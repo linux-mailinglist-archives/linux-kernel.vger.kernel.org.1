@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8A82B6C2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC8C2B6C33
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730167AbgKQRr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:47:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        id S1730177AbgKQRs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729936AbgKQRr6 (ORCPT
+        with ESMTP id S1729446AbgKQRs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:47:58 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A390EC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:47:56 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id d12so24023911wrr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:47:56 -0800 (PST)
+        Tue, 17 Nov 2020 12:48:57 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08274C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:48:57 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id h12so859614pjv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:48:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/nkpqjIgajzlSdFhAUa91rI3DlJHkmeiloPK1fP0SuU=;
-        b=ITHEpjke8j1Fe0rmPjqnxJtQ56VYaMsryc4jDB4Y1zTbi2QPgQ2+KgVVLXghqB+XzG
-         vRRqAMnuUTyv8y6QVXDYqXhXV6Kr8ifAuBwY2NvhzLp5PhT9TCHlfnZVm59AcdSatE5y
-         ygapViTD6nj80KooOIoyv58gESQmaIV4yLBVM+x54832YUCTV9+EJIzp4EJA0hYEPaxI
-         Znp0LY2kDgSLz9Jm/Q+KMwAYgTskuUVAK01BcvQ8b3iUZrfhuFuI/oHZ2NRQwHoQ8z3L
-         uKeJ2iRtr2pnAnKxPspyT2gvKBQsnAh9LCSmrTPMLojK1vW0YZpsA+dSeld8qI6u9ymk
-         527Q==
+        h=from:to:cc:subject:date:message-id;
+        bh=O0PA9nf7G4M2udGN4+q47WXE4Qy7KA5bu5YIoNe2LFg=;
+        b=I+O7Yo6COQWNxmqewYTuql/S/oMpEKVhTAdBS6QxYTq7LJQp4PLzTmXAmd3z88YZZn
+         bey0pn5KrqwJScrlAVY602fvKUOwSj746GPwgI1tSNZWPf5HhRj3glWj4MhaPYfoPFiL
+         QnP0psRV9rvO4Ia34yAeIb4djJdEGNbxJLNIrQrQ8zDaJjmrWbV5dXFY6TQIo/joVePx
+         qEdw8bi0fQOnKnd0tGSPb2MPvWtgCwQHeEB28KbOR+YkQgzv5hGtLHa2JbYQ+3VmXboa
+         E3cy5W6SYtwwug1WKODqHKlJF83ehh/G2e1DA2XoXj0ZY2/ghOrfbvcSHrJl7fJDcjF2
+         wmfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/nkpqjIgajzlSdFhAUa91rI3DlJHkmeiloPK1fP0SuU=;
-        b=qCbMfBxiGn/rg/CxXgPnVhuV7ilv1nmTFQT0jydFv0rvr+WbQ632sGkkGp7yxRQ2JV
-         f+WlRiflBXCAzrYU9hRWuc5by8dJ4DSr3nPIzr7d6RzjSzNpAQcR+tsgrrF6AQtTdVRj
-         bRc0h+jV7S09XyQhyoLv/U7W9lSWmLQ+f+AweXo1BPbWTURZwkvQ/cIMzFzoFB5ushU3
-         vw96KdDa95knb9waQ5uC9Bky9vdzayE9oVEaWtqF8PxlJOjWdy5V1J33kk+YFy0DJue6
-         BQ550L4v4eekpP2W/UpTePTD0sMp+W8F5U4BTGfXkTXtI0TtaQqecN30CT7/xsFH67q9
-         NwTQ==
-X-Gm-Message-State: AOAM531S4vBx5M14o+vASFhE33oNBID2PQESTeAHFAQkhUi/K3eD/QqD
-        iVoJv6Lq0w6uu6POrhItUM8tkQ==
-X-Google-Smtp-Source: ABdhPJzhNHNPbz+hZfvLGzDAC2GIpacCKf+qLy2usgtuYSXjedZu0Xn3+JdU9qVQUahzlQbamiD49g==
-X-Received: by 2002:adf:fd0e:: with SMTP id e14mr660096wrr.119.1605635275236;
-        Tue, 17 Nov 2020 09:47:55 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5150:1004:6c70:8db9? ([2a01:e34:ed2f:f020:5150:1004:6c70:8db9])
-        by smtp.googlemail.com with ESMTPSA id o184sm4572351wmo.37.2020.11.17.09.47.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 09:47:54 -0800 (PST)
-Subject: Re: [PATCH v2 2/4] Documentation/powercap/dtpm: Add documentation for
- dtpm
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     rjw@rjwysocki.net, ulf.hansson@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ilina@codeaurora.org, lukasz.luba@arm.com, rkumbako@codeaurora.org,
-        rui.zhang@intel.com, linux-arm-kernel@lists.infradead.org
-References: <20201116152649.11482-1-daniel.lezcano@linaro.org>
- <20201116152649.11482-3-daniel.lezcano@linaro.org>
- <20201117090856.27eddac7@lwn.net>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <18603f39-a540-5425-2a56-58265f7881d3@linaro.org>
-Date:   Tue, 17 Nov 2020 18:47:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201117090856.27eddac7@lwn.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=O0PA9nf7G4M2udGN4+q47WXE4Qy7KA5bu5YIoNe2LFg=;
+        b=KZPds6QVgmHiM99w5chQRP/Owj8L3jSr/tAW2oAtfWSA9RUgelqZcPVtXOfO2PtckM
+         bKAbI0x3fq9sDnCT2bYZo1bbPwHmPoo5jimGQc5pgc1wy9JhKGq0cLyCDzhHgNayMqZ2
+         x/9UToObSA69/W6JWenUEZvYqFgBbaj7OwIc8A1sG/9p7C2lOIuR5Fw3ebJbg56ZdGLE
+         SUT4S6coULksJdpDv4OrSdZz1xI8Ao7Ct/h+m6GleKcuLDt+E748HVLq8lMVy4l1njxO
+         xpGZ5ZCyOkIUCCi4GDhiidhKIdM1YFsMJ9ujVxOZ3Cq0CFNcTaWESLr6S+ongvzeg+g6
+         Yf5A==
+X-Gm-Message-State: AOAM5316tsc4RolLO7FJzdOKxCZNnY2Ld2xs+XhZmjzdwAf1cYWJfZHb
+        9WLHgQf59RHgF6eJyy210csW
+X-Google-Smtp-Source: ABdhPJwXUv3E3rnopnWn4cwu/xUeTSKe0sisjYQxjooarhF/w/Rb+XZEE47uu2Zdb/NCgRQcv8krHw==
+X-Received: by 2002:a17:90b:345:: with SMTP id fh5mr226340pjb.198.1605635336430;
+        Tue, 17 Nov 2020 09:48:56 -0800 (PST)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.googlemail.com with ESMTPSA id 192sm22222810pfz.200.2020.11.17.09.48.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 09:48:55 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     bjorn.andersson@linaro.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 0/4] Add support for Qcom SMEM based NAND parser
+Date:   Tue, 17 Nov 2020 23:18:41 +0530
+Message-Id: <20201117174845.28684-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2020 17:08, Jonathan Corbet wrote:
-> On Mon, 16 Nov 2020 16:26:47 +0100
-> Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
-> 
->> The dynamic thermal and power management is a technique to dynamically
->> adjust the power consumption of different devices in order to ensure a
->> global thermal constraint.
->>
->> An userspace daemon is usually monitoring the temperature and the
->> power to take immediate action on the device.
->>
->> The DTPM framework provides an unified API to userspace to act on the
->> power.
->>
->> Document this framework.
-> 
-> It's always refreshing to see documentation show up with a new feature! :)
-> 
-> That said, it's clear that you haven't built the docs with this new
-> material.  There's a couple of little things I would ask you to do...
+Hello,
 
-Thanks for the review, I'll take care of your comments and generate the
-documentation to check the expected result.
+This series adds support for parsing the partitions defined in Shared
+Memory (SMEM) of the Qualcomm platforms supporting NAND interface.
+Current parser only supports V3 and V4 of the partition tables.
 
+This series has been tested on SDX55 MTP board which has an onboard NAND
+device.
+
+Thanks,
+Mani
+
+Changes in v2:
+
+* Added additionalProperties: false and removed unit address in binding
+
+Manivannan Sadhasivam (4):
+  dt-bindings: mtd: partitions: Add binding for Qcom SMEM parser
+  mtd: parsers: Add Qcom SMEM parser
+  mtd: rawnand: qcom: Add support for Qcom SMEM parser
+  mtd: parsers: afs: Fix freeing the part name memory in failure
+
+ .../mtd/partitions/qcom,smem-part.yaml        |  33 ++++
+ drivers/mtd/nand/raw/qcom_nandc.c             |   4 +-
+ drivers/mtd/parsers/Kconfig                   |   8 +
+ drivers/mtd/parsers/Makefile                  |   1 +
+ drivers/mtd/parsers/afs.c                     |   4 +-
+ drivers/mtd/parsers/qcomsmempart.c            | 169 ++++++++++++++++++
+ 6 files changed, 215 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+ create mode 100644 drivers/mtd/parsers/qcomsmempart.c
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.17.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
