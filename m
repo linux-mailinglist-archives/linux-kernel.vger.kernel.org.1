@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8522B6511
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCB92B644D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:47:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730853AbgKQN3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:29:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36746 "EHLO mail.kernel.org"
+        id S1727990AbgKQNpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:45:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731446AbgKQN2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:28:38 -0500
+        id S1732723AbgKQNjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:39:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB9D320781;
-        Tue, 17 Nov 2020 13:28:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B48A72467D;
+        Tue, 17 Nov 2020 13:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619717;
-        bh=xNzIYruHbZwGWlvomLEXiR6gRfnXMwxV3iQA7ugjKoY=;
+        s=default; t=1605620370;
+        bh=PZsTWw2S2W+5uvMtiCaN382+wrsYqDv7Bhrej8Bb8s4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q51jb4es5GOs/Bt1WdykHzfxMD5RR+G4w0ZGG43Oc6dmf8XOpzGwrb+58Hiq29A8e
-         DUsYCgMFgqVYW+GCOE3cEw3Uoxa+L4GgqhF6sa3NBvvADbGE1XTeHSi9c8QgXN2s+m
-         1USII5L95DmjzSKMquGP4z+teDWK6a+u0CQJsDKs=
+        b=pGs4sG5mL6KSJ0znHyUqqgg8ChnaCIP+N4BscMjiNco1MZD/XhFLbphsEdN+yiTA/
+         GRaX8ymlWWkPkUFvOrYt0P5uiwHfoHUmWNWzrFtDeyudVhCIZwU2bS1JoF6Vc/jN7e
+         0GNZH6RzZfBbw3Uk1Bt8NmN5wbwJGEvhW09algR0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 105/151] perf: Fix get_recursion_context()
-Date:   Tue, 17 Nov 2020 14:05:35 +0100
-Message-Id: <20201117122126.522066297@linuxfoundation.org>
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH 5.9 196/255] thunderbolt: Add the missed ida_simple_remove() in ring_request_msix()
+Date:   Tue, 17 Nov 2020 14:05:36 +0100
+Message-Id: <20201117122148.469338086@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit ce0f17fc93f63ee91428af10b7b2ddef38cd19e5 ]
+commit 7342ca34d931a357d408aaa25fadd031e46af137 upstream.
 
-One should use in_serving_softirq() to detect SoftIRQ context.
+ring_request_msix() misses to call ida_simple_remove() in an error path.
+Add a label 'err_ida_remove' and jump to it.
 
-Fixes: 96f6d4444302 ("perf_counter: avoid recursion")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201030151955.120572175@infradead.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 046bee1f9ab8 ("thunderbolt: Add MSI-X support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/events/internal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/thunderbolt/nhi.c |   19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/events/internal.h b/kernel/events/internal.h
-index 3aef4191798c3..6e87b358e0826 100644
---- a/kernel/events/internal.h
-+++ b/kernel/events/internal.h
-@@ -210,7 +210,7 @@ static inline int get_recursion_context(int *recursion)
- 		rctx = 3;
- 	else if (in_irq())
- 		rctx = 2;
--	else if (in_softirq())
-+	else if (in_serving_softirq())
- 		rctx = 1;
- 	else
- 		rctx = 0;
--- 
-2.27.0
-
+--- a/drivers/thunderbolt/nhi.c
++++ b/drivers/thunderbolt/nhi.c
+@@ -405,12 +405,23 @@ static int ring_request_msix(struct tb_r
+ 
+ 	ring->vector = ret;
+ 
+-	ring->irq = pci_irq_vector(ring->nhi->pdev, ring->vector);
+-	if (ring->irq < 0)
+-		return ring->irq;
++	ret = pci_irq_vector(ring->nhi->pdev, ring->vector);
++	if (ret < 0)
++		goto err_ida_remove;
++
++	ring->irq = ret;
+ 
+ 	irqflags = no_suspend ? IRQF_NO_SUSPEND : 0;
+-	return request_irq(ring->irq, ring_msix, irqflags, "thunderbolt", ring);
++	ret = request_irq(ring->irq, ring_msix, irqflags, "thunderbolt", ring);
++	if (ret)
++		goto err_ida_remove;
++
++	return 0;
++
++err_ida_remove:
++	ida_simple_remove(&nhi->msix_ida, ring->vector);
++
++	return ret;
+ }
+ 
+ static void ring_release_msix(struct tb_ring *ring)
 
 
