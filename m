@@ -2,627 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF29C2B6E24
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D21A92B6E2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:11:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727251AbgKQTKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:10:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgKQTKi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:10:38 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5408FC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:10:38 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id r18so102124pgu.6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:10:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FS4LCcEm+1/2p3uCVe9l66MRLYTVjvSxcv4TWKIJaWY=;
-        b=UPQ2JMB7WxrONuInwUcc7ZmCAxRKQTA2tTzMQqhPCjAEJA+PNm/4FUN6fX6IHCdo4R
-         as+g64U64NOvM4u/kevNVbqY+USw485eE3540Q+ZSqif2VKLrV2yOnosgKRgdjHAVi2+
-         VFMxGfUAQ5zggrwDua0EsHUiEhW/QHRTLB/6NKga+1+riiLq1Icjlc1BFMM1sg0Et9tt
-         husewdlh62s79DB6gsMmjxkBRjnzQKD8gl0mJlrJcHSbMyg5zyUWOpJ4uddnaAnH9TWd
-         UbRc05E1EyXJY3XuMTbu/Br4VY27Osu+yZcehjdG/EaN26vMJx9OjtNRboXJQR7U9VuC
-         sQJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FS4LCcEm+1/2p3uCVe9l66MRLYTVjvSxcv4TWKIJaWY=;
-        b=DIIaoFaiTa26/Oj/jR+ejsW3qDkHmNddZyco9GlHTdPYvpZsdiN4Tov+IfX+ZSZfJk
-         I4e2ilWUJF0Pat/sada3g6yVawy2p/q5PZGGYa1KvreCB5bFVElr61tqpwPCkhBWxzeL
-         O2xR5PX081EgXWzT447Q+GCHEPv30PaKNMmw25gTf6jIi7REXgxjwaKwKYm+f9RLcf+b
-         964vW5i+wd7DN2AQwkWtTIFTleqjjjvSLKb5T4pQccbKl06GvdZSrsy1UbP0qBU5iT9q
-         6T60XnsxUkKmHCOLowPNHrripRLCUjERnXsXpC/AMa9Vjq9fh7s7dk10P2JxZDij3iLS
-         MwkQ==
-X-Gm-Message-State: AOAM5335vLgUN8Yw3VDLAMO2KiR5qCou3xG1W+ebGZuQTfIIHHJXFm/b
-        dn9M6V638fTW7O0d6zH5Op1XBAX8BbXi20XBMIVkQA==
-X-Google-Smtp-Source: ABdhPJwGve00MOK6zyaDJw6LNhU7NnSLQSMRDDJyCMou9kSNvTL6C9MJjseyIpQAddb+5D79SSqKQ5aUUmRrKyx4suk=
-X-Received: by 2002:a62:1896:0:b029:197:491c:be38 with SMTP id
- 144-20020a6218960000b0290197491cbe38mr755929pfy.15.1605640237430; Tue, 17 Nov
- 2020 11:10:37 -0800 (PST)
+        id S1727321AbgKQTL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:11:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725771AbgKQTL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:11:26 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44D79221FC;
+        Tue, 17 Nov 2020 19:11:23 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 14:11:21 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     tglx@linutronix.de, hch@infradead.org, mingo@redhat.com,
+        keescook@chromium.org, arnd@arndb.de, luto@amacapital.net,
+        wad@chromium.org, paul@paul-moore.com, eparis@redhat.com,
+        oleg@redhat.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kernel@collabora.com,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH v2 05/10] tracepoints: Migrate to use SYSCALL_WORK flag
+Message-ID: <20201117141121.4f1f792a@gandalf.local.home>
+In-Reply-To: <20201116174206.2639648-6-krisman@collabora.com>
+References: <20201116174206.2639648-1-krisman@collabora.com>
+        <20201116174206.2639648-6-krisman@collabora.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201116043532.4032932-1-ndesaulniers@google.com>
- <20201116043532.4032932-3-ndesaulniers@google.com> <20201117030214.GB1340689@ubuntu-m3-large-x86>
-In-Reply-To: <20201117030214.GB1340689@ubuntu-m3-large-x86>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 17 Nov 2020 11:10:26 -0800
-Message-ID: <CAKwvOdk_sphJGQarEWJLzGZWkdzO9dqmcRmys3Retw3vn2Fwag@mail.gmail.com>
-Subject: Re: [PATCH 2/3] Revert "lib: Revert use of fallthrough pseudo-keyword
- in lib/"
-To:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 7:02 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> On Sun, Nov 15, 2020 at 08:35:31PM -0800, Nick Desaulniers wrote:
-> > This reverts commit 6a9dc5fd6170 ("lib: Revert use of fallthrough
-> > pseudo-keyword in lib/")
+On Mon, 16 Nov 2020 12:42:01 -0500
+Gabriel Krisman Bertazi <krisman@collabora.com> wrote:
 
-Gustavo, whose tree did 6a9dc5fd6170 and df561f6688fe go up to
-mainline in?  I'm not sure whether you or MPE (ppc) or someone else
-should pick it this series?
+> For architectures that rely on the generic syscall entry code, use the
+> syscall_work field in struct thread_info and the specific SYSCALL_WORK
+> flag.  This set of flags has the advantage of being architecture
+> independent.
+> 
+> Users of the flag outside of the generic entry code should rely on the
+> accessor macros, such that the flag is still correctly resolved for
+> architectures that don't use the generic entry code and still rely on
+> TIF flags for system call work.
+> 
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-> >
-> > Now that we can build arch/powerpc/boot/ free of -Wimplicit-fallthrough,
-> > re-enable these fixes for lib/.
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/236
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
->
-> > ---
-> >  lib/asn1_decoder.c      |  4 ++--
-> >  lib/assoc_array.c       |  2 +-
-> >  lib/bootconfig.c        |  4 ++--
-> >  lib/cmdline.c           | 10 +++++-----
-> >  lib/dim/net_dim.c       |  2 +-
-> >  lib/dim/rdma_dim.c      |  4 ++--
-> >  lib/glob.c              |  2 +-
-> >  lib/siphash.c           | 36 ++++++++++++++++++------------------
-> >  lib/ts_fsm.c            |  2 +-
-> >  lib/vsprintf.c          | 14 +++++++-------
-> >  lib/xz/xz_dec_lzma2.c   |  4 ++--
-> >  lib/xz/xz_dec_stream.c  | 16 ++++++++--------
-> >  lib/zstd/bitstream.h    | 10 +++++-----
-> >  lib/zstd/compress.c     |  2 +-
-> >  lib/zstd/decompress.c   | 12 ++++++------
-> >  lib/zstd/huf_compress.c |  4 ++--
-> >  16 files changed, 64 insertions(+), 64 deletions(-)
-> >
-> > diff --git a/lib/asn1_decoder.c b/lib/asn1_decoder.c
-> > index 58f72b25f8e9..13da529e2e72 100644
-> > --- a/lib/asn1_decoder.c
-> > +++ b/lib/asn1_decoder.c
-> > @@ -381,7 +381,7 @@ int asn1_ber_decoder(const struct asn1_decoder *decoder,
-> >       case ASN1_OP_END_SET_ACT:
-> >               if (unlikely(!(flags & FLAG_MATCHED)))
-> >                       goto tag_mismatch;
-> > -             /* fall through */
-> > +             fallthrough;
-> >
-> >       case ASN1_OP_END_SEQ:
-> >       case ASN1_OP_END_SET_OF:
-> > @@ -448,7 +448,7 @@ int asn1_ber_decoder(const struct asn1_decoder *decoder,
-> >                       pc += asn1_op_lengths[op];
-> >                       goto next_op;
-> >               }
-> > -             /* fall through */
-> > +             fallthrough;
-> >
-> >       case ASN1_OP_ACT:
-> >               ret = actions[machine[pc + 1]](context, hdr, tag, data + tdp, len);
-> > diff --git a/lib/assoc_array.c b/lib/assoc_array.c
-> > index 6f4bcf524554..04c98799c3ba 100644
-> > --- a/lib/assoc_array.c
-> > +++ b/lib/assoc_array.c
-> > @@ -1113,7 +1113,7 @@ struct assoc_array_edit *assoc_array_delete(struct assoc_array *array,
-> >                                               index_key))
-> >                               goto found_leaf;
-> >               }
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case assoc_array_walk_tree_empty:
-> >       case assoc_array_walk_found_wrong_shortcut:
-> >       default:
-> > diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-> > index 649ed44f199c..9f8c70a98fcf 100644
-> > --- a/lib/bootconfig.c
-> > +++ b/lib/bootconfig.c
-> > @@ -827,7 +827,7 @@ int __init xbc_init(char *buf, const char **emsg, int *epos)
-> >                                                       q - 2);
-> >                               break;
-> >                       }
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case '=':
-> >                       ret = xbc_parse_kv(&p, q, c);
-> >                       break;
-> > @@ -836,7 +836,7 @@ int __init xbc_init(char *buf, const char **emsg, int *epos)
-> >                       break;
-> >               case '#':
-> >                       q = skip_comment(q);
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case ';':
-> >               case '\n':
-> >                       ret = xbc_parse_key(&p, q);
-> > diff --git a/lib/cmdline.c b/lib/cmdline.c
-> > index 9e186234edc0..46f2cb4ce6d1 100644
-> > --- a/lib/cmdline.c
-> > +++ b/lib/cmdline.c
-> > @@ -144,23 +144,23 @@ unsigned long long memparse(const char *ptr, char **retptr)
-> >       case 'E':
-> >       case 'e':
-> >               ret <<= 10;
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case 'P':
-> >       case 'p':
-> >               ret <<= 10;
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case 'T':
-> >       case 't':
-> >               ret <<= 10;
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case 'G':
-> >       case 'g':
-> >               ret <<= 10;
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case 'M':
-> >       case 'm':
-> >               ret <<= 10;
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case 'K':
-> >       case 'k':
-> >               ret <<= 10;
-> > diff --git a/lib/dim/net_dim.c b/lib/dim/net_dim.c
-> > index a4db51c21266..06811d866775 100644
-> > --- a/lib/dim/net_dim.c
-> > +++ b/lib/dim/net_dim.c
-> > @@ -233,7 +233,7 @@ void net_dim(struct dim *dim, struct dim_sample end_sample)
-> >                       schedule_work(&dim->work);
-> >                       break;
-> >               }
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case DIM_START_MEASURE:
-> >               dim_update_sample(end_sample.event_ctr, end_sample.pkt_ctr,
-> >                                 end_sample.byte_ctr, &dim->start_sample);
-> > diff --git a/lib/dim/rdma_dim.c b/lib/dim/rdma_dim.c
-> > index f7e26c7b4749..15462d54758d 100644
-> > --- a/lib/dim/rdma_dim.c
-> > +++ b/lib/dim/rdma_dim.c
-> > @@ -59,7 +59,7 @@ static bool rdma_dim_decision(struct dim_stats *curr_stats, struct dim *dim)
-> >                       break;
-> >               case DIM_STATS_WORSE:
-> >                       dim_turn(dim);
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case DIM_STATS_BETTER:
-> >                       step_res = rdma_dim_step(dim);
-> >                       if (step_res == DIM_ON_EDGE)
-> > @@ -94,7 +94,7 @@ void rdma_dim(struct dim *dim, u64 completions)
-> >                       schedule_work(&dim->work);
-> >                       break;
-> >               }
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case DIM_START_MEASURE:
-> >               dim->state = DIM_MEASURE_IN_PROGRESS;
-> >               dim_update_sample_with_comps(curr_sample->event_ctr, 0, 0,
-> > diff --git a/lib/glob.c b/lib/glob.c
-> > index 52e3ed7e4a9b..85ecbda45cd8 100644
-> > --- a/lib/glob.c
-> > +++ b/lib/glob.c
-> > @@ -102,7 +102,7 @@ bool __pure glob_match(char const *pat, char const *str)
-> >                       break;
-> >               case '\\':
-> >                       d = *pat++;
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               default:        /* Literal character */
-> >  literal:
-> >                       if (c == d) {
-> > diff --git a/lib/siphash.c b/lib/siphash.c
-> > index c47bb6ff2149..a90112ee72a1 100644
-> > --- a/lib/siphash.c
-> > +++ b/lib/siphash.c
-> > @@ -68,11 +68,11 @@ u64 __siphash_aligned(const void *data, size_t len, const siphash_key_t *key)
-> >                                                 bytemask_from_count(left)));
-> >  #else
-> >       switch (left) {
-> > -     case 7: b |= ((u64)end[6]) << 48; /* fall through */
-> > -     case 6: b |= ((u64)end[5]) << 40; /* fall through */
-> > -     case 5: b |= ((u64)end[4]) << 32; /* fall through */
-> > +     case 7: b |= ((u64)end[6]) << 48; fallthrough;
-> > +     case 6: b |= ((u64)end[5]) << 40; fallthrough;
-> > +     case 5: b |= ((u64)end[4]) << 32; fallthrough;
-> >       case 4: b |= le32_to_cpup(data); break;
-> > -     case 3: b |= ((u64)end[2]) << 16; /* fall through */
-> > +     case 3: b |= ((u64)end[2]) << 16; fallthrough;
-> >       case 2: b |= le16_to_cpup(data); break;
-> >       case 1: b |= end[0];
-> >       }
-> > @@ -101,11 +101,11 @@ u64 __siphash_unaligned(const void *data, size_t len, const siphash_key_t *key)
-> >                                                 bytemask_from_count(left)));
-> >  #else
-> >       switch (left) {
-> > -     case 7: b |= ((u64)end[6]) << 48; /* fall through */
-> > -     case 6: b |= ((u64)end[5]) << 40; /* fall through */
-> > -     case 5: b |= ((u64)end[4]) << 32; /* fall through */
-> > +     case 7: b |= ((u64)end[6]) << 48; fallthrough;
-> > +     case 6: b |= ((u64)end[5]) << 40; fallthrough;
-> > +     case 5: b |= ((u64)end[4]) << 32; fallthrough;
-> >       case 4: b |= get_unaligned_le32(end); break;
-> > -     case 3: b |= ((u64)end[2]) << 16; /* fall through */
-> > +     case 3: b |= ((u64)end[2]) << 16; fallthrough;
-> >       case 2: b |= get_unaligned_le16(end); break;
-> >       case 1: b |= end[0];
-> >       }
-> > @@ -268,11 +268,11 @@ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
-> >                                                 bytemask_from_count(left)));
-> >  #else
-> >       switch (left) {
-> > -     case 7: b |= ((u64)end[6]) << 48; /* fall through */
-> > -     case 6: b |= ((u64)end[5]) << 40; /* fall through */
-> > -     case 5: b |= ((u64)end[4]) << 32; /* fall through */
-> > +     case 7: b |= ((u64)end[6]) << 48; fallthrough;
-> > +     case 6: b |= ((u64)end[5]) << 40; fallthrough;
-> > +     case 5: b |= ((u64)end[4]) << 32; fallthrough;
-> >       case 4: b |= le32_to_cpup(data); break;
-> > -     case 3: b |= ((u64)end[2]) << 16; /* fall through */
-> > +     case 3: b |= ((u64)end[2]) << 16; fallthrough;
-> >       case 2: b |= le16_to_cpup(data); break;
-> >       case 1: b |= end[0];
-> >       }
-> > @@ -301,11 +301,11 @@ u32 __hsiphash_unaligned(const void *data, size_t len,
-> >                                                 bytemask_from_count(left)));
-> >  #else
-> >       switch (left) {
-> > -     case 7: b |= ((u64)end[6]) << 48; /* fall through */
-> > -     case 6: b |= ((u64)end[5]) << 40; /* fall through */
-> > -     case 5: b |= ((u64)end[4]) << 32; /* fall through */
-> > +     case 7: b |= ((u64)end[6]) << 48; fallthrough;
-> > +     case 6: b |= ((u64)end[5]) << 40; fallthrough;
-> > +     case 5: b |= ((u64)end[4]) << 32; fallthrough;
-> >       case 4: b |= get_unaligned_le32(end); break;
-> > -     case 3: b |= ((u64)end[2]) << 16; /* fall through */
-> > +     case 3: b |= ((u64)end[2]) << 16; fallthrough;
-> >       case 2: b |= get_unaligned_le16(end); break;
-> >       case 1: b |= end[0];
-> >       }
-> > @@ -431,7 +431,7 @@ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
-> >               v0 ^= m;
-> >       }
-> >       switch (left) {
-> > -     case 3: b |= ((u32)end[2]) << 16; /* fall through */
-> > +     case 3: b |= ((u32)end[2]) << 16; fallthrough;
-> >       case 2: b |= le16_to_cpup(data); break;
-> >       case 1: b |= end[0];
-> >       }
-> > @@ -454,7 +454,7 @@ u32 __hsiphash_unaligned(const void *data, size_t len,
-> >               v0 ^= m;
-> >       }
-> >       switch (left) {
-> > -     case 3: b |= ((u32)end[2]) << 16; /* fall through */
-> > +     case 3: b |= ((u32)end[2]) << 16; fallthrough;
-> >       case 2: b |= get_unaligned_le16(end); break;
-> >       case 1: b |= end[0];
-> >       }
-> > diff --git a/lib/ts_fsm.c b/lib/ts_fsm.c
-> > index ab749ec10ab5..64fd9015ad80 100644
-> > --- a/lib/ts_fsm.c
-> > +++ b/lib/ts_fsm.c
-> > @@ -193,7 +193,7 @@ static unsigned int fsm_find(struct ts_config *conf, struct ts_state *state)
-> >                               TOKEN_MISMATCH();
-> >
-> >                       block_idx++;
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case TS_FSM_ANY:
-> >                       if (next == NULL)
-> > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> > index 14c9a6af1b23..d3c5c16f391c 100644
-> > --- a/lib/vsprintf.c
-> > +++ b/lib/vsprintf.c
-> > @@ -1265,7 +1265,7 @@ char *mac_address_string(char *buf, char *end, u8 *addr,
-> >
-> >       case 'R':
-> >               reversed = true;
-> > -             /* fall through */
-> > +             fallthrough;
-> >
-> >       default:
-> >               separator = ':';
-> > @@ -1682,7 +1682,7 @@ char *uuid_string(char *buf, char *end, const u8 *addr,
-> >       switch (*(++fmt)) {
-> >       case 'L':
-> >               uc = true;
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case 'l':
-> >               index = guid_index;
-> >               break;
-> > @@ -2219,7 +2219,7 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
-> >       case 'S':
-> >       case 's':
-> >               ptr = dereference_symbol_descriptor(ptr);
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case 'B':
-> >               return symbol_string(buf, end, ptr, spec, fmt);
-> >       case 'R':
-> > @@ -2450,7 +2450,7 @@ int format_decode(const char *fmt, struct printf_spec *spec)
-> >
-> >       case 'x':
-> >               spec->flags |= SMALL;
-> > -             /* fall through */
-> > +             fallthrough;
-> >
-> >       case 'X':
-> >               spec->base = 16;
-> > @@ -2468,7 +2468,7 @@ int format_decode(const char *fmt, struct printf_spec *spec)
-> >                * utility, treat it as any other invalid or
-> >                * unsupported format specifier.
-> >                */
-> > -             /* fall through */
-> > +             fallthrough;
-> >
-> >       default:
-> >               WARN_ONCE(1, "Please remove unsupported %%%c in format string\n", *fmt);
-> > @@ -3411,10 +3411,10 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
-> >                       break;
-> >               case 'i':
-> >                       base = 0;
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case 'd':
-> >                       is_sign = true;
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case 'u':
-> >                       break;
-> >               case '%':
-> > diff --git a/lib/xz/xz_dec_lzma2.c b/lib/xz/xz_dec_lzma2.c
-> > index 65a1aad8c223..ca2603abee08 100644
-> > --- a/lib/xz/xz_dec_lzma2.c
-> > +++ b/lib/xz/xz_dec_lzma2.c
-> > @@ -1043,7 +1043,7 @@ XZ_EXTERN enum xz_ret xz_dec_lzma2_run(struct xz_dec_lzma2 *s,
-> >
-> >                       s->lzma2.sequence = SEQ_LZMA_PREPARE;
-> >
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case SEQ_LZMA_PREPARE:
-> >                       if (s->lzma2.compressed < RC_INIT_BYTES)
-> > @@ -1055,7 +1055,7 @@ XZ_EXTERN enum xz_ret xz_dec_lzma2_run(struct xz_dec_lzma2 *s,
-> >                       s->lzma2.compressed -= RC_INIT_BYTES;
-> >                       s->lzma2.sequence = SEQ_LZMA_RUN;
-> >
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case SEQ_LZMA_RUN:
-> >                       /*
-> > diff --git a/lib/xz/xz_dec_stream.c b/lib/xz/xz_dec_stream.c
-> > index 32ab2a08b7cb..fea86deaaa01 100644
-> > --- a/lib/xz/xz_dec_stream.c
-> > +++ b/lib/xz/xz_dec_stream.c
-> > @@ -583,7 +583,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
-> >                       if (ret != XZ_OK)
-> >                               return ret;
-> >
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case SEQ_BLOCK_START:
-> >                       /* We need one byte of input to continue. */
-> > @@ -608,7 +608,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
-> >                       s->temp.pos = 0;
-> >                       s->sequence = SEQ_BLOCK_HEADER;
-> >
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case SEQ_BLOCK_HEADER:
-> >                       if (!fill_temp(s, b))
-> > @@ -620,7 +620,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
-> >
-> >                       s->sequence = SEQ_BLOCK_UNCOMPRESS;
-> >
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case SEQ_BLOCK_UNCOMPRESS:
-> >                       ret = dec_block(s, b);
-> > @@ -629,7 +629,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
-> >
-> >                       s->sequence = SEQ_BLOCK_PADDING;
-> >
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case SEQ_BLOCK_PADDING:
-> >                       /*
-> > @@ -651,7 +651,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
-> >
-> >                       s->sequence = SEQ_BLOCK_CHECK;
-> >
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case SEQ_BLOCK_CHECK:
-> >                       if (s->check_type == XZ_CHECK_CRC32) {
-> > @@ -675,7 +675,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
-> >
-> >                       s->sequence = SEQ_INDEX_PADDING;
-> >
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case SEQ_INDEX_PADDING:
-> >                       while ((s->index.size + (b->in_pos - s->in_start))
-> > @@ -699,7 +699,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
-> >
-> >                       s->sequence = SEQ_INDEX_CRC32;
-> >
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case SEQ_INDEX_CRC32:
-> >                       ret = crc32_validate(s, b);
-> > @@ -709,7 +709,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
-> >                       s->temp.size = STREAM_HEADER_SIZE;
-> >                       s->sequence = SEQ_STREAM_FOOTER;
-> >
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case SEQ_STREAM_FOOTER:
-> >                       if (!fill_temp(s, b))
-> > diff --git a/lib/zstd/bitstream.h b/lib/zstd/bitstream.h
-> > index 3a49784d5c61..7c65c66e41fd 100644
-> > --- a/lib/zstd/bitstream.h
-> > +++ b/lib/zstd/bitstream.h
-> > @@ -259,15 +259,15 @@ ZSTD_STATIC size_t BIT_initDStream(BIT_DStream_t *bitD, const void *srcBuffer, s
-> >               bitD->bitContainer = *(const BYTE *)(bitD->start);
-> >               switch (srcSize) {
-> >               case 7: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[6]) << (sizeof(bitD->bitContainer) * 8 - 16);
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case 6: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[5]) << (sizeof(bitD->bitContainer) * 8 - 24);
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case 5: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[4]) << (sizeof(bitD->bitContainer) * 8 - 32);
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case 4: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[3]) << 24;
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case 3: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[2]) << 16;
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case 2: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[1]) << 8;
-> >               default:;
-> >               }
-> > diff --git a/lib/zstd/compress.c b/lib/zstd/compress.c
-> > index 5e0b67003e55..b080264ed3ad 100644
-> > --- a/lib/zstd/compress.c
-> > +++ b/lib/zstd/compress.c
-> > @@ -3182,7 +3182,7 @@ static size_t ZSTD_compressStream_generic(ZSTD_CStream *zcs, void *dst, size_t *
-> >                               zcs->outBuffFlushedSize = 0;
-> >                               zcs->stage = zcss_flush; /* pass-through to flush stage */
-> >                       }
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case zcss_flush: {
-> >                       size_t const toFlush = zcs->outBuffContentSize - zcs->outBuffFlushedSize;
-> > diff --git a/lib/zstd/decompress.c b/lib/zstd/decompress.c
-> > index db6761ea4deb..66cd487a326a 100644
-> > --- a/lib/zstd/decompress.c
-> > +++ b/lib/zstd/decompress.c
-> > @@ -442,7 +442,7 @@ size_t ZSTD_decodeLiteralsBlock(ZSTD_DCtx *dctx, const void *src, size_t srcSize
-> >               case set_repeat:
-> >                       if (dctx->litEntropy == 0)
-> >                               return ERROR(dictionary_corrupted);
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >               case set_compressed:
-> >                       if (srcSize < 5)
-> >                               return ERROR(corruption_detected); /* srcSize >= MIN_CBLOCK_SIZE == 3; here we need up to 5 for case 3 */
-> > @@ -1768,7 +1768,7 @@ size_t ZSTD_decompressContinue(ZSTD_DCtx *dctx, void *dst, size_t dstCapacity, c
-> >                       return 0;
-> >               }
-> >               dctx->expected = 0; /* not necessary to copy more */
-> > -             /* fall through */
-> > +             fallthrough;
-> >
-> >       case ZSTDds_decodeFrameHeader:
-> >               memcpy(dctx->headerBuffer + ZSTD_frameHeaderSize_prefix, src, dctx->expected);
-> > @@ -2309,7 +2309,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
-> >               switch (zds->stage) {
-> >               case zdss_init:
-> >                       ZSTD_resetDStream(zds); /* transparent reset on starting decoding a new frame */
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case zdss_loadHeader: {
-> >                       size_t const hSize = ZSTD_getFrameParams(&zds->fParams, zds->headerBuffer, zds->lhSize);
-> > @@ -2376,7 +2376,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
-> >                       }
-> >                       zds->stage = zdss_read;
-> >               }
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case zdss_read: {
-> >                       size_t const neededInSize = ZSTD_nextSrcSizeToDecompress(zds->dctx);
-> > @@ -2405,7 +2405,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
-> >                       zds->stage = zdss_load;
-> >                       /* pass-through */
-> >               }
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case zdss_load: {
-> >                       size_t const neededInSize = ZSTD_nextSrcSizeToDecompress(zds->dctx);
-> > @@ -2438,7 +2438,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
-> >                               /* pass-through */
-> >                       }
-> >               }
-> > -                     /* fall through */
-> > +                     fallthrough;
-> >
-> >               case zdss_flush: {
-> >                       size_t const toFlushSize = zds->outEnd - zds->outStart;
-> > diff --git a/lib/zstd/huf_compress.c b/lib/zstd/huf_compress.c
-> > index e727812d12aa..08b4ae80aed4 100644
-> > --- a/lib/zstd/huf_compress.c
-> > +++ b/lib/zstd/huf_compress.c
-> > @@ -556,9 +556,9 @@ size_t HUF_compress1X_usingCTable(void *dst, size_t dstSize, const void *src, si
-> >       n = srcSize & ~3; /* join to mod 4 */
-> >       switch (srcSize & 3) {
-> >       case 3: HUF_encodeSymbol(&bitC, ip[n + 2], CTable); HUF_FLUSHBITS_2(&bitC);
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case 2: HUF_encodeSymbol(&bitC, ip[n + 1], CTable); HUF_FLUSHBITS_1(&bitC);
-> > -             /* fall through */
-> > +             fallthrough;
-> >       case 1: HUF_encodeSymbol(&bitC, ip[n + 0], CTable); HUF_FLUSHBITS(&bitC);
-> >       case 0:
-> >       default:;
-> > --
-> > 2.29.2.299.gdc1121823c-goog
-> >
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
+Also added Mathieu to Cc.
 
+-- Steve
 
--- 
-Thanks,
-~Nick Desaulniers
+> 
+> ---
+> Changes since v2:
+>   - Drop explicit value assignment in enum (tglx)
+>   - Avoid FLAG/_FLAG defines (tglx)
+>   - Fix comment to refer to SYSCALL_WORK_SECCOMP (me)
+> ---
+>  include/linux/entry-common.h | 13 +++++--------
+>  include/linux/thread_info.h  |  2 ++
+>  include/trace/syscall.h      |  6 +++---
+>  kernel/entry/common.c        |  4 ++--
+>  kernel/trace/trace_events.c  |  8 ++++----
+>  kernel/tracepoint.c          |  4 ++--
+>  6 files changed, 18 insertions(+), 19 deletions(-)
+> 
+> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+> index f3fc4457f63f..8aba367e5c79 100644
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -17,10 +17,6 @@
+>  # define _TIF_SYSCALL_EMU		(0)
+>  #endif
+>  
+> -#ifndef _TIF_SYSCALL_TRACEPOINT
+> -# define _TIF_SYSCALL_TRACEPOINT	(0)
+> -#endif
+> -
+>  #ifndef _TIF_SYSCALL_AUDIT
+>  # define _TIF_SYSCALL_AUDIT		(0)
+>  #endif
+> @@ -46,7 +42,7 @@
+>  
+>  #define SYSCALL_ENTER_WORK						\
+>  	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT  |			\
+> -	 _TIF_SYSCALL_TRACEPOINT | _TIF_SYSCALL_EMU |			\
+> +	 _TIF_SYSCALL_EMU |						\
+>  	 ARCH_SYSCALL_ENTER_WORK)
+>  
+>  /*
+> @@ -58,10 +54,11 @@
+>  
+>  #define SYSCALL_EXIT_WORK						\
+>  	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT |			\
+> -	 _TIF_SYSCALL_TRACEPOINT | ARCH_SYSCALL_EXIT_WORK)
+> +	 ARCH_SYSCALL_EXIT_WORK)
+>  
+> -#define SYSCALL_WORK_ENTER	(SYSCALL_WORK_SECCOMP)
+> -#define SYSCALL_WORK_EXIT	(0)
+> +#define SYSCALL_WORK_ENTER	(SYSCALL_WORK_SECCOMP |			\
+> +				 SYSCALL_WORK_SYSCALL_TRACEPOINT)
+> +#define SYSCALL_WORK_EXIT	(SYSCALL_WORK_SYSCALL_TRACEPOINT)
+>  
+>  /*
+>   * TIF flags handled in exit_to_user_mode_loop()
+> diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
+> index 1d6488130b5c..ff0ac2ebb4ff 100644
+> --- a/include/linux/thread_info.h
+> +++ b/include/linux/thread_info.h
+> @@ -37,9 +37,11 @@ enum {
+>  
+>  enum syscall_work_bit {
+>  	SYSCALL_WORK_BIT_SECCOMP,
+> +	SYSCALL_WORK_BIT_SYSCALL_TRACEPOINT,
+>  };
+>  
+>  #define SYSCALL_WORK_SECCOMP		BIT(SYSCALL_WORK_BIT_SECCOMP)
+> +#define SYSCALL_WORK_SYSCALL_TRACEPOINT	BIT(SYSCALL_WORK_BIT_SYSCALL_TRACEPOINT)
+>  
+>  #include <asm/thread_info.h>
+>  
+> diff --git a/include/trace/syscall.h b/include/trace/syscall.h
+> index dc8ac27d27c1..8e193f3a33b3 100644
+> --- a/include/trace/syscall.h
+> +++ b/include/trace/syscall.h
+> @@ -37,10 +37,10 @@ struct syscall_metadata {
+>  #if defined(CONFIG_TRACEPOINTS) && defined(CONFIG_HAVE_SYSCALL_TRACEPOINTS)
+>  static inline void syscall_tracepoint_update(struct task_struct *p)
+>  {
+> -	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+> -		set_tsk_thread_flag(p, TIF_SYSCALL_TRACEPOINT);
+> +	if (test_syscall_work(SYSCALL_TRACEPOINT))
+> +		set_task_syscall_work(p, SYSCALL_TRACEPOINT);
+>  	else
+> -		clear_tsk_thread_flag(p, TIF_SYSCALL_TRACEPOINT);
+> +		clear_task_syscall_work(p, SYSCALL_TRACEPOINT);
+>  }
+>  #else
+>  static inline void syscall_tracepoint_update(struct task_struct *p)
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index c321056c73d7..4e2b3c08d939 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -63,7 +63,7 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
+>  	/* Either of the above might have changed the syscall number */
+>  	syscall = syscall_get_nr(current, regs);
+>  
+> -	if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
+> +	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
+>  		trace_sys_enter(regs, syscall);
+>  
+>  	syscall_enter_audit(regs, syscall);
+> @@ -233,7 +233,7 @@ static void syscall_exit_work(struct pt_regs *regs, unsigned long ti_work,
+>  
+>  	audit_syscall_exit(regs);
+>  
+> -	if (ti_work & _TIF_SYSCALL_TRACEPOINT)
+> +	if (work & SYSCALL_WORK_SYSCALL_TRACEPOINT)
+>  		trace_sys_exit(regs, syscall_get_return_value(current, regs));
+>  
+>  	step = report_single_step(ti_work);
+> diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+> index 47a71f96e5bc..adf65b502453 100644
+> --- a/kernel/trace/trace_events.c
+> +++ b/kernel/trace/trace_events.c
+> @@ -3428,10 +3428,10 @@ static __init int event_trace_enable(void)
+>   * initialize events and perhaps start any events that are on the
+>   * command line. Unfortunately, there are some events that will not
+>   * start this early, like the system call tracepoints that need
+> - * to set the TIF_SYSCALL_TRACEPOINT flag of pid 1. But event_trace_enable()
+> - * is called before pid 1 starts, and this flag is never set, making
+> - * the syscall tracepoint never get reached, but the event is enabled
+> - * regardless (and not doing anything).
+> + * to set the %SYSCALL_WORK_SYSCALL_TRACEPOINT flag of pid 1. But
+> + * event_trace_enable() is called before pid 1 starts, and this flag
+> + * is never set, making the syscall tracepoint never get reached, but
+> + * the event is enabled regardless (and not doing anything).
+>   */
+>  static __init int event_trace_enable_again(void)
+>  {
+> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> index 3f659f855074..7261fa0f5e3c 100644
+> --- a/kernel/tracepoint.c
+> +++ b/kernel/tracepoint.c
+> @@ -594,7 +594,7 @@ int syscall_regfunc(void)
+>  	if (!sys_tracepoint_refcount) {
+>  		read_lock(&tasklist_lock);
+>  		for_each_process_thread(p, t) {
+> -			set_tsk_thread_flag(t, TIF_SYSCALL_TRACEPOINT);
+> +			set_task_syscall_work(t, SYSCALL_TRACEPOINT);
+>  		}
+>  		read_unlock(&tasklist_lock);
+>  	}
+> @@ -611,7 +611,7 @@ void syscall_unregfunc(void)
+>  	if (!sys_tracepoint_refcount) {
+>  		read_lock(&tasklist_lock);
+>  		for_each_process_thread(p, t) {
+> -			clear_tsk_thread_flag(t, TIF_SYSCALL_TRACEPOINT);
+> +			clear_task_syscall_work(t, SYSCALL_TRACEPOINT);
+>  		}
+>  		read_unlock(&tasklist_lock);
+>  	}
+
