@@ -2,108 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FDE2B5CB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDA32B5CB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727374AbgKQKQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 05:16:38 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:42668 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727188AbgKQKQi (ORCPT
+        id S1727154AbgKQKQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:16:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQKQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:16:38 -0500
-Received: from mail-lf1-f72.google.com ([209.85.167.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1key2N-0003xB-M2
-        for linux-kernel@vger.kernel.org; Tue, 17 Nov 2020 10:16:35 +0000
-Received: by mail-lf1-f72.google.com with SMTP id t3so6199620lfk.21
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:16:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XEdsHRGTcFavudpXhNXpa2iKk6bFAMTvjLBIV8dbsko=;
-        b=OngYtvg+q4qPOrxUuioQd46f6xGMaFLh7DYHzkrUM+tqDUDoRpN3j0hbJn+S4LbXJW
-         hmNkWNf7qn4tfhshENmDOKfrn6TOplA74VT05i30UkH3R0BDtSVWZclSsnT/1Jw8PtTS
-         pLTIwvZ/viZYeR0qrqrN1v74Lvz92PDl5sAhEwRSYOVu9DviBFOC8/p1cVCbbPLnGDkX
-         +Vq/aiYRs6hFxZhkfFE2tB0ZepIyCfXiZJ7B3WyZn0fWDj7kqMHUbxcL0q9JmRs/AKxq
-         fezrbJk7kqcOwiY3axyZjTFdWxYxIXVdfKEBbVRXzHyk5+Js3UZotSjHzXNAUNhDTodc
-         lpJA==
-X-Gm-Message-State: AOAM530GSfgSC5ci2Uy6+ez9yTUgbj/1t/XELPEFe+M5rQTnfaZ529ly
-        01Ep5RFUNIcuAgHeGiMqn+CLYfOaRLUMOVGhHkIFlhsIf6mvZQWInFql52kHtZAbr+4zArPvSmg
-        ksF8rP2klNRr4eC/7dBEQlOCBYqVX5TfkQPlbLXju4WkMaIStlSO8XiWu
-X-Received: by 2002:a19:3ce:: with SMTP id 197mr1726609lfd.364.1605608194835;
-        Tue, 17 Nov 2020 02:16:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyGKNQl8F+w9d73yJM5THTTlbfEgwgYYrzLhz1BoumzV9CXFZOZwDEB9lFaKd0BVNBiA2vGw9Gr5K3Xs8pfgq4=
-X-Received: by 2002:a19:3ce:: with SMTP id 197mr1726593lfd.364.1605608194484;
- Tue, 17 Nov 2020 02:16:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201023024539.9512-1-po-hsu.lin@canonical.com>
-In-Reply-To: <20201023024539.9512-1-po-hsu.lin@canonical.com>
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date:   Tue, 17 Nov 2020 18:16:23 +0800
-Message-ID: <CAMy_GT-FNXa+fUjD4wM_8WAgLN7V8O=-E6n5jFULon74ejm=aQ@mail.gmail.com>
-Subject: Re: [PATCHv2] selftests/powerpc/eeh: disable kselftest timeout
- setting for eeh-basic
-To:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kselftest@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     benh@kernel.crashing.org, shuah <shuah@kernel.org>, mbenes@suse.cz,
-        joe.lawrence@redhat.com, mathieu.desnoyers@efficios.com
+        Tue, 17 Nov 2020 05:16:30 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4568C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:16:30 -0800 (PST)
+Received: from [2a0a:edc0:0:900:2e4d:54ff:fe67:bfa5] (helo=ginster)
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <jbe@pengutronix.de>)
+        id 1key2G-00021H-3e; Tue, 17 Nov 2020 11:16:29 +0100
+Message-ID: <315838324eb25d3a1ab37ee90fa28fa1cdc48cae.camel@pengutronix.de>
+From:   Juergen Borleis <jbe@pengutronix.de>
+Reply-To: jbe@pengutronix.de
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>, Han Xu <han.xu@nxp.com>,
+        kernel@pengutronix.de
+Date:   Tue, 17 Nov 2020 11:16:26 +0100
+Organization: Pengutronix e.K.
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:2e4d:54ff:fe67:bfa5
+X-SA-Exim-Mail-From: jbe@pengutronix.de
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
+        metis.ext.pengutronix.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.6 required=4.0 tests=AWL,BAYES_00,
+        FSL_HELO_NON_FQDN_1,HELO_NO_DOMAIN,RDNS_NONE,SPF_SOFTFAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+Subject: mtd: rawnand: gpmi: regression since
+ e5e5631cc88987a6f3cd8304660bd9190da95916
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on metis.ext.pengutronix.de)
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-any update on this patch?
-Or do we want to increase the timeout here?
-Thanks!
+Hi,
 
-On Fri, Oct 23, 2020 at 10:45 AM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
->
-> The eeh-basic test got its own 60 seconds timeout (defined in commit
-> 414f50434aa2 "selftests/eeh: Bump EEH wait time to 60s") per breakable
-> device.
->
-> And we have discovered that the number of breakable devices varies
-> on different hardware. The device recovery time ranges from 0 to 35
-> seconds. In our test pool it will take about 30 seconds to run on a
-> Power8 system that with 5 breakable devices, 60 seconds to run on a
-> Power9 system that with 4 breakable devices.
->
-> Extend the timeout setting in the kselftest framework to 5 minutes
-> to give it a chance to finish.
->
-> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-> ---
->  tools/testing/selftests/powerpc/eeh/Makefile | 2 +-
->  tools/testing/selftests/powerpc/eeh/settings | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/powerpc/eeh/settings
->
-> diff --git a/tools/testing/selftests/powerpc/eeh/Makefile b/tools/testing/selftests/powerpc/eeh/Makefile
-> index b397bab..ae963eb 100644
-> --- a/tools/testing/selftests/powerpc/eeh/Makefile
-> +++ b/tools/testing/selftests/powerpc/eeh/Makefile
-> @@ -3,7 +3,7 @@ noarg:
->         $(MAKE) -C ../
->
->  TEST_PROGS := eeh-basic.sh
-> -TEST_FILES := eeh-functions.sh
-> +TEST_FILES := eeh-functions.sh settings
->
->  top_srcdir = ../../../../..
->  include ../../lib.mk
-> diff --git a/tools/testing/selftests/powerpc/eeh/settings b/tools/testing/selftests/powerpc/eeh/settings
-> new file mode 100644
-> index 0000000..694d707
-> --- /dev/null
-> +++ b/tools/testing/selftests/powerpc/eeh/settings
-> @@ -0,0 +1 @@
-> +timeout=300
-> --
-> 2.7.4
->
+reading a NAND page in raw mode is required to check the consistence of the so-
+called FCBs (used to boot the SoC from NAND content).
+
+Before e5e5631cc88987a6f3cd8304660bd9190da95916 ("mtd: rawnand: gpmi: Use
+nand_extract_bits()") it reads the first page of the NAND correctly as:
+
+00000000  00 00 88 fb ff ff 46 43  42 20 00 00 00 01 50 3c  |......FCB ....P<|
+00000010  19 06 00 00 00 00 00 08  00 00 80 08 00 00 40 00  |..............@.|
+00000020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 09 00  |................|
+00000030  00 00 00 02 00 00 00 02  00 00 09 00 00 00 0a 00  |................|
+00000040  00 00 03 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000050  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000060  00 00 00 00 00 00 00 00  00 00 00 01 00 00 80 10  |................|
+00000070  00 00 55 01 00 00 55 01  00 00 01 00 00 00 9e 07  |..U...U.........|
+00000080  00 00 02 00 00 00 00 08  00 00 00 00 00 00 00 00  |................|
+00000090  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00000200  40 05 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |@...............|
+00000210  40 01 00 00 00 80 05 00  00 80 05 00 40 01 00 00  |@...........@...|
+00000220  c0 03 00 00 80 02 00 00  00 00 00 00 00 00 00 00  |................|
+00000230  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000240  00 00 00 00 00 00 00 00  00 00 00 00 00 00 07 00  |................|
+00000250  80 83 06 00 00 00 07 00  00 00 07 00 00 07 00 00  |................|
+00000260  00 42 06 00 80 05 00 00  00 40 06 00 00 00 00 00  |.B.......@......|
+00000270  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00000790  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 fc  |................|
+000007a0  03 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+000007b0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00000800  ff 00 00 00 00 00 00 00  00 00 00 00 17 15 06 06  |................|
+00000810  10 1f 03 07 00 00 00 1c  0f 17 1f 05 00 00 00 00  |................|
+00000820  00 19 00 00 0e 19 00 00  00 00 00 00 00 00 00 00  |................|
+00000830  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00000880
+
+After applying e5e5631cc88987a6f3cd8304660bd9190da95916 reading the same page
+the reported content is broken (the NAND page still contains correct data):
+
+00000000  00 00 88 fb ff ff 46 43  42 20 00 00 00 01 50 3c  |......FCB ....P<|
+00000010  19 06 00 00 00 00 00 08  00 00 80 08 00 00 40 00  |..............@.|
+00000020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 09 00  |................|
+00000030  00 00 00 02 00 00 00 02  00 00 09 00 00 00 0a 00  |................|
+00000040  40 05 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |@...............|
+00000050  40 01 00 00 00 80 05 00  00 80 05 00 40 01 00 00  |@...........@...|
+00000060  c0 03 00 00 80 02 00 00  00 00 00 00 00 00 00 00  |................|
+00000070  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00000250  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 fc  |................|
+00000260  03 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000270  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+000002c0  06 70 c0 a8 00 00 00 00  00 00 00 00 40 00 00 00  |.p..........@...|
+000002d0  10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+000002e0  00 00 00 00 00 01 00 00  10 00 00 00 fe 80 00 00  |................|
+000002f0  00 00 00 00 52 2d f4 ff  fe 0a f9 6b 80 00 00 00  |....R-.....k....|
+00000300  10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000310  00 00 00 00 00 00 00 00  10 00 00 00 fe 80 00 00  |................|
+00000320  00 00 00 00 00 00 00 00  00 00 00 00 40 00 00 00  |............@...|
+00000330  10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000340  00 00 00 00 00 01 00 00  10 00 00 00 ff 00 00 00  |................|
+00000350  00 00 00 00 00 00 00 00  00 00 00 00 08 00 00 00  |................|
+00000360  10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000370  00 00 00 00 00 01 00 00  09 00 00 00 52 6f 75 74  |............Rout|
+00000380  65 44 61 74 61 00 06 61  61 7b 73 76 7d 00 00 00  |eData..aa{sv}...|
+00000390  28 02 00 00 64 00 00 00  04 00 00 00 64 65 73 74  |(...d.......dest|
+000003a0  00 01 73 00 25 00 00 00  32 30 30 31 3a 36 37 63  |..s.%...2001:67c|
+000003b0  3a 36 37 30 3a 63 30 61  38 3a 35 32 32 64 3a 66  |:670:c0a8:522d:f|
+000003c0  34 66 66 3a 66 65 30 61  3a 66 39 36 62 00 00 00  |4ff:fe0a:f96b...|
+000003d0  06 00 00 00 70 72 65 66  69 78 00 01 75 00 00 00  |....prefix..u...|
+000003e0  80 00 00 00 00 00 00 00  06 00 00 00 6d 65 74 72  |............metr|
+000003f0  69 63 00 01 75 00 00 00  00 00 00 00 54 00 00 00  |ic..u.......T...|
+00000400  00 b0 c8 ec 64 65 73 74  00 01 73 00 13 00 00 00  |....dest..s.....|
+00000410  32 30 30 31 3a 36 37 63  3a 36 37 30 3a 63 30 61  |2001:67c:670:c0a|
+00000420  38 3a 3a 00 00 00 00 00  06 00 00 00 70 72 65 66  |8::.........pref|
+00000430  69 78 00 01 75 00 00 00  40 00 00 00 00 00 00 00  |ix..u...@.......|
+00000440  06 00 00 00 6d 65 74 72  69 63 00 01 75 00 00 00  |....metric..u...|
+00000450  00 01 00 00 5c 00 00 00  04 00 00 00 64 65 73 74  |....\.......dest|
+00000460  00 01 73 00 19 00 00 00  66 65 38 30 3a 3a 35 32  |..s.....fe80::52|
+00000470  32 64 3a 66 34 66 66 3a  66 65 30 61 3a 66 39 36  |2d:f4ff:fe0a:f96|
+00000480  62 00 00 00 00 00 00 00  06 00 00 00 70 72 65 66  |b...........pref|
+00000490  69 78 00 01 75 00 00 00  80 00 00 00 00 00 00 00  |ix..u...........|
+000004a0  06 00 00 00 6d 65 74 72  69 63 00 01 75 00 00 00  |....metric..u...|
+000004b0  00 00 00 00 44 00 00 00  04 00 00 00 64 65 73 74  |....D.......dest|
+000004c0  00 01 73 00 06 00 00 00  66 65 38 30 3a 3a 00 00  |..s.....fe80::..|
+000004d0  06 00 00 00 70 72 65 66  69 78 00 01 75 00 00 00  |....prefix..u...|
+000004e0  40 00 00 00 00 00 00 00  06 00 00 00 6d 65 74 72  |@...........metr|
+000004f0  69 63 00 01 75 00 00 00  00 01 00 00 44 00 00 00  |ic..u.......D...|
+00000500  04 00 00 00 64 65 73 74  00 01 73 00 06 00 00 00  |....dest..s.....|
+00000510  66 66 30 30 3a 3a 00 00  06 00 00 00 70 72 65 66  |ff00::......pref|
+00000520  69 78 00 01 75 00 00 00  08 00 00 00 00 00 00 00  |ix..u...........|
+00000530  06 00 00 00 6d 65 74 72  69 63 00 01 75 00 00 00  |....metric..u...|
+00000540  00 01 00 00 74 00 00 00  04 00 00 00 64 65 73 74  |....t.......dest|
+00000550  00 01 73 00 02 00 00 00  3a 3a 00 00 00 00 00 00  |..s.....::......|
+00000560  06 00 00 00 70 72 65 66  69 78 00 01 75 00 00 00  |....prefix..u...|
+00000570  00 00 00 00 00 00 00 00  08 00 00 00 6e 65 78 74  |............next|
+00000580  2d 68 6f 70 00 01 73 00  17 00 00 00 66 65 38 30  |-hop..s.....fe80|
+00000590  3a 3a 35 30 35 34 3a 66  66 3a 66 65 62 33 3a 61  |::5054:ff:feb3:a|
+000005a0  35 66 62 00 00 00 00 00  06 00 00 00 6d 65 74 72  |5fb.........metr|
+000005b0  69 63 00 01 75 00 00 00  00 04 00 00 00 00 00 00  |ic..u...........|
+000005c0  0b 00 00 00 4e 61 6d 65  73 65 72 76 65 72 73 00  |....Nameservers.|
+000005d0  03 61 61 79 00 00 00 00  00 00 00 00 00 00 00 00  |.aay............|
+000005e0  07 00 00 00 44 6f 6d 61  69 6e 73 00 02 61 73 00  |....Domains..as.|
+000005f0  00 00 00 00 00 00 00 00  08 00 00 00 53 65 61 72  |............Sear|
+00000600  63 68 65 73 00 02 61 73  00 00 00 00 00 00 00 00  |ches..as........|
+00000610  0a 00 00 00 44 6e 73 4f  70 74 69 6f 6e 73 00 02  |....DnsOptions..|
+00000620  61 73 00 00 00 00 00 00  0b 00 00 00 44 6e 73 50  |as..........DnsP|
+00000630  72 69 6f 72 69 74 79 00  01 69 00 00 64 00 00 00  |riority..i..d...|
+00000640  09 00 00 00 46 6c 6f 77  4c 61 62 65 6c 00 01 75  |....FlowLabel..u|
+00000650  00 00 00 00 00 00 00 00  05 00 00 00 46 6c 61 67  |............Flag|
+00000660  73 00 01 75 00 00 00 00  00 00 00 00 30 02 30 02  |s..u........0.0.|
+00000670  30 02 30 02 30 02 30 02  30 02 30 02 30 02 30 02  |0.0.0.0.0.0.0.0.|
+00000680  30 02 30 02 30 02 30 02  30 02 30 02 30 02 72 00  |0.0.0.0.0.0.0.r.|
+00000690  72 00 72 00 31 02 31 02  31 02 31 02 31 02 31 02  |r.r.1.1.1.1.1.1.|
+000006a0  31 02 31 02 31 02 31 02  31 02 31 02 31 02 31 02  |1.1.1.1.1.1.1.1.|
+*
+000006f0  31 02 31 02 31 02 72 00  72 00 72 00 72 00 72 00  |1.1.1.r.r.r.r.r.|
+00000700  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00000720  01 00 00 00 00 00 00 00  17 00 17 00 17 00 17 00  |................|
+00000730  17 00 17 00 17 00 17 00  17 00 17 00 17 00 17 00  |................|
+00000740  17 00 17 00 17 00 17 00  17 00 17 00 72 00 72 00  |............r.r.|
+00000750  72 00 72 00 32 02 32 02  32 02 32 02 32 02 32 02  |r.r.2.2.2.2.2.2.|
+00000760  32 02 32 02 32 02 32 02  32 02 32 02 32 02 32 02  |2.2.2.2.2.2.2.2.|
+*
+00000790  32 02 32 02 33 02 33 02  33 02 33 02 72 00 72 00  |2.2.3.3.3.3.r.r.|
+000007a0  72 00 72 00 72 00 72 00  72 00 72 00 72 00 72 00  |r.r.r.r.r.r.r.r.|
+000007b0  72 00 72 00 34 02 34 02  34 02 34 02 34 02 34 02  |r.r.4.4.4.4.4.4.|
+000007c0  34 02 34 02 34 02 34 02  34 02 34 02 34 02 34 02  |4.4.4.4.4.4.4.4.|
+000007d0  34 02 34 02 34 02 35 02  34 02 34 02 34 02 34 02  |4.4.4.5.4.4.4.4.|
+000007e0  34 02 34 02 34 02 34 02  35 02 72 00 72 00 72 00  |4.4.4.4.5.r.r.r.|
+000007f0  72 00 72 00 36 02 36 02  36 02 36 02 36 02 36 02  |r.r.6.6.6.6.6.6.|
+00000800  ff 00 00 00 00 00 00 00  00 00 00 00 17 15 06 06  |................|
+00000810  10 1f 03 07 00 00 00 1c  0f 17 1f 05 00 00 00 00  |................|
+00000820  00 19 00 00 0e 19 00 00  00 00 00 00 00 00 00 00  |................|
+00000830  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+
+Juergen
+
+-- 
+Pengutronix e.K.                       | Juergen Borleis             |
+Steuerwalder Str. 21                   | https://www.pengutronix.de/ |
+31137 Hildesheim, Germany              | Phone: +49-5121-206917-128  |
+Amtsgericht Hildesheim, HRA 2686       | Fax:   +49-5121-206917-9    |
+
