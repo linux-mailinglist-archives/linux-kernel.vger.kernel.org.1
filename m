@@ -2,104 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06202B5F1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE792B5F1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727735AbgKQM37 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 07:29:59 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2116 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQM36 (ORCPT
+        id S1728208AbgKQMaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:30:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726791AbgKQMaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:29:58 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cb4w04p1dz67F1g;
-        Tue, 17 Nov 2020 20:27:44 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 17 Nov 2020 13:29:55 +0100
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
- Tue, 17 Nov 2020 13:29:55 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Mimi Zohar <zohar@linux.ibm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-Thread-Topic: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-Thread-Index: AQHWuZM+vbqfejrqe02000rC0h3xoqnHabyAgAMLzKCAAG/IAIAABvEAgAAOKACAAAjEgIABPphg
-Date:   Tue, 17 Nov 2020 12:29:55 +0000
-Message-ID: <945773097832444ca31847c830b0053c@huawei.com>
-References: <20201113080132.16591-1-roberto.sassu@huawei.com>
- <20201114111057.GA16415@infradead.org>
- <0fd0fb3360194d909ba48f13220f9302@huawei.com>
- <20201116162202.GA15010@infradead.org>
- <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
- <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
- <20201116180855.GX3576660@ZenIV.linux.org.uk>
-In-Reply-To: <20201116180855.GX3576660@ZenIV.linux.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.220.96.108]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 17 Nov 2020 07:30:04 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609F0C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:30:04 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kf07W-0004Xh-UE; Tue, 17 Nov 2020 13:30:02 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1kf07V-0005Ms-RP; Tue, 17 Nov 2020 13:30:01 +0100
+Date:   Tue, 17 Nov 2020 13:30:01 +0100
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Juergen Borleis <jbe@pengutronix.de>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>, kernel@pengutronix.de,
+        Han Xu <han.xu@nxp.com>
+Subject: Re: mtd: rawnand: gpmi: regression since
+ e5e5631cc88987a6f3cd8304660bd9190da95916
+Message-ID: <20201117123001.GE29830@pengutronix.de>
+References: <315838324eb25d3a1ab37ee90fa28fa1cdc48cae.camel@pengutronix.de>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <315838324eb25d3a1ab37ee90fa28fa1cdc48cae.camel@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 13:28:49 up 271 days, 19:59, 95 users,  load average: 0.10, 0.21,
+ 0.25
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Al Viro [mailto:viro@ftp.linux.org.uk] On Behalf Of Al Viro
-> Sent: Monday, November 16, 2020 7:09 PM
-> On Mon, Nov 16, 2020 at 09:37:32AM -0800, Linus Torvalds wrote:
-> > On Mon, Nov 16, 2020 at 8:47 AM Mimi Zohar <zohar@linux.ibm.com>
-> wrote:
-> > >
-> > > This discussion seems to be going down the path of requiring an IMA
-> > > filesystem hook for reading the file, again.  That solution was
-> > > rejected, not by me.  What is new this time?
-> >
-> > You can't read a non-read-opened file. Not even IMA can.
-> >
-> > So don't do that then.
-> >
-> > IMA is doing something wrong. Why would you ever read a file that can't
-> be read?
-> >
-> > Fix whatever "open" function instead of trying to work around the fact
-> > that you opened it wrong.
+On Tue, Nov 17, 2020 at 11:16:26AM +0100, Juergen Borleis wrote:
+> Hi,
 > 
-> IMA pulls that crap on _every_ open(2), including O_WRONLY.  As far as I'm
-> concerned, the only sane answer is not enabling that thing on your builds;
-> they are deeply special and I hadn't been able to reason with them no
-> matter how much I tried ;-/
+> reading a NAND page in raw mode is required to check the consistence of the so-
+> called FCBs (used to boot the SoC from NAND content).
+> 
+> Before e5e5631cc88987a6f3cd8304660bd9190da95916 ("mtd: rawnand: gpmi: Use
+> nand_extract_bits()") it reads the first page of the NAND correctly as:
+> 
+> 00000000  00 00 88 fb ff ff 46 43  42 20 00 00 00 01 50 3c  |......FCB ....P<|
+> 00000010  19 06 00 00 00 00 00 08  00 00 80 08 00 00 40 00  |..............@.|
+> 00000020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 09 00  |................|
+> 00000030  00 00 00 02 00 00 00 02  00 00 09 00 00 00 0a 00  |................|
+> 00000040  00 00 03 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 00000050  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 00000060  00 00 00 00 00 00 00 00  00 00 00 01 00 00 80 10  |................|
+> 00000070  00 00 55 01 00 00 55 01  00 00 01 00 00 00 9e 07  |..U...U.........|
+> 00000080  00 00 02 00 00 00 00 08  00 00 00 00 00 00 00 00  |................|
+> 00000090  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 00000200  40 05 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |@...............|
+> 00000210  40 01 00 00 00 80 05 00  00 80 05 00 40 01 00 00  |@...........@...|
+> 00000220  c0 03 00 00 80 02 00 00  00 00 00 00 00 00 00 00  |................|
+> 00000230  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 00000240  00 00 00 00 00 00 00 00  00 00 00 00 00 00 07 00  |................|
+> 00000250  80 83 06 00 00 00 07 00  00 00 07 00 00 07 00 00  |................|
+> 00000260  00 42 06 00 80 05 00 00  00 40 06 00 00 00 00 00  |.B.......@......|
+> 00000270  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 00000790  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 fc  |................|
+> 000007a0  03 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 000007b0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 00000800  ff 00 00 00 00 00 00 00  00 00 00 00 17 15 06 06  |................|
+> 00000810  10 1f 03 07 00 00 00 1c  0f 17 1f 05 00 00 00 00  |................|
+> 00000820  00 19 00 00 0e 19 00 00  00 00 00 00 00 00 00 00  |................|
+> 00000830  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 00000880
+> 
+> After applying e5e5631cc88987a6f3cd8304660bd9190da95916 reading the same page
+> the reported content is broken (the NAND page still contains correct data):
+> 
+> 00000000  00 00 88 fb ff ff 46 43  42 20 00 00 00 01 50 3c  |......FCB ....P<|
+> 00000010  19 06 00 00 00 00 00 08  00 00 80 08 00 00 40 00  |..............@.|
+> 00000020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 09 00  |................|
+> 00000030  00 00 00 02 00 00 00 02  00 00 09 00 00 00 0a 00  |................|
+> 00000040  40 05 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |@...............|
+> 00000050  40 01 00 00 00 80 05 00  00 80 05 00 40 01 00 00  |@...........@...|
+> 00000060  c0 03 00 00 80 02 00 00  00 00 00 00 00 00 00 00  |................|
+> 00000070  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 00000250  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 fc  |................|
+> 00000260  03 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 00000270  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> *
+> 000002c0  06 70 c0 a8 00 00 00 00  00 00 00 00 40 00 00 00  |.p..........@...|
 
-A file-based protection mechanism against offline attacks would require
-to verify the current HMAC also before writing and to update the HMAC
-after the write.
+Note beginning from offset 0x2c0 we get some uninitialized data. Among
+other things we saw systemd unit files there.
 
-One of the reasons why dentry_open() cannot be used and IMA switches
-to the old method of changing the mode of the current file descriptor is
-that the current process does not have enough privileges to do the
-operation.
+Sascha
 
-If we find a way to read the file that always works, without reducing the
-security, the old method can be removed.
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
