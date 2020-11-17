@@ -2,40 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375B82B6113
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6AA2B6070
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730202AbgKQNPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:15:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46992 "EHLO mail.kernel.org"
+        id S1728771AbgKQNJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:09:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729022AbgKQNPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:15:31 -0500
+        id S1729373AbgKQNJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:09:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEF952225B;
-        Tue, 17 Nov 2020 13:15:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11E6D2225B;
+        Tue, 17 Nov 2020 13:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618930;
-        bh=aXUGh1UxMukFxGGR6UQY36C2S57jrM7cADPoatME4Nw=;
+        s=default; t=1605618545;
+        bh=Erzmw6T1KHPpYXvP6UTHaqQVh+xzUZeFxd3OXrj3tkM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aT3xsNg+VyKF+FtRjvsdJYWcYB8H+vdVdlM6Bc367+jDjtIv2zNpbd04fBad0xIcz
-         bcSCDr4dx9djtKU/xQZupVvY5+dI56rcl3YH7JgrrlzIJsvZJnhQnpmi0wlsbERRQq
-         2XfXFY5YdUqZQWnYCI3/y4//t7WFIWFFMh0O9LGk=
+        b=y29sIGGlmF+GYpqTGqdDd/HpSdct95pzwQuqZ2E0zW8Sxij6zpITRNCmnvZ0yVAPx
+         HKTyARteNbjSwqaVn+ykiTZOjRkGJV9LqAWBl9wLQFYo7cIF309Zb2JV7cYqDfj5Hq
+         eyIzXjYsyMKGeRJfRlVnhOcPza+6kQ0IEYCRcqJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@vger.kerne.org,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 4.14 56/85] pinctrl: amd: fix incorrect way to disable debounce filter
+        stable@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fabian Frederick <fabf@skynet.be>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.4 62/64] reboot: fix overflow parsing reboot cpu number
 Date:   Tue, 17 Nov 2020 14:05:25 +0100
-Message-Id: <20201117122113.774287792@linuxfoundation.org>
+Message-Id: <20201117122109.241383427@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +52,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coiby Xu <coiby.xu@gmail.com>
+From: Matteo Croce <mcroce@microsoft.com>
 
-commit 06abe8291bc31839950f7d0362d9979edc88a666 upstream.
+commit df5b0ab3e08a156701b537809914b339b0daa526 upstream.
 
-The correct way to disable debounce filter is to clear bit 5 and 6
-of the register.
+Limit the CPU number to num_possible_cpus(), because setting it to a
+value lower than INT_MAX but higher than NR_CPUS produces the following
+error on reboot and shutdown:
 
-Cc: stable@vger.kerne.org
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/linux-gpio/df2c008b-e7b5-4fdd-42ea-4d1c62b52139@redhat.com/
-Link: https://lore.kernel.org/r/20201105231912.69527-2-coiby.xu@gmail.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+    BUG: unable to handle page fault for address: ffffffff90ab1bb0
+    #PF: supervisor read access in kernel mode
+    #PF: error_code(0x0000) - not-present page
+    PGD 1c09067 P4D 1c09067 PUD 1c0a063 PMD 0
+    Oops: 0000 [#1] SMP
+    CPU: 1 PID: 1 Comm: systemd-shutdow Not tainted 5.9.0-rc8-kvm #110
+    Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+    RIP: 0010:migrate_to_reboot_cpu+0xe/0x60
+    Code: ea ea 00 48 89 fa 48 c7 c7 30 57 f1 81 e9 fa ef ff ff 66 2e 0f 1f 84 00 00 00 00 00 53 8b 1d d5 ea ea 00 e8 14 33 fe ff 89 da <48> 0f a3 15 ea fc bd 00 48 89 d0 73 29 89 c2 c1 e8 06 65 48 8b 3c
+    RSP: 0018:ffffc90000013e08 EFLAGS: 00010246
+    RAX: ffff88801f0a0000 RBX: 0000000077359400 RCX: 0000000000000000
+    RDX: 0000000077359400 RSI: 0000000000000002 RDI: ffffffff81c199e0
+    RBP: ffffffff81c1e3c0 R08: ffff88801f41f000 R09: ffffffff81c1e348
+    R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+    R13: 00007f32bedf8830 R14: 00000000fee1dead R15: 0000000000000000
+    FS:  00007f32bedf8980(0000) GS:ffff88801f480000(0000) knlGS:0000000000000000
+    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: ffffffff90ab1bb0 CR3: 000000001d057000 CR4: 00000000000006a0
+    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+    Call Trace:
+      __do_sys_reboot.cold+0x34/0x5b
+      do_syscall_64+0x2d/0x40
+
+Fixes: 1b3a5d02ee07 ("reboot: move arch/x86 reboot= handling to generic kernel")
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Fabian Frederick <fabf@skynet.be>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Robin Holt <robinmholt@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201103214025.116799-3-mcroce@linux.microsoft.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[sudip: use reboot_mode instead of mode]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/pinctrl/pinctrl-amd.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/reboot.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -154,14 +154,14 @@ static int amd_gpio_set_debounce(struct
- 			pin_reg |= BIT(DB_TMR_OUT_UNIT_OFF);
- 			pin_reg |= BIT(DB_TMR_LARGE_OFF);
- 		} else {
--			pin_reg &= ~DB_CNTRl_MASK;
-+			pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
- 			ret = -EINVAL;
- 		}
- 	} else {
- 		pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
- 		pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
- 		pin_reg &= ~DB_TMR_OUT_MASK;
--		pin_reg &= ~DB_CNTRl_MASK;
-+		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
- 	}
- 	writel(pin_reg, gpio_dev->base + offset * 4);
- 	raw_spin_unlock_irqrestore(&gpio_dev->lock, flags);
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -519,6 +519,13 @@ static int __init reboot_setup(char *str
+ 				reboot_cpu = simple_strtoul(str+3, NULL, 0);
+ 			else
+ 				reboot_mode = REBOOT_SOFT;
++			if (reboot_cpu >= num_possible_cpus()) {
++				pr_err("Ignoring the CPU number in reboot= option. "
++				       "CPU %d exceeds possible cpu number %d\n",
++				       reboot_cpu, num_possible_cpus());
++				reboot_cpu = 0;
++				break;
++			}
+ 			break;
+ 
+ 		case 'g':
 
 
