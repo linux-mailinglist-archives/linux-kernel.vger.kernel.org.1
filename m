@@ -2,260 +2,529 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8ED02B56A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310352B56A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgKQCNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:13:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
+        id S1727262AbgKQCOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:14:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgKQCNN (ORCPT
+        with ESMTP id S1727121AbgKQCOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:13:13 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B88EC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:13:12 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id j7so21457317wrp.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:13:11 -0800 (PST)
+        Mon, 16 Nov 2020 21:14:48 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D68C0613CF;
+        Mon, 16 Nov 2020 18:14:48 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id i193so17555145yba.1;
+        Mon, 16 Nov 2020 18:14:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0ck9fejOI93yH1+mJW+gHOqCyEPcqc7kZLnHdPOn5/A=;
-        b=Rj13fcXDfHluduHWFxLueC8sn7T+PXb4lGXNpQfHuoXf9kgo0louyUc1jPBmJlDghK
-         uT2SP9RaYO51t35rCpRgtleRd/nZ0V8o7zjGsu2gdFlY9iDMvM2K3bPrtx98nxoPlNsr
-         EKgDgnk3b8SA48kMZWvrwPgIf9wh6BiT+gtdg=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=chz7LpCjfCN6//fHKa5Bo3DO0Id02C8McMJe/zRj2LI=;
+        b=UFbVT97+wMEoBsKWG0lfDTgz0dPrNB0jQCMHLW6i8b5Nvn58NldDQqTUJMrxZiprsM
+         ne1nW+e4gj1RnuLuEwS89gCXXsJ4ddmATcjsjjKOC5PaR1nqqoNtar0hyJM7UHZRRFVx
+         qKHNfGvs4xDql0ZL//l72jXk/LtpNY7DYjNgdv5PKCov4TejEQq4qr7Aw3uuQYm94ixO
+         K0Iap1f2Q+zisJKOw4qlbJX8G6KNJnzRbfWPGfgESxo/ZvXGxPaS2VknJqyddBlIsymM
+         SLMjVAivAUwXYFlvpPWZLQAVlHpnpkiU8eU1N61l4lQJkI/xsJclcpib85gsR8DjeSxB
+         1drQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0ck9fejOI93yH1+mJW+gHOqCyEPcqc7kZLnHdPOn5/A=;
-        b=ILXSre4YwemPGbh3zl5jEQl1cuf+tcMJBdrDYo0UZy0fRYaRjj1UV/NRLpmhTqZXjt
-         z59YdYFbLVk9WyItJM9QmvYK01NywJPM83+M+15PnYur31ZU5650kX1VEMNHZjcGyeae
-         R5yoUDx96BH4gn8F5/w8BKnk/Dlmw9LoGgBLHMPJh5hy0LWIO2WJTd4OYDAl8v8YSGQv
-         wLCinS254crVOp2qQ1nyKaG5Ag2hcUPl0tCDzzJt7wk2bFll2O1ptXWS3YGiaLWUePRf
-         oLZMziDznlfeh2BuufnhmaT2lnBaYZJNIwL9Sq5sm2fFHzQsDOLJ4ZInFtuW+pDpwv2v
-         drPQ==
-X-Gm-Message-State: AOAM531gCC81m64/xabhrRIWxKLh6TEevLZon56zlXA+eHSWFWLq0N+F
-        Nay495ojHOvxafMSh3ur4frrI67k/GnXSwRC
-X-Google-Smtp-Source: ABdhPJxAg6LoIq/rVTqdGWuII/OjNWZpg+/V8icKSUyzoTR4JuB5ZEXqHuNgoljNl8AKrJ5WxknPfg==
-X-Received: by 2002:adf:db4a:: with SMTP id f10mr22179759wrj.420.1605579190494;
-        Mon, 16 Nov 2020 18:13:10 -0800 (PST)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id u7sm1470001wmb.20.2020.11.16.18.13.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 18:13:09 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Pauline Middelink <middelin@google.com>
-Subject: [PATCH bpf-next v3 2/2] bpf: Add tests for bpf_lsm_set_bprm_opts
-Date:   Tue, 17 Nov 2020 02:13:07 +0000
-Message-Id: <20201117021307.1846300-2-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-In-Reply-To: <20201117021307.1846300-1-kpsingh@chromium.org>
-References: <20201117021307.1846300-1-kpsingh@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=chz7LpCjfCN6//fHKa5Bo3DO0Id02C8McMJe/zRj2LI=;
+        b=a8Y08mgejNW8UhRTMp2Hfm+siJ8VAnnyXgMGroy1IZwBSjBjVYTGD2EhlgzUQIKGoe
+         WfM6pe/BxfRb3wFOFDck2r01f73DBNPUAwcALn1NKuvJeKyHX357aa9CEzyIZ45+YVKp
+         ys51DdUcYNNQvSpAeF4YLZpTIbdzwwsMwhCxv2uF9BmzUuR+hzH4+LlguZgBK9PQx6P4
+         Moh+1qUnLEke4YUxqOp7bb0aQVZNztMFrB3ZwgZLKRfJEUS/iAV+vj9nf2JgYbVTRTHe
+         Oep8qOSwT0Z9sJiEq+S/u7FfU94MPwdRyThv+Djm/YNbN1akChbbDZzHtsdDZ44EWbzu
+         RhgQ==
+X-Gm-Message-State: AOAM532nAAIq/4k0yBh9jNGlU4Tn32/L6fjQ0FixzCRY7fuSLhSDi/iO
+        VdsoMQwkcuq7bQYbrvhtqogx76HSKQZHbBnqXO0=
+X-Google-Smtp-Source: ABdhPJz8+HwkHwE4FWvQpEJiK9BZKwdbXP9kSmFXvdXQjDdwSH0XqegGULtsOJlM8+udaOqdczxR0xJB620zry7vmuQ=
+X-Received: by 2002:a25:bc91:: with SMTP id e17mr10996983ybk.332.1605579286972;
+ Mon, 16 Nov 2020 18:14:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201113202550.3693323-1-atish.patra@wdc.com> <20201113202550.3693323-4-atish.patra@wdc.com>
+In-Reply-To: <20201113202550.3693323-4-atish.patra@wdc.com>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Tue, 17 Nov 2020 10:14:14 +0800
+Message-ID: <CAEUhbmVq=O29MLGraHD_1AvV+UH0q0gh0JAu1ZJ5n7qk4Gb-tQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/4] RISC-V: Initial DTS for Microchip ICICLE board
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Cyril.Jean@microchip.com, Ivan.Griffin@microchip.com,
+        Conor.Dooley@microchip.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Sat, Nov 14, 2020 at 4:29 AM Atish Patra <atish.patra@wdc.com> wrote:
+>
+> Add initial DTS for Microchip ICICLE board having only
+> essential devcies (clocks, sdhci, ethernet, serial, etc).
 
-The test forks a child process, updates the local storage to set/unset
-the securexec bit.
+typo: devices
 
-The BPF program in the test attaches to bprm_creds_for_exec which checks
-the local storage of the current task to set the secureexec bit on the
-binary parameters (bprm).
+> The device tree is based on the U-Boot patch.
+>
+> https://patchwork.ozlabs.org/project/uboot/patch/20201110103414.10142-6-padmarao.begari@microchip.com/
+>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> ---
+>  arch/riscv/boot/dts/Makefile                  |   1 +
+>  arch/riscv/boot/dts/microchip/Makefile        |   2 +
+>  .../microchip/microchip-mpfs-icicle-kit.dts   |  54 +++
+>  .../boot/dts/microchip/microchip-mpfs.dtsi    | 342 ++++++++++++++++++
+>  4 files changed, 399 insertions(+)
+>  create mode 100644 arch/riscv/boot/dts/microchip/Makefile
+>  create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+>  create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+>
+> diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
+> index ca1f8cbd78c0..3ea94ea0a18a 100644
+> --- a/arch/riscv/boot/dts/Makefile
+> +++ b/arch/riscv/boot/dts/Makefile
+> @@ -1,5 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  subdir-y += sifive
+>  subdir-y += kendryte
+> +subdir-y += microchip
+>
+>  obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix /, $(subdir-y))
+> diff --git a/arch/riscv/boot/dts/microchip/Makefile b/arch/riscv/boot/dts/microchip/Makefile
+> new file mode 100644
+> index 000000000000..622b12771fd3
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/microchip/Makefile
+> @@ -0,0 +1,2 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +dtb-$(CONFIG_SOC_MICROCHIP_POLARFIRE) += microchip-mpfs-icicle-kit.dtb
+> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+> new file mode 100644
+> index 000000000000..9a382ab0a799
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+> @@ -0,0 +1,54 @@
+> +// SPDX-License-Identifier: GPL-2.0+
 
-The child then execs a bash command with the environment variable
-TMPDIR set in the envp.  The bash command returns a different exit code
-based on its observed value of the TMPDIR variable.
+Please make this dual-licensed, GPL or MIT.
+See https://github.com/polarfire-soc/meta-polarfire-soc-yocto-bsp/blob/master/recipes-kernel/linux/files/icicle-kit-es/icicle-kit-es-a000-microchip.dts
 
-Since TMPDIR is one of the variables that is ignored by the dynamic
-loader when the secureexec bit is set, one should expect the
-child execution to not see this value when the secureexec bit is set.
+> +/* Copyright (c) 2020 Microchip Technology Inc */
+> +
+> +/dts-v1/;
+> +
+> +#include "microchip-mpfs.dtsi"
+> +
+> +/* Clock frequency (in Hz) of the rtcclk */
+> +#define RTCCLK_FREQ            1000000
+> +
+> +/ {
+> +       #address-cells = <2>;
+> +       #size-cells = <2>;
+> +       model = "Microchip PolarFire-SoC Icicle Kit";
+> +       compatible = "microchip,mpfs-icicle-kit", "microchip,polarfire-soc";
+> +
+> +       chosen {
+> +               stdout-path = &serial0;
+> +       };
+> +
+> +       cpus {
+> +               timebase-frequency = <RTCCLK_FREQ>;
+> +       };
+> +
+> +       memory@80000000 {
+> +               device_type = "memory";
+> +               reg = <0x0 0x80000000 0x0 0x40000000>;
+> +               clocks = <&clkcfg 26>;
+> +       };
+> +
+> +       soc {
+> +       };
+> +};
+> +
+> +&serial0 {
+> +       status = "okay";
+> +};
+> +
+> +&serial1 {
+> +       status = "okay";
+> +};
+> +
+> +&serial2 {
+> +       status = "okay";
+> +};
+> +
+> +&serial3 {
+> +       status = "okay";
+> +};
+> +
+> +&sdcard {
+> +       status = "okay";
+> +};
+> +
+> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+> new file mode 100644
+> index 000000000000..63ac60f345d8
+> --- /dev/null
+> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+> @@ -0,0 +1,342 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/* Copyright (c) 2020 Microchip Technology Inc */
+> +
+> +/dts-v1/;
+> +
+> +/ {
+> +       #address-cells = <2>;
+> +       #size-cells = <2>;
+> +       model = "Microchip PolarFire-SoC";
+> +       compatible = "microchip,polarfire-soc";
+> +
+> +       chosen {
+> +       };
+> +
+> +       cpus {
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +
+> +               cpu@0 {
+> +                       clock-frequency = <0>;
+> +                       compatible = "sifive,rocket0", "riscv";
+> +                       device_type = "cpu";
+> +                       i-cache-block-size = <64>;
+> +                       i-cache-sets = <128>;
+> +                       i-cache-size = <16384>;
+> +                       reg = <0>;
+> +                       riscv,isa = "rv64imac";
+> +                       status = "disabled";
+> +
+> +                       cpu0_intc: interrupt-controller {
+> +                               #interrupt-cells = <1>;
+> +                               compatible = "riscv,cpu-intc";
+> +                               interrupt-controller;
+> +                       };
+> +               };
+> +
+> +               cpu@1 {
+> +                       clock-frequency = <0>;
+> +                       compatible = "sifive,rocket0", "riscv";
+> +                       d-cache-block-size = <64>;
+> +                       d-cache-sets = <64>;
+> +                       d-cache-size = <32768>;
+> +                       d-tlb-sets = <1>;
+> +                       d-tlb-size = <32>;
+> +                       device_type = "cpu";
+> +                       i-cache-block-size = <64>;
+> +                       i-cache-sets = <64>;
+> +                       i-cache-size = <32768>;
+> +                       i-tlb-sets = <1>;
+> +                       i-tlb-size = <32>;
+> +                       mmu-type = "riscv,sv39";
+> +                       reg = <1>;
+> +                       riscv,isa = "rv64imafdc";
+> +                       tlb-split;
+> +                       status = "okay";
+> +
+> +                       cpu1_intc: interrupt-controller {
+> +                               #interrupt-cells = <1>;
+> +                               compatible = "riscv,cpu-intc";
+> +                               interrupt-controller;
+> +                       };
+> +               };
+> +
+> +               cpu@2 {
+> +                       clock-frequency = <0>;
+> +                       compatible = "sifive,rocket0", "riscv";
+> +                       d-cache-block-size = <64>;
+> +                       d-cache-sets = <64>;
+> +                       d-cache-size = <32768>;
+> +                       d-tlb-sets = <1>;
+> +                       d-tlb-size = <32>;
+> +                       device_type = "cpu";
+> +                       i-cache-block-size = <64>;
+> +                       i-cache-sets = <64>;
+> +                       i-cache-size = <32768>;
+> +                       i-tlb-sets = <1>;
+> +                       i-tlb-size = <32>;
+> +                       mmu-type = "riscv,sv39";
+> +                       reg = <2>;
+> +                       riscv,isa = "rv64imafdc";
+> +                       tlb-split;
+> +                       status = "okay";
+> +
+> +                       cpu2_intc: interrupt-controller {
+> +                               #interrupt-cells = <1>;
+> +                               compatible = "riscv,cpu-intc";
+> +                               interrupt-controller;
+> +                       };
+> +               };
+> +
+> +               cpu@3 {
+> +                       clock-frequency = <0>;
+> +                       compatible = "sifive,rocket0", "riscv";
+> +                       d-cache-block-size = <64>;
+> +                       d-cache-sets = <64>;
+> +                       d-cache-size = <32768>;
+> +                       d-tlb-sets = <1>;
+> +                       d-tlb-size = <32>;
+> +                       device_type = "cpu";
+> +                       i-cache-block-size = <64>;
+> +                       i-cache-sets = <64>;
+> +                       i-cache-size = <32768>;
+> +                       i-tlb-sets = <1>;
+> +                       i-tlb-size = <32>;
+> +                       mmu-type = "riscv,sv39";
+> +                       reg = <3>;
+> +                       riscv,isa = "rv64imafdc";
+> +                       tlb-split;
+> +                       status = "okay";
+> +
+> +                       cpu3_intc: interrupt-controller {
+> +                               #interrupt-cells = <1>;
+> +                               compatible = "riscv,cpu-intc";
+> +                               interrupt-controller;
+> +                       };
+> +               };
+> +
+> +               cpu@4 {
+> +                       clock-frequency = <0>;
+> +                       compatible = "sifive,rocket0", "riscv";
+> +                       d-cache-block-size = <64>;
+> +                       d-cache-sets = <64>;
+> +                       d-cache-size = <32768>;
+> +                       d-tlb-sets = <1>;
+> +                       d-tlb-size = <32>;
+> +                       device_type = "cpu";
+> +                       i-cache-block-size = <64>;
+> +                       i-cache-sets = <64>;
+> +                       i-cache-size = <32768>;
+> +                       i-tlb-sets = <1>;
+> +                       i-tlb-size = <32>;
+> +                       mmu-type = "riscv,sv39";
+> +                       reg = <4>;
+> +                       riscv,isa = "rv64imafdc";
+> +                       tlb-split;
+> +                       status = "okay";
+> +                       cpu4_intc: interrupt-controller {
+> +                               #interrupt-cells = <1>;
+> +                               compatible = "riscv,cpu-intc";
+> +                               interrupt-controller;
+> +                       };
+> +               };
+> +       };
+> +
+> +       soc {
+> +               #address-cells = <2>;
+> +               #size-cells = <2>;
+> +               compatible = "simple-bus";
+> +               ranges;
+> +
+> +               cache-controller@2010000 {
+> +                       compatible = "sifive,fu540-c000-ccache", "cache";
+> +                       cache-block-size = <64>;
+> +                       cache-level = <2>;
+> +                       cache-sets = <1024>;
+> +                       cache-size = <2097152>;
+> +                       cache-unified;
+> +                       interrupt-parent = <&plic>;
+> +                       interrupts = <1 2 3>;
+> +                       reg = <0x0 0x2010000 0x0 0x1000>;
+> +               };
+> +
+> +               clint@2000000 {
+> +                       compatible = "riscv,clint0";
+> +                       reg = <0x0 0x2000000 0x0 0xC000>;
+> +                       interrupts-extended = <&cpu0_intc 3 &cpu0_intc 7
+> +                                               &cpu1_intc 3 &cpu1_intc 7
+> +                                               &cpu2_intc 3 &cpu2_intc 7
+> +                                               &cpu3_intc 3 &cpu3_intc 7
+> +                                               &cpu4_intc 3 &cpu4_intc 7>;
+> +               };
+> +
+> +               plic: interrupt-controller@c000000 {
+> +                       #interrupt-cells = <1>;
+> +                       compatible = "sifive,plic-1.0.0";
+> +                       reg = <0x0 0xc000000 0x0 0x4000000>;
+> +                       riscv,ndev = <53>;
+> +                       interrupt-controller;
+> +                       interrupts-extended = <&cpu0_intc 11
+> +                                       &cpu1_intc 11 &cpu1_intc 9
+> +                                       &cpu2_intc 11 &cpu2_intc 9
+> +                                       &cpu3_intc 11 &cpu3_intc 9
+> +                                       &cpu4_intc 11 &cpu4_intc 9>;
+> +               };
+> +
+> +               dma@3000000 {
+> +                       compatible = "sifive,fu540-c000-pdma";
+> +                       reg = <0x0 0x3000000 0x0 0x8000>;
+> +                       interrupt-parent = <&plic>;
+> +                       interrupts = <23 24 25 26 27 28 29 30>;
+> +                       #dma-cells = <1>;
+> +               };
+> +
+> +               refclk: refclk {
+> +                       compatible = "fixed-clock";
+> +                       #clock-cells = <0>;
+> +                       clock-frequency = <600000000>;
+> +                       clock-output-names = "msspllclk";
+> +               };
+> +
+> +               clkcfg: clkcfg@20002000 {
+> +                       compatible = "microchip,pfsoc-clkcfg";
+> +                       reg = <0x0 0x20002000 0x0 0x1000>;
+> +                       reg-names = "mss_sysreg";
+> +                       clocks = <&refclk>;
+> +                       #clock-cells = <1>;
+> +                       clock-output-names = "cpuclk", "axiclk", "ahbclk", "ENVMclk",   /* 0-3   */
+> +                                "MAC0clk", "MAC1clk", "MMCclk", "TIMERclk",            /* 4-7   */
+> +                               "MMUART0clk", "MMUART1clk", "MMUART2clk", "MMUART3clk", /* 8-11  */
+> +                               "MMUART4clk", "SPI0clk", "SPI1clk", "I2C0clk",          /* 12-15 */
+> +                               "I2C1clk", "CAN0clk", "CAN1clk", "USBclk",              /* 16-19 */
+> +                               "RESERVED", "RTCclk", "QSPIclk", "GPIO0clk",            /* 20-23 */
+> +                               "GPIO1clk", "GPIO2clk", "DDRCclk", "FIC0clk",           /* 24-27 */
+> +                               "FIC1clk", "FIC2clk", "FIC3clk", "ATHENAclk", "CFMclk"; /* 28-32 */
 
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- .../selftests/bpf/prog_tests/test_bprm_opts.c | 121 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/bprm_opts.c |  34 +++++
- 2 files changed, 155 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
- create mode 100644 tools/testing/selftests/bpf/progs/bprm_opts.c
+Should all these names be lower case?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
-new file mode 100644
-index 000000000000..0d0954adad73
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2020 Google LLC.
-+ */
-+
-+#include <asm-generic/errno-base.h>
-+#include <test_progs.h>
-+#include <linux/limits.h>
-+
-+#include "bprm_opts.skel.h"
-+#include "network_helpers.h"
-+
-+#ifndef __NR_pidfd_open
-+#define __NR_pidfd_open 434
-+#endif
-+
-+static const char * const bash_envp[] = { "TMPDIR=shouldnotbeset", NULL };
-+
-+static inline int sys_pidfd_open(pid_t pid, unsigned int flags)
-+{
-+	return syscall(__NR_pidfd_open, pid, flags);
-+}
-+
-+static int update_storage(int map_fd, int secureexec)
-+{
-+	int task_fd, ret = 0;
-+
-+	task_fd = sys_pidfd_open(getpid(), 0);
-+	if (task_fd < 0)
-+		return errno;
-+
-+	ret = bpf_map_update_elem(map_fd, &task_fd, &secureexec, BPF_NOEXIST);
-+	if (ret)
-+		ret = errno;
-+
-+	close(task_fd);
-+	return ret;
-+}
-+
-+static int run_set_secureexec(int map_fd, int secureexec)
-+{
-+
-+	int child_pid, child_status, ret, null_fd;
-+
-+	child_pid = fork();
-+	if (child_pid == 0) {
-+		null_fd = open("/dev/null", O_WRONLY);
-+		if (null_fd == -1)
-+			exit(errno);
-+		dup2(null_fd, STDOUT_FILENO);
-+		dup2(null_fd, STDERR_FILENO);
-+		close(null_fd);
-+
-+		/* Ensure that all executions from hereon are
-+		 * secure by setting a local storage which is read by
-+		 * the bprm_creds_for_exec hook and sets bprm->secureexec.
-+		 */
-+		ret = update_storage(map_fd, secureexec);
-+		if (ret)
-+			exit(ret);
-+
-+		/* If the binary is executed with securexec=1, the dynamic
-+		 * loader ingores and unsets certain variables like LD_PRELOAD,
-+		 * TMPDIR etc. TMPDIR is used here to simplify the example, as
-+		 * LD_PRELOAD requires a real .so file.
-+		 *
-+		 * If the value of TMPDIR is set, the bash command returns 10
-+		 * and if the value is unset, it returns 20.
-+		 */
-+		execle("/bin/bash", "bash", "-c",
-+		       "[[ -z \"${TMPDIR}\" ]] || exit 10 && exit 20", NULL,
-+		       bash_envp);
-+		exit(errno);
-+	} else if (child_pid > 0) {
-+		waitpid(child_pid, &child_status, 0);
-+		ret = WEXITSTATUS(child_status);
-+
-+		/* If a secureexec occured, the exit status should be 20.
-+		 */
-+		if (secureexec && ret == 20)
-+			return 0;
-+
-+		/* If normal execution happened the exit code should be 10.
-+		 */
-+		if (!secureexec && ret == 10)
-+			return 0;
-+
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+void test_test_bprm_opts(void)
-+{
-+	int err, duration = 0;
-+	struct bprm_opts *skel = NULL;
-+
-+	skel = bprm_opts__open_and_load();
-+	if (CHECK(!skel, "skel_load", "skeleton failed\n"))
-+		goto close_prog;
-+
-+	err = bprm_opts__attach(skel);
-+	if (CHECK(err, "attach", "attach failed: %d\n", err))
-+		goto close_prog;
-+
-+	/* Run the test with the secureexec bit unset */
-+	err = run_set_secureexec(bpf_map__fd(skel->maps.secure_exec_task_map),
-+				 0 /* secureexec */);
-+	if (CHECK(err, "run_set_secureexec:0", "err = %d\n", err))
-+		goto close_prog;
-+
-+	/* Run the test with the secureexec bit set */
-+	err = run_set_secureexec(bpf_map__fd(skel->maps.secure_exec_task_map),
-+				 1 /* secureexec */);
-+	if (CHECK(err, "run_set_secureexec:1", "err = %d\n", err))
-+		goto close_prog;
-+
-+close_prog:
-+	bprm_opts__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bprm_opts.c b/tools/testing/selftests/bpf/progs/bprm_opts.c
-new file mode 100644
-index 000000000000..f353b4fdc0b7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bprm_opts.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, int);
-+} secure_exec_task_map SEC(".maps");
-+
-+SEC("lsm/bprm_creds_for_exec")
-+int BPF_PROG(secure_exec, struct linux_binprm *bprm)
-+{
-+	int *secureexec;
-+
-+	secureexec = bpf_task_storage_get(&secure_exec_task_map,
-+				   bpf_get_current_task_btf(), 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+
-+	if (secureexec && *secureexec)
-+		bpf_lsm_set_bprm_opts(bprm, BPF_LSM_F_BPRM_SECUREEXEC);
-+
-+	return 0;
-+}
--- 
-2.29.2.299.gdc1121823c-goog
+> +               };
+> +
+> +               serial0: serial@20000000 {
+> +                       compatible = "ns16550a";
+> +                       reg = <0x0 0x20000000 0x0 0x400>;
+> +                       reg-io-width = <4>;
+> +                       reg-shift = <2>;
+> +                       interrupt-parent = <&plic>;
+> +                       interrupts = <90>;
+> +                       current-speed = <115200>;
+> +                       clocks = <&clkcfg 8>;
+> +                       status = "disabled";
+> +               };
+> +
+> +               serial1: serial@20100000 {
+> +                       compatible = "ns16550a";
+> +                       reg = <0x0 0x20100000 0x0 0x400>;
+> +                       reg-io-width = <4>;
+> +                       reg-shift = <2>;
+> +                       interrupt-parent = <&plic>;
+> +                       interrupts = <91>;
+> +                       current-speed = <115200>;
+> +                       clocks = <&clkcfg 9>;
+> +                       status = "disabled";
+> +               };
+> +
+> +               serial2: serial@20102000 {
+> +                       compatible = "ns16550a";
+> +                       reg = <0x0 0x20102000 0x0 0x400>;
+> +                       reg-io-width = <4>;
+> +                       reg-shift = <2>;
+> +                       interrupt-parent = <&plic>;
+> +                       interrupts = <92>;
+> +                       current-speed = <115200>;
+> +                       clocks = <&clkcfg 10>;
+> +                       status = "disabled";
+> +               };
+> +
+> +               serial3: serial@20104000 {
+> +                       compatible = "ns16550a";
+> +                       reg = <0x0 0x20104000 0x0 0x400>;
+> +                       reg-io-width = <4>;
+> +                       reg-shift = <2>;
+> +                       interrupt-parent = <&plic>;
+> +                       interrupts = <93>;
+> +                       current-speed = <115200>;
+> +                       clocks = <&clkcfg 11>;
+> +                       status = "disabled";
+> +               };
+> +
+> +               emmc: mmc@20008000 {
+> +                       compatible = "cdns,sd4hc";
+> +                       reg = <0x0 0x20008000 0x0 0x1000>;
+> +                       interrupt-parent = <&plic>;
+> +                       interrupts = <88 89>;
+> +                       pinctrl-names = "default";
+> +                       clocks = <&clkcfg 6>;
+> +                       bus-width = <4>;
+> +                       cap-mmc-highspeed;
+> +                       mmc-ddr-3_3v;
+> +                       max-frequency = <200000000>;
+> +                       non-removable;
+> +                       no-sd;
+> +                       no-sdio;
+> +                       voltage-ranges = <3300 3300>;
+> +                       status = "disabled";
+> +               };
+> +
+> +               sdcard: sdhc@20008000 {
+> +                       compatible = "cdns,sd4hc";
+> +                       reg = <0x0 0x20008000 0x0 0x1000>;
+> +                       interrupt-parent = <&plic>;
+> +                       interrupts = <88>;
+> +                       pinctrl-names = "default";
+> +                       clocks = <&clkcfg 6>;
+> +                       bus-width = <4>;
+> +                       disable-wp;
+> +                       no-1-8-v;
+> +                       cap-mmc-highspeed;
+> +                       cap-sd-highspeed;
+> +                       card-detect-delay = <200>;
+> +                       sd-uhs-sdr12;
+> +                       sd-uhs-sdr25;
+> +                       sd-uhs-sdr50;
+> +                       sd-uhs-sdr104;
+> +                       max-frequency = <200000000>;
+> +                       status = "disabled";
+> +               };
+> +
+> +               emac0: ethernet@20110000 {
+> +                       compatible = "cdns,macb";
+> +                       reg = <0x0 0x20110000 0x0 0x2000>;
+> +                       interrupt-parent = <&plic>;
+> +                       interrupts = <64 65 66 67>;
+> +                       local-mac-address = [00 00 00 00 00 00];
+> +                       phy-mode = "sgmii";
+> +                       clocks = <&clkcfg 5>, <&clkcfg 2>;
+> +                       clock-names = "pclk", "hclk";
+> +                       status = "disabled";
+> +
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       phy-handle = <&phy0>;
+> +                       phy0: ethernet-phy@8 {
+> +                               reg = <8>;
+> +                               ti,fifo-depth = <0x01>;
+> +                       };
+> +               };
+> +
+> +               emac1: ethernet@20112000 {
+> +                       compatible = "cdns,macb";
+> +                       reg = <0x0 0x20112000 0x0 0x2000>;
+> +                       interrupt-parent = <&plic>;
+> +                       interrupts = <70 71 72 73>;
+> +                       mac-address = [00 00 00 00 00 00];
+> +                       phy-mode = "sgmii";
+> +                       clocks = <&clkcfg 5>, <&clkcfg 2>;
+> +                       clock-names = "pclk", "hclk";
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +                       phy1: ethernet-phy@9 {
+> +                               reg = <9>;
+> +                               ti,fifo-depth = <0x01>;
+> +                       };
+> +               };
+> +
+> +       };
+> +};
 
+Regards,
+Bin
