@@ -2,114 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C022B6DF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:02:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA952B6DFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgKQTAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:00:45 -0500
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:55105 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726644AbgKQTAp (ORCPT
+        id S1729819AbgKQTBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:01:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726644AbgKQTBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:00:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605639643; x=1637175643;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=uJGo6j8ljzoyAXtuqCtiWI7gZtN1UjVC/lwvJf0+CrE=;
-  b=jyEpGExGLrxrCeWlSub5hZStpLLfucObUPzH0eYr91BJyrNwH7EqwTp4
-   /2ChQ6/aqKB/ckxN3Q7zB/o8nL4nOPCrWDSt+gFNux56SlDB64IH3j65+
-   gtqAMjOqL84zPK/EB3iSL820RtdaOnnjLShaCRtVRmrpps1shcGLs3KqS
-   hvNqsUdc1qKRg0JnZkjjl50gsndiLrUWImwgQxU+OuuWa7T0wuIdTYV9a
-   ErrsDeU9RqhxBokADAhrpjsCyJIlfTqjuBSKdL5XnKu8jt27+t5OwvTKQ
-   BYwiruDSYUQbkyEAEYT/rmYKFrbk35pLGe01+P2DHuYEhKggs+D7GMJRO
-   A==;
-IronPort-SDR: wq5GUw4ZcCdWfdFbnT+sTxxoOtlAtdlJ3i488p4VgXIX82brdwCzyRFxJAm0BmPrcgq55k9PQK
- fi8hilKi43EKoV3ZzqIyxBksIoZLOsMi0va4REXx5XUKpQWo4TM437C7v27095HvY/FHOxwdUK
- quDPxconGD/+CUBqHDdRF9HkVQzg5dzjjsq46SQYqF+wCeU/J7aRpQ0/jrb2wXMmrUzoWz864Q
- 0/ZspERyU+2JEKChag6ggk+WRasQbSYw9UeKWk8eHP6jeVnWPnjCypXGwWqOkkFZHFUGkNKG9Z
- AJU=
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="96659063"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Nov 2020 12:00:43 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 17 Nov 2020 12:00:42 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 17 Nov 2020 12:00:42 -0700
-Date:   Tue, 17 Nov 2020 20:00:41 +0100
-From:   Joergen Andreasen <joergen.andreasen@microchip.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <Arvid.Brodin@xdin.com>,
-        <m-karicheri2@ti.com>, <vinicius.gomes@intel.com>,
-        <michael.chan@broadcom.com>, <vishal@chelsio.com>,
-        <saeedm@mellanox.com>, <jiri@mellanox.com>, <idosch@mellanox.com>,
-        <alexandre.belloni@bootlin.com>, <UNGLinuxDriver@microchip.com>,
-        <ivan.khoronzhuk@linaro.org>, <andre.guedes@linux.intel.com>,
-        <allan.nielsen@microchip.com>, <po.liu@nxp.com>,
-        <mingkai.hu@nxp.com>, <claudiu.manoil@nxp.com>,
-        <vladimir.oltean@nxp.com>, <leoyang.li@nxp.com>
-Subject: Re: [RFC, net-next] net: qos: introduce a redundancy flow action
-Message-ID: <20201117190041.dejmwpi4kvgrcotj@soft-dev16>
-References: <20201117063013.37433-1-xiaoliang.yang_1@nxp.com>
+        Tue, 17 Nov 2020 14:01:05 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D99C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:01:05 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id u2so10747944pls.10
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:01:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JYseXDP4i2Hhs9DKh0McOND6mIxwYGtf78PBSIeQhlo=;
+        b=chs8hXLcwd8v9y7yYPXw8+lpeD8ILMsYdq9M/QbiFunuKosgKrQiGFGhM/sdSNogEy
+         y5FfPEAmg+uQyaYiJjNGok+rMJ+0yycAVzRmf/9oduyoN8qTx/xfR7C2clvGuZlvrSWm
+         h6uHL4U70EPBHKI/1HFJ4P1SlY8UG/T8TjZodhVXNlUmiiElibOjwtnIlTngdpxF44l4
+         cCw9lczormZiwbDCu10NzFeEWNVXO6tTqdAGXJXhLoRCNJrtFD5N7lxotBuqMMngIfLn
+         LSexRkOzUEp0CuuC6tJX50yWmoeveA7MmM9ViI5QqXT9mS5bDX1jjDVGsQ0Z29y3/aVj
+         2q6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JYseXDP4i2Hhs9DKh0McOND6mIxwYGtf78PBSIeQhlo=;
+        b=lOGkro0oWonmki75BIHrg17PNyd0Z7Y51xygB3vfoyBqHzANeYQMtD9+CHfX5ro23S
+         k1+2hQs8vGRJa+DyTZe2B6MJ24kDTFH25njjN69IjmG9gsQ/J8lZBF5urk0XC60WODyM
+         hrxcxFeWrW5pRbdJYEUfm16mLiE3WsJA+ssA6R2rAc0aLAlqv6F+zCfE7UEM3Hk3yqRz
+         BPStW1Xr2e6a3L47WAryEpmgO/a+4nDRV5C5lolpgGkBC0ER5m97pzciBZg0zTaExLFI
+         K6NqlZi9shkWk3l3chf55O1e0lOKJJZhoiray8SBNE7tUptvf8WjQ8Sc9NQwyxHZ3tjA
+         /xXw==
+X-Gm-Message-State: AOAM533tYhvhSnyN16SaCt18QqCsujyLZZc+mXHf+7y0h2HsB7USgS32
+        1e1OfS5/tJbICH0cUb/DauxKMf9Ct1CtF2qG/GnzkJ3R8lSqVg==
+X-Google-Smtp-Source: ABdhPJzOldRgN7SwijtAG+tyo1d3bxVSfLlQ9ioQKrAyDUF3ZWvrGjttGmCw3KlHNpWoKDPJBLlEPsGTDtV8hBGihh0=
+X-Received: by 2002:a17:90a:d250:: with SMTP id o16mr449165pjw.25.1605639664820;
+ Tue, 17 Nov 2020 11:01:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20201117063013.37433-1-xiaoliang.yang_1@nxp.com>
-User-Agent: NeoMutt/20171215
+References: <20201117013951.7827-1-rdunlap@infradead.org>
+In-Reply-To: <20201117013951.7827-1-rdunlap@infradead.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 17 Nov 2020 11:00:54 -0800
+Message-ID: <CAKwvOdmESwnF14TLjRfzJg8Dau8XW0LgoDvXtdPjPOqdf211SQ@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: fix barrier() use in <vdso/processor.h>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-riscv@lists.infradead.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 11/17/2020 14:30, Xiaoliang Yang wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> This patch introduce a redundancy flow action to implement frame
-> replication and elimination for reliability, which is defined in
-> IEEE P802.1CB.
-> 
-> There are two modes for redundancy action: generator and recover mode.
-> Generator mode add redundancy tag and replicate the frame to different
-> egress ports. Recover mode drop the repeat frames and remove redundancy
-> tag from the frame.
-> 
-> Below is the setting example in user space:
->         > tc qdisc add dev swp0 clsact
->         > tc filter add dev swp0 ingress protocol 802.1Q flower \
->                 skip_hw dst_mac 00:01:02:03:04:05 vlan_id 1 \
->                 action redundancy generator split dev swp1 dev swp2
-> 
->         > tc filter add dev swp0 ingress protocol 802.1Q flower
->                 skip_hw dst_mac 00:01:02:03:04:06 vlan_id 1 \
->                 action redundancy recover
-> 
-> Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+On Mon, Nov 16, 2020 at 5:40 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> riscv's <vdso/processor.h> uses barrier() so it should
+> #include <asm/barrier.h> to prevent build errors.
+>
+> Fixes this build error:
+>   CC [M]  drivers/net/ethernet/emulex/benet/be_main.o
+> In file included from ./include/vdso/processor.h:10,
+>                  from ./arch/riscv/include/asm/processor.h:11,
+>                  from ./include/linux/prefetch.h:15,
+>                  from drivers/net/ethernet/emulex/benet/be_main.c:14:
+> ./arch/riscv/include/asm/vdso/processor.h: In function 'cpu_relax':
+> ./arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit declaration of function 'barrier' [-Werror=implicit-function-declaration]
+>    14 |  barrier();
+>
+> This happens with a total of 5 networking drivers -- they all use
+> <linux/prefetch.h>.
+>
+> rv64 allmodconfig now builds cleanly after this patch.
+>
+> Fixes fallout from:
+> 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
+>
+> Fixes: ad5d1122b82f ("riscv: use vDSO common flow to reduce the latency of the time-related functions")
 
-Hi Xiaoliang,
+Hi Randy,
+Thanks for the patch, it looks good to me.  I only had a question on
+the commit message.
 
-I like your idea about using filter actions for FRER configuration.
+Is this also related to:
+commit 3347acc6fcd4 ("compiler.h: fix barrier_data() on clang")
 
-I think this is a good starting point but I think that this approach will only
-allow us to configure end systems and not relay systems in bridges/switches.
+I plan to backport 3347acc6fcd4, so it would be good if all of the
+follow ups are all tagged accordingly with fixes tags, so that I don't
+break anything backporting 3347acc6fcd4 because I forgot or missed any
+follow ups that also needed to be backported.
 
-In the following I refer to sections and figures in 802.1CB-2017.
+> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Arvind Sankar <nivedita@alum.mit.edu>
+> Cc: linux-riscv@lists.infradead.org
+> Cc: clang-built-linux@googlegroups.com
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nathan Chancellor <natechancellor@gmail.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> ---
+>  arch/riscv/include/asm/vdso/processor.h |    2 ++
+>  1 file changed, 2 insertions(+)
+>
+> --- lnx-510-rc4.orig/arch/riscv/include/asm/vdso/processor.h
+> +++ lnx-510-rc4/arch/riscv/include/asm/vdso/processor.h
+> @@ -4,6 +4,8 @@
+>
+>  #ifndef __ASSEMBLY__
+>
+> +#include <asm/barrier.h>
+> +
+>  static inline void cpu_relax(void)
+>  {
+>  #ifdef __riscv_muldiv
 
-I am missing the following possibilities:
-Configure split without adding an r-tag (Figure C-4 Relay system C).
-Configure recovery without popping the r-tag (Figure C4 Relay system F).
-Disable flooding and learning per VLAN (Section C.7).
-Select between vector and match recovery algorithm (Section 7.4.3.4 and 7.4.3.5).
-Configure history length if vector algorithm is used (Section 10.4.1.6).
-Configure reset timeout (Section 10.4.1.7).
-Adding an individual recovery function (Section 7.5).
-Counters to be used for latent error detection (Section 7.4.4).
 
-I would prefer to use the term 'frer' instead of 'red' or 'redundancy'
-in all definitions and functions except for 'redundancy-tag'.
+
 -- 
-Joergen Andreasen, Microchip
+Thanks,
+~Nick Desaulniers
