@@ -2,164 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6702B70FE
+	by mail.lfdr.de (Postfix) with ESMTP id DD7622B70FF
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgKQVf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:35:58 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28982 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726136AbgKQVf6 (ORCPT
+        id S1728142AbgKQVgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgKQVgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:35:58 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHLP3bs003230;
-        Tue, 17 Nov 2020 13:35:48 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=a3rya7AoGm/KrctQKzOWuNB0OMnCpCcZ4C6xXUUZqfY=;
- b=NPHCvB/Wdl8yVVAOPUlWP77BNoEvLMboIc6XyDQdF58KKwSEmxOuHkkj5+zMQ9JdgGKH
- 3AGxYRoBhlVxAGYdEIk7u50kl6WU/LZT6aXyJmwxqzEQbKfxv1VqoRixaI95oh9n67El
- A+bOYLqNVRqZfIRZLeGBeqiVD0mXLWYNCg0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34vhqja10b-20
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 17 Nov 2020 13:35:48 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 17 Nov 2020 13:35:43 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BQvE3zvcMewiY8bnJc1kqW+uEIVgBq+Rqf+e7r/kWYz/muFYF03a7X9O/GXybQAk4PRUF/DC9CnAKwb021G0JGDhd6Bril6qY2dw7L/4pMjlZJdLfj7606wcYY+8i8qjtg/+t69o3pzxLyY0ms5rj9mcv707POrkUL1M5T2Oim0SwVaHFWg69h6/OAMqcYNdKeVFxp+lOeQuXqU8tyjiwZMF1m35WV0qRxE95ZVITBlhfTktB1b5b4yfaBkxUvrFpJY7tKwWh3wXdwHwm9v/115FNEH7LXi5vlkuXjrM6HNxHHMIzm+oFdTOatnUA6yHnuRn56MjONyKxd/dpiDHLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a3rya7AoGm/KrctQKzOWuNB0OMnCpCcZ4C6xXUUZqfY=;
- b=a2oTgKpR4UpTjaDFi2p21LvQU8UrU32WNNfHcNzjKySmF3ZdKTd5ErmcAwqdr4HtmwH+AqtdO8LKVHFm6dVdDptOR39mLf11S2WavHcVsJpf36o+0TPKbQ66tRjC2KSDYnR2k8pi5MHFwIxxKXFl+QR8Ih6oFb6W+fGSDJaxA1Frh4386ZQELD/P7kuChPaXT1lYlDTo1O30MI+k8eRip1H/54hMfyeuniJyFcq/VegfgO5lATxbfLHSCITCRGJxFe+O3++d9VF61VwpaXQmHiBsKTjgk/v82ulUbyoPBm0mgHmW5Urn+modtaBKv3/2NoaWuhf/5LWQ6OUZ+Z8o5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a3rya7AoGm/KrctQKzOWuNB0OMnCpCcZ4C6xXUUZqfY=;
- b=ZBuTg9dSco45mBN32TzBmg8eh+gTnjGUw5UipHdjWkePpKo4CkqvcshIQel0H+jVFOwRPgqy8xWf3heRCctFOFAUUfcZIkNjxWqv2na+TOp7jOYHVuxvAVjREPOzSbHR9D+Bj7gXT07Wvp37qX4//Bemp/zntt+xKdqDaGXOYWw=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2661.namprd15.prod.outlook.com (2603:10b6:a03:15b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Tue, 17 Nov
- 2020 21:35:42 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3564.031; Tue, 17 Nov 2020
- 21:35:42 +0000
-Date:   Tue, 17 Nov 2020 13:35:37 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Zi Yan <ziy@nvidia.com>, <linux-mm@kvack.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Nellans <dnellans@nvidia.com>
-Subject: Re: [RFC PATCH 3/6] mm: page_owner: add support for splitting to any
- order in split page_owner.
-Message-ID: <20201117213537.GB156448@carbon.DHCP.thefacebook.com>
-References: <20201111204008.21332-1-zi.yan@sent.com>
- <20201111204008.21332-4-zi.yan@sent.com>
- <20201114001505.GA3047204@carbon.dhcp.thefacebook.com>
- <F55878E8-22B1-443E-9CC8-E97B3DAA7EA4@nvidia.com>
- <20201114013801.GA3069806@carbon.dhcp.thefacebook.com>
- <20201117210532.GX29991@casper.infradead.org>
- <3E32BC50-700F-471E-89FD-35414610B84E@nvidia.com>
- <20201117212255.GZ29991@casper.infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117212255.GZ29991@casper.infradead.org>
-X-Originating-IP: [2620:10d:c090:400::5:dcb1]
-X-ClientProxiedBy: MW2PR16CA0022.namprd16.prod.outlook.com (2603:10b6:907::35)
- To BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+        Tue, 17 Nov 2020 16:36:05 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B293C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:36:05 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id s2so10986693plr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:36:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=0m+K2NlyJQug6oS4FGOKBnmh0ZvQkH6+QHGu2YO0ZCQ=;
+        b=GAY3Uzql0U79yflXsmskEOwGKOWyyO4vCghR9imkBfLliDBHPDNLG+1gn3B14tUyoO
+         4mNUwDqQcwG1QIwUT8ZtQodGUpKr86G5HgJQx1qTVxqZydeBXs2ENQbd/sKGSu7DAmGA
+         AEECNkUa0pB3CpJFn5k4N9EarsV9aiO9bfqMQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=0m+K2NlyJQug6oS4FGOKBnmh0ZvQkH6+QHGu2YO0ZCQ=;
+        b=Z6xDPZpPt/Z78fMQN3yovOMNWrv2APxshdn8uf4UzdHEne4QOb4SKESpjTp//B9IUf
+         5gf0H2PbfGPMx6hes1t20zHN53rR2dEFyvUpms9mRXvP/LjqSQuOqEtcTyU+J1ei7lwE
+         xmkLf7YGzS9jI/uh4PbAJbhYqGMKTkJRmrqHa8ng1pzxbR7aGCuVnTeyglqkuA13+b/8
+         dfl39OPm7niSD+uj09HFzdAEvk9zMOUdfww3r93CsbbFpYbYuR42An9P59ClSGhFrlWn
+         zYcck8lgUrvF4lTeVHyb0Rk9ujdAKJbr/FWskLEcQYSygFSnV2vBkmjcCznn+J33MrS+
+         8ZzQ==
+X-Gm-Message-State: AOAM531EBONLQor0NMCKif/ZsoJpPlS8m13jiC+1e2iHN/NnMZtSjL6n
+        174fWkQooUW8se5CB8PaQ1QZ+F8c+vHrmZxG
+X-Google-Smtp-Source: ABdhPJzOLebmO9Zzxgjs+rpNBfkRo4Y3R0wB5z4YRED4gX2KOUKoduiMuLb6qjkQ+hyiBE3IfB6Hqw==
+X-Received: by 2002:a17:902:6f10:b029:d6:e6f5:1dab with SMTP id w16-20020a1709026f10b02900d6e6f51dabmr1423613plk.1.1605648965014;
+        Tue, 17 Nov 2020 13:36:05 -0800 (PST)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id z68sm6183518pgb.37.2020.11.17.13.36.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 13:36:04 -0800 (PST)
+Subject: Re: [PATCH v6 11/14] misc: bcm-vk: add BCM_VK_QSTATS
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Desmond Yan <desmond.yan@broadcom.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Olof Johansson <olof@lixom.net>
+References: <20201002212327.18393-1-scott.branden@broadcom.com>
+ <20201002212327.18393-12-scott.branden@broadcom.com>
+ <55f88956-48ea-08e3-c353-babb08f3a786@gmail.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <b04f3fdb-143b-ab34-b6e2-ac9fbb802ed0@broadcom.com>
+Date:   Tue, 17 Nov 2020 13:36:02 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:dcb1) by MW2PR16CA0022.namprd16.prod.outlook.com (2603:10b6:907::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Tue, 17 Nov 2020 21:35:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bdcc243a-0ca9-4428-178d-08d88b40bbe6
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2661:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB266103C42ABF42E5D6B23BA3BEE20@BYAPR15MB2661.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zr+TN+3o9YfQDNV0Yq2FRNDWOQALV3xq7hALbkfvU7gXzfa6J1H8VJDvkUAnQ33YWKJz0TpqXd8Gqx7AiU2RQMZrez6fbCTk64gUWuVGZWURa2xH7raVccgs+vhgEDQJ/QRF4jVRAYdi9Nsp3uICOY+tnzkmfohXSpCjLrCnnYBdedy1KOiuIjqkWV1Jw1KN+/VMubZklSgn0pqNB/ifOdi8B3FqUnlOPxebRjpzI9rBUwGGoDmxJoO5b2JoPaYB9QDBOQWIwuRZbAII6UKxT86nLRKouAgd99dKZndBv8o630zHWbclN8jdfstiC2B1lJERiN7dW032DcP4ruCFhA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(376002)(396003)(346002)(366004)(55016002)(54906003)(316002)(4326008)(9686003)(478600001)(6916009)(7416002)(33656002)(186003)(6666004)(8936002)(83380400001)(52116002)(8676002)(7696005)(2906002)(16526019)(6506007)(53546011)(86362001)(66946007)(5660300002)(1076003)(66476007)(66556008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: cvUK2kZnwrrhN6g/mzrFtRoTXW5o1BdZkJoMgUAhdakea840WOPj93QeGWWxfLHAGKvZfMHPYC3fVk5Z9ncGcLYuqHUqcmwOBab0tWQE4YRA6qDw12uM+ol9nqNuqHMOdT0ERXCBGrkHPzEBr5EIOrpMWkx/3AMAPTTvAZKoXwswQb23qPxwsWmbizzkHZRzEEIDt6HDhY/k+RdW+lMgxjfsm3QmJ5CI4c0sujwG1kvbDngQ9w6nR6BxywRA7BLGjHPvurxVIF0VdtCaONBcnfxCKqoYpkucKSIhp5Uss5RfAiiWpS4Gf/Q5WzGJI8LlX5NFemv6xOvajGpDjGT80tA4xMBxnal1yiIWhueiE/S9Zoj5aVBbgJuFBNFeq8N//hForGuzoOROBGbog3eGXLbJaxu+smDJppJ2MGotCSHR68PSmZUPjrUbupz33Z4NHdvY2gH8s0PCGt63gXa0T52wV9AM/efYqKObu1pBdsMJ3YWXhrLhzfywVnI8siEigkbwIXZrseb9ztkMolAXlItjYC+gUKNdBSgPuAn7N2Vz3GX10TCuxgoZIypRKwy8J/Kz4a7mzxi4GxlMwo3doJ0pzIg+BMzZ0LIUW/FSvkt3DIhrVXk6acLV+y1MS9pzC2p/s9qQA4oFRQ3GCufU/Vs0ssFRFndTFZhlrXbHU1k=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdcc243a-0ca9-4428-178d-08d88b40bbe6
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 21:35:42.0740
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PLh6L5wXH7ae+eZ7mMULx1Zui2R8yr4TD6AgTMjWeLC0YXaKPD/EKkq48tAJ2ORp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2661
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_09:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 spamscore=0 malwarescore=0
- phishscore=0 lowpriorityscore=0 clxscore=1015 suspectscore=1
- priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011170158
-X-FB-Internal: deliver
+In-Reply-To: <55f88956-48ea-08e3-c353-babb08f3a786@gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000037d7ea05b45448f5"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 09:22:55PM +0000, Matthew Wilcox wrote:
-> On Tue, Nov 17, 2020 at 04:12:03PM -0500, Zi Yan wrote:
-> > On 17 Nov 2020, at 16:05, Matthew Wilcox wrote:
-> > 
-> > > On Fri, Nov 13, 2020 at 05:38:01PM -0800, Roman Gushchin wrote:
-> > >> On Fri, Nov 13, 2020 at 08:08:58PM -0500, Zi Yan wrote:
-> > >>> Matthew recently converted split_page_owner to take nr instead of order.[1]
-> > >>> But I am not
-> > >>> sure why, since it seems to me that two call sites (__split_huge_page in
-> > >>> mm/huge_memory.c and split_page in mm/page_alloc.c) can pass the order
-> > >>> information.
-> > >>
-> > >> Yeah, I'm not sure why too. Maybe Matthew has some input here?
-> > >> You can also pass new_nr, but IMO orders look so much better here.
-> > >
-> > > If only I'd written that information in the changelog ... oh wait, I did!
-> > >
-> > >     mm/page_owner: change split_page_owner to take a count
-> > >
-> > >     The implementation of split_page_owner() prefers a count rather than the
-> > >     old order of the page.  When we support a variable size THP, we won't
-> > >     have the order at this point, but we will have the number of pages.
-> > >     So change the interface to what the caller and callee would prefer.
-> > 
-> > There are two callers, split_page in mm/page_alloc.c and __split_huge_page in
-> > mm/huge_memory.c. The former has the page order. The latter has the page order
-> > information before __split_huge_page_tail is called, so we can do
-> > old_order = thp_order(head) instead of nr = thp_nr_page(head) and use old_order.
-> > What am I missing there?
-> 
-> Sure, we could also do that.  But what I wrote was true at the time I
-> wrote it.
+--00000000000037d7ea05b45448f5
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-CA
 
-Sure, I was asking about if you're ok with going back to orders or there are better
-ideas. I'm sorry if it wasn't clear and sounded differently.
+Hi Florian,
 
-It just seems to me than a function is taking nr and order (as in Zi's last version),
-I'd expect that it's a number of pages of given order, or something like this.
-So I'd avoid mixing them. Orders are slightly better if nr is always a power of two,
-it's just more obvious from looking at the code.
+On 2020-10-02 6:39 p.m., Florian Fainelli wrote:
+>
+>
+> On 10/2/2020 2:23 PM, Scott Branden wrote:
+>> Add BCM_VK_QSTATS Kconfig option to allow for enabling debug VK
+>> queue statistics.
+>>
+>> These statistics keep track of max, abs_max, and average for the
+>> messages queues.
+>>
+>> Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
+>> Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
+>> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+>
+> would not it make more sense to have those debug prints be trace printks instead? Given what you explained in the previous patch version and the desire to correlate with other system wide activity, that might make more sense. Looking at the kernel's log for debugging performance or utilization or just to get a glimpse of what is going on is not quite suited past probe.
+The debug prints have served our purpose up to this point.
+But, in the interest of getting the other driver patches accepted I will drop this patch from the series and we will investigate further.
 
-Thanks!
+Thanks,
+ Scott
+
+--00000000000037d7ea05b45448f5
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+I/3RRboOeC9M13VNr5feU91O0iDoMreAgPQJ0Lo7YrodKYug0Tt/fFDjkW3v3VIbEr2liUN69U0C
+AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
+MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
+YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
+ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
+FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
+HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
+MmczLmNybDAlBgNVHREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUWOK7
+qiyDSt/IDm/SRcNi/sTEiyswDQYJKoZIhvcNAQELBQADggEBAEe2edd4F9tpp0GPmrFrQ+xp9kY7
+uxBzPdCw588bgVrPemjLwiwV37XTT4iWJtNhPfEpaguM6jeLm58LCvHq5/IBjcyHyf4URQVwAg7B
+pqkH8/M+IBstu4/D+znPHB59X+c+au3Q8D+xoNFd7I30kaE+oJuBuFsGXRBc0Ci+FM86x9k7SF8U
+aui1E7Y9wDfsRSCL2TSwU773f09WkrvVdlKxNqQZj2z7bQUUn+yfXdFfBz0LqlYNfn7xJOpQE3HI
+H4jq6U9+b0Qf+J0n0wyysjXPSeQ7EKXVkT8dM2KSpIN86v5dd9LkAz3C1dmjuPRGEC8ZhI1IjMBt
+0itrn6C23NsxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
+RzMCDFtD165RQeUC8DvoCDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgiMJYmc12
+f0jqnBbsMLg4x6Aeny+wglgZfA3mVK0r/WMwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
+hkiG9w0BCQUxDxcNMjAxMTE3MjEzNjA1WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
+BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
+9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAEgklqpt8R/a1VzhXkipsO1rui1I
+0+lNmYXwwhnHYrn4ItquiOVCjuOlVkyKqJr+nIhhsmr2W99gvoP7PFoAlWSW2HFgS0LqbTuvFwzI
+5eqcIoYDqxvEA7bZHwtfcgsqbujpZLofpvK4muM1o95woDyPhZGHp1oOEtDf5ckFH1hAjDTfSuuJ
+NVf0BO19TbL+xV6T69TiPjTS5t6yo7cl5cKuWJFPD6CaDwLW5F6KFh8u67a8YEqWt7jNNKK/ygHY
+n/eaaKjhQSBxlx7o5ObaRMc5ABQP5IVgdcl7LoOzAODE7fFmAtOy3Qvf3bm0Ny1D5njUNIuYzvpp
+E4ZT/K2kfLE=
+--00000000000037d7ea05b45448f5--
