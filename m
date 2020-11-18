@@ -2,68 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBEF2B814C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D135D2B8156
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727723AbgKRP4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:56:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726238AbgKRP4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:56:31 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1727741AbgKRP6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:58:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgKRP6d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:58:33 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2D1C0613D4;
+        Wed, 18 Nov 2020 07:58:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GOzh1Hc0R1jOyAk5KDQ96c8P+a7sxOoxzcRvNbeKPUI=; b=At2O//XLDIexF2NGZbUhn7yyVa
+        +Zc9ZMWhA/asE2jZ/Hch0edDH/Zna/j/o1WqR7l8RLKVAH8ePaNx4axvv+k7bpbXGe0IQl+oScGBj
+        Yfgq0caBcZKqhYlyqWHQWdkBtq3PrCHWU/HDpK1nYKz0KTGa9hcLnHqsLS/X7/c42Yc5JeKyJlgja
+        /EjYzWcLx55nvYWqznQ0SaVk9G8WXbDxYMPqE+pNSVUD6QY+P4d6UO5d9XmWukc4nRetjpHHg/nCO
+        gEIBd2CvRvhEusc/MVzi51XIhlp9GE6mtn6qmLLGBKOiAmNIIFkJOcq46u06JI83Wh1DZLJrfkH8t
+        b6Lchzpg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kfPqJ-0008Ad-LJ; Wed, 18 Nov 2020 15:57:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64AB7247B8;
-        Wed, 18 Nov 2020 15:56:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605714989;
-        bh=S6MkxhTMTtg3RRpljnV7gAI8VRb1Mas9LfZSsWtf1q8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TPbO6LTVo4eR63FB3qXCO1/jF2mvJDzj7/plUpU4pkP7K6W5KkTtFtExf4HnXhtO3
-         lW0QM67odvRAs5cZeamKXN/f6T8vKu9rpabgx523gTOCM6C+j6mNvfH9Yo61a5cTKm
-         Cw2hQg5+ZyfudOKQsJI0Jt4AYKzkJJuzjHqmwfqs=
-Date:   Wed, 18 Nov 2020 16:57:15 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [RFC PATCH 2/3] usb: typec: Add product_type sysfs attribute
- file for partners and cables
-Message-ID: <X7VEW9X8lYR7cosA@kroah.com>
-References: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
- <20201118150059.3419-3-heikki.krogerus@linux.intel.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 557E83019CE;
+        Wed, 18 Nov 2020 16:57:57 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 115AF235C0B18; Wed, 18 Nov 2020 16:57:57 +0100 (CET)
+Date:   Wed, 18 Nov 2020 16:57:57 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        linmiaohe@huawei.com, martin.varghese@nokia.com, pabeni@redhat.com,
+        pshelar@ovn.org, fw@strlen.de, gnault@redhat.com,
+        steffen.klassert@secunet.com, kyk.segfault@gmail.com,
+        viro@zeniv.linux.org.uk, vladimir.oltean@nxp.com,
+        edumazet@google.com, saeed@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH net-next] net: add in_softirq() debug checking in
+ napi_consume_skb()
+Message-ID: <20201118155757.GY3121392@hirez.programming.kicks-ass.net>
+References: <1603971288-4786-1-git-send-email-linyunsheng@huawei.com>
+ <20201031153824.7ae83b90@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <5b04ad33-1611-8d7b-8fec-4269c01ecab3@huawei.com>
+ <20201102114110.4a20d461@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <5bd6de52-b8e0-db6f-3362-862ae7b2c728@huawei.com>
+ <20201118074348.3bbd1468@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118150059.3419-3-heikki.krogerus@linux.intel.com>
+In-Reply-To: <20201118074348.3bbd1468@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 06:00:58PM +0300, Heikki Krogerus wrote:
-> USB Power Delivery Specification defines a set of product
-> types for partners and cables. The product type is defined
-> in the ID Header VDO, which is the first object in the
-> response to the Discover Identity command.
-> 
-> This sysfs attribute file is only created for the partners
-> and cables if the product type is really known in the
-> driver. Some interfaces do not give access to the Discover
-> Identity response from the partner or cable, but they may
-> still supply the product type separately in some cases.
-> 
-> When the product type of the partner or cable is detected,
-> uevent is also raised with PRODUCT_TYPE set to show the
-> actual product type (for example PRODUCT_TYPE=host).
-> 
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> ---
->  Documentation/ABI/testing/sysfs-class-typec |  55 ++++++++
->  drivers/usb/typec/class.c                   | 132 ++++++++++++++++++--
->  2 files changed, 180 insertions(+), 7 deletions(-)
+On Wed, Nov 18, 2020 at 07:43:48AM -0800, Jakub Kicinski wrote:
 
-Seems semi-sane, nice work :)
+> TBH the last sentence I wrote isn't clear even to me at this point ;D
+> 
+> Maybe using just the macros from preempt.h - like this?
+> 
+> #define lockdep_assert_in_softirq()                                    \
+> do {                                                                   \
+>        WARN_ON_ONCE(__lockdep_enabled                  &&              \
+>                     (!in_softirq() || in_irq() || in_nmi())	\
+> } while (0)
+> 
+> We know what we're doing so in_softirq() should be fine (famous last
+> words).
 
-greg k-h
+So that's not actually using any lockdep state. But if that's what you
+need, I don't have any real complaints.
