@@ -2,117 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696E32B7A75
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C568D2B7A78
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgKRJeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:34:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726273AbgKRJeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:34:08 -0500
-Received: from localhost (unknown [89.205.136.214])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BF44206A5;
-        Wed, 18 Nov 2020 09:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605692047;
-        bh=xHmOu+PXd8Yg2++cDjRs3tWJjNJ/Wm+c5da2xYMxdv4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I5Xu/nc+1gTElZR99zO1qryYKsARkh6Sq6eKMHHI2DLJHahzlYvGjyKzPsihREwD3
-         FSMFSRqJ/njjog0qpWHi5CLehxq8c5v/4VcWuLOKyS1328ht5srOyG+Y2773JdztJ7
-         b4UBMRZAdAhptDgDcZlQKTsm4+3hC6JxM8U5YH7o=
-Date:   Wed, 18 Nov 2020 10:34:04 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     penghao <penghao@uniontech.com>
-Cc:     johan@kernel.org, jonathan@jdcox.net, tomasz@meresinski.eu,
-        hdegoede@redhat.com, dlaz@chromium.org,
-        kai.heng.feng@canonical.com, richard.o.dodd@gmail.com,
-        kerneldev@karsmulder.nl, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for
- Lenovo A630Z TIO built-in usb-audio card
-Message-ID: <X7TqjDO/JMJ2VJ/e@kroah.com>
-References: <20201118092656.944-1-penghao@uniontech.com>
+        id S1726958AbgKRJfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:35:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726742AbgKRJfL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 04:35:11 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A41FC061A4D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:35:11 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfJro-0001VM-KB; Wed, 18 Nov 2020 10:35:08 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfJro-0007Ua-3f; Wed, 18 Nov 2020 10:35:08 +0100
+Date:   Wed, 18 Nov 2020 10:35:06 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Soham Biswas <sohambiswas41@gmail.com>, thierry.reding@gmail.com,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pwm: core: Use octal permission
+Message-ID: <20201118093506.srljfosnamxe5wwz@pengutronix.de>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+ <20201117181214.GK1869941@dell>
+ <CAMmt7eO5te05AuVC+MR-zLB-z+r9FCuJwtON=1QXXY2YwQG0eg@mail.gmail.com>
+ <20201118085113.GO1869941@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ohq2x4jqnsuhvgdo"
 Content-Disposition: inline
-In-Reply-To: <20201118092656.944-1-penghao@uniontech.com>
+In-Reply-To: <20201118085113.GO1869941@dell>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 05:26:56PM +0800, penghao wrote:
-> Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
-> usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
-> seconds later by usb-audio disconnect interrupt to avoids the issue.
-> 
-> Seeking a better fix, we've tried a lot of things, including:
->  - Check that the device's power/wakeup is disabled
->  - Check that remote wakeup is off at the USB level
->  - All the quirks in drivers/usb/core/quirks.c
->    e.g. USB_QUIRK_RESET_RESUME,
->         USB_QUIRK_RESET,
->         USB_QUIRK_IGNORE_REMOTE_WAKEUP,
->         USB_QUIRK_NO_LPM.
-> 
-> but none of that makes any difference.
-> 
-> There are no errors in the logs showing any suspend/resume-related issues.
-> When the system wakes up due to the modem, log-wise it appears to be a
-> normal resume.
-> 
-> Introduce a quirk to disable the port during suspend when the modem is
-> detected.
-> 
-> Changes approoriate to appropriate
-> 
-> Changes since v2
->  - Add Changes commit format
-> 
-> Changes since v1
->  - Change subject form "ALSA" to "USB:"
->  - Adjust to appropriate line
 
-You don't have a "version" in the subject line, what one is this?
+--ohq2x4jqnsuhvgdo
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Nov 18, 2020 at 08:51:13AM +0000, Lee Jones wrote:
+> On Tue, 17 Nov 2020, Soham Biswas wrote:
+>=20
+> > This fixes the following warning:
+> >=20
+> > `drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
+> > not preferred. Consider using octal permissions '0444'.`
+> >=20
+> > generated by the following script:
+> >=20
+> > `./scripts/checkpatch.pl --file --terse drivers/pwm/core.c`
+>=20
+> Oh, it's a checkpatch.pl thing.
+>=20
+> You should definitely quote the warning and describe where it came
+> from in the commit log.
+>=20
+> Not entirely sure what that warning is the result of.  Probably as
+> they're sightly harder to read and easier to get wrong.  Still, I'll
+> let Thierry decide whether the patch itself is suitable for inclusion
+> into the PWM core.
+>=20
+> > On Tue, 17 Nov 2020 at 23:42, Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > On Tue, 17 Nov 2020, Soham Biswas wrote:
+> > >
+> > > > Fixed Warning.
+> > >
+> > > Which warning does this fix?
+> > >
+> > > > Replaced symbolic permission 'S_IRUGO' with octal permission '0444'.
+> > >
+> > > This is semantically equivalent.
+> > >
+> > > Not sure what and/or how this fixes anything.
+> > >
+> > > > Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
+> > > > ---
+> > > >  drivers/pwm/core.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> > > > index 1f16f5365d3c..a8eff4b3ee36 100644
+> > > > --- a/drivers/pwm/core.c
+> > > > +++ b/drivers/pwm/core.c
+> > > > @@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
+> > > >
+> > > >  static int __init pwm_debugfs_init(void)
+> > > >  {
+> > > > -     debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+> > > > +     debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
 
-> 
-> Signed-off-by: penghao <penghao@uniontech.com>
+Actually I'd prefer keeping the symbolic name because this is easier to
+grep for. So to convince me a better reason than "checkpatch says so" is
+needed.
 
-Is that the name/characters you sign legal documents with?  If so,
-great, but I have to ask.
+Best regards
+Uwe
 
-> ---
->  drivers/usb/core/quirks.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-> index 7c1198f80c23..25f655c2cd28 100644
-> --- a/drivers/usb/core/quirks.c
-> +++ b/drivers/usb/core/quirks.c
-> @@ -410,6 +410,10 @@ static const struct usb_device_id usb_quirk_list[] = {
->  	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
->  			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
->  
-> +	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
-> +	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
-> +			USB_QUIRK_DISCONNECT_SUSPEND },
-> +
->  	/* BUILDWIN Photo Frame */
->  	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
->  			USB_QUIRK_HONOR_BNUMINTERFACES },
-> @@ -430,6 +434,7 @@ static const struct usb_device_id usb_quirk_list[] = {
->  	  USB_QUIRK_DELAY_CTRL_MSG },
->  
->  	/* Corsair Strafe RGB */
-> +
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-Why are you adding this blank line for no reason?
+--ohq2x4jqnsuhvgdo
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please fix.
+-----BEGIN PGP SIGNATURE-----
 
-thanks,
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+06scACgkQwfwUeK3K
+7AlIXQgAgF8lWGCuUSzrwgut+6vGhG5KY6ME1zv3TbLjIqfz7pJ+Y3Umgc0SXkTV
+a6odi+6fKPG9TV9zZsDpUkra0wJq24pRw1+ilIa2B/WGDUBl7oIz8vd+jmZnHs+r
+uasgn/z3AxFXKeU9OS9suJGsCmnqGWsT6ciKy1ch70qf1ye7oyGzbggJrQC638d+
+s1qDjSGq63LsClzQc9hWng4ym3p36/NFpl2P5K6qxG0YIIWK3mvPWmedhZt5UMYJ
+VFW+ooMHPiLYIsvpiRWqomqOOls41bgiuCD78gnrjgseMH1a3mFXe3/sInBttw6a
+d6/5o2kNv5Jay7bxEdgJ6b3yF9W6uQ==
+=/okk
+-----END PGP SIGNATURE-----
 
-greg k-h
+--ohq2x4jqnsuhvgdo--
