@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1292B7E04
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1322B7E02
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgKRND4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:03:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726243AbgKRNDz (ORCPT
+        id S1726231AbgKRNDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:03:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45997 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726129AbgKRNDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:03:55 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE11C0613D4;
-        Wed, 18 Nov 2020 05:03:55 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id j5so943450plk.7;
-        Wed, 18 Nov 2020 05:03:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xq+1XmdEWFdb62Dr7GHbaDhMaJ4G5daMpt8CI66K5lk=;
-        b=I22hH9NmSBSbNKBE+0Yy/i/DVDsWDTnEXW+CkKJ+sDlIy4a7PDPLY5arHYdW3cI62K
-         fNn6c9XJ59WxiIxL4UdfcCUkBpA0nzj+F/HBxYbwe79Jv4dOW2qxx5Pe2YoDbW9ezukl
-         XkfJvMWZ8jNnb1rFfhdMP5K+3T1YK7JlNvQfSAbKIHDZTgvWPP21a+rWLw7SlygnlkgS
-         euuaAlqhkNFcrwsTxlcFR2heEV7CIYVipUq8C+CPcicDswHJuTcaTiYIJhSody10yOu/
-         /n6/a+BLVzOdxQ327Dr4t34lgAMPn+Cl/Fnzf6Q046IJtB654HNTyA/yPUUWfyB6b1Yd
-         lHIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xq+1XmdEWFdb62Dr7GHbaDhMaJ4G5daMpt8CI66K5lk=;
-        b=S8iG5HgND3MkEBgg+uqHNC5DiTknexYIqueXue3pk5l9wEIwi7+Ozaz36kkcR3Ak0c
-         yHyM5rcq8ml7K8cGGFOcUPajfFmhCfpCPAdLXuDYBHDnM5O/VXa3l9MwcZ0wK3Nf/IGn
-         44PhheJOKmWeBBvrBzGqzqbyFzXNgMVF5R3jEzssJXTQ++0uODWjorYchI3OWPQGIrOI
-         nSvSLBY+sO/eBKtuZErmDKQ+8MqiC8k3R2ns27xyeQZVBQ8ThvvKEiLlCAOSbSDez6X/
-         7feVZBoctvc+RDObSm013MGlB9Qbdr1VBiB0k1x4ydDReRBFmpO6G2wZ4BXdFZlXlIB3
-         iwBQ==
-X-Gm-Message-State: AOAM533DUzSOQCd9hqBqS5IgURqEOJmwh3BJ5hRQm7d5+Jy+MmqmzM4n
-        ygbxnfbQJdY18l2VieE/K5dC1ov96z9xVrz5Iwk=
-X-Google-Smtp-Source: ABdhPJwBK7xzppEjLKXTxkvFGvieuSmsri9UOQS84oQXu73HhKUZ8VzKNCffG3GjFdCTKNmGprhlbiMsESLuDSXlytA=
-X-Received: by 2002:a17:902:6b45:b029:d6:c43e:ad13 with SMTP id
- g5-20020a1709026b45b02900d6c43ead13mr4247782plt.77.1605704634957; Wed, 18 Nov
- 2020 05:03:54 -0800 (PST)
+        Wed, 18 Nov 2020 08:03:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605704631;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qx5UVopA7OslzMg8qxIDSa62J2P+qibCzlZh525XbS0=;
+        b=DTwMKLoHeBL3C2zeeuifHQUfWuBuoeDf8Reqa/6B9Mhv/oqycnNdmspyZtpGmAWz+hCgGo
+        dmwgYkXEI07ahMQJ1dVJ+jXxzQoRI07v417+MabONhnSCZ4MAh0Fi+6BlrmTEg8x1dphK6
+        D/IpPEvhipZGvpi92Hh4EF5l8A8q5GY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-XaoUlEZ9Nr66jHnkKrGCSg-1; Wed, 18 Nov 2020 08:03:47 -0500
+X-MC-Unique: XaoUlEZ9Nr66jHnkKrGCSg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F4E180364D;
+        Wed, 18 Nov 2020 13:03:46 +0000 (UTC)
+Received: from localhost (ovpn-115-101.rdu2.redhat.com [10.10.115.101])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0149C196FB;
+        Wed, 18 Nov 2020 13:03:45 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 08:03:44 -0500
+From:   Eduardo Habkost <ehabkost@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [RFC] Add kernel-doc test script
+Message-ID: <20201118130344.GD1509407@habkost.net>
+References: <20201030144713.201372-1-pbonzini@redhat.com>
+ <20201030144713.201372-3-pbonzini@redhat.com>
+ <20201113152106.7b4a07ee@lwn.net>
+ <20201113223912.GK17076@casper.infradead.org>
+ <20201117212452.GM1235237@habkost.net>
+ <20201117213051.GA29991@casper.infradead.org>
+ <20201117223612.GN1235237@habkost.net>
+ <16145b8b-3213-8bc9-1826-d3ae006f78fa@infradead.org>
 MIME-Version: 1.0
-References: <20201116135522.21791-1-ms@dev.tdt.de> <20201116135522.21791-6-ms@dev.tdt.de>
- <CAJht_EM-ic4-jtN7e9F6zcJgG3OTw_ePXiiH1i54M+Sc8zq6bg@mail.gmail.com>
- <f3ab8d522b2bcd96506352656a1ef513@dev.tdt.de> <CAJht_EPN=hXsGLsCSxj1bB8yTYNOe=yUzwtrtnMzSybiWhL-9Q@mail.gmail.com>
- <c0c2cedad399b12d152d2610748985fc@dev.tdt.de> <CAJht_EO=G94_xoCupr_7Tt_-kjYxZVfs2n4CTa14mXtu7oYMjg@mail.gmail.com>
- <c60fe64ff67e244bbe9971cfa08713db@dev.tdt.de>
-In-Reply-To: <c60fe64ff67e244bbe9971cfa08713db@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Wed, 18 Nov 2020 05:03:44 -0800
-Message-ID: <CAJht_EOSZRV9uBcRYq6OBLwFOX7uE9Nox+sFv-U0SXRkLaNBrQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 5/6] net/lapb: support netdev events
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <16145b8b-3213-8bc9-1826-d3ae006f78fa@infradead.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 12:49 AM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> Ah, ok. Now I see what you mean.
-> Yes, we should check the lapb->mode in lapb_connect_request().
-...
-> I also have a patch here that implements an "on demand" link feature,
-> which we used for ISDN dialing connections.
-> As ISDN is de facto dead, this is not relevant anymore. But if we want
-> such kind of feature, I think we need to stay with the method to control
-> L2 link state from L3.
+On Tue, Nov 17, 2020 at 04:23:49PM -0800, Randy Dunlap wrote:
+> On 11/17/20 2:36 PM, Eduardo Habkost wrote:
+> > Add a kernel-doc test script to tools/testing/kernel-doc.
+> > 
+> > radix_tree_lookup_slot test case provided by Matthew Wilcox.
+> > 
+> > Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
+> 
+> Very good idea.
+> 
+> I have had a kernel-doc test source file for (?) 10-12 years,
+> while I was the docs maintainer.
 
-I see. Hmm...
+Is that test source file recoverable somewhere?  It probably has
+useful test cases not included here.
 
-I guess for ISDN, the current code (before this patch series) is the
-best. We only establish the connection when L3 has packets to send.
+-- 
+Eduardo
 
-Can we do this? We let L2 handle all device-up / device-down /
-carrier-up / carrier-down events. And when L3 has some packets to send
-but it still finds the L2 link is not up, it will then instruct L2 to
-connect.
-
-This way we may be able to both keep the logic simple and still keep
-L3 compatible with ISDN.
