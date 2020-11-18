@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94212B78CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B52CB2B78CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727750AbgKRIa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:30:27 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:53714 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727136AbgKRIa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:30:26 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id EABA2FB03;
-        Wed, 18 Nov 2020 09:30:24 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id WhnadPvPYcT7; Wed, 18 Nov 2020 09:30:24 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id B053D43F6E; Wed, 18 Nov 2020 09:30:23 +0100 (CET)
-Date:   Wed, 18 Nov 2020 09:30:23 +0100
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        allen <allen.chen@ite.com.tw>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 5/6] dt-bindings: vendor-prefixes: Add ys vendor prefix
-Message-ID: <20201118083023.GA6684@bogon.m.sigxcpu.org>
-References: <cover.1605635248.git.agx@sigxcpu.org>
- <a4930fb7a7464e4feedbdae993fe25080c8f5490.1605635248.git.agx@sigxcpu.org>
- <CACRpkdao_TMcpRsdK=7K5fNKJse0Bqwk58iWu0xsXdDNdcffVA@mail.gmail.com>
+        id S1727772AbgKRIbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:31:15 -0500
+Received: from smtprelay0251.hostedemail.com ([216.40.44.251]:55854 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727154AbgKRIbP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:31:15 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 36C4818021461;
+        Wed, 18 Nov 2020 08:31:14 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3872:4321:5007:6119:6737:10004:10400:10848:11026:11658:11783:11914:12043:12048:12296:12297:12679:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21627:21990:30054:30070:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: horse56_4e0bd9427338
+X-Filterd-Recvd-Size: 2407
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 18 Nov 2020 08:31:11 +0000 (UTC)
+Message-ID: <af05dec1ea9366c2374cb35a559a1156cf605b80.camel@perches.com>
+Subject: Re: [PATCH] net/core: use xx_zalloc instead xx_alloc and memset
+From:   Joe Perches <joe@perches.com>
+To:     Tian Tao <tiantao6@hisilicon.com>, davem@davemloft.net,
+        kuba@kernel.org, linmiaohe@huawei.com, martin.varghese@nokia.com,
+        pshelar@ovn.org, pabeni@redhat.com, fw@strlen.de,
+        viro@zeniv.linux.org.uk, gnault@redhat.com,
+        steffen.klassert@secunet.com, kyk.segfault@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 18 Nov 2020 00:31:10 -0800
+In-Reply-To: <1605687308-57318-1-git-send-email-tiantao6@hisilicon.com>
+References: <1605687308-57318-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdao_TMcpRsdK=7K5fNKJse0Bqwk58iWu0xsXdDNdcffVA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Tue, Nov 17, 2020 at 09:42:33PM +0100, Linus Walleij wrote:
-> On Tue, Nov 17, 2020 at 6:49 PM Guido Günther <agx@sigxcpu.org> wrote:
+On Wed, 2020-11-18 at 16:15 +0800, Tian Tao wrote:
+> use kmem_cache_zalloc instead kmem_cache_alloc and memset.
+[]
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+[]
+> @@ -313,12 +313,10 @@ struct sk_buff *__build_skb(void *data, unsigned int frag_size)
+>  {
+>  	struct sk_buff *skb;
+>  
+> -	skb = kmem_cache_alloc(skbuff_head_cache, GFP_ATOMIC);
+> +	skb = kmem_cache_zalloc(skbuff_head_cache, GFP_ATOMIC);
+>  	if (unlikely(!skb))
+>  		return NULL;
+>  
+> -	memset(skb, 0, offsetof(struct sk_buff, tail));
+> -
+>  	return __build_skb_around(skb, data, frag_size);
+>  }
+>  
 > 
-> > Add prefix for Shenzhen Yashi Changhua Intelligent Technology Co., Ltd.
-> >
-> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> > ---
-> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > index e40ee369f808..d0f3abf2f12c 100644
-> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > @@ -1220,6 +1220,8 @@ patternProperties:
-> >      description: Shenzhen Yangliming Electronic Technology Co., Ltd.
-> >    "^yna,.*":
-> >      description: YSH & ATIL
-> > +  "^ys,.*":
-> > +    description: Shenzhen Yashi Changhua Intelligent Technology Co., Ltd.
-> >    "^yones-toptech,.*":
-> >      description: Yones Toptech Co., Ltd.
-> >    "^ysoft,.*":
-> 
-> I think this should be in alphabetical order of the compatible string, i.e.
-> under yones.
+> @@ -6170,12 +6168,10 @@ static void *skb_ext_get_ptr(struct skb_ext *ext, enum skb_ext_id id)
+>   */
+>  struct skb_ext *__skb_ext_alloc(gfp_t flags)
+>  {
+> -	struct skb_ext *new = kmem_cache_alloc(skbuff_ext_cache, flags);
+> +	struct skb_ext *new = kmem_cache_zalloc(skbuff_ext_cache, flags);
+>  
+> -	if (new) {
+> -		memset(new->offset, 0, sizeof(new->offset));
+> +	if (new)
+>  		refcount_set(&new->refcnt, 1);
+> -	}
+>  
+>  	return new;
+>  }
 
-Messed that up during rebase. Fixed in v2.
-Thanks for the review!
- -- Guido
+I think it'd be nicer to use the same form for both of these functions.
+This could be:
 
-> 
-> Yours,
-> Linus Walleij
-> 
+struct skb_ext *__skb_ext_alloc(gfp_t flags)
+{
+	struct skb_ext *new;
+
+	new = kmem_cache_zalloc(skbbuff_ext_cache, flags);
+	if (unlikely(!new))
+		return NULL;
+
+	refcount_set(&new->refcnt, 1);
+
+	return new;
+}
+
+
