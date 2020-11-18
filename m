@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAFA2B84DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B932B847B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727437AbgKRTU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:20:27 -0500
-Received: from gate.crashing.org ([63.228.1.57]:43809 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgKRTU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:20:26 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AIJBT7B020479;
-        Wed, 18 Nov 2020 13:11:29 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AIJBR35020478;
-        Wed, 18 Nov 2020 13:11:27 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Wed, 18 Nov 2020 13:11:27 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Florian Weimer <fw@deneb.enyo.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: violating function pointer signature
-Message-ID: <20201118191127.GM2672@gate.crashing.org>
-References: <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com> <20201117142145.43194f1a@gandalf.local.home> <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com> <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net> <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com> <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org> <87o8jutt2h.fsf@mid.deneb.enyo.de> <20201118135823.3f0d24b7@gandalf.local.home>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118135823.3f0d24b7@gandalf.local.home>
-User-Agent: Mutt/1.4.2.3i
+        id S1726397AbgKRTNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726020AbgKRTNW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:13:22 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC81C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 11:13:21 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by laurent.telenet-ops.be with bizsmtp
+        id tvDJ2300H4C55Sk01vDJp7; Wed, 18 Nov 2020 20:13:19 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kfStK-003eaX-97; Wed, 18 Nov 2020 20:13:18 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kfStJ-00Grlg-9U; Wed, 18 Nov 2020 20:13:17 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Nicolas Pitre <nico@fluxnic.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] ARM: uncompress: Fix dbgadtb size parameter name
+Date:   Wed, 18 Nov 2020 20:13:14 +0100
+Message-Id: <20201118191314.4019887-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 01:58:23PM -0500, Steven Rostedt wrote:
-> I wonder if we should define on all architectures a void void_stub(void),
-> in assembly, that just does a return, an not worry about gcc messing up the
-> creation of the stub function.
-> 
-> On x86_64:
-> 
-> GLOBAL(void_stub)
-> 	retq
-> 
-> 
-> And so on.
+The dbgadtb macro is passed the size of the appended DTB, not the end
+address.
 
-I don't see how you imagine a compiler to mess this up?
+Fixes: c03e41470e901123 ("ARM: 9010/1: uncompress: Print the location of appended DTB")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ arch/arm/boot/compressed/head.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-void void_stub(void) { }
+diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+index 9905fb7560df215d..265c029c261bc8a1 100644
+--- a/arch/arm/boot/compressed/head.S
++++ b/arch/arm/boot/compressed/head.S
+@@ -116,7 +116,7 @@
+ 		/*
+ 		 * Debug print of the final appended DTB location
+ 		 */
+-		.macro dbgadtb, begin, end
++		.macro dbgadtb, begin, size
+ #ifdef DEBUG
+ 		kputc   #'D'
+ 		kputc   #'T'
+@@ -129,7 +129,7 @@
+ 		kputc	#'('
+ 		kputc	#'0'
+ 		kputc	#'x'
+-		kphex	\end, 8		/* End of appended DTB */
++		kphex	\size, 8	/* Size of appended DTB */
+ 		kputc	#')'
+ 		kputc	#'\n'
+ #endif
+-- 
+2.25.1
 
-will do fine?
-
-        .globl  void_stub
-        .type   void_stub, @function
-void_stub:
-.LFB0:
-        .cfi_startproc
-        ret
-        .cfi_endproc
-.LFE0:
-        .size   void_stub, .-void_stub
-
-
-Calling this via a different declared function type is undefined
-behaviour, but that is independent of how the function is *defined*.
-Your program can make ducks appear from your nose even if that function
-is never called, if you do that.  Just don't do UB, not even once!
-
-
-Segher
