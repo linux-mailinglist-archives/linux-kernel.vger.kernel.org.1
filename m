@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423472B78BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E0A2B78C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727692AbgKRIaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:30:04 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:53572 "EHLO honk.sigxcpu.org"
+        id S1727706AbgKRIaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:30:06 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:53624 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727648AbgKRIaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:30:02 -0500
+        id S1727661AbgKRIaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:30:03 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 837E1FB03;
-        Wed, 18 Nov 2020 09:29:59 +0100 (CET)
+        by honk.sigxcpu.org (Postfix) with ESMTP id 8310FFB05;
+        Wed, 18 Nov 2020 09:30:01 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id YKdmff-a6BE0; Wed, 18 Nov 2020 09:29:58 +0100 (CET)
+        with ESMTP id 6IIUohJ_AG9j; Wed, 18 Nov 2020 09:30:00 +0100 (CET)
 Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id B252E43F70; Wed, 18 Nov 2020 09:29:53 +0100 (CET)
+        id BACFA43F72; Wed, 18 Nov 2020 09:29:53 +0100 (CET)
 From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>,
@@ -37,9 +37,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/6] drm/panel: mantix: Support panel from Shenzhen Yashi Changhua Intelligent Technology Co
-Date:   Wed, 18 Nov 2020 09:29:51 +0100
-Message-Id: <8855b4fc681c675182ce33e0a6cba46bab2bac43.1605688147.git.agx@sigxcpu.org>
+Subject: [PATCH v2 5/6] dt-bindings: vendor-prefixes: Add ys vendor prefix
+Date:   Wed, 18 Nov 2020 09:29:52 +0100
+Message-Id: <efa9b6da947e0cd87ec47c1a211690045304989b.1605688147.git.agx@sigxcpu.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1605688147.git.agx@sigxcpu.org>
 References: <cover.1605688147.git.agx@sigxcpu.org>
@@ -50,50 +50,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The panel uses the same driver IC and has the same resolution but a
-slightly different default mode. It seems it can work with the same
-init sequence.
+Add prefix for Shenzhen Yashi Changhua Intelligent Technology Co., Ltd.
 
 Signed-off-by: Guido Günther <agx@sigxcpu.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c b/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-index b057857165b0..30f28ad4df6b 100644
---- a/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-+++ b/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-@@ -205,6 +205,21 @@ static const struct drm_display_mode default_mode_mantix = {
- 	.height_mm   = 130,
- };
- 
-+static const struct drm_display_mode default_mode_ys = {
-+	.hdisplay    = 720,
-+	.hsync_start = 720 + 45,
-+	.hsync_end   = 720 + 45 + 14,
-+	.htotal	     = 720 + 45 + 14 + 25,
-+	.vdisplay    = 1440,
-+	.vsync_start = 1440 + 175,
-+	.vsync_end   = 1440 + 175 + 8,
-+	.vtotal	     = 1440 + 175 + 8 + 50,
-+	.clock	     = 85298,
-+	.flags	     = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+	.width_mm    = 65,
-+	.height_mm   = 130,
-+};
-+
- static int mantix_get_modes(struct drm_panel *panel,
- 			    struct drm_connector *connector)
- {
-@@ -326,6 +341,7 @@ static int mantix_remove(struct mipi_dsi_device *dsi)
- 
- static const struct of_device_id mantix_of_match[] = {
- 	{ .compatible = "mantix,mlaf057we51-x", .data = &default_mode_mantix },
-+	{ .compatible = "ys,ys57pss36bh5gq", .data = &default_mode_ys },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mantix_of_match);
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index e40ee369f808..fbcba08450c5 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1222,6 +1222,8 @@ patternProperties:
+     description: YSH & ATIL
+   "^yones-toptech,.*":
+     description: Yones Toptech Co., Ltd.
++  "^ys,.*":
++    description: Shenzhen Yashi Changhua Intelligent Technology Co., Ltd.
+   "^ysoft,.*":
+     description: Y Soft Corporation a.s.
+   "^zealz,.*":
 -- 
 2.29.2
 
