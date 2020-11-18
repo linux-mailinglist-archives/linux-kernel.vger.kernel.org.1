@@ -2,97 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652DB2B8127
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FA12B8090
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbgKRPsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:48:32 -0500
-Received: from gproxy2-pub.mail.unifiedlayer.com ([69.89.18.3]:51315 "EHLO
-        gproxy2-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727715AbgKRPsb (ORCPT
+        id S1727415AbgKRPaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:30:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727376AbgKRPa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:48:31 -0500
-X-Greylist: delayed 1467 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Nov 2020 10:48:31 EST
-Received: from cmgw10.unifiedlayer.com (unknown [10.9.0.10])
-        by gproxy2.mail.unifiedlayer.com (Postfix) with ESMTP id F085F1E0B37
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:24:03 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id fPJTkKDs0DlydfPJTkASpQ; Wed, 18 Nov 2020 08:24:03 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=a/MeC3aF c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=nNwsprhYR40A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=_jlGtV7tAAAA:8
- a=tG3I0CS6c874St__sQMA:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=nlm17XC03S6CtCLSeiRr:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ouBZ80njWbnZrSciPVivSTrC+BHgYNNW1XvsrmqpHWI=; b=xm9AjKHFyeG0WWv1SvcUAZTXsC
-        RtBLX3pwGSNXLkSVTbqTQYg4HXR1coGZ80V43wJb3/WFiBEO52r6pEQ+xmfieEKRsEJkCRKbRR3RK
-        9j3/HFjlbF56jN8AiPiNcClTR/WHjY3uaWxboLDEGycQLUlPuu99papCZ/CrFDFwXD6kTLFAJqZNP
-        kBVYQTMJRHECYJCbXgNilkYJtsXLTGLOqIqiVWTkBw4UOBJkmnK1h7JeGJd/D5Z14Uao+aLZxymWT
-        Upizbqc6zlWrKCYtpk3HW9m23tELZf5g9eSRGmqWwf7SLvShe5ZlMkPpT9dUbknYtoYKen2USB/PC
-        jtWlTmrw==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:54772 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kfPJT-000zxX-03; Wed, 18 Nov 2020 15:24:03 +0000
-Date:   Wed, 18 Nov 2020 07:24:01 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/151] 5.4.78-rc1 review
-Message-ID: <20201118152401.GG174391@roeck-us.net>
-References: <20201117122121.381905960@linuxfoundation.org>
+        Wed, 18 Nov 2020 10:30:27 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E4FC061A48
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:30:26 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id h21so3102278wmb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:30:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=/SDkP0vkKcya+FIJEA+cPnvkReKH8EFRybVcIu9lk9M=;
+        b=D1BytoB6O03jBcACE4ZhAx92rosgf9wYS2rPHzrBHSfzKSQ0rUMTzY3xFt8TEHE9k0
+         YIIiPTr94Bc7PUn7zwCH9EE+zMbRYo4nnn12/5TpwUogKdAUXolEut/KGLgjD8p1u9z+
+         dAYzFovYhNWO+3rZhx7IoAOF+fVoq+FdKg0mn20a1XWJUdbwnQ20TZzHguw90k+BaASf
+         7P+5q6YagtEKTiL9MoxhoA0aKwhwyc39dlKHA6piMdU8eOhplAdHXaNEcJpNvodiG8QL
+         JTVWIUvFDbkbxf7qqsJ2NSlEFEvArxEdy8Xn4hO7Lb5vG6HcO7PIrZcevw0aveSWR9kJ
+         kERw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/SDkP0vkKcya+FIJEA+cPnvkReKH8EFRybVcIu9lk9M=;
+        b=BiW0GrtpFJClpz9m7wwV4EX+ybENc/r9w3SdIDTZNuPySTpSupxlLKCPlG4vWXySFo
+         RN2y7B6/JSrrxDkhSyfJR+5cD8DvT3Rf3L1NyvcLpSwtLQK//agNh/Hv5vsVQu9mkF1n
+         pXTlsVZhKO5sVD3NORLdvI/ttDH7v2YVnSo3MJoSWwvh2an7Y1NTcD6ZGExzTnIv2+9C
+         abOaZhTAbozD820p2l96wvKe2cUd8F7qJ/vpQhNOFVMSAA0KUXI3BkTw0Mwm30ebgTjM
+         xqbpxK3YWToW76VyWV+7kCqOQiQ0RGUanEVtFT0RuecOy2i4iqeQdbz9HyXAvhDvYggG
+         SrOw==
+X-Gm-Message-State: AOAM530/gUY4orn2GD1pFPOR1TyhAIuz2PCojdOprQWoHndTH7Vaac+c
+        SxEgXmUaFoCY2D3Dxrpo/3PbYg==
+X-Google-Smtp-Source: ABdhPJzFItfcbj1D5GPsiBo7RkrZes7kt1MjC/X61M/dwKw8ehmZ/XH4IHzsd6fKnSmspZvESraPog==
+X-Received: by 2002:a1c:790c:: with SMTP id l12mr560063wme.47.1605713425424;
+        Wed, 18 Nov 2020 07:30:25 -0800 (PST)
+Received: from MacBook-Pro.local ([212.45.64.13])
+        by smtp.googlemail.com with ESMTPSA id w11sm4405479wmg.36.2020.11.18.07.30.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Nov 2020 07:30:24 -0800 (PST)
+Subject: Re: [PATCH v9 01/17] memory: tegra30: Support interconnect framework
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20201115212922.4390-1-digetx@gmail.com>
+ <20201115212922.4390-2-digetx@gmail.com>
+ <61e777d9-b730-02c6-cedf-cf0aa1a50fb8@linaro.org>
+ <7e484678-43cc-e612-1017-73ed580f9840@gmail.com>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Message-ID: <83a3f33b-3695-2a40-1c2b-5c38d117c1ad@linaro.org>
+Date:   Wed, 18 Nov 2020 17:30:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kfPJT-000zxX-03
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:54772
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 60
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+In-Reply-To: <7e484678-43cc-e612-1017-73ed580f9840@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 02:03:50PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.78 release.
-> There are 151 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 18.11.20 0:02, Dmitry Osipenko wrote:
+> 17.11.2020 23:24, Georgi Djakov пишет:
+>> Hi Dmitry,
+>>
+>> Thank you working on this!
+>>
+>> On 15.11.20 23:29, Dmitry Osipenko wrote:
+>>> Now Internal and External memory controllers are memory interconnection
+>>> providers. This allows us to use interconnect API for tuning of memory
+>>> configuration. EMC driver now supports OPPs and DVFS. MC driver now
+>>> supports tuning of memory arbitration latency, which needs to be done
+>>> for ISO memory clients, like a Display client for example.
+>>>
+>>> Tested-by: Peter Geis <pgwipeout@gmail.com>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>    drivers/memory/tegra/Kconfig       |   1 +
+>>>    drivers/memory/tegra/tegra30-emc.c | 349 +++++++++++++++++++++++++++--
+>>>    drivers/memory/tegra/tegra30.c     | 173 +++++++++++++-
+>>>    3 files changed, 501 insertions(+), 22 deletions(-)
+>>>
+>> [..]> diff --git a/drivers/memory/tegra/tegra30.c
+>> b/drivers/memory/tegra/tegra30.c
+>>> index d0314f29608d..ea849003014b 100644
+>>> --- a/drivers/memory/tegra/tegra30.c
+>>> +++ b/drivers/memory/tegra/tegra30.c
+>> [..]
+>>> +
+>>> +static int tegra30_mc_icc_set(struct icc_node *src, struct icc_node
+>>> *dst)
+>>> +{
+>>> +    struct tegra_mc *mc = icc_provider_to_tegra_mc(src->provider);
+>>> +    const struct tegra_mc_client *client = &mc->soc->clients[src->id];
+>>> +    u64 peak_bandwidth = icc_units_to_bps(src->peak_bw);
+>>> +
+>>> +    /*
+>>> +     * Skip pre-initialization that is done by icc_node_add(), which
+>>> sets
+>>> +     * bandwidth to maximum for all clients before drivers are loaded.
+>>> +     *
+>>> +     * This doesn't make sense for us because we don't have drivers
+>>> for all
+>>> +     * clients and it's okay to keep configuration left from bootloader
+>>> +     * during boot, at least for today.
+>>> +     */
+>>> +    if (src == dst)
+>>> +        return 0;
+>>
+>> Nit: The "proper" way to express this should be to implement the
+>> .get_bw() callback to return zero as initial average/peak bandwidth.
+>> I'm wondering if this will work here?
+>>
+>> The rest looks good to me!
 > 
-> Responses should be made by Thu, 19 Nov 2020 12:20:51 +0000.
-> Anything received after that time might be too late.
+> Hello Georgi,
 > 
+> Returning zeros doesn't allow us to skip the initialization that is done
+> by provider->set(node, node) in icc_node_add(). It will reconfigure
+> memory latency in accordance to a zero memory bandwidth, which is wrong
+> to do.
+> 
+> It actually should be more preferred to preset bandwidth to a maximum
+> before all drivers are synced, but this should be done only once we will
+> wire up all drivers to use ICC framework. For now it's safer to keep the
+> default hardware configuration untouched.
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 426 pass: 426 fail: 0
+Ok, thanks for clarifying! Is there a way to read this hardware 
+configuration and convert it to initial bandwidth? That's the
+idea of the get_bw() callback actually. I am just curious and
+trying to get a better understanding how this works and if it
+would be useful for Tegra.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+Thanks,
+Georgi
