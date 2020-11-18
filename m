@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F19B2B7349
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AD92B7346
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgKRAmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:42:55 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64082 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725943AbgKRAmz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:42:55 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AI0VT7a030737;
-        Tue, 17 Nov 2020 19:42:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=AE67dAyv0KV79MuSZmGwNBXOy19NH6vZIZZD4/aWxig=;
- b=r+HDpBQ0UDF5DulNEGgvRF1fsptICfZaKeUo9duW1zWvNLRUZVnofUtaw/jSd8cqr9c6
- yEi5Vp69Ezb+nJUOl/oGksJS60xx5JFQHo+Twv4JAb7t2w5w4mS0jgLVpZPQjrZUnw33
- QAFH/zC9zMxZYqQ9CFlVf3HeRYFwYP+qsMVnhlFs0xWq7YVUzUtOT8yxGcA+1EwVwRHM
- Re3t/YJm796JTaP5AQGCLIYAKH4bGGLezUUGUxp1vwX4QoLKlAeIyWyTmGbY5dK3izxM
- i6oA2OW6+vQfmyro8jFh9ZdbKsVez3FQaGf4Vl6C1w/Tv5mvzfF/Oi7otJyEVoE6YHb5 Xw== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34ve31w8u5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 19:42:47 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AI0gaSO007504;
-        Wed, 18 Nov 2020 00:42:47 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma02dal.us.ibm.com with ESMTP id 34vgjmc1da-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Nov 2020 00:42:47 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AI0gkZ03605178
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Nov 2020 00:42:46 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 001FE28060;
-        Wed, 18 Nov 2020 00:42:45 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A20EC28058;
-        Wed, 18 Nov 2020 00:42:44 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.65.230.183])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Nov 2020 00:42:44 +0000 (GMT)
-Subject: Re: [PATCH v2 0/6] ibmvfc: Protocol definition updates and new
- targetWWPN Support
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201117191636.131127-1-tyreld@linux.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <e6354cec-787e-e1d1-409e-c06d81f89ac6@linux.ibm.com>
-Date:   Tue, 17 Nov 2020 16:42:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729217AbgKRAmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:42:46 -0500
+Received: from hydra.tuxags.com ([64.13.172.54]:58814 "EHLO mail.tuxags.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgKRAmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 19:42:45 -0500
+Received: by mail.tuxags.com (Postfix, from userid 1000)
+        id 2C755144F139C; Tue, 17 Nov 2020 16:42:44 -0800 (PST)
+Date:   Tue, 17 Nov 2020 16:42:44 -0800
+From:   Matt Mullins <mmullins@mmlx.us>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     rostedt <rostedt@goodmis.org>, paulmck <paulmck@kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
+Message-ID: <20201118004242.rygrwivqcdgeowi7@hydra.tuxags.com>
+Mail-Followup-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rostedt <rostedt@goodmis.org>, paulmck <paulmck@kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>, Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <00000000000004500b05b31e68ce@google.com>
+ <20201115055256.65625-1-mmullins@mmlx.us>
+ <20201116121929.1a7aeb16@gandalf.local.home>
+ <1889971276.46615.1605559047845.JavaMail.zimbra@efficios.com>
+ <20201116154437.254a8b97@gandalf.local.home>
+ <20201116160218.3b705345@gandalf.local.home>
+ <1368007646.46749.1605562481450.JavaMail.zimbra@efficios.com>
+ <20201116171027.458a6c17@gandalf.local.home>
+ <609819191.48825.1605654351686.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-In-Reply-To: <20201117191636.131127-1-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_15:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=608 suspectscore=1 bulkscore=0 clxscore=1015 impostorscore=0
- lowpriorityscore=0 spamscore=0 phishscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011170179
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <609819191.48825.1605654351686.JavaMail.zimbra@efficios.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/20 11:16 AM, Tyrel Datwyler wrote:
-> Several Management Datagrams (MADs) have been reversioned to add a targetWWPN
-> field that is intended to better identify a target over a scsi_id. Further, a
-> couple new MADs have been introduced to the protocol to be used for negotiation
-> of channels/hw queues resources when the VIOS is using SLI-4 capable adapters.
+On Tue, Nov 17, 2020 at 06:05:51PM -0500, Mathieu Desnoyers wrote:
+> ----- On Nov 16, 2020, at 5:10 PM, rostedt rostedt@goodmis.org wrote:
 > 
-> This patchset adds the new protocol definitions and implements support for using
-> the new targetWWPN field and exposing the capability to the VIOS. This
-> targetWWPN support is a prerequisuite for upcoming channelization/MQ support.
+> > On Mon, 16 Nov 2020 16:34:41 -0500 (EST)
+> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 > 
-> changes in v2:
-> 	Removed bug fixes to separate patchset
-> 	Fixed up checkpatch warnings
+> [...]
+> 
+> >> I think you'll want a WRITE_ONCE(old[i].func, tp_stub_func) here, matched
+> >> with a READ_ONCE() in __DO_TRACE. This introduces a new situation where the
+> >> func pointer can be updated and loaded concurrently.
+> > 
+> > I thought about this a little, and then only thing we really should worry
+> > about is synchronizing with those that unregister. Because when we make
+> > this update, there are now two states. the __DO_TRACE either reads the
+> > original func or the stub. And either should be OK to call.
+> > 
+> > Only the func gets updated and not the data. So what exactly are we worried
+> > about here?
+> 
+> Indeed with a stub function, I don't see any need for READ_ONCE/WRITE_ONCE.
 
-Need to spin a v3 to address comments from Brian King, some commit log typos,
-and a badly rebased Patch 5 that doesn't even compile.
+I'm not sure if this is a practical issue, but without WRITE_ONCE, can't
+the write be torn?  A racing __traceiter_ could potentially see a
+half-modified function pointer, which wouldn't work out too well.
 
--Tyrel
+This was actually my gut instinct before I wrote the __GFP_NOFAIL
+instead -- currently that whole array's memory ordering is provided by
+RCU and I didn't dive deep enough to evaluate getting too clever with
+atomic modifications to it.
+
+> 
+> However, if we want to compare the function pointer to some other value and
+> conditionally do (or skip) the call, I think you'll need the READ_ONCE/WRITE_ONCE
+> to make sure the pointer is not re-fetched between comparison and call.
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
