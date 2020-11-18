@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17762B7396
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B14D2B73B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729644AbgKRBLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 20:11:44 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:21442 "EHLO z5.mailgun.us"
+        id S1728021AbgKRBVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 20:21:41 -0500
+Received: from mga02.intel.com ([134.134.136.20]:7287 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727715AbgKRBLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 20:11:43 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605661903; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=AdSCJkjqb9OkQUTrN7lTj6Tme9Iyj9rtBA9UFQ9zHss=;
- b=NGFDegXLv7EuTrpqWnx+pLAYvDzuJ/eJ4wQfot33gkURjV5DO/kG8uLujuWSfcomatIQr1fv
- Sc/bG6RPc/5H0XSZqTwZndwQK1rq2cIYoYTiu7K4vB+9hVbcDQzWSiJWRRRd0beUk/6pNK/g
- wfDVB80XoJkDb2Sg7CuJ8PahwRA=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5fb474b96c42d983b9048c64 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 01:11:21
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 83FD8C43467; Wed, 18 Nov 2020 01:11:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 29EADC433ED;
-        Wed, 18 Nov 2020 01:11:19 +0000 (UTC)
+        id S1727359AbgKRBVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 20:21:40 -0500
+IronPort-SDR: nPn+sFRZwZvnKfbj+P2wQ/a2/t9Yody+IJpG2DTs/mYQ/Q4bRb90s5H6tsylCxcGCqsa1bg7OB
+ bJxgHclnKuMw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="158077816"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="158077816"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 17:21:39 -0800
+IronPort-SDR: MAYuiPPJ6h8H2Dtpl7mj+OrVGXqgAk7sdvO7TLKTW7CHDvUTbK8TTxKlNhb8JMyqNp3+f3khTG
+ hX4KL1VGo3Ng==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="534025770"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Nov 2020 17:21:34 -0800
+Date:   Wed, 18 Nov 2020 09:16:54 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Martin Kepplinger <martin.kepplinger@puri.sm>,
+        0day robot <lkp@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [LKP] Re: [block, scsi, ide] 3e3b42fee6:
+ kmsg.sd#:#:#:#:[sdf]Asking_for_cache_data_failed
+Message-ID: <20201118011654.GB19125@intel.com>
+References: <20201117143350.GA17824@xsang-OptiPlex-9020>
+ <38bed525-3453-f614-7310-ad01f1bc2605@acm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 18 Nov 2020 09:11:19 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        Leo Liou <leoliou@google.com>
-Subject: Re: [PATCH v5 7/7] scsi: ufs: show lba and length for unmap commands
-In-Reply-To: <20201117165839.1643377-8-jaegeuk@kernel.org>
-References: <20201117165839.1643377-1-jaegeuk@kernel.org>
- <20201117165839.1643377-8-jaegeuk@kernel.org>
-Message-ID: <173677d39200bbdf577fb7923eef2916@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <38bed525-3453-f614-7310-ad01f1bc2605@acm.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-18 00:58, Jaegeuk Kim wrote:
-> From: Leo Liou <leoliou@google.com>
+On Tue, Nov 17, 2020 at 08:46:46AM -0800, Bart Van Assche wrote:
+> On 11/17/20 8:00 AM, kernel test robot wrote:
+> > on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
+> > 
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > 
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
 > 
-> We have lba and length for unmap commands.
-> 
-> Signed-off-by: Leo Liou <leoliou@google.com>
-> Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> Please fix the test bot. The DID_ERROR messages are reported during test
+sorry for the false positive, we will resolve this problem soon. Thanks
+for your feedback.
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
-
-> ---
->  drivers/scsi/ufs/ufshcd.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> block/001 and in the attached dmesg output I found the following:
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 86c8dee01ca9..dba3ee307307 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -376,6 +376,11 @@ static void ufshcd_add_command_trace(struct 
-> ufs_hba *hba,
->  				lrbp->ucd_req_ptr->sc.exp_data_transfer_len);
->  			if (opcode == WRITE_10)
->  				group_id = lrbp->cmd->cmnd[6];
-> +		} else if (opcode == UNMAP) {
-> +			if (cmd->request) {
-> +				lba = scsi_get_lba(cmd);
-> +				transfer_len = blk_rq_bytes(cmd->request);
-> +			}
->  		}
->  	}
+> block/001 (stress device hotplugging)                        [passed]
+> 
+> Bart.
+> _______________________________________________
+> LKP mailing list -- lkp@lists.01.org
+> To unsubscribe send an email to lkp-leave@lists.01.org
