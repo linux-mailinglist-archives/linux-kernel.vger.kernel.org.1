@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02B72B783B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D728B2B783E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgKRINe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:13:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726181AbgKRINd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:13:33 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB15C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 00:13:32 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id f5so276130ilj.9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 00:13:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ct2/2UPmScOUHoGSFzqsn+7XRR4T7u7W+vJi+oyfibI=;
-        b=xCfFu4o6WMketFkqkuTIIz+3Wiv5cWWXrj1S2aceMLkMtlicKTS2/Kh9oLrgN2L31v
-         +UFYmpcOCNpv8IRzxoSWJmf2D46PdxVqLN+VzrimBXlKs8+4ztUY6o3YbUU//P5UNQIE
-         WgA2gaolRxkgqym3V9fwVB4aNRkfAIHWQpm8EjlYGXQI3lhD9hb1BUKViXgdh9SsWKO1
-         P5szDGnkBjEYMWK1vsf5UKVrwmBQurP2mN66xkKZMlMC3ugCxOJp9C43Qbof/CFW8u93
-         iakqOIkV3PeQj8ao2DwogPSuFJgjNx+6sv65bdI+COJWd2oY/5sM2t2eJhyUyUsrnRcD
-         kILA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ct2/2UPmScOUHoGSFzqsn+7XRR4T7u7W+vJi+oyfibI=;
-        b=Cn1a45piu8k9xuo0h5SxE4L89XLijSSXdF1iNetVVJQDR8NVsTfSEOUrtHn8JMadaN
-         EeCSXrehDaLWQrOXr3R8P+QvYNTfAS2hI2EMdHFS6/JIL2b8hXARm/TEKmN5dLfYykD9
-         DfcIOvtL1XgfpfHsAPYAT6q3fT+dkKBF+Ua0EnQ71q/YAu9czVZDxcCvzer3TEBKbYK+
-         7m9qO5SYWA+5TQown/G/MXk9rjdYTOmEoWpCyvrKPzy3r9C4vwt2XBP/5sywRIfchhXw
-         QK8ISCfC27FYYp7rS+jMcx6+VoVoTQ0WqPqu2Horglq3Ko5TXGcizhmzXG6Mf7TCU4ja
-         stjw==
-X-Gm-Message-State: AOAM530U6i3fH2VYqgO4PPlMe+q+aGHKxPys+p5hOoLOStrIRVtii9X/
-        FIgnPudN73mP0EjzGSdkE54P9gfS7OokeJ0Mo4afqdFBYKUxFg==
-X-Google-Smtp-Source: ABdhPJyHoLe2SGc5qXcATM+IxxK3upGdnejUFDgJuR/1q5lYaJyQho0GdhOn8kGjlV2KbzTeVFSdYoWDm9Ax9wHbC10=
-X-Received: by 2002:a92:d78b:: with SMTP id d11mr13538859iln.40.1605687211707;
- Wed, 18 Nov 2020 00:13:31 -0800 (PST)
+        id S1726702AbgKRIOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:14:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726181AbgKRIOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:14:41 -0500
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36174241A5;
+        Wed, 18 Nov 2020 08:14:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605687280;
+        bh=qJ5zHy+pCbs19PJJvVJMA3zNtj6fFyQGeZR+ojf8+qg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cHMJGI8v5BPFNXRQWeJ0JKJB0knfTBwt1aDU9wi6IE+cWaFR67uysOUaFXuynNxv3
+         L+f2pnfDgsMsbcM8mcGho2ThKnebwEFSCxc7llCUFg9B41a/EMmjno58VG+jA58qGB
+         L2p5pLsZR52sfdabMOrk4svM+HJ13cYEohUhYY0A=
+Received: by mail-ot1-f49.google.com with SMTP id n89so953047otn.3;
+        Wed, 18 Nov 2020 00:14:40 -0800 (PST)
+X-Gm-Message-State: AOAM531/YNxV2WtUBkV77nraD/8ATVwNtKwRvzUAN38V5OOBedmfCHAb
+        tpT7QYLU/THV3EtEWsooWoZgchQ1Cx9b/U6tTfs=
+X-Google-Smtp-Source: ABdhPJzf9aND79dMbS2oPlqGaDMX02ziUJv3AxQiefYLxvz2JZIIcPClzq5iJdToVHe28h+vHRKxV2a9AOBgyn30V3E=
+X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr5279342otc.305.1605687279412;
+ Wed, 18 Nov 2020 00:14:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20201109163409.24301-1-brgl@bgdev.pl> <20201109163409.24301-8-brgl@bgdev.pl>
- <20201117213504.GY4556@piout.net>
-In-Reply-To: <20201117213504.GY4556@piout.net>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 18 Nov 2020 09:13:20 +0100
-Message-ID: <CAMRc=MehmRGRi=f=xrY498VdQdveLES+bmptvc3rA05ja56HFQ@mail.gmail.com>
-Subject: Re: [PATCH 7/8] rtc: rework rtc_register_device() resource management
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <CA+G9fYuk4imvhyCN7D7T6PMDH6oNp6HDCRiTUKMQ6QXXjBa4ag@mail.gmail.com>
+ <CAK8P3a2MmA257e486D2hj_qj9Wk0ybkfg9yk9f5hR=h-KWUHVg@mail.gmail.com> <20201117232343.rg37fkacw43matmh@revered>
+In-Reply-To: <20201117232343.rg37fkacw43matmh@revered>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 18 Nov 2020 09:14:23 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0+RKdNj4q3GTh26jrwBkF-BgWiEUuFB4xbh8gZj4Q4-g@mail.gmail.com>
+Message-ID: <CAK8P3a0+RKdNj4q3GTh26jrwBkF-BgWiEUuFB4xbh8gZj4Q4-g@mail.gmail.com>
+Subject: Re: [arm] BUG: KASAN: slab-out-of-bounds in memcmp+0x30/0x5c
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:35 PM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
+On Wed, Nov 18, 2020 at 12:24 AM Nishanth Menon <nm@ti.com> wrote:
+> On 16:25-20201117, Arnd Bergmann wrote:
 >
-> On 09/11/2020 17:34:08+0100, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > rtc_register_device() is a managed interface but it doesn't use devres
-> > by itself - instead it marks an rtc_device as "registered" and the devres
-> > callback for devm_rtc_allocate_device() takes care of resource release.
-> >
-> > This doesn't correspond with the design behind devres where managed
-> > structures should not be aware of being managed. The correct solution
-> > here is to register a separate devres callback for unregistering the
-> > device.
-> >
-> > While at it: rename rtc_register_device() to devm_rtc_register_device()
-> > and add it to the list of managed interfaces in devres.rst. This way we
-> > can avoid any potential confusion of driver developers who may expect
-> > there to exist a corresponding unregister function.
-> >
+> Yes, this was indeed a bug that has been around for some time now :(
 >
-> I'm going to apply that but honestly, I don't like the fact that we now
-> end up with both devm_rtc_device_register and devm_rtc_register_device.
-> This was the main reason to not have the devm_ prefix there. I find that
-> way more confusing than the current situation.
->
+> I tested with a variant of the above (did'nt like that
+> oinfo was being assigned an invalid address)
+> Boot log: https://pastebin.ubuntu.com/p/nZfz3HF8N6/ (with the same
+> config as in the report): Would you prefer to me to send the following
+> as a formal patch?
 
-Yes, it's unfortunate that we have two similarly named functions but
-devm_rtc_device_register() is deprecated and should go away right? In
-that case it's just temporary. Additionally: since it's just a wrapper
-around devm_rtc_allocate_device() and devm_rtc_register_device() now,
-we should be able to just replace the code in the drivers with the
-code from devm_rtc_device_register() and we may be able to get rid of
-it soon?
+Awesome, thanks for the new patch and testing it!
 
-Bartosz
+Yes, please send this as a proper patch to have it picked up
+into the regulator tree as a bugfix.
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+
+> diff --git a/drivers/regulator/ti-abb-regulator.c b/drivers/regulator/ti-abb-regulator.c
+> index 3e60bff76194..9f0a4d50cead 100644
+> --- a/drivers/regulator/ti-abb-regulator.c
+> +++ b/drivers/regulator/ti-abb-regulator.c
+> @@ -342,8 +342,17 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
+>                 return ret;
+>         }
+>
+> -       /* If data is exactly the same, then just update index, no change */
+>         info = &abb->info[sel];
+> +       /*
+> +        * When Linux kernel is starting up, we are'nt sure of the
+> +        * Bias configuration that bootloader has configured.
+> +        * So, we get to know the actual setting the first time
+> +        * we are asked to transition.
+> +        */
+> +       if (abb->current_info_idx == -EINVAL)
+> +               goto just_set_abb;
+> +
+> +       /* If data is exactly the same, then just update index, no change */
+>         oinfo = &abb->info[abb->current_info_idx];
+>         if (!memcmp(info, oinfo, sizeof(*info))) {
+>                 dev_dbg(dev, "%s: Same data new idx=%d, old idx=%d\n", __func__,
+> @@ -351,6 +360,7 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
+>                 goto out;
+>         }
+>
+> +just_set_abb:
+>         ret = ti_abb_set_opp(rdev, abb, info);
+>
+>  out:
