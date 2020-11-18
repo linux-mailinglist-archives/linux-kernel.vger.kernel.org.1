@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B552B862C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3462B862F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727494AbgKRU7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 15:59:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
+        id S1727514AbgKRVAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:00:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726243AbgKRU7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:59:53 -0500
+        id S1726502AbgKRVAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 16:00:06 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2048D246CD;
-        Wed, 18 Nov 2020 20:59:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01DB9246CA;
+        Wed, 18 Nov 2020 21:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605733192;
-        bh=0PT8sm0MP3SCcXA3t5v2NDxg0TISz2eUCA5uxup6dZw=;
+        s=default; t=1605733205;
+        bh=OiRq5n6pYwtlRHg6S3gu6kn/EVUSMv2UVgnqO2UpdH4=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=mrFf7UG32G0w/HAHFIHMBo+0BWaMBRTY6oVaGRmOkVTG4vIBuICaXyXW0p3Jx39Gk
-         H7MODqDXhz0M0X/vmD7q+X79Jus01nF7dvRW45gDQV6qOYXc52riKZbsiekQNWNp9J
-         XJ4px2ZmFKCeH6n6Q47i7Ma2noSuYd8gDBkUn62o=
-Date:   Wed, 18 Nov 2020 20:59:32 +0000
+        b=RMLhtTmGmk2wGvmHCsPi7tJxbedfqVn0u5moSprReTbj/UoMPWB/GpAV7XRROGkbm
+         YSPOexo3xa90oHw8CD+xjv7U2UVnoV2HOuSRj9w9G2zYDa7c1u0tH4LSSXncAS0fuN
+         GSggAxDgvvmOjAnlnOsDYWukxh9FJ7rD5DjCCHgA=
+Date:   Wed, 18 Nov 2020 20:59:45 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     srinivas.kandagatla@linaro.org,
-        "xiakaixu1987@gmail.com" <xiakaixu1987@gmail.com>
-Cc:     Kaixu Xia <kaixuxia@tencent.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <1604652816-1330-1-git-send-email-kaixuxia@tencent.com>
-References: <1604652816-1330-1-git-send-email-kaixuxia@tencent.com>
-Subject: Re: [PATCH] ASoC: wcd9335: Remove unnecessary conversion to bool
-Message-Id: <160573314460.46437.3151113690702719362.b4-ty@kernel.org>
+To:     Nishanth Menon <nm@ti.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        lkft-triage@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+In-Reply-To: <20201118145009.10492-1-nm@ti.com>
+References: <20201118145009.10492-1-nm@ti.com>
+Subject: Re: [PATCH] regulator: ti-abb: Fix array out of bound read access on the first transition
+Message-Id: <160573318504.46660.3881026259686236737.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -39,20 +41,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 16:53:36 +0800, xiakaixu1987@gmail.com wrote:
-> The '>=' expression itself is bool, no need to convert it to bool.
-> Fix the following coccicheck warning:
+On Wed, 18 Nov 2020 08:50:09 -0600, Nishanth Menon wrote:
+> At the start of driver initialization, we do not know what bias
+> setting the bootloader has configured the system for and we only know
+> for certain the very first time we do a transition.
 > 
-> ./sound/soc/codecs/wcd9335.c:3982:25-30: WARNING: conversion to bool not needed here
+> However, since the initial value of the comparison index is -EINVAL,
+> this negative value results in an array out of bound access on the
+> very first transition.
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] ASoC: wcd9335: Remove unnecessary conversion to bool
-      commit: a5ec7c9e007b1095d04146eb94bac3863d35a69d
+[1/1] regulator: ti-abb: Fix array out of bound read access on the first transition
+      commit: 2ba546ebe0ce2af47833d8912ced9b4a579f13cb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
