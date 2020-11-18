@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828D22B7E07
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0B92B7E0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726110AbgKRNEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:04:04 -0500
-Received: from alln-iport-5.cisco.com ([173.37.142.92]:28633 "EHLO
-        alln-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgKRNEE (ORCPT
+        id S1726384AbgKRNF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:05:27 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:57433 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgKRNF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:04:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=82; q=dns/txt; s=iport;
-  t=1605704643; x=1606914243;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Pokb30QME/DR4pSJY2FHisPZhDALkkBGM6TUcjHTLeM=;
-  b=MuH2MxtWXAxMVlvsd1ZJhXFHS9O3/bpCnVhsCkqSLcS1T+oRq8ZUE317
-   PW8TxA28D8dnJqDv5285ZkpQFceBB00OXyEDIIOnA/IOWZcvEwwbTspKQ
-   ZHWVFcNw+IeyrslTa/La8H3qCM7jYBXzUkxjN02V8iy9t5ByIsNqmEA9C
-   w=;
-X-IPAS-Result: =?us-ascii?q?A0DTBQDrGrVffYYNJK1iHgEBCxIMggQLg3cvOJVakESJb?=
- =?us-ascii?q?oF8CwEBAQ0BAS0CBAEBhEoCgiUCJTQJDgIDAQEBAwIDAQEBAQUBAQECAQYEF?=
- =?us-ascii?q?AEBhj0LhXMBAgIBeQULAgEIISUPIyUCBA6GEiCuIXSBNIpNgTiIQIUAG4FBP?=
- =?us-ascii?q?4QjPoQ+hXYEnEabbwoggk2bGSKDBwGecpNToFcCERWBMyE4gVlwFYMlTxcCD?=
- =?us-ascii?q?ZxogUIJfIw7AYEQAQE?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.77,486,1596499200"; 
-   d="scan'208";a="608378531"
-Received: from alln-core-12.cisco.com ([173.36.13.134])
-  by alln-iport-5.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 18 Nov 2020 13:04:03 +0000
-Received: from XCH-RCD-004.cisco.com (xch-rcd-004.cisco.com [173.37.102.14])
-        by alln-core-12.cisco.com (8.15.2/8.15.2) with ESMTPS id 0AID427N021075
-        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 13:04:03 GMT
-Received: from xch-aln-004.cisco.com (173.36.7.14) by XCH-RCD-004.cisco.com
- (173.37.102.14) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Nov
- 2020 07:04:02 -0600
-Received: from xch-aln-004.cisco.com ([173.36.7.14]) by XCH-ALN-004.cisco.com
- ([173.36.7.14]) with mapi id 15.00.1497.000; Wed, 18 Nov 2020 07:04:02 -0600
-From:   "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)" 
-        <dzagorui@cisco.com>
-To:     "masahiroy@kernel.org" <masahiroy@kernel.org>
-CC:     "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] kbuild: use -fmacro-prefix-map for .S sources
-Thread-Topic: [PATCH v3] kbuild: use -fmacro-prefix-map for .S sources
-Thread-Index: AQHWsRJPpKcKNHVlGkuCBAHPiPYhnqm/255bgA4Yo8Y=
-Date:   Wed, 18 Nov 2020 13:04:02 +0000
-Message-ID: <1605704642269.72893@cisco.com>
-References: <20201102120853.96855-1-dzagorui@cisco.com>,<1604929732138.17256@cisco.com>
-In-Reply-To: <1604929732138.17256@cisco.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [173.38.209.7]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 18 Nov 2020 08:05:27 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kfN9F-0000K3-3q; Wed, 18 Nov 2020 13:05:21 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Naveen Mamindlapalli <naveenm@marvell.com>,
+        Tomasz Duszynski <tduszynski@marvell.com>,
+        netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] octeontx2-pf: Fix unintentional sign extension issue
+Date:   Wed, 18 Nov 2020 13:05:20 +0000
+Message-Id: <20201118130520.460365-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-Outbound-SMTP-Client: 173.37.102.14, xch-rcd-004.cisco.com
-X-Outbound-Node: alln-core-12.cisco.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> ping=0A=
-=0A=
-Any comments on this ?=0A=
-=0A=
-Thanks,=0A=
-Denys=0A=
-=0A=
+From: Colin Ian King <colin.king@canonical.com>
+
+The shifting of the u16 result from ntohs(proto) by 16 bits to the
+left will be promoted to a 32 bit signed int and then sign-extended
+to a u64.  In the event that the top bit of the return from ntohs(proto)
+is set then all then all the upper 32 bits of a 64 bit long end up as
+also being set because of the sign-extension. Fix this by casting to
+a u64 long before the shift.
+
+Addresses-Coverity: ("Unintended sign extension")
+Fixes: f0c2982aaf98 ("octeontx2-pf: Add support for SR-IOV management function")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index 4c82f60f3cf3..634d60655a74 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -2084,7 +2084,7 @@ static int otx2_do_set_vf_vlan(struct otx2_nic *pf, int vf, u16 vlan, u8 qos,
+ 	vtag_req->vtag_size = VTAGSIZE_T4;
+ 	vtag_req->cfg_type = 0; /* tx vlan cfg */
+ 	vtag_req->tx.cfg_vtag0 = 1;
+-	vtag_req->tx.vtag0 = (ntohs(proto) << 16) | vlan;
++	vtag_req->tx.vtag0 = ((u64)ntohs(proto) << 16) | vlan;
+ 
+ 	err = otx2_sync_mbox_msg(&pf->mbox);
+ 	if (err)
+-- 
+2.28.0
+
