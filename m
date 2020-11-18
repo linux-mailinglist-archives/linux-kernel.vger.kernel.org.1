@@ -2,214 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A56F2B7C7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A2F2B7C71
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgKRLWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:22:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51364 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726044AbgKRLWp (ORCPT
+        id S1726867AbgKRLVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:21:55 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:34756 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726297AbgKRLVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:22:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605698563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ucuBdHHzzGVMVUcseNgSIQ5aiRci3dsu4tulpQfc184=;
-        b=i3l5VzxQEvGgwYVqALPlXS+vLNFOpopnUW5ZgdnT5K9ojdQiob9VgSl0OYJ6TNOWBLtN5G
-        ymZqSRWa/g6/xFkfeTtnLWt7BV7jDJdhpwQEQiDq++RLDlegPuqcZ9JGG0SbLRAY3gd05m
-        Ab5NDJMYCMsZ4QCMvjsUvfdr0NZS8hg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-Cst0s_D0OL-MtpLcU1huyw-1; Wed, 18 Nov 2020 06:22:39 -0500
-X-MC-Unique: Cst0s_D0OL-MtpLcU1huyw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7EB964092;
-        Wed, 18 Nov 2020 11:22:36 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-115-104.ams2.redhat.com [10.36.115.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A24351512;
-        Wed, 18 Nov 2020 11:22:32 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
-        alex.williamson@redhat.com
-Cc:     jean-philippe@linaro.org, zhangfei.gao@linaro.org,
-        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
-        shameerali.kolothum.thodi@huawei.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com, tn@semihalf.com,
-        nicoleotsuka@gmail.com, yuzenghui@huawei.com
-Subject: [PATCH v13 04/15] iommu/smmuv3: Allow s1 and s2 configs to coexist
-Date:   Wed, 18 Nov 2020 12:21:40 +0100
-Message-Id: <20201118112151.25412-5-eric.auger@redhat.com>
-In-Reply-To: <20201118112151.25412-1-eric.auger@redhat.com>
-References: <20201118112151.25412-1-eric.auger@redhat.com>
+        Wed, 18 Nov 2020 06:21:55 -0500
+Received: by mail-qk1-f195.google.com with SMTP id n132so1410626qke.1;
+        Wed, 18 Nov 2020 03:21:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ue6h7UrfTqoxTlMyjwQTIShtLqaWRi/0J/fOLIXOaXM=;
+        b=A2PtbYglonwLPFesxXBDyCBLcXCneraKCdPUNoilWNzOTyyvcGtm/bH4RDZF4yApFd
+         F9iPsfsSK1oFSxke9vuXfMwWb2fo4AXdmfZw/fSzYnf+54ln27qpl8srtQX9qtwTNdkb
+         vzBPz1GaJeKkGUa7XQG1AVPCQpW4oEybX0TK1WSWsZAzWgJcPLr57mBSxVVwVKzkrA3o
+         RE6vU3frI/3P6i4zq3us1bkzbnAxV+whjc6hWRZkqdPR7E8wpGeiVxLz/tXPEvDJn/em
+         SlmbvIGYNtdSKk/qZL8t6S+KHc7yjjZWYltiw7kiUroG6nkI4kz6FSwhx65MUnd6cDGq
+         3I6w==
+X-Gm-Message-State: AOAM530LaY1z8yHpMn8fqdkAGeZ950hwn09k5yLjMAXOD0MbuL1rzo3q
+        PW2k7gRwwCxNTZXEnf+/ObMgiqQjCFT5HSZ8qtK/8Yiv
+X-Google-Smtp-Source: ABdhPJzFvf4BA8UuO9eIPHYyF2YFEZwKd9mZInl4BmMFqjDraqOhBdMLaklXb42+gPLuClGm6bsZ3bagsHLD2Vzs+0w=
+X-Received: by 2002:a37:7201:: with SMTP id n1mr4002674qkc.148.1605698513321;
+ Wed, 18 Nov 2020 03:21:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20201117144845.13714-1-james.clark@arm.com> <20201117144845.13714-2-james.clark@arm.com>
+In-Reply-To: <20201117144845.13714-2-james.clark@arm.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 18 Nov 2020 20:21:40 +0900
+Message-ID: <CAM9d7cj6zbsVB_DNmH0R9XqVJfXe9bofMwreH+u-BaDL-xm2_A@mail.gmail.com>
+Subject: Re: [PATCH v5 01/12] perf tools: Improve topology test
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-perf-users <linux-perf-users@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In true nested mode, both s1_cfg and s2_cfg will coexist.
-Let's remove the union and add a "set" field in each
-config structure telling whether the config is set and needs
-to be applied when writing the STE. In legacy nested mode,
-only the 2d stage is used. In true nested mode, the "set" field
-will be set when the guest passes the pasid table.
+Hello,
 
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
+On Tue, Nov 17, 2020 at 11:49 PM James Clark <james.clark@arm.com> wrote:
+>
+> Improve the topology test to check all aggregation
+> types. This is to lock down the behaviour before
+> 'id' is changed into a struct in later commits.
+>
+> Signed-off-by: James Clark <james.clark@arm.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Thomas Richter <tmricht@linux.ibm.com>
+> Cc: John Garry <john.garry@huawei.com>
+> ---
+>  tools/perf/tests/topology.c | 53 ++++++++++++++++++++++++++++++++-----
+>  1 file changed, 46 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
+> index 22daf2bdf5fa..7bd8848d36b6 100644
+> --- a/tools/perf/tests/topology.c
+> +++ b/tools/perf/tests/topology.c
+> @@ -64,10 +64,11 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>                 .path = path,
+>                 .mode = PERF_DATA_MODE_READ,
+>         };
+> -       int i;
+> +       int i, id;
+>
+>         session = perf_session__new(&data, false, NULL);
+>         TEST_ASSERT_VAL("can't get session", !IS_ERR(session));
+> +       cpu__setup_cpunode_map();
+>
+>         /* On platforms with large numbers of CPUs process_cpu_topology()
+>          * might issue an error while reading the perf.data file section
+> @@ -85,11 +86,18 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>          *  "socket_id number is too big. You may need to upgrade the
+>          *  perf tool."
+>          *
+> -        *  This is the reason why this test might be skipped.
+> +        *  This is the reason why this test might be skipped. aarch64 and
+> +        *  s390 always write this part of the header, even when the above
+> +        *  condition is true (see do_core_id_test in header.c). So always
+> +        *  run this test on those platforms.
+>          */
+> -       if (!session->header.env.cpu)
+> +       if (!session->header.env.cpu
+> +                       && strncmp(session->header.env.arch, "s390", 4)
+> +                       && strncmp(session->header.env.arch, "aarch64", 7))
+>                 return TEST_SKIP;
+>
+> +       TEST_ASSERT_VAL("Session header CPU map not set", session->header.env.cpu);
+> +
+>         for (i = 0; i < session->header.env.nr_cpus_avail; i++) {
+>                 if (!cpu_map__has(map, i))
+>                         continue;
+> @@ -98,14 +106,45 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
+>                          session->header.env.cpu[i].socket_id);
+>         }
+>
+> +       // Test that core ID contains socket, die and core
+> +       for (i = 0; i < map->nr; i++) {
+> +               id = cpu_map__get_core(map, i, NULL);
+> +               TEST_ASSERT_VAL("Core map - Core ID doesn't match",
+> +                       session->header.env.cpu[map->map[i]].core_id == cpu_map__id_to_cpu(id));
+> +
+> +               TEST_ASSERT_VAL("Core map - Socket ID doesn't match",
+> +                       session->header.env.cpu[map->map[i]].socket_id ==
+> +                               cpu_map__id_to_socket(id));
+> +
+> +               TEST_ASSERT_VAL("Core map - Die ID doesn't match",
+> +                       session->header.env.cpu[map->map[i]].die_id == cpu_map__id_to_die(id));
+> +       }
+> +
+> +       // Test that die ID contains socket and die
+>         for (i = 0; i < map->nr; i++) {
+> -               TEST_ASSERT_VAL("Core ID doesn't match",
+> -                       (session->header.env.cpu[map->map[i]].core_id == (cpu_map__get_core(map, i, NULL) & 0xffff)));
+> +               id = cpu_map__get_die(map, i, NULL);
+> +               TEST_ASSERT_VAL("Die map - Socket ID doesn't match",
+> +                       session->header.env.cpu[map->map[i]].socket_id ==
+> +                               cpu_map__id_to_socket(id));
 
----
-v12 -> v13:
-- does not dynamically allocate s1-cfg and s2_cfg anymore. Add
-  the set field
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 43 +++++++++++++--------
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  8 ++--
- 2 files changed, 31 insertions(+), 20 deletions(-)
+I'm not sure it works.  It seems cpu_map__get_die() returns
+16 bit id (socket | die) but cpu_map__id_to_socket() takes
+32 bit id (socket | die | core), right?
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 1e4acc7f3d3c..18ac5af1b284 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -1195,8 +1195,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 	u64 val = le64_to_cpu(dst[0]);
- 	bool ste_live = false;
- 	struct arm_smmu_device *smmu = NULL;
--	struct arm_smmu_s1_cfg *s1_cfg = NULL;
--	struct arm_smmu_s2_cfg *s2_cfg = NULL;
-+	struct arm_smmu_s1_cfg *s1_cfg;
-+	struct arm_smmu_s2_cfg *s2_cfg;
- 	struct arm_smmu_domain *smmu_domain = NULL;
- 	struct arm_smmu_cmdq_ent prefetch_cmd = {
- 		.opcode		= CMDQ_OP_PREFETCH_CFG,
-@@ -1211,13 +1211,24 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 	}
- 
- 	if (smmu_domain) {
-+		s1_cfg = &smmu_domain->s1_cfg;
-+		s2_cfg = &smmu_domain->s2_cfg;
-+
- 		switch (smmu_domain->stage) {
- 		case ARM_SMMU_DOMAIN_S1:
--			s1_cfg = &smmu_domain->s1_cfg;
-+			s1_cfg->set = true;
-+			s2_cfg->set = false;
- 			break;
- 		case ARM_SMMU_DOMAIN_S2:
-+			s1_cfg->set = false;
-+			s2_cfg->set = true;
-+			break;
- 		case ARM_SMMU_DOMAIN_NESTED:
--			s2_cfg = &smmu_domain->s2_cfg;
-+			/*
-+			 * Actual usage of stage 1 depends on nested mode:
-+			 * legacy (2d stage only) or true nested mode
-+			 */
-+			s2_cfg->set = true;
- 			break;
- 		default:
- 			break;
-@@ -1244,7 +1255,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 	val = STRTAB_STE_0_V;
- 
- 	/* Bypass/fault */
--	if (!smmu_domain || !(s1_cfg || s2_cfg)) {
-+	if (!smmu_domain || !(s1_cfg->set || s2_cfg->set)) {
- 		if (!smmu_domain && disable_bypass)
- 			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_ABORT);
- 		else
-@@ -1263,7 +1274,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 		return;
- 	}
- 
--	if (s1_cfg) {
-+	if (s1_cfg->set) {
- 		BUG_ON(ste_live);
- 		dst[1] = cpu_to_le64(
- 			 FIELD_PREP(STRTAB_STE_1_S1DSS, STRTAB_STE_1_S1DSS_SSID0) |
-@@ -1282,7 +1293,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 			FIELD_PREP(STRTAB_STE_0_S1FMT, s1_cfg->s1fmt);
- 	}
- 
--	if (s2_cfg) {
-+	if (s2_cfg->set) {
- 		BUG_ON(ste_live);
- 		dst[2] = cpu_to_le64(
- 			 FIELD_PREP(STRTAB_STE_2_S2VMID, s2_cfg->vmid) |
-@@ -1846,24 +1857,24 @@ static void arm_smmu_domain_free(struct iommu_domain *domain)
- {
- 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
- 	struct arm_smmu_device *smmu = smmu_domain->smmu;
-+	struct arm_smmu_s1_cfg *s1_cfg = &smmu_domain->s1_cfg;
-+	struct arm_smmu_s2_cfg *s2_cfg = &smmu_domain->s2_cfg;
- 
- 	iommu_put_dma_cookie(domain);
- 	free_io_pgtable_ops(smmu_domain->pgtbl_ops);
- 
- 	/* Free the CD and ASID, if we allocated them */
--	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
--		struct arm_smmu_s1_cfg *cfg = &smmu_domain->s1_cfg;
--
-+	if (s1_cfg->set) {
- 		/* Prevent SVA from touching the CD while we're freeing it */
- 		mutex_lock(&arm_smmu_asid_lock);
--		if (cfg->cdcfg.cdtab)
-+		if (s1_cfg->cdcfg.cdtab)
- 			arm_smmu_free_cd_tables(smmu_domain);
--		arm_smmu_free_asid(&cfg->cd);
-+		arm_smmu_free_asid(&s1_cfg->cd);
- 		mutex_unlock(&arm_smmu_asid_lock);
--	} else {
--		struct arm_smmu_s2_cfg *cfg = &smmu_domain->s2_cfg;
--		if (cfg->vmid)
--			arm_smmu_bitmap_free(smmu->vmid_map, cfg->vmid);
-+	}
-+	if (s2_cfg->set) {
-+		if (s2_cfg->vmid)
-+			arm_smmu_bitmap_free(smmu->vmid_map, s2_cfg->vmid);
- 	}
- 
- 	kfree(smmu_domain);
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index 19196eea7c1d..07f59252dd21 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -562,12 +562,14 @@ struct arm_smmu_s1_cfg {
- 	struct arm_smmu_ctx_desc	cd;
- 	u8				s1fmt;
- 	u8				s1cdmax;
-+	bool				set;
- };
- 
- struct arm_smmu_s2_cfg {
- 	u16				vmid;
- 	u64				vttbr;
- 	u64				vtcr;
-+	bool				set;
- };
- 
- struct arm_smmu_strtab_cfg {
-@@ -678,10 +680,8 @@ struct arm_smmu_domain {
- 	atomic_t			nr_ats_masters;
- 
- 	enum arm_smmu_domain_stage	stage;
--	union {
--		struct arm_smmu_s1_cfg	s1_cfg;
--		struct arm_smmu_s2_cfg	s2_cfg;
--	};
-+	struct arm_smmu_s1_cfg	s1_cfg;
-+	struct arm_smmu_s2_cfg	s2_cfg;
- 
- 	struct iommu_domain		domain;
- 
--- 
-2.21.3
+>
+> -               TEST_ASSERT_VAL("Socket ID doesn't match",
+> -                       (session->header.env.cpu[map->map[i]].socket_id == cpu_map__get_socket(map, i, NULL)));
+> +               TEST_ASSERT_VAL("Die map - Die ID doesn't match",
+> +                       session->header.env.cpu[map->map[i]].die_id == cpu_map__id_to_die(id));
+>         }
+>
+> +       // Test that socket ID contains only socket
+> +       for (i = 0; i < map->nr; i++) {
+> +               id = cpu_map__get_socket(map, i, NULL);
+> +               TEST_ASSERT_VAL("Socket map - Socket ID doesn't match",
+> +                       session->header.env.cpu[map->map[i]].socket_id ==
+> +                               cpu_map__id_to_socket(id));
 
+Same here.
+
+Thanks,
+Namhyung
+
+
+> +       }
+> +
+> +       // Test that node ID contains only node
+> +       for (i = 0; i < map->nr; i++) {
+> +               id = cpu_map__get_node(map, i, NULL);
+> +               TEST_ASSERT_VAL("Node map - Node ID doesn't match",
+> +                       cpu__get_node(map->map[i]) == id);
+> +       }
+>         perf_session__delete(session);
+>
+>         return 0;
+> --
+> 2.28.0
+>
