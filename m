@@ -2,131 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D75B2B769C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BA52B76A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbgKRG5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 01:57:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50456 "EHLO mail.kernel.org"
+        id S1726650AbgKRG6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 01:58:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgKRG5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 01:57:22 -0500
-Received: from kernel.org (unknown [77.125.7.142])
+        id S1725800AbgKRG6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 01:58:45 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5BB624654;
-        Wed, 18 Nov 2020 06:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605682641;
-        bh=p9re6A1RRg6oU6SsuX3QRE0t8ggbYYLXloFK2ojmgAo=;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A24424654;
+        Wed, 18 Nov 2020 06:58:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1605682725;
+        bh=JEXidrPb3WDPpJaEzmw1ttSq10d4MBZ43iMbE5Qt4MI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U45SNSKJGotiPIakEwaAseiV27AsVkyTNt66bCAHLcpiM1G9GhxPaQQlROUaXdH9c
-         rZ2SGl1DirjI0HjrC5eRlRQ7rEdibP7yq1sGHKXfUjmBvTCB1ZAiMR3V9ZcpXtRamU
-         6btiE8gvCG8QTrNMjF7yXVOnKyB3lsNIE30mk1FQ=
-Date:   Wed, 18 Nov 2020 08:57:06 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v9 8/9] arch, mm: wire up memfd_secret system call were
- relevant
-Message-ID: <20201118065706.GL370813@kernel.org>
-References: <20201117162932.13649-1-rppt@kernel.org>
- <20201117162932.13649-9-rppt@kernel.org>
- <X7QFMhQlyBMI1wXE@trantor>
+        b=M7rfoP64Hh8gVgpqqh2RU601bedtyMQFnJMEpJXzhq83bFzsQjypaXQVerCJlGRGH
+         iDLjXiNaPoY+SjgKYNOwPx8Nnf41vV1e7JihUD2YrzSN2O2Or5r2ZOxJYZ1QuSUQ5X
+         YIzByOKV7Cj2ySDFJrx7w6bfiwjJ/x+YSx7e1NHA=
+Date:   Wed, 18 Nov 2020 07:59:31 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     penghao <penghao@uniontech.com>
+Cc:     johan@kernel.org, jonathan@jdcox.net, tomasz@meresinski.eu,
+        hdegoede@redhat.com, dlaz@chromium.org,
+        kai.heng.feng@canonical.com, richard.o.dodd@gmail.com,
+        kerneldev@karsmulder.nl, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Changes since v1  - Change subject form "ALSA" to "USB:"
+ - Adjust to approoriate line
+Message-ID: <X7TGU+JHUL4eTbG6@kroah.com>
+References: <20201118065132.24772-1-penghao@uniontech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X7QFMhQlyBMI1wXE@trantor>
+In-Reply-To: <20201118065132.24772-1-penghao@uniontech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 05:15:30PM +0000, Catalin Marinas wrote:
-> On Tue, Nov 17, 2020 at 06:29:31PM +0200, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Wire up memfd_secret system call on architectures that define
-> > ARCH_HAS_SET_DIRECT_MAP, namely arm64, risc-v and x86.
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >  arch/arm64/include/asm/unistd.h        | 2 +-
-> >  arch/arm64/include/asm/unistd32.h      | 2 ++
-> >  arch/arm64/include/uapi/asm/unistd.h   | 1 +
-> >  arch/riscv/include/asm/unistd.h        | 1 +
-> >  arch/x86/entry/syscalls/syscall_32.tbl | 1 +
-> >  arch/x86/entry/syscalls/syscall_64.tbl | 1 +
-> >  include/linux/syscalls.h               | 1 +
-> >  include/uapi/asm-generic/unistd.h      | 6 +++++-
-> >  scripts/checksyscalls.sh               | 4 ++++
-> >  9 files changed, 17 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
-> > index 86a9d7b3eabe..949788f5ba40 100644
-> > --- a/arch/arm64/include/asm/unistd.h
-> > +++ b/arch/arm64/include/asm/unistd.h
-> > @@ -38,7 +38,7 @@
-> >  #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
-> >  #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
-> >  
-> > -#define __NR_compat_syscalls		442
-> > +#define __NR_compat_syscalls		443
-> >  #endif
-> >  
-> >  #define __ARCH_WANT_SYS_CLONE
-> > diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-> > index 6c1dcca067e0..5279481ec95b 100644
-> > --- a/arch/arm64/include/asm/unistd32.h
-> > +++ b/arch/arm64/include/asm/unistd32.h
-> > @@ -891,6 +891,8 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
-> >  __SYSCALL(__NR_process_madvise, sys_process_madvise)
-> >  #define __NR_watch_mount 441
-> >  __SYSCALL(__NR_watch_mount, sys_watch_mount)
-> > +/* 442 is memfd_secret, it is not implemented for 32-bit */
-> > +__SYSCALL(442, sys_ni_syscall)
+On Wed, Nov 18, 2020 at 02:51:32PM +0800, penghao wrote:
+> USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for
+> Lenovo A630Z TIO built-in usb-audio card
+
+Your subject line does not work, please put that information below the
+--- line.
+
+Also, we need a "real" name for the From: and signed-off-by line please.
+
+> Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
+> usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
+> seconds later by usb-audio disconnect interrupt to avoids the issue.
 > 
-> It now behaves correctly for compat but I don't think we need to
-> increment __NR_compat_syscalls. The compat syscall handler already calls
-> sys_ni_syscall() if out of range.
-
-Ok, let's drop this change as well :)
-
-> So the only arm64 change needed is defining __ARCH_WANT_MEMFD_SECRET
-> (well, we don't have a use for it yet ;)).
+> Seeking a better fix, we've tried a lot of things, including:
+>  - Check that the device's power/wakeup is disabled
+>  - Check that remote wakeup is off at the USB level
+>  - All the quirks in drivers/usb/core/quirks.c
+>    e.g. USB_QUIRK_RESET_RESUME,
+>         USB_QUIRK_RESET,
+>         USB_QUIRK_IGNORE_REMOTE_WAKEUP,
+>         USB_QUIRK_NO_LPM.
 > 
-> -- 
-> Catalin
+> but none of that makes any difference.
+> 
+> There are no errors in the logs showing any suspend/resume-related issues.
+> When the system wakes up due to the modem, log-wise it appears to be a
+> normal resume.
+> 
+> Introduce a quirk to disable the port during suspend when the modem is
+> detected.
+> 
+> Signed-off-by: penghao <penghao@uniontech.com>
+> ---
+>  drivers/usb/core/quirks.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+> index 7c1198f80c23..8d18e89f9eb0 100644
+> --- a/drivers/usb/core/quirks.c
+> +++ b/drivers/usb/core/quirks.c
+> @@ -410,7 +410,11 @@ static const struct usb_device_id usb_quirk_list[] = {
+>  	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
+>  			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
+>  
+> -	/* BUILDWIN Photo Frame */
+> +/* Lenovo - ThinkCenter A630Z TI024Gen3 usb-audio card */
+> +{ USB_DEVICE(0x17ef, 0x0xa012), .driver_info =
+> +USB_QUIRK_DISCONNECT_SUSPEND },
+> +
+> +    /* BUILDWIN Photo Frame */
 
--- 
-Sincerely yours,
-Mike.
+Your patch seems to have messed up spaces and tabs here, please fix that
+up in your editor and always run scripts/checkpatch.pl on your patch
+before resending it.
+
+thanks,
+
+greg k-h
