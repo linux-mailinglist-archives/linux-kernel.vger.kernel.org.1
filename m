@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18F82B86E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 085AF2B86F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbgKRVhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:37:23 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60534 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727270AbgKRVhP (ORCPT
+        id S1727030AbgKRVlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgKRVlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:37:15 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id CC16F1C0B87; Wed, 18 Nov 2020 22:37:12 +0100 (CET)
-Date:   Wed, 18 Nov 2020 22:37:12 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     jacek.anaszewski@gmail.com, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v7 2/5] dt-bindings: leds: Add LED_COLOR_ID_MOONLIGHT
- definitions
-Message-ID: <20201118213712.GA22371@amd>
-References: <1605696462-391-1-git-send-email-gene.chen.richtek@gmail.com>
- <1605696462-391-3-git-send-email-gene.chen.richtek@gmail.com>
+        Wed, 18 Nov 2020 16:41:51 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A12C0613D4;
+        Wed, 18 Nov 2020 13:41:50 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id c17so3640722wrc.11;
+        Wed, 18 Nov 2020 13:41:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gjo4l7jEqfgUaEJTViB3FcmDbvAZcSujHdYlxEFDeHw=;
+        b=V58gjjNxTRjOOuSvM8oz4SRLNgcz4ELwhVa98lKi2j3r85iTchKqAqJ7jjMxZ41ghU
+         x+bNr55IxJVzPNY/MNtidNvHFZ0m0/YkoKT2o2tNXXOgaeytt9Bt4E37pnGchcEZo5jB
+         C0X2qxWBM2CqNwXITyXH+I/c5Ohnu/XcYDewKkgfi6884iBxsZX64DaNDf9EpQosqGU1
+         nqyElaNhkBToPJUpS8HOOs6uyESJZR0cbyTQrN5fOEVvaT0znpW5DYQypXJWOg6jzOBZ
+         gg7/XBGdyPYCzyG6gWFq9iCCUg4RJ9xmvo36VftyP2LbgmcPAb+8pg9M+ap5jcTqElfe
+         Tr/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gjo4l7jEqfgUaEJTViB3FcmDbvAZcSujHdYlxEFDeHw=;
+        b=TYu1f03C17HlAGTxcqZcWJPl4YcbFkMAuJsnmrRrjDrIPo9nF53MwDMh1zpfjk9eGm
+         d+Gg7rR+G360PYwPeby+S9zWlG6q79qW9YHafUxLJ1edoHY6/D1V3TJ8LmimASv30PA3
+         p/KQpWsdZ4rkXiDU3uoXshrDfZRDTFUHB4oZJZoD5IeADwR9AYnAMx1vDVWyhEqq2iU3
+         fl/J+BOE57CPWqEMIFIpqz1/6D0OwvesVnN+iLHqhD6YGz4d5E4zurY7BZe9R4LsiWjn
+         wVuO1nfp89KOM3FU6IruKBwEJst3iCCOi6gPVSFrLdg/9T8Pho0H/ZFZt/A6ug8zsezX
+         wtBQ==
+X-Gm-Message-State: AOAM533TFvQV6v2DpzJ/VgmPP98u832ynb/uZmpFfmZmySplIpwngmBf
+        KFqbiQDXrsZ+F3DdfTbtZpc=
+X-Google-Smtp-Source: ABdhPJy9ee/dgg3f2T9n0yWRJmyR6W8Gb0KA8VeUzMnlnShqSnAd5OFBZpApYyKOM58j9YFclFZQbA==
+X-Received: by 2002:adf:eb47:: with SMTP id u7mr6678174wrn.163.1605735709702;
+        Wed, 18 Nov 2020 13:41:49 -0800 (PST)
+Received: from debian (host-92-5-241-147.as43234.net. [92.5.241.147])
+        by smtp.gmail.com with ESMTPSA id o197sm5480589wme.17.2020.11.18.13.41.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 18 Nov 2020 13:41:49 -0800 (PST)
+Date:   Wed, 18 Nov 2020 21:41:47 +0000
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 5.4 140/203] MIPS: PCI: remember nasid changed by set
+ interrupt affinity
+Message-ID: <20201118214147.5ghn6gtzu3jlksre@debian>
+References: <20200116231745.218684830@linuxfoundation.org>
+ <20200116231757.243032912@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="2oS5YaxWCcQjTEyO"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1605696462-391-3-git-send-email-gene.chen.richtek@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200116231757.243032912@linuxfoundation.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
---2oS5YaxWCcQjTEyO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jan 17, 2020 at 12:17:37AM +0100, Greg Kroah-Hartman wrote:
+> From: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+> 
+> commit 37640adbefd66491cb8083a438f7bf366ac09bc7 upstream.
+> 
 
-Hi!
+<snip>
 
-> From: Gene Chen <gene_chen@richtek.com>
->=20
-> Add LED_COLOR_ID_MOONLIGHT definitions
-
-Why is moonlight a color? Camera flashes are usually white, no?
-
-At least it needs a comment...
-
-Best regards,
-								Pavel
-							=09
-
-
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> 
 > ---
->  include/dt-bindings/leds/common.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/include/dt-bindings/leds/common.h b/include/dt-bindings/leds=
-/common.h
-> index 52b619d..1409e9a 100644
-> --- a/include/dt-bindings/leds/common.h
-> +++ b/include/dt-bindings/leds/common.h
-> @@ -33,7 +33,8 @@
->  #define LED_COLOR_ID_MULTI	8	/* For multicolor LEDs */
->  #define LED_COLOR_ID_RGB	9	/* For multicolor LEDs that can do arbitrary =
-color,
->  					   so this would include RGBW and similar */
-> -#define LED_COLOR_ID_MAX	10
-> +#define LED_COLOR_ID_MOONLIGHT	10
-> +#define LED_COLOR_ID_MAX	11
-> =20
->  /* Standard LED functions */
->  /* Keyboard LEDs, usually it would be input4::capslock etc. */
+>  arch/mips/pci/pci-xtalk-bridge.c |    5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> --- a/arch/mips/pci/pci-xtalk-bridge.c
+> +++ b/arch/mips/pci/pci-xtalk-bridge.c
+> @@ -279,16 +279,15 @@ static int bridge_set_affinity(struct ir
+>  	struct bridge_irq_chip_data *data = d->chip_data;
+>  	int bit = d->parent_data->hwirq;
+>  	int pin = d->hwirq;
+> -	nasid_t nasid;
+>  	int ret, cpu;
+>  
+>  	ret = irq_chip_set_affinity_parent(d, mask, force);
+>  	if (ret >= 0) {
+>  		cpu = cpumask_first_and(mask, cpu_online_mask);
+> -		nasid = COMPACT_TO_NASID_NODEID(cpu_to_node(cpu));
+> +		data->nnasid = COMPACT_TO_NASID_NODEID(cpu_to_node(cpu));
 
---=20
-http://www.livejournal.com/~pavelmachek
+This will be 'data->nasid' and its causing mips builds to fail.
 
---2oS5YaxWCcQjTEyO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+1lAgACgkQMOfwapXb+vL26wCeLtwDg4oxx0PYQmJyevNM3Ckd
-2IIAmQGlhDWSRiDQqYO8KZnDIql3iy6g
-=k8BQ
------END PGP SIGNATURE-----
-
---2oS5YaxWCcQjTEyO--
+-- 
+Regards
+Sudip
