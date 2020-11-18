@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5275D2B7E2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BBB2B7E31
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgKRNQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:16:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbgKRNQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:16:26 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 385BC241A5;
-        Wed, 18 Nov 2020 13:16:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605705385;
-        bh=nTNTsy3xL/gdqy1AFHbIdrzBXhJhxmiLNAzDiJMibX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j/3fR4bxrWAtVPLAy/gorf0yvxu74ioU6EQeCPzHG60j8ReAMM5AOCQZmXSyigOVx
-         iX6gPnoCGy3blwvPQL+/pBz6Wv/6LZoDlyWiNRllMcU8OdaCXjk2EgdrEk/ZdmBPoW
-         AV3QX8xQIZOjENq+7wVMW8P30xR0W4T/XV7edH3U=
-Date:   Wed, 18 Nov 2020 13:16:04 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] spi: Take the SPI IO-mutex in the spi_setup() method
-Message-ID: <20201118131604.GC4827@sirena.org.uk>
-References: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
+        id S1726365AbgKRNSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:18:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgKRNSv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 08:18:51 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2A2C0613D4;
+        Wed, 18 Nov 2020 05:18:51 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id g7so1421995pfc.2;
+        Wed, 18 Nov 2020 05:18:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SwgmCoRQqgDi9SwspMTBUmX6vuFIHjell7qTbg11fzE=;
+        b=J8LYV8vaid4hvw7F9n9qrI/Ctn5Y9xYMaCpcVdxPTfdxbxhtE3qBy3JowQgQVGYuPB
+         GM7Sv5KpvlA9OBnlfOuJcEr/vGmXIlvMix9pYM1xhsQtEA/kS/8/caXJP6xnJPdyPFtH
+         xjjtuvbEefrv8MKVAuLy/PUlATfuWp9gqV6eB40LVEVQctNPoYB6VVSeCrLz8qXVRkni
+         PHsCz0Na8goCCXC1UCpInTgopvApd0Y47GYFe1EQxraytSZwOQFBt19sU5xoEK+q03z2
+         RIOaNlBJETigQXj9aLqZ3h741xJtNqjajlCx+3fDInCFRJPnfzw4LNg6dA3Izo70VjmZ
+         BJCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SwgmCoRQqgDi9SwspMTBUmX6vuFIHjell7qTbg11fzE=;
+        b=KGmIdevIJQPKIGBBczK29YVejCR/KwCjLtIEIV1wA/zXj+IIukCll5uTro/subcvph
+         6p+rjoFVp6oveP8sX7/RJIoudzO1LSFue7WqY2y3856U21HfPt39MeG0Ka7pdrDRd1dP
+         GBGsRMypHU3H1bFcjvjGPS/+kDp4n+iRwNmx+sm4hGU9xO3TDFNSYGiLcCmRn22xXk3x
+         rnKu95FzKMVvxf4hRzAH9Ikr9LPhQKpvBC2l1IIiRO+TMQsjh5IQJdXG10AHnPHj0UuJ
+         XOMv6Vg+r+u8XA4DVi+dNct9Rf1hIuhVXRxXnwaT7bKtIPJ/mE2mMig7k9oE2jrGk9JR
+         OudA==
+X-Gm-Message-State: AOAM530CWBrS4NW6B65WDJOYuMUEVwM4jLZgn6nzzyecBKcConTPAudw
+        vIpvqAUbBjwfyzwSpMCwbaYZtUqjRoA=
+X-Google-Smtp-Source: ABdhPJyoqK2ra5D+t5eEXvemIoZnKKGCufzzjUJO7W3OTTnydsIB2jUSBHacZQAWOPrkCZTeODUESw==
+X-Received: by 2002:a62:75c6:0:b029:18a:d510:ff60 with SMTP id q189-20020a6275c60000b029018ad510ff60mr4533830pfc.35.1605705531280;
+        Wed, 18 Nov 2020 05:18:51 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id 131sm10228225pfw.117.2020.11.18.05.18.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 05:18:50 -0800 (PST)
+Date:   Wed, 18 Nov 2020 05:18:47 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kurt Kanzenbach <kurt@linutronix.de>
+Subject: Re: [PATCH net-next 1/4] net: ptp: introduce enum ptp_msg_type
+Message-ID: <20201118131847.GE23320@hoboy.vegasvil.org>
+References: <20201117193124.9789-1-ceggers@arri.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
-X-Cookie: A nuclear war can ruin your whole day.
+In-Reply-To: <20201117193124.9789-1-ceggers@arri.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 17, 2020 at 08:31:21PM +0100, Christian Eggers wrote:
+> Using a PTP wide enum will obsolete different driver internal defines
+> and uses of magic numbers.
 
---Md/poaVZ8hnGTzuv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I like the general idea, but ...
 
-On Tue, Nov 17, 2020 at 12:45:17PM +0300, Serge Semin wrote:
+> +enum ptp_msg_type {
+> +	PTP_MSGTYPE_SYNC        = 0x0,
+> +	PTP_MSGTYPE_DELAY_REQ   = 0x1,
+> +	PTP_MSGTYPE_PDELAY_REQ  = 0x2,
+> +	PTP_MSGTYPE_PDELAY_RESP = 0x3,
+> +};
 
-> method being called at the same time. In particular in calling the
-> spi_set_cs(false) while there is an SPI-transfer being executed. In my
-> case due to the commit cited above all CSs get to be switched off by
-> calling the spi_setup() for /dev/spidev0.1 while there is an concurrent
-> SPI-transfer execution performed on /dev/spidev0.0. Of course a situation
-> of the spi_setup() being called while there is an SPI-transfer being
-> executed for two different SPI peripheral devices of the same controller
-> may happen not only for the spidev driver, but for instance for MMC SPI +
-> some another device, or spi_setup() being called from an SPI-peripheral
-> probe method while some other device has already been probed and is being
-> used by a corresponding driver...
+I would argue that these should be #defines.  After all, they are
+protocol data fields and not an abstract enumerated types.
 
-It's documented that a driver's spi_setup() operation is supposed to
-support being able to be called concurrently with other transfers, see
-spi-summary.rst.
+For example ...
 
-> Of course I could have provided a fix affecting the DW APB SSI driver
-> only, for instance, by creating a mutual exclusive access to the set_cs
-> callback and setting/clearing only the bit responsible for the
-> corresponding chip-select. But after a short research I've discovered that
-> the problem most likely affects a lot of the other drivers:
+> @@ -103,10 +110,10 @@ struct ptp_header *ptp_parse_header(struct sk_buff *skb, unsigned int type);
+>   *
+>   * Return: The message type
+>   */
+> -static inline u8 ptp_get_msgtype(const struct ptp_header *hdr,
+> +static inline enum ptp_msg_type ptp_get_msgtype(const struct ptp_header *hdr,
+>  				 unsigned int type)
+>  {
+> -	u8 msgtype;
+> +	enum ptp_msg_type msgtype;
+>  
+>  	if (unlikely(type & PTP_CLASS_V1)) {
+>  		/* msg type is located at the control field for ptp v1 */
 
-Yeah, problems with it are very common as the documentation has noted
-since forever.  IIRC there was some problem triggered by trying to force
-it to be serialised but I can't remember what it was.
+		msgtype = hdr->control;
+	} else {
+		msgtype = hdr->tsmt & 0x0f;
 
---Md/poaVZ8hnGTzuv
-Content-Type: application/pgp-signature; name="signature.asc"
+This assigns directly from protocol data into an enumerated type.
 
------BEGIN PGP SIGNATURE-----
+	}
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+1HpQACgkQJNaLcl1U
-h9C10wf/UL7gHcOtEornz8CUpn8gXROVBLHD829V29n5B5EAiRDHuF/B5TrIbNfE
-Ciaeb81Gonxu2/gXNWHJB09neBhzC338vZGnfQumD8iR2HJmjqtfP/vpdxu+pxt1
-XBZhKfhpqrwKgZbERk87QJfv10YV4x3CIsQOqgBK1C5TwmBotCTgX11bsERfLclj
-vssooAxtI/R8J3EQrt99SczUNfEZZHxIU5ZtrEd4s1to/PLFO0yLQshro5fhlIMj
-z2jFS4lkgaOVZEEZU2xOaOMGSGYUdRRbO4UlT1n3wGRMWV+nXBh9W+34RFfVMMcN
-VKWlt2Rv7Soaqecr2x87L0qVETf4ww==
-=70uB
------END PGP SIGNATURE-----
+	return msgtype;
 
---Md/poaVZ8hnGTzuv--
+Thanks,
+Richard
+
