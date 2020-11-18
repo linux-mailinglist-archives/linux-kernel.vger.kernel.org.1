@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53602B83FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A102B8401
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgKRSjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:39:47 -0500
-Received: from smtprelay0082.hostedemail.com ([216.40.44.82]:51182 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726181AbgKRSjq (ORCPT
+        id S1726198AbgKRSoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:44:06 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:41936 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgKRSoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:39:46 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id DBB3612C7;
-        Wed, 18 Nov 2020 18:39:45 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3870:3872:3873:3874:4184:4321:4605:5007:6119:7903:10004:10400:10848:11232:11233:11658:11783:11914:12043:12296:12297:12740:12895:13069:13311:13357:13439:13894:14180:14181:14659:14721:21060:21080:21433:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: spark29_2f061692733c
-X-Filterd-Recvd-Size: 2679
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 18 Nov 2020 18:39:44 +0000 (UTC)
-Message-ID: <754e240d1c88274ce2d94a5b6dbcfff1cc8c9508.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add --fix option for OPEN_BRACE issues
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Wed, 18 Nov 2020 10:39:43 -0800
-In-Reply-To: <CABJPP5CqKjY3_mfkJEsHX_8Zc7q1TRCgA4T54sTEZBiKgPS+OQ@mail.gmail.com>
-References: <20201118124035.96976-1-dwaipayanray1@gmail.com>
-         <457730448c84136be089748bea69abd2254e3832.camel@perches.com>
-         <CABJPP5CqKjY3_mfkJEsHX_8Zc7q1TRCgA4T54sTEZBiKgPS+OQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 18 Nov 2020 13:44:06 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIIhfdQ061670;
+        Wed, 18 Nov 2020 18:43:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=SL22lGGVpKno+/uHpGKGIJnK6X8Tldkc1ill4oT2NE8=;
+ b=FE59WBZlOMjuY9q4kIArWoGE6DVKBOeqHXKmMPcQ90nx1PfsJYH3obIG9B3oMm8hhRSJ
+ FYntKWygafq3M+OMiaP9SribXfIuvloRlIKOfipP9tNypA8BNekLWXEMUWlC4y8b2B92
+ eW1nTTwvsZ1WnpMyvktPhIffDrB17MxcjQzcHHTLp0seiQV4IqLlwiFgx3CDyWd0PH+h
+ CFnwvd0JiboGRqU4I8XAonBL2IjISB8wmhCdXfRcC3Erv20hxII9lncLp9Htos/9hrL6
+ FsifPqNo8aIjyDmGqkrObVnSEmEUWz3/qq4NLRsSljd5DvNScxVuJKEwnri9mXOA3+vI Kg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 34t7vn9jvg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Nov 2020 18:43:57 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIIfNkC035313;
+        Wed, 18 Nov 2020 18:41:56 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 34umd0xcba-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Nov 2020 18:41:56 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AIIfrs6020208;
+        Wed, 18 Nov 2020 18:41:53 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 18 Nov 2020 10:41:52 -0800
+Subject: Re: [PATCH] mm: hugetlb: fix type of delta parameter in
+ gather_surplus_pages()
+To:     Liu Xiang <liu.xiang@zlingsmart.com>, linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        liuxiang_1999@126.com, Pan Jiagen <pan.jiagen@zlingsmart.com>
+References: <1605705241-3561-1-git-send-email-liu.xiang@zlingsmart.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <51fbc8e7-7e9d-4070-f8d5-83b33d2d4607@oracle.com>
+Date:   Wed, 18 Nov 2020 10:41:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1605705241-3561-1-git-send-email-liu.xiang@zlingsmart.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011180130
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011180130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-19 at 00:03 +0530, Dwaipayan Ray wrote:
-> On Wed, Nov 18, 2020 at 11:44 PM Joe Perches <joe@perches.com> wrote:
-> > 
-> > On Wed, 2020-11-18 at 18:10 +0530, Dwaipayan Ray wrote:
-> > > Brace style misuses of the following types are now
-> > > corrected:
-> > []
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > []
-> > > @@ -3937,9 +3937,23 @@ sub process {
-> > >                       #print "pre<$pre_ctx>\nline<$line>\nctx<$ctx>\nnext<$lines[$ctx_ln - 1]>\n";
-> > > 
-> > > 
-> > >                       if ($ctx !~ /{\s*/ && defined($lines[$ctx_ln - 1]) && $lines[$ctx_ln - 1] =~ /^\+\s*{/) {
-> > > -                             ERROR("OPEN_BRACE",
-> > > -                                   "that open brace { should be on the previous line\n" .
-> > > -                                     "$here\n$ctx\n$rawlines[$ctx_ln - 1]\n");
-> > > +                             if (ERROR("OPEN_BRACE",
-> > > +                                       "that open brace { should be on the previous line\n" .
-> > > +                                             "$here\n$ctx\n$rawlines[$ctx_ln - 1]\n") &&
-> > > +                                 $fix) {
-> > > +                                     my $line1 = $rawlines[$ctx_ln - 2];
-> > 
-> > How are you sure that in a patch context this line always starts with /^\+/ ?
+On 11/18/20 5:14 AM, Liu Xiang wrote:
+> On 64-bit machine, delta variable in hugetlb_acct_memory() may be larger
+> than 0xffffffff, but gather_surplus_pages() can only use the low 32-bit
+> value now.
 > 
-> Hi,
-> I followed it from the other fixes for OPEN_BRACE which were already
-> there. In the patch context if the lines are added then only I think the fix
-> should be triggered. Other instances should not be modified.
+> Reported-by: Ma Chenggong <ma.chenggong@zlingsmart.com>
+> Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
+> Signed-off-by: Pan Jiagen <pan.jiagen@zlingsmart.com>
+> ---
+>  mm/hugetlb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 37f15c3..293b36d 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1943,7 +1943,7 @@ struct page *alloc_huge_page_vma(struct hstate *h, struct vm_area_struct *vma,
+>   * Increase the hugetlb pool such that it can accommodate a reservation
+>   * of size 'delta'.
+>   */
+> -static int gather_surplus_pages(struct hstate *h, int delta)
+> +static int gather_surplus_pages(struct hstate *h, long delta)
+>  	__must_hold(&hugetlb_lock)
+>  {
+>  	struct list_head surplus_list;
 
-As far as I know there are no existing uses of --fix with OPEN_BRACE.
+Thank you for noticing the type difference.
 
-
+However, if the parameter delta is changed to long then we should also change
+the local variables in gather_surplus_pages that are used with delta.
+Specifically, the local variables 'needed', 'allocated' and 'i' should also be
+of type long.
+-- 
+Mike Kravetz
