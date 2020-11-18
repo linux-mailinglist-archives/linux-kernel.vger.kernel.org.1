@@ -2,111 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCF42B7AC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFD62B7ABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727356AbgKRJyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:54:55 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:38614 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgKRJyz (ORCPT
+        id S1726929AbgKRJx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:53:28 -0500
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:36199 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726172AbgKRJx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:54:55 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AI9eWuQ127169;
-        Wed, 18 Nov 2020 09:53:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=h5FuxwNh5V9GuoxuiWKIycz0XOeyUqsK9043Ar1O0N8=;
- b=Ddc5jGPbRsbQ8IzTDqLkHsyIIEQ1Ej4UI2HXdMb1XsuUmOSclU1KS1kbW2L08qyBkvbv
- x/jpblLNSG3RJx9al3pIY8NH97n2VYQkaPh6jqQwzuDKF5B2SKv8bGnHtYpPP/ocO1JN
- kGJz2qLXFjUqEPsOrjJfzjC+gbnw87ynKd7WKDheBk+P+FBz+UZ0OE/LevtCegvDwZlo
- +hhwm2eJA7JctL8uCsGS0TM/36zb0n7WpBssBClxbRAH3XNRS2+zdqHGsmt3PacJfvfp
- cywsd1BrYSaGH6FSafzaaEDqWX2YlkQ7+WeKcD8itpRh07JZtDjisRzSO0fkVfLVyLPc NQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 34t4rayahw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 09:53:33 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AI9fB3o047748;
-        Wed, 18 Nov 2020 09:53:33 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 34ts5xa490-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Nov 2020 09:53:32 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AI9rQIK024397;
-        Wed, 18 Nov 2020 09:53:26 GMT
-Received: from [192.168.1.102] (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 18 Nov 2020 01:53:26 -0800
-Subject: Re: [PATCH v2] btrfs: return EAGAIN when receiving a pending signal
- in the defrag loops
-To:     xiakaixu1987@gmail.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-References: <1605672156-29051-1-git-send-email-kaixuxia@tencent.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <4d25ee0c-ba57-cd3f-7a6a-981a21c0967d@oracle.com>
-Date:   Wed, 18 Nov 2020 17:53:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Wed, 18 Nov 2020 04:53:27 -0500
+Received: by mail-ed1-f68.google.com with SMTP id m16so1326344edr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:53:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4VZV4JODEANV43Do31vFuPevs/t9w5drfDVPU3kOfDk=;
+        b=SEr9x3gGp9oxQXZ5uF1x5MNOQyVscv0OYJM6OIODSvKFPDM45nqGr3U3F4oUtzZ0VG
+         5qOKcdAeejc94hOF80q/SVKmCJuOGI9ESYY10xXyizd1UAyDnIogmdMfjlQ1fVNwCUF/
+         vtDjCKM/4wrmY/uM+YzrinbWaBiVTsFNC1TdheF9gYQaTxj8Tn5+LwOv7bfua6fn/XAf
+         dvMOkrTtfCUYy7+As0QoTv3IeRR4QUPBfVpsEO5mSh4Axb2vm/jkYe5JM0oxG92ocVet
+         knT/mSnnJaN24Unu05OkR0LU1SxeeE2db2jI/xucWQZiwvZLF0Grhl344tofULyuVYKU
+         7RQQ==
+X-Gm-Message-State: AOAM530L8+1p89vT6crXVkNpMIM5puGhgegmRq5tVdIvn9JExK36JWql
+        f5XkMYgds1ErR0WH02IS/cI=
+X-Google-Smtp-Source: ABdhPJzZN+jj9QnXp4Kegr2WMONRC2atTpBVRxWKfqSGhIg2aRqhDJi8n3Rxr+I9G/yhqUl0Uk4zGA==
+X-Received: by 2002:a50:9fc5:: with SMTP id c63mr4650558edf.224.1605693205466;
+        Wed, 18 Nov 2020 01:53:25 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id u2sm716842edo.65.2020.11.18.01.53.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 01:53:24 -0800 (PST)
+Date:   Wed, 18 Nov 2020 10:53:22 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Olivier Moysan <olivier.moysan@st.com>
+Cc:     linux@armlinux.org.uk, shawnguo@kernel.org, olof@lixom.net,
+        alexandre.torgue@st.com, geert+renesas@glider.be,
+        amelie.delaunay@st.com, aisheng.dong@nxp.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        christian.gmeiner@gmail.com, enric.balletbo@collabora.com,
+        lionel.debieve@st.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] ARM: multi_v7_defconfig: enable spdifrx support
+Message-ID: <20201118095322.GA17075@kozik-lap>
+References: <20201118095013.16094-1-olivier.moysan@st.com>
+ <20201118095013.16094-2-olivier.moysan@st.com>
 MIME-Version: 1.0
-In-Reply-To: <1605672156-29051-1-git-send-email-kaixuxia@tencent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011180065
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011180065
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201118095013.16094-2-olivier.moysan@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/11/20 12:02 pm, xiakaixu1987@gmail.com wrote:
-> From: Kaixu Xia <kaixuxia@tencent.com>
+On Wed, Nov 18, 2020 at 10:50:12AM +0100, Olivier Moysan wrote:
+> Add STM32 SPDIFRX support by enabling CONFIG_SND_SOC_STM32_SPDIFRX
+> as module.
 > 
-> The variable ret is overwritten by the following variable defrag_count.
-> Actually the code should return EAGAIN when receiving a pending signal
-> in the defrag loops.
-> 
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 > ---
-> v2
->   -return EAGAIN instead of remove the EAGAIN error.
-
-  Sorry I might have missed in v1. Why was EAGAIN needed here?
-  Return of defrag_count rather makes sense to me as of now.
-
-Thanks, Anand
-
-> 
->   fs/btrfs/ioctl.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 69a384145dc6..6f13db6d30bd 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -1519,7 +1519,7 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
->   		if (btrfs_defrag_cancelled(fs_info)) {
->   			btrfs_debug(fs_info, "defrag_file cancelled");
->   			ret = -EAGAIN;
-> -			break;
-> +			goto out_ra;
->   		}
->   
->   		if (!should_defrag_range(inode, (u64)i << PAGE_SHIFT,
+>  arch/arm/configs/multi_v7_defconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Best regards,
+Krzysztof
