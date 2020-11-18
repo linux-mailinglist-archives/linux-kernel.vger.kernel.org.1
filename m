@@ -2,56 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6DA2B7BF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 715DE2B7BF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbgKRK7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:59:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgKRK7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726883AbgKRK7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 18 Nov 2020 05:59:19 -0500
-Received: from localhost (unknown [122.171.203.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 318FB221FB;
-        Wed, 18 Nov 2020 10:59:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605697159;
-        bh=ZpfavT36F0f47AvlCCvAzoFPIHcMHHWJELItBg0XM4A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=le7o9svlhciRZg9yMw/kElDk+Y/oVG9O6IIdDeP9idL8+DPgVc2J+7ImYHeLOjzfT
-         A64viIGANaoJ65x7I0ZazQf6XRo2M2NZi1vkLSbNtf0XpAaywAbv7IQEAXqkIWf0t2
-         ieyAfnrJyQbyQjK0khlFfycCctiRoV6ZVzDT0TiM=
-Date:   Wed, 18 Nov 2020 16:29:14 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     tiny.windzz@gmail.com, dmaengine@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [RESEND PATCH 05/19] dmaengine: sun6i: Add support for A100 DMA
-Message-ID: <20201118105914.GO50232@vkoul-mobl>
-References: <cover.1604988979.git.frank@allwinnertech.com>
- <719852c6a9a597bd2e82d01a268ca02b9dee826c.1604988979.git.frank@allwinnertech.com>
+Received: from mail-io1-f72.google.com ([209.85.166.72]:50331 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgKRK7T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 05:59:19 -0500
+Received: by mail-io1-f72.google.com with SMTP id l14so959657ioj.17
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 02:59:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=sA9gdXw4t4IuhfSDdmYIEIjhjXhoEBhwIdCjL2ypdac=;
+        b=TKxrWZxN+imVX2TgFDCZ7IJ73gAdAu+APxKxwhut28ZS7vABgbJRLnvNiNBZS+lzNM
+         Y2JJGOMJv6c4U9TeK0gwg+n0llx+JZbtVLhgkdObeP/Wet0y/iVf8PZ/qgrnZkQXZbOg
+         UnHH+NwQldSRFgWivm+S/WK5ytoqOk7xI33EFN4lDUAa0/9Q63Aviz3p+337GCEoy8Wn
+         1JZxsUMTT9iFv2C8cA1nKU0xnzWdrONfyhfMNVnH47+7rA8cw/AWw9vDtjEjr9V3N/FO
+         QesIsOuZ2vaPZMeTAwnxh5Gd0PXPTARtatwy+eV2Aso++tbbTqUXD3bxIs1lVgkv4RMr
+         UZiQ==
+X-Gm-Message-State: AOAM533fOA5zjwI8X7m8lmuGa9SUEjvyo4DIW/ccWsPeiftCngkYojjz
+        JrNhXOGesgPgVzdREIylxPbzu+NZqZyEHVFIyIQrlcnOqXy9
+X-Google-Smtp-Source: ABdhPJzY2UXmJGIuyGnQxeo99Kf52HVL2fBE7080lmPCgCuQSiT1cFgQ53tDaHwNkqlJQgox3vDR+MWI1u/m2xCmN5RkAYXX6mZo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <719852c6a9a597bd2e82d01a268ca02b9dee826c.1604988979.git.frank@allwinnertech.com>
+X-Received: by 2002:a92:ba14:: with SMTP id o20mr16180289ili.76.1605697157983;
+ Wed, 18 Nov 2020 02:59:17 -0800 (PST)
+Date:   Wed, 18 Nov 2020 02:59:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b7f48605b45f80c5@google.com>
+Subject: WARNING in mptcp_reset_timer
+From:   syzbot <syzbot+42aa53dafb66a07e5a24@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        mptcp@lists.01.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-11-20, 14:28, Frank Lee wrote:
-> From: Yangtao Li <frank@allwinnertech.com>
-> 
-> The dma of a100 is similar to h6, with some minor changes to
-> support greater addressing capabilities.
-> 
-> Add support for it.
+Hello,
 
-Applied, thanks
+syzbot found the following issue on:
 
--- 
-~Vinod
+HEAD commit:    7c8ca812 Add linux-next specific files for 20201117
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14ccfce2500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ff4bc71371dc5b13
+dashboard link: https://syzkaller.appspot.com/bug?extid=42aa53dafb66a07e5a24
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1342e36e500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f29bba500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+42aa53dafb66a07e5a24@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8718 at net/mptcp/protocol.c:719 mptcp_reset_timer+0x12a/0x160 net/mptcp/protocol.c:719
+Modules linked in:
+CPU: 1 PID: 8718 Comm: kworker/1:3 Not tainted 5.10.0-rc4-next-20201117-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events mptcp_worker
+RIP: 0010:mptcp_reset_timer+0x12a/0x160 net/mptcp/protocol.c:719
+Code: e8 0b 87 43 fe e8 46 71 c5 f8 48 b8 00 00 00 00 00 fc ff df 48 c7 04 03 00 00 00 00 48 83 c4 40 5b 5d 41 5c c3 e8 26 71 c5 f8 <0f> 0b 41 bc 14 00 00 00 eb 98 e8 c7 d3 07 f9 e9 30 ff ff ff 48 c7
+RSP: 0018:ffffc90001adfa38 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 1ffff9200035bf47 RCX: ffffffff88ab2357
+RDX: ffff88801ae14f80 RSI: ffffffff88ab23ba RDI: 0000000000000007
+RBP: ffff888024200000 R08: 0000000000000000 R09: ffff88802420084f
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000281400 R14: ffff888024200000 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f994238f010 CR3: 0000000028d92000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ mptcp_push_pending+0x1351/0x17c0 net/mptcp/protocol.c:1266
+ mptcp_worker+0x385/0x1a10 net/mptcp/protocol.c:1877
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
