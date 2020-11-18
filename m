@@ -2,133 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C568D2B7A78
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 478A42B7A79
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgKRJfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgKRJfL (ORCPT
+        id S1726156AbgKRJf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:35:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34418 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725772AbgKRJf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:35:11 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A41FC061A4D
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:35:11 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfJro-0001VM-KB; Wed, 18 Nov 2020 10:35:08 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfJro-0007Ua-3f; Wed, 18 Nov 2020 10:35:08 +0100
-Date:   Wed, 18 Nov 2020 10:35:06 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Soham Biswas <sohambiswas41@gmail.com>, thierry.reding@gmail.com,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pwm: core: Use octal permission
-Message-ID: <20201118093506.srljfosnamxe5wwz@pengutronix.de>
-References: <20201117175452.26914-1-sohambiswas41@gmail.com>
- <20201117181214.GK1869941@dell>
- <CAMmt7eO5te05AuVC+MR-zLB-z+r9FCuJwtON=1QXXY2YwQG0eg@mail.gmail.com>
- <20201118085113.GO1869941@dell>
+        Wed, 18 Nov 2020 04:35:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605692157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u7oDgWHxu4+MRhAydEZNRlN5kWaVQTY+ZlvNsq17iNM=;
+        b=CH9CFwjoKL4eo+aKdWmS4Q0g5+3K+oL+71T1k8SkoczkJPUE0tdZIXB54MC3YavFCBrjHc
+        QYyX2SF/JsVmRnOLEUk1PRurWP2a2UhxFhH8V0iMMeYoc3cV3qZma3058Ztz4URtj9igUC
+        l4XtpB6KpdrAIBM/EDnGPyOagCzfJzc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-uJbNMfRqM3SELhkJ-tBYXw-1; Wed, 18 Nov 2020 04:35:53 -0500
+X-MC-Unique: uJbNMfRqM3SELhkJ-tBYXw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F31CB1028D41;
+        Wed, 18 Nov 2020 09:35:50 +0000 (UTC)
+Received: from krava (unknown [10.40.193.155])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 3DECF6B8E5;
+        Wed, 18 Nov 2020 09:35:46 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 10:35:45 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 06/24] perf tools: Add build_id__is_defined function
+Message-ID: <20201118093545.GB1414446@krava>
+References: <20201117110053.1303113-1-jolsa@kernel.org>
+ <20201117110053.1303113-7-jolsa@kernel.org>
+ <CAP-5=fUrf9Kq3XwKALSZut3M6NXtnJCAMw0Pe2rh8_31a7tX4w@mail.gmail.com>
+ <20201117205359.GJ1216482@krava>
+ <20201117233313.GD657351@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ohq2x4jqnsuhvgdo"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118085113.GO1869941@dell>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201117233313.GD657351@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ohq2x4jqnsuhvgdo
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Nov 18, 2020 at 08:51:13AM +0000, Lee Jones wrote:
-> On Tue, 17 Nov 2020, Soham Biswas wrote:
->=20
-> > This fixes the following warning:
-> >=20
-> > `drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
-> > not preferred. Consider using octal permissions '0444'.`
-> >=20
-> > generated by the following script:
-> >=20
-> > `./scripts/checkpatch.pl --file --terse drivers/pwm/core.c`
->=20
-> Oh, it's a checkpatch.pl thing.
->=20
-> You should definitely quote the warning and describe where it came
-> from in the commit log.
->=20
-> Not entirely sure what that warning is the result of.  Probably as
-> they're sightly harder to read and easier to get wrong.  Still, I'll
-> let Thierry decide whether the patch itself is suitable for inclusion
-> into the PWM core.
->=20
-> > On Tue, 17 Nov 2020 at 23:42, Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > On Tue, 17 Nov 2020, Soham Biswas wrote:
-> > >
-> > > > Fixed Warning.
-> > >
-> > > Which warning does this fix?
-> > >
-> > > > Replaced symbolic permission 'S_IRUGO' with octal permission '0444'.
-> > >
-> > > This is semantically equivalent.
-> > >
-> > > Not sure what and/or how this fixes anything.
-> > >
-> > > > Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
+On Tue, Nov 17, 2020 at 08:33:13PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Nov 17, 2020 at 09:53:59PM +0100, Jiri Olsa escreveu:
+> > On Tue, Nov 17, 2020 at 11:00:37AM -0800, Ian Rogers wrote:
+> > > On Tue, Nov 17, 2020 at 3:01 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > 
+> > > > Adding build_id__is_defined helper to check build id
+> > > > is defined and is != zero build id.
+> > > >
+> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > > > ---
-> > > >  drivers/pwm/core.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >  tools/perf/util/build-id.c | 7 +++++++
+> > > >  tools/perf/util/build-id.h | 1 +
+> > > >  2 files changed, 8 insertions(+)
 > > > >
-> > > > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> > > > index 1f16f5365d3c..a8eff4b3ee36 100644
-> > > > --- a/drivers/pwm/core.c
-> > > > +++ b/drivers/pwm/core.c
-> > > > @@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
-> > > >
-> > > >  static int __init pwm_debugfs_init(void)
-> > > >  {
-> > > > -     debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-> > > > +     debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
+> > > > diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+> > > > index 6b410c3d52dc..7d9ecc37849c 100644
+> > > > --- a/tools/perf/util/build-id.c
+> > > > +++ b/tools/perf/util/build-id.c
+> > > > @@ -912,3 +912,10 @@ void build_id__init(struct build_id *bid, const u8
+> > > > *data, size_t size)
+> > > >         memcpy(bid->data, data, size);
+> > > >         bid->size = size;
+> > > >  }
+> > > > +
+> > > > +bool build_id__is_defined(const struct build_id *bid)
+> > > > +{
+> > > > +       static u8 zero[BUILD_ID_SIZE];
+> > > > +
+> > > > +       return bid && bid->size ? memcmp(bid->data, &zero, bid->size) :
+> > > > false;
+> 
+> > > Fwiw, I find this method to test for zero a little hard to parse - I'm
+> > 
+> > heh, it's controversial one, Namhyung commented
+> > on this one in previous version, so I changed it ;-)
+> >   https://lore.kernel.org/lkml/CAM9d7cjjGjTN8sDgLZ1PoQZ-sUXWjnVaNdyOVE1yHxq46PrPkw@mail.gmail.com/
+> 
+> So, the kernel has an idiom for this in lib/string.c:
+> 
+> /**
+>  * memchr_inv - Find an unmatching character in an area of memory.
+>  * @start: The memory area
+>  * @c: Find a character other than c
+>  * @bytes: The size of the area.
+>  *
+>  * returns the address of the first character other than @c, or %NULL
+>  * if the whole buffer contains just @c.
+>  */
+> void *memchr_inv(const void *start, int c, size_t bytes)
+> 
+> No need for any array of some particular size :-)
 
-Actually I'd prefer keeping the symbolic name because this is easier to
-grep for. So to convince me a better reason than "checkpatch says so" is
-needed.
+ok, will check
 
-Best regards
-Uwe
+thanks,
+jirka
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ohq2x4jqnsuhvgdo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+06scACgkQwfwUeK3K
-7AlIXQgAgF8lWGCuUSzrwgut+6vGhG5KY6ME1zv3TbLjIqfz7pJ+Y3Umgc0SXkTV
-a6odi+6fKPG9TV9zZsDpUkra0wJq24pRw1+ilIa2B/WGDUBl7oIz8vd+jmZnHs+r
-uasgn/z3AxFXKeU9OS9suJGsCmnqGWsT6ciKy1ch70qf1ye7oyGzbggJrQC638d+
-s1qDjSGq63LsClzQc9hWng4ym3p36/NFpl2P5K6qxG0YIIWK3mvPWmedhZt5UMYJ
-VFW+ooMHPiLYIsvpiRWqomqOOls41bgiuCD78gnrjgseMH1a3mFXe3/sInBttw6a
-d6/5o2kNv5Jay7bxEdgJ6b3yF9W6uQ==
-=/okk
------END PGP SIGNATURE-----
-
---ohq2x4jqnsuhvgdo--
