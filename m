@@ -2,123 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533122B8672
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D712B8679
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgKRVRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:17:42 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:44223 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKRVRl (ORCPT
+        id S1726431AbgKRVUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:20:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726081AbgKRVUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:17:41 -0500
-Received: by mail-oi1-f193.google.com with SMTP id t16so3819186oie.11;
-        Wed, 18 Nov 2020 13:17:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CrO86IqWPbTbsc39/JXRXWCmzImNuk67BHzeZAf8HpM=;
-        b=fxk0HMYuEub6u1NeKeroTdNjuets4ePHKeVvWl2cojeS70rKuRJYWtYpuvwxAZsycJ
-         71gZ7U9wAjsSPTZXFLMrRwsgyud5AvtL8LSUa56mDS9mnU1ZRL4tUpiuXtLYvS/89S7p
-         ounP+9hcRMeuLzAbTekzFTf+jBu+NfeMie1SZyAqnEZomMydW7lmhV8G2hgktl+lWG6s
-         6xD6LdYk+YvaT3EyCvyfUj3GjVLy6LCxcppp08WO4QP4gGExAFG7jIzMAbWCZLzpKapP
-         2vzNFPoZzT8nBVxCUAW6/C/ax+RFrfk7w2sME3Qq0TaspDET4JD1qVq0qXKIYosERc7g
-         0jCw==
-X-Gm-Message-State: AOAM531KkTj0P12DRieIHIxYcSWUt4ATaPMb9191qYuPYzuv14cgAo99
-        US9+fvv5TEFQ/AU/5Uo5TTPJDe/Q/w==
-X-Google-Smtp-Source: ABdhPJy2LH7KNJfnAqtIiOaBIWsRT+PWtGAfzx9WCDFVCR2EG1cgHL21bS++4cjS441xxMV8OhUucQ==
-X-Received: by 2002:aca:5710:: with SMTP id l16mr795508oib.24.1605734260797;
-        Wed, 18 Nov 2020 13:17:40 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u66sm873142otb.48.2020.11.18.13.17.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 13:17:39 -0800 (PST)
-Received: (nullmailer pid 1831435 invoked by uid 1000);
-        Wed, 18 Nov 2020 21:17:34 -0000
-Date:   Wed, 18 Nov 2020 15:17:34 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Hector Yuan <hector.yuan@mediatek.com>,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH v2] dt-bindings: dvfs: Add support for generic
- performance domains
-Message-ID: <20201118211734.GA1827746@bogus>
-References: <20201116181356.804590-1-sudeep.holla@arm.com>
+        Wed, 18 Nov 2020 16:20:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605734402;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hPDK1qDHk8vljOAuMZiYLsolHOK0umGXtBlKfodHMLs=;
+        b=c7+ZLFjy4evyrZpfqQqYfiE8xZ78hvQriqw39lRqLsqc3R763tduMr3Yuhl2/NjA8Rg9Kh
+        bN1+h/3j3OOiZDIvSikCZQzSK0iW0OlNpRAFYO0ntJ3OypP9U5wW806AnoV29RHupw8cKS
+        EA9jvFJGH/qU6vxJxbCvgb8hXXzGIJM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-161-2mxtWGWANNq2FZaXljj6oQ-1; Wed, 18 Nov 2020 16:19:59 -0500
+X-MC-Unique: 2mxtWGWANNq2FZaXljj6oQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 79E3A8143EB;
+        Wed, 18 Nov 2020 21:19:58 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 548ED5C1A3;
+        Wed, 18 Nov 2020 21:19:58 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 16:19:57 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Alasdair G Kergon <agk@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the
+ device-mapper tree
+Message-ID: <20201118211957.GA2203@redhat.com>
+References: <20201119074717.79d94aba@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201116181356.804590-1-sudeep.holla@arm.com>
+In-Reply-To: <20201119074717.79d94aba@canb.auug.org.au>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 18:13:56 +0000, Sudeep Holla wrote:
-> The CLKSCREW attack [0] exposed security vulnerabilities in energy management
-> implementations where untrusted software had direct access to clock and
-> voltage hardware controls. In this attack, the malicious software was able to
-> place the platform into unsafe overclocked or undervolted configurations. Such
-> configurations then enabled the injection of predictable faults to reveal
-> secrets.
-> 
-> Many Arm-based systems used to or still use voltage regulator and clock
-> frameworks in the kernel. These frameworks allow callers to independently
-> manipulate frequency and voltage settings. Such implementations can render
-> systems susceptible to this form of attack.
-> 
-> Attacks such as CLKSCREW are now being mitigated by not having direct and
-> independent control of clock and voltage in the kernel and moving that
-> control to a trusted entity, such as the SCP firmware or secure world
-> firmware/software which are to perform sanity checking on the requested
-> performance levels, thereby preventing any attempted malicious programming.
-> 
-> With the advent of such an abstraction, there is a need to replace the
-> generic clock and regulator bindings used by such devices with a generic
-> performance domains bindings.
-> 
-> [0] https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang
-> 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  .../bindings/dvfs/performance-domain.yaml     | 76 +++++++++++++++++++
->  1 file changed, 76 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dvfs/performance-domain.yaml
-> 
-> v1[1]->v2:
-> 	- Changed to Dual License
-> 	- Added select: true, enum for #performance-domain-cells and
-> 	  $ref for performance-domain
-> 	- Changed the example to use real existing compatibles instead
-> 	  of made-up ones
-> 
-> [1] https://lore.kernel.org/lkml/20201105173539.1426301-1-sudeep.holla@arm.com
-> 
+On Wed, Nov 18 2020 at  3:47pm -0500,
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
+> Hi all,
+> 
+> Commit
+> 
+>   a1e4865b4dda ("dm writecache: remove BUG() and fail gracefully instead")
+> 
+> is missing a Signed-off-by from its author.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Thanks, because I went in a different direction on the code changes I
+adjusted author via rebase in my local branch to be me.. but when I
+pushed it, it reverted back to being Randy as author on the remote
+branch. Turns out the rebase needed to be --continue'd.
 
-yamllint warnings/errors:
+Anyway, it should be all set now.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/ata/pata-common.example.dt.yaml: /: '#performance-domain-cells' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/ata/sata-common.example.dt.yaml: /: '#performance-domain-cells' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/ata/allwinner,sun8i-r40-ahci.example.dt.yaml: /: '#performance-domain-cells' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/ata/allwinner,sun8i-r40-ahci.example.dt.yaml: example-0: '#performance-domain-cells' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/ata/allwinner,sun8i-r40-ahci.example.dt.yaml: sata@1c18000: '#performance-domain-cells' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/ata/imx-sata.example.dt.yaml: /: '#performance-domain-cells' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
-
-and on and on...
-
+Thanks,
+Mike
 
