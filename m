@@ -2,248 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC62D2B7622
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7AC2B762C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgKRGEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 01:04:55 -0500
-Received: from mga04.intel.com ([192.55.52.120]:13150 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725787AbgKRGEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 01:04:55 -0500
-IronPort-SDR: 58MaGMmt6WKmYLR+94A6s6C7p9lwS5R3QtZ/8iWWE9vSqIknP6WtT1ymJNOP9/uv7gEv3JKfNz
- Unnkt0C3BZpQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="168498586"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="168498586"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 22:04:53 -0800
-IronPort-SDR: F2/9Cai2wDQDTKCuOOPEN3xnksgZ85vos5KHDXwqW2airwPqdqeh1qFhLwGoFUTjhZXio4U1Tk
- qkxvBtf4Lw9A==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="544357568"
-Received: from chimtrax-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.222])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 22:04:52 -0800
-Subject: Re: [PATCH v11 14/16] PCI/AER: Add pcie_walk_rcec() to RCEC AER
- handling
-To:     Sean V Kelley <sean.v.kelley@intel.com>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, xerces.zhao@gmail.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201117191954.1322844-1-sean.v.kelley@intel.com>
- <20201117191954.1322844-15-sean.v.kelley@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <9e88e209-8d3a-5b15-5463-350ae661daa3@linux.intel.com>
-Date:   Tue, 17 Nov 2020 22:04:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726289AbgKRGMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 01:12:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKRGMD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 01:12:03 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4015BC0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 22:12:03 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id f23so1116276ejk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 22:12:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gJ6Vhuy+iXRZiJNmZErzY7JnP8xPIvyRkVGtF53N6s8=;
+        b=lf3bo8vJQQkAXT4raPezDGDIQLQWVRKOHAv0Di1iRBl5nAmkC9YOboQY+PTlB8J7wT
+         TKBu74Xez0J03TDxUXi3Fthn0S10A+/j9ibTzO68k3IXIBTTGgW2u7mzhL4/pcGUG3uJ
+         sdAAZpl5hxFhKxzf1HqPAwT5kGHJ0mv3nS7STDlw92u+qlRqlaTpLfWipaDUpNewEKpE
+         3Xpq1i4C1z64OjlGVq62nxpiGV4NS4UpL9KuIh8s3PY7PT1eb5Yaz4yuWCOKqLaaYNPz
+         w5/WLaDyWRj7WvrUEjPIiYf2UHrxPcUB052pi6Ap+tSLWPEvZpjKYfOLYZxh7OuXczvx
+         1IqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gJ6Vhuy+iXRZiJNmZErzY7JnP8xPIvyRkVGtF53N6s8=;
+        b=D8mpcgG3eVJtlOL0JavEROoJAhT2ef1iRhUarF9eeoOyn4Iikp8/A28CIIE3KcVajn
+         ZOVs3sZWXprbluGOBUvEo6hRnx5eED+xoveg6Ia/IAWHDcwmOERmqFlXwvMwsVr4033H
+         EL4ATFPJdE9GNvJOUQgWjX8weriOfmZYZ1YiDF30cSCNAX5ddzUnlrOsxI9w886objda
+         FFEYq+V6Hro/lrWtrljJ84ya3TjXTzD7O2oZ9sblTnspsnTmLEvWr72iwMPkIp66CMuX
+         QwV8nH+LiJXnWJ6sY9wPQqIG/jdklW3Z5MoVNN93yHJbHO44kgMT1+W5Bkcut4IEnrU/
+         6+Fg==
+X-Gm-Message-State: AOAM533qp+mj9YzNVbvcKzgl5BxMLEYCtlM5dU03iUijOzCF/qROmsuB
+        INRPbDPIyfdFN1Y26RwVXFpkXpLRVz+6uIgnVZQynQhnEAoHCPin
+X-Google-Smtp-Source: ABdhPJzxPS3/BmwqqokOzxQFyGx/yp9qLjwisVYjO1DPNIAXMOkMER7XlYY/gbH3NVKWvYAmpOx1m93rJFhdL3DuMeg=
+X-Received: by 2002:a17:906:6987:: with SMTP id i7mr24210882ejr.18.1605679919620;
+ Tue, 17 Nov 2020 22:11:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201117191954.1322844-15-sean.v.kelley@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CA+G9fYtwycbC+Hf9aP5Br8wq7cKWVqjhcGusn2DbJaNauGC3Og@mail.gmail.com>
+In-Reply-To: <CA+G9fYtwycbC+Hf9aP5Br8wq7cKWVqjhcGusn2DbJaNauGC3Og@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 18 Nov 2020 11:41:48 +0530
+Message-ID: <CA+G9fYsfEVK86ask=fL=M5juerbz+BwbFGcAZ_UxWrPHXYpA1Q@mail.gmail.com>
+Subject: Re: WARNING: kernel/irq/chip.c:242 __irq_startup+0xa8/0xb0
+To:     open list <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 13 Oct 2020 at 11:09, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> On stable rc  5.8.15 the following kernel warning was noticed once
+> while boot and this is hard to reproduce.
+
+This is now reproduciable on arm64 NXP ls2088 device
+
+[   19.980839] ------------[ cut here ]------------
+[   19.985468] WARNING: CPU: 1 PID: 441 at kernel/irq/chip.c:242
+__irq_startup+0x9c/0xa8
+[   19.985472] Modules linked in: rfkill lm90 ina2xx crct10dif_ce
+qoriq_thermal fuse
+[   20.000773] CPU: 1 PID: 441 Comm: (agetty) Not tainted 5.4.78-rc1 #2
+[   20.000775] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
+[   20.000779] pstate: 60000085 (nZCv daIf -PAN -UAO)
+[   20.018253] pc : __irq_startup+0x9c/0xa8
+[   20.018256] lr : irq_startup+0x64/0x130
+[   20.018259] sp : ffff80001122f8e0
+[   20.029303] x29: ffff80001122f8e0 x28: ffff0082c242d400
+[   20.029306] x27: ffffdd0f47234768 x26: 0000000000020902
+[   20.029309] x25: ffffdd0f461a6f10 x24: ffffdd0f461a6bc8
+[   20.029311] x23: 0000000000000000 x22: 0000000000000001
+[   20.029314] x21: 0000000000000001 x20: ffff0082c22f8780
+[   20.029316] x19: ffff0082c1060800 x18: 0000000000000001
+[   20.029318] x17: 0000000000000000 x16: ffff8000114a0000
+[   20.029321] x15: 0000000000000000 x14: ffff0082c0e92f90
+[   20.071738] x13: ffff0082c0e93080 x12: ffff800011460000
+[   20.071741] x11: dead000000000100 x10: 0000000000000040
+[   20.071743] x9 : ffffdd0f47093ba8 x8 : ffffdd0f47093ba0
+[   20.087653] x7 : ffff0082a00002b0 x6 : ffffdd0f47074958
+[   20.087655] x5 : ffffdd0f47074000 x4 : ffff800011230000
+[   20.087657] x3 : 0000000000000504 x2 : 0000000000000001
+[   20.103567] x1 : 0000000003032004 x0 : ffff0082c1060858
+[   20.103570] Call trace:
+[   20.103573]  __irq_startup+0x9c/0xa8
+[   20.103577]  irq_startup+0x64/0x130
+[   20.118359]  __enable_irq+0x7c/0x88
+[   20.118362]  enable_irq+0x54/0xa8
+[   20.118367]  serial8250_do_startup+0x658/0x718
+[   20.118371]  serial8250_startup+0x38/0x48
+[   20.133589]  uart_startup.part.0+0x12c/0x2b8
+[   20.133592]  uart_port_activate+0x64/0x98
+[   20.133595]  tty_port_open+0x94/0x200
+[   20.133599]  uart_open+0x2c/0x40
+[   20.148730]  tty_open+0x108/0x438
+[   20.148734]  chrdev_open+0xa8/0x1a0
+[   20.148737]  do_dentry_open+0x118/0x3b8
+[   20.159348]  vfs_open+0x38/0x48
+[   20.159350]  path_openat+0x4c8/0x1290
+[   20.159353]  do_filp_open+0x84/0x108
+[   20.159357]  do_sys_open+0x180/0x228
+[   20.173271]  __arm64_sys_openat+0x2c/0x38
+[   20.173274]  el0_svc_handler+0x88/0x1c8
+[   20.173278]  el0_svc+0x8/0x1bc
+[   20.184148] ---[ end trace 736144791ac25035 ]---
 
 
-On 11/17/20 11:19 AM, Sean V Kelley wrote:
-> Root Complex Event Collectors (RCEC) appear as peers to Root Ports and also
-> have the AER capability. In addition, actions need to be taken for
-> associated RCiEPs. In such cases the RCECs will need to be walked in order
-> to find and act upon their respective RCiEPs.
-> 
-> Extend the existing ability to link the RCECs with a walking function
-> pcie_walk_rcec(). Add RCEC support to the current AER service driver and
-> attach the AER service driver to the RCEC device.
-> 
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> [bhelgaas: kernel doc, whitespace cleanup]
-> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Link: https://lore.kernel.org/r/20201002184735.1229220-13-seanvk.dev@oregontracks.org
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> ---
->   drivers/pci/pci.h       |  6 ++++++
->   drivers/pci/pcie/aer.c  | 29 ++++++++++++++++++++++-------
->   drivers/pci/pcie/rcec.c | 37 +++++++++++++++++++++++++++++++++++++
->   3 files changed, 65 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index ae2ee4df1cff..e988cc930d0b 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -473,10 +473,16 @@ static inline void pci_dpc_init(struct pci_dev *pdev) {}
->   void pci_rcec_init(struct pci_dev *dev);
->   void pci_rcec_exit(struct pci_dev *dev);
->   void pcie_link_rcec(struct pci_dev *rcec);
-> +void pcie_walk_rcec(struct pci_dev *rcec,
-> +		    int (*cb)(struct pci_dev *, void *),
-> +		    void *userdata);
->   #else
->   static inline void pci_rcec_init(struct pci_dev *dev) {}
->   static inline void pci_rcec_exit(struct pci_dev *dev) {}
->   static inline void pcie_link_rcec(struct pci_dev *rcec) {}
-> +static inline void pcie_walk_rcec(struct pci_dev *rcec,
-> +				  int (*cb)(struct pci_dev *, void *),
-> +				  void *userdata) {}
->   #endif
->   
->   #ifdef CONFIG_PCI_ATS
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 2869212af8b4..72723a1b67af 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -300,7 +300,8 @@ int pci_aer_raw_clear_status(struct pci_dev *dev)
->   		return -EIO;
->   
->   	port_type = pci_pcie_type(dev);
-> -	if (port_type == PCI_EXP_TYPE_ROOT_PORT) {
-> +	if (port_type == PCI_EXP_TYPE_ROOT_PORT ||
-> +	    port_type == PCI_EXP_TYPE_RC_EC) {
->   		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &status);
->   		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, status);
->   	}
-> @@ -595,7 +596,8 @@ static umode_t aer_stats_attrs_are_visible(struct kobject *kobj,
->   	if ((a == &dev_attr_aer_rootport_total_err_cor.attr ||
->   	     a == &dev_attr_aer_rootport_total_err_fatal.attr ||
->   	     a == &dev_attr_aer_rootport_total_err_nonfatal.attr) &&
-> -	    pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT)
-> +	    ((pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT) &&
-> +	     (pci_pcie_type(pdev) != PCI_EXP_TYPE_RC_EC)))
->   		return 0;
->   
->   	return a->mode;
-> @@ -916,7 +918,10 @@ static bool find_source_device(struct pci_dev *parent,
->   	if (result)
->   		return true;
->   
-> -	pci_walk_bus(parent->subordinate, find_device_iter, e_info);
-> +	if (pci_pcie_type(parent) == PCI_EXP_TYPE_RC_EC)
-> +		pcie_walk_rcec(parent, find_device_iter, e_info);
-> +	else
-> +		pci_walk_bus(parent->subordinate, find_device_iter, e_info);
->   
->   	if (!e_info->error_dev_num) {
->   		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
-> @@ -1053,6 +1058,7 @@ int aer_get_device_error_info(struct pci_dev *dev, struct aer_err_info *info)
->   		if (!(info->status & ~info->mask))
->   			return 0;
->   	} else if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
-> +		   pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC ||
->   	           pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM ||
->   		   info->severity == AER_NONFATAL) {
->   
-> @@ -1205,6 +1211,7 @@ static int set_device_error_reporting(struct pci_dev *dev, void *data)
->   	int type = pci_pcie_type(dev);
->   
->   	if ((type == PCI_EXP_TYPE_ROOT_PORT) ||
-> +	    (type == PCI_EXP_TYPE_RC_EC) ||
->   	    (type == PCI_EXP_TYPE_UPSTREAM) ||
->   	    (type == PCI_EXP_TYPE_DOWNSTREAM)) {
->   		if (enable)
-> @@ -1229,9 +1236,12 @@ static void set_downstream_devices_error_reporting(struct pci_dev *dev,
->   {
->   	set_device_error_reporting(dev, &enable);
->   
-> -	if (!dev->subordinate)
-> -		return;
-> -	pci_walk_bus(dev->subordinate, set_device_error_reporting, &enable);
-> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)
-> +		pcie_walk_rcec(dev, set_device_error_reporting, &enable);
-> +	else if (dev->subordinate)
-> +		pci_walk_bus(dev->subordinate, set_device_error_reporting,
-> +			     &enable);
-> +
->   }
->   
->   /**
-> @@ -1329,6 +1339,11 @@ static int aer_probe(struct pcie_device *dev)
->   	struct device *device = &dev->device;
->   	struct pci_dev *port = dev->port;
->   
-> +	/* Limit to Root Ports or Root Complex Event Collectors */
-> +	if ((pci_pcie_type(port) != PCI_EXP_TYPE_RC_EC) &&
-> +	    (pci_pcie_type(port) != PCI_EXP_TYPE_ROOT_PORT))
-> +		return -ENODEV;
-> +
->   	rpc = devm_kzalloc(device, sizeof(struct aer_rpc), GFP_KERNEL);
->   	if (!rpc)
->   		return -ENOMEM;
-> @@ -1409,7 +1424,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->   
->   static struct pcie_port_service_driver aerdriver = {
->   	.name		= "aer",
-> -	.port_type	= PCI_EXP_TYPE_ROOT_PORT,
-> +	.port_type	= PCIE_ANY_PORT,
->   	.service	= PCIE_PORT_SERVICE_AER,
->   
->   	.probe		= aer_probe,
-> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
-> index cdec277cbd62..2c5c552994e4 100644
-> --- a/drivers/pci/pcie/rcec.c
-> +++ b/drivers/pci/pcie/rcec.c
-> @@ -53,6 +53,18 @@ static int link_rcec_helper(struct pci_dev *dev, void *data)
->   	return 0;
->   }
->   
-> +static int walk_rcec_helper(struct pci_dev *dev, void *data)
-> +{
-> +	struct walk_rcec_data *rcec_data = data;
-> +	struct pci_dev *rcec = rcec_data->rcec;
-> +
-> +	if ((pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) &&
-> +	    rcec_assoc_rciep(rcec, dev))
-> +		rcec_data->user_callback(dev, rcec_data->user_data);
-> +
-> +	return 0;
-> +}
-> +
->   static void walk_rcec(int (*cb)(struct pci_dev *dev, void *data),
->   		      void *userdata)
->   {
-> @@ -109,6 +121,31 @@ void pcie_link_rcec(struct pci_dev *rcec)
->   	walk_rcec(link_rcec_helper, &rcec_data);
->   }
->   
-> +/**
-> + * pcie_walk_rcec - Walk RCiEP devices associating with RCEC and call callback.
-> + * @rcec:	RCEC whose RCiEP devices should be walked
-> + * @cb:		Callback to be called for each RCiEP device found
-> + * @userdata:	Arbitrary pointer to be passed to callback
-> + *
-> + * Walk the given RCEC. Call the callback on each RCiEP found.
-> + *
-> + * If @cb returns anything other than 0, break out.
-> + */
-> +void pcie_walk_rcec(struct pci_dev *rcec, int (*cb)(struct pci_dev *, void *),
-> +		    void *userdata)
-> +{
-> +	struct walk_rcec_data rcec_data;
-> +
-> +	if (!rcec->rcec_ea)
-> +		return;
-> +
-> +	rcec_data.rcec = rcec;
-> +	rcec_data.user_callback = cb;
-> +	rcec_data.user_data = userdata;
-> +
-> +	walk_rcec(walk_rcec_helper, &rcec_data);
-> +}
-> +
->   void pci_rcec_init(struct pci_dev *dev)
->   {
->   	struct rcec_ea *rcec_ea;
-> 
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+ref:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.77-152-ga3746663c347/testrun/3452654/suite/linux-log-parser/test/check-kernel-warning-139363/log
