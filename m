@@ -2,126 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816152B7FC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D92E32B7FCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbgKROq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 09:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        id S1727082AbgKROsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 09:48:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727158AbgKROq6 (ORCPT
+        with ESMTP id S1726344AbgKROsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:46:58 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D14AC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 06:46:58 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id u12so2528607wrt.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 06:46:58 -0800 (PST)
+        Wed, 18 Nov 2020 09:48:06 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A80FC0613D4;
+        Wed, 18 Nov 2020 06:48:06 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id r18so1340692pgu.6;
+        Wed, 18 Nov 2020 06:48:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=IkaU1T+8H3BSMi/OZIdt01pC83gmWoA2b6gexN813gY=;
-        b=ncYrEBRufOu2pip0jWLcl1ef6oGqS09gWhOhJ54VF5gFdvFz8zZ7Y9BBqOLCibxWZ5
-         1E7o5Khplrmn0qpZHHAvp8BeDAwF4wyH/2a12MXy+zEonpCvZJLEs7RKlwrcm/JDVmy/
-         Q85s7aTQi9nz8v/7Uv0kp0Rh+M61lgBVlp6oUWThWXhPCyW+hKuunIqbpCn8/8xtQCdR
-         bOuIoH07zddGkhTqGlsdrITJVuZDTFYfzSC0gOSy0YN2vLGWGXZUB5XWicp6PYXO/Q26
-         a55X4smDs3jwpOOIL9zy1BJRBOp2allN5kQyoZkcTwRlxjeqlzX7gpsCo936vL4EzikH
-         Vv9w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XpeXNv2DK2M3hwS0Spytct1KKHhQGCtOUMK4RpnJ4T4=;
+        b=sXKRhHCke3eRPk50KGQv6Dm7zUZ2LIT2cvvLaR1REP2SBUzFCa51DORMzw/Dee2EE4
+         6tTcCg29G1SfKDr/0kDT44Fg1Scri8gFoR9SOvIhGV+qsdI37gcBuuhfx6HOfD1kZvMt
+         8gX18KQ7+xB0tMvNSllHKUl46Uf8L9yzYdEOxUWZrFzrDIQm7hKFVwl/89cV+IozmZ2k
+         FKDZ3e4T5v1D1eM2zWAj62BmpJpcW3DyrQ0z6pMZQZFWkXxOODtvt/YwhVOzQzEiMaVs
+         +uGH+pAu5jlUWIQ6D4HdtcUpkOrpnAYMliaIt4o9gDQeG+lZBTIl0W4y6f6eDzlsxtyU
+         ubsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IkaU1T+8H3BSMi/OZIdt01pC83gmWoA2b6gexN813gY=;
-        b=Obrd7CSU846DGhlrOVWlhXL+Y/Pi1Ap+9H+D8uS064usk0+N+rVxAfOkzFGCzYPozk
-         /7WkIjJ5omiB8GuhR+KtboV8boVPUZOA2ohCHvDe4rhOJrn6nb0oDbI94lRUmn4SORoP
-         AI3avDpxH5dY5LnLj7lxJyC0egNG/omf+Muvn9cvjPCZoE1GJQZZJk8bkTcTo2hcHRR4
-         8Zyi0uNHnpdJmS1J6cYzKG4K+v3PHcoGUjNfU+rjabJFGwoxZ8xOKlHPOLqBgsKfB1d1
-         IT3utAWzbzHWEZrZo3AgFmGzasD1V7toPMB5iYBW/t/9LYAf5effQ+z4bf0Yip7TpG9v
-         ExYg==
-X-Gm-Message-State: AOAM5331OTpQlRzZhDv4PiXlihZbvLGP+fdLEWyPxVw359eToCdtsUwu
-        lrlIFgV0MoeVq4uBzlHYA+nSIw==
-X-Google-Smtp-Source: ABdhPJzmCg5rGmPl3TA4ofbkxIQA12zKJc4EMI8YdvXMd2K0LqWAP1eAwQh3GbWsxulnG/d1QlP1PQ==
-X-Received: by 2002:a05:6000:182:: with SMTP id p2mr5587590wrx.116.1605710817217;
-        Wed, 18 Nov 2020 06:46:57 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t20sm97700wmi.3.2020.11.18.06.46.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 06:46:56 -0800 (PST)
-Date:   Wed, 18 Nov 2020 14:46:54 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Soham Biswas <sohambiswas41@gmail.com>, thierry.reding@gmail.com,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pwm: core: Use octal permission
-Message-ID: <20201118144654.GU1869941@dell>
-References: <20201117175452.26914-1-sohambiswas41@gmail.com>
- <20201118135835.18395-1-sohambiswas41@gmail.com>
- <CAMmt7eMunjSvOQfaXofWY7Dz--Uim6MPf5WGcbn4D1s9=vMXHQ@mail.gmail.com>
- <20201118142156.uf5bfzq3sh3gliik@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XpeXNv2DK2M3hwS0Spytct1KKHhQGCtOUMK4RpnJ4T4=;
+        b=FqsoLt7BkzHJrJv2JFBryIJUm18FddV9RHpAIJLwUtM/qkGrQ/GAFjlHFXBO+R3gyL
+         q5OaJDqE18lgUteVgyg9RxwH/YmcC/jnCofcZyZ84tDAbQnOad0OAr+EIkBRqOX76q3n
+         Bnk1cSwv0H/tCahVbyGko7N6QPDYrG+rxameQiyCESlXLmkOyQQ+hH6S1euES4n1fkq3
+         uO2j0wrQyQ50LkANzLmLAaE+RRRzI2SpgEM2alAs0KisZH9SNqhWHm94aH6hizrdQGpF
+         yef3xEhj4fjzy8hBkyVMM44NJh2E1zJo2Axkt+pCYh3LOtrVX+ZN7gyQUBhaCwWjFZ1T
+         O8dg==
+X-Gm-Message-State: AOAM5320KbUK5ll9u/O0hjZZLszSDaiImb3+tO7StgAV/+8dNDCMUus6
+        0bTu/NlDRqCmL15fIe+vOg4tbkXwWcYM8c9HGAQ=
+X-Google-Smtp-Source: ABdhPJzSGjB9BpbeecitjRee4YqDw2HHNxVuU7+x+9SRyoua1EM4g9xUJZCWUVgpFQY106PoNZcvP39Irh4Bvzfi/zA=
+X-Received: by 2002:a63:d312:: with SMTP id b18mr8523077pgg.233.1605710885928;
+ Wed, 18 Nov 2020 06:48:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201118142156.uf5bfzq3sh3gliik@pengutronix.de>
+References: <20201118135919.1447-1-ms@dev.tdt.de>
+In-Reply-To: <20201118135919.1447-1-ms@dev.tdt.de>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Wed, 18 Nov 2020 06:47:55 -0800
+Message-ID: <CAJht_EPB5g5ahHrVCM+K8MZG9u5bmqfjpB9-UptTt+bWqhyHWw@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 0/6] net/x25: netdev event handling
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020, Uwe Kleine-König wrote:
+On Wed, Nov 18, 2020 at 5:59 AM Martin Schiller <ms@dev.tdt.de> wrote:
+>
+> ---
+> Changes to v2:
+> o restructure complete patch-set
+> o keep netdev event handling in layer3 (X.25)
 
-> On Wed, Nov 18, 2020 at 07:36:28PM +0530, Soham Biswas wrote:
-> > On Wed, 18 Nov 2020 at 19:29, Soham Biswas <sohambiswas41@gmail.com> wrote:
-> > >
-> > > Permission bits are easier readable in octal than with using the symbolic names.
-> > >
-> > > Fixes the following warning generated by checkpatch:
-> > >
-> > > drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are not preferred.
-> > > Consider using octal permissions '0444'.
-> > >
-> > > +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-> > >                             &pwm_debugfs_fops);
-> > >
-> > > Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
-> > > ---
-> > >  drivers/pwm/core.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> > > index 1f16f5365d3c..a8eff4b3ee36 100644
-> > > --- a/drivers/pwm/core.c
-> > > +++ b/drivers/pwm/core.c
-> > > @@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
-> > >
-> > >  static int __init pwm_debugfs_init(void)
-> > >  {
-> > > -       debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-> > > +       debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
-> > >                             &pwm_debugfs_fops);
-> > >
-> > >         return 0;
-> > >
-> > 
-> > I passed -v3 to git-send-email but it didn't work it seems.
-> 
-> It only works if you use it with a commit range I guess, i.e. when it
-> calls git-format-patch itself.
-> 
-> Also I think if you call checkpatch on your own patch (e.g. using:
-> 
-> 	git format-patch -v3 --stdout | scripts/checkpatch.pl
-> 
-> ) it will tell you to break the long line in the commit log.
+But... Won't it be better to handle L2 connections in L2 code?
 
-That's funny!  Although you can safely ignore that one.
+For example, if we are running X.25 over XOT, we can decide in the XOT
+layer whether and when we reconnect in case the TCP connection is
+dropped. We can decide how long we wait for responses before we
+consider the TCP connection to be dropped.
 
-I find it's better to keep errors/warnings whole.
+If we still want "on-demand" connections in certain L2's, we can also
+implement it in that L2 without the need to change L3.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Every L2 has its own characteristics. It might be better to let
+different L2's handle their connections in their own way. This gives
+L2 the flexibility to handle their connections according to their
+actual link characteristics.
+
+Letting L3 handle L2 connections also makes L2 code too related to /
+coupled with L3 code, which makes the logic complex.
+
+> o add patch to fix lapb_connect_request() for DCE
+> o add patch to handle carrier loss correctly in lapb
+> o drop patch for x25_neighbour param handling
+>   this may need fixes/cleanup and will be resubmitted later.
+>
+> Changes to v1:
+> o fix 'subject_prefix' and 'checkpatch' warnings
+>
+> ---
+>
+> Martin Schiller (6):
+>   net/x25: handle additional netdev events
+>   net/lapb: fix lapb_connect_request() for DCE
+>   net/lapb: handle carrier loss correctly
+>   net/lapb: fix t1 timer handling for DCE
+>   net/x25: fix restart request/confirm handling
+>   net/x25: remove x25_kill_by_device()
