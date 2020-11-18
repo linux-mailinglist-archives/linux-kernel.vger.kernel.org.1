@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91312B76AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FB62B76D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgKRHHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 02:07:08 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:49926 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgKRHHI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 02:07:08 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AI6s9ll084754;
-        Wed, 18 Nov 2020 07:06:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=W9Dn17eSP/nnht7DwPA04ZqWOvMUdMMYD9HsTapUw3s=;
- b=HvCdngw+jBC2wVcr6apwwhutpePCFVd7Cf1k8GW2LD6Oog+X6UzDlfOCBpR6fKrycYlp
- d5tj5PXuB7YJ4tGhNhXGvcW6TA9YIZbN5S8M9bHwE+5D9CJEnFfi1D8VhmYhYh9xdSz2
- FfgAI6Kle/tlC94VaJ7tnnvONZm6lJPtphpdxbe56YKn83zB5RU7d9fN4sIJw31f2kZw
- EuZNg6MtGKTVGwmh1xyBESF7UTXN9dtoZcCT/BXoF1zYPC8Y+quLic2Qhn9/osQzFyVt
- MCbAGd5DyOZkwAPX//rcad19iyVvzeteY352inR/ZvwPoZTt6215ikHmxGZUhYiS1Y8X Ig== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34t7vn6efx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 07:06:41 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AI6tIJI166456;
-        Wed, 18 Nov 2020 07:06:41 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 34umd076rk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Nov 2020 07:06:40 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AI76RxM012749;
-        Wed, 18 Nov 2020 07:06:31 GMT
-Received: from linux.home (/92.157.91.83)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 17 Nov 2020 23:06:27 -0800
-Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, jroedel@suse.de, konrad.wilk@oracle.com,
-        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
-        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
-        kuzuno@gmail.com
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116201711.GE1131@zn.tnic>
- <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
- <20201117165539.GG5719@zn.tnic>
- <890f6b7e-a268-2257-edcb-5eacc7db3d8e@oracle.com>
- <20201117182809.GK5719@zn.tnic>
- <33a1c6ee-0122-0b0c-ed2d-1578b29ef7c1@oracle.com>
- <20201117212307.GR5719@zn.tnic>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <1c39ebd0-2afd-5f51-ef48-ea3f378d8a0d@oracle.com>
-Date:   Wed, 18 Nov 2020 08:08:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726784AbgKRHRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 02:17:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726695AbgKRHRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 02:17:35 -0500
+Received: from wens.tw (mirror2.csie.ntu.edu.tw [140.112.30.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2806A2462E;
+        Wed, 18 Nov 2020 07:17:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605683854;
+        bh=bbEAIhpk175oqHWozTzC68bHohiYOtIa3Zj5+QlIjOM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OGIufOFfUeppMBAapTb2svWHqDXG9xrWw32kVvKGT+dSxAxplXLA1e9Aeee+h5qu5
+         JxLUbgcQbHV7wCHoqDYGkRLQNzatm35ZVK2iGWEE2oRmMd24Lswxa5Er1YSK7PRiVD
+         vF+ystZfHJcIPvxhgfUUYzMf1EV5/1SC1b21Rn2c=
+Received: by wens.tw (Postfix, from userid 1000)
+        id 741735FD01; Wed, 18 Nov 2020 15:17:31 +0800 (CST)
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Shawn Lin <shawn.lin@rock-chips.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
+        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v2 0/4] arm64: rockchip: Fix PCIe ep-gpios requirement and Add Nanopi M4B
+Date:   Wed, 18 Nov 2020 15:17:20 +0800
+Message-Id: <20201118071724.4866-1-wens@kernel.org>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-In-Reply-To: <20201117212307.GR5719@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
- spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011180047
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011180047
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Chen-Yu Tsai <wens@csie.org>
 
-On 11/17/20 10:23 PM, Borislav Petkov wrote:
-> On Tue, Nov 17, 2020 at 08:02:51PM +0100, Alexandre Chartre wrote:
->> No. This prevents the guest VM from gathering data from the host
->> kernel on the same cpu-thread. But there's no mitigation for a guest
->> VM running on a cpu-thread attacking another cpu-thread (which can be
->> running another guest VM or the host kernel) from the same cpu-core.
->> You cannot use flush/clear barriers because the two cpu-threads are
->> running in parallel.
-> 
-> Now there's your justification for why you're doing this. It took a
-> while...
-> 
-> The "why" should always be part of the 0th message to provide
-> reviewers/maintainers with answers to the question, what this pile of
-> patches is all about. Please always add this rationale to your patchset
-> in the future.
-> 
+Hi everyone,
 
-Sorry about that, I will definitively try to do better next time. :-}
+This is v2 of my Nanopi M4B series. Changes since v1 include:
 
-Thanks,
+  - Rewrite subject of patch 1 to match existing convention and reference
+    'ep-gpios' DT property instead of the 'ep_gpio' field
+ 
+This series mainly adds support for the new Nanopi M4B, which is a newer
+variant of the Nanopi M4.
 
-alex.
+The differences against the original Nanopi M4 that are common with the
+other M4V2 revision include:
+
+  - microphone header removed
+  - power button added
+  - recovery button added
+
+Additional changes specific to the M4B:
+
+  - USB 3.0 hub removed; board now has 2x USB 3.0 type-A ports and 2x
+    USB 2.0 ports
+  - ADB toggle switch added; this changes the top USB 3.0 host port to
+    a peripheral port
+  - Type-C port no longer supports data or PD
+  - WiFi/Bluetooth combo chip switched to AP6256, which supports BT 5.0
+    but only 1T1R (down from 2T2R) for WiFi
+
+While working on this, I found that for the M4 family, the PCIe reset
+pin (from the M.2 expansion board) was not wired to the SoC. Only the
+NanoPC T4 has this wired. This ended up in patches 1 and 3.
+
+Patch 1 makes ep_gpio in the Rockchip PCIe driver optional. This property
+is optional in the DT binding, so this just makes the driver adhere to
+the binding.
+
+Patch 2 adds a new compatible string for the new board.
+
+Patch 3 moves the ep-gpios property of the pcie controller from the
+common nanopi4.dtsi file to the nanopc-t4.dts file.
+
+Patch 4 adds a new device tree file for the new board. It includes the
+original device tree for the M4, and then lists the differences.
+
+Given that patch 3 would make PCIe unusable without patch 1, I suggest
+merging patch 1 through the PCI tree as a fix for 5.10, and the rest
+for 5.11 through the Rockchip tree.
+
+Please have a look. The changes are mostly trivial.
+
+
+Regards
+ChenYu
+
+Chen-Yu Tsai (4):
+  PCI: rockchip: Make 'ep-gpios' DT property optional
+  dt-bindings: arm: rockchip: Add FriendlyARM NanoPi M4B
+  arm64: dts: rockchip: nanopi4: Move ep-gpios property to nanopc-t4
+  arm64: dts: rockchip: rk3399: Add NanoPi M4B
+
+ .../devicetree/bindings/arm/rockchip.yaml     |  1 +
+ arch/arm64/boot/dts/rockchip/Makefile         |  1 +
+ .../boot/dts/rockchip/rk3399-nanopc-t4.dts    |  1 +
+ .../boot/dts/rockchip/rk3399-nanopi-m4b.dts   | 52 +++++++++++++++++++
+ .../boot/dts/rockchip/rk3399-nanopi4.dtsi     |  1 -
+ drivers/pci/controller/pcie-rockchip.c        |  2 +-
+ 6 files changed, 56 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts
+
+-- 
+2.29.1
+
