@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC96E2B744A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAA52B7454
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgKRCo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 21:44:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
+        id S1726544AbgKRCsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 21:48:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgKRCo0 (ORCPT
+        with ESMTP id S1726287AbgKRCsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 21:44:26 -0500
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A575C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:44:25 -0800 (PST)
-Received: by mail-vs1-xe44.google.com with SMTP id v6so197402vsd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:44:25 -0800 (PST)
+        Tue, 17 Nov 2020 21:48:41 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C236C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:48:41 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id f12so270600pjp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:48:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i1baSlx7+AuP0I6rzkrgeQ8LBxCjB7SE8APgJzoq8Tk=;
-        b=TTgZMsABcbK/0tR56BhY5Kc3aVCHk2MgelMbWKx9Xwhkr5Frty7saHuiqmPAxqBqh4
-         tClJ4m2IgA5rVTAuQyHfe049KsBCpdpoUZ+z7seEZFoCiR/ysG8XYEfemf/IP92tv4RG
-         jU2JG55ayurOrn831ogClu8q9WHNpZ6CZCteSQsxNvF4NSDu7mdR4XPgO1YPRfNKYZts
-         gliQu/cX/r8+X1HHYae48a84LeUPpoj7e5BBoxeqtQ8SGuRDU8W/gp12c8fO1i3LcKVu
-         PFPunEFubjhtDS2uuJeE3m45WK5kIyDYVjgpY7n/iOCCh7MLe8STHz8OEyujXi3Adsht
-         fU1g==
+        h=from:to:cc:subject:date:message-id;
+        bh=U0A4hiVticV1l5BqvGEE7R9HBABEK4fgnMLNNOiuBJg=;
+        b=KHefq22zv+bEgFPsZF2AFCWK/gy7NrJb5KRoX5dp6VQsNI57tjTAD5I2QHj9eWzLn9
+         0gXrKWkoVXXEWkTSgJX2fybMBtUVNNIA7i9jRpda+7rI2OdGRs3+f6lFHkBNm8024Dg3
+         xiGuldXdCNxplxosFCKcB2H7oYfSZiZ58Y6OYcno6uKscR0QOYObym68dNNeRDe8Oz8w
+         yYnL9rTMkLHmRjWyi1bInRM4mfG4y9v50oPqrgEbxEw+QM35ql4lRJA1d9n1a9T/x6Qu
+         Fc54vPLKwznPi3Czss4ku98tkj/5FNprZdSb4fKzNBjfLh8HI8V81WAfdy6/jyIOB++D
+         89rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i1baSlx7+AuP0I6rzkrgeQ8LBxCjB7SE8APgJzoq8Tk=;
-        b=e4I81ekIyCSUEgAQtoJPvxggpsPlp4TdqJV9WDo/jwrDtRk6/9PXtMR6k4vXz0FzzY
-         t2H86heMwgVHgmDJb3ArntYm4ZJ4sHbU0Hy9wROInSHGycGJZGC0ghsoeB5aCZ/nFnZT
-         SICzzuWaWR22UBziCPAUfd/RAQVWyFAEEwO0gZmacuZjLDnSRQ9ODRJpZdNi9A+PHy41
-         af0dl0/bP3NX7W/DYdfYvMBWfmYTE8NLxQfpo37GM4NJcDajJnA7bhFvPSRJuZ+k2WP6
-         2L7HxTsNFJ1jMpykjxh4J9ksjdcnG11g2yKXDmz4WsmQY2FOW6u4q0WMDL0oCj9T5c+F
-         08Jg==
-X-Gm-Message-State: AOAM5324YzEo61XDAy4sQaDt6/MygxR4E1qGkhrsWt5jolDQSvPl6vpX
-        M0YNGw9+aOnEk2WzQMoGl9+ojbPqaTApwKLOm62DsM83s28=
-X-Google-Smtp-Source: ABdhPJxxHA53i+lcdLKff/HqCsW/grer8JkoU730foAB0z0yMxezTLp9BJ0x6IGh+jGWE/i4nmTeGxMsZAFsAcIFFbY=
-X-Received: by 2002:a05:6102:3129:: with SMTP id f9mr2009802vsh.26.1605667464406;
- Tue, 17 Nov 2020 18:44:24 -0800 (PST)
-MIME-Version: 1.0
-References: <20201116220033.1837-1-urezki@gmail.com> <20201116220033.1837-2-urezki@gmail.com>
- <CAC=cRTN77LAn-9-6rGukc2aUZQzx7oP9eKt_hJeb=wbnhGqObQ@mail.gmail.com> <20201117130434.GA10769@pc636>
-In-Reply-To: <20201117130434.GA10769@pc636>
-From:   huang ying <huang.ying.caritas@gmail.com>
-Date:   Wed, 18 Nov 2020 10:44:13 +0800
-Message-ID: <CAC=cRTN-JyZKyFkRgC0BrBjnu4mMTJ_hXBYszJ9HLXaLqeMfgQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm/vmalloc: rework the drain logic
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=U0A4hiVticV1l5BqvGEE7R9HBABEK4fgnMLNNOiuBJg=;
+        b=IVb3v2kH8/Xj205bS6WI42ASQY88rL0rJ6SnPufFjJ6QPkl5oY1Imm1beDzBKHCmiT
+         PGu/Be+pwS5h+NibJ+b66G8z6I7mIdtPt+ce09loIGh2567xTQyvajXqdD7LgJeD8ZI6
+         aPI9Fz+zjHPN4ggyZv1hS98+F5YCJJn0D1ZhwGEW8IwKimtxnLxNiycdSFhlxSgfw/UT
+         QqeMKvUWghjFihPkLqkjGFvhOnMChY/GGDCVyK9SbLZRBpxJu0tGqzK/kLTP1OD/0AE4
+         e/BxKOcEKroOc8z0+BaiXgg7C9BXppnK4ikO48yHaAaqDHs7VinqS9UBn/fgNi9uoarP
+         H8CQ==
+X-Gm-Message-State: AOAM533AWdk9dVQ/ahnG9L1vFIzwclUMStgCGuiRz+omOWeUFesCUy02
+        SWu8kWjKobN6VkFAdqczOBw=
+X-Google-Smtp-Source: ABdhPJxIMw3Foqrh7O45iqPiJSYAeYwg1U0lRJyJOohG4ydpCZXYN0bwy+rQq4hzPFQUd25nsJBGeA==
+X-Received: by 2002:a17:902:bf43:b029:d6:8b99:3ca2 with SMTP id u3-20020a170902bf43b02900d68b993ca2mr2097731pls.43.1605667720900;
+        Tue, 17 Nov 2020 18:48:40 -0800 (PST)
+Received: from localhost.localdomain ([8.210.202.142])
+        by smtp.gmail.com with ESMTPSA id z3sm22970686pfj.219.2020.11.17.18.48.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Nov 2020 18:48:40 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     khilman@baylibre.com, narmstrong@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        p.zabel@pengutronix.de
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] soc: amlogic: replace devm_reset_control_array_get()
+Date:   Wed, 18 Nov 2020 10:48:20 +0800
+Message-Id: <1605667700-16681-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 9:04 PM Uladzislau Rezki <urezki@gmail.com> wrote:
->
-> On Tue, Nov 17, 2020 at 10:37:34AM +0800, huang ying wrote:
-> > On Tue, Nov 17, 2020 at 6:00 AM Uladzislau Rezki (Sony)
-> > <urezki@gmail.com> wrote:
-> > >
-> > > A current "lazy drain" model suffers from at least two issues.
-> > >
-> > > First one is related to the unsorted list of vmap areas, thus
-> > > in order to identify the [min:max] range of areas to be drained,
-> > > it requires a full list scan. What is a time consuming if the
-> > > list is too long.
-> > >
-> > > Second one and as a next step is about merging all fragments
-> > > with a free space. What is also a time consuming because it
-> > > has to iterate over entire list which holds outstanding lazy
-> > > areas.
-> > >
-> > > See below the "preemptirqsoff" tracer that illustrates a high
-> > > latency. It is ~24 676us. Our workloads like audio and video
-> > > are effected by such long latency:
-> >
-> > This seems like a real problem.  But I found there's long latency
-> > avoidance mechanism in the loop in __purge_vmap_area_lazy() as
-> > follows,
-> >
-> >         if (atomic_long_read(&vmap_lazy_nr) < resched_threshold)
-> >             cond_resched_lock(&free_vmap_area_lock);
-> >
-> I have added that "resched threshold" because of on my tests i could
-> simply hit out of memory, due to the fact that a drain work is not up
-> to speed to process such long outstanding list of vmap areas.
+devm_reset_control_array_get_exclusive() looks more readable
 
-OK.  Now I think I understand the problem.  For free area purging,
-there are multiple "producers" but one "consumer", and it lacks enough
-mechanism to slow down the "producers" if "consumer" can not catch up.
-And your patch tries to resolve the problem via accelerating the
-"consumer".
-That isn't perfect, but I think we may have quite some opportunities
-to merge the free areas, so it should just work.
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ drivers/soc/amlogic/meson-ee-pwrc.c     | 3 +--
+ drivers/soc/amlogic/meson-gx-pwrc-vpu.c | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-And I found the long latency avoidance logic in
-__purge_vmap_area_lazy() appears problematic,
+diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
+index ed7d2fb..50bf5d2 100644
+--- a/drivers/soc/amlogic/meson-ee-pwrc.c
++++ b/drivers/soc/amlogic/meson-ee-pwrc.c
+@@ -413,8 +413,7 @@ static int meson_ee_pwrc_init_domain(struct platform_device *pdev,
+ 			dev_warn(&pdev->dev, "Invalid resets count %d for domain %s\n",
+ 				 count, dom->desc.name);
+ 
+-		dom->rstc = devm_reset_control_array_get(&pdev->dev, false,
+-							 false);
++		dom->rstc = devm_reset_control_array_get_exclusive(&pdev->dev);
+ 		if (IS_ERR(dom->rstc))
+ 			return PTR_ERR(dom->rstc);
+ 	}
+diff --git a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
+index 8790627..b4615b2 100644
+--- a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
++++ b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
+@@ -304,7 +304,7 @@ static int meson_gx_pwrc_vpu_probe(struct platform_device *pdev)
+ 		return PTR_ERR(regmap_hhi);
+ 	}
+ 
+-	rstc = devm_reset_control_array_get(&pdev->dev, false, false);
++	rstc = devm_reset_control_array_get_exclusive(&pdev->dev);
+ 	if (IS_ERR(rstc)) {
+ 		if (PTR_ERR(rstc) != -EPROBE_DEFER)
+ 			dev_err(&pdev->dev, "failed to get reset lines\n");
+-- 
+1.9.1
 
-         if (atomic_long_read(&vmap_lazy_nr) < resched_threshold)
-             cond_resched_lock(&free_vmap_area_lock);
-
-Shouldn't it be something as follows?
-
-         if (i >= BATCH && atomic_long_read(&vmap_lazy_nr) <
-resched_threshold) {
-             cond_resched_lock(&free_vmap_area_lock);
-             i = 0;
-         } else
-             i++;
-
-This will accelerate the purging via batching and slow down vmalloc()
-via holding free_vmap_area_lock.  If it makes sense, can we try this?
-
-And, can we reduce lazy_max_pages() to control the length of the
-purging list?  It could be > 8K if the vmalloc/vfree size is small.
-
-Best Regards,
-Huang, Ying
