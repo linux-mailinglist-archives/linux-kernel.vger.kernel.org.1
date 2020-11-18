@@ -2,181 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E7E2B76D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B726D2B76E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgKRHTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 02:19:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbgKRHTz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 02:19:55 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21116C061A4F
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 23:19:55 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id y7so827007pfq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 23:19:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ogAqzoWb6CN+6DA0U4kbAuwXiWSIUBjOQhukqqaTMWo=;
-        b=U1GoIM1AdmuL58NN4XCeb2w7fxo0jF8vBuA/6z7kciUFM/PGFVLarqF/CD/rUGIBec
-         zCSqu8XcBIH4CRT4geHYFcs41uy7Bgjl8lZAURJb12FYD1rOAZWfJxBd7tLOaMZSqWPb
-         dw2Jxyk1mCon9uig7mYnxDhHOuLrjj+xNZXSYRLwO2ZIwGpBK0fExFQJ+eFhnRWmzbXl
-         rmlplR88Zi8UDPDZ1E61nCx3kjmec1UWS+rzNYI41VEigLg2LAxg3LnqKn9VKhQBUMRC
-         OYFMYYKm7LV71qkUKTr7vaxPjlEEeHrrpgQRK5KiDRdM6IFnwhQ5gg4VlyWGc9pCgW6Y
-         RUyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ogAqzoWb6CN+6DA0U4kbAuwXiWSIUBjOQhukqqaTMWo=;
-        b=ZtqqdvsJUU29HrNmhWW8j+W6zgGvuZPns4tXXgn4eVeQmPSoEwt6+TVoQwV4n/9v9d
-         ScbLWFPghhzpRy4lbXsdBFjefjf5MHGGSl8jqiMsJ+V0ftFhgyBFzu9T2S0MXqLDWiuE
-         AMPcbL5HfoP2W1vP8M/s4H9jlCGVxMyTAmTIjvuzmoO705THlkvsOycmX/bkVue8bFkw
-         ov/XAJVQnFJbnlrysKq8ru/tlQVtMZlvtdNBJOPWk+9zlU9T0sxv0sXR5hQ+GXuAnfPb
-         E6Hb95K/fl3XhSCsRsyCgxaEN+/GmMmSJgL8hLiaveBpoAucRiHMWZQ1csVC7sdsGLpN
-         qcpg==
-X-Gm-Message-State: AOAM530KuSRc5qozUD6RCLne/gHDlYzafIJ2wSFFGupENgGHM8aTDybd
-        NHPK+urlFUL2AD8kox0gL5tS
-X-Google-Smtp-Source: ABdhPJzKPAtFVRCbCKxNDq+2mj9Roy24FWwpRwKrKmMA9dbc3IHJxH1l9zjkYhMbcHX0Q0fTfEv3mA==
-X-Received: by 2002:a62:7e14:0:b029:18a:d515:dc47 with SMTP id z20-20020a627e140000b029018ad515dc47mr3552810pfc.78.1605683994282;
-        Tue, 17 Nov 2020 23:19:54 -0800 (PST)
-Received: from work ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id q23sm23942973pfg.192.2020.11.17.23.19.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 17 Nov 2020 23:19:53 -0800 (PST)
-Date:   Wed, 18 Nov 2020 12:49:47 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] mtd: parsers: Add Qcom SMEM parser
-Message-ID: <20201118071947.GB3286@work>
-References: <20201117174845.28684-1-manivannan.sadhasivam@linaro.org>
- <20201117174845.28684-3-manivannan.sadhasivam@linaro.org>
- <20201118042033.GH8532@builder.lan>
+        id S1726668AbgKRHYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 02:24:25 -0500
+Received: from mga14.intel.com ([192.55.52.115]:36414 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725970AbgKRHYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 02:24:25 -0500
+IronPort-SDR: gu47FGEuELdmIA8dc1ArNv8Fw9KVstc95xkUeU6jVHFKz4q5IZYEKinXcJSjBRoqitOX0+Natn
+ QvBwnUnDcaVQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="170295874"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="170295874"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 23:24:24 -0800
+IronPort-SDR: BsiBOsG3YoC8kWYgw7AnNj3AxlEgT5GXYQd/rjcdO0X2Tsv9X+fwB6g5J2xHBPD6fNjkki366w
+ CTcxQmcW0lWw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="368175742"
+Received: from lkp-server01.sh.intel.com (HELO 67f4f491ac3d) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Nov 2020 23:24:23 -0800
+Received: from kbuild by 67f4f491ac3d with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kfHpG-00001S-Qz; Wed, 18 Nov 2020 07:24:22 +0000
+Date:   Wed, 18 Nov 2020 15:23:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 09a217c10504bcaef911cf2af74e424338efe629
+Message-ID: <5fb4cbf4.j0kplrKeU6WlJvjZ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118042033.GH8532@builder.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:20:33PM -0600, Bjorn Andersson wrote:
-> On Tue 17 Nov 11:48 CST 2020, Manivannan Sadhasivam wrote:
-> 
-> > NAND based Qualcomm platforms have the partition table populated in the
-> > Shared Memory (SMEM). Hence, add a parser for parsing the partitions
-> > from it.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/mtd/parsers/Kconfig        |   8 ++
-> >  drivers/mtd/parsers/Makefile       |   1 +
-> >  drivers/mtd/parsers/qcomsmempart.c | 169 +++++++++++++++++++++++++++++
-> >  3 files changed, 178 insertions(+)
-> >  create mode 100644 drivers/mtd/parsers/qcomsmempart.c
-> > 
-> > diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-> > index e72354322f62..d90c30229052 100644
-> > --- a/drivers/mtd/parsers/Kconfig
-> > +++ b/drivers/mtd/parsers/Kconfig
-> > @@ -160,3 +160,11 @@ config MTD_REDBOOT_PARTS_READONLY
-> >  	  'FIS directory' images, enable this option.
-> >  
-> >  endif # MTD_REDBOOT_PARTS
-> > +
-> > +config MTD_QCOMSMEM_PARTS
-> > +	tristate "Qualcomm SMEM NAND flash partition parser"
-> > +	depends on MTD_NAND_QCOM || COMPILE_TEST
-> > +	depends on QCOM_SMEM
-> > +	help
-> > +	  This provides support for parsing partitions from Shared Memory (SMEM)
-> > +	  for NAND flash on Qualcomm platforms.
-> > diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-> > index b0c5f62f9e85..50eb0b0a2210 100644
-> > --- a/drivers/mtd/parsers/Makefile
-> > +++ b/drivers/mtd/parsers/Makefile
-> > @@ -9,3 +9,4 @@ obj-$(CONFIG_MTD_AFS_PARTS)		+= afs.o
-> >  obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
-> >  obj-$(CONFIG_MTD_SHARPSL_PARTS)		+= sharpslpart.o
-> >  obj-$(CONFIG_MTD_REDBOOT_PARTS)		+= redboot.o
-> > +obj-$(CONFIG_MTD_QCOMSMEM_PARTS)	+= qcomsmempart.o
-> > diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
-> > new file mode 100644
-> > index 000000000000..d8c2a3fa4dfe
-> > --- /dev/null
-> > +++ b/drivers/mtd/parsers/qcomsmempart.c
-> > @@ -0,0 +1,169 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Qualcomm SMEM NAND flash partition parser
-> > + *
-> > + * Copyright (C) 2020, Linaro Ltd.
-> > + */
-> > +
-> > +#include <linux/ctype.h>
-> > +#include <linux/module.h>
-> > +#include <linux/mtd/mtd.h>
-> > +#include <linux/mtd/partitions.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/soc/qcom/smem.h>
-> > +
-> > +#define SMEM_AARM_PARTITION_TABLE	9
-> > +#define SMEM_APPS			0
-> > +
-> > +#define SMEM_FLASH_PART_MAGIC1		0x55ee73aa
-> > +#define SMEM_FLASH_PART_MAGIC2		0xe35ebddb
-> > +#define SMEM_FLASH_PTABLE_V3		3
-> > +#define SMEM_FLASH_PTABLE_V4		4
-> > +#define SMEM_FLASH_PTABLE_MAX_PARTS_V3	16
-> > +#define SMEM_FLASH_PTABLE_MAX_PARTS_V4	48
-> > +#define SMEM_FLASH_PTABLE_HDR_LEN	(4 * sizeof(u32))
-> > +#define SMEM_FLASH_PTABLE_NAME_SIZE	16
-> > +
-> > +/**
-> > + * struct smem_flash_pentry - SMEM Flash partition entry
-> > + * @name: Name of the partition
-> > + * @offset: Offset in blocks
-> > + * @length: Length of the partition in blocks
-> > + * @attr: Flags for this partition
-> > + */
-> > +struct smem_flash_pentry {
-> > +	char name[SMEM_FLASH_PTABLE_NAME_SIZE];
-> > +	u32 offset;
-> 
-> It would be nice if you noted that these are little endian (using
-> __le32) and used le32_to_cpu() below.
-> 
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
+branch HEAD: 09a217c10504bcaef911cf2af74e424338efe629  x86/dumpstack: Make show_trace_log_lvl() static
 
-Good catch! Will do.
+elapsed time: 725m
 
-> Apart from that I think this looks really good.
-> 
+configs tested: 160
+configs skipped: 2
 
-[...]
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> > +	}
-> > +
-> > +	pr_debug("SMEM partition table found: ver: %d len: %d\n",
-> > +		 ptable->version, ptable->numparts);
-> > +	*pparts = parts;
-> > +
-> > +	return i;
-> 
-> Had to check a few times, but afaict this is just ptable->numparts in
-> disguise... So how about just writing that instead?
-> 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc836x_rdk_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                     tqm8540_defconfig
+sh                          rsk7201_defconfig
+nios2                         10m50_defconfig
+powerpc                       eiger_defconfig
+m68k                        mvme147_defconfig
+xtensa                          iss_defconfig
+mips                           ci20_defconfig
+powerpc                     mpc5200_defconfig
+m68k                            mac_defconfig
+arm                          tango4_defconfig
+arm                        spear3xx_defconfig
+arm                            hisi_defconfig
+arm                         assabet_defconfig
+powerpc                     kmeter1_defconfig
+sh                     sh7710voipgw_defconfig
+sh                         ecovec24_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arc                          axs101_defconfig
+c6x                        evmc6678_defconfig
+sh                        sh7785lcr_defconfig
+arm                          pxa910_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                          sdk7786_defconfig
+powerpc                     tqm8555_defconfig
+powerpc                     tqm8560_defconfig
+arm                         orion5x_defconfig
+powerpc                      mgcoge_defconfig
+mips                           mtx1_defconfig
+m68k                             allmodconfig
+sh                          landisk_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                        warp_defconfig
+arm                            u300_defconfig
+arm                         axm55xx_defconfig
+arm                         lpc18xx_defconfig
+arm                          moxart_defconfig
+arm                           u8500_defconfig
+arm                              alldefconfig
+um                           x86_64_defconfig
+powerpc                mpc7448_hpc2_defconfig
+sh                        edosk7705_defconfig
+sh                           se7780_defconfig
+arm                         shannon_defconfig
+h8300                       h8s-sim_defconfig
+sh                   sh7724_generic_defconfig
+powerpc                    klondike_defconfig
+powerpc                 mpc832x_mds_defconfig
+powerpc                    gamecube_defconfig
+arm                       mainstone_defconfig
+mips                       bmips_be_defconfig
+xtensa                       common_defconfig
+arm                        neponset_defconfig
+mips                malta_kvm_guest_defconfig
+powerpc                     redwood_defconfig
+mips                          rb532_defconfig
+h8300                    h8300h-sim_defconfig
+arc                          axs103_defconfig
+arc                                 defconfig
+nios2                               defconfig
+powerpc                    adder875_defconfig
+mips                     cu1000-neo_defconfig
+m68k                         amcore_defconfig
+mips                            e55_defconfig
+sh                            migor_defconfig
+arm                         socfpga_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sh                        edosk7760_defconfig
+sh                               j2_defconfig
+arm                          exynos_defconfig
+xtensa                  cadence_csp_defconfig
+mips                        workpad_defconfig
+mips                         tb0219_defconfig
+powerpc                     ppa8548_defconfig
+mips                         cobalt_defconfig
+microblaze                    nommu_defconfig
+arm                      tct_hammer_defconfig
+mips                         mpc30x_defconfig
+riscv                               defconfig
+powerpc                     skiroot_defconfig
+mips                      bmips_stb_defconfig
+s390                             alldefconfig
+arm                           h5000_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201117
+i386                 randconfig-a005-20201117
+i386                 randconfig-a001-20201117
+i386                 randconfig-a002-20201117
+i386                 randconfig-a004-20201117
+i386                 randconfig-a003-20201117
+x86_64               randconfig-a015-20201115
+x86_64               randconfig-a011-20201115
+x86_64               randconfig-a014-20201115
+x86_64               randconfig-a013-20201115
+x86_64               randconfig-a016-20201115
+x86_64               randconfig-a012-20201115
+i386                 randconfig-a012-20201117
+i386                 randconfig-a014-20201117
+i386                 randconfig-a016-20201117
+i386                 randconfig-a011-20201117
+i386                 randconfig-a015-20201117
+i386                 randconfig-a013-20201117
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Sure, will do.
+clang tested configs:
+x86_64               randconfig-a003-20201117
+x86_64               randconfig-a005-20201117
+x86_64               randconfig-a004-20201117
+x86_64               randconfig-a002-20201117
+x86_64               randconfig-a001-20201117
+x86_64               randconfig-a006-20201117
+x86_64               randconfig-a015-20201116
+x86_64               randconfig-a011-20201116
+x86_64               randconfig-a014-20201116
+x86_64               randconfig-a013-20201116
+x86_64               randconfig-a016-20201116
+x86_64               randconfig-a012-20201116
 
-Thanks,
-Mani
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
