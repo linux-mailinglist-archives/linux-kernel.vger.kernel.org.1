@@ -2,239 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A892B7E6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F33262B7E6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgKRNiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:38:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgKRNiB (ORCPT
+        id S1726524AbgKRNkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:40:06 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:44202 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgKRNkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:38:01 -0500
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC81FC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 05:37:59 -0800 (PST)
-Received: by mail-qv1-xf44.google.com with SMTP id v20so997999qvx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 05:37:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oL9ZE4upvJh/oljpGLb+sWVGETmgVz7ngr+ciRfT49k=;
-        b=l5TZbxeXgAkmWP/0QupXAj21lLzhwHFL71oJFi0ryBJTgN2cC1MaMXFrwCr+IoRqs0
-         jfPlLDkX+6FQ23YvwnK7igz5Stx0+NnzAYizy6pVLDWelaxH4jsY1/w9sug1o2/9apmy
-         w3fuMOplq9d3QDLbGQmAYX2RN7RMTRj+IEY0m1QlGLncnsyqERcC0VZdZx2/0VIfrU7X
-         9iq6JWZvpJo/RgnVfeGfEaDnWlmRWfvDjwSShZIpbVtil/YLM749Srvs6MdNfoEbkO0Y
-         EKc5HEUegjk9i57tY+F5Dw5KqkKLihh3Egr/jmYcM4ZSZz1F+TV+0aKYhDYPRDrEwGbo
-         bjRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oL9ZE4upvJh/oljpGLb+sWVGETmgVz7ngr+ciRfT49k=;
-        b=jYpkROvuzeiu8sTbxqNBGoZUrw83D9Qx7S5ri39HzQpROIm+WxyMxXdv8v7NEOaVqH
-         yyZoaDVEMSml3sZeEY4PS+edcLlFq5w6hVZ+wXL7tVkrpc2wsqDIrbQ/neeEbW3hJdCE
-         R6jClQJUvgNUDaG+EMqFFVSqanVDzdvn7LNveOAxiinQDCtgUhP0HQe5h+Ixl6FxJMrV
-         ahmW7lIpHOvsXrGSViVAmiGhC8rPKhUOaIH79NCzGui7hXJF1ZaSOwPoSnNE9JPmAhUj
-         jZC2dlARFLHFS3lKUfRaV3hqRWAwG6+n0k9kfJ+TaPunzhTP2t8ZRmWtJrGn1yqeVUCa
-         diag==
-X-Gm-Message-State: AOAM531cGoC2JBrPJ2ssj/um4BjyP7BDJTVxCAKayLdad3NOlDUskzKK
-        570itnP6FdivvA2X2kw41Lvfkg==
-X-Google-Smtp-Source: ABdhPJzXpJJdjKVdK0fjPS7bypm+rDnXdoigZ9/odAR+ixDpQu8oeaX5z0CA+4HrqTocRzqofwDkQA==
-X-Received: by 2002:a0c:bd19:: with SMTP id m25mr4930191qvg.52.1605706678862;
-        Wed, 18 Nov 2020 05:37:58 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id b8sm14904247qtx.73.2020.11.18.05.37.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 05:37:58 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kfNem-007jKp-VZ; Wed, 18 Nov 2020 09:37:57 -0400
-Date:   Wed, 18 Nov 2020 09:37:56 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     syzbot <syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com>,
-        leon@kernel.org
-Cc:     dledford@redhat.com, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, parav@mellanox.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: possible deadlock in _destroy_id
-Message-ID: <20201118133756.GK244516@ziepe.ca>
-References: <0000000000004129c705b45fa8f2@google.com>
+        Wed, 18 Nov 2020 08:40:05 -0500
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C4D449BF;
+        Wed, 18 Nov 2020 14:40:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1605706803;
+        bh=1geR/exmqMp91/LbjtCPKbAdQ0uy80PivlfD1KouC6M=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=f5JgRB3PcbggpnlgDTDW8VxQgAnICGfZvjkH+u5ntgxoYi0ovNw4Xb28eDtwoD3sL
+         dqhD19xVvqM8wKOyLNH+Tlcd5yaAph0dcWCbJ8b7vVKFU9BL1iyA9gg8KfKlEHV5B5
+         N1yPoHhmoer205R5VdqxHDlXtqzBV8Gku3pXoOt4=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v5 7/8] [DNI] arm64: dts: renesas: salvator-x-max9286:
+ Specify channel amplitude
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        sergei.shtylyov@gmail.com
+References: <20201116135305.81319-1-jacopo+renesas@jmondi.org>
+ <20201116135305.81319-8-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <71d9898f-2371-7c9d-e0da-cdec1b69ba0f@ideasonboard.com>
+Date:   Wed, 18 Nov 2020 13:40:00 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000004129c705b45fa8f2@google.com>
+In-Reply-To: <20201116135305.81319-8-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 03:10:21AM -0800, syzbot wrote:
+Hi Jacopo,
 
-> HEAD commit:    20529233 Add linux-next specific files for 20201118
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13093cf2500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2c4fb58b6526b3c1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1bc48bf7f78253f664a9
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
+On 16/11/2020 13:53, Jacopo Mondi wrote:
+> Use the newly introduced 'maxim,initial-reverse-channel-mV'
+> property to specify the initial reverse channel amplitude when
+> the remote serializers are pre-programmed with noise immunity threshold
+> enabled.
 > 
-> Unfortunately, I don't have any reproducer for this issue yet.
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-Oh? Is this because the error injection is too random?
- 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com
+Tested-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+
+
+> ---
+>  arch/arm64/boot/dts/renesas/salvator-x-max9286.dtsi | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> iwpm_register_pid: Unable to send a nlmsg (client = 2)
-> infiniband syz1: RDMA CMA: cma_listen_on_dev, error -98
-> ============================================
-> WARNING: possible recursive locking detected
-> 5.10.0-rc4-next-20201118-syzkaller #0 Not tainted
-> syz-executor.5/12844 is trying to acquire lock:
-> ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
-> ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
+> diff --git a/arch/arm64/boot/dts/renesas/salvator-x-max9286.dtsi b/arch/arm64/boot/dts/renesas/salvator-x-max9286.dtsi
+> index 6f4798859542..f14a133b7302 100644
+> --- a/arch/arm64/boot/dts/renesas/salvator-x-max9286.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/salvator-x-max9286.dtsi
+> @@ -128,6 +128,7 @@ gmsl-deserializer@4c {
+>  		compatible = "maxim,max9286";
+>  		reg = <0x4c>;
+>  		poc-supply = <&poc_12v>;
+> +		maxim,initial-reverse-channel-mV = <170>;
+>  
+>  		ports {
+>  			#address-cells = <1>;
+> @@ -263,6 +264,7 @@ gmsl-deserializer@6c {
+>  		compatible = "maxim,max9286";
+>  		reg = <0x6c>;
+>  		poc-supply = <&poc_12v>;
+> +		maxim,initial-reverse-channel-mV = <170>;
+>  
+>  		ports {
+>  			#address-cells = <1>;
 > 
-> but task is already holding lock:
-> ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
-
-Leon, this is caused by
-
-commit c80a0c52d85c49a910d0dc0e342e8d8898677dc0
-Author: Leon Romanovsky <leon@kernel.org>
-Date:   Wed Nov 4 16:40:07 2020 +0200
-
-    RDMA/cma: Add missing error handling of listen_id
-    
-    Don't silently continue if rdma_listen() fails but destroy previously
-    created CM_ID and return an error to the caller.
-
-rdma_destroy_id() can't be called while holding the global lock
-
-This is quite hard to fix. I came up with this ugly thing:
-
-From 8e6568f99fbe4bf734cc4e5dcda987e4ae118bdd Mon Sep 17 00:00:00 2001
-From: Jason Gunthorpe <jgg@nvidia.com>
-Date: Wed, 18 Nov 2020 09:33:23 -0400
-Subject: [PATCH] RDMA/cma: Fix deadlock on &lock in rdma_cma_listen_on_all()
- error unwind
-
-rdma_detroy_id() cannot be called under &lock - we must instead keep the
-error'd ID around until &lock can be released, then destory it.
-
-This is complicated by the usual way listen IDs are destroyed through
-cma_process_remove() which can run at any time and will asynchronously
-destroy the same ID.
-
-Remove the ID from visiblity of cma_process_remove() before going down the
-destroy path outside the locking.
-
-Fixes: c80a0c52d85c ("RDMA/cma: Add missing error handling of listen_id")
-Reported-by: syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
----
- drivers/infiniband/core/cma.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 4585f654f88369..c06c87a4dc5e7d 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2496,7 +2496,8 @@ static int cma_listen_handler(struct rdma_cm_id *id,
- }
- 
- static int cma_listen_on_dev(struct rdma_id_private *id_priv,
--			     struct cma_device *cma_dev)
-+			     struct cma_device *cma_dev,
-+			     struct rdma_id_private **to_destroy)
- {
- 	struct rdma_id_private *dev_id_priv;
- 	struct net *net = id_priv->id.route.addr.dev_addr.net;
-@@ -2504,6 +2505,7 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
- 
- 	lockdep_assert_held(&lock);
- 
-+	*to_destroy = NULL;
- 	if (cma_family(id_priv) == AF_IB && !rdma_cap_ib_cm(cma_dev->device, 1))
- 		return 0;
- 
-@@ -2518,7 +2520,6 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
- 	       rdma_addr_size(cma_src_addr(id_priv)));
- 
- 	_cma_attach_to_dev(dev_id_priv, cma_dev);
--	list_add_tail(&dev_id_priv->listen_list, &id_priv->listen_list);
- 	cma_id_get(id_priv);
- 	dev_id_priv->internal_id = 1;
- 	dev_id_priv->afonly = id_priv->afonly;
-@@ -2528,25 +2529,31 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
- 	ret = rdma_listen(&dev_id_priv->id, id_priv->backlog);
- 	if (ret)
- 		goto err_listen;
-+	list_add_tail(&dev_id_priv->listen_list, &id_priv->listen_list);
- 	return 0;
- err_listen:
--	list_del(&id_priv->listen_list);
-+	/* Caller must destroy this after releasing lock */
-+	*to_destroy = dev_id_priv;
- 	dev_warn(&cma_dev->device->dev, "RDMA CMA: %s, error %d\n", __func__, ret);
--	rdma_destroy_id(&dev_id_priv->id);
- 	return ret;
- }
- 
- static int cma_listen_on_all(struct rdma_id_private *id_priv)
- {
-+	struct rdma_id_private *to_destroy;
- 	struct cma_device *cma_dev;
- 	int ret;
- 
- 	mutex_lock(&lock);
- 	list_add_tail(&id_priv->list, &listen_any_list);
- 	list_for_each_entry(cma_dev, &dev_list, list) {
--		ret = cma_listen_on_dev(id_priv, cma_dev);
--		if (ret)
-+		ret = cma_listen_on_dev(id_priv, cma_dev, &to_destroy);
-+		if (ret) {
-+			/* Prevent racing with cma_process_remove() */
-+			if (to_destroy)
-+				list_del_init(&to_destroy->list);
- 			goto err_listen;
-+		}
- 	}
- 	mutex_unlock(&lock);
- 	return 0;
-@@ -2554,6 +2561,8 @@ static int cma_listen_on_all(struct rdma_id_private *id_priv)
- err_listen:
- 	list_del(&id_priv->list);
- 	mutex_unlock(&lock);
-+	if (to_destroy)
-+		rdma_destroy_id(&to_destroy->id);
- 	return ret;
- }
- 
-@@ -4855,6 +4864,7 @@ static void cma_process_remove(struct cma_device *cma_dev)
- 
- static int cma_add_one(struct ib_device *device)
- {
-+	struct rdma_id_private *to_destroy;
- 	struct cma_device *cma_dev;
- 	struct rdma_id_private *id_priv;
- 	unsigned int i;
-@@ -4902,7 +4912,7 @@ static int cma_add_one(struct ib_device *device)
- 	mutex_lock(&lock);
- 	list_add_tail(&cma_dev->list, &dev_list);
- 	list_for_each_entry(id_priv, &listen_any_list, list) {
--		ret = cma_listen_on_dev(id_priv, cma_dev);
-+		ret = cma_listen_on_dev(id_priv, cma_dev, &to_destroy);
- 		if (ret)
- 			goto free_listen;
- 	}
-@@ -4915,6 +4925,7 @@ static int cma_add_one(struct ib_device *device)
- 	list_del(&cma_dev->list);
- 	mutex_unlock(&lock);
- 
-+	/* cma_process_remove() will delete to_destroy */
- 	cma_process_remove(cma_dev);
- 	kfree(cma_dev->default_roce_tos);
- free_gid_type:
--- 
-2.29.2
 
