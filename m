@@ -2,67 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F2C2B7B96
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC5A2B7B9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727663AbgKRKqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:46:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7699 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgKRKqB (ORCPT
+        id S1727684AbgKRKqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:46:34 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:42085 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727065AbgKRKqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:46:01 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cbfbm5mLxzkY67;
-        Wed, 18 Nov 2020 18:45:40 +0800 (CST)
-Received: from [10.174.179.81] (10.174.179.81) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 18 Nov 2020 18:45:58 +0800
-Subject: Re: [PATCH] android/ion: fix error return code in opensocket()
-From:   "wanghai (M)" <wanghai38@huawei.com>
-To:     <shuah@kernel.org>, <pintu.ping@gmail.com>
-CC:     <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201118103918.58477-1-wanghai38@huawei.com>
-Message-ID: <b952e528-bf77-350f-c51a-a4e3fb22b198@huawei.com>
-Date:   Wed, 18 Nov 2020 18:45:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 18 Nov 2020 05:46:32 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 490921BF209;
+        Wed, 18 Nov 2020 10:46:28 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 11:46:28 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen.Hegelund@microchip.com
+Subject: Re: [PATCH v3 4/5] irqchip: ocelot: Add support for Serval platforms
+Message-ID: <20201118104628.GC4556@piout.net>
+References: <20201116162427.1727851-1-gregory.clement@bootlin.com>
+ <20201116162427.1727851-5-gregory.clement@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <20201118103918.58477-1-wanghai38@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.81]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116162427.1727851-5-gregory.clement@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a syntax problem with this patch, please ignore it!
+On 16/11/2020 17:24:26+0100, Gregory CLEMENT wrote:
+> This patch extends irqchip driver for ocelot to be used with an other
+> vcoreiii base platform: Serval.
+> 
+> Based on a larger patch from Lars Povlsen <lars.povlsen@microchip.com>
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-ÔÚ 2020/11/18 18:39, Wang Hai Ð´µÀ:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
->
-> Fixes: 47a18c42d992 ("android/ion: userspace test utility for ion buffer sharing")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 > ---
->   tools/testing/selftests/android/ion/ipcsocket.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/android/ion/ipcsocket.c b/tools/testing/selftests/android/ion/ipcsocket.c
-> index 7dc521002095..268e6b610357 100644
-> --- a/tools/testing/selftests/android/ion/ipcsocket.c
-> +++ b/tools/testing/selftests/android/ion/ipcsocket.c
-> @@ -28,8 +28,9 @@ int opensocket(int *sockfd, const char *name, int connecttype)
->   	}
->   
->   	*sockfd = ret;
-> -	if (setsockopt(*sockfd, SOL_SOCKET, SO_REUSEADDR,
-> -		(char *)&temp, sizeof(int)) < 0) {
-> +	ret = setsockopt(*sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)&temp,
-> +			 sizeof(int))
-> +	if (ret < 0) {
->   		fprintf(stderr, "<%s>: Failed setsockopt: <%s>\n",
->   		__func__, strerror(errno));
->   		goto err;
+>  drivers/irqchip/irq-mscc-ocelot.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/drivers/irqchip/irq-mscc-ocelot.c b/drivers/irqchip/irq-mscc-ocelot.c
+> index 9964800c53c2..584af3b0a9e2 100644
+> --- a/drivers/irqchip/irq-mscc-ocelot.c
+> +++ b/drivers/irqchip/irq-mscc-ocelot.c
+> @@ -44,6 +44,18 @@ static const struct chip_props ocelot_props = {
+>  	.n_irq			= 24,
+>  };
+>  
+> +static const struct chip_props serval_props = {
+> +	.flags			= FLAGS_HAS_TRIGGER,
+> +	.reg_off_sticky		= 0xc,
+> +	.reg_off_ena		= 0x14,
+> +	.reg_off_ena_clr	= 0x18,
+> +	.reg_off_ena_set	= 0x1c,
+> +	.reg_off_ident		= 0x20,
+> +	.reg_off_trigger	= 0x4,
+> +	.reg_off_force		= 0x8,
+> +	.n_irq			= 24,
+> +};
+> +
+>  static const struct chip_props luton_props = {
+>  	.flags			= FLAGS_NEED_INIT_ENABLE |
+>  				  FLAGS_FORCE_LUTON_STYLE,
+> @@ -210,6 +222,14 @@ static int __init ocelot_irq_init(struct device_node *node,
+>  
+>  IRQCHIP_DECLARE(ocelot_icpu, "mscc,ocelot-icpu-intr", ocelot_irq_init);
+>  
+> +static int __init serval_irq_init(struct device_node *node,
+> +				  struct device_node *parent)
+> +{
+> +	return vcoreiii_irq_init(node, parent, &serval_props);
+> +}
+> +
+> +IRQCHIP_DECLARE(serval_icpu, "mscc,serval-icpu-intr", serval_irq_init);
+> +
+>  static int __init luton_irq_init(struct device_node *node,
+>  				 struct device_node *parent)
+>  {
+> -- 
+> 2.29.2
+> 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
