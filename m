@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278902B874E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C50762B8774
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727423AbgKRWHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 17:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
+        id S1727560AbgKRWIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 17:08:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727372AbgKRWHv (ORCPT
+        with ESMTP id S1727396AbgKRWHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 17:07:51 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5E2C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:07:51 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id g20so2076272plj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:07:51 -0800 (PST)
+        Wed, 18 Nov 2020 17:07:53 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEAAC061A51
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:07:53 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id 60so2506253qvb.15
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:07:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=JUh1T9Q0UpH1P/k5MG3eyMCJDiIsKr/ZhdG3k4jEA2o=;
-        b=GNMm1MAVTepQmZAF77rlDYxsuCdPaSo7+Ez7SIfF2FWVLeWy9R3mFyHA2wPW466N3j
-         0SWe2Yq8j6EF83sMo6emozMTZ9ptK/gS+fCtk3yKY5a6UO91rxckJhgTq1xK04dt07lp
-         6p26tDJr7oc3rv4oRJ6DOnLzLhSn87edt2CqXiE7YNvlWSgL9o2LDhtNJDbcJBqeQQWd
-         0KEtkxJOmbT6JFsXb04tkZ4RCyVn70wiNpv4WilQN6L1DumoZp7goDqbL/XtjbAL/M99
-         v3kUtHqpOiXPTfFRq+tP2O4TBYERMP+NYokmuOLksHWs2A228Y+lQf9s5GUGTnt79xuC
-         A4GQ==
+        bh=bMl2xGwOyye8qFQQO5LhDpDmrDsCMs58eGZcnuWlmjA=;
+        b=Nd7GPjj0ywkFIgMBmhds53YYdSle4acSaIFPLbVd61W8stSkNuoz0WxEayV/OD+juR
+         7iFFwAf5WeBqFMYZtbNZKvYarFFEIh0TRBfk8yozSVYTyizaOQn7nV/yOM5qfxhN6W3x
+         F41WPEwVNkENBqTup7x2SW7FaXclkPY/jek8JoLFOskeSCczH+BvXJtXBg4dfeqkMd7O
+         5Jgsz0yx51vX7weJ6s9P7KIXrk46KNMTxH11C5CzpPEqWRCRyIwkXB16YTNgAiWSsV8M
+         KuNdy4S5hjgNwFDrtraKFHI+LKTEBWBcWNWdPZnYpkQRqJAXNOz0JKEptCIRYdyLVRVY
+         EmzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=JUh1T9Q0UpH1P/k5MG3eyMCJDiIsKr/ZhdG3k4jEA2o=;
-        b=I3TUL1q1mJrU6NvsL17szgaSFRh4EeH7K9jGXiyQVYVX0ktO884jp/eSpmmi7vNx72
-         siJtrNWCi6bCbblfPtT4Qu0zwdy7jYWRrE1HlUaHVv8QAh4GVWkY7yE985AnvliGVYNu
-         PIGRsalACNHeVzopsV/SnZ+k8amcvDQtuSgHymDamXrVmFAdu6dJeueNs/2E5+6/53+q
-         1EIyo9X5gRJQtxuKhQJXnV6EBXdFPIawruh0KNG/pIRJNjn/zFUtSOJUPf856UZfwAvS
-         tdZ0AqsE+rBugm8T+R6VvtIm9XZS2MTTFDeMDy9/ybWv4EbxIBnHOVr0oGNweifgJGQn
-         vnKg==
-X-Gm-Message-State: AOAM532TjCDud+PWvpNGygJ2cY0FkQb7lYiILDAc/DhJb4pw6BrzAeKx
-        qHcCgoI5ddiG679O+44e8lFQszO55eA1G8yMrVo=
-X-Google-Smtp-Source: ABdhPJxE6/lqSbIrIFD1BhHDD+bexarqDwW1+leKzxBz5MqxugP2bAoLKwReJ4geoR/cz0YhdybYAmKOwiK4l65zoYE=
+        bh=bMl2xGwOyye8qFQQO5LhDpDmrDsCMs58eGZcnuWlmjA=;
+        b=JNt5ey6kXTDDeoTHih6MZksPNNxx/LpGWUjbhEuJmZQDhu/cxdVSQ3I2QsJanDLfHY
+         OOmM7lglvI6bz6Y9fCXoNhL9B9UFbI31a/Il6jAdQP+KWB53YBe4E2aP1zSXNNOMO2TO
+         QLTbK6UpeT6Vwp8m7ntUBTvJeCyn0Z+fXbR9cBiS1yLsEPCcF43Px05GbwuAYFzExgEp
+         OU2/eYmU0nPOhP9pF5FcstcYKHZ4Q8rc36H3XVmFhOApaXkD9LASaivTL/hMFc3q4wAF
+         ZNj8oXzdmfycMqZ8CHu8EJn+M4/EoTqwN+FmInzYAOF8eXK6Yzs4uaWNneYwDQ6OtXPF
+         mv0w==
+X-Gm-Message-State: AOAM531XVjrdBmL2dnHeRM+wtAKMRblJBuIKHHpas5iL3lFBzD1ccVVJ
+        ehMpkNUrwWL8+hDkZHxNdPLRCKgYpox6YnLoBdY=
+X-Google-Smtp-Source: ABdhPJw3XblGH0ype4DsebvgJ6qN/grSpkQ1FW0TAdSpMqPujHMfKBlR5uzuC4pXuA1vl9up5ivNoLV3rdGadkF867U=
 Sender: "samitolvanen via sendgmr" 
         <samitolvanen@samitolvanen1.mtv.corp.google.com>
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:a17:90a:fb54:: with SMTP id
- iq20mr1047953pjb.111.1605737270583; Wed, 18 Nov 2020 14:07:50 -0800 (PST)
-Date:   Wed, 18 Nov 2020 14:07:22 -0800
+ (user=samitolvanen job=sendgmr) by 2002:a0c:a94b:: with SMTP id
+ z11mr3035952qva.24.1605737272927; Wed, 18 Nov 2020 14:07:52 -0800 (PST)
+Date:   Wed, 18 Nov 2020 14:07:23 -0800
 In-Reply-To: <20201118220731.925424-1-samitolvanen@google.com>
-Message-Id: <20201118220731.925424-9-samitolvanen@google.com>
+Message-Id: <20201118220731.925424-10-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20201118220731.925424-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v7 08/17] init: lto: fix PREL32 relocations
+Subject: [PATCH v7 09/17] PCI: Fix PREL32 relocations for LTO
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Masahiro Yamada <masahiroy@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -74,76 +74,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With LTO, the compiler can rename static functions to avoid global
-naming collisions. As initcall functions are typically static,
-renaming can break references to them in inline assembly. This
-change adds a global stub with a stable name for each initcall to
-fix the issue when PREL32 relocations are used.
+With Clang's Link Time Optimization (LTO), the compiler can rename
+static functions to avoid global naming collisions. As PCI fixup
+functions are typically static, renaming can break references
+to them in inline assembly. This change adds a global stub to
+DECLARE_PCI_FIXUP_SECTION to fix the issue when PREL32 relocations
+are used.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- include/linux/init.h | 31 +++++++++++++++++++++++++++----
- 1 file changed, 27 insertions(+), 4 deletions(-)
+ include/linux/pci.h | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/init.h b/include/linux/init.h
-index d466bea7ecba..27b9478dcdef 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -209,26 +209,49 @@ extern bool initcall_debug;
-  */
- #define __initcall_section(__sec, __iid)			\
- 	#__sec ".init.." #__iid
-+
-+/*
-+ * With LTO, the compiler can rename static functions to avoid
-+ * global naming collisions. We use a global stub function for
-+ * initcalls to create a stable symbol name whose address can be
-+ * taken in inline assembly when PREL32 relocations are used.
-+ */
-+#define __initcall_stub(fn, __iid, id)				\
-+	__initcall_name(initstub, __iid, id)
-+
-+#define __define_initcall_stub(__stub, fn)			\
-+	int __init __stub(void);				\
-+	int __init __stub(void)					\
-+	{ 							\
-+		return fn();					\
-+	}							\
-+	__ADDRESSABLE(__stub)
- #else
- #define __initcall_section(__sec, __iid)			\
- 	#__sec ".init"
-+
-+#define __initcall_stub(fn, __iid, id)	fn
-+
-+#define __define_initcall_stub(__stub, fn)			\
-+	__ADDRESSABLE(fn)
- #endif
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 22207a79762c..5b8505a5ca5f 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1912,19 +1912,28 @@ enum pci_fixup_pass {
+ };
  
  #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
--#define ____define_initcall(fn, __name, __sec)			\
--	__ADDRESSABLE(fn)					\
-+#define ____define_initcall(fn, __stub, __name, __sec)		\
-+	__define_initcall_stub(__stub, fn)			\
- 	asm(".section	\"" __sec "\", \"a\"		\n"	\
- 	    __stringify(__name) ":			\n"	\
--	    ".long	" #fn " - .			\n"	\
-+	    ".long	" __stringify(__stub) " - .	\n"	\
- 	    ".previous					\n");
+-#define __DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
+-				    class_shift, hook)			\
+-	__ADDRESSABLE(hook)						\
++#define ___DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
++				    class_shift, hook, stub)		\
++	void stub(struct pci_dev *dev);					\
++	void stub(struct pci_dev *dev)					\
++	{ 								\
++		hook(dev); 						\
++	}								\
+ 	asm(".section "	#sec ", \"a\"				\n"	\
+ 	    ".balign	16					\n"	\
+ 	    ".short "	#vendor ", " #device "			\n"	\
+ 	    ".long "	#class ", " #class_shift "		\n"	\
+-	    ".long "	#hook " - .				\n"	\
++	    ".long "	#stub " - .				\n"	\
+ 	    ".previous						\n");
++
++#define __DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
++				  class_shift, hook, stub)		\
++	___DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
++				  class_shift, hook, stub)
+ #define DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
+ 				  class_shift, hook)			\
+ 	__DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
+-				  class_shift, hook)
++				  class_shift, hook, __UNIQUE_ID(hook))
  #else
--#define ____define_initcall(fn, __name, __sec)			\
-+#define ____define_initcall(fn, __unused, __name, __sec)	\
- 	static initcall_t __name __used 			\
- 		__attribute__((__section__(__sec))) = fn;
- #endif
- 
- #define __unique_initcall(fn, id, __sec, __iid)			\
- 	____define_initcall(fn,					\
-+		__initcall_stub(fn, __iid, id),			\
- 		__initcall_name(initcall, __iid, id),		\
- 		__initcall_section(__sec, __iid))
- 
+ /* Anonymous variables would be nice... */
+ #define DECLARE_PCI_FIXUP_SECTION(section, name, vendor, device, class,	\
 -- 
 2.29.2.299.gdc1121823c-goog
 
