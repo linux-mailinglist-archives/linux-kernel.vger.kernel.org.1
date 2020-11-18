@@ -2,117 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D6A2B7967
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E4D2B796F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727443AbgKRItx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:49:53 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:10837 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727347AbgKRItw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:49:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605689392; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=8ubPeUbv9nGA17bHuaYj4qnBJnm2N8KJxhb4W1TPD4Q=;
- b=dHdveSGfVrstA4RADxlsGQnmriai8Rz25XilNO5ZNd2u8tlLsC/sy+TEQZKpkbLd5asKtiPk
- iVKX9qHkG/c0Y7J6/egzSjOGnLU1o0wkZdnHCslxQv+2dNiEqPwGnOFuvecbnEkYQ9lgperW
- 9P09NyCePpI3R1i/GjSsidJfU5o=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5fb4e02e309342b9149d05ef (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 08:49:50
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E5590C433ED; Wed, 18 Nov 2020 08:49:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 05AF5C433C6;
-        Wed, 18 Nov 2020 08:49:47 +0000 (UTC)
+        id S1727342AbgKRIvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:51:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbgKRIvQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:51:16 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A78C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 00:51:16 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id c17so1287172wrc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 00:51:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=cdTlLYpoqg49dJytKCngMw0Q/QviqDLm+/R80RdfooU=;
+        b=Gga3KWoYVZfDr07yxKSI+OzcScUs4GDiJQTw5BVHnFRVvdvIe3jmFXyOk/AC0jA1bF
+         mFzyVmgeVITsSycvHLBWC+NRbSBkgMXnnRVC2WG8+AT2p0qKzdnMJRrs2iye4hcZoO3E
+         NE5qJ7CO+t9obqci6xcSh7B/eMNfHCRlWDN6bRnUy8jUsYMuPLzCJkJCgAlocX98bOi0
+         aerNculhYVOSBkYIVqa2m8jMse+470XYeoZEyKFIwE/zGTUAnLIH88ET9jJ8beKNXr2k
+         yjdQA5QIrNpRgpaUIq9MF3W8ZS0i/mdxJDAtji5R2HwS+RrWSKWwPHh4/B3WVz+TxHdN
+         CR6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cdTlLYpoqg49dJytKCngMw0Q/QviqDLm+/R80RdfooU=;
+        b=pwy1HKrEXoVDR1M8JW49eSVaVkU/lGMKymEIgIfSzzISrGspycGyN8LI0Xm4tBxfCI
+         2IskxbGj9Nj08LQ8nPOhltfYjzD+4zXpu2m84A5fNAgUQdPYcYFm8/ieDx7O0hBAogEV
+         2sgDp3L559Jmk3fAq1q0f6Vl5RHP5woxYNDA02zzqlvyyPbKID40TLIQnt19EsU10NYZ
+         Iwy4h/Ih9r/Zj4XUXxSt9F8MZISh2BorZddEUfX4JJ7OjfmCfevc7kTQLCsmIZEcOk5l
+         fh9qEPuo0UodGnK4a+De3DFFDjcMOp0EVLqlYCYR3JLFS/HIBtjpTJYEjMqkfPUaXMkY
+         FXAw==
+X-Gm-Message-State: AOAM533i8mwbxef+tyK4ODioVFVB5kZ6uWlwhejOj70zqFeH7/WultEX
+        TR70grtorXEqNwJbRTPMmEewdg==
+X-Google-Smtp-Source: ABdhPJwWERf6qt3Q/4PwXA+tgR/h91DCBbx7+RMOUS5nVnmcEa0Rh+Bh6BZGr5p5uAhPdy3wtG1MAA==
+X-Received: by 2002:a5d:4f12:: with SMTP id c18mr3663146wru.304.1605689475334;
+        Wed, 18 Nov 2020 00:51:15 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id c2sm33963964wrf.68.2020.11.18.00.51.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 00:51:14 -0800 (PST)
+Date:   Wed, 18 Nov 2020 08:51:13 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Soham Biswas <sohambiswas41@gmail.com>
+Cc:     thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pwm: core: Use octal permission
+Message-ID: <20201118085113.GO1869941@dell>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+ <20201117181214.GK1869941@dell>
+ <CAMmt7eO5te05AuVC+MR-zLB-z+r9FCuJwtON=1QXXY2YwQG0eg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 18 Nov 2020 16:49:47 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH RFC v1 1/1] scsi: pm: Leave runtime resume along if block
- layer PM is enabled
-In-Reply-To: <6d774277-b055-6924-cf2d-01e874ac3f7b@acm.org>
-References: <1605249009-13752-1-git-send-email-cang@codeaurora.org>
- <1605249009-13752-2-git-send-email-cang@codeaurora.org>
- <97dea590-5f2e-b4e3-ac64-7c346761c523@acm.org>
- <20f447a438aa98afb18be4642c8888b3@codeaurora.org>
- <6d774277-b055-6924-cf2d-01e874ac3f7b@acm.org>
-Message-ID: <3d58c7a1971bbb2895a30122255ed2e1@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMmt7eO5te05AuVC+MR-zLB-z+r9FCuJwtON=1QXXY2YwQG0eg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+On Tue, 17 Nov 2020, Soham Biswas wrote:
 
-On 2020-11-18 12:38, Bart Van Assche wrote:
-> On 11/15/20 5:42 PM, Can Guo wrote:
->> Actually, I am thinking about removing all the pm_runtime_set_active()
->> codes in both scsi_bus_resume_common() and scsi_dev_type_resume() - we
->> don't need to forcibly set the runtime PM status to RPM_ACTIVE for 
->> either
->> SCSI host/target or SCSI devices.
->> 
->> Whenever we access one SCSI device, either block layer or somewhere in
->> the path (e.g. throgh sg IOCTL, sg_open() calls 
->> scsi_autopm_get_device())
->> should runtime resume the device first, and the runtime PM framework 
->> makes
->> sure device's parent (and its parent's parent and so on)gets resumed 
->> as
->> well.
->> Thus, the pm_runtime_set_active() seems redundant. What do you think?
+> This fixes the following warning:
 > 
-> Hi Can,
+> `drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
+> not preferred. Consider using octal permissions '0444'.`
 > 
-> It is not clear to me why the pm_runtime_set_active() calls occur in 
-> the
-> scsi_pm.c source file since the block layer automatically activates
-> block devices if necessary. Maybe these calls are a leftover from a 
-> time
-> when runtime suspended devices were not resumed automatically by the
-> block layer? Anyway, I'm fine with removing these calls.
+> generated by the following script:
 > 
-> Thanks,
-> 
-> Bart.
+> `./scripts/checkpatch.pl --file --terse drivers/pwm/core.c`
 
-Yes, I agree with you. Let me test the new patch (which removes all the
-pm_runtime_set_active() calls) first, if no issue found, I will upload
-it for review.
+Oh, it's a checkpatch.pl thing.
 
-Thanks,
+You should definitely quote the warning and describe where it came
+from in the commit log.
 
-Can Guo.
+Not entirely sure what that warning is the result of.  Probably as
+they're sightly harder to read and easier to get wrong.  Still, I'll
+let Thierry decide whether the patch itself is suitable for inclusion
+into the PWM core.
+
+> On Tue, 17 Nov 2020 at 23:42, Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Tue, 17 Nov 2020, Soham Biswas wrote:
+> >
+> > > Fixed Warning.
+> >
+> > Which warning does this fix?
+> >
+> > > Replaced symbolic permission 'S_IRUGO' with octal permission '0444'.
+> >
+> > This is semantically equivalent.
+> >
+> > Not sure what and/or how this fixes anything.
+> >
+> > > Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
+> > > ---
+> > >  drivers/pwm/core.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> > > index 1f16f5365d3c..a8eff4b3ee36 100644
+> > > --- a/drivers/pwm/core.c
+> > > +++ b/drivers/pwm/core.c
+> > > @@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
+> > >
+> > >  static int __init pwm_debugfs_init(void)
+> > >  {
+> > > -     debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+> > > +     debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
+> > >                           &pwm_debugfs_fops);
+> > >
+> > >       return 0;
+> >
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
