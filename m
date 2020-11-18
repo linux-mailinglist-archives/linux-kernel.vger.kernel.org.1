@@ -2,114 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6472B7ABE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA56B2B7AD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727174AbgKRJxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:53:55 -0500
-Received: from lucky1.263xmail.com ([211.157.147.133]:44200 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgKRJxy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:53:54 -0500
-Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 103ACCA6CF;
-        Wed, 18 Nov 2020 17:53:45 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (250.19.126.124.broad.bjtelecom.net [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P14873T140467622631168S1605693224877545_;
-        Wed, 18 Nov 2020 17:53:45 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <244a6f289cc7c0f74aff6fdbbd7d36af>
-X-RL-SENDER: penghao@uniontech.com
-X-SENDER: penghao@uniontech.com
-X-LOGIN-NAME: penghao@uniontech.com
-X-FST-TO: gregkh@linuxfoundation.org
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 5
-X-System-Flag: 0
-From:   penghao <penghao@uniontech.com>
-To:     gregkh@linuxfoundation.org
-Cc:     johan@kernel.org, jonathan@jdcox.net, tomasz@meresinski.eu,
-        penghao@uniontech.com, hdegoede@redhat.com, dlaz@chromium.org,
-        kai.heng.feng@canonical.com, richard.o.dodd@gmail.com,
-        kerneldev@karsmulder.nl, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for Lenovo A630Z TIO built-in usb-audio card
-Date:   Wed, 18 Nov 2020 17:53:43 +0800
-Message-Id: <20201118095343.3401-1-penghao@uniontech.com>
-X-Mailer: git-send-email 2.11.0
+        id S1726989AbgKRJ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:56:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52594 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725772AbgKRJ4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 04:56:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A1C95ABDE;
+        Wed, 18 Nov 2020 09:56:40 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 09:56:38 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [RFC -V5] autonuma: Migrate on fault among multiple bound nodes
+Message-ID: <20201118095637.GC3306@suse.de>
+References: <20201118051952.39097-1-ying.huang@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201118051952.39097-1-ying.huang@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
-usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
-seconds later by usb-audio disconnect interrupt to avoids the issue.
+On Wed, Nov 18, 2020 at 01:19:52PM +0800, Huang Ying wrote:
+> Now, AutoNUMA can only optimize the page placement among the NUMA
 
-Seeking a better fix, we've tried a lot of things, including:
- - Check that the device's power/wakeup is disabled
- - Check that remote wakeup is off at the USB level
- - All the quirks in drivers/usb/core/quirks.c
-   e.g. USB_QUIRK_RESET_RESUME,
-        USB_QUIRK_RESET,
-        USB_QUIRK_IGNORE_REMOTE_WAKEUP,
-        USB_QUIRK_NO_LPM.
+Note that the feature is referred to as NUMA_BALANCING in the kernel
+configs as AUTONUMA as it was first presented was not merged. The sysctl
+for it is kernel.numa_balancing as you already note. So use NUMAB or
+NUMA_BALANCING but not AUTONUMA because at least a new person grepping
+for NUMA_BALANCING or variants will find it where as autonuma only creeped
+into the powerpc arch code.
 
-but none of that makes any difference.
+If exposing to userspace, the naming should definitely be consistent.
 
-There are no errors in the logs showing any suspend/resume-related issues.
-When the system wakes up due to the modem, log-wise it appears to be a
-normal resume.
+> - sysctl knob numa_balancing can enable/disable the NUMA balancing
+>   globally.
+> 
+> - even if sysctl numa_balancing is enabled, the NUMA balancing will be
+>   disabled for the memory areas or applications with the explicit memory
+>   policy by default.
+> 
+> - MPOL_F_AUTONUMA can be used to enable the NUMA balancing for the
+>   applications when specifying the explicit memory policy.
+> 
 
-Introduce a quirk to disable the port during suspend when the modem is
-detected.
+MPOL_F_NUMAB
 
-Changes since v3
- - Fixed spelling error on appropriate
+> Various page placement optimization based on the NUMA balancing can be
+> done with these flags.  As the first step, in this patch, if the
+> memory of the application is bound to multiple nodes (MPOL_BIND), and
+> in the hint page fault handler the accessing node are in the policy
+> nodemask, the page will be tried to be migrated to the accessing node
+> to reduce the cross-node accessing.
+> 
 
-Changes since v2
- - Add Changes commit format
+The patch still lacks supporting data. It really should have a basic
+benchmark of some sort serving as an example of how the policies should
+be set and a before/after comparison showing the throughput of MPOL_BIND
+accesses spanning 2 or more nodes is faster when numa balancing is enabled.
 
-Changes since v1
- - Change subject form "ALSA" to "USB:"
- - Adjust to appropriate line
+A man page update should also be added clearly outlining when an
+application should consider using it with the linux-api people cc'd
+for review.
 
-Signed-off-by: penghao <penghao@uniontech.com>
----
- drivers/usb/core/quirks.c | 5 +++++
- 1 file changed, 5 insertions(+)
+The main limitation is that if this requires application modification,
+it may never be used. For example, if an application uses openmp places
+that translates into bind then openmp needs knowledge of the flag.
+Similar limitations apply to MPI. This feature has a risk that no one
+uses it.
 
-diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index 7c1198f80c23..25f655c2cd28 100644
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -410,6 +410,10 @@ static const struct usb_device_id usb_quirk_list[] = {
- 	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
- 			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
- 
-+	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
-+	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
-+			USB_QUIRK_DISCONNECT_SUSPEND },
-+
- 	/* BUILDWIN Photo Frame */
- 	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
- 			USB_QUIRK_HONOR_BNUMINTERFACES },
-@@ -430,6 +434,7 @@ static const struct usb_device_id usb_quirk_list[] = {
- 	  USB_QUIRK_DELAY_CTRL_MSG },
- 
- 	/* Corsair Strafe RGB */
-+
- 	{ USB_DEVICE(0x1b1c, 0x1b20), .driver_info = USB_QUIRK_DELAY_INIT |
- 	  USB_QUIRK_DELAY_CTRL_MSG },
- 
+> Huang Ying (2):
+>   mempolicy: Rename MPOL_F_MORON to MPOL_F_MOPRON
+>   autonuma: Migrate on fault among multiple bound nodes
+> ---
+>  include/uapi/linux/mempolicy.h | 4 +++-
+>  mm/mempolicy.c                 | 9 +++++++++
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
+> index 3354774af61e..adb49f13840e 100644
+> --- a/include/uapi/linux/mempolicy.h
+> +++ b/include/uapi/linux/mempolicy.h
+> @@ -28,12 +28,14 @@ enum {
+>  /* Flags for set_mempolicy */
+>  #define MPOL_F_STATIC_NODES	(1 << 15)
+>  #define MPOL_F_RELATIVE_NODES	(1 << 14)
+> +#define MPOL_F_AUTONUMA		(1 << 13) /* Optimize with AutoNUMA if possible */
+>  
+
+Order by flag usage, correct the naming.
+
+>  /*
+>   * MPOL_MODE_FLAGS is the union of all possible optional mode flags passed to
+>   * either set_mempolicy() or mbind().
+>   */
+> -#define MPOL_MODE_FLAGS	(MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES)
+> +#define MPOL_MODE_FLAGS							\
+> +	(MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES | MPOL_F_AUTONUMA)
+>  
+>  /* Flags for get_mempolicy */
+>  #define MPOL_F_NODE	(1<<0)	/* return next IL mode instead of node mask */
+
+How does an application discover if MPOL_F_NUMAB is supported by the
+current running kernel? It looks like they might receive -EINVAL (didn't
+check for sure). In that case, a manual page is defintely needed to
+explain that an error can be returned if the flag is used and the kernel
+does not support it so the application can cover by falling back to a
+strict binding. If it fails silently, then that also needs to be documented
+because it'll lead to different behaviour depending on the running
+kernel.
+
 -- 
-2.11.0
-
-
-
+Mel Gorman
+SUSE Labs
