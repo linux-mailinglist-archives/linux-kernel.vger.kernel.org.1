@@ -2,299 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E6B2B7559
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D392B755C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgKREUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 23:20:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
+        id S1726792AbgKREVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 23:21:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgKREUh (ORCPT
+        with ESMTP id S1726558AbgKREVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 23:20:37 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18368C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:20:37 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id n11so522580ota.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:20:36 -0800 (PST)
+        Tue, 17 Nov 2020 23:21:24 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445CAC061A4F
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:21:24 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id t12so388407pjq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:21:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Wvxu8t2+2ioygEU2T4ArcOLVAxHUsdhIF9PdXDAJM4=;
-        b=W76esqTsZ86EDM1lwch0e8uC4aT1RtvVouxGvKObeDHmB3bZMoC5oHjC2nJz9cteck
-         8koiNfwuE4Z3/i5L4VnIDUfcdNiXZbW+Fr9jjzKkS1Kx+5LYisyTaMeOs3gfmR83xPBt
-         mGiuQpNmNtzFg2Rm+4dtyxgp3aEI2suOJTus+WjaZ1z4n4XNxPlWrXY6pj4Yf/lK64jx
-         4z8KLPyY/MdVNqTLwUaJLg4hTzTdzNuano/+1SdaiLuv+rcSyQQ5ozNgfgE/iJkGQSrM
-         Si2u1p24qNr3vp49zz4qq7CydjH5Si4OSL49NNKvlLZ8lzlcUAy+tvHSdps+7yL+hhV6
-         e50Q==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=k+NY9c+px1FIBEsWz6q06ZNYk3nsdUunnWrMe/Tvt0s=;
+        b=x05XYSCnX2pfVclqovwJGSApW0q+PJFqxYdSWinuurJK7+sFE1YFXh93IjbhpScjSf
+         rqMv+GlvwtGjksPFV0MS/8/gxYiW8EHujQgZuT7V0I7D6hZpfVvUxNI+mKaR3PkoYrRE
+         +wXAqhQre99DNnxOduMfN8vZtzPxssSXMGdu2X1+iC9JkDAM8/u3ylOoQS4vgrJgTLTs
+         dfJFLMWfIaChr/S+x3aWAex34L/z3rCw9RcPnJ3xLs6fLRrpdRKVyzUYg7HBXn9TWLR5
+         ZmAfdhLIHbh2/0lBPCTQ0OjhgS8ejBEBlbw6o3tp3S0CW5lkFKM6I4dVssBvTCivBTY/
+         +BnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Wvxu8t2+2ioygEU2T4ArcOLVAxHUsdhIF9PdXDAJM4=;
-        b=IEc7NQ+v2KzLVp0U5vM28bg4IcUp8XhoJCHLGEqpp5fqGfOyKHPmx7XYlmninCP9Gf
-         yVKKxfBJPL5fzwv0w2sxQ/unYFRxLnNhy0BknVlMnC6uRiunKEUpvEt8KHqA4m/O92+x
-         LljLTt0egqphAcIcUtFIxBQCC8+A5Ogp4Yar/VZNb4iHIPHvZ0VDlu/0DAdqa5GY2/TN
-         /cgNmRRwfWdriGn06Dc9Ia9yCtOXNZKl+AXOgg4W9+KVsP/JAjO6qS8nG8rLGgXmAjaZ
-         BWKgAy5a+NRR2kaEDYYBm+UnrjxKoHLvShGkdzeUqrBZefgtuRlImmJIZcOE/AsU1wz8
-         FiLw==
-X-Gm-Message-State: AOAM5304gHy7Ng7MH12QFED05u9E8O6CJdtrLnWcoPNyO0V4qK2nGUYa
-        IXBd4c3GM+VSzVG+W+7Y0oYimw==
-X-Google-Smtp-Source: ABdhPJwqlVmYvFehmr/fzkq8uhhNTcWyQ3lNwNUQ3Bom+EBGXSfkQub4UHEpAO+oVi/uB5L0kvpjtg==
-X-Received: by 2002:a9d:6847:: with SMTP id c7mr5260354oto.134.1605673236210;
-        Tue, 17 Nov 2020 20:20:36 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id a4sm6459055otj.29.2020.11.17.20.20.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 20:20:35 -0800 (PST)
-Date:   Tue, 17 Nov 2020 22:20:33 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] mtd: parsers: Add Qcom SMEM parser
-Message-ID: <20201118042033.GH8532@builder.lan>
-References: <20201117174845.28684-1-manivannan.sadhasivam@linaro.org>
- <20201117174845.28684-3-manivannan.sadhasivam@linaro.org>
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=k+NY9c+px1FIBEsWz6q06ZNYk3nsdUunnWrMe/Tvt0s=;
+        b=k2aNoO+8eMlbZaif5NB/wmT3dlPFCIxSwwF2pdU65mkm2hYJPw/9jLDB3g/NqtHGss
+         67VLOWkLMKCkrnNLBcuDvKu00I/y+ch6rM/p6dXv8RUBqkGBT7+Sr8NP4U1Yb70k9to5
+         2KQdaByZwYfLxnziixPvpsLVaeHnjC8L8M1HiquzPjFzIJSOZBH6AEevCIYYdz535Q9k
+         rBSQb309nJbnIsHibSZjFdhR8VyUDxUVmr5YdlQahddba2FX84dVUyA3s9h95KnVbw6g
+         Nhc9dEYqaVjwFlokrYeO1u3KrZ5yj0tyyNyF1Uxqvt8WwsaSDhzMTFyObXXapz1eWW8C
+         87bA==
+X-Gm-Message-State: AOAM533vzq63Sz5HgECPJ9/qKMNS880Hwb9yWwGOJQEgAlFSzMKkxn/o
+        7irh8DXCU9KM+VqhcmTfFb9NtA==
+X-Google-Smtp-Source: ABdhPJwRaC+IQmmfuP8LCNaoTxzQFqRk93NVR4NjAXGOdw1Bsnc0hOD1mmfyGITGB5st8GooiDcIIw==
+X-Received: by 2002:a17:902:8506:b029:d9:6dd:45ea with SMTP id bj6-20020a1709028506b02900d906dd45eamr2824765plb.72.1605673283767;
+        Tue, 17 Nov 2020 20:21:23 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id j11sm7489631pfe.26.2020.11.17.20.21.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Nov 2020 20:21:22 -0800 (PST)
+Date:   Wed, 18 Nov 2020 09:51:17 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v9 07/17] PM / devfreq: tegra30: Support interconnect and
+ OPPs from device-tree
+Message-ID: <20201118042117.q6nkwm7exakgfvu3@vireshk-i7>
+References: <20201115212922.4390-1-digetx@gmail.com>
+ <20201115212922.4390-8-digetx@gmail.com>
+ <20201117100705.i62qr4gosvu76o22@vireshk-i7>
+ <956315a9-e806-3b18-6792-f01057a6c511@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201117174845.28684-3-manivannan.sadhasivam@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <956315a9-e806-3b18-6792-f01057a6c511@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 17 Nov 11:48 CST 2020, Manivannan Sadhasivam wrote:
-
-> NAND based Qualcomm platforms have the partition table populated in the
-> Shared Memory (SMEM). Hence, add a parser for parsing the partitions
-> from it.
+On 17-11-20, 17:17, Dmitry Osipenko wrote:
+> 17.11.2020 13:07, Viresh Kumar пишет:
+> > On 16-11-20, 00:29, Dmitry Osipenko wrote:
+> >> This patch moves ACTMON driver away from generating OPP table by itself,
+> >> transitioning it to use the table which comes from device-tree. This
+> >> change breaks compatibility with older device-trees in order to bring
+> >> support for the interconnect framework to the driver. This is a mandatory
+> >> change which needs to be done in order to implement interconnect-based
+> >> memory DVFS. Users of legacy device-trees will get a message telling that
+> >> theirs DT needs to be upgraded. Now ACTMON issues memory bandwidth request
+> >> using dev_pm_opp_set_bw(), instead of driving EMC clock rate directly.
+> >>
+> >> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> >> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> >> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>  drivers/devfreq/tegra30-devfreq.c | 86 ++++++++++++++++---------------
+> >>  1 file changed, 44 insertions(+), 42 deletions(-)
+> >>
+> >> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
+> >> index 38cc0d014738..ed6d4469c8c7 100644
+> >> --- a/drivers/devfreq/tegra30-devfreq.c
+> >> +++ b/drivers/devfreq/tegra30-devfreq.c
+> >> @@ -19,6 +19,8 @@
+> >>  #include <linux/reset.h>
+> >>  #include <linux/workqueue.h>
+> >>  
+> >> +#include <soc/tegra/fuse.h>
+> >> +
+> >>  #include "governor.h"
+> >>  
+> >>  #define ACTMON_GLB_STATUS					0x0
+> >> @@ -155,6 +157,7 @@ struct tegra_devfreq_device {
+> >>  
+> >>  struct tegra_devfreq {
+> >>  	struct devfreq		*devfreq;
+> >> +	struct opp_table	*opp_table;
+> >>  
+> >>  	struct reset_control	*reset;
+> >>  	struct clk		*clock;
+> >> @@ -612,34 +615,19 @@ static void tegra_actmon_stop(struct tegra_devfreq *tegra)
+> >>  static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
+> >>  				u32 flags)
+> >>  {
+> >> -	struct tegra_devfreq *tegra = dev_get_drvdata(dev);
+> >> -	struct devfreq *devfreq = tegra->devfreq;
+> >>  	struct dev_pm_opp *opp;
+> >> -	unsigned long rate;
+> >> -	int err;
+> >> +	int ret;
+> >>  
+> >>  	opp = devfreq_recommended_opp(dev, freq, flags);
+> >>  	if (IS_ERR(opp)) {
+> >>  		dev_err(dev, "Failed to find opp for %lu Hz\n", *freq);
+> >>  		return PTR_ERR(opp);
+> >>  	}
+> >> -	rate = dev_pm_opp_get_freq(opp);
+> >> -	dev_pm_opp_put(opp);
+> >> -
+> >> -	err = clk_set_min_rate(tegra->emc_clock, rate * KHZ);
+> >> -	if (err)
+> >> -		return err;
+> >> -
+> >> -	err = clk_set_rate(tegra->emc_clock, 0);
+> >> -	if (err)
+> >> -		goto restore_min_rate;
+> >>  
+> >> -	return 0;
+> >> -
+> >> -restore_min_rate:
+> >> -	clk_set_min_rate(tegra->emc_clock, devfreq->previous_freq);
+> >> +	ret = dev_pm_opp_set_bw(dev, opp);
+> >> +	dev_pm_opp_put(opp);
+> >>  
+> >> -	return err;
+> >> +	return ret;
+> >>  }
+> >>  
+> >>  static int tegra_devfreq_get_dev_status(struct device *dev,
+> >> @@ -655,7 +643,7 @@ static int tegra_devfreq_get_dev_status(struct device *dev,
+> >>  	stat->private_data = tegra;
+> >>  
+> >>  	/* The below are to be used by the other governors */
+> >> -	stat->current_frequency = cur_freq;
+> >> +	stat->current_frequency = cur_freq * KHZ;
+> >>  
+> >>  	actmon_dev = &tegra->devices[MCALL];
+> >>  
+> >> @@ -705,7 +693,12 @@ static int tegra_governor_get_target(struct devfreq *devfreq,
+> >>  		target_freq = max(target_freq, dev->target_freq);
+> >>  	}
+> >>  
+> >> -	*freq = target_freq;
+> >> +	/*
+> >> +	 * tegra-devfreq driver operates with KHz units, while OPP table
+> >> +	 * entries use Hz units. Hence we need to convert the units for the
+> >> +	 * devfreq core.
+> >> +	 */
+> >> +	*freq = target_freq * KHZ;
+> >>  
+> >>  	return 0;
+> >>  }
+> >> @@ -774,6 +767,7 @@ static struct devfreq_governor tegra_devfreq_governor = {
+> >>  
+> >>  static int tegra_devfreq_probe(struct platform_device *pdev)
+> >>  {
+> >> +	u32 hw_version = BIT(tegra_sku_info.soc_speedo_id);
+> >>  	struct tegra_devfreq_device *dev;
+> >>  	struct tegra_devfreq *tegra;
+> >>  	struct devfreq *devfreq;
+> >> @@ -781,6 +775,13 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+> >>  	long rate;
+> >>  	int err;
+> >>  
+> >> +	/* legacy device-trees don't have OPP table and must be updated */
+> >> +	if (!device_property_present(&pdev->dev, "operating-points-v2")) {
+> >> +		dev_err(&pdev->dev,
+> >> +			"OPP table not found, please update your device tree\n");
+> >> +		return -ENODEV;
+> >> +	}
+> >> +
+> > 
+> > You forgot to remove this ?
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/mtd/parsers/Kconfig        |   8 ++
->  drivers/mtd/parsers/Makefile       |   1 +
->  drivers/mtd/parsers/qcomsmempart.c | 169 +++++++++++++++++++++++++++++
->  3 files changed, 178 insertions(+)
->  create mode 100644 drivers/mtd/parsers/qcomsmempart.c
-> 
-> diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-> index e72354322f62..d90c30229052 100644
-> --- a/drivers/mtd/parsers/Kconfig
-> +++ b/drivers/mtd/parsers/Kconfig
-> @@ -160,3 +160,11 @@ config MTD_REDBOOT_PARTS_READONLY
->  	  'FIS directory' images, enable this option.
->  
->  endif # MTD_REDBOOT_PARTS
-> +
-> +config MTD_QCOMSMEM_PARTS
-> +	tristate "Qualcomm SMEM NAND flash partition parser"
-> +	depends on MTD_NAND_QCOM || COMPILE_TEST
-> +	depends on QCOM_SMEM
-> +	help
-> +	  This provides support for parsing partitions from Shared Memory (SMEM)
-> +	  for NAND flash on Qualcomm platforms.
-> diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-> index b0c5f62f9e85..50eb0b0a2210 100644
-> --- a/drivers/mtd/parsers/Makefile
-> +++ b/drivers/mtd/parsers/Makefile
-> @@ -9,3 +9,4 @@ obj-$(CONFIG_MTD_AFS_PARTS)		+= afs.o
->  obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
->  obj-$(CONFIG_MTD_SHARPSL_PARTS)		+= sharpslpart.o
->  obj-$(CONFIG_MTD_REDBOOT_PARTS)		+= redboot.o
-> +obj-$(CONFIG_MTD_QCOMSMEM_PARTS)	+= qcomsmempart.o
-> diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
-> new file mode 100644
-> index 000000000000..d8c2a3fa4dfe
-> --- /dev/null
-> +++ b/drivers/mtd/parsers/qcomsmempart.c
-> @@ -0,0 +1,169 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Qualcomm SMEM NAND flash partition parser
-> + *
-> + * Copyright (C) 2020, Linaro Ltd.
-> + */
-> +
-> +#include <linux/ctype.h>
-> +#include <linux/module.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/slab.h>
-> +#include <linux/soc/qcom/smem.h>
-> +
-> +#define SMEM_AARM_PARTITION_TABLE	9
-> +#define SMEM_APPS			0
-> +
-> +#define SMEM_FLASH_PART_MAGIC1		0x55ee73aa
-> +#define SMEM_FLASH_PART_MAGIC2		0xe35ebddb
-> +#define SMEM_FLASH_PTABLE_V3		3
-> +#define SMEM_FLASH_PTABLE_V4		4
-> +#define SMEM_FLASH_PTABLE_MAX_PARTS_V3	16
-> +#define SMEM_FLASH_PTABLE_MAX_PARTS_V4	48
-> +#define SMEM_FLASH_PTABLE_HDR_LEN	(4 * sizeof(u32))
-> +#define SMEM_FLASH_PTABLE_NAME_SIZE	16
-> +
-> +/**
-> + * struct smem_flash_pentry - SMEM Flash partition entry
-> + * @name: Name of the partition
-> + * @offset: Offset in blocks
-> + * @length: Length of the partition in blocks
-> + * @attr: Flags for this partition
-> + */
-> +struct smem_flash_pentry {
-> +	char name[SMEM_FLASH_PTABLE_NAME_SIZE];
-> +	u32 offset;
+> Yes, good catch. I'm planning to replace this code with a common helper
+> sometime soon, so if there won't be another reasons to make a new
+> revision, then I'd prefer to keep it as-is for now.
 
-It would be nice if you noted that these are little endian (using
-__le32) and used le32_to_cpu() below.
+You should just replace this patch only with a version of V9.1 and you
+aren't really required to resend the whole series. And you should fix
+it before it gets merged. This isn't a formatting issue which we just
+let through. I trust you when you say that you will fix it, but this
+must be fixed now.
 
-
-Apart from that I think this looks really good.
-
-> +	u32 length;
-> +	u8 attr;
-> +} __packed __aligned(4);
-> +
-> +/**
-> + * struct smem_flash_ptable - SMEM Flash partition table
-> + * @magic1: Partition table Magic 1
-> + * @magic2: Partition table Magic 2
-> + * @version: Partition table version
-> + * @numparts: Number of partitions in this ptable
-> + * @pentry: Flash partition entries belonging to this ptable
-> + */
-> +struct smem_flash_ptable {
-> +	u32 magic1;
-> +	u32 magic2;
-> +	u32 version;
-> +	u32 numparts;
-> +	struct smem_flash_pentry pentry[SMEM_FLASH_PTABLE_MAX_PARTS_V4];
-> +} __packed __aligned(4);
-> +
-> +static int parse_qcomsmem_part(struct mtd_info *mtd,
-> +			       const struct mtd_partition **pparts,
-> +			       struct mtd_part_parser_data *data)
-> +{
-> +	struct smem_flash_pentry *pentry;
-> +	struct smem_flash_ptable *ptable;
-> +	size_t len = SMEM_FLASH_PTABLE_HDR_LEN;
-> +	struct mtd_partition *parts;
-> +	char *name, *c;
-> +	int ret, i;
-> +
-> +	pr_debug("Parsing partition table info from SMEM\n");
-> +	ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
-> +	if (IS_ERR(ptable)) {
-> +		pr_err("Error reading partition table header\n");
-> +		return PTR_ERR(ptable);
-> +	}
-> +
-> +	/* Verify ptable magic */
-> +	if (ptable->magic1 != SMEM_FLASH_PART_MAGIC1 ||
-> +	    ptable->magic2 != SMEM_FLASH_PART_MAGIC2) {
-> +		pr_err("Partition table magic verification failed\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Ensure that # of partitions is less than the max we have allocated */
-> +	if (ptable->numparts > SMEM_FLASH_PTABLE_MAX_PARTS_V4) {
-> +		pr_err("Partition numbers exceed the max limit\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Find out length of partition data based on table version */
-> +	if (ptable->version <= SMEM_FLASH_PTABLE_V3) {
-> +		len = SMEM_FLASH_PTABLE_HDR_LEN + SMEM_FLASH_PTABLE_MAX_PARTS_V3 *
-> +			sizeof(struct smem_flash_pentry);
-> +	} else if (ptable->version == SMEM_FLASH_PTABLE_V4) {
-> +		len = SMEM_FLASH_PTABLE_HDR_LEN + SMEM_FLASH_PTABLE_MAX_PARTS_V4 *
-> +			sizeof(struct smem_flash_pentry);
-> +	} else {
-> +		pr_err("Unknown ptable version (%d)", ptable->version);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/*
-> +	 * Now that the partition table header has been parsed, verified
-> +	 * and the length of the partition table calculated, read the
-> +	 * complete partition table
-> +	 */
-> +	ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
-> +	if (IS_ERR_OR_NULL(ptable)) {
-> +		pr_err("Error reading partition table\n");
-> +		return PTR_ERR(ptable);
-> +	}
-> +
-> +	parts = kcalloc(ptable->numparts, sizeof(*parts), GFP_KERNEL);
-> +	if (!parts)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < ptable->numparts; i++) {
-> +		pentry = &ptable->pentry[i];
-> +		if (pentry->name[0] == '\0')
-> +			continue;
-> +
-> +		name = kstrdup(pentry->name, GFP_KERNEL);
-> +		if (!name) {
-> +			ret = -ENOMEM;
-> +			goto out_free_parts;
-> +		}
-> +
-> +		/* Convert name to lower case */
-> +		for (c = name; *c != '\0'; c++)
-> +			*c = tolower(*c);
-> +
-> +		parts[i].name = name;
-> +		parts[i].offset = pentry->offset * mtd->erasesize;
-> +		parts[i].mask_flags = pentry->attr;
-> +		parts[i].size = pentry->length * mtd->erasesize;
-> +		pr_debug("%d: %s offs=0x%08x size=0x%08x attr:0x%08x\n",
-> +			 i, pentry->name, pentry->offset, pentry->length,
-> +			 pentry->attr);
-> +	}
-> +
-> +	pr_debug("SMEM partition table found: ver: %d len: %d\n",
-> +		 ptable->version, ptable->numparts);
-> +	*pparts = parts;
-> +
-> +	return i;
-
-Had to check a few times, but afaict this is just ptable->numparts in
-disguise... So how about just writing that instead?
-
-Regards,
-Bjorn
-
-> +
-> +out_free_parts:
-> +	while (--i >= 0)
-> +		kfree(parts[i].name);
-> +	kfree(parts);
-> +	*pparts = NULL;
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct of_device_id qcomsmem_of_match_table[] = {
-> +	{ .compatible = "qcom,smem-part" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, qcomsmem_of_match_table);
-> +
-> +static struct mtd_part_parser mtd_parser_qcomsmem = {
-> +	.parse_fn = parse_qcomsmem_part,
-> +	.name = "qcomsmem",
-> +	.of_match_table = qcomsmem_of_match_table,
-> +};
-> +module_mtd_part_parser(mtd_parser_qcomsmem);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_AUTHOR("Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>");
-> +MODULE_DESCRIPTION("Qualcomm SMEM NAND flash partition parser");
-> -- 
-> 2.17.1
-> 
+-- 
+viresh
