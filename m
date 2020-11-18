@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FC42B8128
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B87A92B812A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbgKRPt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:49:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32076 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726211AbgKRPt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:49:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605714596;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MQ3atbt49o/FeEWNxZ+RfU8ToGXg/yRCCUXrGgUjXe4=;
-        b=eUx4eYF2CIPcR4/HxCE9CPgfcbgZuwdOnCkQoB6GdmZmY95FUpj1UVaUB9ZHpur9uhoKVV
-        DROTfrby3vflpfNbzT8fnomoxx4AK6bF1M5+1swXsWOhS94I5GkXj/ioaMAjwFdics5h0o
-        BzftRAGgLSiSWAeEgaMP2XlpeGwGWyw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-542-_VdeTqYPOoqSMsJBHrnhAg-1; Wed, 18 Nov 2020 10:49:54 -0500
-X-MC-Unique: _VdeTqYPOoqSMsJBHrnhAg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727690AbgKRPua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:50:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgKRPua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:50:30 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 39860873114;
-        Wed, 18 Nov 2020 15:49:53 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5DE655D9D2;
-        Wed, 18 Nov 2020 15:49:45 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 10:49:44 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
-Subject: Re: md: dm-writeback: add __noreturn to BUG-ging function
-Message-ID: <20201118154944.GB545@redhat.com>
-References: <20201113225228.20563-1-rdunlap@infradead.org>
- <344abf76-9405-58ba-2dc4-27cab88c974d@de.ibm.com>
- <c29eeb5d-0683-49eb-f729-38b14fac7745@infradead.org>
- <20201117163147.GA27243@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id C1296247A7;
+        Wed, 18 Nov 2020 15:50:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605714629;
+        bh=Yo6sgm3/oVDnxAfTnq6e5gCNuPqh+2emIPWFYlwhGqo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VH8oIO/j4mWTpk4EDah65F4S3YHfWS5i0UHsxNXKM8HSgO8q4OaKUTBepivjyt36W
+         Fyj56OvOuMTaKIqiUMWgsccxZx1PoB8MwbQjMBLb+r3eJ0BWWmhZeuCgwybd1tUlBu
+         H/5y1988557KuNncf6FSOSvgwNdAvTCmjpobasPQ=
+Date:   Wed, 18 Nov 2020 07:50:27 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dmytro Shytyi <dmytro@shytyi.net>
+Cc:     "kuznet" <kuznet@ms2.inr.ac.ru>,
+        "yoshfuji" <yoshfuji@linux-ipv6.org>,
+        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
+        "netdev" <netdev@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next V5] net: Variable SLAAC: SLAAC with prefixes of
+ arbitrary length in PIO
+Message-ID: <20201118075027.18083d19@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <175db965378.e5454e1c360034.2264030307026794920@shytyi.net>
+References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
+        <202011110944.7zNVZmvB-lkp@intel.com>
+        <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net>
+        <175bf515624.c67e02e8130655.7824060160954233592@shytyi.net>
+        <175c31c6260.10eef97f6180313.755036504412557273@shytyi.net>
+        <20201117124348.132862b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <175db965378.e5454e1c360034.2264030307026794920@shytyi.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117163147.GA27243@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17 2020 at 11:31am -0500,
-Mike Snitzer <snitzer@redhat.com> wrote:
+On Wed, 18 Nov 2020 14:41:03 +0100 Dmytro Shytyi wrote:
+>  > > @@ -2576,9 +2590,42 @@ int addrconf_prefix_rcv_add_addr(struct 
+>  > >                   u32 addr_flags, bool sllao, bool tokenized, 
+>  > >                   __u32 valid_lft, u32 prefered_lft) 
+>  > >  { 
+>  > > -    struct inet6_ifaddr *ifp = ipv6_get_ifaddr(net, addr, dev, 1); 
+>  > > +    struct inet6_ifaddr *ifp = NULL; 
+>  > >      int create = 0; 
+>  > > 
+>  > > +    if ((in6_dev->if_flags & IF_RA_VAR_PLEN) == IF_RA_VAR_PLEN && 
+>  > > +        in6_dev->cnf.addr_gen_mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY) { 
+>  > > +        struct inet6_ifaddr *result = NULL; 
+>  > > +        struct inet6_ifaddr *result_base = NULL; 
+>  > > +        struct in6_addr curr_net_prfx; 
+>  > > +        struct in6_addr net_prfx; 
+>  > > +        bool prfxs_equal; 
+>  > > + 
+>  > > +        result_base = result; 
+>  > > +        rcu_read_lock(); 
+>  > > +        list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) { 
+>  > > +            if (!net_eq(dev_net(ifp->idev->dev), net)) 
+>  > > +                continue; 
+>  > > +            ipv6_addr_prefix_copy(&net_prfx, &pinfo->prefix, pinfo->prefix_len); 
+>  > > +            ipv6_addr_prefix_copy(&curr_net_prfx, &ifp->addr, pinfo->prefix_len); 
+>  > > +            prfxs_equal = 
+>  > > +                ipv6_prefix_equal(&net_prfx, &curr_net_prfx, pinfo->prefix_len); 
+>  > > + 
+>  > > +            if (prfxs_equal && pinfo->prefix_len == ifp->prefix_len) { 
+>  > > +                result = ifp; 
+>  > > +                in6_ifa_hold(ifp); 
+>  > > +                break; 
+>  > > +            } 
+>  > > +        } 
+>  > > +        rcu_read_unlock(); 
+>  > > +        if (result_base != result) 
+>  > > +            ifp = result; 
+>  > > +        else 
+>  > > +            ifp = NULL;   
+>  >  
+>  > Could this be a helper of its own?   
+> 
+> Explain the thought please. It is not clear for me.
 
-> On Mon, Nov 16 2020 at  6:00pm -0500,
-> Randy Dunlap <rdunlap@infradead.org> wrote:
-> 
-> > On 11/15/20 11:30 PM, Christian Borntraeger wrote:
-> > > 
-> > > 
-> > > On 13.11.20 23:52, Randy Dunlap wrote:
-> > >> Building on arch/s390/ flags this as an error, so add the
-> > >> __noreturn attribute modifier to prevent the build error.
-> > >>
-> > >> cc1: some warnings being treated as errors
-> > >> ../drivers/md/dm-writecache.c: In function 'persistent_memory_claim':
-> > >> ../drivers/md/dm-writecache.c:323:1: error: no return statement in function returning non-void [-Werror=return-type]
-> > > 
-> > > ok with me, but I am asking why
-> > > 
-> > > the unreachable macro is not good enough. For x86 it obviously is.
-> > > 
-> > > form arch/s390/include/asm/bug.h
-> > > #define BUG() do {                                      \
-> > >         __EMIT_BUG(0);                                  \
-> > >         unreachable();                                  \
-> > > } while (0)
-> > > 
-> > 
-> > Hi Christian,
-> > 
-> > Good question.
-> > I don't see any guidance about when to use one or the other etc.
-> > 
-> > I see __noreturn being used 109 times and unreachable();
-> > being used 33 times, but only now that I look at them.
-> > That had nothing to do with why I used __noreturn in the patch.
-> 
-> But doesn't that speak to the proper fix being needed in unreachable()?
-> Or at a minimum the fix is needed to arch/s390/include/asm/bug.h's BUG.
-> 
-> I really don't think we should be papering over that by sprinkling
-> __noreturn around the kernel's BUG() callers.
-> 
-> Maybe switch arch/s390/include/asm/bug.h's BUG to be like
-> arch/mips/include/asm/bug.h?  It itself uses __noreturn with a 'static
-> inline' function definition rather than #define.
-> 
-> Does that fix the issue?
-> 
-> Thanks,
-> Mike
-> 
-> p.s. you modified dm-writecache.c (not dm-writeback, wich doesn't
-> exist).
-
-I don't think my suggestion will help.. given it'd still leave
-persistent_memory_claim() without a return statement.
-
-Think it worthwhile to just add a dummy 'return 0;' after the BUG().
-
-Mike
-
+At the look of it the code under this if statement looks relatively
+self-contained, and has quite a few local variables. Rather than making
+the surrounding function longer would it be possible to factor it out
+into a helper function?
