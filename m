@@ -2,148 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE262B836D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7567D2B8387
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgKRRzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:55:12 -0500
-Received: from mga11.intel.com ([192.55.52.93]:54544 "EHLO mga11.intel.com"
+        id S1726561AbgKRSBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:01:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:32862 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725822AbgKRRzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:55:12 -0500
-IronPort-SDR: 7Mv/Yn38UvRQ8KRG396fpP7R4DkN07DavvwHQDdyYFMjD/XbPfpo9qkINUymEGekIK1ZI+d9RH
- 0mxx7zVRG9BQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="167647891"
-X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
-   d="scan'208";a="167647891"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 09:55:11 -0800
-IronPort-SDR: A5VeSJnIRUs3Iu1CA37zWlEeXwPm7btFNbSL2hyrERlSDqHvOhGgOFIcVjqVGXWaR8Z53gxktI
- vJrGhFwbuA6g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
-   d="scan'208";a="532816133"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by fmsmga006.fm.intel.com with ESMTP; 18 Nov 2020 09:55:10 -0800
-From:   Richard Gong <richard.gong@linux.intel.com>
-Subject: Re: [PATCHv2 1/5] firmware: stratix10-svc: add
- COMMAND_AUTHENTICATE_BITSTREAM flag
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     gregkh@linuxfoundation.org, trix@redhat.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinguyen@kernel.org, sridhar.rajagopal@intel.com,
-        richard.gong@intel.com
-References: <1605709753-7800-1-git-send-email-richard.gong@linux.intel.com>
- <1605709753-7800-2-git-send-email-richard.gong@linux.intel.com>
- <X7U+BTkW7ZmsMByV@epycbox.lan>
-Message-ID: <d8b58b40-63c6-115e-8e61-f092e3f050b3@linux.intel.com>
-Date:   Wed, 18 Nov 2020 12:16:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725970AbgKRSBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 13:01:40 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1310811D4;
+        Wed, 18 Nov 2020 10:01:40 -0800 (PST)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AEC563F718;
+        Wed, 18 Nov 2020 10:01:38 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, James Morse <James.Morse@arm.com>
+Subject: [PATCH 0/2] x86/intel_rdt: task_work vs task_struct rmid/closid write race
+Date:   Wed, 18 Nov 2020 18:00:28 +0000
+Message-Id: <20201118180030.22764-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <X7U+BTkW7ZmsMByV@epycbox.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi folks,
 
-Hi Moritz,
+This is a small cleanup + a fix for a race I stumbled upon while staring at
+resctrl stuff.
 
-On 11/18/20 9:30 AM, Moritz Fischer wrote:
-> On Wed, Nov 18, 2020 at 08:29:09AM -0600, richard.gong@linux.intel.com wrote:
->> From: Richard Gong <richard.gong@intel.com>
->>
->> Add COMMAND_AUTHENTICATE_BITSTREAM command flag for new added bitstream
->> authentication feature. Authenticating a bistream is to make sure a signed
->> bitstream has the valid signatures.
->>
->> Except for the actual configuration of the device, the bitstream
->> authentication works the same way as FPGA configuration does. If the
->> authentication passes, the signed bitstream will be programmed into QSPI
->> flash memory and will be expected to boot without issues.
->>
->> Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
->> aligns with the firmware settings.
-> 
-> Should this be down with the v2: ?
+Briefly tested on a Xeon Gold 5120 (m2.xlarge.x86 on Equinix) by bouncing a few
+tasks around control groups.
 
-I think the commit message should describe all the changes made in the 
-patch, is it?
+Cheers,
+Valentin
 
->>
->> Signed-off-by: Richard Gong <richard.gong@intel.com>
->> ---
->> v2: new added
->> ---
->>   include/linux/firmware/intel/stratix10-svc-client.h | 11 ++++++++---
->>   1 file changed, 8 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
->> index a93d859..85463c8 100644
->> --- a/include/linux/firmware/intel/stratix10-svc-client.h
->> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
->> @@ -51,12 +51,17 @@
->>   #define SVC_STATUS_NO_SUPPORT		6
->>   
->>   /**
->> - * Flag bit for COMMAND_RECONFIG
->> + * Flag bit for COMMAND_RECONFIG, in bit number
->>    *
->>    * COMMAND_RECONFIG_FLAG_PARTIAL:
->> - * Set to FPGA configuration type (full or partial).
->> + * Set for partial FPGA configuration.
->> + *
->> + * COMMAND_AUTHENTICATE_BITSTREAM:
->> + * Set for bitstream authentication, which makes sure a signed bitstream
->> + * has valid signatures before committing it to QSPI flash memory.
->>    */
->> -#define COMMAND_RECONFIG_FLAG_PARTIAL	1
->> +#define COMMAND_RECONFIG_FLAG_PARTIAL	0
->> +#define COMMAND_AUTHENTICATE_BITSTREAM	1
-> 
-> Can you explain how this commit by itself doesn't break things?
-> 
-> Before this change firmware expected BIT(0) to be set for partial
-> reconfiguration, now BIT(0) suddenly means authentication? How doest his
-> work? :)
->  > Was there a firmware version change? Did this never work before?
-> 
-> If this is version depenedent for firmware, then this might need a
-> different compatible string / id / some form of probing?
-> 
-> Entirely possible that I'm missing something, but it doesn't *seem*
-> right.
->>   
+Valentin Schneider (2):
+  x86/intel_rdt: Check monitor group vs control group membership earlier
+  x86/intel_rdt: Plug task_work vs task_struct {rmid,closid} update race
 
-It did work before.
+ arch/x86/include/asm/resctrl.h         | 11 ++--
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 71 ++++++++++++++++----------
+ 2 files changed, 50 insertions(+), 32 deletions(-)
 
-Before this change, firmware only checks if the received flag value is 
-zero. If the value is zero, it preforms full reconfiguration. Otherwise 
-it does partial reconfiguration.
+--
+2.27.0
 
-To support bitstream authentication feature, firmware is updated to 
-check the received flag value as below:
-	0	--- full reconfiguration
-	BIT(0) 	--- partial reconfiguration
-	BIT(1) 	--- bitstream authentication
-
-Therefore I have updated the command flag setting at Intel service layer 
-driver to align with firmware.
-
-Regards,
-Richard
-
->>   /**
->>    * Timeout settings for service clients:
->> -- 
->> 2.7.4
->>
-> 
-> Cheers,
-> Moritz
-> 
