@@ -2,139 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E507A2B7C9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAA42B7CA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728029AbgKRLZW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Nov 2020 06:25:22 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:54750 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgKRLZU (ORCPT
+        id S1728036AbgKRLZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:25:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgKRLZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:25:20 -0500
-Received: from mail-pg1-f199.google.com ([209.85.215.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kfLaP-0000y9-Pv
-        for linux-kernel@vger.kernel.org; Wed, 18 Nov 2020 11:25:17 +0000
-Received: by mail-pg1-f199.google.com with SMTP id p21so1042722pgb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:25:17 -0800 (PST)
+        Wed, 18 Nov 2020 06:25:24 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3311FC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:25:24 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id a16so2247671ejj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:25:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fWKyRf2WsGHgLb7HiAmjkYpOWmKSOplli+A+DLy0S1A=;
+        b=d6h2oBOgo8mPEvFFMG9ikJzYINgr2PJUstL/3YRrVJBCArbW00nZK8tLfkWao49J+B
+         R0NmkkNXipiwcl71+pRwsbyJZR9JIdjpUGRlcXW1caUKFKQqoPy15C9pkc434Xa2vHY3
+         kp1YXrFqF6YRnSLHJj9qo7+XuOW3mF8ueGL5bgKR8Z8zbPu2KwngbvhDhmWHFAi4T/+g
+         QavwecWVrRbsgG47fe5PJrafK+RLkwElzsd4Y/Q/y1zga6R9vjN90WtzGeVaqWgLZpkl
+         IAu6A0Fcx+3SmE/JdaXrZeTsry6+aBWkJ4wygNqPdakgW6ER4FW3e3AHIHiG0Oq3S+BA
+         60FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=r7x4FLD1g1lFiB/rjBYtCrwkSnWVEPF+U90EeU7fGs4=;
-        b=tZ1Q7PFY9OPp4IpCPIgkCT5Rt0wFA5PXPIluQl55BHG5eu7ggqwALGHhkNUAmpyWtf
-         4CWPh68mVxCY8hF5DiQKMMxx3L+xN7CiLXPZx7Obmij7LgTj8B70ECBzFhaLG700x9U7
-         Ek5fm+AZheV2B0kJ9QsurJXm2GR8DN8PvtlJ2+3po5HTObuu5DilYtOQcMve0M4UokXU
-         FkRZBMviBmhGkjubFRPGAl7bDc1o6RVn3S7R3AlM05KSDR2zYga8pIXwT0rL87TcrU/A
-         Vb1Kp3sKevZukGIG9YTPU3nTz9dlRlQmBTdgXChbo3fMFRAM8jJ9HNU0vgRTos/Ecdvr
-         iQfQ==
-X-Gm-Message-State: AOAM533jNbXy1vz6G0H6rjgU54bImkFTPzRZec9aVZPJr+YmwXZIy+w3
-        o/2d+RwLPjdN5dsoeGzQHz6yMFLk+EfElvfWURmTnvENzGRRrE82YMFe7HvWhKW1slW/j7+OMev
-        miTy9P+K5gScbp/LtF3idhYCHuaj9AhaZ7HY4Eogt8Q==
-X-Received: by 2002:a17:90a:cb93:: with SMTP id a19mr3350479pju.99.1605698716357;
-        Wed, 18 Nov 2020 03:25:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyrZrei/lPBiaqSz316HZD8X9lUfdxdrVtEhbhkaaY76B2qM77fQz03JGOPMmHQuR6flNxK2A==
-X-Received: by 2002:a17:90a:cb93:: with SMTP id a19mr3350463pju.99.1605698716006;
-        Wed, 18 Nov 2020 03:25:16 -0800 (PST)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id m20sm23967992pfk.31.2020.11.18.03.25.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 18 Nov 2020 03:25:15 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for
- Lenovo A630Z TIO built-in usb-audio card
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20201118110639.7455-1-penghao@uniontech.com>
-Date:   Wed, 18 Nov 2020 19:25:07 +0800
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, johan@kernel.org,
-        jonathan@jdcox.net, tomasz@meresinski.eu, hdegoede@redhat.com,
-        dlaz@chromium.org, richard.o.dodd@gmail.com,
-        kerneldev@karsmulder.nl, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <91C616BC-3B99-4BB5-AEBE-6975CBFB29BA@canonical.com>
-References: <20201118110639.7455-1-penghao@uniontech.com>
-To:     penghao <penghao@uniontech.com>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fWKyRf2WsGHgLb7HiAmjkYpOWmKSOplli+A+DLy0S1A=;
+        b=qg1QLz0oBXKcfvMUquxqOS3vqY/hpqWduiijuI0PTpjLa/4QqlBSF9GixNmEfA4sXW
+         EnwaRrIwuwlW0c6P00YzC9ppt9wD9zXdOvY50JP/iofpsmNOrHIYZ83EE0Dn15IaghGj
+         MWiV9hkTr/06DET1WRTWr5ax3aaCXL8kQIYYZY8A0GfiOhhvuIrTJU3qtn/kHiFx1hVz
+         4QUQgAzaXVOD9K7AoUIjznc8bZw3puws4CvDJ+LWqzmE0jHHdcutefVGdHskjWtWMu/5
+         ted3FGO/1/p8CiOoZTLj5UkwQ3K8CBLWAyoSYxmCwmFhyrrx+u2WAfGIH0WgPgiLGGEu
+         BPiQ==
+X-Gm-Message-State: AOAM530tvkfPtTNRCJ2GTrOKASVnNaeZmZLvwUyJAHWwWgiFNVUHZEKV
+        RbIxmlNTK+Qg33HAa0yAe3JpDf4yr0SiZUv1VIAQqw==
+X-Google-Smtp-Source: ABdhPJya9T6m7LJWsC7KLQDRV29Lbf+oR9VCfnP5P0PVMelIFdzdzjtVjdfHlmk3dHQuMc4dgqV8K+p2WgsBb3YOt0Q=
+X-Received: by 2002:a17:906:af8b:: with SMTP id mj11mr5668211ejb.170.1605698722788;
+ Wed, 18 Nov 2020 03:25:22 -0800 (PST)
+MIME-Version: 1.0
+References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 18 Nov 2020 16:55:10 +0530
+Message-ID: <CA+G9fYuQYufAewC_CzZ4ibo42iJNGZ2rU_1wRn8Z9zgXoi8W6g@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/64] 4.4.244-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi penghao,
+On Tue, 17 Nov 2020 at 18:37, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.244 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 19 Nov 2020 12:20:51 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.244-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> On Nov 18, 2020, at 19:06, penghao <penghao@uniontech.com> wrote:
-> 
-> Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
-> usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
-> seconds later by usb-audio disconnect interrupt to avoids the issue.
-> 
-> Seeking a better fix, we've tried a lot of things, including:
-> - Check that the device's power/wakeup is disabled
-> - Check that remote wakeup is off at the USB level
-> - All the quirks in drivers/usb/core/quirks.c
->   e.g. USB_QUIRK_RESET_RESUME,
->        USB_QUIRK_RESET,
->        USB_QUIRK_IGNORE_REMOTE_WAKEUP,
->        USB_QUIRK_NO_LPM.
-> 
-> but none of that makes any difference.
-> 
-> There are no errors in the logs showing any suspend/resume-related issues.
-> When the system wakes up due to the modem, log-wise it appears to be a
-> normal resume.
-> 
-> Introduce a quirk to disable the port during suspend when the modem is
-> detected.
-> 
-> Changes since v4
-> - Fixed add a blank line
-> 
-> Changes since v3
-> - Fixed spelling error on appropriate
-> 
-> Changes since v2
-> - Add Changes commit format
-> 
-> Changes since v1
-> - Change subject form "ALSA" to "USB:"
-> - Adjust to appropriate line
-> 
-> Signed-off-by: penghao <penghao@uniontech.com>
-> ---
-> drivers/usb/core/quirks.c | 4 ++++
-> 1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-> index 7c1198f80c23..26b852ae0d85 100644
-> --- a/drivers/usb/core/quirks.c
-> +++ b/drivers/usb/core/quirks.c
-> @@ -410,6 +410,10 @@ static const struct usb_device_id usb_quirk_list[] = {
-> 	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
-> 			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
-> 
-> +	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
-> +	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
-> +			USB_QUIRK_DISCONNECT_SUSPEND },
-> +
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Would it be possible to enable dynamic debug, reproduce the issue, and attach dmesg here? i.e.
-# echo 'file drivers/usb/* +p; file drivers/usb/host/* +p' > /sys/kernel/debug/dynamic_debug/control
-# echo mem > /sys/power/state
-... and attach dmesg here.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Kai-Heng
+Summary
+------------------------------------------------------------------------
 
-> 	/* BUILDWIN Photo Frame */
-> 	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
-> 			USB_QUIRK_HONOR_BNUMINTERFACES },
-> -- 
-> 2.11.0
-> 
-> 
-> 
+kernel: 4.4.244-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 5c64a4febafe0af1834cf497df8985d917a94b05
+git describe: v4.4.243-65-g5c64a4febafe
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.243-65-g5c64a4febafe
 
+No regressions (compared to build v4.4.243)
+
+No fixes (compared to build v4.4.243)
+
+Ran 32841 total tests in the following environments and test suites.
+
+Environments
+--------------
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* install-android-platform-tools-r2600
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.244-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.244-rc1-hikey-20201117-859
+git commit: cdeaa8f4dfeb6e5920b76b6ee2d57b77b2810576
+git describe: 4.4.244-rc1-hikey-20201117-859
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.244-rc1-hikey-20201117-859
+
+No regressions (compared to build 4.4.244-rc1-hikey-20201114-857)
+
+No fixes (compared to build 4.4.244-rc1-hikey-20201114-857)
+
+
+Ran 1760 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
