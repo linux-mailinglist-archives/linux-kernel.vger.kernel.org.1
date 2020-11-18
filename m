@@ -2,138 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38CE2B7EA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFE22B7EA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgKRNvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726638AbgKRNvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 18 Nov 2020 08:51:05 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:42896 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgKRNvB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:51:01 -0500
-Received: by mail-oi1-f194.google.com with SMTP id w145so2212385oie.9;
-        Wed, 18 Nov 2020 05:51:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7/BvXucMD8YagduuMsyjoy5PjQbQFfc6fjlonLNMZ0Y=;
-        b=qMYWdwopgxtHj/00LoZTsGypCOzmACLz+oDOHu5oNjv67hhX2zNah8OfKbS7QyZfnA
-         fBbHkiYA7rzmRizfpHxahWm34+8OvI0/cywfH/mBV+zJwMY4jlUCAShZl6Z9s0w3/85X
-         gv5J2x8NkJTiQIR0Fk3ikX/klOzTSPDN1OuHflEehPS6k2Fr1femZAJZLsMNL+5eWZRZ
-         BgHxvd00IJgq2NPR2p5Y5T2Bhm51GlhIQ7EQr1cqkLlTqtAZWmT8tLjF6B6Hx7C1bS3X
-         gigKqDjeaTcEY0swzC6Q/9+jqMahsSWFVqHWGDf5EXBOIPgD5yZgwI9bGU1L9lukYOfQ
-         iI3A==
-X-Gm-Message-State: AOAM533X5LC7QtFTkTkRaqfHwOpD4u3dhf81oiNyNdWBRcWSjb+6Uq4A
-        51saB77PBdiv545vVcBiGC4+LpfJYeGWkI9E2yw=
-X-Google-Smtp-Source: ABdhPJwz9rYpsynuWrW4AojT5lRLqDcAXL8oZ2freirUuJIhXvpLwnmhvgHoADdWOz4Np6hx9ncM62eUOU6KuZre4yY=
-X-Received: by 2002:aca:c4c9:: with SMTP id u192mr74778oif.69.1605707460415;
- Wed, 18 Nov 2020 05:51:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20201117134214.970-1-chenbaozi@phytium.com.cn>
- <20201117185720.GA1397876@bjorn-Precision-5520> <CAMj1kXEzst3PqpbyfbGwrAXzufrBAmJHmEdBvkibtqSdAKVMDA@mail.gmail.com>
-In-Reply-To: <CAMj1kXEzst3PqpbyfbGwrAXzufrBAmJHmEdBvkibtqSdAKVMDA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 18 Nov 2020 14:50:49 +0100
-Message-ID: <CAJZ5v0iML=6Eo0PAeGQeD=0g1QUzgX8-FKOUOCojoT2tNMvYjQ@mail.gmail.com>
-Subject: Re: [RFC PATCH V2] acpi/irq: Add stacked IRQ domain support to PCI
- interrupt link
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Chen Baozi <chenbaozi@phytium.com.cn>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail.kernel.org ([198.145.29.99]:38334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726131AbgKRNvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 08:51:00 -0500
+Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BB5B2078D;
+        Wed, 18 Nov 2020 13:50:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605707460;
+        bh=getiHBrDdIRlm0UsQaElrXSKyYuSfDOeLthlpxwUvBk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GqqQZjpKVdqj6Tr8zuWC+Z39XOHhjY7bYzSaEMT4ZTk0GQVe2u3t5kVAl8cN8ecyb
+         1olP7EOfvZ7iG+FoszXBEuL1FFSW5dY6cR0twEW2mkNVSzz9JPlNQmu0KLAJgq3wOw
+         SWr71J6+86pgmYS0gOTcZDzNM6MKPE0QsbdaUBo0=
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     SW_Drivers@habana.ai
+Subject: [PATCH] habanalabs: print CS type when it is stuck
+Date:   Wed, 18 Nov 2020 15:50:50 +0200
+Message-Id: <20201118135050.19621-3-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201118135050.19621-1-ogabbay@kernel.org>
+References: <20201118135050.19621-1-ogabbay@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 2:46 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Tue, 17 Nov 2020 at 19:57, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > Nit: please don't just make up random styles for the subject.  Run
-> > "git log --oneline" on the file and/or the directory and try to follow
-> > the existing convention.  Using random styles adds noise to the
-> > system.
-> >
-> > On Tue, Nov 17, 2020 at 09:42:14PM +0800, Chen Baozi wrote:
-> > > Some PCIe designs require software to do extra acknowledgements for
-> > > legacy INTx interrupts. If the driver is written only for device tree,
-> > > things are simple. In that case, a new driver can be written under
-> > > driver/pci/controller/ with a DT node of PCIe host written like:
-> > >
-> > >   pcie {
-> > >     ...
-> > >     interrupt-map = <0 0 0  1  &pcie_intc 0>,
-> > >                     <0 0 0  2  &pcie_intc 1>,
-> > >                     <0 0 0  3  &pcie_intc 2>,
-> > >                     <0 0 0  4  &pcie_intc 3>;
-> > >
-> > >     pcie_intc: legacy-interrupt-controller {
-> > >       interrupt-controller;
-> > >       #interrupt-cells = <1>;
-> > >       interrupt-parent = <&gic>;
-> > >       interrupts = <0 226 4>;
-> > >     };
-> > >   };
-> > >
-> > > Similar designs can be found on Aardvark, MediaTek Gen2 and Socionext
-> > > UniPhier PCIe controller at the moment. Essentially, those designs are
-> > > supported by inserting an extra interrupt controller between PCIe host
-> > > and GIC and parse the topology in a DT-based PCI controller driver.
-> >
-> > If I understand correctly, we previously ignored the Resource Source
-> > field of an Extended Interrupt Descriptor in the _PRS method of
-> > PNP0C0F PCI Interrupt Link devices, and this patch adds support for
-> > it.
-> >
-> > If that's true, this has nothing to do with DT, other than DT being
-> > another way to describe the same topology, and the above details
-> > really aren't relevant to this patch.
-> >
-> > > As we turn to ACPI, All the PCIe hosts are described the same ID of
-> > > "PNP0A03" and share driver/acpi/pci_root.c. It comes to be a problem
-> > > to make this kind of PCI INTx work under ACPI.
-> >
-> > s/All the PCIe/all the PCIe/
-> >
-> > But this paragraph should probably just go away in favor of something
-> > about implementing Resource Source support.
-> >
-> > > Therefore, we introduce an stacked IRQ domain support to PCI interrupt
-> > > link for ACPI. With this support, we can populate the ResourceSource
-> > > to refer to a device object that describes an interrupt controller.
-> > > That would allow us to refer to a dedicated driver which implements
-> > > the logic needed to manage the interrupt state. With this patch,
-> > > those PCI interrupt links can be supported by describing the INTx
-> > > in ACPI table as the following example:
-> >
-> > "Stacked IRQ domain" sounds like a detail of how you're implementing
-> > support for the Resource Source field for PCI Interrupt Links.
-> >
-> > I don't know what the dedicated driver refers to.  This *should* be
-> > all generic code the follows the ACPI spec (which is pretty sketchy in
-> > this area).  But I assume that there's no special driver needed for
-> > devices like \SB.IXIU, and the logic associated with the interrupt
-> > controller is in the AML associated with IXIU.  It would probably be
-> > useful to mention the relevant methods in the IXIU methods in the
-> > example below.
-> >
->
-> As I understand it, the intent is to provide a driver for \SB.IXIU
-> that acknowledges the legacy INTx interrupts in a SoC specific way,
-> and I don't see how AML could be involved here.
->
-> That also explains why the routines are exported to modules - the IXIU
-> driver could be modularized.
+We have several types of command submissions and the user wants to know
+which type of command submission has not finished in time when that
+event occurs. This is very helpful for debug.
 
-OK, but every new symbol export requires an in-the-tree user or the
-patch is basically not applicable.
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ .../habanalabs/common/command_submission.c    | 28 +++++++++++++++++--
+ 1 file changed, 25 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index 516cbaacc03e..6ca77abf7f8a 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -418,9 +418,31 @@ static void cs_timedout(struct work_struct *work)
+ 
+ 	hdev = cs->ctx->hdev;
+ 
+-	dev_err(hdev->dev,
+-		"Command submission %llu has not finished in time!\n",
+-		cs->sequence);
++	switch (cs->type) {
++	case CS_TYPE_SIGNAL:
++		dev_err(hdev->dev,
++			"Signal command submission %llu has not finished in time!\n",
++			cs->sequence);
++		break;
++
++	case CS_TYPE_WAIT:
++		dev_err(hdev->dev,
++			"Wait command submission %llu has not finished in time!\n",
++			cs->sequence);
++		break;
++
++	case CS_TYPE_COLLECTIVE_WAIT:
++		dev_err(hdev->dev,
++			"Collective Wait command submission %llu has not finished in time!\n",
++			cs->sequence);
++		break;
++
++	default:
++		dev_err(hdev->dev,
++			"Command submission %llu has not finished in time!\n",
++			cs->sequence);
++		break;
++	}
+ 
+ 	cs_put(cs);
+ 
+-- 
+2.17.1
+
