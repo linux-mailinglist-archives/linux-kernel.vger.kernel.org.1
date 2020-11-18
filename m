@@ -2,129 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CCD2B7B79
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D15AC2B7B7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgKRKiK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Nov 2020 05:38:10 -0500
-Received: from fralinode-sdnproxy-1.icoremail.net ([172.104.134.221]:61492
-        "HELO fralinode-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1725613AbgKRKiJ (ORCPT
+        id S1726551AbgKRKjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:39:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgKRKjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:38:09 -0500
-Received: from [192.168.1.100] (unknown [218.77.105.7])
-        by c1app9 (Coremail) with SMTP id CQINCgBHW519+bRfB5WGAA--.58353S2;
-        Wed, 18 Nov 2020 18:37:50 +0800 (CST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [RFC PATCH V2] acpi/irq: Add stacked IRQ domain support to PCI
- interrupt link
-From:   Chen Baozi <chenbaozi@phytium.com.cn>
-In-Reply-To: <20201117185720.GA1397876@bjorn-Precision-5520>
-Date:   Wed, 18 Nov 2020 18:37:49 +0800
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Guohanjun <guohanjun@huawei.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <C1B76F68-1692-4E46-90BD-33BE74B445FF@phytium.com.cn>
-References: <20201117185720.GA1397876@bjorn-Precision-5520>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-CM-TRANSID: CQINCgBHW519+bRfB5WGAA--.58353S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXF4fGw4kGr48tryUCF1kGrg_yoW5WFWrpF
-        WrK3sxJrykGr4FyFn7Aw1FvFZ3ZwsxtFW5J34kG3y3Za15Xr1IgF1xtFW5X3ZrWrn3KF4S
-        qF13t395Wa98XFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvqb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
-        wI1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
-        ZFpf9x07bOlk3UUUUU=
-X-CM-SenderInfo: hfkh0updr2xqxsk13x1xpou0fpof0/1tbiDALgP17uHv9idwAAsV
+        Wed, 18 Nov 2020 05:39:00 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A34BC0613D4;
+        Wed, 18 Nov 2020 02:39:00 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id m143so1666898oig.7;
+        Wed, 18 Nov 2020 02:39:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gdGRlc/c7mQOKpv4Mq/akqz0zWoZvuK0RDkcZAi09eo=;
+        b=IGMZ6pRyo0o/6cCRapb81/ZraXlfnBtIB3IdBumayynNPbA1GI46w0gOBEPXmwjTT3
+         CllYSwmZ+W2sHoeRkZd0t6VqtQ365qXMQWLv8lijZB1Q90S9modYQiVHd35BV/OEWyDK
+         ET3cyfcnLVSnldIofB2QYzpBByY1cTC6f/xva1VmnbpVcGAnDnF8647z9+EVxMoFSJ+R
+         UXHypvuibugqCf+zfZ0/grQgmsdWdBxSeWEqUhKt9vRx6Vz4iiz6ke/rIfJyy4X6JAGs
+         Mqg6LTWhW58OC5jRPY88zUUdx/zlrgW8xFn7h1ch465BU18I++HiwOzvMG/MnUaeUGx3
+         3kug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gdGRlc/c7mQOKpv4Mq/akqz0zWoZvuK0RDkcZAi09eo=;
+        b=cxxEZp7fZjqZzBlfcpj6N1BEqMRKDQ8/q9jRYgvFKLyMegP9M2sjaMB6UBGsRlfBAI
+         dGARQA8IJbpS5eqpTPltWDeBUDbYzKqwim4pQBVUqXPALzlAB7dG8gK5Z9vEpM8Mcq8B
+         1jfx0GCReE8U8wCATYkWTyrGL3b4N4pfXJO83v+iz/7hPpuNqLsh/H9FNYlvOH2JXi2c
+         vh7BwoAN2plLDNFB0pRlb1UjForm5mf85N1pwF+NT3OuNAqCCO5xltGtPPIehqyY9Lkc
+         spcNLaDNnjzXme+Nfts7oVt396uBC8qfm0h0NRp5Ax3nDMGP/GfaLqWWFjQjB8CM4cVr
+         CKdw==
+X-Gm-Message-State: AOAM530cwcWS0/ytwB7cFVZWAyTK9I2TwebxZVL40D9yzhVBHu3gq+Fi
+        MvItgde368uUPBnLV0V+OWNgP3Y5Zg5/RkuNxrxVzYzJ
+X-Google-Smtp-Source: ABdhPJy5LiGa3WuRLLpKjNLBb36Dr+6EOB0Jevnf/bcIxHJ5lgkE2uNPHfL3Zf6ryE031Ve66rH7MC0KSg1pCUXvr4Y=
+X-Received: by 2002:aca:4783:: with SMTP id u125mr2309892oia.23.1605695939755;
+ Wed, 18 Nov 2020 02:38:59 -0800 (PST)
+MIME-Version: 1.0
+References: <1605610537-18085-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1605610537-18085-2-git-send-email-gene.chen.richtek@gmail.com> <ff327630-d919-c26c-30ca-066ad8e826bb@gmail.com>
+In-Reply-To: <ff327630-d919-c26c-30ca-066ad8e826bb@gmail.com>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Wed, 18 Nov 2020 18:38:47 +0800
+Message-ID: <CAE+NS345g6gokjpBn0G9uR2azA9p2ZCgujC2cM5pWmrmmwqYjA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: leds: Add bindings for MT6360 LED
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=
+=9C=8818=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=886:24=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+>
+> Hi Gene,
+>
+> Thank you for the patch.
+>
+> On 11/17/20 11:55 AM, Gene Chen wrote:
+> > From: Gene Chen <gene_chen@richtek.com>
+> >
+> > Add bindings document for LED support on MT6360 PMIC
+> >
+> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> > ---
+> >   .../devicetree/bindings/leds/leds-mt6360.yaml      | 114 ++++++++++++=
++++++++++
+> >   1 file changed, 114 insertions(+)
+> >   create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360=
+.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/=
+Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> > new file mode 100644
+> > index 0000000..871db4d
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> > @@ -0,0 +1,114 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/leds/leds-mt6360.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: LED driver for MT6360 PMIC from MediaTek Integrated.
+> > +
+> > +maintainers:
+> > +  - Gene Chen <gene_chen@richtek.com>
+> > +
+> > +description: |
+> > +  This module is part of the MT6360 MFD device.
+> > +  see Documentation/devicetree/bindings/mfd/mt6360.yaml
+> > +  Add MT6360 LED driver include 2-channel Flash LED with torch/strobe =
+mode,
+> > +  and 4-channel RGB LED support Register/Flash/Breath Mode
+>
+> What actually is the Register mode?
+>
 
-Thanks for reviewing. I’ll try to fix all existing issues and send a new
-version later.
+Register mode is equal to S/W mode.
+Red LED indicator ic default is H/W mode. LED enable when charger plug in.
 
-> On Nov 18, 2020, at 2:57 AM, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> 
-> Nit: please don't just make up random styles for the subject.  Run
-> "git log --oneline" on the file and/or the directory and try to follow
-> the existing convention.  Using random styles adds noise to the
-> system.
-> 
-> On Tue, Nov 17, 2020 at 09:42:14PM +0800, Chen Baozi wrote:
->> 
->> Therefore, we introduce an stacked IRQ domain support to PCI interrupt
->> link for ACPI. With this support, we can populate the ResourceSource
->> to refer to a device object that describes an interrupt controller.
->> That would allow us to refer to a dedicated driver which implements
->> the logic needed to manage the interrupt state. With this patch,
->> those PCI interrupt links can be supported by describing the INTx
->> in ACPI table as the following example:
-> 
-> "Stacked IRQ domain" sounds like a detail of how you're implementing
-> support for the Resource Source field for PCI Interrupt Links.
-> 
-> I don't know what the dedicated driver refers to.  This *should* be
-> all generic code the follows the ACPI spec (which is pretty sketchy in
-> this area).  But I assume that there's no special driver needed for
-> devices like \SB.IXIU, and the logic associated with the interrupt
-> controller is in the AML associated with IXIU.  It would probably be
-> useful to mention the relevant methods in the IXIU methods in the
-> example below.
-> 
-> From ACPI v6.3, Table 6-200, it looks like this patch should include
-> changes to acpi_bus_osc_support() to advertise "Interrupt
-> ResourceSource support".
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: mediatek,mt6360-led
+> > +
+> > +  "#address-cells":
+> > +    const: 1
+> > +
+> > +  "#size-cells":
+> > +    const: 0
+> > +
+> > +patternProperties:
+> > +  "^led@[0-6]$":
+> > +    type: object
+> > +    $ref: common.yaml#
+> > +    description:
+> > +      Properties for a single LED.
+> > +
+> > +    properties:
+> > +      reg:
+> > +        description: Index of the LED.
+> > +        enum:
+> > +          - 0 # LED output INDICATOR1_RED
+> > +          - 1 # LED output INDICATOR1_GREEN
+> > +          - 2 # LED output INDICATOR1_BLUE
+> > +          - 3 # LED output INDICATOR2_ML
+> > +          - 4 # LED output FLED1
+> > +          - 5 # LED output FLED2
+> > +          - 6 # LED output MULTICOLOR
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - "#address-cells"
+> > +  - "#size-cells"
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > + - |
+> > +   #include <dt-bindings/leds/common.h>
+> > +   led-controller {
+> > +     compatible =3D "mediatek,mt6360-led";
+> > +     #address-cells =3D <1>;
+> > +     #size-cells =3D <0>;
+> > +
+> > +     led@0 {
+> > +       reg =3D <0>;
+> > +       function =3D LED_FUNCTION_INDICATOR;
+> > +       color =3D <LED_COLOR_ID_RED>;
+> > +       led-max-microamp =3D <24000>;
+> > +     };
+> > +     led@3 {
+> > +       reg =3D <3>;
+> > +       function =3D LED_FUNCTION_INDICATOR;
+> > +       color =3D <LED_COLOR_ID_AMBER>;
+>
+> You should really have here LED_COLOR_ID_MOONLIGHT if this is
+> a moonlight LED. You'll need to add it to dt-bindings/leds/common.h.
+>
+> > +       led-max-microamp =3D <150000>;
+> > +     };
+> > +     led@4 {
+> > +       reg =3D <4>;
+> > +       function =3D LED_FUNCTION_FLASH;
+> > +       color =3D <LED_COLOR_ID_WHITE>;
+> > +       function-enumerator =3D <1>;
+> > +       led-max-microamp =3D <200000>;
+> > +       flash-max-microamp =3D <500000>;
+> > +       flash-max-timeout-us =3D <1024000>;
+> > +     };
+> > +     led@5 {
+> > +       reg =3D <5>;
+> > +       function =3D LED_FUNCTION_FLASH;
+> > +       color =3D <LED_COLOR_ID_WHITE>;
+> > +       function-enumerator =3D <2>;
+> > +       led-max-microamp =3D <200000>;
+> > +       flash-max-microamp =3D <500000>;
+> > +       flash-max-timeout-us =3D <1024000>;
+> > +     };
+> > +     led@6 {
+> > +       reg =3D <6>;
+> > +       function =3D LED_FUNCTION_INDICATOR;
+> > +       color =3D <LED_COLOR_ID_MULTI>;
+> > +       led-max-microamp =3D <24000>;
+> > +       #address-cells =3D <1>;
+> > +       #size-cells =3D <0>;
+> > +
+> > +       led@1 {
+> > +         reg =3D <1>;
+> > +         function =3D LED_FUNCTION_INDICATOR;
+> > +         color =3D <LED_COLOR_ID_GREEN>;
+> > +       };
+> > +       led@2 {
+> > +         reg =3D <2>;
+> > +         function =3D LED_FUNCTION_INDICATOR;
+> > +         color =3D <LED_COLOR_ID_BLUE>;
+> > +       };
+> > +     };
+>
+> It is of little avail to have multicolor LED with only two LEDs.
+> I propose not to allow such setup - i.e. you should have either
+> one multicolor LED comprising three sub-LEDs (regs: 0, 1, 2),
+> and with main color property set to LED_COLOR_ID_RGB, or three separate
+> LEDs.
+>
+> Effectively, you should have two separate DT examples here to make it
+> clear: one for the case with three LED class devices and one with
+> LED multicolor class device.
+>
 
-According to my understanding, does it mean to add something like：
+ACK
 
-+       capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_INTR_RS_SUPPORT;
-
-and check whether the platform supports usage of ResourceSource after
-acpi_run_osc() returns successfully:
-
-+		osc_sb_intr_rs_support_confirmed =
-+			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_INTR_RS_SUPPORT;
-
-with this bool value, we can then determine if we would ignore the
-ResourceSource field later.
-
-Or we just advertise this capability from the OS side without introducing
-the ‘osc_sb_intr_rs_support_confirmed’?
-
-I am not certain about it because:
-
-1) If we strictly flow the spec, which says “the platform will indicate to
-OS whether ... If not set, the OS may choose to ignore the ResourceSource
-parameter in the extended interrupt descirptor”, this means this capability
-can be used to determine whether we would ignore to parse the field later.
-
-2) On the other hand, Since the ResourceSource has already been used to
-create hierarchical domain for platform device (introduced by 621dc2fdcea1)
-and previous driver does not check this capability, I am not sure whether
-it would break the existing platforms. 
-
-Fix me if I am wrong.
-
-Cheers,
-
-Chen Baozi.
-
-
+> > +   };
+> > +...
+> >
+>
+> --
+> Best regards,
+> Jacek Anaszewski
