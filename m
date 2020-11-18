@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669362B80A1
+	by mail.lfdr.de (Postfix) with ESMTP id DDA042B80A2
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgKRPfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:35:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46958 "EHLO mail.kernel.org"
+        id S1727252AbgKRPfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:35:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726268AbgKRPfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:35:06 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725814AbgKRPfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:35:21 -0500
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25E1A24779;
-        Wed, 18 Nov 2020 15:35:05 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 10:35:02 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: [PATCH] ftrace/documentation: Fix RST C code blocks
-Message-ID: <20201118103502.24e90f7c@gandalf.local.home>
-In-Reply-To: <20201116132929.7f59943e@lwn.net>
-References: <20201116173502.392a769c@canb.auug.org.au>
-        <20201116124338.76a522e1@gandalf.local.home>
-        <20201116122432.796af13b@lwn.net>
-        <20201116152552.11572354@gandalf.local.home>
-        <20201116132929.7f59943e@lwn.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 742E92477C;
+        Wed, 18 Nov 2020 15:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605713721;
+        bh=YIBd7Q8u/sR9Z/z7ziUGOG9UyMZ1x7BkzlRe9c4fu0Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c7R6w1xvBHsSnDJu7YT8x6viO1JnD5yI6BSHhdR7uuZ34NJKvx2RfOb5MyM8IuExa
+         addolZX1lpGwTuPVlhsDX57zGz1aNRSQe1r5dSIVn6y0LtUfGoW5EMJkekD8dFtCYT
+         ON9nX2GaWz5mSPNepXUyl7Bh0WTIpXLm67FKXKSQ=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Chen Yu <yu.c.chen@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v4 0/4] tools/bootconfig: Align the bootconfig applied initrd
+Date:   Thu, 19 Nov 2020 00:35:17 +0900
+Message-Id: <160571371674.277955.11736890010190945946.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Hi,
 
-Some C code in the ftrace-users.rst document is missing RST C block
-annotation, which has to be added.
+This is the 4th version of the bootconfig tool update to align
+the total size of initrd + bootconfig to 4.
 
-Link: https://lore.kernel.org/r/20201116173502.392a769c@canb.auug.org.au
+Previous version is here;
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+ https://lkml.kernel.org/r/160560676899.144950.4148778261999789656.stgit@devnote2
+
+This version adds a new errno after printf fix patch as [1/4].
+
+To adjust the file size, the bootconfig tool adds padding null
+characters in between the boot configuration data and the footer.
+
+The changing points are
+- The bootconfig applied initrd image size is aligned to 4.
+- To insert the padding null ('\0') bytes, the size in the footer
+  can be bigger than the actual bootconfig file size.
+- But the max size of the boot configuration file is same, because
+  the max size doesn't include the last null characters.
+
+In this series I keep 4 bytes aligned instead of longer size,
+because only I could found was that the grub might align the initrd
+filesize to 4, and U-Boot/EDK2 would not change it. So I couldn't
+say what is the best size.
+
+Anyway, I updated the documentation too, which clearly says that
+the above changing points, and if the bootloader pass the wrong
+size, kernel will not find bootconfig from the initrd.
+
+Thank you,
+
 ---
- Documentation/trace/ftrace-uses.rst | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/trace/ftrace-uses.rst b/Documentation/trace/ftrace-uses.rst
-index 5981d5691745..f7d98ae5b885 100644
---- a/Documentation/trace/ftrace-uses.rst
-+++ b/Documentation/trace/ftrace-uses.rst
-@@ -116,6 +116,8 @@ called by a callback may also be traced, and call that same callback,
- recursion protection must be used. There are two helper functions that
- can help in this regard. If you start your code with:
- 
-+.. code-block:: c
-+
- 	int bit;
- 
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
-@@ -124,6 +126,8 @@ can help in this regard. If you start your code with:
- 
- and end it with:
- 
-+.. code-block:: c
-+
- 	ftrace_test_recursion_unlock(bit);
- 
- The code in between will be safe to use, even if it ends up calling a
-@@ -145,6 +149,8 @@ protection, it is best to make sure that RCU is "watching", otherwise
- that data or critical section will not be protected as expected. In this
- case add:
- 
-+.. code-block:: c
-+
- 	if (!rcu_is_watching())
- 		return;
- 
--- 
-2.25.4
+Masami Hiramatsu (4):
+      tools/bootconfig: Fix errno reference after printf()
+      tools/bootconfig: Fix to check the write failure correctly
+      tools/bootconfig: Align the bootconfig applied initrd image size to 4
+      docs: bootconfig: Update file format on initrd image
 
+
+ tools/bootconfig/main.c             |  109 ++++++++++++++++++++++-------------
+ tools/bootconfig/test-bootconfig.sh |    6 ++
+ 2 files changed, 75 insertions(+), 40 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
