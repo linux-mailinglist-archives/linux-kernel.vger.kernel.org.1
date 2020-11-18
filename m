@@ -2,103 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5862B85BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 811D62B85C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbgKRUiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 15:38:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgKRUiW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:38:22 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1ABC0613D4;
-        Wed, 18 Nov 2020 12:38:22 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605731900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T7m4QJtawYIOIZS6hZalfhNOAav/0EAeLSd6wLwAwbA=;
-        b=OP/2/6xTQlMznm9w0E+um0tGQGA9rFJAdZfQHTNZ7OOC0lSE100nLoT5hLTj5/9dBoVukH
-        3b88NLmkJnS+JBzKz1TeDSXHi4TAEBDBQMGJrvt8wagNzSs1Zbyrmcq87VRcJ2CHCIJQfn
-        efmgZ7QKlD62riMxz/qucG3WtwP+Zvdb5tAiuev7rC2PUD77j8QubHZqXHxhrRQZio4aJx
-        HzNk2RWVFoEgGqcK7GdJidp7vFiX6TlDUzCOAdYypRzj0Td5TBA5xssV7ze1FcgPyOJiew
-        3eSwFFZvLmbY/ZJ0tjKsMuRky3U1NDEbjlqUVk0pj7Na8hjSXgI6eUxNo61KSw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605731900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T7m4QJtawYIOIZS6hZalfhNOAav/0EAeLSd6wLwAwbA=;
-        b=7DjjMlzI3nv2TMAeWNK5TnMZWfV2v7GO5EbynbSP1IJURzPpYBaftiXjl318sG9uzefmvd
-        AHb7eJfRKAo+rBCg==
-To:     John Garry <john.garry@huawei.com>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, martin.petersen@oracle.com, jejb@linux.ibm.com
-Cc:     linuxarm@huawei.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
-In-Reply-To: <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
-References: <87ft57r7v3.fsf@nanos.tec.linutronix.de> <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
-Date:   Wed, 18 Nov 2020 21:38:20 +0100
-Message-ID: <874klmqu2r.fsf@nanos.tec.linutronix.de>
+        id S1727287AbgKRUio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 15:38:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725794AbgKRUio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 15:38:44 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82BEC246C8;
+        Wed, 18 Nov 2020 20:38:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605731920;
+        bh=O9c7An1kFM6IXX8FlFyXPILzfnRRePmppBASLK4UFSQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sG9llzjww01u0/kMiTPEgIPTeIF6L1+F/MZA3pjC0Gh0RyD5st4baMZpsrhA7tuEZ
+         /rcFwGjQVdULp5+DfBMba+FFDszcLEvnlHW2rJwOrYHktRINxD2kjzm7nV7TNhYl3i
+         mEpY/AzYLpVSlQfRtC6wfGuHzD7VLASuMY/oQesA=
+Date:   Wed, 18 Nov 2020 14:38:40 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the gpio tree with the kspp-gustavo
+ tree
+Message-ID: <20201118203840.GB15147@embeddedor>
+References: <20201118142445.461d3792@canb.auug.org.au>
+ <CACRpkdahE38tamkVZLx+m3nkE_dDfaN-u7gEwH48BEnf1BvsFg@mail.gmail.com>
+ <CAHp75VevuYCZVPw8HHcaoGdHBvXxHTNnujbf2BUyBECmFHZFDQ@mail.gmail.com>
+ <CAHp75Vcuxc1Ypo6GV_a2hACWPFqg4m8mZr8mLHD=LgWpLLEWMg@mail.gmail.com>
+ <20201118110057.GA30719@embeddedor>
+ <20201118141537.GU4077@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118141537.GU4077@smile.fi.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John,
+On Wed, Nov 18, 2020 at 04:15:37PM +0200, Andy Shevchenko wrote:
+> No problem, thanks for taking care of this.
+> 
+> As Linus mentioned, please send a formal patch he will include in his tree.
+> (I have noticed that there are two drivers in the same change, I recommend
+>  to split, so should be two separated patches)
 
-On Wed, Nov 18 2020 at 11:34, John Garry wrote:
->> +/**
->> + * irq_update_affinity_desc - Update affinity management for an interrupt
->> + * @irq:	The interrupt number to update
->> + * @affinity:	Pointer to the affinity descriptor
->> + *
->> + * This interface can be used to configure the affinity management of
->> + * interrupts which have been allocated already.
->> + */
->> +int irq_update_affinity_desc(unsigned int irq,
->> +			     struct irq_affinity_desc *affinity)
->
-> Just a note on the return value, in the only current callsite - 
-> platform_get_irqs_affinity() - we don't check the return value and 
-> propagate the error. This is because we don't want to fail the interrupt 
-> init just because of problems updating the affinity mask. So I could 
-> print a message to inform the user of error (at the callsite).
+Sure thing. I will do so. :)
 
-Well, not sure about that. During init on a platform which does not have
-the issues with reservation mode there failure cases are:
-
- 1) Interrupt does not exist. Definitely a full fail
-
- 2) Interrupt is already started up. Not a good idea on init() and
-    a clear fail.
-
- 3) Interrupt has already been switched to managed. Double init is not
-    really a good sign either.
-
->> +	/* Requires the interrupt to be shut down */
->> +	if (irqd_is_started(&desc->irq_data))
->
-> We're missing the unlock here, right?
-
-Duh yes.
-
->> +		return -EBUSY;
->> +
->> +	/* Interrupts which are already managed cannot be modified */
->> +	if (irqd_is_managed(&desc->irq_data))
->
-> And here, and I figure that this should be irqd_affinity_is_managed()
-
-More duh :)
-
-I assume you send a fixed variant of this.
-
-Thanks,
-
-        tglx
+Thanks
+--
+Gustavo
