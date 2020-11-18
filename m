@@ -2,104 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DD12B8646
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 984532B864B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgKRVHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:07:51 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:50882 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726340AbgKRVHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:07:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605733670; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=zaEAA7Xe0Rw95/owPckWHhoYL2cO/XrfLoPj7fTl5ao=; b=w7vSV2nvCZFsGmYFGolkoOsEDmgtmCrdydgT+EdI31AMKnJmAYsNdRnjA4+jMmbnJF2NSUBP
- vnD/Qq9mRaByq2OQcFMkD+Bwn1rdVz496DCdmWwwE+1rt3rBQdaH9laOHrA44QwrW3EvTE3i
- Aj7f6I8N1Yj3nxVYc1IAo6Rluos=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5fb58d20a5a29b56a1ab0e1e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 21:07:44
- GMT
-Sender: mdtipton=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8827BC433ED; Wed, 18 Nov 2020 21:07:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.159] (ip70-179-20-127.sd.sd.cox.net [70.179.20.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdtipton)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AD8ACC433ED;
-        Wed, 18 Nov 2020 21:07:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AD8ACC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mdtipton@codeaurora.org
-Subject: Re: [PATCH v2] interconnect: qcom: qcs404: Remove GPU and display RPM
- IDs
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        bjorn.andersson@linaro.org, linux-pm@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201118111044.26056-1-georgi.djakov@linaro.org>
-From:   Mike Tipton <mdtipton@codeaurora.org>
-Message-ID: <00368490-8e55-2d21-2150-bc80f63dedf9@codeaurora.org>
-Date:   Wed, 18 Nov 2020 13:07:42 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-MIME-Version: 1.0
-In-Reply-To: <20201118111044.26056-1-georgi.djakov@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726357AbgKRVKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:10:21 -0500
+Received: from mail-eopbgr760131.outbound.protection.outlook.com ([40.107.76.131]:38374
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726098AbgKRVKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 16:10:20 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K3i0DtaB1vD5p3F4CSuQoagOnWG1x2zUkmOPLVU0JztKcYae+Ic/grNRBD5ZL79LYCrRFQEQgfwdJqCda847boO+si96OP3uvmNorJXdR0QMKoVjre/L6v3wX2z0cpR3V2n1T/jtR/6ueo1VUvT4tuALMAStKnSocc5qPbFJnadU1nKk9XzvbYz83Qi0ErXccAyXNrt+PEzkrvzkboXc9ZQtvk+5dh1V+7xuWrNWfGURqukSfiXLpOaor5sY/IVWjSdbcm0Z1t+WdI9HcUL0DOznwZ08vE9WcRIzpO1kvM0KYz2PARRwcULAWMzJCjY7jvcbZlz6/Mbw9jxB1stNjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dqpFdQ8mmv4U2nruJICqKoj638bRtARkASq06thBeQc=;
+ b=VjvO1QwTPN67Wvd1DUZI6uCygbJWJnJk7rRDHkfIgDSIZd0nleAnTOKrijFL09Wpb+Ds8Se+mcZf2xG3HjVDkdWCFBZpksUbhYDbGUTOK+oFzqQnad0dNfwhGpo9487otAl+I3gUw9ll11Jc3rKptMMj/+0IE/LdQgnRvZt8omA+2P4UV9Er4yO1U4U03RUkbnAOcvg4cq4O93+7kf/n90TJncdSUQvWONMjGL5nQ9v2TBqnuc0jszOp3FI33rDjHLCv1X5Cki76XDnBpqilqnodWsYIJrT0xkzxoqMwt/1nLnPnX9aE/JfUtj986InNMBUllRxEc4Rv/fbl4LRxUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dqpFdQ8mmv4U2nruJICqKoj638bRtARkASq06thBeQc=;
+ b=U+ZD4zTRTiamlKO7NaQJJ+lGW+Gcn6z/7hmsaaC3YQfURr1Vo9QFX7WQyhhgLaxRY0K8RpK/kyj8kNQPa3gZ/Kh1b46N1rqtKdi2cLDdwTLKwpyp/WXL9oEXnFk24UC+1PTUp9GrmEoeDSOOQE7E8UaLs3Oshp+lLrwV0nzFDjU=
+Received: from BL0PR2101MB0930.namprd21.prod.outlook.com
+ (2603:10b6:207:30::18) by BL0PR2101MB1074.namprd21.prod.outlook.com
+ (2603:10b6:207:37::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.4; Wed, 18 Nov
+ 2020 21:10:14 +0000
+Received: from BL0PR2101MB0930.namprd21.prod.outlook.com
+ ([fe80::519c:fbb2:7779:ed64]) by BL0PR2101MB0930.namprd21.prod.outlook.com
+ ([fe80::519c:fbb2:7779:ed64%9]) with mapi id 15.20.3564.033; Wed, 18 Nov 2020
+ 21:10:14 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "b.zolnierkie@samsung.com" <b.zolnierkie@samsung.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>
+CC:     Wei Hu <weh@microsoft.com>
+Subject: RE: [PATCH] video: hyperv_fb: Fix the cache type when mapping the
+ VRAM
+Thread-Topic: [PATCH] video: hyperv_fb: Fix the cache type when mapping the
+ VRAM
+Thread-Index: AQHWvT5KhwldvT+p4Um7gZbK1gSfZKnOY9TA
+Date:   Wed, 18 Nov 2020 21:10:14 +0000
+Message-ID: <BL0PR2101MB0930F078E217A251CC0C457ECAE10@BL0PR2101MB0930.namprd21.prod.outlook.com>
+References: <20201118000305.24797-1-decui@microsoft.com>
+In-Reply-To: <20201118000305.24797-1-decui@microsoft.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a2063ea6-8251-4af5-bc46-1f6100d7b0de;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-11-18T21:09:52Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: microsoft.com; dkim=none (message not signed)
+ header.d=none;microsoft.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [75.100.88.238]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e2b5b725-a294-4baa-b9a9-08d88c0657fc
+x-ms-traffictypediagnostic: BL0PR2101MB1074:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL0PR2101MB1074D7A81EAFFE7384DE89D5CAE10@BL0PR2101MB1074.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dJVDnZikjW5ierNAkJ4y5a+J/oyKT00fRCStxm435GEeeV+TK29iamsCB46iQI8NBz81VcJy2guI8WezzoGZOgn+xm+6gQ9jm5fsA3R52bRyShEHQQWdy3fVEAIvAWHTw25LIJCTnLBrFrJ4rI+uwjsbs9xddWupcnDwDcsU3hbFu58Jmb/YdgfVzKdQOnNxC/gF2olRqsACZQZ2aeCvwdgjUamv7F1ne9NfB8Hb4dY6ffLtcX4Q/GVlrn0lIeG3a/mX5GUC8fPK2VtyMF/VVQQUvaVYjP13arDoAvEBn0FC11WeGb54J3ffS/2zcN8chR34VIvy33mStQoJxhGtCx5aUcxdYDDwouXpSfxX/pu9DdQpw/yNAQzsVw41zI8nT3UWnIm+6dvxASUo6nmRILQZrbeD0GEtYC7yZNlb7SWELL1CAWQEYV0XiuBYkCRP
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB0930.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(136003)(396003)(346002)(6636002)(66446008)(71200400001)(55016002)(76116006)(9686003)(86362001)(7696005)(5660300002)(8676002)(83380400001)(2906002)(66556008)(66476007)(4326008)(53546011)(6506007)(110136005)(26005)(33656002)(82960400001)(966005)(478600001)(66946007)(10290500003)(82950400001)(8936002)(316002)(921005)(8990500004)(186003)(64756008)(52536014)(107886003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?oQ9Zulbgx/rt/z6gBORa2f6cVrfsd1xmAI8GY3iOQPexLNF9gbcXNyNKr+LT?=
+ =?us-ascii?Q?2CeBHEj1bKKuy1gpRJq+woBYkmwm68mrFOqtKd18OnPJ63VpZCvxp69o9zW2?=
+ =?us-ascii?Q?07IPSF11M3ux9yYlWmOCJH9yUZyp7vVU2EHkKqjGpPB/RfoN3DksoeXsE+pM?=
+ =?us-ascii?Q?qQfaNBab548kEo3LC6fRg7UHL/BH+lPs3E1xgV9a0okfxC220D2bQE5zkxL9?=
+ =?us-ascii?Q?tmi0MvHZfmh8RSyDKT8q5H91wSZqYwolEKVaIelhco76Ju63e4INpaglwAjn?=
+ =?us-ascii?Q?9o0xi8YQjaVPSsoR9tHfHMlkDNl2hP+YyglZlpm1VW3vlft/yWKZD8BqT9nJ?=
+ =?us-ascii?Q?0JF5rn+ESCMZWPcebSuS3FLZIgbmSi3OIK8LD7mMxPJDk+px8UPYnUcva5k6?=
+ =?us-ascii?Q?kqamtUQWLhYhkmkIabMOt2IlSGb8y/6wRYXeDjBqpyURo3+FCp/0ka+WCgct?=
+ =?us-ascii?Q?sq+9rJwTFDb5z5D8GfgxEMlH1VZ8Tn0QF2lZVQFyfSB3NGNQeNbdBbPBZscM?=
+ =?us-ascii?Q?0twPdVkt9S0Iojx0Bw5Sm1vS2GIj1/Dwi6tMgnNT3cmFrTnOnWl82MEf5FIP?=
+ =?us-ascii?Q?mi8G+4NUfaURUPci5vdfS2oa+RPC69EDYjNCIPRNgFAsEJrbt8FrBfUi+wDj?=
+ =?us-ascii?Q?lG9+HkPqgcUp+5CZ19g1s6nyD+PPfWAVmXX21b1JdDg6Ad53/Jil6SWAjOIC?=
+ =?us-ascii?Q?MMGmag9H+FNHIqQo7nti/JzoVui4ZZbRP5nv9CbZlYnlcaXprC9SmSk/acJt?=
+ =?us-ascii?Q?EX7i2i4IynL5QSXKUaRBBIiZ/NzvlX8n9DDFYh0STphpm9RYY+dKmqZTooL0?=
+ =?us-ascii?Q?imnVsJxuZu9aSXWUIAXONb9aUhfLABieu5QJ4xEVD3iRAt9MgDB/4QuI7nRl?=
+ =?us-ascii?Q?slCmqNYOae7CboApH9KvQQjbILt7z44RjZ+qg8jersKI+1KpqG70bSQfJb71?=
+ =?us-ascii?Q?mVuNDJfBtw39mG8f6P/J0W73OKSznFmIPnrOLr0vras=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB0930.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2b5b725-a294-4baa-b9a9-08d88c0657fc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2020 21:10:14.3919
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NOBONuGpemogsfeYZoRG3ODQxxOHQsjyVesrpLY7TbyFTHX7MXKUH4Eh1F0BNBQ2waHmgqu895+tfz4dyuxeJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/2020 3:10 AM, Georgi Djakov wrote:
-> The following errors are noticed during boot on a QCS404 board:
-> [    2.926647] qcom_icc_rpm_smd_send mas 6 error -6
-> [    2.934573] qcom_icc_rpm_smd_send mas 8 error -6
-> 
-> These errors show when we try to configure the GPU and display nodes.
-> Since these particular nodes aren't supported on RPM and are purely
-> local, we should just change their mas_rpm_id to -1 to avoid any
-> requests being sent for these master IDs.
-> 
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 
-Reviewed-by: Mike Tipton <mdtipton@codeaurora.org>
 
+> -----Original Message-----
+> From: Dexuan Cui <decui@microsoft.com>
+> Sent: Tuesday, November 17, 2020 7:03 PM
+> To: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> <haiyangz@microsoft.com>; Stephen Hemminger
+> <sthemmin@microsoft.com>; wei.liu@kernel.org;
+> b.zolnierkie@samsung.com; linux-hyperv@vger.kernel.org; dri-
+> devel@lists.freedesktop.org; linux-fbdev@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Michael Kelley <mikelley@microsoft.com>
+> Cc: Wei Hu <weh@microsoft.com>; Dexuan Cui <decui@microsoft.com>
+> Subject: [PATCH] video: hyperv_fb: Fix the cache type when mapping the
+> VRAM
+>=20
+> x86 Hyper-V used to essentially always overwrite the effective cache type=
+ of
+> guest memory accesses to WB. This was problematic in cases where there is
+> a physical device assigned to the VM, since that often requires that the =
+VM
+> should have control over cache types. Thus, on newer Hyper-V since 2018,
+> Hyper-V always honors the VM's cache type, but unexpectedly Linux VM
+> users start to complain that Linux VM's VRAM becomes very slow, and it
+> turns out that Linux VM should not map the VRAM uncacheable by ioremap().
+> Fix this slowness issue by using ioremap_cache().
+>=20
+> On ARM64, ioremap_cache() is also required as the host also maps the VRAM
+> cacheable, otherwise VM Connect can't display properly with ioremap() or
+> ioremap_wc().
+>=20
+> With this change, the VRAM on new Hyper-V is as fast as regular RAM, so i=
+t's
+> no longer necessary to use the hacks we added to mitigate the slowness, i=
+.e.
+> we no longer need to allocate physical memory and use it to back up the
+> VRAM in Generation-1 VM, and we also no longer need to allocate physical
+> memory to back up the framebuffer in a Generation-2 VM and copy the
+> framebuffer to the real VRAM. A further big change will address these for
+> v5.11.
+>=20
+> Fixes: 68a2d20b79b1 ("drivers/video: add Hyper-V Synthetic Video Frame
+> Buffer Driver")
+> Tested-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
 > ---
-> 
-> v2:
-> * Keep the nodes and just set the IDs to -1, as suggested by Mike.
-> 
-> v1: http://lore.kernel.org/r/20201111100734.307-1-georgi.djakov@linaro.org
-> 
->   drivers/interconnect/qcom/qcs404.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/interconnect/qcom/qcs404.c b/drivers/interconnect/qcom/qcs404.c
-> index d4769a5ea182..9820709b43db 100644
-> --- a/drivers/interconnect/qcom/qcs404.c
-> +++ b/drivers/interconnect/qcom/qcs404.c
-> @@ -157,8 +157,8 @@ struct qcom_icc_desc {
->   	}
->   
->   DEFINE_QNODE(mas_apps_proc, QCS404_MASTER_AMPSS_M0, 8, 0, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
-> -DEFINE_QNODE(mas_oxili, QCS404_MASTER_GRAPHICS_3D, 8, 6, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
-> -DEFINE_QNODE(mas_mdp, QCS404_MASTER_MDP_PORT0, 8, 8, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
-> +DEFINE_QNODE(mas_oxili, QCS404_MASTER_GRAPHICS_3D, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
-> +DEFINE_QNODE(mas_mdp, QCS404_MASTER_MDP_PORT0, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
->   DEFINE_QNODE(mas_snoc_bimc_1, QCS404_SNOC_BIMC_1_MAS, 8, 76, -1, QCS404_SLAVE_EBI_CH0);
->   DEFINE_QNODE(mas_tcu_0, QCS404_MASTER_TCU_0, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
->   DEFINE_QNODE(mas_spdm, QCS404_MASTER_SPDM, 4, -1, -1, QCS404_PNOC_INT_3);
-> 
+>=20
+> Hi Wei Liu, can you please pick this up into the hyperv/linux.git tree's =
+hyperv-
+> fixes branch? I really hope this patch can be in v5.10 since it fixes a
+> longstanding issue:
+> https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgith
+> ub.com%2FLIS%2Flis-
+> next%2Fissues%2F655&amp;data=3D04%7C01%7Chaiyangz%40microsoft.com%
+> 7C7e371bb6f79f41aae12208d88b556c85%7C72f988bf86f141af91ab2d7cd011d
+> b47%7C1%7C0%7C637412546297591335%7CUnknown%7CTWFpbGZsb3d8eyJ
+> WIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%
+> 7C1000&amp;sdata=3DStqnT%2Fx1XVoVWUZbJz5BNjaCIdtuNmSf2JoyLSt0c%2B
+> Q%3D&amp;reserved=3D0
+>=20
+>  drivers/video/fbdev/hyperv_fb.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/video/fbdev/hyperv_fb.c
+> b/drivers/video/fbdev/hyperv_fb.c index 5bc86f481a78..c8b0ae676809
+> 100644
+> --- a/drivers/video/fbdev/hyperv_fb.c
+> +++ b/drivers/video/fbdev/hyperv_fb.c
+> @@ -1093,7 +1093,12 @@ static int hvfb_getmem(struct hv_device *hdev,
+> struct fb_info *info)
+>  		goto err1;
+>  	}
+>=20
+> -	fb_virt =3D ioremap(par->mem->start, screen_fb_size);
+> +	/*
+> +	 * Map the VRAM cacheable for performance. This is also required
+> for
+> +	 * VM Connect to display properly for ARM64 Linux VM, as the host
+> also
+> +	 * maps the VRAM cacheable.
+> +	 */
+> +	fb_virt =3D ioremap_cache(par->mem->start, screen_fb_size);
+>  	if (!fb_virt)
+>  		goto err2;
+
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+Thank you!
