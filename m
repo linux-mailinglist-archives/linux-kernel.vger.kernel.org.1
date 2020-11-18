@@ -2,122 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71BD2B7E58
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA262B7E5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgKRNdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:33:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgKRNdn (ORCPT
+        id S1726293AbgKRNfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:35:01 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:44126 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgKRNfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:33:43 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B80C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 05:33:42 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 1so2743009wme.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 05:33:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KhSKm6xXD/S2USk/xN5rMNMtHJTfjEBBg1GQZ9wQdwM=;
-        b=QImmPshdTjV1NJrDADCTneKdpxi5uJioL+eQ8QDHDpdv0hH30nPGo0kDGvD/zwALyd
-         30vCXYj2RStj1hB7kh4JE3YXMMTbI9H07/h8WOebJDrrsFvsP8xjQy72AMrNINrzqeMj
-         tqUnoDB4cNjCxmsiFdUHG5vQmuoXBMKuGmdgn8yY2JDXREAMiNPwX2ht7UHmw3IYEFV3
-         ll80L/0XCHkm6Z+ZW+AF96hQ8IWr7pMQEEpcbXPSOEnYwaHvs7MWot6fdjzTzn56q/fh
-         zO0ccXySdqQIY05+P9m+fDk4b43TH+3zK5ByjKaqZS1o2FJ/eQJt8+tiKMwScKV41+Tp
-         gJKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KhSKm6xXD/S2USk/xN5rMNMtHJTfjEBBg1GQZ9wQdwM=;
-        b=mxvZA200dvNgV5zMvWEqlVB4iRx1pToMXseFSX9J+zlkcSW3Eot5F/LseVyw0e/Yq8
-         /qrQZH619RJGjTO01PJrUc5DFXEEYBSBwXshi/UQsRERh3FIR7SGVFem53O9+3kehtFo
-         WX34zYrInGumfjQO4S7VXJfzAzUfQR5G4SlhIF5LWzU/ahqat0T7sql8PHIuKyY6Dt71
-         Y+BjaaDgTZsxi51AuOVpbR1Kfo8G0a2Nf75StyU4k4n2GBLUvtKKLnAwhDge7AYfsV0U
-         qJ9Krmeib/CEApqCSsi2XJJvaVyix5mrBNAOvGIDKoGLnuKULL8HPVaeJybyJgO7I40H
-         462Q==
-X-Gm-Message-State: AOAM5315Jo1GiJrxg76iNF1Xb42AZX0ylwD+HD8Ln+S7A1DGirPHTmCl
-        NpKb+lemkqYF93pLTeO9MXCYfw==
-X-Google-Smtp-Source: ABdhPJzlRM1pabR6XP3qseZnb4OnIlGC+nOLcf09PaLAN+UpslI69NrtJvWxE+TCMD1dmy53V6aLqw==
-X-Received: by 2002:a1c:2d93:: with SMTP id t141mr80222wmt.104.1605706421330;
-        Wed, 18 Nov 2020 05:33:41 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id b124sm3919845wmh.13.2020.11.18.05.33.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 05:33:39 -0800 (PST)
-Date:   Wed, 18 Nov 2020 14:33:33 +0100
-From:   Marco Elver <elver@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paulmck@kernel.org
-Subject: Re: [PATCH] sched: Fix data-race in wakeup
-Message-ID: <20201118133333.GA1506553@elver.google.com>
-References: <20201116091054.GL3371@techsingularity.net>
- <20201116131102.GA29992@willie-the-truck>
- <20201116133721.GQ3371@techsingularity.net>
- <20201116142005.GE3121392@hirez.programming.kicks-ass.net>
- <20201116193149.GW3371@techsingularity.net>
- <20201117083016.GK3121392@hirez.programming.kicks-ass.net>
- <20201117091545.GA31837@willie-the-truck>
- <20201117092936.GA3121406@hirez.programming.kicks-ass.net>
+        Wed, 18 Nov 2020 08:35:00 -0500
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 787D59BF;
+        Wed, 18 Nov 2020 14:34:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1605706497;
+        bh=DBt7k3kM16a1u4PscOHfyfWUlWagJI1Kn1oXOaUi74g=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PFMJylTmhX9Td6Aa/GgqxbJCyoBWhtUe2G6Hw/yT+/b5rZZ4NP+5+GmQvEmaWCbSJ
+         N8gk/redcZBNO3iJDOefIogErGBCMIH19/r5/Bb62o97wrcZ/HS45IGy90kOUIkvo2
+         vBUb62DL6Chh4vrJM5ZuNFIfEV8r9sGLBHkfL0mU=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v5 0/8] media: i2c: Add RDACM21 camera module
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        sergei.shtylyov@gmail.com
+References: <20201116135305.81319-1-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <53e43d23-483a-adc2-a3c4-3a2b821da832@ideasonboard.com>
+Date:   Wed, 18 Nov 2020 13:34:54 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117092936.GA3121406@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20201116135305.81319-1-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:29AM +0100, Peter Zijlstra wrote:
-[...]
-> > Now the million dollar question is why KCSAN hasn't run into this. Hrmph.
+Hi Jacopo,
+
+On 16/11/2020 13:52, Jacopo Mondi wrote:
+> Hello,
+>    this v5 mostly changes how the rdacm21 driver handles writes to the
+> OV490 chip by handling the 'high' part of the sensor register through an
+> helper function as suggested by Kieran and Laurent.
 > 
-> kernel/sched/Makefile:KCSAN_SANITIZE := n
+> The diff is available at:
+> https://paste.debian.net/1172700/
 > 
-> might have something to do with that, I suppose.
+> Minor fixes in patches subjects and in bindings as reported by Sergei and
+> Kieran.
+> 
+> Bindings have now been sent to DT people now that they've been reviewed
+> by Kieran.
+> 
+> v4: https://patchwork.linuxtv.org/project/linux-media/list/?series=3847
+> v3: https://patchwork.linuxtv.org/project/linux-media/list/?series=3657
+> 
+> Background in v1 cover letter:
+> https://www.spinics.net/lists/linux-renesas-soc/msg52886.html
+> 
+> I have tested on Eagle V3M with 4 RDACM21, but the whole point of
+> this series is to retain compatibility with RDACM20.
+> 
+> For this reason I have included 2 patches on top, not intended for merge
+> that re-propose DTS support for the MAXIM max9286 expansion board connected
+> to Salvator-X and add the newly introduced property to the DTS file.
+> 
+> Kieran, I know you have a working setup with RDACM20, the final patches are
+> meant for ease your testing. Can you give this series a spin ?
 
-For the record, I tried to reproduce this data race. I found a
-read/write race on this bitfield, but not yet that write/write race
-(perhaps I wasn't running the right workload).
 
-	| read to 0xffff8d4e2ce39aac of 1 bytes by task 5269 on cpu 3:
-	|  __sched_setscheduler+0x4a9/0x1070 kernel/sched/core.c:5297
-	|  sched_setattr kernel/sched/core.c:5512 [inline]
-	|  ...
-	|
-	| write to 0xffff8d4e2ce39aac of 1 bytes by task 5268 on cpu 1:
-	|  __schedule+0x296/0xab0 kernel/sched/core.c:4462 		prev->sched_contributes_to_load =
-	|  schedule+0xd1/0x130 kernel/sched/core.c:4601
-	|  ...
-	|
-	| Full report: https://paste.debian.net/hidden/07a50732/
+After some rabbit-holes :-D:
 
-Getting to the above race also required some effort as 1) I kept hitting
-other unrelated data races in the scheduler and had to silence those
-first to be able to make progress, and 2) only enable KCSAN for
-scheduler code to just ignore all other data races. Then I let syzkaller
-run for a few minutes.
+A 5-camera capture on Salvator-X - https://pasteboard.co/JAW0PSr.png
+For this series, on both Eagle-V3M and Salvator-X
 
-Also note our default KCSAN config is suboptimal. For serious debugging,
-I'd recommend the same config that rcutorture uses with the --kcsan
-flag, specifically:
+Tested-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-	CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n,
-	CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n
 
-to get the full picture.
 
-However, as a first step, it'd be nice to eventually remove the
-KCSAN_SANITIZE := n from kernel/sched/Makefile when things are less
-noisy (so that syzbot and default builds can start finding more serious
-issues, too).
+> Series based on latest renesas-drivers tag: renesas-drivers-2020-11-10-v5.10-rc3
+> 
+> Thanks
+>   j
+> 
+> Jacopo Mondi (7):
+>   media: i2c: Add driver for RDACM21 camera module
+>   dt-bindings: media: max9286: Document
+>     'maxim,initial-reverse-channel-mV'
+>   media: i2c: max9286: Break-out reverse channel setup
+>   media: i2c: max9286: Make channel amplitude programmable
+>   media: i2c: max9286: Configure reverse channel amplitude
+>   [DNI] arm64: dts: renesas: salvator-x-max9286: Specify channel
+>     amplitude
+>   [DNI] arm64: dts: renesas: eagle: Specify channel amplitude
+> 
+> Laurent Pinchart (1):
+>   arm64: dts: renesas: salvator-x: Add MAX9286 expansion board
+> 
+>  .../bindings/media/i2c/maxim,max9286.yaml     |  23 +
+>  MAINTAINERS                                   |  12 +
+>  .../arm64/boot/dts/renesas/r8a77970-eagle.dts |   1 +
+>  .../boot/dts/renesas/salvator-x-max9286.dtsi  | 396 ++++++++++++
+>  drivers/media/i2c/Kconfig                     |  13 +
+>  drivers/media/i2c/Makefile                    |   2 +
+>  drivers/media/i2c/max9286.c                   |  58 +-
+>  drivers/media/i2c/rdacm21.c                   | 595 ++++++++++++++++++
+>  8 files changed, 1087 insertions(+), 13 deletions(-)
+>  create mode 100644 arch/arm64/boot/dts/renesas/salvator-x-max9286.dtsi
+>  create mode 100644 drivers/media/i2c/rdacm21.c
+> 
+> --
+> 2.29.1
+> 
 
-Thanks,
--- Marco
