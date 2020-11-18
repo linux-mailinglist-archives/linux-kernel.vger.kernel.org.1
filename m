@@ -2,75 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1C42B79D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3657C2B79D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbgKRI6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:58:53 -0500
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:33679 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgKRI6x (ORCPT
+        id S1727103AbgKRI77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:59:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22843 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726020AbgKRI77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:58:53 -0500
-X-Greylist: delayed 43111 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Nov 2020 03:58:52 EST
-X-Originating-IP: 62.210.143.248
-Received: from weirdfishes.localdomain (62-210-143-248.rev.poneytelecom.eu [62.210.143.248])
-        (Authenticated sender: m@thi.eu.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id B6C241C0009;
-        Wed, 18 Nov 2020 08:58:49 +0000 (UTC)
-Received: by weirdfishes.localdomain (Postfix, from userid 1000)
-        id 5DF1372214948; Wed, 18 Nov 2020 09:58:49 +0100 (CET)
-Date:   Wed, 18 Nov 2020 09:58:49 +0100
-From:   Mathieu Chouquet-Stringer <me@mathieu.digital>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Matthew Garrett <mjg59@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        sean.j.christopherson@intel.com, tony.luck@intel.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        the arch/x86 maintainers <x86@kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH -v2.1] x86/msr: Filter MSR writes
-Message-ID: <20201118085849.GA189743@weirdfishes>
-Mail-Followup-To: Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Borislav Petkov <bp@alien8.de>, Matthew Garrett <mjg59@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        sean.j.christopherson@intel.com, tony.luck@intel.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        the arch/x86 maintainers <x86@kernel.org>, kernel-team@fb.com
-References: <20200615063837.GA14668@zn.tnic>
- <20200714121955.GA2080@chrisdown.name>
- <20200714154728.GA3101@nazgul.tnic>
- <20200714160448.GC2080@chrisdown.name>
- <CACdnJuvfhjMNQUYNYWpPMfwTE3xHi7UNPm7HEwUMv_1F3KT4gA@mail.gmail.com>
- <20201117210018.GA4247@weirdfishes>
- <20201117212016.GQ5719@zn.tnic>
+        Wed, 18 Nov 2020 03:59:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605689998;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gxx/VvkoJZ4QkIxP+qyRXmDmA8Z61VJCEEV8lV2lfkE=;
+        b=CUQenL0tsEeJCscxfnIkkjF1lMlx2bL6H9BP7i1XTjxW4zP/61+bUovGUtY5wpzTTnA2Xt
+        ue7uEjde/qz3KmbYWL8ijPHsCpzOtM8kIkk0ZAbIZF3Irn+WOeOThp4OHe/7wQp3J0tUOM
+        GrweTCVd/WycaLRkk4gHL+uY2hdgdcg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-20-RRR1uNM8PaKjgEH3DAAXIA-1; Wed, 18 Nov 2020 03:59:54 -0500
+X-MC-Unique: RRR1uNM8PaKjgEH3DAAXIA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD26110074B1;
+        Wed, 18 Nov 2020 08:59:52 +0000 (UTC)
+Received: from [10.36.114.231] (ovpn-114-231.ams2.redhat.com [10.36.114.231])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CD2C360C43;
+        Wed, 18 Nov 2020 08:59:46 +0000 (UTC)
+Subject: Re: [PATCH v2 27/29] mm/memory_hotplug: extend
+ offline_and_remove_memory() to handle more than one memory block
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+References: <20201112133815.13332-1-david@redhat.com>
+ <20201112133815.13332-28-david@redhat.com>
+ <20201117205301.bcef9773f3557a764d17b8df@linux-foundation.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <842683af-0a1e-78ea-5b94-178eaf8f3239@redhat.com>
+Date:   Wed, 18 Nov 2020 09:59:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117212016.GQ5719@zn.tnic>
-X-Face: %JOeya=Dg!}[/#Go&*&cQ+)){p1c8}u\Fg2Q3&)kothIq|JnWoVzJtCFo~4X<uJ\9cHK'.w
- 3:{EoxBR
+In-Reply-To: <20201117205301.bcef9773f3557a764d17b8df@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:20:16PM +0100, Borislav Petkov wrote:
-> Not for long:
+On 18.11.20 05:53, Andrew Morton wrote:
+> On Thu, 12 Nov 2020 14:38:13 +0100 David Hildenbrand <david@redhat.com> wrote:
 > 
-> https://git.kernel.org/tip/fe0a5788624c8b8f113a35bbe4636e37f9321241
+>> virtio-mem soon wants to use offline_and_remove_memory() memory that
+>> exceeds a single Linux memory block (memory_block_size_bytes()). Let's
+>> remove that restriction.
+>>
+>> Let's remember the old state and try to restore that if anything goes
+>> wrong. While re-onlining can, in general, fail, it's highly unlikely to
+>> happen (usually only when a notifier fails to allocate memory, and these
+>> are rather rare).
+>>
+>> This will be used by virtio-mem to offline+remove memory ranges that are
+>> bigger than a single memory block - for example, with a device block
+>> size of 1 GiB (e.g., gigantic pages in the hypervisor) and a Linux memory
+>> block size of 128MB.
+>>
+>> While we could compress the state into 2 bit, using 8 bit is much
+>> easier.
+>>
+>> This handling is similar, but different to acpi_scan_try_to_offline():
+>>
+>> a) We don't try to offline twice. I am not sure if this CONFIG_MEMCG
+>> optimization is still relevant - it should only apply to ZONE_NORMAL
+>> (where we have no guarantees). If relevant, we can always add it.
+>>
+>> b) acpi_scan_try_to_offline() simply onlines all memory in case
+>> something goes wrong. It doesn't restore previous online type. Let's do
+>> that, so we won't overwrite what e.g., user space configured.
+>>
+>> ...
+>>
+> 
+> uint8_t is a bit of a mouthful.  u8 is less typing ;)  Doesn't matter.
 
-That's fantastic.
+In case I have to resend, I'll change it :)
 
-> Because if you poke at random MSRs and you manage to "configure" your
-> CPU to run "out of spec" - this is what the taint flag is called:
-> TAINT_CPU_OUT_OF_SPEC - then this is exactly the case you've created: a
-> CPU executing outside of specifications.
+> 
+> Acked-by: Andrew Morton <akpm@linux-foundation.org>
 
-Don't get me wrong, it makes total sense to do that, it's just the
-original reason of !SMP-capable isn't so clear while CPU out of spec is.
+Thanks!
+
 
 -- 
-Mathieu Chouquet-Stringer                             me@mathieu.digital
-            The sun itself sees not till heaven clears.
-	             -- William Shakespeare --
+Thanks,
+
+David / dhildenb
+
