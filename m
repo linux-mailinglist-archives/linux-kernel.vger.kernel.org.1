@@ -2,113 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3657C2B79D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 082DC2B79D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgKRI77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:59:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22843 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726020AbgKRI77 (ORCPT
+        id S1727426AbgKRJAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:00:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727160AbgKRJAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:59:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605689998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gxx/VvkoJZ4QkIxP+qyRXmDmA8Z61VJCEEV8lV2lfkE=;
-        b=CUQenL0tsEeJCscxfnIkkjF1lMlx2bL6H9BP7i1XTjxW4zP/61+bUovGUtY5wpzTTnA2Xt
-        ue7uEjde/qz3KmbYWL8ijPHsCpzOtM8kIkk0ZAbIZF3Irn+WOeOThp4OHe/7wQp3J0tUOM
-        GrweTCVd/WycaLRkk4gHL+uY2hdgdcg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-RRR1uNM8PaKjgEH3DAAXIA-1; Wed, 18 Nov 2020 03:59:54 -0500
-X-MC-Unique: RRR1uNM8PaKjgEH3DAAXIA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD26110074B1;
-        Wed, 18 Nov 2020 08:59:52 +0000 (UTC)
-Received: from [10.36.114.231] (ovpn-114-231.ams2.redhat.com [10.36.114.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CD2C360C43;
-        Wed, 18 Nov 2020 08:59:46 +0000 (UTC)
-Subject: Re: [PATCH v2 27/29] mm/memory_hotplug: extend
- offline_and_remove_memory() to handle more than one memory block
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-References: <20201112133815.13332-1-david@redhat.com>
- <20201112133815.13332-28-david@redhat.com>
- <20201117205301.bcef9773f3557a764d17b8df@linux-foundation.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <842683af-0a1e-78ea-5b94-178eaf8f3239@redhat.com>
-Date:   Wed, 18 Nov 2020 09:59:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 18 Nov 2020 04:00:08 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54004C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:00:07 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id t16so1382277oie.11
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:00:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1FsQN+8izne3JfHZCqz8SHsDVQ3dYaFlVE4Pg17Uqps=;
+        b=KKiI8JWq3PzgGVdBzPB030iFoJN+YRlGzkWc20wD1gh6GwiGKs7t7/95GoT+NUQHyb
+         EX5kThkhYbCx1tBn1mbtCIUYPPr8ebFEs2oS+ZC4WgVnU1ZeIr+gf3zzMHpuePpRf31L
+         3U3LMs6URzNHC23Cr9GDaf0Q6tM8bYD4x8uP8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1FsQN+8izne3JfHZCqz8SHsDVQ3dYaFlVE4Pg17Uqps=;
+        b=C5lPTMdDXkVMQX0/XWdbG2y2G0vUC6mMfmjaSfUv3x+OdmSn1ayHltpjo5ajZqAGno
+         dORkQi+as2aAmlX4t4eNte1N68AcgJ0TcFmBoTlhoggdITaMxuH422538KMCNiMKlihs
+         nOfCYWUD/3WZMOlUYOWObOj0jccYvGyWSK+Dczph1oXgoNVFry+ONkMPk9LWdEhEGZsK
+         HzN0j3QOsHW+2K4cV5Gb9Yj6kYxLR69NWNPnXTkvk4CAM5dAykG8SNoOpajEMkVn928o
+         a2s/DcMJIQKPSEvOMM3ZLxpVf5GGXZ6NcGG9L8wdrpIdBw0aGsi0ARTu51WmdFXcfYr0
+         QYoA==
+X-Gm-Message-State: AOAM5339PkXYJW/OPfLeoIEhewwHW10D8nVDS4ZxAU1Plzgpsnek8HTN
+        PIWMIjT1fvj/ftNytm2ftLVV0LJFXizT2Y1gyNOvBg==
+X-Google-Smtp-Source: ABdhPJyPn9yquhxjYhFS4h9ZTn/G+AO/koeMNkor10wNSKkR/ie+hTCpZdf19Ki8PBhbStq+LVOeKmujydpa/PCr7No=
+X-Received: by 2002:aca:4f14:: with SMTP id d20mr2107464oib.14.1605690006733;
+ Wed, 18 Nov 2020 01:00:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201117205301.bcef9773f3557a764d17b8df@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201117155229.9837-1-mark.jonas@de.bosch.com> <e089d4d5-3bd8-c2cd-3011-ed87ae4284e8@suse.de>
+In-Reply-To: <e089d4d5-3bd8-c2cd-3011-ed87ae4284e8@suse.de>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 18 Nov 2020 09:59:55 +0100
+Message-ID: <CAKMK7uEpEt4w4kVJLOd2Yw1MnsrCn-NMgT4TjcxROpZBa_xvYg@mail.gmail.com>
+Subject: Re: [PATCH] drm: imx: Move fbdev setup to before output polling
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Mark Jonas <mark.jonas@de.bosch.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Leo Ruan <tingquan.ruan@cn.bosch.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.11.20 05:53, Andrew Morton wrote:
-> On Thu, 12 Nov 2020 14:38:13 +0100 David Hildenbrand <david@redhat.com> wrote:
-> 
->> virtio-mem soon wants to use offline_and_remove_memory() memory that
->> exceeds a single Linux memory block (memory_block_size_bytes()). Let's
->> remove that restriction.
->>
->> Let's remember the old state and try to restore that if anything goes
->> wrong. While re-onlining can, in general, fail, it's highly unlikely to
->> happen (usually only when a notifier fails to allocate memory, and these
->> are rather rare).
->>
->> This will be used by virtio-mem to offline+remove memory ranges that are
->> bigger than a single memory block - for example, with a device block
->> size of 1 GiB (e.g., gigantic pages in the hypervisor) and a Linux memory
->> block size of 128MB.
->>
->> While we could compress the state into 2 bit, using 8 bit is much
->> easier.
->>
->> This handling is similar, but different to acpi_scan_try_to_offline():
->>
->> a) We don't try to offline twice. I am not sure if this CONFIG_MEMCG
->> optimization is still relevant - it should only apply to ZONE_NORMAL
->> (where we have no guarantees). If relevant, we can always add it.
->>
->> b) acpi_scan_try_to_offline() simply onlines all memory in case
->> something goes wrong. It doesn't restore previous online type. Let's do
->> that, so we won't overwrite what e.g., user space configured.
->>
->> ...
->>
-> 
-> uint8_t is a bit of a mouthful.  u8 is less typing ;)  Doesn't matter.
+On Wed, Nov 18, 2020 at 9:10 AM Thomas Zimmermann <tzimmermann@suse.de> wro=
+te:
+>
+> Hi
+>
+> Am 17.11.20 um 16:52 schrieb Mark Jonas:
+> > From: Leo Ruan <tingquan.ruan@cn.bosch.com>
+> >
+> > The generic fbdev has to be setup before enabling output polling.
+> > Otherwise the fbdev client is not ready to handle delayed events.
+> >
+> > Since f53705fd, the generic fbdev is setup after the output polling
+> > init. During fbdev setup, when fbdev probes attached outputs and a
+> > status changes from unknown to connected, the delayed event is
+> > marked and the output_poll_work thread is scheduled without delay.
+> > If output_poll_execute() is runs immediately, the delayed event
+> > is handled without actually polling the output because the fbdev is not
+> > registered yet. So the delayed event is lost. This leads to a dark
+> > screen until a KMS application (or fbcon) sets the screen mode.
+> >
+> > This patch fixes the issue by moving the setup of generic fbdev before
+> > initializing and enabling output polling.
+> >
+> > Signed-off-by: Leo Ruan <tingquan.ruan@cn.bosch.com>
+> > Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+> > ---
+> >  drivers/gpu/drm/imx/imx-drm-core.c | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/imx/imx-drm-core.c b/drivers/gpu/drm/imx/i=
+mx-drm-core.c
+> > index 9bf5ad6d18a2..2665040e11c7 100644
+> > --- a/drivers/gpu/drm/imx/imx-drm-core.c
+> > +++ b/drivers/gpu/drm/imx/imx-drm-core.c
+> > @@ -240,14 +240,18 @@ static int imx_drm_bind(struct device *dev)
+> >               legacyfb_depth =3D 16;
+> >       }
+> >
+> > +     /*
+> > +      * The generic fbdev has to be setup before enabling output polli=
+ng.
+> > +      * Otherwise the fbdev client is not ready to handle delayed even=
+ts.
+> > +      */
+> > +     drm_fbdev_generic_setup(drm, legacyfb_depth);
+> > +
+> >       drm_kms_helper_poll_init(drm);
+> >
+> >       ret =3D drm_dev_register(drm, 0);
+> >       if (ret)
+> >               goto err_poll_fini;
+> >
+> > -     drm_fbdev_generic_setup(drm, legacyfb_depth);
+> > -
+>
+> This does not work well. fbdev is supposed to be another regular DRM
+> client. It has to be enabled after registering the DRM device.
+>
+> I'd rather improve fbdev or the driver to handle this gracefully.
 
-In case I have to resend, I'll change it :)
+Yeah I'm not understanding the point here. Once fbcon is running, you
+have a screen. Any fbdev userspace client  also should do a modeset
+first. And if they dont and it's expected uapi for fbdev chardev that
+the display boots up enabled, then we need to fix that in the fbdev
+helpers, not through clever reordering in drivers so that a
+side-effect causes a modeset.
 
-> 
-> Acked-by: Andrew Morton <akpm@linux-foundation.org>
+Note that this is a bit tricky since fbdev shouldn't take over the
+screen by default, so we'd need to delay this until first open of
+/dev/fb0. And we should probably also delay the hotplug handling until
+the first open. fbcon also fake-opens the fbdev file, so it's the same
+code path.
+-Daniel
 
-Thanks!
+>
+> Best regards
+> Thomas
+>
+> >       return 0;
+> >
+> >  err_poll_fini:
+> >
+>
+> --
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+> (HRB 36809, AG N=C3=BCrnberg)
+> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
 
--- 
-Thanks,
 
-David / dhildenb
-
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
