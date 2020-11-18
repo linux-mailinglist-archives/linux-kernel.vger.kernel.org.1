@@ -2,55 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FC82B8032
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542962B803B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgKRPPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:15:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgKRPPO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:15:14 -0500
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406A5C0613D4;
-        Wed, 18 Nov 2020 07:15:14 -0800 (PST)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 1BCB720A8; Wed, 18 Nov 2020 10:15:13 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 1BCB720A8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1605712513;
-        bh=mSxGFZ77x4zkqvjZTkBj8s+vuNZp2OuVj35/dlAfrCQ=;
-        h=Date:To:Cc:Subject:From:From;
-        b=KpmpzR1jOiLZydUe8HdKYUTyiOb9HYznc+vXGaiEUu8xCMI/FbP7/VuXvYJSjo55K
-         c3JK/EAgF9y7z7DT2A2rYxcEKD8mcr38zE2NlP3pfgCosHGr9lrgSNKdS/wf05ya2+
-         l14fn3ACHhrtyqtKInZebstVhDRw5VjF1nB/FTFk=
-Date:   Wed, 18 Nov 2020 10:15:13 -0500
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [GIT PULL] nfsd bugfix for 5.10
-Message-ID: <20201118151513.GC7320@fieldses.org>
+        id S1727298AbgKRPQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:16:13 -0500
+Received: from mga12.intel.com ([192.55.52.136]:8041 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726336AbgKRPQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:16:05 -0500
+IronPort-SDR: Y2MIooStId7wSQ174TkdaHh2uOPGlWFctZRnDtfcOMa48530j7r+N70h6OYtAqYjR/ELk92G46
+ sHbfP7eNdrUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="150399351"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="150399351"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 07:15:59 -0800
+IronPort-SDR: aTiYNJ44AM906CS+zhEMRp2fvFfXKQF7b6rvBGJ5Nwf/0Q3nXU6P0X3HedyxnM0djnyMjcm5o6
+ OaFbHH0nu8Iw==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="359492060"
+Received: from paolonig001.ir.intel.com ([163.33.183.93])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 07:15:56 -0800
+From:   Gabriele Paoloni <gabriele.paoloni@intel.com>
+To:     tony.luck@intel.com, bp@alien8.de, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, hpa@zytor.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gabriele.paoloni@intel.com, linux-safety@lists.elisa.tech
+Subject: [PATCH 0/4] x86/MCE: some minor fixes
+Date:   Wed, 18 Nov 2020 15:15:48 +0000
+Message-Id: <20201118151552.1412-1-gabriele.paoloni@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull
+During the safety analysis that was done in the context of the
+ELISA project by the safety architecture working group some
+incorrectnesses were spotted.
+This patchset proposes some fixes.
 
-  git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.10-2
+Signed-off-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
 
-Just one quick fix for a tracing oops.
+Gabriele Paoloni (4):
+  x86/mce: do not overwrite no_way_out if mce_end() fails
+  x86/mce: move the mce_panic() call and kill_it assignments at the
+    right places
+  x86/mce: for LMCE panic only if mca_cfg.tolerant < 3
+  x86/mce: remove redundant call to irq_work_queue()
 
---b.
+ arch/x86/kernel/cpu/mce/core.c | 28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
 
-----------------------------------------------------------------
-Scott Mayhew (1):
-      SUNRPC: Fix oops in the rpc_xdr_buf event class
+-- 
+2.20.1
 
- include/trace/events/sunrpc.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+---------------------------------------------------------------------
+INTEL CORPORATION ITALIA S.p.A. con unico socio
+Sede: Milanofiori Palazzo E 4 
+CAP 20094 Assago (MI)
+Capitale Sociale Euro 104.000,00 interamente versato
+Partita I.V.A. e Codice Fiscale  04236760155
+Repertorio Economico Amministrativo n. 997124 
+Registro delle Imprese di Milano nr. 183983/5281/33
+Soggetta ad attivita' di direzione e coordinamento di 
+INTEL CORPORATION, USA
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
+
