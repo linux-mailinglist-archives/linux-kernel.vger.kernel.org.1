@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2481E2B7C13
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A62F2B7C3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgKRLGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:06:52 -0500
-Received: from lucky1.263xmail.com ([211.157.147.132]:40960 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgKRLGw (ORCPT
+        id S1727800AbgKRLRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:17:09 -0500
+Received: from latitanza.investici.org ([82.94.249.234]:45377 "EHLO
+        latitanza.investici.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726188AbgKRLRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:06:52 -0500
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 63A12EF647;
-        Wed, 18 Nov 2020 19:06:43 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (250.19.126.124.broad.bjtelecom.net [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P26978T140148173948672S1605697604209366_;
-        Wed, 18 Nov 2020 19:06:44 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <3dba3d32f29c3868c1a2fec0f6b51bb4>
-X-RL-SENDER: penghao@uniontech.com
-X-SENDER: penghao@uniontech.com
-X-LOGIN-NAME: penghao@uniontech.com
-X-FST-TO: gregkh@linuxfoundation.org
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 5
-X-System-Flag: 0
-From:   penghao <penghao@uniontech.com>
-To:     gregkh@linuxfoundation.org
-Cc:     johan@kernel.org, jonathan@jdcox.net, tomasz@meresinski.eu,
-        penghao@uniontech.com, hdegoede@redhat.com, dlaz@chromium.org,
-        kai.heng.feng@canonical.com, richard.o.dodd@gmail.com,
-        kerneldev@karsmulder.nl, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for Lenovo A630Z TIO built-in usb-audio card
-Date:   Wed, 18 Nov 2020 19:06:39 +0800
-Message-Id: <20201118110639.7455-1-penghao@uniontech.com>
-X-Mailer: git-send-email 2.11.0
+        Wed, 18 Nov 2020 06:17:08 -0500
+X-Greylist: delayed 560 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Nov 2020 06:17:07 EST
+Received: from mx3.investici.org (unknown [127.0.0.1])
+        by latitanza.investici.org (Postfix) with ESMTP id 4Cbg5B6LrHz8sh0;
+        Wed, 18 Nov 2020 11:07:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
+        s=stigmate; t=1605697662;
+        bh=pRohe2wpPXolmMdvR/at0ovtLoyHsrhZfm/U2gcuOco=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ULcHjlhqS7tEyxvDIdLm53xZYmh18NOkJmka/k9b5EZG1tIW1LZDa8wFvZoF4wgLM
+         tnhC8hKV7+kgqbHvFZuhl2tFpqz9ruQPPWtN6VFjO03GnaIiHyUkN+p2fg56jXX9Yu
+         1jMRh6w9IioF7zEjfvnlTIf4mUjqne5QxBvt2QU4=
+Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4Cbg5B0w7fz8sgF;
+        Wed, 18 Nov 2020 11:07:41 +0000 (UTC)
+From:   laniel_francis@privacyrequired.com
+To:     akpm@linux-foundation.org
+Cc:     linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, dja@axtens.net,
+        keescook@chromium.org,
+        Francis Laniel <laniel_francis@privacyrequired.com>
+Subject: [PATCH v5 0/5] Fortify strscpy()
+Date:   Wed, 18 Nov 2020 12:07:26 +0100
+Message-Id: <20201118110731.15833-1-laniel_francis@privacyrequired.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
-usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
-seconds later by usb-audio disconnect interrupt to avoids the issue.
+From: Francis Laniel <laniel_francis@privacyrequired.com>
 
-Seeking a better fix, we've tried a lot of things, including:
- - Check that the device's power/wakeup is disabled
- - Check that remote wakeup is off at the USB level
- - All the quirks in drivers/usb/core/quirks.c
-   e.g. USB_QUIRK_RESET_RESUME,
-        USB_QUIRK_RESET,
-        USB_QUIRK_IGNORE_REMOTE_WAKEUP,
-        USB_QUIRK_NO_LPM.
+Hi.
 
-but none of that makes any difference.
 
-There are no errors in the logs showing any suspend/resume-related issues.
-When the system wakes up due to the modem, log-wise it appears to be a
-normal resume.
+I hope your families, friends and yourselves are fine.
 
-Introduce a quirk to disable the port during suspend when the modem is
-detected.
+This patch set answers to this issue:
+https://github.com/KSPP/linux/issues/46
 
-Changes since v4
- - Fixed add a blank line
+I based my modifications on top of two patches from Daniel Axtens which modify
+calls to __builtin_object_size to ensure the true size of char * are returned
+and not the surrounding structure size.
 
- Changes since v3
- - Fixed spelling error on appropriate
+To sum up, in my first patch I implemented a fortified version of strscpy.
+This new version ensures the following before calling vanilla strscpy:
+1. There is no read overflow because either size is smaller than src length
+or we shrink size to src length by calling fortified strnlen.
+2. There is no write overflow because we either failed during compilation or at
+runtime by checking that size is smaller than dest size.
+The second patch brings a new file in LKDTM driver to test this new version.
+The test ensures the fortified version still returns the same value as the
+vanilla one while panic'ing when there is a write overflow.
+The third just corrects some typos in LKDTM related file.
 
-Changes since v2
- - Add Changes commit format
+If you see any problem or way to improve the code, feel free to share it.
 
-Changes since v1
- - Change subject form "ALSA" to "USB:"
- - Adjust to appropriate line
 
-Signed-off-by: penghao <penghao@uniontech.com>
----
- drivers/usb/core/quirks.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Best regards.
 
-diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index 7c1198f80c23..26b852ae0d85 100644
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -410,6 +410,10 @@ static const struct usb_device_id usb_quirk_list[] = {
- 	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
- 			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
- 
-+	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
-+	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
-+			USB_QUIRK_DISCONNECT_SUSPEND },
-+
- 	/* BUILDWIN Photo Frame */
- 	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
- 			USB_QUIRK_HONOR_BNUMINTERFACES },
+Daniel Axtens (2):
+  string.h: detect intra-object overflow in fortified string functions
+  lkdtm: tests for FORTIFY_SOURCE
+
+Francis Laniel (3):
+  string.h: Add FORTIFY coverage for strscpy()
+  Add new file in LKDTM to test fortified strscpy.
+  Correct wrong filenames in comment.
+
+ drivers/misc/lkdtm/Makefile             |  1 +
+ drivers/misc/lkdtm/bugs.c               | 50 +++++++++++++++
+ drivers/misc/lkdtm/core.c               |  3 +
+ drivers/misc/lkdtm/fortify.c            | 82 +++++++++++++++++++++++++
+ drivers/misc/lkdtm/lkdtm.h              | 19 +++---
+ include/linux/string.h                  | 75 ++++++++++++++++++----
+ tools/testing/selftests/lkdtm/tests.txt |  1 +
+ 7 files changed, 213 insertions(+), 18 deletions(-)
+ create mode 100644 drivers/misc/lkdtm/fortify.c
+
 -- 
-2.11.0
-
-
+2.20.1
 
