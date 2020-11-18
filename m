@@ -2,134 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859E12B7A41
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6947D2B7A49
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727287AbgKRJTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:19:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52496 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726172AbgKRJTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:19:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2E198ABDE;
-        Wed, 18 Nov 2020 09:19:18 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id E59BD603F9; Wed, 18 Nov 2020 10:19:17 +0100 (CET)
-Message-Id: <8a4f07e6ec47b681a32c6df5d463857e67bfc965.1605690824.git.mkubecek@suse.cz>
-From:   Michal Kubecek <mkubecek@suse.cz>
-Subject: [PATCH] eventfd: convert to ->write_iter()
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 18 Nov 2020 10:19:17 +0100 (CET)
+        id S1726569AbgKRJXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:23:42 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:35709 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgKRJXm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 04:23:42 -0500
+Received: by mail-wm1-f66.google.com with SMTP id w24so2019444wmi.0;
+        Wed, 18 Nov 2020 01:23:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2nsnjnOqDV6WPzahzgOv8VDTMdt+UU18h3NLzAQiSpA=;
+        b=X5DWRRpLxLa2YwmpnxCDdJ9m2LJqPGahM/mvYxyBmEzouI6woOAdiclOXCRDK+/Ckv
+         g/fBPyVpajhQ/8IdIVgnrq2DkTHQLbIltySYpK6SNrsi4rL6urTRYnF58ovnu9W8kRhP
+         5akmkcElDDpyjwbI9iBQTZtvQmtpSY5GTLTYxd358utefNb+N4+JvC1ModI61825yr6r
+         yeEzcwaSbeiE47oHOoMU72yrUMm28l1Knyt62GCkhyQbqI+mObM+8Spu4fCi++gy3UU5
+         7dDmvcPMyd/pKdWXmMaB645OohHZcXNV9JMVkxYwVPaZPkgzxfkqRfNxTo3Oe6bhkZmw
+         69OA==
+X-Gm-Message-State: AOAM532xzEUwHnoW/fAmZyRrL/eotorSELX22CYYGbjdJeljfqmNYXxG
+        BEMtHHfP9zpYeP54o6hxKZVL3tBGSGk=
+X-Google-Smtp-Source: ABdhPJxckaDRo8U42uknkQAN3d1oqdfUPR8JMwF4vNreh318c5rq4YB0kqkTqeFa5f4PE6gRlLM59w==
+X-Received: by 2002:a7b:c2ef:: with SMTP id e15mr3585111wmk.180.1605691419662;
+        Wed, 18 Nov 2020 01:23:39 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id g4sm32723173wrp.0.2020.11.18.01.23.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 01:23:39 -0800 (PST)
+Date:   Wed, 18 Nov 2020 09:23:37 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dmitry.torokhov@gmail.com, derek.kiernan@xilinx.com,
+        dragan.cvetic@xilinx.com, richardcochran@gmail.com,
+        linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, Wei Liu <wei.liu@kernel.org>
+Subject: Re: [PATCH 2/2] x86: make hyperv support optional
+Message-ID: <20201118092337.k4inzcaqxygrnqc3@liuwe-devbox-debian-v2>
+References: <20201117202308.7568-1-info@metux.net>
+ <20201117202308.7568-2-info@metux.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117202308.7568-2-info@metux.net>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While eventfd ->read() callback was replaced by ->read_iter() recently,
-it still provides ->write() for writes. Since commit 4d03e3cc5982 ("fs:
-don't allow kernel reads and writes without iter ops"), this prevents
-kernel_write() to be used for eventfd and with set_fs() removal,
-->write() cannot be easily called directly with a kernel buffer.
+On Tue, Nov 17, 2020 at 09:23:08PM +0100, Enrico Weigelt, metux IT consult wrote:
+> Make it possible to opt-out from hyperv support.
+> 
 
-According to eventfd(2), eventfd descriptors are supposed to be (also)
-used by kernel to notify userspace applications of events which now
-requires ->write_iter() op to be available (and ->write() not to be).
-Therefore convert eventfd_write() to ->write_iter() semantics. This
-patch also cleans up the code in a similar way as commit 12aceb89b0bc
-("eventfd: convert to f_op->read_iter()") did in read_iter().
+"Hyper-V support".
 
-Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
----
- fs/eventfd.c | 43 +++++++++++++++++++++----------------------
- 1 file changed, 21 insertions(+), 22 deletions(-)
+Have you tested this patch? If so, how?
 
-diff --git a/fs/eventfd.c b/fs/eventfd.c
-index df466ef81ddd..35973d216847 100644
---- a/fs/eventfd.c
-+++ b/fs/eventfd.c
-@@ -261,35 +261,36 @@ static ssize_t eventfd_read(struct kiocb *iocb, struct iov_iter *to)
- 	return sizeof(ucnt);
- }
- 
--static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t count,
--			     loff_t *ppos)
-+static ssize_t eventfd_write(struct kiocb *iocb, struct iov_iter *from)
- {
-+	struct file *file = iocb->ki_filp;
- 	struct eventfd_ctx *ctx = file->private_data;
--	ssize_t res;
- 	__u64 ucnt;
- 	DECLARE_WAITQUEUE(wait, current);
- 
--	if (count < sizeof(ucnt))
-+	if (iov_iter_count(from) < sizeof(ucnt))
- 		return -EINVAL;
--	if (copy_from_user(&ucnt, buf, sizeof(ucnt)))
-+	if (unlikely(!copy_from_iter_full(&ucnt, sizeof(ucnt), from)))
- 		return -EFAULT;
- 	if (ucnt == ULLONG_MAX)
- 		return -EINVAL;
- 	spin_lock_irq(&ctx->wqh.lock);
--	res = -EAGAIN;
--	if (ULLONG_MAX - ctx->count > ucnt)
--		res = sizeof(ucnt);
--	else if (!(file->f_flags & O_NONBLOCK)) {
-+	if (ULLONG_MAX - ctx->count <= ucnt) {
-+		if ((file->f_flags & O_NONBLOCK) ||
-+		    (iocb->ki_flags & IOCB_NOWAIT)) {
-+			spin_unlock_irq(&ctx->wqh.lock);
-+			return -EAGAIN;
-+		}
- 		__add_wait_queue(&ctx->wqh, &wait);
--		for (res = 0;;) {
-+		for (;;) {
- 			set_current_state(TASK_INTERRUPTIBLE);
--			if (ULLONG_MAX - ctx->count > ucnt) {
--				res = sizeof(ucnt);
-+			if (ULLONG_MAX - ctx->count > ucnt)
- 				break;
--			}
- 			if (signal_pending(current)) {
--				res = -ERESTARTSYS;
--				break;
-+				__remove_wait_queue(&ctx->wqh, &wait);
-+				__set_current_state(TASK_RUNNING);
-+				spin_unlock_irq(&ctx->wqh.lock);
-+				return -ERESTARTSYS;
- 			}
- 			spin_unlock_irq(&ctx->wqh.lock);
- 			schedule();
-@@ -298,14 +299,12 @@ static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t c
- 		__remove_wait_queue(&ctx->wqh, &wait);
- 		__set_current_state(TASK_RUNNING);
- 	}
--	if (likely(res > 0)) {
--		ctx->count += ucnt;
--		if (waitqueue_active(&ctx->wqh))
--			wake_up_locked_poll(&ctx->wqh, EPOLLIN);
--	}
-+	ctx->count += ucnt;
-+	if (waitqueue_active(&ctx->wqh))
-+		wake_up_locked_poll(&ctx->wqh, EPOLLIN);
- 	spin_unlock_irq(&ctx->wqh.lock);
- 
--	return res;
-+	return sizeof(ucnt);
- }
- 
- #ifdef CONFIG_PROC_FS
-@@ -328,7 +327,7 @@ static const struct file_operations eventfd_fops = {
- 	.release	= eventfd_release,
- 	.poll		= eventfd_poll,
- 	.read_iter	= eventfd_read,
--	.write		= eventfd_write,
-+	.write_iter	= eventfd_write,
- 	.llseek		= noop_llseek,
- };
- 
--- 
-2.29.2
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> ---
+>  arch/x86/Kconfig                 | 7 +++++++
+>  arch/x86/kernel/cpu/Makefile     | 4 ++--
+>  arch/x86/kernel/cpu/hypervisor.c | 2 ++
+>  drivers/hv/Kconfig               | 2 +-
+>  4 files changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index c227c1fa0091..60aab344d6ab 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -808,6 +808,13 @@ config VMWARE_GUEST
+>  	  This option enables several optimizations for running under the
+>  	  VMware hypervisor.
+>  
+> +config HYPERV_GUEST
+> +	bool "HyperV Guest support"
 
+Hyper-V here.
+
+> +	default y
+> +	help
+> +	  This option enables several optimizations for running under the
+> +	  HyperV hypervisor.
+> +
+
+"for running under Hyper-V".
+
+>  config KVM_GUEST
+>  	bool "KVM Guest support (including kvmclock)"
+>  	depends on PARAVIRT
+> diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
+> index a615b0152bf0..5536b801cb44 100644
+> --- a/arch/x86/kernel/cpu/Makefile
+> +++ b/arch/x86/kernel/cpu/Makefile
+> @@ -51,9 +51,9 @@ obj-$(CONFIG_X86_CPU_RESCTRL)		+= resctrl/
+>  
+>  obj-$(CONFIG_X86_LOCAL_APIC)		+= perfctr-watchdog.o
+>  
+> -obj-$(CONFIG_HYPERVISOR_GUEST)		+= hypervisor.o mshyperv.o
+> +obj-$(CONFIG_HYPERVISOR_GUEST)		+= hypervisor.o
+>  obj-$(CONFIG_VMWARE_GUEST)		+= vmware.o
+> -
+> +obj-$(CONFIG_HYPERV_GUEST)		+= mshyperv.o
+>  obj-$(CONFIG_ACRN_GUEST)		+= acrn.o
+>  
+>  ifdef CONFIG_X86_FEATURE_NAMES
+> diff --git a/arch/x86/kernel/cpu/hypervisor.c b/arch/x86/kernel/cpu/hypervisor.c
+> index c0e770a224aa..32d6b2084d05 100644
+> --- a/arch/x86/kernel/cpu/hypervisor.c
+> +++ b/arch/x86/kernel/cpu/hypervisor.c
+> @@ -37,7 +37,9 @@ static const __initconst struct hypervisor_x86 * const hypervisors[] =
+>  #ifdef CONFIG_VMWARE_GUEST
+>  	&x86_hyper_vmware,
+>  #endif
+> +#ifdef CONFIG_HYPERV_GUEST
+>  	&x86_hyper_ms_hyperv,
+> +#endif
+>  #ifdef CONFIG_KVM_GUEST
+>  	&x86_hyper_kvm,
+>  #endif
+> diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
+> index 79e5356a737a..7b3094c59a81 100644
+> --- a/drivers/hv/Kconfig
+> +++ b/drivers/hv/Kconfig
+> @@ -4,7 +4,7 @@ menu "Microsoft Hyper-V guest support"
+>  
+>  config HYPERV
+>  	tristate "Microsoft Hyper-V client drivers"
+> -	depends on X86 && ACPI && X86_LOCAL_APIC && HYPERVISOR_GUEST
+> +	depends on X86 && ACPI && X86_LOCAL_APIC && HYPERV_GUEST
+>  	select PARAVIRT
+>  	select X86_HV_CALLBACK_VECTOR
+>  	help
+
+Maybe that one should be moved to x86/Kconfig and used instead?
+
+Wei.
+
+> -- 
+> 2.11.0
+> 
