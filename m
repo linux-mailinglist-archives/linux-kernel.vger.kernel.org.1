@@ -2,103 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EED672B7DB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BD72B7DB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgKRMhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 07:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgKRMhP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:37:15 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDF9C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 04:37:15 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfMhy-0004pu-Bl; Wed, 18 Nov 2020 13:37:10 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfMhx-0005wL-GQ; Wed, 18 Nov 2020 13:37:09 +0100
-Date:   Wed, 18 Nov 2020 13:37:07 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        shawn.guo@linaro.org, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pwm: add missed clk_disable_unprepare() in zx_pwm_probe()
-Message-ID: <20201118123707.ab5euxfvljsoi6md@pengutronix.de>
-References: <1605702384-20911-1-git-send-email-zhangchangzhong@huawei.com>
+        id S1726923AbgKRMiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 07:38:09 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:46418 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726199AbgKRMiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 07:38:09 -0500
+Received: from zn.tnic (p200300ec2f0caf0066ae0a9db02cf7f4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:af00:66ae:a9d:b02c:f7f4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 582021EC01A8;
+        Wed, 18 Nov 2020 13:38:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1605703088;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=Lp/HVhwf+M2mga5RrTHsoMi/pE660ypJ9Gtt1WQeiAs=;
+        b=PooAoSAe4FwG0KMLjGGYfhA5Foek7bo98dBqiCPrALl6EtiVvggfgNuXmXtBxCqg/6zL3a
+        CoffaTXyvlNsN7KF+YPFfAmIKQSJRESkSAQA67W1o265dL6bsb3/vjxmWolWJ/DHVNrjdq
+        HSFCHReD8ln6brFz1hZcKBTRThwTXkA=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/msr: Downgrade unrecognized MSR message
+Date:   Wed, 18 Nov 2020 13:38:06 +0100
+Message-Id: <20201118123806.19672-1-bp@alien8.de>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="delqm5cvyhuzjmks"
-Content-Disposition: inline
-In-Reply-To: <1605702384-20911-1-git-send-email-zhangchangzhong@huawei.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Borislav Petkov <bp@suse.de>
 
---delqm5cvyhuzjmks
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It is a warning and not an error so use pr_warn().
 
-Hello,
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/kernel/msr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Wed, Nov 18, 2020 at 08:26:24PM +0800, Zhang Changzhong wrote:
-> Add the missing clk_disable_unprepare() before return from
-> zx_pwm_probe() in the error handling case.
->=20
-> Fixes: 4836193c435c ("pwm: Add ZTE ZX PWM device driver")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> ---
->  drivers/pwm/pwm-zx.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/pwm/pwm-zx.c b/drivers/pwm/pwm-zx.c
-> index e2c21cc..3763ce5 100644
-> --- a/drivers/pwm/pwm-zx.c
-> +++ b/drivers/pwm/pwm-zx.c
-> @@ -238,6 +238,7 @@ static int zx_pwm_probe(struct platform_device *pdev)
->  	ret =3D pwmchip_add(&zpc->chip);
->  	if (ret < 0) {
->  		dev_err(&pdev->dev, "failed to add PWM chip: %d\n", ret);
-> +		clk_disable_unprepare(zpc->pclk);
->  		return ret;
+diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
+index b1147862730c..95e6b97b7d8b 100644
+--- a/arch/x86/kernel/msr.c
++++ b/arch/x86/kernel/msr.c
+@@ -99,8 +99,8 @@ static int filter_write(u32 reg)
+ 	if (!__ratelimit(&fw_rs))
+ 		return 0;
+ 
+-	pr_err("Write to unrecognized MSR 0x%x by %s (pid: %d). Please report to x86@kernel.org.\n",
+-	       reg, current->comm, current->pid);
++	pr_warn("Write to unrecognized MSR 0x%x by %s (pid: %d). Please report to x86@kernel.org.\n",
++	        reg, current->comm, current->pid);
+ 
+ 	return 0;
+ }
+-- 
+2.21.0
 
-This is already fixed in next with:
-
-	a278e8771f42 ("pwm: zx: Add missing cleanup in error path")
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---delqm5cvyhuzjmks
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+1FXAACgkQwfwUeK3K
-7AkFvwgAlqZbqWCqu66Zzd0zktnZwglQMr8xPa1M4sxqMciVKxnPjDeeXhs7MZYX
-yEx6EwVBDpm5xg/Pa/NnR0g3uUYvI62vTt/UK6ucOnG/i+U6LUxMccx7Yb/9meyU
-O/05IL+1db6XO5csP0Nd3zWPdj7y9VlWc3PZYMFWlQVzomFKwK1QkEICTmAozsuo
-f37cw6QSKXk/45WmifmC1MnejnSriyZy16BC2FK/URNuYDWsrkDnojr4CaxRc/ai
-JihRIQk/xn6ASbV23ijwwft4VX3jar2K/SXgvnUqkumOYo4uIDr5PUcm+XG8Z1hL
-l6Zyl6BhRFpnXrgFZO3CdW9JaR2bDA==
-=N8uy
------END PGP SIGNATURE-----
-
---delqm5cvyhuzjmks--
