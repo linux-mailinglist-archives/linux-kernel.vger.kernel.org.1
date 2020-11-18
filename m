@@ -2,85 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D712B7903
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0770E2B79A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgKRIor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:44:47 -0500
-Received: from smtprelay0190.hostedemail.com ([216.40.44.190]:52416 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726107AbgKRIor (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:44:47 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id F323812C5;
-        Wed, 18 Nov 2020 08:44:46 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3873:3876:4321:4605:5007:10004:10400:10848:11026:11232:11473:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30012:30045:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:10,LUA_SUMMARY:none
-X-HE-Tag: brain89_0b065ed27338
-X-Filterd-Recvd-Size: 2196
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 18 Nov 2020 08:44:46 +0000 (UTC)
-Message-ID: <0e1a208d3a0d68181c9ee695aabc3655979bfd7f.camel@perches.com>
-Subject: Re: [PATCH] net: ipv4: fixed brace and space style
-From:   Joe Perches <joe@perches.com>
-To:     Armin Gholampoor <armingh379@gmail.com>, davem@davemloft.net
-Cc:     linux-kernel@vger.kernel.org
-Date:   Wed, 18 Nov 2020 00:44:44 -0800
-In-Reply-To: <20201118165845.16078-1-armingh379@gmail.com>
-References: <20201118165845.16078-1-armingh379@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1727391AbgKRIzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:55:33 -0500
+Received: from albireo.enyo.de ([37.24.231.21]:60370 "EHLO albireo.enyo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725772AbgKRIzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:55:33 -0500
+X-Greylist: delayed 472 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Nov 2020 03:55:32 EST
+Received: from [172.17.203.2] (helo=deneb.enyo.de)
+        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1kfJ7f-00005b-UM; Wed, 18 Nov 2020 08:47:27 +0000
+Received: from fw by deneb.enyo.de with local (Exim 4.92)
+        (envelope-from <fw@deneb.enyo.de>)
+        id 1kfJ7f-0001Fy-Ra; Wed, 18 Nov 2020 09:47:27 +0100
+From:   Florian Weimer <fw@deneb.enyo.de>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org,
+        christian.brauner@ubuntu.com, peterz@infradead.org,
+        willy@infradead.org, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, x86@kernel.org, gofmanp@gmail.com,
+        kernel@collabora.com
+Subject: Re: [PATCH v7 0/7] Syscall User Dispatch
+References: <20201118032840.3429268-1-krisman@collabora.com>
+Date:   Wed, 18 Nov 2020 09:47:27 +0100
+In-Reply-To: <20201118032840.3429268-1-krisman@collabora.com> (Gabriel Krisman
+        Bertazi's message of "Tue, 17 Nov 2020 22:28:33 -0500")
+Message-ID: <87a6vfyrts.fsf@mid.deneb.enyo.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-18 at 11:58 -0500, Armin Gholampoor wrote:
-> Fixed bracings for if statements
-> 
-> Fixed spacings around operators
+* Gabriel Krisman Bertazi:
 
-Do you really think this new code looks better:
+> This is the v7 of syscall user dispatch.  This version is a bit
+> different from v6 on the following points, after the modifications
+> requested on that submission.
 
-> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-
-[old]
-
-static const unsigned char new_state[16] = {
-  /* current state:        new state:      action:	*/
-  [0 /* (Invalid) */]	= TCP_CLOSE,
-  [TCP_ESTABLISHED]	= TCP_FIN_WAIT1 | TCP_ACTION_FIN,
-  [TCP_SYN_SENT]	= TCP_CLOSE,
-  [TCP_SYN_RECV]	= TCP_FIN_WAIT1 | TCP_ACTION_FIN,
-  [TCP_FIN_WAIT1]	= TCP_FIN_WAIT1,
-  [TCP_FIN_WAIT2]	= TCP_FIN_WAIT2,
-  [TCP_TIME_WAIT]	= TCP_CLOSE,
-  [TCP_CLOSE]		= TCP_CLOSE,
-  [TCP_CLOSE_WAIT]	= TCP_LAST_ACK  | TCP_ACTION_FIN,
-  [TCP_LAST_ACK]	= TCP_LAST_ACK,
-  [TCP_LISTEN]		= TCP_CLOSE,
-  [TCP_CLOSING]		= TCP_CLOSING,
-  [TCP_NEW_SYN_RECV]	= TCP_CLOSE,	/* should not happen ! */
-
-[new]
-
-	/* current state:        new state:      action:	*/
-	[0 /* (Invalid) */]	= TCP_CLOSE,
-	[TCP_ESTABLISHED]	= TCP_FIN_WAIT1 | TCP_ACTION_FIN,
-	[TCP_SYN_SENT]	= TCP_CLOSE,
-	[TCP_SYN_RECV]	= TCP_FIN_WAIT1 | TCP_ACTION_FIN,
-	[TCP_FIN_WAIT1]	= TCP_FIN_WAIT1,
-	[TCP_FIN_WAIT2]	= TCP_FIN_WAIT2,
-	[TCP_TIME_WAIT]	= TCP_CLOSE,
-	[TCP_CLOSE]		= TCP_CLOSE,
-	[TCP_CLOSE_WAIT]	= TCP_LAST_ACK  | TCP_ACTION_FIN,
-	[TCP_LAST_ACK]	= TCP_LAST_ACK,
-	[TCP_LISTEN]		= TCP_CLOSE,
-	[TCP_CLOSING]		= TCP_CLOSING,
-	[TCP_NEW_SYN_RECV]	= TCP_CLOSE,	/* should not happen ! */
-
-
+Is this supposed to work with existing (Linux) libcs, or do you bring
+your own low-level run-time libraries?
