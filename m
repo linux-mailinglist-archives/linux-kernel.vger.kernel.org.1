@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C90E2B8662
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C4C2B8666
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgKRVNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:13:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgKRVNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:13:37 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E33EA207D3;
-        Wed, 18 Nov 2020 21:13:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1605734016;
-        bh=+8//0K5UnMNFTVC4OTQS6tajK8TIdT39V94cceNEt5o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DxQLDkJc7dR/Owjkxqg6kuft3IOF4f8GMCFk42XTrdXQn+utjhQHzyLVGCYFXgxKw
-         yM1anhZN0FFirIqmnTXx7WuJZhmVUlBq53WYkjinDycCJIbBRT9/6qbnZEXr8AoXrU
-         t4+32GFD2aalCBjNdWef+wGF/2qnkBG9m3Ewr96I=
-Date:   Wed, 18 Nov 2020 13:13:35 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>, linux-mm@kvack.org,
-        netdev@vger.kernel.org, willy@infradead.org,
-        aruna.ramakrishna@oracle.com, bert.barbe@oracle.com,
-        rama.nichanamatlu@oracle.com, venkat.x.venkatsubra@oracle.com,
-        manjunath.b.patil@oracle.com, joe.jin@oracle.com,
-        srinivas.eeda@oracle.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, vbabka@suse.cz
-Subject: Re: [PATCH v3 1/1] page_frag: Recover from memory pressure
-Message-Id: <20201118131335.738bdade4f3dfcee190ea8c1@linux-foundation.org>
-In-Reply-To: <20201118114654.3435f76c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-References: <20201115201029.11903-1-dongli.zhang@oracle.com>
-        <20201118114654.3435f76c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726815AbgKRVOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgKRVOS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 16:14:18 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F29C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:14:17 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id a9so5097130lfh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:14:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yy+yKl/nnqPyJAxAGlya/ZYfyG7i5Dh09osQ1e1Zb6g=;
+        b=I3SxDCnIlQBxcqp81lE0LsGpSBKz92rnlT+kaRw2F2srcDq9dkJ1Sp76w+EneB2crJ
+         jjxJ6rlRZ/H7KGe4pRCeX3WU0FaNd7GvcXKbANsw3+YiQCi6gaR6eBosWQEA1RgE4i03
+         yMpkvwHIOkai0lK+k5mfTOMmicQTxOlm8fR8I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yy+yKl/nnqPyJAxAGlya/ZYfyG7i5Dh09osQ1e1Zb6g=;
+        b=J6z8LH6Z/q8dO6uzkWX+bvv+K0egmSDW5S5ypPlFTslUHIivsQfsSTHZ5C1CtaxihI
+         Xc5TxFhVNG0ujDI6a5aujnFvG21zAuiFIQcKJK0JdgILcJFNO8V1VM4aBeEVfaSYSBIG
+         dmKEDaihWtVFKJzA25vqVxIpoxKadzPuHAJrY3higbn1lsnSoyJcKc8P+FsSmfskrJWk
+         r0xMCPuP7FtS47cjiuInZ8cPe6zi6NLgHA21kovBrHaxXro4fgW0BVvbGs0rQC+OObzD
+         jDHmUFJsyfArl3D4qLzl+iY7+pcJmZI4i5fwb3Co0jDy4sWXlXCQA29q2cv2Ei/hv6IP
+         MpDQ==
+X-Gm-Message-State: AOAM531HIV1WistfPtGcugoeR/wl6xQ53IeiusdoqUzrZhs9ByBkgWW9
+        QKnm4QmDEzUIzxKErWBIEVa6vs5y1/H5nA==
+X-Google-Smtp-Source: ABdhPJy5GkkI+rHLAsmZ63KjtIGsYh8ynBLvA8TPuf4VjNqR+SmTwgE6GowkFAV0Lajn1NWEX2j9bA==
+X-Received: by 2002:a19:8497:: with SMTP id g145mr4500772lfd.504.1605734055736;
+        Wed, 18 Nov 2020 13:14:15 -0800 (PST)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id c14sm3726268lfr.105.2020.11.18.13.14.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Nov 2020 13:14:14 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id r9so5048892lfn.11
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:14:13 -0800 (PST)
+X-Received: by 2002:a19:ae06:: with SMTP id f6mr4820439lfc.133.1605734053571;
+ Wed, 18 Nov 2020 13:14:13 -0800 (PST)
+MIME-Version: 1.0
+References: <20201118194838.753436396@linutronix.de> <20201118204007.028261233@linutronix.de>
+In-Reply-To: <20201118204007.028261233@linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 18 Nov 2020 13:13:57 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh6+VXQASpG+X_v8E25X9mARyHULeOfHk1RsNFMMWHafQ@mail.gmail.com>
+Message-ID: <CAHk-=wh6+VXQASpG+X_v8E25X9mARyHULeOfHk1RsNFMMWHafQ@mail.gmail.com>
+Subject: Re: [patch V4 2/8] mm/highmem: Provide CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 11:46:54 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
+On Wed, Nov 18, 2020 at 12:58 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Provide CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP which forces the temporary
+> mapping even for lowmem pages. This needs to be a seperate config switch
+> because this only works on architectures which do not have cache aliasing
+> problems.
 
-> > 1. The kernel is under memory pressure and allocation of
-> > PAGE_FRAG_CACHE_MAX_ORDER in __page_frag_cache_refill() will fail. Instead,
-> > the pfmemalloc page is allocated for page_frag_cache->va.
-> > 
-> > 2: All skb->data from page_frag_cache->va (pfmemalloc) will have
-> > skb->pfmemalloc=true. The skb will always be dropped by sock without
-> > SOCK_MEMALLOC. This is an expected behaviour.
-> > 
-> > 3. Suppose a large amount of pages are reclaimed and kernel is not under
-> > memory pressure any longer. We expect skb->pfmemalloc drop will not happen.
-> > 
-> > 4. Unfortunately, page_frag_alloc() does not proactively re-allocate
-> > page_frag_alloc->va and will always re-use the prior pfmemalloc page. The
-> > skb->pfmemalloc is always true even kernel is not under memory pressure any
-> > longer.
-> > 
-> > Fix this by freeing and re-allocating the page instead of recycling it.
-> 
-> Andrew, are you taking this via -mm or should I put it in net? 
-> I'm sending a PR to Linus tomorrow.
+Very good. And you made sure to have a comment to not enable it for
+production systems.
 
-Please go ahead - if/when it appears in mainline or linux-next, I'll
-drop the -mm copy.  
+Hopefully people will even read it ;)
+
+              Linus
