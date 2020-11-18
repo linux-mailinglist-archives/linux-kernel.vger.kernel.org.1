@@ -2,268 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF012B80BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6902B8103
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgKRPk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:40:26 -0500
-Received: from mail-am6eur05on2083.outbound.protection.outlook.com ([40.107.22.83]:47009
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725814AbgKRPkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:40:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TYPuGyLIAGGnuiIevYrwOppgMhgoPe8KDvuEZ7kk7XGAgKouiU/8TIRuOBn1vr3WwQmRVaZaDYRCbNWj5HV8XhscIBKcfPm1gUv5tmAqYOGJrap/ld/7KnDqkNjsTK1+ypl0iSgIj0uG/tcrhzevuO90c1TfU+561rXhF4AfluzRmgc7nZStjtnLTU/qJ7yqA3EWAp0y0x9BOkREyJrxdXUtdcWP9MtWAmHRth2KsiLPWEyu/nJ5p/QVUiFTNiR2PXIn7EqkecAC/a6iFA48pqgBriEOsxwMKd+OyAZLVSpXposPhfgAxzFaiYAFi7LDx7zWARyBZx1oxYSO+tts4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hzPeMZChUarnWWlJf9utRsZx/aOGj4xfIF0f7Y0FZPA=;
- b=aMg6hgGAYEVWgteyJJ2ekNFeNRz1TyAtG/vz+ZIxDsS7UTzz+m3HmNl1Wl7kLUCQ2vIStk/YOM10XgkbiIW4qtU2QmGS2oGNOhCGsF2ZpMDDLsIl6K5SVZCwQfl+4MkGZOsqoEP79laZDx/j1luY4bL/n25X1Rql8ioI2QLjQxThnxpuahONaq38iW1a7tp4dn/HV6nLu5zzudNlvchLuWjnySTiginzcmwbArOwxT81AMD2hp8ZvBc7OLi+eK5U+9dqsIn34+mHxJUUIEzKjing1DSUAtSNgOvmnw+50OdP04EBmAAJvQYIksai2NIuuDVEYrkHzpFHIahhm3+rRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hzPeMZChUarnWWlJf9utRsZx/aOGj4xfIF0f7Y0FZPA=;
- b=RXLbDCv1TkRt6f5DUP2neEylitxdaq2pYymLw0Sx3bg60xRhFqGSdXuQJvHOHB1TgrpAOaHq+9Qx7OSH46VemKk+VdOM9AUsjKLQ6IyP/M1x3Q74d26+9/zxCdmZNAsgZvhql/t3yfx/s8LJoXmV8ATBxI3NyPHq39+SXnZ1n/4=
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
- by AS8PR04MB7686.eurprd04.prod.outlook.com (2603:10a6:20b:290::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Wed, 18 Nov
- 2020 15:40:19 +0000
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::3cfc:a92e:75ad:ce4a]) by AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::3cfc:a92e:75ad:ce4a%3]) with mapi id 15.20.3564.029; Wed, 18 Nov 2020
- 15:40:19 +0000
-From:   Aisheng Dong <aisheng.dong@nxp.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>
-CC:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: RE: [PATCH RESEND] driver core: export device_is_bound() to fix build
- failure
-Thread-Topic: [PATCH RESEND] driver core: export device_is_bound() to fix
- build failure
-Thread-Index: AQHWtVhC0iFw3JVhoky1GSU0i1GD9am95iCAgAGxewCAAAY6gIAAATqAgAAQwoCAAAN9YIAAAygAgAAB+uCAAAn8gIAN9OMwgAAN4wCAAEY+sA==
-Date:   Wed, 18 Nov 2020 15:40:19 +0000
-Message-ID: <AM6PR04MB4966360584616AEEFFB9A4A780E10@AM6PR04MB4966.eurprd04.prod.outlook.com>
-References: <20201108082317.GA40741@kroah.com>
- <CADVatmN8SbZWVGf_xe_K1g7M9ArHXF8TUhYyBgQcydBF4_zp9g@mail.gmail.com>
- <20201109103703.GA1310551@kroah.com>
- <AM6PR04MB4966B90C0DEC71A6C86067AA80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <20201109114125.GC1769924@kroah.com>
- <AM6PR04MB4966F12B67C4104247E0E6A180EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <20201109120512.GB1832201@kroah.com>
- <AM6PR04MB49668F60F74B73931C2ABBFD80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <20201109124801.GA1890488@kroah.com>
- <AM6PR04MB4966375933A2644C8A52119D80E10@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <X7T7TgGGgxx9j2Rl@kroah.com>
-In-Reply-To: <X7T7TgGGgxx9j2Rl@kroah.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=nxp.com;
-x-originating-ip: [180.171.84.81]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 7ead4a03-3cca-44a0-06cd-08d88bd84158
-x-ms-traffictypediagnostic: AS8PR04MB7686:
-x-microsoft-antispam-prvs: <AS8PR04MB76865745784BF2FCFCF7179380E10@AS8PR04MB7686.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ylMDDHLgcMwHMqH3VMLGPtXIjfuTPKnCP5Rl2qXWxGkLWOV3xrg5XvFVMD4MnkC8ocY/WWJulWvqxt57dS2r4LBem4IocMasa+znmF2/fOQUVP99IDDHNYvFUoMHrqWPmAdm4Z9mHFRbWFKMF/pF+pGQZvyKMwRZlTK62zt5o7oggvvU5+jmeNxfINpU65vgt0pH0Imcxom7ZN/3k/9b8ZV56LrfrgHMgX91j2Xr65bswCV8xlfgKzxWfNmth7n9fEEV9cfwHsPtECsgVskFDnSHvPMCe8FJQnMYcEaI6CQw4q0ytrzEeRuuoyXg4tS/ceGyjNuUHA5x9m1nChNzE3EsegsoKzkEMgbzvl7qmw75FNvdyfGd5S44tiNXUtKyDx+eTkkVwsIk4Pj4Xn+6oA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(136003)(366004)(346002)(66556008)(64756008)(52536014)(71200400001)(76116006)(66446008)(5660300002)(55016002)(478600001)(2906002)(8676002)(33656002)(186003)(44832011)(26005)(66476007)(86362001)(66946007)(4326008)(8936002)(7696005)(9686003)(110136005)(53546011)(6506007)(316002)(54906003)(966005)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: RD1DIs1d+jVpeEDTlvBwNsuo1PnrobQXO5uwNOUjO3qQJ0yLXv2ZHMxBE4usuB0jhiLVzbfm3CmS5cgCx1+CFrOoDCJk38RUZux89/q+z/h0uQx2hBWfqVythRuhiLZb5h2WYvNujK2PUG7yd45TL5iftGsIHDejb+TAy5ELUPAeB+V2n7omCa3Nnavf5G+1Y2TYPxgAshWkeQr1/0OQ7cjQWOZBjQBgYaEWuROAM7Q+aoOteckNMldhrljz4KgRxMCt2fFdKEJIF7InQe5XCwbhoDDF2nJbjgtiWyHpS0obywHqf9ID/KmDH8dseckk39Tz96HcC7ktLwJODvsMj7xUBnX5/ma1EtU3xRzcVhm4P6bbBlLHhKlPV0Gu1q/PiiowQXs3DAuSDUlPzbRl9Z1Wdg+MAbcAWRPfSM4nk0TtWNfPHp1PjZ0UFYDSmvfdNaBEUqJ2gn8Fjh0s/B38HgIG2AKWN7NjfNVzarSf5L0BoI+zCt1hWPDRHjZy/R9L/Kdnjtbs/Va1c1PhAHH/F6+X+92+8rwAGAwa7FFtkegnHoQ2rUlMbOa5vfhDM7EeOaEIh2jmlTJHOg6S4FRT8blot/pF4sBBRHl1nJXHC7IiM1AhVJJjfqpQKde4Qs2sSInxdIbihqt5NBWGSOPUJg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726457AbgKRPna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:43:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgKRPn3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:43:29 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C83EC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:43:29 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id 63so1206452qva.7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:43:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ii8uMwZ11exGNZ0QuXQOuB3dAaW5Ak4GBCBwnjIahGo=;
+        b=o2elT4rINyVBV6BS5aB0ifPHqNX9mYDaobsn69M6IaY1usexvUYK9bF6WDGHa47c2w
+         HDuxyZnJdgFGCf45cUPY0MSima5dqX0FOH97IGhewfnyI2G3/6HKsVx4AkHi6WAtXYX1
+         p9YUAEKIv/LWnOlu+IgcKCGOg6SYSNNoVCJ4BWDPTa4moU/RaVFPSXraHeP3bZyh1V//
+         R1GJwaDbUX2LiwOOWLuDc3Q/F5M82/WgorGO12TnPxti1RVItz6+ZNKcT7kcrmQQMNCF
+         RX0ygEcIF6fGaNWJzvA6uSaj4RLdNmm+TLM/jcc4c0ZAjLsau4tijF9aaHjHl+0b98Io
+         5lTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ii8uMwZ11exGNZ0QuXQOuB3dAaW5Ak4GBCBwnjIahGo=;
+        b=NKUPF1n2poAPmtCmg6FS/1g+hr9Kzcoa9ToXGLJOMydy6hT3mL+r42Td1jlfDkFceM
+         RLkjlReuPTFTrN4hOuwUEc1LLlJ0YEKVU1B9NwIjJjrNkmZgMaOQDi3yuERNCuyWwqWE
+         dlGSNhDSzA5yjd/Sw1gCgfI6XDh7bRppeXrG1MxxyJEJRG1M/0ekcMYa/WS5uQpMW6ge
+         RRDuYhAHfQxhHzaiS41AFWZ2/JVeikHuclxg7ZiCfBGTsTN3I+UWl6AiXwitifFuMmf3
+         Xbraau7Pp02HojdxazPurasI/csvYHjl9A0/qlDVbvuH2BuNC5vNHwSJB6qs3AJ99P8V
+         Fjyw==
+X-Gm-Message-State: AOAM533SvMon1pqIqZkRI+RcGFTB8ccZwXE0zr415PhOFDVaW6kgEiMZ
+        mQaro1LIpeg9fA6r4fEG75yc500QXkuAY7yRjoZHfA==
+X-Google-Smtp-Source: ABdhPJxLmAnSOWQI2Qf7LFLVct0WnciQlBPqR78aT5f710dElggYdwcvRDEM1AAuM9lbZrNxAZg3O4Ws6bHAYu910jk=
+X-Received: by 2002:a0c:9e53:: with SMTP id z19mr5380322qve.23.1605714207999;
+ Wed, 18 Nov 2020 07:43:27 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7ead4a03-3cca-44a0-06cd-08d88bd84158
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2020 15:40:19.6780
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hmRRtIWw1WfqUe8w5fRGQ1EppgQRydAMgLuK6gskBzte01H332YorIlOZp7Q339VXbwh2G1JbHSdZOsWuWFWyw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7686
+References: <cover.1605305705.git.andreyknvl@google.com> <f10443693b4dfd63477519e5f2e4fdc439c8c3c8.1605305705.git.andreyknvl@google.com>
+In-Reply-To: <f10443693b4dfd63477519e5f2e4fdc439c8c3c8.1605305705.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 18 Nov 2020 16:43:16 +0100
+Message-ID: <CAG_fn=We3geXieMD1PzFGj+d6wj8_uEpkE=UOn=jfFEciQM2gQ@mail.gmail.com>
+Subject: Re: [PATCH mm v10 41/42] kasan: add documentation for hardware
+ tag-based mode
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPg0K
-PiBTZW50OiBXZWRuZXNkYXksIE5vdmVtYmVyIDE4LCAyMDIwIDY6NDYgUE0NCj4gDQo+IE9uIFdl
-ZCwgTm92IDE4LCAyMDIwIGF0IDEwOjIzOjQyQU0gKzAwMDAsIEFpc2hlbmcgRG9uZyB3cm90ZToN
-Cj4gPiBIaSBHcmVnLA0KPiA+DQo+ID4gPiBGcm9tOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdr
-aEBsaW51eGZvdW5kYXRpb24ub3JnPg0KPiA+ID4gU2VudDogTW9uZGF5LCBOb3ZlbWJlciA5LCAy
-MDIwIDg6NDggUE0NCj4gPiA+DQo+ID4gPiBPbiBNb24sIE5vdiAwOSwgMjAyMCBhdCAxMjoyNjo1
-NVBNICswMDAwLCBBaXNoZW5nIERvbmcgd3JvdGU6DQo+ID4gPiA+ID4gRnJvbTogR3JlZyBLcm9h
-aC1IYXJ0bWFuIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4NCj4gPiA+ID4gPiBTZW50OiBN
-b25kYXksIE5vdmVtYmVyIDksIDIwMjAgODowNSBQTQ0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gT24g
-TW9uLCBOb3YgMDksIDIwMjAgYXQgMTE6NTU6NDZBTSArMDAwMCwgQWlzaGVuZyBEb25nIHdyb3Rl
-Og0KPiA+ID4gPiA+ID4gPiBGcm9tOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZv
-dW5kYXRpb24ub3JnPg0KPiA+ID4gPiA+ID4gPiBTZW50OiBNb25kYXksIE5vdmVtYmVyIDksIDIw
-MjAgNzo0MSBQTQ0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiBPbiBNb24sIE5vdiAwOSwg
-MjAyMCBhdCAxMDo1NzowNUFNICswMDAwLCBBaXNoZW5nIERvbmcgd3JvdGU6DQo+ID4gPiA+ID4g
-PiA+ID4gSGkgR3JlZywNCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+ID4gRnJvbTog
-R3JlZyBLcm9haC1IYXJ0bWFuIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4NCj4gPiA+ID4g
-PiA+ID4gPiA+IFNlbnQ6IE1vbmRheSwgTm92ZW1iZXIgOSwgMjAyMCA2OjM3IFBNDQo+ID4gPiA+
-ID4gPiA+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENIIFJFU0VORF0gZHJpdmVyIGNvcmU6IGV4cG9y
-dA0KPiA+ID4gPiA+ID4gPiA+ID4gZGV2aWNlX2lzX2JvdW5kKCkgdG8gZml4IGJ1aWxkIGZhaWx1
-cmUNCj4gPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4gPiBPbiBNb24sIE5vdiAwOSwg
-MjAyMCBhdCAxMDoxNDo0NkFNICswMDAwLCBTdWRpcA0KPiA+ID4gPiA+ID4gPiA+ID4gTXVraGVy
-amVlDQo+ID4gPiB3cm90ZToNCj4gPiA+ID4gPiA+ID4gPiA+ID4gSGkgR3JlZywNCj4gPiA+ID4g
-PiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiA+ID4gT24gU3VuLCBOb3YgOCwgMjAyMCBhdCA4
-OjIzIEFNIEdyZWcgS3JvYWgtSGFydG1hbg0KPiA+ID4gPiA+ID4gPiA+ID4gPiA8Z3JlZ2toQGxp
-bnV4Zm91bmRhdGlvbi5vcmc+IHdyb3RlOg0KPiA+ID4gPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+
-ID4gPiA+ID4gPiA+ID4gT24gU2F0LCBOb3YgMDcsIDIwMjAgYXQgMTA6NDc6MjdQTSArMDAwMCwg
-U3VkaXANCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiBNdWtoZXJqZWUNCj4gPiA+IHdyb3RlOg0KPiA+
-ID4gPiA+ID4gPiA+ID4gPiA+ID4gV2hlbiBDT05GSUdfTVhDX0NMS19TQ1UgaXMgY29uZmlndXJl
-ZCBhcyAnbScgdGhlDQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiBidWlsZCBmYWlscyBhcyBpdCBp
-cyB1bmFibGUgdG8gZmluZCBkZXZpY2VfaXNfYm91bmQoKS4gVGhlIGVycm9yDQo+IGJlaW5nOg0K
-PiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gRVJST1I6IG1vZHBvc3Q6ICJkZXZpY2VfaXNfYm91bmQi
-DQo+ID4gPiA+ID4gW2RyaXZlcnMvY2xrL2lteC9jbGstaW14LXNjdS5rb10NCj4gPiA+ID4gPiA+
-ID4gPiA+ID4gPiA+ICAgICAgIHVuZGVmaW5lZCENCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+DQo+
-ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiBFeHBvcnQgdGhlIHN5bWJvbCBzbyB0aGF0IHRoZSBtb2R1
-bGUgZmluZHMgaXQuDQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+ID4g
-PiA+ID4gRml4ZXM6IDc3ZDhmMzA2OGM2MyAoImNsazogaW14OiBzY3U6IGFkZCB0d28gY2VsbHMN
-Cj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+IGJpbmRpbmcNCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+
-IHN1cHBvcnQiKQ0KPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gU2lnbmVkLW9mZi1ieTogU3VkaXAg
-TXVraGVyamVlDQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA8c3VkaXBtLm11a2hlcmplZUBnbWFp
-bC5jb20+DQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiAtLS0NCj4gPiA+ID4gPiA+ID4gPiA+ID4g
-PiA+DQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiByZXNlbmRpbmcgd2l0aCB0aGUgRml4ZXM6IHRh
-Zy4NCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiAgZHJp
-dmVycy9iYXNlL2RkLmMgfCAxICsNCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ICAxIGZpbGUgY2hh
-bmdlZCwgMSBpbnNlcnRpb24oKykNCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4g
-PiA+ID4gPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9iYXNlL2RkLmMgYi9kcml2ZXJzL2Jh
-c2UvZGQuYw0KPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gaW5kZXggMTQ4ZTgxOTY5ZTA0Li5hNzk2
-YTU3ZTVlZmIgMTAwNjQ0DQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiAtLS0gYS9kcml2ZXJzL2Jh
-c2UvZGQuYw0KPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gKysrIGIvZHJpdmVycy9iYXNlL2RkLmMN
-Cj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+IEBAIC0zNTMsNiArMzUzLDcgQEAgYm9vbCBkZXZpY2Vf
-aXNfYm91bmQoc3RydWN0DQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiBkZXZpY2UNCj4gPiA+ID4g
-PiA+ID4gPiA+ID4gPiA+ICpkZXYpDQo+ID4gPiA+ID4gew0KPiA+ID4gPiA+ID4gPiA+ID4gPiA+
-ID4gICAgICAgcmV0dXJuIGRldi0+cCAmJg0KPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4ga2xpc3Rf
-bm9kZV9hdHRhY2hlZCgmZGV2LT5wLT5rbm9kZV9kcml2ZXIpOw0KPiA+ID4gPiA+ID4gPiA+ID4g
-PiA+ID4gIH0NCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ICtFWFBPUlRfU1lNQk9MKGRldmljZV9p
-c19ib3VuZCk7DQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiBF
-WFBPUlRfU1lNQk9MX0dQTCgpIHBsZWFzZSwgbGlrZSBhbGwgdGhlIG90aGVyDQo+ID4gPiA+ID4g
-PiA+ID4gPiA+ID4gZXhwb3J0cyBpbiB0aGlzDQo+ID4gPiBmaWxlLg0KPiA+ID4gPiA+ID4gPiA+
-ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gQWxzbywgd2FpdCwgbm8sIGRvbid0IGNhbGwg
-dGhpcywgYXJlIHlvdSBzdXJlIHlvdQ0KPiA+ID4gPiA+ID4gPiA+ID4gPiA+IGFyZSBjYWxsaW5n
-IGl0IGluIGEgcmFjZS1mcmVlIHdheT8gIEFuZCB3aGF0DQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4g
-YnJhbmNoL3RyZWUgaXMgdGhlIGFib3ZlDQo+ID4gPiA+ID4gY29tbWl0IGluPw0KPiA+ID4gPiA+
-ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+ID4gPiBJIGhhdmUgbm90IGNoZWNrZWQgZnVsbHkg
-YnV0IHNpbmNlIGl0IGlzIGJlaW5nIGNhbGxlZA0KPiA+ID4gPiA+ID4gPiA+ID4gPiBmcm9tDQo+
-ID4gPiA+ID4gPiA+ID4gPiA+IHByb2JlKCkgSSBhc3N1bWUgdGhlIGxvY2sgd2lsbCBiZSBoZWxk
-IGF0IHRoYXQgdGltZS4NCj4gPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4gPiBwcm9i
-ZSgpIHNob3VsZCBuZXZlciBjYWxsIHRoaXMgZnVuY3Rpb24gYXMgaXQgbWFrZXMgbm8NCj4gPiA+
-ID4gPiA+ID4gPiA+IHNlbnNlIGF0IGFsbCBhdCB0aGF0IHBvaW50IGluIHRpbWUuICBUaGUgZHJp
-dmVyIHNob3VsZCBiZSBmaXhlZC4NCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IFdv
-dWxkIHlvdSBzdWdnZXN0IGlmIGFueSBvdGhlciBBUEkgd2UgY2FuIHVzZSB0byBhbGxvdyB0aGUN
-Cj4gPiA+ID4gPiA+ID4gPiBkcml2ZXIgdG8ga25vdyB3aGV0aGVyIGFub3RoZXIgZGV2aWNlIGhh
-cyBiZWVuIHByb2JlZD8NCj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gVGhlcmUgaXMgbm9u
-ZSwgc29ycnksIGFzIHRoYXQganVzdCBvcGVucyB1cCB3YXkgdG9vIG1hbnkgcHJvYmxlbXMuDQo+
-ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4gRm9yIGlteCBzY3UgZHJpdmVyIGluIHF1ZXN0
-aW9uLCBpdCBoYXMgYSBzcGVjaWFsDQo+ID4gPiA+ID4gPiA+ID4gcmVxdWlyZW1lbnQgdGhhdCBp
-dCBkZXBlbmRzIG9uIHNjdSBwb3dlciBkb21haW4gZHJpdmVyLg0KPiA+ID4gPiA+ID4gPiA+IEhv
-d2V2ZXIsIHRoZXJlJ3JlIGEgaHVnZSBudW1iZXINCj4gPiA+ID4gPiA+ID4gPiAoMjAwKykgb2Yg
-cG93ZXIgZG9tYWlucyBmb3IgZWFjaCBkZXZpY2UgY2xvY2ssIHdlIGNhbid0DQo+ID4gPiA+ID4g
-PiA+ID4gZGVmaW5lIHRoZW0gYWxsIGluIERUDQo+ID4gPiA+ID4gPiA+IGZvciBhIHNpbmdsZSBj
-bG9jayBjb250cm9sbGVyIG5vZGUuDQo+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiBU
-aGF0J3Mgd2h5IHdlIHdhbnRlZCB0byB1c2UgZGV2aWNlX2lzX2JvdW5kKCkgYmVmb3JlIHRvDQo+
-ID4gPiA+ID4gPiA+ID4gY2hlY2sgaWYgc2N1IHBvd2VyIGRvbWFpbiBpcyByZWFkeSBvciBub3Qg
-dG8gc3VwcG9ydCBkZWZlciBwcm9iZS4NCj4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gVXNl
-IHRoZSBkZXZpY2UgbGluayBmdW5jdGlvbmFsaXR5IGZvciB0aGlzIHR5cGUgb2YgdGhpbmcsDQo+
-ID4gPiA+ID4gPiA+IHRoYXQgaXMgd2hhdCBpdCB3YXMgY3JlYXRlZCBmb3IuDQo+ID4gPiA+ID4g
-PiA+DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gVGhhbmtzIGZvciB0aGUgc3VnZ2VzdGlvbi4g
-SSB3aWxsIGNoZWNrIGl0IGhvdyB0byB1c2UuDQo+ID4gPiA+ID4gPiBCVFcsIEkgd29uZGVyIGlm
-IGRldl9kcml2ZXJfc3RyaW5nKCkgY291bGQgYmUgYW4gb3B0aW9uYWwNCj4gPiA+ID4gPiA+IHNv
-bHV0aW9uIHdoaWNoIHNlZW1zIGEgbW9yZSBzaW1wbGUgd2F5Pw0KPiA+ID4gPiA+DQo+ID4gPiA+
-ID4gQWxzbywgaG93IGRvIHlvdSByZWFsbHkga25vdyB5b3UgZXZlbiBoYXZlIGEgdmFsaWQgcG9p
-bnRlciB0bw0KPiA+ID4gPiA+IHRoYXQgb3RoZXIgZGV2aWNlIHN0cnVjdHVyZT8gIEhvdyBhcmUg
-eW91IGdldHRpbmcgYWNjZXNzIHRvIHRoYXQ/DQo+ID4gPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4g
-VGhlIHJvdWdoIGlkZWEgaXMgYXMgZm9sbG93cy4gTm90IHN1cmUgaWYgdGhvc2UgQVBJcyBhcmUg
-c2FmZQ0KPiA+ID4gPiBlbm91Z2ggYXMgdGhlcmUncmUgbWFueSB1c2VycyBJbiBrZXJuZWwuDQo+
-ID4gPiA+DQo+ID4gPiA+IHBkX25wID0gb2ZfZmluZF9jb21wYXRpYmxlX25vZGUoTlVMTCwgTlVM
-TCwgImZzbCxzY3UtcGQiKTsgcGRfZGV2DQo+ID4gPiA+ID0gb2ZfZmluZF9kZXZpY2VfYnlfbm9k
-ZShwZF9ucCk7IGlmICghcGRfZGV2IHx8DQo+ID4gPiA+ICFkZXZfZHJpdmVyX3N0cmluZygmcGRf
-ZGV2LT5kZXYpIHx8DQo+ID4gPiA+ICAgIHN0cmNtcChkZXZfZHJpdmVyX3N0cmluZygmcGRfZGV2
-LT5kZXYpLCAiaW14LXNjdS1wZCIpKSB7DQo+ID4gPiA+ICAgICAgICAgb2Zfbm9kZV9wdXQocGRf
-bnApOw0KPiA+ID4gPiAgICAgICAgIHJldHVybiAtRVBST0JFX0RFRkVSOw0KPiA+ID4gPiB9DQo+
-ID4gPg0KPiA+ID4gSWNrLCBhZ2Fpbiwgbm8sIGRvbid0IGRvIHRoYXQsIHlvdSBjYW4gbm90IGd1
-YXJhbnRlZSAibmFtZXMiIG9mDQo+ID4gPiBkZXZpY2VzIGFueXdoZXJlIGluIHRoZSBzeXN0ZW0s
-IHNvcnJ5Lg0KPiA+DQo+ID4gSSB0cmllZCB0byB1bmRlcnN0YW5kIGhvdyB0byB1c2UgZGV2bGlu
-ayBmb3IgdGhpcyBjYXNlIGJ5IGRpdmluZyBkZWVwDQo+ID4gaW50byB0aGUgZGV2bGluayBjb2Rl
-LCBob3dldmVyLCBpdCBsb29rZWQgdG8gbWUgdGhlcmUncmUgYSBmZXcgbGltaXRhdGlvbnMgb24N
-Cj4gdGhlIGN1cnJlbnQgZGV2bGluayB1c2FnZS4NCj4gDQo+IEFkZGluZyBTYXJhdmFuYSwgd2hv
-IHdyb3RlIHRoYXQgY29kZSB0byBoZWxwIGV4cGxhaW4gaXQuDQo+IA0KPiA+IFdlIGNhbid0IGNy
-ZWF0ZSBkcml2ZXIgcHJlc2VuY2UgZGVwZW5kZW5jeSBsaW5rIGluIGNvbnN1bWVyJ3MgcHJvYmUN
-Cj4gPiBmdW5jdGlvbiB3aGlsZSB0aGUgc3VwcGxpZXIgZHJpdmVyIGlzIHN0aWxsIG5vdCBwcm9i
-ZWQgb3IgZXZlbiBub3QgY3JlYXRlZCB5ZXQuDQo+ID4gKHdlJ3JlIHRoZSBsYXRlciBjYXNlIHRo
-YXQgc3VwcGxpZXIgZGV2aWNlIHNjdS1wZCBtYXkgYmUgY3JlYXRlZCBhZnRlciBzY3UtY2xrDQo+
-IGRldmljZSkuDQo+IA0KPiBTb3VuZHMgbGlrZSB5b3VyIERUIGlzIHNldCB1cCBiYWNrd2FyZHM/
-DQoNClllcywgdGhlIGR0cyBpcyBsaWtlIGJlbG93Og0KaHR0cHM6Ly9naXQua2VybmVsLm9yZy9w
-dWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L3RyZWUvYXJjaC9hcm02
-NC9ib290L2R0cy9mcmVlc2NhbGUvaW14OHF4cC5kdHNpP2g9djUuMTAtcmM0DQoJc2N1IHsNCgkJ
-Y29tcGF0aWJsZSA9ICJmc2wsaW14LXNjdSI7DQoJCW1ib3gtbmFtZXMgPSAidHgwIiwNCgkJCSAg
-ICAgInJ4MCIsDQoJCQkgICAgICJnaXAzIjsNCgkJbWJveGVzID0gPCZsc2lvX211MSAwIDANCgkJ
-CSAgJmxzaW9fbXUxIDEgMA0KCQkJICAmbHNpb19tdTEgMyAzPjsNCg0KCQljbGs6IGNsb2NrLWNv
-bnRyb2xsZXIgew0KCQkJY29tcGF0aWJsZSA9ICJmc2wsaW14OHF4cC1jbGsiOw0KCQkJI2Nsb2Nr
-LWNlbGxzID0gPDE+Ow0KCQkJY2xvY2tzID0gPCZ4dGFsMzJrICZ4dGFsMjRtPjsNCgkJCWNsb2Nr
-LW5hbWVzID0gInh0YWxfMzJLSHoiLCAieHRhbF8yNE1oeiI7DQoJCX07DQoNCgkJcGQ6IGlteDhx
-eC1wZCB7DQoJCQljb21wYXRpYmxlID0gImZzbCxpbXg4cXhwLXNjdS1wZCI7DQoJCQkjcG93ZXIt
-ZG9tYWluLWNlbGxzID0gPDE+Ow0KCQl9Ow0KCQkuLi4NCg0KQ2xrIGFuZCBwZCBkZXZpY2VzIHVu
-ZGVyIHNjdSBub2RlIGFyZSBwcm9wYWdhdGVkIGJ5IHNjdSBkcml2ZXIgaW4gRFQgb3JkZXIuDQpJ
-ZiBtb3ZpbmcgcGQgbm9kZSBiZWZvcmUgY2xrIG5vZGUgY2FuIGFsc28gYWRkcmVzcyB0aGlzIGlz
-c3VlLg0KDQo+IA0KPiA+IFRoZSBrZXJuZWwgZG9jIERvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9k
-ZXZpY2VfbGluay5yc3QgYWxzbyBtZW50aW9uZWQNCj4gPiB0aGlzIGxpbWl0YXRpb24gYW5kIHRo
-ZSBzdWdnZXN0ZWQgc29sdXRpb24gaXM6DQo+ID4gIlRoZSBvbnVzIGlzIHRodXMgb24gdGhlIGNv
-bnN1bWVyIHRvIGNoZWNrIHByZXNlbmNlIG9mIHRoZSBzdXBwbGllcg0KPiA+IGFmdGVyIGFkZGlu
-ZyB0aGUgbGluaywgYW5kIGRlZmVyIHByb2Jpbmcgb24gbm9uLXByZXNlbmNlLiINCj4gPg0KPiA+
-IFRoZW4gdGhlIHF1ZXN0aW9uIGlzICwgYmFjayBhZ2FpbiwgLCBob3cgdG8gY2hlY2sgdGhlIHBy
-ZXNlbnNlIG9mDQo+ID4gb3RoZXIgZGV2aWNlIGRyaXZlciBpZiB3ZSBjYW4ndCB1c2UgZGV2aWNl
-X2lzX2JvdW5kKCkgQVBJIGluIG1vZHVsZT8NCj4gDQo+IFlvdXIgZHJpdmVyIHNob3VsZCBub3Qg
-Y2FyZSwgYXMgeW91IGNhbid0IGdldCBkaXJlY3QgYWNjZXNzIHRvIGl0LCBzbyBkb24ndCB0cnkg
-dG8NCj4gYXNrIHRoZSBkcml2ZXIgY29yZSBhYm91dCBpdCBhcyB0aGF0IGlzIHJhY3kgYW5kIG5v
-dCB2aWFibGUuDQo+IA0KPiBJZiB5b3VyIGRyaXZlciBuZWVkcyByZXNvdXJjZXMgdGhhdCBpdCBj
-YW4gbm90IGdldCBhdCB0aGlzIHBvaW50IGluIHRpbWUsIGp1c3QgcmV0dXJuDQo+IGZyb20gcHJv
-YmUgd2l0aCBhIGRlZmVyIGVycm9yLiAgVGhhdCB3YXkgaXQgd2lsbCBiZSBjYWxsZWQgYWdhaW4g
-YWZ0ZXIgb3RoZXINCj4gZHJpdmVycyBsb2FkLg0KPiANCg0KUmVmZXJyaW5nIHRvIGFib3ZlIGR0
-cyBzbmlwcGV0LCB5b3UgY2FuIHNlZSB0aGUgcHJvYmxlbSBoZXJlIGlzIHRoYXQgdGhlcmUncmUg
-bm8gcG93ZXINCmRvbWFpbiBwcm9wZXJ0eSBpbiBjbG9jay1jb250cm9sbGVyIG5vZGUgd2hpY2gg
-Y2F1c2UgdGhlIGNsb2NrIGRyaXZlciB1bmFibGUgdG8gdXNlIHRoZQ0KTm9ybWFsL3N0YW5kYXJk
-IHdheSB0byBhY3F1aXJlIFBEIHJlc291cmNlcyBhbmQgcmV0dXJuIGEgRVBST0JFX0RFRkZFUiBp
-ZiBmYWlsZWQgbGlrZQ0KT3RoZXIgcmVzb3VyY2VzLCBlLmcuIGlycSwgZ3BpbyBhbmQgZXRjLg0K
-VGhhdCdzIHRoZSBtYWluIHJlYXNvbiB3ZSB1c2UgZGV2aWNlX2lzX2JvdW5kKCkgaW4gY2xvY2sg
-ZHJpdmVyIHRvIGNoZWNrIGlmIFBEIGRyaXZlcg0KaGFzIGJlZW4gcHJvYmVkLg0KDQpBbmQgb2Zf
-Z2VucGRfYWRkX2RldmljZSgpIHdlIHVzZWQgaW4gc2N1IGNsayBkcml2ZXIgZG9lcyBub3Qgc3Vw
-cG9ydCBFUFJPQkVfREVGRVINCmFuZCBpbiBvcmRlciB0byBtYWludGFpbmVyIHRoZSBiYWNrd2Fy
-ZHMgY29tcGF0aWJpbGl0eSBvZiBpbXhfY2xrX3NjdV9hbGxvY19kZXYoKSBBUEksDQpXZSBhbHNv
-IGNhbid0IHJldHVybiBQUk9CRV9ERUZFUi4gQWxsIHRob3NlIGFyZSBzcGVjaWFsIHJlYXNvbnMg
-d2hpY2ggbWFkZSB0aGluZ3MgY29tcGxpY2F0ZWQNCmFuZCB1bi1lYXN5IHRvIGFkZHJlc3MgaW4g
-c3RhbmRhcmQgd2F5Lg0KDQpNYXliZSB0aGUgc2ltcGxlc3Qgc29sdXRpb24gaXMganVzdGluZyBt
-b3ZlIHNjdSBwZCBub2RlIGFib3ZlIHNjdSBjbGsgbm9kZSB3aGljaCBpcyBhbHNvIG1ha2UNClNl
-bnNlIGJlY2F1c2UgaXQgY2FuIHNhdmUgYSBodWdlIG51bWJlciBvZiBkZWZlciBwcm9iZXMuDQoN
-CkFueXdheSwgdGhhbmtzIGZvciB0aGUgc3VnZ2VzdGlvbiBhbmQgZGV0YWlsZWQsIHBhdGllbnQg
-ZXhwbGFuYXRpb24uDQpJIGNvdWxkIGNvb2sgYSBwYXRjaCB0byByZW1vdmUgZGV2aWNlX2lzX2Jv
-dW5kKCkgY2hlY2tpbmcgY29kZSBmcm9tIGNsayBkcml2ZXINCmFuZCBtb3Zpbmcgc2N1IHBkIG5v
-ZGUgaW4gZHQgdG8gYWRkcmVzcyBpdCBpZiBubyBzdHJvbmcgb2JqZWN0aW9ucy4NCg0KUmVnYXJk
-cw0KQWlzaGVuZw0KDQo+ID4gVGhlIGRldl9kcml2ZXJfc3RyaW5nKCkgc2VlbXMgYmUgYSBxdWlj
-ayBhbmQgZGlydHkgc29sdXRpb24gZm9yIHRoZQ0KPiA+IHRoaXMgYnVpbGQgYnJlYWsgaXNzdWUg
-YXMgdGhlIGRyaXZlciBuYW1lIGlzIGxlc3MgcG9zc2libGUgdG8gYmUgY2hhbmdlZCBhbmQNCj4g
-dW5kZXIgY29udHJvbC4NCj4gDQo+IE5vLCBkcml2ZXIgbmFtZXMgYXJlIG5vdCBldmVyIGd1YXJh
-bnRlZWQgdG8gc3RheSB0aGUgc2FtZSBhbmQgYXJlIG5vdCB0byBiZQ0KPiB1c2VkIGZvciB0aGlz
-IGF0IGFsbCwgc29ycnkuDQo+IA0KPiA+IEhvdyB3b3VsZCB5b3Ugc3VnZ2VzdCBmb3IgY3VycmVu
-dCBzaXR1YXRpb24/DQo+IA0KPiBkZWZlciB5b3VyIHByb2JlIGxpa2UgYWxsIG90aGVyIGRyaXZl
-cnMgaW4gdGhpcyBzaXR1YXRpb24gZG8gaXQ/ICBXaGF0IG1ha2VzIHRoaXMNCj4gb25lIGRyaXZl
-ciBzbyBtdWNoIGRpZmZlcmVudCB0aGFuIHRoZSB0aG91c2FuZHMgb2Ygb3RoZXIgb25lcyB3ZSBj
-dXJyZW50bHkNCj4gaGF2ZT8NCj4gDQo+IHRoYW5rcywNCj4gDQo+IGdyZWcgay1oDQo=
+On Fri, Nov 13, 2020 at 11:17 PM Andrey Konovalov <andreyknvl@google.com> w=
+rote:
+>
+> Add documentation for hardware tag-based KASAN mode and also add some
+> clarifications for software tag-based mode.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
+
+> ---
+> Change-Id: Ib46cb444cfdee44054628940a82f5139e10d0258
+> ---
+>  Documentation/dev-tools/kasan.rst | 80 +++++++++++++++++++++++--------
+>  1 file changed, 59 insertions(+), 21 deletions(-)
+>
+> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/=
+kasan.rst
+> index 2d55d788971c..ffbae8ce5748 100644
+> --- a/Documentation/dev-tools/kasan.rst
+> +++ b/Documentation/dev-tools/kasan.rst
+> @@ -5,12 +5,14 @@ Overview
+>  --------
+>
+>  KernelAddressSANitizer (KASAN) is a dynamic memory error detector design=
+ed to
+> -find out-of-bound and use-after-free bugs. KASAN has two modes: generic =
+KASAN
+> -(similar to userspace ASan) and software tag-based KASAN (similar to use=
+rspace
+> -HWASan).
+> +find out-of-bound and use-after-free bugs. KASAN has three modes:
+> +1. generic KASAN (similar to userspace ASan),
+> +2. software tag-based KASAN (similar to userspace HWASan),
+> +3. hardware tag-based KASAN (based on hardware memory tagging).
+>
+> -KASAN uses compile-time instrumentation to insert validity checks before=
+ every
+> -memory access, and therefore requires a compiler version that supports t=
+hat.
+> +Software KASAN modes (1 and 2) use compile-time instrumentation to inser=
+t
+> +validity checks before every memory access, and therefore require a comp=
+iler
+> +version that supports that.
+>
+>  Generic KASAN is supported in both GCC and Clang. With GCC it requires v=
+ersion
+>  8.3.0 or later. Any supported Clang version is compatible, but detection=
+ of
+> @@ -19,7 +21,7 @@ out-of-bounds accesses for global variables is only sup=
+ported since Clang 11.
+>  Tag-based KASAN is only supported in Clang.
+>
+>  Currently generic KASAN is supported for the x86_64, arm, arm64, xtensa,=
+ s390
+> -and riscv architectures, and tag-based KASAN is supported only for arm64=
+.
+> +and riscv architectures, and tag-based KASAN modes are supported only fo=
+r arm64.
+>
+>  Usage
+>  -----
+> @@ -28,14 +30,16 @@ To enable KASAN configure kernel with::
+>
+>           CONFIG_KASAN =3D y
+>
+> -and choose between CONFIG_KASAN_GENERIC (to enable generic KASAN) and
+> -CONFIG_KASAN_SW_TAGS (to enable software tag-based KASAN).
+> +and choose between CONFIG_KASAN_GENERIC (to enable generic KASAN),
+> +CONFIG_KASAN_SW_TAGS (to enable software tag-based KASAN), and
+> +CONFIG_KASAN_HW_TAGS (to enable hardware tag-based KASAN).
+>
+> -You also need to choose between CONFIG_KASAN_OUTLINE and CONFIG_KASAN_IN=
+LINE.
+> -Outline and inline are compiler instrumentation types. The former produc=
+es
+> -smaller binary while the latter is 1.1 - 2 times faster.
+> +For software modes, you also need to choose between CONFIG_KASAN_OUTLINE=
+ and
+> +CONFIG_KASAN_INLINE. Outline and inline are compiler instrumentation typ=
+es.
+> +The former produces smaller binary while the latter is 1.1 - 2 times fas=
+ter.
+>
+> -Both KASAN modes work with both SLUB and SLAB memory allocators.
+> +Both software KASAN modes work with both SLUB and SLAB memory allocators=
+,
+> +hardware tag-based KASAN currently only support SLUB.
+>  For better bug detection and nicer reporting, enable CONFIG_STACKTRACE.
+>
+>  To augment reports with last allocation and freeing stack of the physica=
+l page,
+> @@ -196,17 +200,24 @@ and the second to last.
+>  Software tag-based KASAN
+>  ~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> -Tag-based KASAN uses the Top Byte Ignore (TBI) feature of modern arm64 C=
+PUs to
+> -store a pointer tag in the top byte of kernel pointers. Like generic KAS=
+AN it
+> -uses shadow memory to store memory tags associated with each 16-byte mem=
+ory
+> +Software tag-based KASAN requires software memory tagging support in the=
+ form
+> +of HWASan-like compiler instrumentation (see HWASan documentation for de=
+tails).
+> +
+> +Software tag-based KASAN is currently only implemented for arm64 archite=
+cture.
+> +
+> +Software tag-based KASAN uses the Top Byte Ignore (TBI) feature of arm64=
+ CPUs
+> +to store a pointer tag in the top byte of kernel pointers. Like generic =
+KASAN
+> +it uses shadow memory to store memory tags associated with each 16-byte =
+memory
+>  cell (therefore it dedicates 1/16th of the kernel memory for shadow memo=
+ry).
+>
+> -On each memory allocation tag-based KASAN generates a random tag, tags t=
+he
+> -allocated memory with this tag, and embeds this tag into the returned po=
+inter.
+> +On each memory allocation software tag-based KASAN generates a random ta=
+g, tags
+> +the allocated memory with this tag, and embeds this tag into the returne=
+d
+> +pointer.
+> +
+>  Software tag-based KASAN uses compile-time instrumentation to insert che=
+cks
+>  before each memory access. These checks make sure that tag of the memory=
+ that
+>  is being accessed is equal to tag of the pointer that is used to access =
+this
+> -memory. In case of a tag mismatch tag-based KASAN prints a bug report.
+> +memory. In case of a tag mismatch software tag-based KASAN prints a bug =
+report.
+>
+>  Software tag-based KASAN also has two instrumentation modes (outline, th=
+at
+>  emits callbacks to check memory accesses; and inline, that performs the =
+shadow
+> @@ -215,9 +226,36 @@ simply printed from the function that performs the a=
+ccess check. With inline
+>  instrumentation a brk instruction is emitted by the compiler, and a dedi=
+cated
+>  brk handler is used to print bug reports.
+>
+> -A potential expansion of this mode is a hardware tag-based mode, which w=
+ould
+> -use hardware memory tagging support instead of compiler instrumentation =
+and
+> -manual shadow memory manipulation.
+> +Software tag-based KASAN uses 0xFF as a match-all pointer tag (accesses =
+through
+> +pointers with 0xFF pointer tag aren't checked). The value 0xFE is curren=
+tly
+> +reserved to tag freed memory regions.
+> +
+> +Software tag-based KASAN currently only supports tagging of
+> +kmem_cache_alloc/kmalloc and page_alloc memory.
+> +
+> +Hardware tag-based KASAN
+> +~~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +Hardware tag-based KASAN is similar to the software mode in concept, but=
+ uses
+> +hardware memory tagging support instead of compiler instrumentation and
+> +shadow memory.
+> +
+> +Hardware tag-based KASAN is currently only implemented for arm64 archite=
+cture
+> +and based on both arm64 Memory Tagging Extension (MTE) introduced in ARM=
+v8.5
+> +Instruction Set Architecture, and Top Byte Ignore (TBI).
+> +
+> +Special arm64 instructions are used to assign memory tags for each alloc=
+ation.
+> +Same tags are assigned to pointers to those allocations. On every memory
+> +access, hardware makes sure that tag of the memory that is being accesse=
+d is
+> +equal to tag of the pointer that is used to access this memory. In case =
+of a
+> +tag mismatch a fault is generated and a report is printed.
+> +
+> +Hardware tag-based KASAN uses 0xFF as a match-all pointer tag (accesses =
+through
+> +pointers with 0xFF pointer tag aren't checked). The value 0xFE is curren=
+tly
+> +reserved to tag freed memory regions.
+> +
+> +Hardware tag-based KASAN currently only supports tagging of
+> +kmem_cache_alloc/kmalloc and page_alloc memory.
+>
+>  What memory accesses are sanitised by KASAN?
+>  --------------------------------------------
+> --
+> 2.29.2.299.gdc1121823c-goog
+>
+
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
