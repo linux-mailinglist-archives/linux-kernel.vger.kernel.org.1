@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268F42B8049
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF592B804B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbgKRPU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:20:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgKRPU4 (ORCPT
+        id S1727159AbgKRPWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:22:05 -0500
+Received: from gproxy4-pub.mail.unifiedlayer.com ([69.89.23.142]:47846 "EHLO
+        gproxy4-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726392AbgKRPWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:20:56 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A12C0613D4;
-        Wed, 18 Nov 2020 07:20:54 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id l5so2366677edq.11;
-        Wed, 18 Nov 2020 07:20:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JdBpN+/s+eu4dMv9PKV8l+WsBUdr8tnMkExlePSrDm8=;
-        b=Pk48p8ZtWUvC6e3UkkoxM7aqSmvdiN2K0VPViD+hEhTP5zYx83Kp4XszdIG0mxNWL6
-         YQyOYsa3TDm5hgynlL7ZrA0YeKr1tbpq8dNSo4TfbJPHLe0TwD6bZBU7GT6S3WUiJmJC
-         oVhbzrsBb+cMHMmMubgpmzj5P19FBqbqurmXtwDzEDWit0tSFS/UOHE80i1SAM4CFn7e
-         ivRYGc+P9oJ7MiacCZAJN+RGQPKCXptvtvLVQlsI1Iju6BQQ0eQVq+EpiS84sjhqOTis
-         n0QAxuUbEuXUtTYQ15EQ573E53OY11o4EFofeljWJNRHIElT0rWaES6Mc7vOh8eTdMet
-         biWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JdBpN+/s+eu4dMv9PKV8l+WsBUdr8tnMkExlePSrDm8=;
-        b=qEGEspwMFv+FlaAsRSZE84XD4Py7WHMI4FHoOOFq/JNYd/q7H5yhOw6dElZswecSkK
-         +ySr3lJ+ZHjx41yqhzLIgOgD8vyRf1L8fyZw6AM7Cp5i2SOen78cGduO+UfiDFeaHnyi
-         8zqSvZWrSsR6v5Prt36dEqvGCXxtSvJmTInteTW9m9b/WFfR8Kb/yTA6O9MjIGG1C7Lt
-         YgF+8eoa4f8E3ohSuuJwIfZ14zwyzdt+PQJ9+0DHfkvM3QvL4nxwkroRKqtPDIglO03T
-         kYLxhaHV4Gb1C1uXNMytQhiKTAd47YG6OeH9MkWmCOISOznseJZiXfJ9iLfOlCu7+cAd
-         F/9A==
-X-Gm-Message-State: AOAM530KvUZy821saTiClOvn1x9Mw9YbBytWqUB2XoTDEr4XAwDaDr0J
-        zJ/Ia42JEzl5Yh0e48bMUjA=
-X-Google-Smtp-Source: ABdhPJy/MblYFWTmZbo0aQQjxf6nUrrToTAbkYlP+jLasvfvJ5DUvNMQ3reeUa6qQ5jMzJUSxniU4w==
-X-Received: by 2002:aa7:c5c7:: with SMTP id h7mr2366534eds.143.1605712853164;
-        Wed, 18 Nov 2020 07:20:53 -0800 (PST)
-Received: from localhost.localdomain ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id k3sm12554313ejd.36.2020.11.18.07.20.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 07:20:52 -0800 (PST)
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] dt-bindings: Fix error in 'make dtbs_check' when using DT_SCHEMA_FILES
-Date:   Wed, 18 Nov 2020 17:20:50 +0200
-Message-Id: <2519b8bde507ca6ccea9765ea197adaaa69a66d5.1605712328.git.cristian.ciocaltea@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Wed, 18 Nov 2020 10:22:04 -0500
+Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
+        by gproxy4.mail.unifiedlayer.com (Postfix) with ESMTP id CDAD1175B6F
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:22:02 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id fPHWknlCah41lfPHWksc22; Wed, 18 Nov 2020 08:22:02 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=N8cH6V1B c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=nNwsprhYR40A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=_jlGtV7tAAAA:8
+ a=-PsjpLTujS7qZS_A3F4A:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=nlm17XC03S6CtCLSeiRr:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=9fQAFSpe4ejooO3kL/zNhicitu0ci7Ua9hi/+HJRbbo=; b=MSgKnF70nHHqBMaFQE/+r+oh+4
+        +BHsFrcGBshC5vuMT+L3ihKKGphT+Foqy+xRU0Ja5uorM0lFAEgWLEiH8HMSC5gVKbXnuGHM632NX
+        4apDqg40M56/oPAhN5m5KKwDN53qqwcaAlmcyc1LmpF4aQJY4I4avPyr8u/OIXlENlYruOK48fXLn
+        KmSDEVqWvcVeTVl8aQvEqBzEP4eJ6f/26CotISCvglhP3M/8M/2GLVVGBZ0yjRrmmVBVsPnqsu5aC
+        2cnhXNmRWTcswWKEOVc0juwnAxtQ7o5wGqSW/1GYzlHRZGhYwnwGw0oFj9/RA1z00/xbkdlgwNhxm
+        b32f9Bpg==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:54752 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kfPHV-000zMb-QV; Wed, 18 Nov 2020 15:22:01 +0000
+Date:   Wed, 18 Nov 2020 07:22:01 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/64] 4.4.244-rc1 review
+Message-ID: <20201118152201.GC174391@roeck-us.net>
+References: <20201117122106.144800239@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kfPHV-000zMb-QV
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:54752
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 24
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If DT_SCHEMA_FILES is specified and contains more than one file paths,
-'make dtbs_check' fails with the following message:
+On Tue, Nov 17, 2020 at 02:04:23PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.244 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 19 Nov 2020 12:20:51 +0000.
+> Anything received after that time might be too late.
+> 
 
-  $ make dtbs_check DT_SCHEMA_FILES="path/to/schema1.yaml path/to/schema2.yaml"
-  SCHEMA  Documentation/devicetree/bindings/processed-schema.json
-  Documentation/devicetree/bindings/Makefile:77: recipe for target 'Documentation/devicetree/bindings/processed-schema.json' failed
-  make[1]: *** [Documentation/devicetree/bindings/processed-schema.json] Error 255
-  make[1]: *** Deleting file 'Documentation/devicetree/bindings/processed-schema.json'
-  Makefile:1364: recipe for target 'dt_binding_check' failed
-  make: *** [dt_binding_check] Error 2
+Build results:
+	total: 165 pass: 165 fail: 0
+Qemu test results:
+	total: 328 pass: 328 fail: 0
 
-The error code 255 is returned by 'dt-mk-schema' when invoked as
-'dt-mk-schema -j -u @<tmp-file>', where '<tmp-file>' is a temporary
-file that is generated to contain a list of SPACE delimited schema
-file paths, as indicated via DT_SCHEMA_FILES.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-However, it seems the file format has been recently changed in
-'dt-mk-schema', which now expects each schema path to be provided on
-a separate line:
-
- $ dt-mk-schema --version
- 2020.12.dev4+g6de1c45
-
-Therefore, let's change '<tmp-file>' content format from
-
- path/to/schema1.yaml path/to/schema2.yaml ... path/to/schemaN.yaml
-
-to
-
- path/to/schema1.yaml
- path/to/schema2.yaml
- ...
- path/to/schemaN.yaml
-
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
----
- Documentation/devicetree/bindings/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-index f50420099a55..643eb873fd51 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -37,7 +37,7 @@ quiet_cmd_chk_bindings = CHKDT   $@
- quiet_cmd_mk_schema = SCHEMA  $@
-       cmd_mk_schema = f=$$(mktemp) ; \
-                       $(if $(DT_MK_SCHEMA_FLAGS), \
--                           echo $(real-prereqs), \
-+                           printf '%s\n' $(real-prereqs), \
-                            $(find_cmd)) > $$f ; \
-                       $(DT_MK_SCHEMA) -j $(DT_MK_SCHEMA_FLAGS) @$$f > $@ ; \
- 		      rm -f $$f
--- 
-2.29.2
-
+Guenter
