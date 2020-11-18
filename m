@@ -2,152 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E28C2B8257
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C730C2B825C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgKRQv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:51:26 -0500
-Received: from mail-dm6nam11on2066.outbound.protection.outlook.com ([40.107.223.66]:63323
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727789AbgKRQvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:51:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KxPcI7235jFGV0R8uAsps1lZK5mhwwACEZaetDJq58YEMzu4TZO2ge7LTN4OM/PklkRf1Z1u+Ywh98a/aiDJRjcSkTkA1NBvvVH0DmH4HWpHperqbetP4j9KVhW0q0dWcHCsVAAkH1KAypdjGlXN19EM+oqanG49jvLZ1C8DEJH1Mw8NGLIggXlnihtMKM9DniPo4BjGSH6Fn9abXpT0jbkAkOf8+qYSGpzmJdfr1jCu5LCCHbr/NTrML6LJQnL5vP/aXnHXSQbzUJA5IccZgm3hWF0meuLKTS/rsesssFhvRcYyTZy4LT0H6t8TbWLfdaiqPgs0lzW9WpGBLMAzMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=17cXEJ4CkTkLou+wMw/xDqWedHYYlX4F/9cZ+y6goWs=;
- b=GHdTrdeENmj2HnjmbIk/WwwFnkScifIycKnC+K492fWBGSMhdZFNIUi6eHtxUCw/aD5kSOwbEnCcuhmWVVZFc+DyzfWomovf6ihFrVMEM4NZxViAKWdVpYS39VHEfLVfVFx53uklIZGVT+y/f7+zudjePl2TOGr4QmuR4y9WKdr6thToUynYlvvARRfUpXZYaqAgg5rNRwTS/Zc4MUqQHePr0vjsiGN61nsgpDAwvbry5f9WGqbLa6FMvv2/+bGgmnKNFh9MaPqQSOkHFgZq0bfcNflWBDXV5gHXfsA6ciBCzIKXvUUcyW3Pioeh5qR3P957lLVMqEEVGWK/2ZxS1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=17cXEJ4CkTkLou+wMw/xDqWedHYYlX4F/9cZ+y6goWs=;
- b=M8zsZyR2H3LTlTz+p+FQuTQy7fk7EBR7NiUQaPit0Id2+qV19McGwg7a9Cqp3y/b7k1NHdMhIfPAWGtVx0BvB1s6fdBK9PYLgvVHske5jGUvXsw/pgGVrCsWta4oMZuZdvyEL0YxZD/yccVMT7O0Eba1T1NrAK/+1TRlxa0hjXE=
-Authentication-Results: 8bytes.org; dkim=none (message not signed)
- header.d=none;8bytes.org; dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
- by BYAPR12MB3237.namprd12.prod.outlook.com (2603:10b6:a03:13a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Wed, 18 Nov
- 2020 16:51:21 +0000
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::dd10:efd2:e325:53c7]) by BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::dd10:efd2:e325:53c7%3]) with mapi id 15.20.3564.033; Wed, 18 Nov 2020
- 16:51:21 +0000
-Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup trigger/polarity
- helpers
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, x86 <x86@kernel.org>,
-        Qian Cai <cai@redhat.com>, Joerg Roedel <joro@8bytes.org>
-References: <20201024213535.443185-20-dwmw2@infradead.org>
- <82d54a74-af90-39a4-e483-b3cd73e2ef03@amd.com>
- <78be575e10034e546cc349d65fac2fcfc6f486b2.camel@infradead.org>
- <877dqtgkzb.fsf@nanos.tec.linutronix.de>
- <874klxghwu.fsf@nanos.tec.linutronix.de>
- <45B3C20C-3BBB-40F3-8A7B-EB20EDD0706F@infradead.org>
- <87y2j9exk2.fsf@nanos.tec.linutronix.de>
- <8C2E184C-D069-4C60-96B5-0758FBC6E402@infradead.org>
- <d4115cc7-3876-e012-b6ec-c525d608834f@amd.com>
- <87tutwg76j.fsf@nanos.tec.linutronix.de>
- <5c86570ce3bedb90514bc1e73b96011660f520b0.camel@infradead.org>
- <87o8k4fcpc.fsf@nanos.tec.linutronix.de>
- <6b44a048de974fb6e2ecb5bf688c122b3107537d.camel@infradead.org>
- <20d99e1f359b448d042d27112e55f8070bf460bb.camel@infradead.org>
- <13f8cb3c-713e-c26e-b2ef-4700f9f6ceac@amd.com>
- <05e3a5ba317f5ff48d2f8356f19e617f8b9d23a4.camel@infradead.org>
- <c2361f78-b739-2f71-562b-d2c5f20825e7@amd.com>
- <79d2e4ee-bfe1-7e86-6f35-f6fda1ce17fa@amd.com>
- <877dqirc7k.fsf@nanos.tec.linutronix.de>
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Message-ID: <9f2f7088-a64d-df82-073e-9acff995d29f@amd.com>
-Date:   Wed, 18 Nov 2020 23:51:10 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.2
-In-Reply-To: <877dqirc7k.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.80.7]
-X-ClientProxiedBy: KL1P15301CA0039.APCP153.PROD.OUTLOOK.COM
- (2603:1096:820:6::27) To BYAPR12MB4597.namprd12.prod.outlook.com
- (2603:10b6:a03:10b::14)
+        id S1727520AbgKRQxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:53:40 -0500
+Received: from mga03.intel.com ([134.134.136.65]:49852 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727008AbgKRQxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:53:39 -0500
+IronPort-SDR: QPoPv6djC+gC+pmlCTw95CoKNx4fKWN69DG9lOKWDKj3ZES33O7mj8jRzfp4YG0EGDk4eXEBXM
+ AlukOMwjfpbw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="171244557"
+X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
+   d="scan'208";a="171244557"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:53:36 -0800
+IronPort-SDR: Ir4GhLDFjPyRr2+EJuG+icvj/Qai9dk1bNDzi1wAON8CBYdO7+8Z6SOXkjdr9DOd+yhZ1+KB1Y
+ WxowBP8oPtUw==
+X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
+   d="scan'208";a="534380521"
+Received: from dlmurray-mobl3.ger.corp.intel.com (HELO localhost) ([10.251.82.13])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:53:32 -0800
+From:   Jani Nikula <jani.nikula@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     jani.nikula@intel.com, intel-gfx@lists.freedesktop.org,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        ath11k@lists.infradead.org, ath10k@lists.infradead.org,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+Subject: [PATCH 1/6] relay: allow the use of const callback structs
+Date:   Wed, 18 Nov 2020 18:53:15 +0200
+Message-Id: <20201118165320.26829-1-jani.nikula@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Suravees-MacBook-Pro.local (165.204.80.7) by KL1P15301CA0039.APCP153.PROD.OUTLOOK.COM (2603:1096:820:6::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.4 via Frontend Transport; Wed, 18 Nov 2020 16:51:18 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 44fcb6e9-7b0f-4bd4-986d-08d88be22d62
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3237:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB3237CDEA1D3F49487BF390EBF3E10@BYAPR12MB3237.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +qM+pjDBPV9wYhoTr1Q7sKHzd39bwCBD0w9X8IRR66h9AGJm0gcQpyeO65kJUw7XsC2ihHjC1E0/kpRiPFM4Wre0j7cKtBcDIwCDqHpVJHPGyQZigvnUvN0RlEL/C3zpp3u2l4f0voMJ3/X3KNZTJzAVJFeAgQymQJgbMcoYHjnf1VW7xg5c7PD/n6GfgXqlUYZuAlDcOh3mIXRN6pgCnCAcFHgqD1So7TSkXBpk5Y7bNj4n8ND8PP7omp5AGoR6bhH5SBb/8/AoeoTPvY+79iZvq1fWo7FmzXJdhbybfoTzBF2KqqkpuFEuFAameTjgvriRFn2a/1QuG212OwKliYkb/94MTVsRizmCG6wrnzCXJ8PUo722Yu9yypgFqqCU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(376002)(136003)(366004)(53546011)(6666004)(5660300002)(8676002)(6506007)(478600001)(83380400001)(36756003)(4326008)(2616005)(31696002)(66556008)(31686004)(44832011)(66946007)(956004)(86362001)(16526019)(52116002)(2906002)(316002)(66476007)(186003)(6486002)(6512007)(54906003)(8936002)(26005)(110136005)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: z2nYLcUIbbDrCWceppArH/1/5MGlJI8lBOE+ORHbF3TbmFajJbCTdslAWfsg15C0jGcMFeS/cjL2yOBQwYstrP3/w62UwHqXFYJU7ScL5J0N9DFTYVO70jPt6II7dQv/Q2aekYDpeNnbg21FLGSE6UHj5igQwWPTLkgk+TKszUQz35X954SwvETvdgFQtQ7TEgpH0bczGAbx5VR71BVohgLz5bsXaVA05fI3dWsjUX5EiU+E/qudkGwU4YR0sig8hCoj+3VFWbvNvGe4T3zBaXzOn+mLF7Sq2O0rRL/Nup98COIgkhvOxlEYWUPq7x980z9rvcn5iaOHVtdQxLNSeDLsEkyh8qyGFH35JOOeXlVfS49oHhkgKZybDaXfdNSbaBiAVFgKmf9hnB+Dary0Yr4HS8Gv0HJ9welSRF12YoxqEecwt8LkBsvCFVbmoFd68Oq6c2Ux95vkpJ5tL+MHRICxAWzuVbgcRXUGOnGSMsSmW1ZMsZbn1Zojjqsah2vnL1xYNKuPmLT6RWd6O950I8xiOYSwUz2QFA74jhvLZR8q4bEmA7g4D2+0W3qRVpUv0zsAnqrZgsGW6f+Q2bYo2Dvwh+nUWoV5I7Qny1EmY5TDGOmlwLGJoF5tRkR8GVTCpR6g6S1qWQTXuHr9WK3s5g==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44fcb6e9-7b0f-4bd4-986d-08d88be22d62
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2020 16:51:21.4380
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TQEvNas7URwVhOiBIubq/kfi7Q+tffC3juOZMcETyfi/WmsI/gsq36V5fzDOMuo7a4lSZjUxmfuiqhrSFP0Fyw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3237
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tglx,
+None of the relay users require the use of mutable structs for
+callbacks, however the relay code does. Instead of assigning default
+callbacks when there is none, add callback wrappers to conditionally
+call the client callbacks if available, and fall back to default
+behaviour (typically no-op) otherwise.
 
-On 11/18/20 9:06 PM, Thomas Gleixner wrote:
-> Suravee,
-> 
-> On Wed, Nov 18 2020 at 17:29, Suravee Suthikulpanit wrote:
->> On 11/17/20 9:00 AM, Suravee Suthikulpanit wrote:
->>
->> I might need your help debugging this issue. I'm seeing the following error:
->>
->> [   14.005937] irq 29, desc: 00000000d200500b, depth: 0, count: 0, unhandled: 0
->> [   14.006234] ->handle_irq():  00000000eab4b6eb, handle_bad_irq+0x0/0x230
->> [   14.006234] ->irq_data.chip(): 000000001cce6d6b, intcapxt_controller+0x0/0x120
->> [   14.006234] ->action(): 0000000083bfd734
->> [   14.006234] ->action->handler(): 0000000094806345, amd_iommu_int_handler+0x0/0x10
->> [   14.006234] unexpected IRQ trap at vector 1d
->>
->> Do you have any idea what might have gone wrong here?
-> 
-> Yes. This lacks setting up the low level flow handler. Delta patch
-> below.
-> 
-> Thanks,
-> 
->          tglx
-> ---
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -2033,6 +2033,7 @@ static int intcapxt_irqdomain_alloc(stru
->   
->   		irqd->chip = &intcapxt_controller;
->   		irqd->chip_data = info->data;
-> +		__irq_set_handler(i, handle_edge_irq, 0, "edge");
->   	}
->   
->   	return ret;
-> 
+This lets all relay users make their struct rchan_callbacks const data.
 
-Yes, this fixes the issue. Now I can receive the IOMMU event log interrupts for IO_PAGE_FAULT event, which is triggered 
-using the injection interface via debugfs.
+Cc: linux-block@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: ath11k@lists.infradead.org
+Cc: ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: linux-wireless@vger.kernel.org
+Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+Cc: intel-gfx@lists.freedesktop.org
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+---
+ include/linux/relay.h |   4 +-
+ kernel/relay.c        | 182 +++++++++++++++++++-----------------------
+ 2 files changed, 86 insertions(+), 100 deletions(-)
 
-Thanks,
-Suravee
+diff --git a/include/linux/relay.h b/include/linux/relay.h
+index e13a333e7c37..7333909df65a 100644
+--- a/include/linux/relay.h
++++ b/include/linux/relay.h
+@@ -62,7 +62,7 @@ struct rchan
+ 	size_t subbuf_size;		/* sub-buffer size */
+ 	size_t n_subbufs;		/* number of sub-buffers per buffer */
+ 	size_t alloc_size;		/* total buffer size allocated */
+-	struct rchan_callbacks *cb;	/* client callbacks */
++	const struct rchan_callbacks *cb; /* client callbacks, may be NULL */
+ 	struct kref kref;		/* channel refcount */
+ 	void *private_data;		/* for user-defined data */
+ 	size_t last_toobig;		/* tried to log event > subbuf size */
+@@ -170,7 +170,7 @@ struct rchan *relay_open(const char *base_filename,
+ 			 struct dentry *parent,
+ 			 size_t subbuf_size,
+ 			 size_t n_subbufs,
+-			 struct rchan_callbacks *cb,
++			 const struct rchan_callbacks *cb,
+ 			 void *private_data);
+ extern int relay_late_setup_files(struct rchan *chan,
+ 				  const char *base_filename,
+diff --git a/kernel/relay.c b/kernel/relay.c
+index b08d936d5fa7..c53676f2d10f 100644
+--- a/kernel/relay.c
++++ b/kernel/relay.c
+@@ -27,13 +27,86 @@
+ static DEFINE_MUTEX(relay_channels_mutex);
+ static LIST_HEAD(relay_channels);
+ 
++/*
++ * rchan_callback wrappers. Call the callbacks if available, otherwise fall back
++ * to default behaviour.
++ */
++
++/*
++ * subbuf_start() callback.
++ */
++static int cb_subbuf_start(const struct rchan_callbacks *cb,
++			   struct rchan_buf *buf,
++			   void *subbuf,
++			   void *prev_subbuf,
++			   size_t prev_padding)
++{
++	if (cb && cb->subbuf_start)
++		return cb->subbuf_start(buf, subbuf, prev_subbuf, prev_padding);
++
++	if (relay_buf_full(buf))
++		return 0;
++
++	return 1;
++}
++
++/*
++ * buf_mapped() callback.
++ */
++static void cb_buf_mapped(const struct rchan_callbacks *cb,
++			  struct rchan_buf *buf,
++			  struct file *filp)
++{
++	if (cb && cb->buf_mapped)
++		cb->buf_mapped(buf, filp);
++}
++
++/*
++ * buf_unmapped() callback.
++ */
++static void cb_buf_unmapped(const struct rchan_callbacks *cb,
++			    struct rchan_buf *buf,
++			    struct file *filp)
++{
++	if (cb && cb->buf_unmapped)
++		cb->buf_unmapped(buf, filp);
++}
++
++/*
++ * create_buf_file_create() callback.
++ */
++static struct dentry *cb_create_buf_file(const struct rchan_callbacks *cb,
++					 const char *filename,
++					 struct dentry *parent,
++					 umode_t mode,
++					 struct rchan_buf *buf,
++					 int *is_global)
++{
++	if (cb && cb->create_buf_file)
++		return cb->create_buf_file(filename, parent, mode, buf, is_global);
++
++	return NULL;
++}
++
++/*
++ * remove_buf_file() callback.
++ */
++static int cb_remove_buf_file(const struct rchan_callbacks *cb,
++			      struct dentry *dentry)
++{
++	if (cb && cb->remove_buf_file)
++		return cb->remove_buf_file(dentry);
++
++	return -EINVAL;
++}
++
+ /*
+  * close() vm_op implementation for relay file mapping.
+  */
+ static void relay_file_mmap_close(struct vm_area_struct *vma)
+ {
+ 	struct rchan_buf *buf = vma->vm_private_data;
+-	buf->chan->cb->buf_unmapped(buf, vma->vm_file);
++	cb_buf_unmapped(buf->chan->cb, buf, vma->vm_file);
+ }
+ 
+ /*
+@@ -107,7 +180,7 @@ static int relay_mmap_buf(struct rchan_buf *buf, struct vm_area_struct *vma)
+ 	vma->vm_ops = &relay_file_mmap_ops;
+ 	vma->vm_flags |= VM_DONTEXPAND;
+ 	vma->vm_private_data = buf;
+-	buf->chan->cb->buf_mapped(buf, filp);
++	cb_buf_mapped(buf->chan->cb, buf, filp);
+ 
+ 	return 0;
+ }
+@@ -264,70 +337,6 @@ EXPORT_SYMBOL_GPL(relay_buf_full);
+  * High-level relay kernel API and associated functions.
+  */
+ 
+-/*
+- * rchan_callback implementations defining default channel behavior.  Used
+- * in place of corresponding NULL values in client callback struct.
+- */
+-
+-/*
+- * subbuf_start() default callback.  Does nothing.
+- */
+-static int subbuf_start_default_callback (struct rchan_buf *buf,
+-					  void *subbuf,
+-					  void *prev_subbuf,
+-					  size_t prev_padding)
+-{
+-	if (relay_buf_full(buf))
+-		return 0;
+-
+-	return 1;
+-}
+-
+-/*
+- * buf_mapped() default callback.  Does nothing.
+- */
+-static void buf_mapped_default_callback(struct rchan_buf *buf,
+-					struct file *filp)
+-{
+-}
+-
+-/*
+- * buf_unmapped() default callback.  Does nothing.
+- */
+-static void buf_unmapped_default_callback(struct rchan_buf *buf,
+-					  struct file *filp)
+-{
+-}
+-
+-/*
+- * create_buf_file_create() default callback.  Does nothing.
+- */
+-static struct dentry *create_buf_file_default_callback(const char *filename,
+-						       struct dentry *parent,
+-						       umode_t mode,
+-						       struct rchan_buf *buf,
+-						       int *is_global)
+-{
+-	return NULL;
+-}
+-
+-/*
+- * remove_buf_file() default callback.  Does nothing.
+- */
+-static int remove_buf_file_default_callback(struct dentry *dentry)
+-{
+-	return -EINVAL;
+-}
+-
+-/* relay channel default callbacks */
+-static struct rchan_callbacks default_channel_callbacks = {
+-	.subbuf_start = subbuf_start_default_callback,
+-	.buf_mapped = buf_mapped_default_callback,
+-	.buf_unmapped = buf_unmapped_default_callback,
+-	.create_buf_file = create_buf_file_default_callback,
+-	.remove_buf_file = remove_buf_file_default_callback,
+-};
+-
+ /**
+  *	wakeup_readers - wake up readers waiting on a channel
+  *	@work: contains the channel buffer
+@@ -371,7 +380,7 @@ static void __relay_reset(struct rchan_buf *buf, unsigned int init)
+ 	for (i = 0; i < buf->chan->n_subbufs; i++)
+ 		buf->padding[i] = 0;
+ 
+-	buf->chan->cb->subbuf_start(buf, buf->data, NULL, 0);
++	cb_subbuf_start(buf->chan->cb, buf, buf->data, NULL, 0);
+ }
+ 
+ /**
+@@ -426,9 +435,8 @@ static struct dentry *relay_create_buf_file(struct rchan *chan,
+ 	snprintf(tmpname, NAME_MAX, "%s%d", chan->base_filename, cpu);
+ 
+ 	/* Create file in fs */
+-	dentry = chan->cb->create_buf_file(tmpname, chan->parent,
+-					   S_IRUSR, buf,
+-					   &chan->is_global);
++	dentry = cb_create_buf_file(chan->cb, tmpname, chan->parent,
++				    S_IRUSR, buf, &chan->is_global);
+ 	if (IS_ERR(dentry))
+ 		dentry = NULL;
+ 
+@@ -461,9 +469,8 @@ static struct rchan_buf *relay_open_buf(struct rchan *chan, unsigned int cpu)
+ 		relay_set_buf_dentry(buf, dentry);
+ 	} else {
+ 		/* Only retrieve global info, nothing more, nothing less */
+-		dentry = chan->cb->create_buf_file(NULL, NULL,
+-						   S_IRUSR, buf,
+-						   &chan->is_global);
++		dentry = cb_create_buf_file(chan->cb, NULL, NULL,
++					    S_IRUSR, buf, &chan->is_global);
+ 		if (IS_ERR_OR_NULL(dentry))
+ 			goto free_buf;
+ 	}
+@@ -495,31 +502,10 @@ static void relay_close_buf(struct rchan_buf *buf)
+ {
+ 	buf->finalized = 1;
+ 	irq_work_sync(&buf->wakeup_work);
+-	buf->chan->cb->remove_buf_file(buf->dentry);
++	cb_remove_buf_file(buf->chan->cb, buf->dentry);
+ 	kref_put(&buf->kref, relay_remove_buf);
+ }
+ 
+-static void setup_callbacks(struct rchan *chan,
+-				   struct rchan_callbacks *cb)
+-{
+-	if (!cb) {
+-		chan->cb = &default_channel_callbacks;
+-		return;
+-	}
+-
+-	if (!cb->subbuf_start)
+-		cb->subbuf_start = subbuf_start_default_callback;
+-	if (!cb->buf_mapped)
+-		cb->buf_mapped = buf_mapped_default_callback;
+-	if (!cb->buf_unmapped)
+-		cb->buf_unmapped = buf_unmapped_default_callback;
+-	if (!cb->create_buf_file)
+-		cb->create_buf_file = create_buf_file_default_callback;
+-	if (!cb->remove_buf_file)
+-		cb->remove_buf_file = remove_buf_file_default_callback;
+-	chan->cb = cb;
+-}
+-
+ int relay_prepare_cpu(unsigned int cpu)
+ {
+ 	struct rchan *chan;
+@@ -565,7 +551,7 @@ struct rchan *relay_open(const char *base_filename,
+ 			 struct dentry *parent,
+ 			 size_t subbuf_size,
+ 			 size_t n_subbufs,
+-			 struct rchan_callbacks *cb,
++			 const struct rchan_callbacks *cb,
+ 			 void *private_data)
+ {
+ 	unsigned int i;
+@@ -597,7 +583,7 @@ struct rchan *relay_open(const char *base_filename,
+ 		chan->has_base_filename = 1;
+ 		strlcpy(chan->base_filename, base_filename, NAME_MAX);
+ 	}
+-	setup_callbacks(chan, cb);
++	chan->cb = cb;
+ 	kref_init(&chan->kref);
+ 
+ 	mutex_lock(&relay_channels_mutex);
+@@ -780,7 +766,7 @@ size_t relay_switch_subbuf(struct rchan_buf *buf, size_t length)
+ 	new_subbuf = buf->subbufs_produced % buf->chan->n_subbufs;
+ 	new = buf->start + new_subbuf * buf->chan->subbuf_size;
+ 	buf->offset = 0;
+-	if (!buf->chan->cb->subbuf_start(buf, new, old, buf->prev_padding)) {
++	if (!cb_subbuf_start(buf->chan->cb, buf, new, old, buf->prev_padding)) {
+ 		buf->offset = buf->chan->subbuf_size + 1;
+ 		return 0;
+ 	}
+-- 
+2.20.1
+
