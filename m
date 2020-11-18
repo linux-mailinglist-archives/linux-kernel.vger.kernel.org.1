@@ -2,60 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C342B7D93
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98ECB2B7DA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbgKRMYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 07:24:55 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8109 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgKRMYz (ORCPT
+        id S1726385AbgKRMai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 07:30:38 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:35879 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725747AbgKRMai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:24:55 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cbhnn6qv3zLlff;
-        Wed, 18 Nov 2020 20:24:29 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Wed, 18 Nov 2020 20:24:44 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     <thierry.reding@gmail.com>, <u.kleine-koenig@pengutronix.de>,
-        <lee.jones@linaro.org>, <shawn.guo@linaro.org>
-CC:     <linux-pwm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] pwm: add missed clk_disable_unprepare() in zx_pwm_probe()
-Date:   Wed, 18 Nov 2020 20:26:24 +0800
-Message-ID: <1605702384-20911-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 18 Nov 2020 07:30:38 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R361e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UFoCyub_1605702631;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UFoCyub_1605702631)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 18 Nov 2020 20:30:31 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] crypto: public_key: Remove redundant header file from public_key.h
+Date:   Wed, 18 Nov 2020 20:30:31 +0800
+Message-Id: <20201118123031.551-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing clk_disable_unprepare() before return from
-zx_pwm_probe() in the error handling case.
+The akcipher.h header file was originally introduced in SM2, and
+then the definition of SM2 was moved to the existing code. This
+header file is left and should be removed.
 
-Fixes: 4836193c435c ("pwm: Add ZTE ZX PWM device driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 ---
- drivers/pwm/pwm-zx.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/crypto/public_key.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/pwm/pwm-zx.c b/drivers/pwm/pwm-zx.c
-index e2c21cc..3763ce5 100644
---- a/drivers/pwm/pwm-zx.c
-+++ b/drivers/pwm/pwm-zx.c
-@@ -238,6 +238,7 @@ static int zx_pwm_probe(struct platform_device *pdev)
- 	ret = pwmchip_add(&zpc->chip);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "failed to add PWM chip: %d\n", ret);
-+		clk_disable_unprepare(zpc->pclk);
- 		return ret;
- 	}
+diff --git a/include/crypto/public_key.h b/include/crypto/public_key.h
+index 948c5203ca9c..47accec68cb0 100644
+--- a/include/crypto/public_key.h
++++ b/include/crypto/public_key.h
+@@ -12,7 +12,6 @@
  
+ #include <linux/keyctl.h>
+ #include <linux/oid_registry.h>
+-#include <crypto/akcipher.h>
+ 
+ /*
+  * Cryptographic data for the public-key subtype of the asymmetric key type.
 -- 
-2.9.5
+2.19.1.3.ge56e4f7
 
