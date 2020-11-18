@@ -2,287 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05612B8861
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 854312B885A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgKRX2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 18:28:12 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40952 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbgKRX2M (ORCPT
+        id S1726908AbgKRXZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 18:25:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgKRXZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:28:12 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AINOa5V096512;
-        Wed, 18 Nov 2020 23:27:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=SmWEE3ByHnlVFAqMSaN/A+TYWtwBVPWNt6Vsf6QDDWA=;
- b=njMb7faSaf5+Q3kx02K6+ZeQjI37rQh6VigUtqqBC5Yq6yDlT4I2+d4wTYSSoK99c1WY
- Atx9bbUnzScWu5eYZaMiFeTufrkwjBEnMyeblPdRfx8EPSMdxPA7ifnqbTTjxUbAADmS
- ne9qhaJk+IsTc6s166WBmo8X7sg2wmSnKSn7gheZml8WQHHsyTZ7uIxJgF6jNCHck5oB
- 8SYnCJeiEQtQZghPan1xk8LBAp5f7n6eIkRcNmbBjK7Fekg0AETwQa0FHd2jOnrLVb74
- Dyu5UYdq6vaM2VjgnOvYolSwkt9i5iXnRlLmwCn4xNOwsqrJipL1bJlBmBIPu25vXSGs vQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34t76m2rsy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 23:27:20 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AINLLaN136260;
-        Wed, 18 Nov 2020 23:25:20 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 34umd17ffe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 23:25:20 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AINPJQJ150558;
-        Wed, 18 Nov 2020 23:25:19 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
-        by aserp3020.oracle.com with ESMTP id 34umd17feh-1;
-        Wed, 18 Nov 2020 23:25:19 +0000
-From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     saeed.mirzamohammadi@oracle.com, john.p.donnelly@oracle.com,
-        stable@vger.kernel.org, Dave Young <dyoung@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Walle <michael@walle.cc>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@flameeyes.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 1/1] kernel/crash_core.c - Add crashkernel=auto for x86 and ARM
-Date:   Wed, 18 Nov 2020 15:24:28 -0800
-Message-Id: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 18 Nov 2020 18:25:39 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3784C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 15:25:39 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 131so2600070pfb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 15:25:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iVPm75HCejAbfrsPX/m4lDspW5RIkaFULkWaEI+VKIw=;
+        b=sCl5Zm2CR6tiUD87M2YHG8Fe+rfguExcgnvmDaoLUyknnQcaTKbNTRwyTkqMfkrzwv
+         pSDEwDwKtNKsdSuXNu8mPzscp50kLawU+n0Ud/rb76ctnxugAFSudElUer/qKEWSgq87
+         hydsMrdqBN+AUvIyFmgy3QsmgMTddhIv2jmuQ7Oq0sdh1+2VSn2iZBvtGkU3EnLGXjkh
+         v5o0ecQ1coCrB+exxBEbGj0XknMe6MHuKt/gytC32OB+xoxrC/V9oxH+6XdUKvCwn8hc
+         UNY6T6W8tsg+UH+1yEEJympbB03icjyYuvx0GXr3jrNPXsI//lYAm/Y7iBf2wi6BeZtO
+         6PXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iVPm75HCejAbfrsPX/m4lDspW5RIkaFULkWaEI+VKIw=;
+        b=Toqerkh2v3NblAND/Qhk7R6YrxML6gp2MuAV2elcW7vbPTK0X+bce9CjhXFNvZT+ws
+         ZdKnDH3jCLbICbSQne8gWsVJtk1LNHzUiFds/LDpRn/XhG2vRbH/TRS/mZ460E1kKvDP
+         fkm0+4+SVJu4uahrA78BtiWx9JIVksgMMl8Mc3NKMAQ3nc1anm/YNyZhum0qfyb/7vxO
+         yqyZ3RKYCQ8aR1T+64eDEZXpzfY9TvQ55SScRQYI+LtQOGgijreMOh8qvISZfrivVblS
+         34ofM0iDyC5YcnC/O8JL1UTQBvkatgo9txthYKU/hr+5uAVPLVdEws1pX/Jt7yWsD6i1
+         9ZZQ==
+X-Gm-Message-State: AOAM533KQmJFAhT/O1Up0Kg2QoU5TaUmngdyyOXWIioKHSduJqlVR6pm
+        Wb3bxNJXXfrGjvh/Ww4WdqPyd6SoPTb63w==
+X-Google-Smtp-Source: ABdhPJxs+GhEvkod5U8YnL990GhfAx47xjK/0XSERjCGGuq1PM+o0vfwR2ZceI+WLIxX2Bs7vRyyeQ==
+X-Received: by 2002:a17:90b:f10:: with SMTP id br16mr1336797pjb.60.1605741938998;
+        Wed, 18 Nov 2020 15:25:38 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id k9sm25833590pfi.188.2020.11.18.15.25.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Nov 2020 15:25:38 -0800 (PST)
+Subject: Re: [PATCH] eventfd: convert to ->write_iter()
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <8a4f07e6ec47b681a32c6df5d463857e67bfc965.1605690824.git.mkubecek@suse.cz>
+ <20201118151806.GA25804@infradead.org>
+ <20201118195936.p33qlcjc7gp2zezz@lion.mk-sys.cz>
+ <4e4d222c-ed8b-a40d-0cdc-cf152573645c@kernel.dk>
+ <20201118231835.u6hqivoayq5ej4vg@lion.mk-sys.cz>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7323253d-003a-456c-166c-d85a614c8bf6@kernel.dk>
+Date:   Wed, 18 Nov 2020 16:25:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1011 mlxlogscore=999
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011180161
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20201118231835.u6hqivoayq5ej4vg@lion.mk-sys.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds crashkernel=auto feature to configure reserved memory for
-vmcore creation to both x86 and ARM platforms based on the total memory
-size.
+On 11/18/20 4:18 PM, Michal Kubecek wrote:
+> On Wed, Nov 18, 2020 at 02:27:08PM -0700, Jens Axboe wrote:
+>> On 11/18/20 12:59 PM, Michal Kubecek wrote:
+>>> On Wed, Nov 18, 2020 at 03:18:06PM +0000, Christoph Hellwig wrote:
+>>>> On Wed, Nov 18, 2020 at 10:19:17AM +0100, Michal Kubecek wrote:
+>>>>> While eventfd ->read() callback was replaced by ->read_iter() recently,
+>>>>> it still provides ->write() for writes. Since commit 4d03e3cc5982 ("fs:
+>>>>> don't allow kernel reads and writes without iter ops"), this prevents
+>>>>> kernel_write() to be used for eventfd and with set_fs() removal,
+>>>>> ->write() cannot be easily called directly with a kernel buffer.
+>>>>>
+>>>>> According to eventfd(2), eventfd descriptors are supposed to be (also)
+>>>>> used by kernel to notify userspace applications of events which now
+>>>>> requires ->write_iter() op to be available (and ->write() not to be).
+>>>>> Therefore convert eventfd_write() to ->write_iter() semantics. This
+>>>>> patch also cleans up the code in a similar way as commit 12aceb89b0bc
+>>>>> ("eventfd: convert to f_op->read_iter()") did in read_iter().
+>>>>
+>>>> A far as I can tell we don't have an in-tree user that writes to an
+>>>> eventfd.  We can merge something like this once there is a user.
+>>>
+>>> As far as I can say, we don't have an in-tree user that reads from
+>>> sysctl. But you not only did not object to commit 4bd6a7353ee1 ("sysctl:
+>>> Convert to iter interfaces") which adds ->read_iter() for sysctl, that
+>>> commit even bears your Signed-off-by. There may be other examples like
+>>> that.
+>>
+>> A better justification for this patch is that users like io_uring can
+>> potentially write non-blocking to the file if ->write_iter() is
+>> supported.
+> 
+> So you think the patch could be accepted with a modified commit message?
+> (As long as there are no technical issues, of course.) I did not really
+> expect there would be so much focus on a justification for a patch which
+> (1) converts f_ops to a more advanced (and apparently preferred)
+> interface and (2) makes eventfd f_ops more consistent.
+> 
+> For the record, my original motivation for this patch was indeed an out
+> of tree module (not mine) using kernel write to eventfd. But that module
+> can be patched to use eventfd_signal() instead and it will have to be
+> patched anyway unless eventfd allows kernel_write() in 5.10 (which
+> doesn't seem likely). So if improving the code is not considered
+> sufficient to justify the patch, I can live with that easily. 
 
-Cc: stable@vger.kernel.org
-Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
-Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
----
- Documentation/admin-guide/kdump/kdump.rst |  5 +++++
- arch/arm64/Kconfig                        | 26 ++++++++++++++++++++++-
- arch/arm64/configs/defconfig              |  1 +
- arch/x86/Kconfig                          | 26 ++++++++++++++++++++++-
- arch/x86/configs/x86_64_defconfig         |  1 +
- kernel/crash_core.c                       | 20 +++++++++++++++--
- 6 files changed, 75 insertions(+), 4 deletions(-)
+My point is that improving eventfd writes from io_uring is a win with
+this patch, whereas enabling kernel_write() makes people more nervous,
+and justifiably so as your stated use case is some out of tree module.
 
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index 75a9dd98e76e..f95a2af64f59 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -285,7 +285,12 @@ This would mean:
-     2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
-     3) if the RAM size is larger than 2G, then reserve 128M
- 
-+Or you can use crashkernel=auto if you have enough memory. The threshold
-+is 1G on x86_64 and arm64. If your system memory is less than the threshold,
-+crashkernel=auto will not reserve memory. The size changes according to
-+the system memory size like below:
- 
-+    x86_64/arm64: 1G-64G:128M,64G-1T:256M,1T-:512M
- 
- Boot into System Kernel
- =======================
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 1515f6f153a0..d359dcffa80e 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1124,7 +1124,7 @@ comment "Support for PE file signature verification disabled"
- 	depends on KEXEC_SIG
- 	depends on !EFI || !SIGNED_PE_FILE_VERIFICATION
- 
--config CRASH_DUMP
-+menuconfig CRASH_DUMP
- 	bool "Build kdump crash kernel"
- 	help
- 	  Generate crash dump after being started by kexec. This should
-@@ -1135,6 +1135,30 @@ config CRASH_DUMP
- 
- 	  For more details see Documentation/admin-guide/kdump/kdump.rst
- 
-+if CRASH_DUMP
-+
-+config CRASH_AUTO_STR
-+        string "Memory reserved for crash kernel"
-+	depends on CRASH_DUMP
-+        default "1G-64G:128M,64G-1T:256M,1T-:512M"
-+	help
-+	  This configures the reserved memory dependent
-+	  on the value of System RAM. The syntax is:
-+	  crashkernel=<range1>:<size1>[,<range2>:<size2>,...][@offset]
-+	              range=start-[end]
-+
-+	  For example:
-+	      crashkernel=512M-2G:64M,2G-:128M
-+
-+	  This would mean:
-+
-+	      1) if the RAM is smaller than 512M, then don't reserve anything
-+	         (this is the "rescue" case)
-+	      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
-+	      3) if the RAM size is larger than 2G, then reserve 128M
-+
-+endif # CRASH_DUMP
-+
- config XEN_DOM0
- 	def_bool y
- 	depends on XEN
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 5cfe3cf6f2ac..899ef3b6a78f 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -69,6 +69,7 @@ CONFIG_SECCOMP=y
- CONFIG_KEXEC=y
- CONFIG_KEXEC_FILE=y
- CONFIG_CRASH_DUMP=y
-+# CONFIG_CRASH_AUTO_STR is not set
- CONFIG_XEN=y
- CONFIG_COMPAT=y
- CONFIG_RANDOMIZE_BASE=y
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index f6946b81f74a..bacd17312bb1 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2035,7 +2035,7 @@ config KEXEC_BZIMAGE_VERIFY_SIG
- 	help
- 	  Enable bzImage signature verification support.
- 
--config CRASH_DUMP
-+menuconfig CRASH_DUMP
- 	bool "kernel crash dumps"
- 	depends on X86_64 || (X86_32 && HIGHMEM)
- 	help
-@@ -2049,6 +2049,30 @@ config CRASH_DUMP
- 	  (CONFIG_RELOCATABLE=y).
- 	  For more details see Documentation/admin-guide/kdump/kdump.rst
- 
-+if CRASH_DUMP
-+
-+config CRASH_AUTO_STR
-+        string "Memory reserved for crash kernel" if X86_64
-+	depends on CRASH_DUMP
-+        default "1G-64G:128M,64G-1T:256M,1T-:512M"
-+	help
-+	  This configures the reserved memory dependent
-+	  on the value of System RAM. The syntax is:
-+	  crashkernel=<range1>:<size1>[,<range2>:<size2>,...][@offset]
-+	              range=start-[end]
-+
-+	  For example:
-+	      crashkernel=512M-2G:64M,2G-:128M
-+
-+	  This would mean:
-+
-+	      1) if the RAM is smaller than 512M, then don't reserve anything
-+	         (this is the "rescue" case)
-+	      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
-+	      3) if the RAM size is larger than 2G, then reserve 128M
-+
-+endif # CRASH_DUMP
-+
- config KEXEC_JUMP
- 	bool "kexec jump"
- 	depends on KEXEC && HIBERNATION
-diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
-index 9936528e1939..7a87fbecf40b 100644
---- a/arch/x86/configs/x86_64_defconfig
-+++ b/arch/x86/configs/x86_64_defconfig
-@@ -33,6 +33,7 @@ CONFIG_EFI_MIXED=y
- CONFIG_HZ_1000=y
- CONFIG_KEXEC=y
- CONFIG_CRASH_DUMP=y
-+# CONFIG_CRASH_AUTO_STR is not set
- CONFIG_HIBERNATION=y
- CONFIG_PM_DEBUG=y
- CONFIG_PM_TRACE_RTC=y
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index 106e4500fd53..a44cd9cc12c4 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -7,6 +7,7 @@
- #include <linux/crash_core.h>
- #include <linux/utsname.h>
- #include <linux/vmalloc.h>
-+#include <linux/kexec.h>
- 
- #include <asm/page.h>
- #include <asm/sections.h>
-@@ -41,6 +42,15 @@ static int __init parse_crashkernel_mem(char *cmdline,
- 					unsigned long long *crash_base)
- {
- 	char *cur = cmdline, *tmp;
-+	unsigned long long total_mem = system_ram;
-+
-+	/*
-+	 * Firmware sometimes reserves some memory regions for it's own use.
-+	 * so we get less than actual system memory size.
-+	 * Workaround this by round up the total size to 128M which is
-+	 * enough for most test cases.
-+	 */
-+	total_mem = roundup(total_mem, SZ_128M);
- 
- 	/* for each entry of the comma-separated list */
- 	do {
-@@ -85,13 +95,13 @@ static int __init parse_crashkernel_mem(char *cmdline,
- 			return -EINVAL;
- 		}
- 		cur = tmp;
--		if (size >= system_ram) {
-+		if (size >= total_mem) {
- 			pr_warn("crashkernel: invalid size\n");
- 			return -EINVAL;
- 		}
- 
- 		/* match ? */
--		if (system_ram >= start && system_ram < end) {
-+		if (total_mem >= start && total_mem < end) {
- 			*crash_size = size;
- 			break;
- 		}
-@@ -250,6 +260,12 @@ static int __init __parse_crashkernel(char *cmdline,
- 	if (suffix)
- 		return parse_crashkernel_suffix(ck_cmdline, crash_size,
- 				suffix);
-+#ifdef CONFIG_CRASH_AUTO_STR
-+	if (strncmp(ck_cmdline, "auto", 4) == 0) {
-+		ck_cmdline = CONFIG_CRASH_AUTO_STR;
-+		pr_info("Using crashkernel=auto, the size chosen is a best effort estimation.\n");
-+	}
-+#endif
- 	/*
- 	 * if the commandline contains a ':', then that's the extended
- 	 * syntax -- if not, it must be the classic syntax
+So yeah, I'd focus on the former and not the latter, as it is actually
+something I'd personally like to see...
+
 -- 
-2.18.4
+Jens Axboe
 
