@@ -2,114 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1522B8581
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FF82B8584
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgKRUZ7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Nov 2020 15:25:59 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2066 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgKRUZ6 (ORCPT
+        id S1726738AbgKRU1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 15:27:18 -0500
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:42390 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726397AbgKRU1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:25:58 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CbvSm6hTjzVpDN;
-        Thu, 19 Nov 2020 04:25:28 +0800 (CST)
-Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Thu, 19 Nov 2020 04:25:56 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 19 Nov 2020 04:25:56 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Thu, 19 Nov 2020 04:25:56 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Will Deacon <will@kernel.org>, Mike Rapoport <rppt@kernel.org>
-CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH] arm64: mm: add support for memmap kernel parameters
-Thread-Topic: [PATCH] arm64: mm: add support for memmap kernel parameters
-Thread-Index: AQHWvXVLtrpWHgsWH0upIuwmJUX89KnNolcAgAAa/ICAAJI6cA==
-Date:   Wed, 18 Nov 2020 20:25:56 +0000
-Message-ID: <1d3780422d2648dfa80a6de87585819a@hisilicon.com>
-References: <20201118063314.22940-1-song.bao.hua@hisilicon.com>
- <20201118173854.GA8537@kernel.org> <20201118191528.GA2680@willie-the-truck>
-In-Reply-To: <20201118191528.GA2680@willie-the-truck>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.71]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 18 Nov 2020 15:27:17 -0500
+Received: by mail-ej1-f67.google.com with SMTP id i19so4603426ejx.9;
+        Wed, 18 Nov 2020 12:27:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W2fBMhQfDyimj8ftEYNVk5h+ZPnnXBgf5DRDPVqq7wU=;
+        b=MSRhoFgxgOvO72UWnPKm/C8LSoIO/QoWywo8etxKXZmSu9F95lUiimYHJpKDE+6Dli
+         sUvtDMhocPHUdcWolMiY7FtfyJ21VEhctCPHg24vHWziWpA+iK3pvzGE5ETOnNkyBU2q
+         PDz5E9/IVRNTMdofOvWVVE1jOx04RlbunmltF5grkbFMLkuojq/PU/wUKshzSI4sAZHe
+         lbsUVzo8nqJzMkvx45pVMlDyLSwChnRX1/PtaNzolL7v4ovRbeoGjAmOwh67GSoB4nZU
+         kWZpGGeIYfyTk2YH0zJmsY5hkOHsanjfaY5E96gRhtuPZEYcpl6A/wiuJ5cQ5fWKaT0Y
+         q6TQ==
+X-Gm-Message-State: AOAM532qJQoUwdVR3xkaaKCq2jibp6MMCWRx4TjgGHNyn7+4Iw7m5fYA
+        24r2o33pkNRA99nz/jBmgaw=
+X-Google-Smtp-Source: ABdhPJzpdxqwLy+WieIOcI43Sds1kbXtCbcj+afnu+P01W3Z00Hb/3EtW5r+ocmenk8kIQECEE5XAg==
+X-Received: by 2002:a17:906:2a0a:: with SMTP id j10mr4873975eje.307.1605731233667;
+        Wed, 18 Nov 2020 12:27:13 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id ew18sm4156200ejb.86.2020.11.18.12.27.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 12:27:12 -0800 (PST)
+Date:   Wed, 18 Nov 2020 21:27:10 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 4/4] media: i2c: imx258: get clock from device
+ properties and enable it via runtime PM
+Message-ID: <20201118202036.GA5631@kozik-lap>
+References: <20201019170247.92002-1-krzk@kernel.org>
+ <20201019172617.92815-1-krzk@kernel.org>
+ <20201019172617.92815-3-krzk@kernel.org>
+ <20201102150847.GZ26150@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201102150847.GZ26150@paasikivi.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Will Deacon [mailto:will@kernel.org]
-> Sent: Thursday, November 19, 2020 8:15 AM
-> To: Mike Rapoport <rppt@kernel.org>
-> Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
-> catalin.marinas@arm.com; linux-arm-kernel@lists.infradead.org;
-> linux-kernel@vger.kernel.org; akpm@linux-foundation.org;
-> anshuman.khandual@arm.com; Linuxarm <linuxarm@huawei.com>
-> Subject: Re: [PATCH] arm64: mm: add support for memmap kernel parameters
+On Mon, Nov 02, 2020 at 05:08:47PM +0200, Sakari Ailus wrote:
+> Hi Krysztof,
 > 
-> On Wed, Nov 18, 2020 at 07:38:54PM +0200, Mike Rapoport wrote:
-> > On Wed, Nov 18, 2020 at 07:33:14PM +1300, Barry Song wrote:
-> > > memmap should be an useful kernel parameter which has been supported
-> by
-> > > x86, mips and xtensa.
-> >
-> > Why is this parameter should be useful for ARM64?
-> > My understanding is that it is required only to work around really
-> > broken bootloaders, isn't it?
+> On Mon, Oct 19, 2020 at 07:26:17PM +0200, Krzysztof Kozlowski wrote:
+> > The IMX258 sensor driver checked in device properties for a
+> > clock-frequency property which actually does not mean that the clock is
+> > really running such frequency or is it even enabled.
+> > 
+> > Get the provided clock and check it frequency.  If none is provided,
+> > fall back to old property.
+> > 
+> > Enable the clock when accessing the IMX258 registers and when streaming
+> > starts with runtime PM.
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > 
+> > ---
+> > 
+> > Changes since v4:
+> > 1. Add missing imx258_power_off.
+> > 
+> > Changes since v3:
+> > 1. None
+> > 
+> > Changes since v2:
+> > 1. Do not try to set drvdata, wrap lines.
+> > 2. Use dev_dbg.
+> > 
+> > Changes since v1:
+> > 1. Use runtime PM for clock toggling
+> > ---
+> >  drivers/media/i2c/imx258.c | 73 +++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 64 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+> > index ae183b0dbba9..038115471f17 100644
+> > --- a/drivers/media/i2c/imx258.c
+> > +++ b/drivers/media/i2c/imx258.c
+> > @@ -2,6 +2,7 @@
+> >  // Copyright (C) 2018 Intel Corporation
+> >  
+> >  #include <linux/acpi.h>
+> > +#include <linux/clk.h>
+> >  #include <linux/delay.h>
+> >  #include <linux/i2c.h>
+> >  #include <linux/module.h>
+> > @@ -68,6 +69,9 @@
+> >  #define REG_CONFIG_MIRROR_FLIP		0x03
+> >  #define REG_CONFIG_FLIP_TEST_PATTERN	0x02
+> >  
+> > +/* Input clock frequency in Hz */
+> > +#define IMX258_INPUT_CLOCK_FREQ		19200000
+> > +
+> >  struct imx258_reg {
+> >  	u16 address;
+> >  	u8 val;
+> > @@ -610,6 +614,8 @@ struct imx258 {
+> >  
+> >  	/* Streaming on/off */
+> >  	bool streaming;
+> > +
+> > +	struct clk *clk;
+> >  };
+> >  
+> >  static inline struct imx258 *to_imx258(struct v4l2_subdev *_sd)
+> > @@ -972,6 +978,29 @@ static int imx258_stop_streaming(struct imx258 *imx258)
+> >  	return 0;
+> >  }
+> >  
+> > +static int imx258_power_on(struct device *dev)
+> > +{
+> > +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> > +	struct imx258 *imx258 = to_imx258(sd);
+> > +	int ret;
+> > +
+> > +	ret = clk_prepare_enable(imx258->clk);
+> > +	if (ret)
+> > +		dev_err(dev, "failed to enable clock\n");
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int imx258_power_off(struct device *dev)
+> > +{
+> > +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> > +	struct imx258 *imx258 = to_imx258(sd);
+> > +
+> > +	clk_disable_unprepare(imx258->clk);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
+> >  {
+> >  	struct imx258 *imx258 = to_imx258(sd);
+> > @@ -1199,9 +1228,28 @@ static int imx258_probe(struct i2c_client *client)
+> >  	int ret;
+> >  	u32 val = 0;
+> >  
+> > -	device_property_read_u32(&client->dev, "clock-frequency", &val);
+> > -	if (val != 19200000)
+> > -		return -EINVAL;
+> > +	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
+> > +	if (!imx258)
+> > +		return -ENOMEM;
+> > +
+> > +	imx258->clk = devm_clk_get_optional(&client->dev, NULL);
+> > +	if (!imx258->clk) {
+> > +		dev_dbg(&client->dev,
+> > +			"no clock provided, using clock-frequency property\n");
+> > +
+> > +		device_property_read_u32(&client->dev, "clock-frequency", &val);
+> > +		if (val != IMX258_INPUT_CLOCK_FREQ)
+> > +			return -EINVAL;
+> > +	} else if (IS_ERR(imx258->clk)) {
+> > +		return dev_err_probe(&client->dev, PTR_ERR(imx258->clk),
+> > +				     "error getting clock\n");
+> > +	} else {
+> > +		if (clk_get_rate(imx258->clk) != IMX258_INPUT_CLOCK_FREQ) {
 > 
+> Please move the check outside the conditional block. May be a separate
+> patch if you like.
 
-Good question. Originally I wrote this patch to debug and verify the vmemmap
-leak issue reported in this patch:
-[PATCH v2] arm64: mm: free unused memmap for sparse memory model that define VMEMMAP
-https://lore.kernel.org/linux-arm-kernel/20200812010655.96339-1-liwei213@huawei.com/
-I don't have a machine which really has holes in memory_section to debug, but memmap
-can help. With memmap, I could specified a machine with various holds in mem_sections.
+OK
 
-After that, I figured out this is not only useful for debugging purpose. it can have some real user cases.
-For example:
-
-1. DAX on DRAM.
-kernel parameter memmap=XG!YG specifies a range of RAM to emulate pmem. Then we are able
-to run DAX and filesystem on top of it. Furthermore, this will probably also benefit the case
-this big patchset wants to "fix" via direct access to memory:
-https://lore.kernel.org/lkml/cover.1602093760.git.yuleixzhang@tencent.com/T/#m1a77074b8e1dadc590a5f45a52d9c3cda69c0780
-as the comments have clearly shown.
-
-2. reserve some memory for userspace to manage via /dev/mem
-
-
-> Agreed, I can't see this being something we really want to support. If it
-> turns out that it is generally useful, then the implementation should
-> probably be somewhere outside of arch/ where I don't have to look at it :)
-> 
-
-What stops this becoming common code is that each platform has different ways
-and boot sequences to populate memblock.
-For example, on Arm64, while early_param is populated, dt has populated
-memblock before that. Other platforms might been much different.
-
-> Will
-
-Thanks
-Barry
-
+Best regards,
+Krzysztof
