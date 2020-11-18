@@ -2,114 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09AA2B756B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1068B2B756E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgKREi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 23:38:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgKREi7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 23:38:59 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412C4C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:38:59 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w14so619159pfd.7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:38:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=owERzaYqHwi5W3jNP2ap5wqI6aYFg8h8r6Iq4kQIegs=;
-        b=O940nd56EF39C6shvsKKS7HBzyblt8tQFn/ktV4VByDF3Bk4MvBDHLBh6/6DWlKKb2
-         3TKGn7hW4DPSD1Yoqk7hTzjznUzG8YnmM1jz+RF7xckxqITG1sWpbnUeBApKS507K4v6
-         F6l1Hpgmi4AZL6YUSAnqGw34DuXTeMVLXekVY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=owERzaYqHwi5W3jNP2ap5wqI6aYFg8h8r6Iq4kQIegs=;
-        b=Jxrm+qrZXQDroDrWy7kaZwCv+hvaP/l8J76JfS93Rf6Ljufa/e8NDeMI3/99dy0Bml
-         z+J3C7c+SvH9xpc3nu4D3xJ34x1W9Dd7X79DD7CCrY+UeNRFGpAMtqorSuFCPvGwo7eB
-         CaoAUP/nAxEklY92pKnePXH7ovQw91D1Gbkdf8vmU7MLBm8waWgIxEGSpqkiF5wstT+P
-         I2RV0nGQTw4PWVm7NTjGO6/rS3IXd58Gomfv7yzuk7ADNt2DbJieMWRlPtgYcCmgo4A0
-         aXjmt12+O584DsUPxUFEiWqEmX5miZlpx8jdUo6VUK76upprypBHMDCPKP1hqpz+aPyQ
-         /+Qg==
-X-Gm-Message-State: AOAM531irQvRIlA4zhBllkTBKDb2SbCBOiARkqLTIiJ+h7Hs2N/lhHiZ
-        ZUnXdgViOJkHChMkEYNmsscg59L7M/tiKQ==
-X-Google-Smtp-Source: ABdhPJyLY/ULmYE7kL4z+NpXB7dygkTdqOpK+q9RIVgz26oFSNkBFFbemBEILFCvjOfFPaMHn/lqfw==
-X-Received: by 2002:aa7:84d0:0:b029:18b:fac7:29b with SMTP id x16-20020aa784d00000b029018bfac7029bmr2744535pfn.29.1605674338308;
-        Tue, 17 Nov 2020 20:38:58 -0800 (PST)
-Received: from localhost ([100.102.99.29])
-        by smtp.gmail.com with ESMTPSA id k7sm22725611pfa.184.2020.11.17.20.38.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 20:38:57 -0800 (PST)
-From:   Cheng-Yi Chiang <cychiang@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>, dianders@chromium.org,
-        dgreid@chromium.org, tzungbi@chromium.org, judyhsiao@chromium.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH v2] ASoC: hdmi-codec: Get ELD in before reporting plugged event
-Date:   Wed, 18 Nov 2020 12:38:52 +0800
-Message-Id: <20201118043852.1338877-1-cychiang@chromium.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+        id S1726629AbgKREjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 23:39:16 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:45815 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725834AbgKREjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 23:39:16 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CbVSx5BS0z9sRR;
+        Wed, 18 Nov 2020 15:39:13 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1605674353;
+        bh=Gucab2yI14o6zvvOYqLkW+9J8GFKEzd/VbbCZuXBYiE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KeEohY5wFCYEz90vSl6jMYLsu0JwUxda0yFj+FR2BUm+hwaxhcKK9AddF0w82et2O
+         m37jc6lK+AsMIK5qOx3m8+PhsIsN0nU9RkWVkjqL8hcodvexRydZMk1smwF3R9DhCp
+         SD437hOdU150fXbJ9mvcqkrJzNrIcYqGgJF2BWD8+J19YjQtknmr/PykUJAOhxnA/W
+         zBw6yLgPgzMNAyfTyE2BWe3FKuwWgkLgnLYa8lJp/BBGhTON2rztswePpP7JP6bSMM
+         KIOhk8l7EYiw6Flb1bddb+V8kHDIeTeu63K1JheeGis0XcD0WMB8oQNPsUaFi2/+9E
+         fkvJLQO7p+Lig==
+Date:   Wed, 18 Nov 2020 15:39:12 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mhi tree
+Message-ID: <20201118153912.1decf6cf@canb.auug.org.au>
+In-Reply-To: <20201117042359.GB7787@work>
+References: <20201117151225.6a50abf8@canb.auug.org.au>
+        <20201117042359.GB7787@work>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/ogDxEJSofVVf92VZ1KduOKX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In plugged callback, ELD should be updated from display driver so that
-user space can query information from ELD immediately after receiving jack
-plugged event.
+--Sig_/ogDxEJSofVVf92VZ1KduOKX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-When jack is unplugged, clear ELD buffer so that user space does not get
-obsolete information of unplugged HDMI.
+Hi Manivannan,
 
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
----
-Change from v1 to v2:
- - Report jack unplug event then clear ELD. This makes sure user will not get a
-   cleared ELD during their usage of jack.
+On Tue, 17 Nov 2020 09:53:59 +0530 Manivannan Sadhasivam <manivannan.sadhas=
+ivam@linaro.org> wrote:
+>
+> +ath11k list, kalle
+>=20
+> On Tue, Nov 17, 2020 at 03:12:25PM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > After merging the mhi tree, today's linux-next build (x86_64 allmodconf=
+ig)
+> > failed like this:
+> >=20
+> > drivers/net/wireless/ath/ath11k/mhi.c:27:4: error: 'struct mhi_channel_=
+config' has no member named 'auto_start'
+> >    27 |   .auto_start =3D false,
+> >       |    ^~~~~~~~~~
+> > drivers/net/wireless/ath/ath11k/mhi.c:42:4: error: 'struct mhi_channel_=
+config' has no member named 'auto_start'
+> >    42 |   .auto_start =3D false,
+> >       |    ^~~~~~~~~~
+> > drivers/net/wireless/ath/ath11k/mhi.c:57:4: error: 'struct mhi_channel_=
+config' has no member named 'auto_start'
+> >    57 |   .auto_start =3D true,
+> >       |    ^~~~~~~~~~
+> > drivers/net/wireless/ath/ath11k/mhi.c:72:4: error: 'struct mhi_channel_=
+config' has no member named 'auto_start'
+> >    72 |   .auto_start =3D true,
+> >       |    ^~~~~~~~~~
+> >=20
+> > Caused by commit
+> >=20
+> >   0cc1f3a385b2 ("bus: mhi: Remove auto-start option")
+>=20
+> The fixing patch [1] should've landed in ath-next. Kalle can you please
+> apply the patch on top of immutable branch?
+>=20
+> Stephen, feel free to pick it up in the meantime.
 
- sound/soc/codecs/hdmi-codec.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Why isn't that "fix patch" in the mhi tree (with necessary Acked-bys)?
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 403d4c6a49a8..e8410b2433de 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -692,10 +692,16 @@ static void plugged_cb(struct device *dev, bool plugged)
- {
- 	struct hdmi_codec_priv *hcp = dev_get_drvdata(dev);
- 
--	if (plugged)
-+	if (plugged) {
-+		if (hcp->hcd.ops->get_eld) {
-+			hcp->hcd.ops->get_eld(dev->parent, hcp->hcd.data,
-+					    hcp->eld, sizeof(hcp->eld));
-+		}
- 		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
--	else
-+	} else {
- 		hdmi_codec_jack_report(hcp, 0);
-+		memset(hcp->eld, 0, sizeof(hcp->eld));
-+	}
- }
- 
- static int hdmi_codec_set_jack(struct snd_soc_component *component,
--- 
-2.29.2.299.gdc1121823c-goog
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/ogDxEJSofVVf92VZ1KduOKX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+0pXAACgkQAVBC80lX
+0Gyl0gf/XjG1Uu80fmwth2c0nFuemW4VyqKUBgQGUNNIBi5Z9Y1rB6D9fig0gz1W
+byX+37r1JGxcw8ed6JTriRLQPTi0IemrTP7BbZ4QNDJwYjL8IAE9yIBeH+5UbvcP
++k+eEpQIMezgKcM/z/n73NxNQR2QnHIzF8wKuIpCcnRoEXaezKLxEH0ZBkdaiU40
+j2Vcxx9lJKZoAbt5ezCDRmTHfucxeAPMNKNZw01nVjtxOoBEZA2nbtHVo//943q8
+KnVtgq5ld7PIvrrnc0UEPYZsIbr+U58kuBCvdnot4KqB50MIkCTf1PkY/92QD3Ee
+fXdnxhXVWw4MWzDowE3WLoXsGKNCyQ==
+=dRxm
+-----END PGP SIGNATURE-----
+
+--Sig_/ogDxEJSofVVf92VZ1KduOKX--
