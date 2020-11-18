@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B752B7EDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A842B7EDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgKRN6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:58:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34224 "EHLO
+        id S1726714AbgKRN7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:59:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbgKRN6k (ORCPT
+        with ESMTP id S1726531AbgKRN7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:58:40 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4573DC0613D4;
-        Wed, 18 Nov 2020 05:58:39 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id f23so2906574ejk.2;
-        Wed, 18 Nov 2020 05:58:39 -0800 (PST)
+        Wed, 18 Nov 2020 08:59:03 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5833DC0613D4;
+        Wed, 18 Nov 2020 05:59:02 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id w4so1228118pgg.13;
+        Wed, 18 Nov 2020 05:59:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=MNzWsDtU39BR4iFEfSJQ9mnoYu92ToJLMEGgLWUUrPw=;
-        b=YxD4BW5cjmQdz4D/NWPOTYFDoj79erTso5jj6MSUrfUHf5OPHU//Y+UjP6rHQ8VYEi
-         vBjQQBNvcP9cw+uaMWj5PTsXnqGwi+kVyf/BQa0kDaY381yNAEK3VpqAAZ093jnk/LMK
-         uTtUZiMYKd8Yzkuafi0CZD6v8UN+ngYxLTCukSBE1wNJ/fl4NlZ4t+DWlUI+C/vjax69
-         nouAaB5P0vcCRk3Ub6qTmGOojyV8lhP+JClrNBmQxficjyoktGm12RqQIMnkW051Za3x
-         r2gagmHv/V2uVmIY3M0N9T9Dl9MIz3112FQOwMO59615Oe+Zq9Y611rb0gojGj2SwgSl
-         KrLQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rimqJqRJwrIOhYO+VNFNI9V0S06+Ty+IA7MjQW8qayk=;
+        b=OMtLm8usqAAVY/VNYkTB6P7jvDPV2p343CObgLyaTlQB8TMHMoYBAkpy8twiOLHXdB
+         6LvgZACiq+0O99TVoYZbd2/A8qRW+pxe/6n71ajxgEM6FdusqWu/cQ8/gVa/s4FW5iKL
+         xa67gAzignJp/NsjKQQxSemAKVG/JVqduRqpZUPqpFb1hTxMYMgIiE+pryh/kS5NLr54
+         fd+DrlAeCt2CZ5A98lpp/9YqMJzuAOtbKzxFv3sBII33dUYPH/Np+TXETMNRpBayQUrT
+         8oXO3T0yNk2pu8CBenVfMha86S4/76NQXl5S/rRTQTFCOWylTb01/5yyruJimAgD1Ad9
+         FVzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=MNzWsDtU39BR4iFEfSJQ9mnoYu92ToJLMEGgLWUUrPw=;
-        b=a8NEHxjZyAZdDSI/gLvONpQ1johPu3qg+gwPdtOsuUyOUeh7g8bJ2tu4GfSTdcCT2H
-         06+qBL8ZPxau6xpHh+CLyLnl3YkwxT1B7d9d+3ep2WOVDqGeLLZKNpzA4KxoU5jMWwnJ
-         VuiVIjfazYtDvE+GPUd/VixUTOQJsMG2VY8ps+UE9YAg/Ac2x2bOW0EyU7fak1xvJ4SQ
-         zb7IkHmC2Jg+NVSmks+dEZcQ8NxoAncoC6YCVwn0lkdHqS1VsWE2hjwnIQq+drzGRlHX
-         UI7s5pC+aYmywNrJezcJBZa4/bVIL0efXSRLJan2v4I9zxwohc32ZtyoQUwbzWpe7d6T
-         YYbg==
-X-Gm-Message-State: AOAM531vC98TXot9YabHK5L5nfm6KBWjbHmnW7ejx3TLKiFAQ3O2e7yd
-        897W0aeKHZfgYEfzi4e8Wcw=
-X-Google-Smtp-Source: ABdhPJyl5SpYNZp2HUHCYYO8l+T0uxxnjSi9rjNGR0CciOkx5xPSCoFR3ksws8b0r8sM04dsBaG9wA==
-X-Received: by 2002:a17:906:374a:: with SMTP id e10mr14400381ejc.246.1605707918063;
-        Wed, 18 Nov 2020 05:58:38 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id cx6sm13721384edb.61.2020.11.18.05.58.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 18 Nov 2020 05:58:37 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     hjc@rock-chips.com, robh+dt@kernel.org, airlied@linux.ie,
-        daniel@ffwll.ch, mturquette@baylibre.com, sboyd@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, linux-clk@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 7/7] ARM: dts: rockchip: enable hdmi_sound and i2s0 for rk3066a-mk808
-Date:   Wed, 18 Nov 2020 14:58:22 +0100
-Message-Id: <20201118135822.9582-8-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201118135822.9582-1-jbx6244@gmail.com>
-References: <20201118135822.9582-1-jbx6244@gmail.com>
+         :references:mime-version:content-transfer-encoding;
+        bh=rimqJqRJwrIOhYO+VNFNI9V0S06+Ty+IA7MjQW8qayk=;
+        b=qaTcB7wS2AHEmLdebVAB9n6A/wZGtPaP7rOg1cbRCGZCgh7fgrScBihnsfUCxXlVFJ
+         fbY549hE8b1FH99aC8JKugjk+XtVxRJ3lIVAI9t6m3dVHrWXDdsiP6jX5U4Ba5xXTksb
+         AGUIhoHRl20n6pQnbQ3aO/sBxYI6fmVdHVJUqGi4+H2F0hDx5RZcVsbkN1G5J70u78PI
+         YxQWU2X2pGqmi5y0hIEBLsq36Ys/PktqDZKPzXsfvFBxO01eYOFETA8A+QLWDyzIljaJ
+         uKHbFIaoBGKjKX5ZNTL39bLGAAGqhPXpedlPUYdBe3s5R3MfikPF1cqKn5KU5WrYxp0t
+         UXVQ==
+X-Gm-Message-State: AOAM530A9UZGsyRrlrH40Y/3WGGl4ariDPg9Z+IJPR8nuKW0n4EAyBh5
+        C1XsTLTk4dohKXYMd2vwjRT3ob5zo39T+Bil/dY=
+X-Google-Smtp-Source: ABdhPJy8Kmmh46lqVfebUl1itC0FZKVnwySpk74pfY2eWFJfYdoz11ICVdAdD7FKHNaLse5RR3GW7A==
+X-Received: by 2002:a65:4485:: with SMTP id l5mr8195872pgq.10.1605707941881;
+        Wed, 18 Nov 2020 05:59:01 -0800 (PST)
+Received: from manjaro.domain.name ([202.142.93.91])
+        by smtp.gmail.com with ESMTPSA id a17sm23269919pga.56.2020.11.18.05.58.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 05:59:01 -0800 (PST)
+From:   Soham Biswas <sohambiswas41@gmail.com>
+To:     thierry.reding@gmail.com
+Cc:     lee.jones@linaro.org, u.kleine-koenig@pengutronix.de,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Soham Biswas <sohambiswas41@gmail.com>
+Subject: [PATCH] pwm: core: Use octal permission
+Date:   Wed, 18 Nov 2020 19:28:35 +0530
+Message-Id: <20201118135835.18395-1-sohambiswas41@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201117175452.26914-1-sohambiswas41@gmail.com>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make some noise with mk808. Enable the hdmi_sound node and
-add i2s0 as sound source for hdmi.
+Permission bits are easier readable in octal than with using the symbolic names.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Fixes the following warning generated by checkpatch:
+
+drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are not preferred.
+Consider using octal permissions '0444'.
+
++debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+                            &pwm_debugfs_fops);
+
+Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
 ---
- arch/arm/boot/dts/rk3066a-mk808.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/pwm/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/rk3066a-mk808.dts b/arch/arm/boot/dts/rk3066a-mk808.dts
-index eed9e60cf..5fe74c097 100644
---- a/arch/arm/boot/dts/rk3066a-mk808.dts
-+++ b/arch/arm/boot/dts/rk3066a-mk808.dts
-@@ -116,6 +116,14 @@
- 	};
- };
+diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+index 1f16f5365d3c..a8eff4b3ee36 100644
+--- a/drivers/pwm/core.c
++++ b/drivers/pwm/core.c
+@@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
  
-+&hdmi_sound {
-+	status = "okay";
-+};
-+
-+&i2s0 {
-+	status = "okay";
-+};
-+
- &mmc0 {
- 	bus-width = <4>;
- 	cap-mmc-highspeed;
+ static int __init pwm_debugfs_init(void)
+ {
+-	debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
++	debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
+ 			    &pwm_debugfs_fops);
+ 
+ 	return 0;
 -- 
-2.11.0
+2.29.2
 
