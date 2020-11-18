@@ -2,71 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604682B846F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAFA2B84DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbgKRTKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:10:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56318 "EHLO mx2.suse.de"
+        id S1727437AbgKRTU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:20:27 -0500
+Received: from gate.crashing.org ([63.228.1.57]:43809 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726891AbgKRTKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:10:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605726622; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PHqRgFGLF7++rqv3Lsk3obYtItSqoxTqnImH6UJRi/k=;
-        b=Ns+TtYTHur4leXJTxMzoo9DXqqyYd+4vWOKF4laQo54XNVwJNpx5I4XcyD1N0KtmfExnzn
-        ujqDIYvw9vlQF7h5AaepV8GurtLZI/6QOJ1nIjFcygxUf0f4TMMrewls6JVsJ4AIxWRQRZ
-        P4IBCP/Ra5X2Ot4N5jkXSxvPfch+QQM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B3577BC5A;
-        Wed, 18 Nov 2020 19:10:22 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 20:10:21 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
- killing a process
-Message-ID: <20201118154334.GT12284@dhcp22.suse.cz>
-References: <20201113173448.1863419-1-surenb@google.com>
- <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
- <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
- <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
- <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
- <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
- <CAJuCfpH-Qjm5uqfaUcfk0QV2zC76uL96FQjd88bZGBvCuXE_aA@mail.gmail.com>
- <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
-MIME-Version: 1.0
+        id S1725948AbgKRTU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:20:26 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AIJBT7B020479;
+        Wed, 18 Nov 2020 13:11:29 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AIJBR35020478;
+        Wed, 18 Nov 2020 13:11:27 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 18 Nov 2020 13:11:27 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Florian Weimer <fw@deneb.enyo.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: violating function pointer signature
+Message-ID: <20201118191127.GM2672@gate.crashing.org>
+References: <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com> <20201117142145.43194f1a@gandalf.local.home> <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com> <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net> <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com> <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org> <87o8jutt2h.fsf@mid.deneb.enyo.de> <20201118135823.3f0d24b7@gandalf.local.home>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
+In-Reply-To: <20201118135823.3f0d24b7@gandalf.local.home>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 13-11-20 18:16:32, Andrew Morton wrote:
-[...]
-> It's all sounding a bit painful (but not *too* painful).  But to
-> reiterate, I do think that adding the ability for a process to shoot
-> down a large amount of another process's memory is a lot more generally
-> useful than tying it to SIGKILL, agree?
+On Wed, Nov 18, 2020 at 01:58:23PM -0500, Steven Rostedt wrote:
+> I wonder if we should define on all architectures a void void_stub(void),
+> in assembly, that just does a return, an not worry about gcc messing up the
+> creation of the stub function.
+> 
+> On x86_64:
+> 
+> GLOBAL(void_stub)
+> 	retq
+> 
+> 
+> And so on.
 
-I am not sure TBH. Is there any reasonable usecase where uncoordinated
-memory tear down is OK and a target process which is able to see the
-unmapped memory?
--- 
-Michal Hocko
-SUSE Labs
+I don't see how you imagine a compiler to mess this up?
+
+void void_stub(void) { }
+
+will do fine?
+
+        .globl  void_stub
+        .type   void_stub, @function
+void_stub:
+.LFB0:
+        .cfi_startproc
+        ret
+        .cfi_endproc
+.LFE0:
+        .size   void_stub, .-void_stub
+
+
+Calling this via a different declared function type is undefined
+behaviour, but that is independent of how the function is *defined*.
+Your program can make ducks appear from your nose even if that function
+is never called, if you do that.  Just don't do UB, not even once!
+
+
+Segher
