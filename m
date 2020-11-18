@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85FD2B7B9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF142B7BAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727700AbgKRKqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:46:44 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:34909 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgKRKqo (ORCPT
+        id S1727755AbgKRKrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:47:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30566 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727740AbgKRKrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:46:44 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 75E2B1BF212;
-        Wed, 18 Nov 2020 10:46:41 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 11:46:41 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen.Hegelund@microchip.com
-Subject: Re: [PATCH v3 5/5] irqchip: ocelot: Add support for Jaguar2 platforms
-Message-ID: <20201118104641.GD4556@piout.net>
-References: <20201116162427.1727851-1-gregory.clement@bootlin.com>
- <20201116162427.1727851-6-gregory.clement@bootlin.com>
+        Wed, 18 Nov 2020 05:47:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605696431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YwZxwwPGug2FmlVJknT/fA/Ax4qLJ0AR2iLC3Jt+Az4=;
+        b=eZIABOmCC//MV4XV0ipLzI1/c4V1Y2HyGu3Refu3Wr/ayBKBHy2zci8H4eEFYulhq6Zt8D
+        fdjNIvEA3eA9uTZ+EU0RgDp7WxqifO/QCL0qhVNo0iT8lufK5YIlT7yDdfmij4R5vytB/p
+        RVopPjoJOCD25jIWXOLXeNQm4pUH1YA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-MLpPsVLWNSu5mc6CLNWcww-1; Wed, 18 Nov 2020 05:47:07 -0500
+X-MC-Unique: MLpPsVLWNSu5mc6CLNWcww-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 517CA1084C99;
+        Wed, 18 Nov 2020 10:47:05 +0000 (UTC)
+Received: from ovpn-115-70.ams2.redhat.com (ovpn-115-70.ams2.redhat.com [10.36.115.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D94675D707;
+        Wed, 18 Nov 2020 10:47:01 +0000 (UTC)
+Message-ID: <f29be74792c7711e0a157a6a024d3998d30be4dd.camel@redhat.com>
+Subject: Re: [PATCH] net/core: use xx_zalloc instead xx_alloc and memset
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Tian Tao <tiantao6@hisilicon.com>, davem@davemloft.net,
+        kuba@kernel.org, linmiaohe@huawei.com, martin.varghese@nokia.com,
+        pshelar@ovn.org, fw@strlen.de, viro@zeniv.linux.org.uk,
+        gnault@redhat.com, steffen.klassert@secunet.com,
+        kyk.segfault@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 18 Nov 2020 11:47:00 +0100
+In-Reply-To: <1605687308-57318-1-git-send-email-tiantao6@hisilicon.com>
+References: <1605687308-57318-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116162427.1727851-6-gregory.clement@bootlin.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2020 17:24:27+0100, Gregory CLEMENT wrote:
-> This patch extends irqchip driver for ocelot to be used with an other
-> vcoreiii base platform: Jaguar2.
+On Wed, 2020-11-18 at 16:15 +0800, Tian Tao wrote:
+> use kmem_cache_zalloc instead kmem_cache_alloc and memset.
 > 
-> Based on a larger patch from Lars Povlsen <lars.povlsen@microchip.com>
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 > ---
->  drivers/irqchip/irq-mscc-ocelot.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+>  net/core/skbuff.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/irqchip/irq-mscc-ocelot.c b/drivers/irqchip/irq-mscc-ocelot.c
-> index 584af3b0a9e2..0dfea8771172 100644
-> --- a/drivers/irqchip/irq-mscc-ocelot.c
-> +++ b/drivers/irqchip/irq-mscc-ocelot.c
-> @@ -70,6 +70,18 @@ static const struct chip_props luton_props = {
->  	.n_irq			= 28,
->  };
->  
-> +static const struct chip_props jaguar2_props = {
-> +	.flags			= FLAGS_HAS_TRIGGER,
-> +	.reg_off_sticky		= 0x10,
-> +	.reg_off_ena		= 0x18,
-> +	.reg_off_ena_clr	= 0x1c,
-> +	.reg_off_ena_set	= 0x20,
-> +	.reg_off_ident		= 0x38,
-> +	.reg_off_trigger	= 0x5c,
-> +	.reg_off_force		= 0xc,
-> +	.n_irq			= 29,
-> +};
-> +
->  static void ocelot_irq_unmask(struct irq_data *data)
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index c9a5a3c..3449c1c 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -313,12 +313,10 @@ struct sk_buff *__build_skb(void *data, unsigned int frag_size)
 >  {
->  	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(data);
-> @@ -237,3 +249,11 @@ static int __init luton_irq_init(struct device_node *node,
+>  	struct sk_buff *skb;
+>  
+> -	skb = kmem_cache_alloc(skbuff_head_cache, GFP_ATOMIC);
+> +	skb = kmem_cache_zalloc(skbuff_head_cache, GFP_ATOMIC);
+
+This will zeroed a slighly larger amount of data compared to the
+existing code: offsetof(struct sk_buff, tail) == 182, sizeof(struct
+sk_buff) == 224.
+
+>  	if (unlikely(!skb))
+>  		return NULL;
+>  
+> -	memset(skb, 0, offsetof(struct sk_buff, tail));
+
+Additionally this leverages constant argument optimizations.
+
+Possibly overall not noticeable, but this code path is quite critical
+performance wise.
+
+I would avoid the above.
+> -
+>  	return __build_skb_around(skb, data, frag_size);
 >  }
 >  
->  IRQCHIP_DECLARE(luton_icpu, "mscc,luton-icpu-intr", luton_irq_init);
-> +
-> +static int __init jaguar2_irq_init(struct device_node *node,
-> +				   struct device_node *parent)
-> +{
-> +	return vcoreiii_irq_init(node, parent, &jaguar2_props);
-> +}
-> +
-> +IRQCHIP_DECLARE(jaguar2_icpu, "mscc,jaguar2-icpu-intr", jaguar2_irq_init);
-> -- 
-> 2.29.2
-> 
+> @@ -6170,12 +6168,10 @@ static void *skb_ext_get_ptr(struct skb_ext *ext, enum skb_ext_id id)
+>   */
+>  struct skb_ext *__skb_ext_alloc(gfp_t flags)
+>  {
+> -	struct skb_ext *new = kmem_cache_alloc(skbuff_ext_cache, flags);
+> +	struct skb_ext *new = kmem_cache_zalloc(skbuff_ext_cache, flags);
+>  
+> -	if (new) {
+> -		memset(new->offset, 0, sizeof(new->offset));
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Similar to the above, but additionally here the number of zeroed bytes
+changes a lot and a few additional cachelines will be touched. The
+performance impact is likely relevant.
+
+Overall I think we should not do this.
+
+Thanks,
+
+Paolo
+
