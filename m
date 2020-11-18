@@ -2,208 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21012B781B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9ECB2B77FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbgKRIHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:07:07 -0500
-Received: from mail-dm6nam11on2053.outbound.protection.outlook.com ([40.107.223.53]:30489
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727268AbgKRIHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:07:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jo8vCK768z4ZUxVfmQEjA30DvxcMUOHLdbab2LbhVKrx0J/xPVh3Dk0LvE/LIR0cUZhNkomN2kko2W1U34o1uqghay2zQOtweKFz/pf+RGtX8GRUdPvFT8xTvkEO5O7ccRLth/zTjLHULF79bRsyi4aN+VjIFI2wvUurajpLWSYXJQFaiI81OI36k84QUrTP9KJK/ItqaEbYnbr/nkoXBcrhm9kTlKYW7trubBCPuVN/KzEjVJjxnAnXkQx+N2l/ocY1QEPA8btC+KsgNckDfMRvsDHJHsyBGA3tyPitaB6aYB8fLEGtJ4jxsHRRA0GzQ1v1QDiv/QEJZvhKlH8AVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sgFPcwVcdVDA1lISQdnpSALC+Om4hmyoTqUgCLjEox0=;
- b=j0ein2QxcpkUCi/sLzSIbeIxJUw6zRlh2D4TcuUV4ocjQWWfbf0yOEnME7o8xMedrje/oGss6TXJHsiGEwtrC7x/pdCjKDc9vUKhx9bCYg0rO28d9awPD8oPjPmK0o+IM+T2rnHoW6w+5oI7Cl3lzQ6TFWpUqJp6M73GaeYMYc4+YMB4BcjO8H3i9FUJQq3jUD4pLO8d2VKa5dyaClSxTBvWa10v+7GjiHkY673lnSK57D2S+xCeWQskQvzvBl4VlQU5pilucQ55JU21JWUjIsZoNlY0Y25U/0nmD/LMUUSbp+22jYXrpTkT4CZYnD4Fjk8hOp+0EFOdtG7//0mLGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sgFPcwVcdVDA1lISQdnpSALC+Om4hmyoTqUgCLjEox0=;
- b=ryUmlwrDxOryq4RpmVoRCAFocFEESG4PAEQVL+TQ9bai5z1aG0RSsogvhaU9GDGeBHSpFfRcR2sdrAnMrJmumu4vP0t1f5tbJUkgKyps/i8MmMQbEQzUvnVqrH1GMsVSmglrX9NBGEC00TCM0prgXEX1xE+X5WmUO73U0fGtOtQ=
-Received: from SA0PR11CA0092.namprd11.prod.outlook.com (2603:10b6:806:d1::7)
- by DM6PR02MB4265.namprd02.prod.outlook.com (2603:10b6:5:2e::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Wed, 18 Nov
- 2020 08:06:58 +0000
-Received: from SN1NAM02FT048.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:d1:cafe::68) by SA0PR11CA0092.outlook.office365.com
- (2603:10b6:806:d1::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend
- Transport; Wed, 18 Nov 2020 08:06:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT048.mail.protection.outlook.com (10.152.72.202) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3564.22 via Frontend Transport; Wed, 18 Nov 2020 08:06:56 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 18 Nov 2020 00:06:33 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Wed, 18 Nov 2020 00:06:33 -0800
-Envelope-to: michal.simek@xilinx.com,
- derek.kiernan@xilinx.com,
- dragan.cvetic@xilinx.com,
- rajan.vaja@xilinx.com,
- tejas.patel@xilinx.com,
- manish.narani@xilinx.com,
- ravi.patel@xilinx.com,
- izhar.ameer.shaikh@xilinx.com,
- wendy.liang@xilinx.com,
- robh+dt@kernel.org,
- arnd@arndb.de,
- gregkh@linuxfoundation.org,
- sumit.semwal@linaro.org,
- christian.koenig@amd.com,
- devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org
-Received: from [172.19.2.167] (port=35936 helo=xsjjliang50.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <wendy.liang@xilinx.com>)
-        id 1kfIU5-0000Nk-QS; Wed, 18 Nov 2020 00:06:33 -0800
-From:   Wendy Liang <wendy.liang@xilinx.com>
-To:     <robh+dt@kernel.org>, <michal.simek@xilinx.com>, <arnd@arndb.de>,
-        <gregkh@linuxfoundation.org>, <sumit.semwal@linaro.org>,
-        <christian.koenig@amd.com>, <derek.kiernan@xilinx.com>,
-        <dragan.cvetic@xilinx.com>, <rajan.vaja@xilinx.com>,
-        <tejas.patel@xilinx.com>, <manish.narani@xilinx.com>,
-        <ravi.patel@xilinx.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>,
-        "Izhar Ameer Shaikh" <izhar.ameer.shaikh@xilinx.com>,
-        Wendy Liang <wendy.liang@xilinx.com>
-Subject: [PATCH 8/9] firmware: xilinx: Add IOCTL support for AIE ISR Clear
-Date:   Wed, 18 Nov 2020 00:06:19 -0800
-Message-ID: <1605686780-17886-9-git-send-email-wendy.liang@xilinx.com>
+        id S1726930AbgKRIGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:06:35 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11997 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726875AbgKRIGf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:06:35 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb4d6010000>; Wed, 18 Nov 2020 00:06:25 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
+ 2020 08:06:34 +0000
+Received: from audio.nvidia.com (172.20.13.39) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 18 Nov 2020 08:06:31 +0000
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <robh+dt@kernel.org>, <thierry.reding@gmail.com>,
+        <broonie@kernel.org>
+CC:     <jonathanh@nvidia.com>, <sharadg@nvidia.com>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH 0/3] Convert Tegra HDA doc to json-schema
+Date:   Wed, 18 Nov 2020 13:36:19 +0530
+Message-ID: <1605686782-29469-1-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605686780-17886-1-git-send-email-wendy.liang@xilinx.com>
-References: <1605686780-17886-1-git-send-email-wendy.liang@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e10d6275-e360-4838-29da-08d88b98eb2b
-X-MS-TrafficTypeDiagnostic: DM6PR02MB4265:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB42655720BE305005CC3D4A10B0E10@DM6PR02MB4265.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6kVZJpBpGhGhZo8B/GKzgyHgMIJRRDFAKJCGHyhVEYgTaTTQa8BdogEueB4plsvyN1vtKO4i94lYpPLivUCKs0F/V/ZJ8Ok81atjaqcCJlq8YLNM3SLVL8PjkmRZhRUPTk6TzDknFd4ruua91FCZ1FcMyEKM2mNQkdFXeJObuHFXbLO6vO+lmlwNqNwbvc6bJQ33a2RSOKLT/Thex3S6jrYRTxEx2bAT58tCtywlxjSHDqv86xrzgzN2lkW+vo7sRmLFqMcK1c5pA1ylONKzkorgA/XMnaG8kZQ/dnkufUZZyOrV74oG3UnSqdOyTpDKp6Bcfd4cVTpv/9ZND8PhO4sWlcVupFUgcX1vynvolBFjAE5AVJijPzdNXNCEhLwKvq3LOzlbodWcEcKvpUVYoRwVD6cz2Y5v0v8IGBtcAgz9chO0ojYZbe7yn3ezT3J/
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(376002)(39850400004)(396003)(346002)(46966005)(426003)(2616005)(82310400003)(44832011)(54906003)(47076004)(5660300002)(7696005)(36906005)(316002)(478600001)(110136005)(336012)(6666004)(921005)(2906002)(26005)(83380400001)(186003)(36756003)(82740400003)(4326008)(8936002)(7416002)(7636003)(6636002)(9786002)(8676002)(70206006)(356005)(70586007)(107886003)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2020 08:06:56.8889
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e10d6275-e360-4838-29da-08d88b98eb2b
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT048.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4265
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605686785; bh=+mKNcXPQxwCx+awvh3qmVh6msTm6zFNTg3ytvlVwQDs=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Type;
+        b=paq+oABr9TMcUz423TCs8j7XyC4Yt9wlv5Ti7x1lBF0yhDlBk6Kn/eiD/ztpuP69U
+         ptNWxtVU55d8Msza0rQXrTEkjVLO/69atPL84sIUWRbommBnxLAlTlZSIj7tKeNCVe
+         eNm+JBPIgxFYy8aM709yiVo8YzfNSOid06rwOEW1GPH+M6Rl36eAfDb7vTDrrnCXjt
+         jl22wL3gcz/SWaeXDALvrNEkd3PoSHNEURjmz2ZOHgOchI9FQaRvnUto1xFbJ5E6rN
+         8KOImO8rQ0ajuz5f86KX2PUDQ1rrp1sC4pYRVMiTHRBUxnlc86O+We6w06cds0XkN0
+         8uvn/uWpmE/9w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Izhar Ameer Shaikh <izhar.ameer.shaikh@xilinx.com>
+Fix Tegra194 DT and convert Tegra HDA doc to YAML format. Ran binding
+validation checks to ensure there are no warnings/errors for HDA.
 
-Latching of AIE NPI Interrupts is present in Versal ES1 Silicon Rev,
-however it has been removed from ES2 rev.
-As a result on ES1, in order to use the interrupt, a client needs to
-request PMC to clear/ack the interrupt.
+Sameer Pujar (3):
+  arm64: tegra: Fix Tegra194 HDA {clock,reset}-names ordering
+  dt-bindings: tegra: Convert HDA doc to json-schema
+  dt-bindings: tegra: Add missing HDA properties
 
-Provide an EEMI IOCTL to serve the same purpose. Note that, this will
-only be applicable for ES1 rev. For ES2 and other non-silicon platforms,
-this call will essentially be a NOP in the firmware.
+ .../bindings/sound/nvidia,tegra30-hda.txt          |  35 -------
+ .../bindings/sound/nvidia,tegra30-hda.yaml         | 112 +++++++++++++++++++++
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           |  12 +--
+ 3 files changed, 118 insertions(+), 41 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml
 
-Signed-off-by: Izhar Ameer Shaikh <izhar.ameer.shaikh@xilinx.com>
-Signed-off-by: Wendy Liang <wendy.liang@xilinx.com>
----
- drivers/firmware/xilinx/zynqmp.c     | 14 ++++++++++++++
- include/linux/firmware/xlnx-zynqmp.h |  8 ++++++++
- 2 files changed, 22 insertions(+)
-
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index efb8a66..7a0c6a3 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -702,6 +702,20 @@ int zynqmp_pm_set_boot_health_status(u32 value)
- }
- 
- /**
-+ * zynqmp_pm_clear_aie_npi_isr - Clear AI engine NPI interrupt status register
-+ * @node:	AI engine node id
-+ * @irq_mask:	Mask of AI engine NPI interrupt bit to clear
-+ *
-+ * Return: Returns status, either success or error+reason
-+ */
-+int zynqmp_pm_clear_aie_npi_isr(u32 node, u32 irq_mask)
-+{
-+	return zynqmp_pm_invoke_fn(PM_IOCTL, node, IOCTL_AIE_ISR_CLEAR,
-+				   irq_mask, 0, NULL);
-+}
-+EXPORT_SYMBOL_GPL(zynqmp_pm_clear_aie_npi_isr);
-+
-+/**
-  * zynqmp_pm_reset_assert - Request setting of reset (1 - assert, 0 - release)
-  * @reset:		Reset to be configured
-  * @assert_flag:	Flag stating should reset be asserted (1) or
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 5968df8..b929d57 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -116,6 +116,8 @@ enum pm_ioctl_id {
- 	IOCTL_READ_PGGS = 15,
- 	/* Set healthy bit value */
- 	IOCTL_SET_BOOT_HEALTH_STATUS = 17,
-+	/* AI engine NPI ISR clear */
-+	IOCTL_AIE_ISR_CLEAR = 24,
- };
- 
- enum pm_query_id {
-@@ -357,6 +359,7 @@ int zynqmp_pm_write_pggs(u32 index, u32 value);
- int zynqmp_pm_read_pggs(u32 index, u32 *value);
- int zynqmp_pm_system_shutdown(const u32 type, const u32 subtype);
- int zynqmp_pm_set_boot_health_status(u32 value);
-+int zynqmp_pm_clear_aie_npi_isr(u32 node, u32 irq_mask);
- #else
- static inline struct zynqmp_eemi_ops *zynqmp_pm_get_eemi_ops(void)
- {
-@@ -507,6 +510,11 @@ static inline int zynqmp_pm_set_boot_health_status(u32 value)
- {
- 	return -ENODEV;
- }
-+
-+static int zynqmp_pm_clear_aie_npi_isr(u32 node, u32 irq_mask)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- #endif /* __FIRMWARE_ZYNQMP_H__ */
 -- 
 2.7.4
 
