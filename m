@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDF32B7FDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3BE2B7FDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgKROzV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Nov 2020 09:55:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
+        id S1727025AbgKRO4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 09:56:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgKROzU (ORCPT
+        with ESMTP id S1726068AbgKRO4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:55:20 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF99C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 06:55:20 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kfOrZ-0002K7-DQ; Wed, 18 Nov 2020 15:55:13 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kfOrY-0003vm-BW; Wed, 18 Nov 2020 15:55:12 +0100
-Message-ID: <32aaa90cabfb68952803ca91933bc0e105e34a53.camel@pengutronix.de>
-Subject: Re: [PATCH v2] drm/imx: depend on COMMON_CLK to fix compile tests
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Wed, 18 Nov 2020 15:55:12 +0100
-In-Reply-To: <20201117182419.73853-1-krzk@kernel.org>
-References: <20201117182419.73853-1-krzk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Wed, 18 Nov 2020 09:56:07 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF1BC0613D4;
+        Wed, 18 Nov 2020 06:56:06 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id s13so2987907wmh.4;
+        Wed, 18 Nov 2020 06:56:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F9vwVFomlSDuds1FQf9/6Z9QEaL4P+/Z5CIsMWerWJs=;
+        b=pFEK+Ng8n6IXFzuM7v7WdjM4TNgr60JFFNMje9aflY6ZZgny57ggPAcpD22A5bvu8M
+         rr+lflG9E4lDZx1akZ2RzZTtS7PWopwFsPjH1poEOt8EgFIusYhv5IQs2Fgdw48KRmUI
+         v++EWoM6orvV2MBjGvQF4ihQAz6D8+J+lmh8Cc1fCzGLm6devIhMQ/n2Y9EQeCUPf9JA
+         1MeYDJDmoB36ljWC80LkrcQVEyhlfHz8eXCv9e2jqxs+QT8rRuw4fqqsg4RF+GmlhoiC
+         Laz3zQsOs3LscurtQ/iUggBxdaL924Wfi4SP+U3yPgt29IaPitgzEd0etNhC9VoDtu/M
+         lU+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F9vwVFomlSDuds1FQf9/6Z9QEaL4P+/Z5CIsMWerWJs=;
+        b=I9V7jIUeawowQvnFcTkvhbXzmmxvt9I/AoEHbsogxjRfN4zEnvvKd6ijuZ+VMS2vOO
+         dZXvzoqCWR1MzZRXcc0FdTwZc+cQQRePAMm0pIrk49SG/CnNkCUDUqq2wqmQOPFV6RoT
+         Y/8mrxykh1PDqrEZGbzk6zyfWnBQmx1Y9eglUgRGvw3hn6s8Pf33IM626KJUB2iDpnkL
+         +8jLDppgNROEyaqQwYd7x7Xnm2D3LUSBMqJBDfB7S63X9ddx5hUOgZBzLwXiEl9IW7Ga
+         2oDXK1rEOb1O/dFpTMGRuz05TwruKeefFncl+gFJsmTtgcLoHq+W9HLi00axPc+uRCHN
+         LCMA==
+X-Gm-Message-State: AOAM531B24/mhValXPsC+vdGzsOOZ9JoRAPp29SfbDthvj8AGWExA9fz
+        g0VW+zwxWbYY06acpSpVWF0w6Ubiw4b0i0qqvEg=
+X-Google-Smtp-Source: ABdhPJz8d9obRcnmrN9volOJNmR/Y8hcECW/5CcD0MI3o4TXo4LCGp+lITn18nFaQjW9ox4gQVZe9BGUNZ7LMDj1zpg=
+X-Received: by 2002:a1c:4884:: with SMTP id v126mr453517wma.160.1605711365627;
+ Wed, 18 Nov 2020 06:56:05 -0800 (PST)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201117175452.26914-1-sohambiswas41@gmail.com> <20201118145112.21250-1-sohambiswas41@gmail.com>
+In-Reply-To: <20201118145112.21250-1-sohambiswas41@gmail.com>
+From:   Soham Biswas <sohambiswas41@gmail.com>
+Date:   Wed, 18 Nov 2020 20:25:54 +0530
+Message-ID: <CAMmt7eNwJ=TW3A6xu0PWboHRFtVp8s_u8JqrN-Y7+jijXUO0XQ@mail.gmail.com>
+Subject: Re: [PATCH v3] pwm: core: Use octal permission
+To:     thierry.reding@gmail.com
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On Tue, 2020-11-17 at 19:24 +0100, Krzysztof Kozlowski wrote:
-> The iMX DRM LVDS driver uses Common Clock Framework thus it cannot be
-> built on platforms without it (e.g. compile test on MIPS with RALINK and
-> SOC_RT305X):
-> 
->     /usr/bin/mips-linux-gnu-ld: drivers/gpu/drm/imx/imx-ldb.o: in function `imx_ldb_encoder_disable':
->     imx-ldb.c:(.text+0x400): undefined reference to `clk_set_parent'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
+On Wed, 18 Nov 2020 at 20:21, Soham Biswas <sohambiswas41@gmail.com> wrote:
+>
+> Permission bits are easier readable in octal than with using the
+> symbolic names.
+>
+> Fixes the following warning generated by checkpatch:
+>
+> drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
+> not preferred. Consider using octal permissions '0444'.
+>
+> +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+>                             &pwm_debugfs_fops);
+>
+> Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
 > ---
-> 
-> Changes since v1:
-> 1. Put depends in DRM_IMX_LDB option only.
-> ---
->  drivers/gpu/drm/imx/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/imx/Kconfig b/drivers/gpu/drm/imx/Kconfig
-> index 6231048aa5aa..73fe2bc5633c 100644
-> --- a/drivers/gpu/drm/imx/Kconfig
-> +++ b/drivers/gpu/drm/imx/Kconfig
-> @@ -28,6 +28,7 @@ config DRM_IMX_TVE
->  config DRM_IMX_LDB
->  	tristate "Support for LVDS displays"
->  	depends on DRM_IMX && MFD_SYSCON
-> +	depends on COMMON_CLK
->  	select DRM_PANEL
->  	help
->  	  Choose this to enable the internal LVDS Display Bridge (LDB)
+>  drivers/pwm/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> index 1f16f5365d3c..a8eff4b3ee36 100644
+> --- a/drivers/pwm/core.c
+> +++ b/drivers/pwm/core.c
+> @@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
+>
+>  static int __init pwm_debugfs_init(void)
+>  {
+> -       debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+> +       debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
+>                             &pwm_debugfs_fops);
+>
+>         return 0;
+> --
+> 2.29.2
+>
 
-Thank you, applied to imx-drm/next.
-
-regards
-Philipp
+I passed the `-v3` flag this time to the git format patch and fixed
+the long lines error. It changed the name of the patch file though xD
