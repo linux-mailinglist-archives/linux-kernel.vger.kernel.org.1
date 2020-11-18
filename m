@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4662B73C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A16A32B73CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgKRB36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 20:29:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26070 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727185AbgKRB36 (ORCPT
+        id S1727512AbgKRBi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 20:38:59 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:41203 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725767AbgKRBi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 20:29:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605662996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5y9d1mDFu+1IAn4UKYshZB62u1n5Z+noiYA1PqcdhCk=;
-        b=PfQCA4cwGft1kIrM88CZ+KZ1BincKYvjIkt7mdeyk55xAm9AZ6OspEj+6WHaxsNk10S9hk
-        3Xi7y3fJG8Prp2uxfmSLuzdAS5Ad/5+fY2G2yIsaYEycJip/BgPqI5th9dPpbcE9P8wTVp
-        bx0CKM96V8oiVNfJxUU0Wz9ATN3BFwg=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-MwWG2qbvMMelpADn12aUTA-1; Tue, 17 Nov 2020 20:29:55 -0500
-X-MC-Unique: MwWG2qbvMMelpADn12aUTA-1
-Received: by mail-qk1-f197.google.com with SMTP id s128so348150qke.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 17:29:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=5y9d1mDFu+1IAn4UKYshZB62u1n5Z+noiYA1PqcdhCk=;
-        b=YdF0km8JiL79Al5JA5BqcYsgAy5xGZ8SNvKoJn6wXAxDp9Ivxsc2eotBeoKvCiBnHq
-         5vLoBjNHcuMzvRqFmWDWsrKR8ZqlOY498oYrX3zrbtHUBc/0arR0eCjMoK+vwW61yYgu
-         KJkwhF13AWpBTytr1OPI1rf5PzHNtChXfeaKQkLkmffuAptS8+mElUFZcaBP/q+kgOeY
-         bNFCr/PFhqbksTK/TFxMkMDPbCn3tgzurnQkYIzBtw+kpHi2A3QqaAjE6SJs0WDGkheR
-         CaXxwVFaGGpmkfmQkQKjd07rcS9clucXuJWhlq/9Tr518sShm0xaMZ5h3FRCTZCtAeSo
-         phnQ==
-X-Gm-Message-State: AOAM5306NRpviYZKGzLn7sgz0ikVbs2kXVOxugzjKHhCtLPK4Iej3HpO
-        akET6KazUH+O+RWp8LvVy7SKI4r64jZpOO9U9vKJfTVpxdoFYE0PRJvuMJtLLJDtUVtr14uigfc
-        cYXz/pBTeZbYovxI2FfViEGWi
-X-Received: by 2002:a0c:9bac:: with SMTP id o44mr2630010qve.43.1605662994570;
-        Tue, 17 Nov 2020 17:29:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxmxm5sTloYaS7lk1Nby+l3Pt4GRZsecKIapPOdPkL0PKYvK5KZOWnsOoSdlJa8/b2h2bRjjA==
-X-Received: by 2002:a0c:9bac:: with SMTP id o44mr2630000qve.43.1605662994342;
-        Tue, 17 Nov 2020 17:29:54 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id c27sm15395005qkk.57.2020.11.17.17.29.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 17:29:53 -0800 (PST)
-Subject: Re: [PATCH 2/2] fpga: dfl: look for vendor specific capability
-To:     matthew.gerlach@linux.intel.com
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mdf@kernel.org, hao.wu@intel.com, linux-doc@vger.kernel.org,
-        corbet@lwn.net
-References: <20201117012552.262149-1-matthew.gerlach@linux.intel.com>
- <20201117012552.262149-3-matthew.gerlach@linux.intel.com>
- <53b9cb12-8002-5737-ba8b-7c59687ead5a@redhat.com>
- <alpine.DEB.2.22.394.2011171457150.312724@rhweight-WRK1>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <2a81ac9c-482e-c0ec-ea71-d811fdf8a01a@redhat.com>
-Date:   Tue, 17 Nov 2020 17:29:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 17 Nov 2020 20:38:59 -0500
+X-UUID: 630185640108402a83ff2c8a81bef551-20201118
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VQSP1sH4CqMAhG3prd+7/b/qG6Nz5rZr5wJPtTA6ytA=;
+        b=prPzbxB8X79spbx4u3Y3tAouEp30AENJqm6rlTVLRN1wGwg5kXiB7WzqfJIfPzGn1auqofhq8g0WiGg4tyuA479gQpruShQYS1EVQdEYQa6J24IzQTq2RdM4k1nbTt1sqpZUbD5xK4dZ5nckjiLy6T1+Y0rgwwgA31I9agzLiKk=;
+X-UUID: 630185640108402a83ff2c8a81bef551-20201118
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1400451792; Wed, 18 Nov 2020 09:38:53 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Nov
+ 2020 09:38:48 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 18 Nov 2020 09:38:50 +0800
+Message-ID: <1605663530.31607.40.camel@mhfsdcap03>
+Subject: Re: [PATCH] dt-bindings: arm: add additionalProperties
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        <linux-unisoc@lists.infradead.org>,
+        <linux-realtek-soc@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Wed, 18 Nov 2020 09:38:50 +0800
+In-Reply-To: <CAMuHMdXVXqj9k4FMFH5aiqKwNrWocJpjahYKA8k2e3Z2ji2hvQ@mail.gmail.com>
+References: <20201117103123.3938-1-chunfeng.yun@mediatek.com>
+         <CAMuHMdXVXqj9k4FMFH5aiqKwNrWocJpjahYKA8k2e3Z2ji2hvQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2011171457150.312724@rhweight-WRK1>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-TM-SNTS-SMTP: 5DF35A84F2346C88C9B1BA1AEF6C513A344973A569469D1148B07A014C4095D62000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
->> Is this really an either/or ?
->>
->> Could there be a base functionality on bar0 and a skew functionality on vendor bars?
->
-> For simplicity I think either or is better.  If skew functionality is in vendor bars, why not just use the vendor bars all the time.
->
->>
->> If vendor is going to completely override, why not use bar0 ?
->
-> I'm not sure I understand the question, but in v2 the legacy DFL search will only occur if there is no VSEC found.
->
-Wondering if vsec was ignored, would the bar0 work ?
-
-Or another way, how badly would an old driver behave.
-
-consider incrementing the driver version if it would be bad.
-
-Tom
-
-
->>
->> Tom
->>
->>>
->>>      if (ret)
->>>          goto irq_free_exit;
->>
->>
->
+T24gVHVlLCAyMDIwLTExLTE3IGF0IDExOjM3ICswMTAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3Jv
+dGU6DQo+IEhpIENodW5mZW5nLA0KPiANCj4gT24gVHVlLCBOb3YgMTcsIDIwMjAgYXQgMTE6MzIg
+QU0gQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPiBB
+ZGQgYW4gZXhwbGljaXQgImFkZGl0aW9uYWxQcm9wZXJ0aWVzOiB0cnVlIiB0byBhdm9pZA0KPiA+
+IGR0X2JpbmRpbmdfY2hlY2sgZXJyb3IgY2F1c2VkIGJ5Og0KPiA+ICdhZGRpdGlvbmFsUHJvcGVy
+dGllcycgaXMgYSByZXF1aXJlZCBwcm9wZXJ0eQ0KPiA+DQo+ID4gVGhpcyB3aWxsIG5vdCBjaGFu
+Z2UgZnVuY3Rpb24sIGR1ZSB0byBhZGRpdGlvbmFsUHJvcGVydGllcw0KPiA+IGlzIHRydWUgYnkg
+ZGVmYXVsdC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcu
+eXVuQG1lZGlhdGVrLmNvbT4NCj4gDQo+IFRoYW5rcyBmb3IgeW91ciBwYXRjaCENCj4gDQo+ID4g
+LS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9hY3Rpb25zLnlhbWwN
+Cj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2FjdGlvbnMu
+eWFtbA0KPiA+IEBAIC00OSwzICs0OSw1IEBAIHByb3BlcnRpZXM6DQo+ID4gICAgICAgICAgICAt
+IGVudW06DQo+ID4gICAgICAgICAgICAgICAgLSB1Y3JvYm90aWNzLGJ1YmJsZWd1bS05NiAjIHVD
+Um9ib3RpY3MgQnViYmxlZ3VtLTk2DQo+ID4gICAgICAgICAgICAtIGNvbnN0OiBhY3Rpb25zLHM5
+MDANCj4gPiArDQo+ID4gK2FkZGl0aW9uYWxQcm9wZXJ0aWVzOiB0cnVlDQo+IA0KPiBMb29rcyB2
+ZXJ5IHNpbWlsYXIgdG8gY29tbWl0IDYyMjk4MzY0YmQ0ODliMDYgKCJkdC1iaW5kaW5nczogRXhw
+bGljaXRseQ0KPiBhbGxvdyBhZGRpdGlvbmFsIHByb3BlcnRpZXMgaW4gYm9hcmQvU29DIHNjaGVt
+YXMiKSBpbiB2NS4xMC1yYzI/DQpZZXMsIGluZGVlZCwgdGhhbmtzIGZvciB5b3VyIGluZm8uDQoN
+Cj4gDQo+IEdye29ldGplLGVldGluZ31zLA0KPiANCj4gICAgICAgICAgICAgICAgICAgICAgICAg
+R2VlcnQNCj4gDQoNCg==
 
