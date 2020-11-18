@@ -2,76 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFF62B845C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82E62B8468
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgKRTF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:05:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60866 "EHLO mail.kernel.org"
+        id S1727063AbgKRTKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:10:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgKRTF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:05:57 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9639220B1F;
-        Wed, 18 Nov 2020 19:05:56 +0000 (UTC)
+        id S1726268AbgKRTKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:10:06 -0500
+Content-Type: text/plain; charset="utf-8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605726357;
-        bh=czhwXJzBR4zdRxRmpiz6/CDV6S0jGgxbOLv7GLXvEi0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UjOF4cr4HY06mtasTjDvTwJSyxBGG8YJAp+6mdTN+4xE8fSYavbczWX1lWh//WqVo
-         rVQRLoTh1cbSKnB2SOlxbd17YT9Ed1+EP0inyaWja+lnpiyWvsNYG7igsxzyw9MeTg
-         vYcQGBsopsYIMipvK1Y5rj7tjY+R+FNEWIA1tzVo=
-Date:   Wed, 18 Nov 2020 11:05:54 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 3/3] f2fs: Handle casefolding with Encryption
-Message-ID: <X7Vwkgb8tqJh+mOr@sol.localdomain>
-References: <20201118064245.265117-1-drosen@google.com>
- <20201118064245.265117-4-drosen@google.com>
+        s=default; t=1605726605;
+        bh=hVmwv30NHYCXFiGeRwjLOsTQJXMm2vVkagSC6m0FZck=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=OpEUInwgsrt2tsNFXBVlG3QrNYIZjmHGJZ9jaBON+36e0jqjqeQM7xH2HdMvM/BPJ
+         xVS9R+Xiqc7UUi7L/XJhmf5oZygw8D7bNRbaUo6Drg1uNVDsD3zH9XK1qfvZhGcfhI
+         yL/hDOPV39hnANk0AJ7e1FlGq+XOREUAEoRVRvR4=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118064245.265117-4-drosen@google.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2] net: Have netpoll bring-up DSA management interface
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160572660568.17971.9397534654388103737.git-patchwork-notify@kernel.org>
+Date:   Wed, 18 Nov 2020 19:10:05 +0000
+References: <20201117035236.22658-1-f.fainelli@gmail.com>
+In-Reply-To: <20201117035236.22658-1-f.fainelli@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, olteanv@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, edumazet@google.com, wangyunjian@huawei.com,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 06:42:45AM +0000, Daniel Rosenberg wrote:
-> Expand f2fs's casefolding support to include encrypted directories.  To
-> index casefolded+encrypted directories, we use the SipHash of the
-> casefolded name, keyed by a key derived from the directory's fscrypt
-> master key.  This ensures that the dirhash doesn't leak information
-> about the plaintext filenames.
-> 
-> Encryption keys are unavailable during roll-forward recovery, so we
-> can't compute the dirhash when recovering a new dentry in an encrypted +
-> casefolded directory.  To avoid having to force a checkpoint when a new
-> file is fsync'ed, store the dirhash on-disk appended to i_name.
-> 
-> This patch incorporates work by Eric Biggers <ebiggers@google.com>
-> and Jaegeuk Kim <jaegeuk@kernel.org>.
-> 
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+Hello:
 
-Looks good.  If it's needed (some may claim it's not needed because I have a
-Co-developed-by), you can add:
+This patch was applied to netdev/net.git (refs/heads/master):
 
-	Reviewed-by: Eric Biggers <ebiggers@google.com>
+On Mon, 16 Nov 2020 19:52:34 -0800 you wrote:
+> DSA network devices rely on having their DSA management interface up and
+> running otherwise their ndo_open() will return -ENETDOWN. Without doing
+> this it would not be possible to use DSA devices as netconsole when
+> configured on the command line. These devices also do not utilize the
+> upper/lower linking so the check about the netpoll device having upper
+> is not going to be a problem.
+> 
+> [...]
 
-- Eric
+Here is the summary with links:
+  - [net,v2] net: Have netpoll bring-up DSA management interface
+    https://git.kernel.org/netdev/net/c/1532b9778478
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
