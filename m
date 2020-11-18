@@ -2,153 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFA12B76CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E7E2B76D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgKRHRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 02:17:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726698AbgKRHRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 02:17:35 -0500
-Received: from wens.tw (mirror2.csie.ntu.edu.tw [140.112.30.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 473CF2467A;
-        Wed, 18 Nov 2020 07:17:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605683854;
-        bh=AQ/Sx1u+bYD4zoGriANF0/uI3pWLqX2+CyXLECxBBZo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kl0OBN5c7oqPQZtM5/3Y8jkB2MPA6nc0A6hfq6bRrXp342xtQ+lYfotLa7gUu3ZXZ
-         HHdqly/VpzlbJnRQDshj7AqjXy07krYR4xCD4LS6wIGu5f3329+AtIdpvNOfIwMwcr
-         xORywiOSYczE3Yh/f9XTuI1YxDi5GsgYSHvX9ObI=
-Received: by wens.tw (Postfix, from userid 1000)
-        id 9F9715FF27; Wed, 18 Nov 2020 15:17:31 +0800 (CST)
-From:   Chen-Yu Tsai <wens@kernel.org>
-To:     Shawn Lin <shawn.lin@rock-chips.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
-        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v2 4/4] arm64: dts: rockchip: rk3399: Add NanoPi M4B
-Date:   Wed, 18 Nov 2020 15:17:24 +0800
-Message-Id: <20201118071724.4866-5-wens@kernel.org>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201118071724.4866-1-wens@kernel.org>
-References: <20201118071724.4866-1-wens@kernel.org>
+        id S1726806AbgKRHTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 02:19:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726524AbgKRHTz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 02:19:55 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21116C061A4F
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 23:19:55 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id y7so827007pfq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 23:19:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ogAqzoWb6CN+6DA0U4kbAuwXiWSIUBjOQhukqqaTMWo=;
+        b=U1GoIM1AdmuL58NN4XCeb2w7fxo0jF8vBuA/6z7kciUFM/PGFVLarqF/CD/rUGIBec
+         zCSqu8XcBIH4CRT4geHYFcs41uy7Bgjl8lZAURJb12FYD1rOAZWfJxBd7tLOaMZSqWPb
+         dw2Jxyk1mCon9uig7mYnxDhHOuLrjj+xNZXSYRLwO2ZIwGpBK0fExFQJ+eFhnRWmzbXl
+         rmlplR88Zi8UDPDZ1E61nCx3kjmec1UWS+rzNYI41VEigLg2LAxg3LnqKn9VKhQBUMRC
+         OYFMYYKm7LV71qkUKTr7vaxPjlEEeHrrpgQRK5KiDRdM6IFnwhQ5gg4VlyWGc9pCgW6Y
+         RUyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ogAqzoWb6CN+6DA0U4kbAuwXiWSIUBjOQhukqqaTMWo=;
+        b=ZtqqdvsJUU29HrNmhWW8j+W6zgGvuZPns4tXXgn4eVeQmPSoEwt6+TVoQwV4n/9v9d
+         ScbLWFPghhzpRy4lbXsdBFjefjf5MHGGSl8jqiMsJ+V0ftFhgyBFzu9T2S0MXqLDWiuE
+         AMPcbL5HfoP2W1vP8M/s4H9jlCGVxMyTAmTIjvuzmoO705THlkvsOycmX/bkVue8bFkw
+         ov/XAJVQnFJbnlrysKq8ru/tlQVtMZlvtdNBJOPWk+9zlU9T0sxv0sXR5hQ+GXuAnfPb
+         E6Hb95K/fl3XhSCsRsyCgxaEN+/GmMmSJgL8hLiaveBpoAucRiHMWZQ1csVC7sdsGLpN
+         qcpg==
+X-Gm-Message-State: AOAM530KuSRc5qozUD6RCLne/gHDlYzafIJ2wSFFGupENgGHM8aTDybd
+        NHPK+urlFUL2AD8kox0gL5tS
+X-Google-Smtp-Source: ABdhPJzKPAtFVRCbCKxNDq+2mj9Roy24FWwpRwKrKmMA9dbc3IHJxH1l9zjkYhMbcHX0Q0fTfEv3mA==
+X-Received: by 2002:a62:7e14:0:b029:18a:d515:dc47 with SMTP id z20-20020a627e140000b029018ad515dc47mr3552810pfc.78.1605683994282;
+        Tue, 17 Nov 2020 23:19:54 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id q23sm23942973pfg.192.2020.11.17.23.19.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 17 Nov 2020 23:19:53 -0800 (PST)
+Date:   Wed, 18 Nov 2020 12:49:47 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] mtd: parsers: Add Qcom SMEM parser
+Message-ID: <20201118071947.GB3286@work>
+References: <20201117174845.28684-1-manivannan.sadhasivam@linaro.org>
+ <20201117174845.28684-3-manivannan.sadhasivam@linaro.org>
+ <20201118042033.GH8532@builder.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118042033.GH8532@builder.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+On Tue, Nov 17, 2020 at 10:20:33PM -0600, Bjorn Andersson wrote:
+> On Tue 17 Nov 11:48 CST 2020, Manivannan Sadhasivam wrote:
+> 
+> > NAND based Qualcomm platforms have the partition table populated in the
+> > Shared Memory (SMEM). Hence, add a parser for parsing the partitions
+> > from it.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/mtd/parsers/Kconfig        |   8 ++
+> >  drivers/mtd/parsers/Makefile       |   1 +
+> >  drivers/mtd/parsers/qcomsmempart.c | 169 +++++++++++++++++++++++++++++
+> >  3 files changed, 178 insertions(+)
+> >  create mode 100644 drivers/mtd/parsers/qcomsmempart.c
+> > 
+> > diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
+> > index e72354322f62..d90c30229052 100644
+> > --- a/drivers/mtd/parsers/Kconfig
+> > +++ b/drivers/mtd/parsers/Kconfig
+> > @@ -160,3 +160,11 @@ config MTD_REDBOOT_PARTS_READONLY
+> >  	  'FIS directory' images, enable this option.
+> >  
+> >  endif # MTD_REDBOOT_PARTS
+> > +
+> > +config MTD_QCOMSMEM_PARTS
+> > +	tristate "Qualcomm SMEM NAND flash partition parser"
+> > +	depends on MTD_NAND_QCOM || COMPILE_TEST
+> > +	depends on QCOM_SMEM
+> > +	help
+> > +	  This provides support for parsing partitions from Shared Memory (SMEM)
+> > +	  for NAND flash on Qualcomm platforms.
+> > diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
+> > index b0c5f62f9e85..50eb0b0a2210 100644
+> > --- a/drivers/mtd/parsers/Makefile
+> > +++ b/drivers/mtd/parsers/Makefile
+> > @@ -9,3 +9,4 @@ obj-$(CONFIG_MTD_AFS_PARTS)		+= afs.o
+> >  obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
+> >  obj-$(CONFIG_MTD_SHARPSL_PARTS)		+= sharpslpart.o
+> >  obj-$(CONFIG_MTD_REDBOOT_PARTS)		+= redboot.o
+> > +obj-$(CONFIG_MTD_QCOMSMEM_PARTS)	+= qcomsmempart.o
+> > diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
+> > new file mode 100644
+> > index 000000000000..d8c2a3fa4dfe
+> > --- /dev/null
+> > +++ b/drivers/mtd/parsers/qcomsmempart.c
+> > @@ -0,0 +1,169 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Qualcomm SMEM NAND flash partition parser
+> > + *
+> > + * Copyright (C) 2020, Linaro Ltd.
+> > + */
+> > +
+> > +#include <linux/ctype.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mtd/mtd.h>
+> > +#include <linux/mtd/partitions.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/soc/qcom/smem.h>
+> > +
+> > +#define SMEM_AARM_PARTITION_TABLE	9
+> > +#define SMEM_APPS			0
+> > +
+> > +#define SMEM_FLASH_PART_MAGIC1		0x55ee73aa
+> > +#define SMEM_FLASH_PART_MAGIC2		0xe35ebddb
+> > +#define SMEM_FLASH_PTABLE_V3		3
+> > +#define SMEM_FLASH_PTABLE_V4		4
+> > +#define SMEM_FLASH_PTABLE_MAX_PARTS_V3	16
+> > +#define SMEM_FLASH_PTABLE_MAX_PARTS_V4	48
+> > +#define SMEM_FLASH_PTABLE_HDR_LEN	(4 * sizeof(u32))
+> > +#define SMEM_FLASH_PTABLE_NAME_SIZE	16
+> > +
+> > +/**
+> > + * struct smem_flash_pentry - SMEM Flash partition entry
+> > + * @name: Name of the partition
+> > + * @offset: Offset in blocks
+> > + * @length: Length of the partition in blocks
+> > + * @attr: Flags for this partition
+> > + */
+> > +struct smem_flash_pentry {
+> > +	char name[SMEM_FLASH_PTABLE_NAME_SIZE];
+> > +	u32 offset;
+> 
+> It would be nice if you noted that these are little endian (using
+> __le32) and used le32_to_cpu() below.
+> 
+> 
 
-The NanoPi M4B is a minor revision of the original M4.
+Good catch! Will do.
 
-The differences against the original Nanopi M4 that are common with the
-other M4V2 revision include:
+> Apart from that I think this looks really good.
+> 
 
-  - microphone header removed
-  - power button added
-  - recovery button added
+[...]
 
-Additional changes specific to the M4B:
+> > +	}
+> > +
+> > +	pr_debug("SMEM partition table found: ver: %d len: %d\n",
+> > +		 ptable->version, ptable->numparts);
+> > +	*pparts = parts;
+> > +
+> > +	return i;
+> 
+> Had to check a few times, but afaict this is just ptable->numparts in
+> disguise... So how about just writing that instead?
+> 
 
-  - USB 3.0 hub removed; board now has 2x USB 3.0 type-A ports and 2x
-    USB 2.0 ports
-  - ADB toggle switch added; this changes the top USB 3.0 host port to
-    a peripheral port
-  - Type-C port no longer supports data or PD
-  - WiFi/Bluetooth combo chip switched to AP6256, which supports BT 5.0
-    but only 1T1R (down from 2T2R) for WiFi
+Sure, will do.
 
-Add a new dts file for the new board revision that shows the difference
-against the original.
-
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
----
- arch/arm64/boot/dts/rockchip/Makefile         |  1 +
- .../boot/dts/rockchip/rk3399-nanopi-m4b.dts   | 52 +++++++++++++++++++
- 2 files changed, 53 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts
-
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index 5a53979b7057..fd47414e40eb 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -32,6 +32,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-kobol-helios64.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-leez-p710.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopc-t4.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4b.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-neo4.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-orangepi.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-pinebook-pro.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts
-new file mode 100644
-index 000000000000..72182c58cc46
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * FriendlyElec NanoPi M4B board device tree source
-+ *
-+ * Copyright (c) 2020 Chen-Yu Tsai <wens@csie.org>
-+ */
-+
-+/dts-v1/;
-+#include "rk3399-nanopi-m4.dts"
-+
-+/ {
-+	model = "FriendlyElec NanoPi M4B";
-+	compatible = "friendlyarm,nanopi-m4b", "rockchip,rk3399";
-+
-+	adc-keys {
-+		compatible = "adc-keys";
-+		io-channels = <&saradc 1>;
-+		io-channel-names = "buttons";
-+		keyup-threshold-microvolt = <1500000>;
-+		poll-interval = <100>;
-+
-+		recovery {
-+			label = "Recovery";
-+			linux,code = <KEY_VENDOR>;
-+			press-threshold-microvolt = <18000>;
-+		};
-+	};
-+};
-+
-+/* No USB type-C PD power manager */
-+/delete-node/ &fusb0;
-+
-+&i2c4 {
-+	status = "disabled";
-+};
-+
-+&u2phy0_host {
-+	phy-supply = <&vcc5v0_usb2>;
-+};
-+
-+&u2phy0_otg {
-+	phy-supply = <&vbus_typec>;
-+};
-+
-+&u2phy1_otg {
-+	phy-supply = <&vcc5v0_usb1>;
-+};
-+
-+&vbus_typec {
-+	enable-active-high;
-+	gpios = <&gpio4 RK_PD2 GPIO_ACTIVE_HIGH>;
-+};
--- 
-2.29.1
-
+Thanks,
+Mani
