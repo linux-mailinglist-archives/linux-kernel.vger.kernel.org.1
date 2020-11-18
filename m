@@ -2,118 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF65F2B754D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D66C2B754A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgKRELD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 23:11:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
+        id S1727272AbgKREKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 23:10:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbgKRELC (ORCPT
+        with ESMTP id S1726743AbgKREKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 23:11:02 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E34C0613D4;
-        Tue, 17 Nov 2020 20:11:01 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id f11so1009347lfs.3;
-        Tue, 17 Nov 2020 20:11:01 -0800 (PST)
+        Tue, 17 Nov 2020 23:10:54 -0500
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B89CC061A51
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:10:54 -0800 (PST)
+Received: by mail-oo1-xc44.google.com with SMTP id c25so79682ooe.13
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:10:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QiZ+hPWcgRrSJYrRI/DcwNjpknvcfyeQfNBRbOUcAZo=;
-        b=kCdq/mUuaZJ6pc88zsrgz7uqcd0wPOwknm5DTCqlhoCmvs/754Xfkj1NmHP7Q79d/F
-         +IvidmjpocDik3B8lo3Kg16Y2caHKLwyiUr6G4dkS6GcTbRJ6/myby64lpQNSyxer+T/
-         MuyE2e+Pt1GeN7ZpPh4CCSPW8jO5DKGt66IqFP0XCfXP8/eORwv/ock173v6lxAB2H8b
-         UfwzrHn9LR0VevS5E4IzV/vf8KyMoL1otvHuTu7LG9PLYaKx0fvJ8ajw/tecwW7Z2dg4
-         v8sf96RAFzagHJZlzw+QZz2rRE95V0wyEfzICI6SpJ7FCtW/D0NVsW55RV2iKma7YMpv
-         JPdg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dRKcQO3pMtpF1NuRSX79Onpwrs+gklZx89qUCct/3SM=;
+        b=qx0xDJvKIig0sy53FRoTJcfK5ApCXai9Xep4AiD5uw8cXKVPDQJuiOvTAKPirYWbK6
+         9uRC4oqhzurXiQqdPKA9npG9AFTdq5Vivhs2DXfQyNYtVokc+fIB/Y5T55L5n2XLjKWo
+         h7JUwS7itLQITyiZRajejWqSlrJLdycOzUtIkvrJJpfZcpp6gqp0c15ew4e0PYxLr2/s
+         JFHsfb5BjYhCMMEkUN/hF3VrftxD1WBc8tiw36P6gDNJDDpZBuzo1Ai+DxgcJar4Seba
+         1Fh9lslOMthE7PJESN3QIvxQz3MxHsgUhvjrtD3jaAZ/Gclo5uxQtduw5GxJRTrzYGZ6
+         aRKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QiZ+hPWcgRrSJYrRI/DcwNjpknvcfyeQfNBRbOUcAZo=;
-        b=oXPDUzeI4TLgzvj5j7bjzuIMdrjAvtIwKgJeFH2PzXK8T2vGeevOllNitBS/w5XxLv
-         D7N/SWyTniXIZY6LnpqbY9yBkGHW3JLJycHwR65hS9ZFUOoEQq2MJNKMuZe5tf5Htdy4
-         VHMwk+acWU3eqWJoPQ82sU/JJLyi0syhQSuF47WlHZkWowGiXcHBQgI1Noy99Jhdm+XM
-         mWCIsfFRZkHt0FpXtS2//xDJUCG5BAyiqAMR72tnYCvTWw1vaLZULzKj5hrXzKYCojB4
-         w3WxeyVgZA0LEnqXvDV9xpSp10w+RLII6PuX1DxkKhAeNHZoG+5eQqi+Z6u8p4pfrCD/
-         eBnw==
-X-Gm-Message-State: AOAM530XJus0py8VMXUrpHBTslUg5ygh2jCQ2eiqcvZApdFdGCf9QhNp
-        qG8/0fcscSv70uC+tgHPPjpuBj/SvM32VXVbfBwmdT3H5Ew=
-X-Google-Smtp-Source: ABdhPJyW1BjaZImKMrTr6fljnV6J3SiCCfled+e4ZYa2bF2lU5eUh+EjQDFQFYiYjSQGKKB9MnnnpGkOCQnMcPkFe0o=
-X-Received: by 2002:ac2:544d:: with SMTP id d13mr2792930lfn.500.1605672659630;
- Tue, 17 Nov 2020 20:10:59 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dRKcQO3pMtpF1NuRSX79Onpwrs+gklZx89qUCct/3SM=;
+        b=BhJuGnkjfqJOFkfBQwWqPO6/VKVsguhiwal8b6C1FEoyEfm5SjKfiyGAJ/vLR13z4w
+         wlkN1DafaRwr4RO2SpCVnIMw9bZRoyJa+1kZ+6qWKBKm+hztse0wBpB/nUjyC7aNPdID
+         29s/MCEA3l+4zzKdYcCVo7FlAtwL7L4dEykrq/JJkXaxhGtYjzoaCKjqoktT6iPUreo9
+         o98i78Y+j/2DYWUEePHfG+Jz5mpKFXHYWtTdWcVUt/PuRnCR8kLaS5UmPG9DU7o/clxL
+         nJTY4/bd7NTVbaGPOV2mrLZ+J1KovDSdrxW9YrIm2QVpFxb4yDu1BPrGkrnwamXakx0o
+         0K5w==
+X-Gm-Message-State: AOAM531vbi8Zaj6iivlNZZvz0p8XcROwtDP9sSOS3eww/ZmJbEgmKehl
+        eLv3o0FzZVyX63V2rvFhSiVETw==
+X-Google-Smtp-Source: ABdhPJxl09WdJ1NQZeKYkxqPw0H5GKrDyLUScIS7dsPNwhLOqoUD1AyXq3vCWBh9+EB1kPR4vKnIfA==
+X-Received: by 2002:a4a:ddd7:: with SMTP id i23mr5416947oov.73.1605672653737;
+        Tue, 17 Nov 2020 20:10:53 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w22sm2446592oie.49.2020.11.17.20.10.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 20:10:53 -0800 (PST)
+Date:   Tue, 17 Nov 2020 22:10:51 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, robh+dt@kernel.org, sboyd@kernel.org,
+        mturquette@baylibre.com, linux-arm-msm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH 5/6] dts:qcom:sdm845: Add dt entries to support crypto
+ engine.
+Message-ID: <20201118041051.GF8532@builder.lan>
+References: <20201117134714.3456446-1-thara.gopinath@linaro.org>
+ <20201117134714.3456446-6-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-References: <20201110084758.115617-1-yinxin_1989@aliyun.com>
-In-Reply-To: <20201110084758.115617-1-yinxin_1989@aliyun.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 17 Nov 2020 20:10:48 -0800
-Message-ID: <CAADnVQK-XuFi0yZuWa+upEeFypKYNr7XHc-8JhGtfYzFPLni9g@mail.gmail.com>
-Subject: Re: [PATCH] bpf:Fix update dirty data in lru percpu hash maps
-To:     Xin Yin <yinxin_1989@aliyun.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117134714.3456446-6-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 1:04 AM Xin Yin <yinxin_1989@aliyun.com> wrote:
->
-> For lru_percpu_map update elem, prealloc_lru_pop() may return
-> an unclear elem, if the func called by bpf prog and "onallcpus"
-> set to false, it may update an elem whith dirty data.
->
-> Clear percpu value of the elem, before use it.
->
-> Signed-off-by: Xin Yin <yinxin_1989@aliyun.com>
+On Tue 17 Nov 07:47 CST 2020, Thara Gopinath wrote:
 
-The alternative fix commit d3bec0138bfb ("bpf: Zero-fill re-used
-per-cpu map element")
-was already merged.
-Please double check that it fixes your test.
-
+> Add crypto engine (CE) and CE BAM related nodes and definitions to
+> "sdm845.dtsi".
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 > ---
->  kernel/bpf/hashtab.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 728ffec52cf3..b1f781ec20b6 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -709,6 +709,16 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
->         }
->  }
->
-> +static void pcpu_init_value(struct bpf_htab *htab, void __percpu *pptr)
-> +{
-> +       u32 size = round_up(htab->map.value_size, 8);
-> +       int cpu;
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi | 30 ++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index 40e8c11f23ab..b5b2ea97681f 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -2138,6 +2138,36 @@ ufs_mem_phy_lanes: lanes@1d87400 {
+>  			};
+>  		};
+>  
+> +		cryptobam: dma@1dc4000 {
+> +			compatible = "qcom,bam-v1.7.0";
+> +			reg = <0 0x01dc4000 0 0x24000>;
+> +			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&rpmhcc RPMH_CE_CLK>;
+> +			clock-names = "bam_clk";
+> +			#dma-cells = <1>;
+> +			qcom,ee = <0>;
+> +			qcom,controlled-remotely = <1>;
+> +			iommus = <&apps_smmu 0x704 0x1>,
+> +				 <&apps_smmu 0x706 0x1>,
+> +				 <&apps_smmu 0x714 0x1>,
+> +				 <&apps_smmu 0x716 0x1>;
+
+Can you confirm that this can't be written as:
+
+iommus = <&apps_smmu 0x704 0x3>,
+	 <&apps_smmu 0x714 0x3>;
+
+(and same below).
+
+Regards,
+Bjorn
+> +		};
 > +
-> +       for_each_possible_cpu(cpu) {
-> +               memset(per_cpu_ptr(pptr, cpu), 0, size);
-> +       }
-> +}
+> +		crypto: crypto@1dfa000 {
+> +			compatible = "qcom,crypto-v5.4";
+> +			reg = <0 0x01dfa000 0 0x6000>;
+> +			clocks = <&gcc GCC_CE1_AHB_CLK>,
+> +				 <&gcc GCC_CE1_AHB_CLK>,
+> +				 <&rpmhcc RPMH_CE_CLK>;
+> +			clock-names = "iface", "bus", "core";
+> +			dmas = <&cryptobam 6>, <&cryptobam 7>;
+> +			dma-names = "rx", "tx";
+> +			iommus = <&apps_smmu 0x704 0x1>,
+> +				 <&apps_smmu 0x706 0x1>,
+> +				 <&apps_smmu 0x714 0x1>,
+> +				 <&apps_smmu 0x716 0x1>;
+> +		};
 > +
->  static bool fd_htab_map_needs_adjust(const struct bpf_htab *htab)
->  {
->         return htab->map.map_type == BPF_MAP_TYPE_HASH_OF_MAPS &&
-> @@ -1075,6 +1085,9 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
->                 pcpu_copy_value(htab, htab_elem_get_ptr(l_old, key_size),
->                                 value, onallcpus);
->         } else {
-> +               if (!onallcpus)
-> +                       pcpu_init_value(htab,
-> +                                       htab_elem_get_ptr(l_new, key_size));
->                 pcpu_copy_value(htab, htab_elem_get_ptr(l_new, key_size),
->                                 value, onallcpus);
->                 hlist_nulls_add_head_rcu(&l_new->hash_node, head);
-> --
-> 2.19.5
->
+>  		ipa: ipa@1e40000 {
+>  			compatible = "qcom,sdm845-ipa";
+>  
+> -- 
+> 2.25.1
+> 
