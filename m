@@ -2,103 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691B92B7853
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAC82B7870
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgKRIVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:21:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52479 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725772AbgKRIVR (ORCPT
+        id S1727374AbgKRIWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:22:04 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:45156 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726894AbgKRIWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:21:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605687676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G6KbmzkjPXdz5sd/mUlYtsiRppY2HL0oovb3kA5qA88=;
-        b=DmN5WcaxiJBo/y6HXemUCWlx4Lq229FAfIxiRl9gVcU3kUNzGJUgADQ0mP0wyQkxxLfAKT
-        I0AYO94JoanTJTXet9EnH2hRkl7aptnwkdSPpTBa9MTVhsz3i/vKIUZTLZXwgZet22FcUp
-        G1F33DkPobCdlg4biKCukZ+rVaPeUOY=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-PwIx0dc5NuCuK4jOQcwF8g-1; Wed, 18 Nov 2020 03:21:14 -0500
-X-MC-Unique: PwIx0dc5NuCuK4jOQcwF8g-1
-Received: by mail-ej1-f69.google.com with SMTP id l2so550952ejx.6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 00:21:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G6KbmzkjPXdz5sd/mUlYtsiRppY2HL0oovb3kA5qA88=;
-        b=lJml65lWsm12FoQXR1MS9WRRzs5m4mBEDcchCj7vn/EWG5rlHstlAPKj5TEyTpblR4
-         rB0DSCAudYFE0o6o/MK/kYESetwy7xanV5we+DapxGckK13IU4SGVF6TUyNH+kFg4O44
-         RddGFcoUPtI7LY33Sz/5l8KYdbgsfbHta1isM/Du+yoyN942gAy4rm9Na0Ff7GRpIzER
-         g1g6gTWx+yaV8+Wzkv+QxmGwiRSZ0XE5pSm3KppVKKyCIv7Bu/1gTCrV7adXFOivhvmc
-         Ao1BXI9PCk7fbQRmwjNM3N9pHnJTs9I6pwVRaHBuo0N0K/kvfQvpqdmAg7P9yrdadpaY
-         i5VQ==
-X-Gm-Message-State: AOAM531hu832gZYZsEEyuflOKl+0rD/e0C6VcUeobNpj6yynH1Mt2Uqw
-        iP0PahkgKafDo6MOub391e9CVZzrneu3lfMYk90Wa6qercK/wDM+mw2gT5sh01yyfQqqrlyqASC
-        Fa7P6zJPYiJc7PPPSoJ77wfo5
-X-Received: by 2002:a17:906:ca93:: with SMTP id js19mr24197396ejb.537.1605687673227;
-        Wed, 18 Nov 2020 00:21:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxnL15xTPVl8NBwdM1yC9jhzhLP8R3S6JTXtQ9uX4GF3tz9G3svQWxLIaZfoDvgEd1r2A6fww==
-X-Received: by 2002:a17:906:ca93:: with SMTP id js19mr24197387ejb.537.1605687673057;
-        Wed, 18 Nov 2020 00:21:13 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b1sm12672359ejg.60.2020.11.18.00.21.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Nov 2020 00:21:12 -0800 (PST)
-Subject: Re: [RFC] Add kernel-doc test script
-To:     Eduardo Habkost <ehabkost@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20201030144713.201372-1-pbonzini@redhat.com>
- <20201030144713.201372-3-pbonzini@redhat.com>
- <20201113152106.7b4a07ee@lwn.net>
- <20201113223912.GK17076@casper.infradead.org>
- <20201117212452.GM1235237@habkost.net>
- <20201117213051.GA29991@casper.infradead.org>
- <20201117223612.GN1235237@habkost.net>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <19ebee73-0e7a-7dc1-5948-072ae153e383@redhat.com>
-Date:   Wed, 18 Nov 2020 09:21:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 18 Nov 2020 03:22:03 -0500
+X-UUID: 27dbbb843e6b419197c4c22ca197f673-20201118
+X-UUID: 27dbbb843e6b419197c4c22ca197f673-20201118
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2101430473; Wed, 18 Nov 2020 16:21:46 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 18 Nov 2020 16:21:44 +0800
+Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 18 Nov 2020 16:21:44 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Min Guo <min.guo@mediatek.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-usb@vger.kernel.org>
+Subject: [PATCH v3 01/11] dt-bindings: usb: convert usb-device.txt to YAML schema
+Date:   Wed, 18 Nov 2020 16:21:16 +0800
+Message-ID: <20201118082126.42701-1-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20201117223612.GN1235237@habkost.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/20 23:36, Eduardo Habkost wrote:
-> +# the -man output includes the build date
-> +export KBUILD_BUILD_TIMESTAMP=1991-08-25
+Convert usb-device.txt to YAML schema usb-device.yaml
 
-Nice :)
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+v3:
+  1. remove $nodenmae and items key word for compatilbe;
+  2. add additionalProperties;
 
-> +ok=yes
-> +
-> +# don't even try to test other formats if -none fails:
-> +test none -none || exit 1
-> +
-> +test rst2 -rst -sphinx-version 3.0.0 || ok=no
+  The followings are suggested by Rob:
+  3. merge the following patch
+    [v2,1/4] dt-bindings: usb: convert usb-device.txt to YAML schema
+    [v2,2/4] dt-bindings: usb: add properties for hard wired devices
+  4. define the unit-address for hard-wired device in usb-hcd.yaml,
+     also define its 'reg' and 'compatible';
+  5. This series is base on Serge's series:
+    https://patchwork.kernel.org/project/linux-usb/cover/20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru/
+    [v4,00/18] dt-bindings: usb: Add generic USB HCD, xHCI, DWC USB3 DT schema
 
-Do you want 3.0.0 here too?
+v2 changes suggested by Rob:
+  1. modify pattern to support any USB class
+  2. convert usb-device.txt into usb-device.yaml
+---
+ .../devicetree/bindings/usb/usb-device.txt    | 102 --------------
+ .../devicetree/bindings/usb/usb-device.yaml   | 125 ++++++++++++++++++
+ .../devicetree/bindings/usb/usb-hcd.yaml      |  33 +++++
+ 3 files changed, 158 insertions(+), 102 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/usb/usb-device.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/usb-device.yaml
 
-> +test rst3 -rst -sphinx-version 3.0.0 || ok=no
-> +test man -man || ok=no
-
-Also since you are at it you might as well rename the function to 
-something other than "test", it's a bit confusing due to the "test" 
-shell builtin.
-
-Paolo
+diff --git a/Documentation/devicetree/bindings/usb/usb-device.txt b/Documentation/devicetree/bindings/usb/usb-device.txt
+deleted file mode 100644
+index 036be172b1ae..000000000000
+--- a/Documentation/devicetree/bindings/usb/usb-device.txt
++++ /dev/null
+@@ -1,102 +0,0 @@
+-Generic USB Device Properties
+-
+-Usually, we only use device tree for hard wired USB device.
+-The reference binding doc is from:
+-http://www.devicetree.org/open-firmware/bindings/usb/usb-1_0.ps
+-
+-Four types of device-tree nodes are defined: "host-controller nodes"
+-representing USB host controllers, "device nodes" representing USB devices,
+-"interface nodes" representing USB interfaces and "combined nodes"
+-representing simple USB devices.
+-
+-A combined node shall be used instead of a device node and an interface node
+-for devices of class 0 or 9 (hub) with a single configuration and a single
+-interface.
+-
+-A "hub node" is a combined node or an interface node that represents a USB
+-hub.
+-
+-
+-Required properties for device nodes:
+-- compatible: "usbVID,PID", where VID is the vendor id and PID the product id.
+-  The textual representation of VID and PID shall be in lower case hexadecimal
+-  with leading zeroes suppressed. The other compatible strings from the above
+-  standard binding could also be used, but a device adhering to this binding
+-  may leave out all except for "usbVID,PID".
+-- reg: the number of the USB hub port or the USB host-controller port to which
+-  this device is attached. The range is 1-255.
+-
+-
+-Required properties for device nodes with interface nodes:
+-- #address-cells: shall be 2
+-- #size-cells: shall be 0
+-
+-
+-Required properties for interface nodes:
+-- compatible: "usbifVID,PID.configCN.IN", where VID is the vendor id, PID is
+-  the product id, CN is the configuration value and IN is the interface
+-  number. The textual representation of VID, PID, CN and IN shall be in lower
+-  case hexadecimal with leading zeroes suppressed. The other compatible
+-  strings from the above standard binding could also be used, but a device
+-  adhering to this binding may leave out all except for
+-  "usbifVID,PID.configCN.IN".
+-- reg: the interface number and configuration value
+-
+-The configuration component is not included in the textual representation of
+-an interface-node unit address for configuration 1.
+-
+-
+-Required properties for combined nodes:
+-- compatible: "usbVID,PID", where VID is the vendor id and PID the product id.
+-  The textual representation of VID and PID shall be in lower case hexadecimal
+-  with leading zeroes suppressed. The other compatible strings from the above
+-  standard binding could also be used, but a device adhering to this binding
+-  may leave out all except for "usbVID,PID".
+-- reg: the number of the USB hub port or the USB host-controller port to which
+-  this device is attached. The range is 1-255.
+-
+-
+-Required properties for hub nodes with device nodes:
+-- #address-cells: shall be 1
+-- #size-cells: shall be 0
+-
+-
+-Required properties for host-controller nodes with device nodes:
+-- #address-cells: shall be 1
+-- #size-cells: shall be 0
+-
+-
+-Example:
+-
+-&usb1 {	/* host controller */
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-
+-	hub@1 {		/* hub connected to port 1 */
+-		compatible = "usb5e3,608";
+-		reg = <1>;
+-	};
+-
+-	device@2 {	/* device connected to port 2 */
+-		compatible = "usb123,4567";
+-		reg = <2>;
+-	};
+-
+-	device@3 { 	/* device connected to port 3 */
+-		compatible = "usb123,abcd";
+-		reg = <3>;
+-
+-		#address-cells = <2>;
+-		#size-cells = <0>;
+-
+-		interface@0 {	/* interface 0 of configuration 1 */
+-			compatible = "usbif123,abcd.config1.0";
+-			reg = <0 1>;
+-		};
+-
+-		interface@0,2 {	/* interface 0 of configuration 2 */
+-			compatible = "usbif123,abcd.config2.0";
+-			reg = <0 2>;
+-		};
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/usb/usb-device.yaml b/Documentation/devicetree/bindings/usb/usb-device.yaml
+new file mode 100644
+index 000000000000..f31d8a85d3e6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/usb-device.yaml
+@@ -0,0 +1,125 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/usb-device.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: The device tree bindings for the Generic USB Device
++
++maintainers:
++  - Greg Kroah-Hartman <gregkh@linuxfoundation.org>
++
++description: |
++  Usually, we only use device tree for hard wired USB device.
++  The reference binding doc is from:
++  http://www.devicetree.org/open-firmware/bindings/usb/usb-1_0.ps
++
++  Four types of device-tree nodes are defined: "host-controller nodes"
++  representing USB host controllers, "device nodes" representing USB devices,
++  "interface nodes" representing USB interfaces and "combined nodes"
++  representing simple USB devices.
++
++  A combined node shall be used instead of a device node and an interface node
++  for devices of class 0 or 9 (hub) with a single configuration and a single
++  interface.
++
++  A "hub node" is a combined node or an interface node that represents a USB
++  hub.
++
++properties:
++  compatible:
++    pattern: "^usb[0-9a-f]+,[0-9a-f]+$"
++    description: Device nodes or combined nodes.
++      "usbVID,PID", where VID is the vendor id and PID the product id.
++      The textual representation of VID and PID shall be in lower case
++      hexadecimal with leading zeroes suppressed. The other compatible
++      strings from the above standard binding could also be used,
++      but a device adhering to this binding may leave out all except
++      for "usbVID,PID".
++
++  reg:
++    description: the number of the USB hub port or the USB host-controller
++      port to which this device is attached. The range is 1-255.
++    maxItems: 1
++
++  "#address-cells":
++    description: should be 1 for hub nodes with device nodes,
++      should be 2 for device nodes with interface nodes.
++    enum: [1, 2]
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "^interface@[0-9]+(,[0-9]+)$":
++    type: object
++    description: USB interface nodes.
++      The configuration component is not included in the textual
++      representation of an interface-node unit address for configuration 1.
++
++    properties:
++      compatible:
++        pattern: "^usbif[0-9a-f]+,[0-9a-f]+.config[0-9a-f]+.[0-9a-f]+$"
++        description: Interface nodes.
++          "usbifVID,PID.configCN.IN", where VID is the vendor id, PID is
++          the product id, CN is the configuration value and IN is the interface
++          number. The textual representation of VID, PID, CN and IN shall be
++          in lower case hexadecimal with leading zeroes suppressed.
++          The other compatible strings from the above standard binding could
++          also be used, but a device adhering to this binding may leave out
++          all except for "usbifVID,PID.configCN.IN".
++
++      reg:
++        description: should be 2 cells long, the first cell represents
++          the interface number and the second cell represents the
++          configuration value.
++        maxItems: 1
++
++required:
++  - compatile
++  - reg
++
++additionalProperties: true
++
++examples:
++  #hub connected to port 1
++  #device connected to port 2
++  #device connected to port 3
++  #    interface 0 of configuration 1
++  #    interface 0 of configuration 2
++  - |
++    usb@11270000 {
++        compatible = "generic-xhci";
++        reg = <0x11270000 0x1000>;
++        interrupts = <0x0 0x4e 0x0>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        hub@1 {
++            compatible = "usb5e3,608";
++            reg = <1>;
++        };
++
++        device@2 {
++            compatible = "usb123,4567";
++            reg = <2>;
++        };
++
++        device@3 {
++            compatible = "usb123,abcd";
++            reg = <3>;
++
++            #address-cells = <2>;
++            #size-cells = <0>;
++
++            interface@0 {
++                compatible = "usbif123,abcd.config1.0";
++                reg = <0 1>;
++            };
++
++            interface@0,2 {
++                compatible = "usbif123,abcd.config2.0";
++                reg = <0 2>;
++            };
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+index 9881ac10380d..5d0c6b5500d6 100755
+--- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
++++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+@@ -23,6 +23,32 @@ properties:
+       targeted hosts (non-PC hosts).
+     type: boolean
+ 
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "@[0-9a-f]+$":
++    type: object
++    description: The hard wired USB devices
++
++    properties:
++      compatible:
++        pattern: "^usb[0-9a-f]+,[0-9a-f]+$"
++        $ref: /usb/usb-device.yaml
++        description: the string is 'usbVID,PID', where VID is the vendor id
++          and PID is the product id
++
++      reg:
++        $ref: /usb/usb-device.yaml
++        maxItems: 1
++
++    required:
++      - compatible
++      - reg
++
+ additionalProperties: true
+ 
+ examples:
+@@ -30,4 +56,11 @@ examples:
+     usb {
+         phys = <&usb2_phy1>, <&usb3_phy1>;
+         phy-names = "usb";
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        hub@1 {
++            compatible = "usb5e3,610";
++            reg = <1>;
++        };
+     };
+-- 
+2.18.0
 
