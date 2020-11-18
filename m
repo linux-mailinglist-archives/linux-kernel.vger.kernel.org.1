@@ -2,291 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7038E2B7C03
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0E52B7C08
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgKRLAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:00:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56580 "EHLO
+        id S1727817AbgKRLA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:00:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25017 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727750AbgKRLAT (ORCPT
+        by vger.kernel.org with ESMTP id S1726510AbgKRLA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:00:19 -0500
+        Wed, 18 Nov 2020 06:00:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605697217;
+        s=mimecast20190719; t=1605697257;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SqWuAkoe91TfxTBFDnkKWT5U9ehJUI+pqFt27D9lSSw=;
-        b=jModzjZfL7s4edlcG/I65lRm+wkmD+Qwbqq/0W1cBsHIQqQi03dHF1FmYq94Hqle4pL+FL
-        1XMOdgCRqzIbTs6C0pRlxdmdCppDpZtlHKlege+gdDlUViaULD377lbkqiBabxwmi62Lpc
-        rhLU1luUAjH+IcccefDPMCe/+oQ3KXI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-iJ7RqIMGOEKOSINdpqlh0w-1; Wed, 18 Nov 2020 06:00:14 -0500
-X-MC-Unique: iJ7RqIMGOEKOSINdpqlh0w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74661107B26E;
-        Wed, 18 Nov 2020 11:00:13 +0000 (UTC)
-Received: from [10.36.115.104] (ovpn-115-104.ams2.redhat.com [10.36.115.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7B20210013DB;
-        Wed, 18 Nov 2020 11:00:07 +0000 (UTC)
-Subject: Re: [RFC, v1 0/3] msi support for platform devices
-To:     Vikas Gupta <vikas.gupta@broadcom.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikram Prakash <vikram.prakash@broadcom.com>,
-        Srinath Mannam <srinath.mannam@broadcom.com>,
-        Manish Kurup <manish.kurup@broadcom.com>
-References: <20201105060257.35269-1-vikas.gupta@broadcom.com>
- <20201112175852.21572-1-vikas.gupta@broadcom.com>
- <96436cba-88e3-ddb6-36d6-000929b86979@redhat.com>
- <CAHLZf_uAp-CzA-rkvFF70wT5zoB98OvErXxFthoBHyvzwTRxAQ@mail.gmail.com>
- <c78d2706-f406-32ab-1637-bd0c9f459e23@redhat.com>
- <CAHLZf_uQBzQndGo1vtPtrUd2KXk+im=A9evowggzk6U=5vEvAg@mail.gmail.com>
- <92188bdf-e0a9-aad9-d26b-78a5443f2a47@redhat.com>
- <e44a2949-b86f-52a9-501c-4f099b820dcd@redhat.com>
- <CAHLZf_vWqcx_cGwfBJGZjaU2UQGd3BRNsKwGOLp0KAhqwh4x4w@mail.gmail.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <3d9ae9b8-3a0c-fc50-7b56-3097b515c6ca@redhat.com>
-Date:   Wed, 18 Nov 2020 12:00:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        bh=BHgwWsxqfyxpx05VciZN0+XFPaB0CWdQNUMluxEj1l4=;
+        b=HSz+H6qEexE/Iz8xX3bY+3V6g95fFYhOF+RFcPPdej1BQl1UuaMsAKwkrkdXdem6dqiA0r
+        x8hY8CwOnUlCIt2Gobb5epDo7hu578HM4jZsDcTVmdDCJmvZE3TFd3v51RUmxXj9T1PykT
+        GQ/DStfIJE7/dZPOkwk6yyn84yGZ6O8=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-38-NB_AZ69yOFWJa1KddD3mAw-1; Wed, 18 Nov 2020 06:00:54 -0500
+X-MC-Unique: NB_AZ69yOFWJa1KddD3mAw-1
+Received: by mail-ed1-f72.google.com with SMTP id c24so660092edx.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:00:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BHgwWsxqfyxpx05VciZN0+XFPaB0CWdQNUMluxEj1l4=;
+        b=KbXN478Exck2k51RJ0twtbHCTbdAvxmi8tx+bsj9E4cplFVz+EsdfaRfkFTcXoa5wT
+         9HO/x/EINpXQ/j/SPUKUCTwN7+D0q00BWnWxSiHEpXTfE0iECVc4sx4yg9U1V4bj741W
+         +jj4DtwU1wgurweAmUvAFZwg+RSrQpdVmbJISSzGD/LZkv7ade5ON3l+lyYQVOzJ+Giz
+         d9xTJDLA0RB4nr0Q014iUo4p7uNzfmmfzHiWLQ4KdPkabMb1QmE6NuqCM/g5pehGqrhU
+         sNUTFLprUfP8PvURqNSpnW3Xfde5E4xd5pmmzoQh1al8c0TYQrcXJhaw8n4dCL8M4JyK
+         u/RQ==
+X-Gm-Message-State: AOAM531QubrWts7/j8A2ixm8kK97qTLR6i8JXjWcco/uC8JbbcK69Kc2
+        x5oowICSeytt3zH79iUSVWlO2p6x26GBEf75hh1n23vdIelv0HGrrTf5LmqpxiEb5b8hYheSOIw
+        dd6EumQlwr0cgot9LXZ2wTaKW
+X-Received: by 2002:a17:906:a856:: with SMTP id dx22mr24507874ejb.134.1605697252934;
+        Wed, 18 Nov 2020 03:00:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy+GAjBHUWjn6hPBGFbrVITqQ9sqQ54HoZMU+4La/yd5R1Uo4ZbK2hUgvmGYP6WYH67B0ZMEA==
+X-Received: by 2002:a17:906:a856:: with SMTP id dx22mr24507840ejb.134.1605697252666;
+        Wed, 18 Nov 2020 03:00:52 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id n12sm12766284ejs.19.2020.11.18.03.00.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Nov 2020 03:00:51 -0800 (PST)
+Subject: Re: [PATCH 0/5] Add uv_sysfs platform driver
+To:     Justin Ernst <justin.ernst@hpe.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org
+Cc:     Andy Shevchenko <andy@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>
+References: <20201117204224.51230-1-justin.ernst@hpe.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <99d26b0e-efd7-a32d-7be0-607c98ac2569@redhat.com>
+Date:   Wed, 18 Nov 2020 12:00:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <CAHLZf_vWqcx_cGwfBJGZjaU2UQGd3BRNsKwGOLp0KAhqwh4x4w@mail.gmail.com>
+In-Reply-To: <20201117204224.51230-1-justin.ernst@hpe.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vikas,
+Hi,
 
-On 11/17/20 5:36 PM, Vikas Gupta wrote:
-> Hi Eric,
+On 11/17/20 9:42 PM, Justin Ernst wrote:
+> Introduce a new platform driver to gather topology information from UV systems
+> and expose that information via a sysfs interface at /sys/firmware/sgi_uv/.
 > 
-> On Tue, Nov 17, 2020 at 1:55 PM Auger Eric <eric.auger@redhat.com> wrote:
->>
->> Hi Vikas,
->>
->> On 11/17/20 9:05 AM, Auger Eric wrote:
->>> Hi Vikas,
->>>
->>> On 11/17/20 7:25 AM, Vikas Gupta wrote:
->>>> Hi Eric,
->>>>
->>>> On Mon, Nov 16, 2020 at 6:44 PM Auger Eric <eric.auger@redhat.com> wrote:
->>>>>
->>>>> Hi Vikas,
->>>>>
->>>>> On 11/13/20 6:24 PM, Vikas Gupta wrote:
->>>>>> Hi Eric,
->>>>>>
->>>>>> On Fri, Nov 13, 2020 at 12:10 AM Auger Eric <eric.auger@redhat.com> wrote:
->>>>>>>
->>>>>>> Hi Vikas,
->>>>>>>
->>>>>>> On 11/12/20 6:58 PM, Vikas Gupta wrote:
->>>>>>>> This RFC adds support for MSI for platform devices.
->>>>>>>> a) MSI(s) is/are added in addition to the normal interrupts.
->>>>>>>> b) The vendor specific MSI configuration can be done using
->>>>>>>>    callbacks which is implemented as msi module.
->>>>>>>> c) Adds a msi handling module for the Broadcom platform devices.
->>>>>>>>
->>>>>>>> Changes from:
->>>>>>>> -------------
->>>>>>>>  v0 to v1:
->>>>>>>>    i)  Removed MSI device flag VFIO_DEVICE_FLAGS_MSI.
->>>>>>>>    ii) Add MSI(s) at the end of the irq list of platform IRQs.
->>>>>>>>        MSI(s) with first entry of MSI block has count and flag
->>>>>>>>        information.
->>>>>>>>        IRQ list: Allocation for IRQs + MSIs are allocated as below
->>>>>>>>        Example: if there are 'n' IRQs and 'k' MSIs
->>>>>>>>        -------------------------------------------------------
->>>>>>>>        |IRQ-0|IRQ-1|....|IRQ-n|MSI-0|MSI-1|MSI-2|......|MSI-k|
->>>>>>>>        -------------------------------------------------------
->>>>>>> I have not taken time yet to look at your series, but to me you should have
->>>>>>> |IRQ-0|IRQ-1|....|IRQ-n|MSI|MSIX
->>>>>>> then for setting a given MSIX (i) you would select the MSIx index and
->>>>>>> then set start=i count=1.
->>>>>>
->>>>>> As per your suggestion, we should have, if there are n-IRQs, k-MSIXs
->>>>>> and m-MSIs, allocation of IRQs should be done as below
->>>>>>
->>>>>> |IRQ0|IRQ1|......|IRQ-(n-1)|MSI|MSIX|
->>>>>>                                              |        |
->>>>>>                                              |
->>>>>> |MSIX0||MSIX1||MSXI2|....|MSIX-(k-1)|
->>>>>>                                              |MSI0||MSI1||MSI2|....|MSI-(m-1)|
->>>>> No I really meant this list of indices: IRQ0|IRQ1|......|IRQ-(n-1)|MSI|MSIX|
->>>>> and potentially later on IRQ0|IRQ1|......|IRQ-(n-1)|MSI|MSIX| ERR| REQ
->>>>> if ERR/REQ were to be added.
->>>> I agree on this. Actually the map I drew incorrectly above but wanted
->>>> to demonstrate the same. It was a child-parent relationship for MSI
->>>> and its members and similarly for MSIX as well.
->>>>>
->>>>> I think the userspace could query the total number of indices using
->>>>> VFIO_DEVICE_GET_INFO and retrieve num_irqs (corresponding to the n wire
->>>>> interrupts + MSI index + MSIX index)
->>>>>
->>>>> Then userspace can loop on all the indices using
->>>>> VFIO_DEVICE_GET_IRQ_INFO. For each index it uses count to determine the
->>>>> first indices related to wire interrupts (count = 1). Then comes the MSI
->>>>> index, and after the MSI index. If any of those is supported, count >1,
->>>>> otherwise count=0. The only thing I am dubious about is can the device
->>>>> use a single MSI/MSIX? Because my hypothesis here is we use count to
->>>>> discriminate between wire first indices and other indices.
->>>> I believe count can be one as well, especially for ERR/REQ as you
->>>> mentioned above.
->>> Given ERR and REQ indices would follow MSI and MSIX ones, MSI index
->>> could be recognized by the first index whose count != 1. But indeed I am
->>> not sure the number of supported vectors cannot be 1. In your case it is
->>> induced by the size of the ring so it is OK but for other devices this
->>> may be different.
->>>
->>> I think we can not rely on the count > 1. Now, this is
->>>> blocking and we are not left with options unless we consider adding
->>>> more enums in flags in vfio_irq_info to tell userspace that particular
->>>> index is wired, MSI, MSIX etc. for the platform device.
->>>> What do you think?
->>> If count is not reliable to discriminate the first n wired interrupts
->>> from the subsequen MSI and MSIx index, Alex suggested to add a
->>> capability extension in the vfio_irq_info structure. Something similar
->>> to what was done for vfio_region_info.
->>>
->>> Such kind of thing was attempted in
->>> https://lore.kernel.org/kvmarm/20201116110030.32335-8-eric.auger@redhat.com/T/#u
->>>
->>> ` [PATCH v11 07/13] vfio: Use capability chains to handle device
->>> specific irq
->>> ` [PATCH v11 08/13] vfio/pci: Add framework for custom interrupt indices
->>> ` [PATCH v11 09/13] vfio: Add new IRQ for DMA fault reporting
->>
->> By the way I was mentionning MSI/MSIx in my previous reply but, as Alex
->> pointed out, with platform device only a single MSI index does make
->> sense, no?
-> Yes, I think single MSI should be OK.
-> This single MSI index should be implemented as ext_irqs, similar to,
-> as you implemented in the mentioned patch. Is my understanding
-> correct?
-Yes, if count !=1 cannot be used to detect the MSI index, I think using
-a capability would do the job and this is aligned with last Alex'
-suggestion.
+> Justin Ernst (5):
+>   x86/platform/uv: Remove existing /sys/firmware/sgi_uv/ interface
+>   x86/platform/uv: Add and export uv_bios_* functions
+>   x86/platform/uv: Add new uv_sysfs platform driver
+>   x86/platform/uv: Update ABI documentation of /sys/firmware/sgi_uv/
+>   x86/platform/uv: Update MAINTAINERS for uv_sysfs driver
 
-Thanks
+So patch 1/1 drops the existing 
 
-Eric
-> Thanks,
-> Vikas
->>
->> Thanks
->>
->> Eric
->>>
->>> Note this has not been reviewed yet.
->>>
->>> Thanks
->>>
->>> Eric
->>>
->>>>>
->>>>>
->>>>>
->>>>>> With this implementation user space can know that, at indexes n and
->>>>>> n+1, edge triggered interrupts are present.
->>>>> note wired interrupts can also be edge ones.
->>>>>>    We may add an element in vfio_platform_irq itself to allocate MSIs/MSIXs
->>>>>>    struct vfio_platform_irq{
->>>>>>    .....
->>>>>>    .....
->>>>>>    struct vfio_platform_irq *block; => this points to the block
->>>>>> allocation for MSIs/MSIXs and all msi/msix are type of IRQs.As wired interrupts and MSI interrupts coexist, I would store in vdev an
->>>>> array of wired interrupts (the existing vdev->irqs) and a new array for
->>>>> MSI(x) as done in the PCI code.
->>>>>
->>>>> vdev->ctx = kcalloc(nvec, sizeof(struct vfio_pci_irq_ctx), GFP_KERNEL);
->>>>>
->>>>> Does it make sense?
->>>> Yes, we can use similar kinds of allocations.
->>>>
->>>> Thanks,
->>>> Vikas
->>>>>
->>>>>>    };
->>>>>>                          OR
->>>>>> Another structure can be defined in 'vfio_pci_private.h'
->>>>>> struct vfio_msi_ctx {
->>>>>>         struct eventfd_ctx      *trigger;
->>>>>>         char                    *name;
->>>>>> };
->>>>>> and
->>>>>> struct vfio_platform_irq {
->>>>>>   .....
->>>>>>   .....
->>>>>>   struct vfio_msi_ctx *block; => this points to the block allocation
->>>>>> for MSIs/MSIXs
->>>>>> };
->>>>>> Which of the above two options sounds OK to you? Please suggest.
->>>>>>
->>>>>>> to me individual MSIs are encoded in the subindex and not in the index.
->>>>>>> The index just selects the "type" of interrupt.
->>>>>>>
->>>>>>> For PCI you just have:
->>>>>>>         VFIO_PCI_INTX_IRQ_INDEX,
->>>>>>>         VFIO_PCI_MSI_IRQ_INDEX, -> MSI index and then you play with
->>>>>>> start/count
->>>>>>>         VFIO_PCI_MSIX_IRQ_INDEX,
->>>>>>>         VFIO_PCI_ERR_IRQ_INDEX,
->>>>>>>         VFIO_PCI_REQ_IRQ_INDEX,
->>>>>>>
->>>>>>> (include/uapi/linux/vfio.h)
->>>>>>
->>>>>> In pci case, type of interrupts is fixed so they can be 'indexed' by
->>>>>> these enums but for VFIO platform user space will need to iterate all
->>>>>> (num_irqs) indexes to know at which indexes edge triggered interrupts
->>>>>> are present.
->>>>> indeed, but can't you loop over all indices looking until count !=1? At
->>>>> this point you know if have finished emurating the wires. Holds if
->>>>> MSI(x) count !=1 of course.
->>>>>
->>>>> Thanks
->>>>>
->>>>> Eric
->>>>>
->>>>>>
->>>>>> Thanks,
->>>>>> Vikas
->>>>>>>
->>>>>>> Thanks
->>>>>>>
->>>>>>> Eric
->>>>>>>>        MSI-0 will have count=k set and flags set accordingly.
->>>>>>>>
->>>>>>>> Vikas Gupta (3):
->>>>>>>>   vfio/platform: add support for msi
->>>>>>>>   vfio/platform: change cleanup order
->>>>>>>>   vfio/platform: add Broadcom msi module
->>>>>>>>
->>>>>>>>  drivers/vfio/platform/Kconfig                 |   1 +
->>>>>>>>  drivers/vfio/platform/Makefile                |   1 +
->>>>>>>>  drivers/vfio/platform/msi/Kconfig             |   9 +
->>>>>>>>  drivers/vfio/platform/msi/Makefile            |   2 +
->>>>>>>>  .../vfio/platform/msi/vfio_platform_bcmplt.c  |  74 ++++++
->>>>>>>>  drivers/vfio/platform/vfio_platform_common.c  |  86 ++++++-
->>>>>>>>  drivers/vfio/platform/vfio_platform_irq.c     | 238 +++++++++++++++++-
->>>>>>>>  drivers/vfio/platform/vfio_platform_private.h |  23 ++
->>>>>>>>  8 files changed, 419 insertions(+), 15 deletions(-)
->>>>>>>>  create mode 100644 drivers/vfio/platform/msi/Kconfig
->>>>>>>>  create mode 100644 drivers/vfio/platform/msi/Makefile
->>>>>>>>  create mode 100644 drivers/vfio/platform/msi/vfio_platform_bcmplt.c
->>>>>>>>
->>>>>>>
->>>>>
->>
+/sys/firmware/sgi_uv/coherence_id
+/sys/firmware/sgi_uv/partition_id
+
+sysfs API, then according to patch 4/5 patch 3/5 reintroduces
+the /sys/firmware/sgi_uv/partition_id API, but the /sys/firmware/sgi_uv/coherence_id
+file is gone for ever ?
+
+I'm not sure what userspace bits (may) depend on this but without more info
+this looks like a clear violation of the do not break userspace APIs rule.
+
+So, based on this, I have to nack this series in its current state.
+
+Now if there is a strong believe there are 0 (not a few, but _zero_) users
+out there who rely on the /sys/firmware/sgi_uv/coherence_id file then this
+might be ok. But then there needs to be a technical analysis of why this is
+ok in the commit message of the patch dropping this sysfs file.
+
+Also the commit message of patch 1/5 should mention that
+/sys/firmware/sgi_uv/partition_id will be re-introduced later through
+another driver.
+
+Regards,
+
+Hans
+
+
+> 
+>  .../ABI/testing/sysfs-firmware-sgi_uv         | 137 ++-
+>  MAINTAINERS                                   |   6 +
+>  arch/x86/include/asm/uv/bios.h                |  49 +
+>  arch/x86/include/asm/uv/uv_geo.h              | 103 +++
+>  arch/x86/platform/uv/Makefile                 |   2 +-
+>  arch/x86/platform/uv/bios_uv.c                |  54 ++
+>  arch/x86/platform/uv/uv_sysfs.c               |  63 --
+>  drivers/platform/x86/Kconfig                  |  11 +
+>  drivers/platform/x86/Makefile                 |   3 +
+>  drivers/platform/x86/uv_sysfs.c               | 853 ++++++++++++++++++
+>  10 files changed, 1202 insertions(+), 79 deletions(-)
+>  create mode 100644 arch/x86/include/asm/uv/uv_geo.h
+>  delete mode 100644 arch/x86/platform/uv/uv_sysfs.c
+>  create mode 100644 drivers/platform/x86/uv_sysfs.c
+> 
+> 
+> base-commit: 4ef8451b332662d004df269d4cdeb7d9f31419b5
+> 
 
