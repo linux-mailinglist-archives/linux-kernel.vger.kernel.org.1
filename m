@@ -2,178 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6212B72D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 852532B72D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:06:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727314AbgKRAGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:06:22 -0500
-Received: from www62.your-server.de ([213.133.104.62]:39952 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgKRAGV (ORCPT
+        id S1728650AbgKRAGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:06:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726205AbgKRAGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:06:21 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kfAzJ-0006H4-Us; Wed, 18 Nov 2020 01:06:17 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kfAzJ-000NB8-OE; Wed, 18 Nov 2020 01:06:17 +0100
-Subject: Re: [PATCH bpf-next v6 06/34] bpf: prepare for memcg-based memory
- accounting for bpf maps
-To:     Roman Gushchin <guro@fb.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, netdev@vger.kernel.org, andrii@kernel.org,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-References: <20201117034108.1186569-1-guro@fb.com>
- <20201117034108.1186569-7-guro@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <41eb5e5b-e651-4cb3-a6ea-9ff6b8aa41fb@iogearbox.net>
-Date:   Wed, 18 Nov 2020 01:06:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 17 Nov 2020 19:06:50 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3F0C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:06:50 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id t12so90756pjq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:06:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LbHoYkDshsZNDnVClBGFOLqaI4R4jBMVshvMjXXS/SE=;
+        b=sYKoNr7a0tDbSEHIPgnmUJvh5wuPFq7BuhpbIsvk5MbdedI1K4AY1d5kJ0F0UzHH2u
+         VoL7b0W+czcz8FNRWscvjogwdoa1xogZLEVWEW69P3QBHk7WrBM6zJ/oiT4PxA00rIxM
+         R3Tre+W3SY8EFuaBEhrCiUXMtoSPk78bxz8BtTLOlNicEEhMYKbfs2Fbq9tq9Tg+ovOd
+         6NOporZbyLb99nkfRHlQYgQf/DzxcP9olswA868ClDX1GuXHm026eNKl6J6TWLMU63ci
+         42tPX9GNXr9a3ZxlcLFrCaIt6hibXFj5zsdMKzxOuwp+/rOB7oRkA8F/kK1A8YWoJZn3
+         hfkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LbHoYkDshsZNDnVClBGFOLqaI4R4jBMVshvMjXXS/SE=;
+        b=NkpcjLGzHtWtCP1zH7sPnKu8gjiRKmgvt+FgsR1N/m4z//lDEljColyzjhb2gA9JCT
+         37VsqyUOmq9NhmsRetptcHHH4aCFTiK40rWFcK+XXJtq0jhD0D1afIxonoWq92u6h5sA
+         BnV4HQGThaWm7+/oUmXvJJlOz23hhbaBX7L3j0lmpXIal5PXUF1gYYB3g2Gkmbf+Ber+
+         2PjO3p2QZarMg8Xp4hM8PEMqbl2qv42udpAYGF4oQE/d6zM7Z0IT7ii7fwPOuqqhAQdO
+         l86wtGg2GH3M9K+Jo8lLnFH85OStHProDYrV3vljt6lMCIaiStsAdL3SWLy+1J17VSEJ
+         pH5A==
+X-Gm-Message-State: AOAM533sYYy6EnaPeMVoYiSC8AXb3x6HWrXkXiUpdDwAJevgUVnj/WLe
+        09kaO2FnRyhBvaHnceLlYm/Krw==
+X-Google-Smtp-Source: ABdhPJwGg8xThv48+1ANtylzltaxVEheW1K+481DJrc8Aj6pOPtjN7C7oCLqNDFUIGIriYtGavz8LA==
+X-Received: by 2002:a17:90a:c0f:: with SMTP id 15mr1457749pjs.148.1605658009680;
+        Tue, 17 Nov 2020 16:06:49 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id l1sm1519511pgg.4.2020.11.17.16.06.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 16:06:48 -0800 (PST)
+Date:   Tue, 17 Nov 2020 17:06:47 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
+Message-ID: <20201118000647.GA4113759@xps15>
+References: <c31b8427-baca-5c77-6420-b592c57a3a7b@st.com>
+ <20201112115115.GA11069@ubuntu>
+ <945f377d-1975-552d-25b2-1dc25d3c3a46@st.com>
+ <2d25d1aa-bd8a-f0db-7888-9f72edc9f687@st.com>
+ <20201116151028.GA1519@ubuntu>
+ <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
+ <20201116224003.GC3892875@xps15>
+ <50549519-d9ff-9048-a3d8-dab02bfda096@st.com>
+ <20201117160330.GA15538@ubuntu>
+ <a653c503-7fd1-7b87-88a5-88c9002ba410@st.com>
 MIME-Version: 1.0
-In-Reply-To: <20201117034108.1186569-7-guro@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25991/Tue Nov 17 14:12:35 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a653c503-7fd1-7b87-88a5-88c9002ba410@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/20 4:40 AM, Roman Gushchin wrote:
-> In the absolute majority of cases if a process is making a kernel
-> allocation, it's memory cgroup is getting charged.
+On Tue, Nov 17, 2020 at 05:44:05PM +0100, Arnaud POULIQUEN wrote:
 > 
-> Bpf maps can be updated from an interrupt context and in such
-> case there is no process which can be charged. It makes the memory
-> accounting of bpf maps non-trivial.
 > 
-> Fortunately, after commit 4127c6504f25 ("mm: kmem: enable kernel
-> memcg accounting from interrupt contexts") and b87d8cefe43c
-> ("mm, memcg: rework remote charging API to support nesting")
-> it's finally possible.
+> On 11/17/20 5:03 PM, Guennadi Liakhovetski wrote:
+> > On Tue, Nov 17, 2020 at 12:42:30PM +0100, Arnaud POULIQUEN wrote:
+> > 
+> > [snip]
+> > 
+> >> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+> >> index 5bda7cb44618..80c2cc23bada 100644
+> >> --- a/drivers/rpmsg/rpmsg_ns.c
+> >> +++ b/drivers/rpmsg/rpmsg_ns.c
+> >> @@ -55,6 +55,39 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void
+> >> *data, int len,
+> >>  	return 0;
+> >>  }
+> >>
+> >> +/**
+> >> + * rpmsg_ns_register_device() - register name service device based on rpdev
+> >> + * @rpdev: prepared rpdev to be used for creating endpoints
+> >> + *
+> >> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
+> >> + * basis for the rpmsg name service device.
+> >> + */
+> >> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+> >> +{
+> >> +#ifdef MODULES
+> >> +	int ret;
+> >> +	struct module *rpmsg_ns;
+> >> +
+> >> +	mutex_lock(&module_mutex);
+> >> +	rpmsg_ns = find_module(KBUILD_MODNAME);
+> >> +	mutex_unlock(&module_mutex);
+> >> +
+> >> +	if (!rpmsg_ns) {
+> >> +		ret = request_module(KBUILD_MODNAME);
+> > 
+> > Is this code requesting the module in which it is located?.. I must be missing 
+> > something...
 > 
-> To do it, a pointer to the memory cgroup of the process which created
-> the map is saved, and this cgroup is getting charged for all
-> allocations made from an interrupt context.
+> Right this is stupid...Thanks to highlight this!
 > 
-> Allocations made from a process context will be accounted in a usual way.
+> That being said, your remark is very interesting: we need to load the module to
+> access to this function. This means that calling this function ensures that the
+> module is loaded. In this case no need to add the piece of code to find
+> module... here is the call stack associated (associated patch is available below):
 > 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Song Liu <songliubraving@fb.com>
-[...]
->   
-> +#ifdef CONFIG_MEMCG_KMEM
-> +static __always_inline int __bpf_map_update_elem(struct bpf_map *map, void *key,
-> +						 void *value, u64 flags)
+> 
+> (rpmsg_ns_probe+0x5c/0xe0 [rpmsg_ns])
+> [   11.858748] [<bf00a0a0>] (rpmsg_ns_probe [rpmsg_ns]) from [<bf0005cc>]
+> (rpmsg_dev_probe+0x14c/0x1b0 [rpmsg_core])
+> [   11.869047] [<bf0005cc>] (rpmsg_dev_probe [rpmsg_core]) from [<c067cd44>]
+> (really_probe+0x208/0x4f0)
+> [   11.878117] [<c067cd44>] (really_probe) from [<c067d1f4>]
+> (driver_probe_device+0x78/0x16c)
+> [   11.886404] [<c067d1f4>] (driver_probe_device) from [<c067ad48>]
+> (bus_for_each_drv+0x84/0xd0)
+> [   11.894887] [<c067ad48>] (bus_for_each_drv) from [<c067ca9c>]
+> (__device_attach+0xf0/0x188)
+> [   11.903142] [<c067ca9c>] (__device_attach) from [<c067bb10>]
+> (bus_probe_device+0x84/0x8c)
+> [   11.911314] [<c067bb10>] (bus_probe_device) from [<c0678094>]
+> (device_add+0x3b0/0x7b0)
+> [   11.919227] [<c0678094>] (device_add) from [<bf0003dc>]
+> (rpmsg_register_device+0x54/0x88 [rpmsg_core])
+> [   11.928541] [<bf0003dc>] (rpmsg_register_device [rpmsg_core]) from
+> [<bf011b58>] (rpmsg_probe+0x298/0x3c8 [virtio_rpmsg_bus])
+> [   11.939748] [<bf011b58>] (rpmsg_probe [virtio_rpmsg_bus]) from [<c05cd648>]
+> (virtio_dev_probe+0x1f4/0x2c4)
+> [   11.949377] [<c05cd648>] (virtio_dev_probe) from [<c067cd44>]
+> (really_probe+0x208/0x4f0)
+> [   11.957454] [<c067cd44>] (really_probe) from [<c067d1f4>]
+> (driver_probe_device+0x78/0x16c)
+> [   11.965710] [<c067d1f4>] (driver_probe_device) from [<c067d548>]
+> (device_driver_attach+0x58/0x60)
+> [   11.974574] [<c067d548>] (device_driver_attach) from [<c067d604>]
+> (__driver_attach+0xb4/0x154)
+> [   11.983177] [<c067d604>] (__driver_attach) from [<c067ac68>]
+> (bus_for_each_dev+0x78/0xc0)
+> [   11.991344] [<c067ac68>] (bus_for_each_dev) from [<c067bdc0>]
+> (bus_add_driver+0x170/0x20c)
+> [   11.999600] [<c067bdc0>] (bus_add_driver) from [<c067e12c>]
+> (driver_register+0x74/0x108)
+> [   12.007693] [<c067e12c>] (driver_register) from [<bf017010>]
+> (rpmsg_init+0x10/0x1000 [virtio_rpmsg_bus])
+> [   12.017168] [<bf017010>] (rpmsg_init [virtio_rpmsg_bus]) from [<c0102090>]
+> (do_one_initcall+0x58/0x2bc)
+> [
+> 
+> This would make the patch very simple. I tested following patch on my platform,
+> applying it, i do not reproduce the initial issue.
+> 
+> 
+> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+> index c3fc75e6514b..1394114782d2 100644
+> --- a/drivers/rpmsg/Kconfig
+> +++ b/drivers/rpmsg/Kconfig
+> @@ -71,5 +71,6 @@ config RPMSG_VIRTIO
+>  	depends on HAS_DMA
+>  	select RPMSG
+>  	select VIRTIO
+> +	select RPMSG_NS
+> 
+>  endmenu
+> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+> index 5bda7cb44618..5867281188de 100644
+> --- a/drivers/rpmsg/rpmsg_ns.c
+> +++ b/drivers/rpmsg/rpmsg_ns.c
+> @@ -55,6 +55,24 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void
+> *data, int len,
+>  	return 0;
+>  }
+> 
+> +/**
+> + * rpmsg_ns_register_device() - register name service device based on rpdev
+> + * @rpdev: prepared rpdev to be used for creating endpoints
+> + *
+> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
+> + * basis for the rpmsg name service device.
+> + */
+> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
 > +{
-> +	struct mem_cgroup *old_memcg;
-> +	bool in_interrupt;
-> +	int ret;
+> +	strcpy(rpdev->id.name, KBUILD_MODNAME);
+> +	rpdev->driver_override = KBUILD_MODNAME;
+> +	rpdev->src = RPMSG_NS_ADDR;
+> +	rpdev->dst = RPMSG_NS_ADDR;
 > +
-> +	/*
-> +	 * If update from an interrupt context results in a memory allocation,
-> +	 * the memory cgroup to charge can't be determined from the context
-> +	 * of the current task. Instead, we charge the memory cgroup, which
-> +	 * contained a process created the map.
-> +	 */
-> +	in_interrupt = in_interrupt();
-> +	if (in_interrupt)
-> +		old_memcg = set_active_memcg(map->memcg);
+> +	return rpmsg_register_device(rpdev);
+> +}
+> +EXPORT_SYMBOL(rpmsg_ns_register_device);
 > +
-> +	ret = map->ops->map_update_elem(map, key, value, flags);
-> +
-> +	if (in_interrupt)
-> +		set_active_memcg(old_memcg);
-> +
-> +	return ret;
+>  static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+>  {
+>  	struct rpmsg_endpoint *ns_ept;
+> @@ -80,7 +98,7 @@ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+>  }
+> 
+>  static struct rpmsg_driver rpmsg_ns_driver = {
+> -	.drv.name = "rpmsg_ns",
+> +	.drv.name = KBUILD_MODNAME,
+>  	.probe = rpmsg_ns_probe,
+>  };
+> 
+> @@ -104,5 +122,5 @@ module_exit(rpmsg_ns_exit);
+> 
+>  MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
+>  MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
+> -MODULE_ALIAS("rpmsg_ns");
+> +MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
+>  MODULE_LICENSE("GPL v2");
+> diff --git a/include/linux/rpmsg/ns.h b/include/linux/rpmsg/ns.h
+> index bdc1ea278814..68eac2b42075 100644
+> --- a/include/linux/rpmsg/ns.h
+> +++ b/include/linux/rpmsg/ns.h
+> @@ -41,21 +41,6 @@ enum rpmsg_ns_flags {
+>  /* Address 53 is reserved for advertising remote services */
+>  #define RPMSG_NS_ADDR			(53)
+> 
+> -/**
+> - * rpmsg_ns_register_device() - register name service device based on rpdev
+> - * @rpdev: prepared rpdev to be used for creating endpoints
+> - *
+> - * This function wraps rpmsg_register_device() preparing the rpdev for use as
+> - * basis for the rpmsg name service device.
+> - */
+> -static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+> -{
+> -	strcpy(rpdev->id.name, "rpmsg_ns");
+> -	rpdev->driver_override = "rpmsg_ns";
+> -	rpdev->src = RPMSG_NS_ADDR;
+> -	rpdev->dst = RPMSG_NS_ADDR;
+> -
+> -	return rpmsg_register_device(rpdev);
+> -}
+> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev);
 
-Hmm, this approach here won't work, see also commit 09772d92cd5a ("bpf: avoid
-retpoline for lookup/update/delete calls on maps") which removes the indirect
-call, so the __bpf_map_update_elem() and therefore the set_active_memcg() is
-not invoked for the vast majority of cases.
+I confirm that all this is working as expected - I will send a new revision of
+this set tomorrow afternoon.  
 
-> +}
-> +#else
-> +static __always_inline int __bpf_map_update_elem(struct bpf_map *map, void *key,
-> +						 void *value, u64 flags)
-> +{
-> +	return map->ops->map_update_elem(map, key, value, flags);
-> +}
-> +#endif
-> +
->   BPF_CALL_4(bpf_map_update_elem, struct bpf_map *, map, void *, key,
->   	   void *, value, u64, flags)
->   {
->   	WARN_ON_ONCE(!rcu_read_lock_held());
-> -	return map->ops->map_update_elem(map, key, value, flags);
-> +
-> +	return __bpf_map_update_elem(map, key, value, flags);
->   }
->   
->   const struct bpf_func_proto bpf_map_update_elem_proto = {
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index f3fe9f53f93c..2d77fc2496da 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -31,6 +31,7 @@
->   #include <linux/poll.h>
->   #include <linux/bpf-netns.h>
->   #include <linux/rcupdate_trace.h>
-> +#include <linux/memcontrol.h>
->   
->   #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
->   			  (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
-> @@ -456,6 +457,27 @@ void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock)
->   		__release(&map_idr_lock);
->   }
->   
-> +#ifdef CONFIG_MEMCG_KMEM
-> +static void bpf_map_save_memcg(struct bpf_map *map)
-> +{
-> +	map->memcg = get_mem_cgroup_from_mm(current->mm);
-> +}
-> +
-> +static void bpf_map_release_memcg(struct bpf_map *map)
-> +{
-> +	mem_cgroup_put(map->memcg);
-> +}
-> +
-> +#else
-> +static void bpf_map_save_memcg(struct bpf_map *map)
-> +{
-> +}
-> +
-> +static void bpf_map_release_memcg(struct bpf_map *map)
-> +{
-> +}
-> +#endif
-> +
->   /* called from workqueue */
->   static void bpf_map_free_deferred(struct work_struct *work)
->   {
-> @@ -464,6 +486,7 @@ static void bpf_map_free_deferred(struct work_struct *work)
->   
->   	bpf_map_charge_move(&mem, &map->memory);
->   	security_bpf_map_free(map);
-> +	bpf_map_release_memcg(map);
->   	/* implementation dependent freeing */
->   	map->ops->map_free(map);
->   	bpf_map_charge_finish(&mem);
-> @@ -875,6 +898,8 @@ static int map_create(union bpf_attr *attr)
->   	if (err)
->   		goto free_map_sec;
->   
-> +	bpf_map_save_memcg(map);
-> +
->   	err = bpf_map_new_fd(map, f_flags);
->   	if (err < 0) {
->   		/* failed to allocate fd.
+Guennadi, can I add a Co-developed-by and Signed-off-by with your name on the
+patch?
+
 > 
-
+>  #endif
+> 
+> Thanks,
+> Arnaud
+> 
+> > 
+> > Thanks
+> > Guennadi
+> > 
