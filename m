@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B142B7193
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA1B2B7141
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728811AbgKQW2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:28:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        id S1728838AbgKQWH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:07:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728184AbgKQW2y (ORCPT
+        with ESMTP id S1728161AbgKQWH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:28:54 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6BEC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:28:54 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id u2so11062982pls.10
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:28:54 -0800 (PST)
+        Tue, 17 Nov 2020 17:07:59 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5725C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:07:58 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id w24so140210wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:07:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l+l6bPNdAyGzxXdbN4WyqDuDuPAZPzRdy+08/xBki4g=;
-        b=oxyyGnn2pbqzNcAh7Ro5v/5q+r5L0/p8tgKM5bY5Amc103WXnHI72zTmNIl9EKzGUP
-         hx+MTwWTcvuW+rL3rnEp3nVYrbexUS+150D5tGwQ7D80hcO9gUlWErWSaBGVadR7zLv7
-         WEN+YlkXUTrpAr8XzzyDVMXB68lyehw2wG25TORvlwowlCEIbqmEalhfueDvU6V4t8xQ
-         3F0PhD/cM5Y2wpMOOwp68iwtNEfMy7WD8y3fh9XUK9zFP1R82KM7z8aRDE/zDmieqzLF
-         2CR9WVPP7zoYKtH/jT86zIJKogoA6Y755rDX953a0ITuhls5qVkiVB7fPVgjYXcvmrn+
-         k2Wg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=URvCGNr5k1+GzznmsJpB6SNe04WSGrxWUmVDQcvgcZ4=;
+        b=I03DxdCD92qsINhuEikYZ0TIzqvVS7L/jHcBxIb+ciBI6o/XpoFgfYLo+YsbNS+16P
+         P4RqgCb031+L8tTs9IR1wLVE3u5AST/aEAbtHj+iMtmlo1X4rYS/KdOebq4OprAEicUo
+         Hpya8WtKC9srGXWOOXOwcVtHIQ8XPvACMYi3q8pzxiB7DOOo2qJ/LMe8t8cwOhlkrqhX
+         HkUAUjH+DQqtDKyLANkCqJr8lNqBXPZsmBBolet3QG1dGzyfIvBEA/W5PmtYxMFN5+rA
+         oxmm0kQxjx4bCnLzI4WwvofizGbr/vU97Fx1NDF9MxCeAVpso+Rkl3WE1SHtJUCZpil5
+         3/TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l+l6bPNdAyGzxXdbN4WyqDuDuPAZPzRdy+08/xBki4g=;
-        b=jRV0O/Pv4f7W6Jlcu0xtYfibttroQLB0mwgbnktnhT0o2Rce5CJu4nXim/+/HpvAkM
-         ZaCDIB+YqQex7wq6oyyM8VekxAlHzyUdn6+GqHT8ULPTXBE6bDkDMk7ym//scPw1BCtY
-         +E4zxIhOf1yMB994y/Qe3tTva6/IcII3n2lPji+u0cUxEzDybycpCoCSnPBRNQNTojWk
-         XsbSvribyimbLnq/t+couf72a6NVymKr67dGer7MTI0X4YUYQsV/qwJSQ6ALh2TdGxrB
-         H1OVWwqrxuyQtn2kklYaWjRznlxP+8Gvf3xAMGkmSgLYB9tyzLkwNz0hMivzy+QWFDH0
-         j2wQ==
-X-Gm-Message-State: AOAM531WUIbpWuBetVnyCn9Ym2T23Sawd/uKIbC3cg2Ue5NG0CCqwMQd
-        6C1fD8IeHpEykt7liuXHKbxSfanirTUQ8jsyaUh/2Q==
-X-Google-Smtp-Source: ABdhPJxWXioFAPozNpXYIDJ3H6sf8MNf9Tby1TCVJwkV7fzb9RpugKiB0p81VLrblJcCJB4KyhP3+HCdilQdR+vYEIM=
-X-Received: by 2002:a17:902:e901:b029:d8:e727:2595 with SMTP id
- k1-20020a170902e901b02900d8e7272595mr1537952pld.56.1605652134074; Tue, 17 Nov
- 2020 14:28:54 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=URvCGNr5k1+GzznmsJpB6SNe04WSGrxWUmVDQcvgcZ4=;
+        b=TyUSKZWr+oy8ejiPQ99691pg3wxreeA5m7yHg5uwdMTqp2nYgjSnIuEXbKly1xuInG
+         oebr6FNH7J2Gd+fqGnCMYYUHYyqfv2A/zJ+3Edmy1GYK//wHhB9L2w44YcEA6aD0MP0o
+         NLIRJ5lX9zAUShmnINM0FVhKubOusxhMs56+Oo5UubeWMUJ3lNJNu/8mzEVGqno99wqs
+         oQfqTs4ctLgCr6x6JJAXdidrUa8A7efc5ujDTZNi2m93erUWkiL4vaLHH7O8Cuo6eS1m
+         oXT1cMPLY/9pXjhnQj+Iot6B38azGG1/e7dryIj6odPWL4wdbzS+BZ6/QnNVKeoqXA7n
+         nXLQ==
+X-Gm-Message-State: AOAM533dKJxjZzkJZzSffFGWjP6l6qfbOcJGEGVTk3xiJZa2StBueoNZ
+        v/mkJA+jioqjYEyHuqfkGR4=
+X-Google-Smtp-Source: ABdhPJxUjPspH7cJSSAMqBmrepuOgh4/9AxibRwo13eCtSmnpO/CFhmYNovsBMRKF5dpXWnVbE/wVQ==
+X-Received: by 2002:a1c:e3d4:: with SMTP id a203mr1177352wmh.177.1605650877448;
+        Tue, 17 Nov 2020 14:07:57 -0800 (PST)
+Received: from localhost.localdomain ([46.166.142.216])
+        by smtp.gmail.com with ESMTPSA id h20sm133352wmb.29.2020.11.17.14.07.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 14:07:57 -0800 (PST)
+From:   Armin Gholampoor <armingh379@gmail.com>
+To:     davem@davemloft.net
+Cc:     linux-kernel@vger.kernel.org,
+        Armin Gholampoor <armingh379@gmail.com>
+Subject: [PATCH] net: ipv4: fixed a brace coding style issue
+Date:   Wed, 18 Nov 2020 01:37:44 -0500
+Message-Id: <20201118063744.214744-1-armingh379@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201116043532.4032932-1-ndesaulniers@google.com>
- <20201116043532.4032932-3-ndesaulniers@google.com> <20201117030214.GB1340689@ubuntu-m3-large-x86>
- <CAKwvOdk_sphJGQarEWJLzGZWkdzO9dqmcRmys3Retw3vn2Fwag@mail.gmail.com> <20201117221629.GA4679@embeddedor>
-In-Reply-To: <20201117221629.GA4679@embeddedor>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 17 Nov 2020 14:28:43 -0800
-Message-ID: <CAKwvOdmNW3iynqi_+2c1P-6Prq1a8iVufoaZh2NAbsaBLeZZ4Q@mail.gmail.com>
-Subject: Re: [PATCH 2/3] Revert "lib: Revert use of fallthrough pseudo-keyword
- in lib/"
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 2:16 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> I'm happy to take this series in my tree.  I'm planing to send a
-> pull-request for -rc5 with more related changes. So, I can include
-> this in the same PR.
->
-> In the meantime I'll add this to my testing tree, so it can be
-> build-tested by the 0-day folks. :)
+Fixed bracing style issue.
 
-SGTM, and thank you.  I'm sure you saw the existing warning about
-indentation.  Do we want to modify the revert patch, or put another
-patch on top?
+Signed-off-by: Armin Gholampoor <armingh379@gmail.com>
+---
+ net/ipv4/tcp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index b2bc3d7fe..37bc91e4a 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -3170,8 +3170,7 @@ static int do_tcp_setsockopt(struct sock *sk, int level, int optname,
+ 		else if (tp->repair_queue == TCP_RECV_QUEUE) {
+ 			WRITE_ONCE(tp->rcv_nxt, val);
+ 			WRITE_ONCE(tp->copied_seq, val);
+-		}
+-		else
++		} else
+ 			err = -EINVAL;
+ 		break;
+ 
 -- 
-Thanks,
-~Nick Desaulniers
+2.29.2
+
