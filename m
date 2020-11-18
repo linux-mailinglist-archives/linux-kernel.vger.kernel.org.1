@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADC22B737E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948892B7388
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727809AbgKRBJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 20:09:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgKRBJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 20:09:26 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DADF320782;
-        Wed, 18 Nov 2020 01:09:23 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 20:09:22 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Matt Mullins <mmullins@mmlx.us>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        paulmck <paulmck@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
-Message-ID: <20201117200922.195ba28c@oasis.local.home>
-In-Reply-To: <20201118004242.rygrwivqcdgeowi7@hydra.tuxags.com>
-References: <00000000000004500b05b31e68ce@google.com>
-        <20201115055256.65625-1-mmullins@mmlx.us>
-        <20201116121929.1a7aeb16@gandalf.local.home>
-        <1889971276.46615.1605559047845.JavaMail.zimbra@efficios.com>
-        <20201116154437.254a8b97@gandalf.local.home>
-        <20201116160218.3b705345@gandalf.local.home>
-        <1368007646.46749.1605562481450.JavaMail.zimbra@efficios.com>
-        <20201116171027.458a6c17@gandalf.local.home>
-        <609819191.48825.1605654351686.JavaMail.zimbra@efficios.com>
-        <20201118004242.rygrwivqcdgeowi7@hydra.tuxags.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728117AbgKRBLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 20:11:15 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1236 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727834AbgKRBLO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 20:11:14 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AI11bpF016626;
+        Tue, 17 Nov 2020 20:11:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=qqtdFimCAjGS2THNY3F0NZ9EpxY5xgsEj5s0tuyKV9E=;
+ b=mzAQJtmL+h/GoJx/BkDT/93z/ZKECUJ0k7ANKewBercuCZrhoqdv91UwjR6fcB3Q1cxw
+ rEb8xCe2lVZH1nGnYiwW8heLYxlP1PITqCmqPfnXO4zhtNSsiaVZOe3+Y8kY30uEm07P
+ 9buE+KTIEnULEnr/F73IhVnjR/ZPG/oOte2+HP0lqPYTB3He4sQEzLrDqrjF4RKP+MFm
+ 46XbXhkbIgTyUkBnu9FuTmrOkglq0uVaZi0ICpmmMKR7GvBPTnK2oZWYeWkH5vvkVpAQ
+ dxb58ub3ECD4ZRJ9YUztswjB8SQhozDBUikkUyViPgDPe6hTNdXtPDQSY344ouS1Y3pz JA== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34v9pfxg2c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 20:11:08 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AI12RdP021467;
+        Wed, 18 Nov 2020 01:11:07 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma04dal.us.ibm.com with ESMTP id 34t6v994dj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Nov 2020 01:11:07 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AI1B5gl11272836
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Nov 2020 01:11:05 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B1C2CBE058;
+        Wed, 18 Nov 2020 01:11:05 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 441B4BE04F;
+        Wed, 18 Nov 2020 01:11:05 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Nov 2020 01:11:05 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH v3 0/6] ibmvfc: Protocol definition updates and new targetWWPN Support
+Date:   Tue, 17 Nov 2020 19:10:58 -0600
+Message-Id: <20201118011104.296999-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_15:2020-11-17,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=775
+ impostorscore=0 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1015 priorityscore=1501
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011180000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 16:42:44 -0800
-Matt Mullins <mmullins@mmlx.us> wrote:
+Several Management Datagrams (MADs) have been reversioned to add a targetWWPN
+field that is intended to better identify a target over in place of the scsi_id.
+This patchset adds the new protocol definitions and implements support for using
+the new targetWWPN field and exposing the capability to the VIOS. This
+targetWWPN support is a prerequisuite for upcoming channelization/MQ support.
 
+changes in v3:
+* addressed field naming consistency in Patches 2 & 5 in response to [brking]
+* fixed commit log typos
+* fixed bad rebase of Patch 4 such that it now compiles
 
-> > Indeed with a stub function, I don't see any need for READ_ONCE/WRITE_ONCE.  
-> 
-> I'm not sure if this is a practical issue, but without WRITE_ONCE, can't
-> the write be torn?  A racing __traceiter_ could potentially see a
-> half-modified function pointer, which wouldn't work out too well.
+changes in v2:
+* Removed bug fixes to separate patchset
+* Fixed up checkpatch warnings
 
-This has been discussed before, and Linus said:
+Tyrel Datwyler (6):
+  ibmvfc: deduplicate common ibmvfc_cmd init code
+  ibmvfc: add new fields for version 2 of several MADs
+  ibmvfc: add helper for testing capability flags
+  ibmvfc: add FC payload retrieval routines for versioned vfcFrames
+  ibmvfc: add support for target_wwpn field in v2 MADs and vfcFrame
+  ibmvfc: advertise client support for targetWWPN using v2 commands
 
-"We add READ_ONCE and WRITE_ONCE annotations when they make sense. Not
-because of some theoretical "compiler is free to do garbage"
-arguments. If such garbage happens, we need to fix the compiler"
+ drivers/scsi/ibmvscsi/ibmvfc.c | 185 ++++++++++++++++++++++-----------
+ drivers/scsi/ibmvscsi/ibmvfc.h |  28 ++++-
+ 2 files changed, 147 insertions(+), 66 deletions(-)
 
-https://lore.kernel.org/lkml/CAHk-=wi_KeD1M-_-_SU_H92vJ-yNkDnAGhAS=RR1yNNGWKW+aA@mail.gmail.com/
+--
+2.27.0
 
-> 
-> This was actually my gut instinct before I wrote the __GFP_NOFAIL
-> instead -- currently that whole array's memory ordering is provided by
-> RCU and I didn't dive deep enough to evaluate getting too clever with
-> atomic modifications to it.
-
-The pointers are always going to be the architecture word size (by
-definition), and any compiler that tears a write of a long is broken.
-
--- Steve
