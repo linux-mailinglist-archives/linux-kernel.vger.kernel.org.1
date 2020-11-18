@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B532B7502
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCD12B7503
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 04:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725792AbgKRDuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 22:50:13 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:46822 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725613AbgKRDuN (ORCPT
+        id S1727794AbgKRDuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 22:50:20 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:35582 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727008AbgKRDuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 22:50:13 -0500
-X-UUID: 5c27fc8608614bf597ab7e98b18e3bcd-20201118
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=kF/INCW/2jYXxM9LXFS6EoXUIq77hAmvBpBxqoM7wak=;
-        b=WiYeA9PYRytVY6p5c9gU/8YBSAk0bSP68tCA7ideHpQJX5WPJGQJAV1nwvdnM2YZZmcZootKZF0kuntPtpXBeLqS4Eq4KJrQdxnt1C3E8dp7+psTp9XJnR/c655J8VQj1DgONhnvbwukgLtx/jbm1XTexebE1xw55nX2iyWFly8=;
-X-UUID: 5c27fc8608614bf597ab7e98b18e3bcd-20201118
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1970448491; Wed, 18 Nov 2020 11:50:05 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 18 Nov 2020 11:49:42 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 18 Nov 2020 11:49:43 +0800
-Message-ID: <1605671382.23622.8.camel@mtksdaap41>
-Subject: Re: [PATCH v5 14/24] clk: mediatek: Add MT8192 imp i2c wrapper
- clock support
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Yingjoe Chen <yingjoe.chen@mediatek.com>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>
-Date:   Wed, 18 Nov 2020 11:49:42 +0800
-In-Reply-To: <1605667293.8636.5.camel@mtksdaap41>
-References: <1604887429-29445-1-git-send-email-weiyi.lu@mediatek.com>
-         <1604887429-29445-15-git-send-email-weiyi.lu@mediatek.com>
-         <1605667293.8636.5.camel@mtksdaap41>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 17 Nov 2020 22:50:20 -0500
+Received: by mail-io1-f70.google.com with SMTP id u8so379114ior.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 19:50:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/DoS+YQS9VBlKN6+t7kOlnb/cNhUvvMuTsydpQN3w74=;
+        b=reBKKMqe9OMuMYeIY4FeJ5KvGzHReB2JT2hxSYOv1sVdCt55evSelbLj7IEyCYk/sV
+         mOteV9Pg9E4YCcwtnYwzL0pB3Zq5i7PBgjidqq7ikTitWOcJuOn603SMKyZPSKobOKH6
+         cVAooA3APBo5D7AiKwjy1XxyCgudORLR2knO++WULWljkC6MFq5nRaDnboBkr5F5M1G4
+         nEjF7WBKUU3uaoMyCCuwvfg+OiSF6S6SGTuVpvYSuzhyuM8pfL8lNrCym6nV+/eHAXZ0
+         kQplRUNSjp4AnRNV1E9S3ROn2FkaXv2XocRnmvjLsrk6bSH+O7aDIvt87R8hGl+J1DgP
+         sBOg==
+X-Gm-Message-State: AOAM533IWqkgGVqPv+vtIc4+1uS0oAiY1KNJNudRA2Lqr4Ws9Sde0+NQ
+        d+sywprzvzNAsHfkKBQzCK846ZtJ3LVcjqW2ZuQIRwJau3zm
+X-Google-Smtp-Source: ABdhPJwi4a4IGODP4KC7xAUdxzicB5OMZ/EE96H2i+xQvPC8q+DXDy0d9Ou9uQDg6ciFNbahKMxSCVG5OnPh+ycAovjeZUGX6O5A
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-Received: by 2002:a02:70ce:: with SMTP id f197mr6796213jac.120.1605671419188;
+ Tue, 17 Nov 2020 19:50:19 -0800 (PST)
+Date:   Tue, 17 Nov 2020 19:50:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000911d3905b459824c@google.com>
+Subject: memory leak in bpf
+From:   syzbot <syzbot+f3694595248708227d35@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTExLTE4IGF0IDEwOjQxICswODAwLCBZaW5nam9lIENoZW4gd3JvdGU6DQo+
-IE9uIE1vbiwgMjAyMC0xMS0wOSBhdCAxMDowMyArMDgwMCwgV2VpeWkgTHUgd3JvdGU6DQo+ID4g
-QWRkIE1UODE5MiBpbXAgaTJjIHdyYXBwZXIgY2xvY2sgcHJvdmlkZXINCj4gPiANCj4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBXZWl5aSBMdSA8d2VpeWkubHVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+
-ICBkcml2ZXJzL2Nsay9tZWRpYXRlay9LY29uZmlnICAgICAgICAgICAgICAgICAgIHwgICA2ICsr
-DQo+ID4gIGRyaXZlcnMvY2xrL21lZGlhdGVrL01ha2VmaWxlICAgICAgICAgICAgICAgICAgfCAg
-IDEgKw0KPiA+ICBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTkyLWltcF9paWNfd3JhcC5j
-IHwgMTE5ICsrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgMyBmaWxlcyBjaGFuZ2VkLCAx
-MjYgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9jbGsvbWVk
-aWF0ZWsvY2xrLW10ODE5Mi1pbXBfaWljX3dyYXAuYw0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL2Nsay9tZWRpYXRlay9LY29uZmlnIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvS2NvbmZp
-Zw0KPiA+IGluZGV4IGViNTQ5ZjguLjhhY2M3ZDYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9j
-bGsvbWVkaWF0ZWsvS2NvbmZpZw0KPiA+ICsrKyBiL2RyaXZlcnMvY2xrL21lZGlhdGVrL0tjb25m
-aWcNCj4gPiBAQCAtNTE1LDYgKzUxNSwxMiBAQCBjb25maWcgQ09NTU9OX0NMS19NVDgxOTJfSU1H
-U1lTDQo+ID4gIAloZWxwDQo+ID4gIAkgIFRoaXMgZHJpdmVyIHN1cHBvcnRzIE1lZGlhVGVrIE1U
-ODE5MiBpbWdzeXMgYW5kIGltZ3N5czIgY2xvY2tzLg0KPiA+ICANCj4gPiArY29uZmlnIENPTU1P
-Tl9DTEtfTVQ4MTkyX0lNUF9JSUNfV1JBUA0KPiA+ICsJYm9vbCAiQ2xvY2sgZHJpdmVyIGZvciBN
-ZWRpYVRlayBNVDgxOTIgaW1wX2lpY193cmFwIg0KPiA+ICsJZGVwZW5kcyBvbiBDT01NT05fQ0xL
-X01UODE5Mg0KPiA+ICsJaGVscA0KPiA+ICsJICBUaGlzIGRyaXZlciBzdXBwb3J0cyBNZWRpYVRl
-ayBNVDgxOTIgaW1wX2lpY193cmFwIGNsb2Nrcy4NCj4gPiArDQo+ID4gIGNvbmZpZyBDT01NT05f
-Q0xLX01UODUxNg0KPiA+ICAJYm9vbCAiQ2xvY2sgZHJpdmVyIGZvciBNZWRpYVRlayBNVDg1MTYi
-DQo+ID4gIAlkZXBlbmRzIG9uIEFSQ0hfTUVESUFURUsgfHwgQ09NUElMRV9URVNUDQo+IA0KPiA8
-Li4uPg0KPiANCj4gPiArDQo+ID4gK3N0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIGNsa19t
-dDgxOTJfaW1wX2lpY193cmFwX2RydiA9IHsNCj4gPiArCS5wcm9iZSA9IG10a19jbGtfc2ltcGxl
-X3Byb2JlLA0KPiANCj4gR29vZCB0byBoYXZlIHRoaXMgZ2VuZXJpYyBwcm9iZSBmdW5jdGlvbi4g
-Tm93IHNldmVyYWwgbXRrIGNsayBkcml2ZXJzDQo+IGFyZSBqdXN0IGEgZmV3IGRhdGEuDQo+IA0K
-PiBCdXQgdGhpcyBzZXJpZXMgc3RpbGwgYWRkID4xMCBjb25maWdzIGZvciBtdDgxOTIgY2xvY2sg
-ZHJpdmVycy4gV2h5IGRvDQo+IHdlIG5lZWQgc2VwYXJhdGUgY29uZmlncyBmb3IgY2xvY2tzIG9m
-IGRpZmZlcmVudCBkb21haW4/IEkgZG9uJ3QgdGhpbmsNCj4gdGhleSBuZWVkIGxvdHMgb2YgcmVz
-b3VyY2UuIFdlIHNob3VsZCByZXZpZXcgdGhlIHJhdGlvbmFsZSBhbmQgcmVkdWNlDQo+IHRoZSBu
-dW1iZXJzLiANCj4gDQpIaSBKb2UsDQoNClRoYW5rcyBmb3IgcmV2aWV3aW5nLg0KDQpUaGVyZSBo
-YXZlIGJlZW4gc29tZSBkaXNjdXNzaW9ucyBpbiBwYXRjaFsxXSBhcyB0byB3aHkgdGhlIHN1YnN5
-c3RlbQ0KY2xvY2tzIGFyZSBub3cgc2VwYXJhdGVkIGJ5IGRpZmZlcmVudCBjb25maWdzLg0KQW5k
-IHdlIGRvIG5lZWQgdGhlc2UgY2xvY2tzIHRvIGJlIG9wdGlvbmFsIG9uIHNvbWUgTWVkaWF0VGVr
-IFNvQw0KcGxhdGZvcm0uDQoNCkkgdGhvdWdodCBpdCBpdCBub3cgYSByYXRpb25hbGUgbnVtYmVy
-IG9mIHN1YnN5c3RlbSBjbG9jayBwcm92aWRlcg0KZHJpdmVycy4gSW4gdGhpcyBzZXJpZXMsIHdl
-IGhhdmUgcmVkdWNlZCBmcm9tIDIzIHRvIDEyLg0KDQpbMV0NCmh0dHBzOi8vcGF0Y2h3b3JrLmtl
-cm5lbC5vcmcvcHJvamVjdC9saW51eC1tZWRpYXRlay9wYXRjaC8xNDYwNjIxNTE0LTY1MTkxLTUt
-Z2l0LXNlbmQtZW1haWwtamFtZXNqai5saWFvQG1lZGlhdGVrLmNvbS8NCg0KDQo+IA0KPiBKb2Uu
-Qw0KPiANCj4gDQoNCg==
+Hello,
 
+syzbot found the following issue on:
+
+HEAD commit:    f01c30de Merge tag 'vfs-5.10-fixes-2' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b9b181500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f13716fa0212fd
+dashboard link: https://syzkaller.appspot.com/bug?extid=f3694595248708227d35
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b78b81500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f3694595248708227d35@syzkaller.appspotmail.com
+
+2020/11/14 15:01:05 executed programs: 33
+2020/11/14 15:01:11 executed programs: 35
+2020/11/14 15:01:17 executed programs: 37
+2020/11/14 15:01:22 executed programs: 39
+BUG: memory leak
+unreferenced object 0xffff8881161c6440 (size 64):
+  comm "syz-executor.0", pid 8961, jiffies 4295107077 (age 12.370s)
+  hex dump (first 32 bytes):
+    80 62 58 04 00 ea ff ff c0 17 37 04 00 ea ff ff  .bX.......7.....
+    80 6f 47 04 00 ea ff ff 40 64 58 04 00 ea ff ff  .oG.....@dX.....
+  backtrace:
+    [<00000000189a27fd>] kmalloc_node include/linux/slab.h:575 [inline]
+    [<00000000189a27fd>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:94 [inline]
+    [<00000000189a27fd>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:135 [inline]
+    [<00000000189a27fd>] ringbuf_map_alloc kernel/bpf/ringbuf.c:183 [inline]
+    [<00000000189a27fd>] ringbuf_map_alloc+0x1be/0x410 kernel/bpf/ringbuf.c:150
+    [<000000009e5cec3e>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+    [<000000009e5cec3e>] map_create kernel/bpf/syscall.c:825 [inline]
+    [<000000009e5cec3e>] __do_sys_bpf+0x7d0/0x30a0 kernel/bpf/syscall.c:4381
+    [<00000000c513b5d1>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000033006ec5>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
