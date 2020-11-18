@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9083F2B8510
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 422912B8515
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgKRTq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:46:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726357AbgKRTq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:46:57 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F094A246AA;
-        Wed, 18 Nov 2020 19:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605728816;
-        bh=r4rtZMhdAiBSx+HYth3NByAdBaTUCKCee8fL0I2kNRA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lHosobLoK22MXnVs0MjQ4ibqeRWzsM41/a6EmjFHtqfruDDk9og6FzvPaO2faW0zv
-         jQOzL9YbAkVIz/w2o10YIQlrnodjuJmvIEddKJIog1qKb02XCdvby4FWQi8+pJ4hnn
-         FJxAwQkeq4Ut9VCw2cr3TAjjTkzgoyf5DvczvGq4=
-Date:   Wed, 18 Nov 2020 11:46:54 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     akpm@linux-foundation.org
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>, linux-mm@kvack.org,
-        netdev@vger.kernel.org, willy@infradead.org,
-        aruna.ramakrishna@oracle.com, bert.barbe@oracle.com,
-        rama.nichanamatlu@oracle.com, venkat.x.venkatsubra@oracle.com,
-        manjunath.b.patil@oracle.com, joe.jin@oracle.com,
-        srinivas.eeda@oracle.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, vbabka@suse.cz
-Subject: Re: [PATCH v3 1/1] page_frag: Recover from memory pressure
-Message-ID: <20201118114654.3435f76c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201115201029.11903-1-dongli.zhang@oracle.com>
-References: <20201115201029.11903-1-dongli.zhang@oracle.com>
+        id S1726519AbgKRTsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:48:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgKRTsY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:48:24 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0387AC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 11:48:24 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfTRF-0008Jq-CL; Wed, 18 Nov 2020 20:48:21 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfTRE-0004E5-O3; Wed, 18 Nov 2020 20:48:20 +0100
+Date:   Wed, 18 Nov 2020 20:48:17 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Soham Biswas <sohambiswas41@gmail.com>, lee.jones@linaro.org,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] pwm: core: Use octal permission
+Message-ID: <20201118194817.4l3esfu5dnhgo6vx@pengutronix.de>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+ <20201118145112.21250-1-sohambiswas41@gmail.com>
+ <20201118175936.GB3552669@ulmo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uzaqwqsfd3uecqxm"
+Content-Disposition: inline
+In-Reply-To: <20201118175936.GB3552669@ulmo>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Nov 2020 12:10:29 -0800 Dongli Zhang wrote:
-> The ethernet driver may allocate skb (and skb->data) via napi_alloc_skb().
-> This ends up to page_frag_alloc() to allocate skb->data from
-> page_frag_cache->va.
-> 
-> During the memory pressure, page_frag_cache->va may be allocated as
-> pfmemalloc page. As a result, the skb->pfmemalloc is always true as
-> skb->data is from page_frag_cache->va. The skb will be dropped if the
-> sock (receiver) does not have SOCK_MEMALLOC. This is expected behaviour
-> under memory pressure.
-> 
-> However, once kernel is not under memory pressure any longer (suppose large
-> amount of memory pages are just reclaimed), the page_frag_alloc() may still
-> re-use the prior pfmemalloc page_frag_cache->va to allocate skb->data. As a
-> result, the skb->pfmemalloc is always true unless page_frag_cache->va is
-> re-allocated, even if the kernel is not under memory pressure any longer.
-> 
-> Here is how kernel runs into issue.
-> 
-> 1. The kernel is under memory pressure and allocation of
-> PAGE_FRAG_CACHE_MAX_ORDER in __page_frag_cache_refill() will fail. Instead,
-> the pfmemalloc page is allocated for page_frag_cache->va.
-> 
-> 2: All skb->data from page_frag_cache->va (pfmemalloc) will have
-> skb->pfmemalloc=true. The skb will always be dropped by sock without
-> SOCK_MEMALLOC. This is an expected behaviour.
-> 
-> 3. Suppose a large amount of pages are reclaimed and kernel is not under
-> memory pressure any longer. We expect skb->pfmemalloc drop will not happen.
-> 
-> 4. Unfortunately, page_frag_alloc() does not proactively re-allocate
-> page_frag_alloc->va and will always re-use the prior pfmemalloc page. The
-> skb->pfmemalloc is always true even kernel is not under memory pressure any
-> longer.
-> 
-> Fix this by freeing and re-allocating the page instead of recycling it.
 
-Andrew, are you taking this via -mm or should I put it in net? 
-I'm sending a PR to Linus tomorrow.
+--uzaqwqsfd3uecqxm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 18, 2020 at 06:59:36PM +0100, Thierry Reding wrote:
+> On Wed, Nov 18, 2020 at 08:21:12PM +0530, Soham Biswas wrote:
+> > Permission bits are easier readable in octal than with using the
+> > symbolic names.
+> >=20
+> > Fixes the following warning generated by checkpatch:
+> >=20
+> > drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
+> > not preferred. Consider using octal permissions '0444'.
+> >=20
+> > +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+> >                             &pwm_debugfs_fops);
+> >=20
+> > Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
+> > ---
+> >  drivers/pwm/core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> Applied, thanks. Though I did unwrap the checkpatch warning message as
+> Uwe suggested.
+
+Then feel free to add my
+
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Thanks
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--uzaqwqsfd3uecqxm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+1ensACgkQwfwUeK3K
+7AkYrgf+MLbRmUWmOmVGdJ5eNS/y1sukSZQEqulBrWanPUnHmliEIP6jM3+lynhO
+nXT9CMtv71p3iYk5pSdmSpyYdVlLbfj8A+9wz8SaLzks7NQBN3vTi/DA9yTZZpRG
+FSlOE89yWvN+W4q5vx64mZjQ4RCgJ6YhM28W+wWZN6ak8cy87MXzSMX6SKZJe3e7
+69SnllB6s/e/mQ55vDI7/ZEIWqqciSbyfcP3FYnbTYNRy4fR7OCBn755ZAvR+oHq
+uMosaBYkS1abTR4qnQO82ZunytFLt+ECHOhsFJNIKIN5D7YuouY8E2I/ZwuYeSnC
+3IetN0sRztXNdsFIO7go9rUUyvdkEw==
+=5Se1
+-----END PGP SIGNATURE-----
+
+--uzaqwqsfd3uecqxm--
