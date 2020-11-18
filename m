@@ -2,125 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3052B7BD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0E52B7BE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgKRKwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:52:35 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:33397 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgKRKwe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:52:34 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id ED33A240002;
-        Wed, 18 Nov 2020 10:52:32 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 11:52:32 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen.Hegelund@microchip.com
-Subject: Re: [PATCH 4/5] power: reset: ocelot: Add support 2 othe MIPS based
- SoCs
-Message-ID: <20201118105232.GE4556@piout.net>
-References: <20201116171159.1735315-1-gregory.clement@bootlin.com>
- <20201116171159.1735315-5-gregory.clement@bootlin.com>
+        id S1726156AbgKRKzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:55:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725497AbgKRKzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 05:55:17 -0500
+Received: from localhost (unknown [122.171.203.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE60521D7E;
+        Wed, 18 Nov 2020 10:55:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605696916;
+        bh=xmUi7NEvnZdYYt+aDd+QBQNLDMyOOam0WWhgYkBWUBc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QTLL2CZfZ2BIxJxgh4MzdRJDEUi0JhmTrdoQCX4SbVZ04EcLJ9OxHOas5GLO69C40
+         Ofh36C2PVM72SlKf9q4ca+oDr2Sxa8ve6UvRyQlvRWNo1Cf1vOMcyk/ehwyYB38mmJ
+         X+BktUxlOGtBqhJPuQh1YoE8pC50oFVvLa0u3XjY=
+Date:   Wed, 18 Nov 2020 16:25:11 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     =?utf-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+        Zubair.Kakakhel@imgtec.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dmaengine@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Subject: Re: [PATCH RESEND 0/2] Add dmaengine bindings for the JZ4775 and the
+ X2000 SoCs.
+Message-ID: <20201118105511.GM50232@vkoul-mobl>
+References: <20201107122016.89859-1-zhouyanjie@wanyeetech.com>
+ <BQOKJQ.FNG5W5HD7VTG1@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201116171159.1735315-5-gregory.clement@bootlin.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BQOKJQ.FNG5W5HD7VTG1@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 16/11/2020 18:11:58+0100, Gregory CLEMENT wrote:
-> This adds reset support for Luton and Jaguar2 in the ocelot-reset
-> driver. They are both MIPS based belonging to the VvoreIII family.
+On 10-11-20, 08:54, Paul Cercueil wrote:
+> Hi Zhou,
 > 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
->  drivers/power/reset/ocelot-reset.c | 30 +++++++++++++++++++++++++++---
->  1 file changed, 27 insertions(+), 3 deletions(-)
+> Le sam. 7 nov. 2020 à 20:20, 周琰杰 (Zhou Yanjie)
+> <zhouyanjie@wanyeetech.com> a écrit :
+> > Add the dmaengine bindings for the JZ4775 SoC and the X2000 SoC from
+> > Ingenic.
+> > 
+> > 周琰杰 (Zhou Yanjie) (2):
+> >   dt-bindings: dmaengine: Add JZ4775 bindings.
+> >   dt-bindings: dmaengine: Add X2000 bindings.
+> > 
+> >  include/dt-bindings/dma/jz4775-dma.h | 44 +++++++++++++++++++++++++++++
+> >  include/dt-bindings/dma/x2000-dma.h  | 54
+> > ++++++++++++++++++++++++++++++++++++
 > 
-> diff --git a/drivers/power/reset/ocelot-reset.c b/drivers/power/reset/ocelot-reset.c
-> index a203c42e99d4..0f92416f2907 100644
-> --- a/drivers/power/reset/ocelot-reset.c
-> +++ b/drivers/power/reset/ocelot-reset.c
-> @@ -29,6 +29,8 @@ struct ocelot_reset_context {
->  	struct notifier_block restart_handler;
->  };
->  
-> +#define BIT_OFF_INVALID				32
-> +
->  #define SOFT_SWC_RST  BIT(1)
->  #define SOFT_CHIP_RST BIT(0)
->  
-> @@ -77,9 +79,11 @@ static int ocelot_restart_handle(struct notifier_block *this,
->  			   ctx->props->vcore_protect, 0);
->  
->  	/* Make the SI back to boot mode */
-> -	regmap_update_bits(ctx->cpu_ctrl, ICPU_CFG_CPU_SYSTEM_CTRL_GENERAL_CTRL,
-> -			   IF_SI_OWNER_MASK << if_si_owner_bit,
-> -			   IF_SI_OWNER_SIBM << if_si_owner_bit);
-> +	if (if_si_owner_bit != BIT_OFF_INVALID)
-> +		regmap_update_bits(ctx->cpu_ctrl,
-> +				   ICPU_CFG_CPU_SYSTEM_CTRL_GENERAL_CTRL,
-> +				   IF_SI_OWNER_MASK << if_si_owner_bit,
-> +				   IF_SI_OWNER_SIBM << if_si_owner_bit);
->  
->  	pr_emerg("Resetting SoC\n");
->  
-> @@ -127,6 +131,20 @@ static int ocelot_reset_probe(struct platform_device *pdev)
->  	return err;
->  }
->  
-> +static const struct reset_props reset_props_jaguar2 = {
-> +	.syscon		 = "mscc,ocelot-cpu-syscon",
-> +	.protect_reg     = 0x20,
-> +	.vcore_protect   = BIT(2),
-> +	.if_si_owner_bit = 6,
-> +};
-> +
-> +static const struct reset_props reset_props_luton = {
-> +	.syscon		 = "mscc,ocelot-cpu-syscon",
-> +	.protect_reg     = 0x20,
-> +	.vcore_protect   = BIT(2),
-> +	.if_si_owner_bit = BIT_OFF_INVALID, /* n/a */
-> +};
-> +
->  static const struct reset_props reset_props_ocelot = {
->  	.syscon		 = "mscc,ocelot-cpu-syscon",
->  	.protect_reg     = 0x20,
-> @@ -143,6 +161,12 @@ static const struct reset_props reset_props_sparx5 = {
->  
->  static const struct of_device_id ocelot_reset_of_match[] = {
->  	{
-> +		.compatible = "mscc,jaguar2-chip-reset",
-> +		.data = &reset_props_jaguar2
-> +	}, {
-> +		.compatible = "mscc,luton-chip-reset",
-> +		.data = &reset_props_luton
-> +	}, {
+> If that's up to me, these macros aren't really needed, and you can put the
+> values directly in the dma cells. This is done already in jz4740.dtsi,
+> jz4725b.dtsi and jz4770.dtsi.
 
-These compatible strings are undocumented. Else,
-
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-
->  		.compatible = "mscc,ocelot-chip-reset",
->  		.data = &reset_props_ocelot
->  	}, {
-> -- 
-> 2.29.2
-> 
+But that is not really nice, it is good to define these rather than put
+numbers, the include/dt-bindings exists for this sole reason!
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+~Vinod
