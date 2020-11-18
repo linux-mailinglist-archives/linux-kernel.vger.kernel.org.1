@@ -2,157 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FA12B8090
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:33:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A8B2B8091
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727415AbgKRPaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727406AbgKRPaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 18 Nov 2020 10:30:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48436 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727376AbgKRPa1 (ORCPT
+        with ESMTP id S1727379AbgKRPa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:30:27 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E4FC061A48
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:30:26 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id h21so3102278wmb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:30:26 -0800 (PST)
+        Wed, 18 Nov 2020 10:30:28 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38743C061A4F
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:30:28 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id j14so2122925ots.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:30:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=/SDkP0vkKcya+FIJEA+cPnvkReKH8EFRybVcIu9lk9M=;
-        b=D1BytoB6O03jBcACE4ZhAx92rosgf9wYS2rPHzrBHSfzKSQ0rUMTzY3xFt8TEHE9k0
-         YIIiPTr94Bc7PUn7zwCH9EE+zMbRYo4nnn12/5TpwUogKdAUXolEut/KGLgjD8p1u9z+
-         dAYzFovYhNWO+3rZhx7IoAOF+fVoq+FdKg0mn20a1XWJUdbwnQ20TZzHguw90k+BaASf
-         7P+5q6YagtEKTiL9MoxhoA0aKwhwyc39dlKHA6piMdU8eOhplAdHXaNEcJpNvodiG8QL
-         JTVWIUvFDbkbxf7qqsJ2NSlEFEvArxEdy8Xn4hO7Lb5vG6HcO7PIrZcevw0aveSWR9kJ
-         kERw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kiEcFfelocfnhd2oKnW85K0Bs8+YfhezxKsPupYgoVA=;
+        b=Xx6D+0YmDe8+tDzPY4xh3axjXWUigyE0t6cfxv7hcF5EUuiy/ygtvyfrw/olSohMT/
+         TMhyF1T8cRnhC8qaHpLXWfc0jiEmJy6yMdXRPc4Vdn6UiCRUAQluv58WRuAa9dqeJqJs
+         qMjxWb6E84fvjWn2CxUZCKex1qlpVSb3ErINLyy8OLPtYIrLhk+lFgHBojwLis4d8O5E
+         R4c3k/QgjKWre5QgpcpJxqu62RzMglsh7rm/pxUeBjLfHgh1ZHzaeBQ8RqiOTJ35vE5I
+         A8Rpr5IPI228F7JBjwuEDjOE9KVIYhS+TDrNDL/E+9nUUFtWfZLOxNpR9QVKcNk9CRUA
+         jHbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/SDkP0vkKcya+FIJEA+cPnvkReKH8EFRybVcIu9lk9M=;
-        b=BiW0GrtpFJClpz9m7wwV4EX+ybENc/r9w3SdIDTZNuPySTpSupxlLKCPlG4vWXySFo
-         RN2y7B6/JSrrxDkhSyfJR+5cD8DvT3Rf3L1NyvcLpSwtLQK//agNh/Hv5vsVQu9mkF1n
-         pXTlsVZhKO5sVD3NORLdvI/ttDH7v2YVnSo3MJoSWwvh2an7Y1NTcD6ZGExzTnIv2+9C
-         abOaZhTAbozD820p2l96wvKe2cUd8F7qJ/vpQhNOFVMSAA0KUXI3BkTw0Mwm30ebgTjM
-         xqbpxK3YWToW76VyWV+7kCqOQiQ0RGUanEVtFT0RuecOy2i4iqeQdbz9HyXAvhDvYggG
-         SrOw==
-X-Gm-Message-State: AOAM530/gUY4orn2GD1pFPOR1TyhAIuz2PCojdOprQWoHndTH7Vaac+c
-        SxEgXmUaFoCY2D3Dxrpo/3PbYg==
-X-Google-Smtp-Source: ABdhPJzFItfcbj1D5GPsiBo7RkrZes7kt1MjC/X61M/dwKw8ehmZ/XH4IHzsd6fKnSmspZvESraPog==
-X-Received: by 2002:a1c:790c:: with SMTP id l12mr560063wme.47.1605713425424;
-        Wed, 18 Nov 2020 07:30:25 -0800 (PST)
-Received: from MacBook-Pro.local ([212.45.64.13])
-        by smtp.googlemail.com with ESMTPSA id w11sm4405479wmg.36.2020.11.18.07.30.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Nov 2020 07:30:24 -0800 (PST)
-Subject: Re: [PATCH v9 01/17] memory: tegra30: Support interconnect framework
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201115212922.4390-1-digetx@gmail.com>
- <20201115212922.4390-2-digetx@gmail.com>
- <61e777d9-b730-02c6-cedf-cf0aa1a50fb8@linaro.org>
- <7e484678-43cc-e612-1017-73ed580f9840@gmail.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <83a3f33b-3695-2a40-1c2b-5c38d117c1ad@linaro.org>
-Date:   Wed, 18 Nov 2020 17:30:22 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kiEcFfelocfnhd2oKnW85K0Bs8+YfhezxKsPupYgoVA=;
+        b=Xsl3ArM0JEEsxEKgWaqmFzJYi+fuvgNnCd7hZQ4Tl3YRQiQc7tpXyHaFwVaH4b4m6l
+         TTvIEvYB3bjpqPrwO63FLuYD2L2T4WpvqlP3c9XxJhqQZ4ylryfKMmR8ddwnwjd4VzX/
+         em60+4NAF5MOtTtDfSpTKRwV3Jm/tOxbImMqFjuJ7QHq+1yWsNxQRhlJt2NCs+wNd3jh
+         pdTF3WGSqhn71JUb/FFfM9gUhWgyyuZ6jOaVhkFU+AQ1hvGzCx0zRQfKA70fQCTPREO5
+         /yV/CQI4K67PRQnvmKsMsA9+3+lMnFcz3gBDWceKgbKr6awu+g/yl8dVjplsI7oA9Y2v
+         NCJw==
+X-Gm-Message-State: AOAM5318Nykmb8m+LvI4R/Gr2PoRwSFUvbMXcm1jZdLJoW15XDd8Vcb1
+        flXnBt/GDMJw7Mv1gPBlvJyHrQ==
+X-Google-Smtp-Source: ABdhPJwT6i2eu4Z8eoQlgamaU/3w0ODZywHhThqnmRn/orCMAdSnT63f00YFJ9sjJ8dFOGwUmRpn/g==
+X-Received: by 2002:a9d:7cd6:: with SMTP id r22mr7033207otn.355.1605713427580;
+        Wed, 18 Nov 2020 07:30:27 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 68sm7606075oto.71.2020.11.18.07.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 07:30:26 -0800 (PST)
+Date:   Wed, 18 Nov 2020 09:30:25 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
+        vkoul@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] clk: qcom: Add support for SDX55 RPMh clocks
+Message-ID: <20201118153025.GJ8532@builder.lan>
+References: <20201105104817.15715-1-manivannan.sadhasivam@linaro.org>
+ <20201105104817.15715-5-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <7e484678-43cc-e612-1017-73ed580f9840@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105104817.15715-5-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.11.20 0:02, Dmitry Osipenko wrote:
-> 17.11.2020 23:24, Georgi Djakov пишет:
->> Hi Dmitry,
->>
->> Thank you working on this!
->>
->> On 15.11.20 23:29, Dmitry Osipenko wrote:
->>> Now Internal and External memory controllers are memory interconnection
->>> providers. This allows us to use interconnect API for tuning of memory
->>> configuration. EMC driver now supports OPPs and DVFS. MC driver now
->>> supports tuning of memory arbitration latency, which needs to be done
->>> for ISO memory clients, like a Display client for example.
->>>
->>> Tested-by: Peter Geis <pgwipeout@gmail.com>
->>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>> ---
->>>    drivers/memory/tegra/Kconfig       |   1 +
->>>    drivers/memory/tegra/tegra30-emc.c | 349 +++++++++++++++++++++++++++--
->>>    drivers/memory/tegra/tegra30.c     | 173 +++++++++++++-
->>>    3 files changed, 501 insertions(+), 22 deletions(-)
->>>
->> [..]> diff --git a/drivers/memory/tegra/tegra30.c
->> b/drivers/memory/tegra/tegra30.c
->>> index d0314f29608d..ea849003014b 100644
->>> --- a/drivers/memory/tegra/tegra30.c
->>> +++ b/drivers/memory/tegra/tegra30.c
->> [..]
->>> +
->>> +static int tegra30_mc_icc_set(struct icc_node *src, struct icc_node
->>> *dst)
->>> +{
->>> +    struct tegra_mc *mc = icc_provider_to_tegra_mc(src->provider);
->>> +    const struct tegra_mc_client *client = &mc->soc->clients[src->id];
->>> +    u64 peak_bandwidth = icc_units_to_bps(src->peak_bw);
->>> +
->>> +    /*
->>> +     * Skip pre-initialization that is done by icc_node_add(), which
->>> sets
->>> +     * bandwidth to maximum for all clients before drivers are loaded.
->>> +     *
->>> +     * This doesn't make sense for us because we don't have drivers
->>> for all
->>> +     * clients and it's okay to keep configuration left from bootloader
->>> +     * during boot, at least for today.
->>> +     */
->>> +    if (src == dst)
->>> +        return 0;
->>
->> Nit: The "proper" way to express this should be to implement the
->> .get_bw() callback to return zero as initial average/peak bandwidth.
->> I'm wondering if this will work here?
->>
->> The rest looks good to me!
-> 
-> Hello Georgi,
-> 
-> Returning zeros doesn't allow us to skip the initialization that is done
-> by provider->set(node, node) in icc_node_add(). It will reconfigure
-> memory latency in accordance to a zero memory bandwidth, which is wrong
-> to do.
-> 
-> It actually should be more preferred to preset bandwidth to a maximum
-> before all drivers are synced, but this should be done only once we will
-> wire up all drivers to use ICC framework. For now it's safer to keep the
-> default hardware configuration untouched.
+On Thu 05 Nov 04:48 CST 2020, Manivannan Sadhasivam wrote:
 
-Ok, thanks for clarifying! Is there a way to read this hardware 
-configuration and convert it to initial bandwidth? That's the
-idea of the get_bw() callback actually. I am just curious and
-trying to get a better understanding how this works and if it
-would be useful for Tegra.
+> Add support for following clocks maintained by RPMh in SDX55 SoCs.
+> 
+> * BI TCXO
+> * RF_CLK1
+> * RF_CLK1_AO
+> * RF_CLK2
+> * RF_CLK2_AO
+> * QPIC (Qualcomm Technologies, Inc. Parallel Interface Controller)
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Thanks,
-Georgi
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> ---
+>  drivers/clk/qcom/clk-rpmh.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
+> index e2c669b08aff..fb72db957721 100644
+> --- a/drivers/clk/qcom/clk-rpmh.c
+> +++ b/drivers/clk/qcom/clk-rpmh.c
+> @@ -432,6 +432,25 @@ static const struct clk_rpmh_desc clk_rpmh_sm8250 = {
+>  	.num_clks = ARRAY_SIZE(sm8250_rpmh_clocks),
+>  };
+>  
+> +DEFINE_CLK_RPMH_VRM(sdx55, rf_clk1, rf_clk1_ao, "rfclkd1", 1);
+> +DEFINE_CLK_RPMH_VRM(sdx55, rf_clk2, rf_clk2_ao, "rfclkd2", 1);
+> +DEFINE_CLK_RPMH_BCM(sdx55, qpic_clk, "QP0");
+> +
+> +static struct clk_hw *sdx55_rpmh_clocks[] = {
+> +	[RPMH_CXO_CLK]		= &sdm845_bi_tcxo.hw,
+> +	[RPMH_CXO_CLK_A]	= &sdm845_bi_tcxo_ao.hw,
+> +	[RPMH_RF_CLK1]		= &sdx55_rf_clk1.hw,
+> +	[RPMH_RF_CLK1_A]	= &sdx55_rf_clk1_ao.hw,
+> +	[RPMH_RF_CLK2]		= &sdx55_rf_clk2.hw,
+> +	[RPMH_RF_CLK2_A]	= &sdx55_rf_clk2_ao.hw,
+> +	[RPMH_QPIC_CLK]		= &sdx55_qpic_clk.hw,
+> +};
+> +
+> +static const struct clk_rpmh_desc clk_rpmh_sdx55 = {
+> +	.clks = sdx55_rpmh_clocks,
+> +	.num_clks = ARRAY_SIZE(sdx55_rpmh_clocks),
+> +};
+> +
+>  static struct clk_hw *of_clk_rpmh_hw_get(struct of_phandle_args *clkspec,
+>  					 void *data)
+>  {
+> @@ -517,6 +536,7 @@ static int clk_rpmh_probe(struct platform_device *pdev)
+>  static const struct of_device_id clk_rpmh_match_table[] = {
+>  	{ .compatible = "qcom,sc7180-rpmh-clk", .data = &clk_rpmh_sc7180},
+>  	{ .compatible = "qcom,sdm845-rpmh-clk", .data = &clk_rpmh_sdm845},
+> +	{ .compatible = "qcom,sdx55-rpmh-clk",  .data = &clk_rpmh_sdx55},
+>  	{ .compatible = "qcom,sm8150-rpmh-clk", .data = &clk_rpmh_sm8150},
+>  	{ .compatible = "qcom,sm8250-rpmh-clk", .data = &clk_rpmh_sm8250},
+>  	{ }
+> -- 
+> 2.17.1
+> 
