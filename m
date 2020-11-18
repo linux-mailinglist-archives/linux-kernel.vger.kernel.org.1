@@ -2,145 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654942B88D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:56:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E3F2B88DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727253AbgKRXzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 18:55:37 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2375 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726413AbgKRXzg (ORCPT
+        id S1726889AbgKRX61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 18:58:27 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:42216 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726340AbgKRX60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:55:36 -0500
-Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Cc06p14fXz520J;
-        Thu, 19 Nov 2020 07:55:14 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Thu, 19 Nov 2020 07:55:33 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 19 Nov 2020 07:55:33 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Thu, 19 Nov 2020 07:55:33 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-CC:     Will Deacon <will@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        Linuxarm <linuxarm@huawei.com>,
+        Wed, 18 Nov 2020 18:58:26 -0500
+Received: from mailhost.synopsys.com (sv1-mailhost1.synopsys.com [10.205.2.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id A3619C00BF;
+        Wed, 18 Nov 2020 23:58:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1605743904; bh=xMtfUUXrs8OTPhltxhQVTQtJPCNyZrhwHqCAXHSeuiY=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=cxV02Tu4j7d8topJ8TWwLNDjMo6Uqn//xWK4DnigkEyrcLCXPHjgzHE1ta8vR3LbD
+         rBmimWP3rF8Su0e023MP9aCEsLTBzmIxYZ4Bu9SdDISiCpPLH4WWXxRzby15YdM+AP
+         NrQQEtESVZ5yTneVcMr6jduJ74r8daxPiE61LbE7YbuX+jdBRsuXQmYJaVshho0PFy
+         e3YVxe5f8OjAZFpY5/AjJ2hBIBET0+28I0U4F9Cw6j0eKTTUSpHdBKmwbgijNzT3mm
+         CfLbAZt6Dpc2t6mKoFesJPktWT3V4RzUbLRXSvrIC0CUzbrIIBszlB04q/d0ptz6TO
+         dP/PUE21u8atQ==
+Received: from o365relay-in.synopsys.com (us03-o365relay3.synopsys.com [10.4.161.139])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 5B404A006E;
+        Wed, 18 Nov 2020 23:58:24 +0000 (UTC)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id A9B1E812F1;
+        Wed, 18 Nov 2020 23:58:23 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=paltsev@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="k+l3eyH8";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TDs8SKmkJ5IeVJeGuwndJpGZ41pbFjp2kBA8EmQ8U8NNJhUUBcdYSmjXEkWtZOb43IePcZMO9aLdXWqOvM6nANQPT1Ai08j/5FrbMmnKU6IguoVkOMCJZdKY2vsYn9MRRYlrLrHvADU5iXZEYxf0LbETNpboxNjkX0Jcrg7lGmH/bQ67FodibBTadBFwH3D3vkzRZJOceroIMFb3ndexQ6qG8n0xYNR5ORdodOYmsRu1btXL4bU5awPYvMrH3cB6a63jPjf7OQr1CiS8o4gOxtOdZaJLZ7wLnpl4e/JS9GITg/Gajj15EceCHfBpo6Lfk/FLvaSWaOHVmdBVA/3m6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2u4PnsOFzp3JBTzebDZjVnJlNjexoQveheu42tq3Zy8=;
+ b=PLOw/MvZSyKE07lwfBLBk+BFYigWvFHdejpVfYrxlthvJE/MHywEgmMYoKpH4eot3LmRXXlkAO6P6TVdAReNPNG2lmltNW6xEYdkVADD/kuWsRPdYnp+hOQh/d04PElZvDiW3wHBfqWSaao3yW5u9n0NnyKOksrChOZyAGQaSUpyy2ihoubMf+hUT9zeaAhLCVwAscY5AohrBXoZaEEhPTKnVycMpT8ZTUqY2vyh9E6iFqL69uskULs1YukqUb0dUI3pEraouVnytc2mHlkAH9LaeXSWrlaxjvGxFlhH2ZHLkHsskou/bHBm8U8SgjcTejPR7cXPKnsyg7ia23uh3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2u4PnsOFzp3JBTzebDZjVnJlNjexoQveheu42tq3Zy8=;
+ b=k+l3eyH8r45Dx3GfTQ9G6eqBKH8xXaNrViMqgV2AOn0uzcqmO1ntSThqUaOJHm93xPP8F6Ebj8Ak0/+Wb6Bn/K87c/oCvynVi7BOCXUoVwQ0D5BssLZUghRrhDsn4NjPILZIXzF+rgg94QdJ88jDYDwapHqyuArVpsf+Enxuu0A=
+Received: from MWHPR1201MB0029.namprd12.prod.outlook.com
+ (2603:10b6:301:4d::15) by MWHPR12MB1310.namprd12.prod.outlook.com
+ (2603:10b6:300:a::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Wed, 18 Nov
+ 2020 23:58:19 +0000
+Received: from MWHPR1201MB0029.namprd12.prod.outlook.com
+ ([fe80::49ab:983f:4056:5dff]) by MWHPR1201MB0029.namprd12.prod.outlook.com
+ ([fe80::49ab:983f:4056:5dff%4]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
+ 23:58:19 +0000
+X-SNPS-Relay: synopsys.com
+From:   Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+To:     Sia Jee Heng <jee.heng.sia@intel.com>
+CC:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH] arm64: mm: add support for memmap kernel parameters
-Thread-Topic: [PATCH] arm64: mm: add support for memmap kernel parameters
-Thread-Index: AQHWvXVLtrpWHgsWH0upIuwmJUX89KnNolcAgAAa/ICAAJI6cP//pm8AgACWN3A=
-Date:   Wed, 18 Nov 2020 23:55:33 +0000
-Message-ID: <0a1de2555ed2458d97e5c79929f74380@hisilicon.com>
-References: <20201118063314.22940-1-song.bao.hua@hisilicon.com>
- <20201118173854.GA8537@kernel.org> <20201118191528.GA2680@willie-the-truck>
- <1d3780422d2648dfa80a6de87585819a@hisilicon.com>
- <CAMj1kXE-Ea7K_U9JUp2uq+kpmTEYaiKrqMK1J1DOG-UAA3J6ow@mail.gmail.com>
-In-Reply-To: <CAMj1kXE-Ea7K_U9JUp2uq+kpmTEYaiKrqMK1J1DOG-UAA3J6ow@mail.gmail.com>
-Accept-Language: en-GB, en-US
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [PATCH v4 11/15] dmaengine: dw-axi-dmac: Add Intel KeemBay DMA
+ register fields
+Thread-Topic: [PATCH v4 11/15] dmaengine: dw-axi-dmac: Add Intel KeemBay DMA
+ register fields
+Thread-Index: AQHWvIrXLAM1xxfy7U+r4CcYlOAdA6nOkDDR
+Date:   Wed, 18 Nov 2020 23:58:19 +0000
+Message-ID: <MWHPR1201MB0029278F2808FB55CEB8B3D5DEE10@MWHPR1201MB0029.namprd12.prod.outlook.com>
+References: <20201117022215.2461-1-jee.heng.sia@intel.com>,<20201117022215.2461-12-jee.heng.sia@intel.com>
+In-Reply-To: <20201117022215.2461-12-jee.heng.sia@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.226]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [5.18.244.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 25b57cc9-2a03-49a3-e9b3-08d88c1dd31e
+x-ms-traffictypediagnostic: MWHPR12MB1310:
+x-microsoft-antispam-prvs: <MWHPR12MB131067C77F7EE204A45EA0A6DEE10@MWHPR12MB1310.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6qW2D2RUAPlVpBRflsH2afEVhxON1CaWaleijMo0HBEiBHBz9DwuwaXrcTeEqMIwzEZfPbnp7YXg0/rG8dJK/G7bn93RSX2CKL10CMAIDVETuKqmgmATGRcBSxJO5cHzjjqq8zywYdrDydTxMn7IVXq72Z0R5gph9DwXAq2XAqWF0EQNvlv/VWBJDF4m0h5RFAgeEQpQm7T8J80zRhMKRzoh3sGQVvlws1uwS5atxZSQreF04CTRO/QGQczgbF6OgEIIEbhRucoXtmlaLhtgVkHIrzjJ8Q2dc1aSTavTwcdRyZ6JDl+Sl6sh6KRjy4PPU9DHWuogXQkJYM8sh4D/9w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0029.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(136003)(396003)(8676002)(54906003)(66556008)(66476007)(64756008)(66446008)(66946007)(316002)(33656002)(478600001)(7696005)(9686003)(71200400001)(5660300002)(55016002)(83380400001)(91956017)(4326008)(76116006)(6506007)(2906002)(8936002)(6916009)(52536014)(186003)(26005)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: bNQSeGQZ0xYuUxMqJjz5FMQNQOR6HN8WNVbo0KtuW6MnnZH0rqXIMLLUAHRM9ZR8ZU8ZE1hygsAcufDwX2SRhrQyad7UGPBBkP0c2QF84va64RM+Ezi8OtzUpykHspa3B50Iw5WQXVixBYhdy1vvECLvm6wSLcmXf8UytM6jEB/it9znQ/20lAWU+aNgYnnAS29+0RmgXSfsnVuu1ePBWPuZXs/oUzS6BzuXql2Y1SkesMDkCtkCUy22lPPp8VL95EkTPrI1Cq4soK1Km8XInbEUS5+u6susF0kMztqZxsgqHqEQ8yiel2YfaXOSR02HeLlZSEPdjUqUtjnM+laZH5eX7nZQi4Y83wyLQ1jnomBOiladPU1KZHoUCEM8YvaTZ8tZhUoasmewV2pPtA6JktYFkEM9+3mT+0Mc5Xy/NUbcZFrP5+YXYLDepYIb7ZoLzekLDy97BPsfHagSapDqD8sJPe7MJgqBq9I+ekDYjKAsg4M3/2dXt/00Zpbmp6NDRhPtBFnRNDPsqXs2prq575RnLpsalLz8/N56D2Su+dZG6946eDhGZhKLiTCRMXxW0a+cItoLCDvtWnLscTC9pf1fOz1K9sNy1ium732E2KuJj2wiQo0ODnI3GiL9FDr8/w3J7VaULG3yiWr5uREG/rip0/4hjLSK5xe5V1QWN3OfejnZWaOXqZVGteryNudYmoRtD7SWJKfR+QKBiaDLDsG/gV2qPOfBnuZOI5/zL9B3Be8ZDZ7/Hw/dOu4jdTWu/+md66MeZB8S5CG2aVKuJcG0BBvPpYvHCKqwSwuM6WgGE8pFZETp2FIORsDry62WCaAElmXw+0WzvAWD6Do+csgaN08cDyomVE3jPKdSKe39YTgw24EJuxwO3b9syQaHl3mHv/1lvnx7FnK7k1aysw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0029.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25b57cc9-2a03-49a3-e9b3-08d88c1dd31e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2020 23:58:19.4395
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qX3dI7V2vfkVjXwjzhRtYKz2BOOjCbsnRwbXiBQWGzBdToNGgMF8xza1S+LgMXt4sAzpwY8Cra1yI/y0vhTbmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1310
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQXJkIEJpZXNoZXV2ZWwg
-W21haWx0bzphcmRiQGtlcm5lbC5vcmddDQo+IFNlbnQ6IFRodXJzZGF5LCBOb3ZlbWJlciAxOSwg
-MjAyMCAxMTozOCBBTQ0KPiBUbzogU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKSA8c29uZy5iYW8u
-aHVhQGhpc2lsaWNvbi5jb20+DQo+IENjOiBXaWxsIERlYWNvbiA8d2lsbEBrZXJuZWwub3JnPjsg
-TWlrZSBSYXBvcG9ydCA8cnBwdEBrZXJuZWwub3JnPjsNCj4gYW5zaHVtYW4ua2hhbmR1YWxAYXJt
-LmNvbTsgY2F0YWxpbi5tYXJpbmFzQGFybS5jb207IExpbnV4YXJtDQo+IDxsaW51eGFybUBodWF3
-ZWkuY29tPjsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gYWtwbUBsaW51eC1mb3Vu
-ZGF0aW9uLm9yZzsgbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IFN1Ympl
-Y3Q6IFJlOiBbUEFUQ0hdIGFybTY0OiBtbTogYWRkIHN1cHBvcnQgZm9yIG1lbW1hcCBrZXJuZWwg
-cGFyYW1ldGVycw0KPiANCj4gT24gV2VkLCAxOCBOb3YgMjAyMCBhdCAyMToyNywgU29uZyBCYW8g
-SHVhIChCYXJyeSBTb25nKQ0KPiA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+IHdyb3RlOg0K
-PiA+DQo+ID4NCj4gPg0KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZy
-b206IFdpbGwgRGVhY29uIFttYWlsdG86d2lsbEBrZXJuZWwub3JnXQ0KPiA+ID4gU2VudDogVGh1
-cnNkYXksIE5vdmVtYmVyIDE5LCAyMDIwIDg6MTUgQU0NCj4gPiA+IFRvOiBNaWtlIFJhcG9wb3J0
-IDxycHB0QGtlcm5lbC5vcmc+DQo+ID4gPiBDYzogU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKSA8
-c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+Ow0KPiA+ID4gY2F0YWxpbi5tYXJpbmFzQGFybS5j
-b207IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4gPiA+IGxpbnV4LWtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc7DQo+ID4gPiBh
-bnNodW1hbi5raGFuZHVhbEBhcm0uY29tOyBMaW51eGFybSA8bGludXhhcm1AaHVhd2VpLmNvbT4N
-Cj4gPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGFybTY0OiBtbTogYWRkIHN1cHBvcnQgZm9yIG1l
-bW1hcCBrZXJuZWwNCj4gcGFyYW1ldGVycw0KPiA+ID4NCj4gPiA+IE9uIFdlZCwgTm92IDE4LCAy
-MDIwIGF0IDA3OjM4OjU0UE0gKzAyMDAsIE1pa2UgUmFwb3BvcnQgd3JvdGU6DQo+ID4gPiA+IE9u
-IFdlZCwgTm92IDE4LCAyMDIwIGF0IDA3OjMzOjE0UE0gKzEzMDAsIEJhcnJ5IFNvbmcgd3JvdGU6
-DQo+ID4gPiA+ID4gbWVtbWFwIHNob3VsZCBiZSBhbiB1c2VmdWwga2VybmVsIHBhcmFtZXRlciB3
-aGljaCBoYXMgYmVlbg0KPiBzdXBwb3J0ZWQNCj4gPiA+IGJ5DQo+ID4gPiA+ID4geDg2LCBtaXBz
-IGFuZCB4dGVuc2EuDQo+ID4gPiA+DQo+ID4gPiA+IFdoeSBpcyB0aGlzIHBhcmFtZXRlciBzaG91
-bGQgYmUgdXNlZnVsIGZvciBBUk02ND8NCj4gPiA+ID4gTXkgdW5kZXJzdGFuZGluZyBpcyB0aGF0
-IGl0IGlzIHJlcXVpcmVkIG9ubHkgdG8gd29yayBhcm91bmQgcmVhbGx5DQo+ID4gPiA+IGJyb2tl
-biBib290bG9hZGVycywgaXNuJ3QgaXQ/DQo+ID4gPg0KPiA+DQo+ID4gR29vZCBxdWVzdGlvbi4g
-T3JpZ2luYWxseSBJIHdyb3RlIHRoaXMgcGF0Y2ggdG8gZGVidWcgYW5kIHZlcmlmeSB0aGUNCj4g
-dm1lbW1hcA0KPiA+IGxlYWsgaXNzdWUgcmVwb3J0ZWQgaW4gdGhpcyBwYXRjaDoNCj4gPiBbUEFU
-Q0ggdjJdIGFybTY0OiBtbTogZnJlZSB1bnVzZWQgbWVtbWFwIGZvciBzcGFyc2UgbWVtb3J5IG1v
-ZGVsIHRoYXQNCj4gZGVmaW5lIFZNRU1NQVANCj4gPg0KPiBodHRwczovL2xvcmUua2VybmVsLm9y
-Zy9saW51eC1hcm0ta2VybmVsLzIwMjAwODEyMDEwNjU1Ljk2MzM5LTEtbGl3ZWkyMTNADQo+IGh1
-YXdlaS5jb20vDQo+ID4gSSBkb24ndCBoYXZlIGEgbWFjaGluZSB3aGljaCByZWFsbHkgaGFzIGhv
-bGVzIGluIG1lbW9yeV9zZWN0aW9uIHRvIGRlYnVnLA0KPiBidXQgbWVtbWFwDQo+ID4gY2FuIGhl
-bHAuIFdpdGggbWVtbWFwLCBJIGNvdWxkIHNwZWNpZmllZCBhIG1hY2hpbmUgd2l0aCB2YXJpb3Vz
-IGhvbGRzIGluDQo+IG1lbV9zZWN0aW9ucy4NCj4gPg0KPiA+IEFmdGVyIHRoYXQsIEkgZmlndXJl
-ZCBvdXQgdGhpcyBpcyBub3Qgb25seSB1c2VmdWwgZm9yIGRlYnVnZ2luZyBwdXJwb3NlLiBpdCBj
-YW4NCj4gaGF2ZSBzb21lIHJlYWwgdXNlciBjYXNlcy4NCj4gPiBGb3IgZXhhbXBsZToNCj4gPg0K
-PiA+IDEuIERBWCBvbiBEUkFNLg0KPiA+IGtlcm5lbCBwYXJhbWV0ZXIgbWVtbWFwPVhHIVlHIHNw
-ZWNpZmllcyBhIHJhbmdlIG9mIFJBTSB0byBlbXVsYXRlDQo+IHBtZW0uIFRoZW4gd2UgYXJlIGFi
-bGUNCj4gPiB0byBydW4gREFYIGFuZCBmaWxlc3lzdGVtIG9uIHRvcCBvZiBpdC4gRnVydGhlcm1v
-cmUsIHRoaXMgd2lsbCBwcm9iYWJseSBhbHNvDQo+IGJlbmVmaXQgdGhlIGNhc2UNCj4gPiB0aGlz
-IGJpZyBwYXRjaHNldCB3YW50cyB0byAiZml4IiB2aWEgZGlyZWN0IGFjY2VzcyB0byBtZW1vcnk6
-DQo+ID4NCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC9jb3Zlci4xNjAyMDkzNzYwLmdp
-dC55dWxlaXh6aGFuZ0B0ZW5jZW50LmNvbS9UDQo+IC8jbTFhNzcwNzRiOGUxZGFkYzU5MGE1ZjQ1
-YTUyZDljM2NkYTY5YzA3ODANCj4gPiBhcyB0aGUgY29tbWVudHMgaGF2ZSBjbGVhcmx5IHNob3du
-Lg0KPiA+DQo+ID4gMi4gcmVzZXJ2ZSBzb21lIG1lbW9yeSBmb3IgdXNlcnNwYWNlIHRvIG1hbmFn
-ZSB2aWEgL2Rldi9tZW0NCj4gPg0KPiANCj4gQXBvbG9naWVzIGZvciB0aGUgYmx1bnRuZXNzLCBi
-dXQgd2hhdCB5b3UgYXJlIHNheWluZyBoZXJlIGlzIHRoYXQgeW91DQo+IG5lZWQgYSBoYWNrIHRv
-IHBpbGUgdGhvc2Ugb3RoZXIgaGFja3Mgb250by4NCj4gDQo+IEN1cnJlbnRseSwgd2UgdXNlIHRo
-ZSBOT01BUCBhdHRyaWJ1dGUgaW4gbWVtYmxvY2sgdG8gZGVzY3JpYmUgbWVtb3J5DQo+IHRoYXQg
-aXMgb21pdHRlZCBmcm9tIHRoZSBkaXJlY3QgbWFwLiBSZW1vdmluZyBtZW1vcnkgZnJvbSBtZW1i
-bG9jaw0KPiBlbnRpcmVseSBhbHNvIHN0cmlwcyBpdCBvZiB0aGlzIGFubm90YXRpb24sIHdoaWNo
-IG1lYW5zIHRoYXQNCj4gcGh5c19tZW1fYWNjZXNzX3Byb3QoKSB3aWxsIGlkZW50aWZ5IGl0IGFz
-IGRldmljZSBtZW1vcnkgbm90IERSQU0sIGFuZA0KPiB1c2UgdGhlIHdyb25nIGF0dHJpYnV0ZXMg
-d2hlbiB1c2luZyAvZGV2L21lbS4NCj4gDQo+IFRoZXJlIGFyZSBsaWtlbHkgb3RoZXIgcGxhY2Vz
-IHdoZXJlIHRoaXMgZGlzdGluY3Rpb24gbWF0dGVycywgYW5kIHNvIEkNCj4gYW0gbm90IGJ1eWlu
-ZyB0aGUganVzdGlmaWNhdGlvbiB0aGF0IHdlIGNhbiBtYWtlIG1lYW5pbmdmdWwgdXNlIG9mDQo+
-IHRoaXMgbWVtb3J5IGluIHRoZSBnZW5lcmFsIGNhc2UsIGFuZCBhbnl0aGluZyB0aGF0IHJlbGll
-cyBvbiBpdCB3aWxsDQo+IGJlIGZyYWdpbGUsIGFuZCBwcm9iYWJseSBvbmx5IGxpbWl0ZWQgdG8g
-dmVyeSBzcGVjaWZpYyBkZWJ1Zw0KPiBzY2VuYXJpb3MuDQoNClllcC4gb3JpZ2luYWxseSBJIGRp
-ZCB0aGF0IGZvciBkZWJ1Z2dpbmcgcHVycG9zZSB0byBlbXVsYXRlIGEgbWFjaGluZSB3aXRoDQpz
-b21lIGhvbGVzIGluIG1lbV9zZWN0aW9uLiBJIGd1ZXNzIGl0IHNob3VsZCBiZSBhbHNvIHVzZWZ1
-bCB0byBvdGhlciBwZW9wbGUNCmlmIHRoZXkgbmVlZCB0aGUgc2FtZSB0aGluZyBmb3IgZGVidWdn
-aW5nLg0KDQo+IA0KPiBTbyBJIGRvbid0IHRoaW5rIHdlIHNob3VsZCBtZXJnZSB0aGlzLg0KDQpJ
-dCBzaG91bGQgYmUgaW4gdGhlIHNhbWUgc2l0dWF0aW9uIGZvciBvdGhlciBwbGF0Zm9ybXMgbGlr
-ZSB4ODYsIG1pcHMgYW5kIHh0ZW5zYQ0KYnV0IHRoZXkgaGF2ZSBlbmFibGVkIHRoaXMga2VybmVs
-IHBhcmFtZXRlci4NCg0KbWF5YmUgdGhlIGVtdWxhdGVkIHBtZW0gYnkgRFJBTSBpcyBhbiB1c2Vm
-dWwgc2NlbmFyaW8gb3RoZXIgdGhhbiBkZWJ1Z2dpbmcuDQoNCkxhdGVyLCBodHRwczovL2xvcmUu
-a2VybmVsLm9yZy9sa21sL2NvdmVyLjE2MDIwOTM3NjAuZ2l0Lnl1bGVpeHpoYW5nQHRlbmNlbnQu
-Y29tL1QvI20xYTc3MDc0YjhlMWRhZGM1OTBhNWY0NWE1MmQ5YzNjZGE2OWMwNzgwDQptaWdodCBi
-ZSBhYmxlIHRvIHVzZSB0aGlzIHBhcmFtZXRlci4NCg0KQW55d2F5LCBJIGRvbid0IG1pbmQga2Vl
-cGluZyBpdCBsb2NhbCBmb3IgZGVidWdnaW5nIGF0IHRoaXMgc3RhZ2UgYW5kIHdhaXRpbmcgZm9y
-IGENCm1vcmUgY29udmluY2luZyB1c2UgY2FzZS4NCg0KPiANCj4gDQo+ID4NCj4gPiA+IEFncmVl
-ZCwgSSBjYW4ndCBzZWUgdGhpcyBiZWluZyBzb21ldGhpbmcgd2UgcmVhbGx5IHdhbnQgdG8gc3Vw
-cG9ydC4gSWYgaXQNCj4gPiA+IHR1cm5zIG91dCB0aGF0IGl0IGlzIGdlbmVyYWxseSB1c2VmdWws
-IHRoZW4gdGhlIGltcGxlbWVudGF0aW9uIHNob3VsZA0KPiA+ID4gcHJvYmFibHkgYmUgc29tZXdo
-ZXJlIG91dHNpZGUgb2YgYXJjaC8gd2hlcmUgSSBkb24ndCBoYXZlIHRvIGxvb2sgYXQgaXQgOikN
-Cj4gPiA+DQo+ID4NCj4gPiBXaGF0IHN0b3BzIHRoaXMgYmVjb21pbmcgY29tbW9uIGNvZGUgaXMg
-dGhhdCBlYWNoIHBsYXRmb3JtIGhhcyBkaWZmZXJlbnQNCj4gd2F5cw0KPiA+IGFuZCBib290IHNl
-cXVlbmNlcyB0byBwb3B1bGF0ZSBtZW1ibG9jay4NCj4gPiBGb3IgZXhhbXBsZSwgb24gQXJtNjQs
-IHdoaWxlIGVhcmx5X3BhcmFtIGlzIHBvcHVsYXRlZCwgZHQgaGFzIHBvcHVsYXRlZA0KPiA+IG1l
-bWJsb2NrIGJlZm9yZSB0aGF0LiBPdGhlciBwbGF0Zm9ybXMgbWlnaHQgYmVlbiBtdWNoIGRpZmZl
-cmVudC4NCj4gPg0KPiA+ID4gV2lsbA0KPiA+DQoNClRoYW5rcw0KQmFycnkNCg0K
+Hi Sia,=0A=
+=0A=
+> Subject: [PATCH v4 11/15] dmaengine: dw-axi-dmac: Add Intel KeemBay DMA r=
+egister fields=0A=
+> =0A=
+> Add support for Intel KeemBay DMA registers. These registers are required=
+=0A=
+> to run data transfer between device to memory and memory to device on Int=
+el=0A=
+> KeemBay SoC.=0A=
+> =0A=
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>=0A=
+> Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>=0A=
+> ---=0A=
+>  drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c |  4 ++++=0A=
+>  drivers/dma/dw-axi-dmac/dw-axi-dmac.h          | 14 ++++++++++++++=0A=
+>  2 files changed, 18 insertions(+)=0A=
+> =0A=
+> diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma=
+/dw-axi-dmac/dw-axi-dmac-platform.c=0A=
+> index 7c97b58206bf..9f7f908b89d8 100644=0A=
+> --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c=0A=
+> +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c=0A=
+> @@ -1192,6 +1192,10 @@ static int dw_probe(struct platform_device *pdev)=
+=0A=
+>         if (IS_ERR(chip->regs))=0A=
+>                 return PTR_ERR(chip->regs);=0A=
+> =0A=
+> +       chip->apb_regs =3D devm_platform_ioremap_resource(pdev, 1);=0A=
+> +       if (IS_ERR(chip->apb_regs))=0A=
+> +               dev_warn(&pdev->dev, "apb_regs not supported\n");=0A=
+=0A=
+There shouldn't be warning in case of compatible =3D "snps,axi-dma-1.01a" a=
+nd=0A=
+apb_regs missing. Could you please try to do ioremap for this region only i=
+n=0A=
+case of intel,kmb-axi-dma?=0A=
+=0A=
+> +=0A=
+>         chip->core_clk =3D devm_clk_get(chip->dev, "core-clk");=0A=
+>         if (IS_ERR(chip->core_clk))=0A=
+>                 return PTR_ERR(chip->core_clk);=0A=
+> diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-d=
+mac/dw-axi-dmac.h=0A=
+> index bdb66d775125..f64e8d33b127 100644=0A=
+> --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h=0A=
+> +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h=0A=
+> @@ -63,6 +63,7 @@ struct axi_dma_chip {=0A=
+>         struct device           *dev;=0A=
+>         int                     irq;=0A=
+>         void __iomem            *regs;=0A=
+> +       void __iomem            *apb_regs;=0A=
+>         struct clk              *core_clk;=0A=
+>         struct clk              *cfgr_clk;=0A=
+>         struct dw_axi_dma       *dw;=0A=
+> @@ -169,6 +170,19 @@ static inline struct axi_dma_chan *dchan_to_axi_dma_=
+chan(struct dma_chan *dchan)=0A=
+>  #define CH_INTSIGNAL_ENA       0x090 /* R/W Chan Interrupt Signal Enable=
+ */=0A=
+>  #define CH_INTCLEAR            0x098 /* W Chan Interrupt Clear */=0A=
+> =0A=
+> +/* Apb slave registers */=0A=
+Could you please add the comment that all this registers exist only in case=
+ of=0A=
+intel,kmb-axi-dma extension?=0A=
+=0A=
+> +#define DMAC_APB_CFG           0x000 /* DMAC Apb Configuration Register =
+*/=0A=
+> +#define DMAC_APB_STAT          0x004 /* DMAC Apb Status Register */=0A=
+> +#define DMAC_APB_DEBUG_STAT_0  0x008 /* DMAC Apb Debug Status Register 0=
+ */=0A=
+> +#define DMAC_APB_DEBUG_STAT_1  0x00C /* DMAC Apb Debug Status Register 1=
+ */=0A=
+> +#define DMAC_APB_HW_HS_SEL_0   0x010 /* DMAC Apb HW HS register 0 */=0A=
+> +#define DMAC_APB_HW_HS_SEL_1   0x014 /* DMAC Apb HW HS register 1 */=0A=
+> +#define DMAC_APB_LPI           0x018 /* DMAC Apb Low Power Interface Reg=
+ */=0A=
+> +#define DMAC_APB_BYTE_WR_CH_EN 0x01C /* DMAC Apb Byte Write Enable */=0A=
+> +#define DMAC_APB_HALFWORD_WR_CH_EN     0x020 /* DMAC Halfword write enab=
+les */=0A=
+> +=0A=
+> +#define UNUSED_CHANNEL         0x3F /* Set unused DMA channel to 0x3F */=
+=0A=
+> +#define MAX_BLOCK_SIZE         0x1000 /* 1024 blocks * 4 bytes data widt=
+h */=0A=
+> =0A=
+>  /* DMAC_CFG */=0A=
+>  #define DMAC_EN_POS                    0=0A=
+> --=0A=
+> 2.18.0=0A=
+> =
