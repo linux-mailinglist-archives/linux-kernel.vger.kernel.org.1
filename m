@@ -2,79 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210CF2B812D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8C12B8136
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727715AbgKRPuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:50:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50324 "EHLO mail.kernel.org"
+        id S1727736AbgKRPva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:51:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726698AbgKRPuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:50:44 -0500
-Received: from localhost (unknown [122.171.203.152])
+        id S1726234AbgKRPva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:51:30 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DC55247AF;
-        Wed, 18 Nov 2020 15:50:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605714643;
-        bh=atXI3IGFAZhuwWZNfCRfTF5//pdQnE6WVrE6bXlpwjs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nH93ycB/F7MR29usBTZIMKaeoHZrLvvOdw6d5hPaB6BCtdZlGwiQu+iLEpjVe6IhK
-         6SPiM9/JJ5eyvV5q5bFLZvg2hIlgqD1BJ2JYPvO2HtiFDqvGAM+romswwkrbGrMwhV
-         2BuOW49lo+TOW1AtYcBv2/AaFrQr2r7p1tnwsE60=
-Date:   Wed, 18 Nov 2020 21:20:38 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Jonathan McDowell <noodles@earth.li>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Thomas Pedersen <twp@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH v5] dmaengine: qcom: Add ADM driver
-Message-ID: <20201118155038.GU50232@vkoul-mobl>
-References: <20200916064326.GA13963@earth.li>
- <20200919185739.GS3411@earth.li>
- <20200920181204.GT3411@earth.li>
- <20200923194056.GY3411@earth.li>
- <20201114140233.GM32650@earth.li>
+        by mail.kernel.org (Postfix) with ESMTPSA id C2472247A7;
+        Wed, 18 Nov 2020 15:51:28 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 10:51:27 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH] ftrace/documentation: Fix RST C code blocks
+Message-ID: <20201118105127.4a7b02ef@gandalf.local.home>
+In-Reply-To: <20201118103502.24e90f7c@gandalf.local.home>
+References: <20201116173502.392a769c@canb.auug.org.au>
+        <20201116124338.76a522e1@gandalf.local.home>
+        <20201116122432.796af13b@lwn.net>
+        <20201116152552.11572354@gandalf.local.home>
+        <20201116132929.7f59943e@lwn.net>
+        <20201118103502.24e90f7c@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201114140233.GM32650@earth.li>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-11-20, 14:02, Jonathan McDowell wrote:
-> Add the DMA engine driver for the QCOM Application Data Mover (ADM) DMA
-> controller found in the MSM8x60 and IPQ/APQ8064 platforms.
+On Wed, 18 Nov 2020 10:35:02 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> The ADM supports both memory to memory transactions and memory
-> to/from peripheral device transactions.  The controller also provides
-> flow control capabilities for transactions to/from peripheral devices.
+> Some C code in the ftrace-users.rst document is missing RST C block
+> annotation, which has to be added.
 > 
-> The initial release of this driver supports slave transfers to/from
-> peripherals and also incorporates CRCI (client rate control interface)
-> flow control.
+> Link: https://lore.kernel.org/r/20201116173502.392a769c@canb.auug.org.au
 > 
-> The hardware only supports a 32 bit physical address, so specifying
-> !PHYS_ADDR_T_64BIT gives maximum COMPILE_TEST coverage without having to
-> spend effort on kludging things in the code that will never actually be
-> needed on real hardware.
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+>
 
-Applied, thanks
+Jon,
 
-My build scripts emit the warnings below, please fix them up with the
-follow up patch. You can get this with W=1
+You want to take this through your tree?
 
-drivers/dma/qcom/qcom_adm.c:180: warning: Function parameter or member 'chan' not described in 'adm_free_chan'
-drivers/dma/qcom/qcom_adm.c:190: warning: Function parameter or member 'burst' not described in 'adm_get_blksize'
-drivers/dma/qcom/qcom_adm.c:466: warning: Function parameter or member 'chan' not described in 'adm_terminate_all'
-drivers/dma/qcom/qcom_adm.c:466: warning: Excess function parameter 'achan' description in 'adm_terminate_all'
-drivers/dma/qcom/qcom_adm.c:503: warning: Function parameter or member 'achan' not described in 'adm_start_dma'
-
--- 
-~Vinod
+-- Steve
