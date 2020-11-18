@@ -2,65 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414E32B7FF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA4D2B7FF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727131AbgKRPAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:00:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgKRPAo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:00:44 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE843C0613D4;
-        Wed, 18 Nov 2020 07:00:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4ZAMfgrFUzuUjDjqhjvyKWs7Yyb4zhoUH2cqBpb/P9Y=; b=JlMuJcCm7YsUkcT6ezUZZXkyvN
-        SK1fXCTZScBC0MnqyguO2d9UmA2OcR+j91CuRP1icUZO8IfGIgkqMwR51CULZ7WTzb5SmDvpDt2qS
-        DlteLNjU5QqSn4FoM5FbSn2YjIymrPK7sHvFZfCRnaXQ4O0SDPxIvv1g4AR9BMSLBjEPsnsCljRRO
-        uP1Fq5WswgXiWncCLl9odTz4Jc7OxifS2fLNpwN2XkpXeNsmriKDes02I5D+l20QGwcSSQdHZTuHE
-        /9R+nVK/ZIOdSdph3Ao90ssdQu4oAgREvhnrL21tjaew8qpkfpzLN3jaDY+Hi8RoqZSOAezcNzqRR
-        +DtMTm6Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfOws-0005lu-1d; Wed, 18 Nov 2020 15:00:42 +0000
-Date:   Wed, 18 Nov 2020 15:00:41 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        soheil.kdev@gmail.com, arnd@arndb.de, shuochen@google.com,
-        linux-man@vger.kernel.org, Willem de Bruijn <willemb@google.com>
-Subject: Re: [PATCH v3 1/2] epoll: add nsec timeout support with epoll_pwait2
-Message-ID: <20201118150041.GF29991@casper.infradead.org>
-References: <20201118144617.986860-1-willemdebruijn.kernel@gmail.com>
- <20201118144617.986860-2-willemdebruijn.kernel@gmail.com>
+        id S1727195AbgKRPBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:01:04 -0500
+Received: from mga03.intel.com ([134.134.136.65]:37906 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgKRPBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:01:04 -0500
+IronPort-SDR: tG4GU5Q94pVoV1ryrPGBK7rlkQXQ+Jy1hEpM2cF650RqSYfWnSWXrkujChr82Gom0ELxePmkRI
+ sfW4aji5T4YA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="171224092"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="171224092"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 07:01:02 -0800
+IronPort-SDR: rsCU8KYkOh3bKEQ93QeGTpCgE1yrihlALPUw1ZGHY5x+Q6FUbtyYDNzBROyXZ52PaYD+xVUbon
+ XNrpE2mQkKLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="430881513"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 18 Nov 2020 07:01:00 -0800
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [RFC PATCH 0/3] usb: typec: Product Type time
+Date:   Wed, 18 Nov 2020 18:00:56 +0300
+Message-Id: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118144617.986860-2-willemdebruijn.kernel@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 09:46:15AM -0500, Willem de Bruijn wrote:
-> -static inline struct timespec64 ep_set_mstimeout(long ms)
-> +static inline struct timespec64 ep_set_nstimeout(s64 timeout)
->  {
-> -	struct timespec64 now, ts = {
-> -		.tv_sec = ms / MSEC_PER_SEC,
-> -		.tv_nsec = NSEC_PER_MSEC * (ms % MSEC_PER_SEC),
-> -	};
-> +	struct timespec64 now, ts;
->  
-> +	ts = ns_to_timespec64(timeout);
->  	ktime_get_ts64(&now);
->  	return timespec64_add_safe(now, ts);
->  }
+Hi Prashant,
 
-Why do you pass around an s64 for timeout, converting it to and from
-a timespec64 instead of passing around a timespec64?
+The original discussion [1].
+
+This proposal is in practice a compromise. I came to the conclusion
+that we probable should expose the product type separately after all.
+The reason for that is because we may in some cases actually know the
+product type even when we don't have access to the Discover Identity
+response. UCSI for example in practice gives us at least the cable
+product type even though it does not let us know the response to the
+Discover Identity command.
+
+So my proposal here is that we add an attribute for the product type
+itself, showing the product type as a string. Then we also add the
+attribute for the product type specific VDOs which we place under the
+identity directory more or less the way you originally proposed.
+
+Note. I have not tested these at all.
+
+[1] https://lore.kernel.org/linux-usb/20201023214328.1262883-2-pmalani@chromium.org/
+
+Heikki Krogerus (2):
+  usb: pd: DFP product types
+  usb: typec: Add product_type sysfs attribute file for partners and
+    cables
+
+Prashant Malani (1):
+  usb: typec: Expose Product Type VDOs via sysfs
+
+ Documentation/ABI/testing/sysfs-class-typec |  55 +++++++
+ drivers/usb/typec/class.c                   | 173 +++++++++++++++++++-
+ include/linux/usb/pd_vdo.h                  |  16 +-
+ 3 files changed, 234 insertions(+), 10 deletions(-)
+
+-- 
+2.29.2
 
