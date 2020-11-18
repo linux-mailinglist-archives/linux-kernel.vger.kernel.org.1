@@ -2,89 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5349F2B8533
+	by mail.lfdr.de (Postfix) with ESMTP id BFE812B8534
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgKRT6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:58:49 -0500
-Received: from smtprelay0203.hostedemail.com ([216.40.44.203]:55850 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725710AbgKRT6t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:58:49 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 425BF8384365;
-        Wed, 18 Nov 2020 19:58:48 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2198:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3868:3870:3871:3872:3873:3874:4184:4321:4605:5007:6119:7903:10004:10400:10848:11232:11233:11658:11783:11914:12043:12296:12297:12555:12740:12895:13161:13229:13439:13894:14180:14181:14659:14721:21060:21080:21433:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: drop19_6100d3c2733c
-X-Filterd-Recvd-Size: 3328
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 18 Nov 2020 19:58:47 +0000 (UTC)
-Message-ID: <12b44d3a477de314320dc9d26b26576875525f27.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add --fix option for OPEN_BRACE issues
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Wed, 18 Nov 2020 11:58:46 -0800
-In-Reply-To: <CABJPP5CHofzA46FHe3eJrgjQBTcaoCkR=dc29xxK80oFZJVfoQ@mail.gmail.com>
-References: <20201118124035.96976-1-dwaipayanray1@gmail.com>
-         <457730448c84136be089748bea69abd2254e3832.camel@perches.com>
-         <CABJPP5CqKjY3_mfkJEsHX_8Zc7q1TRCgA4T54sTEZBiKgPS+OQ@mail.gmail.com>
-         <754e240d1c88274ce2d94a5b6dbcfff1cc8c9508.camel@perches.com>
-         <CABJPP5CHofzA46FHe3eJrgjQBTcaoCkR=dc29xxK80oFZJVfoQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1726735AbgKRT7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:59:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46890 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725710AbgKRT7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:59:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 71BDAAC1F;
+        Wed, 18 Nov 2020 19:59:36 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id 34E1D603F9; Wed, 18 Nov 2020 20:59:36 +0100 (CET)
+Date:   Wed, 18 Nov 2020 20:59:36 +0100
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] eventfd: convert to ->write_iter()
+Message-ID: <20201118195936.p33qlcjc7gp2zezz@lion.mk-sys.cz>
+References: <8a4f07e6ec47b681a32c6df5d463857e67bfc965.1605690824.git.mkubecek@suse.cz>
+ <20201118151806.GA25804@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118151806.GA25804@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-19 at 00:15 +0530, Dwaipayan Ray wrote:
-> On Thu, Nov 19, 2020 at 12:09 AM Joe Perches <joe@perches.com> wrote:
+On Wed, Nov 18, 2020 at 03:18:06PM +0000, Christoph Hellwig wrote:
+> On Wed, Nov 18, 2020 at 10:19:17AM +0100, Michal Kubecek wrote:
+> > While eventfd ->read() callback was replaced by ->read_iter() recently,
+> > it still provides ->write() for writes. Since commit 4d03e3cc5982 ("fs:
+> > don't allow kernel reads and writes without iter ops"), this prevents
+> > kernel_write() to be used for eventfd and with set_fs() removal,
+> > ->write() cannot be easily called directly with a kernel buffer.
 > > 
-> > On Thu, 2020-11-19 at 00:03 +0530, Dwaipayan Ray wrote:
-> > > On Wed, Nov 18, 2020 at 11:44 PM Joe Perches <joe@perches.com> wrote:
-> > > > 
-> > > > On Wed, 2020-11-18 at 18:10 +0530, Dwaipayan Ray wrote:
-> > > > > Brace style misuses of the following types are now
-> > > > > corrected:
-> > > > []
-> > > > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > > > []
-> > > > > @@ -3937,9 +3937,23 @@ sub process {
-> > > > >                       #print "pre<$pre_ctx>\nline<$line>\nctx<$ctx>\nnext<$lines[$ctx_ln - 1]>\n";
-> > > > > 
-> > > > > 
-> > > > >                       if ($ctx !~ /{\s*/ && defined($lines[$ctx_ln - 1]) && $lines[$ctx_ln - 1] =~ /^\+\s*{/) {
-> > > > > -                             ERROR("OPEN_BRACE",
-> > > > > -                                   "that open brace { should be on the previous line\n" .
-> > > > > -                                     "$here\n$ctx\n$rawlines[$ctx_ln - 1]\n");
-> > > > > +                             if (ERROR("OPEN_BRACE",
-> > > > > +                                       "that open brace { should be on the previous line\n" .
-> > > > > +                                             "$here\n$ctx\n$rawlines[$ctx_ln - 1]\n") &&
-> > > > > +                                 $fix) {
-> > > > > +                                     my $line1 = $rawlines[$ctx_ln - 2];
-> > > > 
-> > > > How are you sure that in a patch context this line always starts with /^\+/ ?
-> > > 
-> > > Hi,
-> > > I followed it from the other fixes for OPEN_BRACE which were already
-> > > there. In the patch context if the lines are added then only I think the fix
-> > > should be triggered. Other instances should not be modified.
-> > 
-> > As far as I know there are no existing uses of --fix with OPEN_BRACE.
-> > 
+> > According to eventfd(2), eventfd descriptors are supposed to be (also)
+> > used by kernel to notify userspace applications of events which now
+> > requires ->write_iter() op to be available (and ->write() not to be).
+> > Therefore convert eventfd_write() to ->write_iter() semantics. This
+> > patch also cleans up the code in a similar way as commit 12aceb89b0bc
+> > ("eventfd: convert to f_op->read_iter()") did in read_iter().
 > 
-> I think you added it via 8d1824780f2f1 ("checkpatch: add --fix option
-> for a couple OPEN_BRACE misuses")
+> A far as I can tell we don't have an in-tree user that writes to an
+> eventfd.  We can merge something like this once there is a user.
 
-The difference here is that you are dealing with a $stat context and
-the existing --fix entries are just for single line fixes.
-	
+As far as I can say, we don't have an in-tree user that reads from
+sysctl. But you not only did not object to commit 4bd6a7353ee1 ("sysctl:
+Convert to iter interfaces") which adds ->read_iter() for sysctl, that
+commit even bears your Signed-off-by. There may be other examples like
+that.
 
+Michal Kubecek
