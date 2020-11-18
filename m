@@ -2,131 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400972B7FFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D75C82B800E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727244AbgKRPBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:01:09 -0500
-Received: from mga03.intel.com ([134.134.136.65]:37906 "EHLO mga03.intel.com"
+        id S1727278AbgKRPDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:03:00 -0500
+Received: from mout.gmx.net ([212.227.17.22]:35157 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgKRPBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:01:08 -0500
-IronPort-SDR: VymetH0v634OdmwNyx+cIHqJ6ccf5c88Lx0NWei2k4yR/3d2p/NPltrNrcHKiCT+ePDgb9itXy
- 5NkvHUjvHuMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="171224115"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="171224115"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 07:01:07 -0800
-IronPort-SDR: oBsI6eQnRmOr2J4c615C9zIETFYkhQOiTS5uLYJZmUJQypHGqZQBlqUtIDDtNHIzn9hF6/u/re
- /HgYvVzf+YSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="430881696"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Nov 2020 07:01:06 -0800
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [RFC PATCH 3/3] usb: typec: Expose Product Type VDOs via sysfs
-Date:   Wed, 18 Nov 2020 18:00:59 +0300
-Message-Id: <20201118150059.3419-4-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
-References: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
+        id S1726672AbgKRPC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:02:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1605711691;
+        bh=6sI8GRG+r2bpQj9f4Kf4zQEmoAbekTyDXxqajSWPs3g=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Mo/sNygYxu2Hr14nQWcibBm74o9glLqc2efB2Z1YkhL4c2oNEKaZP4DRsopReAoe2
+         oIyars/FVw7qIB47QKnboUU/IZ2KfYnWtD0WsQboIPeJtoPTp3Le1iLGPQ0XzhY0on
+         oK+4ZW9QvZmTa0N7jj51MHctKorI/TORG3AvrGiM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.123.70] ([178.202.41.135]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MsHnm-1kQlWL2f0s-00th5v; Wed, 18
+ Nov 2020 16:01:31 +0100
+Subject: Re: [SPECIFICATION RFC] The firmware and bootloader log specification
+To:     Daniel Kiper <daniel.kiper@oracle.com>, coreboot@coreboot.org,
+        grub-devel@gnu.org, linux-kernel@vger.kernel.org,
+        systemd-devel@lists.freedesktop.org,
+        trenchboot-devel@googlegroups.com, u-boot@lists.denx.de,
+        x86@kernel.org, xen-devel@lists.xenproject.org
+Cc:     alecb@umass.edu, alexander.burmashev@oracle.com,
+        allen.cryptic@gmail.com, andrew.cooper3@citrix.com,
+        ard.biesheuvel@linaro.org, btrotter@gmail.com,
+        dpsmith@apertussolutions.com, eric.devolder@oracle.com,
+        eric.snowberg@oracle.com, hpa@zytor.com, hun@n-dimensional.de,
+        javierm@redhat.com, joao.m.martins@oracle.com,
+        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
+        krystian.hebel@3mdeb.com, leif@nuviainc.com,
+        lukasz.hawrylko@intel.com, luto@amacapital.net,
+        michal.zygowski@3mdeb.com, mjg59@google.com, mtottenh@akamai.com,
+        phcoder@gmail.com, piotr.krol@3mdeb.com, pjones@redhat.com,
+        pmenzel@molgen.mpg.de, roger.pau@citrix.com,
+        ross.philipson@oracle.com, tyhicks@linux.microsoft.com
+References: <20201113235242.k6fzlwmwm2xqhqsi@tomti.i.net-space.pl>
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+Autocrypt: addr=xypron.glpk@gmx.de; prefer-encrypt=mutual; keydata=
+ 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 Eg==
+Message-ID: <ef50dac9-3ded-6836-28b1-7addb0bab986@gmx.de>
+Date:   Wed, 18 Nov 2020 16:01:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201113235242.k6fzlwmwm2xqhqsi@tomti.i.net-space.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dPo4qeALMWM4Pgg4L2ctr733oiVff5JOAL9lOgM/oSdpk4wx0E3
+ yNsWsHvPTTdjw1QELEaleKh0n+Nl34WRqUofql5zXFY/kh8SgoCniRoQmgshoM5iJb9SVlq
+ O7WZ9kGWBMa3ZuS3/7qZwqnlz8323FE8R0pziCYJy1yH5HltqPXcC6ve9I2UO1IDGgI7kMr
+ WqEjlwIWmK9iqYVJlxBEg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:77Ci9R1aR/8=:qDp85K6AmJsxF/xbd/w99c
+ mgfz5372Cc85Kxks48slOw+XrqMuQvQ8jUPOwd65S0rMiRrF43mktV6o948Feaq1FQB2xFtWg
+ 2lmdfNASHgrdQWEL8AKVzRVNqmoBNvFfTC/CwwhuI31W+1iq0YUKRcnY1CzuR8LmBWupPtzX4
+ 6O/S/p4SCMt9750qEMrX09eMZc9A09i6oXKWmnpBRdYwIFNlM5Z8WeETwfjED6+Dh3oP5+AsG
+ vUhm2sGxwhGd5XOdCNCnsNn8JSd5qzU79mK/pSSRbSryn3RU15eIaTq+yWckcuupq8JnJV+Ov
+ d7Lpp7HgvWiRw4Xnvt/XKPDyx2oNJj9d58EkNFRVlfWeQXALugRLnkXKZZMfD3S30dzr9Exy5
+ g0IjBCbVHc/quAVgsWLyIf3Tv9AB1nH3sf4Wz6FpzGAtVF18ZV/vyTjXVH6hKptZYnCfm/F8U
+ 1vTr6e54b98FatVU6F1PNrFAFibe3THnuhS5lxGgUccSZ1+MAlW86OeM2LiTQTJvrWo46/gZO
+ yPRlevJ24yf+0/4tSo59LBkrzy8QH3PvuiCShXmzsl2R8yHYEXlxJ46IIU8CprSNKkNkLGbYE
+ E3zLOBd31I0dJIBNefMdjL/h6Ep9cS5C0BmJVEO8Ill1YAukUly+JJ/FFhfjBZJXlStBmqfTf
+ l3XiHB7dA2K/bQmaGLpcTliYNxMyHwvwuiFaN2PL1Fw297bnaFYE9qHJdTGsXeVfw9NXr2zZZ
+ Dtd57buNjTR7oyl3Y69sc2/+Py3EenbFiyj285YTs2wv24cWQDfQ4NfslAMK12cO/RfrPW3Q6
+ hHD1jRYP0Ourg5GLiWod83l6GC4LMs+mpU+0RSec8e9QuA99CzsOsyztsBzsjN6tenEi+ZBPJ
+ 1l9wnu9SMuPdGjbnDztQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prashant Malani <pmalani@chromium.org>
+On 14.11.20 00:52, Daniel Kiper wrote:
+> Hey,
+>
+> This is next attempt to create firmware and bootloader log specification=
+.
+> Due to high interest among industry it is an extension to the initial
+> bootloader log only specification. It takes into the account most of the
+> comments which I got up until now.
+>
+> The goal is to pass all logs produced by various boot components to the
+> running OS. The OS kernel should expose these logs to the user space
+> and/or process them internally if needed. The content of these logs
+> should be human readable. However, they should also contain the
+> information which allows admins to do e.g. boot time analysis.
+>
+> The log specification should be as much as possible platform agnostic
+> and self contained. The final version of this spec should be merged into
+> existing specifications, e.g. UEFI, ACPI, Multiboot2, or be a standalone
+> spec, e.g. as a part of OASIS Standards. The former seems better but is
+> not perfect too...
+>
+> Here is the description (pseudocode) of the structures which will be
+> used to store the log data.
 
-Interim. ABI doc missing.
+Hello Daniel,
 
-A PD-capable device can return up to 3 Product Type VDOs as part of its
-DiscoverIdentity Response (USB PD Spec, Rev 3.0, Version 2.0, Section
-6.4.4.3.1). Add sysfs attribute to expose these to userspace.
+thanks for your suggestion which makes good sense to me.
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
-[ heikki: Only one instead of three attribute files ]
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>'
----
- drivers/usb/typec/class.c | 41 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+Why can't we simply use the message format defined in "The Syslog
+Protocol", https://tools.ietf.org/html/rfc5424?
 
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index 303f054181ff7..5e135678f5952 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -165,15 +165,55 @@ static ssize_t product_show(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_RO(product);
- 
-+static ssize_t
-+product_type_vdo_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct usb_pd_identity *id = get_pd_identity(dev);
-+	size_t len = 0;
-+	int i;
-+
-+	for (i = 0; i < 3; i++) {
-+		if (!id->vdo[i])
-+			break;
-+		len += sysfs_emit(buf, "%08x ", id->vdo[i]);
-+	}
-+
-+	buf[len - 1] = '\n';
-+
-+	return len;
-+}
-+
-+static struct device_attribute dev_attr_product_type_vdo = {
-+	.attr = {
-+		.name = "product_type",
-+		.mode = 0444,
-+	},
-+	.show = product_type_vdo_show,
-+};
-+
-+static umode_t
-+typec_identity_attr_is_visible(struct kobject *kobj, struct attribute *attr, int n)
-+{
-+	struct usb_pd_identity *id = get_pd_identity(kobj_to_dev(kobj));
-+
-+	if (attr == &dev_attr_product_type_vdo.attr &&
-+	    !id->vdo[0])
-+		return 0;
-+
-+	return attr->mode;
-+}
-+
- static struct attribute *usb_pd_id_attrs[] = {
- 	&dev_attr_id_header.attr,
- 	&dev_attr_cert_stat.attr,
- 	&dev_attr_product.attr,
-+	&dev_attr_product_type_vdo.attr,
- 	NULL
- };
- 
- static const struct attribute_group usb_pd_id_group = {
- 	.name = "identity",
-+	.is_visible = typec_identity_attr_is_visible,
- 	.attrs = usb_pd_id_attrs,
- };
- 
-@@ -191,6 +231,7 @@ static void typec_product_type_notify(struct device *dev)
- 	if (!ptype)
- 		return;
- 
-+	sysfs_notify(&dev->kobj, "identity", "product_type");
- 	sysfs_notify(&dev->kobj, NULL, "product_type");
- 
- 	envp[0] = kasprintf(GFP_KERNEL, "PRODUCT_TYPE=%s", ptype);
--- 
-2.29.2
+>
+>   struct bf_log
+>   {
+>     uint32_t   version;
+>     char       producer[64];
+>     uint64_t   flags;
+>     uint64_t   next_bf_log_addr;
+>     uint32_t   next_msg_off;
+>     bf_log_msg msgs[];
+
+As bf_log_msg is does not have defined length msgs[] cannot be an array.
+
+>   }
+>
+>   struct bf_log_msg
+>   {
+>     uint32_t size;
+>     uint64_t ts_nsec;
+>     uint32_t level;
+>     uint32_t facility;
+>     uint32_t msg_off;
+>     char     strings[];
+>   }
+>
+> The members of struct bf_log:
+>   - version: the firmware and bootloader log format version number, 1 fo=
+r now,
+>   - producer: the producer/firmware/bootloader/... type; the length
+>     allows ASCII UUID storage if somebody needs that functionality,
+>   - flags: it can be used to store information about log state, e.g.
+>     it was truncated or not (does it make sense to have an information
+>     about the number of lost messages?),
+>   - next_bf_log_addr: address of next bf_log struct; none if zero (I thi=
+nk
+>     newer spec versions should not change anything in first 5 bf_log mem=
+bers;
+>     this way older log parsers will be able to traverse/copy all logs re=
+gardless
+>     of version used in one log or another),
+>   - next_msg_off: the offset, in bytes, from the beginning of the bf_log=
+ struct,
+>     of the next byte after the last log message in the msgs[]; i.e. the =
+offset
+>     of the next available log message slot; it is equal to the total siz=
+e of
+>     the log buffer including the bf_log struct,
+
+Why would you need an offset to first unused byte?
+
+We possibly have multiple producers of messages:
+
+- TF-A
+- U-Boot
+- iPXE
+- GRUB
+
+What we need is the offset to the next struct bf_log.
+
+>   - msgs: the array of log messages,
+>   - should we add CRC or hash or signatures here?
+>
+> The members of struct bf_log_msg:
+>   - size: total size of bf_log_msg struct,
+>   - ts_nsec: timestamp expressed in nanoseconds starting from 0,
+
+Would each message producer start from 0?
+
+Shouldn't we use the time from the hardware RTC if it is available via
+boot service GetTime()?
+
+>   - level: similar to syslog meaning; can be used to differentiate norma=
+l messages
+>     from debug messages; the exact interpretation depends on the current=
+ producer
+>     type specified in the bf_log.producer,
+>   - facility: similar to syslog meaning; can be used to differentiate th=
+e sources of
+>     the messages, e.g. message produced by networking module; the exact =
+interpretation
+>     depends on the current producer type specified in the bf_log.produce=
+r,
+>   - msg_off: the log message offset in strings[],
+
+What is this field good for? Why don't you start the the string at
+strings[0]?
+What would be useful would be the offset to the next bf_log_msg.
+
+>   - strings[0]: the beginning of log message type, similar to the facili=
+ty member but
+>     NUL terminated string instead of integer; this will be used by, e.g.=
+, the GRUB2
+>     for messages printed using grub_dprintf(),
+>   - strings[msg_off]: the beginning of log message, NUL terminated strin=
+g.
+
+
+Why strings in plural? Do you want to put multiple strings into
+'strings'? What identifies the last string?
+
+
+>
+> Note: The producers are free to use/ignore any given set of level, facil=
+ity and/or
+>       log type members. Though the usage of these members has to be clea=
+rly defined.
+>       Ignored integer members should be set to 0. Ignored log message ty=
+pe should
+>       contain an empty NUL terminated string. The log message is mandato=
+ry but can
+>       be an empty NUL terminated string.
+>
+> There is still not fully solved problem how the logs should be presented=
+ to the OS.
+> On the UEFI platforms we can use config tables to do that. Then probably
+> bf_log.next_bf_log_addr should not be used.
+
+Why? How would you otherwise find the entries of the next produser in
+the configuration table? What I am missing is a GUID for the
+configuration table.
+
+> On the ACPI and Device Tree platforms
+> we can use these mechanisms to present the logs to the OSes. The situati=
+on gets more
+
+I do not understand this.
+
+UEFI implementations use either of ACPI and device-trees and support
+configuration tables. Why do you want to use some other binding?
+
+Best regards
+
+Heinrich
+
+> difficult if neither of these mechanisms are present. However, maybe we =
+should not
+> bother too much about that because probably these platforms getting less=
+ and less
+> common.
+>
+> Anyway, I am aware that this is not specification per se. The goal of th=
+is email is
+> to continue the discussion about the idea of the firmware and booloader =
+log and to
+> find out where the final specification should land. Of course taking int=
+o the account
+> assumptions made above.
+>
+> You can find previous discussions about related topics at [1], [2] and [=
+3].
+>
+> Additionally, I am going to present this during GRUB mini-summit session=
+ on Tuesday,
+> 17th of November at 15:45 UTC. So, if you want to discuss the log design=
+ please join
+> us. You can find more details here [4].
+>
+> Daniel
+>
+> [1] https://lists.gnu.org/archive/html/grub-devel/2019-10/msg00107.html
+> [2] https://lists.gnu.org/archive/html/grub-devel/2019-11/msg00079.html
+> [3] https://lists.gnu.org/archive/html/grub-devel/2020-05/msg00223.html
+> [4] https://twitter.com/3mdeb_com/status/1327278804100931587
+>
 
