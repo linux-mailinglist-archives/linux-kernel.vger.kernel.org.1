@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701A72B8554
+	by mail.lfdr.de (Postfix) with ESMTP id DEEE62B8555
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:10:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgKRUHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 15:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgKRUHy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:07:54 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BB5C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 12:07:53 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id b17so3700034ljf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 12:07:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yeKLzuYfSfYjwv9jvXe2h8dCQ8PeIQ4687zDP48KQD4=;
-        b=auA3imED+bIoRMFGpqlHbmGJvk5kJIVk9BvJ71Ira2vwQeTwsyJoF2ODXO+9860si8
-         gGjs0urQ/Cc2ujf7odeViQab+MFQjbKyera6rW0BZgPgDUbpSn4h0vHZ6Mrw7fnkOS4/
-         kyW9BeyxpySDSnlLImvtf8XWUsJ80qtN+eYto7cHVh8iQ5T8p3mk/aCGOwd2ia2g4Wx2
-         9WGJTUhcmEpRjMBm7Aboc0RJsXYZVbZpBx4XfjC4B4H3WpCC9/Qp3WdmCbX/du9KoVrC
-         tU0ah1OTAK7NJyi7Q291Mdo/fZ60pSDzMEKHw6I9rXgeJb6DgqSwvz3NX0nMCGEqfyq/
-         hhCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yeKLzuYfSfYjwv9jvXe2h8dCQ8PeIQ4687zDP48KQD4=;
-        b=m2az6Vp1y/FflCTLDDGcoHYrHnewoefHUg6ucmVh+faNzPKW/qk873hji7sU2JkIEz
-         wQq0IEpcFP+DV2Al80w36ZN08M85y5kdmjaWqG1xZAQYjn3Erlf4LrVSZhsInJLVoVMc
-         atVf/s0FBYOrWTpcEl6odN0G0wpwvG3ICyeEzt5X1qeQ/4HeeFnWrTFmEgUYWpTr16W/
-         S2b7F1zmAb1jUC54JJhjhs2yBTcbgF57ToAgx1RhCmAbETo+coraVjNbMS8st5aK8khQ
-         wODXx73HGrrcSWNbUhG4xTMQYyx7VdsYRD+z4s8Q8DuHKhqL/VzBm1lzVbOP4PyIPJym
-         WGXQ==
-X-Gm-Message-State: AOAM532WCxHFDUblV8uv9JcV5ELmiIMvs4ydQHrH5Oj5ISWx7bOdvo/F
-        SkmCn6QSoRIWqUUgKR9DARActP7wVkRNN/smWPYaBg==
-X-Google-Smtp-Source: ABdhPJwJ18EsoGPbvczbpZK4lj+zDySbnfbpX0LfAcTYVKWWJzj2P1bJUMLF8F/dQKOCRgpXcYsePLJ5tnNGIwss8Jo=
-X-Received: by 2002:a2e:58a:: with SMTP id 132mr4584575ljf.77.1605730072077;
- Wed, 18 Nov 2020 12:07:52 -0800 (PST)
+        id S1726894AbgKRUJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 15:09:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726299AbgKRUJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 15:09:47 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3DB62100A;
+        Wed, 18 Nov 2020 20:09:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605730187;
+        bh=/3r0ST05xJSzGUnRqs6k7/gzVgXvpCVKmESDDqVZ7oY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CntlHIoipoc39ssSbL8KbTkJjbu43zhTFzl7olRgQz6LFwz9vTfVlTqmRbZ7AZLMJ
+         uUNbJz2PXyZoiFp9j72jGWpLzo8nN6Cvub3DawFuYR75tEklQFz3zKCdrQENVdB+NC
+         zcXIiI2QjaUfWMwLbQrzzHpwTLRSyNyILGfC3m2c=
+Date:   Wed, 18 Nov 2020 12:09:45 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     siddhant gupta <siddhantgupta416@gmail.com>
+Cc:     Tom Parkin <tparkin@katalix.com>, davem@davemloft.net,
+        corbet@lwn.net, netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mamta Shukla <mamtashukla555@gmail.com>,
+        Himadri Pandya <himadrispandya@gmail.com>
+Subject: Re: [PATCH] Documentation: networking: Fix Column span alignment
+ warnings in l2tp.rst
+Message-ID: <20201118120945.468701ab@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <CA+imup-3pT47CVL7GZn_vJtHGngNexBR060y2gRfw2v5Gr8P0Q@mail.gmail.com>
+References: <20201117095207.GA16407@Sleakybeast>
+        <20201118102307.GA4903@katalix.com>
+        <CA+imup-3pT47CVL7GZn_vJtHGngNexBR060y2gRfw2v5Gr8P0Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201118175726.2453120-1-shakeelb@google.com> <20201118195822.GW12284@dhcp22.suse.cz>
-In-Reply-To: <20201118195822.GW12284@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 18 Nov 2020 12:07:40 -0800
-Message-ID: <CALvZod4nG-6DBy_sJKbCg+xrYf1DS2ZJ3zkbHQSc4q8iZiPjwQ@mail.gmail.com>
-Subject: Re: [PATCH] memcg, kmem: further deprecate kmem.limit_in_bytes
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 11:58 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Wed 18-11-20 09:57:26, Shakeel Butt wrote:
-> > The deprecation process of kmem.limit_in_bytes started with the commit
-> > 0158115f702 ("memcg, kmem: deprecate kmem.limit_in_bytes") which also
-> > explains in detail the motivation behind the deprecation. To summarize,
-> > it is the unexpected behavior on hitting the kmem limit. This patch
-> > moves the deprecation process to the next stage by disallowing to set
-> > the kmem limit. In future we might just remove the kmem.limit_in_bytes
-> > file completely.
+On Wed, 18 Nov 2020 16:44:11 +0530 siddhant gupta wrote:
+> On Wed, 18 Nov 2020 at 15:53, Tom Parkin <tparkin@katalix.com> wrote:
 > >
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
->
-> I am not against this. I am just not sure whether one year is enough for
-> those users who tend to have a more considervative kernel upgrade path.
-> I am not worried about SLES user base much as we didn't even enable
-> KMEM accounting when it was still guarded by a config option. Not sure
-> about others though.
->
-> Considering the code cleanup is not that large,
+> > On  Tue, Nov 17, 2020 at 15:22:07 +0530, Siddhant Gupta wrote:  
+> > > Fix Column span alignment problem warnings in the file
+> > >  
+> >
+> > Thanks for the patch, Siddhant.
+> >
+> > Could you provide some information on how these warnings were
+> > triggered?  Using Sphinx 2.4.4 I can't reproduce any warnings for
+> > l2tp.rst using the "make htmldocs" target.
+> >  
+> 
+> I am currently using Sphinx v1.8.5 and I made use of command "make
+> htmldocs >> doc_xxx.log 2>&1" for directing the errors into a file and
+> the statements in the file showed me these warning, also to confirm
+> those I tried using "rst2html" on l2tp.rst file and got same set of
+> warnings.
 
-I was thinking of removing the kmem page counter in the followup but
-thought of sending this alone to see if now is the right time.
-
-> I would rather wait some
-> more. But you can add
-> Acked-by: Michal Hocko <mhocko@suse.com>
->
-> Maybe we can ask Andrew to put it into mmotm for few releases.
->
-
-Ok with me. I will send the full series and will ask Andrew to keep
-the series in mm tree for a couple of releases.
+No errors here either, Sphinx 2.2.2, unless Documentation/ has some
+explicit rule about this let's not reshuffle text for an old version 
+of the compiler.
