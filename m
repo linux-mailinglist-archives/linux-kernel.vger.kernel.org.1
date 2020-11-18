@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B652B7AC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6472B7ABE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727550AbgKRJyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:54:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727521AbgKRJyF (ORCPT
+        id S1727174AbgKRJxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:53:55 -0500
+Received: from lucky1.263xmail.com ([211.157.147.133]:44200 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgKRJxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:54:05 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78E9C061A4D
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:54:04 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfK9t-0003br-T9; Wed, 18 Nov 2020 10:53:49 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfK9p-00087c-1n; Wed, 18 Nov 2020 10:53:45 +0100
-Date:   Wed, 18 Nov 2020 10:53:42 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-tegra@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Alban Bedel <albeu@free.fr>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>, zhang.lyra@gmail.com,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        dl-linux-imx <linux-imx@nxp.com>, orsonzhai@gmail.com,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        linux-pwm@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Sascha Hauer <kernel@pengutronix.de>, baolin.wang7@gmail.com,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH] drivers: gpio: use of_match_ptr() and ACPI_PTR() macros
-Message-ID: <20201118095342.sviuxvfsbmmn22mo@pengutronix.de>
-References: <20201117154340.18216-1-info@metux.net>
- <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jrmdeyhh5m52oxeb"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Wed, 18 Nov 2020 04:53:54 -0500
+Received: from localhost (unknown [192.168.167.32])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 103ACCA6CF;
+        Wed, 18 Nov 2020 17:53:45 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (250.19.126.124.broad.bjtelecom.net [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P14873T140467622631168S1605693224877545_;
+        Wed, 18 Nov 2020 17:53:45 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <244a6f289cc7c0f74aff6fdbbd7d36af>
+X-RL-SENDER: penghao@uniontech.com
+X-SENDER: penghao@uniontech.com
+X-LOGIN-NAME: penghao@uniontech.com
+X-FST-TO: gregkh@linuxfoundation.org
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 5
+X-System-Flag: 0
+From:   penghao <penghao@uniontech.com>
+To:     gregkh@linuxfoundation.org
+Cc:     johan@kernel.org, jonathan@jdcox.net, tomasz@meresinski.eu,
+        penghao@uniontech.com, hdegoede@redhat.com, dlaz@chromium.org,
+        kai.heng.feng@canonical.com, richard.o.dodd@gmail.com,
+        kerneldev@karsmulder.nl, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for Lenovo A630Z TIO built-in usb-audio card
+Date:   Wed, 18 Nov 2020 17:53:43 +0800
+Message-Id: <20201118095343.3401-1-penghao@uniontech.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
+usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
+seconds later by usb-audio disconnect interrupt to avoids the issue.
 
---jrmdeyhh5m52oxeb
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Seeking a better fix, we've tried a lot of things, including:
+ - Check that the device's power/wakeup is disabled
+ - Check that remote wakeup is off at the USB level
+ - All the quirks in drivers/usb/core/quirks.c
+   e.g. USB_QUIRK_RESET_RESUME,
+        USB_QUIRK_RESET,
+        USB_QUIRK_IGNORE_REMOTE_WAKEUP,
+        USB_QUIRK_NO_LPM.
 
-On Tue, Nov 17, 2020 at 06:45:37PM +0200, Andy Shevchenko wrote:
-> On Tue, Nov 17, 2020 at 5:45 PM Enrico Weigelt, metux IT consult
-> <info@metux.net> wrote:
-> >
-> > The of_match_ptr(foo) macro evaluates to foo, only if
-> > CONFIG_OF is set, otherwise to NULL. Same does ACPI_PTR with
-> > CONFIG_ACPI. That's very helpful for drivers that can be used
-> > with or without oftree / acpi.
-> >
-> > Even though most of the drivers touched here probably don't
-> > actually need that, it's also nice for consistency to make it
-> > the de-facto standard and change all drivers to use the
-> > of_match_ptr() and ACPI_PTR() macros.
-> >
-> > A nice side effect: in some situations, when compiled w/o
-> > CONFIG_OF/CONFIG_ACPI, the corresponding match tables could
-> > automatically become unreferenced and optimized-away by the
-> > compiler, w/o explicitly cluttering the code w/ ifdef's.
->=20
-> NAK.
->=20
-> It prevents using DT-enabled drivers on ACPI based platforms.
+but none of that makes any difference.
 
-So a system without CONFIG_OF might still make use of .of_match_table?
+There are no errors in the logs showing any suspend/resume-related issues.
+When the system wakes up due to the modem, log-wise it appears to be a
+normal resume.
 
-If so: TIL ...
+Introduce a quirk to disable the port during suspend when the modem is
+detected.
 
-Best regards
-Uwe
+Changes since v3
+ - Fixed spelling error on appropriate
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Changes since v2
+ - Add Changes commit format
 
---jrmdeyhh5m52oxeb
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes since v1
+ - Change subject form "ALSA" to "USB:"
+ - Adjust to appropriate line
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: penghao <penghao@uniontech.com>
+---
+ drivers/usb/core/quirks.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+07yIACgkQwfwUeK3K
-7Ak+4Af/S4LACdOy4WkgBIlg0vOjRAgAtSXuRqE7DZpYrEDA16Jf1/hvxQgwZgoQ
-2gZ2CszqBXhxH94X4GFtm7veiGfXquPsf0qlQ31Ou2yDIIv0+oXBBrSi78lwesD1
-1s6fYmYnp+Oijt1tRIg+euHAWOyIIyavCIBFkoFVIOvlux7JMc7pQZrdTGuiHJP1
-6c6F0G+G2nlLQtmwsR4Jm2vERKNDy3X87PdQANsH4ipSsIFyxTH/5Mgx4kLRZ/sg
-prSguvAIqgH+3KyVK9w454gWpqQJrGiCa7CEybzjNjAnjCAoxnnJ8SQ1/Ys27Y5L
-O0PgX1tM/ulriSZe+T5UUlYqGZyBAw==
-=A5vw
------END PGP SIGNATURE-----
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 7c1198f80c23..25f655c2cd28 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -410,6 +410,10 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
+ 			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
+ 
++	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
++	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
++			USB_QUIRK_DISCONNECT_SUSPEND },
++
+ 	/* BUILDWIN Photo Frame */
+ 	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
+ 			USB_QUIRK_HONOR_BNUMINTERFACES },
+@@ -430,6 +434,7 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	  USB_QUIRK_DELAY_CTRL_MSG },
+ 
+ 	/* Corsair Strafe RGB */
++
+ 	{ USB_DEVICE(0x1b1c, 0x1b20), .driver_info = USB_QUIRK_DELAY_INIT |
+ 	  USB_QUIRK_DELAY_CTRL_MSG },
+ 
+-- 
+2.11.0
 
---jrmdeyhh5m52oxeb--
+
+
