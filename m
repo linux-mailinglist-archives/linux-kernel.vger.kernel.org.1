@@ -2,144 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744FE2B8658
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C90E2B8662
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgKRVLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:11:44 -0500
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:33848 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbgKRVLm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:11:42 -0500
-Received: by mail-oo1-f67.google.com with SMTP id q28so809121oof.1;
-        Wed, 18 Nov 2020 13:11:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uD5r0mgjx4XJefZojTk2Z0WXY+V/wMDo4YKRMEiDeRo=;
-        b=ai8dGM4IEJXeLYTj5uxG78HcCaY3g/mzGYXzmyUE9uwfGykLaWymjACaGlUGK2T9ju
-         949XqnEFlrXBfvDZoL31F+ZdeaNMZGzoLDBJbprUl5xQMcPY5fz28+GK3ap9rtK2W0xC
-         skSR4mB7Q+iMNo6WDZw5ys9PGIe3WwboRMS8ViQYlrxLybJW+y/Wc0lcn3/zqnbvkRGg
-         ypTZiwCkmaZaJYtM3pgeZg5qbSTl5FuXeepeCb8nhNOrAi9d1voLBNNyVSAO84OUv08v
-         xCIUtTLD9PYWHSvqRk2o+jcqIqFlRqJn6mLjTjIMLypfiMVZJQBBeptDREzHhfH8lVVz
-         xLNw==
-X-Gm-Message-State: AOAM5321818luQH4asRKONJC3UPeIa9T5U0aOkm7bJlAyGCfUL6ANEfq
-        8CJ8cULqfw1LmnJVrAr/aNpudm6XlA==
-X-Google-Smtp-Source: ABdhPJxOzK+MobHEv7bORvgn3Y50ldP9mkw/2MAFt5uWRKavbH8N6hGY5gQPftuWziY/LxDkTP4CQg==
-X-Received: by 2002:a05:6820:453:: with SMTP id p19mr7783312oou.28.1605733901532;
-        Wed, 18 Nov 2020 13:11:41 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m109sm7852560otc.30.2020.11.18.13.11.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 13:11:40 -0800 (PST)
-Received: (nullmailer pid 1823762 invoked by uid 1000);
-        Wed, 18 Nov 2020 21:11:39 -0000
-Date:   Wed, 18 Nov 2020 15:11:39 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: pci: ti,j721e: Fix
- "ti,syscon-pcie-ctrl" to take argument
-Message-ID: <20201118211139.GA1815279@bogus>
-References: <20201116173141.31873-1-kishon@ti.com>
- <20201116173141.31873-2-kishon@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116173141.31873-2-kishon@ti.com>
+        id S1726739AbgKRVNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:13:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725948AbgKRVNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 16:13:37 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E33EA207D3;
+        Wed, 18 Nov 2020 21:13:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1605734016;
+        bh=+8//0K5UnMNFTVC4OTQS6tajK8TIdT39V94cceNEt5o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DxQLDkJc7dR/Owjkxqg6kuft3IOF4f8GMCFk42XTrdXQn+utjhQHzyLVGCYFXgxKw
+         yM1anhZN0FFirIqmnTXx7WuJZhmVUlBq53WYkjinDycCJIbBRT9/6qbnZEXr8AoXrU
+         t4+32GFD2aalCBjNdWef+wGF/2qnkBG9m3Ewr96I=
+Date:   Wed, 18 Nov 2020 13:13:35 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>, linux-mm@kvack.org,
+        netdev@vger.kernel.org, willy@infradead.org,
+        aruna.ramakrishna@oracle.com, bert.barbe@oracle.com,
+        rama.nichanamatlu@oracle.com, venkat.x.venkatsubra@oracle.com,
+        manjunath.b.patil@oracle.com, joe.jin@oracle.com,
+        srinivas.eeda@oracle.com, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, vbabka@suse.cz
+Subject: Re: [PATCH v3 1/1] page_frag: Recover from memory pressure
+Message-Id: <20201118131335.738bdade4f3dfcee190ea8c1@linux-foundation.org>
+In-Reply-To: <20201118114654.3435f76c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+References: <20201115201029.11903-1-dongli.zhang@oracle.com>
+        <20201118114654.3435f76c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 11:01:39PM +0530, Kishon Vijay Abraham I wrote:
-> Fix binding documentation of "ti,syscon-pcie-ctrl" to take phandle with
-> argument. The argument is the register offset within "syscon" used to
-> configure PCIe controller.
+On Wed, 18 Nov 2020 11:46:54 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
+
+> > 1. The kernel is under memory pressure and allocation of
+> > PAGE_FRAG_CACHE_MAX_ORDER in __page_frag_cache_refill() will fail. Instead,
+> > the pfmemalloc page is allocated for page_frag_cache->va.
+> > 
+> > 2: All skb->data from page_frag_cache->va (pfmemalloc) will have
+> > skb->pfmemalloc=true. The skb will always be dropped by sock without
+> > SOCK_MEMALLOC. This is an expected behaviour.
+> > 
+> > 3. Suppose a large amount of pages are reclaimed and kernel is not under
+> > memory pressure any longer. We expect skb->pfmemalloc drop will not happen.
+> > 
+> > 4. Unfortunately, page_frag_alloc() does not proactively re-allocate
+> > page_frag_alloc->va and will always re-use the prior pfmemalloc page. The
+> > skb->pfmemalloc is always true even kernel is not under memory pressure any
+> > longer.
+> > 
+> > Fix this by freeing and re-allocating the page instead of recycling it.
 > 
-> Link: Link: http://lore.kernel.org/r/CAL_JsqKiUcO76bo1GoepWM1TusJWoty_BRy2hFSgtEVMqtrvvQ@mail.gmail.com
+> Andrew, are you taking this via -mm or should I put it in net? 
+> I'm sending a PR to Linus tomorrow.
 
-Link: Link: ?
-
-AIUI, 'Link' is supposed to be a link to this patch. I guess more than 1 
-Link would be okay though.
-
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  .../devicetree/bindings/pci/ti,j721e-pci-ep.yaml     | 12 ++++++++----
->  .../devicetree/bindings/pci/ti,j721e-pci-host.yaml   | 12 ++++++++----
->  2 files changed, 16 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
-> index 3ae3e1a2d4b0..e9685c0bdc3e 100644
-> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
-> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml
-> @@ -29,9 +29,13 @@ properties:
->        - const: mem
->  
->    ti,syscon-pcie-ctrl:
-> -    description: Phandle to the SYSCON entry required for configuring PCIe mode
-> -                 and link speed.
-> -    $ref: /schemas/types.yaml#/definitions/phandle
-> +    allOf:
-
-You no longer need allOf here.
-
-> +      - $ref: /schemas/types.yaml#/definitions/phandle-array
-> +      - items:
-> +          - items:
-> +            - description: Phandle to the SYSCON entry
-> +            - description: pcie_ctrl register offset within SYSCON
-> +    description: Specifier for configuring PCIe mode and link speed.
->  
->    power-domains:
->      maxItems: 1
-> @@ -80,7 +84,7 @@ examples:
->                   <0x00 0x0d000000 0x00 0x00800000>,
->                   <0x00 0x10000000 0x00 0x08000000>;
->             reg-names = "intd_cfg", "user_cfg", "reg", "mem";
-> -           ti,syscon-pcie-ctrl = <&pcie0_ctrl>;
-> +           ti,syscon-pcie-ctrl = <&pcie0_ctrl 0x4070>;
->             max-link-speed = <3>;
->             num-lanes = <2>;
->             power-domains = <&k3_pds 239 TI_SCI_PD_EXCLUSIVE>;
-> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-> index ee7a8eade3f6..a3b82992bcfa 100644
-> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-> @@ -29,9 +29,13 @@ properties:
->        - const: cfg
->  
->    ti,syscon-pcie-ctrl:
-> -    description: Phandle to the SYSCON entry required for configuring PCIe mode
-> -      and link speed.
-> -    $ref: /schemas/types.yaml#/definitions/phandle
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle-array
-> +      - items:
-> +          - items:
-> +            - description: Phandle to the SYSCON entry
-> +            - description: pcie_ctrl register offset within SYSCON
-> +    description: Specifier for configuring PCIe mode and link speed.
->  
->    power-domains:
->      maxItems: 1
-> @@ -90,7 +94,7 @@ examples:
->                    <0x00 0x0d000000 0x00 0x00800000>,
->                    <0x00 0x10000000 0x00 0x00001000>;
->              reg-names = "intd_cfg", "user_cfg", "reg", "cfg";
-> -            ti,syscon-pcie-ctrl = <&pcie0_ctrl>;
-> +            ti,syscon-pcie-ctrl = <&pcie0_ctrl 0x4070>;
->              max-link-speed = <3>;
->              num-lanes = <2>;
->              power-domains = <&k3_pds 239 TI_SCI_PD_EXCLUSIVE>;
-> -- 
-> 2.17.1
-> 
+Please go ahead - if/when it appears in mainline or linux-next, I'll
+drop the -mm copy.  
