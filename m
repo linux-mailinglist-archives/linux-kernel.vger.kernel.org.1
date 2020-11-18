@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36ACA2B83F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2822B83EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgKRSec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:34:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgKRSeb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:34:31 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AC7C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:34:31 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id d17so4385697lfq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:34:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O6Pr4KsX5I6OjoV/O+XnmJxxfakXMRzrCCZbtymxAyY=;
-        b=DgkNLNcO1RLJwk9m3YOKJyfHXrmu2SzimggufjzxWH40vzwvdBmqiEdWVWs5LIV2hZ
-         6m4deP7+BsCigur2P/hut8eIQNAti5cdRx0dUxbS1LKb5gtA/406E2AAhoS/AIpFTNP/
-         O7bGYbS1kykGnsZh3zV/N3oNUtO7h0iT8M2LGoQ/WuTNHw0b0iLlJKgU0KY7hKUHefHG
-         ALlf3WgFF2/l9eMNtNucSTKTVH2c0HGmaISCES4f+h4KvGtSc2Jlyq9BGiQXLF9rD09U
-         E33tehClQcOZJHTxV1FMLq+yy0q0YoUC9gSSLTPrNn2RE5Wap09m6phQRHXVRYLFU2SM
-         s3ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O6Pr4KsX5I6OjoV/O+XnmJxxfakXMRzrCCZbtymxAyY=;
-        b=FU+gMa8KTs5V3opOUf8qYcPzP/OWz3B/wRa6cKIYRzrPY0aUhVKLr6DcNIM/3xZh61
-         /wDQPFQJ3GK/co1cOzj+E6gQOEsiA1zNTojMFVPAw1L98W3dtePNjge3OSFUO8mctKV+
-         oue5mPD8kL1HjYB76cufb4gdPzTIcr0JLryBQ9yrJ2QCK9GISlgLKuBm02SDbHjlnzyS
-         41ov7aPCkrgRkpToX9X7KEvo1ahhdEijm6KlXMnMTLwloLOsrmRzj713mJc/WLjbx3KR
-         fHnymheMEcVF/7S99SB7rVOwW+b8hoIJPQy2jDJQr4K71o5BfGZkuS22VYJXxVFRs6nK
-         tRUA==
-X-Gm-Message-State: AOAM533kwfNS/CUXjBiVBu12G/05uWoxm3O6Q0CfVWjxuOjZusrQP0FS
-        nlryxu9ImIn5lqOYJ01NzciyHIH19wwn0/DOACI=
-X-Google-Smtp-Source: ABdhPJxUQ/Y1xtlrn2AAPKoG862Lp1eEeGED2YqWBNkU3uR3d0YRuo1P6Zx/usyKuhoH6qf1x/bI1UqhgI6FLan5m6A=
-X-Received: by 2002:ac2:598f:: with SMTP id w15mr3906570lfn.148.1605724469568;
- Wed, 18 Nov 2020 10:34:29 -0800 (PST)
+        id S1726501AbgKRSeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:34:21 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:59073 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725794AbgKRSeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 13:34:20 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605724460; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=08x4HZK1C0mpGxp1ucPf4OqdqazMVA/m8B1O10e/r7I=; b=ERaw6byqSCQ3bIom3X/D7wTXgQGL7ETiCTXmMvZvFHPyxFaktVqfbLyMs3sFyti7x4GtsaXH
+ R9S4i5Efa6+eIAY+yfRRY/294YkFW00Tl9JNEb4+FEy+8m3cZ5W3LQpB+TlrusXkiKJWLH/X
+ 9ZzZS7y7wCmCjNt/sBZB8yNOAxQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fb5692b0c9500dc7b3f756f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 18:34:19
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 873E7C433ED; Wed, 18 Nov 2020 18:34:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D9ED1C433C6;
+        Wed, 18 Nov 2020 18:34:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D9ED1C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH] net: qrtr: Unprepare MHI channels during remove
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     kvalo@codeaurora.org, linux-wireless@vger.kernel.org,
+        cjhuang@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, linux-kernel@vger.kernel.org,
+        ath11k@lists.infradead.org, clew@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org
+References: <1605723625-11206-1-git-send-email-bbhatt@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <5e94c0be-9402-7309-5d65-857a27d1f491@codeaurora.org>
+Date:   Wed, 18 Nov 2020 11:34:17 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201118124035.96976-1-dwaipayanray1@gmail.com> <457730448c84136be089748bea69abd2254e3832.camel@perches.com>
-In-Reply-To: <457730448c84136be089748bea69abd2254e3832.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Thu, 19 Nov 2020 00:03:58 +0530
-Message-ID: <CABJPP5CqKjY3_mfkJEsHX_8Zc7q1TRCgA4T54sTEZBiKgPS+OQ@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: add --fix option for OPEN_BRACE issues
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1605723625-11206-1-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 11:44 PM Joe Perches <joe@perches.com> wrote:
->
-> On Wed, 2020-11-18 at 18:10 +0530, Dwaipayan Ray wrote:
-> > Brace style misuses of the following types are now
-> > corrected:
-> []
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > @@ -3937,9 +3937,23 @@ sub process {
-> >                       #print "pre<$pre_ctx>\nline<$line>\nctx<$ctx>\nnext<$lines[$ctx_ln - 1]>\n";
-> >
-> >
-> >                       if ($ctx !~ /{\s*/ && defined($lines[$ctx_ln - 1]) && $lines[$ctx_ln - 1] =~ /^\+\s*{/) {
-> > -                             ERROR("OPEN_BRACE",
-> > -                                   "that open brace { should be on the previous line\n" .
-> > -                                     "$here\n$ctx\n$rawlines[$ctx_ln - 1]\n");
-> > +                             if (ERROR("OPEN_BRACE",
-> > +                                       "that open brace { should be on the previous line\n" .
-> > +                                             "$here\n$ctx\n$rawlines[$ctx_ln - 1]\n") &&
-> > +                                 $fix) {
-> > +                                     my $line1 = $rawlines[$ctx_ln - 2];
->
-> How are you sure that in a patch context this line always starts with /^\+/ ?
+On 11/18/2020 11:20 AM, Bhaumik Bhatt wrote:
+> Reset MHI device channels when driver remove is called due to
+> module unload or any crash scenario. This will make sure that
+> MHI channels no longer remain enabled for transfers since the
+> MHI stack does not take care of this anymore after the auto-start
+> channels feature was removed.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>   net/qrtr/mhi.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
+> index 7100f0b..2bf2b19 100644
+> --- a/net/qrtr/mhi.c
+> +++ b/net/qrtr/mhi.c
+> @@ -104,6 +104,7 @@ static void qcom_mhi_qrtr_remove(struct mhi_device *mhi_dev)
+>   	struct qrtr_mhi_dev *qdev = dev_get_drvdata(&mhi_dev->dev);
+>   
+>   	qrtr_endpoint_unregister(&qdev->ep);
+> +	mhi_unprepare_from_transfer(mhi_dev);
+>   	dev_set_drvdata(&mhi_dev->dev, NULL);
+>   }
+>   
+> 
 
-Hi,
-I followed it from the other fixes for OPEN_BRACE which were already
-there. In the patch context if the lines are added then only I think the fix
-should be triggered. Other instances should not be modified.
+I admit, I didn't pay much attention to the auto-start being removed, 
+but this seems odd to me.
 
-Thanks,
-Dwaipayan.
+As a client, the MHI device is being removed, likely because of some 
+factor outside of my control, but I still need to clean it up?  This 
+really feels like something MHI should be handling.
+
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
