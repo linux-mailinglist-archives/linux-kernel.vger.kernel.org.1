@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F062B83FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7392B83FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgKRSjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:39:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        id S1726574AbgKRSjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:39:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgKRSjU (ORCPT
+        with ESMTP id S1725772AbgKRSjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:39:20 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26867C0613D4;
-        Wed, 18 Nov 2020 10:39:19 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id s13so3656487wmh.4;
-        Wed, 18 Nov 2020 10:39:19 -0800 (PST)
+        Wed, 18 Nov 2020 13:39:31 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44C4C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:39:31 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id r9so1479781pjl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:39:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YiJTSBtle7cqr6NeENgfeIIBEb6CbCibc49Xjq0ZXzA=;
-        b=a3GsCKtemU3YlqDsjE0mm+erC8chaJq9drsbx3YZnkC9ClcD18vv6d9Bp7cIprcf6w
-         dqBfkajO3kiDj+4ks+8NyOdCw2TkspBKR3rmMedpkL9Alv3oKBavIgfQWsoIVIHHL1+4
-         Ufcxn3s9VaLtdqF1lWYJDXtoMBNJjLDNpId1CR0LTNDuqd/HLtoXKDIyMQr+Hd8iOukz
-         bPmQphYfNsHi5gdJ7Ju2TYT9vKqF3vKgioEsL0lyf7faO/Rn1J8LDohyN/h6/J/jc8TU
-         WSJCu3QZ+x/ET45uX2+M43Mvb4dtje5w3uOxTFXtTgTYusLUvUE7SwL8NfrWLUCws67b
-         BLzg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IS8KqvtGpvchc3pdVmAI45zcVonfW9i7VEyA+0SXwEk=;
+        b=KHZ7aizcPD3KFmUYyRLDRAPwX+xZUdeK+inF8t7KSoc8CIO2d4OrwpEDRaX7ZCdzX1
+         5ntmaT4E4o50mHiPmm5ata9Fisx1PUskkp25ZUSja6PM2ymMfGTRg8TzsjK9yYeZtLWU
+         9FOGPj9Cu5T0uWyKt8rbLtnlAKuJJx5IdNhZY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YiJTSBtle7cqr6NeENgfeIIBEb6CbCibc49Xjq0ZXzA=;
-        b=CBMP3BksCA4K0PnfY0yQB3JcHjZHIObnV0aXuqPPJJWX70NztP0rqNQ9DbV5ivb7a9
-         HLWInQm8i1pQrL0Ad3Vhd4MQLB+X0bBcKdg0aw6+uH6cWpHUJsbRhY7d/ZwF/iWfZhfR
-         jFJjKunT6k/bic0VIiYHxqVMak4GHm6XWD0fr8IDeFg7XQ7Z9UerS0ILg5UIgNJKMMbY
-         J/djuTp75M1R15acEO8hLRJrD7sBBVqf0A1lIQJG2piKf8ND3H4UZvAepqb6xSHPXGRu
-         7/diIcZ119EUf9RT8OXVvIYHO/EqVg2B6Fk73V184EF5+F9cys01nw43m+yHvgr40GOG
-         ebjg==
-X-Gm-Message-State: AOAM532WnmsTVEWsa+DH3roMLqnhTnSAWzYjISxw3I3owmqphcgOeYoP
-        rRA/6xUPbjEhFqdtmIuenb8+PdA2AR79nt4TJ6k=
-X-Google-Smtp-Source: ABdhPJwF2QPigW04aMTrGfylLIKdrz+SxKUNnlzSknb+LVXzj9o23MdHGlTOLEQ5ieIY9UMuAzivJUUKP8T222vJilM=
-X-Received: by 2002:a1c:c343:: with SMTP id t64mr505782wmf.140.1605724757758;
- Wed, 18 Nov 2020 10:39:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IS8KqvtGpvchc3pdVmAI45zcVonfW9i7VEyA+0SXwEk=;
+        b=gcFV1MmdlhzTDHmLshuCIt2yWJ3ift8q6Fwz4X6b4hNETyU40QIe7vOSVpt6E0UOHx
+         rWFvGrU0clZQTjOWPNPFwIz7TX7dSxGihIFP9Py38s4odVZyUoKum2XqNvxlhTPQS55/
+         V83Du7KKnOy/KCiZJv3A7AQo5sBReok/vTEXOmFlFfeqSME35dXv9/YpisFD9+S1sbqS
+         AJgLDIElwSkxf32+rYrENff5WRa2VyaHDr/zsIbbFKZR9kWMEtkogpPsyLWXXBlFqScQ
+         0bANkLoyWQwvEtm6xxC3zGUHwdq6FAxs3NCsIRNP7ZPBBeArrf7a+M03D0uKMpDBAtMe
+         j2gA==
+X-Gm-Message-State: AOAM531Az6htR5mi6W0WU+RMfCrxKc3uzHPIaTCQDhNySrIml/Dh03sq
+        IenBtATNucgDcy5Uj7IVEy3kjA==
+X-Google-Smtp-Source: ABdhPJweHbHek1SIEw8iwFk9D76M1BOkOrOl/RQAY4++lcIH3vB9PS5TWTzt0p0LaAQdaxqaD7xCUA==
+X-Received: by 2002:a17:90b:93:: with SMTP id bb19mr394736pjb.102.1605724771392;
+        Wed, 18 Nov 2020 10:39:31 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id 12sm3376992pjt.25.2020.11.18.10.39.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 10:39:30 -0800 (PST)
+Date:   Wed, 18 Nov 2020 10:39:29 -0800
+From:   Prashant Malani <pmalani@chromium.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] usb: typec: Product Type time
+Message-ID: <20201118183929.GA3652649@google.com>
+References: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
-References: <20201117175452.26914-1-sohambiswas41@gmail.com>
- <20201118145112.21250-1-sohambiswas41@gmail.com> <20201118175936.GB3552669@ulmo>
-In-Reply-To: <20201118175936.GB3552669@ulmo>
-From:   Soham Biswas <sohambiswas41@gmail.com>
-Date:   Thu, 19 Nov 2020 00:09:06 +0530
-Message-ID: <CAMmt7eO217-8aVGkrMDrRiCiJiW0RTk39k1E_GAabDXmjWO+Kg@mail.gmail.com>
-Subject: Re: [PATCH v3] pwm: core: Use octal permission
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 at 23:29, Thierry Reding <thierry.reding@gmail.com> wrote:
->
-> On Wed, Nov 18, 2020 at 08:21:12PM +0530, Soham Biswas wrote:
-> > Permission bits are easier readable in octal than with using the
-> > symbolic names.
-> >
-> > Fixes the following warning generated by checkpatch:
-> >
-> > drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
-> > not preferred. Consider using octal permissions '0444'.
-> >
-> > +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-> >                             &pwm_debugfs_fops);
-> >
-> > Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
-> > ---
-> >  drivers/pwm/core.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Applied, thanks. Though I did unwrap the checkpatch warning message as
-> Uwe suggested.
->
-> Thierry
+Hi Heikki,
 
-Thank You!
+Thanks for developing these patches :)
+
+On Wed, Nov 18, 2020 at 06:00:56PM +0300, Heikki Krogerus wrote:
+> Hi Prashant,
+> 
+> The original discussion [1].
+> 
+> This proposal is in practice a compromise. I came to the conclusion
+> that we probable should expose the product type separately after all.
+> The reason for that is because we may in some cases actually know the
+> product type even when we don't have access to the Discover Identity
+> response. UCSI for example in practice gives us at least the cable
+> product type even though it does not let us know the response to the
+> Discover Identity command.
+> 
+> So my proposal here is that we add an attribute for the product type
+> itself, showing the product type as a string. Then we also add the
+> attribute for the product type specific VDOs which we place under the
+> identity directory more or less the way you originally proposed.
+
+Sounds good to me.
+
+Best regards,
+
+-Prashant
