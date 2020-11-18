@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2472B7DA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED672B7DB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgKRMb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 07:31:26 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:54798 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbgKRMbW (ORCPT
+        id S1726731AbgKRMhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 07:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgKRMhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:31:22 -0500
-Date:   Wed, 18 Nov 2020 12:31:19 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605702680;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gY79bn/JOxIN1PIIo0Y3ayMJ2So8MvH5Ka59GLpA/co=;
-        b=FTXsgfyjo/AVtuPVr5vg5/leS9Lximb2TMfCOGgipMPktNV25PCTUWFGRrnuGYHCQsdNxW
-        WGBZMIj+NdHqP27gmOv2+VzKSMv9wN/i4R5ONEicWkX4vurwqbE1fhSNDhBJDdmFhkMMoL
-        4N7kUutNUhNz6lE/9nBRsPn0gv6w+JCBipi7faeIOMCk71RVCCX0Khypa0tRxbdYyqKIVO
-        1/GLHNBG91+CdWpQp8DS+/rPlz+/N3N9sdPlInzUY7HC4WG9XdlapDQzYxtR2mZk7bKslv
-        Nc57QpjJC4refHhCGwfOyVuASDX/b2uW8uKCoMalEc12UPMhZaDd0wRwstfE8g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605702680;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gY79bn/JOxIN1PIIo0Y3ayMJ2So8MvH5Ka59GLpA/co=;
-        b=nDKm4xWPlF9IxDHumh5UMOVI0jT5odGYD+8A5q/j/4PdYLELVoAMxLdnWfHdC2Zry3Mdd/
-        T7RT6O6zJKqZoMCA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/uaccess: Document copy_from_user_nmi()
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201117202753.806376613@linutronix.de>
-References: <20201117202753.806376613@linutronix.de>
+        Wed, 18 Nov 2020 07:37:15 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDF9C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 04:37:15 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfMhy-0004pu-Bl; Wed, 18 Nov 2020 13:37:10 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfMhx-0005wL-GQ; Wed, 18 Nov 2020 13:37:09 +0100
+Date:   Wed, 18 Nov 2020 13:37:07 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
+        shawn.guo@linaro.org, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pwm: add missed clk_disable_unprepare() in zx_pwm_probe()
+Message-ID: <20201118123707.ab5euxfvljsoi6md@pengutronix.de>
+References: <1605702384-20911-1-git-send-email-zhangchangzhong@huawei.com>
 MIME-Version: 1.0
-Message-ID: <160570267965.11244.13389205990310912289.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="delqm5cvyhuzjmks"
+Content-Disposition: inline
+In-Reply-To: <1605702384-20911-1-git-send-email-zhangchangzhong@huawei.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     907f8eb8e0eb2b3312b292e67dc4dbc493424747
-Gitweb:        https://git.kernel.org/tip/907f8eb8e0eb2b3312b292e67dc4dbc493424747
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 17 Nov 2020 21:23:35 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 18 Nov 2020 13:19:01 +01:00
+--delqm5cvyhuzjmks
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-x86/uaccess: Document copy_from_user_nmi()
+Hello,
 
-Document the functionality of copy_from_user_nmi() to avoid further
-confusion. Fix the typo in the existing comment while at it.
+On Wed, Nov 18, 2020 at 08:26:24PM +0800, Zhang Changzhong wrote:
+> Add the missing clk_disable_unprepare() before return from
+> zx_pwm_probe() in the error handling case.
+>=20
+> Fixes: 4836193c435c ("pwm: Add ZTE ZX PWM device driver")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> ---
+>  drivers/pwm/pwm-zx.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/pwm/pwm-zx.c b/drivers/pwm/pwm-zx.c
+> index e2c21cc..3763ce5 100644
+> --- a/drivers/pwm/pwm-zx.c
+> +++ b/drivers/pwm/pwm-zx.c
+> @@ -238,6 +238,7 @@ static int zx_pwm_probe(struct platform_device *pdev)
+>  	ret =3D pwmchip_add(&zpc->chip);
+>  	if (ret < 0) {
+>  		dev_err(&pdev->dev, "failed to add PWM chip: %d\n", ret);
+> +		clk_disable_unprepare(zpc->pclk);
+>  		return ret;
 
-Requested-by: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201117202753.806376613@linutronix.de
----
- arch/x86/lib/usercopy.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+This is already fixed in next with:
 
-diff --git a/arch/x86/lib/usercopy.c b/arch/x86/lib/usercopy.c
-index 3f435d7..c3e8a62 100644
---- a/arch/x86/lib/usercopy.c
-+++ b/arch/x86/lib/usercopy.c
-@@ -9,9 +9,23 @@
- 
- #include <asm/tlbflush.h>
- 
--/*
-- * We rely on the nested NMI work to allow atomic faults from the NMI path; the
-- * nested NMI paths are careful to preserve CR2.
-+/**
-+ * copy_from_user_nmi - NMI safe copy from user
-+ * @to:		Pointer to the destination buffer
-+ * @from:	Pointer to a user space address of the current task
-+ * @n:		Number of bytes to copy
-+ *
-+ * Returns: The number of not copied bytes. 0 is success, i.e. all bytes copied
-+ *
-+ * Contrary to other copy_from_user() variants this function can be called
-+ * from NMI context. Despite the name it is not restricted to be called
-+ * from NMI context. It is safe to be called from any other context as
-+ * well. It disables pagefaults across the copy which means a fault will
-+ * abort the copy.
-+ *
-+ * For NMI context invocations this relies on the nested NMI work to allow
-+ * atomic faults from the NMI path; the nested NMI paths are careful to
-+ * preserve CR2.
-  */
- unsigned long
- copy_from_user_nmi(void *to, const void __user *from, unsigned long n)
-@@ -27,7 +41,7 @@ copy_from_user_nmi(void *to, const void __user *from, unsigned long n)
- 	/*
- 	 * Even though this function is typically called from NMI/IRQ context
- 	 * disable pagefaults so that its behaviour is consistent even when
--	 * called form other contexts.
-+	 * called from other contexts.
- 	 */
- 	pagefault_disable();
- 	ret = __copy_from_user_inatomic(to, from, n);
+	a278e8771f42 ("pwm: zx: Add missing cleanup in error path")
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--delqm5cvyhuzjmks
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+1FXAACgkQwfwUeK3K
+7AkFvwgAlqZbqWCqu66Zzd0zktnZwglQMr8xPa1M4sxqMciVKxnPjDeeXhs7MZYX
+yEx6EwVBDpm5xg/Pa/NnR0g3uUYvI62vTt/UK6ucOnG/i+U6LUxMccx7Yb/9meyU
+O/05IL+1db6XO5csP0Nd3zWPdj7y9VlWc3PZYMFWlQVzomFKwK1QkEICTmAozsuo
+f37cw6QSKXk/45WmifmC1MnejnSriyZy16BC2FK/URNuYDWsrkDnojr4CaxRc/ai
+JihRIQk/xn6ASbV23ijwwft4VX3jar2K/SXgvnUqkumOYo4uIDr5PUcm+XG8Z1hL
+l6Zyl6BhRFpnXrgFZO3CdW9JaR2bDA==
+=N8uy
+-----END PGP SIGNATURE-----
+
+--delqm5cvyhuzjmks--
