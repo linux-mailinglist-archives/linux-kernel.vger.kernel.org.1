@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B66A2B7580
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7FE2B7583
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgKREy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 23:54:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgKREy6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 23:54:58 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0772C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:54:56 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id d17so334454plr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:54:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=moO2QhNnqIGWOkMHd95f/PelXhTS60oiUOB6MIxsOtY=;
-        b=KJgiM8UwlUWQO8p9WhLRYJs69GRYY7ASWc7B+IKX2wDbM/9TGHQ2DMAK2lMze3on5t
-         VLc1ukbdFUes3cGxqq1273FEdH7V2rrO/p+mhtgOa24whGVgIIbSBWFkZ5j4lmPC/Z0v
-         jrndjRGxl1zmKY74hYID/A9wMDZ6ppnbCiQk8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=moO2QhNnqIGWOkMHd95f/PelXhTS60oiUOB6MIxsOtY=;
-        b=hEumh+ULhlTJEubth5s/muAIWFWuI/eXwAtMBTbhR0jMl53uKfIbcM6I6n4w1Nivub
-         ryVQG9SjaYz2r8hTAJXZRoGUe4UYQbhXXZMEE58lNC1WtMxSPMnvmBGVSnajJbXhPPzp
-         EFun9aMKeXWDpNgD2CkY6/PrMt3Tl/wU/FI6+oP6+YZ69PjorJsQFuI8kGMQTuhSB+Xe
-         NtPRhJrveyQDR6MwSx1Mmylf3amw7zVcc2vgPmrTRyuheVjKMIB6bLInrHqobtZYXV8S
-         tIreVr8tKJt5VnYiwgQQrR9JKtE3S7UDV8dWRTxZxH1/eyZymVVj7V71M95HxUvEc1vR
-         ZFHQ==
-X-Gm-Message-State: AOAM5332gfV89R0QTQCLplCnbYUpanzc7WQMzw2lgeh7NRsg6rBmYfHi
-        qjgaph68qS/bvmDAKGehOz9Uyw==
-X-Google-Smtp-Source: ABdhPJyWsv8OrsRh/Xsuzi+ygcgvXgaBBy4c00ZRCo1S3sE7OOLuluGTBnUcbOZ77IlCgpDNJgIUYg==
-X-Received: by 2002:a17:90a:8543:: with SMTP id a3mr2408228pjw.13.1605675296251;
-        Tue, 17 Nov 2020 20:54:56 -0800 (PST)
-Received: from smtp.gmail.com ([100.99.132.239])
-        by smtp.gmail.com with ESMTPSA id mt2sm834690pjb.7.2020.11.17.20.54.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 20:54:55 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH] arm64: dts: qcom: sc7180: Add prox sensor to LTE SKU Lazor boards
-Date:   Tue, 17 Nov 2020 20:54:54 -0800
-Message-Id: <20201118045454.2503325-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+        id S1726561AbgKRE5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 23:57:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgKRE5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 23:57:48 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4B852463F;
+        Wed, 18 Nov 2020 04:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605675467;
+        bh=P6T1UQXF1TGia034LOF14sr42Ekt76ERzkz1oq8E3pE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=op/XhzDH1RzBgaMZ3dceJ1Hc/gg18B0n4VUvAVUZZIo1VagaAJQ21dC8+BDqWtUaZ
+         2ASqsbR/ubmvO2BKkDKKAbbQUpc9tmajREw1+l6cANKSskmxNpVvItB1agtPvoih07
+         p2OPJoQMLYrEtSWwDUGmFI8N3KzukBKvbFECk0J0=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5CE003523137; Tue, 17 Nov 2020 20:57:47 -0800 (PST)
+Date:   Tue, 17 Nov 2020 20:57:47 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Matt Mullins <mmullins@mmlx.us>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
+Message-ID: <20201118045747.GN1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201115055256.65625-1-mmullins@mmlx.us>
+ <20201116121929.1a7aeb16@gandalf.local.home>
+ <1889971276.46615.1605559047845.JavaMail.zimbra@efficios.com>
+ <20201116154437.254a8b97@gandalf.local.home>
+ <20201116160218.3b705345@gandalf.local.home>
+ <1368007646.46749.1605562481450.JavaMail.zimbra@efficios.com>
+ <20201116171027.458a6c17@gandalf.local.home>
+ <609819191.48825.1605654351686.JavaMail.zimbra@efficios.com>
+ <20201118004242.rygrwivqcdgeowi7@hydra.tuxags.com>
+ <20201117200922.195ba28c@oasis.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117200922.195ba28c@oasis.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a proximity sensor on Lazor devices, but only for LTE SKUs.
-Enable it only on the LTE SKUs and also configure it properly so it
-works.
+On Tue, Nov 17, 2020 at 08:09:22PM -0500, Steven Rostedt wrote:
+> On Tue, 17 Nov 2020 16:42:44 -0800
+> Matt Mullins <mmullins@mmlx.us> wrote:
+> 
+> 
+> > > Indeed with a stub function, I don't see any need for READ_ONCE/WRITE_ONCE.  
+> > 
+> > I'm not sure if this is a practical issue, but without WRITE_ONCE, can't
+> > the write be torn?  A racing __traceiter_ could potentially see a
+> > half-modified function pointer, which wouldn't work out too well.
+> 
+> This has been discussed before, and Linus said:
+> 
+> "We add READ_ONCE and WRITE_ONCE annotations when they make sense. Not
+> because of some theoretical "compiler is free to do garbage"
+> arguments. If such garbage happens, we need to fix the compiler"
+> 
+> https://lore.kernel.org/lkml/CAHk-=wi_KeD1M-_-_SU_H92vJ-yNkDnAGhAS=RR1yNNGWKW+aA@mail.gmail.com/
 
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Matthias Kaehlcke <mka@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts | 8 ++++++++
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts | 8 ++++++++
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi       | 7 ++++++-
- 3 files changed, 22 insertions(+), 1 deletion(-)
+I have to ask...  Did the ARM compilers get fixed?  As of a few
+months ago, they would tear stores of some constant values.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts
-index 5a67e5baafec..e16ba7b01f25 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts
-@@ -13,6 +13,14 @@ / {
- 	compatible = "google,lazor-rev1-sku0", "google,lazor-rev2-sku0", "qcom,sc7180";
- };
- 
-+&ap_sar_sensor {
-+	status = "okay";
-+};
-+
-+&ap_sar_sensor_i2c {
-+	status = "okay";
-+};
-+
- &keyboard_backlight {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts
-index 43836fc4d403..0881f8dd02c9 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts
-@@ -13,6 +13,14 @@ / {
- 	compatible = "google,lazor-sku0", "qcom,sc7180";
- };
- 
-+&ap_sar_sensor {
-+	status = "okay";
-+};
-+
-+&ap_sar_sensor_i2c {
-+	status = "okay";
-+};
-+
- &keyboard_backlight {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-index 180ef9e04306..89de69b60609 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-@@ -30,7 +30,12 @@ panel_in_edp: endpoint {
- };
- 
- &ap_sar_sensor {
--	status = "okay";
-+	semtech,cs0-ground;
-+	semtech,combined-sensors = <3>;
-+	semtech,resolution = "fine";
-+	semtech,startup-sensor = <1>;
-+	semtech,proxraw-strength = <2>;
-+	semtech,avg-pos-strength = <64>;
- };
- 
- ap_ts_pen_1v8: &i2c4 {
+> > This was actually my gut instinct before I wrote the __GFP_NOFAIL
+> > instead -- currently that whole array's memory ordering is provided by
+> > RCU and I didn't dive deep enough to evaluate getting too clever with
+> > atomic modifications to it.
+> 
+> The pointers are always going to be the architecture word size (by
+> definition), and any compiler that tears a write of a long is broken.
 
-base-commit: ead9f7d7ea9e20843e29e688b53859cea20044ee
--- 
-Sent by a computer, using git, on the internet
+But yes, if the write is of a non-constant pointer, the compiler does
+have less leverage.
 
+							Thanx, Paul
