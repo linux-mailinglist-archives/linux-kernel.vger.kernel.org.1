@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C002B887A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DCD2B887D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbgKRXkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 18:40:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
+        id S1727103AbgKRXks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 18:40:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgKRXkW (ORCPT
+        with ESMTP id S1726092AbgKRXkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:40:22 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A6DC0613D4;
-        Wed, 18 Nov 2020 15:40:22 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id o9so5280591ejg.1;
-        Wed, 18 Nov 2020 15:40:21 -0800 (PST)
+        Wed, 18 Nov 2020 18:40:47 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35202C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 15:40:46 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id b3so1892712pls.11
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 15:40:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dYEg6jWrPkkD53OAHB3soxjlN28LSPDv84400U2paVQ=;
-        b=iIQfwh1LxtqMIVtXSq+tbCkZtDnA1zaS9i6mmWLIe8z4ZpHRemHjRNwAFQiIxrUCra
-         NyHaor6DBzYbqNXVKmqNam4tFAjTJ/4m+YZeRAXosZZyLiXF0TlPMDdi+m+laqVk12CF
-         bP3ke4fdLMG+qA5eJ+wzkqkFm7WDTKVMA7ifPImzs9++tFDwkJwyVr5RqMhuFAnm6Nb5
-         msL9AUcZpilItQ/ZI3W4ccv3GAR9Um7KczBpgP4e9nFM0cJvlIfsy8vZ5ovHtdAtpK5o
-         uGgsWoQWnts/QfdnXI2nfqgM5q5xOqMU8KedqRhTsiKn0uZtFRcNRzG7zmHT2Mx/1OPw
-         9W1Q==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P4eqbUws5OBh+zSDmGIZGynXeE/GCKmhJYh2f9F/2s8=;
+        b=MM/2GIKGWDzxw4aO+CK8E1czrZG9hJLEpzvnEQAQlaPwjmdtFuk3rlBdbPs8q+3uF9
+         88xHc/Q9LHtK2qtfZlFJ0ZWcZXGWjHDwAbWd70kuQxRzVpxeSj+VbA17o5K+gKYn4G6k
+         6nBxH+6s5j3GjdnOcWGf2UwpUEIgDW3X5H/Xs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dYEg6jWrPkkD53OAHB3soxjlN28LSPDv84400U2paVQ=;
-        b=efEY5Ssc1PQL8IMxJkfBae2ICtva4KqN0YlWhttp3a8RHhZ7cRH4uBUTGiz0ynXJLi
-         AtvjFcWGrqgwk7uviU4iqOfigEwjVMi1bsn8/8JBQEUIHB9S/uJY0SSS5N1xgdO5k2vJ
-         IIeV3x4e6Zu3fPlv16C4K2jhmqoQyGOINivM8kk0jVkSi7ENyHta0idgsLROUmAeL7s+
-         DUMwBWdonDwIQaJhNxXjPIGtJqCHTdmo8wac7k/YD1yQ466eLZVw60TKsgMQh/gpygNy
-         IVLvNmABlVd/mguDsAipI8s9lZMOPn5IbEiNzWSTvd7tRctF/8xPyo4pKLEhKgNy+YDK
-         OEZw==
-X-Gm-Message-State: AOAM5306ggBLOwBguhDf/eBkvmQnNdWopP6iIfKIo6xV/2mVJkntI/hS
-        q0kRT+4MQx6LsE2Nuc3bhjg=
-X-Google-Smtp-Source: ABdhPJwzMT5hNpDkngkqFx6uhBOO1xguLw1XxFSQ0hkS91QQhtD72KtANsYgbnr+w+TsH08IytL7kw==
-X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr25754407ejz.341.1605742820626;
-        Wed, 18 Nov 2020 15:40:20 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id m26sm13518241ejb.45.2020.11.18.15.40.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 15:40:20 -0800 (PST)
-Date:   Thu, 19 Nov 2020 01:40:18 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 00/12] net: dsa: microchip: PTP support for
- KSZ956x
-Message-ID: <20201118234018.jltisnhjesddt6kf@skbuf>
-References: <20201118203013.5077-1-ceggers@arri.de>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P4eqbUws5OBh+zSDmGIZGynXeE/GCKmhJYh2f9F/2s8=;
+        b=S3s+iDZ3de1lR8YdXLiNtFga15N33JuK9hrYgEXIfkg62Xsvk9tCrUrrS4aNVk59+w
+         5sfEYtlMjtiZYic5FPydbsALG0N/3adkUVD6nrpmY8xjKiB0wIs2gtWa/ZrJ8+6KlHFb
+         hSqYaNnQ8Hw+WPgoVaorP+NMUqw5Z/E/2obm68mRk5lH/Iw58kZriD4Ih7C/dI5mLi3C
+         59TC78puWuSE9aq31f2JciZJbR+OQBMaKUoPxin4dJw+oP6jbdPZp3Lb19lrWW8haR5q
+         2dMzld8UOIFKGVUM5QY/3Nq+/jMEpC8pSRcS1KR6kiWEq73r/a5CzE3IeKkZ4yZLuRTY
+         UDZQ==
+X-Gm-Message-State: AOAM533U7TBcsne4/F6ev3ahqQoDGlrOnDEATWVcGt6lbmHQAOYlHC4K
+        Iu1Nf2T7jG5jkvONSuEbKuyA7w==
+X-Google-Smtp-Source: ABdhPJwWRoldri4GORHGp02TpBVqgoRyd8LQW83YaMGnQCu23Xf4ZLp8w8bW2PEESszAm0RJA8sFSg==
+X-Received: by 2002:a17:902:56e:b029:d5:d861:6b17 with SMTP id 101-20020a170902056eb02900d5d8616b17mr6679168plf.17.1605742845769;
+        Wed, 18 Nov 2020 15:40:45 -0800 (PST)
+Received: from evgreen-glaptop.cheshire.ch ([2601:646:c780:1404:250:b6ff:fee1:7d4c])
+        by smtp.gmail.com with ESMTPSA id t200sm5210979pfc.143.2020.11.18.15.40.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Wed, 18 Nov 2020 15:40:45 -0800 (PST)
+From:   Evan Green <evgreen@chromium.org>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Evan Green <evgreen@chromium.org>,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v3 0/2] i2c: i2c-mux-gpio: Enable this driver in ACPI land
+Date:   Wed, 18 Nov 2020 15:40:23 -0800
+Message-Id: <20201118234025.376412-1-evgreen@chromium.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118203013.5077-1-ceggers@arri.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 09:30:01PM +0100, Christian Eggers wrote:
-> This series adds support for PTP to the KSZ956x and KSZ9477 devices.
-> 
-> There is only little documentation for PTP available on the data sheet
-> [1] (more or less only the register reference). Questions to the
-> Microchip support were seldom answered comprehensively or in reasonable
-> time. So this is more or less the result of reverse engineering.
+The i2c-mux-gpio driver is a handy driver to have in your bag of tricks,
+but it currently only works with DT-based firmware. Enable this driver
+on ACPI platforms as well.
 
-I will not have the time today, and probably not tomorrow, to review
-this. I want to take some time to get more hands-on with the UDP
-checksumming issues reported by Christian in the previous version (in
-order to understand what the problem really is),
-https://lore.kernel.org/netdev/1813904.kIZFssEuCH@n95hx1g2/
-and I will probably only find time for that in the weekend. If anybody
-feels like reviewing the series in the meantime, of course feel free to
-do so.
+The first patch is a little dinky. Peter, if it turns out you'd rather
+just take this all as a single patch, feel free to squash the first
+patch into the second. Or I can resend a squashed patch if needed.
 
-One thing that should definitely not be part of this series though is
-patch 11/12. Christian, given the conversation we had on your previous
-patch:
-https://lore.kernel.org/netdev/20201113025311.jpkplhmacjz6lkc5@skbuf/
-as well as the documentation patch that was submitted in the meantime:
-https://lore.kernel.org/netdev/20201117213826.18235-1-a.fatoum@pengutronix.de/
-obviously you chose to completely disregard that. May we know why?
-How are you even making use of the PTP_CLK_REQ_PPS feature?
+Changes in v3:
+ - Introduced minor &pdev->dev to dev refactor (Peter)
+ - Update commit message again (Peter)
+ - Added missing \n (Peter)
+ - adr64 overflow check (Peter)
+ - Don't initialize child (Peter)
+ - Limit scope of dev_handle (Peter)
+
+Changes in v2:
+ - Make it compile properly when !CONFIG_ACPI (Randy)
+ - Update commit message regarding i2c-parent (Peter)
+
+Evan Green (2):
+  i2c: i2c-mux-gpio: Factor out pdev->dev in _probe_dt()
+  i2c: i2c-mux-gpio: Enable this driver in ACPI land
+
+ drivers/i2c/muxes/i2c-mux-gpio.c | 112 ++++++++++++++++++++++---------
+ 1 file changed, 82 insertions(+), 30 deletions(-)
+
+-- 
+2.26.2
+
