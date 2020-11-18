@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A082B85F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4B12B85F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbgKRUrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 15:47:22 -0500
-Received: from ozlabs.org ([203.11.71.1]:34939 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726195AbgKRUrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:47:21 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1727412AbgKRUsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 15:48:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726416AbgKRUsH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 15:48:07 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69840C0613D4;
+        Wed, 18 Nov 2020 12:48:07 -0800 (PST)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cbvxy32ysz9sSs;
-        Thu, 19 Nov 2020 07:47:18 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605732438;
-        bh=KlRNMrEP52Um3m4GL7W95LQHH7PuwUeFgdBON1y9GQ4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EHbILVgTDOQWihg5ip4M0ZWdRBHEXi3V9vWibxzKds/UE3zdqZbD8CG///KiW27se
-         Lc+PUYAcCvGA9hlpq8S00lCxeOmgrnGHUL1N/gJvRsTQWrlF974S9xcqRD3mmNSQ4h
-         fdWxlYSJZQE8cB3StoettKwvjnA7VXJqLCi/ZhfAbpG2Q/ebO4Kg3tSvNAxXEEDaBN
-         3vz+8d9hi09DsQTEYXm6I44SVN/81K2AEfuML5eiA+8M0kErgouQOU40p7PeFzygIN
-         Q7wHyTbLJCK5f0gcnUqIsdpWRVjsEZl5XU8PltyoyHlqq8ldbLo2qBg5mqWj50Fa/C
-         /prFBnaFBoJuA==
-Date:   Thu, 19 Nov 2020 07:47:17 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alasdair G Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the device-mapper
- tree
-Message-ID: <20201119074717.79d94aba@canb.auug.org.au>
+        by ms.lwn.net (Postfix) with ESMTPSA id DF9EE1F5B;
+        Wed, 18 Nov 2020 20:48:06 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 13:48:05 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        kgdb-bugreport@lists.sourceforge.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Subject: Re: [PATCH] Documentation: kgdb: Fix a typo
+Message-ID: <20201118134805.7304a9bf@lwn.net>
+In-Reply-To: <1605519767-25502-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1605519767-25502-1-git-send-email-yangtiezhu@loongson.cn>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UC86c3Y/584OPE+.27/BaE1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UC86c3Y/584OPE+.27/BaE1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 16 Nov 2020 17:42:47 +0800
+Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 
-Hi all,
+> "to into" -> "into"
+> 
+> Reported-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  Documentation/dev-tools/kgdb.rst | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/dev-tools/kgdb.rst b/Documentation/dev-tools/kgdb.rst
+> index 77b688e..4345624 100644
+> --- a/Documentation/dev-tools/kgdb.rst
+> +++ b/Documentation/dev-tools/kgdb.rst
+> @@ -63,10 +63,9 @@ will want to turn on ``CONFIG_DEBUG_INFO`` which is called
+>  It is advised, but not required, that you turn on the
+>  ``CONFIG_FRAME_POINTER`` kernel option which is called :menuselection:`Compile
+>  the kernel with frame pointers` in the config menu. This option inserts code
+> -to into the compiled executable which saves the frame information in
+> -registers or on the stack at different points which allows a debugger
+> -such as gdb to more accurately construct stack back traces while
+> -debugging the kernel.
+> +into the compiled executable which saves the frame information in registers
+> +or on the stack at different points which allows a debugger such as gdb to
+> +more accurately construct stack back traces while debugging the kernel.
 
-Commit
+Applied.
 
-  a1e4865b4dda ("dm writecache: remove BUG() and fail gracefully instead")
+In the future, though, please avoid refilling paragraphs when you make a
+change like this; it makes it much harder to see what has actually changed.
 
-is missing a Signed-off-by from its author.
+Thanks,
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/UC86c3Y/584OPE+.27/BaE1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+1iFUACgkQAVBC80lX
-0Gyzxwf/ddkJaAE9MskS2LGQ6knGY+6r7uI0f6QL64ZzH6gNjaguNIkGjxiWrhyS
-gSq2vp7tLNWTbTfG9LhLM7n8LXzJ29Dxner/nO1pCwWpmugErBa3BEmL0SWcSL5P
-3Z4Pt9ya0y5e68K9J7Xe51wmGkBUZIipZSi/xAHmOpUvV1id123bWbid6HbQIGIQ
-6Gklnnht/YruQ+lXRk4ruBAOuj0BWkud9pI+FooKnNI615bFzQFiftu6W/wQpAxl
-2DHPckH7wqeKlBjK1ulr5Dv5PpKaYj7SceE4MOVhR39f56d9oA+iGdHGWffD6Nll
-QtfRnY6aorNhJPpNYyLHid9bcVfqJw==
-=BwJN
------END PGP SIGNATURE-----
-
---Sig_/UC86c3Y/584OPE+.27/BaE1--
+jon
