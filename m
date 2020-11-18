@@ -2,90 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE162B8369
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7852B836F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgKRRyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:54:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgKRRyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:54:21 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73E4E2072C;
-        Wed, 18 Nov 2020 17:54:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605722060;
-        bh=2chfH8EPljoz9qid6xfoiBfanuWdJD9OCp12nXdd7p8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Q5GVecmHE3n34e8cX0cTepQdtkvOj6VINeogsdnTvHzOgvTPGXC5cpRJ5wtmKFfUt
-         DPlYJh7VWKfvXiC8VmXYi6YOrmpnPZ48Q9DHsdKD2dPJVeK2vV55+oAMjbgyTMC1PS
-         xINQ/HCVgEymbLPbWgxQaV0ZZCRlsU27WXbfpE/U=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 212253520FE0; Wed, 18 Nov 2020 09:54:20 -0800 (PST)
-Date:   Wed, 18 Nov 2020 09:54:20 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     frederic@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: NOHZ tick-stop error: Non-RCU local softirq work is pending
-Message-ID: <20201118175420.GA17381@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201118175218.GA16039@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118175218.GA16039@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726199AbgKRR5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 12:57:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgKRR5a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 12:57:30 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120B5C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 09:57:30 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id f3so1633035plb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 09:57:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=bsCN5N4JAInCrP+YslG6n3+5vM/Uc6NYHq4aIGZzdzI=;
+        b=OGRSdH36h0ql+bIlfx/9tGobraLomjaMP/OGf7xW5gcwYX/S+wGFedmGUIuhxC0LSR
+         hKh+6e2I/P/ivkmCMV69IPmrpjif2Ee1Qbd4bBoJSwf3dYAbZJYnAgcn0UOQks0sDsu0
+         c4u4eFtfKg3wDQU/FXPU3e2Ai8Hn4c45tOv5CGexd5fJRohaQe0eZDQy5PhSlMm25KvC
+         /LszuxocTrAvMgTq6qnAaJN4zBeBR9svkTdmnf+Qf21ndZE5kmVEd0mhclsv3+swrjB9
+         BXkn/ihkNkSyShamgRdPhCvShPte1OaDz9gILzY6uLxXnU/qrb0SyR3Z+ZV6pRVFItSK
+         lIMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=bsCN5N4JAInCrP+YslG6n3+5vM/Uc6NYHq4aIGZzdzI=;
+        b=ezyBGycO2XYAl+REUxeYMW4jyTGzPVGEARgDCbPPE3xvOQlHamlhp+s5wxbYI10EkJ
+         wdrbCAX1QRR0xJdTpyTFy8i6+bHNJpr7LUaQFTQf3BXLXfPuA8HZ8uD0HRQs9ZGWwvHz
+         ce0RNJq60uXXEBfyEFeUJ6Okp2qrmWsZ4DBVMTsRWt9vvzrx9lRUAC+BV8HI0QwhxorT
+         VXMnjfPLojZ1rfYpIClt1aLZyFSKMAq/Xa3V8dDI6RRZjq0Ac3z06FPOqEZbxCShTQIv
+         0if3p6/W1jcOsRjqTVJLSLDii70Ncrl97D8KREr+2ESPp8iABauZzvPppSZ+fFOImAHt
+         KPyg==
+X-Gm-Message-State: AOAM531qUkH/trZN/z8BcVNv7BXt8kqMFGXibWlT2gZ28SUfhEOJYyWQ
+        sfJpObiPaOde7mHYoJEuZT0QQ3rFVQUTgg==
+X-Google-Smtp-Source: ABdhPJx00ige9yBV83xg5Lg2I5cK9a2WIVrg3dF4PjKIbJbAgldyXx0PiGCaJRFgGCNymksPSdS/KbohifO0IA==
+Sender: "shakeelb via sendgmr" <shakeelb@shakeelb.svl.corp.google.com>
+X-Received: from shakeelb.svl.corp.google.com ([100.116.77.44]) (user=shakeelb
+ job=sendgmr) by 2002:a17:90a:f0c7:: with SMTP id fa7mr235213pjb.3.1605722249509;
+ Wed, 18 Nov 2020 09:57:29 -0800 (PST)
+Date:   Wed, 18 Nov 2020 09:57:26 -0800
+Message-Id: <20201118175726.2453120-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+Subject: [PATCH] memcg, kmem: further deprecate kmem.limit_in_bytes
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 09:52:18AM -0800, Paul E. McKenney wrote:
-> Hello, Frederic,
-> 
-> Here is the last few months' pile of warnings from rcutorture runs.
+The deprecation process of kmem.limit_in_bytes started with the commit
+0158115f702 ("memcg, kmem: deprecate kmem.limit_in_bytes") which also
+explains in detail the motivation behind the deprecation. To summarize,
+it is the unexpected behavior on hitting the kmem limit. This patch
+moves the deprecation process to the next stage by disallowing to set
+the kmem limit. In future we might just remove the kmem.limit_in_bytes
+file completely.
 
-And this time with scenario names.  ;-)
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ .../admin-guide/cgroup-v1/memory.rst          |  6 ++--
+ mm/memcontrol.c                               | 35 +++----------------
+ 2 files changed, 6 insertions(+), 35 deletions(-)
 
-								Thanx, Paul
+diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
+index 52688ae34461..cb993d80194d 100644
+--- a/Documentation/admin-guide/cgroup-v1/memory.rst
++++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+@@ -87,10 +87,8 @@ Brief summary of control files.
+  memory.oom_control		     set/show oom controls.
+  memory.numa_stat		     show the number of memory usage per numa
+ 				     node
+- memory.kmem.limit_in_bytes          set/show hard limit for kernel memory
+-                                     This knob is deprecated and shouldn't be
+-                                     used. It is planned that this be removed in
+-                                     the foreseeable future.
++ memory.kmem.limit_in_bytes          This knob is deprecated and writing to
++                                     it will return -EINVAL.
+  memory.kmem.usage_in_bytes          show current kernel memory allocation
+  memory.kmem.failcnt                 show the number of kernel memory usage
+ 				     hits limits
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 45465c03a8d7..78d17b3181ad 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3075,28 +3075,14 @@ static void memcg_free_cache_id(int id)
+ int __memcg_kmem_charge(struct mem_cgroup *memcg, gfp_t gfp,
+ 			unsigned int nr_pages)
+ {
+-	struct page_counter *counter;
+ 	int ret;
+ 
+ 	ret = try_charge(memcg, gfp, nr_pages);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
+-	    !page_counter_try_charge(&memcg->kmem, nr_pages, &counter)) {
+-
+-		/*
+-		 * Enforce __GFP_NOFAIL allocation because callers are not
+-		 * prepared to see failures and likely do not have any failure
+-		 * handling code.
+-		 */
+-		if (gfp & __GFP_NOFAIL) {
+-			page_counter_charge(&memcg->kmem, nr_pages);
+-			return 0;
+-		}
+-		cancel_charge(memcg, nr_pages);
+-		return -ENOMEM;
+-	}
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
++		page_counter_charge(&memcg->kmem, nr_pages);
+ 	return 0;
+ }
+ 
+@@ -3769,17 +3755,6 @@ static void memcg_free_kmem(struct mem_cgroup *memcg)
+ }
+ #endif /* CONFIG_MEMCG_KMEM */
+ 
+-static int memcg_update_kmem_max(struct mem_cgroup *memcg,
+-				 unsigned long max)
+-{
+-	int ret;
+-
+-	mutex_lock(&memcg_max_mutex);
+-	ret = page_counter_set_max(&memcg->kmem, max);
+-	mutex_unlock(&memcg_max_mutex);
+-	return ret;
+-}
+-
+ static int memcg_update_tcp_max(struct mem_cgroup *memcg, unsigned long max)
+ {
+ 	int ret;
+@@ -3845,10 +3820,8 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
+ 			ret = mem_cgroup_resize_max(memcg, nr_pages, true);
+ 			break;
+ 		case _KMEM:
+-			pr_warn_once("kmem.limit_in_bytes is deprecated and will be removed. "
+-				     "Please report your usecase to linux-mm@kvack.org if you "
+-				     "depend on this functionality.\n");
+-			ret = memcg_update_kmem_max(memcg, nr_pages);
++			/* kmem.limit_in_bytes is deprecated. */
++			ret = -EINVAL;
+ 			break;
+ 		case _TCP:
+ 			ret = memcg_update_tcp_max(memcg, nr_pages);
+-- 
+2.29.2.299.gdc1121823c-goog
 
-------------------------------------------------------------------------
-
-./2020.11.02-12.05.02/TREE02/console.log:[  255.098527] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #282!!!
-./2020.09.01-17.20.03/LOCK05.3/console.log:[  414.534548] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.09.01-17.20.03/LOCK05.3/console.log:[ 3798.654736] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.09.01-17.20.03/LOCK05.2/console.log:[ 1718.589367] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.09.01-17.20.03/LOCK05.2/console.log:[ 6632.777655] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.10.29-16.54.07/SRCU-P/console.log:[ 2873.688490] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.11.02-17.25.58/TREE05/console.log:[ 3081.738937] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.11.04-19.46.51/SRCU-N/console.log:[ 2673.597523] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.09.02-17.17.02/LOCK05.3/console.log:[ 1467.372887] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.09.02-17.17.02/LOCK05/console.log:[   34.371094] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.09.02-17.17.02/LOCK05/console.log:[ 1147.260097] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.11.14-16.00.39/SRCU-P/console.log:[ 5066.699589] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.10.12-21.08.28/SRCU-P/console.log:[  816.338843] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.09.02-15.27.04/LOCK05/console.log:[   34.338836] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.09.10-02.28.14/TREE01/console.log:[ 1234.111394] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-./2020.09.10-02.28.14/TREE01/console.log:[ 1282.109415] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-./2020.09.10-02.28.14/TREE07/console.log:[  239.215890] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-./2020.09.10-02.28.14/TREE07/console.log:[  367.918969] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-./2020.09.10-02.28.14/TREE07/console.log:[ 1461.037894] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.09.10-02.28.14/TREE07/console.log:[ 1503.810903] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-./2020.09.10-02.28.14/TREE07/console.log:[ 1503.811939] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-./2020.09.10-02.28.14/TRACE01/console.log:[  699.514824] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-./2020.09.10-02.28.14/SRCU-P/console.log:[  751.681629] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-./2020.09.10-02.28.14/TREE02/console.log:[  287.770126] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-./2020.09.10-02.28.14/TREE02/console.log:[  287.771096] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-./2020.09.10-02.28.14/TREE05/console.log:[  648.009370] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.09.10-02.28.14/TREE05/console.log:[  924.733405] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-./2020.09.10-02.28.14/TREE05/console.log:[  924.734011] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-./2020.09.10-02.28.14/TREE05/console.log:[ 1743.197353] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #02!!!
-./2020.09.10-02.28.14/TREE04/console.log:[ 1528.161635] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-./2020.09.10-02.28.14/TREE04/console.log:[ 1528.162313] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-./2020.10.30-11.47.17/TREE08/console.log:[  265.201513] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-./2020.10.30-11.47.17/TREE08/console.log:[  473.137587] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #202!!!
-./2020.11.05-11.47.22/TREE08/console.log:[  187.375426] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
-./2020.09.02-16.20.12/LOCK05/console.log:[ 1361.544451] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #80!!!
-./2020.11.06-17.37.06/TREE05/console.log:[   79.519727] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #280!!!
