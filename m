@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6657C2B7546
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF65F2B754D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgKREIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 23:08:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        id S1727861AbgKRELD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 23:11:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727226AbgKREIs (ORCPT
+        with ESMTP id S1726743AbgKRELC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 23:08:48 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FEFC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:08:47 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id z16so486282otq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:08:47 -0800 (PST)
+        Tue, 17 Nov 2020 23:11:02 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E34C0613D4;
+        Tue, 17 Nov 2020 20:11:01 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id f11so1009347lfs.3;
+        Tue, 17 Nov 2020 20:11:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OFlGs4mKDX02PSiyPJiMC0bb+xNxk/N/G1k1e5peRxM=;
-        b=QQxY3p7I4RHFjrJTNkalSyBx+aIXUj8ijk/Babr2vzHpUep7XKzj77fta6TtzebgCu
-         54w0M3ZVHkJ7tSZJaQFR13s4eDVIVnuggLxxAX/z9ETdmoCw7xAt0Za8Y6X241m2BeFH
-         3Er2KD5uQ9DeDGOB62xwTWlctLYgh74cMeJ5dJribRHezlK2WOR/0WPuzzI0l6M4WEjk
-         zIqI92EjKqkBWA+foxnWcitA3s9/AQwyndns11yV9uHU7TQnSCWdcfqA4ytclWb0VxOP
-         w3kBDZUlO6Ay3K/vVQQILFpKML26QLRUiIpvcrwjgXFFzKDAlSmB24By6DeNLtaItTfU
-         j4KQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QiZ+hPWcgRrSJYrRI/DcwNjpknvcfyeQfNBRbOUcAZo=;
+        b=kCdq/mUuaZJ6pc88zsrgz7uqcd0wPOwknm5DTCqlhoCmvs/754Xfkj1NmHP7Q79d/F
+         +IvidmjpocDik3B8lo3Kg16Y2caHKLwyiUr6G4dkS6GcTbRJ6/myby64lpQNSyxer+T/
+         MuyE2e+Pt1GeN7ZpPh4CCSPW8jO5DKGt66IqFP0XCfXP8/eORwv/ock173v6lxAB2H8b
+         UfwzrHn9LR0VevS5E4IzV/vf8KyMoL1otvHuTu7LG9PLYaKx0fvJ8ajw/tecwW7Z2dg4
+         v8sf96RAFzagHJZlzw+QZz2rRE95V0wyEfzICI6SpJ7FCtW/D0NVsW55RV2iKma7YMpv
+         JPdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OFlGs4mKDX02PSiyPJiMC0bb+xNxk/N/G1k1e5peRxM=;
-        b=aP9LB+TtkbY11YxinVzOxNx1TO8dxAzzUfWd6/zzgMAzs4XFAMIAl6Q435eJOYTuXc
-         2SsmQVmg1J7yCIdnTgEN3DAQfYVxyfgQHREi4dpwyaYiE7lYZ0GMa+X1NW3+w1/RhHMg
-         9jTSEL1qrTL/klLo6fB85m7dK5gg6wgH/iKo0aDPLkeCF9fBd1XyU9IZEQhLAByCT5NE
-         mxDbpTD+LHNOSVbbN3dQLw8QOj+TKQYF8T0qa2CPbP8VheIlrWzsQgimIAdvH5xqZ1pW
-         pJ2XhAS2eHjIuNSvrUI0Nsm5VyRnmgOy9AcTYbwuiQZDvyyHko9rFuy6KkfEM8bOOS8e
-         3iGA==
-X-Gm-Message-State: AOAM532p0BoBpDIA8QD8NKyNGb/GYqWclSHC364/fO3tRbkA31k82CLs
-        aE++/mqruX5h/bGT7zeN8ETk0g==
-X-Google-Smtp-Source: ABdhPJxXjhnt+l7S4mf68h2a9v6ouX5XJ/FbYDzULaWBwyywmHfA/8h64fZ+7LNab2guhsIUdYyfpw==
-X-Received: by 2002:a9d:268:: with SMTP id 95mr5025458otb.27.1605672527061;
-        Tue, 17 Nov 2020 20:08:47 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id a4sm6447099otj.29.2020.11.17.20.08.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 20:08:46 -0800 (PST)
-Date:   Tue, 17 Nov 2020 22:08:44 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, robh+dt@kernel.org, sboyd@kernel.org,
-        mturquette@baylibre.com, linux-arm-msm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH 6/6] devicetree:bindings:crypto: Extend qcom-qce binding
- to add support for crypto engine version 5.4
-Message-ID: <20201118040844.GE8532@builder.lan>
-References: <20201117134714.3456446-1-thara.gopinath@linaro.org>
- <20201117134714.3456446-7-thara.gopinath@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QiZ+hPWcgRrSJYrRI/DcwNjpknvcfyeQfNBRbOUcAZo=;
+        b=oXPDUzeI4TLgzvj5j7bjzuIMdrjAvtIwKgJeFH2PzXK8T2vGeevOllNitBS/w5XxLv
+         D7N/SWyTniXIZY6LnpqbY9yBkGHW3JLJycHwR65hS9ZFUOoEQq2MJNKMuZe5tf5Htdy4
+         VHMwk+acWU3eqWJoPQ82sU/JJLyi0syhQSuF47WlHZkWowGiXcHBQgI1Noy99Jhdm+XM
+         mWCIsfFRZkHt0FpXtS2//xDJUCG5BAyiqAMR72tnYCvTWw1vaLZULzKj5hrXzKYCojB4
+         w3WxeyVgZA0LEnqXvDV9xpSp10w+RLII6PuX1DxkKhAeNHZoG+5eQqi+Z6u8p4pfrCD/
+         eBnw==
+X-Gm-Message-State: AOAM530XJus0py8VMXUrpHBTslUg5ygh2jCQ2eiqcvZApdFdGCf9QhNp
+        qG8/0fcscSv70uC+tgHPPjpuBj/SvM32VXVbfBwmdT3H5Ew=
+X-Google-Smtp-Source: ABdhPJyW1BjaZImKMrTr6fljnV6J3SiCCfled+e4ZYa2bF2lU5eUh+EjQDFQFYiYjSQGKKB9MnnnpGkOCQnMcPkFe0o=
+X-Received: by 2002:ac2:544d:: with SMTP id d13mr2792930lfn.500.1605672659630;
+ Tue, 17 Nov 2020 20:10:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117134714.3456446-7-thara.gopinath@linaro.org>
+References: <20201110084758.115617-1-yinxin_1989@aliyun.com>
+In-Reply-To: <20201110084758.115617-1-yinxin_1989@aliyun.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 17 Nov 2020 20:10:48 -0800
+Message-ID: <CAADnVQK-XuFi0yZuWa+upEeFypKYNr7XHc-8JhGtfYzFPLni9g@mail.gmail.com>
+Subject: Re: [PATCH] bpf:Fix update dirty data in lru percpu hash maps
+To:     Xin Yin <yinxin_1989@aliyun.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 17 Nov 07:47 CST 2020, Thara Gopinath wrote:
+On Tue, Nov 10, 2020 at 1:04 AM Xin Yin <yinxin_1989@aliyun.com> wrote:
+>
+> For lru_percpu_map update elem, prealloc_lru_pop() may return
+> an unclear elem, if the func called by bpf prog and "onallcpus"
+> set to false, it may update an elem whith dirty data.
+>
+> Clear percpu value of the elem, before use it.
+>
+> Signed-off-by: Xin Yin <yinxin_1989@aliyun.com>
 
-> Add compatible string to support v5.4 crypto engine.
-> 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-
-$subject should be "dt-bindings: crypto: ..." and you should try to stay
-within 50 chars for the subject. So how about something like:
-
-"dt-bindings: crypto: qcom-qce: Add v5.4 to binding"
-
-With something like that:
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
+The alternative fix commit d3bec0138bfb ("bpf: Zero-fill re-used
+per-cpu map element")
+was already merged.
+Please double check that it fixes your test.
 
 > ---
->  Documentation/devicetree/bindings/crypto/qcom-qce.txt | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.txt b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-> index fdd53b184ba8..ed1ede9c0acc 100644
-> --- a/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-> +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-> @@ -2,7 +2,9 @@ Qualcomm crypto engine driver
->  
->  Required properties:
->  
-> -- compatible  : should be "qcom,crypto-v5.1"
-> +- compatible  : should be
-> +		"qcom,crypto-v5.1" for ipq6018
-> +		"qcom,crypto-v5.4" for sdm845
->  - reg         : specifies base physical address and size of the registers map
->  - clocks      : phandle to clock-controller plus clock-specifier pair
->  - clock-names : "iface" clocks register interface
-> -- 
-> 2.25.1
-> 
+>  kernel/bpf/hashtab.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 728ffec52cf3..b1f781ec20b6 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -709,6 +709,16 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
+>         }
+>  }
+>
+> +static void pcpu_init_value(struct bpf_htab *htab, void __percpu *pptr)
+> +{
+> +       u32 size = round_up(htab->map.value_size, 8);
+> +       int cpu;
+> +
+> +       for_each_possible_cpu(cpu) {
+> +               memset(per_cpu_ptr(pptr, cpu), 0, size);
+> +       }
+> +}
+> +
+>  static bool fd_htab_map_needs_adjust(const struct bpf_htab *htab)
+>  {
+>         return htab->map.map_type == BPF_MAP_TYPE_HASH_OF_MAPS &&
+> @@ -1075,6 +1085,9 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+>                 pcpu_copy_value(htab, htab_elem_get_ptr(l_old, key_size),
+>                                 value, onallcpus);
+>         } else {
+> +               if (!onallcpus)
+> +                       pcpu_init_value(htab,
+> +                                       htab_elem_get_ptr(l_new, key_size));
+>                 pcpu_copy_value(htab, htab_elem_get_ptr(l_new, key_size),
+>                                 value, onallcpus);
+>                 hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+> --
+> 2.19.5
+>
