@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C4B2B8377
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 172142B8380
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgKRR66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:58:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
+        id S1726098AbgKRR7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 12:59:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgKRR65 (ORCPT
+        with ESMTP id S1725446AbgKRR7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:58:57 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66771C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 09:58:56 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id y18so2749285ilp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 09:58:56 -0800 (PST)
+        Wed, 18 Nov 2020 12:59:40 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA37EC0613D4;
+        Wed, 18 Nov 2020 09:59:40 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c198so2017171wmd.0;
+        Wed, 18 Nov 2020 09:59:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=RHM44Z31TODI36NU69HtGTSe77AacSdaBSQlZ2dh504=;
-        b=iVRwUUiu7byXatmGf++o0AyVyDx1MQvIrJACC2AIzhZyyp8WqpUBGs14xhkns7EWjB
-         jkFnG7cfoGjYeC3mgjgvQ8HUn9pA4Nce5vdFIgGwRSAXFTyflZttYGi8ItsadadGqGbx
-         P0YDjf0ZigbYU/sTCc7AZ0xiMA7ALYeETcIXU+nNeNeqhVo2rKE0TU7YqPiTIOrkW3Hx
-         i0ydrImwhfDeUxhWBLp/QeI7EsoGVYqh/CpUUuNG6iMmHLXKD5dsDp6kJf/5nJnIenyZ
-         qcaPUcLDhuexwkaNnUljaN2XVnpAtaqxEge+e4kzSLTD3xxM6P9TygcPU1wUFKtgNlGB
-         bKrg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jE6xH3xJT8t3bwjXvLY5varaGvrj90mEqWVft4kIEmo=;
+        b=K8uCnzo+I6QMN8j4L73XC+Q+vWAjDrHlQkHZvObSTdMsxU6SGwz6pxgSsEurOJPbjq
+         HS/TlvzeNIKuprXTIrh6JnzPpSBFZAxnGxpne+mUiV5sZkZkvEIdIquzazv8pxQyiM6b
+         WCwkA4sa69/9qBAr1MwUx9/7H65puByUducCUc87tfZe1qtNMqQoN+7lPvFkIZyOuzi5
+         ctXKnSfO8p7J4JcuTmrMpKaOYiTrLuB2gLe7XZKEwB4sH1BeG7oQ3E6cgFt+7pLCeEHf
+         ftCjGYIpwZJjTET1NvI1kOBDmE/aiV9V2sJdKF9SySPf0sUx0NnXw0JvBeM28NypGgfj
+         NEnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RHM44Z31TODI36NU69HtGTSe77AacSdaBSQlZ2dh504=;
-        b=SQcAHYyYf6QrSy9aaXprY1/+ooMF5PyRyaQwmhLvBDMYtrcs69vPXCSiGiDDaTAVPt
-         IVEDbQE0OvIiq+uLfTJcFd0384i9cH+2+xLllVupv3r4G3x7X/uW9R7QUCBshDXqZI0T
-         BYMlbA/WVNPiACcOKc+c4H+kKjZmcFwYFEYT6ztr/WJWz1u3YW7pDPcF4A1dlXRYW+ni
-         awEs4pq/8IjAOZ8O84V+0vFkNxVMpRYDuI3C4Joo2WNo5fgzrXJbFMnPHVwvSoFntTNv
-         pcpewAhM1oLhJjN4dmajpA++CQO3g/Ukm8/pkJ4Xmk6yz/5rwumfZEoFvzDniNKsAu6i
-         Rbwg==
-X-Gm-Message-State: AOAM533MbE1qdWRGGrixqxHyulLySXRR/k7CAiMwlm7fqFMp/wp5FXwA
-        E/W67d/t4JbvYLnKjJyrmkpSMw==
-X-Google-Smtp-Source: ABdhPJxfwFRR1SLojQ3KKE3pug8dRlj88nDvok5Zl2mi48hZHoqSW0y/Eq4zHC6qyDgBniyKUSa33A==
-X-Received: by 2002:a92:5f03:: with SMTP id t3mr18332882ilb.25.1605722335675;
-        Wed, 18 Nov 2020 09:58:55 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id o3sm13877329ilk.27.2020.11.18.09.58.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Nov 2020 09:58:55 -0800 (PST)
-Subject: Re: INFO: task can't die in io_sq_thread_stop
-To:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
-        syzbot <syzbot+03beeb595f074db9cfd1@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-References: <00000000000038569805b4211287@google.com>
- <39be8d01-6550-ee8a-5a8d-2707b372b711@linux.alibaba.com>
- <d57f9c10-e640-08f5-4c20-2553768aff65@linux.alibaba.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f082f65d-85b0-5226-2070-d0d01f160faa@kernel.dk>
-Date:   Wed, 18 Nov 2020 10:58:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jE6xH3xJT8t3bwjXvLY5varaGvrj90mEqWVft4kIEmo=;
+        b=ToQjYv4wtceLG25X4JWpePMz7EVArgn9vpt8284TU7rMfYQucml04HKL4UAo9VMBUC
+         bMU6FpbMWwF1iIebMDNysHUbws5H0d5Jq2S4nUsXBadeLStx2q0r3T/kz78in7Idh4o7
+         s0KegzeKFXg1kTIy4nTfR/5grV7278IsH6GKbn48Gs436mhinFw8M9aI8RUU/HanJG1V
+         jDWNTnlHnctvNgepI5kpvPEtrWqe0DnhaZbGNgHDZ0SzFMaPjB3X/meG6O1+fswkiY29
+         18uUplYbutl1psjyHvNhwfWCb3aKNY4AdWUMVneHCWOZab3PUloXyIsW5VoOzK7fnn9n
+         zxFw==
+X-Gm-Message-State: AOAM5313QwnqkC6EV7T4ZuWMj/jMczHxXPplqvW5W322h3c/dC3GkZn6
+        pgqEEo1qD+NxaiXVA8hkt6M=
+X-Google-Smtp-Source: ABdhPJzHYJVIqxKzrw2tN2VVzJXDmNacwF8gO8cKfA+DGUCUkw6UdYvqBWrcXYN2JGziNk14njIYQA==
+X-Received: by 2002:a1c:2384:: with SMTP id j126mr318789wmj.116.1605722379424;
+        Wed, 18 Nov 2020 09:59:39 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id a21sm617367wmb.38.2020.11.18.09.59.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 09:59:38 -0800 (PST)
+Date:   Wed, 18 Nov 2020 18:59:36 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Soham Biswas <sohambiswas41@gmail.com>
+Cc:     lee.jones@linaro.org, u.kleine-koenig@pengutronix.de,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] pwm: core: Use octal permission
+Message-ID: <20201118175936.GB3552669@ulmo>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+ <20201118145112.21250-1-sohambiswas41@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <d57f9c10-e640-08f5-4c20-2553768aff65@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yNb1oOkm5a9FJOVX"
+Content-Disposition: inline
+In-Reply-To: <20201118145112.21250-1-sohambiswas41@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/20 8:27 PM, Xiaoguang Wang wrote:
-> hi,
-> 
-> A gentle reminder, in case you overlooked this syzbot report.
 
-Did see it (and your reply), was hoping you'd send an actual patch
-for this (nudge, nudge).
+--yNb1oOkm5a9FJOVX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-With luck, maybe we'll see a reproducer out of syzbot at some point too.
+On Wed, Nov 18, 2020 at 08:21:12PM +0530, Soham Biswas wrote:
+> Permission bits are easier readable in octal than with using the
+> symbolic names.
+>=20
+> Fixes the following warning generated by checkpatch:
+>=20
+> drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
+> not preferred. Consider using octal permissions '0444'.
+>=20
+> +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+>                             &pwm_debugfs_fops);
+>=20
+> Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
+> ---
+>  drivers/pwm/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
-Jens Axboe
+Applied, thanks. Though I did unwrap the checkpatch warning message as
+Uwe suggested.
 
+Thierry
+
+--yNb1oOkm5a9FJOVX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+1YQgACgkQ3SOs138+
+s6EzahAAtvL172oAjP8DMdC4bZL1n1WrGgaPfOOA03IUuaZiYFFQu9/V5UaMa7zk
+jNEYlPHuGGeiRXRhCgOU6loZGiy9pH6/72+cE/y5QBK0azDxk9IT+bnlMnRu13UV
+soab0bFyTkg1skm2Iome7DGxuxoL7baxeZZvdXHFD8zGgYa8uIyHDJBClDe9Zu1Z
+VgWfPG4Cy0ch18TCCJQg29M1cpZwDqLcEI0BBmHVEAmT64+6epNudrslnTEQTyyM
+XkRcq6Fa1U2AHNyy0v/PF+RZbhAcO0FElxYTvKKa6UPzqjkDmlUqGyQ8kuHmmRJg
+0jD4R6nJjLjOA3AOqcG6ZqrfIQ5RaEvELZYn4m3XOJej+oprQvKcpdSnsq+KREyd
+W0CSCb9SfqXZAAIM0m1E40c4NReaubbQaDeNMMhRrWbmq1UMmogVyomiRyGdLLe9
+ASlCGk08Ks0KlkJ+HbKTQ2/hVYtOt0neJuv0BnpCbP2dcPEQZO35RM1KoZTwIyFW
+UF+AKeALMLjmEjDzbrA6YD9aK9bcqxRe+1b4ikjYV4Rb5L2n8Hh3Taxpn/mH08hs
+mMwtUka/giwkuoXNNmHIJV4beH+kdXw9VljAG+PaKyQSaNwRrOwkns+X+7f28nZJ
+ZBTHGHA7Z7NFO6L4jtwfXMKyLrRWPQ3DhFxKbYeyISSWqlMCk9g=
+=gkhH
+-----END PGP SIGNATURE-----
+
+--yNb1oOkm5a9FJOVX--
