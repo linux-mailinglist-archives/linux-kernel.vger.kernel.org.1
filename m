@@ -2,122 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7AC2B762C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64C22B7643
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgKRGMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 01:12:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKRGMD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 01:12:03 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4015BC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 22:12:03 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id f23so1116276ejk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 22:12:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gJ6Vhuy+iXRZiJNmZErzY7JnP8xPIvyRkVGtF53N6s8=;
-        b=lf3bo8vJQQkAXT4raPezDGDIQLQWVRKOHAv0Di1iRBl5nAmkC9YOboQY+PTlB8J7wT
-         TKBu74Xez0J03TDxUXi3Fthn0S10A+/j9ibTzO68k3IXIBTTGgW2u7mzhL4/pcGUG3uJ
-         sdAAZpl5hxFhKxzf1HqPAwT5kGHJ0mv3nS7STDlw92u+qlRqlaTpLfWipaDUpNewEKpE
-         3Xpq1i4C1z64OjlGVq62nxpiGV4NS4UpL9KuIh8s3PY7PT1eb5Yaz4yuWCOKqLaaYNPz
-         w5/WLaDyWRj7WvrUEjPIiYf2UHrxPcUB052pi6Ap+tSLWPEvZpjKYfOLYZxh7OuXczvx
-         1IqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gJ6Vhuy+iXRZiJNmZErzY7JnP8xPIvyRkVGtF53N6s8=;
-        b=D8mpcgG3eVJtlOL0JavEROoJAhT2ef1iRhUarF9eeoOyn4Iikp8/A28CIIE3KcVajn
-         ZOVs3sZWXprbluGOBUvEo6hRnx5eED+xoveg6Ia/IAWHDcwmOERmqFlXwvMwsVr4033H
-         EL4ATFPJdE9GNvJOUQgWjX8weriOfmZYZ1YiDF30cSCNAX5ddzUnlrOsxI9w886objda
-         FFEYq+V6Hro/lrWtrljJ84ya3TjXTzD7O2oZ9sblTnspsnTmLEvWr72iwMPkIp66CMuX
-         QwV8nH+LiJXnWJ6sY9wPQqIG/jdklW3Z5MoVNN93yHJbHO44kgMT1+W5Bkcut4IEnrU/
-         6+Fg==
-X-Gm-Message-State: AOAM533qp+mj9YzNVbvcKzgl5BxMLEYCtlM5dU03iUijOzCF/qROmsuB
-        INRPbDPIyfdFN1Y26RwVXFpkXpLRVz+6uIgnVZQynQhnEAoHCPin
-X-Google-Smtp-Source: ABdhPJzxPS3/BmwqqokOzxQFyGx/yp9qLjwisVYjO1DPNIAXMOkMER7XlYY/gbH3NVKWvYAmpOx1m93rJFhdL3DuMeg=
-X-Received: by 2002:a17:906:6987:: with SMTP id i7mr24210882ejr.18.1605679919620;
- Tue, 17 Nov 2020 22:11:59 -0800 (PST)
+        id S1726460AbgKRGXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 01:23:48 -0500
+Received: from mga14.intel.com ([192.55.52.115]:32179 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725794AbgKRGXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 01:23:48 -0500
+IronPort-SDR: k1z4gyI+XeQxSIcbZDyYzxeySGk6A3CCE5cC6ai65TzMKF1yMJbpZtHx18Jzz3rUPavrnM11Vs
+ ctZ6uOLS4NSA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="170290719"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="170290719"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 22:23:46 -0800
+IronPort-SDR: 4XAn/oDKxWs44dPnVAOZVKfp1rgtd2+MRAykiGWpLUAR7tGtq8eEfCfy+bYJhUnorST5z7QffV
+ u3wSZ/DtCBhQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="359197704"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Nov 2020 22:23:43 -0800
+Date:   Wed, 18 Nov 2020 14:19:32 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     matthew.gerlach@linux.intel.com
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mdf@kernel.org, hao.wu@intel.com, trix@redhat.com,
+        linux-doc@vger.kernel.org, corbet@lwn.net, yilun.xu@intel.com
+Subject: Re: [PATCH 2/2] fpga: dfl: look for vendor specific capability
+Message-ID: <20201118061932.GC14665@yilunxu-OptiPlex-7050>
+References: <20201117012552.262149-1-matthew.gerlach@linux.intel.com>
+ <20201117012552.262149-3-matthew.gerlach@linux.intel.com>
+ <20201117075626.GA14665@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2011171114570.296481@rhweight-WRK1>
 MIME-Version: 1.0
-References: <CA+G9fYtwycbC+Hf9aP5Br8wq7cKWVqjhcGusn2DbJaNauGC3Og@mail.gmail.com>
-In-Reply-To: <CA+G9fYtwycbC+Hf9aP5Br8wq7cKWVqjhcGusn2DbJaNauGC3Og@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 18 Nov 2020 11:41:48 +0530
-Message-ID: <CA+G9fYsfEVK86ask=fL=M5juerbz+BwbFGcAZ_UxWrPHXYpA1Q@mail.gmail.com>
-Subject: Re: WARNING: kernel/irq/chip.c:242 __irq_startup+0xa8/0xb0
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2011171114570.296481@rhweight-WRK1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Oct 2020 at 11:09, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On stable rc  5.8.15 the following kernel warning was noticed once
-> while boot and this is hard to reproduce.
+On Tue, Nov 17, 2020 at 11:41:32AM -0800, matthew.gerlach@linux.intel.com wrote:
+> 
+> 
+> On Tue, 17 Nov 2020, Xu Yilun wrote:
+> 
+> >On Mon, Nov 16, 2020 at 05:25:52PM -0800, matthew.gerlach@linux.intel.com wrote:
+> >>From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> >>
+> >>A DFL may not begin at offset 0 of BAR 0.  A PCIe vendor
+> >>specific capability can be used to specify the start of a
+> >>number of DFLs.
+> >>
+> >>Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> >>---
+> >> Documentation/fpga/dfl.rst | 10 +++++
+> >> drivers/fpga/dfl-pci.c     | 88 +++++++++++++++++++++++++++++++++++++-
+> >> 2 files changed, 97 insertions(+), 1 deletion(-)
+> >>
+> >>diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
+> >>index 0404fe6ffc74..c81ceb1e79e2 100644
+> >>--- a/Documentation/fpga/dfl.rst
+> >>+++ b/Documentation/fpga/dfl.rst
+> >>@@ -501,6 +501,16 @@ Developer only needs to provide a sub feature driver with matched feature id.
+> >> FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
+> >> could be a reference.
+> >>
+> >>+Location of DFLs on PCI bus
+> >>+===========================
+> >>+The start of the DFL is assumed to be offset 0 of bar 0.
+> >>+Alternatively, a vendor specific capability structure can be used to
+> >>+specify the location of one or more DFLs.  Intel has reserved the
+> >>+vendor specific id of 0x43 for this purpose.  The vendor specific
+> >>+data begins with a 4 byte count of the number of DFLs followed 4 byte
+> >>+Offset/BIR fields for each DFL. Bits 2:0 of Offset/BIR field indicates
+> >>+the BAR, and bits 31:3 form the 8 byte aligned offset where bits 2:0 are
+> >>+zero.
+> >>
+> >> Open discussion
+> >> ===============
+> >>diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+> >>index b1b157b41942..5418e8bf2496 100644
+> >>--- a/drivers/fpga/dfl-pci.c
+> >>+++ b/drivers/fpga/dfl-pci.c
+> >>@@ -27,6 +27,13 @@
+> >> #define DRV_VERSION	"0.8"
+> >> #define DRV_NAME	"dfl-pci"
+> >>
+> >>+#define PCI_VNDR_ID_DFLS 0x43
+> >>+
+> >>+#define PCI_VNDR_DFLS_CNT_OFFSET 8
+> >>+#define PCI_VNDR_DFLS_RES_OFFSET 0x0c
+> >>+
+> >>+#define PCI_VND_DFLS_RES_BAR_MASK 0x7
+> >
+> >We could define the mask by GENMASK().
+> >
+> >Also another macro PCI_VND_DFLS_RES_OFFSET_MASK is needed.
+> 
+> I will use GENMASK and and add PCI_VND_DFLS_RES_OFFSET_MASK in v2.
+> >
+> >>+
+> >> struct cci_drvdata {
+> >> 	struct dfl_fpga_cdev *cdev;	/* container device */
+> >> };
+> >>@@ -119,6 +126,82 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
+> >> 	return table;
+> >> }
+> >>
+> >>+static int find_dfl_in_cfg(struct pci_dev *pcidev,
+> >>+			   struct dfl_fpga_enum_info *info)
+> >>+{
+> >>+	u32 bar, offset, vndr_hdr, dfl_cnt, dfl_res;
+> >>+	int dfl_res_off, i, voff = 0;
+> >>+	resource_size_t start, len;
+> >>+
+> >>+	while ((voff = pci_find_next_ext_capability(pcidev, voff, PCI_EXT_CAP_ID_VNDR))) {
+> >>+
+> >>+		pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER, &vndr_hdr);
+> >>+
+> >>+		dev_dbg(&pcidev->dev,
+> >>+			"vendor-specific capability id 0x%x, rev 0x%x len 0x%x\n",
+> >>+			PCI_VNDR_HEADER_ID(vndr_hdr),
+> >>+			PCI_VNDR_HEADER_REV(vndr_hdr),
+> >>+			PCI_VNDR_HEADER_LEN(vndr_hdr));
+> >>+
+> >>+		if (PCI_VNDR_HEADER_ID(vndr_hdr) == PCI_VNDR_ID_DFLS)
+> >>+			break;
+> >>+	}
+> >>+
+> >>+	if (!voff) {
+> >>+		dev_dbg(&pcidev->dev, "%s no VSEC found\n", __func__);
+> >>+		return -ENODEV;
+> >>+	}
+> >>+
+> >>+	pci_read_config_dword(pcidev, voff + PCI_VNDR_DFLS_CNT_OFFSET, &dfl_cnt);
+> >>+	dev_info(&pcidev->dev, "dfl_cnt %d\n", dfl_cnt);
+> >
+> >dev_dbg() is better?
+> 
+> I will change to dev_dbg in v2.
+> 
+> >
+> >>+	for (i = 0; i < dfl_cnt; i++) {
+> >>+		dfl_res_off = voff + PCI_VNDR_DFLS_RES_OFFSET +
+> >>+				      (i * sizeof(dfl_res));
+> >>+		pci_read_config_dword(pcidev, dfl_res_off, &dfl_res);
+> >>+
+> >>+		dev_dbg(&pcidev->dev, "dfl_res 0x%x\n", dfl_res);
+> >>+
+> >>+		bar = dfl_res & PCI_VND_DFLS_RES_BAR_MASK;
+> >
+> >FIELD_GET is better?
+> 
+> I think & will the GENMASK will be better because it will be
+> symetrical to the & below for the offset.
 
-This is now reproduciable on arm64 NXP ls2088 device
+Fine.
 
-[   19.980839] ------------[ cut here ]------------
-[   19.985468] WARNING: CPU: 1 PID: 441 at kernel/irq/chip.c:242
-__irq_startup+0x9c/0xa8
-[   19.985472] Modules linked in: rfkill lm90 ina2xx crct10dif_ce
-qoriq_thermal fuse
-[   20.000773] CPU: 1 PID: 441 Comm: (agetty) Not tainted 5.4.78-rc1 #2
-[   20.000775] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-[   20.000779] pstate: 60000085 (nZCv daIf -PAN -UAO)
-[   20.018253] pc : __irq_startup+0x9c/0xa8
-[   20.018256] lr : irq_startup+0x64/0x130
-[   20.018259] sp : ffff80001122f8e0
-[   20.029303] x29: ffff80001122f8e0 x28: ffff0082c242d400
-[   20.029306] x27: ffffdd0f47234768 x26: 0000000000020902
-[   20.029309] x25: ffffdd0f461a6f10 x24: ffffdd0f461a6bc8
-[   20.029311] x23: 0000000000000000 x22: 0000000000000001
-[   20.029314] x21: 0000000000000001 x20: ffff0082c22f8780
-[   20.029316] x19: ffff0082c1060800 x18: 0000000000000001
-[   20.029318] x17: 0000000000000000 x16: ffff8000114a0000
-[   20.029321] x15: 0000000000000000 x14: ffff0082c0e92f90
-[   20.071738] x13: ffff0082c0e93080 x12: ffff800011460000
-[   20.071741] x11: dead000000000100 x10: 0000000000000040
-[   20.071743] x9 : ffffdd0f47093ba8 x8 : ffffdd0f47093ba0
-[   20.087653] x7 : ffff0082a00002b0 x6 : ffffdd0f47074958
-[   20.087655] x5 : ffffdd0f47074000 x4 : ffff800011230000
-[   20.087657] x3 : 0000000000000504 x2 : 0000000000000001
-[   20.103567] x1 : 0000000003032004 x0 : ffff0082c1060858
-[   20.103570] Call trace:
-[   20.103573]  __irq_startup+0x9c/0xa8
-[   20.103577]  irq_startup+0x64/0x130
-[   20.118359]  __enable_irq+0x7c/0x88
-[   20.118362]  enable_irq+0x54/0xa8
-[   20.118367]  serial8250_do_startup+0x658/0x718
-[   20.118371]  serial8250_startup+0x38/0x48
-[   20.133589]  uart_startup.part.0+0x12c/0x2b8
-[   20.133592]  uart_port_activate+0x64/0x98
-[   20.133595]  tty_port_open+0x94/0x200
-[   20.133599]  uart_open+0x2c/0x40
-[   20.148730]  tty_open+0x108/0x438
-[   20.148734]  chrdev_open+0xa8/0x1a0
-[   20.148737]  do_dentry_open+0x118/0x3b8
-[   20.159348]  vfs_open+0x38/0x48
-[   20.159350]  path_openat+0x4c8/0x1290
-[   20.159353]  do_filp_open+0x84/0x108
-[   20.159357]  do_sys_open+0x180/0x228
-[   20.173271]  __arm64_sys_openat+0x2c/0x38
-[   20.173274]  el0_svc_handler+0x88/0x1c8
-[   20.173278]  el0_svc+0x8/0x1bc
-[   20.184148] ---[ end trace 736144791ac25035 ]---
+> 
+> >
+> >>+
+> >>+		if (bar >= PCI_STD_NUM_BARS) {
+> >>+			dev_err(&pcidev->dev, "%s bad bar number %d\n",
+> >>+				__func__, bar);
+> >>+			return -EINVAL;
+> >>+		}
+> >>+
+> >>+		len = pci_resource_len(pcidev, bar);
+> >>+
+> >>+		if (len == 0) {
+> >>+			dev_err(&pcidev->dev, "%s unmapped bar number %d\n",
+> >>+				__func__, bar);
+> >>+			return -EINVAL;
+> >>+		}
+> >>+
+> >>+		offset = dfl_res & ~PCI_VND_DFLS_RES_BAR_MASK;
+> >
+> >ditto
+> We don't want to use FIELD_GET here because we don't the shifting.
 
+That's correct.
 
+> 
+> >
+> >>+
+> >>+		if (offset >= len) {
+> >>+			dev_err(&pcidev->dev, "%s bad offset %u >= %llu\n",
+> >>+				__func__, offset, len);
+> >>+			return -EINVAL;
+> >>+		}
+> >>+
+> >>+		dev_info(&pcidev->dev, "%s BAR %d offset 0x%x\n", __func__, bar, offset);
+> >
+> >dev_dbg()?
+> 
+> I will change to dev_dbg in v2.
+> 
+> >
+> >>+
+> >>+		start = pci_resource_start(pcidev, bar) + offset;
+> >>+		len -= offset;
+> >
+> >With these code, I have the following assumption:
+> >
+> >1. There is only one DFL in one bar, multiple DFLs requires multiple
+> >bars.
+> >
+> >2. The DFL region is from the "offset" to the end of the bar.
+> >
+> >Are they correct? If yes maybe we should specify them clearly in Doc.
+> >
+> 
+> This code would have the same assumptions as the existing code for finding
+> the dfls.  The len value is only used during the walk of the DFL to prevent
+> walking too far.  So I think one could have more than one DFL
+> on a particular bar as long as the start of the DFLs are different.
 
-ref:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.77-152-ga3746663c347/testrun/3452654/suite/linux-log-parser/test/check-kernel-warning-139363/log
+OK, I understand.
+
+It is a little different. Previously all the DFL nodes are chained in
+one bar. So we have only one DFL in one bar. In no chance we could have
+overlapped regions.
+
+Now we can have more DFLs in one bar, so I think it could be better we
+know their boundaries earlier.
+
+> 
+> >>+
+> >>+		if (!PAGE_ALIGNED(start)) {
+> >>+			dev_err(&pcidev->dev, "%s unaliged start 0x%llx\n",
+> >>+				__func__, start);
+> >>+			return -EINVAL;
+> >>+		}
+> >>+
+> >>+		dfl_fpga_enum_info_add_dfl(info, start, len);
+> >
+> >Do we need some region overlapping check in this func? So we could find
+> >the HW problem (e.g. same bar num for multiple DFLs) in early stage.
+> >
+> 
+> I think whatever overlapping check would also need to be in the existing
+> code because the logic is the same.
+
+Yes.
+
+Thanks,
+Yilun
+
+> 
+> >>+	}
+> >>+
+> >>+	return 0;
+> >>+}
+> >>+
+> >> static int find_dfl_in_bar0(struct pci_dev *pcidev,
+> >> 			    struct dfl_fpga_enum_info *info)
+> >> {
+> >>@@ -221,7 +304,10 @@ static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
+> >> 			goto irq_free_exit;
+> >> 	}
+> >>
+> >>-	ret = find_dfl_in_bar0(pcidev, info);
+> >>+	ret = find_dfl_in_cfg(pcidev, info);
+> >>+
+> >>+	if (ret)
+> >>+		ret = find_dfl_in_bar0(pcidev, info);
+> >
+> >The patch is more than the relocation support for DFL. Actually it
+> >introduced a different way of DFL finding.
+> >
+> >Previously it starts at bar0 offset 0, find dfl fme first, then find
+> >dfl port according to fme header registers. Now it enumerates every DFL
+> >by PCIe VSEC.
+> >
+> >Maybe we should add more description about the change and why.
+> 
+> I will highlight this difference in the documentation in v2.
+> >
+> >Thanks,
+> >Yilun
+> >
+> >>
+> >> 	if (ret)
+> >> 		goto irq_free_exit;
+> >>--
+> >>2.25.2
+> >
