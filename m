@@ -2,89 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D652B7C34
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DABF52B7C26
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbgKRLPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:15:10 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:37552 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgKRLPJ (ORCPT
+        id S1726881AbgKRLMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:12:08 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8108 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726780AbgKRLMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:15:09 -0500
-Received: by mail-oi1-f193.google.com with SMTP id m17so1791637oie.4;
-        Wed, 18 Nov 2020 03:15:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D8wT37MkPFkyxY6qYH5+6Fkhw2mpanFwYZDumxMMKKk=;
-        b=HyHYGweC6n65p+vjQ8/8miLZYweHigIBz4YeORsAnKGEDjb452OSKvcYNxHXy1irjb
-         hXFSzv1aZ8usyQsRJzDyuhWX9Vb9hA8ttiY0EX89XSYccfCS3TsK+Ub1KJL8mnPeHUaz
-         cSVp8AfSzbq1bKTxx2CRAvNqFMde6JcfVy20IYZO4iWDvsUrL+pOcnppd+4tu3bXDEdo
-         B97MI/Xf2LF1AvSzWL2Kr3XFRcw5cbaiHHy7sYFa5qJXwqGHzqghI+WimeUcyfoBpVQp
-         uHDdE1gAQSXPYC6yc/N0l1RP1v8SCI+0f0gOQ5nwvMyhaHTcNKwhrCyTkG2lz/obF5O5
-         TGVw==
-X-Gm-Message-State: AOAM530BapPIJyxlarGunAZBc1jK9QuAlpvCaP/HKkA84OnSf0ZvHS2d
-        gxEyJBuLRpQdVCgc3n1FW9D9gTUSmkx9a5Y3t8g=
-X-Google-Smtp-Source: ABdhPJzei9Pt9brHCLe1ebo8Ar52GK3xgnsIYzUePmBrlhAXtq1sMyLFWo7UO2GTITvUtXBAJsO4hUqZYtB8eqd5Eeg=
-X-Received: by 2002:aca:c4c9:: with SMTP id u192mr2294643oif.69.1605698108951;
- Wed, 18 Nov 2020 03:15:08 -0800 (PST)
+        Wed, 18 Nov 2020 06:12:07 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cbg9r6vQtzLq7D;
+        Wed, 18 Nov 2020 19:11:44 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Wed, 18 Nov 2020
+ 19:11:58 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <darrick.wong@oracle.com>, <linux-xfs@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>, <zhangxiaoxu5@huawei.com>
+Subject: [PATCH] xfs: return corresponding errcode if xfs_initialize_perag() fail
+Date:   Wed, 18 Nov 2020 19:15:31 +0800
+Message-ID: <20201118111531.455814-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20201111054356.793390-1-ben.widawsky@intel.com>
- <20201111054356.793390-2-ben.widawsky@intel.com> <CAJZ5v0i7fcoBe5o-J7q5fYW_1nUYJ-QdshWOBV5fFf85rD_sDA@mail.gmail.com>
- <CAPcyv4i6MCu6RmLCyE+K-j3bbtrYeA+hJXL4+Zy_Tfhmwv2ErA@mail.gmail.com>
-In-Reply-To: <CAPcyv4i6MCu6RmLCyE+K-j3bbtrYeA+hJXL4+Zy_Tfhmwv2ErA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 18 Nov 2020 12:14:56 +0100
-Message-ID: <CAJZ5v0j_ReK3AGDdw7fLvmw_7knECCg2U_huKgJzQeLCy8smug@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/9] cxl/acpi: Add an acpi_cxl module for the CXL interconnect
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:45 PM Dan Williams <dan.j.williams@intel.com> wrote:
->
-> On Tue, Nov 17, 2020 at 6:33 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> [..]
-> > > +static struct acpi_driver acpi_cxl_driver = {
-> >
-> > First of all, no new acpi_driver instances, pretty please!
-> >
-> > acpi_default_enumeration() should create a platform device with the
-> > ACPI0017 ID for you.  Can't you provide a driver for this one?
-> >
->
-> Ah, yes, I recall we had this discussion around the time the ACPI0012
-> NFIT driver was developed. IIRC the reason ACPI0012 remaining an
-> acpi_driver was due to a need to handle ACPI notifications, is that
-> the deciding factor?
+In xfs_initialize_perag(), if kmem_zalloc(), xfs_buf_hash_init(), or
+radix_tree_preload() failed, the returned value 'error' is not set
+accordingly.
 
-Sort of.  In fact, a platform device driver can still handle ACPI
-notifications just fine, it just needs to install a notify handler for
-that.
+Fixes: commit 8b26c5825e02 ("xfs: handle ENOMEM correctly during initialisation of perag structures")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ fs/xfs/xfs_mount.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-The cases when an acpi_driver is really needed are basically when
-creating the platform device during the enumeration is not desirable,
-like in the PCI or PNP cases (because they both create device objects
-of a different type to represent the "physical" device).
+diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
+index 150ee5cb8645..7110507a2b6b 100644
+--- a/fs/xfs/xfs_mount.c
++++ b/fs/xfs/xfs_mount.c
+@@ -194,20 +194,25 @@ xfs_initialize_perag(
+ 		}
+ 
+ 		pag = kmem_zalloc(sizeof(*pag), KM_MAYFAIL);
+-		if (!pag)
++		if (!pag) {
++			error = -ENOMEM;
+ 			goto out_unwind_new_pags;
++		}
+ 		pag->pag_agno = index;
+ 		pag->pag_mount = mp;
+ 		spin_lock_init(&pag->pag_ici_lock);
+ 		INIT_RADIX_TREE(&pag->pag_ici_root, GFP_ATOMIC);
+-		if (xfs_buf_hash_init(pag))
++
++		error = xfs_buf_hash_init(pag);
++		if (error)
+ 			goto out_free_pag;
+ 		init_waitqueue_head(&pag->pagb_wait);
+ 		spin_lock_init(&pag->pagb_lock);
+ 		pag->pagb_count = 0;
+ 		pag->pagb_tree = RB_ROOT;
+ 
+-		if (radix_tree_preload(GFP_NOFS))
++		error = radix_tree_preload(GFP_NOFS);
++		if (error)
+ 			goto out_hash_destroy;
+ 
+ 		spin_lock(&mp->m_perag_lock);
+-- 
+2.25.4
 
-It doesn't look like it is really needed for ACPI0012, but since it is
-there already, well ...
-
-> ACPI0017 does not have any notifications so it seems like platform driver is the way to go.
-
-Indeed.
