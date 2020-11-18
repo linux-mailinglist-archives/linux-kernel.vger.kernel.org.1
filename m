@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99EE2B7524
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D850B2B752C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727448AbgKRD7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 22:59:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        id S1727661AbgKRECp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 23:02:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgKRD7w (ORCPT
+        with ESMTP id S1726487AbgKRECp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 22:59:52 -0500
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6769C061A52
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 19:59:51 -0800 (PST)
-Received: by mail-oo1-xc41.google.com with SMTP id 123so79817ooi.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 19:59:51 -0800 (PST)
+        Tue, 17 Nov 2020 23:02:45 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CD6C0613D4;
+        Tue, 17 Nov 2020 20:02:44 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id u2so266556pls.10;
+        Tue, 17 Nov 2020 20:02:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AYUDfsjz/BiPdriQRvZgCzt0EKnDewedXAzX2qb1/N8=;
-        b=ZeWlVK12FMlxSle4OgP3joqmV7i1gWw/cOqbXjFBDI7BZN2qdX6GoWCFFGjcrfOobN
-         +c1smv+vIDCFf3NLdkduY2Gqm10hQDi1a3RRrW/DWlDnd1LMh4/Ca62uX3fKp0Rw6y8m
-         5ZJbDcwQ3e4qLRsUqSQ2NiQGSTFMey1YnJNhUyqccPfTLMV40UiQjGE6ARZ9Y/7LTnv7
-         WZpwDS7iI90DCfbW72QdN7amTrHRRkNDa54wUEYkZ5rAw4IucLQbtqwL0m/K9yJtJrWB
-         njfHe4XYyLMSPy2DRqrvzJv/PlxeZFmodepGNI1fGc2pWO+DeXhqwyMnU372QlZXoG6u
-         cMEw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=HykVKqQ+2ZoqHnFMju1jNMVz685wDVtbToSJmkHGopQ=;
+        b=CYl3DXQTh7asvKxKx9OfgqovdvoMiy/O9k+bH9CTPXtXxmvDIi9MCWtixAYeWEJTCd
+         4nRCH6a2+98EI9FjmG9q4WrheMzlBAAnAk0AhhI34Y7hx2Q/DUh795Sr4uWbMkWhTXfy
+         9iyG5i+IxpWorbDDXeaPe0K9vsEfea3yXGK535dX03/7g3Z0U8gtq035ejLRNm0eaQ2E
+         m8BHOkZjIbifcZ4+dh7M0CZXbhQls3NOTICsk2JMDBWPlCyLgA5KyCfqZADa2gepLHXI
+         2+galqZardyPe22tJB0QXG1AZDssJ7R/ZVClmopc0Whj3IdCX+UjoBo8zPizTjrj9QXj
+         JVOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AYUDfsjz/BiPdriQRvZgCzt0EKnDewedXAzX2qb1/N8=;
-        b=oYqpGv6MiziCYEvrCf2u/h/T6jDdxjGyxaLnxxuxWETSbChdWl14FyzXuGUmg8f9Ru
-         cc3YDg6cnF+gkaf7uEkvwGzyv7pcrG4t1igTiSj7daUGg527izc43xvwyrT++gLkaHti
-         y7bhLE0fZQls3nNE3fglYkLjCA0is5Jmmtv/GLSZDzvK2F6zzRzB90KFJOjqTY8Wa37D
-         ZbYu+GvN02B4DfFJfjPrOpg3c2Kyzr/aldEyjhJJlQ/lq8eVHsENfz1GCYinKnM+Bp+o
-         joZ0WkASyUUD774BqhZzGS6TD2F053ADXIgApRloplsfRySJbP1DeEBQE3FFsh8X+JSD
-         rifw==
-X-Gm-Message-State: AOAM530vlB/Sh+mjMyn1ontk9Ekt8djRyYXorZVabE8SeSCx8nnEa+5f
-        glXSoLDDxzyupP+EzHOcFQ+6AwV9UOaWuQ==
-X-Google-Smtp-Source: ABdhPJxSGvTwJcqUsn9umVLb9zsdDT5WaMv2VN0KIZqNoStysEXnmPXdZdWB2GDVBCnKwkKKqFBpQw==
-X-Received: by 2002:a4a:c4c7:: with SMTP id g7mr5106094ooq.50.1605671991154;
-        Tue, 17 Nov 2020 19:59:51 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c18sm6159529oob.45.2020.11.17.19.59.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 19:59:50 -0800 (PST)
-Date:   Tue, 17 Nov 2020 21:59:48 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, robh+dt@kernel.org, sboyd@kernel.org,
-        mturquette@baylibre.com, linux-arm-msm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH 2/6] clk:qcom:rpmh: Add CE clock on sdm845.
-Message-ID: <20201118035948.GB8532@builder.lan>
-References: <20201117134714.3456446-1-thara.gopinath@linaro.org>
- <20201117134714.3456446-3-thara.gopinath@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117134714.3456446-3-thara.gopinath@linaro.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HykVKqQ+2ZoqHnFMju1jNMVz685wDVtbToSJmkHGopQ=;
+        b=BFpMzTPSUgiAppwz85bgcT/ZCR8ck3JJRxjqX27WNAKdj9/wPYGEIDyj0nDc6mZywN
+         d0/Y+cgXJMUfOZQWqzqhXOPMgpXHrEQgQzamclTSHnx2ThmmHyS+HscStkz7foE7Oi3K
+         GxW8kJ4sYnjNMxOKFBN8DLIbQHtZWwTEvbKZa0HM2JGEDXcI2KcC7nmURggmgEgJ/w3g
+         rBCNWkS0roJR20dHNKbwu+EBnB3eSvG6nXL85rkv/DpwZYkDHBYNNEULB6VGx3UvnfMB
+         LdumJIUHQxezQmIoUtE4VsLtloUHAAsNFnQh889m8GXMxDO3Vd1wwOljjiLgTxdHcy6I
+         WvvA==
+X-Gm-Message-State: AOAM532CgqR+93pMCUPKYukByZvOjJDj3m/bSfDjcJDT4IAsBJB+pKrV
+        pezK13L+3Txgux/XLSfPLiTL0GCKwwMB
+X-Google-Smtp-Source: ABdhPJzt6pNU+o6pHNGcR+Z4cys69+oSq7mOoNrkZ1bkY6Qczvkuxio/Gap1dmYbSIUzvWWTYUcjcA==
+X-Received: by 2002:a17:90a:8b8c:: with SMTP id z12mr2136937pjn.233.1605672164491;
+        Tue, 17 Nov 2020 20:02:44 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id q11sm20718263pgm.79.2020.11.17.20.02.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Nov 2020 20:02:43 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH v2] btrfs: return EAGAIN when receiving a pending signal in the defrag loops
+Date:   Wed, 18 Nov 2020 12:02:36 +0800
+Message-Id: <1605672156-29051-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 17 Nov 07:47 CST 2020, Thara Gopinath wrote:
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-> Qualcomm CE clock resource that is managed by BCM is required
-> by crypto driver to access the core clock.
-> 
+The variable ret is overwritten by the following variable defrag_count.
+Actually the code should return EAGAIN when receiving a pending signal
+in the defrag loops.
 
-' ' after ':' in $subject
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+v2
+ -return EAGAIN instead of remove the EAGAIN error.
 
-With that
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+ fs/btrfs/ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-bjorn
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 69a384145dc6..6f13db6d30bd 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1519,7 +1519,7 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
+ 		if (btrfs_defrag_cancelled(fs_info)) {
+ 			btrfs_debug(fs_info, "defrag_file cancelled");
+ 			ret = -EAGAIN;
+-			break;
++			goto out_ra;
+ 		}
+ 
+ 		if (!should_defrag_range(inode, (u64)i << PAGE_SHIFT,
+-- 
+2.20.0
 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
->  drivers/clk/qcom/clk-rpmh.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
-> index e2c669b08aff..7e2a4a9b9bf6 100644
-> --- a/drivers/clk/qcom/clk-rpmh.c
-> +++ b/drivers/clk/qcom/clk-rpmh.c
-> @@ -349,6 +349,7 @@ DEFINE_CLK_RPMH_VRM(sdm845, rf_clk2, rf_clk2_ao, "rfclka2", 1);
->  DEFINE_CLK_RPMH_VRM(sdm845, rf_clk3, rf_clk3_ao, "rfclka3", 1);
->  DEFINE_CLK_RPMH_VRM(sm8150, rf_clk3, rf_clk3_ao, "rfclka3", 1);
->  DEFINE_CLK_RPMH_BCM(sdm845, ipa, "IP0");
-> +DEFINE_CLK_RPMH_BCM(sdm845, ce, "CE0");
->  
->  static struct clk_hw *sdm845_rpmh_clocks[] = {
->  	[RPMH_CXO_CLK]		= &sdm845_bi_tcxo.hw,
-> @@ -364,6 +365,7 @@ static struct clk_hw *sdm845_rpmh_clocks[] = {
->  	[RPMH_RF_CLK3]		= &sdm845_rf_clk3.hw,
->  	[RPMH_RF_CLK3_A]	= &sdm845_rf_clk3_ao.hw,
->  	[RPMH_IPA_CLK]		= &sdm845_ipa.hw,
-> +	[RPMH_CE_CLK]		= &sdm845_ce.hw,
->  };
->  
->  static const struct clk_rpmh_desc clk_rpmh_sdm845 = {
-> -- 
-> 2.25.1
-> 
