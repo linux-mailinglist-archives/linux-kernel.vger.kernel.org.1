@@ -2,122 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE592B818D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5091C2B818F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgKRQPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:15:22 -0500
-Received: from mga02.intel.com ([134.134.136.20]:12838 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbgKRQPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:15:22 -0500
-IronPort-SDR: BYC0+XFW+tVL1gVtVuyE+TOIGbFCa04FYU4WFDykUg1gbOo4k+SsC3dm5b1Q4cCitu4RI5bFij
- Opnf3jQWtX0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="158173552"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="158173552"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:15:19 -0800
-IronPort-SDR: KXXwI6zttn0bm+t5tKedpWUNYCmo50FeuvjTm8URD5vp07OlxH3tgEOezC1rIlKY0yExugHu0J
- z+qEsuFpLk9Q==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="476411969"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.28.176]) ([10.255.28.176])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:15:12 -0800
-Subject: Re: [PATCH v2 04/17] perf: x86/ds: Handle guest PEBS overflow PMI and
- inject it to guest
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>, luwei.kang@intel.com,
-        Thomas Gleixner <tglx@linutronix.de>, wei.w.wang@intel.com,
-        Tony Luck <tony.luck@intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20201109021254.79755-1-like.xu@linux.intel.com>
- <20201109021254.79755-5-like.xu@linux.intel.com>
- <20201117143529.GJ3121406@hirez.programming.kicks-ass.net>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <b2c3f889-44dd-cadb-f225-a4c5db3a4447@linux.intel.com>
-Date:   Thu, 19 Nov 2020 00:15:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1726602AbgKRQPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:15:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbgKRQPt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:15:49 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1FAC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:15:49 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id g20so2011470qtu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:15:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IJE6rXIzbWSElRW1phJDk97yNh0I3oGRFmJIDcQescw=;
+        b=SE9bSGsY7rY7vZ/YERAqp5Aap2XbtOGXi5TykZmuL6lnXFT1tP0Hiy08Y6aKkcx3eU
+         09nQLfYB9+JCKnQho7Dq7ZUKlVbBCqXx+8li0Ih4MCsdYi9sB8w909NPOxoQd/8X5mFh
+         P5lRTk8JRM+XhkAuWwPLHRv6yWJsn0Y1omjVM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IJE6rXIzbWSElRW1phJDk97yNh0I3oGRFmJIDcQescw=;
+        b=Ueay4J771vTbdlaJzSaNDdk0a6sqADi3La/yEutx8z2bE3PhlmI7XCiGnVfACa0kEm
+         1dM3TUUHrnJHfP6+eRQ4mB9LF/ytlKtdv6C/PqKIaXeqhaF9AJ83/JOuISdiHmfN1+9m
+         vKzKbpPl7FQCFpHYC8oRGo519AOxHodMzS+AQVW4ItKOofk6+vKa8UcAVvw8MN59sbCW
+         eTJisxh15dxpVNxn72pYUh+AVw9+g3Jwr78Y1STkK/jFZwzgqgn6pmsNK2lMg8D9TFbB
+         agEFk6UIah0DbeEPwygpbzmSsPmNdLnIuNS4aumrNJu92g+hMLOSMDZcvy5cx80/6ofu
+         LxWQ==
+X-Gm-Message-State: AOAM532TfzqJ91rGa+6RwBxQoMJ5k5Csmc/amz4LkHz+8uWLTfAT8qYY
+        3XM41X3rsq7v4rzWHynuMA5lixhAZEHbug==
+X-Google-Smtp-Source: ABdhPJxt4kX6XjIEzA4VfTUA005xth8CjWWyICEF6/zG8klopHRXmTIBquPttrtC6/50FW9tKOVccw==
+X-Received: by 2002:ac8:6f1c:: with SMTP id g28mr5386731qtv.65.1605716147933;
+        Wed, 18 Nov 2020 08:15:47 -0800 (PST)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id r62sm17089383qkd.80.2020.11.18.08.15.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 08:15:47 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH v2] rcu/segcblist: Add debug checks for segment lengths
+Date:   Wed, 18 Nov 2020 11:15:41 -0500
+Message-Id: <20201118161541.3844924-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
 MIME-Version: 1.0
-In-Reply-To: <20201117143529.GJ3121406@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+After rcu_do_batch(), add a check for whether the seglen counts went to
+zero if the list was indeed empty.
 
-On 2020/11/17 22:35, Peter Zijlstra wrote:
-> On Mon, Nov 09, 2020 at 10:12:41AM +0800, Like Xu wrote:
->> With PEBS virtualization, the PEBS records get delivered to the guest,
->> and host still sees the PEBS overflow PMI from guest PEBS counters.
->> This would normally result in a spurious host PMI and we needs to inject
->> that PEBS overflow PMI into the guest, so that the guest PMI handler
->> can handle the PEBS records.
->>
->> Check for this case in the host perf PEBS handler. If a PEBS overflow
->> PMI occurs and it's not generated from host side (via check host DS),
->> a fake event will be triggered. The fake event causes the KVM PMI callback
->> to be called, thereby injecting the PEBS overflow PMI into the guest.
->>
->> No matter how many guest PEBS counters are overflowed, only triggering
->> one fake event is enough. The guest PEBS handler would retrieve the
->> correct information from its own PEBS records buffer.
->>
->> If the counter_freezing is disabled on the host, a guest PEBS overflow
->> PMI would be missed when a PEBS counter is enabled on the host side
->> and coincidentally a host PEBS overflow PMI based on host DS_AREA is
->> also triggered right after vm-exit due to the guest PEBS overflow PMI
->> based on guest DS_AREA. In that case, KVM will disable guest PEBS before
->> vm-entry once there's a host PEBS counter enabled on the same CPU.
-> 
-> How does this guest DS crud work? DS_AREA is a host virtual address;
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+v1->v2: Added more debug checks.
 
-A host counter will be scheduled (maybe cross-mapped) for a guest PEBS 
-counter (via guest PEBS event), and its enable bits (PEBS_ENABLE + EN
-+ GLOBAL_CTRL) will be set according to guest's values right before the
-vcpu entry (via atomic_switch_perf_msrs).
+ kernel/rcu/rcu_segcblist.c | 12 ++++++++++++
+ kernel/rcu/rcu_segcblist.h |  3 +++
+ kernel/rcu/tree.c          |  2 ++
+ 3 files changed, 17 insertions(+)
 
-The guest PEBS record(s) will be written to the guest DS buffer referenced
-by the guest DS_AREA msr, which is switched during the vmx transaction,
-and it is the guest virtual address.
-
-> ISTR there was lots of fail trying to virtualize it earlier. What's
-> changed? There's 0 clues here.
-
-Ah, now we have EPT-friendly PEBS facilities supported since Ice Lake
-which makes guest PEBS feature possible w/o guest memory pinned.
-
-> 
-> Why are the host and guest DS area separate, why can't we map them to
-> the exact same physical pages?
-
-If we map both guest and host DS_AREA to the exact same physical pages,
-- the guest can access the host PEBS records, which means that the host
-IP maybe leaked, because we cannot predict the time guest drains records 
-and it would be over-designed to clean it up before each vm-entry;
-- different tasks/vcpus on the same pcpu cannot share the same PEBS DS
-settings from the same physical page. For example, some require large
-PEBS and reset values, while others do not.
-
-Like many guest msrs, we use the separate guest DS_AREA for the guest's
-own use and it avoids mutual interference as little as possible.
-
-Thanks,
-Like Xu
-
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index 5059b6102afe..6e98bb3804f0 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -94,6 +94,18 @@ static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
+ 	return READ_ONCE(rsclp->seglen[seg]);
+ }
+ 
++/* Return number of callbacks in segmented callback list by totalling seglen. */
++long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp)
++{
++	long len = 0;
++	int i;
++
++	for (i = RCU_DONE_TAIL; i < RCU_CBLIST_NSEGS; i++)
++		len += rcu_segcblist_get_seglen(rsclp, i);
++
++	return len;
++}
++
+ /* Set the length of a segment of the rcu_segcblist structure. */
+ static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
+ {
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index cd35c9faaf51..46a42d77f7e1 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -15,6 +15,9 @@ static inline long rcu_cblist_n_cbs(struct rcu_cblist *rclp)
+ 	return READ_ONCE(rclp->len);
+ }
+ 
++/* Return number of callbacks in segmented callback list by totalling seglen. */
++long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp);
++
+ void rcu_cblist_init(struct rcu_cblist *rclp);
+ void rcu_cblist_enqueue(struct rcu_cblist *rclp, struct rcu_head *rhp);
+ void rcu_cblist_flush_enqueue(struct rcu_cblist *drclp,
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index f5b61e10f1de..91e35b521e51 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2553,6 +2553,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	WARN_ON_ONCE(count == 0 && !rcu_segcblist_empty(&rdp->cblist));
+ 	WARN_ON_ONCE(!IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+ 		     count != 0 && rcu_segcblist_empty(&rdp->cblist));
++	WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
++	WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+ 
+ 	rcu_nocb_unlock_irqrestore(rdp, flags);
+ 
+-- 
+2.29.2.299.gdc1121823c-goog
