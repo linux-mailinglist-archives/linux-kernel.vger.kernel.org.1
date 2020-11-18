@@ -2,72 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8972B7461
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFAE2B7448
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgKRCwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 21:52:23 -0500
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:3003 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726716AbgKRCwX (ORCPT
+        id S1726742AbgKRCnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 21:43:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726417AbgKRCnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 21:52:23 -0500
-X-Greylist: delayed 576 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Nov 2020 21:52:22 EST
-Received: from ubuntu.localdomain (unknown [157.0.31.124])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 2449D4E12BC;
-        Wed, 18 Nov 2020 10:42:44 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
-        Bernard Zhao <bernard@vivo.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH] amdgpu/amdgpu_ids: fix kmalloc_array not uses number as first arg
-Date:   Tue, 17 Nov 2020 18:42:29 -0800
-Message-Id: <20201118024234.102485-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.29.0
+        Tue, 17 Nov 2020 21:43:52 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C98C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:43:50 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id f18so167120pgi.8
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:43:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cIZ+YWWP5aqalUoRio2QtJMh5XCbXXDA9kJRwC7+zv8=;
+        b=bbch85ddNZ7XzpLUOYzExmTsbmLKMUrE9yX+1sYtLTuQIw8ozlyrK0AUfruD2uMB8P
+         6FNZterRPoL/JxxCQOE66gZrVVt84KUGv3FnJx3SDvodbBi6iowaXhCLd2TA5DOMSGe0
+         SRjy4IuV5OTslaeKmbzNIBAIPNtEt56wYcPKmVdWyiYt8CJHgfVPWHmSHxAkIWO4apO4
+         qTmvP8l8gWp7CKIOdxDrhM2uWcMO4rKs9rRpPQFiEbYc0Ei/qlaJeWdKQTN6s1ppRauD
+         /PioS9bT+LFuJ5NT2IoOvE18sAWFzx3ej5zoGL2Ax7RG5rNSntedlGRaoxDAHdUinMyW
+         M+wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cIZ+YWWP5aqalUoRio2QtJMh5XCbXXDA9kJRwC7+zv8=;
+        b=FAv+KrmBCwwxDJ/l9IJwV5dqMe2goYhYduUAFW0MxYWVA/GrlcTc0RlqeKSzMH0uSw
+         6kqYp8hL0ZoeEgDiTBi/dxfC2YaPEasZZkdJQHgzrST9Gnf26TsczXCQCTJGfi+Koots
+         MYi85nuU1SZ6QOtnx3A22+tFJbIy4meX8AHBuFYr9udFgECi1wa8Da37UdTvYXIBLBf2
+         kVJ4dsFxyQ+9N+KBQusOCKMSA56I8nexySZxTmKsxG/zKwAna5f2Hwh7BSLJPpNEzkGr
+         rpvlCF9IsFVxXxYWWJf69hH90IqYt8guzNMSMPS8g060nvbkAmNce/ZYGy/tHCySgO/m
+         qfnw==
+X-Gm-Message-State: AOAM533ph/qpBRsfmgmQIzgsSFiBoqBLos8WoZxZ+aWgC31LKcpDfmk5
+        QokHvrpPTC+Nxt6EAk38Kp+EPM5Xzwqwbr2HOUVLcQ==
+X-Google-Smtp-Source: ABdhPJxGDISMqn2bIRZh7wORdl/cIXS0Q2etgc5JYSCpx/B0Jr1Wza3ya52gTSkwn/Ea57CTkeoqexeqyVXu0Ud+DQE=
+X-Received: by 2002:a62:16c1:0:b029:18c:8a64:fc04 with SMTP id
+ 184-20020a6216c10000b029018c8a64fc04mr2397649pfw.59.1605667430141; Tue, 17
+ Nov 2020 18:43:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSkhDSUkdGU5CT0gdVkpNS05NTUxITU9PSUpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS09ISVVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6P1E6Egw*Sz8fGQ8#Sw0qIRYO
-        Ax0KCR1VSlVKTUtOTU1MSE1PQkNIVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSU9ZV1kIAVlBSU9KTjcG
-X-HM-Tid: 0a75d93b9e0c9376kuws2449d4e12bc
+References: <20201113105952.11638-1-songmuchun@bytedance.com>
+ <349168819c1249d4bceea26597760b0a@hisilicon.com> <CAMZfGtUVDJ4QHYRCKnPTkgcKGJ38s2aOOktH+8Urz7oiVfimww@mail.gmail.com>
+ <714ae7d701d446259ab269f14a030fe9@hisilicon.com> <CAMZfGtWNa=abZdN6HmWE1VBFHfGCbsW9D0zrN-F5zrhn6s=ErA@mail.gmail.com>
+ <20201117192223.GW29991@casper.infradead.org>
+In-Reply-To: <20201117192223.GW29991@casper.infradead.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 18 Nov 2020 10:43:06 +0800
+Message-ID: <CAMZfGtUsqkk1Td3YBb-Ap6M_Hg59te1uORCPLVk4QeaFt7U0cw@mail.gmail.com>
+Subject: Re: [External] RE: [PATCH v4 00/21] Free some vmemmap pages of
+ hugetlb page
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
+        "pawan.kumar.gupta@linux.intel.com" 
+        <pawan.kumar.gupta@linux.intel.com>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "oneukum@suse.com" <oneukum@suse.com>,
+        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
+        "jroedel@suse.de" <jroedel@suse.de>,
+        "almasrymina@google.com" <almasrymina@google.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "mhocko@suse.com" <mhocko@suse.com>,
+        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix check_patch.pl warning:
-kmalloc_array uses number as first arg, sizeof is generally wrong.
-+fences = kmalloc_array(sizeof(void *), id_mgr->num_ids,
-GFP_KERNEL);
+On Wed, Nov 18, 2020 at 3:22 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Wed, Nov 18, 2020 at 12:29:07AM +0800, Muchun Song wrote:
+> > > ideally, we should be able to free PageTail if we change struct page in some way.
+> > > Then we will save much more for 2MB hugetlb. but it seems it is not easy.
+> >
+> > Now for the 2MB HugrTLB page, we only free 6 vmemmap pages.
+> > But your words woke me up. Maybe we really can free 7 vmemmap
+> > pages. In this case, we can see 8 of the 512 struct page structures
+> > has beed set PG_head flag. If we can adjust compound_head()
+> > slightly and make compound_head() return the real head struct
+> > page when the parameter is the tail struct page but with PG_head
+> > flag set. I will start an investigation and a test.
+>
+> What are you thinking?
+>
+> static inline struct page *compound_head(struct page *page)
+> {
+>         unsigned long head = READ_ONCE(page->compound_head);
+>
+>         if (unlikely(head & 1))
+>                 return (struct page *) (head - 1);
+> +       if (unlikely(page->flags & PG_head))
+> +               return (struct page *)(page[1]->compound_head - 1)
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah, I think so too. Maybe adding an align check is better.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-index 6e9a9e5dbea0..f2bd4b0e06f6 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-@@ -208,7 +208,7 @@ static int amdgpu_vmid_grab_idle(struct amdgpu_vm *vm,
- 	if (ring->vmid_wait && !dma_fence_is_signaled(ring->vmid_wait))
- 		return amdgpu_sync_fence(sync, ring->vmid_wait);
- 
--	fences = kmalloc_array(sizeof(void *), id_mgr->num_ids, GFP_KERNEL);
-+	fences = kmalloc_array(id_mgr->num_ids, sizeof(void *), GFP_KERNEL);
- 	if (!fences)
- 		return -ENOMEM;
- 
++         if ((test_bit(PG_head, &page->flags) &&
++              IS_ALIGNED((unsigned long)page, PAGE_SIZE))
+
+>         return page;
+> }
+>
+> ... because if it's that, there are code paths which also just test
+> PageHead, and so we'd actually need to change PageHead to be something
+> like:
+
+Yeah, I also think that rework compound_head() and PageHead() is enough.
+
+Thanks.
+
+>
+> static inline bool PageHead(struct page *page)
+> {
+>         return (page->flags & PG_head) &&
+>                 (page[1]->compound_head == (unsigned long)page + 1);
+> }
+>
+> I'm not sure if that's worth doing -- there may be other things I
+> haven't thought of.
+
+
+
 -- 
-2.29.0
-
+Yours,
+Muchun
