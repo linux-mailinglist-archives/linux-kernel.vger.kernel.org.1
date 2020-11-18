@@ -2,114 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0A42B7686
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950A02B768C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgKRGx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 01:53:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgKRGxz (ORCPT
+        id S1726647AbgKRGz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 01:55:29 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:48123 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgKRGz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 01:53:55 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7322BC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 22:53:55 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id c9so949336ybs.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 22:53:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:mime-version:message-id:date:subject:from:to:cc;
-        bh=lYxi6V4AwXuK11wzjloSmKc5wDxn+VtI80uFADH0oBo=;
-        b=EZwMWMWBJ3RTKa1dGgqNG8Dn2tO+WJT6QVngf28ljyZWoVZTL8PyZ8AM9X7b0Y9rH1
-         l/hCkjS8oRFrunmw5MMza+9AVVhvUm6XwCzxj4aHVRqf1Rr0fsUPNuI8B8stErZKeyew
-         7aGaKAbdx+jyGPsN4kL4a3Rs5h1vZ0+eHjOMocv6+KV3AD2dNixFvKc1FapeFu6X/5JU
-         0Z+bxvuK/dq18CvSl6MO+mZBEJMBJj135nDRT/Q676Xs95zpDqb6uXyjR7EGRJh+ONLX
-         Mc3+Qlp8/LxjkH9fk6u2wQfx9MWVDN4tvD/gsiLyG5loyRg8It51wa6yEQDCbTVCaVPA
-         waKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
-         :to:cc;
-        bh=lYxi6V4AwXuK11wzjloSmKc5wDxn+VtI80uFADH0oBo=;
-        b=CLYhzFyrIO6NwW4l054IP7FmJ0kQlMMTo/7DkSl5W1EPsmdKArmVd9/70ZgSgnnJ8i
-         qlcCWLUW4vVlxNGd8kHBr+4jN62c/R4v49i29+8A6EX1kusdy/lhov16xoB72KRiI9dh
-         C/mEcF1X1z7e/r0OCXEajETmIrNZJ3H0IcGoRMfCSGhhj+z1AksIpelcato7lB7X8/uB
-         s87w55OITQJeSFBTJqBMkyn5k3/dDmAyHGlbQt+F9zVn2X/rPDbade1UcXrPwCbxyVh/
-         g5o8OmXk/HkEHoMQj0DNaYCYhIY1idwF4OWFIQJywZc+I3e/rqwjPCsMpn+mGbbVViQR
-         EVGw==
-X-Gm-Message-State: AOAM530PnNf3ZdOFQ1yyg3hqDYLrZfX6SBRHZFGEIEcDfmsPDte9VS+O
-        EqMGQdEqBzkWljECAHtoVKXwNizdxqAabA25
-X-Google-Smtp-Source: ABdhPJzIo2uFUNiLHns1Yfv+CT1C8FDvVwC6eqy1M8lGa1euZ9++HPWS8I/TWJ7qYaykqJndfBJmAySvAMABFASY
-Sender: "josephjang via sendgmr" 
-        <josephjang@josephjang-p920.ntc.corp.google.com>
-MIME-Version: 1.0
-X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:7220:84ff:fe09:41e0])
- (user=josephjang job=sendgmr) by 2002:a25:6804:: with SMTP id
- d4mr5290078ybc.379.1605682434707; Tue, 17 Nov 2020 22:53:54 -0800 (PST)
-Message-ID: <00000000000025043f05b45c1367@google.com>
-Date:   Wed, 18 Nov 2020 06:53:54 +0000
-Subject: [PATCH v3] power: suspend: Move dpm_watchdog to suspend.c and enhance it
-From:   <josephjang@google.com>
-To:     rafael@kernel.org, gregkh@linuxfoundation.org, rjw@rjwysocki.net,
-        pavel@ucw.cz, len.brown@intel.com, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        jonglin@google.com, woodylin@google.com, markcheng@google.com,
-        josephjang@google.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        Wed, 18 Nov 2020 01:55:28 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 17 Nov 2020 22:55:28 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 17 Nov 2020 22:55:26 -0800
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 18 Nov 2020 12:25:10 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 5EEB0212C6; Wed, 18 Nov 2020 12:25:09 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
+        nicolas@ndufresne.ca, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v3 0/3] Add new controls for QP and layer bitrate
+Date:   Wed, 18 Nov 2020 12:24:54 +0530
+Message-Id: <1605682497-29273-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Nov 13, 2020 at 2:26 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Oct 23, 2020 at 02:04:17PM +0800, Joseph Jang wrote:
-> > > Since dpm_watchdog just cover device power management, we proposed to
-> > > move it to core power suspend.c to cover not only device power  
-> management
-> > > hang issues, but also core power management hand issues.
-> > >
-> > > Since dpm_watchdog stands for device pm, we propose to use new name  
-> sleep
-> > > timer and new timeout handler to cover more sleep hang issues. The new
-> > > timeout handler will dump disk sleep task at first round timeout and
-> > > trigger kernel panic at second round timeout.
-> > > The default timer for each round is defined in
-> > > CONFIG_PM_SLEEP_TIMER_TIMEOUT.
-> > >
-> > > Signed-off-by: Joseph Jang <josephjang@google.com>
-> >
-> > It still seems odd you can't use a watchdog for this, as you really have
-> > just implemented the same thing here, but "open coded" the logic.
-> >
-> > I'll let Rafael chime in here too, as he knows this area much better
-> > than I as to if this is viable or not.
+This series adds frame specific min/max qp controls for hevc and layer
+wise bitrate control for h264.
 
-> It is viable AFAICS.
+Chnages since v2:
+ - addressed comments.
+ - added driver side implementation for new controls.
 
-> Just make the existing thing work with dev == NULL and use it as needed.
+Dikshita Agarwal (3):
+  media: v4l2-ctrl: Add frame-specific min/max qp controls for hevc
+  media: v4l2-ctrl: Add layer wise bitrate controls for h264
+  venus: venc: Add support for frame-specific min/max qp controls
 
-Thank you Greg and Rafael code review and good suggestions.
+ .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 72 +++++++++++++++++++++-
+ drivers/media/platform/qcom/venus/core.h           | 18 ++++++
+ drivers/media/platform/qcom/venus/venc.c           | 21 +++++--
+ drivers/media/platform/qcom/venus/venc_ctrls.c     | 51 +++++++++++++++
+ drivers/media/v4l2-core/v4l2-ctrls.c               | 15 +++++
+ include/uapi/linux/v4l2-controls.h                 | 17 +++++
+ 6 files changed, 187 insertions(+), 7 deletions(-)
 
-Since dpm_watchdog just covers two functions __device_suspend() and  
-device_resume().
-We still don't know how to use current dpm_watchdog to capture other  
-suspend hang cases
-outside these two functions. So we are trying to enhance it by moving  
-dpm_watchdog from
-"drivers/base/power/main.c" to "kernel/power/suspend.c" and enable/disable  
-the watchdog
-in more core pm functions.
-Could you help to review if we can do that or not? If not, could you help  
-to give us
-other better suggestions?
+-- 
+2.7.4
 
-If you agree to do that, I will provide a new PATCH version 4 to fix all  
-coding problems
-later.
-
-
-Thank you,
-Joseph.
