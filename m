@@ -2,239 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D852B7CE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9180D2B7CEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgKRLil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:38:41 -0500
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:54699 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727814AbgKRLik (ORCPT
+        id S1727919AbgKRLjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:39:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52075 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726867AbgKRLji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:38:40 -0500
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8696CFF812;
-        Wed, 18 Nov 2020 11:38:35 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 12:38:38 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Eugen.Hristev@microchip.com
-Cc:     laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, sakari.ailus@iki.fi
-Subject: Re: [PATCH v5 2/3] media: atmel: introduce microchip csi2dc driver
-Message-ID: <20201118113838.kyz2qw24yowgkerj@uno.localdomain>
-References: <20201112133437.372475-1-eugen.hristev@microchip.com>
- <20201112133437.372475-2-eugen.hristev@microchip.com>
- <20201117115902.unnrnccoj3s4gtam@uno.localdomain>
- <20201117120951.GC3940@pendragon.ideasonboard.com>
- <3615c6eb-e475-9a2b-21e5-0b8d8f64f9c6@microchip.com>
- <20201118091133.hr5iwjqijnj6tjfs@uno.localdomain>
- <29449196-f67b-06bd-a586-03309459cc72@microchip.com>
+        Wed, 18 Nov 2020 06:39:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605699576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6R/6pwwpmuxG0MDZ4yvt0MqGRHPil6xB7qtVxel0gLg=;
+        b=LxZgRlQnMDGpF23ns1issgUcYppgpnHkbkbYSg1fWrsUrWBtT03oeLqpCFrqgPkP3zNlw9
+        DJsnD03MgLAI3z05BZd7Qfgr7tXrAkObuVFWWzekoGCJAOiBDKyBQ9ifwHBDyh9/lF5nuv
+        1u+sVZ86v+gDF01cKKBAlYU6wqQa1sw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-580-j--3qPDFPE-juJ_vE929Ug-1; Wed, 18 Nov 2020 06:39:35 -0500
+X-MC-Unique: j--3qPDFPE-juJ_vE929Ug-1
+Received: by mail-wr1-f69.google.com with SMTP id d8so808858wrr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:39:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6R/6pwwpmuxG0MDZ4yvt0MqGRHPil6xB7qtVxel0gLg=;
+        b=W3sRHYiJs3FMlor8O7pvxTqRUzbb0C2LHSfl3gJb0Dc33d4EXsnLOGyZq+j9bYcgnG
+         oSxFDkKiMWXt1uNgx/rl3QY4cs711dO19U8+FDFkWt3TuPfqayBdYKZF/GsoahtdpY4N
+         VfAiTj6xE5TRhu0L3PBrcOAumc7C0Ob+btkAHQIkxqKkHO4nXYr6VMeEoNgXm7p3PCHw
+         /70NPpSJBlX1t+92EahucbOswc48hvSTUisqWXy1NqUgWZ6obI91XGFrIHDRSafqQAOc
+         qes9hx6OwnCzysjERRlwg0D69XncWhP4dGprw+ViAgFI/pW3wOUN/4wKtQWm8l9Pu3Ni
+         zmag==
+X-Gm-Message-State: AOAM532y6qpqU/HzcQ3mxjQZyDRNGVaMj0yadpC7O3djmYu/Fa3s2N/0
+        XKiSv2fucWl+4Y9cIxDAx8KWQTlV9Yoeu+4ygjPzv3GB7C4lBoivtlK22IESpN1YEtb4+0SP8pC
+        1Dib4QOIVp5rhXzhg8kVonVHz
+X-Received: by 2002:a7b:c1ce:: with SMTP id a14mr4098635wmj.126.1605699574083;
+        Wed, 18 Nov 2020 03:39:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzrPLqC5uRTn2T9zd6p9hbLUkX2tNzGSzrjqO2hEeUwzwzrRTmKFuYoh+KPvYKlSgz9RTE61A==
+X-Received: by 2002:a7b:c1ce:: with SMTP id a14mr4098620wmj.126.1605699573741;
+        Wed, 18 Nov 2020 03:39:33 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id y16sm31384125wrt.25.2020.11.18.03.39.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 03:39:33 -0800 (PST)
+Date:   Wed, 18 Nov 2020 12:39:30 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH RFC 04/12] vdpa: add vdpa simulator for block device
+Message-ID: <20201118113930.p7uigootcb42wqix@steredhat>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <20201113134712.69744-5-sgarzare@redhat.com>
+ <20201117111121.GD131917@stefanha-x1.localdomain>
+ <20201117141620.ytium7r6xpxi4and@steredhat>
+ <20201117164342.GT131917@stefanha-x1.localdomain>
+ <20201117173811.lw4nwicoykhnn3tt@steredhat>
+ <20201118112355.GE182763@stefanha-x1.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <29449196-f67b-06bd-a586-03309459cc72@microchip.com>
+In-Reply-To: <20201118112355.GE182763@stefanha-x1.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eugen,
-
-On Wed, Nov 18, 2020 at 09:48:19AM +0000, Eugen.Hristev@microchip.com wrote:
-> On 18.11.2020 11:11, Jacopo Mondi wrote:
-> > Hello Eugen,
-> >
-
-[snip]
-
-> >> Hello,
-> >>
-> >> First of all thank you for the review and explanations.
-> >>
-> >> I am still confused about how does the userspace know which elements are
-> >> in the pipeline and how to connect them ?
-> >
-> > Using the media-controller uAPI to inspect, explore and configure the
-> > media graph (it's mostly about enabling and disabling media links),
-> > and using the v4l2 subdev uAPI to configure formats, sizes and such on
-> > each subdevice device node associated with a media entity. Finally,
-> > using the v4l2 uAPI to stream from the top-level driver that expose a
-> > video device node.
+On Wed, Nov 18, 2020 at 11:23:55AM +0000, Stefan Hajnoczi wrote:
+>On Tue, Nov 17, 2020 at 06:38:11PM +0100, Stefano Garzarella wrote:
+>> On Tue, Nov 17, 2020 at 04:43:42PM +0000, Stefan Hajnoczi wrote:
+>> > On Tue, Nov 17, 2020 at 03:16:20PM +0100, Stefano Garzarella wrote:
+>> > > On Tue, Nov 17, 2020 at 11:11:21AM +0000, Stefan Hajnoczi wrote:
+>> > > > On Fri, Nov 13, 2020 at 02:47:04PM +0100, Stefano Garzarella wrote:
+>> > > > > +static void vdpasim_blk_work(struct work_struct *work)
+>> > > > > +{
+>> > > > > +	struct vdpasim *vdpasim = container_of(work, struct vdpasim, work);
+>> > > > > +	u8 status = VIRTIO_BLK_S_OK;
+>> > > > > +	int i;
+>> > > > > +
+>> > > > > +	spin_lock(&vdpasim->lock);
+>> > > > > +
+>> > > > > +	if (!(vdpasim->status & VIRTIO_CONFIG_S_DRIVER_OK))
+>> > > > > +		goto out;
+>> > > > > +
+>> > > > > +	for (i = 0; i < VDPASIM_BLK_VQ_NUM; i++) {
+>> > > > > +		struct vdpasim_virtqueue *vq = &vdpasim->vqs[i];
+>> > > > > +
+>> > > > > +		if (!vq->ready)
+>> > > > > +			continue;
+>> > > > > +
+>> > > > > +		while (vringh_getdesc_iotlb(&vq->vring, &vq->iov, &vq->iov,
+>> > > > > +					    &vq->head, GFP_ATOMIC) > 0) {
+>> > > > > +
+>> > > > > +			int write;
+>> > > > > +
+>> > > > > +			vq->iov.i = vq->iov.used - 1;
+>> > > > > +			write = vringh_iov_push_iotlb(&vq->vring, &vq->iov, &status, 1);
+>> > > > > +			if (write <= 0)
+>> > > > > +				break;
+>> > > >
+>> > > > We're lucky the guest driver doesn't crash after VIRTIO_BLK_T_GET_ID? :)
+>> > >
+>> > > The crash could happen if the simulator doesn't put the string terminator,
+>> > > but in virtio_blk.c, the serial_show() initialize the buffer putting the
+>> > > string terminator in the VIRTIO_BLK_ID_BYTES element:
+>> > >
+>> > >     buf[VIRTIO_BLK_ID_BYTES] = '\0';
+>> > >     err = virtblk_get_id(disk, buf);
+>> > >
+>> > > This should prevent the issue, right?
+>> > >
+>> > > However in the last patch of this series I implemented VIRTIO_BLK_T_GET_ID
+>> > > support :-)
+>> >
+>> > Windows, BSD, macOS, etc guest drivers aren't necessarily going to
+>> > terminate or initialize the serial string buffer.
+>>
+>> Unfortunately I discovered that VIRTIO_BLK_T_GET_ID is not in the VIRTIO
+>> specs, so, just for curiosity, I checked the QEMU code and I found this:
+>>
+>>     case VIRTIO_BLK_T_GET_ID:
+>>     {
+>>         /*
+>>          * NB: per existing s/n string convention the string is
+>>          * terminated by '\0' only when shorter than buffer.
+>>          */
+>>         const char *serial = s->conf.serial ? s->conf.serial : "";
+>>         size_t size = MIN(strlen(serial) + 1,
+>>                           MIN(iov_size(in_iov, in_num),
+>>                               VIRTIO_BLK_ID_BYTES));
+>>         iov_from_buf(in_iov, in_num, 0, serial, size);
+>>         virtio_blk_req_complete(req, VIRTIO_BLK_S_OK);
+>>         virtio_blk_free_request(req);
+>>         break;
+>>     }
+>>
+>> It seems that the device emulation in QEMU expects that the driver
+>> terminates the serial string buffer.
+>>
+>> Do you know why VIRTIO_BLK_T_GET_ID is not in the specs?
+>> Should we add it?
 >
-> Okay but which application in userspace uses this userAPI ?
-
-media-ctl which is part of v4l2-utils.
-
-existing applications or frameworks like gstreamer have no notion of
-the platform they run on, they can't configure it, they only
-understand '/dev/video0'
-
-> So I could use it to test my pipeline.
->
-
-The first step is to use media-ctl to manually setup the pipeline and
-test. Once it's setup you can usually keep using the legacy
-applications that only stream from /dev/video0.
-
-Of course manually setting up the pipeline using a script does not
-scale, that's what the 'libcamera pipeline handler' does in facts.
-It implements the same logic that you would manually apply with
-media-ctl
-
-> >
-> > It's really (conceptually) not different than doing the same using
-> > media-ctl and v4l2-ctl.
-> >
-> >> And if this is the case, what is the purpose of the endpoints in the DT ?
-> >>
-> >
-> > DTS describe the hardware. Usually a driver parses the firmware graph
-> > to create and model the media graph and the available connections
-> > between media entities but there's no requirement to have a 1-to-1
-> > match (as far I'm aware).
->
-> So the top level v4l2 driver should parse the whole graph ?
->
-
-Userspace should :)
-
-> >
-> > Media links on a media graph then need to be enabled opportunely
-> > depending on the desired use case, the platform topology etc
-> >
-> >> At this moment, I just use the /dev/video0, because the top v4l2 driver
-> >> configures the subdevice, and this subdevice configures it's own
-> >> subdevice and so on, until the sensor itself.
-> >>
-> >> My top v4l2 driver will not 'complete' unless a subdevice registers
-> >> itself , and if this subdevice does not provide any information
-> >> regarding its formats, the probe of the top v4l2 driver will fail,
-> >> because it will not find compatibility between it's supported input
-> >> formats and what the subdevice provides.
-> >
-> > ouch, I see.. Which driver is that ?
->
-> The atmel image sensor controller driver.
-> All sensor drivers that we use (for example : ov5640, ov7740, ov7670)
-> register as subdevices, and the atmel-isc will 'complete' when the
-> sensor is probed and registered.
-
-That's ok, the complete callback is called when all the async devices
-registered in a notifier are matched.
-
-> To have the csi2dc module compatible with what we have on atmel-isc,
-> it's natural to have the csi2dc register itself as a subdevice such that
-> the atmel-isc can 'complete'.
-
-the csi2d registering as subdev is all good (apart from the issue of
-having 2 v4l2_device, but as you've see there's a solution for that
-and it's called sub-notifiers).
-
-The 'issue' here is that your top driver wants to match formats to initialize
-its supported format list (in isc_formats_init() from what I can see).
-
-An MC driver should not care about that. Each piece of the pipeline
-has to be considered in isolation, and the format matching happens at
-link_validate() time for links between subdevices and usually at
-s_stream(1) time between sub-devices and video devices.
-
-In example, format enumeration on the video device registered by the
-top v4l2 driver is conditional to the presence of the mbus_code field
-as you can read in:
-https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-enum-fmt.html?highlight=enum_fmt#c.V4L.VIDIOC_ENUM_FMT
-
-And it should be possible by setting mbus_code = 0 to get a list of
-all formats supported -by the hardware- not limited to the current use
-case.
-
-Userspace knows the platform and if asked for 640x480[YUV420] will go
-and set the right format on each piece of the pipeline, after having
-enabled the relevant links, using the right media bus codes and sizes
-
-Totally random example:
-
-        [video0] s_fmt(640x480, PIXFMT_YUV422)
-         (pad 0)
-           |
-           v
-         (pad 1) sudev_s_fmt(1, 640x480, MBUS_YUYV8_1X16)
-        [csi2dc]       --- your subdev can crop ---
-         (pad 0) sudev_s_fmt(0, 648x496, MBUS_YUYV8_1X16)
-           |
-           V
-         (pad 0) subdev_s_fmt(0, 648x496, MBUS_YUYV_1X16)
-        [ov5640]
-
-If your top v4l2 driver can produce RGB from a YUV stream it's
-perfectly legit then to s_fmt(video0, 640x480, PIXFMT_RGB565) and
-subdev_s_fmt(csi2dc, 1, 640x480, MBUS_YUYV8_1X16).
-
-As you can see it all depends on what your hardware can do.
-
->
->
-> >
-> > If that's an MC driver, and that seems the case, it should not bother
-> > validating the subdevice formats, but only care about listing what its
-> > capabilities are.
->
-> if this atmel-isc does not offer format capabilities for the userspace
-> via the /dev/video0, then all applications that we use (gstreamer
-> v4l2src, ffmpeg ) fail.
-> What can we use then, if we cannot use these applications ?
+>It's about to be merged into the VIRTIO spec:
+>https://github.com/oasis-tcs/virtio-spec/issues/63
 >
 
-I think if you setup the pipeline with media-ctl correctly (ie you
-don't get any -EPIPE at s_stream) you should be able to keep using
-legacy apps, but it very much depends on how they are implemented.
+Great! Thanks for the link!
 
-Usually setting up the pipeline using media-ctl and streaming using
-v4l2-ctl or yavta is the first validation test.
-
-> >
-> >>
-> >> So what to do in this case ? Libcamera will configure this whole
-> >> pipeline for me , if the drivers just probe ( and start/stop streaming
-> >> by selecting the respective registers) ? or how to do this whole
-> >> pipeline configuration ?
-> >>
-> >
-> > Well, libcamera offers a framework to enable specialized code (called
-> > "pipeline handler") to operate under an high-level API towards application
-> > and implement image tuning algorithms on top of that common API.
-> >
-> > The code to configure the pipeline is device specific (unless your
-> > pipeline is very simple). So it's not that libcamera just magically
-> > knows how to operate on every platforms it runs on, it needs platform
-> > specific code to do so. What you get in exchange is an high level API
-> > to offer to application developers, a framework to implement 3A and
-> > tuning algorithms, integration with a growing set of other userspace
-> > frameworks (android, gstreamer, pipewire and a legacy v4l2-compat
-> > layer)
->
-> I tried a buildroot with libcamera and gstreamer libcamerasrc , to see
-> how it goes. Libcamera does not recognize the /dev/video0 device that we
-> have. The v4l2 compatibility layer should not perform exactly this ?
-
-There's no pipeline handler for your platform (unless you have
-developed one)
-
->
-> # gst-launch-1.0 libcamerasrc ! fakesink
-> Setting pipeline to PAUSED ...
-> [0:00:28.448687200] [216]  WARN IPAManager ipa_manager.cpp:147 No IPA
-> found in '/usr/lib/libcamera'
-> [0:00:28.448890800] [216]  INFO Camera camera_manager.cpp:287 libcamera
-> v0.0.0+54328-2020.11-rc2-dirty (2020-11-17T20:58:37+02:00)
-> ERROR: from element
-> /GstPipeline:pipeline0/GstLibcameraSrc:libcamerasrc0: Could not find any
-> supported camera on this system.
-            ^
-And this is the expected outcome :)
-
-As said, it's not that libcamera magically knows how to deal with all
-devices it is run on. We would not need libcamera at all if that was
-the case, any application would be self-configurable and that's it :)
+Stefano
 
