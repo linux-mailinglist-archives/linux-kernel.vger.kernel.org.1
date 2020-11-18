@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AEF2B7D85
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1154D2B7D8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgKRMSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 07:18:00 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:50470 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726740AbgKRMSA (ORCPT
+        id S1726780AbgKRMUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 07:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726296AbgKRMUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:18:00 -0500
-X-UUID: 3cde5d8ece844de3bde8ac6e0bf150e1-20201118
-X-UUID: 3cde5d8ece844de3bde8ac6e0bf150e1-20201118
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 107496916; Wed, 18 Nov 2020 20:17:55 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 18 Nov 2020 20:17:53 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 18 Nov 2020 20:17:53 +0800
-From:   <qii.wang@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>
-Subject: [v2] i2c: mediatek: Move suspend and resume handling to NOIRQ phase
-Date:   Wed, 18 Nov 2020 20:17:41 +0800
-Message-ID: <1605701861-30800-1-git-send-email-qii.wang@mediatek.com>
-X-Mailer: git-send-email 1.9.1
+        Wed, 18 Nov 2020 07:20:40 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53677C0613D4;
+        Wed, 18 Nov 2020 04:20:40 -0800 (PST)
+Date:   Wed, 18 Nov 2020 12:20:36 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605702038;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=45nFyw7nelPjO0AqMdm7a6w0iCNxbTMhLeO/+LFCMPM=;
+        b=yUDv7oqb9bphTZyU+s1e2sBJxCnQ6WkTOfiNmKdspS40KjU+EcxRnhzivCFw9bP3DHnfF+
+        5C8GNXy/5roZIbezF4OMoylJbw/nV6u+Jy3MBoXwKlEVASU1nIOLkpd0fG1l6VwK31ysZw
+        JCsSPOcNd2/1Mm3ZKxSHZLT41F0nJ2lHe3jzab/2yS6/6r16xY+KOGl61T5ThVz1PoTWhz
+        TxIZyPlzfSJBsr3bhoDPAD9iyOzZQppfUugxwo79N5j2d8U1/28qq9uMoh1oTkwp/t6p+B
+        Au/i0oXweMj7Qqskt+dnla6KUYr0QbZUBv4qhmnbVtUwe4/a/T51xNkGO1xfWw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605702038;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=45nFyw7nelPjO0AqMdm7a6w0iCNxbTMhLeO/+LFCMPM=;
+        b=ymwHkzG+aXnC/kQF7nIZMT1pvEhyYzPswKPT1+osMV3lVMtnkAjkDR5UT+dnVm0/9DmQuF
+        N7j5ZTWesjdM66DA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/dumpstack: Do not try to access user space code
+ of other tasks
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201117202753.667274723@linutronix.de>
+References: <20201117202753.667274723@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Message-ID: <160570203682.11244.2241309729043603979.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qii Wang <qii.wang@mediatek.com>
+The following commit has been merged into the x86/urgent branch of tip:
 
-Some i2c device driver indirectly uses I2C driver when it is now
-being suspended. The i2c devices driver is suspended during the
-NOIRQ phase and this cannot be changed due to other dependencies.
-Therefore, we also need to move the suspend handling for the I2C
-controller driver to the NOIRQ phase as well.
+Commit-ID:     860aaabac8235cfde10fe556aa82abbbe3117888
+Gitweb:        https://git.kernel.org/tip/860aaabac8235cfde10fe556aa82abbbe3117888
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 17 Nov 2020 21:23:34 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 18 Nov 2020 12:56:29 +01:00
 
-Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+x86/dumpstack: Do not try to access user space code of other tasks
+
+sysrq-t ends up invoking show_opcodes() for each task which tries to access
+the user space code of other processes, which is obviously bogus.
+
+It either manages to dump where the foreign task's regs->ip points to in a
+valid mapping of the current task or triggers a pagefault and prints "Code:
+Bad RIP value.". Both is just wrong.
+
+Add a safeguard in copy_code() and check whether the @regs pointer matches
+currents pt_regs. If not, do not even try to access it.
+
+While at it, add commentary why using copy_from_user_nmi() is safe in
+copy_code() even if the function name suggests otherwise.
+
+Reported-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+Tested-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201117202753.667274723@linutronix.de
 ---
+ arch/x86/kernel/dumpstack.c | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
 
-Changes in v2:
-	- fix the wrong spelling medaitek to mediatek 
-
- drivers/i2c/busses/i2c-mt65xx.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index 33de99b..6f61595 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -1258,7 +1258,8 @@ static int mtk_i2c_probe(struct platform_device *pdev)
- 	mtk_i2c_clock_disable(i2c);
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index 25c06b6..97aa900 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -78,6 +78,9 @@ static int copy_code(struct pt_regs *regs, u8 *buf, unsigned long src,
+ 	if (!user_mode(regs))
+ 		return copy_from_kernel_nofault(buf, (u8 *)src, nbytes);
  
- 	ret = devm_request_irq(&pdev->dev, irq, mtk_i2c_irq,
--			       IRQF_TRIGGER_NONE, I2C_DRV_NAME, i2c);
-+			       IRQF_NO_SUSPEND | IRQF_TRIGGER_NONE,
-+			       I2C_DRV_NAME, i2c);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev,
- 			"Request I2C IRQ %d fail\n", irq);
-@@ -1285,7 +1286,16 @@ static int mtk_i2c_remove(struct platform_device *pdev)
++	/* The user space code from other tasks cannot be accessed. */
++	if (regs != task_pt_regs(current))
++		return -EPERM;
+ 	/*
+ 	 * Make sure userspace isn't trying to trick us into dumping kernel
+ 	 * memory by pointing the userspace instruction pointer at it.
+@@ -85,6 +88,12 @@ static int copy_code(struct pt_regs *regs, u8 *buf, unsigned long src,
+ 	if (__chk_range_not_ok(src, nbytes, TASK_SIZE_MAX))
+ 		return -EINVAL;
+ 
++	/*
++	 * Even if named copy_from_user_nmi() this can be invoked from
++	 * other contexts and will not try to resolve a pagefault, which is
++	 * the correct thing to do here as this code can be called from any
++	 * context.
++	 */
+ 	return copy_from_user_nmi(buf, (void __user *)src, nbytes);
  }
  
- #ifdef CONFIG_PM_SLEEP
--static int mtk_i2c_resume(struct device *dev)
-+static int mtk_i2c_suspend_noirq(struct device *dev)
-+{
-+	struct mtk_i2c *i2c = dev_get_drvdata(dev);
-+
-+	i2c_mark_adapter_suspended(&i2c->adap);
-+
-+	return 0;
-+}
-+
-+static int mtk_i2c_resume_noirq(struct device *dev)
- {
- 	int ret;
- 	struct mtk_i2c *i2c = dev_get_drvdata(dev);
-@@ -1300,12 +1310,15 @@ static int mtk_i2c_resume(struct device *dev)
+@@ -115,13 +124,19 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
+ 	u8 opcodes[OPCODE_BUFSIZE];
+ 	unsigned long prologue = regs->ip - PROLOGUE_SIZE;
  
- 	mtk_i2c_clock_disable(i2c);
- 
-+	i2c_mark_adapter_resumed(&i2c->adap);
-+
- 	return 0;
+-	if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
+-		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
+-		       loglvl, prologue);
+-	} else {
++	switch (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
++	case 0:
+ 		printk("%sCode: %" __stringify(PROLOGUE_SIZE) "ph <%02x> %"
+ 		       __stringify(EPILOGUE_SIZE) "ph\n", loglvl, opcodes,
+ 		       opcodes[PROLOGUE_SIZE], opcodes + PROLOGUE_SIZE + 1);
++		break;
++	case -EPERM:
++		/* No access to the user space stack of other tasks. Ignore. */
++		break;
++	default:
++		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
++		       loglvl, prologue);
++		break;
+ 	}
  }
- #endif
  
- static const struct dev_pm_ops mtk_i2c_pm = {
--	SET_SYSTEM_SLEEP_PM_OPS(NULL, mtk_i2c_resume)
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(mtk_i2c_suspend_noirq,
-+				      mtk_i2c_resume_noirq)
- };
- 
- static struct platform_driver mtk_i2c_driver = {
--- 
-1.9.1
-
