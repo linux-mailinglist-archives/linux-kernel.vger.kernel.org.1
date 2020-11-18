@@ -2,90 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7312B7969
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D6A2B7967
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727470AbgKRIuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:50:02 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:58934 "EHLO gloria.sntech.de"
+        id S1727443AbgKRItx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:49:53 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:10837 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726964AbgKRIuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:50:01 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kfJ9o-00056u-Q4; Wed, 18 Nov 2020 09:49:40 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Shawn Lin <shawn.lin@rock-chips.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Chen-Yu Tsai <wens@kernel.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
-        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] PCI: rockchip: Make 'ep-gpios' DT property optional
-Date:   Wed, 18 Nov 2020 09:49:40 +0100
-Message-ID: <1737702.WCGJIqnLLh@diego>
-In-Reply-To: <20201118071724.4866-2-wens@kernel.org>
-References: <20201118071724.4866-1-wens@kernel.org> <20201118071724.4866-2-wens@kernel.org>
+        id S1727347AbgKRItw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:49:52 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605689392; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=8ubPeUbv9nGA17bHuaYj4qnBJnm2N8KJxhb4W1TPD4Q=;
+ b=dHdveSGfVrstA4RADxlsGQnmriai8Rz25XilNO5ZNd2u8tlLsC/sy+TEQZKpkbLd5asKtiPk
+ iVKX9qHkG/c0Y7J6/egzSjOGnLU1o0wkZdnHCslxQv+2dNiEqPwGnOFuvecbnEkYQ9lgperW
+ 9P09NyCePpI3R1i/GjSsidJfU5o=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5fb4e02e309342b9149d05ef (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 08:49:50
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E5590C433ED; Wed, 18 Nov 2020 08:49:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 05AF5C433C6;
+        Wed, 18 Nov 2020 08:49:47 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 18 Nov 2020 16:49:47 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH RFC v1 1/1] scsi: pm: Leave runtime resume along if block
+ layer PM is enabled
+In-Reply-To: <6d774277-b055-6924-cf2d-01e874ac3f7b@acm.org>
+References: <1605249009-13752-1-git-send-email-cang@codeaurora.org>
+ <1605249009-13752-2-git-send-email-cang@codeaurora.org>
+ <97dea590-5f2e-b4e3-ac64-7c346761c523@acm.org>
+ <20f447a438aa98afb18be4642c8888b3@codeaurora.org>
+ <6d774277-b055-6924-cf2d-01e874ac3f7b@acm.org>
+Message-ID: <3d58c7a1971bbb2895a30122255ed2e1@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 18. November 2020, 08:17:21 CET schrieb Chen-Yu Tsai:
-> From: Chen-Yu Tsai <wens@csie.org>
+Hi Bart,
+
+On 2020-11-18 12:38, Bart Van Assche wrote:
+> On 11/15/20 5:42 PM, Can Guo wrote:
+>> Actually, I am thinking about removing all the pm_runtime_set_active()
+>> codes in both scsi_bus_resume_common() and scsi_dev_type_resume() - we
+>> don't need to forcibly set the runtime PM status to RPM_ACTIVE for 
+>> either
+>> SCSI host/target or SCSI devices.
+>> 
+>> Whenever we access one SCSI device, either block layer or somewhere in
+>> the path (e.g. throgh sg IOCTL, sg_open() calls 
+>> scsi_autopm_get_device())
+>> should runtime resume the device first, and the runtime PM framework 
+>> makes
+>> sure device's parent (and its parent's parent and so on)gets resumed 
+>> as
+>> well.
+>> Thus, the pm_runtime_set_active() seems redundant. What do you think?
 > 
-> The Rockchip PCIe controller DT binding clearly states that 'ep-gpios' is
-> an optional property. And indeed there are boards that don't require it.
+> Hi Can,
 > 
-> Make the driver follow the binding by using devm_gpiod_get_optional()
-> instead of devm_gpiod_get().
+> It is not clear to me why the pm_runtime_set_active() calls occur in 
+> the
+> scsi_pm.c source file since the block layer automatically activates
+> block devices if necessary. Maybe these calls are a leftover from a 
+> time
+> when runtime suspended devices were not resumed automatically by the
+> block layer? Anyway, I'm fine with removing these calls.
 > 
-> Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller support")
-> Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC driver")
-> Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt() to parse DT")
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-
-Reviewed-by: Heiko Stuebner <heiko@sntech.de
-
-
-I'll pick up patches 2-4 separately, after giving Rob a chance to look at
-the simple binding.
-
-
-Heiko
-
-> ---
-> Changes since v1:
+> Thanks,
 > 
->   - Rewrite subject to match existing convention and reference
->     'ep-gpios' DT property instead of the 'ep_gpio' field
-> ---
->  drivers/pci/controller/pcie-rockchip.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/controller/pcie-rockchip.c
-> index 904dec0d3a88..c95950e9004f 100644
-> --- a/drivers/pci/controller/pcie-rockchip.c
-> +++ b/drivers/pci/controller/pcie-rockchip.c
-> @@ -118,7 +118,7 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *rockchip)
->  	}
->  
->  	if (rockchip->is_rc) {
-> -		rockchip->ep_gpio = devm_gpiod_get(dev, "ep", GPIOD_OUT_HIGH);
-> +		rockchip->ep_gpio = devm_gpiod_get_optional(dev, "ep", GPIOD_OUT_HIGH);
->  		if (IS_ERR(rockchip->ep_gpio)) {
->  			dev_err(dev, "missing ep-gpios property in node\n");
->  			return PTR_ERR(rockchip->ep_gpio);
-> 
+> Bart.
 
+Yes, I agree with you. Let me test the new patch (which removes all the
+pm_runtime_set_active() calls) first, if no issue found, I will upload
+it for review.
 
+Thanks,
 
-
+Can Guo.
