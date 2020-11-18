@@ -2,86 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4C92B7A33
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859E12B7A41
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgKRJSa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Nov 2020 04:18:30 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:22279 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725772AbgKRJS3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:18:29 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-94-FSSv3gobMvWUdqkIex0ELA-1; Wed, 18 Nov 2020 09:18:25 +0000
-X-MC-Unique: FSSv3gobMvWUdqkIex0ELA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 18 Nov 2020 09:18:24 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 18 Nov 2020 09:18:24 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kuniyuki Iwashima' <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC PATCH bpf-next 0/8] Socket migration for SO_REUSEPORT.
-Thread-Topic: [RFC PATCH bpf-next 0/8] Socket migration for SO_REUSEPORT.
-Thread-Index: AQHWvMXedAT5e1uWx0Go2ulX1CPcBqnNnI0w
-Date:   Wed, 18 Nov 2020 09:18:24 +0000
-Message-ID: <01a5c211a87a4dd69940e19c2ff00334@AcuMS.aculab.com>
-References: <20201117094023.3685-1-kuniyu@amazon.co.jp>
-In-Reply-To: <20201117094023.3685-1-kuniyu@amazon.co.jp>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S1727287AbgKRJTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:19:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52496 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726172AbgKRJTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 04:19:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2E198ABDE;
+        Wed, 18 Nov 2020 09:19:18 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id E59BD603F9; Wed, 18 Nov 2020 10:19:17 +0100 (CET)
+Message-Id: <8a4f07e6ec47b681a32c6df5d463857e67bfc965.1605690824.git.mkubecek@suse.cz>
+From:   Michal Kubecek <mkubecek@suse.cz>
+Subject: [PATCH] eventfd: convert to ->write_iter()
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 18 Nov 2020 10:19:17 +0100 (CET)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuniyuki Iwashima
-> Sent: 17 November 2020 09:40
-> 
-> The SO_REUSEPORT option allows sockets to listen on the same port and to
-> accept connections evenly. However, there is a defect in the current
-> implementation. When a SYN packet is received, the connection is tied to a
-> listening socket. Accordingly, when the listener is closed, in-flight
-> requests during the three-way handshake and child sockets in the accept
-> queue are dropped even if other listeners could accept such connections.
-> 
-> This situation can happen when various server management tools restart
-> server (such as nginx) processes. For instance, when we change nginx
-> configurations and restart it, it spins up new workers that respect the new
-> configuration and closes all listeners on the old workers, resulting in
-> in-flight ACK of 3WHS is responded by RST.
+While eventfd ->read() callback was replaced by ->read_iter() recently,
+it still provides ->write() for writes. Since commit 4d03e3cc5982 ("fs:
+don't allow kernel reads and writes without iter ops"), this prevents
+kernel_write() to be used for eventfd and with set_fs() removal,
+->write() cannot be easily called directly with a kernel buffer.
 
-Can't you do something to stop new connections being queued (like
-setting the 'backlog' to zero), then carry on doing accept()s
-for a guard time (or until the queue length is zero) before finally
-closing the listening socket.
+According to eventfd(2), eventfd descriptors are supposed to be (also)
+used by kernel to notify userspace applications of events which now
+requires ->write_iter() op to be available (and ->write() not to be).
+Therefore convert eventfd_write() to ->write_iter() semantics. This
+patch also cleans up the code in a similar way as commit 12aceb89b0bc
+("eventfd: convert to f_op->read_iter()") did in read_iter().
 
-	David
+Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
+---
+ fs/eventfd.c | 43 +++++++++++++++++++++----------------------
+ 1 file changed, 21 insertions(+), 22 deletions(-)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/fs/eventfd.c b/fs/eventfd.c
+index df466ef81ddd..35973d216847 100644
+--- a/fs/eventfd.c
++++ b/fs/eventfd.c
+@@ -261,35 +261,36 @@ static ssize_t eventfd_read(struct kiocb *iocb, struct iov_iter *to)
+ 	return sizeof(ucnt);
+ }
+ 
+-static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t count,
+-			     loff_t *ppos)
++static ssize_t eventfd_write(struct kiocb *iocb, struct iov_iter *from)
+ {
++	struct file *file = iocb->ki_filp;
+ 	struct eventfd_ctx *ctx = file->private_data;
+-	ssize_t res;
+ 	__u64 ucnt;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 
+-	if (count < sizeof(ucnt))
++	if (iov_iter_count(from) < sizeof(ucnt))
+ 		return -EINVAL;
+-	if (copy_from_user(&ucnt, buf, sizeof(ucnt)))
++	if (unlikely(!copy_from_iter_full(&ucnt, sizeof(ucnt), from)))
+ 		return -EFAULT;
+ 	if (ucnt == ULLONG_MAX)
+ 		return -EINVAL;
+ 	spin_lock_irq(&ctx->wqh.lock);
+-	res = -EAGAIN;
+-	if (ULLONG_MAX - ctx->count > ucnt)
+-		res = sizeof(ucnt);
+-	else if (!(file->f_flags & O_NONBLOCK)) {
++	if (ULLONG_MAX - ctx->count <= ucnt) {
++		if ((file->f_flags & O_NONBLOCK) ||
++		    (iocb->ki_flags & IOCB_NOWAIT)) {
++			spin_unlock_irq(&ctx->wqh.lock);
++			return -EAGAIN;
++		}
+ 		__add_wait_queue(&ctx->wqh, &wait);
+-		for (res = 0;;) {
++		for (;;) {
+ 			set_current_state(TASK_INTERRUPTIBLE);
+-			if (ULLONG_MAX - ctx->count > ucnt) {
+-				res = sizeof(ucnt);
++			if (ULLONG_MAX - ctx->count > ucnt)
+ 				break;
+-			}
+ 			if (signal_pending(current)) {
+-				res = -ERESTARTSYS;
+-				break;
++				__remove_wait_queue(&ctx->wqh, &wait);
++				__set_current_state(TASK_RUNNING);
++				spin_unlock_irq(&ctx->wqh.lock);
++				return -ERESTARTSYS;
+ 			}
+ 			spin_unlock_irq(&ctx->wqh.lock);
+ 			schedule();
+@@ -298,14 +299,12 @@ static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t c
+ 		__remove_wait_queue(&ctx->wqh, &wait);
+ 		__set_current_state(TASK_RUNNING);
+ 	}
+-	if (likely(res > 0)) {
+-		ctx->count += ucnt;
+-		if (waitqueue_active(&ctx->wqh))
+-			wake_up_locked_poll(&ctx->wqh, EPOLLIN);
+-	}
++	ctx->count += ucnt;
++	if (waitqueue_active(&ctx->wqh))
++		wake_up_locked_poll(&ctx->wqh, EPOLLIN);
+ 	spin_unlock_irq(&ctx->wqh.lock);
+ 
+-	return res;
++	return sizeof(ucnt);
+ }
+ 
+ #ifdef CONFIG_PROC_FS
+@@ -328,7 +327,7 @@ static const struct file_operations eventfd_fops = {
+ 	.release	= eventfd_release,
+ 	.poll		= eventfd_poll,
+ 	.read_iter	= eventfd_read,
+-	.write		= eventfd_write,
++	.write_iter	= eventfd_write,
+ 	.llseek		= noop_llseek,
+ };
+ 
+-- 
+2.29.2
 
