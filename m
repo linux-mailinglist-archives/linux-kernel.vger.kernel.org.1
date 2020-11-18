@@ -2,80 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8AE2B7E91
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAC72B7E9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgKRNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:49:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726209AbgKRNtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:49:35 -0500
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D020D2065C;
-        Wed, 18 Nov 2020 13:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605707375;
-        bh=Uf6OeZIjyAMpkxI+7HgUeUSemvA3wxfOMZHmxJmLarU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yxB/KcCTGyW11MVhtTRAVTO0uUx0M4/3q2ukRHfgjFU/B4lwb3/6N7mrnG3nsUF+V
-         QavQj/B6Js0paJshW8sGYvWcuyBk+GdfDK9UrWV8vmcg/hcROdhMb2qZPCCTCK/FGq
-         c7+ayaXjgpkApN4u2Ew0ON7Y/CCsIlDTl4a6s6U0=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     jbacik@fb.com, ast@kernel.org
-Cc:     bpf@vger.kernel.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, luomeng12@huawei.com
-Subject: [PATCH] fail_function: remove a redundant mutex unlock
-Date:   Wed, 18 Nov 2020 22:49:31 +0900
-Message-Id: <160570737118.263807.8358435412898356284.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201110084245.3067324-1-luomeng12@huawei.com>
-References: <20201110084245.3067324-1-luomeng12@huawei.com>
-User-Agent: StGit/0.19
+        id S1726623AbgKRNt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:49:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726601AbgKRNtz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 08:49:55 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC0FC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 05:49:55 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id c9so3071833wml.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 05:49:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=JPxBsG7pLUv1UeZC7bK3HiUpZwCt2ccyPS8zKWnix68=;
+        b=jaAhxIS0kOFrub/2XYBkRaFdVAnK6ivWuYEyDekbW6fGKlwS+EgevqcDkbnpj78GsT
+         W5C7DMKvp8x+kwJoYYxYP7SB0UfQseuhVjrNjHQbDktOvRNZVVcmqV6fasQrHRqbiM1V
+         bt4uY2fSniJTFPq2hz8i2pOuDDnLwAeKCNGUSddr4CnzgKVe8xzzoWp+3hXjBQczi4Cn
+         fNHbTMGz0Bd928VK7xb/I4v6wjsyBrAjU48L/olEJ03WtVcqtgs2ITvSw8mZdtBz2LmD
+         bE5PJ1XT4pmgGXQwUusPBRV6MdX8PV22FfWopjaQIJgsYS0kAfuiIuitWyHzHNq54t4t
+         /VPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JPxBsG7pLUv1UeZC7bK3HiUpZwCt2ccyPS8zKWnix68=;
+        b=pc8CKCZiRkWoVxTZbs7ddzHwpdBYlALyVluhPVnLW/tgDF54Buv/ID8CI9z+ssy+21
+         ZgGtqIf6vix5oe72A2K4qAhoDXPWRWQEiAr21MJIoVXEGLNAMSKClCRTZszTRBGbpHko
+         HC4pEvRywHMyOPLk7hdtTd5dzarJXglFDWj66rD/QsxhnW54e5JgTcCHmSEnoBHkshaw
+         F32FNIgeDwsT4IVKUilFS/I4BjiHHETjmGvrrz77oYC02KKVYdhhfHEiZwi0zzonfk1U
+         37mNc6F84b7SQV5SZdgf5/y7WycaUzdm0DoJ3HVuHU+jYKdTgev06ncXRTi4YEn4k6pa
+         yIIA==
+X-Gm-Message-State: AOAM530tJSxpGvnWBQz/l6fRos9HJa9usylQ+Pe6GSCjK0XFyvvirRcm
+        IZekF8dyUwi1KvMCmGdZce3yJCX/X/xJJvMu
+X-Google-Smtp-Source: ABdhPJyAMUqiNH0sMSJ+6gPz+g0YzrWzNKXgmPOPpNTTm967Lj9FBDf8f/eZpYPQ/PmJkINZJ39t2Q==
+X-Received: by 2002:a1c:a344:: with SMTP id m65mr112832wme.77.1605707394087;
+        Wed, 18 Nov 2020 05:49:54 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id n15sm33575358wrq.48.2020.11.18.05.49.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 05:49:53 -0800 (PST)
+Date:   Wed, 18 Nov 2020 13:49:48 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Soham Biswas <sohambiswas41@gmail.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, thierry.reding@gmail.com,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: core: Use octal permission
+Message-ID: <20201118134948.GS1869941@dell>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+ <20201118104730.4270-1-sohambiswas41@gmail.com>
+ <20201118124312.wk6cmnktxefn7k7m@pengutronix.de>
+ <CAMmt7ePTtM1hj6C4dgYO2o-A1C9C7NdnJHsnqSUir13ZjeEXTg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMmt7ePTtM1hj6C4dgYO2o-A1C9C7NdnJHsnqSUir13ZjeEXTg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+On Wed, 18 Nov 2020, Soham Biswas wrote:
 
-Fix a mutex_unlock() issue where before copy_from_user() is
-not called mutex_locked.
+> Sure will do that. Sorry for the inconvenience, I am a bit new to the
+> process of emailing patches. Should I mark the next patch as v3?
 
-Fixes: 4b1a29a7f542 ("error-injection: Support fault injection framework")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- 0 files changed
+Make sure the text you are quoting does above your reply.
 
-diff --git a/kernel/fail_function.c b/kernel/fail_function.c
-index 63b349168da7..b0b1ad93fa95 100644
---- a/kernel/fail_function.c
-+++ b/kernel/fail_function.c
-@@ -253,7 +253,7 @@ static ssize_t fei_write(struct file *file, const char __user *buffer,
- 
- 	if (copy_from_user(buf, buffer, count)) {
- 		ret = -EFAULT;
--		goto out;
-+		goto out_free;
- 	}
- 	buf[count] = '\0';
- 	sym = strstrip(buf);
-@@ -307,8 +307,9 @@ static ssize_t fei_write(struct file *file, const char __user *buffer,
- 		ret = count;
- 	}
- out:
--	kfree(buf);
- 	mutex_unlock(&fei_lock);
-+out_free:
-+	kfree(buf);
- 	return ret;
- }
- 
+This is called top-posting and is frowned upon.
 
+Yes, please bump the version number - it will make the tooling happy.
+
+> On Wed, 18 Nov 2020 at 18:13, Uwe Kleine-König
+> <u.kleine-koenig@pengutronix.de> wrote:
+> >
+> > [added "v2" to the subject, would have been better if you had already
+> > done that. I don't know if/how this confuses tools like b4 and patchwork]
+> >
+> > Hello,
+> >
+> > On Wed, Nov 18, 2020 at 04:17:30PM +0530, Soham Biswas wrote:
+> > > Fixes the following warning generated by checkpatch:
+> > >
+> > > drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
+> > > not preferred. Consider using octal permissions '0444'.
+> > >
+> > > +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+> > >                           &pwm_debugfs_fops);
+> >
+> > something like: "Permission bits are easier readable in octal than with
+> > using the symbolic names." in the commit log would be good for those of
+> > us who missed why this was added to checkpatch.
+> >
+> > Best regards
+> > Uwe
+> >
+> >
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
