@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732B82B7301
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AA12B7305
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:28:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgKRAYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:24:40 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:22958 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbgKRAYj (ORCPT
+        id S1727023AbgKRAYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:24:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgKRAYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:24:39 -0500
+        Tue, 17 Nov 2020 19:24:55 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45193C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:24:55 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id 2so20675178ybc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:24:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1605659079; x=1637195079;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=gFlZ38MwH8yQdiFbxPN+HVi8DqXGDlanSljdPiGUeDM=;
-  b=ORMuFMU+AatopXViHUN422do7kWLj/Z7Q2lEi1cOnvIypb5XFeDIkIPr
-   5j8QEOuMjcOCu2XbtjuYTGZL3eiYx1HJE9eJCF5kdRqFslT/HmxeJOeGU
-   DsIpZpPT2MHn+C4VbNLeGBlfwAEL9Nes28IoWFUgLLDfK6ED+pDIfZnE6
-   M=;
-X-IronPort-AV: E=Sophos;i="5.77,486,1596499200"; 
-   d="scan'208";a="95133538"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 18 Nov 2020 00:24:33 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 1A887A220A;
-        Wed, 18 Nov 2020 00:24:33 +0000 (UTC)
-Received: from EX13D07UWB003.ant.amazon.com (10.43.161.66) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 18 Nov 2020 00:24:32 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
- EX13D07UWB003.ant.amazon.com (10.43.161.66) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 18 Nov 2020 00:24:32 +0000
-Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
- (172.22.96.68) by mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP
- Server id 15.0.1497.2 via Frontend Transport; Wed, 18 Nov 2020 00:24:31 +0000
-Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
-        id 7BE4440E2D; Wed, 18 Nov 2020 00:24:31 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 00:24:31 +0000
-From:   Anchal Agarwal <anchalag@amazon.com>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <anchalag@amazon.com>
-Subject: [PATCH] NFS: Retry the CLOSE if the embedded GETATTR is rejected
- with ERR_STALE
-Message-ID: <20201118002431.GA6941@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0huT1R6YxHvGQqjy0+YuKw2JldEAQJIjUv13qFD6dSE=;
+        b=VUG0beWyUt8t9AI5oq/YFRQwecBElOINxFbPhyy/8GofdinFclo6zu1uIepaA67qsR
+         Xdu5eTDwkSe5uUpSlKtgjK0VyUtV39YYZYRjJPR/Ziqj4fulhWJpDjOZbeX6TQzmeskI
+         ZftGi1itFwsOncl+z7StJOtEbHfLX8dmPt8eYyM7NemrIloKmnKydQskGZPWKLInSCRR
+         vCUSnjBQOKXtUZtdVrHnYHv2ViwsBR8FWZPBeYlvygsge5OiIzAPlV9r9qhHWGPDqO7e
+         oOh8ad6TuwqklUzBXAwSkO15r5Mj6PecgJc0P2X+ckwTZOKQve3wW/tM/dbsi/VpsRhh
+         zZuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0huT1R6YxHvGQqjy0+YuKw2JldEAQJIjUv13qFD6dSE=;
+        b=HwlnNzluH+YSXxE5WYrzaVlttHUpoFB6LMiEmGetVjqFtgd9HcPxL04lzjJETnXUHf
+         0JXgi04cjEUtoewNj+1sYgBrNDdIonzn4JrzQU2vvNmpfM17OcCnhfQMi8eG7ZXa0LYb
+         ZJ4eIYl24BhZFLU8pyEiV/2d7ibEJTh7GAt5WjPyqHz8AJjieCdrTxjU8NexLWO5OgnY
+         VbORmH6QMUPmZU0mRWHHwODdmgkBF711iy7jvX6E505uFXYsHAFFzBjbUlUHgrrNdbr0
+         uwf6i0OeXpf2GNjCkQ0uLfXc+eCXiGtKwwThoYNXxg1ZFgXqsDv/CukVL/8nmZ3+tqBH
+         YdNA==
+X-Gm-Message-State: AOAM532x/vywAFgucD2oT35w/ZEsX4WE1uvOtNL7wm3Kl1PncLVZIXaU
+        +MtaGpC3WwZoMKZHu8iiMbTT5WNEChaXW9oW3V8=
+X-Google-Smtp-Source: ABdhPJyrWC2hnz0a+YpjEc/pPbGRaoxoIvPVC89x34vc5rx9dRHAKUY+BD84V8Qa6YI/dCAH4D7960lOGz/NIsdgZDw=
+X-Received: by 2002:a25:61c5:: with SMTP id v188mr3618112ybb.422.1605659094582;
+ Tue, 17 Nov 2020 16:24:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20201118000751.845172-1-ndesaulniers@google.com> <20201118000751.845172-2-ndesaulniers@google.com>
+In-Reply-To: <20201118000751.845172-2-ndesaulniers@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 18 Nov 2020 01:24:43 +0100
+Message-ID: <CANiq72=jEx5o_m72WoeRq9r74YGtedK4AE=4b=j2zS6M60ESaA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] powerpc: boot: include compiler_attributes.h
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Miguel Ojeda <ojeda@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If our CLOSE RPC call is rejected with an ERR_STALE error, then we
-should remove the GETATTR call from the compound RPC and retry.
-This could happen in a scenario where two clients tries to access
-the same file. One client opens the file and the other client removes
-the file while it's opened by first client. When the first client
-attempts to close the file the server returns ESTALE and the file ends
-up being leaked on the server. This depends on how nfs server is
-configured and is not reproducible if running against nfsd.
+On Wed, Nov 18, 2020 at 1:08 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> It was also noted in 6a9dc5fd6170 that we could -D__KERNEL__ and
+> -include compiler_types.h like the main kernel does, though testing that
+> produces a whole sea of warnings to cleanup.
 
-Signed-off-by: Anchal Agarwal <anchalag@amazon.com>
----
- fs/nfs/nfs4proc.c | 1 +
- 1 file changed, 1 insertion(+)
+(Re; for Gustavo to consider since he took it now): I would add a
+comment noting this as a reminder -- it also helps to entice a
+cleanup.
 
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index 9e0ca9b2b210..40e4259bc83e 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -3548,6 +3548,7 @@ static void nfs4_close_done(struct rpc_task *task, void *data)
- 			res_stateid = &calldata->res.stateid;
- 			renew_lease(server, calldata->timestamp);
- 			break;
-+		case -ESTALE:
- 		case -NFS4ERR_ACCESS:
- 			if (calldata->arg.bitmask != NULL) {
- 				calldata->arg.bitmask = NULL;
--- 
-2.16.6
-
+Cheers,
+Miguel
