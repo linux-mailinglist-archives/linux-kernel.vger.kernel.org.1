@@ -2,152 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AF32B7384
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0D42B738C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgKRBLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 20:11:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgKRBLO (ORCPT
+        id S1729172AbgKRBLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 20:11:17 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59438 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728073AbgKRBLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 20:11:14 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D2AC061A48;
-        Tue, 17 Nov 2020 17:11:13 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id v20so467455ljk.8;
-        Tue, 17 Nov 2020 17:11:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k1uTQmCaLL4z76gRIZgW5OMObzd3UGBaR1Yyv4E9eQk=;
-        b=Rto2KIJM7zEuqxypzt93PDHfcpYVAnMQjlVgugOtPIY1GPn2Tw90KZC8IDmMAgskdH
-         MpG1EIk215aNH6cupXTUHxfQ8Bbl+mpgpfJp0peA/fe0RrKAAWolRMLkeCG7jLDMd11k
-         zJK4RTe+XCWdXkNCnfBznOiiUS7Lj+G1iWigoKsKEjh8zCYqadxrwBTxZ+XkfHdKSHwx
-         XHlCfihABAX4t7PfS2ZuU7+/Hwz0tzGdqYDBz7M9CVw2X7Lf2X+uu4fsie3usrLuIv++
-         4I2MXFy1zla+tRXxG6yQFQyQ9iVrmAP9Z9zeYW5/nkcLo2Jbw0StYzyA55eqBiNnqDCJ
-         3/Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k1uTQmCaLL4z76gRIZgW5OMObzd3UGBaR1Yyv4E9eQk=;
-        b=s9i9yfBZbr+hym+iSeP94VxfXlZ61ERB9p4NlF95e+e/tC2q55mJytfrQN+AGFbqXb
-         oEglMg2EzVxBhal9s2khcnzJsNYoeOzw1YvcgdCXLfdbBlbR77FndwTluNFsI7T70bzf
-         RUQdRhz1mutpkcE/oX69S/LB/s7CYQl51ljOyqNL5kY4ZAFkwNrvIA7OT3ChaEu1qP5/
-         bUKv0/qWbZ6hZKy8Ct9xKM694nvbX2/CbyzILNLui7h/JjgMQpDwsioCUuMAqtlugEq8
-         cU/hp5M9QW1ZqfrHMYkvhtOajjoxgSQzUJjrV9uQ5HDaFGOOmlk/FEn7Rhoy4vWN+dsm
-         DSgg==
-X-Gm-Message-State: AOAM5329xkolMYWu6s3tTgpIAhghsbzQWowk5YXWE519GC+mMtm+/4RJ
-        T0MrCWWD4u3Syyh3G/9yEwyw0nSzB7u0BhElLU0=
-X-Google-Smtp-Source: ABdhPJzb6cde2dyBm3bIrgT1Vq6ukk4rXZepBUsZDjJ6oDvxq1XcIFvseiplfDvZZYigk6moJ3qfcsvtkmrpxniKtxE=
-X-Received: by 2002:a2e:8982:: with SMTP id c2mr3041179lji.121.1605661872055;
- Tue, 17 Nov 2020 17:11:12 -0800 (PST)
+        Tue, 17 Nov 2020 20:11:15 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AI11bOG016714;
+        Tue, 17 Nov 2020 20:11:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=LSyIP//E1kr/UpSMXW5SEKPnBCVX3G7oPATqzrZa3qc=;
+ b=Fje5IudKFAiImsrB/lqeEZdXcrUrSVeo/8rA3ef+rcwOWyeI6gSo08G/nP4gXmqtqk0a
+ HReP558dVDw+21OJxjOCnGOeP/yD16Maw/vBM48TkrZZ4Tabr38G/0TLGERuBVHcD0+U
+ 7epjxBGVfbzuc+e8jrN+uOX0uBQugDEi8zjj92P2Xker8rr4Y+qzRoIxfgpYIjg3ctX/
+ kwK03qAsol7KUlhGxzLYPsMUyvf/52nTAV9moBltSP12kNhji1FJHOwwV4Bt53YTMSjj
+ Lkl/JNlspWAHVEaDifUrz/iBVJBCBb+qMvhpXQmyovGBYnj20nEy5Lbjw3fKO7ULopy9 5Q== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34v9pfxg2r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 20:11:09 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AI11riP014915;
+        Wed, 18 Nov 2020 01:11:08 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma03wdc.us.ibm.com with ESMTP id 34t6v92mqp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Nov 2020 01:11:08 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AI1B1SV49938714
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Nov 2020 01:11:01 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5A3A8BE054;
+        Wed, 18 Nov 2020 01:11:07 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA286BE04F;
+        Wed, 18 Nov 2020 01:11:06 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Nov 2020 01:11:06 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH v3 3/6] ibmvfc: add helper for testing capability flags
+Date:   Tue, 17 Nov 2020 19:11:01 -0600
+Message-Id: <20201118011104.296999-4-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201118011104.296999-1-tyreld@linux.ibm.com>
+References: <20201118011104.296999-1-tyreld@linux.ibm.com>
 MIME-Version: 1.0
-References: <20201117034108.1186569-1-guro@fb.com> <20201117034108.1186569-7-guro@fb.com>
- <41eb5e5b-e651-4cb3-a6ea-9ff6b8aa41fb@iogearbox.net> <20201118004634.GA179309@carbon.dhcp.thefacebook.com>
- <20201118010703.GC156448@carbon.DHCP.thefacebook.com>
-In-Reply-To: <20201118010703.GC156448@carbon.DHCP.thefacebook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 17 Nov 2020 17:11:00 -0800
-Message-ID: <CAADnVQ+vSLfgVCXB7KnXMBzVe3rL20qLwrKf=xrJXpZTmUEnYA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 06/34] bpf: prepare for memcg-based memory
- accounting for bpf maps
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_15:2020-11-17,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ impostorscore=0 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1015 priorityscore=1501
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011180000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 5:07 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Tue, Nov 17, 2020 at 04:46:34PM -0800, Roman Gushchin wrote:
-> > On Wed, Nov 18, 2020 at 01:06:17AM +0100, Daniel Borkmann wrote:
-> > > On 11/17/20 4:40 AM, Roman Gushchin wrote:
-> > > > In the absolute majority of cases if a process is making a kernel
-> > > > allocation, it's memory cgroup is getting charged.
-> > > >
-> > > > Bpf maps can be updated from an interrupt context and in such
-> > > > case there is no process which can be charged. It makes the memory
-> > > > accounting of bpf maps non-trivial.
-> > > >
-> > > > Fortunately, after commit 4127c6504f25 ("mm: kmem: enable kernel
-> > > > memcg accounting from interrupt contexts") and b87d8cefe43c
-> > > > ("mm, memcg: rework remote charging API to support nesting")
-> > > > it's finally possible.
-> > > >
-> > > > To do it, a pointer to the memory cgroup of the process which created
-> > > > the map is saved, and this cgroup is getting charged for all
-> > > > allocations made from an interrupt context.
-> > > >
-> > > > Allocations made from a process context will be accounted in a usual way.
-> > > >
-> > > > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > > > Acked-by: Song Liu <songliubraving@fb.com>
-> > > [...]
-> > > > +#ifdef CONFIG_MEMCG_KMEM
-> > > > +static __always_inline int __bpf_map_update_elem(struct bpf_map *map, void *key,
-> > > > +                                          void *value, u64 flags)
-> > > > +{
-> > > > + struct mem_cgroup *old_memcg;
-> > > > + bool in_interrupt;
-> > > > + int ret;
-> > > > +
-> > > > + /*
-> > > > +  * If update from an interrupt context results in a memory allocation,
-> > > > +  * the memory cgroup to charge can't be determined from the context
-> > > > +  * of the current task. Instead, we charge the memory cgroup, which
-> > > > +  * contained a process created the map.
-> > > > +  */
-> > > > + in_interrupt = in_interrupt();
-> > > > + if (in_interrupt)
-> > > > +         old_memcg = set_active_memcg(map->memcg);
-> > > > +
-> > > > + ret = map->ops->map_update_elem(map, key, value, flags);
-> > > > +
-> > > > + if (in_interrupt)
-> > > > +         set_active_memcg(old_memcg);
-> > > > +
-> > > > + return ret;
-> > >
-> > > Hmm, this approach here won't work, see also commit 09772d92cd5a ("bpf: avoid
-> > > retpoline for lookup/update/delete calls on maps") which removes the indirect
-> > > call, so the __bpf_map_update_elem() and therefore the set_active_memcg() is
-> > > not invoked for the vast majority of cases.
-> >
-> > I see. Well, the first option is to move these calls into map-specific update
-> > functions, but the list is relatively long:
-> >   nsim_map_update_elem()
-> >   cgroup_storage_update_elem()
-> >   htab_map_update_elem()
-> >   htab_percpu_map_update_elem()
-> >   dev_map_update_elem()
-> >   dev_map_hash_update_elem()
-> >   trie_update_elem()
-> >   cpu_map_update_elem()
-> >   bpf_pid_task_storage_update_elem()
-> >   bpf_fd_inode_storage_update_elem()
-> >   bpf_fd_sk_storage_update_elem()
-> >   sock_map_update_elem()
-> >   xsk_map_update_elem()
-> >
-> > Alternatively, we can set the active memcg for the whole duration of bpf
-> > execution. It's simpler, but will add some overhead. Maybe we can somehow
-> > mark programs calling into update helpers and skip all others?
->
-> Actually, this is problematic if a program updates several maps, because
-> in theory they can belong to different cgroups.
-> So it seems that the first option is the way to go. Do you agree?
+Testing the NPIV Login response capabilities is a long winded process of
+dereferencing the vhost->login_buf->resp.capabilities field, then byte
+swapping that value to host endian, and performing the bitwise test.
+Currently we only ever check this in ibmvfc_cancel_all(), but follow-up
+patches will need to regularly check for targetWWPN and channelization
+support.
 
-May be instead of kmalloc_node() that is used by most of the map updates
-introduce bpf_map_kmalloc_node() that takes a map pointer as an argument?
-And do set_memcg inside?
+Add a helper to simplify checking various VIOS capabilities, namely
+ibmvfc_check_caps().
+
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+---
+ drivers/scsi/ibmvscsi/ibmvfc.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index d33b24668367..a68602cd1255 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -138,6 +138,13 @@ static void ibmvfc_tgt_move_login(struct ibmvfc_target *);
+ 
+ static const char *unknown_error = "unknown error";
+ 
++static int ibmvfc_check_caps(struct ibmvfc_host *vhost, unsigned long cap_flags)
++{
++	u64 host_caps = be64_to_cpu(vhost->login_buf->resp.capabilities);
++
++	return (host_caps & cap_flags) ? 1 : 0;
++}
++
+ #ifdef CONFIG_SCSI_IBMVFC_TRACE
+ /**
+  * ibmvfc_trc_start - Log a start trace entry
+@@ -2240,7 +2247,7 @@ static int ibmvfc_cancel_all(struct scsi_device *sdev, int type)
+ 		tmf->common.length = cpu_to_be16(sizeof(*tmf));
+ 		tmf->scsi_id = cpu_to_be64(rport->port_id);
+ 		int_to_scsilun(sdev->lun, &tmf->lun);
+-		if (!(be64_to_cpu(vhost->login_buf->resp.capabilities) & IBMVFC_CAN_SUPPRESS_ABTS))
++		if (!ibmvfc_check_caps(vhost, IBMVFC_CAN_SUPPRESS_ABTS))
+ 			type &= ~IBMVFC_TMF_SUPPRESS_ABTS;
+ 		if (vhost->state == IBMVFC_ACTIVE)
+ 			tmf->flags = cpu_to_be32((type | IBMVFC_TMF_LUA_VALID));
+-- 
+2.27.0
+
