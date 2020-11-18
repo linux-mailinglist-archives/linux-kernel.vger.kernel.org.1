@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C7E2B7324
+	by mail.lfdr.de (Postfix) with ESMTP id CB97F2B7325
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgKRAcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727611AbgKRAcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:32:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbgKRAcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Nov 2020 19:32:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgKRAcp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:32:45 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CB3C0613CF;
-        Tue, 17 Nov 2020 16:32:45 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 62so17142878pgg.12;
-        Tue, 17 Nov 2020 16:32:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ITkylofkTnKCttMpfYe2p+d8np5whLu0Pk9eE30l4wQ=;
-        b=IFcF64mNCWsknC9yTYHfwyJDHGmvEVvamwsYDbNUGdLblb2by/NeNHX7lbw2/S9HQg
-         RAX/aqTdXYCoUIqPu2usaSlvrUt1N6xqZ8MAYp8JBTd18b1Lx8EDTtmBGWeXV7FgZZo0
-         S+gEddgyuMT44F+MdZ57M6ZcWAqucU0RMe/xcVyWNdpVHNoFjt1xXmyVfwWkVMLjJpZ6
-         dCcabEHjtHVbTqbpi+J01ZjzTeWubqVh0Kqn8Xenv9DYG30qEJEXBxH64yc+SMIEOPqD
-         GS5h1utuz08CtEuzg8IKfTL43FtvJdL1osKOceyDdGU57dGwjIDTSum4Yl51Gz6G8eAW
-         /KDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ITkylofkTnKCttMpfYe2p+d8np5whLu0Pk9eE30l4wQ=;
-        b=VNXeg8l99hmHSJ/M2WDlfw4tZPaUL4MZDX6mkDuvARCNDpBIBmAmMzPCP86QJ9c+sU
-         pbbu5+jZcTtM3BQysA0EKVeRlgKTGf7mXOhw4ls5FdPtg1bgG6jqEaV3qx9SGc/gbK6s
-         6uioTyqa9083u4ykxU617r7/dObXlvELoua++8C7r6OP2T9fljkrpQL4ga4oTDFIFTge
-         a0jn9kTEuRC3J6YE/JqCdZ8P9aTPgm7lCEJr42IeK+BGwvTiaMcv87Y52nwREw/my/o4
-         74SCilMiyNb97o4u7CMLZUf70doluLWwaHzCBWQ+juPH4/mo6AoyeXPHum4zWEzONIU+
-         6O9w==
-X-Gm-Message-State: AOAM531KuP40WWisK2QKY+IBpct08Cwjrbn+hQsgUEiIXYOnPnLTdK2X
-        T7RxVL+4fi6TDOZoGn3HAh4=
-X-Google-Smtp-Source: ABdhPJwRY+DH4YW7v+Sb7Wp8lwT3/MZeCcuj3px8fgqzG1apTirOUwPp8FXJPQvVO2RUnbEiCXX3RQ==
-X-Received: by 2002:a63:f318:: with SMTP id l24mr5717770pgh.193.1605659565084;
-        Tue, 17 Nov 2020 16:32:45 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id a23sm22960637pfl.29.2020.11.17.16.32.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 16:32:44 -0800 (PST)
-Date:   Tue, 17 Nov 2020 16:32:42 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Oleksij Rempel <linux@rempel-privat.de>
-Cc:     linux-input@vger.kernel.org, Anatolij Gustschin <agust@denx.de>,
-        linux-kernel@vger.kernel.org,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: Re: [PATCH] Input: ads7846 - fix unaligned access on 7845
-Message-ID: <20201118003242.GF2009714@dtor-ws>
-References: <20201112012742.GA3608551@dtor-ws>
- <de67681c-b392-198c-f73e-4c9073d8f1e3@rempel-privat.de>
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9CD92067D;
+        Wed, 18 Nov 2020 00:32:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605659565;
+        bh=O+dUlNl3bmWfAxsEgXyHiuNMBnDv6mdTILfyBMvVAoE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=zwiEDk//OgB/AKfAgwZFVLZGZUf1KD+qmqVy4g/G0JR4QMFOiB1ohFnwpG0XTnewM
+         Hp0ls4cpAusixlmDJuNq+dg8kNT8HtGJCAnmFmHjEhl2lc5oPQsEMSSm4eszoXEtQH
+         kcXh86pPGwuG2xdQyrD2auHJggoqw+P7YAZqTia4=
+Date:   Tue, 17 Nov 2020 16:32:45 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3] net/tun: Call netdev notifiers
+Message-ID: <20201117163245.4ff522ef@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201116104121.20884-1-ms@dev.tdt.de>
+References: <20201116104121.20884-1-ms@dev.tdt.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de67681c-b392-198c-f73e-4c9073d8f1e3@rempel-privat.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 09:04:23AM +0100, Oleksij Rempel wrote:
-> Hello Dmitry,
+On Mon, 16 Nov 2020 11:41:21 +0100 Martin Schiller wrote:
+> Call netdev notifiers before and after changing the device type.
 > 
-> Am 12.11.20 um 02:27 schrieb Dmitry Torokhov:
-> > req->sample[1] is not naturally aligned at word boundary, and therefore
-> > we should use get_unaligned_be16() when accessing it.
-> >
-> > Fixes: 3eac5c7e44f3 ("Input: ads7846 - extend the driver for ads7845 controller support")
-> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Signed-off-by: Martin Schiller <ms@dev.tdt.de>
+> ---
 > 
-> I do not have ads7845, but i  assume i need to resend my patch with the same fix. Correct?
+> Change from v2:
+> use subject_prefix 'net-next' to fix 'fixes_present' issue
+> 
+> Change from v1:
+> fix 'subject_prefix' and 'checkpatch' warnings
+> 
+> ---
+>  drivers/net/tun.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index 3d45d56172cb..2d9a00f41023 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -3071,9 +3071,13 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
+>  				   "Linktype set failed because interface is up\n");
+>  			ret = -EBUSY;
+>  		} else {
+> +			call_netdevice_notifiers(NETDEV_PRE_TYPE_CHANGE,
+> +						 tun->dev);
 
-I do not think your patches are affected, so I just applied it together
-with yours.
+This call may return an error (which has to be unpacked with
+notifier_to_errno()).
 
-Thanks.
+>  			tun->dev->type = (int) arg;
+>  			netif_info(tun, drv, tun->dev, "linktype set to %d\n",
+>  				   tun->dev->type);
+> +			call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE,
+> +						 tun->dev);
+>  			ret = 0;
+>  		}
+>  		break;
 
--- 
-Dmitry
