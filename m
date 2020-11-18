@@ -2,76 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F1E2B7C09
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 241F42B7C0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbgKRLA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:00:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57040 "EHLO mail.kernel.org"
+        id S1727855AbgKRLBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:01:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726510AbgKRLA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:00:59 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        id S1726510AbgKRLBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 06:01:07 -0500
+Received: from localhost (unknown [122.171.203.152])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1657F238E6;
-        Wed, 18 Nov 2020 11:00:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C80F0221FB;
+        Wed, 18 Nov 2020 11:01:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605697258;
-        bh=LtPEeV37jqaOG4N9SOqPyVH8faRroDw/Z5ZgYdxXRZw=;
+        s=default; t=1605697266;
+        bh=87AtqepXzMfHjkY3wh4VeLjokOPuvtn3vK0COLEgwwM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xFl5Ac2BRrER3nj5aMDBXN0McTSlR/sLpDPCkWLgqgJS9Q5xlkgPD4kTUrE8TQYYI
-         sx8OfcQSC4t80HOf2jHMVz9iq4sLsIhEW7w8m8wZPfOIXEIMZZi/VFU/PPzfSUofcL
-         NrP2We1WuNGcWzXZM/8uBTXDmkYLE6Q2ssyShfU0=
-Date:   Wed, 18 Nov 2020 05:00:57 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the gpio tree with the kspp-gustavo
- tree
-Message-ID: <20201118110057.GA30719@embeddedor>
-References: <20201118142445.461d3792@canb.auug.org.au>
- <CACRpkdahE38tamkVZLx+m3nkE_dDfaN-u7gEwH48BEnf1BvsFg@mail.gmail.com>
- <CAHp75VevuYCZVPw8HHcaoGdHBvXxHTNnujbf2BUyBECmFHZFDQ@mail.gmail.com>
- <CAHp75Vcuxc1Ypo6GV_a2hACWPFqg4m8mZr8mLHD=LgWpLLEWMg@mail.gmail.com>
+        b=S+gEUnDIrRyE6PH+eMT36gk1fs25r6HEI1O2Jr2WPSJN6HUKHHMyTwEQU5qQo7v0X
+         VW+g9YZuUvt0QJNpRiRJGYj14wOyf4En3yZfw1cp/aQiYNMpGgdlfMiRkdOW0vulZW
+         2g5sKjCHuViCxRDpxLRYN8JsDEz1GGgsCh/k2Rj4=
+Date:   Wed, 18 Nov 2020 16:31:02 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Frank Lee <frank@allwinnertech.com>
+Cc:     tiny.windzz@gmail.com, devicetree@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [RESEND PATCH 04/19] dt-bindings: dma: allwinner,sun50i-a64-dma:
+ Add A100 compatible
+Message-ID: <20201118110102.GP50232@vkoul-mobl>
+References: <cover.1604988979.git.frank@allwinnertech.com>
+ <f15a18e9b8868e8853db1b5a3d1e411b0ac1c63a.1604988979.git.frank@allwinnertech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75Vcuxc1Ypo6GV_a2hACWPFqg4m8mZr8mLHD=LgWpLLEWMg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <f15a18e9b8868e8853db1b5a3d1e411b0ac1c63a.1604988979.git.frank@allwinnertech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On Wed, Nov 18, 2020 at 12:52:25PM +0200, Andy Shevchenko wrote:
-> On Wed, Nov 18, 2020 at 11:29 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Wed, Nov 18, 2020 at 9:53 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > > On Wed, Nov 18, 2020 at 4:24 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > >   b8e0b635e6e6 ("gpio: Fix fall-through warnings for Clang")
-> > > >
-> > > > from the kspp-gustavo tree and commit:
+On 10-11-20, 14:26, Frank Lee wrote:
+> From: Yangtao Li <frank@allwinnertech.com>
 > 
-> Gustavo, one remark though. It's not okay to hide changes from
-> maintainers. I have checked
-> b8e0b635e6e6 ("gpio: Fix fall-through warnings for Clang") and found
-> nothing except your SoB.
-> 
-> Please, inform maintainers about changes you are doing in their realm(s).
+> Add a binding for A100's dma controller.
 
-Sorry about that. I'll remove that change from my tree. I just wanted to
-test some changes in linux-next.
+Applied, thanks
 
-Thanks for the feedback.
---
-Gustavo
-
-
+-- 
+~Vinod
