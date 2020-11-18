@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8604E2B8823
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B386E2B882A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:10:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgKRXG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 18:06:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726588AbgKRXG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:06:56 -0500
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5511246F5;
-        Wed, 18 Nov 2020 23:07:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605740832;
-        bh=ozEp87BLC35xPyBVmDNmQ6DkEOrGPDG+EAMmXG54HQ4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GyVmbiubYH+DB+w+71RKjxb6bgYshMPjCmqYnRga9x1cUqzxDer+7gQRWsW6gCe69
-         8mzHYvJ8kjyuf0y5YpTNGejuVc1JiflOf2lFlJXG0CqH8vLKCUbATja58auHlmBkas
-         4pPw3fiMcY8MbqZJo6iCOOW0bXOgGEyDtip+0hWs=
-Received: by mail-oo1-f51.google.com with SMTP id h10so872318ooi.10;
-        Wed, 18 Nov 2020 15:07:12 -0800 (PST)
-X-Gm-Message-State: AOAM533jYvtGCfSEq5mbm87DhbZ4ZcQDDpMbsYGJq7XrNqjnTXI+CRwD
-        zWC5jDyz8eXofgzTqCXzWKNWmO+wYcZ/LYZ9S1Y=
-X-Google-Smtp-Source: ABdhPJzhjKMJ9WU+vCAYaN4v+U+O1urFrWl4AEKRcYEc6mJ61WIU8kTJrw45Rs9k7wUhrxisrmJIXMm3W8M1tsGJgL4=
-X-Received: by 2002:a4a:844f:: with SMTP id m15mr8299508oog.41.1605740831825;
- Wed, 18 Nov 2020 15:07:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20201112183839.1009297-1-natechancellor@gmail.com>
- <CAKwvOdkShrqgNDWO0bsPcPZLx-+u79mfmPrGy7CnSKZVdcYzSA@mail.gmail.com>
- <20201113005347.GA3625030@ubuntu-m3-large-x86> <CAMj1kXHYG7d-BDtbZ-4+wGdHb0rxXiMLuSvSMW_JFHgp3G6kTg@mail.gmail.com>
- <CAKwvOdk1ir=D---9xVAxcErJWSGVxK1Mv6AC=TK3RVwNdcvFjw@mail.gmail.com> <CAKwvOdnauFdUgS0Ww=O-PHrXWhXQEEYd806NUcy8_7MOG0Uo2g@mail.gmail.com>
-In-Reply-To: <CAKwvOdnauFdUgS0Ww=O-PHrXWhXQEEYd806NUcy8_7MOG0Uo2g@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 19 Nov 2020 00:06:59 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFrm+M6vN+e8KqBDHxMxSPTaH_hWT2fg+Z3iY3hV4Hcsw@mail.gmail.com>
-Message-ID: <CAMj1kXFrm+M6vN+e8KqBDHxMxSPTaH_hWT2fg+Z3iY3hV4Hcsw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Always link with '-z norelro'
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jian Cai <jiancai@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Fangrui Song <maskray@google.com>,
-        Dan Rue <dan.rue@linaro.org>, Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727194AbgKRXJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 18:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726457AbgKRXJe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 18:09:34 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CECDC0613D4;
+        Wed, 18 Nov 2020 15:09:51 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id j19so2411168pgg.5;
+        Wed, 18 Nov 2020 15:09:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=BFitlouLqV5WjAV4yis+SNy1ksEBkbSXVdeVWFMxCgQ=;
+        b=rEThL2sa7EQ5kIQx32rvLbR/kFdz1zobSEUYn4oWYiSZ4fA73aYTdSOu4tSDHYJoMm
+         T600ICRuLEf/w3lxxqIF8O2/k2boZvhWmlWC8MX+OBnC/RnG8giTFafP7Q+YW95HAbqV
+         Zh+cqbqUeMs9FLz1SCwfZ4jD7b8lcgyEUlUgelSgw0eBLuSLueMKtyoE7G/YpKRS4p/y
+         tB11JM1yp8XTNVQsAkHU/bDEB40dw6FVx2yrsvm+KlQcVnEEr2pBhz6MbkycbDgakMmb
+         1jRj1sawhQ1dr3AWU9pmAdj7W9EmlaN+HWUnWEr7nC2hAOAjAYabbl9r5HrGC59WJztp
+         wUmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=BFitlouLqV5WjAV4yis+SNy1ksEBkbSXVdeVWFMxCgQ=;
+        b=q2XgbAfBA9tG3stRvp+QNkm6w0MCsQcW5yAjtUUk3qnmz/Wic4VbSgWeThF80Xx/ER
+         WTA+2oFI2S1Rpqi7M1FWMCqVA7ZGG32jiGt4uk5VdK3/VwuXDayGlz3/PuhC1SKRCuIa
+         w7gBOUiJsYaG+ThUR4Owzif4BePLZFrSzMBc0Fuh+hPkyP+qsbY4x4IHcZJvDSSgDvIh
+         G9tUOpq+QgPKGdV95xjT7ljnNPJ3psrHmcfFrVTjkrZWjFk+08o8AYAkMzly6RxnB2Jc
+         Q4RgHTkbagfdLOSN65nFqiw1Mcq5MVeOfN0zpUabW/+FPP5WX8URt7gMR09yXt2uUndV
+         S1Fg==
+X-Gm-Message-State: AOAM533gXXmGotRQGRffxn7r6sfHhHnfCRLx408u/nybho7uoeTyiWRx
+        8zTPYcyOr8irSkTaWqpUwWCpCr/yEyAWq6tP
+X-Google-Smtp-Source: ABdhPJzuBMVJyfNRuwEIiXq+MUjq865yCE7VpOiJ98dctqAKDL1P+66d8xBL1pFHeAegwr/cCe+HPw==
+X-Received: by 2002:a63:4513:: with SMTP id s19mr10194192pga.254.1605740990817;
+        Wed, 18 Nov 2020 15:09:50 -0800 (PST)
+Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id b21sm2565304pji.24.2020.11.18.15.09.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 15:09:50 -0800 (PST)
+From:   rentao.bupt@gmail.com
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, openbmc@lists.ozlabs.org, taoren@fb.com,
+        mikechoi@fb.com
+Cc:     Tao Ren <rentao.bupt@gmail.com>
+Subject: [PATCH v2 0/2] hwmon: (max127) Add Maxim MAX127 hardware monitoring
+Date:   Wed, 18 Nov 2020 15:09:27 -0800
+Message-Id: <20201118230929.18147-1-rentao.bupt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 at 00:05, Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Fri, Nov 13, 2020 at 11:34 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Thu, Nov 12, 2020 at 10:06 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > On Fri, 13 Nov 2020 at 01:53, Nathan Chancellor
-> > > <natechancellor@gmail.com> wrote:
-> > > >
-> > > > On Thu, Nov 12, 2020 at 04:44:46PM -0800, Nick Desaulniers wrote:
-> > > > > On Thu, Nov 12, 2020 at 10:41 AM Nathan Chancellor
-> > > > > <natechancellor@gmail.com> wrote:
-> > > > > >
-> > > > > > Commit 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker
-> > > > > > script and options") added '-z norelro' to the arm64 Makefile when
-> > > > > > CONFIG_RELOCATABLE was set to help support ld.lld because ld.lld
-> > > > > > defaults to '-z relro' but the kernel does not use program headers or
-> > > > > > adhere to the section layout that is required for RELRO to work.
-> > > > > >
-> > > > > > Commit 3b92fa7485eb ("arm64: link with -z norelro regardless of
-> > > > > > CONFIG_RELOCATABLE") unconditionally added it to LDFLAGS_vmlinux because
-> > > > > > an error occurs with CONFIG_KASAN set even when CONFIG_RELOCATABLE is
-> > > > > > unset.
-> > > > > >
-> > > > > > As it turns out, ARM experiences the same error after CONFIG_KASAN was
-> > > > > > implemented, meaning that '-z norelro' needs to be added to that
-> > > > > > Makefile as well (multi_v7_defconfig + CONFIG_KASAN=y + LD=ld.lld):
-> > > > > >
-> > > > > > $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LLVM=1 zImage
-> > > > > > ld.lld: error: section: .exit.data is not contiguous with other relro sections
-> > > > > >
-> > > > > > To avoid playing whack-a-mole with different architectures over time,
-> > > > > > hoist '-z norelro' into the main Makefile. This does not affect ld.bfd
-> > > > > > because '-z norelro' is the default for it.
->
-> Fangrui pointed out off list that this might need an ld-option wrapper
-> for older versions of GNU binutils.  Dan was showing me some build
-> logs today, and I thought I spotted such warnings about `-z norelro
-> will be ignored`.
+From: Tao Ren <rentao.bupt@gmail.com>
 
-Does ld-option catch options that cause warnings but no errors?
+The patch series adds hardware monitoring driver for the Maxim MAX127
+chip.
+
+Patch #1 adds the max127 hardware monitoring driver, and patch #2 adds
+documentation for the driver.
+
+Tao Ren (2):
+  hwmon: (max127) Add Maxim MAX127 hardware monitoring driver
+  docs: hwmon: Document max127 driver
+
+ Documentation/hwmon/index.rst  |   1 +
+ Documentation/hwmon/max127.rst |  45 +++++
+ drivers/hwmon/Kconfig          |   9 +
+ drivers/hwmon/Makefile         |   1 +
+ drivers/hwmon/max127.c         | 346 +++++++++++++++++++++++++++++++++
+ 5 files changed, 402 insertions(+)
+ create mode 100644 Documentation/hwmon/max127.rst
+ create mode 100644 drivers/hwmon/max127.c
+
+-- 
+2.17.1
+
