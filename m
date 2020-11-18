@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB97F2B7325
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5830E2B7328
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727611AbgKRAcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:32:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725767AbgKRAcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:32:46 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9CD92067D;
-        Wed, 18 Nov 2020 00:32:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605659565;
-        bh=O+dUlNl3bmWfAxsEgXyHiuNMBnDv6mdTILfyBMvVAoE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zwiEDk//OgB/AKfAgwZFVLZGZUf1KD+qmqVy4g/G0JR4QMFOiB1ohFnwpG0XTnewM
-         Hp0ls4cpAusixlmDJuNq+dg8kNT8HtGJCAnmFmHjEhl2lc5oPQsEMSSm4eszoXEtQH
-         kcXh86pPGwuG2xdQyrD2auHJggoqw+P7YAZqTia4=
-Date:   Tue, 17 Nov 2020 16:32:45 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3] net/tun: Call netdev notifiers
-Message-ID: <20201117163245.4ff522ef@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201116104121.20884-1-ms@dev.tdt.de>
-References: <20201116104121.20884-1-ms@dev.tdt.de>
+        id S1729157AbgKRAdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:33:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgKRAdb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 19:33:31 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0922C0613CF;
+        Tue, 17 Nov 2020 16:33:31 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id l11so47267plt.1;
+        Tue, 17 Nov 2020 16:33:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3YnzFhuriT1u2qd6o9Ro/pkfTVdzzLt9x8ZF1CF/qnA=;
+        b=RbwMkj2q24avAvO2XuXCvO8epPCvLzPfZP/LcZ1gPnGBLQVrsk0LsiCIZw2cIZbBOW
+         d5OrTpWePJKIr4vlpjf/fr8FLIiFMSqB5W6cSgR0jjD5ovsa1EGH7YBEE0k7ihwV0oDP
+         jmAzLtgGMiW1hWj5lttPYZxSfNeoLH/QYgaPLIhQES9BoRprFrssQxqpyntYkOadzSht
+         dvNBmN5zmaq9Uw6SIHdLxL8k8F6eNMNkzd0Jt15YY/h8nR5G4P41nhtPgMpIUvoWgMyO
+         dBISMLQhnc2f7wtVTfHCb5j6S1vkaVJAEMYgwrv34XL95Vmf4wX+HOrnA9QYxhkgbv4H
+         HcoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3YnzFhuriT1u2qd6o9Ro/pkfTVdzzLt9x8ZF1CF/qnA=;
+        b=RNpHEKCEnDUguGjhQZAetdFG7oGSvDPrl6ryrvtErPiSbZqtxWiwdCJfrl+FeqjQyz
+         IcPds4ajDgjfoY0lpT4uykrlyAnzlzzMnd7R/Od8V6jRaEy7FzR1XjkNV5pu9K3+9VKd
+         9uu4i2ryvMqie7jf5RBMpHRp3jsZXMEqWcxHsZii+0Tj4vZtLSThYw131Vo6b0cgFgE8
+         yXLlkvOUvDz/hAhS1if4r1+HLVCpCav3eDb9N7VDLm+CZhaAuPi1FqfMDxaO1pvjfRsM
+         G31QFp2LtjS793FblZESCFuXzcczsnwnrPZLhdAFSNehYPtgOwj39ARflXX0epw+FHki
+         nGhw==
+X-Gm-Message-State: AOAM532D5l2yCCcmr1xSb+pdGFgLpgZdLFP/FBPIzUEabMJmh/jMoKIX
+        4F4XwUgEf0d4ratdoDH/hgA=
+X-Google-Smtp-Source: ABdhPJyGZ+JLGwJCDJEd+EbRlOJ25ksG6eM+ifOdNHUswDpdJXjRlObDRc6txkig7tryqi9LaAv1IA==
+X-Received: by 2002:a17:90a:5291:: with SMTP id w17mr1443869pjh.129.1605659611167;
+        Tue, 17 Nov 2020 16:33:31 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id s6sm24016830pfh.9.2020.11.17.16.33.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 16:33:30 -0800 (PST)
+Date:   Tue, 17 Nov 2020 16:33:28 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, dusonlin@emc.com.tw,
+        KT Liao <kt.liao@emc.com.tw>, linux-input@vger.kernel.org
+Subject: Re: [PATCH] input: mouse: elan_i2c_core: Move header inclusion inside
+Message-ID: <20201118003328.GG2009714@dtor-ws>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+ <20201104162427.2984742-7-lee.jones@linaro.org>
+ <20201112104420.GG1997862@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112104420.GG1997862@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 11:41:21 +0100 Martin Schiller wrote:
-> Call netdev notifiers before and after changing the device type.
+On Thu, Nov 12, 2020 at 10:44:20AM +0000, Lee Jones wrote:
+> The same clause as its use.
 > 
-> Signed-off-by: Martin Schiller <ms@dev.tdt.de>
-> ---
+> Fixes the following W=1 kernel build warning(s):
 > 
-> Change from v2:
-> use subject_prefix 'net-next' to fix 'fixes_present' issue
+>  include/linux/input/elan-i2c-ids.h:26:36: warning: ‘elan_acpi_id’ defined but not used [-Wunused-const-variable=]
 > 
-> Change from v1:
-> fix 'subject_prefix' and 'checkpatch' warnings
-> 
-> ---
->  drivers/net/tun.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> index 3d45d56172cb..2d9a00f41023 100644
-> --- a/drivers/net/tun.c
-> +++ b/drivers/net/tun.c
-> @@ -3071,9 +3071,13 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
->  				   "Linktype set failed because interface is up\n");
->  			ret = -EBUSY;
->  		} else {
-> +			call_netdevice_notifiers(NETDEV_PRE_TYPE_CHANGE,
-> +						 tun->dev);
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Henrik Rydberg <rydberg@bitmath.org>
+> Cc: Jingle Wu <jingle.wu@emc.com.tw>
+> Cc: dusonlin@emc.com.tw
+> Cc: KT Liao <kt.liao@emc.com.tw>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-This call may return an error (which has to be unpacked with
-notifier_to_errno()).
+Applied, thank you.
 
->  			tun->dev->type = (int) arg;
->  			netif_info(tun, drv, tun->dev, "linktype set to %d\n",
->  				   tun->dev->type);
-> +			call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE,
-> +						 tun->dev);
->  			ret = 0;
->  		}
->  		break;
-
+-- 
+Dmitry
