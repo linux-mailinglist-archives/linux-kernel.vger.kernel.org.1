@@ -2,175 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D3C2B763C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 049C22B7640
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgKRGWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 01:22:04 -0500
-Received: from mail-eopbgr750089.outbound.protection.outlook.com ([40.107.75.89]:37127
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725355AbgKRGWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 01:22:03 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RnyjGRm7kM0gqSunZyyHze9pPXtA10t7RBU1nfCJi+XW6h5Hm6Ha9/Dr/PHkH54M74Mw41rmRxa0oEmlQRSsBX2W5C60DHl9Qq9AYZcBNL0PvaPBwYkM8DOG19wTPNyJL/AK860//pT+xjte1X1+H+6UfVEBJGVHeZ4NMw0sUa3o604O4mf1Frt4WSGLrnQkc91f3KLOA+DF/p7yyT40nHW0FMW7OCtE3NQyrHF7594b1TpSH28ghyoS5hSLUB8KaUud4JZeW+86fKNYdQT1h0Y9ot6SZdtAUgXQjzi9aeXBkpHsxBZWsJ2HYqpXS5FiwM7wAubn0sVO7YBrd/4rFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YYHMhHFztwXUvmgcYBTWt2g3LwrpD40XBslgW2us4+8=;
- b=g/KmlvS2n4WsXuSUVl6GFK8M6hDjd4fuge8Tg7phy1S1iCCcHeJJcnXT3AMBDH6RPCPiAtIWteh0/rxD8nH+1uWnBfpuDGF6fUlinjQQLceDaU/EFCPE3JQDBb+nGo7R1Ll/6Wtdt15sw6AeKLOkBI+S4FpRQRmFMj69QmhSHN0BW530/59eEEPqpa/koooqSLfz7zZBFMAl5rugJgZ0H7hUZfkJMltcnkiyNlQljBhmVMqdZmMH1cV5/6M/DREJq9TfenO2bNFNaYL7+ZilIIx25dSI84qgba+sNwoeyf+5qeYroEd1WAkBzLQnKcKauKTEPplsqNLSmqw/tweVZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=intel.com smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S1726440AbgKRGWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 01:22:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726360AbgKRGWk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 01:22:40 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408B5C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 22:22:40 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id z16so715776otq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 22:22:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YYHMhHFztwXUvmgcYBTWt2g3LwrpD40XBslgW2us4+8=;
- b=HsYiqFZhfki2KPNDkXiK8NvEs2IJWcZsNAM6WJaqP9vGQqlzxdgarB49iA0C0lmEZt3z/ZbhbdFRIWkbH6GIay2riJpooSwz9I55Q2RwzlW243kGmDEITtV0F24U1m/nW/4pLgOQ3UDz8lYfHSeHq9Edw1USQf6Sqtq8qd69ZnE=
-Received: from CY4PR08CA0048.namprd08.prod.outlook.com (2603:10b6:903:151::34)
- by MWHPR02MB3183.namprd02.prod.outlook.com (2603:10b6:301:62::36) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 18 Nov
- 2020 06:21:59 +0000
-Received: from CY1NAM02FT024.eop-nam02.prod.protection.outlook.com
- (2603:10b6:903:151:cafe::1b) by CY4PR08CA0048.outlook.office365.com
- (2603:10b6:903:151::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend
- Transport; Wed, 18 Nov 2020 06:21:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT024.mail.protection.outlook.com (10.152.74.210) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3564.22 via Frontend Transport; Wed, 18 Nov 2020 06:21:58 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 17 Nov 2020 22:21:38 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Tue, 17 Nov 2020 22:21:38 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- adrian.hunter@intel.com,
- ulf.hansson@linaro.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- linux-mmc@vger.kernel.org
-Received: from [172.23.64.106] (port=35149 helo=xhdvnc125.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <manish.narani@xilinx.com>)
-        id 1kfGqX-0005Yk-Tg; Tue, 17 Nov 2020 22:21:38 -0800
-Received: by xhdvnc125.xilinx.com (Postfix, from userid 16987)
-        id 1AF20121375; Wed, 18 Nov 2020 11:51:37 +0530 (IST)
-From:   Manish Narani <manish.narani@xilinx.com>
-To:     <michal.simek@xilinx.com>, <adrian.hunter@intel.com>,
-        <ulf.hansson@linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@xilinx.com>, Manish Narani <manish.narani@xilinx.com>
-Subject: [PATCH] mmc: sdhci-of-arasan: Add pinctrl support to the driver
-Date:   Wed, 18 Nov 2020 11:51:35 +0530
-Message-ID: <1605680495-37483-1-git-send-email-manish.narani@xilinx.com>
-X-Mailer: git-send-email 2.1.1
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YtbFnHLC0F4iSC34KfXMYG3W+T/7MuJJbJ93crg4rYY=;
+        b=s/0gcm/nu0ykiimxR8WdTqn9/oRW/XbyL4w3MNEAnCfzuYkMI3OFhwyBJe63/t0URk
+         MF/eQSENFOP4uuanpMx/bVQmSBCMt9205j/XRDkg2inxeNJhKoi7iACS4a6LKhzYyyPq
+         qa4dNN1q0jLGZrs5Lrn7jSqxzCJiOKKH3hQaT5DpJF7rkZje9PEQmxHX/SUM+QIQdrko
+         eTsEfmyf6ZOcB2cirE8P2cFHN4xZybxLcNtsGeHE28KzS3mQ7JEffWMaUWI2FOczvsSz
+         zEPr9p1knwW2aa2cMoNyVRYTr6BAKJgMrSjOb12HfcwQQj2g7+qML5P4PBXcJLFoIouH
+         gSng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YtbFnHLC0F4iSC34KfXMYG3W+T/7MuJJbJ93crg4rYY=;
+        b=ey8eCnFL0knqx0E0fw5H+dsHX4ok8t5MUC+K/zNxShk+oGVLl0tR/LHqZbpAlkTRtN
+         utUid0zqc3mh5RnuIvKeHtDVYauAVX922oZuHbqD0SPZVENBVoWcp8hX4eCda84uOoFI
+         yMfKXvntuhGSfFyRmy+A6CCBHGW0Yhbkfz4CvLDJvpYraU3OP87mxJjeo7p10eDiPbxX
+         Q6BJkb24rzraTFRwtFI/KfZ3+kbHJ+Fj1GeVbtlXpAentxSrBygTwuJfQ3O3Z9YQkJ7O
+         HgF/sSYHwED93AK4a1gvVlRzuZnB+ZZM2s/MOu0jwSJyapokUhRq4jflFn4O4zHpWE6B
+         7HcA==
+X-Gm-Message-State: AOAM531fkQZ8BBlQAIVQ95ZjTX1tL8nnvW33xI5mSpArHQgbGXWruTvD
+        AJoNsvvzkcBGqmVu1UelubtUtRgNyicWk7geUgICaA==
+X-Google-Smtp-Source: ABdhPJwWgllZCVW/lRnluvAChVjMF1TDf/msIQVY0NfyaYFdNqL1Ed/ZnJAgja+VBlqEUAJ7Jx61VEi4QbR1tg0v1Z0=
+X-Received: by 2002:a9d:8ee:: with SMTP id 101mr5606894otf.93.1605680559385;
+ Tue, 17 Nov 2020 22:22:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f4ecaf41-cfed-4a56-cad6-08d88b8a4139
-X-MS-TrafficTypeDiagnostic: MWHPR02MB3183:
-X-Microsoft-Antispam-PRVS: <MWHPR02MB3183CD7D0AAF85E4A54C20E5C1E10@MWHPR02MB3183.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OsbovSU5rs6mjLCZGqvgplE6uHrxG4usiWCv+C80Riz0+ZYXfAXagACsva8TQUATpuzDJTJpvZO2BCdctiiHMFC67KnPBJAzI5ERpNRQ20X0LBeYFB6KyPiyKVxDd0tmETY7jQYo1gw0aGLW+GVMFrsdnenzL+z2wclGGIh5MhG8Awx5ECz73BOH7tDprs/Fjabc3Qvog/3ZebPv/BsgKDC4xNrNc5WxburQx/QNRiVU8uVh83sq0NEJ7y4pJWUnDRKmzOmzi0yEu2B0z8pLHoSebpjY/o+f1U5+aFNAyRjRhZj4f1TB67Q1w0iyZm/yKZkEhkP7ae77hG0OEjVTs9lwNRh9ZC90zBhAeoxmkSSvsILyuQeovlcVLGNjFUR/g73MvNtMfmq2NeHP2ahZZSyqYoavnX8CN7CdKmuNdhs=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39850400004)(136003)(46966005)(6266002)(83380400001)(8936002)(8676002)(4326008)(107886003)(110136005)(54906003)(36756003)(42186006)(478600001)(82310400003)(36906005)(356005)(316002)(82740400003)(70586007)(44832011)(26005)(70206006)(426003)(7636003)(186003)(2906002)(5660300002)(2616005)(336012)(47076004)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2020 06:21:58.8355
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4ecaf41-cfed-4a56-cad6-08d88b8a4139
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT024.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB3183
+References: <20201117040315.28548-1-drosen@google.com> <20201117040315.28548-4-drosen@google.com>
+ <X7QbX9Q4xzhg+5UU@sol.localdomain>
+In-Reply-To: <X7QbX9Q4xzhg+5UU@sol.localdomain>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Tue, 17 Nov 2020 22:22:28 -0800
+Message-ID: <CA+PiJmRQGJP5uHf-yXs=efo++JE+SUmjRizwzH-RGG92RdAxyw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] f2fs: Handle casefolding with Encryption
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Driver should be able to handle optional pinctrl setting.
+On Tue, Nov 17, 2020 at 10:50 AM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+>
+> What is the assignment to dentry_page supposed to be accomplishing?  It looks
+> like it's meant to pass up errors from f2fs_find_target_dentry(), but it doesn't
+> do that.
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
----
- drivers/mmc/host/sdhci-of-arasan.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Woops. Fixed that for the next version.
 
-diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-index 829ccef87426..f788cc9d5914 100644
---- a/drivers/mmc/host/sdhci-of-arasan.c
-+++ b/drivers/mmc/host/sdhci-of-arasan.c
-@@ -23,6 +23,7 @@
- #include <linux/regmap.h>
- #include <linux/of.h>
- #include <linux/firmware/xlnx-zynqmp.h>
-+#include <linux/pinctrl/consumer.h>
- 
- #include "cqhci.h"
- #include "sdhci-pltfm.h"
-@@ -135,6 +136,8 @@ struct sdhci_arasan_clk_data {
-  * @clk_ops:		Struct for the Arasan Controller Clock Operations.
-  * @soc_ctl_base:	Pointer to regmap for syscon for soc_ctl registers.
-  * @soc_ctl_map:	Map to get offsets into soc_ctl registers.
-+ * @pinctrl:		Per-device pin control state holder.
-+ * @pins_default:	Pinctrl state for a device.
-  * @quirks:		Arasan deviations from spec.
-  */
- struct sdhci_arasan_data {
-@@ -149,6 +152,8 @@ struct sdhci_arasan_data {
- 
- 	struct regmap	*soc_ctl_base;
- 	const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
-+	struct pinctrl	*pinctrl;
-+	struct pinctrl_state *pins_default;
- 	unsigned int	quirks;
- 
- /* Controller does not have CD wired and will not function normally without */
-@@ -1619,6 +1624,25 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
- 		goto unreg_clk;
- 	}
- 
-+	sdhci_arasan->pinctrl = devm_pinctrl_get(&pdev->dev);
-+	if (!IS_ERR(sdhci_arasan->pinctrl)) {
-+		sdhci_arasan->pins_default =
-+			pinctrl_lookup_state(sdhci_arasan->pinctrl,
-+					     PINCTRL_STATE_DEFAULT);
-+		if (IS_ERR(sdhci_arasan->pins_default)) {
-+			dev_err(&pdev->dev, "Missing default pinctrl config\n");
-+			ret = PTR_ERR(sdhci_arasan->pins_default);
-+			goto unreg_clk;
-+		}
-+
-+		ret = pinctrl_select_state(sdhci_arasan->pinctrl,
-+					   sdhci_arasan->pins_default);
-+		if (ret) {
-+			dev_err(&pdev->dev, "could not select default state\n");
-+			goto unreg_clk;
-+		}
-+	}
-+
- 	sdhci_arasan->phy = ERR_PTR(-ENODEV);
- 	if (of_device_is_compatible(pdev->dev.of_node,
- 				    "arasan,sdhci-5.1")) {
--- 
-2.17.1
+>
+> > @@ -222,14 +250,20 @@ static bool f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
+> >                * fall back to treating them as opaque byte sequences.
+> >                */
+> >               if (sb_has_strict_encoding(sb) || name->len != entry.len)
+> > -                     return false;
+> > -             return !memcmp(name->name, entry.name, name->len);
+> > +                     res = 0;
+> > +             else
+> > +                     res = memcmp(name->name, entry.name, name->len) == 0;
+> > +     } else {
+> > +             /* utf8_strncasecmp_folded returns 0 on match */
+> > +             res = (res == 0);
+> >       }
+>
+> The following might be easier to understand:
+>
+>         /*
+>          * In strict mode, ignore invalid names.  In non-strict mode, fall back
+>          * to treating them as opaque byte sequences.
+>          */
+>         if (res < 0 && !sb_has_strict_encoding(sb)) {
+>                 res = name->len == entry.len &&
+>                       memcmp(name->name, entry.name, name->len) == 0;
+>         } else {
+>                 /* utf8_strncasecmp_folded returns 0 on match */
+>                 res = (res == 0);
+>         }
+>
+Thanks, that is a fair bit nicer.
 
+> > @@ -273,10 +308,14 @@ struct f2fs_dir_entry *f2fs_find_target_dentry(const struct f2fs_dentry_ptr *d,
+> >                       continue;
+> >               }
+> >
+> > -             if (de->hash_code == fname->hash &&
+> > -                 f2fs_match_name(d->inode, fname, d->filename[bit_pos],
+> > -                                 le16_to_cpu(de->name_len)))
+> > -                     goto found;
+> > +             if (de->hash_code == fname->hash) {
+> > +                     res = f2fs_match_name(d->inode, fname, d->filename[bit_pos],
+> > +                                 le16_to_cpu(de->name_len));
+> > +                     if (res < 0)
+> > +                             return ERR_PTR(res);
+> > +                     else if (res)
+> > +                             goto found;
+> > +             }
+>
+> Overly long line here.  Also 'else if' is unnecessary, just use 'if'.
+>
+> - Eric
+The 0 case is important, since that reflects that the name was not found.
+-Daniel
