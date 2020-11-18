@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D842B81EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A572C2B81EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:31:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbgKRQ32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:29:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:58876 "EHLO foss.arm.com"
+        id S1727930AbgKRQ3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:29:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:58888 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727151AbgKRQ31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:29:27 -0500
+        id S1726643AbgKRQ33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:29:29 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1FAF41534;
-        Wed, 18 Nov 2020 08:29:27 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF77B153B;
+        Wed, 18 Nov 2020 08:29:28 -0800 (PST)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 932D63F719;
-        Wed, 18 Nov 2020 08:29:25 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 562473F719;
+        Wed, 18 Nov 2020 08:29:27 -0800 (PST)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
@@ -24,9 +24,9 @@ Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
         jbhayana@google.com, peter.hilber@opensynergy.com,
         mikhail.golubev@opensynergy.com, Igor.Skalkin@opensynergy.com,
         cristian.marussi@arm.com
-Subject: [PATCH v3 3/6] hwmon: scmi: update hwmon internal scale data type
-Date:   Wed, 18 Nov 2020 16:29:02 +0000
-Message-Id: <20201118162905.10439-4-cristian.marussi@arm.com>
+Subject: [PATCH v3 4/6] firmware: arm_scmi: add SCMIv3.0 Sensors timestamped reads
+Date:   Wed, 18 Nov 2020 16:29:03 +0000
+Message-Id: <20201118162905.10439-5-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201118162905.10439-1-cristian.marussi@arm.com>
 References: <20201118162905.10439-1-cristian.marussi@arm.com>
@@ -34,27 +34,250 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use an int to calculate scale values inside scmi_hwmon_scale() to match
-the updated scale data type in struct scmi_sensor_info.
+Add new .reading_get_timestamped() method to sensor_ops to support SCMIv3.0
+timestamped reads.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/hwmon/scmi-hwmon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+V2 --> v3
+- setting rx_size to 0 in sensor_reading_get to allow fw to send
+  both v2 and v3 replies...even if sensor_reading_get() only handles
+  v2 spec and returns one single value
+- using get_unaligned_le64 in lieu of le64_to_cpu
+- removed refs to v2.1
+---
+ drivers/firmware/arm_scmi/sensors.c | 137 ++++++++++++++++++++++++++--
+ include/linux/scmi_protocol.h       |  22 +++++
+ 2 files changed, 152 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
-index 09ce30cba54b..17d064e58938 100644
---- a/drivers/hwmon/scmi-hwmon.c
-+++ b/drivers/hwmon/scmi-hwmon.c
-@@ -30,7 +30,7 @@ static inline u64 __pow10(u8 x)
+diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
+index 1c83aaae0012..0adc545116a4 100644
+--- a/drivers/firmware/arm_scmi/sensors.c
++++ b/drivers/firmware/arm_scmi/sensors.c
+@@ -156,6 +156,27 @@ struct scmi_msg_sensor_reading_get {
+ #define SENSOR_READ_ASYNC	BIT(0)
+ };
  
- static int scmi_hwmon_scale(const struct scmi_sensor_info *sensor, u64 *value)
++struct scmi_resp_sensor_reading_get {
++	__le64 readings;
++};
++
++struct scmi_resp_sensor_reading_complete {
++	__le32 id;
++	__le64 readings;
++};
++
++struct scmi_sensor_reading_le {
++	__le32 sensor_value_low;
++	__le32 sensor_value_high;
++	__le32 timestamp_low;
++	__le32 timestamp_high;
++};
++
++struct scmi_resp_sensor_reading_complete_v3 {
++	__le32 id;
++	struct scmi_sensor_reading_le readings[];
++};
++
+ struct scmi_sensor_trip_notify_payld {
+ 	__le32 agent_id;
+ 	__le32 sensor_id;
+@@ -576,6 +597,21 @@ scmi_sensor_trip_point_config(const struct scmi_handle *handle, u32 sensor_id,
+ 	return ret;
+ }
+ 
++/**
++ * scmi_sensor_reading_get  - Read scalar sensor value
++ * @handle: Platform handle
++ * @sensor_id: Sensor ID
++ * @value: The 64bit value sensor reading
++ *
++ * This function returns a single 64 bit reading value representing the sensor
++ * value; if the platform SCMI Protocol implementation and the sensor support
++ * multiple axis and timestamped-reads, this just returns the first axis while
++ * dropping the timestamp value.
++ * Use instead the @scmi_sensor_reading_get_timestamped to retrieve the array of
++ * timestamped multi-axis values.
++ *
++ * Return: 0 on Success
++ */
+ static int scmi_sensor_reading_get(const struct scmi_handle *handle,
+ 				   u32 sensor_id, u64 *value)
  {
--	s8 scale = sensor->scale;
-+	int scale = sensor->scale;
- 	u64 f;
+@@ -586,25 +622,111 @@ static int scmi_sensor_reading_get(const struct scmi_handle *handle,
+ 	struct scmi_sensor_info *s = si->sensors + sensor_id;
  
- 	switch (sensor->type) {
+ 	ret = scmi_xfer_get_init(handle, SENSOR_READING_GET,
+-				 SCMI_PROTOCOL_SENSOR, sizeof(*sensor),
+-				 sizeof(u64), &t);
++				 SCMI_PROTOCOL_SENSOR, sizeof(*sensor), 0, &t);
+ 	if (ret)
+ 		return ret;
+ 
+ 	sensor = t->tx.buf;
+ 	sensor->id = cpu_to_le32(sensor_id);
++	if (s->async) {
++		sensor->flags = cpu_to_le32(SENSOR_READ_ASYNC);
++		ret = scmi_do_xfer_with_response(handle, t);
++		if (!ret) {
++			struct scmi_resp_sensor_reading_complete *resp;
++
++			resp = t->rx.buf;
++			if (le32_to_cpu(resp->id) == sensor_id)
++				*value = get_unaligned_le64(&resp->readings);
++			else
++				ret = -EPROTO;
++		}
++	} else {
++		sensor->flags = cpu_to_le32(0);
++		ret = scmi_do_xfer(handle, t);
++		if (!ret) {
++			struct scmi_resp_sensor_reading_get *resp;
++
++			resp = t->rx.buf;
++			*value = get_unaligned_le64(&resp->readings);
++		}
++	}
+ 
++	scmi_xfer_put(handle, t);
++	return ret;
++}
++
++static inline void
++scmi_parse_sensor_readings(struct scmi_sensor_reading *out,
++			   const struct scmi_sensor_reading_le *in)
++{
++	out->value = get_unaligned_le64((void *)&in->sensor_value_low);
++	out->timestamp = get_unaligned_le64((void *)&in->timestamp_low);
++}
++
++/**
++ * scmi_sensor_reading_get_timestamped  - Read multiple-axis timestamped values
++ * @handle: Platform handle
++ * @sensor_id: Sensor ID
++ * @count: The length of the provided @readings array
++ * @readings: An array of elements each representing a timestamped per-axis
++ *	      reading of type @struct scmi_sensor_reading.
++ *	      Returned readings are ordered as the @axis descriptors array
++ *	      included in @struct scmi_sensor_info and the max number of
++ *	      returned elements is min(@count, @num_axis); ideally the provided
++ *	      array should be of length @count equal to @num_axis.
++ *
++ * Return: 0 on Success
++ */
++static int
++scmi_sensor_reading_get_timestamped(const struct scmi_handle *handle,
++				    u32 sensor_id, u8 count,
++				    struct scmi_sensor_reading *readings)
++{
++	int ret;
++	struct scmi_xfer *t;
++	struct scmi_msg_sensor_reading_get *sensor;
++	struct sensors_info *si = handle->sensor_priv;
++	struct scmi_sensor_info *s = si->sensors + sensor_id;
++
++	if (!count || !readings ||
++	    (!s->num_axis && count > 1) || (s->num_axis && count > s->num_axis))
++		return -EINVAL;
++
++	ret = scmi_xfer_get_init(handle, SENSOR_READING_GET,
++				 SCMI_PROTOCOL_SENSOR, sizeof(*sensor), 0, &t);
++	if (ret)
++		return ret;
++
++	sensor = t->tx.buf;
++	sensor->id = cpu_to_le32(sensor_id);
+ 	if (s->async) {
+ 		sensor->flags = cpu_to_le32(SENSOR_READ_ASYNC);
+ 		ret = scmi_do_xfer_with_response(handle, t);
+-		if (!ret)
+-			*value = get_unaligned_le64((void *)
+-						    ((__le32 *)t->rx.buf + 1));
++		if (!ret) {
++			int i;
++			struct scmi_resp_sensor_reading_complete_v3 *resp;
++
++			resp = t->rx.buf;
++			/* Retrieve only the number of requested axis anyway */
++			if (le32_to_cpu(resp->id) == sensor_id)
++				for (i = 0; i < count; i++)
++					scmi_parse_sensor_readings(&readings[i],
++								   &resp->readings[i]);
++			else
++				ret = -EPROTO;
++		}
+ 	} else {
+ 		sensor->flags = cpu_to_le32(0);
+ 		ret = scmi_do_xfer(handle, t);
+-		if (!ret)
+-			*value = get_unaligned_le64(t->rx.buf);
++		if (!ret) {
++			int i;
++			struct scmi_sensor_reading_le *resp_readings;
++
++			resp_readings = t->rx.buf;
++			for (i = 0; i < count; i++)
++				scmi_parse_sensor_readings(&readings[i],
++							   &resp_readings[i]);
++		}
+ 	}
+ 
+ 	scmi_xfer_put(handle, t);
+@@ -631,6 +753,7 @@ static const struct scmi_sensor_ops sensor_ops = {
+ 	.info_get = scmi_sensor_info_get,
+ 	.trip_point_config = scmi_sensor_trip_point_config,
+ 	.reading_get = scmi_sensor_reading_get,
++	.reading_get_timestamped = scmi_sensor_reading_get_timestamped,
+ };
+ 
+ static int scmi_sensor_set_notify_enabled(const struct scmi_handle *handle,
+diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+index 53cc5ce0e494..072d8f9fc42a 100644
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -149,6 +149,20 @@ struct scmi_power_ops {
+ 			 u32 *state);
+ };
+ 
++/**
++ * scmi_sensor_reading  - represent a timestamped read
++ *
++ * Used by @reading_get_timestamped method.
++ *
++ * @value: The signed value sensor read.
++ * @timestamp: An unsigned timestamp for the sensor read, as provided by
++ *	       SCMI platform. Set to zero when not available.
++ */
++struct scmi_sensor_reading {
++	long long value;
++	unsigned long long timestamp;
++};
++
+ /**
+  * scmi_range_attrs  - specifies a sensor or axis values' range
+  * @min_range: The minimum value which can be represented by the sensor/axis.
+@@ -391,6 +405,11 @@ enum scmi_sensor_class {
+  * @info_get: get the information of the specified sensor
+  * @trip_point_config: selects and configures a trip-point of interest
+  * @reading_get: gets the current value of the sensor
++ * @reading_get_timestamped: gets the current value and timestamp, when
++ *			     available, of the sensor. (as of v3.0 spec)
++ *			     Supports multi-axis sensors for sensors which
++ *			     supports it and if the @reading array size of
++ *			     @count entry equals the sensor num_axis
+  */
+ struct scmi_sensor_ops {
+ 	int (*count_get)(const struct scmi_handle *handle);
+@@ -400,6 +419,9 @@ struct scmi_sensor_ops {
+ 				 u32 sensor_id, u8 trip_id, u64 trip_value);
+ 	int (*reading_get)(const struct scmi_handle *handle, u32 sensor_id,
+ 			   u64 *value);
++	int (*reading_get_timestamped)(const struct scmi_handle *handle,
++				       u32 sensor_id, u8 count,
++				       struct scmi_sensor_reading *readings);
+ };
+ 
+ /**
 -- 
 2.17.1
 
