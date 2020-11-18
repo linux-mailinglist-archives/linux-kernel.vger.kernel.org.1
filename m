@@ -2,182 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACC72B8432
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7137E2B8438
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726886AbgKRSxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:53:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726827AbgKRSxw (ORCPT
+        id S1726875AbgKRS5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:57:32 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:37858 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726316AbgKRS5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:53:52 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A1BC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:53:52 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id kk16so867949pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:53:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/EQtQALhCEqfL4DGAhnne0Mwd7FFhtVFNWFyL4AwZ5c=;
-        b=KZojK7bEWDx5hLzKhd5MrNlmQvCB68Xnk6S2Q6YCJSkfRUARg97yNUwy03/QvCfMe+
-         mcVZJOV1aImmFjNLZVPIu2YiNhBRbIWf/3JNg2ScWbszzsK/ifIpFhiGhUdKBsLPU0WV
-         Xb2Wdc2pde+TVtwNHnqBsVcPxhZdVFoqMwdrY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/EQtQALhCEqfL4DGAhnne0Mwd7FFhtVFNWFyL4AwZ5c=;
-        b=E3GLYXL+S8RsVvAn2JVeA1MvPpJXCRXWkHQVnyPfUXdCwQjIb08bgociQSUL3ZO3Yu
-         LaKfVcxqcLpLJzk1/j8FGy7vT/NkjomLcwgVDF0ySnfJeBEYaXfnfjc2C7wMn7NpmhPz
-         RkZtL/R0v8xw6cLoKB19W5lly1TWVt0bowI+rVTU+msGaARdTq4SLxRiAGZTByEkHutQ
-         wG0uZGGo0ls7WceTfvO1FrCrdw6bwcXFnGm4rqzHl5AVEMQCZkA8+IBcNSN7/aPdUtsO
-         613bUr4GeTTCbOY5AjftpJNJYM00oyoyu3jCR6CgZv5I8VWuIX5I7nz0fIyi9snCtvti
-         cCYQ==
-X-Gm-Message-State: AOAM530JM/Kz7BETtHZLmUQIud4dKEvb6EEHY6J1jNzrxDOvchRagL5j
-        ZBp5gvp0jLKtEzr1cn5F5lq2nw==
-X-Google-Smtp-Source: ABdhPJw6gBV4r3Dwt4GFOmQuwUSgdqPlrkxHZck4DPp8tMoFpnM+59r0F5fRgJ+zWjgMqw5mWHBv8Q==
-X-Received: by 2002:a17:90b:3512:: with SMTP id ls18mr473430pjb.70.1605725632000;
-        Wed, 18 Nov 2020 10:53:52 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id t9sm3277973pjo.4.2020.11.18.10.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 10:53:51 -0800 (PST)
-Date:   Wed, 18 Nov 2020 10:53:50 -0800
-From:   Prashant Malani <pmalani@chromium.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [RFC PATCH 2/3] usb: typec: Add product_type sysfs attribute
- file for partners and cables
-Message-ID: <20201118185350.GB3652649@google.com>
-References: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
- <20201118150059.3419-3-heikki.krogerus@linux.intel.com>
+        Wed, 18 Nov 2020 13:57:31 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 543081F44B45
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     libc-alpha@sourceware.org
+Cc:     Florian Weimer <fw@deneb.enyo.de>, linux-kernel@vger.kernel.org
+Subject: Kernel prctl feature for syscall interception and emulation
+Date:   Wed, 18 Nov 2020 13:57:26 -0500
+Message-ID: <873616v6g9.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118150059.3419-3-heikki.krogerus@linux.intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+Hi,
 
-On Wed, Nov 18, 2020 at 06:00:58PM +0300, Heikki Krogerus wrote:
-> USB Power Delivery Specification defines a set of product
-> types for partners and cables. The product type is defined
-> in the ID Header VDO, which is the first object in the
-> response to the Discover Identity command.
-> 
-> This sysfs attribute file is only created for the partners
-> and cables if the product type is really known in the
-> driver. Some interfaces do not give access to the Discover
-> Identity response from the partner or cable, but they may
-> still supply the product type separately in some cases.
-> 
-> When the product type of the partner or cable is detected,
-> uevent is also raised with PRODUCT_TYPE set to show the
-> actual product type (for example PRODUCT_TYPE=host).
-> 
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+I'm proposing a kernel patch for a feature I'm calling Syscall User
+Dispatch (SUD).  It is a mechanism to efficiently redirect system calls
+of only part of a binary back to userspace to be emulated by a
+compatibility layer.  The patchset is close to being accepted, but
+Florian suggested the feature might pose some constraints on glibc, and
+requested I raise the discussion here.
 
-I tried this out with the following peripherals:
-- Thunderbolt 3 active cable.
-- Thunderbolt 3 passive cable.
-- Dell WD19TB dock.
-- Type C DisplayPort enabled monitor (which advertises as AMA).
+The problem I am trying to solve is that modern Windows games running
+over Wine are issuing Windows system calls directly from the Windows
+code, without going through the "WinAPI", which doesn't give Wine a
+chance to emulate the library calls and implement the behavior.  As a
+result, Windows syscalls reache the Linux kernel, and the kernel has
+no context to differentiate them from native syscalls coming from the
+Wine side, since it cannot trust the ABI, not even syscall numbers to be
+something sane.  Historically, Windows applications were very respectful
+of the WinAPI, not bypassing it, but we are seeing modern applications
+like games doing it more often for reasons, I believe, of DRM.
 
-For the above, the product_type seems to be getting parsed and displayed
-correctly, so FWIW:
+It is worth mentioning that, by design, Wine and the Windows application
+run on the same process space, so we really cannot just filter specific
+threads or the entire application. We need some kind of filter executed
+on each system call.
 
-Tested-by: Prashant Malani <pmalani@chromium.org>
+Now, the obvious way to solve this problem would be cBPF filtering
+memory regions, through Seccomp.  The main problem with that approach is
+the performance of executing a large cBPF filter.  The goal is to run
+games, and we observed the Seccomp filter become a bottleneck, since we
+have many, many memory areas that need to be checked by cBPF.  In
+addition, seccomp, as a security mechanism, doesn't support some filter
+update operations, like removing them.  Another approaches were
+explored, like making a new mode out of seccomp, but the kernel
+community preferred to make it a separate, self-contained mechanism.
+Other solutions, like (live) patching the Windows application are out
+of question, as they would trip DRM and anti-cheat protection
+mechanisms.
 
-> ---
->  Documentation/ABI/testing/sysfs-class-typec |  55 ++++++++
->  drivers/usb/typec/class.c                   | 132 ++++++++++++++++++--
->  2 files changed, 180 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-class-typec b/Documentation/ABI/testing/sysfs-class-typec
-> index b7794e02ad205..4c09e327c62be 100644
-> --- a/Documentation/ABI/testing/sysfs-class-typec
-> +++ b/Documentation/ABI/testing/sysfs-class-typec
-> @@ -139,6 +139,42 @@ Description:
->  		Shows if the partner supports USB Power Delivery communication:
->  		Valid values: yes, no
->  
-> +What:		/sys/class/typec/<port>-partner/product_type
-> +Date:		December 2020
-> +Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> +Description:	USB Power Delivery Specification defines a set of product types
-> +		for the partner devices. This file will show the product type of
-> +		the partner if it is known. Dual-role capable partners will have
-> +		both UFP and DFP product types defined, but only one that
-> +		matches the current role will be active at the time. If the
-> +		product type of the partner is not visible to the device driver,
-> +		this file will not exist.
-> +
-> +		When the partner product type is detected, or changed with role
-> +		swap, uvevent is also raised that contains PRODUCT_TYPE=<product
-> +		type> (for example PRODUCT_TYPE=hub).
-> +
-> +		Valid values:
-> +
-> +		UFP / device role
-> +		========================  ==========================
-> +		undefined		  -
-> +		hub			  PDUSB Hub
-> +		peripheral		  PDUSB Peripheral
-> +		psd			  Power Bank
-> +		ama			  Alternate Mode Adapter
-> +		vpd			  VCONN Powered USB Device
-> +		========================  ==========================
-> +
-> +		DFP / host role
-> +		========================  ==========================
-> +		undefined		  -
-> +		hub			  PDUSB Hub
-> +		host			  PDUSB Host
-> +		power_brick		  Power Brick
-> +		amc			  Alternate Mode Controller
-> +		========================  ==========================
-> +
->  What:		/sys/class/typec/<port>-partner>/identity/
->  Date:		April 2017
->  Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> @@ -202,6 +238,25 @@ Description:
->  		- type-c
->  		- captive
->  
-> +What:		/sys/class/typec/<port>-cable/product_type
-> +Date:		December 2020
-> +Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> +Description:	USB Power Delivery Specification defines a set of product types
-> +		for the cables. This file will show the product type of the
-> +		cable if it is known. If the product type of the cable is not
-> +		visible to the device driver, this file will not exist.
-> +
-> +		When the cable product type is detected, uvevent is also raised
-> +		with PRODUCT_TYPE showing the product type of the cable.
-> +
-> +		Valid values:
-> +
-> +		========================  ==========================
-> +		undefined		  -
-> +		active			  Active Cable
-> +		passive			  Passive Cable
-> +		========================  ==========================
+The SUD interface I proposed to the kernel community is self-contained
+and exposed as a prctl option.  It lets userspace define a switch
+variable per-thread that, when set, will raise a SIGSYS for any syscall
+attempted.  The idea is that Wine can just flip this switch efficiently
+before delivering control to the Windows portions of the binary, and
+flip it back off when it needs to execute native syscalls.  It is
+important for us that the switch flip doesn't require a syscall, for
+performance reasons.  The interface also lets userspace define a
+"dispatcher region" from where any syscalls are always executed,
+regardless of the selector variable.  This is important for the return
+of the SIGSYS directly to a Windows segment, where we need to execute
+the signal return trampoline with the selector blocked.  Ideally, Wine
+would simply define this dispatcher region as the entire libc code
+segment, and just use the selector to safe-guard against Linux libraries
+issuing syscalls by themselves (they exist).
 
-There exists a /sys/class/typec/<port>-cable/type attribute (connected
-to the "active" field in struct typec_cable [1]), which is supposed
-to be populated by the Type C port driver. Won't the newly introduced
-attribute duplicate the same information as "type"?
+I think my questions to libc are: what are the constraints, if any, that
+libc would face with this new interface?  I expected this to be
+completely invisible to libc.  In addition, are there any problems you
+foresee with the current interface?
 
-[1]
-https://elixir.bootlin.com/linux/v5.10-rc4/source/include/linux/usb/typec.h#L170
+Finally, I don't think it makes sense to bother you immediately with
+the kernel implementation patches, but if you want to see the them,
+they are archived in the link below.  I can also share them directly on
+this ML if you request it.
 
-Thanks,
+  https://lkml.org/lkml/2020/11/17/2347
 
--Prashant
+Nevertheless, I think it is useful the share the final patch, that has
+the in-tree documentation for the interface, which I inlined in this
+message.
+
+Thanks.
+
+-- >8 --
+Subject: [PATCH v7 7/7] docs: Document Syscall User Dispatch
+
+Explain the interface, provide some background and security notes.
+
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+---
+ .../admin-guide/syscall-user-dispatch.rst     | 87 +++++++++++++++++++
+ 1 file changed, 87 insertions(+)
+ create mode 100644 Documentation/admin-guide/syscall-user-dispatch.rst
+
+diff --git a/Documentation/admin-guide/syscall-user-dispatch.rst b/Documentation/admin-guide/syscall-user-dispatch.rst
+new file mode 100644
+index 000000000000..e2fb36926f97
+--- /dev/null
++++ b/Documentation/admin-guide/syscall-user-dispatch.rst
+@@ -0,0 +1,87 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=====================
++Syscall User Dispatch
++=====================
++
++Background
++----------
++
++Compatibility layers like Wine need a way to efficiently emulate system
++calls of only a part of their process - the part that has the
++incompatible code - while being able to execute native syscalls without
++a high performance penalty on the native part of the process.  Seccomp
++falls short on this task, since it has limited support to efficiently
++filter syscalls based on memory regions, and it doesn't support removing
++filters.  Therefore a new mechanism is necessary.
++
++Syscall User Dispatch brings the filtering of the syscall dispatcher
++address back to userspace.  The application is in control of a flip
++switch, indicating the current personality of the process.  A
++multiple-personality application can then flip the switch without
++invoking the kernel, when crossing the compatibility layer API
++boundaries, to enable/disable the syscall redirection and execute
++syscalls directly (disabled) or send them to be emulated in userspace
++through a SIGSYS.
++
++The goal of this design is to provide very quick compatibility layer
++boundary crosses, which is achieved by not executing a syscall to change
++personality every time the compatibility layer executes.  Instead, a
++userspace memory region exposed to the kernel indicates the current
++personality, and the application simply modifies that variable to
++configure the mechanism.
++
++There is a relatively high cost associated with handling signals on most
++architectures, like x86, but at least for Wine, syscalls issued by
++native Windows code are currently not known to be a performance problem,
++since they are quite rare, at least for modern gaming applications.
++
++Since this mechanism is designed to capture syscalls issued by
++non-native applications, it must function on syscalls whose invocation
++ABI is completely unexpected to Linux.  Syscall User Dispatch, therefore
++doesn't rely on any of the syscall ABI to make the filtering.  It uses
++only the syscall dispatcher address and the userspace key.
++
++Interface
++---------
++
++A process can setup this mechanism on supported kernels
++CONFIG_SYSCALL_USER_DISPATCH) by executing the following prctl:
++
++  prctl(PR_SET_SYSCALL_USER_DISPATCH, <op>, <offset>, <length>, [selector])
++
++<op> is either PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF, to enable and
++disable the mechanism globally for that thread.  When
++PR_SYS_DISPATCH_OFF is used, the other fields must be zero.
++
++<offset> and <offset+length> delimit a closed memory region interval
++from which syscalls are always executed directly, regardless of the
++userspace selector.  This provides a fast path for the C library, which
++includes the most common syscall dispatchers in the native code
++applications, and also provides a way for the signal handler to return
++without triggering a nested SIGSYS on (rt_)sigreturn.  Users of this
++interface should make sure that at least the signal trampoline code is
++included in this region. In addition, for syscalls that implement the
++trampoline code on the vDSO, that trampoline is never intercepted.
++
++[selector] is a pointer to a char-sized region in the process memory
++region, that provides a quick way to enable disable syscall redirection
++thread-wide, without the need to invoke the kernel directly.  selector
++can be set to PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF.  Any other
++value should terminate the program with a SIGSYS.
++
++Security Notes
++--------------
++
++Syscall User Dispatch provides functionality for compatibility layers to
++quickly capture system calls issued by a non-native part of the
++application, while not impacting the Linux native regions of the
++process.  It is not a mechanism for sandboxing system calls, and it
++should not be seen as a security mechanism, since it is trivial for a
++malicious application to subvert the mechanism by jumping to an allowed
++dispatcher region prior to executing the syscall, or to discover the
++address and modify the selector value.  If the use case requires any
++kind of security sandboxing, Seccomp should be used instead.
++
++Any fork or exec of the existing process resets the mechanism to
++PR_SYS_DISPATCH_OFF.
+-- 
+2.29.2
+
+-- 
+Gabriel Krisman Bertazi
