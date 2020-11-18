@@ -2,94 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30A22B7DBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8856B2B7DC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgKRMnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 07:43:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726274AbgKRMnT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:43:19 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44D0C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 04:43:19 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfMnr-0005Ho-1U; Wed, 18 Nov 2020 13:43:15 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfMnq-0006Hy-Js; Wed, 18 Nov 2020 13:43:14 +0100
-Date:   Wed, 18 Nov 2020 13:43:12 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Soham Biswas <sohambiswas41@gmail.com>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: core: Use octal permission
-Message-ID: <20201118124312.wk6cmnktxefn7k7m@pengutronix.de>
-References: <20201117175452.26914-1-sohambiswas41@gmail.com>
- <20201118104730.4270-1-sohambiswas41@gmail.com>
+        id S1726533AbgKRMqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 07:46:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726020AbgKRMqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 07:46:14 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF9A724180;
+        Wed, 18 Nov 2020 12:46:10 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 07:46:09 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matt Mullins <mmullins@mmlx.us>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v2] tracepoint: Do not fail unregistering a probe due to
+ memory allocation
+Message-ID: <20201118074609.20fdf9c4@gandalf.local.home>
+In-Reply-To: <CAADnVQJekaejHo0eTnnUp68tOhwUv8t47DpGoOgc9Y+_19PpeA@mail.gmail.com>
+References: <20201117211836.54acaef2@oasis.local.home>
+        <CAADnVQJekaejHo0eTnnUp68tOhwUv8t47DpGoOgc9Y+_19PpeA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xgid2l46xpe7e4uf"
-Content-Disposition: inline
-In-Reply-To: <20201118104730.4270-1-sohambiswas41@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 17 Nov 2020 20:54:24 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
---xgid2l46xpe7e4uf
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >  extern int
+> > @@ -310,7 +312,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+> >                 do {                                                    \
+> >                         it_func = (it_func_ptr)->func;                  \
+> >                         __data = (it_func_ptr)->data;                   \
+> > -                       ((void(*)(void *, proto))(it_func))(__data, args); \
+> > +                       /*                                              \
+> > +                        * Removed functions that couldn't be allocated \
+> > +                        * are replaced with TRACEPOINT_STUB.           \
+> > +                        */                                             \
+> > +                       if (likely(it_func != TRACEPOINT_STUB))         \
+> > +                               ((void(*)(void *, proto))(it_func))(__data, args); \  
+> 
+> I think you're overreacting to the problem.
 
-[added "v2" to the subject, would have been better if you had already
-done that. I don't know if/how this confuses tools like b4 and patchwork]
+I will disagree with that.
 
-Hello,
+> Adding run-time check to extremely unlikely problem seems wasteful.
 
-On Wed, Nov 18, 2020 at 04:17:30PM +0530, Soham Biswas wrote:
-> Fixes the following warning generated by checkpatch:
->=20
-> drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
-> not preferred. Consider using octal permissions '0444'.
->=20
-> +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-> 			    &pwm_debugfs_fops);
+Show me a real benchmark that you can notice a problem here. I bet that
+check is even within the noise of calling an indirect function. Especially
+on a machine with retpolines.
 
-something like: "Permission bits are easier readable in octal than with
-using the symbolic names." in the commit log would be good for those of
-us who missed why this was added to checkpatch.
+> 99.9% of the time allocate_probes() will do kmalloc from slab of small
+> objects.
+> If that slab is out of memory it means it cannot allocate a single page.
+> In such case so many things will be failing to alloc that system
+> is unlikely operational. oom should have triggered long ago.
+> Imo Matt's approach to add __GFP_NOFAIL to allocate_probes()
 
-Best regards
-Uwe
-=20
+Looking at the GFP_NOFAIL comment:
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+ * %__GFP_NOFAIL: The VM implementation _must_ retry infinitely: the caller
+ * cannot handle allocation failures. The allocation could block
+ * indefinitely but will never return with failure. Testing for
+ * failure is pointless.
+ * New users should be evaluated carefully (and the flag should be
+ * used only when there is no reasonable failure policy) but it is
+ * definitely preferable to use the flag rather than opencode endless
+ * loop around allocator.
 
---xgid2l46xpe7e4uf
-Content-Type: application/pgp-signature; name="signature.asc"
+I realized I made a mistake in my patch for using it, as my patch is a
+failure policy. It looks like something we want to avoid in general.
 
------BEGIN PGP SIGNATURE-----
+Thanks, I'll send a v3 that removes it.
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+1Ft4ACgkQwfwUeK3K
-7Akh2Af+KZFmdvE9jcytMnHuRTfVMZazqGMplXWU1o5RgnaNS2nim3D4WaIrK51j
-79IBYcbwizF8kXZE2EoV+CdndeH1b7o0I/JV8osAR92/BSK5PWvs/C81e/Mbabkq
-J8Bl2VGxoVje1s9zNMf77KuTpipGm4YF+2cKb611K5vf4f/NiotOB4hQohusvidg
-/17O6jTUrjUbnAMVlYNQerC9OUB6bFFzVGwsodP4JgytTdWQNLf+RHP0dK6fpadG
-QcBdgNayevDcPajlEPxhTVo2o3MLRHb3JosKGUA/8okcLJp+cD9lB+z1afJ2cxbs
-rFBvIga2kpFHCXpFzSk/jh6DJMwCAQ==
-=hbYk
------END PGP SIGNATURE-----
+> when it's called from func_remove() is much better.
+> The error was reported by syzbot that was using
+> memory fault injections. ENOMEM in allocate_probes() was
+> never seen in real life and highly unlikely will ever be seen.
 
---xgid2l46xpe7e4uf--
+And the biggest thing you are missing here, is that if you are running on a
+machine that has static calls, this code is never hit unless you have more
+than one callback on a single tracepoint. That's because when there's only
+one callback, it gets called directly, and this loop is not involved.
+
+-- Steve
