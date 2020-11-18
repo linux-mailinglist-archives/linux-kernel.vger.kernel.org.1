@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADB02B7FD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DBA2B7FDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727231AbgKROvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 09:51:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
+        id S1727114AbgKROyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 09:54:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgKROvj (ORCPT
+        with ESMTP id S1726293AbgKROyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:51:39 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B78C0613D4;
-        Wed, 18 Nov 2020 06:51:39 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id r6so1166525pjd.1;
-        Wed, 18 Nov 2020 06:51:39 -0800 (PST)
+        Wed, 18 Nov 2020 09:54:01 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8E9C0613D4;
+        Wed, 18 Nov 2020 06:54:01 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id r17so2540435wrw.1;
+        Wed, 18 Nov 2020 06:54:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=t5uedKWjYZhLmHBmo17IOneaP07yxkMVZsdlyTCdn0E=;
-        b=R7abOssRqpTjRzQyxi7nfkaDhzRBoYCcxS+OwUNBEAMwiDHrX0OuR+e7tELtLqpUlp
-         yNqahH6acfS/dXNcQHZfmA7bXThSQ173ZQFDHKwVzbH4RHQUPCmenzsgKe0cH4rPq0TK
-         vK6FUPCgAejh7nka2fPDXQgWlVbJNyA6wWpCmbfR0kNZnAGw2Y8iPlpurHdNhFhv3uvH
-         DVPpY8ChAC+T920e5825Vufnn5QFYjsDL8L5YnxQ/hx63oO5/przV7AvXJJMUHqpZLEO
-         xImUKRDBku6mtfQLlj9P/BMjtBtS6mU6uQBjieNN1nlqqYCwqZgb+kTh9YTurBIAM1Zu
-         rLkQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=noyj//pQAVL0F3TT1GEpmdCZZctT7gUdg23e2fukuL4=;
+        b=ntCI44C4kjqgCGo1yYRBpvXVz5rJOFRbkY02AVMtdy9mPWcyC+k3PY+9uEHczo1c7v
+         28Vb2QzJL3K4jr2VMiaqlsVmyijSVZ6Ui2FoffLAIFf4n8dJYKlpVycSPFBUwUvRE4qR
+         El1eoDUfQp5/s2gbP/l7DxJ5QIzp+ElzUvv7QHZb5WJHdHU/L1Bg6gyUokp07hV7okJY
+         nj+Od9ZWnmFZaNfb0JjB9iQotnHhldsbYXb8Pc5lhoLEAcUtkbZgdXf7akq1G0/02xGb
+         FVT/E4UMFNTt6fPunBOkFLJKk8jXEKk9MpzkOs2TrzR7AhSHZ97Hs9ZSW9daafG2th9g
+         OgWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=t5uedKWjYZhLmHBmo17IOneaP07yxkMVZsdlyTCdn0E=;
-        b=RSn4NqoVh/ZPL7LHAW1H5VbIBV/Ka/gBZ/sMXLIuWeQWkoZOr6LNWSjrJajgEs47d7
-         10OzbSibnsyZm5ERNR6branvgvbFQpoi2/3UqJsF/CVfNyUCd1+DajJjruPnNy3LHIiE
-         P7a/6TUOEWJR2Kb+sVfz3IYekReSZmoAdHSN+dMEFHyD4OCEQR72hog20vFm7N9vLAuB
-         2AA2+xfPoXQi6rDR3BpTw1HXI2nD+EnfgABG5GRXrtlSkUBGAOQSycpoX25M4QLdK+n+
-         sAssh1tUxSPZGS9z+kHOztBfY9oa1y9RgGTexPAg+8v7Ee+u6SKdctswg2uTV3LWHoAp
-         FrBg==
-X-Gm-Message-State: AOAM530XfmNqBJNzZwNAAbf0wqZF5qZxkf9a1VoRjlwMn+OtYRut/xOT
-        ni7gW035/IVS581Sy5VvlDA=
-X-Google-Smtp-Source: ABdhPJw5AyAwbbGTMJggrxcgt8VwHoS3e3plTaNJUt40AlGbeUhTXhp+mxYlguDNNpForIoO4SKrTg==
-X-Received: by 2002:a17:902:9307:b029:d9:d097:fd6c with SMTP id bc7-20020a1709029307b02900d9d097fd6cmr1132363plb.10.1605711099128;
-        Wed, 18 Nov 2020 06:51:39 -0800 (PST)
-Received: from manjaro.domain.name ([202.142.93.91])
-        by smtp.gmail.com with ESMTPSA id t10sm7954297pfq.110.2020.11.18.06.51.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=noyj//pQAVL0F3TT1GEpmdCZZctT7gUdg23e2fukuL4=;
+        b=NdBR5MLe+dAz4ORXO+gQhCvEKGtjYsBNDCPbULsNMpgn2DpT8P627Qhaa1MJSkeIW0
+         B/2ci2R2Tl3mI1EWbVZRX+GisbXQzHEmNML+TINRQtuiyH5NEpr+vvh1Df43zPLed2Bx
+         HOdRAgxaguVtD/t2DbBGUbkmm+XusKT97fDPH1ucWFrqFtmNVmyzXpZUaKpNmbu2iwvD
+         3KqtJm854OkfBGHSQlXBB4UeKx6ehbVEsTb1NurS/mASbgJgaW2u0RzOnXuavlLqGzAq
+         lW7Mku6h3NQyUHWWFg0azuojUp1pxy4OQ6JEfp0iGdisIEYHKkvxy5U2APbxz+4RDSRc
+         0H0g==
+X-Gm-Message-State: AOAM530VZXm5dZ0XDgpTSWHa0LKXRbIeZvjsHY2te2Rm/lD4jR8PHzGY
+        5HyFahJy5WyB4cIV45bZRcijBps2L8oAzdPK
+X-Google-Smtp-Source: ABdhPJz5Ixt95dpw0tbcmzoh/UimTZIfdS9pfrUy3+Ck7lRj3q7TkGYplYgsiHg0DapKjZ1X7dhkDA==
+X-Received: by 2002:adf:fd85:: with SMTP id d5mr4884502wrr.99.1605711239584;
+        Wed, 18 Nov 2020 06:53:59 -0800 (PST)
+Received: from localhost.localdomain (host-82-51-6-75.retail.telecomitalia.it. [82.51.6.75])
+        by smtp.gmail.com with ESMTPSA id o197sm3973785wme.17.2020.11.18.06.53.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 06:51:38 -0800 (PST)
-From:   Soham Biswas <sohambiswas41@gmail.com>
-To:     thierry.reding@gmail.com
-Cc:     lee.jones@linaro.org, u.kleine-koenig@pengutronix.de,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Soham Biswas <sohambiswas41@gmail.com>
-Subject: [PATCH v3] pwm: core: Use octal permission
-Date:   Wed, 18 Nov 2020 20:21:12 +0530
-Message-Id: <20201118145112.21250-1-sohambiswas41@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117175452.26914-1-sohambiswas41@gmail.com>
-References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+        Wed, 18 Nov 2020 06:53:58 -0800 (PST)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH] scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()
+Date:   Wed, 18 Nov 2020 15:53:48 +0100
+Message-Id: <20201118145348.109879-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Permission bits are easier readable in octal than with using the
-symbolic names.
+Check that the packet is of the expected size at least, don't copy
+data past the packet.
 
-Fixes the following warning generated by checkpatch:
-
-drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
-not preferred. Consider using octal permissions '0444'.
-
-+debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-                            &pwm_debugfs_fops);
-
-Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
+Reported-by: Saruhan Karademir <skarade@microsoft.com>
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: linux-scsi@vger.kernel.org
 ---
- drivers/pwm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Based on hyperv-next.
 
-diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-index 1f16f5365d3c..a8eff4b3ee36 100644
---- a/drivers/pwm/core.c
-+++ b/drivers/pwm/core.c
-@@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
+ drivers/scsi/storvsc_drv.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index 331a33a04f1ad..629a46a0bab6e 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -1270,6 +1270,11 @@ static void storvsc_on_channel_callback(void *context)
  
- static int __init pwm_debugfs_init(void)
- {
--	debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-+	debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
- 			    &pwm_debugfs_fops);
+ 		request = (struct storvsc_cmd_request *)(unsigned long)cmd_rqst;
  
- 	return 0;
++		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) - vmscsi_size_delta) {
++			dev_err(&device->device, "Invalid packet len\n");
++			continue;
++		}
++
+ 		if (request == &stor_device->init_request ||
+ 		    request == &stor_device->reset_request) {
+ 			memcpy(&request->vstor_packet, packet,
 -- 
-2.29.2
+2.25.1
 
