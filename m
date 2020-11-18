@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14752B830D
+	by mail.lfdr.de (Postfix) with ESMTP id 344242B830C
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728342AbgKRRTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:19:22 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:56242 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728112AbgKRRSY (ORCPT
+        id S1728336AbgKRRTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 12:19:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728125AbgKRRSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:18:24 -0500
-Date:   Wed, 18 Nov 2020 17:18:21 -0000
+        Wed, 18 Nov 2020 12:18:25 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4279FC0613D6;
+        Wed, 18 Nov 2020 09:18:25 -0800 (PST)
+Date:   Wed, 18 Nov 2020 17:18:22 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605719902;
+        s=2020; t=1605719903;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mjXLzESJxTHiTUDJr6T4Ge6mdPBydRyMO+K5wFUHbFM=;
-        b=bviEZV/ER3wQOPyRb9b2CZyso1BIDJR0abQDOvBrd7DJg4yaTzzrgJkYsBDJtdGlwj4hxs
-        WsAkECiTKTooC5sat5sbrQo77ECp7AM/LgOaw0P1d4UTZ+sPh1tURZcXz6Rzxz/nOqNBZ6
-        yc5rYBU5i9AnHhBlFJVta6y5iN7Qu4anFQY/VkiCtoyZMf5zJ4+O5zSkUL8aOd+BXhC/kq
-        5lRghxzFqtMuERLsKRXQLmKX9Tt8+Idbj6FFK2IthVsbKS2Zi8NDgg+EXP2xFq3Y4yMmqk
-        2nsUpj+HKUpryTyGJZpmSoHQK+8xF2P+YJNBRvAFhY7FWsabBSPCD/k1aS3SQA==
+        bh=wqW/hes8AG5vX2DtfW+eElUWT4khKtv66gqqeEBVPls=;
+        b=1ts+M/dgNqRTLKMaUwHdjxbSPcUZyMk2H4NLe0WvOYnJzuhmeoZpqQnB7HAI/VX5dSWX7+
+        cvR8UWWGUM6Z6vX5liYXe/OIJFbJiXQkNs56D8S0/IQRhz28goGX9cG+oNuPPmd+7W7MbA
+        Z2rixqqZ2xIyIx6HcQZFfYCpbwFiG32UnTOHLE+A1lZuhaRuiy50tpbE/jZPg5S7jIVCRi
+        iRMjxtwlvWvUpj79XSMZrK9W9zEGytyu0Nzfwh05VOrq8/fJoPdO/FeyWLZvB1xhLRHDlR
+        nJDvRfFiN9JJw5OgfSmvg0nahhxklvZfnhpvYNhdg7XgCtuB8I4sR8zyFYqtoQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605719902;
+        s=2020e; t=1605719903;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mjXLzESJxTHiTUDJr6T4Ge6mdPBydRyMO+K5wFUHbFM=;
-        b=q6TKQdU5tUbaW/Z+wCMOrUD+IjYj4D4UTIMqLn16nft+/76BCIGgPZjl0H6t77aBFZiuOJ
-        qS3JwaDWBLUz9OAw==
-From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
+        bh=wqW/hes8AG5vX2DtfW+eElUWT4khKtv66gqqeEBVPls=;
+        b=+cD5oHlHGf59nA2RlFTtKSryPmkzz09TR4XQNzkx5R5ZThKFnO6OUIFHzEbIuIjw4H5rHD
+        ebmDU5AkxkQpBrBg==
+From:   "tip-bot2 for Jarkko Sakkinen" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/vdso: Add support for exception fixup in vDSO functions
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
+Subject: [tip: x86/sgx] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
         Jarkko Sakkinen <jarkko@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Jethro Beekman <jethro@fortanix.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201112220135.165028-17-jarkko@kernel.org>
-References: <20201112220135.165028-17-jarkko@kernel.org>
+In-Reply-To: <20201112220135.165028-14-jarkko@kernel.org>
+References: <20201112220135.165028-14-jarkko@kernel.org>
 MIME-Version: 1.0
-Message-ID: <160571990110.11244.1048088437021042520.tip-bot2@tip-bot2>
+Message-ID: <160571990289.11244.12554545909138188274.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,325 +63,412 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/sgx branch of tip:
 
-Commit-ID:     8382c668ce4f367d902f4a340a1bfa9e46096ec1
-Gitweb:        https://git.kernel.org/tip/8382c668ce4f367d902f4a340a1bfa9e460=
-96ec1
-Author:        Sean Christopherson <sean.j.christopherson@intel.com>
-AuthorDate:    Fri, 13 Nov 2020 00:01:27 +02:00
+Commit-ID:     c6d26d370767fa227fc44b98a8bdad112efdf563
+Gitweb:        https://git.kernel.org/tip/c6d26d370767fa227fc44b98a8bdad112ef=
+df563
+Author:        Jarkko Sakkinen <jarkko@kernel.org>
+AuthorDate:    Fri, 13 Nov 2020 00:01:24 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 18 Nov 2020 18:02:50 +01:00
+CommitterDate: Wed, 18 Nov 2020 18:02:49 +01:00
 
-x86/vdso: Add support for exception fixup in vDSO functions
+x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
 
-Signals are a horrid little mechanism.  They are especially nasty in
-multi-threaded environments because signal state like handlers is global
-across the entire process.  But, signals are basically the only way that
-userspace can =E2=80=9Cgracefully=E2=80=9D handle and recover from exceptions.
+SGX enclave pages are inaccessible to normal software. They must be
+populated with data by copying from normal memory with the help of the
+EADD and EEXTEND functions of the ENCLS instruction.
 
-The kernel generally does not like exceptions to occur during execution.
-But, exceptions are a fact of life and must be handled in some
-circumstances.  The kernel handles them by keeping a list of individual
-instructions which may cause exceptions.  Instead of truly handling the
-exception and returning to the instruction that caused it, the kernel
-instead restarts execution at a *different* instruction.  This makes it
-obvious to that thread of execution that the exception occurred and lets
-*that* code handle the exception instead of the handler.
+Add an ioctl() which performs EADD that adds new data to an enclave, and
+optionally EEXTEND functions that hash the page contents and use the
+hash as part of enclave =E2=80=9Cmeasurement=E2=80=9D to ensure enclave integ=
+rity.
 
-This is not dissimilar to the try/catch exceptions mechanisms that some
-programming languages have, but applied *very* surgically to single
-instructions.  It effectively changes the visible architecture of the
-instruction.
+The enclave author gets to decide which pages will be included in the
+enclave measurement with EEXTEND. Measurement is very slow and has
+sometimes has very little value. For instance, an enclave _could_
+measure every page of data and code, but would be slow to initialize.
+Or, it might just measure its code and then trust that code to
+initialize the bulk of its data after it starts running.
 
-Problem
-=3D=3D=3D=3D=3D=3D=3D
-
-SGX generates a lot of signals, and the code to enter and exit enclaves and
-muck with signal handling is truly horrid.  At the same time, an approach
-like kernel exception fixup can not be easily applied to userspace
-instructions because it changes the visible instruction architecture.
-
-Solution
-=3D=3D=3D=3D=3D=3D=3D=3D
-
-The vDSO is a special page of kernel-provided instructions that run in
-userspace.  Any userspace calling into the vDSO knows that it is special.
-This allows the kernel a place to legitimately rewrite the user/kernel
-contract and change instruction behavior.
-
-Add support for fixing up exceptions that occur while executing in the
-vDSO.  This replaces what could traditionally only be done with signal
-handling.
-
-This new mechanism will be used to replace previously direct use of SGX
-instructions by userspace.
-
-Just introduce the vDSO infrastructure.  Later patches will actually
-replace signal generation with vDSO exception fixup.
-
-Suggested-by: Andy Lutomirski <luto@amacapital.net>
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Jethro Beekman <jethro@fortanix.com>
-Link: https://lkml.kernel.org/r/20201112220135.165028-17-jarkko@kernel.org
+Tested-by: Jethro Beekman <jethro@fortanix.com>
+Link: https://lkml.kernel.org/r/20201112220135.165028-14-jarkko@kernel.org
 ---
- arch/x86/entry/vdso/Makefile          |  6 +--
- arch/x86/entry/vdso/extable.c         | 46 ++++++++++++++++++++++++-
- arch/x86/entry/vdso/extable.h         | 28 +++++++++++++++-
- arch/x86/entry/vdso/vdso-layout.lds.S |  9 ++++-
- arch/x86/entry/vdso/vdso2c.h          | 50 +++++++++++++++++++++++++-
- arch/x86/include/asm/vdso.h           |  5 +++-
- 6 files changed, 139 insertions(+), 5 deletions(-)
- create mode 100644 arch/x86/entry/vdso/extable.c
- create mode 100644 arch/x86/entry/vdso/extable.h
+ arch/x86/include/uapi/asm/sgx.h |  30 +++-
+ arch/x86/kernel/cpu/sgx/ioctl.c | 284 +++++++++++++++++++++++++++++++-
+ arch/x86/kernel/cpu/sgx/sgx.h   |   1 +-
+ 3 files changed, 315 insertions(+)
 
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 2124374..2ad757f 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -29,7 +29,7 @@ vobjs32-y :=3D vdso32/note.o vdso32/system_call.o vdso32/si=
-greturn.o
- vobjs32-y +=3D vdso32/vclock_gettime.o
+diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
+index f31bb17..835f7e5 100644
+--- a/arch/x86/include/uapi/asm/sgx.h
++++ b/arch/x86/include/uapi/asm/sgx.h
+@@ -8,10 +8,21 @@
+ #include <linux/types.h>
+ #include <linux/ioctl.h>
 =20
- # files to link into kernel
--obj-y				+=3D vma.o
-+obj-y				+=3D vma.o extable.o
- KASAN_SANITIZE_vma.o		:=3D y
- UBSAN_SANITIZE_vma.o		:=3D y
- KCSAN_SANITIZE_vma.o		:=3D y
-@@ -128,8 +128,8 @@ $(obj)/%-x32.o: $(obj)/%.o FORCE
-=20
- targets +=3D vdsox32.lds $(vobjx32s-y)
-=20
--$(obj)/%.so: OBJCOPYFLAGS :=3D -S
--$(obj)/%.so: $(obj)/%.so.dbg FORCE
-+$(obj)/%.so: OBJCOPYFLAGS :=3D -S --remove-section __ex_table
-+$(obj)/%.so: $(obj)/%.so.dbg
- 	$(call if_changed,objcopy)
-=20
- $(obj)/vdsox32.so.dbg: $(obj)/vdsox32.lds $(vobjx32s) FORCE
-diff --git a/arch/x86/entry/vdso/extable.c b/arch/x86/entry/vdso/extable.c
-new file mode 100644
-index 0000000..afcf5b6
---- /dev/null
-+++ b/arch/x86/entry/vdso/extable.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/err.h>
-+#include <linux/mm.h>
-+#include <asm/current.h>
-+#include <asm/traps.h>
-+#include <asm/vdso.h>
-+
-+struct vdso_exception_table_entry {
-+	int insn, fixup;
++/**
++ * enum sgx_epage_flags - page control flags
++ * %SGX_PAGE_MEASURE:	Measure the page contents with a sequence of
++ *			ENCLS[EEXTEND] operations.
++ */
++enum sgx_page_flags {
++	SGX_PAGE_MEASURE	=3D 0x01,
 +};
 +
-+bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
-+			  unsigned long error_code, unsigned long fault_addr)
+ #define SGX_MAGIC 0xA4
+=20
+ #define SGX_IOC_ENCLAVE_CREATE \
+ 	_IOW(SGX_MAGIC, 0x00, struct sgx_enclave_create)
++#define SGX_IOC_ENCLAVE_ADD_PAGES \
++	_IOWR(SGX_MAGIC, 0x01, struct sgx_enclave_add_pages)
+=20
+ /**
+  * struct sgx_enclave_create - parameter structure for the
+@@ -22,4 +33,23 @@ struct sgx_enclave_create  {
+ 	__u64	src;
+ };
+=20
++/**
++ * struct sgx_enclave_add_pages - parameter structure for the
++ *                                %SGX_IOC_ENCLAVE_ADD_PAGE ioctl
++ * @src:	start address for the page data
++ * @offset:	starting page offset
++ * @length:	length of the data (multiple of the page size)
++ * @secinfo:	address for the SECINFO data
++ * @flags:	page control flags
++ * @count:	number of bytes added (multiple of the page size)
++ */
++struct sgx_enclave_add_pages {
++	__u64 src;
++	__u64 offset;
++	__u64 length;
++	__u64 secinfo;
++	__u64 flags;
++	__u64 count;
++};
++
+ #endif /* _UAPI_ASM_X86_SGX_H */
+diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
+index 1355490..82acff7 100644
+--- a/arch/x86/kernel/cpu/sgx/ioctl.c
++++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+@@ -101,6 +101,287 @@ static long sgx_ioc_enclave_create(struct sgx_encl *enc=
+l, void __user *arg)
+ 	return ret;
+ }
+=20
++static struct sgx_encl_page *sgx_encl_page_alloc(struct sgx_encl *encl,
++						 unsigned long offset,
++						 u64 secinfo_flags)
 +{
-+	const struct vdso_image *image =3D current->mm->context.vdso_image;
-+	const struct vdso_exception_table_entry *extable;
-+	unsigned int nr_entries, i;
-+	unsigned long base;
++	struct sgx_encl_page *encl_page;
++	unsigned long prot;
++
++	encl_page =3D kzalloc(sizeof(*encl_page), GFP_KERNEL);
++	if (!encl_page)
++		return ERR_PTR(-ENOMEM);
++
++	encl_page->desc =3D encl->base + offset;
++	encl_page->encl =3D encl;
++
++	prot =3D _calc_vm_trans(secinfo_flags, SGX_SECINFO_R, PROT_READ)  |
++	       _calc_vm_trans(secinfo_flags, SGX_SECINFO_W, PROT_WRITE) |
++	       _calc_vm_trans(secinfo_flags, SGX_SECINFO_X, PROT_EXEC);
 +
 +	/*
-+	 * Do not attempt to fixup #DB or #BP.  It's impossible to identify
-+	 * whether or not a #DB/#BP originated from within an SGX enclave and
-+	 * SGX enclaves are currently the only use case for vDSO fixup.
++	 * TCS pages must always RW set for CPU access while the SECINFO
++	 * permissions are *always* zero - the CPU ignores the user provided
++	 * values and silently overwrites them with zero permissions.
 +	 */
-+	if (trapnr =3D=3D X86_TRAP_DB || trapnr =3D=3D X86_TRAP_BP)
-+		return false;
++	if ((secinfo_flags & SGX_SECINFO_PAGE_TYPE_MASK) =3D=3D SGX_SECINFO_TCS)
++		prot |=3D PROT_READ | PROT_WRITE;
 +
-+	if (!current->mm->context.vdso)
-+		return false;
++	/* Calculate maximum of the VM flags for the page. */
++	encl_page->vm_max_prot_bits =3D calc_vm_prot_bits(prot, 0);
 +
-+	base =3D  (unsigned long)current->mm->context.vdso + image->extable_base;
-+	nr_entries =3D image->extable_len / (sizeof(*extable));
-+	extable =3D image->extable;
++	return encl_page;
++}
 +
-+	for (i =3D 0; i < nr_entries; i++) {
-+		if (regs->ip =3D=3D base + extable[i].insn) {
-+			regs->ip =3D base + extable[i].fixup;
-+			regs->di =3D trapnr;
-+			regs->si =3D error_code;
-+			regs->dx =3D fault_addr;
-+			return true;
++static int sgx_validate_secinfo(struct sgx_secinfo *secinfo)
++{
++	u64 perm =3D secinfo->flags & SGX_SECINFO_PERMISSION_MASK;
++	u64 pt   =3D secinfo->flags & SGX_SECINFO_PAGE_TYPE_MASK;
++
++	if (pt !=3D SGX_SECINFO_REG && pt !=3D SGX_SECINFO_TCS)
++		return -EINVAL;
++
++	if ((perm & SGX_SECINFO_W) && !(perm & SGX_SECINFO_R))
++		return -EINVAL;
++
++	/*
++	 * CPU will silently overwrite the permissions as zero, which means
++	 * that we need to validate it ourselves.
++	 */
++	if (pt =3D=3D SGX_SECINFO_TCS && perm)
++		return -EINVAL;
++
++	if (secinfo->flags & SGX_SECINFO_RESERVED_MASK)
++		return -EINVAL;
++
++	if (memchr_inv(secinfo->reserved, 0, sizeof(secinfo->reserved)))
++		return -EINVAL;
++
++	return 0;
++}
++
++static int __sgx_encl_add_page(struct sgx_encl *encl,
++			       struct sgx_encl_page *encl_page,
++			       struct sgx_epc_page *epc_page,
++			       struct sgx_secinfo *secinfo, unsigned long src)
++{
++	struct sgx_pageinfo pginfo;
++	struct vm_area_struct *vma;
++	struct page *src_page;
++	int ret;
++
++	/* Deny noexec. */
++	vma =3D find_vma(current->mm, src);
++	if (!vma)
++		return -EFAULT;
++
++	if (!(vma->vm_flags & VM_MAYEXEC))
++		return -EACCES;
++
++	ret =3D get_user_pages(src, 1, 0, &src_page, NULL);
++	if (ret < 1)
++		return -EFAULT;
++
++	pginfo.secs =3D (unsigned long)sgx_get_epc_virt_addr(encl->secs.epc_page);
++	pginfo.addr =3D encl_page->desc & PAGE_MASK;
++	pginfo.metadata =3D (unsigned long)secinfo;
++	pginfo.contents =3D (unsigned long)kmap_atomic(src_page);
++
++	ret =3D __eadd(&pginfo, sgx_get_epc_virt_addr(epc_page));
++
++	kunmap_atomic((void *)pginfo.contents);
++	put_page(src_page);
++
++	return ret ? -EIO : 0;
++}
++
++/*
++ * If the caller requires measurement of the page as a proof for the content,
++ * use EEXTEND to add a measurement for 256 bytes of the page. Repeat this
++ * operation until the entire page is measured."
++ */
++static int __sgx_encl_extend(struct sgx_encl *encl,
++			     struct sgx_epc_page *epc_page)
++{
++	unsigned long offset;
++	int ret;
++
++	for (offset =3D 0; offset < PAGE_SIZE; offset +=3D SGX_EEXTEND_BLOCK_SIZE) {
++		ret =3D __eextend(sgx_get_epc_virt_addr(encl->secs.epc_page),
++				sgx_get_epc_virt_addr(epc_page) + offset);
++		if (ret) {
++			if (encls_failed(ret))
++				ENCLS_WARN(ret, "EEXTEND");
++
++			return -EIO;
 +		}
 +	}
 +
-+	return false;
++	return 0;
 +}
-diff --git a/arch/x86/entry/vdso/extable.h b/arch/x86/entry/vdso/extable.h
-new file mode 100644
-index 0000000..b56f6b0
---- /dev/null
-+++ b/arch/x86/entry/vdso/extable.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __VDSO_EXTABLE_H
-+#define __VDSO_EXTABLE_H
 +
-+/*
-+ * Inject exception fixup for vDSO code.  Unlike normal exception fixup,
-+ * vDSO uses a dedicated handler the addresses are relative to the overall
-+ * exception table, not each individual entry.
-+ */
-+#ifdef __ASSEMBLY__
-+#define _ASM_VDSO_EXTABLE_HANDLE(from, to)	\
-+	ASM_VDSO_EXTABLE_HANDLE from to
-+
-+.macro ASM_VDSO_EXTABLE_HANDLE from:req to:req
-+	.pushsection __ex_table, "a"
-+	.long (\from) - __ex_table
-+	.long (\to) - __ex_table
-+	.popsection
-+.endm
-+#else
-+#define _ASM_VDSO_EXTABLE_HANDLE(from, to)	\
-+	".pushsection __ex_table, \"a\"\n"      \
-+	".long (" #from ") - __ex_table\n"      \
-+	".long (" #to ") - __ex_table\n"        \
-+	".popsection\n"
-+#endif
-+
-+#endif /* __VDSO_EXTABLE_H */
-diff --git a/arch/x86/entry/vdso/vdso-layout.lds.S b/arch/x86/entry/vdso/vdso=
--layout.lds.S
-index 4d15293..dc8da76 100644
---- a/arch/x86/entry/vdso/vdso-layout.lds.S
-+++ b/arch/x86/entry/vdso/vdso-layout.lds.S
-@@ -75,11 +75,18 @@ SECTIONS
- 	 * stuff that isn't used at runtime in between.
- 	 */
-=20
--	.text		: { *(.text*) }			:text	=3D0x90909090,
-+	.text		: {
-+		*(.text*)
-+		*(.fixup)
-+	}						:text	=3D0x90909090,
-+
-+
-=20
- 	.altinstructions	: { *(.altinstructions) }	:text
- 	.altinstr_replacement	: { *(.altinstr_replacement) }	:text
-=20
-+	__ex_table		: { *(__ex_table) }		:text
-+
- 	/DISCARD/ : {
- 		*(.discard)
- 		*(.discard.*)
-diff --git a/arch/x86/entry/vdso/vdso2c.h b/arch/x86/entry/vdso/vdso2c.h
-index 6f46e11..1c7cfac 100644
---- a/arch/x86/entry/vdso/vdso2c.h
-+++ b/arch/x86/entry/vdso/vdso2c.h
-@@ -5,6 +5,41 @@
-  * are built for 32-bit userspace.
-  */
-=20
-+static void BITSFUNC(copy)(FILE *outfile, const unsigned char *data, size_t =
-len)
++static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
++			     unsigned long offset, struct sgx_secinfo *secinfo,
++			     unsigned long flags)
 +{
-+	size_t i;
++	struct sgx_encl_page *encl_page;
++	struct sgx_epc_page *epc_page;
++	int ret;
 +
-+	for (i =3D 0; i < len; i++) {
-+		if (i % 10 =3D=3D 0)
-+			fprintf(outfile, "\n\t");
-+		fprintf(outfile, "0x%02X, ", (int)(data)[i]);
-+	}
-+}
++	encl_page =3D sgx_encl_page_alloc(encl, offset, secinfo->flags);
++	if (IS_ERR(encl_page))
++		return PTR_ERR(encl_page);
 +
-+
-+/*
-+ * Extract a section from the input data into a standalone blob.  Used to
-+ * capture kernel-only data that needs to persist indefinitely, e.g. the
-+ * exception fixup tables, but only in the kernel, i.e. the section can
-+ * be stripped from the final vDSO image.
-+ */
-+static void BITSFUNC(extract)(const unsigned char *data, size_t data_len,
-+			      FILE *outfile, ELF(Shdr) *sec, const char *name)
-+{
-+	unsigned long offset;
-+	size_t len;
-+
-+	offset =3D (unsigned long)GET_LE(&sec->sh_offset);
-+	len =3D (size_t)GET_LE(&sec->sh_size);
-+
-+	if (offset + len > data_len)
-+		fail("section to extract overruns input data");
-+
-+	fprintf(outfile, "static const unsigned char %s[%lu] =3D {", name, len);
-+	BITSFUNC(copy)(outfile, data + offset, len);
-+	fprintf(outfile, "\n};\n\n");
-+}
-+
- static void BITSFUNC(go)(void *raw_addr, size_t raw_len,
- 			 void *stripped_addr, size_t stripped_len,
- 			 FILE *outfile, const char *image_name)
-@@ -15,7 +50,7 @@ static void BITSFUNC(go)(void *raw_addr, size_t raw_len,
- 	ELF(Ehdr) *hdr =3D (ELF(Ehdr) *)raw_addr;
- 	unsigned long i, syms_nr;
- 	ELF(Shdr) *symtab_hdr =3D NULL, *strtab_hdr, *secstrings_hdr,
--		*alt_sec =3D NULL;
-+		*alt_sec =3D NULL, *extable_sec =3D NULL;
- 	ELF(Dyn) *dyn =3D 0, *dyn_end =3D 0;
- 	const char *secstrings;
- 	INT_BITS syms[NSYMS] =3D {};
-@@ -77,6 +112,8 @@ static void BITSFUNC(go)(void *raw_addr, size_t raw_len,
- 		if (!strcmp(secstrings + GET_LE(&sh->sh_name),
- 			    ".altinstructions"))
- 			alt_sec =3D sh;
-+		if (!strcmp(secstrings + GET_LE(&sh->sh_name), "__ex_table"))
-+			extable_sec =3D sh;
- 	}
-=20
- 	if (!symtab_hdr)
-@@ -155,6 +192,9 @@ static void BITSFUNC(go)(void *raw_addr, size_t raw_len,
- 			(int)((unsigned char *)stripped_addr)[i]);
- 	}
- 	fprintf(outfile, "\n};\n\n");
-+	if (extable_sec)
-+		BITSFUNC(extract)(raw_addr, raw_len, outfile,
-+				  extable_sec, "extable");
-=20
- 	fprintf(outfile, "const struct vdso_image %s =3D {\n", image_name);
- 	fprintf(outfile, "\t.data =3D raw_data,\n");
-@@ -165,6 +205,14 @@ static void BITSFUNC(go)(void *raw_addr, size_t raw_len,
- 		fprintf(outfile, "\t.alt_len =3D %lu,\n",
- 			(unsigned long)GET_LE(&alt_sec->sh_size));
- 	}
-+	if (extable_sec) {
-+		fprintf(outfile, "\t.extable_base =3D %lu,\n",
-+			(unsigned long)GET_LE(&extable_sec->sh_offset));
-+		fprintf(outfile, "\t.extable_len =3D %lu,\n",
-+			(unsigned long)GET_LE(&extable_sec->sh_size));
-+		fprintf(outfile, "\t.extable =3D extable,\n");
++	epc_page =3D __sgx_alloc_epc_page();
++	if (IS_ERR(epc_page)) {
++		kfree(encl_page);
++		return PTR_ERR(epc_page);
 +	}
 +
- 	for (i =3D 0; i < NSYMS; i++) {
- 		if (required_syms[i].export && syms[i])
- 			fprintf(outfile, "\t.sym_%s =3D %" PRIi64 ",\n",
-diff --git a/arch/x86/include/asm/vdso.h b/arch/x86/include/asm/vdso.h
-index bbcdc7b..b5d2347 100644
---- a/arch/x86/include/asm/vdso.h
-+++ b/arch/x86/include/asm/vdso.h
-@@ -15,6 +15,8 @@ struct vdso_image {
- 	unsigned long size;   /* Always a multiple of PAGE_SIZE */
++	mmap_read_lock(current->mm);
++	mutex_lock(&encl->lock);
++
++	/*
++	 * Insert prior to EADD in case of OOM.  EADD modifies MRENCLAVE, i.e.
++	 * can't be gracefully unwound, while failure on EADD/EXTEND is limited
++	 * to userspace errors (or kernel/hardware bugs).
++	 */
++	ret =3D xa_insert(&encl->page_array, PFN_DOWN(encl_page->desc),
++			encl_page, GFP_KERNEL);
++	if (ret)
++		goto err_out_unlock;
++
++	ret =3D __sgx_encl_add_page(encl, encl_page, epc_page, secinfo,
++				  src);
++	if (ret)
++		goto err_out;
++
++	/*
++	 * Complete the "add" before doing the "extend" so that the "add"
++	 * isn't in a half-baked state in the extremely unlikely scenario
++	 * the enclave will be destroyed in response to EEXTEND failure.
++	 */
++	encl_page->encl =3D encl;
++	encl_page->epc_page =3D epc_page;
++	encl->secs_child_cnt++;
++
++	if (flags & SGX_PAGE_MEASURE) {
++		ret =3D __sgx_encl_extend(encl, epc_page);
++		if (ret)
++			goto err_out;
++	}
++
++	mutex_unlock(&encl->lock);
++	mmap_read_unlock(current->mm);
++	return ret;
++
++err_out:
++	xa_erase(&encl->page_array, PFN_DOWN(encl_page->desc));
++
++err_out_unlock:
++	mutex_unlock(&encl->lock);
++	mmap_read_unlock(current->mm);
++
++	sgx_free_epc_page(epc_page);
++	kfree(encl_page);
++
++	return ret;
++}
++
++/**
++ * sgx_ioc_enclave_add_pages() - The handler for %SGX_IOC_ENCLAVE_ADD_PAGES
++ * @encl:       an enclave pointer
++ * @arg:	a user pointer to a struct sgx_enclave_add_pages instance
++ *
++ * Add one or more pages to an uninitialized enclave, and optionally extend =
+the
++ * measurement with the contents of the page. The SECINFO and measurement ma=
+sk
++ * are applied to all pages.
++ *
++ * A SECINFO for a TCS is required to always contain zero permissions because
++ * CPU silently zeros them. Allowing anything else would cause a mismatch in
++ * the measurement.
++ *
++ * mmap()'s protection bits are capped by the page permissions. For each page
++ * address, the maximum protection bits are computed with the following
++ * heuristics:
++ *
++ * 1. A regular page: PROT_R, PROT_W and PROT_X match the SECINFO permission=
+s.
++ * 2. A TCS page: PROT_R | PROT_W.
++ *
++ * mmap() is not allowed to surpass the minimum of the maximum protection bi=
+ts
++ * within the given address range.
++ *
++ * The function deinitializes kernel data structures for enclave and returns
++ * -EIO in any of the following conditions:
++ *
++ * - Enclave Page Cache (EPC), the physical memory holding enclaves, has
++ *   been invalidated. This will cause EADD and EEXTEND to fail.
++ * - If the source address is corrupted somehow when executing EADD.
++ *
++ * Return:
++ * - 0:		Success.
++ * - -EACCES:	The source page is located in a noexec partition.
++ * - -ENOMEM:	Out of EPC pages.
++ * - -EINTR:	The call was interrupted before data was processed.
++ * - -EIO:	Either EADD or EEXTEND failed because invalid source address
++ *		or power cycle.
++ * - -errno:	POSIX error.
++ */
++static long sgx_ioc_enclave_add_pages(struct sgx_encl *encl, void __user *ar=
+g)
++{
++	struct sgx_enclave_add_pages add_arg;
++	struct sgx_secinfo secinfo;
++	unsigned long c;
++	int ret;
++
++	if (!test_bit(SGX_ENCL_CREATED, &encl->flags))
++		return -EINVAL;
++
++	if (copy_from_user(&add_arg, arg, sizeof(add_arg)))
++		return -EFAULT;
++
++	if (!IS_ALIGNED(add_arg.offset, PAGE_SIZE) ||
++	    !IS_ALIGNED(add_arg.src, PAGE_SIZE))
++		return -EINVAL;
++
++	if (add_arg.length & (PAGE_SIZE - 1))
++		return -EINVAL;
++
++	if (add_arg.offset + add_arg.length - PAGE_SIZE >=3D encl->size)
++		return -EINVAL;
++
++	if (copy_from_user(&secinfo, (void __user *)add_arg.secinfo,
++			   sizeof(secinfo)))
++		return -EFAULT;
++
++	if (sgx_validate_secinfo(&secinfo))
++		return -EINVAL;
++
++	for (c =3D 0 ; c < add_arg.length; c +=3D PAGE_SIZE) {
++		if (signal_pending(current)) {
++			if (!c)
++				ret =3D -EINTR;
++
++			break;
++		}
++
++		if (need_resched())
++			cond_resched();
++
++		ret =3D sgx_encl_add_page(encl, add_arg.src + c, add_arg.offset + c,
++					&secinfo, add_arg.flags);
++		if (ret)
++			break;
++	}
++
++	add_arg.count =3D c;
++
++	if (copy_to_user(arg, &add_arg, sizeof(add_arg)))
++		return -EFAULT;
++
++	return ret;
++}
++
+ long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
+ {
+ 	struct sgx_encl *encl =3D filep->private_data;
+@@ -113,6 +394,9 @@ long sgx_ioctl(struct file *filep, unsigned int cmd, unsi=
+gned long arg)
+ 	case SGX_IOC_ENCLAVE_CREATE:
+ 		ret =3D sgx_ioc_enclave_create(encl, (void __user *)arg);
+ 		break;
++	case SGX_IOC_ENCLAVE_ADD_PAGES:
++		ret =3D sgx_ioc_enclave_add_pages(encl, (void __user *)arg);
++		break;
+ 	default:
+ 		ret =3D -ENOIOCTLCMD;
+ 		break;
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+index bd9dcb1..91234f4 100644
+--- a/arch/x86/kernel/cpu/sgx/sgx.h
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -14,6 +14,7 @@
+ #define pr_fmt(fmt) "sgx: " fmt
 =20
- 	unsigned long alt, alt_len;
-+	unsigned long extable_base, extable_len;
-+	const void *extable;
+ #define SGX_MAX_EPC_SECTIONS		8
++#define SGX_EEXTEND_BLOCK_SIZE		256
 =20
- 	long sym_vvar_start;  /* Negative offset to the vvar area */
-=20
-@@ -45,6 +47,9 @@ extern void __init init_vdso_image(const struct vdso_image =
-*image);
-=20
- extern int map_vdso_once(const struct vdso_image *image, unsigned long addr);
-=20
-+extern bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
-+				 unsigned long error_code,
-+				 unsigned long fault_addr);
- #endif /* __ASSEMBLER__ */
-=20
- #endif /* _ASM_X86_VDSO_H */
+ struct sgx_epc_page {
+ 	unsigned int section;
