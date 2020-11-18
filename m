@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5A12B838D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42AF2B839A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgKRSC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:02:29 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:39430 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgKRSC3 (ORCPT
+        id S1726316AbgKRSHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgKRSHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:02:29 -0500
-Received: from 3.general.kamal.us.vpn ([10.172.68.53] helo=ascalon)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kamal@canonical.com>)
-        id 1kfRmi-0007Yv-6o; Wed, 18 Nov 2020 18:02:24 +0000
-Received: from kamal by ascalon with local (Exim 4.90_1)
-        (envelope-from <kamal@ascalon>)
-        id 1kfRmd-00038H-Er; Wed, 18 Nov 2020 10:02:19 -0800
-Date:   Wed, 18 Nov 2020 10:02:17 -0800
-From:   Kamal Mostafa <kamal@canonical.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: Same problem for 4.14.y and a concern: Re: [PATCH 4.19 056/191]
- powerpc: select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
-Message-ID: <20201118180216.GA31560@ascalon>
-References: <20201103203232.656475008@linuxfoundation.org>
- <20201103203239.940977599@linuxfoundation.org>
- <87361qug5a.fsf@mpe.ellerman.id.au>
- <CAEO-eVMZ-qjZfdum=NQCq-hur=KkHvFgJO1maHw7C1S4NFbczw@mail.gmail.com>
- <20201118004528.GA629656@sasha-vm>
+        Wed, 18 Nov 2020 13:07:52 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854E1C0613D4;
+        Wed, 18 Nov 2020 10:07:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YzS91EnA1FNJiGjiBHPMzd0uYWSFicdq9v7Qv3Gu6Jk=; b=mjXXLuYtZ+K8Lc9yyxzUBqHmSO
+        yKXigXTnSCMKh9dBvF4lRh2UEZNPCeZyav3DuPV2BVLZetszfu7eJEurk1w038QfIB0giEfyD8muW
+        rhmlcEFZG+AvD6wQOmYtwG0YAQUWg2igIni9dmVzCbYT/z9vOKsCoErQfCZ8EL25oQ5ZRr7EEz3sQ
+        M7BX+agZqE3/KM1KFnlYIGzGVlodxh29c8q5QMsDrrxlvJa0WeoaQTkrAgrE2ltdwwfppNGnw3KdQ
+        xUUvJQ4FXyLZ2IZpf39R0rtHa3CWEUSpyJWypiglxj40GrqRVZs5s0W5+xCgfjevqJiopXTEv9/AN
+        q9DwXrBw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kfRrY-0007CP-5r; Wed, 18 Nov 2020 18:07:24 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D999F3012C3;
+        Wed, 18 Nov 2020 19:07:21 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BB42C2BC7371A; Wed, 18 Nov 2020 19:07:21 +0100 (CET)
+Date:   Wed, 18 Nov 2020 19:07:21 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kan Liang <kan.liang@linux.intel.com>, luwei.kang@intel.com,
+        Thomas Gleixner <tglx@linutronix.de>, wei.w.wang@intel.com,
+        Tony Luck <tony.luck@intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/17] perf: x86/ds: Handle guest PEBS overflow PMI
+ and inject it to guest
+Message-ID: <20201118180721.GA3121392@hirez.programming.kicks-ass.net>
+References: <20201109021254.79755-1-like.xu@linux.intel.com>
+ <20201109021254.79755-5-like.xu@linux.intel.com>
+ <20201117143529.GJ3121406@hirez.programming.kicks-ass.net>
+ <b2c3f889-44dd-cadb-f225-a4c5db3a4447@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118004528.GA629656@sasha-vm>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b2c3f889-44dd-cadb-f225-a4c5db3a4447@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 07:45:28PM -0500, Sasha Levin wrote:
-> On Tue, Nov 17, 2020 at 10:51:16AM -0800, Kamal Mostafa wrote:
-> > On Tue, Nov 3, 2020 at 4:22 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> > 
-> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> > > > From: Nicholas Piggin <npiggin@gmail.com>
-> > > >
-> > > > [ Upstream commit 66acd46080bd9e5ad2be4b0eb1d498d5145d058e ]
-> > > >
-> > > > powerpc uses IPIs in some situations to switch a kernel thread away
-> > > > from a lazy tlb mm, which is subject to the TLB flushing race
-> > > > described in the changelog introducing ARCH_WANT_IRQS_OFF_ACTIVATE_MM.
-> > > >
-> > > > Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> > > > Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> > > > Link:
-> > > https://lore.kernel.org/r/20200914045219.3736466-3-npiggin@gmail.com
-> > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > > ---
-> > > >  arch/powerpc/Kconfig                   | 1 +
-> > > >  arch/powerpc/include/asm/mmu_context.h | 2 +-
-> > > >  2 files changed, 2 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> > > > index f38d153d25861..0bc53f0e37c0f 100644
-> > > > --- a/arch/powerpc/Kconfig
-> > > > +++ b/arch/powerpc/Kconfig
-> > > > @@ -152,6 +152,7 @@ config PPC
-> > > >       select ARCH_USE_BUILTIN_BSWAP
-> > > >       select ARCH_USE_CMPXCHG_LOCKREF         if PPC64
-> > > >       select ARCH_WANT_IPC_PARSE_VERSION
-> > > > +     select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
-> > > 
-> > > This depends on upstream commit:
-> > > 
-> > >   d53c3dfb23c4 ("mm: fix exec activate_mm vs TLB shootdown and lazy tlb
-> > > switching race")
-> > > 
-> > > 
-> > > Which I don't see in 4.19 stable, or in the email thread here.
-> > > 
-> > > So this shouldn't be backported to 4.19 unless that commit is also
-> > > backported.
-> > > 
-> > > cheers
-> > > 
-> > 
-> > Hi-
-> > 
-> > This glitch has made its way into 4.14.y ...
-> >    [4.14.y] c2bca8712a19 powerpc: select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
-> > But 4.14.y does not carry the prereq that introduces that config.
+On Thu, Nov 19, 2020 at 12:15:09AM +0800, Like Xu wrote:
+
+> > ISTR there was lots of fail trying to virtualize it earlier. What's
+> > changed? There's 0 clues here.
 > 
-> I'll queue up the 4.19 backport for 4.14 too, thanks!
+> Ah, now we have EPT-friendly PEBS facilities supported since Ice Lake
+> which makes guest PEBS feature possible w/o guest memory pinned.
+
+OK.
+
+> > Why are the host and guest DS area separate, why can't we map them to
+> > the exact same physical pages?
 > 
+> If we map both guest and host DS_AREA to the exact same physical pages,
+> - the guest can access the host PEBS records, which means that the host
+> IP maybe leaked, because we cannot predict the time guest drains records and
+> it would be over-designed to clean it up before each vm-entry;
+> - different tasks/vcpus on the same pcpu cannot share the same PEBS DS
+> settings from the same physical page. For example, some require large
+> PEBS and reset values, while others do not.
+> 
+> Like many guest msrs, we use the separate guest DS_AREA for the guest's
+> own use and it avoids mutual interference as little as possible.
 
-Thanks Sasha.
-
-And nevermind my other concern ...
-
-> > It would seem that the intent is that it should be *only* enabled
-> > (currently at least) for arches that will explicitly select it, but the
-> > config advice does not make that very clear.  Could that new config get
-> > an explicit "default n" line?
-
-... I see now that a 'default' isn't necessary; the config only appears
-for arches which explicitly select it, as intended.
-
- -Kamal
+OK, but the code here wanted to inspect the guest DS from the host. It
+states this is somehow complicated/expensive. But surely we can at the
+very least map the first guest DS page somewhere so we can at least
+access the control bits without too much magic.
