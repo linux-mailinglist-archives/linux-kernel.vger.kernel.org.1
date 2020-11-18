@@ -2,90 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E7C2B750E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 04:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2972B7511
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 04:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbgKRDyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 22:54:54 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:51256 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgKRDyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 22:54:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605671693; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ZpMUv3oK49C6eOBaaI0CLod60nuTQ9Tc+mFUPGAV3Ng=;
- b=FR38yKV5F/MHb3oaDL+8QZe076MRvfr/8n1lWyLHrR7Zbof+yOuKiZRohEWDz3j9ArSpQniO
- xNrpfVQQt4v1Y4S06GHK4fQ0gRPQizImiGSpGs0XDcsUA3cwI7Nxj4stWvtEFpvNbQbgIBOX
- K5e7mnd4H3b0zge6jZPoutHoNtA=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fb49b0d6c42d983b9353404 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 03:54:53
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 79F3CC43465; Wed, 18 Nov 2020 03:54:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CE19CC433ED;
-        Wed, 18 Nov 2020 03:54:51 +0000 (UTC)
+        id S1727464AbgKRDzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 22:55:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727288AbgKRDzH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 22:55:07 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844EDC061A4F
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 19:55:07 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id ei22so366202pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 19:55:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NF71P8SL20XuWGpve1Ss/ZaRaSfeH/zBmcqp/hYzjCw=;
+        b=Rm8kt3VpI/aWCK8QuAXnBlKQgakkQESmJbYWI+EwQjN3Yhd6FbRj4gxVQKNgjbSmbZ
+         aAQ47/Wg+l6lGrGnnOQJJ5+KfsqV0N6Ud4/ecG9Xz1eQi65hzeq14Ct5S68NUsWhGwJX
+         3LPYA5gpgSwVClpU/N+5JpD4zCu629F+y6UQ8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NF71P8SL20XuWGpve1Ss/ZaRaSfeH/zBmcqp/hYzjCw=;
+        b=AK2GGrk6sqkq4acl6bVojOO6xlVyzZKEgjXFlq4nFcgsL2vV8oIpnanOzApFv5qjx6
+         1OfDoRYlJ0tncXh6VevwpIsisSthWjhsEszc654PuZ9hZeihM8rQlQdXJ8OlBRFndP+n
+         YPnw4rgiU8iz2cfYAnrh4PqWXexFPXNvUy5chilrnrLMc58i72EhQd5eSJTE81nBBA31
+         CFdSJw2kwuo7sqvow0MmYPxu3adPIYVMWZW7uqRB7kRUSGo7T2HH6IvYS3JlDAB8zIXd
+         1/zQnrj2Yl0dRm+eTFxotRtoVXSs6IKbYTjwZ70yMNM2F0VKo0jpFs4vk+ENcYQSJ4D0
+         PHTA==
+X-Gm-Message-State: AOAM5313+aWuEPWOu7ycUW04UDAb2rH1+HSQzrLLH62oy2E77dgsOd46
+        DOQMVp81Fm/NIHsFTs5hrXTcyw==
+X-Google-Smtp-Source: ABdhPJwrYH4odcpeAEWrzKDSnTEwhm/OO88XM2k1g4IF7+ohxJxegV50JUMuGHCnQDzpm2sHh6Ng3g==
+X-Received: by 2002:a17:902:a705:b029:d6:e486:ef6 with SMTP id w5-20020a170902a705b02900d6e4860ef6mr2890732plq.0.1605671706956;
+        Tue, 17 Nov 2020 19:55:06 -0800 (PST)
+Received: from chromium.org ([2401:fa00:1:b:f693:9fff:fef4:a8fc])
+        by smtp.gmail.com with ESMTPSA id 131sm7798031pfw.117.2020.11.17.19.55.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 19:55:06 -0800 (PST)
+Date:   Wed, 18 Nov 2020 11:55:02 +0800
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     Weiyi Lu <weiyi.lu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream@mediatek.com, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 07/24] clk: mediatek: Fix asymmetrical PLL enable and
+ disable control
+Message-ID: <20201118035502.GB1049148@chromium.org>
+References: <1604887429-29445-1-git-send-email-weiyi.lu@mediatek.com>
+ <1604887429-29445-8-git-send-email-weiyi.lu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 18 Nov 2020 11:54:51 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 1/7] scsi: ufs: avoid to call REQ_CLKS_OFF to CLKS_OFF
-In-Reply-To: <20201117165839.1643377-2-jaegeuk@kernel.org>
-References: <20201117165839.1643377-1-jaegeuk@kernel.org>
- <20201117165839.1643377-2-jaegeuk@kernel.org>
-Message-ID: <9947ab24ad74d77b96e9f09523f25e1a@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604887429-29445-8-git-send-email-weiyi.lu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-18 00:58, Jaegeuk Kim wrote:
-> Once UFS was gated with CLKS_OFF, it should not call REQ_CLKS_OFF 
-> again, which
-> caused hibern8_enter failure.
+On Mon, Nov 09, 2020 at 10:03:32AM +0800, Weiyi Lu wrote:
+> In fact, the en_mask is a combination of divider enable mask
+> and pll enable bit(bit0).
+> Before this patch, we enabled both divider mask and bit0 in prepare(),
+> but only cleared the bit0 in unprepare().
+> In the future, we hope en_mask will only be used as divider enable mask.
+> The enable register(CON0) will be set in 2 steps:
+> first is divider mask, and then bit0 during prepare(), and vice versa.
+> But considering backward compatibility, at this stage we allow en_mask
+> to be a combination or a pure divider enable mask.
+> And then we will make en_mask a pure divider enable mask in another
+> following patch series.
+
+I have a question on this: Are there any possible problems on controlling
+divider_en and bit0 at the same time? Or is this only for cleanups?
+
+If mtk_pll_data::en_mask is not allowed to control with bit0 together,
+I guess register_pll() also needs to check en_mask::bit0 is cleared?
+
 > 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-
-Reviewed-by: Can Guo <cang@codeaurora.org>
-
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 > ---
->  drivers/scsi/ufs/ufshcd.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/clk/mediatek/clk-pll.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index b8f573a02713..cc8d5f0c3fdc 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1745,7 +1745,8 @@ static void __ufshcd_release(struct ufs_hba *hba)
->  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
->  	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
->  	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
-> -	    hba->active_uic_cmd || hba->uic_async_done)
-> +	    hba->active_uic_cmd || hba->uic_async_done ||
-> +	    hba->clk_gating.state == CLKS_OFF)
->  		return;
-> 
->  	hba->clk_gating.state = REQ_CLKS_OFF;
+> diff --git a/drivers/clk/mediatek/clk-pll.c b/drivers/clk/mediatek/clk-pll.c
+> index f440f2cd..11ed5d1 100644
+> --- a/drivers/clk/mediatek/clk-pll.c
+> +++ b/drivers/clk/mediatek/clk-pll.c
+> @@ -238,6 +238,7 @@ static int mtk_pll_prepare(struct clk_hw *hw)
+>  {
+>  	struct mtk_clk_pll *pll = to_mtk_clk_pll(hw);
+>  	u32 r;
+> +	u32 div_en_mask;
+>  
+>  	r = readl(pll->pwr_addr) | CON0_PWR_ON;
+>  	writel(r, pll->pwr_addr);
+> @@ -247,10 +248,15 @@ static int mtk_pll_prepare(struct clk_hw *hw)
+>  	writel(r, pll->pwr_addr);
+>  	udelay(1);
+>  
+> -	r = readl(pll->base_addr + REG_CON0);
+> -	r |= pll->data->en_mask;
+> +	r = readl(pll->base_addr + REG_CON0) | CON0_BASE_EN;
+>  	writel(r, pll->base_addr + REG_CON0);
+>  
+> +	div_en_mask = pll->data->en_mask & ~CON0_BASE_EN;
+> +	if (div_en_mask) {
+> +		r = readl(pll->base_addr + REG_CON0) | div_en_mask;
+> +		writel(r, pll->base_addr + REG_CON0);
+> +	}
+> +
+>  	__mtk_pll_tuner_enable(pll);
+>  
+>  	udelay(20);
+> @@ -268,6 +274,7 @@ static void mtk_pll_unprepare(struct clk_hw *hw)
+>  {
+>  	struct mtk_clk_pll *pll = to_mtk_clk_pll(hw);
+>  	u32 r;
+> +	u32 div_en_mask;
+>  
+>  	if (pll->data->flags & HAVE_RST_BAR) {
+>  		r = readl(pll->base_addr + REG_CON0);
+> @@ -277,8 +284,13 @@ static void mtk_pll_unprepare(struct clk_hw *hw)
+>  
+>  	__mtk_pll_tuner_disable(pll);
+>  
+> -	r = readl(pll->base_addr + REG_CON0);
+> -	r &= ~CON0_BASE_EN;
+> +	div_en_mask = pll->data->en_mask & ~CON0_BASE_EN;
+> +	if (div_en_mask) {
+> +		r = readl(pll->base_addr + REG_CON0) & ~div_en_mask;
+> +		writel(r, pll->base_addr + REG_CON0);
+> +	}
+> +
+> +	r = readl(pll->base_addr + REG_CON0) & ~CON0_BASE_EN;
+>  	writel(r, pll->base_addr + REG_CON0);
+>  
+>  	r = readl(pll->pwr_addr) | CON0_ISO_EN;
+> -- 
+> 1.8.1.1.dirty
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
