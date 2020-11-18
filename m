@@ -2,294 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EA72B83B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544142B83C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgKRSUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:20:31 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:41474 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725794AbgKRSUa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:20:30 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AIIBEmV018577;
-        Wed, 18 Nov 2020 10:20:24 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=j2+GBTdAUdld5tDzl82jh6Eo7u51NEUkjOLY6+x5aTw=;
- b=R4f30tFlf7KtHh0EBB+Cr/1goLwT/gvIptqwazkSLv+6AG30V6Mo9uY6jXknlix6emZm
- GOm+WTax0rHAPe50prfxPAYvgV+RXYW7AHpBy8Txi6yFeVLgnvmF0dH7YddoCN/xA3ED
- JE5fD+zXl8/0Mqkm5v+/oX/JxiVO+LbaVuCJeiEonwOvzUqDD/qlBNR6GGc7K+J5WnPs
- NQtl049Q1t8VPMRPgefJm0+j+ZgIvH3i8PtOK9H+vRp+TiqKOGiDYPj4J/OfBvjS7Cxf
- FYV0x7zpcBGQiuWhlrcv2HnofWqfYAO6OhWsklpBYT3dJ7ylDW0lTt3t394RpTNLiMIC 4A== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 34w7ncref3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 18 Nov 2020 10:20:23 -0800
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Nov
- 2020 10:20:22 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Nov
- 2020 10:20:22 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 18 Nov 2020 10:20:22 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 27C493F7048;
-        Wed, 18 Nov 2020 10:20:19 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Chulski <stefanc@marvell.com>
-Subject: [PATCH] net: mvpp2: divide fifo for dts-active ports only
-Date:   Wed, 18 Nov 2020 20:20:56 +0200
-Message-ID: <1605723656-1276-1-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
+        id S1726500AbgKRSZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:25:05 -0500
+Received: from mail-mw2nam10on2083.outbound.protection.outlook.com ([40.107.94.83]:28513
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726020AbgKRSZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 13:25:04 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hdg4J394prKaz0Un2KG8N5cCu7btP+7AVpzoOemkgmfuW3CAys9O36aZY96i4zk+lGCITpym3/K7Y7LOlgoh7hOvmDsJGr3H3zCscCe7tvEIw1s4ewI5B9S3CdvLj1t4lsTbdwiLOEsNY6TZsjLzMVb8tejRXsklqbmafZAaS66cZ8q4cvblJ7GGxYNwF36wKZL7gEY6Rcb6mamBg+ptsBMhONiRQrLotyP6KOeBBkBkIb092bIxMnbJxKt1DyxD5k+A9eZfwlpddCCWNaqhBOJBHLQJmCYPJp6H9xq4fCO9vZRIdDgFWzt4/Qvj8/o8M2zgtawjHPmA8yUIyJLl0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qUDTZ0c4JaUVqA5RyiRdUoCO2ux4l53hxJWiJpJ57tU=;
+ b=esrz9kO07QOyfsC3XK3sraauZC8AJ9b7VaEBE3C3cMHJ2HgyU8dCx+N+UXSljX8sLwx9/hFEpqGfhpzg0GKNrkHx0WI2HbCq1iHUKB9fRM+hBoLGVI2OS/A5PVq7WfOpW/nNooYDuSCVh8S+sNbTIh7X7Vt5rIeXJZ/zPzgFcs7AnC2vcOFbIOunsySVc8vNfh3MFG2SvOrLbdhLeE1lthDu+RMJG79b1g1GMFoMVrQoySv3NOvHaW2v1TyfGpcBvFzxlvVO1HioFtJbEldKKTpQeETukv15tLz5MKlqrYU0P2AMVVDIZNxoMPq98iOrHLNVAZMyNLTQ9Tu8LYxtBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qUDTZ0c4JaUVqA5RyiRdUoCO2ux4l53hxJWiJpJ57tU=;
+ b=J4ulbCviz7/UE8NVPDYKDce1r5oxgpajfYqhz7ovLDLv+cwGLLG5Hwa2O6pGa1/AXenfFAAeA0O7RnRvDzsFJZUxWZRFYeeBy9+0KqCl+b57TjpX5oNYtJUsn/eaMdGt09hMVpzEAnt57IMDXjN3ipHpyEk8MG5O0PxZzHa++as=
+Received: from CY4PR14CA0039.namprd14.prod.outlook.com (2603:10b6:903:101::25)
+ by BYAPR02MB5416.namprd02.prod.outlook.com (2603:10b6:a03:a4::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Wed, 18 Nov
+ 2020 18:25:01 +0000
+Received: from CY1NAM02FT025.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:101:cafe::78) by CY4PR14CA0039.outlook.office365.com
+ (2603:10b6:903:101::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend
+ Transport; Wed, 18 Nov 2020 18:25:01 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT025.mail.protection.outlook.com (10.152.75.148) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3564.22 via Frontend Transport; Wed, 18 Nov 2020 18:25:00 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Wed, 18 Nov 2020 10:24:32 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Wed, 18 Nov 2020 10:24:32 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ linux-kernel@vger.kernel.org,
+ linux-mmc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ adrian.hunter@intel.com,
+ ulf.hansson@linaro.org
+Received: from [172.30.17.110] (port=41868)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kfS87-0003sV-CS; Wed, 18 Nov 2020 10:24:31 -0800
+Subject: Re: [PATCH] mmc: sdhci-of-arasan: Add pinctrl support to the driver
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Manish Narani <manish.narani@xilinx.com>
+CC:     Michal Simek <michal.simek@xilinx.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        <git@xilinx.com>
+References: <1605680495-37483-1-git-send-email-manish.narani@xilinx.com>
+ <CAPDyKFr7KTf7jUAuPj=0NZ1sty+y7ySV8PkdrKFXPVthJ=VJVQ@mail.gmail.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <aeb44b64-5ff6-5662-2761-0e804708ce8a@xilinx.com>
+Date:   Wed, 18 Nov 2020 19:24:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-18_06:2020-11-17,2020-11-18 signatures=0
+In-Reply-To: <CAPDyKFr7KTf7jUAuPj=0NZ1sty+y7ySV8PkdrKFXPVthJ=VJVQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 20ed5a8d-f2be-47f7-11a4-08d88bef4340
+X-MS-TrafficTypeDiagnostic: BYAPR02MB5416:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB5416591E09B9284505C98346C6E10@BYAPR02MB5416.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5GmcxtV75o5Tzjc20Z6l5DnjzIurAIpqiif+FiMj4McB8OvlCE/vofdnOBFzaVjWZ7I2hUUmDfM6bZ+X2vGIJpTk8Frcu7FNWSKKcQD3khpdIOQZlYx8+pMRl9O/JwNkS4QvIWv9PXThfZyhBhfV8eGVbddEa9HQ5DUVjAJu5f2oOrVitUjF7AlJ4YsNwVGkrQVjsiErs7oJ+AIK4GSK5nSaxLqdoUlnH8Wikfzszn4bgo9nre7a2c4nxoAj+eEQEy9Gpy/ojyvzRS9/G5Qxzuog+iN9XvHEtZx9wKRkfudbqq2b4kGCe0Hz9ckavghVNRDaQDj1ilvhqXVFG7qxBFBScWKqimeFc+KjM4rOmPj4pAdHgvEf7JuGIjfIQ1C/hLu2RPltYPnsacCFQfxso0FubQloGuOvBpMJzOFXwuz9TpYRmoTpfOq619AebiJJPAHCDleRzf186e6vcSX3AQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(39860400002)(376002)(46966005)(107886003)(83380400001)(82310400003)(36756003)(186003)(31696002)(4326008)(26005)(8676002)(110136005)(6636002)(5660300002)(6666004)(54906003)(478600001)(9786002)(2616005)(36906005)(8936002)(2906002)(44832011)(82740400003)(316002)(70206006)(47076004)(7636003)(31686004)(356005)(336012)(70586007)(426003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2020 18:25:00.3917
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20ed5a8d-f2be-47f7-11a4-08d88bef4340
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT025.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5416
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
 
-Tx/Rx FIFO is a HW resource limited by total size, but shared
-by all ports of same CP110 and impacting port-performance.
-Do not divide the FIFO for ports which are not enabled in DTS,
-so active ports could have more FIFO.
 
-The active port mapping should be done in probe before FIFO-init.
+On 18. 11. 20 16:43, Ulf Hansson wrote:
+> On Wed, 18 Nov 2020 at 07:22, Manish Narani <manish.narani@xilinx.com> wrote:
+>>
+>> Driver should be able to handle optional pinctrl setting.
+>>
+>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+>> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+>> ---
+>>  drivers/mmc/host/sdhci-of-arasan.c | 24 ++++++++++++++++++++++++
+>>  1 file changed, 24 insertions(+)
+>>
+>> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+>> index 829ccef87426..f788cc9d5914 100644
+>> --- a/drivers/mmc/host/sdhci-of-arasan.c
+>> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+>> @@ -23,6 +23,7 @@
+>>  #include <linux/regmap.h>
+>>  #include <linux/of.h>
+>>  #include <linux/firmware/xlnx-zynqmp.h>
+>> +#include <linux/pinctrl/consumer.h>
+>>
+>>  #include "cqhci.h"
+>>  #include "sdhci-pltfm.h"
+>> @@ -135,6 +136,8 @@ struct sdhci_arasan_clk_data {
+>>   * @clk_ops:           Struct for the Arasan Controller Clock Operations.
+>>   * @soc_ctl_base:      Pointer to regmap for syscon for soc_ctl registers.
+>>   * @soc_ctl_map:       Map to get offsets into soc_ctl registers.
+>> + * @pinctrl:           Per-device pin control state holder.
+>> + * @pins_default:      Pinctrl state for a device.
+>>   * @quirks:            Arasan deviations from spec.
+>>   */
+>>  struct sdhci_arasan_data {
+>> @@ -149,6 +152,8 @@ struct sdhci_arasan_data {
+>>
+>>         struct regmap   *soc_ctl_base;
+>>         const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
+>> +       struct pinctrl  *pinctrl;
+>> +       struct pinctrl_state *pins_default;
+>>         unsigned int    quirks;
+>>
+>>  /* Controller does not have CD wired and will not function normally without */
+>> @@ -1619,6 +1624,25 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+>>                 goto unreg_clk;
+>>         }
+>>
+>> +       sdhci_arasan->pinctrl = devm_pinctrl_get(&pdev->dev);
+>> +       if (!IS_ERR(sdhci_arasan->pinctrl)) {
+>> +               sdhci_arasan->pins_default =
+>> +                       pinctrl_lookup_state(sdhci_arasan->pinctrl,
+>> +                                            PINCTRL_STATE_DEFAULT);
+>> +               if (IS_ERR(sdhci_arasan->pins_default)) {
+>> +                       dev_err(&pdev->dev, "Missing default pinctrl config\n");
+>> +                       ret = PTR_ERR(sdhci_arasan->pins_default);
+>> +                       goto unreg_clk;
+>> +               }
+>> +
+>> +               ret = pinctrl_select_state(sdhci_arasan->pinctrl,
+>> +                                          sdhci_arasan->pins_default);
+>> +               if (ret) {
+>> +                       dev_err(&pdev->dev, "could not select default state\n");
+>> +                       goto unreg_clk;
+>> +               }
+>> +       }
+> 
+> Isn't all this already taken care of via pinctrl_bind_pins() called by
+> driver core during probe?
+> 
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  23 +++--
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 129 +++++++++++++++++-------
- 2 files changed, 108 insertions(+), 44 deletions(-)
+Thanks for the hint.
+Manish: Can you please check it?
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index 8347758..6bd7e40 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -695,6 +695,9 @@
- /* Maximum number of supported ports */
- #define MVPP2_MAX_PORTS			4
- 
-+/* Loopback port index */
-+#define MVPP2_LOOPBACK_PORT_INDEX	3
-+
- /* Maximum number of TXQs used by single port */
- #define MVPP2_MAX_TXQ			8
- 
-@@ -729,22 +732,21 @@
- #define MVPP2_TX_DESC_ALIGN		(MVPP2_DESC_ALIGNED_SIZE - 1)
- 
- /* RX FIFO constants */
-+#define MVPP2_RX_FIFO_PORT_DATA_SIZE_44KB	0xb000
- #define MVPP2_RX_FIFO_PORT_DATA_SIZE_32KB	0x8000
- #define MVPP2_RX_FIFO_PORT_DATA_SIZE_8KB	0x2000
- #define MVPP2_RX_FIFO_PORT_DATA_SIZE_4KB	0x1000
--#define MVPP2_RX_FIFO_PORT_ATTR_SIZE_32KB	0x200
--#define MVPP2_RX_FIFO_PORT_ATTR_SIZE_8KB	0x80
-+#define MVPP2_RX_FIFO_PORT_ATTR_SIZE(data_size)	((data_size) >> 6)
- #define MVPP2_RX_FIFO_PORT_ATTR_SIZE_4KB	0x40
- #define MVPP2_RX_FIFO_PORT_MIN_PKT		0x80
- 
- /* TX FIFO constants */
--#define MVPP22_TX_FIFO_DATA_SIZE_10KB		0xa
--#define MVPP22_TX_FIFO_DATA_SIZE_3KB		0x3
--#define MVPP2_TX_FIFO_THRESHOLD_MIN		256
--#define MVPP2_TX_FIFO_THRESHOLD_10KB	\
--	(MVPP22_TX_FIFO_DATA_SIZE_10KB * 1024 - MVPP2_TX_FIFO_THRESHOLD_MIN)
--#define MVPP2_TX_FIFO_THRESHOLD_3KB	\
--	(MVPP22_TX_FIFO_DATA_SIZE_3KB * 1024 - MVPP2_TX_FIFO_THRESHOLD_MIN)
-+#define MVPP22_TX_FIFO_DATA_SIZE_16KB		16
-+#define MVPP22_TX_FIFO_DATA_SIZE_10KB		10
-+#define MVPP22_TX_FIFO_DATA_SIZE_3KB		3
-+#define MVPP2_TX_FIFO_THRESHOLD_MIN		256 /* Bytes */
-+#define MVPP2_TX_FIFO_THRESHOLD(kb)	\
-+		((kb) * 1024 - MVPP2_TX_FIFO_THRESHOLD_MIN)
- 
- /* RX buffer constants */
- #define MVPP2_SKB_SHINFO_SIZE \
-@@ -946,6 +948,9 @@ struct mvpp2 {
- 	/* List of pointers to port structures */
- 	int port_count;
- 	struct mvpp2_port *port_list[MVPP2_MAX_PORTS];
-+	/* Map of enabled ports */
-+	unsigned long port_map;
-+
- 	struct mvpp2_tai *tai;
- 
- 	/* Number of Tx threads used */
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index f6616c8..9ff5f57 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -6601,32 +6601,56 @@ static void mvpp2_rx_fifo_init(struct mvpp2 *priv)
- 	mvpp2_write(priv, MVPP2_RX_FIFO_INIT_REG, 0x1);
- }
- 
--static void mvpp22_rx_fifo_init(struct mvpp2 *priv)
-+static void mvpp22_rx_fifo_set_hw(struct mvpp2 *priv, int port, int data_size)
- {
--	int port;
-+	int attr_size = MVPP2_RX_FIFO_PORT_ATTR_SIZE(data_size);
- 
--	/* The FIFO size parameters are set depending on the maximum speed a
--	 * given port can handle:
--	 * - Port 0: 10Gbps
--	 * - Port 1: 2.5Gbps
--	 * - Ports 2 and 3: 1Gbps
--	 */
-+	mvpp2_write(priv, MVPP2_RX_DATA_FIFO_SIZE_REG(port), data_size);
-+	mvpp2_write(priv, MVPP2_RX_ATTR_FIFO_SIZE_REG(port), attr_size);
-+}
- 
--	mvpp2_write(priv, MVPP2_RX_DATA_FIFO_SIZE_REG(0),
--		    MVPP2_RX_FIFO_PORT_DATA_SIZE_32KB);
--	mvpp2_write(priv, MVPP2_RX_ATTR_FIFO_SIZE_REG(0),
--		    MVPP2_RX_FIFO_PORT_ATTR_SIZE_32KB);
-+/* Initialize TX FIFO's: the total FIFO size is 48kB on PPv2.2.
-+ * 4kB fixed space must be assigned for the loopback port.
-+ * Redistribute remaining avialable 44kB space among all active ports.
-+ * Guarantee minimum 32kB for 10G port and 8kB for port 1, capable of 2.5G
-+ * SGMII link.
-+ */
-+static void mvpp22_rx_fifo_init(struct mvpp2 *priv)
-+{
-+	int port, size;
-+	unsigned long port_map;
-+	int remaining_ports_count;
-+	int size_remainder;
-+
-+	/* The loopback requires fixed 4kB of the FIFO space assignment. */
-+	mvpp22_rx_fifo_set_hw(priv, MVPP2_LOOPBACK_PORT_INDEX,
-+			      MVPP2_RX_FIFO_PORT_DATA_SIZE_4KB);
-+	port_map = priv->port_map & ~BIT(MVPP2_LOOPBACK_PORT_INDEX);
-+
-+	/* Set RX FIFO size to 0 for inactive ports. */
-+	for_each_clear_bit(port, &port_map, MVPP2_LOOPBACK_PORT_INDEX)
-+		mvpp22_rx_fifo_set_hw(priv, port, 0);
-+
-+	/* Assign remaining RX FIFO space among all active ports. */
-+	size_remainder = MVPP2_RX_FIFO_PORT_DATA_SIZE_44KB;
-+	remaining_ports_count = hweight_long(port_map);
-+
-+	for_each_set_bit(port, &port_map, MVPP2_LOOPBACK_PORT_INDEX) {
-+		if (remaining_ports_count == 1)
-+			size = size_remainder;
-+		else if (port == 0)
-+			size = max(size_remainder / remaining_ports_count,
-+				   MVPP2_RX_FIFO_PORT_DATA_SIZE_32KB);
-+		else if (port == 1)
-+			size = max(size_remainder / remaining_ports_count,
-+				   MVPP2_RX_FIFO_PORT_DATA_SIZE_8KB);
-+		else
-+			size = size_remainder / remaining_ports_count;
- 
--	mvpp2_write(priv, MVPP2_RX_DATA_FIFO_SIZE_REG(1),
--		    MVPP2_RX_FIFO_PORT_DATA_SIZE_8KB);
--	mvpp2_write(priv, MVPP2_RX_ATTR_FIFO_SIZE_REG(1),
--		    MVPP2_RX_FIFO_PORT_ATTR_SIZE_8KB);
-+		size_remainder -= size;
-+		remaining_ports_count--;
- 
--	for (port = 2; port < MVPP2_MAX_PORTS; port++) {
--		mvpp2_write(priv, MVPP2_RX_DATA_FIFO_SIZE_REG(port),
--			    MVPP2_RX_FIFO_PORT_DATA_SIZE_4KB);
--		mvpp2_write(priv, MVPP2_RX_ATTR_FIFO_SIZE_REG(port),
--			    MVPP2_RX_FIFO_PORT_ATTR_SIZE_4KB);
-+		mvpp22_rx_fifo_set_hw(priv, port, size);
- 	}
- 
- 	mvpp2_write(priv, MVPP2_RX_MIN_PKT_SIZE_REG,
-@@ -6634,24 +6658,53 @@ static void mvpp22_rx_fifo_init(struct mvpp2 *priv)
- 	mvpp2_write(priv, MVPP2_RX_FIFO_INIT_REG, 0x1);
- }
- 
--/* Initialize Tx FIFO's: the total FIFO size is 19kB on PPv2.2 and 10G
-- * interfaces must have a Tx FIFO size of 10kB. As only port 0 can do 10G,
-- * configure its Tx FIFO size to 10kB and the others ports Tx FIFO size to 3kB.
-+static void mvpp22_tx_fifo_set_hw(struct mvpp2 *priv, int port, int size)
-+{
-+	int threshold = MVPP2_TX_FIFO_THRESHOLD(size);
-+
-+	mvpp2_write(priv, MVPP22_TX_FIFO_SIZE_REG(port), size);
-+	mvpp2_write(priv, MVPP22_TX_FIFO_THRESH_REG(port), threshold);
-+}
-+
-+/* Initialize TX FIFO's: the total FIFO size is 19kB on PPv2.2.
-+ * 3kB fixed space must be assigned for the loopback port.
-+ * Redistribute remaining avialable 16kB space among all active ports.
-+ * The 10G interface should use 10kB (which is maximum possible size
-+ * per single port).
-  */
- static void mvpp22_tx_fifo_init(struct mvpp2 *priv)
- {
--	int port, size, thrs;
--
--	for (port = 0; port < MVPP2_MAX_PORTS; port++) {
--		if (port == 0) {
-+	int port, size;
-+	unsigned long port_map;
-+	int remaining_ports_count;
-+	int size_remainder;
-+
-+	/* The loopback requires fixed 3kB of the FIFO space assignment. */
-+	mvpp22_tx_fifo_set_hw(priv, MVPP2_LOOPBACK_PORT_INDEX,
-+			      MVPP22_TX_FIFO_DATA_SIZE_3KB);
-+	port_map = priv->port_map & ~BIT(MVPP2_LOOPBACK_PORT_INDEX);
-+
-+	/* Set TX FIFO size to 0 for inactive ports. */
-+	for_each_clear_bit(port, &port_map, MVPP2_LOOPBACK_PORT_INDEX)
-+		mvpp22_tx_fifo_set_hw(priv, port, 0);
-+
-+	/* Assign remaining TX FIFO space among all active ports. */
-+	size_remainder = MVPP22_TX_FIFO_DATA_SIZE_16KB;
-+	remaining_ports_count = hweight_long(port_map);
-+
-+	for_each_set_bit(port, &port_map, MVPP2_LOOPBACK_PORT_INDEX) {
-+		if (remaining_ports_count == 1)
-+			size = min(size_remainder,
-+				   MVPP22_TX_FIFO_DATA_SIZE_10KB);
-+		else if (port == 0)
- 			size = MVPP22_TX_FIFO_DATA_SIZE_10KB;
--			thrs = MVPP2_TX_FIFO_THRESHOLD_10KB;
--		} else {
--			size = MVPP22_TX_FIFO_DATA_SIZE_3KB;
--			thrs = MVPP2_TX_FIFO_THRESHOLD_3KB;
--		}
--		mvpp2_write(priv, MVPP22_TX_FIFO_SIZE_REG(port), size);
--		mvpp2_write(priv, MVPP22_TX_FIFO_THRESH_REG(port), thrs);
-+		else
-+			size = size_remainder / remaining_ports_count;
-+
-+		size_remainder -= size;
-+		remaining_ports_count--;
-+
-+		mvpp22_tx_fifo_set_hw(priv, port, size);
- 	}
- }
- 
-@@ -6952,6 +7005,12 @@ static int mvpp2_probe(struct platform_device *pdev)
- 			goto err_axi_clk;
- 	}
- 
-+	/* Map DTS-active ports. Should be done before FIFO mvpp2_init */
-+	fwnode_for_each_available_child_node(fwnode, port_fwnode) {
-+		if (!fwnode_property_read_u32(port_fwnode, "port-id", &i))
-+			priv->port_map |= BIT(i);
-+	}
-+
- 	/* Initialize network controller */
- 	err = mvpp2_init(pdev, priv);
- 	if (err < 0) {
--- 
-1.9.1
-
+Thanks,
+Michal
