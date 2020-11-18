@@ -2,76 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573E62B8855
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F3B2B8859
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgKRXXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 18:23:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgKRXXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:23:49 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D99D221FE;
-        Wed, 18 Nov 2020 23:23:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605741828;
-        bh=xKZACUxyV23LrsDvEaCr6ps7gloZQxSkyTsA5BorCtw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CJB+DNkG/PSKh2h7xzlh2JPaZcjPQ3l5+B7dGhFsGA+6XgmKAdBFt9Kc2o3SBhhi2
-         215LJepGQZyeu1Bhb1n2PSRb5fyVAwzDUjQEzdlDR9pN/dUQblFNjk+cqP/uFRXaOP
-         FatgJ4J1zUi6bU5mlUmoxZd0BmmysU15OmzzncK0=
-Date:   Wed, 18 Nov 2020 15:23:46 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>, linux-mm@kvack.org,
-        netdev@vger.kernel.org, willy@infradead.org,
-        aruna.ramakrishna@oracle.com, bert.barbe@oracle.com,
-        rama.nichanamatlu@oracle.com, venkat.x.venkatsubra@oracle.com,
-        manjunath.b.patil@oracle.com, joe.jin@oracle.com,
-        srinivas.eeda@oracle.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, vbabka@suse.cz
-Subject: Re: [PATCH v3 1/1] page_frag: Recover from memory pressure
-Message-ID: <20201118152346.5a4fe12d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201118131335.738bdade4f3dfcee190ea8c1@linux-foundation.org>
-References: <20201115201029.11903-1-dongli.zhang@oracle.com>
-        <20201118114654.3435f76c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <20201118131335.738bdade4f3dfcee190ea8c1@linux-foundation.org>
+        id S1726875AbgKRXYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 18:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgKRXYS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 18:24:18 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0270AC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 15:24:16 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 62so2425708pgg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 15:24:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fZb71qCZpbdlpuwjdIAT2vB+YWJhGNyA/NN+MDd17nY=;
+        b=rKi7CCd0zuW2lqT7kWv0CJPzNJwftE8rgm/Sy31Hcx2XVCDLRzDG7GOQ/lU9xu4JIz
+         xdNKeYXFQ0y8vM7VRezlVL7MRQVZZvQVWDQnM7LUZH7qgXLUWp3j+a+4G3RzBJDZBWzN
+         do8vnvNSvg0/WtsrTbuipHyyipbcu+XrIqyNy9+hfIr2RSscR3r3rcv4MG/h8aFRH71k
+         4vY6gOpaT+ZwBJtEBpdTmoz9r+bHsNcQRlpaaypb1ZvB+GvzJ5KqM/rwtls+eMAjVdYv
+         GHJqrGTsfUgWZEr49PjNo9ayYe5xZye/n047PW/lsMwXI3orUyszOXBwoeUfnRHJOFBY
+         5ixg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fZb71qCZpbdlpuwjdIAT2vB+YWJhGNyA/NN+MDd17nY=;
+        b=U/jyX0NhRJMkbUAW8NAqWuhmLC65Ri0FzxNLVlHewXMprtsVXVrWXfIdcydcc7OqHj
+         w2Ykn/ll8Jr9Um/hMiFZ1Pi3hb9qICz+Kj5z4luf/BF51X9aNNhy4pHMa/5QqYz052ZH
+         4GsGyN7Rc+rYFKiT2o90STqJQCSUZMyc2lKrriYKxQ+61mo+C3SRtXHOU0azUIwnBImd
+         58Xy/wswdgkTLL7bGYYYLuYOivpn8FfIljR68g0zPumm+KIraPaSNmN3u730mrNDMOgX
+         cXH+foV9nd28nj6t3r14RLUzHCZh+w/pdE9xw9EJ8UbyEwDUKUecO7EhAXIE2iRC11QP
+         nUzA==
+X-Gm-Message-State: AOAM530AddceWJcNx+DDwdBtcqk0YHvHdurUpJHl37ww/4r//r1Dl6zI
+        KDAgzEM7GMqPDg+cm9lZ6Ssm9KGCiq/okWvAelWH+Q==
+X-Google-Smtp-Source: ABdhPJxbZL/HsUjbNlyNlEybpabI+oOFCI9CwCKy/MKm6NpHpglk6oRA1MyUE6utTjPjbunO1oGfBt9cinGmT20Yv6s=
+X-Received: by 2002:a17:90a:4881:: with SMTP id b1mr1364541pjh.32.1605741856285;
+ Wed, 18 Nov 2020 15:24:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201112183839.1009297-1-natechancellor@gmail.com>
+ <CAKwvOdkShrqgNDWO0bsPcPZLx-+u79mfmPrGy7CnSKZVdcYzSA@mail.gmail.com>
+ <20201113005347.GA3625030@ubuntu-m3-large-x86> <CAMj1kXHYG7d-BDtbZ-4+wGdHb0rxXiMLuSvSMW_JFHgp3G6kTg@mail.gmail.com>
+ <CAKwvOdk1ir=D---9xVAxcErJWSGVxK1Mv6AC=TK3RVwNdcvFjw@mail.gmail.com>
+ <CAKwvOdnauFdUgS0Ww=O-PHrXWhXQEEYd806NUcy8_7MOG0Uo2g@mail.gmail.com> <CAMj1kXFrm+M6vN+e8KqBDHxMxSPTaH_hWT2fg+Z3iY3hV4Hcsw@mail.gmail.com>
+In-Reply-To: <CAMj1kXFrm+M6vN+e8KqBDHxMxSPTaH_hWT2fg+Z3iY3hV4Hcsw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 18 Nov 2020 15:24:04 -0800
+Message-ID: <CAKwvOdnNzd6wZoDJEgwjnEuTusU8jUcsLDiYoKipkcTubQ+t5g@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Always link with '-z norelro'
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jian Cai <jiancai@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Fangrui Song <maskray@google.com>,
+        Dan Rue <dan.rue@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Alan Modra <amodra@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 13:13:35 -0800 Andrew Morton wrote:
-> On Wed, 18 Nov 2020 11:46:54 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
-> 
-> > > 1. The kernel is under memory pressure and allocation of
-> > > PAGE_FRAG_CACHE_MAX_ORDER in __page_frag_cache_refill() will fail. Instead,
-> > > the pfmemalloc page is allocated for page_frag_cache->va.
-> > > 
-> > > 2: All skb->data from page_frag_cache->va (pfmemalloc) will have
-> > > skb->pfmemalloc=true. The skb will always be dropped by sock without
-> > > SOCK_MEMALLOC. This is an expected behaviour.
-> > > 
-> > > 3. Suppose a large amount of pages are reclaimed and kernel is not under
-> > > memory pressure any longer. We expect skb->pfmemalloc drop will not happen.
-> > > 
-> > > 4. Unfortunately, page_frag_alloc() does not proactively re-allocate
-> > > page_frag_alloc->va and will always re-use the prior pfmemalloc page. The
-> > > skb->pfmemalloc is always true even kernel is not under memory pressure any
-> > > longer.
-> > > 
-> > > Fix this by freeing and re-allocating the page instead of recycling it.  
-> > 
-> > Andrew, are you taking this via -mm or should I put it in net? 
-> > I'm sending a PR to Linus tomorrow.  
-> 
-> Please go ahead - if/when it appears in mainline or linux-next, I'll
-> drop the -mm copy.  
+On Wed, Nov 18, 2020 at 3:07 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Thu, 19 Nov 2020 at 00:05, Nick Desaulniers <ndesaulniers@google.com> =
+wrote:
+> >
+> > > > > > > To avoid playing whack-a-mole with different architectures ov=
+er time,
+> > > > > > > hoist '-z norelro' into the main Makefile. This does not affe=
+ct ld.bfd
+> > > > > > > because '-z norelro' is the default for it.
+> >
+> > Fangrui pointed out off list that this might need an ld-option wrapper
+> > for older versions of GNU binutils.  Dan was showing me some build
+> > logs today, and I thought I spotted such warnings about `-z norelro
+> > will be ignored`.
+>
+> Does ld-option catch options that cause warnings but no errors?
 
-Okay, applied, thank you!
+$ ld.bfd -z foo /dev/null
+ld.bfd: warning: -z foo ignored
+ld.bfd: warning: cannot find entry symbol _start; not setting start address
+=E2=9E=9C echo $?
+0
+
+Probably not. Can be a version check then (yuck); next is to find when
+ld.bfd supported `-z norelro`.
+
+commit 8c37241be3b1 in binutils looks like it.
+Date:   Tue May 11 17:08:38 2004 +0000
+
+which looks like either
+2004-05-17 19:46:23 +0000  (tag: binutils-2_15)
+or
+2005-05-02 22:04:18 +0000  (tag: binutils-2_16)
+
+So I think that would be fine then, since the kernel only supports 2.23+.
+
+Though maybe it's
+commit 5fd104addfddb68844fb8df67be832ee98ad9888
+    Emit a warning when -z relro is unsupported
+
+    ld silently accepts -z relro and -z norelro for targets that lack the
+    necessary GNU_RELRO support.  This patch makes those targets emit a
+    warning instead, and adds testsuite infrastructure to detect when
+    relro is unsupported.
+
+So maybe then alpha and xtensa are getting new warnings (IIUC).  If
+that's the case, then we might not be able to set `-z norelro`
+globally, and instead have to play whack a mole per architecture.
+--=20
+Thanks,
+~Nick Desaulniers
