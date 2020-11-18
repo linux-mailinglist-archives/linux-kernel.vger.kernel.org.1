@@ -2,124 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D742D2B73AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9147F2B73B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727312AbgKRBSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 20:18:21 -0500
-Received: from mga14.intel.com ([192.55.52.115]:10924 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgKRBSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 20:18:20 -0500
-IronPort-SDR: rrwjOLOgXqaHYS+DuRUBjr+BfINOb1wP4ULxhgi2fXeXWkrQJs9m2s4msN154u/cK3rrOvmHyb
- +r2ZyrpYDJsQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="170264475"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="170264475"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 17:18:20 -0800
-IronPort-SDR: 95rPe/ac1LH6QVYzBzJHaGVjNcLiNHZp1Edc7RE0rVXjVhX72nvXKlgCzUkOJfvnRLjfidBcHj
- hQSJqNuxgmAQ==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="544285306"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.117])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 17:18:18 -0800
-Date:   Wed, 18 Nov 2020 09:17:32 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     Quentin Schulz <quentin.schulz@bootlin.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Antoine Tenart <antoine.tenart@bootlin.com>
-Subject: drivers/net/phy/mscc/mscc_ptp.c:138:12: warning: Redundant
- condition: cond. '!cond || (cond && upper)' is equivalent to '!cond ||
- upper'
-Message-ID: <20201118011732.GE3723@shao2-debian>
+        id S1728422AbgKRBWD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 20:22:03 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:36454 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727174AbgKRBWC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 20:22:02 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0AI1LuIU2004179, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb03.realtek.com.tw[172.21.6.96])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0AI1LuIU2004179
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 18 Nov 2020 09:21:56 +0800
+Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
+ RTEXMB03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Wed, 18 Nov 2020 09:21:55 +0800
+Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
+ RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
+ 15.01.2044.006; Wed, 18 Nov 2020 09:21:55 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: RE: [PATCH net-next] r8153_ecm: avoid to be prior to r8152 driver
+Thread-Topic: [PATCH net-next] r8153_ecm: avoid to be prior to r8152 driver
+Thread-Index: AQHWu+Uk6MVFESXbN0aOZKSDeZR30KnJ9OqAgACBuYCAARgAcIAAbCuAgAEfDcA=
+Date:   Wed, 18 Nov 2020 01:21:55 +0000
+Message-ID: <8249fd02c3484d6484c6e278478561a6@realtek.com>
+References: <7fd014f2-c9a5-e7ec-f1c6-b3e4bb0f6eb6@samsung.com>
+        <CGME20201116065317eucas1p2a2d141857bbdd6b4998dd11937d52f56@eucas1p2.samsung.com>
+        <1394712342-15778-393-Taiwan-albertk@realtek.com>
+        <5f3db229-940c-c8ed-257b-0b4b3dd2afbb@samsung.com>
+        <20201116090231.423afc8f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <02f38e505a3a45389e2f3c06b2f6c850@realtek.com>
+ <20201117081149.20723b4a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201117081149.20723b4a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.177.146]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9c87c9f41245baa3fc4716cf39141439cf405b01
-commit: ab2bf933935710ac545f94e49d16b5eab01f846f net: phy: mscc: 1588 block initialization
-compiler: h8300-linux-gcc (GCC) 9.3.0
+Jakub Kicinski <kuba@kernel.org>
+> Sent: Wednesday, November 18, 2020 12:12 AM
+[...]
+> Something like this?
+> 
+> config USB_RTL8153_ECM
+> 	tristate <headline text>
+> 	select MII
+> 	select USB_NET_CDCETHER
+> 	depends on USB_RTL8152 || USB_RTL8152=n
+> 	help
+> 		<you help text>
+> 
+> 
+> select clauses will pull in the dependencies you need, and the
+> dependency on RTL8152 will be satisfied either when RTL8152's code
+> is reachable (both are modules or RTL8152 is built in) or when RTL8152
+> is not built at all.
+> 
+> Does that help?
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <rong.a.chen@intel.com>
+Thanks a lot.
+I would test it.
 
+Best Regards,
+Hayes
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
-
->> kernel/taskstats.c:220:0: warning: syntax error [syntaxError]
-   
-   ^
---
->> drivers/net/phy/mscc/mscc_ptp.c:138:12: warning: Redundant condition: cond. '!cond || (cond && upper)' is equivalent to '!cond || upper' [redundantCondition]
-    if (!cond || (cond && upper))
-              ^
-
-vim +138 drivers/net/phy/mscc/mscc_ptp.c
-
-ab2bf933935710a Quentin Schulz 2020-06-23  104  
-ab2bf933935710a Quentin Schulz 2020-06-23  105  static void vsc85xx_ts_write_csr(struct phy_device *phydev, enum ts_blk blk,
-ab2bf933935710a Quentin Schulz 2020-06-23  106  				 u16 addr, u32 val)
-ab2bf933935710a Quentin Schulz 2020-06-23  107  {
-ab2bf933935710a Quentin Schulz 2020-06-23  108  	struct vsc8531_private *priv = phydev->priv;
-ab2bf933935710a Quentin Schulz 2020-06-23  109  	bool base_port = phydev->mdio.addr == priv->ts_base_addr;
-ab2bf933935710a Quentin Schulz 2020-06-23  110  	u32 reg, bypass, cnt = 0, lower = val & 0xffff, upper = val >> 16;
-ab2bf933935710a Quentin Schulz 2020-06-23  111  	bool cond = (addr == MSCC_PHY_PTP_LTC_CTRL ||
-ab2bf933935710a Quentin Schulz 2020-06-23  112  		     addr == MSCC_PHY_1588_INGR_VSC85XX_INT_MASK ||
-ab2bf933935710a Quentin Schulz 2020-06-23  113  		     addr == MSCC_PHY_1588_VSC85XX_INT_MASK ||
-ab2bf933935710a Quentin Schulz 2020-06-23  114  		     addr == MSCC_PHY_1588_INGR_VSC85XX_INT_STATUS ||
-ab2bf933935710a Quentin Schulz 2020-06-23  115  		     addr == MSCC_PHY_1588_VSC85XX_INT_STATUS) &&
-ab2bf933935710a Quentin Schulz 2020-06-23  116  		    blk == PROCESSOR;
-ab2bf933935710a Quentin Schulz 2020-06-23  117  	enum ts_blk_hw blk_hw;
-ab2bf933935710a Quentin Schulz 2020-06-23  118  
-ab2bf933935710a Quentin Schulz 2020-06-23  119  	switch (blk) {
-ab2bf933935710a Quentin Schulz 2020-06-23  120  	case INGRESS:
-ab2bf933935710a Quentin Schulz 2020-06-23  121  		blk_hw = base_port ? INGRESS_ENGINE_0 : INGRESS_ENGINE_1;
-ab2bf933935710a Quentin Schulz 2020-06-23  122  		break;
-ab2bf933935710a Quentin Schulz 2020-06-23  123  	case EGRESS:
-ab2bf933935710a Quentin Schulz 2020-06-23  124  		blk_hw = base_port ? EGRESS_ENGINE_0 : EGRESS_ENGINE_1;
-ab2bf933935710a Quentin Schulz 2020-06-23  125  		break;
-ab2bf933935710a Quentin Schulz 2020-06-23  126  	case PROCESSOR:
-ab2bf933935710a Quentin Schulz 2020-06-23  127  	default:
-ab2bf933935710a Quentin Schulz 2020-06-23  128  		blk_hw = base_port ? PROCESSOR_0 : PROCESSOR_1;
-ab2bf933935710a Quentin Schulz 2020-06-23  129  		break;
-ab2bf933935710a Quentin Schulz 2020-06-23  130  	}
-ab2bf933935710a Quentin Schulz 2020-06-23  131  
-ab2bf933935710a Quentin Schulz 2020-06-23  132  	mutex_lock(&phydev->mdio.bus->mdio_lock);
-ab2bf933935710a Quentin Schulz 2020-06-23  133  
-ab2bf933935710a Quentin Schulz 2020-06-23  134  	bypass = phy_ts_base_read(phydev, MSCC_PHY_BYPASS_CONTROL);
-ab2bf933935710a Quentin Schulz 2020-06-23  135  
-ab2bf933935710a Quentin Schulz 2020-06-23  136  	phy_ts_base_write(phydev, MSCC_EXT_PAGE_ACCESS, MSCC_PHY_PAGE_1588);
-ab2bf933935710a Quentin Schulz 2020-06-23  137  
-ab2bf933935710a Quentin Schulz 2020-06-23 @138  	if (!cond || (cond && upper))
-ab2bf933935710a Quentin Schulz 2020-06-23  139  		phy_ts_base_write(phydev, MSCC_PHY_TS_CSR_DATA_MSB, upper);
-ab2bf933935710a Quentin Schulz 2020-06-23  140  
-ab2bf933935710a Quentin Schulz 2020-06-23  141  	phy_ts_base_write(phydev, MSCC_PHY_TS_CSR_DATA_LSB, lower);
-ab2bf933935710a Quentin Schulz 2020-06-23  142  
-ab2bf933935710a Quentin Schulz 2020-06-23  143  	phy_ts_base_write(phydev, MSCC_PHY_TS_BIU_ADDR_CNTL, BIU_ADDR_EXE |
-ab2bf933935710a Quentin Schulz 2020-06-23  144  			  BIU_ADDR_WRITE | BIU_BLK_ID(blk_hw) |
-ab2bf933935710a Quentin Schulz 2020-06-23  145  			  BIU_CSR_ADDR(addr));
-ab2bf933935710a Quentin Schulz 2020-06-23  146  
-ab2bf933935710a Quentin Schulz 2020-06-23  147  	do {
-ab2bf933935710a Quentin Schulz 2020-06-23  148  		reg = phy_ts_base_read(phydev, MSCC_PHY_TS_BIU_ADDR_CNTL);
-ab2bf933935710a Quentin Schulz 2020-06-23  149  	} while (!(reg & BIU_ADDR_EXE) && cnt++ < BIU_ADDR_CNT_MAX);
-ab2bf933935710a Quentin Schulz 2020-06-23  150  
-ab2bf933935710a Quentin Schulz 2020-06-23  151  	phy_ts_base_write(phydev, MSCC_EXT_PAGE_ACCESS, MSCC_PHY_PAGE_STANDARD);
-ab2bf933935710a Quentin Schulz 2020-06-23  152  
-ab2bf933935710a Quentin Schulz 2020-06-23  153  	if (cond && upper)
-ab2bf933935710a Quentin Schulz 2020-06-23  154  		phy_ts_base_write(phydev, MSCC_PHY_BYPASS_CONTROL, bypass);
-ab2bf933935710a Quentin Schulz 2020-06-23  155  
-ab2bf933935710a Quentin Schulz 2020-06-23  156  	mutex_unlock(&phydev->mdio.bus->mdio_lock);
-ab2bf933935710a Quentin Schulz 2020-06-23  157  }
-ab2bf933935710a Quentin Schulz 2020-06-23  158  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
