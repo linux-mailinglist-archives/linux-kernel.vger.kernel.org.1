@@ -2,90 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA402B8036
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1A42B8044
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727286AbgKRPQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:16:09 -0500
-Received: from mga12.intel.com ([192.55.52.136]:8050 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgKRPQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:16:08 -0500
-IronPort-SDR: nYonFwEl9zJoMqqTd2+ZwiZQti2c4WFbWJJGn9YppHl8DZ0xtevVTqrl4kDhUFMJ4MuuWJ6JQS
- qVLDP8y4yS3g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="150399374"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="150399374"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 07:16:07 -0800
-IronPort-SDR: Qdj1G/BZDfUwKBd9PGrja0yEPB2y5oIR8EVsEoULTfcS+ZmJWqFhPNXha2H4xpjI3mfdLEKQTK
- ha0EJCyBdLKQ==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="359492130"
-Received: from paolonig001.ir.intel.com ([163.33.183.93])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 07:16:05 -0800
-From:   Gabriele Paoloni <gabriele.paoloni@intel.com>
-To:     tony.luck@intel.com, bp@alien8.de, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, hpa@zytor.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gabriele.paoloni@intel.com, linux-safety@lists.elisa.tech
-Subject: [PATCH 4/4] x86/mce: remove redundant call to irq_work_queue()
-Date:   Wed, 18 Nov 2020 15:15:52 +0000
-Message-Id: <20201118151552.1412-5-gabriele.paoloni@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201118151552.1412-1-gabriele.paoloni@intel.com>
-References: <20201118151552.1412-1-gabriele.paoloni@intel.com>
+        id S1727210AbgKRPSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:18:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726374AbgKRPSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:18:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE094C0613D4;
+        Wed, 18 Nov 2020 07:18:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=E5AWr005ZKFbj0xARuPSwpcPr63RRv1/s0GYEoynaDs=; b=UQTdS4lz7RdwKWWIgtMBMQ1+94
+        EYYX9vjZJ73KleKO1k3dSus0T2TpUbs23iRbpKidfOCx8+M59jJ+tf4yJuMUOy3dQUg10JWBqopEH
+        P32VgTOKCTxTwbETMy53ukX/cJ4J59SDLRwI+oRrHhTtpXUr37FyigVMIolrGaUzGUMawxJLHLO2d
+        RWa1OouI62+Kllslsb+CubbOARYbRtPHDB6GRtARxGWFHlAG6lixtJHa3FND8TJHORFipJZuyZwxr
+        5W5rdcvby3IS1P6ItpkIL5haQB4tYIY5JpDfcXwq7r7hRYHXmDvF2E0V/5BU2cLyBwLsFCtQIKqc2
+        tMtnsiUA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kfPDi-0006mk-KJ; Wed, 18 Nov 2020 15:18:06 +0000
+Date:   Wed, 18 Nov 2020 15:18:06 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] eventfd: convert to ->write_iter()
+Message-ID: <20201118151806.GA25804@infradead.org>
+References: <8a4f07e6ec47b681a32c6df5d463857e67bfc965.1605690824.git.mkubecek@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a4f07e6ec47b681a32c6df5d463857e67bfc965.1605690824.git.mkubecek@suse.cz>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now in do_machine_check() we have:
-__mc_scan_banks()->mce_log()->irq_work_queue(&mce_irq_work)
+On Wed, Nov 18, 2020 at 10:19:17AM +0100, Michal Kubecek wrote:
+> While eventfd ->read() callback was replaced by ->read_iter() recently,
+> it still provides ->write() for writes. Since commit 4d03e3cc5982 ("fs:
+> don't allow kernel reads and writes without iter ops"), this prevents
+> kernel_write() to be used for eventfd and with set_fs() removal,
+> ->write() cannot be easily called directly with a kernel buffer.
+> 
+> According to eventfd(2), eventfd descriptors are supposed to be (also)
+> used by kernel to notify userspace applications of events which now
+> requires ->write_iter() op to be available (and ->write() not to be).
+> Therefore convert eventfd_write() to ->write_iter() semantics. This
+> patch also cleans up the code in a similar way as commit 12aceb89b0bc
+> ("eventfd: convert to f_op->read_iter()") did in read_iter().
 
-hence the call of irq_work_queue() below after __mc_scan_banks()
-seems redundant. Just remove it.
-
-Signed-off-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/mce/core.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index d16cbb05b09c..f2f7bfc60c67 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1407,9 +1407,6 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 		}
- 	}
- 
--	if (worst > 0)
--		irq_work_queue(&mce_irq_work);
--
- 	if (worst != MCE_AR_SEVERITY && !kill_it)
- 		goto out;
- 
--- 
-2.20.1
-
----------------------------------------------------------------------
-INTEL CORPORATION ITALIA S.p.A. con unico socio
-Sede: Milanofiori Palazzo E 4 
-CAP 20094 Assago (MI)
-Capitale Sociale Euro 104.000,00 interamente versato
-Partita I.V.A. e Codice Fiscale  04236760155
-Repertorio Economico Amministrativo n. 997124 
-Registro delle Imprese di Milano nr. 183983/5281/33
-Soggetta ad attivita' di direzione e coordinamento di 
-INTEL CORPORATION, USA
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
-
+A far as I can tell we don't have an in-tree user that writes to an
+eventfd.  We can merge something like this once there is a user.
