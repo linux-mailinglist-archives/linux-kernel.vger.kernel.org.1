@@ -2,130 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850342B851C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 792882B8520
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgKRTvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:51:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
+        id S1726092AbgKRTxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:53:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbgKRTvm (ORCPT
+        with ESMTP id S1725710AbgKRTxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:51:42 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E6DC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 11:51:41 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id 23so3366373wrc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 11:51:41 -0800 (PST)
+        Wed, 18 Nov 2020 14:53:48 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD463C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 11:53:48 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id m9so1953398pgb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 11:53:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a0R930kNYjqnavMF/KBPQVusHU1NjslAYSOCWdpyJ04=;
-        b=HSfuIYzTTaTm27qs+m3sYY0AB2lkoYN+yZmn3aYs/SNgCxiRCa8OfVemFUCsnEfJ3G
-         gzmGaAY1Ah9ppsUIaq4UB+yFR7OcgT2UqbZ1FJHHctPpLw/vwXfQKVpk41362nHk/dfz
-         Z2inWgK+Vb//4DMknD0TXOgo6bnJLZ+CmZHPvRGtBsDo2n0XBnbSMmA4KSibgFIHhHdQ
-         sYk7dJUIDCmgjS90IMCXUeJDtlaCSip6BaPk9ff6ITwi0frdDNddUBgnS5FfQEOOAMHU
-         iEQ2hQQ+2Qc1ID3BKdIYTQviazP6xZH7WLAVkqSW3b0UlgFI3i3MZdzdCyYRo7DUziX7
-         /Dzw==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=Nv1lrpdhsNV5qrzQebFMOG5OIfE6xbhYHuZs96YR+FM=;
+        b=bDEBYC40hgqvmqxbaEKtvckc6NvT/RbCEYuDgJ9aEWvhiRs16BNuSs693ZPg40EwrV
+         LQrgGY/iJ6tdNiWJzQX+8n0UwclQRCqEU61x/024gocsOTLyKjh8jgufMVVUXlMSbUqy
+         WO6kLbO8YYHN50EbiLUp71HaGHDhswJr8zf+cYE5iGpeWs/4AKwFkRQ0iibEJub9u08P
+         RfUL4XUhKL9dIWlcnQ4uU40oPJRE4109tDViD/K/mZuYoCq0vNlFhmgr2QUHQ6X9CNXA
+         B6rw7Leec6zoAx3qh7jeY+C82oynkZGJXo36kyH+x1KzsKcR3mg9zr34CznnQm+ClFYr
+         lStQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a0R930kNYjqnavMF/KBPQVusHU1NjslAYSOCWdpyJ04=;
-        b=EH8daW0gLLjwSGQfDDHulQKVyuHHggbyPz5QdTzWLZpQpfHtIjj/aJk6KdmU7I2mCz
-         +V79tjVLyr42Xr2xihBavHOn2VRiIuAncAEq18oSMmW/XdZUbDVbRcLpLQjtnza4/8O0
-         AYCRCi3UzbtJ9Qrx+2zx8I9z86+UHV577j8ofjGgcFEScqaGW0k/nA15HJXBDmCHd9gx
-         Qu3tKosHKhnRHZ66LYSSWFQa1Z+QKPOMMQLvpfGfFbrW87/Wz+MAoGAqwfrUl4iGZ/WS
-         KVbs1/SvjLWcuS/wx2S+azdHRlL8X46vtib/WHcF1A3Tkt9+gtI2bhc0X8/8CRrexRj2
-         T3KA==
-X-Gm-Message-State: AOAM530qjiMXiXwPfnxe44l0Xaj+b9swNfDzDfGsx3kTKUBW2l9ogpPw
-        CfJ4JbcN1G//XxUZ3rAbqJkdWdqyEWKKV2xK2LyrIA==
-X-Google-Smtp-Source: ABdhPJwN1+sRNrKHv4pWi7GszYiUiM0BqmVDZTAlh1f1JsdOfBzXgX31DLoX4X6KxSYKVFVZx4YHKaRz4n08K+i0vM0=
-X-Received: by 2002:a5d:4a50:: with SMTP id v16mr6536380wrs.106.1605729100247;
- Wed, 18 Nov 2020 11:51:40 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=Nv1lrpdhsNV5qrzQebFMOG5OIfE6xbhYHuZs96YR+FM=;
+        b=k0tapSvSrKg3i9Gc7muVuGEL+KaC44dxut4wOEs1oaAE0Ta0NFb8T9GCY26ws5DRE7
+         0sc9IWNMQkSIH1x7xQ1Q8yREzrZlnjyc7h5fEbIe83K6WYk2sWMGDW8aw6Uycom9GPRm
+         hcFNtC1kZ2gVB+WjbgsiMj+7PRkmH+XW3dlzGiw7+hTSP0TLmBS+Pzu9fnY2JzZukDnx
+         XTIfImJxqBvZ1qC64hsjJbyyJIvXtldqtMwd4ec/qdCkPnY0b0S/CUFSP/7ELcPN1Wcv
+         kqq6eXT7m7UyYJFERHUUy9QvEWvWxQfP3BINXZ8gJSNXYZ8vDAVizKqgC5gyevA754Pb
+         /pLw==
+X-Gm-Message-State: AOAM532pZDWyfDHLjBSFbryRtL4iYvXCSZnJ71+CQpG9CmdTtxHmEEpo
+        iYjhwUeSKbKzeImLBZb2N4a7xQ==
+X-Google-Smtp-Source: ABdhPJy1Lr/VhmQiOIIOOdBdn0L5HHiRUxFJwMAPMpCWzaYxHigh46zSKk3LLQ5VrRtLGn0HNnpyYg==
+X-Received: by 2002:a62:52d7:0:b029:18b:7093:fb88 with SMTP id g206-20020a6252d70000b029018b7093fb88mr6145068pfb.76.1605729228003;
+        Wed, 18 Nov 2020 11:53:48 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id a12sm3264030pjh.48.2020.11.18.11.53.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 11:53:47 -0800 (PST)
+Date:   Wed, 18 Nov 2020 11:53:46 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Roman Gushchin <guro@fb.com>
+cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, cl@linux.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        shakeelb@google.com, hannes@cmpxchg.org, aneesh.kumar@linux.ibm.com
+Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
+ slub page order
+In-Reply-To: <20201118193446.GC186396@carbon.dhcp.thefacebook.com>
+Message-ID: <alpine.DEB.2.23.453.2011181153390.1618743@chino.kir.corp.google.com>
+References: <20201118082759.1413056-1-bharata@linux.ibm.com> <9e1a2e2b-1b3c-9587-9b74-8ed8300fcb98@suse.cz> <20201118193446.GC186396@carbon.dhcp.thefacebook.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-References: <20201113173448.1863419-1-surenb@google.com> <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
- <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
- <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
- <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
- <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
- <CAJuCfpH-Qjm5uqfaUcfk0QV2zC76uL96FQjd88bZGBvCuXE_aA@mail.gmail.com>
- <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
- <20201118154334.GT12284@dhcp22.suse.cz> <CAJuCfpGC1Kv2rC7oq-TT2dX1soy5J_R+y6DU8xEzVuJgOqHKAw@mail.gmail.com>
- <20201118193233.GV12284@dhcp22.suse.cz>
-In-Reply-To: <20201118193233.GV12284@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 18 Nov 2020 11:51:29 -0800
-Message-ID: <CAJuCfpGucpqxOzGhteFrtv-0HrSbAmZjLbA2=NCy-5UEx04mJw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
- killing a process
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Minchan Kim <minchan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 11:32 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Wed 18-11-20 11:22:21, Suren Baghdasaryan wrote:
-> > On Wed, Nov 18, 2020 at 11:10 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Fri 13-11-20 18:16:32, Andrew Morton wrote:
-> > > [...]
-> > > > It's all sounding a bit painful (but not *too* painful).  But to
-> > > > reiterate, I do think that adding the ability for a process to shoot
-> > > > down a large amount of another process's memory is a lot more generally
-> > > > useful than tying it to SIGKILL, agree?
-> > >
-> > > I am not sure TBH. Is there any reasonable usecase where uncoordinated
-> > > memory tear down is OK and a target process which is able to see the
-> > > unmapped memory?
-> >
-> > I think uncoordinated memory tear down is a special case which makes
-> > sense only when the target process is being killed (and we can enforce
-> > that by allowing MADV_DONTNEED to be used only if the target process
-> > has pending SIGKILL).
->
-> That would be safe but then I am wondering whether it makes sense to
-> implement as a madvise call. It is quite strange to expect somebody call
-> a syscall on a killed process. But this is more a detail. I am not a
-> great fan of a more generic MADV_DONTNEED on a remote process. This is
-> just too dangerous IMHO.
+On Wed, 18 Nov 2020, Roman Gushchin wrote:
 
-Agree 100%
+> On Wed, Nov 18, 2020 at 12:25:38PM +0100, Vlastimil Babka wrote:
+> > On 11/18/20 9:27 AM, Bharata B Rao wrote:
+> > > The page order of the slab that gets chosen for a given slab
+> > > cache depends on the number of objects that can be fit in the
+> > > slab while meeting other requirements. We start with a value
+> > > of minimum objects based on nr_cpu_ids that is driven by
+> > > possible number of CPUs and hence could be higher than the
+> > > actual number of CPUs present in the system. This leads to
+> > > calculate_order() chosing a page order that is on the higher
+> > > side leading to increased slab memory consumption on systems
+> > > that have bigger page sizes.
+> > > 
+> > > Hence rely on the number of online CPUs when determining the
+> > > mininum objects, thereby increasing the chances of chosing
+> > > a lower conservative page order for the slab.
+> > > 
+> > > Signed-off-by: Bharata B Rao <bharata@linux.ibm.com>
+> > 
+> > Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> > 
+> > Ideally, we would react to hotplug events and update existing caches
+> > accordingly. But for that, recalculation of order for existing caches would
+> > have to be made safe, while not affecting hot paths. We have removed the
+> > sysfs interface with 32a6f409b693 ("mm, slub: remove runtime allocation
+> > order changes") as it didn't seem easy and worth the trouble.
+> > 
+> > In case somebody wants to start with a large order right from the boot
+> > because they know they will hotplug lots of cpus later, they can use
+> > slub_min_objects= boot param to override this heuristic. So in case this
+> > change regresses somebody's performance, there's a way around it and thus
+> > the risk is low IMHO.
+> 
+> I agree. For the absolute majority of users there will be no difference.
+> And there is a good workaround for the rest.
+> 
+> Acked-by: Roman Gushchin <guro@fb.com>
+> 
 
->
-> > However, the ability to apply other flavors of
-> > process_madvise() to large memory areas spanning multiple VMAs can be
-> > useful in more cases.
->
-> Yes I do agree with that. The error reporting would be more tricky but
-> I am not really sure that the exact reporting is really necessary for
-> advice like interface.
-
-Andrew's suggestion for this special mode to change return semantics
-to the usual "0 or error code" seems to me like the most reasonable
-way to deal with the return value limitation.
-
->
-> > For example in Android we will use
-> > process_madvise(MADV_PAGEOUT) to "shrink" an inactive background
-> > process.
->
-> That makes sense to me.
-> --
-> Michal Hocko
-> SUSE Labs
+Acked-by: David Rientjes <rientjes@google.com>
