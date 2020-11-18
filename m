@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258FC2B74F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 04:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1F12B74F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 04:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgKRDqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 22:46:35 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19297 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726487AbgKRDqe (ORCPT
+        id S1727336AbgKRDsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 22:48:52 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7639 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727186AbgKRDsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 22:46:34 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb499240000>; Tue, 17 Nov 2020 19:46:44 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
- 2020 03:46:34 +0000
-Received: from jckuo-lt.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Wed, 18 Nov 2020 03:46:32 +0000
-From:   JC Kuo <jckuo@nvidia.com>
-To:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, JC Kuo <jckuo@nvidia.com>
-Subject: [PATCH v1] arm64: tegra: jetson-tx1: Fix USB_VBUS_EN0 regulator
-Date:   Wed, 18 Nov 2020 11:46:31 +0800
-Message-ID: <20201118034631.74127-1-jckuo@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 17 Nov 2020 22:48:51 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CbTLV6Tm7z15Mhy;
+        Wed, 18 Nov 2020 11:48:34 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 18 Nov 2020 11:48:40 +0800
+From:   Meng Yu <yumeng18@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <yumeng18@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/5] crypto: hisilicon/hpre - add something for Kunpeng 930
+Date:   Wed, 18 Nov 2020 11:46:56 +0800
+Message-ID: <1605671221-30692-1-git-send-email-yumeng18@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605671204; bh=CzEJnQTXpaO+zvL/bMVWDJgq8PsKnA/5HnYumHPgzos=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=puHw6YQpo6zExa7fqJPCEvC4oHAeYV6V9kQKoRBtW8PbWqDLK3HgFLlgvuDK1MZZN
-         4YwwKAUVseZb4MKaSTdE/PHgZAxA0ehwfU4AC2q2v97jdmlfAf0E5oPR5KRxWL42by
-         ZxHjTBGTGPcOdpmIHIBeNkRCRay49Xt7/LKMn344t9QNyqDxkI/f10d8F7oLmkuVjp
-         xPzONMHi1HYclOHfMGhKY/QOaNqoLV2llDgsNYMppE2cv8GdCSOFvyFS42PVhkrgWH
-         3y+bfYfGhjojlurO1IB0W5v/HhcBFyjSqKBzppVnaWa5TQPwKoc89RM0rCT6IhxaTc
-         C5zYSHfoDWqBg==
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-USB_VBUS_EN0 regulator (regulator@11) is being overwritten by vdd-cam-1v2
-regulator. This commit rearrange USB_VBUS_EN0 to be regulator@14.
+Add algorithms(ECDH and CURVE25519) in Kunpeng 930.
 
-Signed-off-by: JC Kuo <jckuo@nvidia.com>
----
- .../arm64/boot/dts/nvidia/tegra210-p2597.dtsi | 20 +++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+v2 -> v3:
+- patch #1: add a 'Signed-off-by' from its author
+- patch #5: fix sparse warnings
+- patch #5: add 'CRYPTO_LIB_CURVE25519_GENERIC' in 'Kconfig'
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi b/arch/arm64/bo=
-ot/dts/nvidia/tegra210-p2597.dtsi
-index e18e1a9a3011..a9caaf7c0d67 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-@@ -1663,16 +1663,6 @@ vdd_usb_vbus: regulator@9 {
- 		vin-supply =3D <&vdd_5v0_sys>;
- 	};
-=20
--	vdd_usb_vbus_otg: regulator@11 {
--		compatible =3D "regulator-fixed";
--		regulator-name =3D "USB_VBUS_EN0";
--		regulator-min-microvolt =3D <5000000>;
--		regulator-max-microvolt =3D <5000000>;
--		gpio =3D <&gpio TEGRA_GPIO(CC, 4) GPIO_ACTIVE_HIGH>;
--		enable-active-high;
--		vin-supply =3D <&vdd_5v0_sys>;
--	};
--
- 	vdd_hdmi: regulator@10 {
- 		compatible =3D "regulator-fixed";
- 		regulator-name =3D "VDD_HDMI_5V0";
-@@ -1712,4 +1702,14 @@ vdd_cam_1v8: regulator@13 {
- 		enable-active-high;
- 		vin-supply =3D <&vdd_3v3_sys>;
- 	};
-+
-+	vdd_usb_vbus_otg: regulator@14 {
-+		compatible =3D "regulator-fixed";
-+		regulator-name =3D "USB_VBUS_EN0";
-+		regulator-min-microvolt =3D <5000000>;
-+		regulator-max-microvolt =3D <5000000>;
-+		gpio =3D <&gpio TEGRA_GPIO(CC, 4) GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		vin-supply =3D <&vdd_5v0_sys>;
-+	};
- };
---=20
-2.25.1
+v1 -> v2:
+- patch #5: delete 'curve25519_null_point'
+
+Hui Tang (1):
+  crypto: hisilicon/hpre - add initial settings adapt to 'Kunpeng 930'
+
+Meng Yu (4):
+  crypto: hisilicon/hpre - add version adapt to new algorithms
+  crypto: hisilicon/hpre - add algorithm type
+  crypto: hisilicon/hpre - add 'ECDH' algorithm
+  crypto: hisilicon/hpre - add 'CURVE25519' algorithm
+
+ drivers/crypto/hisilicon/Kconfig            |    1 +
+ drivers/crypto/hisilicon/hpre/hpre.h        |   25 +-
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 1194 ++++++++++++++++++++++++++-
+ drivers/crypto/hisilicon/hpre/hpre_main.c   |  105 ++-
+ drivers/crypto/hisilicon/qm.c               |    4 +-
+ drivers/crypto/hisilicon/qm.h               |    4 +-
+ drivers/crypto/hisilicon/sec2/sec.h         |    4 +-
+ drivers/crypto/hisilicon/sec2/sec_crypto.c  |    4 +-
+ drivers/crypto/hisilicon/sec2/sec_crypto.h  |    4 +-
+ drivers/crypto/hisilicon/zip/zip.h          |    4 +-
+ drivers/crypto/hisilicon/zip/zip_crypto.c   |    4 +-
+ 11 files changed, 1289 insertions(+), 64 deletions(-)
+
+-- 
+2.8.1
 
