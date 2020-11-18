@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A842B7EDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7802B7EDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbgKRN7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726531AbgKRN7D (ORCPT
+        id S1726736AbgKRN7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:59:41 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:40913 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726274AbgKRN7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:59:03 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5833DC0613D4;
-        Wed, 18 Nov 2020 05:59:02 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id w4so1228118pgg.13;
-        Wed, 18 Nov 2020 05:59:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rimqJqRJwrIOhYO+VNFNI9V0S06+Ty+IA7MjQW8qayk=;
-        b=OMtLm8usqAAVY/VNYkTB6P7jvDPV2p343CObgLyaTlQB8TMHMoYBAkpy8twiOLHXdB
-         6LvgZACiq+0O99TVoYZbd2/A8qRW+pxe/6n71ajxgEM6FdusqWu/cQ8/gVa/s4FW5iKL
-         xa67gAzignJp/NsjKQQxSemAKVG/JVqduRqpZUPqpFb1hTxMYMgIiE+pryh/kS5NLr54
-         fd+DrlAeCt2CZ5A98lpp/9YqMJzuAOtbKzxFv3sBII33dUYPH/Np+TXETMNRpBayQUrT
-         8oXO3T0yNk2pu8CBenVfMha86S4/76NQXl5S/rRTQTFCOWylTb01/5yyruJimAgD1Ad9
-         FVzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rimqJqRJwrIOhYO+VNFNI9V0S06+Ty+IA7MjQW8qayk=;
-        b=qaTcB7wS2AHEmLdebVAB9n6A/wZGtPaP7rOg1cbRCGZCgh7fgrScBihnsfUCxXlVFJ
-         fbY549hE8b1FH99aC8JKugjk+XtVxRJ3lIVAI9t6m3dVHrWXDdsiP6jX5U4Ba5xXTksb
-         AGUIhoHRl20n6pQnbQ3aO/sBxYI6fmVdHVJUqGi4+H2F0hDx5RZcVsbkN1G5J70u78PI
-         YxQWU2X2pGqmi5y0hIEBLsq36Ys/PktqDZKPzXsfvFBxO01eYOFETA8A+QLWDyzIljaJ
-         uKHbFIaoBGKjKX5ZNTL39bLGAAGqhPXpedlPUYdBe3s5R3MfikPF1cqKn5KU5WrYxp0t
-         UXVQ==
-X-Gm-Message-State: AOAM530A9UZGsyRrlrH40Y/3WGGl4ariDPg9Z+IJPR8nuKW0n4EAyBh5
-        C1XsTLTk4dohKXYMd2vwjRT3ob5zo39T+Bil/dY=
-X-Google-Smtp-Source: ABdhPJy8Kmmh46lqVfebUl1itC0FZKVnwySpk74pfY2eWFJfYdoz11ICVdAdD7FKHNaLse5RR3GW7A==
-X-Received: by 2002:a65:4485:: with SMTP id l5mr8195872pgq.10.1605707941881;
-        Wed, 18 Nov 2020 05:59:01 -0800 (PST)
-Received: from manjaro.domain.name ([202.142.93.91])
-        by smtp.gmail.com with ESMTPSA id a17sm23269919pga.56.2020.11.18.05.58.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 05:59:01 -0800 (PST)
-From:   Soham Biswas <sohambiswas41@gmail.com>
-To:     thierry.reding@gmail.com
-Cc:     lee.jones@linaro.org, u.kleine-koenig@pengutronix.de,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Soham Biswas <sohambiswas41@gmail.com>
-Subject: [PATCH] pwm: core: Use octal permission
-Date:   Wed, 18 Nov 2020 19:28:35 +0530
-Message-Id: <20201118135835.18395-1-sohambiswas41@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117175452.26914-1-sohambiswas41@gmail.com>
-References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+        Wed, 18 Nov 2020 08:59:40 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kfNzj-0002u9-GH; Wed, 18 Nov 2020 14:59:35 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kfNzi-0001hY-G0; Wed, 18 Nov 2020 14:59:34 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 0BD08240041;
+        Wed, 18 Nov 2020 14:59:34 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 83038240040;
+        Wed, 18 Nov 2020 14:59:33 +0100 (CET)
+Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
+        by mail.dev.tdt.de (Postfix) with ESMTPSA id 5584E20370;
+        Wed, 18 Nov 2020 14:59:33 +0100 (CET)
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     andrew.hendry@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        xie.he.0141@gmail.com
+Cc:     linux-x25@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
+Subject: [PATCH net-next v3 0/6] net/x25: netdev event handling
+Date:   Wed, 18 Nov 2020 14:59:13 +0100
+Message-ID: <20201118135919.1447-1-ms@dev.tdt.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+Content-Transfer-Encoding: quoted-printable
+X-purgate-type: clean
+X-purgate-ID: 151534::1605707975-000037DC-375AD673/0/0
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Permission bits are easier readable in octal than with using the symbolic names.
-
-Fixes the following warning generated by checkpatch:
-
-drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are not preferred.
-Consider using octal permissions '0444'.
-
-+debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-                            &pwm_debugfs_fops);
-
-Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
 ---
- drivers/pwm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes to v2:
+o restructure complete patch-set
+o keep netdev event handling in layer3 (X.25)
+o add patch to fix lapb_connect_request() for DCE
+o add patch to handle carrier loss correctly in lapb
+o drop patch for x25_neighbour param handling
+  this may need fixes/cleanup and will be resubmitted later.
 
-diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-index 1f16f5365d3c..a8eff4b3ee36 100644
---- a/drivers/pwm/core.c
-+++ b/drivers/pwm/core.c
-@@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
- 
- static int __init pwm_debugfs_init(void)
- {
--	debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-+	debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
- 			    &pwm_debugfs_fops);
- 
- 	return 0;
--- 
-2.29.2
+Changes to v1:
+o fix 'subject_prefix' and 'checkpatch' warnings
+
+---
+
+Martin Schiller (6):
+  net/x25: handle additional netdev events
+  net/lapb: fix lapb_connect_request() for DCE
+  net/lapb: handle carrier loss correctly
+  net/lapb: fix t1 timer handling for DCE
+  net/x25: fix restart request/confirm handling
+  net/x25: remove x25_kill_by_device()
+
+ include/net/x25.h     |  2 +
+ net/lapb/lapb_iface.c | 22 +++++++++--
+ net/lapb/lapb_timer.c | 11 +++++-
+ net/x25/af_x25.c      | 66 +++++++++++++++++++++++--------
+ net/x25/x25_link.c    | 90 ++++++++++++++++++++++++++++++++++++-------
+ net/x25/x25_route.c   |  3 --
+ 6 files changed, 155 insertions(+), 39 deletions(-)
+
+--=20
+2.20.1
 
