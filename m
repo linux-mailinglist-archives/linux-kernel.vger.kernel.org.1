@@ -2,56 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423FD2B7D69
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7AD2B7D6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgKRMK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 07:10:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:53228 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbgKRMK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:10:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8FB1111D4;
-        Wed, 18 Nov 2020 04:10:56 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2809A3F70D;
-        Wed, 18 Nov 2020 04:10:54 -0800 (PST)
-References: <20201113112414.2569-1-valentin.schneider@arm.com> <20201115115849.GA6943@geo.homenetwork>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Tao Zhou <t1zhou@163.com>
-Cc:     linux-kernel@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        bigeasy@linutronix.de, bristot@redhat.com, bsegall@google.com,
-        dietmar.eggemann@arm.com, juri.lelli@redhat.com, mgorman@suse.de,
-        mingo@kernel.org, ouwen210@hotmail.com, peterz@infradead.org,
-        qais.yousef@arm.com, rostedt@goodmis.org, swood@redhat.com,
-        tglx@linutronix.de, tj@kernel.org, vincent.donnefort@arm.com,
-        vincent.guittot@linaro.org
-Subject: Re: [PATCH] sched/core: Add missing completion for affine_move_task() waiters
-In-reply-to: <20201115115849.GA6943@geo.homenetwork>
-Date:   Wed, 18 Nov 2020 12:10:51 +0000
-Message-ID: <jhjk0uix3uc.mognet@arm.com>
+        id S1727352AbgKRMMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 07:12:38 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53322 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727338AbgKRMMh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 07:12:37 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-237-I7aQPtCNMhmYbvGEvl3L3Q-1; Wed, 18 Nov 2020 12:12:30 +0000
+X-MC-Unique: I7aQPtCNMhmYbvGEvl3L3Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 18 Nov 2020 12:12:30 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 18 Nov 2020 12:12:30 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: RE: Linux 5.10-rc4
+Thread-Topic: Linux 5.10-rc4
+Thread-Index: AQHWu7P6i7HOJgcGCEellKywj802qKnNzjYQ
+Date:   Wed, 18 Nov 2020 12:12:29 +0000
+Message-ID: <692820a49ded436591b5fe3a18c68a5e@AcuMS.aculab.com>
+References: <CAHk-=wjFfAktnadOPb_iV5nKh=V5Am1sG-gciYveswRtuEkrLQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wjFfAktnadOPb_iV5nKh=V5Am1sG-gciYveswRtuEkrLQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 15/11/20 11:59, Tao Zhou wrote:
-> Oh, I did not receive this patch from 'ouwen210@hotmail.com'
-> account. Checked that you sent the patch to that mail address
-> from web. If 'ouwen210' is not a good mail account name(I have
-> used this name since 2002), I will change to use this one(Now
-> is smooth enough and can go to lkml).
->
-
-Nah, any address is fine. I grabbed whatever emails were cc'd to the patch
-this is fixing - just make sure you're using the right address (i.e. the
-one you want LKML stuff to go to) when interacting on the list and you
-should be good.
-
-> Thanks,
-> Tao
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTYgTm92ZW1iZXIgMjAyMCAwMDo1OQ0KPiAN
+Cj4gQWxsIGxvb2tzIGdvb2QsIGFuZCBub3RoaW5nIG1ha2VzIG1lIGdvICJ1aGh1aCwgNS4xMCBs
+b29rcyBpZmZ5Ii4gU28NCj4gZ28gdGVzdCwgbGV0J3MgZ2V0IHRoaXMgYWxsIHNvbGlkIGFuZCBj
+YWxtZWQgZG93biwgYW5kIHRoaXMgd2lsbA0KPiBob3BlZnVsbHkgYmUgb25lIG9mIHRob3NlIHJl
+Z3VsYXIgYm9yaW5nIHJlbGVhc2VzIGV2ZW4gaWYgaXQncw0KPiBjZXJ0YWlubHkgbm90IGJlZW4g
+b24gdGhlIHNtYWxsZXIgc2lkZS4uLg0KDQpJJ3ZlIGdvdCB0aGUgJ3NwbGF0JyBiZWxvdyBkdXJp
+bmcgYm9vdC4NClRoaXMgaXMgYW4gOC1jb3JlIEMyNzU4IEF0b20gY3B1IHVzaW5nIHRoZSBvbi1i
+b2FyZC9jcHUgZ3JhcGhpY3MuDQpVc2VyIHNwYWNlIGlzIFVidW50dSAyMC4wNC4NCg0KQWRkaXRp
+b25hbGx5IHRoZSBYIGRpc3BsYXkgaGFzIGFsbCB0aGUgY29sb3VycyBhbmQgYWxpZ25tZW50IHNs
+aWdodGx5DQptZXNzZWQgdXAuDQo1LjkuMCB3YXMgb2suDQpJJ20ganVzdCBndWVzc2luZyB0aGUg
+dHdvIGlzc3VlcyBhcmUgcmVsYXRlZC4NCg0KCURhdmlkDQoNClsgICAyMC44MDk4OTFdIFdBUk5J
+Tkc6IENQVTogMCBQSUQ6IDk3MyBhdCBkcml2ZXJzL2dwdS9kcm0vZHJtX2dlbV92cmFtX2hlbHBl
+ci5jOjI4NCBkcm1fZ2VtX3ZyYW1fb2Zmc2V0KzB4MzUvMHg0MCBbZHJtX3ZyYW1faGVscGVyXQ0K
+WyAgIDIwLjgyMTU0M10gTW9kdWxlcyBsaW5rZWQgaW46IG5sc19pc284ODU5XzEgZG1fbXVsdGlw
+YXRoIHNjc2lfZGhfcmRhYyBzY3NpX2RoX2VtYyBzY3NpX2RoX2FsdWEgaXBtaV9zc2lmIGludGVs
+X3Bvd2VyY2xhbXAgY29yZXRlbXAga3ZtX2ludGVsIGt2bSBqb3lkZXYgaW5wdXRfbGVkcyBpcG1p
+X3NpIGludGVsX2NzdGF0ZSBpcG1pX2RldmludGYgaXBtaV9tc2doYW5kbGVyIG1hY19oaWQgc2No
+X2ZxX2NvZGVsIHBhcnBvcnRfcGMgcHBkZXYgbHAgcGFycG9ydCBpcF90YWJsZXMgeF90YWJsZXMg
+YXV0b2ZzNCBidHJmcyBibGFrZTJiX2dlbmVyaWMgenN0ZF9jb21wcmVzcyByYWlkMTAgcmFpZDQ1
+NiBhc3luY19yYWlkNl9yZWNvdiBhc3luY19tZW1jcHkgYXN5bmNfcHEgYXN5bmNfeG9yIGFzeW5j
+X3R4IGxpYmNyYzMyYyB4b3IgcmFpZDZfcHEgcmFpZDEgcmFpZDAgbXVsdGlwYXRoIGxpbmVhciBh
+c3QgZHJtX3ZyYW1faGVscGVyIGRybV9rbXNfaGVscGVyIHN5c2NvcHlhcmVhIHN5c2ZpbGxyZWN0
+IHN5c2ltZ2JsdCBmYl9zeXNfZm9wcyBjZWMgZHJtX3R0bV9oZWxwZXIgdHRtIGNyY3QxMGRpZl9w
+Y2xtdWwgY3JjMzJfcGNsbXVsIGdoYXNoX2NsbXVsbmlfaW50ZWwgZ3Bpb19pY2ggZHJtIGFlc25p
+X2ludGVsIGhpZF9nZW5lcmljIGdsdWVfaGVscGVyIGNyeXB0b19zaW1kIGlnYiB1c2JoaWQgY3J5
+cHRkIGFoY2kgaTJjX2k4MDEgaGlkIGxpYmFoY2kgaTJjX3NtYnVzIGxwY19pY2ggZGNhIGkyY19p
+c210IGkyY19hbGdvX2JpdA0KWyAgIDIwLjg4NzQ3N10gQ1BVOiAwIFBJRDogOTczIENvbW06IGdu
+b21lLXNoZWxsIE5vdCB0YWludGVkIDUuMTAuMC1yYzQrICM3OA0KWyAgIDIwLjg5NDI3NF0gSGFy
+ZHdhcmUgbmFtZTogU3VwZXJtaWNybyBBMVNBaS9BMVNSaSwgQklPUyAxLjFhIDA4LzI3LzIwMTUN
+ClsgICAyMC45MDA4OTZdIFJJUDogMDAxMDpkcm1fZ2VtX3ZyYW1fb2Zmc2V0KzB4MzUvMHg0MCBb
+ZHJtX3ZyYW1faGVscGVyXQ0KWyAgIDIwLjkwNzM0Ml0gQ29kZTogMDAgNDggODkgZTUgODUgYzAg
+NzQgMTcgNDggODMgYmYgNzggMDEgMDAgMDAgMDAgNzQgMTggNDggOGIgODcgODAgMDEgMDAgMDAg
+NWQgNDggYzEgZTAgMGMgYzMgMGYgMGIgNDggYzcgYzAgZWQgZmYgZmYgZmYgNWQgYzMgPDBmPiAw
+YiAzMSBjMCA1ZCBjMyAwZiAxZiA0NCAwMCAwMCAwZiAxZiA0NCAwMCAwMCA1NSA0OCA4YiA4NyAx
+OCAwNg0KWyAgIDIwLjkyNjEwMF0gUlNQOiAwMDE4OmZmZmY5ZjU5ODExZDNhNjggRUZMQUdTOiAw
+MDAxMDI0Ng0KWyAgIDIwLjkzMTMzOV0gUkFYOiAwMDAwMDAwMDAwMDAwMDAyIFJCWDogZmZmZjhi
+NDY4NjFlMjBjMCBSQ1g6IGZmZmZmZmZmYzAzMmQ2MDANClsgICAyMC45Mzg0NzldIFJEWDogZmZm
+ZjhiNDY4ZjQ3YTAwMCBSU0k6IGZmZmY4YjQ2ODYxZTIwMDAgUkRJOiBmZmZmOGI0NjhmOWFjYzAw
+DQpbICAgMjAuOTQ1NjIyXSBSQlA6IGZmZmY5ZjU5ODExZDNhNjggUjA4OiAwMDAwMDAwMDAwMDAw
+MDQwIFIwOTogZmZmZjhiNDY4NjRjZTI4OA0KWyAgIDIwLjk1Mjc2OV0gUjEwOiAwMDAwMDAwMDAw
+MDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDAwMSBSMTI6IGZmZmY4YjQ2OGY0N2EwMDANClsgICAy
+MC45NTk5MTVdIFIxMzogMDAwMDAwMDAwMDAwMDAwMCBSMTQ6IDAwMDAwMDAwMDAwMDAwMDAgUjE1
+OiBmZmZmOGI0NjhhZDJiZjAwDQpbICAgMjAuOTY3MDU3XSBGUzogIDAwMDA3ZjViMzdhYzVjYzAo
+MDAwMCkgR1M6ZmZmZjhiNDllZmMwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpb
+ICAgMjAuOTc1MTQ5XSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgw
+MDUwMDMzDQpbICAgMjAuOTgwOTA0XSBDUjI6IDAwMDA3ZjViM2QwOTNmMDAgQ1IzOiAwMDAwMDAw
+MTAzNDM4MDAwIENSNDogMDAwMDAwMDAwMDEwMDZmMA0KWyAgIDIwLjk4ODA0N10gQ2FsbCBUcmFj
+ZToNClsgICAyMC45OTA1MDZdICBhc3RfY3Vyc29yX3BhZ2VfZmxpcCsweDIyLzB4MTAwIFthc3Rd
+DQpbICAgMjAuOTk1MzEzXSAgYXN0X2N1cnNvcl9wbGFuZV9oZWxwZXJfYXRvbWljX3VwZGF0ZSsw
+eDQ2LzB4NzAgW2FzdF0NClsgICAyMS4wMDE1MjRdICBkcm1fYXRvbWljX2hlbHBlcl9jb21taXRf
+cGxhbmVzKzB4YmQvMHgyMjAgW2RybV9rbXNfaGVscGVyXQ0KWyAgIDIxLjAwODI0M10gIGRybV9h
+dG9taWNfaGVscGVyX2NvbW1pdF90YWlsX3JwbSsweDNhLzB4NzAgW2RybV9rbXNfaGVscGVyXQ0K
+WyAgIDIxLjAxNTA2Ml0gIGNvbW1pdF90YWlsKzB4OTkvMHgxMzAgW2RybV9rbXNfaGVscGVyXQ0K
+WyAgIDIxLjAyMDA1MF0gIGRybV9hdG9taWNfaGVscGVyX2NvbW1pdCsweDEyMy8weDE1MCBbZHJt
+X2ttc19oZWxwZXJdDQpbICAgMjEuMDI2MjY5XSAgZHJtX2F0b21pY19jb21taXQrMHg0YS8weDUw
+IFtkcm1dDQpbICAgMjEuMDMwNzM3XSAgZHJtX2F0b21pY19oZWxwZXJfdXBkYXRlX3BsYW5lKzB4
+ZTcvMHgxNDAgW2RybV9rbXNfaGVscGVyXQ0KWyAgIDIxLjAzNzM4NF0gIF9fc2V0cGxhbmVfYXRv
+bWljKzB4Y2MvMHgxMTAgW2RybV0NClsgICAyMS4wNDE5NTNdICBkcm1fbW9kZV9jdXJzb3JfdW5p
+dmVyc2FsKzB4MTNlLzB4MjYwIFtkcm1dDQpbICAgMjEuMDQ3Mjk5XSAgZHJtX21vZGVfY3Vyc29y
+X2NvbW1vbisweGVmLzB4MjIwIFtkcm1dDQpbICAgMjEuMDUyMjg3XSAgPyBhbGxvY19zZXRfcHRl
+KzB4MTBkLzB4NmQwDQpbICAgMjEuMDU2MjQ0XSAgPyBkcm1fbW9kZV9jdXJzb3JfaW9jdGwrMHg2
+MC8weDYwIFtkcm1dDQpbICAgMjEuMDYxMjQyXSAgZHJtX21vZGVfY3Vyc29yMl9pb2N0bCsweGUv
+MHgxMCBbZHJtXQ0KWyAgIDIxLjA2NjA2N10gIGRybV9pb2N0bF9rZXJuZWwrMHhhZS8weGYwIFtk
+cm1dDQpbICAgMjEuMDcwNDU1XSAgZHJtX2lvY3RsKzB4MjQxLzB4M2YwIFtkcm1dDQpbICAgMjEu
+MDc0NDE1XSAgPyBkcm1fbW9kZV9jdXJzb3JfaW9jdGwrMHg2MC8weDYwIFtkcm1dDQpbICAgMjEu
+MDc5NDAxXSAgX194NjRfc3lzX2lvY3RsKzB4OTEvMHhjMA0KWyAgIDIxLjA4MzE2N10gIGRvX3N5
+c2NhbGxfNjQrMHgzOC8weDkwDQpbICAgMjEuMDg2NzU1XSAgZW50cnlfU1lTQ0FMTF82NF9hZnRl
+cl9od2ZyYW1lKzB4NDQvMHhhOQ0KWyAgIDIxLjA5MTgxM10gUklQOiAwMDMzOjB4N2Y1YjNjZjEz
+NTBiDQpbICAgMjEuMDk1NDAzXSBDb2RlOiAwZiAxZSBmYSA0OCA4YiAwNSA4NSAzOSAwZCAwMCA2
+NCBjNyAwMCAyNiAwMCAwMCAwMCA0OCBjNyBjMCBmZiBmZiBmZiBmZiBjMyA2NiAwZiAxZiA0NCAw
+MCAwMCBmMyAwZiAxZSBmYSBiOCAxMCAwMCAwMCAwMCAwZiAwNSA8NDg+IDNkIDAxIGYwIGZmIGZm
+IDczIDAxIGMzIDQ4IDhiIDBkIDU1IDM5IDBkIDAwIGY3IGQ4IDY0IDg5IDAxIDQ4DQpbICAgMjEu
+MTE0MTU0XSBSU1A6IDAwMmI6MDAwMDdmZmVmMTk2NjU4OCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdf
+UkFYOiAwMDAwMDAwMDAwMDAwMDEwDQpbICAgMjEuMTIxNzMwXSBSQVg6IGZmZmZmZmZmZmZmZmZm
+ZGEgUkJYOiAwMDAwN2ZmZWYxOTY2NWMwIFJDWDogMDAwMDdmNWIzY2YxMzUwYg0KWyAgIDIxLjEy
+ODg3MF0gUkRYOiAwMDAwN2ZmZWYxOTY2NWMwIFJTSTogMDAwMDAwMDBjMDI0NjRiYiBSREk6IDAw
+MDAwMDAwMDAwMDAwMDkNClsgICAyMS4xMzYwMTNdIFJCUDogMDAwMDAwMDBjMDI0NjRiYiBSMDg6
+IDAwMDAwMDAwMDAwMDAwNDAgUjA5OiAwMDAwMDAwMDAwMDAwMDA0DQpbICAgMjEuMTQzMTU3XSBS
+MTA6IDAwMDAwMDAwMDAwMDAwMDIgUjExOiAwMDAwMDAwMDAwMDAwMjQ2IFIxMjogMDAwMDU2MWVj
+OWQxMDA2MA0KWyAgIDIxLjE1MDI5NV0gUjEzOiAwMDAwMDAwMDAwMDAwMDA5IFIxNDogMDAwMDU2
+MWVjYTJjYzlhMCBSMTU6IDAwMDAwMDAwMDAwMDAwNDANCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNz
+IExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAx
+UFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
