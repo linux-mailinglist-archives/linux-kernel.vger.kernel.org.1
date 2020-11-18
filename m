@@ -2,270 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F062B81F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B44092B81F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbgKRQ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:29:33 -0500
-Received: from foss.arm.com ([217.140.110.172]:58908 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727807AbgKRQ3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:29:33 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4897D1396;
-        Wed, 18 Nov 2020 08:29:32 -0800 (PST)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C376D3F719;
-        Wed, 18 Nov 2020 08:29:30 -0800 (PST)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        Jonathan.Cameron@Huawei.com, egranata@google.com,
-        jbhayana@google.com, peter.hilber@opensynergy.com,
-        mikhail.golubev@opensynergy.com, Igor.Skalkin@opensynergy.com,
-        cristian.marussi@arm.com
-Subject: [PATCH v3 6/6] firmware: arm_scmi: add SCMIv3.0 Sensor notifications
-Date:   Wed, 18 Nov 2020 16:29:05 +0000
-Message-Id: <20201118162905.10439-7-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201118162905.10439-1-cristian.marussi@arm.com>
-References: <20201118162905.10439-1-cristian.marussi@arm.com>
+        id S1727959AbgKRQ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:29:40 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:51306 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727807AbgKRQ3j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:29:39 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id F071A8030809;
+        Wed, 18 Nov 2020 16:29:33 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id qaudjfTZt0c0; Wed, 18 Nov 2020 19:29:33 +0300 (MSK)
+Date:   Wed, 18 Nov 2020 19:29:31 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] spi: Take the SPI IO-mutex in the spi_setup() method
+Message-ID: <20201118162931.sdpofyw74yyr5n5z@mobilestation>
+References: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
+ <20201118131604.GC4827@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201118131604.GC4827@sirena.org.uk>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for new SCMIv3.0 SENSOR_UPDATE notification.
+On Wed, Nov 18, 2020 at 01:16:04PM +0000, Mark Brown wrote:
+> On Tue, Nov 17, 2020 at 12:45:17PM +0300, Serge Semin wrote:
+> 
+> > method being called at the same time. In particular in calling the
+> > spi_set_cs(false) while there is an SPI-transfer being executed. In my
+> > case due to the commit cited above all CSs get to be switched off by
+> > calling the spi_setup() for /dev/spidev0.1 while there is an concurrent
+> > SPI-transfer execution performed on /dev/spidev0.0. Of course a situation
+> > of the spi_setup() being called while there is an SPI-transfer being
+> > executed for two different SPI peripheral devices of the same controller
+> > may happen not only for the spidev driver, but for instance for MMC SPI +
+> > some another device, or spi_setup() being called from an SPI-peripheral
+> > probe method while some other device has already been probed and is being
+> > used by a corresponding driver...
+> 
+> It's documented that a driver's spi_setup() operation is supposed to
+> support being able to be called concurrently with other transfers, see
+> spi-summary.rst.
+> 
+> > Of course I could have provided a fix affecting the DW APB SSI driver
+> > only, for instance, by creating a mutual exclusive access to the set_cs
+> > callback and setting/clearing only the bit responsible for the
+> > corresponding chip-select. But after a short research I've discovered that
+> > the problem most likely affects a lot of the other drivers:
+> 
+> Yeah, problems with it are very common as the documentation has noted
+> since forever.  IIRC there was some problem triggered by trying to force
+> it to be serialised but I can't remember what it was.
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-v2 --> v3
-- removed stale unused msg payload definition
-- moved variable declaration inside switch block
----
- drivers/firmware/arm_scmi/sensors.c | 124 +++++++++++++++++++++++-----
- include/linux/scmi_protocol.h       |   9 ++
- 2 files changed, 114 insertions(+), 19 deletions(-)
+Does it mean nack for this patch from you? So you suggest to fix the controller
+driver instead, right? If so the best solution would be to just lock the
+IO mutex in the set_cs callback of the DW APB SSI driver...
 
-diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
-index fa3385045361..6d6b48032c8c 100644
---- a/drivers/firmware/arm_scmi/sensors.c
-+++ b/drivers/firmware/arm_scmi/sensors.c
-@@ -24,6 +24,7 @@ enum scmi_sensor_protocol_cmd {
- 	SENSOR_LIST_UPDATE_INTERVALS = 0x8,
- 	SENSOR_CONFIG_GET = 0x9,
- 	SENSOR_CONFIG_SET = 0xA,
-+	SENSOR_CONTINUOUS_UPDATE_NOTIFY = 0xB,
- };
- 
- struct scmi_msg_resp_sensor_attributes {
-@@ -133,10 +134,10 @@ struct scmi_msg_resp_sensor_list_update_intervals {
- 	__le32 intervals[];
- };
- 
--struct scmi_msg_sensor_trip_point_notify {
-+struct scmi_msg_sensor_request_notify {
- 	__le32 id;
- 	__le32 event_control;
--#define SENSOR_TP_NOTIFY_ALL	BIT(0)
-+#define SENSOR_NOTIFY_ALL	BIT(0)
- };
- 
- struct scmi_msg_set_sensor_trip_point {
-@@ -198,6 +199,12 @@ struct scmi_sensor_trip_notify_payld {
- 	__le32 trip_point_desc;
- };
- 
-+struct scmi_sensor_update_notify_payld {
-+	__le32 agent_id;
-+	__le32 sensor_id;
-+	struct scmi_sensor_reading_le readings[];
-+};
-+
- struct sensors_info {
- 	u32 version;
- 	int num_sensors;
-@@ -563,15 +570,16 @@ static int scmi_sensor_description_get(const struct scmi_handle *handle,
- 	return ret;
- }
- 
--static int scmi_sensor_trip_point_notify(const struct scmi_handle *handle,
--					 u32 sensor_id, bool enable)
-+static inline int
-+scmi_sensor_request_notify(const struct scmi_handle *handle, u32 sensor_id,
-+			   u8 message_id, bool enable)
- {
- 	int ret;
--	u32 evt_cntl = enable ? SENSOR_TP_NOTIFY_ALL : 0;
-+	u32 evt_cntl = enable ? SENSOR_NOTIFY_ALL : 0;
- 	struct scmi_xfer *t;
--	struct scmi_msg_sensor_trip_point_notify *cfg;
-+	struct scmi_msg_sensor_request_notify *cfg;
- 
--	ret = scmi_xfer_get_init(handle, SENSOR_TRIP_POINT_NOTIFY,
-+	ret = scmi_xfer_get_init(handle, message_id,
- 				 SCMI_PROTOCOL_SENSOR, sizeof(*cfg), 0, &t);
- 	if (ret)
- 		return ret;
-@@ -586,6 +594,23 @@ static int scmi_sensor_trip_point_notify(const struct scmi_handle *handle,
- 	return ret;
- }
- 
-+static int scmi_sensor_trip_point_notify(const struct scmi_handle *handle,
-+					 u32 sensor_id, bool enable)
-+{
-+	return scmi_sensor_request_notify(handle, sensor_id,
-+					  SENSOR_TRIP_POINT_NOTIFY,
-+					  enable);
-+}
-+
-+static int
-+scmi_sensor_continuous_update_notify(const struct scmi_handle *handle,
-+				     u32 sensor_id, bool enable)
-+{
-+	return scmi_sensor_request_notify(handle, sensor_id,
-+					  SENSOR_CONTINUOUS_UPDATE_NOTIFY,
-+					  enable);
-+}
-+
- static int
- scmi_sensor_trip_point_config(const struct scmi_handle *handle, u32 sensor_id,
- 			      u8 trip_id, u64 trip_value)
-@@ -836,7 +861,19 @@ static int scmi_sensor_set_notify_enabled(const struct scmi_handle *handle,
- {
- 	int ret;
- 
--	ret = scmi_sensor_trip_point_notify(handle, src_id, enable);
-+	switch (evt_id) {
-+	case SCMI_EVENT_SENSOR_TRIP_POINT_EVENT:
-+		ret = scmi_sensor_trip_point_notify(handle, src_id, enable);
-+		break;
-+	case SCMI_EVENT_SENSOR_UPDATE:
-+		ret = scmi_sensor_continuous_update_notify(handle, src_id,
-+							   enable);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
- 	if (ret)
- 		pr_debug("FAIL_ENABLED - evt[%X] dom[%d] - ret:%d\n",
- 			 evt_id, src_id, ret);
-@@ -849,20 +886,59 @@ static void *scmi_sensor_fill_custom_report(const struct scmi_handle *handle,
- 					    const void *payld, size_t payld_sz,
- 					    void *report, u32 *src_id)
- {
--	const struct scmi_sensor_trip_notify_payld *p = payld;
--	struct scmi_sensor_trip_point_report *r = report;
-+	void *rep = NULL;
- 
--	if (evt_id != SCMI_EVENT_SENSOR_TRIP_POINT_EVENT ||
--	    sizeof(*p) != payld_sz)
--		return NULL;
-+	switch (evt_id) {
-+	case SCMI_EVENT_SENSOR_TRIP_POINT_EVENT:
-+	{
-+		const struct scmi_sensor_trip_notify_payld *p = payld;
-+		struct scmi_sensor_trip_point_report *r = report;
- 
--	r->timestamp = timestamp;
--	r->agent_id = le32_to_cpu(p->agent_id);
--	r->sensor_id = le32_to_cpu(p->sensor_id);
--	r->trip_point_desc = le32_to_cpu(p->trip_point_desc);
--	*src_id = r->sensor_id;
-+		if (sizeof(*p) != payld_sz)
-+			break;
- 
--	return r;
-+		r->timestamp = timestamp;
-+		r->agent_id = le32_to_cpu(p->agent_id);
-+		r->sensor_id = le32_to_cpu(p->sensor_id);
-+		r->trip_point_desc = le32_to_cpu(p->trip_point_desc);
-+		*src_id = r->sensor_id;
-+		rep = r;
-+		break;
-+	}
-+	case SCMI_EVENT_SENSOR_UPDATE:
-+	{
-+		int i;
-+		struct scmi_sensor_info *s;
-+		const struct scmi_sensor_update_notify_payld *p = payld;
-+		struct scmi_sensor_update_report *r = report;
-+		struct sensors_info *sinfo = handle->sensor_priv;
-+
-+		/* payld_sz is variable for this event */
-+		r->sensor_id = le32_to_cpu(p->sensor_id);
-+		if (r->sensor_id >= sinfo->num_sensors)
-+			break;
-+		r->timestamp = timestamp;
-+		r->agent_id = le32_to_cpu(p->agent_id);
-+		s = &sinfo->sensors[r->sensor_id];
-+		/*
-+		 * The generated report r (@struct scmi_sensor_update_report)
-+		 * was pre-allocated to contain up to SCMI_MAX_NUM_SENSOR_AXIS
-+		 * readings: here it is filled with the effective @num_axis
-+		 * readings defined for this sensor or 1 for scalar sensors.
-+		 */
-+		r->readings_count = s->num_axis ?: 1;
-+		for (i = 0; i < r->readings_count; i++)
-+			scmi_parse_sensor_readings(&r->readings[i],
-+						   &p->readings[i]);
-+		*src_id = r->sensor_id;
-+		rep = r;
-+		break;
-+	}
-+	default:
-+		break;
-+	}
-+
-+	return rep;
- }
- 
- static const struct scmi_event sensor_events[] = {
-@@ -871,6 +947,16 @@ static const struct scmi_event sensor_events[] = {
- 		.max_payld_sz = sizeof(struct scmi_sensor_trip_notify_payld),
- 		.max_report_sz = sizeof(struct scmi_sensor_trip_point_report),
- 	},
-+	{
-+		.id = SCMI_EVENT_SENSOR_UPDATE,
-+		.max_payld_sz =
-+			sizeof(struct scmi_sensor_update_notify_payld) +
-+			 SCMI_MAX_NUM_SENSOR_AXIS *
-+			 sizeof(struct scmi_sensor_reading_le),
-+		.max_report_sz = sizeof(struct scmi_sensor_update_report) +
-+				  SCMI_MAX_NUM_SENSOR_AXIS *
-+				  sizeof(struct scmi_sensor_reading),
-+	},
- };
- 
- static const struct scmi_event_ops sensor_event_ops = {
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 32d18457b6c6..dcdd1d10bbcc 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -658,6 +658,7 @@ enum scmi_notification_events {
- 	SCMI_EVENT_PERFORMANCE_LIMITS_CHANGED = 0x0,
- 	SCMI_EVENT_PERFORMANCE_LEVEL_CHANGED = 0x1,
- 	SCMI_EVENT_SENSOR_TRIP_POINT_EVENT = 0x0,
-+	SCMI_EVENT_SENSOR_UPDATE = 0x1,
- 	SCMI_EVENT_RESET_ISSUED = 0x0,
- 	SCMI_EVENT_BASE_ERROR_EVENT = 0x0,
- 	SCMI_EVENT_SYSTEM_POWER_STATE_NOTIFIER = 0x0,
-@@ -699,6 +700,14 @@ struct scmi_sensor_trip_point_report {
- 	unsigned int	trip_point_desc;
- };
- 
-+struct scmi_sensor_update_report {
-+	ktime_t				timestamp;
-+	unsigned int			agent_id;
-+	unsigned int			sensor_id;
-+	unsigned int			readings_count;
-+	struct scmi_sensor_reading	readings[];
-+};
-+
- struct scmi_reset_issued_report {
- 	ktime_t		timestamp;
- 	unsigned int	agent_id;
--- 
-2.17.1
+-Sergey
 
