@@ -2,109 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B792B8529
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 850342B851C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbgKRT5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:57:38 -0500
-Received: from gate.crashing.org ([63.228.1.57]:42142 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726081AbgKRT5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:57:37 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AIJmcsd023146;
-        Wed, 18 Nov 2020 13:48:38 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AIJmb2m023145;
-        Wed, 18 Nov 2020 13:48:37 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Wed, 18 Nov 2020 13:48:37 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Florian Weimer <fw@deneb.enyo.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: violating function pointer signature
-Message-ID: <20201118194837.GO2672@gate.crashing.org>
-References: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com> <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net> <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com> <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org> <87o8jutt2h.fsf@mid.deneb.enyo.de> <20201118135823.3f0d24b7@gandalf.local.home> <20201118191127.GM2672@gate.crashing.org> <20201118143343.4e86e79f@gandalf.local.home>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118143343.4e86e79f@gandalf.local.home>
-User-Agent: Mutt/1.4.2.3i
+        id S1726211AbgKRTvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:51:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbgKRTvm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:51:42 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E6DC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 11:51:41 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id 23so3366373wrc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 11:51:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a0R930kNYjqnavMF/KBPQVusHU1NjslAYSOCWdpyJ04=;
+        b=HSfuIYzTTaTm27qs+m3sYY0AB2lkoYN+yZmn3aYs/SNgCxiRCa8OfVemFUCsnEfJ3G
+         gzmGaAY1Ah9ppsUIaq4UB+yFR7OcgT2UqbZ1FJHHctPpLw/vwXfQKVpk41362nHk/dfz
+         Z2inWgK+Vb//4DMknD0TXOgo6bnJLZ+CmZHPvRGtBsDo2n0XBnbSMmA4KSibgFIHhHdQ
+         sYk7dJUIDCmgjS90IMCXUeJDtlaCSip6BaPk9ff6ITwi0frdDNddUBgnS5FfQEOOAMHU
+         iEQ2hQQ+2Qc1ID3BKdIYTQviazP6xZH7WLAVkqSW3b0UlgFI3i3MZdzdCyYRo7DUziX7
+         /Dzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a0R930kNYjqnavMF/KBPQVusHU1NjslAYSOCWdpyJ04=;
+        b=EH8daW0gLLjwSGQfDDHulQKVyuHHggbyPz5QdTzWLZpQpfHtIjj/aJk6KdmU7I2mCz
+         +V79tjVLyr42Xr2xihBavHOn2VRiIuAncAEq18oSMmW/XdZUbDVbRcLpLQjtnza4/8O0
+         AYCRCi3UzbtJ9Qrx+2zx8I9z86+UHV577j8ofjGgcFEScqaGW0k/nA15HJXBDmCHd9gx
+         Qu3tKosHKhnRHZ66LYSSWFQa1Z+QKPOMMQLvpfGfFbrW87/Wz+MAoGAqwfrUl4iGZ/WS
+         KVbs1/SvjLWcuS/wx2S+azdHRlL8X46vtib/WHcF1A3Tkt9+gtI2bhc0X8/8CRrexRj2
+         T3KA==
+X-Gm-Message-State: AOAM530qjiMXiXwPfnxe44l0Xaj+b9swNfDzDfGsx3kTKUBW2l9ogpPw
+        CfJ4JbcN1G//XxUZ3rAbqJkdWdqyEWKKV2xK2LyrIA==
+X-Google-Smtp-Source: ABdhPJwN1+sRNrKHv4pWi7GszYiUiM0BqmVDZTAlh1f1JsdOfBzXgX31DLoX4X6KxSYKVFVZx4YHKaRz4n08K+i0vM0=
+X-Received: by 2002:a5d:4a50:: with SMTP id v16mr6536380wrs.106.1605729100247;
+ Wed, 18 Nov 2020 11:51:40 -0800 (PST)
+MIME-Version: 1.0
+References: <20201113173448.1863419-1-surenb@google.com> <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
+ <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
+ <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
+ <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
+ <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
+ <CAJuCfpH-Qjm5uqfaUcfk0QV2zC76uL96FQjd88bZGBvCuXE_aA@mail.gmail.com>
+ <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
+ <20201118154334.GT12284@dhcp22.suse.cz> <CAJuCfpGC1Kv2rC7oq-TT2dX1soy5J_R+y6DU8xEzVuJgOqHKAw@mail.gmail.com>
+ <20201118193233.GV12284@dhcp22.suse.cz>
+In-Reply-To: <20201118193233.GV12284@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 18 Nov 2020 11:51:29 -0800
+Message-ID: <CAJuCfpGucpqxOzGhteFrtv-0HrSbAmZjLbA2=NCy-5UEx04mJw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
+ killing a process
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Minchan Kim <minchan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 02:33:43PM -0500, Steven Rostedt wrote:
-> On Wed, 18 Nov 2020 13:11:27 -0600
-> Segher Boessenkool <segher@kernel.crashing.org> wrote:
-> 
-> > Calling this via a different declared function type is undefined
-> > behaviour, but that is independent of how the function is *defined*.
-> > Your program can make ducks appear from your nose even if that function
-> > is never called, if you do that.  Just don't do UB, not even once!
-> 
-> But that's the whole point of this conversation. We are going to call this
-> from functions that are going to have some random set of parameters.
+On Wed, Nov 18, 2020 at 11:32 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 18-11-20 11:22:21, Suren Baghdasaryan wrote:
+> > On Wed, Nov 18, 2020 at 11:10 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Fri 13-11-20 18:16:32, Andrew Morton wrote:
+> > > [...]
+> > > > It's all sounding a bit painful (but not *too* painful).  But to
+> > > > reiterate, I do think that adding the ability for a process to shoot
+> > > > down a large amount of another process's memory is a lot more generally
+> > > > useful than tying it to SIGKILL, agree?
+> > >
+> > > I am not sure TBH. Is there any reasonable usecase where uncoordinated
+> > > memory tear down is OK and a target process which is able to see the
+> > > unmapped memory?
+> >
+> > I think uncoordinated memory tear down is a special case which makes
+> > sense only when the target process is being killed (and we can enforce
+> > that by allowing MADV_DONTNEED to be used only if the target process
+> > has pending SIGKILL).
+>
+> That would be safe but then I am wondering whether it makes sense to
+> implement as a madvise call. It is quite strange to expect somebody call
+> a syscall on a killed process. But this is more a detail. I am not a
+> great fan of a more generic MADV_DONTNEED on a remote process. This is
+> just too dangerous IMHO.
 
-<snip great summary>
+Agree 100%
 
-> And you see the above, the macro does:
-> 
-> 	((void(*)(void *, proto))(it_func))(__data, args);
+>
+> > However, the ability to apply other flavors of
+> > process_madvise() to large memory areas spanning multiple VMAs can be
+> > useful in more cases.
+>
+> Yes I do agree with that. The error reporting would be more tricky but
+> I am not really sure that the exact reporting is really necessary for
+> advice like interface.
 
-Yup.
+Andrew's suggestion for this special mode to change return semantics
+to the usual "0 or error code" seems to me like the most reasonable
+way to deal with the return value limitation.
 
-> With it_func being the func from the struct tracepoint_func, which is a
-> void pointer, it is typecast to the function that is defined by the
-> tracepoint. args is defined as the arguments that match the proto.
-
-If you have at most four or so args, what you wnat to do will work on
-all systems the kernel currently supports, as far as I can tell.  It
-is not valid C, and none of the compilers have an extension for this
-either.  But it will likely work.
-
-> The problem we are solving is on the removal case, if the memory is tight,
-> it is possible that the new array can not be allocated. But we must still
-> remove the called function. The idea in this case is to replace the
-> function saved with a stub. The above loop will call the stub and not the
-> removed function until another update happens.
-> 
-> This thread is about how safe is it to call:
-> 
-> void tp_stub_func(void) { return ; }
-> 
-> instead of the function that was removed?
-
-Exactly as safe as calling a stub defined in asm.  The undefined
-behaviour happens if your program has such a call, it doesn't matter
-how the called function is defined, it doesn't have to be C.
-
-> Thus, we are indeed calling that stub function from a call site that is not
-> using the same parameters.
-> 
-> The question is, will this break?
-
-It is unlikely to break if you use just a few arguments, all of simple
-scalar types.  Just hope you will never encounter a crazy ABI :-)
-
-
-Segher
+>
+> > For example in Android we will use
+> > process_madvise(MADV_PAGEOUT) to "shrink" an inactive background
+> > process.
+>
+> That makes sense to me.
+> --
+> Michal Hocko
+> SUSE Labs
