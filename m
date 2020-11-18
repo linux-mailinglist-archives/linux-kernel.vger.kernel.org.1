@@ -2,89 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB612B8253
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863AB2B8255
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgKRQur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:50:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726643AbgKRQuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:50:46 -0500
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AF9F2483B;
-        Wed, 18 Nov 2020 16:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605718245;
-        bh=qsoOEUiiSDhIbJk1yoympSyQi0isGZFJw9HB88FY0GI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=b7Z6EyXPTD/9sEhG7ZMPv/G6SLqjaEyvVLcpW6WQ4v4y+L/gnYXEFCPOBNeZbMrn0
-         G0ojKy7PtDG6l9oXwOFzMLQ5cJyanYybxC5fzWzv+6EipxpzdAkTf7MXci8LdOyG15
-         +rR9vk4b5/ybjgJauwqE0vcqa4yD1/XmO5CD8Ams=
-Received: by mail-ot1-f43.google.com with SMTP id i18so2408033ots.0;
-        Wed, 18 Nov 2020 08:50:45 -0800 (PST)
-X-Gm-Message-State: AOAM532FuLBvQ9qFSjcEuPBg6Vk2MYOV6LSgbqR0NPyNoSRnEAg1hfDs
-        qi+SJj/Yuus7GVKu5ttb/03wrfqNvBs/Omka6Gw=
-X-Google-Smtp-Source: ABdhPJxupkceoVI99EaTH/OeU3OUcnij4CgpA5a8Wi79SEyNJovflKu43G/vaNsBQP8FnFO82UaoBBmRkGjoFVc/aXo=
-X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr6434729otc.305.1605718244685;
- Wed, 18 Nov 2020 08:50:44 -0800 (PST)
+        id S1727986AbgKRQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:50:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727977AbgKRQut (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:50:49 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D379AC061A4D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:50:49 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id j5so1292588plk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:50:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G9I3t8aN7L1xly0yUdg8yWu3OFUJdCn4z7Buna0vemo=;
+        b=jkwC9oZ9Upku7sbUkXC7BIfgX2KZ0ZxyHa6bNFDCZYHvGnVO88kTnC0w4u/F4ezXnc
+         GREsN/hIh3RnrYa8SD6a6CDC7MAJu4ed+jIwT1rNlu0k8plP0MOlxSgBN1JzWmUewZep
+         fvMI1gACSgiaaDnX6igKVeag6vhyjjjsSGa7q/E0k/j04aT6VwIz+wlQ/FYSAx7bNqUj
+         ssOnPGUtQ+e1ISYv323ocUT9TNcNCN0ChCc11tGc6cWmjlzvFxFi8YjvV1G+u+9PQcan
+         GfOW3i++5NOzBPcvHLHyqTw5BRpaQGfh3JSfFl21svfNJbFlG5JAmExP38mfBSiNtcje
+         cJzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G9I3t8aN7L1xly0yUdg8yWu3OFUJdCn4z7Buna0vemo=;
+        b=ClP8rNprCDC/rsbnMFck1E8DudQf67/KBxBOGbbcLeRUU2H8Vi5BH4H10yGv02Ym9X
+         YOjwcVPbxjriy7CATH3JBsTCB+HNPlF87m56G4dfsnBl67mDIstgKFs/JcLL2x7NOpz5
+         l77v8WEO6swslx7qqm9QrysdraaqhAXgUSu312dE+GjJP4Ik7Dm0hyacs6TAB6TIIy4v
+         Qw7Oks2FeoXgsp0X+hc/YqU15fs2a5f28SbpI5PuMNZz+TmwJUTKIm+DBIBG9FknaEab
+         EkVClaGPxh1Up0/t+XT/MRij9/rcRBkPWbNMlql34ATUDIwtowsz/WTCkJw+gNrEwthN
+         ZxMw==
+X-Gm-Message-State: AOAM531MM5uABB63IApaDL6ihnTHxLtUdygKU/bDNVxnxb0s0onxoCBo
+        vu5R+XLxcfpsqFEM85UCD92ixS7D20aWLhcnW9591A==
+X-Google-Smtp-Source: ABdhPJz7vgjiZ81NHh1dkjauRy3xD7weGPoC85n8NibHpoDwygaoYq4lVfKSiolmozAPc2KrRuV7J9FbC0ZndFIPsJU=
+X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr736163pjj.101.1605718249147;
+ Wed, 18 Nov 2020 08:50:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118144617.986860-1-willemdebruijn.kernel@gmail.com>
- <20201118144617.986860-2-willemdebruijn.kernel@gmail.com> <CA+FuTSdFTDFwOVyws19CaAP_6+c5gTrvA0ybvDo3LJ-VhPz1eQ@mail.gmail.com>
-In-Reply-To: <CA+FuTSdFTDFwOVyws19CaAP_6+c5gTrvA0ybvDo3LJ-VhPz1eQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 18 Nov 2020 17:50:28 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a09jUv8YiuZAi5Q-SW4k20Pw0mXdHj9DVznbQ=Kxm2gig@mail.gmail.com>
-Message-ID: <CAK8P3a09jUv8YiuZAi5Q-SW4k20Pw0mXdHj9DVznbQ=Kxm2gig@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] epoll: add nsec timeout support with epoll_pwait2
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+References: <20201116175107.02db396d@gandalf.local.home> <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
+ <20201117142145.43194f1a@gandalf.local.home> <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+ <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 18 Nov 2020 08:50:37 -0800
+Message-ID: <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
+Subject: Re: violating function pointer signature
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>,
-        linux-man <linux-man@vger.kernel.org>
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 5:21 PM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
-> > diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-> > index 109e6681b8fa..9a4e8ec207fc 100644
-> > --- a/arch/x86/entry/syscalls/syscall_32.tbl
-> > +++ b/arch/x86/entry/syscalls/syscall_32.tbl
-> > @@ -447,3 +447,4 @@
-> >  440    i386    process_madvise         sys_process_madvise
-> >  441    i386    watch_mount             sys_watch_mount
-> >  442    i386    memfd_secret            sys_memfd_secret
-> > +443    i386    epoll_pwait2            sys_epoll_pwait2                compat_sys_epoll_pwait2
+On Wed, Nov 18, 2020 at 5:23 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> I should have caught this sooner, but this does not work as intended.
+> On Tue, Nov 17, 2020 at 03:34:51PM -0500, Steven Rostedt wrote:
 >
-> x86 will still call epoll_pwait2 with old_timespec32.
+> > > > Since all tracepoints callbacks have at least one parameter (__data), we
+> > > > could declare tp_stub_func as:
+> > > >
+> > > > static void tp_stub_func(void *data, ...)
+> > > > {
+> > > >   return;
+> > > > }
+> > > >
+> > > > And now C knows that tp_stub_func() can be called with one or more
+> > > > parameters, and had better be able to deal with it!
+> > >
+> > > AFAIU this won't work.
+> > >
+> > > C99 6.5.2.2 Function calls
+> > >
+> > > "If the function is defined with a type that is not compatible with the type (of the
+> > > expression) pointed to by the expression that denotes the called function, the behavior is
+> > > undefined."
+> >
+> > But is it really a problem in practice. I'm sure we could create an objtool
+> > function to check to make sure we don't break anything at build time.
 >
-> One approach is a separate epoll_pwait2_time64 syscall, similar to
-> ppoll_time64. But that was added to work around legacy 32-bit ppoll.
-> Not needed for a new API.
+> I think that as long as the function is completely empty (it never
+> touches any of the arguments) this should work in practise.
 >
-> In libc, ppoll_time64 is declared with type struct __timespec64. That
-> type is not defined in Linux uapi. Will need to look at this some
-> more.
+> That is:
+>
+>   void tp_nop_func(void) { }
 
-The libc __timespec64 corresponds to the __kernel_timespec64
-structure in uapi. It is defined to only have 'long' nanoseconds
-member because that's what c99 and posix require, but the bits
-are in the position that matches the lower 32 bits of the 64-bit
-tv_nsec in the kernel, and get_timespec64() performs the
-necessary conversion to either check or zero the upper bits.
+or `void tp_nop_func()` if you plan to call it with different
+parameter types that are all unused in the body.  If you do plan to
+use them, maybe a pointer to a tagged union would be safer?
 
-I think all you need in user space is to pass the timeout as a
-__timespec64 structure and add a conversion in the exported
-library interface.
+>
+> can be used as an argument to any function pointer that has a void
+> return. In fact, I already do that, grep for __static_call_nop().
+>
+> I'm not sure what the LLVM-CFI crud makes of it, but that's their
+> problem.
 
-       Arnd
+If you have instructions on how to exercise the code in question, we
+can help test it with CFI.  Better to find any potential issues before
+they get committed.
+-- 
+Thanks,
+~Nick Desaulniers
