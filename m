@@ -2,198 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F882B832E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B502B832F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgKRRir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:38:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55816 "EHLO mail.kernel.org"
+        id S1727232AbgKRRjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 12:39:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgKRRiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:38:46 -0500
-Received: from localhost (unknown [122.171.203.152])
+        id S1725943AbgKRRjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 12:39:02 -0500
+Received: from kernel.org (unknown [77.125.7.142])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 566C7248E4;
-        Wed, 18 Nov 2020 17:38:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F97E248CE;
+        Wed, 18 Nov 2020 17:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605721125;
-        bh=TJs6ufOKrYfPMympCMUx0YXX4b/lAEhbvsaPAVJ7nzU=;
+        s=default; t=1605721141;
+        bh=ect8hrurvHpqV7LsIdFQA4NZMDGMnFxigrdnNDKCjfQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dt8M0ohw8HXTxblHpQirtRUNfOvYLcfIGqCW5lQNXL4FC9zymrt5ZLGBD3jVU2ary
-         A4mVlPDZNSf4PcnyRzndgglOEs5MIV4e6nisXjNstGEY5jlwCbHQuRiHhgXTOBQgEa
-         8AJirs586mVufGxHNat+E0erKNZl5UcTbUopDIVs=
-Date:   Wed, 18 Nov 2020 23:08:40 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@intel.com, chuanhua.lei@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
-Subject: Re: [PATCH v9 2/2] Add Intel LGM SoC DMA support.
-Message-ID: <20201118173840.GW50232@vkoul-mobl>
-References: <cover.1605158930.git.mallikarjunax.reddy@linux.intel.com>
- <67be905aa3bcb9faac424f2a134e88d076700419.1605158930.git.mallikarjunax.reddy@linux.intel.com>
+        b=lM2rvn/2KA3q0c3yoB1RQpJ2Pi/bhIapgVQIJs4hSbc/RHw2YZ2WuqsSnI/FLJlxq
+         1rSENn6dcpe3NO1uO6q9LhD10fQj3HsfowIY7mjCmvOd1IIIiciEm1qyVMrqC6vJGs
+         4z1h6/eBUubqF2v4W/i1B9kvAWRdvEgdZqTeHTLU=
+Date:   Wed, 18 Nov 2020 19:38:54 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, anshuman.khandual@arm.com,
+        linuxarm@huawei.com
+Subject: Re: [PATCH] arm64: mm: add support for memmap kernel parameters
+Message-ID: <20201118173854.GA8537@kernel.org>
+References: <20201118063314.22940-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <67be905aa3bcb9faac424f2a134e88d076700419.1605158930.git.mallikarjunax.reddy@linux.intel.com>
+In-Reply-To: <20201118063314.22940-1-song.bao.hua@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-11-20, 13:38, Amireddy Mallikarjuna reddy wrote:
-> Add DMA controller driver for Lightning Mountain (LGM) family of SoCs.
+Hi Barry,
+
+On Wed, Nov 18, 2020 at 07:33:14PM +1300, Barry Song wrote:
+> memmap should be an useful kernel parameter which has been supported by
+> x86, mips and xtensa.
+
+Why is this parameter should be useful for ARM64? 
+My understanding is that it is required only to work around really
+broken bootloaders, isn't it?
+
+> This patch adds support for ARM64. At this stage,
+> the below two modes are supported only:
+> memmap=nn[KMG]@ss[KMG]
+> Force usage of a specific region of memory
 > 
-> The main function of the DMA controller is the transfer of data from/to any
-> peripheral to/from the memory. A memory to memory copy capability can also
-> be configured.
+> memmap=nn[KMG]$ss[KMG]
+> Region of memory to be reserved is from ss to ss+nn
 > 
-> This ldma driver is used for configure the device and channnels for data
-> and control paths.
+> If users set memmap=exactmap before memmap=nn[KMG]@ss[KMG], they will
+> get the exact memory specified by memmap=nn[KMG]@ss[KMG]. For example,
+> on one machine with 4GB memory, "memmap=exactmap memmap=1G@1G" will
+> make kernel use the memory from 1GB to 2GB only.
 > 
-> Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 > ---
-> v1:
-> - Initial version.
-
-You have a cover letter, use that to keep track of these changes
-
-> +++ b/drivers/dma/lgm/Kconfig
-> @@ -0,0 +1,9 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config INTEL_LDMA
-> +	bool "Lightning Mountain centralized low speed DMA and high speed DMA controllers"
-
-Do we have any other speeds :D
-
-> +++ b/drivers/dma/lgm/lgm-dma.c
-> @@ -0,0 +1,1742 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Lightning Mountain centralized low speed and high speed DMA controller driver
-> + *
-> + * Copyright (c) 2016 ~ 2020 Intel Corporation.
-
-I think you mean 2016 - 2020, a dash which refers to duration
-
-> +struct dw2_desc {
-> +	struct {
-> +		u32 len		:16;
-> +		u32 res0	:7;
-> +		u32 bofs	:2;
-> +		u32 res1	:3;
-> +		u32 eop		:1;
-> +		u32 sop		:1;
-> +		u32 c		:1;
-> +		u32 own		:1;
-> +	} __packed field;
-
-Another one, looks like folks adding dmaengine patches love this
-approach, second one for the day..
-
-Now why do you need the bit fields, why not use register defines and
-helpers in bitfield.h to help configure the fields See FIELD_GET,
-FIELD_PREP etc
-
-> +struct dma_dev_ops {
-> +	int (*device_alloc_chan_resources)(struct dma_chan *chan);
-> +	void (*device_free_chan_resources)(struct dma_chan *chan);
-> +	int (*device_config)(struct dma_chan *chan,
-> +			     struct dma_slave_config *config);
-> +	int (*device_pause)(struct dma_chan *chan);
-> +	int (*device_resume)(struct dma_chan *chan);
-> +	int (*device_terminate_all)(struct dma_chan *chan);
-> +	void (*device_synchronize)(struct dma_chan *chan);
-> +	enum dma_status (*device_tx_status)(struct dma_chan *chan,
-> +					    dma_cookie_t cookie,
-> +					    struct dma_tx_state *txstate);
-> +	struct dma_async_tx_descriptor *(*device_prep_slave_sg)
-> +		(struct dma_chan *chan, struct scatterlist *sgl,
-> +		unsigned int sg_len, enum dma_transfer_direction direction,
-> +		unsigned long flags, void *context);
-> +	void (*device_issue_pending)(struct dma_chan *chan);
-> +};
-
-Heh! why do you have a copy of dmaengine ops here?
-
-> +static int ldma_chan_desc_cfg(struct ldma_chan *c, dma_addr_t desc_base,
-> +			      int desc_num)
-> +{
-> +	struct ldma_dev *d = to_ldma_dev(c->vchan.chan.device);
+>  arch/arm64/mm/init.c | 59 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+> 
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 095540667f0f..f1c6bfdbc953 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -235,6 +235,65 @@ static int __init early_mem(char *p)
+>  }
+>  early_param("mem", early_mem);
+>  
+> +static int need_remove_real_memblock __initdata;
 > +
-> +	if (!desc_num) {
-> +		dev_err(d->dev, "Channel %d must allocate descriptor first\n",
-> +			c->nr);
-> +		return -EINVAL;
+> +static void __init parse_memmap_one(char *p)
+> +{
+> +	char *oldp;
+> +	unsigned long start_at, mem_size;
+> +
+> +	if (!p)
+> +		return;
+> +
+> +	if (!strncmp(p, "exactmap", 8)) {
+> +		need_remove_real_memblock = 1;
+> +		return;
 > +	}
 > +
-> +	if (desc_num > DMA_MAX_DESC_NUM) {
-> +		dev_err(d->dev, "Channel %d descriptor number out of range %d\n",
-> +			c->nr, desc_num);
-> +		return -EINVAL;
+> +	oldp = p;
+> +	mem_size = memparse(p, &p);
+> +	if (p == oldp)
+> +		return;
+> +
+> +	switch (*p) {
+> +	case '@':
+> +		start_at = memparse(p + 1, &p);
+> +		/*
+> +		 * use the exactmap defined by nn[KMG]@ss[KMG], remove
+> +		 * memblock populated by DT etc.
+> +		 */
+> +		if (need_remove_real_memblock) {
+> +			need_remove_real_memblock = 0;
+> +			memblock_remove(0, ULLONG_MAX);
+> +		}
+> +		memblock_add(start_at, mem_size);
+> +		break;
+> +	case '$':
+> +		start_at = memparse(p + 1, &p);
+> +		memblock_reserve(start_at, mem_size);
+> +		break;
+> +	default:
+> +		pr_warn("Unrecognized memmap syntax: %s\n", p);
+> +		break;
+> +	}
+> +}
+> +
+> +static int __init parse_memmap_opt(char *str)
+> +{
+> +	while (str) {
+> +		char *k = strchr(str, ',');
+> +
+> +		if (k)
+> +			*k++ = 0;
+> +
+> +		parse_memmap_one(str);
+> +		str = k;
 > +	}
 > +
-> +	ldma_chan_desc_hw_cfg(c, desc_base, desc_num);
+> +	return 0;
+> +}
+> +early_param("memmap", parse_memmap_opt);
 > +
-> +	c->flags |= DMA_HW_DESC;
-> +	c->desc_cnt = desc_num;
-> +	c->desc_phys = desc_base;
-
-So you have a custom API which is used to configure this flag, a number
-and an address. The question is why, can you please help explain this?
-
-> +static void dma_issue_pending(struct dma_chan *chan)
-> +{
-> +	struct ldma_chan *c = to_ldma_chan(chan);
-> +	struct ldma_dev *d = to_ldma_dev(c->vchan.chan.device);
-> +	unsigned long flags;
-> +
-> +	if (d->ver == DMA_VER22) {
-
-why is this specific to this version?
-
-> +static enum dma_status
-> +dma_tx_status(struct dma_chan *chan, dma_cookie_t cookie,
-> +	      struct dma_tx_state *txstate)
-> +{
-> +	struct ldma_chan *c = to_ldma_chan(chan);
-> +	struct ldma_dev *d = to_ldma_dev(c->vchan.chan.device);
-> +	enum dma_status status = DMA_COMPLETE;
-> +
-> +	if (d->ver == DMA_VER22)
-> +		status = dma_cookie_status(chan, cookie, txstate);
-
-so for non DMA_VER22 status is always complete, even if I may havent
-invoked issue_pending() right!
-
-> new file mode 100644
-> index 000000000000..6942e0ef0977
-> --- /dev/null
-> +++ b/include/linux/dma/lgm_dma.h
-> @@ -0,0 +1,27 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2016 ~ 2020 Intel Corporation.
-> + */
-> +#ifndef LGM_DMA_H
-> +#define LGM_DMA_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/dmaengine.h>
-> +
-> +/*!
-> + * \fn int intel_dma_chan_desc_cfg(struct dma_chan *chan, dma_addr_t desc_base,
-> + *                                 int desc_num)
-> + * \brief Configure low level channel descriptors
-> + * \param[in] chan   pointer to DMA channel that the client is using
-> + * \param[in] desc_base   descriptor base physical address
-> + * \param[in] desc_num   number of descriptors
-> + * \return   0 on success
-> + * \return   kernel bug reported on failure
-
-See Documentation/process/coding-style.rst!
+>  static int __init early_init_dt_scan_usablemem(unsigned long node,
+>  		const char *uname, int depth, void *data)
+>  {
+> -- 
+> 2.25.1
+> 
 
 -- 
-~Vinod
+Sincerely yours,
+Mike.
