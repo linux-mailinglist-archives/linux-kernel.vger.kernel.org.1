@@ -2,194 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05F12B7FE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A855E2B7FE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbgKRO53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 09:57:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727185AbgKRO52 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:57:28 -0500
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A78C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 06:57:28 -0800 (PST)
-Received: by mail-oo1-xc44.google.com with SMTP id t142so483127oot.7
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 06:57:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yC56/5eovc0p2taLgfqDLm/bYdGb/IRzX62KgJk5SpM=;
-        b=jF+qgsgTVlSYxXl/tWTgZSYUN97wQ2dUy7YOqb28eaxPgemF+rA0k8UMEKyJCoOYDA
-         J8cKy2KKGPfAHU7+pAPLD1UySogMBxhwfePjp0t76OWc8/k323xSr7oA5lHcijarxDpK
-         LN9xAIw6FykKwCO6DlGZhxyC86aY4gEimCm9QoGkTm2M7wsANTrcqHm4fU9EF+KWO8Bm
-         8j2TiyH04trSxW9Ly6JvhNMZ2Mr88S4auHPFg+KosQt/6d9VkogruNP2/cKQtZbdQUgS
-         Xkatd15v6Q4SNuMeaSQ3oS5FHpLD3sNxpOP3di4NTIxMcm46u4+yFqfT5HhBCWoP8h+s
-         bdlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yC56/5eovc0p2taLgfqDLm/bYdGb/IRzX62KgJk5SpM=;
-        b=GYYD+7fMlT3uffy4yJYERVBdtCCfZIgkqaihGQG8H2mD7RAjmaqTVBC2ANHVrcTuvb
-         wPQtky5LGRrEStNI61fujbIbYMj1pWmZL74lWeTN4cwIVV0DV4osLuRn9JxpVjt/hwLP
-         uPYcBmPK/rSdp2/XRXhq4T4PAD+wCRl0LAhAWhyIr6iUxo/KMQD7OPsSUvmQbRxbnuoH
-         vXus0Fz9C+t2tJ0K/c8eiPTHiykbfn2k+j5d2ou0hJMKa4Pa2ux4SSg/UoMncm58/d8v
-         YAWk76AkLGQwHxBmXLb0C774UFFZo8Do3pVwD+jabIuG5/7pMufcfzFE1aYgSk1416m6
-         QEaQ==
-X-Gm-Message-State: AOAM5321ykAmyvyPrqacAZIBYxm5Wlg5dWrGLqbRUfDfUcmo93VyImJG
-        j3h29Zq+AIHNYq4rXrbhwIJMNQ==
-X-Google-Smtp-Source: ABdhPJwjzsi8JVKzP3O49BZ1na7F8ToQV6WP4vXzapBZNLXWhmysOVib3zmuwcQczH2gos1EtaMabA==
-X-Received: by 2002:a4a:c4c7:: with SMTP id g7mr6558615ooq.50.1605711447885;
-        Wed, 18 Nov 2020 06:57:27 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x9sm6553416otk.9.2020.11.18.06.57.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 06:57:27 -0800 (PST)
-Date:   Wed, 18 Nov 2020 08:57:25 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, mka@chromium.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        bgodavar@codeaurora.org, rjliao@codeaurora.org,
-        hbandi@codeaurora.org, abhishekpandit@chromium.org
-Subject: Re: [PATCH v2] Bluetooth: btqca: Add support to read FW build
- version for WCN3991 BTSoC
-Message-ID: <20201118145725.GI8532@builder.lan>
-References: <1605703943-25980-1-git-send-email-gubbaven@codeaurora.org>
+        id S1726979AbgKRO6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 09:58:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726299AbgKRO6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 09:58:16 -0500
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C97A24727;
+        Wed, 18 Nov 2020 14:58:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605711495;
+        bh=U61exPEFiflzmEBPAelqp9n9O1THMYeJlPv88dcYPKw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0TFyS1hNvwAurDa+AkI64wQL1jW8vBl5i0OMXrErLxK2tyV22mIibMBrDYff3vxTg
+         IIB5rrtiEL5GH5FegXQkbqPFoPT8t7CcUn4vy/lRbtO8/aCph4ezlXXRtlp+d7rL1d
+         xA411WdqRHgsJw2r65gQgDITIu9qSaUzBWUAcgos=
+Received: by mail-ot1-f42.google.com with SMTP id y22so1975494oti.10;
+        Wed, 18 Nov 2020 06:58:15 -0800 (PST)
+X-Gm-Message-State: AOAM531yDB9/A9qwZ/QdA3h1bQ9SxXkoGcVSyywWBZeWdCxqNJRzcoXv
+        00oUz8SdlfGz5wt9n8QdM5PAGn3ZGo6rNjwVxA==
+X-Google-Smtp-Source: ABdhPJxOO1hc63MJavyeihL13HaVP57AoIDiLqfRBH5CR+RvjmUeHJCy5ZBMuIAL2wK2Xfna1uIqcHsOq5/yc4UFXvw=
+X-Received: by 2002:a05:6830:2259:: with SMTP id t25mr6913606otd.192.1605711494499;
+ Wed, 18 Nov 2020 06:58:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605703943-25980-1-git-send-email-gubbaven@codeaurora.org>
+References: <20201111152523.76254-1-aford173@gmail.com> <20201111191809.GA1859246@bogus>
+ <CAHCN7x+w3wpELWHVSd1-U38N+4TEDKWDRxzXEtDX2svkrTGJCw@mail.gmail.com>
+ <CAL_JsqK580zBfPfPHF2pi52dhOkgf0Ovt8TOxfCjYz0Y54pQzA@mail.gmail.com> <CAHCN7xLRaB49n=Bja_aCZD_rUaD_A54_pL5ApC4Fh8Q8+mhwdQ@mail.gmail.com>
+In-Reply-To: <CAHCN7xLRaB49n=Bja_aCZD_rUaD_A54_pL5ApC4Fh8Q8+mhwdQ@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 18 Nov 2020 08:58:03 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+r0oNsX-Am5LWGj1PpG6Xfeb9NmnFk3-82bd94C1i+fQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+r0oNsX-Am5LWGj1PpG6Xfeb9NmnFk3-82bd94C1i+fQ@mail.gmail.com>
+Subject: Re: [PATCH V4] dt-bindings: soc: imx: Add binding doc for spba bus
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Adam Ford-BE <aford@beaconembedded.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 18 Nov 06:52 CST 2020, Venkata Lakshmi Narayana Gubba wrote:
+On Wed, Nov 18, 2020 at 6:13 AM Adam Ford <aford173@gmail.com> wrote:
+>
+> On Thu, Nov 12, 2020 at 7:52 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Thu, Nov 12, 2020 at 5:44 AM Adam Ford <aford173@gmail.com> wrote:
+> > >
+> > > On Wed, Nov 11, 2020 at 2:18 PM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Wed, 11 Nov 2020 09:25:23 -0600, Adam Ford wrote:
+> > > > > Add binding doc for fsl,spba-bus.
+> > > > >
+> > > > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > > > ---
+> > > > > make dt_binding_check showed no errors if I did this right.
+> > > > >
+> > > > > V4:  Remove an accidental makefile change
+> > > > >      Move type:object under additional properties
+> > > > >
+> > > > > V3:  Rebase sample from aips-bus example
+> > > > >      Split off from series adding i.MX8M Nano functions to reduce noise
+> > > > >
+> > > > > V2:  Attempted to update yaml from feedback
+> > > > >
+> > > >
+> > > >
+> > > > My bot found errors running 'make dt_binding_check' on your patch:
+> > > >
+> > > > yamllint warnings/errors:
+> > > >
+> > > > dtschema/dtc warnings/errors:
+> > > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml: bus@30000000: reg: [[805306368, 1048576]] is not of type 'object'
+> > > >         From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+> > > >
+> > >
+> > > Rob,
+> > >
+> > > Can you give me a pointer on what this message is saying?  I don't
+> > > undertsand the YAML language, and I cannot get my machine to generate
+> > > the same messages you're seeing.
+> >
+> > 'reg' is not documented, so it's defaulting to the schema in
+> > 'additionalProperties' which says anything else has to be a node
+> > (which is an 'object' in json-schema).
+> >
+> > > >
+> > > > See https://patchwork.ozlabs.org/patch/1398351
+> > > >
+> > > > The base for the patch is generally the last rc1. Any dependencies
+> > > > should be noted.
+> > > >
+> > > > If you already ran 'make dt_binding_check' and didn't see the above
+> > > > error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> > > > date:
+> > > >
+> > > > pip3 install dtschema --upgrade
+> > >
+> > > I have installed yamllint, and I have run the above line, but when I
+> > > run make dt_binding_check it fails to finish script even before I add
+> > > this new binding.  If I revert the Makefile back to before the
+> > > implementation of yamllint, it works, but doesn't show the error.
+> > > When I restore the Makefile, it runs but it doesn't show the error.
+> > > Once I do a make clean, and run the dt_binding_check again, it fails
+> > > to finish with the following error
+> > >
+> > > make[1]: *** [Documentation/devicetree/bindings/Makefile:59:
+> > > Documentation/devicetree/bindings/processed-schema-examples.json]
+> > > Error 123
+> > >
+> > > It appears as if the processed-schema-examples.json is not generated at all.
+> > >
+> > > When I revert back to the older makefile, it appears that file is
+> > > generated, but when I restore the makefile to the current version and
+> > > run it again, it doesn't show the dtschema warnings/errors you see.
+> > > I am guessing it's because the processed-schema-examples.json isn't
+> > > being generated correctly after I run make clean.
+> > >
+> > > Do you have any ideas what might be missing from my build machine?
+> >
+> > What tree? v5.10-rc3 landed some changes that shouldn't have gone in
+> > and broke dt_binding_check. In any case, you can use 'make -k' to work
+> > around any unrelated failure.
+>
+> Rob,
+>
+> I went and pulled a clean copy of 5.10-RC1 and did "make
+> dt_binding_check -k" without adding my patch or modifying the branch
+> in any way.
 
-> Add support to read FW build version for WCN3991 BTSoC
+Oh right, since it's 1 rule now, -k isn't going to help. Use -rc2
+which has fixes needed. Or comment out running yamllint in
+.../bindings/Makefile
 
-Your commit message doesn't describe why you need/want this? Is it
-somehow required for BT to come up or is it simply 57 lines of code to
-print a line of build info in the kernel log?
+I'm going to change it to ignore yamllint errors.
 
-
-
-Note that most people reading the kernel log won't care about what
-firmware version their BT chip is running, so if it's only for your own
-debugging purpose I would prefer if you make this available in sysfs or
-debugfs.
-
-Regards,
-Bjorn
-
-> 
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-> ---
->  drivers/bluetooth/btqca.c | 57 +++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/bluetooth/btqca.h |  3 +++
->  2 files changed, 60 insertions(+)
-> 
-> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-> index ce9dcff..dfd7ff7 100644
-> --- a/drivers/bluetooth/btqca.c
-> +++ b/drivers/bluetooth/btqca.c
-> @@ -101,6 +101,56 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
->  }
->  EXPORT_SYMBOL_GPL(qca_read_soc_version);
->  
-> +static int qca_read_fw_build_info(struct hci_dev *hdev)
-> +{
-> +	struct sk_buff *skb;
-> +	struct edl_event_hdr *edl;
-> +	char cmd;
-> +	int err = 0;
-> +	char build_label[QCA_FW_BUILD_VER_LEN];
-> +	int build_lbl_len;
-> +
-> +	bt_dev_dbg(hdev, "QCA read fw build info");
-> +
-> +	cmd = EDL_GET_BUILD_INFO_CMD;
-> +	skb = __hci_cmd_sync_ev(hdev, EDL_PATCH_CMD_OPCODE, EDL_PATCH_CMD_LEN,
-> +				&cmd, HCI_EV_VENDOR, HCI_INIT_TIMEOUT);
-> +	if (IS_ERR(skb)) {
-> +		err = PTR_ERR(skb);
-> +		bt_dev_err(hdev, "Reading QCA fw build info failed (%d)",
-> +			   err);
-> +		return err;
-> +	}
-> +
-> +	edl = (struct edl_event_hdr *)(skb->data);
-> +	if (!edl) {
-> +		bt_dev_err(hdev, "QCA read fw build info with no header");
-> +		err = -EILSEQ;
-> +		goto out;
-> +	}
-> +
-> +	if (edl->cresp != EDL_CMD_REQ_RES_EVT ||
-> +	    edl->rtype != EDL_GET_BUILD_INFO_CMD) {
-> +		bt_dev_err(hdev, "QCA Wrong packet received %d %d", edl->cresp,
-> +			   edl->rtype);
-> +		err = -EIO;
-> +		goto out;
-> +	}
-> +
-> +	build_lbl_len = edl->data[0];
-> +	memcpy(build_label, &edl->data[1], build_lbl_len);
-> +	*(build_label + build_lbl_len) = '\0';
-> +
-> +	bt_dev_info(hdev, "BT SoC FW Build info: %s", build_label);
-> +
-> +out:
-> +	kfree_skb(skb);
-> +	if (err)
-> +		bt_dev_err(hdev, "QCA read fw build info failed (%d)", err);
-> +
-> +	return err;
-> +}
-> +
->  static int qca_send_reset(struct hci_dev *hdev)
->  {
->  	struct sk_buff *skb;
-> @@ -520,6 +570,13 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
->  		return err;
->  	}
->  
-> +	if (soc_type == QCA_WCN3991) {
-> +		/* get fw build info */
-> +		err = qca_read_fw_build_info(hdev);
-> +		if (err < 0)
-> +			return err;
-> +	}
-> +
->  	bt_dev_info(hdev, "QCA setup on UART is completed");
->  
->  	return 0;
-> diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
-> index d81b74c..375c7fc 100644
-> --- a/drivers/bluetooth/btqca.h
-> +++ b/drivers/bluetooth/btqca.h
-> @@ -11,6 +11,7 @@
->  #define EDL_PATCH_CMD_LEN		(1)
->  #define EDL_PATCH_VER_REQ_CMD		(0x19)
->  #define EDL_PATCH_TLV_REQ_CMD		(0x1E)
-> +#define EDL_GET_BUILD_INFO_CMD		(0x20)
->  #define EDL_NVM_ACCESS_SET_REQ_CMD	(0x01)
->  #define MAX_SIZE_PER_TLV_SEGMENT	(243)
->  #define QCA_PRE_SHUTDOWN_CMD		(0xFC08)
-> @@ -34,6 +35,8 @@
->  #define QCA_HCI_CC_OPCODE		0xFC00
->  #define QCA_HCI_CC_SUCCESS		0x00
->  
-> +#define QCA_FW_BUILD_VER_LEN		255
-> +
->  enum qca_baudrate {
->  	QCA_BAUDRATE_115200 	= 0,
->  	QCA_BAUDRATE_57600,
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+>
+> After a bunch of DTEX, then starts to give feedback from various yaml
+> files like wrong intendentation, etc.  I can give you a larger log
+> dump if you want.
+>
+> Then I get the error message again:
+> ./Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml:35:15:
+> [warning] wrong indentation: expected 16 but found 14 (indentation)
+> ./Documentation/devicetree/bindings/mmc/arasan,sdhci.yaml:38:15:
+> [warning] wrong indentation: expected 16 but found 14 (indentation)
+> ./Documentation/devicetree/bindings/eeprom/at25.yaml:84:8: [warning]
+> wrong indentation: expected 6 but found 7 (indentation)
+> ./Documentation/devicetree/bindings/eeprom/at25.yaml:90:8: [warning]
+> wrong indentation: expected 6 but found 7 (indentation)
+> make[1]: *** [Documentation/devicetree/bindings/Makefile:59:
+> Documentation/devicetree/bindings/processed-schema-examples.json]
+> Error 123
+> make[1]: Target '__build' not remade because of errors.
+> make: *** [Makefile:1364: dt_binding_check] Error 2
+>
+> It appears that
+> Documentation/devicetree/bindings/processed-schema-examples.json was
+> not generated.
+>
+> I went through the writing-schema.rst file to see what/if anything I
+> am missing, but as far as I can tell, I have everything installed.
+> I did " pip3 install
+> git+https://github.com/devicetree-org/dt-schema.git@master" and "
+> "apt-get install libyaml-dev"
+>
+> I am running Ubuntu 20.04 if that helps.
+>
+> thanks for any suggestions you might have.
+>
+> adam
+>
+> >
+> > Rob
