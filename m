@@ -2,64 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91F22B8643
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DD12B8646
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbgKRVFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:05:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57042 "EHLO mail.kernel.org"
+        id S1726683AbgKRVHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:07:51 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:50882 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726316AbgKRVFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:05:19 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726340AbgKRVHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 16:07:50 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605733670; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=zaEAA7Xe0Rw95/owPckWHhoYL2cO/XrfLoPj7fTl5ao=; b=w7vSV2nvCZFsGmYFGolkoOsEDmgtmCrdydgT+EdI31AMKnJmAYsNdRnjA4+jMmbnJF2NSUBP
+ vnD/Qq9mRaByq2OQcFMkD+Bwn1rdVz496DCdmWwwE+1rt3rBQdaH9laOHrA44QwrW3EvTE3i
+ Aj7f6I8N1Yj3nxVYc1IAo6Rluos=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
+ 5fb58d20a5a29b56a1ab0e1e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 21:07:44
+ GMT
+Sender: mdtipton=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8827BC433ED; Wed, 18 Nov 2020 21:07:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.159] (ip70-179-20-127.sd.sd.cox.net [70.179.20.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BE9322201;
-        Wed, 18 Nov 2020 21:05:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605733518;
-        bh=5C5bEY+DL1ajImtxJCjy6ztNOGvMs4VuL3KEnsvaNuM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=S7vc3UyU7jkYzPtyuPMZfQxF2kmU3r/lzlPDcchA+1j/P0sSl/eNsttrf+ByA3JP6
-         uwnMU2iuy7rqXDGfdm25JP5uP204UG9k+imVWjbMi+haLlDOaWHmxPlzSk0ZTk+hPK
-         ZtkISZMA42yM2mS3DkKumxgXbSZxfAgin69KZFFc=
-Date:   Wed, 18 Nov 2020 15:05:16 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Guilherme Piccoli <gpiccoli@canonical.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>, lukas@wunner.de,
-        linux-pci@vger.kernel.org, Pingfan Liu <kernelfans@gmail.com>,
-        andi@firstfloor.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Baoquan He <bhe@redhat.com>, x86@kernel.org,
-        Sinan Kaya <okaya@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Dave Young <dyoung@redhat.com>,
-        Gavin Guo <gavin.guo@canonical.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Guowen Shan <gshan@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dan Streetman <ddstreet@canonical.com>,
-        Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
-Message-ID: <20201118210516.GA76543@bjorn-Precision-5520>
+        (Authenticated sender: mdtipton)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AD8ACC433ED;
+        Wed, 18 Nov 2020 21:07:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AD8ACC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mdtipton@codeaurora.org
+Subject: Re: [PATCH v2] interconnect: qcom: qcs404: Remove GPU and display RPM
+ IDs
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        bjorn.andersson@linaro.org, linux-pm@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201118111044.26056-1-georgi.djakov@linaro.org>
+From:   Mike Tipton <mdtipton@codeaurora.org>
+Message-ID: <00368490-8e55-2d21-2150-bc80f63dedf9@codeaurora.org>
+Date:   Wed, 18 Nov 2020 13:07:42 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHD1Q_zS9Hs8mUsm=q0Ei0kQ+y+wQhkroD+M2eCPKo2xLO6hBw@mail.gmail.com>
+In-Reply-To: <20201118111044.26056-1-georgi.djakov@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 09:04:07AM -0300, Guilherme Piccoli wrote:
+On 11/18/2020 3:10 AM, Georgi Djakov wrote:
+> The following errors are noticed during boot on a QCS404 board:
+> [    2.926647] qcom_icc_rpm_smd_send mas 6 error -6
+> [    2.934573] qcom_icc_rpm_smd_send mas 8 error -6
+> 
+> These errors show when we try to configure the GPU and display nodes.
+> Since these particular nodes aren't supported on RPM and are purely
+> local, we should just change their mas_rpm_id to -1 to avoid any
+> requests being sent for these master IDs.
+> 
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 
-> Also, taking here the opportunity to clarify my understanding about
-> the limitations of that approach: Bjorn, in our reproducer machine we
-> had 3 parents in the PCI tree (as per lspci -t), 0000:00, 0000:ff and
-> 0000:80 - are those all under "segment 0" as per your verbiage?
+Reviewed-by: Mike Tipton <mdtipton@codeaurora.org>
 
-Yes.  The "0000" is the PCI segment (or "domain" in the Linux PCI core).
-It's common on x86 to have multiple host bridges in segment 0000.
+> ---
+> 
+> v2:
+> * Keep the nodes and just set the IDs to -1, as suggested by Mike.
+> 
+> v1: http://lore.kernel.org/r/20201111100734.307-1-georgi.djakov@linaro.org
+> 
+>   drivers/interconnect/qcom/qcs404.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/interconnect/qcom/qcs404.c b/drivers/interconnect/qcom/qcs404.c
+> index d4769a5ea182..9820709b43db 100644
+> --- a/drivers/interconnect/qcom/qcs404.c
+> +++ b/drivers/interconnect/qcom/qcs404.c
+> @@ -157,8 +157,8 @@ struct qcom_icc_desc {
+>   	}
+>   
+>   DEFINE_QNODE(mas_apps_proc, QCS404_MASTER_AMPSS_M0, 8, 0, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+> -DEFINE_QNODE(mas_oxili, QCS404_MASTER_GRAPHICS_3D, 8, 6, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+> -DEFINE_QNODE(mas_mdp, QCS404_MASTER_MDP_PORT0, 8, 8, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+> +DEFINE_QNODE(mas_oxili, QCS404_MASTER_GRAPHICS_3D, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+> +DEFINE_QNODE(mas_mdp, QCS404_MASTER_MDP_PORT0, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+>   DEFINE_QNODE(mas_snoc_bimc_1, QCS404_SNOC_BIMC_1_MAS, 8, 76, -1, QCS404_SLAVE_EBI_CH0);
+>   DEFINE_QNODE(mas_tcu_0, QCS404_MASTER_TCU_0, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+>   DEFINE_QNODE(mas_spdm, QCS404_MASTER_SPDM, 4, -1, -1, QCS404_PNOC_INT_3);
+> 
