@@ -2,63 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3542B7B77
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41F22B7B83
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727617AbgKRKga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:36:30 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7555 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726077AbgKRKga (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:36:30 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CbfNs4hpNzhZhj;
-        Wed, 18 Nov 2020 18:36:13 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Wed, 18 Nov 2020
- 18:36:24 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <shuah@kernel.org>, <pintu.ping@gmail.com>
-CC:     <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] android/ion: fix error return code in opensocket()
-Date:   Wed, 18 Nov 2020 18:39:18 +0800
-Message-ID: <20201118103918.58477-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726300AbgKRKlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:41:11 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:49773 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725497AbgKRKlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 05:41:11 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CbfVY2vL1z9s1l;
+        Wed, 18 Nov 2020 21:41:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1605696069;
+        bh=SCySA/wn6QQF8qPRAczBg9qAxU0dJBy6SjnKwYcAFGQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jANG97vukQgf5/0I8/IZkFDiOEvwvgf8J55/yNiViRVFQf4G94vnDHIsee1im0djA
+         cXn6TSmyek6cfsdvfYJLvQ3KxOyBE0tIcWnMgd69sR9NVO439Fk6D6ZGf9esvkKKs4
+         F5PcAZe2ZaJuHvBGAMHFLovhzyPCfNDlbVycgBRiv7Vh+XFjbTapggi5y6SQd73Fo3
+         Ij7OC/Kscd5W9owY64mUggTNirgwIUVD0GtyjT0urMOek123d5NXSV0DDbZuBapdXM
+         0nbcllckktj3H+Hbi+FCiQWQRxkoIf+k0mnfsw32U8vCUZl1UEpAoRd/DrXY8q7bVY
+         t7x5fmamjOfNQ==
+Date:   Wed, 18 Nov 2020 21:41:07 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mhi tree
+Message-ID: <20201118214107.08eb9b7b@canb.auug.org.au>
+In-Reply-To: <20201118093900.GD3286@work>
+References: <20201117151225.6a50abf8@canb.auug.org.au>
+        <20201117042359.GB7787@work>
+        <20201118153912.1decf6cf@canb.auug.org.au>
+        <20201118154500.127aaba6@canb.auug.org.au>
+        <20201118155128.64c97667@canb.auug.org.au>
+        <20201118050640.GA3286@work>
+        <20201118093900.GD3286@work>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/_WFM473AmapmYpnSN35ey7G";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+--Sig_/_WFM473AmapmYpnSN35ey7G
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 47a18c42d992 ("android/ion: userspace test utility for ion buffer sharing")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- tools/testing/selftests/android/ion/ipcsocket.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Hi Manivannan,
 
-diff --git a/tools/testing/selftests/android/ion/ipcsocket.c b/tools/testing/selftests/android/ion/ipcsocket.c
-index 7dc521002095..268e6b610357 100644
---- a/tools/testing/selftests/android/ion/ipcsocket.c
-+++ b/tools/testing/selftests/android/ion/ipcsocket.c
-@@ -28,8 +28,9 @@ int opensocket(int *sockfd, const char *name, int connecttype)
- 	}
- 
- 	*sockfd = ret;
--	if (setsockopt(*sockfd, SOL_SOCKET, SO_REUSEADDR,
--		(char *)&temp, sizeof(int)) < 0) {
-+	ret = setsockopt(*sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)&temp,
-+			 sizeof(int))
-+	if (ret < 0) {
- 		fprintf(stderr, "<%s>: Failed setsockopt: <%s>\n",
- 		__func__, strerror(errno));
- 		goto err;
--- 
-2.17.1
+On Wed, 18 Nov 2020 15:09:00 +0530 Manivannan Sadhasivam <manivannan.sadhas=
+ivam@linaro.org> wrote:
+>
+> Patch applied to immutable branch and merged into mhi-next. Now you can
+> remove the fix patch.
 
+Thanks for letting me know.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/_WFM473AmapmYpnSN35ey7G
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+0+kMACgkQAVBC80lX
+0GyBHQgAmc2nI2PQleoLzKs7OS9dzIV2YNLqVrGIV+siLZDW6Z98VpELec7tzwiy
+xV5TuNfk8okk4Y0PYpTdn1SAv37EpXOYdJbf4lYDeetS+fMPeOXvYl1Wqcr5JLX1
+zTD0Ps1SVW25R/dtcr4u9Sl/bSxxQRT4/ECfy0Exvq61OHjnFaTh8JBKKiFRC5uQ
+GkYnr4bLv7va6IRinkT1M5i/vpllVM/xP8mXVQpj503FO19MO79MZjOBw3AWX9h0
+ph0t0ImnNeLT2UPth430GaYVPNuI59dSctZ12uj9wlb+mhyN/+BXM56XWz4tIcSF
+4VbW5gTM/zPWxLOLrHOYGuNx41JmiQ==
+=fKPR
+-----END PGP SIGNATURE-----
+
+--Sig_/_WFM473AmapmYpnSN35ey7G--
