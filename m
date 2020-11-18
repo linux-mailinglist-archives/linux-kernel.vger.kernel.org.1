@@ -2,130 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA592B733F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7767B2B733B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728918AbgKRAkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:40:09 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40172 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725767AbgKRAkH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727773AbgKRAkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 17 Nov 2020 19:40:07 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AI0VfXK091463;
-        Tue, 17 Nov 2020 19:39:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=cCZ/NzGVtH+YqDn1ti91oWtrqNDR6yLpF+Fxsawg+qs=;
- b=TR9E9G8R12jwsHTKvingo5NfqbsmOOXxJK3ClOD/0GzUdE+YoiQAbirpbd2Yx3ztnlof
- qtUhq8bDG7dgIayzE+QosCKzj5Y86dNFIzscKGo2tlSXLG8KSAy50IjoPFCapXtrWRcf
- 9wQIZqExFGp5WL9/DQ9n0YmYO+ShcDnPpjBNZRiRKUMdG20VoF+/zjs9LpTQYmtV5YW+
- SYheX2wm1FMvBUvpkk8FCI7VDDAEMHEF2o8BqyU3wszuXg0+uhAt2v8NiHgmXkXQ967B
- cBJjBFFj8CLa5Iw2rJGQir4UwLcWOSUMdzKw9O81xd1/twsLG50Aj/4V2IiHcvQGS2Yj PA== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34veevmd65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 19:39:58 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AI0RhJp029550;
-        Wed, 18 Nov 2020 00:39:58 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma03dal.us.ibm.com with ESMTP id 34t6v9gwkd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Nov 2020 00:39:58 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AI0dv9s64881066
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Nov 2020 00:39:57 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 383C628059;
-        Wed, 18 Nov 2020 00:39:57 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C7CB228058;
-        Wed, 18 Nov 2020 00:39:55 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.65.230.183])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Nov 2020 00:39:54 +0000 (GMT)
-Subject: Re: [PATCH 4/6] ibmvfc: add FC payload retrieval routines for
- versioned vfcFrames
-To:     Brian King <brking@linux.vnet.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201112010442.102589-1-tyreld@linux.ibm.com>
- <20201112010442.102589-4-tyreld@linux.ibm.com>
- <9e38f449-d2e6-6408-4fef-cfb5351393cc@linux.vnet.ibm.com>
- <a829840c-6f39-2901-4cdc-9df1d83f3196@linux.vnet.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <8c13e026-b496-d3bd-8d8d-8a4fd607b43a@linux.ibm.com>
-Date:   Tue, 17 Nov 2020 16:39:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+Received: from mail.kernel.org ([198.145.29.99]:59344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727105AbgKRAkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 19:40:06 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605660006;
+        bh=go9oetv/NnAHIMcevcbrihVwJOjTRqpZY5jHueeHVSU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KgIbWTW7EjSKTjeBcWPeGnZJExVqyn1eLakhTA62HnHfS15L8tfxcWrfyqSM60f/v
+         qesjHEEsZimaDsO7L1KOiT8ASMhdI3PZwGLIfF5VCp7wSPqSFlIWPy+jX7gQaEEVNS
+         zyrb9ic3+ftVwe1bou4JWUI3gEm6Q/p7RIvjy6/A=
 MIME-Version: 1.0
-In-Reply-To: <a829840c-6f39-2901-4cdc-9df1d83f3196@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_15:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- priorityscore=1501 adultscore=0 lowpriorityscore=0 spamscore=0
- phishscore=0 malwarescore=0 impostorscore=0 mlxlogscore=999 clxscore=1015
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170179
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v4 1/2] bpf: Add bpf_bprm_opts_set helper
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160566000595.20766.10496873955506140440.git-patchwork-notify@kernel.org>
+Date:   Wed, 18 Nov 2020 00:40:05 +0000
+References: <20201117232929.2156341-1-kpsingh@chromium.org>
+In-Reply-To: <20201117232929.2156341-1-kpsingh@chromium.org>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kafai@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, revest@chromium.org,
+        jackmanb@chromium.org, middelin@google.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/20 2:21 PM, Brian King wrote:
-> On 11/17/20 4:14 PM, Brian King wrote:
->> On 11/11/20 7:04 PM, Tyrel Datwyler wrote:
->>> The FC iu and response payloads are located at different offsets
->>> depending on the ibmvfc_cmd version. This is a result of the version 2
->>> vfcFrame definition adding an extra 64bytes of reserved space to the
->>> structure prior to the payloads.
->>>
->>> Add helper routines to determine the current vfcFrame version and
->>> returning pointers to the proper iu or response structures within that
->>> ibmvfc_cmd.
->>>
->>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->>> ---
->>>  drivers/scsi/ibmvscsi/ibmvfc.c | 76 ++++++++++++++++++++++++----------
->>>  1 file changed, 53 insertions(+), 23 deletions(-)
->>>
->>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
->>> index aa3445bec42c..5e666f7c9266 100644
->>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
->>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
->>> @@ -138,6 +138,22 @@ static void ibmvfc_tgt_move_login(struct ibmvfc_target *);
->>>  
->>>  static const char *unknown_error = "unknown error";
->>>  
->>> +static struct ibmvfc_fcp_cmd_iu *ibmvfc_get_fcp_iu(struct ibmvfc_host *vhost, struct ibmvfc_cmd *vfc_cmd)
->>> +{
->>> +	if (be64_to_cpu(vhost->login_buf->resp.capabilities) & IBMVFC_HANDLE_VF_WWPN)
->>
->> Suggest adding a flag to the vhost structure that you setup after login in order to
->> simplify this check and avoid chasing multiple pointers along with a byte swap.
->>
->> Maybe something like:
->>
->> vhost->is_v2
+Hello:
+
+This series was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Tue, 17 Nov 2020 23:29:28 +0000 you wrote:
+> From: KP Singh <kpsingh@google.com>
 > 
-> Even better might be vhost->version which you'd set to 1 or 2 and then you could directly
-> use that to set the field in the command structures later.
+> The helper allows modification of certain bits on the linux_binprm
+> struct starting with the secureexec bit which can be updated using the
+> BPF_F_BPRM_SECUREEXEC flag.
+> 
+> secureexec can be set by the LSM for privilege gaining executions to set
+> the AT_SECURE auxv for glibc.  When set, the dynamic linker disables the
+> use of certain environment variables (like LD_PRELOAD).
+> 
+> [...]
 
-So, the problem is that now a MADs version is determined by capability and not
-an over arching protocol version. So, we will still have some MAD's that are v1
-while other are v2 with a certain capability. The solution could work in the
-short term since targetWWPN is the only feature that has v2 MADs, but I suspect
-more versioning down the pipeline which may lead to some MADs whose v2 form has
-nothing to do with targetWWPN support.
+Here is the summary with links:
+  - [bpf-next,v4,1/2] bpf: Add bpf_bprm_opts_set helper
+    https://git.kernel.org/bpf/bpf-next/c/3f6719c7b62f
+  - [bpf-next,v4,2/2] bpf: Add tests for bpf_bprm_opts_set helper
+    https://git.kernel.org/bpf/bpf-next/c/ea87ae85c9b3
 
--Tyrel
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
