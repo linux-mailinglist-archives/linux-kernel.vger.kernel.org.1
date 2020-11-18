@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312302B829A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EA72B829C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:06:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgKRRDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:03:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
+        id S1728012AbgKRRDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 12:03:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727895AbgKRRDT (ORCPT
+        with ESMTP id S1727935AbgKRRDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:03:19 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E999C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 09:03:18 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id m6so2898143wrg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 09:03:18 -0800 (PST)
+        Wed, 18 Nov 2020 12:03:21 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1019C061A4F
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 09:03:20 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id a3so3379468wmb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 09:03:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tHZNVtWV03wSSvt4VtOznFOQfn700bs7DZF5bDl/1hQ=;
-        b=PycsmBXTWZTus1KYTPmF4oGleYgdhSLv1aXStm0xGjWjhKTnM1SCNSN0AwBOm1VT6A
-         flIDpXbIoaJMUTcgkkEvXzBxD4nW2w0Z0BINIWH5CecWVZR448hJV0h889KMfaY5HGzH
-         meWBkWmndzR0vsHkaJpUeY/2IkNR5T1sXFG+OdK86W/k6FbHSkXZvz69BftXR7CN6Yhg
-         KoGxpqfutId+C7CZXoe+KpaZiY0rxKBtiiXfbL3KwCXZ04WGo7SB+be8AeYvdyfICLRl
-         wa4EvZmNXNh2e25POTvTcmsoycB1forodFjpoRGl3KoHeksOF+TxmKL7fU/+9rpJg5Tt
-         v7WA==
+        bh=/woKeC5KGNH7T/xAX1AxjALkVqvprR8gaAK4xA3oo5s=;
+        b=Cwomn+wxk4TpP9Q1CovJ8LXgrq/XaZVqHwkTs9e7Z2XG4LL1ZV0Kg96ssuPfZh3SqJ
+         8hObLgj8AAoBhJ4FEC4GOsShwySqBDt74C2VOoZ/QjgpJAjZejaCAbk7U1AXU7ma4kQH
+         Rsfi+e855GEX30rE0v73w1djExqiYkNukF9x7s0+yg2CG7l2KXAOuM0rFhkOP0ZRrHng
+         v3YVM2X96ucTKh57Za3qXcvbnRTg+IVPw6oGmkPA2P5Jx5fDMppED3eRR3DIS6G06xaY
+         MaR2b+Ylcsz9WgIthC8vwt2I6CbTeupO3lZ3bwKtlldOHE01e4u1bnSXy9mwYhqXwqVu
+         VVdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tHZNVtWV03wSSvt4VtOznFOQfn700bs7DZF5bDl/1hQ=;
-        b=cqq8vL2POQi+ocs9Wmvy4ZugmDLBE13FK2pDRxttf28jZIr6ZZkVo1XMibk3pHLFp4
-         RXOiZK5nKK1url0z/ZxDaX/86NpBAHQ7pPTgMRquwfifSiiOiTdxu5RFY794S8c2krjh
-         rnZUeenNvlS1TVFbbdZ/8QK9boxirthjrHOtuI1kOLnqz4D76Yrkqs/pdTt4t+v4j5VY
-         +Jhn0ZbZjtdkzisVtYAEhKhGaq+DTkxEo//hNVl8WA26ReZJYtMYo9GcbQ05cyQjIgsV
-         uRXFIzRD1I6FLLq3zHJO0ghk5yYTDnJ5HgsydJGHtUigf8kLmF6+5J6mqpu2RFnGZqqb
-         f0rg==
-X-Gm-Message-State: AOAM531KpDGEKtP4Kuk50H02YUqzlQyfcXbaM0pqwI7/16m4Ag+1PhAa
-        jTbJsFDtRxNd17v5kIi4R8DbaA==
-X-Google-Smtp-Source: ABdhPJwEJ44xJF+widQnqNKYzPyysZEA4M2iF2krE5ccYKsEXq033m9D898E1yasLA+f2s1bf4jyZg==
-X-Received: by 2002:adf:a198:: with SMTP id u24mr4381933wru.219.1605718997272;
-        Wed, 18 Nov 2020 09:03:17 -0800 (PST)
+        bh=/woKeC5KGNH7T/xAX1AxjALkVqvprR8gaAK4xA3oo5s=;
+        b=C7ELbHeg9BYuw5nTBnR5w6H8XKyQHYMAfvswWIGnMjoUMJXuVICSlpBU7gmzwQhw+m
+         KINDIPT3l/DOIwqi81PYHwe2izqv+PctpguGJpUdkP/vW2i7fwgs/2lQBWF9HzbbKFFT
+         fYhtwRgBU/zfSuhbQ5JsxVqnfqbfAETPh73oiAgw+Ne3LmdPJmDUxyIYOwAwsPOmtmUJ
+         Gdh6y8zOEcNZSVyQsj+MMRqZluFsbMEXI3C+gI6QQwghEJO5/XBM5Az3O0CicddZzLmB
+         ITHVQ4DNFz+REbsIw6K9iAbxQ8wvuj8bVnUPwsWdRzF3i5RUcpHfjWKWTItA0PvINrus
+         yg6Q==
+X-Gm-Message-State: AOAM533x/+/+46lXkyRDKQKdfGrIcaILdlxQjKzZoo7mZVmlbs/aWqum
+        KWcG65QyvtRfqXNksgwyo4J/yQ==
+X-Google-Smtp-Source: ABdhPJxpYksQa3n/Yd7hzS4PjipFts8SYkUlPiPMNc5G3xr8yEGbze95pQFeIwLcQmIPZBYri1H/ow==
+X-Received: by 2002:a05:600c:290a:: with SMTP id i10mr1035685wmd.187.1605718999252;
+        Wed, 18 Nov 2020 09:03:19 -0800 (PST)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id x13sm44233wmi.20.2020.11.18.09.03.16
+        by smtp.gmail.com with ESMTPSA id x13sm44233wmi.20.2020.11.18.09.03.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 09:03:16 -0800 (PST)
+        Wed, 18 Nov 2020 09:03:17 -0800 (PST)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     srinivas.kandagatla@linaro.org, srini@kernel.org
 Cc:     bjorn.andersson@linaro.org, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH 1/2] slimbus: qcom-ngd-ctrl: add Sub System Restart support
-Date:   Wed, 18 Nov 2020 17:02:45 +0000
-Message-Id: <20201118170246.16588-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/2] slimbus: qcom-ngd-ctrl: add Protection Domain Restart Support
+Date:   Wed, 18 Nov 2020 17:02:46 +0000
+Message-Id: <20201118170246.16588-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20201118170246.16588-1-srinivas.kandagatla@linaro.org>
 References: <20201118170246.16588-1-srinivas.kandagatla@linaro.org>
@@ -64,234 +64,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds SSR(SubSystem Restart) support which includes, synchronisation
-between SSR and QMI server notifications. Also with this patch now NGD is taken
-down by SSR instead of QMI server down notification.
-
-NGD up path now relies on both SSR and QMI notifications and particularly
-sequence of SSR up followed by QMI server up notification.
+Add support to protection domain restart. Protection domain restart
+would also restart the service just like SSR.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
  drivers/slimbus/Kconfig         |  1 +
- drivers/slimbus/qcom-ngd-ctrl.c | 97 +++++++++++++++++++++++++++++++--
- 2 files changed, 94 insertions(+), 4 deletions(-)
+ drivers/slimbus/qcom-ngd-ctrl.c | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
 diff --git a/drivers/slimbus/Kconfig b/drivers/slimbus/Kconfig
-index 8cd595148d17..7c950948a9ec 100644
+index 7c950948a9ec..060a2c65978a 100644
 --- a/drivers/slimbus/Kconfig
 +++ b/drivers/slimbus/Kconfig
-@@ -25,6 +25,7 @@ config SLIM_QCOM_NGD_CTRL
- 	depends on HAS_IOMEM && DMA_ENGINE && NET
+@@ -26,6 +26,7 @@ config SLIM_QCOM_NGD_CTRL
  	depends on ARCH_QCOM || COMPILE_TEST
  	select QCOM_QMI_HELPERS
-+	select QCOM_RPROC_COMMON
+ 	select QCOM_RPROC_COMMON
++	select QCOM_PDR_HELPERS
  	help
  	  Select driver if Qualcomm's SLIMbus Satellite Non-Generic Device
  	  Component is programmed using Linux kernel.
 diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index 218aefc3531c..f62693653d2b 100644
+index f62693653d2b..d8decb345e9d 100644
 --- a/drivers/slimbus/qcom-ngd-ctrl.c
 +++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -13,6 +13,9 @@
- #include <linux/slimbus.h>
- #include <linux/delay.h>
- #include <linux/pm_runtime.h>
-+#include <linux/mutex.h>
-+#include <linux/notifier.h>
-+#include <linux/remoteproc/qcom_rproc.h>
+@@ -19,6 +19,7 @@
  #include <linux/of.h>
  #include <linux/io.h>
  #include <linux/soc/qcom/qmi.h>
-@@ -155,8 +158,14 @@ struct qcom_slim_ngd_ctrl {
- 	struct qcom_slim_ngd_dma_desc txdesc[QCOM_SLIM_NGD_DESC_NUM];
- 	struct completion reconf;
- 	struct work_struct m_work;
-+	struct work_struct ngd_up_work;
- 	struct workqueue_struct *mwq;
-+	struct completion qmi_up;
- 	spinlock_t tx_buf_lock;
-+	struct mutex tx_lock;
-+	struct mutex ssr_lock;
-+	struct notifier_block nb;
-+	void *notifier;
++#include <linux/soc/qcom/pdr.h>
+ #include <net/sock.h>
+ #include "slimbus.h"
+ 
+@@ -166,6 +167,7 @@ struct qcom_slim_ngd_ctrl {
+ 	struct mutex ssr_lock;
+ 	struct notifier_block nb;
+ 	void *notifier;
++	struct pdr_handle *pdr;
  	enum qcom_slim_ngd_state state;
  	dma_addr_t rx_phys_base;
  	dma_addr_t tx_phys_base;
-@@ -868,14 +877,18 @@ static int qcom_slim_ngd_xfer_msg(struct slim_controller *sctrl,
- 	if (txn->msg && txn->msg->wbuf)
- 		memcpy(puc, txn->msg->wbuf, txn->msg->num_bytes);
- 
-+	mutex_lock(&ctrl->tx_lock);
- 	ret = qcom_slim_ngd_tx_msg_post(ctrl, pbuf, txn->rl);
--	if (ret)
-+	if (ret) {
-+		mutex_unlock(&ctrl->tx_lock);
- 		return ret;
-+	}
- 
- 	timeout = wait_for_completion_timeout(&tx_sent, HZ);
- 	if (!timeout) {
- 		dev_err(sctrl->dev, "TX timed out:MC:0x%x,mt:0x%x", txn->mc,
- 					txn->mt);
-+		mutex_unlock(&ctrl->tx_lock);
- 		return -ETIMEDOUT;
- 	}
- 
-@@ -884,10 +897,12 @@ static int qcom_slim_ngd_xfer_msg(struct slim_controller *sctrl,
- 		if (!timeout) {
- 			dev_err(sctrl->dev, "TX timed out:MC:0x%x,mt:0x%x",
- 				txn->mc, txn->mt);
-+			mutex_unlock(&ctrl->tx_lock);
- 			return -ETIMEDOUT;
- 		}
- 	}
- 
-+	mutex_unlock(&ctrl->tx_lock);
- 	return 0;
- }
- 
-@@ -1200,6 +1215,13 @@ static void qcom_slim_ngd_master_worker(struct work_struct *work)
- 	}
- }
- 
-+static int qcom_slim_ngd_update_device_status(struct device *dev, void *null)
-+{
-+	slim_report_absent(to_slim_device(dev));
-+
-+	return 0;
-+}
-+
- static int qcom_slim_ngd_runtime_resume(struct device *dev)
+@@ -1382,6 +1384,7 @@ static int qcom_slim_ngd_ssr_pdr_notify(struct qcom_slim_ngd_ctrl *ctrl,
  {
- 	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev);
-@@ -1267,7 +1289,7 @@ static int qcom_slim_ngd_qmi_new_server(struct qmi_handle *hdl,
- 	qmi->svc_info.sq_node = service->node;
- 	qmi->svc_info.sq_port = service->port;
- 
--	qcom_slim_ngd_enable(ctrl, true);
-+	complete(&ctrl->qmi_up);
- 
- 	return 0;
- }
-@@ -1280,10 +1302,9 @@ static void qcom_slim_ngd_qmi_del_server(struct qmi_handle *hdl,
- 	struct qcom_slim_ngd_ctrl *ctrl =
- 		container_of(qmi, struct qcom_slim_ngd_ctrl, qmi);
- 
-+	reinit_completion(&ctrl->qmi_up);
- 	qmi->svc_info.sq_node = 0;
- 	qmi->svc_info.sq_port = 0;
--
--	qcom_slim_ngd_enable(ctrl, false);
+ 	switch (action) {
+         case QCOM_SSR_BEFORE_SHUTDOWN:
++	case SERVREG_SERVICE_STATE_DOWN:
+ 		/* Make sure the last dma xfer is finished */
+ 		mutex_lock(&ctrl->tx_lock);
+ 		if (ctrl->state != QCOM_SLIM_NGD_CTRL_DOWN) {
+@@ -1393,6 +1396,7 @@ static int qcom_slim_ngd_ssr_pdr_notify(struct qcom_slim_ngd_ctrl *ctrl,
+ 		mutex_unlock(&ctrl->tx_lock);
+                 break;
+         case QCOM_SSR_AFTER_POWERUP:
++	case SERVREG_SERVICE_STATE_UP:
+ 		schedule_work(&ctrl->ngd_up_work);
+ 		break;
+         default:
+@@ -1412,6 +1416,12 @@ static int qcom_slim_ngd_ssr_notify(struct notifier_block *nb,
+ 	return qcom_slim_ngd_ssr_pdr_notify(ctrl, action);
  }
  
- static struct qmi_ops qcom_slim_ngd_qmi_svc_event_ops = {
-@@ -1333,6 +1354,64 @@ static const struct of_device_id qcom_slim_ngd_dt_match[] = {
- 
- MODULE_DEVICE_TABLE(of, qcom_slim_ngd_dt_match);
- 
-+static void qcom_slim_ngd_down(struct qcom_slim_ngd_ctrl *ctrl)
++static void slim_pd_status(int state, char *svc_path, void *priv)
 +{
-+	mutex_lock(&ctrl->ssr_lock);
-+	device_for_each_child(ctrl->ctrl.dev, NULL,
-+			      qcom_slim_ngd_update_device_status);
-+	qcom_slim_ngd_enable(ctrl, false);
-+	mutex_unlock(&ctrl->ssr_lock);
++	struct qcom_slim_ngd_ctrl *ctrl = (struct qcom_slim_ngd_ctrl *)priv;
++
++	qcom_slim_ngd_ssr_pdr_notify(ctrl, state);
 +}
-+
-+static void qcom_slim_ngd_up_worker(struct work_struct *work)
-+{
-+	struct qcom_slim_ngd_ctrl *ctrl;
-+
-+	ctrl = container_of(work, struct qcom_slim_ngd_ctrl, ngd_up_work);
-+
-+	/* Make sure qmi service is up before continuing */
-+	wait_for_completion_interruptible(&ctrl->qmi_up);
-+
-+	mutex_lock(&ctrl->ssr_lock);
-+	qcom_slim_ngd_enable(ctrl, true);
-+	mutex_unlock(&ctrl->ssr_lock);
-+}
-+
-+static int qcom_slim_ngd_ssr_pdr_notify(struct qcom_slim_ngd_ctrl *ctrl,
-+					unsigned long action)
-+{
-+	switch (action) {
-+        case QCOM_SSR_BEFORE_SHUTDOWN:
-+		/* Make sure the last dma xfer is finished */
-+		mutex_lock(&ctrl->tx_lock);
-+		if (ctrl->state != QCOM_SLIM_NGD_CTRL_DOWN) {
-+			pm_runtime_get_noresume(ctrl->dev);
-+			ctrl->state = QCOM_SLIM_NGD_CTRL_DOWN;
-+			qcom_slim_ngd_down(ctrl);
-+			qcom_slim_ngd_exit_dma(ctrl);
-+		}
-+		mutex_unlock(&ctrl->tx_lock);
-+                break;
-+        case QCOM_SSR_AFTER_POWERUP:
-+		schedule_work(&ctrl->ngd_up_work);
-+		break;
-+        default:
-+                break;
-+        }
-+
-+        return NOTIFY_OK;
-+}
-+
-+static int qcom_slim_ngd_ssr_notify(struct notifier_block *nb,
-+				    unsigned long action,
-+				    void *data)
-+{
-+	struct qcom_slim_ngd_ctrl *ctrl = container_of(nb,
-+					       struct qcom_slim_ngd_ctrl, nb);
-+
-+	return qcom_slim_ngd_ssr_pdr_notify(ctrl, action);
-+}
-+
  static int of_qcom_slim_ngd_register(struct device *parent,
  				     struct qcom_slim_ngd_ctrl *ctrl)
  {
-@@ -1397,6 +1476,7 @@ static int qcom_slim_ngd_probe(struct platform_device *pdev)
- 	}
+@@ -1499,6 +1509,7 @@ static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
+ 	struct qcom_slim_ngd_ctrl *ctrl;
+ 	struct resource *res;
+ 	int ret;
++	struct pdr_service *pds;
  
- 	INIT_WORK(&ctrl->m_work, qcom_slim_ngd_master_worker);
-+	INIT_WORK(&ctrl->ngd_up_work, qcom_slim_ngd_up_worker);
- 	ctrl->mwq = create_singlethread_workqueue("ngd_master");
- 	if (!ctrl->mwq) {
- 		dev_err(&pdev->dev, "Failed to start master worker\n");
-@@ -1444,6 +1524,11 @@ static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	ctrl->nb.notifier_call = qcom_slim_ngd_ssr_notify;
-+	ctrl->notifier = qcom_register_ssr_notifier("lpass", &ctrl->nb);
-+	if (IS_ERR(ctrl->notifier))
-+		return PTR_ERR(ctrl->notifier);
-+
- 	ctrl->dev = dev;
- 	ctrl->framer.rootfreq = SLIM_ROOT_FREQ >> 3;
- 	ctrl->framer.superfreq =
-@@ -1457,9 +1542,12 @@ static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
- 	ctrl->ctrl.wakeup = NULL;
- 	ctrl->state = QCOM_SLIM_NGD_CTRL_DOWN;
- 
-+	mutex_init(&ctrl->tx_lock);
-+	mutex_init(&ctrl->ssr_lock);
- 	spin_lock_init(&ctrl->tx_buf_lock);
- 	init_completion(&ctrl->reconf);
+ 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+ 	if (!ctrl)
+@@ -1549,6 +1560,18 @@ static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
  	init_completion(&ctrl->qmi.qmi_comp);
-+	init_completion(&ctrl->qmi_up);
+ 	init_completion(&ctrl->qmi_up);
  
++	ctrl->pdr = pdr_handle_alloc(slim_pd_status, ctrl);
++	if (IS_ERR(ctrl->pdr)) {
++		dev_err(dev, "Failed to init PDR handle\n");
++		return PTR_ERR(ctrl->pdr);
++	}
++
++	pds = pdr_add_lookup(ctrl->pdr, "avs/audio", "msm/adsp/audio_pd");
++	if (IS_ERR(pds) && PTR_ERR(pds) != -EALREADY) {
++		dev_err(dev, "pdr add lookup failed: %d\n", ret);
++		return PTR_ERR(pds);
++	}
++
  	platform_driver_register(&qcom_slim_ngd_driver);
  	return of_qcom_slim_ngd_register(dev, ctrl);
-@@ -1477,6 +1565,7 @@ static int qcom_slim_ngd_remove(struct platform_device *pdev)
+ }
+@@ -1565,6 +1588,7 @@ static int qcom_slim_ngd_remove(struct platform_device *pdev)
  	struct qcom_slim_ngd_ctrl *ctrl = platform_get_drvdata(pdev);
  
  	pm_runtime_disable(&pdev->dev);
-+	qcom_unregister_ssr_notifier(ctrl->notifier, &ctrl->nb);
++	pdr_handle_release(ctrl->pdr);
+ 	qcom_unregister_ssr_notifier(ctrl->notifier, &ctrl->nb);
  	qcom_slim_ngd_enable(ctrl, false);
  	qcom_slim_ngd_exit_dma(ctrl);
- 	qcom_slim_ngd_qmi_svc_event_deinit(&ctrl->qmi);
 -- 
 2.21.0
 
