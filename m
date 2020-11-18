@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4F72B73DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 353B02B73D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgKRBqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 20:46:01 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7554 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgKRBqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 20:46:01 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CbQcm5FxXzhXvb;
-        Wed, 18 Nov 2020 09:45:44 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.203.123) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 18 Nov 2020 09:45:52 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH] Documentation/admin-guide: mark memmap parameter is supported by a few architectures
-Date:   Wed, 18 Nov 2020 14:41:45 +1300
-Message-ID: <20201118014145.29596-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S1727863AbgKRBmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 20:42:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbgKRBmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 20:42:17 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC857208CA;
+        Wed, 18 Nov 2020 01:42:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605663737;
+        bh=8vdUHJx6QdVqwIXSt3q/abygMXVBbcnI4fiQGK9hEdw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=GtqXQbqPMuvnbSVNd1sQInUwGh1w1X5+nzaxp6jpkMgvakpVNlyAW1EeyoYl0MNva
+         HZtisoXZkTojQvVcb3Ysi9K8vU65WHUiosAPtKIOt5S+QCLUQMR4v0stApNpR28Dig
+         obtwuV4SNepeHzLG05W4HkygKXD8NVmpZL+5dBRg=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.126.203.123]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201117160306.21760-1-info@metux.net>
+References: <20201117160306.21760-1-info@metux.net>
+Subject: Re: [PATCH] (v2) drivers: clk: make gpio-gated clock support optional
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
+        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 17 Nov 2020 17:42:15 -0800
+Message-ID: <160566373556.60232.14730664139007414312@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-early_param memmap is only implemented on X86, MIPS and XTENSA. To avoid
-wasting users’ time on trying this on platform like ARM, mark it clearly.
+Quoting Enrico Weigelt, metux IT consult (2020-11-17 08:03:06)
+> diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+> index c715d4681a0b..99e0188a15be 100644
+> --- a/drivers/clk/Kconfig
+> +++ b/drivers/clk/Kconfig
+> @@ -38,6 +38,14 @@ menuconfig COMMON_CLK
+> =20
+>  if COMMON_CLK
+> =20
+> +config COMMON_CLK_GPIO
+> +       tristate "GPIO gated clock support"
+> +       default y
 
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- * the background was that I spent one hour on using memmap on arm64, only
-   to find memmap= is not implemented on most architectures;
+Maybe 'default GPIOLIB'?
 
- Documentation/admin-guide/kernel-parameters.rst | 1 +
- Documentation/admin-guide/kernel-parameters.txt | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+> +       select gpiolib
 
-diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-index 6d421694d98e..06fb1b4aa849 100644
---- a/Documentation/admin-guide/kernel-parameters.rst
-+++ b/Documentation/admin-guide/kernel-parameters.rst
-@@ -172,6 +172,7 @@ parameter is applicable::
- 	X86	Either 32-bit or 64-bit x86 (same as X86-32+X86-64)
- 	X86_UV	SGI UV support is enabled.
- 	XEN	Xen support is enabled
-+	XTENSA	xtensa architecture is enabled.
- 
- In addition, the following text indicates that the option::
- 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 526d65d8573a..8bdbc555f221 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2709,7 +2709,7 @@
- 			option description.
- 
- 	memmap=nn[KMG]@ss[KMG]
--			[KNL] Force usage of a specific region of memory.
-+			[KNL, X86, MIPS, XTENSA] Force usage of a specific region of memory.
- 			Region of memory to be used is from ss to ss+nn.
- 			If @ss[KMG] is omitted, it is equivalent to mem=nn[KMG],
- 			which limits max address to nn[KMG].
--- 
-2.25.1
+Does lowercase work here?
 
+> +       help
+> +         Supports gpio gated clocks, which can be enabled/disabled via
+> +         gpio output.
+> +
+>  config COMMON_CLK_WM831X
+>         tristate "Clock driver for WM831x/2x PMICs"
+>         depends on MFD_WM831X
