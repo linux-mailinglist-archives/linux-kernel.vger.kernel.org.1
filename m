@@ -2,62 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811D62B85C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6646B2B85C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727287AbgKRUio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 15:38:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgKRUio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:38:44 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        id S1727304AbgKRUiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 15:38:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgKRUip (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 15:38:45 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAAE1C0613D4;
+        Wed, 18 Nov 2020 12:38:45 -0800 (PST)
+Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82BEC246C8;
-        Wed, 18 Nov 2020 20:38:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605731920;
-        bh=O9c7An1kFM6IXX8FlFyXPILzfnRRePmppBASLK4UFSQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sG9llzjww01u0/kMiTPEgIPTeIF6L1+F/MZA3pjC0Gh0RyD5st4baMZpsrhA7tuEZ
-         /rcFwGjQVdULp5+DfBMba+FFDszcLEvnlHW2rJwOrYHktRINxD2kjzm7nV7TNhYl3i
-         mEpY/AzYLpVSlQfRtC6wfGuHzD7VLASuMY/oQesA=
-Date:   Wed, 18 Nov 2020 14:38:40 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the gpio tree with the kspp-gustavo
- tree
-Message-ID: <20201118203840.GB15147@embeddedor>
-References: <20201118142445.461d3792@canb.auug.org.au>
- <CACRpkdahE38tamkVZLx+m3nkE_dDfaN-u7gEwH48BEnf1BvsFg@mail.gmail.com>
- <CAHp75VevuYCZVPw8HHcaoGdHBvXxHTNnujbf2BUyBECmFHZFDQ@mail.gmail.com>
- <CAHp75Vcuxc1Ypo6GV_a2hACWPFqg4m8mZr8mLHD=LgWpLLEWMg@mail.gmail.com>
- <20201118110057.GA30719@embeddedor>
- <20201118141537.GU4077@smile.fi.intel.com>
+        by ms.lwn.net (Postfix) with ESMTPSA id 819002EF;
+        Wed, 18 Nov 2020 20:38:45 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 13:38:44 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Subject: Re: [PATCH v2] docs: automarkup.py: Allow automatic cross-reference
+ inside C namespace
+Message-ID: <20201118133844.388d2c2f@lwn.net>
+In-Reply-To: <C75JFDOJJFBC.1FPM3DRBNPIKC@ArchWay>
+References: <20201117021107.214704-1-nfraprado@protonmail.com>
+        <20201117064759.0c03e7cf@coco.lan>
+        <C75JFDOJJFBC.1FPM3DRBNPIKC@ArchWay>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118141537.GU4077@smile.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 04:15:37PM +0200, Andy Shevchenko wrote:
-> No problem, thanks for taking care of this.
+On Tue, 17 Nov 2020 12:30:13 +0000
+Nícolas F. R. A. Prado <nfraprado@protonmail.com> wrote:
+
+> > Hmm... do we still need to skip syscalls?  
 > 
-> As Linus mentioned, please send a formal patch he will include in his tree.
-> (I have noticed that there are two drivers in the same change, I recommend
->  to split, so should be two separated patches)
+> Yeah, I see what you mean. Since you moved the syscalls in the docs inside
+> namespaces, there shouldn't be any syscall definitions in the global scope
+> anymore and therefore we don't need to skip them any longer.
+> 
+> I tried it out here and indeed it works fine without skipping them.
+> 
+> But I wonder if it would be a good safety measure to leave it there anyway. We
+> never want to cross-reference to syscalls in the global scope, so if we continue
+> doing that skip, even if someone accidentally adds a syscall definition outside
+> a c:namespace, this will prevent cross-references to it anyway.
+> 
+> What do you think?
 
-Sure thing. I will do so. :)
+I put the original skip logic in there to keep it from even trying to
+cross-reference common syscall names; I wasn't really even worried about
+false references at that point.  I'd leave the check in unless it's
+actively causing trouble somewhere...
 
-Thanks
---
-Gustavo
+Thanks,
+
+jon
