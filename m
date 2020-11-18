@@ -2,117 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243C92B75A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 06:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A753E2B75A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 06:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgKRFRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 00:17:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        id S1726463AbgKRFSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 00:18:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgKRFRM (ORCPT
+        with ESMTP id S1725772AbgKRFSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 00:17:12 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA48C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 21:17:11 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id f23so974364ejk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 21:17:10 -0800 (PST)
+        Wed, 18 Nov 2020 00:18:31 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CC2C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 21:18:31 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id f16so586061otl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 21:18:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=ZGiaC/aZwLqgseKttDTSIk4SHX5hWDlbguFGb2lvQsw=;
-        b=Hp3KxZu707bFASJokOgasIWZ0YTtF0yduORhdQn4GqgcZKodREFdfS4+0kbF4hHcaX
-         rjQvze4chJ73hkSkRBeRkqI3dxvBXC5YN5jyFnbFkSoQzd0jHKOTNZOk6Ej0nLwD9DWc
-         a1XRUVdDKh8Kq29MVl1yh0dNIeTKZvCEHuupo8VjuxT69dP1jWabO7zhQkpDCOwbT4pL
-         PQyJVf9mxor78ukEegS3kQafRNfEwXwNzeQOIHEHUB4Jl3rsV6OgVoQIURsvHnT8KmYs
-         /DXEe057g268HFxKvXnSDYtWn6YKX3tToACWgeNEijwJUzbisWpC+DEhXAeBx5iWnHv7
-         ox9g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F7sKJwkzdbeLOyKiVuDYfrrRTcjeln31HNpMolHCz84=;
+        b=dhgZBRUwhlMJGYy5B5kg0/hTc+PVW/P9fwbxUQJYELxJr3sFTgqZUB3YOpBKAzffVk
+         DY8UNWEqVw/HybCxEg7v6elONW5OXpewFmWZL47EXnXpZ8KRUpN25OyEbQ9waYsX2RYx
+         Z7M6iEvChYlW5DZl2OVnarihlbMHfZ+iw9QzaRzN3biQjmkcdmZfzEv9o1SvTTS68wEa
+         j8YjGL9BGrbAOtVkCtPFjv7oRrzDU3i75AjHiOH8d7M/p3Fs5gn7lA76LSbCUU4yP3Pf
+         y279jWnjt9FlaQSVf4leq5rK885Ko1y0Kv581qhqm/jDkmphNYUXOMTTDpKcLJGF9Wct
+         d2EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=ZGiaC/aZwLqgseKttDTSIk4SHX5hWDlbguFGb2lvQsw=;
-        b=E5RJbhlfpctu9ICFAZdzyLmklcJH+42wBv0pZew4ulPRF+l4TRdDyoRL9DoPArG1iT
-         DuPvR+VPFuv30rwQ5sqdZP1RIDXCW+QfFv806GvPPt7+GqRTWhl/Y6zPoC2uk3G2NLFM
-         6es9Iyw6L2iE0PEMiWp7TEJCGllY2FXHZJ+JoabVuIR/O1y8BQHwNFxMY8VozJThXDuY
-         TaymaFhsrLo0qtUb4Tv6xjq0UbBXyDfcxLzLYl8mnM2EIjrOxww5JprTix7y8djBeUpe
-         zgwcZw8U5BcRcw/RWd3/LF0vm2NGVzeC2AoDr8yaHmfmD/R5ijregrPkptjdazUd6lVW
-         Dlww==
-X-Gm-Message-State: AOAM533Wm4FylCvVBSD/oqFeUJIx2OF228z/wEBhnpL9Ovs9AepV0JbF
-        tvBVTH5ZtU3+jqdLgLpT0i6Zpm8wzLgven/sAVRhvgkeEgJO71QV
-X-Google-Smtp-Source: ABdhPJwIWP1pAH5eg7LQv2y3gsh374/S6tLuSFmZ+PtssJwoSBTnUyvucU+I858Ch5WNsi7PtIAoUD6HbZsW60xhxPU=
-X-Received: by 2002:a17:906:3087:: with SMTP id 7mr21817189ejv.375.1605676629505;
- Tue, 17 Nov 2020 21:17:09 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F7sKJwkzdbeLOyKiVuDYfrrRTcjeln31HNpMolHCz84=;
+        b=FFBEeyuECyUFcRYgMbWuA20iQORMnkOTwg7vwM+UhIyRIIUJRRijYxf/RUfmanW+Df
+         3i5vCC1UwznvonZChq4W6xzt2DL+mAZKDBSBNyD94UA3sPwSrt/5XbjVZMxT2hkvBxew
+         LwhxnoqcBSaxG3sfU1xeeD/QeBnsm6+Acg0idQmMGXGceDBgIel+CCMsCto66z6/p3b5
+         H0XYp9WlAtTp72czQ2GJlPqjEDsGoWNzVq/FOMxnYwxeXM+ugryEjLE1+RmsGvRcupvT
+         4CaoD13JDtP+qWrurmiIJbQsMvsOz8CB2KCKQ/qxFWgVk5Z8DnJfJeVhn+KXfu24aSZ7
+         2LiA==
+X-Gm-Message-State: AOAM533B9H15qKN27oaPPzt+ugplUkW4djhW6jvSJDy+bJTp5npV/FBG
+        3ey3xO7VmY854reN59CH//yHL1UYUyfGOoP2rpACSg==
+X-Google-Smtp-Source: ABdhPJznMB7Dcm3wHiflI6UU5baKUw77SPDRMKIJ2o8sjGzcuUEIkHfXK7f360M22ZzOz3BxHb2BphgAFuVXhh6gpyE=
+X-Received: by 2002:a9d:64ce:: with SMTP id n14mr5354340otl.352.1605676710354;
+ Tue, 17 Nov 2020 21:18:30 -0800 (PST)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 18 Nov 2020 10:46:58 +0530
-Message-ID: <CA+G9fYsk54r9Re4E9BWpqsoxLjpCvxRKFWRgdiKVcPoYE5z0Hw@mail.gmail.com>
-Subject: [stable-rc 5.9] BUG: Invalid wait context on arm64 db410c device
-To:     linux- stable <stable@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
+References: <20201117181935.3613581-1-minchan@kernel.org> <20201117181935.3613581-3-minchan@kernel.org>
+In-Reply-To: <20201117181935.3613581-3-minchan@kernel.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Tue, 17 Nov 2020 21:18:17 -0800
+Message-ID: <CALAqxLX0BfH3G0eoA77dKyuVAUGmdJGhFuaoJdyG+TGqnmt2PA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] dma-buf: add export symbol for dma-heap
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Hyesoo Yu <hyesoo.yu@samsung.com>,
+        Matthew Wilcox <willy@infradead.org>, david@redhat.com,
+        iamjoonsoo.kim@lge.com, vbabka@suse.cz,
+        Suren Baghdasaryan <surenb@google.com>,
+        KyongHo Cho <pullip.cho@samsung.com>,
+        John Dias <joaodias@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Christoph Hellwig <hch@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While booting stable rc 5.9.9-rc1 kernel on arm64 Qualcomm db410c device
-the following BUG: Invalid wait context noticed.
+On Tue, Nov 17, 2020 at 10:19 AM Minchan Kim <minchan@kernel.org> wrote:
+>
+> From: Hyesoo Yu <hyesoo.yu@samsung.com>
+>
+> The heaps could be added as module, so some functions should
+> be exported to register dma-heaps. And dma-heap of module can use
+> cma area to allocate and free. However the function related cma
+> is not exported now. Let's export them for next patches.
+>
+> Signed-off-by: Hyesoo Yu <hyesoo.yu@samsung.com>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
+>  drivers/dma-buf/dma-heap.c | 2 ++
+>  mm/cma.c                   | 3 +++
+>  2 files changed, 5 insertions(+)
+>
+> diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
+> index afd22c9dbdcf..cc6339cbca09 100644
+> --- a/drivers/dma-buf/dma-heap.c
+> +++ b/drivers/dma-buf/dma-heap.c
+> @@ -189,6 +189,7 @@ void *dma_heap_get_drvdata(struct dma_heap *heap)
+>  {
+>         return heap->priv;
+>  }
+> +EXPORT_SYMBOL_GPL(dma_heap_get_drvdata);
+>
+>  struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
+>  {
+> @@ -272,6 +273,7 @@ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
+>         kfree(heap);
+>         return err_ret;
+>  }
+> +EXPORT_SYMBOL_GPL(dma_heap_add);
+>
+>  static char *dma_heap_devnode(struct device *dev, umode_t *mode)
+>  {
 
-This issue has not reproduced after several testing loops.
+Thanks so much for sending this series along!
+I'm ok with the dma-heap exports to support modules.
 
-[   18.667840]
-[   18.667865] =============================
-[   18.668392] [ BUG: Invalid wait context ]
-[   18.672301] 5.9.9-rc1 #1 Not tainted
-[   18.676291] -----------------------------
-[   18.679939] systemd-udevd/415 is trying to lock:
-[   18.683846] ffff00003a73c718 (&mm->mmap_lock){++++}-{3:3}, at:
-__might_fault+0x60/0xa8
-[   18.688537] other info that might help us debug this:
-[   18.696259] context-{4:4}
-[   18.701379] 1 lock held by systemd-udevd/415:
-[   18.703982]  #0: ffff800012781a38 (rcu_read_lock){....}-{1:2}, at:
-xa_load+0x0/0x178
-[   18.708328] stack backtrace:
-[   18.716137] CPU: 0 PID: 415 Comm: systemd-udevd Not tainted 5.9.9-rc1 #1
-[   18.719003] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-[   18.725687] Call trace:
-[   18.732369]  dump_backtrace+0x0/0x1f8
-[   18.734540]  show_stack+0x2c/0x38
-[   18.738360]  dump_stack+0xec/0x158
-[   18.741658]  __lock_acquire+0x520/0x1478
-[   18.744956]  lock_acquire+0x120/0x4c8
-[   18.749035]  __might_fault+0x84/0xa8
-[   18.752597]  copy_page_to_iter+0xb4/0x3e8
-[   18.756242]  generic_file_buffered_read+0x4bc/0xa98
-[   18.760148]  generic_file_read_iter+0xd4/0x168
-[   18.764836]  blkdev_read_iter+0x50/0x78
-[   18.769349]  new_sync_read+0x100/0x1a0
-[   18.773082]  vfs_read+0x1b4/0x1d8
-[   18.776900]  ksys_read+0x74/0xf8
-[   18.780286]  __arm64_sys_read+0x24/0x30
-[   18.783586]  el0_svc_common.constprop.3+0x7c/0x198
-[   18.787143]  do_el0_svc+0x34/0xa0
-[   18.792005]  el0_sync_handler+0x16c/0x210
-[   18.795390]  el0_sync+0x140/0x180
+> diff --git a/mm/cma.c b/mm/cma.c
+> index 7c11ec2dc04c..87834e2966fa 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -54,6 +54,7 @@ const char *cma_get_name(const struct cma *cma)
+>  {
+>         return cma->name;
+>  }
+> +EXPORT_SYMBOL_GPL(cma_get_name);
+>
+>  static unsigned long cma_bitmap_aligned_mask(const struct cma *cma,
+>                                              unsigned int align_order)
+> @@ -498,6 +499,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>         pr_debug("%s(): returned %p\n", __func__, page);
+>         return page;
+>  }
+> +EXPORT_SYMBOL_GPL(cma_alloc);
+>
+>  /*
+>   * cma_alloc_bulk() - allocate high order bulk pages from contiguous area with
+> @@ -641,6 +643,7 @@ bool cma_release(struct cma *cma, const struct page *pages, unsigned int count)
+>
+>         return true;
+>  }
+> +EXPORT_SYMBOL_GPL(cma_release);
+>
+>  int cma_for_each_area(int (*it)(struct cma *cma, void *data), void *data)
+>  {
+> --
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Though Christoph's (cc'ed) input would probably be good for the cma
+ones, as I know he had concerns previously with similar patches.
 
-full test log details,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.8-256-gfb1622495321/testrun/3452274/suite/linux-log-parser/test/check-kernel-bug-1951524/log
-https://lkft.validation.linaro.org/scheduler/job/1951524#L4210
-
-metadata:
-  git branch: linux-5.9.y
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-  git commit: fb1622495321923cbb1ae2c6cf2da1e9ca286800
-  git describe: v5.9.8-256-gfb1622495321
-  make_kernelversion: 5.9.9-rc1
-  kernel-config:
-http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-stable-rc-5.9/32/config
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+thanks
+-john
