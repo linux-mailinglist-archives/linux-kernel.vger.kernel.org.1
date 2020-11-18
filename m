@@ -2,148 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6947D2B7A49
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B5C2B7A53
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbgKRJXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:23:42 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:35709 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgKRJXm (ORCPT
+        id S1726483AbgKRJZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:25:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgKRJZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:23:42 -0500
-Received: by mail-wm1-f66.google.com with SMTP id w24so2019444wmi.0;
-        Wed, 18 Nov 2020 01:23:40 -0800 (PST)
+        Wed, 18 Nov 2020 04:25:53 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E0BC061A4D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:25:52 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id p22so2280924wmg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:25:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=X6ZFH7heqse89aEGvMmhzcbSi20z75OlSQMAgPLbESY=;
+        b=qsrid+z+rmZ3dQS0wbdI0bNgj4M5MSLp+gEMgXV6pD107XERnbrCeb4fuwBhnXhhMC
+         KXHYWC1kNKIJwZf7/xLoXfFqgCbE7c7yJinhL5z2ssGTC0kKTYOLhj2uVu+wJGWo5dvF
+         bKfxyw2bfxI+GEnta7thOy7XNgPTU7LaBgO2AVpLbhmzaG4wPNFDr2QN527GIGPTo0Q1
+         3jFoNmlWzG5xyLLI4l21CFDARG//t9l5aIqjFYnqj8/1USJfj1/jNHLBXFv2Zbu82e2H
+         bDyce1abLLvAKmygjJypUQPKmCk40uitrOiVVix8cWwFTz6HsQiLudWBBn5aw365LAWr
+         1Ulw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2nsnjnOqDV6WPzahzgOv8VDTMdt+UU18h3NLzAQiSpA=;
-        b=X5DWRRpLxLa2YwmpnxCDdJ9m2LJqPGahM/mvYxyBmEzouI6woOAdiclOXCRDK+/Ckv
-         g/fBPyVpajhQ/8IdIVgnrq2DkTHQLbIltySYpK6SNrsi4rL6urTRYnF58ovnu9W8kRhP
-         5akmkcElDDpyjwbI9iBQTZtvQmtpSY5GTLTYxd358utefNb+N4+JvC1ModI61825yr6r
-         yeEzcwaSbeiE47oHOoMU72yrUMm28l1Knyt62GCkhyQbqI+mObM+8Spu4fCi++gy3UU5
-         7dDmvcPMyd/pKdWXmMaB645OohHZcXNV9JMVkxYwVPaZPkgzxfkqRfNxTo3Oe6bhkZmw
-         69OA==
-X-Gm-Message-State: AOAM532xzEUwHnoW/fAmZyRrL/eotorSELX22CYYGbjdJeljfqmNYXxG
-        BEMtHHfP9zpYeP54o6hxKZVL3tBGSGk=
-X-Google-Smtp-Source: ABdhPJxckaDRo8U42uknkQAN3d1oqdfUPR8JMwF4vNreh318c5rq4YB0kqkTqeFa5f4PE6gRlLM59w==
-X-Received: by 2002:a7b:c2ef:: with SMTP id e15mr3585111wmk.180.1605691419662;
-        Wed, 18 Nov 2020 01:23:39 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id g4sm32723173wrp.0.2020.11.18.01.23.38
+         :mime-version:content-disposition:in-reply-to;
+        bh=X6ZFH7heqse89aEGvMmhzcbSi20z75OlSQMAgPLbESY=;
+        b=QhpP/JZ9RwwG8z7kMK8Yl8+XLZ6bC3rwK900QZkpOlTaJ7RXugrwFPbsTcgLH00ZaH
+         APEq3jALzgZietwLceQNeZKXpykRIK6fEl4rF8XPFKetBbZx2f2HUuI5H+9a30ULLXBb
+         Ih+fnxufUv03xdOAuLLhFy5ejr4PZIobIZlPXV7J+sJJFW9bnCapzem5X7Jzqlvcrtky
+         TgB4pSYelgUPCa99qwSAkWrYmkhQwLIthpGViGkb47PazZFZd7gvw9qq41IFKbRV4IDr
+         L/8xQhhr/361cUCPV9kuBVr2473/sKfQeszPrwzRTQN7m3OBnNUQ8JPGZ2ipn0nPPo++
+         OnMw==
+X-Gm-Message-State: AOAM531hMrgMWbiKsqUTqWeNzTfVaooYI2UOSWel6t9qj1aT6AlAY2b5
+        sGRkFu4dkCB+j96P8P9x69XIBQ==
+X-Google-Smtp-Source: ABdhPJyzHPcv8qy3yk+iw5C1CfQhs0U063gy6g1/i2mGk7ekBPYQXw+3gsJbk8sWoUnBUh/4KANvSQ==
+X-Received: by 2002:a7b:cbc8:: with SMTP id n8mr3370259wmi.124.1605691551308;
+        Wed, 18 Nov 2020 01:25:51 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id t136sm2716518wmt.18.2020.11.18.01.25.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 01:23:39 -0800 (PST)
-Date:   Wed, 18 Nov 2020 09:23:37 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dmitry.torokhov@gmail.com, derek.kiernan@xilinx.com,
-        dragan.cvetic@xilinx.com, richardcochran@gmail.com,
-        linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH 2/2] x86: make hyperv support optional
-Message-ID: <20201118092337.k4inzcaqxygrnqc3@liuwe-devbox-debian-v2>
-References: <20201117202308.7568-1-info@metux.net>
- <20201117202308.7568-2-info@metux.net>
+        Wed, 18 Nov 2020 01:25:50 -0800 (PST)
+Date:   Wed, 18 Nov 2020 09:25:47 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        android-kvm@google.com
+Subject: Re: [RFC PATCH 15/27] of/fdt: Introduce
+ early_init_dt_add_memory_hyp()
+Message-ID: <20201118092547.GA2031536@google.com>
+References: <20201117181607.1761516-1-qperret@google.com>
+ <20201117181607.1761516-16-qperret@google.com>
+ <CAL_Jsq+xAy9+HjH6vqfmaAEKBe9MMm+wWvUtiz5dFnHmMneqNw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117202308.7568-2-info@metux.net>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <CAL_Jsq+xAy9+HjH6vqfmaAEKBe9MMm+wWvUtiz5dFnHmMneqNw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 09:23:08PM +0100, Enrico Weigelt, metux IT consult wrote:
-> Make it possible to opt-out from hyperv support.
+Hi Rob,
+
+On Tuesday 17 Nov 2020 at 13:44:53 (-0600), Rob Herring wrote:
+> Can this be done right after we add all the memblocks using the
+> memblock API?
+
+Possibly, but the thing I'm a bit worried about is the way 'no-map'
+regions are removed from memblocks early on.
+
+The EL2 object needs to know about these parts of memory too (and in
+fact we may be able to enforce the 'no-map' attribute at the host stage
+2 level as well). It's also possible we'll need to have portions of the
+guests payload preloaded (and verified) by the bootloader into reserved
+memory regions, possibly no-map, to make sure the host does not mess
+with them in a normal use-case. So, I couldn't find a much better place
+than this one but suggestions are very much welcome.
+
+I'll have a go at the memblock stuff to see if I find a way to make it
+work from that angle.
+
+> I thought EFI would also need to be handled, but looks
+> like it just calls early_init_dt_add_memory_arch(). That's odd
+> especially for ACPI systems...
 > 
+> I don't really like putting what looks like an arm64 only hook here,
+> but then I don't want an arm64 version of
+> early_init_dt_add_memory_arch() either. We're almost to the point of
+> getting rid of the arch specific ones. But I don't have a better
+> suggestion currently.
 
-"Hyper-V support".
+Ack, the ugly truth is that this is likely to remain arm64-specific. I
+figured this was simple enough that we might want to consider it,
+though.
 
-Have you tested this patch? If so, how?
-
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
-> ---
->  arch/x86/Kconfig                 | 7 +++++++
->  arch/x86/kernel/cpu/Makefile     | 4 ++--
->  arch/x86/kernel/cpu/hypervisor.c | 2 ++
->  drivers/hv/Kconfig               | 2 +-
->  4 files changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index c227c1fa0091..60aab344d6ab 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -808,6 +808,13 @@ config VMWARE_GUEST
->  	  This option enables several optimizations for running under the
->  	  VMware hypervisor.
->  
-> +config HYPERV_GUEST
-> +	bool "HyperV Guest support"
-
-Hyper-V here.
-
-> +	default y
-> +	help
-> +	  This option enables several optimizations for running under the
-> +	  HyperV hypervisor.
-> +
-
-"for running under Hyper-V".
-
->  config KVM_GUEST
->  	bool "KVM Guest support (including kvmclock)"
->  	depends on PARAVIRT
-> diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
-> index a615b0152bf0..5536b801cb44 100644
-> --- a/arch/x86/kernel/cpu/Makefile
-> +++ b/arch/x86/kernel/cpu/Makefile
-> @@ -51,9 +51,9 @@ obj-$(CONFIG_X86_CPU_RESCTRL)		+= resctrl/
->  
->  obj-$(CONFIG_X86_LOCAL_APIC)		+= perfctr-watchdog.o
->  
-> -obj-$(CONFIG_HYPERVISOR_GUEST)		+= hypervisor.o mshyperv.o
-> +obj-$(CONFIG_HYPERVISOR_GUEST)		+= hypervisor.o
->  obj-$(CONFIG_VMWARE_GUEST)		+= vmware.o
-> -
-> +obj-$(CONFIG_HYPERV_GUEST)		+= mshyperv.o
->  obj-$(CONFIG_ACRN_GUEST)		+= acrn.o
->  
->  ifdef CONFIG_X86_FEATURE_NAMES
-> diff --git a/arch/x86/kernel/cpu/hypervisor.c b/arch/x86/kernel/cpu/hypervisor.c
-> index c0e770a224aa..32d6b2084d05 100644
-> --- a/arch/x86/kernel/cpu/hypervisor.c
-> +++ b/arch/x86/kernel/cpu/hypervisor.c
-> @@ -37,7 +37,9 @@ static const __initconst struct hypervisor_x86 * const hypervisors[] =
->  #ifdef CONFIG_VMWARE_GUEST
->  	&x86_hyper_vmware,
->  #endif
-> +#ifdef CONFIG_HYPERV_GUEST
->  	&x86_hyper_ms_hyperv,
-> +#endif
->  #ifdef CONFIG_KVM_GUEST
->  	&x86_hyper_kvm,
->  #endif
-> diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
-> index 79e5356a737a..7b3094c59a81 100644
-> --- a/drivers/hv/Kconfig
-> +++ b/drivers/hv/Kconfig
-> @@ -4,7 +4,7 @@ menu "Microsoft Hyper-V guest support"
->  
->  config HYPERV
->  	tristate "Microsoft Hyper-V client drivers"
-> -	depends on X86 && ACPI && X86_LOCAL_APIC && HYPERVISOR_GUEST
-> +	depends on X86 && ACPI && X86_LOCAL_APIC && HYPERV_GUEST
->  	select PARAVIRT
->  	select X86_HV_CALLBACK_VECTOR
->  	help
-
-Maybe that one should be moved to x86/Kconfig and used instead?
-
-Wei.
-
-> -- 
-> 2.11.0
-> 
+Thanks,
+Quentin
