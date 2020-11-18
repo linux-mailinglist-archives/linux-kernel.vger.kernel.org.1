@@ -2,117 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915DA2B81C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 873442B81B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgKRQZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:25:19 -0500
-Received: from mailout04.rmx.de ([94.199.90.94]:54174 "EHLO mailout04.rmx.de"
+        id S1726942AbgKRQWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:22:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726092AbgKRQZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:25:18 -0500
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726094AbgKRQWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:22:52 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailout04.rmx.de (Postfix) with ESMTPS id 4Cbp7Z24b8z3qqhC;
-        Wed, 18 Nov 2020 17:25:14 +0100 (CET)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4Cbp6l3cPHz2TSBr;
-        Wed, 18 Nov 2020 17:24:31 +0100 (CET)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.25) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 18 Nov
- 2020 17:23:54 +0100
-From:   Christian Eggers <ceggers@arri.de>
-To:     Richard Cochran <richardcochran@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Vladimir Oltean <olteanv@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>,
-        "Kurt Kanzenbach" <kurt@linutronix.de>
-Subject: [PATCH net-next v2 3/3] ptp: ptp_ines: use new PTP_MSGTYPE_* define(s)
-Date:   Wed, 18 Nov 2020 17:22:03 +0100
-Message-ID: <20201118162203.24293-4-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201118162203.24293-1-ceggers@arri.de>
-References: <20201118162203.24293-1-ceggers@arri.de>
+        by mail.kernel.org (Postfix) with ESMTPSA id 210AD247E0;
+        Wed, 18 Nov 2020 16:22:51 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 11:22:49 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Chen Yu <yu.chen.surf@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v4 3/4] tools/bootconfig: Align the bootconfig applied
+ initrd image size to 4
+Message-ID: <20201118112249.30d20147@gandalf.local.home>
+In-Reply-To: <160571374406.277955.187006985015101129.stgit@devnote2>
+References: <160571371674.277955.11736890010190945946.stgit@devnote2>
+        <160571374406.277955.187006985015101129.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.25]
-X-RMX-ID: 20201118-172433-4Cbp6l3cPHz2TSBr-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove driver internal defines for this.
+On Thu, 19 Nov 2020 00:35:44 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Cc: Richard Cochran <richardcochran@gmail.com>
-Cc: Kurt Kanzenbach <kurt@linutronix.de>
----
- drivers/ptp/ptp_ines.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+> +
+> +	/* To align up the total size to BOOTCONFIG_ALIGN, get padding size */
+> +	total_size = stat.st_size + size + sizeof(u32) * 2 + BOOTCONFIG_MAGIC_LEN;
+> +	pad = BOOTCONFIG_ALIGN - total_size % BOOTCONFIG_ALIGN;
+> +	if (pad == BOOTCONFIG_ALIGN)
+> +		pad = 0;
 
-diff --git a/drivers/ptp/ptp_ines.c b/drivers/ptp/ptp_ines.c
-index 4700ffbdfced..6c7c2843ba0b 100644
---- a/drivers/ptp/ptp_ines.c
-+++ b/drivers/ptp/ptp_ines.c
-@@ -108,11 +108,6 @@ MODULE_LICENSE("GPL");
- #define MESSAGE_TYPE_P_DELAY_RESP	3
- #define MESSAGE_TYPE_DELAY_REQ		4
- 
--#define SYNC				0x0
--#define DELAY_REQ			0x1
--#define PDELAY_REQ			0x2
--#define PDELAY_RESP			0x3
--
- static LIST_HEAD(ines_clocks);
- static DEFINE_MUTEX(ines_clocks_lock);
- 
-@@ -683,9 +678,9 @@ static bool is_sync_pdelay_resp(struct sk_buff *skb, int type)
- 
- 	msgtype = ptp_get_msgtype(hdr, type);
- 
--	switch ((msgtype & 0xf)) {
--	case SYNC:
--	case PDELAY_RESP:
-+	switch (msgtype) {
-+	case PTP_MSGTYPE_SYNC:
-+	case PTP_MSGTYPE_PDELAY_RESP:
- 		return true;
- 	default:
- 		return false;
-@@ -696,13 +691,13 @@ static u8 tag_to_msgtype(u8 tag)
- {
- 	switch (tag) {
- 	case MESSAGE_TYPE_SYNC:
--		return SYNC;
-+		return PTP_MSGTYPE_SYNC;
- 	case MESSAGE_TYPE_P_DELAY_REQ:
--		return PDELAY_REQ;
-+		return PTP_MSGTYPE_PDELAY_REQ;
- 	case MESSAGE_TYPE_P_DELAY_RESP:
--		return PDELAY_RESP;
-+		return PTP_MSGTYPE_PDELAY_RESP;
- 	case MESSAGE_TYPE_DELAY_REQ:
--		return DELAY_REQ;
-+		return PTP_MSGTYPE_DELAY_REQ;
- 	}
- 	return 0xf;
- }
--- 
-Christian Eggers
-Embedded software developer
+If alignment is always a power of two, you could simply do:
 
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+	pad = (total_size + BOOTCONFIG_ALIGN - 1) &  ~(BOOTCONFIG_ALIGN - 1)) - total_size;
 
+Which will give you the proper padding, without the if.
+
+> +	size += pad;
+> +
+> +	/* Add a footer */
+> +	*(u32 *)(data + size) = size;
+> +	*(u32 *)(data + size + sizeof(u32)) = csum;
+> +	memcpy(data + size + sizeof(u32) * 2, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN);
+> +	total_size = size + sizeof(u32) * 2 + BOOTCONFIG_MAGIC_LEN;
+
+I wonder if it would be cleaner to just have a void pointer index for the above:
+
+	void *p;
+
+	p = data + size;
+	*(u32 *)p = size;
+	p += sizeof(u32);
+
+	*(u32 *)p = csum;
+	p += sizeof(u32);
+
+	memcpy(p, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN);
+	p += BOOTCONFIG_MAGIC_LEN;
+
+	total_size = p - (void *)data;
+
+Also, how does this work if we run this on a little endian box for a big
+endian crossbuild?
+
+-- Steve
+
+
+> +
+> +	ret = write(fd, data, total_size);
+> +	if (ret < total_size) {
+>  		if (ret < 0)
+>  			ret = -errno;
+>  		pr_err("Failed to apply a boot config: %d\n", ret);
+> -		if (ret < 0)
+> -			goto out;
+> -		goto out_rollback;
+> -	}
+> -	/* Write a magic word of the bootconfig */
+> -	ret = write(fd, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN);
+> -	if (ret < BOOTCONFIG_MAGIC_LEN) {
+> -		if (ret < 0)
+> -			ret = -errno;
+> -		pr_err("Failed to apply a boot config magic: %d\n", ret);
+> -		goto out_rollback;
+> -	}
+> -	ret = 0;
+> +		if (ret > 0)
+> +			goto out_rollback;
+> +	} else
+> +		ret = 0;
+> +
+>  out:
+>  	close(fd);
+>  	free(data);
