@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A352B7AFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:15:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 565FA2B7B0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgKRKOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:14:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgKRKOS (ORCPT
+        id S1726339AbgKRKQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:16:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24806 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725774AbgKRKQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:14:18 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048C4C0613D4;
-        Wed, 18 Nov 2020 02:14:17 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id y7so1102340pfq.11;
-        Wed, 18 Nov 2020 02:14:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HN6u+FaAjlCZ1H4jPrUouV4ZFgMNcWdPZdmdiKhmcQE=;
-        b=WPTRWJnYWV1uyEiESoGUSJC5xeaHrjCL0uIuthI6VL4iIXHMc3a8Yx/9DjzmyWshCj
-         kfusP6YtKW1SPZAnAz6d+4ZLHBsZi+Gd7G0eRO1+CmutyJnJ0iOENrRWBsQEc7z8ZN+0
-         xpWbVFCntQRGMvBzJiRJEe5eXiVgQ9eZcMTM/cF0ay9hto/A1EJ8rYzwAv2CA842w3iI
-         V2Z34PviqHHx8+YmrrDLc+E236LZ3V8nlyHhTzyMFuULO1KTWeqhd3wamNX+dK+grvw4
-         N2KcO5xRBO0k2Wu5ss4tXaK9IjIQTHShhesm0IjxdpH/guK/H5+MXKnVDACQZuEtmnSr
-         BJ+A==
+        Wed, 18 Nov 2020 05:16:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605694585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yed5/d7vK7YdqC5lhdZVNcPCr3eQRtrjIPPe/s03Tno=;
+        b=hMbsrJHnaxDO+CNXu3IbasSaJL08s4tqsIaqyuLP62IHwV5maJY3XNxpcdqsu//XkHX8pR
+        OKzsLiwzrAEaxl2g5+NGvF9kedH311vNs8muptBqtnp5GP5CtWHH2ReZYn0h0eE8yPxYB+
+        bPSPp6N9gD2+XA/XdiJBIJnpc9inOn8=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-Z-IaRSNSNXqDhzyuY5NxUw-1; Wed, 18 Nov 2020 05:16:23 -0500
+X-MC-Unique: Z-IaRSNSNXqDhzyuY5NxUw-1
+Received: by mail-wr1-f70.google.com with SMTP id h13so723128wrr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 02:16:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HN6u+FaAjlCZ1H4jPrUouV4ZFgMNcWdPZdmdiKhmcQE=;
-        b=n5V77fBaGGxraE0RIJDO/w4CF/TRVgPMZkyHUzvUrTW0dScQg5seDhWIXGH0B+W/74
-         JjUzWw0ZvE15DtHQZ/4N4tLCUc30Ai0YeAaTzEjbPB32niMIQPUwG+DceeoNIZpnV3vH
-         k/CzlSTmgVkYJEzz110HXg/2MhaQk0SE7S4xspB6ktvJ/QaiMlRoKGbSCQHRgul7zYdX
-         vYcrKk3FBonwOdS6lvtTgDNaWmJBXkEl8XiR1sE9UJWRqBt/wH4I3DazimpmNejh23M8
-         ylinTu67aD1/4O9JWOHigzTAIfCPRVIdOQ0kBC8uU33LaoCRAgpVkoC75WjMJefUVoqR
-         xmaQ==
-X-Gm-Message-State: AOAM532BD47Q/QtrYaINrlF4EWUE9JU5suczZte8f/Jsc4IyJnCudI7d
-        x9hr32akYistepd8TQERQsoB8jNIFj0NdT41EYM=
-X-Google-Smtp-Source: ABdhPJwgZoth9XotQe6oYHEscjQKz6WMp04ErJrrau3wx2TytZxtGiTtOJ0WqYvYj0mKnzMPvmckakWe+5SXArELSW0=
-X-Received: by 2002:a62:7c95:0:b029:18c:5002:a1ab with SMTP id
- x143-20020a627c950000b029018c5002a1abmr3757599pfc.40.1605694456561; Wed, 18
- Nov 2020 02:14:16 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yed5/d7vK7YdqC5lhdZVNcPCr3eQRtrjIPPe/s03Tno=;
+        b=lWaz6QOl2fTxa32Zgb16jEQ1OhDX5cDH9IBU1SstaSJ7DT+8ABcSwlV/gaiJ7KJ3P4
+         wO7rAmIxSBs3zGKX+izPwBySXK9KNN3qKMYbpn/CqmEyEnBjtA0svteHNA3H8x/U8p24
+         mKEl7IuyJee+AhF5MjTmj9jmV0ZAwAdgtzlK35GSnS9QO56RjAmOL9rBNYqXI4ObapTb
+         iHcs2sWIM8TsNaMMBImd93kuDNz+GaPPOcUvoaunthhPdK6as+E3+DmyumWc6gvT/APl
+         ny3evQOz2IJBQcoEvRl7PaAulJ75Th+tFzX/pX+KwMdWGk8zWYRCi/2HXNMaIm9uy0+C
+         vaWA==
+X-Gm-Message-State: AOAM5315iu6LEsFizthppJceRZfMVc6PcI2BWZwpj/jb018SeRX5QyRy
+        22JhF7O0j1TPOGEKtkW1hEYRdCYCMpSGWR/bdm68Zj/JDTHW0bF9FkQDlYbSsXeWYZIzIiouglo
+        0r7aZV8Z4IYJMUlk7oHzcl7FS
+X-Received: by 2002:a1c:3c04:: with SMTP id j4mr3793827wma.105.1605694581817;
+        Wed, 18 Nov 2020 02:16:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz8gTvwJsFF5o43oH2YetHhRlLDl2RZsi15AIAqwyAVp6G3xTEHw8/0j0DSSSEDTs/utrvImA==
+X-Received: by 2002:a1c:3c04:: with SMTP id j4mr3793798wma.105.1605694581613;
+        Wed, 18 Nov 2020 02:16:21 -0800 (PST)
+Received: from redhat.com (bzq-109-67-54-78.red.bezeqint.net. [109.67.54.78])
+        by smtp.gmail.com with ESMTPSA id b4sm2360517wmc.1.2020.11.18.02.16.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 02:16:20 -0800 (PST)
+Date:   Wed, 18 Nov 2020 05:16:15 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
+ for rproc serial
+Message-ID: <20201118042039-mutt-send-email-mst@kernel.org>
+References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
+ <20201116091950.GA30524@infradead.org>
+ <ca183081-5a9f-0104-bf79-5fea544c9271@st.com>
+ <20201116162844.GB16619@infradead.org>
+ <20201116163907.GA19209@infradead.org>
+ <79d2eb78-caad-9c0d-e130-51e628cedaaa@st.com>
+ <20201117140230.GA30567@infradead.org>
 MIME-Version: 1.0
-References: <20201117154340.18216-1-info@metux.net> <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
- <20201118095342.sviuxvfsbmmn22mo@pengutronix.de> <CAHp75Vd9QUCcUoPLUW3kkJC0h=mPUqHNqNJPY74gDGSu67t8Hw@mail.gmail.com>
- <CAHp75Vcdu1aOLuF+EFDZibbi0OwGH4QfBhJQm9VZQkeEGEeKDQ@mail.gmail.com> <20201118100856.GQ1869941@dell>
-In-Reply-To: <20201118100856.GQ1869941@dell>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 18 Nov 2020 12:15:05 +0200
-Message-ID: <CAHp75VcO6Abz5=go0w2Vg6uTEuTw59fZ-yHfFCY9CQ=_JZXWFg@mail.gmail.com>
-Subject: Re: [PATCH] drivers: gpio: use of_match_ptr() and ACPI_PTR() macros
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-tegra@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Alban Bedel <albeu@free.fr>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>, zhang.lyra@gmail.com,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        dl-linux-imx <linux-imx@nxp.com>, orsonzhai@gmail.com,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        linux-pwm@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Sascha Hauer <kernel@pengutronix.de>, baolin.wang7@gmail.com,
-        Shawn Guo <shawnguo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117140230.GA30567@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 12:09 PM Lee Jones <lee.jones@linaro.org> wrote:
-> On Wed, 18 Nov 2020, Andy Shevchenko wrote:
-> > On Wed, Nov 18, 2020 at 11:56 AM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > > On Wed, Nov 18, 2020 at 11:54 AM Uwe Kleine-K=C3=B6nig
-> > > <u.kleine-koenig@pengutronix.de> wrote:
-> > > > On Tue, Nov 17, 2020 at 06:45:37PM +0200, Andy Shevchenko wrote:
-> >
-> > ...
-> >
-> > > > So a system without CONFIG_OF might still make use of .of_match_tab=
-le?
-> > >
-> > > Yep!
-> >
-> > If you are curious:
-> > https://elixir.bootlin.com/linux/latest/source/drivers/acpi/bus.c#L615
->
-> This still doesn't sit quite well with me.
->
-> Not the process of ACPI using OF artifacts or the possibilty to embed
-> OF type structures into ACPI tables, but the fact that an OF-only user
-> (or so they think) should have to care about that special use-case.
+On Tue, Nov 17, 2020 at 02:02:30PM +0000, Christoph Hellwig wrote:
+> On Tue, Nov 17, 2020 at 03:00:32PM +0100, Arnaud POULIQUEN wrote:
+> > The dma_declare_coherent_memory allows to associate vdev0buffer memory region
+> > to the remoteproc virtio device (vdev parent). This region is used to allocated
+> > the rpmsg buffers.
+> > The memory for the rpmsg buffer is allocated by the rpmsg_virtio device in
+> > rpmsg_virtio_bus[1]. The size depends on the total size needed for the rpmsg
+> > buffers.
+> > 
+> > The vrings are allocated directly by the remoteproc device.
+> 
+> Weird.  I thought virtio was pretty strict in not allowing diret DMA
+> API usage in drivers to support the legacy no-mapping case.
 
-OF-only users shouldn't take care about this. If you are sure that the
-driver may not be used on a non-OF platform.
+Well remoteproc is weird in that it's use of DMA API precedes
+standartization efforts, and it was never standardized in the virtio
+spec ..
 
-> What if we make ACPI select OF?  Or handle the ACPI case explicitly in
-> the of_match_ptr() declaration?
+> Either way, the point stands:  if you want these magic buffers handed
+> out to specific rpmsg instances I think not having to detour through the
+> DMA API is going to make everyones life easier.
 
-I guess you are a bit late, but you always may propose patches to ACPI
-maintainers.
-
---=20
-With Best Regards,
-Andy Shevchenko
