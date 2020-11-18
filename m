@@ -2,1167 +2,427 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA96D2B7A1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A342B7A1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727426AbgKRJLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:11:40 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:37957 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbgKRJLi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:11:38 -0500
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id B977820001F;
-        Wed, 18 Nov 2020 09:11:30 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 10:11:33 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Eugen.Hristev@microchip.com
-Cc:     laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, sakari.ailus@iki.fi
-Subject: Re: [PATCH v5 2/3] media: atmel: introduce microchip csi2dc driver
-Message-ID: <20201118091133.hr5iwjqijnj6tjfs@uno.localdomain>
-References: <20201112133437.372475-1-eugen.hristev@microchip.com>
- <20201112133437.372475-2-eugen.hristev@microchip.com>
- <20201117115902.unnrnccoj3s4gtam@uno.localdomain>
- <20201117120951.GC3940@pendragon.ideasonboard.com>
- <3615c6eb-e475-9a2b-21e5-0b8d8f64f9c6@microchip.com>
+        id S1726704AbgKRJM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:12:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44454 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726172AbgKRJM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 04:12:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 08D59ABDE;
+        Wed, 18 Nov 2020 09:12:54 +0000 (UTC)
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Leo Ruan <tingquan.ruan@cn.bosch.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Mark Jonas <mark.jonas@de.bosch.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201117155229.9837-1-mark.jonas@de.bosch.com>
+ <e089d4d5-3bd8-c2cd-3011-ed87ae4284e8@suse.de>
+ <CAKMK7uEpEt4w4kVJLOd2Yw1MnsrCn-NMgT4TjcxROpZBa_xvYg@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH] drm: imx: Move fbdev setup to before output polling
+Message-ID: <68af913c-9f4e-73b5-a2cb-8692902a2847@suse.de>
+Date:   Wed, 18 Nov 2020 10:12:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3615c6eb-e475-9a2b-21e5-0b8d8f64f9c6@microchip.com>
+In-Reply-To: <CAKMK7uEpEt4w4kVJLOd2Yw1MnsrCn-NMgT4TjcxROpZBa_xvYg@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="y4BYlABVEYysq6OMDXMoyK4sH88S66Nxu"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Eugen,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--y4BYlABVEYysq6OMDXMoyK4sH88S66Nxu
+Content-Type: multipart/mixed; boundary="WMakGiMkDwAFduzZqhcr2mj05JJZMstbs";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Daniel Vetter <daniel@ffwll.ch>
+Cc: Leo Ruan <tingquan.ruan@cn.bosch.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ David Airlie <airlied@linux.ie>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ NXP Linux Team <linux-imx@nxp.com>, Mark Jonas <mark.jonas@de.bosch.com>,
+ Shawn Guo <shawnguo@kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+Message-ID: <68af913c-9f4e-73b5-a2cb-8692902a2847@suse.de>
+Subject: Re: [PATCH] drm: imx: Move fbdev setup to before output polling
+References: <20201117155229.9837-1-mark.jonas@de.bosch.com>
+ <e089d4d5-3bd8-c2cd-3011-ed87ae4284e8@suse.de>
+ <CAKMK7uEpEt4w4kVJLOd2Yw1MnsrCn-NMgT4TjcxROpZBa_xvYg@mail.gmail.com>
+In-Reply-To: <CAKMK7uEpEt4w4kVJLOd2Yw1MnsrCn-NMgT4TjcxROpZBa_xvYg@mail.gmail.com>
 
-On Tue, Nov 17, 2020 at 05:24:30PM +0000, Eugen.Hristev@microchip.com wrote:
-> On 17.11.2020 14:09, Laurent Pinchart wrote:
-> > Hello everybody,
-> >
-> > On Tue, Nov 17, 2020 at 12:59:02PM +0100, Jacopo Mondi wrote:
-> >> On Thu, Nov 12, 2020 at 03:34:36PM +0200, Eugen Hristev wrote:
-> >>> Microchip CSI2DC (CSI2 Demultiplexer Controller) is a misc bridge device
-> >>> that converts a byte stream in IDI Synopsys format (coming from a CSI2HOST)
-> >>> to a pixel stream that can be captured by a sensor controller.
-> >>>
-> >>> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> >>> ---
-> >>> Hello,
-> >>>
-> >>> There still are some open questions regarding the last reviews on the ML.
-> >>>
-> >>> Regarding the format list which is not const, I cannot have it const because
-> >>> I reference elements from this list into a dynamic list which is non-const.
-> >>>
-> >>> Regarding the presence of the v4l2_dev, without this I cannot add a notifier
-> >>> for this device to have it async completed , when the underlying subdevice
-> >>> finishes probing.
-> >>
-> >> I see you have a discussion with Sakari on-going on this, and I have
-> >> the very same comment he had.
-> >>
-> >> Should a sub-notifier be used and this driver should not register any
-> >> v4l2_dev but integrate in the media graph of the receiver ?
-> >>
-> >> For reference, rcar-csi2 uses sub-notifiers and register in the
-> >> rcar-vin media graph, it doesn't need to set up a v4l2_dev.
-> >>
-> >> rcar-vin (the DMA engine driver) that register video nodes and the v4l2-dev
-> >> also registers the device nodes for all the connected subdevices.
-> >
-> > Sub-notifiers were invited for this purpose, so I think they're the
-> > right tool.
-> >
-> >>> Regarding the callbacks for set frame interval, set frame size, etc, I cannot
-> >>> remove them because losing functionality to the underlying subdevice, as
-> >>> explained in :
-> >>> https://lkml.org/lkml/2020/10/12/427
-> >>
-> >> Using the frame sizes as in the example you reported, if this device has
-> >> limitations on the supported sizes, (a min and a max most
-> >> probably) that's the only thing that should be exposed from this
-> >> driver subdevice. The sensor subdevice instead will report the
-> >> available discrete sizes and userspace configures the sensor's source
-> >> pad and the bridge's sink pad with the same sizes to properly set up the
-> >> capture pipeline. video0 should not report the sizes exposed by the sensor
-> >> nor any information that depends on what's connected to it.
-> >
-> > Agreed. Subdev drivers should remain simple and cover only the subdev
-> > they manage. Bundling it together is the job of userspace. In the legacy
-> > model it uses to be the job of the top-level V4L2 driver (the one
-> > implementing v4l2_device), but that's legacy, especially for embedded
-> > camera use cases. In any case, the top-level logic must not be spread
-> > across subdevices.
-> >
-> >> I know what your next question is: what about existing application
-> >> that only know about video0 and want to setup everything from there. I
-> >> understand vendors not wanting to wrap gstreamer or what is used in
-> >> the wild in custom scripts that sets up the pipeline opportunely
-> >> before streaming, and I'm pretty sure you know what is the solution I
-> >> would propose for this :)
-> >>
-> >> I've just gone through the same path with RPi's Unicam, that does the
-> >> same thing as your one does: it's an MC driver, but wants to control
-> >> the sensor through the v4l2-subdev kAPI to support legacy use cases
-> >> not covered by libcamera. The fact is that we're stuck in this limbo
-> >> where MC pipeline tries to decouple components one from each other and
-> >> delegate their configuration to userspace, but at the same time
-> >> vendors want to be able to use the simple plain video node centric
-> >> interface because of their existing user base, so I understand your
-> >> discomfort, but the 'simple plain' approach is what's preventing Linux
-> >> platforms to be in-par with proprietary and custom solutions for any
-> >> use case that is not a simple frame capture, so I think it's fair for
-> >> mainline to push for this evolution to happen. Just my2c of course.
-> >
-> > Compatibility with the userspace of downstream kernels is important, but
-> > that's a downstream kernel issue. In mainline we want to go the MC way,
-> > and downstream can then, if desired, implement the configuration of the
-> > pipeline in the top-level V4L2 driver in the kernel to support the
-> > existing userbase. For new drivers I wouldn't recommend that, for
-> > existing downstream drivers it may be required.
->
-> Hello,
->
-> First of all thank you for the review and explanations.
->
-> I am still confused about how does the userspace know which elements are
-> in the pipeline and how to connect them ?
+--WMakGiMkDwAFduzZqhcr2mj05JJZMstbs
+Content-Type: multipart/mixed;
+ boundary="------------6CCE5A54CD10E6493E924170"
+Content-Language: en-US
 
-Using the media-controller uAPI to inspect, explore and configure the
-media graph (it's mostly about enabling and disabling media links),
-and using the v4l2 subdev uAPI to configure formats, sizes and such on
-each subdevice device node associated with a media entity. Finally,
-using the v4l2 uAPI to stream from the top-level driver that expose a
-video device node.
+This is a multi-part message in MIME format.
+--------------6CCE5A54CD10E6493E924170
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-It's really (conceptually) not different than doing the same using
-media-ctl and v4l2-ctl.
+Hi
 
-> And if this is the case, what is the purpose of the endpoints in the DT ?
->
+Am 18.11.20 um 09:59 schrieb Daniel Vetter:
+> On Wed, Nov 18, 2020 at 9:10 AM Thomas Zimmermann <tzimmermann@suse.de>=
+ wrote:
+>>
+>> Hi
+>>
+>> Am 17.11.20 um 16:52 schrieb Mark Jonas:
+>>> From: Leo Ruan <tingquan.ruan@cn.bosch.com>
+>>>
+>>> The generic fbdev has to be setup before enabling output polling.
+>>> Otherwise the fbdev client is not ready to handle delayed events.
+>>>
+>>> Since f53705fd, the generic fbdev is setup after the output polling
+>>> init. During fbdev setup, when fbdev probes attached outputs and a
+>>> status changes from unknown to connected, the delayed event is
+>>> marked and the output_poll_work thread is scheduled without delay.
+>>> If output_poll_execute() is runs immediately, the delayed event
+>>> is handled without actually polling the output because the fbdev is n=
+ot
+>>> registered yet. So the delayed event is lost. This leads to a dark
+>>> screen until a KMS application (or fbcon) sets the screen mode.
+>>>
+>>> This patch fixes the issue by moving the setup of generic fbdev befor=
+e
+>>> initializing and enabling output polling.
+>>>
+>>> Signed-off-by: Leo Ruan <tingquan.ruan@cn.bosch.com>
+>>> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+>>> ---
+>>>   drivers/gpu/drm/imx/imx-drm-core.c | 8 ++++++--
+>>>   1 file changed, 6 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/imx/imx-drm-core.c b/drivers/gpu/drm/imx=
+/imx-drm-core.c
+>>> index 9bf5ad6d18a2..2665040e11c7 100644
+>>> --- a/drivers/gpu/drm/imx/imx-drm-core.c
+>>> +++ b/drivers/gpu/drm/imx/imx-drm-core.c
+>>> @@ -240,14 +240,18 @@ static int imx_drm_bind(struct device *dev)
+>>>                legacyfb_depth =3D 16;
+>>>        }
+>>>
+>>> +     /*
+>>> +      * The generic fbdev has to be setup before enabling output pol=
+ling.
+>>> +      * Otherwise the fbdev client is not ready to handle delayed ev=
+ents.
+>>> +      */
+>>> +     drm_fbdev_generic_setup(drm, legacyfb_depth);
+>>> +
+>>>        drm_kms_helper_poll_init(drm);
+>>>
+>>>        ret =3D drm_dev_register(drm, 0);
+>>>        if (ret)
+>>>                goto err_poll_fini;
+>>>
+>>> -     drm_fbdev_generic_setup(drm, legacyfb_depth);
+>>> -
+>>
+>> This does not work well. fbdev is supposed to be another regular DRM
+>> client. It has to be enabled after registering the DRM device.
+>>
+>> I'd rather improve fbdev or the driver to handle this gracefully.
+>=20
+> Yeah I'm not understanding the point here. Once fbcon is running, you
+> have a screen. Any fbdev userspace client  also should do a modeset
+> first. And if they dont and it's expected uapi for fbdev chardev that
+> the display boots up enabled, then we need to fix that in the fbdev
+> helpers, not through clever reordering in drivers so that a
+> side-effect causes a modeset.
+>=20
+> Note that this is a bit tricky since fbdev shouldn't take over the
+> screen by default, so we'd need to delay this until first open of
+> /dev/fb0. And we should probably also delay the hotplug handling until
+> the first open. fbcon also fake-opens the fbdev file, so it's the same
+> code path.
 
-DTS describe the hardware. Usually a driver parses the firmware graph
-to create and model the media graph and the available connections
-between media entities but there's no requirement to have a 1-to-1
-match (as far I'm aware).
+As far as I understand the commit message, the problem is that the=20
+display blanks out after registering the driver. And fbdev somewhat=20
+mitigates this by doing an early modeset. Users with fbdev disabled=20
+(most of them in embedded, I guess) would still run into the issue until =
 
-Media links on a media graph then need to be enabled opportunely
-depending on the desired use case, the platform topology etc
+userspace makes a modeset.
 
-> At this moment, I just use the /dev/video0, because the top v4l2 driver
-> configures the subdevice, and this subdevice configures it's own
-> subdevice and so on, until the sensor itself.
->
-> My top v4l2 driver will not 'complete' unless a subdevice registers
-> itself , and if this subdevice does not provide any information
-> regarding its formats, the probe of the top v4l2 driver will fail,
-> because it will not find compatibility between it's supported input
-> formats and what the subdevice provides.
+Mark, if that's the case, an option might be to pick up the device=20
+settings instead of calling drm_mode_config_reset(). The driver would=20
+then continue to display whatever is on the screen.
 
-ouch, I see.. Which driver is that ?
+Best regards
+Thomas
 
-If that's an MC driver, and that seems the case, it should not bother
-validating the subdevice formats, but only care about listing what its
-capabilities are.
+> -Daniel
+>=20
+>>
+>> Best regards
+>> Thomas
+>>
+>>>        return 0;
+>>>
+>>>   err_poll_fini:
+>>>
+>>
+>> --
+>> Thomas Zimmermann
+>> Graphics Driver Developer
+>> SUSE Software Solutions Germany GmbH
+>> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+>> (HRB 36809, AG N=C3=BCrnberg)
+>> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+>=20
+>=20
+>=20
 
->
-> So what to do in this case ? Libcamera will configure this whole
-> pipeline for me , if the drivers just probe ( and start/stop streaming
-> by selecting the respective registers) ? or how to do this whole
-> pipeline configuration ?
->
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
-Well, libcamera offers a framework to enable specialized code (called
-"pipeline handler") to operate under an high-level API towards application
-and implement image tuning algorithms on top of that common API.
+--------------6CCE5A54CD10E6493E924170
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0x680DC11D530B7A23.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0x680DC11D530B7A23.asc"
 
-The code to configure the pipeline is device specific (unless your
-pipeline is very simple). So it's not that libcamera just magically
-knows how to operate on every platforms it runs on, it needs platform
-specific code to do so. What you get in exchange is an high level API
-to offer to application developers, a framework to implement 3A and
-tuning algorithms, integration with a growing set of other userspace
-frameworks (android, gstreamer, pipewire and a legacy v4l2-compat
-layer)
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-We have a lengthy pipeline handler writers guide that might help
-better explain this:
+xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdgX=
+H47
+fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0BeB5B=
+bqP
+5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4YchdHm3bkPj=
+z9E
+ErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB9GluwvIhSezPg=
+nEm
+imZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEBAAHNKFRob21hcyBaa=
+W1t
+ZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmNvbT7CwI4EEwEIADgCGwMFCwkIBwIGFQoJCAsCB=
+BYC
+AwECHgECF4AWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCXvxIWAAKCRBoDcEdUwt6I+aZB/9ih=
+Onf
+G4Lgf1L87cvoXh95/bnaJ6aQhP6/ZeRleuCXflnyDajlm3c9loQr0r2bQUi7JeYwUKbBab2QS=
+GJm
+DMRGlLMnmzWB8mHmZ6bHAu+2Sth8SraE42p6BB9d8dlYEID+dl/D/xUBeulfkck5rloGtYqDi=
++1Q
+DfkEZJaxVSZ6FFkXuQi/G9qcI4iklN2nv02iQ7mZe8WYAysix6s/6vIobhirEBreclSNxXqis=
+p8n
+91+v855JC11EgRdUXMRK81IAaCKXP8zLx3ixku7mvP9Om61yerHSbeU2HZbIggZYQlFh6llJm=
+zF1
+CjCWgPTJyk4t4kMTcNOw5ykD47vU/KW+wl0EEBECAB0WIQQn6OOmnzvP/7ktjmoud6EwEfXTw=
+gUC
+WzodVwAKCRAud6EwEfXTwidvAKDkOADDHfI0QNXqAZcg6i1kOndAYACeLXHBwpjnumkPSyoab=
+IiL
++he8r3zCwHMEEAEIAB0WIQQeXZghmQijlU7YzFiqUDvJrg9HpwUCWznxsQAKCRCqUDvJrg9Hp=
+42f
+CADIvsZcAd04PDFclRltHr2huy6s7+ZZA6PgYlMblEBh4bJA+dNPBTvzpJ7FJv/bmHOa+phWy=
+Urj
+EpfFGuOKGuWAfzgVAEu52fMrW3/mm+O26z1AKIu8hiZ/x9OAe4AM71ZO2lZrV1/53ZdzWnRuO=
+45N
+GQcotU8oeVfT9okAfmozmWMmIMq7Q0K6bV8W3qiD5XfDNxjr2caxc/9WX1bZPUo3n0H23MNaA=
+Tpy
+Oz732UtDh6sKUAB1RfzBBd/REbjHD7+quwJGAdRScyDRncX1vNb2+wihy0ipA69XY3bkhR5iD=
+u5r
+A9enuiMe6J1IBMI1PZh+vOufB/M6cd2D9RULIJaJwsBzBBABCAAdFiEEuyNtt7Ge78bIRx1op=
+/N8
+GYw5MYEFAls6MrsACgkQp/N8GYw5MYEnLQf/dwqlDJVQL2q+i8FFaqTMAm0n9jLRV6pN8JxFH=
+j0g
+voyWUOnQuNdAFgtKd26ZhN8NkLoSMO8E19eBPfLoBIFK5yNNVmRHAZm07MzGbA0uNWINJhmdR=
+bZM
+RMh0nneXjcEU/IvUmd8TPFTAd24X2mbzHgcaHMLJSVx1ohd4alRJXHIqDobKmiVwekyPnInJn=
+zWw
+iuZUkIotTkQple1PT/dF3S+KtPXBL6ldQ4NkAeCjsz4wnzSa9+VKOxEhiHM0PMzXSbkCMP+4m=
+Xy9
+RMplBw9Dm9hN2PSouBPifIrSodiiSWZYXOEkzLiBAB0frCKR63Dnx9kvjCD9Pz5wLd/70rjqI=
+cLA
+jgQTAQgAOAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC=
+3oj
+BQJftODHAAoJEGgNwR1TC3ojZSIIAIV3makffp4P4leU8JSLt0aTNewsOhy7VQzKUtlCw3PKD=
+3l/
+SuymZhQKgH+n6sijzFauZnZ+x0T+Oy+dDVZb3sNJuuMUDIHw18EO9daZBMcueaS54FGe73lAp=
+HUl
+7nxyocCxoqIG8+fP+75itV/ls2TSh5rJvjLvHC8J3NqfGlJ/jlSKrQUnzFbXfE5KGWiKNAn+I=
+1a2
+EE0I7uLpYgkdb8hcjtV9Rxr2ja+GWOaSoqB29P5GUzipkWo4144Q16JBO6QP2R9y/1ZK9VqH2=
+5T8
+lTKocLAaHCEdpDqY5KI15as9tIxlI1Vh+eqhTh/gwEm1ykO1gmrQ1zvGLDMB1EE6El3NJ1Rob=
+21h
+cyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIbAwULCQgHAgYVC=
+gkI
+CwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJe/EheAAoJEGgNwR1TC3ojq=
+RgI
+AIoegtTp1prPzfHgTAuEPd8v58ssHubwi9tg69a8IJ+iMNozhs4iUou84WOLBJNjSieXHZRa8=
+fJj
+//2/sTuABn38AQ9FcKX9/B49hrdCo6c0WHHKqlPrSTzuXNKYyOdmSFd/pDhBb2Bn5DTxxH5RP=
+m/N
+U/C9nUlwi7Y+FgBlDNa5h592wmJfv0cJAfvF56C+QL65jHFOFIW9xSaTOAxxMXHGJHXki6Iwa=
+aTg
+s7QQlKQcd5XvvED1bwLyQ7rq+MEZo5N7IygpQMM3qqGMlCnDdyQ3W95rd0HCWpfa0oVRCOwdu=
+SL3
+5hG7ONqBpvBj8z5GjSbt4HLJGvpeT0k37qzRExrCXQQQEQIAHRYhBCfo46afO8//uS2Oai53o=
+TAR
+9dPCBQJbOh1XAAoJEC53oTAR9dPC05AAoIy0HQ2DBDYugQ42P4HfyxfZTIvKAJ0fqNBcBFW9S=
+tbR
+DEP9cfpNVOv8YMLAcwQQAQgAHRYhBB5dmCGZCKOVTtjMWKpQO8muD0enBQJbOfGzAAoJEKpQO=
+8mu
+D0enL0wIAM2NTeUDCofBAkbWHGTZopclefbh0xGPYQEfttNyalp0hn1CrVO7OsX5eTjRqgyOa=
+1C5
+OAsNghCM4PUmrfv5cZ9+sNn9bRM50uVW9IFRlq8wwBY4+7QejJ5gs7DW/0tZIMZ6iTGKK0WEO=
+7gd
+2K9hXadPBScTdIqXeWH82meiqElnEQL+K9UeGUBrku+1EQIOxwziKwTDlTvhyJ+xmEKj0uWRc=
+Ocl
+27xLS9XOWPGXcNQBtlZhF8e/E1kFRt5CPP5UBdUCN8qydUadseXivSNDiYob9dyJSFt7G0Bq4=
+/ac
+Ret5ANtGRWsp8xYJQRossRMWL0w9P8SiIc2IY/JrQrpz29nCwHMEEAEIAB0WIQS7I223sZ7vx=
+shH
+HWin83wZjDkxgQUCWzoywAAKCRCn83wZjDkxgQaDCACyFuBLQWNvLT8GTDqTf/gETzmtoEM6Y=
+r8O
+4jbYg05xiFzAqMZctQsm3zHakx2JrimxDvQJRQJQzp5ICJ7J/BOuSL4FE1SPeQIfjm4jyBZGH=
+P/W
+vgHsT5e3+ZCPePPZO+3irarTKVhaaP70Tpka6EsOCZzO6L8D6tUDkhxMX0ymy7p8w9Yt1eD0o=
+Ume
+mxrKdS1ulpNJUTBw7gJN8bMowVnycEm6wntxOjrCxuwbkKhFLdn0ejcXQ0UkfbUFKfU64gGBu=
+S53
+ZlM8XlOhQEIw/FrdXszhR+Tg3Ag130cmJhOrghgOBLzvJfUd6OvDT5VIz0QGbAm8SWlAIIms1=
+9Z8
+kBsLwsCOBBMBCAA4AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEEchf7rIzpz2NEoWjla=
+A3B
+HVMLeiMFAl+04McACgkQaA3BHVMLeiPHXAf/SEoZa6CKoOAs1ctEP/hN8cEQqbEiuZ+71nm3u=
+/BQ
+p/CEUvqGq+iVc8kkpClDbPz5fa9mb+yWwufsnXKOs6ygmEoAEOL7dBZZIaRobBEkB09VXIkx8=
+lE0
+00grBVtToHUGRfZcMoMZ98XhPGU6lJDN200j/2CV46hQDz6PLySecNjOME05mosbYW5N2JwFd=
+uXP
+Qx++DjWB32QLBhcOcP3WslTy3PKVe/TcTvk0JpPFMz4UFc+awBVhDgZiGGAW3xLZRYyhpoAEs=
+N7u
+XkV2ct0MRxuZ3y4tTYJobhbZwutRojiPPZduRw9CSpNDcQHruFiSOIQTpnLeCA6K2JAZyqmP/=
+87A
+TQRbOdLgAQgAxiY/gz9X5PlFjlq3+DutR02wuFa/UA9iuH1FB584Nges1EdQT16ixhtPpcyvJ=
+H2F
+PxeUY5hHApbCJAGhZIOJMyj9eLb2NSefgFd8janHYNNfBzbYsq0sCBNGM/6ptTrdjTGdA3b1Q=
+YNt
+iDLIrnUNbcfQh/Zrck2yF4AAr5dz1tqPQsYhzxP26IRYcGcIf5F2GABOdZYYp0N6BRHkGQN8O=
+Dk7
+8UhLKYkEfHYPKiSW/mDgHOSCpOrCZpjOyXxTFkq9trGrTNt6EN1ryW+EVeh00UwCBMsmUu4Ng=
+4Ys
+rYDButLdKnQARuSl0kFvjipWUablsClmi4d4n/6f7uvXb6Wp2wARAQABwsB8BBgBCAAmFiEEc=
+hf7
+rIzpz2NEoWjlaA3BHVMLeiMFAls50uACGwwFCQPCZwAACgkQaA3BHVMLeiOl9wgAifA/k6VwQ=
+qiR
+OccKINPPg6fLgacdE/Z9cBNBkIrGa7gAljaH2J/D01/ZOMJnoAy8Le2EA3SsUOPnk32XizUKl=
+oOj
+gn7R+Sse7I1pydPbToJ4lXUTs1ie3FSf4tKJGs53LCfp6uPFGL0RhNUsIdwOEESMqYVl+DgAz=
+gZk
+xZfWWDT54dt3mgvVqzbxa+8j+4hozJXxFvJei3Wv/xAuVaV1Tc2tMXmntMxTbLdkfaZ/my5Io=
+cAy
+1sTiMonxkcU6jcaEuCNWsFYcT0lc7TzEqSAP7Dq/zf6eiawS5/oLotiupj+2xm/IRfrM3wK2K=
+s90
+9a79Vc1FgCX+Vq3uVIjcfbqqscLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojB=
+QJf
+tOH6AAoJEGgNwR1TC3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6=
+Baa
+6H7ufXNQtThRyIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3=
+T0T
+trijKP4ASAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446S=
+h8W
+n/2DYa8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRai=
+tYJ
+4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9fOwU0EX7ThE=
+wEQ
+ANJiTIb/nQ+MPgIBsSfBBhmXrVFUwFveO6DWPZ0M+Y5xBJhvDukosstSgcLCdld4SFF2JnnCo=
+yh9
+boM2j2Ksd5wNzTzXlo3lEzFRAipftboviUjap0qxoRwy1hBV3Ft1/VyNwwYY7qjGVATQU7cIT=
+/zL
+gb+Sd0NPQA8r2NvpJq1MnI8nFfA2ZH4diuRtavhEBUzp63SlCYxnyxqT5AQzSQGUpsjSyh1A5=
+ezt
+j1pwxgnkX7F9ZT0lUBo6zZM6ZBq8Nkyvox46l79QoWMBm9y+/nIXy/uXdT6RaumPjBzVttGmk=
+Onm
+TlGUJyQAndAE1boib9iWCJ4kIr2ezRKjXJXGuaM1m7hSfdQYWed0j52+nW9qGSNNk1GjYXM8Z=
+SWT
+agX6O5mfbpzRgBBK/XoE9NWRNAa4V+tUX4/vqqDl0m+O4F2GYs6Eu7WLredRgwjDuMF/VCKvQ=
+fr3
+yjIt90Zi10cHQw3khdJWmSDKYgenpvsffo4x56biifOh6IxS/whf5/BAx4nx8GyX7JO0DUnUu=
+ieC
+NfEGRu8QbYBSOkO/vdm4xy7RZwdzlqN8zjCLFOCG346Bnsx3ku2lNtX6qZoajmfD4oO6N0Xds=
+2pE
+wjufCfJW9sCLdBmqLD5OvsRljyv7vt5w28XSF1tyhQaxIs+8sFJtwfCliduffq56FcFrEXCxs=
+LQr
+ABEBAAHCwqwEGAEIACAWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCX7ThEwIbAgJACRBoDcEdU=
+wt6
+I8F0IAQZAQgAHRYhBMZ3Zv36bjFHcGBRaJYfxNxEKL/gBQJftOETAAoJEJYfxNxEKL/gkygQA=
+LQH
+pXm45ZfMCDx7u/d7rRH/R7EfEV5OAoS981IkzbTgrb9z6YYfhQqH+R2ImgoX/Lou7zSjyd22/=
+IaZ
+AnTKHKkXIFIM1uB144dqAi3tW/Bei/CSdiD7DY1q92Ebl6e+Gpf3TZdATSY00fVeLMNFnjbbz=
+CVX
+9+LEKYARNm7kYogVJMc5CuVmXBn9FFF3cioRvpuals8llsFc4WiUBJfDfOzjXExqv3OMtJj0s=
+qlK
+sXdnLkXbtAmEvFaxqUuO1ZwTCTGflrn/g4C8Cg0ifk0wZGgGYRindkJE1vOQZPaDI7GtNxJ+D=
+sx4
+fL/8tf7Wuk3TZ6t/ofKhjq8sUVCVhnlyd/3ujruDu/PhwwYBsHjNn+PmHeCCRJuOWwKapdfjH=
+9nt
+sHXTvyXBB2D3H7Oj7S/HOTXRNTUWhaxICKtq+XDSuJKOv7CNevkjMF4ybQDsrUxnaWd76YqNP=
+vZv
+PYoTqKzKukifjGXMsxC6HU4K2GscpvoaIk7glaD+NYi3fIGi/gR0UNc6cmXtOrYKSnCsNOwcO=
+CJL
+DjEr6YdbdAXO2wxCLqnupo8JRJgA8hjjHM5OoTGEyP/c+DKDqFO90YilX1XN8xchHrw+bDv0E=
+Zm0
+RZpVdL7WNr7qQE4UhDfuyo4Gis4Z+npzoOL4g3yaQQfK32zZD9iqk9152b7ny2Ke5oFIF5SSa=
+EwH
+/2tLNBevzgzWuEB6FtqoMT5RjDyx+xBeImRlhnP0EenRh+EP0nmLCAaFiP4tTp1bX54SyByp8=
+wcN
+7F2+v2Sgdd64w1pdrjT74Zf1xj0NTxEdt5jEaPfl5Vjv3cXiB8ACwPkMIXmkJx3uaGJynl4Os=
+irb
+nzzviEzvDVpLAxL7Qr6imlKUh92iAoz+XxEDqgMZnJJOTDFdDxEBhv911VzlRraDNdxw4MHMm=
+5Nr
+5pj4HGYh3PigzNo0KIreB50YqhGOesaC4Q75gv8mLc2Ec5dEq79BVMUOaCmYDShBN9j6JovNs=
+WSR
+5YP3tXi+jZ+VnyKLft9wo1fh1oYadFEVSHgGsEY=3D
+=3DfoRs
+-----END PGP PUBLIC KEY BLOCK-----
 
-https://git.linuxtv.org/libcamera.git/tree/Documentation/guides/pipeline-handler.rst
-(you might want to compile libcamera to be able to render it in a browser)
+--------------6CCE5A54CD10E6493E924170--
 
-Hope this helps to clarify things a bit
+--WMakGiMkDwAFduzZqhcr2mj05JJZMstbs--
 
->
-> >
-> >> Some more comments on the implementation below
-> >>
-> >>> Changes in v5:
-> >>> - only in bindings
-> >>>
-> >>> Changes in v4:
-> >>> - now using get_mbus_config ops to get data from the subdevice, like the
-> >>> virtual channel id, and the clock type.
-> >>> - now having possibility to select any of the RAW10 data modes
-> >>> - at completion time, select which formats are also available in the subdevice,
-> >>> and move to the dynamic list accordingly
-> >>> - changed the pipeline integration, do not advertise subdev ready at probe time.
-> >>> wait until completion is done, and then start a workqueue that will register
-> >>> this device as a subdevice for the next element in pipeline.
-> >>> - moved the s_power code into a different function called now csi2dc_power
-> >>> that is called with CONFIG_PM functions. This is also called at completion,
-> >>> to have the device ready in case CONFIG_PM is not selected on the platform.
-> >>> - merged try_fmt into set_fmt
-> >>> - driver cleanup, wrapped lines over 80 characters
-> >>>
-> >>> Changes in v2:
-> >>> - moved driver to platform/atmel
-> >>> - fixed minor things as per Sakari's review
-> >>> - still some things from v2 review are not yet addressed, to be followed up
-> >>>
-> >>>   drivers/media/platform/atmel/Kconfig          |  13 +
-> >>>   drivers/media/platform/atmel/Makefile         |   1 +
-> >>>   .../media/platform/atmel/microchip-csi2dc.c   | 785 ++++++++++++++++++
-> >>>   3 files changed, 799 insertions(+)
-> >>>   create mode 100644 drivers/media/platform/atmel/microchip-csi2dc.c
-> >>>
-> >>> diff --git a/drivers/media/platform/atmel/Kconfig b/drivers/media/platform/atmel/Kconfig
-> >>> index 99b51213f871..147e1c14129b 100644
-> >>> --- a/drivers/media/platform/atmel/Kconfig
-> >>> +++ b/drivers/media/platform/atmel/Kconfig
-> >>> @@ -32,3 +32,16 @@ config VIDEO_ATMEL_ISI
-> >>>      help
-> >>>        This module makes the ATMEL Image Sensor Interface available
-> >>>        as a v4l2 device.
-> >>> +
-> >>> +config VIDEO_MICROCHIP_CSI2DC
-> >>> +   tristate "Microchip CSI2 Demux Controller"
-> >>> +   depends on VIDEO_V4L2 && COMMON_CLK && OF
-> >>> +   depends on ARCH_AT91 || COMPILE_TEST
-> >>> +   select MEDIA_CONTROLLER
-> >>> +   select VIDEO_V4L2_SUBDEV_API
-> >>> +   select V4L2_FWNODE
-> >>> +   help
-> >>> +     CSI2 Demux Controller driver. CSI2DC is a helper chip
-> >>> +     that converts IDI interface byte stream to a parallel pixel stream.
-> >>> +     It supports various RAW formats as input.
-> >>> +     Performs clock domain crossing between hardware blocks.
-> >>
-> >> Is the last phrase necessary ? Also missing the usual
-> >>
-> >>          To compile this driver as a module, choose M here: the
-> >>          module will be called ...
-> >>
-> >>> diff --git a/drivers/media/platform/atmel/Makefile b/drivers/media/platform/atmel/Makefile
-> >>> index c5c01556c653..8e80af500bf5 100644
-> >>> --- a/drivers/media/platform/atmel/Makefile
-> >>> +++ b/drivers/media/platform/atmel/Makefile
-> >>> @@ -5,3 +5,4 @@ atmel-xisc-objs = atmel-sama7g5-isc.o atmel-isc-base.o
-> >>>   obj-$(CONFIG_VIDEO_ATMEL_ISI) += atmel-isi.o
-> >>>   obj-$(CONFIG_VIDEO_ATMEL_ISC) += atmel-isc.o
-> >>>   obj-$(CONFIG_VIDEO_ATMEL_XISC) += atmel-xisc.o
-> >>> +obj-$(CONFIG_VIDEO_MICROCHIP_CSI2DC) += microchip-csi2dc.o
-> >>> diff --git a/drivers/media/platform/atmel/microchip-csi2dc.c b/drivers/media/platform/atmel/microchip-csi2dc.c
-> >>> new file mode 100644
-> >>> index 000000000000..fda1d5882dbb
-> >>> --- /dev/null
-> >>> +++ b/drivers/media/platform/atmel/microchip-csi2dc.c
-> >>> @@ -0,0 +1,785 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0
-> >>
-> >> Nit: I see GPL-2.0 listed as deprecated by spdx.org
-> >> Should you use one of:
-> >>                GPL-2.0-only
-> >>                        GPL-2.0-or-later
-> >>
-> >>> +/*
-> >>> + * Microchip CSI2 Demux Controller (CSI2DC) driver
-> >>> + *
-> >>> + * Copyright (C) 2018-2020 Microchip Technology, Inc.
-> >>> + *
-> >>> + * Author: Eugen Hristev <eugen.hristev@microchip.com>
-> >>> + *
-> >>> + */
-> >>> +
-> >>> +#include <linux/clk.h>
-> >>> +#include <linux/module.h>
-> >>> +#include <linux/of.h>
-> >>> +#include <linux/of_graph.h>
-> >>> +#include <linux/platform_device.h>
-> >>> +#include <linux/pm_runtime.h>
-> >>> +#include <linux/videodev2.h>
-> >>> +
-> >>> +#include <media/v4l2-device.h>
-> >>> +#include <media/v4l2-fwnode.h>
-> >>> +#include <media/v4l2-subdev.h>
-> >>> +#include <media/videobuf2-dma-contig.h>
-> >>> +
-> >>> +/* Global configuration register */
-> >>> +#define CSI2DC_GCFG                        0x0
-> >>> +
-> >>> +/* MIPI sensor pixel clock is free running */
-> >>> +#define CSI2DC_GCFG_MIPIFRN                BIT(0)
-> >>> +/* Output waveform inter-line minimum delay */
-> >>> +#define CSI2DC_GCFG_HLC(v)         ((v) << 4)
-> >>> +#define CSI2DC_GCFG_HLC_MASK               GENMASK(7, 4)
-> >>> +/* SAMA7G5 requires a HLC delay of 15 */
-> >>> +#define SAMA7G5_HLC                        (15)
-> >>> +
-> >>> +/* Global control register */
-> >>> +#define CSI2DC_GCTLR                       0x04
-> >>> +#define CSI2DC_GCTLR_SWRST         BIT(0)
-> >>> +
-> >>> +/* Global status register */
-> >>> +#define CSI2DC_GS                  0x08
-> >>> +
-> >>> +/* SSP interrupt status register */
-> >>> +#define CSI2DC_SSPIS                       0x28
-> >>> +/* Pipe update register */
-> >>> +#define CSI2DC_PU                  0xC0
-> >>> +/* Video pipe attributes update */
-> >>> +#define CSI2DC_PU_VP                       BIT(0)
-> >>> +
-> >>> +/* Pipe update status register */
-> >>> +#define CSI2DC_PUS                 0xC4
-> >>> +
-> >>> +/* Video pipeline enable register */
-> >>> +#define CSI2DC_VPE                 0xF8
-> >>> +#define CSI2DC_VPE_ENABLE          BIT(0)
-> >>> +
-> >>> +/* Video pipeline configuration register */
-> >>> +#define CSI2DC_VPCFG                       0xFC
-> >>> +/* Data type */
-> >>> +#define CSI2DC_VPCFG_DT(v)         ((v) << 0)
-> >>> +#define CSI2DC_VPCFG_DT_MASK               GENMASK(5, 0)
-> >>> +/* Virtual channel identifier */
-> >>> +#define CSI2DC_VPCFG_VC(v)         ((v) << 6)
-> >>> +#define CSI2DC_VPCFG_VC_MASK               GENMASK(7, 6)
-> >>> +/* Decompression enable */
-> >>> +#define CSI2DC_VPCFG_DE                    BIT(8)
-> >>> +/* Decoder mode */
-> >>> +#define CSI2DC_VPCFG_DM(v)         ((v) << 9)
-> >>> +#define CSI2DC_VPCFG_DM_DECODER8TO12       0
-> >>> +/* Decoder predictor 2 selection */
-> >>> +#define CSI2DC_VPCFG_DP2           BIT(12)
-> >>> +/* Recommended memory storage */
-> >>> +#define CSI2DC_VPCFG_RMS           BIT(13)
-> >>> +/* Post adjustment */
-> >>> +#define CSI2DC_VPCFG_PA                    BIT(14)
-> >>> +
-> >>> +/* Video pipeline column register */
-> >>> +#define CSI2DC_VPCOL                       0x100
-> >>> +/* Column number */
-> >>> +#define CSI2DC_VPCOL_COL(v)                ((v) << 0)
-> >>> +#define CSI2DC_VPCOL_COL_MASK              GENMASK(15, 0)
-> >>> +
-> >>> +/* Video pipeline row register */
-> >>> +#define CSI2DC_VPROW                       0x104
-> >>> +/* Row number */
-> >>> +#define CSI2DC_VPROW_ROW(v)                ((v) << 0)
-> >>> +#define CSI2DC_VPROW_ROW_MASK              GENMASK(15, 0)
-> >>> +
-> >>> +/* Version register */
-> >>> +#define CSI2DC_VERSION                     0x1FC
-> >>> +
-> >>> +/* register read/write helpers */
-> >>> +#define csi2dc_readl(st, reg)              readl_relaxed((st)->base + (reg))
-> >>> +#define csi2dc_writel(st, reg, val)        writel_relaxed((val), \
-> >>> +                                   (st)->base + (reg))
-> >>> +
-> >>> +/* supported RAW data types */
-> >>> +#define CSI2DC_DT_RAW6                     0x28
-> >>> +#define CSI2DC_DT_RAW7                     0x29
-> >>> +#define CSI2DC_DT_RAW8                     0x2A
-> >>> +#define CSI2DC_DT_RAW10                    0x2B
-> >>> +#define CSI2DC_DT_RAW12                    0x2C
-> >>> +#define CSI2DC_DT_RAW14                    0x2D
-> >>> +
-> >>> +struct csi2dc_format {
-> >>> +   u32                             mbus_code;
-> >>> +   u32                             dt;
-> >>> +};
-> >>> +
-> >>> +static struct csi2dc_format csi2dc_formats_list[] = {
-> >>> +   {
-> >>> +           .mbus_code =            MEDIA_BUS_FMT_SRGGB10_1X10,
-> >>> +           .dt =                   CSI2DC_DT_RAW10,
-> >>> +   }, {
-> >>> +           .mbus_code =            MEDIA_BUS_FMT_SBGGR10_1X10,
-> >>> +           .dt =                   CSI2DC_DT_RAW10,
-> >>> +   }, {
-> >>> +           .mbus_code =            MEDIA_BUS_FMT_SGRBG10_1X10,
-> >>> +           .dt =                   CSI2DC_DT_RAW10,
-> >>> +   }, {
-> >>> +           .mbus_code =            MEDIA_BUS_FMT_SGBRG10_1X10,
-> >>> +           .dt =                   CSI2DC_DT_RAW10,
-> >>> +   },
-> >>> +};
-> >>> +
-> >>> +enum mipi_csi_pads {
-> >>> +   CSI2DC_PAD_SINK                 = 0,
-> >>> +   CSI2DC_PAD_SOURCE               = 1,
-> >>> +   CSI2DC_PADS_NUM                 = 2,
-> >>> +};
-> >>> +
-> >>> +struct csi2dc_device {
-> >>> +   void __iomem                    *base;
-> >>> +   struct v4l2_subdev              csi2dc_sd;
-> >>> +   struct device                   *dev;
-> >>> +   struct v4l2_device              v4l2_dev;
-> >>> +   struct clk                      *pclk;
-> >>> +   struct clk                      *scck;
-> >>> +
-> >>> +   bool                            video_pipe;
-> >>> +
-> >>> +   u32                             num_fmts;
-> >>> +   struct csi2dc_format            **formats;
-> >>> +
-> >>> +   struct csi2dc_format            *cur_fmt;
-> >>> +   struct csi2dc_format            *try_fmt;
-> >>> +
-> >>> +   struct media_pad                pads[CSI2DC_PADS_NUM];
-> >>> +
-> >>> +   bool                            clk_gated;
-> >>> +   u32                             vc;
-> >>> +
-> >>> +   struct v4l2_async_subdev        *asd;
-> >>> +   struct v4l2_async_notifier      notifier;
-> >>> +
-> >>> +   struct v4l2_subdev              *input_sd;
-> >>> +
-> >>> +   u32                             remote_pad;
-> >>> +
-> >>> +   bool                            completed;
-> >>> +   bool                            powered_on;
-> >>> +
-> >>> +   struct work_struct              workq;
-> >>> +};
-> >>> +
-> >>> +static void csi2dc_vp_update(struct csi2dc_device *csi2dc)
-> >>> +{
-> >>> +   u32 vp;
-> >>> +
-> >>> +   vp = CSI2DC_VPCFG_DT(csi2dc->cur_fmt->dt) & CSI2DC_VPCFG_DT_MASK;
-> >>> +   vp |= CSI2DC_VPCFG_VC(csi2dc->vc) & CSI2DC_VPCFG_VC_MASK;
-> >>> +   vp &= ~CSI2DC_VPCFG_DE;
-> >>> +   vp |= CSI2DC_VPCFG_DM(CSI2DC_VPCFG_DM_DECODER8TO12);
-> >>> +   vp &= ~CSI2DC_VPCFG_DP2;
-> >>> +   vp &= ~CSI2DC_VPCFG_RMS;
-> >>> +   vp |= CSI2DC_VPCFG_PA;
-> >>> +
-> >>> +   csi2dc_writel(csi2dc, CSI2DC_VPCFG, vp);
-> >>> +   csi2dc_writel(csi2dc, CSI2DC_VPE, CSI2DC_VPE_ENABLE);
-> >>> +   csi2dc_writel(csi2dc, CSI2DC_PU, CSI2DC_PU_VP);
-> >>> +}
-> >>> +
-> >>> +static inline struct csi2dc_device *
-> >>> +csi2dc_sd_to_csi2dc_device(struct v4l2_subdev *csi2dc_sd)
-> >>> +{
-> >>> +   return container_of(csi2dc_sd, struct csi2dc_device, csi2dc_sd);
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_enum_mbus_code(struct v4l2_subdev *csi2dc_sd,
-> >>> +                            struct v4l2_subdev_pad_config *cfg,
-> >>> +                            struct v4l2_subdev_mbus_code_enum *code)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = csi2dc_sd_to_csi2dc_device(csi2dc_sd);
-> >>> +
-> >>> +   if (code->index >= csi2dc->num_fmts)
-> >>> +           return -EINVAL;
-> >>> +
-> >>> +   code->code = csi2dc->formats[code->index]->mbus_code;
-> >>> +   return 0;
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_set_fmt(struct v4l2_subdev *csi2dc_sd,
-> >>> +                     struct v4l2_subdev_pad_config *cfg,
-> >>> +                     struct v4l2_subdev_format *req_fmt)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = csi2dc_sd_to_csi2dc_device(csi2dc_sd);
-> >>> +   struct csi2dc_format *fmt;
-> >>> +   int ret, i;
-> >>> +
-> >>> +   if (!csi2dc->completed) {
-> >>> +           dev_dbg((csi2dc)->dev, "subdev not registered yet\n");
-> >>> +           return 0;
-> >>> +   }
-> >>> +
-> >>> +   for (fmt = csi2dc->formats[0], i = 0; i < csi2dc->num_fmts; fmt++, i++)
-> >>> +           if (req_fmt->format.code == fmt->mbus_code)
-> >>> +                   csi2dc->try_fmt = fmt;
-> >>> +
-> >>> +   /* in case we could not find the desired format, default to something */
-> >>> +   if (!csi2dc->try_fmt  ||
-> >>> +       req_fmt->format.code != csi2dc->try_fmt->mbus_code) {
-> >>> +           csi2dc->try_fmt = csi2dc->formats[0];
-> >>> +
-> >>> +           dev_dbg(csi2dc->dev,
-> >>> +                   "CSI2DC unsupported format 0x%x, defaulting to 0x%x\n",
-> >>> +                   req_fmt->format.code, csi2dc->formats[0]->mbus_code);
-> >>> +
-> >>> +           req_fmt->format.code = csi2dc->formats[0]->mbus_code;
-> >>> +   }
-> >>> +
-> >>> +   /* if we are just trying, we are done */
-> >>> +   if (req_fmt->which == V4L2_SUBDEV_FORMAT_TRY)
-> >>> +           return 0;
-> >>> +
-> >>> +   ret = v4l2_subdev_call(csi2dc->input_sd, pad, set_fmt, cfg, req_fmt);
-> >>> +   if (ret) {
-> >>> +           dev_err(csi2dc->dev, "input subdev failed %d\n", ret);
-> >>> +           return ret;
-> >>> +   }
-> >>> +
-> >>> +   csi2dc->cur_fmt = csi2dc->try_fmt;
-> >>> +   /* update video pipe */
-> >>> +   csi2dc_vp_update(csi2dc);
-> >>> +
-> >>> +   dev_dbg(csi2dc->dev, "CSI2DC new format: 0x%x\n", req_fmt->format.code);
-> >>> +   return 0;
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_formats_init(struct csi2dc_device *csi2dc)
-> >>> +{
-> >>> +   struct csi2dc_format *fmt;
-> >>> +   struct v4l2_subdev *subdev = csi2dc->input_sd;
-> >>> +   unsigned int num_fmts, i;
-> >>> +
-> >>> +   struct v4l2_subdev_mbus_code_enum mbus_code = {
-> >>> +           .which = V4L2_SUBDEV_FORMAT_ACTIVE,
-> >>> +           .index = 0,
-> >>> +   };
-> >>> +
-> >>> +   num_fmts = 0;
-> >>> +
-> >>> +   csi2dc->formats = devm_kcalloc(csi2dc->dev,
-> >>> +                                  ARRAY_SIZE(csi2dc_formats_list),
-> >>> +                                  sizeof(*csi2dc->formats), GFP_KERNEL);
-> >>> +   if (!csi2dc->formats)
-> >>> +           return -ENOMEM;
-> >>> +
-> >>> +   while (!v4l2_subdev_call(subdev, pad, enum_mbus_code, NULL,
-> >>> +          &mbus_code)) {
-> >>> +           mbus_code.index++;
-> >>> +           for (fmt = &csi2dc_formats_list[0], i = 0;
-> >>> +                i < ARRAY_SIZE(csi2dc_formats_list); i++, fmt++)
-> >>> +                   if (fmt->mbus_code == mbus_code.code) {
-> >>> +                           csi2dc->formats[num_fmts] = fmt;
-> >>> +                           num_fmts++;
-> >>> +                   }
-> >>> +   }
-> >>
-> >> For the reasons explained above and by Sakari, I think this should be dropped
-> >>
-> >>> +
-> >>> +   if (!num_fmts)
-> >>> +           return -ENXIO;
-> >>> +
-> >>> +   csi2dc->num_fmts = num_fmts;
-> >>> +
-> >>> +   return 0;
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_power(struct csi2dc_device *csi2dc, int on)
-> >>> +{
-> >>> +   int ret = 0;
-> >>> +
-> >>> +   if (!csi2dc->completed) {
-> >>> +           dev_dbg((csi2dc)->dev, "subdev not registered yet\n");
-> >>> +           return 0;
-> >>> +   }
-> >>
-> >> Can this happen ?
-> >>
-> >>> +
-> >>> +   if (csi2dc->powered_on == on)
-> >>> +           return 0;
-> >>
-> >> Same question
-> >>
-> >>> +
-> >>> +   if (on)
-> >>> +           ret = clk_prepare_enable(csi2dc->scck);
-> >>> +   else
-> >>> +           clk_disable_unprepare(csi2dc->scck);
-> >>> +   if (ret)
-> >>> +           dev_err(csi2dc->dev, "failed to enable scck: %d\n", ret);
-> >>> +
-> >>> +   /* if powering up, deassert reset line */
-> >>> +   if (on)
-> >>> +           csi2dc_writel(csi2dc, CSI2DC_GCTLR, CSI2DC_GCTLR_SWRST);
-> >>> +
-> >>> +   /* if powering down, assert reset line */
-> >>> +   if (!on)
-> >>> +           csi2dc_writel(csi2dc, CSI2DC_GCTLR, !CSI2DC_GCTLR_SWRST);
-> >>> +   if (!ret)
-> >>> +           csi2dc->powered_on = on;
-> >>
-> >> Wouldn't this be better coded as
-> >>
-> >>          if (on) {
-> >>                  clk_prepare_enable
-> >>                  csi2dc_writel(SWRST)
-> >>                  powered_on = true
-> >>          } else {
-> >>                  clk_disable_unrepare
-> >>                  csi2dc_writel(!SWRST)
-> >>                  powered_on = false
-> >>          }
-> >>> +
-> >>> +   return ret;
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_s_stream(struct v4l2_subdev *csi2dc_sd, int enable)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = csi2dc_sd_to_csi2dc_device(csi2dc_sd);
-> >>> +
-> >>> +   if (!csi2dc->completed) {
-> >>> +           dev_dbg((csi2dc)->dev, "subdev not registered yet\n");
-> >>> +           return 0;
-> >>> +   }
-> >>> +
-> >>> +   return v4l2_subdev_call(csi2dc->input_sd, video, s_stream, enable);
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_g_frame_interval(struct v4l2_subdev *csi2dc_sd,
-> >>> +                              struct v4l2_subdev_frame_interval *interval)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = csi2dc_sd_to_csi2dc_device(csi2dc_sd);
-> >>> +
-> >>> +   if (!csi2dc->completed) {
-> >>> +           dev_dbg((csi2dc)->dev, "subdev not registered yet\n");
-> >>> +           return 0;
-> >>> +   }
-> >>> +
-> >>> +   return v4l2_subdev_call(csi2dc->input_sd, video, g_frame_interval,
-> >>> +                           interval);
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_s_frame_interval(struct v4l2_subdev *csi2dc_sd,
-> >>> +                              struct v4l2_subdev_frame_interval *interval)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = csi2dc_sd_to_csi2dc_device(csi2dc_sd);
-> >>> +
-> >>> +   if (!csi2dc->completed) {
-> >>> +           dev_dbg((csi2dc)->dev, "subdev not registered yet\n");
-> >>> +           return 0;
-> >>> +   }
-> >>> +
-> >>> +   return v4l2_subdev_call(csi2dc->input_sd, video, s_frame_interval,
-> >>> +                           interval);
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_enum_frame_size(struct v4l2_subdev *csi2dc_sd,
-> >>> +                             struct v4l2_subdev_pad_config *cfg,
-> >>> +                             struct v4l2_subdev_frame_size_enum *fse)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = csi2dc_sd_to_csi2dc_device(csi2dc_sd);
-> >>> +
-> >>> +   if (!csi2dc->completed) {
-> >>> +           dev_dbg((csi2dc)->dev, "subdev not registered yet\n");
-> >>> +           return 0;
-> >>> +   }
-> >>> +
-> >>> +   return v4l2_subdev_call(csi2dc->input_sd, pad, enum_frame_size, cfg,
-> >>> +                           fse);
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_enum_frame_interval(struct v4l2_subdev *csi2dc_sd,
-> >>> +                         struct v4l2_subdev_pad_config *cfg,
-> >>> +                         struct v4l2_subdev_frame_interval_enum *fie)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = csi2dc_sd_to_csi2dc_device(csi2dc_sd);
-> >>> +
-> >>> +   if (!csi2dc->completed) {
-> >>> +           dev_dbg((csi2dc)->dev, "subdev not registered yet\n");
-> >>> +           return 0;
-> >>> +   }
-> >>> +
-> >>> +   return v4l2_subdev_call(csi2dc->input_sd, pad, enum_frame_interval, cfg,
-> >>> +                           fie);
-> >>> +}
-> >>> +
-> >>> +static const struct v4l2_subdev_pad_ops csi2dc_pad_ops = {
-> >>> +   .enum_mbus_code = csi2dc_enum_mbus_code,
-> >>> +   .set_fmt = csi2dc_set_fmt,
-> >>> +   .enum_frame_size = csi2dc_enum_frame_size,
-> >>> +   .enum_frame_interval = csi2dc_enum_frame_interval,
-> >>> +};
-> >>> +
-> >>> +static const struct v4l2_subdev_video_ops csi2dc_video_ops = {
-> >>> +   .s_stream = csi2dc_s_stream,
-> >>> +   .g_frame_interval = csi2dc_g_frame_interval,
-> >>> +   .s_frame_interval = csi2dc_s_frame_interval,
-> >>> +};
-> >>> +
-> >>> +static const struct v4l2_subdev_ops csi2dc_subdev_ops = {
-> >>> +   .pad = &csi2dc_pad_ops,
-> >>> +   .video = &csi2dc_video_ops,
-> >>> +};
-> >>> +
-> >>> +static int csi2dc_get_mbus_config(struct csi2dc_device *csi2dc)
-> >>> +{
-> >>> +   struct v4l2_mbus_config mbus_config = { 0 };
-> >>> +   int ret;
-> >>> +
-> >>> +   ret = v4l2_subdev_call(csi2dc->input_sd, pad, get_mbus_config,
-> >>> +                          csi2dc->remote_pad, &mbus_config);
-> >>> +   if (ret == -ENOIOCTLCMD) {
-> >>> +           dev_dbg(csi2dc->dev,
-> >>> +                   "no remote mbus configuration available\n");
-> >>> +           goto csi2dc_get_mbus_config_defaults;
-> >>> +   }
-> >>> +
-> >>> +   if (ret) {
-> >>> +           dev_err(csi2dc->dev,
-> >>> +                   "failed to get remote mbus configuration\n");
-> >>> +           goto csi2dc_get_mbus_config_defaults;
-> >>
-> >> This should probably be an error reported to the caller. But this
-> >> function return value is not checked, so it's probably fine.
-> >>
-> >>> +   }
-> >>> +
-> >>> +   if (mbus_config.flags & V4L2_MBUS_CSI2_CHANNEL_0)
-> >>> +           csi2dc->vc = 0;
-> >>> +   else if (mbus_config.flags & V4L2_MBUS_CSI2_CHANNEL_1)
-> >>> +           csi2dc->vc = 1;
-> >>> +   else if (mbus_config.flags & V4L2_MBUS_CSI2_CHANNEL_2)
-> >>> +           csi2dc->vc = 2;
-> >>> +   else if (mbus_config.flags & V4L2_MBUS_CSI2_CHANNEL_3)
-> >>> +           csi2dc->vc = 3;
-> >>> +
-> >>> +   dev_dbg(csi2dc->dev, "subdev sending on channel %d\n", csi2dc->vc);
-> >>> +
-> >>> +   csi2dc->clk_gated = mbus_config.flags &
-> >>> +                       V4L2_MBUS_CSI2_NONCONTINUOUS_CLOCK;
-> >>> +
-> >>> +   dev_dbg(csi2dc->dev, "%s clock\n",
-> >>> +           csi2dc->clk_gated ? "gated" : "free running");
-> >>> +
-> >>> +   return 0;
-> >>> +
-> >>> +csi2dc_get_mbus_config_defaults:
-> >>> +   csi2dc->vc = 0; /* Virtual ID 0 by default */
-> >>> +   csi2dc->clk_gated = false; /* Free running clock by default */
-> >>> +
-> >>> +   return 0;
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_async_bound(struct v4l2_async_notifier *notifier,
-> >>> +                         struct v4l2_subdev *subdev,
-> >>> +                         struct v4l2_async_subdev *asd)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = container_of(notifier->v4l2_dev,
-> >>> +                                   struct csi2dc_device, v4l2_dev);
-> >>> +   int pad;
-> >>> +
-> >>> +   csi2dc->input_sd = subdev;
-> >>> +
-> >>> +   pad = media_entity_get_fwnode_pad(&subdev->entity,
-> >>> +                                     asd->match.fwnode,
-> >>> +                                     MEDIA_PAD_FL_SOURCE);
-> >>> +   if (pad < 0) {
-> >>> +           dev_err(csi2dc->dev, "Failed to find pad for %s\n",
-> >>> +                   subdev->name);
-> >>> +           return pad;
-> >>> +   }
-> >>> +
-> >>> +   csi2dc->remote_pad = pad;
-> >>> +
-> >>> +   csi2dc_get_mbus_config(csi2dc);
-> >>
-> >> The closer to s_stream you call get_mbus_config, the less the chances
-> >> of receiving a stale configuration, if this can happen.
-> >>
-> >>> +
-> >>> +   return 0;
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_async_complete(struct v4l2_async_notifier *notifier)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc =
-> >>> +           container_of(notifier->v4l2_dev, struct csi2dc_device,
-> >>> +                        v4l2_dev);
-> >>> +   int ret;
-> >>> +
-> >>> +   ret = csi2dc_formats_init(csi2dc);
-> >>> +   if (ret)
-> >>> +           return ret;
-> >>> +
-> >>> +   ret = v4l2_device_register_subdev_nodes(&csi2dc->v4l2_dev);
-> >>> +   if (ret < 0) {
-> >>> +           v4l2_err(&csi2dc->v4l2_dev,
-> >>> +                    "failed to register subdev nodes\n");
-> >>> +           return ret;
-> >>> +   }
-> >>> +
-> >>> +   csi2dc->completed = true;
-> >>> +
-> >>> +   csi2dc_writel(csi2dc, CSI2DC_GCFG,
-> >>> +                 (SAMA7G5_HLC & CSI2DC_GCFG_HLC_MASK) |
-> >>> +                 (csi2dc->clk_gated ? 0 : CSI2DC_GCFG_MIPIFRN));
-> >>> +
-> >>> +   csi2dc_writel(csi2dc, CSI2DC_VPCOL,
-> >>> +                 CSI2DC_VPCOL_COL(0xFFF) & CSI2DC_VPCOL_COL_MASK);
-> >>> +   csi2dc_writel(csi2dc, CSI2DC_VPROW,
-> >>> +                 CSI2DC_VPROW_ROW(0xFFF) & CSI2DC_VPROW_ROW_MASK);
-> >>> +
-> >>> +   /* once we are completed, we can register ourselves in the pipeline */
-> >>> +   schedule_work(&csi2dc->workq);
-> >>> +
-> >>> +   return ret;
-> >>> +}
-> >>> +
-> >>> +static const struct v4l2_async_notifier_operations csi2dc_async_ops = {
-> >>> +   .bound = csi2dc_async_bound,
-> >>> +   .complete = csi2dc_async_complete,
-> >>> +};
-> >>> +
-> >>> +static void csi2dc_cleanup_notifier(struct csi2dc_device *csi2dc)
-> >>> +{
-> >>> +   v4l2_async_notifier_unregister(&csi2dc->notifier);
-> >>> +   v4l2_async_notifier_cleanup(&csi2dc->notifier);
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_prepare_notifier(struct csi2dc_device *csi2dc,
-> >>> +                              struct device_node *input_parent)
-> >>> +{
-> >>> +   int ret;
-> >>> +
-> >>> +   v4l2_async_notifier_init(&csi2dc->notifier);
-> >>> +
-> >>> +   csi2dc->asd = kzalloc(sizeof(*csi2dc->asd), GFP_KERNEL);
-> >>> +   if (!csi2dc->asd)
-> >>> +           return -ENOMEM;
-> >>> +
-> >>> +   csi2dc->asd->match_type = V4L2_ASYNC_MATCH_FWNODE;
-> >>> +   csi2dc->asd->match.fwnode = of_fwnode_handle(input_parent);
-> >>
-> >> If you use v4l2_async_notifier_add_fwnode_subdev() the framework does
-> >> this for you.
-> >>
-> >>> +
-> >>> +   ret = v4l2_async_notifier_add_subdev(&csi2dc->notifier, csi2dc->asd);
-> >>> +   if (ret) {
-> >>> +           dev_err(csi2dc->dev, "failed to add async notifier.\n");
-> >>> +           v4l2_async_notifier_cleanup(&csi2dc->notifier);
-> >>> +           goto csi2dc_prepare_notifier_err;
-> >>> +   }
-> >>> +
-> >>> +   csi2dc->notifier.ops = &csi2dc_async_ops;
-> >>> +
-> >>> +   ret = v4l2_async_notifier_register(&csi2dc->v4l2_dev,
-> >>> +                                      &csi2dc->notifier);
-> >>> +
-> >>> +   if (ret) {
-> >>> +           dev_err(csi2dc->dev, "fail to register async notifier.\n");
-> >>
-> >> Shouldn't you cleanup the notifier if registration fails ?
-> >>
-> >>> +           goto csi2dc_prepare_notifier_err;
-> >>> +   }
-> >>> +
-> >>> +csi2dc_prepare_notifier_err:
-> >>> +   of_node_put(input_parent);
-> >>> +
-> >>> +   return ret;
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_of_parse(struct csi2dc_device *csi2dc,
-> >>> +                      struct device_node *of_node)
-> >>> +{
-> >>> +   struct device_node *input_node, *sink_node, *input_parent;
-> >>> +   struct v4l2_fwnode_endpoint input_endpoint = { 0 },
-> >>> +                               sink_endpoint = { 0 };
-> >>> +   int ret;
-> >>> +
-> >>> +   input_node = of_graph_get_next_endpoint(of_node, NULL);
-> >>> +
-> >>> +   if (!input_node) {
-> >>> +           dev_err(csi2dc->dev,
-> >>> +                   "missing port node at %s, input node is mandatory.\n",
-> >>
-> >> Please use %pOF to print the node name
-> >> Also, input_node should be put in the error path
-> >>
-> >>> +                   of_node->full_name);
-> >>> +           return -EINVAL;
-> >>> +   }
-> >>> +
-> >>> +   ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(input_node),
-> >>> +                                    &input_endpoint);
-> >>
-> >> Please set input_endpoint.bus_type if you know what kind of bus you're
-> >> dealing with (not having the bindings of the IDI transmitter I'm not
-> >> sure. Is this V4L2_MBUS_CSI2_DPHY ?)
-> >>
-> >>> +
-> >>> +   if (ret) {
-> >>> +           dev_err(csi2dc->dev, "endpoint not defined at %s\n",
-> >>> +                   of_node->full_name);
-> >>> +           return ret;
-> >>> +   }
-> >>> +
-> >>> +   input_parent = of_graph_get_remote_port_parent(input_node);
-> >>> +   if (!input_parent) {
-> >>
-> >> Missing of_node_put(input_node)
-> >>
-> >>> +           dev_err(csi2dc->dev,
-> >>> +                   "could not get input node's parent node.\n");
-> >>> +           return -EINVAL;
-> >>> +   }
-> >>> +
-> >>> +   sink_node = of_graph_get_next_endpoint(of_node, input_node);
-> >>> +
-> >>> +   if (sink_node)
-> >>> +           ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(sink_node),
-> >>> +                                            &sink_endpoint);
-> >>
-> >> Same, set sink_endpoint.bus_type if you know it's MBUS_PARALLEL
-> >>
-> >>> +
-> >>> +   if (!sink_node || ret) {
-> >>
-> >> If parsing fail you don't return an error but continue registering the
-> >> notifier and potentially end up registering the async subdev for this
-> >> entity even if the endpoint parsing failed.
-> >>
-> >>> +           dev_info(csi2dc->dev,
-> >>> +                    "missing sink node at %s, data pipe available only.\n",
-> >>> +                    of_node->full_name);
-> >>> +   } else {
-> >>> +           csi2dc->video_pipe = true;
-> >>
-> >> video_pipe is unused it seems
-> >>
-> >>> +
-> >>> +           dev_dbg(csi2dc->dev, "block %s %d.%d->%d.%d video pipeline\n",
-> >>> +                   of_node->full_name, input_endpoint.base.port,
-> >>> +                   input_endpoint.base.id, sink_endpoint.base.port,
-> >>> +                   sink_endpoint.base.id);
-> >>> +   }
-> >>> +
-> >>> +   of_node_put(sink_node);
-> >>> +   of_node_put(input_node);
-> >>> +
-> >>> +   /* prepare async notifier for subdevice completion */
-> >>> +   return csi2dc_prepare_notifier(csi2dc, input_parent);
-> >>> +}
-> >>> +
-> >>> +static void csi2dc_workq_handler(struct work_struct *workq)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = container_of(workq,
-> >>> +                                   struct csi2dc_device, workq);
-> >>> +   int ret;
-> >>> +
-> >>> +   if (v4l2_async_register_subdev(&csi2dc->csi2dc_sd))
-> >>> +           dev_dbg(csi2dc->dev, "failed to register the subdevice\n");
-> >>
-> >> That's peculiar, why do you have to schedule this to a workqueue
-> >> instead of doing this in the complete() callback ?
-> >>
-> >>> +
-> >>> +   ret = csi2dc_power(csi2dc, true);
-> >>> +   if (ret < 0)
-> >>> +           v4l2_err(&csi2dc->v4l2_dev, "failed to power on\n");
-> >>
-> >> Should the device be powered on at s_stream time ? Possibly with a
-> >> pm_runtime_get_sync() call ? I see you register pm_runtime operations,
-> >> but never call get_sync() or _put().
-> >>
-> >> What if CONFIG_PM not selected ? Should this driver select it ? Do you
-> >> have use cases where that's not possible ?
-> >>
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_probe(struct platform_device *pdev)
-> >>> +{
-> >>> +   struct device *dev = &pdev->dev;
-> >>> +   struct csi2dc_device *csi2dc;
-> >>> +   struct resource *res = NULL;
-> >>> +   int ret = 0;
-> >>> +
-> >>> +   csi2dc = devm_kzalloc(dev, sizeof(*csi2dc), GFP_KERNEL);
-> >>> +   if (!csi2dc)
-> >>> +           return -ENOMEM;
-> >>> +
-> >>> +   csi2dc->dev = dev;
-> >>> +
-> >>> +   res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >>> +   if (!res)
-> >>> +           return -EINVAL;
-> >>
-> >> devm_ioremap_resource() checks for the validity of 'res' so you can
-> >> drop the previous two lines
-> >>
-> >>> +
-> >>> +   csi2dc->base = devm_ioremap_resource(dev, res);
-> >>> +
-> >>
-> >> Is the empy line intentional, sometimes you have one, sometimes you
-> >> don't ?
-> >>
-> >>> +   if (IS_ERR(csi2dc->base)) {
-> >>> +           dev_err(dev, "base address not set\n");
-> >>
-> >>
-> >>> +           return PTR_ERR(csi2dc->base);
-> >>> +   }
-> >>> +
-> >>> +   csi2dc->pclk = devm_clk_get(dev, "pclk");
-> >>> +   if (IS_ERR(csi2dc->pclk)) {
-> >>> +           ret = PTR_ERR(csi2dc->pclk);
-> >>> +           dev_err(dev, "failed to get pclk: %d\n", ret);
-> >>> +           return ret;
-> >>
-> >> Just return PTR_ERR instead of assigning to ret
-> >>
-> >>> +   }
-> >>> +
-> >>> +   ret = clk_prepare_enable(csi2dc->pclk);
-> >>> +   if (ret) {
-> >>> +           dev_err(dev, "failed to enable pclk: %d\n", ret);
-> >>> +           return ret;
-> >>> +   }
-> >>
-> >> Has this clock to be enabled here or can it be done in the
-> >> pm_runtime callback ?
-> >>
-> >>> +
-> >>> +   csi2dc->scck = devm_clk_get(dev, "scck");
-> >>> +   if (IS_ERR(csi2dc->scck)) {
-> >>> +           ret = PTR_ERR(csi2dc->scck);
-> >>> +           dev_err(dev, "failed to get scck: %d\n", ret);
-> >>> +           goto csi2dc_clk_fail;
-> >>> +   }
-> >>> +
-> >>> +   ret = v4l2_device_register(dev, &csi2dc->v4l2_dev);
-> >>> +   if (ret) {
-> >>> +           dev_err(dev, "unable to register v4l2 device.\n");
-> >>> +           goto csi2dc_clk_fail;
-> >>> +   }
-> >>> +
-> >>> +   v4l2_subdev_init(&csi2dc->csi2dc_sd, &csi2dc_subdev_ops);
-> >>> +
-> >>> +   csi2dc->csi2dc_sd.owner = THIS_MODULE;
-> >>> +   csi2dc->csi2dc_sd.dev = dev;
-> >>> +   snprintf(csi2dc->csi2dc_sd.name, sizeof(csi2dc->csi2dc_sd.name),
-> >>> +            "CSI2DC.0");
-> >>> +
-> >>> +   csi2dc->csi2dc_sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
-> >>> +   csi2dc->csi2dc_sd.entity.function = MEDIA_ENT_F_VID_IF_BRIDGE;
-> >>> +   csi2dc->pads[CSI2DC_PAD_SINK].flags = MEDIA_PAD_FL_SINK;
-> >>> +   csi2dc->pads[CSI2DC_PAD_SOURCE].flags = MEDIA_PAD_FL_SOURCE;
-> >>
-> >> Isn't the source pad presence conditional to the presence of
-> >> port@1 ?
-> >>
-> >>> +
-> >>> +   ret = media_entity_pads_init(&csi2dc->csi2dc_sd.entity, CSI2DC_PADS_NUM,
-> >>> +                                csi2dc->pads);
-> >>> +   if (ret < 0) {
-> >>> +           dev_err(dev, "media entity init failed\n");
-> >>> +           goto csi2dc_probe_entity_err;
-> >>> +   }
-> >>> +
-> >>> +   v4l2_set_subdevdata(&csi2dc->csi2dc_sd, pdev);
-> >>> +
-> >>> +   platform_set_drvdata(pdev, &csi2dc->csi2dc_sd);
-> >>> +
-> >>> +   INIT_WORK(&csi2dc->workq, csi2dc_workq_handler);
-> >>> +
-> >>> +   ret = csi2dc_of_parse(csi2dc, dev->of_node);
-> >>> +   if (ret)
-> >>> +           goto csi2dc_probe_entity_err;
-> >>> +
-> >>> +   dev_info(dev, "Microchip CSI2DC version %x\n",
-> >>> +            csi2dc_readl(csi2dc, CSI2DC_VERSION));
-> >>> +
-> >>> +   pm_runtime_set_active(dev);
-> >>> +   pm_runtime_enable(dev);
-> >>> +   pm_request_idle(dev);
-> >>> +
-> >>> +   return 0;
-> >>> +
-> >>> +csi2dc_probe_entity_err:
-> >>> +   media_entity_cleanup(&csi2dc->csi2dc_sd.entity);
-> >>> +   v4l2_device_unregister(&csi2dc->v4l2_dev);
-> >>> +csi2dc_clk_fail:
-> >>> +   clk_disable_unprepare(csi2dc->pclk);
-> >>> +   return ret;
-> >>> +}
-> >>> +
-> >>> +static int csi2dc_remove(struct platform_device *pdev)
-> >>> +{
-> >>> +   struct v4l2_subdev *csi2dc_sd = platform_get_drvdata(pdev);
-> >>> +   struct csi2dc_device *csi2dc = csi2dc_sd_to_csi2dc_device(csi2dc_sd);
-> >>> +
-> >>> +   pm_runtime_disable(&pdev->dev);
-> >>> +
-> >>> +   v4l2_async_unregister_subdev(&csi2dc->csi2dc_sd);
-> >>> +   csi2dc_cleanup_notifier(csi2dc);
-> >>> +   media_entity_cleanup(&csi2dc->csi2dc_sd.entity);
-> >>> +   v4l2_device_unregister(&csi2dc->v4l2_dev);
-> >>> +   clk_disable_unprepare(csi2dc->pclk);
-> >>> +
-> >>> +   return 0;
-> >>> +}
-> >>> +
-> >>> +static int __maybe_unused csi2dc_runtime_suspend(struct device *dev)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = dev_get_drvdata(dev);
-> >>> +
-> >>> +   return csi2dc_power(csi2dc, false);
-> >>> +}
-> >>> +
-> >>> +static int __maybe_unused csi2dc_runtime_resume(struct device *dev)
-> >>> +{
-> >>> +   struct csi2dc_device *csi2dc = dev_get_drvdata(dev);
-> >>> +
-> >>> +   return csi2dc_power(csi2dc, true);
-> >>> +}
-> >>> +
-> >>> +static const struct dev_pm_ops csi2dc_dev_pm_ops = {
-> >>> +   SET_RUNTIME_PM_OPS(csi2dc_runtime_suspend, csi2dc_runtime_resume, NULL)
-> >>> +};
-> >>> +
-> >>> +static const struct of_device_id csi2dc_of_match[] = {
-> >>> +   { .compatible = "microchip,sama7g5-csi2dc" },
-> >>> +   { }
-> >>> +};
-> >>> +
-> >>> +MODULE_DEVICE_TABLE(of, csi2dc_of_match);
-> >>> +
-> >>> +static struct platform_driver csi2dc_driver = {
-> >>> +   .probe  = csi2dc_probe,
-> >>> +   .remove = csi2dc_remove,
-> >>> +   .driver = {
-> >>> +           .name           = "microchip-csi2dc",
-> >>> +           .pm             = &csi2dc_dev_pm_ops,
-> >>> +           .of_match_table = of_match_ptr(csi2dc_of_match),
-> >>> +   },
-> >>> +};
-> >>> +
-> >>> +module_platform_driver(csi2dc_driver);
-> >>> +
-> >>> +MODULE_AUTHOR("Eugen Hristev <eugen.hristev@microchip.com>");
-> >>> +MODULE_DESCRIPTION("Microchip CSI2 Demux Controller driver");
-> >>> +MODULE_LICENSE("GPL v2");
-> >>> +MODULE_SUPPORTED_DEVICE("video");
-> >>
-> >> For my education, what's MODULE_SUPPORTED_DEVICE for ?
-> >
-> > It's "not yet implemented" since 2005, I think it can be dropped :-)
-> >
-> > --
-> > Regards,
-> >
-> > Laurent Pinchart
-> >
->
+--y4BYlABVEYysq6OMDXMoyK4sH88S66Nxu
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl+05ZQFAwAAAAAACgkQlh/E3EQov+B3
+NxAAj2lQLPh9xBa2ZyVNvl+EF2j0hfDKNqyfTWFl0A3+eb2DdrfCjI/ZfciB5Y5VVix/+A+ncUES
++FjkgBq2jpW+BZ1KgYgvRrVktv0teFb8LYBLzzQUF0+Vv3nSwvS5MFwz7g4aJ8LF79yZX1vm5IdA
+ueMI89QQWnbPS1FeTb0vPPgzzgh1hO8sxmmItHvyS7wBKIvhYGGt4bC4VSyOK58+FMvmF4cfXoZM
+85Ud5DDtzd50VohKWwUjP3CiWAK/OGaN2IKhDtOHxWkXXzp35v2ElwvAQkdwGINlEqCuZSGoXEdL
+7CoHmeyGPquFgHuMfjmv1aZzfFBX7wm0BiCqnmy5oD/tytx3UJfaQGqFCsllmdehJr6qbt14dVKT
+OP5YermSbcedzaKCsoAIibCe+Udpkax+LFtRbelXkjCk5XkQIM82FxxKRqhNoemvJeDFM1LvxnXr
+cnjd60Q5siHWpLcontca5WVhSE1t1aEJExCauEgb3Y7JzLxdCNopxRKD1JU5LXLnNK02Mjen02tb
++JXoM1n5Ejzw4hm6TNNMU+pU4wIX/NskTHoGHEF5c+ZmclPXzw3V/UF5WTMNqvmOktPlVQEG8PVj
+7gVfHn1nDk1Fn6ba8oMj3ZvNFIw2yTVCqCaRL53fQKhYLlPHdf6XVJq9dkzccjt4rEDQ82vZ9xfD
+COI=
+=8+F1
+-----END PGP SIGNATURE-----
+
+--y4BYlABVEYysq6OMDXMoyK4sH88S66Nxu--
