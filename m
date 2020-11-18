@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FAE2B7AB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCF42B7AC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgKRJvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:51:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:49980 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgKRJvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:51:41 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B255111D4;
-        Wed, 18 Nov 2020 01:51:40 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C91653F719;
-        Wed, 18 Nov 2020 01:51:39 -0800 (PST)
-References: <20201116142005.GE3121392@hirez.programming.kicks-ass.net> <20201116193149.GW3371@techsingularity.net> <20201117083016.GK3121392@hirez.programming.kicks-ass.net> <20201117091545.GA31837@willie-the-truck> <20201117092936.GA3121406@hirez.programming.kicks-ass.net> <20201117094621.GE3121429@hirez.programming.kicks-ass.net> <jhjv9e4w3gj.mognet@arm.com> <jhjtutovvtm.mognet@arm.com> <20201117161318.GP3121392@hirez.programming.kicks-ass.net> <jhjo8jvwzi7.mognet@arm.com> <20201118080515.GR3121392@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: Fix data-race in wakeup
-In-reply-to: <20201118080515.GR3121392@hirez.programming.kicks-ass.net>
-Date:   Wed, 18 Nov 2020 09:51:33 +0000
-Message-ID: <jhjmtzfvvq2.mognet@arm.com>
+        id S1727356AbgKRJyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:54:55 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:38614 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgKRJyz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 04:54:55 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AI9eWuQ127169;
+        Wed, 18 Nov 2020 09:53:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=h5FuxwNh5V9GuoxuiWKIycz0XOeyUqsK9043Ar1O0N8=;
+ b=Ddc5jGPbRsbQ8IzTDqLkHsyIIEQ1Ej4UI2HXdMb1XsuUmOSclU1KS1kbW2L08qyBkvbv
+ x/jpblLNSG3RJx9al3pIY8NH97n2VYQkaPh6jqQwzuDKF5B2SKv8bGnHtYpPP/ocO1JN
+ kGJz2qLXFjUqEPsOrjJfzjC+gbnw87ynKd7WKDheBk+P+FBz+UZ0OE/LevtCegvDwZlo
+ +hhwm2eJA7JctL8uCsGS0TM/36zb0n7WpBssBClxbRAH3XNRS2+zdqHGsmt3PacJfvfp
+ cywsd1BrYSaGH6FSafzaaEDqWX2YlkQ7+WeKcD8itpRh07JZtDjisRzSO0fkVfLVyLPc NQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 34t4rayahw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Nov 2020 09:53:33 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AI9fB3o047748;
+        Wed, 18 Nov 2020 09:53:33 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 34ts5xa490-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Nov 2020 09:53:32 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AI9rQIK024397;
+        Wed, 18 Nov 2020 09:53:26 GMT
+Received: from [192.168.1.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 18 Nov 2020 01:53:26 -0800
+Subject: Re: [PATCH v2] btrfs: return EAGAIN when receiving a pending signal
+ in the defrag loops
+To:     xiakaixu1987@gmail.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+References: <1605672156-29051-1-git-send-email-kaixuxia@tencent.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <4d25ee0c-ba57-cd3f-7a6a-981a21c0967d@oracle.com>
+Date:   Wed, 18 Nov 2020 17:53:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1605672156-29051-1-git-send-email-kaixuxia@tencent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011180065
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011180065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18/11/20 12:02 pm, xiakaixu1987@gmail.com wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
+> 
+> The variable ret is overwritten by the following variable defrag_count.
+> Actually the code should return EAGAIN when receiving a pending signal
+> in the defrag loops.
+> 
+> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+> ---
+> v2
+>   -return EAGAIN instead of remove the EAGAIN error.
 
-On 18/11/20 08:05, Peter Zijlstra wrote:
-> On Tue, Nov 17, 2020 at 07:32:16PM +0000, Valentin Schneider wrote:
->> 
->> On 17/11/20 16:13, Peter Zijlstra wrote:
->> > On Tue, Nov 17, 2020 at 03:37:24PM +0000, Valentin Schneider wrote:
->> >
->> >> >> +	/*
->> >> >> +	 * This field must not be in the scheduler word above due to wakelist
->> >> >> +	 * queueing no longer being serialized by p->on_cpu. However:
->> >> >> +	 *
->> >> >> +	 * p->XXX = X;			ttwu()
->> >> >> +	 * schedule()			  if (p->on_rq && ..) // false
->> >> >> +	 *   smp_mb__after_spinlock();	  if (smp_load_acquire(&p->on_cpu) && //true
->> >> >> +	 *   deactivate_task()		      ttwu_queue_wakelist())
->> >> >> +	 *     p->on_rq = 0;			p->sched_remote_wakeup = Y;
->> >> >> +	 *
->> >> >> +	 * guarantees all stores of 'current' are visible before
->> >> >> +	 * ->sched_remote_wakeup gets used, so it can be in this word.
->> >> >> +	 */
->> >> >
->> >> > Isn't the control dep between that ttwu() p->on_rq read and
->> >> > p->sched_remote_wakeup write "sufficient"?
->> >> 
->> >> smp_acquire__after_ctrl_dep() that is, since we need
->> >>   ->on_rq load => 'current' bits load + store
->> >
->> > I don't think we need that extra barrier; after all, there will be a
->> > complete schedule() between waking the task and it actually becoming
->> > current.
->> 
->> Apologies for the messy train of thought; what I was trying to say is that
->> we have already the following, which AIUI is sufficient:
->> 
->> 	* p->XXX = X;			ttwu()
->> 	* schedule()			  if (p->on_rq && ..) // false
->> 	*   smp_mb__after_spinlock();	  smp_acquire__after_ctrl_dep();
->> 	*   deactivate_task()		  ttwu_queue_wakelist()
->> 	*     p->on_rq = 0;		    p->sched_remote_wakeup = Y;
->> 
->
-> Ah, you meant the existing smp_acquire__after_ctrl_dep(). Yeah, that's
-> not required here either ;-)
->
-> The reason I had the ->on_cpu thing in there is because it shows we
-> violate the regular ->on_cpu handoff rules, not for the acquire.
->
+  Sorry I might have missed in v1. Why was EAGAIN needed here?
+  Return of defrag_count rather makes sense to me as of now.
 
-Gotcha
+Thanks, Anand
 
-> The only ordering that matters on the RHS of that thing is the ->on_rq
-> load to p->sched_remote_wakeup store ctrl dep. That, combined with the
-> LHS, guarantees there is a strict order on the stores.
->
-> Makes sense?
+> 
+>   fs/btrfs/ioctl.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 69a384145dc6..6f13db6d30bd 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1519,7 +1519,7 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
+>   		if (btrfs_defrag_cancelled(fs_info)) {
+>   			btrfs_debug(fs_info, "defrag_file cancelled");
+>   			ret = -EAGAIN;
+> -			break;
+> +			goto out_ra;
+>   		}
+>   
+>   		if (!should_defrag_range(inode, (u64)i << PAGE_SHIFT,
+> 
 
-Yep, thanks!
