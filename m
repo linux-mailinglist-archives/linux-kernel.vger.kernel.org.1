@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D66A2B82B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:11:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D582B82BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbgKRRI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:08:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727266AbgKRRI4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:08:56 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A578FC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 09:08:56 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id x18so2662536ilq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 09:08:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=t0xp18kbqZ7c9+DaDbe3VSi72SFiEvBg3iQH+LM4aUs=;
-        b=H1pI2wFuis1TDuErW4J8ilZ1MQa3Pj5BDz809I8/t0fqSJDnX/qF25TUipHqYJhY7a
-         nf5aJcXFJa+6EPkLlFjWScBQlbRvXSqjhltQ1d+0B+p2PmAPS/g+hG8M5ox8oJvpxN6U
-         d7lRyaH0X4nQ5Ge2izargKmvqsDzTy/CWRnio=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t0xp18kbqZ7c9+DaDbe3VSi72SFiEvBg3iQH+LM4aUs=;
-        b=Qbarao5BNfEkjMADFMHRjUy0NEMSxUbVEQ5/bo+by/d0vuNYviRa151CXwlkYMEYCs
-         Gw93cNmf8a/G86dOoiFu2fUkAScsyAIy19gtIiOmfl5sx44Lb54LNqg9YrhCdTNR5Xwh
-         jMniSk1QNkoPawV05cZcG3Rb34M4N+/qafc8veY9DYkF2zQdZ5DTB1HEIUyY9cCRMT/g
-         GSq6mXzJryzh9jQrp3yxIy51ghA4ep734oJTWPLlk4Go2Hj/xCuo27Pde76+d/QUdECD
-         YxVnDh+HjpQYWPCsROQwDoLl1hQwdNiLrKQVBq0Y864MT2RgPf+Msknj7F3Sh88fdd1P
-         5lPA==
-X-Gm-Message-State: AOAM530uV0sdbtlKMXCvPhvL5qwL0NotvCa+MVZFSx23W8HBXAHu05BS
-        dwzUcYotAkiz3XY4BYUnKLgE7w==
-X-Google-Smtp-Source: ABdhPJyVmugXt2QgeDvVeEfk31H/WCfKjtfU5IHkfi0rGTd9Hu+kCWeLhBwrMVGdc6My1gKCO6elag==
-X-Received: by 2002:a92:cd51:: with SMTP id v17mr16641744ilq.98.1605719335444;
-        Wed, 18 Nov 2020 09:08:55 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id t78sm12043078ill.36.2020.11.18.09.08.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Nov 2020 09:08:54 -0800 (PST)
-Subject: Re: [PATCH v2] android/ion: fix error return code in opensocket()
-To:     Wang Hai <wanghai38@huawei.com>, shuah@kernel.org,
-        pintu.ping@gmail.com
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20201118104742.62817-1-wanghai38@huawei.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f0c54d6d-2b3a-2053-edfe-6fff32feed41@linuxfoundation.org>
-Date:   Wed, 18 Nov 2020 10:08:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1726772AbgKRRNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 12:13:42 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:15250 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgKRRNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 12:13:42 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605719622; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=5nESMJmnxUHbx6t5k8rqAYtDrNGqPSU8af4XuSF6aX8=; b=rejAfuF9ViO8JwkkoghRuCP0tm1/79iBCbRmiOhIyfLqgMfepbmHlSc1WLdcaTk9Aey8Rl/T
+ wf4ooA3LclEwscxc3riGEOrFeVEEFyUpQ7XQDssraXvrc7gCUnk/F/WoQKi5OHlxca48sYub
+ KNpJgQBw8f8IKSemRqjwjaaYYDg=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5fb556370c9500dc7beb0646 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 17:13:27
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EBBA0C43463; Wed, 18 Nov 2020 17:13:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D1942C433ED;
+        Wed, 18 Nov 2020 17:13:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D1942C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jani Nikula <jani.nikula@intel.com>
+Cc:     linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        ath10k@lists.infradead.org
+Subject: Re: [PATCH 3/6] ath10k: make relay callbacks const
+References: <20201118165320.26829-1-jani.nikula@intel.com>
+        <20201118165320.26829-3-jani.nikula@intel.com>
+Date:   Wed, 18 Nov 2020 19:13:22 +0200
+In-Reply-To: <20201118165320.26829-3-jani.nikula@intel.com> (Jani Nikula's
+        message of "Wed, 18 Nov 2020 18:53:17 +0200")
+Message-ID: <87ima2vb9p.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20201118104742.62817-1-wanghai38@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/20 3:47 AM, Wang Hai wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
-> 
-> Fixes: 47a18c42d992 ("android/ion: userspace test utility for ion buffer sharing")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> ---
-> v1->v2: add missing ";"
->   tools/testing/selftests/android/ion/ipcsocket.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/android/ion/ipcsocket.c b/tools/testing/selftests/android/ion/ipcsocket.c
-> index 7dc521002095..13b3455ba39c 100644
-> --- a/tools/testing/selftests/android/ion/ipcsocket.c
-> +++ b/tools/testing/selftests/android/ion/ipcsocket.c
-> @@ -28,8 +28,9 @@ int opensocket(int *sockfd, const char *name, int connecttype)
->   	}
->   
->   	*sockfd = ret;
-> -	if (setsockopt(*sockfd, SOL_SOCKET, SO_REUSEADDR,
-> -		(char *)&temp, sizeof(int)) < 0) {
-> +	ret = setsockopt(*sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)&temp,
-> +			 sizeof(int));
-> +	if (ret < 0) {
->   		fprintf(stderr, "<%s>: Failed setsockopt: <%s>\n",
->   		__func__, strerror(errno));
->   		goto err;
-> 
+Jani Nikula <jani.nikula@intel.com> writes:
 
-This test is slated removal and I have stopped accepting patches that
-aren't critical fixes at this time.
+> Now that relay_open() accepts const callbacks, make relay callbacks
+> const.
+>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: ath10k@lists.infradead.org
+> Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 
-thanks,
--- Shuah
+I assume this goes via some other tree:
+
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
