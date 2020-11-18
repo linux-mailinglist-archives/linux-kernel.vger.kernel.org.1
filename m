@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD46E2B7DBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30A22B7DBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:43:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgKRMml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 07:42:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
+        id S1726611AbgKRMnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 07:43:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKRMmk (ORCPT
+        with ESMTP id S1726274AbgKRMnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:42:40 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B184C0613D4;
-        Wed, 18 Nov 2020 04:42:39 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id j19so1117791pgg.5;
-        Wed, 18 Nov 2020 04:42:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BcnYGj+C/9R8wBRz1/UDdUpVkNJlS0bCdBKP8JiMj4M=;
-        b=gBU34nZNaEJsbA4j0zlKy7MXrpRKsPO/m1CuJmc/Oy7Ss49WbVYVYVXYEPCVUAa3v4
-         j0sTMgOHPCikUYSKBI3dpohhuj3TFpLs9Y83C2z6YuBKPnY6uM01eDKVw8xH9Rb+fqsd
-         jOJNmOC3PBufxsdSlphzIpoUc1hMs1YDjL3XZr7Y3uK5jtojwqSCJN6vhYq1M7C/fFl2
-         WjU/LHn2IrA5MJ0+/TIanLXRFFaHBx0xaU8+0CZuwPZMz7L2Sgv9SLdvCLGB5MMg2+/9
-         iZFLySIy+Id4t+/DKbbNPhdvOWiCGGWAMWFR+NF5ohZMbCAuR/j6BF8OgYfxqrtMJ5Zg
-         WGxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BcnYGj+C/9R8wBRz1/UDdUpVkNJlS0bCdBKP8JiMj4M=;
-        b=R0fHwNc1ZvN+LnLEI7ubFB8pCHAy3UAxL2e6dsR5ebYisqA7UYk8rtnpMqcSGIeB1Q
-         ry7OjlGzr0MaMU2SAzgYTGOriez+97AjRF8UUG/RAjETHU85ff6HeCVclB9yJOoNjEU2
-         FrlvYp0uOMDBKq8Blp63DPVbFe8KG8c2e4puU6azi4nqS+aRa1Pd+HK9aC4/+DmFA9Cj
-         53YP7C8KKJzrY6Yr4Lskpz5ueo88Eb7upWm/GNe7PEnEWO9rev+fjWFO0RG56zqkuXX1
-         2rnNr14CQJ0FFKktFfRDfo78UpprCRxbFEtrvrVKxkaiWTxfUG7cmBJHQfUMXSDkBbGN
-         0DQg==
-X-Gm-Message-State: AOAM533EaaVXIQ2e5+yOPgpOsSJ5rQ5bRivzRwJWxApVhgWeY5lLvg7l
-        4XpGzqUvM7PMOXCiyUmR8Rs=
-X-Google-Smtp-Source: ABdhPJw1dgjFEQHz6gwvPa9vls9TAYCnMtcRs2kjywi/VkRMNuH54a+eQqStWSUHFMQFZ8H5VjsgVA==
-X-Received: by 2002:a62:445:0:b029:196:61fc:2756 with SMTP id 66-20020a6204450000b029019661fc2756mr4473224pfe.12.1605703358664;
-        Wed, 18 Nov 2020 04:42:38 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:d3e8:9066:8d33:b89c])
-        by smtp.gmail.com with ESMTPSA id cu1sm2444519pjb.6.2020.11.18.04.42.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 04:42:38 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next] Documentation: Remove the deleted "framerelay" document from the index
-Date:   Wed, 18 Nov 2020 04:42:26 -0800
-Message-Id: <20201118124226.15588-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 18 Nov 2020 07:43:19 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44D0C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 04:43:19 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfMnr-0005Ho-1U; Wed, 18 Nov 2020 13:43:15 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfMnq-0006Hy-Js; Wed, 18 Nov 2020 13:43:14 +0100
+Date:   Wed, 18 Nov 2020 13:43:12 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Soham Biswas <sohambiswas41@gmail.com>
+Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: core: Use octal permission
+Message-ID: <20201118124312.wk6cmnktxefn7k7m@pengutronix.de>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+ <20201118104730.4270-1-sohambiswas41@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xgid2l46xpe7e4uf"
+Content-Disposition: inline
+In-Reply-To: <20201118104730.4270-1-sohambiswas41@gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit f73659192b0b ("net: wan: Delete the DLCI / SDLA drivers")
-deleted "Documentation/networking/framerelay.rst". However, it is still
-referenced in "Documentation/networking/index.rst". We need to remove the
-reference, too.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- Documentation/networking/index.rst | 1 -
- 1 file changed, 1 deletion(-)
+--xgid2l46xpe7e4uf
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-index 70c71c9206e2..bc6020c945c4 100644
---- a/Documentation/networking/index.rst
-+++ b/Documentation/networking/index.rst
-@@ -52,7 +52,6 @@ Contents:
-    eql
-    fib_trie
-    filter
--   framerelay
-    generic-hdlc
-    generic_netlink
-    gen_stats
--- 
-2.27.0
+[added "v2" to the subject, would have been better if you had already
+done that. I don't know if/how this confuses tools like b4 and patchwork]
 
+Hello,
+
+On Wed, Nov 18, 2020 at 04:17:30PM +0530, Soham Biswas wrote:
+> Fixes the following warning generated by checkpatch:
+>=20
+> drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
+> not preferred. Consider using octal permissions '0444'.
+>=20
+> +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+> 			    &pwm_debugfs_fops);
+
+something like: "Permission bits are easier readable in octal than with
+using the symbolic names." in the commit log would be good for those of
+us who missed why this was added to checkpatch.
+
+Best regards
+Uwe
+=20
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--xgid2l46xpe7e4uf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+1Ft4ACgkQwfwUeK3K
+7Akh2Af+KZFmdvE9jcytMnHuRTfVMZazqGMplXWU1o5RgnaNS2nim3D4WaIrK51j
+79IBYcbwizF8kXZE2EoV+CdndeH1b7o0I/JV8osAR92/BSK5PWvs/C81e/Mbabkq
+J8Bl2VGxoVje1s9zNMf77KuTpipGm4YF+2cKb611K5vf4f/NiotOB4hQohusvidg
+/17O6jTUrjUbnAMVlYNQerC9OUB6bFFzVGwsodP4JgytTdWQNLf+RHP0dK6fpadG
+QcBdgNayevDcPajlEPxhTVo2o3MLRHb3JosKGUA/8okcLJp+cD9lB+z1afJ2cxbs
+rFBvIga2kpFHCXpFzSk/jh6DJMwCAQ==
+=hbYk
+-----END PGP SIGNATURE-----
+
+--xgid2l46xpe7e4uf--
