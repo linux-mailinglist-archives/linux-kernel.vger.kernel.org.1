@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A942B72DD
+	by mail.lfdr.de (Postfix) with ESMTP id B05822B72DE
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgKRAIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S1729041AbgKRAIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:08:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgKRAIC (ORCPT
+        with ESMTP id S1726205AbgKRAIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:08:02 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C6DC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:08:02 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id 198so201814qkj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:08:02 -0800 (PST)
+        Tue, 17 Nov 2020 19:08:06 -0500
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E22C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:08:05 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id az21so1144047pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:08:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=60RDm9GZdiDvHOVTVOgnNPhDb7lpPTDsg7QOSfebuy4=;
-        b=eHi14+wzHA3GWNL69Egy8TJVe0yzRQoR91adGg656Kp/8QG7pQZoGOT91k6ka6w6Fr
-         +sP0fkZBSd0zQ/JWhtkfQ0/NecTiOyHSXm2rzOgmaSubxI2y0f5Wvl45NXgBYqiaBza1
-         3Z6NCFLdM4+m+oYnxqhtSifKMOm5GCRHyLMlxA4RJLEAQk7iBlCzdLdjawsaylu+S9/m
-         BgxE756zWYZtQ/v28Vg3RXRB5u5GIpeRGxAg2hNTVU4eAB5JKAYRCiZKwWdeRChd3p4I
-         z+GJjq4PbppqAfNtKx2K8bS70rw9vWX/52pFYj4KfXGZ2MKiCiHt7zb7204HqB1vVwZK
-         JGzA==
+        bh=ZoLqrAoAGgtRMWY5Ly3Uz/zVJ7u7CowAPhA5LCk6zRo=;
+        b=QMe+KMyALkHuLWIwMAd3IcGboUIhue215ts8AHabmDPxJsgJ5GOa247SLfDiEV1del
+         39isMLZaqG+KjYf5fErA3lSzcIf5vFlzx7QeFcuDS+rwO41SU793ZeqzQ2LDJOKrItxL
+         dsOm1tiLGfcBG3UGov9evkrm2A1dnaaEG1lplqnXV2fAVfPErZl/402zw489CQ+6ptMA
+         MOeTypyCIuH9fnQV9P6Nab4a2qYo8TmmGqjih8f3GlgxTBDv9iZRRApMEiyqRXM5o/dv
+         ZjA987oktQ+A78cn2kPBaBCyRmYh3jwv0v8aqMb46jwfou7ITq6+baX4Zycfzqg7t7IY
+         BbXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=60RDm9GZdiDvHOVTVOgnNPhDb7lpPTDsg7QOSfebuy4=;
-        b=k8nmH3NO/jDz7sNnR6j67i39eKEfedeIJm8NM4xlzz8/+J5zP+k7spUKq9A+4lSEz7
-         MhJzpoeUan2Dy5H3J8guo1vPWubcAilsY6ydROuqXWO8+O2Yt9lkmotJoDGWFouLt3Y3
-         T1zeRRF9VYDaJdcwLj2nFIbDPh5NCKSX2kx9MrHJ2oTbYnT82QzaZBttppubygCzhRSy
-         d4LUvwP0fEIp0xqVdnGf69HMnXQCvKTnBMT61+s7J8TBlTBiHqsSUqFFznndrx8iW/Ra
-         vrE07kQ6zkegaHYHs7hfv+h8RYjDLWJq4LPi+hmFrcnXpvupx+Z5MTFZgBSIb5ioFYXd
-         yo5Q==
-X-Gm-Message-State: AOAM531HFJAP9qmt0JnI/yPn1CEfZKdir915nI1+aIlVO7MSe4tCa/qk
-        trcPErTFEp844qU2JK2/ClmIYsj1HlkKPlgk1EE=
-X-Google-Smtp-Source: ABdhPJzmlVGZoccUlD7B14kIiKYBXJ8LMSWJfZ77mc02Pp7puSP6ttSA82K5uXIAgrM5ZNnwIz+UFgG10oc/SIHOvY8=
+        bh=ZoLqrAoAGgtRMWY5Ly3Uz/zVJ7u7CowAPhA5LCk6zRo=;
+        b=rF1cVRNP5Otm3DWdqCRthiWU1BpcTxgGqeZAitPfJITjSZeXoqAX6hd4zK7oRmezWJ
+         G5XZVJ+NCR9NFJoCFAbmKhlhq7jWFsyLg2LadNl/Kpij8GyHwD518pzH6YyclRvvUfvo
+         5X7Z2l0L3wp0rbDQ1SGpYrXJuagPeVTw8m4umEkjgppstkbdWbj/iD3Q3TXDnVo4zF2G
+         vg6uVRPvausgfHa+9jrBGHbv96lTn4ypBnaSQ6ndE5JjOJA5mz43A1jnaostcFf3TgMR
+         wePzfjNGgI5YA+heWM4WvVZHH/esJAvy3cv0mig2dtQIYpnYClG6uPnVIa9rrgoKPx94
+         qlYQ==
+X-Gm-Message-State: AOAM532tyceWmS1G9dgHYkrczERjtrx8F2Lo3SGGfE9Ndffg0bfASiOH
+        ouWRkfzhMMrPa7QDKFVUAjudEhwSMu0rJUQQGEc=
+X-Google-Smtp-Source: ABdhPJwOIeXJrLik284jVv4U4rHzVZe6y2uuRPCunqgSjK8I/KL0XayJohw88sZS+4eYXX4ew/NK+/Lhm5aaVCEW+JY=
 Sender: "ndesaulniers via sendgmr" 
         <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:ad4:53c8:: with SMTP id
- k8mr1987233qvv.40.1605658082001; Tue, 17 Nov 2020 16:08:02 -0800 (PST)
-Date:   Tue, 17 Nov 2020 16:07:49 -0800
+ (user=ndesaulniers job=sendgmr) by 2002:a17:90b:e04:: with SMTP id
+ ge4mr140150pjb.0.1605658084052; Tue, 17 Nov 2020 16:08:04 -0800 (PST)
+Date:   Tue, 17 Nov 2020 16:07:50 -0800
 In-Reply-To: <20201118000751.845172-1-ndesaulniers@google.com>
-Message-Id: <20201118000751.845172-2-ndesaulniers@google.com>
+Message-Id: <20201118000751.845172-3-ndesaulniers@google.com>
 Mime-Version: 1.0
 References: <20201118000751.845172-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH v2 1/3] powerpc: boot: include compiler_attributes.h
+Subject: [PATCH v2 2/3] Revert "lib: Revert use of fallthrough pseudo-keyword
+ in lib/"
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     "Gustavo A . R . Silva" <gustavoars@kernel.org>
 Cc:     Nathan Chancellor <natechancellor@gmail.com>,
@@ -65,64 +66,570 @@ Cc:     Nathan Chancellor <natechancellor@gmail.com>,
         linux-kernel@vger.kernel.org,
         Arvind Sankar <nivedita@alum.mit.edu>,
         Nick Desaulniers <ndesaulniers@google.com>,
+        kernel test robot <lkp@intel.com>,
         Miguel Ojeda <ojeda@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel uses `-include` to include include/linux/compiler_types.h
-into all translation units (see scripts/Makefile.lib), which #includes
-compiler_attributes.h.
+This reverts commit 6a9dc5fd6170 ("lib: Revert use of fallthrough
+pseudo-keyword in lib/")
 
-arch/powerpc/boot/ uses different compiler flags from the rest of the
-kernel. As such, it doesn't contain the definitions from these headers,
-and redefines a few that it needs.
+Now that we can build arch/powerpc/boot/ free of -Wimplicit-fallthrough,
+re-enable these fixes for lib/.
 
-For the purpose of enabling -Wimplicit-fallthrough for ppc, include
-compiler_attributes.h via `-include`.
+Reformats HUF_compress1X_usingCTable() in lib/zstd/huf_compress.c to
+avoid a smatch warning on "inconsistent indenting" reported by kernel
+test robot.
 
-It was also noted in 6a9dc5fd6170 that we could -D__KERNEL__ and
--include compiler_types.h like the main kernel does, though testing that
-produces a whole sea of warnings to cleanup. This approach is minimally
-invasive.
-
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 Tested-by: Nathan Chancellor <natechancellor@gmail.com>
 Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Acked-by: Miguel Ojeda <ojeda@kernel.org>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 Link: https://github.com/ClangBuiltLinux/linux/issues/236
 ---
- arch/powerpc/boot/Makefile     | 1 +
- arch/powerpc/boot/decompress.c | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
+ lib/asn1_decoder.c      |  4 ++--
+ lib/assoc_array.c       |  2 +-
+ lib/bootconfig.c        |  4 ++--
+ lib/cmdline.c           | 10 +++++-----
+ lib/dim/net_dim.c       |  2 +-
+ lib/dim/rdma_dim.c      |  4 ++--
+ lib/glob.c              |  2 +-
+ lib/siphash.c           | 36 ++++++++++++++++++------------------
+ lib/ts_fsm.c            |  2 +-
+ lib/vsprintf.c          | 14 +++++++-------
+ lib/xz/xz_dec_lzma2.c   |  4 ++--
+ lib/xz/xz_dec_stream.c  | 16 ++++++++--------
+ lib/zstd/bitstream.h    | 10 +++++-----
+ lib/zstd/compress.c     |  2 +-
+ lib/zstd/decompress.c   | 12 ++++++------
+ lib/zstd/huf_compress.c | 17 ++++++++++++-----
+ 16 files changed, 74 insertions(+), 67 deletions(-)
 
-diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
-index f8ce6d2dde7b..1659963a8f1d 100644
---- a/arch/powerpc/boot/Makefile
-+++ b/arch/powerpc/boot/Makefile
-@@ -31,6 +31,7 @@ endif
- BOOTCFLAGS    := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
- 		 -fno-strict-aliasing -O2 -msoft-float -mno-altivec -mno-vsx \
- 		 -pipe -fomit-frame-pointer -fno-builtin -fPIC -nostdinc \
-+		 -include $(srctree)/include/linux/compiler_attributes.h \
- 		 $(LINUXINCLUDE)
+diff --git a/lib/asn1_decoder.c b/lib/asn1_decoder.c
+index 58f72b25f8e9..13da529e2e72 100644
+--- a/lib/asn1_decoder.c
++++ b/lib/asn1_decoder.c
+@@ -381,7 +381,7 @@ int asn1_ber_decoder(const struct asn1_decoder *decoder,
+ 	case ASN1_OP_END_SET_ACT:
+ 		if (unlikely(!(flags & FLAG_MATCHED)))
+ 			goto tag_mismatch;
+-		/* fall through */
++		fallthrough;
  
- ifdef CONFIG_PPC64_BOOT_WRAPPER
-diff --git a/arch/powerpc/boot/decompress.c b/arch/powerpc/boot/decompress.c
-index 8bf39ef7d2df..6098b879ac97 100644
---- a/arch/powerpc/boot/decompress.c
-+++ b/arch/powerpc/boot/decompress.c
-@@ -21,7 +21,6 @@
+ 	case ASN1_OP_END_SEQ:
+ 	case ASN1_OP_END_SET_OF:
+@@ -448,7 +448,7 @@ int asn1_ber_decoder(const struct asn1_decoder *decoder,
+ 			pc += asn1_op_lengths[op];
+ 			goto next_op;
+ 		}
+-		/* fall through */
++		fallthrough;
  
- #define STATIC static
- #define INIT
--#define __always_inline inline
+ 	case ASN1_OP_ACT:
+ 		ret = actions[machine[pc + 1]](context, hdr, tag, data + tdp, len);
+diff --git a/lib/assoc_array.c b/lib/assoc_array.c
+index 6f4bcf524554..04c98799c3ba 100644
+--- a/lib/assoc_array.c
++++ b/lib/assoc_array.c
+@@ -1113,7 +1113,7 @@ struct assoc_array_edit *assoc_array_delete(struct assoc_array *array,
+ 						index_key))
+ 				goto found_leaf;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case assoc_array_walk_tree_empty:
+ 	case assoc_array_walk_found_wrong_shortcut:
+ 	default:
+diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+index 649ed44f199c..9f8c70a98fcf 100644
+--- a/lib/bootconfig.c
++++ b/lib/bootconfig.c
+@@ -827,7 +827,7 @@ int __init xbc_init(char *buf, const char **emsg, int *epos)
+ 							q - 2);
+ 				break;
+ 			}
+-			/* fall through */
++			fallthrough;
+ 		case '=':
+ 			ret = xbc_parse_kv(&p, q, c);
+ 			break;
+@@ -836,7 +836,7 @@ int __init xbc_init(char *buf, const char **emsg, int *epos)
+ 			break;
+ 		case '#':
+ 			q = skip_comment(q);
+-			/* fall through */
++			fallthrough;
+ 		case ';':
+ 		case '\n':
+ 			ret = xbc_parse_key(&p, q);
+diff --git a/lib/cmdline.c b/lib/cmdline.c
+index 9e186234edc0..46f2cb4ce6d1 100644
+--- a/lib/cmdline.c
++++ b/lib/cmdline.c
+@@ -144,23 +144,23 @@ unsigned long long memparse(const char *ptr, char **retptr)
+ 	case 'E':
+ 	case 'e':
+ 		ret <<= 10;
+-		/* fall through */
++		fallthrough;
+ 	case 'P':
+ 	case 'p':
+ 		ret <<= 10;
+-		/* fall through */
++		fallthrough;
+ 	case 'T':
+ 	case 't':
+ 		ret <<= 10;
+-		/* fall through */
++		fallthrough;
+ 	case 'G':
+ 	case 'g':
+ 		ret <<= 10;
+-		/* fall through */
++		fallthrough;
+ 	case 'M':
+ 	case 'm':
+ 		ret <<= 10;
+-		/* fall through */
++		fallthrough;
+ 	case 'K':
+ 	case 'k':
+ 		ret <<= 10;
+diff --git a/lib/dim/net_dim.c b/lib/dim/net_dim.c
+index a4db51c21266..06811d866775 100644
+--- a/lib/dim/net_dim.c
++++ b/lib/dim/net_dim.c
+@@ -233,7 +233,7 @@ void net_dim(struct dim *dim, struct dim_sample end_sample)
+ 			schedule_work(&dim->work);
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case DIM_START_MEASURE:
+ 		dim_update_sample(end_sample.event_ctr, end_sample.pkt_ctr,
+ 				  end_sample.byte_ctr, &dim->start_sample);
+diff --git a/lib/dim/rdma_dim.c b/lib/dim/rdma_dim.c
+index f7e26c7b4749..15462d54758d 100644
+--- a/lib/dim/rdma_dim.c
++++ b/lib/dim/rdma_dim.c
+@@ -59,7 +59,7 @@ static bool rdma_dim_decision(struct dim_stats *curr_stats, struct dim *dim)
+ 			break;
+ 		case DIM_STATS_WORSE:
+ 			dim_turn(dim);
+-			/* fall through */
++			fallthrough;
+ 		case DIM_STATS_BETTER:
+ 			step_res = rdma_dim_step(dim);
+ 			if (step_res == DIM_ON_EDGE)
+@@ -94,7 +94,7 @@ void rdma_dim(struct dim *dim, u64 completions)
+ 			schedule_work(&dim->work);
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case DIM_START_MEASURE:
+ 		dim->state = DIM_MEASURE_IN_PROGRESS;
+ 		dim_update_sample_with_comps(curr_sample->event_ctr, 0, 0,
+diff --git a/lib/glob.c b/lib/glob.c
+index 52e3ed7e4a9b..85ecbda45cd8 100644
+--- a/lib/glob.c
++++ b/lib/glob.c
+@@ -102,7 +102,7 @@ bool __pure glob_match(char const *pat, char const *str)
+ 			break;
+ 		case '\\':
+ 			d = *pat++;
+-			/* fall through */
++			fallthrough;
+ 		default:	/* Literal character */
+ literal:
+ 			if (c == d) {
+diff --git a/lib/siphash.c b/lib/siphash.c
+index c47bb6ff2149..a90112ee72a1 100644
+--- a/lib/siphash.c
++++ b/lib/siphash.c
+@@ -68,11 +68,11 @@ u64 __siphash_aligned(const void *data, size_t len, const siphash_key_t *key)
+ 						  bytemask_from_count(left)));
+ #else
+ 	switch (left) {
+-	case 7: b |= ((u64)end[6]) << 48; /* fall through */
+-	case 6: b |= ((u64)end[5]) << 40; /* fall through */
+-	case 5: b |= ((u64)end[4]) << 32; /* fall through */
++	case 7: b |= ((u64)end[6]) << 48; fallthrough;
++	case 6: b |= ((u64)end[5]) << 40; fallthrough;
++	case 5: b |= ((u64)end[4]) << 32; fallthrough;
+ 	case 4: b |= le32_to_cpup(data); break;
+-	case 3: b |= ((u64)end[2]) << 16; /* fall through */
++	case 3: b |= ((u64)end[2]) << 16; fallthrough;
+ 	case 2: b |= le16_to_cpup(data); break;
+ 	case 1: b |= end[0];
+ 	}
+@@ -101,11 +101,11 @@ u64 __siphash_unaligned(const void *data, size_t len, const siphash_key_t *key)
+ 						  bytemask_from_count(left)));
+ #else
+ 	switch (left) {
+-	case 7: b |= ((u64)end[6]) << 48; /* fall through */
+-	case 6: b |= ((u64)end[5]) << 40; /* fall through */
+-	case 5: b |= ((u64)end[4]) << 32; /* fall through */
++	case 7: b |= ((u64)end[6]) << 48; fallthrough;
++	case 6: b |= ((u64)end[5]) << 40; fallthrough;
++	case 5: b |= ((u64)end[4]) << 32; fallthrough;
+ 	case 4: b |= get_unaligned_le32(end); break;
+-	case 3: b |= ((u64)end[2]) << 16; /* fall through */
++	case 3: b |= ((u64)end[2]) << 16; fallthrough;
+ 	case 2: b |= get_unaligned_le16(end); break;
+ 	case 1: b |= end[0];
+ 	}
+@@ -268,11 +268,11 @@ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
+ 						  bytemask_from_count(left)));
+ #else
+ 	switch (left) {
+-	case 7: b |= ((u64)end[6]) << 48; /* fall through */
+-	case 6: b |= ((u64)end[5]) << 40; /* fall through */
+-	case 5: b |= ((u64)end[4]) << 32; /* fall through */
++	case 7: b |= ((u64)end[6]) << 48; fallthrough;
++	case 6: b |= ((u64)end[5]) << 40; fallthrough;
++	case 5: b |= ((u64)end[4]) << 32; fallthrough;
+ 	case 4: b |= le32_to_cpup(data); break;
+-	case 3: b |= ((u64)end[2]) << 16; /* fall through */
++	case 3: b |= ((u64)end[2]) << 16; fallthrough;
+ 	case 2: b |= le16_to_cpup(data); break;
+ 	case 1: b |= end[0];
+ 	}
+@@ -301,11 +301,11 @@ u32 __hsiphash_unaligned(const void *data, size_t len,
+ 						  bytemask_from_count(left)));
+ #else
+ 	switch (left) {
+-	case 7: b |= ((u64)end[6]) << 48; /* fall through */
+-	case 6: b |= ((u64)end[5]) << 40; /* fall through */
+-	case 5: b |= ((u64)end[4]) << 32; /* fall through */
++	case 7: b |= ((u64)end[6]) << 48; fallthrough;
++	case 6: b |= ((u64)end[5]) << 40; fallthrough;
++	case 5: b |= ((u64)end[4]) << 32; fallthrough;
+ 	case 4: b |= get_unaligned_le32(end); break;
+-	case 3: b |= ((u64)end[2]) << 16; /* fall through */
++	case 3: b |= ((u64)end[2]) << 16; fallthrough;
+ 	case 2: b |= get_unaligned_le16(end); break;
+ 	case 1: b |= end[0];
+ 	}
+@@ -431,7 +431,7 @@ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
+ 		v0 ^= m;
+ 	}
+ 	switch (left) {
+-	case 3: b |= ((u32)end[2]) << 16; /* fall through */
++	case 3: b |= ((u32)end[2]) << 16; fallthrough;
+ 	case 2: b |= le16_to_cpup(data); break;
+ 	case 1: b |= end[0];
+ 	}
+@@ -454,7 +454,7 @@ u32 __hsiphash_unaligned(const void *data, size_t len,
+ 		v0 ^= m;
+ 	}
+ 	switch (left) {
+-	case 3: b |= ((u32)end[2]) << 16; /* fall through */
++	case 3: b |= ((u32)end[2]) << 16; fallthrough;
+ 	case 2: b |= get_unaligned_le16(end); break;
+ 	case 1: b |= end[0];
+ 	}
+diff --git a/lib/ts_fsm.c b/lib/ts_fsm.c
+index ab749ec10ab5..64fd9015ad80 100644
+--- a/lib/ts_fsm.c
++++ b/lib/ts_fsm.c
+@@ -193,7 +193,7 @@ static unsigned int fsm_find(struct ts_config *conf, struct ts_state *state)
+ 				TOKEN_MISMATCH();
  
- /*
-  * The build process will copy the required zlib source files and headers
+ 			block_idx++;
+-			/* fall through */
++			fallthrough;
+ 
+ 		case TS_FSM_ANY:
+ 			if (next == NULL)
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 14c9a6af1b23..d3c5c16f391c 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -1265,7 +1265,7 @@ char *mac_address_string(char *buf, char *end, u8 *addr,
+ 
+ 	case 'R':
+ 		reversed = true;
+-		/* fall through */
++		fallthrough;
+ 
+ 	default:
+ 		separator = ':';
+@@ -1682,7 +1682,7 @@ char *uuid_string(char *buf, char *end, const u8 *addr,
+ 	switch (*(++fmt)) {
+ 	case 'L':
+ 		uc = true;
+-		/* fall through */
++		fallthrough;
+ 	case 'l':
+ 		index = guid_index;
+ 		break;
+@@ -2219,7 +2219,7 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
+ 	case 'S':
+ 	case 's':
+ 		ptr = dereference_symbol_descriptor(ptr);
+-		/* fall through */
++		fallthrough;
+ 	case 'B':
+ 		return symbol_string(buf, end, ptr, spec, fmt);
+ 	case 'R':
+@@ -2450,7 +2450,7 @@ int format_decode(const char *fmt, struct printf_spec *spec)
+ 
+ 	case 'x':
+ 		spec->flags |= SMALL;
+-		/* fall through */
++		fallthrough;
+ 
+ 	case 'X':
+ 		spec->base = 16;
+@@ -2468,7 +2468,7 @@ int format_decode(const char *fmt, struct printf_spec *spec)
+ 		 * utility, treat it as any other invalid or
+ 		 * unsupported format specifier.
+ 		 */
+-		/* fall through */
++		fallthrough;
+ 
+ 	default:
+ 		WARN_ONCE(1, "Please remove unsupported %%%c in format string\n", *fmt);
+@@ -3411,10 +3411,10 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
+ 			break;
+ 		case 'i':
+ 			base = 0;
+-			/* fall through */
++			fallthrough;
+ 		case 'd':
+ 			is_sign = true;
+-			/* fall through */
++			fallthrough;
+ 		case 'u':
+ 			break;
+ 		case '%':
+diff --git a/lib/xz/xz_dec_lzma2.c b/lib/xz/xz_dec_lzma2.c
+index 65a1aad8c223..ca2603abee08 100644
+--- a/lib/xz/xz_dec_lzma2.c
++++ b/lib/xz/xz_dec_lzma2.c
+@@ -1043,7 +1043,7 @@ XZ_EXTERN enum xz_ret xz_dec_lzma2_run(struct xz_dec_lzma2 *s,
+ 
+ 			s->lzma2.sequence = SEQ_LZMA_PREPARE;
+ 
+-			/* fall through */
++			fallthrough;
+ 
+ 		case SEQ_LZMA_PREPARE:
+ 			if (s->lzma2.compressed < RC_INIT_BYTES)
+@@ -1055,7 +1055,7 @@ XZ_EXTERN enum xz_ret xz_dec_lzma2_run(struct xz_dec_lzma2 *s,
+ 			s->lzma2.compressed -= RC_INIT_BYTES;
+ 			s->lzma2.sequence = SEQ_LZMA_RUN;
+ 
+-			/* fall through */
++			fallthrough;
+ 
+ 		case SEQ_LZMA_RUN:
+ 			/*
+diff --git a/lib/xz/xz_dec_stream.c b/lib/xz/xz_dec_stream.c
+index 32ab2a08b7cb..fea86deaaa01 100644
+--- a/lib/xz/xz_dec_stream.c
++++ b/lib/xz/xz_dec_stream.c
+@@ -583,7 +583,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+ 			if (ret != XZ_OK)
+ 				return ret;
+ 
+-			/* fall through */
++			fallthrough;
+ 
+ 		case SEQ_BLOCK_START:
+ 			/* We need one byte of input to continue. */
+@@ -608,7 +608,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+ 			s->temp.pos = 0;
+ 			s->sequence = SEQ_BLOCK_HEADER;
+ 
+-			/* fall through */
++			fallthrough;
+ 
+ 		case SEQ_BLOCK_HEADER:
+ 			if (!fill_temp(s, b))
+@@ -620,7 +620,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+ 
+ 			s->sequence = SEQ_BLOCK_UNCOMPRESS;
+ 
+-			/* fall through */
++			fallthrough;
+ 
+ 		case SEQ_BLOCK_UNCOMPRESS:
+ 			ret = dec_block(s, b);
+@@ -629,7 +629,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+ 
+ 			s->sequence = SEQ_BLOCK_PADDING;
+ 
+-			/* fall through */
++			fallthrough;
+ 
+ 		case SEQ_BLOCK_PADDING:
+ 			/*
+@@ -651,7 +651,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+ 
+ 			s->sequence = SEQ_BLOCK_CHECK;
+ 
+-			/* fall through */
++			fallthrough;
+ 
+ 		case SEQ_BLOCK_CHECK:
+ 			if (s->check_type == XZ_CHECK_CRC32) {
+@@ -675,7 +675,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+ 
+ 			s->sequence = SEQ_INDEX_PADDING;
+ 
+-			/* fall through */
++			fallthrough;
+ 
+ 		case SEQ_INDEX_PADDING:
+ 			while ((s->index.size + (b->in_pos - s->in_start))
+@@ -699,7 +699,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+ 
+ 			s->sequence = SEQ_INDEX_CRC32;
+ 
+-			/* fall through */
++			fallthrough;
+ 
+ 		case SEQ_INDEX_CRC32:
+ 			ret = crc32_validate(s, b);
+@@ -709,7 +709,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+ 			s->temp.size = STREAM_HEADER_SIZE;
+ 			s->sequence = SEQ_STREAM_FOOTER;
+ 
+-			/* fall through */
++			fallthrough;
+ 
+ 		case SEQ_STREAM_FOOTER:
+ 			if (!fill_temp(s, b))
+diff --git a/lib/zstd/bitstream.h b/lib/zstd/bitstream.h
+index 3a49784d5c61..7c65c66e41fd 100644
+--- a/lib/zstd/bitstream.h
++++ b/lib/zstd/bitstream.h
+@@ -259,15 +259,15 @@ ZSTD_STATIC size_t BIT_initDStream(BIT_DStream_t *bitD, const void *srcBuffer, s
+ 		bitD->bitContainer = *(const BYTE *)(bitD->start);
+ 		switch (srcSize) {
+ 		case 7: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[6]) << (sizeof(bitD->bitContainer) * 8 - 16);
+-			/* fall through */
++			fallthrough;
+ 		case 6: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[5]) << (sizeof(bitD->bitContainer) * 8 - 24);
+-			/* fall through */
++			fallthrough;
+ 		case 5: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[4]) << (sizeof(bitD->bitContainer) * 8 - 32);
+-			/* fall through */
++			fallthrough;
+ 		case 4: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[3]) << 24;
+-			/* fall through */
++			fallthrough;
+ 		case 3: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[2]) << 16;
+-			/* fall through */
++			fallthrough;
+ 		case 2: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[1]) << 8;
+ 		default:;
+ 		}
+diff --git a/lib/zstd/compress.c b/lib/zstd/compress.c
+index 5e0b67003e55..b080264ed3ad 100644
+--- a/lib/zstd/compress.c
++++ b/lib/zstd/compress.c
+@@ -3182,7 +3182,7 @@ static size_t ZSTD_compressStream_generic(ZSTD_CStream *zcs, void *dst, size_t *
+ 				zcs->outBuffFlushedSize = 0;
+ 				zcs->stage = zcss_flush; /* pass-through to flush stage */
+ 			}
+-			/* fall through */
++			fallthrough;
+ 
+ 		case zcss_flush: {
+ 			size_t const toFlush = zcs->outBuffContentSize - zcs->outBuffFlushedSize;
+diff --git a/lib/zstd/decompress.c b/lib/zstd/decompress.c
+index db6761ea4deb..66cd487a326a 100644
+--- a/lib/zstd/decompress.c
++++ b/lib/zstd/decompress.c
+@@ -442,7 +442,7 @@ size_t ZSTD_decodeLiteralsBlock(ZSTD_DCtx *dctx, const void *src, size_t srcSize
+ 		case set_repeat:
+ 			if (dctx->litEntropy == 0)
+ 				return ERROR(dictionary_corrupted);
+-			/* fall through */
++			fallthrough;
+ 		case set_compressed:
+ 			if (srcSize < 5)
+ 				return ERROR(corruption_detected); /* srcSize >= MIN_CBLOCK_SIZE == 3; here we need up to 5 for case 3 */
+@@ -1768,7 +1768,7 @@ size_t ZSTD_decompressContinue(ZSTD_DCtx *dctx, void *dst, size_t dstCapacity, c
+ 			return 0;
+ 		}
+ 		dctx->expected = 0; /* not necessary to copy more */
+-		/* fall through */
++		fallthrough;
+ 
+ 	case ZSTDds_decodeFrameHeader:
+ 		memcpy(dctx->headerBuffer + ZSTD_frameHeaderSize_prefix, src, dctx->expected);
+@@ -2309,7 +2309,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
+ 		switch (zds->stage) {
+ 		case zdss_init:
+ 			ZSTD_resetDStream(zds); /* transparent reset on starting decoding a new frame */
+-			/* fall through */
++			fallthrough;
+ 
+ 		case zdss_loadHeader: {
+ 			size_t const hSize = ZSTD_getFrameParams(&zds->fParams, zds->headerBuffer, zds->lhSize);
+@@ -2376,7 +2376,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
+ 			}
+ 			zds->stage = zdss_read;
+ 		}
+-			/* fall through */
++			fallthrough;
+ 
+ 		case zdss_read: {
+ 			size_t const neededInSize = ZSTD_nextSrcSizeToDecompress(zds->dctx);
+@@ -2405,7 +2405,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
+ 			zds->stage = zdss_load;
+ 			/* pass-through */
+ 		}
+-			/* fall through */
++			fallthrough;
+ 
+ 		case zdss_load: {
+ 			size_t const neededInSize = ZSTD_nextSrcSizeToDecompress(zds->dctx);
+@@ -2438,7 +2438,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
+ 				/* pass-through */
+ 			}
+ 		}
+-			/* fall through */
++			fallthrough;
+ 
+ 		case zdss_flush: {
+ 			size_t const toFlushSize = zds->outEnd - zds->outStart;
+diff --git a/lib/zstd/huf_compress.c b/lib/zstd/huf_compress.c
+index e727812d12aa..e23279089293 100644
+--- a/lib/zstd/huf_compress.c
++++ b/lib/zstd/huf_compress.c
+@@ -555,11 +555,18 @@ size_t HUF_compress1X_usingCTable(void *dst, size_t dstSize, const void *src, si
+ 
+ 	n = srcSize & ~3; /* join to mod 4 */
+ 	switch (srcSize & 3) {
+-	case 3: HUF_encodeSymbol(&bitC, ip[n + 2], CTable); HUF_FLUSHBITS_2(&bitC);
+-		/* fall through */
+-	case 2: HUF_encodeSymbol(&bitC, ip[n + 1], CTable); HUF_FLUSHBITS_1(&bitC);
+-		/* fall through */
+-	case 1: HUF_encodeSymbol(&bitC, ip[n + 0], CTable); HUF_FLUSHBITS(&bitC);
++	case 3:
++		HUF_encodeSymbol(&bitC, ip[n + 2], CTable);
++		HUF_FLUSHBITS_2(&bitC);
++		fallthrough;
++	case 2:
++		HUF_encodeSymbol(&bitC, ip[n + 1], CTable);
++		HUF_FLUSHBITS_1(&bitC);
++		fallthrough;
++	case 1:
++		HUF_encodeSymbol(&bitC, ip[n + 0], CTable);
++		HUF_FLUSHBITS(&bitC);
++		break;
+ 	case 0:
+ 	default:;
+ 	}
 -- 
 2.29.2.299.gdc1121823c-goog
 
