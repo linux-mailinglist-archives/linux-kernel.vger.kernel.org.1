@@ -2,168 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F962B764B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B5D2B764C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgKRG1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 01:27:15 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8106 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKRG1O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 01:27:14 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CbXs80gmZzLq99;
-        Wed, 18 Nov 2020 14:26:52 +0800 (CST)
-Received: from [10.174.176.199] (10.174.176.199) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 18 Nov 2020 14:27:01 +0800
-Subject: Re: workqueue: Only kick a worker after thawed or for an unbound
- workqueue
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-CC:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>
-References: <aaa87d62-b89d-e241-1a6e-01176694616f@huawei.com>
- <CAJhGHyBCs17Q=iQBfTJ-4Ls7egpa_70aEx0Ym_-oCt2vXKkSOg@mail.gmail.com>
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-Message-ID: <6e174c9f-5436-7d1c-0443-3ca21ff8dad7@huawei.com>
-Date:   Wed, 18 Nov 2020 14:26:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726506AbgKRG1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 01:27:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726361AbgKRG1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 01:27:24 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 967CC24655;
+        Wed, 18 Nov 2020 06:27:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605680843;
+        bh=RpCSS3y/duXfmLEcUn3G8/pHSXmT8ukKU/5AG+m0bT8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V58yRoepyagZTKlr+aW6gb29AshdnBnmgDiYwKqMm3jlLRYkgNPd33jvY3404zhqF
+         f0Vq1eeZw/pwKC17YrReXC+eB7OqJ3I2z/UF/rbyQKIjkyufDOUzj36PJr33VOANJ1
+         46Slhm5EzAs0u5/ypJRRtVFkLqUibL9cremOd1dY=
+Date:   Tue, 17 Nov 2020 22:27:20 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 3/3] f2fs: Handle casefolding with Encryption
+Message-ID: <X7S+yK05aX+zB+k9@sol.localdomain>
+References: <20201117040315.28548-1-drosen@google.com>
+ <20201117040315.28548-4-drosen@google.com>
+ <X7QbX9Q4xzhg+5UU@sol.localdomain>
+ <CA+PiJmRQGJP5uHf-yXs=efo++JE+SUmjRizwzH-RGG92RdAxyw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJhGHyBCs17Q=iQBfTJ-4Ls7egpa_70aEx0Ym_-oCt2vXKkSOg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.199]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+PiJmRQGJP5uHf-yXs=efo++JE+SUmjRizwzH-RGG92RdAxyw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 17, 2020 at 10:22:28PM -0800, Daniel Rosenberg wrote:
+> > > @@ -273,10 +308,14 @@ struct f2fs_dir_entry *f2fs_find_target_dentry(const struct f2fs_dentry_ptr *d,
+> > >                       continue;
+> > >               }
+> > >
+> > > -             if (de->hash_code == fname->hash &&
+> > > -                 f2fs_match_name(d->inode, fname, d->filename[bit_pos],
+> > > -                                 le16_to_cpu(de->name_len)))
+> > > -                     goto found;
+> > > +             if (de->hash_code == fname->hash) {
+> > > +                     res = f2fs_match_name(d->inode, fname, d->filename[bit_pos],
+> > > +                                 le16_to_cpu(de->name_len));
+> > > +                     if (res < 0)
+> > > +                             return ERR_PTR(res);
+> > > +                     else if (res)
+> > > +                             goto found;
+> > > +             }
+> >
+> > Overly long line here.  Also 'else if' is unnecessary, just use 'if'.
+> >
+> > - Eric
+> The 0 case is important, since that reflects that the name was not found.
 
+I meant doing the following:
 
-On 2020/11/18 12:06, Lai Jiangshan wrote:
-> On Tue, Nov 17, 2020 at 3:33 PM Yunfeng Ye <yeyunfeng@huawei.com> wrote:
->>
->> In realtime scenario, We do not want to have interference on the
->> isolated cpu cores. but when invoking alloc_workqueue() for percpu wq
->> on the housekeeping cpu, it kick a kworker on the isolated cpu.
->>
->>   alloc_workqueue
->>     pwq_adjust_max_active
->>       wake_up_worker
->>
->> The comment in pwq_adjust_max_active() said:
->>   "Need to kick a worker after thawed or an unbound wq's
->>    max_active is bumped"
->>
->> So it is unnecessary to kick a kworker for percpu wq's when
->> alloc_workqueue. this patch only kick a worker after thawed or for an
->> unbound workqueue.
->>
->> Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
->> ---
->>  kernel/workqueue.c | 18 +++++++++++++-----
->>  1 file changed, 13 insertions(+), 5 deletions(-)
->>
->> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
->> index c41c3c17b86a..80f7bbd4889f 100644
->> --- a/kernel/workqueue.c
->> +++ b/kernel/workqueue.c
->> @@ -3696,14 +3696,16 @@ static void pwq_unbound_release_workfn(struct work_struct *work)
->>  }
->>
->>  /**
->> - * pwq_adjust_max_active - update a pwq's max_active to the current setting
->> + * pwq_adjust_max_active_and_kick - update a pwq's max_active to the current setting
->>   * @pwq: target pool_workqueue
->> + * @force_kick: force to kick a worker
->>   *
->>   * If @pwq isn't freezing, set @pwq->max_active to the associated
->>   * workqueue's saved_max_active and activate delayed work items
->>   * accordingly.  If @pwq is freezing, clear @pwq->max_active to zero.
->>   */
->> -static void pwq_adjust_max_active(struct pool_workqueue *pwq)
->> +static void pwq_adjust_max_active_and_kick(struct pool_workqueue *pwq,
->> +                                       bool force_kick)
->>  {
->>         struct workqueue_struct *wq = pwq->wq;
->>         bool freezable = wq->flags & WQ_FREEZABLE;
->> @@ -3733,9 +3735,10 @@ static void pwq_adjust_max_active(struct pool_workqueue *pwq)
->>
->>                 /*
->>                  * Need to kick a worker after thawed or an unbound wq's
->> -                * max_active is bumped.  It's a slow path.  Do it always.
->> +                * max_active is bumped.
-> 
-> 
-> Hello
-> 
-> Thanks for reporting the problem.
-> 
-> But I don't like to add an argument. The waking up is called
-> always just because it was considered no harm and it is slow
-> path. But it can still be possible to detect if the waking up
-> is really needed based on the actual activation of delayed works.
-> 
-> The previous lines are:
-> 
->                 while (!list_empty(&pwq->delayed_works) &&
->                        pwq->nr_active < pwq->max_active)
->                         pwq_activate_first_delayed(pwq);
-> 
-> And you can record the old pwq->nr_active before these lines:
-> 
->                 int old_nr_active = pwq->nr_active;
-> 
->                 while (!list_empty(&pwq->delayed_works) &&
->                        pwq->nr_active < pwq->max_active)
->                         pwq_activate_first_delayed(pwq);
-> 
->                 /* please add more comments here, see 951a078a5 */
->                 if (old_nr_active < pwq->nr_active) {
->                         if (!old_nr_active || (wq->flags & WQ_UNBOUND))
->                                 wake_up_worker(pwq->pool);
->                 }
-> 
-Ok, I will send a patch v2.
-Thanks.
+	if (res < 0)
+		return ERR_PTR(res);
+	if (res)
+		goto found;
 
-> 
-> Thanks for your work.
-> Lai.
-> 
->>                  */
->> -               wake_up_worker(pwq->pool);
->> +               if (force_kick || (wq->flags & WQ_UNBOUND))
->> +                       wake_up_worker(pwq->pool);
->>         } else {
->>                 pwq->max_active = 0;
->>         }
->> @@ -3743,6 +3746,11 @@ static void pwq_adjust_max_active(struct pool_workqueue *pwq)
->>         raw_spin_unlock_irqrestore(&pwq->pool->lock, flags);
->>  }
->>
->> +static void pwq_adjust_max_active(struct pool_workqueue *pwq)
->> +{
->> +       pwq_adjust_max_active_and_kick(pwq, false);
->> +}
->> +
->>  /* initialize newly alloced @pwq which is associated with @wq and @pool */
->>  static void init_pwq(struct pool_workqueue *pwq, struct workqueue_struct *wq,
->>                      struct worker_pool *pool)
->> @@ -5252,7 +5260,7 @@ void thaw_workqueues(void)
->>         list_for_each_entry(wq, &workqueues, list) {
->>                 mutex_lock(&wq->mutex);
->>                 for_each_pwq(pwq, wq)
->> -                       pwq_adjust_max_active(pwq);
->> +                       pwq_adjust_max_active_and_kick(pwq, true);
->>                 mutex_unlock(&wq->mutex);
->>         }
->>
->> --
->> 2.18.4
-> .
-> 
+It doesn't really matter, but usually kernel code doesn't use 'else' after an
+early return.
+
+- Eric
