@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D07A42B86ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0985A2B86CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgKRVjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:39:46 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:27538 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbgKRVjq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:39:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1605735586; x=1637271586;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=CFzTQ+Nhs2AflLk0S9gsqg4iJJjF2NZUiIgRPnV2kKc=;
-  b=OoMRv75L+vo1f6bSfbybYdnFG258cj6izqBFCjZZtgPZLSXgP4tqAudZ
-   7TFKW/uN1mnQado40vr5m4n9Kx07HsBUIDxzyOnmXy04LIAyTESIdQABR
-   UBfZ6gRz9dswkwz7Bb/Me8fTFzkW4/yWZIfm818Hcc/u0cvF6Yy8z76dQ
-   4=;
-X-IronPort-AV: E=Sophos;i="5.77,488,1596499200"; 
-   d="scan'208";a="67282979"
-Subject: Re: [PATCH] NFS: Retry the CLOSE if the embedded GETATTR is rejected with
- ERR_STALE
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 18 Nov 2020 21:30:08 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 40F09A0725;
-        Wed, 18 Nov 2020 21:29:36 +0000 (UTC)
-Received: from EX13D47UWA002.ant.amazon.com (10.43.163.30) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 18 Nov 2020 21:29:36 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
- EX13D47UWA002.ant.amazon.com (10.43.163.30) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 18 Nov 2020 21:29:36 +0000
-Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
- (172.22.96.68) by mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP
- Server id 15.0.1497.2 via Frontend Transport; Wed, 18 Nov 2020 21:29:36 +0000
-Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
-        id 3967040E2B; Wed, 18 Nov 2020 21:29:35 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 21:29:35 +0000
-From:   Anchal Agarwal <anchalag@amazon.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20201118212935.GA12762@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
-References: <20201118002431.GA6941@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
- <a0babbb7d58f02769a6ce40d029768e7221acf24.camel@hammerspace.com>
+        id S1727053AbgKRVff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:35:35 -0500
+Received: from mga11.intel.com ([192.55.52.93]:8606 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726766AbgKRVfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 16:35:34 -0500
+IronPort-SDR: 4usVwzh5PTJAztVQX2EZ1lKn6fegobUQFrerccFT4qDudYi9rbbld+htVhyDDsF3y3tM/awE0l
+ URm2lC/bC1dg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="167680384"
+X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
+   d="scan'208";a="167680384"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 13:35:33 -0800
+IronPort-SDR: N7X8KpP5Fb25kRBz6/gO5VM7lB3nVRaC7xNKBecWTSsmsjqdhAdWiZUzn5lhg3YkR9Y1VWgwcC
+ h2yef+026nKA==
+X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
+   d="scan'208";a="534494609"
+Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.212.69.244]) ([10.212.69.244])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 13:35:32 -0800
+Subject: Re: [PATCH net-next v1] ptp: document struct ptp_clock_request
+ members
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Richard Cochran <richardcochran@gmail.com>
+Cc:     kernel@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201117213826.18235-1-a.fatoum@pengutronix.de>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+Organization: Intel Corporation
+Message-ID: <26e16e25-c5ac-1474-fcc9-466cea4bcf9a@intel.com>
+Date:   Wed, 18 Nov 2020 13:35:29 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <a0babbb7d58f02769a6ce40d029768e7221acf24.camel@hammerspace.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20201117213826.18235-1-a.fatoum@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 03:17:20AM +0000, Trond Myklebust wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> 
-> 
-> 
-> On Wed, 2020-11-18 at 00:24 +0000, Anchal Agarwal wrote:
-> > If our CLOSE RPC call is rejected with an ERR_STALE error, then we
-> > should remove the GETATTR call from the compound RPC and retry.
-> > This could happen in a scenario where two clients tries to access
-> > the same file. One client opens the file and the other client removes
-> > the file while it's opened by first client. When the first client
-> > attempts to close the file the server returns ESTALE and the file
-> > ends
-> > up being leaked on the server. This depends on how nfs server is
-> > configured and is not reproducible if running against nfsd.
-> 
-> That would be a seriously broken server. If you return NFS4ERR_STALE to
-> the client, you cannot expect any further interaction with that file
-> from the client. It won't try to send CLOSE or DELEGRETURN or any other
-> stateful operation.
->
-In this scenario, the setup we have at EFS is more of a distributed fashion. Multiple
-clients are connected to multiple servers with a common filesystem. So the above
-scenario leads to leaked open file handles on the client that tries to close deleted
-file. So I was of the view, in that case client could retry close without getattr
-in the close sequence without anything to do on server side.
 
-Thanks,
-Anchal Agarwal
-> --
-> Trond Myklebust
-> Linux NFS client maintainer, Hammerspace
-> trond.myklebust@hammerspace.com
+
+On 11/17/2020 1:38 PM, Ahmad Fatoum wrote:
+> It's arguable most people interested in configuring a PPS signal
+> want it as external output, not as kernel input. PTP_CLK_REQ_PPS
+> is for input though. Add documentation to nudge readers into
+> the correct direction.
+
+Agreed. I think at least one driver has abused the PPS in the past as a
+way to request that we enable the PPS hardware, resulting in effectively
+using it as a limited form of the EXTTS interface. Hopefully this helps
+reduce the confusion here!
+
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+
 > 
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> ---
+> Prompted by Richard's comment here:
+> https://lore.kernel.org/netdev/20180525170247.r4gn323udrucmyv6@localhost/
+> ---
+>  include/linux/ptp_clock_kernel.h | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
+> index d3e8ba5c7125..0d47fd33b228 100644
+> --- a/include/linux/ptp_clock_kernel.h
+> +++ b/include/linux/ptp_clock_kernel.h
+> @@ -12,6 +12,19 @@
+>  #include <linux/pps_kernel.h>
+>  #include <linux/ptp_clock.h>
+>  
+> +/**
+> + * struct ptp_clock_request - request PTP clock event
+> + *
+> + * @type:   The type of the request.
+> + *	    EXTTS:  Configure external trigger timestamping
+> + *	    PEROUT: Configure periodic output signal (e.g. PPS)
+> + *	    PPS:    trigger internal PPS event for input
+> + *	            into kernel PPS subsystem
+> + * @extts:  describes configuration for external trigger timestamping.
+> + *          This is only valid when event == PTP_CLK_REQ_EXTTS.
+> + * @perout: describes configuration for periodic output.
+> + *	    This is only valid when event == PTP_CLK_REQ_PEROUT.
+> + */
+>  
+>  struct ptp_clock_request {
+>  	enum {
 > 
