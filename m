@@ -2,75 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43CC2B799F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5422B79C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgKRIye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:54:34 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8107 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgKRIye (ORCPT
+        id S1727622AbgKRI4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:56:38 -0500
+Received: from lucky1.263xmail.com ([211.157.147.135]:48304 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726658AbgKRI4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:54:34 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cbc773fBYzLqK8;
-        Wed, 18 Nov 2020 16:54:11 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.144) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 18 Nov 2020
- 16:54:25 +0800
-Subject: Re: [PATCH 1/1] ACPI/nfit: correct the badrange to be reported in
- nfit_handle_mce()
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-acpi <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201118084117.1937-1-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <9b8310ed-e93f-e708-eefa-520701e6d044@huawei.com>
-Date:   Wed, 18 Nov 2020 16:54:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <20201118084117.1937-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.144]
-X-CFilter-Loop: Reflected
+        Wed, 18 Nov 2020 03:56:37 -0500
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 3D2F7A5EB2;
+        Wed, 18 Nov 2020 16:56:26 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (250.19.126.124.broad.bjtelecom.net [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P26978T140148616816384S1605689787381400_;
+        Wed, 18 Nov 2020 16:56:27 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <fbcb1dee2af695eef72cd5ac8d86c5a9>
+X-RL-SENDER: penghao@uniontech.com
+X-SENDER: penghao@uniontech.com
+X-LOGIN-NAME: penghao@uniontech.com
+X-FST-TO: gregkh@linuxfoundation.org
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 5
+X-System-Flag: 0
+From:   penghao <penghao@uniontech.com>
+To:     gregkh@linuxfoundation.org
+Cc:     johan@kernel.org, jonathan@jdcox.net, tomasz@meresinski.eu,
+        penghao@uniontech.com, hdegoede@redhat.com, dlaz@chromium.org,
+        kai.heng.feng@canonical.com, richard.o.dodd@gmail.com,
+        kerneldev@karsmulder.nl, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for Lenovo A630Z TIO built-in usb-audio card
+Date:   Wed, 18 Nov 2020 16:56:23 +0800
+Message-Id: <20201118085623.31221-1-penghao@uniontech.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
+usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
+seconds later by usb-audio disconnect interrupt to avoids the issue.
+
+Seeking a better fix, we've tried a lot of things, including:
+ - Check that the device's power/wakeup is disabled
+ - Check that remote wakeup is off at the USB level
+ - All the quirks in drivers/usb/core/quirks.c
+   e.g. USB_QUIRK_RESET_RESUME,
+        USB_QUIRK_RESET,
+        USB_QUIRK_IGNORE_REMOTE_WAKEUP,
+        USB_QUIRK_NO_LPM.
+
+but none of that makes any difference.
+
+There are no errors in the logs showing any suspend/resume-related issues.
+When the system wakes up due to the modem, log-wise it appears to be a
+normal resume.
+
+Introduce a quirk to disable the port during suspend when the modem is
+detected.
+
+Changes since v2
+ - Add Changes commit format
+
+Changes since v1
+ - Change subject form "ALSA" to "USB:"
+ - Adjust to approoriate line
+
+Signed-off-by: penghao <penghao@uniontech.com>
+---
+ drivers/usb/core/quirks.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 7c1198f80c23..25f655c2cd28 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -410,6 +410,10 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
+ 			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
+ 
++	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
++	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
++			USB_QUIRK_DISCONNECT_SUSPEND },
++
+ 	/* BUILDWIN Photo Frame */
+ 	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
+ 			USB_QUIRK_HONOR_BNUMINTERFACES },
+@@ -430,6 +434,7 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	  USB_QUIRK_DELAY_CTRL_MSG },
+ 
+ 	/* Corsair Strafe RGB */
++
+ 	{ USB_DEVICE(0x1b1c, 0x1b20), .driver_info = USB_QUIRK_DELAY_INIT |
+ 	  USB_QUIRK_DELAY_CTRL_MSG },
+ 
+-- 
+2.11.0
 
 
-On 2020/11/18 16:41, Zhen Lei wrote:
-> The badrange to be reported should always cover mce->addr.
-Maybe I should change this description to:
-Make sure the badrange to be reported can always cover mce->addr.
-
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  drivers/acpi/nfit/mce.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/acpi/nfit/mce.c b/drivers/acpi/nfit/mce.c
-> index ee8d9973f60b..053e719c7bea 100644
-> --- a/drivers/acpi/nfit/mce.c
-> +++ b/drivers/acpi/nfit/mce.c
-> @@ -63,7 +63,7 @@ static int nfit_handle_mce(struct notifier_block *nb, unsigned long val,
->  
->  		/* If this fails due to an -ENOMEM, there is little we can do */
->  		nvdimm_bus_add_badrange(acpi_desc->nvdimm_bus,
-> -				ALIGN(mce->addr, L1_CACHE_BYTES),
-> +				ALIGN_DOWN(mce->addr, L1_CACHE_BYTES),
->  				L1_CACHE_BYTES);
->  		nvdimm_region_notify(nfit_spa->nd_region,
->  				NVDIMM_REVALIDATE_POISON);
-> 
 
