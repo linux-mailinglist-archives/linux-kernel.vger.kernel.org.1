@@ -2,154 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4ED2B7849
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA492B784D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgKRIR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:17:59 -0500
-Received: from mail-mw2nam10on2065.outbound.protection.outlook.com ([40.107.94.65]:61152
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725964AbgKRIR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:17:59 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jruGW4QX2HECQfM2Qt7G8w9aQpsOBO/ezfVE8ChUIym2yAkc4OnSbl5M25JNurCvU5vG2AlxyeyTkDwMlZ+AVfKJ4QaXZc+j4daezxYWxK0OzZcLLkLWzTmAZyaYZm7Apfre3pG8EvOY+Mdis3V/7RBvHReQyKi5/9sCmtNmFrfy+mC4th5J33L2Lyw6qOHrdq571p1wwLxQJIFkzR5FI3pvzRLKgr1cKD32gon+dQmWl2EcU0Un1Z4Y+6YFEO8RFlBPAJAQmb8xXtzw3/QNsfoESQgo4ye2rf6JKhdnaS9hMC0X71q6IL9nHUzL2tiTF2gKGQpkiTtOxMzG4ymSGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qSs1trCyG5UT4I/jRddZiO1HMVAIVB1h7VRmK6KCJH4=;
- b=UErASAf8kxy+/4ooK+4hxSUK9WE8dU+06IgRwDKZ3qMZdyoYB4gY55gJlIeX4P3c5bQJHqt9tMoEDWwMapJimM1f74xp6Y7RZi0gzZq4KWDgK6jQYJvqghieSw7UD0Ra1SQ/jEBKqK0KS7qK5Divk/m1En6jhkOVyB3dBOI6w19BSENaGvGWt7mTIdesjwTNNZdIf5fX+Np9rWTB1e26nFApHuitKS9WCqx7EXba1HKKNdTkLht6ES9p9AwpFl09Rt34UAbGNqlWB206H3nUbk2Ljw5c7M9a9g062PuL4gDgaN9ZuBBiNVe6YwSRH32Kfg1QuKap6OzFYUU19y9vKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qSs1trCyG5UT4I/jRddZiO1HMVAIVB1h7VRmK6KCJH4=;
- b=VYjYuALAp7mQ/txJsTak7vsQeMR93UNxfjA4Wil2U8wlWrj/g52fNsUc7wrRKcgLWgir4ZKoKXcflWvY5tZUkAcCqzBuqvKXETgTnVo/RMey3qKGupQaakU6BzEDSgZqQSBo2MrVrQMYrVcAj6VuNVSyOZDkqA9ibmtPoff8vCE=
-Authentication-Results: vivo.com; dkim=none (message not signed)
- header.d=none;vivo.com; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB3966.namprd12.prod.outlook.com (2603:10b6:208:165::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Wed, 18 Nov
- 2020 08:17:56 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::1ccc:8a9a:45d3:dd31]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::1ccc:8a9a:45d3:dd31%7]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
- 08:17:56 +0000
-Subject: Re: [PATCH] amd/amdgpu: use kmalloc_array to replace kmalloc with
- multiply
-To:     Bernard Zhao <bernard@vivo.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Monk Liu <Monk.Liu@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Yintian Tao <yttao@amd.com>, Dennis Li <Dennis.Li@amd.com>,
-        Wenhui Sheng <Wenhui.Sheng@amd.com>,
-        chen gong <curry.gong@amd.com>,
-        Bokun Zhang <Bokun.Zhang@amd.com>,
-        "Stanley.Yang" <Stanley.Yang@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-References: <20201118025503.102699-1-bernard@vivo.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <f55ec782-9eff-c30b-2a0e-01a9898c9387@amd.com>
-Date:   Wed, 18 Nov 2020 09:17:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201118025503.102699-1-bernard@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM3PR07CA0125.eurprd07.prod.outlook.com
- (2603:10a6:207:8::11) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S1726658AbgKRITF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:19:05 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:56495 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726724AbgKRITF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:19:05 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201118081853euoutp01d189a944f511d2d7fbde15e0086aa325~IjE3q6G8_0084500845euoutp01c
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:18:53 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201118081853euoutp01d189a944f511d2d7fbde15e0086aa325~IjE3q6G8_0084500845euoutp01c
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1605687533;
+        bh=3AVGejOWI+zfnZDxmo65S7C/BS7eNSduGs7tvM+vBQM=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=AswUwIlFtluyPpe328WhTmE9xu+W0zV0sQBDqUkcQXWMeMEBzocNfJ3HzX+B4YZ8z
+         EZm0xq4x3tJkaCaSsKY8HEYvHJRI8rvY/NIE2pxSQhCl0W81nSTmL3hGF0ZRHbBFGT
+         sIlwc0W5vJdO7gqduZsjHcSgZq5Kf5WnAyll24kU=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201118081848eucas1p190f13d67d8792baf8dcc71ee86879fb4~IjEy2Dazn0353103531eucas1p10;
+        Wed, 18 Nov 2020 08:18:48 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 59.C6.44805.8E8D4BF5; Wed, 18
+        Nov 2020 08:18:48 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201118081847eucas1p1cd6b364d763afa452b93e81899602153~IjEyVDAL33175531755eucas1p1w;
+        Wed, 18 Nov 2020 08:18:47 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201118081847eusmtrp28b147f583bb586c8f3f3935cc0ae3993~IjEyUc8kZ3115231152eusmtrp20;
+        Wed, 18 Nov 2020 08:18:47 +0000 (GMT)
+X-AuditID: cbfec7f4-b4fff7000000af05-f2-5fb4d8e814b8
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 43.F2.21957.7E8D4BF5; Wed, 18
+        Nov 2020 08:18:47 +0000 (GMT)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201118081847eusmtip16ba6845d94231838352a8bf48b3a6e83~IjEx5XQom2356323563eusmtip1l;
+        Wed, 18 Nov 2020 08:18:47 +0000 (GMT)
+Subject: Re: [PATCH net-next v2] r8153_ecm: avoid to be prior to r8152
+ driver
+To:     Hayes Wang <hayeswang@realtek.com>, netdev@vger.kernel.org
+Cc:     nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <4261c50d-4bf0-e861-dc1a-1332165db0ef@samsung.com>
+Date:   Wed, 18 Nov 2020 09:18:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.4.3
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM3PR07CA0125.eurprd07.prod.outlook.com (2603:10a6:207:8::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.15 via Frontend Transport; Wed, 18 Nov 2020 08:17:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b70033bf-cadd-41b2-3dd6-08d88b9a740f
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3966:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB3966B469DD43F46E87E5E26683E10@MN2PR12MB3966.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:635;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z8Omptn27fYckps9sXsR4NS8byNpiysTRlKhahDHmqaEKX6ISltzrCeMFH7Sfo7UA05N+zgYxBYoUtlctvHACjzwgkWTc/NftRgX6CcamF3HaIwIda4IniXg3nTcAnNMj2yQCA9FC7PAeUzjnkjRVVmiv2v8mfwpZLB1szgs9EeRJEF/dA5+hRWagHterCQ8JQw2USReNR4UoA4QbICdmIQeah6gLZO5dz4dpVCjjSIQwp5lOSQjq61lBqamfI8EcN73wZlvnRpWmWgSVa1uAj5jIW3DV9PvEguRyGeW/+p5VRQ0pg8R7+lJLqBzXHN6051Q2k7uvWfKuElixx1ktisTDIga7xgHZEsPF3BbWH/M58P2APAUMQ2aNfSieVUHkTfB5ai1KQ8ib8+rkiaj4Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(346002)(376002)(39860400002)(66556008)(66476007)(6666004)(16526019)(86362001)(36756003)(6486002)(31686004)(2906002)(5660300002)(66946007)(4326008)(31696002)(8676002)(316002)(2616005)(186003)(478600001)(110136005)(8936002)(83380400001)(52116002)(921005)(66574015)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UFlGTTZqNml4OThHOVZLQkc4VllXNFZiU0RFTURLZnROcXFuYUtZd1cvUGpz?=
- =?utf-8?B?VjAyOW5EQkthbFB5RWtHQmFLeVVWVmFzM2RDZGZTY1IyRUZNWUU3YmlpQSs2?=
- =?utf-8?B?UVlDNTFlMGdCb1BCMnBRcWZZS2JTUmJqMXFoL2ErUEVDR3ZhTnpYYm5kV2NT?=
- =?utf-8?B?a0hpWlUwOEJlb3IrakNnaGZnaDB5WDUraVd1b2ltMlFlMS85VmUzZTFZcEcx?=
- =?utf-8?B?MHhHRVJDd2FjWDJsWXY0TjNQN1plZFV0OTZTeVBBS3piZ3F6NjVsQVhpRVRU?=
- =?utf-8?B?SUlDcTNxM2ZTUGJtOG5QTmY1czZBWVU1S0xtakJQelN1RFJINVR5L3lhM1Vv?=
- =?utf-8?B?TFBVTHdkVXFWcmxTTGliVHI2VVFiK3MycU9raFByaGUyZkMxeC9WV0dGWGxU?=
- =?utf-8?B?cWo1Smg0K25lenozcU9pRmpucVRSV2pQcXBSYi81L0ZlaXpqL3Z0WVFYem94?=
- =?utf-8?B?R21jR3d0dFFkb1kzU01tZUdZbURoVW9OemNBNHRSU1lZbUxVd3gvc2VNVVNx?=
- =?utf-8?B?T0VWTWVBU3QrY29peHBzay9ZQk5pTlFLM2VxNmxwd2xVNi9sRTBtSG1XTTFQ?=
- =?utf-8?B?RFpqbXdOYWphcU0rbkltTndISzdkb1lvMWNxNGl0a1pDOW1IanBjeXI2dTRC?=
- =?utf-8?B?RkY5SzNiWGpodStaQms1RWdtRWdsdm5OaWhFclljaVBBcnB5SVpSbWVGOVNv?=
- =?utf-8?B?c2paVXRkaFJxTDF0UFdYY3ZVZ1o4V29zZzFGMXlZZ3ZuZzlZTkxoRW00bFhm?=
- =?utf-8?B?RmVhVXZLdk44WWxOOTFPYTJiNU9LbE1ERlh5Ry9UQlhZZTAwZktsMzVPbElz?=
- =?utf-8?B?WkdUaWRuYmljdlVCUlFEUE5TVWJZS2lQT0lJcy9XQzRYYzBGOGJFWC9GNGtG?=
- =?utf-8?B?d0VYUGJrNXpraXpIU1VIbGRpQXRINVA0NUdKWndOaDdWUWYyL2lQM1UzNHRr?=
- =?utf-8?B?WnZVTnlOdmtNMStpSVFDUy8rTnBDbnA1REM5YnJsOXlNaUlhS2ttZHRycEhQ?=
- =?utf-8?B?OFNTWmZOZ2VxVGdaMnprVWcyYnBsd3ZlR0lJcnhMVjFRRENPczltdVlLeENY?=
- =?utf-8?B?T1MwWERpZVRLSG9kcDhnNHArT2N1Q3BEQTZIYTVXOXA1elJCS2hTcDJpcjdy?=
- =?utf-8?B?bmVGVTJHWVNMY0lwMjRScGRibURGWFVrY2hEQ0I4RWNsSDFzWHRLK2hTcXo2?=
- =?utf-8?B?U2NUQmVKS0ZFZlBjQnFmRlR3aEw1UXZrc2NUSVYvRzVWcC9PMjZWRkNXVjB3?=
- =?utf-8?B?ZVpIQ0YwR1BON0tEMGViODJ1bEpsRkMvWnFFL1k4aW90MVptUT09?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b70033bf-cadd-41b2-3dd6-08d88b9a740f
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2020 08:17:56.4323
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oJ2Qw9L69cTpTUEBZyuLUhNtCtl4mcNJIYa2PoG7NM49UgUzPjuUvVXYkwm3LFXj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3966
+In-Reply-To: <1394712342-15778-394-Taiwan-albertk@realtek.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpileLIzCtJLcpLzFFi42LZduznOd0XN7bEG2y7w2Ex7WAPo8XlXXPY
+        LBYta2W2OLZAzOJL7yxWB1aPx283s3t83iQXwBTFZZOSmpNZllqkb5fAlfFi1hqWgr9CFYuX
+        72NrYLzB38XIySEhYCJxd1EnexcjF4eQwApGiQUXfzNBOF8YJe6efcQG4XxmlLhyaRdQGQdY
+        y+etehDx5YwSG2b9YAIZJSTwnlFiSY8JiC0s4C8x9dNPdhBbRMBOYvrLC4wgNrNAsMTUps8s
+        IDabgKFE19suNhCbF6jm6Jp3YDUsAqoSa/dtB5spKpAksX3LdlaIGkGJkzOfgPVyAtXvXv+G
+        BWKmvMT2t3OYIWxxiVtP5oN9ICGwg0Ni0aVPjBB/ukjMn/OVDcIWlnh1fAs7hC0j8X8nTEMz
+        o8TDc2vZIZweRonLTTOguq0l7pz7xQbyPrOApsT6XfqQkHCUePU/DsLkk7jxVhDiBj6JSdum
+        M0OEeSU62oQgZqhJzDq+Dm7rwQuXmCcwKs1C8tksJN/MQvLNLIS1CxhZVjGKp5YW56anFhvl
+        pZbrFSfmFpfmpesl5+duYgQmk9P/jn/Zwbj81Ue9Q4xMHIyHGCU4mJVEeF1MNsYL8aYkVlal
+        FuXHF5XmpBYfYpTmYFES503asiZeSCA9sSQ1OzW1ILUIJsvEwSnVwGR7zmaKxNNKp7Nsj4Ud
+        F72aUbzLNsnGr8As/vufzZ4WMz8dyAvfK6qz23DCIqm+8mWblqyIcleeuC4kL/3VueZ/v/Sd
+        /X08+yvDV+80OnE+y//H8fD+XfcvyL0qW/riblt4l3nhbkaNY4ckTuy4rpy7wq5+2qp3PZ1t
+        bIoemW42DPpFhZ+DzZ0uzuCfo/VJe8mH/T/sX79MXRex3eXJ+rsnE3+npXLcZxM05OwWXuG6
+        z2syo/98tYfKpYHP7vQ2ds79KLf6nKji7GVL72r261y4pbXvzc4XD3yPdr2MP3mwkn3CKtF7
+        u4Rc4p7F+p60/tnyfr2M3l+2x1U7Z7TJRdgu7XvttqS/U9TUL+FNApMSS3FGoqEWc1FxIgA5
+        HZwklQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsVy+t/xu7rPb2yJN7g8VcVi2sEeRovLu+aw
+        WSxa1spscWyBmMWX3lmsDqwej99uZvf4vEkugClKz6Yov7QkVSEjv7jEVina0MJIz9DSQs/I
+        xFLP0Ng81srIVEnfziYlNSezLLVI3y5BL+PFrDUsBX+FKhYv38fWwHiDv4uRg0NCwETi81a9
+        LkYuDiGBpYwS+1b/YOpi5ASKy0icnNbACmELS/y51sUGUfSWUWLOpqeMIAlhAV+JtSt2s4PY
+        IgJ2EtNfXmAEGcosECyx92UBRP1RRom2nyfAhrIJGEp0vQUZxMnBC1R/dM07sDksAqoSa/dt
+        B6sRFUiSmHn8LDtEjaDEyZlPWEBsTqD63evfgNnMAmYS8zY/ZIaw5SW2v50DZYtL3Hoyn2kC
+        o9AsJO2zkLTMQtIyC0nLAkaWVYwiqaXFuem5xYZ6xYm5xaV56XrJ+bmbGIHxs+3Yz807GOe9
+        +qh3iJGJg/EQowQHs5IIr4vJxngh3pTEyqrUovz4otKc1OJDjKZA/0xklhJNzgdGcF5JvKGZ
+        gamhiZmlgamlmbGSOO/WuWvihQTSE0tSs1NTC1KLYPqYODilGph8vY4ZPtp2I/yYx5vMkn/z
+        /7XLil199Lls19sjVdMma05Jf23K9XOTUGOf8JcNGWevLDqc8qgn28+85Oq1HRuOx5pyTn24
+        9phOW/O9j7P0D211PTlr5dyS808+vF9YqStf3h6xinHPFAdNffWQ8zFiL2euWL32pGVcwvI3
+        x94YLj5tWqbutqnblWsWp3PLsuxb03Xa7Gd3rosXVg/udJv/07gn7JlYeeik/5rOM/asZWjs
+        r+VelbKzbsHnTLuKw+a2Bubz1/AvjLGPj1nyef5Z6VoeVrNZHNpTly/YLrabe0IC61ux1DJn
+        Pa9ghlkzaqR9w1WnP+z58fJ7vKy1QPqdZXflzveesXmrXucdfDhViaU4I9FQi7moOBEAqBCf
+        aygDAAA=
+X-CMS-MailID: 20201118081847eucas1p1cd6b364d763afa452b93e81899602153
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201118064440eucas1p27610e4adabc4f77b985b6e8271a1dbc3
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201118064440eucas1p27610e4adabc4f77b985b6e8271a1dbc3
+References: <1394712342-15778-393-Taiwan-albertk@realtek.com>
+        <CGME20201118064440eucas1p27610e4adabc4f77b985b6e8271a1dbc3@eucas1p2.samsung.com>
+        <1394712342-15778-394-Taiwan-albertk@realtek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 18.11.20 um 03:55 schrieb Bernard Zhao:
-> Fix check_patch.pl warning:
-> WARNING: Prefer kmalloc_array over kmalloc with multiply
-> +bps = kmalloc(align_space * sizeof((*data)->bps), GFP_KERNEL);
-> WARNING: Prefer kmalloc_array over kmalloc with multiply
-> +bps_bo = kmalloc(align_space * sizeof((*data)->bps_bo),
-> GFP_KERNEL);
-> kmalloc_array has multiply overflow check, which will be safer.
+Hi
+
+On 18.11.2020 07:43, Hayes Wang wrote:
+> Avoid r8153_ecm is compiled as built-in, if r8152 driver is compiled
+> as modules. Otherwise, the r8153_ecm would be used, even though the
+> device is supported by r8152 driver.
 >
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> Fixes: c1aedf015ebd ("net/usb/r8153_ecm: support ECM mode for RTL8153")
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
 
-Not userspace controllable values, but looks cleaner anyway.
+Yes, this looks like a proper fix.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
 > ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> v2:
+> Use a separate Kconfig entry for r8153_ecm with proper dependencies.
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
-> index d0aea5e39531..f2a0851c804f 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
-> @@ -280,8 +280,8 @@ static int amdgpu_virt_init_ras_err_handler_data(struct amdgpu_device *adev)
->   	if (!*data)
->   		return -ENOMEM;
+>   drivers/net/usb/Kconfig  | 9 +++++++++
+>   drivers/net/usb/Makefile | 3 ++-
+>   2 files changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
+> index b46993d5f997..1e3719028780 100644
+> --- a/drivers/net/usb/Kconfig
+> +++ b/drivers/net/usb/Kconfig
+> @@ -628,4 +628,13 @@ config USB_NET_AQC111
+>   	  This driver should work with at least the following devices:
+>   	  * Aquantia AQtion USB to 5GbE
 >   
-> -	bps = kmalloc(align_space * sizeof((*data)->bps), GFP_KERNEL);
-> -	bps_bo = kmalloc(align_space * sizeof((*data)->bps_bo), GFP_KERNEL);
-> +	bps = kmalloc_array(align_space, sizeof((*data)->bps), GFP_KERNEL);
-> +	bps_bo = kmalloc_array(align_space, sizeof((*data)->bps_bo), GFP_KERNEL);
->   
->   	if (!bps || !bps_bo) {
->   		kfree(bps);
+> +config USB_RTL8153_ECM
+> +	tristate "RTL8153 ECM support"
+> +	depends on USB_NET_CDCETHER && (USB_RTL8152 || USB_RTL8152=n)
+> +	default y
+> +	help
+> +	  This option supports ECM mode for RTL8153 ethernet adapter, when
+> +	  CONFIG_USB_RTL8152 is not set, or the RTL8153 device is not
+> +	  supported by r8152 driver.
+> +
+>   endif # USB_NET_DRIVERS
+> diff --git a/drivers/net/usb/Makefile b/drivers/net/usb/Makefile
+> index 99381e6bea78..4964f7b326fb 100644
+> --- a/drivers/net/usb/Makefile
+> +++ b/drivers/net/usb/Makefile
+> @@ -13,7 +13,7 @@ obj-$(CONFIG_USB_LAN78XX)	+= lan78xx.o
+>   obj-$(CONFIG_USB_NET_AX8817X)	+= asix.o
+>   asix-y := asix_devices.o asix_common.o ax88172a.o
+>   obj-$(CONFIG_USB_NET_AX88179_178A)      += ax88179_178a.o
+> -obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o r8153_ecm.o
+> +obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o
+>   obj-$(CONFIG_USB_NET_CDC_EEM)	+= cdc_eem.o
+>   obj-$(CONFIG_USB_NET_DM9601)	+= dm9601.o
+>   obj-$(CONFIG_USB_NET_SR9700)	+= sr9700.o
+> @@ -41,3 +41,4 @@ obj-$(CONFIG_USB_NET_QMI_WWAN)	+= qmi_wwan.o
+>   obj-$(CONFIG_USB_NET_CDC_MBIM)	+= cdc_mbim.o
+>   obj-$(CONFIG_USB_NET_CH9200)	+= ch9200.o
+>   obj-$(CONFIG_USB_NET_AQC111)	+= aqc111.o
+> +obj-$(CONFIG_USB_RTL8153_ECM)	+= r8153_ecm.o
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
