@@ -2,224 +2,517 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08622B8020
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D86F2B8029
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgKRPJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:09:08 -0500
-Received: from mga05.intel.com ([192.55.52.43]:22082 "EHLO mga05.intel.com"
+        id S1727134AbgKRPMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:12:43 -0500
+Received: from m12-16.163.com ([220.181.12.16]:58716 "EHLO m12-16.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725787AbgKRPJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:09:08 -0500
-IronPort-SDR: tzTjgOcVZI4yFYZsJPc14Rv07zZdKYEv6Odkf2PehYsIx5S19SmobjpVL+FzMHGlrIwiEUHU9h
- jTzOA/lL67kg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="255839777"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="255839777"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 07:08:45 -0800
-IronPort-SDR: OY43P+kZqllLMr3ReTtT2xW/WtStSEcYAsH1TCNR0IVk5e0CCruQ7nhF9QPexXrhOEyADSwwgB
- Hj1Mo4awQKiQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="359488561"
-Received: from lkp-server02.sh.intel.com (HELO 67996b229c47) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 18 Nov 2020 07:08:43 -0800
-Received: from kbuild by 67996b229c47 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kfP4d-00008p-18; Wed, 18 Nov 2020 15:08:43 +0000
-Date:   Wed, 18 Nov 2020 23:08:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.11.16a] BUILD SUCCESS
- 11c40b6a6d081572e39732003d0bb536bf05a716
-Message-ID: <5fb538e9.1Cd52QZ94+10j6N9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726306AbgKRPMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:12:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=hCpes
+        gmyHWsg/4Ew+6nX3NEJWa5wfq5Ky2+hpCSdKTI=; b=d3fiwReoA9lGzIc6Bnk/L
+        9XeurT5Do95lDRHU35/yjbzn0wDYo/t31ftWWi53uTrPHjbvio9RNWviqAa2cwGI
+        H/lZgP/2OzCq3ghnIJ5L/pbQbsKrTMQpcceeeGsKDVYdzFHJSpGE7cWzLfhOpY+2
+        GNP4HMkk13EbUTLB/CP9nc=
+Received: from [192.168.0.103] (unknown [120.229.59.52])
+        by smtp12 (Coremail) with SMTP id EMCowAAHti5jObVfIIOmMg--.41806S3;
+        Wed, 18 Nov 2020 23:10:31 +0800 (CST)
+Subject: Re: [PATCH 1/3] lib: Introduce copy_from_back()
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+References: <20201109191601.14053-1-zengzhaoxiu@163.com>
+ <20201116163523.GA18835@infradead.org>
+ <092552df-204e-beee-58f8-da194b866d0f@163.com>
+ <20201116172435.GA29722@infradead.org>
+From:   Zhaoxiu Zeng <zengzhaoxiu@163.com>
+Message-ID: <688724e9-d505-38c6-b30a-74e49dc8d353@163.com>
+Date:   Wed, 18 Nov 2020 23:10:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201116172435.GA29722@infradead.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowAAHti5jObVfIIOmMg--.41806S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW3tF1DJw43tw4UCrWfCFW7Arb_yoWDAw47pa
+        43KasFywsrZr18Kry5ZF48Z345G393AFW7KF9rXryfZF17Jr15WFyjg34UtryqqFs3Aa45
+        Ar9IgFWayrWkAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jSzuAUUUUU=
+X-Originating-IP: [120.229.59.52]
+X-CM-SenderInfo: p2hqw6xkdr5xrx6rljoofrz/1tbiGQfggFyPau2czwAAs5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.11.16a
-branch HEAD: 11c40b6a6d081572e39732003d0bb536bf05a716  torture: Prepare for splitting qemu execution from kvm-test-1-run.sh
+ÔÚ 2020/11/17 1:24, Christoph Hellwig Ð´µÀ:
+>> +#define FAST_COPY_SAFEGUARD_SIZE (sizeof(long) * 2 - 1)
+>> +
+>> +#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+>> +
+>> +/*
+>> + * The caller must ensure that the output buffer has enough space (len + FAST_COPY_SAFEGUARD_SIZE),
+>> + * so we can write 2 words per loop without overflowing the output buffer
+>> + */
+>> +static __always_inline u8 *copy_from_back_fast(u8 *out, size_t dist, size_t len)
+> 
+> The code is pretty unreadable with these longs lines.  Please stick to
+> the normal 80 char limit.
+> 
 
-elapsed time: 724m
+I cleaned up the code.
 
-configs tested: 160
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          rsk7269_defconfig
-powerpc                 mpc832x_rdb_defconfig
-sh                        edosk7760_defconfig
-sh                         microdev_defconfig
-sh                            shmin_defconfig
-sh                            migor_defconfig
-arm                            hisi_defconfig
-arm                         assabet_defconfig
-powerpc                     kmeter1_defconfig
-sh                     sh7710voipgw_defconfig
-sh                         ecovec24_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                    ge_imp3a_defconfig
-arm                          gemini_defconfig
-xtensa                    xip_kc705_defconfig
-powerpc                     ksi8560_defconfig
-microblaze                    nommu_defconfig
-arm                          exynos_defconfig
-mips                 decstation_r4k_defconfig
-mips                      maltasmvp_defconfig
-mips                           ci20_defconfig
-arc                         haps_hs_defconfig
-sh                   sh7770_generic_defconfig
-arm                          tango4_defconfig
-mips                      loongson3_defconfig
-arm                            mps2_defconfig
-arc                     nsimosci_hs_defconfig
-mips                            ar7_defconfig
-powerpc                      cm5200_defconfig
-mips                          malta_defconfig
-openrisc                    or1ksim_defconfig
-arm                         hackkit_defconfig
-m68k                         apollo_defconfig
-mips                          rm200_defconfig
-mips                  decstation_64_defconfig
-sh                            hp6xx_defconfig
-mips                       bmips_be_defconfig
-c6x                        evmc6472_defconfig
-s390                       zfcpdump_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                      pmac32_defconfig
-sh                          rsk7203_defconfig
-powerpc                      pcm030_defconfig
-openrisc                         alldefconfig
-sparc                               defconfig
-powerpc                     kilauea_defconfig
-sh                          polaris_defconfig
-sh                           se7724_defconfig
-m68k                          atari_defconfig
-sh                        dreamcast_defconfig
-mips                      maltaaprp_defconfig
-arm                         socfpga_defconfig
-powerpc                 mpc8313_rdb_defconfig
-sh                               j2_defconfig
-xtensa                  cadence_csp_defconfig
-arm                            lart_defconfig
-arm                          prima2_defconfig
-powerpc                    gamecube_defconfig
-h8300                            alldefconfig
-mips                      bmips_stb_defconfig
-s390                             alldefconfig
-arm                           h5000_defconfig
-arm                        neponset_defconfig
-i386                                defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20201118
-x86_64               randconfig-a003-20201118
-x86_64               randconfig-a004-20201118
-x86_64               randconfig-a002-20201118
-x86_64               randconfig-a006-20201118
-x86_64               randconfig-a001-20201118
-i386                 randconfig-a006-20201117
-i386                 randconfig-a005-20201117
-i386                 randconfig-a001-20201117
-i386                 randconfig-a002-20201117
-i386                 randconfig-a004-20201117
-i386                 randconfig-a003-20201117
-i386                 randconfig-a006-20201118
-i386                 randconfig-a005-20201118
-i386                 randconfig-a002-20201118
-i386                 randconfig-a001-20201118
-i386                 randconfig-a003-20201118
-i386                 randconfig-a004-20201118
-i386                 randconfig-a012-20201118
-i386                 randconfig-a014-20201118
-i386                 randconfig-a016-20201118
-i386                 randconfig-a011-20201118
-i386                 randconfig-a013-20201118
-i386                 randconfig-a015-20201118
-i386                 randconfig-a012-20201117
-i386                 randconfig-a014-20201117
-i386                 randconfig-a016-20201117
-i386                 randconfig-a011-20201117
-i386                 randconfig-a015-20201117
-i386                 randconfig-a013-20201117
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20201117
-x86_64               randconfig-a005-20201117
-x86_64               randconfig-a004-20201117
-x86_64               randconfig-a002-20201117
-x86_64               randconfig-a001-20201117
-x86_64               randconfig-a006-20201117
-x86_64               randconfig-a015-20201118
-x86_64               randconfig-a014-20201118
-x86_64               randconfig-a011-20201118
-x86_64               randconfig-a013-20201118
-x86_64               randconfig-a016-20201118
-x86_64               randconfig-a012-20201118
-x86_64               randconfig-a015-20201116
-x86_64               randconfig-a011-20201116
-x86_64               randconfig-a014-20201116
-x86_64               randconfig-a013-20201116
-x86_64               randconfig-a016-20201116
-x86_64               randconfig-a012-20201116
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ include/asm-generic/Kbuild           |   1 +
+ include/asm-generic/copy_from_back.h | 422 +++++++++++++++++++++++++++
+ 2 files changed, 423 insertions(+)
+ create mode 100644 include/asm-generic/copy_from_back.h
+
+diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
+index e78bbb9a07e9..84964a32572c 100644
+--- a/include/asm-generic/Kbuild
++++ b/include/asm-generic/Kbuild
+@@ -12,6 +12,7 @@ mandatory-y += bugs.h
+ mandatory-y += cacheflush.h
+ mandatory-y += checksum.h
+ mandatory-y += compat.h
++mandatory-y += copy_from_back.h
+ mandatory-y += current.h
+ mandatory-y += delay.h
+ mandatory-y += device.h
+diff --git a/include/asm-generic/copy_from_back.h b/include/asm-generic/copy_from_back.h
+new file mode 100644
+index 000000000000..5628290f0286
+--- /dev/null
++++ b/include/asm-generic/copy_from_back.h
+@@ -0,0 +1,423 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __COPY_FROM_BACK_H
++#define __COPY_FROM_BACK_H
++
++#include <linux/types.h>
++
++#define FAST_COPY_SAFEGUARD_SIZE (sizeof(long) * 2 - 1)
++
++#define COPY_WORD(ptr) \
++	*(unsigned long *)(ptr) = *(unsigned long *)((ptr) - dist)
++
++#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
++
++/*
++ * The caller must ensure that the output buffer has enough space
++ * (len + FAST_COPY_SAFEGUARD_SIZE), so we can write 2 words per
++ * loop without overflowing the output buffer
++ */
++static __always_inline u8 *copy_from_back_fast(u8 *out, size_t dist, size_t len)
++{
++	u8 *end = out + len;
++
++	/*
++	 * ensure the distance is larger than sizeof(long),
++	 * so we can copy one word per step
++	 */
++	if (unlikely(dist < sizeof(long))) {
++#if BITS_PER_LONG == 32
++		/* extend the distance '1,2,3' to '4,4,6' */
++		out[0] = out[0 - dist];
++		out[1] = out[1 - dist];
++		out[2] = out[2 - dist];
++		out += sizeof(long) - 1;
++		if (out >= end)
++			return end;
++		dist = dist == 3 ? 6 : 4;
++#elif BITS_PER_LONG == 64
++		/* extend the distance '1,2,3,4,5,6,7' to '8,8,9,8,A,C,E' */
++		out[0] = out[0 - dist];
++		out[1] = out[1 - dist];
++		out[2] = out[2 - dist];
++		*(u32 *)(out + 3) = *(u32 *)(out -
++					((0x43213110 >> (dist * 4)) & 0xF));
++		out += sizeof(long) - 1;
++		if (out >= end)
++			return end;
++		dist = (0xECA89880 >> (dist * 4)) & 0xF;
++#else
++#error "Unknown BITS_PER_LONG"
++#endif
++	}
++
++	do {
++		COPY_WORD(out);
++		out += sizeof(long);
++		COPY_WORD(out);
++		out += sizeof(long);
++	} while (out < end);
++
++	return end;
++}
++
++static __always_inline u8 *copy_from_back(u8 *out, size_t dist, size_t len)
++{
++	if (len >= sizeof(long)) {
++		/* extend the distance if nedded */
++		if (unlikely(dist < sizeof(long))) {
++#if BITS_PER_LONG == 32
++			out[0] = out[0 - dist];
++			out[1] = out[1 - dist];
++			out[2] = out[2 - dist];
++			out += sizeof(long) - 1;
++			len -= sizeof(long) - 1;
++			if (len < sizeof(long))
++				goto _last;
++			dist = dist == 3 ? 6 : 4;
++#elif BITS_PER_LONG == 64
++			out[0] = out[0 - dist];
++			out[1] = out[1 - dist];
++			out[2] = out[2 - dist];
++			*(u32 *)(out + 3) = *(u32 *)(out -
++					((0x43213110 >> (dist * 4)) & 0xF));
++			out += sizeof(long) - 1;
++			len -= sizeof(long) - 1;
++			if (len < sizeof(long))
++				goto _last;
++			dist = (0xECA89880 >> (dist * 4)) & 0xF;
++#else
++#error "Unknown BITS_PER_LONG"
++#endif
++		}
++
++		while (len >= sizeof(long) * 2) {
++			len -= sizeof(long) * 2;
++			COPY_WORD(out);
++			out += sizeof(long);
++			COPY_WORD(out);
++			out += sizeof(long);
++		}
++		if (len >= sizeof(long)) {
++			len -= sizeof(long);
++			COPY_WORD(out);
++			out += sizeof(long);
++		}
++		if (len) {
++			out += len;
++			COPY_WORD(out - sizeof(long));
++		}
++	} else {
++		*out = *(out - dist);
++		out++;
++		len--;
++_last:
++		if (len >= 2) {
++			if (dist == 1)
++				dist = 2;
++#if BITS_PER_LONG == 32
++			*(u16 *)out = *(u16 *)(out - dist);
++			out += 2;
++			len -= 2;
++#else
++			do {
++				*(u16 *)out = *(u16 *)(out - dist);
++				out += 2;
++				len -= 2;
++			} while (len >= 2);
++#endif
++		}
++		if (len) {
++			*out = *(out - dist);
++			out++;
++		}
++	}
++
++	return out;
++}
++
++#else /* CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS */
++
++#include <asm/unaligned.h>
++
++/*
++ * Endian independent macros for shifting bits
++ */
++#ifdef __BIG_ENDIAN
++# define LSPULL(x, n)	((x) << (n))
++# define LSPUSH(x, n)	((x) >> (n))
++# define LSMASK(n)	(~(~0UL >> (n)))
++# define LSFETCH(x, n)	((x) >> (BITS_PER_LONG - (n)))
++#else
++# define LSPULL(x, n)	((x) >> (n))
++# define LSPUSH(x, n)	((x) << (n))
++# define LSMASK(n)	((1UL << (n)) - 1)
++# define LSFETCH(x, n)	((x) & LSMASK(n))
++#endif
++
++#define COPY_WORD_SHIFT(ptr, l, h) \
++	*(unsigned long *)(ptr) = LSPULL((l), shift_l) | LSPUSH((h), shift_h)
++
++static __always_inline u8 *copy_from_back_fast(u8 *out, size_t dist, size_t len)
++{
++	u8 *end = out + len;
++	unsigned long val;
++	unsigned int n;
++
++	/* extend the distance if nedded */
++	if (unlikely(dist < sizeof(long))) {
++#if BITS_PER_LONG == 32
++		out[0] = out[0 - dist];
++		out[1] = out[1 - dist];
++		out[2] = out[2 - dist];
++		out += sizeof(long) - 1;
++		if (out >= end)
++			return end;
++		dist = dist == 3 ? 6 : 4;
++#elif BITS_PER_LONG == 64
++		out[0] = out[0 - dist];
++		out[1] = out[1 - dist];
++		out[2] = out[2 - dist];
++		out[3] = out[3 - dist];
++		out[4] = out[4 - dist];
++		out[5] = out[5 - dist];
++		out[6] = out[6 - dist];
++		out += sizeof(long) - 1;
++		if (out >= end)
++			return end;
++		dist = (0xECA89880 >> (dist * 4)) & 0xF;
++#else
++#error "Unknown BITS_PER_LONG"
++#endif
++	}
++
++	/* align out addr */
++	n = (uintptr_t)out & (sizeof(long) - 1);
++	if (n) {
++		val = get_unaligned((unsigned long *)(out - dist));
++		put_unaligned(val, (unsigned long *)out);
++		out += sizeof(long);
++		if (out >= end)
++			return end;
++		out -= n;
++	}
++
++	n = dist & (sizeof(long) - 1);
++	if (n) {
++		const unsigned int shift_h = n * 8;
++		const unsigned int shift_l = BITS_PER_LONG - shift_h;
++		unsigned long prev;
++
++		dist -= n;
++		prev = *(unsigned long *)(out - dist - sizeof(long));
++
++		do {
++			val = *(unsigned long *)(out - dist);
++			COPY_WORD_SHIFT(out, prev, val);
++			out += sizeof(long);
++			prev = *(unsigned long *)(out - dist);
++			COPY_WORD_SHIFT(out, val, prev);
++			out += sizeof(long);
++		} while (out < end);
++	} else {
++		do {
++			COPY_WORD(out);
++			out += sizeof(long);
++			COPY_WORD(out);
++			out += sizeof(long);
++		} while (out < end);
++	}
++
++	return end;
++}
++
++static __always_inline u8 *copy_from_back(u8 *out, size_t dist, size_t len)
++{
++	if (len >= sizeof(long)) {
++		unsigned long val;
++		unsigned int n;
++
++		/* extend the distance if nedded */
++		if (unlikely(dist < sizeof(long))) {
++#if BITS_PER_LONG == 32
++			out[0] = out[0 - dist];
++			out[1] = out[1 - dist];
++			out[2] = out[2 - dist];
++			out += sizeof(long) - 1;
++			len -= sizeof(long) - 1;
++			if (len < sizeof(long))
++				goto _last;
++			dist = dist == 3 ? 6 : 4;
++#elif BITS_PER_LONG == 64
++			out[0] = out[0 - dist];
++			out[1] = out[1 - dist];
++			out[2] = out[2 - dist];
++			out[3] = out[3 - dist];
++			out[4] = out[4 - dist];
++			out[5] = out[5 - dist];
++			out[6] = out[6 - dist];
++			out += sizeof(long) - 1;
++			len -= sizeof(long) - 1;
++			if (len < sizeof(long))
++				goto _last;
++			dist = (0xECA89880 >> (dist * 4)) & 0xF;
++#else
++#error "Unknown BITS_PER_LONG"
++#endif
++		}
++
++		/* align out addr */
++		n = (uintptr_t)out & (sizeof(long) - 1);
++		if (n) {
++			val = get_unaligned((unsigned long *)(out - dist));
++			put_unaligned(val, (unsigned long *)out);
++			out += sizeof(long);
++			len -= sizeof(long);
++			if (len < sizeof(long)) {
++				if (len)
++					goto _last;
++				return out;
++			}
++			out -= n;
++			len += n;
++		}
++
++		n = dist & (sizeof(long) - 1);
++		if (n) {
++			const unsigned int shift_h = n * 8;
++			const unsigned int shift_l = BITS_PER_LONG - shift_h;
++			unsigned long prev;
++
++			dist -= n;
++			prev = *(unsigned long *)(out - dist - sizeof(long));
++
++			while (len >= sizeof(long) * 2) {
++				len -= sizeof(long) * 2;
++				val = *(unsigned long *)(out - dist);
++				COPY_WORD_SHIFT(out, prev, val);
++				out += sizeof(long);
++				prev = *(unsigned long *)(out - dist);
++				COPY_WORD_SHIFT(out, val, prev);
++				out += sizeof(long);
++			}
++			if (len >= sizeof(long)) {
++				len -= sizeof(long);
++				val = *(unsigned long *)(out - dist);
++				COPY_WORD_SHIFT(out, prev, val);
++				out += sizeof(long);
++				prev = val;
++			}
++			if (len) {
++				val = LSPULL(prev, shift_l);
++				if (len * 8 > shift_h) {
++					prev = *(unsigned long *)(out - dist);
++					val |= LSPUSH(prev, shift_h);
++				}
++				goto _part;
++			}
++		} else if (dist != sizeof(long)) {
++			while (len >= sizeof(long) * 2) {
++				len -= sizeof(long) * 2;
++				COPY_WORD(out);
++				out += sizeof(long);
++				COPY_WORD(out);
++				out += sizeof(long);
++			}
++			if (len >= sizeof(long)) {
++				len -= sizeof(long);
++				COPY_WORD(out);
++				out += sizeof(long);
++			}
++			if (len) {
++				val = *(unsigned long *)(out - dist);
++				goto _part;
++			}
++		} else {
++			val = *(unsigned long *)(out - sizeof(long));
++			while (len >= sizeof(long) * 2) {
++				len -= sizeof(long) * 2;
++				*(unsigned long *)out = val;
++				out += sizeof(long);
++				*(unsigned long *)out = val;
++				out += sizeof(long);
++			}
++			if (len >= sizeof(long)) {
++				len -= sizeof(long);
++				*(unsigned long *)out = val;
++				out += sizeof(long);
++			}
++			if (len) {
++_part:
++#if BITS_PER_LONG == 64
++				if (len & 4) {
++					*(u32 *)out = LSFETCH(val, 32);
++					out += 4;
++					val = LSPULL(val, 32);
++				}
++#endif
++				if (len & 2) {
++					*(u16 *)out = LSFETCH(val, 16);
++					out += 2;
++					val = LSPULL(val, 16);
++				}
++				if (len & 1)
++					*out++ = LSFETCH(val, 8);
++			}
++		}
++	} else {
++_last:
++		/* align out addr */
++		if ((uintptr_t)out & 1) {
++			*out = *(out - dist);
++			out++;
++			len--;
++		}
++		if (len >= 2) {
++#if BITS_PER_LONG == 32
++			if (dist > 1)
++				*(u16 *)out = get_unaligned((u16 *)(out - dist));
++			else
++				*(u16 *)out = out[-1] | out[-1] << 8;
++			out += 2;
++			len -= 2;
++#else
++			u16 val;
++
++			if (dist > 2) {
++				do {
++					val = get_unaligned((u16 *)(out - dist));
++					*(u16 *)out = val;
++					out += 2;
++					len -= 2;
++				} while (len >= 2);
++			} else {
++				val = dist == 2 ? *(u16 *)(out - 2)
++						: (out[-1] | out[-1] << 8);
++				do {
++					*(u16 *)out = val;
++					out += 2;
++					len -= 2;
++				} while (len >= 2);
++			}
++#endif
++		}
++		if (len) {
++			*out = *(out - dist);
++			out++;
++		}
++	}
++
++	return out;
++}
++
++#undef COPY_WORD_SHIFT
++
++#undef LSPULL
++#undef LSPUSH
++#undef LSMASK
++#undef LSFETCH
++
++#endif /* CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS */
++
++#undef COPY_WORD
++
++#endif /* __COPY_FROM_BACK_H */
+-- 
+2.28.0
+
