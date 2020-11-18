@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBC62B7E38
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A761D2B7E3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgKRNWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:22:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgKRNWN (ORCPT
+        id S1726293AbgKRNWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:22:36 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:47884 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725747AbgKRNWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:22:13 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CEBC0613D4;
-        Wed, 18 Nov 2020 05:22:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=304dWlgV4M2wRi89v82SUM37CJvIM8VxHmQweeYvBaI=; b=WJibo/P6oUNW82KjoGVgCSC64B
-        vgFXenT8KrfcbWPEy3tncLCkyu21yLHxG2PHoRAG+3g/hhE1hILFlYMS4ES9flVs4G6BCdU5Yqr7v
-        kw5wjRgJusQVf3KCWQg+67hz9+OVvkN2xQ4U2GKoSFqrhOJmYegImZeIVfWFDy+5V60Pe6pDgsEy3
-        Cqf+zV10UPR0lMssdIi8ic+kHfv5b/2YX8aWcuCctA1SgQQebqvYTqCGNCY7jw6nHNuyNhOAl8H9R
-        pjEQe3PFGzrYVzpggre8W0yZicwBGvO/P7DbbC2LOErQnywtsaNlvtkpr9dYuMLZ4SLj28w2jURt2
-        V5KFJk5g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfNP4-0008CO-0n; Wed, 18 Nov 2020 13:21:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 17D0D3012DC;
-        Wed, 18 Nov 2020 14:21:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 002E5200E0A39; Wed, 18 Nov 2020 14:21:36 +0100 (CET)
-Date:   Wed, 18 Nov 2020 14:21:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: violating function pointer signature
-Message-ID: <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
-References: <20201116175107.02db396d@gandalf.local.home>
- <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
- <20201117142145.43194f1a@gandalf.local.home>
- <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
- <20201117153451.3015c5c9@gandalf.local.home>
+        Wed, 18 Nov 2020 08:22:35 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-111-eBeRGmPRPnygMD5X2l45bA-1; Wed, 18 Nov 2020 13:22:29 +0000
+X-MC-Unique: eBeRGmPRPnygMD5X2l45bA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 18 Nov 2020 13:22:28 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 18 Nov 2020 13:22:28 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Alexandre Chartre' <alexandre.chartre@oracle.com>,
+        Borislav Petkov <bp@alien8.de>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "jroedel@suse.de" <jroedel@suse.de>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "jan.setjeeilers@oracle.com" <jan.setjeeilers@oracle.com>,
+        "junaids@google.com" <junaids@google.com>,
+        "oweisse@google.com" <oweisse@google.com>,
+        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "graf@amazon.de" <graf@amazon.de>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "kuzuno@gmail.com" <kuzuno@gmail.com>
+Subject: RE: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
+Thread-Topic: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
+Thread-Index: AQHWvX4bZBmKPgi/bUuugBhHF1Bzu6nNnuFAgAARogCAACju4A==
+Date:   Wed, 18 Nov 2020 13:22:28 +0000
+Message-ID: <5c93e47e106c42659b2004e8de604d61@AcuMS.aculab.com>
+References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
+ <20201116201711.GE1131@zn.tnic>
+ <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
+ <20201117165539.GG5719@zn.tnic>
+ <890f6b7e-a268-2257-edcb-5eacc7db3d8e@oracle.com>
+ <20201117212608.GS5719@zn.tnic>
+ <b63ec614-8a49-728d-aa61-76339378183f@oracle.com>
+ <ce8d862f498042d1bd7a6e8a071f06bf@AcuMS.aculab.com>
+ <0bedae59-5397-9cae-3c2a-66bc376f5616@oracle.com>
+In-Reply-To: <0bedae59-5397-9cae-3c2a-66bc376f5616@oracle.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117153451.3015c5c9@gandalf.local.home>
-X-Bad-Reply: References and In-Reply-To but no 'Re:' in Subject.
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 03:34:51PM -0500, Steven Rostedt wrote:
+RnJvbTogQWxleGFuZHJlIENoYXJ0cmUNCj4gU2VudDogMTggTm92ZW1iZXIgMjAyMCAxMDozMA0K
+Li4uDQo+IENvcnJlY3QsIHRoaXMgUkZDIGlzIG5vdCBjaGFuZ2luZyB0aGUgb3ZlcmhlYWQuIEhv
+d2V2ZXIsIGl0IGlzIGEgc3RlcCBmb3J3YXJkDQo+IGZvciBiZWluZyBhYmxlIHRvIGV4ZWN1dGUg
+c29tZSBzZWxlY3RlZCBzeXNjYWxscyBvciBpbnRlcnJ1cHQgaGFuZGxlcnMgd2l0aG91dA0KPiBz
+d2l0Y2hpbmcgdG8gdGhlIGtlcm5lbCBwYWdlLXRhYmxlLiBUaGUgbmV4dCBzdGVwIHdvdWxkIGJl
+IHRvIGlkZW50aWZ5IGFuZCBhZGQNCj4gdGhlIG5lY2Vzc2FyeSBtYXBwaW5nIHRvIHRoZSB1c2Vy
+IHBhZ2UtdGFibGUgc28gdGhhdCBzcGVjaWZpZWQgc3lzY2FsbHMgY2FuIGJlDQo+IGV4ZWN1dGVk
+IHdpdGhvdXQgc3dpdGNoaW5nIHRoZSBwYWdlLXRhYmxlLg0KDQpSZW1lbWJlciB0aGF0IHdpdGhv
+dXQgUFRJIHVzZXIgc3BhY2UgY2FuIHJlYWQgYWxsIGtlcm5lbCBtZW1vcnkuDQooSSdtIG5vdCAx
+MDAlIHN1cmUgeW91IGNhbiBmb3JjZSBhIGNhY2hlLWxpbmUgcmVhZC4pDQpJdCBpc24ndCBldmVu
+IHRoYXQgc2xvdy4NCihFdmVuIEkgY2FuIHVuZGVyc3RhbmQgaG93IGl0IHdvcmtzLikNCg0KU28g
+aWYgeW91IGFyZSB3b3JyaWVkIGFib3V0IHVzZXIgc3BhY2UgZG9pbmcgdGhhdCB5b3UgY2FuJ3Qg
+cmVhbGx5DQpydW4gYW55dGhpbmcgb24gdGhlIHVzZXIgcGFnZSB0YWJsZXMuDQoNClN5c3RlbSBj
+YWxscyBsaWtlIGdldHBpZCgpIGFyZSBpcnJlbGV2YW50IC0gdGhleSBhcmVuJ3QgdXNlZCAobXVj
+aCkuDQpFdmVuIHRoZSB0aW1lIG9mIGRheSBvbmVzIGFyZSBpbXBsZW1lbnRlZCBpbiB0aGUgVkRT
+TyB3aXRob3V0IGENCmNvbnRleHQgc3dpdGNoLg0KDQpTbyB0aGUgb3ZlcmhlYWRzIGNvbWUgZnJv
+bSBvdGhlciBzeXN0ZW0gY2FsbHMgdGhhdCAnZG8gd29yaycNCndpdGhvdXQgYWN0dWFsbHkgc2xl
+ZXBpbmcuDQpJJ20gZ3Vlc3NpbmcgdGhpbmdzIGxpa2UgcmVhZCwgd3JpdGUsIHNlbmRtc2csIHJl
+Y3Ztc2cuDQoNClRoZSBvbmx5IGludGVyZXN0aW5nIHN5c3RlbSBjYWxsIEkgY2FuIHRoaW5rIG9m
+IGlzIGZ1dGV4Lg0KQXMgd2VsbCBhcyBhbGwgdGhlIGNhbGxzIHRoYXQgcmV0dXJuIGltbWVkaWF0
+ZWx5IGJlY2F1c2UgdGhlDQptdXRleCBoYXMgYmVlbiByZWxlYXNlZCB3aGlsZSBlbnRlcmluZyB0
+aGUga2VybmVsLCBJIHN1c3BlY3QNCnRoYXQgYmVpbmcgcHJlLWVtcHRlZCBieSBhIGRpZmZlcmVu
+dCB0aHJlYWQgKG9mIHRoZSBzYW1lIHByb2Nlc3MpDQpkb2Vzbid0IGFjdHVhbGx5IG5lZWQgQ1Iz
+IHJlbG9hZGluZyAod2l0aG91dCBQVEkpLg0KDQpJIGFsc28gc3VzcGVjdCB0aGF0IGl0IGlzbid0
+IGp1c3QgdGhlIENSMyByZWxvYWQgdGhhdCBjb3N0cy4NClRoZXJlIGNvdWxkIChkZXBlbmRpbmcg
+b24gdGhlIGNwdSkgYmUgYXNzb2NpYXRlZCBUTEIgYW5kL29yIGNhY2hlDQppbnZhbGlkYXRpb25z
+IHRoYXQgaGF2ZSBhIG11Y2ggbGFyZ2VyIGVmZmVjdCBvbiBwcm9ncmFtcyB3aXRoDQpsYXJnZSB3
+b3JraW5nIHNldHMgdGhhbiBvbiBzaW1wbGUgYmVuY2htYXJrIHByb2dyYW1zLg0KDQpOb3cgYml0
+cyBvZiBkYXRhIHRoYXQgeW91IGFyZSAnbW9yZSB3b3JyaWVkIGFib3V0JyBjb3VsZCBiZSBrZXB0
+DQppbiBwaHlzaWNhbCBtZW1vcnkgdGhhdCBpc24ndCBub3JtYWxseSBtYXBwZWQgKG9yIHJlZmVy
+ZW5jZWQgYnkNCmEgVExCKSBhbmQgb25seSBtYXBwZWQgd2hlbiBuZWVkZWQuDQpCdXQgdGhhdCBk
+b2Vzbid0IGhlbHAgdGhlIGdlbmVyYWwgY2FzZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQg
+QWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVz
+LCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-> > > Since all tracepoints callbacks have at least one parameter (__data), we
-> > > could declare tp_stub_func as:
-> > > 
-> > > static void tp_stub_func(void *data, ...)
-> > > {
-> > >	return;
-> > > }
-> > > 
-> > > And now C knows that tp_stub_func() can be called with one or more
-> > > parameters, and had better be able to deal with it!  
-> > 
-> > AFAIU this won't work.
-> > 
-> > C99 6.5.2.2 Function calls
-> > 
-> > "If the function is defined with a type that is not compatible with the type (of the
-> > expression) pointed to by the expression that denotes the called function, the behavior is
-> > undefined."
-> 
-> But is it really a problem in practice. I'm sure we could create an objtool
-> function to check to make sure we don't break anything at build time.
-
-I think that as long as the function is completely empty (it never
-touches any of the arguments) this should work in practise.
-
-That is:
-
-  void tp_nop_func(void) { }
-
-can be used as an argument to any function pointer that has a void
-return. In fact, I already do that, grep for __static_call_nop().
-
-I'm not sure what the LLVM-CFI crud makes of it, but that's their
-problem.
