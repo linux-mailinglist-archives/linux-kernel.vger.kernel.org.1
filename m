@@ -2,375 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED44D2B844F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 106A52B8451
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgKRTBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:01:12 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:23156 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726634AbgKRTBL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:01:11 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AIItMpe004403;
-        Wed, 18 Nov 2020 11:01:03 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0220;
- bh=v6DbP+tA/T8lIfQBTNU76VxL8dqObicCcAXOJoW7daI=;
- b=b+IRUWfgbcxQjCEw8SP0y3XguQf2pMDln/S4+C8GiIiwsRJhAqqOAPiihiOxRGZE83px
- xAhqGPtm4Rdfc+sahuoe/M7561HKAFOnxy6jcyfa1Np11HS+wF7hY8x71iEb3txKr9F5
- Y2Ll/C7N9Q8zEwIUiC30+IqnA+WybM5jIPFfYKD7GcZBiDnGOJZ+ill1DRGs3Fm49W6M
- sJQDzyPhBQp8dKQcfZeY2tLIeNAcGOrq+Zy0XJYJkkaKHtdkl9gkw7ef0a/ziGbbt5Fv
- ppvzQszL63mH/ZzYPPGPAZBp4rMGV1A/98N70ndkcrgkH0znJywiJbtkmf8CFW23T33e vQ== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 34w7ncrm2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 18 Nov 2020 11:01:02 -0800
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Nov
- 2020 11:01:00 -0800
-Received: from SC-EXCH02.marvell.com (10.93.176.82) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Nov
- 2020 11:01:01 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.176)
- by SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Wed, 18 Nov 2020 11:01:00 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ETwO6BI+x7ORPSQsGownpq5SG4nHwJ0Q6wLAD/ni1+r4BJAvQvAkMMmQ1JK5xbK/nlRS+n0vRH70LFrsktLU2/79pulLjBGA8ZDzbP7f53+0/ubmbyJ+c88rfJBYL+vGFjB0+odfoRuBIsMVHRsLwtSFlkowecaR8caz5QE32X5jLFMefnTCc5qgByJWmogZCdxiMVtGlpk0wPukxUrXfy02gBkH6zeFIVH1d1s05jUPFu35Emc+zsJWbHNW58RJxv7TTDh2aZyihOttMJhI+TTNJY5nb9I37z+hsg/OHRNa3i5NXQtyqAs/1NwwAWQj4dH/oFOrQOhCI2xJc3tFTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v6DbP+tA/T8lIfQBTNU76VxL8dqObicCcAXOJoW7daI=;
- b=J0s8zuGPhmXjtERmmUW6Cj4TeC2COYHAKZOXaLbL6BW6WdFC1U77ETO/YxWEuN9XuuWz+QpxPIkSeBpncS7P317iSncBXXQqDW4XIriQive/77ksx5SatpxHDJm//EPE9MWSohzB8WnfSG8Ug94QOOYk9b3Y5WOEg9QUF8aeFGOBCCL2Py2Libxcnw4/fT/d/YhWWBukr+m8f4qnxH0mjUT8UzszsTLFAl9L4twTBycfpc+jp/CnrVwTESw/Ghj9ZdkYwCUqHLatbB8DllBKtrfro1UYEDe9539t+V/A+/cMNT87Z7PC8U4WtyvlzHdCJJasO1WVYs9tef01uf0v7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v6DbP+tA/T8lIfQBTNU76VxL8dqObicCcAXOJoW7daI=;
- b=JOZ+G+KH4rHAYWxPdTvutDN47Y8H7f8M1Mh/1JK5Ag7ac21RyRIRId3iQpJnEPIkUCx1IL5T+xzBgA0Rlte8018BoKuyKLVsktRh8AEDkwtK2aCjB6fSHLcpN16wuAdOrmWBI/yN5JZMKf+WooOQQvMT0LlEpQEUW013NmSL/84=
-Received: from CO6PR18MB3873.namprd18.prod.outlook.com (2603:10b6:5:350::23)
- by MWHPR18MB1405.namprd18.prod.outlook.com (2603:10b6:320:26::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Wed, 18 Nov
- 2020 19:00:59 +0000
-Received: from CO6PR18MB3873.namprd18.prod.outlook.com
- ([fe80::ed55:e9b3:f86c:3e5b]) by CO6PR18MB3873.namprd18.prod.outlook.com
- ([fe80::ed55:e9b3:f86c:3e5b%6]) with mapi id 15.20.3564.025; Wed, 18 Nov 2020
- 19:00:59 +0000
-From:   Stefan Chulski <stefanc@marvell.com>
-To:     Stefan Chulski <stefanc@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Yan Markman <ymarkman@marvell.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: RE: [PATCH] net: mvpp2: divide fifo for dts-active ports only
-Thread-Topic: [PATCH] net: mvpp2: divide fifo for dts-active ports only
-Thread-Index: AQHWvdd7b7hGe3lyr0+AVyQcEIp8ZanOPlqw
-Date:   Wed, 18 Nov 2020 19:00:59 +0000
-Message-ID: <CO6PR18MB38736FA3A7C79A59CC311441B0E10@CO6PR18MB3873.namprd18.prod.outlook.com>
-References: <1605723656-1276-1-git-send-email-stefanc@marvell.com>
-In-Reply-To: <1605723656-1276-1-git-send-email-stefanc@marvell.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [80.230.11.109]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 397a482e-1dd4-4202-4259-08d88bf4496c
-x-ms-traffictypediagnostic: MWHPR18MB1405:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR18MB1405B2A8EB410B31466B8F97B0E10@MWHPR18MB1405.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NROHCC1wt7R+TLgwt31fEU6xKYYPwSn2ujag1O9WroNYLx+HwR+RfponhKSbM7TERS77MswMEXSIMZ8wmiLlHN4AW8jPmhWxe9e4/ck9E1LBr2be46K/ZXSHynPKrh1KYcJEEEQTIzazn1VwzHEJnDMXpXPW4gxsyJzFaefQ8u4eOz5+kCBmYbsS/IGydH2yB4aoyWHqYyO/s+R77XShVwgrl2+KdASAS3ff5P1LYZF3t2fhG8ma2+0XriQkTyeMtI/74LNwjJqjUsxO1VdfoI+4V/+Z29zJKpt6bilpQmJuZS77y03xMnjQR9bwiHaxBbYcBTgi9yOkj6JcmDQolA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR18MB3873.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(376002)(136003)(346002)(53546011)(54906003)(6506007)(110136005)(33656002)(8936002)(7696005)(83380400001)(76116006)(64756008)(8676002)(66446008)(26005)(316002)(186003)(66946007)(66476007)(66556008)(478600001)(52536014)(71200400001)(5660300002)(4326008)(2906002)(86362001)(9686003)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: N4opU7Ud9FQ12BL76XAzp+kUGWs0C/MAvPB3e5aiEPcSN2xKlMX5ytIOxCjEUhb4SjYFu7W7WGpyhkCAZAsJgUdN2ifJAAjshRTxQUdVCd032PCRBpWXFte7oMX874NFL380wXVF+OxGpqQfTVLMbdGCw/hkwsVGeouX6wRDWOvdGbo+065xKZf1o9sh/OELwMsLwmFMVI9gnKh1oUui7HzgcUDWlOIBjk2inRiIWoW2PYJJq0FB8DU6S5wQz8N7IZbjE40znBhwpc1Se0u711EFP9BgdnzQPanrDeCtdhWEVAKmz1Dfk3luNDVt21oZPUN7xux0ZgsqyQpJSI7tRdbJkjWp8uwuuBAD0sViOQGNDctPP5eq57vK1ofdlMXu0e3COlFjKgPnbkAqrGd5IHbpPQO4D72xhHEU/ZfjSfwzLvBmCsyTA8QBU+wyCvcOyV0UMC9iQC3cUrA2cVo+CwGoxq9jaANwZtW12skq7OLRV+osmYAf+KjaaYQO4IWgC3esn65gQi5nzYYhWrK6JTDK55koH6jh4UJ7XfengmgOab/zRp2h1LQKE1XApcd7+r9RlOkPg4dV6+dq+OHWCJO+Yh2XDHaq9ajaTFB00TmaYDRtrxr9W2l0JIt5uH84HcCMxjV2YOmtFCM1CYwL6m6QvyBMJcIDMYM5OIwwBHBVD1EF2idG4JvNDuIcHggxK+mn9QvTNI53X9xA9greQhzPsx6NSx7sB4wE3qFl66/RTTAT2C5JZSWbYp2Ct16pl2rkeXbvwaKHwW8pefByPsS6N7lwIxL9j6F+u7vufDPUQTMnqhIEvyHib7wWgKITfCrC5YxLTDpX/qMgSwWxbo2M5YALwUTQMmADw5bzheKeJECwcrPSM4Kd8Ny9G1RoUfZbi59nTTwdpTRGx/uEQw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727164AbgKRTBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:01:52 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:35583 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726864AbgKRTBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:01:52 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605726110; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=dp59ll0cwi4fKbOjXmQC9h9P16VEfYIK+g8aTYDxuP0=; b=TfSkdfYjWUBB+P38HAHO30NKBH5JEHOk7JBjKBD8rh193zkkYFbLLe+RN4vhhA9VBpwgtEbi
+ MrACZ2QtNhVrF6csWiKY6rsjk+wXqu39+D4GYd3nSz4yuhpephBcq1WVxM61PKNJuez0fB9Y
+ OIXwc0z+J3iXUAxcblpXrH4yKLQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5fb56f78a5c560669c81d8eb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 19:01:12
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D959BC43460; Wed, 18 Nov 2020 19:01:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.117.159] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E1B7C43463;
+        Wed, 18 Nov 2020 19:01:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6E1B7C43463
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v4] usb: dwc3: Stop active transfers before halting the
+ controller
+To:     Michael Tretter <m.tretter@pengutronix.de>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, thinhn@synopsys.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        jackp@codeaurora.org
+References: <20200929002059.26714-1-wcheng@codeaurora.org>
+ <20201118101430.GC23024@pengutronix.de>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <db9df635-ac72-c5f1-387e-694fcad77385@codeaurora.org>
+Date:   Wed, 18 Nov 2020 11:01:08 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR18MB3873.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 397a482e-1dd4-4202-4259-08d88bf4496c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2020 19:00:59.1693
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: W0moQvySQohtrDP2mBDW15m1rf4ukqFgJzw1svn8oEi9nJjvuKYhZOzI4kKSfg/GPRlaqeXO3xVcFjf211qamg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR18MB1405
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-18_06:2020-11-17,2020-11-18 signatures=0
+In-Reply-To: <20201118101430.GC23024@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> -----Original Message-----
-> From: stefanc@marvell.com <stefanc@marvell.com>
-> Sent: Wednesday, November 18, 2020 8:21 PM
-> To: netdev@vger.kernel.org
-> Cc: thomas.petazzoni@bootlin.com; davem@davemloft.net; Nadav Haklai
-> <nadavh@marvell.com>; Yan Markman <ymarkman@marvell.com>; linux-
-> kernel@vger.kernel.org; Stefan Chulski <stefanc@marvell.com>
-> Subject: [PATCH] net: mvpp2: divide fifo for dts-active ports only
->=20
-> From: Stefan Chulski <stefanc@marvell.com>
->=20
-> Tx/Rx FIFO is a HW resource limited by total size, but shared by all port=
-s of
-> same CP110 and impacting port-performance.
-> Do not divide the FIFO for ports which are not enabled in DTS, so active =
-ports
-> could have more FIFO.
->=20
-> The active port mapping should be done in probe before FIFO-init.
->=20
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  23 +++--
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 129
-> +++++++++++++++++-------
->  2 files changed, 108 insertions(+), 44 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> index 8347758..6bd7e40 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> @@ -695,6 +695,9 @@
->  /* Maximum number of supported ports */
->  #define MVPP2_MAX_PORTS			4
->=20
-> +/* Loopback port index */
-> +#define MVPP2_LOOPBACK_PORT_INDEX	3
-> +
->  /* Maximum number of TXQs used by single port */
->  #define MVPP2_MAX_TXQ			8
->=20
-> @@ -729,22 +732,21 @@
->  #define MVPP2_TX_DESC_ALIGN		(MVPP2_DESC_ALIGNED_SIZE
-> - 1)
->=20
->  /* RX FIFO constants */
-> +#define MVPP2_RX_FIFO_PORT_DATA_SIZE_44KB	0xb000
->  #define MVPP2_RX_FIFO_PORT_DATA_SIZE_32KB	0x8000
->  #define MVPP2_RX_FIFO_PORT_DATA_SIZE_8KB	0x2000
->  #define MVPP2_RX_FIFO_PORT_DATA_SIZE_4KB	0x1000
-> -#define MVPP2_RX_FIFO_PORT_ATTR_SIZE_32KB	0x200
-> -#define MVPP2_RX_FIFO_PORT_ATTR_SIZE_8KB	0x80
-> +#define MVPP2_RX_FIFO_PORT_ATTR_SIZE(data_size)	((data_size) >> 6)
->  #define MVPP2_RX_FIFO_PORT_ATTR_SIZE_4KB	0x40
->  #define MVPP2_RX_FIFO_PORT_MIN_PKT		0x80
->=20
->  /* TX FIFO constants */
-> -#define MVPP22_TX_FIFO_DATA_SIZE_10KB		0xa
-> -#define MVPP22_TX_FIFO_DATA_SIZE_3KB		0x3
-> -#define MVPP2_TX_FIFO_THRESHOLD_MIN		256
-> -#define MVPP2_TX_FIFO_THRESHOLD_10KB	\
-> -	(MVPP22_TX_FIFO_DATA_SIZE_10KB * 1024 -
-> MVPP2_TX_FIFO_THRESHOLD_MIN)
-> -#define MVPP2_TX_FIFO_THRESHOLD_3KB	\
-> -	(MVPP22_TX_FIFO_DATA_SIZE_3KB * 1024 -
-> MVPP2_TX_FIFO_THRESHOLD_MIN)
-> +#define MVPP22_TX_FIFO_DATA_SIZE_16KB		16
-> +#define MVPP22_TX_FIFO_DATA_SIZE_10KB		10
-> +#define MVPP22_TX_FIFO_DATA_SIZE_3KB		3
-> +#define MVPP2_TX_FIFO_THRESHOLD_MIN		256 /* Bytes */
-> +#define MVPP2_TX_FIFO_THRESHOLD(kb)	\
-> +		((kb) * 1024 - MVPP2_TX_FIFO_THRESHOLD_MIN)
->=20
->  /* RX buffer constants */
->  #define MVPP2_SKB_SHINFO_SIZE \
-> @@ -946,6 +948,9 @@ struct mvpp2 {
->  	/* List of pointers to port structures */
->  	int port_count;
->  	struct mvpp2_port *port_list[MVPP2_MAX_PORTS];
-> +	/* Map of enabled ports */
-> +	unsigned long port_map;
-> +
->  	struct mvpp2_tai *tai;
->=20
->  	/* Number of Tx threads used */
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> index f6616c8..9ff5f57 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -6601,32 +6601,56 @@ static void mvpp2_rx_fifo_init(struct mvpp2 *priv=
-)
->  	mvpp2_write(priv, MVPP2_RX_FIFO_INIT_REG, 0x1);  }
->=20
-> -static void mvpp22_rx_fifo_init(struct mvpp2 *priv)
-> +static void mvpp22_rx_fifo_set_hw(struct mvpp2 *priv, int port, int
-> +data_size)
->  {
-> -	int port;
-> +	int attr_size =3D MVPP2_RX_FIFO_PORT_ATTR_SIZE(data_size);
->=20
-> -	/* The FIFO size parameters are set depending on the maximum speed
-> a
-> -	 * given port can handle:
-> -	 * - Port 0: 10Gbps
-> -	 * - Port 1: 2.5Gbps
-> -	 * - Ports 2 and 3: 1Gbps
-> -	 */
-> +	mvpp2_write(priv, MVPP2_RX_DATA_FIFO_SIZE_REG(port), data_size);
-> +	mvpp2_write(priv, MVPP2_RX_ATTR_FIFO_SIZE_REG(port), attr_size); }
->=20
-> -	mvpp2_write(priv, MVPP2_RX_DATA_FIFO_SIZE_REG(0),
-> -		    MVPP2_RX_FIFO_PORT_DATA_SIZE_32KB);
-> -	mvpp2_write(priv, MVPP2_RX_ATTR_FIFO_SIZE_REG(0),
-> -		    MVPP2_RX_FIFO_PORT_ATTR_SIZE_32KB);
-> +/* Initialize TX FIFO's: the total FIFO size is 48kB on PPv2.2.
-> + * 4kB fixed space must be assigned for the loopback port.
-> + * Redistribute remaining avialable 44kB space among all active ports.
-> + * Guarantee minimum 32kB for 10G port and 8kB for port 1, capable of
-> +2.5G
-> + * SGMII link.
-> + */
-> +static void mvpp22_rx_fifo_init(struct mvpp2 *priv) {
-> +	int port, size;
-> +	unsigned long port_map;
-> +	int remaining_ports_count;
-> +	int size_remainder;
-> +
-> +	/* The loopback requires fixed 4kB of the FIFO space assignment. */
-> +	mvpp22_rx_fifo_set_hw(priv, MVPP2_LOOPBACK_PORT_INDEX,
-> +			      MVPP2_RX_FIFO_PORT_DATA_SIZE_4KB);
-> +	port_map =3D priv->port_map & ~BIT(MVPP2_LOOPBACK_PORT_INDEX);
-> +
-> +	/* Set RX FIFO size to 0 for inactive ports. */
-> +	for_each_clear_bit(port, &port_map,
-> MVPP2_LOOPBACK_PORT_INDEX)
-> +		mvpp22_rx_fifo_set_hw(priv, port, 0);
-> +
-> +	/* Assign remaining RX FIFO space among all active ports. */
-> +	size_remainder =3D MVPP2_RX_FIFO_PORT_DATA_SIZE_44KB;
-> +	remaining_ports_count =3D hweight_long(port_map);
-> +
-> +	for_each_set_bit(port, &port_map, MVPP2_LOOPBACK_PORT_INDEX) {
-> +		if (remaining_ports_count =3D=3D 1)
-> +			size =3D size_remainder;
-> +		else if (port =3D=3D 0)
-> +			size =3D max(size_remainder / remaining_ports_count,
-> +				   MVPP2_RX_FIFO_PORT_DATA_SIZE_32KB);
-> +		else if (port =3D=3D 1)
-> +			size =3D max(size_remainder / remaining_ports_count,
-> +				   MVPP2_RX_FIFO_PORT_DATA_SIZE_8KB);
-> +		else
-> +			size =3D size_remainder / remaining_ports_count;
->=20
-> -	mvpp2_write(priv, MVPP2_RX_DATA_FIFO_SIZE_REG(1),
-> -		    MVPP2_RX_FIFO_PORT_DATA_SIZE_8KB);
-> -	mvpp2_write(priv, MVPP2_RX_ATTR_FIFO_SIZE_REG(1),
-> -		    MVPP2_RX_FIFO_PORT_ATTR_SIZE_8KB);
-> +		size_remainder -=3D size;
-> +		remaining_ports_count--;
->=20
-> -	for (port =3D 2; port < MVPP2_MAX_PORTS; port++) {
-> -		mvpp2_write(priv, MVPP2_RX_DATA_FIFO_SIZE_REG(port),
-> -			    MVPP2_RX_FIFO_PORT_DATA_SIZE_4KB);
-> -		mvpp2_write(priv, MVPP2_RX_ATTR_FIFO_SIZE_REG(port),
-> -			    MVPP2_RX_FIFO_PORT_ATTR_SIZE_4KB);
-> +		mvpp22_rx_fifo_set_hw(priv, port, size);
->  	}
->=20
->  	mvpp2_write(priv, MVPP2_RX_MIN_PKT_SIZE_REG, @@ -6634,24
-> +6658,53 @@ static void mvpp22_rx_fifo_init(struct mvpp2 *priv)
->  	mvpp2_write(priv, MVPP2_RX_FIFO_INIT_REG, 0x1);  }
->=20
-> -/* Initialize Tx FIFO's: the total FIFO size is 19kB on PPv2.2 and 10G
-> - * interfaces must have a Tx FIFO size of 10kB. As only port 0 can do 10=
-G,
-> - * configure its Tx FIFO size to 10kB and the others ports Tx FIFO size =
-to 3kB.
-> +static void mvpp22_tx_fifo_set_hw(struct mvpp2 *priv, int port, int
-> +size) {
-> +	int threshold =3D MVPP2_TX_FIFO_THRESHOLD(size);
-> +
-> +	mvpp2_write(priv, MVPP22_TX_FIFO_SIZE_REG(port), size);
-> +	mvpp2_write(priv, MVPP22_TX_FIFO_THRESH_REG(port), threshold); }
-> +
-> +/* Initialize TX FIFO's: the total FIFO size is 19kB on PPv2.2.
-> + * 3kB fixed space must be assigned for the loopback port.
-> + * Redistribute remaining avialable 16kB space among all active ports.
-> + * The 10G interface should use 10kB (which is maximum possible size
-> + * per single port).
->   */
->  static void mvpp22_tx_fifo_init(struct mvpp2 *priv)  {
-> -	int port, size, thrs;
-> -
-> -	for (port =3D 0; port < MVPP2_MAX_PORTS; port++) {
-> -		if (port =3D=3D 0) {
-> +	int port, size;
-> +	unsigned long port_map;
-> +	int remaining_ports_count;
-> +	int size_remainder;
-> +
-> +	/* The loopback requires fixed 3kB of the FIFO space assignment. */
-> +	mvpp22_tx_fifo_set_hw(priv, MVPP2_LOOPBACK_PORT_INDEX,
-> +			      MVPP22_TX_FIFO_DATA_SIZE_3KB);
-> +	port_map =3D priv->port_map & ~BIT(MVPP2_LOOPBACK_PORT_INDEX);
-> +
-> +	/* Set TX FIFO size to 0 for inactive ports. */
-> +	for_each_clear_bit(port, &port_map,
-> MVPP2_LOOPBACK_PORT_INDEX)
-> +		mvpp22_tx_fifo_set_hw(priv, port, 0);
-> +
-> +	/* Assign remaining TX FIFO space among all active ports. */
-> +	size_remainder =3D MVPP22_TX_FIFO_DATA_SIZE_16KB;
-> +	remaining_ports_count =3D hweight_long(port_map);
-> +
-> +	for_each_set_bit(port, &port_map, MVPP2_LOOPBACK_PORT_INDEX) {
-> +		if (remaining_ports_count =3D=3D 1)
-> +			size =3D min(size_remainder,
-> +				   MVPP22_TX_FIFO_DATA_SIZE_10KB);
-> +		else if (port =3D=3D 0)
->  			size =3D MVPP22_TX_FIFO_DATA_SIZE_10KB;
-> -			thrs =3D MVPP2_TX_FIFO_THRESHOLD_10KB;
-> -		} else {
-> -			size =3D MVPP22_TX_FIFO_DATA_SIZE_3KB;
-> -			thrs =3D MVPP2_TX_FIFO_THRESHOLD_3KB;
-> -		}
-> -		mvpp2_write(priv, MVPP22_TX_FIFO_SIZE_REG(port), size);
-> -		mvpp2_write(priv, MVPP22_TX_FIFO_THRESH_REG(port),
-> thrs);
-> +		else
-> +			size =3D size_remainder / remaining_ports_count;
-> +
-> +		size_remainder -=3D size;
-> +		remaining_ports_count--;
-> +
-> +		mvpp22_tx_fifo_set_hw(priv, port, size);
->  	}
->  }
->=20
-> @@ -6952,6 +7005,12 @@ static int mvpp2_probe(struct platform_device
-> *pdev)
->  			goto err_axi_clk;
->  	}
->=20
-> +	/* Map DTS-active ports. Should be done before FIFO mvpp2_init */
-> +	fwnode_for_each_available_child_node(fwnode, port_fwnode) {
-> +		if (!fwnode_property_read_u32(port_fwnode, "port-id", &i))
-> +			priv->port_map |=3D BIT(i);
-> +	}
-> +
->  	/* Initialize network controller */
->  	err =3D mvpp2_init(pdev, priv);
->  	if (err < 0) {
-> --
-> 1.9.1
+On 11/18/2020 2:14 AM, Michael Tretter wrote:
+> Hello,
+> 
+> On Mon, 28 Sep 2020 17:20:59 -0700, Wesley Cheng wrote:
+>> In the DWC3 databook, for a device initiated disconnect or bus reset, the
+>> driver is required to send dependxfer commands for any pending transfers.
+>> In addition, before the controller can move to the halted state, the SW
+>> needs to acknowledge any pending events.  If the controller is not halted
+>> properly, there is a chance the controller will continue accessing stale or
+>> freed TRBs and buffers.
+> 
+> This patch causes a regression when using the uvc gadget with the dwc3 gadget
+> driver, which causes host to not be able to enumerate the USB device.
+> 
+> The regression can be reproduced as follows:
+> 
+> Configure the uvc gadget via configfs, which in the end binds to the driver
+> and calls dwc3_gadget_start. Start the uvc-gadget user space application,
+> which activates the function and the gadget and calls pullup enable. The UVC
+> Device is now detected by a USB host.
+> 
+> Stop the uvc gadget application, which deactivates the gadget, calls pullup
+> disable and, thus, stops the dwc3 gadget.
+> 
+Hi Michael,
 
+Thanks for the analysis.  I think specifically, the f_uvc will use the
+usb_function_deactivate() API to disable the pullup (w/o calling
+udc_stop()) and using usb_function_activate() to do the opposite.  These
+are triggered when an application opens/closes the V4L2 device. (your
+application)
 
-Jakub Kicinski added to CC
+> Restart the uvc gadget application; the gadget is activated and pullup enable
+> is called, but the dwc3 gadget is not started.
+> 
+
+Seems like the deactivate/activate calls avoid any UDC start stop
+operations, and only use the pullup executions to issue a soft disconnect.
+
+> The USB Host shows the following error messages and the USB device cannot be
+> enumerated.
+> 
+> 	usb 3-1.1: Device not responding to setup address.
+> 	usb 3-1.1: Device not responding to setup address.
+> 	usb 3-1.1: device not accepting address 10, error -71
+> 	usb 3-1.1: Device not responding to setup address.
+> 	usb 3-1.1: Device not responding to setup address.
+> 	usb 3-1.1: device not accepting address 11, error -71
+> 	usb 3-1-port1: unable to enumerate USB device
+> 
+>>
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> Reviewed-by: Thinh Nguyen <thinhn@synopsys.com>
+>>
+>> ---
+>> Changes in v4:
+>>  - Updated comments to reference DWC3 databook sections and added direct
+>>    quotes.
+>>  - Changed the stop active transfer EP loop to use dwc->num_eps.
+>>  - Moved to using dwc3_gadget_disable_irq/synchronize_irq instead of
+>>    enable_irq/disable_irq for ensuring the interrupt handler is not pending.
+>>
+>> Changes in v3:
+>>  - Removed DWC3_EP_ENABLED check from dwc3_gadget_stop_active_transfers()
+>>    as dwc3_stop_active_transfer() has a check already in place.
+>>  - Calling __dwc3_gadget_stop() which ensures that DWC3 interrupt events
+>>    are cleared, and ep0 eps are cleared for the pullup disabled case.  Not
+>>    required to call __dwc3_gadget_start() on pullup enable, as the
+>>    composite driver will execute udc_start() before calling pullup().
+> 
+> This change seems to be related to the regression. Maybe it is required to
+> call __dwc3_gadget_start() on pullup enable, but I am not sure, how this
+> should be handled.
+> 
+> Michael
+> 
+
+Definitely, in this situation, we would not call the udc_start()
+callback, which will affect the functionality after re-enabling the
+device.  I wonder why the deactivate/activate routines don't explicitly
+need to start/stop the UDC?
+
+Thanks
+Wesley Cheng
+
+>>
+>> Changes in v2:
+>>  - Moved cleanup code to the pullup() API to differentiate between device
+>>    disconnect and hibernation.
+>>  - Added cleanup code to the bus reset case as well.
+>>  - Verified the move to pullup() did not reproduce the problen using the
+>>    same test sequence.
+>>
+>> Verified fix by adding a check for ETIMEDOUT during the run stop call.
+>> Shell script writing to the configfs UDC file to trigger disconnect and
+>> connect.  Batch script to have PC execute data transfers over adb (ie adb
+>> push)  After a few iterations, we'd run into a scenario where the
+>> controller wasn't halted.  With the following change, no failed halts after
+>> many iterations.
+>> ---
+>>  drivers/usb/dwc3/ep0.c    |  2 +-
+>>  drivers/usb/dwc3/gadget.c | 66 ++++++++++++++++++++++++++++++++++++++-
+>>  2 files changed, 66 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/usb/dwc3/ep0.c b/drivers/usb/dwc3/ep0.c
+>> index 59f2e8c31bd1..456aa87e8778 100644
+>> --- a/drivers/usb/dwc3/ep0.c
+>> +++ b/drivers/usb/dwc3/ep0.c
+>> @@ -197,7 +197,7 @@ int dwc3_gadget_ep0_queue(struct usb_ep *ep, struct usb_request *request,
+>>  	int				ret;
+>>  
+>>  	spin_lock_irqsave(&dwc->lock, flags);
+>> -	if (!dep->endpoint.desc) {
+>> +	if (!dep->endpoint.desc || !dwc->pullups_connected) {
+>>  		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
+>>  				dep->name);
+>>  		ret = -ESHUTDOWN;
+>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>> index 3ab6f118c508..5d879b7606d5 100644
+>> --- a/drivers/usb/dwc3/gadget.c
+>> +++ b/drivers/usb/dwc3/gadget.c
+>> @@ -1516,7 +1516,7 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
+>>  {
+>>  	struct dwc3		*dwc = dep->dwc;
+>>  
+>> -	if (!dep->endpoint.desc) {
+>> +	if (!dep->endpoint.desc || !dwc->pullups_connected) {
+>>  		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
+>>  				dep->name);
+>>  		return -ESHUTDOWN;
+>> @@ -1926,6 +1926,21 @@ static int dwc3_gadget_set_selfpowered(struct usb_gadget *g,
+>>  	return 0;
+>>  }
+>>  
+>> +static void dwc3_stop_active_transfers(struct dwc3 *dwc)
+>> +{
+>> +	u32 epnum;
+>> +
+>> +	for (epnum = 2; epnum < dwc->num_eps; epnum++) {
+>> +		struct dwc3_ep *dep;
+>> +
+>> +		dep = dwc->eps[epnum];
+>> +		if (!dep)
+>> +			continue;
+>> +
+>> +		dwc3_remove_requests(dwc, dep);
+>> +	}
+>> +}
+>> +
+>>  static int dwc3_gadget_run_stop(struct dwc3 *dwc, int is_on, int suspend)
+>>  {
+>>  	u32			reg;
+>> @@ -1971,6 +1986,9 @@ static int dwc3_gadget_run_stop(struct dwc3 *dwc, int is_on, int suspend)
+>>  	return 0;
+>>  }
+>>  
+>> +static void dwc3_gadget_disable_irq(struct dwc3 *dwc);
+>> +static void __dwc3_gadget_stop(struct dwc3 *dwc);
+>> +
+>>  static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>>  {
+>>  	struct dwc3		*dwc = gadget_to_dwc(g);
+>> @@ -1994,7 +2012,46 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>>  		}
+>>  	}
+>>  
+>> +	/*
+>> +	 * Synchronize any pending event handling before executing the controller
+>> +	 * halt routine.
+>> +	 */
+>> +	if (!is_on) {
+>> +		dwc3_gadget_disable_irq(dwc);
+>> +		synchronize_irq(dwc->irq_gadget);
+>> +	}
+>> +
+>>  	spin_lock_irqsave(&dwc->lock, flags);
+>> +
+>> +	if (!is_on) {
+>> +		u32 count;
+>> +
+>> +		/*
+>> +		 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
+>> +		 * Section 4.1.8 Table 4-7, it states that for a device-initiated
+>> +		 * disconnect, the SW needs to ensure that it sends "a DEPENDXFER
+>> +		 * command for any active transfers" before clearing the RunStop
+>> +		 * bit.
+>> +		 */
+>> +		dwc3_stop_active_transfers(dwc);
+>> +		__dwc3_gadget_stop(dwc);
+>> +
+>> +		/*
+>> +		 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
+>> +		 * Section 1.3.4, it mentions that for the DEVCTRLHLT bit, the
+>> +		 * "software needs to acknowledge the events that are generated
+>> +		 * (by writing to GEVNTCOUNTn) while it is waiting for this bit
+>> +		 * to be set to '1'."
+>> +		 */
+>> +		count = dwc3_readl(dwc->regs, DWC3_GEVNTCOUNT(0));
+>> +		count &= DWC3_GEVNTCOUNT_MASK;
+>> +		if (count > 0) {
+>> +			dwc3_writel(dwc->regs, DWC3_GEVNTCOUNT(0), count);
+>> +			dwc->ev_buf->lpos = (dwc->ev_buf->lpos + count) %
+>> +						dwc->ev_buf->length;
+>> +		}
+>> +	}
+>> +
+>>  	ret = dwc3_gadget_run_stop(dwc, is_on, false);
+>>  	spin_unlock_irqrestore(&dwc->lock, flags);
+>>  
+>> @@ -3100,6 +3157,13 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+>>  	}
+>>  
+>>  	dwc3_reset_gadget(dwc);
+>> +	/*
+>> +	 * In the Synopsis DesignWare Cores USB3 Databook Rev. 3.30a
+>> +	 * Section 4.1.2 Table 4-2, it states that during a USB reset, the SW
+>> +	 * needs to ensure that it sends "a DEPENDXFER command for any active
+>> +	 * transfers."
+>> +	 */
+>> +	dwc3_stop_active_transfers(dwc);
+>>  
+>>  	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
+>>  	reg &= ~DWC3_DCTL_TSTCTRL_MASK;
+>> -- 
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
+>>
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
