@@ -2,38 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061552B81D5
+	by mail.lfdr.de (Postfix) with ESMTP id E18532B81D7
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbgKRQ0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:26:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56706 "EHLO mail.kernel.org"
+        id S1727911AbgKRQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:27:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgKRQ0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:26:54 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1726224AbgKRQ1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:27:01 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB37F24819;
-        Wed, 18 Nov 2020 16:26:52 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 11:26:51 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [PATCH] ftrace/documentation: Fix RST C code blocks
-Message-ID: <20201118112651.0b1c9944@gandalf.local.home>
-In-Reply-To: <20201118092432.1407b900@lwn.net>
-References: <20201116173502.392a769c@canb.auug.org.au>
-        <20201116124338.76a522e1@gandalf.local.home>
-        <20201116122432.796af13b@lwn.net>
-        <20201116152552.11572354@gandalf.local.home>
-        <20201116132929.7f59943e@lwn.net>
-        <20201118103502.24e90f7c@gandalf.local.home>
-        <20201118105127.4a7b02ef@gandalf.local.home>
-        <20201118092432.1407b900@lwn.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9752724818;
+        Wed, 18 Nov 2020 16:26:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605716820;
+        bh=d6fcYi77BXc0FDTlYdszbLc7LzeiPITJH4/OZIoT2Sg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dAHGsinRGFxYeHu9dwjrFUIo14FWc38Mv6mosYACM0CItOIG6P+Rylwmr8ZMzCW2v
+         E+bR4pkNQ6SKYXvZAkFpHP+C+n65mHUjTlpEI35S5nbPWyz/eIgfV+kxSxpyrvw0Av
+         L3lZOKAv8jyozkH11r5jtDatMK/yDwyIc4EFNIyQ=
+Date:   Wed, 18 Nov 2020 08:26:58 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        linmiaohe@huawei.com, martin.varghese@nokia.com, pabeni@redhat.com,
+        pshelar@ovn.org, fw@strlen.de, gnault@redhat.com,
+        steffen.klassert@secunet.com, kyk.segfault@gmail.com,
+        viro@zeniv.linux.org.uk, vladimir.oltean@nxp.com,
+        edumazet@google.com, saeed@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH net-next] net: add in_softirq() debug checking in
+ napi_consume_skb()
+Message-ID: <20201118082658.2aa41190@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201118155757.GY3121392@hirez.programming.kicks-ass.net>
+References: <1603971288-4786-1-git-send-email-linyunsheng@huawei.com>
+        <20201031153824.7ae83b90@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <5b04ad33-1611-8d7b-8fec-4269c01ecab3@huawei.com>
+        <20201102114110.4a20d461@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <5bd6de52-b8e0-db6f-3362-862ae7b2c728@huawei.com>
+        <20201118074348.3bbd1468@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20201118155757.GY3121392@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -41,19 +51,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 09:24:32 -0700
-Jonathan Corbet <corbet@lwn.net> wrote:
-
-> > Jon,
-> > 
-> > You want to take this through your tree?  
+On Wed, 18 Nov 2020 16:57:57 +0100 Peter Zijlstra wrote:
+> On Wed, Nov 18, 2020 at 07:43:48AM -0800, Jakub Kicinski wrote:
 > 
-> The changes that created the warning in the first place are in the ftrace
-> tree, right?  So it seems that the fix should be there as well; it won't
-> apply to the docs tree.
+> > TBH the last sentence I wrote isn't clear even to me at this point ;D
+> > 
+> > Maybe using just the macros from preempt.h - like this?
+> > 
+> > #define lockdep_assert_in_softirq()                                    \
+> > do {                                                                   \
+> >        WARN_ON_ONCE(__lockdep_enabled                  &&              \
+> >                     (!in_softirq() || in_irq() || in_nmi())	\
+> > } while (0)
+> > 
+> > We know what we're doing so in_softirq() should be fine (famous last
+> > words).  
+> 
+> So that's not actually using any lockdep state. But if that's what you
+> need, I don't have any real complaints.
 
-Bah, I forgot the report was on linux-next and not mainline.
+Great, thanks! 
 
-OK, I'll take it, but can you give an ack?
-
--- Steve
+The motivation was to piggy back on lockdep rather than adding a
+one-off Kconfig knob for a check in the fast path in networking.
