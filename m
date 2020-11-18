@@ -2,243 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587C72B817B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B09452B817E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgKRQGW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Nov 2020 11:06:22 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2129 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgKRQGV (ORCPT
+        id S1726868AbgKRQGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:06:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbgKRQGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:06:21 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cbngb3JCjz67Ddw;
-        Thu, 19 Nov 2020 00:04:27 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 18 Nov 2020 17:06:18 +0100
-Received: from localhost (10.47.75.221) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 18 Nov
- 2020 16:06:17 +0000
-Date:   Wed, 18 Nov 2020 16:06:08 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-CC:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Vaishnav M A <vaishnav@beagleboard.org>,
-        "Andy Shevchenko" <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 2/3] iio: adc: ad7887: convert driver to full DT probing
-Message-ID: <20201118160608.00007da6@Huawei.com>
-In-Reply-To: <CA+U=Dsqev5D_zWuLq+P3qjbYrTRYgEkCc3dEfLKp0z0nfZihVQ@mail.gmail.com>
-References: <20201117075254.4861-1-alexandru.ardelean@analog.com>
-        <20201117075254.4861-2-alexandru.ardelean@analog.com>
-        <20201117110111.0000468a@Huawei.com>
-        <20201117110447.0000393c@Huawei.com>
-        <CA+U=DsoXG3JderYJL8_7Vu+UYZf9jiW-tW4pRiRY3a0p-y2peg@mail.gmail.com>
-        <20201117160218.0000274b@Huawei.com>
-        <CA+U=Dsqev5D_zWuLq+P3qjbYrTRYgEkCc3dEfLKp0z0nfZihVQ@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Wed, 18 Nov 2020 11:06:47 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD47C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:06:46 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id j205so3688473lfj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:06:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6f4dav7ATAax7XPW13cjbLpbLpT7AAuV8964tjQIwfw=;
+        b=wIAAl58dH5TmeearBT/Svzeo2aUmROCnzDOgEUu9xSsKtcBd1/v1IDBGtMB8ayPHor
+         WxC1RwlxQAE0njmfKAJLPc9Q08r1pfAPPD/5BEMjDo1zo7BzCU8J7b14LXuNpvFUfTbj
+         T/4muZmidJvWHFc9m6TrGFv7gsqH0Wlr6ybuzZB0Xoq0vk1EtGq3JHOlP8+72Em+OS2J
+         l4eu8d6uk7PlPbCDOlGs3bKk5KSYXXvUe4efKMtXPpnmhI7RJo+BTpn8SHzfMULINuhc
+         N8Weba2jQjZ28kWzMKPtSgBQ3W90cmrQW54VCNnCSEpXbKb5p3JLGLwhBMcUmMulvW2+
+         mOEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6f4dav7ATAax7XPW13cjbLpbLpT7AAuV8964tjQIwfw=;
+        b=iZlUHiNXQpFvEa3JexKe669TO4+f9MtydV4w/fqoKX516fiVPDV35nTG5rjq407Wc0
+         r9GM87qv9uQ5agD9vFa+4mg2DNA/bq4pvcx6VCNyVr/ESO6HkM+ufZrqu2AF+hBuHyJ8
+         o/dQhdUBVr+W8yOBaNH0QooKgAJKmAIOa1QzUQY0aRBbcsrK/0nY27T3Qdqlre7+dN68
+         iPPqmFBoz1myELKy6GHrdk8q8Q2hCSmOT624BgLjzgooaHx6qXALGurHKMTwlRiQwzi1
+         aB+H4vn4oD3fHLTkcorroT47Bh4YGbFRHE9VIBPbep0ZXIjSMrBFS0/R4tX4JbpDcaAa
+         rbeQ==
+X-Gm-Message-State: AOAM533oOMCxJvgYTeTv5tLU1ENubXdR7MO3ktChGF5n1NOupvHwob19
+        q6Xr+4f90LQ111StnprWiBvJ+//o4swp15ZNyQha8Q==
+X-Google-Smtp-Source: ABdhPJxEpn9PbcliTCYN82vYm/xnn8J4M634iKPpsLFOuETDZ97sq7/BC7Ir8l7AOphhOvGSbELZ/JMyQqgOAOy3ImU=
+X-Received: by 2002:a05:6512:200e:: with SMTP id a14mr3703228lfb.573.1605715604575;
+ Wed, 18 Nov 2020 08:06:44 -0800 (PST)
 MIME-Version: 1.0
+References: <20201117134222.31482-1-mgorman@techsingularity.net>
+ <20201117134222.31482-4-mgorman@techsingularity.net> <20201117141814.GN3121392@hirez.programming.kicks-ass.net>
+ <CAKfTPtDQgv8RCe1RRCGg0px0Bp6GbdAhXbRKTH5zeVaRDmK+vg@mail.gmail.com>
+ <20201117151740.GB3371@techsingularity.net> <CAKfTPtD27L0Epg7wPzw7G2zDL8XgdVbB45dZEZEsLmuwRp5gcg@mail.gmail.com>
+ <20201117172847.GC3371@techsingularity.net>
+In-Reply-To: <20201117172847.GC3371@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 18 Nov 2020 17:06:32 +0100
+Message-ID: <CAKfTPtBdLJzbv0PFbYeveKeF2_+CgRzwexP5g7E5cgirfc6big@mail.gmail.com>
+Subject: Re: [PATCH 3/3] sched/numa: Limit the amount of imbalance that can
+ exist at fork time
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.47.75.221]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 14:59:39 +0200
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
-
-> On Tue, Nov 17, 2020 at 6:02 PM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
+On Tue, 17 Nov 2020 at 18:28, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Tue, Nov 17, 2020 at 04:53:10PM +0100, Vincent Guittot wrote:
+> > On Tue, 17 Nov 2020 at 16:17, Mel Gorman <mgorman@techsingularity.net> wrote:
+> > >
+> > > On Tue, Nov 17, 2020 at 03:31:19PM +0100, Vincent Guittot wrote:
+> > > > On Tue, 17 Nov 2020 at 15:18, Peter Zijlstra <peterz@infradead.org> wrote:
+> > > > >
+> > > > > On Tue, Nov 17, 2020 at 01:42:22PM +0000, Mel Gorman wrote:
+> > > > > > -                     if (local_sgs.idle_cpus)
+> > > > > > +                     if (local_sgs.idle_cpus >= (sd->span_weight >> 2))
+> > > > > >                               return NULL;
+> > > > >
+> > > > > Is that the same 25% ?
+> > > >
+> > > > same question for me
+> > >
+> > > It's the same 25%. It's in the comment as -- utilisation is not too high
 > >
-> > On Tue, 17 Nov 2020 17:03:06 +0200
-> > Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
-> >  
-> > > On Tue, Nov 17, 2020 at 1:06 PM Jonathan Cameron
-> > > <Jonathan.Cameron@huawei.com> wrote:  
-> > > >
-> > > > On Tue, 17 Nov 2020 11:01:11 +0000
-> > > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > > >  
-> > > > > On Tue, 17 Nov 2020 09:52:53 +0200
-> > > > > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-> > > > >  
-> > > > > > This change removes the SPI device table, adds an OF device table instead.
-> > > > > > This should also be usable for ACPI via PRP0001.
-> > > > > >
-> > > > > > This device is usually probed via device-tree, so it makes more sense to
-> > > > > > use the OF device table.
-> > > > > >
-> > > > > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>  
-> > > > > So, we've had a few cases of having to put the device_id table
-> > > > > back again recently.
-> > > > > https://lore.kernel.org/linux-iio/20201101152613.2c37581a@archlinux/
-> > > > >
-> > > > > They tend to be due to greybus doing it's probing in yet another fashion.
-> > > > > So far they've been all i2c devices, but I kind of assume it does the same for spi.
-> > > > > https://elixir.bootlin.com/linux/latest/source/drivers/staging/greybus/spilib.c#L437
-> > > > >
-> > > > > How device_get_match_data() plays with that I'm not sure. It probably
-> > > > > doesn't right now given swnode doesn't have a device_get_match_data() callback.
-> > > > >
-> > > > > https://elixir.bootlin.com/linux/latest/source/drivers/base/swnode.c#L539
-> > > > >
-> > > > > So after all that I think I've argued myself around to thinking what you have
-> > > > > here is fine.  If someone wants to support this via a swnode then they can
-> > > > > figure out how to make that work.
-> > > > >
-> > > > > +CC Vaishnav and Andy for their input.
-> > > > >
-> > > > > Otherwise looks fine to me.  
-> > > >
-> > > > Having said that.... Why are we going through this dance for driver with
-> > > > only one compatible?   Are there other parts on their way?
-> > > > If not, perhaps we should just rip out the matching code entirely in
-> > > > the interests of simplicity.  
-> > >
-> > > So, this one has a bit of a funny story.
-> > > There's an AD7888 which is similar in terms of registers but with more channels.
-> > > Lars did a patch to support it on top of AD7887:
-> > >     https://github.com/analogdevicesinc/linux/commits/iio-ad7888
-> > >
-> > > We tried to order a part for this to test the changes, but we got a
-> > > reply that it's obsolete.
-> > > The website says it is still in production.
-> > > So, I was confused about the answer we got. ¯\_(ツ)_/¯
-> > >
-> > > In the meantime, I thought I'd take some of the cleanup value of Lars'
-> > > work and do the cleanup only.
-> > > We may still find that part somewhere and maybe add it, or maybe
-> > > another one would come along.
-> > > I don't know at this point. I'm mostly looking at some of my backlog
-> > > stuff and trying to cleanup old stuff.
-> > >
-> > > I'm fine to simplify the driver now and add the matching bits later.  
+> > utilization is misleading, it usually refers to pelt utilization
+> > whereas whet you check is the number of busy cpus
 > >
-> > Sounds good to me.  
-> 
-> I'm a bit vague on the message of this reply.
-> Should I simplify it or leave it as-is?
-oops.  Simplify it as then we don't have to worry about dealing with the
-greybus case.
+>
+> Will fix.
+>
+> > > where "high" is related to adjust_numa_imbalance.
+> > >
+> > > > could we encapsulate this 25% allowed imbalance like for adjust_numa_imbalance
+> > >
+> > > Using adjust_numa_imbalance() directly in this context would be awkward
+> >
+> > Would be good to use the same function to say if we allow or not the imbalance
+> >
+> > something like numa_allow_imbalance(sg_lb_stats * group_stats)
+> >
+>
+> Also can be done.
+>
+> > which would return how much margin remains available before not
+> > allowing the imbalance
+> >
+>
+> Easier to just make it a bool as the available margin is not relevant
+> (yet).
 
-Jonathan
+That's my point, preparing future evolution by providing directly the
+stats struct which have all this information and even more for further
+enhancement and return how much imbalance is still acceptable.
 
-> 
-> >  
-> > >  
-> > > >
-> > > > Jonathan
-> > > >  
-> > > > >
-> > > > > Thanks,
-> > > > >
-> > > > > Jonathan
-> > > > >
-> > > > >  
-> > > > > > ---
-> > > > > >  drivers/iio/adc/ad7887.c | 23 +++++++++++++++--------
-> > > > > >  1 file changed, 15 insertions(+), 8 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
-> > > > > > index 06f684c053a0..4f68a1b17ec8 100644
-> > > > > > --- a/drivers/iio/adc/ad7887.c
-> > > > > > +++ b/drivers/iio/adc/ad7887.c
-> > > > > > @@ -40,6 +40,7 @@ enum ad7887_channels {
-> > > > > >
-> > > > > >  /**
-> > > > > >   * struct ad7887_chip_info - chip specifc information
-> > > > > > + * @name:          the name of the part
-> > > > > >   * @int_vref_mv:   the internal reference voltage
-> > > > > >   * @channels:              channels specification
-> > > > > >   * @num_channels:  number of channels
-> > > > > > @@ -47,6 +48,7 @@ enum ad7887_channels {
-> > > > > >   * @num_dual_channels:     number of channels in dual mode
-> > > > > >   */
-> > > > > >  struct ad7887_chip_info {
-> > > > > > +   const char                      *name;
-> > > > > >     u16                             int_vref_mv;
-> > > > > >     const struct iio_chan_spec      *channels;
-> > > > > >     unsigned int                    num_channels;
-> > > > > > @@ -218,6 +220,7 @@ static const struct ad7887_chip_info ad7887_chip_info_tbl[] = {
-> > > > > >      * More devices added in future
-> > > > > >      */
-> > > > > >     [ID_AD7887] = {
-> > > > > > +           .name = "ad7887",
-> > > > > >             .channels = ad7887_channels,
-> > > > > >             .num_channels = ARRAY_SIZE(ad7887_channels),
-> > > > > >             .dual_channels = ad7887_dual_channels,
-> > > > > > @@ -239,12 +242,17 @@ static void ad7887_reg_disable(void *data)
-> > > > > >
-> > > > > >  static int ad7887_probe(struct spi_device *spi)
-> > > > > >  {
-> > > > > > +   const struct ad7887_chip_info *info;
-> > > > > >     struct ad7887_state *st;
-> > > > > >     struct iio_dev *indio_dev;
-> > > > > >     bool dual_mode;
-> > > > > >     uint8_t mode;
-> > > > > >     int ret;
-> > > > > >
-> > > > > > +   info = device_get_match_data(&spi->dev);
-> > > > > > +   if (!info)
-> > > > > > +           return -ENODEV;
-> > > > > > +
-> > > > > >     indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
-> > > > > >     if (indio_dev == NULL)
-> > > > > >             return -ENOMEM;
-> > > > > > @@ -269,13 +277,12 @@ static int ad7887_probe(struct spi_device *spi)
-> > > > > >                     return ret;
-> > > > > >     }
-> > > > > >
-> > > > > > -   st->chip_info =
-> > > > > > -           &ad7887_chip_info_tbl[spi_get_device_id(spi)->driver_data];
-> > > > > > +   st->chip_info = info;
-> > > > > >
-> > > > > >     spi_set_drvdata(spi, indio_dev);
-> > > > > >     st->spi = spi;
-> > > > > >
-> > > > > > -   indio_dev->name = spi_get_device_id(spi)->name;
-> > > > > > +   indio_dev->name = st->chip_info->name;
-> > > > > >     indio_dev->info = &ad7887_info;
-> > > > > >     indio_dev->modes = INDIO_DIRECT_MODE;
-> > > > > >
-> > > > > > @@ -336,18 +343,18 @@ static int ad7887_probe(struct spi_device *spi)
-> > > > > >     return devm_iio_device_register(&spi->dev, indio_dev);
-> > > > > >  }
-> > > > > >
-> > > > > > -static const struct spi_device_id ad7887_id[] = {
-> > > > > > -   {"ad7887", ID_AD7887},
-> > > > > > -   {}
-> > > > > > +static const struct of_device_id ad7887_of_match[] = {
-> > > > > > +   { .compatible = "adi,ad7887", .data = &ad7887_chip_info_tbl[ID_AD7887] },
-> > > > > > +   { }
-> > > > > >  };
-> > > > > > -MODULE_DEVICE_TABLE(spi, ad7887_id);
-> > > > > > +MODULE_DEVICE_TABLE(of, ad7887_of_match);
-> > > > > >
-> > > > > >  static struct spi_driver ad7887_driver = {
-> > > > > >     .driver = {
-> > > > > >             .name   = "ad7887",
-> > > > > > +           .of_match_table = ad7887_of_match,
-> > > > > >     },
-> > > > > >     .probe          = ad7887_probe,
-> > > > > > -   .id_table       = ad7887_id,
-> > > > > >  };
-> > > > > >  module_spi_driver(ad7887_driver);
-> > > > > >  
-> > > > >  
-> > > >  
-> >  
+But this probably means to align numa stats with lb stats to share the
+same struct
 
+>
+> >
+> > > but the threshold could be shared with something like the additional
+> > > diff below. Is that what you had in mind or something different?
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index adfab218a498..49ef3484c56c 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -5878,6 +5878,8 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
+> > >  static struct sched_group *
+> > >  find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu);
+> > >
+> > > +static inline int numa_imbalance_threshold(int weight);
+> > > +
+> > >  /*
+> > >   * find_idlest_group_cpu - find the idlest CPU among the CPUs in the group.
+> > >   */
+> > > @@ -8894,7 +8896,7 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+> > >                          * If there is a real need of migration, periodic load
+> > >                          * balance will take care of it.
+> > >                          */
+> > > -                       if (local_sgs.idle_cpus >= (sd->span_weight >> 2))
+> >
+> > also here you use idle_cpus and on the other part you use nr_running.
+> > Can't we use the same metrics on both sides?
+> >
+>
+> We can. Basing it on sum_nr_running is only an approximation of the number
+> of busy CPUs if tasks are bound to a subset of CPUs but it would mean that
+> the fork spreading decision is in line with adjust_numa_imbalance(). That
+> is a sensible starting point and we could pass in
+> (sd->span_weight - local_sgs.idle_cpus into numa_allow_imbalance()) if
+> there was strong justification for it.
+>
+> Untested patch currently looks like
+>
+> ---
+>  kernel/sched/fair.c | 24 ++++++++++++++++++++----
+>  1 file changed, 20 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 33709dfac24d..4c8a3b570b0a 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -1550,6 +1550,7 @@ struct task_numa_env {
+>  static unsigned long cpu_load(struct rq *rq);
+>  static unsigned long cpu_runnable(struct rq *rq);
+>  static unsigned long cpu_util(int cpu);
+> +static inline bool allow_numa_imbalance(int dst_running, int dst_weight);
+>  static inline long adjust_numa_imbalance(int imbalance,
+>                                         int dst_running, int dst_weight);
+>
+> @@ -8779,9 +8780,6 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+>                         .group_type = group_overloaded,
+>         };
+>
+> -       imbalance = scale_load_down(NICE_0_LOAD) *
+> -                               (sd->imbalance_pct-100) / 100;
+> -
+>         do {
+>                 int local_group;
+>
+> @@ -8835,6 +8833,11 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+>         switch (local_sgs.group_type) {
+>         case group_overloaded:
+>         case group_fully_busy:
+> +
+> +               /* Calculate allowed imbalance based on load */
+> +               imbalance = scale_load_down(NICE_0_LOAD) *
+> +                               (sd->imbalance_pct-100) / 100;
+
+forgot to mention this previously, but this change seems unrelated to
+rest of this patch and could deserve a dedicated patch
+
+> +
+>                 /*
+>                  * When comparing groups across NUMA domains, it's possible for
+>                  * the local domain to be very lightly loaded relative to the
+> @@ -8891,7 +8894,7 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+>                          * a real need of migration, periodic load balance will
+>                          * take care of it.
+>                          */
+> -                       if (local_sgs.idle_cpus)
+> +                       if (allow_numa_imbalance(local_sgs.sum_nr_running, sd->span_weight))
+>                                 return NULL;
+>                 }
+>
+> @@ -8995,9 +8998,22 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+>
+>  #define NUMA_IMBALANCE_MIN 2
+>
+> +/*
+> + * Allow a NUMA imbalance if busy CPUs is less than 25% of the domain.
+> + * This is an approximation as the number of running tasks may not be
+> + * related to the number of busy CPUs due to sched_setaffinity.
+> + */
+> +static inline bool allow_numa_imbalance(int dst_running, int dst_weight)
+> +{
+> +       return (dst_running < (dst_weight >> 2));
+> +}
+> +
+>  static inline long adjust_numa_imbalance(int imbalance,
+>                                 int dst_running, int dst_weight)
+>  {
+> +       if (!allow_numa_imbalance(dst_running, dst_weight))
+> +               return imbalance;
+> +
+>         /*
+>          * Allow a small imbalance based on a simple pair of communicating
+>          * when the destination is lightly loaded so that pairs of
