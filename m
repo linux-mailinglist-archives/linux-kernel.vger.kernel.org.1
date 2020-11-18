@@ -2,123 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCC32B789C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4319F2B789F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727406AbgKRI2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:28:43 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:35959 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726641AbgKRI2n (ORCPT
+        id S1726860AbgKRI3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:29:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgKRI3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:28:43 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kfIpP-0004fq-Gx; Wed, 18 Nov 2020 09:28:35 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kfIpO-0008Lm-DO; Wed, 18 Nov 2020 09:28:34 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id E4AB5240041;
-        Wed, 18 Nov 2020 09:28:33 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 669A3240040;
-        Wed, 18 Nov 2020 09:28:33 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 01AC020049;
-        Wed, 18 Nov 2020 09:28:32 +0100 (CET)
+        Wed, 18 Nov 2020 03:29:18 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6805CC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 00:29:18 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id 7so1572241ejm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 00:29:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e7/0oySTdCBUS5K5VKhLrqKbbTWozDIFYehy2a24oc4=;
+        b=x6eY0PCRQQMpbRy1Q6I+uu2YRoF0r80KxAZAQf9JYuY7YfySWIG/IDmCzLYv7CaBsZ
+         7SrK4geFajx4WBuJSxw3oLdNfgW0ovgegiQHt/m9n7a5Utp8dDQlE6JCWoyW6R+lOpiT
+         FbHpL2YR+nhQfigvVD3YVHC5Vc24MOU5GQlUSjGPtemOT/Z5V0IJEueviYI+TWfNxaMa
+         JoqLlIzxPBgZ5/upGEV7DiBW9qID+MvjIB1WTzavkjzQuKhh+pftwAib3wjvLlUWrBWk
+         6lPZj68GyYlz9r5ntU4DpfTriBwHExi1ODjUuostjEtrslX9QGrQ+IcWHX124w/4nQKd
+         pMHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e7/0oySTdCBUS5K5VKhLrqKbbTWozDIFYehy2a24oc4=;
+        b=NzdQIulevA7ohrZ1ds0C9qR9nMymST942wGEVX7gmicmmPQLv6wKs2r/Lj2I1iOKOD
+         9Ff0m9LlkmUqwY64p9LwqFvUXhgw658T/fDYIg6WLwCUwivnMuAYrhwKYvp/jkiZu+RS
+         EDMFuktbbmP0c+mCbBmL5V8Machikv9Duoi382AUI888dPkMUrTH8n/O6JjPydG2WyNd
+         EHWxM27V9i+yJtmT/esrezerioMuoXkNsH1Ve9qzjc1a+OZGDJJNdVW12bQXWEkwD2y6
+         GUeaM+DyJZVVTGQ8e2NzL2+a1eas0CVw6VZtEPCRlNP6SPIhhEBscejNyZMHlKaLWF8p
+         BTmA==
+X-Gm-Message-State: AOAM533LN+BZsltOwdDQ7IigiUOrVpyb2Gh4LFJrccDlnB1GNMl47VWb
+        UJ1JIZ3/teoMHatqmlNHfrQJaLRqEuoZuwXoFTVrIs4MNLg=
+X-Google-Smtp-Source: ABdhPJxkvr9erWwYTMRmncD7Ew/aYtYR/RWu/Aktlh0nMa+Hl7GHN+3niImXyMHSA/Vx6TuVW+ZUpqtd4KMriVuXyzs=
+X-Received: by 2002:a17:906:15cc:: with SMTP id l12mr21905044ejd.363.1605688157047;
+ Wed, 18 Nov 2020 00:29:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 18 Nov 2020 09:28:32 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2 3/6] net/x25: replace x25_kill_by_device with
- x25_kill_by_neigh
-Organization: TDT AG
-In-Reply-To: <CAJht_EN0fhD08+wH5kSBWvciHU7uM7iKJu_UcEXwZBKssuqNVw@mail.gmail.com>
-References: <20201116135522.21791-1-ms@dev.tdt.de>
- <20201116135522.21791-4-ms@dev.tdt.de>
- <CAJht_EN0fhD08+wH5kSBWvciHU7uM7iKJu_UcEXwZBKssuqNVw@mail.gmail.com>
-Message-ID: <352e0095deb8f1f3b08e335942eabac2@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.15
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate: clean
-X-purgate-type: clean
-X-purgate-ID: 151534::1605688115-000013A4-791AC271/0/0
+References: <20201113023355.43406-1-greentime.hu@sifive.com>
+In-Reply-To: <20201113023355.43406-1-greentime.hu@sifive.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 18 Nov 2020 09:29:06 +0100
+Message-ID: <CAMpxmJXhqprF2QcYwkwFnHzv0H4_944MGUtmi4Ra5s_CU3R9+A@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: sifive: To get gpio irq offset from device tree data
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Yash Shah <yash.shah@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-17 20:50, Xie He wrote:
-> On Mon, Nov 16, 2020 at 6:00 AM Martin Schiller <ms@dev.tdt.de> wrote:
->> 
->> Remove unnecessary function x25_kill_by_device.
-> 
->> -/*
->> - *     Kill all bound sockets on a dropped device.
->> - */
->> -static void x25_kill_by_device(struct net_device *dev)
->> -{
->> -       struct sock *s;
->> -
->> -       write_lock_bh(&x25_list_lock);
->> -
->> -       sk_for_each(s, &x25_list)
->> -               if (x25_sk(s)->neighbour && x25_sk(s)->neighbour->dev 
->> == dev)
->> -                       x25_disconnect(s, ENETUNREACH, 0, 0);
->> -
->> -       write_unlock_bh(&x25_list_lock);
->> -}
->> -
->>  /*
->>   *     Handle device status changes.
->>   */
->> @@ -273,7 +257,11 @@ static int x25_device_event(struct notifier_block 
->> *this, unsigned long event,
->>                 case NETDEV_DOWN:
->>                         pr_debug("X.25: got event NETDEV_DOWN for 
->> device: %s\n",
->>                                  dev->name);
->> -                       x25_kill_by_device(dev);
->> +                       nb = x25_get_neigh(dev);
->> +                       if (nb) {
->> +                               x25_kill_by_neigh(nb);
->> +                               x25_neigh_put(nb);
->> +                       }
->>                         x25_route_device_down(dev);
->>                         x25_link_device_down(dev);
->>                         break;
-> 
-> This patch might not be entirely necessary. x25_kill_by_neigh and
-> x25_kill_by_device are just two helper functions. One function takes
-> nb as the argument and the other one takes dev as the argument. But
-> they do almost the same things. It doesn't harm to keep both. In C++
-> we often have different functions with the same name doing almost the
-> same things.
-> 
+On Fri, Nov 13, 2020 at 3:34 AM Greentime Hu <greentime.hu@sifive.com> wrote:
+>
+> We can get hwirq number of the gpio by its irq_data->hwirq so that we don't
+> need to add more macros for different platforms. This patch is tested in
+> SiFive Unleashed board and SiFive Unmatched board.
+>
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> ---
+>  drivers/gpio/gpio-sifive.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-sifive.c b/drivers/gpio/gpio-sifive.c
+> index c54dd08f2cbf..630bddec48e5 100644
+> --- a/drivers/gpio/gpio-sifive.c
+> +++ b/drivers/gpio/gpio-sifive.c
+> @@ -29,7 +29,6 @@
+>  #define SIFIVE_GPIO_OUTPUT_XOR 0x40
+>
+>  #define SIFIVE_GPIO_MAX                32
+> -#define SIFIVE_GPIO_IRQ_OFFSET 7
+>
+>  struct sifive_gpio {
+>         void __iomem            *base;
+> @@ -37,7 +36,7 @@ struct sifive_gpio {
+>         struct regmap           *regs;
+>         unsigned long           irq_state;
+>         unsigned int            trigger[SIFIVE_GPIO_MAX];
+> -       unsigned int            irq_parent[SIFIVE_GPIO_MAX];
+> +       unsigned int            irq_number[SIFIVE_GPIO_MAX];
+>  };
+>
+>  static void sifive_gpio_set_ie(struct sifive_gpio *chip, unsigned int offset)
+> @@ -144,8 +143,12 @@ static int sifive_gpio_child_to_parent_hwirq(struct gpio_chip *gc,
+>                                              unsigned int *parent,
+>                                              unsigned int *parent_type)
+>  {
+> +       struct sifive_gpio *chip = gpiochip_get_data(gc);
+> +       struct irq_data *d = irq_get_irq_data(chip->irq_number[child]);
+> +
+>         *parent_type = IRQ_TYPE_NONE;
+> -       *parent = child + SIFIVE_GPIO_IRQ_OFFSET;
+> +       *parent = irqd_to_hwirq(d);
+> +
+>         return 0;
+>  }
+>
+> @@ -165,7 +168,7 @@ static int sifive_gpio_probe(struct platform_device *pdev)
+>         struct irq_domain *parent;
+>         struct gpio_irq_chip *girq;
+>         struct sifive_gpio *chip;
+> -       int ret, ngpio;
+> +       int ret, ngpio, i;
+>
+>         chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
+>         if (!chip)
+> @@ -200,6 +203,9 @@ static int sifive_gpio_probe(struct platform_device *pdev)
+>                 return -ENODEV;
+>         }
+>
+> +       for (i = 0; i < ngpio; i++)
+> +               chip->irq_number[i] = platform_get_irq(pdev, i);
+> +
+>         ret = bgpio_init(&chip->gc, dev, 4,
+>                          chip->base + SIFIVE_GPIO_INPUT_VAL,
+>                          chip->base + SIFIVE_GPIO_OUTPUT_VAL,
+> --
+> 2.29.2
+>
 
-Well I don't like to have 2 functions doing the same thing.
-But after another look at this code, I've found that I also need to
-remove the call to x25_clear_forward_by_dev() in the function
-x25_route_device_down(). Otherwise, it will be called twice.
+Applied, thanks!
 
-> The original code also seems to be a little more efficient than the new 
-> code.
-
-The only difference would be the x25_get_neigh() and x25_neigh_put()
-calls. That shouldn't cost to much.
+Bart
