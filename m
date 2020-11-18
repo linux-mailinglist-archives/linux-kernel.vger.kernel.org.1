@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D292B75E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 06:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAD92B75E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 06:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726256AbgKRFX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 00:23:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgKRFX4 (ORCPT
+        id S1726390AbgKRF0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 00:26:13 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:55535 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725446AbgKRF0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 00:23:56 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B774C0613D4;
-        Tue, 17 Nov 2020 21:23:56 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CbWSR2yBhz9sPB;
-        Wed, 18 Nov 2020 16:23:47 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605677032;
-        bh=THPO9V2L7dvdAS9jHEYn7yEsc51znokxsc0KkAwqhw0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dvRlHy7q8O5Pj4seBQItGAsnyFR8dOGrVgfMw50c/WAxeE8rrrmrPuV7hmnt+geHl
-         e0Kl+Av4sbPaTLXYaFgvCk9YpAhNV+emUIOgWMFhCiZMPOAjHfu4Kf59lJnws6xGPp
-         SZsM64HyaO2C78y+FkUlelLyoflksWfRqstB+rQRftRxVx7J4GMONymnDd0Tfu0vFU
-         E/xSAdgNzZQpAwJPpby7wI6VDYAbgqjxwIXTj8kLbqx5lesj87mnGX+/LZjryZjRez
-         fOaOnbXFQl1bAygmsMQglAZOwIh8BcIXPYdfqCjNnVXx71SOxiQVs+PytcWjuYyzZB
-         ayLuUHh+hQiEw==
-Date:   Wed, 18 Nov 2020 16:23:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-misc tree
-Message-ID: <20201118162346.07d3eac5@canb.auug.org.au>
+        Wed, 18 Nov 2020 00:26:12 -0500
+X-UUID: dff173429cf944bf885c6e4eb8117996-20201118
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=feaWGkTA0pDN4xL1xb59wAcryyZv9HU/J1oPsDG2QIk=;
+        b=Wz8NRaFhXXrYtiAhdjwOe8ysvLqJwGDbbo7+uUyk23LOv22VH9Y0qWseR1WOmF1tghWMAScC0eFlYuJhY+jwZLXWM8NVQ7g26jzl/VKZCy4qiIdZRa0ZP4ihsAfiH6buMj6OJXwxtJ8EunYd65MTu3DGs83Us3XQ7RwXJqs06FY=;
+X-UUID: dff173429cf944bf885c6e4eb8117996-20201118
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1957854605; Wed, 18 Nov 2020 13:26:08 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 18 Nov 2020 13:26:07 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 18 Nov 2020 13:26:07 +0800
+Message-ID: <1605677166.23663.4.camel@mtkswgap22>
+Subject: Re: [PATCH v3] ALSA: usb-audio: disable 96khz support for HUAWEI
+ USB-C HEADSET
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     Takashi Iwai <tiwai@suse.com>
+CC:     Jaroslav Kysela <perex@perex.cz>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        "Nicola Lunghi" <nick83ola@gmail.com>,
+        Christopher Swenson <swenson@swenson.io>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Ainge Hsu =?UTF-8?Q?=28=E5=BE=90=E5=B7=A7=E5=AE=9C=29?= 
+        <ainge.hsu@mediatek.com>,
+        Eddie Hung =?UTF-8?Q?=28=E6=B4=AA=E6=AD=A3=E9=91=AB=29?= 
+        <Eddie.Hung@mediatek.com>,
+        Chunfeng Yun =?UTF-8?Q?=28=E4=BA=91=E6=98=A5=E5=B3=B0=29?= 
+        <Chunfeng.Yun@mediatek.com>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Date:   Wed, 18 Nov 2020 13:26:06 +0800
+In-Reply-To: <1604999048-20294-1-git-send-email-macpaul.lin@mediatek.com>
+References: <1604996266.2817.1.camel@mtkswgap22>
+         <1604999048-20294-1-git-send-email-macpaul.lin@mediatek.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/m0q5U3u7THfVFLV3lrjVY3f";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/m0q5U3u7THfVFLV3lrjVY3f
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+T24gVHVlLCAyMDIwLTExLTEwIGF0IDE3OjA0ICswODAwLCBNYWNwYXVsIExpbiB3cm90ZToNCj4g
+VGhlIEhVQVdFSSBVU0ItQyBoZWFkc2V0IChWSUQ6MHgxMmQxLCBQSUQ6MHgzYTA3KSByZXBvcnRl
+ZCBpdCBzdXBwb3J0cw0KPiA5Nmtoei4gSG93ZXZlciB0aGVyZSB3aWxsIGJlIHNvbWUgcmFuZG9t
+IGlzc3VlIHVuZGVyIDk2a2h6Lg0KPiBOb3Qgc3VyZSBpZiB0aGVyZSBpcyBhbnkgYWx0ZXJuYXRl
+IHNldHRpbmcgY291bGQgYmUgYXBwbGllZC4NCj4gSGVuY2UgNDhraHogaXMgc3VnZ2VzdGVkIHRv
+IGJlIGFwcGxpZWQgYXQgdGhpcyBtb21lbnQuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBNYWNwYXVs
+IExpbiA8bWFjcGF1bC5saW5AbWVkaWF0ZWsuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBFZGRpZSBI
+dW5nIDxlZGRpZS5odW5nQG1lZGlhdGVrLmNvbT4NCj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5v
+cmcNCj4gLS0tDQo+IENoYW5nZXMgZm9yIHYyOg0KPiAgIC0gRml4IGJ1aWxkIGVycm9yLg0KPiAg
+IC0gQWRkIENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+IENoYW5nZXMgZm9yIHYzOg0KPiAg
+IC0gUmVwbGFjZSAidWRldiIgd2l0aCAiY2hpcC0+ZGV2IiBhY2NvcmRpbmcgdG8gVGFrYXNoaSdz
+IHN1Z2dlc3Rpb24uIFRoYW5rcy4NCj4gDQo+ICBzb3VuZC91c2IvZm9ybWF0LmMgfCAgICA1ICsr
+KysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0
+IGEvc291bmQvdXNiL2Zvcm1hdC5jIGIvc291bmQvdXNiL2Zvcm1hdC5jDQo+IGluZGV4IDFiMjhk
+MDEuLjBhZmY3NzQgMTAwNjQ0DQo+IC0tLSBhL3NvdW5kL3VzYi9mb3JtYXQuYw0KPiArKysgYi9z
+b3VuZC91c2IvZm9ybWF0LmMNCj4gQEAgLTIxNyw2ICsyMTcsMTEgQEAgc3RhdGljIGludCBwYXJz
+ZV9hdWRpb19mb3JtYXRfcmF0ZXNfdjEoc3RydWN0IHNuZF91c2JfYXVkaW8gKmNoaXAsIHN0cnVj
+dCBhdWRpb2YNCj4gIAkJCSAgICAoY2hpcC0+dXNiX2lkID09IFVTQl9JRCgweDA0MWUsIDB4NDA2
+NCkgfHwNCj4gIAkJCSAgICAgY2hpcC0+dXNiX2lkID09IFVTQl9JRCgweDA0MWUsIDB4NDA2OCkp
+KQ0KPiAgCQkJCXJhdGUgPSA4MDAwOw0KPiArCQkJLyogSHVhd2VpIGhlYWRzZXQgY2FuJ3Qgc3Vw
+cG9ydCA5NmtIeiBmdWxseSAqLw0KPiArCQkJaWYgKHJhdGUgPT0gOTYwMDAgJiYNCj4gKwkJCSAg
+ICBjaGlwLT51c2JfaWQgPT0gVVNCX0lEKDB4MTJkMSwgMHgzYTA3KSAmJg0KPiArCQkJICAgIGxl
+MTZfdG9fY3B1KGNoaXAtPmRldi0+ZGVzY3JpcHRvci5iY2REZXZpY2UpID09IDB4NDkpDQo+ICsJ
+CQkJY29udGludWU7DQo+ICANCj4gIAkJCWZwLT5yYXRlX3RhYmxlW2ZwLT5ucl9yYXRlc10gPSBy
+YXRlOw0KPiAgCQkJaWYgKCFmcC0+cmF0ZV9taW4gfHwgcmF0ZSA8IGZwLT5yYXRlX21pbikNCg0K
+U29ycnkgZm9yIGJvdGhlcmluZyBhZ2FpbiwgcGxlYXNlIGhvbGQtb24gdGhpcyBwYXRjaC4NCkkn
+bSBzdGlsbCB0cnlpbmcgdG8gY2xhcmlmeSBpZiB0aGVyZSBpcyBhbm90aGVyIGFwcHJvYWNoIGZv
+ciB0aGlzDQppbnRlcm9wZXJhYmlsaXR5IGlzc3VlLg0KSSdsbCB1cGRhdGUgdGhpcyB0aHJlYWQg
+b25jZSB0aGUgcmVzdWx0IGhhcyBjYW1lIG91dC4NCg0KVGhhbmtzDQpNYWNwYXVsIExpbg0K
 
-Hi all,
-
-After merging the drm-misc tree, today's linux-next build (htmldocs)
-produced this warning:
-
-Documentation/gpu/todo.rst:302: WARNING: Unexpected indentation.
-Documentation/gpu/todo.rst:303: WARNING: Block quote ends without a blank l=
-ine; unexpected unindent.
-
-Introduced by commit
-
-  39aead8373b3 ("fbcon: Disable accelerated scrolling")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/m0q5U3u7THfVFLV3lrjVY3f
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+0r+IACgkQAVBC80lX
-0Gyeawf9EEBzE8xJd5LmAY8ZjRGrsccS4pRUkZVhhNjK15y6lvSlX7L89g4RCffk
-GCA/NuLEhh4wts6JlgNQnvr5jUKCxtN8pOW32W5JmNYjZxw7xUqzNjIpOEYHjfdx
-H9wnESAeQUTrekJXTtj/3zXSl8+fbubmkdqFzk6LixwNnSGQ1g6LNxn0ASCwZa6D
-LiFIjM9uj6tiSrUcbX//TTnJKfuxXYxW8h4lSfZtXynyqSUCyPb2QgiNv1AGf0b2
-zsk06ywVi970oh0F/w9OuYKDJkwp+Y7Mrjtr12nqd3xYxsHDLzm51fzTdM9EzwdD
-C4t2nWa5tr23+jNCRWHRx7rRCr0AUg==
-=N+fA
------END PGP SIGNATURE-----
-
---Sig_/m0q5U3u7THfVFLV3lrjVY3f--
