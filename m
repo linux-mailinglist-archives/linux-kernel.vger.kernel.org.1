@@ -2,141 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A1C2B7FCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ADB02B7FD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727193AbgKROuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 09:50:39 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39370 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727161AbgKROui (ORCPT
+        id S1727231AbgKROvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 09:51:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgKROvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:50:38 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AIEoJSD112404;
-        Wed, 18 Nov 2020 08:50:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605711019;
-        bh=/WfMKfpfaqPhwhCkATAAiFh4DbZHut//34CHnfa7pU8=;
-        h=From:To:CC:Subject:Date;
-        b=ufkgw32S/4yo2MS7xBQe7neGZibn0mxh8sp5Siikv+ns+ta8Dp6HDAR7Nncpd2xd9
-         1+3HXgQqWmGtZCXHlbz45JbHA4DsufHe9uChUxtMh59F9sQz9HgU6PWoXpG9rKB93I
-         lHytBggqescJqQWtSv7oGuGB0rD+iDI+woCP8fEQ=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AIEoJch055732
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 08:50:19 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 18
- Nov 2020 08:50:19 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 18 Nov 2020 08:50:19 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AIEoJ9A113879;
-        Wed, 18 Nov 2020 08:50:19 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <lkft-triage@lists.linaro.org>, <linux-pm@vger.kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH] regulator: ti-abb: Fix array out of bound read access on the first transition
-Date:   Wed, 18 Nov 2020 08:50:09 -0600
-Message-ID: <20201118145009.10492-1-nm@ti.com>
+        Wed, 18 Nov 2020 09:51:39 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B78C0613D4;
+        Wed, 18 Nov 2020 06:51:39 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id r6so1166525pjd.1;
+        Wed, 18 Nov 2020 06:51:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=t5uedKWjYZhLmHBmo17IOneaP07yxkMVZsdlyTCdn0E=;
+        b=R7abOssRqpTjRzQyxi7nfkaDhzRBoYCcxS+OwUNBEAMwiDHrX0OuR+e7tELtLqpUlp
+         yNqahH6acfS/dXNcQHZfmA7bXThSQ173ZQFDHKwVzbH4RHQUPCmenzsgKe0cH4rPq0TK
+         vK6FUPCgAejh7nka2fPDXQgWlVbJNyA6wWpCmbfR0kNZnAGw2Y8iPlpurHdNhFhv3uvH
+         DVPpY8ChAC+T920e5825Vufnn5QFYjsDL8L5YnxQ/hx63oO5/przV7AvXJJMUHqpZLEO
+         xImUKRDBku6mtfQLlj9P/BMjtBtS6mU6uQBjieNN1nlqqYCwqZgb+kTh9YTurBIAM1Zu
+         rLkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=t5uedKWjYZhLmHBmo17IOneaP07yxkMVZsdlyTCdn0E=;
+        b=RSn4NqoVh/ZPL7LHAW1H5VbIBV/Ka/gBZ/sMXLIuWeQWkoZOr6LNWSjrJajgEs47d7
+         10OzbSibnsyZm5ERNR6branvgvbFQpoi2/3UqJsF/CVfNyUCd1+DajJjruPnNy3LHIiE
+         P7a/6TUOEWJR2Kb+sVfz3IYekReSZmoAdHSN+dMEFHyD4OCEQR72hog20vFm7N9vLAuB
+         2AA2+xfPoXQi6rDR3BpTw1HXI2nD+EnfgABG5GRXrtlSkUBGAOQSycpoX25M4QLdK+n+
+         sAssh1tUxSPZGS9z+kHOztBfY9oa1y9RgGTexPAg+8v7Ee+u6SKdctswg2uTV3LWHoAp
+         FrBg==
+X-Gm-Message-State: AOAM530XfmNqBJNzZwNAAbf0wqZF5qZxkf9a1VoRjlwMn+OtYRut/xOT
+        ni7gW035/IVS581Sy5VvlDA=
+X-Google-Smtp-Source: ABdhPJw5AyAwbbGTMJggrxcgt8VwHoS3e3plTaNJUt40AlGbeUhTXhp+mxYlguDNNpForIoO4SKrTg==
+X-Received: by 2002:a17:902:9307:b029:d9:d097:fd6c with SMTP id bc7-20020a1709029307b02900d9d097fd6cmr1132363plb.10.1605711099128;
+        Wed, 18 Nov 2020 06:51:39 -0800 (PST)
+Received: from manjaro.domain.name ([202.142.93.91])
+        by smtp.gmail.com with ESMTPSA id t10sm7954297pfq.110.2020.11.18.06.51.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 06:51:38 -0800 (PST)
+From:   Soham Biswas <sohambiswas41@gmail.com>
+To:     thierry.reding@gmail.com
+Cc:     lee.jones@linaro.org, u.kleine-koenig@pengutronix.de,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Soham Biswas <sohambiswas41@gmail.com>
+Subject: [PATCH v3] pwm: core: Use octal permission
+Date:   Wed, 18 Nov 2020 20:21:12 +0530
+Message-Id: <20201118145112.21250-1-sohambiswas41@gmail.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201117175452.26914-1-sohambiswas41@gmail.com>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the start of driver initialization, we do not know what bias
-setting the bootloader has configured the system for and we only know
-for certain the very first time we do a transition.
+Permission bits are easier readable in octal than with using the
+symbolic names.
 
-However, since the initial value of the comparison index is -EINVAL,
-this negative value results in an array out of bound access on the
-very first transition.
+Fixes the following warning generated by checkpatch:
 
-Since we don't know what the setting is, we just set the bias
-configuration as there is nothing to compare against. This prevents
-the array out of bound access.
+drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
+not preferred. Consider using octal permissions '0444'.
 
-NOTE: Even though we could use a more relaxed check of "< 0" the only
-valid values(ignoring cosmic ray induced bitflips) are -EINVAL, 0+.
++debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+                            &pwm_debugfs_fops);
 
-Fixes: 40b1936efebd ("regulator: Introduce TI Adaptive Body Bias(ABB) on-chip LDO driver")
-Link: https://lore.kernel.org/linux-mm/CA+G9fYuk4imvhyCN7D7T6PMDH6oNp6HDCRiTUKMQ6QXXjBa4ag@mail.gmail.com/
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Nishanth Menon <nm@ti.com>
+Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
 ---
+ drivers/pwm/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Mark,
-
-I will leave it to your descretion if this needs to be tagged for
-stable or to drop the Fixes tag - Side effect, if this occurs, will be
-an unstable system very hard to track down - but typically occurring
-during system boot - Impacts systems: DM3/OMAP3,4,5,DRA7/AM5x.
-
-I would categorize this as "This could be a problem..." problem..
-the bug is an out of bound read, and has been around since v3.11 and is
-not a catastrophic data corruption kind of issue.
-
-Though theoretically, there is a possibility that the compare may
-pass and result in missing bias configuration(and resulting system
-will be unstable), I have'nt heard of actual report (but, it will be
-surprising if any actual instability was actually tracked down to this
-bug). Any ways, I had to go to git full history to pick the exact
-commit - I have left it in the patch.
-
-
-Arnd,
-
-I have left your reviewed-by from the thread, I can fixup
-any further commit message comments if you may have.
-
-drivers/regulator/ti-abb-regulator.c | 12 +++++++++++- 1 file changed,
-11 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/regulator/ti-abb-regulator.c b/drivers/regulator/ti-abb-regulator.c
-index 3e60bff76194..9f0a4d50cead 100644
---- a/drivers/regulator/ti-abb-regulator.c
-+++ b/drivers/regulator/ti-abb-regulator.c
-@@ -342,8 +342,17 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
- 		return ret;
- 	}
+diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+index 1f16f5365d3c..a8eff4b3ee36 100644
+--- a/drivers/pwm/core.c
++++ b/drivers/pwm/core.c
+@@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
  
--	/* If data is exactly the same, then just update index, no change */
- 	info = &abb->info[sel];
-+	/*
-+	 * When Linux kernel is starting up, we are'nt sure of the
-+	 * Bias configuration that bootloader has configured.
-+	 * So, we get to know the actual setting the first time
-+	 * we are asked to transition.
-+	 */
-+	if (abb->current_info_idx == -EINVAL)
-+		goto just_set_abb;
-+
-+	/* If data is exactly the same, then just update index, no change */
- 	oinfo = &abb->info[abb->current_info_idx];
- 	if (!memcmp(info, oinfo, sizeof(*info))) {
- 		dev_dbg(dev, "%s: Same data new idx=%d, old idx=%d\n", __func__,
-@@ -351,6 +360,7 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
- 		goto out;
- 	}
+ static int __init pwm_debugfs_init(void)
+ {
+-	debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
++	debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
+ 			    &pwm_debugfs_fops);
  
-+just_set_abb:
- 	ret = ti_abb_set_opp(rdev, abb, info);
- 
- out:
+ 	return 0;
 -- 
 2.29.2
 
