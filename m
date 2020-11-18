@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2692B8399
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DD22B83A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgKRSHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:07:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgKRSHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:07:49 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6420320872;
-        Wed, 18 Nov 2020 18:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605722869;
-        bh=G3eNmrElpyk/JxdBz4ZxECjisMtQTh/y/4ve+046iDc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J+KKNmpy9vshVC7uON3rYNM2VC3nQSETkj1ls4ywL6YkZbRUIQGr2DtRsZkx8cgjS
-         aHZRGqKRltau/tixcju0xTJw9aIYQ5MgpdWWDeNRi1+3nq2e7hA2Si7uIs+v4jl2md
-         wl7Ar/XTUBMOenMKU0EuziYi+9AFzdOztNvbx97g=
-Date:   Wed, 18 Nov 2020 18:07:28 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Jiaxin Yu <jiaxin.yu@mediatek.com>
-Cc:     matthias.bgg@gmail.com, tzungbi@google.com,
-        alsa-devel@alsa-project.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, shane.chien@mediatek.com,
-        Trevor.Wu@mediatek.com
-Subject: Re: [PATCH] dt-bindings: mediatek: mt8192: revert "add audio afe
- document"
-Message-ID: <20201118180728.GF4827@sirena.org.uk>
-References: <1605081920-11848-1-git-send-email-jiaxin.yu@mediatek.com>
+        id S1726502AbgKRSKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:10:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgKRSKF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 13:10:05 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4AFC0613D4;
+        Wed, 18 Nov 2020 10:10:04 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id y17so4034786ejh.11;
+        Wed, 18 Nov 2020 10:10:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pxELOt6GfZS0tNdRK6kX1TfQriizca3PB6DRDDt/oRE=;
+        b=ARZ/DpQWE3vHp4KvYJiP0MPbTy8gGHTlVEzX8Q2sAyqbiwomX5JR9e0+Xq8P4ALeA9
+         Cj/SbWXr3SfCCp3F8suHbL8HOtlkYdZg3yjtBG+YwlDvmzvXOaBdSjFvYGsrT7mRRDpW
+         5uWclLo253shnOYvG7CD+UoEZ4eYKBwbZkgM257FpKwKvQxGJE21Rtq3Y8kYDp7mULvW
+         SE99GdqcrfE2VFsSk7FhxfDZSz2xgfbL+uL1U2SqbZB0AA4QlYm9EVbB1J5UqA07WoRz
+         +m47a+WerueTtR3wePnIEzsIaJa5bK9ekZ/VFrKaown7lSa+iL6bGwoaNRIdOea43meB
+         dbbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pxELOt6GfZS0tNdRK6kX1TfQriizca3PB6DRDDt/oRE=;
+        b=hMwO1lj4qNpKCgLkJGDDmNgYQiMc6SMkaYN6Jm7EK2TC6rHJTTaMHrCh50TselbcVZ
+         jh5k2W76RR5AjZSXVKzPTUpKTBYMmf+GaUHvCuawYLSQXnZbTQdsH/KJ65pLq4X2Pd+H
+         mG4qFNWkvpW1RZ+vnMslw0HjAHDJbBIHYVCNwMnOUKTdkNKzJfN3EIqCV8OWLcBj1biN
+         wQFFCvVlEWKNW795M/XtJWTLiJAW1D43hBudHnzlZjaksaUXpBgNQ1D8aKL7E22eAeXA
+         sDXyFKqEH5EeUiXbPb3TccRcydjVA9NxWL91w1gZH/nIgReMHGrCHKOQ4veirE/2KK7D
+         XZAQ==
+X-Gm-Message-State: AOAM531HKlz6HexINDbcjJ0e7X9Qay5NfqvKvpAIuHV6RsNwd1JMO3z6
+        7D8IBXHrARViGft37NwjlcThr+GH7qovVw==
+X-Google-Smtp-Source: ABdhPJygaSh3dhehHH5Wu64My3bzhXbfEB6R0xPAHy3T+2lelDqTPu9nlj2EDqeFRWzMnKMkbhFHlg==
+X-Received: by 2002:a17:906:ca83:: with SMTP id js3mr26018362ejb.42.1605723003484;
+        Wed, 18 Nov 2020 10:10:03 -0800 (PST)
+Received: from localhost.localdomain ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id dk8sm1483425ejb.88.2020.11.18.10.10.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 10:10:02 -0800 (PST)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
+Subject: [PATCH 1/1] pinctrl: actions: pinctrl-s500: Constify s500_padinfo[]
+Date:   Wed, 18 Nov 2020 20:10:00 +0200
+Message-Id: <24505deb08d050eb4ce38f186f4037d7541ea217.1605722628.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
-Content-Disposition: inline
-In-Reply-To: <1605081920-11848-1-git-send-email-jiaxin.yu@mediatek.com>
-X-Cookie: A nuclear war can ruin your whole day.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+s500_padinfo[] is never modified and should be made 'const' to allow
+the compiler to optimize code generation, i.e. put it in the text
+section instead of the data section.
 
---eDB11BtaWSyaBkpc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Before:
+   text    data     bss     dec     hex filename
+  12503    5088       0   17591    44b7 drivers/pinctrl/actions/pinctrl-s500.o
 
-On Wed, Nov 11, 2020 at 04:05:20PM +0800, Jiaxin Yu wrote:
-> This reverts commit 1afc60e00de3abbb6c559da409c5c1bb8c1d98ec.
->=20
-> Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
-> ---
->  https://mailman.alsa-project.org/pipermail/alsa-devel/2020-November/1768=
-73.html
->  These dependency are continuing to upstream, I will revert this patch fi=
-rst.
->  After the dependencies are merged, I will send 'mt8192-afe-pcm.yaml' aga=
-in.
+After:
+   text    data     bss     dec     hex filename
+  14435    3156       0   17591    44b7 drivers/pinctrl/actions/pinctrl-s500.o
 
-This description of what the commit does should be part of the
-changelog, reverts are just normal patches and should have changelogs
-describing what they do just like other changes do.
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+---
+ drivers/pinctrl/actions/pinctrl-s500.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+diff --git a/drivers/pinctrl/actions/pinctrl-s500.c b/drivers/pinctrl/actions/pinctrl-s500.c
+index 38e30914af6e..ced778079b76 100644
+--- a/drivers/pinctrl/actions/pinctrl-s500.c
++++ b/drivers/pinctrl/actions/pinctrl-s500.c
+@@ -1485,7 +1485,7 @@ static PAD_PULLCTL_CONF(DNAND_D6, 2, 2, 1);
+ static PAD_PULLCTL_CONF(DNAND_D7, 2, 2, 1);
+ 
+ /* Pad info table */
+-static struct owl_padinfo s500_padinfo[NUM_PADS] = {
++static const struct owl_padinfo s500_padinfo[NUM_PADS] = {
+ 	[DNAND_DQS] = PAD_INFO_PULLCTL(DNAND_DQS),
+ 	[DNAND_DQSN] = PAD_INFO_PULLCTL(DNAND_DQSN),
+ 	[ETH_TXD0] = PAD_INFO_ST(ETH_TXD0),
+-- 
+2.29.2
 
-Please include human readable descriptions of things like commits and
-issues being discussed in e-mail in your mails, this makes them much
-easier for humans to read especially when they have no internet access.
-I do frequently catch up on my mail on flights or while otherwise
-travelling so this is even more pressing for me than just being about
-making things a bit easier to read.
-
---eDB11BtaWSyaBkpc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+1Yt8ACgkQJNaLcl1U
-h9AhLAf/TGSE24nfALfss97iOQLpBN2TcEUOBzg/RRtpuWtwvSMYV4B6YSoNojIr
-FMcDlZWyPnv+3y3iht5s5jNy278L2Dobyj10ncVofPIdIZ4duv5CRsxcuSb5bde+
-4IKJ8om4SM+CEovLSNYLTclqEeu621cTX6dTklSi4cW5SOHxir9DqSKHlR973TRb
-XihhxBmTMMIpUKIEYHqULed6nhHQ1nWPV2JvThXh4C51gO+PI9ixrLtGjSssfMtI
-p2jSsO6qgJi4MyAPA7zZ1N/KLK/IUiL4jPE1qj5QfPtZOjOXp9uwAAJ2Y+jsRQDs
-o7HKVJGxnso4TH365eWAQrexXZV6tw==
-=g11E
------END PGP SIGNATURE-----
-
---eDB11BtaWSyaBkpc--
