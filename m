@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1322B7E02
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828D22B7E07
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgKRNDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:03:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45997 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726129AbgKRNDw (ORCPT
+        id S1726110AbgKRNEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:04:04 -0500
+Received: from alln-iport-5.cisco.com ([173.37.142.92]:28633 "EHLO
+        alln-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgKRNEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:03:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605704631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qx5UVopA7OslzMg8qxIDSa62J2P+qibCzlZh525XbS0=;
-        b=DTwMKLoHeBL3C2zeeuifHQUfWuBuoeDf8Reqa/6B9Mhv/oqycnNdmspyZtpGmAWz+hCgGo
-        dmwgYkXEI07ahMQJ1dVJ+jXxzQoRI07v417+MabONhnSCZ4MAh0Fi+6BlrmTEg8x1dphK6
-        D/IpPEvhipZGvpi92Hh4EF5l8A8q5GY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-XaoUlEZ9Nr66jHnkKrGCSg-1; Wed, 18 Nov 2020 08:03:47 -0500
-X-MC-Unique: XaoUlEZ9Nr66jHnkKrGCSg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F4E180364D;
-        Wed, 18 Nov 2020 13:03:46 +0000 (UTC)
-Received: from localhost (ovpn-115-101.rdu2.redhat.com [10.10.115.101])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0149C196FB;
-        Wed, 18 Nov 2020 13:03:45 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 08:03:44 -0500
-From:   Eduardo Habkost <ehabkost@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [RFC] Add kernel-doc test script
-Message-ID: <20201118130344.GD1509407@habkost.net>
-References: <20201030144713.201372-1-pbonzini@redhat.com>
- <20201030144713.201372-3-pbonzini@redhat.com>
- <20201113152106.7b4a07ee@lwn.net>
- <20201113223912.GK17076@casper.infradead.org>
- <20201117212452.GM1235237@habkost.net>
- <20201117213051.GA29991@casper.infradead.org>
- <20201117223612.GN1235237@habkost.net>
- <16145b8b-3213-8bc9-1826-d3ae006f78fa@infradead.org>
+        Wed, 18 Nov 2020 08:04:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=82; q=dns/txt; s=iport;
+  t=1605704643; x=1606914243;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Pokb30QME/DR4pSJY2FHisPZhDALkkBGM6TUcjHTLeM=;
+  b=MuH2MxtWXAxMVlvsd1ZJhXFHS9O3/bpCnVhsCkqSLcS1T+oRq8ZUE317
+   PW8TxA28D8dnJqDv5285ZkpQFceBB00OXyEDIIOnA/IOWZcvEwwbTspKQ
+   ZHWVFcNw+IeyrslTa/La8H3qCM7jYBXzUkxjN02V8iy9t5ByIsNqmEA9C
+   w=;
+X-IPAS-Result: =?us-ascii?q?A0DTBQDrGrVffYYNJK1iHgEBCxIMggQLg3cvOJVakESJb?=
+ =?us-ascii?q?oF8CwEBAQ0BAS0CBAEBhEoCgiUCJTQJDgIDAQEBAwIDAQEBAQUBAQECAQYEF?=
+ =?us-ascii?q?AEBhj0LhXMBAgIBeQULAgEIISUPIyUCBA6GEiCuIXSBNIpNgTiIQIUAG4FBP?=
+ =?us-ascii?q?4QjPoQ+hXYEnEabbwoggk2bGSKDBwGecpNToFcCERWBMyE4gVlwFYMlTxcCD?=
+ =?us-ascii?q?ZxogUIJfIw7AYEQAQE?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.77,486,1596499200"; 
+   d="scan'208";a="608378531"
+Received: from alln-core-12.cisco.com ([173.36.13.134])
+  by alln-iport-5.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 18 Nov 2020 13:04:03 +0000
+Received: from XCH-RCD-004.cisco.com (xch-rcd-004.cisco.com [173.37.102.14])
+        by alln-core-12.cisco.com (8.15.2/8.15.2) with ESMTPS id 0AID427N021075
+        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
+        Wed, 18 Nov 2020 13:04:03 GMT
+Received: from xch-aln-004.cisco.com (173.36.7.14) by XCH-RCD-004.cisco.com
+ (173.37.102.14) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Nov
+ 2020 07:04:02 -0600
+Received: from xch-aln-004.cisco.com ([173.36.7.14]) by XCH-ALN-004.cisco.com
+ ([173.36.7.14]) with mapi id 15.00.1497.000; Wed, 18 Nov 2020 07:04:02 -0600
+From:   "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)" 
+        <dzagorui@cisco.com>
+To:     "masahiroy@kernel.org" <masahiroy@kernel.org>
+CC:     "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] kbuild: use -fmacro-prefix-map for .S sources
+Thread-Topic: [PATCH v3] kbuild: use -fmacro-prefix-map for .S sources
+Thread-Index: AQHWsRJPpKcKNHVlGkuCBAHPiPYhnqm/255bgA4Yo8Y=
+Date:   Wed, 18 Nov 2020 13:04:02 +0000
+Message-ID: <1605704642269.72893@cisco.com>
+References: <20201102120853.96855-1-dzagorui@cisco.com>,<1604929732138.17256@cisco.com>
+In-Reply-To: <1604929732138.17256@cisco.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [173.38.209.7]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <16145b8b-3213-8bc9-1826-d3ae006f78fa@infradead.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Outbound-SMTP-Client: 173.37.102.14, xch-rcd-004.cisco.com
+X-Outbound-Node: alln-core-12.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 04:23:49PM -0800, Randy Dunlap wrote:
-> On 11/17/20 2:36 PM, Eduardo Habkost wrote:
-> > Add a kernel-doc test script to tools/testing/kernel-doc.
-> > 
-> > radix_tree_lookup_slot test case provided by Matthew Wilcox.
-> > 
-> > Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
-> 
-> Very good idea.
-> 
-> I have had a kernel-doc test source file for (?) 10-12 years,
-> while I was the docs maintainer.
-
-Is that test source file recoverable somewhere?  It probably has
-useful test cases not included here.
-
--- 
-Eduardo
-
+> ping=0A=
+=0A=
+Any comments on this ?=0A=
+=0A=
+Thanks,=0A=
+Denys=0A=
+=0A=
