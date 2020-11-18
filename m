@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FED42B8261
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64ECF2B8264
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgKRQyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:54:00 -0500
-Received: from mga01.intel.com ([192.55.52.88]:27137 "EHLO mga01.intel.com"
+        id S1727898AbgKRQyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:54:10 -0500
+Received: from mga07.intel.com ([134.134.136.100]:25390 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727926AbgKRQx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:53:59 -0500
-IronPort-SDR: KrHk7k0abLF1cyTrZG4Cx4NcY4exsfcosg3mg4IYa61HQ6YhZzebceqUYDYlpHqMu5vxQyizee
- 8AvX9fBtkclw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="189225105"
+        id S1726200AbgKRQyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:54:09 -0500
+IronPort-SDR: 9QnQvVPINyKM1arDRg/KvOwW04imsKzs8R0zxCWHbrrCYu+XQ8caFVKmYh5Pbxw+j22torBs6F
+ fbXc9PrZmClA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="235294715"
 X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
-   d="scan'208";a="189225105"
+   d="scan'208";a="235294715"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:53:59 -0800
-IronPort-SDR: jsxUfAN5DZO4IEOLUgumsySlshtRsfXJkfhQKxxX/cDt8ZHc5WlB6ERFxzx2zU+cenkOdC0ncv
- wtXbOLqwiH9A==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:54:05 -0800
+IronPort-SDR: b+Me0fA2hfNwx+X46TMrYBI82RVTkrCUtHxSyR25hoePnkSSSplrZ9+/sMhT3iEsZC4Qv1KC6X
+ K+ttF8smDYjQ==
 X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
-   d="scan'208";a="330580086"
+   d="scan'208";a="325656162"
 Received: from dlmurray-mobl3.ger.corp.intel.com (HELO localhost) ([10.251.82.13])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:53:57 -0800
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:54:03 -0800
 From:   Jani Nikula <jani.nikula@intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     jani.nikula@intel.com, intel-gfx@lists.freedesktop.org,
-        Kalle Valo <kvalo@codeaurora.org>,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        linux-wireless@vger.kernel.org
-Subject: [PATCH 5/6] ath9k: make relay callbacks const
-Date:   Wed, 18 Nov 2020 18:53:19 +0200
-Message-Id: <20201118165320.26829-5-jani.nikula@intel.com>
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Subject: [PATCH 6/6] blktrace: make relay callbacks const
+Date:   Wed, 18 Nov 2020 18:53:20 +0200
+Message-Id: <20201118165320.26829-6-jani.nikula@intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201118165320.26829-1-jani.nikula@intel.com>
 References: <20201118165320.26829-1-jani.nikula@intel.com>
@@ -47,27 +45,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Now that relay_open() accepts const callbacks, make relay callbacks
 const.
 
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org
 Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 ---
- drivers/net/wireless/ath/ath9k/common-spectral.c | 2 +-
+ kernel/trace/blktrace.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/common-spectral.c b/drivers/net/wireless/ath/ath9k/common-spectral.c
-index 21191955a7c1..e055adfb5361 100644
---- a/drivers/net/wireless/ath/ath9k/common-spectral.c
-+++ b/drivers/net/wireless/ath/ath9k/common-spectral.c
-@@ -1053,7 +1053,7 @@ static int remove_buf_file_handler(struct dentry *dentry)
- 	return 0;
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index f1022945e346..b5c4b9ade960 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -449,7 +449,7 @@ static struct dentry *blk_create_buf_file_callback(const char *filename,
+ 					&relay_file_operations);
  }
  
--static struct rchan_callbacks rfs_spec_scan_cb = {
-+static const struct rchan_callbacks rfs_spec_scan_cb = {
- 	.create_buf_file = create_buf_file_handler,
- 	.remove_buf_file = remove_buf_file_handler,
- };
+-static struct rchan_callbacks blk_relay_callbacks = {
++static const struct rchan_callbacks blk_relay_callbacks = {
+ 	.subbuf_start		= blk_subbuf_start_callback,
+ 	.create_buf_file	= blk_create_buf_file_callback,
+ 	.remove_buf_file	= blk_remove_buf_file_callback,
 -- 
 2.20.1
 
