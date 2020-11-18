@@ -2,121 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4B52B73E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD7B2B73E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgKRBtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 20:49:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgKRBtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 20:49:33 -0500
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44ECA241A7;
-        Wed, 18 Nov 2020 01:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605664172;
-        bh=M6DfrIdy95Ghs9mCFBL8Ngh2V0KHo7z65Isd9IgYS3s=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=GFbG78XCZWOi7mQ937XcvONvdNNLDydGM450RdgNzpN3caAYSRmfTf1XerRwsaW4v
-         /Dq4pOCMsDsgx6QaqwNie1Vh5xT3xu/K5iXqy4/kNzP3h9O6j7MiQ10Rd/fbCJ/XCm
-         WxDk55uYFKWryDlqwJqlGunKSUMUCm0OLHbiZZSk=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <24d975ca-1942-5f7f-ae89-7b572f48812c@microchip.com>
-References: <1604655988-353-1-git-send-email-claudiu.beznea@microchip.com> <1604655988-353-7-git-send-email-claudiu.beznea@microchip.com> <160538849947.60232.12002724470272520124@swboyd.mtv.corp.google.com> <24d975ca-1942-5f7f-ae89-7b572f48812c@microchip.com>
-Subject: Re: [PATCH v4 06/11] clk: at91: clk-sam9x60-pll: allow runtime changes for pll
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Eugen.Hristev@microchip.com, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-To:     Claudiu.Beznea@microchip.com, Ludovic.Desroches@microchip.com,
-        Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
-        mturquette@baylibre.com, robh+dt@kernel.org
-Date:   Tue, 17 Nov 2020 17:49:30 -0800
-Message-ID: <160566417078.60232.18106288530854376790@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S1726554AbgKRBxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 20:53:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgKRBxx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 20:53:53 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C634C061A48;
+        Tue, 17 Nov 2020 17:53:51 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id js21so219902pjb.0;
+        Tue, 17 Nov 2020 17:53:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=t5eReXO4wqmdOiCBF4R3AZcbfxasgeFRgSN87jtfTOA=;
+        b=iOOTgarBSRRV3nOEIu7RPO2lJzpE7H0bWf/Qkv32Dwl6ecP2lZqAw7+9hfCztF88lC
+         His2eJEuigwDBhcb9hfT6xTOzQiZwORJCx67+WrAQGLSwIqpWOuZ/VX6Gh6/HkC+2aRq
+         KEf67tHBbfprzTe+J1pEJQbnO6bdDHVf8SoIy2krfHhWsaZ31xIe7HbqPdAt534yxBIe
+         DbP/bXXy27S9bOantElC6qzqEDgBXRGKel3B4MOdILOz7TODEmn06lLxC4+eOiJz3JR9
+         y/M1GrVNQgxFTVtVuQAs7lfPhQVHTUlB8GTpqHKICauG/J6euAUjJMSbS1Jg1NS//FiR
+         Y9gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=t5eReXO4wqmdOiCBF4R3AZcbfxasgeFRgSN87jtfTOA=;
+        b=c3Sd/NzeGJwMwNE5NgxeHweviNkDG1Mz7ejc1gHyTzlIBa92mpQ5EG5WUeM3X78fPm
+         Trn1lSpZj4fWJ5ZYWxUk8AZKhDZ6ZjNJfDNSjps8pwZD0FYaH8t3TE6ComU4ppeExNFe
+         72yKU/v/ZkWmU73TDs9s+ocOhE3ouXa0M+sB8EMtKoXAg6zdk9DNOtmEnwX1Euka4kp0
+         ReWD08ym3PLE2jvjCDITvKYxk+4WMMNx7GyjF2MkWGre9ykCAcdPaHljSuJ+3AqaBZMX
+         i91p3NV9YPq90+diHdP3jtPm2vZzTTBnmhrlsNmy1omoxjWvTU5MM/9J9tR0eefdZphR
+         BqTw==
+X-Gm-Message-State: AOAM530FjbTsVYtaLZkXp+p5O4a3skc5JhJzoakufqJ0pM8dp8d8z3Fj
+        IiO3zw1jQGBofqNFJfSr4i8=
+X-Google-Smtp-Source: ABdhPJxTtKOhfudWJ+Y1l0w8jEU3rSWDhUb1E21+wQSdIi35mopiq4+sofDFLHqLhSuaxds8II+/Lg==
+X-Received: by 2002:a17:90a:f0c7:: with SMTP id fa7mr1876767pjb.3.1605664430920;
+        Tue, 17 Nov 2020 17:53:50 -0800 (PST)
+Received: from oslab.tsinghua.edu.cn ([166.111.139.137])
+        by smtp.gmail.com with ESMTPSA id t32sm21430494pgl.0.2020.11.17.17.53.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 17:53:50 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH v2 1/4] rtlwifi: rtl8188ee: avoid accessing the data mapped to streaming DMA
+Date:   Wed, 18 Nov 2020 09:53:14 +0800
+Message-Id: <20201118015314.4979-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Claudiu.Beznea@microchip.com (2020-11-16 03:24:54)
->=20
->=20
-> On 14.11.2020 23:14, Stephen Boyd wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
-the content is safe
-> >=20
-> > Quoting Claudiu Beznea (2020-11-06 01:46:23)
-> >> diff --git a/drivers/clk/at91/clk-sam9x60-pll.c b/drivers/clk/at91/clk=
--sam9x60-pll.c
-> >> index 78f458a7b2ef..6fe5d8530a0c 100644
-> >> --- a/drivers/clk/at91/clk-sam9x60-pll.c
-> >> +++ b/drivers/clk/at91/clk-sam9x60-pll.c
-> >> @@ -225,8 +225,51 @@ static int sam9x60_frac_pll_set_rate(struct clk_h=
-w *hw, unsigned long rate,
-> >>                                      unsigned long parent_rate)
-> >>  {
-> >>         struct sam9x60_pll_core *core =3D to_sam9x60_pll_core(hw);
-> >> +       struct sam9x60_frac *frac =3D to_sam9x60_frac(core);
-> >> +       struct regmap *regmap =3D core->regmap;
-> >> +       unsigned long irqflags, clkflags =3D clk_hw_get_flags(hw);
-> >> +       unsigned int val, cfrac, cmul;
-> >> +       long ret;
-> >> +
-> >> +       ret =3D sam9x60_frac_pll_compute_mul_frac(core, rate, parent_r=
-ate, true);
-> >> +       if (ret <=3D 0 || (clkflags & CLK_SET_RATE_GATE))
-> >=20
-> > Is this function being called when the clk is enabled and it has the
-> > CLK_SET_RATE_GATE flag set?
->=20
-> Yes, this function could be called when CLK_SET_RATE_GATE is set.
-> On SAMA7G5 there are multiple PLL blocks of the same type. All these PLLs
-> are controlled by clk-sam9x60-pll.c driver. One of this PLL block fed the
-> CPU who's frequency could be changed at run time. At the same time there
-> are PLLs that fed hardware block not glitch free aware or that we don't
-> want to allow the rate change (this is the case of SAM9X60's CPU PLL, or
-> the DDR PLL on SAMA7G5).
->=20
-> I'm confused why this driver needs to check
-> > this flag.
->=20
-> Because we have multiple PLLs of the same type, some of them feed hardware
-> blocks that are glitch free aware of these PLLs' frequencies changes, some
-> feed hardware blocks that are not glitch free aware of PLLs' frequencies
-> changes or for some of them we don't want the frequency changes at all.
+In rtl88ee_tx_fill_cmddesc(), skb->data is mapped to streaming DMA on
+line 677:
+  dma_addr_t mapping = dma_map_single(..., skb->data, ...);
 
-Can we have different clk_ops for the different types of PLLs? It looks
-like the flag is being used to overload this function to do different
-things depending on how the flags are set. What happens if we decide to
-change the semantics of this clk flag? How does it map to this driver?
-Ideally this driver shouldn't need to worry about this flag, at least
-not in this function, except to figure out if it should do something
-different like not write the value to the hardware or something like
-that.
+On line 680, skb->data is assigned to hdr after cast:
+  struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)(skb->data);
 
-The flag indicates to the clk framework that this clk should be gated
-when clk_set_rate() is called on it. The driver should be able to figure
-out that the clk is disabled by reading the hardware here and checking
-the enable state, or it could just have different clk_ops for the
-different type of PLL and do something different without checking the
-flag. Either way, checking the flag looks wrong.
+Then hdr->frame_control is accessed on line 681:
+  __le16 fc = hdr->frame_control;
 
-> >> -                 .c =3D 1,
-> >> +                 .f =3D CLK_IS_CRITICAL | CLK_SET_RATE_GATE,
-> >=20
-> > Please indicate why clks are critical.
->=20
-> Sure! I'll do it in next version. I chose it like this because they are
-> feeding critical parts of the system like CPU or memory.
->=20
-> > Whenever the CLK_IS_CRITICAL flag
-> > is used we should have a comment indicating why.
->=20
-> I was not aware of this rule. I'll update the code accordingly.
+This DMA access may cause data inconsistency between CPU and hardwre.
 
-Sorry. I should put a document comment next to the flag.
+To fix this bug, hdr->frame_control is accessed before the DMA mapping.
+
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
+index b9775eec4c54..c948dafa0c80 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c
+@@ -674,12 +674,12 @@ void rtl88ee_tx_fill_cmddesc(struct ieee80211_hw *hw,
+ 	u8 fw_queue = QSLT_BEACON;
+ 	__le32 *pdesc = (__le32 *)pdesc8;
+ 
+-	dma_addr_t mapping = dma_map_single(&rtlpci->pdev->dev, skb->data,
+-					    skb->len, DMA_TO_DEVICE);
+-
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)(skb->data);
+ 	__le16 fc = hdr->frame_control;
+ 
++	dma_addr_t mapping = dma_map_single(&rtlpci->pdev->dev, skb->data,
++					    skb->len, DMA_TO_DEVICE);
++
+ 	if (dma_mapping_error(&rtlpci->pdev->dev, mapping)) {
+ 		rtl_dbg(rtlpriv, COMP_SEND, DBG_TRACE,
+ 			"DMA mapping error\n");
+-- 
+2.17.1
+
