@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D992B72DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A942B72DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbgKRAIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:08:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47350 "EHLO
+        id S1728925AbgKRAIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:08:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgKRAIB (ORCPT
+        with ESMTP id S1726205AbgKRAIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:08:01 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C53C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:08:00 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id x20so215436qts.19
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:08:00 -0800 (PST)
+        Tue, 17 Nov 2020 19:08:02 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C6DC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:08:02 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id 198so201814qkj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:08:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=V3tvIh5NHv05LPYSP9VOlCUVLr3gN78y2A44GlQ/+zg=;
-        b=ddMrpjFpXh0ci590xEOLW7SJSIup4OgtQiHQGQ7qJKT5bTz6H0JhT6g/+XnLsGuqbE
-         agLaFQDvs9x5ip/ZvJHe5SBw+tta4FuWRorIhOOJWouCuHJ5oxSiyiM0Dq0oRCepln3C
-         UrY8dPQfN5sC6c6tLJzmPWnJOM7U3NffOmxi+/2T++V/wj6NzikDg8L4Jbrj3f+exuLK
-         mlof4+m6FaWVdUzULd3YtCJRpJb4/kPeVPLW0HR2gdpHiy4vxMG50vv83YtD801HkeyP
-         m1WJRCVkpX7fUJ6zGSuVfQRljJUTzEIrWttcMSALDzYdh3AQG1MZslH8qTzVqRj26HFJ
-         +qHw==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=60RDm9GZdiDvHOVTVOgnNPhDb7lpPTDsg7QOSfebuy4=;
+        b=eHi14+wzHA3GWNL69Egy8TJVe0yzRQoR91adGg656Kp/8QG7pQZoGOT91k6ka6w6Fr
+         +sP0fkZBSd0zQ/JWhtkfQ0/NecTiOyHSXm2rzOgmaSubxI2y0f5Wvl45NXgBYqiaBza1
+         3Z6NCFLdM4+m+oYnxqhtSifKMOm5GCRHyLMlxA4RJLEAQk7iBlCzdLdjawsaylu+S9/m
+         BgxE756zWYZtQ/v28Vg3RXRB5u5GIpeRGxAg2hNTVU4eAB5JKAYRCiZKwWdeRChd3p4I
+         z+GJjq4PbppqAfNtKx2K8bS70rw9vWX/52pFYj4KfXGZ2MKiCiHt7zb7204HqB1vVwZK
+         JGzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=V3tvIh5NHv05LPYSP9VOlCUVLr3gN78y2A44GlQ/+zg=;
-        b=idn4AalrotiClkWtY3AhRNdvCFR0f3BCQqdbpTQFt/PLHQPhAtl6P+Jyu/NT4SnmXv
-         Riz+79jWHay7reHVgMQ8MDdmc1UkcgaiO74UQhG3kth8gqxHcOyFtzQDKUEFHJI6iEOL
-         vkKzx0bheafgK+k2pLGzbvXkQ4HotceZZWgr7M9UxqcEa5o9eSYvXMUbe8d+NPc9rAma
-         h2CRGHgr47HO2Mgdp9pFVEtmWOeRTool8hHRQd29x6JMHjl5SI9PSgEBUWnrTBVZsLF3
-         ao+uWIa5IdR1Zji1FY19iq+U5Zbj8CWxr6zPnBMYCwYELNY0tZ0ybI1JDDhtMhMxzFkK
-         QFqQ==
-X-Gm-Message-State: AOAM533MFFJCCSHaPKzostFCVPES4ON7lqAruzDp1UNfrBGA/IDIOtWd
-        H4C/S7xCZR+KM4pKCGAKmLf7Gt/wsC7Yu7M7BCc=
-X-Google-Smtp-Source: ABdhPJxyT4QSqjiO/hV2SGyByZFsZRA7niNoQlakX/V0MDwLgNhsF7VsvTbGKPGQxyGwFCBQLO7iPm/RgWu/MnQ8oPg=
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=60RDm9GZdiDvHOVTVOgnNPhDb7lpPTDsg7QOSfebuy4=;
+        b=k8nmH3NO/jDz7sNnR6j67i39eKEfedeIJm8NM4xlzz8/+J5zP+k7spUKq9A+4lSEz7
+         MhJzpoeUan2Dy5H3J8guo1vPWubcAilsY6ydROuqXWO8+O2Yt9lkmotJoDGWFouLt3Y3
+         T1zeRRF9VYDaJdcwLj2nFIbDPh5NCKSX2kx9MrHJ2oTbYnT82QzaZBttppubygCzhRSy
+         d4LUvwP0fEIp0xqVdnGf69HMnXQCvKTnBMT61+s7J8TBlTBiHqsSUqFFznndrx8iW/Ra
+         vrE07kQ6zkegaHYHs7hfv+h8RYjDLWJq4LPi+hmFrcnXpvupx+Z5MTFZgBSIb5ioFYXd
+         yo5Q==
+X-Gm-Message-State: AOAM531HFJAP9qmt0JnI/yPn1CEfZKdir915nI1+aIlVO7MSe4tCa/qk
+        trcPErTFEp844qU2JK2/ClmIYsj1HlkKPlgk1EE=
+X-Google-Smtp-Source: ABdhPJzmlVGZoccUlD7B14kIiKYBXJ8LMSWJfZ77mc02Pp7puSP6ttSA82K5uXIAgrM5ZNnwIz+UFgG10oc/SIHOvY8=
 Sender: "ndesaulniers via sendgmr" 
         <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:f185:: with SMTP id
- m5mr2278509qvl.27.1605658080093; Tue, 17 Nov 2020 16:08:00 -0800 (PST)
-Date:   Tue, 17 Nov 2020 16:07:48 -0800
-Message-Id: <20201118000751.845172-1-ndesaulniers@google.com>
+ (user=ndesaulniers job=sendgmr) by 2002:ad4:53c8:: with SMTP id
+ k8mr1987233qvv.40.1605658082001; Tue, 17 Nov 2020 16:08:02 -0800 (PST)
+Date:   Tue, 17 Nov 2020 16:07:49 -0800
+In-Reply-To: <20201118000751.845172-1-ndesaulniers@google.com>
+Message-Id: <20201118000751.845172-2-ndesaulniers@google.com>
 Mime-Version: 1.0
+References: <20201118000751.845172-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH v2 0/3] PPC: Fix -Wimplicit-fallthrough for clang
+Subject: [PATCH v2 1/3] powerpc: boot: include compiler_attributes.h
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     "Gustavo A . R . Silva" <gustavoars@kernel.org>
 Cc:     Nathan Chancellor <natechancellor@gmail.com>,
@@ -61,54 +64,65 @@ Cc:     Nathan Chancellor <natechancellor@gmail.com>,
         clang-built-linux@googlegroups.com, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org,
         Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While cleaning up the last few -Wimplicit-fallthrough warnings in tree
-for Clang, I noticed
-commit 6a9dc5fd6170d ("lib: Revert use of fallthrough pseudo-keyword in lib/")
-which seemed to undo a bunch of fixes in lib/ due to breakage in
-arch/powerpc/boot/ not including compiler_types.h.  We don't need
-compiler_types.h for the definition of `fallthrough`, simply
-compiler_attributes.h.  Include that, revert the revert to lib/, and fix
-the last remaining cases I observed for powernv_defconfig.
+The kernel uses `-include` to include include/linux/compiler_types.h
+into all translation units (see scripts/Makefile.lib), which #includes
+compiler_attributes.h.
 
-Changes V1->V2:
-* collect tags via b4 (fix Gustavo's tag as per Miguel in patch 2/3).
-* reword commit message of patch 1/3 as per Arvind.
-* reformat patch 2/3 as per kernel test robot and Gustavo.
+arch/powerpc/boot/ uses different compiler flags from the rest of the
+kernel. As such, it doesn't contain the definitions from these headers,
+and redefines a few that it needs.
 
-Nick Desaulniers (3):
-  powerpc: boot: include compiler_attributes.h
-  Revert "lib: Revert use of fallthrough pseudo-keyword in lib/"
-  powerpc: fix -Wimplicit-fallthrough
+For the purpose of enabling -Wimplicit-fallthrough for ppc, include
+compiler_attributes.h via `-include`.
 
- arch/powerpc/boot/Makefile      |  1 +
- arch/powerpc/boot/decompress.c  |  1 -
- arch/powerpc/kernel/prom_init.c |  1 +
- arch/powerpc/kernel/uprobes.c   |  1 +
- arch/powerpc/perf/imc-pmu.c     |  1 +
- lib/asn1_decoder.c              |  4 ++--
- lib/assoc_array.c               |  2 +-
- lib/bootconfig.c                |  4 ++--
- lib/cmdline.c                   | 10 ++++-----
- lib/dim/net_dim.c               |  2 +-
- lib/dim/rdma_dim.c              |  4 ++--
- lib/glob.c                      |  2 +-
- lib/siphash.c                   | 36 ++++++++++++++++-----------------
- lib/ts_fsm.c                    |  2 +-
- lib/vsprintf.c                  | 14 ++++++-------
- lib/xz/xz_dec_lzma2.c           |  4 ++--
- lib/xz/xz_dec_stream.c          | 16 +++++++--------
- lib/zstd/bitstream.h            | 10 ++++-----
- lib/zstd/compress.c             |  2 +-
- lib/zstd/decompress.c           | 12 +++++------
- lib/zstd/huf_compress.c         | 17 +++++++++++-----
- 21 files changed, 78 insertions(+), 68 deletions(-)
+It was also noted in 6a9dc5fd6170 that we could -D__KERNEL__ and
+-include compiler_types.h like the main kernel does, though testing that
+produces a whole sea of warnings to cleanup. This approach is minimally
+invasive.
 
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://github.com/ClangBuiltLinux/linux/issues/236
+---
+ arch/powerpc/boot/Makefile     | 1 +
+ arch/powerpc/boot/decompress.c | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
+index f8ce6d2dde7b..1659963a8f1d 100644
+--- a/arch/powerpc/boot/Makefile
++++ b/arch/powerpc/boot/Makefile
+@@ -31,6 +31,7 @@ endif
+ BOOTCFLAGS    := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+ 		 -fno-strict-aliasing -O2 -msoft-float -mno-altivec -mno-vsx \
+ 		 -pipe -fomit-frame-pointer -fno-builtin -fPIC -nostdinc \
++		 -include $(srctree)/include/linux/compiler_attributes.h \
+ 		 $(LINUXINCLUDE)
+ 
+ ifdef CONFIG_PPC64_BOOT_WRAPPER
+diff --git a/arch/powerpc/boot/decompress.c b/arch/powerpc/boot/decompress.c
+index 8bf39ef7d2df..6098b879ac97 100644
+--- a/arch/powerpc/boot/decompress.c
++++ b/arch/powerpc/boot/decompress.c
+@@ -21,7 +21,6 @@
+ 
+ #define STATIC static
+ #define INIT
+-#define __always_inline inline
+ 
+ /*
+  * The build process will copy the required zlib source files and headers
 -- 
 2.29.2.299.gdc1121823c-goog
 
