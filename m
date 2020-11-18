@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478A42B7A79
+	by mail.lfdr.de (Postfix) with ESMTP id BBE162B7A7A
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgKRJf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:35:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34418 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725772AbgKRJf6 (ORCPT
+        id S1726298AbgKRJjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:39:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725814AbgKRJjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:35:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605692157;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u7oDgWHxu4+MRhAydEZNRlN5kWaVQTY+ZlvNsq17iNM=;
-        b=CH9CFwjoKL4eo+aKdWmS4Q0g5+3K+oL+71T1k8SkoczkJPUE0tdZIXB54MC3YavFCBrjHc
-        QYyX2SF/JsVmRnOLEUk1PRurWP2a2UhxFhH8V0iMMeYoc3cV3qZma3058Ztz4URtj9igUC
-        l4XtpB6KpdrAIBM/EDnGPyOagCzfJzc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-uJbNMfRqM3SELhkJ-tBYXw-1; Wed, 18 Nov 2020 04:35:53 -0500
-X-MC-Unique: uJbNMfRqM3SELhkJ-tBYXw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F31CB1028D41;
-        Wed, 18 Nov 2020 09:35:50 +0000 (UTC)
-Received: from krava (unknown [10.40.193.155])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3DECF6B8E5;
-        Wed, 18 Nov 2020 09:35:46 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 10:35:45 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 06/24] perf tools: Add build_id__is_defined function
-Message-ID: <20201118093545.GB1414446@krava>
-References: <20201117110053.1303113-1-jolsa@kernel.org>
- <20201117110053.1303113-7-jolsa@kernel.org>
- <CAP-5=fUrf9Kq3XwKALSZut3M6NXtnJCAMw0Pe2rh8_31a7tX4w@mail.gmail.com>
- <20201117205359.GJ1216482@krava>
- <20201117233313.GD657351@kernel.org>
+        Wed, 18 Nov 2020 04:39:06 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9781DC061A4D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:39:06 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id h12so758993pjv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:39:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lST301jSjmBSq10zdHWdNa3dguE3h2ga71kmHkIDesY=;
+        b=wsu2HEenfL7Thmo+t9FdUkwaWLB48UNcL8uUVRp19HOYk8GozIMCYNqa/kBoZfEIDj
+         /T6FraKwmjw0Rs1E6Bo5EmGrX8RkC1t6lIlwByWPHM62sZ8uPw6klOaqfuzU9ff2ZtSf
+         rinO4d1bFtSrmFgs7UMmWJEZbn51q9VBMy32/6FSGVIe6MfmbBJ/SoDKtOaeVcULmmE8
+         zpZXos6NG9xWLW+AD4Yp4u7YdmSK5LJMlKF3Db3RffHmcxwp9YdLbNA3uWVOpcLygpYG
+         SjJQQBprpBpsyfN3REiP5dPbI5yLZ2I7+CXLEfVPwRGzJAvVQnRegeA9f8xYMiTCpi9k
+         JWCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lST301jSjmBSq10zdHWdNa3dguE3h2ga71kmHkIDesY=;
+        b=oyBhSrYLZ7tI883aMghytV6TT+OU9/DGy3Ue5/XM0OSZI4sWLNc3MenBCW9FmwlWcq
+         cUX9ZRdCHkJO7YlXOJ2pEREUYaOqbSMbIT9hN8ifXOFQTCZq0Rx7PqMuJroce12eOwyg
+         00f79/fd18XfgZ93oaIpc1398QyXre5xt6dPWZAGKnnlC390BtlPj9RzqVf0/rJskEjh
+         fiL/DaXBPfCyTj0k+yeEyMcSbhrptyr6u4Cnj0dt0+wAPXrQ4QJvVPOt8Bme6J1TZ+0T
+         pTJsO5ccRC/1mKlYJyNRLERt8Pr/w+od6rW/r/RZndWZiaENzYvH1HVwe/RuwDUh6n5A
+         lFUg==
+X-Gm-Message-State: AOAM531oznyfrPK8m5fTGaEdi1oB48wCz/lFzPzJEfbLok/+hq25OjmN
+        nN+IwfhVq1Uw6+AFgmllZQTu
+X-Google-Smtp-Source: ABdhPJzVUakyVdAR0GHELEuSJ5PfNeYyaU2S76+o3VpsnwdXURLic/dmc2oZgt8eLHpvOIg+br2aOw==
+X-Received: by 2002:a17:90a:aa13:: with SMTP id k19mr3300365pjq.145.1605692345968;
+        Wed, 18 Nov 2020 01:39:05 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id e184sm24725991pfe.146.2020.11.18.01.39.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 18 Nov 2020 01:39:05 -0800 (PST)
+Date:   Wed, 18 Nov 2020 15:09:00 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mhi tree
+Message-ID: <20201118093900.GD3286@work>
+References: <20201117151225.6a50abf8@canb.auug.org.au>
+ <20201117042359.GB7787@work>
+ <20201118153912.1decf6cf@canb.auug.org.au>
+ <20201118154500.127aaba6@canb.auug.org.au>
+ <20201118155128.64c97667@canb.auug.org.au>
+ <20201118050640.GA3286@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117233313.GD657351@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20201118050640.GA3286@work>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 08:33:13PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Nov 17, 2020 at 09:53:59PM +0100, Jiri Olsa escreveu:
-> > On Tue, Nov 17, 2020 at 11:00:37AM -0800, Ian Rogers wrote:
-> > > On Tue, Nov 17, 2020 at 3:01 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > 
-> > > > Adding build_id__is_defined helper to check build id
-> > > > is defined and is != zero build id.
-> > > >
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >  tools/perf/util/build-id.c | 7 +++++++
-> > > >  tools/perf/util/build-id.h | 1 +
-> > > >  2 files changed, 8 insertions(+)
-> > > >
-> > > > diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-> > > > index 6b410c3d52dc..7d9ecc37849c 100644
-> > > > --- a/tools/perf/util/build-id.c
-> > > > +++ b/tools/perf/util/build-id.c
-> > > > @@ -912,3 +912,10 @@ void build_id__init(struct build_id *bid, const u8
-> > > > *data, size_t size)
-> > > >         memcpy(bid->data, data, size);
-> > > >         bid->size = size;
-> > > >  }
-> > > > +
-> > > > +bool build_id__is_defined(const struct build_id *bid)
-> > > > +{
-> > > > +       static u8 zero[BUILD_ID_SIZE];
-> > > > +
-> > > > +       return bid && bid->size ? memcmp(bid->data, &zero, bid->size) :
-> > > > false;
+On Wed, Nov 18, 2020 at 10:36:40AM +0530, Manivannan Sadhasivam wrote:
+> Hi Stephen,
 > 
-> > > Fwiw, I find this method to test for zero a little hard to parse - I'm
+> On Wed, Nov 18, 2020 at 03:51:28PM +1100, Stephen Rothwell wrote:
+> > Hi all,
 > > 
-> > heh, it's controversial one, Namhyung commented
-> > on this one in previous version, so I changed it ;-)
-> >   https://lore.kernel.org/lkml/CAM9d7cjjGjTN8sDgLZ1PoQZ-sUXWjnVaNdyOVE1yHxq46PrPkw@mail.gmail.com/
+> > On Wed, 18 Nov 2020 15:45:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > On Wed, 18 Nov 2020 15:39:12 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > >
+> > > > Why isn't that "fix patch" in the mhi tree (with necessary Acked-bys)?  
+> > > 
+> > > Ignore that, I missed its appearance :-)
+> > 
+> > Ignore that, my question stands (git confused me a lot :-().
+> > 
+> > I have applied the fix patch to the mhi tree merge today.
 > 
-> So, the kernel has an idiom for this in lib/string.c:
+> After discussing with Kalle, we decided to have a single patch which
+> changes MHI and ath11k (fix patch) to avoid issues. I'll send it today and
+> get it applied to mhi-next soon (via immutable branch).
 > 
-> /**
->  * memchr_inv - Find an unmatching character in an area of memory.
->  * @start: The memory area
->  * @c: Find a character other than c
->  * @bytes: The size of the area.
->  *
->  * returns the address of the first character other than @c, or %NULL
->  * if the whole buffer contains just @c.
->  */
-> void *memchr_inv(const void *start, int c, size_t bytes)
+
+Patch applied to immutable branch and merged into mhi-next. Now you can
+remove the fix patch.
+
+Thanks,
+Mani
+
+> Thanks,
+> Mani
 > 
-> No need for any array of some particular size :-)
-
-ok, will check
-
-thanks,
-jirka
-
+> > -- 
+> > Cheers,
+> > Stephen Rothwell
+> 
+> 
