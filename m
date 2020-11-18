@@ -2,113 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBED62B7C96
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E507A2B7C9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728026AbgKRLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:24:43 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2269 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727187AbgKRLYm (ORCPT
+        id S1728029AbgKRLZW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Nov 2020 06:25:22 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:54750 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgKRLZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:24:42 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb504700001>; Wed, 18 Nov 2020 03:24:32 -0800
-Received: from [10.26.72.203] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
- 2020 11:24:39 +0000
-Subject: Re: [PATCH v1] arm64: tegra: jetson-tx1: Fix USB_VBUS_EN0 regulator
-To:     JC Kuo <jckuo@nvidia.com>, <gregkh@linuxfoundation.org>,
-        <thierry.reding@gmail.com>, <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20201118034631.74127-1-jckuo@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <6e21646a-a687-65b7-cd69-2c15e29e8241@nvidia.com>
-Date:   Wed, 18 Nov 2020 11:24:36 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201118034631.74127-1-jckuo@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605698672; bh=TUjCCZUUH8OLh6XZB6NhWxcK+9KqFaUWGef66hapmRY=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=hZrIzEPeYhFGw4XLwx/xe/xVyM5uCQRQCHsl1+ykjNO8At70Fscu6wgAd67OpdQHi
-         tXpb4gX05KvY9UMGEtcDop+4Jz7B3KYeqziSlNkab29jyU9/GVv51WoAOrE2homzHz
-         D/+VjIQgjQ+wOGu+CC4PHmfhmSTDACuU0RWZ9IXSaDFaF6DoEm6llOiyRMroh+KXUd
-         mDgTY2nFbrG3UG/z00vYuhV2GMbbng3Z/BdDhrppXhq7oF3P9xLc6OjHObB9/nFgRB
-         0E4yur7zNwGZk/n7rI3cKfXy5eh3E20Du0awTw/dLMjEsJLI6fBQgM0w9NOlpqJPT5
-         GcXibjsIO6o8w==
+        Wed, 18 Nov 2020 06:25:20 -0500
+Received: from mail-pg1-f199.google.com ([209.85.215.199])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kfLaP-0000y9-Pv
+        for linux-kernel@vger.kernel.org; Wed, 18 Nov 2020 11:25:17 +0000
+Received: by mail-pg1-f199.google.com with SMTP id p21so1042722pgb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:25:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=r7x4FLD1g1lFiB/rjBYtCrwkSnWVEPF+U90EeU7fGs4=;
+        b=tZ1Q7PFY9OPp4IpCPIgkCT5Rt0wFA5PXPIluQl55BHG5eu7ggqwALGHhkNUAmpyWtf
+         4CWPh68mVxCY8hF5DiQKMMxx3L+xN7CiLXPZx7Obmij7LgTj8B70ECBzFhaLG700x9U7
+         Ek5fm+AZheV2B0kJ9QsurJXm2GR8DN8PvtlJ2+3po5HTObuu5DilYtOQcMve0M4UokXU
+         FkRZBMviBmhGkjubFRPGAl7bDc1o6RVn3S7R3AlM05KSDR2zYga8pIXwT0rL87TcrU/A
+         Vb1Kp3sKevZukGIG9YTPU3nTz9dlRlQmBTdgXChbo3fMFRAM8jJ9HNU0vgRTos/Ecdvr
+         iQfQ==
+X-Gm-Message-State: AOAM533jNbXy1vz6G0H6rjgU54bImkFTPzRZec9aVZPJr+YmwXZIy+w3
+        o/2d+RwLPjdN5dsoeGzQHz6yMFLk+EfElvfWURmTnvENzGRRrE82YMFe7HvWhKW1slW/j7+OMev
+        miTy9P+K5gScbp/LtF3idhYCHuaj9AhaZ7HY4Eogt8Q==
+X-Received: by 2002:a17:90a:cb93:: with SMTP id a19mr3350479pju.99.1605698716357;
+        Wed, 18 Nov 2020 03:25:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyrZrei/lPBiaqSz316HZD8X9lUfdxdrVtEhbhkaaY76B2qM77fQz03JGOPMmHQuR6flNxK2A==
+X-Received: by 2002:a17:90a:cb93:: with SMTP id a19mr3350463pju.99.1605698716006;
+        Wed, 18 Nov 2020 03:25:16 -0800 (PST)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id m20sm23967992pfk.31.2020.11.18.03.25.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Nov 2020 03:25:15 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for
+ Lenovo A630Z TIO built-in usb-audio card
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <20201118110639.7455-1-penghao@uniontech.com>
+Date:   Wed, 18 Nov 2020 19:25:07 +0800
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, johan@kernel.org,
+        jonathan@jdcox.net, tomasz@meresinski.eu, hdegoede@redhat.com,
+        dlaz@chromium.org, richard.o.dodd@gmail.com,
+        kerneldev@karsmulder.nl, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <91C616BC-3B99-4BB5-AEBE-6975CBFB29BA@canonical.com>
+References: <20201118110639.7455-1-penghao@uniontech.com>
+To:     penghao <penghao@uniontech.com>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi penghao,
 
-On 18/11/2020 03:46, JC Kuo wrote:
-> USB_VBUS_EN0 regulator (regulator@11) is being overwritten by vdd-cam-1v2
-> regulator. This commit rearrange USB_VBUS_EN0 to be regulator@14.
+> On Nov 18, 2020, at 19:06, penghao <penghao@uniontech.com> wrote:
 > 
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+> Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
+> usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
+> seconds later by usb-audio disconnect interrupt to avoids the issue.
+> 
+> Seeking a better fix, we've tried a lot of things, including:
+> - Check that the device's power/wakeup is disabled
+> - Check that remote wakeup is off at the USB level
+> - All the quirks in drivers/usb/core/quirks.c
+>   e.g. USB_QUIRK_RESET_RESUME,
+>        USB_QUIRK_RESET,
+>        USB_QUIRK_IGNORE_REMOTE_WAKEUP,
+>        USB_QUIRK_NO_LPM.
+> 
+> but none of that makes any difference.
+> 
+> There are no errors in the logs showing any suspend/resume-related issues.
+> When the system wakes up due to the modem, log-wise it appears to be a
+> normal resume.
+> 
+> Introduce a quirk to disable the port during suspend when the modem is
+> detected.
+> 
+> Changes since v4
+> - Fixed add a blank line
+> 
+> Changes since v3
+> - Fixed spelling error on appropriate
+> 
+> Changes since v2
+> - Add Changes commit format
+> 
+> Changes since v1
+> - Change subject form "ALSA" to "USB:"
+> - Adjust to appropriate line
+> 
+> Signed-off-by: penghao <penghao@uniontech.com>
 > ---
->  .../arm64/boot/dts/nvidia/tegra210-p2597.dtsi | 20 +++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
+> drivers/usb/core/quirks.c | 4 ++++
+> 1 file changed, 4 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi b/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-> index e18e1a9a3011..a9caaf7c0d67 100644
-> --- a/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-> +++ b/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-> @@ -1663,16 +1663,6 @@ vdd_usb_vbus: regulator@9 {
->  		vin-supply = <&vdd_5v0_sys>;
->  	};
->  
-> -	vdd_usb_vbus_otg: regulator@11 {
-> -		compatible = "regulator-fixed";
-> -		regulator-name = "USB_VBUS_EN0";
-> -		regulator-min-microvolt = <5000000>;
-> -		regulator-max-microvolt = <5000000>;
-> -		gpio = <&gpio TEGRA_GPIO(CC, 4) GPIO_ACTIVE_HIGH>;
-> -		enable-active-high;
-> -		vin-supply = <&vdd_5v0_sys>;
-> -	};
-> -
->  	vdd_hdmi: regulator@10 {
->  		compatible = "regulator-fixed";
->  		regulator-name = "VDD_HDMI_5V0";
-> @@ -1712,4 +1702,14 @@ vdd_cam_1v8: regulator@13 {
->  		enable-active-high;
->  		vin-supply = <&vdd_3v3_sys>;
->  	};
+> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+> index 7c1198f80c23..26b852ae0d85 100644
+> --- a/drivers/usb/core/quirks.c
+> +++ b/drivers/usb/core/quirks.c
+> @@ -410,6 +410,10 @@ static const struct usb_device_id usb_quirk_list[] = {
+> 	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
+> 			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
+> 
+> +	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
+> +	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
+> +			USB_QUIRK_DISCONNECT_SUSPEND },
 > +
-> +	vdd_usb_vbus_otg: regulator@14 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "USB_VBUS_EN0";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		gpio = <&gpio TEGRA_GPIO(CC, 4) GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +		vin-supply = <&vdd_5v0_sys>;
-> +	};
->  };
+
+Would it be possible to enable dynamic debug, reproduce the issue, and attach dmesg here? i.e.
+# echo 'file drivers/usb/* +p; file drivers/usb/host/* +p' > /sys/kernel/debug/dynamic_debug/control
+# echo mem > /sys/power/state
+... and attach dmesg here.
+
+Kai-Heng
+
+> 	/* BUILDWIN Photo Frame */
+> 	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
+> 			USB_QUIRK_HONOR_BNUMINTERFACES },
+> -- 
+> 2.11.0
+> 
+> 
 > 
 
-Thanks for catching this! We should add the 'Fixes:' tag.
-
-By the way, I assume that VBUS is currently broken for the OTG port.
-Without this change is that USB port completely broken? I am wondering
-if we need to CC stable@vger.kernel.org on this.
-
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-
-Cheers
-Jon
-
--- 
-nvpublic
