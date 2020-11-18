@@ -2,108 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565FA2B7B0B
+	by mail.lfdr.de (Postfix) with ESMTP id C2CDA2B7B0C
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgKRKQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:16:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24806 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725774AbgKRKQ0 (ORCPT
+        id S1727157AbgKRKQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:16:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgKRKQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:16:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605694585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yed5/d7vK7YdqC5lhdZVNcPCr3eQRtrjIPPe/s03Tno=;
-        b=hMbsrJHnaxDO+CNXu3IbasSaJL08s4tqsIaqyuLP62IHwV5maJY3XNxpcdqsu//XkHX8pR
-        OKzsLiwzrAEaxl2g5+NGvF9kedH311vNs8muptBqtnp5GP5CtWHH2ReZYn0h0eE8yPxYB+
-        bPSPp6N9gD2+XA/XdiJBIJnpc9inOn8=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-Z-IaRSNSNXqDhzyuY5NxUw-1; Wed, 18 Nov 2020 05:16:23 -0500
-X-MC-Unique: Z-IaRSNSNXqDhzyuY5NxUw-1
-Received: by mail-wr1-f70.google.com with SMTP id h13so723128wrr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 02:16:22 -0800 (PST)
+        Wed, 18 Nov 2020 05:16:43 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910C5C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 02:16:43 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id s9so1693809ljo.11
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 02:16:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=hGoOMyJii3owWWUIU9inXnHVdD1MeHU27iWUbYqkD6o=;
+        b=R36457ZmmxvRFQxfHymTs/z3dpX2b2Na4C3GVK10sshTbI3HwNUMHp0a6ZvJtK3vMJ
+         aX88VUYT/XgemMcG/cnuu8MAoplxVsntQdTxpBBp9knU4Y+QEjmvy6Fb4I996BsBtSi3
+         lHNUuXmieDOeKxL4VtpbfZaErbXtnVagkG6xZn72OM86MqX+ndvufPu3zZe3XOBCHi5V
+         0ECLpMo69/DsMRKxDinD/w18mn+k6XQjNjRsqLsrEV+z7IbKVVrIlaIfz6whqy3qb9Io
+         6R+qYDMj/5vbrTcH49tB5QAYgS5TeDkf33xVImj84cd2e0kd26CmAFQyKecd2bghWe6c
+         dh3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Yed5/d7vK7YdqC5lhdZVNcPCr3eQRtrjIPPe/s03Tno=;
-        b=lWaz6QOl2fTxa32Zgb16jEQ1OhDX5cDH9IBU1SstaSJ7DT+8ABcSwlV/gaiJ7KJ3P4
-         wO7rAmIxSBs3zGKX+izPwBySXK9KNN3qKMYbpn/CqmEyEnBjtA0svteHNA3H8x/U8p24
-         mKEl7IuyJee+AhF5MjTmj9jmV0ZAwAdgtzlK35GSnS9QO56RjAmOL9rBNYqXI4ObapTb
-         iHcs2sWIM8TsNaMMBImd93kuDNz+GaPPOcUvoaunthhPdK6as+E3+DmyumWc6gvT/APl
-         ny3evQOz2IJBQcoEvRl7PaAulJ75Th+tFzX/pX+KwMdWGk8zWYRCi/2HXNMaIm9uy0+C
-         vaWA==
-X-Gm-Message-State: AOAM5315iu6LEsFizthppJceRZfMVc6PcI2BWZwpj/jb018SeRX5QyRy
-        22JhF7O0j1TPOGEKtkW1hEYRdCYCMpSGWR/bdm68Zj/JDTHW0bF9FkQDlYbSsXeWYZIzIiouglo
-        0r7aZV8Z4IYJMUlk7oHzcl7FS
-X-Received: by 2002:a1c:3c04:: with SMTP id j4mr3793827wma.105.1605694581817;
-        Wed, 18 Nov 2020 02:16:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz8gTvwJsFF5o43oH2YetHhRlLDl2RZsi15AIAqwyAVp6G3xTEHw8/0j0DSSSEDTs/utrvImA==
-X-Received: by 2002:a1c:3c04:: with SMTP id j4mr3793798wma.105.1605694581613;
-        Wed, 18 Nov 2020 02:16:21 -0800 (PST)
-Received: from redhat.com (bzq-109-67-54-78.red.bezeqint.net. [109.67.54.78])
-        by smtp.gmail.com with ESMTPSA id b4sm2360517wmc.1.2020.11.18.02.16.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 02:16:20 -0800 (PST)
-Date:   Wed, 18 Nov 2020 05:16:15 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
- for rproc serial
-Message-ID: <20201118042039-mutt-send-email-mst@kernel.org>
-References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
- <20201116091950.GA30524@infradead.org>
- <ca183081-5a9f-0104-bf79-5fea544c9271@st.com>
- <20201116162844.GB16619@infradead.org>
- <20201116163907.GA19209@infradead.org>
- <79d2eb78-caad-9c0d-e130-51e628cedaaa@st.com>
- <20201117140230.GA30567@infradead.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=hGoOMyJii3owWWUIU9inXnHVdD1MeHU27iWUbYqkD6o=;
+        b=uVbXFOu8B+ru4o3O0ERbZ69xpu+aEs/D6XWpQ388f2pQ8MRM6rDOg4Ok8UQzAzUww5
+         6bvfMU5SbGJNaK3dCKtU9SZr5zocPyOyPTaiyS/ziRTeOPO4tQvazVbksvBTsIGpwp2/
+         Z5dyq4DPksBgDLroLnMNMUtQn7ARJjK3iOHJJGgUUcNRCfFPnlAc9GJRITt/cmhQ/4ap
+         nGkgdsnqnByJ5G8nTQowdPrmsgTXHVOaE4NVs9BLx2UeHk5E4t8Ueb5cEROTnSaQEsTi
+         pEJX8OXRTzTVIvbTko2JvsTYdXPQcxNkMAjaMzrqc2HXz1V4VrktccogEiAnhS4c6W6b
+         7aUg==
+X-Gm-Message-State: AOAM530hwBmPTFXMGRcrXy2OFXhMy6239pTBG7zZBQTcxzdxBuvY7Bti
+        /M0L82fp8gR6ntte0oouq6nKgFsBmPY8oemVNI8=
+X-Google-Smtp-Source: ABdhPJx6Qk8QXGn3Vf7vj5fzUjueF0p86BYMaKdDbilEfDTpd223byT3LPiVcCHm5oW9URbmcsm4y/9HFp4EChA0N2Y=
+X-Received: by 2002:a2e:8654:: with SMTP id i20mr3603146ljj.343.1605694602053;
+ Wed, 18 Nov 2020 02:16:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117140230.GA30567@infradead.org>
+Received: by 2002:ac2:5dea:0:0:0:0:0 with HTTP; Wed, 18 Nov 2020 02:16:41
+ -0800 (PST)
+Reply-To: michellegoodman035@gmail.com
+From:   Shayma <shaymamarwan09@gmail.com>
+Date:   Wed, 18 Nov 2020 10:16:41 +0000
+Message-ID: <CAMz+VjSJTYC3F4f2SkiV_1G0OR_mmwOjc5F0nB1AN9qOhcQh2A@mail.gmail.com>
+Subject: Hallo
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 02:02:30PM +0000, Christoph Hellwig wrote:
-> On Tue, Nov 17, 2020 at 03:00:32PM +0100, Arnaud POULIQUEN wrote:
-> > The dma_declare_coherent_memory allows to associate vdev0buffer memory region
-> > to the remoteproc virtio device (vdev parent). This region is used to allocated
-> > the rpmsg buffers.
-> > The memory for the rpmsg buffer is allocated by the rpmsg_virtio device in
-> > rpmsg_virtio_bus[1]. The size depends on the total size needed for the rpmsg
-> > buffers.
-> > 
-> > The vrings are allocated directly by the remoteproc device.
-> 
-> Weird.  I thought virtio was pretty strict in not allowing diret DMA
-> API usage in drivers to support the legacy no-mapping case.
-
-Well remoteproc is weird in that it's use of DMA API precedes
-standartization efforts, and it was never standardized in the virtio
-spec ..
-
-> Either way, the point stands:  if you want these magic buffers handed
-> out to specific rpmsg instances I think not having to detour through the
-> DMA API is going to make everyones life easier.
-
+Hallo, ich hoffe du hast meine Nachricht erhalten.
+Ich brauche schnelle Reaktionen
+Vielen Dank
+Michelle
