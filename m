@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB972B8625
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAC32B8629
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727438AbgKRU7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 15:59:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55362 "EHLO mail.kernel.org"
+        id S1727453AbgKRU7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 15:59:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727427AbgKRU7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:59:24 -0500
+        id S1726234AbgKRU7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 15:59:36 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A2882075B;
-        Wed, 18 Nov 2020 20:59:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60F61246CA;
+        Wed, 18 Nov 2020 20:59:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605733164;
-        bh=DgN0ueKPhlpMnl248+5X9YV07WLhR3E+i+hScOY+X6Y=;
+        s=default; t=1605733176;
+        bh=a7U2C6v9GVw424t93GzLhDnAmyo5rTt0U8ggDVQHPNc=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=nP1wxYlM3ubihD8EhQ8o6vyWu9XK1ue1Kjlof6nAzW0M5rQo8q9k9ARfhPJvyV0vF
-         kUH+yLL3EpuMEoq5pla8h6dCSxn4S+Zz6Z4GhgxfU89UzKWajT1Lb8riBrMyLIvdCh
-         RtZjD8dWQis4uLZLrLjmNXa87C9AMhgo7XeVFnRA=
-Date:   Wed, 18 Nov 2020 20:59:04 +0000
+        b=VGNVT6PbRD5ZSvhWK+DD132RQ8L6fi0PAchfARO199l2reE5tjWIt/dnVBWKk7DOf
+         t6onpdmbau6n1JopMwyLRO/ZLRv3WPhx0oUInSCbY8Qrqegdu6Gsm+/MffFvZBUeQ4
+         nyDuGE4bRylQuz3C07pwPv8qYi6bw7IZgwCvt1c0=
+Date:   Wed, 18 Nov 2020 20:59:15 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Kyle Russell <bkylerussell@gmail.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
-        Daniel Mack <daniel@zonque.org>, linux-kernel@vger.kernel.org,
-        Haojian Zhuang <haojian.zhuang@gmail.com>, lkundrak@v3.sk,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-In-Reply-To: <20201106145905.365903-1-bkylerussell@gmail.com>
-References: <20201106145905.365903-1-bkylerussell@gmail.com>
-Subject: Re: [PATCH] ASoC: mmp-sspa: clear transmit phase bit for non-stereo formats
-Message-Id: <160573314460.46437.15997412834070266670.b4-ty@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, matthias.bgg@gmail.com,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>, robh+dt@kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tzungbi@google.com, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Cc:     shane.chien@mediatek.com, Trevor.Wu@mediatek.com
+In-Reply-To: <1605081920-11848-1-git-send-email-jiaxin.yu@mediatek.com>
+References: <1605081920-11848-1-git-send-email-jiaxin.yu@mediatek.com>
+Subject: Re: [PATCH] dt-bindings: mediatek: mt8192: revert "add audio afe document"
+Message-Id: <160573314459.46437.12225896346683178113.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,11 +42,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 09:59:05 -0500, Kyle Russell wrote:
-> The transmit phase register value is never cleared during hw params.
-> So once hw params sets this bit to handle a two channel format, it
-> remains configured for dual-phase, which is not desirable for mono
-> playback.
+On Wed, 11 Nov 2020 16:05:20 +0800, Jiaxin Yu wrote:
+> This reverts commit 1afc60e00de3abbb6c559da409c5c1bb8c1d98ec.
 
 Applied to
 
@@ -54,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mmp-sspa: clear transmit phase bit for non-stereo formats
-      commit: b88b31f4fa0abcd698045362d4aefcddc50cba59
+[1/1] ASoC: mt8192: revert "add audio afe document"
+      commit: 7d94ca3c8acd0117200f34523536ee01615e7dc3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
