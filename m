@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98C02B7432
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C8D2B743A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgKRCeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 21:34:05 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:49606 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgKRCeF (ORCPT
+        id S1726768AbgKRCg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 21:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726397AbgKRCg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 21:34:05 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0AI2XngrE029377, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0AI2XngrE029377
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 18 Nov 2020 10:33:49 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Wed, 18 Nov 2020 10:33:49 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Wed, 18 Nov 2020 10:33:49 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
- RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
- 15.01.2044.006; Wed, 18 Nov 2020 10:33:49 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/4] rtlwifi: rtl8188ee: avoid accessing the data mapped to streaming DMA
-Thread-Topic: [PATCH v2 1/4] rtlwifi: rtl8188ee: avoid accessing the data
- mapped to streaming DMA
-Thread-Index: AQHWvU2rgo4QMM0k1kuIsMYwqSTPC6nMpXgA
-Date:   Wed, 18 Nov 2020 02:33:48 +0000
-Message-ID: <1605666764.7490.1.camel@realtek.com>
-References: <20201118015314.4979-1-baijiaju1990@gmail.com>
-In-Reply-To: <20201118015314.4979-1-baijiaju1990@gmail.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.213]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F376166834A78D4BB5D032F1C78958CD@realtek.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        Tue, 17 Nov 2020 21:36:56 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1FDC061A48
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:36:55 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id h12so263865pjv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:36:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=aLAwBEV8rDngSyjP7XaDJT1gxKz3iKkOVuPY4qMJ+Y4=;
+        b=Sch+ceLdIm2niHQkFOJ3RkQtWCgGPslipO9TDCg80Dz8aSnw71wPiGwAt4FFHCu9TP
+         0moiF/HLPZzkrpPTLpEPUi+5JWMNHGcHhrve/sDuxvkvTn3cueVFkHooYeS4xA2lwDVm
+         VHQmGw3VHT/VyGLy5qg/RW2njNOmvbQfAw9Jowtp0v5iLmJEZikCW+GnyRYMnq93Loc7
+         pUI+EBC5HfuWHE0V5hEpVWUj0RyK22dnnvFtZlpquHX9+XhfXhcwvXvSJjxvzukxQldq
+         iR5NbMx33PeZQUd6YyNAhDWdJi6eq54gcKe7wUqJaPXvRLU9ldx+Z3wlxgqLZoguyWq/
+         bozQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=aLAwBEV8rDngSyjP7XaDJT1gxKz3iKkOVuPY4qMJ+Y4=;
+        b=ZGrwRmSHkMR/rZ64aZyJNTOIBpt6ogM419ox1W84QPZsw0kTJQrWEgMi5iu+rm32tU
+         Hc/wha74L0rBrjYvQ6MKbIlOrsaCe9LvFZGpjrvs8PwFaztKYtIln+AoYdXdW6eOIVPw
+         LxX95oUIU3nKVrdtq212lz5o2AelXqKi2eLu0Q2Osn6LDq+hJptqDRZwP5657Mhz5eM+
+         92UIY0Wu3uh4dmC2hPyAvkqexF+d4h8GL3/AMw5z5t7GoZXmr/15f5Io82Vxx2A0ZeWU
+         oAf3Va0Tym+1wjJlL+Okb55cFhfbzWk/zDCI/JzfjRIHbtF1o2t6Cf/GaV1B+YVzwt9g
+         RjZQ==
+X-Gm-Message-State: AOAM53249P1iPEoUn4WmOR9LAFDak2N4bfFangXpi+w8JrItTnYN0TkF
+        wdZdhTndrzcUHF12PY/a8vQ=
+X-Google-Smtp-Source: ABdhPJwXsbmgh7VDl77Mqc7qiFziVJuy+X4wawPYtGcauQ+tk8eWNX35YVsHNvvaJBdiBqEEDRhe/w==
+X-Received: by 2002:a17:90b:b15:: with SMTP id bf21mr1911068pjb.21.1605667015399;
+        Tue, 17 Nov 2020 18:36:55 -0800 (PST)
+Received: from localhost.localdomain ([8.210.202.142])
+        by smtp.gmail.com with ESMTPSA id j11sm7210265pfe.26.2020.11.17.18.36.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Nov 2020 18:36:55 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     kishon@ti.com, vkoul@kernel.org, khilman@baylibre.com,
+        narmstrong@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, p.zabel@pengutronix.de,
+        lorenzo.pieralisi@arm.com, repk@triplefau.lt, yejune.deng@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: [PATCH] phy: amlogic: replace devm_reset_control_array_get()
+Date:   Wed, 18 Nov 2020 10:36:35 +0800
+Message-Id: <1605666995-16462-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTExLTE4IGF0IDA5OjUzICswODAwLCBKaWEtSnUgQmFpIHdyb3RlOg0KPiBJ
-biBydGw4OGVlX3R4X2ZpbGxfY21kZGVzYygpLCBza2ItPmRhdGEgaXMgbWFwcGVkIHRvIHN0cmVh
-bWluZyBETUEgb24NCj4gbGluZSA2Nzc6DQo+IMKgIGRtYV9hZGRyX3QgbWFwcGluZyA9IGRtYV9t
-YXBfc2luZ2xlKC4uLiwgc2tiLT5kYXRhLCAuLi4pOw0KPiANCj4gT24gbGluZSA2ODAsIHNrYi0+
-ZGF0YSBpcyBhc3NpZ25lZCB0byBoZHIgYWZ0ZXIgY2FzdDoNCj4gwqAgc3RydWN0IGllZWU4MDIx
-MV9oZHIgKmhkciA9IChzdHJ1Y3QgaWVlZTgwMjExX2hkciAqKShza2ItPmRhdGEpOw0KPiANCj4g
-VGhlbiBoZHItPmZyYW1lX2NvbnRyb2wgaXMgYWNjZXNzZWQgb24gbGluZSA2ODE6DQo+IMKgIF9f
-bGUxNiBmYyA9IGhkci0+ZnJhbWVfY29udHJvbDsNCj4gDQo+IFRoaXMgRE1BIGFjY2VzcyBtYXkg
-Y2F1c2UgZGF0YSBpbmNvbnNpc3RlbmN5IGJldHdlZW4gQ1BVIGFuZCBoYXJkd3JlLg0KPiANCj4g
-VG8gZml4IHRoaXMgYnVnLCBoZHItPmZyYW1lX2NvbnRyb2wgaXMgYWNjZXNzZWQgYmVmb3JlIHRo
-ZSBETUEgbWFwcGluZy4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEppYS1KdSBCYWkgPGJhaWppYWp1
-MTk5MEBnbWFpbC5jb20+DQoNClRoaXMgcGF0Y2hzZXQgbG9va3MgZ29vZCB0byBtZS4NClRoYW5r
-IHlvdS4NCg0KQWNrZWQtYnk6IFBpbmctS2UgU2hpaCA8cGtzaGloQHJlYWx0ZWsuY29tPg0KDQo+
-IC0tLQ0KPiDCoGRyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnRsd2lmaS9ydGw4MTg4ZWUv
-dHJ4LmMgfCA2ICsrKy0tLQ0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDMg
-ZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVh
-bHRlay9ydGx3aWZpL3J0bDgxODhlZS90cnguYw0KPiBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3Jl
-YWx0ZWsvcnRsd2lmaS9ydGw4MTg4ZWUvdHJ4LmMNCj4gaW5kZXggYjk3NzVlZWM0YzU0Li5jOTQ4
-ZGFmYTBjODAgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnRs
-d2lmaS9ydGw4MTg4ZWUvdHJ4LmMNCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRl
-ay9ydGx3aWZpL3J0bDgxODhlZS90cnguYw0KPiBAQCAtNjc0LDEyICs2NzQsMTIgQEAgdm9pZCBy
-dGw4OGVlX3R4X2ZpbGxfY21kZGVzYyhzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywNCj4gwqAJdTgg
-ZndfcXVldWUgPSBRU0xUX0JFQUNPTjsNCj4gwqAJX19sZTMyICpwZGVzYyA9IChfX2xlMzIgKilw
-ZGVzYzg7DQo+IMKgDQo+IC0JZG1hX2FkZHJfdCBtYXBwaW5nID0gZG1hX21hcF9zaW5nbGUoJnJ0
-bHBjaS0+cGRldi0+ZGV2LCBza2ItPmRhdGEsDQo+IC0JCQkJCcKgwqDCoMKgc2tiLT5sZW4sIERN
-QV9UT19ERVZJQ0UpOw0KPiAtDQo+IMKgCXN0cnVjdCBpZWVlODAyMTFfaGRyICpoZHIgPSAoc3Ry
-dWN0IGllZWU4MDIxMV9oZHIgKikoc2tiLT5kYXRhKTsNCj4gwqAJX19sZTE2IGZjID0gaGRyLT5m
-cmFtZV9jb250cm9sOw0KPiDCoA0KPiArCWRtYV9hZGRyX3QgbWFwcGluZyA9IGRtYV9tYXBfc2lu
-Z2xlKCZydGxwY2ktPnBkZXYtPmRldiwgc2tiLT5kYXRhLA0KPiArCQkJCQnCoMKgwqDCoHNrYi0+
-bGVuLCBETUFfVE9fREVWSUNFKTsNCj4gKw0KPiDCoAlpZiAoZG1hX21hcHBpbmdfZXJyb3IoJnJ0
-bHBjaS0+cGRldi0+ZGV2LCBtYXBwaW5nKSkgew0KPiDCoAkJcnRsX2RiZyhydGxwcml2LCBDT01Q
-X1NFTkQsIERCR19UUkFDRSwNCj4gwqAJCQkiRE1BIG1hcHBpbmcgZXJyb3JcbiIpOw0KDQoNCg0K
+devm_reset_control_array_get_exclusive() looks more readable
+
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ drivers/phy/amlogic/phy-meson-axg-pcie.c       | 2 +-
+ drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/phy/amlogic/phy-meson-axg-pcie.c b/drivers/phy/amlogic/phy-meson-axg-pcie.c
+index 377ed0d..3204f02 100644
+--- a/drivers/phy/amlogic/phy-meson-axg-pcie.c
++++ b/drivers/phy/amlogic/phy-meson-axg-pcie.c
+@@ -155,7 +155,7 @@ static int phy_axg_pcie_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->regmap))
+ 		return PTR_ERR(priv->regmap);
+ 
+-	priv->reset = devm_reset_control_array_get(dev, false, false);
++	priv->reset = devm_reset_control_array_get_exclusive(dev);
+ 	if (IS_ERR(priv->reset))
+ 		return PTR_ERR(priv->reset);
+ 
+diff --git a/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c b/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
+index 08e3227..bab6345 100644
+--- a/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
++++ b/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
+@@ -418,7 +418,7 @@ static int phy_g12a_usb3_pcie_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_disable_clk_ref;
+ 
+-	priv->reset = devm_reset_control_array_get(dev, false, false);
++	priv->reset = devm_reset_control_array_get_exclusive(dev);
+ 	if (IS_ERR(priv->reset))
+ 		return PTR_ERR(priv->reset);
+ 
+-- 
+1.9.1
+
