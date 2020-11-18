@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D242B7B8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945E62B7B8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgKRKmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:42:31 -0500
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:45772 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgKRKma (ORCPT
+        id S1727438AbgKRKnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:43:20 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35430 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgKRKnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:42:30 -0500
-Received: by mail-ej1-f65.google.com with SMTP id dk16so2012564ejb.12;
-        Wed, 18 Nov 2020 02:42:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RSpyNr9ImM7m91CBLdyW5FUGxR8gG95LO/PYe+GLcPM=;
-        b=rDkONH0ooGN6zPjwQT/PAJ+R1//Dlt+Ps0mBcq6GY522GsSLeaBTktGzulLuJ3eymO
-         ZZSpk1cnb5kBLhUzTulVSCZAo041hnsFvQUZ1asVr2bKTEW0P6PP+bbqZqf0zqNytHsy
-         ABF8Y30p/VTTbzl8KcQZiOxBV+T5nL2GFsDW9kT1ZIFLPThn3CIHdmqea56DM+t2B9es
-         tURslJX0FtONvQ3nRAnGo3DKY5wLvTyHh+aiXpZrjerA/aAR7BnNv2tbk20FDGzBr4dm
-         veVM7EA//tckyX1rlMwd9SdKkpHqvK9thsYp5kLGlaPy9N9gLuXGz77ze1E20omfpnv2
-         Ik6g==
-X-Gm-Message-State: AOAM531MOrtIEVx6dfrPpLBUNYJSjZoTdMd18Ak4IQpY1PVW016TtzX5
-        lp7QjBUq61+YKTONgEgsDSk=
-X-Google-Smtp-Source: ABdhPJx7/ODY/gVEoRqL5kGJlrG8wd017WuRtscj4IzeoSwSxUVO6td2HgkiLYpTN9rcgeuRjg3bBw==
-X-Received: by 2002:a17:906:1408:: with SMTP id p8mr22992702ejc.548.1605696148906;
-        Wed, 18 Nov 2020 02:42:28 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id f13sm12601074ejf.42.2020.11.18.02.42.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 02:42:28 -0800 (PST)
-Date:   Wed, 18 Nov 2020 11:42:26 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Alice Guo <alice.guo@nxp.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXT] Re: [PATCH v3 4/4] soc: imx8m: change to use platform
- driver
-Message-ID: <20201118104226.GA23766@kozik-lap>
-References: <20201113110409.13546-1-alice.guo@nxp.com>
- <20201113110409.13546-4-alice.guo@nxp.com>
- <20201114164128.GD14989@kozik-lap>
- <AM6PR04MB6053BFD5462C9AC405962095E2E30@AM6PR04MB6053.eurprd04.prod.outlook.com>
- <20201116161338.GB25108@kozik-lap>
- <AM6PR04MB60534E7BD063455FDA2649C3E2E10@AM6PR04MB6053.eurprd04.prod.outlook.com>
+        Wed, 18 Nov 2020 05:43:19 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 241641C0B78; Wed, 18 Nov 2020 11:43:17 +0100 (CET)
+Date:   Wed, 18 Nov 2020 11:43:16 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 031/101] ALSA: hda: Reinstate runtime_allow() for
+ all hda controllers
+Message-ID: <20201118104316.GA8364@duo.ucw.cz>
+References: <20201117122113.128215851@linuxfoundation.org>
+ <20201117122114.605040102@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="3MwIy2ne0vdjdPXF"
 Content-Disposition: inline
-In-Reply-To: <AM6PR04MB60534E7BD063455FDA2649C3E2E10@AM6PR04MB6053.eurprd04.prod.outlook.com>
+In-Reply-To: <20201117122114.605040102@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 10:28:47AM +0000, Alice Guo wrote:
- > 
-> > If it is properly explained and there is no other way then yes, you could. Here, for
-> > old DTBs, I would prefer to use
-> > of_platform_device_create() and bind to "soc" node (child of root).
-> > This way you would always have device and exactly one entry point for the
-> > probe.
-> > 
-> 
-> static struct platform_driver imx8_soc_init_driver = {
-> 	.probe = imx8_soc_init_probe,
-> 	.driver = {
-> 		.name = "soc@0",
-> 	},
-> };
-> Can I use "soc@0" to match this driver? It will not use of_platform_device_create(). It will use of_find_property() to determine whether
-> and nvmem-cells can be used. If there is no nvmem-cells, it will use the old way, which supports old DTBS. There is no need to add new
-> compatible.
 
-No, the soc@0 is not a proper name for the driver.
+--3MwIy2ne0vdjdPXF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>=20
+> [ Upstream commit 9fc149c3bce7bdbb94948a8e6bd025e3b3538603 ]
+>=20
+> The broken jack detection should be fixed by commit a6e7d0a4bdb0 ("ALSA:
+> hda: fix jack detection with Realtek codecs when in D3"), let's try
+> enabling runtime PM by default again.
+
+I believe experiments should be done in mainline, not in stable.
+
+Worse problem is that a6e7d0a4bdb0 is not in 4.19-stable, so this will
+likely break jack detection.
 
 Best regards,
-Krzysztof
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--3MwIy2ne0vdjdPXF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX7T6xAAKCRAw5/Bqldv6
+8qNvAJ0erFrRa/rwZNBgtghWbPFsW/lv3QCgmShM9pXWR35stOVOhIafBJzOqZ0=
+=HvEy
+-----END PGP SIGNATURE-----
+
+--3MwIy2ne0vdjdPXF--
