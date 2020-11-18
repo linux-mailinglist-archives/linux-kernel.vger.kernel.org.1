@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18532B81D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5882B81E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgKRQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:27:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56780 "EHLO mail.kernel.org"
+        id S1726815AbgKRQ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:27:34 -0500
+Received: from ms.lwn.net ([45.79.88.28]:45438 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgKRQ1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:27:01 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        id S1726039AbgKRQ1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:27:33 -0500
+Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9752724818;
-        Wed, 18 Nov 2020 16:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605716820;
-        bh=d6fcYi77BXc0FDTlYdszbLc7LzeiPITJH4/OZIoT2Sg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dAHGsinRGFxYeHu9dwjrFUIo14FWc38Mv6mosYACM0CItOIG6P+Rylwmr8ZMzCW2v
-         E+bR4pkNQ6SKYXvZAkFpHP+C+n65mHUjTlpEI35S5nbPWyz/eIgfV+kxSxpyrvw0Av
-         L3lZOKAv8jyozkH11r5jtDatMK/yDwyIc4EFNIyQ=
-Date:   Wed, 18 Nov 2020 08:26:58 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        linmiaohe@huawei.com, martin.varghese@nokia.com, pabeni@redhat.com,
-        pshelar@ovn.org, fw@strlen.de, gnault@redhat.com,
-        steffen.klassert@secunet.com, kyk.segfault@gmail.com,
-        viro@zeniv.linux.org.uk, vladimir.oltean@nxp.com,
-        edumazet@google.com, saeed@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH net-next] net: add in_softirq() debug checking in
- napi_consume_skb()
-Message-ID: <20201118082658.2aa41190@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201118155757.GY3121392@hirez.programming.kicks-ass.net>
-References: <1603971288-4786-1-git-send-email-linyunsheng@huawei.com>
-        <20201031153824.7ae83b90@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <5b04ad33-1611-8d7b-8fec-4269c01ecab3@huawei.com>
-        <20201102114110.4a20d461@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <5bd6de52-b8e0-db6f-3362-862ae7b2c728@huawei.com>
-        <20201118074348.3bbd1468@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <20201118155757.GY3121392@hirez.programming.kicks-ass.net>
+        by ms.lwn.net (Postfix) with ESMTPSA id A618835A;
+        Wed, 18 Nov 2020 16:27:31 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 09:27:30 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Eduardo Habkost <ehabkost@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [RFC] Add kernel-doc test script
+Message-ID: <20201118092730.32a3920c@lwn.net>
+In-Reply-To: <20201117223612.GN1235237@habkost.net>
+References: <20201030144713.201372-1-pbonzini@redhat.com>
+        <20201030144713.201372-3-pbonzini@redhat.com>
+        <20201113152106.7b4a07ee@lwn.net>
+        <20201113223912.GK17076@casper.infradead.org>
+        <20201117212452.GM1235237@habkost.net>
+        <20201117213051.GA29991@casper.infradead.org>
+        <20201117223612.GN1235237@habkost.net>
+Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 16:57:57 +0100 Peter Zijlstra wrote:
-> On Wed, Nov 18, 2020 at 07:43:48AM -0800, Jakub Kicinski wrote:
-> 
-> > TBH the last sentence I wrote isn't clear even to me at this point ;D
-> > 
-> > Maybe using just the macros from preempt.h - like this?
-> > 
-> > #define lockdep_assert_in_softirq()                                    \
-> > do {                                                                   \
-> >        WARN_ON_ONCE(__lockdep_enabled                  &&              \
-> >                     (!in_softirq() || in_irq() || in_nmi())	\
-> > } while (0)
-> > 
-> > We know what we're doing so in_softirq() should be fine (famous last
-> > words).  
-> 
-> So that's not actually using any lockdep state. But if that's what you
-> need, I don't have any real complaints.
+On Tue, 17 Nov 2020 17:36:12 -0500
+Eduardo Habkost <ehabkost@redhat.com> wrote:
 
-Great, thanks! 
+> Add a kernel-doc test script to tools/testing/kernel-doc.
+> 
+> radix_tree_lookup_slot test case provided by Matthew Wilcox.
+> 
+> Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
+> ---
+>  tools/testing/kernel-doc/test-case.h          | 111 ++++++++++
+>  .../testing/kernel-doc/test-case.man.expected | 150 ++++++++++++++
+>  .../kernel-doc/test-case.none.expected        |   0
+>  .../kernel-doc/test-case.rst2.expected        | 195 ++++++++++++++++++
+>  .../kernel-doc/test-case.rst3.expected        | 195 ++++++++++++++++++
+>  tools/testing/kernel-doc/test.sh              |  90 ++++++++
+>  6 files changed, 741 insertions(+)
+>  create mode 100644 tools/testing/kernel-doc/test-case.h
+>  create mode 100644 tools/testing/kernel-doc/test-case.man.expected
+>  create mode 100644 tools/testing/kernel-doc/test-case.none.expected
+>  create mode 100644 tools/testing/kernel-doc/test-case.rst2.expected
+>  create mode 100644 tools/testing/kernel-doc/test-case.rst3.expected
+>  create mode 100755 tools/testing/kernel-doc/test.sh
 
-The motivation was to piggy back on lockdep rather than adding a
-one-off Kconfig knob for a check in the fast path in networking.
+Seems like a good thing to have overall.
+
+I do worry a bit that the test will be sensitive to *any* change to
+kernel-doc output, including formatting changes that might be deliberate.
+But if that turns out to be a problem in the real world, we can deal with
+it then.
+
+Thanks,
+
+jon
