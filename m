@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32412B7E88
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0132B7E8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726223AbgKRNsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:48:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbgKRNs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:48:29 -0500
-Received: from localhost (unknown [176.167.30.29])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F5092467D;
-        Wed, 18 Nov 2020 13:48:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605707309;
-        bh=FhpmE9GaEDK3Gc53pTvZ8A7bNaWvzYY3xTCVWQcF0DM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zJDEtJ2bhEtY5kTQCzaKxwxX82iqwLCuHzIQdoItNHXdCE3eOY1UWbdkU2TrvHkFv
-         dfNzFOs95ZznjtBkT3wxC2fRTlQh8l7xTXc07UUIE8flMorXlK9QRJZjVRFUSZHAxq
-         vHaHRwSTHu6g/oypWWagPr63CeVYVd7mdglgHKO8=
-Date:   Wed, 18 Nov 2020 14:48:26 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Phil Auld <pauld@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH 0/5] context_tracking: Flatter archs not using
- exception_enter/exit() v3
-Message-ID: <20201118134826.GA279436@lothringen>
-References: <20201117151637.259084-1-frederic@kernel.org>
- <20201118073947.GQ3121392@hirez.programming.kicks-ass.net>
+        id S1726489AbgKRNsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:48:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbgKRNsv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 08:48:51 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE1CC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 05:48:51 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfNpI-0003AT-Vd; Wed, 18 Nov 2020 14:48:48 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfNpI-0008Td-DW; Wed, 18 Nov 2020 14:48:48 +0100
+Date:   Wed, 18 Nov 2020 14:48:46 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Soham Biswas <sohambiswas41@gmail.com>
+Cc:     thierry.reding@gmail.com, Lee Jones <lee.jones@linaro.org>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: core: Use octal permission
+Message-ID: <20201118134846.ddghymkn2ldallnl@pengutronix.de>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+ <20201118104730.4270-1-sohambiswas41@gmail.com>
+ <20201118124312.wk6cmnktxefn7k7m@pengutronix.de>
+ <CAMmt7ePTtM1hj6C4dgYO2o-A1C9C7NdnJHsnqSUir13ZjeEXTg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vu343jntuqqimxti"
 Content-Disposition: inline
-In-Reply-To: <20201118073947.GQ3121392@hirez.programming.kicks-ass.net>
+In-Reply-To: <CAMmt7ePTtM1hj6C4dgYO2o-A1C9C7NdnJHsnqSUir13ZjeEXTg@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 08:39:47AM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 17, 2020 at 04:16:32PM +0100, Frederic Weisbecker wrote:
-> > Frederic Weisbecker (5):
-> >       context_tracking: Introduce HAVE_CONTEXT_TRACKING_OFFSTACK
-> >       context_tracking:  Don't implement exception_enter/exit() on CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK
-> >       sched: Detect call to schedule from critical entry code
-> >       context_tracking: Only define schedule_user() on !HAVE_CONTEXT_TRACKING_OFFSTACK archs
-> >       x86: Support HAVE_CONTEXT_TRACKING_OFFSTACK
-> 
-> Thanks!
-> 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Thanks! Probably this should go through your branches?
+--vu343jntuqqimxti
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 18, 2020 at 07:11:35PM +0530, Soham Biswas wrote:
+> Sure will do that. Sorry for the inconvenience, I am a bit new to the
+> process of emailing patches. Should I mark the next patch as v3?
+
+Yes, just pass -v3 to git-format-patch or git-send-email.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--vu343jntuqqimxti
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+1JjwACgkQwfwUeK3K
+7AmrRQf44jl3byaPFhXvbf5iEMszTzaj+xEqVyvAPpC9H7NCK6jK3sdSQ9XJunXN
+OxwaiEkhjBjlGUKZRcLKiX2vcFmkz00AtlED/u4cELBucyLC3JRUoeJdKmc1yroE
+8QPoGe1Ba29JWJPjBhZseDlYletxbBVg0fhkNio8dTGd86ybvPLFukqXyyW5hT/7
+HFZ6gd8R6xQgzD5XjXL1wY5LGn+u9O52tHXTJV6Dq3CDsI6XtujNIn8ceDiIya/e
+dDfCYyhaXIOhNV8kcJnbdYzQ7wOKF0go8OG1FJu36E87I3tT3R7KZqAITbbVN21r
+FOc0dP0X7F//k2b4LGmFz1kW2HEr
+=nIs5
+-----END PGP SIGNATURE-----
+
+--vu343jntuqqimxti--
