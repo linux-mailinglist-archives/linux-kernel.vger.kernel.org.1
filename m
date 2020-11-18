@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDE22B861B
+	by mail.lfdr.de (Postfix) with ESMTP id B9AED2B861C
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgKRU6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 15:58:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgKRU6e (ORCPT
+        id S1726883AbgKRU6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 15:58:37 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:57608 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726638AbgKRU6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:58:34 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580BEC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 12:58:34 -0800 (PST)
-Message-Id: <20201118204006.869487226@linutronix.de>
+        Wed, 18 Nov 2020 15:58:35 -0500
+Message-Id: <20201118204007.028261233@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605733112;
+        s=2020; t=1605733113;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=nCDGwh3SdMGSRFUr2TixpTbJs+qPfQ4mGy29He36FSU=;
-        b=4HJFTSRrzyezlZsPToBtWv8leQtJ0MTHzKFJq9o42DBJgVcKgw+i/EzkU/Xu3X6MUOqgip
-        kF+/QL8GARivdO4Vb7/vfEuBq0g4hbpTH6QlEtQlwamJ36b3KVMTjnsHteA7vXYZ4RLJ/a
-        b3YrhuVTye5vTdl48rwxMdjfd3z9xDYCvmX0lajTAbqDUHSB7y+GTypDnX7rbC0ZHy48E/
-        F9xp/SQzShTSvEauNvYjsfheAOsTV5QAGv3H6B5MdRlTDHURo6/CV4UNlSfiVzG+r/lmET
-        QJxbafIWg1X6GLNk4k96skCri49uU0DWrzbJCuzSAJIexDhJNLzLwqFgMxWEPA==
+        bh=7rStCz/mQFScHxK69Y+EQ2P9i7Zl599sIUrIWDCDz3Y=;
+        b=EeSRihQ0Sba8l2old4dtzqJTYc/sprNUmo+vpnwrLXWFt4uNoHTGtAlnxY9ZRZjBcR4ntZ
+        lLOJReiKRK+AKPfirtELCu5M91totpbCYhp/1UJlfRTvjoNVHcKtvjXxxS4A0U9z4X13Bv
+        I6WNVRQEUr+qzSt0Om/tFWCSUMgzLKU0Gv4LQ/Rx5SIY6bYBjOdD03Rje1j2ZBtN0x1V3A
+        TBtwQcU0wZfb10lwg1UoA8XvXtGAzR+c9Dyatw2MyUvTO4AJuZkbPnMMB0th7Fc/wBQpxe
+        PRQgR5fSjqMHjid0TtpsBxpqA98kWoa0cr7HcmlMF/2dKkwxW0GnT3q9xqOjJg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605733112;
+        s=2020e; t=1605733113;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=nCDGwh3SdMGSRFUr2TixpTbJs+qPfQ4mGy29He36FSU=;
-        b=UXbqqWzHxG8zdORi+anHS8vxHmSweUHPHldVZ8d7X+2hHEpvRgT6noPAN8OMPWrU0JIEOA
-        ctDx7Fudx8RFo2Ag==
-Date:   Wed, 18 Nov 2020 20:48:39 +0100
+        bh=7rStCz/mQFScHxK69Y+EQ2P9i7Zl599sIUrIWDCDz3Y=;
+        b=ylOSmMyfpk722YM3P/eT9vPJFIpXbquk8UhgYQ01gHXosiAAkOxmFtK8EgPdA/aoUpG5rk
+        KijjZHafHfUrgBAA==
+Date:   Wed, 18 Nov 2020 20:48:40 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>,
@@ -52,7 +49,7 @@ Cc:     x86@kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
         Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [patch V4 1/8] mm/highmem: Provide and use CONFIG_DEBUG_KMAP_LOCAL
+Subject: [patch V4 2/8] mm/highmem: Provide CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP
 References: <20201118194838.753436396@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -61,68 +58,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CONFIG_KMAP_LOCAL can be enabled by x86/32bit even if CONFIG_HIGHMEM is not
-enabled for temporary MMIO space mappings.
+CONFIG_DEBUG_KMAP_LOCAL, which is selected by CONFIG_DEBUG_HIGHMEM is only
+providing guard pages, but does not provide a mechanism to enforce the
+usage of the kmap_local() infrastructure.
 
-Provide it as a seperate config option which depends on CONFIG_KMAP_LOCAL
-and let CONFIG_DEBUG_HIGHMEM select it.
+Provide CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP which forces the temporary
+mapping even for lowmem pages. This needs to be a seperate config switch
+because this only works on architectures which do not have cache aliasing
+problems.
 
-This won't increase the debug coverage of this significantly but it paves
-the way to do so.
-
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
 V4: New patch
 ---
- include/asm-generic/kmap_size.h |    2 +-
- lib/Kconfig.debug               |    8 ++++++++
- mm/highmem.c                    |    4 ++--
- 3 files changed, 11 insertions(+), 3 deletions(-)
+ lib/Kconfig.debug |   14 ++++++++++++++
+ mm/highmem.c      |   12 +++++++++++-
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
---- a/include/asm-generic/kmap_size.h
-+++ b/include/asm-generic/kmap_size.h
-@@ -3,7 +3,7 @@
- #define _ASM_GENERIC_KMAP_SIZE_H
- 
- /* For debug this provides guard pages between the maps */
--#ifdef CONFIG_DEBUG_HIGHMEM
-+#ifdef CONFIG_DEBUG_KMAP_LOCAL
- # define KM_MAX_IDX	33
- #else
- # define KM_MAX_IDX	16
 --- a/lib/Kconfig.debug
 +++ b/lib/Kconfig.debug
-@@ -849,9 +849,17 @@ config DEBUG_PER_CPU_MAPS
+@@ -856,9 +856,23 @@ config DEBUG_KMAP_LOCAL
+ 	  This option enables additional error checking for the kmap_local
+ 	  infrastructure.  Disable for production use.
  
- 	  Say N if unsure.
- 
-+config DEBUG_KMAP_LOCAL
-+	bool "Debug kmap_local temporary mappings"
-+	depends on DEBUG_KERNEL && KMAP_LOCAL
++config ARCH_SUPPORTS_KMAP_LOCAL_FORCE_MAP
++	bool
++
++config DEBUG_KMAP_LOCAL_FORCE_MAP
++	bool "Enforce kmap_local temporary mappings"
++	depends on DEBUG_KERNEL && ARCH_SUPPORTS_KMAP_LOCAL_FORCE_MAP
++	select KMAP_LOCAL
++	select DEBUG_KMAP_LOCAL
 +	help
-+	  This option enables additional error checking for the kmap_local
-+	  infrastructure.  Disable for production use.
++	  This option enforces temporary mappings through the kmap_local
++	  mechanism for non-highmem pages and on non-highmem systems.
++	  Disable this for production systems!
 +
  config DEBUG_HIGHMEM
  	bool "Highmem debugging"
  	depends on DEBUG_KERNEL && HIGHMEM
-+	select DEBUG_KMAP_LOCAL
++	select DEBUG_KMAP_LOCAL_FORCE_MAP if ARCH_SUPPORTS_KMAP_LOCAL_FORCE_MAP
+ 	select DEBUG_KMAP_LOCAL
  	help
  	  This option enables additional error checking for high memory
- 	  systems.  Disable for production systems.
 --- a/mm/highmem.c
 +++ b/mm/highmem.c
-@@ -368,10 +368,10 @@ EXPORT_SYMBOL(kunmap_high);
- static DEFINE_PER_CPU(int, __kmap_local_idx);
+@@ -474,7 +474,12 @@ void *__kmap_local_page_prot(struct page
+ {
+ 	void *kmap;
  
- /*
-- * With DEBUG_HIGHMEM the stack depth is doubled and every second
-+ * With DEBUG_KMAP_LOCAL the stack depth is doubled and every second
-  * slot is unused which acts as a guard page
-  */
--#ifdef CONFIG_DEBUG_HIGHMEM
-+#ifdef CONFIG_DEBUG_KMAP_LOCAL
- # define KM_INCR	2
- #else
- # define KM_INCR	1
+-	if (!PageHighMem(page))
++	/*
++	 * To broaden the usage of the actual kmap_local() machinery always map
++	 * pages when debugging is enabled and the architecture has no problems
++	 * with alias mappings.
++	 */
++	if (!IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP) && !PageHighMem(page))
+ 		return page_address(page);
+ 
+ 	/* Try kmap_high_get() if architecture has it enabled */
+@@ -494,6 +499,11 @@ void kunmap_local_indexed(void *vaddr)
+ 
+ 	if (addr < __fix_to_virt(FIX_KMAP_END) ||
+ 	    addr > __fix_to_virt(FIX_KMAP_BEGIN)) {
++		if (IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP)) {
++			/* This _should_ never happen! See above. */
++			WARN_ON_ONCE(1);
++			return;
++		}
+ 		/*
+ 		 * Handle mappings which were obtained by kmap_high_get()
+ 		 * first as the virtual address of such mappings is below
 
