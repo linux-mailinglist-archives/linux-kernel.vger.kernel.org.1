@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AD92B7346
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8690E2B7350
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729217AbgKRAmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:42:46 -0500
-Received: from hydra.tuxags.com ([64.13.172.54]:58814 "EHLO mail.tuxags.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgKRAmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:42:45 -0500
-Received: by mail.tuxags.com (Postfix, from userid 1000)
-        id 2C755144F139C; Tue, 17 Nov 2020 16:42:44 -0800 (PST)
-Date:   Tue, 17 Nov 2020 16:42:44 -0800
-From:   Matt Mullins <mmullins@mmlx.us>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     rostedt <rostedt@goodmis.org>, paulmck <paulmck@kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
-Message-ID: <20201118004242.rygrwivqcdgeowi7@hydra.tuxags.com>
-Mail-Followup-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rostedt <rostedt@goodmis.org>, paulmck <paulmck@kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>, Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <00000000000004500b05b31e68ce@google.com>
- <20201115055256.65625-1-mmullins@mmlx.us>
- <20201116121929.1a7aeb16@gandalf.local.home>
- <1889971276.46615.1605559047845.JavaMail.zimbra@efficios.com>
- <20201116154437.254a8b97@gandalf.local.home>
- <20201116160218.3b705345@gandalf.local.home>
- <1368007646.46749.1605562481450.JavaMail.zimbra@efficios.com>
- <20201116171027.458a6c17@gandalf.local.home>
- <609819191.48825.1605654351686.JavaMail.zimbra@efficios.com>
+        id S1727315AbgKRAok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:44:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgKRAoj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 19:44:39 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FF2C061A48
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:44:39 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id d9so187374qke.8
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:44:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jvMBZnCEU5HoaKmEz2zC68vpae0VCPnCFkIIwIpMjCk=;
+        b=Er5jrtRz40N9KHFqK3cRPXgMF0i3IBbwmRk6dSn01KOUDUMfMTesxKstZ/Dt5cFXna
+         1ZODWfd4S/lLnDugAhoeyPGWx9DNNOmwlkugIsswm2gaqJQdKTFkIQHf8slWLj2I/3l4
+         KlgtE1QD1Td96KeLNBs3ojUC9Ch/qfH1Dd3wk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jvMBZnCEU5HoaKmEz2zC68vpae0VCPnCFkIIwIpMjCk=;
+        b=ZrPYM1CpVVovIj9wGgdy62oFEupW65fb1t5fV6AebcAdxurYqH0mbljyclXn6O1T8y
+         oT/4dOdDY5/ooOJBIdUBreu0l88VxZfth0i7gh3+xgGAKi+CjNpxNjVa6cFhgdZQPoih
+         lFO880Y9plgWuUIFg0UrSgCLF6/eDeRqE+xTQVMMULiwPA1EdSHd9qppeM+K+kGJ6btY
+         YV/NGYno3RIgLxGatQMWhSnYGwepTPdUInzZBq9EsrJ6cuUDMUEj/q5Prhvjkljb3RWr
+         +Lo5hv1Yprc6VF3s1TDl5j1mg7EsOq0bUAfw1paTdMukbDLEj52aPToRkeNm31NjBMps
+         QpdQ==
+X-Gm-Message-State: AOAM532wHoja67n6t4Kq5MU/kS1WBi/TJaxXCk57gq3cAplmO48yX/l8
+        hDQcFhElvOOaxbxI95qc94z24f2TEd8qWM1falJerQ==
+X-Google-Smtp-Source: ABdhPJwdlObKSjwaCKGeUXkqhAFPM3jkFlTSb1KkSlXnuE9weNacpVZAv3k/Wz1OebvdaRrbgz0pjZ92COdoUXuvGzc=
+X-Received: by 2002:a05:620a:6d4:: with SMTP id 20mr2477398qky.4.1605660278520;
+ Tue, 17 Nov 2020 16:44:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <609819191.48825.1605654351686.JavaMail.zimbra@efficios.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+References: <20201113202503.6559-1-utkarsh.h.patel@intel.com>
+ <20201113202503.6559-6-utkarsh.h.patel@intel.com> <20201117211619.GD1819103@google.com>
+In-Reply-To: <20201117211619.GD1819103@google.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Tue, 17 Nov 2020 16:44:27 -0800
+Message-ID: <CACeCKaf6ErEdzcWAXU_1ES63za8GunFgWfOnhiJOowY3iYA6UQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/8] usb: typec: Use Thunderbolt 3 cable discover mode
+ VDO in Enter_USB message
+To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        Azhar Shaikh <azhar.shaikh@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:05:51PM -0500, Mathieu Desnoyers wrote:
-> ----- On Nov 16, 2020, at 5:10 PM, rostedt rostedt@goodmis.org wrote:
-> 
-> > On Mon, 16 Nov 2020 16:34:41 -0500 (EST)
-> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
-> [...]
-> 
-> >> I think you'll want a WRITE_ONCE(old[i].func, tp_stub_func) here, matched
-> >> with a READ_ONCE() in __DO_TRACE. This introduces a new situation where the
-> >> func pointer can be updated and loaded concurrently.
-> > 
-> > I thought about this a little, and then only thing we really should worry
-> > about is synchronizing with those that unregister. Because when we make
-> > this update, there are now two states. the __DO_TRACE either reads the
-> > original func or the stub. And either should be OK to call.
-> > 
-> > Only the func gets updated and not the data. So what exactly are we worried
-> > about here?
-> 
-> Indeed with a stub function, I don't see any need for READ_ONCE/WRITE_ONCE.
+On Tue, Nov 17, 2020 at 1:16 PM Prashant Malani <pmalani@chromium.org> wrote:
+>
+> Hi Utkarsh,
+>
+> On Fri, Nov 13, 2020 at 12:25:00PM -0800, Utkarsh Patel wrote:
+> > USB4 also uses same cable properties as Thunderbolt 3 so use Thunderbolt 3
+> > cable discover mode VDO to fill details such as active cable plug link
+> > training and cable rounded support.
 
-I'm not sure if this is a practical issue, but without WRITE_ONCE, can't
-the write be torn?  A racing __traceiter_ could potentially see a
-half-modified function pointer, which wouldn't work out too well.
+On digging into the Cros EC code further, sounds like active cable
+link training and cable rounded are necessarily only part of
+cables that have a TBT cable VDO, so sounds like the approach in the
+patch is fine.
 
-This was actually my gut instinct before I wrote the __GFP_NOFAIL
-instead -- currently that whole array's memory ordering is provided by
-RCU and I didn't dive deep enough to evaluate getting too clever with
-atomic modifications to it.
+Sorry for the noise.
 
-> 
-> However, if we want to compare the function pointer to some other value and
-> conditionally do (or skip) the call, I think you'll need the READ_ONCE/WRITE_ONCE
-> to make sure the pointer is not re-fetched between comparison and call.
-> 
-> Thanks,
-> 
-> Mathieu
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+Best regards,
+
+-Prashant
