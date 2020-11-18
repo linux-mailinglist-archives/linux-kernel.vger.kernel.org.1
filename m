@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060BA2B7B41
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7058C2B7AD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727633AbgKRK0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:26:01 -0500
-Received: from elvis.franken.de ([193.175.24.41]:41015 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726077AbgKRK0A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:26:00 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kfKer-00027K-00; Wed, 18 Nov 2020 11:25:49 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 03591C021C; Wed, 18 Nov 2020 09:55:57 +0100 (CET)
-Date:   Wed, 18 Nov 2020 09:55:57 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     robh+dt@kernel.org, paul@crapouillou.net,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, ak@linux.intel.com, krzk@kernel.org,
-        ebiederm@xmission.com, hns@goldelico.com, paulburton@kernel.org,
-        nixiaoming@huawei.com, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Subject: Re: [PATCH v2 0/2] Add missing nodes and refresh defconfig for
- Ingenic SoCs based boards.
-Message-ID: <20201118085557.GA8140@alpha.franken.de>
-References: <20201116175508.51943-1-zhouyanjie@wanyeetech.com>
+        id S1727226AbgKRJ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:57:40 -0500
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:38707 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726498AbgKRJ5k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 04:57:40 -0500
+Received: by mail-ej1-f67.google.com with SMTP id a16so1888457ejj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:57:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vHvynxXDRrbBpMyooiMx2F7a2F7tNi6glQIZcTUzvk4=;
+        b=HDLjWsf69i/JhzLXus5pZLqVJG0jkAYc1DEZT+MeDR8Yh2hQd6u7hv33GDxBgHHjkn
+         JU2YueZRRAZ9xPn2kYl47RNuJ0exk4DSTdrzX41RoK1xf5YmH4OtDnAncyfljHj1DVFO
+         CLhFmmexJRoHy5LkBk1pvHX0yskkA435Ca4CmQO68RTDqEejPGt/pY/Zg9g/R/IVkNZY
+         RzRttv6a8lDhEr6QHJ9N2bzxbhV8SIQcP06KpdYqLWyKYPLaoj28urjIQCrgyHriIiUX
+         ZIT5/0TJFzE8/YlSqYqNoUZHSWRjN5It3uSRBR/KCI3ukSxupClyveab6s0YlVXI6ofX
+         6Ipg==
+X-Gm-Message-State: AOAM533COdLxxL6XLvAJ1hIG7crg+tedOH7Z73p+9SifFybSs/lKyuSY
+        CXj8tXF2SDPBK/6xO3P2NtA=
+X-Google-Smtp-Source: ABdhPJyseKCTaVrk2SwdP4AfF8+FYn/cik5SUbH9kHMZQoRS1o3QkFhxEZARB7YYZfb1FRLWdzdAwQ==
+X-Received: by 2002:a17:906:6d8e:: with SMTP id h14mr219486ejt.522.1605693458613;
+        Wed, 18 Nov 2020 01:57:38 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id f19sm13176916edy.13.2020.11.18.01.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 01:57:37 -0800 (PST)
+Date:   Wed, 18 Nov 2020 10:57:36 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Olivier Moysan <olivier.moysan@st.com>
+Cc:     linux@armlinux.org.uk, shawnguo@kernel.org, olof@lixom.net,
+        alexandre.torgue@st.com, geert+renesas@glider.be,
+        amelie.delaunay@st.com, aisheng.dong@nxp.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        christian.gmeiner@gmail.com, enric.balletbo@collabora.com,
+        lionel.debieve@st.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ARM: multi_v7_defconfig: enable dfsdm audio support
+Message-ID: <20201118095736.GB17075@kozik-lap>
+References: <20201118095013.16094-1-olivier.moysan@st.com>
+ <20201118095013.16094-3-olivier.moysan@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201116175508.51943-1-zhouyanjie@wanyeetech.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201118095013.16094-3-olivier.moysan@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 01:55:06AM +0800, 周琰杰 (Zhou Yanjie) wrote:
-> v1->v2:
-> 1.Add the otg_power node for otg_phy's vcc_supply.
-> 2.Move assigned-clocks in the otg node into the cgu node.
-> 3.Move the position of the SSI node.
-> 4.Select CONFIG_JZ4780_EFUSE as default.
-> 
-> 周琰杰 (Zhou Yanjie) (2):
->   MIPS: Ingenic: Add missing nodes for Ingenic SoCs and boards.
->   MIPS: Ingenic: Refresh defconfig for Ingenic SoCs based boards.
-> 
->  arch/mips/boot/dts/ingenic/ci20.dts       | 45 +++++++++++++++++++--
->  arch/mips/boot/dts/ingenic/cu1000-neo.dts | 62 ++++++++++++++++++++++++++---
->  arch/mips/boot/dts/ingenic/cu1830-neo.dts | 66 ++++++++++++++++++++++++++++---
->  arch/mips/boot/dts/ingenic/jz4780.dtsi    | 45 ++++++++++++++++++++-
->  arch/mips/boot/dts/ingenic/x1000.dtsi     | 56 +++++++++++++++++++++++++-
->  arch/mips/boot/dts/ingenic/x1830.dtsi     | 58 ++++++++++++++++++++++++++-
->  arch/mips/configs/ci20_defconfig          | 15 ++++++-
->  arch/mips/configs/cu1000-neo_defconfig    | 28 ++++++++++---
->  arch/mips/configs/cu1830-neo_defconfig    | 32 +++++++++++----
->  9 files changed, 374 insertions(+), 33 deletions(-)
+On Wed, Nov 18, 2020 at 10:50:13AM +0100, Olivier Moysan wrote:
+> Add DFSDM audio support by enabling CONFIG_SND_SOC_STM32_DFSDM
+> as module.
 
-series applied to mips-next.
+Please say why do you enable it (e.g. for what SoC).
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Best regards,
+Krzysztof
