@@ -2,315 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B112B8196
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9A42B81A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgKRQRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:17:08 -0500
-Received: from mga05.intel.com ([192.55.52.43]:29216 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726812AbgKRQRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:17:08 -0500
-IronPort-SDR: 4Hd5tqK4n5BorG1TpWStgObwhbRMA87jpCHo/i+boDNjnVymr/KS0GoJnfsJ/zzpiOc3tiYTsh
- xmE5Ysc+noLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="255851120"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="255851120"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:17:06 -0800
-IronPort-SDR: lcKzzWY9cqfU4Mn4czy7ppuNSZ/hpiiZkLLjIcNakjW2zfskIFwuIX9SGAEQI+cXeyrm866Re5
- I3HnLhyY5zqg==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="357041404"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:17:05 -0800
-Date:   Wed, 18 Nov 2020 08:19:40 -0800
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Eric Auger <eric.auger@redhat.com>
-Cc:     eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, will@kernel.org, joro@8bytes.org,
-        maz@kernel.org, robin.murphy@arm.com, alex.williamson@redhat.com,
-        jean-philippe@linaro.org, zhangfei.gao@linaro.org,
-        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
-        shameerali.kolothum.thodi@huawei.com, yi.l.liu@intel.com,
-        tn@semihalf.com, nicoleotsuka@gmail.com, yuzenghui@huawei.com,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v13 01/15] iommu: Introduce attach/detach_pasid_table
- API
-Message-ID: <20201118081940.3192ac1c@jacob-builder>
-In-Reply-To: <20201118112151.25412-2-eric.auger@redhat.com>
-References: <20201118112151.25412-1-eric.auger@redhat.com>
-        <20201118112151.25412-2-eric.auger@redhat.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1726081AbgKRQWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:22:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgKRQWA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:22:00 -0500
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C92C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:22:00 -0800 (PST)
+Received: by mail-vk1-xa41.google.com with SMTP id u16so605399vkb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:21:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K8RmJ6583kn36tl0y/pk4VUasnmo3J+EkhpquBGIyPY=;
+        b=Su7vdk+6Pxa70+YWzlJJRhYHAX+NkgMlwLd1krqBnxjE8W+xsLtD0Y3jd/v/ltbDJZ
+         1ur16lR1idrNj7+br4H30Vh25RwzSDxvJN4rkYApjeXwlGBVTLj+kj4s7ZADOtAZlq4b
+         +jLdEsmRUqhweHgdzxzkrIm7M1rwhsFVMegPg+lDK8R1r/kNTdaP8Bjz1iCyLLkHAIUv
+         UDkgW4bRqgtNAsznQR2cg1rkWroKPpuKz50g8emoJArV9W8nvzQQ6kgYTO17Sga3UVyB
+         ++nqQ9isEzgUJRCrvZ0KI7k6zgNGJAFv73g/ygu3rKn8Rr0ubHeJuLjqZs+yRfFF9aNV
+         esuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K8RmJ6583kn36tl0y/pk4VUasnmo3J+EkhpquBGIyPY=;
+        b=AlZJ6Xm0Uq5tZ1rDUrlBBnvelT/DSEIfVpqL8Cu3pA5td84S0TI5Usa/EOGwesnu/4
+         CMx6IqBePWpIl9d4H+t+yrhrO+2UoWL8N7j/335F995SLvunCKIhO9xaABbQ8Xcrp0Xj
+         C6RVwZcta2PxlfAvl8BvcIz1Bj9gWHsM3fN8qP9uR2/mzbRZrtivl1xGq7dIJq/JsNSP
+         oAm8NFOaDLCxTOwRVWHtZDErI1YMHSeJAdTGn1azszhtvXIhpF4c0cUFMjlXSoDPt93n
+         GyOyM0gDBItDjnr9JCr3RUnYqHqMtXG4XX5tbYSaHQTgwG2UjmL0GIr+y2txf8HQLVM/
+         2VKg==
+X-Gm-Message-State: AOAM532Nko/ffmWhY1tpnwnBJvcg0/JIn0AzZCgHAA9QOZEphcatPRgj
+        JgONqN+qKzp4VT2h0EhrCh6X0IsLChs=
+X-Google-Smtp-Source: ABdhPJyaVJzKz1x7eoH3IH2jhknS3x6nfr3PckX9BgGPfX1bxYTA2WweG0MWeytYup26hCiAQROgfw==
+X-Received: by 2002:a1f:23d6:: with SMTP id j205mr3732490vkj.20.1605716518651;
+        Wed, 18 Nov 2020 08:21:58 -0800 (PST)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id d2sm3024649vkg.46.2020.11.18.08.21.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Nov 2020 08:21:57 -0800 (PST)
+Received: by mail-ua1-f51.google.com with SMTP id r23so862325uak.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:21:57 -0800 (PST)
+X-Received: by 2002:ab0:16da:: with SMTP id g26mr3072595uaf.122.1605716516969;
+ Wed, 18 Nov 2020 08:21:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201118144617.986860-1-willemdebruijn.kernel@gmail.com> <20201118144617.986860-2-willemdebruijn.kernel@gmail.com>
+In-Reply-To: <20201118144617.986860-2-willemdebruijn.kernel@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 18 Nov 2020 11:21:19 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSdFTDFwOVyws19CaAP_6+c5gTrvA0ybvDo3LJ-VhPz1eQ@mail.gmail.com>
+Message-ID: <CA+FuTSdFTDFwOVyws19CaAP_6+c5gTrvA0ybvDo3LJ-VhPz1eQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] epoll: add nsec timeout support with epoll_pwait2
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>,
+        linux-man@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
-
-On Wed, 18 Nov 2020 12:21:37 +0100, Eric Auger <eric.auger@redhat.com>
-wrote:
-
-> In virtualization use case, when a guest is assigned
-> a PCI host device, protected by a virtual IOMMU on the guest,
-> the physical IOMMU must be programmed to be consistent with
-> the guest mappings. If the physical IOMMU supports two
-> translation stages it makes sense to program guest mappings
-> onto the first stage/level (ARM/Intel terminology) while the host
-> owns the stage/level 2.
-> 
-> In that case, it is mandated to trap on guest configuration
-> settings and pass those to the physical iommu driver.
-> 
-> This patch adds a new API to the iommu subsystem that allows
-> to set/unset the pasid table information.
-> 
-> A generic iommu_pasid_table_config struct is introduced in
-> a new iommu.h uapi header. This is going to be used by the VFIO
-> user API.
-> 
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
-> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
-> Signed-off-by: Ashok Raj <ashok.raj@intel.com>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> 
+On Wed, Nov 18, 2020 at 9:46 AM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> From: Willem de Bruijn <willemb@google.com>
+>
+> Add syscall epoll_pwait2, an epoll_wait variant with nsec resolution
+> that replaces int timeout with struct timespec. It is equivalent
+> otherwise.
+>
+>     int epoll_pwait2(int fd, struct epoll_event *events,
+>                      int maxevents,
+>                      const struct timespec *timeout,
+>                      const sigset_t *sigset);
+>
+> The underlying hrtimer is already programmed with nsec resolution.
+> pselect and ppoll also set nsec resolution timeout with timespec.
+>
+> The sigset_t in epoll_pwait has a compat variant. epoll_pwait2 needs
+> the same.
+>
+> For timespec, only support this new interface on 2038 aware platforms
+> that define __kernel_timespec_t. So no CONFIG_COMPAT_32BIT_TIME.
+>
+> Changes
+>   v3:
+>   - rewrite: add epoll_pwait2 syscall instead of epoll_create1 flag
+>   v2:
+>   - cast to s64: avoid overflow on 32-bit platforms (Shuo Chen)
+>   - minor commit message rewording
+>
+> Signed-off-by: Willem de Bruijn <willemb@google.com>
+>
 > ---
-> 
-> v12 -> v13:
-> - Fix config check
-> 
-> v11 -> v12:
-> - add argsz, name the union
-> ---
->  drivers/iommu/iommu.c      | 68 ++++++++++++++++++++++++++++++++++++++
->  include/linux/iommu.h      | 21 ++++++++++++
->  include/uapi/linux/iommu.h | 54 ++++++++++++++++++++++++++++++
->  3 files changed, 143 insertions(+)
-> 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index b53446bb8c6b..978fe34378fb 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -2171,6 +2171,74 @@ int iommu_uapi_sva_unbind_gpasid(struct
-> iommu_domain *domain, struct device *dev }
->  EXPORT_SYMBOL_GPL(iommu_uapi_sva_unbind_gpasid);
->  
-> +int iommu_attach_pasid_table(struct iommu_domain *domain,
-> +			     struct iommu_pasid_table_config *cfg)
-> +{
-> +	if (unlikely(!domain->ops->attach_pasid_table))
-> +		return -ENODEV;
-> +
-> +	return domain->ops->attach_pasid_table(domain, cfg);
-> +}
-> +
-> +int iommu_uapi_attach_pasid_table(struct iommu_domain *domain,
-> +				  void __user *uinfo)
-> +{
-> +	struct iommu_pasid_table_config pasid_table_data = { 0 };
-> +	u32 minsz;
-> +
-> +	if (unlikely(!domain->ops->attach_pasid_table))
-> +		return -ENODEV;
-> +
-> +	/*
-> +	 * No new spaces can be added before the variable sized union,
-> the
-> +	 * minimum size is the offset to the union.
-> +	 */
-> +	minsz = offsetof(struct iommu_pasid_table_config, vendor_data);
-> +
-> +	/* Copy minsz from user to get flags and argsz */
-> +	if (copy_from_user(&pasid_table_data, uinfo, minsz))
-> +		return -EFAULT;
-> +
-> +	/* Fields before the variable size union are mandatory */
-> +	if (pasid_table_data.argsz < minsz)
-> +		return -EINVAL;
-> +
-> +	/* PASID and address granu require additional info beyond minsz
-> */
-> +	if (pasid_table_data.version != PASID_TABLE_CFG_VERSION_1)
-> +		return -EINVAL;
-> +	if (pasid_table_data.format == IOMMU_PASID_FORMAT_SMMUV3 &&
-> +	    pasid_table_data.argsz <
-> +		offsetofend(struct iommu_pasid_table_config,
-> vendor_data.smmuv3))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * User might be using a newer UAPI header which has a larger
-> data
-> +	 * size, we shall support the existing flags within the current
-> +	 * size. Copy the remaining user data _after_ minsz but not more
-> +	 * than the current kernel supported size.
-> +	 */
-> +	if (copy_from_user((void *)&pasid_table_data + minsz, uinfo +
-> minsz,
-> +			   min_t(u32, pasid_table_data.argsz,
-> sizeof(pasid_table_data)) - minsz))
-> +		return -EFAULT;
-> +
-> +	/* Now the argsz is validated, check the content */
-> +	if (pasid_table_data.config < IOMMU_PASID_CONFIG_TRANSLATE ||
-> +	    pasid_table_data.config > IOMMU_PASID_CONFIG_ABORT)
-> +		return -EINVAL;
-> +
-> +	return domain->ops->attach_pasid_table(domain,
-> &pasid_table_data); +}
-> +EXPORT_SYMBOL_GPL(iommu_uapi_attach_pasid_table);
-> +
-> +void iommu_detach_pasid_table(struct iommu_domain *domain)
-> +{
-> +	if (unlikely(!domain->ops->detach_pasid_table))
-> +		return;
-> +
-> +	domain->ops->detach_pasid_table(domain);
-> +}
-> +EXPORT_SYMBOL_GPL(iommu_detach_pasid_table);
-> +
->  static void __iommu_detach_device(struct iommu_domain *domain,
->  				  struct device *dev)
->  {
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index b95a6f8db6ff..464fcbecf841 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -223,6 +223,8 @@ struct iommu_iotlb_gather {
->   * @cache_invalidate: invalidate translation caches
->   * @sva_bind_gpasid: bind guest pasid and mm
->   * @sva_unbind_gpasid: unbind guest pasid and mm
-> + * @attach_pasid_table: attach a pasid table
-> + * @detach_pasid_table: detach the pasid table
->   * @def_domain_type: device default domain type, return value:
->   *		- IOMMU_DOMAIN_IDENTITY: must use an identity domain
->   *		- IOMMU_DOMAIN_DMA: must use a dma domain
-> @@ -287,6 +289,9 @@ struct iommu_ops {
->  				      void *drvdata);
->  	void (*sva_unbind)(struct iommu_sva *handle);
->  	u32 (*sva_get_pasid)(struct iommu_sva *handle);
-> +	int (*attach_pasid_table)(struct iommu_domain *domain,
-> +				  struct iommu_pasid_table_config *cfg);
-> +	void (*detach_pasid_table)(struct iommu_domain *domain);
->  
->  	int (*page_response)(struct device *dev,
->  			     struct iommu_fault_event *evt,
-> @@ -434,6 +439,11 @@ extern int iommu_uapi_sva_unbind_gpasid(struct
-> iommu_domain *domain, struct device *dev, void __user *udata);
->  extern int iommu_sva_unbind_gpasid(struct iommu_domain *domain,
->  				   struct device *dev, ioasid_t pasid);
-> +extern int iommu_attach_pasid_table(struct iommu_domain *domain,
-> +				    struct iommu_pasid_table_config
-> *cfg); +extern int iommu_uapi_attach_pasid_table(struct iommu_domain
-> *domain,
-> +					 void __user *udata);
-> +extern void iommu_detach_pasid_table(struct iommu_domain *domain);
->  extern struct iommu_domain *iommu_get_domain_for_dev(struct device *dev);
->  extern struct iommu_domain *iommu_get_dma_domain(struct device *dev);
->  extern int iommu_map(struct iommu_domain *domain, unsigned long iova,
-> @@ -639,6 +649,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device
-> *dev, void iommu_sva_unbind_device(struct iommu_sva *handle);
->  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
->  
-> +
->  #else /* CONFIG_IOMMU_API */
->  
->  struct iommu_ops {};
-> @@ -1020,6 +1031,16 @@ iommu_aux_get_pasid(struct iommu_domain *domain,
-> struct device *dev) return -ENODEV;
->  }
->  
-> +static inline
-> +int iommu_attach_pasid_table(struct iommu_domain *domain,
-> +			     struct iommu_pasid_table_config *cfg)
-> +{
-> +	return -ENODEV;
-> +}
-> +
-> +static inline
-> +void iommu_detach_pasid_table(struct iommu_domain *domain) {}
-> +
->  static inline struct iommu_sva *
->  iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void
-> *drvdata) {
-> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
-> index e1d9e75f2c94..082d758dd016 100644
-> --- a/include/uapi/linux/iommu.h
-> +++ b/include/uapi/linux/iommu.h
-> @@ -338,4 +338,58 @@ struct iommu_gpasid_bind_data {
->  	} vendor;
->  };
->  
-> +/**
-> + * struct iommu_pasid_smmuv3 - ARM SMMUv3 Stream Table Entry stage 1
-> related
-> + *     information
-> + * @version: API version of this structure
-> + * @s1fmt: STE s1fmt (format of the CD table: single CD, linear table
-> + *         or 2-level table)
-> + * @s1dss: STE s1dss (specifies the behavior when @pasid_bits != 0
-> + *         and no PASID is passed along with the incoming transaction)
-> + * @padding: reserved for future use (should be zero)
-> + *
-> + * The PASID table is referred to as the Context Descriptor (CD) table
-> on ARM
-> + * SMMUv3. Please refer to the ARM SMMU 3.x spec (ARM IHI 0070A) for full
-> + * details.
-> + */
-> +struct iommu_pasid_smmuv3 {
-> +#define PASID_TABLE_SMMUV3_CFG_VERSION_1 1
-> +	__u32	version;
-> +	__u8	s1fmt;
-> +	__u8	s1dss;
-> +	__u8	padding[2];
-> +};
-> +
-> +/**
-> + * struct iommu_pasid_table_config - PASID table data used to bind guest
-> PASID
-> + *     table to the host IOMMU
-> + * @argsz: User filled size of this data
-> + * @version: API version to prepare for future extensions
-> + * @format: format of the PASID table
-> + * @base_ptr: guest physical address of the PASID table
-> + * @pasid_bits: number of PASID bits used in the PASID table
-> + * @config: indicates whether the guest translation stage must
-> + *          be translated, bypassed or aborted.
-> + * @padding: reserved for future use (should be zero)
-> + * @vendor_data.smmuv3: table information when @format is
-> + * %IOMMU_PASID_FORMAT_SMMUV3
-> + */
-> +struct iommu_pasid_table_config {
-> +	__u32	argsz;
-> +#define PASID_TABLE_CFG_VERSION_1 1
-> +	__u32	version;
-> +#define IOMMU_PASID_FORMAT_SMMUV3	1
-> +	__u32	format;
-There will be a u32 gap here, right? perhaps another padding?
 
-> +	__u64	base_ptr;
-> +	__u8	pasid_bits;
-> +#define IOMMU_PASID_CONFIG_TRANSLATE	1
-> +#define IOMMU_PASID_CONFIG_BYPASS	2
-> +#define IOMMU_PASID_CONFIG_ABORT	3
-> +	__u8	config;
-> +	__u8    padding[2];
-> +	union {
-> +		struct iommu_pasid_smmuv3 smmuv3;
-> +	} vendor_data;
-> +};
-> +
->  #endif /* _UAPI_IOMMU_H */
+> diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
+> index 109e6681b8fa..9a4e8ec207fc 100644
+> --- a/arch/x86/entry/syscalls/syscall_32.tbl
+> +++ b/arch/x86/entry/syscalls/syscall_32.tbl
+> @@ -447,3 +447,4 @@
+>  440    i386    process_madvise         sys_process_madvise
+>  441    i386    watch_mount             sys_watch_mount
+>  442    i386    memfd_secret            sys_memfd_secret
+> +443    i386    epoll_pwait2            sys_epoll_pwait2                compat_sys_epoll_pwait2
 
+I should have caught this sooner, but this does not work as intended.
 
-Thanks,
+x86 will still call epoll_pwait2 with old_timespec32.
 
-Jacob
+One approach is a separate epoll_pwait2_time64 syscall, similar to
+ppoll_time64. But that was added to work around legacy 32-bit ppoll.
+Not needed for a new API.
+
+In libc, ppoll_time64 is declared with type struct __timespec64. That
+type is not defined in Linux uapi. Will need to look at this some
+more.
