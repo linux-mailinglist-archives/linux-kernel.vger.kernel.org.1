@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92F02B7E28
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5275D2B7E2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgKRNP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:15:56 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:13181 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725814AbgKRNP4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:15:56 -0500
-X-IronPort-AV: E=Sophos;i="5.77,486,1596492000"; 
-   d="scan'208";a="478177596"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 14:15:54 +0100
-Date:   Wed, 18 Nov 2020 14:15:53 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Coccinelle <cocci@systeme.lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Cocci] [PATCH v2] coccinelle: locks: Add balancedlock.cocci
- script
-In-Reply-To: <62af4a93-dbc3-8aa0-6924-4dc479001d34@web.de>
-Message-ID: <alpine.DEB.2.22.394.2011181413280.2641@hadrien>
-References: <20201118080242.t6u6lchj5ww2fac4@adolin> <62af4a93-dbc3-8aa0-6924-4dc479001d34@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1726293AbgKRNQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:16:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726015AbgKRNQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 08:16:26 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 385BC241A5;
+        Wed, 18 Nov 2020 13:16:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605705385;
+        bh=nTNTsy3xL/gdqy1AFHbIdrzBXhJhxmiLNAzDiJMibX4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j/3fR4bxrWAtVPLAy/gorf0yvxu74ioU6EQeCPzHG60j8ReAMM5AOCQZmXSyigOVx
+         iX6gPnoCGy3blwvPQL+/pBz6Wv/6LZoDlyWiNRllMcU8OdaCXjk2EgdrEk/ZdmBPoW
+         AV3QX8xQIZOjENq+7wVMW8P30xR0W4T/XV7edH3U=
+Date:   Wed, 18 Nov 2020 13:16:04 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] spi: Take the SPI IO-mutex in the spi_setup() method
+Message-ID: <20201118131604.GC4827@sirena.org.uk>
+References: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1777813137-1605705354=:2641"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
+Content-Disposition: inline
+In-Reply-To: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
+X-Cookie: A nuclear war can ruin your whole day.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1777813137-1605705354=:2641
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+--Md/poaVZ8hnGTzuv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > +++ b/scripts/coccinelle/locks/balancedlock.cocci
-> …
-> > +//# False positives may be generated due to locks released within a nested
-> > +//# function call or a goto block.
-> > +///
-> > +// Confidence: Moderate
->
-> How good does such information fit together?
->
+On Tue, Nov 17, 2020 at 12:45:17PM +0300, Serge Semin wrote:
 
-What kind of response do you expect?  There are some concerns, so it's not
-High confidence.  It works pretty well so it's not low confidence.  So
-it's moderate confidence.  What else is there to say?
+> method being called at the same time. In particular in calling the
+> spi_set_cs(false) while there is an SPI-transfer being executed. In my
+> case due to the commit cited above all CSs get to be switched off by
+> calling the spi_setup() for /dev/spidev0.1 while there is an concurrent
+> SPI-transfer execution performed on /dev/spidev0.0. Of course a situation
+> of the spi_setup() being called while there is an SPI-transfer being
+> executed for two different SPI peripheral devices of the same controller
+> may happen not only for the spidev driver, but for instance for MMC SPI +
+> some another device, or spi_setup() being called from an SPI-peripheral
+> probe method while some other device has already been probed and is being
+> used by a corresponding driver...
 
-> …
-> >+ (
-> > +mutex_lock@p(E);
-> > +|
-> > +read_lock@p(E);
-> > +|
-> …
->
-> Why did you not reorder the elements of such a SmPL disjunctions according to
-> an usage incidence (which can be determined by another SmPL script like
-> “report_lock_calls.cocci”)?
+It's documented that a driver's spi_setup() operation is supposed to
+support being able to be called concurrently with other transfers, see
+spi-summary.rst.
 
-I don't recall ever seeing any evidence that it has an impact for function
-calls.  Furthermore, the numbers will change over time.  So why change it?
+> Of course I could have provided a fix affecting the DW APB SSI driver
+> only, for instance, by creating a mutual exclusive access to the set_cs
+> callback and setting/clearing only the bit responsible for the
+> corresponding chip-select. But after a short research I've discovered that
+> the problem most likely affects a lot of the other drivers:
 
-> …
-> > +msg = "This code segment might have an unbalanced lock."
-> > +coccilib.org.print_todo(j0[0], msg)
->
-> Please pass the string literal directly.
->
-> +coccilib.org.print_todo(j0[0], "This code segment might have an unbalanced lock.")
+Yeah, problems with it are very common as the documentation has noted
+since forever.  IIRC there was some problem triggered by trying to force
+it to be serialised but I can't remember what it was.
 
-The code is fine as it is.
+--Md/poaVZ8hnGTzuv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-julia
---8323329-1777813137-1605705354=:2641--
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+1HpQACgkQJNaLcl1U
+h9C10wf/UL7gHcOtEornz8CUpn8gXROVBLHD829V29n5B5EAiRDHuF/B5TrIbNfE
+Ciaeb81Gonxu2/gXNWHJB09neBhzC338vZGnfQumD8iR2HJmjqtfP/vpdxu+pxt1
+XBZhKfhpqrwKgZbERk87QJfv10YV4x3CIsQOqgBK1C5TwmBotCTgX11bsERfLclj
+vssooAxtI/R8J3EQrt99SczUNfEZZHxIU5ZtrEd4s1to/PLFO0yLQshro5fhlIMj
+z2jFS4lkgaOVZEEZU2xOaOMGSGYUdRRbO4UlT1n3wGRMWV+nXBh9W+34RFfVMMcN
+VKWlt2Rv7Soaqecr2x87L0qVETf4ww==
+=70uB
+-----END PGP SIGNATURE-----
+
+--Md/poaVZ8hnGTzuv--
