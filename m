@@ -2,77 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62FE2B83AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1789E2B83AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgKRSOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:14:55 -0500
-Received: from smtprelay0161.hostedemail.com ([216.40.44.161]:54512 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725947AbgKRSOz (ORCPT
+        id S1726579AbgKRSRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:17:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgKRSRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:14:55 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 4E8C28384364;
-        Wed, 18 Nov 2020 18:14:54 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3870:3873:3874:4321:4605:5007:6119:10004:10400:10848:11026:11232:11658:11914:12043:12297:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21221:21433:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: brick87_4d0cbfa2733c
-X-Filterd-Recvd-Size: 2134
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 18 Nov 2020 18:14:53 +0000 (UTC)
-Message-ID: <457730448c84136be089748bea69abd2254e3832.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add --fix option for OPEN_BRACE issues
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Wed, 18 Nov 2020 10:14:52 -0800
-In-Reply-To: <20201118124035.96976-1-dwaipayanray1@gmail.com>
-References: <20201118124035.96976-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 18 Nov 2020 13:17:38 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A6DC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:17:38 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id t5so2355205qtp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:17:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dD6sy6Ni7G98HJq3DqJZV//04hrVQ+nxAJOAbo7wvhk=;
+        b=qJAbsThvMXyR4d+PIgohVNva/D2t9a7cD6go1AdmvAW672jq8QSw/vzECdpnCWRFZV
+         WmV+DIarl5wFKmzjvTpuAMygG5s5ntdTMxfipQkR1U3EOIOEohxqhIybA9voWh67gGSP
+         Q0gxOc1xVfObB2q5VWzdxsCfqkPJUaTulVCdycEMbIskP7JS8OdzXtKjLARGslX8zzD0
+         7ptr7LEvupZHwCjxmZTo8b73zzPnKeOjVb1x6rCdGf2cvSRNkMT3nHbAljSMmp3Lkmx1
+         fjkc7DzaAq5Pyt8Nbmie20hEUzgIXx2BaiJtUmAS9EX5C7oEeYCCsmOECgM+vAssCZek
+         OlPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dD6sy6Ni7G98HJq3DqJZV//04hrVQ+nxAJOAbo7wvhk=;
+        b=tlCfbaw8A8R1Wnc4sjpqa+eH1Hxvkwoe9vc6AjFf5W5R1j9G1HlXbOWFMt4+432Jbt
+         AnkeRLiVdINPD9y4wg3CAmEOknK3XtqoVx2ul3xKwM+Yhpj8jtpWt7n3K2TSgI2ckRT+
+         gGhd19KVuemT1jCWGrr7QZc6mu5tWuTtPLX3T4ojW5sB06AElSDbm8Br3bMdh26nl4zG
+         psja0mJUr5Uj2NNb2twfcSo/CYYmNU1aPIApjGOaVtrUKpWKHjFiQlxu2QQbAtEefnNw
+         ieRAtNgK71X4vaXB5d3+nGRQKx3nxuFz20k9fOSfI69Mx5Oizs6rArSJg4iDgDJZa1F4
+         6mgg==
+X-Gm-Message-State: AOAM5328ZqWgwNa4zfNrjc6PuWHMcHNBllPi6Ibtqq9MRnf+0V/2Mtfg
+        joJucIOGM6Js18OHTVFvgeyMHZCBFHcICCHTHWlq2g==
+X-Google-Smtp-Source: ABdhPJwjIPP+a0W/JVbnUzrfqXk1ZwIHI0Yh5MJiflSzaI004PpAVODhE4lYuOadLU95uf/mjebeOwtldHsGIt2uKUs=
+X-Received: by 2002:ac8:1089:: with SMTP id a9mr5781536qtj.111.1605723457613;
+ Wed, 18 Nov 2020 10:17:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201117024825.GA8169@xsang-OptiPlex-9020> <24d9d093-5b7a-9aee-8d61-59c0007a9269@nvidia.com>
+ <20201118134952.GE1981@quack2.suse.cz>
+In-Reply-To: <20201118134952.GE1981@quack2.suse.cz>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 18 Nov 2020 10:17:27 -0800
+Message-ID: <CAPcyv4g=MFAojCeCST+sF22A+2cetVMFmQuDtu7arEM+0a+Ebw@mail.gmail.com>
+Subject: Re: [mm/gup] 47e29d32af: phoronix-test-suite.npb.FT.A.total_mop_s
+ -45.0% regression
+To:     Jan Kara <jack@suse.cz>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kbuild test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        feng tang <feng.tang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@intel.com>,
+        guobing.chen@intel.com, ming.a.chen@intel.com, frank.du@intel.com,
+        Shuhua.Fan@intel.com, wangyang.guo@intel.com,
+        Wenhuan.Huang@intel.com, jessica.ji@intel.com, shan.kang@intel.com,
+        guangli.li@intel.com, tiejun.li@intel.com, yu.ma@intel.com,
+        dapeng1.mi@intel.com, jiebin.sun@intel.com, gengxin.xie@intel.com,
+        fan.zhao@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-18 at 18:10 +0530, Dwaipayan Ray wrote:
-> Brace style misuses of the following types are now
-> corrected:
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3937,9 +3937,23 @@ sub process {
->  			#print "pre<$pre_ctx>\nline<$line>\nctx<$ctx>\nnext<$lines[$ctx_ln - 1]>\n";
->  
-> 
->  			if ($ctx !~ /{\s*/ && defined($lines[$ctx_ln - 1]) && $lines[$ctx_ln - 1] =~ /^\+\s*{/) {
-> -				ERROR("OPEN_BRACE",
-> -				      "that open brace { should be on the previous line\n" .
-> -					"$here\n$ctx\n$rawlines[$ctx_ln - 1]\n");
-> +				if (ERROR("OPEN_BRACE",
-> +					  "that open brace { should be on the previous line\n" .
-> +						"$here\n$ctx\n$rawlines[$ctx_ln - 1]\n") &&
-> +				    $fix) {
-> +					my $line1 = $rawlines[$ctx_ln - 2];
+On Wed, Nov 18, 2020 at 5:51 AM Jan Kara <jack@suse.cz> wrote:
+>
+> On Mon 16-11-20 19:35:31, John Hubbard wrote:
+> >
+> > On 11/16/20 6:48 PM, kernel test robot wrote:
+> > >
+> > > Greeting,
+> > >
+> > > FYI, we noticed a -45.0% regression of phoronix-test-suite.npb.FT.A.total_mop_s due to commit:
+> > >
+> >
+> > That's a huge slowdown...
+> >
+> > >
+> > > commit: 47e29d32afba11b13efb51f03154a8cf22fb4360 ("mm/gup: page->hpage_pinned_refcount: exact pin counts for huge pages")
+> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> >
+> > ...but that commit happened in April, 2020. Surely if this were a serious
+> > issue we would have some other indication...is this worth following up
+> > on?? I'm inclined to ignore it, honestly.
+>
+> Why this was detected so late is a fair question although it doesn't quite
+> invalidate the report...
 
-How are you sure that in a patch context this line always starts with /^\+/ ?
-
-> +					my $line2 = $rawlines[$ctx_ln - 1];
-> +					fix_delete_line($ctx_ln - 2, $line1);
-> +					fix_delete_line($ctx_ln - 1, $line2);
-> +
-> +					my $fixedline = rtrim($line1) . " {";
-> +					fix_insert_line($ctx_ln - 1, $fixedline);
-> +					$fixedline = $line2;
-> +					$fixedline =~ s/^(.\s*)\{\s*/$1\t/;
-> +					if ($fixedline !~ /^\+\s*$/) {
-> +						fix_insert_line($ctx_ln - 1, $fixedline);
-> +					}
-> +				}
-
-
+I don't know what specifically happened in this case, perhaps someone
+from the lkp team can comment? However, the myth / contention that
+"surely someone else would have noticed by now" is why the lkp project
+was launched. Kernels regressed without much complaint and it wasn't
+until much later in the process, around the time enterprise distros
+rebased to new kernels, did end users start filing performance loss
+regression reports. Given -stable kernel releases, 6-7 months is still
+faster than many end user upgrade cycles to new kernel baselines.
