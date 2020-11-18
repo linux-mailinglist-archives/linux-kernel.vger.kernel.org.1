@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE162B7A7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F83B2B7A8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgKRJjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:39:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgKRJjG (ORCPT
+        id S1726759AbgKRJlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:41:37 -0500
+Received: from smtprelay0163.hostedemail.com ([216.40.44.163]:44502 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725790AbgKRJlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:39:06 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9781DC061A4D
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:39:06 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id h12so758993pjv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:39:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lST301jSjmBSq10zdHWdNa3dguE3h2ga71kmHkIDesY=;
-        b=wsu2HEenfL7Thmo+t9FdUkwaWLB48UNcL8uUVRp19HOYk8GozIMCYNqa/kBoZfEIDj
-         /T6FraKwmjw0Rs1E6Bo5EmGrX8RkC1t6lIlwByWPHM62sZ8uPw6klOaqfuzU9ff2ZtSf
-         rinO4d1bFtSrmFgs7UMmWJEZbn51q9VBMy32/6FSGVIe6MfmbBJ/SoDKtOaeVcULmmE8
-         zpZXos6NG9xWLW+AD4Yp4u7YdmSK5LJMlKF3Db3RffHmcxwp9YdLbNA3uWVOpcLygpYG
-         SjJQQBprpBpsyfN3REiP5dPbI5yLZ2I7+CXLEfVPwRGzJAvVQnRegeA9f8xYMiTCpi9k
-         JWCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lST301jSjmBSq10zdHWdNa3dguE3h2ga71kmHkIDesY=;
-        b=oyBhSrYLZ7tI883aMghytV6TT+OU9/DGy3Ue5/XM0OSZI4sWLNc3MenBCW9FmwlWcq
-         cUX9ZRdCHkJO7YlXOJ2pEREUYaOqbSMbIT9hN8ifXOFQTCZq0Rx7PqMuJroce12eOwyg
-         00f79/fd18XfgZ93oaIpc1398QyXre5xt6dPWZAGKnnlC390BtlPj9RzqVf0/rJskEjh
-         fiL/DaXBPfCyTj0k+yeEyMcSbhrptyr6u4Cnj0dt0+wAPXrQ4QJvVPOt8Bme6J1TZ+0T
-         pTJsO5ccRC/1mKlYJyNRLERt8Pr/w+od6rW/r/RZndWZiaENzYvH1HVwe/RuwDUh6n5A
-         lFUg==
-X-Gm-Message-State: AOAM531oznyfrPK8m5fTGaEdi1oB48wCz/lFzPzJEfbLok/+hq25OjmN
-        nN+IwfhVq1Uw6+AFgmllZQTu
-X-Google-Smtp-Source: ABdhPJzVUakyVdAR0GHELEuSJ5PfNeYyaU2S76+o3VpsnwdXURLic/dmc2oZgt8eLHpvOIg+br2aOw==
-X-Received: by 2002:a17:90a:aa13:: with SMTP id k19mr3300365pjq.145.1605692345968;
-        Wed, 18 Nov 2020 01:39:05 -0800 (PST)
-Received: from work ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id e184sm24725991pfe.146.2020.11.18.01.39.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 18 Nov 2020 01:39:05 -0800 (PST)
-Date:   Wed, 18 Nov 2020 15:09:00 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mhi tree
-Message-ID: <20201118093900.GD3286@work>
-References: <20201117151225.6a50abf8@canb.auug.org.au>
- <20201117042359.GB7787@work>
- <20201118153912.1decf6cf@canb.auug.org.au>
- <20201118154500.127aaba6@canb.auug.org.au>
- <20201118155128.64c97667@canb.auug.org.au>
- <20201118050640.GA3286@work>
+        Wed, 18 Nov 2020 04:41:36 -0500
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave04.hostedemail.com (Postfix) with ESMTP id ADAA418033F5D;
+        Wed, 18 Nov 2020 09:41:35 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 9A220837F24D;
+        Wed, 18 Nov 2020 09:41:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3351:3622:3865:3867:3868:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4605:5007:6691:7576:8985:9025:10004:10400:10848:10967:11232:11233:11658:11914:12043:12262:12297:12438:12555:12679:12683:12740:12895:13069:13161:13229:13311:13357:13439:13894:14110:14181:14659:14721:14777:21080:21627:21795:30029:30030:30034:30051:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:414,LUA_SUMMARY:none
+X-HE-Tag: sun17_590424827339
+X-Filterd-Recvd-Size: 1850
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 18 Nov 2020 09:41:33 +0000 (UTC)
+Message-ID: <ebe315dae8855ed2c55d6ce48f84aa4edd93e5fd.camel@perches.com>
+Subject: Re: [PATCH] pwm: core: Use octal permission
+From:   Joe Perches <joe@perches.com>
+To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>
+Cc:     Soham Biswas <sohambiswas41@gmail.com>, thierry.reding@gmail.com,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 18 Nov 2020 01:41:31 -0800
+In-Reply-To: <20201118093506.srljfosnamxe5wwz@pengutronix.de>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+         <20201117181214.GK1869941@dell>
+         <CAMmt7eO5te05AuVC+MR-zLB-z+r9FCuJwtON=1QXXY2YwQG0eg@mail.gmail.com>
+         <20201118085113.GO1869941@dell>
+         <20201118093506.srljfosnamxe5wwz@pengutronix.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118050640.GA3286@work>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 10:36:40AM +0530, Manivannan Sadhasivam wrote:
-> Hi Stephen,
-> 
-> On Wed, Nov 18, 2020 at 03:51:28PM +1100, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > On Wed, 18 Nov 2020 15:45:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > On Wed, 18 Nov 2020 15:39:12 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > > >
-> > > > Why isn't that "fix patch" in the mhi tree (with necessary Acked-bys)?  
-> > > 
-> > > Ignore that, I missed its appearance :-)
-> > 
-> > Ignore that, my question stands (git confused me a lot :-().
-> > 
-> > I have applied the fix patch to the mhi tree merge today.
-> 
-> After discussing with Kalle, we decided to have a single patch which
-> changes MHI and ath11k (fix patch) to avoid issues. I'll send it today and
-> get it applied to mhi-next soon (via immutable branch).
-> 
+On Wed, 2020-11-18 at 10:35 +0100, Uwe Kleine-König wrote:
 
-Patch applied to immutable branch and merged into mhi-next. Now you can
-remove the fix patch.
+> Actually I'd prefer keeping the symbolic name because this is easier to
+> grep for. So to convince me a better reason than "checkpatch says so" is
+> needed.
 
-Thanks,
-Mani
+https://lore.kernel.org/lkml/CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ@mail.gmail.com/
+-------------------------------------------------------------------
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 2 Aug 2016 16:58:29 -0400
 
-> Thanks,
-> Mani
-> 
-> > -- 
-> > Cheers,
-> > Stephen Rothwell
-> 
-> 
+The symbolic names are good for the *other* bits (ie sticky bit, and
+the inode mode _type_ numbers etc), but for the permission bits, the
+symbolic names are just insane crap. Nobody sane should ever use them.
+Not in the kernel, not in user space.
+
+           Linus
+
+
