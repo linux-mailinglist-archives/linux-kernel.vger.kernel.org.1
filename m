@@ -2,72 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31B42B79A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1C22B7963
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727499AbgKRIzg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 18 Nov 2020 03:55:36 -0500
-Received: from albireo.enyo.de ([37.24.231.21]:60374 "EHLO albireo.enyo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725772AbgKRIzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:55:36 -0500
-Received: from [172.17.203.2] (helo=deneb.enyo.de)
-        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1kfJ8s-0000D4-23; Wed, 18 Nov 2020 08:48:42 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1kfJ8s-0001IL-02; Wed, 18 Nov 2020 09:48:42 +0100
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org,
-        christian.brauner@ubuntu.com, peterz@infradead.org,
-        willy@infradead.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, x86@kernel.org, gofmanp@gmail.com,
-        kernel@collabora.com
-Subject: Re: [PATCH v7 7/7] docs: Document Syscall User Dispatch
-References: <20201118032840.3429268-1-krisman@collabora.com>
-        <20201118032840.3429268-8-krisman@collabora.com>
-Date:   Wed, 18 Nov 2020 09:48:41 +0100
-In-Reply-To: <20201118032840.3429268-8-krisman@collabora.com> (Gabriel Krisman
-        Bertazi's message of "Tue, 17 Nov 2020 22:28:40 -0500")
-Message-ID: <875z63yrrq.fsf@mid.deneb.enyo.de>
+        id S1727426AbgKRItU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:49:20 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:55575 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727365AbgKRItT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:49:19 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kfJ9O-000Mmd-Uw; Wed, 18 Nov 2020 09:49:15 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kfJ9O-000JAm-3B; Wed, 18 Nov 2020 09:49:14 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id CD86F240041;
+        Wed, 18 Nov 2020 09:49:13 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 4F122240040;
+        Wed, 18 Nov 2020 09:49:13 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id BA80620382;
+        Wed, 18 Nov 2020 09:49:12 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 18 Nov 2020 09:49:12 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 5/6] net/lapb: support netdev events
+Organization: TDT AG
+In-Reply-To: <CAJht_EO=G94_xoCupr_7Tt_-kjYxZVfs2n4CTa14mXtu7oYMjg@mail.gmail.com>
+References: <20201116135522.21791-1-ms@dev.tdt.de>
+ <20201116135522.21791-6-ms@dev.tdt.de>
+ <CAJht_EM-ic4-jtN7e9F6zcJgG3OTw_ePXiiH1i54M+Sc8zq6bg@mail.gmail.com>
+ <f3ab8d522b2bcd96506352656a1ef513@dev.tdt.de>
+ <CAJht_EPN=hXsGLsCSxj1bB8yTYNOe=yUzwtrtnMzSybiWhL-9Q@mail.gmail.com>
+ <c0c2cedad399b12d152d2610748985fc@dev.tdt.de>
+ <CAJht_EO=G94_xoCupr_7Tt_-kjYxZVfs2n4CTa14mXtu7oYMjg@mail.gmail.com>
+Message-ID: <c60fe64ff67e244bbe9971cfa08713db@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1605689354-00008E89-76F75258/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Gabriel Krisman Bertazi:
+On 2020-11-17 19:28, Xie He wrote:
+> On Tue, Nov 17, 2020 at 5:26 AM Martin Schiller <ms@dev.tdt.de> wrote:
+>> 
+>> On 2020-11-17 12:32, Xie He wrote:
+>> >
+>> > I think for a DCE, it doesn't need to initiate the L2
+>> > connection on device-up. It just needs to wait for a connection to
+>> > come. But L3 seems to be still instructing it to initiate the L2
+>> > connection. This seems to be a problem.
+>> 
+>> The "ITU-T Recommendation X.25 (10/96) aka "Blue Book" [1] says under
+>> point 2.4.4.1:
+>> "Either the DTE or the DCE may initiate data link set-up."
+>> 
+>> Experience shows that there are also DTEs that do not establish a
+>> connection themselves.
+>> 
+>> That is also the reason why I've added this patch:
+>> https://patchwork.kernel.org/project/netdevbpf/patch/20201116135522.21791-7-ms@dev.tdt.de/
+> 
+> Yes, I understand that either the DTE or the DCE *may* initiate the L2
+> connection. This is also the way the current code (before this patch
+> set) works. But I see both the DTE and the DCE will try to initiate
+> the L2 connection after device-up, because according to your 1st
+> patch, L3 will always instruct L2 to do this on device-up. However,
+> looking at your 6th patch (in the link you gave), you seem to want the
+> DCE to wait for a while before initiating the connection by itself. So
+> I'm unclear which way you want to go. Making DCE initiate the L2
+> connection on device-up, or making DCE wait for a while before
+> initiating the L2 connection? I think the second way is more
+> reasonable.
 
-> +Interface
-> +---------
-> +
-> +A process can setup this mechanism on supported kernels
-> +CONFIG_SYSCALL_USER_DISPATCH) by executing the following prctl:
-> +
-> +  prctl(PR_SET_SYSCALL_USER_DISPATCH, <op>, <offset>, <length>, [selector])
-> +
-> +<op> is either PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF, to enable and
-> +disable the mechanism globally for that thread.  When
-> +PR_SYS_DISPATCH_OFF is used, the other fields must be zero.
-> +
-> +<offset> and <offset+length> delimit a closed memory region interval
-> +from which syscalls are always executed directly, regardless of the
-> +userspace selector.  This provides a fast path for the C library, which
-> +includes the most common syscall dispatchers in the native code
-> +applications, and also provides a way for the signal handler to return
-> +without triggering a nested SIGSYS on (rt_)sigreturn.  Users of this
-> +interface should make sure that at least the signal trampoline code is
-> +included in this region. In addition, for syscalls that implement the
-> +trampoline code on the vDSO, that trampoline is never intercepted.
-> +
-> +[selector] is a pointer to a char-sized region in the process memory
-> +region, that provides a quick way to enable disable syscall redirection
-> +thread-wide, without the need to invoke the kernel directly.  selector
-> +can be set to PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF.  Any other
-> +value should terminate the program with a SIGSYS.
+Ah, ok. Now I see what you mean.
+Yes, we should check the lapb->mode in lapb_connect_request().
 
-Is this a process property or a task/thread property?  The last
-paragraph says “thread-wide”, but the first paragraph says “process”.
+>> > It feels unclean to me that the L2 connection will sometimes be
+>> > initiated by L3 and sometimes by L2 itself. Can we make L2 connections
+>> > always be initiated by L2 itself? If L3 needs to do something after L2
+>> > links up, L2 will notify it anyway.
+>> 
+>> My original goal was to change as little as possible of the original
+>> code. And in the original code the NETDEV_UP/NETDEV_DOWN events 
+>> were/are
+>> handled in L3. But it is of course conceivable to shift this to L2.
+> 
+> I suggested moving L2 connection handling to L2 because I think having
+> both L2 and L3 to handle this makes the logic of the code too complex.
+> For example, after a device-up event, L3 will instruct L2 to initiate
+> the L2 connection. But L2 code has its own way of initiating
+> connections. For a DCE, L2 wants to wait a while before initiating the
+> connection. So currently L2 and L3 want to do things differently and
+> they are doing things at the same time.
+> 
+>> But you have to keep in mind that the X.25 L3 stack can also be used
+>> with tap interfaces (e.g. for XOT), where you do not have a L2 at all.
+> 
+> Can we treat XOT the same as LAPB? I think XOT should be considered a
+> L2 in this case. So maybe XOT can establish the TCP connection by
+> itself without being instructed by L3. I'm not sure if this is
+> feasible in practice but it'd be good if it is.
+> 
+> This also simplifies the L3 code.
+
+I also have a patch here that implements an "on demand" link feature,
+which we used for ISDN dialing connections.
+As ISDN is de facto dead, this is not relevant anymore. But if we want
+such kind of feature, I think we need to stay with the method to control
+L2 link state from L3.
