@@ -2,71 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFD62B7ABD
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B652B7AC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgKRJx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:53:28 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:36199 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbgKRJx1 (ORCPT
+        id S1727550AbgKRJyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:54:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727521AbgKRJyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:53:27 -0500
-Received: by mail-ed1-f68.google.com with SMTP id m16so1326344edr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:53:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4VZV4JODEANV43Do31vFuPevs/t9w5drfDVPU3kOfDk=;
-        b=SEr9x3gGp9oxQXZ5uF1x5MNOQyVscv0OYJM6OIODSvKFPDM45nqGr3U3F4oUtzZ0VG
-         5qOKcdAeejc94hOF80q/SVKmCJuOGI9ESYY10xXyizd1UAyDnIogmdMfjlQ1fVNwCUF/
-         vtDjCKM/4wrmY/uM+YzrinbWaBiVTsFNC1TdheF9gYQaTxj8Tn5+LwOv7bfua6fn/XAf
-         dvMOkrTtfCUYy7+As0QoTv3IeRR4QUPBfVpsEO5mSh4Axb2vm/jkYe5JM0oxG92ocVet
-         knT/mSnnJaN24Unu05OkR0LU1SxeeE2db2jI/xucWQZiwvZLF0Grhl344tofULyuVYKU
-         7RQQ==
-X-Gm-Message-State: AOAM530L8+1p89vT6crXVkNpMIM5puGhgegmRq5tVdIvn9JExK36JWql
-        f5XkMYgds1ErR0WH02IS/cI=
-X-Google-Smtp-Source: ABdhPJzZN+jj9QnXp4Kegr2WMONRC2atTpBVRxWKfqSGhIg2aRqhDJi8n3Rxr+I9G/yhqUl0Uk4zGA==
-X-Received: by 2002:a50:9fc5:: with SMTP id c63mr4650558edf.224.1605693205466;
-        Wed, 18 Nov 2020 01:53:25 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id u2sm716842edo.65.2020.11.18.01.53.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 01:53:24 -0800 (PST)
-Date:   Wed, 18 Nov 2020 10:53:22 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Olivier Moysan <olivier.moysan@st.com>
-Cc:     linux@armlinux.org.uk, shawnguo@kernel.org, olof@lixom.net,
-        alexandre.torgue@st.com, geert+renesas@glider.be,
-        amelie.delaunay@st.com, aisheng.dong@nxp.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        christian.gmeiner@gmail.com, enric.balletbo@collabora.com,
-        lionel.debieve@st.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ARM: multi_v7_defconfig: enable spdifrx support
-Message-ID: <20201118095322.GA17075@kozik-lap>
-References: <20201118095013.16094-1-olivier.moysan@st.com>
- <20201118095013.16094-2-olivier.moysan@st.com>
+        Wed, 18 Nov 2020 04:54:05 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78E9C061A4D
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 01:54:04 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfK9t-0003br-T9; Wed, 18 Nov 2020 10:53:49 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfK9p-00087c-1n; Wed, 18 Nov 2020 10:53:45 +0100
+Date:   Wed, 18 Nov 2020 10:53:42 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-tegra@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Alban Bedel <albeu@free.fr>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>, zhang.lyra@gmail.com,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        dl-linux-imx <linux-imx@nxp.com>, orsonzhai@gmail.com,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        linux-pwm@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Sascha Hauer <kernel@pengutronix.de>, baolin.wang7@gmail.com,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH] drivers: gpio: use of_match_ptr() and ACPI_PTR() macros
+Message-ID: <20201118095342.sviuxvfsbmmn22mo@pengutronix.de>
+References: <20201117154340.18216-1-info@metux.net>
+ <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jrmdeyhh5m52oxeb"
 Content-Disposition: inline
-In-Reply-To: <20201118095013.16094-2-olivier.moysan@st.com>
+In-Reply-To: <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 10:50:12AM +0100, Olivier Moysan wrote:
-> Add STM32 SPDIFRX support by enabling CONFIG_SND_SOC_STM32_SPDIFRX
-> as module.
-> 
-> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-> ---
->  arch/arm/configs/multi_v7_defconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+--jrmdeyhh5m52oxeb
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Krzysztof
+On Tue, Nov 17, 2020 at 06:45:37PM +0200, Andy Shevchenko wrote:
+> On Tue, Nov 17, 2020 at 5:45 PM Enrico Weigelt, metux IT consult
+> <info@metux.net> wrote:
+> >
+> > The of_match_ptr(foo) macro evaluates to foo, only if
+> > CONFIG_OF is set, otherwise to NULL. Same does ACPI_PTR with
+> > CONFIG_ACPI. That's very helpful for drivers that can be used
+> > with or without oftree / acpi.
+> >
+> > Even though most of the drivers touched here probably don't
+> > actually need that, it's also nice for consistency to make it
+> > the de-facto standard and change all drivers to use the
+> > of_match_ptr() and ACPI_PTR() macros.
+> >
+> > A nice side effect: in some situations, when compiled w/o
+> > CONFIG_OF/CONFIG_ACPI, the corresponding match tables could
+> > automatically become unreferenced and optimized-away by the
+> > compiler, w/o explicitly cluttering the code w/ ifdef's.
+>=20
+> NAK.
+>=20
+> It prevents using DT-enabled drivers on ACPI based platforms.
+
+So a system without CONFIG_OF might still make use of .of_match_table?
+
+If so: TIL ...
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--jrmdeyhh5m52oxeb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+07yIACgkQwfwUeK3K
+7Ak+4Af/S4LACdOy4WkgBIlg0vOjRAgAtSXuRqE7DZpYrEDA16Jf1/hvxQgwZgoQ
+2gZ2CszqBXhxH94X4GFtm7veiGfXquPsf0qlQ31Ou2yDIIv0+oXBBrSi78lwesD1
+1s6fYmYnp+Oijt1tRIg+euHAWOyIIyavCIBFkoFVIOvlux7JMc7pQZrdTGuiHJP1
+6c6F0G+G2nlLQtmwsR4Jm2vERKNDy3X87PdQANsH4ipSsIFyxTH/5Mgx4kLRZ/sg
+prSguvAIqgH+3KyVK9w454gWpqQJrGiCa7CEybzjNjAnjCAoxnnJ8SQ1/Ys27Y5L
+O0PgX1tM/ulriSZe+T5UUlYqGZyBAw==
+=A5vw
+-----END PGP SIGNATURE-----
+
+--jrmdeyhh5m52oxeb--
