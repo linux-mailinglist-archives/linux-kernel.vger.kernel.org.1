@@ -2,79 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6657A2B7832
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF6F2B7837
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgKRIIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:08:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgKRIIQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:08:16 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4E1C061A4D
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 00:08:16 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id k4so1036328edl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 00:08:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MYkzksRNaGbOMgyJtFrKrhjpOwtjgLuKKLI9H1meENs=;
-        b=xCWG2WDkXGUHEmmvlIEXs8mX9u3sb6FB0q9LFul6OKzhcg+CIPpbHyWVJyUIcZ6U0c
-         CxzCSvsRY1fmsdf7hUe3PrzVMR4XzcBUH5/oDkRiRzgCDh1l3MGg9f7qpopJPDhA/Osf
-         naXIzRtC+tCcAsimW4BCW/g1+nTYFw7Px93SotOJsq6n0lSPMi1qM3+8nb320uD64Ba8
-         gLMznJOGDpF+y5CXx6brPuOqhhmOYYTNKbiw7OmMCngWtim6jtwlUlja+b94KEBDE01Z
-         cClj/K8TpXVCCPjufmUZeja80w0hx/6KOG/M8vvoGE9/WY1lxBvSZ/eKf0rV7Sw9spuE
-         MEzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MYkzksRNaGbOMgyJtFrKrhjpOwtjgLuKKLI9H1meENs=;
-        b=VOMwydsIcN2Hh34DlXZ1rGOOSIz15M4D5z7JCe9B8aAYO9QE4MIqdSh7meP+7f736M
-         tJ899GVhGd4YS7XzjeDXjmOD30stVHI9ZDpNjOkACS04NYek4igAWtM1WE5QZw0Glw87
-         DfQbC19I/5/5z1IHTPEjrlZ2SYx4aF6XMjCIx0Z08zmQ4motj7r9jGbFiPYp1Rmg1PF6
-         4vHuq/R1LBd6u0Z22o/TpqgJBdfmjp+4C2ALJ/5Fbkh/Cw7Yu6FAmY9QP4KmrDaiZlvb
-         XX5ghQsWmz7khulpUb6AIQkO7YxoHhHsYBwaG1bFbYmYlZIrxrYM8+nPH3l0Ifxc8hvV
-         jHAA==
-X-Gm-Message-State: AOAM531aF+vbx+8DhvhMbXk/01mAyuI8u7wfWih40OcZm6vaAW/8a5iu
-        kO/uJHwNzY6Q2s4tigYy02KrCddJAwzpgZ7eFTMPyA==
-X-Google-Smtp-Source: ABdhPJyIpjJgJazX4fTSFDsxCZTxH/xxyf4fTir1+gkSOwPp8hbM6quT/hXeCY699yN511XwzGCCUFGquOJ6Buwje7k=
-X-Received: by 2002:a05:6402:144f:: with SMTP id d15mr25196770edx.300.1605686895096;
- Wed, 18 Nov 2020 00:08:15 -0800 (PST)
+        id S1725794AbgKRIKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:10:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38376 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726296AbgKRIKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:10:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D1053ABDE;
+        Wed, 18 Nov 2020 08:10:13 +0000 (UTC)
+Subject: Re: [PATCH] drm: imx: Move fbdev setup to before output polling
+To:     Mark Jonas <mark.jonas@de.bosch.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     Leo Ruan <tingquan.ruan@cn.bosch.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org
+References: <20201117155229.9837-1-mark.jonas@de.bosch.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <e089d4d5-3bd8-c2cd-3011-ed87ae4284e8@suse.de>
+Date:   Wed, 18 Nov 2020 09:10:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201118073517.1884-1-thunder.leizhen@huawei.com>
-In-Reply-To: <20201118073517.1884-1-thunder.leizhen@huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 18 Nov 2020 00:08:03 -0800
-Message-ID: <CAPcyv4iECY-XoJ=jhARDDqjv-j8fnOUiKxB9Z+M5J+kMoeeWhA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ACPI/nfit: avoid accessing uninitialized memory in acpi_nfit_ctl()
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-acpi <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201117155229.9837-1-mark.jonas@de.bosch.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 11:36 PM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->
-> The ACPI_ALLOCATE() does not zero the "buf", so when the condition
-> "integer->type != ACPI_TYPE_INTEGER" in int_to_buf() is met, the result
-> is unpredictable in acpi_nfit_ctl().
->
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Hi
 
-Looks good to me.
+Am 17.11.20 um 16:52 schrieb Mark Jonas:
+> From: Leo Ruan <tingquan.ruan@cn.bosch.com>
+> 
+> The generic fbdev has to be setup before enabling output polling.
+> Otherwise the fbdev client is not ready to handle delayed events.
+> 
+> Since f53705fd, the generic fbdev is setup after the output polling
+> init. During fbdev setup, when fbdev probes attached outputs and a
+> status changes from unknown to connected, the delayed event is
+> marked and the output_poll_work thread is scheduled without delay.
+> If output_poll_execute() is runs immediately, the delayed event
+> is handled without actually polling the output because the fbdev is not
+> registered yet. So the delayed event is lost. This leads to a dark
+> screen until a KMS application (or fbcon) sets the screen mode.
+> 
+> This patch fixes the issue by moving the setup of generic fbdev before
+> initializing and enabling output polling.
+> 
+> Signed-off-by: Leo Ruan <tingquan.ruan@cn.bosch.com>
+> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
+> ---
+>  drivers/gpu/drm/imx/imx-drm-core.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/imx/imx-drm-core.c b/drivers/gpu/drm/imx/imx-drm-core.c
+> index 9bf5ad6d18a2..2665040e11c7 100644
+> --- a/drivers/gpu/drm/imx/imx-drm-core.c
+> +++ b/drivers/gpu/drm/imx/imx-drm-core.c
+> @@ -240,14 +240,18 @@ static int imx_drm_bind(struct device *dev)
+>  		legacyfb_depth = 16;
+>  	}
+>  
+> +	/*
+> +	 * The generic fbdev has to be setup before enabling output polling.
+> +	 * Otherwise the fbdev client is not ready to handle delayed events.
+> +	 */
+> +	drm_fbdev_generic_setup(drm, legacyfb_depth);
+> +
+>  	drm_kms_helper_poll_init(drm);
+>  
+>  	ret = drm_dev_register(drm, 0);
+>  	if (ret)
+>  		goto err_poll_fini;
+>  
+> -	drm_fbdev_generic_setup(drm, legacyfb_depth);
+> -
 
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+This does not work well. fbdev is supposed to be another regular DRM
+client. It has to be enabled after registering the DRM device.
 
-I'll pick this up.
+I'd rather improve fbdev or the driver to handle this gracefully.
+
+Best regards
+Thomas
+
+>  	return 0;
+>  
+>  err_poll_fini:
+> 
+
+-- 
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
