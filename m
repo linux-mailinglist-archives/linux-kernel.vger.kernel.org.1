@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6812B8444
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF972B8457
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgKRTA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:00:26 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:50926 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726098AbgKRTA0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:00:26 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-25-1cEBhn94MimnJjzlWXZTFw-1; Wed, 18 Nov 2020 19:00:22 +0000
-X-MC-Unique: 1cEBhn94MimnJjzlWXZTFw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 18 Nov 2020 19:00:21 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 18 Nov 2020 19:00:21 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Subject: RE: Linux 5.10-rc4
-Thread-Topic: Linux 5.10-rc4
-Thread-Index: AQHWu7P6i7HOJgcGCEellKywj802qKnNzjYQgABmnYCAAAwRYA==
-Date:   Wed, 18 Nov 2020 19:00:21 +0000
-Message-ID: <c776ad37ae9f48aa8eff020e4499901c@AcuMS.aculab.com>
-References: <CAHk-=wjFfAktnadOPb_iV5nKh=V5Am1sG-gciYveswRtuEkrLQ@mail.gmail.com>
- <692820a49ded436591b5fe3a18c68a5e@AcuMS.aculab.com>
- <CAHk-=wgQY7k_3NVCbaSmiJyLiAV_1TgwLk-d4QRMHMWqM5Oo_w@mail.gmail.com>
-In-Reply-To: <CAHk-=wgQY7k_3NVCbaSmiJyLiAV_1TgwLk-d4QRMHMWqM5Oo_w@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+        id S1726831AbgKRTFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:05:05 -0500
+Received: from gate.crashing.org ([63.228.1.57]:54376 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726163AbgKRTFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:05:05 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AIIthGu019175;
+        Wed, 18 Nov 2020 12:55:43 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AIIteOV019174;
+        Wed, 18 Nov 2020 12:55:40 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 18 Nov 2020 12:55:40 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Florian Weimer <fw@deneb.enyo.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: violating function pointer signature
+Message-ID: <20201118185540.GL2672@gate.crashing.org>
+References: <20201116175107.02db396d@gandalf.local.home> <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com> <20201117142145.43194f1a@gandalf.local.home> <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com> <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net> <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com> <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org> <87o8jutt2h.fsf@mid.deneb.enyo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o8jutt2h.fsf@mid.deneb.enyo.de>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTggTm92ZW1iZXIgMjAyMCAxODoxMQ0KPiAN
-Cj4gT24gV2VkLCBOb3YgMTgsIDIwMjAgYXQgNDoxMiBBTSBEYXZpZCBMYWlnaHQgPERhdmlkLkxh
-aWdodEBhY3VsYWIuY29tPiB3cm90ZToNCj4gPg0KPiA+IEkndmUgZ290IHRoZSAnc3BsYXQnIGJl
-bG93IGR1cmluZyBib290Lg0KPiA+IFRoaXMgaXMgYW4gOC1jb3JlIEMyNzU4IEF0b20gY3B1IHVz
-aW5nIHRoZSBvbi1ib2FyZC9jcHUgZ3JhcGhpY3MuDQo+ID4gVXNlciBzcGFjZSBpcyBVYnVudHUg
-MjAuMDQuDQo+ID4NCj4gPiBBZGRpdGlvbmFsbHkgdGhlIFggZGlzcGxheSBoYXMgYWxsIHRoZSBj
-b2xvdXJzIGFuZCBhbGlnbm1lbnQgc2xpZ2h0bHkNCj4gPiBtZXNzZWQgdXAuDQo+ID4gNS45LjAg
-d2FzIG9rLg0KPiA+IEknbSBqdXN0IGd1ZXNzaW5nIHRoZSB0d28gaXNzdWVzIGFyZSByZWxhdGVk
-Lg0KPiANCj4gU291bmRzIGxpa2VseS4gIEJ1dCBpdCB3b3VsZCBiZSBsb3ZlbHkgaWYgeW91IGNv
-dWxkIGJpc2VjdCB3aGVuDQo+IGV4YWN0bHkgdGhlIHByb2JsZW0ocykgc3RhcnRlZCB0byBib3Ro
-IHZlcmlmeSB0aGF0LCBhbmQganVzdCB0bw0KPiBwaW5wb2ludCB0aGUgZXhhY3QgY2hhbmdlLi4N
-Cg0KSSdtIHdvcmtpbmcgb24gaXQgLSBoYXZlIGJlZW4gYWxsIGFmdGVybm9vbi4NCihJJ20gb24g
-aG9saWRheSBhbmQgaXQgaXMgcmFpbmluZy4uLikNCg0KNS4xMC1yYzEgZmFpbHMsIHNvIGl0IGlz
-IHNvbWV0aGluZyBpbiB0aGUgbWVyZ2Ugd2luZG93Lg0KSSBzdXNwZWN0IEknbGwganVzdCBoaXQg
-dGhlIHB1bGwgb2YgdGhlIGRybSBjaGFuZ2VzLg0KVGhlIGJpc2VjdCBzdWRkZW5seSBidWlsZCBh
-IDUuOS1yYzUrIGtlcm5lbCENClNvIEknbSByZXRlc3RpbmcgYSBnb29kL2JhZCBwYWlyIHdpdGgg
-bGlrZWx5IGRhdGVzIGFuZCB3aWxsIHJlc3RhcnQgaXQuDQoNCkFubm95aW5nbHkgdGhlIHRlc3Qg
-c3lzdGVtIGRlZmF1bHRzIHRvIGJvb3RpbmcgdGhlIGhpZ2hlc3QgdmVyc2lvbg0Ka2VybmVsIC0g
-bm90IHRoZSBvbmUgSSd2ZSBqdXN0IGJ1aWxkOyBJIG1heSBoYXZlIGdpdmVuIGl0IGEgd3Jvbmcg
-YW5zd2VyLg0KVGhlIGJ1aWxkcyBhbHNvIGFsbCB0YWtlIDIwIG1pbnV0ZXM7IHNvIHRoZSBiaXNl
-Y3QgaXMgc2xvdy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
-QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
-aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Wed, Nov 18, 2020 at 07:31:50PM +0100, Florian Weimer wrote:
+> * Segher Boessenkool:
+> 
+> > On Wed, Nov 18, 2020 at 12:17:30PM -0500, Steven Rostedt wrote:
+> >> I could change the stub from (void) to () if that would be better.
+> >
+> > Don't?  In a function definition they mean exactly the same thing (and
+> > the kernel uses (void) everywhere else, which many people find clearer).
+> 
+> And I think () functions expected a caller-provided parameter save
+> area on powerpc64le, while (void) functions do not.
 
+Like I said (but you cut off, didn't realise it matters I guess):
+
+> > In a function declaration that is not part of a definition it means no
+> > information about the arguments is specified, a quite different thing.
+
+Since the caller does not know if the callee will need a save area, it
+has to assume it does.  Similar is true for many ABIs.
+
+> It does not
+> matter for an empty function, but GCC prefers to use the parameter
+> save area instead of setting up a stack frame if it is present.  So
+> you get stack corruption if you call a () function as a (void)
+> function.  (The other way round is fine.)
+
+If you have no prototype for a function, you have to assume worst case,
+yes.  Calling things "a () function" can mean two things (a declaration
+that is or isn't a definition, two very different things), so it helps
+to be explicit about it.
+
+Just use (void) and do not worry :-)
+
+
+Segher
