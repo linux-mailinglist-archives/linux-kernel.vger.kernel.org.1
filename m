@@ -2,94 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECB12B756A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2971A2B756C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgKREiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 23:38:17 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:36174 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgKREiQ (ORCPT
+        id S1726497AbgKREjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 23:39:14 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58230 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725834AbgKREjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 23:38:16 -0500
-Received: by mail-pg1-f193.google.com with SMTP id t21so336681pgl.3;
-        Tue, 17 Nov 2020 20:38:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PL94uEPHkPgwoSTEUJTRIWLNjp6IL0BpUZlGz8omUG0=;
-        b=C+98vc80BZbtjXpOu2PxS9BhsuTuF5hapx8AIAouAPD+sB+v448AwP5l86ky4aZJjz
-         4z3MHklcBCG1lTTn4TvNa4Z+LCClrk9/TVaIZtDXky9y6V/4XL71x8wD8ZfBPmisaAyy
-         uQDrnfudyCYsdhc0JayRKvf9UyUxqegKg09fFaLpc75tTFVdHrHWzEpeiIU582ruf2GR
-         XI8wlfDRnYgespqwD/14sa35V3l10+u9HoFSNb1ZbMkcLaORtsPVI4uXeaJuGl7ZIbqf
-         6wfnlXNMQWhbDWa/62juDSOGO3Coa9b0g7lh/QCJq16wnQYiANgERgB6WgatD3IxWcKl
-         gS2w==
-X-Gm-Message-State: AOAM532h+CbDiGx3rYzVoJbetaB5SDqXT0JKh9y5Io+5Lw0SR3P7ijmh
-        +TscqKv2RL8AFbbjMSJqdeWK1GY5iP4=
-X-Google-Smtp-Source: ABdhPJycdQm5sVRY0NmyvKoJHUlSfU28PhA3bdEB9g/SGEJmWN03zqCB7ZXzrkb5VHRuRkvrDp8sjw==
-X-Received: by 2002:a63:e00c:: with SMTP id e12mr6376270pgh.441.1605674295582;
-        Tue, 17 Nov 2020 20:38:15 -0800 (PST)
-Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id o132sm22760038pfg.100.2020.11.17.20.38.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 20:38:14 -0800 (PST)
-Subject: Re: [PATCH RFC v1 1/1] scsi: pm: Leave runtime resume along if block
- layer PM is enabled
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <1605249009-13752-1-git-send-email-cang@codeaurora.org>
- <1605249009-13752-2-git-send-email-cang@codeaurora.org>
- <97dea590-5f2e-b4e3-ac64-7c346761c523@acm.org>
- <20f447a438aa98afb18be4642c8888b3@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <6d774277-b055-6924-cf2d-01e874ac3f7b@acm.org>
-Date:   Tue, 17 Nov 2020 20:38:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 17 Nov 2020 23:39:13 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AI4Vjkf169891;
+        Tue, 17 Nov 2020 23:38:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mMN/I+ULrLZLhfR9hdqq7ovhu7Y8pk43iPxX5Uo59jI=;
+ b=XEaBE3Gq3ZY2c3X0uhgaNizMMBLwXWl1FkmOk0udmCjoqeEQwSV9Y4FXXStSkpKJ1cH/
+ IGTsdh+cWabDtM27IzSXZMqLQMR+eCmOnRgoFiTQaulJE3gjxIEawX74QdHgercJEWQX
+ ApdONh+EG1Vn6qMwG4mcA20DscHMpZcq1oCjhvNhSxF4Rf6q6UmC0oxoqlXK4vEauoAp
+ l2y/femdlQT1067uPhycSyhCMNXNo6m+wZs7qUYSn5qAiReQnJymSO8dpx0aNPPVKTsP
+ U/4SuGtBLJbtl+AM9rPV/JXKao5S2z8mk+RpSfE47jZj/oQbsysLExjRS2oWzQte8z1i ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34vevtrc5b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 23:38:42 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AI4WqJY176208;
+        Tue, 17 Nov 2020 23:38:41 -0500
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34vevtrc4v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 23:38:41 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AI4WfOE005455;
+        Wed, 18 Nov 2020 04:38:40 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma01dal.us.ibm.com with ESMTP id 34uttrf5ef-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 18 Nov 2020 04:38:40 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AI4cch660162546
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Nov 2020 04:38:38 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B68A36E056;
+        Wed, 18 Nov 2020 04:38:38 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2207C6E050;
+        Wed, 18 Nov 2020 04:38:33 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.39.226])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Nov 2020 04:38:32 +0000 (GMT)
+Subject: Re: [PATCH RFC v5 01/13] perf jevents: Add support for an extra
+ directory level
+To:     John Garry <john.garry@huawei.com>, acme@kernel.org,
+        will@kernel.org, mark.rutland@arm.com, jolsa@redhat.com,
+        irogers@google.com, leo.yan@linaro.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, mathieu.poirier@linaro.org
+Cc:     linuxarm@huawei.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, qiangqing.zhang@nxp.com,
+        zhangshaokun@hisilicon.com, linux-imx@nxp.com
+References: <1604666153-4187-1-git-send-email-john.garry@huawei.com>
+ <1604666153-4187-2-git-send-email-john.garry@huawei.com>
+ <61c23ae8-73d4-4616-38f5-f81dafbf5851@linux.ibm.com>
+ <3ca35e0f-e5e6-8616-0435-0f8e553df1f9@huawei.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <03f4d625-1430-8b2e-7798-8de657b4141c@linux.ibm.com>
+Date:   Wed, 18 Nov 2020 10:08:31 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20f447a438aa98afb18be4642c8888b3@codeaurora.org>
+In-Reply-To: <3ca35e0f-e5e6-8616-0435-0f8e553df1f9@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-18_01:2020-11-17,2020-11-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 spamscore=0 malwarescore=0 suspectscore=0 clxscore=1011
+ impostorscore=0 priorityscore=1501 bulkscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011180026
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/20 5:42 PM, Can Guo wrote:
-> Actually, I am thinking about removing all the pm_runtime_set_active()
-> codes in both scsi_bus_resume_common() and scsi_dev_type_resume() - we
-> don't need to forcibly set the runtime PM status to RPM_ACTIVE for either
-> SCSI host/target or SCSI devices.
+
+
+On 11/13/20 2:54 PM, John Garry wrote:
+> On 13/11/2020 08:48, kajoljain wrote:
+>>
+>> On 11/6/20 6:05 PM, John Garry wrote:
+>>> Currently only upto a level 2 directory is supported, in form
+>>> vendor/platform.
+>> Hi John,
+>>      Just want to check in case of sub directories,
+>> Will it be good add on/feasible to be able to include events of particular sub-directory for a
+>> platform? Otherwise with this patch in the end all event will be part of
+>> same pmu_event structure. So what is the purpose of sub directories? Let me know if I am missing something.
 > 
-> Whenever we access one SCSI device, either block layer or somewhere in
-> the path (e.g. throgh sg IOCTL, sg_open() calls scsi_autopm_get_device())
-> should runtime resume the device first, and the runtime PM framework makes
-> sure device's parent (and its parent's parent and so on)gets resumed as
-> well.
-> Thus, the pm_runtime_set_active() seems redundant. What do you think?
+> Hi Kajol Jain,
+> 
+> So currently we support both of the following structure:
+> arch/platform
+> arch/vendor/platform/
+> 
+> arch/vendor/platform/ is for an arch like arm, where the arch provider may not be the vendor.
+> 
+> I want to go one step further, to support also:
+> arch/vendor/platform/cpu
+> arch/vendor/platform/sys
+> 
+> Here we have separate folders for cpu and sys events. CPU events in "cpu" folder are added to pmu_events_map[], as before. And events in "sys" folder are added from patch 2/13 to new table pmu_sys_events_table[].
+> 
+> I hope it's clearer now.
 
-Hi Can,
+Hi John,
+    Thanks for explaining. This patch looks good to me then.
 
-It is not clear to me why the pm_runtime_set_active() calls occur in the
-scsi_pm.c source file since the block layer automatically activates
-block devices if necessary. Maybe these calls are a leftover from a time
-when runtime suspended devices were not resumed automatically by the
-block layer? Anyway, I'm fine with removing these calls.
+Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
 
 Thanks,
-
-Bart.
+Kajol Jain
+> 
+> Thanks,
+> John
+> 
+>>
+>> Thanks,
+>> Kajol Jain
+>>> Add support for a further level, to support vendor/platform
+>>> sub-directories in future.
+> 
