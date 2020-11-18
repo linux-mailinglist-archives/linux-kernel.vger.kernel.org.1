@@ -2,120 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1789E2B83AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E78EF2B83BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgKRSRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgKRSRi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:17:38 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A6DC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:17:38 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id t5so2355205qtp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:17:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dD6sy6Ni7G98HJq3DqJZV//04hrVQ+nxAJOAbo7wvhk=;
-        b=qJAbsThvMXyR4d+PIgohVNva/D2t9a7cD6go1AdmvAW672jq8QSw/vzECdpnCWRFZV
-         WmV+DIarl5wFKmzjvTpuAMygG5s5ntdTMxfipQkR1U3EOIOEohxqhIybA9voWh67gGSP
-         Q0gxOc1xVfObB2q5VWzdxsCfqkPJUaTulVCdycEMbIskP7JS8OdzXtKjLARGslX8zzD0
-         7ptr7LEvupZHwCjxmZTo8b73zzPnKeOjVb1x6rCdGf2cvSRNkMT3nHbAljSMmp3Lkmx1
-         fjkc7DzaAq5Pyt8Nbmie20hEUzgIXx2BaiJtUmAS9EX5C7oEeYCCsmOECgM+vAssCZek
-         OlPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dD6sy6Ni7G98HJq3DqJZV//04hrVQ+nxAJOAbo7wvhk=;
-        b=tlCfbaw8A8R1Wnc4sjpqa+eH1Hxvkwoe9vc6AjFf5W5R1j9G1HlXbOWFMt4+432Jbt
-         AnkeRLiVdINPD9y4wg3CAmEOknK3XtqoVx2ul3xKwM+Yhpj8jtpWt7n3K2TSgI2ckRT+
-         gGhd19KVuemT1jCWGrr7QZc6mu5tWuTtPLX3T4ojW5sB06AElSDbm8Br3bMdh26nl4zG
-         psja0mJUr5Uj2NNb2twfcSo/CYYmNU1aPIApjGOaVtrUKpWKHjFiQlxu2QQbAtEefnNw
-         ieRAtNgK71X4vaXB5d3+nGRQKx3nxuFz20k9fOSfI69Mx5Oizs6rArSJg4iDgDJZa1F4
-         6mgg==
-X-Gm-Message-State: AOAM5328ZqWgwNa4zfNrjc6PuWHMcHNBllPi6Ibtqq9MRnf+0V/2Mtfg
-        joJucIOGM6Js18OHTVFvgeyMHZCBFHcICCHTHWlq2g==
-X-Google-Smtp-Source: ABdhPJwjIPP+a0W/JVbnUzrfqXk1ZwIHI0Yh5MJiflSzaI004PpAVODhE4lYuOadLU95uf/mjebeOwtldHsGIt2uKUs=
-X-Received: by 2002:ac8:1089:: with SMTP id a9mr5781536qtj.111.1605723457613;
- Wed, 18 Nov 2020 10:17:37 -0800 (PST)
-MIME-Version: 1.0
-References: <20201117024825.GA8169@xsang-OptiPlex-9020> <24d9d093-5b7a-9aee-8d61-59c0007a9269@nvidia.com>
- <20201118134952.GE1981@quack2.suse.cz>
-In-Reply-To: <20201118134952.GE1981@quack2.suse.cz>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 18 Nov 2020 10:17:27 -0800
-Message-ID: <CAPcyv4g=MFAojCeCST+sF22A+2cetVMFmQuDtu7arEM+0a+Ebw@mail.gmail.com>
-Subject: Re: [mm/gup] 47e29d32af: phoronix-test-suite.npb.FT.A.total_mop_s
- -45.0% regression
-To:     Jan Kara <jack@suse.cz>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kbuild test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        feng tang <feng.tang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@intel.com>,
-        guobing.chen@intel.com, ming.a.chen@intel.com, frank.du@intel.com,
-        Shuhua.Fan@intel.com, wangyang.guo@intel.com,
-        Wenhuan.Huang@intel.com, jessica.ji@intel.com, shan.kang@intel.com,
-        guangli.li@intel.com, tiejun.li@intel.com, yu.ma@intel.com,
-        dapeng1.mi@intel.com, jiebin.sun@intel.com, gengxin.xie@intel.com,
-        fan.zhao@intel.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1726641AbgKRSUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:20:48 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:59769 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726510AbgKRSUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 13:20:46 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605723646; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=V5QH/vQSVKr3HElpyNLc6yOQyNNozrNzG76HGXqu0AA=; b=iCoAACBjRP/6WVOhG2f8JV1cwOzAgHnzp+cOHCZ0lcyDDOjfM+SWi5nyiRf4ytx7GbLgxYuX
+ HyT3BW7QK+oinnM3q6LxoVAPZxaITvIepFW+lF0K7uGVxkleWLEzdDsWAdLqBOt+tbbiNusf
+ TL7I12P91bJKLnQTGA/3COQHVUI=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5fb565f922377520ee4df079 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 18:20:41
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 86648C43463; Wed, 18 Nov 2020 18:20:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4A73BC433ED;
+        Wed, 18 Nov 2020 18:20:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4A73BC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     kvalo@codeaurora.org, linux-wireless@vger.kernel.org,
+        cjhuang@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, linux-kernel@vger.kernel.org,
+        ath11k@lists.infradead.org, clew@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH] net: qrtr: Unprepare MHI channels during remove
+Date:   Wed, 18 Nov 2020 10:20:25 -0800
+Message-Id: <1605723625-11206-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 5:51 AM Jan Kara <jack@suse.cz> wrote:
->
-> On Mon 16-11-20 19:35:31, John Hubbard wrote:
-> >
-> > On 11/16/20 6:48 PM, kernel test robot wrote:
-> > >
-> > > Greeting,
-> > >
-> > > FYI, we noticed a -45.0% regression of phoronix-test-suite.npb.FT.A.total_mop_s due to commit:
-> > >
-> >
-> > That's a huge slowdown...
-> >
-> > >
-> > > commit: 47e29d32afba11b13efb51f03154a8cf22fb4360 ("mm/gup: page->hpage_pinned_refcount: exact pin counts for huge pages")
-> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> >
-> > ...but that commit happened in April, 2020. Surely if this were a serious
-> > issue we would have some other indication...is this worth following up
-> > on?? I'm inclined to ignore it, honestly.
->
-> Why this was detected so late is a fair question although it doesn't quite
-> invalidate the report...
+Reset MHI device channels when driver remove is called due to
+module unload or any crash scenario. This will make sure that
+MHI channels no longer remain enabled for transfers since the
+MHI stack does not take care of this anymore after the auto-start
+channels feature was removed.
 
-I don't know what specifically happened in this case, perhaps someone
-from the lkp team can comment? However, the myth / contention that
-"surely someone else would have noticed by now" is why the lkp project
-was launched. Kernels regressed without much complaint and it wasn't
-until much later in the process, around the time enterprise distros
-rebased to new kernels, did end users start filing performance loss
-regression reports. Given -stable kernel releases, 6-7 months is still
-faster than many end user upgrade cycles to new kernel baselines.
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+---
+ net/qrtr/mhi.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
+index 7100f0b..2bf2b19 100644
+--- a/net/qrtr/mhi.c
++++ b/net/qrtr/mhi.c
+@@ -104,6 +104,7 @@ static void qcom_mhi_qrtr_remove(struct mhi_device *mhi_dev)
+ 	struct qrtr_mhi_dev *qdev = dev_get_drvdata(&mhi_dev->dev);
+ 
+ 	qrtr_endpoint_unregister(&qdev->ep);
++	mhi_unprepare_from_transfer(mhi_dev);
+ 	dev_set_drvdata(&mhi_dev->dev, NULL);
+ }
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
