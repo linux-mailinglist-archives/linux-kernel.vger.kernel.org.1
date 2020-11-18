@@ -2,451 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CBC2B808A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E062B8117
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727395AbgKRPa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:30:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727378AbgKRPa2 (ORCPT
+        id S1727684AbgKRPqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:46:04 -0500
+Received: from gproxy3-pub.mail.unifiedlayer.com ([69.89.30.42]:58388 "EHLO
+        gproxy3-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726673AbgKRPqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:30:28 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD01FC061A4D
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:30:27 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id v20so1195385qvx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:30:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wonpByTzbuJxA+M2ARgOF+/g8Val/wioKkFNzzsy6gU=;
-        b=Rx3USm/EF/+xzXJ3dItOEJTB5qqQxP2Bp+5E6BDeVmQUmuyXjg2dtFMCGlq3oB8B4k
-         9N8bBvMJiAHRFOtjuPCq7jGUb/18cJv4ZalX00BQbblcX4MXB9tWk3qOC3P+rKlTzaQ3
-         VLJPFJo/V9bAA6oeh/HT7tcmovDyItVsev9cBUPBZmKlt9df/9RTeWO8S8xfY/mKOZ1n
-         KBjxSS9wq1oArwhOhDvrRtzjIYXOCU5zZ/Iz+XKRcsN/1vJP59xcIYdnyT+iRPVz9PEf
-         XqDUR+8daz0CINYLjsROik5nOdPp+S60Nl3rJ0UEifkBuUpJmOYBCi1YW1IxVmGTeKU6
-         rIMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wonpByTzbuJxA+M2ARgOF+/g8Val/wioKkFNzzsy6gU=;
-        b=BwthoTjgy35z0Wszl435Vk/uCeLMnmcbBbdWtPG1GeAlMYLZJtGXvLFlt2EDZ7u/M3
-         1Q9mUvfZPzIERhgSpJSXt1eF1kTk9TjVgWYba/QjrOtmAKDXe5n5a0EY9xgAQutdNKZr
-         VEPuOiZBAZnxyiSuRB20vqdE/7z0rZvfWqtWIA7/GifYGky8x6UPmUVHSceE074YQqJi
-         CtLKHsTRiZ1WR6ILx4YjLDlpSithzF+cvxPfQN0KmGErCnXBLNN84ScJ7q2MWxm+NGrP
-         ga8AgEdyK2iTyxxX70pc72FXBJ4M3Ica6irhHdXRn/N+VsbFMSViPGH6WIPCjfQyJ5VD
-         aVKw==
-X-Gm-Message-State: AOAM530JYhsxIgJuzmhRCd/N/YcaBLQniowL+vdc1kgZqjALtIm2xPHx
-        g7gJxJNbwGovl0D/sjcOpRn9oQqRzx5v4e9g2lQlFw==
-X-Google-Smtp-Source: ABdhPJxK5Pg90c0+JTtmWbark/tL3Qlyr/DRIZ1JSHln2ehMftzFJstYHoGeuu5x3dUyK0eJCWTOCBOKuZDmD3Xamgk=
-X-Received: by 2002:a0c:c583:: with SMTP id a3mr5176021qvj.2.1605713426500;
- Wed, 18 Nov 2020 07:30:26 -0800 (PST)
+        Wed, 18 Nov 2020 10:46:03 -0500
+Received: from cmgw12.unifiedlayer.com (unknown [10.9.0.12])
+        by gproxy3.mail.unifiedlayer.com (Postfix) with ESMTP id 1E6C840274
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:21:03 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id fPGYk5VPOeMJHfPGYkE9K4; Wed, 18 Nov 2020 08:21:03 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=XoLUx2N9 c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=nNwsprhYR40A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=gAnH3GRIAAAA:8
+ a=orx1m2IVeNyU1SGiEpsA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=oVHKYsEdi7-vN-J5QA_j:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=MG1Pe5b9gOp+QsfW2IYJZdVPI+qgDMHAO+V4Clvd6ps=; b=VTfwCaRv1EMC80SLorAXAK3LFN
+        AOfS1yQgwAoknQ61znasQQThLmEitTU/g8uh8kUgIb7bGtrprbL38uhTQbdtvwQ8YfLdTtUm+EfkI
+        7ww9Vnmze8C8wpA8953sphnYnRoBVPYvsw6dltYg7T5Lhaff2aZvZJ1zqOzZOcagQqOxwOzzhFVgs
+        Q3/V3S6rsjjBEs1We1qrdV2+FLU9mXvPyzC1fH5q8M8XR5lW9yfpqKkOeKlgwmJumXRkOUzHCnomy
+        Rmnc26uUbeq5qCXSgEx9M5G0buI0NK91n1/9oaIAH3Y4ibfE27Ta8KOBmNNaih/Ob2XCwIjwMoDEt
+        eelQbhIg==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:54746 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kfPGY-000z4j-7o; Wed, 18 Nov 2020 15:21:02 +0000
+Date:   Wed, 18 Nov 2020 07:21:01 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-hwmon@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, jdelvare@suse.com,
+        "Thoren, Mark" <mark.thoren@analog.com>
+Subject: Re: [PATCH v2 3/4] hwmon: (ltc2945): add support for sense resistor
+Message-ID: <20201118152101.GB174391@roeck-us.net>
+References: <20201111091259.46773-1-alexandru.ardelean@analog.com>
+ <20201111091259.46773-4-alexandru.ardelean@analog.com>
+ <CA+U=Dsqh1MDGjWfULdnmw5+2tTD4dutiodqr+uCdPhsFMbs=iQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1605305705.git.andreyknvl@google.com> <c305a433db6fe8ef194cddf8615db0ef7a3b0355.1605305705.git.andreyknvl@google.com>
-In-Reply-To: <c305a433db6fe8ef194cddf8615db0ef7a3b0355.1605305705.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 18 Nov 2020 16:30:15 +0100
-Message-ID: <CAG_fn=Wy7fLJd46=N9U-yQAQreioEf2ny+CGNmhUVYpbWiXA1Q@mail.gmail.com>
-Subject: Re: [PATCH mm v10 05/42] kasan: rename (un)poison_shadow to (un)poison_range
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+U=Dsqh1MDGjWfULdnmw5+2tTD4dutiodqr+uCdPhsFMbs=iQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kfPGY-000z4j-7o
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:54746
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 12
+X-Org:  HG=direseller_whb_net_legacy;ORG=directi;
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 11:16 PM Andrey Konovalov <andreyknvl@google.com> w=
-rote:
->
-> This is a preparatory commit for the upcoming addition of a new hardware
-> tag-based (MTE-based) KASAN mode.
->
-> The new mode won't be using shadow memory. Rename external annotation
-> kasan_unpoison_shadow() to kasan_unpoison_range(), and introduce internal
-> functions (un)poison_range() (without kasan_ prefix).
->
-> Co-developed-by: Marco Elver <elver@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+On Wed, Nov 18, 2020 at 04:43:07PM +0200, Alexandru Ardelean wrote:
+> On Wed, Nov 11, 2020 at 11:08 AM Alexandru Ardelean
+> <alexandru.ardelean@analog.com> wrote:
+> >
+> > The sense resistor is a parameter of the board. It should be configured in
+> > the driver via a device-tree / ACPI property, so that the proper current
+> > measurements can be done in the driver.
+> >
+> > It shouldn't be necessary that userspace need to know about the value of
+> > the resistor. It makes things a bit harder to make the application code
+> > portable from one board to another.
+> >
+> > This change implements support for the sense resistor to be configured from
+> > DT/ACPI and used in current calculations.
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/hwmon/ltc2945.c | 53 ++++++++++++++++++++---------------------
+> >  1 file changed, 26 insertions(+), 27 deletions(-)
+> >
+> > diff --git a/drivers/hwmon/ltc2945.c b/drivers/hwmon/ltc2945.c
+> > index 6d4569a25471..909dd92a7a20 100644
+> > --- a/drivers/hwmon/ltc2945.c
+> > +++ b/drivers/hwmon/ltc2945.c
+> > @@ -61,9 +61,11 @@
+> >  /**
+> >   * struct ltc2945_state - driver instance specific data
+> >   * @regmap             regmap object to access device registers
+> > + * @r_sense_uohm       current sense resistor value
+> >   */
+> >  struct ltc2945_state {
+> >         struct regmap           *regmap;
+> > +       u32                     r_sense_uohm;
+> >  };
+> >
+> >  static inline bool is_power_reg(u8 reg)
+> > @@ -101,9 +103,8 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
+> >         case LTC2945_MAX_POWER_THRES_H:
+> >         case LTC2945_MIN_POWER_THRES_H:
+> >                 /*
+> > -                * Convert to uW by assuming current is measured with
+> > -                * an 1mOhm sense resistor, similar to current
+> > -                * measurements.
+> > +                * Convert to uW by and scale it with the configured
+> > +                * sense resistor, similar to current measurements.
+> >                  * Control register bit 0 selects if voltage at SENSE+/VDD
+> >                  * or voltage at ADIN is used to measure power.
+> >                  */
+> > @@ -112,10 +113,10 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
+> >                         return ret;
+> >                 if (control & CONTROL_MULT_SELECT) {
+> >                         /* 25 mV * 25 uV = 0.625 uV resolution. */
+> > -                       val *= 625LL;
+> > +                       val = DIV_ROUND_CLOSEST_ULL(val * 625LL * 1000, st->r_sense_uohm);
+> >                 } else {
+> >                         /* 0.5 mV * 25 uV = 0.0125 uV resolution. */
+> > -                       val = (val * 25LL) >> 1;
+> > +                       val = DIV_ROUND_CLOSEST_ULL(val * 25LL * 1000, st->r_sense_uohm) >> 1;
+> >                 }
+> >                 break;
+> >         case LTC2945_VIN_H:
+> > @@ -140,13 +141,10 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
+> >         case LTC2945_MAX_SENSE_THRES_H:
+> >         case LTC2945_MIN_SENSE_THRES_H:
+> >                 /*
+> > -                * 25 uV resolution. Convert to current as measured with
+> > -                * an 1 mOhm sense resistor, in mA. If a different sense
+> > -                * resistor is installed, calculate the actual current by
+> > -                * dividing the reported current by the sense resistor value
+> > -                * in mOhm.
+> > +                * 25 uV resolution. Convert to current and scale it
+> > +                * with the value of the sense resistor.
+> >                  */
+> > -               val *= 25;
+> > +               val = DIV_ROUND_CLOSEST_ULL(val * 25 * 1000, st->r_sense_uohm);
+> >                 break;
+> >         default:
+> >                 return -EINVAL;
+> > @@ -169,9 +167,8 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+> >         case LTC2945_MAX_POWER_THRES_H:
+> >         case LTC2945_MIN_POWER_THRES_H:
+> >                 /*
+> > -                * Convert to register value by assuming current is measured
+> > -                * with an 1mOhm sense resistor, similar to current
+> > -                * measurements.
+> > +                * Convert to register value, scale it with the configured sense
+> > +                * resistor value, similar to current measurements.
+> >                  * Control register bit 0 selects if voltage at SENSE+/VDD
+> >                  * or voltage at ADIN is used to measure power, which in turn
+> >                  * determines register calculations.
+> > @@ -181,14 +178,10 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+> >                         return ret;
+> >                 if (control & CONTROL_MULT_SELECT) {
+> >                         /* 25 mV * 25 uV = 0.625 uV resolution. */
+> > -                       val = DIV_ROUND_CLOSEST_ULL(val, 625);
+> > +                       val = DIV_ROUND_CLOSEST_ULL(val * 1000, 625 * st->r_sense_uohm);
+> 
+> I think that in this ltc2945_val_to_reg(), I should do the math the
+> other way around.
+> i.e.    val = DIV_ROUND_CLOSEST_ULL(val * st->r_sense_uohm, 625000);
+> 
+> I got confused initially and did it wrong.
+> 
+Good catch.
 
-> ---
-> Change-Id: Ia359f32815242c4704e49a5f1639ca2d2f8cba69
-> ---
->  include/linux/kasan.h |  6 +++---
->  kernel/fork.c         |  4 ++--
->  mm/kasan/common.c     | 49 ++++++++++++++++++++++++-------------------
->  mm/kasan/generic.c    | 23 ++++++++++----------
->  mm/kasan/kasan.h      |  3 ++-
->  mm/kasan/tags.c       |  2 +-
->  mm/slab_common.c      |  2 +-
->  7 files changed, 47 insertions(+), 42 deletions(-)
->
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 26f2ab92e7ca..d237051dca58 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -71,7 +71,7 @@ extern void kasan_enable_current(void);
->  /* Disable reporting bugs for current task */
->  extern void kasan_disable_current(void);
->
-> -void kasan_unpoison_shadow(const void *address, size_t size);
-> +void kasan_unpoison_range(const void *address, size_t size);
->
->  void kasan_unpoison_task_stack(struct task_struct *task);
->
-> @@ -108,7 +108,7 @@ struct kasan_cache {
->  size_t __ksize(const void *);
->  static inline void kasan_unpoison_slab(const void *ptr)
->  {
-> -       kasan_unpoison_shadow(ptr, __ksize(ptr));
-> +       kasan_unpoison_range(ptr, __ksize(ptr));
->  }
->  size_t kasan_metadata_size(struct kmem_cache *cache);
->
-> @@ -117,7 +117,7 @@ void kasan_restore_multi_shot(bool enabled);
->
->  #else /* CONFIG_KASAN */
->
-> -static inline void kasan_unpoison_shadow(const void *address, size_t siz=
-e) {}
-> +static inline void kasan_unpoison_range(const void *address, size_t size=
-) {}
->
->  static inline void kasan_unpoison_task_stack(struct task_struct *task) {=
-}
->
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 15f189bb8ec4..bee52236f09b 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -225,8 +225,8 @@ static unsigned long *alloc_thread_stack_node(struct =
-task_struct *tsk, int node)
->                 if (!s)
->                         continue;
->
-> -               /* Clear the KASAN shadow of the stack. */
-> -               kasan_unpoison_shadow(s->addr, THREAD_SIZE);
-> +               /* Mark stack accessible for KASAN. */
-> +               kasan_unpoison_range(s->addr, THREAD_SIZE);
->
->                 /* Clear stale pointers from reused stack. */
->                 memset(s->addr, 0, THREAD_SIZE);
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index f5739be60edc..6adbf5891aff 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -109,7 +109,7 @@ void *memcpy(void *dest, const void *src, size_t len)
->   * Poisons the shadow memory for 'size' bytes starting from 'addr'.
->   * Memory addresses should be aligned to KASAN_SHADOW_SCALE_SIZE.
->   */
-> -void kasan_poison_shadow(const void *address, size_t size, u8 value)
-> +void poison_range(const void *address, size_t size, u8 value)
->  {
->         void *shadow_start, *shadow_end;
->
-> @@ -130,7 +130,7 @@ void kasan_poison_shadow(const void *address, size_t =
-size, u8 value)
->         __memset(shadow_start, value, shadow_end - shadow_start);
->  }
->
-> -void kasan_unpoison_shadow(const void *address, size_t size)
-> +void unpoison_range(const void *address, size_t size)
->  {
->         u8 tag =3D get_tag(address);
->
-> @@ -149,7 +149,7 @@ void kasan_unpoison_shadow(const void *address, size_=
-t size)
->         if (is_kfence_address(address))
->                 return;
->
-> -       kasan_poison_shadow(address, size, tag);
-> +       poison_range(address, size, tag);
->
->         if (size & KASAN_SHADOW_MASK) {
->                 u8 *shadow =3D (u8 *)kasan_mem_to_shadow(address + size);
-> @@ -161,12 +161,17 @@ void kasan_unpoison_shadow(const void *address, siz=
-e_t size)
->         }
->  }
->
-> +void kasan_unpoison_range(const void *address, size_t size)
-> +{
-> +       unpoison_range(address, size);
-> +}
-> +
->  static void __kasan_unpoison_stack(struct task_struct *task, const void =
-*sp)
->  {
->         void *base =3D task_stack_page(task);
->         size_t size =3D sp - base;
->
-> -       kasan_unpoison_shadow(base, size);
-> +       unpoison_range(base, size);
->  }
->
->  /* Unpoison the entire stack for a task. */
-> @@ -185,7 +190,7 @@ asmlinkage void kasan_unpoison_task_stack_below(const=
- void *watermark)
->          */
->         void *base =3D (void *)((unsigned long)watermark & ~(THREAD_SIZE =
-- 1));
->
-> -       kasan_unpoison_shadow(base, watermark - base);
-> +       unpoison_range(base, watermark - base);
->  }
->
->  void kasan_alloc_pages(struct page *page, unsigned int order)
-> @@ -199,13 +204,13 @@ void kasan_alloc_pages(struct page *page, unsigned =
-int order)
->         tag =3D random_tag();
->         for (i =3D 0; i < (1 << order); i++)
->                 page_kasan_tag_set(page + i, tag);
-> -       kasan_unpoison_shadow(page_address(page), PAGE_SIZE << order);
-> +       unpoison_range(page_address(page), PAGE_SIZE << order);
->  }
->
->  void kasan_free_pages(struct page *page, unsigned int order)
->  {
->         if (likely(!PageHighMem(page)))
-> -               kasan_poison_shadow(page_address(page),
-> +               poison_range(page_address(page),
->                                 PAGE_SIZE << order,
->                                 KASAN_FREE_PAGE);
->  }
-> @@ -297,18 +302,18 @@ void kasan_poison_slab(struct page *page)
->
->         for (i =3D 0; i < compound_nr(page); i++)
->                 page_kasan_tag_reset(page + i);
-> -       kasan_poison_shadow(page_address(page), page_size(page),
-> -                       KASAN_KMALLOC_REDZONE);
-> +       poison_range(page_address(page), page_size(page),
-> +                    KASAN_KMALLOC_REDZONE);
->  }
->
->  void kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
->  {
-> -       kasan_unpoison_shadow(object, cache->object_size);
-> +       unpoison_range(object, cache->object_size);
->  }
->
->  void kasan_poison_object_data(struct kmem_cache *cache, void *object)
->  {
-> -       kasan_poison_shadow(object,
-> +       poison_range(object,
->                         round_up(cache->object_size, KASAN_SHADOW_SCALE_S=
-IZE),
->                         KASAN_KMALLOC_REDZONE);
->  }
-> @@ -424,7 +429,7 @@ static bool __kasan_slab_free(struct kmem_cache *cach=
-e, void *object,
->         }
->
->         rounded_up_size =3D round_up(cache->object_size, KASAN_SHADOW_SCA=
-LE_SIZE);
-> -       kasan_poison_shadow(object, rounded_up_size, KASAN_KMALLOC_FREE);
-> +       poison_range(object, rounded_up_size, KASAN_KMALLOC_FREE);
->
->         if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine) ||
->                         unlikely(!(cache->flags & SLAB_KASAN)))
-> @@ -467,9 +472,9 @@ static void *__kasan_kmalloc(struct kmem_cache *cache=
-, const void *object,
->                 tag =3D assign_tag(cache, object, false, keep_tag);
->
->         /* Tag is ignored in set_tag without CONFIG_KASAN_SW_TAGS */
-> -       kasan_unpoison_shadow(set_tag(object, tag), size);
-> -       kasan_poison_shadow((void *)redzone_start, redzone_end - redzone_=
-start,
-> -               KASAN_KMALLOC_REDZONE);
-> +       unpoison_range(set_tag(object, tag), size);
-> +       poison_range((void *)redzone_start, redzone_end - redzone_start,
-> +                    KASAN_KMALLOC_REDZONE);
->
->         if (cache->flags & SLAB_KASAN)
->                 kasan_set_track(&get_alloc_info(cache, object)->alloc_tra=
-ck, flags);
-> @@ -508,9 +513,9 @@ void * __must_check kasan_kmalloc_large(const void *p=
-tr, size_t size,
->                                 KASAN_SHADOW_SCALE_SIZE);
->         redzone_end =3D (unsigned long)ptr + page_size(page);
->
-> -       kasan_unpoison_shadow(ptr, size);
-> -       kasan_poison_shadow((void *)redzone_start, redzone_end - redzone_=
-start,
-> -               KASAN_PAGE_REDZONE);
-> +       unpoison_range(ptr, size);
-> +       poison_range((void *)redzone_start, redzone_end - redzone_start,
-> +                    KASAN_PAGE_REDZONE);
->
->         return (void *)ptr;
->  }
-> @@ -542,7 +547,7 @@ void kasan_poison_kfree(void *ptr, unsigned long ip)
->                         kasan_report_invalid_free(ptr, ip);
->                         return;
->                 }
-> -               kasan_poison_shadow(ptr, page_size(page), KASAN_FREE_PAGE=
-);
-> +               poison_range(ptr, page_size(page), KASAN_FREE_PAGE);
->         } else {
->                 __kasan_slab_free(page->slab_cache, ptr, ip, false);
->         }
-> @@ -728,7 +733,7 @@ int kasan_populate_vmalloc(unsigned long addr, unsign=
-ed long size)
->          * // vmalloc() allocates memory
->          * // let a =3D area->addr
->          * // we reach kasan_populate_vmalloc
-> -        * // and call kasan_unpoison_shadow:
-> +        * // and call unpoison_range:
->          * STORE shadow(a), unpoison_val
->          * ...
->          * STORE shadow(a+99), unpoison_val     x =3D LOAD p
-> @@ -763,7 +768,7 @@ void kasan_poison_vmalloc(const void *start, unsigned=
- long size)
->                 return;
->
->         size =3D round_up(size, KASAN_SHADOW_SCALE_SIZE);
-> -       kasan_poison_shadow(start, size, KASAN_VMALLOC_INVALID);
-> +       poison_range(start, size, KASAN_VMALLOC_INVALID);
->  }
->
->  void kasan_unpoison_vmalloc(const void *start, unsigned long size)
-> @@ -771,7 +776,7 @@ void kasan_unpoison_vmalloc(const void *start, unsign=
-ed long size)
->         if (!is_vmalloc_or_module_addr(start))
->                 return;
->
-> -       kasan_unpoison_shadow(start, size);
-> +       unpoison_range(start, size);
->  }
->
->  static int kasan_depopulate_vmalloc_pte(pte_t *ptep, unsigned long addr,
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index d6a386255007..cdc2d8112f3e 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -203,11 +203,11 @@ static void register_global(struct kasan_global *gl=
-obal)
->  {
->         size_t aligned_size =3D round_up(global->size, KASAN_SHADOW_SCALE=
-_SIZE);
->
-> -       kasan_unpoison_shadow(global->beg, global->size);
-> +       unpoison_range(global->beg, global->size);
->
-> -       kasan_poison_shadow(global->beg + aligned_size,
-> -               global->size_with_redzone - aligned_size,
-> -               KASAN_GLOBAL_REDZONE);
-> +       poison_range(global->beg + aligned_size,
-> +                    global->size_with_redzone - aligned_size,
-> +                    KASAN_GLOBAL_REDZONE);
->  }
->
->  void __asan_register_globals(struct kasan_global *globals, size_t size)
-> @@ -286,13 +286,12 @@ void __asan_alloca_poison(unsigned long addr, size_=
-t size)
->
->         WARN_ON(!IS_ALIGNED(addr, KASAN_ALLOCA_REDZONE_SIZE));
->
-> -       kasan_unpoison_shadow((const void *)(addr + rounded_down_size),
-> -                             size - rounded_down_size);
-> -       kasan_poison_shadow(left_redzone, KASAN_ALLOCA_REDZONE_SIZE,
-> -                       KASAN_ALLOCA_LEFT);
-> -       kasan_poison_shadow(right_redzone,
-> -                       padding_size + KASAN_ALLOCA_REDZONE_SIZE,
-> -                       KASAN_ALLOCA_RIGHT);
-> +       unpoison_range((const void *)(addr + rounded_down_size),
-> +                      size - rounded_down_size);
-> +       poison_range(left_redzone, KASAN_ALLOCA_REDZONE_SIZE,
-> +                    KASAN_ALLOCA_LEFT);
-> +       poison_range(right_redzone, padding_size + KASAN_ALLOCA_REDZONE_S=
-IZE,
-> +                    KASAN_ALLOCA_RIGHT);
->  }
->  EXPORT_SYMBOL(__asan_alloca_poison);
->
-> @@ -302,7 +301,7 @@ void __asan_allocas_unpoison(const void *stack_top, c=
-onst void *stack_bottom)
->         if (unlikely(!stack_top || stack_top > stack_bottom))
->                 return;
->
-> -       kasan_unpoison_shadow(stack_top, stack_bottom - stack_top);
-> +       unpoison_range(stack_top, stack_bottom - stack_top);
->  }
->  EXPORT_SYMBOL(__asan_allocas_unpoison);
->
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index ac499456740f..42ab02c61331 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -150,7 +150,8 @@ static inline bool addr_has_shadow(const void *addr)
->         return (addr >=3D kasan_shadow_to_mem((void *)KASAN_SHADOW_START)=
-);
->  }
->
-> -void kasan_poison_shadow(const void *address, size_t size, u8 value);
-> +void poison_range(const void *address, size_t size, u8 value);
-> +void unpoison_range(const void *address, size_t size);
->
->  /**
->   * check_memory_region - Check memory region, and report if invalid acce=
-ss.
-> diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
-> index 5c8b08a25715..c0b3f327812b 100644
-> --- a/mm/kasan/tags.c
-> +++ b/mm/kasan/tags.c
-> @@ -153,7 +153,7 @@ EXPORT_SYMBOL(__hwasan_storeN_noabort);
->
->  void __hwasan_tag_memory(unsigned long addr, u8 tag, unsigned long size)
->  {
-> -       kasan_poison_shadow((void *)addr, size, tag);
-> +       poison_range((void *)addr, size, tag);
->  }
->  EXPORT_SYMBOL(__hwasan_tag_memory);
->
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 479d17b90155..0b5ae1819a8b 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1179,7 +1179,7 @@ size_t ksize(const void *objp)
->          * We assume that ksize callers could use whole allocated area,
->          * so we need to unpoison this area.
->          */
-> -       kasan_unpoison_shadow(objp, size);
-> +       kasan_unpoison_range(objp, size);
->         return size;
->  }
->  EXPORT_SYMBOL(ksize);
-> --
-> 2.29.2.299.gdc1121823c-goog
->
+Guenter
 
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+> >                 } else {
+> > -                       /*
+> > -                        * 0.5 mV * 25 uV = 0.0125 uV resolution.
+> > -                        * Divide first to avoid overflow;
+> > -                        * accept loss of accuracy.
+> > -                        */
+> > -                       val = DIV_ROUND_CLOSEST_ULL(val, 25) * 2;
+> > +                       /* 0.5 mV * 25 uV = 0.0125 uV resolution. */
+> > +                       val = DIV_ROUND_CLOSEST_ULL(val * 2 * 1000, 25 * st->r_sense_uohm);
+> >                 }
+> >                 break;
+> >         case LTC2945_VIN_H:
+> > @@ -213,13 +206,10 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+> >         case LTC2945_MAX_SENSE_THRES_H:
+> >         case LTC2945_MIN_SENSE_THRES_H:
+> >                 /*
+> > -                * 25 uV resolution. Convert to current as measured with
+> > -                * an 1 mOhm sense resistor, in mA. If a different sense
+> > -                * resistor is installed, calculate the actual current by
+> > -                * dividing the reported current by the sense resistor value
+> > -                * in mOhm.
+> > +                * 25 uV resolution. Convert to current and scale it
+> > +                * with the value of the sense resistor, in mA.
+> >                  */
+> > -               val = DIV_ROUND_CLOSEST_ULL(val, 25);
+> > +               val = DIV_ROUND_CLOSEST_ULL(val * 1000, 25 * st->r_sense_uohm);
+> >                 break;
+> >         default:
+> >                 return -EINVAL;
+> > @@ -475,6 +465,15 @@ static int ltc2945_probe(struct i2c_client *client)
+> >                 return PTR_ERR(regmap);
+> >         }
+> >
+> > +       if (device_property_read_u32(dev, "shunt-resistor-micro-ohms",
+> > +                                    &st->r_sense_uohm))
+> > +               st->r_sense_uohm = 1000;
+> > +
+> > +       if (st->r_sense_uohm == 0) {
+> > +               dev_err(dev, "Zero value provided for sense resistor in DT");
+> > +               return -EINVAL;
+> > +       }
+> > +
+> >         st->regmap = regmap;
+> >
+> >         /* Clear faults */
+> > --
+> > 2.17.1
+> >
