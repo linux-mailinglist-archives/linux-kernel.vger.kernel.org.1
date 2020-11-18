@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1422B7EB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A378C2B7EB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgKRN5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:57:18 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:53307 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgKRN5R (ORCPT
+        id S1726501AbgKRN5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:57:36 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57889 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgKRN5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:57:17 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kfNxM-0006lO-Tk; Wed, 18 Nov 2020 14:57:08 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kfNxL-0004WC-U6; Wed, 18 Nov 2020 14:57:07 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 188BB240041;
-        Wed, 18 Nov 2020 14:57:04 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 8DE49240040;
-        Wed, 18 Nov 2020 14:57:03 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 2B85220370;
-        Wed, 18 Nov 2020 14:57:02 +0100 (CET)
+        Wed, 18 Nov 2020 08:57:36 -0500
+Received: from fsav110.sakura.ne.jp (fsav110.sakura.ne.jp [27.133.134.237])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0AIDv8Au020864;
+        Wed, 18 Nov 2020 22:57:08 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav110.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav110.sakura.ne.jp);
+ Wed, 18 Nov 2020 22:57:08 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav110.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0AIDv8Pa020860
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 18 Nov 2020 22:57:08 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH v3] lockdep: Allow tuning tracing capacity constants.
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+ <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
+ <0eb519fa-e77b-b655-724a-4e9eecc64626@i-love.sakura.ne.jp>
+ <6933e938-f219-5e13-aee6-fe4de87eb43e@i-love.sakura.ne.jp>
+Message-ID: <81ab0ffd-6e80-c96c-053a-b1b4fe8694c1@i-love.sakura.ne.jp>
+Date:   Wed, 18 Nov 2020 22:57:08 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <6933e938-f219-5e13-aee6-fe4de87eb43e@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 18 Nov 2020 14:57:02 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2 5/6] net/lapb: support netdev events
-Organization: TDT AG
-In-Reply-To: <CAJht_EMd5iKmdvePgYzWYXnG=5LxQopStzz_Lk9uNSkRyrudqw@mail.gmail.com>
-References: <20201116135522.21791-1-ms@dev.tdt.de>
- <20201116135522.21791-6-ms@dev.tdt.de>
- <CAJht_EM-ic4-jtN7e9F6zcJgG3OTw_ePXiiH1i54M+Sc8zq6bg@mail.gmail.com>
- <f3ab8d522b2bcd96506352656a1ef513@dev.tdt.de>
- <CAJht_EPN=hXsGLsCSxj1bB8yTYNOe=yUzwtrtnMzSybiWhL-9Q@mail.gmail.com>
- <c0c2cedad399b12d152d2610748985fc@dev.tdt.de>
- <CAJht_EO=G94_xoCupr_7Tt_-kjYxZVfs2n4CTa14mXtu7oYMjg@mail.gmail.com>
- <c60fe64ff67e244bbe9971cfa08713db@dev.tdt.de>
- <CAJht_EOSZRV9uBcRYq6OBLwFOX7uE9Nox+sFv-U0SXRkLaNBrQ@mail.gmail.com>
- <CAJht_EMd5iKmdvePgYzWYXnG=5LxQopStzz_Lk9uNSkRyrudqw@mail.gmail.com>
-Message-ID: <b494372c616c811ab8814e42c907434f@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.15
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-ID: 151534::1605707828-00000FB8-740E6CBA/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-18 14:46, Xie He wrote:
-> On Wed, Nov 18, 2020 at 5:03 AM Xie He <xie.he.0141@gmail.com> wrote:
->> 
->> On Wed, Nov 18, 2020 at 12:49 AM Martin Schiller <ms@dev.tdt.de> 
->> wrote:
->> >
->> > I also have a patch here that implements an "on demand" link feature,
->> > which we used for ISDN dialing connections.
->> > As ISDN is de facto dead, this is not relevant anymore. But if we want
->> > such kind of feature, I think we need to stay with the method to control
->> > L2 link state from L3.
->> 
->> I see. Hmm...
->> 
->> I guess for ISDN, the current code (before this patch series) is the
->> best. We only establish the connection when L3 has packets to send.
->> 
->> Can we do this? We let L2 handle all device-up / device-down /
->> carrier-up / carrier-down events. And when L3 has some packets to send
->> but it still finds the L2 link is not up, it will then instruct L2 to
->> connect.
->> 
->> This way we may be able to both keep the logic simple and still keep
->> L3 compatible with ISDN.
+Peter, do you have a plan to make this problem actionable?
+
+On 2020/10/18 22:02, Tetsuo Handa wrote:
+> Peter, what do you think? Can we apply this patch?
 > 
-> Another solution might be letting ISDN automatically connect when it
-> receives the first packet from L3. This way we can still free L3 from
-> all handlings of L2 connections.
+> A potential for-now workaround for syzkaller would be to allow syzkaller
+> not to encounter the BUG: message (by masking BUG: message on the kernel
+> side) when hitting these limits, for continue testing until the kernel
+> crashes (due to other bugs like UAF) would be to some degree useful.
+> 
+> On 2020/10/10 21:58, Tetsuo Handa wrote:
+>> Since syzkaller continues various test cases until the kernel crashes,
+>> syzkaller tends to examine more locking dependencies than normal systems.
+>> As a result, syzbot is reporting that the fuzz testing was terminated
+>> due to hitting upper limits lockdep can track [1] [2] [3].
+>>
+>> Peter Zijlstra does not want to allow tuning these limits via kernel
+>> config options, for such change discourages thinking. But currently we
+>> are not actionable, for lockdep does not report the culprit for hitting
+>> these limits [4].
+>>
+>> Therefore, I propose this patch again, with a caveat that this patch is
+>> expected to be reverted after lockdep becomes capable of reporting the
+>> culprit, for I consider that "postpone fixing lock related problems in
+>> existing code" is less painful than "not detecting lock related problems
+>> introduced by new patches".
+>>
+>> [1] https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
+>> [2] https://syzkaller.appspot.com/bug?id=381cb436fe60dc03d7fd2a092b46d7f09542a72a
+>> [3] https://syzkaller.appspot.com/bug?id=a588183ac34c1437fc0785e8f220e88282e5a29f
+>> [4] https://lkml.kernel.org/r/CACT4Y+agTiEF-1i9LbAgp-q_02oYF0kAPZGAAJ==-wx2Xh7xzQ@mail.gmail.com
+>>
+>> Reported-by: syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
+>> Reported-by: syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>
+>> Reported-by: syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
+>> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+>> Acked-by: Dmitry Vyukov <dvyukov@google.com>
+>> ---
+>>  kernel/locking/lockdep.c           |  2 +-
+>>  kernel/locking/lockdep_internals.h |  8 +++---
+>>  lib/Kconfig.debug                  | 40 ++++++++++++++++++++++++++++++
+>>  3 files changed, 45 insertions(+), 5 deletions(-)
 
-ISDN is not important now. Also the I4L subsystem has been removed.
-
-I have now completely reworked the patch-set and it is now much tidier.
-For now I left the event handling completely in X.25 (L3).
-
-I will now send the whole thing as v3 and we can discuss it further.
