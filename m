@@ -2,219 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68082B7F72
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DCA2B7F74
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgKRObp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 09:31:45 -0500
-Received: from mga03.intel.com ([134.134.136.65]:35421 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726384AbgKRObo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:31:44 -0500
-IronPort-SDR: mEg5nfb/sCLT1r9Dtrrt7ZdLUiRYxa1mfJa4XaaaeF1S/6D+5Tjw0gLxBPmmXVY6Zc8spYl67B
- H8bSz8UdLagA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="171220152"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="171220152"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 06:31:43 -0800
-IronPort-SDR: F8kZ31vTEk2BL7o09WEYW3i9vp/BPeuQvFe0DT6rWAtKnIIJRT+opLWBRoBeHgLgnNMSLXqi5j
- LVgRYMwVJ+cg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="330520915"
-Received: from lkp-server02.sh.intel.com (HELO 67996b229c47) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 18 Nov 2020 06:31:42 -0800
-Received: from kbuild by 67996b229c47 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kfOUn-000089-DY; Wed, 18 Nov 2020 14:31:41 +0000
-Date:   Wed, 18 Nov 2020 22:31:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/clang-ft/lib] BUILD SUCCESS
- 02ec42c445b349042b8361294a9ff72fc3193f18
-Message-ID: <5fb5302b.ouyVOXQVexOnInAp%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726875AbgKRObt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 09:31:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbgKRObs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 09:31:48 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79025C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 06:31:48 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h21so2918342wmb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 06:31:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=77gMImcbngsyFF3Kh1bUZt4EqmcmVNO0vErBUFdwx2w=;
+        b=v2fvZNY+grT4giPGpG9AfdPemDFWlwFtdYpSOwbiaa6C9E4b1baIyzdWzuiGTlP7eS
+         x7msBmtS2wkxDsy31kncXI7VGq0s/mnzfn74IKGpc1i9+QNjhLrd7j+dFe092Cn0dDjV
+         KDBBZOuI5jZ5RjWsPPQtrwxEdGd6luqcgoD6zYO/sgtdKiCG8KBvsAVG/Iv4p8wQs65p
+         mC5FtsmnqYnaDPfAvok/8WjV3T/akvz3RfZ2fgPXDWOAAS9WeK3XU9DWqe06ehUMfZRc
+         /cUuRFAjKY3RD2J+A4EDKh5NRVcvHAClSrOyTCdwStFA3FuqGktmyzt85/OESDbT0Ssf
+         k3Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=77gMImcbngsyFF3Kh1bUZt4EqmcmVNO0vErBUFdwx2w=;
+        b=uDZb+GFjjzP1h7mqunKXlKOdlOCD7U4zkuiJWjkbzoXGMm3twsEdl62jMVlHnROpIA
+         0ef4vrQwF3itYjYDzpdYkQAruGkziW9kiAzVPNNNHLloy9MAavf3d37eWZF2tNhe8om3
+         e7sCTS8UG6PIunGSdgHf684Jwbr+8RSATKVMj0Pr64jopwarWetlGULRCt2V4YKg9+Yp
+         z6UeATZHww/ixp319+5b18TBsVqTtldJR5kC8fBaS0qjrZr+q3nDBfMSw8PBqWgy54tr
+         jGbduk0n/5Ico7c47SSCedGmLQa9wwega922mBJUg1RWi+kscSIFiOb8o+bIxXnwINt6
+         VatQ==
+X-Gm-Message-State: AOAM532NwFd0IRQqn/Meyk2LWOiuyfiZGTIH4DgXyTY4p9ahfmGkWyBv
+        ie0nenXCgIx5yqOZcG8wL3qUtQ==
+X-Google-Smtp-Source: ABdhPJyiO0C6fIniO9A8G4+oXO/BFYBEEq1ifMK+gP7zPSNkLa+obZh4pOi4zfnF+eiaqN3P59YUgA==
+X-Received: by 2002:a7b:cbc8:: with SMTP id n8mr334272wmi.124.1605709906953;
+        Wed, 18 Nov 2020 06:31:46 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id u5sm28800161wro.56.2020.11.18.06.31.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 06:31:45 -0800 (PST)
+Date:   Wed, 18 Nov 2020 14:31:42 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        android-kvm@google.com
+Subject: Re: [RFC PATCH 15/27] of/fdt: Introduce
+ early_init_dt_add_memory_hyp()
+Message-ID: <20201118143142.GA2220979@google.com>
+References: <20201117181607.1761516-1-qperret@google.com>
+ <20201117181607.1761516-16-qperret@google.com>
+ <CAL_Jsq+xAy9+HjH6vqfmaAEKBe9MMm+wWvUtiz5dFnHmMneqNw@mail.gmail.com>
+ <20201118092547.GA2031536@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201118092547.GA2031536@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/clang-ft/lib
-branch HEAD: 02ec42c445b349042b8361294a9ff72fc3193f18  powerpc: fix -Wimplicit-fallthrough
+On Wednesday 18 Nov 2020 at 09:25:47 (+0000), Quentin Perret wrote:
+> I'll have a go at the memblock stuff to see if I find a way to make it
+> work from that angle.
 
-elapsed time: 724m
+OK, no luck with the memblock API, but I figured that I can actually
+postpone the KVM memory reservation to a later point, after
+unflatten_device_tree(), which lets me iterate over the memory nodes
+directly rather than having the fdt driver do it for me.
 
-configs tested: 155
-configs skipped: 2
+The below seems to boot alright (though I'm not too familiar with
+of_address_to_resource() so I may not be using right) and keeps the
+whole thing in arch/arm64. Thoughts?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks,
+Quentin
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     mpc5200_defconfig
-m68k                            mac_defconfig
-arm                          tango4_defconfig
-arm                        spear3xx_defconfig
-arm                            hisi_defconfig
-arm                         assabet_defconfig
-powerpc                     kmeter1_defconfig
-sh                     sh7710voipgw_defconfig
-sh                         ecovec24_defconfig
-powerpc                 mpc8315_rdb_defconfig
-sh                          landisk_defconfig
-powerpc                        warp_defconfig
-arm                            u300_defconfig
-mips                           ci20_defconfig
-arm                          exynos_defconfig
-mips                 decstation_r4k_defconfig
-mips                      maltasmvp_defconfig
-arc                         haps_hs_defconfig
-sh                   sh7770_generic_defconfig
-mips                      loongson3_defconfig
-arm                            mps2_defconfig
-arc                     nsimosci_hs_defconfig
-mips                            ar7_defconfig
-powerpc                      cm5200_defconfig
-mips                          malta_defconfig
-openrisc                    or1ksim_defconfig
-arm                         shannon_defconfig
-h8300                       h8s-sim_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                    klondike_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                    gamecube_defconfig
-sh                                  defconfig
-mips                        omega2p_defconfig
-arm                         mv78xx0_defconfig
-powerpc                           allnoconfig
-mips                malta_kvm_guest_defconfig
-arc                                 defconfig
-powerpc                     redwood_defconfig
-mips                          rb532_defconfig
-h8300                    h8300h-sim_defconfig
-arc                          axs103_defconfig
-sh                          rsk7203_defconfig
-powerpc                      pcm030_defconfig
-openrisc                         alldefconfig
-sparc                               defconfig
-powerpc                     kilauea_defconfig
-arm                         socfpga_defconfig
-powerpc                 mpc8313_rdb_defconfig
-sh                        edosk7760_defconfig
-sh                               j2_defconfig
-xtensa                  cadence_csp_defconfig
-sh                          polaris_defconfig
-arm                            lart_defconfig
-arm                          prima2_defconfig
-h8300                            alldefconfig
-mips                      bmips_stb_defconfig
-s390                             alldefconfig
-arm                           h5000_defconfig
-arm                        neponset_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a006-20201117
-i386                 randconfig-a005-20201117
-i386                 randconfig-a001-20201117
-i386                 randconfig-a002-20201117
-i386                 randconfig-a004-20201117
-i386                 randconfig-a003-20201117
-i386                 randconfig-a006-20201118
-i386                 randconfig-a005-20201118
-i386                 randconfig-a002-20201118
-i386                 randconfig-a001-20201118
-i386                 randconfig-a003-20201118
-i386                 randconfig-a004-20201118
-x86_64               randconfig-a005-20201118
-x86_64               randconfig-a003-20201118
-x86_64               randconfig-a004-20201118
-x86_64               randconfig-a002-20201118
-x86_64               randconfig-a006-20201118
-x86_64               randconfig-a001-20201118
-i386                 randconfig-a012-20201118
-i386                 randconfig-a014-20201118
-i386                 randconfig-a016-20201118
-i386                 randconfig-a011-20201118
-i386                 randconfig-a013-20201118
-i386                 randconfig-a015-20201118
-i386                 randconfig-a012-20201117
-i386                 randconfig-a014-20201117
-i386                 randconfig-a011-20201117
-i386                 randconfig-a013-20201117
-i386                 randconfig-a016-20201117
-i386                 randconfig-a015-20201117
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20201117
-x86_64               randconfig-a005-20201117
-x86_64               randconfig-a004-20201117
-x86_64               randconfig-a002-20201117
-x86_64               randconfig-a001-20201117
-x86_64               randconfig-a006-20201117
-x86_64               randconfig-a015-20201118
-x86_64               randconfig-a014-20201118
-x86_64               randconfig-a011-20201118
-x86_64               randconfig-a013-20201118
-x86_64               randconfig-a016-20201118
-x86_64               randconfig-a012-20201118
-x86_64               randconfig-a015-20201116
-x86_64               randconfig-a011-20201116
-x86_64               randconfig-a014-20201116
-x86_64               randconfig-a013-20201116
-x86_64               randconfig-a016-20201116
-x86_64               randconfig-a012-20201116
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+---8<---
+diff --git a/arch/arm64/kvm/hyp/reserved_mem.c b/arch/arm64/kvm/hyp/reserved_mem.c
+index 7da8e2915c1c..cab5ad587a3a 100644
+--- a/arch/arm64/kvm/hyp/reserved_mem.c
++++ b/arch/arm64/kvm/hyp/reserved_mem.c
+@@ -6,6 +6,7 @@
+ 
+ #include <linux/kvm_host.h>
+ #include <linux/memblock.h>
++#include <linux/of_address.h>
+ #include <linux/sort.h>
+ 
+ #include <asm/kvm_host.h>
+@@ -16,7 +17,7 @@
+ phys_addr_t hyp_mem_base;
+ phys_addr_t hyp_mem_size;
+ 
+-void __init early_init_dt_add_memory_hyp(u64 base, u64 size)
++static int __init add_hyp_memblock_region(struct resource *rsrc)
+ {
+ 	struct hyp_memblock_region *reg;
+ 
+@@ -24,12 +25,14 @@ void __init early_init_dt_add_memory_hyp(u64 base, u64 size)
+ 		kvm_nvhe_sym(hyp_memblock_nr) = -1;
+ 
+ 	if (kvm_nvhe_sym(hyp_memblock_nr) < 0)
+-		return;
++		return -ENOMEM;
+ 
+ 	reg = kvm_nvhe_sym(hyp_memory);
+-	reg[kvm_nvhe_sym(hyp_memblock_nr)].start = base;
+-	reg[kvm_nvhe_sym(hyp_memblock_nr)].end = base + size;
++	reg[kvm_nvhe_sym(hyp_memblock_nr)].start = rsrc->start;
++	reg[kvm_nvhe_sym(hyp_memblock_nr)].end = rsrc->end;
+ 	kvm_nvhe_sym(hyp_memblock_nr)++;
++
++	return 0;
+ }
+ 
+ static int cmp_hyp_memblock(const void *p1, const void *p2)
+@@ -52,7 +55,10 @@ void kvm_sort_memblock_regions(void)
+ extern bool enable_protected_kvm;
+ void __init reserve_kvm_hyp(void)
+ {
++	struct device_node *np;
++	struct resource rsrc;
+ 	u64 nr_pages, prev;
++	int i;
+ 
+ 	if (!enable_protected_kvm)
+ 		return;
+@@ -60,8 +66,14 @@ void __init reserve_kvm_hyp(void)
+ 	if (!is_hyp_mode_available() || is_kernel_in_hyp_mode())
+ 		return;
+ 
+-	if (kvm_nvhe_sym(hyp_memblock_nr) <= 0)
+-		return;
++	for_each_node_by_type(np, "memory") {
++		for (i = 0; !of_address_to_resource(np, i, &rsrc); i++) {
++			if (!add_hyp_memblock_region(&rsrc))
++				continue;
++			kvm_err("Failed to add hyp memblock\n");
++			return;
++		}
++	}
+ 
+ 	hyp_mem_size += num_possible_cpus() << PAGE_SHIFT;
+ 	hyp_mem_size += hyp_s1_pgtable_size();
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index f81da019b677..114f788a4da4 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -391,7 +391,6 @@ void __init arm64_memblock_init(void)
+ 
+ 	reserve_elfcorehdr();
+ 
+-	reserve_kvm_hyp();
+ 
+ 	high_memory = __va(memblock_end_of_DRAM() - 1) + 1;
+ 
+@@ -423,6 +422,8 @@ void __init bootmem_init(void)
+ 
+ 	dma_pernuma_cma_reserve();
+ 
++	reserve_kvm_hyp();
++
+ 	/*
+ 	 * sparse_init() tries to allocate memory from memblock, so must be
+ 	 * done after the fixed reservations
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index af2b5a09c5b4..4602e467ca8b 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1099,10 +1099,6 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+ #define MAX_MEMBLOCK_ADDR	((phys_addr_t)~0)
+ #endif
+ 
+-void __init __weak early_init_dt_add_memory_hyp(u64 base, u64 size)
+-{
+-}
+-
+ void __init __weak early_init_dt_add_memory_arch(u64 base, u64 size)
+ {
+ 	const u64 phys_offset = MIN_MEMBLOCK_ADDR;
+@@ -1143,7 +1139,6 @@ void __init __weak early_init_dt_add_memory_arch(u64 base, u64 size)
+ 		base = phys_offset;
+ 	}
+ 	memblock_add(base, size);
+-	early_init_dt_add_memory_hyp(base, size);
+ }
+ 
+ int __init __weak early_init_dt_mark_hotplug_memory_arch(u64 base, u64 size)
