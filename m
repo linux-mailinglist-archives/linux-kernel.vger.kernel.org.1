@@ -2,69 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEE62B8555
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E198E2B8559
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgKRUJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 15:09:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45916 "EHLO mail.kernel.org"
+        id S1726995AbgKRULx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 15:11:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726299AbgKRUJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:09:47 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726840AbgKRULw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 15:11:52 -0500
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3DB62100A;
-        Wed, 18 Nov 2020 20:09:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF690246C2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 20:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605730187;
-        bh=/3r0ST05xJSzGUnRqs6k7/gzVgXvpCVKmESDDqVZ7oY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CntlHIoipoc39ssSbL8KbTkJjbu43zhTFzl7olRgQz6LFwz9vTfVlTqmRbZ7AZLMJ
-         uUNbJz2PXyZoiFp9j72jGWpLzo8nN6Cvub3DawFuYR75tEklQFz3zKCdrQENVdB+NC
-         zcXIiI2QjaUfWMwLbQrzzHpwTLRSyNyILGfC3m2c=
-Date:   Wed, 18 Nov 2020 12:09:45 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     siddhant gupta <siddhantgupta416@gmail.com>
-Cc:     Tom Parkin <tparkin@katalix.com>, davem@davemloft.net,
-        corbet@lwn.net, netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mamta Shukla <mamtashukla555@gmail.com>,
-        Himadri Pandya <himadrispandya@gmail.com>
-Subject: Re: [PATCH] Documentation: networking: Fix Column span alignment
- warnings in l2tp.rst
-Message-ID: <20201118120945.468701ab@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <CA+imup-3pT47CVL7GZn_vJtHGngNexBR060y2gRfw2v5Gr8P0Q@mail.gmail.com>
-References: <20201117095207.GA16407@Sleakybeast>
-        <20201118102307.GA4903@katalix.com>
-        <CA+imup-3pT47CVL7GZn_vJtHGngNexBR060y2gRfw2v5Gr8P0Q@mail.gmail.com>
+        s=default; t=1605730312;
+        bh=xH09zmAMJR7NQ0penF01YGocgLtiRqP/c16vo28xqMs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cQxU872/OaztpvrzHVfL0VYocUM+OEd0boZ+scemi/iOBcUE3xN+h0h0dlfC/cuF/
+         usSKtwTQbKMSt0j0isXHAaGScy4lEOBJiatXkcSEO/4/D2F9Wf67WlRCKuxNGLYc+B
+         FVRmgNPnIPl+get85P+KmjQXoM8caKKXad6SShD8=
+Received: by mail-ed1-f51.google.com with SMTP id q3so3340998edr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 12:11:51 -0800 (PST)
+X-Gm-Message-State: AOAM533mPaZ8V/Ibi8XiPyZS9rliA7RvphloISBBb4/vmDkZ7CHhz2+O
+        mDhksxagetYFvRr6vZ0QqqUW0X7d2HM2Rl93mGk=
+X-Google-Smtp-Source: ABdhPJyuwE9rW2aLLtgf1eTOIDKPNtfAwUEfdypJSwWno4+HwFzVqFNqhTiVYC+WS/NF+0wik6+rQf5kI+AxgGY8/io=
+X-Received: by 2002:a05:6402:290:: with SMTP id l16mr28013820edv.104.1605730310120;
+ Wed, 18 Nov 2020 12:11:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201117182310.73609-1-krzk@kernel.org> <20201118153816.fctrz6dfjiph2mgl@gilmour.lan>
+In-Reply-To: <20201118153816.fctrz6dfjiph2mgl@gilmour.lan>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 18 Nov 2020 21:11:37 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPdnOSYZ425FEStjBcd71NTycYDVXmH4e3aq4+wa=kbdyQ@mail.gmail.com>
+Message-ID: <CAJKOXPdnOSYZ425FEStjBcd71NTycYDVXmH4e3aq4+wa=kbdyQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: sunxi: do not select COMMON_CLK to fix builds
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 16:44:11 +0530 siddhant gupta wrote:
-> On Wed, 18 Nov 2020 at 15:53, Tom Parkin <tparkin@katalix.com> wrote:
+On Wed, 18 Nov 2020 at 16:38, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> On Tue, Nov 17, 2020 at 07:23:10PM +0100, Krzysztof Kozlowski wrote:
+> > COMMON_CLK is a user-selectable option with its own dependencies.  The
+> > most important dependency is !HAVE_LEGACY_CLK.  User-selectable drivers
+> > should not select COMMON_CLK because they will create a dependency cycle
+> > and build failures.  For example on MIPS a configuration with COMMON_CLK
+> > (selected by SND_SUN8I_CODEC) and HAVE_LEGACY_CLK (selected by
+> > SOC_RT305X) is possible:
 > >
-> > On  Tue, Nov 17, 2020 at 15:22:07 +0530, Siddhant Gupta wrote:  
-> > > Fix Column span alignment problem warnings in the file
-> > >  
+> >   WARNING: unmet direct dependencies detected for COMMON_CLK
+> >     Depends on [n]: !HAVE_LEGACY_CLK [=y]
+> >     Selected by [y]:
+> >     - SND_SUN8I_CODEC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
+> >       (ARCH_SUNXI || COMPILE_TEST [=y]) && OF [=y] && (MACH_SUN8I || ARM64 && ARCH_SUNXI || COMPILE_TEST [=y])
 > >
-> > Thanks for the patch, Siddhant.
+> >     /usr/bin/mips-linux-gnu-ld: drivers/clk/clk.o: in function `clk_set_rate':
+> >     (.text+0xaeb4): multiple definition of `clk_set_rate'; arch/mips/ralink/clk.o:(.text+0x88): first defined here
 > >
-> > Could you provide some information on how these warnings were
-> > triggered?  Using Sphinx 2.4.4 I can't reproduce any warnings for
-> > l2tp.rst using the "make htmldocs" target.
-> >  
-> 
-> I am currently using Sphinx v1.8.5 and I made use of command "make
-> htmldocs >> doc_xxx.log 2>&1" for directing the errors into a file and
-> the statements in the file showed me these warning, also to confirm
-> those I tried using "rst2html" on l2tp.rst file and got same set of
-> warnings.
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > Reviewed-by: Samuel Holland <samuel@sholland.org>
+>
+> Acked-by: Maxime Ripard <mripard@kernel.org>
+>
+> however, I'm not sure the prefix is the one Mark would expect?
 
-No errors here either, Sphinx 2.2.2, unless Documentation/ has some
-explicit rule about this let's not reshuffle text for an old version 
-of the compiler.
+Good point, I'll fix it in v3.
+
+Best regards,
+Krzysztof
