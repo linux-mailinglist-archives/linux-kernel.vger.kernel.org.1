@@ -2,119 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA082B7419
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2202B7421
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgKRCGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 21:06:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgKRCGx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 21:06:53 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20347C061A48;
-        Tue, 17 Nov 2020 18:06:53 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id h12so230207pjv.2;
-        Tue, 17 Nov 2020 18:06:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HZKGduzqBReBfRr08X8V7IvE/bDB3pEOMc9tQAotIvE=;
-        b=mQSoM3tpBbs+SzuUQGWHjGluu1bhAz1/FEFkGbOZbZUz11uBEsqFbvKtimMU/um87B
-         916uaICDWLpwmbwaL+iBpNwswSh4oxWRUDr4iSLIJGbZLWpb5aa/zm2w9mFDIsrWkT+2
-         na8sjo0zllRPiibdAXQ3KhdbQkQWfmGb/XK/fSWQWBZiOACmbHLP2A5KhId6nN2EcSwA
-         jSaWSPcy6dUuuu+5L2Y9TRiuBtXTek84eWL+9TyLGc/9E3HZtjDljXX19eO2EZEYRYzO
-         szcc6AElGtvMPd9pCw49aa4/Sb9bZkPNgqelMw0k4gtb980X4UBx32AtQoFHH8DFilsp
-         d9vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HZKGduzqBReBfRr08X8V7IvE/bDB3pEOMc9tQAotIvE=;
-        b=QdvY+VN7oS4jzKOAKo+2jUBmWYLfJ9pinpNw270GCHW2kXgbBYWB2VqW7I5Q04dvDn
-         B0o7CSOJMvpKQCa9oio1T0NruQyI2kLV4/xR7AhX5xpOGEFm+bCplbIxzWCOTakD1LI+
-         mg228MPr6QBWXKiC5oNtE4+PtJ3bTpZPrWG3p9vN2l6Yz6X25yt4JCwUnE/taDocQ1/E
-         +XwWLUyULrsR01HRh5/9OXMOHtOJ0fyNf6sSzSLUNOMumfbfTOdmjjPD4vscx01TfKTB
-         R9QTAsArFJGvJVtJI7yhtakG4+E649c8dkHsoRikU/s0yJFFpmeTigWNflxa4/Q+7CJs
-         ctnQ==
-X-Gm-Message-State: AOAM530kyA/2WKeg1kfb2Uw9ATf/RA389g798vnLOzOJq2S9T990M2at
-        yGJRVx6o95EVvonuAQqoY14=
-X-Google-Smtp-Source: ABdhPJzsOC1ruRnZumF1K8gm+9+QrU+lBpFYmyxlNYeWCcTFjgmk3F/6fFht7pWy24OfEAuO4KUfTg==
-X-Received: by 2002:a17:902:b196:b029:d5:a8fd:9a1c with SMTP id s22-20020a170902b196b02900d5a8fd9a1cmr2372153plr.44.1605665212605;
-        Tue, 17 Nov 2020 18:06:52 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id s145sm22886088pfs.187.2020.11.17.18.06.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 18:06:51 -0800 (PST)
-Date:   Wed, 18 Nov 2020 11:06:49 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        sergey.senozhatsky.work@gmail.com, tony@atomide.com,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm/vunmap: add cond_resched() in
- vunmap_pmd_range"
-Message-ID: <X7SBufr4GftKY9pB@jagdpanzerIV.localdomain>
-References: <20201105170249.387069-1-minchan@kernel.org>
- <20201106175933.90e4c8851010c9ce4dd732b6@linux-foundation.org>
- <20201107083939.GA1633068@google.com>
- <20201112200101.GC123036@google.com>
- <20201112144919.5f6b36876f4e59ebb4a99d6d@linux-foundation.org>
- <20201113162529.GA2378542@google.com>
- <20201116175323.GB3805951@google.com>
- <20201117135632.GA27763@infradead.org>
- <20201117202916.GA3856507@google.com>
+        id S1726494AbgKRCSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 21:18:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725771AbgKRCSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 21:18:42 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14BC324655;
+        Wed, 18 Nov 2020 02:18:38 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 21:18:36 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matt Mullins <mmullins@mmlx.us>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH v2] tracepoint: Do not fail unregistering a probe due to
+ memory allocation
+Message-ID: <20201117211836.54acaef2@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117202916.GA3856507@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/11/17 12:29), Minchan Kim wrote:
-> Yub, I remeber the discussion. 
-> https://lore.kernel.org/linux-mm/20200416203736.GB50092@google.com/
-> 
-> I wanted to remove it but 30% gain made me think again before
-> deciding to drop it.
-> Since it continue to make problems and Linux is approaching to
-> deprecate the 32bit machines, I think it would be better to drop it
-> rather than inventing weird workaround.
-> 
-> Ccing Tony since omap2plus have used it by default for just in case.
-> 
-> From fc1b17a120991fd86b9e1153ab22d0b0bdadd8d0 Mon Sep 17 00:00:00 2001
-> From: Minchan Kim <minchan@kernel.org>
-> Date: Tue, 17 Nov 2020 11:58:51 -0800
-> Subject: [PATCH] mm/zsmalloc.c: drop ZSMALLOC_PGTABLE_MAPPING
-> 
-> Even though this option showed some amount improvement(e.g., 30%)
-> in some arm32 platforms, it has been headache to maintain since it
-> have abused APIs[1](e.g., unmap_kernel_range in atomic context).
-> 
-> Since we are approaching to deprecate 32bit machines and already made
-> the config option available for only builtin build since v5.8, lastly
-> it has been not default option in zsmalloc, it's time to drop the
-> option for better maintainance.
-> 
-> [1] http://lore.kernel.org/linux-mm/20201105170249.387069-1-minchan@kernel.org
-> 
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Cc: <stable@vger.kernel.org>
-> Fixes: e47110e90584 ("mm/vunmap: add cond_resched() in vunmap_pmd_range")
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Looks good to me.
+The list of tracepoint callbacks is managed by an array that is protected
+by RCU. To update this array, a new array is allocated, the updates are
+copied over to the new array, and then the list of functions for the
+tracepoint is switched over to the new array. After a completion of an RCU
+grace period, the old array is freed.
 
-Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+This process happens for both adding a callback as well as removing one.
+But on removing a callback, if the new array fails to be allocated, the
+callback is not removed, and may be used after it is freed by the clients
+of the tracepoint.
 
-	-ss
+There's really no reason to fail if the allocation for a new array fails
+when removing a function. Instead, the function can simply be replaced by a
+stub that will be ignored in the callback loop, and it will be cleaned up
+on the next modification of the array.
+
+Link: https://lore.kernel.org/r/20201115055256.65625-1-mmullins@mmlx.us
+Link: https://lkml.kernel.org/r/20201116175107.02db396d@gandalf.local.home
+
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@chromium.org>
+Cc: netdev <netdev@vger.kernel.org>
+Cc: bpf <bpf@vger.kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: stable@vger.kernel.org
+Fixes: 97e1c18e8d17b ("tracing: Kernel Tracepoints")
+Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
+Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
+Reported-by: Matt Mullins <mmullins@mmlx.us>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+Changes since v1:
+   Use 1L value for stub function, and ignore calling it.
+
+ include/linux/tracepoint.h |  9 ++++-
+ kernel/tracepoint.c        | 80 +++++++++++++++++++++++++++++---------
+ 2 files changed, 69 insertions(+), 20 deletions(-)
+
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 0f21617f1a66..2e06e05b9d2a 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -33,6 +33,8 @@ struct trace_eval_map {
+ 
+ #define TRACEPOINT_DEFAULT_PRIO	10
+ 
++#define TRACEPOINT_STUB		((void *)0x1L)
++
+ extern struct srcu_struct tracepoint_srcu;
+ 
+ extern int
+@@ -310,7 +312,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 		do {							\
+ 			it_func = (it_func_ptr)->func;			\
+ 			__data = (it_func_ptr)->data;			\
+-			((void(*)(void *, proto))(it_func))(__data, args); \
++			/*						\
++			 * Removed functions that couldn't be allocated \
++			 * are replaced with TRACEPOINT_STUB.		\
++			 */						\
++			if (likely(it_func != TRACEPOINT_STUB))		\
++				((void(*)(void *, proto))(it_func))(__data, args); \
+ 		} while ((++it_func_ptr)->func);			\
+ 		return 0;						\
+ 	}								\
+diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+index 3f659f855074..20ce78b3f578 100644
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -53,10 +53,10 @@ struct tp_probes {
+ 	struct tracepoint_func probes[];
+ };
+ 
+-static inline void *allocate_probes(int count)
++static inline void *allocate_probes(int count, gfp_t extra_flags)
+ {
+ 	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
+-				       GFP_KERNEL);
++				       GFP_KERNEL | extra_flags);
+ 	return p == NULL ? NULL : p->probes;
+ }
+ 
+@@ -131,6 +131,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
+ {
+ 	struct tracepoint_func *old, *new;
+ 	int nr_probes = 0;
++	int stub_funcs = 0;
+ 	int pos = -1;
+ 
+ 	if (WARN_ON(!tp_func->func))
+@@ -147,14 +148,34 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
+ 			if (old[nr_probes].func == tp_func->func &&
+ 			    old[nr_probes].data == tp_func->data)
+ 				return ERR_PTR(-EEXIST);
++			if (old[nr_probes].func == TRACEPOINT_STUB)
++				stub_funcs++;
+ 		}
+ 	}
+-	/* + 2 : one for new probe, one for NULL func */
+-	new = allocate_probes(nr_probes + 2);
++	/* + 2 : one for new probe, one for NULL func - stub functions */
++	new = allocate_probes(nr_probes + 2 - stub_funcs, 0);
+ 	if (new == NULL)
+ 		return ERR_PTR(-ENOMEM);
+ 	if (old) {
+-		if (pos < 0) {
++		if (stub_funcs) {
++			/* Need to copy one at a time to remove stubs */
++			int probes = 0;
++
++			pos = -1;
++			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
++				if (old[nr_probes].func == TRACEPOINT_STUB)
++					continue;
++				if (pos < 0 && old[nr_probes].prio < prio)
++					pos = probes++;
++				new[probes++] = old[nr_probes];
++			}
++			nr_probes = probes;
++			if (pos < 0)
++				pos = probes;
++			else
++				nr_probes--; /* Account for insertion */
++
++		} else if (pos < 0) {
+ 			pos = nr_probes;
+ 			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
+ 		} else {
+@@ -188,8 +209,9 @@ static void *func_remove(struct tracepoint_func **funcs,
+ 	/* (N -> M), (N > 1, M >= 0) probes */
+ 	if (tp_func->func) {
+ 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
+-			if (old[nr_probes].func == tp_func->func &&
+-			     old[nr_probes].data == tp_func->data)
++			if ((old[nr_probes].func == tp_func->func &&
++			     old[nr_probes].data == tp_func->data) ||
++			    old[nr_probes].func == TRACEPOINT_STUB)
+ 				nr_del++;
+ 		}
+ 	}
+@@ -207,15 +229,33 @@ static void *func_remove(struct tracepoint_func **funcs,
+ 		int j = 0;
+ 		/* N -> M, (N > 1, M > 0) */
+ 		/* + 1 for NULL */
+-		new = allocate_probes(nr_probes - nr_del + 1);
+-		if (new == NULL)
+-			return ERR_PTR(-ENOMEM);
+-		for (i = 0; old[i].func; i++)
+-			if (old[i].func != tp_func->func
+-					|| old[i].data != tp_func->data)
+-				new[j++] = old[i];
+-		new[nr_probes - nr_del].func = NULL;
+-		*funcs = new;
++		new = allocate_probes(nr_probes - nr_del + 1, __GFP_NOFAIL);
++		if (new) {
++			for (i = 0; old[i].func; i++)
++				if ((old[i].func != tp_func->func
++				     || old[i].data != tp_func->data)
++				    && old[i].func != TRACEPOINT_STUB)
++					new[j++] = old[i];
++			new[nr_probes - nr_del].func = NULL;
++			*funcs = new;
++		} else {
++			/*
++			 * Failed to allocate, replace the old function
++			 * with TRACEPOINT_STUB.
++			 */
++			for (i = 0; old[i].func; i++)
++				if (old[i].func == tp_func->func &&
++				    old[i].data == tp_func->data) {
++					old[i].func = TRACEPOINT_STUB;
++					/* Set the prio to the next event. */
++					if (old[i + 1].func)
++						old[i].prio =
++							old[i + 1].prio;
++					else
++						old[i].prio = -1;
++				}
++			*funcs = old;
++		}
+ 	}
+ 	debug_print_probes(*funcs);
+ 	return old;
+@@ -295,10 +335,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
+ 	tp_funcs = rcu_dereference_protected(tp->funcs,
+ 			lockdep_is_held(&tracepoints_mutex));
+ 	old = func_remove(&tp_funcs, func);
+-	if (IS_ERR(old)) {
+-		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
++	if (WARN_ON_ONCE(IS_ERR(old)))
+ 		return PTR_ERR(old);
+-	}
++
++	if (tp_funcs == old)
++		/* Failed allocating new tp_funcs, replaced func with stub */
++		return 0;
+ 
+ 	if (!tp_funcs) {
+ 		/* Removed last function */
+-- 
+2.25.4
+
