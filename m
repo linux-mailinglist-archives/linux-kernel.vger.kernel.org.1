@@ -2,131 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14FF22B765E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BBE2B7658
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgKRGhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 01:37:34 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7948 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgKRGhe (ORCPT
+        id S1726495AbgKRGeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 01:34:13 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:50528 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725794AbgKRGeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 01:37:34 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CbY5F68njzhc9Z;
-        Wed, 18 Nov 2020 14:37:21 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.202.14) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 18 Nov 2020 14:37:23 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        Wed, 18 Nov 2020 01:34:13 -0500
+X-UUID: 92d89cdc1c634cf28d265d8639f7634b-20201118
+X-UUID: 92d89cdc1c634cf28d265d8639f7634b-20201118
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <wenbin.mei@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 462278039; Wed, 18 Nov 2020 14:34:09 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 18 Nov 2020 14:34:07 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 18 Nov 2020 14:34:07 +0800
+From:   Wenbin Mei <wenbin.mei@mediatek.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-mmc@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <akpm@linux-foundation.org>, <rppt@kernel.org>,
-        <anshuman.khandual@arm.com>, <linuxarm@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH] arm64: mm: add support for memmap kernel parameters
-Date:   Wed, 18 Nov 2020 19:33:14 +1300
-Message-ID: <20201118063314.22940-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>
+Subject: [PATCH] mmc: mediatek: Add system suspend/resume interface
+Date:   Wed, 18 Nov 2020 14:34:05 +0800
+Message-ID: <20201118063405.24906-1-wenbin.mei@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.202.14]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-memmap should be an useful kernel parameter which has been supported by
-x86, mips and xtensa. This patch adds support for ARM64. At this stage,
-the below two modes are supported only:
-memmap=nn[KMG]@ss[KMG]
-Force usage of a specific region of memory
+Before we got these errors on MT8192 platform:
+[   59.153891] Restarting tasks ...
+[   59.154540] done.
+[   59.159175] PM: suspend exit
+[   59.218724] mtk-msdc 11f60000.mmc: phase: [map:fffffffe] [maxlen:31]
+[final:16]
+[  119.776083] mmc0: cqhci: timeout for tag 9
+[  119.780196] mmc0: cqhci: ============ CQHCI REGISTER DUMP ===========
+[  119.786709] mmc0: cqhci: Caps:      0x100020b6 | Version:  0x00000510
+[  119.793225] mmc0: cqhci: Config:    0x00000101 | Control:  0x00000000
+[  119.799706] mmc0: cqhci: Int stat:  0x00000000 | Int enab: 0x00000000
+[  119.806177] mmc0: cqhci: Int sig:   0x00000000 | Int Coal: 0x00000000
+[  119.812670] mmc0: cqhci: TDL base:  0x00000000 | TDL up32: 0x00000000
+[  119.819149] mmc0: cqhci: Doorbell:  0x003ffc00 | TCN:      0x00000200
+[  119.825656] mmc0: cqhci: Dev queue: 0x00000000 | Dev Pend: 0x00000000
+[  119.832155] mmc0: cqhci: Task clr:  0x00000000 | SSC1:     0x00001000
+[  119.838627] mmc0: cqhci: SSC2:      0x00000000 | DCMD rsp: 0x00000000
+[  119.845174] mmc0: cqhci: RED mask:  0xfdf9a080 | TERRI:    0x0000891c
+[  119.851654] mmc0: cqhci: Resp idx:  0x00000000 | Resp arg: 0x00000000
+[  119.865773] mmc0: cqhci: : ===========================================
+[  119.872358] mmc0: running CQE recovery
+From these logs, we found TDL base was back to the default value.
 
-memmap=nn[KMG]$ss[KMG]
-Region of memory to be reserved is from ss to ss+nn
+After suspend, the mmc host is powered off by HW, and bring CQE register
+to the default value, so we add system suspend/resume interface, then bring
+CQE to deactivated state before suspend, it will be enabled by CQE first
+request after resume.
 
-If users set memmap=exactmap before memmap=nn[KMG]@ss[KMG], they will
-get the exact memory specified by memmap=nn[KMG]@ss[KMG]. For example,
-on one machine with 4GB memory, "memmap=exactmap memmap=1G@1G" will
-make kernel use the memory from 1GB to 2GB only.
-
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
 ---
- arch/arm64/mm/init.c | 59 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+ drivers/mmc/host/mtk-sd.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 095540667f0f..f1c6bfdbc953 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -235,6 +235,65 @@ static int __init early_mem(char *p)
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index fc5ee5df91ad..c5f9cd6fc951 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -2758,11 +2758,29 @@ static int msdc_runtime_resume(struct device *dev)
+ 	msdc_restore_reg(host);
+ 	return 0;
  }
- early_param("mem", early_mem);
++
++static int msdc_sys_suspend(struct device *dev)
++{
++	struct mmc_host *mmc = dev_get_drvdata(dev);
++	int ret;
++
++	if (mmc->caps2 & MMC_CAP2_CQE) {
++		ret = cqhci_suspend(mmc);
++		if (ret)
++			return ret;
++	}
++
++	return pm_runtime_force_suspend(dev);
++}
++
++static int msdc_sys_resume(struct device *dev)
++{
++	return pm_runtime_force_resume(dev);
++}
+ #endif
  
-+static int need_remove_real_memblock __initdata;
-+
-+static void __init parse_memmap_one(char *p)
-+{
-+	char *oldp;
-+	unsigned long start_at, mem_size;
-+
-+	if (!p)
-+		return;
-+
-+	if (!strncmp(p, "exactmap", 8)) {
-+		need_remove_real_memblock = 1;
-+		return;
-+	}
-+
-+	oldp = p;
-+	mem_size = memparse(p, &p);
-+	if (p == oldp)
-+		return;
-+
-+	switch (*p) {
-+	case '@':
-+		start_at = memparse(p + 1, &p);
-+		/*
-+		 * use the exactmap defined by nn[KMG]@ss[KMG], remove
-+		 * memblock populated by DT etc.
-+		 */
-+		if (need_remove_real_memblock) {
-+			need_remove_real_memblock = 0;
-+			memblock_remove(0, ULLONG_MAX);
-+		}
-+		memblock_add(start_at, mem_size);
-+		break;
-+	case '$':
-+		start_at = memparse(p + 1, &p);
-+		memblock_reserve(start_at, mem_size);
-+		break;
-+	default:
-+		pr_warn("Unrecognized memmap syntax: %s\n", p);
-+		break;
-+	}
-+}
-+
-+static int __init parse_memmap_opt(char *str)
-+{
-+	while (str) {
-+		char *k = strchr(str, ',');
-+
-+		if (k)
-+			*k++ = 0;
-+
-+		parse_memmap_one(str);
-+		str = k;
-+	}
-+
-+	return 0;
-+}
-+early_param("memmap", parse_memmap_opt);
-+
- static int __init early_init_dt_scan_usablemem(unsigned long node,
- 		const char *uname, int depth, void *data)
- {
+ static const struct dev_pm_ops msdc_dev_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+-				pm_runtime_force_resume)
++	SET_SYSTEM_SLEEP_PM_OPS(msdc_sys_suspend, msdc_sys_resume)
+ 	SET_RUNTIME_PM_OPS(msdc_runtime_suspend, msdc_runtime_resume, NULL)
+ };
+ 
 -- 
-2.25.1
+2.18.0
 
