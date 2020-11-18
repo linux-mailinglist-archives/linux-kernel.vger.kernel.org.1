@@ -2,101 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B054B2B7CB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8582B7CBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727680AbgKRLaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:30:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgKRLaB (ORCPT
+        id S1727058AbgKRLep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:34:45 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2127 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726519AbgKRLeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:30:01 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADA0C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:30:01 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0caf00530924e6be7c3eae.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:af00:5309:24e6:be7c:3eae])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2E5CC1EC04B9;
-        Wed, 18 Nov 2020 12:29:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1605698999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=OgYajlOI1q6yag3exq5oVHdCfPZ2gQ2BbYRUSYh5t/E=;
-        b=FEpJkJLW9XsNhJoekx42Od69miyIVAQrvlSnNEVyuuFZw6xpfg36/WpQXumksBhjpmWxBh
-        4yqDy4cFD+1pkKAYN8VZDKgvfi4BY+jQZ+b7+pffEK1YMNX+eJRm7iF9YlhCWrft3pYVCb
-        BbBBkH3HF6xWYfOO1x2NDRq8xqr6V5Q=
-Date:   Wed, 18 Nov 2020 12:29:52 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, jroedel@suse.de, konrad.wilk@oracle.com,
-        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
-        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
-        kuzuno@gmail.com, Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
-Message-ID: <20201118112952.GB7472@zn.tnic>
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116201711.GE1131@zn.tnic>
- <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
- <20201117165539.GG5719@zn.tnic>
- <890f6b7e-a268-2257-edcb-5eacc7db3d8e@oracle.com>
- <20201117212608.GS5719@zn.tnic>
- <b63ec614-8a49-728d-aa61-76339378183f@oracle.com>
+        Wed, 18 Nov 2020 06:34:44 -0500
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CbgfX2Y30z67FV0;
+        Wed, 18 Nov 2020 19:33:08 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 18 Nov 2020 12:34:42 +0100
+Received: from [10.200.66.130] (10.200.66.130) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Wed, 18 Nov 2020 11:34:41 +0000
+Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
+To:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <martin.petersen@oracle.com>,
+        <jejb@linux.ibm.com>
+CC:     <linuxarm@huawei.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <maz@kernel.org>
+References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
+Date:   Wed, 18 Nov 2020 11:34:27 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b63ec614-8a49-728d-aa61-76339378183f@oracle.com>
+In-Reply-To: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.200.66.130]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 08:41:42AM +0100, Alexandre Chartre wrote:
-> Well, it looks like I wrongfully assume that KPTI was a well known performance
-> overhead since it was introduced (because it adds extra page-table switches),
-> but you are right I should be presenting my own numbers.
+Hi Thomas,
 
-Here's one recipe, courtesy of Mel:
+> 
+> Sorry for the delay. 
 
-https://github.com/gormanm/mmtests
+No worries, Thanks for the effort.
 
-"
-./run-mmtests.sh --no-monitor --config configs/config-workload-poundsyscall test-default
+> Supporting this truly on x86 needs some more
+> thought and surgery, but for ARM it should not matter. 
 
-# reboot the machine with pti disabled
+ok, as long as you are content not to support x86 atm.
 
-./run-mmtests.sh --no-monitor --config configs/config-workload-poundsyscall test-nopti
+> I made a few
+> tweaks to your original code. See below.
 
-poundsyscall just calls getppid() so it's a light-weight syscall and a
-proxy measure for syscall entry/exit costs. To do the actual compare
+I think maybe a few more tweaks, below. Apart from that, it looks to 
+work ok.
 
-cd work/log
-../../compare-kernels.sh
+> 
+> Thanks,
+> 
+>          tglx
+> ---
+> From: John Garry <john.garry@huawei.com>
+> Subject: genirq/affinity: Add irq_update_affinity_desc()
+> Date: Wed, 28 Oct 2020 20:33:05 +0800
+> 
+> From: John Garry <john.garry@huawei.com>
+> 
+> Add a function to allow the affinity of an interrupt be switched to
+> managed, such that interrupts allocated for platform devices may be
+> managed.
+> 
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>   include/linux/interrupt.h |    8 ++++++
+>   kernel/irq/manage.c       |   56 ++++++++++++++++++++++++++++++++++++++++++++++
+>   2 files changed, 64 insertions(+)
+> 
 
-and see what gain there is from disabling pti. If you want to compare
-the other direction
+...
 
-../../compare-kernels.sh --baseline test-nopti --compare test-default
+> +/**
+> + * irq_update_affinity_desc - Update affinity management for an interrupt
+> + * @irq:	The interrupt number to update
+> + * @affinity:	Pointer to the affinity descriptor
+> + *
+> + * This interface can be used to configure the affinity management of
+> + * interrupts which have been allocated already.
+> + */
+> +int irq_update_affinity_desc(unsigned int irq,
+> +			     struct irq_affinity_desc *affinity)
 
-If you get an error about BinarySearch
+Just a note on the return value, in the only current callsite - 
+platform_get_irqs_affinity() - we don't check the return value and 
+propagate the error. This is because we don't want to fail the interrupt 
+init just because of problems updating the affinity mask. So I could 
+print a message to inform the user of error (at the callsite).
 
-(echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan
-yes | cpan List::BinarySearch
+> +{
+> +	struct irq_desc *desc;
+> +	unsigned long flags;
+> +	bool activated;
+> +
+> +	/*
+> +	 * Supporting this with the reservation scheme used by x86 needs
+> +	 * some more thought. Fail it for now.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_GENERIC_IRQ_RESERVATION_MODE))
+> +		return -EOPNOTSUPP;
+> +
+> +	desc = irq_get_desc_buslock(irq, &flags, 0);
+> +	if (!desc)
+> +		return -EINVAL;
+> +
+> +	/* Requires the interrupt to be shut down */
+> +	if (irqd_is_started(&desc->irq_data))
 
-Only se the second line if you want to interactively confirm what cpan
-should download and install."
+We're missing the unlock here, right?
 
-I've CCed him should you have any questions.
+> +		return -EBUSY;
+> +
+> +	/* Interrupts which are already managed cannot be modified */
+> +	if (irqd_is_managed(&desc->irq_data))
 
-Thx.
+And here, and I figure that this should be irqd_affinity_is_managed()
 
--- 
-Regards/Gruss,
-    Boris.
+> +		return -EBUSY;
+> +
+> +	/*
+> +	 * Deactivate the interrupt. That's required to undo
+> +	 * anything an earlier activation has established.
+> +	 */
+> +	activated = irqd_is_activated(&desc->irq_data);
+> +	if (activated)
+> +		irq_domain_deactivate_irq(&desc->irq_data);
+> +
+> +	if (affinity->is_managed) {
+> +		irqd_set(&desc->irq_data, IRQD_AFFINITY_MANAGED);
+> +		irqd_set(&desc->irq_data, IRQD_MANAGED_SHUTDOWN);
+> +	}
+> +
+> +	cpumask_copy(desc->irq_common_data.affinity, &affinity->mask);
+> +
+> +	/* Restore the activation state */
+> +	if (activated)
+> +		irq_domain_deactivate_irq(&desc->irq_data);
+> +	irq_put_desc_busunlock(desc, flags);
+> +	return 0;
+> +}
+> +
+>   int __irq_set_affinity(unsigned int irq, const struct cpumask *mask, bool force)
+>   {
+>   	struct irq_desc *desc = irq_to_desc(irq);
+> .
+> 
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+John
+
