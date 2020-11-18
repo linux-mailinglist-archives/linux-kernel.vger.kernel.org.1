@@ -2,31 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D7C2B7E8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8AE2B7E91
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgKRNtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:49:06 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:59052 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgKRNtG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 08:49:06 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kfNpV-0003wW-W4; Wed, 18 Nov 2020 13:49:02 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Lyude Paul <lyude@redhat.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/selftests/test-drm_dp_mst_helper: fix memory leak allocated to 'out'
-Date:   Wed, 18 Nov 2020 13:49:01 +0000
-Message-Id: <20201118134901.461841-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.28.0
+        id S1726551AbgKRNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 08:49:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726209AbgKRNtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 08:49:35 -0500
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D020D2065C;
+        Wed, 18 Nov 2020 13:49:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605707375;
+        bh=Uf6OeZIjyAMpkxI+7HgUeUSemvA3wxfOMZHmxJmLarU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=yxB/KcCTGyW11MVhtTRAVTO0uUx0M4/3q2ukRHfgjFU/B4lwb3/6N7mrnG3nsUF+V
+         QavQj/B6Js0paJshW8sGYvWcuyBk+GdfDK9UrWV8vmcg/hcROdhMb2qZPCCTCK/FGq
+         c7+ayaXjgpkApN4u2Ew0ON7Y/CCsIlDTl4a6s6U0=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     jbacik@fb.com, ast@kernel.org
+Cc:     bpf@vger.kernel.org, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org, luomeng12@huawei.com
+Subject: [PATCH] fail_function: remove a redundant mutex unlock
+Date:   Wed, 18 Nov 2020 22:49:31 +0900
+Message-Id: <160570737118.263807.8358435412898356284.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201110084245.3067324-1-luomeng12@huawei.com>
+References: <20201110084245.3067324-1-luomeng12@huawei.com>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -34,36 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Luo Meng <luomeng12@huawei.com>
 
-Currently when txmsg fails to allocate then there is a leak on 'out'. Fix
-this by setting result to false and exiting via the clean up exit path.
-Note since txmsg is NULL at this point, the kfree of txmsg is a no-op.
+Fix a mutex_unlock() issue where before copy_from_user() is
+not called mutex_locked.
 
-Addresses-Coverity: ("Resource leak")
-Fixes: 09234b88ef55 ("drm/selftests/test-drm_dp_mst_helper: Move 'sideband_msg_req_encode_decode' onto the heap")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 4b1a29a7f542 ("error-injection: Support fault injection framework")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Luo Meng <luomeng12@huawei.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ 0 files changed
 
-diff --git a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-index 6b4759ed6bfd..dbac073ed385 100644
---- a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-+++ b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-@@ -131,8 +131,10 @@ sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
- 		return false;
+diff --git a/kernel/fail_function.c b/kernel/fail_function.c
+index 63b349168da7..b0b1ad93fa95 100644
+--- a/kernel/fail_function.c
++++ b/kernel/fail_function.c
+@@ -253,7 +253,7 @@ static ssize_t fei_write(struct file *file, const char __user *buffer,
  
- 	txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
--	if (!txmsg)
--		return false;
-+	if (!txmsg) {
-+		result = false;
-+		goto out;
-+	}
+ 	if (copy_from_user(buf, buffer, count)) {
+ 		ret = -EFAULT;
+-		goto out;
++		goto out_free;
+ 	}
+ 	buf[count] = '\0';
+ 	sym = strstrip(buf);
+@@ -307,8 +307,9 @@ static ssize_t fei_write(struct file *file, const char __user *buffer,
+ 		ret = count;
+ 	}
+ out:
+-	kfree(buf);
+ 	mutex_unlock(&fei_lock);
++out_free:
++	kfree(buf);
+ 	return ret;
+ }
  
- 	drm_dp_encode_sideband_req(in, txmsg);
- 	ret = drm_dp_decode_sideband_req(txmsg, out);
--- 
-2.28.0
 
