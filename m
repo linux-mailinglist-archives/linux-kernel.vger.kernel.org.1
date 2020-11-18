@@ -2,92 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00832B75F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 06:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E229B2B75FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 06:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgKRFcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 00:32:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
+        id S1726361AbgKRFeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 00:34:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726195AbgKRFce (ORCPT
+        with ESMTP id S1726198AbgKRFeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 00:32:34 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C68BC0613D4;
-        Tue, 17 Nov 2020 21:32:34 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CbWfQ0tNGz9sPB;
-        Wed, 18 Nov 2020 16:32:30 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605677552;
-        bh=RB6gQPLk2IyeCwKNK6UjThau1ryfZYNug0uwMIEY+TA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UuiRsV0RyhJCrWj0gkqCzq3FBrETpqcGW4G+aCJVuXckyxCmCKCLWctMQMRO0Ynmr
-         WDXEQlmlaNLfyFpKYtlIAo/+qQGcIVoMvlFbwRmRfYb7m/Np1nqpe09eirKv8bxBvZ
-         RM+4ICRNJa1o0rB8vIs3j5qIaTgvtqdmG+0XVLtIslPyLz3/njhlWGVfRXBjxJfIZF
-         r9MFIMi7xsDLw4Choy2J5MKt3ipr4LQv9HKVk3qxPPYpw63chHBrsLqUpRdLgQdvAW
-         1koLEkxxy7lf6FV+vFkk8X7UrafQMcnNsTT6kIiQ3/WEVVcfojv1zCMNuziD5Ikeb9
-         ly3ktGvmt2sVQ==
-Date:   Wed, 18 Nov 2020 16:32:29 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Helen Koike <helen.koike@collabora.com>,
-        Jacob Chen <jacob2.chen@rock-chips.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the v4l-dvb tree
-Message-ID: <20201118163229.1cda4547@canb.auug.org.au>
+        Wed, 18 Nov 2020 00:34:10 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BE2C061A51
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 21:34:08 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id w13so937731eju.13
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 21:34:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BopsKmSar3n4P2J12Sr3SxLSSPQixGWTU7etCFUvEQ0=;
+        b=CugPd5MD9jNugwhqO/Gr9MkjMcbb6CXIe/YBJ6yWCBjU5fr3YpbYt4AZzxNba/bSYl
+         uyDHBGpm4uVezOQh7dKVM83R0kZ0IlQvAbA2PN+lNfsIoadedA4zFWuhVkRA1gYbxIyD
+         Xm3as8ORxmOYFMdHgqBb4FkvJgHMHGu4ToX8hECpJACyOPamikY/1/UQHszQLjnJPhQ7
+         ebIlRScaG0El2TITFAhbsoeURuVy0UEm4iEaqnsPyHE3UjvEiQA3nOZkrq6d2WzVBVfl
+         F+q1amVs1YcZsOVix0qmYlgKOBbaBbP5i+Ul8Y6SMKKYzy7Xtq4pCHAAHoH6UcGMqR6s
+         cfvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BopsKmSar3n4P2J12Sr3SxLSSPQixGWTU7etCFUvEQ0=;
+        b=LuUI6gAqT/hokzeKdrJpg4w4F0CE9uiV8BbcRb4/Y5x5fcgI+MD1dgH2Q5Hw8xvO4D
+         /OV/2Kqqci55n2R4VcQggGszqBfwnR/Kl5OZ6MM2aWfsA7qfRwtIksCr3ivBjytKqN/9
+         3eEWltOO6MUz77ju1B4V+u10fKYLCbTvePDmaFGpzDdEMC0v684DRKZxktq8g2NuzosI
+         wIj5ZPuI2xBoMIfVXIPWJitupvvkF953eA3osic3VYhuKRteU4gNittVnsbreygLvhDY
+         Ikp2WDE+wVHBXDiqP9Avlvv+4Mj9Y0ItNR1LYXlSETcPGlpOw38Q2277ahO50A0aW+Sx
+         fAYw==
+X-Gm-Message-State: AOAM530fZNo9ltalrUkGqavmkci70YGVh+CQ+jn79+NhgDhT+4W3AahO
+        xcpRsAuT0GzOSBpkf8fcnSzkKHgp2uWBZCt7YvsywQ==
+X-Google-Smtp-Source: ABdhPJwogktE2pJm2xh3pNFBobna/9Th5ECROtOqF+Zx+ceiLF964yBgqeJMX0OYZPoDfFT6pYfrw/wIJCLy66utgj8=
+X-Received: by 2002:a17:906:3087:: with SMTP id 7mr21857605ejv.375.1605677647248;
+ Tue, 17 Nov 2020 21:34:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nt1dCCOdh4cs09UhX=sJWQV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 18 Nov 2020 11:03:55 +0530
+Message-ID: <CA+G9fYt+YNy=34HLHpDrc6=73Nhu14NEf7AP+woyZryny+b-2Q@mail.gmail.com>
+Subject: Re: [PATCH 5.9 000/255] 5.9.9-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux- stable <stable@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nt1dCCOdh4cs09UhX=sJWQV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 17 Nov 2020 at 19:02, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.9.9 release.
+> There are 255 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 19 Nov 2020 12:20:51 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.9.9-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Hi all,
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-After merging the v4l-dvb tree, today's linux-next build (htmldocs)
-produced these warnings:
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Documentation/output/videodev2.h.rst:6: WARNING: undefined label: v4l2-meta=
--fmt-rk-isp1-params (if the link has no caption the label must precede a se=
-ction header)
-Documentation/output/videodev2.h.rst:6: WARNING: undefined label: v4l2-meta=
--fmt-rk-isp1-stat-3a (if the link has no caption the label must precede a s=
-ection header)
+NOTE:
+1)
+BUG: Invalid wait context on arm64 db410c device while booting.
+This issue has not reproduced after several testing loops.
+https://lore.kernel.org/stable/CA+G9fYsk54r9Re4E9BWpqsoxLjpCvxRKFWRgdiKVcPo=
+YE5z0Hw@mail.gmail.com/T/#u
 
-Introduced by commit
+2)
+kselftest test suite version upgrade to v5.9
 
-  df22026aebd8 ("media: videodev2.h, v4l2-ioctl: add rkisp1 meta buffer for=
-mat")
+3)
+While running kselftest netfilter on x86, i386, arm64 and arm devices
+the following kernel warning was noticed.
+WARNING: at net/netfilter/nf_tables_api.c:622
+lockdep_nfnl_nft_mutex_not_held+0x19/0x20 [nf_tables]
+https://lore.kernel.org/linux-kselftest/CA+G9fYvFUpODs+NkSYcnwKnXm62tmP=3Dk=
+sLeBPmB+KFrB2rvCtQ@mail.gmail.com/
+
+4)
+From this release we have started building kernels with clang-10 toolchain
+and testing LTP testsuite on qemu_arm64, qemu_arm, qemu_x86_64 and qemu_i38=
+6.
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.9.9-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.9.y
+git commit: fb1622495321923cbb1ae2c6cf2da1e9ca286800
+git describe: v5.9.8-256-gfb1622495321
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
+y/build/v5.9.8-256-gfb1622495321
+
+No regressions (compared to build v5.9.8)
+
+No fixes (compared to build v5.9.8)
+
+Ran 52946 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* ltp-controllers-tests
+* ltp-cve-tests
+* network-basic-tests
+* kselftest
+* ltp-open-posix-tests
+* kvm-unit-tests
+* kunit
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
 
 --=20
-Cheers,
-Stephen Rothwell
-
---Sig_/nt1dCCOdh4cs09UhX=sJWQV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+0se0ACgkQAVBC80lX
-0Gxmxwf+M6wY63H9Hq+QbuSycpHon+EWfH0Wfwt6bO7eDGUhQXQv0unmuHq2UPgF
-/QlTRQgRpqxhCyzfqtO8Qv3EEVV/ht8dpCV/ItqjCTgt2RZZIEPaBqWlVNeqw0h5
-GIs5OaNzwEdGzkfJN4qOfoC2VIU3j6+eCk2Hj+x6A89SofHd/VuaxxLECs+mXg7i
-r87uFCZ0d2zDf7b9fK0HKnbYPCNoNgaUVmo1dRnJG3HSzjxOnJjdK8iBE/6DvE3L
-+/6K79VVlfkp5BERv89GF8xxIiIoU/uzSscv9wTHwCFPHD4YbmCAFoBLyv846HnX
-D/JJ9dFDmAMhsSJir9NLJiVtR83wGg==
-=0OTy
------END PGP SIGNATURE-----
-
---Sig_/nt1dCCOdh4cs09UhX=sJWQV--
+Linaro LKFT
+https://lkft.linaro.org
