@@ -2,131 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398DC2B87DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF92B2B87D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbgKRWki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 17:40:38 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:60434 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbgKRWkh (ORCPT
+        id S1726963AbgKRWjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 17:39:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726184AbgKRWjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 17:40:37 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIMYM2j053900;
-        Wed, 18 Nov 2020 22:38:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=m6wLHiKM+bSFMHahGiYbPBVS/ny3WBpJuh+PlKd3o2U=;
- b=D1BdkFasMIku94ns2M0cLij1YVJ/AUsyuHjpByxuY3K7NNpPqjFU27m7AlAC6zFcRwNS
- 5DmY6gn5Nq5E4RwAlUJ8jUcv/tKIlvY25MwSEPPdtF2RvDgzhcbb9L6W/hRRu9sErfkG
- dctIdofu4T1K0zHwKsfCt8NbEShzFS9ZCm4VQEx8oBnwl1U8iE5P50+uwWJ2/Eghj3jV
- P2BzV+zZjIn0nx42QuJzbavfOrZb6O+cxIcvaf376VpzLvQDnkvDyCjxnml1TJPU5LiQ
- VViITkvjCtSzFSTuDwDHFMwO3LvGsXh+csgYmdhAOkRRAJQ7kuy5QHKKQ43JypoOLNp+ fQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 34t4rb2qwf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 22:38:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIMVM0w007892;
-        Wed, 18 Nov 2020 22:38:47 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 34umd169mg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Nov 2020 22:38:47 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AIMceTm025687;
-        Wed, 18 Nov 2020 22:38:41 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 18 Nov 2020 14:38:40 -0800
-Subject: Re: [PATCH v4 03/21] mm/hugetlb: Introduce a new config
- HUGETLB_PAGE_FREE_VMEMMAP
-To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, osalvador@suse.de, mhocko@suse.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201113105952.11638-1-songmuchun@bytedance.com>
- <20201113105952.11638-4-songmuchun@bytedance.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <697ee4b7-edcc-e3b8-676c-935ec445c05d@oracle.com>
-Date:   Wed, 18 Nov 2020 14:38:37 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Wed, 18 Nov 2020 17:39:23 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D6BC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:39:23 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0caf003ca6ed11c9851040.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:af00:3ca6:ed11:c985:1040])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 242FF1EC0473;
+        Wed, 18 Nov 2020 23:39:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1605739162;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Nucy5FwvBOpAW9Hru//1nPQRh1YMjfPMlPyS0c5OiG8=;
+        b=r2cucCQAalfzAmb1gka6cmeJJZu5vVOJt6QvkwJvhppmv/9taW0ffqEZE5PzEFMzbAAr4M
+        k9qceZmAZqsjznzd3IN3/qieoKLjlDNNCHR+NJ4ZrPz5Qqtn6o6SZZGBth4AzeSJsSa1SM
+        BcIpO6VANxCaalJJLYsMCuy7a7Z5Ty0=
+Date:   Wed, 18 Nov 2020 23:39:16 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     konrad.wilk@oracle.com, hch@lst.de, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, jon.grimm@amd.com,
+        rientjes@google.com
+Subject: Re: [PATCH v5] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201118223916.GP7472@zn.tnic>
+References: <20201118201243.18510-1-Ashish.Kalra@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20201113105952.11638-4-songmuchun@bytedance.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxscore=0 phishscore=0
- spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011180155
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=2 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011180155
+Content-Disposition: inline
+In-Reply-To: <20201118201243.18510-1-Ashish.Kalra@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/20 2:59 AM, Muchun Song wrote:
-> The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
-> whether to enable the feature of freeing unused vmemmap associated
-> with HugeTLB pages. Now only support x86.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  arch/x86/mm/init_64.c |  2 +-
->  fs/Kconfig            | 14 ++++++++++++++
->  2 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index 0a45f062826e..0435bee2e172 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
+On Wed, Nov 18, 2020 at 08:12:43PM +0000, Ashish Kalra wrote:
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index 3511736fbc74..0f42911cea57 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -1166,6 +1166,10 @@ void __init setup_arch(char **cmdline_p)
+>  	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+>  		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
 >  
->  static void __init register_page_bootmem_info(void)
->  {
-> -#ifdef CONFIG_NUMA
-> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
->  	int i;
->  
->  	for_each_online_node(i)
-> diff --git a/fs/Kconfig b/fs/Kconfig
-> index 976e8b9033c4..67e1bc99574f 100644
-> --- a/fs/Kconfig
-> +++ b/fs/Kconfig
-> @@ -245,6 +245,20 @@ config HUGETLBFS
->  config HUGETLB_PAGE
->  	def_bool HUGETLBFS
->  
-> +config HUGETLB_PAGE_FREE_VMEMMAP
-> +	def_bool HUGETLB_PAGE
-> +	depends on X86
-> +	depends on SPARSEMEM_VMEMMAP
-> +	depends on HAVE_BOOTMEM_INFO_NODE
-> +	help
-> +	  When using SPARSEMEM_VMEMMAP, the system can save up some memory
+> +#ifdef CONFIG_X86_64
+> +	swiotlb_adjust();
+> +#endif
 
-Should that read,
+Add an empty stub in include/linux/swiotlb.h for the !CONFIG_SWIOTLB
+case and get rid of the ifdeffery please.
 
-	When using HUGETLB_PAGE_FREE_VMEMMAP, ...
+> +unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
+> +{
+> +	unsigned long size = 0;
+> +
+> +	/*
+> +	 * For SEV, all DMA has to occur via shared/unencrypted pages.
+> +	 * SEV uses SWOTLB to make this happen without changing device
+> +	 * drivers. However, depending on the workload being run, the
+> +	 * default 64MB of SWIOTLB may not be enough & SWIOTLB may
+> +	 * run out of buffers for DMA, resulting in I/O errors and/or
+> +	 * performance degradation especially with high I/O workloads.
+> +	 * Increase the default size of SWIOTLB for SEV guests using
+> +	 * a minimum value of 128MB and a maximum value of 512MB,
+> +	 * depending on amount of provisioned guest memory.
+> +	 */
+> +	if (sev_active()) {
+> +		phys_addr_t total_mem = memblock_phys_mem_size();
+> +
+> +		if (total_mem <= SZ_1G)
+> +			size = max(iotlb_default_size, (unsigned long) SZ_128M);
+> +		else if (total_mem <= SZ_4G)
+> +			size = max(iotlb_default_size, (unsigned long) SZ_256M);
+> +		else
+> +			size = max(iotlb_default_size, (unsigned long) SZ_512M);
+> +
+> +		pr_info("SEV adjusted max SWIOTLB size = %luMB",
 
-as the help message is for this config option.
+Please make that message more user-friendly.
+
+...
+
+> +void __init swiotlb_adjust(void)
+> +{
+> +	unsigned long size;
+> +
+> +	/*
+> +	 * If swiotlb parameter has not been specified, give a chance to
+> +	 * architectures such as those supporting memory encryption to
+> +	 * adjust/expand SWIOTLB size for their use.
+> +	 */
+> +	if (!io_tlb_nslabs) {
+> +		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
+> +		if (size) {
+> +			size = ALIGN(size, 1 << IO_TLB_SHIFT);
+> +			io_tlb_nslabs = size >> IO_TLB_SHIFT;
+> +			io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
+> +
+> +			pr_info("architecture adjusted SWIOTLB slabs = %lu\n",
+
+That one too: what does "architecture adjusted SWIOTLB slabs" even
+mean?!
+
+Put yourself in your code user's shoes and see if that message makes
+sense to her/him.
+
+Thx.
 
 -- 
-Mike Kravetz
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
