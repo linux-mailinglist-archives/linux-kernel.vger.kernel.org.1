@@ -2,121 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B972B84F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A512B84F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgKRTdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:33:09 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18725 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgKRTdJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:33:09 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb576fe0007>; Wed, 18 Nov 2020 11:33:18 -0800
-Received: from [10.2.62.4] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
- 2020 19:32:58 +0000
-Subject: Re: [mm/gup] 47e29d32af: phoronix-test-suite.npb.FT.A.total_mop_s
- -45.0% regression
-To:     Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>
-CC:     kernel test robot <oliver.sang@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dave Chinner" <david@fromorbit.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Jonathan Corbet" <corbet@lwn.net>, Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, <lkp@lists.01.org>,
-        kbuild test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        feng tang <feng.tang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@intel.com>,
-        <guobing.chen@intel.com>, <ming.a.chen@intel.com>,
-        <frank.du@intel.com>, <Shuhua.Fan@intel.com>,
-        <wangyang.guo@intel.com>, <Wenhuan.Huang@intel.com>,
-        <jessica.ji@intel.com>, <shan.kang@intel.com>,
-        <guangli.li@intel.com>, <tiejun.li@intel.com>, <yu.ma@intel.com>,
-        <dapeng1.mi@intel.com>, <jiebin.sun@intel.com>,
-        <gengxin.xie@intel.com>, <fan.zhao@intel.com>
-References: <20201117024825.GA8169@xsang-OptiPlex-9020>
- <24d9d093-5b7a-9aee-8d61-59c0007a9269@nvidia.com>
- <20201118134952.GE1981@quack2.suse.cz>
- <CAPcyv4g=MFAojCeCST+sF22A+2cetVMFmQuDtu7arEM+0a+Ebw@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <f297fa64-3833-b361-0175-d769ce4ad31d@nvidia.com>
-Date:   Wed, 18 Nov 2020 11:32:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101
- Thunderbird/83.0
+        id S1726683AbgKRTdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:33:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725947AbgKRTdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:33:49 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56AC3238E6;
+        Wed, 18 Nov 2020 19:33:45 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 14:33:43 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Florian Weimer <fw@deneb.enyo.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: violating function pointer signature
+Message-ID: <20201118143343.4e86e79f@gandalf.local.home>
+In-Reply-To: <20201118191127.GM2672@gate.crashing.org>
+References: <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
+        <20201117142145.43194f1a@gandalf.local.home>
+        <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+        <20201117153451.3015c5c9@gandalf.local.home>
+        <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+        <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
+        <20201118121730.12ee645b@gandalf.local.home>
+        <20201118181226.GK2672@gate.crashing.org>
+        <87o8jutt2h.fsf@mid.deneb.enyo.de>
+        <20201118135823.3f0d24b7@gandalf.local.home>
+        <20201118191127.GM2672@gate.crashing.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4g=MFAojCeCST+sF22A+2cetVMFmQuDtu7arEM+0a+Ebw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605727998; bh=/zzto4qjui2QjTRLRNXiDcYtzpUx5bkuyHBccy5FEXc=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=oJrQCeqSFU8BNSDtz4THhkYXIqCYe7H0T5GmvybJtxVSbs2ad2JqRtEc9hgt5IU2t
-         GrM6lYjdbXaj0rOM0i1Efmi8+kcAjyEORoPxo8VXw6OvfoOlIa/1uCwuiFyFwG9pQZ
-         suZyFoe4RYVtjavFdS6NUY6zgEzBPMaC5XHcCRl90VFxqyWtBUA+snciB2AewyHsg/
-         AqtPm9SG+08yAvieBfUXe+kgMmCtTwxbWtk2oMx7am0BFSi6ClYACYFK00afHGDjnT
-         4A9jtApbrrvkVNWZlCgeK8Zb7dFTe12+62GzmWiImWMDtMAXtY2M2AuEliJ0Egv9CH
-         CaFnaWpQWtf1g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/20 10:17 AM, Dan Williams wrote:
-> On Wed, Nov 18, 2020 at 5:51 AM Jan Kara <jack@suse.cz> wrote:
->>
->> On Mon 16-11-20 19:35:31, John Hubbard wrote:
->>>
->>> On 11/16/20 6:48 PM, kernel test robot wrote:
->>>>
->>>> Greeting,
->>>>
->>>> FYI, we noticed a -45.0% regression of phoronix-test-suite.npb.FT.A.total_mop_s due to commit:
->>>>
->>>
->>> That's a huge slowdown...
->>>
->>>>
->>>> commit: 47e29d32afba11b13efb51f03154a8cf22fb4360 ("mm/gup: page->hpage_pinned_refcount: exact pin counts for huge pages")
->>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
->>>
->>> ...but that commit happened in April, 2020. Surely if this were a serious
->>> issue we would have some other indication...is this worth following up
->>> on?? I'm inclined to ignore it, honestly.
->>
->> Why this was detected so late is a fair question although it doesn't quite
->> invalidate the report...
-> 
-> I don't know what specifically happened in this case, perhaps someone
-> from the lkp team can comment? However, the myth / contention that
-> "surely someone else would have noticed by now" is why the lkp project
-> was launched. Kernels regressed without much complaint and it wasn't
-> until much later in the process, around the time enterprise distros
-> rebased to new kernels, did end users start filing performance loss
-> regression reports. Given -stable kernel releases, 6-7 months is still
-> faster than many end user upgrade cycles to new kernel baselines.
-> 
+On Wed, 18 Nov 2020 13:11:27 -0600
+Segher Boessenkool <segher@kernel.crashing.org> wrote:
 
-I see, thanks for explaining. I'll take a peek, then.
+> Calling this via a different declared function type is undefined
+> behaviour, but that is independent of how the function is *defined*.
+> Your program can make ducks appear from your nose even if that function
+> is never called, if you do that.  Just don't do UB, not even once!
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+But that's the whole point of this conversation. We are going to call this
+from functions that are going to have some random set of parameters.
+
+But there is a limit to that. All the callers will expect a void return,
+and none of the callers will have a variable number of parameters.
+
+The code in question is tracepoints and static calls. For this
+conversation, I'll stick with tracepoints (even though static calls are
+used too, but including that in the conversation is confusing).
+
+Let me define what is happening:
+
+We have a macro that creates a defined tracepoint with a defined set of
+parameters. But each tracepoint can have a different set of parameters. All
+of them will have "void *" as the first parameter, but what comes after
+that is unique to each tracepoint (defined by a macro). None of them will
+be a variadic function call.
+
+The macro looks like this:
+
+	int __traceiter_##_name(void *__data, proto)			\
+	{								\
+		struct tracepoint_func *it_func_ptr;			\
+		void *it_func;						\
+									\
+		it_func_ptr =						\
+			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
+		do {							\
+			it_func = (it_func_ptr)->func;			\
+			__data = (it_func_ptr)->data;			\
+			((void(*)(void *, proto))(it_func))(__data, args); \
+		} while ((++it_func_ptr)->func);			\
+		return 0;						\
+	}
+
+
+There's an array of struct tracepoint_func pointers, which has the
+definition of:
+
+struct tracepoint_func {
+	void *func;
+	void *data;
+	int prio;
+};
+
+
+And you see the above, the macro does:
+
+	((void(*)(void *, proto))(it_func))(__data, args);
+
+With it_func being the func from the struct tracepoint_func, which is a
+void pointer, it is typecast to the function that is defined by the
+tracepoint. args is defined as the arguments that match the proto.
+
+The way the array is updated, is to use an RCU method, which is to create a
+new array, copy the changes to the new array, then switch the "->funcs"
+over to the new copy, and after a RCU grace period is finished, we can free
+the old array.
+
+The problem we are solving is on the removal case, if the memory is tight,
+it is possible that the new array can not be allocated. But we must still
+remove the called function. The idea in this case is to replace the
+function saved with a stub. The above loop will call the stub and not the
+removed function until another update happens.
+
+This thread is about how safe is it to call:
+
+void tp_stub_func(void) { return ; }
+
+instead of the function that was removed?
+
+Thus, we are indeed calling that stub function from a call site that is not
+using the same parameters.
+
+The question is, will this break?
+
+-- Steve
