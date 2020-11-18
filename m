@@ -2,148 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFAE2B7448
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC96E2B744A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgKRCnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 21:43:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
+        id S1726494AbgKRCo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 21:44:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726417AbgKRCnw (ORCPT
+        with ESMTP id S1725771AbgKRCo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 21:43:52 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C98C061A4D
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:43:50 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id f18so167120pgi.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:43:50 -0800 (PST)
+        Tue, 17 Nov 2020 21:44:26 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A575C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:44:25 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id v6so197402vsd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:44:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cIZ+YWWP5aqalUoRio2QtJMh5XCbXXDA9kJRwC7+zv8=;
-        b=bbch85ddNZ7XzpLUOYzExmTsbmLKMUrE9yX+1sYtLTuQIw8ozlyrK0AUfruD2uMB8P
-         6FNZterRPoL/JxxCQOE66gZrVVt84KUGv3FnJx3SDvodbBi6iowaXhCLd2TA5DOMSGe0
-         SRjy4IuV5OTslaeKmbzNIBAIPNtEt56wYcPKmVdWyiYt8CJHgfVPWHmSHxAkIWO4apO4
-         qTmvP8l8gWp7CKIOdxDrhM2uWcMO4rKs9rRpPQFiEbYc0Ei/qlaJeWdKQTN6s1ppRauD
-         /PioS9bT+LFuJ5NT2IoOvE18sAWFzx3ej5zoGL2Ax7RG5rNSntedlGRaoxDAHdUinMyW
-         M+wA==
+        bh=i1baSlx7+AuP0I6rzkrgeQ8LBxCjB7SE8APgJzoq8Tk=;
+        b=TTgZMsABcbK/0tR56BhY5Kc3aVCHk2MgelMbWKx9Xwhkr5Frty7saHuiqmPAxqBqh4
+         tClJ4m2IgA5rVTAuQyHfe049KsBCpdpoUZ+z7seEZFoCiR/ysG8XYEfemf/IP92tv4RG
+         jU2JG55ayurOrn831ogClu8q9WHNpZ6CZCteSQsxNvF4NSDu7mdR4XPgO1YPRfNKYZts
+         gliQu/cX/r8+X1HHYae48a84LeUPpoj7e5BBoxeqtQ8SGuRDU8W/gp12c8fO1i3LcKVu
+         PFPunEFubjhtDS2uuJeE3m45WK5kIyDYVjgpY7n/iOCCh7MLe8STHz8OEyujXi3Adsht
+         fU1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cIZ+YWWP5aqalUoRio2QtJMh5XCbXXDA9kJRwC7+zv8=;
-        b=FAv+KrmBCwwxDJ/l9IJwV5dqMe2goYhYduUAFW0MxYWVA/GrlcTc0RlqeKSzMH0uSw
-         6kqYp8hL0ZoeEgDiTBi/dxfC2YaPEasZZkdJQHgzrST9Gnf26TsczXCQCTJGfi+Koots
-         MYi85nuU1SZ6QOtnx3A22+tFJbIy4meX8AHBuFYr9udFgECi1wa8Da37UdTvYXIBLBf2
-         kVJ4dsFxyQ+9N+KBQusOCKMSA56I8nexySZxTmKsxG/zKwAna5f2Hwh7BSLJPpNEzkGr
-         rpvlCF9IsFVxXxYWWJf69hH90IqYt8guzNMSMPS8g060nvbkAmNce/ZYGy/tHCySgO/m
-         qfnw==
-X-Gm-Message-State: AOAM533ph/qpBRsfmgmQIzgsSFiBoqBLos8WoZxZ+aWgC31LKcpDfmk5
-        QokHvrpPTC+Nxt6EAk38Kp+EPM5Xzwqwbr2HOUVLcQ==
-X-Google-Smtp-Source: ABdhPJxGDISMqn2bIRZh7wORdl/cIXS0Q2etgc5JYSCpx/B0Jr1Wza3ya52gTSkwn/Ea57CTkeoqexeqyVXu0Ud+DQE=
-X-Received: by 2002:a62:16c1:0:b029:18c:8a64:fc04 with SMTP id
- 184-20020a6216c10000b029018c8a64fc04mr2397649pfw.59.1605667430141; Tue, 17
- Nov 2020 18:43:50 -0800 (PST)
+        bh=i1baSlx7+AuP0I6rzkrgeQ8LBxCjB7SE8APgJzoq8Tk=;
+        b=e4I81ekIyCSUEgAQtoJPvxggpsPlp4TdqJV9WDo/jwrDtRk6/9PXtMR6k4vXz0FzzY
+         t2H86heMwgVHgmDJb3ArntYm4ZJ4sHbU0Hy9wROInSHGycGJZGC0ghsoeB5aCZ/nFnZT
+         SICzzuWaWR22UBziCPAUfd/RAQVWyFAEEwO0gZmacuZjLDnSRQ9ODRJpZdNi9A+PHy41
+         af0dl0/bP3NX7W/DYdfYvMBWfmYTE8NLxQfpo37GM4NJcDajJnA7bhFvPSRJuZ+k2WP6
+         2L7HxTsNFJ1jMpykjxh4J9ksjdcnG11g2yKXDmz4WsmQY2FOW6u4q0WMDL0oCj9T5c+F
+         08Jg==
+X-Gm-Message-State: AOAM5324YzEo61XDAy4sQaDt6/MygxR4E1qGkhrsWt5jolDQSvPl6vpX
+        M0YNGw9+aOnEk2WzQMoGl9+ojbPqaTApwKLOm62DsM83s28=
+X-Google-Smtp-Source: ABdhPJxxHA53i+lcdLKff/HqCsW/grer8JkoU730foAB0z0yMxezTLp9BJ0x6IGh+jGWE/i4nmTeGxMsZAFsAcIFFbY=
+X-Received: by 2002:a05:6102:3129:: with SMTP id f9mr2009802vsh.26.1605667464406;
+ Tue, 17 Nov 2020 18:44:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20201113105952.11638-1-songmuchun@bytedance.com>
- <349168819c1249d4bceea26597760b0a@hisilicon.com> <CAMZfGtUVDJ4QHYRCKnPTkgcKGJ38s2aOOktH+8Urz7oiVfimww@mail.gmail.com>
- <714ae7d701d446259ab269f14a030fe9@hisilicon.com> <CAMZfGtWNa=abZdN6HmWE1VBFHfGCbsW9D0zrN-F5zrhn6s=ErA@mail.gmail.com>
- <20201117192223.GW29991@casper.infradead.org>
-In-Reply-To: <20201117192223.GW29991@casper.infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 18 Nov 2020 10:43:06 +0800
-Message-ID: <CAMZfGtUsqkk1Td3YBb-Ap6M_Hg59te1uORCPLVk4QeaFt7U0cw@mail.gmail.com>
-Subject: Re: [External] RE: [PATCH v4 00/21] Free some vmemmap pages of
- hugetlb page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        "pawan.kumar.gupta@linux.intel.com" 
-        <pawan.kumar.gupta@linux.intel.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "oneukum@suse.com" <oneukum@suse.com>,
-        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        "almasrymina@google.com" <almasrymina@google.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "mhocko@suse.com" <mhocko@suse.com>,
-        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+References: <20201116220033.1837-1-urezki@gmail.com> <20201116220033.1837-2-urezki@gmail.com>
+ <CAC=cRTN77LAn-9-6rGukc2aUZQzx7oP9eKt_hJeb=wbnhGqObQ@mail.gmail.com> <20201117130434.GA10769@pc636>
+In-Reply-To: <20201117130434.GA10769@pc636>
+From:   huang ying <huang.ying.caritas@gmail.com>
+Date:   Wed, 18 Nov 2020 10:44:13 +0800
+Message-ID: <CAC=cRTN-JyZKyFkRgC0BrBjnu4mMTJ_hXBYszJ9HLXaLqeMfgQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/vmalloc: rework the drain logic
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 3:22 AM Matthew Wilcox <willy@infradead.org> wrote:
+On Tue, Nov 17, 2020 at 9:04 PM Uladzislau Rezki <urezki@gmail.com> wrote:
 >
-> On Wed, Nov 18, 2020 at 12:29:07AM +0800, Muchun Song wrote:
-> > > ideally, we should be able to free PageTail if we change struct page in some way.
-> > > Then we will save much more for 2MB hugetlb. but it seems it is not easy.
+> On Tue, Nov 17, 2020 at 10:37:34AM +0800, huang ying wrote:
+> > On Tue, Nov 17, 2020 at 6:00 AM Uladzislau Rezki (Sony)
+> > <urezki@gmail.com> wrote:
+> > >
+> > > A current "lazy drain" model suffers from at least two issues.
+> > >
+> > > First one is related to the unsorted list of vmap areas, thus
+> > > in order to identify the [min:max] range of areas to be drained,
+> > > it requires a full list scan. What is a time consuming if the
+> > > list is too long.
+> > >
+> > > Second one and as a next step is about merging all fragments
+> > > with a free space. What is also a time consuming because it
+> > > has to iterate over entire list which holds outstanding lazy
+> > > areas.
+> > >
+> > > See below the "preemptirqsoff" tracer that illustrates a high
+> > > latency. It is ~24 676us. Our workloads like audio and video
+> > > are effected by such long latency:
 > >
-> > Now for the 2MB HugrTLB page, we only free 6 vmemmap pages.
-> > But your words woke me up. Maybe we really can free 7 vmemmap
-> > pages. In this case, we can see 8 of the 512 struct page structures
-> > has beed set PG_head flag. If we can adjust compound_head()
-> > slightly and make compound_head() return the real head struct
-> > page when the parameter is the tail struct page but with PG_head
-> > flag set. I will start an investigation and a test.
->
-> What are you thinking?
->
-> static inline struct page *compound_head(struct page *page)
-> {
->         unsigned long head = READ_ONCE(page->compound_head);
->
->         if (unlikely(head & 1))
->                 return (struct page *) (head - 1);
-> +       if (unlikely(page->flags & PG_head))
-> +               return (struct page *)(page[1]->compound_head - 1)
+> > This seems like a real problem.  But I found there's long latency
+> > avoidance mechanism in the loop in __purge_vmap_area_lazy() as
+> > follows,
+> >
+> >         if (atomic_long_read(&vmap_lazy_nr) < resched_threshold)
+> >             cond_resched_lock(&free_vmap_area_lock);
+> >
+> I have added that "resched threshold" because of on my tests i could
+> simply hit out of memory, due to the fact that a drain work is not up
+> to speed to process such long outstanding list of vmap areas.
 
-Yeah, I think so too. Maybe adding an align check is better.
+OK.  Now I think I understand the problem.  For free area purging,
+there are multiple "producers" but one "consumer", and it lacks enough
+mechanism to slow down the "producers" if "consumer" can not catch up.
+And your patch tries to resolve the problem via accelerating the
+"consumer".
+That isn't perfect, but I think we may have quite some opportunities
+to merge the free areas, so it should just work.
 
-+         if ((test_bit(PG_head, &page->flags) &&
-+              IS_ALIGNED((unsigned long)page, PAGE_SIZE))
+And I found the long latency avoidance logic in
+__purge_vmap_area_lazy() appears problematic,
 
->         return page;
-> }
->
-> ... because if it's that, there are code paths which also just test
-> PageHead, and so we'd actually need to change PageHead to be something
-> like:
+         if (atomic_long_read(&vmap_lazy_nr) < resched_threshold)
+             cond_resched_lock(&free_vmap_area_lock);
 
-Yeah, I also think that rework compound_head() and PageHead() is enough.
+Shouldn't it be something as follows?
 
-Thanks.
+         if (i >= BATCH && atomic_long_read(&vmap_lazy_nr) <
+resched_threshold) {
+             cond_resched_lock(&free_vmap_area_lock);
+             i = 0;
+         } else
+             i++;
 
->
-> static inline bool PageHead(struct page *page)
-> {
->         return (page->flags & PG_head) &&
->                 (page[1]->compound_head == (unsigned long)page + 1);
-> }
->
-> I'm not sure if that's worth doing -- there may be other things I
-> haven't thought of.
+This will accelerate the purging via batching and slow down vmalloc()
+via holding free_vmap_area_lock.  If it makes sense, can we try this?
 
+And, can we reduce lazy_max_pages() to control the length of the
+purging list?  It could be > 8K if the vmalloc/vfree size is small.
 
-
--- 
-Yours,
-Muchun
+Best Regards,
+Huang, Ying
