@@ -2,300 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DE22B87F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:56:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB14A2B87F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgKRW4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 17:56:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgKRW4O (ORCPT
+        id S1726431AbgKRW4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 17:56:31 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:46195 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgKRW4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 17:56:14 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC116C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:56:30 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id 10so5014501wml.2
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:56:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1seX92mFsrfx7vZyLIxprFubCVzfCSOLsu/hjAP+vTs=;
-        b=vox9ADdoLllhyA1WukaU1CRn9MH5Ac1e19bK2BhUq0VExU/Wmxkt8mbTE+40y/r1MV
-         NmZpUniroixmZ0iwh6+lKHnnOBGKRU4uv25M9W9AU7/cgxZ1SuqdFPihrQQnjQzbgznF
-         sE2K77SL8EQpM0acGAMkBG9BZay0+eqqATgSlTrda7OnH697vk4AGc3DJ4iDuygQhF8C
-         s841mg/agEyleLOBAFzE+8WMmLehdkndMmJwA9hfPmP2Vg1sbnpbe91pll7ImLk74dAS
-         JXpP0Jf3cwN9Yh/JEdNPZgB/6srsMK5CcUc+PZTIPurEBsKMKSPWR9q7CYfFDe/oGpoQ
-         ngPg==
+        Wed, 18 Nov 2020 17:56:30 -0500
+Received: from mail-qt1-f198.google.com ([209.85.160.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <gpiccoli@canonical.com>)
+        id 1kfWNa-0004Ca-Dw
+        for linux-kernel@vger.kernel.org; Wed, 18 Nov 2020 22:56:46 +0000
+Received: by mail-qt1-f198.google.com with SMTP id z14so2798898qto.8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:56:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1seX92mFsrfx7vZyLIxprFubCVzfCSOLsu/hjAP+vTs=;
-        b=YzJ3LYof89UrpTKBJZuSlcV4vHyoeQEiGQl4TsiY1JggTa0Z2fBrK4VzQduO/LitBN
-         pbLMRijo/Ok5gxmLsDQkPDKDhCy+FulFtiEDOMaOazn1iGZS/4WK4aNFS6fVptartevy
-         nNqwH+r2AH7+0EaIiOC9C2RgntvXlpqWc33QtzzRy8VOnxg8/owJsH5kfnyOw1ZNcXjw
-         qq1FPoSyUdyMtG1LvAFSekguSB3rdAT16lnSlSQlbd3R7ab5M9kXKMLObFF7lQVV0fhK
-         ijS80WHxMimtqh+dj8jzDBcdNelGMGNNAR7IXrksrqLQ70Ss6ZWNYc2jmyIDIIv4aqe7
-         0DvQ==
-X-Gm-Message-State: AOAM531XGtVc0hugL7q21Z+BTY28gUqnLXo8Q0lKfpNAH+dkglvBv6CF
-        h6nlxhHr7IdUWX/siLp8o2v9fQ==
-X-Google-Smtp-Source: ABdhPJwdlAxRq7xNFMtlK6ne5yf2WkyW7uJ1VlCtr6keEqO7/0WNjQ19rvEqd/QRHs2EefbueKWGMw==
-X-Received: by 2002:a7b:cc84:: with SMTP id p4mr1406309wma.86.1605740189466;
-        Wed, 18 Nov 2020 14:56:29 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id p4sm35980145wrm.51.2020.11.18.14.56.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 14:56:27 -0800 (PST)
-Date:   Wed, 18 Nov 2020 23:56:21 +0100
-From:   Marco Elver <elver@google.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
- allocations
-Message-ID: <20201118225621.GA1770130@elver.google.com>
-References: <20201111183430.GN517454@elver.google.com>
- <20201111192123.GB3249@paulmck-ThinkPad-P72>
- <20201111202153.GT517454@elver.google.com>
- <20201112001129.GD3249@paulmck-ThinkPad-P72>
- <CANpmjNNyZs6NrHPmomC4=9MPEvCy1bFA5R2pRsMhG7=c3LhL_Q@mail.gmail.com>
- <20201112161439.GA2989297@elver.google.com>
- <20201112175406.GF3249@paulmck-ThinkPad-P72>
- <20201113175754.GA6273@paulmck-ThinkPad-P72>
- <20201117105236.GA1964407@elver.google.com>
- <20201117182915.GM1437@paulmck-ThinkPad-P72>
+        h=x-gm-message-state:to:cc:in-reply-to:from:subject:autocrypt
+         :message-id:date:user-agent:mime-version:content-language
+         :content-transfer-encoding;
+        bh=9hM3BhOixpgWWUwPs0/nSKrVu8zTVptQYczuRAn528E=;
+        b=SHPt6D0b97BCabBshZFfpmnFvtrVrUlNmkPNT7HMmvQ5WTuQ4xp5uMVGuYvugzV3iP
+         xf8ehmJNhADv+w/+NoHyxa97u1bVLfTAEgmIp1XuBAS4M+OgRY3ash7PfEZadg2sgP0r
+         h9Vy4nZRdnNU40qcGjpanIHKGPk+Arp7S2rUZhYVHDOY6vuSrftlIW2bn6rhQoWs50aX
+         yW1VSYqpfzT1cimSpQacJ1V50ewP3RH+U+gQmHCNMl9/1UfJJaoo07caXPJUFS9fQyj/
+         ZT+f5Het47+zg3Qor0woGcQY9YnQJeJLq9P9eWSsfbqRXKSJD1iXCx3RH0uAtQIGsHKq
+         a14g==
+X-Gm-Message-State: AOAM533JQskP4BUAqrxDGWRhD1+DYTBKOVUUKiWuQlK4+XalydyGfhQk
+        gSERhCRIgH+K3Z13UP2TLto5cByifTStkQmhLt2q7aUAAT0Dz2Axw4oGK/QPdc8+Behd2ojkeGS
+        gWWXRveFjeC5/E9EGVaGmmYiw5uCDfcsgIkT9B0d0kQ==
+X-Received: by 2002:aed:2141:: with SMTP id 59mr7386720qtc.117.1605740205490;
+        Wed, 18 Nov 2020 14:56:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJynz+uuAUd+R0wXJKjUR5CRGS5h1/6Vbvp0ykTmN3/BRYV6zXtTZqaZV7SA+LZzKwvZROxZxg==
+X-Received: by 2002:aed:2141:: with SMTP id 59mr7386701qtc.117.1605740205239;
+        Wed, 18 Nov 2020 14:56:45 -0800 (PST)
+Received: from [192.168.1.75] ([177.215.76.189])
+        by smtp.gmail.com with ESMTPSA id k31sm16519305qtd.40.2020.11.18.14.56.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Nov 2020 14:56:44 -0800 (PST)
+To:     vincent.guittot@linaro.org
+Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, zohooouoto@zoho.com.cn, mgorman@suse.de,
+        mingo@redhat.com, ouwen210@hotmail.com, pauld@redhat.com,
+        peterz@infradead.org, pkondeti@codeaurora.org, rostedt@goodmis.org,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        Gavin Guo <gavin.guo@canonical.com>, halves@canonical.com,
+        nivedita.singhvi@canonical.com, linux-kernel@vger.kernel.org,
+        gpiccoli@canonical.com
+In-Reply-To: 
+From:   "Guilherme G. Piccoli" <gpiccoli@canonical.com>
+Subject: Re: [PATCH v3] sched/fair: fix unthrottle_cfs_rq for leaf_cfs_rq list
+Autocrypt: addr=gpiccoli@canonical.com; prefer-encrypt=mutual; keydata=
+ xsBNBFpVBxcBCADPNKmu2iNKLepiv8+Ssx7+fVR8lrL7cvakMNFPXsXk+f0Bgq9NazNKWJIn
+ Qxpa1iEWTZcLS8ikjatHMECJJqWlt2YcjU5MGbH1mZh+bT3RxrJRhxONz5e5YILyNp7jX+Vh
+ 30rhj3J0vdrlIhPS8/bAt5tvTb3ceWEic9mWZMsosPavsKVcLIO6iZFlzXVu2WJ9cov8eQM/
+ irIgzvmFEcRyiQ4K+XUhuA0ccGwgvoJv4/GWVPJFHfMX9+dat0Ev8HQEbN/mko/bUS4Wprdv
+ 7HR5tP9efSLucnsVzay0O6niZ61e5c97oUa9bdqHyApkCnGgKCpg7OZqLMM9Y3EcdMIJABEB
+ AAHNLUd1aWxoZXJtZSBHLiBQaWNjb2xpIDxncGljY29saUBjYW5vbmljYWwuY29tPsLAdwQT
+ AQgAIQUCWmClvQIbAwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRDOR5EF9K/7Gza3B/9d
+ 5yczvEwvlh6ksYq+juyuElLvNwMFuyMPsvMfP38UslU8S3lf+ETukN1S8XVdeq9yscwtsRW/
+ 4YoUwHinJGRovqy8gFlm3SAtjfdqysgJqUJwBmOtcsHkmvFXJmPPGVoH9rMCUr9s6VDPox8f
+ q2W5M7XE9YpsfchS/0fMn+DenhQpV3W6pbLtuDvH/81GKrhxO8whSEkByZbbc+mqRhUSTdN3
+ iMpRL0sULKPVYbVMbQEAnfJJ1LDkPqlTikAgt3peP7AaSpGs1e3pFzSEEW1VD2jIUmmDku0D
+ LmTHRl4t9KpbU/H2/OPZkrm7809QovJGRAxjLLPcYOAP7DUeltvezsBNBFpVBxcBCADbxD6J
+ aNw/KgiSsbx5Sv8nNqO1ObTjhDR1wJw+02Bar9DGuFvx5/qs3ArSZkl8qX0X9Vhptk8rYnkn
+ pfcrtPBYLoux8zmrGPA5vRgK2ItvSc0WN31YR/6nqnMfeC4CumFa/yLl26uzHJa5RYYQ47jg
+ kZPehpc7IqEQ5IKy6cCKjgAkuvM1rDP1kWQ9noVhTUFr2SYVTT/WBHqUWorjhu57/OREo+Tl
+ nxI1KrnmW0DbF52tYoHLt85dK10HQrV35OEFXuz0QPSNrYJT0CZHpUprkUxrupDgkM+2F5LI
+ bIcaIQ4uDMWRyHpDbczQtmTke0x41AeIND3GUc+PQ4hWGp9XABEBAAHCwF8EGAEIAAkFAlpV
+ BxcCGwwACgkQzkeRBfSv+xv1wwgAj39/45O3eHN5pK0XMyiRF4ihH9p1+8JVfBoSQw7AJ6oU
+ 1Hoa+sZnlag/l2GTjC8dfEGNoZd3aRxqfkTrpu2TcfT6jIAsxGjnu+fUCoRNZzmjvRziw3T8
+ egSPz+GbNXrTXB8g/nc9mqHPPprOiVHDSK8aGoBqkQAPZDjUtRwVx112wtaQwArT2+bDbb/Y
+ Yh6gTrYoRYHo6FuQl5YsHop/fmTahpTx11IMjuh6IJQ+lvdpdfYJ6hmAZ9kiVszDF6pGFVkY
+ kHWtnE2Aa5qkxnA2HoFpqFifNWn5TyvJFpyqwVhVI8XYtXyVHub/WbXLWQwSJA4OHmqU8gDl
+ X18zwLgdiQ==
+Message-ID: <17fc60a3-cc50-7cff-eb46-904c2f0c416e@canonical.com>
+Date:   Wed, 18 Nov 2020 19:56:38 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="0OAP2g/MAC+5xKAE"
-Content-Disposition: inline
-In-Reply-To: <20201117182915.GM1437@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vincent (and all CCed), I'm sorry to ping about such "old" patch, but
+we experienced a similar condition to what this patch addresses; it's an
+older kernel (4.15.x) but when suggesting the users to move to an
+updated 5.4.x kernel, we noticed that this patch is not there, although
+similar ones are (like [0] and [1]).
 
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So, I'd like to ask if there's any particular reason to not backport
+this fix to stable kernels, specially the longterm 5.4. The main reason
+behind the question is that the code is very complex for non-experienced
+scheduler developers, and I'm afraid in suggesting such backport to 5.4
+and introduce complex-to-debug issues.
 
-On Tue, Nov 17, 2020 at 10:29AM -0800, Paul E. McKenney wrote:
-[...] 
-> But it would be good to get the kcompactd() people to look at this (not
-> immediately seeing who they are in MAINTAINERS).  Perhaps preemption is
-> disabled somehow and I am failing to see it.
-> 
-> Failing that, maybe someone knows of a way to check for overly long
-> timeout handlers.
+Let me know your thoughts Vincent (and all CCed), thanks in advance.
+Cheers,
 
-I think I figured out one piece of the puzzle. Bisection keeps pointing
-me at some -rcu merge commit, which kept throwing me off. Nor did it
-help that reproduction is a bit flaky. However, I think there are 2
-independent problems, but the manifestation of 1 problem triggers the
-2nd problem:
 
-1. problem: slowed forward progress (workqueue lockup / RCU stall reports)
+Guilherme
 
-2. problem: DEADLOCK which causes complete system lockup
 
-	| ...
-	|        CPU0
-	|        ----
-	|   lock(rcu_node_0);
-	|   <Interrupt>
-	|     lock(rcu_node_0);
-	| 
-	|  *** DEADLOCK ***
-	| 
-	| 1 lock held by event_benchmark/105:
-	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: print_other_cpu_stall kernel/rcu/tree_stall.h:493 [inline]
-	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: check_cpu_stall kernel/rcu/tree_stall.h:652 [inline]
-	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: rcu_pending kernel/rcu/tree.c:3752 [inline]
-	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x428/0xd40 kernel/rcu/tree.c:2581
-	| ...
+P.S. For those that deleted this thread from the email client, here's a
+link:
+https://lore.kernel.org/lkml/20200513135528.4742-1-vincent.guittot@linaro.org/
 
-Problem 2 can with reasonable confidence (5 trials) be fixed by reverting:
 
-	rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
+[0]
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe61468b2cb
 
-At which point the system always boots to user space -- albeit with a
-bunch of warnings still (attached). The supposed "good" version doesn't
-end up with all those warnings deterministically, so I couldn't say if
-the warnings are expected due to recent changes or not (Arm64 QEMU
-emulation, 1 CPU, and lots of debugging tools on).
-
-Does any of that make sense?
-
-Thanks,
--- Marco
-
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=log
-
-Testing all events: OK
-Running tests again, along with the function tracer
-Running tests on all trace events:
-Testing all events: 
-hrtimer: interrupt took 10156432 ns
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-	(detected by 0, t=3752 jiffies, g=2785, q=6)
-rcu: All QSes seen, last rcu_preempt kthread activity 3752 (4295396561-4295392809), jiffies_till_next_fqs=1, root ->qsmask 0x0
-rcu: rcu_preempt kthread starved for 3752 jiffies! g2785 f0x0 RCU_GP_ONOFF(3) ->state=0x0 ->cpu=0
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x00000428
-Call trace:
- __switch_to+0x10c/0x200 arch/arm64/kernel/process.c:578
- context_switch kernel/sched/core.c:3773 [inline]
- __schedule+0x2d8/0x980 kernel/sched/core.c:4522
- preempt_schedule_common+0x4c/0x1a8 kernel/sched/core.c:4681
- preempt_schedule+0x38/0x40 kernel/sched/core.c:4706
- __raw_spin_unlock include/linux/spinlock_api_smp.h:152 [inline]
- _raw_spin_unlock+0x94/0xa8 kernel/locking/spinlock.c:183
- rcu_gp_init kernel/rcu/tree.c:1820 [inline]
- rcu_gp_kthread+0x34c/0x1bd8 kernel/rcu/tree.c:2105
- kthread+0x13c/0x188 kernel/kthread.c:292
- ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-	(detected by 0, t=3752 jiffies, g=2817, q=6)
-rcu: All QSes seen, last rcu_preempt kthread activity 856 (4295412565-4295411709), jiffies_till_next_fqs=1, root ->qsmask 0x0
-rcu: rcu_preempt kthread starved for 856 jiffies! g2817 f0x2 RCU_GP_CLEANUP(7) ->state=0x0 ->cpu=0
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x00000428
-Call trace:
- __switch_to+0x10c/0x200 arch/arm64/kernel/process.c:578
- context_switch kernel/sched/core.c:3773 [inline]
- __schedule+0x2d8/0x980 kernel/sched/core.c:4522
- preempt_schedule_common+0x4c/0x1a8 kernel/sched/core.c:4681
- preempt_schedule+0x38/0x40 kernel/sched/core.c:4706
- __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:169 [inline]
- _raw_spin_unlock_irq+0x84/0x98 kernel/locking/spinlock.c:199
- rcu_gp_cleanup kernel/rcu/tree.c:2015 [inline]
- rcu_gp_kthread+0x1038/0x1bd8 kernel/rcu/tree.c:2119
- kthread+0x13c/0x188 kernel/kthread.c:292
- ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
-BUG: workqueue lockup - pool cpus=0 flags=0x4 nice=0 stuck for 16s!
-Showing busy workqueues and worker pools:
-workqueue events: flags=0x0
-  pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-    pending: vmstat_shepherd
-workqueue events_power_efficient: flags=0x82
-  pwq 2: cpus=0 flags=0x4 nice=0 active=2/256 refcnt=4
-    pending: neigh_periodic_work, do_cache_clean
-workqueue rcu_gp: flags=0x8
-  pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-    in-flight: 15:srcu_invoke_callbacks
-pool 0: cpus=0 node=0 flags=0x0 nice=0 hung=0s workers=3 idle: 111 5
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-	(detected by 0, t=3752 jiffies, g=2829, q=6)
-rcu: All QSes seen, last rcu_preempt kthread activity 1522 (4295422970-4295421448), jiffies_till_next_fqs=1, root ->qsmask 0x0
-rcu: rcu_preempt kthread starved for 1522 jiffies! g2829 f0x2 RCU_GP_CLEANUP(7) ->state=0x0 ->cpu=0
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x00000428
-Call trace:
- dump_backtrace+0x0/0x240 arch/arm64/kernel/stacktrace.c:100
- show_stack+0x34/0x88 arch/arm64/kernel/stacktrace.c:196
- sched_show_task kernel/sched/core.c:6445 [inline]
- sched_show_task+0x1fc/0x228 kernel/sched/core.c:6420
- rcu_check_gp_kthread_starvation+0xc8/0xe4 kernel/rcu/tree_stall.h:452
- print_other_cpu_stall kernel/rcu/tree_stall.h:520 [inline]
- check_cpu_stall kernel/rcu/tree_stall.h:640 [inline]
- rcu_pending kernel/rcu/tree.c:3752 [inline]
- rcu_sched_clock_irq+0xb34/0xc48 kernel/rcu/tree.c:2581
- update_process_times+0x6c/0xb8 kernel/time/timer.c:1709
- tick_sched_handle.isra.0+0x58/0x88 kernel/time/tick-sched.c:176
- tick_sched_timer+0x68/0xe0 kernel/time/tick-sched.c:1328
- __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
- __hrtimer_run_queues+0x288/0x730 kernel/time/hrtimer.c:1583
- hrtimer_interrupt+0x114/0x288 kernel/time/hrtimer.c:1645
- timer_handler drivers/clocksource/arm_arch_timer.c:647 [inline]
- arch_timer_handler_virt+0x50/0x70 drivers/clocksource/arm_arch_timer.c:658
- handle_percpu_devid_irq+0x104/0x4c0 kernel/irq/chip.c:930
- generic_handle_irq_desc include/linux/irqdesc.h:152 [inline]
- generic_handle_irq+0x54/0x78 kernel/irq/irqdesc.c:650
- __handle_domain_irq+0xac/0x130 kernel/irq/irqdesc.c:687
- handle_domain_irq include/linux/irqdesc.h:170 [inline]
- gic_handle_irq+0x70/0x108 drivers/irqchip/irq-gic.c:370
- el1_irq+0xc0/0x180 arch/arm64/kernel/entry.S:651
- arch_local_irq_enable arch/arm64/include/asm/irqflags.h:37 [inline]
- __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
- _raw_spin_unlock_irq+0x50/0x98 kernel/locking/spinlock.c:199
- finish_lock_switch kernel/sched/core.c:3513 [inline]
- finish_task_switch+0xa8/0x290 kernel/sched/core.c:3613
- context_switch kernel/sched/core.c:3776 [inline]
- __schedule+0x2dc/0x980 kernel/sched/core.c:4522
- preempt_schedule_common+0x4c/0x1a8 kernel/sched/core.c:4681
- preempt_schedule+0x38/0x40 kernel/sched/core.c:4706
- __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:169 [inline]
- _raw_spin_unlock_irq+0x84/0x98 kernel/locking/spinlock.c:199
- rcu_gp_cleanup kernel/rcu/tree.c:2046 [inline]
- rcu_gp_kthread+0x1144/0x1bd8 kernel/rcu/tree.c:2119
- kthread+0x13c/0x188 kernel/kthread.c:292
- ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-	(detected by 0, t=3752 jiffies, g=2845, q=6)
-rcu: All QSes seen, last rcu_preempt kthread activity 2796 (4295435367-4295432571), jiffies_till_next_fqs=1, root ->qsmask 0x0
-rcu: rcu_preempt kthread starved for 2796 jiffies! g2845 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x0000042a
-Call trace:
- dump_backtrace+0x0/0x240 arch/arm64/kernel/stacktrace.c:100
- show_stack+0x34/0x88 arch/arm64/kernel/stacktrace.c:196
- sched_show_task kernel/sched/core.c:6445 [inline]
- sched_show_task+0x1fc/0x228 kernel/sched/core.c:6420
- rcu_check_gp_kthread_starvation+0xc8/0xe4 kernel/rcu/tree_stall.h:452
- print_other_cpu_stall kernel/rcu/tree_stall.h:520 [inline]
- check_cpu_stall kernel/rcu/tree_stall.h:640 [inline]
- rcu_pending kernel/rcu/tree.c:3752 [inline]
- rcu_sched_clock_irq+0xb34/0xc48 kernel/rcu/tree.c:2581
- update_process_times+0x6c/0xb8 kernel/time/timer.c:1709
- tick_sched_handle.isra.0+0x58/0x88 kernel/time/tick-sched.c:176
- tick_sched_timer+0x68/0xe0 kernel/time/tick-sched.c:1328
- __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
- __hrtimer_run_queues+0x288/0x730 kernel/time/hrtimer.c:1583
- hrtimer_interrupt+0x114/0x288 kernel/time/hrtimer.c:1645
- timer_handler drivers/clocksource/arm_arch_timer.c:647 [inline]
- arch_timer_handler_virt+0x50/0x70 drivers/clocksource/arm_arch_timer.c:658
- handle_percpu_devid_irq+0x104/0x4c0 kernel/irq/chip.c:930
- generic_handle_irq_desc include/linux/irqdesc.h:152 [inline]
- generic_handle_irq+0x54/0x78 kernel/irq/irqdesc.c:650
- __handle_domain_irq+0xac/0x130 kernel/irq/irqdesc.c:687
- handle_domain_irq include/linux/irqdesc.h:170 [inline]
- gic_handle_irq+0x70/0x108 drivers/irqchip/irq-gic.c:370
- el1_irq+0xc0/0x180 arch/arm64/kernel/entry.S:651
- arch_local_irq_restore arch/arm64/include/asm/irqflags.h:124 [inline]
- rcu_irq_enter_irqson+0x40/0x78 kernel/rcu/tree.c:1078
- trace_preempt_disable_rcuidle include/trace/events/preemptirq.h:51 [inline]
- trace_preempt_off+0x108/0x1f8 kernel/trace/trace_preemptirq.c:130
- preempt_latency_start kernel/sched/core.c:4164 [inline]
- preempt_latency_start kernel/sched/core.c:4157 [inline]
- preempt_schedule_notrace+0x170/0x1c0 kernel/sched/core.c:4747
- __ftrace_ops_list_func kernel/trace/ftrace.c:6956 [inline]
- ftrace_ops_list_func+0x108/0x230 kernel/trace/ftrace.c:6977
- ftrace_graph_call+0x0/0x4
- preempt_count_add+0x8/0x1a0 arch/arm64/include/asm/atomic.h:65
- schedule+0x44/0x100 kernel/sched/core.c:4599
- schedule_timeout+0x240/0x538 kernel/time/timer.c:1871
- rcu_gp_fqs_loop kernel/rcu/tree.c:1942 [inline]
- rcu_gp_kthread+0x618/0x1bd8 kernel/rcu/tree.c:2115
- kthread+0x13c/0x188 kernel/kthread.c:292
- ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
-OK
-
---0OAP2g/MAC+5xKAE--
+[1]
+https://lore.kernel.org/lkml/20200506141821.GA9773@lorien.usersys.redhat.com/
+<- great thread BTW!
