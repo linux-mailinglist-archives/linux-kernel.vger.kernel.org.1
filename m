@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C632A2B8681
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9F62B8683
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgKRVVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:21:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbgKRVVE (ORCPT
+        id S1727030AbgKRVVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:21:38 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:33540 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbgKRVVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:21:04 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D62C0613D4;
-        Wed, 18 Nov 2020 13:21:03 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id w10so3358067ilq.5;
-        Wed, 18 Nov 2020 13:21:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Etsjq+atvaozZ+ERSgtIVMrYT2G/1liabm/HjElDckw=;
-        b=LdWAuOsT2+8S0Uq0EX06VC4iDDAKgvi5Nd0xlYtsLBoiAPSqnrYFpMqP2L9P/nVP9Z
-         dO+ubwVAeeDke/8+NpAImqZ1koHIFfKT5kUcygzTzLBfDG07gOT4+kZAmsZUE89joGeq
-         Y6N4rQajwaCdkit6skDQxegyVc5+JyVtEtiBsWkOwD3eWBFqkRO37D7S/DI4gdsJDcNd
-         AuBl7Cdm3QPgr1dZVeEW2HvGHPkRd4bKaTivTVOsunkE2Fv4BnJYrnHjNn01vtI5dMU9
-         LXDnpOr2j/RispsjAK66RSgHlImnCGTS2OJJTGQIlGhcHn6vnWiPuciWe9S22/So4MXl
-         XIzA==
+        Wed, 18 Nov 2020 16:21:36 -0500
+Received: by mail-oi1-f195.google.com with SMTP id k26so3890670oiw.0;
+        Wed, 18 Nov 2020 13:21:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Etsjq+atvaozZ+ERSgtIVMrYT2G/1liabm/HjElDckw=;
-        b=BfAgD9OoE6TPNkeROLwvixEmuDiez9rrH2WhBN3VYE4FlztkxqNXeuKTJSPB6qNAdS
-         UIxRkIIgAyD+NBhbEf7xlrqIgTYR0W+3HM2W6K4ZFq3XT2PDo/PJx0HljkK78+sAQfAI
-         6X3o5vxac+hq3dsdpF/2T16++48nnF/bZsr8+FSBQeYDxw/b2kg9qU/va05J1B0Ql7Lg
-         LVW1v1LKA93S9qZFMvhFQZ+5m+6t9KG/H3MKH0rT8s+dEcobt7l9JjFqU7bcY2muNsri
-         4XVpuayavfgjNtOQ5Q4sHmCNdenazYbeBHpv3zbr5c/kzqj6dulCiaK7OsNg0l2pDqm9
-         wJ9Q==
-X-Gm-Message-State: AOAM5339mYgLeGJdHxzD/Li1oW1RTMulVRsvko4+1S3WMUxQKmEFoyVq
-        LMMN9dF64wKUGcokTXQNBDzBH59rpB9A2IsRPgdcAIb7OyI=
-X-Google-Smtp-Source: ABdhPJy3aX/SP8FQyuznKG5zkWe7Evxf9h9w1nHdSYM6wRWsXR8UhZrJbO0+BDwsxoT4CdlgxSkDGzopMSCxP1wmfu8=
-X-Received: by 2002:a92:6410:: with SMTP id y16mr17620180ilb.126.1605734463244;
- Wed, 18 Nov 2020 13:21:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ss0uXL2h5hvFP3EZBj3yPcEtBcUi82HRGtXChv/G4cE=;
+        b=GMpiwoz0gTCNaDPtti8VWtUNbB/SuhXQG1lRJaBg+5h8RouMndVovtods0LCxXC+7S
+         fyD2u8RajNfgsQCEODApoNPkNAQmbnwDUnGjGrNxFJ6hqSincONUPvQY4+qBPRzQMOZg
+         AGINSeZs+RDfAOmjV9zIaGY8rKrpG//AJXwpYTV0ZVfv02Bjv8QRKaK9VPYaSfNU3kdm
+         dcIoyvo4ogFDkqRJM/m08eNzsHT/TVd6PQo5f8lZ1Xekd1MuMIsKzgf0tI/H3UvdnETe
+         XqRV3u4cvIiwymT7ZwYiCiSDxRb/5mUNuhp4Ps/zRgEJfKYhrcsqdAGezLs8hjY/9hCI
+         Lrew==
+X-Gm-Message-State: AOAM533FE+FmuWE5idmnYyd2FJIpPlsbe3Ai/12QiBXirpPOKvj+7gtv
+        mxmygAwGVOeF4jaBoD8hiQ==
+X-Google-Smtp-Source: ABdhPJxxTBYvftWskecODoDjJ4ukv9OAObOfUYCvBisilnIt0kN6iy3jVW5cH+JoiiwCQRORHbp4sg==
+X-Received: by 2002:aca:ba42:: with SMTP id k63mr706654oif.111.1605734495634;
+        Wed, 18 Nov 2020 13:21:35 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y18sm6915392ooj.20.2020.11.18.13.21.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 13:21:34 -0800 (PST)
+Received: (nullmailer pid 1836565 invoked by uid 1000);
+        Wed, 18 Nov 2020 21:21:33 -0000
+Date:   Wed, 18 Nov 2020 15:21:33 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Wendy Liang <wendy.liang@xilinx.com>
+Cc:     gregkh@linuxfoundation.org, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, tejas.patel@xilinx.com,
+        dragan.cvetic@xilinx.com, arnd@arndb.de, derek.kiernan@xilinx.com,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, manish.narani@xilinx.com,
+        michal.simek@xilinx.com, linux-media@vger.kernel.org,
+        rajan.vaja@xilinx.com, robh+dt@kernel.org, ravi.patel@xilinx.com
+Subject: Re: [PATCH 1/9] dt-binding: soc: xilinx: ai-engine: Add AI engine
+ binding
+Message-ID: <20201118212133.GA1836326@bogus>
+References: <1605686780-17886-1-git-send-email-wendy.liang@xilinx.com>
+ <1605686780-17886-2-git-send-email-wendy.liang@xilinx.com>
 MIME-Version: 1.0
-References: <20201111104409.1530957-1-a.nogikh@gmail.com>
-In-Reply-To: <20201111104409.1530957-1-a.nogikh@gmail.com>
-From:   Aleksandr Nogikh <a.nogikh@gmail.com>
-Date:   Thu, 19 Nov 2020 00:20:52 +0300
-Message-ID: <CADpXja_NZqMomnHfzRRNE97LwP4WYZY4Z1egeFiCjwSbea-Urg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] security: add fault injection to LSM hooks
-To:     jmorris@namei.org
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>, akinobu.mita@gmail.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@google.com>, casey@schaufler-ca.com,
-        penguin-kernel@i-love.sakura.ne.jp,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org, mortonm@chromium.org,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605686780-17886-2-git-send-email-wendy.liang@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 at 13:44, Aleksandr Nogikh <a.nogikh@gmail.com> wrote:
->
-> From: Aleksandr Nogikh <nogikh@google.com>
->
-> Fault injection capabilities[Documentation/fault-injection/fault-injection.rst]
-> facilitate testing of the stability of the Linux kernel by providing
-> means to force a number of kernel interfaces to return error
-> codes. This patch series proposes adding such fault injection
-> capability into LSM hooks.
->
-> The intent is to make it possible to test whether the existing kernel
-> code properly handles negative return values of LSM hooks. Syzbot
-> [https://github.com/google/syzkaller/blob/master/docs/syzbot.md] will
-> automatically do that with the aid of instrumentation tools once these
-> changes are merged.
-[...]
+On Wed, 18 Nov 2020 00:06:12 -0800, Wendy Liang wrote:
+> Xilinx AI engine array can be partitioned statically for different
+> applications. In the device tree, there will be device node for the AI
+> engine device, and device nodes for the statically configured AI engine
+> partitions. Each of the statically configured partition has a partition
+> ID in the system.
+> 
+> Signed-off-by: Wendy Liang <wendy.liang@xilinx.com>
+> ---
+>  .../bindings/soc/xilinx/xlnx,ai-engine.yaml        | 119 +++++++++++++++++++++
+>  1 file changed, 119 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
+> 
 
-James, can you please take another look at the series? Are there
-enough reviewed-bys now?
 
---
-Best Regards,
-Aleksandr
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml:10:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml: 'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1402008
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
