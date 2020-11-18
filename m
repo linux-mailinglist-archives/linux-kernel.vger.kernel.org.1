@@ -2,86 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41F22B7B83
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38312B7B89
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgKRKlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:41:11 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:49773 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725497AbgKRKlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:41:11 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CbfVY2vL1z9s1l;
-        Wed, 18 Nov 2020 21:41:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605696069;
-        bh=SCySA/wn6QQF8qPRAczBg9qAxU0dJBy6SjnKwYcAFGQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jANG97vukQgf5/0I8/IZkFDiOEvwvgf8J55/yNiViRVFQf4G94vnDHIsee1im0djA
-         cXn6TSmyek6cfsdvfYJLvQ3KxOyBE0tIcWnMgd69sR9NVO439Fk6D6ZGf9esvkKKs4
-         F5PcAZe2ZaJuHvBGAMHFLovhzyPCfNDlbVycgBRiv7Vh+XFjbTapggi5y6SQd73Fo3
-         Ij7OC/Kscd5W9owY64mUggTNirgwIUVD0GtyjT0urMOek123d5NXSV0DDbZuBapdXM
-         0nbcllckktj3H+Hbi+FCiQWQRxkoIf+k0mnfsw32U8vCUZl1UEpAoRd/DrXY8q7bVY
-         t7x5fmamjOfNQ==
-Date:   Wed, 18 Nov 2020 21:41:07 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mhi tree
-Message-ID: <20201118214107.08eb9b7b@canb.auug.org.au>
-In-Reply-To: <20201118093900.GD3286@work>
-References: <20201117151225.6a50abf8@canb.auug.org.au>
-        <20201117042359.GB7787@work>
-        <20201118153912.1decf6cf@canb.auug.org.au>
-        <20201118154500.127aaba6@canb.auug.org.au>
-        <20201118155128.64c97667@canb.auug.org.au>
-        <20201118050640.GA3286@work>
-        <20201118093900.GD3286@work>
+        id S1726616AbgKRKmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:42:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgKRKmL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 05:42:11 -0500
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D320C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 02:42:11 -0800 (PST)
+Received: by mail-vk1-xa41.google.com with SMTP id i62so343542vkb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 02:42:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=hGoOMyJii3owWWUIU9inXnHVdD1MeHU27iWUbYqkD6o=;
+        b=OcZlAcMs3Bvb6QTCiaAHHeybxoaLvbATZ3xRwizW0BaRsZ+ABPK6sn0nQLRqbXh8Hp
+         pAuYEFJuLlQo8SuVE7E969LE1nP05wJFe++fbwb66LGiOL5602rTDX1/4SgL1jRoM52Y
+         7uiSvPKT2z8cKpYescDFm7saFzCeDc+Jz3NSIUKh6fCSYxNfGojbuz3iyy+h7+E2ag1G
+         bqTm4IyTPx6/VrfATLe9UZsCZjUOjCcCE7CngVgQHfBZ6rIJNZY6sjFZVKWRBN7nMrWP
+         FmQECf9XSF6fPyhxTA9ErLo3U6toKKvupGNe2DBDPUvyMZVsiYWkQdk9zQE/oB7ZBdhD
+         fznQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=hGoOMyJii3owWWUIU9inXnHVdD1MeHU27iWUbYqkD6o=;
+        b=fJVm90oyq05jOOnCHCElz8JqmDQfdR6p5fT4xD7k1ly+BMPGLfFQFUt/Q+aE+4tPfS
+         00qJWmf78DT2iFZ98asglndH5mMyTNgUZ0KJ/Ve4Zj7IlNcgJfb1eRhKQn+grzFw1qRz
+         BYr5NNH9xsWYRxxGRgj5fE0dfStRwG3jRsLVl2Eh5pmzgROmJNiugBA1FFFBLCC7LvBZ
+         vq5g/+nAAs9hMEv+ktHUq+zQ8+rJo9dNfyC2hCZ/4Z42TM2hWkTmDmhN+0SuEfj/XFtE
+         h0vGqTQEO2YGo/siU/6mlJqRUyn6ppQWYXNs7tGwXg0wauIoAT3sG7yF/pCMtFE1TsDz
+         /BcQ==
+X-Gm-Message-State: AOAM533bqzyCVNOliycZ94HVpCo/Ye3hF7Ivkxg20CcrRSpXlz+Hng0v
+        YFxVeI5RkC1cbiELy8gOLRGwe7Vs8ONfk+EKxZE=
+X-Google-Smtp-Source: ABdhPJzWnzFbaiMredudcmJ2M6z81yblydUHJklbeG/0V8drB++8NRhoaPbIGYuyV3ZV3d2kBlh+oTNTlOPfd/hmmbw=
+X-Received: by 2002:a1f:1e41:: with SMTP id e62mr2726022vke.9.1605696130408;
+ Wed, 18 Nov 2020 02:42:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_WFM473AmapmYpnSN35ey7G";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Received: by 2002:a67:2e8a:0:0:0:0:0 with HTTP; Wed, 18 Nov 2020 02:42:10
+ -0800 (PST)
+Reply-To: michellegoodman035@gmail.com
+From:   Shayma <shaymamarwan07@gmail.com>
+Date:   Wed, 18 Nov 2020 10:42:10 +0000
+Message-ID: <CAAgEbk=w3AEQK0mm5fGEPAXuwErKiWz7cA+BwhHd9M0NfO5K8A@mail.gmail.com>
+Subject: HI
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_WFM473AmapmYpnSN35ey7G
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Manivannan,
-
-On Wed, 18 Nov 2020 15:09:00 +0530 Manivannan Sadhasivam <manivannan.sadhas=
-ivam@linaro.org> wrote:
->
-> Patch applied to immutable branch and merged into mhi-next. Now you can
-> remove the fix patch.
-
-Thanks for letting me know.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/_WFM473AmapmYpnSN35ey7G
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+0+kMACgkQAVBC80lX
-0GyBHQgAmc2nI2PQleoLzKs7OS9dzIV2YNLqVrGIV+siLZDW6Z98VpELec7tzwiy
-xV5TuNfk8okk4Y0PYpTdn1SAv37EpXOYdJbf4lYDeetS+fMPeOXvYl1Wqcr5JLX1
-zTD0Ps1SVW25R/dtcr4u9Sl/bSxxQRT4/ECfy0Exvq61OHjnFaTh8JBKKiFRC5uQ
-GkYnr4bLv7va6IRinkT1M5i/vpllVM/xP8mXVQpj503FO19MO79MZjOBw3AWX9h0
-ph0t0ImnNeLT2UPth430GaYVPNuI59dSctZ12uj9wlb+mhyN/+BXM56XWz4tIcSF
-4VbW5gTM/zPWxLOLrHOYGuNx41JmiQ==
-=fKPR
------END PGP SIGNATURE-----
-
---Sig_/_WFM473AmapmYpnSN35ey7G--
+Hallo, ich hoffe du hast meine Nachricht erhalten.
+Ich brauche schnelle Reaktionen
+Vielen Dank
+Michelle
