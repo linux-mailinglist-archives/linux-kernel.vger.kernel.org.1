@@ -2,318 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8FF2B813A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61D22B8143
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727753AbgKRPwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:52:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727343AbgKRPwe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:52:34 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD308C061A4D
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:52:33 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id i18so2203207ots.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:52:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DFXKiu/ERXnudaHqdsCHh1K/eIT7Qae3dBT4rxeusqg=;
-        b=OAdS8LDUggC0FXriez47qL8WNDAMUSPazv+Mfc5iILP4RyTyNpUBaUMTbYwuW7e7U6
-         zyLnTgGsCRSymLHbNCr1NeBhd3Snd2fzGvSe1959jijWGpJd4UqJ4HNgz/8pG00i5jEl
-         W7/63FIe0+PmrWyupmuUzNz3vw7GUoAwyBt+h30Fo5kCWfD0kVm6vqlmK4TJuLuoWKiv
-         LY2OC8NYtToauD6NHEaUeEWiAbm3wMl8tOPryvEw6HCnhDy2uulQIbGz6Ut/fYI9/ytI
-         GFGKBa59jZTTjb2IxORahnFczbZM+dMaWmnh+4Fy16A7KD5etW55xzN2Rs+1FucVqoZw
-         y1ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DFXKiu/ERXnudaHqdsCHh1K/eIT7Qae3dBT4rxeusqg=;
-        b=PQfLu90mb31X4DvJQ0eVqx6vkQRSmfjERVYLKXROtLVTeUS47u2XOK7ZNBF6z67cNw
-         mgSmq3ofyM4y75vSMDk07Ud0OOZwBFrsJEV9Ukcyy/uGErJQHhsSDxn2jjnr7vaLxVZH
-         h0eNgV7fA57QapgCoMVpRuqADpgGUtwlpiapVyqbCL91rOlhfLOjV9fttWCLRwvi2T7Y
-         30JJ2OAQ8tb5ji9dHTlaXmenB5p4/lQDWiy86uExl2NZydks4PVw96li8ljX8NKegkMM
-         UIZTsF7SzPq8q/FJQxlwd2R73yPHw7HP2/OAY2qac4Bt+UqxYHVUUYk73DEjUMj7qhln
-         3y5w==
-X-Gm-Message-State: AOAM531DDtsMeKEuONiseUlqgmnKYai5LqpjgT5ZNkv7a2IonrKACX8K
-        RI9dw/elfX2nB7NbvFhQqndpnA==
-X-Google-Smtp-Source: ABdhPJyn1vqIt2ovBr+7cKKkoPRWJKkNo90BRYL67zjiT7nlEzvnWxJe7KogmDAHqB4ivOFYvXAZFA==
-X-Received: by 2002:a05:6830:2368:: with SMTP id r8mr7021148oth.75.1605714752949;
-        Wed, 18 Nov 2020 07:52:32 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i12sm8111876oon.26.2020.11.18.07.52.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 07:52:32 -0800 (PST)
-Date:   Wed, 18 Nov 2020 09:52:30 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Siddharth Gupta <sidgup@codeaurora.org>
-Cc:     agross@kernel.org, ohad@wizery.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, rishabhb@codeaurora.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v7 2/4] remoteproc: coredump: Add minidump functionality
-Message-ID: <20201118155230.GB9177@builder.lan>
-References: <1604395160-12443-1-git-send-email-sidgup@codeaurora.org>
- <1604395160-12443-3-git-send-email-sidgup@codeaurora.org>
+        id S1726908AbgKRPz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:55:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726304AbgKRPz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:55:58 -0500
+Received: from localhost (unknown [122.171.203.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CC41247BA;
+        Wed, 18 Nov 2020 15:55:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605714957;
+        bh=r7TtzppEJg7jscSFWerCU85PxTKfvLkBL5GpLNH1UdA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GT0o/kOSk09q/JKrSYtWd746b1S+U7Smfvg7DD7EJclNr9/LtPJsAVIBXPwioDFs9
+         cD46fwXXeHkuzhY0ldWyXuvgMFsoVaQTdCkmv4x+a9euwc/OFtAoCMNhFRlMhyffVZ
+         8aS1duqWXEHI1NTqWsroD4yl5+LhPUp6h/jq9X/8=
+Date:   Wed, 18 Nov 2020 21:25:52 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        andriy.shevchenko@intel.com, chuanhua.lei@linux.intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
+Subject: Re: [PATCH v9 1/2] dt-bindings: dma: Add bindings for Intel LGM SoC
+Message-ID: <20201118155552.GV50232@vkoul-mobl>
+References: <cover.1605158930.git.mallikarjunax.reddy@linux.intel.com>
+ <bfe586ac62080d14759bda22ebf1de1a1fa9c09d.1605158930.git.mallikarjunax.reddy@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604395160-12443-3-git-send-email-sidgup@codeaurora.org>
+In-Reply-To: <bfe586ac62080d14759bda22ebf1de1a1fa9c09d.1605158930.git.mallikarjunax.reddy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 03 Nov 03:19 CST 2020, Siddharth Gupta wrote:
-
-> This change adds a new kind of core dump mechanism which instead of dumping
-> entire program segments of the firmware, dumps sections of the remoteproc
-> memory which are sufficient to allow debugging the firmware. This function
-> thus uses section headers instead of program headers during creation of the
-> core dump elf.
+On 12-11-20, 13:38, Amireddy Mallikarjuna reddy wrote:
+> Add DT bindings YAML schema for DMA controller driver
+> of Lightning Mountain (LGM) SoC.
 > 
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-
-Co-developed-by: Rishabh
-
-> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
 > ---
->  drivers/remoteproc/remoteproc_coredump.c    | 140 ++++++++++++++++++++++++++++
->  drivers/remoteproc/remoteproc_elf_helpers.h |  26 ++++++
->  include/linux/remoteproc.h                  |   1 +
->  3 files changed, 167 insertions(+)
+> v1:
+> - Initial version.
 > 
-> diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/remoteproc_coredump.c
-> index 34530dc..a6c0099 100644
-> --- a/drivers/remoteproc/remoteproc_coredump.c
-> +++ b/drivers/remoteproc/remoteproc_coredump.c
-> @@ -323,3 +323,143 @@ void rproc_coredump(struct rproc *rproc)
->  	 */
->  	wait_for_completion(&dump_state.dump_done);
->  }
+> v2:
+> - Fix bot errors.
+> 
+> v3:
+> - No change.
+> 
+> v4:
+> - Address Thomas langer comments
+>   - use node name pattern as dma-controller as in common binding.
+>   - Remove "_" (underscore) in instance name.
+>   - Remove "port-" and "chan-" in attribute name for both 'dma-ports' & 'dma-channels' child nodes.
+> 
+> v5:
+> - Moved some of the attributes in 'dma-ports' & 'dma-channels' child nodes to dma client/consumer side as cells in 'dmas' properties.
+> 
+> v6:
+> - Add additionalProperties: false
+> - completely removed 'dma-ports' and 'dma-channels' child nodes.
+> - Moved channel dt properties to client side dmas.
+> - Use standard dma-channels and dma-channel-mask properties.
+> - Documented reset-names
+> - Add description for dma-cells
+> 
+> v7:
+> - modified compatible to oneof
+> - Reduced number of dma-cells to 3
+> - Fine tune the description of some properties.
+> 
+> v7-resend:
+> - rebase to 5.10-rc1
+> 
+> v8:
+> - rebased to 5.10-rc3
+> - Fixing the bot issues (wrong indentation)
+> 
+> v9:
+> - rebased to 5.10-rc3
+> - Use 'enum' instead of oneOf+const
+> - Drop '#dma-cells' in required:, already covered in dma-common.yaml
+> - Drop nodename Already covered by dma-controller.yaml
+> ---
+>  .../devicetree/bindings/dma/intel,ldma.yaml        | 130 +++++++++++++++++++++
+>  1 file changed, 130 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/intel,ldma.yaml b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
+> new file mode 100644
+> index 000000000000..c06281a10178
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
+> @@ -0,0 +1,130 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/intel,ldma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +/**
-> + * rproc_minidump() - perform minidump
-> + * @rproc:	rproc handle
-> + *
-> + * This function will generate an ELF header for the registered sections of
-> + * segments and create a devcoredump device associated with rproc. Based on
-> + * the coredump configuration this function will directly copy the segments
-> + * from device memory to userspace or copy segments from device memory to
-> + * a separate buffer, which can then be read by userspace.
-> + * The first approach avoids using extra vmalloc memory. But it will stall
-> + * recovery flow until dump is read by userspace.
-> + */
-> +void rproc_minidump(struct rproc *rproc)
+> +title: Lightning Mountain centralized low speed DMA and high speed DMA controllers.
+> +
+> +maintainers:
+> +  - chuanhua.lei@intel.com
+> +  - mallikarjunax.reddy@intel.com
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - intel,lgm-cdma
+> +      - intel,lgm-dma2tx
+> +      - intel,lgm-dma1rx
+> +      - intel,lgm-dma1tx
+> +      - intel,lgm-dma0tx
+> +      - intel,lgm-dma3
+> +      - intel,lgm-toe-dma30
+> +      - intel,lgm-toe-dma31
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#dma-cells":
+> +    const: 3
+> +    description:
+> +      The first cell is the peripheral's DMA request line.
+> +      The second cell is the peripheral's (port) number corresponding to the channel.
+> +      The third cell is the burst length of the channel.
+> +
+> +  dma-channels:
+> +    minimum: 1
+> +    maximum: 16
+> +
+> +  dma-channel-mask:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  reset-names:
+> +    items:
+> +      - const: ctrl
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  intel,dma-poll-cnt:
+> +    $ref: /schemas/types.yaml#definitions/uint32
+> +    description:
+> +      DMA descriptor polling counter is used to control the poling mechanism
 
-Implementation wise I think this looks good now!
+s/poling/polling
 
-But the name "minidump" isn't descriptive - nor is the "perform
-minidump". I think you should name this rproc_coredump_using_sections()
+> +      for the descriptor fetching for all channels.
+> +
+> +  intel,dma-byte-en:
+> +    type: boolean
+> +    description:
+> +      DMA byte enable is only valid for DMA write(RX).
+> +      Byte enable(1) means DMA write will be based on the number of dwords
+> +      instead of the whole burst.
 
-> +{
-> +	struct rproc_dump_segment *segment;
-> +	void *shdr;
-> +	void *ehdr;
-> +	size_t data_size;
-> +	size_t strtbl_size = 0;
-> +	size_t strtbl_index = 1;
-> +	size_t offset;
-> +	void *data;
-> +	u8 class = rproc->elf_class;
-> +	int shnum;
-> +	struct rproc_coredump_state dump_state;
-> +	unsigned int dump_conf = rproc->dump_conf;
-> +	char *str_tbl = "STR_TBL";
-> +
-> +	if (list_empty(&rproc->dump_segments) ||
-> +	    dump_conf == RPROC_COREDUMP_DISABLED)
-> +		return;
-> +
-> +	if (class == ELFCLASSNONE) {
-> +		dev_err(&rproc->dev, "Elf class is not set\n");
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * We allocate two extra section headers. The first one is null.
-> +	 * Second section header is for the string table. Also space is
-> +	 * allocated for string table.
-> +	 */
-> +	data_size = elf_size_of_hdr(class) + 2 * elf_size_of_shdr(class);
-> +	shnum = 2;
-> +
-> +	/* the extra byte is for the null character at index 0 */
-> +	strtbl_size += strlen(str_tbl) + 2;
-> +
-> +	list_for_each_entry(segment, &rproc->dump_segments, node) {
-> +		data_size += elf_size_of_shdr(class);
-> +		strtbl_size += strlen(segment->priv) + 1;
-> +		if (dump_conf == RPROC_COREDUMP_ENABLED)
-> +			data_size += segment->size;
-> +		shnum++;
-> +	}
-> +
-> +	data_size += strtbl_size;
-> +
-> +	data = vmalloc(data_size);
-> +	if (!data)
-> +		return;
-> +
-> +	ehdr = data;
-> +	memset(ehdr, 0, elf_size_of_hdr(class));
-> +	/* e_ident field is common for both elf32 and elf64 */
-> +	elf_hdr_init_ident(ehdr, class);
-> +
-> +	elf_hdr_set_e_type(class, ehdr, ET_CORE);
-> +	elf_hdr_set_e_machine(class, ehdr, rproc->elf_machine);
-> +	elf_hdr_set_e_version(class, ehdr, EV_CURRENT);
-> +	elf_hdr_set_e_entry(class, ehdr, rproc->bootaddr);
-> +	elf_hdr_set_e_shoff(class, ehdr, elf_size_of_hdr(class));
-> +	elf_hdr_set_e_ehsize(class, ehdr, elf_size_of_hdr(class));
-> +	elf_hdr_set_e_shentsize(class, ehdr, elf_size_of_shdr(class));
-> +	elf_hdr_set_e_shnum(class, ehdr, shnum);
-> +	elf_hdr_set_e_shstrndx(class, ehdr, 1);
-> +
-> +	/*
-> +	 * The zeroth index of the section header is reserved and is rarely used.
-> +	 * Set the section header as null (SHN_UNDEF) and move to the next one.
-> +	 */
-> +	shdr = data + elf_hdr_get_e_shoff(class, ehdr);
-> +	memset(shdr, 0, elf_size_of_shdr(class));
-> +	shdr += elf_size_of_shdr(class);
-> +
-> +	/* Initialize the string table. */
-> +	offset = elf_hdr_get_e_shoff(class, ehdr) +
-> +		 elf_size_of_shdr(class) * elf_hdr_get_e_shnum(class, ehdr);
-> +	memset(data + offset, 0, strtbl_size);
-> +
-> +	/* Fill in the string table section header. */
-> +	memset(shdr, 0, elf_size_of_shdr(class));
-> +	elf_shdr_set_sh_type(class, shdr, SHT_STRTAB);
-> +	elf_shdr_set_sh_offset(class, shdr, offset);
-> +	elf_shdr_set_sh_size(class, shdr, strtbl_size);
-> +	elf_shdr_set_sh_entsize(class, shdr, 0);
-> +	elf_shdr_set_sh_flags(class, shdr, 0);
-> +	elf_shdr_set_sh_name(class, shdr, set_section_name(str_tbl, ehdr, class, &strtbl_index));
-> +	offset += elf_shdr_get_sh_size(class, shdr);
-> +	shdr += elf_size_of_shdr(class);
-> +
-> +	list_for_each_entry(segment, &rproc->dump_segments, node) {
-> +		memset(shdr, 0, elf_size_of_shdr(class));
-> +		elf_shdr_set_sh_type(class, shdr, SHT_PROGBITS);
-> +		elf_shdr_set_sh_offset(class, shdr, offset);
-> +		elf_shdr_set_sh_addr(class, shdr, segment->da);
-> +		elf_shdr_set_sh_size(class, shdr, segment->size);
-> +		elf_shdr_set_sh_entsize(class, shdr, 0);
-> +		elf_shdr_set_sh_flags(class, shdr, SHF_WRITE);
-> +		elf_shdr_set_sh_name(class, shdr,
-> +				     set_section_name(segment->priv, ehdr, class, &strtbl_index));
-> +
-> +		/* No need to copy segments for inline dumps */
-> +		if (dump_conf == RPROC_COREDUMP_ENABLED)
-> +			rproc_copy_segment(rproc, data + offset, segment, 0,
-> +					   segment->size);
-> +		offset += elf_shdr_get_sh_size(class, shdr);
-> +		shdr += elf_size_of_shdr(class);
-> +	}
-> +
-> +	if (dump_conf == RPROC_COREDUMP_ENABLED) {
-> +		dev_coredumpv(&rproc->dev, data, data_size, GFP_KERNEL);
-> +		return;
-> +	}
-> +
-> +	/* Initialize the dump state struct to be used by rproc_coredump_read */
-> +	dump_state.rproc = rproc;
-> +	dump_state.header = data;
-> +	init_completion(&dump_state.dump_done);
-> +
-> +	dev_coredumpm(&rproc->dev, NULL, &dump_state, data_size, GFP_KERNEL,
-> +		      rproc_coredump_read, rproc_coredump_free);
-> +
-> +	/* Wait until the dump is read and free is called. Data is freed
-> +	 * by devcoredump framework automatically after 5 minutes.
-> +	 */
-> +	wait_for_completion(&dump_state.dump_done);
-> +}
-> +EXPORT_SYMBOL(rproc_minidump);
-> diff --git a/drivers/remoteproc/remoteproc_elf_helpers.h b/drivers/remoteproc/remoteproc_elf_helpers.h
-> index 4b6be7b..fa669ad 100644
-> --- a/drivers/remoteproc/remoteproc_elf_helpers.h
-> +++ b/drivers/remoteproc/remoteproc_elf_helpers.h
-> @@ -65,6 +65,7 @@ ELF_GEN_FIELD_GET_SET(hdr, e_type, u16)
->  ELF_GEN_FIELD_GET_SET(hdr, e_version, u32)
->  ELF_GEN_FIELD_GET_SET(hdr, e_ehsize, u32)
->  ELF_GEN_FIELD_GET_SET(hdr, e_phentsize, u16)
-> +ELF_GEN_FIELD_GET_SET(hdr, e_shentsize, u16)
->  
->  ELF_GEN_FIELD_GET_SET(phdr, p_paddr, u64)
->  ELF_GEN_FIELD_GET_SET(phdr, p_vaddr, u64)
-> @@ -75,6 +76,9 @@ ELF_GEN_FIELD_GET_SET(phdr, p_offset, u64)
->  ELF_GEN_FIELD_GET_SET(phdr, p_flags, u32)
->  ELF_GEN_FIELD_GET_SET(phdr, p_align, u64)
->  
-> +ELF_GEN_FIELD_GET_SET(shdr, sh_type, u32)
-> +ELF_GEN_FIELD_GET_SET(shdr, sh_flags, u32)
-> +ELF_GEN_FIELD_GET_SET(shdr, sh_entsize, u16)
->  ELF_GEN_FIELD_GET_SET(shdr, sh_size, u64)
->  ELF_GEN_FIELD_GET_SET(shdr, sh_offset, u64)
->  ELF_GEN_FIELD_GET_SET(shdr, sh_name, u32)
-> @@ -93,4 +97,26 @@ ELF_STRUCT_SIZE(shdr)
->  ELF_STRUCT_SIZE(phdr)
->  ELF_STRUCT_SIZE(hdr)
->  
-> +static inline unsigned int set_section_name(const char *name, void *ehdr, u8 class, size_t *index)
+Can you explain this, also sounds you could use _maxburst values..?
 
-I think set_section_name() is a rather generic name for a function
-living in a header file.  So I think you should prefix this with "elf_".
+> +
+> +  intel,dma-drb:
+> +    type: boolean
+> +    description:
+> +      DMA descriptor read back to make sure data and desc synchronization.
+> +
+> +  intel,dma-desc-in-sram:
+> +    type: boolean
+> +    description:
+> +      DMA descritpors in SRAM or not. Some old controllers descriptors
+> +      can be in DRAM or SRAM. The new ones are all in SRAM.
 
-Also, doesn't this function just "adds strings to a string table",
-rather than "set a section name"? Is it elf_strtbl_add() ?
+should that not be decided by driver..? Or is this a hw property?
 
-Regards,
-Bjorn
+> +
+> +  intel,dma-orrc:
+> +    $ref: /schemas/types.yaml#definitions/uint32
+> +    description:
+> +      DMA outstanding read counter value determine the number of
+> +      ORR-Outstanding Read Request. The maximum value is 16.
 
-> +{
-> +	u16 shstrndx = elf_hdr_get_e_shstrndx(class, ehdr);
-> +	void *shdr;
-> +	char *strtab;
-> +	size_t idx, ret;
+How would this be used by folks..?
+
 > +
-> +	shdr = ehdr + elf_size_of_hdr(class) + shstrndx * elf_size_of_shdr(class);
-> +	strtab = ehdr + elf_shdr_get_sh_offset(class, shdr);
-> +	idx = index ? *index : 0;
-> +	if (!strtab || !name)
-> +		return 0;
+> +  intel,dma-dburst-wr:
+> +    type: boolean
+> +    description:
+> +      Enable RX dynamic burst write. When it is enabled, the DMA does RX dynamic burst;
+> +      if it is disabled, the DMA RX will still support programmable fixed burst size of 2,4,8,16.
+> +      It only applies to RX DMA and memcopy DMA.
 > +
-> +	ret = idx;
-> +	strcpy((strtab + idx), name);
-> +	idx += strlen(name) + 1;
-> +	if (index)
-> +		*index = idx;
+> +required:
+> +  - compatible
+> +  - reg
+
+So only two are mandatory, what about the bunch of intel properties you
+added above..?
+
 > +
-> +	return ret;
-> +}
+> +additionalProperties: false
 > +
->  #endif /* REMOTEPROC_ELF_LOADER_H */
-> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> index a419878..844021e 100644
-> --- a/include/linux/remoteproc.h
-> +++ b/include/linux/remoteproc.h
-> @@ -656,6 +656,7 @@ rproc_of_resm_mem_entry_init(struct device *dev, u32 of_resm_idx, size_t len,
->  int rproc_boot(struct rproc *rproc);
->  void rproc_shutdown(struct rproc *rproc);
->  void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type);
-> +void rproc_minidump(struct rproc *rproc);
->  int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t size);
->  int rproc_coredump_add_custom_segment(struct rproc *rproc,
->  				      dma_addr_t da, size_t size,
+> +examples:
+> +  - |
+> +    dma0: dma-controller@e0e00000 {
+> +      compatible = "intel,lgm-cdma";
+> +      reg = <0xe0e00000 0x1000>;
+> +      #dma-cells = <3>;
+> +      dma-channels = <16>;
+> +      dma-channel-mask = <0xFFFF>;
+> +      interrupt-parent = <&ioapic1>;
+> +      interrupts = <82 1>;
+> +      resets = <&rcu0 0x30 0>;
+> +      reset-names = "ctrl";
+> +      clocks = <&cgu0 80>;
+> +      intel,dma-poll-cnt = <4>;
+> +      intel,dma-byte-en;
+> +      intel,dma-drb;
+> +    };
+> +  - |
+> +    dma3: dma-controller@ec800000 {
+> +      compatible = "intel,lgm-dma3";
+> +      reg = <0xec800000 0x1000>;
+> +      clocks = <&cgu0 71>;
+> +      resets = <&rcu0 0x10 9>;
+> +      #dma-cells = <3>;
+> +      intel,dma-poll-cnt = <16>;
+> +      intel,dma-desc-in-sram;
+> +      intel,dma-orrc = <16>;
+> +      intel,dma-byte-en;
+> +      intel,dma-dburst-wr;
+> +    };
 > -- 
-> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> 2.11.0
+
+-- 
+~Vinod
