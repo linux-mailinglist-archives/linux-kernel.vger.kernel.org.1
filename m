@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820572B886E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5C82B8871
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgKRXeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 18:34:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725823AbgKRXeB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:34:01 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015AAC0613D4;
-        Wed, 18 Nov 2020 15:34:01 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id f20so5223400ejz.4;
-        Wed, 18 Nov 2020 15:34:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1xsMrKCOLxV9P6mZP+3GBaf95z88hZLl0UpnSDVLBMg=;
-        b=H1s+/DzsM/5rYDrY6z3rNfusQOKMDUdgB88vGqvzIucm2I6BgUAMlll98LTx0h0TPw
-         9EiQEfkxSiDIZwbHU/UUBzbop99zbjCrnrNvF55EL8bG3gecj3aytBx93yKZRCJYrT8h
-         t4i8QL2qtA0furiT+xE8xCFNatnVHfjAd6nRhbnO0roPvE6GH2VnzJMQQar6rRRkx6+/
-         jt5BDSuDz6Lr+HqXTwZqW5PPYF0sSdePUQ09uBRq9XUIOtPMsC8hpWpNy4Vg6isY5b9j
-         RrFVygq8fAHMmDOu4iN7MQRaQekfNFJQDz8NUAf2/YkBcq+eK6wk69P00+9o+dGNEn2F
-         WAiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1xsMrKCOLxV9P6mZP+3GBaf95z88hZLl0UpnSDVLBMg=;
-        b=dDWjBi2vtYq0y7ivE1KDbAEi2hedaIKT0X3RdG42hrvAJ7DgzsX3kyaRZbdayteSCd
-         whVB6ELSKjP/WK06cJJx4u62KwDVdeMmL0dZwp+fiTtOnKvq0nOW/UPHWMS2l+DDyvgE
-         dvJR+gMjsfVSA3KWYC29iymVXXxlX6rIkaQ1aILwuNn0Vcv8QXxJ9TkigInTgUNfEpeX
-         jIPxr3cXT++t9KPyOb76XZSp7JKwtrTmAJgif68lrij+DyRnZeEo4kre1m5YfEL52DAy
-         +nu30T6crqk3EXVnO2FlEYwmAH0BRuS6gVUpiOeUJ/ajBHVsUfFNuPKlIEfKAu1BS1ZX
-         P04g==
-X-Gm-Message-State: AOAM530mCiCm7vzI/hJ+BmA3Cyfidg5Pf2jGG/9WGE5zWMN1XWQIEvc3
-        WalrU2gn5k0fydv9NVXsUCI=
-X-Google-Smtp-Source: ABdhPJyYJchJaBRorDVBw19T6dAIC1vEnTHXGhykS9X7YaDZfmFWKNVZ/11PKDCeJJ0E/+vmZGU7nw==
-X-Received: by 2002:a17:906:c084:: with SMTP id f4mr12013899ejz.4.1605742439706;
-        Wed, 18 Nov 2020 15:33:59 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id q19sm13753113ejz.90.2020.11.18.15.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 15:33:58 -0800 (PST)
-Date:   Thu, 19 Nov 2020 01:33:57 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: dsa: avoid potential use-after-free error
-Message-ID: <20201118233357.ihifojr62ly4pas3@skbuf>
-References: <20201118154335.1189-1-ceggers@arri.de>
+        id S1726815AbgKRXfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 18:35:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58696 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726098AbgKRXfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 18:35:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4A6D8AF7E;
+        Wed, 18 Nov 2020 23:35:00 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id 073F0603F9; Thu, 19 Nov 2020 00:35:00 +0100 (CET)
+Date:   Thu, 19 Nov 2020 00:34:59 +0100
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] eventfd: convert to ->write_iter()
+Message-ID: <20201118233459.d2p5gh7boguzcybg@lion.mk-sys.cz>
+References: <8a4f07e6ec47b681a32c6df5d463857e67bfc965.1605690824.git.mkubecek@suse.cz>
+ <20201118151806.GA25804@infradead.org>
+ <20201118195936.p33qlcjc7gp2zezz@lion.mk-sys.cz>
+ <4e4d222c-ed8b-a40d-0cdc-cf152573645c@kernel.dk>
+ <20201118231835.u6hqivoayq5ej4vg@lion.mk-sys.cz>
+ <7323253d-003a-456c-166c-d85a614c8bf6@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118154335.1189-1-ceggers@arri.de>
+In-Reply-To: <7323253d-003a-456c-166c-d85a614c8bf6@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 04:43:35PM +0100, Christian Eggers wrote:
-> If dsa_switch_ops::port_txtstamp() returns false, clone will be freed
-> immediately. Storing the pointer in DSA_SKB_CB(skb)->clone anyway,
-> supports annoying use-after-free bugs.
+On Wed, Nov 18, 2020 at 04:25:37PM -0700, Jens Axboe wrote:
+> On 11/18/20 4:18 PM, Michal Kubecek wrote:
+> > On Wed, Nov 18, 2020 at 02:27:08PM -0700, Jens Axboe wrote:
+> >> On 11/18/20 12:59 PM, Michal Kubecek wrote:
+> >>> On Wed, Nov 18, 2020 at 03:18:06PM +0000, Christoph Hellwig wrote:
+> >>>> On Wed, Nov 18, 2020 at 10:19:17AM +0100, Michal Kubecek wrote:
+> >>>>> While eventfd ->read() callback was replaced by ->read_iter() recently,
+> >>>>> it still provides ->write() for writes. Since commit 4d03e3cc5982 ("fs:
+> >>>>> don't allow kernel reads and writes without iter ops"), this prevents
+> >>>>> kernel_write() to be used for eventfd and with set_fs() removal,
+> >>>>> ->write() cannot be easily called directly with a kernel buffer.
+> >>>>>
+> >>>>> According to eventfd(2), eventfd descriptors are supposed to be (also)
+> >>>>> used by kernel to notify userspace applications of events which now
+> >>>>> requires ->write_iter() op to be available (and ->write() not to be).
+> >>>>> Therefore convert eventfd_write() to ->write_iter() semantics. This
+> >>>>> patch also cleans up the code in a similar way as commit 12aceb89b0bc
+> >>>>> ("eventfd: convert to f_op->read_iter()") did in read_iter().
+> >>>>
+> >>>> A far as I can tell we don't have an in-tree user that writes to an
+> >>>> eventfd.  We can merge something like this once there is a user.
+> >>>
+> >>> As far as I can say, we don't have an in-tree user that reads from
+> >>> sysctl. But you not only did not object to commit 4bd6a7353ee1 ("sysctl:
+> >>> Convert to iter interfaces") which adds ->read_iter() for sysctl, that
+> >>> commit even bears your Signed-off-by. There may be other examples like
+> >>> that.
+> >>
+> >> A better justification for this patch is that users like io_uring can
+> >> potentially write non-blocking to the file if ->write_iter() is
+> >> supported.
+> > 
+> > So you think the patch could be accepted with a modified commit message?
+> > (As long as there are no technical issues, of course.) I did not really
+> > expect there would be so much focus on a justification for a patch which
+> > (1) converts f_ops to a more advanced (and apparently preferred)
+> > interface and (2) makes eventfd f_ops more consistent.
+> > 
+> > For the record, my original motivation for this patch was indeed an out
+> > of tree module (not mine) using kernel write to eventfd. But that module
+> > can be patched to use eventfd_signal() instead and it will have to be
+> > patched anyway unless eventfd allows kernel_write() in 5.10 (which
+> > doesn't seem likely). So if improving the code is not considered
+> > sufficient to justify the patch, I can live with that easily. 
+> 
+> My point is that improving eventfd writes from io_uring is a win with
+> this patch, whereas enabling kernel_write() makes people more nervous,
+> and justifiably so as your stated use case is some out of tree module.
+> 
+> So yeah, I'd focus on the former and not the latter, as it is actually
+> something I'd personally like to see...
 
-Like what?
+OK, I'll send v2 with a different reasoning in commit message.
 
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Fixes 146d442c2357 ("net: dsa: Keep a pointer to the skb clone for TX timestamping")
-
-Not the right format for a Fixes: tag, please try to set up your
-.gitconfig to automate the creation of this tag.
+Michal Kubecek
