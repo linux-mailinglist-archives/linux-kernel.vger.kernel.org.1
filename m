@@ -2,202 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C094D2B7C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B552B7C2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727438AbgKRLMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:12:48 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:42806 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgKRLMs (ORCPT
+        id S1726677AbgKRLNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:13:40 -0500
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:31969 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgKRLNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:12:48 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIBAdfY099923;
-        Wed, 18 Nov 2020 11:12:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=3rp1ngSg0OMLf4tSCce9YVXlF4JBPSDWXQ2Tkwdn2Pg=;
- b=NKmwYfOm5tXiV5ZArzd/GDbefGbZ3JKD963oGEKPQOwRnk84O87dwSPL3r/qT1xkEd7c
- OIfpeqm4Sm6bLyXz/UuQ+xAOb77yeei1Eg27QgC2pbi1AASXmOmnj+l03TI+cHOUlzL7
- 1KkKJMVJ0hZMF1QT5Ky64HioxC7qhYt07KTGDcFEDYqMaUdlb6NWx/np04Ej8bHhTqhk
- eNqJcbMdnHgQlc7cmTn4OE0ElXsrG8T+Io6LKALo+tE+rbxMFCsX4SfqwVt058QC/BOX
- oKuLuNQnauCRNZVhHfbbFgl3yVYzWw4VaheRbmDYCgokqhsuTJ+CEmA0Dm3KsnmQiaFq WQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34t4rayn93-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 11:12:34 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIB9UNn090022;
-        Wed, 18 Nov 2020 11:12:33 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 34ts0s65aq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Nov 2020 11:12:33 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AIBCVY5021936;
-        Wed, 18 Nov 2020 11:12:31 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 18 Nov 2020 03:12:30 -0800
-Date:   Wed, 18 Nov 2020 14:12:24 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     mchehab+huawei@kernel.org, gregkh@linuxfoundation.org,
-        mayulong1@huawei.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: mfd: hi6421-spmi-pmic: fix error return code in
- hi6421_spmi_pmic_probe()
-Message-ID: <20201118111224.GC29398@kadam>
-References: <20201118103724.57451-1-wanghai38@huawei.com>
+        Wed, 18 Nov 2020 06:13:39 -0500
+Received: from ubuntu.localdomain (unknown [157.0.31.124])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 276954E1771;
+        Wed, 18 Nov 2020 19:13:34 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] drm/vmwgfx: use min_t to replace min
+Date:   Wed, 18 Nov 2020 03:13:27 -0800
+Message-Id: <20201118111327.105071-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118103724.57451-1-wanghai38@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- bulkscore=0 suspectscore=2 spamscore=0 malwarescore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011180078
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=2 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011180078
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ0tMHk0dQx5CQhhNVkpNS05NQkNLSk9PT0tVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Phg6MSo5Tz8tLw4vPxMYVh4O
+        PzIaFC9VSlVKTUtOTUJDS0pOS0tLVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU9ZV1kIAVlBSUtDSjcG
+X-HM-Tid: 0a75db0f4c5b9376kuws276954e1771
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not necessarily related to your patch but it should just return -ENOMEM
-instead of the "goto irq_malloc;".
+Use min_t to replace min, min_t is a bit fast because min use
+twice typeof.
+This patch also fix check_patch.pl warning:
+WARNING: min() should probably be min_t(unsigned long, num_pages,
+VMW_PPN_PER_REMAP)
++unsigned long nr = min(num_pages, (unsigned long)
+VMW_PPN_PER_REMAP);
 
-drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-   251          if (!gpio_is_valid(pmic->gpio))
-   252                  return -EINVAL;
-   253  
-   254          ret = devm_gpio_request_one(dev, pmic->gpio, GPIOF_IN, "pmic");
-   255          if (ret < 0) {
-   256                  dev_err(dev, "failed to request gpio%d\n", pmic->gpio);
-   257                  return ret;
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is a direct return.
-
-   258          }
-   259  
-   260          pmic->irq = gpio_to_irq(pmic->gpio);
-
-[ Edit.  Actually I can see that the original author must have thought
-  that this needed to be released but it doesn't. ]
-
-   261  
-   262          hi6421_spmi_pmic_irq_prc(pmic);
-   263  
-   264          pmic->irqs = devm_kzalloc(dev, HISI_IRQ_NUM * sizeof(int), GFP_KERNEL);
-   265          if (!pmic->irqs) {
-   266                  ret = -ENOMEM;
-   267                  goto irq_malloc;
-
-This is a goto with a ComeFrom style label name, which says where it
-is called from (The goto is at the place where irq_malloc fails).  This
-is a useless label name because we can see from the line before that
-the alloc failed.  What we want to know is what the goto does!
-
-   268          }
-   269  
-   270          pmic->domain = irq_domain_add_simple(np, HISI_IRQ_NUM, 0,
-   271                                               &hi6421_spmi_domain_ops, pmic);
-   272          if (!pmic->domain) {
-   273                  dev_err(dev, "failed irq domain add simple!\n");
-   274                  ret = -ENODEV;
-   275                  goto irq_malloc;
-
-Here the label name is even more useless here because "irq_malloc"
-didn't fail on the line before.  #Confusing  But we still don't know
-what the goto does.
-
-If we scroll down then we see that "goto irq_malloc" releases the IRQ.
-A better name would be "goto err_irq;"
-
-   276          }
-   277  
-   278          for (i = 0; i < HISI_IRQ_NUM; i++) {
-   279                  virq = irq_create_mapping(pmic->domain, i);
-   280                  if (!virq) {
-   281                          dev_err(dev, "Failed mapping hwirq\n");
-   282                          ret = -ENOSPC;
-   283                          goto irq_malloc;
-   284                  }
-   285                  pmic->irqs[i] = virq;
-   286                  dev_dbg(dev, "%s: pmic->irqs[%d] = %d\n",
-   287                          __func__, i, pmic->irqs[i]);
-   288          }
-   289  
-   290          ret = request_threaded_irq(pmic->irq, hi6421_spmi_irq_handler, NULL,
-   291                                     IRQF_TRIGGER_LOW | IRQF_SHARED | IRQF_NO_SUSPEND,
-   292                                     "pmic", pmic);
-
-Except it turns out that we don't actually request the IRQ until this
-line.  So those earlier "goto err_irq;" things are bogus.
-
-   293          if (ret < 0) {
-   294                  dev_err(dev, "could not claim pmic IRQ: error %d\n", ret);
-   295                  goto irq_malloc;
-   296          }
-   297  
-   298          dev_set_drvdata(&pdev->dev, pmic);
-   299  
-   300          /*
-   301           * The logic below will rely that the pmic is already stored at
-   302           * drvdata.
-   303           */
-   304          dev_dbg(&pdev->dev, "SPMI-PMIC: adding children for %pOF\n",
-   305                  pdev->dev.of_node);
-   306          ret = devm_mfd_add_devices(&pdev->dev, PLATFORM_DEVID_NONE,
-   307                                     hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
-   308                                     NULL, 0, NULL);
-   309          if (!ret)
-   310                  return 0;
-
-This is "success handling" anti-pattern and "last condition is weird"
-anti-pattern.  We should always do failure handling.  The code should
-look like:
-
-	success();
-	success();
-	success();
-	success();
-	if () {
-		failure();
-		failure();
-		failure();
-	}
-	success();
-	success();
-	if () {
-		failure();
-		failure();
-		failure();
-	}
-
-Failure is indented twice and success once.
-
-   311  
-   312          dev_err(dev, "Failed to add child devices: %d\n", ret);
-   313  
-   314  irq_malloc:
-   315          free_irq(pmic->irq, pmic);
-
-This free should only be done if devm_mfd_add_devices() fails.  I don't
-know what happens if you free an IRQ which has not been requested.  I
-think it triggers a WARN().
-
-   316  
-   317          return ret;
-   318  }
-
-regards,
-dan carpenter
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c b/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c
+index 83c0d5a3e4fd..b8f6fe1a71e6 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c
+@@ -72,7 +72,7 @@ static int vmw_gmr2_bind(struct vmw_private *dev_priv,
+ 		SVGA_REMAP_GMR2_PPN64 : SVGA_REMAP_GMR2_PPN32;
+ 
+ 	while (num_pages > 0) {
+-		unsigned long nr = min(num_pages, (unsigned long)VMW_PPN_PER_REMAP);
++		unsigned long nr = min_t((unsigned long), num_pages, VMW_PPN_PER_REMAP);
+ 
+ 		remap_cmd.offsetPages = remap_pos;
+ 		remap_cmd.numPages = nr;
+-- 
+2.29.0
 
