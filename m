@@ -2,146 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDC72B8120
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FC42B8128
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727705AbgKRPrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:47:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgKRPrq (ORCPT
+        id S1727665AbgKRPt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:49:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32076 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726211AbgKRPt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:47:46 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E433C0613D4;
-        Wed, 18 Nov 2020 07:47:46 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id p1so2603204wrf.12;
-        Wed, 18 Nov 2020 07:47:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YJpTSJsL9moVZsBZji+qYlimshdtftJObIcujQ/7f3I=;
-        b=qvKkyEszF9bvQyIp8KuS6pTbQ5AUDFADd3r5741U3zdxwGmmcPm4w8vxW0KK7glcz4
-         d2w6CoLAFVKKnTyta/6mho7GqdCTyN7/3g+XCiKcyhtClStjVFemIFk5dMO8hpEijFIn
-         te6se+GmjKACvvBlwuaLd+6RgeDOHa8ERYKQae6Uur1iFfoGtdVmYE4zZ3JmTk+OiXrv
-         7btfl3QZfzl9hfKTQ8n5X6kkX37rYzH1bdaQmSs8HbhJEwhLS+5Yk/0Eg3jSKDWsLM8r
-         OvsOAGJA9scIFTlvJyUPN6yCbTEh3dak3xPA95o7jM8Doqeu2ZVR15TeAtooJXSzFGTR
-         vFRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YJpTSJsL9moVZsBZji+qYlimshdtftJObIcujQ/7f3I=;
-        b=EQBpw8VXa39dJRYpo3Kve62aJDD+m3g1rd58KS0sZk9Vmi5QhL2+yVJykvrsR0eh1M
-         cKa4RVyrtzpF6RkNpB7dl2OfdkuDd/r1cFS3h33JCiUnHrNpP62pucgig5UQUmBFG5bp
-         /PAJltqN5piVoF+eO/wlBggOj1GAL17iMPXLFPhcitu3GuaSzaAKY9VuVtnLNNncxXBp
-         BkLQfFGDKGfU/kZ9qeLsteNFzFCIv4+6G8tL1X+Js7uRDYjUlrQRQVTwLZA2mZNbcJhK
-         6du0aDKFHhvMBdgGGT/IX0DoCgPV0e66jaKM+5Oehgaht+/KuYogcE2OBhnea7X5br2w
-         1kHg==
-X-Gm-Message-State: AOAM530H9/oquPZbFtd+4+rcmu/GmnMD77Z4QDC+kl9XbkJTRc9lJ2v2
-        jj1EQyPSyZhfZUWVUSnaWYBfOTda/2/NkbKda4w=
-X-Google-Smtp-Source: ABdhPJyCgGodENbiW6qRPwGh0bJqiogtkj2ctSrQugr1iQqxGDiQPrRTc+Ni8ZY+fWOB4URpKdFConwkoBpwKS1ULR4=
-X-Received: by 2002:adf:f04b:: with SMTP id t11mr5098446wro.147.1605714464802;
- Wed, 18 Nov 2020 07:47:44 -0800 (PST)
+        Wed, 18 Nov 2020 10:49:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605714596;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MQ3atbt49o/FeEWNxZ+RfU8ToGXg/yRCCUXrGgUjXe4=;
+        b=eUx4eYF2CIPcR4/HxCE9CPgfcbgZuwdOnCkQoB6GdmZmY95FUpj1UVaUB9ZHpur9uhoKVV
+        DROTfrby3vflpfNbzT8fnomoxx4AK6bF1M5+1swXsWOhS94I5GkXj/ioaMAjwFdics5h0o
+        BzftRAGgLSiSWAeEgaMP2XlpeGwGWyw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-542-_VdeTqYPOoqSMsJBHrnhAg-1; Wed, 18 Nov 2020 10:49:54 -0500
+X-MC-Unique: _VdeTqYPOoqSMsJBHrnhAg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 39860873114;
+        Wed, 18 Nov 2020 15:49:53 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5DE655D9D2;
+        Wed, 18 Nov 2020 15:49:45 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 10:49:44 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: Re: md: dm-writeback: add __noreturn to BUG-ging function
+Message-ID: <20201118154944.GB545@redhat.com>
+References: <20201113225228.20563-1-rdunlap@infradead.org>
+ <344abf76-9405-58ba-2dc4-27cab88c974d@de.ibm.com>
+ <c29eeb5d-0683-49eb-f729-38b14fac7745@infradead.org>
+ <20201117163147.GA27243@redhat.com>
 MIME-Version: 1.0
-References: <20201117172608.2091648-1-swboyd@chromium.org> <71aebca216babf4010c92d4d1ce9a9b4@codeaurora.org>
- <160565358127.60232.4382778730228368993@swboyd.mtv.corp.google.com>
-In-Reply-To: <160565358127.60232.4382778730228368993@swboyd.mtv.corp.google.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 18 Nov 2020 07:49:31 -0800
-Message-ID: <CAF6AEGsDyvFVxAME1_VUprPKdrpEGdvP9XrQEG_-=1mRRcRBow@mail.gmail.com>
-Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: Remove chatty vbif debug print
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>,
-        Kalyan Thota <kalyan_t@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117163147.GA27243@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 2:53 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting abhinavk@codeaurora.org (2020-11-17 12:34:56)
-> > On 2020-11-17 09:26, Stephen Boyd wrote:
-> > > I don't know what this debug print is for but it is super chatty,
-> > > throwing 8 lines of debug prints in the logs every time we update a
-> > > plane. It looks like it has no value. Let's nuke it so we can get
-> > > better logs.
-> > >
-> > > Cc: Sean Paul <sean@poorly.run>
-> > > Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-> > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> >
-> > > ---
-> > >  drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c | 3 ---
-> > >  1 file changed, 3 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> > > b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> > > index 5e8c3f3e6625..5eb2b2ee09f5 100644
-> > > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> > > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> > > @@ -245,9 +245,6 @@ void dpu_vbif_set_qos_remap(struct dpu_kms
-> > > *dpu_kms,
-> > >       forced_on = mdp->ops.setup_clk_force_ctrl(mdp, params->clk_ctrl,
-> > > true);
-> > >
-> > >       for (i = 0; i < qos_tbl->npriority_lvl; i++) {
-> > > -             DPU_DEBUG("vbif:%d xin:%d lvl:%d/%d\n",
-> > > -                             params->vbif_idx, params->xin_id, i,
-> > > -                             qos_tbl->priority_lvl[i]);
-> >
-> > Instead of getting rid of this print, we should optimize the caller of
-> > this.
->
-> Does the print tell us anything? Right now it prints 8 lines where it
-> feels like it could be trimmed down:
->
->            [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:0/3
->            [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:1/3
->            [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:2/4
->            [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:3/4
->            [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:4/5
->            [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:5/5
->            [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:6/6
->            [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:7/6
->
-> maybe one line that combines the index into values?
->
->            [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 [3 3 4 4 5 5 6 6]
->
+On Tue, Nov 17 2020 at 11:31am -0500,
+Mike Snitzer <snitzer@redhat.com> wrote:
 
-or possibly convert to a tracepoint (so it doesn't spam the drm_trace buffer)
+> On Mon, Nov 16 2020 at  6:00pm -0500,
+> Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+> > On 11/15/20 11:30 PM, Christian Borntraeger wrote:
+> > > 
+> > > 
+> > > On 13.11.20 23:52, Randy Dunlap wrote:
+> > >> Building on arch/s390/ flags this as an error, so add the
+> > >> __noreturn attribute modifier to prevent the build error.
+> > >>
+> > >> cc1: some warnings being treated as errors
+> > >> ../drivers/md/dm-writecache.c: In function 'persistent_memory_claim':
+> > >> ../drivers/md/dm-writecache.c:323:1: error: no return statement in function returning non-void [-Werror=return-type]
+> > > 
+> > > ok with me, but I am asking why
+> > > 
+> > > the unreachable macro is not good enough. For x86 it obviously is.
+> > > 
+> > > form arch/s390/include/asm/bug.h
+> > > #define BUG() do {                                      \
+> > >         __EMIT_BUG(0);                                  \
+> > >         unreachable();                                  \
+> > > } while (0)
+> > > 
+> > 
+> > Hi Christian,
+> > 
+> > Good question.
+> > I don't see any guidance about when to use one or the other etc.
+> > 
+> > I see __noreturn being used 109 times and unreachable();
+> > being used 33 times, but only now that I look at them.
+> > That had nothing to do with why I used __noreturn in the patch.
+> 
+> But doesn't that speak to the proper fix being needed in unreachable()?
+> Or at a minimum the fix is needed to arch/s390/include/asm/bug.h's BUG.
+> 
+> I really don't think we should be papering over that by sprinkling
+> __noreturn around the kernel's BUG() callers.
+> 
+> Maybe switch arch/s390/include/asm/bug.h's BUG to be like
+> arch/mips/include/asm/bug.h?  It itself uses __noreturn with a 'static
+> inline' function definition rather than #define.
+> 
+> Does that fix the issue?
+> 
+> Thanks,
+> Mike
+> 
+> p.s. you modified dm-writecache.c (not dm-writeback, wich doesn't
+> exist).
 
-BR,
--R
+I don't think my suggestion will help.. given it'd still leave
+persistent_memory_claim() without a return statement.
 
-> But again I have no idea if this print is really useful. Maybe we can
-> print it only if the value changes from what was already there?
-> Basically move the print into dpu_hw_set_qos_remap() and then skip out
-> early if nothing changed or print and modify the register.
->
-> > This is what
-> > we are doing in downstream. So we need to update the property only if we
-> > are switching from a RT client
-> > to non-RT client for the plane and vice-versa. So we should try to do
-> > the same thing here.
-> >
-> >         is_rt = sde_crtc_is_rt_client(crtc, crtc->state);
-> >         if (is_rt != psde->is_rt_pipe) {
-> >                 psde->is_rt_pipe = is_rt;
-> >                 pstate->dirty |= SDE_PLANE_DIRTY_QOS;
-> >         }
-> >
-> >
-> >         if (pstate->dirty & DPU_PLANE_DIRTY_QOS)
-> >                 _dpu_plane_set_qos_remap(plane);
-> >
->
-> Sounds great! Can you send the patch?
+Think it worthwhile to just add a dummy 'return 0;' after the BUG().
+
+Mike
+
