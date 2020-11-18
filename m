@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6BC2B72EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C0D2B72ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgKRAPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:15:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgKRAPp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:15:45 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1383C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:15:43 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id y16so394704ljh.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:15:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eWrhbtxMaDvAA/hqZtx4oXS0+2NR8hi9OYu+UfYxShM=;
-        b=eW9ytAHGHiQg0UjXTBR2k5vHOB0NAXJ6YaKbN8S6L09yrDcZNbH8+z4GWfYUzfhW3t
-         dzMuoT3NE4oZTkYczeQRW/gufIrbJN9ca7ZWH66NdhDmdwSjgTYMibESojmaoZcq35wr
-         XoAMrI3eC4yy9MqqxMDiaV+3CaIUqfFiQoy6Fkv/o2sCnuzTiXxiA2Jccqvh0lvkzmAK
-         mAU3B6JFW9rh8NE8GDLQ4Udmys+N76Ac8+xucJwBSxI7phXYbeoBsjddLquKWuLgWWiN
-         cwXKFVUjAxBLCdQ2aYWpz/872jnOmvRxvJSki6BzeUoJKxNxzMRRTFwbPlWHoN5XW+85
-         pzbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eWrhbtxMaDvAA/hqZtx4oXS0+2NR8hi9OYu+UfYxShM=;
-        b=UgfqqiIzwGInxr/dXLgxPFXIrAZ4MKy+vv6KveDvgE/w88sB/s0tS+Uj622GSS83S1
-         03bBWKHkcAs/odgy2aso7JBydwLHSsGkIdfmaqumVBNR3kTU0/yxe/Vjp6FSeehDM0o4
-         YLQJARgZ0wbIoyL6s4ASD1Geql1/M1YKsh78wOYLzhRhT72rvoJZ2q+fhm6DA0QGxxPM
-         uRcLHrjHcMhlkQ35z84vnl2TtI24UCj1xuwKrJ3bFgvox5pIGSvbwK9UaJ0euLupmjhH
-         SJoW31qApiHxELWlcdpLeCQa/L0Xaoa48SzeuVaV9DpDclwgeG9ovY0iVpIzU0g0lFmS
-         LGKw==
-X-Gm-Message-State: AOAM531Sch6OpdW0CZlYVy8KwXCXq3hwDhSF/duQfoaiwKbTn8c1ZVRk
-        j/g/zHRw9jQuCLm1T9bvNvC4MnwshYDbjoN+e6WgKfqKun2s2bUX
-X-Google-Smtp-Source: ABdhPJyeahuY3HMFK2a8FC+b5Gfa6NyYvm+3NwaEh5oPTktmnIxFCR9vwlEUeZSFblV0ihPS9NFFlAixhcvod44jUX8=
-X-Received: by 2002:a2e:998e:: with SMTP id w14mr3143826lji.100.1605658542224;
- Tue, 17 Nov 2020 16:15:42 -0800 (PST)
+        id S1726765AbgKRARD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:17:03 -0500
+Received: from mga04.intel.com ([192.55.52.120]:54467 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726202AbgKRARC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 19:17:02 -0500
+IronPort-SDR: b8bA3KtzE/S/4QUXTeLhqhmt8yqcgsYscoVdTaQI3TJ1uhqoMpgr8Xp4zP/dthyyFbKxD9+aoF
+ 4ovZvc1EAKeg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="168466272"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="168466272"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 16:17:02 -0800
+IronPort-SDR: DClsseHVbLjb7Cvh9XQq7XZQwYxjsVM4Y8Czp/d1BXkRsDuYYwS+VuNiX+yFdJQeRSnYZX4ifL
+ /v5jh9uhvSrw==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="544268385"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.212.81.41])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 16:17:01 -0800
+Subject: Re: [PATCH v5 6/6] fpga: m10bmc-sec: add max10 get_hw_errinfo
+ callback func
+To:     Tom Rix <trix@redhat.com>, mdf@kernel.org, lee.jones@linaro.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20201114005559.90860-1-russell.h.weight@intel.com>
+ <20201114005559.90860-7-russell.h.weight@intel.com>
+ <d0e4819b-87b8-ef6f-9ede-adc28e10b2f8@redhat.com>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <be5ecb61-2cfd-a179-3f29-36af8bd69855@intel.com>
+Date:   Tue, 17 Nov 2020 16:16:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1605201148-4508-1-git-send-email-srinivas.neeli@xilinx.com> <1605201148-4508-6-git-send-email-srinivas.neeli@xilinx.com>
-In-Reply-To: <1605201148-4508-6-git-send-email-srinivas.neeli@xilinx.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 18 Nov 2020 01:15:31 +0100
-Message-ID: <CACRpkdYsWpB-09efW1OPRXvrS_e=i5HduSJkEor7Lfb3NgmHpw@mail.gmail.com>
-Subject: Re: [LINUX PATCH V3 5/9] gpio: gpio-xilinx: Add interrupt support
-To:     Srinivas Neeli <srinivas.neeli@xilinx.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        sgoud@xilinx.com, Robert Hancock <hancock@sedsystems.ca>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d0e4819b-87b8-ef6f-9ede-adc28e10b2f8@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas!
 
-On Thu, Nov 12, 2020 at 6:12 PM Srinivas Neeli
-<srinivas.neeli@xilinx.com> wrote:
 
-> Adds interrupt support to the Xilinx GPIO driver so that rising and
-> falling edge line events can be supported. Since interrupt support is
-> an optional feature in the Xilinx IP, the driver continues to support
-> devices which have no interrupt provided.
+On 11/15/20 6:20 AM, Tom Rix wrote:
+> On 11/13/20 4:55 PM, Russ Weight wrote:
+>> Extend the MAX10 BMC Secure Update driver to include
+>> a function that returns 64 bits of additional HW specific
+>> data for errors that require additional information.
+>> This callback function enables the hw_errinfo sysfs
+>> node in the Intel Security Manager class driver.
+>>
+>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>> ---
+>> v5:
+>>   - No change
+>> v4:
+>>   - No change
+>> v3:
+>>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+>>   - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure Update
+>>     driver"
+>> v2:
+>>   - Implemented HW_ERRINFO_POISON for m10bmc_sec_hw_errinfo() to
+>>     ensure that corresponding bits are set to 1 if we are unable
+>>     to read the doorbell or auth_result registers.
+>>   - Added m10bmc_ prefix to functions in m10bmc_iops structure
+>> ---
+>>  drivers/fpga/intel-m10-bmc-secure.c | 25 +++++++++++++++++++++++++
+>>  1 file changed, 25 insertions(+)
+>>
+>> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
+>> index 4fa8a2256088..a024efb173d3 100644
+>> --- a/drivers/fpga/intel-m10-bmc-secure.c
+>> +++ b/drivers/fpga/intel-m10-bmc-secure.c
+>> @@ -472,11 +472,36 @@ static enum fpga_sec_err m10bmc_sec_cancel(struct fpga_sec_mgr *smgr)
+>>  	return ret ? FPGA_SEC_ERR_RW_ERROR : FPGA_SEC_ERR_NONE;
+>>  }
+>>  
+>> +#define HW_ERRINFO_POISON	GENMASK(31, 0)
+>> +static u64 m10bmc_sec_hw_errinfo(struct fpga_sec_mgr *smgr)
+>> +{
+>> +	struct m10bmc_sec *sec = smgr->priv;
+>> +	u32 doorbell, auth_result;
+> If doorbell and auth_result were poisoned at initialization, the if-checks could be skipped.
+
+Yes - I'll make this change.
+
+- Russ
 >
-> Signed-off-by: Robert Hancock <hancock@sedsystems.ca>
-> Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+> Tom
+>
+>> +
+>> +	switch (smgr->err_code) {
+>> +	case FPGA_SEC_ERR_HW_ERROR:
+>> +	case FPGA_SEC_ERR_TIMEOUT:
+>> +	case FPGA_SEC_ERR_BUSY:
+>> +	case FPGA_SEC_ERR_WEAROUT:
+>> +		if (m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell))
+>> +			doorbell = HW_ERRINFO_POISON;
+>> +
+>> +		if (m10bmc_sys_read(sec->m10bmc, M10BMC_AUTH_RESULT,
+>> +				    &auth_result))
+>> +			auth_result = HW_ERRINFO_POISON;
+>> +
+>> +		return (u64)doorbell << 32 | (u64)auth_result;
+>> +	default:
+>> +		return 0;
+>> +	}
+>> +}
+>> +
+>>  static const struct fpga_sec_mgr_ops m10bmc_sops = {
+>>  	.prepare = m10bmc_sec_prepare,
+>>  	.write_blk = m10bmc_sec_write_blk,
+>>  	.poll_complete = m10bmc_sec_poll_complete,
+>>  	.cancel = m10bmc_sec_cancel,
+>> +	.get_hw_errinfo = m10bmc_sec_hw_errinfo,
+>>  };
+>>  
+>>  static int m10bmc_secure_probe(struct platform_device *pdev)
 
-(...)
->  config GPIO_XILINX
->         tristate "Xilinx GPIO support"
-> +       select GPIOLIB_IRQCHIP
-> +       depends on OF_GPIO
->         help
->           Say yes here to support the Xilinx FPGA GPIO device
-
-Please add:
-select IRQ_DOMAIN_HIERARCHY
-
-Because your driver requires this.
-
-> +       /* Update cells with gpio-cells value */
-> +       if (of_property_read_u32(np, "#gpio-cells", &cells))
-> +               dev_dbg(&pdev->dev, "Missing gpio-cells property\n");
-(...)
-> +       chip->gc.of_gpio_n_cells = cells;
-
-Why is this necessary?
-Mention in the commit.
-
-Other than that this looks very good and good use
-of the hierarchical IRQ feature in gpiolib!
-
-Yours,
-Linus Walleij
