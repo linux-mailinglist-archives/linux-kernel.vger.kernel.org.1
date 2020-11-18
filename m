@@ -2,207 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E229B2B75FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 06:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 694002B7608
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 06:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgKRFeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 00:34:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgKRFeK (ORCPT
+        id S1726260AbgKRFqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 00:46:11 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:60821 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgKRFqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 00:34:10 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BE2C061A51
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 21:34:08 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id w13so937731eju.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 21:34:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BopsKmSar3n4P2J12Sr3SxLSSPQixGWTU7etCFUvEQ0=;
-        b=CugPd5MD9jNugwhqO/Gr9MkjMcbb6CXIe/YBJ6yWCBjU5fr3YpbYt4AZzxNba/bSYl
-         uyDHBGpm4uVezOQh7dKVM83R0kZ0IlQvAbA2PN+lNfsIoadedA4zFWuhVkRA1gYbxIyD
-         Xm3as8ORxmOYFMdHgqBb4FkvJgHMHGu4ToX8hECpJACyOPamikY/1/UQHszQLjnJPhQ7
-         ebIlRScaG0El2TITFAhbsoeURuVy0UEm4iEaqnsPyHE3UjvEiQA3nOZkrq6d2WzVBVfl
-         F+q1amVs1YcZsOVix0qmYlgKOBbaBbP5i+Ul8Y6SMKKYzy7Xtq4pCHAAHoH6UcGMqR6s
-         cfvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BopsKmSar3n4P2J12Sr3SxLSSPQixGWTU7etCFUvEQ0=;
-        b=LuUI6gAqT/hokzeKdrJpg4w4F0CE9uiV8BbcRb4/Y5x5fcgI+MD1dgH2Q5Hw8xvO4D
-         /OV/2Kqqci55n2R4VcQggGszqBfwnR/Kl5OZ6MM2aWfsA7qfRwtIksCr3ivBjytKqN/9
-         3eEWltOO6MUz77ju1B4V+u10fKYLCbTvePDmaFGpzDdEMC0v684DRKZxktq8g2NuzosI
-         wIj5ZPuI2xBoMIfVXIPWJitupvvkF953eA3osic3VYhuKRteU4gNittVnsbreygLvhDY
-         Ikp2WDE+wVHBXDiqP9Avlvv+4Mj9Y0ItNR1LYXlSETcPGlpOw38Q2277ahO50A0aW+Sx
-         fAYw==
-X-Gm-Message-State: AOAM530fZNo9ltalrUkGqavmkci70YGVh+CQ+jn79+NhgDhT+4W3AahO
-        xcpRsAuT0GzOSBpkf8fcnSzkKHgp2uWBZCt7YvsywQ==
-X-Google-Smtp-Source: ABdhPJwogktE2pJm2xh3pNFBobna/9Th5ECROtOqF+Zx+ceiLF964yBgqeJMX0OYZPoDfFT6pYfrw/wIJCLy66utgj8=
-X-Received: by 2002:a17:906:3087:: with SMTP id 7mr21857605ejv.375.1605677647248;
- Tue, 17 Nov 2020 21:34:07 -0800 (PST)
+        Wed, 18 Nov 2020 00:46:11 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kfGIA-0000tM-Br; Wed, 18 Nov 2020 06:46:06 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kfGI9-00030X-GO; Wed, 18 Nov 2020 06:46:05 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id E4CF1240041;
+        Wed, 18 Nov 2020 06:46:04 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 85840240040;
+        Wed, 18 Nov 2020 06:46:04 +0100 (CET)
+Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
+        by mail.dev.tdt.de (Postfix) with ESMTPSA id 290F0204F6;
+        Wed, 18 Nov 2020 06:46:04 +0100 (CET)
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>
+Subject: [PATCH net-next v4] net/tun: Call netdev notifiers
+Date:   Wed, 18 Nov 2020 06:45:55 +0100
+Message-ID: <20201118054555.14248-1-ms@dev.tdt.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20201117122138.925150709@linuxfoundation.org>
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 18 Nov 2020 11:03:55 +0530
-Message-ID: <CA+G9fYt+YNy=34HLHpDrc6=73Nhu14NEf7AP+woyZryny+b-2Q@mail.gmail.com>
-Subject: Re: [PATCH 5.9 000/255] 5.9.9-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
 Content-Transfer-Encoding: quoted-printable
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1605678366-000064E4-D961B555/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 at 19:02, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.9.9 release.
-> There are 255 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 19 Nov 2020 12:20:51 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.9.9-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Call netdev notifiers before and after changing the device type.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Signed-off-by: Martin Schiller <ms@dev.tdt.de>
+---
+Changes to v3:
+* Handle return value of call_netdevice_notifiers()
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Changes to v2:
+* Use subject_prefix 'net-next' to fix 'fixes_present' issue
 
-NOTE:
-1)
-BUG: Invalid wait context on arm64 db410c device while booting.
-This issue has not reproduced after several testing loops.
-https://lore.kernel.org/stable/CA+G9fYsk54r9Re4E9BWpqsoxLjpCvxRKFWRgdiKVcPo=
-YE5z0Hw@mail.gmail.com/T/#u
+Changes to v1:
+* Fix 'subject_prefix' and 'checkpatch' warnings
 
-2)
-kselftest test suite version upgrade to v5.9
+---
+ drivers/net/tun.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-3)
-While running kselftest netfilter on x86, i386, arm64 and arm devices
-the following kernel warning was noticed.
-WARNING: at net/netfilter/nf_tables_api.c:622
-lockdep_nfnl_nft_mutex_not_held+0x19/0x20 [nf_tables]
-https://lore.kernel.org/linux-kselftest/CA+G9fYvFUpODs+NkSYcnwKnXm62tmP=3Dk=
-sLeBPmB+KFrB2rvCtQ@mail.gmail.com/
-
-4)
-From this release we have started building kernels with clang-10 toolchain
-and testing LTP testsuite on qemu_arm64, qemu_arm, qemu_x86_64 and qemu_i38=
-6.
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.9.9-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.9.y
-git commit: fb1622495321923cbb1ae2c6cf2da1e9ca286800
-git describe: v5.9.8-256-gfb1622495321
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
-y/build/v5.9.8-256-gfb1622495321
-
-No regressions (compared to build v5.9.8)
-
-No fixes (compared to build v5.9.8)
-
-Ran 52946 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* ltp-controllers-tests
-* ltp-cve-tests
-* network-basic-tests
-* kselftest
-* ltp-open-posix-tests
-* kvm-unit-tests
-* kunit
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 3d45d56172cb..704306695b88 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -3071,10 +3071,19 @@ static long __tun_chr_ioctl(struct file *file, un=
+signed int cmd,
+ 				   "Linktype set failed because interface is up\n");
+ 			ret =3D -EBUSY;
+ 		} else {
++			ret =3D call_netdevice_notifiers(NETDEV_PRE_TYPE_CHANGE,
++						       tun->dev);
++			ret =3D notifier_to_errno(err);
++			if (ret) {
++				netif_info(tun, drv, tun->dev,
++					   "Refused to change device type\n");
++				break;
++			}
+ 			tun->dev->type =3D (int) arg;
+ 			netif_info(tun, drv, tun->dev, "linktype set to %d\n",
+ 				   tun->dev->type);
+-			ret =3D 0;
++			call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE,
++						 tun->dev);
+ 		}
+ 		break;
+=20
 --=20
-Linaro LKFT
-https://lkft.linaro.org
+2.20.1
+
