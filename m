@@ -2,102 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8032B7710
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B63622B7714
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgKRHkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 02:40:01 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:59916 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726296AbgKRHkA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 02:40:00 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AI7OEDo180962;
-        Wed, 18 Nov 2020 07:39:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=4KgLT+B0lb8kNH88ZUkx3bx2giYs+dXPjO0zGf/6wwc=;
- b=niscrOODhEXVydQUCTyWmsb2VkhUWuGFOWu6VirfilOr48IzW8hHegxWU+spUvCop29Z
- POrDaBvkBmrqwibKifYTeeWWBpX5cRpvMRfkeYewNCYSEcSwUa9S6Cw3jbotlN7J6NpX
- 4XfEL3j8109ixreSldUqyT6m7eSokVo/PUNOf7MCWix2x1bBYgEUyOhsfsebSnk23/Zn
- 8K8OLEBAcUsonZ0lkNs9W9PeQj/EdxatfmFUN2ZYLIFNv5gzodYOE2BjoKtgxmtISD7V
- nSbYpFEZ6U2JNALY4YqySmUvtgXhcUZvdJ8K/h5ydspjsgVh6JMOZl1M4ytl8Xz9tvTl bw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34t76kxjv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 07:39:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AI7PJlE058852;
-        Wed, 18 Nov 2020 07:39:32 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 34umd0863h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Nov 2020 07:39:32 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AI7dNvX026966;
-        Wed, 18 Nov 2020 07:39:23 GMT
-Received: from linux.home (/92.157.91.83)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 17 Nov 2020 23:39:23 -0800
-Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, jroedel@suse.de, konrad.wilk@oracle.com,
-        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
-        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
-        kuzuno@gmail.com
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116201711.GE1131@zn.tnic>
- <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
- <20201117165539.GG5719@zn.tnic>
- <890f6b7e-a268-2257-edcb-5eacc7db3d8e@oracle.com>
- <20201117212608.GS5719@zn.tnic>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <b63ec614-8a49-728d-aa61-76339378183f@oracle.com>
-Date:   Wed, 18 Nov 2020 08:41:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726722AbgKRHmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 02:42:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726200AbgKRHl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 02:41:59 -0500
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0D9024656;
+        Wed, 18 Nov 2020 07:41:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605685319;
+        bh=Q4jpEyGuwcCkj+Ak7YzDr/tG7X4Egxkvlz1mTnJ8TFQ=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=SJw9vTE3zE3+IwA5FcC/Gc6ap8q20Ark7HFMfCaI5bNbYMRiKF22QEP6+MbTSf3O0
+         r6AiVfmnmNBDYarTXPNBwtt/cWi014DbhBMfe/hl4x2BF1z3k8/NOFFONf6DX1cwuz
+         bHhMD0xiWDmO++3Zu1g+bi4C9NqpSm06ozKIB+SQ=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20201117212608.GS5719@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
- spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011180050
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011180050
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201115170950.304460-2-krzk@kernel.org>
+References: <20201115170950.304460-1-krzk@kernel.org> <20201115170950.304460-2-krzk@kernel.org>
+Subject: Re: [PATCH 1/3] clk: fix redefinition of clk_prepare on MIPS with HAVE_LEGACY_CLK
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+To:     Chen-Yu Tsai <wens@csie.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Date:   Tue, 17 Nov 2020 23:41:57 -0800
+Message-ID: <160568531746.60232.15496517544781609246@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Krzysztof Kozlowski (2020-11-15 09:09:48)
+> COMMON_CLK even though is a user-selectable symbol, is still selected by
+> multiple other config options.  COMMON_CLK should not be used when
+> legacy clocks are provided by architecture, so it correctly depends on
+> !HAVE_LEGACY_CLK.
+>=20
+> However it is possible to create a config which selects both COMMON_CLK
+> (by SND_SUN8I_CODEC) and HAVE_LEGACY_CLK (by SOC_RT305X) which leads to
 
-On 11/17/20 10:26 PM, Borislav Petkov wrote:
-> On Tue, Nov 17, 2020 at 07:12:07PM +0100, Alexandre Chartre wrote:
->> Some benchmarks are available, in particular from phoronix:
-> 
-> What I was expecting was benchmarks *you* have run which show that
-> perf penalty, not something one can find quickly on the internet and
-> something one cannot always reproduce her-/himself.
-> 
-> You do know that presenting convincing numbers with a patchset greatly
-> improves its chances of getting it upstreamed, right?
-> 
-
-Well, it looks like I wrongfully assume that KPTI was a well known performance
-overhead since it was introduced (because it adds extra page-table switches),
-but you are right I should be presenting my own numbers.
-
-Thanks,
-
-alex.
+Why is SND_SUN8I_CODEC selecting COMMON_CLK? Or really, why is
+SOC_RT305X selecting HAVE_LEGACY_CLK?
