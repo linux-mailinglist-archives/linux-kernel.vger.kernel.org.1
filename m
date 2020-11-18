@@ -2,207 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C5D2B844B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC64D2B8455
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgKRTAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:00:38 -0500
-Received: from mga11.intel.com ([192.55.52.93]:61024 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727068AbgKRTAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:00:37 -0500
-IronPort-SDR: gocfy7zmU2SSJaI0i2qRHY5tGsCwV0+AM0jkeNc5pCU9Qw2g28OwTHgLKo5XrLDtiQ//id4bQG
- T40HZD+JlpkQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="167658900"
-X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
-   d="scan'208";a="167658900"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 11:00:35 -0800
-IronPort-SDR: 6l2o5cyRNAbcz3TV1vIdaX2GrjdafBBOVdLUbGLgyurHVzF1ThVjgkUsa9YQFdUHL8HKzH4ERs
- Nl3Os1hRYzqw==
-X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
-   d="scan'208";a="544665317"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.140])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 11:00:35 -0800
-From:   matthew.gerlach@linux.intel.com
-To:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mdf@kernel.org, hao.wu@intel.com, trix@redhat.com,
-        linux-doc@vger.kernel.org, corbet@lwn.net
-Cc:     Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: [PATCH v2 2/2] fpga: dfl: look for vendor specific capability
-Date:   Wed, 18 Nov 2020 11:01:51 -0800
-Message-Id: <20201118190151.365564-3-matthew.gerlach@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201118190151.365564-1-matthew.gerlach@linux.intel.com>
-References: <20201118190151.365564-1-matthew.gerlach@linux.intel.com>
+        id S1726865AbgKRTCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:02:46 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:50702 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgKRTCp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:02:45 -0500
+Received: from 89-64-89-10.dynamic.chello.pl (89.64.89.10) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
+ id 589eb52260f9054a; Wed, 18 Nov 2020 20:02:42 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: [PATCH] cpufreq: Fix up several kerneldoc comments
+Date:   Wed, 18 Nov 2020 20:02:42 +0100
+Message-ID: <1739462.uCgn0Xls2p@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-A DFL may not begin at offset 0 of BAR 0.  A PCIe vendor
-specific capability can be used to specify the start of a
-number of DFLs.
+Fix up the remaining kerneldoc comments that don't adhere to the
+expected format and clarify some of them a bit.
 
-Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+No functional changes.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
-v2: Update documentation for clarity.
-    Clean up  macro names.
-    Use GENMASK.
-    Removed spurious blank lines.
-    Changed some calls from dev_info to dev_dbg.
-    Specifically check for VSEC not found, -ENODEV.
-    Ensure correct pci vendor id.
-    Remove check for page alignment.
-    Rename find_dfl_in_cfg to find_dfls_by_vsec.
-    Initialize target memory of pci_read_config_dword to invalid values before use.
----
- Documentation/fpga/dfl.rst | 13 ++++++
- drivers/fpga/dfl-pci.c     | 87 +++++++++++++++++++++++++++++++++++++-
- 2 files changed, 98 insertions(+), 2 deletions(-)
+ drivers/cpufreq/cpufreq.c |   72 +++++++++++++++++++++++-----------------------
+ 1 file changed, 36 insertions(+), 36 deletions(-)
 
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index 0404fe6ffc74..37016ff35a90 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -501,6 +501,19 @@ Developer only needs to provide a sub feature driver with matched feature id.
- FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
- could be a reference.
+Index: linux-pm/drivers/cpufreq/cpufreq.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/cpufreq.c
++++ linux-pm/drivers/cpufreq/cpufreq.c
+@@ -298,8 +298,10 @@ struct cpufreq_policy *cpufreq_cpu_acqui
+  *            EXTERNALLY AFFECTING FREQUENCY CHANGES                 *
+  *********************************************************************/
  
-+Location of DFLs on PCI Device
-+===========================
-+The start of the first DFL is assumed to be offset 0 of bar 0.
-+If the first node of the DFL is an FME, then further DFLs
-+in the port(s) are specified in FME header registers.
-+Alternatively, a vendor specific capability structure can be used to
-+specify the location of all the DFLs on the device, providing flexibility
-+for the type of starting node in the DFL.  Intel has reserved the
-+VSEC ID of 0x43 for this purpose.  The vendor specific
-+data begins with a 4 byte vendor specific register for the number of DFLs followed 4 byte
-+Offset/BIR vendor specific registers for each DFL. Bits 2:0 of Offset/BIR register
-+indicates the BAR, and bits 31:3 form the 8 byte aligned offset where bits 2:0 are
-+zero.
- 
- Open discussion
- ===============
-diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-index b27fae045536..3a6807e3e10c 100644
---- a/drivers/fpga/dfl-pci.c
-+++ b/drivers/fpga/dfl-pci.c
-@@ -27,6 +27,14 @@
- #define DRV_VERSION	"0.8"
- #define DRV_NAME	"dfl-pci"
- 
-+#define PCI_VSEC_ID_INTEL_DFLS 0x43
-+
-+#define PCI_VNDR_DFLS_CNT 8
-+#define PCI_VNDR_DFLS_RES 0x0c
-+
-+#define PCI_VNDR_DFLS_RES_BAR_MASK GENMASK(2, 0)
-+#define PCI_VNDR_DFLS_RES_OFF_MASK GENMASK(31, 3)
-+
- struct cci_drvdata {
- 	struct dfl_fpga_cdev *cdev;	/* container device */
- };
-@@ -119,8 +127,80 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
- 	return table;
+-/*
+- * adjust_jiffies - adjust the system "loops_per_jiffy"
++/**
++ * adjust_jiffies - Adjust the system "loops_per_jiffy".
++ * @val: CPUFREQ_PRECHANGE or CPUFREQ_POSTCHANGE.
++ * @ci: Frequency change information.
+  *
+  * This function alters the system "loops_per_jiffy" for the clock
+  * speed change. Note that loops_per_jiffy cannot be updated on SMP
+@@ -331,14 +333,14 @@ static void adjust_jiffies(unsigned long
  }
  
-+static int find_dfls_by_vsec(struct pci_dev *pcidev, struct dfl_fpga_enum_info *info)
-+{
-+	u32 bar, offset, vndr_hdr, dfl_cnt, dfl_res;
-+	int dfl_res_off, i, voff = 0;
-+	resource_size_t start, len;
-+
-+	if (pcidev->vendor != PCI_VENDOR_ID_INTEL)
-+		return -ENODEV;
-+
-+	while ((voff = pci_find_next_ext_capability(pcidev, voff, PCI_EXT_CAP_ID_VNDR))) {
-+		vndr_hdr = 0;
-+		pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER, &vndr_hdr);
-+
-+		dev_dbg(&pcidev->dev,
-+			"vendor-specific capability id 0x%x, rev 0x%x len 0x%x\n",
-+			PCI_VNDR_HEADER_ID(vndr_hdr),
-+			PCI_VNDR_HEADER_REV(vndr_hdr),
-+			PCI_VNDR_HEADER_LEN(vndr_hdr));
-+
-+		if (PCI_VNDR_HEADER_ID(vndr_hdr) == PCI_VSEC_ID_INTEL_DFLS)
-+			break;
-+	}
-+
-+	if (!voff) {
-+		dev_dbg(&pcidev->dev, "%s no VSEC found\n", __func__);
-+		return -ENODEV;
-+	}
-+
-+	dfl_cnt = 0;
-+	pci_read_config_dword(pcidev, voff + PCI_VNDR_DFLS_CNT, &dfl_cnt);
-+	dev_dbg(&pcidev->dev, "dfl_cnt %d\n", dfl_cnt);
-+	for (i = 0; i < dfl_cnt; i++) {
-+		dfl_res_off = voff + PCI_VNDR_DFLS_RES +
-+				      (i * sizeof(dfl_res));
-+		dfl_res = GENMASK(31, 0);
-+		pci_read_config_dword(pcidev, dfl_res_off, &dfl_res);
-+
-+		dev_dbg(&pcidev->dev, "dfl_res 0x%x\n", dfl_res);
-+
-+		bar = dfl_res & PCI_VNDR_DFLS_RES_BAR_MASK;
-+		if (bar >= PCI_STD_NUM_BARS) {
-+			dev_err(&pcidev->dev, "%s bad bar number %d\n",
-+				__func__, bar);
-+			return -EINVAL;
-+		}
-+
-+		len = pci_resource_len(pcidev, bar);
-+		if (len == 0) {
-+			dev_err(&pcidev->dev, "%s unmapped bar number %d\n",
-+				__func__, bar);
-+			return -EINVAL;
-+		}
-+
-+		offset = dfl_res & PCI_VNDR_DFLS_RES_OFF_MASK;
-+		if (offset >= len) {
-+			dev_err(&pcidev->dev, "%s bad offset %u >= %pa\n",
-+				__func__, offset, &len);
-+			return -EINVAL;
-+		}
-+
-+		dev_dbg(&pcidev->dev, "%s BAR %d offset 0x%x\n", __func__, bar, offset);
-+
-+		len -= offset;
-+
-+		start = pci_resource_start(pcidev, bar) + offset;
-+
-+		dfl_fpga_enum_info_add_dfl(info, start, len);
-+	}
-+
-+	return 0;
-+}
-+
- static int find_dfls_by_default(struct pci_dev *pcidev,
--				struct dfl_fpga_enum_info *info)
-+			       struct dfl_fpga_enum_info *info)
+ /**
+- * cpufreq_notify_transition - Notify frequency transition and adjust_jiffies.
++ * cpufreq_notify_transition - Notify frequency transition and adjust jiffies.
+  * @policy: cpufreq policy to enable fast frequency switching for.
+  * @freqs: contain details of the frequency update.
+  * @state: set to CPUFREQ_PRECHANGE or CPUFREQ_POSTCHANGE.
+  *
+- * This function calls the transition notifiers and the "adjust_jiffies"
+- * function. It is called twice on all CPU frequency changes that have
+- * external effects.
++ * This function calls the transition notifiers and adjust_jiffies().
++ *
++ * It is called twice on all CPU frequency changes that have external effects.
+  */
+ static void cpufreq_notify_transition(struct cpufreq_policy *policy,
+ 				      struct cpufreq_freqs *freqs,
+@@ -1646,13 +1648,12 @@ static void cpufreq_remove_dev(struct de
+ }
+ 
+ /**
+- *	cpufreq_out_of_sync - If actual and saved CPU frequency differs, we're
+- *	in deep trouble.
+- *	@policy: policy managing CPUs
+- *	@new_freq: CPU frequency the CPU actually runs at
++ * cpufreq_out_of_sync - Fix up actual and saved CPU frequency difference.
++ * @policy: Policy managing CPUs.
++ * @new_freq: New CPU frequency.
+  *
+- *	We adjust to current frequency first, and need to clean up later.
+- *	So either call to cpufreq_update_policy() or schedule handle_update()).
++ * Adjust to the current frequency first and clean up later by either calling
++ * cpufreq_update_policy(), or scheduling handle_update().
+  */
+ static void cpufreq_out_of_sync(struct cpufreq_policy *policy,
+ 				unsigned int new_freq)
+@@ -1832,7 +1833,7 @@ int cpufreq_generic_suspend(struct cpufr
+ EXPORT_SYMBOL(cpufreq_generic_suspend);
+ 
+ /**
+- * cpufreq_suspend() - Suspend CPUFreq governors
++ * cpufreq_suspend() - Suspend CPUFreq governors.
+  *
+  * Called during system wide Suspend/Hibernate cycles for suspending governors
+  * as some platforms can't change frequency after this point in suspend cycle.
+@@ -1868,7 +1869,7 @@ suspend:
+ }
+ 
+ /**
+- * cpufreq_resume() - Resume CPUFreq governors
++ * cpufreq_resume() - Resume CPUFreq governors.
+  *
+  * Called during system wide Suspend/Hibernate cycle for resuming governors that
+  * are suspended with cpufreq_suspend().
+@@ -1920,10 +1921,10 @@ bool cpufreq_driver_test_flags(u16 flags
+ }
+ 
+ /**
+- *	cpufreq_get_current_driver - return current driver's name
++ * cpufreq_get_current_driver - Return the current driver's name.
+  *
+- *	Return the name string of the currently loaded cpufreq driver
+- *	or NULL, if none.
++ * Return the name string of the currently registered cpufreq driver or NULL if
++ * none.
+  */
+ const char *cpufreq_get_current_driver(void)
  {
- 	resource_size_t start, len;
- 	int port_num, bar, i;
-@@ -220,7 +300,10 @@ static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
- 			goto irq_free_exit;
- 	}
+@@ -1935,10 +1936,10 @@ const char *cpufreq_get_current_driver(v
+ EXPORT_SYMBOL_GPL(cpufreq_get_current_driver);
  
--	ret = find_dfls_by_default(pcidev, info);
-+	ret = find_dfls_by_vsec(pcidev, info);
-+	if (ret == -ENODEV)
-+		ret = find_dfls_by_default(pcidev, info);
-+
- 	if (ret)
- 		goto irq_free_exit;
+ /**
+- *	cpufreq_get_driver_data - return current driver data
++ * cpufreq_get_driver_data - Return current driver data.
+  *
+- *	Return the private data of the currently loaded cpufreq
+- *	driver, or NULL if no cpufreq driver is loaded.
++ * Return the private data of the currently registered cpufreq driver, or NULL
++ * if no cpufreq driver has been registered.
+  */
+ void *cpufreq_get_driver_data(void)
+ {
+@@ -1954,17 +1955,16 @@ EXPORT_SYMBOL_GPL(cpufreq_get_driver_dat
+  *********************************************************************/
  
--- 
-2.25.2
+ /**
+- *	cpufreq_register_notifier - register a driver with cpufreq
+- *	@nb: notifier function to register
+- *      @list: CPUFREQ_TRANSITION_NOTIFIER or CPUFREQ_POLICY_NOTIFIER
+- *
+- *	Add a driver to one of two lists: either a list of drivers that
+- *      are notified about clock rate changes (once before and once after
+- *      the transition), or a list of drivers that are notified about
+- *      changes in cpufreq policy.
++ * cpufreq_register_notifier - Register a notifier with cpufreq.
++ * @nb: notifier function to register.
++ * @list: CPUFREQ_TRANSITION_NOTIFIER or CPUFREQ_POLICY_NOTIFIER.
++ *
++ * Add a notifier to one of two lists: either a list of notifiers that run on
++ * clock rate changes (once before and once after every transition), or a list
++ * of notifiers that ron on cpufreq policy changes.
+  *
+- *	This function may sleep, and has the same return conditions as
+- *	blocking_notifier_chain_register.
++ * This function may sleep and it has the same return values as
++ * blocking_notifier_chain_register().
+  */
+ int cpufreq_register_notifier(struct notifier_block *nb, unsigned int list)
+ {
+@@ -2001,14 +2001,14 @@ int cpufreq_register_notifier(struct not
+ EXPORT_SYMBOL(cpufreq_register_notifier);
+ 
+ /**
+- *	cpufreq_unregister_notifier - unregister a driver with cpufreq
+- *	@nb: notifier block to be unregistered
+- *	@list: CPUFREQ_TRANSITION_NOTIFIER or CPUFREQ_POLICY_NOTIFIER
++ * cpufreq_unregister_notifier - Unregister a notifier from cpufreq.
++ * @nb: notifier block to be unregistered.
++ * @list: CPUFREQ_TRANSITION_NOTIFIER or CPUFREQ_POLICY_NOTIFIER.
+  *
+- *	Remove a driver from the CPU frequency notifier list.
++ * Remove a notifier from one of the cpufreq notifier lists.
+  *
+- *	This function may sleep, and has the same return conditions as
+- *	blocking_notifier_chain_unregister.
++ * This function may sleep and it has the same return values as
++ * blocking_notifier_chain_unregister().
+  */
+ int cpufreq_unregister_notifier(struct notifier_block *nb, unsigned int list)
+ {
+
+
 
