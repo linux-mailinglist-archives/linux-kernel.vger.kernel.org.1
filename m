@@ -2,113 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAC72B7E9C
+	by mail.lfdr.de (Postfix) with ESMTP id 141412B7E9A
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 14:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgKRNt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 08:49:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726601AbgKRNtz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726598AbgKRNtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 18 Nov 2020 08:49:55 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC0FC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 05:49:55 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id c9so3071833wml.5
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 05:49:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=JPxBsG7pLUv1UeZC7bK3HiUpZwCt2ccyPS8zKWnix68=;
-        b=jaAhxIS0kOFrub/2XYBkRaFdVAnK6ivWuYEyDekbW6fGKlwS+EgevqcDkbnpj78GsT
-         W5C7DMKvp8x+kwJoYYxYP7SB0UfQseuhVjrNjHQbDktOvRNZVVcmqV6fasQrHRqbiM1V
-         bt4uY2fSniJTFPq2hz8i2pOuDDnLwAeKCNGUSddr4CnzgKVe8xzzoWp+3hXjBQczi4Cn
-         fNHbTMGz0Bd928VK7xb/I4v6wjsyBrAjU48L/olEJ03WtVcqtgs2ITvSw8mZdtBz2LmD
-         bE5PJ1XT4pmgGXQwUusPBRV6MdX8PV22FfWopjaQIJgsYS0kAfuiIuitWyHzHNq54t4t
-         /VPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=JPxBsG7pLUv1UeZC7bK3HiUpZwCt2ccyPS8zKWnix68=;
-        b=pc8CKCZiRkWoVxTZbs7ddzHwpdBYlALyVluhPVnLW/tgDF54Buv/ID8CI9z+ssy+21
-         ZgGtqIf6vix5oe72A2K4qAhoDXPWRWQEiAr21MJIoVXEGLNAMSKClCRTZszTRBGbpHko
-         HC4pEvRywHMyOPLk7hdtTd5dzarJXglFDWj66rD/QsxhnW54e5JgTcCHmSEnoBHkshaw
-         F32FNIgeDwsT4IVKUilFS/I4BjiHHETjmGvrrz77oYC02KKVYdhhfHEiZwi0zzonfk1U
-         37mNc6F84b7SQV5SZdgf5/y7WycaUzdm0DoJ3HVuHU+jYKdTgev06ncXRTi4YEn4k6pa
-         yIIA==
-X-Gm-Message-State: AOAM530tJSxpGvnWBQz/l6fRos9HJa9usylQ+Pe6GSCjK0XFyvvirRcm
-        IZekF8dyUwi1KvMCmGdZce3yJCX/X/xJJvMu
-X-Google-Smtp-Source: ABdhPJyAMUqiNH0sMSJ+6gPz+g0YzrWzNKXgmPOPpNTTm967Lj9FBDf8f/eZpYPQ/PmJkINZJ39t2Q==
-X-Received: by 2002:a1c:a344:: with SMTP id m65mr112832wme.77.1605707394087;
-        Wed, 18 Nov 2020 05:49:54 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id n15sm33575358wrq.48.2020.11.18.05.49.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 05:49:53 -0800 (PST)
-Date:   Wed, 18 Nov 2020 13:49:48 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Soham Biswas <sohambiswas41@gmail.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, thierry.reding@gmail.com,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: core: Use octal permission
-Message-ID: <20201118134948.GS1869941@dell>
-References: <20201117175452.26914-1-sohambiswas41@gmail.com>
- <20201118104730.4270-1-sohambiswas41@gmail.com>
- <20201118124312.wk6cmnktxefn7k7m@pengutronix.de>
- <CAMmt7ePTtM1hj6C4dgYO2o-A1C9C7NdnJHsnqSUir13ZjeEXTg@mail.gmail.com>
+Received: from mx2.suse.de ([195.135.220.15]:46762 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726588AbgKRNty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 08:49:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9FABBAC90;
+        Wed, 18 Nov 2020 13:49:52 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3D86C1E130B; Wed, 18 Nov 2020 14:49:52 +0100 (CET)
+Date:   Wed, 18 Nov 2020 14:49:52 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com, guobing.chen@intel.com,
+        ming.a.chen@intel.com, frank.du@intel.com, Shuhua.Fan@intel.com,
+        wangyang.guo@intel.com, Wenhuan.Huang@intel.com,
+        jessica.ji@intel.com, shan.kang@intel.com, guangli.li@intel.com,
+        tiejun.li@intel.com, yu.ma@intel.com, dapeng1.mi@intel.com,
+        jiebin.sun@intel.com, gengxin.xie@intel.com, fan.zhao@intel.com
+Subject: Re: [mm/gup] 47e29d32af: phoronix-test-suite.npb.FT.A.total_mop_s
+ -45.0% regression
+Message-ID: <20201118134952.GE1981@quack2.suse.cz>
+References: <20201117024825.GA8169@xsang-OptiPlex-9020>
+ <24d9d093-5b7a-9aee-8d61-59c0007a9269@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMmt7ePTtM1hj6C4dgYO2o-A1C9C7NdnJHsnqSUir13ZjeEXTg@mail.gmail.com>
+In-Reply-To: <24d9d093-5b7a-9aee-8d61-59c0007a9269@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020, Soham Biswas wrote:
+On Mon 16-11-20 19:35:31, John Hubbard wrote:
+> 
+> On 11/16/20 6:48 PM, kernel test robot wrote:
+> > 
+> > Greeting,
+> > 
+> > FYI, we noticed a -45.0% regression of phoronix-test-suite.npb.FT.A.total_mop_s due to commit:
+> > 
+> 
+> That's a huge slowdown...
+> 
+> > 
+> > commit: 47e29d32afba11b13efb51f03154a8cf22fb4360 ("mm/gup: page->hpage_pinned_refcount: exact pin counts for huge pages")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> ...but that commit happened in April, 2020. Surely if this were a serious
+> issue we would have some other indication...is this worth following up
+> on?? I'm inclined to ignore it, honestly.
 
-> Sure will do that. Sorry for the inconvenience, I am a bit new to the
-> process of emailing patches. Should I mark the next patch as v3?
+Why this was detected so late is a fair question although it doesn't quite
+invalidate the report... The NPB benchmark appears to be a supercomputing
+benchmark so concievably it could be heavily using THPs. The question is
+why it would be a heavy user of pinning as well but even that is imaginable
+considering that MPI is in use etc.
 
-Make sure the text you are quoting does above your reply.
+So maybe it is worth trying to reproduce this because heavy THP + pinning
+users might be indeed rare and only those would show regressions in THP
+pinning performance...
 
-This is called top-posting and is frowned upon.
-
-Yes, please bump the version number - it will make the tooling happy.
-
-> On Wed, 18 Nov 2020 at 18:13, Uwe Kleine-König
-> <u.kleine-koenig@pengutronix.de> wrote:
-> >
-> > [added "v2" to the subject, would have been better if you had already
-> > done that. I don't know if/how this confuses tools like b4 and patchwork]
-> >
-> > Hello,
-> >
-> > On Wed, Nov 18, 2020 at 04:17:30PM +0530, Soham Biswas wrote:
-> > > Fixes the following warning generated by checkpatch:
-> > >
-> > > drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
-> > > not preferred. Consider using octal permissions '0444'.
-> > >
-> > > +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-> > >                           &pwm_debugfs_fops);
-> >
-> > something like: "Permission bits are easier readable in octal than with
-> > using the symbolic names." in the commit log would be good for those of
-> > us who missed why this was added to checkpatch.
-> >
-> > Best regards
-> > Uwe
-> >
-> >
-
+								Honza
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
