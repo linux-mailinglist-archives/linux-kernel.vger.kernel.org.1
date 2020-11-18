@@ -2,229 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432D12B8709
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF42F2B870C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgKRV5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:57:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgKRV5i (ORCPT
+        id S1726288AbgKRWBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 17:01:32 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:29816 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725822AbgKRWBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:57:38 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B75EC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:57:38 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id l206so3940954oif.12
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:57:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GXYWVa35MXkGoujDVrhSb9wJFjzw08YcnWue3rcfjq8=;
-        b=hS9sFogtNqnE7hnRk4CHPYw8EWrOKH8Q4xVn7XRGwVtE04v23zCoGonDce35glfCR8
-         LKMOtcfBqBxL6fZJKZQjuSvdCxSB/+O1XIPSNBw5Whs9fmdLEw0mwU4W+qAyPp2Di/53
-         IIP3yTYQHzHf9rNH8EdX73tQOM8xzy6YoIfI8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GXYWVa35MXkGoujDVrhSb9wJFjzw08YcnWue3rcfjq8=;
-        b=KiFbWnGuuR9RozNClJCN+hmvxaUk0pj8BLSxyakVDYP1XGdtzRZWopopV0Nu27zSr+
-         uX8EqZENd3n4rCwXUJrzhu82CA7Nhw4gN8ViDPIFNMhQ2xAic7xUVFt3D7Q7hxhYgLiC
-         KOSiVWCXPD5jGgVZok8W3ioYc2D6u3nnoS0gderMj9uX79yfeh/Vg0eeEdD0P5QzEhZ4
-         tHekNl3a/JjVEI2tVNvAiMJr2Eg9zpGWajwHnSwCFJxag7qkrBO+p+CPvOtv/wdPP3IC
-         TxtB3gatoA3+wyQQbpWAuPXG2tPL+uxS/58ps7q+EiZ8hmS8/XI6pWVy2ApGL5GAvm8i
-         y1xw==
-X-Gm-Message-State: AOAM531ZQ2eVjmh5jsQvtKEYjoM2vIusoUJZV0coE9RaH3VWd31AdydL
-        IIBLWnqhzqHnaw9FHUQm//H3pgNLACYdK/ThfjyqEA==
-X-Google-Smtp-Source: ABdhPJxTjwNLCy88v9cc19MR4gAqBWbzzdWm9P44HeMIaO+nB0WDmH36kh4uweeVFUDOUQuKL+rszi704oMLQU7dUvk=
-X-Received: by 2002:aca:7506:: with SMTP id q6mr895116oic.128.1605736657792;
- Wed, 18 Nov 2020 13:57:37 -0800 (PST)
+        Wed, 18 Nov 2020 17:01:32 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-180-nUHV_53HOIKmbqbZ2EyqFg-1; Wed, 18 Nov 2020 22:01:25 +0000
+X-MC-Unique: nUHV_53HOIKmbqbZ2EyqFg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 18 Nov 2020 22:01:25 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 18 Nov 2020 22:01:25 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Thomas Zimmermann' <tzimmermann@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>,
+        "Huang, Ray" <ray.huang@amd.com>
+Subject: RE: Linux 5.10-rc4
+Thread-Topic: Linux 5.10-rc4
+Thread-Index: AQHWu7P6i7HOJgcGCEellKywj802qKnNzjYQgAB+qGeAACacEA==
+Date:   Wed, 18 Nov 2020 22:01:24 +0000
+Message-ID: <f7be660da595411ab60aaa4b76008769@AcuMS.aculab.com>
+References: <CAHk-=wjFfAktnadOPb_iV5nKh=V5Am1sG-gciYveswRtuEkrLQ@mail.gmail.com>
+ <692820a49ded436591b5fe3a18c68a5e@AcuMS.aculab.com>
+ <CAHk-=wgQY7k_3NVCbaSmiJyLiAV_1TgwLk-d4QRMHMWqM5Oo_w@mail.gmail.com>
+ <0a10da3d-085f-c7a7-0053-dc1e9ea871ed@suse.de>
+In-Reply-To: <0a10da3d-085f-c7a7-0053-dc1e9ea871ed@suse.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <CAKMK7uFj+5p4XPUnd2Mc3R4i2Umja5-iGgDg+jVzRBhCW-6qbQ@mail.gmail.com>
- <20201118160222.GA58120@bjorn-Precision-5520>
-In-Reply-To: <20201118160222.GA58120@bjorn-Precision-5520>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 18 Nov 2020 22:57:26 +0100
-Message-ID: <CAKMK7uGuvuGf-b_rsMtwRXJzjQ9zAw1CXYVKxBLFAXQW0Hc7+A@mail.gmail.com>
-Subject: Re: [PATCH] x86/gpu: add JSL stolen memory support
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Matthew D Roper <matthew.d.roper@intel.com>,
-        hariom.pandey@intel.com, Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 5:02 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Fri, Nov 06, 2020 at 10:39:16AM +0100, Daniel Vetter wrote:
-> > On Thu, Nov 5, 2020 at 3:17 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > On Thu, Nov 05, 2020 at 11:46:06AM +0200, Joonas Lahtinen wrote:
-> > > > Quoting Bjorn Helgaas (2020-11-04 19:35:56)
-> > > > > [+cc Jani, Joonas, Rodrigo, David, Daniel]
-> > > > >
-> > > > > On Wed, Nov 04, 2020 at 05:35:06PM +0530, Tejas Upadhyay wrote:
-> > > > > > JSL re-uses the same stolen memory as ICL and EHL.
-> > > > > >
-> > > > > > Cc: Lucas De Marchi <lucas.demarchi@intel.com>
-> > > > > > Cc: Matt Roper <matthew.d.roper@intel.com>
-> > > > > > Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-> > > > >
-> > > > > I don't plan to do anything with this since previous similar patches
-> > > > > have gone through some other tree, so this is just kibitzing.
-> > > > >
-> > > > > But the fact that we have this long list of Intel devices [1] that
-> > > > > constantly needs updates [2] is a hint that something is wrong.
-> > > >
-> > > > We add an entry for every new integrated graphics platform. Once the
-> > > > platform is added, there have not been changes lately.
-> > > >
-> > > > > IIUC the general idea is that we need to discover Intel gfx memory by
-> > > > > looking at device-dependent config space and add it to the E820 map.
-> > > > > Apparently the quirks discover this via PCI config registers like
-> > > > > I830_ESMRAMC, I845_ESMRAMC, etc, and tell the driver about it via the
-> > > > > global "intel_graphics_stolen_res"?
-> > > >
-> > > > We discover what is called the graphics data stolen memory. It is regular
-> > > > system memory range that is not CPU accessible. It is accessible by the
-> > > > integrated graphics only.
-> > > >
-> > > > See: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/x86/kernel/early-quirks.c?h=v5.10-rc2&id=814c5f1f52a4beb3710317022acd6ad34fc0b6b9
-> > > >
-> > > > > That's not the way this should work.  There should some generic, non
-> > > > > device-dependent PCI or ACPI method to discover the memory used, or at
-> > > > > least some way to do it in the driver instead of early arch code.
-> > > >
-> > > > It's used by the early BIOS/UEFI code to set up initial framebuffer.
-> > > > Even if i915 driver is never loaded, the memory ranges still need to
-> > > > be fixed. They source of the problem is that the OEM BIOS which are
-> > > > not under our control get the programming wrong.
-> > > >
-> > > > We used to detect the memory region size again at i915 initialization
-> > > > but wanted to eliminate the code duplication and resulting subtle bugs
-> > > > that caused. Conclusion back then was that storing the struct resource
-> > > > in memory is the best trade-off.
-> > > >
-> > > > > How is this *supposed* to work?  Is there something we can do in E820
-> > > > > or other resource management that would make this easier?
-> > > >
-> > > > The code was added around Haswell (HSW) device generation to mitigate
-> > > > bugs in BIOS. It is traditionally hard to get all OEMs to fix their
-> > > > BIOS when things work for Windows. It's only later years when some
-> > > > laptop models are intended to be sold with Linux.
-> > > >
-> > > > The alternative would be to get all the OEM to fix their BIOS for Linux,
-> > > > but that is not very realistic given past experiences. So it seems
-> > > > a better choice to to add new line per platform generation to make
-> > > > sure the users can boot to Linux.
-> > >
-> > > How does Windows do this?  Do they have to add similar code for each
-> > > new platform?
-> >
-> > Windows is chicken and doesn't move any mmio bar around on its own.
-> > Except if the bios explicitly told it somehow (e.g. for the 64bit bar
-> > stuff amd recently announced for windows, that linux supports since
-> > years by moving the bar). So except if you want to preemptively
-> > disable the pci code that does this anytime there's an intel gpu, this
-> > is what we have to do.
->
-> I think Windows *does* move BARs (they use the more generic
-> terminology of "rebalancing PNP resources") in some cases [3,4].  Of
-> course, I'm pretty sure Windows will only assign PCI resources inside
-> the windows advertised in the host bridge _CRS.
->
-> Linux *used* to ignore that host bridge _CRS and could set BARs to
-> addresses that appeared available but were in fact used by the
-> platform somehow.  But Linux has been paying attention to host bridge
-> _CRS for a long time now, so it should also only assign resources
-> inside those windows.
+RnJvbTogVGhvbWFzIFppbW1lcm1hbm4NCj4gU2VudDogMTggTm92ZW1iZXIgMjAyMCAxOTozNw0K
+PiANCj4gSGkNCj4gDQo+IEFtIDE4LjExLjIwIHVtIDE5OjEwIHNjaHJpZWIgTGludXMgVG9ydmFs
+ZHM6DQo+ID4gT24gV2VkLCBOb3YgMTgsIDIwMjAgYXQgNDoxMiBBTSBEYXZpZCBMYWlnaHQgPERh
+dmlkLkxhaWdodEBhY3VsYWIuY29tPiB3cm90ZToNCj4gPj4NCj4gPj4gSSd2ZSBnb3QgdGhlICdz
+cGxhdCcgYmVsb3cgZHVyaW5nIGJvb3QuDQo+ID4+IFRoaXMgaXMgYW4gOC1jb3JlIEMyNzU4IEF0
+b20gY3B1IHVzaW5nIHRoZSBvbi1ib2FyZC9jcHUgZ3JhcGhpY3MuDQo+ID4+IFVzZXIgc3BhY2Ug
+aXMgVWJ1bnR1IDIwLjA0Lg0KPiA+Pg0KPiA+PiBBZGRpdGlvbmFsbHkgdGhlIFggZGlzcGxheSBo
+YXMgYWxsIHRoZSBjb2xvdXJzIGFuZCBhbGlnbm1lbnQgc2xpZ2h0bHkNCj4gPj4gbWVzc2VkIHVw
+Lg0KPiA+PiA1LjkuMCB3YXMgb2suDQo+ID4+IEknbSBqdXN0IGd1ZXNzaW5nIHRoZSB0d28gaXNz
+dWVzIGFyZSByZWxhdGVkLg0KPiA+DQo+ID4gU291bmRzIGxpa2VseS4gIEJ1dCBpdCB3b3VsZCBi
+ZSBsb3ZlbHkgaWYgeW91IGNvdWxkIGJpc2VjdCB3aGVuDQo+ID4gZXhhY3RseSB0aGUgcHJvYmxl
+bShzKSBzdGFydGVkIHRvIGJvdGggdmVyaWZ5IHRoYXQsIGFuZCBqdXN0IHRvDQo+ID4gcGlucG9p
+bnQgdGhlIGV4YWN0IGNoYW5nZS4uDQoNCkkgZG9uJ3QgcXVpdGUgdW5kZXJzdGFuZCB3aGF0ICdn
+aXQgYmlzZWN0JyBkaWQuDQpJIHdhcyBiaXNlY3RpbmcgYmV0d2VlbiB2NS45IGFuZCB2NS4xMC1y
+YzEgYnV0IGl0IHN1ZGRlbmx5IHN0YXJ0ZWQNCmdlbmVyYXRpbmcgdjUuOS4wLXJjNSsga2VybmVs
+cy4NCg0KVGhlIGlkZW50aWZpZWQgY29tbWl0IHdhcyAxM2E4ZjQ2ZDgwMyBkcm0vdHRtOiBtb3Zl
+IGdob3N0IG9iamVjdCBjcmVhdGVkLg0KKHJldHlwZWQgLSBob3BlIGl0IGlzIHJpZ2h0KS4NCkJ1
+dCB0aGUgZGlmZiB0byB0aGF0IGxhc3QgJ2dvb2QnIGNvbW1pdCBpcyBtYXNzaXZlLg0KDQpTbyBJ
+IGRvbid0IGtub3cgaWYgdGhhdCBpcyBhbnl3aGVyZSBuZWFyIHJpZ2h0Lg0KDQoJRGF2aWQNCg0K
+PiA+DQo+ID4gSSdtIGFkZGluZyBUaG9tYXMgWmltbWVybWFubiB0byB0aGUgY2MsIGJlY2F1c2Ug
+aGUgZGlkIHRoYXQgImRybS9hc3Q6DQo+ID4gUHJvZ3JhbSBkaXNwbGF5IG1vZGUgaW4gQ1JUQydz
+IGF0b21pY19lbmFibGUiIHdoaWNoIGxvb2tzIHJlbGV2YW50IGluDQo+ID4gdGhhdCBpdCdzIHJp
+Z2h0IGluIHRoYXQgY2FsbC1jaGFpbi4NCj4gPg0KPiA+IERpZCBzb21lIGluaXRpYWxpemF0aW9u
+IHBlcmhhcHMgZ2V0IG92ZXJsb29rZWQ/DQo+ID4NCj4gPiBBbmQgRGF2ZSBhbmQgRGFuaWVsIGFu
+ZCB0aGUgZHJtIGxpc3QgY2MnZCBhcyB3ZWxsLi4NCj4gPg0KPiA+IEZ1bGwgc3BsYXQgbGVmdCBx
+dW90ZWQgYmVsb3cgZm9yIG5ldyBwZW9wbGUgYW5kIGxpc3QuDQo+ID4NCj4gPiAgICAgICAgICAg
+ICAgTGludXMNCj4gPg0KPiA+PiBbICAgMjAuODA5ODkxXSBXQVJOSU5HOiBDUFU6IDAgUElEOiA5
+NzMgYXQgZHJpdmVycy9ncHUvZHJtL2RybV9nZW1fdnJhbV9oZWxwZXIuYzoyODQNCj4gZHJtX2dl
+bV92cmFtX29mZnNldCsweDM1LzB4NDAgW2RybV92cmFtX2hlbHBlcl0NCj4gDQo+IFRoYXQgbGlu
+ZSBpcyBhdCBbMV0sIHdoaWNoIGNvbWVzIGZyb20NCj4gDQo+ICAgNDY2NDJhN2Q0ZDgwICgiZHJt
+L3ZyYW0taGVscGVyOiBkb24ndCB1c2UgdHRtIGJvLT5vZmZzZXQgdjQiKQ0KPiANCj4gQnV0IHRo
+ZSBwYXRjaCB3YXMgbWVyZ2VkIGluIDUuOS1yYzEsIHNvIGl0J3MgcHJvYmFibHkgc29tZXRoaW5n
+IGVsc2UuDQo+IA0KPiBXZSd2ZSBoYWQgYSBsb3Qgb2YgVFRNLXJlbGF0ZWQgY2hhbmdlcyByZWNl
+bnRseSwgc28gbXkgYmVzdCBndWVzcyBpcw0KPiB0aGF0IGl0J3Mgc29tZXRoaW5nIGluIFRUTSB3
+aXRoIEJPIGluaXRpYWxpemF0aW9uLg0KPiANCj4gIEZyb20gc29tZSBncmVwcGluZywgaXQgbG9v
+a3MgbGlrZSB3ZSBoYXZlIHRvIGNhbGwgdHRtX2JvX21lbV9zcGFjZSgpIHRvDQo+IGZpbGwgbW1f
+bm9kZSAoaS5lLiwgdGhlIHBvaW50ZXIgdGhhdCBjYXVzZXMgdGhlIHdhcm5pbmcpLiBCdXQgSSBj
+YW5ub3QNCj4gZmluZCB3aGVyZSB2cmFtIGhlbHBlcnMgZG8gdGhpcy4gTWF5YmUgdGhhdCdzIGEg
+Z29vZCBzdGFydGluZyBwb2ludC4NCj4gDQo+IEknbSBhZGRpbmcgdGhlIFRUTSBkZXZzIHRvIGNj
+Lg0KPiANCj4gQmVzdCByZWdhcmRzDQo+IFRob21hcw0KPiANCj4gWzFdDQo+IGh0dHBzOi8vZ2l0
+Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC90
+cmVlL2RyaXZlcnMvZ3B1L2RybS9kcm1fZ2VtX3ZyYW1faA0KPiBlbHBlci5jP2g9djUuMTAtcmM0
+I24yODQNCj4gDQo+IA0KPiA+PiBbICAgMjAuODIxNTQzXSBNb2R1bGVzIGxpbmtlZCBpbjogbmxz
+X2lzbzg4NTlfMSBkbV9tdWx0aXBhdGggc2NzaV9kaF9yZGFjIHNjc2lfZGhfZW1jIHNjc2lfZGhf
+YWx1YQ0KPiBpcG1pX3NzaWYgaW50ZWxfcG93ZXJjbGFtcCBjb3JldGVtcCBrdm1faW50ZWwga3Zt
+IGpveWRldiBpbnB1dF9sZWRzIGlwbWlfc2kgaW50ZWxfY3N0YXRlIGlwbWlfZGV2aW50Zg0KPiBp
+cG1pX21zZ2hhbmRsZXIgbWFjX2hpZCBzY2hfZnFfY29kZWwgcGFycG9ydF9wYyBwcGRldiBscCBw
+YXJwb3J0IGlwX3RhYmxlcyB4X3RhYmxlcyBhdXRvZnM0IGJ0cmZzDQo+IGJsYWtlMmJfZ2VuZXJp
+YyB6c3RkX2NvbXByZXNzIHJhaWQxMCByYWlkNDU2IGFzeW5jX3JhaWQ2X3JlY292IGFzeW5jX21l
+bWNweSBhc3luY19wcSBhc3luY194b3INCj4gYXN5bmNfdHggbGliY3JjMzJjIHhvciByYWlkNl9w
+cSByYWlkMSByYWlkMCBtdWx0aXBhdGggbGluZWFyIGFzdCBkcm1fdnJhbV9oZWxwZXIgZHJtX2tt
+c19oZWxwZXINCj4gc3lzY29weWFyZWEgc3lzZmlsbHJlY3Qgc3lzaW1nYmx0IGZiX3N5c19mb3Bz
+IGNlYyBkcm1fdHRtX2hlbHBlciB0dG0gY3JjdDEwZGlmX3BjbG11bCBjcmMzMl9wY2xtdWwNCj4g
+Z2hhc2hfY2xtdWxuaV9pbnRlbCBncGlvX2ljaCBkcm0gYWVzbmlfaW50ZWwgaGlkX2dlbmVyaWMg
+Z2x1ZV9oZWxwZXIgY3J5cHRvX3NpbWQgaWdiIHVzYmhpZCBjcnlwdGQNCj4gYWhjaSBpMmNfaTgw
+MSBoaWQgbGliYWhjaSBpMmNfc21idXMgbHBjX2ljaCBkY2EgaTJjX2lzbXQgaTJjX2FsZ29fYml0
+DQo+ID4+IFsgICAyMC44ODc0NzddIENQVTogMCBQSUQ6IDk3MyBDb21tOiBnbm9tZS1zaGVsbCBO
+b3QgdGFpbnRlZCA1LjEwLjAtcmM0KyAjNzgNCj4gPj4gWyAgIDIwLjg5NDI3NF0gSGFyZHdhcmUg
+bmFtZTogU3VwZXJtaWNybyBBMVNBaS9BMVNSaSwgQklPUyAxLjFhIDA4LzI3LzIwMTUNCj4gPj4g
+WyAgIDIwLjkwMDg5Nl0gUklQOiAwMDEwOmRybV9nZW1fdnJhbV9vZmZzZXQrMHgzNS8weDQwIFtk
+cm1fdnJhbV9oZWxwZXJdDQo+ID4+IFsgICAyMC45MDczNDJdIENvZGU6IDAwIDQ4IDg5IGU1IDg1
+IGMwIDc0IDE3IDQ4IDgzIGJmIDc4IDAxIDAwIDAwIDAwIDc0IDE4IDQ4IDhiIDg3IDgwIDAxIDAw
+IDAwIDVkDQo+IDQ4IGMxIGUwIDBjIGMzIDBmIDBiIDQ4IGM3IGMwIGVkIGZmIGZmIGZmIDVkIGMz
+IDwwZj4gMGIgMzEgYzAgNWQgYzMgMGYgMWYgNDQgMDAgMDAgMGYgMWYgNDQgMDAgMDAgNTUNCj4g
+NDggOGIgODcgMTggMDYNCj4gPj4gWyAgIDIwLjkyNjEwMF0gUlNQOiAwMDE4OmZmZmY5ZjU5ODEx
+ZDNhNjggRUZMQUdTOiAwMDAxMDI0Ng0KPiA+PiBbICAgMjAuOTMxMzM5XSBSQVg6IDAwMDAwMDAw
+MDAwMDAwMDIgUkJYOiBmZmZmOGI0Njg2MWUyMGMwIFJDWDogZmZmZmZmZmZjMDMyZDYwMA0KPiA+
+PiBbICAgMjAuOTM4NDc5XSBSRFg6IGZmZmY4YjQ2OGY0N2EwMDAgUlNJOiBmZmZmOGI0Njg2MWUy
+MDAwIFJESTogZmZmZjhiNDY4ZjlhY2MwMA0KPiA+PiBbICAgMjAuOTQ1NjIyXSBSQlA6IGZmZmY5
+ZjU5ODExZDNhNjggUjA4OiAwMDAwMDAwMDAwMDAwMDQwIFIwOTogZmZmZjhiNDY4NjRjZTI4OA0K
+PiA+PiBbICAgMjAuOTUyNzY5XSBSMTA6IDAwMDAwMDAwMDAwMDAwMDAgUjExOiAwMDAwMDAwMDAw
+MDAwMDAxIFIxMjogZmZmZjhiNDY4ZjQ3YTAwMA0KPiA+PiBbICAgMjAuOTU5OTE1XSBSMTM6IDAw
+MDAwMDAwMDAwMDAwMDAgUjE0OiAwMDAwMDAwMDAwMDAwMDAwIFIxNTogZmZmZjhiNDY4YWQyYmYw
+MA0KPiA+PiBbICAgMjAuOTY3MDU3XSBGUzogIDAwMDA3ZjViMzdhYzVjYzAoMDAwMCkgR1M6ZmZm
+ZjhiNDllZmMwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQo+ID4+IFsgICAyMC45
+NzUxNDldIENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMN
+Cj4gPj4gWyAgIDIwLjk4MDkwNF0gQ1IyOiAwMDAwN2Y1YjNkMDkzZjAwIENSMzogMDAwMDAwMDEw
+MzQzODAwMCBDUjQ6IDAwMDAwMDAwMDAxMDA2ZjANCj4gPj4gWyAgIDIwLjk4ODA0N10gQ2FsbCBU
+cmFjZToNCj4gPj4gWyAgIDIwLjk5MDUwNl0gIGFzdF9jdXJzb3JfcGFnZV9mbGlwKzB4MjIvMHgx
+MDAgW2FzdF0NCj4gPj4gWyAgIDIwLjk5NTMxM10gIGFzdF9jdXJzb3JfcGxhbmVfaGVscGVyX2F0
+b21pY191cGRhdGUrMHg0Ni8weDcwIFthc3RdDQo+ID4+IFsgICAyMS4wMDE1MjRdICBkcm1fYXRv
+bWljX2hlbHBlcl9jb21taXRfcGxhbmVzKzB4YmQvMHgyMjAgW2RybV9rbXNfaGVscGVyXQ0KPiA+
+PiBbICAgMjEuMDA4MjQzXSAgZHJtX2F0b21pY19oZWxwZXJfY29tbWl0X3RhaWxfcnBtKzB4M2Ev
+MHg3MCBbZHJtX2ttc19oZWxwZXJdDQo+ID4+IFsgICAyMS4wMTUwNjJdICBjb21taXRfdGFpbCsw
+eDk5LzB4MTMwIFtkcm1fa21zX2hlbHBlcl0NCj4gPj4gWyAgIDIxLjAyMDA1MF0gIGRybV9hdG9t
+aWNfaGVscGVyX2NvbW1pdCsweDEyMy8weDE1MCBbZHJtX2ttc19oZWxwZXJdDQo+ID4+IFsgICAy
+MS4wMjYyNjldICBkcm1fYXRvbWljX2NvbW1pdCsweDRhLzB4NTAgW2RybV0NCj4gPj4gWyAgIDIx
+LjAzMDczN10gIGRybV9hdG9taWNfaGVscGVyX3VwZGF0ZV9wbGFuZSsweGU3LzB4MTQwIFtkcm1f
+a21zX2hlbHBlcl0NCj4gPj4gWyAgIDIxLjAzNzM4NF0gIF9fc2V0cGxhbmVfYXRvbWljKzB4Y2Mv
+MHgxMTAgW2RybV0NCj4gPj4gWyAgIDIxLjA0MTk1M10gIGRybV9tb2RlX2N1cnNvcl91bml2ZXJz
+YWwrMHgxM2UvMHgyNjAgW2RybV0NCj4gPj4gWyAgIDIxLjA0NzI5OV0gIGRybV9tb2RlX2N1cnNv
+cl9jb21tb24rMHhlZi8weDIyMCBbZHJtXQ0KPiA+PiBbICAgMjEuMDUyMjg3XSAgPyBhbGxvY19z
+ZXRfcHRlKzB4MTBkLzB4NmQwDQo+ID4+IFsgICAyMS4wNTYyNDRdICA/IGRybV9tb2RlX2N1cnNv
+cl9pb2N0bCsweDYwLzB4NjAgW2RybV0NCj4gPj4gWyAgIDIxLjA2MTI0Ml0gIGRybV9tb2RlX2N1
+cnNvcjJfaW9jdGwrMHhlLzB4MTAgW2RybV0NCj4gPj4gWyAgIDIxLjA2NjA2N10gIGRybV9pb2N0
+bF9rZXJuZWwrMHhhZS8weGYwIFtkcm1dDQo+ID4+IFsgICAyMS4wNzA0NTVdICBkcm1faW9jdGwr
+MHgyNDEvMHgzZjAgW2RybV0NCj4gPj4gWyAgIDIxLjA3NDQxNV0gID8gZHJtX21vZGVfY3Vyc29y
+X2lvY3RsKzB4NjAvMHg2MCBbZHJtXQ0KPiA+PiBbICAgMjEuMDc5NDAxXSAgX194NjRfc3lzX2lv
+Y3RsKzB4OTEvMHhjMA0KPiA+PiBbICAgMjEuMDgzMTY3XSAgZG9fc3lzY2FsbF82NCsweDM4LzB4
+OTANCj4gPj4gWyAgIDIxLjA4Njc1NV0gIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsw
+eDQ0LzB4YTkNCj4gPj4gWyAgIDIxLjA5MTgxM10gUklQOiAwMDMzOjB4N2Y1YjNjZjEzNTBiDQo+
+ID4+IFsgICAyMS4wOTU0MDNdIENvZGU6IDBmIDFlIGZhIDQ4IDhiIDA1IDg1IDM5IDBkIDAwIDY0
+IGM3IDAwIDI2IDAwIDAwIDAwIDQ4IGM3IGMwIGZmIGZmIGZmIGZmIGMzIDY2DQo+IDBmIDFmIDQ0
+IDAwIDAwIGYzIDBmIDFlIGZhIGI4IDEwIDAwIDAwIDAwIDBmIDA1IDw0OD4gM2QgMDEgZjAgZmYg
+ZmYgNzMgMDEgYzMgNDggOGIgMGQgNTUgMzkgMGQgMDAgZjcNCj4gZDggNjQgODkgMDEgNDgNCj4g
+Pj4gWyAgIDIxLjExNDE1NF0gUlNQOiAwMDJiOjAwMDA3ZmZlZjE5NjY1ODggRUZMQUdTOiAwMDAw
+MDI0NiBPUklHX1JBWDogMDAwMDAwMDAwMDAwMDAxMA0KPiA+PiBbICAgMjEuMTIxNzMwXSBSQVg6
+IGZmZmZmZmZmZmZmZmZmZGEgUkJYOiAwMDAwN2ZmZWYxOTY2NWMwIFJDWDogMDAwMDdmNWIzY2Yx
+MzUwYg0KPiA+PiBbICAgMjEuMTI4ODcwXSBSRFg6IDAwMDA3ZmZlZjE5NjY1YzAgUlNJOiAwMDAw
+MDAwMGMwMjQ2NGJiIFJESTogMDAwMDAwMDAwMDAwMDAwOQ0KPiA+PiBbICAgMjEuMTM2MDEzXSBS
+QlA6IDAwMDAwMDAwYzAyNDY0YmIgUjA4OiAwMDAwMDAwMDAwMDAwMDQwIFIwOTogMDAwMDAwMDAw
+MDAwMDAwNA0KPiA+PiBbICAgMjEuMTQzMTU3XSBSMTA6IDAwMDAwMDAwMDAwMDAwMDIgUjExOiAw
+MDAwMDAwMDAwMDAwMjQ2IFIxMjogMDAwMDU2MWVjOWQxMDA2MA0KPiA+PiBbICAgMjEuMTUwMjk1
+XSBSMTM6IDAwMDAwMDAwMDAwMDAwMDkgUjE0OiAwMDAwNTYxZWNhMmNjOWEwIFIxNTogMDAwMDAw
+MDAwMDAwMDA0MA0KPiANCj4gLS0NCj4gVGhvbWFzIFppbW1lcm1hbm4NCj4gR3JhcGhpY3MgRHJp
+dmVyIERldmVsb3Blcg0KPiBTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCj4g
+TWF4ZmVsZHN0ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQo+IChIUkIgMzY4MDksIEFH
+IE7DvHJuYmVyZykNCj4gR2VzY2jDpGZ0c2bDvGhyZXI6IEZlbGl4IEltZW5kw7ZyZmZlcg0KDQot
+DQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwg
+TWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2Fs
+ZXMpDQo=
 
-If this behaviour is newer than the addition of these quirks then yeah
-they're probably not needed anymore, and we can move all this back
-into the driver. Do you have the commit when pci core started
-observing _CRS on the host bridge?
--Daniel
-
->
-> So I'm missing what the real problem is.  Joonas mentioned BIOS bugs
-> above, but I don't know what that means.
->
-> Here's what I can figure out so far, tell me if I'm in the weeds:
->
->   - The intel_graphics_stolen() early quirk:
->       1) Initializes global struct resource intel_graphics_stolen_res
->       2) Adds the region to E820 map as E820_TYPE_RESERVED
->
->   - i915_driver_hw_probe() uses intel_graphics_stolen_res, but this
->     happens after the PCI core is initialized, so early quirks
->     wouldn't be required for this use.
->
->   - So I guess the E820 map update is what requires the early quirk?
->     But I don't know exactly what depends on this update.
->
-> I haven't found the connection to the early BIOS/UEFI code and the
-> initial framebuffer yet.
->
-> > And given that this 64bit mmio bar support in windows still requires
-> > an explicit bios upgrade for the explicit opt in I don't think this
-> > will change anytime soon.
-> >
-> > We have a similar ugly problem with kvm, since you can't use these
-> > ranges freely (they're very special in hw), and the kvm maintainers
-> > are equally annoyed that they have to keep supporting RRMR to block
-> > that range, just because of intel integrated graphics. Apparently
-> > windows is again totally fine with this.
-> > -Daniel
-> >
-> >
-> > >
-> > > > > > ---
-> > > > > >  arch/x86/kernel/early-quirks.c | 1 +
-> > > > > >  1 file changed, 1 insertion(+)
-> > > > > >
-> > > > > > diff --git a/arch/x86/kernel/early-quirks.c b/arch/x86/kernel/early-quirks.c
-> > > > > > index a4b5af03dcc1..534cc3f78c6b 100644
-> > > > > > --- a/arch/x86/kernel/early-quirks.c
-> > > > > > +++ b/arch/x86/kernel/early-quirks.c
-> > > > > > @@ -549,6 +549,7 @@ static const struct pci_device_id intel_early_ids[] __initconst = {
-> > > > > >       INTEL_CNL_IDS(&gen9_early_ops),
-> > > > > >       INTEL_ICL_11_IDS(&gen11_early_ops),
-> > > > > >       INTEL_EHL_IDS(&gen11_early_ops),
-> > > > > > +     INTEL_JSL_IDS(&gen11_early_ops),
-> > > > > >       INTEL_TGL_12_IDS(&gen11_early_ops),
-> > > > > >       INTEL_RKL_IDS(&gen11_early_ops),
-> > > > > >  };
-> > > > >
-> > > > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/kernel/early-quirks.c?h=v5.10-rc2#n518
-> > > > >
-> > > > > [2]
-> > > > >   May 2020 efbee021ad02 ("x86/gpu: add RKL stolen memory support")
-> > > > >   Jul 2019 6b2436aeb945 ("x86/gpu: add TGL stolen memory support")
-> > > > >   Mar 2019 d53fef0be4a5 ("x86/gpu: add ElkhartLake to gen11 early quirks")
-> > > > >   May 2018 db0c8d8b031d ("x86/gpu: reserve ICL's graphics stolen memory")
-> > > > >   Dec 2017 33aa69ed8aac ("x86/gpu: add CFL to early quirks")
-> > > > >   Jul 2017 2e1e9d48939e ("x86/gpu: CNL uses the same GMS values as SKL")
-> > > > >   Jan 2017 bc384c77e3bb ("x86/gpu: GLK uses the same GMS values as SKL")
-> > > > >   Oct 2015 00ce5c8a66fb ("drm/i915/kbl: Kabylake uses the same GMS values as Skylake")
-> > > > >   Mar 2015 31d4dcf705c3 ("drm/i915/bxt: Broxton uses the same GMS values as Skylake")
-> > > > >   ...
->
-> [3] https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/stopping-a-device-to-rebalance-resources
-> [4] http://download.microsoft.com/download/5/b/9/5b97017b-e28a-4bae-ba48-174cf47d23cd/cpa070_wh06.ppt ("PCI Express In Depth For Windows Vista and Beyond")
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
