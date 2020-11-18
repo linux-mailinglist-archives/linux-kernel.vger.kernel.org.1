@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0D72B742F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C98C02B7432
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgKRCbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 21:31:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbgKRCbX (ORCPT
+        id S1726697AbgKRCeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 21:34:05 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:49606 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgKRCeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 21:31:23 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75634C061A48
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:31:21 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id 7so618048qtp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 18:31:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8b4iSaMQbkOsXKVrPVTdb4e933LrWafVxDAh1z5pNFw=;
-        b=FbG1ylC+hN7kHCfOUP71IibqqFobG8cnKh6gcCQi+gZnc2axArBwStq+TYnDKgUaFv
-         HH5ty9xl+fwcvrXbhO3IL70pm5tKYoC2HQZa+SRSCUWRpJdhWTNQWdat/o9udhW0JQ9t
-         wyjxDn4tz/oEO6pdNnSKhdTRtvF9nagzcS01Ke5AgFH8Tb32uJgk4TfFTgnwReo8sld9
-         I0x+pp//CBXEfDLe4nCU80wbnL1/LbdZtG8BFEJcouDeAJv0g2beu/fMG21P1+kMmQnm
-         jt7qRsQWTy1wYy+JdoS0UtQYiF7GFNq40dHtbXtPBA98X8InkwxsQ/qJbE08VFC0MdbZ
-         dEAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8b4iSaMQbkOsXKVrPVTdb4e933LrWafVxDAh1z5pNFw=;
-        b=Ik0h5wf4SIc180v1o8TEbuyJXkJZaOJen/wzj+w9kLf2EqURxxpLCaAIA+nTA4hd7k
-         s+mFho+9ZNk1e9QR0BFQhP+UPHEE7jL3ZdYxI6ZrNCkwpCsqIbjaHiKZcCfEkjoaaTb0
-         ZL4UaBqb5TaNrlicIoQWMvS3RrwQhD1PMi018DLmZih232YcaOnAIRRzMDE08C9CA1dx
-         k+sOgooRUulkM1zDFVYBeLS5yLkBP4Z4EXgW8IJQlqHHMpsphEzAWnVebwwwr7AVozA2
-         Y0WVD3uo5+VxXuDFqdqpdzgoGnQYkhXGm0GgYUnt64Xs22PJSwXsV0778hiB7SQArltj
-         SgGA==
-X-Gm-Message-State: AOAM5315eqbxk7nncDXTbXDEJp6yrAa4KeLMGm4mG9jC7fknec5V1Jgr
-        axBUAZTJtbAC/Frr3j9FZZs=
-X-Google-Smtp-Source: ABdhPJz0GC2VeKIZZKlS0XvXzIr02zxjfa2OVf9b9VM7Tig8vru0p8ZGoFf4UJZs6+Ex5m8U97iRWg==
-X-Received: by 2002:ac8:4252:: with SMTP id r18mr2825092qtm.26.1605666680578;
-        Tue, 17 Nov 2020 18:31:20 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id g123sm9152476qkd.135.2020.11.17.18.31.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 18:31:19 -0800 (PST)
-Date:   Tue, 17 Nov 2020 19:31:18 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>, jarkko.sakkinen@iki.fi,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Marco Elver <elver@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3 1/7] compiler-clang: add build check for clang 10.0.1
-Message-ID: <20201118023118.GA1069826@ubuntu-m3-large-x86>
-References: <20201104013447.GA21728@kapsi.fi>
- <20201117030427.61981-1-jhubbard@nvidia.com>
- <CAKwvOdkEFPYmH+JFC5a0+whb_1H84gS1WU5FVpV071Bc4mhiCQ@mail.gmail.com>
+        Tue, 17 Nov 2020 21:34:05 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0AI2XngrE029377, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0AI2XngrE029377
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 18 Nov 2020 10:33:49 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Wed, 18 Nov 2020 10:33:49 +0800
+Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Wed, 18 Nov 2020 10:33:49 +0800
+Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
+ RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
+ 15.01.2044.006; Wed, 18 Nov 2020 10:33:49 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/4] rtlwifi: rtl8188ee: avoid accessing the data mapped to streaming DMA
+Thread-Topic: [PATCH v2 1/4] rtlwifi: rtl8188ee: avoid accessing the data
+ mapped to streaming DMA
+Thread-Index: AQHWvU2rgo4QMM0k1kuIsMYwqSTPC6nMpXgA
+Date:   Wed, 18 Nov 2020 02:33:48 +0000
+Message-ID: <1605666764.7490.1.camel@realtek.com>
+References: <20201118015314.4979-1-baijiaju1990@gmail.com>
+In-Reply-To: <20201118015314.4979-1-baijiaju1990@gmail.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.213]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F376166834A78D4BB5D032F1C78958CD@realtek.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdkEFPYmH+JFC5a0+whb_1H84gS1WU5FVpV071Bc4mhiCQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:46:29AM -0800, Nick Desaulniers wrote:
-> On Mon, Nov 16, 2020 at 7:04 PM John Hubbard <jhubbard@nvidia.com> wrote:
-> >
-> > Hi,
-> >
-> > I just ran into this and it's a real pain to figure out, because even
-> > with the very latest Fedora 33 on my test machine, which provides clang
-> > version 11.0.0:
-> 
-> Hi John,
-> Thanks for the report.  The patch was picked up by AKPM and is in the -mm tree:
-> https://ozlabs.org/~akpm/mmots/broken-out/compiler-clang-remove-version-check-for-bpf-tracing.patch
-
-This should probably go to Linus as a regression fix in the next wave,
-if that is possible.
-
-Cheers,
-Nathan
+T24gV2VkLCAyMDIwLTExLTE4IGF0IDA5OjUzICswODAwLCBKaWEtSnUgQmFpIHdyb3RlOg0KPiBJ
+biBydGw4OGVlX3R4X2ZpbGxfY21kZGVzYygpLCBza2ItPmRhdGEgaXMgbWFwcGVkIHRvIHN0cmVh
+bWluZyBETUEgb24NCj4gbGluZSA2Nzc6DQo+IMKgIGRtYV9hZGRyX3QgbWFwcGluZyA9IGRtYV9t
+YXBfc2luZ2xlKC4uLiwgc2tiLT5kYXRhLCAuLi4pOw0KPiANCj4gT24gbGluZSA2ODAsIHNrYi0+
+ZGF0YSBpcyBhc3NpZ25lZCB0byBoZHIgYWZ0ZXIgY2FzdDoNCj4gwqAgc3RydWN0IGllZWU4MDIx
+MV9oZHIgKmhkciA9IChzdHJ1Y3QgaWVlZTgwMjExX2hkciAqKShza2ItPmRhdGEpOw0KPiANCj4g
+VGhlbiBoZHItPmZyYW1lX2NvbnRyb2wgaXMgYWNjZXNzZWQgb24gbGluZSA2ODE6DQo+IMKgIF9f
+bGUxNiBmYyA9IGhkci0+ZnJhbWVfY29udHJvbDsNCj4gDQo+IFRoaXMgRE1BIGFjY2VzcyBtYXkg
+Y2F1c2UgZGF0YSBpbmNvbnNpc3RlbmN5IGJldHdlZW4gQ1BVIGFuZCBoYXJkd3JlLg0KPiANCj4g
+VG8gZml4IHRoaXMgYnVnLCBoZHItPmZyYW1lX2NvbnRyb2wgaXMgYWNjZXNzZWQgYmVmb3JlIHRo
+ZSBETUEgbWFwcGluZy4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEppYS1KdSBCYWkgPGJhaWppYWp1
+MTk5MEBnbWFpbC5jb20+DQoNClRoaXMgcGF0Y2hzZXQgbG9va3MgZ29vZCB0byBtZS4NClRoYW5r
+IHlvdS4NCg0KQWNrZWQtYnk6IFBpbmctS2UgU2hpaCA8cGtzaGloQHJlYWx0ZWsuY29tPg0KDQo+
+IC0tLQ0KPiDCoGRyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnRsd2lmaS9ydGw4MTg4ZWUv
+dHJ4LmMgfCA2ICsrKy0tLQ0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDMg
+ZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVh
+bHRlay9ydGx3aWZpL3J0bDgxODhlZS90cnguYw0KPiBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3Jl
+YWx0ZWsvcnRsd2lmaS9ydGw4MTg4ZWUvdHJ4LmMNCj4gaW5kZXggYjk3NzVlZWM0YzU0Li5jOTQ4
+ZGFmYTBjODAgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnRs
+d2lmaS9ydGw4MTg4ZWUvdHJ4LmMNCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRl
+ay9ydGx3aWZpL3J0bDgxODhlZS90cnguYw0KPiBAQCAtNjc0LDEyICs2NzQsMTIgQEAgdm9pZCBy
+dGw4OGVlX3R4X2ZpbGxfY21kZGVzYyhzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywNCj4gwqAJdTgg
+ZndfcXVldWUgPSBRU0xUX0JFQUNPTjsNCj4gwqAJX19sZTMyICpwZGVzYyA9IChfX2xlMzIgKilw
+ZGVzYzg7DQo+IMKgDQo+IC0JZG1hX2FkZHJfdCBtYXBwaW5nID0gZG1hX21hcF9zaW5nbGUoJnJ0
+bHBjaS0+cGRldi0+ZGV2LCBza2ItPmRhdGEsDQo+IC0JCQkJCcKgwqDCoMKgc2tiLT5sZW4sIERN
+QV9UT19ERVZJQ0UpOw0KPiAtDQo+IMKgCXN0cnVjdCBpZWVlODAyMTFfaGRyICpoZHIgPSAoc3Ry
+dWN0IGllZWU4MDIxMV9oZHIgKikoc2tiLT5kYXRhKTsNCj4gwqAJX19sZTE2IGZjID0gaGRyLT5m
+cmFtZV9jb250cm9sOw0KPiDCoA0KPiArCWRtYV9hZGRyX3QgbWFwcGluZyA9IGRtYV9tYXBfc2lu
+Z2xlKCZydGxwY2ktPnBkZXYtPmRldiwgc2tiLT5kYXRhLA0KPiArCQkJCQnCoMKgwqDCoHNrYi0+
+bGVuLCBETUFfVE9fREVWSUNFKTsNCj4gKw0KPiDCoAlpZiAoZG1hX21hcHBpbmdfZXJyb3IoJnJ0
+bHBjaS0+cGRldi0+ZGV2LCBtYXBwaW5nKSkgew0KPiDCoAkJcnRsX2RiZyhydGxwcml2LCBDT01Q
+X1NFTkQsIERCR19UUkFDRSwNCj4gwqAJCQkiRE1BIG1hcHBpbmcgZXJyb3JcbiIpOw0KDQoNCg0K
