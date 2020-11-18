@@ -2,225 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D392B755C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 108742B755E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 05:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgKREVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 23:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgKREVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 23:21:24 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445CAC061A4F
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:21:24 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id t12so388407pjq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 20:21:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=k+NY9c+px1FIBEsWz6q06ZNYk3nsdUunnWrMe/Tvt0s=;
-        b=x05XYSCnX2pfVclqovwJGSApW0q+PJFqxYdSWinuurJK7+sFE1YFXh93IjbhpScjSf
-         rqMv+GlvwtGjksPFV0MS/8/gxYiW8EHujQgZuT7V0I7D6hZpfVvUxNI+mKaR3PkoYrRE
-         +wXAqhQre99DNnxOduMfN8vZtzPxssSXMGdu2X1+iC9JkDAM8/u3ylOoQS4vgrJgTLTs
-         dfJFLMWfIaChr/S+x3aWAex34L/z3rCw9RcPnJ3xLs6fLRrpdRKVyzUYg7HBXn9TWLR5
-         ZmAfdhLIHbh2/0lBPCTQ0OjhgS8ejBEBlbw6o3tp3S0CW5lkFKM6I4dVssBvTCivBTY/
-         +BnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=k+NY9c+px1FIBEsWz6q06ZNYk3nsdUunnWrMe/Tvt0s=;
-        b=k2aNoO+8eMlbZaif5NB/wmT3dlPFCIxSwwF2pdU65mkm2hYJPw/9jLDB3g/NqtHGss
-         67VLOWkLMKCkrnNLBcuDvKu00I/y+ch6rM/p6dXv8RUBqkGBT7+Sr8NP4U1Yb70k9to5
-         2KQdaByZwYfLxnziixPvpsLVaeHnjC8L8M1HiquzPjFzIJSOZBH6AEevCIYYdz535Q9k
-         rBSQb309nJbnIsHibSZjFdhR8VyUDxUVmr5YdlQahddba2FX84dVUyA3s9h95KnVbw6g
-         Nhc9dEYqaVjwFlokrYeO1u3KrZ5yj0tyyNyF1Uxqvt8WwsaSDhzMTFyObXXapz1eWW8C
-         87bA==
-X-Gm-Message-State: AOAM533vzq63Sz5HgECPJ9/qKMNS880Hwb9yWwGOJQEgAlFSzMKkxn/o
-        7irh8DXCU9KM+VqhcmTfFb9NtA==
-X-Google-Smtp-Source: ABdhPJwRaC+IQmmfuP8LCNaoTxzQFqRk93NVR4NjAXGOdw1Bsnc0hOD1mmfyGITGB5st8GooiDcIIw==
-X-Received: by 2002:a17:902:8506:b029:d9:6dd:45ea with SMTP id bj6-20020a1709028506b02900d906dd45eamr2824765plb.72.1605673283767;
-        Tue, 17 Nov 2020 20:21:23 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id j11sm7489631pfe.26.2020.11.17.20.21.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Nov 2020 20:21:22 -0800 (PST)
-Date:   Wed, 18 Nov 2020 09:51:17 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v9 07/17] PM / devfreq: tegra30: Support interconnect and
- OPPs from device-tree
-Message-ID: <20201118042117.q6nkwm7exakgfvu3@vireshk-i7>
-References: <20201115212922.4390-1-digetx@gmail.com>
- <20201115212922.4390-8-digetx@gmail.com>
- <20201117100705.i62qr4gosvu76o22@vireshk-i7>
- <956315a9-e806-3b18-6792-f01057a6c511@gmail.com>
+        id S1727021AbgKREYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 23:24:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725613AbgKREYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 23:24:03 -0500
+Received: from localhost (unknown [122.171.203.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46580206B6;
+        Wed, 18 Nov 2020 04:24:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605673443;
+        bh=EE4RE2vUaW+LMJCvm5ivbId3HhZ8VlGzj64e+W8E+Fs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OgxK86tvrvvi5i9SQzVB1ZedFCzHOUU5NLhZZ2Y2LP9NjckicT2w9S3a2UriJWvvq
+         UFj5YNDI+3TuMMGcLXtxwXTzq+Wi3vo5TFMr2TPJstzW26tE9amawY9ToEQcn8XEJ1
+         gLT7mLQtq91C1YR9G6ttIM+rftltl8yQWqIxjokM=
+Date:   Wed, 18 Nov 2020 09:53:58 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Yejune Deng <yejune.deng@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the phy-next tree
+Message-ID: <20201118042358.GJ50232@vkoul-mobl>
+References: <20201117134046.569d58b8@canb.auug.org.au>
+ <20201117100056.GF50232@vkoul-mobl>
+ <20201118135619.4a4bf4c5@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <956315a9-e806-3b18-6792-f01057a6c511@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201118135619.4a4bf4c5@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-11-20, 17:17, Dmitry Osipenko wrote:
-> 17.11.2020 13:07, Viresh Kumar пишет:
-> > On 16-11-20, 00:29, Dmitry Osipenko wrote:
-> >> This patch moves ACTMON driver away from generating OPP table by itself,
-> >> transitioning it to use the table which comes from device-tree. This
-> >> change breaks compatibility with older device-trees in order to bring
-> >> support for the interconnect framework to the driver. This is a mandatory
-> >> change which needs to be done in order to implement interconnect-based
-> >> memory DVFS. Users of legacy device-trees will get a message telling that
-> >> theirs DT needs to be upgraded. Now ACTMON issues memory bandwidth request
-> >> using dev_pm_opp_set_bw(), instead of driving EMC clock rate directly.
-> >>
-> >> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> >> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> >> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> >>  drivers/devfreq/tegra30-devfreq.c | 86 ++++++++++++++++---------------
-> >>  1 file changed, 44 insertions(+), 42 deletions(-)
-> >>
-> >> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-> >> index 38cc0d014738..ed6d4469c8c7 100644
-> >> --- a/drivers/devfreq/tegra30-devfreq.c
-> >> +++ b/drivers/devfreq/tegra30-devfreq.c
-> >> @@ -19,6 +19,8 @@
-> >>  #include <linux/reset.h>
-> >>  #include <linux/workqueue.h>
-> >>  
-> >> +#include <soc/tegra/fuse.h>
-> >> +
-> >>  #include "governor.h"
-> >>  
-> >>  #define ACTMON_GLB_STATUS					0x0
-> >> @@ -155,6 +157,7 @@ struct tegra_devfreq_device {
-> >>  
-> >>  struct tegra_devfreq {
-> >>  	struct devfreq		*devfreq;
-> >> +	struct opp_table	*opp_table;
-> >>  
-> >>  	struct reset_control	*reset;
-> >>  	struct clk		*clock;
-> >> @@ -612,34 +615,19 @@ static void tegra_actmon_stop(struct tegra_devfreq *tegra)
-> >>  static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
-> >>  				u32 flags)
-> >>  {
-> >> -	struct tegra_devfreq *tegra = dev_get_drvdata(dev);
-> >> -	struct devfreq *devfreq = tegra->devfreq;
-> >>  	struct dev_pm_opp *opp;
-> >> -	unsigned long rate;
-> >> -	int err;
-> >> +	int ret;
-> >>  
-> >>  	opp = devfreq_recommended_opp(dev, freq, flags);
-> >>  	if (IS_ERR(opp)) {
-> >>  		dev_err(dev, "Failed to find opp for %lu Hz\n", *freq);
-> >>  		return PTR_ERR(opp);
-> >>  	}
-> >> -	rate = dev_pm_opp_get_freq(opp);
-> >> -	dev_pm_opp_put(opp);
-> >> -
-> >> -	err = clk_set_min_rate(tegra->emc_clock, rate * KHZ);
-> >> -	if (err)
-> >> -		return err;
-> >> -
-> >> -	err = clk_set_rate(tegra->emc_clock, 0);
-> >> -	if (err)
-> >> -		goto restore_min_rate;
-> >>  
-> >> -	return 0;
-> >> -
-> >> -restore_min_rate:
-> >> -	clk_set_min_rate(tegra->emc_clock, devfreq->previous_freq);
-> >> +	ret = dev_pm_opp_set_bw(dev, opp);
-> >> +	dev_pm_opp_put(opp);
-> >>  
-> >> -	return err;
-> >> +	return ret;
-> >>  }
-> >>  
-> >>  static int tegra_devfreq_get_dev_status(struct device *dev,
-> >> @@ -655,7 +643,7 @@ static int tegra_devfreq_get_dev_status(struct device *dev,
-> >>  	stat->private_data = tegra;
-> >>  
-> >>  	/* The below are to be used by the other governors */
-> >> -	stat->current_frequency = cur_freq;
-> >> +	stat->current_frequency = cur_freq * KHZ;
-> >>  
-> >>  	actmon_dev = &tegra->devices[MCALL];
-> >>  
-> >> @@ -705,7 +693,12 @@ static int tegra_governor_get_target(struct devfreq *devfreq,
-> >>  		target_freq = max(target_freq, dev->target_freq);
-> >>  	}
-> >>  
-> >> -	*freq = target_freq;
-> >> +	/*
-> >> +	 * tegra-devfreq driver operates with KHz units, while OPP table
-> >> +	 * entries use Hz units. Hence we need to convert the units for the
-> >> +	 * devfreq core.
-> >> +	 */
-> >> +	*freq = target_freq * KHZ;
-> >>  
-> >>  	return 0;
-> >>  }
-> >> @@ -774,6 +767,7 @@ static struct devfreq_governor tegra_devfreq_governor = {
-> >>  
-> >>  static int tegra_devfreq_probe(struct platform_device *pdev)
-> >>  {
-> >> +	u32 hw_version = BIT(tegra_sku_info.soc_speedo_id);
-> >>  	struct tegra_devfreq_device *dev;
-> >>  	struct tegra_devfreq *tegra;
-> >>  	struct devfreq *devfreq;
-> >> @@ -781,6 +775,13 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
-> >>  	long rate;
-> >>  	int err;
-> >>  
-> >> +	/* legacy device-trees don't have OPP table and must be updated */
-> >> +	if (!device_property_present(&pdev->dev, "operating-points-v2")) {
-> >> +		dev_err(&pdev->dev,
-> >> +			"OPP table not found, please update your device tree\n");
-> >> +		return -ENODEV;
-> >> +	}
-> >> +
-> > 
-> > You forgot to remove this ?
+On 18-11-20, 13:56, Stephen Rothwell wrote:
+> Hi Vinod,
 > 
-> Yes, good catch. I'm planning to replace this code with a common helper
-> sometime soon, so if there won't be another reasons to make a new
-> revision, then I'd prefer to keep it as-is for now.
+> On Tue, 17 Nov 2020 15:30:56 +0530 Vinod Koul <vkoul@kernel.org> wrote:
+> >
+> > On 17-11-20, 13:40, Stephen Rothwell wrote:
+> > > Hi all,
+> > > 
+> > > After merging the phy-next tree, today's linux-next build (arm
+> > > multi_v7_defconfig) failed like this:
+> > > 
+> > > drivers/soc/amlogic/meson-ee-pwrc.c: In function 'meson_ee_pwrc_init_domain':
+> > > drivers/soc/amlogic/meson-ee-pwrc.c:416:65: error: expected ';' before 'if'
+> > >   416 |   dom->rstc = devm_reset_control_array_get_exclusive(&pdev->dev)
+> > >       |                                                                 ^
+> > >       |                                                                 ;
+> > >   417 |   if (IS_ERR(dom->rstc))
+> > >       |   ~~                                                             
+> > > 
+> > > Caused by commit
+> > > 
+> > >   3cc8e86721ad ("phy: amlogic: Replace devm_reset_control_array_get()")
+> > > 
+> > > I have used the phy-next tree from next-20201116 for today.  
+> > 
+> > I have reverted this commit
+> 
+> Thanks, but forgot to push out?
 
-You should just replace this patch only with a version of V9.1 and you
-aren't really required to resend the whole series. And you should fix
-it before it gets merged. This isn't a formatting issue which we just
-let through. I trust you when you say that you will fix it, but this
-must be fixed now.
+Precisely :( Fixed now, sorry for the trouble
 
 -- 
-viresh
+~Vinod
