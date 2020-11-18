@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299A42B8763
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DC62B876A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727590AbgKRWIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 17:08:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
+        id S1727646AbgKRWIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 17:08:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727530AbgKRWIK (ORCPT
+        with ESMTP id S1727553AbgKRWIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 17:08:10 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC67C061A48
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:08:08 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id d206so2786481qkc.23
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:08:08 -0800 (PST)
+        Wed, 18 Nov 2020 17:08:11 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A22C061A51
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:08:11 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id v1so2511232qvf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:08:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=Nlv9TtNsD8fyGZu3R87XXmbB0Bi+xxOBLxznH5wjST8=;
-        b=WyirgobuLaISXur5OETz3eZnFCLE1kF2NBpqHWeIkDujjqI4PTHmgyyXAb1sNUuHVN
-         Megmr6usGQTpCjvxunY6g475SVXL5PIUg4xn4wNAXU/O3G5axjtfvi1UZNaKLuLRYzl+
-         H7vQeuVy+SxuGDx4D44bti70PiBfA/Fc3fj5gR5ZBA0IAjFSuTDfAo6x8m+qBTUa+FN4
-         nVGzOamtnPS4n9xOnes8ikNN+95nJ8r8jDlDMPEu/u6I87rrC0kQZtn7FOesX7zgskpv
-         7cU1bdPWutzDBqXdefcq61dRpBvIzgZAnfJAtbylX8NSGb4UV73Xo8c5A2fqUr0JVzRi
-         d1yg==
+        bh=C9kRHDqVxMS9meVJm6Hst0wtaqe3NZ38y9krJFbUxhM=;
+        b=Hl0/5xWucUPJ643/PIYI+sdYOG9Js6rvOiCoWjAxZvuk5n0EKu2IQNyuMBh6yuGcq9
+         GKmyN/Fjv1jDACb/r2eyKCWMiRaP+4jFOJ6W4iVlTT1s5IuE0w5eW1wzTr9z3qGyZB+c
+         1+Ac3lgon9jRiCkfkxGCRfVfPCkQ6vCnGvL8X0mU+VnbyrvK/6C28dCzTrjfsSmgp5BY
+         2Jbefx7UjiqpuevCvMPBNA4WlnqB56ySe/GRWbZuQ3g+Xtr0BahoHUIbgF6ovQ/Jl0Ng
+         P8wwQ6WGRG+ElcWU389UI3hoPAsl5dsytrkZXsVBF/3XKPHdZFVmlJ7BHjNcimLrN72n
+         o+Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Nlv9TtNsD8fyGZu3R87XXmbB0Bi+xxOBLxznH5wjST8=;
-        b=DwaE/hWzF1FEVvCwNc1FkRID9Owybe2vYRIDCkxPcDK3dloxc3CKB9Rv6zZWONaVnn
-         qG1U5K4MGOj6I2QU2PMFItN4Drzv0Yrzn/7tO0Pc5gMQlR9s1alvbymWnvw2BJ0G4BAS
-         iqt8bD01i2olFncFx12JaHFd/4wAnMJYZYcXgO0H4NLS0V1OQh1bg8z6E/jKnPtzR2KY
-         ppi6DxgBCtWs9y/BwqDTsMHrkQWiFywkd0LOH2FG6/3f9aQaRmNdfnEZIGq0L7qTVgNb
-         5mWYzI52mj6BEXoW4UvmnueFXirZ0hNQuLOn2PkFG7GMYUkrfo2wNFkA5jcPR1Q2TtyP
-         jAJA==
-X-Gm-Message-State: AOAM533inzoJQ/UL0SHgXiBsnkyBwOw3wLzt4fF1mpgqne+oBu6AQi3O
-        tcZQMEV4HNRfOYSvAH0kn385qX4tnlvDM8Q2WhQ=
-X-Google-Smtp-Source: ABdhPJzn6vg0M5iTYPWjSWDRpSi/wGi1RShBZ+9f1oY4yzr2uEIppawRZrpye0kyCUINDWBYJ3z6tcMBnMS/ieVkr8o=
+        bh=C9kRHDqVxMS9meVJm6Hst0wtaqe3NZ38y9krJFbUxhM=;
+        b=HrhzJVgDBKuZmVXpqJDj8Je6GSyzY3GbI/ZWgEseSCj++WVyEV7sQ5EGovTBjRD0X4
+         tEBVdboS3iRmodv1FhFyrsWQ6mTN6gqU0i7TqGmOH4MMXtOQmdsDLDF0+2sAamcmimIC
+         MpDVLgW6EOHUqG3mX5lZ6sjSJQqxeNDQRxvYWsfV0b+a0HTiw0ZAwOrXCD8DE5p/VbB+
+         x8QgytX8a2Rxe2o+lEcamnfMt1PHGRpVmja8L31s2aVZz9oDPgVmsAuYaLbDNVNCBJER
+         HQWXsOax3MG8PSqIsi5VxIa5SIOvwazHhQRKt+qrwVNs0mXOgR+7PNI3+3LRZtfmCtBE
+         8XjA==
+X-Gm-Message-State: AOAM533JzIdmtn2qtv2MmsS5SObK6uLK/vq5cSdZFyIy7SVLobAUH/JH
+        2p+uyx8sRUF/LsJQaq+uXlRBbYRRwrGJ92zjsMQ=
+X-Google-Smtp-Source: ABdhPJypKLtF22I9S60T1xcjNfuT4VKu9ADZC5Cc5ECnuUgqSEfk7aa/seslzQLD9zO17pZOKSThOIghv6j82Kh+Quo=
 Sender: "samitolvanen via sendgmr" 
         <samitolvanen@samitolvanen1.mtv.corp.google.com>
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:a0c:b65b:: with SMTP id
- q27mr6722891qvf.8.1605737287989; Wed, 18 Nov 2020 14:08:07 -0800 (PST)
-Date:   Wed, 18 Nov 2020 14:07:29 -0800
+ (user=samitolvanen job=sendgmr) by 2002:ad4:4e0d:: with SMTP id
+ dl13mr7176727qvb.54.1605737290528; Wed, 18 Nov 2020 14:08:10 -0800 (PST)
+Date:   Wed, 18 Nov 2020 14:07:30 -0800
 In-Reply-To: <20201118220731.925424-1-samitolvanen@google.com>
-Message-Id: <20201118220731.925424-16-samitolvanen@google.com>
+Message-Id: <20201118220731.925424-17-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20201118220731.925424-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v7 15/17] KVM: arm64: disable LTO for the nVHE directory
+Subject: [PATCH v7 16/17] arm64: disable recordmcount with DYNAMIC_FTRACE_WITH_REGS
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Masahiro Yamada <masahiroy@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -74,32 +74,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We use objcopy to manipulate ELF binaries for the nVHE code,
-which fails with LTO as the compiler produces LLVM bitcode
-instead. Disable LTO for this code to allow objcopy to be used.
+DYNAMIC_FTRACE_WITH_REGS uses -fpatchable-function-entry, which makes
+running recordmcount unnecessary as there are no mcount calls in object
+files, and __mcount_loc doesn't need to be generated.
+
+While there's normally no harm in running recordmcount even when it's
+not strictly needed, this won't work with LTO as we have LLVM bitcode
+instead of ELF objects.
+
+This change selects FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY, which
+disables recordmcount when patchable function entries are used instead.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- arch/arm64/kvm/hyp/nvhe/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index ddde15fe85f2..4ceed7682287 100644
---- a/arch/arm64/kvm/hyp/nvhe/Makefile
-+++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -51,9 +51,9 @@ $(obj)/kvm_nvhe.o: $(obj)/kvm_nvhe.tmp.o FORCE
- quiet_cmd_hypcopy = HYPCOPY $@
-       cmd_hypcopy = $(OBJCOPY) --prefix-symbols=__kvm_nvhe_ $< $@
- 
--# Remove ftrace and Shadow Call Stack CFLAGS.
-+# Remove ftrace, LTO, and Shadow Call Stack CFLAGS.
- # This is equivalent to the 'notrace' and '__noscs' annotations.
--KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS), $(KBUILD_CFLAGS))
-+KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_LTO) $(CC_FLAGS_SCS), $(KBUILD_CFLAGS))
- 
- # KVM nVHE code is run at a different exception code with a different map, so
- # compiler instrumentation that inserts callbacks or checks into the code may
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 1515f6f153a0..c7f07978f5b6 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -158,6 +158,8 @@ config ARM64
+ 	select HAVE_DYNAMIC_FTRACE
+ 	select HAVE_DYNAMIC_FTRACE_WITH_REGS \
+ 		if $(cc-option,-fpatchable-function-entry=2)
++	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
++		if DYNAMIC_FTRACE_WITH_REGS
+ 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+ 	select HAVE_FAST_GUP
+ 	select HAVE_FTRACE_MCOUNT_RECORD
 -- 
 2.29.2.299.gdc1121823c-goog
 
