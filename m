@@ -2,147 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B502B832F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7AB2B8334
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727232AbgKRRjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:39:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgKRRjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:39:02 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F97E248CE;
-        Wed, 18 Nov 2020 17:38:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605721141;
-        bh=ect8hrurvHpqV7LsIdFQA4NZMDGMnFxigrdnNDKCjfQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lM2rvn/2KA3q0c3yoB1RQpJ2Pi/bhIapgVQIJs4hSbc/RHw2YZ2WuqsSnI/FLJlxq
-         1rSENn6dcpe3NO1uO6q9LhD10fQj3HsfowIY7mjCmvOd1IIIiciEm1qyVMrqC6vJGs
-         4z1h6/eBUubqF2v4W/i1B9kvAWRdvEgdZqTeHTLU=
-Date:   Wed, 18 Nov 2020 19:38:54 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        linuxarm@huawei.com
-Subject: Re: [PATCH] arm64: mm: add support for memmap kernel parameters
-Message-ID: <20201118173854.GA8537@kernel.org>
-References: <20201118063314.22940-1-song.bao.hua@hisilicon.com>
+        id S1727434AbgKRRjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 12:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725943AbgKRRjR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 12:39:17 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB92C0613D4;
+        Wed, 18 Nov 2020 09:39:16 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a186so1057647wme.1;
+        Wed, 18 Nov 2020 09:39:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tBEHYjbr9h0KOxqYdfFdNORHu/D5UPBdVAR9ICK58/E=;
+        b=m5ttd4pQmM5ajkY/62xI99HId+Fab0QQ4QEPAxEvccJ5WXTol+SfM6qftp3kRcHrdz
+         cmOUJXv+ZqLqfXQzolkTFsajWuBl3yAGC++N8ndQVnAvVm5hUC9w0WiHVJ5r4C+fE5Pf
+         yIMPc72URwGxRam0Fs0xydLmW9pVUCb2rsC32b11Bb9EOs2Zqz65X9xfLHHQqCZFG3yA
+         +C8y6qNrlIl92r4yW7ZvK69sW1GyxCGQ1jocw4L7W5cHP0AiYFXx/jH43qYJ4cM7fIov
+         JcCaL6BGC0hWbjzuIUhA4codmSfFoA/DeswANGLw5/lGqxvi/rCYNtkf7jBzo/35PQDI
+         irUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tBEHYjbr9h0KOxqYdfFdNORHu/D5UPBdVAR9ICK58/E=;
+        b=feRcu9jlHLkC5FnmooxZ549hrFzi6I2KDMDqr+CEde6nn7T1SYqs+13cezQzh8p37F
+         CzH5ep+Y5L4wI1nYifRaYFrJ5k9uFzM6gMrcjgZqLkk/rz1UF1GDdjpBJBK7xZ03OK/R
+         FX4kciGbKmakP24+6NLKgoRuWdQEh4X9b9zPmvBbMANuwZR23zEQAYo4DWuVazp7bLUH
+         QkrMYhygP1QTTgE+4QO7EyU83g56TAACaHxpVoaP7SQEMgeOT2i3VOwQ9U9jTZs98mGb
+         hmZqvEQcfWXw59HUH5DCbNGr2iUe8py9BwUx2T/COmSsPKiANULlNc0pPvVUvOZlEL/A
+         wFFA==
+X-Gm-Message-State: AOAM532DfeDQeCYl9SVlidsG/p2FLHpguMO9pFIIsroZGHO7Rj00bJdg
+        q83TtV2421FYTnLNc1nVmKlMO/x7gNar1/oNba4=
+X-Google-Smtp-Source: ABdhPJz8LKG5mlyTDTXO0mswPingfjQoR6BXTwbu2RzrBuTbYpNcMRmRlX7OGuhYuW+Vk+2KQOi/tsPw87SpXprZ7ko=
+X-Received: by 2002:a1c:4884:: with SMTP id v126mr224035wma.160.1605721155414;
+ Wed, 18 Nov 2020 09:39:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118063314.22940-1-song.bao.hua@hisilicon.com>
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+ <20201118135835.18395-1-sohambiswas41@gmail.com> <CAMmt7eMunjSvOQfaXofWY7Dz--Uim6MPf5WGcbn4D1s9=vMXHQ@mail.gmail.com>
+ <20201118142156.uf5bfzq3sh3gliik@pengutronix.de> <20201118144654.GU1869941@dell>
+ <20201118165616.fld4ayh3v6u73lrw@pengutronix.de>
+In-Reply-To: <20201118165616.fld4ayh3v6u73lrw@pengutronix.de>
+From:   Soham Biswas <sohambiswas41@gmail.com>
+Date:   Wed, 18 Nov 2020 23:09:04 +0530
+Message-ID: <CAMmt7eO_cjSjhTTDXsxteSmhTQ2iZiYXEHjzgB69_8j4cHd6YA@mail.gmail.com>
+Subject: Re: [PATCH] pwm: core: Use octal permission
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Lee Jones <lee.jones@linaro.org>, thierry.reding@gmail.com,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Barry,
+On Wed, 18 Nov 2020 at 22:26, Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+>
+> On Wed, Nov 18, 2020 at 02:46:54PM +0000, Lee Jones wrote:
+> > On Wed, 18 Nov 2020, Uwe Kleine-K=C3=B6nig wrote:
+> >
+> > > On Wed, Nov 18, 2020 at 07:36:28PM +0530, Soham Biswas wrote:
+> > > > On Wed, 18 Nov 2020 at 19:29, Soham Biswas <sohambiswas41@gmail.com=
+> wrote:
+> > > > >
+> > > > > Permission bits are easier readable in octal than with using the =
+symbolic names.
+> > > > >
+> > > > > Fixes the following warning generated by checkpatch:
+> > > > >
+> > > > > drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' =
+are not preferred.
+> > > > > Consider using octal permissions '0444'.
+> > > > >
+> > > > > +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+> > > > >                             &pwm_debugfs_fops);
+> > > > >
+> > > > > Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
+> > > > > ---
+> > > > >  drivers/pwm/core.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> > > > > index 1f16f5365d3c..a8eff4b3ee36 100644
+> > > > > --- a/drivers/pwm/core.c
+> > > > > +++ b/drivers/pwm/core.c
+> > > > > @@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
+> > > > >
+> > > > >  static int __init pwm_debugfs_init(void)
+> > > > >  {
+> > > > > -       debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+> > > > > +       debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
+> > > > >                             &pwm_debugfs_fops);
+> > > > >
+> > > > >         return 0;
+> > > > >
+> > > >
+> > > > I passed -v3 to git-send-email but it didn't work it seems.
+> > >
+> > > It only works if you use it with a commit range I guess, i.e. when it
+> > > calls git-format-patch itself.
+> > >
+> > > Also I think if you call checkpatch on your own patch (e.g. using:
+> > >
+> > >     git format-patch -v3 --stdout | scripts/checkpatch.pl
+> > >
+> > > ) it will tell you to break the long line in the commit log.
+> >
+> > That's funny!  Although you can safely ignore that one.
+> >
+> > I find it's better to keep errors/warnings whole.
+>
+> Yes, so please don't ignore that warning for:
+>
+>         Permission bits are easier readable in octal than with using the =
+symbolic names.
+>
+> Best regards
+> Uwe
+>
+> --
+> Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig       =
+     |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ =
+|
 
-On Wed, Nov 18, 2020 at 07:33:14PM +1300, Barry Song wrote:
-> memmap should be an useful kernel parameter which has been supported by
-> x86, mips and xtensa.
-
-Why is this parameter should be useful for ARM64? 
-My understanding is that it is required only to work around really
-broken bootloaders, isn't it?
-
-> This patch adds support for ARM64. At this stage,
-> the below two modes are supported only:
-> memmap=nn[KMG]@ss[KMG]
-> Force usage of a specific region of memory
-> 
-> memmap=nn[KMG]$ss[KMG]
-> Region of memory to be reserved is from ss to ss+nn
-> 
-> If users set memmap=exactmap before memmap=nn[KMG]@ss[KMG], they will
-> get the exact memory specified by memmap=nn[KMG]@ss[KMG]. For example,
-> on one machine with 4GB memory, "memmap=exactmap memmap=1G@1G" will
-> make kernel use the memory from 1GB to 2GB only.
-> 
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> ---
->  arch/arm64/mm/init.c | 59 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 59 insertions(+)
-> 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 095540667f0f..f1c6bfdbc953 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -235,6 +235,65 @@ static int __init early_mem(char *p)
->  }
->  early_param("mem", early_mem);
->  
-> +static int need_remove_real_memblock __initdata;
-> +
-> +static void __init parse_memmap_one(char *p)
-> +{
-> +	char *oldp;
-> +	unsigned long start_at, mem_size;
-> +
-> +	if (!p)
-> +		return;
-> +
-> +	if (!strncmp(p, "exactmap", 8)) {
-> +		need_remove_real_memblock = 1;
-> +		return;
-> +	}
-> +
-> +	oldp = p;
-> +	mem_size = memparse(p, &p);
-> +	if (p == oldp)
-> +		return;
-> +
-> +	switch (*p) {
-> +	case '@':
-> +		start_at = memparse(p + 1, &p);
-> +		/*
-> +		 * use the exactmap defined by nn[KMG]@ss[KMG], remove
-> +		 * memblock populated by DT etc.
-> +		 */
-> +		if (need_remove_real_memblock) {
-> +			need_remove_real_memblock = 0;
-> +			memblock_remove(0, ULLONG_MAX);
-> +		}
-> +		memblock_add(start_at, mem_size);
-> +		break;
-> +	case '$':
-> +		start_at = memparse(p + 1, &p);
-> +		memblock_reserve(start_at, mem_size);
-> +		break;
-> +	default:
-> +		pr_warn("Unrecognized memmap syntax: %s\n", p);
-> +		break;
-> +	}
-> +}
-> +
-> +static int __init parse_memmap_opt(char *str)
-> +{
-> +	while (str) {
-> +		char *k = strchr(str, ',');
-> +
-> +		if (k)
-> +			*k++ = 0;
-> +
-> +		parse_memmap_one(str);
-> +		str = k;
-> +	}
-> +
-> +	return 0;
-> +}
-> +early_param("memmap", parse_memmap_opt);
-> +
->  static int __init early_init_dt_scan_usablemem(unsigned long node,
->  		const char *uname, int depth, void *data)
->  {
-> -- 
-> 2.25.1
-> 
-
--- 
-Sincerely yours,
-Mike.
+I did fix that warning and ran the checkpatch script on my patch and
+it said that there were no errors or style problems.
