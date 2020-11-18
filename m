@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87D62B76A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAD42B76AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgKRHAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 02:00:30 -0500
-Received: from lucky1.263xmail.com ([211.157.147.131]:57932 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726596AbgKRHAa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 02:00:30 -0500
-X-Greylist: delayed 519 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Nov 2020 02:00:25 EST
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 8396DB6B1F;
-        Wed, 18 Nov 2020 14:51:38 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (250.19.126.124.broad.bjtelecom.net [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P26978T140148431894272S1605682298944163_;
-        Wed, 18 Nov 2020 14:51:39 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <ead1bf6159ec8691252672aba89c1fea>
-X-RL-SENDER: penghao@uniontech.com
-X-SENDER: penghao@uniontech.com
-X-LOGIN-NAME: penghao@uniontech.com
-X-FST-TO: gregkh@linuxfoundation.org
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 5
-X-System-Flag: 0
-From:   penghao <penghao@uniontech.com>
-To:     gregkh@linuxfoundation.org
-Cc:     johan@kernel.org, jonathan@jdcox.net, tomasz@meresinski.eu,
-        penghao@uniontech.com, hdegoede@redhat.com, dlaz@chromium.org,
-        kai.heng.feng@canonical.com, richard.o.dodd@gmail.com,
-        kerneldev@karsmulder.nl, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Changes since v1  - Change subject form "ALSA" to "USB:"  - Adjust to approoriate line
-Date:   Wed, 18 Nov 2020 14:51:32 +0800
-Message-Id: <20201118065132.24772-1-penghao@uniontech.com>
-X-Mailer: git-send-email 2.11.0
+        id S1726510AbgKRHIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 02:08:49 -0500
+Received: from mga01.intel.com ([192.55.52.88]:38655 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725772AbgKRHIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 02:08:48 -0500
+IronPort-SDR: HahwTZMmUkfup9oorMyFMpB2xJ+6DRK++R30+Qtb0e4wvNQ962sJzx+qT3h0iDW3efqpOskKfJ
+ 0ukZPjtuHIXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="189148083"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="189148083"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 23:08:48 -0800
+IronPort-SDR: cT4WzMgjqK8TlRhjvo48Va8QYGVafVzmvb42xKU62dJudr3ZMyaeI/ee3H2cpINZgP2wiwZZK0
+ ZJVjmFwpKNeg==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="544381148"
+Received: from atimm-mobl1.ger.corp.intel.com (HELO ubuntu) ([10.252.38.47])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 23:08:46 -0800
+Date:   Wed, 18 Nov 2020 08:08:36 +0100
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
+Message-ID: <20201118070836.GA19190@ubuntu>
+References: <20201112115115.GA11069@ubuntu>
+ <945f377d-1975-552d-25b2-1dc25d3c3a46@st.com>
+ <2d25d1aa-bd8a-f0db-7888-9f72edc9f687@st.com>
+ <20201116151028.GA1519@ubuntu>
+ <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
+ <20201116224003.GC3892875@xps15>
+ <50549519-d9ff-9048-a3d8-dab02bfda096@st.com>
+ <20201117160330.GA15538@ubuntu>
+ <a653c503-7fd1-7b87-88a5-88c9002ba410@st.com>
+ <20201118000647.GA4113759@xps15>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118000647.GA4113759@xps15>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk for
-Lenovo A630Z TIO built-in usb-audio card
+On Tue, Nov 17, 2020 at 05:06:47PM -0700, Mathieu Poirier wrote:
 
-Add a USB_QUIRK_DISCONNECT_SUSPEND quirk for the Lenovo TIO built-in
-usb-audio. when A630Z going into S3,the system immediately wakeup 7-8
-seconds later by usb-audio disconnect interrupt to avoids the issue.
+[snip]
 
-Seeking a better fix, we've tried a lot of things, including:
- - Check that the device's power/wakeup is disabled
- - Check that remote wakeup is off at the USB level
- - All the quirks in drivers/usb/core/quirks.c
-   e.g. USB_QUIRK_RESET_RESUME,
-        USB_QUIRK_RESET,
-        USB_QUIRK_IGNORE_REMOTE_WAKEUP,
-        USB_QUIRK_NO_LPM.
+> I confirm that all this is working as expected - I will send a new revision of
+> this set tomorrow afternoon.  
+> 
+> Guennadi, can I add a Co-developed-by and Signed-off-by with your name on the
+> patch?
 
-but none of that makes any difference.
+You can add the "Co-developed-by" tag, sure, if you like. As for the SOB: I'm 
+not sure if this is a proper use of it? AFAIK SOB is used when that person 
+"transmitted" the patch, e.g. if they developed and submitted it to a list, 
+or if they received it from someone and forwarded it upstream (maintainer 
+case). I'm not sure about this case, but well, feel free, don't think we'd 
+be violating anything since I did send versions of code, similar to parts of 
+that, some with my SOF, so, should be fine.
 
-There are no errors in the logs showing any suspend/resume-related issues.
-When the system wakes up due to the modem, log-wise it appears to be a
-normal resume.
-
-Introduce a quirk to disable the port during suspend when the modem is
-detected.
-
-Signed-off-by: penghao <penghao@uniontech.com>
----
- drivers/usb/core/quirks.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index 7c1198f80c23..8d18e89f9eb0 100644
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -410,7 +410,11 @@ static const struct usb_device_id usb_quirk_list[] = {
- 	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
- 			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
- 
--	/* BUILDWIN Photo Frame */
-+/* Lenovo - ThinkCenter A630Z TI024Gen3 usb-audio card */
-+{ USB_DEVICE(0x17ef, 0x0xa012), .driver_info =
-+USB_QUIRK_DISCONNECT_SUSPEND },
-+
-+    /* BUILDWIN Photo Frame */
- 	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
- 			USB_QUIRK_HONOR_BNUMINTERFACES },
- 
--- 
-2.11.0
-
-
-
+Thanks
+Guennadi
