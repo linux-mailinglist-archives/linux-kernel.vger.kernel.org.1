@@ -2,332 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327062B7331
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4112B7336
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727133AbgKRAiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:38:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52066 "EHLO
+        id S1727369AbgKRAjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:39:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgKRAiV (ORCPT
+        with ESMTP id S1726992AbgKRAjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:38:21 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851E4C061A48
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:38:21 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id y22so39662plr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:38:21 -0800 (PST)
+        Tue, 17 Nov 2020 19:39:04 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC0FC061A48
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:39:03 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id l11so502761lfg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:39:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OZQGoYGnoHs+9ApYZ7Z+Ccs9twmxhveiKgSrp4BfJLE=;
-        b=VW5QwgY8S3ARm2OVTjam3i2IiD1+N2XN2ZOpY78Dg6yLSF1FBsaEY7/QfGJY/AuE5f
-         7dGXOd/o80EAP+JeGVtvWPLq0V7bI5Re7+ALp/3OqjqJIbgDPAgciEemvPOXvdtfmt+7
-         3LLT4XPVeM9UbtidwTQzyBEusTxTrddWxswP44+1l717WS/bp3r+J4r/7nmS22SYANU3
-         VJ0K1MTmIE03z/3WYqA+b8Y+pIxigoZLnRFDTwUGkCCezoxMtaDH1RwCyJUCbAx2Ivj5
-         MPmSBra+unacpWd3V20u0lV55tt+RJn+mK2Ja+keZxkO2DzIimnFzo8BWkVkC54cHr/3
-         y9qg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8cUIbkZJylsb5mO6hD/KZYGDtSV3P8FggXBoXgK+a98=;
+        b=spDKP8Cj1EaiX/Lv5t3Qkw8QD0FSRfZa/OQOa/7jvbJs0fpyUfTlaf7QGQ0S+UAdez
+         SX8kQ6hZj+W1hgFZUV8GqSBklPHOJDyy8SxvO5CLmie/8wyXwkaZ2aiGVXYQvvZo3Jzx
+         maRCHS63l7HL59+bKhFIOLi0ptIP47AvkIRf3s298xunQ6JY4lcG2g7gum+M5E+fwg7x
+         Hv7gg6oxYSiXOHpPYj9GIaobsuYesLc+ROcJx/RWeAQ+d6D7x3tcrK1F5C7kT6xjNZY9
+         JfEuxBxuaK7d0Z1jxSXxhh2jfAPpXPHluITOn2AAhO/KSpNDJqCF2H2QrUiB+beesAia
+         cX8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OZQGoYGnoHs+9ApYZ7Z+Ccs9twmxhveiKgSrp4BfJLE=;
-        b=hAPu3wwpQyR2HEHWFumOh/883IcqtytkvPrp953ZtFh9mzeF85QoDM9CnTf0ZGL8r9
-         SkUjaTPxApPIuciLdHWwB/W4xoGOcxkzCBVZmpmcMnLf3wCBoz8lRb88UA/wq+EAJPGo
-         lIumgKps8PNtjsT9Kso6gzVCFGys250pjxgybe8IYMgsrxbtxlvMvN7VyzTnCT7nlMja
-         oIcQTh3I2JJagX4S1HJuY4KW2dzTmTP6HTM/ZjoOBdCFbtubk0clBlHkX5ys6m9QV1pk
-         HGFwqT28sONHzYh69I9x728APjEREI2S8JvRWSFPLhLxnXhQj+lQMaNkUSx/ibB8JgZk
-         W68g==
-X-Gm-Message-State: AOAM530Ksjka/qlH1+G1qrkGCFRwDVzkt3dPapxKFRWIpLn9lEuxKL/h
-        8yPlYXB+TG0Gp5lVLR3pVyqPkQ==
-X-Google-Smtp-Source: ABdhPJy2TXTaf056zBPCxRa1SgWNX6EQTPXIT5lKAHimL06t/ZIdVFml/2imblFH+T5TNY4TESqiBQ==
-X-Received: by 2002:a17:902:d211:b029:d7:cd5e:2857 with SMTP id t17-20020a170902d211b02900d7cd5e2857mr1660911ply.45.1605659900567;
-        Tue, 17 Nov 2020 16:38:20 -0800 (PST)
-Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
-        by smtp.gmail.com with ESMTPSA id p4sm285186pjo.6.2020.11.17.16.38.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 16:38:19 -0800 (PST)
-Date:   Wed, 18 Nov 2020 00:38:15 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v7 1/8] block: ensure bios are not split in middle of
- crypto data unit
-Message-ID: <20201118003815.GA1155188@google.com>
-References: <20201117140708.1068688-1-satyat@google.com>
- <20201117140708.1068688-2-satyat@google.com>
- <X7RdS2cINwFkl/MN@sol.localdomain>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8cUIbkZJylsb5mO6hD/KZYGDtSV3P8FggXBoXgK+a98=;
+        b=eRr9G9BI7lWarBzd6FmMj8/IVmXhUpj9ych9tq1UIfzkEBPotku93BTSZcvWDINc64
+         rnADCylur7gIRbzWlcT7fAzlTbYiKE/dpbAn4OjvNlxhQSij+2jXnALV0N+JUOS+rpa/
+         Prc2svF1Wa/iJ6yNpp3rxdYATRb+7xiOEtlG9SlMrKB6YpN2vuFzglH+iMFPNrYIMm6V
+         U7iDvjLaxrVThW3abQ4PnfmtNpUjdDQmpn8vvbtRKtLDe0Bl3mwG4NTg5rFE8UugiYaa
+         YTf3hHd8qS6DuPYawaTO33laIS9LirJixQG52xMSL2Pd8iZvoNtGAa/suYZx1tK1BbB9
+         3SZA==
+X-Gm-Message-State: AOAM532Qta07Qs3raza/2OqHagV5tCxVCpSl/HToRZnR2DqavB0MGTEk
+        KpUI9kZo9opgFfoTp/IryBnJjHpQq7DeKPsncMWbfQ==
+X-Google-Smtp-Source: ABdhPJzP/7gUUiG2Hzqfd0CHPMAFi62oLlQ30ZVIBtWrmH4gJQa06oqnka0nRprKaPt7QqMH80d7vCKK79I+HmFZHP8=
+X-Received: by 2002:a19:546:: with SMTP id 67mr2477974lff.502.1605659941675;
+ Tue, 17 Nov 2020 16:39:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X7RdS2cINwFkl/MN@sol.localdomain>
+References: <1605201148-4508-1-git-send-email-srinivas.neeli@xilinx.com> <1605201148-4508-8-git-send-email-srinivas.neeli@xilinx.com>
+In-Reply-To: <1605201148-4508-8-git-send-email-srinivas.neeli@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 18 Nov 2020 01:38:50 +0100
+Message-ID: <CACRpkdasQEgsOEim5oFMBk-K24SzxYAR17jzuPR3_CTjYZ1hvA@mail.gmail.com>
+Subject: Re: [LINUX PATCH V3 7/9] gpio: gpio-xilinx: Add support for suspend
+ and resume
+To:     Srinivas Neeli <srinivas.neeli@xilinx.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        sgoud@xilinx.com, Robert Hancock <hancock@sedsystems.ca>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git@xilinx.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 03:31:23PM -0800, Eric Biggers wrote:
-> On Tue, Nov 17, 2020 at 02:07:01PM +0000, Satya Tangirala wrote:
-> > Introduce blk_crypto_bio_sectors_alignment() that returns the required
-> > alignment for the number of sectors in a bio. Any bio split must ensure
-> > that the number of sectors in the resulting bios is aligned to that
-> > returned value. This patch also updates __blk_queue_split(),
-> > __blk_queue_bounce() and blk_crypto_split_bio_if_needed() to respect
-> > blk_crypto_bio_sectors_alignment() when splitting bios.
-> > 
-> > Signed-off-by: Satya Tangirala <satyat@google.com>
-> > ---
-> >  block/bio.c                 |  1 +
-> >  block/blk-crypto-fallback.c | 10 ++--
-> >  block/blk-crypto-internal.h | 18 +++++++
-> >  block/blk-merge.c           | 96 ++++++++++++++++++++++++++++++++-----
-> >  block/blk-mq.c              |  3 ++
-> >  block/bounce.c              |  4 ++
-> >  6 files changed, 117 insertions(+), 15 deletions(-)
-> > 
-> 
-> I feel like this should be split into multiple patches: one patch that
-> introduces blk_crypto_bio_sectors_alignment(), and a patch for each place that
-> needs to take blk_crypto_bio_sectors_alignment() into account.
-> 
-> It would also help to give a real-world example of why support for
-> data_unit_size > logical_block_size is needed.  E.g. ext4 or f2fs encryption
-> with a 4096-byte filesystem block size, using eMMC inline encryption hardware
-> that has logical_block_size=512.
-> 
-> Also, is this needed even without the fscrypt direct I/O support?  If so, it
-> should be sent out separately.
-> 
-Yes, I think it's needed even without the fscrypt direct I/O support.
-And ok, I'll send it out separately then :)
-> > diff --git a/block/blk-merge.c b/block/blk-merge.c
-> > index bcf5e4580603..f34dda7132f9 100644
-> > --- a/block/blk-merge.c
-> > +++ b/block/blk-merge.c
-> > @@ -149,13 +149,15 @@ static inline unsigned get_max_io_size(struct request_queue *q,
-> >  	unsigned pbs = queue_physical_block_size(q) >> SECTOR_SHIFT;
-> >  	unsigned lbs = queue_logical_block_size(q) >> SECTOR_SHIFT;
-> >  	unsigned start_offset = bio->bi_iter.bi_sector & (pbs - 1);
-> > +	unsigned int bio_sectors_alignment =
-> > +					blk_crypto_bio_sectors_alignment(bio);
-> >  
-> >  	max_sectors += start_offset;
-> >  	max_sectors &= ~(pbs - 1);
-> > -	if (max_sectors > start_offset)
-> > -		return max_sectors - start_offset;
-> > +	if (max_sectors - start_offset >= bio_sectors_alignment)
-> > +		return round_down(max_sectors - start_offset, bio_sectors_alignment);
-> >  
-> > -	return sectors & ~(lbs - 1);
-> > +	return round_down(sectors & ~(lbs - 1), bio_sectors_alignment);
-> >  }
-> 
-> 'max_sectors - start_offset >= bio_sectors_alignment' looks wrong, as
-> 'max_sectors - start_offset' underflows if 'max_sectors < start_offset'.
-> 
-> Maybe consider something like the below?
-> 
-> static inline unsigned get_max_io_size(struct request_queue *q,
-> 				       struct bio *bio)
-> {
-> 	unsigned sectors = blk_max_size_offset(q, bio->bi_iter.bi_sector);
-> 	unsigned pbs = queue_physical_block_size(q) >> SECTOR_SHIFT;
-> 	unsigned lbs = queue_logical_block_size(q) >> SECTOR_SHIFT;
-> 	sector_t pb_aligned_sector =
-> 		round_down(bio->bi_iter.bi_sector + sectors, pbs);
-> 
-> 	lbs = max(lbs, blk_crypto_bio_sectors_alignment(bio));
-> 
-> 	if (pb_aligned_sector >= bio->bi_iter.bi_sector + lbs)
-> 		sectors = pb_aligned_sector - bio->bi_iter.bi_sector;
-> 
-> 	return round_down(sectors, lbs);
-> }
-> 
-> Maybe it would be useful to have a helper function bio_required_alignment() that
-> returns the crypto data unit size if the bio has an encryption context, and the
-> logical block size if it doesn't?
->
-> >  
-> >  static inline unsigned get_max_segment_size(const struct request_queue *q,
-> > @@ -174,6 +176,41 @@ static inline unsigned get_max_segment_size(const struct request_queue *q,
-> >  			(unsigned long)queue_max_segment_size(q));
-> >  }
-> >  
-> > +/**
-> > + * update_aligned_sectors_and_segs() - Ensures that *@aligned_sectors is aligned
-> > + *				       to @bio_sectors_alignment, and that
-> > + *				       *@aligned_segs is the value of nsegs
-> > + *				       when sectors reached/first exceeded that
-> > + *				       value of *@aligned_sectors.
-> > + *
-> > + * @nsegs: [in] The current number of segs
-> > + * @sectors: [in] The current number of sectors
-> > + * @aligned_segs: [in,out] The number of segments that make up @aligned_sectors
-> > + * @aligned_sectors: [in,out] The largest number of sectors <= @sectors that is
-> > + *		     aligned to @sectors
-> > + * @bio_sectors_alignment: [in] The alignment requirement for the number of
-> > + *			  sectors
-> > + *
-> > + * Updates *@aligned_sectors to the largest number <= @sectors that is also a
-> > + * multiple of @bio_sectors_alignment. This is done by updating *@aligned_sectors
-> > + * whenever @sectors is at least @bio_sectors_alignment more than
-> > + * *@aligned_sectors, since that means we can increment *@aligned_sectors while
-> > + * still keeping it aligned to @bio_sectors_alignment and also keeping it <=
-> > + * @sectors. *@aligned_segs is updated to the value of nsegs when @sectors first
-> > + * reaches/exceeds any value that causes *@aligned_sectors to be updated.
-> > + */
-> > +static inline void update_aligned_sectors_and_segs(const unsigned int nsegs,
-> > +						   const unsigned int sectors,
-> > +						   unsigned int *aligned_segs,
-> > +				unsigned int *aligned_sectors,
-> > +				const unsigned int bio_sectors_alignment)
-> > +{
-> > +	if (sectors - *aligned_sectors < bio_sectors_alignment)
-> > +		return;
-> > +	*aligned_sectors = round_down(sectors, bio_sectors_alignment);
-> > +	*aligned_segs = nsegs;
-> > +}
-> > +
-> >  /**
-> >   * bvec_split_segs - verify whether or not a bvec should be split in the middle
-> >   * @q:        [in] request queue associated with the bio associated with @bv
-> > @@ -195,9 +232,12 @@ static inline unsigned get_max_segment_size(const struct request_queue *q,
-> >   * the block driver.
-> >   */
-> >  static bool bvec_split_segs(const struct request_queue *q,
-> > -			    const struct bio_vec *bv, unsigned *nsegs,
-> > -			    unsigned *sectors, unsigned max_segs,
-> > -			    unsigned max_sectors)
-> > +			    const struct bio_vec *bv, unsigned int *nsegs,
-> > +			    unsigned int *sectors, unsigned int *aligned_segs,
-> > +			    unsigned int *aligned_sectors,
-> > +			    unsigned int bio_sectors_alignment,
-> > +			    unsigned int max_segs,
-> > +			    unsigned int max_sectors)
-> >  {
-> >  	unsigned max_len = (min(max_sectors, UINT_MAX >> 9) - *sectors) << 9;
-> >  	unsigned len = min(bv->bv_len, max_len);
-> > @@ -211,6 +251,11 @@ static bool bvec_split_segs(const struct request_queue *q,
-> >  
-> >  		(*nsegs)++;
-> >  		total_len += seg_size;
-> > +		update_aligned_sectors_and_segs(*nsegs,
-> > +						*sectors + (total_len >> 9),
-> > +						aligned_segs,
-> > +						aligned_sectors,
-> > +						bio_sectors_alignment);
-> >  		len -= seg_size;
-> >  
-> >  		if ((bv->bv_offset + total_len) & queue_virt_boundary(q))
-> > @@ -235,6 +280,8 @@ static bool bvec_split_segs(const struct request_queue *q,
-> >   * following is guaranteed for the cloned bio:
-> >   * - That it has at most get_max_io_size(@q, @bio) sectors.
-> >   * - That it has at most queue_max_segments(@q) segments.
-> > + * - That the number of sectors in the returned bio is aligned to
-> > + *   blk_crypto_bio_sectors_alignment(@bio)
-> >   *
-> >   * Except for discard requests the cloned bio will point at the bi_io_vec of
-> >   * the original bio. It is the responsibility of the caller to ensure that the
-> > @@ -252,6 +299,9 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
-> >  	unsigned nsegs = 0, sectors = 0;
-> >  	const unsigned max_sectors = get_max_io_size(q, bio);
-> >  	const unsigned max_segs = queue_max_segments(q);
-> > +	const unsigned int bio_sectors_alignment =
-> > +					blk_crypto_bio_sectors_alignment(bio);
-> > +	unsigned int aligned_segs = 0, aligned_sectors = 0;
-> >  
-> >  	bio_for_each_bvec(bv, bio, iter) {
-> >  		/*
-> > @@ -266,8 +316,14 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
-> >  		    bv.bv_offset + bv.bv_len <= PAGE_SIZE) {
-> >  			nsegs++;
-> >  			sectors += bv.bv_len >> 9;
-> > -		} else if (bvec_split_segs(q, &bv, &nsegs, &sectors, max_segs,
-> > -					 max_sectors)) {
-> > +			update_aligned_sectors_and_segs(nsegs, sectors,
-> > +							&aligned_segs,
-> > +							&aligned_sectors,
-> > +							bio_sectors_alignment);
-> > +		} else if (bvec_split_segs(q, &bv, &nsegs, &sectors,
-> > +					   &aligned_segs, &aligned_sectors,
-> > +					   bio_sectors_alignment, max_segs,
-> > +					   max_sectors)) {
-> >  			goto split;
-> >  		}
-> >  
-> > @@ -275,11 +331,24 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
-> >  		bvprvp = &bvprv;
-> >  	}
-> >  
-> > +	/*
-> > +	 * The input bio's number of sectors is assumed to be aligned to
-> > +	 * bio_sectors_alignment. If that's the case, then this function should
-> > +	 * ensure that aligned_segs == nsegs and aligned_sectors == sectors if
-> > +	 * the bio is not going to be split.
-> > +	 */
-> > +	WARN_ON(aligned_segs != nsegs || aligned_sectors != sectors);
-> >  	*segs = nsegs;
-> >  	return NULL;
-> >  split:
-> > -	*segs = nsegs;
-> > -	return bio_split(bio, sectors, GFP_NOIO, bs);
-> > +	*segs = aligned_segs;
-> > +	if (WARN_ON(aligned_sectors == 0))
-> > +		goto err;
-> > +	return bio_split(bio, aligned_sectors, GFP_NOIO, bs);
-> > +err:
-> > +	bio->bi_status = BLK_STS_IOERR;
-> > +	bio_endio(bio);
-> > +	return bio;
-> >  }
-> 
-> This part is pretty complex.  Are you sure it's needed?  How was alignment to
-> logical_block_size ensured before?
-> 
-Afaict, alignment to logical_block_size (lbs) is done by assuming that
-bv->bv_len is always lbs aligned (among other things). Is that not the
-case?
+Hi Srinivas,
 
-If it is the case, that's what we're trying to avoid with this patch (we
-want to be able to submit bios that have 2 bvecs that together make up a
-single crypto data unit, for example). And this is complex because
-multiple segments could "add up" to make up a single crypto data unit,
-but this function's job is to limit both the number of segments *and*
-the number of sectors - so when ensuring that the number of sectors is
-aligned to crypto data unit size, we also want the smallest number of
-segments that can make up that aligned number of sectors.
-> > diff --git a/block/bounce.c b/block/bounce.c
-> > index 162a6eee8999..b15224799008 100644
-> > --- a/block/bounce.c
-> > +++ b/block/bounce.c
-> > @@ -295,6 +295,7 @@ static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
-> >  	bool bounce = false;
-> >  	int sectors = 0;
-> >  	bool passthrough = bio_is_passthrough(*bio_orig);
-> > +	unsigned int bio_sectors_alignment;
-> >  
-> >  	bio_for_each_segment(from, *bio_orig, iter) {
-> >  		if (i++ < BIO_MAX_PAGES)
-> > @@ -305,6 +306,9 @@ static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
-> >  	if (!bounce)
-> >  		return;
-> >  
-> > +	bio_sectors_alignment = blk_crypto_bio_sectors_alignment(bio);
-> > +	sectors = round_down(sectors, bio_sectors_alignment);
-> > +
-> 
-> This can be one line:
-> 
-> 	sectors = round_down(sectors, blk_crypto_bio_sectors_alignment(bio));
-> 
-Sure thing. I also messed up the argument being passed - it should've
-been *bio_orig, not bio :(. Would you have any recommendations on how to
-test code in bounce.c?
-> - Eric
+On Thu, Nov 12, 2020 at 6:13 PM Srinivas Neeli
+<srinivas.neeli@xilinx.com> wrote:
+
+> Add support for suspend and resume, pm runtime suspend and resume.
+> Added free and request calls.
+>
+> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+> ---
+> Changes in V3:
+> -Created new patch for suspend and resume.
+
+(...)
+
+I'm following the idea here I think.
+
+> @@ -544,6 +618,8 @@ static int xgpio_probe(struct platform_device *pdev)
+
+> +       pm_runtime_enable(&pdev->dev);
+> +       status = pm_runtime_get_sync(&pdev->dev);
+> +       if (status < 0)
+> +               goto err_unprepare_clk;
+
+Now the clock is enabled a second time. Because
+runtime PM kicks in.
+
+Do this instead:
+pm_runtime_get_noresume()
+pm_runtime_set_active()
+pm_runtime_enable()
+
+Now runtime PM knows it is active and will not call
+runtime resume and enable the clock a second time.
+
+> +       pm_runtime_put(&pdev->dev);
+>         return 0;
+
+This is right, now pm runtime will gate the clock
+until the first GPIO is requested.
+
+> +err_pm_put:
+> +       pm_runtime_put_sync(&pdev->dev);
+>  err_unprepare_clk:
+> +       pm_runtime_disable(&pdev->dev);
+>         clk_disable_unprepare(chip->clk);
+>         return status;
+
+Use this on the errorpath instead:
+pm_runtime_put_noidle()
+pm_runtime_disable()
+clk_disable_unprepare();
+
+Now the code will not call runtime suspend to
+gate the clock a second time.
+
+Double-check the references to the clock and check
+in debugfs that the clock really gets disabled if you're
+not using any GPIOs.
+
+Yours,
+Linus Walleij
