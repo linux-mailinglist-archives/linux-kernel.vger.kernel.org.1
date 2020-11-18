@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344DB2B814B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB94A2B8154
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727701AbgKRP4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:56:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726920AbgKRP4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:56:14 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF366247B8;
-        Wed, 18 Nov 2020 15:56:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605714972;
-        bh=GELHucXkKa7G3QtQ8cSbwCgNnr50MKNdiCNGTna4zK0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p/2grwt89tBSwFvd8T1v6y71xnlybjf5sHdsiy2umfiSBcDmbfB9W081S9dnG917+
-         haJTt4lD9S4ylXS0lhM+8WH0Gt5Je2atuYkuWbL9GgnJjTgTGIoku8GXX4WqSmiC32
-         9xwoR+6TeyJv5v/xCCufP08cF0TwWHDWY/bzh+t0=
-Date:   Wed, 18 Nov 2020 16:56:57 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [RFC PATCH 3/3] usb: typec: Expose Product Type VDOs via sysfs
-Message-ID: <X7VESebL4CnS45hv@kroah.com>
-References: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
- <20201118150059.3419-4-heikki.krogerus@linux.intel.com>
+        id S1727798AbgKRP55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:57:57 -0500
+Received: from sender11-of-o52.zoho.eu ([31.186.226.238]:21365 "EHLO
+        sender11-of-o52.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgKRP54 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:57:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1605715025; cv=none; 
+        d=zohomail.eu; s=zohoarc; 
+        b=WjzgxdOVTogBKmBQjO2meIoe1mDOq7hRrBVkt59W4xfz/5jTVsXzQ1mnTvM0fxNJMZ2ZVo1j/blr4DNzP8hd0Gz7UJoCx15UeRr4yoyvfyiaRfP4/XVleAp6xLqUp6vZjt2ciikyQi2h4WTXX8VihaNJX+ci16vzpDk023brWrU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+        t=1605715025; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=r734+KKew+kGS2tJrjpen3pnF+qZa2+AOhj0cSasEhU=; 
+        b=bLvYuPB9M9j4eNg1ALkoZPtgTN20oBWWl9BOu6yxPVpmLArfOYV/bf2UkAwmTwpBOOekIoOTHby6wg1+ZuyIBtk7/FkAW/1ATtw8pjGxJG2ruvO6MSQVeWhqdC+qwSV62bFE6ZQIFp5pSWPEekihKO90rlQ9j+W9gS8IufE1hcg=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+        dkim=pass  header.i=shytyi.net;
+        spf=pass  smtp.mailfrom=dmytro@shytyi.net;
+        dmarc=pass header.from=<dmytro@shytyi.net> header.from=<dmytro@shytyi.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1605715025;
+        s=hs; d=shytyi.net; i=dmytro@shytyi.net;
+        h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=r734+KKew+kGS2tJrjpen3pnF+qZa2+AOhj0cSasEhU=;
+        b=I1xV/Sytw+s1XvVsI9+t7hdm0eSE2ZpnSTzBmj2i+L1fGItQkbOW5/HvUKLyPStI
+        d/IGg2RxsQTTA5ep6H1yjTiqFpm3TRCUIyjlX6jI1LjgQtl4gR7uX2UE+/u+iETai3y
+        qmFb5kafFN9NKxBRcKWUdhF8wW7ZLtJFuRTIXCWY=
+Received: from mail.zoho.eu by mx.zoho.eu
+        with SMTP id 1605715018978132.54482825616162; Wed, 18 Nov 2020 16:56:58 +0100 (CET)
+Date:   Wed, 18 Nov 2020 16:56:58 +0100
+From:   Dmytro Shytyi <dmytro@shytyi.net>
+To:     "Jakub Kicinski" <kuba@kernel.org>
+Cc:     "kuznet" <kuznet@ms2.inr.ac.ru>,
+        "yoshfuji" <yoshfuji@linux-ipv6.org>,
+        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
+        "netdev" <netdev@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Message-ID: <175dc12c4e0.10495546f370275.5966814804122496347@shytyi.net>
+In-Reply-To: <20201118075027.18083d19@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
+        <202011110944.7zNVZmvB-lkp@intel.com>
+        <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net>
+        <175bf515624.c67e02e8130655.7824060160954233592@shytyi.net>
+        <175c31c6260.10eef97f6180313.755036504412557273@shytyi.net>
+        <20201117124348.132862b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <175db965378.e5454e1c360034.2264030307026794920@shytyi.net> <20201118075027.18083d19@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Subject: Re: [PATCH net-next V5] net: Variable SLAAC: SLAAC with prefixes of
+ arbitrary length in PIO
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118150059.3419-4-heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 06:00:59PM +0300, Heikki Krogerus wrote:
-> From: Prashant Malani <pmalani@chromium.org>
-> 
-> Interim. ABI doc missing.
-> 
-> A PD-capable device can return up to 3 Product Type VDOs as part of its
-> DiscoverIdentity Response (USB PD Spec, Rev 3.0, Version 2.0, Section
-> 6.4.4.3.1). Add sysfs attribute to expose these to userspace.
-> 
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> [ heikki: Only one instead of three attribute files ]
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>'
-> ---
->  drivers/usb/typec/class.c | 41 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-> index 303f054181ff7..5e135678f5952 100644
-> --- a/drivers/usb/typec/class.c
-> +++ b/drivers/usb/typec/class.c
-> @@ -165,15 +165,55 @@ static ssize_t product_show(struct device *dev, struct device_attribute *attr,
->  }
->  static DEVICE_ATTR_RO(product);
->  
-> +static ssize_t
-> +product_type_vdo_show(struct device *dev, struct device_attribute *attr, char *buf)
-> +{
-> +	struct usb_pd_identity *id = get_pd_identity(dev);
-> +	size_t len = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < 3; i++) {
-> +		if (!id->vdo[i])
-> +			break;
-> +		len += sysfs_emit(buf, "%08x ", id->vdo[i]);
-> +	}
-> +
-> +	buf[len - 1] = '\n';
-> +
-> +	return len;
-> +}
+Hello,
 
-I don't understand what you are trying to print out here, documentation
-would be helpful :)
+---- On Wed, 18 Nov 2020 16:50:27 +0100 Jakub Kicinski <kuba@kernel.org> wrote ----
 
-> +
-> +static struct device_attribute dev_attr_product_type_vdo = {
-> +	.attr = {
-> +		.name = "product_type",
-> +		.mode = 0444,
-> +	},
-> +	.show = product_type_vdo_show,
-> +};
+ > On Wed, 18 Nov 2020 14:41:03 +0100 Dmytro Shytyi wrote: 
+ > >  > > @@ -2576,9 +2590,42 @@ int addrconf_prefix_rcv_add_addr(struct 
+ > >  > >                   u32 addr_flags, bool sllao, bool tokenized, 
+ > >  > >                   __u32 valid_lft, u32 prefered_lft) 
+ > >  > >  { 
+ > >  > > -    struct inet6_ifaddr *ifp = ipv6_get_ifaddr(net, addr, dev, 1); 
+ > >  > > +    struct inet6_ifaddr *ifp = NULL; 
+ > >  > >      int create = 0; 
+ > >  > > 
+ > >  > > +    if ((in6_dev->if_flags & IF_RA_VAR_PLEN) == IF_RA_VAR_PLEN && 
+ > >  > > +        in6_dev->cnf.addr_gen_mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY) { 
+ > >  > > +        struct inet6_ifaddr *result = NULL; 
+ > >  > > +        struct inet6_ifaddr *result_base = NULL; 
+ > >  > > +        struct in6_addr curr_net_prfx; 
+ > >  > > +        struct in6_addr net_prfx; 
+ > >  > > +        bool prfxs_equal; 
+ > >  > > + 
+ > >  > > +        result_base = result; 
+ > >  > > +        rcu_read_lock(); 
+ > >  > > +        list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) { 
+ > >  > > +            if (!net_eq(dev_net(ifp->idev->dev), net)) 
+ > >  > > +                continue; 
+ > >  > > +            ipv6_addr_prefix_copy(&net_prfx, &pinfo->prefix, pinfo->prefix_len); 
+ > >  > > +            ipv6_addr_prefix_copy(&curr_net_prfx, &ifp->addr, pinfo->prefix_len); 
+ > >  > > +            prfxs_equal = 
+ > >  > > +                ipv6_prefix_equal(&net_prfx, &curr_net_prfx, pinfo->prefix_len); 
+ > >  > > + 
+ > >  > > +            if (prfxs_equal && pinfo->prefix_len == ifp->prefix_len) { 
+ > >  > > +                result = ifp; 
+ > >  > > +                in6_ifa_hold(ifp); 
+ > >  > > +                break; 
+ > >  > > +            } 
+ > >  > > +        } 
+ > >  > > +        rcu_read_unlock(); 
+ > >  > > +        if (result_base != result) 
+ > >  > > +            ifp = result; 
+ > >  > > +        else 
+ > >  > > +            ifp = NULL; 
+ > >  > 
+ > >  > Could this be a helper of its own? 
+ > > 
+ > > Explain the thought please. It is not clear for me. 
+ >  
+ > At the look of it the code under this if statement looks relatively 
+ > self-contained, and has quite a few local variables. Rather than making 
+ > the surrounding function longer would it be possible to factor it out 
+ > into a helper function? 
+ > 
+Understood.
+Thanks.
 
-DEVICE_ATTR_RO(product_type_vdo)?
-
-Why are you calling it "product_type" and not with the "vdo"?
-
-And you have to name it this, there's always __ATTR_RO(), never put a
-mode in "raw" numbers for a sysfs file if at all possible.
-
-thanks,
-
-greg k-h
+Best regards,
+Dmytro SHYTYI.
