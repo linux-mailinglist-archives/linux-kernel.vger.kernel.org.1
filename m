@@ -2,361 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5591C2B7395
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AF32B7384
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729573AbgKRBLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 20:11:30 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62128 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727892AbgKRBLQ (ORCPT
+        id S1728037AbgKRBLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 20:11:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgKRBLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 20:11:16 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AI13aN8118264;
-        Tue, 17 Nov 2020 20:11:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=P8gGOwh7TXuAOb1r1lHCU+bnwtu7EHwqe/9uSKvL5Fg=;
- b=bIvUWQXXkhzf/l4uuweGIIUJvogbRRuuhSYGFksoosVGABEu50YFmW0/51E8YtRU8GYI
- xMU43yHDQND9hXoKt9Tqw/NNulmkY/x7fHALnn9GI9maOiKzjUkZZtZrgYt8WMjLXEtC
- 3SoV8DT/RjRjcOwMFoqqkVEmjRBUU2UzEDvWErT1Feh31l1tWdnGwYkUQNgOdBRXtUeY
- MN5g84/AMWZPwgX00QE1qL1ivJIyTRyklWZbvRBw4AP9/RgrPBVrjza7tW26o1pIZ94q
- r8MPlHxSAiRFBq6fM/ZCwdTPyGLYHFCHpmzTYjCRpZGCIejrvwLBE1TVmfLHaFeauhGH XQ== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34v962758e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 20:11:10 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AI188r2015324;
-        Wed, 18 Nov 2020 01:11:09 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma01wdc.us.ibm.com with ESMTP id 34uyn19fqp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 Nov 2020 01:11:08 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AI1B61Y5440214
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Nov 2020 01:11:06 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C9FB2BE053;
-        Wed, 18 Nov 2020 01:11:06 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64A1BBE054;
-        Wed, 18 Nov 2020 01:11:06 +0000 (GMT)
-Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 18 Nov 2020 01:11:06 +0000 (GMT)
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
-Subject: [PATCH v3 2/6] ibmvfc: add new fields for version 2 of several MADs
-Date:   Tue, 17 Nov 2020 19:11:00 -0600
-Message-Id: <20201118011104.296999-3-tyreld@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201118011104.296999-1-tyreld@linux.ibm.com>
-References: <20201118011104.296999-1-tyreld@linux.ibm.com>
+        Tue, 17 Nov 2020 20:11:14 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D2AC061A48;
+        Tue, 17 Nov 2020 17:11:13 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id v20so467455ljk.8;
+        Tue, 17 Nov 2020 17:11:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k1uTQmCaLL4z76gRIZgW5OMObzd3UGBaR1Yyv4E9eQk=;
+        b=Rto2KIJM7zEuqxypzt93PDHfcpYVAnMQjlVgugOtPIY1GPn2Tw90KZC8IDmMAgskdH
+         MpG1EIk215aNH6cupXTUHxfQ8Bbl+mpgpfJp0peA/fe0RrKAAWolRMLkeCG7jLDMd11k
+         zJK4RTe+XCWdXkNCnfBznOiiUS7Lj+G1iWigoKsKEjh8zCYqadxrwBTxZ+XkfHdKSHwx
+         XHlCfihABAX4t7PfS2ZuU7+/Hwz0tzGdqYDBz7M9CVw2X7Lf2X+uu4fsie3usrLuIv++
+         4I2MXFy1zla+tRXxG6yQFQyQ9iVrmAP9Z9zeYW5/nkcLo2Jbw0StYzyA55eqBiNnqDCJ
+         3/Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k1uTQmCaLL4z76gRIZgW5OMObzd3UGBaR1Yyv4E9eQk=;
+        b=s9i9yfBZbr+hym+iSeP94VxfXlZ61ERB9p4NlF95e+e/tC2q55mJytfrQN+AGFbqXb
+         oEglMg2EzVxBhal9s2khcnzJsNYoeOzw1YvcgdCXLfdbBlbR77FndwTluNFsI7T70bzf
+         RUQdRhz1mutpkcE/oX69S/LB/s7CYQl51ljOyqNL5kY4ZAFkwNrvIA7OT3ChaEu1qP5/
+         bUKv0/qWbZ6hZKy8Ct9xKM694nvbX2/CbyzILNLui7h/JjgMQpDwsioCUuMAqtlugEq8
+         cU/hp5M9QW1ZqfrHMYkvhtOajjoxgSQzUJjrV9uQ5HDaFGOOmlk/FEn7Rhoy4vWN+dsm
+         DSgg==
+X-Gm-Message-State: AOAM5329xkolMYWu6s3tTgpIAhghsbzQWowk5YXWE519GC+mMtm+/4RJ
+        T0MrCWWD4u3Syyh3G/9yEwyw0nSzB7u0BhElLU0=
+X-Google-Smtp-Source: ABdhPJzb6cde2dyBm3bIrgT1Vq6ukk4rXZepBUsZDjJ6oDvxq1XcIFvseiplfDvZZYigk6moJ3qfcsvtkmrpxniKtxE=
+X-Received: by 2002:a2e:8982:: with SMTP id c2mr3041179lji.121.1605661872055;
+ Tue, 17 Nov 2020 17:11:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_15:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 suspectscore=1 lowpriorityscore=0 spamscore=0 bulkscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011180003
+References: <20201117034108.1186569-1-guro@fb.com> <20201117034108.1186569-7-guro@fb.com>
+ <41eb5e5b-e651-4cb3-a6ea-9ff6b8aa41fb@iogearbox.net> <20201118004634.GA179309@carbon.dhcp.thefacebook.com>
+ <20201118010703.GC156448@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20201118010703.GC156448@carbon.DHCP.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 17 Nov 2020 17:11:00 -0800
+Message-ID: <CAADnVQ+vSLfgVCXB7KnXMBzVe3rL20qLwrKf=xrJXpZTmUEnYA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 06/34] bpf: prepare for memcg-based memory
+ accounting for bpf maps
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a target_wwpn field to several MADs. Its possible that a scsi
-ID of a target can change due to some fabric changes. The WWPN of the
-scsi target provides a better way to identify the target. Also, add
-flags for receiving MAD versioning information and advertising client
-support for targetWWPN with the VIOS. This latter capability flag will
-be required for future clients capable of requesting multiple hardware
-queues from the host adapter.
+On Tue, Nov 17, 2020 at 5:07 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Tue, Nov 17, 2020 at 04:46:34PM -0800, Roman Gushchin wrote:
+> > On Wed, Nov 18, 2020 at 01:06:17AM +0100, Daniel Borkmann wrote:
+> > > On 11/17/20 4:40 AM, Roman Gushchin wrote:
+> > > > In the absolute majority of cases if a process is making a kernel
+> > > > allocation, it's memory cgroup is getting charged.
+> > > >
+> > > > Bpf maps can be updated from an interrupt context and in such
+> > > > case there is no process which can be charged. It makes the memory
+> > > > accounting of bpf maps non-trivial.
+> > > >
+> > > > Fortunately, after commit 4127c6504f25 ("mm: kmem: enable kernel
+> > > > memcg accounting from interrupt contexts") and b87d8cefe43c
+> > > > ("mm, memcg: rework remote charging API to support nesting")
+> > > > it's finally possible.
+> > > >
+> > > > To do it, a pointer to the memory cgroup of the process which created
+> > > > the map is saved, and this cgroup is getting charged for all
+> > > > allocations made from an interrupt context.
+> > > >
+> > > > Allocations made from a process context will be accounted in a usual way.
+> > > >
+> > > > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > > > Acked-by: Song Liu <songliubraving@fb.com>
+> > > [...]
+> > > > +#ifdef CONFIG_MEMCG_KMEM
+> > > > +static __always_inline int __bpf_map_update_elem(struct bpf_map *map, void *key,
+> > > > +                                          void *value, u64 flags)
+> > > > +{
+> > > > + struct mem_cgroup *old_memcg;
+> > > > + bool in_interrupt;
+> > > > + int ret;
+> > > > +
+> > > > + /*
+> > > > +  * If update from an interrupt context results in a memory allocation,
+> > > > +  * the memory cgroup to charge can't be determined from the context
+> > > > +  * of the current task. Instead, we charge the memory cgroup, which
+> > > > +  * contained a process created the map.
+> > > > +  */
+> > > > + in_interrupt = in_interrupt();
+> > > > + if (in_interrupt)
+> > > > +         old_memcg = set_active_memcg(map->memcg);
+> > > > +
+> > > > + ret = map->ops->map_update_elem(map, key, value, flags);
+> > > > +
+> > > > + if (in_interrupt)
+> > > > +         set_active_memcg(old_memcg);
+> > > > +
+> > > > + return ret;
+> > >
+> > > Hmm, this approach here won't work, see also commit 09772d92cd5a ("bpf: avoid
+> > > retpoline for lookup/update/delete calls on maps") which removes the indirect
+> > > call, so the __bpf_map_update_elem() and therefore the set_active_memcg() is
+> > > not invoked for the vast majority of cases.
+> >
+> > I see. Well, the first option is to move these calls into map-specific update
+> > functions, but the list is relatively long:
+> >   nsim_map_update_elem()
+> >   cgroup_storage_update_elem()
+> >   htab_map_update_elem()
+> >   htab_percpu_map_update_elem()
+> >   dev_map_update_elem()
+> >   dev_map_hash_update_elem()
+> >   trie_update_elem()
+> >   cpu_map_update_elem()
+> >   bpf_pid_task_storage_update_elem()
+> >   bpf_fd_inode_storage_update_elem()
+> >   bpf_fd_sk_storage_update_elem()
+> >   sock_map_update_elem()
+> >   xsk_map_update_elem()
+> >
+> > Alternatively, we can set the active memcg for the whole duration of bpf
+> > execution. It's simpler, but will add some overhead. Maybe we can somehow
+> > mark programs calling into update helpers and skip all others?
+>
+> Actually, this is problematic if a program updates several maps, because
+> in theory they can belong to different cgroups.
+> So it seems that the first option is the way to go. Do you agree?
 
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
----
- drivers/scsi/ibmvscsi/ibmvfc.c | 58 ++++++++++++++++++----------------
- drivers/scsi/ibmvscsi/ibmvfc.h | 28 +++++++++++++---
- 2 files changed, 55 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 316902074abe..d33b24668367 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -149,6 +149,7 @@ static void ibmvfc_trc_start(struct ibmvfc_event *evt)
- 	struct ibmvfc_host *vhost = evt->vhost;
- 	struct ibmvfc_cmd *vfc_cmd = &evt->iu.cmd;
- 	struct ibmvfc_mad_common *mad = &evt->iu.mad_common;
-+	struct ibmvfc_fcp_cmd_iu *iu = &vfc_cmd->v1.iu;
- 	struct ibmvfc_trace_entry *entry;
- 
- 	entry = &vhost->trace[vhost->trace_index++];
-@@ -159,11 +160,11 @@ static void ibmvfc_trc_start(struct ibmvfc_event *evt)
- 
- 	switch (entry->fmt) {
- 	case IBMVFC_CMD_FORMAT:
--		entry->op_code = vfc_cmd->iu.cdb[0];
-+		entry->op_code = iu->cdb[0];
- 		entry->scsi_id = be64_to_cpu(vfc_cmd->tgt_scsi_id);
--		entry->lun = scsilun_to_int(&vfc_cmd->iu.lun);
--		entry->tmf_flags = vfc_cmd->iu.tmf_flags;
--		entry->u.start.xfer_len = be32_to_cpu(vfc_cmd->iu.xfer_len);
-+		entry->lun = scsilun_to_int(&iu->lun);
-+		entry->tmf_flags = iu->tmf_flags;
-+		entry->u.start.xfer_len = be32_to_cpu(iu->xfer_len);
- 		break;
- 	case IBMVFC_MAD_FORMAT:
- 		entry->op_code = be32_to_cpu(mad->opcode);
-@@ -183,6 +184,8 @@ static void ibmvfc_trc_end(struct ibmvfc_event *evt)
- 	struct ibmvfc_host *vhost = evt->vhost;
- 	struct ibmvfc_cmd *vfc_cmd = &evt->xfer_iu->cmd;
- 	struct ibmvfc_mad_common *mad = &evt->xfer_iu->mad_common;
-+	struct ibmvfc_fcp_cmd_iu *iu = &vfc_cmd->v1.iu;
-+	struct ibmvfc_fcp_rsp *rsp = &vfc_cmd->v1.rsp;
- 	struct ibmvfc_trace_entry *entry = &vhost->trace[vhost->trace_index++];
- 
- 	entry->evt = evt;
-@@ -192,15 +195,15 @@ static void ibmvfc_trc_end(struct ibmvfc_event *evt)
- 
- 	switch (entry->fmt) {
- 	case IBMVFC_CMD_FORMAT:
--		entry->op_code = vfc_cmd->iu.cdb[0];
-+		entry->op_code = iu->cdb[0];
- 		entry->scsi_id = be64_to_cpu(vfc_cmd->tgt_scsi_id);
--		entry->lun = scsilun_to_int(&vfc_cmd->iu.lun);
--		entry->tmf_flags = vfc_cmd->iu.tmf_flags;
-+		entry->lun = scsilun_to_int(&iu->lun);
-+		entry->tmf_flags = iu->tmf_flags;
- 		entry->u.end.status = be16_to_cpu(vfc_cmd->status);
- 		entry->u.end.error = be16_to_cpu(vfc_cmd->error);
--		entry->u.end.fcp_rsp_flags = vfc_cmd->rsp.flags;
--		entry->u.end.rsp_code = vfc_cmd->rsp.data.info.rsp_code;
--		entry->u.end.scsi_status = vfc_cmd->rsp.scsi_status;
-+		entry->u.end.fcp_rsp_flags = rsp->flags;
-+		entry->u.end.rsp_code = rsp->data.info.rsp_code;
-+		entry->u.end.scsi_status = rsp->scsi_status;
- 		break;
- 	case IBMVFC_MAD_FORMAT:
- 		entry->op_code = be32_to_cpu(mad->opcode);
-@@ -263,7 +266,7 @@ static const char *ibmvfc_get_cmd_error(u16 status, u16 error)
- static int ibmvfc_get_err_result(struct ibmvfc_cmd *vfc_cmd)
- {
- 	int err;
--	struct ibmvfc_fcp_rsp *rsp = &vfc_cmd->rsp;
-+	struct ibmvfc_fcp_rsp *rsp = &vfc_cmd->v1.rsp;
- 	int fc_rsp_len = be32_to_cpu(rsp->fcp_rsp_len);
- 
- 	if ((rsp->flags & FCP_RSP_LEN_VALID) &&
-@@ -1378,6 +1381,7 @@ static int ibmvfc_map_sg_data(struct scsi_cmnd *scmd,
- 	int sg_mapped;
- 	struct srp_direct_buf *data = &vfc_cmd->ioba;
- 	struct ibmvfc_host *vhost = dev_get_drvdata(dev);
-+	struct ibmvfc_fcp_cmd_iu *iu = &vfc_cmd->v1.iu;
- 
- 	if (cls3_error)
- 		vfc_cmd->flags |= cpu_to_be16(IBMVFC_CLASS_3_ERR);
-@@ -1394,10 +1398,10 @@ static int ibmvfc_map_sg_data(struct scsi_cmnd *scmd,
- 
- 	if (scmd->sc_data_direction == DMA_TO_DEVICE) {
- 		vfc_cmd->flags |= cpu_to_be16(IBMVFC_WRITE);
--		vfc_cmd->iu.add_cdb_len |= IBMVFC_WRDATA;
-+		iu->add_cdb_len |= IBMVFC_WRDATA;
- 	} else {
- 		vfc_cmd->flags |= cpu_to_be16(IBMVFC_READ);
--		vfc_cmd->iu.add_cdb_len |= IBMVFC_RDDATA;
-+		iu->add_cdb_len |= IBMVFC_RDDATA;
- 	}
- 
- 	if (sg_mapped == 1) {
-@@ -1516,7 +1520,7 @@ static void ibmvfc_log_error(struct ibmvfc_event *evt)
- {
- 	struct ibmvfc_cmd *vfc_cmd = &evt->xfer_iu->cmd;
- 	struct ibmvfc_host *vhost = evt->vhost;
--	struct ibmvfc_fcp_rsp *rsp = &vfc_cmd->rsp;
-+	struct ibmvfc_fcp_rsp *rsp = &vfc_cmd->v1.rsp;
- 	struct scsi_cmnd *cmnd = evt->cmnd;
- 	const char *err = unknown_error;
- 	int index = ibmvfc_get_err_index(be16_to_cpu(vfc_cmd->status), be16_to_cpu(vfc_cmd->error));
-@@ -1570,7 +1574,7 @@ static void ibmvfc_relogin(struct scsi_device *sdev)
- static void ibmvfc_scsi_done(struct ibmvfc_event *evt)
- {
- 	struct ibmvfc_cmd *vfc_cmd = &evt->xfer_iu->cmd;
--	struct ibmvfc_fcp_rsp *rsp = &vfc_cmd->rsp;
-+	struct ibmvfc_fcp_rsp *rsp = &vfc_cmd->v1.rsp;
- 	struct scsi_cmnd *cmnd = evt->cmnd;
- 	u32 rsp_len = 0;
- 	u32 sense_len = be32_to_cpu(rsp->fcp_sense_len);
-@@ -1650,17 +1654,17 @@ static struct ibmvfc_cmd *ibmvfc_init_vfc_cmd(struct ibmvfc_event *evt, struct s
- {
- 	struct fc_rport *rport = starget_to_rport(scsi_target(sdev));
- 	struct ibmvfc_cmd *vfc_cmd = &evt->iu.cmd;
--	size_t offset = offsetof(struct ibmvfc_cmd, rsp);
-+	size_t offset = offsetof(struct ibmvfc_cmd, v1.rsp);
- 
- 	memset(vfc_cmd, 0, sizeof(*vfc_cmd));
- 	vfc_cmd->resp.va = cpu_to_be64(be64_to_cpu(evt->crq.ioba) + offset);
--	vfc_cmd->resp.len = cpu_to_be32(sizeof(vfc_cmd->rsp));
-+	vfc_cmd->resp.len = cpu_to_be32(sizeof(vfc_cmd->v1.rsp));
- 	vfc_cmd->frame_type = cpu_to_be32(IBMVFC_SCSI_FCP_TYPE);
--	vfc_cmd->payload_len = cpu_to_be32(sizeof(vfc_cmd->iu));
--	vfc_cmd->resp_len = cpu_to_be32(sizeof(vfc_cmd->rsp));
-+	vfc_cmd->payload_len = cpu_to_be32(sizeof(vfc_cmd->v1.iu));
-+	vfc_cmd->resp_len = cpu_to_be32(sizeof(vfc_cmd->v1.rsp));
- 	vfc_cmd->cancel_key = cpu_to_be32((unsigned long)sdev->hostdata);
- 	vfc_cmd->tgt_scsi_id = cpu_to_be64(rport->port_id);
--	int_to_scsilun(sdev->lun, &vfc_cmd->iu.lun);
-+	int_to_scsilun(sdev->lun, &vfc_cmd->v1.iu.lun);
- 
- 	return vfc_cmd;
- }
-@@ -1697,12 +1701,12 @@ static int ibmvfc_queuecommand_lck(struct scsi_cmnd *cmnd,
- 
- 	vfc_cmd = ibmvfc_init_vfc_cmd(evt, cmnd->device);
- 
--	vfc_cmd->iu.xfer_len = cpu_to_be32(scsi_bufflen(cmnd));
--	memcpy(vfc_cmd->iu.cdb, cmnd->cmnd, cmnd->cmd_len);
-+	vfc_cmd->v1.iu.xfer_len = cpu_to_be32(scsi_bufflen(cmnd));
-+	memcpy(vfc_cmd->v1.iu.cdb, cmnd->cmnd, cmnd->cmd_len);
- 
- 	if (cmnd->flags & SCMD_TAGGED) {
- 		vfc_cmd->task_tag = cpu_to_be64(cmnd->tag);
--		vfc_cmd->iu.pri_task_attr = IBMVFC_SIMPLE_TASK;
-+		vfc_cmd->v1.iu.pri_task_attr = IBMVFC_SIMPLE_TASK;
- 	}
- 
- 	vfc_cmd->correlation = cpu_to_be64(evt);
-@@ -2029,7 +2033,7 @@ static int ibmvfc_reset_device(struct scsi_device *sdev, int type, char *desc)
- 	struct ibmvfc_cmd *tmf;
- 	struct ibmvfc_event *evt = NULL;
- 	union ibmvfc_iu rsp_iu;
--	struct ibmvfc_fcp_rsp *fc_rsp = &rsp_iu.cmd.rsp;
-+	struct ibmvfc_fcp_rsp *fc_rsp = &rsp_iu.cmd.v1.rsp;
- 	int rsp_rc = -EBUSY;
- 	unsigned long flags;
- 	int rsp_code = 0;
-@@ -2041,7 +2045,7 @@ static int ibmvfc_reset_device(struct scsi_device *sdev, int type, char *desc)
- 		tmf = ibmvfc_init_vfc_cmd(evt, sdev);
- 
- 		tmf->flags = cpu_to_be16((IBMVFC_NO_MEM_DESC | IBMVFC_TMF));
--		tmf->iu.tmf_flags = type;
-+		tmf->v1.iu.tmf_flags = type;
- 		evt->sync_iu = &rsp_iu;
- 
- 		init_completion(&evt->comp);
-@@ -2334,7 +2338,7 @@ static int ibmvfc_abort_task_set(struct scsi_device *sdev)
- 	struct ibmvfc_cmd *tmf;
- 	struct ibmvfc_event *evt, *found_evt;
- 	union ibmvfc_iu rsp_iu;
--	struct ibmvfc_fcp_rsp *fc_rsp = &rsp_iu.cmd.rsp;
-+	struct ibmvfc_fcp_rsp *fc_rsp = &rsp_iu.cmd.v1.rsp;
- 	int rc, rsp_rc = -EBUSY;
- 	unsigned long flags, timeout = IBMVFC_ABORT_TIMEOUT;
- 	int rsp_code = 0;
-@@ -2361,7 +2365,7 @@ static int ibmvfc_abort_task_set(struct scsi_device *sdev)
- 		tmf = ibmvfc_init_vfc_cmd(evt, sdev);
- 
- 		tmf->flags = cpu_to_be16((IBMVFC_NO_MEM_DESC | IBMVFC_TMF));
--		tmf->iu.tmf_flags = IBMVFC_ABORT_TASK_SET;
-+		tmf->v1.iu.tmf_flags = IBMVFC_ABORT_TASK_SET;
- 		evt->sync_iu = &rsp_iu;
- 
- 		tmf->correlation = cpu_to_be64(evt);
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.h b/drivers/scsi/ibmvscsi/ibmvfc.h
-index 34debccfb142..9d58cfd774d3 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.h
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.h
-@@ -54,6 +54,7 @@
- 
- #define IBMVFC_MAD_SUCCESS		0x00
- #define IBMVFC_MAD_NOT_SUPPORTED	0xF1
-+#define IBMVFC_MAD_VERSION_NOT_SUPP	0xF2
- #define IBMVFC_MAD_FAILED		0xF7
- #define IBMVFC_MAD_DRIVER_FAILED	0xEE
- #define IBMVFC_MAD_CRQ_ERROR		0xEF
-@@ -168,6 +169,8 @@ struct ibmvfc_npiv_login {
- #define IBMVFC_CAN_MIGRATE		0x01
- #define IBMVFC_CAN_USE_CHANNELS		0x02
- #define IBMVFC_CAN_HANDLE_FPIN		0x04
-+#define IBMVFC_CAN_USE_MAD_VERSION	0x08
-+#define IBMVFC_CAN_SEND_VF_WWPN		0x10
- 	__be64 node_name;
- 	struct srp_direct_buf async;
- 	u8 partition_name[IBMVFC_MAX_NAME];
-@@ -211,7 +214,9 @@ struct ibmvfc_npiv_login_resp {
- 	__be64 capabilities;
- #define IBMVFC_CAN_FLUSH_ON_HALT	0x08
- #define IBMVFC_CAN_SUPPRESS_ABTS	0x10
--#define IBMVFC_CAN_SUPPORT_CHANNELS	0x20
-+#define IBMVFC_MAD_VERSION_CAP		0x20
-+#define IBMVFC_HANDLE_VF_WWPN		0x40
-+#define IBMVFC_CAN_SUPPORT_CHANNELS	0x80
- 	__be32 max_cmds;
- 	__be32 scsi_id_sz;
- 	__be64 max_dma_len;
-@@ -293,6 +298,7 @@ struct ibmvfc_port_login {
- 	__be32 reserved2;
- 	struct ibmvfc_service_parms service_parms;
- 	struct ibmvfc_service_parms service_parms_change;
-+	__be64 target_wwpn;
- 	__be64 reserved3[2];
- } __packed __aligned(8);
- 
-@@ -344,6 +350,7 @@ struct ibmvfc_process_login {
- 	__be16 status;
- 	__be16 error;			/* also fc_reason */
- 	__be32 reserved2;
-+	__be64 target_wwpn;
- 	__be64 reserved3[2];
- } __packed __aligned(8);
- 
-@@ -378,6 +385,8 @@ struct ibmvfc_tmf {
- 	__be32 cancel_key;
- 	__be32 my_cancel_key;
- 	__be32 pad;
-+	__be64 target_wwpn;
-+	__be64 task_tag;
- 	__be64 reserved[2];
- } __packed __aligned(8);
- 
-@@ -474,9 +483,19 @@ struct ibmvfc_cmd {
- 	__be64 correlation;
- 	__be64 tgt_scsi_id;
- 	__be64 tag;
--	__be64 reserved3[2];
--	struct ibmvfc_fcp_cmd_iu iu;
--	struct ibmvfc_fcp_rsp rsp;
-+	__be64 target_wwpn;
-+	__be64 reserved3;
-+	union {
-+		struct {
-+			struct ibmvfc_fcp_cmd_iu iu;
-+			struct ibmvfc_fcp_rsp rsp;
-+		} v1;
-+		struct {
-+			__be64 reserved4;
-+			struct ibmvfc_fcp_cmd_iu iu;
-+			struct ibmvfc_fcp_rsp rsp;
-+		} v2;
-+	};
- } __packed __aligned(8);
- 
- struct ibmvfc_passthru_fc_iu {
-@@ -503,6 +522,7 @@ struct ibmvfc_passthru_iu {
- 	__be64 correlation;
- 	__be64 scsi_id;
- 	__be64 tag;
-+	__be64 target_wwpn;
- 	__be64 reserved2[2];
- } __packed __aligned(8);
- 
--- 
-2.27.0
-
+May be instead of kmalloc_node() that is used by most of the map updates
+introduce bpf_map_kmalloc_node() that takes a map pointer as an argument?
+And do set_memcg inside?
