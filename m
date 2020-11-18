@@ -2,104 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F682B8694
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8F32B8698
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgKRV1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:27:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47434 "EHLO
+        id S1726723AbgKRV2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKRV1M (ORCPT
+        with ESMTP id S1725947AbgKRV2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:27:12 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F69CC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:27:11 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id m13so3639890ioq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:27:11 -0800 (PST)
+        Wed, 18 Nov 2020 16:28:12 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA19C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:28:11 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id p8so3639166wrx.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:28:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eeM7fvU8Uo79E6Y3uNDD9FvmacgHALhMrr4AV1XqxP0=;
-        b=PunnfcYpbpMRJUZjucBpq/I4yqUTk9Ywtf0HDRuOgldBli9h0gqL6uycoXQpPVYNd3
-         SIKHm5l9sv8NrWaLKJr/ob4gAHdc5pz6T9/qGf5WYu6pfsHy3RBmNl6yb0HIUqRYWvTj
-         92/UikKStZsnh8ARCVAdN6yjtmhNOIFSF4zNyRdkhMI+GaHZhnYohD5SQDm/Mnpf/i4R
-         qgugEv3iRAF1lqUfyxkEdkGoBZt4ybue+bAyKy7hZbFdXMRL5YZPnoqOrp8JVfUMxa78
-         vDa/IA1W99U7UNacYiouKBxgusHbBjMDmVC7m004xjMusLeen0pLclJaq9IsKhEdrZpy
-         QyYQ==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HS6nUspWVEnRH3DktJ6lTOTBrBar/ajeOsAdlwxAVfA=;
+        b=YKzFgtkkMHlSLwlLC/Mkiiy5BraPDGwk2MuvSz2qMiEPCoLC/nICjiXxmVBQtcMNKR
+         YEwOVxtQb5fA4gateHWy9KZG4GX7tF/c+TXVDQ0CRWHYQw/96bO5jk6Nj9kCVJn9qdYt
+         ghPCbXx5vR0BY/kZW1Mo8vh77aT9X1lKadhRQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eeM7fvU8Uo79E6Y3uNDD9FvmacgHALhMrr4AV1XqxP0=;
-        b=V9Q+m1Ythpp6y/s31Z5M3Nv0tNmcb/sBture1XgRlxpWjOJbVgDMDlQDNStYub7GDJ
-         eBKob7uwBGGesDerqOgH2Gu/b6FBKYOk7avKDensAb8Pg7sooxGe3u6tVM8O9vOM84bx
-         +hshrBDnxpSoQgzcuhOG3zzZVTMPVf7j6DNzpFvjyAohIJafS1A7O48LSNeMgIAVJk67
-         rBwHiwrQ88CkZHEMla+lMUY/CHS3PuEwRZQipf2e1tSVC+HZi4hYbSi9a9marWsug+pU
-         qsgpCa8rE5fpBRuGaEjYDLIBq8KYN8x6cqf2P5Wazwe3tP7kNDNMPPthQwR3zU50H8xX
-         byJA==
-X-Gm-Message-State: AOAM531JxESzTcRmBHA7DAuNcxpA5vzm4bSUB95EWBwK7heGLe7RWyHV
-        Df9Q84iDKQ5L765YxES16BryKWx5h6FeQA==
-X-Google-Smtp-Source: ABdhPJxgpkYgNjZTur0BdZsWqdFVlKCtR8FHXQvzpQPnaFRYF7/LDl7QxStAqVnPjpkw7h2TZg3Y5g==
-X-Received: by 2002:a05:6638:124d:: with SMTP id o13mr10383581jas.98.1605734830152;
-        Wed, 18 Nov 2020 13:27:10 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id z6sm16264337ilm.69.2020.11.18.13.27.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Nov 2020 13:27:09 -0800 (PST)
-Subject: Re: [PATCH] eventfd: convert to ->write_iter()
-To:     Michal Kubecek <mkubecek@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <8a4f07e6ec47b681a32c6df5d463857e67bfc965.1605690824.git.mkubecek@suse.cz>
- <20201118151806.GA25804@infradead.org>
- <20201118195936.p33qlcjc7gp2zezz@lion.mk-sys.cz>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4e4d222c-ed8b-a40d-0cdc-cf152573645c@kernel.dk>
-Date:   Wed, 18 Nov 2020 14:27:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=HS6nUspWVEnRH3DktJ6lTOTBrBar/ajeOsAdlwxAVfA=;
+        b=aH4SC+gcJxpyMcwICsjsiOh6cDeazYD8gZ3hxUcxzuu/vjUxoSH8A+3O6P2kKU5sGM
+         C15zQNBJ1+4NW89mRNuNGRBOg40LJeVD3bB9H70tpIBOruaSQBCA/Gf6Ut4nc1YquZ2r
+         igJl+0rYgOQwCwJw/CrLV3Fpr5bymybrrXyjKFwaUuJK2MI6cXiC6vy/VcN5shXt+RbH
+         N/u2Mty0IU3MZBQHU6J2Gzxt8xImvBVq/bV7s8CiOYD5p4AGuxMhptDbqptkLCvBpYOD
+         3FqUHfmB98AkriLxebTj9vGXUjn8QYpBvoFbz/o8Qrwv1hPxObBEL0+2a5eJtgBbA82d
+         oamw==
+X-Gm-Message-State: AOAM531vOQJySuNLB9WshNBAV8D+y6oB1BL8aEuqn3xSdw5U0U5jKDrt
+        m58ulay6ru7eMMUYy1v0cTHxFA==
+X-Google-Smtp-Source: ABdhPJwyxkCdrn5AqiDgzx2c3AYE8913FWq4KNbg5UOleL8BNb0m1507hLivk7jAW0U7Oh+xiLH5Pw==
+X-Received: by 2002:adf:e607:: with SMTP id p7mr6648704wrm.93.1605734890452;
+        Wed, 18 Nov 2020 13:28:10 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id x2sm29456487wru.44.2020.11.18.13.28.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 13:28:09 -0800 (PST)
+Date:   Wed, 18 Nov 2020 22:28:07 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH] drm/via: fix assignment in if condition
+Message-ID: <20201118212807.GA401619@phenom.ffwll.local>
+Mail-Followup-To: Bernard Zhao <bernard@vivo.com>,
+        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+References: <20201118114021.105502-1-bernard@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <20201118195936.p33qlcjc7gp2zezz@lion.mk-sys.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118114021.105502-1-bernard@vivo.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/20 12:59 PM, Michal Kubecek wrote:
-> On Wed, Nov 18, 2020 at 03:18:06PM +0000, Christoph Hellwig wrote:
->> On Wed, Nov 18, 2020 at 10:19:17AM +0100, Michal Kubecek wrote:
->>> While eventfd ->read() callback was replaced by ->read_iter() recently,
->>> it still provides ->write() for writes. Since commit 4d03e3cc5982 ("fs:
->>> don't allow kernel reads and writes without iter ops"), this prevents
->>> kernel_write() to be used for eventfd and with set_fs() removal,
->>> ->write() cannot be easily called directly with a kernel buffer.
->>>
->>> According to eventfd(2), eventfd descriptors are supposed to be (also)
->>> used by kernel to notify userspace applications of events which now
->>> requires ->write_iter() op to be available (and ->write() not to be).
->>> Therefore convert eventfd_write() to ->write_iter() semantics. This
->>> patch also cleans up the code in a similar way as commit 12aceb89b0bc
->>> ("eventfd: convert to f_op->read_iter()") did in read_iter().
->>
->> A far as I can tell we don't have an in-tree user that writes to an
->> eventfd.  We can merge something like this once there is a user.
+On Wed, Nov 18, 2020 at 03:40:19AM -0800, Bernard Zhao wrote:
+> Fix check_patch.pl warning:
+> ERROR: do not use assignment in if condition
+> +                       if ((HALCYON_HEADER2 == (cmd = *buf)) &&
 > 
-> As far as I can say, we don't have an in-tree user that reads from
-> sysctl. But you not only did not object to commit 4bd6a7353ee1 ("sysctl:
-> Convert to iter interfaces") which adds ->read_iter() for sysctl, that
-> commit even bears your Signed-off-by. There may be other examples like
-> that.
+> ERROR: do not use assignment in if condition
+> +                       if (HALCYON_HEADER2 == (cmd = *buf))
+> 
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
 
-A better justification for this patch is that users like io_uring can
-potentially write non-blocking to the file if ->write_iter() is
-supported.
+Applied, thanks for your patch.
+-Daniel
+
+> ---
+>  drivers/gpu/drm/via/via_verifier.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/via/via_verifier.c b/drivers/gpu/drm/via/via_verifier.c
+> index 8d8135f424ef..3d6e3a70f318 100644
+> --- a/drivers/gpu/drm/via/via_verifier.c
+> +++ b/drivers/gpu/drm/via/via_verifier.c
+> @@ -1001,8 +1001,8 @@ via_verify_command_stream(const uint32_t * buf, unsigned int size,
+>  			state = via_check_vheader6(&buf, buf_end);
+>  			break;
+>  		case state_command:
+> -			if ((HALCYON_HEADER2 == (cmd = *buf)) &&
+> -			    supported_3d)
+> +			cmd = *buf;
+> +			if ((cmd == HALCYON_HEADER2) && supported_3d)
+>  				state = state_header2;
+>  			else if ((cmd & HALCYON_HEADER1MASK) == HALCYON_HEADER1)
+>  				state = state_header1;
+> @@ -1064,7 +1064,8 @@ via_parse_command_stream(struct drm_device *dev, const uint32_t *buf,
+>  			state = via_parse_vheader6(dev_priv, &buf, buf_end);
+>  			break;
+>  		case state_command:
+> -			if (HALCYON_HEADER2 == (cmd = *buf))
+> +			cmd = *buf;
+> +			if (cmd == HALCYON_HEADER2)
+>  				state = state_header2;
+>  			else if ((cmd & HALCYON_HEADER1MASK) == HALCYON_HEADER1)
+>  				state = state_header1;
+> -- 
+> 2.29.0
+> 
 
 -- 
-Jens Axboe
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
