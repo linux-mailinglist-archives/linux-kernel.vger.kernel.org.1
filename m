@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7A62B8847
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 059192B8849
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 00:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgKRXSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 18:18:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47926 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgKRXSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:18:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3BB50B1E1;
-        Wed, 18 Nov 2020 23:18:36 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id EEC2D603F9; Thu, 19 Nov 2020 00:18:35 +0100 (CET)
-Date:   Thu, 19 Nov 2020 00:18:35 +0100
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] eventfd: convert to ->write_iter()
-Message-ID: <20201118231835.u6hqivoayq5ej4vg@lion.mk-sys.cz>
-References: <8a4f07e6ec47b681a32c6df5d463857e67bfc965.1605690824.git.mkubecek@suse.cz>
- <20201118151806.GA25804@infradead.org>
- <20201118195936.p33qlcjc7gp2zezz@lion.mk-sys.cz>
- <4e4d222c-ed8b-a40d-0cdc-cf152573645c@kernel.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e4d222c-ed8b-a40d-0cdc-cf152573645c@kernel.dk>
+        id S1726950AbgKRXS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 18:18:59 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:40902 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726375AbgKRXS7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 18:18:59 -0500
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id D9B76C00BF;
+        Wed, 18 Nov 2020 23:18:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1605741538; bh=l8jYpxVPZqbhmqWqAoCVIcy60I2O10KGualyqBU1XR0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jvSHCY26OydhI9R8LdOudbMk1Ly2wrdyg5YNRfpH6lGKKsC6hJ/myNwLJ/W+0zi7H
+         lh34YF4FsqXPzYvCrE55KQiSrdKR/TWSxz8Jznuyk72JRTpEPNVfgo4AtO+UmMzZWg
+         K0Z3s/kggIMbm65JNAZX5RxQ4lp4+Vv7rXFl7zSBU1p+CuJqNnIwcbLfsuk/a+1FKr
+         galGumOBMBg6pSGSbwNbCn3hi4wFZfJzYe73GsKnXqRAfoNh9eQR0FkYGaTGW/i7q0
+         FksMRSb9Ro/AFhTnUJHuKp8V2e7f1THiaBrLfVJMKUOlAtEL+axZOsqfLaIkeOWXt+
+         46gZMtwh3x7fA==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 8EA3BA005C;
+        Wed, 18 Nov 2020 23:18:56 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Joao Pinto <Joao.Pinto@synopsys.com>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: Fix typo on the DesignWare IP reset bindings documentation
+Date:   Thu, 19 Nov 2020 00:18:39 +0100
+Message-Id: <89719d8d40048e9b7baa0cd984b5bb108d056de4.1605741519.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 02:27:08PM -0700, Jens Axboe wrote:
-> On 11/18/20 12:59 PM, Michal Kubecek wrote:
-> > On Wed, Nov 18, 2020 at 03:18:06PM +0000, Christoph Hellwig wrote:
-> >> On Wed, Nov 18, 2020 at 10:19:17AM +0100, Michal Kubecek wrote:
-> >>> While eventfd ->read() callback was replaced by ->read_iter() recently,
-> >>> it still provides ->write() for writes. Since commit 4d03e3cc5982 ("fs:
-> >>> don't allow kernel reads and writes without iter ops"), this prevents
-> >>> kernel_write() to be used for eventfd and with set_fs() removal,
-> >>> ->write() cannot be easily called directly with a kernel buffer.
-> >>>
-> >>> According to eventfd(2), eventfd descriptors are supposed to be (also)
-> >>> used by kernel to notify userspace applications of events which now
-> >>> requires ->write_iter() op to be available (and ->write() not to be).
-> >>> Therefore convert eventfd_write() to ->write_iter() semantics. This
-> >>> patch also cleans up the code in a similar way as commit 12aceb89b0bc
-> >>> ("eventfd: convert to f_op->read_iter()") did in read_iter().
-> >>
-> >> A far as I can tell we don't have an in-tree user that writes to an
-> >> eventfd.  We can merge something like this once there is a user.
-> > 
-> > As far as I can say, we don't have an in-tree user that reads from
-> > sysctl. But you not only did not object to commit 4bd6a7353ee1 ("sysctl:
-> > Convert to iter interfaces") which adds ->read_iter() for sysctl, that
-> > commit even bears your Signed-off-by. There may be other examples like
-> > that.
-> 
-> A better justification for this patch is that users like io_uring can
-> potentially write non-blocking to the file if ->write_iter() is
-> supported.
+This patch removes a loose "i" character is present on the current
+documentation.
 
-So you think the patch could be accepted with a modified commit message?
-(As long as there are no technical issues, of course.) I did not really
-expect there would be so much focus on a justification for a patch which
-(1) converts f_ops to a more advanced (and apparently preferred)
-interface and (2) makes eventfd f_ops more consistent.
+Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+---
+ Documentation/devicetree/bindings/reset/snps,dw-reset.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-For the record, my original motivation for this patch was indeed an out
-of tree module (not mine) using kernel write to eventfd. But that module
-can be patched to use eventfd_signal() instead and it will have to be
-patched anyway unless eventfd allows kernel_write() in 5.10 (which
-doesn't seem likely). So if improving the code is not considered
-sufficient to justify the patch, I can live with that easily. 
+diff --git a/Documentation/devicetree/bindings/reset/snps,dw-reset.txt b/Documentation/devicetree/bindings/reset/snps,dw-reset.txt
+index f94f911..0c241d4 100644
+--- a/Documentation/devicetree/bindings/reset/snps,dw-reset.txt
++++ b/Documentation/devicetree/bindings/reset/snps,dw-reset.txt
+@@ -23,7 +23,7 @@ example:
+ 		#reset-cells = <1>;
+ 	};
+ 
+-	dw_rst_2: reset-controller@1000 {i
++	dw_rst_2: reset-controller@1000 {
+ 		compatible = "snps,dw-low-reset";
+ 		reg = <0x1000 0x8>;
+ 		#reset-cells = <1>;
+-- 
+2.7.4
 
-Michal Kubecek
