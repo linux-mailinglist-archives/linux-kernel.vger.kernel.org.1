@@ -2,171 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA492B784D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A632B7851
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 09:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbgKRITF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 03:19:05 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:56495 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726724AbgKRITF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:19:05 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201118081853euoutp01d189a944f511d2d7fbde15e0086aa325~IjE3q6G8_0084500845euoutp01c
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 08:18:53 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201118081853euoutp01d189a944f511d2d7fbde15e0086aa325~IjE3q6G8_0084500845euoutp01c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1605687533;
-        bh=3AVGejOWI+zfnZDxmo65S7C/BS7eNSduGs7tvM+vBQM=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=AswUwIlFtluyPpe328WhTmE9xu+W0zV0sQBDqUkcQXWMeMEBzocNfJ3HzX+B4YZ8z
-         EZm0xq4x3tJkaCaSsKY8HEYvHJRI8rvY/NIE2pxSQhCl0W81nSTmL3hGF0ZRHbBFGT
-         sIlwc0W5vJdO7gqduZsjHcSgZq5Kf5WnAyll24kU=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201118081848eucas1p190f13d67d8792baf8dcc71ee86879fb4~IjEy2Dazn0353103531eucas1p10;
-        Wed, 18 Nov 2020 08:18:48 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 59.C6.44805.8E8D4BF5; Wed, 18
-        Nov 2020 08:18:48 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201118081847eucas1p1cd6b364d763afa452b93e81899602153~IjEyVDAL33175531755eucas1p1w;
-        Wed, 18 Nov 2020 08:18:47 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201118081847eusmtrp28b147f583bb586c8f3f3935cc0ae3993~IjEyUc8kZ3115231152eusmtrp20;
-        Wed, 18 Nov 2020 08:18:47 +0000 (GMT)
-X-AuditID: cbfec7f4-b4fff7000000af05-f2-5fb4d8e814b8
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 43.F2.21957.7E8D4BF5; Wed, 18
-        Nov 2020 08:18:47 +0000 (GMT)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201118081847eusmtip16ba6845d94231838352a8bf48b3a6e83~IjEx5XQom2356323563eusmtip1l;
-        Wed, 18 Nov 2020 08:18:47 +0000 (GMT)
-Subject: Re: [PATCH net-next v2] r8153_ecm: avoid to be prior to r8152
- driver
-To:     Hayes Wang <hayeswang@realtek.com>, netdev@vger.kernel.org
-Cc:     nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <4261c50d-4bf0-e861-dc1a-1332165db0ef@samsung.com>
-Date:   Wed, 18 Nov 2020 09:18:49 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.4.3
-MIME-Version: 1.0
-In-Reply-To: <1394712342-15778-394-Taiwan-albertk@realtek.com>
-Content-Transfer-Encoding: 7bit
+        id S1726851AbgKRIUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 03:20:02 -0500
+Received: from mail-mw2nam10on2057.outbound.protection.outlook.com ([40.107.94.57]:3809
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725772AbgKRIUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:20:02 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hZFmDGb3Syc95fXOHlliRiaXgwdXORCWQCwyYLN8YrWigRFS1qsKOzaw3cYdaIUr4crBeX5nEVoit4KgvnO9/XzMmvGVyRaQnDEQcufOwLlmvmbsSL6JjrvUpq0UzxwjbwOCkajwBc1jiRP31R5DDvn7/RzPl64XjgTkBMJxFqEU9W86W49+7WV81pPNB70JcKEhfmQk2s7vKANI2qndufWL5cDN0R/HBrM7WK5/XOXPYUTMw0VyGoAvdOADwmpLm5CL1JqVRcWyD5CCD8F0dpww6kGy3LcDO8o+NqIqMJ9ILC/SwQNX6SsFuh03MdD3Xnm15o7MctOyii9OvAHiZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QuaFK2YwudltDL1ExHWPRfpD2+PB/ak9/xNlSSMaHJ4=;
+ b=I7g+ZyT6JsRdWakEN4qrGFu53cEu5DA6MXxLlPbt3S+r1/VwZd7Q6Utwkg2l3Qc7UriN+r1fEZc6e5SRWYqOa9Z8/ssjQMAjyTzsRXeoSydedLNSdGhWekiKvcTg0h29VzcXka9aqDXKg0Okq4xHFDcHOR7xPKXCySU0eKOvpxQyf/NZQfjZI+onMzWumo8dmZB+P2f6VXrNDsWH/Yegre2fz4aH3AwCQVyCvI75SG5j4v11Qgd90E18VdS0Zj8mGF7VcZJzil3wblwXMoi8+Wpc/hNfb52+voe/ITAAct0c6P6JNAWproAO9kYa+5hvbLJ5RvGAzf8AdiB23p3LZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QuaFK2YwudltDL1ExHWPRfpD2+PB/ak9/xNlSSMaHJ4=;
+ b=s2w0amb1o3l3PcRWGL1rJQ8sJTuyvqEn1TYBjgpg5mDynpDbEfmhGmu7cq6S+ihPvIf9UlzTTwQ6JAt54/Io9kE27deUcaHdhaZMODTQcaq5cMnStBj9Dtivgi9ZvZ+VeVO62Qc5qdAIy17Mnj76w9yWNb7jAr4gDPwVdJvPFYg=
+Authentication-Results: vivo.com; dkim=none (message not signed)
+ header.d=none;vivo.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB3966.namprd12.prod.outlook.com (2603:10b6:208:165::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Wed, 18 Nov
+ 2020 08:19:59 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::1ccc:8a9a:45d3:dd31]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::1ccc:8a9a:45d3:dd31%7]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
+ 08:19:59 +0000
+Subject: Re: [PATCH] amd/amdgpu: optimise CONFIG_X||CONFIG_X_MODULE to
+ IS_ENABLED(X)
+To:     Bernard Zhao <bernard@vivo.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Ye Bin <yebin10@huawei.com>,
+        Evan Quan <evan.quan@amd.com>, Andriy Gapon <avg@FreeBSD.org>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20201118034306.103427-1-bernard@vivo.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <e401f71f-4bfd-e4cb-c21d-addd6a2e90fe@amd.com>
+Date:   Wed, 18 Nov 2020 09:19:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201118034306.103427-1-bernard@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpileLIzCtJLcpLzFFi42LZduznOd0XN7bEG2y7w2Ex7WAPo8XlXXPY
-        LBYta2W2OLZAzOJL7yxWB1aPx283s3t83iQXwBTFZZOSmpNZllqkb5fAlfFi1hqWgr9CFYuX
-        72NrYLzB38XIySEhYCJxd1EnexcjF4eQwApGiQUXfzNBOF8YJe6efcQG4XxmlLhyaRdQGQdY
-        y+etehDx5YwSG2b9YAIZJSTwnlFiSY8JiC0s4C8x9dNPdhBbRMBOYvrLC4wgNrNAsMTUps8s
-        IDabgKFE19suNhCbF6jm6Jp3YDUsAqoSa/dtB5spKpAksX3LdlaIGkGJkzOfgPVyAtXvXv+G
-        BWKmvMT2t3OYIWxxiVtP5oN9ICGwg0Ni0aVPjBB/ukjMn/OVDcIWlnh1fAs7hC0j8X8nTEMz
-        o8TDc2vZIZweRonLTTOguq0l7pz7xQbyPrOApsT6XfqQkHCUePU/DsLkk7jxVhDiBj6JSdum
-        M0OEeSU62oQgZqhJzDq+Dm7rwQuXmCcwKs1C8tksJN/MQvLNLIS1CxhZVjGKp5YW56anFhvl
-        pZbrFSfmFpfmpesl5+duYgQmk9P/jn/Zwbj81Ue9Q4xMHIyHGCU4mJVEeF1MNsYL8aYkVlal
-        FuXHF5XmpBYfYpTmYFES503asiZeSCA9sSQ1OzW1ILUIJsvEwSnVwGR7zmaKxNNKp7Nsj4Ud
-        F72aUbzLNsnGr8As/vufzZ4WMz8dyAvfK6qz23DCIqm+8mWblqyIcleeuC4kL/3VueZ/v/Sd
-        /X08+yvDV+80OnE+y//H8fD+XfcvyL0qW/riblt4l3nhbkaNY4ckTuy4rpy7wq5+2qp3PZ1t
-        bIoemW42DPpFhZ+DzZ0uzuCfo/VJe8mH/T/sX79MXRex3eXJ+rsnE3+npXLcZxM05OwWXuG6
-        z2syo/98tYfKpYHP7vQ2ds79KLf6nKji7GVL72r261y4pbXvzc4XD3yPdr2MP3mwkn3CKtF7
-        u4Rc4p7F+p60/tnyfr2M3l+2x1U7Z7TJRdgu7XvttqS/U9TUL+FNApMSS3FGoqEWc1FxIgA5
-        HZwklQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsVy+t/xu7rPb2yJN7g8VcVi2sEeRovLu+aw
-        WSxa1spscWyBmMWX3lmsDqwej99uZvf4vEkugClKz6Yov7QkVSEjv7jEVina0MJIz9DSQs/I
-        xFLP0Ng81srIVEnfziYlNSezLLVI3y5BL+PFrDUsBX+FKhYv38fWwHiDv4uRg0NCwETi81a9
-        LkYuDiGBpYwS+1b/YOpi5ASKy0icnNbACmELS/y51sUGUfSWUWLOpqeMIAlhAV+JtSt2s4PY
-        IgJ2EtNfXmAEGcosECyx92UBRP1RRom2nyfAhrIJGEp0vQUZxMnBC1R/dM07sDksAqoSa/dt
-        B6sRFUiSmHn8LDtEjaDEyZlPWEBsTqD63evfgNnMAmYS8zY/ZIaw5SW2v50DZYtL3Hoyn2kC
-        o9AsJO2zkLTMQtIyC0nLAkaWVYwiqaXFuem5xYZ6xYm5xaV56XrJ+bmbGIHxs+3Yz807GOe9
-        +qh3iJGJg/EQowQHs5IIr4vJxngh3pTEyqrUovz4otKc1OJDjKZA/0xklhJNzgdGcF5JvKGZ
-        gamhiZmlgamlmbGSOO/WuWvihQTSE0tSs1NTC1KLYPqYODilGph8vY4ZPtp2I/yYx5vMkn/z
-        /7XLil199Lls19sjVdMma05Jf23K9XOTUGOf8JcNGWevLDqc8qgn28+85Oq1HRuOx5pyTn24
-        9phOW/O9j7P0D211PTlr5dyS808+vF9YqStf3h6xinHPFAdNffWQ8zFiL2euWL32pGVcwvI3
-        x94YLj5tWqbutqnblWsWp3PLsuxb03Xa7Gd3rosXVg/udJv/07gn7JlYeeik/5rOM/asZWjs
-        r+VelbKzbsHnTLuKw+a2Bubz1/AvjLGPj1nyef5Z6VoeVrNZHNpTly/YLrabe0IC61ux1DJn
-        Pa9ghlkzaqR9w1WnP+z58fJ7vKy1QPqdZXflzveesXmrXucdfDhViaU4I9FQi7moOBEAqBCf
-        aygDAAA=
-X-CMS-MailID: 20201118081847eucas1p1cd6b364d763afa452b93e81899602153
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201118064440eucas1p27610e4adabc4f77b985b6e8271a1dbc3
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201118064440eucas1p27610e4adabc4f77b985b6e8271a1dbc3
-References: <1394712342-15778-393-Taiwan-albertk@realtek.com>
-        <CGME20201118064440eucas1p27610e4adabc4f77b985b6e8271a1dbc3@eucas1p2.samsung.com>
-        <1394712342-15778-394-Taiwan-albertk@realtek.com>
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM8P192CA0014.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21b::19) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM8P192CA0014.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:21b::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Wed, 18 Nov 2020 08:19:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 55a4cbda-a872-47e1-0b5a-08d88b9abd2c
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3966:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB39662BBA755AF6EE1E85122583E10@MN2PR12MB3966.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:323;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1JiwByY8rVNgogupy9cDdlAGBopWA8j44v8fz82rUkt9FDDJht3q67LiDOn09JftyS7CMy6WCaLNNIElpJlKUdkmEPf8FL1x6HLJftWRXgyeGAF3lsOVJKpDS/9Wkq8A9g2/U/sM6Qmc58shfayCcvFmwXrRo45A9Wwxxj0WtWMCcT1X2QQNaQhfNNtAZ7Z7mhP0uORkDDG21jHP4/7tvZG7D6ZiWY/krkKk7jDVbNSeUvaBYYNiED/MYk0kuPVQqiKYWozevHaRcy9Cd4it236Nu+vrKOD4GdlIYO398WTgnw9w0nq3y7SJihHyL4r0RdDaHgtUdEJLjgdaOBupZD0ELgGKynZQE1FEodd8oIh8dKJERZ2Srtn0S/hZ9YMZIEYmjKnOmMyMb4YgnVrc4w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(346002)(376002)(39860400002)(66556008)(66476007)(6666004)(16526019)(86362001)(36756003)(6486002)(31686004)(2906002)(5660300002)(66946007)(4326008)(31696002)(8676002)(316002)(2616005)(186003)(478600001)(110136005)(8936002)(83380400001)(52116002)(921005)(66574015)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RlNsaExiTEVaZWF4R3E1YWwveUljYkpVRzZZdXI1aXRna3BYbXhvVXVuSzg3?=
+ =?utf-8?B?cnBFZE5tbHdCb1FpZjcrK1lyRE4zUnk2OXg0QzlSN204R2NUVWh4L0hmaW9r?=
+ =?utf-8?B?MUlTTG9OZTlLN0pRUjR0aGJXR3hmdVV1RVZsMFQ4Y2EwUEZ5dG15WkpmMXZp?=
+ =?utf-8?B?OGh2ejhsK2RtMmovSGVSOUdJRTlaWmdyZ0VibURKWi9vNytTTDZKZmlud2Uy?=
+ =?utf-8?B?cW9oSVNORGNHVjdCRm9mYVA3cGRqN2RmZWNhb2ljdE9tb3hnZjU4Vi9kNDY4?=
+ =?utf-8?B?SDlDcjVnRk8vbUpsY25CTThXdzYwSVJkYTUzQTdwNEdmblZqbEl3NUQ2em5l?=
+ =?utf-8?B?TVFwbDdpUzZ4WE1kZkZjei9HYUxEVmsva25zWGtwaEltdytIMndSRjhObWk4?=
+ =?utf-8?B?STRVQ1hhaDhDOU4yaFZWRHUrZCtvZEswQWlhaGpmNjVyZkpMa01nUmo4UTFI?=
+ =?utf-8?B?NUdNNkhjVFYzVGNub09JUnFscEFYZm5YUEwrQ3pEaFZpZy93MmxyVlI4L3ZX?=
+ =?utf-8?B?Q0JyYmt6RGJGdGhvcCt5TGhhZnRGdldSZXJBT3FMR2dMNUZXWk1BZk1UTTRW?=
+ =?utf-8?B?bTYxRXhDQWJUeDA1VzVzd1NSc1haeHp4QlZjSkNCU24yRjM2R09zWW5Ya1V6?=
+ =?utf-8?B?SGlScXNSMG9oUVlqc1psRi9mNytqNHN1NzFDQ1VYcWxoOE1JMmx5aGp1dHRF?=
+ =?utf-8?B?RnA4VTRTT3Q3NnpSWW1oQ2dRS2pQT2lheS9YdzF6SE5ZbENid3dMbjhQdVF5?=
+ =?utf-8?B?cUNHcTBkQlFONEE4Q05zbFp0OFllWFNZekZYcUVFT2pzSkM2Mk4rb3JyTFl5?=
+ =?utf-8?B?V3JiN092S1RnTDFYZENhMk04UGkxRklKaTRDa21yZ3huZUE5U09xRDZ5b3hE?=
+ =?utf-8?B?WGpYaUswSW5tTDJyUWgwMHdQdkVkSVZYd1V3WGJEQkJ4VXVQZzJXeUF3Wndq?=
+ =?utf-8?B?T0RGZkxCVXdmWEkwdWkxMi8rb1FCQUxtVy9OQnVXczBaVE1ERUkxQkNlY0ti?=
+ =?utf-8?B?TjZMS0JWdVVTWC9GelRZcE5HMHJoOCtOSWNHdmxpZU9PUXZYalhMdTVRZUZU?=
+ =?utf-8?B?MVhMRmFQMCtxbW0ycGY0ZngwSCswQ05ZYnordDB0alYvTWVyTXpsSzQ0RHVj?=
+ =?utf-8?B?YjRVWkQwUi8yQ3pCbXJRVVk4Sy8zei8rRmp1OWZtdDdqU0RLSmszUFBGWlN5?=
+ =?utf-8?B?YlVHS0tkYWtManZMc0hpcmxwby9HNS9POHBvZS9oMWlmSFlyQXIxVnpYa3V2?=
+ =?utf-8?B?K05Xci9pbEpqSXlQc1NCQTJsN0QxUDBzM0JHb0ZFa3Z3dnUzQT09?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55a4cbda-a872-47e1-0b5a-08d88b9abd2c
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2020 08:19:59.2897
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +7hxYEP3qinQ6O72KtQm58Y7XX6vr01N5s+PuYl453kmgYBvkMR9f6P/lcGz2swa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3966
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-On 18.11.2020 07:43, Hayes Wang wrote:
-> Avoid r8153_ecm is compiled as built-in, if r8152 driver is compiled
-> as modules. Otherwise, the r8153_ecm would be used, even though the
-> device is supported by r8152 driver.
+Am 18.11.20 um 04:43 schrieb Bernard Zhao:
+> Optimise CONFIG_<X> || CONFIG_<X>_MODULE to IS_ENABLED(<X>).
+> This change also fix check_patch.pl warning:
+> WARNING: Prefer IS_ENABLED(<FOO>) to CONFIG_<FOO> ||
+> CONFIG_<FOO>_MODULE
+> +#if defined(CONFIG_BACKLIGHT_CLASS_DEVICE) || defined
+> (CONFIG_BACKLIGHT_CLASS_DEVICE_MODULE)
 >
-> Fixes: c1aedf015ebd ("net/usb/r8153_ecm: support ECM mode for RTL8153")
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
 
-Yes, this looks like a proper fix.
-
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Acked-by: Christian König <christian.koenig@amd.com>
 
 > ---
-> v2:
-> Use a separate Kconfig entry for r8153_ecm with proper dependencies.
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 >
->   drivers/net/usb/Kconfig  | 9 +++++++++
->   drivers/net/usb/Makefile | 3 ++-
->   2 files changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
-> index b46993d5f997..1e3719028780 100644
-> --- a/drivers/net/usb/Kconfig
-> +++ b/drivers/net/usb/Kconfig
-> @@ -628,4 +628,13 @@ config USB_NET_AQC111
->   	  This driver should work with at least the following devices:
->   	  * Aquantia AQtion USB to 5GbE
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+> index 165b02e267b0..f1980cd1f402 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+> @@ -64,7 +64,7 @@ struct amdgpu_atif {
+>   	struct amdgpu_atif_notifications notifications;
+>   	struct amdgpu_atif_functions functions;
+>   	struct amdgpu_atif_notification_cfg notification_cfg;
+> -#if defined(CONFIG_BACKLIGHT_CLASS_DEVICE) || defined(CONFIG_BACKLIGHT_CLASS_DEVICE_MODULE)
+> +#if IS_ENABLED(CONFIG_BACKLIGHT_CLASS_DEVICE)
+>   	struct backlight_device *bd;
+>   #endif
+>   	struct amdgpu_dm_backlight_caps backlight_caps;
+> @@ -447,7 +447,7 @@ static int amdgpu_atif_handler(struct amdgpu_device *adev,
+>   		DRM_DEBUG_DRIVER("ATIF: %d pending SBIOS requests\n", count);
 >   
-> +config USB_RTL8153_ECM
-> +	tristate "RTL8153 ECM support"
-> +	depends on USB_NET_CDCETHER && (USB_RTL8152 || USB_RTL8152=n)
-> +	default y
-> +	help
-> +	  This option supports ECM mode for RTL8153 ethernet adapter, when
-> +	  CONFIG_USB_RTL8152 is not set, or the RTL8153 device is not
-> +	  supported by r8152 driver.
-> +
->   endif # USB_NET_DRIVERS
-> diff --git a/drivers/net/usb/Makefile b/drivers/net/usb/Makefile
-> index 99381e6bea78..4964f7b326fb 100644
-> --- a/drivers/net/usb/Makefile
-> +++ b/drivers/net/usb/Makefile
-> @@ -13,7 +13,7 @@ obj-$(CONFIG_USB_LAN78XX)	+= lan78xx.o
->   obj-$(CONFIG_USB_NET_AX8817X)	+= asix.o
->   asix-y := asix_devices.o asix_common.o ax88172a.o
->   obj-$(CONFIG_USB_NET_AX88179_178A)      += ax88179_178a.o
-> -obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o r8153_ecm.o
-> +obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o
->   obj-$(CONFIG_USB_NET_CDC_EEM)	+= cdc_eem.o
->   obj-$(CONFIG_USB_NET_DM9601)	+= dm9601.o
->   obj-$(CONFIG_USB_NET_SR9700)	+= sr9700.o
-> @@ -41,3 +41,4 @@ obj-$(CONFIG_USB_NET_QMI_WWAN)	+= qmi_wwan.o
->   obj-$(CONFIG_USB_NET_CDC_MBIM)	+= cdc_mbim.o
->   obj-$(CONFIG_USB_NET_CH9200)	+= ch9200.o
->   obj-$(CONFIG_USB_NET_AQC111)	+= aqc111.o
-> +obj-$(CONFIG_USB_RTL8153_ECM)	+= r8153_ecm.o
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+>   		if (req.pending & ATIF_PANEL_BRIGHTNESS_CHANGE_REQUEST) {
+> -#if defined(CONFIG_BACKLIGHT_CLASS_DEVICE) || defined(CONFIG_BACKLIGHT_CLASS_DEVICE_MODULE)
+> +#if IS_ENABLED(CONFIG_BACKLIGHT_CLASS_DEVICE)
+>   			if (atif->bd) {
+>   				DRM_DEBUG_DRIVER("Changing brightness to %d\n",
+>   						 req.backlight_level);
+> @@ -806,7 +806,7 @@ int amdgpu_acpi_init(struct amdgpu_device *adev)
+>   	}
+>   	adev->atif = atif;
+>   
+> -#if defined(CONFIG_BACKLIGHT_CLASS_DEVICE) || defined(CONFIG_BACKLIGHT_CLASS_DEVICE_MODULE)
+> +#if IS_ENABLED(CONFIG_BACKLIGHT_CLASS_DEVICE)
+>   	if (atif->notifications.brightness_change) {
+>   		if (amdgpu_device_has_dc_support(adev)) {
+>   #if defined(CONFIG_DRM_AMD_DC)
 
