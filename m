@@ -2,62 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38312B7B89
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D242B7B8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgKRKmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgKRKmL (ORCPT
+        id S1727065AbgKRKmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:42:31 -0500
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:45772 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgKRKma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:42:11 -0500
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D320C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 02:42:11 -0800 (PST)
-Received: by mail-vk1-xa41.google.com with SMTP id i62so343542vkb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 02:42:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=hGoOMyJii3owWWUIU9inXnHVdD1MeHU27iWUbYqkD6o=;
-        b=OcZlAcMs3Bvb6QTCiaAHHeybxoaLvbATZ3xRwizW0BaRsZ+ABPK6sn0nQLRqbXh8Hp
-         pAuYEFJuLlQo8SuVE7E969LE1nP05wJFe++fbwb66LGiOL5602rTDX1/4SgL1jRoM52Y
-         7uiSvPKT2z8cKpYescDFm7saFzCeDc+Jz3NSIUKh6fCSYxNfGojbuz3iyy+h7+E2ag1G
-         bqTm4IyTPx6/VrfATLe9UZsCZjUOjCcCE7CngVgQHfBZ6rIJNZY6sjFZVKWRBN7nMrWP
-         FmQECf9XSF6fPyhxTA9ErLo3U6toKKvupGNe2DBDPUvyMZVsiYWkQdk9zQE/oB7ZBdhD
-         fznQ==
+        Wed, 18 Nov 2020 05:42:30 -0500
+Received: by mail-ej1-f65.google.com with SMTP id dk16so2012564ejb.12;
+        Wed, 18 Nov 2020 02:42:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=hGoOMyJii3owWWUIU9inXnHVdD1MeHU27iWUbYqkD6o=;
-        b=fJVm90oyq05jOOnCHCElz8JqmDQfdR6p5fT4xD7k1ly+BMPGLfFQFUt/Q+aE+4tPfS
-         00qJWmf78DT2iFZ98asglndH5mMyTNgUZ0KJ/Ve4Zj7IlNcgJfb1eRhKQn+grzFw1qRz
-         BYr5NNH9xsWYRxxGRgj5fE0dfStRwG3jRsLVl2Eh5pmzgROmJNiugBA1FFFBLCC7LvBZ
-         vq5g/+nAAs9hMEv+ktHUq+zQ8+rJo9dNfyC2hCZ/4Z42TM2hWkTmDmhN+0SuEfj/XFtE
-         h0vGqTQEO2YGo/siU/6mlJqRUyn6ppQWYXNs7tGwXg0wauIoAT3sG7yF/pCMtFE1TsDz
-         /BcQ==
-X-Gm-Message-State: AOAM533bqzyCVNOliycZ94HVpCo/Ye3hF7Ivkxg20CcrRSpXlz+Hng0v
-        YFxVeI5RkC1cbiELy8gOLRGwe7Vs8ONfk+EKxZE=
-X-Google-Smtp-Source: ABdhPJzWnzFbaiMredudcmJ2M6z81yblydUHJklbeG/0V8drB++8NRhoaPbIGYuyV3ZV3d2kBlh+oTNTlOPfd/hmmbw=
-X-Received: by 2002:a1f:1e41:: with SMTP id e62mr2726022vke.9.1605696130408;
- Wed, 18 Nov 2020 02:42:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RSpyNr9ImM7m91CBLdyW5FUGxR8gG95LO/PYe+GLcPM=;
+        b=rDkONH0ooGN6zPjwQT/PAJ+R1//Dlt+Ps0mBcq6GY522GsSLeaBTktGzulLuJ3eymO
+         ZZSpk1cnb5kBLhUzTulVSCZAo041hnsFvQUZ1asVr2bKTEW0P6PP+bbqZqf0zqNytHsy
+         ABF8Y30p/VTTbzl8KcQZiOxBV+T5nL2GFsDW9kT1ZIFLPThn3CIHdmqea56DM+t2B9es
+         tURslJX0FtONvQ3nRAnGo3DKY5wLvTyHh+aiXpZrjerA/aAR7BnNv2tbk20FDGzBr4dm
+         veVM7EA//tckyX1rlMwd9SdKkpHqvK9thsYp5kLGlaPy9N9gLuXGz77ze1E20omfpnv2
+         Ik6g==
+X-Gm-Message-State: AOAM531MOrtIEVx6dfrPpLBUNYJSjZoTdMd18Ak4IQpY1PVW016TtzX5
+        lp7QjBUq61+YKTONgEgsDSk=
+X-Google-Smtp-Source: ABdhPJx7/ODY/gVEoRqL5kGJlrG8wd017WuRtscj4IzeoSwSxUVO6td2HgkiLYpTN9rcgeuRjg3bBw==
+X-Received: by 2002:a17:906:1408:: with SMTP id p8mr22992702ejc.548.1605696148906;
+        Wed, 18 Nov 2020 02:42:28 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id f13sm12601074ejf.42.2020.11.18.02.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 02:42:28 -0800 (PST)
+Date:   Wed, 18 Nov 2020 11:42:26 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Alice Guo <alice.guo@nxp.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: [PATCH v3 4/4] soc: imx8m: change to use platform
+ driver
+Message-ID: <20201118104226.GA23766@kozik-lap>
+References: <20201113110409.13546-1-alice.guo@nxp.com>
+ <20201113110409.13546-4-alice.guo@nxp.com>
+ <20201114164128.GD14989@kozik-lap>
+ <AM6PR04MB6053BFD5462C9AC405962095E2E30@AM6PR04MB6053.eurprd04.prod.outlook.com>
+ <20201116161338.GB25108@kozik-lap>
+ <AM6PR04MB60534E7BD063455FDA2649C3E2E10@AM6PR04MB6053.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Received: by 2002:a67:2e8a:0:0:0:0:0 with HTTP; Wed, 18 Nov 2020 02:42:10
- -0800 (PST)
-Reply-To: michellegoodman035@gmail.com
-From:   Shayma <shaymamarwan07@gmail.com>
-Date:   Wed, 18 Nov 2020 10:42:10 +0000
-Message-ID: <CAAgEbk=w3AEQK0mm5fGEPAXuwErKiWz7cA+BwhHd9M0NfO5K8A@mail.gmail.com>
-Subject: HI
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <AM6PR04MB60534E7BD063455FDA2649C3E2E10@AM6PR04MB6053.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht erhalten.
-Ich brauche schnelle Reaktionen
-Vielen Dank
-Michelle
+On Wed, Nov 18, 2020 at 10:28:47AM +0000, Alice Guo wrote:
+ > 
+> > If it is properly explained and there is no other way then yes, you could. Here, for
+> > old DTBs, I would prefer to use
+> > of_platform_device_create() and bind to "soc" node (child of root).
+> > This way you would always have device and exactly one entry point for the
+> > probe.
+> > 
+> 
+> static struct platform_driver imx8_soc_init_driver = {
+> 	.probe = imx8_soc_init_probe,
+> 	.driver = {
+> 		.name = "soc@0",
+> 	},
+> };
+> Can I use "soc@0" to match this driver? It will not use of_platform_device_create(). It will use of_find_property() to determine whether
+> and nvmem-cells can be used. If there is no nvmem-cells, it will use the old way, which supports old DTBS. There is no need to add new
+> compatible.
+
+No, the soc@0 is not a proper name for the driver.
+
+Best regards,
+Krzysztof
