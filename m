@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098272B86EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FD12B86E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727378AbgKRVh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:37:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48966 "EHLO
+        id S1727305AbgKRVhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:37:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727189AbgKRVhI (ORCPT
+        with ESMTP id S1727202AbgKRVhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:37:08 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92D4C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:37:07 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id t21so2206125pgl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:37:07 -0800 (PST)
+        Wed, 18 Nov 2020 16:37:09 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E4EC061A52
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:37:08 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id q10so2402295pfn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 13:37:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YpJGL4iVaQpB7OmyOGqz/Jf0POXHK+Nggf2uFVT9Buw=;
-        b=Y+5VPhwluelryGOQCt3n3SLvjhuuBuGqMkLhujB4uQYgQFEmpW1VtT+R2h5FjpMVam
-         QZ/+hbIPzVkdLVm6Xi4r5vIcBFrZYlmWam9WdErqkFSyTCWTIaA65gFBn3BeBCnjYkqj
-         07AQYXYcCc+abgZN6IFLtlQTMTiI2T9XMeCntMGvzXhCwUXoiqUcYOxWODcBj1KGilpj
-         untdq2Ijm29Xf1sFR8YZ8RSEG/OIDZipc+ExWrgoaycXiLwXn2Bty4skr81+T1UYo08I
-         +CuHidQMa23Z/PhfDzYcBVFLaQTNefZNJ+1CnomlPhItmI7IBxP7l4jaFmE4rccHJ74K
-         rZcA==
+        bh=zy3k3QU006yaoOz1NXa213YD9ZVtkyTeVCamwFEkkEQ=;
+        b=icUFKKqdT3O3MfaZT1wGzWn5QA732yvQHomUfU0K7xdkzUdogA+4S5L9cfQ07uzZhZ
+         AZp2HNmeoiburbu5jDmc2c/PuxYRvv6sotaKfm79q6Enp6JzlfICvlqbMFg3PGYRHhfy
+         T4/bBSvpPrAOnS5tmioFZdtqW1Di85b5TU9NXVfYN6opIgyCIy7GzmZXyjXAarYOBTAR
+         TqIILJHxA+ck+RwZ5ikeMJwX20mym39vRwedgoOLCC/KVxBFK+1DojWmo0dFoS3k4ocb
+         dZ7M+1Bfl3Y4yr/YBRf61uxymYjuxew+M70kBhBo1DaR4/ts0UChdg//zfhcYFCZgv63
+         alCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YpJGL4iVaQpB7OmyOGqz/Jf0POXHK+Nggf2uFVT9Buw=;
-        b=JZ2nE546ELwELAZI7KuVkuiNv6XsIaTngi9RU3wb9mBdDeYcjD4rtU6Px30jMwRztZ
-         dNsXIEnPwkyaGnraU8iOAfdY5//X1J8GPTUPT+uLSQ6sNczfXKxcoQ93D6nS+UyRXzHp
-         Ey2w4JnphRzWuxINOfocotRTbiFJfkvTEQT3ybjPPFM9o6F9z91gX1Zy//tX1sYx1o6c
-         7XZYn+35gQYwfj0/T/h5hs/3f7s/9tIxGqzhuTW1f5FHo4V/dCCLGzlktckkQzvpRMbe
-         iHW2sgadqnJHXZI6mIAdOpfXZj6E/rvNUYTwsZBDVZfHAHstUSbuvhq7Wa/2x9jedtLL
-         auLA==
-X-Gm-Message-State: AOAM5308CE0rEiabvVJD2HKHvhUnXLGUId1c2iFkKM77ppY5Z9SD6KYR
-        EZ9GYji8rjccWngbcK1p56yzQw==
-X-Google-Smtp-Source: ABdhPJwsUsXFF9FMgUN8DIMvjHiLqOfSJCNaXznrpB/8orPbOgGOmPHLoZNHgr/DAnezYeTM6CpaYw==
-X-Received: by 2002:a63:3116:: with SMTP id x22mr9671299pgx.278.1605735427551;
-        Wed, 18 Nov 2020 13:37:07 -0800 (PST)
+        bh=zy3k3QU006yaoOz1NXa213YD9ZVtkyTeVCamwFEkkEQ=;
+        b=np6vjKwUwbpyrVMBwDAecv+xQ17BBh8hE+29w5Lx6Gehtk6uR9vM0ktADiWULoH6lm
+         7LJrrgRvDr0cGa3y9vYac5xD8SuvABOCv/o2LNvlZIVjGMF02a8am/+i2ros9yDg8q6h
+         GiGEtahsmd78KkP96qJFSX0SYVyybI9KiO9ZFzqtTCwQsp16uXB27/EKs/1Wl3C2xX1O
+         fdegKfhfx8CWKlx0kwCJ7j1hLpQLxtw/FHQpRs+DHwY43LOLu583njs9VSY9AA45Fbms
+         obM7FL4kPLGXmcfNUNu0t6XE3jz0339hOF0odmVm6qzimsdyDl+VmBEuB6+gAffc5Yeb
+         TG3w==
+X-Gm-Message-State: AOAM531qIjXIe+jUJ6rxHgLVO3CNHW2b7t9CN8hIS6xC6h3K7ay6DApq
+        IUY5ICx70wdQyh0UT/O6ULwmOJBe/2TkMA==
+X-Google-Smtp-Source: ABdhPJxRW8Jrq4birgvuXpqlj5KN69JKSfYJk+5WtworHWJCvIaFslvj2wHgFA+NHNM7N8f+Lm7eEQ==
+X-Received: by 2002:a65:688b:: with SMTP id e11mr9768874pgt.175.1605735428544;
+        Wed, 18 Nov 2020 13:37:08 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id e6sm26575694pfn.190.2020.11.18.13.37.06
+        by smtp.gmail.com with ESMTPSA id e6sm26575694pfn.190.2020.11.18.13.37.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 13:37:07 -0800 (PST)
+        Wed, 18 Nov 2020 13:37:08 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org
 Cc:     guennadi.liakhovetski@linux.intel.com, arnaud.pouliquen@st.com,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 5/8] rpmsg: core: Add channel creation internal API
-Date:   Wed, 18 Nov 2020 14:36:57 -0700
-Message-Id: <20201118213700.74106-6-mathieu.poirier@linaro.org>
+Subject: [PATCH v6 6/8] rpmsg: virtio: Add rpmsg channel device ops
+Date:   Wed, 18 Nov 2020 14:36:58 -0700
+Message-Id: <20201118213700.74106-7-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201118213700.74106-1-mathieu.poirier@linaro.org>
 References: <20201118213700.74106-1-mathieu.poirier@linaro.org>
@@ -66,108 +66,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
-Add the channel creation API as a first step to be able to define the
-name service announcement as a rpmsg driver independent from the RPMsg
-virtio bus.
+Implement the create and release of the RPMsg channel
+for the RPMsg virtio bus.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- drivers/rpmsg/rpmsg_core.c     | 44 ++++++++++++++++++++++++++++++++++
- drivers/rpmsg/rpmsg_internal.h | 10 ++++++++
- 2 files changed, 54 insertions(+)
+ drivers/rpmsg/virtio_rpmsg_bus.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-index 91de940896e3..e5daee4f9373 100644
---- a/drivers/rpmsg/rpmsg_core.c
-+++ b/drivers/rpmsg/rpmsg_core.c
-@@ -20,6 +20,50 @@
+diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+index 2253936593c5..6ec299f7f790 100644
+--- a/drivers/rpmsg/virtio_rpmsg_bus.c
++++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+@@ -151,6 +151,8 @@ static int virtio_rpmsg_trysendto(struct rpmsg_endpoint *ept, void *data,
+ 				  int len, u32 dst);
+ static int virtio_rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src,
+ 					   u32 dst, void *data, int len);
++static struct rpmsg_device *__rpmsg_create_channel(struct virtproc_info *vrp,
++						   struct rpmsg_channel_info *chinfo);
  
- #include "rpmsg_internal.h"
+ static const struct rpmsg_endpoint_ops virtio_endpoint_ops = {
+ 	.destroy_ept = virtio_rpmsg_destroy_ept,
+@@ -255,6 +257,24 @@ static struct rpmsg_endpoint *__rpmsg_create_ept(struct virtproc_info *vrp,
+ 	return NULL;
+ }
  
-+/**
-+ * rpmsg_create_channel() - create a new rpmsg channel
-+ * using its name and address info.
-+ * @rpdev: rpmsg device
-+ * @chinfo: channel_info to bind
-+ *
-+ * Returns a pointer to the new rpmsg device on success, or NULL on error.
-+ */
-+struct rpmsg_device *rpmsg_create_channel(struct rpmsg_device *rpdev,
-+					  struct rpmsg_channel_info *chinfo)
++static struct rpmsg_device *virtio_rpmsg_create_channel(struct rpmsg_device *rpdev,
++							struct rpmsg_channel_info *chinfo)
 +{
-+	if (WARN_ON(!rpdev))
-+		return NULL;
-+	if (!rpdev->ops || !rpdev->ops->create_channel) {
-+		dev_err(&rpdev->dev, "no create_channel ops found\n");
-+		return NULL;
-+	}
++	struct virtio_rpmsg_channel *vch = to_virtio_rpmsg_channel(rpdev);
++	struct virtproc_info *vrp = vch->vrp;
 +
-+	return rpdev->ops->create_channel(rpdev, chinfo);
++	return __rpmsg_create_channel(vrp, chinfo);
 +}
-+EXPORT_SYMBOL(rpmsg_create_channel);
 +
-+/**
-+ * rpmsg_release_channel() - release a rpmsg channel
-+ * using its name and address info.
-+ * @rpdev: rpmsg device
-+ * @chinfo: channel_info to bind
-+ *
-+ * Returns 0 on success or an appropriate error value.
-+ */
-+int rpmsg_release_channel(struct rpmsg_device *rpdev,
-+			  struct rpmsg_channel_info *chinfo)
++static int virtio_rpmsg_release_channel(struct rpmsg_device *rpdev,
++					struct rpmsg_channel_info *chinfo)
 +{
-+	if (WARN_ON(!rpdev))
-+		return -EINVAL;
-+	if (!rpdev->ops || !rpdev->ops->release_channel) {
-+		dev_err(&rpdev->dev, "no release_channel ops found\n");
-+		return -ENXIO;
-+	}
++	struct virtio_rpmsg_channel *vch = to_virtio_rpmsg_channel(rpdev);
++	struct virtproc_info *vrp = vch->vrp;
 +
-+	return rpdev->ops->release_channel(rpdev, chinfo);
++	return rpmsg_unregister_device(&vrp->vdev->dev, chinfo);
 +}
-+EXPORT_SYMBOL(rpmsg_release_channel);
 +
- /**
-  * rpmsg_create_ept() - create a new rpmsg_endpoint
-  * @rpdev: rpmsg channel device
-diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-index 3fc83cd50e98..f1de73e0f2d6 100644
---- a/drivers/rpmsg/rpmsg_internal.h
-+++ b/drivers/rpmsg/rpmsg_internal.h
-@@ -20,6 +20,8 @@
+ static struct rpmsg_endpoint *virtio_rpmsg_create_ept(struct rpmsg_device *rpdev,
+ 						      rpmsg_rx_cb_t cb,
+ 						      void *priv,
+@@ -347,6 +367,8 @@ static int virtio_rpmsg_announce_destroy(struct rpmsg_device *rpdev)
+ }
  
- /**
-  * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
-+ * @create_channel:	create backend-specific channel, optional
-+ * @release_channel:	release backend-specific channel, optional
-  * @create_ept:		create backend-specific endpoint, required
-  * @announce_create:	announce presence of new channel, optional
-  * @announce_destroy:	announce destruction of channel, optional
-@@ -29,6 +31,10 @@
-  * advertise new channels implicitly by creating the endpoints.
-  */
- struct rpmsg_device_ops {
-+	struct rpmsg_device *(*create_channel)(struct rpmsg_device *rpdev,
-+					       struct rpmsg_channel_info *chinfo);
-+	int (*release_channel)(struct rpmsg_device *rpdev,
-+			       struct rpmsg_channel_info *chinfo);
- 	struct rpmsg_endpoint *(*create_ept)(struct rpmsg_device *rpdev,
- 					    rpmsg_rx_cb_t cb, void *priv,
- 					    struct rpmsg_channel_info chinfo);
-@@ -75,6 +81,10 @@ int rpmsg_unregister_device(struct device *parent,
- struct device *rpmsg_find_device(struct device *parent,
- 				 struct rpmsg_channel_info *chinfo);
- 
-+struct rpmsg_device *rpmsg_create_channel(struct rpmsg_device *rpdev,
-+					  struct rpmsg_channel_info *chinfo);
-+int rpmsg_release_channel(struct rpmsg_device *rpdev,
-+			  struct rpmsg_channel_info *chinfo);
- /**
-  * rpmsg_chrdev_register_device() - register chrdev device based on rpdev
-  * @rpdev:	prepared rpdev to be used for creating endpoints
+ static const struct rpmsg_device_ops virtio_rpmsg_ops = {
++	.create_channel = virtio_rpmsg_create_channel,
++	.release_channel = virtio_rpmsg_release_channel,
+ 	.create_ept = virtio_rpmsg_create_ept,
+ 	.announce_create = virtio_rpmsg_announce_create,
+ 	.announce_destroy = virtio_rpmsg_announce_destroy,
 -- 
 2.25.1
 
