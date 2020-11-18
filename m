@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310CC2B7509
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 04:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0ADD2B74D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 04:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgKRDxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 22:53:18 -0500
-Received: from ip-124-219-static.velo.net.id ([222.165.219.124]:52934 "EHLO
-        mail.antara.co.id" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgKRDxR (ORCPT
+        id S1727054AbgKRDaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 22:30:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgKRDaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 22:53:17 -0500
-X-Greylist: delayed 14318 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Nov 2020 22:53:17 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mail.antara.co.id (Postfix) with ESMTP id 843A71F65722B;
-        Wed, 18 Nov 2020 05:17:00 +0700 (WIB)
-Received: from mail.antara.co.id ([127.0.0.1])
-        by localhost (mail.antara.co.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id cf4v2p72vaZW; Wed, 18 Nov 2020 05:17:00 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.antara.co.id (Postfix) with ESMTP id 7DCDD19F81CDC;
-        Wed, 18 Nov 2020 05:16:36 +0700 (WIB)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.antara.co.id 7DCDD19F81CDC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=antara.co.id;
-        s=3EABCADA-9341-11EA-A670-F6C5E02DA24A; t=1605651396;
-        bh=Hvq1Mx5uY7DkTCpM+MB6v1DaT6TqX0OjRj9UExq5z6s=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=DAwWM6JLveUmMA/xSVJFUdazo/9L59cYBFKJ3Qe8tuqICdS/5cJnludnjqtUryOeJ
-         FRsx6CDM+ns0RUNVfvdBe8pWkD1wJwdPq0266DpIOUIaQpm5RCpbjiCS65jK0MzxWA
-         kYQWXhC0LqHPyUOA2S8Nzv8MaCiGFzROBe/Pjcdmmn/j471Gku/154Vhbf6mqsSNRF
-         pEpnbFHWLPtGEy+Ft0YkzrA6PHuPOvQcwWY1OKEyD6kA8T9O8tAjHUwrJsIGj0zZyT
-         4rY7KAB1SQ+5ClkHufWCocXCmYihCQ/njvQdXs4eAFFpISUajM97Z6Wppv0VGwwecU
-         aLytTRs6MIBjg==
-X-Virus-Scanned: amavisd-new at antara.co.id
-Received: from mail.antara.co.id ([127.0.0.1])
-        by localhost (mail.antara.co.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id o47RlC7BNmej; Wed, 18 Nov 2020 05:16:36 +0700 (WIB)
-Received: from [172.20.10.2] (unknown [129.205.113.239])
-        by mail.antara.co.id (Postfix) with ESMTPSA id 296E91B291636;
-        Wed, 18 Nov 2020 05:16:12 +0700 (WIB)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 17 Nov 2020 22:30:23 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529D7C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 19:30:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PcMAtrHwVt8y6geL+odDfrTIIzd4boDIlhOEr7BpkFc=; b=R5unZwDRZlSMIrgnPPLz2jUGur
+        h/m2ml4fkanoXiEeMBLDQBm6B9EP2hWFocOiEbH1In77BNyrCmzuph8Iq8xPLVOe2Mq83WXCAKmhC
+        D3QX71lgwPy02wFpwAs8osPAjd8gkZYey1JFNXddyKFNVxCgJjZlzdon26goV8999JweuNxnZA7Aj
+        f7+RLZEAYc9odcnUQzwidU4+NxQ3UegKcxqA5z/w514xTxrIDkTtSxLK59SB8GnMFmqqC1GIwg99C
+        UP1+L0z9DD41mq+0QitlM/rHOwQUQyFn3fZN094Z1m696mG0iXVIJVa3fRRAsPC2I2qnw2m3p496g
+        +y/5qzcA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kfEAX-0006Ws-R5; Wed, 18 Nov 2020 03:30:05 +0000
+Date:   Wed, 18 Nov 2020 03:30:05 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Byungchul Park <byungchul.park@lge.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        david@fromorbit.com, amir73il@gmail.com, bfields@fieldses.org,
+        gregkh@linuxfoundation.org, kernel-team@lge.com
+Subject: Re: [RFC] Are you good with Lockdep?
+Message-ID: <20201118033005.GD29991@casper.infradead.org>
+References: <20201111050559.GA24438@X58A-UD3R>
+ <20201111105441.GA78848@gmail.com>
+ <20201111093609.1bd2b637@gandalf.local.home>
+ <87d00jo55p.fsf@nanos.tec.linutronix.de>
+ <20201112081030.GB14554@X58A-UD3R>
+ <20201112092612.00a19239@gandalf.local.home>
+ <20201112145251.GB17076@casper.infradead.org>
+ <20201116085757.GB26078@X58A-UD3R>
+ <20201116153729.GC29991@casper.infradead.org>
+ <20201118014540.GA1278700@boqun-archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: my subject
-To:     Recipients <serang@antara.co.id>
-From:   Ade <serang@antara.co.id>
-Date:   Tue, 17 Nov 2020 14:14:58 -0800
-Reply-To: atmybest1234@gmail.com
-Message-Id: <20201117221613.296E91B291636@mail.antara.co.id>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118014540.GA1278700@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guten Morgen, Ihre E-Mail wurde von meiner Stiftung als einer unserer gl=C3=
-=BCcklichen Gewinner ausgew=C3=A4hlt. Sie erhalten eine Spende in H=C3=B6he=
- von 1.000.000,00 =E2=82=AC (eine Million Euro), um sich und Ihren Mitmensc=
-hen in dieser Zeit der Coronavirus-Pandemie zu helfen.
-Ich habe gerade meine Gr=C3=BCndung begonnen und wir versuchen, die Welt zu=
- erreichen und so vielen Leben zu helfen, wie wir ber=C3=BChren k=C3=B6nnen.
-Lesen Sie mehr =C3=BCber mich. https://www.bbc.com/news/uk-england-hereford=
--worcester-47637346
+On Wed, Nov 18, 2020 at 09:45:40AM +0800, Boqun Feng wrote:
+> Hi Matthew,
+> 
+> On Mon, Nov 16, 2020 at 03:37:29PM +0000, Matthew Wilcox wrote:
+> [...]
+> > 
+> > It's not just about lockdep for semaphores.  Mutexes will spin if the
+> > current owner is still running, so to convert an interrupt-released
+> > semaphore to a mutex, we need a way to mark the mutex as being released
+> 
+> Could you provide an example for the conversion from interrupt-released
+> semaphore to a mutex? I'd like to see if we can improve lockdep to help
+> on that case.
 
-Bitte antworten Sie sofort, ich werde alles, was Sie wissen m=C3=BCssen, im=
- Detail erkl=C3=A4ren.
-Danke
-Ade Goodchild
+How about adb_probe_mutex in drivers/macintosh/adb.c.  Most of
+the acquires/releases are within the same task.  But adb_reset_bus()
+calls down(&adb_probe_mutex), then schedules adb_reset_work() which runs
+adb_probe_task() which calls up(&adb_probe_mutex).
+
+Ideally adb_probe_mutex would become a mutex instead of the semaphore
+it currently is.  adb_reset_bus() would pass ownership of the mutex to
+kadbprobe since it's the one which must run in order to release the mutex.
