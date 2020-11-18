@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F0C2B7F34
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9282B7F39
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgKRONU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 09:13:20 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:60063 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgKRONU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:13:20 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kfOCx-0005v8-3O; Wed, 18 Nov 2020 14:13:15 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] scsi: lpfc: Fix memory leak on lcb_context
-Date:   Wed, 18 Nov 2020 14:13:14 +0000
-Message-Id: <20201118141314.462471-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.28.0
+        id S1726466AbgKROOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 09:14:44 -0500
+Received: from mga12.intel.com ([192.55.52.136]:2450 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726019AbgKROOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 09:14:43 -0500
+IronPort-SDR: WEF/MeA3Fl6FCldwDWSvp+bh5rdWz9pCz19x0pEF8+mIh9hxhf9HP+C12KU2ic9XDa87pCQSib
+ 0FMamdxRvkNw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="150390228"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="150390228"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 06:14:37 -0800
+IronPort-SDR: D7WY4oclhyy/VoROe0p8bFypYOQlnkov4eqdcYFhBg4MNxPK7dw4S7lNirv+5OyrqNhZYGsxuX
+ ZnzQT08TBGaA==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="534307437"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 06:14:35 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1kfOFF-007e7W-PU; Wed, 18 Nov 2020 16:15:37 +0200
+Date:   Wed, 18 Nov 2020 16:15:37 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the gpio tree with the kspp-gustavo
+ tree
+Message-ID: <20201118141537.GU4077@smile.fi.intel.com>
+References: <20201118142445.461d3792@canb.auug.org.au>
+ <CACRpkdahE38tamkVZLx+m3nkE_dDfaN-u7gEwH48BEnf1BvsFg@mail.gmail.com>
+ <CAHp75VevuYCZVPw8HHcaoGdHBvXxHTNnujbf2BUyBECmFHZFDQ@mail.gmail.com>
+ <CAHp75Vcuxc1Ypo6GV_a2hACWPFqg4m8mZr8mLHD=LgWpLLEWMg@mail.gmail.com>
+ <20201118110057.GA30719@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118110057.GA30719@embeddedor>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Nov 18, 2020 at 05:00:57AM -0600, Gustavo A. R. Silva wrote:
+> On Wed, Nov 18, 2020 at 12:52:25PM +0200, Andy Shevchenko wrote:
+> > On Wed, Nov 18, 2020 at 11:29 AM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Wed, Nov 18, 2020 at 9:53 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > > > On Wed, Nov 18, 2020 at 4:24 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > >
+> > > > >   b8e0b635e6e6 ("gpio: Fix fall-through warnings for Clang")
+> > > > >
+> > > > > from the kspp-gustavo tree and commit:
+> > 
+> > Gustavo, one remark though. It's not okay to hide changes from
+> > maintainers. I have checked
+> > b8e0b635e6e6 ("gpio: Fix fall-through warnings for Clang") and found
+> > nothing except your SoB.
+> > 
+> > Please, inform maintainers about changes you are doing in their realm(s).
+> 
+> Sorry about that. I'll remove that change from my tree. I just wanted to
+> test some changes in linux-next.
+> 
+> Thanks for the feedback.
 
-Currently there is an error return path that neglects to free the
-allocation for lcb_context.  Fix this by adding a new error free
-exit path that kfree's lcb_context before returning.  Use this new
-kfree exit path in another exit error path that also kfree's the same
-object, allowing a line of code to be removed.
+No problem, thanks for taking care of this.
 
-Addresses-Coverity: ("Resource leak")
-Fixes: 4430f7fd09ec ("scsi: lpfc: Rework locations of ndlp reference taking")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/scsi/lpfc/lpfc_els.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+As Linus mentioned, please send a formal patch he will include in his tree.
+(I have noticed that there are two drivers in the same change, I recommend
+ to split, so should be two separated patches)
 
-diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
-index 03f47d1b21fe..0d3271b4c130 100644
---- a/drivers/scsi/lpfc/lpfc_els.c
-+++ b/drivers/scsi/lpfc/lpfc_els.c
-@@ -6515,18 +6515,20 @@ lpfc_els_rcv_lcb(struct lpfc_vport *vport, struct lpfc_iocbq *cmdiocb,
- 	lcb_context->ndlp = lpfc_nlp_get(ndlp);
- 	if (!lcb_context->ndlp) {
- 		rjt_err = LSRJT_UNABLE_TPC;
--		goto rjt;
-+		goto rjt_free;
- 	}
- 
- 	if (lpfc_sli4_set_beacon(vport, lcb_context, state)) {
- 		lpfc_printf_vlog(ndlp->vport, KERN_ERR, LOG_TRACE_EVENT,
- 				 "0193 failed to send mail box");
--		kfree(lcb_context);
- 		lpfc_nlp_put(ndlp);
- 		rjt_err = LSRJT_UNABLE_TPC;
--		goto rjt;
-+		goto rjt_free;
- 	}
- 	return 0;
-+
-+rjt_free:
-+	kfree(lcb_context);
- rjt:
- 	memset(&stat, 0, sizeof(stat));
- 	stat.un.b.lsRjtRsnCode = rjt_err;
 -- 
-2.28.0
+With Best Regards,
+Andy Shevchenko
+
 
