@@ -2,150 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77EF2B7C1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:11:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A242B7C1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgKRLKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:10:24 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:42938 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgKRLKY (ORCPT
+        id S1726696AbgKRLKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:10:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgKRLKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:10:24 -0500
-Received: by mail-io1-f70.google.com with SMTP id p67so1001206iod.9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:10:21 -0800 (PST)
+        Wed, 18 Nov 2020 06:10:47 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB0CC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:10:47 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 23so1754954wrc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:10:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TM4xeCFqhqNPAzGhqi5+938j8jku7K9Wdryn7CNC1ME=;
+        b=TGKY7RuGO77gVB241XAL+NVsGYh6cpT3uiYRDighw58NflqbuQwh4EgaEI1KNxQw4u
+         AVZDvR2dW4sSylM2M3u6W8H6J9UUYMSOLQDgh6KDFVC6WMK3Ca2u10xzRHcX5uJcuLoK
+         3UW/d1KZDCiXpUiBeIBvYHc2ytxZz36QrLFVTj8scTWc6QTc1mHzudSjX5eZBUFh0WRd
+         sh43ebAsXf4lHZKAvX5hUPqPxkOzQHRdtJZ9oZl0Ih/RgtR7Q7ItPfnt2NevujJLlheD
+         HaqWSPHZZ05bI/Ikq49gWx7R9daA/ZPBc4FxhZM1a3m6DfSFcRhCCjvYx4dvHRHSdAfm
+         grEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qxJMdjmQc4H+kMVNFv1PlhPGxPauXxN3GYZOTbxiOq8=;
-        b=O/iOwWtnig+Ytl1N1SLUTZp1KPs4eM39/6dXzoEorsvnh3dX4SDmGKEv7xIDMTmdXE
-         7uoBNads3SJpLZ7hWGgssEsX9fGs6CyFeurjlb3+aClr2ZQTs9V2nz33rR+wJVfsg3DG
-         fmwtEGPvf0C4iwwD03/QEIw24jZBTVDHnVl5cH0s6XfDu7IwjiJCUIw+7wtv3ySKcExJ
-         /Z+QFVQbs23wrVQFB+jQrkgtSY2tlAzhW5tse18VSNNmibgBjxzJuLhi0iRj3e6um9gM
-         aK6EeW1edIVtuuQA0y98gZPbbg4e1wnwMCzte/viLGGvkQWMhgieHsNo5Zvihy8zMyDZ
-         6dqg==
-X-Gm-Message-State: AOAM533TbaIfXXrTiiiAKc+bnSpamLHYyx75NTMV0Bec0Dhd1hJhnw29
-        nqnYzuDd/g3C7Q4S/6tqWEmyHBupcAt0cj9ZGBV+MczR1BM8
-X-Google-Smtp-Source: ABdhPJy3Zpy2YQ6D11LXPDs3qsFz4kgOOHPt9zlTXh7zZoY7bEtfnEVKLL0BjQscXuszlJVSnEwWplA/fEpsAKALNrc4RRhEcHLp
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TM4xeCFqhqNPAzGhqi5+938j8jku7K9Wdryn7CNC1ME=;
+        b=QqVlq0l8BStPHTDVkzCwXufZDu666CBHF57vg+ahYTD1ZlGIMrXu1Y/X154mBK2+0a
+         Ki0gDp0GJzmfp1ccYP+VGosYpaSp9is7Dvvwz3caOGBYxD7QqK7bAafyiGp61IRgycUU
+         3GNJ4t12Wzh0X5X20jPY9XOpeR7vw7QULHvijoMj4cAkhMmNBa+mom3FFqS6QYGHIojg
+         b0iV33RLdaIe61u9UGq+vIQ4kiz0zuuPZ/veakFRQFH43sPf1MIzXi7i0Ua4gvzTyqz6
+         tZO9Jr4dwbiZUM2+HWcrA5REIzlc3DWHYuP0OY+ruunVfmvYv20MXqnglCBYWvybwvBP
+         uJ5Q==
+X-Gm-Message-State: AOAM5331E5GQOhX4iXSU7g5CBuBbupV/H55jKRdTwr7KYsqqtJC8ogSL
+        nbuyBGagE569kfAqEcpGne+2Ig==
+X-Google-Smtp-Source: ABdhPJxKcSpP5PNEgdsLExRl9hVOtWk9A08Woie5Y8ZNqZYsH2v8ah7p0jFQnFfCdZxkJt8he/I4dA==
+X-Received: by 2002:a5d:4802:: with SMTP id l2mr4149899wrq.424.1605697845849;
+        Wed, 18 Nov 2020 03:10:45 -0800 (PST)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id y203sm3649174wmg.9.2020.11.18.03.10.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Nov 2020 03:10:45 -0800 (PST)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     mdtipton@codeaurora.org, bjorn.andersson@linaro.org,
+        linux-pm@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org
+Subject: [PATCH v2] interconnect: qcom: qcs404: Remove GPU and display RPM IDs
+Date:   Wed, 18 Nov 2020 13:10:44 +0200
+Message-Id: <20201118111044.26056-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:c64b:: with SMTP id 11mr17056910ill.224.1605697821285;
- Wed, 18 Nov 2020 03:10:21 -0800 (PST)
-Date:   Wed, 18 Nov 2020 03:10:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004129c705b45fa8f2@google.com>
-Subject: possible deadlock in _destroy_id
-From:   syzbot <syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        parav@mellanox.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The following errors are noticed during boot on a QCS404 board:
+[    2.926647] qcom_icc_rpm_smd_send mas 6 error -6
+[    2.934573] qcom_icc_rpm_smd_send mas 8 error -6
 
-syzbot found the following issue on:
+These errors show when we try to configure the GPU and display nodes.
+Since these particular nodes aren't supported on RPM and are purely
+local, we should just change their mas_rpm_id to -1 to avoid any
+requests being sent for these master IDs.
 
-HEAD commit:    20529233 Add linux-next specific files for 20201118
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13093cf2500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2c4fb58b6526b3c1
-dashboard link: https://syzkaller.appspot.com/bug?extid=1bc48bf7f78253f664a9
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com
-
-iwpm_register_pid: Unable to send a nlmsg (client = 2)
-infiniband syz1: RDMA CMA: cma_listen_on_dev, error -98
-============================================
-WARNING: possible recursive locking detected
-5.10.0-rc4-next-20201118-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.5/12844 is trying to acquire lock:
-ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
-ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
-
-but task is already holding lock:
-ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(lock#6);
-  lock(lock#6);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-6 locks held by syz-executor.5/12844:
- #0: ffffffff8fa76958 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x15b/0x690 drivers/infiniband/core/netlink.c:164
- #1: ffffffff8c66c490 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x261/0x540 drivers/infiniband/core/nldev.c:1545
- #2: ffffffff8c65bd90 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3c0 drivers/infiniband/core/device.c:1321
- #3: ffffffff8c65bc50 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x163/0x3c0 drivers/infiniband/core/device.c:1331
- #4: ffff888027bb0598 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:710
- #5: ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
-
-stack backtrace:
-CPU: 1 PID: 12844 Comm: syz-executor.5 Not tainted 5.10.0-rc4-next-20201118-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_deadlock_bug kernel/locking/lockdep.c:2759 [inline]
- check_deadlock kernel/locking/lockdep.c:2802 [inline]
- validate_chain kernel/locking/lockdep.c:3593 [inline]
- __lock_acquire.cold+0x115/0x39f kernel/locking/lockdep.c:4830
- lock_acquire kernel/locking/lockdep.c:5435 [inline]
- lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5400
- __mutex_lock_common kernel/locking/mutex.c:956 [inline]
- __mutex_lock+0x134/0x1110 kernel/locking/mutex.c:1103
- cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
- _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
- cma_listen_on_dev.cold+0x168/0x16d drivers/infiniband/core/cma.c:2535
- cma_add_one+0x667/0xce0 drivers/infiniband/core/cma.c:4905
- add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:712
- enable_device_and_get+0x1d5/0x3c0 drivers/infiniband/core/device.c:1333
- ib_register_device drivers/infiniband/core/device.c:1408 [inline]
- ib_register_device+0x7a0/0xa30 drivers/infiniband/core/device.c:1367
- siw_device_register drivers/infiniband/sw/siw/siw_main.c:72 [inline]
- siw_newlink drivers/infiniband/sw/siw/siw_main.c:545 [inline]
- siw_newlink+0xddb/0x1340 drivers/infiniband/sw/siw/siw_main.c:522
- nldev_newlink+0x30e/0x540 drivers/infiniband/core/nldev.c:1555
- rdma_nl_rcv_msg+0x367/0x690 drivers/infiniband/core/netlink.c:195
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x2f2/0x440 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:650 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:670
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2339
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2393
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2426
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45deb9
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f2728c60c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000002d040 RCX: 000000000045deb9
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
-RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007ffddb965a9f R14: 00007f2728c619c0 R15: 000000000118bf2c
-
-
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+v2:
+* Keep the nodes and just set the IDs to -1, as suggested by Mike.
+
+v1: http://lore.kernel.org/r/20201111100734.307-1-georgi.djakov@linaro.org
+
+ drivers/interconnect/qcom/qcs404.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/interconnect/qcom/qcs404.c b/drivers/interconnect/qcom/qcs404.c
+index d4769a5ea182..9820709b43db 100644
+--- a/drivers/interconnect/qcom/qcs404.c
++++ b/drivers/interconnect/qcom/qcs404.c
+@@ -157,8 +157,8 @@ struct qcom_icc_desc {
+ 	}
+ 
+ DEFINE_QNODE(mas_apps_proc, QCS404_MASTER_AMPSS_M0, 8, 0, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+-DEFINE_QNODE(mas_oxili, QCS404_MASTER_GRAPHICS_3D, 8, 6, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+-DEFINE_QNODE(mas_mdp, QCS404_MASTER_MDP_PORT0, 8, 8, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
++DEFINE_QNODE(mas_oxili, QCS404_MASTER_GRAPHICS_3D, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
++DEFINE_QNODE(mas_mdp, QCS404_MASTER_MDP_PORT0, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+ DEFINE_QNODE(mas_snoc_bimc_1, QCS404_SNOC_BIMC_1_MAS, 8, 76, -1, QCS404_SLAVE_EBI_CH0);
+ DEFINE_QNODE(mas_tcu_0, QCS404_MASTER_TCU_0, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+ DEFINE_QNODE(mas_spdm, QCS404_MASTER_SPDM, 4, -1, -1, QCS404_PNOC_INT_3);
