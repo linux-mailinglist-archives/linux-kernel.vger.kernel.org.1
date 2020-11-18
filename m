@@ -2,134 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4802B810F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9292B8105
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 16:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727657AbgKRPoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 10:44:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726363AbgKRPoM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 10:44:12 -0500
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E32DC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:44:12 -0800 (PST)
-Received: by mail-vk1-xa41.google.com with SMTP id b190so572510vka.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 07:44:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ydW4yk3TuZeSZNEMd5axHSNJoQSvtmifCt5BdKRg16c=;
-        b=tA/bE1TZGsTU92aTpRhEFvcyxzto5ecR9XJkFucrG8nxq2ihWvjgHGw1iuywYvzipU
-         6YvjThzK2uomYFlRwGZs/4slkWzQdwdqkQ/fN+8XFkyQ+cz+tp+9wEkcr5dFRe/tQ4in
-         Uvds9pYH9IgCzN5SL4vuds34h/D/zNQ1GBT1cdh/d2Bpr8x2VTgxY/zv0SXrVf/smnvD
-         uI5XcI1AwNVbcIb3asABOyPIgdngYu+zSx9+KxprHaC43jdC5ckL3YhQQ2wL/qzJgtxh
-         OKPN5HKu9JAlBeZ5nTxF7HklNo8p7oPUJ/EdAELw+CYnW2layqGwmSrDFOv23hUeRfl/
-         wDlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ydW4yk3TuZeSZNEMd5axHSNJoQSvtmifCt5BdKRg16c=;
-        b=sMZoaA56IJqmYc+K0g8ouJIFt2nACySkTWfEXi/brpTGttriSVPegSZkjvHHmWm6S1
-         yciFgHPjlAOaAMXkCLRk8ccaJrugK5xZDdiaO+dhQ7X4zHb+ZKbMVyy4IG4ad8IB2hhH
-         uSpu7IpQYgHKnN2IuWwZ3zgHL46KeDROUBob/VVIR1oAL2AxoYGhDmybJAqfv+/rtWDE
-         l+0IcKysKaE12OTqQUAkdfOtHOKHqO2EH+rZ3ldgpx++fMV53PAuSV0nymDKys6HHuOJ
-         hGjYMgmtLq+4zqbz+ewdIAHFDQzExiJjc42iHbot73tfHidCyAaBVKf9B61t3LHTOX3p
-         Xyng==
-X-Gm-Message-State: AOAM533omf5Ri515bDszZKgPvdzBuVVHoX7sTXfSQe8usRB1GR1GKhiW
-        ddS1Gc2NqfuT4/8FhxhudP+S5ACl0gq/wUFEao6qmw==
-X-Google-Smtp-Source: ABdhPJyclpsoyMGwEp4eAi3irUnBeWNOvcROuZtu5a/eHfn8VDPqkTkMqfp76L/7oEhiRZt1qoUuCvCNowDqVMNb2pU=
-X-Received: by 2002:a1f:41cc:: with SMTP id o195mr3817836vka.15.1605714251540;
- Wed, 18 Nov 2020 07:44:11 -0800 (PST)
+        id S1727624AbgKRPnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 10:43:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726089AbgKRPnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 10:43:52 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C890524790;
+        Wed, 18 Nov 2020 15:43:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605714230;
+        bh=UYGm67oJy3fn2gGaEmsbNsf9wQ1unp6GlqvydeoXiKI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c7YZ9AX3fJCB5dbBlKn0fiCqo/9pr8MLUsZWaDDmAzf2JkEid2RhMX/tknDJe54ja
+         Rk/TwYuda6d01QcbEzcfigJT+AVV43yqdOgXD5rDwBUrs4p9pNfwGfQfIK6KAC1KED
+         cyItfoMrmvSrdM3S+eeZCD7XK6BncbTvLWlMehMA=
+Date:   Wed, 18 Nov 2020 07:43:48 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        <davem@davemloft.net>, <linmiaohe@huawei.com>,
+        <martin.varghese@nokia.com>, <pabeni@redhat.com>,
+        <pshelar@ovn.org>, <fw@strlen.de>, <gnault@redhat.com>,
+        <steffen.klassert@secunet.com>, <kyk.segfault@gmail.com>,
+        <viro@zeniv.linux.org.uk>, <vladimir.oltean@nxp.com>,
+        <edumazet@google.com>, <saeed@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: Re: [PATCH net-next] net: add in_softirq() debug checking in
+ napi_consume_skb()
+Message-ID: <20201118074348.3bbd1468@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <5bd6de52-b8e0-db6f-3362-862ae7b2c728@huawei.com>
+References: <1603971288-4786-1-git-send-email-linyunsheng@huawei.com>
+        <20201031153824.7ae83b90@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <5b04ad33-1611-8d7b-8fec-4269c01ecab3@huawei.com>
+        <20201102114110.4a20d461@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <5bd6de52-b8e0-db6f-3362-862ae7b2c728@huawei.com>
 MIME-Version: 1.0
-References: <1605680495-37483-1-git-send-email-manish.narani@xilinx.com>
-In-Reply-To: <1605680495-37483-1-git-send-email-manish.narani@xilinx.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 18 Nov 2020 16:43:35 +0100
-Message-ID: <CAPDyKFr7KTf7jUAuPj=0NZ1sty+y7ySV8PkdrKFXPVthJ=VJVQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-of-arasan: Add pinctrl support to the driver
-To:     Manish Narani <manish.narani@xilinx.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        git@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 at 07:22, Manish Narani <manish.narani@xilinx.com> wrote:
->
-> Driver should be able to handle optional pinctrl setting.
->
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
-> ---
->  drivers/mmc/host/sdhci-of-arasan.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-> index 829ccef87426..f788cc9d5914 100644
-> --- a/drivers/mmc/host/sdhci-of-arasan.c
-> +++ b/drivers/mmc/host/sdhci-of-arasan.c
-> @@ -23,6 +23,7 @@
->  #include <linux/regmap.h>
->  #include <linux/of.h>
->  #include <linux/firmware/xlnx-zynqmp.h>
-> +#include <linux/pinctrl/consumer.h>
->
->  #include "cqhci.h"
->  #include "sdhci-pltfm.h"
-> @@ -135,6 +136,8 @@ struct sdhci_arasan_clk_data {
->   * @clk_ops:           Struct for the Arasan Controller Clock Operations.
->   * @soc_ctl_base:      Pointer to regmap for syscon for soc_ctl registers.
->   * @soc_ctl_map:       Map to get offsets into soc_ctl registers.
-> + * @pinctrl:           Per-device pin control state holder.
-> + * @pins_default:      Pinctrl state for a device.
->   * @quirks:            Arasan deviations from spec.
->   */
->  struct sdhci_arasan_data {
-> @@ -149,6 +152,8 @@ struct sdhci_arasan_data {
->
->         struct regmap   *soc_ctl_base;
->         const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
-> +       struct pinctrl  *pinctrl;
-> +       struct pinctrl_state *pins_default;
->         unsigned int    quirks;
->
->  /* Controller does not have CD wired and will not function normally without */
-> @@ -1619,6 +1624,25 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
->                 goto unreg_clk;
->         }
->
-> +       sdhci_arasan->pinctrl = devm_pinctrl_get(&pdev->dev);
-> +       if (!IS_ERR(sdhci_arasan->pinctrl)) {
-> +               sdhci_arasan->pins_default =
-> +                       pinctrl_lookup_state(sdhci_arasan->pinctrl,
-> +                                            PINCTRL_STATE_DEFAULT);
-> +               if (IS_ERR(sdhci_arasan->pins_default)) {
-> +                       dev_err(&pdev->dev, "Missing default pinctrl config\n");
-> +                       ret = PTR_ERR(sdhci_arasan->pins_default);
-> +                       goto unreg_clk;
-> +               }
-> +
-> +               ret = pinctrl_select_state(sdhci_arasan->pinctrl,
-> +                                          sdhci_arasan->pins_default);
-> +               if (ret) {
-> +                       dev_err(&pdev->dev, "could not select default state\n");
-> +                       goto unreg_clk;
-> +               }
-> +       }
+On Wed, 18 Nov 2020 09:57:30 +0800 Yunsheng Lin wrote:
+> On 2020/11/3 3:41, Jakub Kicinski wrote:
+> > On Mon, 2 Nov 2020 11:14:32 +0800 Yunsheng Lin wrote:  
+> >> On 2020/11/1 6:38, Jakub Kicinski wrote:  
+> >>> On Thu, 29 Oct 2020 19:34:48 +0800 Yunsheng Lin wrote:    
+> >>>> The current semantic for napi_consume_skb() is that caller need
+> >>>> to provide non-zero budget when calling from NAPI context, and
+> >>>> breaking this semantic will cause hard to debug problem, because
+> >>>> _kfree_skb_defer() need to run in atomic context in order to push
+> >>>> the skb to the particular cpu' napi_alloc_cache atomically.
+> >>>>
+> >>>> So add a in_softirq() debug checking in napi_consume_skb() to catch
+> >>>> this kind of error.
+> >>>>
+> >>>> Suggested-by: Eric Dumazet <edumazet@google.com>
+> >>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>    
+> >>>     
+> >>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> >>>> index 1ba8f01..1834007 100644
+> >>>> --- a/net/core/skbuff.c
+> >>>> +++ b/net/core/skbuff.c
+> >>>> @@ -897,6 +897,10 @@ void napi_consume_skb(struct sk_buff *skb, int budget)
+> >>>>  		return;
+> >>>>  	}
+> >>>>  
+> >>>> +	DEBUG_NET_WARN(!in_softirq(),
+> >>>> +		       "%s is called with non-zero budget outside softirq context.\n",
+> >>>> +		       __func__);    
+> >>>
+> >>> Can't we use lockdep instead of defining our own knobs?    
+> >>
+> >> From the first look, using the below seems better than defining our
+> >> own knobs, because there is similar lockdep_assert_in_irq() checking
+> >> already and lockdep_assert_in_*() is NULL-OP when CONFIG_PROVE_LOCKING
+> >> is not defined.
+> >>  
+> >>>
+> >>> Like this maybe?
+> >>>
+> >>> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> >>> index f5594879175a..5253a167d00c 100644
+> >>> --- a/include/linux/lockdep.h
+> >>> +++ b/include/linux/lockdep.h
+> >>> @@ -594,6 +594,14 @@ do {                                                                       \
+> >>>                       this_cpu_read(hardirqs_enabled)));                \
+> >>>  } while (0)
+> >>>  
+> >>> +#define lockdep_assert_in_softirq()                                    \
+> >>> +do {                                                                   \
+> >>> +       WARN_ON_ONCE(__lockdep_enabled                  &&              \
+> >>> +                    (softirq_count() == 0              ||              \
+> >>> +                     this_cpu_read(hardirq_context)));                 \    
+> >>
+> >> Using in_softirq() seems more obvious then using softirq_count()?
+> >> And there is below comment above avoiding the using of in_softirq(), maybe
+> >> that is why you use softirq_count() directly here?
+> >> "softirq_count() == 0" still mean we are not in the SoftIRQ context and
+> >> BH is not disabled. right? Perhap lockdep_assert_in_softirq_or_bh_disabled()
+> >> is more obvious?  
+> > 
+> > Let's add Peter to the recipients to get his opinion.
+> > 
+> > We have a per-cpu resource which is also accessed from BH (see
+> > _kfree_skb_defer()).
+> > 
+> > We're trying to come up with the correct lockdep incantation for it.  
+> 
+> Hi, Peter
+> 	Any suggestion?
 
-Isn't all this already taken care of via pinctrl_bind_pins() called by
-driver core during probe?
+Let's just try lockdep_assert_in_softirq() and see if anyone complains.
+People are more likely to respond to a patch than a discussion.
 
-[...]
+> >> /*
+> >>  * Are we doing bottom half or hardware interrupt processing?
+> >>  *
+> >>  * in_irq()       - We're in (hard) IRQ context
+> >>  * in_softirq()   - We have BH disabled, or are processing softirqs
+> >>  * in_interrupt() - We're in NMI,IRQ,SoftIRQ context or have BH disabled
+> >>  * in_serving_softirq() - We're in softirq context
+> >>  * in_nmi()       - We're in NMI context
+> >>  * in_task()	  - We're in task context
+> >>  *
+> >>  * Note: due to the BH disabled confusion: in_softirq(),in_interrupt() really
+> >>  *       should not be used in new code.
+> >>  */
+> >>
+> >>
+> >> Also, is there any particular reason we do the "this_cpu_read(hardirq_context)"
+> >> checking?  
+> > 
+> > Accessing BH resources from a hard IRQ context would be a bug, we may
+> > have interrupted a BH, so AFAIU softirq_count() != 0, but we can nest
+> > calls to _kfree_skb_defer().  
+> 
+> In that case, maybe just call lockdep_assert_in_irq() is enough?
 
-Kind regards
-Uffe
+TBH the last sentence I wrote isn't clear even to me at this point ;D
+
+Maybe using just the macros from preempt.h - like this?
+
+#define lockdep_assert_in_softirq()                                    \
+do {                                                                   \
+       WARN_ON_ONCE(__lockdep_enabled                  &&              \
+                    (!in_softirq() || in_irq() || in_nmi())	\
+} while (0)
+
+We know what we're doing so in_softirq() should be fine (famous last
+words).
