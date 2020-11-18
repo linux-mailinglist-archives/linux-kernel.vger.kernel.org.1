@@ -2,129 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2742B82CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6792F2B82CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgKRRRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:17:38 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:52468 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgKRRRh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:17:37 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIHAECE073044;
-        Wed, 18 Nov 2020 17:17:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Y7RDndGVzQeN5im5B5VdCZDnnFdxreOzlbN5GxqqxM0=;
- b=IwL17tVUmIjvZI2qwSjTt3gRoA6NEBhxyEefDWG6VkprGVuz2fwUY5PokPGePLRrCJB9
- IF8wp6DnXmvd2GKkfeV37khi2xVohcKGYJLjWE9kv64CXeu12Dy3W1RTprz8OHrJ/Jtn
- FOKYcb2nFlKe2DhbE9l8mKx6ZrvRYVbegm+UHBlKZy3ssNhEKFGjTQiBd9BJwWBq2Odf
- q7UbnU3r3gd4VCh+1Iaxjtha+SBgiEdU37Htm9mFEeU75toUikh8lLAsNJ8nrc+d5uQw
- xeeYwB2SZxh6bAnwIMOlsghjJIRP2JwohlCNOJssY1WtFQpYpjSB0nSS+Tnw2aJkQiv8 Mg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34t7vn956x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 17:17:27 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIHBLkR091763;
-        Wed, 18 Nov 2020 17:17:26 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 34umd0u0hs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Nov 2020 17:17:26 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AIHHPo3032243;
-        Wed, 18 Nov 2020 17:17:25 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 18 Nov 2020 09:17:24 -0800
-Date:   Wed, 18 Nov 2020 09:17:23 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, zhangxiaoxu5@huawei.com
-Subject: Re: [PATCH] xfs: return corresponding errcode if
- xfs_initialize_perag() fail
-Message-ID: <20201118171723.GC9695@magnolia>
-References: <20201118111531.455814-1-yukuai3@huawei.com>
+        id S1727984AbgKRRRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 12:17:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgKRRRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 12:17:36 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3EA8248A7;
+        Wed, 18 Nov 2020 17:17:32 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 12:17:30 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: violating function pointer signature
+Message-ID: <20201118121730.12ee645b@gandalf.local.home>
+In-Reply-To: <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
+References: <20201116175107.02db396d@gandalf.local.home>
+        <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
+        <20201117142145.43194f1a@gandalf.local.home>
+        <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+        <20201117153451.3015c5c9@gandalf.local.home>
+        <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+        <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118111531.455814-1-yukuai3@huawei.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=5 mlxscore=0 phishscore=0
- spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011180119
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=5
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011180119
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 07:15:31PM +0800, Yu Kuai wrote:
-> In xfs_initialize_perag(), if kmem_zalloc(), xfs_buf_hash_init(), or
-> radix_tree_preload() failed, the returned value 'error' is not set
-> accordingly.
+On Wed, 18 Nov 2020 08:50:37 -0800
+Nick Desaulniers <ndesaulniers@google.com> wrote:
+
+> On Wed, Nov 18, 2020 at 5:23 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Tue, Nov 17, 2020 at 03:34:51PM -0500, Steven Rostedt wrote:
+> >  
+> > > > > Since all tracepoints callbacks have at least one parameter (__data), we
+> > > > > could declare tp_stub_func as:
+> > > > >
+> > > > > static void tp_stub_func(void *data, ...)
+> > > > > {
+> > > > >   return;
+> > > > > }
+> > > > >
+> > > > > And now C knows that tp_stub_func() can be called with one or more
+> > > > > parameters, and had better be able to deal with it!  
+> > > >
+> > > > AFAIU this won't work.
+> > > >
+> > > > C99 6.5.2.2 Function calls
+> > > >
+> > > > "If the function is defined with a type that is not compatible with the type (of the
+> > > > expression) pointed to by the expression that denotes the called function, the behavior is
+> > > > undefined."  
+> > >
+> > > But is it really a problem in practice. I'm sure we could create an objtool
+> > > function to check to make sure we don't break anything at build time.  
+> >
+> > I think that as long as the function is completely empty (it never
+> > touches any of the arguments) this should work in practise.
+> >
+> > That is:
+> >
+> >   void tp_nop_func(void) { }  
 > 
-> Fixes: commit 8b26c5825e02 ("xfs: handle ENOMEM correctly during initialisation of perag structures")
+> or `void tp_nop_func()` if you plan to call it with different
+> parameter types that are all unused in the body.  If you do plan to
+> use them, maybe a pointer to a tagged union would be safer?
 
-/me suspects you really want
+This stub function will never use the parameters passed to it.
 
-Fixes: 9b2471797942 ("xfs: cache unlinked pointers in an rhashtable")
+You can see the patch I have for the tracepoint issue here:
 
-but otherwise this is legit.
+ https://lore.kernel.org/r/20201118093405.7a6d2290@gandalf.local.home
 
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+I could change the stub from (void) to () if that would be better.
 
---D
-
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  fs/xfs/xfs_mount.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
-> index 150ee5cb8645..7110507a2b6b 100644
-> --- a/fs/xfs/xfs_mount.c
-> +++ b/fs/xfs/xfs_mount.c
-> @@ -194,20 +194,25 @@ xfs_initialize_perag(
->  		}
->  
->  		pag = kmem_zalloc(sizeof(*pag), KM_MAYFAIL);
-> -		if (!pag)
-> +		if (!pag) {
-> +			error = -ENOMEM;
->  			goto out_unwind_new_pags;
-> +		}
->  		pag->pag_agno = index;
->  		pag->pag_mount = mp;
->  		spin_lock_init(&pag->pag_ici_lock);
->  		INIT_RADIX_TREE(&pag->pag_ici_root, GFP_ATOMIC);
-> -		if (xfs_buf_hash_init(pag))
-> +
-> +		error = xfs_buf_hash_init(pag);
-> +		if (error)
->  			goto out_free_pag;
->  		init_waitqueue_head(&pag->pagb_wait);
->  		spin_lock_init(&pag->pagb_lock);
->  		pag->pagb_count = 0;
->  		pag->pagb_tree = RB_ROOT;
->  
-> -		if (radix_tree_preload(GFP_NOFS))
-> +		error = radix_tree_preload(GFP_NOFS);
-> +		if (error)
->  			goto out_hash_destroy;
->  
->  		spin_lock(&mp->m_perag_lock);
-> -- 
-> 2.25.4
+> >
+> > can be used as an argument to any function pointer that has a void
+> > return. In fact, I already do that, grep for __static_call_nop().
+> >
+> > I'm not sure what the LLVM-CFI crud makes of it, but that's their
+> > problem.  
 > 
+> If you have instructions on how to exercise the code in question, we
+> can help test it with CFI.  Better to find any potential issues before
+> they get committed.
+
+If you apply the patch to the Linux kernel, and then apply:
+
+  https://lore.kernel.org/r/20201116181638.6b0de6f7@gandalf.local.home
+
+Which will force the failed case (to use the stubs). And build and boot the
+kernel with those patches applied, you can test it with:
+
+
+ # mount -t tracefs nodev /sys/kernel/tracing
+ # cd /sys/kernel/tracing
+ # echo 1 > events/sched/sched_switch/enable
+ # mkdir instances/foo
+ # echo 1 > instances/foo/events/sched/sched_switch/enable
+ # echo 0 > events/sched/sched_switch/enable
+
+Which add two callbacks to the function array for the sched_switch
+tracepoint. The remove the first one, which would add the stub instead.
+
+-- Steve
