@@ -2,76 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A382B7DCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 911292B7DE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgKRMr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 07:47:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKRMr4 (ORCPT
+        id S1726475AbgKRMwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 07:52:53 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:23005 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgKRMwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:47:56 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A524C0613D4;
-        Wed, 18 Nov 2020 04:47:56 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 34so1113978pgp.10;
-        Wed, 18 Nov 2020 04:47:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2DjGzshzKdHWrGiaGRKCB67Oy3hkCcTIVQFEgISUXfQ=;
-        b=bbkvjKynxttrfV7/oq9VBdsZRxyp8CYW0iQnwyHY2HQbZ8N8VD6K/YIk13UnytI6GI
-         FS3/dNG0wZ0GJHZP04YZWas/v7pnHBBsaIG8OXl9vAgg0MB3TNdLE+n5XY1Kt583X//w
-         XC3qfJjF1HP1MaY2pJD173Z3fvTvOJuOWCMF3LILbG6FygQvRsTCf+gWRKKs+q+q8HSe
-         TzKGXQLOUSaSZkRuq0lY+xwT0ncLPPzN/ocG2nM5lXvj0wxncVW5YcxtwSm/K+tDDlcz
-         9SakYjXuMYyhd+lMWqVve1RaJmL/8zEm/l1ZAkZTzM/H+Jm+yVt3bN58dfWbZuDXs9b3
-         1N7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2DjGzshzKdHWrGiaGRKCB67Oy3hkCcTIVQFEgISUXfQ=;
-        b=kd2I2O97+hRALMHkPLkP12MG6t/xF2NavIjVtBqfBDF7i/Nf+VHAB6bNKKtZbc9zdx
-         W/WpgbFzq+0ceqnVdY9lE6qKOTYTsg+8yrMbXC+ergHxtxYGGQnIv5fd+RjRLZ0hAcEw
-         7IPQNwG9YihfvOA5AmSS81TEdoh1LLf/Y+5zjvwe9+kJLkplhewVojPYd50a6ZLT5EQr
-         ds4tozPIa6VOnj9qdMa/IXbcZh+fgcy65ccQMwG9vXZpPLwz8I+78d1zBxQ4eArekzek
-         Bxg+uDWgh64u3d0YYz1e/MiseDAP8OagjfsBaFTMmQGNhFSfdVMywBFVRV/apcvDeFeC
-         SvPQ==
-X-Gm-Message-State: AOAM530op2DWFUpZtvH+b1mGA6er4qPBxhyoHme7FzXPr602s4Wq+aQ0
-        KXzAPRdDddghKKwru2s2FRYCYt7VFWr+eQtFExA=
-X-Google-Smtp-Source: ABdhPJzEg5T27QrloGArlelWEc+01Ji/j5nHAavxP4ExA5OBq3+ypXhnjgCr0vYLdLvWm8tjsZULsf4bGi5Faa//Kds=
-X-Received: by 2002:a63:1d0b:: with SMTP id d11mr5357330pgd.368.1605703676179;
- Wed, 18 Nov 2020 04:47:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20201118161959.1537d7cc@canb.auug.org.au>
-In-Reply-To: <20201118161959.1537d7cc@canb.auug.org.au>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Wed, 18 Nov 2020 04:47:46 -0800
-Message-ID: <CAJht_ENp-AHgOj4GZhSgg7P3mXtN6AYqeiZTYObji3qJWkw0pw@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the net-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 18 Nov 2020 07:52:53 -0500
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 18 Nov 2020 04:52:52 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 18 Nov 2020 04:52:50 -0800
+X-QCInternal: smtphost
+Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 18 Nov 2020 18:22:26 +0530
+Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
+        id 4184A21D6E; Wed, 18 Nov 2020 18:22:25 +0530 (IST)
+From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        rjliao@codeaurora.org, hbandi@codeaurora.org,
+        abhishekpandit@chromium.org,
+        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Subject: [PATCH v2] Bluetooth: btqca: Add support to read FW build version for WCN3991 BTSoC
+Date:   Wed, 18 Nov 2020 18:22:23 +0530
+Message-Id: <1605703943-25980-1-git-send-email-gubbaven@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 9:20 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> After merging the net-next tree, today's linux-next build (htmldocs)
-> produced this warning:
->
-> Documentation/networking/index.rst:6: WARNING: toctree contains reference to nonexisting document 'networking/framerelay'
->
-> Introduced by commit
->
->   f73659192b0b ("net: wan: Delete the DLCI / SDLA drivers")
+Add support to read FW build version for WCN3991 BTSoC
 
-Thanks for reporting! I submitted another patch to remove the
-reference to the deleted document. Thanks!
+Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+---
+ drivers/bluetooth/btqca.c | 57 +++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/bluetooth/btqca.h |  3 +++
+ 2 files changed, 60 insertions(+)
+
+diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+index ce9dcff..dfd7ff7 100644
+--- a/drivers/bluetooth/btqca.c
++++ b/drivers/bluetooth/btqca.c
+@@ -101,6 +101,56 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
+ }
+ EXPORT_SYMBOL_GPL(qca_read_soc_version);
+ 
++static int qca_read_fw_build_info(struct hci_dev *hdev)
++{
++	struct sk_buff *skb;
++	struct edl_event_hdr *edl;
++	char cmd;
++	int err = 0;
++	char build_label[QCA_FW_BUILD_VER_LEN];
++	int build_lbl_len;
++
++	bt_dev_dbg(hdev, "QCA read fw build info");
++
++	cmd = EDL_GET_BUILD_INFO_CMD;
++	skb = __hci_cmd_sync_ev(hdev, EDL_PATCH_CMD_OPCODE, EDL_PATCH_CMD_LEN,
++				&cmd, HCI_EV_VENDOR, HCI_INIT_TIMEOUT);
++	if (IS_ERR(skb)) {
++		err = PTR_ERR(skb);
++		bt_dev_err(hdev, "Reading QCA fw build info failed (%d)",
++			   err);
++		return err;
++	}
++
++	edl = (struct edl_event_hdr *)(skb->data);
++	if (!edl) {
++		bt_dev_err(hdev, "QCA read fw build info with no header");
++		err = -EILSEQ;
++		goto out;
++	}
++
++	if (edl->cresp != EDL_CMD_REQ_RES_EVT ||
++	    edl->rtype != EDL_GET_BUILD_INFO_CMD) {
++		bt_dev_err(hdev, "QCA Wrong packet received %d %d", edl->cresp,
++			   edl->rtype);
++		err = -EIO;
++		goto out;
++	}
++
++	build_lbl_len = edl->data[0];
++	memcpy(build_label, &edl->data[1], build_lbl_len);
++	*(build_label + build_lbl_len) = '\0';
++
++	bt_dev_info(hdev, "BT SoC FW Build info: %s", build_label);
++
++out:
++	kfree_skb(skb);
++	if (err)
++		bt_dev_err(hdev, "QCA read fw build info failed (%d)", err);
++
++	return err;
++}
++
+ static int qca_send_reset(struct hci_dev *hdev)
+ {
+ 	struct sk_buff *skb;
+@@ -520,6 +570,13 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+ 		return err;
+ 	}
+ 
++	if (soc_type == QCA_WCN3991) {
++		/* get fw build info */
++		err = qca_read_fw_build_info(hdev);
++		if (err < 0)
++			return err;
++	}
++
+ 	bt_dev_info(hdev, "QCA setup on UART is completed");
+ 
+ 	return 0;
+diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
+index d81b74c..375c7fc 100644
+--- a/drivers/bluetooth/btqca.h
++++ b/drivers/bluetooth/btqca.h
+@@ -11,6 +11,7 @@
+ #define EDL_PATCH_CMD_LEN		(1)
+ #define EDL_PATCH_VER_REQ_CMD		(0x19)
+ #define EDL_PATCH_TLV_REQ_CMD		(0x1E)
++#define EDL_GET_BUILD_INFO_CMD		(0x20)
+ #define EDL_NVM_ACCESS_SET_REQ_CMD	(0x01)
+ #define MAX_SIZE_PER_TLV_SEGMENT	(243)
+ #define QCA_PRE_SHUTDOWN_CMD		(0xFC08)
+@@ -34,6 +35,8 @@
+ #define QCA_HCI_CC_OPCODE		0xFC00
+ #define QCA_HCI_CC_SUCCESS		0x00
+ 
++#define QCA_FW_BUILD_VER_LEN		255
++
+ enum qca_baudrate {
+ 	QCA_BAUDRATE_115200 	= 0,
+ 	QCA_BAUDRATE_57600,
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
