@@ -2,103 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED50E2B8406
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:47:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660512B8407
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgKRSpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:45:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgKRSpx (ORCPT
+        id S1726614AbgKRSrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:47:11 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:37594 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbgKRSrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:45:53 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966C1C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:45:51 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id v144so4412338lfa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 10:45:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4Ug/4t0fM3pIpIAub0llFf/8Xaf+lcT8t0V5wPmfAso=;
-        b=gozNiFyAIAeRymxxB2sVP7pZY8eXn6i0bdSQC8BcSw0/V9sD0rco8VOu8rAfHq856s
-         FS7XgqgNE5LAUWeqGVJ1kyBw+Rx60wcQWaM4w95Ezodmdv8I9fCy6cCnCJu4IY2U6dYM
-         lTIff9uLe3QqN7HOVkX7br/nHmMdzFZrP4qxGlDsPulFA6SSmKj8l1B29++6FFJDIQ6K
-         NejhrhI/QP18FDOC4UryKrGgY+nZV/HxNjfxI1mlQMB8Szo+EQ9/l4Xur+JKDVYs6FJB
-         AthANSgXoOf0jTu6kB4dgM4W1i9Nq76zmxJikCxqTML0qTijsecgIpw34B1i+oYPWPqJ
-         yNhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Ug/4t0fM3pIpIAub0llFf/8Xaf+lcT8t0V5wPmfAso=;
-        b=udBdZvkMJZPfZh7UO6VYINey5DrKptoPCeUsSmxU0UrKXc4jgQoYCIqmLsEl2kHoi9
-         yg2S8qVOM8vGvNZb5uddrmbtM0Qm27eCCNEKspbe/I56z6VCyddJDtMJu8OWk0OxNzqQ
-         8brhVXMZLwGrX18nusm3DU3fcLzcJWPQO0+YX3v9zNMOW+FU7Tjk5ScC1iBAgEA0YdKD
-         845QBerOz6xCCUdD1U9XVEFMRnBRhUHIn0BLGdRJqluFnMheIdQQdkm7lJYE/6Qv7uFu
-         7QUhysYHCS0CI4oKCNpnsqRjo/2l3Dqw9prZL15A6/xT5zSZ425L34q5O9HG78dSpo9v
-         yy9A==
-X-Gm-Message-State: AOAM533k5R52teE3iiQLGHoLGhxchK1n+AInpcghPd5PlxqaG9GG9jGn
-        xH691PBye8pDJMhZcGEv/5elxYaGW4yJYbMYNUQ=
-X-Google-Smtp-Source: ABdhPJypgN7nclvX8BPdMcWzPn6z4X/5N660ZKeA+awwd0+ULJzwVj2KkHQCcdQihNEuiqmOxl1AaV78nbNmHuOXWhU=
-X-Received: by 2002:a19:4147:: with SMTP id o68mr4454498lfa.365.1605725149965;
- Wed, 18 Nov 2020 10:45:49 -0800 (PST)
+        Wed, 18 Nov 2020 13:47:10 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 5AF141F44997
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH v3 00/13] Stateless H.264 de-staging
+Date:   Wed, 18 Nov 2020 15:46:47 -0300
+Message-Id: <20201118184700.331213-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201118124035.96976-1-dwaipayanray1@gmail.com>
- <457730448c84136be089748bea69abd2254e3832.camel@perches.com>
- <CABJPP5CqKjY3_mfkJEsHX_8Zc7q1TRCgA4T54sTEZBiKgPS+OQ@mail.gmail.com> <754e240d1c88274ce2d94a5b6dbcfff1cc8c9508.camel@perches.com>
-In-Reply-To: <754e240d1c88274ce2d94a5b6dbcfff1cc8c9508.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Thu, 19 Nov 2020 00:15:19 +0530
-Message-ID: <CABJPP5CHofzA46FHe3eJrgjQBTcaoCkR=dc29xxK80oFZJVfoQ@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: add --fix option for OPEN_BRACE issues
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 12:09 AM Joe Perches <joe@perches.com> wrote:
->
-> On Thu, 2020-11-19 at 00:03 +0530, Dwaipayan Ray wrote:
-> > On Wed, Nov 18, 2020 at 11:44 PM Joe Perches <joe@perches.com> wrote:
-> > >
-> > > On Wed, 2020-11-18 at 18:10 +0530, Dwaipayan Ray wrote:
-> > > > Brace style misuses of the following types are now
-> > > > corrected:
-> > > []
-> > > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > > []
-> > > > @@ -3937,9 +3937,23 @@ sub process {
-> > > >                       #print "pre<$pre_ctx>\nline<$line>\nctx<$ctx>\nnext<$lines[$ctx_ln - 1]>\n";
-> > > >
-> > > >
-> > > >                       if ($ctx !~ /{\s*/ && defined($lines[$ctx_ln - 1]) && $lines[$ctx_ln - 1] =~ /^\+\s*{/) {
-> > > > -                             ERROR("OPEN_BRACE",
-> > > > -                                   "that open brace { should be on the previous line\n" .
-> > > > -                                     "$here\n$ctx\n$rawlines[$ctx_ln - 1]\n");
-> > > > +                             if (ERROR("OPEN_BRACE",
-> > > > +                                       "that open brace { should be on the previous line\n" .
-> > > > +                                             "$here\n$ctx\n$rawlines[$ctx_ln - 1]\n") &&
-> > > > +                                 $fix) {
-> > > > +                                     my $line1 = $rawlines[$ctx_ln - 2];
-> > >
-> > > How are you sure that in a patch context this line always starts with /^\+/ ?
-> >
-> > Hi,
-> > I followed it from the other fixes for OPEN_BRACE which were already
-> > there. In the patch context if the lines are added then only I think the fix
-> > should be triggered. Other instances should not be modified.
->
-> As far as I know there are no existing uses of --fix with OPEN_BRACE.
->
+Now that H.264 stateless controls are solid, we can get it
+out of staging.
 
-I think you added it via 8d1824780f2f1 ("checkpatch: add --fix option
-for a couple OPEN_BRACE misuses")
+Following some guidelines from Hans, this series creates a
+new stateless control class for the stable codec controls to land.
+
+While here, I'm including a patch from Jonas adding profiles
+and levels to Rkvdec, and also made a similar fix for Cedrus.
+
+This series was tested on a i.MX8MQ EVK board, using GStreamer:
+
+https://gitlab.freedesktop.org/ezequielgarcia/gst-plugins-bad/-/commits/h264_stable_uapi
+
+In case someone wants to give this a test.
+
+Here's compliance output, with today's master branch:
+
+commit 11da65eee7a271bba3f21d8117cdac428fe3a91e (HEAD -> master, origin/master, origin/HEAD)
+Author: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date:   Sat Nov 14 13:41:14 2020 +0100
+
+    v4l2-ctl: clean up control value printing
+
+v4l2-compliance 1.19.0GIT_COMMIT_CNT, 64 bits, 64-bit time_t
+v4l2-compliance SHA: GIT_SHA GIT_COMMIT_DATE
+
+Compliance test for hantro-vpu device /dev/video0:
+
+Driver Info:
+	Driver name      : hantro-vpu
+	Card type        : nxp,imx8mq-vpu-dec
+	Bus info         : platform: hantro-vpu
+	Driver version   : 5.10.0
+	Capabilities     : 0x84204000
+		Video Memory-to-Memory Multiplanar
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04204000
+		Video Memory-to-Memory Multiplanar
+		Streaming
+		Extended Pix Format
+Media Driver Info:
+	Driver name      : hantro-vpu
+	Model            : hantro-vpu
+	Serial           : 
+	Bus info         : platform: hantro-vpu
+	Media version    : 5.10.0
+	Hardware revision: 0x00000000 (0)
+	Driver version   : 5.10.0
+Interface Info:
+	ID               : 0x0300000c
+	Type             : V4L Video
+Entity Info:
+	ID               : 0x00000001 (1)
+	Name             : nxp,imx8mq-vpu-dec-source
+	Function         : V4L2 I/O
+	Pad 0x01000002   : 0: Source
+	  Link 0x02000008: to remote pad 0x1000004 of entity 'nxp,imx8mq-vpu-dec-proc': Data, Enabled, Immutable
+
+Required ioctls:
+	test MC information (see 'Media Driver Info' above): OK
+	test VIDIOC_QUERYCAP: OK
+
+Allow for multiple opens:
+	test second /dev/video0 open: OK
+	test VIDIOC_QUERYCAP: OK
+	test VIDIOC_G/S_PRIORITY: OK
+	test for unlimited opens: OK
+
+	test invalid ioctls: OK
+Debug ioctls:
+	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+	test VIDIOC_LOG_STATUS: OK (Not Supported)
+
+Input ioctls:
+	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+	Inputs: 0 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+	Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+	test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls:
+	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+	test VIDIOC_QUERYCTRL: OK
+	test VIDIOC_G/S_CTRL: OK
+	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+	Standard Controls: 11 Private Controls: 1
+
+Format ioctls:
+	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+	test VIDIOC_G/S_PARM: OK (Not Supported)
+	test VIDIOC_G_FBUF: OK (Not Supported)
+	test VIDIOC_G_FMT: OK
+	test VIDIOC_TRY_FMT: OK
+	test VIDIOC_S_FMT: OK
+	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+	test Cropping: OK (Not Supported)
+	test Composing: OK (Not Supported)
+	test Scaling: OK (Not Supported)
+
+Codec ioctls:
+	test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+	test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+
+Buffer ioctls:
+	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+	test VIDIOC_EXPBUF: OK
+	test Requests: OK
+
+Total for hantro-vpu device /dev/video0: 46, Succeeded: 46, Failed: 0, Warnings: 0
 
 Thanks,
-Dwaipayan.
+Ezequiel
+
+v3:
+  * Dropped level control from Cedrus, as agreed.
+  * Add support for H264 stateless controls in std_log and std_validate_compound.
+  * Added a ctrl debug error message, to help debug validation issues.
+  * Style minor fixes as requested by Hans.
+v2:
+  * Split destage changes in several patches so it's easier to review.
+  * Added missing changes to drivers/media/v4l2-core/v4l2-ctrls.c.
+  * Renamed V4L2_CID_CODEC_CX2341X_ and V4L2_CID_MPEG_MFC51_
+  * Moved the compatibility macros for MPEG to the end of the header.
+
+Ezequiel Garcia (12):
+  media: ctrls: Add validate failure debug message
+  media: cedrus: h264: Support profile controls
+  media: Rename stateful codec control macros
+  media: Clean stateless control includes
+  media: uapi: h264: Add profile_idc macros
+  media: controls: Validate H264 stateless controls
+  media: controls: Add the stateless codec control class
+  media: uapi: Move parsed H264 pixel format out of staging
+  media: uapi: Move the H264 stateless control types out of staging
+  media: controls: Log H264 stateless controls in .std_log
+  media: uapi: move H264 stateless controls out of staging
+  media: docs: Move the H264 stateless codec uAPI
+
+Jonas Karlman (1):
+  media: rkvdec: h264: Support profile and level controls
+
+ .../userspace-api/media/v4l/common.rst        |   1 +
+ .../userspace-api/media/v4l/dev-mem2mem.rst   |   2 +-
+ .../media/v4l/ext-ctrls-codec-stateless.rst   | 674 +++++++++++++++
+ .../media/v4l/ext-ctrls-codec.rst             | 696 +--------------
+ .../media/v4l/extended-controls.rst           |   8 +-
+ .../media/v4l/pixfmt-compressed.rst           |  21 +-
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |   6 +-
+ drivers/media/common/cx2341x.c                |   4 +-
+ drivers/media/platform/s5p-mfc/s5p_mfc_dec.c  |   2 +-
+ drivers/media/platform/s5p-mfc/s5p_mfc_enc.c  |   2 +-
+ drivers/media/v4l2-core/v4l2-ctrls.c          | 153 +++-
+ drivers/staging/media/hantro/hantro_drv.c     |  26 +-
+ drivers/staging/media/hantro/hantro_h264.c    |   8 +-
+ drivers/staging/media/hantro/hantro_hw.h      |   4 +-
+ drivers/staging/media/rkvdec/rkvdec-h264.c    |   8 +-
+ drivers/staging/media/rkvdec/rkvdec.c         |  39 +-
+ drivers/staging/media/sunxi/cedrus/cedrus.c   |  43 +-
+ .../staging/media/sunxi/cedrus/cedrus_dec.c   |  12 +-
+ include/media/fwht-ctrls.h                    |   2 +-
+ include/media/h264-ctrls.h                    |  34 +-
+ include/media/hevc-ctrls.h                    |  10 +-
+ include/media/mpeg2-ctrls.h                   |   4 +-
+ include/media/v4l2-ctrls.h                    |   1 -
+ include/media/v4l2-h264.h                     |   2 +-
+ include/media/vp8-ctrls.h                     |   2 +-
+ include/uapi/linux/v4l2-controls.h            | 795 +++++++++++++-----
+ include/uapi/linux/videodev2.h                |   8 +
+ 27 files changed, 1542 insertions(+), 1025 deletions(-)
+ create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
+
+-- 
+2.27.0
+
