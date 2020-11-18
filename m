@@ -2,151 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F5B2B8623
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6262B2B859E
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 21:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727384AbgKRU6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 15:58:44 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:57764 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727276AbgKRU6n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:58:43 -0500
-Message-Id: <20201118204007.670851839@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605733121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=n6ZnY4fkMJxZaMnKuAdf5ZenkVJW5B3lKuVHTxlEMsQ=;
-        b=eUC6bTUEftA8VubxeJPfi/9RV3Ygjgx/syVTifwYyBPpgBjdlQO3p+Tzw/9zclPhp/oguL
-        V8eWjtmVqFSElbYr6KDgwpygcHQvsZgRV7o+76zpYgZzWeUL3uF7Gf8Qu3T4zcE8aNG03c
-        n11gDWPi6Psl/yvCMsgMY1kZO2qFOT+MTYMWMxeyM4Xm3bgZ2gmezcUmwJ/3vzPTSQ8zu1
-        9Pd0CB4FdrVTnDl3k0VzGFRrox46iOe3gPocn0qCiYEZzgzocPIib7OQMrq7yp6VVBqH4a
-        vxPF6PZJlxoxos0zcXWJf0Dk+BJnyOHqxFPuFx4WCACiK4uLEpRHFpd68LKPXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605733121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=n6ZnY4fkMJxZaMnKuAdf5ZenkVJW5B3lKuVHTxlEMsQ=;
-        b=6Gj6t05xdfPnftLBfQTZ+to85TmZSrrZNMp1Vt4RpSfwiFRxeihmtg7CYQ3+YvJG7vqQMO
-        kUZoqldX72sngVCg==
-Date:   Wed, 18 Nov 2020 20:48:46 +0100
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [patch V4 8/8] x86/crashdump/32: Simplify copy_oldmem_page()
-References: <20201118194838.753436396@linutronix.de>
+        id S1727164AbgKRUbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 15:31:48 -0500
+Received: from mailout06.rmx.de ([94.199.90.92]:33674 "EHLO mailout06.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726812AbgKRUbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 15:31:48 -0500
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout06.rmx.de (Postfix) with ESMTPS id 4Cbvbz313Gz9vqV;
+        Wed, 18 Nov 2020 21:31:43 +0100 (CET)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4Cbvbk5G1Mz2xDw;
+        Wed, 18 Nov 2020 21:31:30 +0100 (CET)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.25) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 18 Nov
+ 2020 21:30:29 +0100
+From:   Christian Eggers <ceggers@arri.de>
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>
+CC:     Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Christian Eggers <ceggers@arri.de>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next v3 00/12] net: dsa: microchip: PTP support for KSZ956x
+Date:   Wed, 18 Nov 2020 21:30:01 +0100
+Message-ID: <20201118203013.5077-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.25]
+X-RMX-ID: 20201118-213130-4Cbvbk5G1Mz2xDw-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+This series adds support for PTP to the KSZ956x and KSZ9477 devices.
 
-Replace kmap_atomic_pfn() with kmap_local_pfn() which is preemptible and
-can take page faults.
+There is only little documentation for PTP available on the data sheet
+[1] (more or less only the register reference). Questions to the
+Microchip support were seldom answered comprehensively or in reasonable
+time. So this is more or less the result of reverse engineering.
 
-Remove the indirection of the dump page and the related cruft which is not
-longer required.
+[1]
+http://ww1.microchip.com/downloads/en/DeviceDoc/KSZ9563R-Data-Sheet-DS00002419D.pdf
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V3: New patch
----
- arch/x86/kernel/crash_dump_32.c |   48 ++++++++--------------------------------
- 1 file changed, 10 insertions(+), 38 deletions(-)
+Changes from v2  --> v3
+------------------------
+Applied all changes requested by Vladimir Oltean. v3 depends on my other
+netdev patches from 2020-11-18:
+- net: ptp: introduce common defines for PTP message types
+- net: dsa: avoid potential use-after-free error
 
---- a/arch/x86/kernel/crash_dump_32.c
-+++ b/arch/x86/kernel/crash_dump_32.c
-@@ -13,8 +13,6 @@
- 
- #include <linux/uaccess.h>
- 
--static void *kdump_buf_page;
--
- static inline bool is_crashed_pfn_valid(unsigned long pfn)
- {
- #ifndef CONFIG_X86_PAE
-@@ -41,15 +39,11 @@ static inline bool is_crashed_pfn_valid(
-  * @userbuf: if set, @buf is in user address space, use copy_to_user(),
-  *	otherwise @buf is in kernel address space, use memcpy().
-  *
-- * Copy a page from "oldmem". For this page, there is no pte mapped
-- * in the current kernel. We stitch up a pte, similar to kmap_atomic.
-- *
-- * Calling copy_to_user() in atomic context is not desirable. Hence first
-- * copying the data to a pre-allocated kernel page and then copying to user
-- * space in non-atomic context.
-+ * Copy a page from "oldmem". For this page, there might be no pte mapped
-+ * in the current kernel.
-  */
--ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
--                               size_t csize, unsigned long offset, int userbuf)
-+ssize_t copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
-+			 unsigned long offset, int userbuf)
- {
- 	void  *vaddr;
- 
-@@ -59,38 +53,16 @@ ssize_t copy_oldmem_page(unsigned long p
- 	if (!is_crashed_pfn_valid(pfn))
- 		return -EFAULT;
- 
--	vaddr = kmap_atomic_pfn(pfn);
-+	vaddr = kmap_local_pfn(pfn);
- 
- 	if (!userbuf) {
--		memcpy(buf, (vaddr + offset), csize);
--		kunmap_atomic(vaddr);
-+		memcpy(buf, vaddr + offset, csize);
- 	} else {
--		if (!kdump_buf_page) {
--			printk(KERN_WARNING "Kdump: Kdump buffer page not"
--				" allocated\n");
--			kunmap_atomic(vaddr);
--			return -EFAULT;
--		}
--		copy_page(kdump_buf_page, vaddr);
--		kunmap_atomic(vaddr);
--		if (copy_to_user(buf, (kdump_buf_page + offset), csize))
--			return -EFAULT;
-+		if (copy_to_user(buf, vaddr + offset, csize))
-+			csize = -EFAULT;
- 	}
- 
--	return csize;
--}
-+	kunmap_local(vaddr);
- 
--static int __init kdump_buf_page_init(void)
--{
--	int ret = 0;
--
--	kdump_buf_page = kmalloc(PAGE_SIZE, GFP_KERNEL);
--	if (!kdump_buf_page) {
--		printk(KERN_WARNING "Kdump: Failed to allocate kdump buffer"
--			 " page\n");
--		ret = -ENOMEM;
--	}
--
--	return ret;
-+	return csize;
- }
--arch_initcall(kdump_buf_page_init);
+[1/11]-->[1/12]  - dts: remove " OR BSD-2-Clause" from SPDX-License-Identifier
+                 - dts: add "additionalProperties"
+                 - dts: remove quotes
+[2/11]-->[2/12]  - Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+[3/11]           - [Patch removed] (split ksz_common.h)
+[4/11]-->[3/12]  - Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+                 - fixed summary
+[5/11]-->[4/12]  - Use "interrupts-extended" syntax
+[6/11]-->[5+6/12] - Split up patch
+                 - style fixes
+                 - use GENMASK()
+                 - IRQF_ONESHOT|IRQF_SHARED
+[7/11]-->[7/12]  - Remove "default n" from Kconfig
+                 - use mutex in adjfine()
+                 - style fixes
+[8/11]-->[8/12]  - Be more verbose in commit message
+                 - Rename helper
+                 - provide correction instead of t2
+                 - simplify location of UDP header
+[9/11]-->[9+10/12] - Split up patch
+                 - Update commmit messages
+                 - don't use OR operator on irqreturn_t
+                 - spin_lock_irqsave() --> spin_lock_bh()
+                 - style fixes
+                 - remove rx_filter cases for DELAY_REQ
+                 - use new PTP_MSGTYPE_* defines
+                 - inline ksz9477_ptp_should_tstamp()
+                 - ksz9477_tstamp_to_clock() --> ksz9477_tstamp_reconstruct()
+                 - use shared data in include/linux/net/dsa/ksz_common.h
+                 - wait for tx time stamp (within sleepable context)
+                 - use boolean for tx time stamp enable
+                 - move t2 from correction to tail tag (again)
+                 - ...
+
+Changes from RFC --> v2
+------------------------
+I think that all open questions regarding the RFC version could be solved.
+dts: referenced to dsa.yaml
+dts: changed node name to "switch" in example
+dts: changed "ports" subnode to "ethernet-ports"
+ksz_common: support "ethernet-ports" subnode
+tag_ksz: fix usage of correction field (32 bit ns + 16 bit sub-ns)
+tag_ksz: use cached PTP header from device's .port_txtstamp function
+tag_ksz: refactored ksz9477_tstamp_to_clock()
+tag_ksz: pdelay_req: only subtract 2 bit seconds from the correction field
+tag_ksz: pdelay_resp: don't move (negative) correction to the egress tail tag
+ptp_classify: add ptp_onestep_p2p_move_t2_to_correction helper
+ksz9477_ptp: removed E2E support (as suggested by Vladimir)
+ksz9477_ptp: removed master/slave sysfs attributes (nacked by Richard)
+ksz9477_ptp: refactored ksz9477_ptp_port_txtstamp
+ksz9477_ptp: removed "pulse" attribute
+kconfig: depend on PTP_1588_CLOCK (instead of "imply")
+
+
+
 
