@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1154D2B7D8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0E92B7D98
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgKRMUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 07:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726296AbgKRMUk (ORCPT
+        id S1726997AbgKRM0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 07:26:04 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:34547 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgKRM0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:20:40 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53677C0613D4;
-        Wed, 18 Nov 2020 04:20:40 -0800 (PST)
-Date:   Wed, 18 Nov 2020 12:20:36 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605702038;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=45nFyw7nelPjO0AqMdm7a6w0iCNxbTMhLeO/+LFCMPM=;
-        b=yUDv7oqb9bphTZyU+s1e2sBJxCnQ6WkTOfiNmKdspS40KjU+EcxRnhzivCFw9bP3DHnfF+
-        5C8GNXy/5roZIbezF4OMoylJbw/nV6u+Jy3MBoXwKlEVASU1nIOLkpd0fG1l6VwK31ysZw
-        JCsSPOcNd2/1Mm3ZKxSHZLT41F0nJ2lHe3jzab/2yS6/6r16xY+KOGl61T5ThVz1PoTWhz
-        TxIZyPlzfSJBsr3bhoDPAD9iyOzZQppfUugxwo79N5j2d8U1/28qq9uMoh1oTkwp/t6p+B
-        Au/i0oXweMj7Qqskt+dnla6KUYr0QbZUBv4qhmnbVtUwe4/a/T51xNkGO1xfWw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605702038;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=45nFyw7nelPjO0AqMdm7a6w0iCNxbTMhLeO/+LFCMPM=;
-        b=ymwHkzG+aXnC/kQF7nIZMT1pvEhyYzPswKPT1+osMV3lVMtnkAjkDR5UT+dnVm0/9DmQuF
-        N7j5ZTWesjdM66DA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/dumpstack: Do not try to access user space code
- of other tasks
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201117202753.667274723@linutronix.de>
-References: <20201117202753.667274723@linutronix.de>
+        Wed, 18 Nov 2020 07:26:03 -0500
+Received: by mail-ot1-f65.google.com with SMTP id j14so1553667ots.1;
+        Wed, 18 Nov 2020 04:26:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PiA+hYcssZWHOVn8FUP0jNEzq1o0bLIoAhov7HTRa3s=;
+        b=FhXiut2BdlaNbRz4GLN4QeL7bHmOhrVLxBNtOC2CobR8RpJwTenI1Xr6G/Z/BH5XTo
+         o9VzSibPEI1YJfL/yfxPMngmvPaVHmd0mcg+lrS3DLcTMijAGgOMEaqAWp3AhySwOD3E
+         BPmCOQClB3LcL+lQJWpjsuXFB0uiwBmmH8kgf0TfOVy7NBNteYPc9e6SVmvemzL7RxSO
+         G6gIW4hbs9o1xtqbwFrwiRbCNSLLGuThNi4/NpcxnTnumbWsqFXnSvsM/57hm7ZEO4ma
+         PJZ7715lrMFJOERyGsID+vfGRCoZZrYCYLQr8vy02r3XQ72/jxnDbvLbbxDJWGNQfAQN
+         pICQ==
+X-Gm-Message-State: AOAM532EM9+pMbw+TgbcyuS0A4J2af9AbC33rlTdKK85YL9oZufxNVVZ
+        YvcBgCT/GsZ3I+oMpc081HyqnXvnuG9c4BmSYmY=
+X-Google-Smtp-Source: ABdhPJzoeLJSnBwU2uet5BoMgaxg6p2GPAzJTKIfrW4HwcWnUV0X+T3Z2xvmIMz+HD3psO6w0GaKCsVc5AjXi/P4qGw=
+X-Received: by 2002:a9d:16f:: with SMTP id 102mr6592389otu.206.1605702361517;
+ Wed, 18 Nov 2020 04:26:01 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <160570203682.11244.2241309729043603979.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+ <20201111054356.793390-3-ben.widawsky@intel.com> <20201116175909.00007e53@Huawei.com>
+ <CAPcyv4h_kSYhcGAdZshFPFbGPgZKCvUh9q7M=jMMRaEauUPzaQ@mail.gmail.com>
+In-Reply-To: <CAPcyv4h_kSYhcGAdZshFPFbGPgZKCvUh9q7M=jMMRaEauUPzaQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 18 Nov 2020 13:25:49 +0100
+Message-ID: <CAJZ5v0ibEXVC5vsjCfougJqp_ZbENUKmbTkCjbxVTen-gsONXA@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/9] cxl/acpi: add OSC support
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Tue, Nov 17, 2020 at 12:26 AM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> On Mon, Nov 16, 2020 at 10:00 AM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Tue, 10 Nov 2020 21:43:49 -0800
+> > Ben Widawsky <ben.widawsky@intel.com> wrote:
+> >
+> > > From: Vishal Verma <vishal.l.verma@intel.com>
+> > >
+> > > Add support to advertise OS capabilities, and request OS control for CXL
+> > > features using the ACPI _OSC mechanism. Advertise support for all
+> > > possible CXL features, and attempt to request control too for all
+> > > possible features.
+> > >
+> > > Based on a patch by Sean Kelley.
+> > >
+> > > Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> >
+> > I guess unsurprisingly a lot of this is cut and paste from PCIe
+> > so can we share some of the code?
+> >
+>
+> I do not see a refactoring effort for these bit being all that
+> fruitful.
 
-Commit-ID:     860aaabac8235cfde10fe556aa82abbbe3117888
-Gitweb:        https://git.kernel.org/tip/860aaabac8235cfde10fe556aa82abbbe3117888
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 17 Nov 2020 21:23:34 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 18 Nov 2020 12:56:29 +01:00
+Well, that depends on how much code duplication could be avoided this way.
 
-x86/dumpstack: Do not try to access user space code of other tasks
+> The backport pressure for this driver stack I expect will be
+> higher than most, so I'm sensitive to avoiding unnecessary core
+> entanglements.
 
-sysrq-t ends up invoking show_opcodes() for each task which tries to access
-the user space code of other processes, which is obviously bogus.
+If two pieces of code are based on the same underlying common code, it
+is immediately clear to the reader how similar to each other they are.
+Otherwise, they need to be carefully compared with each other to find
+out what the differences are and whether or not they are arbitrary or
+vitally important.  That is essential both from the revirem
+perspective today and to anyone wanting to understand the given code
+in the future (possibly in order to modify it without breaking it).
+It outweighs the convenience by far IMV, with all due respect.
 
-It either manages to dump where the foreign task's regs->ip points to in a
-valid mapping of the current task or triggers a pagefault and prints "Code:
-Bad RIP value.". Both is just wrong.
-
-Add a safeguard in copy_code() and check whether the @regs pointer matches
-currents pt_regs. If not, do not even try to access it.
-
-While at it, add commentary why using copy_from_user_nmi() is safe in
-copy_code() even if the function name suggests otherwise.
-
-Reported-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Borislav Petkov <bp@suse.de>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-Tested-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201117202753.667274723@linutronix.de
----
- arch/x86/kernel/dumpstack.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
-index 25c06b6..97aa900 100644
---- a/arch/x86/kernel/dumpstack.c
-+++ b/arch/x86/kernel/dumpstack.c
-@@ -78,6 +78,9 @@ static int copy_code(struct pt_regs *regs, u8 *buf, unsigned long src,
- 	if (!user_mode(regs))
- 		return copy_from_kernel_nofault(buf, (u8 *)src, nbytes);
- 
-+	/* The user space code from other tasks cannot be accessed. */
-+	if (regs != task_pt_regs(current))
-+		return -EPERM;
- 	/*
- 	 * Make sure userspace isn't trying to trick us into dumping kernel
- 	 * memory by pointing the userspace instruction pointer at it.
-@@ -85,6 +88,12 @@ static int copy_code(struct pt_regs *regs, u8 *buf, unsigned long src,
- 	if (__chk_range_not_ok(src, nbytes, TASK_SIZE_MAX))
- 		return -EINVAL;
- 
-+	/*
-+	 * Even if named copy_from_user_nmi() this can be invoked from
-+	 * other contexts and will not try to resolve a pagefault, which is
-+	 * the correct thing to do here as this code can be called from any
-+	 * context.
-+	 */
- 	return copy_from_user_nmi(buf, (void __user *)src, nbytes);
- }
- 
-@@ -115,13 +124,19 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
- 	u8 opcodes[OPCODE_BUFSIZE];
- 	unsigned long prologue = regs->ip - PROLOGUE_SIZE;
- 
--	if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
--		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
--		       loglvl, prologue);
--	} else {
-+	switch (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
-+	case 0:
- 		printk("%sCode: %" __stringify(PROLOGUE_SIZE) "ph <%02x> %"
- 		       __stringify(EPILOGUE_SIZE) "ph\n", loglvl, opcodes,
- 		       opcodes[PROLOGUE_SIZE], opcodes + PROLOGUE_SIZE + 1);
-+		break;
-+	case -EPERM:
-+		/* No access to the user space stack of other tasks. Ignore. */
-+		break;
-+	default:
-+		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
-+		       loglvl, prologue);
-+		break;
- 	}
- }
- 
+Recall how much effort it took to combine x86 with x86_64 and why it
+turned out to be necessary to do that work, for one example.
