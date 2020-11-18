@@ -2,110 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F277F2B746E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 03:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440A92B747A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 04:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgKRC4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 21:56:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+        id S1726769AbgKRDBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 22:01:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgKRC4Z (ORCPT
+        with ESMTP id S1726287AbgKRDBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 21:56:25 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F59C0613D4;
-        Tue, 17 Nov 2020 18:56:24 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CbSBD33Jtz9sT6;
-        Wed, 18 Nov 2020 13:56:20 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605668181;
-        bh=2jx3vQWDi8HWrUIZuQWUfNeUbTc6Akx3AMLtoxMmmEQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tWaJ7NWfG5xWRSgLoEhh0cYNW8N6bAIdRH6XwpQV5VOU/C1cLsCRiaXCJgEJl1v6v
-         /edeBABYlpwjNesBPznB0tAkMZYeRd26MuQHCZS1pNuOCwiLVcH7I3Yhodl6WoEqkx
-         uqLm+jCWmVy9ame1H6PUYOFLiZw31lEAFBycc2e4nmbSFDHYRkFiR3OMHNtnkK+TNh
-         CXXI39RlDqZzEfdpGiKv5aSAmDqVBjTIodo4dq2n7Xas5B11IC0P9SgvTTNTYvI1Vb
-         ERpAsWXwJqeWZerraM8P0eJJzDv6G6DcNYuhtgjOWMqYifyWm9D/6G30we/opc8Y8X
-         LF5xd2xa3Zm1Q==
-Date:   Wed, 18 Nov 2020 13:56:19 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Yejune Deng <yejune.deng@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the phy-next tree
-Message-ID: <20201118135619.4a4bf4c5@canb.auug.org.au>
-In-Reply-To: <20201117100056.GF50232@vkoul-mobl>
-References: <20201117134046.569d58b8@canb.auug.org.au>
-        <20201117100056.GF50232@vkoul-mobl>
+        Tue, 17 Nov 2020 22:01:07 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03119C061A4D
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 19:01:06 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id f16so353698otl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 19:01:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3uJCOUcCa+QNGhT/ES7N0Gs1weA2TXULzhkEQY1X4Jo=;
+        b=iudQYKUwAOK9crkiWJ66u2A1YGZCBlCwtJ7NMi11klrVKGT/dFCsGxSljVJDr7DJ0g
+         lDpDgEUNZJYa9nmxUH6uwUeRo3AfV1WCViXiGu7wlPweAMbLV9FB7Fo5b+oHQQi1aigL
+         MthZtLw/DcFUhqRbHbBYjcPvo9uIa7i3ztccA2IcPNjXwSZ/67Qwhs8pEX8j/HXeHvxw
+         93df3wEp8sT1v3KNz39iAtv/5GK29Rvl2QwMK0WBKbuAsvVBBUxdzbuCEnY7WYezsKge
+         0Eh0ekjpKLpbRF4mkuu4/ZplAcqUYubSLUEgxK6sY+vaYIVUs1y2KWD1SMzaLPnFOOzH
+         t57A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3uJCOUcCa+QNGhT/ES7N0Gs1weA2TXULzhkEQY1X4Jo=;
+        b=Gi1vE27ft2uudG9GNYfYVSfxs6e3VP5TxXT2wzdG7fOj7RPn4AdGazgwOHmTjtIHqG
+         mZHz7NqBabjYRWlSTa/A76DVhoL+2OiIt1xVi0QWcGfVu5YbuAa8VysvVYYBYLriKVbI
+         Af7vFSvP/tvU/uD1Q9bQ3zyrCbBy2oaqVajzIqAsC8jRhAO8kmCmmKOoYlucsPYdANlY
+         daKhRkk/W+UwgcluVfDJ+WejElnnx+d5rtHq3YVty6FlJKX0jNTKInfkFz1v8RMFeFtw
+         fk4c+kEBsSHPauBVF3XCuHHoSXWQeXa9DYJUAAomT3ERhS5IqW99nIwnH9DSccgcYvp8
+         R6jQ==
+X-Gm-Message-State: AOAM532h+YYqYhQ4uaxaTD0BSNXMeWgCWWsPb/zdMhtjuWYqX99bVpI/
+        5JxQPZWgmYxgBfT+IGY07jo5wwx8Oi1FzJjygCDVMA==
+X-Google-Smtp-Source: ABdhPJzGGlEp/RY02FjhdSrOME5ixmXEwMqcM3Kp5XSh8B606VPzwVjQm4NMFjXTadyAYc+lrXxzVUAwYI5nu6c9VOY=
+X-Received: by 2002:a05:6830:2415:: with SMTP id j21mr4976789ots.221.1605668466163;
+ Tue, 17 Nov 2020 19:01:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_8n_0noY654JHgjeuD7C/Vq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201117181935.3613581-1-minchan@kernel.org> <20201117181935.3613581-5-minchan@kernel.org>
+In-Reply-To: <20201117181935.3613581-5-minchan@kernel.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Tue, 17 Nov 2020 19:00:54 -0800
+Message-ID: <CALAqxLWqDLHpOHNEayvhDjJeXjEk_uneH2=d9fy8M87EjKfReA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] dma-heap: Devicetree binding for chunk heap
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Hyesoo Yu <hyesoo.yu@samsung.com>,
+        Matthew Wilcox <willy@infradead.org>, david@redhat.com,
+        iamjoonsoo.kim@lge.com, vbabka@suse.cz,
+        Suren Baghdasaryan <surenb@google.com>,
+        KyongHo Cho <pullip.cho@samsung.com>,
+        John Dias <joaodias@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_8n_0noY654JHgjeuD7C/Vq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Vinod,
-
-On Tue, 17 Nov 2020 15:30:56 +0530 Vinod Koul <vkoul@kernel.org> wrote:
+On Tue, Nov 17, 2020 at 10:19 AM Minchan Kim <minchan@kernel.org> wrote:
 >
-> On 17-11-20, 13:40, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > After merging the phy-next tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> >=20
-> > drivers/soc/amlogic/meson-ee-pwrc.c: In function 'meson_ee_pwrc_init_do=
-main':
-> > drivers/soc/amlogic/meson-ee-pwrc.c:416:65: error: expected ';' before =
-'if'
-> >   416 |   dom->rstc =3D devm_reset_control_array_get_exclusive(&pdev->d=
-ev)
-> >       |                                                                =
- ^
-> >       |                                                                =
- ;
-> >   417 |   if (IS_ERR(dom->rstc))
-> >       |   ~~                                                           =
- =20
-> >=20
-> > Caused by commit
-> >=20
-> >   3cc8e86721ad ("phy: amlogic: Replace devm_reset_control_array_get()")
-> >=20
-> > I have used the phy-next tree from next-20201116 for today. =20
->=20
-> I have reverted this commit
+> From: Hyesoo Yu <hyesoo.yu@samsung.com>
+>
+> Document devicetree binding for chunk heap on dma heap framework
+>
+> Signed-off-by: Hyesoo Yu <hyesoo.yu@samsung.com>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
+>  .../bindings/dma-buf/chunk_heap.yaml          | 52 +++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma-buf/chunk_heap.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/dma-buf/chunk_heap.yaml b/Documentation/devicetree/bindings/dma-buf/chunk_heap.yaml
+> new file mode 100644
+> index 000000000000..f382bee02778
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma-buf/chunk_heap.yaml
+> @@ -0,0 +1,52 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma-buf/chunk_heap.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Device tree binding for chunk heap on DMA HEAP FRAMEWORK
+> +
+> +maintainers:
+> +  - Sumit Semwal <sumit.semwal@linaro.org>
+> +
+> +description: |
+> +  The chunk heap is backed by the Contiguous Memory Allocator (CMA) and
+> +  allocates the buffers that are made up to a list of fixed size chunks
+> +  taken from CMA. Chunk sizes are configurated when the heaps are created.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - dma_heap,chunk
+> +
+> +  memory-region:
+> +    maxItems: 1
+> +
+> +  alignment:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - memory-region
+> +  - alignment
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    reserved-memory {
+> +        #address-cells = <2>;
+> +        #size-cells = <1>;
+> +
+> +        chunk_memory: chunk_memory {
+> +            compatible = "shared-dma-pool";
+> +            reusable;
+> +            size = <0x10000000>;
+> +        };
+> +    };
+> +
+> +    chunk_default_heap: chunk_default_heap {
+> +        compatible = "dma_heap,chunk";
+> +        memory-region = <&chunk_memory>;
+> +        alignment = <0x10000>;
+> +    };
 
-Thanks, but forgot to push out?
 
---=20
-Cheers,
-Stephen Rothwell
+So I suspect Rob will push back on this as he has for other dt
+bindings related to ion/dmabuf heaps (I tried to push a similar
+solution to exporting multiple CMA areas via dmabuf heaps).
 
---Sig_/_8n_0noY654JHgjeuD7C/Vq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+The proposal he seemed to like best was having an in-kernel function
+that a driver would call to initialize the heap (associated with the
+CMA region the driver is interested in). Similar to Kunihiko Hayashi's
+patch here:
+  - https://lore.kernel.org/lkml/1594948208-4739-1-git-send-email-hayashi.kunihiko@socionext.com/
 
------BEGIN PGP SIGNATURE-----
+The one sticking point for that patch (which I think is a good one),
+is that we don't have any in-tree users, so it couldn't be merged yet.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+0jVMACgkQAVBC80lX
-0GwBtwf8Cm+mUbsMXzR9lCrXwck3MmbKFFTiwpBL9iFlZEal+7dNuzHGC6oUbHs+
-W9ysCXzhyxzf0tPgpY3CAvFxk7hd05jeDylqQfs/BgK952mAnX6UIWA1uo8Nb23O
-CYCS/mnsNb/avvAfnVkZUA/AU5+4flvNE1SxhmWWWlMobsLJhRrT0TkZop06i7Xr
-7gGBrRJuhFkxWMqH3NqKdwRZFby31rcB8O/rf2gFzm2cUOxf0gMEcWIcXjvLiIMG
-PhsgjajYwy0ahxUm2VJA5ODvGgl/VIxCEvdgQq8J7I7J6OzropXhs6Cc0sRblToO
-kcaWWHF3DPylyVFJVtpaHG1YVp3gKQ==
-=RAek
------END PGP SIGNATURE-----
+A similar approach might be good here, but again we probably need to
+have at least one in-tree user which could call such a registration
+function.
 
---Sig_/_8n_0noY654JHgjeuD7C/Vq--
+thanks
+-john
