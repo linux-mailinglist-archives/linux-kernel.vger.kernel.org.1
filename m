@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE022B72FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732B82B7301
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgKRAX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:23:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgKRAXz (ORCPT
+        id S1726917AbgKRAYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:24:40 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:22958 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgKRAYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:23:55 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE56C0613CF;
-        Tue, 17 Nov 2020 16:23:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=x66IiCb3J78ZY3ZCN379wprOnWskvKlwPEBSJOmY+qk=; b=h/ilHSI//Cj40icPF5NAyf72zk
-        oJ2mH8JAKNXT8MvGjd3tA/Ej26ljvchcRTuv5EyhszSepD7NWHZ+Z+pOWObqA+KdnBsCqV/pXmy5N
-        PZwBWzPa1wn0PM63RCJZ5yARcc9ZPO47HlrQwOTMkEYKze79YmLVHuG9yOluaCsZcTOnhaOBphZoZ
-        z+MwcBvumcMA7Ak/HKM6/lLkDvM+nknrtIF/Awt/aF9Y8N3rKM4FVPgVxBiO1elcPG5LIkIM+WwTZ
-        cn8/q0wbw1Rv6QcaujlyJv/jO2uPNMXCbYOVF2x3/e7aIAE+tj9bjU22BQSyJMR/X/qo3pXxQqoEU
-        ddU/0ZTw==;
-Received: from [2601:1c0:6280:3f0::bcc4]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfBGK-0006C5-SH; Wed, 18 Nov 2020 00:23:53 +0000
-Subject: Re: [RFC] Add kernel-doc test script
-To:     Eduardo Habkost <ehabkost@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20201030144713.201372-1-pbonzini@redhat.com>
- <20201030144713.201372-3-pbonzini@redhat.com>
- <20201113152106.7b4a07ee@lwn.net>
- <20201113223912.GK17076@casper.infradead.org>
- <20201117212452.GM1235237@habkost.net>
- <20201117213051.GA29991@casper.infradead.org>
- <20201117223612.GN1235237@habkost.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <16145b8b-3213-8bc9-1826-d3ae006f78fa@infradead.org>
-Date:   Tue, 17 Nov 2020 16:23:49 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 17 Nov 2020 19:24:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1605659079; x=1637195079;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=gFlZ38MwH8yQdiFbxPN+HVi8DqXGDlanSljdPiGUeDM=;
+  b=ORMuFMU+AatopXViHUN422do7kWLj/Z7Q2lEi1cOnvIypb5XFeDIkIPr
+   5j8QEOuMjcOCu2XbtjuYTGZL3eiYx1HJE9eJCF5kdRqFslT/HmxeJOeGU
+   DsIpZpPT2MHn+C4VbNLeGBlfwAEL9Nes28IoWFUgLLDfK6ED+pDIfZnE6
+   M=;
+X-IronPort-AV: E=Sophos;i="5.77,486,1596499200"; 
+   d="scan'208";a="95133538"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 18 Nov 2020 00:24:33 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 1A887A220A;
+        Wed, 18 Nov 2020 00:24:33 +0000 (UTC)
+Received: from EX13D07UWB003.ant.amazon.com (10.43.161.66) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 18 Nov 2020 00:24:32 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13D07UWB003.ant.amazon.com (10.43.161.66) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 18 Nov 2020 00:24:32 +0000
+Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
+ (172.22.96.68) by mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP
+ Server id 15.0.1497.2 via Frontend Transport; Wed, 18 Nov 2020 00:24:31 +0000
+Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
+        id 7BE4440E2D; Wed, 18 Nov 2020 00:24:31 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 00:24:31 +0000
+From:   Anchal Agarwal <anchalag@amazon.com>
+To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <anchalag@amazon.com>
+Subject: [PATCH] NFS: Retry the CLOSE if the embedded GETATTR is rejected
+ with ERR_STALE
+Message-ID: <20201118002431.GA6941@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20201117223612.GN1235237@habkost.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/20 2:36 PM, Eduardo Habkost wrote:
-> Add a kernel-doc test script to tools/testing/kernel-doc.
-> 
-> radix_tree_lookup_slot test case provided by Matthew Wilcox.
-> 
-> Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
+If our CLOSE RPC call is rejected with an ERR_STALE error, then we
+should remove the GETATTR call from the compound RPC and retry.
+This could happen in a scenario where two clients tries to access
+the same file. One client opens the file and the other client removes
+the file while it's opened by first client. When the first client
+attempts to close the file the server returns ESTALE and the file ends
+up being leaked on the server. This depends on how nfs server is
+configured and is not reproducible if running against nfsd.
 
-Very good idea.
+Signed-off-by: Anchal Agarwal <anchalag@amazon.com>
+---
+ fs/nfs/nfs4proc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I have had a kernel-doc test source file for (?) 10-12 years,
-while I was the docs maintainer.
-
-I didn't have the "expected" files for comparison.
-I just used $web_browser.
-
-> ---
->  tools/testing/kernel-doc/test-case.h          | 111 ++++++++++
->  .../testing/kernel-doc/test-case.man.expected | 150 ++++++++++++++
->  .../kernel-doc/test-case.none.expected        |   0
->  .../kernel-doc/test-case.rst2.expected        | 195 ++++++++++++++++++
->  .../kernel-doc/test-case.rst3.expected        | 195 ++++++++++++++++++
->  tools/testing/kernel-doc/test.sh              |  90 ++++++++
->  6 files changed, 741 insertions(+)
->  create mode 100644 tools/testing/kernel-doc/test-case.h
->  create mode 100644 tools/testing/kernel-doc/test-case.man.expected
->  create mode 100644 tools/testing/kernel-doc/test-case.none.expected
->  create mode 100644 tools/testing/kernel-doc/test-case.rst2.expected
->  create mode 100644 tools/testing/kernel-doc/test-case.rst3.expected
->  create mode 100755 tools/testing/kernel-doc/test.sh
-
-thanks.
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 9e0ca9b2b210..40e4259bc83e 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -3548,6 +3548,7 @@ static void nfs4_close_done(struct rpc_task *task, void *data)
+ 			res_stateid = &calldata->res.stateid;
+ 			renew_lease(server, calldata->timestamp);
+ 			break;
++		case -ESTALE:
+ 		case -NFS4ERR_ACCESS:
+ 			if (calldata->arg.bitmask != NULL) {
+ 				calldata->arg.bitmask = NULL;
 -- 
-~Randy
+2.16.6
 
