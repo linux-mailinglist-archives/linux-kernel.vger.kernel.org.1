@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4112B7336
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B612B733A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbgKRAjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:39:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
+        id S1727485AbgKRAkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726992AbgKRAjE (ORCPT
+        with ESMTP id S1725767AbgKRAkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:39:04 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC0FC061A48
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:39:03 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id l11so502761lfg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:39:03 -0800 (PST)
+        Tue, 17 Nov 2020 19:40:06 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2A0C061A48
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:40:04 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id 11so435914ljf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:40:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8cUIbkZJylsb5mO6hD/KZYGDtSV3P8FggXBoXgK+a98=;
-        b=spDKP8Cj1EaiX/Lv5t3Qkw8QD0FSRfZa/OQOa/7jvbJs0fpyUfTlaf7QGQ0S+UAdez
-         SX8kQ6hZj+W1hgFZUV8GqSBklPHOJDyy8SxvO5CLmie/8wyXwkaZ2aiGVXYQvvZo3Jzx
-         maRCHS63l7HL59+bKhFIOLi0ptIP47AvkIRf3s298xunQ6JY4lcG2g7gum+M5E+fwg7x
-         Hv7gg6oxYSiXOHpPYj9GIaobsuYesLc+ROcJx/RWeAQ+d6D7x3tcrK1F5C7kT6xjNZY9
-         JfEuxBxuaK7d0Z1jxSXxhh2jfAPpXPHluITOn2AAhO/KSpNDJqCF2H2QrUiB+beesAia
-         cX8Q==
+        bh=fpRq5oGbKPQIWf1i8EYl3vqTi7XQsrMlJoxcyJpJKNQ=;
+        b=rg9U2K7Llz1s3ghw9hvLqwjk2o3u9dU95otVL20eLEDgygNZpRsb/sSLWiOeDncl18
+         Z9ZlnNAKkQYzXBOzoP8p4066v9X8E+lkBlE9K6zlVwaGxNXB2daW6FoM23RSROU0AP+e
+         l5UbRlaxteh1YV4DvoaortMefIJ9vEEfoFqOVkKapvJeO0XXBJa7At0YHa/xREuZGZDx
+         V9cUUvpjLYKaA7j2BQOO5pkaY8eFkiEbNcnQfFo6Qo5a9O1hI5SiBYGhppQTvqSQcgrq
+         PLaOQy/oTp8eDLPhB7EadrlRhfJ6FhdAbcYqUZM2iyYwFlIBD07wyxmXAjPZc08Dn1Yr
+         DaDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8cUIbkZJylsb5mO6hD/KZYGDtSV3P8FggXBoXgK+a98=;
-        b=eRr9G9BI7lWarBzd6FmMj8/IVmXhUpj9ych9tq1UIfzkEBPotku93BTSZcvWDINc64
-         rnADCylur7gIRbzWlcT7fAzlTbYiKE/dpbAn4OjvNlxhQSij+2jXnALV0N+JUOS+rpa/
-         Prc2svF1Wa/iJ6yNpp3rxdYATRb+7xiOEtlG9SlMrKB6YpN2vuFzglH+iMFPNrYIMm6V
-         U7iDvjLaxrVThW3abQ4PnfmtNpUjdDQmpn8vvbtRKtLDe0Bl3mwG4NTg5rFE8UugiYaa
-         YTf3hHd8qS6DuPYawaTO33laIS9LirJixQG52xMSL2Pd8iZvoNtGAa/suYZx1tK1BbB9
-         3SZA==
-X-Gm-Message-State: AOAM532Qta07Qs3raza/2OqHagV5tCxVCpSl/HToRZnR2DqavB0MGTEk
-        KpUI9kZo9opgFfoTp/IryBnJjHpQq7DeKPsncMWbfQ==
-X-Google-Smtp-Source: ABdhPJzP/7gUUiG2Hzqfd0CHPMAFi62oLlQ30ZVIBtWrmH4gJQa06oqnka0nRprKaPt7QqMH80d7vCKK79I+HmFZHP8=
-X-Received: by 2002:a19:546:: with SMTP id 67mr2477974lff.502.1605659941675;
- Tue, 17 Nov 2020 16:39:01 -0800 (PST)
+        bh=fpRq5oGbKPQIWf1i8EYl3vqTi7XQsrMlJoxcyJpJKNQ=;
+        b=lgQSIwhVv9if2W4O4jrM1Lh3RPaKs9137YuMDqs37EtUXryuviSuhdHdzQmk5WFlwS
+         T3zHKXRrQxbGibm4u+rORly+QIi/TA51xtbev0QmDkRZ+It4UwP3k4yVtJa9TJkkW+Lv
+         1hx9YFF4LXBKEnq5HruPwLakqJwF66oin9uJcBfcE4gmNomYQtl/f4HSgHZzwyGqeUrb
+         WihxCRewJ/kpjQOgOtxVatpMUv+tNB58+wEH429kqOr65bLocyfSVwtamqm1HI9Vtadz
+         pXExRFk32hDWr0HGgIZHQRh0BOyz9FT6lXLAnAi94R84ml8AgKmEGGRlkcBkSabJz0oV
+         fdqw==
+X-Gm-Message-State: AOAM530Ciy2zDPqAKN/EXSPcTmnKnPPQmDneP4Z0lXZTDEVecVWgHwS9
+        T+TBVr1bPJmfiK+PjMs2/ZwwTOOnjyH1hP99HpU/sA==
+X-Google-Smtp-Source: ABdhPJwDHv2OLnWaiVJw3Tn/fOTtEHtSJELlqaEXImCpNOkLLD4kW0MqQMaFSXoCNdxMD3ZRlv2kLE3SERO9ndosTTg=
+X-Received: by 2002:a2e:321a:: with SMTP id y26mr3183401ljy.293.1605660002899;
+ Tue, 17 Nov 2020 16:40:02 -0800 (PST)
 MIME-Version: 1.0
-References: <1605201148-4508-1-git-send-email-srinivas.neeli@xilinx.com> <1605201148-4508-8-git-send-email-srinivas.neeli@xilinx.com>
-In-Reply-To: <1605201148-4508-8-git-send-email-srinivas.neeli@xilinx.com>
+References: <1605201148-4508-1-git-send-email-srinivas.neeli@xilinx.com> <1605201148-4508-9-git-send-email-srinivas.neeli@xilinx.com>
+In-Reply-To: <1605201148-4508-9-git-send-email-srinivas.neeli@xilinx.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 18 Nov 2020 01:38:50 +0100
-Message-ID: <CACRpkdasQEgsOEim5oFMBk-K24SzxYAR17jzuPR3_CTjYZ1hvA@mail.gmail.com>
-Subject: Re: [LINUX PATCH V3 7/9] gpio: gpio-xilinx: Add support for suspend
- and resume
+Date:   Wed, 18 Nov 2020 01:39:52 +0100
+Message-ID: <CACRpkdZPCHnNiiyu8Tj4cZ=m-NEPKuh664hbc0+PkyLo1kHQCA@mail.gmail.com>
+Subject: Re: [LINUX PATCH V3 8/9] gpio: gpio-xilinx: Check return value of of_property_read_u32
 To:     Srinivas Neeli <srinivas.neeli@xilinx.com>
 Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Michal Simek <michal.simek@xilinx.com>,
@@ -66,65 +65,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
-
 On Thu, Nov 12, 2020 at 6:13 PM Srinivas Neeli
 <srinivas.neeli@xilinx.com> wrote:
 
-> Add support for suspend and resume, pm runtime suspend and resume.
-> Added free and request calls.
+> In two different instances the return value of "of_property_read_u32"
+> API was neither captured nor checked.
+> Fixed it by capturing the return value and then checking for any error.
 >
+> Addresses-Coverity: "check_return"
 > Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-> ---
-> Changes in V3:
-> -Created new patch for suspend and resume.
 
-(...)
-
-I'm following the idea here I think.
-
-> @@ -544,6 +618,8 @@ static int xgpio_probe(struct platform_device *pdev)
-
-> +       pm_runtime_enable(&pdev->dev);
-> +       status = pm_runtime_get_sync(&pdev->dev);
-> +       if (status < 0)
-> +               goto err_unprepare_clk;
-
-Now the clock is enabled a second time. Because
-runtime PM kicks in.
-
-Do this instead:
-pm_runtime_get_noresume()
-pm_runtime_set_active()
-pm_runtime_enable()
-
-Now runtime PM knows it is active and will not call
-runtime resume and enable the clock a second time.
-
-> +       pm_runtime_put(&pdev->dev);
->         return 0;
-
-This is right, now pm runtime will gate the clock
-until the first GPIO is requested.
-
-> +err_pm_put:
-> +       pm_runtime_put_sync(&pdev->dev);
->  err_unprepare_clk:
-> +       pm_runtime_disable(&pdev->dev);
->         clk_disable_unprepare(chip->clk);
->         return status;
-
-Use this on the errorpath instead:
-pm_runtime_put_noidle()
-pm_runtime_disable()
-clk_disable_unprepare();
-
-Now the code will not call runtime suspend to
-gate the clock a second time.
-
-Double-check the references to the clock and check
-in debugfs that the clock really gets disabled if you're
-not using any GPIOs.
+Patch applied.
 
 Yours,
 Linus Walleij
