@@ -2,187 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E702B768F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A99962B768A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 07:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgKRGzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 01:55:33 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:26429 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgKRGzc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 01:55:32 -0500
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 17 Nov 2020 22:55:30 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 17 Nov 2020 22:55:28 -0800
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 18 Nov 2020 12:25:22 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 93143212C6; Wed, 18 Nov 2020 12:25:21 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
-        nicolas@ndufresne.ca, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v3 3/3] venus: venc: Add support for frame-specific min/max qp controls
-Date:   Wed, 18 Nov 2020 12:24:57 +0530
-Message-Id: <1605682497-29273-4-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605682497-29273-1-git-send-email-dikshita@codeaurora.org>
-References: <1605682497-29273-1-git-send-email-dikshita@codeaurora.org>
+        id S1726596AbgKRGz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 01:55:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725794AbgKRGz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 01:55:26 -0500
+Received: from kernel.org (unknown [77.125.7.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6554424655;
+        Wed, 18 Nov 2020 06:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605682525;
+        bh=ijXF7PUCZPM+SCn0c+6woTjKwc8l6BuK+EQkKzOZoH8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oiKSsv9RDCQm1S/HmggqtrPvdJmgXqMRBK6MAHqh9Yd/MlSYNip+OwN+JVDWvyw4j
+         PaowVWNf6v5Qw5aC1zUcALKjA0MeiiAKYuhFd5N18H92PtIsqdOsAxh4AC1cLHAVVu
+         7NvCS9CGGb6cKrHrwQ+X3wdidxAmVeF4uLboBzI8=
+Date:   Wed, 18 Nov 2020 08:55:09 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH v9 6/9] secretmem: add memcg accounting
+Message-ID: <20201118065509.GK370813@kernel.org>
+References: <20201117162932.13649-1-rppt@kernel.org>
+ <20201117162932.13649-7-rppt@kernel.org>
+ <20201117193358.GB109785@carbon.dhcp.thefacebook.com>
+ <CALvZod5mJnR2DXoYTbp9RX4uR7zVyqAPfD+XKpqXKgxaNyJ1VA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod5mJnR2DXoYTbp9RX4uR7zVyqAPfD+XKpqXKgxaNyJ1VA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for frame type specific min and max qp controls
-for encoder.
+On Tue, Nov 17, 2020 at 12:02:01PM -0800, Shakeel Butt wrote:
+> On Tue, Nov 17, 2020 at 11:49 AM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > On Tue, Nov 17, 2020 at 06:29:29PM +0200, Mike Rapoport wrote:
+> > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > >
+> > > Account memory consumed by secretmem to memcg. The accounting is updated
+> > > when the memory is actually allocated and freed.
+> > >
+> > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> [snip]
+> > >
+> > > +static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
+> > > +{
+> > > +     int err;
+> > > +
+> > > +     err = memcg_kmem_charge_page(page, gfp, order);
+> 
+> I haven't looked at the whole series but it seems like these pages
+> will be mapped into the userspace, so this patch has dependency on
+> Roman's "mm: allow mapping
+> accounted kernel pages to userspace" patch series.
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- drivers/media/platform/qcom/venus/core.h       | 18 +++++++++
- drivers/media/platform/qcom/venus/venc.c       | 21 ++++++++---
- drivers/media/platform/qcom/venus/venc_ctrls.c | 51 ++++++++++++++++++++++++++
- 3 files changed, 85 insertions(+), 5 deletions(-)
+Yes, that's why I rebased the patches on top of mmotm.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 3bc129a..6a764c9 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -230,10 +230,28 @@ struct venc_controls {
- 	u32 h264_b_qp;
- 	u32 h264_min_qp;
- 	u32 h264_max_qp;
-+	u32 h264_i_min_qp;
-+	u32 h264_i_max_qp;
-+	u32 h264_p_min_qp;
-+	u32 h264_p_max_qp;
-+	u32 h264_b_min_qp;
-+	u32 h264_b_max_qp;
- 	u32 h264_loop_filter_mode;
- 	s32 h264_loop_filter_alpha;
- 	s32 h264_loop_filter_beta;
- 
-+	u32 hevc_i_qp;
-+	u32 hevc_p_qp;
-+	u32 hevc_b_qp;
-+	u32 hevc_min_qp;
-+	u32 hevc_max_qp;
-+	u32 hevc_i_min_qp;
-+	u32 hevc_i_max_qp;
-+	u32 hevc_p_min_qp;
-+	u32 hevc_p_max_qp;
-+	u32 hevc_b_min_qp;
-+	u32 hevc_b_max_qp;
-+
- 	u32 vp8_min_qp;
- 	u32 vp8_max_qp;
- 
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 0bf92cc..f2f5a85 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -668,17 +668,28 @@ static int venc_set_properties(struct venus_inst *inst)
- 		return ret;
- 
- 	ptype = HFI_PROPERTY_PARAM_VENC_SESSION_QP;
--	quant.qp_i = ctr->h264_i_qp;
--	quant.qp_p = ctr->h264_p_qp;
--	quant.qp_b = ctr->h264_b_qp;
-+	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
-+		quant.qp_i = ctr->hevc_i_qp;
-+		quant.qp_p = ctr->hevc_p_qp;
-+		quant.qp_b = ctr->hevc_b_qp;
-+	} else {
-+		quant.qp_i = ctr->h264_i_qp;
-+		quant.qp_p = ctr->h264_p_qp;
-+		quant.qp_b = ctr->h264_b_qp;
-+	}
- 	quant.layer_id = 0;
- 	ret = hfi_session_set_property(inst, ptype, &quant);
- 	if (ret)
- 		return ret;
- 
- 	ptype = HFI_PROPERTY_PARAM_VENC_SESSION_QP_RANGE;
--	quant_range.min_qp = ctr->h264_min_qp;
--	quant_range.max_qp = ctr->h264_max_qp;
-+	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
-+		quant_range.min_qp = ctr->hevc_min_qp;
-+		quant_range.max_qp = ctr->hevc_max_qp;
-+	} else {
-+		quant_range.min_qp = ctr->h264_min_qp;
-+		quant_range.max_qp = ctr->h264_max_qp;
-+	}
- 	quant_range.layer_id = 0;
- 	ret = hfi_session_set_property(inst, ptype, &quant_range);
- 	if (ret)
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index 0708b3b..cd131e3 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -125,9 +125,60 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_H264_MIN_QP:
- 		ctr->h264_min_qp = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MIN_QP:
-+		ctr->h264_i_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP:
-+		ctr->h264_p_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MIN_QP:
-+		ctr->h264_b_min_qp = ctrl->val;
-+		break;
- 	case V4L2_CID_MPEG_VIDEO_H264_MAX_QP:
- 		ctr->h264_max_qp = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MAX_QP:
-+		ctr->h264_i_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MAX_QP:
-+		ctr->h264_p_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MAX_QP:
-+		ctr->h264_b_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_QP:
-+		ctr->hevc_i_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_QP:
-+		ctr->hevc_p_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_QP:
-+		ctr->hevc_b_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP:
-+		ctr->hevc_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MIN_QP:
-+		ctr->hevc_i_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MIN_QP:
-+		ctr->hevc_p_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MIN_QP:
-+		ctr->hevc_b_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP:
-+		ctr->hevc_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MAX_QP:
-+		ctr->hevc_i_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MAX_QP:
-+		ctr->hevc_p_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MAX_QP:
-+		ctr->hevc_b_max_qp = ctrl->val;
-+		break;
- 	case V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MODE:
- 		ctr->multi_slice_mode = ctrl->val;
- 		break;
 -- 
-2.7.4
-
+Sincerely yours,
+Mike.
