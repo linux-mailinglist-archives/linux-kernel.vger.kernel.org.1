@@ -2,114 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567CB2B7F31
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F0C2B7F34
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgKROMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 09:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgKROMt (ORCPT
+        id S1726805AbgKRONU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 09:13:20 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:60063 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbgKRONU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:12:49 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D88DC0613D4;
-        Wed, 18 Nov 2020 06:12:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dyKHycAKMMp/+Y5fbwqSpCe3GD5VyAzVk4hmnay49UY=; b=JXkj2GptKVopjLGtTx5/SfOVnQ
-        ns5NhJMPZ9Ndrez6kOFoBVQrJI3fQOlSU17cQO5QnVSh0XGRfTASrzp1plndIc9sqgQ9x4dTLlzLu
-        TlmtfHbZ42zaxFjqm+nZhwjoeN6yH1t+C7PCrnRsU5YIGRpeHxBagaXB/3uW8KPwEmBCNQb98WzXa
-        3IG5nvF67A7f67ohMtAPRc11bPkB4pot7J7dWJLHBU1ZqKdPL7ifvowhsp3DA3er6Hs89WK77UETy
-        Y/9vmwYQjSHJQHvFvuMvFN8o//Li+o6DJ96gka4RbgPVrX1XgCx2FxV+2TYF8AM/bfFC1yu6yM6Zx
-        oPhQ3vhA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfOCB-0002rI-LJ; Wed, 18 Nov 2020 14:12:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B845B3012C3;
-        Wed, 18 Nov 2020 15:12:26 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A0C60200E0A44; Wed, 18 Nov 2020 15:12:26 +0100 (CET)
-Date:   Wed, 18 Nov 2020 15:12:26 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Florian Weimer <fw@deneb.enyo.de>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: violating function pointer signature
-Message-ID: <20201118141226.GV3121392@hirez.programming.kicks-ass.net>
-References: <20201116175107.02db396d@gandalf.local.home>
- <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
- <20201117142145.43194f1a@gandalf.local.home>
- <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
- <20201117153451.3015c5c9@gandalf.local.home>
- <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
- <87h7pmwyta.fsf@mid.deneb.enyo.de>
+        Wed, 18 Nov 2020 09:13:20 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kfOCx-0005v8-3O; Wed, 18 Nov 2020 14:13:15 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] scsi: lpfc: Fix memory leak on lcb_context
+Date:   Wed, 18 Nov 2020 14:13:14 +0000
+Message-Id: <20201118141314.462471-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h7pmwyta.fsf@mid.deneb.enyo.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 02:59:29PM +0100, Florian Weimer wrote:
-> * Peter Zijlstra:
-> 
-> > I think that as long as the function is completely empty (it never
-> > touches any of the arguments) this should work in practise.
-> >
-> > That is:
-> >
-> >   void tp_nop_func(void) { }
-> >
-> > can be used as an argument to any function pointer that has a void
-> > return. In fact, I already do that, grep for __static_call_nop().
-> 
-> You can pass it as a function parameter, but in general, you cannot
-> call the function with a different prototype.  Even trivial
-> differences such as variadic vs non-variadic prototypes matter.
+From: Colin Ian King <colin.king@canonical.com>
 
-I don't think any tracepoint uses variadic argument.
+Currently there is an error return path that neglects to free the
+allocation for lcb_context.  Fix this by adding a new error free
+exit path that kfree's lcb_context before returning.  Use this new
+kfree exit path in another exit error path that also kfree's the same
+object, allowing a line of code to be removed.
 
-> The default Linux calling conventions are all of the cdecl family,
-> where the caller pops the argument off the stack.  You didn't quote
-> enough to context to tell whether other calling conventions matter in
-> your case.
+Addresses-Coverity: ("Resource leak")
+Fixes: 4430f7fd09ec ("scsi: lpfc: Rework locations of ndlp reference taking")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/scsi/lpfc/lpfc_els.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-This is strictly in-kernel, and I think we're all cdecl, of which the
-important part is caller-cleanup. The function compiles to:
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index 03f47d1b21fe..0d3271b4c130 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -6515,18 +6515,20 @@ lpfc_els_rcv_lcb(struct lpfc_vport *vport, struct lpfc_iocbq *cmdiocb,
+ 	lcb_context->ndlp = lpfc_nlp_get(ndlp);
+ 	if (!lcb_context->ndlp) {
+ 		rjt_err = LSRJT_UNABLE_TPC;
+-		goto rjt;
++		goto rjt_free;
+ 	}
+ 
+ 	if (lpfc_sli4_set_beacon(vport, lcb_context, state)) {
+ 		lpfc_printf_vlog(ndlp->vport, KERN_ERR, LOG_TRACE_EVENT,
+ 				 "0193 failed to send mail box");
+-		kfree(lcb_context);
+ 		lpfc_nlp_put(ndlp);
+ 		rjt_err = LSRJT_UNABLE_TPC;
+-		goto rjt;
++		goto rjt_free;
+ 	}
+ 	return 0;
++
++rjt_free:
++	kfree(lcb_context);
+ rjt:
+ 	memset(&stat, 0, sizeof(stat));
+ 	stat.un.b.lsRjtRsnCode = rjt_err;
+-- 
+2.28.0
 
-	RET
-
-so whatever the arguments are is irrelevant.
-
-> > I'm not sure what the LLVM-CFI crud makes of it, but that's their
-> > problem.
-> 
-> LTO can cause problems as well, particularly with whole-program
-> optimization.
-
-I don't think LTO can de-virtualize a dynamic array of function
-pointers, so there's very little risk. That said, the __static_call_nop
-case, where everything is inlined, is compiled sub-optimally for both
-LLVM and GCC.
