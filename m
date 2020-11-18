@@ -2,122 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9997F2B7C41
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:18:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E77EF2B7C1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgKRLRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 06:17:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727812AbgKRLRJ (ORCPT
+        id S1726505AbgKRLKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 06:10:24 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:42938 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgKRLKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:17:09 -0500
-Received: from latitanza.investici.org (latitanza.investici.org [IPv6:2001:888:2000:56::19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB69C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:17:09 -0800 (PST)
-Received: from mx3.investici.org (unknown [127.0.0.1])
-        by latitanza.investici.org (Postfix) with ESMTP id 4Cbg5T4cCyz8shP;
-        Wed, 18 Nov 2020 11:07:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
-        s=stigmate; t=1605697677;
-        bh=/ovjSkkj+pP7zpXzoV2FaBY80rRmAkeAXTToEnVDEWw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mMgCOAbDjQ+yGDUHcYfa9kc9nDG2pwfSWDacKs/gYhxxw7jGSdwNFr6vnbLYR6EBz
-         PrDr1/5L0eSxcTJ3jcwibtQ7ipw3xVF3O+FW3gq/hhy1XZmk43rLAsMm0Z5vBUUlHM
-         mmeSUYZva9uKATjxFT7NNNTPHdi69npYBI0wVb/g=
-Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4Cbg5S686vz8sgF;
-        Wed, 18 Nov 2020 11:07:56 +0000 (UTC)
-From:   laniel_francis@privacyrequired.com
-To:     akpm@linux-foundation.org
-Cc:     linux-hardening@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, dja@axtens.net,
-        keescook@chromium.org,
-        Francis Laniel <laniel_francis@privacyrequired.com>
-Subject: [PATCH v5 5/5] Correct wrong filenames in comment.
-Date:   Wed, 18 Nov 2020 12:07:31 +0100
-Message-Id: <20201118110731.15833-6-laniel_francis@privacyrequired.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201118110731.15833-1-laniel_francis@privacyrequired.com>
-References: <20201118110731.15833-1-laniel_francis@privacyrequired.com>
+        Wed, 18 Nov 2020 06:10:24 -0500
+Received: by mail-io1-f70.google.com with SMTP id p67so1001206iod.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 03:10:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=qxJMdjmQc4H+kMVNFv1PlhPGxPauXxN3GYZOTbxiOq8=;
+        b=O/iOwWtnig+Ytl1N1SLUTZp1KPs4eM39/6dXzoEorsvnh3dX4SDmGKEv7xIDMTmdXE
+         7uoBNads3SJpLZ7hWGgssEsX9fGs6CyFeurjlb3+aClr2ZQTs9V2nz33rR+wJVfsg3DG
+         fmwtEGPvf0C4iwwD03/QEIw24jZBTVDHnVl5cH0s6XfDu7IwjiJCUIw+7wtv3ySKcExJ
+         /Z+QFVQbs23wrVQFB+jQrkgtSY2tlAzhW5tse18VSNNmibgBjxzJuLhi0iRj3e6um9gM
+         aK6EeW1edIVtuuQA0y98gZPbbg4e1wnwMCzte/viLGGvkQWMhgieHsNo5Zvihy8zMyDZ
+         6dqg==
+X-Gm-Message-State: AOAM533TbaIfXXrTiiiAKc+bnSpamLHYyx75NTMV0Bec0Dhd1hJhnw29
+        nqnYzuDd/g3C7Q4S/6tqWEmyHBupcAt0cj9ZGBV+MczR1BM8
+X-Google-Smtp-Source: ABdhPJy3Zpy2YQ6D11LXPDs3qsFz4kgOOHPt9zlTXh7zZoY7bEtfnEVKLL0BjQscXuszlJVSnEwWplA/fEpsAKALNrc4RRhEcHLp
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c64b:: with SMTP id 11mr17056910ill.224.1605697821285;
+ Wed, 18 Nov 2020 03:10:21 -0800 (PST)
+Date:   Wed, 18 Nov 2020 03:10:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004129c705b45fa8f2@google.com>
+Subject: possible deadlock in _destroy_id
+From:   syzbot <syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        parav@mellanox.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Francis Laniel <laniel_francis@privacyrequired.com>
+Hello,
 
-In lkdtm.h, files targeted in comments are named "lkdtm_file.c" while there are
-named "file.c" in directory.
+syzbot found the following issue on:
 
-Signed-off-by: Francis Laniel <laniel_francis@privacyrequired.com>
-Acked-by: Kees Cook <keescook@chromium.org>
+HEAD commit:    20529233 Add linux-next specific files for 20201118
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13093cf2500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2c4fb58b6526b3c1
+dashboard link: https://syzkaller.appspot.com/bug?extid=1bc48bf7f78253f664a9
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com
+
+iwpm_register_pid: Unable to send a nlmsg (client = 2)
+infiniband syz1: RDMA CMA: cma_listen_on_dev, error -98
+============================================
+WARNING: possible recursive locking detected
+5.10.0-rc4-next-20201118-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor.5/12844 is trying to acquire lock:
+ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
+ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
+
+but task is already holding lock:
+ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(lock#6);
+  lock(lock#6);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+6 locks held by syz-executor.5/12844:
+ #0: ffffffff8fa76958 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x15b/0x690 drivers/infiniband/core/netlink.c:164
+ #1: ffffffff8c66c490 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x261/0x540 drivers/infiniband/core/nldev.c:1545
+ #2: ffffffff8c65bd90 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3c0 drivers/infiniband/core/device.c:1321
+ #3: ffffffff8c65bc50 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x163/0x3c0 drivers/infiniband/core/device.c:1331
+ #4: ffff888027bb0598 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:710
+ #5: ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
+
+stack backtrace:
+CPU: 1 PID: 12844 Comm: syz-executor.5 Not tainted 5.10.0-rc4-next-20201118-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_deadlock_bug kernel/locking/lockdep.c:2759 [inline]
+ check_deadlock kernel/locking/lockdep.c:2802 [inline]
+ validate_chain kernel/locking/lockdep.c:3593 [inline]
+ __lock_acquire.cold+0x115/0x39f kernel/locking/lockdep.c:4830
+ lock_acquire kernel/locking/lockdep.c:5435 [inline]
+ lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5400
+ __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+ __mutex_lock+0x134/0x1110 kernel/locking/mutex.c:1103
+ cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
+ _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
+ cma_listen_on_dev.cold+0x168/0x16d drivers/infiniband/core/cma.c:2535
+ cma_add_one+0x667/0xce0 drivers/infiniband/core/cma.c:4905
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:712
+ enable_device_and_get+0x1d5/0x3c0 drivers/infiniband/core/device.c:1333
+ ib_register_device drivers/infiniband/core/device.c:1408 [inline]
+ ib_register_device+0x7a0/0xa30 drivers/infiniband/core/device.c:1367
+ siw_device_register drivers/infiniband/sw/siw/siw_main.c:72 [inline]
+ siw_newlink drivers/infiniband/sw/siw/siw_main.c:545 [inline]
+ siw_newlink+0xddb/0x1340 drivers/infiniband/sw/siw/siw_main.c:522
+ nldev_newlink+0x30e/0x540 drivers/infiniband/core/nldev.c:1555
+ rdma_nl_rcv_msg+0x367/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2f2/0x440 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:650 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:670
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2339
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2393
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2426
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45deb9
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f2728c60c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000002d040 RCX: 000000000045deb9
+RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
+RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007ffddb965a9f R14: 00007f2728c619c0 R15: 000000000118bf2c
+
+
 ---
- drivers/misc/lkdtm/lkdtm.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
-index 138f06254b61..6aa6d6a1a839 100644
---- a/drivers/misc/lkdtm/lkdtm.h
-+++ b/drivers/misc/lkdtm/lkdtm.h
-@@ -6,7 +6,7 @@
- 
- #include <linux/kernel.h>
- 
--/* lkdtm_bugs.c */
-+/* bugs.c */
- void __init lkdtm_bugs_init(int *recur_param);
- void lkdtm_PANIC(void);
- void lkdtm_BUG(void);
-@@ -35,7 +35,7 @@ void lkdtm_CORRUPT_PAC(void);
- void lkdtm_FORTIFY_OBJECT(void);
- void lkdtm_FORTIFY_SUBOBJECT(void);
- 
--/* lkdtm_heap.c */
-+/* heap.c */
- void __init lkdtm_heap_init(void);
- void __exit lkdtm_heap_exit(void);
- void lkdtm_OVERWRITE_ALLOCATION(void);
-@@ -47,7 +47,7 @@ void lkdtm_SLAB_FREE_DOUBLE(void);
- void lkdtm_SLAB_FREE_CROSS(void);
- void lkdtm_SLAB_FREE_PAGE(void);
- 
--/* lkdtm_perms.c */
-+/* perms.c */
- void __init lkdtm_perms_init(void);
- void lkdtm_WRITE_RO(void);
- void lkdtm_WRITE_RO_AFTER_INIT(void);
-@@ -62,7 +62,7 @@ void lkdtm_EXEC_NULL(void);
- void lkdtm_ACCESS_USERSPACE(void);
- void lkdtm_ACCESS_NULL(void);
- 
--/* lkdtm_refcount.c */
-+/* refcount.c */
- void lkdtm_REFCOUNT_INC_OVERFLOW(void);
- void lkdtm_REFCOUNT_ADD_OVERFLOW(void);
- void lkdtm_REFCOUNT_INC_NOT_ZERO_OVERFLOW(void);
-@@ -83,10 +83,10 @@ void lkdtm_REFCOUNT_SUB_AND_TEST_SATURATED(void);
- void lkdtm_REFCOUNT_TIMING(void);
- void lkdtm_ATOMIC_TIMING(void);
- 
--/* lkdtm_rodata.c */
-+/* rodata.c */
- void lkdtm_rodata_do_nothing(void);
- 
--/* lkdtm_usercopy.c */
-+/* usercopy.c */
- void __init lkdtm_usercopy_init(void);
- void __exit lkdtm_usercopy_exit(void);
- void lkdtm_USERCOPY_HEAP_SIZE_TO(void);
-@@ -98,7 +98,7 @@ void lkdtm_USERCOPY_STACK_FRAME_FROM(void);
- void lkdtm_USERCOPY_STACK_BEYOND(void);
- void lkdtm_USERCOPY_KERNEL(void);
- 
--/* lkdtm_stackleak.c */
-+/* stackleak.c */
- void lkdtm_STACKLEAK_ERASING(void);
- 
- /* cfi.c */
--- 
-2.20.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
