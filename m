@@ -2,214 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CECB2B7B8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E05ED2B7B93
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgKRKov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:44:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726141AbgKRKov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:44:51 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0DED7206A5;
-        Wed, 18 Nov 2020 10:44:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605696289;
-        bh=gTI+Tk0xN6ZXh54yy91oECXFwZUA9qhLXwJEsFPlDCU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LUr+LKlDil0FVn+Ut1kK2ECrSQzEWBgnnoEduRezMbB4QWt7lUASxRSJoj1g2Tsii
-         xF6zKZmwc4Fd2DMherCpe4kiCAElyTPDVQtY9inYnMHqdiXk4kQTCN6LfoJAExrd0r
-         sN+pJxnWH344VhBTWYZwrsa+u9QcWrI2ULvgHQlg=
-Date:   Wed, 18 Nov 2020 11:45:34 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Aisheng Dong <aisheng.dong@nxp.com>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH RESEND] driver core: export device_is_bound() to fix
- build failure
-Message-ID: <X7T7TgGGgxx9j2Rl@kroah.com>
-References: <20201108082317.GA40741@kroah.com>
- <CADVatmN8SbZWVGf_xe_K1g7M9ArHXF8TUhYyBgQcydBF4_zp9g@mail.gmail.com>
- <20201109103703.GA1310551@kroah.com>
- <AM6PR04MB4966B90C0DEC71A6C86067AA80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <20201109114125.GC1769924@kroah.com>
- <AM6PR04MB4966F12B67C4104247E0E6A180EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <20201109120512.GB1832201@kroah.com>
- <AM6PR04MB49668F60F74B73931C2ABBFD80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <20201109124801.GA1890488@kroah.com>
- <AM6PR04MB4966375933A2644C8A52119D80E10@AM6PR04MB4966.eurprd04.prod.outlook.com>
+        id S1726602AbgKRKpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:45:53 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:19412 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725497AbgKRKpw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 05:45:52 -0500
+X-IronPort-AV: E=Sophos;i="5.77,486,1596492000"; 
+   d="scan'208";a="478145187"
+Received: from clt-128-93-180-167.vpn.inria.fr (HELO [128.93.180.167]) ([128.93.180.167])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 18 Nov 2020 11:45:46 +0100
+Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
+From:   Brice Goglin <brice.goglin@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        x86@kernel.org, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
+ <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
+ <20201003085345.GA114893@kroah.com>
+ <20201006005736.GD6041@ranerica-svr.sc.intel.com>
+ <20201006073744.GA6753@kroah.com>
+ <20201007031447.GB27938@ranerica-svr.sc.intel.com>
+ <20201007051546.GA47583@kroah.com>
+ <7233394d-982b-72cd-ceb9-d81161bd826f@gmail.com> <X6zZaKt57Xl9NnuN@kroah.com>
+ <d7ac96f2-10e8-209d-2903-1bbe8fc552f4@gmail.com> <X60TJ2u47WK3yY/y@kroah.com>
+ <33efde37-562f-4c6a-72ba-2277533e3781@gmail.com>
+Autocrypt: addr=brice.goglin@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <ea20c2b8-18c8-ef76-4a16-15b7271333d1@gmail.com>
+Date:   Wed, 18 Nov 2020 11:45:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR04MB4966375933A2644C8A52119D80E10@AM6PR04MB4966.eurprd04.prod.outlook.com>
+In-Reply-To: <33efde37-562f-4c6a-72ba-2277533e3781@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 10:23:42AM +0000, Aisheng Dong wrote:
-> Hi Greg,
-> 
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Sent: Monday, November 9, 2020 8:48 PM
-> > 
-> > On Mon, Nov 09, 2020 at 12:26:55PM +0000, Aisheng Dong wrote:
-> > > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Sent: Monday, November 9, 2020 8:05 PM
-> > > >
-> > > > On Mon, Nov 09, 2020 at 11:55:46AM +0000, Aisheng Dong wrote:
-> > > > > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > > Sent: Monday, November 9, 2020 7:41 PM
-> > > > > >
-> > > > > > On Mon, Nov 09, 2020 at 10:57:05AM +0000, Aisheng Dong wrote:
-> > > > > > > Hi Greg,
-> > > > > > >
-> > > > > > > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > > > > Sent: Monday, November 9, 2020 6:37 PM
-> > > > > > > > Subject: Re: [PATCH RESEND] driver core: export
-> > > > > > > > device_is_bound() to fix build failure
-> > > > > > > >
-> > > > > > > > On Mon, Nov 09, 2020 at 10:14:46AM +0000, Sudip Mukherjee
-> > wrote:
-> > > > > > > > > Hi Greg,
-> > > > > > > > >
-> > > > > > > > > On Sun, Nov 8, 2020 at 8:23 AM Greg Kroah-Hartman
-> > > > > > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > > > > > >
-> > > > > > > > > > On Sat, Nov 07, 2020 at 10:47:27PM +0000, Sudip Mukherjee
-> > wrote:
-> > > > > > > > > > > When CONFIG_MXC_CLK_SCU is configured as 'm' the build
-> > > > > > > > > > > fails as it is unable to find device_is_bound(). The error being:
-> > > > > > > > > > > ERROR: modpost: "device_is_bound"
-> > > > [drivers/clk/imx/clk-imx-scu.ko]
-> > > > > > > > > > >       undefined!
-> > > > > > > > > > >
-> > > > > > > > > > > Export the symbol so that the module finds it.
-> > > > > > > > > > >
-> > > > > > > > > > > Fixes: 77d8f3068c63 ("clk: imx: scu: add two cells
-> > > > > > > > > > > binding
-> > > > > > > > > > > support")
-> > > > > > > > > > > Signed-off-by: Sudip Mukherjee
-> > > > > > > > > > > <sudipm.mukherjee@gmail.com>
-> > > > > > > > > > > ---
-> > > > > > > > > > >
-> > > > > > > > > > > resending with the Fixes: tag.
-> > > > > > > > > > >
-> > > > > > > > > > >  drivers/base/dd.c | 1 +
-> > > > > > > > > > >  1 file changed, 1 insertion(+)
-> > > > > > > > > > >
-> > > > > > > > > > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > > > > > > > > > > index 148e81969e04..a796a57e5efb 100644
-> > > > > > > > > > > --- a/drivers/base/dd.c
-> > > > > > > > > > > +++ b/drivers/base/dd.c
-> > > > > > > > > > > @@ -353,6 +353,7 @@ bool device_is_bound(struct device
-> > > > > > > > > > > *dev)
-> > > > {
-> > > > > > > > > > >       return dev->p &&
-> > > > > > > > > > > klist_node_attached(&dev->p->knode_driver);
-> > > > > > > > > > >  }
-> > > > > > > > > > > +EXPORT_SYMBOL(device_is_bound);
-> > > > > > > > > >
-> > > > > > > > > > EXPORT_SYMBOL_GPL() please, like all the other exports in this
-> > file.
-> > > > > > > > > >
-> > > > > > > > > > Also, wait, no, don't call this, are you sure you are
-> > > > > > > > > > calling it in a race-free way?  And what branch/tree is
-> > > > > > > > > > the above
-> > > > commit in?
-> > > > > > > > >
-> > > > > > > > > I have not checked fully but since it is being called from
-> > > > > > > > > probe() I assume the lock will be held at that time.
-> > > > > > > >
-> > > > > > > > probe() should never call this function as it makes no sense
-> > > > > > > > at all at that point in time.  The driver should be fixed.
-> > > > > > >
-> > > > > > > Would you suggest if any other API we can use to allow the
-> > > > > > > driver to know whether another device has been probed?
-> > > > > >
-> > > > > > There is none, sorry, as that just opens up way too many problems.
-> > > > > >
-> > > > > > > For imx scu driver in question, it has a special requirement
-> > > > > > > that it depends on scu power domain driver. However, there're
-> > > > > > > a huge number
-> > > > > > > (200+) of power domains for each device clock, we can't define
-> > > > > > > them all in DT
-> > > > > > for a single clock controller node.
-> > > > > > >
-> > > > > > > That's why we wanted to use device_is_bound() before to check
-> > > > > > > if scu power domain is ready or not to support defer probe.
-> > > > > >
-> > > > > > Use the device link functionality for this type of thing, that
-> > > > > > is what it was created for.
-> > > > > >
-> > > > >
-> > > > > Thanks for the suggestion. I will check it how to use.
-> > > > > BTW, I wonder if dev_driver_string() could be an optional solution
-> > > > > which seems a more simple way?
-> > > >
-> > > > Also, how do you really know you even have a valid pointer to that
-> > > > other device structure?  How are you getting access to that?
-> > > >
-> > >
-> > > The rough idea is as follows. Not sure if those APIs are safe enough
-> > > as there're many users In kernel.
-> > >
-> > > pd_np = of_find_compatible_node(NULL, NULL, "fsl,scu-pd"); pd_dev =
-> > > of_find_device_by_node(pd_np); if (!pd_dev ||
-> > > !dev_driver_string(&pd_dev->dev) ||
-> > >    strcmp(dev_driver_string(&pd_dev->dev), "imx-scu-pd")) {
-> > >         of_node_put(pd_np);
-> > >         return -EPROBE_DEFER;
-> > > }
-> > 
-> > Ick, again, no, don't do that, you can not guarantee "names" of devices
-> > anywhere in the system, sorry.
-> 
-> I tried to understand how to use devlink for this case by diving deep into the devlink code,
-> however, it looked to me there're a few limitations on the current devlink usage.
 
-Adding Saravana, who wrote that code to help explain it.
+Le 17/11/2020 à 16:55, Brice Goglin a écrit :
+> Le 12/11/2020 à 11:49, Greg Kroah-Hartman a écrit :
+>> On Thu, Nov 12, 2020 at 10:10:57AM +0100, Brice Goglin wrote:
+>>> Le 12/11/2020 à 07:42, Greg Kroah-Hartman a écrit :
+>>>> On Thu, Nov 12, 2020 at 07:19:48AM +0100, Brice Goglin wrote:
+>>>>> Hello
+>>>>>
+>>>>> Sorry for the late reply. As the first userspace consumer of this
+>>>>> interface [1], I can confirm that reading a single file to get the mask
+>>>>> would be better, at least for performance reason. On large platforms, we
+>>>>> already have to read thousands of sysfs files to get CPU topology and
+>>>>> cache information, I'd be happy not to read one more file per cpu.
+>>>>>
+>>>>> Reading these sysfs files is slow, and it does not scale well when
+>>>>> multiple processes read them in parallel.
+>>>> Really?  Where is the slowdown?  Would something like readfile() work
+>>>> better for you for that?
+>>>> 	https://lore.kernel.org/linux-api/20200704140250.423345-1-gregkh@linuxfoundation.org/
+>>> I guess readfile would improve the sequential case by avoiding syscalls
+>>> but it would not improve the parallel case since syscalls shouldn't have
+>>> any parallel issue?
+>> syscalls should not have parallel issues at all.
+>>
+>>> We've been watching the status of readfile() since it was posted on LKML
+>>> 6 months ago, but we were actually wondering if it would end up being
+>>> included at some point.
+>> It needs a solid reason to be merged.  My "test" benchmarks are fun to
+>> run, but I have yet to find a real need for it anywhere as the
+>> open/read/close syscall overhead seems to be lost in the noise on any
+>> real application workload that I can find.
+>>
+>> If you have a real need, and it reduces overhead and cpu usage, I'm more
+>> than willing to update the patchset and resubmit it.
+>>
+>>
+> Hello
+>
+> I updated hwloc to use readfile instead of open+read+close on all those
+> small sysfs/procfs files. Unfortunately the improvement is very small,
+> only a couple percents. On a 40 core server, our library starts in 38ms
+> instead of 39ms. I can't deploy your patches on larger machines, but I
+> tested our code on a copy of their sysfs files saved on a local disk :
+> For a 256-thread KNL, we go from 15ms to 14ms. For a 896-core SGI
+> machine, from 73ms to 71ms.
 
-> We can't create driver presence dependency link in consumer's probe function
-> while the supplier driver is still not probed or even not created yet.
-> (we're the later case that supplier device scu-pd may be created after scu-clk device).
 
-Sounds like your DT is set up backwards?
+Sorry, I forgot to update some codepaths to properly use readfile yesterday :/
+Here are updated and more precise numbers that show a non-negligible improvement.
+Again, we're measuring the entire hwloc topology discovery, which includes reading
+many sysfs file (improved thanks to readfile) and then building a hierarchy of
+objects describing the machine (not modified).
 
-> The kernel doc Documentation/driver-api/device_link.rst also mentioned this limitation and
-> the suggested solution is:
-> "The onus is thus on the consumer to check presence of the supplier after adding the link,
-> and defer probing on non-presence."
-> 
-> Then the question is , back again, , how to check the presense of other device driver if we can't
-> use device_is_bound() API in module?
+Server sysfs files (dual-socket x 20 cores x SMT-2)
+default  43.48ms +/-4.48
+readfile 42.15ms +/-4.58 => 3.1% better
+1971 readfile calls => 674ns improvement per call
 
-Your driver should not care, as you can't get direct access to it, so
-don't try to ask the driver core about it as that is racy and not
-viable.
+Knight Landing sysfs stored on local hard drive (64 cores x SMT-4)
+default  14.60ms +/-0.91
+readfile 13.63ms +/-1.05 => 6.6% better
+2940 readfile calls => 329ns improvement per call
 
-If your driver needs resources that it can not get at this point in
-time, just return from probe with a defer error.  That way it will be
-called again after other drivers load.
+SGI Altix UV sysfs stored on local hard drive (56 sockets x 8 coeurs x SMT-2)
+default  69.12ms +/-1.40
+readfile 66.03ms +/-1.35 => 4.5% better
+14525 readfile calls => 212ns improvement per call
 
-> The dev_driver_string() seems be a quick and dirty solution for the this build break issue as
-> the driver name is less possible to be changed and under control.
+I don't know why the first case (real sysfs files) gets a much
+higher standard deviation and higher improvement per readfile call.
+The other two cases match what microbenmarks say
+(about 200ns improvement per readfile call).
 
-No, driver names are not ever guaranteed to stay the same and are not to
-be used for this at all, sorry.
+Brice
 
-> How would you suggest for current situation?
 
-defer your probe like all other drivers in this situation do it?  What
-makes this one driver so much different than the thousands of other ones
-we currently have?
 
-thanks,
 
-greg k-h
+>
+> I see 200ns improvement for readfile (2300) vs open+read+close (2500) on
+> my server when reading a single cpu topology file. With several
+> thousands of sysfs files to read in the above large hwloc tests, it
+> confirms an overall improvement in the order of 1ms.
+>
+> So, just like you said, the overhead seems to be pretty much lost in the
+> noise of hwloc doing its own stuff after reading hundreds of sysfs files :/
+>
+> Brice
+>
+>
