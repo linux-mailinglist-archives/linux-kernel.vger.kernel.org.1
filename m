@@ -2,70 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89832B7F70
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A68082B7F72
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgKROa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 09:30:27 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:64328 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgKROa1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:30:27 -0500
-Received: from fsav104.sakura.ne.jp (fsav104.sakura.ne.jp [27.133.134.231])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0AIEU7re060626;
-        Wed, 18 Nov 2020 23:30:07 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav104.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp);
- Wed, 18 Nov 2020 23:30:07 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0AIEU7EL060617
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 18 Nov 2020 23:30:07 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v3] lockdep: Allow tuning tracing capacity constants.
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
- <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
- <0eb519fa-e77b-b655-724a-4e9eecc64626@i-love.sakura.ne.jp>
- <6933e938-f219-5e13-aee6-fe4de87eb43e@i-love.sakura.ne.jp>
- <81ab0ffd-6e80-c96c-053a-b1b4fe8694c1@i-love.sakura.ne.jp>
- <20201118142357.GW3121392@hirez.programming.kicks-ass.net>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <1778f2e5-0a0c-2c6e-2c83-fe51d938e8a2@i-love.sakura.ne.jp>
-Date:   Wed, 18 Nov 2020 23:30:05 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1726822AbgKRObp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 09:31:45 -0500
+Received: from mga03.intel.com ([134.134.136.65]:35421 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726384AbgKRObo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 09:31:44 -0500
+IronPort-SDR: mEg5nfb/sCLT1r9Dtrrt7ZdLUiRYxa1mfJa4XaaaeF1S/6D+5Tjw0gLxBPmmXVY6Zc8spYl67B
+ H8bSz8UdLagA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="171220152"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="171220152"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 06:31:43 -0800
+IronPort-SDR: F8kZ31vTEk2BL7o09WEYW3i9vp/BPeuQvFe0DT6rWAtKnIIJRT+opLWBRoBeHgLgnNMSLXqi5j
+ LVgRYMwVJ+cg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="330520915"
+Received: from lkp-server02.sh.intel.com (HELO 67996b229c47) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 18 Nov 2020 06:31:42 -0800
+Received: from kbuild by 67996b229c47 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kfOUn-000089-DY; Wed, 18 Nov 2020 14:31:41 +0000
+Date:   Wed, 18 Nov 2020 22:31:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/clang-ft/lib] BUILD SUCCESS
+ 02ec42c445b349042b8361294a9ff72fc3193f18
+Message-ID: <5fb5302b.ouyVOXQVexOnInAp%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20201118142357.GW3121392@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The problem is that we can't know what exactly is consuming these resources.
-My question is do you have a plan to make it possible to know what exactly is
-consuming these resources.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/clang-ft/lib
+branch HEAD: 02ec42c445b349042b8361294a9ff72fc3193f18  powerpc: fix -Wimplicit-fallthrough
 
-On 2020/11/18 23:23, Peter Zijlstra wrote:
-> On Wed, Nov 18, 2020 at 10:57:08PM +0900, Tetsuo Handa wrote:
->> Peter, do you have a plan to make this problem actionable?
-> 
-> I don't even know what the problem is.. nor do you. You can keep sending
-> this bad paper-over-issues patch until you're blue in the face, I'll not
-> take it for reasons I've explained before.
-> 
-> I've also previously said that the right way to go about this is to
-> figure out what exactly is consuming these resources and then figure out
-> how to cure _that_. Blindly increasing the number only enables bad
-> actors to get away with being bad.
-> 
+elapsed time: 724m
+
+configs tested: 155
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     mpc5200_defconfig
+m68k                            mac_defconfig
+arm                          tango4_defconfig
+arm                        spear3xx_defconfig
+arm                            hisi_defconfig
+arm                         assabet_defconfig
+powerpc                     kmeter1_defconfig
+sh                     sh7710voipgw_defconfig
+sh                         ecovec24_defconfig
+powerpc                 mpc8315_rdb_defconfig
+sh                          landisk_defconfig
+powerpc                        warp_defconfig
+arm                            u300_defconfig
+mips                           ci20_defconfig
+arm                          exynos_defconfig
+mips                 decstation_r4k_defconfig
+mips                      maltasmvp_defconfig
+arc                         haps_hs_defconfig
+sh                   sh7770_generic_defconfig
+mips                      loongson3_defconfig
+arm                            mps2_defconfig
+arc                     nsimosci_hs_defconfig
+mips                            ar7_defconfig
+powerpc                      cm5200_defconfig
+mips                          malta_defconfig
+openrisc                    or1ksim_defconfig
+arm                         shannon_defconfig
+h8300                       h8s-sim_defconfig
+sh                   sh7724_generic_defconfig
+powerpc                    klondike_defconfig
+powerpc                 mpc832x_mds_defconfig
+powerpc                    gamecube_defconfig
+sh                                  defconfig
+mips                        omega2p_defconfig
+arm                         mv78xx0_defconfig
+powerpc                           allnoconfig
+mips                malta_kvm_guest_defconfig
+arc                                 defconfig
+powerpc                     redwood_defconfig
+mips                          rb532_defconfig
+h8300                    h8300h-sim_defconfig
+arc                          axs103_defconfig
+sh                          rsk7203_defconfig
+powerpc                      pcm030_defconfig
+openrisc                         alldefconfig
+sparc                               defconfig
+powerpc                     kilauea_defconfig
+arm                         socfpga_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sh                        edosk7760_defconfig
+sh                               j2_defconfig
+xtensa                  cadence_csp_defconfig
+sh                          polaris_defconfig
+arm                            lart_defconfig
+arm                          prima2_defconfig
+h8300                            alldefconfig
+mips                      bmips_stb_defconfig
+s390                             alldefconfig
+arm                           h5000_defconfig
+arm                        neponset_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+i386                 randconfig-a006-20201117
+i386                 randconfig-a005-20201117
+i386                 randconfig-a001-20201117
+i386                 randconfig-a002-20201117
+i386                 randconfig-a004-20201117
+i386                 randconfig-a003-20201117
+i386                 randconfig-a006-20201118
+i386                 randconfig-a005-20201118
+i386                 randconfig-a002-20201118
+i386                 randconfig-a001-20201118
+i386                 randconfig-a003-20201118
+i386                 randconfig-a004-20201118
+x86_64               randconfig-a005-20201118
+x86_64               randconfig-a003-20201118
+x86_64               randconfig-a004-20201118
+x86_64               randconfig-a002-20201118
+x86_64               randconfig-a006-20201118
+x86_64               randconfig-a001-20201118
+i386                 randconfig-a012-20201118
+i386                 randconfig-a014-20201118
+i386                 randconfig-a016-20201118
+i386                 randconfig-a011-20201118
+i386                 randconfig-a013-20201118
+i386                 randconfig-a015-20201118
+i386                 randconfig-a012-20201117
+i386                 randconfig-a014-20201117
+i386                 randconfig-a011-20201117
+i386                 randconfig-a013-20201117
+i386                 randconfig-a016-20201117
+i386                 randconfig-a015-20201117
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20201117
+x86_64               randconfig-a005-20201117
+x86_64               randconfig-a004-20201117
+x86_64               randconfig-a002-20201117
+x86_64               randconfig-a001-20201117
+x86_64               randconfig-a006-20201117
+x86_64               randconfig-a015-20201118
+x86_64               randconfig-a014-20201118
+x86_64               randconfig-a011-20201118
+x86_64               randconfig-a013-20201118
+x86_64               randconfig-a016-20201118
+x86_64               randconfig-a012-20201118
+x86_64               randconfig-a015-20201116
+x86_64               randconfig-a011-20201116
+x86_64               randconfig-a014-20201116
+x86_64               randconfig-a013-20201116
+x86_64               randconfig-a016-20201116
+x86_64               randconfig-a012-20201116
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
