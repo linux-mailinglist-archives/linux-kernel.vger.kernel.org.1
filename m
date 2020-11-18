@@ -2,134 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA56B2B7AD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A043B2B7ACD
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 10:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbgKRJ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 04:56:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52594 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725772AbgKRJ4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 04:56:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A1C95ABDE;
-        Wed, 18 Nov 2020 09:56:40 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 09:56:38 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [RFC -V5] autonuma: Migrate on fault among multiple bound nodes
-Message-ID: <20201118095637.GC3306@suse.de>
-References: <20201118051952.39097-1-ying.huang@intel.com>
+        id S1727513AbgKRJ4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 04:56:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727043AbgKRJ4H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 04:56:07 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE023C0613D4;
+        Wed, 18 Nov 2020 01:56:05 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id h12so780926pjv.2;
+        Wed, 18 Nov 2020 01:56:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iN17+NL6h1ATpfyCdibmddqKJUozPpM85yOX+t7P07s=;
+        b=iH601Gg7erHx4XMuGEchEuetzhu7G/RZ5OWbOS3W3/wzXOSJsmX0VTIax8BjL9m5uz
+         GXQ3Js7foFc2XTpaTDPT3YqS7DQ2CzIhnXwQN7MRiheKtQc5DwMKeKKuz3qnGmlnbcla
+         +3kvcBguWTTCeqyc9l+yoldR9X9PFhz4w7+wqEfluCVzevJxHfuWykfpTMFOcJzNDpVC
+         7VDtRtPCcjoutmpn0ruSU0o6anEAKcagv1kx0rgK3ptvJwtGIX6DNkLh1UbkvDazxf/n
+         SfenlBosZtKaZ1+lT8+/fpV74scF7KMfLWXqVGoqafv6CfEeQlSteF8mDj8xx6qbiZog
+         oZEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iN17+NL6h1ATpfyCdibmddqKJUozPpM85yOX+t7P07s=;
+        b=WjIO/WMVHnNw9qz0Ied2W5+NJSVO/9kcqUj/1GqEt85ypXSR6bi5owIqtkh/+gsjlr
+         p63PmIgzkEwozEbrFKiEn2l7A0nDMDnnMs9/N+HYq67TdNoGYCc2w0GUdt4oUcGxuXR2
+         yB+iHnLxeco/jF6lj6ZdrRQrNTawe121sHvTnjAxpxzvAPKUQzi9rVZcp4r9uFThxgpO
+         mZwz/vpBCGbYpgjA1uVSNgLfgxPS7Vu+CHZBOiozzyfIZeFBb7rHRp+IU/x3SkrAdJaW
+         DBXCsAi3MO8oU2JTkdFqCUW+8XORjhnuHuIZqe1NhYRcDYpNBR5NMaLTDPtypdNJfim/
+         1/kg==
+X-Gm-Message-State: AOAM533zjdOrfpcZt2cXtvGLHqowSeZVAjO9+wSsf/jgiyM2u8pZ8NBL
+        mvpOaCZeOwVL0OytAdW8kqY6D0PwERHmr6GIwSY=
+X-Google-Smtp-Source: ABdhPJwdxF1Zf/yjvQENLno08HERXXeTB9PR24kk98KO1SzJYVXr7enJkFxf3Vj9hg7d/FeAQooIGQGeN9ak0W7yBM0=
+X-Received: by 2002:a17:90a:d90a:: with SMTP id c10mr3343024pjv.129.1605693365044;
+ Wed, 18 Nov 2020 01:56:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201118051952.39097-1-ying.huang@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201117154340.18216-1-info@metux.net> <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
+ <20201118095342.sviuxvfsbmmn22mo@pengutronix.de>
+In-Reply-To: <20201118095342.sviuxvfsbmmn22mo@pengutronix.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 18 Nov 2020 11:56:53 +0200
+Message-ID: <CAHp75Vd9QUCcUoPLUW3kkJC0h=mPUqHNqNJPY74gDGSu67t8Hw@mail.gmail.com>
+Subject: Re: [PATCH] drivers: gpio: use of_match_ptr() and ACPI_PTR() macros
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-tegra@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Alban Bedel <albeu@free.fr>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>, zhang.lyra@gmail.com,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        dl-linux-imx <linux-imx@nxp.com>, orsonzhai@gmail.com,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        linux-pwm@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Sascha Hauer <kernel@pengutronix.de>, baolin.wang7@gmail.com,
+        Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 01:19:52PM +0800, Huang Ying wrote:
-> Now, AutoNUMA can only optimize the page placement among the NUMA
+On Wed, Nov 18, 2020 at 11:54 AM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+> On Tue, Nov 17, 2020 at 06:45:37PM +0200, Andy Shevchenko wrote:
+> > On Tue, Nov 17, 2020 at 5:45 PM Enrico Weigelt, metux IT consult
+> > <info@metux.net> wrote:
+> > >
+> > > The of_match_ptr(foo) macro evaluates to foo, only if
+> > > CONFIG_OF is set, otherwise to NULL. Same does ACPI_PTR with
+> > > CONFIG_ACPI. That's very helpful for drivers that can be used
+> > > with or without oftree / acpi.
+> > >
+> > > Even though most of the drivers touched here probably don't
+> > > actually need that, it's also nice for consistency to make it
+> > > the de-facto standard and change all drivers to use the
+> > > of_match_ptr() and ACPI_PTR() macros.
+> > >
+> > > A nice side effect: in some situations, when compiled w/o
+> > > CONFIG_OF/CONFIG_ACPI, the corresponding match tables could
+> > > automatically become unreferenced and optimized-away by the
+> > > compiler, w/o explicitly cluttering the code w/ ifdef's.
+> >
+> > NAK.
+> >
+> > It prevents using DT-enabled drivers on ACPI based platforms.
+>
+> So a system without CONFIG_OF might still make use of .of_match_table?
 
-Note that the feature is referred to as NUMA_BALANCING in the kernel
-configs as AUTONUMA as it was first presented was not merged. The sysctl
-for it is kernel.numa_balancing as you already note. So use NUMAB or
-NUMA_BALANCING but not AUTONUMA because at least a new person grepping
-for NUMA_BALANCING or variants will find it where as autonuma only creeped
-into the powerpc arch code.
+Yep!
 
-If exposing to userspace, the naming should definitely be consistent.
+> If so: TIL ...
 
-> - sysctl knob numa_balancing can enable/disable the NUMA balancing
->   globally.
-> 
-> - even if sysctl numa_balancing is enabled, the NUMA balancing will be
->   disabled for the memory areas or applications with the explicit memory
->   policy by default.
-> 
-> - MPOL_F_AUTONUMA can be used to enable the NUMA balancing for the
->   applications when specifying the explicit memory policy.
-> 
-
-MPOL_F_NUMAB
-
-> Various page placement optimization based on the NUMA balancing can be
-> done with these flags.  As the first step, in this patch, if the
-> memory of the application is bound to multiple nodes (MPOL_BIND), and
-> in the hint page fault handler the accessing node are in the policy
-> nodemask, the page will be tried to be migrated to the accessing node
-> to reduce the cross-node accessing.
-> 
-
-The patch still lacks supporting data. It really should have a basic
-benchmark of some sort serving as an example of how the policies should
-be set and a before/after comparison showing the throughput of MPOL_BIND
-accesses spanning 2 or more nodes is faster when numa balancing is enabled.
-
-A man page update should also be added clearly outlining when an
-application should consider using it with the linux-api people cc'd
-for review.
-
-The main limitation is that if this requires application modification,
-it may never be used. For example, if an application uses openmp places
-that translates into bind then openmp needs knowledge of the flag.
-Similar limitations apply to MPI. This feature has a risk that no one
-uses it.
-
-> Huang Ying (2):
->   mempolicy: Rename MPOL_F_MORON to MPOL_F_MOPRON
->   autonuma: Migrate on fault among multiple bound nodes
-> ---
->  include/uapi/linux/mempolicy.h | 4 +++-
->  mm/mempolicy.c                 | 9 +++++++++
->  2 files changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
-> index 3354774af61e..adb49f13840e 100644
-> --- a/include/uapi/linux/mempolicy.h
-> +++ b/include/uapi/linux/mempolicy.h
-> @@ -28,12 +28,14 @@ enum {
->  /* Flags for set_mempolicy */
->  #define MPOL_F_STATIC_NODES	(1 << 15)
->  #define MPOL_F_RELATIVE_NODES	(1 << 14)
-> +#define MPOL_F_AUTONUMA		(1 << 13) /* Optimize with AutoNUMA if possible */
->  
-
-Order by flag usage, correct the naming.
-
->  /*
->   * MPOL_MODE_FLAGS is the union of all possible optional mode flags passed to
->   * either set_mempolicy() or mbind().
->   */
-> -#define MPOL_MODE_FLAGS	(MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES)
-> +#define MPOL_MODE_FLAGS							\
-> +	(MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES | MPOL_F_AUTONUMA)
->  
->  /* Flags for get_mempolicy */
->  #define MPOL_F_NODE	(1<<0)	/* return next IL mode instead of node mask */
-
-How does an application discover if MPOL_F_NUMAB is supported by the
-current running kernel? It looks like they might receive -EINVAL (didn't
-check for sure). In that case, a manual page is defintely needed to
-explain that an error can be returned if the flag is used and the kernel
-does not support it so the application can cover by falling back to a
-strict binding. If it fails silently, then that also needs to be documented
-because it'll lead to different behaviour depending on the running
-kernel.
-
--- 
-Mel Gorman
-SUSE Labs
+--=20
+With Best Regards,
+Andy Shevchenko
