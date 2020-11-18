@@ -2,80 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3462B862F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 448F92B8633
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 22:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgKRVAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 16:00:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55830 "EHLO mail.kernel.org"
+        id S1727534AbgKRVAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 16:00:35 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:54191 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726502AbgKRVAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:00:06 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725822AbgKRVAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 16:00:34 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605733233; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=me3QojmUqbAKGblIUNKSiP+s5RvLfBpixFUxOedx0SM=; b=es4zBFpLshg70c2DX6uSHkyn43Pg0O5EaytTG0nm0JtZ8pcJl4nIzqz5VyZSZnoF8fXTWePJ
+ 8K2zoNZ15q0GmP/WqpVKYZUb9EGKVMKmrB8yLnEbn2e6qlTYKOcM/U6WFcWrZKvOMT7GPXur
+ EM0l1o7TEcY3O+Du0NPQCdCacHk=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fb58b68d64ea0b703fed282 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 21:00:24
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A7699C43463; Wed, 18 Nov 2020 21:00:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from displaysanity13-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01DB9246CA;
-        Wed, 18 Nov 2020 21:00:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605733205;
-        bh=OiRq5n6pYwtlRHg6S3gu6kn/EVUSMv2UVgnqO2UpdH4=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=RMLhtTmGmk2wGvmHCsPi7tJxbedfqVn0u5moSprReTbj/UoMPWB/GpAV7XRROGkbm
-         YSPOexo3xa90oHw8CD+xjv7U2UVnoV2HOuSRj9w9G2zYDa7c1u0tH4LSSXncAS0fuN
-         GSggAxDgvvmOjAnlnOsDYWukxh9FJ7rD5DjCCHgA=
-Date:   Wed, 18 Nov 2020 20:59:45 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Nishanth Menon <nm@ti.com>, Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lkft-triage@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <20201118145009.10492-1-nm@ti.com>
-References: <20201118145009.10492-1-nm@ti.com>
-Subject: Re: [PATCH] regulator: ti-abb: Fix array out of bound read access on the first transition
-Message-Id: <160573318504.46660.3881026259686236737.b4-ty@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 279BAC433C6;
+        Wed, 18 Nov 2020 21:00:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 279BAC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org,
+        rnayak@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] drm/msm/dp: fix connect/disconnect handled at irq_hpd
+Date:   Wed, 18 Nov 2020 13:00:14 -0800
+Message-Id: <1605733214-14280-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 08:50:09 -0600, Nishanth Menon wrote:
-> At the start of driver initialization, we do not know what bias
-> setting the bootloader has configured the system for and we only know
-> for certain the very first time we do a transition.
-> 
-> However, since the initial value of the comparison index is -EINVAL,
-> this negative value results in an array out of bound access on the
-> very first transition.
-> 
-> [...]
+Some usb type-c dongle use irq_hpd request to perform device connection
+and disconnection. This patch add handling of both connection and
+disconnection are based on the state of hpd_state and sink_count.
 
-Applied to
+Changes in V2:
+-- add dp_display_handle_port_ststus_changed()
+-- fix kernel test robot complaint
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+Changes in V3:
+-- add encoder_mode_set into struct dp_display_private
 
-Thanks!
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 26b8d66a399e ("drm/msm/dp: promote irq_hpd handle to handle link training correctly")
+Tested-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c | 92 ++++++++++++++++++++++---------------
+ 1 file changed, 55 insertions(+), 37 deletions(-)
 
-[1/1] regulator: ti-abb: Fix array out of bound read access on the first transition
-      commit: 2ba546ebe0ce2af47833d8912ced9b4a579f13cb
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index e9cb878..6e971d5 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -102,6 +102,8 @@ struct dp_display_private {
+ 	struct dp_display_mode dp_mode;
+ 	struct msm_dp dp_display;
+ 
++	bool encoder_mode_set;
++
+ 	/* wait for audio signaling */
+ 	struct completion audio_comp;
+ 
+@@ -279,13 +281,24 @@ static void dp_display_send_hpd_event(struct msm_dp *dp_display)
+ 	drm_helper_hpd_irq_event(connector->dev);
+ }
+ 
+-static int dp_display_send_hpd_notification(struct dp_display_private *dp,
+-					    bool hpd)
++
++static void dp_display_set_encoder_mode(struct dp_display_private *dp)
+ {
+-	static bool encoder_mode_set;
+ 	struct msm_drm_private *priv = dp->dp_display.drm_dev->dev_private;
+ 	struct msm_kms *kms = priv->kms;
+ 
++	if (!dp->encoder_mode_set && dp->dp_display.encoder &&
++				kms->funcs->set_encoder_mode) {
++		kms->funcs->set_encoder_mode(kms,
++				dp->dp_display.encoder, false);
++
++		dp->encoder_mode_set = true;
++	}
++}
++
++static int dp_display_send_hpd_notification(struct dp_display_private *dp,
++					    bool hpd)
++{
+ 	if ((hpd && dp->dp_display.is_connected) ||
+ 			(!hpd && !dp->dp_display.is_connected)) {
+ 		DRM_DEBUG_DP("HPD already %s\n", (hpd ? "on" : "off"));
+@@ -298,15 +311,6 @@ static int dp_display_send_hpd_notification(struct dp_display_private *dp,
+ 
+ 	dp->dp_display.is_connected = hpd;
+ 
+-	if (dp->dp_display.is_connected && dp->dp_display.encoder
+-				&& !encoder_mode_set
+-				&& kms->funcs->set_encoder_mode) {
+-		kms->funcs->set_encoder_mode(kms,
+-				dp->dp_display.encoder, false);
+-		DRM_DEBUG_DP("set_encoder_mode() Completed\n");
+-		encoder_mode_set = true;
+-	}
+-
+ 	dp_display_send_hpd_event(&dp->dp_display);
+ 
+ 	return 0;
+@@ -342,7 +346,6 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+ 
+ 	dp_add_event(dp, EV_USER_NOTIFICATION, true, 0);
+ 
+-
+ end:
+ 	return rc;
+ }
+@@ -359,6 +362,8 @@ static void dp_display_host_init(struct dp_display_private *dp)
+ 	if (dp->usbpd->orientation == ORIENTATION_CC2)
+ 		flip = true;
+ 
++	dp_display_set_encoder_mode(dp);
++
+ 	dp_power_init(dp->power, flip);
+ 	dp_ctrl_host_init(dp->ctrl, flip);
+ 	dp_aux_init(dp->aux);
+@@ -442,24 +447,42 @@ static void dp_display_handle_video_request(struct dp_display_private *dp)
+ 	}
+ }
+ 
+-static int dp_display_handle_irq_hpd(struct dp_display_private *dp)
++static int dp_display_handle_port_ststus_changed(struct dp_display_private *dp)
+ {
+-	u32 sink_request;
+-
+-	sink_request = dp->link->sink_request;
++	int rc = 0;
+ 
+-	if (sink_request & DS_PORT_STATUS_CHANGED) {
+-		if (dp_display_is_sink_count_zero(dp)) {
+-			DRM_DEBUG_DP("sink count is zero, nothing to do\n");
+-			return -ENOTCONN;
++	if (dp_display_is_sink_count_zero(dp)) {
++		DRM_DEBUG_DP("sink count is zero, nothing to do\n");
++		if (dp->hpd_state != ST_DISCONNECTED) {
++			dp->hpd_state = ST_DISCONNECT_PENDING;
++			dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
++		}
++	} else {
++		if (dp->hpd_state == ST_DISCONNECTED) {
++			dp->hpd_state = ST_CONNECT_PENDING;
++			rc = dp_display_process_hpd_high(dp);
++			if (rc)
++				dp->hpd_state = ST_DISCONNECTED;
+ 		}
++	}
++
++	return rc;
++}
++
++static int dp_display_handle_irq_hpd(struct dp_display_private *dp)
++{
++	u32 sink_request = dp->link->sink_request;
+ 
+-		return dp_display_process_hpd_high(dp);
++	if (dp->hpd_state == ST_DISCONNECTED) {
++		if (sink_request & DP_LINK_STATUS_UPDATED) {
++			DRM_ERROR("Disconnected, no DP_LINK_STATUS_UPDATED\n");
++			return -EINVAL;
++		}
+ 	}
+ 
+ 	dp_ctrl_handle_sink_request(dp->ctrl);
+ 
+-	if (dp->link->sink_request & DP_TEST_LINK_VIDEO_PATTERN)
++	if (sink_request & DP_TEST_LINK_VIDEO_PATTERN)
+ 		dp_display_handle_video_request(dp);
+ 
+ 	return 0;
+@@ -490,19 +513,10 @@ static int dp_display_usbpd_attention_cb(struct device *dev)
+ 	rc = dp_link_process_request(dp->link);
+ 	if (!rc) {
+ 		sink_request = dp->link->sink_request;
+-		if (sink_request & DS_PORT_STATUS_CHANGED) {
+-			/* same as unplugged */
+-			hpd->hpd_high = 0;
+-			dp->hpd_state = ST_DISCONNECT_PENDING;
+-			dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
+-		}
+-
+-		rc = dp_display_handle_irq_hpd(dp);
+-
+-		if (!rc && (sink_request & DS_PORT_STATUS_CHANGED)) {
+-			hpd->hpd_high = 1;
+-			dp->hpd_state = ST_CONNECT_PENDING;
+-		}
++		if (sink_request & DS_PORT_STATUS_CHANGED)
++			rc = dp_display_handle_port_ststus_changed(dp);
++		else
++			rc = dp_display_handle_irq_hpd(dp);
+ 	}
+ 
+ 	return rc;
+@@ -668,6 +682,7 @@ static int dp_disconnect_pending_timeout(struct dp_display_private *dp, u32 data
+ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ {
+ 	u32 state;
++	int ret;
+ 
+ 	mutex_lock(&dp->event_mutex);
+ 
+@@ -678,7 +693,10 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 		return 0;
+ 	}
+ 
+-	dp_display_usbpd_attention_cb(&dp->pdev->dev);
++	ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
++	if (ret == -ECONNRESET) { /* cable unplugged */
++		dp->core_initialized = false;
++	}
+ 
+ 	mutex_unlock(&dp->event_mutex);
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
