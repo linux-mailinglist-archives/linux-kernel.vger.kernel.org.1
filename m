@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745102B7D63
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A262B7D3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 13:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728122AbgKRMIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 07:08:05 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58878 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727195AbgKRMID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:08:03 -0500
-X-UUID: 343a00263eab4edc8fc679d893061a58-20201118
-X-UUID: 343a00263eab4edc8fc679d893061a58-20201118
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 370850102; Wed, 18 Nov 2020 20:07:59 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 18 Nov 2020 20:07:57 +0800
-Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 18 Nov 2020 20:07:57 +0800
-From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <fshao@chromium.org>, Argus Lin <argus.lin@mediatek.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Subject: [PATCH v4 5/5] arm64: dts: mt8192: add pwrap node
-Date:   Wed, 18 Nov 2020 20:01:34 +0800
-Message-ID: <1605700894-32699-6-git-send-email-hsin-hsiung.wang@mediatek.com>
-X-Mailer: git-send-email 2.6.4
-In-Reply-To: <1605700894-32699-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1605700894-32699-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        id S1727050AbgKRMER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 07:04:17 -0500
+Received: from foss.arm.com ([217.140.110.172]:52866 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726299AbgKRMEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 07:04:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 002C8D6E;
+        Wed, 18 Nov 2020 04:04:15 -0800 (PST)
+Received: from e123648.arm.com (unknown [10.57.23.25])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 888363F70D;
+        Wed, 18 Nov 2020 04:04:13 -0800 (PST)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        daniel.lezcano@linaro.org, lukasz.luba@arm.com, orjan.eide@arm.com,
+        robh@kernel.org, alyssa.rosenzweig@collabora.com,
+        steven.price@arm.com, airlied@linux.ie, daniel@ffwll.ch,
+        ionela.voinescu@arm.com
+Subject: [PATCH v2 0/5] Thermal devfreq cooling improvements with Energy Model
+Date:   Wed, 18 Nov 2020 12:03:53 +0000
+Message-Id: <20201118120358.17150-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pwrap node to SOC MT8192.
+Hi all,
 
-Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+This patch set is a continuation of my previous work, which aimed
+to add Energy Model to all devices. This series is a follow up
+for the patches which got merged to v5.9-rc1. It aims to change
+the thermal devfreq cooling and use the Energy Model instead of
+private power table and structures. The new registration interface
+in the patch 3/5 helps to register devfreq cooling and the EM in one
+call. There is also another improvement, patch 2/5 is changing the
+way how thermal gets the device status. Now it's taken on demand
+and stored as a copy. The last patch wouldn't go through thermal tree,
+but it's here for consistency.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index 69d45c7..9a40d19 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -272,6 +272,18 @@
- 			clock-names = "clk13m";
- 		};
- 
-+		pwrap: pwrap@10026000 {
-+			compatible = "mediatek,mt6873-pwrap";
-+			reg = <0 0x10026000 0 0x1000>;
-+			reg-names = "pwrap";
-+			interrupts = <GIC_SPI 220 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&infracfg CLK_INFRA_PMIC_AP>,
-+				 <&infracfg CLK_INFRA_PMIC_TMR>;
-+			clock-names = "spi", "wrap";
-+			assigned-clocks = <&topckgen CLK_TOP_PWRAP_ULPOSC_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_OSC_D10>;
-+		};
-+
- 		scp_adsp: syscon@10720000 {
- 			compatible = "mediatek,mt8192-scp_adsp", "syscon";
- 			reg = <0 0x10720000 0 0x1000>;
+The patch set is based on current next-20201118, which has new EM API
+in the pm/linux-next tree.
+
+changes:
+v2:
+- renamed freq_get_state() and related to perf_idx pattern as
+  suggested by Ionela
+v1 [2]
+
+Regards,
+Lukasz Luba
+
+[1] https://lkml.org/lkml/2020/5/11/326
+[2] https://lore.kernel.org/linux-pm/20200921122007.29610-1-lukasz.luba@arm.com/
+
+Lukasz Luba (5):
+  thermal: devfreq_cooling: change tracing function and arguments
+  thermal: devfreq_cooling: get a copy of device status
+  thermal: devfreq_cooling: add new registration functions with Energy
+    Model
+  thermal: devfreq_cooling: remove old power model and use EM
+  drm/panfrost: Register devfreq cooling and attempt to add Energy Model
+
+ drivers/gpu/drm/panfrost/panfrost_devfreq.c |   2 +-
+ drivers/thermal/devfreq_cooling.c           | 434 ++++++++++----------
+ include/linux/devfreq_cooling.h             |  39 +-
+ include/trace/events/thermal.h              |  19 +-
+ 4 files changed, 259 insertions(+), 235 deletions(-)
+
 -- 
-2.6.4
+2.17.1
 
