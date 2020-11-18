@@ -2,67 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D0D2B770F
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8032B7710
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 08:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgKRHj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 02:39:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726296AbgKRHj4 (ORCPT
+        id S1726699AbgKRHkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 02:40:01 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:59916 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726296AbgKRHkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 02:39:56 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2378C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 23:39:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GiHrAlh1tLEfMQgzXhaQ8GsJ8zIMpmOXVFJJO0ZgE0U=; b=f4nPyA2Mei+uVPIo2mhqPVsFNl
-        IeqTmUm94hRNG478x1HMf8C7kboqgkQDcRWFKmMF5d4ZaMVzDK1w1pA6fzUH0RLbKcsRiX6mJEFoR
-        6UqloReXWasBASjWS0xH9pmxbo1zLiaCzy1lrL+A30qCEVfQmX5C0sr91AOPDk3t7o4GY+SFJKe5Y
-        93LVTqZElw7VT64LS5SxU2uvupV5aeY2xFo8ifhdLmGrubif1GRCz1TIrL6staOnpOy0po7SDUrtv
-        YbnsNE78uFmCeG2g4M8TUl82f6JWv2U+1f8AuMmsICYcq6ZkI8MgfkWIi9QX65E/JUnqxohlnCR13
-        icgmeO8w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfI4F-0000LO-Sh; Wed, 18 Nov 2020 07:39:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DC2913019CE;
-        Wed, 18 Nov 2020 08:39:47 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CC271200DCACF; Wed, 18 Nov 2020 08:39:47 +0100 (CET)
-Date:   Wed, 18 Nov 2020 08:39:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Phil Auld <pauld@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH 0/5] context_tracking: Flatter archs not using
- exception_enter/exit() v3
-Message-ID: <20201118073947.GQ3121392@hirez.programming.kicks-ass.net>
-References: <20201117151637.259084-1-frederic@kernel.org>
+        Wed, 18 Nov 2020 02:40:00 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AI7OEDo180962;
+        Wed, 18 Nov 2020 07:39:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=4KgLT+B0lb8kNH88ZUkx3bx2giYs+dXPjO0zGf/6wwc=;
+ b=niscrOODhEXVydQUCTyWmsb2VkhUWuGFOWu6VirfilOr48IzW8hHegxWU+spUvCop29Z
+ POrDaBvkBmrqwibKifYTeeWWBpX5cRpvMRfkeYewNCYSEcSwUa9S6Cw3jbotlN7J6NpX
+ 4XfEL3j8109ixreSldUqyT6m7eSokVo/PUNOf7MCWix2x1bBYgEUyOhsfsebSnk23/Zn
+ 8K8OLEBAcUsonZ0lkNs9W9PeQj/EdxatfmFUN2ZYLIFNv5gzodYOE2BjoKtgxmtISD7V
+ nSbYpFEZ6U2JNALY4YqySmUvtgXhcUZvdJ8K/h5ydspjsgVh6JMOZl1M4ytl8Xz9tvTl bw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34t76kxjv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Nov 2020 07:39:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AI7PJlE058852;
+        Wed, 18 Nov 2020 07:39:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 34umd0863h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Nov 2020 07:39:32 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AI7dNvX026966;
+        Wed, 18 Nov 2020 07:39:23 GMT
+Received: from linux.home (/92.157.91.83)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 17 Nov 2020 23:39:23 -0800
+Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, linux-kernel@vger.kernel.org,
+        thomas.lendacky@amd.com, jroedel@suse.de, konrad.wilk@oracle.com,
+        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
+        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
+        kuzuno@gmail.com
+References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
+ <20201116201711.GE1131@zn.tnic>
+ <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
+ <20201117165539.GG5719@zn.tnic>
+ <890f6b7e-a268-2257-edcb-5eacc7db3d8e@oracle.com>
+ <20201117212608.GS5719@zn.tnic>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <b63ec614-8a49-728d-aa61-76339378183f@oracle.com>
+Date:   Wed, 18 Nov 2020 08:41:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117151637.259084-1-frederic@kernel.org>
+In-Reply-To: <20201117212608.GS5719@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011180050
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011180050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 04:16:32PM +0100, Frederic Weisbecker wrote:
-> Frederic Weisbecker (5):
->       context_tracking: Introduce HAVE_CONTEXT_TRACKING_OFFSTACK
->       context_tracking:  Don't implement exception_enter/exit() on CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK
->       sched: Detect call to schedule from critical entry code
->       context_tracking: Only define schedule_user() on !HAVE_CONTEXT_TRACKING_OFFSTACK archs
->       x86: Support HAVE_CONTEXT_TRACKING_OFFSTACK
 
-Thanks!
+On 11/17/20 10:26 PM, Borislav Petkov wrote:
+> On Tue, Nov 17, 2020 at 07:12:07PM +0100, Alexandre Chartre wrote:
+>> Some benchmarks are available, in particular from phoronix:
+> 
+> What I was expecting was benchmarks *you* have run which show that
+> perf penalty, not something one can find quickly on the internet and
+> something one cannot always reproduce her-/himself.
+> 
+> You do know that presenting convincing numbers with a patchset greatly
+> improves its chances of getting it upstreamed, right?
+> 
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Well, it looks like I wrongfully assume that KPTI was a well known performance
+overhead since it was introduced (because it adds extra page-table switches),
+but you are right I should be presenting my own numbers.
+
+Thanks,
+
+alex.
