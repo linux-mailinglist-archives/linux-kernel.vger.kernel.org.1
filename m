@@ -2,134 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334872B87FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DE22B87F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 23:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbgKRW4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 17:56:42 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:43336 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgKRW4l (ORCPT
+        id S1726300AbgKRW4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 17:56:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgKRW4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 17:56:41 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIMsVvI085507;
-        Wed, 18 Nov 2020 22:54:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=XxpL9XzMtnUsCDI1cqX0tLBID7hXFz4WaVSnV84QLvM=;
- b=OJeWjm92ss0S+LtenEBUdFtR4jItyL3Fnm/idn1wY4j4Dhq648st2BlTO9zuuaHgwUm5
- N9NHOueq7j/c5ZDfPkUTLk3rOSPJikawqaon9pFVcYKAxewXy3QiLJJ/7iUHx14Ts9OH
- YBtmiERRWpQ8fpzvrpjQPgSSJ9itkZpktH8AKK10jcHRByT5pO04vNjI5ZRtYOUN22zD
- tGpGwOHqoLiNEOIpa/nZHqaw4sucbSRl3dTv9zM42JYHI4uskS1dcxD/CVjsPuh4qy9h
- PPD/BkUM893cJdZiit5zxtJ/A1ahN6yNVSJVuvAb8vEwW72vr52ofWs+8O33NHo66WPX 8A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 34t4rb2sce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 18 Nov 2020 22:54:31 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIMfel8052638;
-        Wed, 18 Nov 2020 22:54:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 34uspvd68x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Nov 2020 22:54:31 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AIMsRgd025515;
-        Wed, 18 Nov 2020 22:54:28 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 18 Nov 2020 14:54:27 -0800
-Subject: Re: [PATCH v4 04/21] mm/hugetlb: Introduce nr_free_vmemmap_pages in
- the struct hstate
-To:     Oscar Salvador <osalvador@suse.de>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        x86@kernel.org, hpa@zytor.com, dave.hansen@linux.intel.com,
-        luto@kernel.org, peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, mhocko@suse.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20201113105952.11638-1-songmuchun@bytedance.com>
- <20201113105952.11638-5-songmuchun@bytedance.com>
- <20201116133310.GA32129@linux>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <e2e367e3-a130-576e-906c-12f69db18af8@oracle.com>
-Date:   Wed, 18 Nov 2020 14:54:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Wed, 18 Nov 2020 17:56:14 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC116C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:56:30 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id 10so5014501wml.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 14:56:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1seX92mFsrfx7vZyLIxprFubCVzfCSOLsu/hjAP+vTs=;
+        b=vox9ADdoLllhyA1WukaU1CRn9MH5Ac1e19bK2BhUq0VExU/Wmxkt8mbTE+40y/r1MV
+         NmZpUniroixmZ0iwh6+lKHnnOBGKRU4uv25M9W9AU7/cgxZ1SuqdFPihrQQnjQzbgznF
+         sE2K77SL8EQpM0acGAMkBG9BZay0+eqqATgSlTrda7OnH697vk4AGc3DJ4iDuygQhF8C
+         s841mg/agEyleLOBAFzE+8WMmLehdkndMmJwA9hfPmP2Vg1sbnpbe91pll7ImLk74dAS
+         JXpP0Jf3cwN9Yh/JEdNPZgB/6srsMK5CcUc+PZTIPurEBsKMKSPWR9q7CYfFDe/oGpoQ
+         ngPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1seX92mFsrfx7vZyLIxprFubCVzfCSOLsu/hjAP+vTs=;
+        b=YzJ3LYof89UrpTKBJZuSlcV4vHyoeQEiGQl4TsiY1JggTa0Z2fBrK4VzQduO/LitBN
+         pbLMRijo/Ok5gxmLsDQkPDKDhCy+FulFtiEDOMaOazn1iGZS/4WK4aNFS6fVptartevy
+         nNqwH+r2AH7+0EaIiOC9C2RgntvXlpqWc33QtzzRy8VOnxg8/owJsH5kfnyOw1ZNcXjw
+         qq1FPoSyUdyMtG1LvAFSekguSB3rdAT16lnSlSQlbd3R7ab5M9kXKMLObFF7lQVV0fhK
+         ijS80WHxMimtqh+dj8jzDBcdNelGMGNNAR7IXrksrqLQ70Ss6ZWNYc2jmyIDIIv4aqe7
+         0DvQ==
+X-Gm-Message-State: AOAM531XGtVc0hugL7q21Z+BTY28gUqnLXo8Q0lKfpNAH+dkglvBv6CF
+        h6nlxhHr7IdUWX/siLp8o2v9fQ==
+X-Google-Smtp-Source: ABdhPJwdlAxRq7xNFMtlK6ne5yf2WkyW7uJ1VlCtr6keEqO7/0WNjQ19rvEqd/QRHs2EefbueKWGMw==
+X-Received: by 2002:a7b:cc84:: with SMTP id p4mr1406309wma.86.1605740189466;
+        Wed, 18 Nov 2020 14:56:29 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id p4sm35980145wrm.51.2020.11.18.14.56.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 14:56:27 -0800 (PST)
+Date:   Wed, 18 Nov 2020 23:56:21 +0100
+From:   Marco Elver <elver@google.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
+ allocations
+Message-ID: <20201118225621.GA1770130@elver.google.com>
+References: <20201111183430.GN517454@elver.google.com>
+ <20201111192123.GB3249@paulmck-ThinkPad-P72>
+ <20201111202153.GT517454@elver.google.com>
+ <20201112001129.GD3249@paulmck-ThinkPad-P72>
+ <CANpmjNNyZs6NrHPmomC4=9MPEvCy1bFA5R2pRsMhG7=c3LhL_Q@mail.gmail.com>
+ <20201112161439.GA2989297@elver.google.com>
+ <20201112175406.GF3249@paulmck-ThinkPad-P72>
+ <20201113175754.GA6273@paulmck-ThinkPad-P72>
+ <20201117105236.GA1964407@elver.google.com>
+ <20201117182915.GM1437@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20201116133310.GA32129@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 bulkscore=0 suspectscore=2 adultscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011180156
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=2 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011180157
+Content-Type: multipart/mixed; boundary="0OAP2g/MAC+5xKAE"
+Content-Disposition: inline
+In-Reply-To: <20201117182915.GM1437@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20 5:33 AM, Oscar Salvador wrote:
-> On Fri, Nov 13, 2020 at 06:59:35PM +0800, Muchun Song wrote:
->> +void __init hugetlb_vmemmap_init(struct hstate *h)
->> +{
->> +	unsigned int order = huge_page_order(h);
->> +	unsigned int vmemmap_pages;
->> +
->> +	vmemmap_pages = ((1 << order) * sizeof(struct page)) >> PAGE_SHIFT;
->> +	/*
->> +	 * The head page and the first tail page are not to be freed to buddy
->> +	 * system, the others page will map to the first tail page. So there
-> "the remaining pages" might be more clear.
-> 
->> +	 * are (@vmemmap_pages - RESERVE_VMEMMAP_NR) pages can be freed.
-> "that can be freed"
-> 
->> +	 *
->> +	 * Could RESERVE_VMEMMAP_NR be greater than @vmemmap_pages? This is
->> +	 * not expected to happen unless the system is corrupted. So on the
->> +	 * safe side, it is only a safety net.
->> +	 */
->> +	if (likely(vmemmap_pages > RESERVE_VMEMMAP_NR))
->> +		h->nr_free_vmemmap_pages = vmemmap_pages - RESERVE_VMEMMAP_NR;
->> +	else
->> +		h->nr_free_vmemmap_pages = 0;
-> 
-> This made think of something.
-> Since struct hstate hstates is global, all the fields should be defined to 0.
-> So, the following assignments in hugetlb_add_hstate:
-> 
->         h->nr_huge_pages = 0;
->         h->free_huge_pages = 0;
-> 
-> should not be needed.
-> Actually, we do not initialize other values like resv_huge_pages
-> or surplus_huge_pages.
-> 
-> If that is the case, the "else" could go.
-> 
-> Mike?
 
-Correct.  Those assignments have been in the code for a very long time.
+--0OAP2g/MAC+5xKAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> The changes itself look good to me.
-> I think that putting all the vemmap stuff into hugetlb-vmemmap.* was
-> the right choice.
+On Tue, Nov 17, 2020 at 10:29AM -0800, Paul E. McKenney wrote:
+[...] 
+> But it would be good to get the kcompactd() people to look at this (not
+> immediately seeing who they are in MAINTAINERS).  Perhaps preemption is
+> disabled somehow and I am failing to see it.
+> 
+> Failing that, maybe someone knows of a way to check for overly long
+> timeout handlers.
 
-Agree!
--- 
-Mike Kravetz
+I think I figured out one piece of the puzzle. Bisection keeps pointing
+me at some -rcu merge commit, which kept throwing me off. Nor did it
+help that reproduction is a bit flaky. However, I think there are 2
+independent problems, but the manifestation of 1 problem triggers the
+2nd problem:
+
+1. problem: slowed forward progress (workqueue lockup / RCU stall reports)
+
+2. problem: DEADLOCK which causes complete system lockup
+
+	| ...
+	|        CPU0
+	|        ----
+	|   lock(rcu_node_0);
+	|   <Interrupt>
+	|     lock(rcu_node_0);
+	| 
+	|  *** DEADLOCK ***
+	| 
+	| 1 lock held by event_benchmark/105:
+	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: print_other_cpu_stall kernel/rcu/tree_stall.h:493 [inline]
+	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: check_cpu_stall kernel/rcu/tree_stall.h:652 [inline]
+	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: rcu_pending kernel/rcu/tree.c:3752 [inline]
+	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x428/0xd40 kernel/rcu/tree.c:2581
+	| ...
+
+Problem 2 can with reasonable confidence (5 trials) be fixed by reverting:
+
+	rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
+
+At which point the system always boots to user space -- albeit with a
+bunch of warnings still (attached). The supposed "good" version doesn't
+end up with all those warnings deterministically, so I couldn't say if
+the warnings are expected due to recent changes or not (Arm64 QEMU
+emulation, 1 CPU, and lots of debugging tools on).
+
+Does any of that make sense?
+
+Thanks,
+-- Marco
+
+--0OAP2g/MAC+5xKAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=log
+
+Testing all events: OK
+Running tests again, along with the function tracer
+Running tests on all trace events:
+Testing all events: 
+hrtimer: interrupt took 10156432 ns
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+	(detected by 0, t=3752 jiffies, g=2785, q=6)
+rcu: All QSes seen, last rcu_preempt kthread activity 3752 (4295396561-4295392809), jiffies_till_next_fqs=1, root ->qsmask 0x0
+rcu: rcu_preempt kthread starved for 3752 jiffies! g2785 f0x0 RCU_GP_ONOFF(3) ->state=0x0 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x00000428
+Call trace:
+ __switch_to+0x10c/0x200 arch/arm64/kernel/process.c:578
+ context_switch kernel/sched/core.c:3773 [inline]
+ __schedule+0x2d8/0x980 kernel/sched/core.c:4522
+ preempt_schedule_common+0x4c/0x1a8 kernel/sched/core.c:4681
+ preempt_schedule+0x38/0x40 kernel/sched/core.c:4706
+ __raw_spin_unlock include/linux/spinlock_api_smp.h:152 [inline]
+ _raw_spin_unlock+0x94/0xa8 kernel/locking/spinlock.c:183
+ rcu_gp_init kernel/rcu/tree.c:1820 [inline]
+ rcu_gp_kthread+0x34c/0x1bd8 kernel/rcu/tree.c:2105
+ kthread+0x13c/0x188 kernel/kthread.c:292
+ ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+	(detected by 0, t=3752 jiffies, g=2817, q=6)
+rcu: All QSes seen, last rcu_preempt kthread activity 856 (4295412565-4295411709), jiffies_till_next_fqs=1, root ->qsmask 0x0
+rcu: rcu_preempt kthread starved for 856 jiffies! g2817 f0x2 RCU_GP_CLEANUP(7) ->state=0x0 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x00000428
+Call trace:
+ __switch_to+0x10c/0x200 arch/arm64/kernel/process.c:578
+ context_switch kernel/sched/core.c:3773 [inline]
+ __schedule+0x2d8/0x980 kernel/sched/core.c:4522
+ preempt_schedule_common+0x4c/0x1a8 kernel/sched/core.c:4681
+ preempt_schedule+0x38/0x40 kernel/sched/core.c:4706
+ __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:169 [inline]
+ _raw_spin_unlock_irq+0x84/0x98 kernel/locking/spinlock.c:199
+ rcu_gp_cleanup kernel/rcu/tree.c:2015 [inline]
+ rcu_gp_kthread+0x1038/0x1bd8 kernel/rcu/tree.c:2119
+ kthread+0x13c/0x188 kernel/kthread.c:292
+ ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
+BUG: workqueue lockup - pool cpus=0 flags=0x4 nice=0 stuck for 16s!
+Showing busy workqueues and worker pools:
+workqueue events: flags=0x0
+  pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+    pending: vmstat_shepherd
+workqueue events_power_efficient: flags=0x82
+  pwq 2: cpus=0 flags=0x4 nice=0 active=2/256 refcnt=4
+    pending: neigh_periodic_work, do_cache_clean
+workqueue rcu_gp: flags=0x8
+  pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+    in-flight: 15:srcu_invoke_callbacks
+pool 0: cpus=0 node=0 flags=0x0 nice=0 hung=0s workers=3 idle: 111 5
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+	(detected by 0, t=3752 jiffies, g=2829, q=6)
+rcu: All QSes seen, last rcu_preempt kthread activity 1522 (4295422970-4295421448), jiffies_till_next_fqs=1, root ->qsmask 0x0
+rcu: rcu_preempt kthread starved for 1522 jiffies! g2829 f0x2 RCU_GP_CLEANUP(7) ->state=0x0 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x00000428
+Call trace:
+ dump_backtrace+0x0/0x240 arch/arm64/kernel/stacktrace.c:100
+ show_stack+0x34/0x88 arch/arm64/kernel/stacktrace.c:196
+ sched_show_task kernel/sched/core.c:6445 [inline]
+ sched_show_task+0x1fc/0x228 kernel/sched/core.c:6420
+ rcu_check_gp_kthread_starvation+0xc8/0xe4 kernel/rcu/tree_stall.h:452
+ print_other_cpu_stall kernel/rcu/tree_stall.h:520 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:640 [inline]
+ rcu_pending kernel/rcu/tree.c:3752 [inline]
+ rcu_sched_clock_irq+0xb34/0xc48 kernel/rcu/tree.c:2581
+ update_process_times+0x6c/0xb8 kernel/time/timer.c:1709
+ tick_sched_handle.isra.0+0x58/0x88 kernel/time/tick-sched.c:176
+ tick_sched_timer+0x68/0xe0 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x288/0x730 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x114/0x288 kernel/time/hrtimer.c:1645
+ timer_handler drivers/clocksource/arm_arch_timer.c:647 [inline]
+ arch_timer_handler_virt+0x50/0x70 drivers/clocksource/arm_arch_timer.c:658
+ handle_percpu_devid_irq+0x104/0x4c0 kernel/irq/chip.c:930
+ generic_handle_irq_desc include/linux/irqdesc.h:152 [inline]
+ generic_handle_irq+0x54/0x78 kernel/irq/irqdesc.c:650
+ __handle_domain_irq+0xac/0x130 kernel/irq/irqdesc.c:687
+ handle_domain_irq include/linux/irqdesc.h:170 [inline]
+ gic_handle_irq+0x70/0x108 drivers/irqchip/irq-gic.c:370
+ el1_irq+0xc0/0x180 arch/arm64/kernel/entry.S:651
+ arch_local_irq_enable arch/arm64/include/asm/irqflags.h:37 [inline]
+ __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+ _raw_spin_unlock_irq+0x50/0x98 kernel/locking/spinlock.c:199
+ finish_lock_switch kernel/sched/core.c:3513 [inline]
+ finish_task_switch+0xa8/0x290 kernel/sched/core.c:3613
+ context_switch kernel/sched/core.c:3776 [inline]
+ __schedule+0x2dc/0x980 kernel/sched/core.c:4522
+ preempt_schedule_common+0x4c/0x1a8 kernel/sched/core.c:4681
+ preempt_schedule+0x38/0x40 kernel/sched/core.c:4706
+ __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:169 [inline]
+ _raw_spin_unlock_irq+0x84/0x98 kernel/locking/spinlock.c:199
+ rcu_gp_cleanup kernel/rcu/tree.c:2046 [inline]
+ rcu_gp_kthread+0x1144/0x1bd8 kernel/rcu/tree.c:2119
+ kthread+0x13c/0x188 kernel/kthread.c:292
+ ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+	(detected by 0, t=3752 jiffies, g=2845, q=6)
+rcu: All QSes seen, last rcu_preempt kthread activity 2796 (4295435367-4295432571), jiffies_till_next_fqs=1, root ->qsmask 0x0
+rcu: rcu_preempt kthread starved for 2796 jiffies! g2845 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:    0 pid:   10 ppid:     2 flags:0x0000042a
+Call trace:
+ dump_backtrace+0x0/0x240 arch/arm64/kernel/stacktrace.c:100
+ show_stack+0x34/0x88 arch/arm64/kernel/stacktrace.c:196
+ sched_show_task kernel/sched/core.c:6445 [inline]
+ sched_show_task+0x1fc/0x228 kernel/sched/core.c:6420
+ rcu_check_gp_kthread_starvation+0xc8/0xe4 kernel/rcu/tree_stall.h:452
+ print_other_cpu_stall kernel/rcu/tree_stall.h:520 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:640 [inline]
+ rcu_pending kernel/rcu/tree.c:3752 [inline]
+ rcu_sched_clock_irq+0xb34/0xc48 kernel/rcu/tree.c:2581
+ update_process_times+0x6c/0xb8 kernel/time/timer.c:1709
+ tick_sched_handle.isra.0+0x58/0x88 kernel/time/tick-sched.c:176
+ tick_sched_timer+0x68/0xe0 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x288/0x730 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x114/0x288 kernel/time/hrtimer.c:1645
+ timer_handler drivers/clocksource/arm_arch_timer.c:647 [inline]
+ arch_timer_handler_virt+0x50/0x70 drivers/clocksource/arm_arch_timer.c:658
+ handle_percpu_devid_irq+0x104/0x4c0 kernel/irq/chip.c:930
+ generic_handle_irq_desc include/linux/irqdesc.h:152 [inline]
+ generic_handle_irq+0x54/0x78 kernel/irq/irqdesc.c:650
+ __handle_domain_irq+0xac/0x130 kernel/irq/irqdesc.c:687
+ handle_domain_irq include/linux/irqdesc.h:170 [inline]
+ gic_handle_irq+0x70/0x108 drivers/irqchip/irq-gic.c:370
+ el1_irq+0xc0/0x180 arch/arm64/kernel/entry.S:651
+ arch_local_irq_restore arch/arm64/include/asm/irqflags.h:124 [inline]
+ rcu_irq_enter_irqson+0x40/0x78 kernel/rcu/tree.c:1078
+ trace_preempt_disable_rcuidle include/trace/events/preemptirq.h:51 [inline]
+ trace_preempt_off+0x108/0x1f8 kernel/trace/trace_preemptirq.c:130
+ preempt_latency_start kernel/sched/core.c:4164 [inline]
+ preempt_latency_start kernel/sched/core.c:4157 [inline]
+ preempt_schedule_notrace+0x170/0x1c0 kernel/sched/core.c:4747
+ __ftrace_ops_list_func kernel/trace/ftrace.c:6956 [inline]
+ ftrace_ops_list_func+0x108/0x230 kernel/trace/ftrace.c:6977
+ ftrace_graph_call+0x0/0x4
+ preempt_count_add+0x8/0x1a0 arch/arm64/include/asm/atomic.h:65
+ schedule+0x44/0x100 kernel/sched/core.c:4599
+ schedule_timeout+0x240/0x538 kernel/time/timer.c:1871
+ rcu_gp_fqs_loop kernel/rcu/tree.c:1942 [inline]
+ rcu_gp_kthread+0x618/0x1bd8 kernel/rcu/tree.c:2115
+ kthread+0x13c/0x188 kernel/kthread.c:292
+ ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
+OK
+
+--0OAP2g/MAC+5xKAE--
