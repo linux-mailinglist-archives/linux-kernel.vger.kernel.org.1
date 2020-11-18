@@ -2,78 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D7E2B82A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B27612B82A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728046AbgKRRDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:03:52 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:55067 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728034AbgKRRDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:03:51 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605719030; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=CgsWrpDUafJXjJonIZiDeISlp/lcC2lCyr+VBDH+BuU=; b=mNEbH5vfEj4vSp0IPxe3tnr0lUeKVjmpZJAIMzqDDhoUufM+1Div2ZGCd3zoxMEFHKba7IjQ
- 170WF4vecO1JnsYjNuLJ+5H92/56hwGBWLWX+5Uqg6+/l+HFQ6VLl7QNpW7XUJYi0Egy9gOa
- 93AqI9uw+dg7GAJSo5/ckmDyDPA=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fb553f5b9b39088ed7e0793 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 17:03:49
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B6937C43462; Wed, 18 Nov 2020 17:03:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727435AbgKRRGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 12:06:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53218 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727010AbgKRRGJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 12:06:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605719168;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=znOvFVbpSljE+gP6YbD+IOXgKYlAvuPgXm75WCYUueE=;
+        b=gRwiY3v9DwBkmyipKGGiQpmF13+iJjUTirezmAG9AjJPukvbJkrbP1m1CKvww9IUKKdFxb
+        v3HKhXOzYs9Tbs1ExK4QgjF2DfBar6WIkqA9GY4Mt/Cxrb7VaYgHSsH2SBIe/snsMUNZae
+        mp2GOJJwzDTstFg4mhkTl60MOMS7O+4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-m6xE8JiTMIaZwlzsEo4lGg-1; Wed, 18 Nov 2020 12:06:04 -0500
+X-MC-Unique: m6xE8JiTMIaZwlzsEo4lGg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9D181C433C6;
-        Wed, 18 Nov 2020 17:03:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9D181C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jani Nikula <jani.nikula@intel.com>
-Cc:     linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 5/6] ath9k: make relay callbacks const
-References: <20201118165320.26829-1-jani.nikula@intel.com>
-        <20201118165320.26829-5-jani.nikula@intel.com>
-Date:   Wed, 18 Nov 2020 19:03:44 +0200
-In-Reply-To: <20201118165320.26829-5-jani.nikula@intel.com> (Jani Nikula's
-        message of "Wed, 18 Nov 2020 18:53:19 +0200")
-Message-ID: <87y2iyvbpr.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BAA86D249;
+        Wed, 18 Nov 2020 17:06:01 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.192.150])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E972C6091A;
+        Wed, 18 Nov 2020 17:05:55 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 18:05:52 +0100
+From:   Andrew Jones <drjones@redhat.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Steven Price <steven.price@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Haibo Xu <Haibo.Xu@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        qemu-devel@nongnu.org, Marc Zyngier <maz@kernel.org>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        James Morse <james.morse@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        Julien Thierry <julien.thierry.kdev@gmail.com>
+Subject: Re: [PATCH v4 2/2] arm64: kvm: Introduce MTE VCPU feature
+Message-ID: <20201118170552.cuczyylf34ows5jd@kamzik.brq.redhat.com>
+References: <20201026155727.36685-1-steven.price@arm.com>
+ <20201026155727.36685-3-steven.price@arm.com>
+ <X7P1VLZhBh045tsr@trantor>
+ <f34b3d16-8bc7-af9d-c0e0-fb114d2465aa@arm.com>
+ <X7VQua7YO4isMFPU@trantor>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X7VQua7YO4isMFPU@trantor>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jani Nikula <jani.nikula@intel.com> writes:
+On Wed, Nov 18, 2020 at 04:50:01PM +0000, Catalin Marinas wrote:
+> On Wed, Nov 18, 2020 at 04:01:20PM +0000, Steven Price wrote:
+> > On 17/11/2020 16:07, Catalin Marinas wrote:
+> > > On Mon, Oct 26, 2020 at 03:57:27PM +0000, Steven Price wrote:
+> > > > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> > > > index 19aacc7d64de..38fe25310ca1 100644
+> > > > --- a/arch/arm64/kvm/mmu.c
+> > > > +++ b/arch/arm64/kvm/mmu.c
+> > > > @@ -862,6 +862,26 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+> > > >   	if (vma_pagesize == PAGE_SIZE && !force_pte)
+> > > >   		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
+> > > >   							   &pfn, &fault_ipa);
+> > > > +
+> > > > +	/*
+> > > > +	 * The otherwise redundant test for system_supports_mte() allows the
+> > > > +	 * code to be compiled out when CONFIG_ARM64_MTE is not present.
+> > > > +	 */
+> > > > +	if (system_supports_mte() && kvm->arch.mte_enabled && pfn_valid(pfn)) {
+> > > > +		/*
+> > > > +		 * VM will be able to see the page's tags, so we must ensure
+> > > > +		 * they have been initialised.
+> > > > +		 */
+> > > > +		struct page *page = pfn_to_page(pfn);
+> > > > +		long i, nr_pages = compound_nr(page);
+> > > > +
+> > > > +		/* if PG_mte_tagged is set, tags have already been initialised */
+> > > > +		for (i = 0; i < nr_pages; i++, page++) {
+> > > > +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+> > > > +				mte_clear_page_tags(page_address(page));
+> > > > +		}
+> > > > +	}
+> > > 
+> > > If this page was swapped out and mapped back in, where does the
+> > > restoring from swap happen?
+> > 
+> > Restoring from swap happens above this in the call to gfn_to_pfn_prot()
+> 
+> Looking at the call chain, gfn_to_pfn_prot() ends up with
+> get_user_pages() using the current->mm (the VMM) and that does a
+> set_pte_at(), presumably restoring the tags. Does this mean that all
+> memory mapped by the VMM in user space should have PROT_MTE set?
+> Otherwise we don't take the mte_sync_tags() path in set_pte_at() and no
+> tags restored from swap (we do save them since when they were mapped,
+> PG_mte_tagged was set).
+> 
+> So I think the code above should be similar to mte_sync_tags(), even
+> calling a common function, but I'm not sure where to get the swap pte
+> from.
+> 
+> An alternative is to only enable HCR_EL2.ATA and MTE in guest if the vmm
+> mapped the memory with PROT_MTE.
 
-> Now that relay_open() accepts const callbacks, make relay callbacks
-> const.
->
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
-> Cc: linux-wireless@vger.kernel.org
-> Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+This is a very reasonable alternative. The VMM must be aware of whether
+the guest may use MTE anyway. Asking it to map the memory with PROT_MTE
+when it wants to offer the guest that option is a reasonable requirement.
+If the memory is not mapped as such, then the host kernel shouldn't assume
+MTE may be used by the guest, and it should even enforce that it is not
+(by not enabling the feature).
 
-Can I take this to my ath tree or what's the plan?
+Thanks,
+drew
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+> 
+> Yet another option is to always call mte_sync_tags() from set_pte_at()
+> and defer the pte_tagged() or is_swap_pte() checks to the MTE code.
+> 
+> -- 
+> Catalin
+> 
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
