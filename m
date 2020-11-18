@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABD42B735C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 01:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEAC2B736A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 02:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729437AbgKRAra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 19:47:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
+        id S1727114AbgKRA7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 19:59:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgKRAr3 (ORCPT
+        with ESMTP id S1726205AbgKRA7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:47:29 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EF4C061A48;
-        Tue, 17 Nov 2020 16:47:28 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id y22so50138plr.6;
-        Tue, 17 Nov 2020 16:47:28 -0800 (PST)
+        Tue, 17 Nov 2020 19:59:08 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3667DC061A48
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:59:08 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id q10so347310pfn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:59:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5VVUDsIQSbxm2kV6TXkpMyNop6FcshPxk4X8Om/Gvsg=;
-        b=C3jo8906JKjYOkkYJIW9j2p4HK2VlJk9cY+Vbx1gNpN+dBsDkZctcOkWnY77EyQaf8
-         XAPkUoRy3Ua8vQVyH/L1njUgvRdyXxmhf1mr9XPhTafx21sLi1cxtBIJDS1X6cOJq6yc
-         /9zs5N5oFfEmj9bPRp/Lnx/WJK3CXP0lTgZSRPDX/9PmyAIRUfIPOJj9FhDaAn2PliYZ
-         XHwujUqfseA7CctUHuorAMx6hnfbCPuou6Tx82IGxtCXd1ijUoNHTEvujKgISTT1h9Ds
-         13PB6xRp8+apXZm4ZLdxUTvIkkB/EaChfr4RbrCxYfUEHcv0+SX1PsJyYCgQgIEwRMNl
-         vJfQ==
+        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fZiwxZqojFgPo5SsCHfj9x1Lcm6wX0ajQ1bLVVWx3jU=;
+        b=ugCJDASvWGrjrU1UVd1kTuc8cB+gPeGsAKwTgHP8RzvZ0d6D/Pxx21h1wZ9Mp+0KsG
+         +uWpI2aJ60/fEeEzI+J6ACWHKv2MbSBk8jalOWRY/q8erFFlS6t7zHdBkrLQqSxjJCzW
+         +aOPdyQdKTLx3ry0J5m9p7c1Hb2If/PjwgPfdGCfbRJpREBw77df27MpbwuZWgjGYjIX
+         I1WE5Aizi+Y5PSrmbANDMgyPT4JZAPKN65HApfP3EoAVN13k72QCGLAKFMyIgfW07Npf
+         iAUfHAwR1boa5U8/DNAVA0dgBWGkdosCBjIdo4RjOrUovlQviOl2XLY+0xHLgRBf6Ffi
+         RfPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5VVUDsIQSbxm2kV6TXkpMyNop6FcshPxk4X8Om/Gvsg=;
-        b=WtlKi3m4ZPT3PpyHX2HaahKPyNfD172QWmbxiKKiIvGxuoedbWgFHqCZDRiOLZCC3A
-         GCQN/n+eyDA9KcxLLNrQRWhGh9JSrDvoigY3hXmkwfOPrW1Z2y2pLsIAkr/P76Hgyp7F
-         pVYR01EtpRiBkkg0TNF6r6+yO+QX3SAyhOisFtcX3BDIpnPlvoDwkKnO/1rjbtDTYfWM
-         NqESgLc1m63CC5FPBZ04veMIa/vxJfjOHV3+ZQtVj3zCHJMTWpp1GRYKDqRK4zggEmZi
-         uUFbgkcwGiwGQ+MeRjK4/EQXMgtoShedRjIUuyXpJELlHwpuZqv05Z8Xqq/lOGax5ZA9
-         b9IA==
-X-Gm-Message-State: AOAM533Q03/MOyP8ax3Jol4YkfmpQ/cG7gRiNlmeJPo21ZTv+BT7i+JE
-        8ukNGrt5UOvnp3rfy4/EmScic81pkcpnvQ==
-X-Google-Smtp-Source: ABdhPJy5UWxuFtmpm7KypkH7TEKSVPcZs2RVxxqutxJLsY9riHHM0IT5Bvga844ocE2sOv79zwISoA==
-X-Received: by 2002:a17:90a:5217:: with SMTP id v23mr1581575pjh.160.1605660447897;
-        Tue, 17 Nov 2020 16:47:27 -0800 (PST)
-Received: from aroeseler-LY545.hsd1.ca.comcast.net ([2601:648:8400:9ef4:34d:9355:e74:4f1b])
-        by smtp.googlemail.com with ESMTPSA id y124sm22355993pfy.28.2020.11.17.16.47.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fZiwxZqojFgPo5SsCHfj9x1Lcm6wX0ajQ1bLVVWx3jU=;
+        b=md+m7dxsSS+Fg/IiJsOjrt7DM+EdrvJ8mBxajJlL4QJITrEtGuvs1WqWWtPx4HiC2k
+         81yXGG7tGmQxjbVE7KrBGXl0U8akS5JWjD5NeejuTPtjSOUOFDHxNhV+US8mYk1flbYw
+         H6ksAThVEVKlZLOFWCE3vot+FwEKlECBIhOfZPI88tpMCUvN5TgbOOZ2G3R5vPoHBHya
+         2SRNw6CDTp3eH4JOeWG4BhnjIQ/HzloBtgRorqtbJgQLpf5XdWaxj8iXZJxOqPB1v9ev
+         F9ocqgN4V3l/fHLRuTXzGKFZ++QUC7mLGNO7gtKNOI65rCV0JzEtTr01kMb70aSNbMaq
+         iJUA==
+X-Gm-Message-State: AOAM532Umu/iSAn16vArQntnBL9cum82QPbGpYAJiXg+UODcakvNukRt
+        u80oslfu/gx8j+dZfF4oqWurw2h7kbYqLPA=
+X-Google-Smtp-Source: ABdhPJxdQinxTZFO5n5EZ6IWDpmbfN2LzGmaJN6gn2i345FWRsV2HD3cz7OaPvnK63UNxoAFSui30Q==
+X-Received: by 2002:a05:6a00:78d:b029:18b:f46:5262 with SMTP id g13-20020a056a00078db029018b0f465262mr2266304pfu.74.1605661147582;
+        Tue, 17 Nov 2020 16:59:07 -0800 (PST)
+Received: from xuyuqing-ZenBook-UX425JA-UX425JA.huaqin.com ([101.78.151.194])
+        by smtp.gmail.com with ESMTPSA id y10sm307159pjm.34.2020.11.17.16.59.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 16:47:27 -0800 (PST)
-From:   Andreas Roeseler <andreas.a.roeseler@gmail.com>
-To:     davem@davemloft.net
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 net-next 3/3] net: add support for sending RFC8335 PROBE
-Date:   Tue, 17 Nov 2020 16:47:26 -0800
-Message-Id: <9b256be32638926353a24c5600a689e7b339d595.1605659597.git.andreas.a.roeseler@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1605659597.git.andreas.a.roeseler@gmail.com>
-References: <cover.1605659597.git.andreas.a.roeseler@gmail.com>
+        Tue, 17 Nov 2020 16:59:07 -0800 (PST)
+From:   xuyuqing <xuyuqing@huaqin.corp-partner.google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>, dianders@chromium.org,
+        dgreid@chromium.org, tzungbi@chromium.org, cychiang@chromium.org,
+        judyhsiao@chromium.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        zhouguohui@huaqin.corp-partner.google.com,
+        xuyuqing@huaqin.corp-partner.google.com
+Subject: [PATCH v1 0/1] Fix 32 bit format for adau7002
+Date:   Wed, 18 Nov 2020 08:58:57 +0800
+Message-Id: <20201118005858.123013-1-xuyuqing@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modifying the ping_supported function to support probe message types
-allows the user to send probe requests through the existing framework
-for sending ping requests.
+the microphone is attached to external codec(adau7002)
+instead of rt5682.We need to always use 32 bit format on sc7180
+to meet the clock requirement of adau7002:
+The ADAU7002 requires a BCLK rate 
+that is a minimum of 64× the LRCLK sample rate
 
-Signed-off-by: Andreas Roeseler <andreas.a.roeseler@gmail.com>
----
-Changes since v1:
- - Switch to correct base tree
+xuyuqing (1):
+  ASoC: qcom: sc7180: fix 32 bit format for adau7002
 
-Changes since v2:
- - Switch to net-next tree 67c70b5eb2bf7d0496fcb62d308dc3096bc11553
+ sound/soc/qcom/sc7180.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Changes since v3:
- - Reorder patches add defines first 
----
- net/ipv4/ping.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
-index 248856b301c4..39bdcb2bfc92 100644
---- a/net/ipv4/ping.c
-+++ b/net/ipv4/ping.c
-@@ -453,7 +453,9 @@ EXPORT_SYMBOL_GPL(ping_bind);
- static inline int ping_supported(int family, int type, int code)
- {
- 	return (family == AF_INET && type == ICMP_ECHO && code == 0) ||
--	       (family == AF_INET6 && type == ICMPV6_ECHO_REQUEST && code == 0);
-+	       (family == AF_INET && type == ICMP_EXT_ECHO && code == 0) ||
-+	       (family == AF_INET6 && type == ICMPV6_ECHO_REQUEST && code == 0) ||
-+	       (family == AF_INET6 && type == ICMPV6_EXT_ECHO_REQUEST && code == 0);
- }
- 
- /*
 -- 
-2.29.2
+2.25.1
 
