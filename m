@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE712B7F40
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5EF2B7F47
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 15:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgKROSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 09:18:39 -0500
-Received: from albireo.enyo.de ([37.24.231.21]:38150 "EHLO albireo.enyo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgKROSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:18:38 -0500
-Received: from [172.17.203.2] (helo=deneb.enyo.de)
-        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1kfOI1-0001Cf-LF; Wed, 18 Nov 2020 14:18:29 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1kfOI1-0002RJ-54; Wed, 18 Nov 2020 15:18:29 +0100
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: violating function pointer signature
-References: <20201116175107.02db396d@gandalf.local.home>
-        <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
-        <20201117142145.43194f1a@gandalf.local.home>
-        <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
-        <20201117153451.3015c5c9@gandalf.local.home>
-        <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
-        <87h7pmwyta.fsf@mid.deneb.enyo.de>
-        <20201118141226.GV3121392@hirez.programming.kicks-ass.net>
-Date:   Wed, 18 Nov 2020 15:18:29 +0100
-In-Reply-To: <20201118141226.GV3121392@hirez.programming.kicks-ass.net> (Peter
-        Zijlstra's message of "Wed, 18 Nov 2020 15:12:26 +0100")
-Message-ID: <874klmwxxm.fsf@mid.deneb.enyo.de>
+        id S1726719AbgKROTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 09:19:11 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34470 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgKROTL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 09:19:11 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AIEJ7dq066074;
+        Wed, 18 Nov 2020 08:19:07 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605709147;
+        bh=KI2Z4UHnxhnILseGS7lyqummupvcLaGAH+tnwbFydjE=;
+        h=From:To:CC:Subject:Date;
+        b=YSLN8FHRSD9I47kMCVjUBOq0tt/8T6pgf3oAqJ5bZR2dz6v3eTVxEsYdOcS3J6F5/
+         SsxXY4BMmGoB0Agw5ACfDHQ9NuB79rp28Qu7pQaiZ4KeKX7cOcMiUsTYHKinmQ4yJZ
+         tTkrUZ1J4AudiSDdwo7MGPRNzSjV5jhpQmi57aXQ=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AIEJ7A9006416
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Nov 2020 08:19:07 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 18
+ Nov 2020 08:19:07 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 18 Nov 2020 08:19:07 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AIEJ6n1037747;
+        Wed, 18 Nov 2020 08:19:07 -0600
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Tony Lindgren <tony@atomide.com>
+CC:     <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH] bus: ti-sysc: suppress err msg for timers used as clockevent/source
+Date:   Wed, 18 Nov 2020 16:19:00 +0200
+Message-ID: <20201118141900.25063-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Zijlstra:
+GP Timers used as clockevent/source are not available for ti-sysc bus and
+handled by Kernel timekeeping core. Now ti-sysc produces error message
+every time such timer is detected:
 
->> The default Linux calling conventions are all of the cdecl family,
->> where the caller pops the argument off the stack.  You didn't quote
->> enough to context to tell whether other calling conventions matter in
->> your case.
->
-> This is strictly in-kernel, and I think we're all cdecl, of which the
-> important part is caller-cleanup. The function compiles to:
->
-> 	RET
->
-> so whatever the arguments are is irrelevant.
+ "ti-sysc: probe of 48040000.target-module failed with error -16"
 
-Yes, then the stub is ABI-compatible, as far as I know.
+Such messages are not necessary, so suppress them by returning -ENXIO
+instead of -EBUSY.
+
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+ drivers/bus/ti-sysc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index 792a2878cb16..02186bac1b0b 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -2883,7 +2883,7 @@ static int sysc_check_active_timer(struct sysc *ddata)
+ 
+ 	if ((ddata->cfg.quirks & SYSC_QUIRK_NO_RESET_ON_INIT) &&
+ 	    (ddata->cfg.quirks & SYSC_QUIRK_NO_IDLE))
+-		return -EBUSY;
++		return -ENXIO;
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
+
