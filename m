@@ -2,75 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397C82B8198
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2794E2B819A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 17:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgKRQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 11:18:55 -0500
-Received: from mga11.intel.com ([192.55.52.93]:44042 "EHLO mga11.intel.com"
+        id S1727363AbgKRQS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 11:18:58 -0500
+Received: from foss.arm.com ([217.140.110.172]:58600 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbgKRQSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:18:54 -0500
-IronPort-SDR: EJi7014HSJLlgNtWJJNI+LBrRa6UpQxDMsgWN61pptqOeeNEwfaLG5y61n2PGLy+alKhkoVqST
- tUhfyPyHNe0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="167630958"
-X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
-   d="scan'208";a="167630958"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:18:54 -0800
-IronPort-SDR: IVpCU1Ahwp8XRZgwM9P7fzgvSrTOIr7HwjfQC/OZKdFiBIPX30c/XrYrj4IHiiLLic8SHsYAYG
- eQhXiFeJnhBA==
-X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
-   d="scan'208";a="476413155"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.28.176]) ([10.255.28.176])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 08:18:48 -0800
-Subject: Re: [PATCH v2 05/17] KVM: x86/pmu: Reprogram guest PEBS event to
- emulate guest PEBS counter
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>, luwei.kang@intel.com,
-        Thomas Gleixner <tglx@linutronix.de>, wei.w.wang@intel.com,
-        Tony Luck <tony.luck@intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20201109021254.79755-1-like.xu@linux.intel.com>
- <20201109021254.79755-6-like.xu@linux.intel.com>
- <20201117144100.GK3121406@hirez.programming.kicks-ass.net>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <b467faaf-1594-e389-bff9-3bc29f90d4e5@linux.intel.com>
-Date:   Thu, 19 Nov 2020 00:18:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1726110AbgKRQS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:18:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C29DD1396;
+        Wed, 18 Nov 2020 08:18:56 -0800 (PST)
+Received: from red-moon.arm.com (unknown [10.57.62.8])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 187CF3F719;
+        Wed, 18 Nov 2020 08:18:53 -0800 (PST)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     jingoohan1@gmail.com, bhelgaas@google.com,
+        amurray@thegoodpenguin.co.uk, jonathanh@nvidia.com,
+        gustavo.pimentel@synopsys.com, robh@kernel.org,
+        Vidya Sagar <vidyas@nvidia.com>, treding@nvidia.com
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-pci@vger.kernel.org, kthota@nvidia.com,
+        linux-kernel@vger.kernel.org, mmaddireddy@nvidia.com,
+        sagar.tv@gmail.com
+Subject: Re: [PATCH V2 0/2] Add support to handle prefetchable memory
+Date:   Wed, 18 Nov 2020 16:18:47 +0000
+Message-Id: <160571623360.10954.9426111019711925652.b4-ty@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20201118144626.32189-1-vidyas@nvidia.com>
+References: <20201118144626.32189-1-vidyas@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20201117144100.GK3121406@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/17 22:41, Peter Zijlstra wrote:
-> On Mon, Nov 09, 2020 at 10:12:42AM +0800, Like Xu wrote:
->> +			/* Indicate PEBS overflow PMI to guest. */
->> +			__set_bit(62, (unsigned long *)&pmu->global_status);
+On Wed, 18 Nov 2020 20:16:24 +0530, Vidya Sagar wrote:
+> This patch series adds support for configuring the DesignWare IP's ATU
+> region for prefetchable memory translations.
+> It first starts by flagging a warning if the size of non-prefetchable
+> aperture goes beyond 32-bit as PCIe spec doesn't allow it.
+> And then adds required support for programming the ATU to handle higher
+> (i.e. >4GB) sizes.
 > 
-> GLOBAL_STATUS_BUFFER_OVF_BIT
-> 
+> [...]
 
-Thanks, I'll apply it.
+Applied to pci/dwc, thanks!
 
-If you have more comments on the entire patch set, please let me know.
+[1/2] PCI: of: Warn if non-prefetchable memory aperture size is > 32-bit
+      https://git.kernel.org/lpieralisi/pci/c/fede8526cc
+[2/2] PCI: dwc: Add support to program ATU for >4GB memory
+      https://git.kernel.org/lpieralisi/pci/c/74081de4a1
 
 Thanks,
-Like Xu
+Lorenzo
