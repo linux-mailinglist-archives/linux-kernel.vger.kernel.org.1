@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715DE2B7BF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 11:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB7A2B7BF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 12:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgKRK7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 05:59:19 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:50331 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgKRK7T (ORCPT
+        id S1727727AbgKRK7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 05:59:48 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:6715 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgKRK7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:59:19 -0500
-Received: by mail-io1-f72.google.com with SMTP id l14so959657ioj.17
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 02:59:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=sA9gdXw4t4IuhfSDdmYIEIjhjXhoEBhwIdCjL2ypdac=;
-        b=TKxrWZxN+imVX2TgFDCZ7IJ73gAdAu+APxKxwhut28ZS7vABgbJRLnvNiNBZS+lzNM
-         Y2JJGOMJv6c4U9TeK0gwg+n0llx+JZbtVLhgkdObeP/Wet0y/iVf8PZ/qgrnZkQXZbOg
-         UnHH+NwQldSRFgWivm+S/WK5ytoqOk7xI33EFN4lDUAa0/9Q63Aviz3p+337GCEoy8Wn
-         1JZxsUMTT9iFv2C8cA1nKU0xnzWdrONfyhfMNVnH47+7rA8cw/AWw9vDtjEjr9V3N/FO
-         QesIsOuZ2vaPZMeTAwnxh5Gd0PXPTARtatwy+eV2Aso++tbbTqUXD3bxIs1lVgkv4RMr
-         UZiQ==
-X-Gm-Message-State: AOAM533fOA5zjwI8X7m8lmuGa9SUEjvyo4DIW/ccWsPeiftCngkYojjz
-        JrNhXOGesgPgVzdREIylxPbzu+NZqZyEHVFIyIQrlcnOqXy9
-X-Google-Smtp-Source: ABdhPJzY2UXmJGIuyGnQxeo99Kf52HVL2fBE7080lmPCgCuQSiT1cFgQ53tDaHwNkqlJQgox3vDR+MWI1u/m2xCmN5RkAYXX6mZo
+        Wed, 18 Nov 2020 05:59:48 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 72EBE240010;
+        Wed, 18 Nov 2020 10:59:45 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 11:59:45 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen.Hegelund@microchip.com
+Subject: Re: [PATCH 1/5] dt-bindings: reset: ocelot: Add documentation for
+ 'microchip,reset-switch-core' property
+Message-ID: <20201118105945.GF4556@piout.net>
+References: <20201116171159.1735315-1-gregory.clement@bootlin.com>
+ <20201116171159.1735315-2-gregory.clement@bootlin.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ba14:: with SMTP id o20mr16180289ili.76.1605697157983;
- Wed, 18 Nov 2020 02:59:17 -0800 (PST)
-Date:   Wed, 18 Nov 2020 02:59:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b7f48605b45f80c5@google.com>
-Subject: WARNING in mptcp_reset_timer
-From:   syzbot <syzbot+42aa53dafb66a07e5a24@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        mptcp@lists.01.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116171159.1735315-2-gregory.clement@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 16/11/2020 18:11:55+0100, Gregory CLEMENT wrote:
+> From: Lars Povlsen <lars.povlsen@microchip.com>
+> 
+> This documents the 'microchip,reset-switch-core' property in the
+> ocelot-reset driver.
+> 
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> ---
+>  .../devicetree/bindings/power/reset/ocelot-reset.txt        | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/power/reset/ocelot-reset.txt b/Documentation/devicetree/bindings/power/reset/ocelot-reset.txt
+> index 4d530d815484..20fff03753ad 100644
+> --- a/Documentation/devicetree/bindings/power/reset/ocelot-reset.txt
+> +++ b/Documentation/devicetree/bindings/power/reset/ocelot-reset.txt
+> @@ -9,9 +9,15 @@ microchip Sparx5 armv8 SoC's.
+>  Required Properties:
+>   - compatible: "mscc,ocelot-chip-reset" or "microchip,sparx5-chip-reset"
+>  
+> +Optional properties:
+> +- microchip,reset-switch-core : Perform a switch core reset at the
+> +  time of driver load. This is may be used to initialize the switch
+> +  core to a known state (before other drivers are loaded).
+> +
 
-syzbot found the following issue on:
+If this is to be used by the switchdev driver, then I would simply
+register this reset as a proper reset controller (with the  driver/reset
+API) and consume that from the switchdev driver.
 
-HEAD commit:    7c8ca812 Add linux-next specific files for 20201117
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14ccfce2500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ff4bc71371dc5b13
-dashboard link: https://syzkaller.appspot.com/bug?extid=42aa53dafb66a07e5a24
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1342e36e500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f29bba500000
+However, the switch may also be configured from userspace in existing
+products. In this case you'd have to expose a reset interface, either
+from the drivers/reset core or with a specific consumer.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+42aa53dafb66a07e5a24@syzkaller.appspotmail.com
+My point is that this property is not necessary.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8718 at net/mptcp/protocol.c:719 mptcp_reset_timer+0x12a/0x160 net/mptcp/protocol.c:719
-Modules linked in:
-CPU: 1 PID: 8718 Comm: kworker/1:3 Not tainted 5.10.0-rc4-next-20201117-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events mptcp_worker
-RIP: 0010:mptcp_reset_timer+0x12a/0x160 net/mptcp/protocol.c:719
-Code: e8 0b 87 43 fe e8 46 71 c5 f8 48 b8 00 00 00 00 00 fc ff df 48 c7 04 03 00 00 00 00 48 83 c4 40 5b 5d 41 5c c3 e8 26 71 c5 f8 <0f> 0b 41 bc 14 00 00 00 eb 98 e8 c7 d3 07 f9 e9 30 ff ff ff 48 c7
-RSP: 0018:ffffc90001adfa38 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 1ffff9200035bf47 RCX: ffffffff88ab2357
-RDX: ffff88801ae14f80 RSI: ffffffff88ab23ba RDI: 0000000000000007
-RBP: ffff888024200000 R08: 0000000000000000 R09: ffff88802420084f
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000281400 R14: ffff888024200000 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f994238f010 CR3: 0000000028d92000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- mptcp_push_pending+0x1351/0x17c0 net/mptcp/protocol.c:1266
- mptcp_worker+0x385/0x1a10 net/mptcp/protocol.c:1877
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
