@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422912B8515
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B792B8529
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 20:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgKRTsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 14:48:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgKRTsY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:48:24 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0387AC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 11:48:24 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfTRF-0008Jq-CL; Wed, 18 Nov 2020 20:48:21 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfTRE-0004E5-O3; Wed, 18 Nov 2020 20:48:20 +0100
-Date:   Wed, 18 Nov 2020 20:48:17 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Soham Biswas <sohambiswas41@gmail.com>, lee.jones@linaro.org,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] pwm: core: Use octal permission
-Message-ID: <20201118194817.4l3esfu5dnhgo6vx@pengutronix.de>
-References: <20201117175452.26914-1-sohambiswas41@gmail.com>
- <20201118145112.21250-1-sohambiswas41@gmail.com>
- <20201118175936.GB3552669@ulmo>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uzaqwqsfd3uecqxm"
+        id S1726602AbgKRT5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 14:57:38 -0500
+Received: from gate.crashing.org ([63.228.1.57]:42142 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726081AbgKRT5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:57:37 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AIJmcsd023146;
+        Wed, 18 Nov 2020 13:48:38 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AIJmb2m023145;
+        Wed, 18 Nov 2020 13:48:37 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 18 Nov 2020 13:48:37 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Florian Weimer <fw@deneb.enyo.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: violating function pointer signature
+Message-ID: <20201118194837.GO2672@gate.crashing.org>
+References: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com> <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net> <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com> <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org> <87o8jutt2h.fsf@mid.deneb.enyo.de> <20201118135823.3f0d24b7@gandalf.local.home> <20201118191127.GM2672@gate.crashing.org> <20201118143343.4e86e79f@gandalf.local.home>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118175936.GB3552669@ulmo>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201118143343.4e86e79f@gandalf.local.home>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 18, 2020 at 02:33:43PM -0500, Steven Rostedt wrote:
+> On Wed, 18 Nov 2020 13:11:27 -0600
+> Segher Boessenkool <segher@kernel.crashing.org> wrote:
+> 
+> > Calling this via a different declared function type is undefined
+> > behaviour, but that is independent of how the function is *defined*.
+> > Your program can make ducks appear from your nose even if that function
+> > is never called, if you do that.  Just don't do UB, not even once!
+> 
+> But that's the whole point of this conversation. We are going to call this
+> from functions that are going to have some random set of parameters.
 
---uzaqwqsfd3uecqxm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+<snip great summary>
 
-On Wed, Nov 18, 2020 at 06:59:36PM +0100, Thierry Reding wrote:
-> On Wed, Nov 18, 2020 at 08:21:12PM +0530, Soham Biswas wrote:
-> > Permission bits are easier readable in octal than with using the
-> > symbolic names.
-> >=20
-> > Fixes the following warning generated by checkpatch:
-> >=20
-> > drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
-> > not preferred. Consider using octal permissions '0444'.
-> >=20
-> > +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-> >                             &pwm_debugfs_fops);
-> >=20
-> > Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
-> > ---
-> >  drivers/pwm/core.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> Applied, thanks. Though I did unwrap the checkpatch warning message as
-> Uwe suggested.
+> And you see the above, the macro does:
+> 
+> 	((void(*)(void *, proto))(it_func))(__data, args);
 
-Then feel free to add my
+Yup.
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> With it_func being the func from the struct tracepoint_func, which is a
+> void pointer, it is typecast to the function that is defined by the
+> tracepoint. args is defined as the arguments that match the proto.
 
-Thanks
-Uwe
+If you have at most four or so args, what you wnat to do will work on
+all systems the kernel currently supports, as far as I can tell.  It
+is not valid C, and none of the compilers have an extension for this
+either.  But it will likely work.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+> The problem we are solving is on the removal case, if the memory is tight,
+> it is possible that the new array can not be allocated. But we must still
+> remove the called function. The idea in this case is to replace the
+> function saved with a stub. The above loop will call the stub and not the
+> removed function until another update happens.
+> 
+> This thread is about how safe is it to call:
+> 
+> void tp_stub_func(void) { return ; }
+> 
+> instead of the function that was removed?
 
---uzaqwqsfd3uecqxm
-Content-Type: application/pgp-signature; name="signature.asc"
+Exactly as safe as calling a stub defined in asm.  The undefined
+behaviour happens if your program has such a call, it doesn't matter
+how the called function is defined, it doesn't have to be C.
 
------BEGIN PGP SIGNATURE-----
+> Thus, we are indeed calling that stub function from a call site that is not
+> using the same parameters.
+> 
+> The question is, will this break?
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+1ensACgkQwfwUeK3K
-7AkYrgf+MLbRmUWmOmVGdJ5eNS/y1sukSZQEqulBrWanPUnHmliEIP6jM3+lynhO
-nXT9CMtv71p3iYk5pSdmSpyYdVlLbfj8A+9wz8SaLzks7NQBN3vTi/DA9yTZZpRG
-FSlOE89yWvN+W4q5vx64mZjQ4RCgJ6YhM28W+wWZN6ak8cy87MXzSMX6SKZJe3e7
-69SnllB6s/e/mQ55vDI7/ZEIWqqciSbyfcP3FYnbTYNRy4fR7OCBn755ZAvR+oHq
-uMosaBYkS1abTR4qnQO82ZunytFLt+ECHOhsFJNIKIN5D7YuouY8E2I/ZwuYeSnC
-3IetN0sRztXNdsFIO7go9rUUyvdkEw==
-=5Se1
------END PGP SIGNATURE-----
+It is unlikely to break if you use just a few arguments, all of simple
+scalar types.  Just hope you will never encounter a crazy ABI :-)
 
---uzaqwqsfd3uecqxm--
+
+Segher
