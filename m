@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2822B83EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F062B83FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 19:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgKRSeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 13:34:21 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:59073 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgKRSeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 13:34:20 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605724460; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=08x4HZK1C0mpGxp1ucPf4OqdqazMVA/m8B1O10e/r7I=; b=ERaw6byqSCQ3bIom3X/D7wTXgQGL7ETiCTXmMvZvFHPyxFaktVqfbLyMs3sFyti7x4GtsaXH
- R9S4i5Efa6+eIAY+yfRRY/294YkFW00Tl9JNEb4+FEy+8m3cZ5W3LQpB+TlrusXkiKJWLH/X
- 9ZzZS7y7wCmCjNt/sBZB8yNOAxQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5fb5692b0c9500dc7b3f756f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 18 Nov 2020 18:34:19
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 873E7C433ED; Wed, 18 Nov 2020 18:34:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D9ED1C433C6;
-        Wed, 18 Nov 2020 18:34:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D9ED1C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH] net: qrtr: Unprepare MHI channels during remove
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     kvalo@codeaurora.org, linux-wireless@vger.kernel.org,
-        cjhuang@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, linux-kernel@vger.kernel.org,
-        ath11k@lists.infradead.org, clew@codeaurora.org,
-        loic.poulain@linaro.org, netdev@vger.kernel.org
-References: <1605723625-11206-1-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <5e94c0be-9402-7309-5d65-857a27d1f491@codeaurora.org>
-Date:   Wed, 18 Nov 2020 11:34:17 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726298AbgKRSjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 13:39:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgKRSjU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 13:39:20 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26867C0613D4;
+        Wed, 18 Nov 2020 10:39:19 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id s13so3656487wmh.4;
+        Wed, 18 Nov 2020 10:39:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YiJTSBtle7cqr6NeENgfeIIBEb6CbCibc49Xjq0ZXzA=;
+        b=a3GsCKtemU3YlqDsjE0mm+erC8chaJq9drsbx3YZnkC9ClcD18vv6d9Bp7cIprcf6w
+         dqBfkajO3kiDj+4ks+8NyOdCw2TkspBKR3rmMedpkL9Alv3oKBavIgfQWsoIVIHHL1+4
+         Ufcxn3s9VaLtdqF1lWYJDXtoMBNJjLDNpId1CR0LTNDuqd/HLtoXKDIyMQr+Hd8iOukz
+         bPmQphYfNsHi5gdJ7Ju2TYT9vKqF3vKgioEsL0lyf7faO/Rn1J8LDohyN/h6/J/jc8TU
+         WSJCu3QZ+x/ET45uX2+M43Mvb4dtje5w3uOxTFXtTgTYusLUvUE7SwL8NfrWLUCws67b
+         BLzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YiJTSBtle7cqr6NeENgfeIIBEb6CbCibc49Xjq0ZXzA=;
+        b=CBMP3BksCA4K0PnfY0yQB3JcHjZHIObnV0aXuqPPJJWX70NztP0rqNQ9DbV5ivb7a9
+         HLWInQm8i1pQrL0Ad3Vhd4MQLB+X0bBcKdg0aw6+uH6cWpHUJsbRhY7d/ZwF/iWfZhfR
+         jFJjKunT6k/bic0VIiYHxqVMak4GHm6XWD0fr8IDeFg7XQ7Z9UerS0ILg5UIgNJKMMbY
+         J/djuTp75M1R15acEO8hLRJrD7sBBVqf0A1lIQJG2piKf8ND3H4UZvAepqb6xSHPXGRu
+         7/diIcZ119EUf9RT8OXVvIYHO/EqVg2B6Fk73V184EF5+F9cys01nw43m+yHvgr40GOG
+         ebjg==
+X-Gm-Message-State: AOAM532WnmsTVEWsa+DH3roMLqnhTnSAWzYjISxw3I3owmqphcgOeYoP
+        rRA/6xUPbjEhFqdtmIuenb8+PdA2AR79nt4TJ6k=
+X-Google-Smtp-Source: ABdhPJwF2QPigW04aMTrGfylLIKdrz+SxKUNnlzSknb+LVXzj9o23MdHGlTOLEQ5ieIY9UMuAzivJUUKP8T222vJilM=
+X-Received: by 2002:a1c:c343:: with SMTP id t64mr505782wmf.140.1605724757758;
+ Wed, 18 Nov 2020 10:39:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1605723625-11206-1-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+ <20201118145112.21250-1-sohambiswas41@gmail.com> <20201118175936.GB3552669@ulmo>
+In-Reply-To: <20201118175936.GB3552669@ulmo>
+From:   Soham Biswas <sohambiswas41@gmail.com>
+Date:   Thu, 19 Nov 2020 00:09:06 +0530
+Message-ID: <CAMmt7eO217-8aVGkrMDrRiCiJiW0RTk39k1E_GAabDXmjWO+Kg@mail.gmail.com>
+Subject: Re: [PATCH v3] pwm: core: Use octal permission
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/2020 11:20 AM, Bhaumik Bhatt wrote:
-> Reset MHI device channels when driver remove is called due to
-> module unload or any crash scenario. This will make sure that
-> MHI channels no longer remain enabled for transfers since the
-> MHI stack does not take care of this anymore after the auto-start
-> channels feature was removed.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->   net/qrtr/mhi.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
-> index 7100f0b..2bf2b19 100644
-> --- a/net/qrtr/mhi.c
-> +++ b/net/qrtr/mhi.c
-> @@ -104,6 +104,7 @@ static void qcom_mhi_qrtr_remove(struct mhi_device *mhi_dev)
->   	struct qrtr_mhi_dev *qdev = dev_get_drvdata(&mhi_dev->dev);
->   
->   	qrtr_endpoint_unregister(&qdev->ep);
-> +	mhi_unprepare_from_transfer(mhi_dev);
->   	dev_set_drvdata(&mhi_dev->dev, NULL);
->   }
->   
-> 
+On Wed, 18 Nov 2020 at 23:29, Thierry Reding <thierry.reding@gmail.com> wrote:
+>
+> On Wed, Nov 18, 2020 at 08:21:12PM +0530, Soham Biswas wrote:
+> > Permission bits are easier readable in octal than with using the
+> > symbolic names.
+> >
+> > Fixes the following warning generated by checkpatch:
+> >
+> > drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
+> > not preferred. Consider using octal permissions '0444'.
+> >
+> > +debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+> >                             &pwm_debugfs_fops);
+> >
+> > Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
+> > ---
+> >  drivers/pwm/core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Applied, thanks. Though I did unwrap the checkpatch warning message as
+> Uwe suggested.
+>
+> Thierry
 
-I admit, I didn't pay much attention to the auto-start being removed, 
-but this seems odd to me.
-
-As a client, the MHI device is being removed, likely because of some 
-factor outside of my control, but I still need to clean it up?  This 
-really feels like something MHI should be handling.
-
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+Thank You!
