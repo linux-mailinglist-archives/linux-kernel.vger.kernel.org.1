@@ -2,370 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C4A2B8306
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5700B2B82FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 18:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgKRRTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 12:19:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726779AbgKRRS0 (ORCPT
+        id S1728286AbgKRRTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 12:19:02 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:56288 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728128AbgKRRS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:18:26 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC615C061A48;
-        Wed, 18 Nov 2020 09:18:25 -0800 (PST)
-Date:   Wed, 18 Nov 2020 17:18:23 -0000
+        Wed, 18 Nov 2020 12:18:27 -0500
+Date:   Wed, 18 Nov 2020 17:18:24 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605719904;
+        s=2020; t=1605719905;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=27Hx/9L6Bgvxvckao76MI16Fd3OlfNj6W6bPpXmngk4=;
-        b=pKY/qw2JHXqdJcVFyYyGtsqcR/YnsJlNuGUrbH6j9LZ4rYRNAaYGhrGmRZwM/b4LI8EmUu
-        up4KNGCFmtv08lRMzLfepBlpg/1bcvD11KyrwpU7PcImVz8dqGJ/8PvzZslf3bsWQk4qBs
-        TwJjBlBDxsUpb41xI+ZvmELoi8eAF2iSi5kooSgEGGCnfFKmrXme1aAWSSNgQW/BVCWD0W
-        sI9jzUGJ/BKdLgwZTWLMtyRO+JxhYfW+RczvBc0qefhthyMcBWAoPKNg5duqhfR7biDY5r
-        YerKmLbpNHvfsyha0Q31qTPdpeC3L8ez1I5G0JuKJ77UJsyoISo05X90gX5XNw==
+        bh=D8nvGAloLJJ+ql8yUirlpnKjefPIphkSY9wZqt7KbrU=;
+        b=HmXLRPvL6PMY28DoLg8vFxmeMzLmDS/aanFDrDA0oHMsTV0kFY2TOMoz+uE89FHthZwDMm
+        UsoYbrgWzukpzd20d2fqUbL/0+IflPX/17U8Oih0IJfb5rH9oJBZdCrKtupnd3p0bTLR4Y
+        eBRQ2ecI/5ECsT6YEIzCPgycjWE3fm4kXb7ky2eKX1FOyMNg2k83e+0RdG46q5Y3h7BpMI
+        g4g9zjhsrpopCMTFnJgyiyOnxxYpiVIgIYJK5lnPU6gPiw4X7Xt5+hEFlvoJAOV1YkyBl0
+        c1KUsEj5Fl5QgHm2i9zpzng31rKERTbn7rEha0QYEIdOUw9LJkbYJvqbvC1R5g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605719904;
+        s=2020e; t=1605719905;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=27Hx/9L6Bgvxvckao76MI16Fd3OlfNj6W6bPpXmngk4=;
-        b=ES1bWJZ9IwqBn1oZXo3+/SFL9vvibEiuOZrR0LW46xqeL5ZYbjHqIQ7t/A5NCWTJ7t2vG6
-        q4wXubJoEnARD2Cw==
-From:   "tip-bot2 for Jarkko Sakkinen" <tip-bot2@linutronix.de>
+        bh=D8nvGAloLJJ+ql8yUirlpnKjefPIphkSY9wZqt7KbrU=;
+        b=uOgaBK5vemufPZWUYT3IMXINBNMLwhm00NKsUyMuSTibbrQKJWLHEhQ2Jv5isvjWNOh0Un
+        Xp9W/wmlEYr5dnCQ==
+From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+Subject: [tip: x86/sgx] mm: Add 'mprotect' hook to struct vm_operations_struct
 Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
         Jarkko Sakkinen <jarkko@kernel.org>,
         Borislav Petkov <bp@suse.de>,
-        Jethro Beekman <jethro@fortanix.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201112220135.165028-13-jarkko@kernel.org>
-References: <20201112220135.165028-13-jarkko@kernel.org>
+        Jethro Beekman <jethro@fortanix.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Hillf Danton <hdanton@sina.com>, linux-mm@kvack.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20201112220135.165028-11-jarkko@kernel.org>
+References: <20201112220135.165028-11-jarkko@kernel.org>
 MIME-Version: 1.0
-Message-ID: <160571990352.11244.15572010531955820807.tip-bot2@tip-bot2>
+Message-ID: <160571990472.11244.16622523428160178953.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/sgx branch of tip:
 
-Commit-ID:     888d249117876239593fe3039b6ead8ad6849035
-Gitweb:        https://git.kernel.org/tip/888d249117876239593fe3039b6ead8ad6849035
-Author:        Jarkko Sakkinen <jarkko@kernel.org>
-AuthorDate:    Fri, 13 Nov 2020 00:01:23 +02:00
+Commit-ID:     95bb7c42ac8a94ce3d0eb059ad64430390351ccb
+Gitweb:        https://git.kernel.org/tip/95bb7c42ac8a94ce3d0eb059ad644303903=
+51ccb
+Author:        Sean Christopherson <sean.j.christopherson@intel.com>
+AuthorDate:    Fri, 13 Nov 2020 00:01:21 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 18 Nov 2020 18:02:49 +01:00
+CommitterDate: Tue, 17 Nov 2020 14:36:14 +01:00
 
-x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+mm: Add 'mprotect' hook to struct vm_operations_struct
 
-Add an ioctl() that performs the ECREATE function of the ENCLS
-instruction, which creates an SGX Enclave Control Structure (SECS).
+Background
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Although the SECS is an in-memory data structure, it is present in
-enclave memory and is not directly accessible by software.
+1. SGX enclave pages are populated with data by copying from normal memory
+   via ioctl() (SGX_IOC_ENCLAVE_ADD_PAGES), which will be added later in
+   this series.
+2. It is desirable to be able to restrict those normal memory data sources.
+   For instance, to ensure that the source data is executable before
+   copying data to an executable enclave page.
+3. Enclave page permissions are dynamic (just like normal permissions) and
+   can be adjusted at runtime with mprotect().
 
-Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+This creates a problem because the original data source may have long since
+vanished at the time when enclave page permissions are established (mmap()
+or mprotect()).
+
+The solution (elsewhere in this series) is to force enclave creators to
+declare their paging permission *intent* up front to the ioctl().  This
+intent can be immediately compared to the source data=E2=80=99s mapping and
+rejected if necessary.
+
+The =E2=80=9Cintent=E2=80=9D is also stashed off for later comparison with en=
+clave
+PTEs. This ensures that any future mmap()/mprotect() operations
+performed by the enclave creator or done on behalf of the enclave
+can be compared with the earlier declared permissions.
+
+Problem
+=3D=3D=3D=3D=3D=3D=3D
+
+There is an existing mmap() hook which allows SGX to perform this
+permission comparison at mmap() time.  However, there is no corresponding
+->mprotect() hook.
+
+Solution
+=3D=3D=3D=3D=3D=3D=3D=3D
+
+Add a vm_ops->mprotect() hook so that mprotect() operations which are
+inconsistent with any page's stashed intent can be rejected by the driver.
+
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Co-developed-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Jethro Beekman <jethro@fortanix.com>
-Link: https://lkml.kernel.org/r/20201112220135.165028-13-jarkko@kernel.org
+Acked-by: Jethro Beekman <jethro@fortanix.com>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Acked-by: Hillf Danton <hdanton@sina.com>
+Cc: linux-mm@kvack.org
+Link: https://lkml.kernel.org/r/20201112220135.165028-11-jarkko@kernel.org
 ---
- Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +-
- arch/x86/include/uapi/asm/sgx.h                    |  25 ++-
- arch/x86/kernel/cpu/sgx/Makefile                   |   1 +-
- arch/x86/kernel/cpu/sgx/driver.c                   |  12 +-
- arch/x86/kernel/cpu/sgx/driver.h                   |   3 +-
- arch/x86/kernel/cpu/sgx/encl.c                     |   8 +-
- arch/x86/kernel/cpu/sgx/encl.h                     |   7 +-
- arch/x86/kernel/cpu/sgx/ioctl.c                    | 123 ++++++++++++-
- 8 files changed, 180 insertions(+)
- create mode 100644 arch/x86/include/uapi/asm/sgx.h
- create mode 100644 arch/x86/kernel/cpu/sgx/ioctl.c
+ include/linux/mm.h | 7 +++++++
+ mm/mprotect.c      | 7 +++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-index 55a2d9b..a4c75a2 100644
---- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-+++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-@@ -323,6 +323,7 @@ Code  Seq#    Include File                                           Comments
-                                                                      <mailto:tlewis@mindspring.com>
- 0xA3  90-9F  linux/dtlk.h
- 0xA4  00-1F  uapi/linux/tee.h                                        Generic TEE subsystem
-+0xA4  00-1F  uapi/asm/sgx.h                                          <mailto:linux-sgx@vger.kernel.org>
- 0xAA  00-3F  linux/uapi/linux/userfaultfd.h
- 0xAB  00-1F  linux/nbd.h
- 0xAC  00-1F  linux/raw.h
-diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-new file mode 100644
-index 0000000..f31bb17
---- /dev/null
-+++ b/arch/x86/include/uapi/asm/sgx.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * Copyright(c) 2016-20 Intel Corporation.
-+ */
-+#ifndef _UAPI_ASM_X86_SGX_H
-+#define _UAPI_ASM_X86_SGX_H
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index db6ae4d..1813fa8 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -559,6 +559,13 @@ struct vm_operations_struct {
+ 	void (*close)(struct vm_area_struct * area);
+ 	int (*split)(struct vm_area_struct * area, unsigned long addr);
+ 	int (*mremap)(struct vm_area_struct * area);
++	/*
++	 * Called by mprotect() to make driver-specific permission
++	 * checks before mprotect() is finalised.   The VMA must not
++	 * be modified.  Returns 0 if eprotect() can proceed.
++	 */
++	int (*mprotect)(struct vm_area_struct *vma, unsigned long start,
++			unsigned long end, unsigned long newflags);
+ 	vm_fault_t (*fault)(struct vm_fault *vmf);
+ 	vm_fault_t (*huge_fault)(struct vm_fault *vmf,
+ 			enum page_entry_size pe_size);
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index 56c02be..ab70902 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -616,9 +616,16 @@ static int do_mprotect_pkey(unsigned long start, size_t =
+len,
+ 		tmp =3D vma->vm_end;
+ 		if (tmp > end)
+ 			tmp =3D end;
 +
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
++		if (vma->vm_ops && vma->vm_ops->mprotect)
++			error =3D vma->vm_ops->mprotect(vma, nstart, tmp, newflags);
++		if (error)
++			goto out;
 +
-+#define SGX_MAGIC 0xA4
+ 		error =3D mprotect_fixup(vma, &prev, nstart, tmp, newflags);
+ 		if (error)
+ 			goto out;
 +
-+#define SGX_IOC_ENCLAVE_CREATE \
-+	_IOW(SGX_MAGIC, 0x00, struct sgx_enclave_create)
-+
-+/**
-+ * struct sgx_enclave_create - parameter structure for the
-+ *                             %SGX_IOC_ENCLAVE_CREATE ioctl
-+ * @src:	address for the SECS page data
-+ */
-+struct sgx_enclave_create  {
-+	__u64	src;
-+};
-+
-+#endif /* _UAPI_ASM_X86_SGX_H */
-diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/Makefile
-index 3fc4511..91d3dc7 100644
---- a/arch/x86/kernel/cpu/sgx/Makefile
-+++ b/arch/x86/kernel/cpu/sgx/Makefile
-@@ -1,4 +1,5 @@
- obj-y += \
- 	driver.o \
- 	encl.o \
-+	ioctl.o \
- 	main.o
-diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
-index c2810e1..ee947b7 100644
---- a/arch/x86/kernel/cpu/sgx/driver.c
-+++ b/arch/x86/kernel/cpu/sgx/driver.c
-@@ -88,10 +88,22 @@ static unsigned long sgx_get_unmapped_area(struct file *file,
- 	return current->mm->get_unmapped_area(file, addr, len, pgoff, flags);
- }
- 
-+#ifdef CONFIG_COMPAT
-+static long sgx_compat_ioctl(struct file *filep, unsigned int cmd,
-+			      unsigned long arg)
-+{
-+	return sgx_ioctl(filep, cmd, arg);
-+}
-+#endif
-+
- static const struct file_operations sgx_encl_fops = {
- 	.owner			= THIS_MODULE,
- 	.open			= sgx_open,
- 	.release		= sgx_release,
-+	.unlocked_ioctl		= sgx_ioctl,
-+#ifdef CONFIG_COMPAT
-+	.compat_ioctl		= sgx_compat_ioctl,
-+#endif
- 	.mmap			= sgx_mmap,
- 	.get_unmapped_area	= sgx_get_unmapped_area,
- };
-diff --git a/arch/x86/kernel/cpu/sgx/driver.h b/arch/x86/kernel/cpu/sgx/driver.h
-index cda9c43..a728e8e 100644
---- a/arch/x86/kernel/cpu/sgx/driver.h
-+++ b/arch/x86/kernel/cpu/sgx/driver.h
-@@ -9,8 +9,11 @@
- #include <linux/rwsem.h>
- #include <linux/sched.h>
- #include <linux/workqueue.h>
-+#include <uapi/asm/sgx.h>
- #include "sgx.h"
- 
-+long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg);
-+
- int sgx_drv_init(void);
- 
- #endif /* __ARCH_X86_SGX_DRIVER_H__ */
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index b9d445d..57eff30 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -46,6 +46,7 @@ static vm_fault_t sgx_vma_fault(struct vm_fault *vmf)
- 	struct sgx_encl_page *entry;
- 	unsigned long phys_addr;
- 	struct sgx_encl *encl;
-+	unsigned long pfn;
- 	vm_fault_t ret;
- 
- 	encl = vma->vm_private_data;
-@@ -61,6 +62,13 @@ static vm_fault_t sgx_vma_fault(struct vm_fault *vmf)
- 
- 	phys_addr = sgx_get_epc_phys_addr(entry->epc_page);
- 
-+	/* Check if another thread got here first to insert the PTE. */
-+	if (!follow_pfn(vma, addr, &pfn)) {
-+		mutex_unlock(&encl->lock);
-+
-+		return VM_FAULT_NOPAGE;
-+	}
-+
- 	ret = vmf_insert_pfn(vma, addr, PFN_DOWN(phys_addr));
- 	if (ret != VM_FAULT_NOPAGE) {
- 		mutex_unlock(&encl->lock);
-diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
-index 1df8011..7cc1758 100644
---- a/arch/x86/kernel/cpu/sgx/encl.h
-+++ b/arch/x86/kernel/cpu/sgx/encl.h
-@@ -26,9 +26,16 @@ struct sgx_encl_page {
- 	struct sgx_encl *encl;
- };
- 
-+enum sgx_encl_flags {
-+	SGX_ENCL_IOCTL		= BIT(0),
-+	SGX_ENCL_DEBUG		= BIT(1),
-+	SGX_ENCL_CREATED	= BIT(2),
-+};
-+
- struct sgx_encl {
- 	unsigned long base;
- 	unsigned long size;
-+	unsigned long flags;
- 	unsigned int page_cnt;
- 	unsigned int secs_child_cnt;
- 	struct mutex lock;
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-new file mode 100644
-index 0000000..1355490
---- /dev/null
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -0,0 +1,123 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*  Copyright(c) 2016-20 Intel Corporation. */
-+
-+#include <asm/mman.h>
-+#include <linux/mman.h>
-+#include <linux/delay.h>
-+#include <linux/file.h>
-+#include <linux/hashtable.h>
-+#include <linux/highmem.h>
-+#include <linux/ratelimit.h>
-+#include <linux/sched/signal.h>
-+#include <linux/shmem_fs.h>
-+#include <linux/slab.h>
-+#include <linux/suspend.h>
-+#include "driver.h"
-+#include "encl.h"
-+#include "encls.h"
-+
-+static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
-+{
-+	struct sgx_epc_page *secs_epc;
-+	struct sgx_pageinfo pginfo;
-+	struct sgx_secinfo secinfo;
-+	unsigned long encl_size;
-+	long ret;
-+
-+	/* The extra page goes to SECS. */
-+	encl_size = secs->size + PAGE_SIZE;
-+
-+	secs_epc = __sgx_alloc_epc_page();
-+	if (IS_ERR(secs_epc))
-+		return PTR_ERR(secs_epc);
-+
-+	encl->secs.epc_page = secs_epc;
-+
-+	pginfo.addr = 0;
-+	pginfo.contents = (unsigned long)secs;
-+	pginfo.metadata = (unsigned long)&secinfo;
-+	pginfo.secs = 0;
-+	memset(&secinfo, 0, sizeof(secinfo));
-+
-+	ret = __ecreate((void *)&pginfo, sgx_get_epc_virt_addr(secs_epc));
-+	if (ret) {
-+		ret = -EIO;
-+		goto err_out;
-+	}
-+
-+	if (secs->attributes & SGX_ATTR_DEBUG)
-+		set_bit(SGX_ENCL_DEBUG, &encl->flags);
-+
-+	encl->secs.encl = encl;
-+	encl->base = secs->base;
-+	encl->size = secs->size;
-+
-+	/* Set only after completion, as encl->lock has not been taken. */
-+	set_bit(SGX_ENCL_CREATED, &encl->flags);
-+
-+	return 0;
-+
-+err_out:
-+	sgx_free_epc_page(encl->secs.epc_page);
-+	encl->secs.epc_page = NULL;
-+
-+	return ret;
-+}
-+
-+/**
-+ * sgx_ioc_enclave_create() - handler for %SGX_IOC_ENCLAVE_CREATE
-+ * @encl:	An enclave pointer.
-+ * @arg:	The ioctl argument.
-+ *
-+ * Allocate kernel data structures for the enclave and invoke ECREATE.
-+ *
-+ * Return:
-+ * - 0:		Success.
-+ * - -EIO:	ECREATE failed.
-+ * - -errno:	POSIX error.
-+ */
-+static long sgx_ioc_enclave_create(struct sgx_encl *encl, void __user *arg)
-+{
-+	struct sgx_enclave_create create_arg;
-+	void *secs;
-+	int ret;
-+
-+	if (test_bit(SGX_ENCL_CREATED, &encl->flags))
-+		return -EINVAL;
-+
-+	if (copy_from_user(&create_arg, arg, sizeof(create_arg)))
-+		return -EFAULT;
-+
-+	secs = kmalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!secs)
-+		return -ENOMEM;
-+
-+	if (copy_from_user(secs, (void __user *)create_arg.src, PAGE_SIZE))
-+		ret = -EFAULT;
-+	else
-+		ret = sgx_encl_create(encl, secs);
-+
-+	kfree(secs);
-+	return ret;
-+}
-+
-+long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
-+{
-+	struct sgx_encl *encl = filep->private_data;
-+	int ret;
-+
-+	if (test_and_set_bit(SGX_ENCL_IOCTL, &encl->flags))
-+		return -EBUSY;
-+
-+	switch (cmd) {
-+	case SGX_IOC_ENCLAVE_CREATE:
-+		ret = sgx_ioc_enclave_create(encl, (void __user *)arg);
-+		break;
-+	default:
-+		ret = -ENOIOCTLCMD;
-+		break;
-+	}
-+
-+	clear_bit(SGX_ENCL_IOCTL, &encl->flags);
-+	return ret;
-+}
+ 		nstart =3D tmp;
+=20
+ 		if (nstart < prev->vm_end)
