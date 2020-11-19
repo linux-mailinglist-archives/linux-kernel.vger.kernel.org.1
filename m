@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC842B8CDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD28B2B8CE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgKSIJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:09:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgKSIJ0 (ORCPT
+        id S1726515AbgKSIK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:10:27 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41310 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726483AbgKSIK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:09:26 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D4AC0613CF;
-        Thu, 19 Nov 2020 00:09:26 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id a18so3716557pfl.3;
-        Thu, 19 Nov 2020 00:09:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PVVrHpLNgq+kl9A2aIZQl8Ll9b4XaLdyqAsmoMcdYJs=;
-        b=Lt9kWa/44LbPO5/cPquY/oD00iPelLttboNoTpKbK9dVAWzH3RYKbgHDaeT6P23ez6
-         XYjih+2Wx91QAfzcjVrjNcMRQqyKMzvKWszEcpIYw3l4r6MDSSxf6w+tsg82r209sIyJ
-         IEGvTF5hruSESkPBKHd9ynQL4Fw5UaK/5mi3S9/aJHYwNANMhk2Fi5uPGPs8iLd0R+TY
-         q/ATxd8/gZwHYIXOpNQW2VZwlEK4lPQJweq4lAc8Om3wvrsXoz6C61JbXMeYgzktl/o9
-         a8nEhrjC+UR3qzkMKQRfh1Iig1LdAZBtpa2/9ZrJ0aUI/CPg4/NBgGPjEW6ESCBWn4VG
-         ckUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PVVrHpLNgq+kl9A2aIZQl8Ll9b4XaLdyqAsmoMcdYJs=;
-        b=J3jxwGkmBeLrQEV//jlt+HblJ9sDFICZWcjgooDpMU9AjR0zkiu+oDjCWOKiiXCDWn
-         ui9x8Uouz5ytBCMVbwPm9chL3CfdB0UGF8Rxe57YzdTXGoq2WnKQi/HpoY51dWGyuYaz
-         SH6P61RpqQO/GpGDr14zdwF7sESR5ElvopjrrMLYvja6SsonQH6pXkGcFs2756pfcsmA
-         wVq+hK/Nq5T1kFjEdGcTXBplu6JQratqtK39gtQkc737nDKDy7mSvbEsnCQeGSNURjc9
-         v/vtnCurYwa3PVZj+qjY8Ad8gw1SW5hdv/SVwIaCaUc7RBNiVy9dHf2/NKjbAU0s+oeT
-         xvBA==
-X-Gm-Message-State: AOAM531GeZ8y825U1ol3AVGFLYFmxyJWV81Jic8Ip3GjXPbkRFPolMfg
-        Ou/QRHOBGd19M5jIll9UZp/TtobYlgNcWYtGeR0=
-X-Google-Smtp-Source: ABdhPJzMtCi6Lzy+hKBiQ1H0tfPFF0KZ7VqlwVI9VZTJv3bdyDqPXOQ+M26nyyu2U6Ahg5fVxF2kbbfXdJ/XIi3n5Mc=
-X-Received: by 2002:a17:90a:4884:: with SMTP id b4mr3128671pjh.198.1605773366305;
- Thu, 19 Nov 2020 00:09:26 -0800 (PST)
+        Thu, 19 Nov 2020 03:10:26 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id C40931C0B8C; Thu, 19 Nov 2020 09:10:24 +0100 (CET)
+Date:   Thu, 19 Nov 2020 09:10:23 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/71] 4.19.156-rc1 review
+Message-ID: <20201119081023.GA29401@amd>
+References: <20201109125019.906191744@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20201118135919.1447-1-ms@dev.tdt.de> <CAJht_EPB5g5ahHrVCM+K8MZG9u5bmqfjpB9-UptTt+bWqhyHWw@mail.gmail.com>
- <ae263ce5b1b31bfa763f755bdb3ef962@dev.tdt.de>
-In-Reply-To: <ae263ce5b1b31bfa763f755bdb3ef962@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Thu, 19 Nov 2020 00:09:15 -0800
-Message-ID: <CAJht_EMb5uKo6J7BAaiC9mN-ZcG+xDGc2Q9NC0ybof61vr4m2w@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 0/6] net/x25: netdev event handling
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
+Content-Disposition: inline
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 11:02 PM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> On 2020-11-18 15:47, Xie He wrote:
-> >
-> > But... Won't it be better to handle L2 connections in L2 code?
-> >
-> > For example, if we are running X.25 over XOT, we can decide in the XOT
-> > layer whether and when we reconnect in case the TCP connection is
-> > dropped. We can decide how long we wait for responses before we
-> > consider the TCP connection to be dropped.
-> >
-> > If we still want "on-demand" connections in certain L2's, we can also
-> > implement it in that L2 without the need to change L3.
-> >
-> > Every L2 has its own characteristics. It might be better to let
-> > different L2's handle their connections in their own way. This gives
-> > L2 the flexibility to handle their connections according to their
-> > actual link characteristics.
-> >
-> > Letting L3 handle L2 connections also makes L2 code too related to /
-> > coupled with L3 code, which makes the logic complex.
->
-> OK, I will give it a try. But we need to keep the possibility to
-> initiate and terminate the L2 connection from L3.
 
-OK. Thanks so much!
+--bg08WKrSYDhXBjb5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> In the on demand scenario i mentioned, the L2 should be connected when
-> the first L3 logical channel goes up and needs to be disconnected, when
-> the last L3 logical channel on an interface is cleared.
+Hi!
 
-I see. Maybe we can do it this way:
+> This is the start of the stable review cycle for the 4.19.156 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Wed, 11 Nov 2020 12:50:04 +0000.
+> Anything received after that time might be too late.
 
-When L3 wants to initiate the first L3 connection, it can check
-whether the L2 connection is established, and if it is not, it can
-instruct L2 to connect. This is the same as what the current code
-(before this series) does.
+CIP testing did not find any problems here:
 
-When the last L3 connection is terminated, we can let L3 use the
-one-byte header to "suggest" (rather than "instruct") L2 to terminate
-the L2 connection. L2 can choose to either terminate the connection or
-continue to keep it, based on whether it is in on-demand mode.
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+But reviews indicated two patches that are problematic in 4.19:
+
+rc-v4.19.155.list: fd2278164808 o: | memory: emif: Remove bogus
+debugfs error handling
+
+- debugfs still returns NULL in 4.19 so this introduces bug. It is
+  just a cleanup so it can be reverted.
+
+rc-v4.19.156.list: 7d5553147613 o: | drm/i915: Break up error capture
+compression loops with cond_resched()
+
+- code still needs to be atomic in 4.19; this probably depends on
+  a42f45a2a, see _object_create(). It does not fix anything severe so
+  it can be simply reverted.
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+							=09
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--bg08WKrSYDhXBjb5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+2KG8ACgkQMOfwapXb+vJN0gCfavq+ZDR7DQfZiMWTk6jOx8q5
+rREAoJmVaDtomtNkGh18+k1a0LJfFPiD
+=OMVk
+-----END PGP SIGNATURE-----
+
+--bg08WKrSYDhXBjb5--
