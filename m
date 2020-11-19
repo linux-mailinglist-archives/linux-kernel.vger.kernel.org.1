@@ -2,156 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8900C2B9B2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450D62B9B11
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727307AbgKSTGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:06:41 -0500
-Received: from mga12.intel.com ([192.55.52.136]:21738 "EHLO mga12.intel.com"
+        id S1727304AbgKSTCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:02:38 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:24740 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726944AbgKSTGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:06:41 -0500
-IronPort-SDR: Q8Z1M84r9eJat97C99tV8SmkDliAhsv5FAA8zelHyM/uLD/iFDNNIq8XT04aujDo/UdLjo1bcA
- KPKvcPQD58EQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="150614463"
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="150614463"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 11:06:40 -0800
-IronPort-SDR: n8TA3IManuqrcTlk2ugPC5bmgwG8KEkOXeSI7KE5Z9OPY2kl0AH9aJt9Ksc7HD3LeJjWPShKwY
- isD4NikzCgOg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="431333993"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Nov 2020 11:06:40 -0800
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
-        Dave.Martin@arm.com, mpe@ellerman.id.au, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, libc-alpha@sourceware.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chang.seok.bae@intel.com,
-        Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v2 2/4] x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
+        id S1727192AbgKSTCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 14:02:37 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605812557; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=QM3CLPvjkfi6YERoSbKWzDa4BPjcQSDZ5ZJSSMwwfYw=;
+ b=p3bt++XyKz71hb7chrxZ08QOj9dt6dcyJ4t6hhiZUMRSfOTvdxu7KLq98uzpnu4K7LnDPlTw
+ PHC4CYTQRMqDpKVp2u4PVEytHvatSsVmdxyFQpor1FfqWf2WNMJqsJ9q9ANI9WTL0lFI1xXt
+ 0yDuhOut5ElbmFHYVWXEUkucLIs=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fb6c14cfa67d9becf71a9f2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Nov 2020 19:02:36
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 29221C43463; Thu, 19 Nov 2020 19:02:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2AC29C433C6;
+        Thu, 19 Nov 2020 19:02:35 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 Date:   Thu, 19 Nov 2020 11:02:35 -0800
-Message-Id: <20201119190237.626-3-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201119190237.626-1-chang.seok.bae@intel.com>
-References: <20201119190237.626-1-chang.seok.bae@intel.com>
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>, ath11k@lists.infradead.org,
+        cjhuang@codeaurora.org, clew@codeaurora.org,
+        hemantk@codeaurora.org, kvalo@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, manivannan.sadhasivam@linaro.org,
+        netdev@vger.kernel.org, jhugo=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH] net: qrtr: Unprepare MHI channels during remove
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <2019fe3c-55c5-61fe-758c-1e9952e1cb33@codeaurora.org>
+References: <1605723625-11206-1-git-send-email-bbhatt@codeaurora.org>
+ <5e94c0be-9402-7309-5d65-857a27d1f491@codeaurora.org>
+ <CAMZdPi_b0=qFNGi1yUke3Dip2bi-zW4ULTg8W4nbyPyEsE3D4w@mail.gmail.com>
+ <2019fe3c-55c5-61fe-758c-1e9952e1cb33@codeaurora.org>
+Message-ID: <647d1520d0bcefa7ff02d2ef5ee81bd1@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Historically, signal.h defines MINSIGSTKSZ (2KB) and SIGSTKSZ (8KB), for
-use by all architectures with sigaltstack(2). Over time, the hardware state
-size grew, but these constants did not evolve. Today, literal use of these
-constants on several architectures may result in signal stack overflow, and
-thus user data corruption.
+On 2020-11-18 11:34 AM, Jeffrey Hugo wrote:
+> On 11/18/2020 12:14 PM, Loic Poulain wrote:
+>> 
+>> 
+>> Le mer. 18 nov. 2020 à 19:34, Jeffrey Hugo <jhugo@codeaurora.org 
+>> <mailto:jhugo@codeaurora.org>> a écrit :
+>> 
+>>     On 11/18/2020 11:20 AM, Bhaumik Bhatt wrote:
+>>      > Reset MHI device channels when driver remove is called due to
+>>      > module unload or any crash scenario. This will make sure that
+>>      > MHI channels no longer remain enabled for transfers since the
+>>      > MHI stack does not take care of this anymore after the 
+>> auto-start
+>>      > channels feature was removed.
+>>      >
+>>      > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org
+>>     <mailto:bbhatt@codeaurora.org>>
+>>      > ---
+>>      >   net/qrtr/mhi.c | 1 +
+>>      >   1 file changed, 1 insertion(+)
+>>      >
+>>      > diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
+>>      > index 7100f0b..2bf2b19 100644
+>>      > --- a/net/qrtr/mhi.c
+>>      > +++ b/net/qrtr/mhi.c
+>>      > @@ -104,6 +104,7 @@ static void qcom_mhi_qrtr_remove(struct
+>>     mhi_device *mhi_dev)
+>>      >       struct qrtr_mhi_dev *qdev = 
+>> dev_get_drvdata(&mhi_dev->dev);
+>>      >
+>>      >       qrtr_endpoint_unregister(&qdev->ep);
+>>      > +     mhi_unprepare_from_transfer(mhi_dev);
+>>      >       dev_set_drvdata(&mhi_dev->dev, NULL);
+>>      >   }
+>>      >
+>>      >
+>> 
+>>     I admit, I didn't pay much attention to the auto-start being 
+>> removed,
+>>     but this seems odd to me.
+>> 
+>>     As a client, the MHI device is being removed, likely because of 
+>> some
+>>     factor outside of my control, but I still need to clean it up?  
+>> This
+>>     really feels like something MHI should be handling.
+>> 
+>> 
+>> I think this is just about balancing operations, what is done in probe 
+>> should be undone in remove, so here channels are started in probe and 
+>> stopped/reset in remove.
+> 
+> I understand that perspective, but that doesn't quite match what is
+> going on here.  Regardless of if the channel was started (prepared) in
+> probe, it now needs to be stopped in remove.  That not balanced in all
+> cases
+> 
+> Lets assume, in response to probe(), my client driver goes and creates
+> some other object, maybe a socket.  In response to that socket being
+> opened/activated by the client of my driver, I go and start the mhi
+> channel.  Now, normally, when the socket is closed/deactivated, I stop
+> the MHI channel.  In this case, stopping the MHI channel in remove()
+> is unbalanced with respect to probe(), but is now a requirement.
+> 
+> Now you may argue, I should close the object in response to remove,
+> which will then trigger the stop on the channel.  That doesn't apply
+> to everything.  For example, you cannot close an open file in the
+> kernel. You need to wait for userspace to close it.  By the time that
+> happens, the mhi_dev is long gone I expect.
+> 
+> So if, somehow, the client driver is the one causing the remove to
+> occur, then yes it should probably be the one doing the stop, but
+> that's a narrow set of conditions, and I think having that requirement
+> for all scenarios is limiting.
+It should be the client's responsibility to perform a clean-up though.
 
-A few years ago, the ARM team addressed this issue by establishing
-getauxval(AT_MINSIGSTKSZ), such that the kernel can supply at runtime value
-that is an appropriate replacement on the current and future hardware.
+We cannot assume that the remove() call was due to factors outside of 
+the
+client's control at all times. You may not know if the remove() was due 
+to
+device actually crashing or just an unbind/module unload. So, it would 
+be
+better if you call it as the device should ideally not be left with a 
+stale
+channel context.
 
-Add getauxval(AT_MINSIGSTKSZ) support to x86, analogous to the support
-added for ARM in commit 94b07c1f8c39 ("arm64: signal: Report signal frame
-size to userspace via auxv").
+We had an issue where a client was issuing a driver unbind without 
+unpreparing
+the MHI channels and without Loic's patch [1], we would not issue a 
+channel
+RESET to the device resulting in incoming data to the host on those 
+channels
+after host clean-up and an unmapped memory access and kernel panic.
 
-Reported-by: Florian Weimer <fweimer@redhat.com>
-Fixes: c2bc11f10a39 ("x86, AVX-512: Enable AVX-512 States Context Switch")
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Cc: H.J. Lu <hjl.tools@gmail.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: Dave Martin <Dave.Martin@arm.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: x86@kernel.org
-Cc: libc-alpha@sourceware.org
-Cc: linux-arch@vger.kernel.org
-Cc: linux-api@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=153531
+If MHI dev will be gone that NULL/status check must be present in 
+something that
+userspace could potentially use.
+
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/bus/mhi?h=next-20201119&id=a7f422f2f89e7d48aa66e6488444a4c7f01269d5
+
+Thanks,
+Bhaumik
 ---
- arch/x86/include/asm/elf.h         | 4 ++++
- arch/x86/include/uapi/asm/auxvec.h | 6 ++++--
- arch/x86/kernel/signal.c           | 5 +++++
- 3 files changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-index b9a5d488f1a5..044b024abea1 100644
---- a/arch/x86/include/asm/elf.h
-+++ b/arch/x86/include/asm/elf.h
-@@ -311,6 +311,7 @@ do {									\
- 		NEW_AUX_ENT(AT_SYSINFO,	VDSO_ENTRY);			\
- 		NEW_AUX_ENT(AT_SYSINFO_EHDR, VDSO_CURRENT_BASE);	\
- 	}								\
-+	NEW_AUX_ENT(AT_MINSIGSTKSZ, get_sigframe_size());			\
- } while (0)
- 
- /*
-@@ -327,6 +328,7 @@ extern unsigned long task_size_32bit(void);
- extern unsigned long task_size_64bit(int full_addr_space);
- extern unsigned long get_mmap_base(int is_legacy);
- extern bool mmap_address_hint_valid(unsigned long addr, unsigned long len);
-+extern unsigned long get_sigframe_size(void);
- 
- #ifdef CONFIG_X86_32
- 
-@@ -348,6 +350,7 @@ do {									\
- 	if (vdso64_enabled)						\
- 		NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
- 			    (unsigned long __force)current->mm->context.vdso); \
-+	NEW_AUX_ENT(AT_MINSIGSTKSZ, get_sigframe_size());			\
- } while (0)
- 
- /* As a historical oddity, the x32 and x86_64 vDSOs are controlled together. */
-@@ -356,6 +359,7 @@ do {									\
- 	if (vdso64_enabled)						\
- 		NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
- 			    (unsigned long __force)current->mm->context.vdso); \
-+	NEW_AUX_ENT(AT_MINSIGSTKSZ, get_sigframe_size());			\
- } while (0)
- 
- #define AT_SYSINFO		32
-diff --git a/arch/x86/include/uapi/asm/auxvec.h b/arch/x86/include/uapi/asm/auxvec.h
-index 580e3c567046..edd7808060e6 100644
---- a/arch/x86/include/uapi/asm/auxvec.h
-+++ b/arch/x86/include/uapi/asm/auxvec.h
-@@ -10,11 +10,13 @@
- #endif
- #define AT_SYSINFO_EHDR		33
- 
-+#define AT_MINSIGSTKSZ		51
-+
- /* entries in ARCH_DLINFO: */
- #if defined(CONFIG_IA32_EMULATION) || !defined(CONFIG_X86_64)
--# define AT_VECTOR_SIZE_ARCH 2
-+# define AT_VECTOR_SIZE_ARCH 3
- #else /* else it's non-compat x86-64 */
--# define AT_VECTOR_SIZE_ARCH 1
-+# define AT_VECTOR_SIZE_ARCH 2
- #endif
- 
- #endif /* _ASM_X86_AUXVEC_H */
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index bae35ff6e744..ee6f1ceaa7a2 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -720,6 +720,11 @@ void __init init_sigframe_size(void)
- 	max_frame_size = round_up(max_frame_size, FRAME_ALIGNMENT);
- }
- 
-+unsigned long get_sigframe_size(void)
-+{
-+	return max_frame_size;
-+}
-+
- static inline int is_ia32_compat_frame(struct ksignal *ksig)
- {
- 	return IS_ENABLED(CONFIG_IA32_EMULATION) &&
--- 
-2.17.1
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
