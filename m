@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765902B98E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD2E2B98E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbgKSRFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:05:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728264AbgKSRFL (ORCPT
+        id S1728614AbgKSRFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:05:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60174 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728264AbgKSRFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:05:11 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9306EC0613CF;
-        Thu, 19 Nov 2020 09:05:10 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id b17so6974747ljf.12;
-        Thu, 19 Nov 2020 09:05:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pdp2px/iS7YqbK+0lbuHDAjLg5kKmJIdvkTVN3rm+HA=;
-        b=nFrkjPYj5vl0YiVByyuAPfx+cb+3H+MDG1Ianvgu4Z3URGmiV/WLvmnINr9f48kYUc
-         IicByixTxjFT5pH2OUi+DWW31g+xU1ygpPrqSPGe8cvlFDjvlHmg0J4TTFJheDpVMYCY
-         ChwdeoTwJqwOzksjwYT+9ij7EPq4qX+/a0ovn/RRQ7U4Ae9gmV6CY3MkHAAel72nvxp5
-         osb3wGZD8j0TB5Y/sDFl2svkDZavV2/tegJ2IL8GMsN01D0ew9RSdsUySK7Q4tLxWUw8
-         NocXBsPOvWw0fNXh4njlqGJ2RBlH2XWFKHwQG6NwMuf6FpfavlKjrx77OH9dkAsEx+JS
-         WNCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pdp2px/iS7YqbK+0lbuHDAjLg5kKmJIdvkTVN3rm+HA=;
-        b=V24MVvuunDRgfciNGS4mVmmM0zWZw7NS2HP6FolAi5Fh1PaLwBo6Qao9JQu3EvNhEw
-         RcdnyDreVs3NENE7UvhGGfAhuDJ42CkNELwyAY/RkK/Uso5uL3ZO8OWDnD55SBeXlLO8
-         UdEj5aZH8jOXbubmRCbeNuRXBosz2EuOSmEFRM/CsBp4iP6qfhFTw9QZgE2/AN2+ZrA0
-         S6fqNcpdXKgn9S+ZUvFLdFB4UxOC4ZY7Yh2T6KXXY4nKC2FrsCHL0q4tJsUrVfzJ2MvJ
-         t1m8ppwGgvXbNNThfsLit3Uq5QjxX6pLFo5vG0Xtfw5mCvkrPD3opaADzVj4YONst9dz
-         cJFw==
-X-Gm-Message-State: AOAM533UNG9XHJhX4NOsYni9RRz7dSywNbAAnbNVi/W2I7cLOmOoZJmE
-        CZUaaTyqJLX9YpfTrnxRDXy0kw2sInsqVaW/q3w=
-X-Google-Smtp-Source: ABdhPJz84FHFdyN0TSp9MADPx8nbmsZjfZw5H5CotVdL+2BNemeMDX8r8YbIfwGewwb0rZZYIvJ0RyMGCdRdeeoHSHk=
-X-Received: by 2002:a2e:b1c9:: with SMTP id e9mr5441355lja.283.1605805508987;
- Thu, 19 Nov 2020 09:05:08 -0800 (PST)
+        Thu, 19 Nov 2020 12:05:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605805512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rphq9zvAUmd4d4wT5fgUborloPcVcl2GbeePfTvH6N0=;
+        b=SKT/jHAG5yq0bNW7KUNwhSeNyossTwlr2tgpUWXe4tsGw6ugomf7VvsTe1TcUa2mbgtLOH
+        5qSZMoVIpVl58WtwaW55xVHvx33rAipqO4y8i4n+3Kh8IPm0zFxAt4HVJT0zY7V1PxYEb2
+        bUYgU7ZjW6GQEruO6N2eF/JeGdV1LH8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-348-RZjdcy3WN0i0kC_9VafJCg-1; Thu, 19 Nov 2020 12:05:10 -0500
+X-MC-Unique: RZjdcy3WN0i0kC_9VafJCg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 633BE8144E1;
+        Thu, 19 Nov 2020 17:05:09 +0000 (UTC)
+Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1AB1F13470;
+        Thu, 19 Nov 2020 17:05:09 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 10:05:08 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jia He <justin.he@arm.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio iommu type1: Bypass the vma permission check in
+ vfio_pin_pages_remote()
+Message-ID: <20201119100508.483c6503@w520.home>
+In-Reply-To: <20201119142737.17574-1-justin.he@arm.com>
+References: <20201119142737.17574-1-justin.he@arm.com>
 MIME-Version: 1.0
-References: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
- <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
- <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
- <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org>
- <87o8jutt2h.fsf@mid.deneb.enyo.de> <20201118135823.3f0d24b7@gandalf.local.home>
- <20201118191127.GM2672@gate.crashing.org> <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
- <20201119143735.GU2672@gate.crashing.org> <20201119095951.30269233@gandalf.local.home>
-In-Reply-To: <20201119095951.30269233@gandalf.local.home>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 19 Nov 2020 09:04:57 -0800
-Message-ID: <CAADnVQL8d5zKTE_TohUcGgKKp6K1Noo7M22t_hKYQjO_g0Mb0g@mail.gmail.com>
-Subject: Re: violating function pointer signature
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 6:59 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> Linux obviously
-> supports multiple architectures (more than any other OS), but it is pretty
-> stuck to gcc as a compiler (with LLVM just starting to work too).
->
-> We are fine with being stuck to a compiler if it gives us what we want.
+On Thu, 19 Nov 2020 22:27:37 +0800
+Jia He <justin.he@arm.com> wrote:
 
-I beg to disagree.
-android, chrome and others changed their kernel builds to
-"make LLVM=1" some time ago.
-It's absolutely vital for the health of the kernel to be built with
-both gcc and llvm.
+> The permission of vfio iommu is different and incompatible with vma
+> permission. If the iotlb->perm is IOMMU_NONE (e.g. qemu side), qemu will
+> simply call unmap ioctl() instead of mapping. Hence vfio_dma_map() can't
+> map a dma region with NONE permission.
+> 
+> This corner case will be exposed in coming virtio_fs cache_size
+> commit [1]
+>  - mmap(NULL, size, PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+>    memory_region_init_ram_ptr()
+>  - re-mmap the above area with read/write authority.
+>  - vfio_dma_map() will be invoked when vfio device is hotplug added.
+> 
+> qemu:
+> vfio_listener_region_add()
+> 	vfio_dma_map(..., readonly=false)
+> 		map.flags is set to VFIO_DMA_MAP_FLAG_READ|VFIO_..._WRITE
+> 		ioctl(VFIO_IOMMU_MAP_DMA)
+> 
+> kernel:
+> vfio_dma_do_map()
+> 	vfio_pin_map_dma()
+> 		vfio_pin_pages_remote()
+> 			vaddr_get_pfn()
+> 			...
+> 				check_vma_flags() failed! because
+> 				vm_flags hasn't VM_WRITE && gup_flags
+> 				has FOLL_WRITE
+> 
+> It will report error in qemu log when hotplug adding(vfio) a nvme disk
+> to qemu guest on an Ampere EMAG server:
+> "VFIO_MAP_DMA failed: Bad address"
+
+I don't fully understand the argument here, I think this is suggesting
+that because QEMU won't call VFIO_IOMMU_MAP_DMA on a region that has
+NONE permission, the kernel can ignore read/write permission by using
+FOLL_FORCE.  Not only is QEMU not the only userspace driver for vfio,
+but regardless of that, we can't trust the behavior of any given
+userspace driver.  Bypassing the permission check with FOLL_FORCE seems
+like it's placing the trust in the user, which seems like a security
+issue.  Thanks,
+
+Alex
+
+
+> [1] https://gitlab.com/virtio-fs/qemu/-/blob/virtio-fs-dev/hw/virtio/vhost-user-fs.c#L502
+> 
+> Signed-off-by: Jia He <justin.he@arm.com>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 67e827638995..33faa6b7dbd4 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -453,7 +453,8 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+>  		flags |= FOLL_WRITE;
+>  
+>  	mmap_read_lock(mm);
+> -	ret = pin_user_pages_remote(mm, vaddr, 1, flags | FOLL_LONGTERM,
+> +	ret = pin_user_pages_remote(mm, vaddr, 1,
+> +				    flags | FOLL_LONGTERM | FOLL_FORCE,
+>  				    page, NULL, NULL);
+>  	if (ret == 1) {
+>  		*pfn = page_to_pfn(page[0]);
+
