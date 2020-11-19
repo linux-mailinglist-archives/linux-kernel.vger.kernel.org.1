@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182EB2B8FF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3C52B9007
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgKSKNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 05:13:55 -0500
-Received: from mout01.posteo.de ([185.67.36.65]:37223 "EHLO mout01.posteo.de"
+        id S1726358AbgKSKUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 05:20:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725816AbgKSKNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 05:13:55 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 81F57160064
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 11:13:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1605780831; bh=xqiQG/dHvbiqPnLUHnrIJGw7cSZUheLL7+Mm/fo794U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FdxZ2mGIRPbSAq72BHewv7C0NAkAh/39HjsrRv6AYebBQ63UoaYFJkFs5emPENYJ0
-         YwoJ4xuh88Wp3ThaFbqvADdXIaEn5kLsw36xEkVVRlYqyoOn8bmIvj2gDO7/FU957/
-         EOtlz3ZttRFgj+0+OwzMZlkXsa/+rfVV78rBrE9a+xqaseAxYw9npguASueO3y+IKX
-         oRxnMqUF67lkeuGXrdV6NkP+flSHFt7DdOyMVNPjVdcWDtD5+0kpMCpwsy3k2wuPXk
-         GLUwQlcHJhOhhkYRmwrDVv3iZ78qlnJ/tTuf2jfKXgVI/srnlkXq4hvd1RjEGjOVd1
-         o2Nbp1RqkIYrA==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4CcFrV30xKz6tmk;
-        Thu, 19 Nov 2020 11:13:46 +0100 (CET)
-Date:   Thu, 19 Nov 2020 11:13:43 +0100
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH 2/2] hwspinlock: add sunxi hardware spinlock support
-Message-ID: <20201119111343.74956eae@monster.powergraphx.local>
-In-Reply-To: <20201119071523.5cbpgy2cpo5cmuev@gilmour.lan>
-References: <cover.1605693132.git.wilken.gottwalt@posteo.net>
-        <149526a0ba8d18ebb68baa24e95d946ede90b4c0.1605693132.git.wilken.gottwalt@posteo.net>
-        <20201118153733.jgiokn6jkwu6rv6c@gilmour.lan>
-        <20201118203624.7221ba8b@monster.powergraphx.local>
-        <20201119071523.5cbpgy2cpo5cmuev@gilmour.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725881AbgKSKUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 05:20:47 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B457A24698;
+        Thu, 19 Nov 2020 10:20:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605781246;
+        bh=ehcYypQuHzkF5BBv0v8MHkj6WiebOTftlrc66yRCup8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aOcHDQupECII/OPF1ZL97joCf5UAJW1nxgbLLnjhMpeewNP59EcUgNH31uCt5Jlbj
+         R/BzklO4l86Zii9GwTGFGPFrapVYBlYHRrZuqvtN0Bw+she5+i7wkSAn+Fqeru4o35
+         daNhqKAPZVA+pQddvIgsaNYfW29MhZHbi6+JZVcY=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kfh3P-00Bv0R-EZ; Thu, 19 Nov 2020 10:20:39 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 19 Nov 2020 10:20:39 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     kernelci-results@groups.io, Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
+In-Reply-To: <a0bec7c4-9bec-8858-4879-52f4688d9992@collabora.com>
+References: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
+ <a0bec7c4-9bec-8858-4879-52f4688d9992@collabora.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <630e00e83cdd07ee5a0eaba9d3479554@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: guillaume.tucker@collabora.com, narmstrong@baylibre.com, kernelci-results@groups.io, khilman@baylibre.com, jbrunet@baylibre.com, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, martin.blumenstingl@googlemail.com, airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 08:15:23 +0100
-Maxime Ripard <maxime@cerno.tech> wrote:
-> > can you help me here a bit? I still try to figure out how to do patch sets
-> > properly. Some kernel submitting documentation says everything goes into the
-> > coverletter and other documentation only tells how to split the patches. So
-> > what would be the right way? A quick example based on my patch set would be
-> > really helpful.
+On 2020-11-19 08:50, Guillaume Tucker wrote:
+> Please see the automated bisection report below about some kernel
+> errors on meson-gxbb-p200.
 > 
-> I mean, the split between your patches and so on is good, you got that right
+> Reports aren't automatically sent to the public while we're
+> trialing new bisection features on kernelci.org, however this one
+> looks valid.
 > 
-> The thing I wanted better details on is the commit log itself, so the
-> message attached to that patch.
-
-Ah yes, I think I got it now. So basically add a nice summary of the coverletter
-there.
-
-> > > Most importantly, this hwspinlock is used to synchronize the ARM cores
-> > > and the ARISC. How did you test this driver?
-> > 
-> > Yes, you are right, I should have mentioned this. I have a simple test kernel
-> > module for this. But I must admit, testing the ARISC is very hard and I have
-> > no real idea how to do it. Testing the hwspinlocks in general seems to work
-> > with my test kernel module, but I'm not sure if this is really sufficient. I
-> > can provide the code for it if you like. What would be the best way? Github?
-> > Just mailing a patch?
-> > 
-> > The test module produces these results:
-> > 
-> > # insmod /lib/modules/5.9.8/kernel/drivers/hwspinlock/sunxi_hwspinlock_test.ko 
-> > [   45.395672] [init] sunxi hwspinlock test driver start
-> > [   45.400775] [init] start test locks
-> > [   45.404263] [run ] testing 32 locks
-> > [   45.407804] [test] testing lock 0 -----
-> > [   45.411652] [test] taking lock attempt #0 succeded
-> > [   45.416438] [test] try taken lock attempt #0
-> > [   45.420735] [test] unlock/take attempt #0
-> > [   45.424752] [test] taking lock attempt #1 succeded
-> > [   45.429556] [test] try taken lock attempt #1
-> > [   45.433823] [test] unlock/take attempt #1
-> > [   45.437862] [test] testing lock 1 -----
+> The bisection started with next-20201118 but the errors are still
+> present in next-20201119.  Details for this regression:
 > 
-> That doesn't really test for contention though, and dealing with
-> contention is mostly what this hardware is about. Could you make a small
-> test with crust to see if when the arisc has taken the lock, the ARM
-> cores can't take it?
+>   https://kernelci.org/test/case/id/5fb6196bfd0127fd68d8d902/
+> 
+> The first error is:
+> 
+>   [   14.757489] Internal error: synchronous external abort: 96000210
+> [#1] PREEMPT SMP
 
-So the best solution would be to write a bare metal program that runs on the
-arisc and can be triggered from the linux side (the test kernel module) to take
-a spinlock ... or at least take spinlocks periodically for a while and watch it
-on the linux side. Okay, I think I can do this. Though, I have to dig through
-all this new stuff first.
+Looks like yet another clock ordering setup. I guess different Amlogic
+platforms have slightly different ordering requirements.
 
-Greetings,
-Wilken
+Neil, do you have any idea of which platform requires which ordering?
+The variability in DT and platforms is pretty difficult to follow (and
+I don't think I have such board around).
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
