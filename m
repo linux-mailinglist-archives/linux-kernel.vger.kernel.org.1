@@ -2,104 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF3E2B99EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F592B99EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729667AbgKSRpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:45:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47806 "EHLO mail.kernel.org"
+        id S1729510AbgKSRp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:45:28 -0500
+Received: from mga09.intel.com ([134.134.136.24]:40769 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726480AbgKSRpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:45:39 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2FC5246D1;
-        Thu, 19 Nov 2020 17:45:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605807939;
-        bh=0Ily8GU1L3meC7su53GWzSiSKHlT/zHGHdGumDMVjTg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=L1hxl53ILHRF2vp07xAaKF6NxzddOcXjZEylZITKs5hacW6xav0WxfdGlcU10GSDC
-         Kgz3aVcFeT0e3sDyBTm8/XNztzx3lrtdKxThSUHELP8MQwp/HVopa7CkwG39SLCg3a
-         hdlzSqcOh55ZL9ihmy4iDcM686cjOPQzc7JoCRsw=
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v5.10-rc4
-Date:   Thu, 19 Nov 2020 17:45:17 +0000
-Message-Id: <20201119174538.A2FC5246D1@mail.kernel.org>
+        id S1728511AbgKSRp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:45:27 -0500
+IronPort-SDR: Hv3h+aFSzqMMN1Ep+T+YHOBl39zlE4s2ZXUCi+Xz21hvT6RmRllrNA5L8LUTBFUrBVuxlt9Qpv
+ 03hKs7lP9DOQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="171499596"
+X-IronPort-AV: E=Sophos;i="5.78,353,1599548400"; 
+   d="scan'208";a="171499596"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 09:45:26 -0800
+IronPort-SDR: +bf+G675BRCLA6Z8sHKcXIqKGLu6Q/3eOF0tOWS/rj47s0G1YHVc+SC9cmCacMkZJkbDpyMqH8
+ 2v3i2j1JDIOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,353,1599548400"; 
+   d="scan'208";a="534860651"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 19 Nov 2020 09:45:26 -0800
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
+        by linux.intel.com (Postfix) with ESMTP id 7A172580814;
+        Thu, 19 Nov 2020 09:45:26 -0800 (PST)
+Message-ID: <cdb520abba97ccf083788ed8ccb44fc042939468.camel@linux.intel.com>
+Subject: Re: [PATCH 2/2] PCI: Disable Precision Time Measurement during
+ suspend
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Len Brown <len.brown@intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 19 Nov 2020 09:45:26 -0800
+In-Reply-To: <CAJZ5v0hGhyPySUdabwW5_LhyAKC3A4zdgj7H=55R=Xk3jvt3Yw@mail.gmail.com>
+References: <20201119001822.31617-1-david.e.box@linux.intel.com>
+         <20201119001822.31617-2-david.e.box@linux.intel.com>
+         <CAJZ5v0hGhyPySUdabwW5_LhyAKC3A4zdgj7H=55R=Xk3jvt3Yw@mail.gmail.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit bc7f2cd7559c5595dc38b909ae9a8d43e0215994:
+On Thu, 2020-11-19 at 13:01 +0100, Rafael J. Wysocki wrote:
+> On Thu, Nov 19, 2020 at 1:17 AM David E. Box
+> <david.e.box@linux.intel.com> wrote:
+> > On Intel client platforms that support suspend-to-idle, like Ice
+> > Lake,
+> > root ports that have Precision Time Management (PTM) enabled can
+> > prevent
+> > the port from being fully power gated, causing higher power
+> > consumption
+> > while suspended.  To prevent this, after saving the PTM control
+> > register,
+> > disable the feature.  The feature will be returned to its previous
+> > state
+> > during restore.
+> > 
+> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=209361
+> > Reported-by: Len Brown <len.brown@intel.com>
+> > Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > ---
+> >  drivers/pci/pci.c | 14 +++++++++++++-
+> >  1 file changed, 13 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index 6fd4ae910a88..a2b40497d443 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -21,6 +21,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/spinlock.h>
+> >  #include <linux/string.h>
+> > +#include <linux/suspend.h>
+> >  #include <linux/log2.h>
+> >  #include <linux/logic_pio.h>
+> >  #include <linux/pm_wakeup.h>
+> > @@ -1543,7 +1544,7 @@ static void pci_save_ptm_state(struct pci_dev
+> > *dev)
+> >  {
+> >         int ptm;
+> >         struct pci_cap_saved_state *save_state;
+> > -       u16 *cap;
+> > +       u16 *cap, ctrl;
+> > 
+> >         if (!pci_is_pcie(dev))
+> >                 return;
+> > @@ -1560,6 +1561,17 @@ static void pci_save_ptm_state(struct
+> > pci_dev *dev)
+> > 
+> >         cap = (u16 *)&save_state->cap.data[0];
+> >         pci_read_config_word(dev, ptm + PCI_PTM_CTRL, cap);
+> > +
+> > +       /*
+> > +        * On Intel systems that support suspend-to-idle,
+> > additional
+> > +        * power savings can be gained by disabling PTM on root
+> > ports,
+> > +        * as this allows the port to enter a deeper pm state.
+> 
+> I would say "There are systems (for example, ...) where the power
+> drawn while suspended can be significantly reduced by disabling PTM
+> on
+> PCIe root ports, as this allows the port to enter a lower-power PM
+> state and the SoC to reach a lower-power idle state as a whole".
 
-  spi: bcm2835: remove use of uninitialized gpio flags variable (2020-11-06 11:23:26 +0000)
+Okay.
 
-are available in the Git repository at:
+> 
+> > +        */
+> > +       if (pm_suspend_target_state == PM_SUSPEND_TO_IDLE &&
+> 
+> AFAICS the target sleep state doesn't matter here, so I'd skip the
+> check above, but otherwise it LGTM.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.10-rc4
+The target sleep state doesn't matter so much but that it's suspending
+does. pci_save_state() is called during probe for the root ports (and
+many other pci devices - I'm curious as to why). So without this check
+the capability gets disabled on boot.
 
-for you to fetch changes up to 04a9cd51d3f3308a98cbc6adc07acb12fbade011:
+> 
+> > +           pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
+> > +               ctrl = *cap & ~(PCI_PTM_CTRL_ENABLE |
+> > PCI_PTM_CTRL_ROOT);
+> > +               pci_write_config_word(dev, ptm + PCI_PTM_CTRL,
+> > ctrl);
+> > +       }
+> >  }
+> > 
+> >  static void pci_restore_ptm_state(struct pci_dev *dev)
+> > --
 
-  spi: npcm-fiu: Don't leak SPI master in probe error path (2020-11-17 17:08:39 +0000)
+David
 
-----------------------------------------------------------------
-spi: Fixes for v5.10
-
-This is a relatively large set of fixes, the bulk of it being a series
-from Lukas Wunner which fixes confusion with the lifetime of driver data
-allocated along with the SPI controller structure that's been created as
-part of the conversion to devm APIs.  The simplest fix, explained in
-detail in Lukas' commit message, is to move to a devm_ function for
-allocation of the controller and hence driver data in order to push the
-free of that after anything tries to reference the driver data in the
-remove path.  This results in a relatively large diff due to the
-addition of a new function but isn't particularly complex.
-
-There's also a fix from sven van Asbroeck which fixes yet more fallout
-from the conflicts between the various different places one can
-configure the polarity of GPIOs in modern systems.
-
-Otherwise everything is fairly small and driver specific.
-
-----------------------------------------------------------------
-Eddie James (1):
-      spi: fsi: Fix transfer returning without finalizing message
-
-Lukas Wunner (6):
-      spi: Introduce device-managed SPI controller allocation
-      spi: bcm2835: Fix use-after-free on unbind
-      spi: bcm2835aux: Fix use-after-free on unbind
-      spi: bcm-qspi: Fix use-after-free on unbind
-      spi: lpspi: Fix use-after-free on unbind
-      spi: npcm-fiu: Don't leak SPI master in probe error path
-
-Mark Brown (1):
-      Merge series "Use-after-free be gone" from Lukas Wunner <lukas@wunner.de>:
-
-Nathan Chancellor (1):
-      spi: bcm2835aux: Restore err assignment in bcm2835aux_spi_probe
-
-Serge Semin (1):
-      spi: dw: Set transfer handler before unmasking the IRQs
-
-Sven Van Asbroeck (1):
-      spi: fix client driver breakages when using GPIO descriptors
-
-Zhihao Cheng (1):
-      spi: cadence-quadspi: Fix error return code in cqspi_probe
-
- drivers/spi/spi-bcm-qspi.c        | 34 ++++++----------
- drivers/spi/spi-bcm2835.c         | 24 ++++--------
- drivers/spi/spi-bcm2835aux.c      | 20 ++++------
- drivers/spi/spi-cadence-quadspi.c |  2 +
- drivers/spi/spi-dw-core.c         |  4 +-
- drivers/spi/spi-fsi.c             |  2 +-
- drivers/spi/spi-fsl-lpspi.c       |  3 --
- drivers/spi/spi-npcm-fiu.c        |  2 +-
- drivers/spi/spi.c                 | 81 ++++++++++++++++++++++++++++++---------
- include/linux/spi/spi.h           | 19 +++++++++
- 10 files changed, 115 insertions(+), 76 deletions(-)
