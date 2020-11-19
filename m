@@ -2,88 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC1D2B9A3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E9F2B9A3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729772AbgKSR5M convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Nov 2020 12:57:12 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:29926 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728451AbgKSR5L (ORCPT
+        id S1728714AbgKSR7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:59:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43632 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728330AbgKSR7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:57:11 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-194-1fE0Cy52OzOiF703RXrXFQ-1; Thu, 19 Nov 2020 17:57:07 +0000
-X-MC-Unique: 1fE0Cy52OzOiF703RXrXFQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 19 Nov 2020 17:57:06 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 19 Nov 2020 17:57:06 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Rich Felker' <dalias@libc.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-CC:     "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Paul Gofman <gofmanp@gmail.com>
-Subject: RE: Kernel prctl feature for syscall interception and emulation
-Thread-Topic: Kernel prctl feature for syscall interception and emulation
-Thread-Index: AQHWvps8vCklDp4dlUSnkfZ/iVi4VanPuwKQ
-Date:   Thu, 19 Nov 2020 17:57:06 +0000
-Message-ID: <d3734f734fbb4c3bacc8234be39f31be@AcuMS.aculab.com>
-References: <873616v6g9.fsf@collabora.com>
- <20201119151317.GF534@brightrain.aerifal.cx> <87h7pltj9p.fsf@collabora.com>
- <20201119162801.GH534@brightrain.aerifal.cx> <87eekpmeux.fsf@collabora.com>
- <20201119173938.GJ534@brightrain.aerifal.cx>
-In-Reply-To: <20201119173938.GJ534@brightrain.aerifal.cx>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 19 Nov 2020 12:59:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605808753;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RIoVsFHcxQBEphSpxz/IoFEkDGp+2Q03g3zLSzBSnXg=;
+        b=c9OEFWWmp2wLgx3NFBKNLDVgiqIm/Q+4q5u9k0TqLCA2PKeLX6XWNyO4KCrGsOkPet5LPj
+        u44eEfApiKNT3BthCdnNjFQx8oKwiMz6WCLyvEP7Obg3wXqDMNvgXMmScDGE4cOWlMfWCE
+        zLfg1wLFqb0+STboqDQ9ohv17VRnYBo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-l3wsqm0bMSiAcBt8sHBeFw-1; Thu, 19 Nov 2020 12:59:11 -0500
+X-MC-Unique: l3wsqm0bMSiAcBt8sHBeFw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D2839CC00;
+        Thu, 19 Nov 2020 17:59:10 +0000 (UTC)
+Received: from mail (ovpn-113-32.rdu2.redhat.com [10.10.113.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 23DAE60855;
+        Thu, 19 Nov 2020 17:59:03 +0000 (UTC)
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>, Rafael Aquini <aquini@redhat.com>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/1] x86: restore the write back cache of reserved RAM in iounmap()
+Date:   Thu, 19 Nov 2020 12:59:01 -0500
+Message-Id: <20201119175902.17394-1-aarcange@redhat.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > The Windows code is not completely loaded at initialization time.  It
-> > also has dynamic libraries loaded later.  yes, wine knows the memory
-> > regions, but there is no guarantee there is a small number of segments
-> > or that the full picture is known at any given moment.
-> 
-> Yes, I didn't mean it was known statically at init time (although
-> maybe it can be; see below) just that all the code doing the loading
-> is under Wine's control (vs having system dynamic linker doing stuff
-> it can't reliably see, which is the case with host libraries).
+Hello everyone,
 
-Since wine must itself make the mmap() system calls that make memory
-executable can't it arrange for windows code and linux code to be
-above/below some critical address?
+We identified some PCD set on the direct mapping causing hardly
+reproducible performance issues and this patch fixes the ultimate root
+cause.
 
-IIRC 32bit windows has the user/kernel split at 2G, so all the
-linux code could be shoe-horned into the top 1GB.
+The caller for now has been tweaked to avoid triggering this case (now
+that we know about it) however if the observations on the proposed fix
+aren't correct, it'd be great if we could still do some other change
+to ioremap/iounmap and perhaps the other memtype APIs, to be sure
+those PCD/PWT leftovers won't happen again a few years from now in
+another place.
 
-A similar boundary could be picked for 64bit code.
+For example one more complex alternative would be to use the
+page_mapcount of reserved pages (currently unused) to do proper
+refcounting on the overlapping ioremap so you can resync the kernel
+direct mapping to write back only at the very last iounmap.
 
-This would probably require flags to mmap() to map above/below
-the specified address (is there a flag for the 2G boundary
-these days - wine used to do very horrid things).
-It might also need a special elf interpreter to load the
-wine code itself high.
+Or a much simpler alternative that would remain fully neutral for
+overlapping ioremaps, would be to overwrite all page_count of reserved
+RAM in a way that if they're ever freed later it'll trigger a crash
+during __free_pages.
 
-	David
+==
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ *  ioremap.c
+ *
+ *  Copyright (C) 2020  Red Hat, Inc.
+ *
+ *  Reproducer for bug io iounmap.
+ */
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/mm.h>
+#include <asm/io.h>
+
+#define NR_PAGES 512
+#define REPRODUCE
+
+static struct page *pages[NR_PAGES];
+static void __iomem *map[NR_PAGES];
+
+int init_module(void)
+{
+	int i;
+	for (i = 0; i < NR_PAGES; i++) {
+		pages[i] = alloc_pages(GFP_KERNEL|__GFP_NOWARN, MAX_ORDER-1);
+		if (!pages[i])
+			break;
+		__SetPageReserved(pages[i]);
+#ifdef REPRODUCE
+		map[i] = ioremap(page_to_phys(pages[i]), 1L<<(MAX_ORDER-1));
+		WARN_ON_ONCE(!map[i]);
+#endif
+	}
+
+	return 0;
+}
+
+void cleanup_module(void)
+{
+	int i;
+	for (i = 0; i < NR_PAGES; i++) {
+		if (map[i])
+			iounmap(map[i]);
+		if (!pages[i])
+			break;
+		__ClearPageReserved(pages[i]);
+		__free_pages(pages[i], MAX_ORDER-1);
+	}
+}
+
+MODULE_LICENSE("GPL");
+==
+
+Andrea Arcangeli (1):
+  x86: restore the write back cache of reserved RAM in iounmap()
+
+ arch/x86/mm/ioremap.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
