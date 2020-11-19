@@ -2,114 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6422B9D36
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6022B9D3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgKSVzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 16:55:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgKSVzP (ORCPT
+        id S1726496AbgKSV4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 16:56:54 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:55092 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbgKSV4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 16:55:15 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70B8C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:55:12 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h21so8070589wmb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:55:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QPqvc1x5t7qLXCW8n18+RH8/nuMRFmIb+j6wkjvSoac=;
-        b=Gwqz797TCkbOAVXSCqrZyYHhgCS7dzOjYtHH0GBsaR7yAMjfsqRYgOOflkXnGQoqak
-         sQ9s5hKxA3pyQoNSOp12r4A+7s8b69QGMD3QIdbXngX7xoUK7N4c5E7NSiy6u8iaxP5H
-         jIWTiAuptzNvlg/xBNvDmCANQYgytMNEnsMU1EDPZlYmBQ/9EDcOWj60bOZaKOIzZP/S
-         ujjFP/4/RCnlt+H8abbC0kmLlmuagt9dLZFUklOFACs+21kZifVVdWqbNVyWng3YGFZH
-         izvPt6qHxkhRnb6D0A8sL1LVc9B6G579wlb/QBQ8eTwx0Rk4frvNeRLCNqjV3jYNLSBF
-         jw6g==
+        Thu, 19 Nov 2020 16:56:54 -0500
+Received: from mail-ed1-f71.google.com ([209.85.208.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <guilherme.piccoli@canonical.com>)
+        id 1kfrv9-0001aS-8N
+        for linux-kernel@vger.kernel.org; Thu, 19 Nov 2020 21:56:51 +0000
+Received: by mail-ed1-f71.google.com with SMTP id bc27so2852401edb.18
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:56:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QPqvc1x5t7qLXCW8n18+RH8/nuMRFmIb+j6wkjvSoac=;
-        b=ApiVWWakdfqlxeHI9kVDuyMX5G765TWtU9hUS5ky6Ze/1cCabJ4OSZKZZ8m3mi+xr9
-         sxIvi5CFQS3QDi2obrS03n5boIl2ovRdpg2wUlnAoFfOkdrEfhIi7Uv+5+YzKQV3UiEo
-         YGoc6GFuH9cWtSLa6ZA3dnLhVfa2Ka0ACrDIyaEC3fbd6HpFfapc5r/GzuRI7WWLDP/E
-         D/RhYLjEEVGe1HFt+U5JxSMDF2EBkQVUGzmqGB8BKeIP436bCchj88WA5rhSvkhJZt+A
-         fmt0KUQRjgZj2/WZNJ+lD0z5OB/zIe/vzTHQx4t6TXtf3CQISM2rq8gctwDz9xKauKMx
-         8UpA==
-X-Gm-Message-State: AOAM532tOuPYOZtYGCWHiY1BOgVpspN4kmdwuu11mBOYp030j3KbWuyJ
-        W3q386JDjKz0kuKkbFqzMmvujQgnKi9vplc71AY=
-X-Google-Smtp-Source: ABdhPJwrarEP3o+nZ/cPmHQ+jbwoZm614gVVX5gD94S1cshyD2zw2A1NRL4NTTbfz8YAMyeIztWkhAVqGhHgLec1fR0=
-X-Received: by 2002:a1c:f017:: with SMTP id a23mr6746684wmb.56.1605822911406;
- Thu, 19 Nov 2020 13:55:11 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=lhFyzHKwMpafV6CqL/rG6oJZPrxLkevFP6v3DPlHTjQ=;
+        b=MzEg4cWalB6CgpdxfG792Z0ceiNj56CIP3yuQnNlJGO9olO36DmQk4to/5nYfRrbjQ
+         RTQvvQ3KrLD7l9ocwK1A8TGK71HDBx910hzJVQARrCVAWiv+Jyqlktf4tsxOwSVRY90f
+         O2qdtQQWrBg0+vKGFubY1KC2meSejBy+RjiE+0ptp1dueNGHcncjPJPfA7JxkBVi85HY
+         3NuwFIiQxvOXHLtgEPiFeWZqDNN7unHMTLxPFA84P4ObBwEJYJOF+kHDich4gC1oDd5B
+         xzfwXhiDRBRo1w7Ip4PJGj9B6TKO9sU5qyb0Jt2F/uEF8Bfyk15HJ8o5GbC7Vv06JdNN
+         vvMg==
+X-Gm-Message-State: AOAM5306JnycXadBoATKhmzSOlVYNwtzkV/bKJ55g/HrdjINawyVzavI
+        alD54KPARoUfWJq9lcGFQq1ZSAmooX22ZtWMQd2TJ8XtjhcHbH1aBP9ovH7Bl5HuLGHnoei36KJ
+        K14l1hvlE7uFOWBjLLqQrOHoNT/dxjLvj+AegCTq37IXHnjFyUuObRuNzEw==
+X-Received: by 2002:a17:906:c298:: with SMTP id r24mr12518355ejz.381.1605823010850;
+        Thu, 19 Nov 2020 13:56:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyeZ68/adrbEJ2QL8FWoGR/7QczQEdL/SJ/roqlAOfSUFE97woxfB9XeYew72aotj7J5ZRFC0uKzMIuINdlucY=
+X-Received: by 2002:a17:906:c298:: with SMTP id r24mr12518308ejz.381.1605823010561;
+ Thu, 19 Nov 2020 13:56:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118024234.102485-1-bernard@vivo.com> <d61726de-c9a9-ee9c-cb8a-c34f0625a973@amd.com>
-In-Reply-To: <d61726de-c9a9-ee9c-cb8a-c34f0625a973@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 19 Nov 2020 16:54:59 -0500
-Message-ID: <CADnq5_M+seQ8Ui4p2uMKuGZ_9Y=jwmbSm1YiWxQV_=5PmEw9UA@mail.gmail.com>
-Subject: Re: [PATCH] amdgpu/amdgpu_ids: fix kmalloc_array not uses number as
- first arg
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Bernard Zhao <bernard@vivo.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
+References: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
+In-Reply-To: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
+From:   Guilherme Piccoli <gpiccoli@canonical.com>
+Date:   Thu, 19 Nov 2020 18:56:14 -0300
+Message-ID: <CAHD1Q_yA37wWrOscBHpSFEjFecGFcrzY6R6qU_iMESzYArV_Kg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] kernel/crash_core.c - Add crashkernel=auto for x86
+ and ARM
+To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>, x86@kernel.org,
+        Michael Walle <michael@walle.cc>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, john.p.donnelly@oracle.com,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, Baoquan He <bhe@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# v4 . 16+" <stable@vger.kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        =?UTF-8?Q?Diego_Elio_Petten=C3=B2?= <flameeyes@flameeyes.com>,
+        Olof Johansson <olof@lixom.net>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Dann Frazier <dann.frazier@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Hi Saeed, thanks for your patch/idea! Comments inline, below.
 
-Alex
+On Wed, Nov 18, 2020 at 8:29 PM Saeed Mirzamohammadi
+<saeed.mirzamohammadi@oracle.com> wrote:
+>
+> This adds crashkernel=auto feature to configure reserved memory for
+> vmcore creation to both x86 and ARM platforms based on the total memory
+> size.
+>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+> ---
+>  Documentation/admin-guide/kdump/kdump.rst |  5 +++++
+>  arch/arm64/Kconfig                        | 26 ++++++++++++++++++++++-
+>  arch/arm64/configs/defconfig              |  1 +
+>  arch/x86/Kconfig                          | 26 ++++++++++++++++++++++-
+>  arch/x86/configs/x86_64_defconfig         |  1 +
+>  kernel/crash_core.c                       | 20 +++++++++++++++--
+>  6 files changed, 75 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+> index 75a9dd98e76e..f95a2af64f59 100644
+> --- a/Documentation/admin-guide/kdump/kdump.rst
+> +++ b/Documentation/admin-guide/kdump/kdump.rst
+> @@ -285,7 +285,12 @@ This would mean:
+>      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
+>      3) if the RAM size is larger than 2G, then reserve 128M
+>
+> +Or you can use crashkernel=auto if you have enough memory. The threshold
+> +is 1G on x86_64 and arm64. If your system memory is less than the threshold,
+> +crashkernel=auto will not reserve memory. The size changes according to
+> +the system memory size like below:
+>
+> +    x86_64/arm64: 1G-64G:128M,64G-1T:256M,1T-:512M
 
-On Wed, Nov 18, 2020 at 3:17 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 18.11.20 um 03:42 schrieb Bernard Zhao:
-> > Fix check_patch.pl warning:
-> > kmalloc_array uses number as first arg, sizeof is generally wrong.
-> > +fences =3D kmalloc_array(sizeof(void *), id_mgr->num_ids,
-> > GFP_KERNEL);
-> >
-> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> > ---
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c b/drivers/gpu/drm/=
-amd/amdgpu/amdgpu_ids.c
-> > index 6e9a9e5dbea0..f2bd4b0e06f6 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-> > @@ -208,7 +208,7 @@ static int amdgpu_vmid_grab_idle(struct amdgpu_vm *=
-vm,
-> >       if (ring->vmid_wait && !dma_fence_is_signaled(ring->vmid_wait))
-> >               return amdgpu_sync_fence(sync, ring->vmid_wait);
-> >
-> > -     fences =3D kmalloc_array(sizeof(void *), id_mgr->num_ids, GFP_KER=
-NEL);
-> > +     fences =3D kmalloc_array(id_mgr->num_ids, sizeof(void *), GFP_KER=
-NEL);
-> >       if (!fences)
-> >               return -ENOMEM;
-> >
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+As mentioned in the thread, this was tried before and never got merged
+- I'm not sure the all the reasons, but I speculate that a stronger
+reason is that it'd likely fail in many cases. I've seen cases of 256G
+servers that require crashkernel=600M (or more), due to the amount of
+devices. Also, the minimum nowadays would likely be 96M or more - I'm
+looping Cascardo and Dann (Debian/Ubuntu maintainers of kdump stuff)
+so they maybe can jump in with even more examples/considerations.
+
+What we've been trying to do in Ubuntu/Debian is using an estimator
+approach [0] - this is purely userspace and tries to infer the amount
+of necessary memory a kdump minimal[1] kernel would take. I'm not
+-1'ing your approach totally, but I think a bit more consideration is
+needed in the ranges, at least accounting the number of devices of the
+machine or something like that.
+
+Cheers,
+
+
+Guilherme
+
+[0] https://salsa.debian.org/debian/makedumpfile/-/merge_requests/7
+[1] Minimal as having a reduced initrd + "shrinking" parameters (like
+nr_cpus=1).
