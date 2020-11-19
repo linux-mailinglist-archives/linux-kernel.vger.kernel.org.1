@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B225D2B9878
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 868C62B987C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729332AbgKSQqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:46:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:34672 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729280AbgKSQqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:46:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B21DF1650;
-        Thu, 19 Nov 2020 08:46:38 -0800 (PST)
-Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2FB3B3F718;
-        Thu, 19 Nov 2020 08:46:37 -0800 (PST)
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
-        jonathan.zhouwen@huawei.com, coresight@lists.linaro.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v4 25/25] coresight: Add support for v8.4 SelfHosted tracing
-Date:   Thu, 19 Nov 2020 16:45:47 +0000
-Message-Id: <20201119164547.2982871-26-suzuki.poulose@arm.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201119164547.2982871-1-suzuki.poulose@arm.com>
-References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
+        id S1729350AbgKSQrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:47:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728339AbgKSQrB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:47:01 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5116C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:46:59 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id l12so5970362ilo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:46:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=FaAZ3Ie6S4Ojl8IwJ7YfwRCdnjPQtizRhqlrShWzHSw=;
+        b=zeKR4T+NvyvQCgl3HJ9IUz0nFCmDPyPffNjPihBKuBviHjsn0NLfJ+KImxOGTviP6F
+         iyR45a75WIMB3CcAQZQSAdVIc6Nk8eUTv5NTQODrsvMEoNCPARLgOwJo9TQlBnmY0HpO
+         8HSr5ymO22054vQ+v5b73KmecdCR2f0w5h0Ixdza9HZP9/bXhJ/NUvT2ky685QuSPYYB
+         95DeZECFTXQPk4mY3iV5K+SRtSp4uRn9Vfw7yuhzGThC0jkfdQ54jZQOMMibMcfQyEcT
+         19hlwWMMfDQyMMyeUOEncnr8MKVb2juJnZ+L6Bv8iBNgSavnf5ALf6jTrNlkhnWFXVIp
+         6sOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FaAZ3Ie6S4Ojl8IwJ7YfwRCdnjPQtizRhqlrShWzHSw=;
+        b=B+4i4lKCiuHvTE1UhNMNDV2aZBIAxlH3LSNHRQ7hqKkFvow0hFx4CuprSFOApM2cv8
+         /4GOXOSDJEel6MqzSlj4Du0Pmq+3ThR6e2cd0kIKr8MoITp5q7uXhj5JrrIsB26J0dAo
+         l7NDs8JSFnW9CreboVyQnpxHcPaoFGHqPpJPv9mvV7RT+6Ro86fo4YV25HFo1OLrt1gr
+         kTlxZk4l/7veF5XP+fYE6Sj7D+V2jNvBn7kTxq2P/oSRoukoK+p2awPKj+BtgW5mVKLk
+         LzuripWnw66WFoHQq1z7342Mb+yRZyxIcDZVb1jcpVKNWJTxsMm5ryec1iHSGLWz/vlD
+         DzOg==
+X-Gm-Message-State: AOAM530HFZZIaKrd1olSNS3x2BDM9LD+c/cU20mbqSQDzHZ0GLXwSujD
+        TYg+hREtB9YkeLFgZqdPXzz4nNQJtKcRnA==
+X-Google-Smtp-Source: ABdhPJxX3WvEa5ao8bfs8kI6M75hJG4I+/QU4VLpOR9ir2ZfnBPp26ILs3ypZw77yzcqFQJX7x4KgQ==
+X-Received: by 2002:a92:cb50:: with SMTP id f16mr944655ilq.225.1605804418878;
+        Thu, 19 Nov 2020 08:46:58 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id o124sm190932ila.62.2020.11.19.08.46.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 08:46:58 -0800 (PST)
+Subject: Re: [PATCH 0/2] optimise iov_iter
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        linux-block@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+References: <cover.1605799583.git.asml.silence@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2b50322d-821f-469e-6f57-072b54e25ef4@kernel.dk>
+Date:   Thu, 19 Nov 2020 09:46:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1605799583.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Zhou <jonathan.zhouwen@huawei.com>
+On 11/19/20 8:29 AM, Pavel Begunkov wrote:
+> The first patch optimises iov_iter_npages() for the bvec case, and the
+> second helps code generation to kill unreachable code.
+> 
+> Pavel Begunkov (2):
+>   iov_iter: optimise iov_iter_npages for bvec
+>   iov_iter: optimise iter type checking
+> 
+>  include/linux/uio.h | 10 +++++-----
+>  lib/iov_iter.c      | 10 +++++-----
+>  2 files changed, 10 insertions(+), 10 deletions(-)
 
-v8.4 tracing extensions added support for trace filtering controlled
-by TRFCR_ELx. This must be programmed to allow tracing at EL1/EL2 and
-EL0. The timestamp used is the virtual time. Also enable CONTEXIDR_EL2
-tracing if we are running the kernel at EL2.
+Nice! Tested this and confirmed both the better code generation,
+and reduction in overhead in iov_iter_npages().
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Will Deacon <will@kernel.org>
-Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
-[ Move the trace filtering setup etm_init_arch_data() and
- clean ups]
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
----
- .../coresight/coresight-etm4x-core.c          | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 1d054d2ab2a0..647685736134 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -760,6 +760,30 @@ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
- 	return false;
- }
- 
-+static void cpu_enable_tracing(void)
-+{
-+	u64 dfr0 = read_sysreg(id_aa64dfr0_el1);
-+	u64 trfcr;
-+
-+	if (!(dfr0 >> ID_AA64DFR0_TRACE_FILT_SHIFT))
-+		return;
-+
-+	/*
-+	 * If the CPU supports v8.4 SelfHosted Tracing, enable
-+	 * tracing at the kernel EL and EL0, forcing to use the
-+	 * virtual time as the timestamp.
-+	 */
-+	trfcr = (TRFCR_ELx_TS_VIRTUAL |
-+		 TRFCR_ELx_ExTRE |
-+		 TRFCR_ELx_E0TRE);
-+
-+	/* If we are running at EL2, allow tracing the CONTEXTIDR_EL2. */
-+	if (is_kernel_in_hyp_mode())
-+		trfcr |= TRFCR_EL2_CX;
-+
-+	write_sysreg_s(trfcr, SYS_TRFCR_EL1);
-+}
-+
- static void etm4_init_arch_data(void *info)
- {
- 	u32 etmidr0;
-@@ -943,6 +967,7 @@ static void etm4_init_arch_data(void *info)
- 	/* NUMCNTR, bits[30:28] number of counters available for tracing */
- 	drvdata->nr_cntr = BMVAL(etmidr5, 28, 30);
- 	etm4_cs_lock(drvdata, csa);
-+	cpu_enable_tracing();
- }
- 
- static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
 -- 
-2.24.1
+Jens Axboe
 
