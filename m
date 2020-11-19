@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9998F2B8B13
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 06:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1D02B8B19
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 06:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbgKSFmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 00:42:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725648AbgKSFmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 00:42:45 -0500
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BCD8238E6;
-        Thu, 19 Nov 2020 05:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605764564;
-        bh=K3I9fEDjpyOo6fG6HF9At2f7NJvevaDoclzM+4tuFUA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H1GUu8vaeM1OBAw83vezwe+F/ZgjyDAH5Tpn4X9WDQBZh6U+MsdveykP257uUGy82
-         ZLW+q7CpLWiHLPiospTungZIPW9kM2ldYENK22E9AXCu/U88CQzeeWMZ2vpGUS6XHr
-         mMpWQvZnWOJYLtToilHLgau+BfMNV6gavwifAnPo=
-Date:   Thu, 19 Nov 2020 14:42:41 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Chen Yu <yu.chen.surf@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v4 2/4] tools/bootconfig: Fix to check the write failure
- correctly
-Message-Id: <20201119144241.6e87b0db19dfd542906d1b60@kernel.org>
-In-Reply-To: <160571373504.277955.1260524414275036851.stgit@devnote2>
-References: <160571371674.277955.11736890010190945946.stgit@devnote2>
-        <160571373504.277955.1260524414275036851.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725937AbgKSFpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 00:45:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgKSFpG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 00:45:06 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C52DC0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 21:45:06 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id g19so4193378otp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 21:45:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TMS5XxHXA8HnDyOa6csmMz3nOTPbgIfQVudWfCsAbc8=;
+        b=XUmZ6vpzDKdu2Y+mFAu1/ex/vzO6hoUr3ygepbs0LS52dQMVJhVegWLVqEmCYjNpH3
+         qUp8aSvHlGDWNVHzX1EgSs9NCDCyOVWpNv9CkpafOPA/y3J5F5/RmuLaekZAx/3f7SFM
+         sjU5qlRyPl2ekvLUzeQIq0wIjEi1OYRS3ARZGiTsoQ7Gcj3tApeZcgFa1m+sIJVGFrG8
+         IOtjJG0kEVmhL7d0ju96gpdTZtjkhnA/wQihq/mueKh+FUWo5tK6bKnFVBJQFZhyuO0w
+         87/xMLbHuOF71Fdoyya4URh+tSi4WjKpNrQqDS0qKF6+ghQAEsV2h9FAkERn0o+zNSts
+         nsPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TMS5XxHXA8HnDyOa6csmMz3nOTPbgIfQVudWfCsAbc8=;
+        b=V/mNCbNOl0tHqOGB+s0MaLCc9hQu5yL2TVxwB+W5vq0svzWh3GH+kAmPG8oInlslrb
+         1zVn+I8ABPEc1ffTig3ukO8k/ARXiC+cpVZ9ktXtNFiKD2o+DNwb7cx5D440X3JYO3V9
+         HAkE5AwEKWnBHP8cIsai5d3E4sr7R+ALLXexmc9pCgu3XnjauJnJeVCDQBB6hY5TLFL9
+         ZRwKBgLSD3byIjfqwUnuapmOEg6u9/WvEUkPo7C9BhfqMY5RQ+SVAvf9iijvt/yvQJpj
+         aWtv3j5iSAN/jdFJkQl0tJoJw/IH62j4zchYTCqdOxU1O4hR6ihFISIiP9phfgK3UH+z
+         /whA==
+X-Gm-Message-State: AOAM533fgggr6qASKxenzHef0mQa4uYkDjSMZBGkYX9vaKzh+zp2w6sV
+        Y9v0b6WSmwXuUTAkMP/Sa2pSsg==
+X-Google-Smtp-Source: ABdhPJxkbnksx3ECJpiTpas/HhwTtNaMLsDlS0ZGNaAQ7je71JjzdLz481CVrpobf+hZSvyNIUZykw==
+X-Received: by 2002:a9d:1b2:: with SMTP id e47mr8641928ote.45.1605764705660;
+        Wed, 18 Nov 2020 21:45:05 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m2sm746892ots.11.2020.11.18.21.45.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 21:45:04 -0800 (PST)
+Date:   Wed, 18 Nov 2020 23:45:03 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     mdtipton@codeaurora.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] interconnect: qcom: qcs404: Remove GPU and display
+ RPM IDs
+Message-ID: <20201119054503.GK8532@builder.lan>
+References: <20201118111044.26056-1-georgi.djakov@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118111044.26056-1-georgi.djakov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 00:35:35 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Wed 18 Nov 05:10 CST 2020, Georgi Djakov wrote:
 
-> Fix to check the write(2) failure including partial write
-> correctly and try to rollback the partial write, because
-> if there is no BOOTCONFIG_MAGIC string, we can not remove it.
+> The following errors are noticed during boot on a QCS404 board:
+> [    2.926647] qcom_icc_rpm_smd_send mas 6 error -6
+> [    2.934573] qcom_icc_rpm_smd_send mas 8 error -6
 > 
-> Fixes: 85c46b78da58 ("bootconfig: Add bootconfig magic word for indicating bootconfig explicitly")
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Tested-by: Chen Yu <yu.chen.surf@gmail.com>
+> These errors show when we try to configure the GPU and display nodes.
+> Since these particular nodes aren't supported on RPM and are purely
+> local, we should just change their mas_rpm_id to -1 to avoid any
+> requests being sent for these master IDs.
+> 
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 > ---
->  tools/bootconfig/main.c |   27 +++++++++++++++++++++++----
->  1 file changed, 23 insertions(+), 4 deletions(-)
 > 
-> diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-> index 52eb2bbe8966..905bfaefae35 100644
-> --- a/tools/bootconfig/main.c
-> +++ b/tools/bootconfig/main.c
-> @@ -337,6 +337,7 @@ static int delete_xbc(const char *path)
->  
->  static int apply_xbc(const char *path, const char *xbc_path)
->  {
-> +	struct stat stat;
->  	u32 size, csum;
->  	char *buf, *data;
->  	int ret, fd;
-> @@ -394,16 +395,26 @@ static int apply_xbc(const char *path, const char *xbc_path)
->  		return ret;
->  	}
->  	/* TODO: Ensure the @path is initramfs/initrd image */
-> +	if (fstat(fd, &stat) < 0) {
-> +		pr_err("Failed to get the size of %s\n", path);
-> +		goto out;
-> +	}
->  	ret = write(fd, data, size + 8);
-> -	if (ret < 0) {
-> +	if (ret < size + 8) {
-> +		if (ret < 0)
-> +			ret = -errno;
->  		pr_err("Failed to apply a boot config: %d\n", ret);
-> -		goto out;
-> +		if (ret < 0)
-> +			goto out;
-> +		goto out_rollback;
->  	}
->  	/* Write a magic word of the bootconfig */
->  	ret = write(fd, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN);
-> -	if (ret < 0) {
-> +	if (ret < BOOTCONFIG_MAGIC_LEN) {
-> +		if (ret < 0)
-> +			ret = -errno;
->  		pr_err("Failed to apply a boot config magic: %d\n", ret);
-> -		goto out;
-> +		goto out_rollback;
->  	}
->  	ret = 0;
->  out:
-> @@ -411,6 +422,14 @@ static int apply_xbc(const char *path, const char *xbc_path)
->  	free(data);
->  
->  	return ret;
-> +
-> +out_rollback:
-
-Oops, I forgot to set error to return value here.
-
-I'll fix that.
-
-Thank you,
-
-> +	if (ftruncate(fd, stat.st_size) < 0) {
-> +		ret = -errno;
-> +		pr_err("Failed to rollback the write error: %d\n", ret);
-> +		pr_err("The initrd %s may be corrupted. Recommend to rebuild.\n", path);
-> +	}
-> +	goto out;
->  }
->  
->  static int usage(void)
+> v2:
+> * Keep the nodes and just set the IDs to -1, as suggested by Mike.
 > 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> v1: http://lore.kernel.org/r/20201111100734.307-1-georgi.djakov@linaro.org
+> 
+>  drivers/interconnect/qcom/qcs404.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/interconnect/qcom/qcs404.c b/drivers/interconnect/qcom/qcs404.c
+> index d4769a5ea182..9820709b43db 100644
+> --- a/drivers/interconnect/qcom/qcs404.c
+> +++ b/drivers/interconnect/qcom/qcs404.c
+> @@ -157,8 +157,8 @@ struct qcom_icc_desc {
+>  	}
+>  
+>  DEFINE_QNODE(mas_apps_proc, QCS404_MASTER_AMPSS_M0, 8, 0, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+> -DEFINE_QNODE(mas_oxili, QCS404_MASTER_GRAPHICS_3D, 8, 6, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+> -DEFINE_QNODE(mas_mdp, QCS404_MASTER_MDP_PORT0, 8, 8, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+> +DEFINE_QNODE(mas_oxili, QCS404_MASTER_GRAPHICS_3D, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+> +DEFINE_QNODE(mas_mdp, QCS404_MASTER_MDP_PORT0, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+>  DEFINE_QNODE(mas_snoc_bimc_1, QCS404_SNOC_BIMC_1_MAS, 8, 76, -1, QCS404_SLAVE_EBI_CH0);
+>  DEFINE_QNODE(mas_tcu_0, QCS404_MASTER_TCU_0, 8, -1, -1, QCS404_SLAVE_EBI_CH0, QCS404_BIMC_SNOC_SLV);
+>  DEFINE_QNODE(mas_spdm, QCS404_MASTER_SPDM, 4, -1, -1, QCS404_PNOC_INT_3);
