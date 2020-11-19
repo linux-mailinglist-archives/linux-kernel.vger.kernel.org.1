@@ -2,288 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FA12B9B69
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6519F2B9B6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbgKSTTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:19:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37196 "EHLO mail.kernel.org"
+        id S1728139AbgKSTWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:22:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727016AbgKSTTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:19:36 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        id S1727513AbgKSTWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 14:22:43 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 163C5205F4;
-        Thu, 19 Nov 2020 19:19:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8553205F4;
+        Thu, 19 Nov 2020 19:22:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605813574;
-        bh=kcMUhbrWutQjFnyHrkbqfY7DUhNFeD96SAd1sQVezbk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=AI1MYweprabSCmmJmWyIL2eGt/fZdUI+00zTXAXYjn5CVBqQaYBXmfT74wIfHrv/e
-         UMnA3nxJF6FF7M+Z7NpXaKYEIQ1YwtlxrXZBHsGOfhyPU/B+prZUPH9RLnF0jwBFM+
-         v4v8avH8ylW7k23FNAaXxCPgIddhNMivhz7eAhQ8=
-Date:   Thu, 19 Nov 2020 13:19:32 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Matthew D Roper <matthew.d.roper@intel.com>,
-        hariom.pandey@intel.com, Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Jesse Barnes <jsbarnes@google.com>
-Subject: Re: [PATCH] x86/gpu: add JSL stolen memory support
-Message-ID: <20201119191932.GA121237@bjorn-Precision-5520>
+        s=default; t=1605813761;
+        bh=wOSKD6KaekuTL9FaqrJwo8Gx+3gm8XcWsJ/0mjAGK7M=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=pCcJMFebAGJyWbP1IrcS2R67xjFIkHD+9u0oznjqptnJ7cH2Dp/8nZ/zwYHqsMnCe
+         XRrqq7mc9Uk27mvZ1Bb4iMtgRbpkL3qdWlOTiUsNAARAZ8hOszPJ6gS5p6SFCQIdZ0
+         nL3BFxZJzAVX/MnCDpwojRCnboSvomP4/IMlcYgg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 40BFB35225CF; Thu, 19 Nov 2020 11:22:41 -0800 (PST)
+Date:   Thu, 19 Nov 2020 11:22:41 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2] rcu/segcblist: Add debug checks for segment lengths
+Message-ID: <20201119192241.GZ1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201118161541.3844924-1-joel@joelfernandes.org>
+ <20201118201335.GR1437@paulmck-ThinkPad-P72>
+ <20201119035222.GA18458@paulmck-ThinkPad-P72>
+ <20201119035613.GA18816@paulmck-ThinkPad-P72>
+ <20201119183252.GA812262@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uEjj-Od3B=RtQDV_7ibDOsY6WxKGiJXt0MYq3C6kaVPcQ@mail.gmail.com>
+In-Reply-To: <20201119183252.GA812262@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Jesse]
-
-On Thu, Nov 19, 2020 at 10:37:10AM +0100, Daniel Vetter wrote:
-> On Thu, Nov 19, 2020 at 12:14 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Wed, Nov 18, 2020 at 10:57:26PM +0100, Daniel Vetter wrote:
-> > > On Wed, Nov 18, 2020 at 5:02 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Fri, Nov 06, 2020 at 10:39:16AM +0100, Daniel Vetter wrote:
-> > > > > On Thu, Nov 5, 2020 at 3:17 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > > > On Thu, Nov 05, 2020 at 11:46:06AM +0200, Joonas Lahtinen wrote:
-> > > > > > > Quoting Bjorn Helgaas (2020-11-04 19:35:56)
-> > > > > > > > [+cc Jani, Joonas, Rodrigo, David, Daniel]
-> > > > > > > >
-> > > > > > > > On Wed, Nov 04, 2020 at 05:35:06PM +0530, Tejas Upadhyay wrote:
-> > > > > > > > > JSL re-uses the same stolen memory as ICL and EHL.
-> > > > > > > > >
-> > > > > > > > > Cc: Lucas De Marchi <lucas.demarchi@intel.com>
-> > > > > > > > > Cc: Matt Roper <matthew.d.roper@intel.com>
-> > > > > > > > > Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-> > > > > > > >
-> > > > > > > > I don't plan to do anything with this since previous similar patches
-> > > > > > > > have gone through some other tree, so this is just kibitzing.
-> > > > > > > >
-> > > > > > > > But the fact that we have this long list of Intel devices [1] that
-> > > > > > > > constantly needs updates [2] is a hint that something is wrong.
-> > > > > > >
-> > > > > > > We add an entry for every new integrated graphics platform. Once the
-> > > > > > > platform is added, there have not been changes lately.
-> > > > > > >
-> > > > > > > > IIUC the general idea is that we need to discover Intel gfx memory by
-> > > > > > > > looking at device-dependent config space and add it to the E820 map.
-> > > > > > > > Apparently the quirks discover this via PCI config registers like
-> > > > > > > > I830_ESMRAMC, I845_ESMRAMC, etc, and tell the driver about it via the
-> > > > > > > > global "intel_graphics_stolen_res"?
-> > > > > > >
-> > > > > > > We discover what is called the graphics data stolen memory. It is regular
-> > > > > > > system memory range that is not CPU accessible. It is accessible by the
-> > > > > > > integrated graphics only.
-> > > > > > >
-> > > > > > > See: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/x86/kernel/early-quirks.c?h=v5.10-rc2&id=814c5f1f52a4beb3710317022acd6ad34fc0b6b9
-> > > > > > >
-> > > > > > > > That's not the way this should work.  There should some generic, non
-> > > > > > > > device-dependent PCI or ACPI method to discover the memory used, or at
-> > > > > > > > least some way to do it in the driver instead of early arch code.
-> > > > > > >
-> > > > > > > It's used by the early BIOS/UEFI code to set up initial framebuffer.
-> > > > > > > Even if i915 driver is never loaded, the memory ranges still need to
-> > > > > > > be fixed. They source of the problem is that the OEM BIOS which are
-> > > > > > > not under our control get the programming wrong.
-> > > > > > >
-> > > > > > > We used to detect the memory region size again at i915 initialization
-> > > > > > > but wanted to eliminate the code duplication and resulting subtle bugs
-> > > > > > > that caused. Conclusion back then was that storing the struct resource
-> > > > > > > in memory is the best trade-off.
-> > > > > > >
-> > > > > > > > How is this *supposed* to work?  Is there something we can do in E820
-> > > > > > > > or other resource management that would make this easier?
-> > > > > > >
-> > > > > > > The code was added around Haswell (HSW) device generation to mitigate
-> > > > > > > bugs in BIOS. It is traditionally hard to get all OEMs to fix their
-> > > > > > > BIOS when things work for Windows. It's only later years when some
-> > > > > > > laptop models are intended to be sold with Linux.
-> > > > > > >
-> > > > > > > The alternative would be to get all the OEM to fix their BIOS for Linux,
-> > > > > > > but that is not very realistic given past experiences. So it seems
-> > > > > > > a better choice to to add new line per platform generation to make
-> > > > > > > sure the users can boot to Linux.
-> > > > > >
-> > > > > > How does Windows do this?  Do they have to add similar code for each
-> > > > > > new platform?
-> > > > >
-> > > > > Windows is chicken and doesn't move any mmio bar around on its own.
-> > > > > Except if the bios explicitly told it somehow (e.g. for the 64bit bar
-> > > > > stuff amd recently announced for windows, that linux supports since
-> > > > > years by moving the bar). So except if you want to preemptively
-> > > > > disable the pci code that does this anytime there's an intel gpu, this
-> > > > > is what we have to do.
-> > > >
-> > > > I think Windows *does* move BARs (they use the more generic
-> > > > terminology of "rebalancing PNP resources") in some cases [3,4].  Of
-> > > > course, I'm pretty sure Windows will only assign PCI resources inside
-> > > > the windows advertised in the host bridge _CRS.
-> > > >
-> > > > Linux *used* to ignore that host bridge _CRS and could set BARs to
-> > > > addresses that appeared available but were in fact used by the
-> > > > platform somehow.  But Linux has been paying attention to host bridge
-> > > > _CRS for a long time now, so it should also only assign resources
-> > > > inside those windows.
-> > >
-> > > If this behaviour is newer than the addition of these quirks then yeah
-> > > they're probably not needed anymore, and we can move all this back
-> > > into the driver. Do you have the commit when pci core started
-> > > observing _CRS on the host bridge?
-> >
-> > I think the most relevant commit is this:
-> >
-> >   2010-02-23 7bc5e3f2be32 ("x86/PCI: use host bridge _CRS info by default on 2008 and newer machines")
-> >
-> > but the earliest quirk I found is over three years later:
-> >
-> >   2013-07-26 814c5f1f52a4 ("x86: add early quirk for reserving Intel graphics stolen memory v5")
-> >
-> > So there must be something else going on.  814c5f1f52a4 mentions a
-> > couple bug reports.  The dmesg from 66726 [5] shows that we *are*
-> > observing the host bridge _CRS, but Linux just used the BIOS
-> > configuration without changing anything:
-> >
-> >   BIOS-e820: [mem 0x000000007f49_f000-0x000000007f5f_ffff] usable
-> >   BIOS-e820: [mem 0x00000000fec0_0000-0x00000000fec0_0fff] reserved
-> >   PCI: Using host bridge windows from ACPI; if necessary, use "pci=nocrs" and report a bug
-> >   ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
-> >   pci_bus 0000:00: root bus resource [mem 0x7f70_0000-0xffff_ffff]
-> >   pci 0000:00:1c.0: PCI bridge to [bus 01]
-> >   pci 0000:00:1c.0:   bridge window [io  0x1000-0x1fff]
-> >   pci 0000:00:1c.0:   bridge window [mem 0xfe90_0000-0xfe9f_ffff]
-> >   pci 0000:00:1c.0:   bridge window [mem 0x7f70_0000-0x7f8f_ffff 64bit pref]
-> >   pci 0000:01:00.0: [1814:3090] type 00 class 0x028000
-> >   pci 0000:01:00.0: reg 10: [mem 0xfe90_0000-0xfe90_ffff]
-> >   [drm:i915_stolen_to_physical] *ERROR* conflict detected with stolen region: [0x7f80_0000 - 0x8000_0000]
-> >
-> > So the BIOS programmed the 00:1c.0 bridge prefetchable window to
-> > [mem 0x7f70_0000-0x7f8f_ffff], and i915 thinks that's a conflict.
-> >
-> > On this system, there are no PCI BARs in that range.  01:00.0 looks
-> > like a Ralink RT3090 Wireless 802.11n device that only has a
-> > non-prefetchable BAR at [mem 0xfe90_0000-0xfe90_ffff].
-> >
-> > I don't know the details of the conflict.  IIUC, Joonas said the
-> > stolen memory is accessible only by the integrated graphics, not by
-> > the CPU.  The bridge window is CPU accessible, of course, and the
-> > [mem 0x7f70_0000-0x7f8f_ffff] range contains the addresses the CPU
-> > uses for programmed I/O to BARs below the bridge.
-> >
-> > The graphics accesses sound like they would be DMA in the *bus*
-> > address space, which is frequently, but not always, identical to the
-> > CPU address space.
+On Thu, Nov 19, 2020 at 01:32:52PM -0500, Joel Fernandes wrote:
+> On Wed, Nov 18, 2020 at 07:56:13PM -0800, Paul E. McKenney wrote:
+> > On Wed, Nov 18, 2020 at 07:52:23PM -0800, Paul E. McKenney wrote:
+> > > On Wed, Nov 18, 2020 at 12:13:35PM -0800, Paul E. McKenney wrote:
+> > > > On Wed, Nov 18, 2020 at 11:15:41AM -0500, Joel Fernandes (Google) wrote:
+> > > > > After rcu_do_batch(), add a check for whether the seglen counts went to
+> > > > > zero if the list was indeed empty.
+> > > > > 
+> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > 
+> > > > Queued for testing and further review, thank you!
+> > > 
+> > > FYI, the second of the two checks triggered in all four one-hour runs of
+> > > TREE01, all four one-hour runs of TREE04, and one of the four one-hour
+> > > runs of TREE07.  This one:
+> > > 
+> > > WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+> > > 
+> > > That is, there are callbacks in the list, but the sum of the segment
+> > > counts is nevertheless zero.  The ->nocb_lock is held.
+> > > 
+> > > Thoughts?
+> > 
+> > FWIW, TREE01 reproduces it very quickly compared to the other two
+> > scenarios, on all four run, within five minutes.
 > 
-> So apparently on some platforms the conflict is harmless because the
-> BIOS puts BARs and stuff over it from boot-up, and things work:
-> 0b6d24c01932 ("drm/i915: Don't complain about stolen conflicts on
-> gen3") But we also had conflict reports on other machines.
+> So far for TREE01, I traced it down to an rcu_barrier happening so it could
+> be related to some interaction with rcu_barrier() (Just a guess).
 
-The bug reports mentioned in 814c5f1f52a4 ("x86: add early quirk for
-reserving Intel graphics stolen memory v5") and 0b6d24c01932
-("drm/i915: Don't complain about stolen conflicts on gen3") seem to be
-basically complaints about the *message*, not anything that's actually
-broken.  
+Well, rcu_barrier() and srcu_barrier() are the only users of
+rcu_segcblist_entrain(), if that helps.  Your modification to that
+function looks plausible to me, but the system's opinion always overrules
+mine.  ;-)
 
-Jesse's comment [6]:
-
-  Given the decode priority on our GMCHs, it's fine if the regions
-  overlap.  However it doesn't look like there's a nice way to detect
-  it.  In this case, part of the range occupied by the stolen space is
-  simply "reserved" per the E820, but the rest of it is under the bus
-  0 range (which kind of makes sense too).
-
-sounds relevant but I don't know enough to interpret it.  I added
-Jesse in case he wants to comment.
-
-> GPU does all its access with CPU address space (after the iommu, which
-> is entirely integrated). So I'm not sure whether we've seen something
-> go boom or whether reserving that resource was just precaution in
-> eaba1b8f3379 ("drm/i915: Verify that our stolen memory doesn't
-> conflict"), it's all a bit way back in history.
+> 'p2' print below is the panic on the second warning. It executes 43 callbacks
+> from the segcb list, but the list length still does not appear to be 0.
 > 
-> So really not sure what to do here or what the risks are.
+> I'll debug it more:
+> 
+> [  191.085702]  rcuop/0-12        0.... 75782125us : rcu_invoke_callback: rcu_preempt rhp=000000006a881152 func=__d_free
+> [  191.844028]  rcuop/0-12        0d..1 75796122us : rcu_segcb_stats: SegCbDequeued seglen: (DONE=0, WAIT=43, NEXT_READY=0, NEXT=0) gp_seq: (DONE=0, WAIT=11656, NEXT_READY=11656, NEXT=0)
+> [  191.846493]  rcuop/0-12        0.... 75796122us : rcu_invoke_callback: rcu_preempt rhp=00000000017536a2 func=i_callback
+> [  191.848160]  rcuop/0-12        0.... 75796123us : rcu_invoke_callback: rcu_preempt rhp=0000000014235c71 func=__d_free
+> [  191.849695]  rcuop/0-12        0.... 75796123us : rcu_invoke_callback: rcu_preempt rhp=00000000368c5928 func=i_callback
+> [  191.851262]  rcuop/0-12        0.... 75796124us : rcu_invoke_callback: rcu_preempt rhp=00000000bdbea790 func=__d_free
+> [  191.852800]  rcuop/0-12        0.... 75796124us : rcu_invoke_callback: rcu_preempt rhp=0000000034b99f3d func=rcu_barrier_callback
+> [  192.526784]  rcuop/0-12        0d..1 75809162us : rcu_segcb_stats: SegCbDequeued seglen: (DONE=0, WAIT=0, NEXT_READY=0, NEXT=0) gp_seq: (DONE=0, WAIT=11656, NEXT_READY=11656, NEXT=0)
 
-I'm not either.  Seems like we're not really converging on anything
-useful we can do at this point.  The only thing I can think of would
-be to collect data about actual failures (not just warning messages).
-That might lead to something we could improve in the future.
+Quite the coincidence that WAIT and NEXT_READY have exactly the same
+number of callbacks, isn't it?  Or am I being too suspicious today?
 
-> > > > So I'm missing what the real problem is.  Joonas mentioned BIOS bugs
-> > > > above, but I don't know what that means.
-> > > >
-> > > > Here's what I can figure out so far, tell me if I'm in the weeds:
-> > > >
-> > > >   - The intel_graphics_stolen() early quirk:
-> > > >       1) Initializes global struct resource intel_graphics_stolen_res
-> > > >       2) Adds the region to E820 map as E820_TYPE_RESERVED
-> > > >
-> > > >   - i915_driver_hw_probe() uses intel_graphics_stolen_res, but this
-> > > >     happens after the PCI core is initialized, so early quirks
-> > > >     wouldn't be required for this use.
-> > > >
-> > > >   - So I guess the E820 map update is what requires the early quirk?
-> > > >     But I don't know exactly what depends on this update.
-> > > >
-> > > > I haven't found the connection to the early BIOS/UEFI code and the
-> > > > initial framebuffer yet.
-> > > >
-> > > > > And given that this 64bit mmio bar support in windows still requires
-> > > > > an explicit bios upgrade for the explicit opt in I don't think this
-> > > > > will change anytime soon.
-> > > > >
-> > > > > We have a similar ugly problem with kvm, since you can't use these
-> > > > > ranges freely (they're very special in hw), and the kvm maintainers
-> > > > > are equally annoyed that they have to keep supporting RRMR to block
-> > > > > that range, just because of intel integrated graphics. Apparently
-> > > > > windows is again totally fine with this.
-> > > > > -Daniel
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > > > > ---
-> > > > > > > > >  arch/x86/kernel/early-quirks.c | 1 +
-> > > > > > > > >  1 file changed, 1 insertion(+)
-> > > > > > > > >
-> > > > > > > > > diff --git a/arch/x86/kernel/early-quirks.c b/arch/x86/kernel/early-quirks.c
-> > > > > > > > > index a4b5af03dcc1..534cc3f78c6b 100644
-> > > > > > > > > --- a/arch/x86/kernel/early-quirks.c
-> > > > > > > > > +++ b/arch/x86/kernel/early-quirks.c
-> > > > > > > > > @@ -549,6 +549,7 @@ static const struct pci_device_id intel_early_ids[] __initconst = {
-> > > > > > > > >       INTEL_CNL_IDS(&gen9_early_ops),
-> > > > > > > > >       INTEL_ICL_11_IDS(&gen11_early_ops),
-> > > > > > > > >       INTEL_EHL_IDS(&gen11_early_ops),
-> > > > > > > > > +     INTEL_JSL_IDS(&gen11_early_ops),
-> > > > > > > > >       INTEL_TGL_12_IDS(&gen11_early_ops),
-> > > > > > > > >       INTEL_RKL_IDS(&gen11_early_ops),
-> > > > > > > > >  };
-> > > > > > > >
-> > > > > > > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/kernel/early-quirks.c?h=v5.10-rc2#n518
-> > > > > > > >
-> > > > > > > > [2]
-> > > > > > > >   May 2020 efbee021ad02 ("x86/gpu: add RKL stolen memory support")
-> > > > > > > >   Jul 2019 6b2436aeb945 ("x86/gpu: add TGL stolen memory support")
-> > > > > > > >   Mar 2019 d53fef0be4a5 ("x86/gpu: add ElkhartLake to gen11 early quirks")
-> > > > > > > >   May 2018 db0c8d8b031d ("x86/gpu: reserve ICL's graphics stolen memory")
-> > > > > > > >   Dec 2017 33aa69ed8aac ("x86/gpu: add CFL to early quirks")
-> > > > > > > >   Jul 2017 2e1e9d48939e ("x86/gpu: CNL uses the same GMS values as SKL")
-> > > > > > > >   Jan 2017 bc384c77e3bb ("x86/gpu: GLK uses the same GMS values as SKL")
-> > > > > > > >   Oct 2015 00ce5c8a66fb ("drm/i915/kbl: Kabylake uses the same GMS values as Skylake")
-> > > > > > > >   Mar 2015 31d4dcf705c3 ("drm/i915/bxt: Broxton uses the same GMS values as Skylake")
-> > > > > > > >   ...
-> > > >
-> > > > [3] https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/stopping-a-device-to-rebalance-resources
-> > > > [4] http://download.microsoft.com/download/5/b/9/5b97017b-e28a-4bae-ba48-174cf47d23cd/cpa070_wh06.ppt ("PCI Express In Depth For Windows Vista and Beyond")
-> >
-> > [5] https://bugs.freedesktop.org/show_bug.cgi?id=66726
+								Thanx, Paul
 
-[6] https://bugs.freedesktop.org/show_bug.cgi?id=76983#c11
+> [  192.529132]  rcuop/0-12        0.... 75809163us : rcu_invoke_callback: rcu_preempt rhp=000000002d6a3fce func=rcu_sync_func
+> [  192.530807]  rcuop/0-12        0.... 75809165us : rcu_invoke_callback: rcu_preempt rhp=000000009aa91c97 func=destroy_sched_domains_rcu
+> [  192.532556]  rcuop/0-12        0.... 75809170us : rcu_invoke_callback: rcu_preempt rhp=000000002bb5a998 func=destroy_sched_domains_rcu
+> [  192.534303]  rcuop/0-12        0.... 75809172us : rcu_invoke_callback: rcu_preempt rhp=00000000bcc2369a func=destroy_sched_domains_rcu
+> [  192.536053]  rcuop/0-12        0.... 75809174us : rcu_invoke_callback: rcu_preempt rhp=000000004dcec39b func=destroy_sched_domains_rcu
+> [  192.537802]  rcuop/0-12        0.... 75809176us : rcu_invoke_callback: rcu_preempt rhp=00000000dedb509d func=destroy_sched_domains_rcu
+> [  192.539553]  rcuop/0-12        0.... 75809178us : rcu_invoke_callback: rcu_preempt rhp=000000006fe7dd9e func=destroy_sched_domains_rcu
+> [  192.541299]  rcuop/0-12        0.... 75809180us : rcu_invoke_callback: rcu_preempt rhp=000000005a212061 func=destroy_sched_domains_rcu
+> [  192.543043]  rcuop/0-12        0.... 75809182us : rcu_invoke_callback: rcu_preempt rhp=00000000c914935f func=destroy_sched_domains_rcu
+> [  192.544792]  rcuop/0-12        0.... 75809184us : rcu_invoke_callback: rcu_preempt rhp=0000000019fa3368 func=destroy_sched_domains_rcu
+> [  192.546539]  rcuop/0-12        0.... 75809186us : rcu_invoke_callback: rcu_preempt rhp=00000000ab06c069 func=destroy_sched_domains_rcu
+> [  192.548289]  rcuop/0-12        0.... 75809188us : rcu_invoke_callback: rcu_preempt rhp=000000003c134d6b func=destroy_sched_domains_rcu
+> [  192.550037]  rcuop/0-12        0.... 75809190us : rcu_invoke_callback: rcu_preempt rhp=00000000cd1fda6c func=destroy_sched_domains_rcu
+> [  192.551790]  rcuop/0-12        0.... 75809192us : rcu_invoke_callback: rcu_preempt rhp=000000005e2c676e func=destroy_sched_domains_rcu
+> [  192.553576]  rcuop/0-12        0.... 75809194us : rcu_invoke_callback: rcu_preempt rhp=00000000ef38f46f func=destroy_sched_domains_rcu
+> [  192.555314]  rcuop/0-12        0.... 75809196us : rcu_invoke_callback: rcu_preempt rhp=0000000080458170 func=destroy_sched_domains_rcu
+> [  192.557054]  rcuop/0-12        0.... 75809198us : rcu_invoke_callback: rcu_preempt rhp=0000000009316351 func=destroy_sched_domains_rcu
+> [  192.558793]  rcuop/0-12        0.... 75809200us : rcu_invoke_callback: rcu_preempt rhp=0000000022a2585e func=destroy_sched_domains_rcu
+> [  192.560539]  rcuop/0-12        0.... 75809202us : rcu_invoke_callback: rcu_preempt rhp=00000000b3aee55f func=destroy_sched_domains_rcu
+> [  192.562282]  rcuop/0-12        0.... 75809204us : rcu_invoke_callback: rcu_preempt rhp=0000000044bb7261 func=destroy_sched_domains_rcu
+> [  192.564028]  rcuop/0-12        0.... 75809206us : rcu_invoke_callback: rcu_preempt rhp=00000000d5c7ff62 func=destroy_sched_domains_rcu
+> [  192.565777]  rcuop/0-12        0.... 75809208us : rcu_invoke_callback: rcu_preempt rhp=00000000bc570a55 func=destroy_sched_domains_rcu
+> [  192.567568]  rcuop/0-12        0.... 75809210us : rcu_invoke_callback: rcu_preempt rhp=000000004d639757 func=destroy_sched_domains_rcu
+> [  192.569315]  rcuop/0-12        0.... 75809212us : rcu_invoke_callback: rcu_preempt rhp=00000000de702458 func=destroy_sched_domains_rcu
+> [  192.571111]  rcuop/0-12        0.... 75809214us : rcu_invoke_callback: rcu_preempt rhp=000000006f7cb15a func=destroy_sched_domains_rcu
+> [  192.572855]  rcuop/0-12        0.... 75809216us : rcu_invoke_callback: rcu_preempt rhp=0000000000893e5b func=destroy_sched_domains_rcu
+> [  192.574595]  rcuop/0-12        0.... 75809218us : rcu_invoke_callback: rcu_preempt rhp=0000000066d48c64 func=destroy_sched_domains_rcu
+> [  192.576435]  rcuop/0-12        0.... 75809220us : rcu_invoke_callback: rcu_preempt rhp=000000009a3df053 func=destroy_sched_domains_rcu
+> [  192.578182]  rcuop/0-12        0.... 75809221us : rcu_invoke_callback: rcu_preempt rhp=000000002b4a7d54 func=destroy_sched_domains_rcu
+> [  192.579981]  rcuop/0-12        0.... 75809223us : rcu_invoke_callback: rcu_preempt rhp=000000009cf78b8b func=destroy_sched_domains_rcu
+> [  192.581773]  rcuop/0-12        0.... 75809225us : rcu_invoke_callback: rcu_preempt rhp=000000000beafe8a func=destroy_sched_domains_rcu
+> [  192.583547]  rcuop/0-12        0.... 75809227us : rcu_invoke_callback: rcu_preempt rhp=000000007ade7189 func=destroy_sched_domains_rcu
+> [  192.585373]  rcuop/0-12        0.... 75809229us : rcu_invoke_callback: rcu_preempt rhp=00000000e9d1e487 func=destroy_sched_domains_rcu
+> [  192.587139]  rcuop/0-12        0.... 75809231us : rcu_invoke_callback: rcu_preempt rhp=000000002e04188d func=destroy_sched_domains_rcu
+> [  192.588984]  rcuop/0-12        0.... 75809233us : rcu_invoke_callback: rcu_preempt rhp=00000000bf10a58e func=destroy_sched_domains_rcu
+> [  192.590732]  rcuop/0-12        0.... 75809235us : rcu_invoke_callback: rcu_preempt rhp=00000000501d3290 func=destroy_sched_domains_rcu
+> [  192.592562]  rcuop/0-12        0.... 75809237us : rcu_invoke_callback: rcu_preempt rhp=00000000e129bf91 func=destroy_sched_domains_rcu
+> [  192.594309]  rcuop/0-12        0.... 75809239us : rcu_invoke_callback: rcu_preempt rhp=0000000072364c93 func=destroy_sched_domains_rcu
+> [  192.596063]  rcuop/0-12        0.... 75809241us : rcu_invoke_callback: rcu_preempt rhp=000000000342d994 func=destroy_sched_domains_rcu
+> [  192.597807]  rcuop/0-12        0.... 75809243us : rcu_invoke_callback: rcu_preempt rhp=00000000944f6695 func=destroy_sched_domains_rcu
+> [  192.599608]  rcuop/0-12        0.... 75809245us : rcu_invoke_callback: rcu_preempt rhp=00000000255bf397 func=destroy_sched_domains_rcu
+> [  192.601341]  rcuop/0-12        0.... 75809247us : rcu_invoke_callback: rcu_preempt rhp=00000000d4a4767b func=free_rootdomain
+> [  192.602958]  rcuop/0-12        0.... 75809251us : rcu_invoke_callback: rcu_preempt rhp=00000000b6688098 func=destroy_sched_domains_rcu
+> [  192.604779]  rcuop/0-12        0.... 75809269us : rcu_invoke_callback: rcu_preempt rhp=0000000034b99f3d func=rcu_barrier_callback
+> [  193.894910]  rcuop/0-12        0d..1 75873331us : rcu_do_batch: p2
+> 
+> thanks,
+> 
+>  - Joel
+> 
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > > > > ---
+> > > > > v1->v2: Added more debug checks.
+> > > > > 
+> > > > >  kernel/rcu/rcu_segcblist.c | 12 ++++++++++++
+> > > > >  kernel/rcu/rcu_segcblist.h |  3 +++
+> > > > >  kernel/rcu/tree.c          |  2 ++
+> > > > >  3 files changed, 17 insertions(+)
+> > > > > 
+> > > > > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > > > > index 5059b6102afe..6e98bb3804f0 100644
+> > > > > --- a/kernel/rcu/rcu_segcblist.c
+> > > > > +++ b/kernel/rcu/rcu_segcblist.c
+> > > > > @@ -94,6 +94,18 @@ static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
+> > > > >  	return READ_ONCE(rsclp->seglen[seg]);
+> > > > >  }
+> > > > >  
+> > > > > +/* Return number of callbacks in segmented callback list by totalling seglen. */
+> > > > > +long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp)
+> > > > > +{
+> > > > > +	long len = 0;
+> > > > > +	int i;
+> > > > > +
+> > > > > +	for (i = RCU_DONE_TAIL; i < RCU_CBLIST_NSEGS; i++)
+> > > > > +		len += rcu_segcblist_get_seglen(rsclp, i);
+> > > > > +
+> > > > > +	return len;
+> > > > > +}
+> > > > > +
+> > > > >  /* Set the length of a segment of the rcu_segcblist structure. */
+> > > > >  static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
+> > > > >  {
+> > > > > diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> > > > > index cd35c9faaf51..46a42d77f7e1 100644
+> > > > > --- a/kernel/rcu/rcu_segcblist.h
+> > > > > +++ b/kernel/rcu/rcu_segcblist.h
+> > > > > @@ -15,6 +15,9 @@ static inline long rcu_cblist_n_cbs(struct rcu_cblist *rclp)
+> > > > >  	return READ_ONCE(rclp->len);
+> > > > >  }
+> > > > >  
+> > > > > +/* Return number of callbacks in segmented callback list by totalling seglen. */
+> > > > > +long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp);
+> > > > > +
+> > > > >  void rcu_cblist_init(struct rcu_cblist *rclp);
+> > > > >  void rcu_cblist_enqueue(struct rcu_cblist *rclp, struct rcu_head *rhp);
+> > > > >  void rcu_cblist_flush_enqueue(struct rcu_cblist *drclp,
+> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > index f5b61e10f1de..91e35b521e51 100644
+> > > > > --- a/kernel/rcu/tree.c
+> > > > > +++ b/kernel/rcu/tree.c
+> > > > > @@ -2553,6 +2553,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+> > > > >  	WARN_ON_ONCE(count == 0 && !rcu_segcblist_empty(&rdp->cblist));
+> > > > >  	WARN_ON_ONCE(!IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> > > > >  		     count != 0 && rcu_segcblist_empty(&rdp->cblist));
+> > > > > +	WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
+> > > > > +	WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+> > > > >  
+> > > > >  	rcu_nocb_unlock_irqrestore(rdp, flags);
+> > > > >  
+> > > > > -- 
+> > > > > 2.29.2.299.gdc1121823c-goog
