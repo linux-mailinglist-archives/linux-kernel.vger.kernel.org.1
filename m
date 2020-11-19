@@ -2,209 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA422B9B34
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBE02B9B22
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgKSTGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:06:48 -0500
-Received: from mga12.intel.com ([192.55.52.136]:21738 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727379AbgKSTGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:06:41 -0500
-IronPort-SDR: CoOWW9S1lU/DwL6pCf82prx3WqF7RkYoDe4Ldp6T+0vGKDafBdCueTSTNYDTj6SLSVKj4grBtI
- rDIg/QSrqAIA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="150614466"
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="150614466"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 11:06:40 -0800
-IronPort-SDR: cRHXwcW+O3T3Lu6hmAFl89aA2EOI2uiwuiEY3qbl0hMiNN9OnNPbO6iLxi8CMh0omk72M3lJr0
- 9grhV6NPeSzg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="431333999"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Nov 2020 11:06:40 -0800
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
-        Dave.Martin@arm.com, mpe@ellerman.id.au, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, libc-alpha@sourceware.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chang.seok.bae@intel.com,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 4/4] selftest/x86/signal: Include test cases for validating sigaltstack
-Date:   Thu, 19 Nov 2020 11:02:37 -0800
-Message-Id: <20201119190237.626-5-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201119190237.626-1-chang.seok.bae@intel.com>
-References: <20201119190237.626-1-chang.seok.bae@intel.com>
+        id S1727398AbgKSTEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:04:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60687 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726886AbgKSTEI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 14:04:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605812647;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1qNxLY7LLhUH6+ZHrJNh82Tq2sizSDbuMmtO7hAo1E4=;
+        b=biR031L0aFb4IhStVNFtnqK6UE9luGUO+VvmWDt/fSMJOGPTPMTN2QQbU8UkdZ1NM7GuAK
+        wrDJV/hlJCg7EVlc31D2ORUB/8eKN1rAqApQSaHpiGt5kR9+bzTwiq3r2Obh1ZpiZdkkOk
+        AWj3AcfE04j2Ypv270Ck0n66ElYlLYU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-62-LbHB2hLRMcWuB9cQjprhtA-1; Thu, 19 Nov 2020 14:04:05 -0500
+X-MC-Unique: LbHB2hLRMcWuB9cQjprhtA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7ED1881440E;
+        Thu, 19 Nov 2020 19:04:04 +0000 (UTC)
+Received: from mail (ovpn-113-32.rdu2.redhat.com [10.10.113.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 062EA5C1D1;
+        Thu, 19 Nov 2020 19:03:59 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 14:03:58 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] x86: restore the write back cache of reserved RAM in
+ iounmap()
+Message-ID: <X7bBnsSJk33IyY6k@redhat.com>
+References: <20201119175902.17394-1-aarcange@redhat.com>
+ <20201119180206.GA24054@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119180206.GA24054@infradead.org>
+User-Agent: Mutt/2.0.0 (2020-11-07)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test measures the kernel's signal delivery with different (enough vs.
-insufficient) stack sizes.
+Hello Christoph,
 
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Cc: x86@kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- tools/testing/selftests/x86/Makefile      |   2 +-
- tools/testing/selftests/x86/sigaltstack.c | 126 ++++++++++++++++++++++
- 2 files changed, 127 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/x86/sigaltstack.c
+On Thu, Nov 19, 2020 at 06:02:06PM +0000, Christoph Hellwig wrote:
+> What is the callers?  The whole SetPageReservered + ioremap* thing
+> you mention in the actual patch is completely bogus.  I think we'll
+> need to reject that as well and fix the caller.
 
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index 6703c7906b71..e0c52e5ab49e 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -13,7 +13,7 @@ CAN_BUILD_WITH_NOPIE := $(shell ./check_cc.sh $(CC) trivial_program.c -no-pie)
- TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt test_mremap_vdso \
- 			check_initial_reg_state sigreturn iopl ioperm \
- 			test_vdso test_vsyscall mov_ss_trap \
--			syscall_arg_fault fsgsbase_restore
-+			syscall_arg_fault fsgsbase_restore sigaltstack
- TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
- 			test_FCMOV test_FCOMI test_FISTTP \
- 			vdso_restorer
-diff --git a/tools/testing/selftests/x86/sigaltstack.c b/tools/testing/selftests/x86/sigaltstack.c
-new file mode 100644
-index 000000000000..353679df6901
---- /dev/null
-+++ b/tools/testing/selftests/x86/sigaltstack.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#define _GNU_SOURCE
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdbool.h>
-+#include <string.h>
-+#include <err.h>
-+#include <errno.h>
-+#include <limits.h>
-+#include <sys/mman.h>
-+#include <sys/auxv.h>
-+#include <sys/prctl.h>
-+#include <sys/resource.h>
-+#include <setjmp.h>
-+
-+/* sigaltstack()-enforced minimum stack */
-+#define ENFORCED_MINSIGSTKSZ	2048
-+
-+#ifndef AT_MINSIGSTKSZ
-+#  define AT_MINSIGSTKSZ	51
-+#endif
-+
-+static int nerrs;
-+
-+static bool sigalrm_expected;
-+
-+static unsigned long at_minstack_size;
-+
-+static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
-+		       int flags)
-+{
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sa_sigaction = handler;
-+	sa.sa_flags = SA_SIGINFO | flags;
-+	sigemptyset(&sa.sa_mask);
-+	if (sigaction(sig, &sa, 0))
-+		err(1, "sigaction");
-+}
-+
-+static void clearhandler(int sig)
-+{
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sa_handler = SIG_DFL;
-+	sigemptyset(&sa.sa_mask);
-+	if (sigaction(sig, &sa, 0))
-+		err(1, "sigaction");
-+}
-+
-+static int setup_altstack(void *start, unsigned long size)
-+{
-+	stack_t ss;
-+
-+	memset(&ss, 0, sizeof(ss));
-+	ss.ss_size = size;
-+	ss.ss_sp = start;
-+
-+	return sigaltstack(&ss, NULL);
-+}
-+
-+static jmp_buf jmpbuf;
-+
-+static void sigsegv(int sig, siginfo_t *info, void *ctx_void)
-+{
-+	if (sigalrm_expected) {
-+		printf("[FAIL]\tSIGSEGV signal delivered.\n");
-+		nerrs++;
-+	} else {
-+		printf("[OK]\tSIGSEGV signal expectedly delivered.\n");
-+	}
-+
-+	siglongjmp(jmpbuf, 1);
-+}
-+
-+static void sigalrm(int sig, siginfo_t *info, void *ctx_void)
-+{
-+	if (!sigalrm_expected) {
-+		printf("[FAIL]\tSIGALRM sigal delivered.\n");
-+		nerrs++;
-+	} else {
-+		printf("[OK]\tSIGALRM signal expectedly delivered.\n");
-+	}
-+}
-+
-+static void test_sigaltstack(void *altstack, unsigned long size)
-+{
-+	if (setup_altstack(altstack, size))
-+		err(1, "sigaltstack()");
-+
-+	sigalrm_expected = (size > at_minstack_size) ? true : false;
-+
-+	sethandler(SIGSEGV, sigsegv, 0);
-+	sethandler(SIGALRM, sigalrm, SA_ONSTACK);
-+
-+	if (sigsetjmp(jmpbuf, 1) == 0) {
-+		printf("[RUN]\tTest an %s sigaltstack\n",
-+		       sigalrm_expected ? "enough" : "insufficient");
-+		raise(SIGALRM);
-+	}
-+
-+	clearhandler(SIGALRM);
-+	clearhandler(SIGSEGV);
-+}
-+
-+int main(void)
-+{
-+	void *altstack;
-+
-+	at_minstack_size = getauxval(AT_MINSIGSTKSZ);
-+
-+	altstack = mmap(NULL, at_minstack_size + SIGSTKSZ, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
-+	if (altstack == MAP_FAILED)
-+		err(1, "mmap()");
-+
-+	if ((ENFORCED_MINSIGSTKSZ + 1) < at_minstack_size)
-+		test_sigaltstack(altstack, ENFORCED_MINSIGSTKSZ + 1);
-+
-+	test_sigaltstack(altstack, at_minstack_size + SIGSTKSZ);
-+
-+	return nerrs == 0 ? 0 : 1;
-+}
--- 
-2.17.1
+The actual caller is not so much the focus here: the point here is to
+be able to either handle the caller gracefully or to get a synchronous
+kernel crash in __free_pages.
+
+Otherwise the problem induced by such a caller (no matter if right or
+wrong) becomes hardly debuggable.
+
+The caller in question was the EFI_BOOT_SERVICE_DATA that is aliased
+on non RAM but then freed later by swapping RAM under it.
+
+Of course the caller has already been changed to stick to write back
+and that specific caller is not a concern anymore. My concern is if we
+leave the callee (iounmap) as it is, what does guarantee us that we
+won't hit again in production a few years down the road?
+
+When I first read the caller it felt nothing should have gone wrong,
+it looked ok even the version that would leave PCD leftovers bits in
+the direct map. So I didn't get why switching to write back would
+prevent the PCD leftovers until I looked at the callee (iounmap).
+
+Thanks,
+Andrea
 
