@@ -2,88 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FEB2B8E97
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6655B2B8EB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgKSJT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:19:56 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8116 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgKSJT4 (ORCPT
+        id S1726685AbgKSJYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:24:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbgKSJYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:19:56 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CcDdx2ycZzLlfP;
-        Thu, 19 Nov 2020 17:19:33 +0800 (CST)
-Received: from [10.74.191.121] (10.74.191.121) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 19 Nov 2020 17:19:44 +0800
-Subject: Re: [PATCH net-next] net: add in_softirq() debug checking in
- napi_consume_skb()
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     <davem@davemloft.net>, <linmiaohe@huawei.com>,
-        <martin.varghese@nokia.com>, <pabeni@redhat.com>,
-        <pshelar@ovn.org>, <fw@strlen.de>, <gnault@redhat.com>,
-        <steffen.klassert@secunet.com>, <kyk.segfault@gmail.com>,
-        <viro@zeniv.linux.org.uk>, <vladimir.oltean@nxp.com>,
-        <edumazet@google.com>, <saeed@kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <1603971288-4786-1-git-send-email-linyunsheng@huawei.com>
- <20201031153824.7ae83b90@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <5b04ad33-1611-8d7b-8fec-4269c01ecab3@huawei.com>
- <20201102114110.4a20d461@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <5bd6de52-b8e0-db6f-3362-862ae7b2c728@huawei.com>
- <20201118074348.3bbd1468@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <20201118155757.GY3121392@hirez.programming.kicks-ass.net>
- <20201118082658.2aa41190@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <b00f1c28-668c-ecdb-6aa7-282e57475e25@huawei.com>
-Date:   Thu, 19 Nov 2020 17:19:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 19 Nov 2020 04:24:14 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104F3C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:24:13 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id s8so5607611wrw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:24:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zaC6HLGL+omaruF7IeeV6ol/EWI+2CFXnsLBGa9N2h8=;
+        b=ln4/GRPsn1eE/mc4KtEhAra4RNxg2QN/XCka1Lm+SO2cFGcTgSz9JuA78/6LQkmPyJ
+         nkkLeNCQ/OYPaQ9dGsJCCZmb9NJstm4EHu/gk4E23pILzrpw81pglIJJYC7PsR0UPMZe
+         Y1NKVSYJ3N3sv3kd7Fzh1JfdJuqUw7HtX3G8hRSz0ga1xYFJ2r2G2QuGMfuivBO7cIX9
+         E+Kk+0rSrYUicEpXsxUtZrPPpBoJtTy0ll5MkIi93UttK3WoWY0WfDcBIvnQfeji71wh
+         KxXGz5pCBE2HIrHwg7D+bsoiUqqH/CeRN5FI3v2GoZUodzlwHRNctRvsX0ysVcbdQSRV
+         Haew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zaC6HLGL+omaruF7IeeV6ol/EWI+2CFXnsLBGa9N2h8=;
+        b=oprevk8c1Ec1yZTfjJ1b23bG0zanqIGdVEhB0vZQETinobdbzetXHQFd+Uktr0UPSd
+         SGdJaDzJwYOYQx6fitstiygVqUsMyrPVK+yMeW/zVN7DNCqGvYULlX6VAYXixH1tkaIr
+         hDrM+7UA0HQbDi2U7EdrPSy/+QOjDOraGR0+Yro7fpAzXTGVZe6QhuMglEa/Sig2p4Yg
+         XxVaNWIdy1hhIqiBbMJEztC9GnXgeIL99Dr9EUuADCZrqHW973Q/HjIgAZ9SHMSiheMv
+         ufcJhB/2l8JlOaSInAlCi8NzMD4tdf0UMt0FLdvojLdAlfKL7ynboeqm0xdh0rgHdu4T
+         XtOg==
+X-Gm-Message-State: AOAM533lpn0b846QVWNGSiZ01YrbF+VjJZ/mizyzFCeNRbAlN7qtVs9D
+        EBEjaI4Kh6GV4287e9y57aG/VdOJV/ZeAA==
+X-Google-Smtp-Source: ABdhPJzg7aVYJrdLm/oL4IR42qo7g1ZbElMa34XwzM/Q9EDRF18UfbTJHr9aX3EK8RKHDuNBE14BdQ==
+X-Received: by 2002:adf:c147:: with SMTP id w7mr9965825wre.60.1605777851508;
+        Thu, 19 Nov 2020 01:24:11 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id l3sm9717175wmf.0.2020.11.19.01.24.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 01:24:11 -0800 (PST)
+Date:   Thu, 19 Nov 2020 09:24:07 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 08/14] arm64: exec: Adjust affinity for compat tasks
+ with mismatched 32-bit EL0
+Message-ID: <20201119092407.GB2416649@google.com>
+References: <20201113093720.21106-1-will@kernel.org>
+ <20201113093720.21106-9-will@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201118082658.2aa41190@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.191.121]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113093720.21106-9-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/19 0:26, Jakub Kicinski wrote:
-> On Wed, 18 Nov 2020 16:57:57 +0100 Peter Zijlstra wrote:
->> On Wed, Nov 18, 2020 at 07:43:48AM -0800, Jakub Kicinski wrote:
->>
->>> TBH the last sentence I wrote isn't clear even to me at this point ;D
->>>
->>> Maybe using just the macros from preempt.h - like this?
->>>
->>> #define lockdep_assert_in_softirq()                                    \
->>> do {                                                                   \
->>>        WARN_ON_ONCE(__lockdep_enabled                  &&              \
->>>                     (!in_softirq() || in_irq() || in_nmi())	\
->>> } while (0)
-
-One thing I am not so sure about is the different irq context indicator
-in preempt.h and lockdep.h, for example lockdep_assert_in_irq() uses
-this_cpu_read(hardirq_context) in lockdep.h, and in_irq() uses
-current_thread_info()->preempt_count in preempt.h, if they are the same
-thing?
-
->>>
->>> We know what we're doing so in_softirq() should be fine (famous last
->>> words).  
->>
->> So that's not actually using any lockdep state. But if that's what you
->> need, I don't have any real complaints.
+On Friday 13 Nov 2020 at 09:37:13 (+0000), Will Deacon wrote:
+> When exec'ing a 32-bit task on a system with mismatched support for
+> 32-bit EL0, try to ensure that it starts life on a CPU that can actually
+> run it.
 > 
-> Great, thanks! 
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  arch/arm64/kernel/process.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
 > 
-> The motivation was to piggy back on lockdep rather than adding a
-> one-off Kconfig knob for a check in the fast path in networking.
-> .
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 1540ab0fbf23..17b94007fed4 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -625,6 +625,16 @@ unsigned long arch_align_stack(unsigned long sp)
+>  	return sp & ~0xf;
+>  }
+>  
+> +static void adjust_compat_task_affinity(struct task_struct *p)
+> +{
+> +	const struct cpumask *mask = system_32bit_el0_cpumask();
+> +
+> +	if (restrict_cpus_allowed_ptr(p, mask))
+> +		set_cpus_allowed_ptr(p, mask);
+
+My understanding of this call to set_cpus_allowed_ptr() is that you're
+mimicking the hotplug vs affinity case behaviour in some ways. That is,
+if a task is pinned to a CPU and userspace hotplugs that CPU, then the
+kernel will reset the affinity of the task to the remaining online CPUs.
+
+I guess that is a sensible fallback path when userspace gives
+contradictory commands to the kernel, but that most certainly deserves a
+comment :)
+
+> +
+> +	set_tsk_thread_flag(current, TIF_NOTIFY_RESUME);
+> +}
+>  
+>  /*
+>   * Called from setup_new_exec() after (COMPAT_)SET_PERSONALITY.
+>   */
+> @@ -635,7 +645,7 @@ void arch_setup_new_exec(void)
+>  	if (is_compat_task()) {
+>  		mmflags = MMCF_AARCH32;
+>  		if (static_branch_unlikely(&arm64_mismatched_32bit_el0))
+> -			set_tsk_thread_flag(current, TIF_NOTIFY_RESUME);
+> +			adjust_compat_task_affinity(current);
+>  	}
+>  
+>  	current->mm->context.flags = mmflags;
+> -- 
+> 2.29.2.299.gdc1121823c-goog
 > 
