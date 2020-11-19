@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D572B9DD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 376492B9DDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgKSWto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 17:49:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726682AbgKSWtl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:49:41 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C37AC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 14:49:41 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id u21so7910084iol.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 14:49:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bo4MSwJ0tFuIkBE6whS0DGZ/BGwfpkBFnKgHt6nK9mc=;
-        b=LW7B1p54sQ0R41QAYybP5dn8QpIlUsIfU+oEIC4hgcjr1EPQzjmgAalqONQ3S+2d6B
-         z0z7uwFyxfpX68Wpbk66MqOiVQeW0MWgrEQ8OzyS2dkdtoMOROZoXS1NooiErSFswwT+
-         1BRyCT+ifjMv7YFZZWPSD560NpqsESdwamWdHFxL3/GsmbYAqySkxx6RigEr2hn40Z7d
-         BPQzQvBucOvQyofVIuRLeex0KgW/5bMDtOoVZux/QQJ0FCpnhRKvFqsZ+tLI63juI7uU
-         ZC1k7jX4yeuoBPr1FrJuJ3HOO12JzEeAqJ1EdFCtnXYM+t5F90tTFPuzdXc6PxSItTMn
-         Z/rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bo4MSwJ0tFuIkBE6whS0DGZ/BGwfpkBFnKgHt6nK9mc=;
-        b=eI2YjjUf9ut7w6h1g/9KARGXrxcHoXBlAaCtoZ+9Aq1JYiRbZF5UXuU+214IEGDRaY
-         mwImASzfX7dFcSbHYDC6F/g4qXAf+GttWRGQhYBzzoRRDrgQyx0KyLTptIPhxFTWRiMs
-         O/bynxJwJCwn+wdsX6YXfArdaAAgSAW83B1grsSGUyUDUT0arLM68u/5qT5xs398vC18
-         wqhZeHHE7AHhMEJ2R6sSL9ilwkB4VL4GbVr7uqndiWrhOeOC+HpIanEPwke6onGgeCCt
-         KEpNRR/lo5bq8g+8RR9BtlqyY6yjN8oTcGTgnmCW5/VDwVHqIJ7n0syOE/dCmK00pNmI
-         dtxQ==
-X-Gm-Message-State: AOAM531t6qazGNoTISl7EI6vfhYFKaGeNk71KKAa6BJINgTFzdMHopJj
-        CSXDlnGb7IRa6/iYl5XPwwHJwA==
-X-Google-Smtp-Source: ABdhPJxt159FsjtZ0a9d3LRsiofXJXMu2XDRNt69oViEkRJfTZtIJ9N8Ueh8Z81ixfHlKIVgX51+iw==
-X-Received: by 2002:a5d:8d13:: with SMTP id p19mr8920238ioj.37.1605826180967;
-        Thu, 19 Nov 2020 14:49:40 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id i3sm446532iom.8.2020.11.19.14.49.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 14:49:40 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 6/6] net: ipa: add driver shutdown callback
-Date:   Thu, 19 Nov 2020 16:49:29 -0600
-Message-Id: <20201119224929.23819-7-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201119224929.23819-1-elder@linaro.org>
-References: <20201119224929.23819-1-elder@linaro.org>
+        id S1726638AbgKSWwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 17:52:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726163AbgKSWwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 17:52:30 -0500
+Received: from localhost (unknown [176.167.53.63])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D7CC22227;
+        Thu, 19 Nov 2020 22:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605826349;
+        bh=YLqkp5mZrk9CzpMu4+a95ZqlYmTlizCb/DRTtNW383U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KRZQqwvxbeFf/W1N7gd/3zhLy6+ReIC1tIAYoB02wMTpS5S57L0KqoVejeKj8Rj7p
+         E9g7O+Q+m7koeWwx0OuXxbiJ6etNatPA6fDWE9KS4bpj1kCKbN0eZg37dSdjeWnUCG
+         XMceozTbM8+W147S5bCl7/IP6SDwziwSVHGxRQFk=
+Date:   Thu, 19 Nov 2020 23:52:27 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch 12/19] softirq: Add RT specific softirq accounting
+Message-ID: <20201119225227.GA29717@lothringen>
+References: <20201113140207.499353218@linutronix.de>
+ <20201113141734.096224353@linutronix.de>
+ <20201119121801.GA20115@lothringen>
+ <87ima1p55m.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ima1p55m.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A system shutdown can happen at essentially any time, and it's
-possible that the IPA driver is busy when a shutdown is underway.
-IPA hardware accesses IMEM and SMEM memory regions using an IOMMU,
-and at some point during shutdown, needed I/O mappings could become
-invalid.  This could be disastrous for any "in flight" IPA activity.
+On Thu, Nov 19, 2020 at 07:34:13PM +0100, Thomas Gleixner wrote:
+> On Thu, Nov 19 2020 at 13:18, Frederic Weisbecker wrote:
+> > On Fri, Nov 13, 2020 at 03:02:19PM +0100, Thomas Gleixner wrote:
+> >> RT requires the softirq to be preemptible and uses a per CPU local lock to
+> >> protect BH disabled sections and softirq processing. Therefore RT cannot
+> >> use the preempt counter to keep track of BH disabled/serving.
+> >> 
+> >> Add a RT only counter to task struct and adjust the relevant macros in
+> >> preempt.h.
+> >
+> > You may want to describe a bit the reason for this per task counter.
+> > It's not intuitive at this stage.
+> 
+> Something like this:
+> 
+>  RT requires the softirq processing and local bottomhalf disabled regions
+>  to be preemptible. Using the normal preempt count based serialization is
+>  therefore not possible because this implicitely disables preemption.
+> 
+>  RT kernels use a per CPU local lock to serialize bottomhalfs. As
+>  local_bh_disable() can nest the lock can only be acquired on the
+>  outermost invocation of local_bh_disable() and released when the nest
+>  count becomes zero. Tasks which hold the local lock can be preempted so
+>  its required to keep track of the nest count per task.
+> 
+>  Add a RT only counter to task struct and adjust the relevant macros in
+>  preempt.h.
+> 
+> Thanks,
 
-Avoid this by defining a new driver shutdown callback that stops all
-IPA activity and cleanly shuts down the driver.  It merely calls the
-driver's existing remove callback, reporting the error if it returns
-one.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_main.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 9f4bd822ac625..bbfc071fa2a60 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -889,6 +889,15 @@ static int ipa_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static void ipa_shutdown(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	ret = ipa_remove(pdev);
-+	if (ret)
-+		dev_err(&pdev->dev, "shutdown: remove returned %d\n", ret);
-+}
-+
- /**
-  * ipa_suspend() - Power management system suspend callback
-  * @dev:	IPA device structure
-@@ -946,8 +955,9 @@ static const struct dev_pm_ops ipa_pm_ops = {
- };
- 
- static struct platform_driver ipa_driver = {
--	.probe	= ipa_probe,
--	.remove	= ipa_remove,
-+	.probe		= ipa_probe,
-+	.remove		= ipa_remove,
-+	.shutdown	= ipa_shutdown,
- 	.driver	= {
- 		.name		= "ipa",
- 		.pm		= &ipa_pm_ops,
--- 
-2.20.1
-
+Very good, thanks!
