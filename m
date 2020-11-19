@@ -2,110 +2,445 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C44E2B9442
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDD32B9446
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgKSOMM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Nov 2020 09:12:12 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:41974 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727025AbgKSOMM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:12:12 -0500
-Received: from mail-pl1-f197.google.com ([209.85.214.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kfkfR-0007jb-6A
-        for linux-kernel@vger.kernel.org; Thu, 19 Nov 2020 14:12:09 +0000
-Received: by mail-pl1-f197.google.com with SMTP id l3so3847092ply.6
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 06:12:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=nH0pepi68r8FQkDwjzYaJZuqslp2q+xa3wM3+4CcUNI=;
-        b=CzF4OHFHfcb36C95gFIysR01bXH8hbMs6rJZN7uqUb7AJtm8kIDYQnTSgzsAtNPdNG
-         RQHJR/SX+NgUwJ8RDizujCqEscZHdl06/ayFkX1v2qNKY/QicGJRybJ/U3YJ8dCPkSJL
-         oaScRw4wD00TnughPE/uhxhQf6rB3CGUvvcMXqw5i72WyVnattp2WMf73QJkWZNJpvaq
-         UqdiAIWTLh7otSs1f/nOKKTB+EY6dmnFvSKvkhpuU0ISiqNLLSXRD2KJmffER7n1sfbI
-         lPYpuvpHoG0km2l6znNonNDZPmssPm38+YoJ9t8Ehl1eWP7lVuYG0u4D1KYSudeGaJLa
-         nbjw==
-X-Gm-Message-State: AOAM530mRPVIcprt32Vv41116EpWFzl4zKd+VFn7YcJMOF59cETUPDvh
-        CBRIh2bppqQzxxOw9GkhDqMR8bq9qpU6lYDw4fqEN5o7cgJzDshM9tGtfVDrwQkMsEvYZNI65rm
-        QChm1zTMteWs2ECO2QG3MFgbYjnJAMvgGFUXCiHRadw==
-X-Received: by 2002:a17:90a:e016:: with SMTP id u22mr4967119pjy.54.1605795127736;
-        Thu, 19 Nov 2020 06:12:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzEsbWks+/Io06NXTLDnwuTx+VBMU7rkmX3MvP7sWEMB/cXOSRBJavypU9mYkDvSJimUgBNCQ==
-X-Received: by 2002:a17:90a:e016:: with SMTP id u22mr4967089pjy.54.1605795127353;
-        Thu, 19 Nov 2020 06:12:07 -0800 (PST)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id v8sm3827347pju.32.2020.11.19.06.12.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Nov 2020 06:12:06 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk
- forLenovo A630Z TIO built-in usb-audio card
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <X7Z6RKu4T5IrhUFB@kroah.com>
-Date:   Thu, 19 Nov 2020 22:12:02 +0800
-Cc:     =?utf-8?B?5b2t5rWp?= <penghao@uniontech.com>,
-        johan <johan@kernel.org>, jonathan <jonathan@jdcox.net>,
-        tomasz <tomasz@meresinski.eu>,
-        Hans de Goede <hdegoede@redhat.com>,
-        dlaz <dlaz@chromium.org>,
-        "richard.o.dodd" <richard.o.dodd@gmail.com>,
-        kerneldev <kerneldev@karsmulder.nl>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <FB40A0E5-5E3C-4FC6-B690-02F9785EC7D5@canonical.com>
-References: <20201118123039.11696-1-penghao@uniontech.com>
- <49219711-84BE-44FC-BBFE-DD8D609CA26D@canonical.com>
- <1892790617.185900.1605788248261.JavaMail.xmail@bj-wm-cp-6>
- <7D73C39C-C3E2-4C08-A773-3D7582A6AA7D@canonical.com>
- <X7Z6RKu4T5IrhUFB@kroah.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+        id S1727806AbgKSOM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:12:28 -0500
+Received: from mga09.intel.com ([134.134.136.24]:19112 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727408AbgKSOM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:12:28 -0500
+IronPort-SDR: in7iLRKDvRJFmVoOrvAo6DHXyM/M4nYKg7GuU2eX79TviiVsla1LByKxGsaLnlUL5QR0Cjro01
+ OK5mM2IO3HuA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="171461892"
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208,223";a="171461892"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 06:12:21 -0800
+IronPort-SDR: 8AmlEtvtS0eef5APW6aujIBH8Xts5nuxQyAJ4LsGICRI2Od7L1TFZKCKOebRheUGdUkKX489lC
+ 3pY/aysndjqQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208,223";a="431241099"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 19 Nov 2020 06:12:19 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 19 Nov 2020 16:12:18 +0200
+Date:   Thu, 19 Nov 2020 16:12:18 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [RFC PATCH 2/3] usb: typec: Add product_type sysfs attribute
+ file for partners and cables
+Message-ID: <20201119141218.GE3774817@kuha.fi.intel.com>
+References: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
+ <20201118150059.3419-3-heikki.krogerus@linux.intel.com>
+ <20201118185350.GB3652649@google.com>
+ <20201119110506.GA3774817@kuha.fi.intel.com>
+ <20201119111122.GA3891271@google.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="MGYHOYXEY6WxJCY8"
+Content-Disposition: inline
+In-Reply-To: <20201119111122.GA3891271@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--MGYHOYXEY6WxJCY8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On Nov 19, 2020, at 21:59, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+Hi Prashant,
+
+On Thu, Nov 19, 2020 at 03:11:22AM -0800, Prashant Malani wrote:
+> On Thu, Nov 19, 2020 at 01:05:06PM +0200, Heikki Krogerus wrote:
+> > On Wed, Nov 18, 2020 at 10:53:50AM -0800, Prashant Malani wrote:
+> > > > +What:		/sys/class/typec/<port>-cable/product_type
+> > > > +Date:		December 2020
+> > > > +Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > > > +Description:	USB Power Delivery Specification defines a set of product types
+> > > > +		for the cables. This file will show the product type of the
+> > > > +		cable if it is known. If the product type of the cable is not
+> > > > +		visible to the device driver, this file will not exist.
+> > > > +
+> > > > +		When the cable product type is detected, uvevent is also raised
+> > > > +		with PRODUCT_TYPE showing the product type of the cable.
+> > > > +
+> > > > +		Valid values:
+> > > > +
+> > > > +		========================  ==========================
+> > > > +		undefined		  -
+> > > > +		active			  Active Cable
+> > > > +		passive			  Passive Cable
+> > > > +		========================  ==========================
+> > > 
+> > > There exists a /sys/class/typec/<port>-cable/type attribute (connected
+> > > to the "active" field in struct typec_cable [1]), which is supposed
+> > > to be populated by the Type C port driver. Won't the newly introduced
+> > > attribute duplicate the same information as "type"?
+> > 
+> > True. So we don't need add this for the cable separately. I'll just
+> > modify the code so that it considers also the response to Discover
+> > Identity command if we have access to it.
+> > 
+> > Would it be OK if we name the file "type" instead of "product_type"
+> > also with the partners?
 > 
-> On Thu, Nov 19, 2020 at 09:41:32PM +0800, Kai-Heng Feng wrote:
->> Hi penghao,
->> 
->>> On Nov 19, 2020, at 20:17, 彭浩 <penghao@uniontech.com> wrote:
->>> 
->>> root@uos-PC:/sys/bus/usb/devices/usb7# dmesg
->>> [ 0.000000] Linux version 4.19.0-6-amd64 (debian-kernel@lists.debian.org) (gcc version 8.3.0 (Debian 8.3.0-6)) #1 SMP Uos 4.19.67-11eagle (2020-03-21)
->> 
->> Thanks for the dmesg. But would it be possible to use mainline kernel enable dynamic debug?
->> 
->> But anyway, this is not a regular AMD or Intel platform, so I guess we can merge the quirk as is...
->> 
->> Kai-Heng
->> 
->>> [ 0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-4.19.0-6-amd64 root=UUID=e5a40c4f-d88e-4a4d-9414-a27892a31be7 ro splash console=ttyS0,115200n8 loglevel=7 DEEPIN_GFXMODE=0,1920x1080,1600x1200,1280x1024,1024x768
->>> [ 0.000000] Zhaoxin Linux Patch Version is V3.0.2 
->>> [ 0.000000] With Zhaoxin Shanghai CPU patch V2.0.0
-> 
-> What do you mean "not a regular"?  This is an x86-variant chip platform,
-> but what does that have to do with the USB quirk detection?
+> That makes the naming consistent. Sounds good to me :)
 
-USB quirk detection should work fine. I was trying to find the root cause, but seeing it's a Zhaoxin CPU, that could be the reason why mainline kernel, which has many USB power management fixes, wasn't used.
+Cool. Could you test if the attached version works?
 
-penghao, is it possible to boot mainline kernel on Zhaoxin CPU?
+thanks,
 
-Kai-Heng
+-- 
+heikki
 
-> 
-> thanks,
-> 
-> greg k-h
+--MGYHOYXEY6WxJCY8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-usb-typec-Add-type-sysfs-attribute-file-for-partners.patch"
 
+From a3e8bbad905e6e3ac97fe99998ed4dbc56824de4 Mon Sep 17 00:00:00 2001
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Date: Wed, 18 Nov 2020 17:27:57 +0300
+Subject: [PATCH] usb: typec: Add type sysfs attribute file for partners
+
+USB Power Delivery Specification defines a set of product
+types for partners and cables. The product type can be read
+from the ID Header VDO which is the first object in the
+response to the Discover Identity command. This attribute
+will display the product type of the partner. The cables
+already have the attribute.
+
+This sysfs attribute file is only created for the partners
+and cables if the product type is really known in the
+driver. Some interfaces do not give access to the Discover
+Identity response from the partner or cable, but they may
+still supply the product type separately in some cases.
+
+When the product type of the partner or cable is detected,
+uevent is also raised with PRODUCT_TYPE set to show the
+actual product type (for example PRODUCT_TYPE=host).
+
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
+ Documentation/ABI/testing/sysfs-class-typec |  53 ++++++-
+ drivers/usb/typec/class.c                   | 147 +++++++++++++++++---
+ 2 files changed, 181 insertions(+), 19 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-class-typec b/Documentation/ABI/testing/sysfs-class-typec
+index b7794e02ad205..6f97b85f55320 100644
+--- a/Documentation/ABI/testing/sysfs-class-typec
++++ b/Documentation/ABI/testing/sysfs-class-typec
+@@ -139,6 +139,41 @@ Description:
+ 		Shows if the partner supports USB Power Delivery communication:
+ 		Valid values: yes, no
+ 
++What:		/sys/class/typec/<port>-partner/type
++Date:		December 2020
++Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
++Description:	USB Power Delivery Specification defines a set of product types
++		for the partner devices. This file will show the product type of
++		the partner if it is known. Dual-role capable partners will have
++		both UFP and DFP product types defined, but only one that
++		matches the current role will be active at the time. If the
++		product type of the partner is not visible to the device driver,
++		this file will not exist.
++
++		When the partner product type is detected, or changed with role
++		swap, uvevent is also raised that contains PRODUCT_TYPE=<product
++		type> (for example PRODUCT_TYPE=hub).
++
++		Valid values:
++
++		UFP / device role
++		========================  ==========================
++		undefined		  -
++		hub			  PDUSB Hub
++		peripheral		  PDUSB Peripheral
++		ama			  Alternate Mode Adapter
++		vpd			  VCONN Powered USB Device
++		========================  ==========================
++
++		DFP / host role
++		========================  ==========================
++		undefined		  -
++		hub			  PDUSB Hub
++		host			  PDUSB Host
++		power_brick		  Power Brick
++		amc			  Alternate Mode Controller
++		========================  ==========================
++
+ What:		/sys/class/typec/<port>-partner>/identity/
+ Date:		April 2017
+ Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+@@ -187,9 +222,21 @@ described in USB Type-C and USB Power Delivery specifications.
+ What:		/sys/class/typec/<port>-cable/type
+ Date:		April 2017
+ Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+-Description:
+-		Shows if the cable is active.
+-		Valid values: active, passive
++Description:	USB Power Delivery Specification defines a set of product types
++		for the cables. This file will show the product type of the
++		cable if it is known. If the product type of the cable is not
++		visible to the device driver, this file will not exist.
++
++		When the cable product type is detected, uvevent is also raised
++		with PRODUCT_TYPE showing the product type of the cable.
++
++		Valid values:
++
++		========================  ==========================
++		undefined		  -
++		active			  Active Cable
++		passive			  Passive Cable
++		========================  ==========================
+ 
+ What:		/sys/class/typec/<port>-cable/plug_type
+ Date:		April 2017
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index 35eec707cb512..1190148ad3ed5 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -11,6 +11,7 @@
+ #include <linux/mutex.h>
+ #include <linux/property.h>
+ #include <linux/slab.h>
++#include <linux/usb/pd_vdo.h>
+ 
+ #include "bus.h"
+ 
+@@ -81,6 +82,29 @@ static const char * const typec_accessory_modes[] = {
+ 	[TYPEC_ACCESSORY_DEBUG]		= "debug",
+ };
+ 
++/* Product types defined in USB PD Specification R3.0 V2.0 */
++static const char * const product_type_ufp[8] = {
++	[IDH_PTYPE_UNDEF]		= "undefined",
++	[IDH_PTYPE_HUB]			= "hub",
++	[IDH_PTYPE_PERIPH]		= "peripheral",
++	[IDH_PTYPE_PSD]			= "psd",
++	[IDH_PTYPE_AMA]			= "ama",
++};
++
++static const char * const product_type_dfp[8] = {
++	[IDH_PTYPE_DFP_UNDEF]		= "undefined",
++	[IDH_PTYPE_DFP_HUB]		= "hub",
++	[IDH_PTYPE_DFP_HOST]		= "host",
++	[IDH_PTYPE_DFP_PB]		= "power_brick",
++	[IDH_PTYPE_DFP_AMC]		= "amc",
++};
++
++static const char * const product_type_cable[8] = {
++	[IDH_PTYPE_UNDEF]		= "undefined",
++	[IDH_PTYPE_PCABLE]		= "passive",
++	[IDH_PTYPE_ACABLE]		= "active",
++};
++
+ static struct usb_pd_identity *get_pd_identity(struct device *dev)
+ {
+ 	if (is_typec_partner(dev)) {
+@@ -95,6 +119,32 @@ static struct usb_pd_identity *get_pd_identity(struct device *dev)
+ 	return NULL;
+ }
+ 
++static const char *get_pd_product_type(struct device *dev)
++{
++	struct typec_port *port = to_typec_port(dev->parent);
++	struct usb_pd_identity *id = get_pd_identity(dev);
++	const char *ptype = NULL;
++
++	if (is_typec_partner(dev)) {
++		if (!id)
++			return NULL;
++
++		if (port->data_role == TYPEC_HOST)
++			ptype = product_type_ufp[PD_IDH_PTYPE(id->id_header)];
++		else
++			ptype = product_type_dfp[PD_IDH_DFP_PTYPE(id->id_header)];
++	} else if (is_typec_cable(dev)) {
++		if (id)
++			ptype = product_type_cable[PD_IDH_PTYPE(id->id_header)];
++		else
++			ptype = to_typec_cable(dev)->active ?
++				product_type_cable[IDH_PTYPE_ACABLE] :
++				product_type_cable[IDH_PTYPE_PCABLE];
++	}
++
++	return ptype;
++}
++
+ static ssize_t id_header_show(struct device *dev, struct device_attribute *attr,
+ 			      char *buf)
+ {
+@@ -139,11 +189,56 @@ static const struct attribute_group *usb_pd_id_groups[] = {
+ 	NULL,
+ };
+ 
++static void typec_product_type_notify(struct device *dev)
++{
++	char *envp[2] = { };
++	const char *ptype;
++
++	ptype = get_pd_product_type(dev);
++	if (!ptype)
++		return;
++
++	sysfs_notify(&dev->kobj, NULL, "type");
++
++	envp[0] = kasprintf(GFP_KERNEL, "PRODUCT_TYPE=%s", ptype);
++	if (!envp[0])
++		return;
++
++	kobject_uevent_env(&dev->kobj, KOBJ_CHANGE, envp);
++	kfree(envp[0]);
++}
++
+ static void typec_report_identity(struct device *dev)
+ {
+ 	sysfs_notify(&dev->kobj, "identity", "id_header");
+ 	sysfs_notify(&dev->kobj, "identity", "cert_stat");
+ 	sysfs_notify(&dev->kobj, "identity", "product");
++	typec_product_type_notify(dev);
++}
++
++static ssize_t
++type_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	const char *ptype;
++
++	ptype = get_pd_product_type(dev);
++	if (!ptype)
++		return 0;
++
++	return sysfs_emit(buf, "%s\n", ptype);
++}
++static DEVICE_ATTR_RO(type);
++
++static umode_t typec_product_type_attr_is_visible(struct kobject *kobj,
++						  struct attribute *attr, int n)
++{
++	struct device *dev = kobj_to_dev(kobj);
++
++	if (attr == &dev_attr_type.attr)
++		if (!get_pd_product_type(dev))
++			return 0;
++
++	return attr->mode;
+ }
+ 
+ /* ------------------------------------------------------------------------- */
+@@ -535,9 +630,19 @@ static DEVICE_ATTR_RO(supports_usb_power_delivery);
+ static struct attribute *typec_partner_attrs[] = {
+ 	&dev_attr_accessory_mode.attr,
+ 	&dev_attr_supports_usb_power_delivery.attr,
++	&dev_attr_type.attr,
++	NULL
++};
++
++static struct attribute_group typec_partner_group = {
++	.is_visible = typec_product_type_attr_is_visible,
++	.attrs = typec_partner_attrs,
++};
++
++static const struct attribute_group *typec_partner_groups[] = {
++	&typec_partner_group,
+ 	NULL
+ };
+-ATTRIBUTE_GROUPS(typec_partner);
+ 
+ static void typec_partner_release(struct device *dev)
+ {
+@@ -744,15 +849,6 @@ EXPORT_SYMBOL_GPL(typec_unregister_plug);
+ 
+ /* Type-C Cables */
+ 
+-static ssize_t
+-type_show(struct device *dev, struct device_attribute *attr, char *buf)
+-{
+-	struct typec_cable *cable = to_typec_cable(dev);
+-
+-	return sprintf(buf, "%s\n", cable->active ? "active" : "passive");
+-}
+-static DEVICE_ATTR_RO(type);
+-
+ static const char * const typec_plug_types[] = {
+ 	[USB_PLUG_NONE]		= "unknown",
+ 	[USB_PLUG_TYPE_A]	= "type-a",
+@@ -775,7 +871,15 @@ static struct attribute *typec_cable_attrs[] = {
+ 	&dev_attr_plug_type.attr,
+ 	NULL
+ };
+-ATTRIBUTE_GROUPS(typec_cable);
++
++static struct attribute_group typec_cable_group = {
++	.attrs = typec_cable_attrs,
++};
++
++static const struct attribute_group *typec_cable_groups[] = {
++	&typec_cable_group,
++	NULL
++};
+ 
+ static void typec_cable_release(struct device *dev)
+ {
+@@ -1352,6 +1456,11 @@ const struct device_type typec_port_dev_type = {
+ /* --------------------------------------- */
+ /* Driver callbacks to report role updates */
+ 
++static int partner_match(struct device *dev, void *data)
++{
++	return is_typec_partner(dev);
++}
++
+ /**
+  * typec_set_data_role - Report data role change
+  * @port: The USB Type-C Port where the role was changed
+@@ -1361,12 +1470,23 @@ const struct device_type typec_port_dev_type = {
+  */
+ void typec_set_data_role(struct typec_port *port, enum typec_data_role role)
+ {
++	struct device *partner_dev;
++
+ 	if (port->data_role == role)
+ 		return;
+ 
+ 	port->data_role = role;
+ 	sysfs_notify(&port->dev.kobj, NULL, "data_role");
+ 	kobject_uevent(&port->dev.kobj, KOBJ_CHANGE);
++
++	partner_dev = device_find_child(&port->dev, NULL, partner_match);
++	if (!partner_dev)
++		return;
++
++	if (to_typec_partner(partner_dev)->identity)
++		typec_product_type_notify(partner_dev);
++
++	put_device(partner_dev);
+ }
+ EXPORT_SYMBOL_GPL(typec_set_data_role);
+ 
+@@ -1407,11 +1527,6 @@ void typec_set_vconn_role(struct typec_port *port, enum typec_role role)
+ }
+ EXPORT_SYMBOL_GPL(typec_set_vconn_role);
+ 
+-static int partner_match(struct device *dev, void *data)
+-{
+-	return is_typec_partner(dev);
+-}
+-
+ /**
+  * typec_set_pwr_opmode - Report changed power operation mode
+  * @port: The USB Type-C Port where the mode was changed
+-- 
+2.29.2
+
+
+--MGYHOYXEY6WxJCY8--
