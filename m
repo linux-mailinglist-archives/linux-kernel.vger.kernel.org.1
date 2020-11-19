@@ -2,421 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69072B9AE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0586E2B9AE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729033AbgKSSs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:48:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728729AbgKSSs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:48:57 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1564824655;
-        Thu, 19 Nov 2020 18:48:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605811735;
-        bh=hWjn1+/Wc2+9R7wYa3AEgWDxt/qeUaeDAgWczzv5Q9s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=2G7HBzbX6DrdwuMVLJmGvXV1iFSP313M+lsFfxwJhQjwiXVEYht1B+Bll7ChaeX/A
-         XtFNe8ENPZD8oegjpIEzWuVxQp0I5JuUtrewNHSgbEYUty9VDFwnqfQItzjJTPUWcW
-         AgtAnniup37yJMJP3gLZz4mSv7WBm+J4NAJPiLZ0=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A9B5335225CF; Thu, 19 Nov 2020 10:48:54 -0800 (PST)
-Date:   Thu, 19 Nov 2020 10:48:54 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
- allocations
-Message-ID: <20201119184854.GY1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201112161439.GA2989297@elver.google.com>
- <20201112175406.GF3249@paulmck-ThinkPad-P72>
- <20201113175754.GA6273@paulmck-ThinkPad-P72>
- <20201117105236.GA1964407@elver.google.com>
- <20201117182915.GM1437@paulmck-ThinkPad-P72>
- <20201118225621.GA1770130@elver.google.com>
- <20201118233841.GS1437@paulmck-ThinkPad-P72>
- <20201119125357.GA2084963@elver.google.com>
- <20201119151409.GU1437@paulmck-ThinkPad-P72>
- <20201119170259.GA2134472@elver.google.com>
+        id S1729509AbgKSSvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:51:23 -0500
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:7008 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728104AbgKSSvX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:51:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605811883; x=1637347883;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=seu1I9S1RtPdVx2cDTQsxmfeVDgfgAHU/Qapy2hz8BI=;
+  b=bsd2SMbF2A/uagqkdO1gEE1gVLcja1OddCArn0zmCWJjIKKOIxyEmwwh
+   Hv+bugVDByily8OCsFvy4g1cwiwk1RZ3XMNTTZpPuonhe3BN7sik2SdYx
+   HerU28r0r/Ngi7xawxKiwA5Wle0ZVZEsfsxDyEMUNX1XPB9Xo8v85o3Ll
+   6QiDTyaFT7Fe1K/G21+1sn/+EecsGXQ7Hh3nisrPH/fCQ6CkK6oyEiPCW
+   JUxwnN3waGB0w38Ggl5X6PttvziX13BX5TFLFBADG4Sq8KIR3rkI8Ap0a
+   IVWc3apXnudk6c2jd61U/40b24zPcq+AiA4YSuUDZBCvPcJsKb8WD9gdS
+   Q==;
+IronPort-SDR: FRhX5BvMj7CMyP6qfkAn1n3Z+MzxoBDrL3+d0MpJqhIPRA9XH+XnIfIIq7IBaSg6JrAQVKsxe7
+ Gyuk8gEyYgmEwXqM2ybfBkpU7nzpGFChQtBD019sOAE7Po88YSXqWSts2e/0ZzF0tQOBFhNqhZ
+ jjrclUYQpD0EmTwq6/gc7XAkpD1YhCk7NTrMwPiG9rAsJ0CUf0U9/uWvhx4yVIwx0KxJ+pHchF
+ G9PXl5Ec+0AgPbpBHV2ag5zbHEDJ0VYEV42wcJNiFECEj0TcZOfy9kG7tesan84I4HrTyGgqZ/
+ pn4=
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="94269681"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Nov 2020 11:51:22 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 19 Nov 2020 11:51:21 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Thu, 19 Nov 2020 11:51:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ea1hh0LcdJuMfPnwoUHCw+/SbDTe8QCNwCacWvLq8ClUrcKPwhqLLvnbqz0KP26lBysazwrGy3NfDNS2KcjYNrOtK764NherQWqPyJi08k+BXcRyckmZoJp/694B8vIQhKCO0HrILkrO0y6XDyRaP387Vg8Kq1Dnc4Xh5d/xtVSMh1/wgkDacm3IoLQ4x+WqWrWLkbvfST0IMvcBDho9Oyo1egx/gO4KjwcPPPOUB+OT3ozkwCF380fRFji3FmjaE7p0s+zMxskt0J769kjESy2lrMAOYTUcRwOOlbV5XJuRWB+Z/zLs6pq/3gJXKHN2SubVmcex+aGzI6k1B8K5wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=seu1I9S1RtPdVx2cDTQsxmfeVDgfgAHU/Qapy2hz8BI=;
+ b=oO8aTqHlRMAz5v/JVHZqrGgS2omfOu5aR/jKDsgQos4zXtvesB0rp8z9It079qb4JjhDHgWp19uwdd8wwyHWA5h/FbBV4PqqDiOHBlrTB8IQVYxv9cW538uVovsps+uYK72czSeCPO5al3s0jIaVMq3kjAw48/bR38snn29ziZthun7+NFD+ZEaML0StttfrxyXbwr80p0smdsocQCIi+ojW8Toy3JYskl7h5Drh/wd6vNYBr8aAJTOVIUogO7iDPBjUUWeZismgZ9Zd5JAOK14co79FZ5a4buXFYa/qLZcvDdJCnpaWG9dM4NwoblKUcao6G3869YvNsjGArBNVHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=seu1I9S1RtPdVx2cDTQsxmfeVDgfgAHU/Qapy2hz8BI=;
+ b=mmpL/iqMFc0qTbZDzNopaHeYabItms0dOqvUyGakdVQoS8tybbR3BMGpqe1M9ksvMTHfdWMMrpYVscLlKJ/Gcir0uc+wMrJTf6b0cQ59uH2r7IA2ekCgs4B4RaLcCCrfEZGNFFW7oYv8zExWs5NagB8qv8WuQzwk5pe8TRQzEcI=
+Received: from BYAPR11MB3558.namprd11.prod.outlook.com (2603:10b6:a03:b3::11)
+ by BYAPR11MB3400.namprd11.prod.outlook.com (2603:10b6:a03:1a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Thu, 19 Nov
+ 2020 18:51:16 +0000
+Received: from BYAPR11MB3558.namprd11.prod.outlook.com
+ ([fe80::d420:c3da:146c:977e]) by BYAPR11MB3558.namprd11.prod.outlook.com
+ ([fe80::d420:c3da:146c:977e%7]) with mapi id 15.20.3564.031; Thu, 19 Nov 2020
+ 18:51:16 +0000
+From:   <Tristram.Ha@microchip.com>
+To:     <ceggers@arri.de>, <olteanv@gmail.com>
+CC:     <kuba@kernel.org>, <andrew@lunn.ch>, <richardcochran@gmail.com>,
+        <robh+dt@kernel.org>, <vivien.didelot@gmail.com>,
+        <davem@davemloft.net>, <kurt.kanzenbach@linutronix.de>,
+        <george.mccollister@gmail.com>, <marex@denx.de>,
+        <helmut.grohne@intenta.de>, <pbarker@konsulko.com>,
+        <Codrin.Ciubotariu@microchip.com>, <Woojung.Huh@microchip.com>,
+        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next v3 00/12] net: dsa: microchip: PTP support for
+ KSZ956x
+Thread-Topic: [PATCH net-next v3 00/12] net: dsa: microchip: PTP support for
+ KSZ956x
+Thread-Index: AQHWvenhDxym6cdhMkevUTN+Ss+rxqnOjIQAgABhLACAANQCsA==
+Date:   Thu, 19 Nov 2020 18:51:15 +0000
+Message-ID: <BYAPR11MB35582F880B533EB2EE0CDD1DECE00@BYAPR11MB3558.namprd11.prod.outlook.com>
+References: <20201118203013.5077-1-ceggers@arri.de>
+ <20201118234018.jltisnhjesddt6kf@skbuf> <2452899.Bt8PnbAPR0@n95hx1g2>
+In-Reply-To: <2452899.Bt8PnbAPR0@n95hx1g2>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: arri.de; dkim=none (message not signed)
+ header.d=none;arri.de; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [99.25.38.29]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 01b35f1a-06bb-4d18-a8a3-08d88cbc183f
+x-ms-traffictypediagnostic: BYAPR11MB3400:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR11MB34001584E1DFE8241CAAD2CEECE00@BYAPR11MB3400.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1QjvyLhViVKXE/8mtm4eUJZCIq4ecYK17sizODFhQKC6nQX+yTB288zHliQuitPOsBlU0hvVlaJbMBDRuAkCIDKLZBThW3XM+E88QeHHK5gQi5TIxgMJFnrLOz3r19xLX8MBj/Q3g/CRlFjpamKbX5ncqvoZWzN0C3xaz6PVkk5hwULVC64qvRsi0NIks7g8BiVJ3dpPYsl0DqW5cStnj8f+21s2xsS6EP/d1sfoRHIHeRLJLMH/Rl3yv8XqUQB22qHJAw4axl80AIWxFRUDgZpHDe3cvcaxQH3O2z+YjnciYi+hU5fDxw63lk9lV4WEhPkT4sSjm/im/sDVTvFoLTVVxJ9SMRuyl18JnvZU9HJBY9gOE8j+yhlEXVjN/0Xo7KeEsEJ8V7oIViFY+ryyFw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3558.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(396003)(39860400002)(366004)(71200400001)(66556008)(64756008)(66446008)(7416002)(7696005)(5660300002)(4326008)(55016002)(76116006)(66946007)(66476007)(86362001)(2906002)(83380400001)(52536014)(478600001)(110136005)(54906003)(8676002)(9686003)(26005)(8936002)(966005)(33656002)(316002)(186003)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: azTCSouBJ1sAE79xbyETIIq1vkoHjxYkXGPrQKkkItBqKc70v7/RsVkmsQ+SU2LKZI64eMQzZFNvxmb7cUGFSFwXIsiPWFD+4rQFm0WnEb7WYpnJM0kUKF0S93a1BetFxc6LaA1XbbGgWltpafbzgqf5i9gDiga3doEf8uWZ0Hpgrx6aol/QxpLamOTLePSZZyqfiqocIyXgWYTYZ/dfxoPvtVpf0wm5eUWCd0rFSHP4LPyGv1GXcr21c+b2Z21zXRRgJLQ9fiQwGoiCuLwShyfqyT2avvqY0PVlK/b+ViGCUPVUVZ5M+lnCofHcc+2z5krgBzpUNe/B/gQWQ7XM+mvHK10KaRhYlhpliqoxxHYSKXHHqTcAJTvE4bc4hf0rby8WMhJhuptjg1X6QXJCmOH0j+ym464JG+yTMB7Gb8k7mmmtLA5pXqEvXwt0yE+HV40XLrVKja8DQE7jIT6tnxH1YTm7obYDj7disQWGXmAV/OVJDcNpMUd9z9lK4ikGi6XmzBZxjhAE09Fnm/Ndqz8NEwhuwAGiFZDo+NYuuQzxOz0pvIClPco2uePqxbKiLBWRKccVaUbJMHZgugmkFya3sTqRE15dsC3p5PGC37kUWSRuDC8wnp/QVoW3ASYWXU6vhdbItcDo7AhWnuyxEA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119170259.GA2134472@elver.google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3558.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01b35f1a-06bb-4d18-a8a3-08d88cbc183f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2020 18:51:15.9022
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1RhheuEhQn+EBkIybRi/OesbmTFz+NfvonvVrmdg6/Gbdu4YUL7iyxpJTqb0phomNtb6X+3L2+ZXDG+jO0daEa5ENuAN7KrrXZmuc38/XRs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3400
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 06:02:59PM +0100, Marco Elver wrote:
-> On Thu, Nov 19, 2020 at 07:14AM -0800, Paul E. McKenney wrote:
-> > On Thu, Nov 19, 2020 at 01:53:57PM +0100, Marco Elver wrote:
-> > > On Wed, Nov 18, 2020 at 03:38PM -0800, Paul E. McKenney wrote:
-> > > > On Wed, Nov 18, 2020 at 11:56:21PM +0100, Marco Elver wrote:
-> > > > > [...]
-> > > > > I think I figured out one piece of the puzzle. Bisection keeps pointing
-> > > > > me at some -rcu merge commit, which kept throwing me off. Nor did it
-> > > > > help that reproduction is a bit flaky. However, I think there are 2
-> > > > > independent problems, but the manifestation of 1 problem triggers the
-> > > > > 2nd problem:
-> > > > > 
-> > > > > 1. problem: slowed forward progress (workqueue lockup / RCU stall reports)
-> > > > > 
-> > > > > 2. problem: DEADLOCK which causes complete system lockup
-> > > > > 
-> > > > > 	| ...
-> > > > > 	|        CPU0
-> > > > > 	|        ----
-> > > > > 	|   lock(rcu_node_0);
-> > > > > 	|   <Interrupt>
-> > > > > 	|     lock(rcu_node_0);
-> > > > > 	| 
-> > > > > 	|  *** DEADLOCK ***
-> > > > > 	| 
-> > > > > 	| 1 lock held by event_benchmark/105:
-> > > > > 	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: print_other_cpu_stall kernel/rcu/tree_stall.h:493 [inline]
-> > > > > 	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: check_cpu_stall kernel/rcu/tree_stall.h:652 [inline]
-> > > > > 	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: rcu_pending kernel/rcu/tree.c:3752 [inline]
-> > > > > 	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x428/0xd40 kernel/rcu/tree.c:2581
-> > > > > 	| ...
-> > > > > 
-> > > > > Problem 2 can with reasonable confidence (5 trials) be fixed by reverting:
-> > > > > 
-> > > > > 	rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
-> > > > > 
-> > > > > At which point the system always boots to user space -- albeit with a
-> > > > > bunch of warnings still (attached). The supposed "good" version doesn't
-> > > > > end up with all those warnings deterministically, so I couldn't say if
-> > > > > the warnings are expected due to recent changes or not (Arm64 QEMU
-> > > > > emulation, 1 CPU, and lots of debugging tools on).
-> > > > > 
-> > > > > Does any of that make sense?
-> > > > 
-> > > > Marco, it makes all too much sense!  :-/
-> > > > 
-> > > > Does the patch below help?
-> > > > 
-> > > > 							Thanx, Paul
-> > > > 
-> > > > ------------------------------------------------------------------------
-> > > > 
-> > > > commit 444ef3bbd0f243b912fdfd51f326704f8ee872bf
-> > > > Author: Peter Zijlstra <peterz@infradead.org>
-> > > > Date:   Sat Aug 29 10:22:24 2020 -0700
-> > > > 
-> > > >     sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled
-> > > 
-> > > My assumption is that this is a replacement for "rcu: Don't invoke
-> > > try_invoke_on_locked_down_task() with irqs disabled", right?
-> > 
-> > Hmmm...  It was actually intended to be in addition.
-> > 
-> > > That seems to have the same result (same test setup) as only reverting
-> > > "rcu: Don't invoke..." does: still results in a bunch of workqueue
-> > > lockup warnings and RCU stall warnings, but boots to user space. I
-> > > attached a log. If the warnings are expected (are they?), then it looks
-> > > fine to me.
-> > 
-> > No, they are not at all expected, but might be a different symptom
-> > of the original problem.  Please see below.
-> > 
-> > > (And just in case: with "rcu: Don't invoke..." and "sched/core:
-> > > Allow..." both applied I still get DEADLOCKs -- but that's probably
-> > > expected.)
-> > 
-> > As noted earlier, it is a surprise.  Could you please send me the
-> > console output?
->  
-> I've attached the output of a run with both commits applied.
-
-Got it, thank you!
-
-> > > Testing all events: OK
-> > > hrtimer: interrupt took 17120368 ns
-> > > Running tests again, along with the function tracer
-> > > Running tests on all trace events:
-> > > Testing all events: 
-> > > BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 12s!
-> > > Showing busy workqueues and worker pools:
-> > > workqueue events: flags=0x0
-> > >   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> > >     pending: vmstat_shepherd
-> > > BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 17s!
-> > > Showing busy workqueues and worker pools:
-> > > workqueue events: flags=0x0
-> > >   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
-> > >     pending: vmstat_shepherd
-> > > workqueue events_power_efficient: flags=0x82
-> > >   pwq 2: cpus=0 flags=0x4 nice=0 active=1/256 refcnt=3
-> > >     pending: neigh_periodic_work
-> > > ------------[ cut here ]------------
-> > > WARNING: CPU: 0 PID: 1 at kernel/rcu/tree_stall.h:758 rcu_check_gp_start_stall kernel/rcu/tree_stall.h:750 [inline]
-> > > WARNING: CPU: 0 PID: 1 at kernel/rcu/tree_stall.h:758 rcu_check_gp_start_stall.isra.0+0x14c/0x210 kernel/rcu/tree_stall.h:711
-> > 
-> > I have different line numbering,
-> 
-> This is still using next-20201110. I'll rerun with latest -next as well.
-
-No problem, as it looks like next-20201105 is a reasonable approximation.
-
-> > but the only warning that I see in this
-> > function is the one complaining that RCU has been ignoring a request to
-> > start a grace period for too long.  This usually happens because the RCU
-> > grace-period kthread (named "rcu_preempt" in your case, but can also be
-> > named "rcu_sched") is being prevented from running, but can be caused
-> > by other things as well.
-> > 
-> > > Modules linked in:
-> > > CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc3-next-20201110-00003-g920304642405-dirty #30
-> > > Hardware name: linux,dummy-virt (DT)
-> > > pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
-> > > pc : rcu_check_gp_start_stall kernel/rcu/tree_stall.h:750 [inline]
-> > > pc : rcu_check_gp_start_stall.isra.0+0x14c/0x210 kernel/rcu/tree_stall.h:711
-> > > lr : __xchg_mb arch/arm64/include/asm/cmpxchg.h:88 [inline]
-> > > lr : atomic_xchg include/asm-generic/atomic-instrumented.h:615 [inline]
-> > > lr : rcu_check_gp_start_stall kernel/rcu/tree_stall.h:751 [inline]
-> > > lr : rcu_check_gp_start_stall.isra.0+0x148/0x210 kernel/rcu/tree_stall.h:711
-> > 
-> > Two program counters and four link registers?  Awesome!  ;-)
-> 
-> Ah I'm using syzkaller's symbolizer, which duplicates lines if there was
-> an inline function (remove all the "[inline]" and it should make sense,
-> but the "[inline]" tell you the actual line). Obviously for things like
-> this it's a bit unintuitive. :-)
-
-Very useful, though, and a big THANK YOU to those who made it happen!
-
-> > > sp : ffff800010003d20
-> > > x29: ffff800010003d20 x28: ffff274ac3a10000 
-> > > x27: 0000000000000000 x26: ffff274b3dbe72d8 
-> > > x25: ffffbcb867722000 x24: 0000000000000000 
-> > > x23: 0000000000000000 x22: ffffbcb8681d1260 
-> > > x21: ffffbcb86735b000 x20: ffffbcb867404440 
-> > > x19: ffffbcb867404440 x18: 0000000000000123 
-> > > x17: ffffbcb865d400f0 x16: 0000000000000002 
-> > > x15: 0000000000000002 x14: 0000000000000000 
-> > > x13: 003d090000000000 x12: 00001e8480000000 
-> > > x11: ffffbcb867958980 x10: ffff800010003cf0 
-> > > x9 : ffffbcb864f4b7c8 x8 : 0000000000000080 
-> > > x7 : 0000000000000026 x6 : ffffbcb86774e4c0 
-> > > x5 : 0000000000000000 x4 : 00000000d4001f4b 
-> > > x3 : 0000000000000000 x2 : 0000000000000000 
-> > > x1 : 0000000000000001 x0 : 0000000000000000 
-> > > Call trace:
-> > >  rcu_check_gp_start_stall kernel/rcu/tree_stall.h:750 [inline]
-> > >  rcu_check_gp_start_stall.isra.0+0x14c/0x210 kernel/rcu/tree_stall.h:711
-> > >  rcu_core+0x168/0x9e0 kernel/rcu/tree.c:2719
-> > >  rcu_core_si+0x18/0x28 kernel/rcu/tree.c:2737
-> > 
-> > The RCU_SOFTIRQ handler is causing this checking to occur, for whatever
-> > that is worth.
-> > 
-> > >  __do_softirq+0x188/0x6b4 kernel/softirq.c:298
-> > >  do_softirq_own_stack include/linux/interrupt.h:568 [inline]
-> > >  invoke_softirq kernel/softirq.c:393 [inline]
-> > >  __irq_exit_rcu kernel/softirq.c:423 [inline]
-> > >  irq_exit+0x1cc/0x1e0 kernel/softirq.c:447
-> > >  __handle_domain_irq+0xb4/0x130 kernel/irq/irqdesc.c:690
-> > >  handle_domain_irq include/linux/irqdesc.h:170 [inline]
-> > >  gic_handle_irq+0x70/0x108 drivers/irqchip/irq-gic.c:370
-> > >  el1_irq+0xc0/0x180 arch/arm64/kernel/entry.S:651
-> > >  arch_local_irq_restore+0x8/0x10 arch/arm64/include/asm/irqflags.h:124
-> > >  release_probes kernel/tracepoint.c:113 [inline]
-> > >  tracepoint_remove_func kernel/tracepoint.c:315 [inline]
-> > >  tracepoint_probe_unregister+0x220/0x378 kernel/tracepoint.c:382
-> > >  trace_event_reg+0x58/0x150 kernel/trace/trace_events.c:298
-> > >  __ftrace_event_enable_disable+0x424/0x608 kernel/trace/trace_events.c:412
-> > >  ftrace_event_enable_disable kernel/trace/trace_events.c:495 [inline]
-> > >  __ftrace_set_clr_event_nolock+0x120/0x180 kernel/trace/trace_events.c:811
-> > >  __ftrace_set_clr_event+0x60/0x90 kernel/trace/trace_events.c:833
-> > >  event_trace_self_tests+0xd4/0x114 kernel/trace/trace_events.c:3661
-> > >  event_trace_self_test_with_function kernel/trace/trace_events.c:3734 [inline]
-> > >  event_trace_self_tests_init+0x88/0xa8 kernel/trace/trace_events.c:3747
-> > >  do_one_initcall+0xa4/0x500 init/main.c:1212
-> > >  do_initcall_level init/main.c:1285 [inline]
-> > >  do_initcalls init/main.c:1301 [inline]
-> > >  do_basic_setup init/main.c:1321 [inline]
-> > >  kernel_init_freeable+0x344/0x3c4 init/main.c:1521
-> > >  kernel_init+0x20/0x16c init/main.c:1410
-> > >  ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
-> > > irq event stamp: 3274113
-> > > hardirqs last  enabled at (3274112): [<ffffbcb864f8aee4>] rcu_core+0x974/0x9e0 kernel/rcu/tree.c:2716
-> > > hardirqs last disabled at (3274113): [<ffffbcb866233bf0>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
-> > > hardirqs last disabled at (3274113): [<ffffbcb866233bf0>] _raw_spin_lock_irqsave+0xb8/0x14c kernel/locking/spinlock.c:159
-> > > softirqs last  enabled at (3272576): [<ffffbcb864e10b80>] __do_softirq+0x630/0x6b4 kernel/softirq.c:325
-> > > softirqs last disabled at (3274101): [<ffffbcb864ec6c54>] do_softirq_own_stack include/linux/interrupt.h:568 [inline]
-> > > softirqs last disabled at (3274101): [<ffffbcb864ec6c54>] invoke_softirq kernel/softirq.c:393 [inline]
-> > > softirqs last disabled at (3274101): [<ffffbcb864ec6c54>] __irq_exit_rcu kernel/softirq.c:423 [inline]
-> > > softirqs last disabled at (3274101): [<ffffbcb864ec6c54>] irq_exit+0x1cc/0x1e0 kernel/softirq.c:447
-> > > ---[ end trace 902768efebf5a607 ]---
-> > > rcu: rcu_preempt: wait state: RCU_GP_WAIT_GPS(1) ->state: 0x0 delta ->gp_activity 4452 ->gp_req_activity 3848 ->gp_wake_time 3848 ->gp_wake_seq 2696 ->gp_seq 2696 ->gp_seq_needed 2700 ->gp_flags 0x1
-> > 
-> > The last thing that RCU's grace-period kthread did was to go to sleep
-> > waiting for a grace-period request (RCU_GP_WAIT_GPS).
-> > 
-> > > rcu: 	rcu_node 0:0 ->gp_seq 2696 ->gp_seq_needed 2700
-> > > rcu: RCU callbacks invoked since boot: 2583
-> > > rcu_tasks: RTGS_WAIT_CBS(11) since 567120 g:1 i:0/0 k. 
-> > > rcu_tasks_rude: RTGS_WAIT_CBS(11) since 567155 g:1 i:0/1 k. 
-> > > rcu_tasks_trace: RTGS_INIT(0) since 4295464549 g:0 i:0/0 k. N0 h:0/0/0
-> > > rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> > > 	(detected by 0, t=3752 jiffies, g=2705, q=8)
-> > > rcu: All QSes seen, last rcu_preempt kthread activity 557 (4295471128-4295470571), jiffies_till_next_fqs=1, root ->qsmask 0x0
-> > > rcu: rcu_preempt kthread starved for 557 jiffies! g2705 f0x2 RCU_GP_CLEANUP(7) ->state=0x0 ->cpu=0
-> > 
-> > And here we see that RCU's grace-period kthread has in fact been starved.
-> > 
-> > This kthread is now in RCU_GP_CLEANUP, perhaps because of the wakeup that is
-> > sent in rcu_check_gp_kthread_starvation().
-> > 
-> > My current guess is that this is a consequence of the earlier failures,
-> > but who knows?
->  
-> I can try bisection again, or reverting some commits that might be
-> suspicious? But we'd need some selection of suspicious commits.
-
-The report claims that one of the rcu_node ->lock fields is held
-with interrupts enabled, which would indeed be bad.  Except that all
-of the stack traces that it shows have these locks held within the
-scheduling-clock interrupt handler.  Now with the "rcu: Don't invoke
-try_invoke_on_locked_down_task() with irqs disabled" but without the
-"sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled"
-commit, I understand why.  With both, I don't see how this happens.
-
-At this point, I am reduced to adding lockdep_assert_irqs_disabled()
-calls at various points in that code, as shown in the patch below.
-
-At this point, I would guess that your first priority would be the
-initial bug rather than this following issue, but you never know, this
-might well help diagnose the initial bug.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit ccedf00693ef60f7c06d23490fc41bb60dd43dc3
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Thu Nov 19 10:13:06 2020 -0800
-
-    rcu: Add lockdep_assert_irqs_disabled() to rcu_sched_clock_irq() and callees
-    
-    This commit adds a number of lockdep_assert_irqs_disabled() calls
-    to rcu_sched_clock_irq() and a number of the functions that it calls.
-    The point of this is to help track down a situation where lockdep appears
-    to be insisting that interrupts are enabled within these functions, which
-    should only ever be invoked from the scheduling-clock interrupt handler.
-    
-    Link: https://lore.kernel.org/lkml/20201111133813.GA81547@elver.google.com/
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2b3274c..1d956f9 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2580,6 +2580,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- void rcu_sched_clock_irq(int user)
- {
- 	trace_rcu_utilization(TPS("Start scheduler-tick"));
-+	lockdep_assert_irqs_disabled();
- 	raw_cpu_inc(rcu_data.ticks_this_gp);
- 	/* The load-acquire pairs with the store-release setting to true. */
- 	if (smp_load_acquire(this_cpu_ptr(&rcu_data.rcu_urgent_qs))) {
-@@ -2593,6 +2594,7 @@ void rcu_sched_clock_irq(int user)
- 	rcu_flavor_sched_clock_irq(user);
- 	if (rcu_pending(user))
- 		invoke_rcu_core();
-+	lockdep_assert_irqs_disabled();
- 
- 	trace_rcu_utilization(TPS("End scheduler-tick"));
- }
-@@ -3761,6 +3763,8 @@ static int rcu_pending(int user)
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 	struct rcu_node *rnp = rdp->mynode;
- 
-+	lockdep_assert_irqs_disabled();
-+
- 	/* Check for CPU stalls, if enabled. */
- 	check_cpu_stall(rdp);
- 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 642ebd6..f7aa41c 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -682,6 +682,7 @@ static void rcu_flavor_sched_clock_irq(int user)
- {
- 	struct task_struct *t = current;
- 
-+	lockdep_assert_irqs_disabled();
- 	if (user || rcu_is_cpu_rrupt_from_idle()) {
- 		rcu_note_voluntary_context_switch(current);
- 	}
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 4e3aecd..f276d8e 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -267,6 +267,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- 	struct task_struct *t;
- 	struct task_struct *ts[8];
- 
-+	lockdep_assert_irqs_disabled();
- 	if (!rcu_preempt_blocked_readers_cgp(rnp))
- 		return 0;
- 	pr_err("\tTasks blocked on level-%d rcu_node (CPUs %d-%d):",
-@@ -291,6 +292,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- 				".q"[rscr.rs.b.need_qs],
- 				".e"[rscr.rs.b.exp_hint],
- 				".l"[rscr.on_blkd_list]);
-+		lockdep_assert_irqs_disabled();
- 		put_task_struct(t);
- 		ndetected++;
- 	}
-@@ -527,6 +529,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 	struct rcu_node *rnp;
- 	long totqlen = 0;
- 
-+	lockdep_assert_irqs_disabled();
-+
- 	/* Kick and suppress, if so configured. */
- 	rcu_stall_kick_kthreads();
- 	if (rcu_stall_is_suppressed())
-@@ -548,6 +552,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 				}
- 		}
- 		ndetected += rcu_print_task_stall(rnp, flags); // Releases rnp->lock.
-+		lockdep_assert_irqs_disabled();
- 	}
- 
- 	for_each_possible_cpu(cpu)
-@@ -594,6 +599,8 @@ static void print_cpu_stall(unsigned long gps)
- 	struct rcu_node *rnp = rcu_get_root();
- 	long totqlen = 0;
- 
-+	lockdep_assert_irqs_disabled();
-+
- 	/* Kick and suppress, if so configured. */
- 	rcu_stall_kick_kthreads();
- 	if (rcu_stall_is_suppressed())
-@@ -649,6 +656,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	unsigned long js;
- 	struct rcu_node *rnp;
- 
-+	lockdep_assert_irqs_disabled();
- 	if ((rcu_stall_is_suppressed() && !READ_ONCE(rcu_kick_kthreads)) ||
- 	    !rcu_gp_in_progress())
- 		return;
+PiBPbiBUaHVyc2RheSwgMTkgTm92ZW1iZXIgMjAyMCwgMDA6NDA6MTggQ0VULCBWbGFkaW1pciBP
+bHRlYW4gd3JvdGU6DQo+ID4gT24gV2VkLCBOb3YgMTgsIDIwMjAgYXQgMDk6MzA6MDFQTSArMDEw
+MCwgQ2hyaXN0aWFuIEVnZ2VycyB3cm90ZToNCj4gPiA+IFRoaXMgc2VyaWVzIGFkZHMgc3VwcG9y
+dCBmb3IgUFRQIHRvIHRoZSBLU1o5NTZ4IGFuZCBLU1o5NDc3IGRldmljZXMuDQo+ID4gPg0KPiA+
+ID4gVGhlcmUgaXMgb25seSBsaXR0bGUgZG9jdW1lbnRhdGlvbiBmb3IgUFRQIGF2YWlsYWJsZSBv
+biB0aGUgZGF0YSBzaGVldA0KPiA+ID4gWzFdIChtb3JlIG9yIGxlc3Mgb25seSB0aGUgcmVnaXN0
+ZXIgcmVmZXJlbmNlKS4gUXVlc3Rpb25zIHRvIHRoZQ0KPiA+ID4gTWljcm9jaGlwIHN1cHBvcnQg
+d2VyZSBzZWxkb20gYW5zd2VyZWQgY29tcHJlaGVuc2l2ZWx5IG9yIGluDQo+IHJlYXNvbmFibGUN
+Cj4gPiA+IHRpbWUuIFNvIHRoaXMgaXMgbW9yZSBvciBsZXNzIHRoZSByZXN1bHQgb2YgcmV2ZXJz
+ZSBlbmdpbmVlcmluZy4NCj4gPg0KPiA+IFsuLi5dDQo+ID4gT25lIHRoaW5nIHRoYXQgc2hvdWxk
+IGRlZmluaXRlbHkgbm90IGJlIHBhcnQgb2YgdGhpcyBzZXJpZXMgdGhvdWdoIGlzDQo+ID4gcGF0
+Y2ggMTEvMTIuIENocmlzdGlhbiwgZ2l2ZW4gdGhlIGNvbnZlcnNhdGlvbiB3ZSBoYWQgb24geW91
+ciBwcmV2aW91cw0KPiA+IHBhdGNoOg0KPiA+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL25ldGRl
+di8yMDIwMTExMzAyNTMxMS5qcGtwbGhtYWNqejZsa2M1QHNrYnVmLw0KPiBzb3JyeSwgSSBkaWRu
+J3QgcmVhZCB0aGF0IGNhcmVmdWxseSBlbm91Z2guIFNvbWUgb2YgdGhlIG90aGVyIHJlcXVlc3Rl
+ZA0KPiBjaGFuZ2VzDQo+IHdlcmUgcXVpdGUgY2hhbGxlbmdpbmcgZm9yIG1lLiBBZGRpdGlvbmFs
+bHksIGZpbmRpbmcgdGhlIFVEUCBjaGVja3N1bSBidWcNCj4gbmVlZGVkIHNvbWUgdGltZSBmb3Ig
+aWRlbnRpZnlpbmcgYmVjYXVzZSBJIGRpZG4ndCByZWNvZ25pemUgdGhhdCB3aGVuIGl0IGdvdA0K
+PiBpbnRyb2R1Y2VkLg0KPiANCj4gPiBhcyB3ZWxsIGFzIHRoZSBkb2N1bWVudGF0aW9uIHBhdGNo
+IHRoYXQgd2FzIHN1Ym1pdHRlZCBpbiB0aGUgbWVhbnRpbWU6DQo+ID4gaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvbmV0ZGV2LzIwMjAxMTE3MjEzODI2LjE4MjM1LTEtDQo+IGEuZmF0b3VtQHBlbmd1
+dHJvbml4LmRlLw0KPiBJIGFtIG5vdCBzdWJzY3JpYmVkIHRvIHRoZSBsaXN0Lg0KPiANCj4gPiBv
+YnZpb3VzbHkgeW91IGNob3NlIHRvIGNvbXBsZXRlbHkgZGlzcmVnYXJkIHRoYXQuIE1heSB3ZSBr
+bm93IHdoeT8gSG93DQo+ID4gYXJlIHlvdSBldmVuIG1ha2luZyB1c2Ugb2YgdGhlIFBUUF9DTEtf
+UkVRX1BQUyBmZWF0dXJlPw0KPiBPZiBjb3Vyc2UgSSB3aWxsIGRyb3AgdGhhdCBwYXRjaCBmcm9t
+IHRoZSBuZXh0IHNlcmllcy4NCg0KVGhlc2UgYXJlIGdlbmVyYWwgY29tbWVudHMgYWJvdXQgdGhp
+cyBQVFAgcGF0Y2guDQoNClRoZSBpbml0aWFsIHByb3Bvc2FsIGluIHRhZ19rc3ouYyBpcyBmb3Ig
+dGhlIHN3aXRjaCBkcml2ZXIgdG8gcHJvdmlkZSBjYWxsYmFjayBmdW5jdGlvbnMNCnRvIGhhbmRs
+ZSByZWNlaXZpbmcgYW5kIHRyYW5zbWl0dGluZy4gIFRoZW4gZWFjaCBzd2l0Y2ggZHJpdmVyIGNh
+biBiZSBhZGRlZCB0bw0KcHJvY2VzcyB0aGUgdGFpbCB0YWcgaW4gaXRzIG93biBkcml2ZXIgYW5k
+IGxlYXZlIHRhZ19rc3ouYyB1bmNoYW5nZWQuDQoNCkl0IHdhcyByZWplY3RlZCBiZWNhdXNlIG9m
+IHdhbnRpbmcgdG8ga2VlcCB0YWdfa3N6LmMgY29kZSBhbmQgc3dpdGNoIGRyaXZlciBjb2RlDQpz
+ZXBhcmF0ZSBhbmQgY29uY2VybiBhYm91dCBwZXJmb3JtYW5jZS4NCg0KTm93IHRhZ19rc3ouYyBp
+cyBmaWxsZWQgd2l0aCBQVFAgY29kZSB0aGF0IGlzIG5vdCByZWxldmFudCBmb3Igb3RoZXIgc3dp
+dGNoZXMgYW5kIHdpbGwNCm5lZWQgdG8gYmUgY2hhbmdlZCBhZ2FpbiB3aGVuIGFub3RoZXIgc3dp
+dGNoIGRyaXZlciB3aXRoIFBUUCBmdW5jdGlvbiBpcyBhZGRlZC4NCg0KQ2FuIHdlIGltcGxlbWVu
+dCB0aGF0IGNhbGxiYWNrIG1lY2hhbmlzbT8NCg0KT25lIGlzc3VlIHdpdGggdHJhbnNtaXNzaW9u
+IHdpdGggUFRQIGVuYWJsZWQgaXMgdGhhdCB0aGUgdGFpbCB0YWcgbmVlZHMgdG8gY29udGFpbiA0
+DQphZGRpdGlvbmFsIGJ5dGVzLiAgV2hlbiB0aGUgUFRQIGZ1bmN0aW9uIGlzIG9mZiB0aGUgYnl0
+ZXMgYXJlIG5vdCBhZGRlZC4gIFRoaXMgc2hvdWxkDQpiZSBtb25pdG9yZWQgYWxsIHRoZSB0aW1l
+Lg0KDQpUaGUgZXh0cmEgNCBieXRlcyBhcmUgb25seSB1c2VkIGZvciAxLXN0ZXAgUGRlbGF5X1Jl
+c3AuICBJdCBzaG91bGQgY29udGFpbiB0aGUgcmVjZWl2ZQ0KdGltZXN0YW1wIG9mIHByZXZpb3Vz
+IFBkZWxheV9SZXEgd2l0aCBsYXRlbmN5IGFkanVzdGVkLiAgVGhlIGNvcnJlY3Rpb24gZmllbGQg
+aW4NClBkZWxheV9SZXNwIHNob3VsZCBiZSB6ZXJvLiAgSXQgbWF5IGJlIGEgaGFyZHdhcmUgYnVn
+IHRvIGhhdmUgd3JvbmcgVURQIGNoZWNrc3VtDQp3aGVuIHRoZSBtZXNzYWdlIGlzIHNlbnQuDQoN
+CkkgdGhpbmsgdGhlIHJpZ2h0IGltcGxlbWVudGF0aW9uIGlzIGZvciB0aGUgZHJpdmVyIHRvIHJl
+bWVtYmVyIHRoaXMgcmVjZWl2ZSB0aW1lc3RhbXANCm9mIFBkZWxheV9SZXEgYW5kIHB1dHMgaXQg
+aW4gdGhlIHRhaWwgdGFnIHdoZW4gaXQgc2VlcyBhIDEtc3RlcCBQZGVsYXlfUmVzcCBpcyBzZW50
+Lg0KDQpUaGVyZSBpcyBvbmUgbW9yZSByZXF1aXJlbWVudCB0aGF0IGlzIGEgbGl0dGxlIGRpZmZp
+Y3VsdCB0byBkby4gIFRoZSBjYWxjdWxhdGVkIHBlZXIgZGVsYXkNCm5lZWRzIHRvIGJlIHByb2dy
+YW1tZWQgaW4gaGFyZHdhcmUgcmVnaXN0ZXIsIGJ1dCB0aGUgcmVndWxhciBQVFAgc3RhY2sgaGFz
+IG5vIHdheSB0bw0Kc2VuZCB0aGF0IGNvbW1hbmQuICBJIHRoaW5rIHRoZSBkcml2ZXIgaGFzIHRv
+IGRvIGl0cyBvd24gY2FsY3VsYXRpb24gYnkgc25vb3Bpbmcgb24gdGhlDQpQZGVsYXlfUmVxL1Bk
+ZWxheV9SZXNwL1BkZWxheV9SZXNwX0ZvbGxvd19VcCBtZXNzYWdlcy4NCg0KVGhlIHJlY2VpdmUg
+YW5kIHRyYW5zbWl0IGxhdGVuY2llcyBhcmUgZGlmZmVyZW50IGZvciBkaWZmZXJlbnQgY29ubmVj
+dGVkIHNwZWVkLiAgU28gdGhlDQpkcml2ZXIgbmVlZHMgdG8gY2hhbmdlIHRoZW0gd2hlbiB0aGUg
+bGluayBjaGFuZ2VzLiAgRm9yIHRoYXQgcmVhc29uIHRoZSBQVFAgc3RhY2sNCnNob3VsZCBub3Qg
+dXNlIGl0cyBvd24gbGF0ZW5jeSB2YWx1ZXMgYXMgZ2VuZXJhbGx5IHRoZSBhcHBsaWNhdGlvbiBk
+b2VzIG5vdCBjYXJlIGFib3V0DQp0aGUgbGlua2VkIHNwZWVkLg0KIA0K
