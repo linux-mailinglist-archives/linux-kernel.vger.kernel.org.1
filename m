@@ -2,140 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DED2B9622
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1206F2B9616
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728603AbgKSPZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:25:25 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43916 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728587AbgKSPZW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:25:22 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJF3o0K178201;
-        Thu, 19 Nov 2020 10:25:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=bZWeach1hpqIl7RkSlIKJPYnf7keLEg/eCDF2QMudGY=;
- b=AFHXbVnlSsJ3MAa+tlSs32PwIEzK89R7S6vrvUsZWnb1Cc6Pph9KCVcs8AWilA55NYRJ
- l+mUU7mMgHmKbNWSJmnuZlY/TLThF4SpaVtjQ2eDzDillBTNlzd1P5KYwJo/Ih3N7Plb
- TKHJCrC/1ZwDQCFMFxpqljFbWlMIn+Iuep4V5yXV2Yc7eYVG0FoiALItR7GGUquVH1qK
- t+USKxYpnGgAznNueXrnLne/DDFzHd7n1WnEeuefjZbZ3PNTttmycFRiHOH7KRigKsOo
- 443cgTmfDtMEq15T3rKcQnaadQqhSLKfVBO2FuXpDj50F8T3xRGFA1HdouqITTakUfTd 1w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34wg133jma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 10:25:20 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AJF4A4Y180667;
-        Thu, 19 Nov 2020 10:25:19 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34wg133jk4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 10:25:19 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AJF7fEV032766;
-        Thu, 19 Nov 2020 15:25:16 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 34w4yfh6uc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 15:25:16 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AJFPDGX50463172
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Nov 2020 15:25:13 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7E2E0A4057;
-        Thu, 19 Nov 2020 15:25:13 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 43A6FA404D;
-        Thu, 19 Nov 2020 15:25:11 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.85.99.210])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Nov 2020 15:25:10 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     jolsa@redhat.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, irogers@google.com,
-        ravi.bangoria@linux.ibm.com, kjain@linux.ibm.com,
-        maddy@linux.ibm.com
-Subject: [PATCH] perf test: Fix metric parsing test
-Date:   Thu, 19 Nov 2020 20:54:11 +0530
-Message-Id: <20201119152411.46041-1-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
+        id S1728260AbgKSPYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:24:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728018AbgKSPYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:24:37 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E46A24695;
+        Thu, 19 Nov 2020 15:24:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605799477;
+        bh=vhsM6OOWsmV75YH35wM6eBKYq0pu3NlFsI0c/iS85Jw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=itGY+rODjctume7lqREVvVgTm0PipbbooAkT9XKeItLpchquNp7qpaiFyg7lwNNg3
+         GQz4bB+sDcOnLZuuFxPmVYzJiDmlkv62Rg+Y8+jk2gyyqNqEIvpEz/OLcMR/n2uOoU
+         8AmMuKMJmPmGiqWpHdm7eQ3hslokzd1xig76cxrA=
+Date:   Thu, 19 Nov 2020 15:24:16 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/3] spi: fix resource leak for drivers without .remove
+ callback
+Message-ID: <20201119152416.GB5554@sirena.org.uk>
+References: <20201119152059.2631650-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_09:2020-11-19,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0
- bulkscore=0 phishscore=0 adultscore=0 suspectscore=1 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190114
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="b5gNqxB1S1yM7hjW"
+Content-Disposition: inline
+In-Reply-To: <20201119152059.2631650-1-u.kleine-koenig@pengutronix.de>
+X-Cookie: Chocolate chip.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e1c92a7fbbc5 ("perf tests: Add another metric parsing test")
-add another test for metric parsing. The test goes through all metrics
-compiled for arch within pmu events and try to parse them.
 
-Right now this test is failing in powerpc machine.
+--b5gNqxB1S1yM7hjW
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Result in power9 platform:
+On Thu, Nov 19, 2020 at 04:20:57PM +0100, Uwe Kleine-K=F6nig wrote:
+> Consider an spi driver with a .probe but without a .remove callback (e.g.
+> rtc-ds1347). The function spi_drv_probe() is called to bind a device and
+> so some init routines like dev_pm_domain_attach() are used. As there is
+> no remove callback spi_drv_remove() isn't called at unbind time however
+> and so calling dev_pm_domain_detach() is missed and the pm domain keeps
+> active.
 
-[command]# ./perf test 10
-10: PMU events                                                      :
-10.1: PMU event table sanity                                        : Ok
-10.2: PMU event map aliases                                         : Ok
-10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
-10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+> To fix this always use either both or none of the functions and make
+> them handle the callback not being set.
 
-Issue is we are passing different runtime parameter value in "expr__find_other"
-and "expr__parse" function which is called from function `metric_parse_fake`.
-And because of this parsing of hv-24x7 metrics is failing.
+Why would we want to tie configuring PM domains to either of these
+functions?  We certainly don't want to force drivers to have empty
+remove functions to trigger cleanup of domains, this would be
+counterintuitive and this stuff should be transparent to the driver.
 
-[command]# ./perf test 10 -vv
-.....
-hv_24x7/pm_mcs01_128b_rd_disp_port01,chip=1/ not found
-expr__parse failed
-test child finished with -1
----- end ----
-PMU events subtest 4: FAILED!
+--b5gNqxB1S1yM7hjW
+Content-Type: application/pgp-signature; name="signature.asc"
 
-This patch fix this issue and change runtime parameter value to '0' in
-expr__parse function.
+-----BEGIN PGP SIGNATURE-----
 
-Result in power9 platform after this patch:
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+2jh8ACgkQJNaLcl1U
+h9CEIgf+KS7hlI8RaH9Yz5nFvPMDnGif1tpYzZmGdG66LnEwmLJyYByEKxWPMUfd
+XKVQk6ebTw4Te+w1s+0vVdQDToqluN2VL1h4246SeMdvs+3m9W0EdNa4TmxcHL8p
+Z9BwEfGyZnr8fP9rEUJRtuctsM9XTqwBHN9JpD7tiF5zS5nEG0YCXil/sfv840dG
+4A8dK+JWidPoV1Io297kXk9DFKEk13x0ZwW6RzmSb+RYO/KXC89wXFG/zkx++q2O
+2glLn1xEXL9j9a5foxnKZbDCrfrS0Qvq5i0nFbtMJQ9NA41alrnL8hAUaDWkOqnp
+JkKmG2gIh4zoqy4lrBQHgT+0C9y3BQ==
+=qkpy
+-----END PGP SIGNATURE-----
 
-[command]# ./perf test 10
-10: PMU events                                                      :
-10.1: PMU event table sanity                                        : Ok
-10.2: PMU event map aliases                                         : Ok
-10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
-10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
-
-Fixes: e1c92a7fbbc5 ("perf tests: Add another metric parsing test")
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
----
- tools/perf/tests/pmu-events.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index ad2b21591275..0ca6a5a53523 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -575,7 +575,7 @@ static int metric_parse_fake(const char *str)
- 		}
- 	}
- 
--	if (expr__parse(&result, &ctx, str, 1))
-+	if (expr__parse(&result, &ctx, str, 0))
- 		pr_err("expr__parse failed\n");
- 	else
- 		ret = 0;
--- 
-2.27.0
-
+--b5gNqxB1S1yM7hjW--
