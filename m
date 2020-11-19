@@ -2,51 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEB82B9639
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C322B9643
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgKSP10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:27:26 -0500
-Received: from foss.arm.com ([217.140.110.172]:60380 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728228AbgKSP1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:27:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B44411D4;
-        Thu, 19 Nov 2020 07:27:24 -0800 (PST)
-Received: from bogus (unknown [10.57.54.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B69E93F719;
-        Thu, 19 Nov 2020 07:27:21 -0800 (PST)
-Date:   Thu, 19 Nov 2020 15:27:19 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, lukasz.luba@arm.com,
-        Jonathan.Cameron@Huawei.com, broonie@kernel.org, robh@kernel.org,
-        satyakim@qti.qualcomm.com, etienne.carriere@linaro.org,
-        f.fainelli@gmail.com, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v5 5/5] dt-bindings: arm: add support for SCMI Regulators
-Message-ID: <20201119152719.pkba7bz23s4bzo46@bogus>
-References: <20201117123415.55105-1-cristian.marussi@arm.com>
- <20201117123415.55105-6-cristian.marussi@arm.com>
+        id S1727811AbgKSPdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:33:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727535AbgKSPdA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:33:00 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F45DC0613CF;
+        Thu, 19 Nov 2020 07:33:00 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id a15so6285209edy.1;
+        Thu, 19 Nov 2020 07:33:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ddxSt3wpSpboFERrBzVXzYpBlWugsPxM3x0s+uiBN2M=;
+        b=iMB7AActJAYhUi6yp+uKKqf/eJgTmphnLGUbc/I2BAdd/Ao2za7FuaEkiyf+eSfTGe
+         YaAvGicLhCpfhrskqGXxqOzGB27p+JVMgJJSCvy9OajV1xCiCCscL/lg7HbT11J2uJcB
+         7m8ngC1oWnR/81cVGHR0jXPlU13LKVgvvHRyXmjS8YhYzpRNWFffw1cugGAmybdjpfC+
+         3J1SKQKa5gjYZmBE3GA6sGW9U87foJ0p9AdYH7VbiK5SzsFgF6nwlhuC86p3iG2mhZih
+         Z2lKpQ7PIgv1tvzeuHuhAUCGlhKH31uqeTNjd8570WC1GlA0fhT1lylnjmfjUUyvb3rk
+         t3tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ddxSt3wpSpboFERrBzVXzYpBlWugsPxM3x0s+uiBN2M=;
+        b=BopokDnwjd6QQABAijRn/LPeAjxLxQZzCg7qBo7Lc9ABjS1HyC/CDoo5fjqtroARHy
+         XmVdPykJunnpQj7QQ4OOFMmIW8Tot0vdb0uGO6H+c6CYKfqSm9iTFvTKwdm1WH2Mju9+
+         6UhrKGknnZ1CyL8hcsPZmq7uUHs1jVhLKIUG4aDr1XX0ABA1s9ZbCsUrknJKVFp122gr
+         a3P129Y7FH4OxyX0Qysd22XCmAhGJ9ToDEFSwqREyWHjMKozCOCG3jBKkipXXKyQCSc0
+         TiBlU93OKnhHGr8XCYv0KX7lHau4g1VTe+8XbZfvUhETIAtOT260jYk0rV7tuGzR006i
+         sv6w==
+X-Gm-Message-State: AOAM532L3vORalOw0/Eqpwyr9dTnGSSu7Lcf44QEep9yXxFLiH+G1P8a
+        IIf+Hk7HP5+FDcHVParQbsuNiKhKzJ44sA==
+X-Google-Smtp-Source: ABdhPJwGZZjfAcLjNFQmoj+12BbllR5+smck15BtFcLyUbze6Gh2p/TVFNPCRgVO4m5B8mnPcLb9BA==
+X-Received: by 2002:a50:da4b:: with SMTP id a11mr13553485edk.364.1605799979057;
+        Thu, 19 Nov 2020 07:32:59 -0800 (PST)
+Received: from localhost.localdomain (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
+        by smtp.gmail.com with ESMTPSA id u7sm3595612ejf.83.2020.11.19.07.32.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 07:32:58 -0800 (PST)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] optimise iov_iter
+Date:   Thu, 19 Nov 2020 15:29:41 +0000
+Message-Id: <cover.1605799583.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117123415.55105-6-cristian.marussi@arm.com>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 12:34:15PM +0000, Cristian Marussi wrote:
-> Add devicetree bindings to support regulators based on SCMI Voltage
-> Domain Protocol.
->
+The first patch optimises iov_iter_npages() for the bvec case, and the
+second helps code generation to kill unreachable code.
 
-Ideally, the DT binding should be first one, rather before the binding
-is used in the code. I can move the order while applying.
+Pavel Begunkov (2):
+  iov_iter: optimise iov_iter_npages for bvec
+  iov_iter: optimise iter type checking
+
+ include/linux/uio.h | 10 +++++-----
+ lib/iov_iter.c      | 10 +++++-----
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
 -- 
-Regards,
-Sudeep
+2.24.0
+
