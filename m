@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA67B2B9590
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5302B9593
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728136AbgKSOyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:54:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:59750 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728044AbgKSOyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:54:52 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F87911D4;
-        Thu, 19 Nov 2020 06:54:52 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C423A3F719;
-        Thu, 19 Nov 2020 06:54:49 -0800 (PST)
-References: <20201113093720.21106-1-will@kernel.org> <20201113093720.21106-8-will@kernel.org> <jhj8saxwm1l.mognet@arm.com> <20201119131319.GE4331@willie-the-truck>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 07/14] sched: Introduce restrict_cpus_allowed_ptr() to limit task CPU affinity
-In-reply-to: <20201119131319.GE4331@willie-the-truck>
-Date:   Thu, 19 Nov 2020 14:54:47 +0000
-Message-ID: <jhj5z61wg5k.mognet@arm.com>
+        id S1727669AbgKSO5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:57:43 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:62550 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727053AbgKSO5m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:57:42 -0500
+Received: from fsav104.sakura.ne.jp (fsav104.sakura.ne.jp [27.133.134.231])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0AJEvefs079100;
+        Thu, 19 Nov 2020 23:57:40 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav104.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp);
+ Thu, 19 Nov 2020 23:57:40 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0AJEve44079096
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 19 Nov 2020 23:57:40 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH v3] lockdep: Allow tuning tracing capacity constants.
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzkaller <syzkaller@googlegroups.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+ <0eb519fa-e77b-b655-724a-4e9eecc64626@i-love.sakura.ne.jp>
+ <6933e938-f219-5e13-aee6-fe4de87eb43e@i-love.sakura.ne.jp>
+ <81ab0ffd-6e80-c96c-053a-b1b4fe8694c1@i-love.sakura.ne.jp>
+ <20201118142357.GW3121392@hirez.programming.kicks-ass.net>
+ <1778f2e5-0a0c-2c6e-2c83-fe51d938e8a2@i-love.sakura.ne.jp>
+ <20201118151038.GX3121392@hirez.programming.kicks-ass.net>
+ <9bc4e07d-2a58-077b-b4c7-ab056ba33cf1@i-love.sakura.ne.jp>
+ <CACT4Y+ZJNkssAQLuwfcKPTTKLZhHRAo0POGOMVsGFGizoHaNMg@mail.gmail.com>
+ <CACT4Y+Zh10241gchu6e_=LwxPSEzXT-0HSmhnTtkXFZevKi_yQ@mail.gmail.com>
+ <CACT4Y+a8TjV+Pe6mwne777RV+xB+aHT6GxuMLAVBn5mtK4P0Lw@mail.gmail.com>
+ <CACT4Y+ZSsKjvojD8iFVFv9F5X5BvZR8vLyaKrgxUxyknma04Sg@mail.gmail.com>
+ <5e8342c4-702f-80a9-e669-8a7386ce0da1@i-love.sakura.ne.jp>
+ <CACT4Y+a4X4MNkWsvRySokKE=gO8AH1kegtUQk9T0M37EfWtN-w@mail.gmail.com>
+ <CACT4Y+aNJmuhk0KicX4FzKW6PhawFBgvrC2gSJcWwUkR8VSSmg@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <7ff5e5db-4fbd-00ff-d264-cf80e52bb1b6@i-love.sakura.ne.jp>
+Date:   Thu, 19 Nov 2020 23:57:36 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CACT4Y+aNJmuhk0KicX4FzKW6PhawFBgvrC2gSJcWwUkR8VSSmg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020/11/19 23:30, Dmitry Vyukov wrote:
+> p.s. it's indeed huge, full log was 11MB, this probably won't be
+> chewed by syzbot.
 
-On 19/11/20 13:13, Will Deacon wrote:
-> On Thu, Nov 19, 2020 at 12:47:34PM +0000, Valentin Schneider wrote:
->>
->> On 13/11/20 09:37, Will Deacon wrote:
->> > Asymmetric systems may not offer the same level of userspace ISA support
->> > across all CPUs, meaning that some applications cannot be executed by
->> > some CPUs. As a concrete example, upcoming arm64 big.LITTLE designs do
->> > not feature support for 32-bit applications on both clusters.
->> >
->> > Although userspace can carefully manage the affinity masks for such
->> > tasks, one place where it is particularly problematic is execve()
->> > because the CPU on which the execve() is occurring may be incompatible
->> > with the new application image. In such a situation, it is desirable to
->> > restrict the affinity mask of the task and ensure that the new image is
->> > entered on a compatible CPU.
->>
->> > From userspace's point of view, this looks the same as if the
->> > incompatible CPUs have been hotplugged off in its affinity mask.
->>
->> {pedantic reading warning}
->>
->> Hotplugged CPUs *can* be set in a task's affinity mask, though interact
->> weirdly with cpusets [1]. Having it be the same as hotplug would mean
->> keeping incompatible CPUs allowed in the affinity mask, but preventing them
->> from being picked via e.g. is_cpu_allowed().
->
-> Sure, but I was talking about what userspace sees, and I don't think it ever
-> sees CPUs that have been hotplugged off, right? That is, sched_getaffinity()
-> masks its result with the active_mask.
->
+Is "cat /proc/lockdep*" output written from userspace?
+Then, we could try "xz -9" + "base64" for recording.
 
-Right, this wasn't pedantic reading, but reading between the lines!
+> Peter, are these [hex numbers] needed? Could we strip them during
+> post-processing? At first sight they look like derivatives of the
+> name.
+
+kernel/locking/lockdep.c uses %px (raw address) whereas
+kernel/locking/lockdep_proc.c uses %p (__ptr_to_hashval() value).
+I think saving these [hashed hex numbers] is unlikely useful.
+At least for this testing, we can strip leading 00000000 part.
