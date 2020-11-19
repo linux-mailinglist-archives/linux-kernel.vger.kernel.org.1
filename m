@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868BE2B9BC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDC12B9BC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727715AbgKST4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:56:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44070 "EHLO mail.kernel.org"
+        id S1727834AbgKST61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:58:27 -0500
+Received: from mga04.intel.com ([192.55.52.120]:14183 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727304AbgKST4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:56:32 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9769A2224D;
-        Thu, 19 Nov 2020 19:56:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605815791;
-        bh=dErbzcv3kR/xdYe7GVFdgHBkg9LK5dXcA6T+ijj9rpc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=TEfH60p0Hoyo86weK5rZ40gatR1l75RDcEo4vHtLLB3HMBxlfkKgPZwEzOksVgO46
-         7NEmA0LUJcJXHiW0lkkze/LC0T6pjP4AZhHqEMXkVSla1iWQGqjLjkk3drwcDJjd+5
-         fxJLxsr8yFh1REeVzfQCLX4y9OLBVFVDzF27ekKg=
-Date:   Thu, 19 Nov 2020 13:56:30 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        davem@davemloft.net, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com
-Subject: Re: [v4,3/3] MAINTAINERS: update entry for MediaTek PCIe controller
-Message-ID: <20201119195630.GA197187@bjorn-Precision-5520>
+        id S1726820AbgKST61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 14:58:27 -0500
+IronPort-SDR: wfkSV18YztEjQN7iiCtK61d3gKMP7/YMtMbsd7Y7fJuLcwIIT6NtNbJlMjQhRq7MXASv2lHgui
+ PwI2Al/7RpuA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="168782679"
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="168782679"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 11:58:26 -0800
+IronPort-SDR: mNmWCJtYPhnq+MLG2r+sOL8j9YmUXjIGiWPp/Y9ybuSk2U45p5P8vpnmblP23MJtea4St1WcUr
+ g00c/CFqhquQ==
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="360143084"
+Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.51])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 11:58:24 -0800
+Date:   Thu, 19 Nov 2020 19:58:16 +0000
+From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        qat-linux@intel.com, Denis Efremov <efremov@linux.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org
+Subject: Re: [PATCH] crypto: qat - fix excluded_middle.cocci warnings
+Message-ID: <20201119195816.GA131726@silpixa00400314>
+References: <alpine.DEB.2.22.394.2011131811110.2840@hadrien>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118082935.26828-4-jianjun.wang@mediatek.com>
+In-Reply-To: <alpine.DEB.2.22.394.2011131811110.2840@hadrien>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Follow the convention and include more information in the subject,
-e.g.,
+On Fri, Nov 13, 2020 at 06:14:00PM +0100, Julia Lawall wrote:
+> From: kernel test robot <lkp@intel.com>
+> 
+>  Condition !A || A && B is equivalent to !A || B.
+A similar change was submitted and discussed some time ago:
+https://patchwork.kernel.org/project/linux-crypto/patch/78b1532c-f8bf-48e4-d0a7-30ea0137d408@huawei.com/
 
-  MAINTAINERS: Add Jianjun Wang as MediaTek PCI co-maintainer
+The change simplifies the logic but makes the code less readable.
+I added a comment to clarify it.
 
-On Wed, Nov 18, 2020 at 04:29:35PM +0800, Jianjun Wang wrote:
-> Add maintainer for MediaTek PCIe controller driver.
-> 
-> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
-> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index deaafb617361..5c6110468526 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13459,6 +13459,7 @@ F:	drivers/pci/controller/dwc/pcie-histb.c
->  
->  PCIE DRIVER FOR MEDIATEK
->  M:	Ryder Lee <ryder.lee@mediatek.com>
-> +M:	Jianjun Wang <jianjun.wang@mediatek.com>
->  L:	linux-pci@vger.kernel.org
->  L:	linux-mediatek@lists.infradead.org
->  S:	Supported
-> -- 
-> 2.25.1
-> 
+Regards,
+
+-- 
+Giovanni
+
+----8<----
+From: kernel test robot <lkp@intel.com>
+Date: Fri, 13 Nov 2020 18:14:00 +0100
+Subject: [PATCH] crypto: qat - fix excluded_middle.cocci warnings
+
+ Condition !A || A && B is equivalent to !A || B.
+
+Generated by: scripts/coccinelle/misc/excluded_middle.cocci
+
+Fixes: b76f0ea01312 ("coccinelle: misc: add excluded_middle.cocci script")
+CC: Denis Efremov <efremov@linux.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+---
+ drivers/crypto/qat/qat_common/adf_dev_mgr.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/qat/qat_common/adf_dev_mgr.c b/drivers/crypto/qat/qat_common/adf_dev_mgr.c
+index 29dc2e3d38ff..4c752eed10fe 100644
+--- a/drivers/crypto/qat/qat_common/adf_dev_mgr.c
++++ b/drivers/crypto/qat/qat_common/adf_dev_mgr.c
+@@ -151,8 +151,8 @@ int adf_devmgr_add_dev(struct adf_accel_dev *accel_dev,
+ 	mutex_lock(&table_lock);
+ 	atomic_set(&accel_dev->ref_count, 0);
+ 
+-	/* PF on host or VF on guest */
+-	if (!accel_dev->is_vf || (accel_dev->is_vf && !pf)) {
++	/* PF on host or VF on guest - optimized to remove redundant is_vf */
++	if (!accel_dev->is_vf || !pf) {
+ 		struct vf_id_map *map;
+ 
+ 		list_for_each(itr, &accel_table) {
+@@ -248,7 +248,8 @@ void adf_devmgr_rm_dev(struct adf_accel_dev *accel_dev,
+ 		       struct adf_accel_dev *pf)
+ {
+ 	mutex_lock(&table_lock);
+-	if (!accel_dev->is_vf || (accel_dev->is_vf && !pf)) {
++	/* PF on host or VF on guest - optimized to remove redundant is_vf */
++	if (!accel_dev->is_vf || !pf) {
+ 		id_map[accel_dev->accel_id] = 0;
+ 		num_devices--;
+ 	} else if (accel_dev->is_vf && pf) {
+-- 
+2.28.0
+
