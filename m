@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21F52B8D3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9936B2B8D3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgKSIab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:30:31 -0500
-Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:51660 "EHLO
-        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726094AbgKSIaa (ORCPT
+        id S1726621AbgKSIad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:30:33 -0500
+Received: from outbound-smtp29.blacknight.com ([81.17.249.32]:55006 "EHLO
+        outbound-smtp29.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726073AbgKSIab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:30:30 -0500
+        Thu, 19 Nov 2020 03:30:31 -0500
 Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id 92542BF020
+        by outbound-smtp29.blacknight.com (Postfix) with ESMTPS id AD340BF037
         for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:30:28 +0000 (GMT)
-Received: (qmail 4668 invoked from network); 19 Nov 2020 08:30:28 -0000
+Received: (qmail 4685 invoked from network); 19 Nov 2020 08:30:28 -0000
 Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
   by 81.17.254.9 with ESMTPA; 19 Nov 2020 08:30:28 -0000
 From:   Mel Gorman <mgorman@techsingularity.net>
@@ -26,9 +26,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 2/4] sched: Avoid unnecessary calculation of load imbalance at clone time
-Date:   Thu, 19 Nov 2020 08:30:25 +0000
-Message-Id: <20201119083027.31335-3-mgorman@techsingularity.net>
+Subject: [PATCH 3/4] sched/numa: Allow a floating imbalance between NUMA nodes
+Date:   Thu, 19 Nov 2020 08:30:26 +0000
+Message-Id: <20201119083027.31335-4-mgorman@techsingularity.net>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201119083027.31335-1-mgorman@techsingularity.net>
 References: <20201119083027.31335-1-mgorman@techsingularity.net>
@@ -38,46 +38,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In find_idlest_group(), the load imbalance is only relevant when the group
-is either overloaded or fully busy but it is calculated unconditionally.
-This patch moves the imbalance calculation to the context it is required.
-Technically, it is a micro-optimisation but really the benefit is avoiding
-confusing one type of imbalance with another depending on the group_type
-in the next patch.
+Currently, an imbalance is only allowed when a destination node
+is almost completely idle. This solved one basic class of problems
+and was the cautious approach.
 
-No functional change.
+This patch revisits the possibility that NUMA nodes can be imbalanced
+until 25% of the CPUs are occupied. The reasoning behind 25% is somewhat
+superficial -- it's half the cores when HT is enabled.  At higher
+utilisations, balancing should continue as normal and keep things even
+until scheduler domains are fully busy or over utilised.
+
+Note that this is not expected to be a universal win. Any benchmark
+that prefers spreading as wide as possible with limited communication
+will favour the old behaviour as there is more memory bandwidth.
+Workloads that communicate heavily in pairs such as netperf or tbench
+benefit. For the tests I ran, the vast majority of workloads saw
+a benefit so it seems to be a worthwhile trade-off.
 
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- kernel/sched/fair.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ kernel/sched/fair.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 5fbed29e4001..9aded12aaa90 100644
+index 9aded12aaa90..e17e6c5da1d5 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -8777,9 +8777,6 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 			.group_type = group_overloaded,
- 	};
+@@ -1550,7 +1550,8 @@ struct task_numa_env {
+ static unsigned long cpu_load(struct rq *rq);
+ static unsigned long cpu_runnable(struct rq *rq);
+ static unsigned long cpu_util(int cpu);
+-static inline long adjust_numa_imbalance(int imbalance, int dst_running);
++static inline long adjust_numa_imbalance(int imbalance,
++					int dst_running, int dst_weight);
  
--	imbalance = scale_load_down(NICE_0_LOAD) *
--				(sd->imbalance_pct-100) / 100;
+ static inline enum
+ numa_type numa_classify(unsigned int imbalance_pct,
+@@ -1930,7 +1931,8 @@ static void task_numa_find_cpu(struct task_numa_env *env,
+ 		src_running = env->src_stats.nr_running - 1;
+ 		dst_running = env->dst_stats.nr_running + 1;
+ 		imbalance = max(0, dst_running - src_running);
+-		imbalance = adjust_numa_imbalance(imbalance, dst_running);
++		imbalance = adjust_numa_imbalance(imbalance, dst_running,
++							env->dst_stats.weight);
+ 
+ 		/* Use idle CPU if there is no imbalance */
+ 		if (!imbalance) {
+@@ -8995,16 +8997,14 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+ 
+ #define NUMA_IMBALANCE_MIN 2
+ 
+-static inline long adjust_numa_imbalance(int imbalance, int dst_running)
++static inline long adjust_numa_imbalance(int imbalance,
++				int dst_running, int dst_weight)
+ {
+-	unsigned int imbalance_min;
 -
- 	do {
- 		int local_group;
+ 	/*
+ 	 * Allow a small imbalance based on a simple pair of communicating
+-	 * tasks that remain local when the source domain is almost idle.
++	 * tasks that remain local when the destination is lightly loaded.
+ 	 */
+-	imbalance_min = NUMA_IMBALANCE_MIN;
+-	if (dst_running <= imbalance_min)
++	if (dst_running < (dst_weight >> 2) && imbalance <= NUMA_IMBALANCE_MIN)
+ 		return 0;
  
-@@ -8833,6 +8830,11 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 	switch (local_sgs.group_type) {
- 	case group_overloaded:
- 	case group_fully_busy:
-+
-+		/* Calculate allowed imbalance based on load */
-+		imbalance = scale_load_down(NICE_0_LOAD) *
-+				(sd->imbalance_pct-100) / 100;
-+
- 		/*
- 		 * When comparing groups across NUMA domains, it's possible for
- 		 * the local domain to be very lightly loaded relative to the
+ 	return imbalance;
+@@ -9107,9 +9107,10 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+ 		}
+ 
+ 		/* Consider allowing a small imbalance between NUMA groups */
+-		if (env->sd->flags & SD_NUMA)
++		if (env->sd->flags & SD_NUMA) {
+ 			env->imbalance = adjust_numa_imbalance(env->imbalance,
+-						busiest->sum_nr_running);
++				busiest->sum_nr_running, busiest->group_weight);
++		}
+ 
+ 		return;
+ 	}
 -- 
 2.26.2
 
