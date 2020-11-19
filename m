@@ -2,114 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB60E2B8DC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A89F2B8DD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgKSIni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:43:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52736 "EHLO mail.kernel.org"
+        id S1726344AbgKSIqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:46:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54326 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725648AbgKSIni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:43:38 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB0B121D40;
-        Thu, 19 Nov 2020 08:43:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605775417;
-        bh=GP7AYcVUPOh23WPA8GgN0PDVztnolsPIrPEVVI5te+I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Eb+ZsPczYI4/ZTWJ1/Q2AcUm8GHpqDQx/GL0DRroxJ21DxSCs8FvI3bsNRDpe9l5d
-         ZTolWybz/IOaLH16nVKrHQzGTDeq3Jt2pL0jNxBraTqf8n7w3H0500ZidhWubBaboI
-         PMwX/cQlnkKaWH1Bklkfy2ZxglvurV7Uyp0NH4us=
-Date:   Thu, 19 Nov 2020 09:44:21 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Cliff Whickman <cpw@sgi.com>, Arnd Bergmann <arnd@arndb.de>,
-        Robin Holt <robinmholt@gmail.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: Re: [PATCH] misc/sgi-xp: Replace in_interrupt() usage
-Message-ID: <X7YwZZgvk92Cghl7@kroah.com>
-References: <20201119081354.836813-1-bigeasy@linutronix.de>
+        id S1725873AbgKSIqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 03:46:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 398D9AD2B;
+        Thu, 19 Nov 2020 08:46:04 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 08:46:01 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [patch V4 2/8] mm/highmem: Provide
+ CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP
+Message-ID: <20201119084601.GG3306@suse.de>
+References: <20201118194838.753436396@linutronix.de>
+ <20201118204007.028261233@linutronix.de>
+ <CAHk-=wh6+VXQASpG+X_v8E25X9mARyHULeOfHk1RsNFMMWHafQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20201119081354.836813-1-bigeasy@linutronix.de>
+In-Reply-To: <CAHk-=wh6+VXQASpG+X_v8E25X9mARyHULeOfHk1RsNFMMWHafQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 09:13:54AM +0100, Sebastian Andrzej Siewior wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
+On Wed, Nov 18, 2020 at 01:13:57PM -0800, Linus Torvalds wrote:
+> On Wed, Nov 18, 2020 at 12:58 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> > Provide CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP which forces the temporary
+> > mapping even for lowmem pages. This needs to be a seperate config switch
+> > because this only works on architectures which do not have cache aliasing
+> > problems.
 > 
-> The usage of in_interrupt() in xpc_partition_disengaged() is clearly
-> intended to avoid canceling the timeout timer when the function is invoked
-> from the timer callback.
+> Very good. And you made sure to have a comment to not enable it for
+> production systems.
 > 
-> While in_interrupt() is deprecated and ill defined as it does not provide
-> what the name suggests it catches the intended case.
+> Hopefully people will even read it ;)
 > 
-> Add an argument to xpc_partition_disengaged() which is true if called
-> from timer and otherwise false.
-> Use del_timer_sync() instead of del_singleshot_timer_sync() which is the
-> same thing.
-> 
-> Note: This does not prevent reentrancy into the function as the function
-> has no concurrency control and timer callback and regular task context
-> callers can happen concurrently on different CPUs or the timer can
-> interrupt the task context before it is able to cancel it.
-> 
-> While the only driver which is providing the arch_xpc_ops callbacks
-> (xpc_uv) seems not to have a reentrancy problem and the only negative
-> effect would be a double dev_info() entry in dmesg, the whole mechanism is
-> conceptually broken.
-> 
-> But that's not subject of this cleanup endeavour and left as an exercise to
-> the folks who might have interest to make that code fully correct.
-> 
-> [bigeasy: Add the argument, use del_timer_sync().]
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Cliff Whickman <cpw@sgi.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Robin Holt <robinmholt@gmail.com>
-> Cc: Steve Wahl <steve.wahl@hpe.com>
-> Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
-> Cc: Russ Anderson <russ.anderson@hpe.com>
-> ---
->  drivers/misc/sgi-xp/xpc.h           | 2 +-
->  drivers/misc/sgi-xp/xpc_main.c      | 8 ++++----
->  drivers/misc/sgi-xp/xpc_partition.c | 9 ++++-----
->  3 files changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/misc/sgi-xp/xpc.h b/drivers/misc/sgi-xp/xpc.h
-> index 71db60edff655..bbcf10ca3ab7f 100644
-> --- a/drivers/misc/sgi-xp/xpc.h
-> +++ b/drivers/misc/sgi-xp/xpc.h
-> @@ -633,7 +633,7 @@ extern void *xpc_kmalloc_cacheline_aligned(size_t, gfp_t, void **);
->  extern int xpc_setup_rsvd_page(void);
->  extern void xpc_teardown_rsvd_page(void);
->  extern int xpc_identify_activate_IRQ_sender(void);
-> -extern int xpc_partition_disengaged(struct xpc_partition *);
-> +extern int xpc_partition_disengaged(struct xpc_partition *, bool from_timer);
 
-These types of "flags" for functions are horrible as they do not
-describe what is happening when you read the places the function is
-called.
+And not start thinking it as a security hardening option.
 
-Instead, make it part of the function name itself:
-	xpc_partition_disengaged_from_timer()
-and then handle it that way, by using a shared static function with the
-flag.
-
-Otherwise this type of change just does not age well at all.
-
-thanks,
-
-greg k-h
+-- 
+Mel Gorman
+SUSE Labs
