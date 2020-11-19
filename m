@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CCD2B99D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0C62B9996
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729853AbgKSRl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:41:26 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52506 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729365AbgKSRiE (ORCPT
+        id S1729652AbgKSRit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:38:49 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49320 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729180AbgKSRiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:38:04 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJHXu1m022383
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:38:04 -0800
+        Thu, 19 Nov 2020 12:38:46 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0AJHbCQe030284
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:38:45 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=8ebA+INnP+S9dh1GI2+WmeYXpW5UeJvL7rqO27RxywU=;
- b=Vo6LRX9BU2o/Yb4HMs14fgwD/AitFLNhrmerAZUvDJj2WXqWGrj5HWioSoe41m22eRpc
- Eef599gP+dxpgYEG0UCMKPAc34E0OPsP5jymriYO2vbBZOEfwOf9RoDZeqDMl9bJCQol
- yYklE0PhssYlheOQ45c1O2+6tns+BoXXrKU= 
+ bh=TnExbMUogzHd8p7IQb5z0S0wFoIvqXTWgF/AVE8fTrA=;
+ b=riY0syhaFgn7coLqLmgcmc0o4CdHbYFABdV6qAhfwwaAWfWUB3UB/BIflI2d08fJDL0r
+ ix1TFU6nWmiAd+tNi1Srl3b/tMGTmb46ZdAUZ4ufiwJGjkeLScBqfzot1IekqW2JgKL5
+ joW+KP8WLVtjvFE6v2vQjW24v0DwUB6G/j8= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34wthes6ag-12
+        by m0001303.ppops.net with ESMTP id 34whfknkfk-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:38:03 -0800
-Received: from intmgw002.41.prn1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:38:45 -0800
+Received: from intmgw002.06.prn3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 19 Nov 2020 09:38:01 -0800
+ 15.1.1979.3; Thu, 19 Nov 2020 09:38:07 -0800
 Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 0FD7C145BD13; Thu, 19 Nov 2020 09:37:57 -0800 (PST)
+        id 14C47145BD15; Thu, 19 Nov 2020 09:37:57 -0800 (PST)
 From:   Roman Gushchin <guro@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
         <andrii@kernel.org>, <akpm@linux-foundation.org>,
         <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
         <kernel-team@fb.com>
-Subject: [PATCH bpf-next v7 30/34] bpf: eliminate rlimit-based memory accounting for xskmap maps
-Date:   Thu, 19 Nov 2020 09:37:50 -0800
-Message-ID: <20201119173754.4125257-31-guro@fb.com>
+Subject: [PATCH bpf-next v7 31/34] bpf: eliminate rlimit-based memory accounting for bpf local storage maps
+Date:   Thu, 19 Nov 2020 09:37:51 -0800
+Message-ID: <20201119173754.4125257-32-guro@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20201119173754.4125257-1-guro@fb.com>
 References: <20201119173754.4125257-1-guro@fb.com>
@@ -50,61 +50,62 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-19_09:2020-11-19,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=859
- lowpriorityscore=0 bulkscore=0 phishscore=0 spamscore=0 adultscore=0
- impostorscore=0 clxscore=1015 priorityscore=1501 suspectscore=13
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190125
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ malwarescore=0 phishscore=0 suspectscore=13 priorityscore=1501
+ impostorscore=0 mlxlogscore=681 lowpriorityscore=0 spamscore=0 mlxscore=0
+ bulkscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190126
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not use rlimit-based memory accounting for xskmap maps.
+Do not use rlimit-based memory accounting for bpf local storage maps.
 It has been replaced with the memcg-based memory accounting.
 
 Signed-off-by: Roman Gushchin <guro@fb.com>
 Acked-by: Song Liu <songliubraving@fb.com>
 ---
- net/xdp/xskmap.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ kernel/bpf/bpf_local_storage.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-diff --git a/net/xdp/xskmap.c b/net/xdp/xskmap.c
-index eceea51182d9..217e224698b9 100644
---- a/net/xdp/xskmap.c
-+++ b/net/xdp/xskmap.c
-@@ -75,9 +75,8 @@ static void xsk_map_sock_delete(struct xdp_sock *xs,
+diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storag=
+e.c
+index abd0ea385274..0875bb46e96b 100644
+--- a/kernel/bpf/bpf_local_storage.c
++++ b/kernel/bpf/bpf_local_storage.c
+@@ -547,8 +547,6 @@ struct bpf_local_storage_map *bpf_local_storage_map_a=
+lloc(union bpf_attr *attr)
+ 	struct bpf_local_storage_map *smap;
+ 	unsigned int i;
+ 	u32 nbuckets;
+-	u64 cost;
+-	int ret;
 =20
- static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
- {
--	struct bpf_map_memory mem;
--	int err, numa_node;
- 	struct xsk_map *m;
-+	int numa_node;
- 	u64 size;
-=20
- 	if (!capable(CAP_NET_ADMIN))
-@@ -91,18 +90,11 @@ static struct bpf_map *xsk_map_alloc(union bpf_attr *=
-attr)
- 	numa_node =3D bpf_map_attr_numa_node(attr);
- 	size =3D struct_size(m, xsk_map, attr->max_entries);
-=20
--	err =3D bpf_map_charge_init(&mem, size);
--	if (err < 0)
--		return ERR_PTR(err);
+ 	smap =3D kzalloc(sizeof(*smap), GFP_USER | __GFP_NOWARN | __GFP_ACCOUNT=
+);
+ 	if (!smap)
+@@ -559,18 +557,9 @@ struct bpf_local_storage_map *bpf_local_storage_map_=
+alloc(union bpf_attr *attr)
+ 	/* Use at least 2 buckets, select_bucket() is undefined behavior with 1=
+ bucket */
+ 	nbuckets =3D max_t(u32, 2, nbuckets);
+ 	smap->bucket_log =3D ilog2(nbuckets);
+-	cost =3D sizeof(*smap->buckets) * nbuckets + sizeof(*smap);
 -
- 	m =3D bpf_map_area_alloc(size, numa_node);
--	if (!m) {
--		bpf_map_charge_finish(&mem);
-+	if (!m)
- 		return ERR_PTR(-ENOMEM);
+-	ret =3D bpf_map_charge_init(&smap->map.memory, cost);
+-	if (ret < 0) {
+-		kfree(smap);
+-		return ERR_PTR(ret);
 -	}
-=20
- 	bpf_map_init_from_attr(&m->map, attr);
--	bpf_map_charge_move(&m->map.memory, &mem);
- 	spin_lock_init(&m->lock);
-=20
- 	return &m->map;
+-
+ 	smap->buckets =3D kvcalloc(sizeof(*smap->buckets), nbuckets,
+ 				 GFP_USER | __GFP_NOWARN | __GFP_ACCOUNT);
+ 	if (!smap->buckets) {
+-		bpf_map_charge_finish(&smap->map.memory);
+ 		kfree(smap);
+ 		return ERR_PTR(-ENOMEM);
+ 	}
 --=20
 2.26.2
 
