@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB942B8BFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C4A2B8BFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgKSHFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:05:22 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7702 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726355AbgKSHFU (ORCPT
+        id S1726444AbgKSHGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:06:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgKSHGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:05:20 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cc9fd5C6JzkWt8;
-        Thu, 19 Nov 2020 15:04:57 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 19 Nov 2020 15:05:14 +0800
-Subject: Re: [PATCH] leds: lp50xx: add missing fwnode_handle_put in error
- handling case
-To:     Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201111032159.17833-1-miaoqinglang@huawei.com>
- <e803008d-2d68-6048-90dc-d05c311a5fb9@ti.com>
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-Message-ID: <9ddeebab-85c2-3597-4cea-4129b1d7f8ae@huawei.com>
-Date:   Thu, 19 Nov 2020 15:05:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 19 Nov 2020 02:06:10 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEC0C0613CF;
+        Wed, 18 Nov 2020 23:06:10 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id q28so3403631pgk.1;
+        Wed, 18 Nov 2020 23:06:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ayYk+CLpbPqFDGheTWGLWJByA3PKUlBGP2wbtuMSk5g=;
+        b=Gf1JER74hE92j718zjtQKRHqVHA/1x3kIk17/RAV22kRIdO747d0KNAOu1XZ7tubtj
+         sbwSf+og8FnBF7EzFbMIBVFjjLgNgAFKxOqJziIqgtcsfJZRyfzhd3E7WhnuL9fQKLzX
+         XWykZG5LFOWe0iM7MKlgymyKGr4c2IdCLM/YxoVHA/PNqlV1SjjlzwxOjQjlOwXajhg6
+         SfETbrSvhAaISjDHWbZijM5mlCHi53k6pexHckPq+YzOCtyjTo6CI8h7nLhkC1NowMVR
+         LJ6xFfvqv1/qE7jztBFjSJZ6S2qRslaMumIfLWM/YEsixBfKAAj86Q6rckFS+xP0Vwo+
+         oAWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ayYk+CLpbPqFDGheTWGLWJByA3PKUlBGP2wbtuMSk5g=;
+        b=Ep0Ha/pCNyZY+fAnWUhvtxIijp0gdlIO3tHjeF4Kz+LWk+ChdlpjqqucFgLoK4lxoG
+         V1QCxE1hzL9xyHe+YOY62KQOqaqNCrN6y3SGINt5BENeQ6JEr+P4aZUbCF24NVSvJ4bq
+         5Ef1suZ23CkzW9ZVere+wEvytDMrisEFau3DkPIZM/jvzgRN4792triv3zuAf8HbLS+b
+         0Gm23x7FNuNOqw2xpkl0OVdlAPsJTd5cbrfga6OKg80JMM7bU1WOrOsADHS2cRhtVFeK
+         CZejOojKJm3PEVm4MtAVpLLNWhMIhDRdGx2t7jxJ7t/mO/uuftkSi99m+Fv27A3dTCcR
+         I8gA==
+X-Gm-Message-State: AOAM530wwp15Bjf5t1oySKOIn0PMKF3FnXD8lcBAORkxur7f+dn8MIre
+        wIp39qTGNTl0tCOlar+zbSJ5gR8U4Is=
+X-Google-Smtp-Source: ABdhPJw+wHRwabNGFldhWGrNpfK4GQPCNmTs/OEfzg4Y2bFxtsuNYze9g7TY9kSJlpIqBDrLGx8DBw==
+X-Received: by 2002:a63:f318:: with SMTP id l24mr11659522pgh.193.1605769569645;
+        Wed, 18 Nov 2020 23:06:09 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id w63sm28085063pfc.120.2020.11.18.23.06.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 23:06:08 -0800 (PST)
+Date:   Wed, 18 Nov 2020 23:06:06 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] Input: adp5589: use devm_kzalloc() to allocate
+ the kpad object
+Message-ID: <20201119070606.GC2034289@dtor-ws>
+References: <20201112074308.71351-1-alexandru.ardelean@analog.com>
+ <20201112074308.71351-2-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-In-Reply-To: <e803008d-2d68-6048-90dc-d05c311a5fb9@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112074308.71351-2-alexandru.ardelean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2020/11/11 21:27, Dan Murphy 写道:
-> Hello
+On Thu, Nov 12, 2020 at 09:43:04AM +0200, Alexandru Ardelean wrote:
+> This removes the need to manually free the kpad object and cleans up some
+> exit/error paths.
+> The error path cleanup should reduce the risk of any memory leaks with this
+> object.
 > 
-> On 11/10/20 9:21 PM, Qinglang Miao wrote:
->> Fix to goto child_out to do fwnode_handle_put(child)
->> from the error handling case rather than simply return,
->> as done elsewhere in this function.
->>
->> Fixes: 242b81170fb8 ("leds: lp50xx: Add the LP50XX family of the RGB 
->> LED driver")
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->> ---
->>   drivers/leds/leds-lp50xx.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
->> index 5fb4f24aeb2e..49a997b2c781 100644
->> --- a/drivers/leds/leds-lp50xx.c
->> +++ b/drivers/leds/leds-lp50xx.c
->> @@ -488,7 +488,7 @@ static int lp50xx_probe_dt(struct lp50xx *priv)
->>           mc_led_info = devm_kcalloc(priv->dev, LP50XX_LEDS_PER_MODULE,
->>                          sizeof(*mc_led_info), GFP_KERNEL);
->>           if (!mc_led_info)
->> -            return -ENOMEM;
->> +            goto child_out;
-> 
-> Thanks for the patch.
-> 
-> Need to set ret = -ENOMEM; then do child_out so the error is reported 
-> properly
-> 
-> Dan
-> .
-Hi Dan,
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 
-I've sent v2 on this fix, setting ret as well.
+Applied, thank you.
 
-Thanks!
+-- 
+Dmitry
