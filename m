@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4692B894F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DB72B894E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727127AbgKSBL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 20:11:56 -0500
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:22424 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727011AbgKSBL4 (ORCPT
+        id S1727196AbgKSBI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 20:08:58 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7648 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbgKSBI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 20:11:56 -0500
-Received: from ubuntu.localdomain (unknown [157.0.31.124])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id EE3DD4E1403;
-        Thu, 19 Nov 2020 09:11:52 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2] drm/vmwgfx: use min_t to replace min
-Date:   Wed, 18 Nov 2020 17:11:46 -0800
-Message-Id: <20201119011146.107587-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.29.0
+        Wed, 18 Nov 2020 20:08:58 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cc1lV6QpQz15LTm;
+        Thu, 19 Nov 2020 09:08:38 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 19 Nov 2020
+ 09:08:45 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <linus.walleij@linaro.org>, <thomas.langer@lantiq.com>,
+        <blogic@openwrt.org>
+CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
+        <zhangxiaoxu5@huawei.com>
+Subject: [PATCH V2] pinctrl: falcon: add missing put_device() call in pinctrl_falcon_probe()
+Date:   Thu, 19 Nov 2020 09:12:19 +0800
+Message-ID: <20201119011219.2248232-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <e6241dd2-9ce8-9334-93f7-a4f84b20834e@web.de>
+References: <e6241dd2-9ce8-9334-93f7-a4f84b20834e@web.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTk5NQhhJQktMTxhCVkpNS05MT0NISkhKQ0JVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS09ISFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NUk6Fio5FT8dSg5NMAwiNQg6
-        PEoaCx9VSlVKTUtOTE9DSEpITUhPVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSU9ZV1kIAVlBSUhPTTcG
-X-HM-Tid: 0a75de0ecc1f9376kuwsee3dd4e1403
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use min_t to replace min, min_t is a bit fast because min use
-twice typeof.
-This patch also fix check_patch.pl warning:
-WARNING: min() should probably be min_t(unsigned long, num_pages,
-VMW_PPN_PER_REMAP)
-+unsigned long nr = min(num_pages, (unsigned long)
-VMW_PPN_PER_REMAP);
+if of_find_device_by_node() succeed, pinctrl_falcon_probe() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
-Reported-by: kernel test robot <lkp@intel.com>
+Fixes: e316cb2b16bb ("OF: pinctrl: MIPS: lantiq: adds support for FALCON SoC")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
-Changes since V1:
-*fix compile error reported by kernel test robot
+ drivers/pinctrl/pinctrl-falcon.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Link for V1:
-*https://lore.kernel.org/patchwork/patch/1340996/
----
- drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c b/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c
-index 83c0d5a3e4fd..525d5e1227e8 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_gmr.c
-@@ -72,7 +72,7 @@ static int vmw_gmr2_bind(struct vmw_private *dev_priv,
- 		SVGA_REMAP_GMR2_PPN64 : SVGA_REMAP_GMR2_PPN32;
+diff --git a/drivers/pinctrl/pinctrl-falcon.c b/drivers/pinctrl/pinctrl-falcon.c
+index 62c02b969327..7521a924dffb 100644
+--- a/drivers/pinctrl/pinctrl-falcon.c
++++ b/drivers/pinctrl/pinctrl-falcon.c
+@@ -431,24 +431,28 @@ static int pinctrl_falcon_probe(struct platform_device *pdev)
  
- 	while (num_pages > 0) {
--		unsigned long nr = min(num_pages, (unsigned long)VMW_PPN_PER_REMAP);
-+		unsigned long nr = min_t(unsigned long, num_pages, VMW_PPN_PER_REMAP);
+ 	/* load and remap the pad resources of the different banks */
+ 	for_each_compatible_node(np, NULL, "lantiq,pad-falcon") {
+-		struct platform_device *ppdev = of_find_device_by_node(np);
+ 		const __be32 *bank = of_get_property(np, "lantiq,bank", NULL);
+ 		struct resource res;
++		struct platform_device *ppdev;
+ 		u32 avail;
+ 		int pins;
  
- 		remap_cmd.offsetPages = remap_pos;
- 		remap_cmd.numPages = nr;
+ 		if (!of_device_is_available(np))
+ 			continue;
+ 
+-		if (!ppdev) {
+-			dev_err(&pdev->dev, "failed to find pad pdev\n");
+-			continue;
+-		}
+ 		if (!bank || *bank >= PORTS)
+ 			continue;
+ 		if (of_address_to_resource(np, 0, &res))
+ 			continue;
++
++		ppdev = of_find_device_by_node(np);
++		if (!ppdev) {
++			dev_err(&pdev->dev, "failed to find pad pdev\n");
++			continue;
++		}
++
+ 		falcon_info.clk[*bank] = clk_get(&ppdev->dev, NULL);
++		put_device(&ppdev->dev);
+ 		if (IS_ERR(falcon_info.clk[*bank])) {
+ 			dev_err(&ppdev->dev, "failed to get clock\n");
+ 			of_node_put(np);
 -- 
-2.29.0
+2.25.4
 
