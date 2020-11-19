@@ -2,77 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6432B8EF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1E92B8EF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgKSJbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:31:49 -0500
-Received: from mga18.intel.com ([134.134.136.126]:12118 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726809AbgKSJbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:31:48 -0500
-IronPort-SDR: /7CGtJds3aTlIV4it7FEkrNGihx8Wk/90bd84qvdmc7yBYtdj5zWMkD+KKe0dsN9Y8e29v8IUs
- VAZpANAPW1Hg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="159031872"
-X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="159031872"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 01:31:47 -0800
-IronPort-SDR: SBk6uKIf0HN15Trt8wcKcBy0DjcTVAn13vX0y9a6L9f8+j/4tXvtvmucJXlVb9jGtqifvdEit7
- ceOV+Kpi6j9w==
-X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="341630737"
-Received: from bkeavene-mobl.ger.corp.intel.com (HELO localhost) ([10.251.83.118])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 01:31:46 -0800
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     intel-gfx@lists.freedesktop.org, Kalle Valo <kvalo@codeaurora.org>,
-        ath11k@lists.infradead.org
-Subject: Re: [PATCH 4/6] ath11k: make relay callbacks const
-In-Reply-To: <20201118165320.26829-4-jani.nikula@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20201118165320.26829-1-jani.nikula@intel.com> <20201118165320.26829-4-jani.nikula@intel.com>
-Date:   Thu, 19 Nov 2020 11:31:43 +0200
-Message-ID: <871rgppu9s.fsf@intel.com>
+        id S1727061AbgKSJcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:32:17 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2130 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbgKSJcP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 04:32:15 -0500
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CcDtj28bWz67FXS;
+        Thu, 19 Nov 2020 17:30:37 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Thu, 19 Nov 2020 10:32:13 +0100
+Received: from [10.200.65.70] (10.200.65.70) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Thu, 19 Nov
+ 2020 09:32:11 +0000
+Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
+To:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <martin.petersen@oracle.com>,
+        <jejb@linux.ibm.com>
+CC:     <linuxarm@huawei.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <maz@kernel.org>
+References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
+ <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
+ <874klmqu2r.fsf@nanos.tec.linutronix.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
+Date:   Thu, 19 Nov 2020 09:31:56 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <874klmqu2r.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.200.65.70]
+X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020, Jani Nikula <jani.nikula@intel.com> wrote:
-> Now that relay_open() accepts const callbacks, make relay callbacks
-> const.
->
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: ath11k@lists.infradead.org
-> Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Hi Thomas,
 
-Kalle, thanks for the acks on the other two ath patches - can I have
-your ack on this one too please?
+>>> +int irq_update_affinity_desc(unsigned int irq,
+>>> +			     struct irq_affinity_desc *affinity)
+>> Just a note on the return value, in the only current callsite -
+>> platform_get_irqs_affinity() - we don't check the return value and
+>> propagate the error. This is because we don't want to fail the interrupt
+>> init just because of problems updating the affinity mask. So I could
+>> print a message to inform the user of error (at the callsite).
+> Well, not sure about that. During init on a platform which does not have
+> the issues with reservation mode there failure cases are:
+> 
+>   1) Interrupt does not exist. Definitely a full fail
+> 
+>   2) Interrupt is already started up. Not a good idea on init() and
+>      a clear fail.
+> 
+>   3) Interrupt has already been switched to managed. Double init is not
+>      really a good sign either.
 
-BR,
-Jani.
+I just tested that and case 3) would be a problem. I don't see us 
+clearing the managed flag when free'ing the interrupt. So with 
+CONFIG_DEBUG_TEST_DRIVER_REMOVE=y, we attempt this affinity update 
+twice, and error from the irqd_affinity_is_managed() check.
 
-> ---
->  drivers/net/wireless/ath/ath11k/spectral.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath11k/spectral.c b/drivers/net/wireless/ath/ath11k/spectral.c
-> index ac2a8cfdc1c0..1afe67759659 100644
-> --- a/drivers/net/wireless/ath/ath11k/spectral.c
-> +++ b/drivers/net/wireless/ath/ath11k/spectral.c
-> @@ -148,7 +148,7 @@ static int remove_buf_file_handler(struct dentry *dentry)
->  	return 0;
->  }
->  
-> -static struct rchan_callbacks rfs_scan_cb = {
-> +static const struct rchan_callbacks rfs_scan_cb = {
->  	.create_buf_file = create_buf_file_handler,
->  	.remove_buf_file = remove_buf_file_handler,
->  };
+> 
+>>> +	/* Requires the interrupt to be shut down */
+>>> +	if (irqd_is_started(&desc->irq_data))
+>> We're missing the unlock here, right?
+> Duh yes.
+> 
+>>> +		return -EBUSY;
+>>> +
+>>> +	/* Interrupts which are already managed cannot be modified */
+>>> +	if (irqd_is_managed(&desc->irq_data))
+>> And here, and I figure that this should be irqd_affinity_is_managed()
+> More duh:)
+> 
+> I assume you send a fixed variant of this.
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Can do.
+
+Thanks,
+John
