@@ -2,140 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6022B9D3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 568012B9D3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgKSV4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 16:56:54 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:55092 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgKSV4y (ORCPT
+        id S1726614AbgKSV45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 16:56:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbgKSV45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 16:56:54 -0500
-Received: from mail-ed1-f71.google.com ([209.85.208.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <guilherme.piccoli@canonical.com>)
-        id 1kfrv9-0001aS-8N
-        for linux-kernel@vger.kernel.org; Thu, 19 Nov 2020 21:56:51 +0000
-Received: by mail-ed1-f71.google.com with SMTP id bc27so2852401edb.18
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:56:51 -0800 (PST)
+        Thu, 19 Nov 2020 16:56:57 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA27C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:56:57 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id c198so6679399wmd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:56:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tlLqDfAGYn0nYJ3DEoNWqwPsD3d58ZqJLDR3pX/h9LI=;
+        b=aaONIso3P58VTJcyH558RGTSNI8DcgOx+J+A4s+NsJxRzoFR5feZMV3ZWp0qIxpL0Z
+         SnP7g8Y3Fa/4igzONjn9VWSr8z244bjeVmZm1h9eMQb1Vo2nuTBZAsPOHvIi1bDeHEao
+         iOWoCxnktaHRJYe67u94PIVWQkPIwA3/9B371y0tL7klgLfXBVdhUp4uKGxBLbMv54Dt
+         n8GP1hegfYAd8ZN+z+tEjM/2VBuVL2mVuo96SMmmVElSmF7kKQutudcyiaB4cuSuazPX
+         aq5RszqzGvaQO9rCOeo1PX+6BldMXzB4kxK29h2PYX7Vxhc0N6K0k2RzCLjLh03dVJ/m
+         KTVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lhFyzHKwMpafV6CqL/rG6oJZPrxLkevFP6v3DPlHTjQ=;
-        b=MzEg4cWalB6CgpdxfG792Z0ceiNj56CIP3yuQnNlJGO9olO36DmQk4to/5nYfRrbjQ
-         RTQvvQ3KrLD7l9ocwK1A8TGK71HDBx910hzJVQARrCVAWiv+Jyqlktf4tsxOwSVRY90f
-         O2qdtQQWrBg0+vKGFubY1KC2meSejBy+RjiE+0ptp1dueNGHcncjPJPfA7JxkBVi85HY
-         3NuwFIiQxvOXHLtgEPiFeWZqDNN7unHMTLxPFA84P4ObBwEJYJOF+kHDich4gC1oDd5B
-         xzfwXhiDRBRo1w7Ip4PJGj9B6TKO9sU5qyb0Jt2F/uEF8Bfyk15HJ8o5GbC7Vv06JdNN
-         vvMg==
-X-Gm-Message-State: AOAM5306JnycXadBoATKhmzSOlVYNwtzkV/bKJ55g/HrdjINawyVzavI
-        alD54KPARoUfWJq9lcGFQq1ZSAmooX22ZtWMQd2TJ8XtjhcHbH1aBP9ovH7Bl5HuLGHnoei36KJ
-        K14l1hvlE7uFOWBjLLqQrOHoNT/dxjLvj+AegCTq37IXHnjFyUuObRuNzEw==
-X-Received: by 2002:a17:906:c298:: with SMTP id r24mr12518355ejz.381.1605823010850;
-        Thu, 19 Nov 2020 13:56:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyeZ68/adrbEJ2QL8FWoGR/7QczQEdL/SJ/roqlAOfSUFE97woxfB9XeYew72aotj7J5ZRFC0uKzMIuINdlucY=
-X-Received: by 2002:a17:906:c298:: with SMTP id r24mr12518308ejz.381.1605823010561;
- Thu, 19 Nov 2020 13:56:50 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tlLqDfAGYn0nYJ3DEoNWqwPsD3d58ZqJLDR3pX/h9LI=;
+        b=aCqjhbnLQE0J877kPATvleM/MwUQWmwXHn/S4OsKffrDzt5xF4MZGpC1aXbGbQZzhp
+         A5w0dKOElS8Ve6Lo/uSHXjYo226pRa7uJecaeEnNvQljAGbngzrgE8eONUUT6iNMecli
+         E+J0vo7SNmHUowsQdS8LrpBhzzycjJg+XcbRVYr15G9ZviwBZSNRYj/lsAUQW3fohGzD
+         Xgzh3luSVDPQApCf83t0PP5/l6DxMFWIKfy5dtPnPPWi4qYcEzcqEY1rshNXCwYuxFzz
+         FLhxxhwUQSFT0ePM/V+RS009pBTs3atrg4KyrY7TB8YGylMXbjhbakiTi4Vy5fYktvnH
+         mtkg==
+X-Gm-Message-State: AOAM530RyjsuC/7vr4WTq2xjuPdMG+js3vvXj4RsoSUl1P2ycwzOSO2N
+        99ZqGg7YhV4EHZY9ujdl4YdfkcRQWhYh0B444WU=
+X-Google-Smtp-Source: ABdhPJya3DMRrcLHYiVQoTxYnrTiQXBAipjqux6cCTZEqPK09Qn227q+Dj18bKYo0PkLYXRUw/qYtfdSNm1UpJS1EWY=
+X-Received: by 2002:a1c:1c3:: with SMTP id 186mr6576990wmb.39.1605823015772;
+ Thu, 19 Nov 2020 13:56:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
-In-Reply-To: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
-From:   Guilherme Piccoli <gpiccoli@canonical.com>
-Date:   Thu, 19 Nov 2020 18:56:14 -0300
-Message-ID: <CAHD1Q_yA37wWrOscBHpSFEjFecGFcrzY6R6qU_iMESzYArV_Kg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] kernel/crash_core.c - Add crashkernel=auto for x86
- and ARM
-To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-doc@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>, x86@kernel.org,
-        Michael Walle <michael@walle.cc>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>, john.p.donnelly@oracle.com,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, Baoquan He <bhe@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "# v4 . 16+" <stable@vger.kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        =?UTF-8?Q?Diego_Elio_Petten=C3=B2?= <flameeyes@flameeyes.com>,
-        Olof Johansson <olof@lixom.net>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Dann Frazier <dann.frazier@canonical.com>
+References: <20201118025503.102699-1-bernard@vivo.com> <f55ec782-9eff-c30b-2a0e-01a9898c9387@amd.com>
+In-Reply-To: <f55ec782-9eff-c30b-2a0e-01a9898c9387@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 19 Nov 2020 16:56:44 -0500
+Message-ID: <CADnq5_Pnv7+vu-mV3C5-zKXFexzs=qX6Jne6DKx-LteP_VQn-Q@mail.gmail.com>
+Subject: Re: [PATCH] amd/amdgpu: use kmalloc_array to replace kmalloc with multiply
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Bernard Zhao <bernard@vivo.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Monk Liu <Monk.Liu@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Yintian Tao <yttao@amd.com>, Dennis Li <Dennis.Li@amd.com>,
+        Wenhui Sheng <Wenhui.Sheng@amd.com>,
+        chen gong <curry.gong@amd.com>,
+        Bokun Zhang <Bokun.Zhang@amd.com>,
+        "Stanley.Yang" <Stanley.Yang@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saeed, thanks for your patch/idea! Comments inline, below.
+Applied.  Thanks!
 
-On Wed, Nov 18, 2020 at 8:29 PM Saeed Mirzamohammadi
-<saeed.mirzamohammadi@oracle.com> wrote:
+Alex
+
+On Wed, Nov 18, 2020 at 3:18 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
 >
-> This adds crashkernel=auto feature to configure reserved memory for
-> vmcore creation to both x86 and ARM platforms based on the total memory
-> size.
+> Am 18.11.20 um 03:55 schrieb Bernard Zhao:
+> > Fix check_patch.pl warning:
+> > WARNING: Prefer kmalloc_array over kmalloc with multiply
+> > +bps =3D kmalloc(align_space * sizeof((*data)->bps), GFP_KERNEL);
+> > WARNING: Prefer kmalloc_array over kmalloc with multiply
+> > +bps_bo =3D kmalloc(align_space * sizeof((*data)->bps_bo),
+> > GFP_KERNEL);
+> > kmalloc_array has multiply overflow check, which will be safer.
+> >
+> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
 >
-> Cc: stable@vger.kernel.org
-> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
-> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> ---
->  Documentation/admin-guide/kdump/kdump.rst |  5 +++++
->  arch/arm64/Kconfig                        | 26 ++++++++++++++++++++++-
->  arch/arm64/configs/defconfig              |  1 +
->  arch/x86/Kconfig                          | 26 ++++++++++++++++++++++-
->  arch/x86/configs/x86_64_defconfig         |  1 +
->  kernel/crash_core.c                       | 20 +++++++++++++++--
->  6 files changed, 75 insertions(+), 4 deletions(-)
+> Not userspace controllable values, but looks cleaner anyway.
 >
-> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-> index 75a9dd98e76e..f95a2af64f59 100644
-> --- a/Documentation/admin-guide/kdump/kdump.rst
-> +++ b/Documentation/admin-guide/kdump/kdump.rst
-> @@ -285,7 +285,12 @@ This would mean:
->      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
->      3) if the RAM size is larger than 2G, then reserve 128M
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
 >
-> +Or you can use crashkernel=auto if you have enough memory. The threshold
-> +is 1G on x86_64 and arm64. If your system memory is less than the threshold,
-> +crashkernel=auto will not reserve memory. The size changes according to
-> +the system memory size like below:
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_virt.c
+> > index d0aea5e39531..f2a0851c804f 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c
+> > @@ -280,8 +280,8 @@ static int amdgpu_virt_init_ras_err_handler_data(st=
+ruct amdgpu_device *adev)
+> >       if (!*data)
+> >               return -ENOMEM;
+> >
+> > -     bps =3D kmalloc(align_space * sizeof((*data)->bps), GFP_KERNEL);
+> > -     bps_bo =3D kmalloc(align_space * sizeof((*data)->bps_bo), GFP_KER=
+NEL);
+> > +     bps =3D kmalloc_array(align_space, sizeof((*data)->bps), GFP_KERN=
+EL);
+> > +     bps_bo =3D kmalloc_array(align_space, sizeof((*data)->bps_bo), GF=
+P_KERNEL);
+> >
+> >       if (!bps || !bps_bo) {
+> >               kfree(bps);
 >
-> +    x86_64/arm64: 1G-64G:128M,64G-1T:256M,1T-:512M
-
-As mentioned in the thread, this was tried before and never got merged
-- I'm not sure the all the reasons, but I speculate that a stronger
-reason is that it'd likely fail in many cases. I've seen cases of 256G
-servers that require crashkernel=600M (or more), due to the amount of
-devices. Also, the minimum nowadays would likely be 96M or more - I'm
-looping Cascardo and Dann (Debian/Ubuntu maintainers of kdump stuff)
-so they maybe can jump in with even more examples/considerations.
-
-What we've been trying to do in Ubuntu/Debian is using an estimator
-approach [0] - this is purely userspace and tries to infer the amount
-of necessary memory a kdump minimal[1] kernel would take. I'm not
--1'ing your approach totally, but I think a bit more consideration is
-needed in the ranges, at least accounting the number of devices of the
-machine or something like that.
-
-Cheers,
-
-
-Guilherme
-
-[0] https://salsa.debian.org/debian/makedumpfile/-/merge_requests/7
-[1] Minimal as having a reduced initrd + "shrinking" parameters (like
-nr_cpus=1).
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
