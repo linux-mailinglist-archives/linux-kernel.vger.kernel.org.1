@@ -2,177 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450D62B9B11
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6C82B9B37
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgKSTCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:02:38 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:24740 "EHLO z5.mailgun.us"
+        id S1727980AbgKSTGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:06:49 -0500
+Received: from mga12.intel.com ([192.55.52.136]:21741 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727192AbgKSTCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:02:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605812557; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=QM3CLPvjkfi6YERoSbKWzDa4BPjcQSDZ5ZJSSMwwfYw=;
- b=p3bt++XyKz71hb7chrxZ08QOj9dt6dcyJ4t6hhiZUMRSfOTvdxu7KLq98uzpnu4K7LnDPlTw
- PHC4CYTQRMqDpKVp2u4PVEytHvatSsVmdxyFQpor1FfqWf2WNMJqsJ9q9ANI9WTL0lFI1xXt
- 0yDuhOut5ElbmFHYVWXEUkucLIs=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5fb6c14cfa67d9becf71a9f2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Nov 2020 19:02:36
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 29221C43463; Thu, 19 Nov 2020 19:02:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2AC29C433C6;
-        Thu, 19 Nov 2020 19:02:35 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 19 Nov 2020 11:02:35 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>, ath11k@lists.infradead.org,
-        cjhuang@codeaurora.org, clew@codeaurora.org,
-        hemantk@codeaurora.org, kvalo@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        netdev@vger.kernel.org, jhugo=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] net: qrtr: Unprepare MHI channels during remove
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <2019fe3c-55c5-61fe-758c-1e9952e1cb33@codeaurora.org>
-References: <1605723625-11206-1-git-send-email-bbhatt@codeaurora.org>
- <5e94c0be-9402-7309-5d65-857a27d1f491@codeaurora.org>
- <CAMZdPi_b0=qFNGi1yUke3Dip2bi-zW4ULTg8W4nbyPyEsE3D4w@mail.gmail.com>
- <2019fe3c-55c5-61fe-758c-1e9952e1cb33@codeaurora.org>
-Message-ID: <647d1520d0bcefa7ff02d2ef5ee81bd1@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S1727363AbgKSTGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 14:06:41 -0500
+IronPort-SDR: tHm/mcoOBnqly1M6/rMuahSggzJDUygLVEujbYFz8VZFI0XrEtfQXxsNmSCerZTpiBTjy59jUI
+ KsMUm2kKy0Xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="150614464"
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="150614464"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 11:06:40 -0800
+IronPort-SDR: QvspKCblnMCzsL5wITYJlqCsyv5vaoj+VeSN8G8G3ANsVrt2oRyOfr/jIoEfE+Rm7qkyy7yfoR
+ iAXOglYNV5mA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="431333996"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Nov 2020 11:06:40 -0800
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
+        x86@kernel.org
+Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
+        Dave.Martin@arm.com, mpe@ellerman.id.au, tony.luck@intel.com,
+        ravi.v.shankar@intel.com, libc-alpha@sourceware.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chang.seok.bae@intel.com
+Subject: [PATCH v2 3/4] x86/signal: Prevent an alternate stack overflow before a signal delivery
+Date:   Thu, 19 Nov 2020 11:02:36 -0800
+Message-Id: <20201119190237.626-4-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201119190237.626-1-chang.seok.bae@intel.com>
+References: <20201119190237.626-1-chang.seok.bae@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-18 11:34 AM, Jeffrey Hugo wrote:
-> On 11/18/2020 12:14 PM, Loic Poulain wrote:
->> 
->> 
->> Le mer. 18 nov. 2020 à 19:34, Jeffrey Hugo <jhugo@codeaurora.org 
->> <mailto:jhugo@codeaurora.org>> a écrit :
->> 
->>     On 11/18/2020 11:20 AM, Bhaumik Bhatt wrote:
->>      > Reset MHI device channels when driver remove is called due to
->>      > module unload or any crash scenario. This will make sure that
->>      > MHI channels no longer remain enabled for transfers since the
->>      > MHI stack does not take care of this anymore after the 
->> auto-start
->>      > channels feature was removed.
->>      >
->>      > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org
->>     <mailto:bbhatt@codeaurora.org>>
->>      > ---
->>      >   net/qrtr/mhi.c | 1 +
->>      >   1 file changed, 1 insertion(+)
->>      >
->>      > diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
->>      > index 7100f0b..2bf2b19 100644
->>      > --- a/net/qrtr/mhi.c
->>      > +++ b/net/qrtr/mhi.c
->>      > @@ -104,6 +104,7 @@ static void qcom_mhi_qrtr_remove(struct
->>     mhi_device *mhi_dev)
->>      >       struct qrtr_mhi_dev *qdev = 
->> dev_get_drvdata(&mhi_dev->dev);
->>      >
->>      >       qrtr_endpoint_unregister(&qdev->ep);
->>      > +     mhi_unprepare_from_transfer(mhi_dev);
->>      >       dev_set_drvdata(&mhi_dev->dev, NULL);
->>      >   }
->>      >
->>      >
->> 
->>     I admit, I didn't pay much attention to the auto-start being 
->> removed,
->>     but this seems odd to me.
->> 
->>     As a client, the MHI device is being removed, likely because of 
->> some
->>     factor outside of my control, but I still need to clean it up?  
->> This
->>     really feels like something MHI should be handling.
->> 
->> 
->> I think this is just about balancing operations, what is done in probe 
->> should be undone in remove, so here channels are started in probe and 
->> stopped/reset in remove.
-> 
-> I understand that perspective, but that doesn't quite match what is
-> going on here.  Regardless of if the channel was started (prepared) in
-> probe, it now needs to be stopped in remove.  That not balanced in all
-> cases
-> 
-> Lets assume, in response to probe(), my client driver goes and creates
-> some other object, maybe a socket.  In response to that socket being
-> opened/activated by the client of my driver, I go and start the mhi
-> channel.  Now, normally, when the socket is closed/deactivated, I stop
-> the MHI channel.  In this case, stopping the MHI channel in remove()
-> is unbalanced with respect to probe(), but is now a requirement.
-> 
-> Now you may argue, I should close the object in response to remove,
-> which will then trigger the stop on the channel.  That doesn't apply
-> to everything.  For example, you cannot close an open file in the
-> kernel. You need to wait for userspace to close it.  By the time that
-> happens, the mhi_dev is long gone I expect.
-> 
-> So if, somehow, the client driver is the one causing the remove to
-> occur, then yes it should probably be the one doing the stop, but
-> that's a narrow set of conditions, and I think having that requirement
-> for all scenarios is limiting.
-It should be the client's responsibility to perform a clean-up though.
+The kernel pushes data on the userspace stack when entering a signal. If
+using a sigaltstack(), the kernel precisely knows the user stack size.
 
-We cannot assume that the remove() call was due to factors outside of 
-the
-client's control at all times. You may not know if the remove() was due 
-to
-device actually crashing or just an unbind/module unload. So, it would 
-be
-better if you call it as the device should ideally not be left with a 
-stale
-channel context.
+When the kernel knows that the user stack is too small, avoid the overflow
+and do an immediate SIGSEGV instead.
 
-We had an issue where a client was issuing a driver unbind without 
-unpreparing
-the MHI channels and without Loic's patch [1], we would not issue a 
-channel
-RESET to the device resulting in incoming data to the host on those 
-channels
-after host clean-up and an unmapped memory access and kernel panic.
+This overflow is known to occur on systems with large XSAVE state. The
+effort to increase the size typically used for altstacks reduces the
+frequency of these overflows, but this approach is still useful for legacy
+binaries.
 
-If MHI dev will be gone that NULL/status check must be present in 
-something that
-userspace could potentially use.
+Here the kernel expects a bit conservative stack size (for 64-bit apps).
+Legacy binaries used a too-small sigaltstack would be already overflowed
+before this change, if they run on modern hardware.
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/bus/mhi?h=next-20201119&id=a7f422f2f89e7d48aa66e6488444a4c7f01269d5
-
-Thanks,
-Bhaumik
+Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+Reviewed-by: Len Brown <len.brown@intel.com>
+Cc: x86@kernel.org
+Cc: linux-kernel@vger.kernel.org
 ---
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+ arch/x86/ia32/ia32_signal.c     | 11 ++++++++---
+ arch/x86/include/asm/sigframe.h |  2 ++
+ arch/x86/kernel/signal.c        | 16 +++++++++++++++-
+ 3 files changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/ia32/ia32_signal.c b/arch/x86/ia32/ia32_signal.c
+index 81cf22398cd1..85abd9eb79d5 100644
+--- a/arch/x86/ia32/ia32_signal.c
++++ b/arch/x86/ia32/ia32_signal.c
+@@ -210,13 +210,18 @@ static void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
+ 	sp = regs->sp;
+ 
+ 	/* This is the X/Open sanctioned signal stack switching.  */
+-	if (ksig->ka.sa.sa_flags & SA_ONSTACK)
++	if (ksig->ka.sa.sa_flags & SA_ONSTACK) {
++		/* If the altstack might overflow, die with SIGSEGV: */
++		if (!altstack_size_ok(current))
++			return (void __user *)-1L;
++
+ 		sp = sigsp(sp, ksig);
+ 	/* This is the legacy signal stack switching. */
+-	else if (regs->ss != __USER32_DS &&
++	} else if (regs->ss != __USER32_DS &&
+ 		!(ksig->ka.sa.sa_flags & SA_RESTORER) &&
+-		 ksig->ka.sa.sa_restorer)
++		 ksig->ka.sa.sa_restorer) {
+ 		sp = (unsigned long) ksig->ka.sa.sa_restorer;
++	}
+ 
+ 	sp = fpu__alloc_mathframe(sp, 1, &fx_aligned, &math_size);
+ 	*fpstate = (struct _fpstate_32 __user *) sp;
+diff --git a/arch/x86/include/asm/sigframe.h b/arch/x86/include/asm/sigframe.h
+index ac77f3f90bc9..c9f2f9ace76f 100644
+--- a/arch/x86/include/asm/sigframe.h
++++ b/arch/x86/include/asm/sigframe.h
+@@ -106,6 +106,8 @@ struct rt_sigframe_x32 {
+ #define SIZEOF_rt_sigframe_x32	0
+ #endif
+ 
++bool altstack_size_ok(struct task_struct *tsk);
++
+ void __init init_sigframe_size(void);
+ 
+ #endif /* _ASM_X86_SIGFRAME_H */
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index ee6f1ceaa7a2..cee41d684dc2 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -251,8 +251,13 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 
+ 	/* This is the X/Open sanctioned signal stack switching.  */
+ 	if (ka->sa.sa_flags & SA_ONSTACK) {
+-		if (sas_ss_flags(sp) == 0)
++		if (sas_ss_flags(sp) == 0) {
++			/* If the altstack might overflow, die with SIGSEGV: */
++			if (!altstack_size_ok(current))
++				return (void __user *)-1L;
++
+ 			sp = current->sas_ss_sp + current->sas_ss_size;
++		}
+ 	} else if (IS_ENABLED(CONFIG_X86_32) &&
+ 		   !onsigstack &&
+ 		   regs->ss != __USER_DS &&
+@@ -725,6 +730,15 @@ unsigned long get_sigframe_size(void)
+ 	return max_frame_size;
+ }
+ 
++bool altstack_size_ok(struct task_struct *tsk)
++{
++	/*
++	 * Can this task's sigaltstack accommodate the largest
++	 * signal frame the kernel might need?
++	 */
++	return (tsk->sas_ss_size >= max_frame_size);
++}
++
+ static inline int is_ia32_compat_frame(struct ksignal *ksig)
+ {
+ 	return IS_ENABLED(CONFIG_IA32_EMULATION) &&
+-- 
+2.17.1
+
