@@ -2,147 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85752B9220
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BF52B923C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727156AbgKSMJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:09:50 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47848 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbgKSMJt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:09:49 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id F183C1F4579E
-Message-ID: <8cc657c5d41c8794fb62d854dfb6380f1553dc21.camel@collabora.com>
-Subject: Re: [PATCH v3 07/13] media: controls: Validate H264 stateless
- controls
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Date:   Thu, 19 Nov 2020 09:09:38 -0300
-In-Reply-To: <20201118184700.331213-8-ezequiel@collabora.com>
-References: <20201118184700.331213-1-ezequiel@collabora.com>
-         <20201118184700.331213-8-ezequiel@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        id S1727179AbgKSMLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:11:12 -0500
+Received: from mga01.intel.com ([192.55.52.88]:33756 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726866AbgKSMLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 07:11:11 -0500
+IronPort-SDR: QZm41tzU7URNMdNcWABav2u0+MVIQeJQ2ahkkKRQchTyHkV1wL/fKk0W9xzAQI17fPSLXibmyJ
+ 8kQom8qdu/dw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="189364322"
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="189364322"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 04:11:10 -0800
+IronPort-SDR: cjQkm8w0TOL1dAn1/1SG2eK5hCK/WpHyzI+ZxaFn1egzYUcFKlpHyueOxbaq9Llsk/bT6tYmfn
+ 8Vsiyu8KjiqQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="431209451"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 19 Nov 2020 04:11:08 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 19 Nov 2020 14:11:07 +0200
+Date:   Thu, 19 Nov 2020 14:11:07 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [RFC PATCH 3/3] usb: typec: Expose Product Type VDOs via sysfs
+Message-ID: <20201119121107.GD3774817@kuha.fi.intel.com>
+References: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
+ <20201118150059.3419-4-heikki.krogerus@linux.intel.com>
+ <X7VESebL4CnS45hv@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X7VESebL4CnS45hv@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Wed, 2020-11-18 at 15:46 -0300, Ezequiel Garcia wrote:
-> Check that all the fields that correspond or are related
-> to a H264 specification syntax element have legal values.
+On Wed, Nov 18, 2020 at 04:56:57PM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Nov 18, 2020 at 06:00:59PM +0300, Heikki Krogerus wrote:
+> > From: Prashant Malani <pmalani@chromium.org>
+> > 
+> > Interim. ABI doc missing.
+> > 
+> > A PD-capable device can return up to 3 Product Type VDOs as part of its
+> > DiscoverIdentity Response (USB PD Spec, Rev 3.0, Version 2.0, Section
+> > 6.4.4.3.1). Add sysfs attribute to expose these to userspace.
+> > 
+> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> > [ heikki: Only one instead of three attribute files ]
+> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>'
+> > ---
+> >  drivers/usb/typec/class.c | 41 +++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 41 insertions(+)
+> > 
+> > diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> > index 303f054181ff7..5e135678f5952 100644
+> > --- a/drivers/usb/typec/class.c
+> > +++ b/drivers/usb/typec/class.c
+> > @@ -165,15 +165,55 @@ static ssize_t product_show(struct device *dev, struct device_attribute *attr,
+> >  }
+> >  static DEVICE_ATTR_RO(product);
+> >  
+> > +static ssize_t
+> > +product_type_vdo_show(struct device *dev, struct device_attribute *attr, char *buf)
+> > +{
+> > +	struct usb_pd_identity *id = get_pd_identity(dev);
+> > +	size_t len = 0;
+> > +	int i;
+> > +
+> > +	for (i = 0; i < 3; i++) {
+> > +		if (!id->vdo[i])
+> > +			break;
+> > +		len += sysfs_emit(buf, "%08x ", id->vdo[i]);
+> > +	}
+> > +
+> > +	buf[len - 1] = '\n';
+> > +
+> > +	return len;
+> > +}
 > 
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> ---
->  drivers/media/v4l2-core/v4l2-ctrls.c | 83 ++++++++++++++++++++++++++++
->  1 file changed, 83 insertions(+)
+> I don't understand what you are trying to print out here, documentation
+> would be helpful :)
 > 
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-> index 21c1928a9df8..adcf47bddbe3 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> @@ -1775,6 +1775,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->  {
->  	struct v4l2_ctrl_mpeg2_slice_params *p_mpeg2_slice_params;
->  	struct v4l2_ctrl_vp8_frame_header *p_vp8_frame_header;
-> +	struct v4l2_ctrl_h264_sps *p_h264_sps;
-> +	struct v4l2_ctrl_h264_pps *p_h264_pps;
-> +	struct v4l2_ctrl_h264_pred_weights *p_h264_pred_weigths;
->  	struct v4l2_ctrl_h264_slice_params *p_h264_slice_params;
->  	struct v4l2_ctrl_h264_decode_params *p_h264_dec_params;
->  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
-> @@ -1834,20 +1837,100 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->  		break;
->  
->  	case V4L2_CTRL_TYPE_H264_SPS:
-> +		p_h264_sps = p;
-> +
-> +		/* Only monochrome and 4:2:0 allowed */
-> +		if (p_h264_sps->profile_idc < V4L2_H264_PROFILE_IDC_HIGH_422 &&
-> +		    p_h264_sps->chroma_format_idc > 1)
-> +				return -EINVAL;
-> +		/* 4:2:2 allowed */
-> +		else if (p_h264_sps->profile_idc < V4L2_H264_PROFILE_IDC_HIGH_444 &&
-> +			 p_h264_sps->chroma_format_idc > 2)
-> +				return -EINVAL;
-> +		else if (p_h264_sps->chroma_format_idc > 3)
-> +				return -EINVAL;
-> +
-> +		if (p_h264_sps->bit_depth_luma_minus8 > 6)
-> +			return -EINVAL;
-> +		if (p_h264_sps->bit_depth_chroma_minus8 > 6)
-> +			return -EINVAL;
-> +		if (p_h264_sps->log2_max_frame_num_minus4 > 12)
-> +			return -EINVAL;
-> +		if (p_h264_sps->pic_order_cnt_type > 2)
-> +			return -EINVAL;
-> +		if (p_h264_sps->log2_max_pic_order_cnt_lsb_minus4 > 12)
-> +			return -EINVAL;
+> > +static struct device_attribute dev_attr_product_type_vdo = {
+> > +	.attr = {
+> > +		.name = "product_type",
+> > +		.mode = 0444,
+> > +	},
+> > +	.show = product_type_vdo_show,
+> > +};
+> 
+> DEVICE_ATTR_RO(product_type_vdo)?
+> 
+> Why are you calling it "product_type" and not with the "vdo"?
+> 
+> And you have to name it this, there's always __ATTR_RO(), never put a
+> mode in "raw" numbers for a sysfs file if at all possible.
 
-After a round of testing and some discussions with Jernej
-on IRC, this patch needs some more discussion.
+Sorry Greg. This is still work-in-progress.
 
-For instance, syntax element log2_max_pic_order_cnt_lsb_minus4
-is only present if pic_order_cnt_type==0. It's easy to set it
-to 0 in that case (although the spec doesn't specify any value).
+I didn't use the _vdo ending in the file name because the other files
+exposing the other parts (VDOs) of the response to the discover
+identity don't have it either.
 
-Similarly, chroma_format_idc, bit_depth_luma_minus8,
-bit_depth_chroma_minus8 elements are not present for some profiles.
-The spec defines what are the values to be inferred in this case.
 
-> +		if (p_h264_sps->max_num_ref_frames > V4L2_H264_REF_LIST_LEN)
-> +			return -EINVAL;
-> +		break;
-> +
->  	case V4L2_CTRL_TYPE_H264_PPS:
-> +		p_h264_pps = p;
-> +
-[snip]
+thanks,
 
->  
->  	case V4L2_CTRL_TYPE_H264_SLICE_PARAMS:
->  		p_h264_slice_params = p;
->  
-> +		if (p_h264_slice_params->colour_plane_id > 2)
-> +			return -EINVAL;
-> +		if (p_h264_slice_params->cabac_init_idc > 2)
-> +			return -EINVAL;
-
-There are other cases which are more complex to solve. For instance,
-cabac_init_idc which is specified if PPS element
-entropy_coding_mode_flag is passed.
-
-I believe applications (most of them will have to be adapted
-anyway for the new API), will have to ensure cabac_init_idc is sane
-before passing it to the kernel.
-
-> +		if (p_h264_slice_params->disable_deblocking_filter_idc > 2)
-> +			return -EINVAL;
-> +		if (p_h264_slice_params->slice_alpha_c0_offset_div2 < -6 ||
-> +		    p_h264_slice_params->slice_alpha_c0_offset_div2 > 6)
-> +			return -EINVAL;
-> +		if (p_h264_slice_params->slice_beta_offset_div2 < -6 ||
-> +		    p_h264_slice_params->slice_beta_offset_div2 > 6)
-
-Same here, these depends on PPS element deblocking_filter_control_present_flag.
-
-I guess we can handle the simple ones, but those that depend
-on elements from other NALUs might have to remain as-is.
-
-Thanks,
-Ezequiel
-
+-- 
+heikki
