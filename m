@@ -2,138 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BC92B9A47
+	by mail.lfdr.de (Postfix) with ESMTP id DDCE82B9A48
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgKSSAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:00:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60500 "EHLO mail.kernel.org"
+        id S1729179AbgKSSAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:00:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44800 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727016AbgKSSAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:00:13 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84F15246A7;
-        Thu, 19 Nov 2020 18:00:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605808812;
-        bh=SgurXvzhl9QuPyBTLPJtG4Q6saSrCINScSXjZM3boiY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=G9nXR0Hc81p1Wd9CZ7BRzEKbDyKZi+wK22E0R4lEabYjim1Vlj9WubIAWnrlyLNL9
-         KlPJD/PP1cy0I7JGaiMCjcWOh6toiVfGO7WtmJ4+Zq0EBBEPuqlfzoILasOMSWxtEf
-         oA1dto0U+ndVH69mpzAq+Maanvjexn6Pe0BdQSU4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 28B3235225CF; Thu, 19 Nov 2020 10:00:12 -0800 (PST)
-Date:   Thu, 19 Nov 2020 10:00:12 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, rcu@vger.kernel.org
-Subject: Re: [PATCH RFC tip/core/rcu 1/5] srcu: Make Tiny SRCU use multi-bit
- grace-period counter
-Message-ID: <20201119180012.GW1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
- <20201117004052.14758-1-paulmck@kernel.org>
- <72dffe43-b746-6d75-1f6a-9936d709be63@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <72dffe43-b746-6d75-1f6a-9936d709be63@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1727016AbgKSSAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:00:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D4904AC2D;
+        Thu, 19 Nov 2020 18:00:19 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id 99F9D603F9; Thu, 19 Nov 2020 19:00:19 +0100 (CET)
+Message-Id: <ed4484a3dc8297296bfcd16810f7dc1976d6f7d0.1605808477.git.mkubecek@suse.cz>
+From:   Michal Kubecek <mkubecek@suse.cz>
+Subject: [PATCH v2] eventfd: convert to ->write_iter()
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 19 Nov 2020 19:00:19 +0100 (CET)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 01:44:49PM +0530, Neeraj Upadhyay wrote:
-> Hi Paul,
-> 
-> On 11/17/2020 6:10 AM, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > There is a need for a polling interface for SRCU grace periods.  This
-> > polling needs to distinguish between an SRCU instance being idle on the
-> > one hand or in the middle of a grace period on the other.  This commit
-> > therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
-> > a defacto boolean to a free-running counter, using the bottom bit to
-> > indicate that a grace period is in progress.  The second-from-bottom
-> > bit is thus used as the index returned by srcu_read_lock().
-> > 
-> > Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-> > Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >   include/linux/srcutiny.h | 4 ++--
-> >   kernel/rcu/srcutiny.c    | 5 +++--
-> >   2 files changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> > index 5a5a194..fed4a2d 100644
-> > --- a/include/linux/srcutiny.h
-> > +++ b/include/linux/srcutiny.h
-> > @@ -15,7 +15,7 @@
-> >   struct srcu_struct {
-> >   	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
-> > -	short srcu_idx;			/* Current reader array element. */
-> > +	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
-> >   	u8 srcu_gp_running;		/* GP workqueue running? */
-> >   	u8 srcu_gp_waiting;		/* GP waiting for readers? */
-> >   	struct swait_queue_head srcu_wq;
-> > @@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
-> >   {
-> >   	int idx;
-> > -	idx = READ_ONCE(ssp->srcu_idx);
-> > +	idx = (READ_ONCE(ssp->srcu_idx) & 0x2) / 2;
-> 
-> Should we use bit 0x2 of (READ_ONCE(ssp->srcu_idx) + 1) , if GP
-> (srcu_drive_gp()) is in progress? Or am I missing something here?
-> 
-> idx = ((READ_ONCE(ssp->srcu_idx) +1) & 0x2) / 2;
+While eventfd ->read() callback was replaced by ->read_iter() recently by
+commit 12aceb89b0bc ("eventfd: convert to f_op->read_iter()"), ->write()
+was not replaced.
 
-You miss nothing!  I am running about 200 hours of concurrent rcutorture
-of the SRCU-t and SRCU-u scenarios, but I must admit that this race could
-be hard to hit.  But it could of course result in too-short grace periods.
-I will fold this into the original with attribution.
+Convert also ->write() to ->write_iter() to make the interface more
+consistent and allow non-blocking writes from e.g. io_uring. Also
+reorganize the code and return value handling in a similar way as it was
+done in eventfd_read().
 
-> Also, any reason for using divison instead of shift; something to
-> do with 16-bit srcu_idx which I am missing here?
+v2: different reasoning in commit message (no code change)
 
-I just figure that the compiler is better at selecting instructions
-than I am.  Either would work.
+Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
+---
+ fs/eventfd.c | 43 +++++++++++++++++++++----------------------
+ 1 file changed, 21 insertions(+), 22 deletions(-)
 
-							Thanx, Paul
+diff --git a/fs/eventfd.c b/fs/eventfd.c
+index df466ef81ddd..35973d216847 100644
+--- a/fs/eventfd.c
++++ b/fs/eventfd.c
+@@ -261,35 +261,36 @@ static ssize_t eventfd_read(struct kiocb *iocb, struct iov_iter *to)
+ 	return sizeof(ucnt);
+ }
+ 
+-static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t count,
+-			     loff_t *ppos)
++static ssize_t eventfd_write(struct kiocb *iocb, struct iov_iter *from)
+ {
++	struct file *file = iocb->ki_filp;
+ 	struct eventfd_ctx *ctx = file->private_data;
+-	ssize_t res;
+ 	__u64 ucnt;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 
+-	if (count < sizeof(ucnt))
++	if (iov_iter_count(from) < sizeof(ucnt))
+ 		return -EINVAL;
+-	if (copy_from_user(&ucnt, buf, sizeof(ucnt)))
++	if (unlikely(!copy_from_iter_full(&ucnt, sizeof(ucnt), from)))
+ 		return -EFAULT;
+ 	if (ucnt == ULLONG_MAX)
+ 		return -EINVAL;
+ 	spin_lock_irq(&ctx->wqh.lock);
+-	res = -EAGAIN;
+-	if (ULLONG_MAX - ctx->count > ucnt)
+-		res = sizeof(ucnt);
+-	else if (!(file->f_flags & O_NONBLOCK)) {
++	if (ULLONG_MAX - ctx->count <= ucnt) {
++		if ((file->f_flags & O_NONBLOCK) ||
++		    (iocb->ki_flags & IOCB_NOWAIT)) {
++			spin_unlock_irq(&ctx->wqh.lock);
++			return -EAGAIN;
++		}
+ 		__add_wait_queue(&ctx->wqh, &wait);
+-		for (res = 0;;) {
++		for (;;) {
+ 			set_current_state(TASK_INTERRUPTIBLE);
+-			if (ULLONG_MAX - ctx->count > ucnt) {
+-				res = sizeof(ucnt);
++			if (ULLONG_MAX - ctx->count > ucnt)
+ 				break;
+-			}
+ 			if (signal_pending(current)) {
+-				res = -ERESTARTSYS;
+-				break;
++				__remove_wait_queue(&ctx->wqh, &wait);
++				__set_current_state(TASK_RUNNING);
++				spin_unlock_irq(&ctx->wqh.lock);
++				return -ERESTARTSYS;
+ 			}
+ 			spin_unlock_irq(&ctx->wqh.lock);
+ 			schedule();
+@@ -298,14 +299,12 @@ static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t c
+ 		__remove_wait_queue(&ctx->wqh, &wait);
+ 		__set_current_state(TASK_RUNNING);
+ 	}
+-	if (likely(res > 0)) {
+-		ctx->count += ucnt;
+-		if (waitqueue_active(&ctx->wqh))
+-			wake_up_locked_poll(&ctx->wqh, EPOLLIN);
+-	}
++	ctx->count += ucnt;
++	if (waitqueue_active(&ctx->wqh))
++		wake_up_locked_poll(&ctx->wqh, EPOLLIN);
+ 	spin_unlock_irq(&ctx->wqh.lock);
+ 
+-	return res;
++	return sizeof(ucnt);
+ }
+ 
+ #ifdef CONFIG_PROC_FS
+@@ -328,7 +327,7 @@ static const struct file_operations eventfd_fops = {
+ 	.release	= eventfd_release,
+ 	.poll		= eventfd_poll,
+ 	.read_iter	= eventfd_read,
+-	.write		= eventfd_write,
++	.write_iter	= eventfd_write,
+ 	.llseek		= noop_llseek,
+ };
+ 
+-- 
+2.29.2
 
-> Thanks
-> Neeraj
-> 
-> >   	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
-> >   	return idx;
-> >   }
-> > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> > index 6208c1d..5598cf6 100644
-> > --- a/kernel/rcu/srcutiny.c
-> > +++ b/kernel/rcu/srcutiny.c
-> > @@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *wp)
-> >   	ssp->srcu_cb_head = NULL;
-> >   	ssp->srcu_cb_tail = &ssp->srcu_cb_head;
-> >   	local_irq_enable();
-> > -	idx = ssp->srcu_idx;
-> > -	WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
-> > +	idx = (ssp->srcu_idx & 0x2) / 2;
-> > +	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
-> >   	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
-> >   	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
-> >   	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
-> > +	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
-> >   	/* Invoke the callbacks we removed above. */
-> >   	while (lh) {
-> > 
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
-> the Code Aurora Forum, hosted by The Linux Foundation
