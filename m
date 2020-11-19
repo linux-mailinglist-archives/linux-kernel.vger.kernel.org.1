@@ -2,137 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9213E2B8969
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C5C2B897B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727164AbgKSBQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 20:16:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbgKSBQ0 (ORCPT
+        id S1727339AbgKSBXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 20:23:55 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:58821 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgKSBXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 20:16:26 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5281C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 17:16:24 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id q16so4046313edv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 17:16:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9f9f6o6lpgdv8ZMI6nf3AW/mVAB1Cq7QnLtCyTveD0k=;
-        b=DVHwKJ5dYMuqFTTiWpZnRhiM10utp3nM2Lt1dzI8KbeeqlKB9j1IW+Bc4XKs/VvYKQ
-         rIhQwkFEpZ5mLtlhIcEFVTaDhGRk9iTS8QMzWlSNw0Up6PpZ3SO1t8V+8RUZIEoVBc85
-         RVXc5zgBxFERHD8MsS62vurs+1b7228TqlHrPX5QD1rRGP1mlTleHtbrKvvmWv4qoNIV
-         2hMrdPWdMWoV1/NhjhXeeAkXwgQFRXHa7sTibnC0dBK5OS+w3pB4bTKrNrudn76gT9sh
-         +acC0ExKYJID9n+LGez1PIUbbMWWWgGB3nbzbW4l9UUmKo/k86t1mMAd862Tbm8/xZn9
-         eXLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9f9f6o6lpgdv8ZMI6nf3AW/mVAB1Cq7QnLtCyTveD0k=;
-        b=CsFDWYA5EA56JhLLdlrVXuhRWDEX79G32jvjQc7TtsUt+ZeIpGEzfyiNWIq3oQKkW1
-         AcGCo+tYNzeq5xSvYKMryMt25kXHKkv3NulwO2jdzSWjsvlaMbfYM5mVrLCO6DQKAfya
-         3DOA6Xz6HP0JEVmgo+gTrXIVha0Dtls4Cv+XHX1BgDQ6kWwobWQL5veeYmGz9pqR0gMs
-         8yUxAm7WefQ4sKf+PpKZK2DcVTuvxjOZOS90A5/fMGc5or0TWrvoDo2/3QnJGft9VtAl
-         43TYkoiTAlRQKRZ+ISxf2/xENVb9WnyqpdTQOWhPAe66XdnedhwLsWnUc9oZQycp71Cn
-         Obag==
-X-Gm-Message-State: AOAM532in1e8DJ22wGxUVgKD+Ek2aFzi+MP1Yp1CJzoDA4DEkuA1gzqy
-        Kt/0xz7moMJ5PLklicWcciFUM++p7N8vDqKNLqs=
-X-Google-Smtp-Source: ABdhPJyrcQqV38Ou7gU9H78B8J530YlnqoX4AeM+JLoKskuu7TPFJ1CpWaZ63Aa50L0EYPKnAshnpWN6GU/K1VLsrTk=
-X-Received: by 2002:a05:6402:150d:: with SMTP id f13mr27755566edw.119.1605748583525;
- Wed, 18 Nov 2020 17:16:23 -0800 (PST)
+        Wed, 18 Nov 2020 20:23:54 -0500
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201119012352epoutp02593a01762b10ca87b17e73a9fb8aa93b~IxDy-Me_l2419524195epoutp02u
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:23:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201119012352epoutp02593a01762b10ca87b17e73a9fb8aa93b~IxDy-Me_l2419524195epoutp02u
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1605749032;
+        bh=LeXwRNKcehHWUG2cdfOqOVbePlLQRsG7q4c4w5O9DBo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vIgC+/bB2SsZYPQNAKz+UaYencBwyO4Vn91vCb+HDsqZZhyryyIi6EVsv+DBKHfX7
+         v0pZB5aIZC53KmB0QVH5pFYtumTtsaDWHKAskokidmM3wiiBSXgPGZw+EhkLUSzX/u
+         Vur2v9pxlw38NaTnrT6TQIP6+MknB+pUpwyioVoU=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20201119012351epcas2p21508f0bcfb2b90afe2f956c8e62f590b~IxDyU4sfq1488314883epcas2p2j;
+        Thu, 19 Nov 2020 01:23:51 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.182]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4Cc2522LgqzMqYkr; Thu, 19 Nov
+        2020 01:23:50 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        38.48.56312.429C5BF5; Thu, 19 Nov 2020 10:23:48 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201119012348epcas2p25300933258a716781298cff068eb973a~IxDvaXDuZ2421724217epcas2p2G;
+        Thu, 19 Nov 2020 01:23:48 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201119012348epsmtrp1199b2fe640195f011894329191b00ad4~IxDvZlY9P1094210942epsmtrp1D;
+        Thu, 19 Nov 2020 01:23:48 +0000 (GMT)
+X-AuditID: b6c32a46-1d9ff7000000dbf8-e3-5fb5c924840f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C2.CE.08745.429C5BF5; Thu, 19 Nov 2020 10:23:48 +0900 (KST)
+Received: from KEI (unknown [12.36.155.227]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201119012348epsmtip14dd99af005e62d55fbb42664e57008a2~IxDvRS-JD1546815468epsmtip1f;
+        Thu, 19 Nov 2020 01:23:48 +0000 (GMT)
+Date:   Thu, 19 Nov 2020 10:16:14 +0900
+From:   Hyesoo Yu <hyesoo.yu@samsung.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, john.stultz@linaro.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 3/4] dma-buf: heaps: add chunk heap to dmabuf heaps
+Message-ID: <20201119011614.GB136599@KEI>
 MIME-Version: 1.0
-References: <CAHk-=wjFfAktnadOPb_iV5nKh=V5Am1sG-gciYveswRtuEkrLQ@mail.gmail.com>
- <692820a49ded436591b5fe3a18c68a5e@AcuMS.aculab.com> <CAHk-=wgQY7k_3NVCbaSmiJyLiAV_1TgwLk-d4QRMHMWqM5Oo_w@mail.gmail.com>
- <0a10da3d-085f-c7a7-0053-dc1e9ea871ed@suse.de> <f7be660da595411ab60aaa4b76008769@AcuMS.aculab.com>
- <CAKMK7uFZhVqEzjfHszQ=1KeoRecXSDa0+tdH_rT8yENY9zasyQ@mail.gmail.com> <CAPM=9tw7_BU1_mUVa8ZeqsXfsN_cODsTzTAXiQkDGT+i1v0JaQ@mail.gmail.com>
-In-Reply-To: <CAPM=9tw7_BU1_mUVa8ZeqsXfsN_cODsTzTAXiQkDGT+i1v0JaQ@mail.gmail.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Thu, 19 Nov 2020 11:16:12 +1000
-Message-ID: <CAPM=9twMArmaJ9rqxDzhZh+dwgVuTdAXrtzFK+TpSe_9xSKDOA@mail.gmail.com>
-Subject: Re: Linux 5.10-rc4
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Huang, Ray" <ray.huang@amd.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201118090013.434-1-hdanton@sina.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJJsWRmVeSWpSXmKPExsWy7bCmua7Kya3xBk/vm1rMWb+GzeLAz+cs
+        Fmd+61pc3jWHzaJnw1ZWi3tr/rNaLPv6nt2B3WPTqk42j02fJrF73Lm2h83jxIzfLB6TXrh7
+        fN4kF8AWlWOTkZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlhrqSQl5ibaqvk4hOg65aZ
+        A3SJkkJZYk4pUCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafA0LBArzgxt7g0L10vOT/XytDA
+        wMgUqDIhJ2PV+X/MBRc4K9bs/8jcwPiQvYuRk0NCwETiw9m5zF2MXBxCAjsYJbpPzGMCSQgJ
+        fGKUuDNVHSLxmVGif+FRFpiOla2rGSESuxgltuzbywbhPGSU2Lz4GtAsDg4WAVWJo/+TQRrY
+        BNQlTmxZxghiiwgoS3RemMUKUs8scIZRYuZRkHpODmEBd4lJnw6ygPTyCmhK7DttARLmFRCU
+        ODnzCdhiTqDFyxbsYAUpERVQkXh1sB5kjIRAK4dE36lbrBDHuUjMfrUMyhaWeHV8C9SbUhIv
+        +9ug7HKJsy2PWCGaWxglLk67ygaRMJaY9awd7FBmgUyJ3w2Pwe6RADr6yC0WiDCfRMfhv+wQ
+        YV6JjjYhiE5lif3L5kHDR1Li0dp2qBM8JBq+H2GBBOh2RokFP8InMMrPQvLZLCTLIGwdiQW7
+        P7HNAtrALCAtsfwfB4SpKbF+l/4CRtZVjGKpBcW56anFRgVGyFG9iRGcRrXcdjBOeftB7xAj
+        EwfjIUYJDmYlEd61mlvjhXhTEiurUovy44tKc1KLDzGaAmNpIrOUaHI+MJHnlcQbmhqZmRlY
+        mlqYmhlZKInzhq7sixcSSE8sSc1OTS1ILYLpY+LglGpgYmx/HiO69l789re8ZTlHn9TGuaz9
+        m76y+La6d5HFquNMXd2VHgkbLPiN39yyflngMYPh6PTuTvFj1js9pttEzP3EdOro2p3CRte2
+        aBZIOF7oapETN+19aCEUUfxQ+9pOpTlsPw7LfmyWaPx+6dp5np+Z/098ai3w/7M3mr/lUYpg
+        8/28g3sXNdb06S1MObZwlrF3VVbU9LV95fzyl5smVn5d0lUnvu3Gm4gH6zawL3s362/Pmk9v
+        X2eKfXmh49KveMXFIYmLwbmp6CD75mCWnKbPPksWXv6murV/52XP2KnNIvfEW4u5sjbGT3xf
+        0CilLzBD4Lvc+Zw1GY/naNy4MtfsQ03vK3Who2cTuy7EKLEUZyQaajEXFScCAHpx/m8sBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLLMWRmVeSWpSXmKPExsWy7bCSnK7Kya3xBt090hZz1q9hszjw8zmL
+        xZnfuhaXd81hs+jZsJXV4t6a/6wWy76+Z3dg99i0qpPNY9OnSewed67tYfM4MeM3i8ekF+4e
+        nzfJBbBFcdmkpOZklqUW6dslcGVsnvqRpaCXveLPw79sDYzbWbsYOTkkBEwkVrauZuxi5OIQ
+        EtjBKDHx/RyohKTErM8nmSBsYYn7LUdYIYruM0pMX3acvYuRg4NFQFXi6P9kkBo2AXWJE1uW
+        MYLYIgLKEp0XZoHVMwucY5RY/WsOWEJYwF1i0qeDLCC9vAKaEvtOW4CYQgLbGSXOMINU8AoI
+        Spyc+YQFxGYW0JK48e8lE0gJs4C0xPJ/HCBhTqCTly3YwQoSFhVQkXh1sH4Co+AsJM2zkDTP
+        QmhewMi8ilEytaA4Nz232LDAKC+1XK84Mbe4NC9dLzk/dxMjOAa0tHYw7ln1Qe8QIxMH4yFG
+        CQ5mJRHetZpb44V4UxIrq1KL8uOLSnNSiw8xSnOwKInzfp21ME5IID2xJDU7NbUgtQgmy8TB
+        KdXANHP9m+o/Dqtrhe6lMX/4E1n4z8yNc9eB+WZuKl/vt8p9f/Ncgz3k5syNG71UvunNPOj9
+        R0Iv8thM9yusaRMWv3o587VE1Gl2XRehqbsc5ufwZnw6fWnlxPssqvzBF2YIusoFic/PXBP5
+        +oZdd5wyk01GYJv8XVbPvA/y4ZWL7W5M7NqmoWLQ+nPVJ9Gcy3ElV2V5/WrTTUQVN3apNIrW
+        uJ7kCq29vGYO36T+jbu7NPcKNAmw/iyQ5Sr7sD9xjstttl2X46Wd6jVWvFXRz0yYwzf/dKP2
+        vSgx37MZ/g/cv+90E1zYrhg7Qa1vg3t41WH/zowXbernBF+u/Nn/cqVQ2b9jbSsWmpm+UX36
+        x49RiaU4I9FQi7moOBEAn5Cc1vACAAA=
+X-CMS-MailID: 20201119012348epcas2p25300933258a716781298cff068eb973a
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----4WYzU9ra2zsysXCCwV9o7Bet81fjsxgzse5jnxws3Y-xTz8o=_15f447_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201118090020epcas2p3244a130a7b02a42127213a0b99f90291
+References: <20201117181935.3613581-1-minchan@kernel.org>
+        <CGME20201118090020epcas2p3244a130a7b02a42127213a0b99f90291@epcas2p3.samsung.com>
+        <20201118090013.434-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 at 08:25, Dave Airlie <airlied@gmail.com> wrote:
->
-> On Thu, 19 Nov 2020 at 08:15, Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> >
-> > On Wed, Nov 18, 2020 at 11:01 PM David Laight <David.Laight@aculab.com> wrote:
-> > >
-> > > From: Thomas Zimmermann
-> > > > Sent: 18 November 2020 19:37
-> > > >
-> > > > Hi
-> > > >
-> > > > Am 18.11.20 um 19:10 schrieb Linus Torvalds:
-> > > > > On Wed, Nov 18, 2020 at 4:12 AM David Laight <David.Laight@aculab.com> wrote:
-> > > > >>
-> > > > >> I've got the 'splat' below during boot.
-> > > > >> This is an 8-core C2758 Atom cpu using the on-board/cpu graphics.
-> > > > >> User space is Ubuntu 20.04.
-> > > > >>
-> > > > >> Additionally the X display has all the colours and alignment slightly
-> > > > >> messed up.
-> > > > >> 5.9.0 was ok.
-> > > > >> I'm just guessing the two issues are related.
-> > > > >
-> > > > > Sounds likely.  But it would be lovely if you could bisect when
-> > > > > exactly the problem(s) started to both verify that, and just to
-> > > > > pinpoint the exact change..
-> > >
-> > > I don't quite understand what 'git bisect' did.
-> > > I was bisecting between v5.9 and v5.10-rc1 but it suddenly started
-> > > generating v5.9.0-rc5+ kernels.
-> >
-> > We queue up patches for -rc1 way before the previous kernel is
-> > released, so this is normal.
-> >
-> > > The identified commit was 13a8f46d803 drm/ttm: move ghost object created.
-> > > (retyped - hope it is right).
-> > > But the diff to that last 'good' commit is massive.
-> >
-> > Yeah that's also normal for non-linear history. If you want to
-> > double-check, re-test the parent of that commit (which is 2ee476f77ffe
-> > ("drm/ttm: add a simple assign mem to bo wrapper")), which should
-> > work, and then the bad commit.
-> >
-> > Also is this the first bad commit for both the splat and the screen
-> > corruption issues?
-> >
-> > > So I don't know if that is anywhere near right.
-> >
-> > Thomas guessed it could be a ttm change, you hit one, and it looks
-> > like it could be the culprit. Now I guess it's up to Dave. Also adding
-> > Christian, in case he has an idea.
->
-> I'd be mildly surprised if it's that commit, since it just refactors
-> what looks to me to be two identical code pieces into one instance
-> (within the scope of me screwing that up, but reading it I can't see
-> it).
->
-> I'll dig into this today.
+------4WYzU9ra2zsysXCCwV9o7Bet81fjsxgzse5jnxws3Y-xTz8o=_15f447_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 
-https://patchwork.freedesktop.org/patch/401559/
+Hello, Hillf danton.
 
-should fix it.
+On Wed, Nov 18, 2020 at 05:00:13PM +0800, Hillf Danton wrote:
+> On Tue, 17 Nov 2020 10:19:34 -0800 Minchan Kim wrote:
+> +
+> +static int chunk_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
+> +{
+> +	struct chunk_heap_buffer *buffer = dmabuf->priv;
+> +	struct sg_table *table = &buffer->sg_table;
+> +	unsigned long addr = vma->vm_start;
+> +	struct sg_page_iter piter;
+> +	int ret;
+> +
+> +	for_each_sgtable_page(table, &piter, vma->vm_pgoff) {
+> +		struct page *page = sg_page_iter_page(&piter);
+> +
+> +		ret = remap_pfn_range(vma, addr, page_to_pfn(page), PAGE_SIZE,
+> +				      vma->vm_page_prot);
+> +		if (ret)
+> +			return ret;
+> +		addr = PAGE_SIZE;
+> 
+> Typo?
+> 		addr += PAGE_SIZE;
+> 
 
-We had a report in the rc1 thread but it got lost in the nouveau stuff
-as well, I've cc that reporter as well.
+Yes, It is typo. I will change it.
 
-please test.
-Dave.
+Thanks for your review.
+Regards.
+
+> +		if (addr >= vma->vm_end)
+> +			return 0;
+> +	}
+> +	return 0;
+> +}
+> 
+
+------4WYzU9ra2zsysXCCwV9o7Bet81fjsxgzse5jnxws3Y-xTz8o=_15f447_
+Content-Type: text/plain; charset="utf-8"
+
+
+------4WYzU9ra2zsysXCCwV9o7Bet81fjsxgzse5jnxws3Y-xTz8o=_15f447_--
