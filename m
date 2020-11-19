@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8367E2B9155
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7902B919B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727366AbgKSLmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:42:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
+        id S1727768AbgKSLpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:45:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727317AbgKSLmm (ORCPT
+        with ESMTP id S1726913AbgKSLmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:42:42 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764BDC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:42:42 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id p8so6111077wrx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:42:42 -0800 (PST)
+        Thu, 19 Nov 2020 06:42:43 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9287DC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:42:43 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id d142so6879039wmd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:42:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=at6RnRS2binr6/2DoZInS71m49aG42bZbjqPJx56QTI=;
-        b=0LBtnzcjXnRGSdCTdytvwtVLfskXVbMAqdcH53p5UWq4+CK2rBI8eirA5qDjXCD419
-         9+wFzkaSmkG2PyY0FEsJiPDuqj0Tr+g03E7X2t3jPlah9VzPOo50QYwMZKxOeholeKAE
-         ZGvcjUgv3L0PXToKgPZB2f7wh1HnzQvONHWIbckm6vLY8lUfdZ36JBIskFGFVxsZWqqQ
-         9ArpmUPmvEfuTr+f8N/ITJRK9vUEzA1Z8jsV6C7O/9uyh0fBZrCfkCX4x4mJzF4TB5vy
-         b9TIVTOL6qlkP3dqgBCU0pWgLvnInrVF3DR6rN5+k77d29XMxmWCgNkBuT+zW5XjyMbL
-         cuYg==
+        bh=vUDDxJ6QrhE79EdxKg7lI4ODKwN3GG0oY8e3KZqF1cI=;
+        b=W9yL3wLhV/G+OiJXPV54u2ifo0jFlG0/aH5HY/bHsqrcFr0oj+akPzjgVMqg1/NMm1
+         2bZ3eGH5wzWEbECWF/opI5i3kDqLjGrCljDlSwRiYzxOI6wD2dvQH0SFNgsECJZ+nug8
+         ZBlW352oj1aFkQBP0kUQyUxbuPlJ2agNrPACq+jDFY/y3bUgp7b5U8TxA23Xdy6ev1ij
+         O8Zc+27/yg5ciD44WNAsQJnGBWwfsNdUmwFchkcsol3KJGs2M48Llg31lqMsVtnTst7/
+         TCRqL8T1PXPLBJqnA+iOZw7g9j/IYLiOzOFxO7++77t68b+0ibSHluv7Pw/H8CBjo0qD
+         qd5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=at6RnRS2binr6/2DoZInS71m49aG42bZbjqPJx56QTI=;
-        b=EF9eKQjxiFEq14Jm2n1P97kMERGk5z9q0TfNJOBTXWWSoBkqnVf9t21hsAxMLF7GHT
-         wt3gg59PX0DjLIF/6U9vlAstVv+uHHgk8U5ZUNQHN670KoMdP7n/ggqGP+XixIWEP2s6
-         gxKy4gP4b5tUnuyUtyJ9U1wgC01sKFclxQ32ZedGqC5WU4ONQHA1o84n7yy3o9RxoMKK
-         TTT4h2MgkMLWpErx7gjYMn5Dd2b86xzcEa7oFHE4rFQm2JqokfC6lP2aBnRp3UcZfIYv
-         HwZrjsKqQzGQCMvFuWGvnR+2PdBP646QaqI0rNQ6TnTs+RVZ5cgn8jJzN10G/ninmkIO
-         BrKQ==
-X-Gm-Message-State: AOAM530UPKXjnVmfU1Hw7pRLIs7FfHY6IIhSiSZStSAUXO88kyfyOl6n
-        Z6MNHBFCp/L0KNHsL99Zr3rcqg==
-X-Google-Smtp-Source: ABdhPJztj8RdV8cAzQVm5qxyk8qTvD3pVn25y+QaZS7WF8vCP/yJAjNcq8tKhcJu0Atp9DQv0CCIXw==
-X-Received: by 2002:adf:b78b:: with SMTP id s11mr9646394wre.42.1605786161290;
-        Thu, 19 Nov 2020 03:42:41 -0800 (PST)
+        bh=vUDDxJ6QrhE79EdxKg7lI4ODKwN3GG0oY8e3KZqF1cI=;
+        b=VLAqLNin5DDyr7XyoUWwX34RDq5riRQPzAbL17Fl8TiUuzXnd5QlGEg0hItXrh+47C
+         GCVUq7DNni1KGGATK6x0pzW7ObrJYIrCDkB06TGG56ZRwz1TlbrLIAEooH1a0KD3pMfA
+         aPFN5OaFVJ5MKWu9cRXxulo3gAFqeAsCsDK6d102+ejknmTN7clR/n2uARFUQagLa/DA
+         iWi6opuffxx4uXXhT+iym/zsG1BTWOIJmc5sv8QQXlWGLtp1sJy34dB2ZcKa5MbnSTku
+         CxqsBREoVfsh0MbbBXBTvH24F87rJEzMW5SMkozG92zITlM5FjHEqeo99K1JHMzWW1yf
+         hndA==
+X-Gm-Message-State: AOAM530uoouZfJWcfuHZa109lr4aWEOZFoAAliX13NkSrCr1ny7aodAn
+        lpiSfcJmPfeMwqgOCSLao9+Esg==
+X-Google-Smtp-Source: ABdhPJzdY3UgL7H9MVWSejzo3MvTbl+US/npXEvRSau4/Li6cWEG4X103a3Jj2cFdOao12InjVI3Wg==
+X-Received: by 2002:a05:600c:2886:: with SMTP id g6mr4164141wmd.110.1605786162343;
+        Thu, 19 Nov 2020 03:42:42 -0800 (PST)
 Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr. [2.15.39.206])
-        by smtp.gmail.com with ESMTPSA id u23sm9745178wmc.32.2020.11.19.03.42.40
+        by smtp.gmail.com with ESMTPSA id u23sm9745178wmc.32.2020.11.19.03.42.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 03:42:40 -0800 (PST)
+        Thu, 19 Nov 2020 03:42:41 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 35/59] rtc: rx8025: stop using deprecated RTC API
-Date:   Thu, 19 Nov 2020 12:41:25 +0100
-Message-Id: <20201119114149.4117-36-brgl@bgdev.pl>
+Subject: [PATCH 36/59] rtc: asm9260: stop using deprecated RTC API
+Date:   Thu, 19 Nov 2020 12:41:26 +0100
+Message-Id: <20201119114149.4117-37-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201119114149.4117-1-brgl@bgdev.pl>
 References: <20201119114149.4117-1-brgl@bgdev.pl>
@@ -72,45 +72,42 @@ and devm_rtc_register_device() pair instead.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/rtc/rtc-rx8025.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/rtc/rtc-asm9260.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/rtc/rtc-rx8025.c b/drivers/rtc/rtc-rx8025.c
-index a24f85893f90..3c08cfa779d7 100644
---- a/drivers/rtc/rtc-rx8025.c
-+++ b/drivers/rtc/rtc-rx8025.c
-@@ -524,12 +524,9 @@ static int rx8025_probe(struct i2c_client *client,
- 	if (err)
- 		return err;
+diff --git a/drivers/rtc/rtc-asm9260.c b/drivers/rtc/rtc-asm9260.c
+index 3ab81cdec00b..c74455bce8b4 100644
+--- a/drivers/rtc/rtc-asm9260.c
++++ b/drivers/rtc/rtc-asm9260.c
+@@ -284,14 +284,14 @@ static int asm9260_rtc_probe(struct platform_device *pdev)
+ 	iowrite32(0, priv->iobase + HW_CIIR);
+ 	iowrite32(BM_AMR_OFF, priv->iobase + HW_AMR);
  
--	rx8025->rtc = devm_rtc_device_register(&client->dev, client->name,
--					  &rx8025_rtc_ops, THIS_MODULE);
--	if (IS_ERR(rx8025->rtc)) {
--		dev_err(&client->dev, "unable to register the class device\n");
-+	rx8025->rtc = devm_rtc_allocate_device(&client->dev);
-+	if (IS_ERR(rx8025->rtc))
- 		return PTR_ERR(rx8025->rtc);
--	}
- 
- 	if (client->irq > 0) {
- 		dev_info(&client->dev, "IRQ %d supplied\n", client->irq);
-@@ -543,13 +540,15 @@ static int rx8025_probe(struct i2c_client *client,
- 		}
+-	priv->rtc = devm_rtc_device_register(dev, dev_name(dev),
+-					     &asm9260_rtc_ops, THIS_MODULE);
++	priv->rtc = devm_rtc_allocate_device(dev);
+ 	if (IS_ERR(priv->rtc)) {
+ 		ret = PTR_ERR(priv->rtc);
+-		dev_err(dev, "Failed to register RTC device: %d\n", ret);
+ 		goto err_return;
  	}
  
-+	rx8025->rtc->ops = &rx8025_rtc_ops;
- 	rx8025->rtc->max_user_freq = 1;
- 
- 	/* the rx8025 alarm only supports a minute accuracy */
- 	rx8025->rtc->uie_unsupported = 1;
- 
- 	err = rx8025_sysfs_register(&client->dev);
--	return err;
++	priv->rtc->ops = &asm9260_rtc_ops;
 +
-+	return devm_rtc_register_device(rx8025->rtc);
- }
+ 	ret = devm_request_threaded_irq(dev, irq_alarm, NULL,
+ 					asm9260_rtc_irq, IRQF_ONESHOT,
+ 					dev_name(dev), priv);
+@@ -301,6 +301,10 @@ static int asm9260_rtc_probe(struct platform_device *pdev)
+ 		goto err_return;
+ 	}
  
- static int rx8025_remove(struct i2c_client *client)
++	ret = devm_rtc_register_device(priv->rtc);
++	if (ret)
++		goto err_return;
++
+ 	return 0;
+ 
+ err_return:
 -- 
 2.29.1
 
