@@ -2,129 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8882B97CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D292B97D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgKSQYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:24:15 -0500
-Received: from mail-eopbgr70082.outbound.protection.outlook.com ([40.107.7.82]:13038
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728013AbgKSQYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:24:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MoDUV/5dvM3cZluKSWQFNMImGpuSub+V5Cf088lWGhn4Tw3EJBO2MrURO1Mq+C06w15Hs0E4tIAaxIyH9KYkTNrRYoaJVhAhxNgTryIz9Y5D8Oufykexwqqfkw1y0eAod6keyzVFM3D2bU0bjgC/VKqRs+0LfBj8R5LWl2F0RllY5yxM+nGe8bzJ43KxE96LTjchtEiInmPieWqTVT7YxkCDFEUCAD9ush4xZvzW3jfbwb/dPdcz+1KrEt7MuAgFvIX31ppxyFweb9WbW6n8Spfdyo+APA82uGMPd583K5Eb5C7YHcUI3XluIMdazsFKfeMxf+Z/gq3am+5v+BqEsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AR0HRj54qtc+cHcJ6Pp33/LNMwv+OOOpRpPD1NWiI7M=;
- b=DeBi4lCroUDEEqtDgZtGItEHLQweipG8doZNp0GeL++qBDLpjs5RtCEuKzVUj00P0NFOk2Sr8ZQCIFJFQeR1PjN+84iP92uQXOdxZLMkX9sAicg3uRuxlzq54r87G/aFHE1AubYin4hGG4qfFh4ycOfq1mUd+wB6z8LTtWXes9AJYZT/+57R7esA10ql1iHFEMohjs2PnLhjiY/M6OACOuggNLDgywXtTB6gWNaL6GPMS0OEZlZDJREGIlRv1tCx/QKks8a4aAQfpsoW8wLziGWeJ/BkozK48oW1mbIp+jskcYJo/ps5kkl9hAp4g8wM1mZVVaKIs55yIgOgbFPFuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AR0HRj54qtc+cHcJ6Pp33/LNMwv+OOOpRpPD1NWiI7M=;
- b=Ncvy1KUbthNFro8lO6O4XV+2Zs0Y1oXwMnU4QurfXAvlrutgAna2BKc2aFH9rZlubjlLHSM8q/uo+b9oQOQKCofKZVFYLgaOTCO6/Rz2z+HggowqoKj+2wwSwhSgkKZz1kwTYN7YtmRydNR4i9AuRYQttZ08tKVfAw7Lalj/2Jk=
-Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
- (2603:10a6:800:31::12) by VI1PR0402MB3488.eurprd04.prod.outlook.com
- (2603:10a6:803:10::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Thu, 19 Nov
- 2020 16:24:10 +0000
-Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
- ([fe80::91f8:d96b:f238:7962]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
- ([fe80::91f8:d96b:f238:7962%8]) with mapi id 15.20.3564.028; Thu, 19 Nov 2020
- 16:24:10 +0000
-From:   Viorel Suman <viorel.suman@nxp.com>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC PATCH] ASoC: ak4458: use reset control instead of reset gpio
-Thread-Topic: [RFC PATCH] ASoC: ak4458: use reset control instead of reset
- gpio
-Thread-Index: AQHWvGa/ULTQkQTG3EuXXoMLDy7cbKnPa9MAgAAJFpA=
-Date:   Thu, 19 Nov 2020 16:24:10 +0000
-Message-ID: <VI1PR0401MB22729D51912D66FDB2973A7792E00@VI1PR0401MB2272.eurprd04.prod.outlook.com>
-References: <20201116222036.343635-1-viorel.suman@oss.nxp.com>
- <cee287f3-29c1-771f-ca20-812de1ae8044@ti.com>
-In-Reply-To: <cee287f3-29c1-771f-ca20-812de1ae8044@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [5.12.106.221]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3307aa86-5dd6-4855-da88-08d88ca78b96
-x-ms-traffictypediagnostic: VI1PR0402MB3488:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0402MB34888ECA9CBB9A8A9AA4161992E00@VI1PR0402MB3488.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6RTtaHMv5g4VlwvNuUC8dMtHeJdRonqdF4pGr6X+zJpFblaXiOuFxykv76WPRrT4+SWx4A2bvgvBfmXZvL32otQsnZdJtX9Lkh/PeaNz2TXveBXKwg730jUQGLJRJXRik3FN3mg05m1JAK84I7aTNVaex0MT2WQG1ueoS7r+KCny9lbkXgeA1NjXeFkQsZGJPrOjbp7LA4KZDiyWgv+6P/+Xf/p4uBOBmOguAyy+tm1gJywXh2l9Rm+oSlIB3x38fdzrhEo0Y+EZ8/x7pIahzikXbQp6OwWWbmCHg8D9pQGMKubY8UyqxxNulIkvHJHyj6h7I3n/XpRwwI1ao0EJm581ED/EpVLvSeXG/9AEIYmCI0PEJNZVw5AEkz09F89lY3BnaLcVi9bZ4JYEEJA2DQfTmy58ZULYM0bgXAFuaX/31+/KD69ULzZ4VZhjIw8v
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2272.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(376002)(346002)(396003)(7416002)(478600001)(86362001)(33656002)(71200400001)(26005)(55016002)(2906002)(921005)(44832011)(83380400001)(9686003)(5660300002)(52536014)(186003)(316002)(6506007)(7696005)(76116006)(66946007)(64756008)(8676002)(8936002)(66446008)(66556008)(110136005)(66476007)(966005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: IFQMLRikzP4JVwCCaO95/Pe0/PxCpoEozuI6T0wvfdLt+TjyOxbVQxeEOlqa/FI+5XFRDNo3l3MaC4PfgG/aqZuUfTbcx+WEOEVMCrBH456rIZJ2uFGKKBuhJcU6tMegnVXIXBzVu5zP3AbSePrvO9Awji2/CaeGqdwV/HuaZ1ApuxvTFuPhRUQHyEnZQUWThovU0YmKnnpM8s8ChrwZ/MEji8H5w+qj//x0GJk+49egqet4Yl8MGhiHdiIklWtNgaSCGursbQe5rHTivWLaKqzyCliWUPE5CRGVFB6PDqGo5nJt/4WlxK2eHvGgOL6KqrZ9FUI0pJuvoKG7U0KKaPZ2RSADGQ9+SheG5H99vArnQeTNuCoBzUu5YsCM5orzc3HQ2Q4fgZnv44k3Qn1vm/s/D4Mqo7hb/8exzEgjIne9KJSvyIRCkvXuKM1Ilx5vg1ACBTy8stD1RaVzNogqCmys6EcZujtx5nR28udWk+WMq/PafE0dkROCfCamzBN+Amm69oZwsKo+ThtBCCtw6XSs/T3BeffjGtsp2HPw3zbNzciahkonoGcjdU2qgvzjGV9j3KLESIYGdhUzk6Wim3HEabL4bFh7QWPgXgAMQH6qcOUaexEEfWRqLfeT9otjLQEau6sTeNaoEg1PKH+M8Q==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728623AbgKSQZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:25:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728011AbgKSQZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:25:49 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066A2C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:25:49 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id y17so8710489ejh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:25:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2GruhQdqr+wzWu7YIuTjo4e/TRyXrwSpjT/ODeg/Yqc=;
+        b=HNhCr9vU0ISFuiHpPTfBE/dnSa1k1AQmT5a5owhc4HAvKKm3lmsYZp8SXMp+lTOqLJ
+         oA3puTIhotxShLQBAg0rlM4WDEQkkC69CqcXEaiU9EAiBKKxtasmjjIbIeazLFtic2MI
+         fLz07UvbuvQYFFiUzTKn15TR5mxfbYbxOQpkI5/9WHICtRExdl10ClVPeje4PwMD++Sp
+         5gJtKtlsgxdEDaopQgVhEbsCfANljY7EtRJZz+x93MNooDxOX9ReqlU+WdfT/OoDCbh6
+         DZ4+nKQgm0TMuhm7MKG6SISpKF0WEI9VVfoZtlPQUmeHaXi/qPVmsTWyh3Hr2yUJQNso
+         SF0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2GruhQdqr+wzWu7YIuTjo4e/TRyXrwSpjT/ODeg/Yqc=;
+        b=FPF0TsERvS0C5MOOlkWQLaUu/BRaj0ybVM55nmGcDNaBp2S1yh0LSVVe8EIiWEOCcF
+         pGAmdtGEkULAZVPRXsZWVYhpGn0CNfFZ4yDGk20mt9FZAB9ZkHIhQZTlNEXmcbi7TIWd
+         2H8h6mXQftZ0CEMOFDnxmqHTzA+CAnY9l36hsgqIQVEaXw8lQIHASjnIWbTbV+6kYsyu
+         0VeSq3Fydjft1UWVOszCB9rKEMlx7z6t/Qa7R0uzx75ba/JEMYeMl71jwtdNKtM09UNj
+         Ic4r/tu9I0Nxg2qJQXs7vN5TuTyX4URkUgG6/eheC+X1pMOmPqi4zgymsMZufEFBx/hx
+         gHTg==
+X-Gm-Message-State: AOAM530LD4mG+nPhQ0iZdQGaqCIVp9uM98rjoA6IC71QhVm9+5tkyQOi
+        EDRNVUgAbLxmKED92ETLpiFHRQ==
+X-Google-Smtp-Source: ABdhPJx5kfoZrvZqP/Uo4FFewwoV/LxEuk0ZaZ0aeXlkfVXWjL868auf9G7gfWTXVZ0FB7pclJWrVQ==
+X-Received: by 2002:a17:906:3ec8:: with SMTP id d8mr29647604ejj.32.1605803147524;
+        Thu, 19 Nov 2020 08:25:47 -0800 (PST)
+Received: from localhost ([2a01:4b00:8523:2d03:9843:cd3f:f36b:d55c])
+        by smtp.gmail.com with ESMTPSA id 2sm66968ejw.65.2020.11.19.08.25.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 08:25:46 -0800 (PST)
+From:   David Brazdil <dbrazdil@google.com>
+To:     kvmarm@lists.cs.columbia.edu
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Scull <ascull@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>, kernel-team@android.com,
+        David Brazdil <dbrazdil@google.com>
+Subject: [RFC PATCH 0/6] kvm: arm64: Fix up hyp relocations
+Date:   Thu, 19 Nov 2020 16:25:37 +0000
+Message-Id: <20201119162543.78001-1-dbrazdil@google.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3307aa86-5dd6-4855-da88-08d88ca78b96
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2020 16:24:10.1002
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dqyALH0srer/zEqDHnpzjgyMMe3jhQjPBSVzTXeVKc7xPkB9QeN2pEcWTdjMeuIMpXVYrQtXyEmEoHaxN9P5PQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3488
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUGV0ZXIsDQoNCj4gRFRTIGlzIHN1cHBvc2VkIHRvIGxvb2sgYXMgZm9sbG93czoNCj4gPg0K
-PiA+IC8gew0KPiA+ICAgICBhazQ0NThfcmVzZXQ6IGdwaW8tcmVzZXQgew0KPiA+ICAgICAgICBj
-b21wYXRpYmxlID0gImdwaW8tcmVzZXQiOw0KPiA+ICAgICAgICByZXNldC1ncGlvcyA9IDwmcGNh
-NjQxNiA0IEdQSU9fQUNUSVZFX0xPVz47DQo+ID4gICAgICAgICNyZXNldC1jZWxscyA9IDwwPjsN
-Cj4gPiAgICAgICAgaW5pdGlhbGx5LWluLXJlc2V0Ow0KPiANCj4gSSBjYW4gbm90IGZpbmQgYW55
-dGhpbmcgcmVzZW1ibGluZyB0byB0aGlzIGluIG5leHQtMjAyMDExMTkuDQo+IFdoZXJlIGlzIHRo
-ZSBpbXBsZW1lbnRhdGlvbiBhbmQgZG9jdW1lbnRhdGlvbiBmb3IgdGhpcyBncGlvLXJlc2V0Pw0K
-DQpUaGUgYm9hcmQgc2NoZW1hdGljcyBpcyBub3QgcHVibGljbHkgYXZhaWxhYmxlOyBzb21lIGlu
-Zm8gbWF5IGJlIHNlZW4gaW4gRFRTIGZpbGVzIGJlbG93Og0KaHR0cHM6Ly9zb3VyY2UuY29kZWF1
-cm9yYS5vcmcvZXh0ZXJuYWwvaW14L2xpbnV4LWlteC90cmVlL2FyY2gvYXJtNjQvYm9vdC9kdHMv
-ZnJlZXNjYWxlL2lteDhtbS1ldmsuZHRzP2g9aW14XzUuNC4yNF8yLjEuMA0KaHR0cHM6Ly9zb3Vy
-Y2UuY29kZWF1cm9yYS5vcmcvZXh0ZXJuYWwvaW14L2xpbnV4LWlteC90cmVlL2FyY2gvYXJtNjQv
-Ym9vdC9kdHMvZnJlZXNjYWxlL2lteDhtbS1hYjIuZHRzP2g9aW14XzUuNC4yNF8yLjEuMA0KaHR0
-cHM6Ly9zb3VyY2UuY29kZWF1cm9yYS5vcmcvZXh0ZXJuYWwvaW14L2xpbnV4LWlteC90cmVlL2Fy
-Y2gvYXJtNjQvYm9vdC9kdHMvZnJlZXNjYWxlL2lteDhtcC1hYjIuZHRzP2g9aW14XzUuNC4yNF8y
-LjEuMA0KDQpJbiBleGFtcGxlcyBhYm92ZSB0aGUgR1BJTyBpcyBoYW5kbGVkIGJ5IG1hY2hpbmUg
-ZHJpdmVyIC0gd3JvbmcgYXBwcm9hY2ggZ2l2ZW4gdGhhdA0KaXQgcmVxdWlyZXMgbWFjaGluZSBk
-cml2ZXIgYmVpbmcgcHJvYmVkIGJlZm9yZSBjb2RlYyBkcml2ZXIuDQoNCj4gPiAtCWFrNDQ1OC0+
-cmVzZXRfZ3Bpb2QgPSBkZXZtX2dwaW9kX2dldF9vcHRpb25hbChhazQ0NTgtPmRldiwNCj4gInJl
-c2V0IiwNCj4gPiAtCQkJCQkJICAgICAgR1BJT0RfT1VUX0xPVyk7DQo+ID4gLQlpZiAoSVNfRVJS
-KGFrNDQ1OC0+cmVzZXRfZ3Bpb2QpKQ0KPiA+IC0JCXJldHVybiBQVFJfRVJSKGFrNDQ1OC0+cmVz
-ZXRfZ3Bpb2QpOw0KPiA+ICsJYWs0NDU4LT5yZXNldCA9IGRldm1fcmVzZXRfY29udHJvbF9nZXRf
-b3B0aW9uYWxfc2hhcmVkKGFrNDQ1OC0NCj4gPmRldiwgTlVMTCk7DQo+ID4gKwlpZiAoSVNfRVJS
-KGFrNDQ1OC0+cmVzZXQpKQ0KPiA+ICsJCXJldHVybiBQVFJfRVJSKGFrNDQ1OC0+cmVzZXQpOw0K
-PiANCj4gVGhlIGJpbmRpbmcgZG9jdW1lbnRhdGlvbiBtdXN0IGJlIHVwZGF0ZWQgYW5kIHlvdSBt
-dXN0IHN1cHBvcnQgdGhlIGdwaW8NCj4gd2F5IGFzIHdlbGwuDQoNClN1cmUsIG1ha2Ugc2Vuc2Uu
-DQoNCj4gV2hlbiBJIGhhZCB0aGlzIGRpc2N1c3Npb24gYXJvdW5kIHVzaW5nIHRoZSByZXNldCBm
-cmFtZXdvcmsgZm9yIHNoYXJlZA0KPiBlbmFibGUgYW5kL29yIHJlc2V0IHBpbnMgaXQgd2FzIHN1
-Z2dlc3RlZCB0aGF0IF9pZl8gc3VjaCBhIGRyaXZlciBtYWtlcw0KPiBzZW5zZSB0aGVuIGl0IHNo
-b3VsZCBpbnRlcm5hbGx5IGhhbmRsZSAoYnkgdXNpbmcgbWFnaWMgc3RyaW5ncykgdGhlIGZhbGxi
-YWNrDQo+IGFuZCB3b3JrIHdpdGggcHJlLXJlc2V0IGJpbmRpbmcuDQoNClRoYW5rcywgd291bGQg
-YXBwcmVjaWF0ZSBpZiB5b3UgcG9pbnQgbWUgdG8gdGhlIGRpc2N1c3Npb24geW91IGhhZC4NCg0K
-VmlvcmVsDQo=
+Hi,
+
+KVM nVHE hyp code runs under different VA mapping than the kernel, which
+meant that .hyp.text code had to use PC-relative addressing because
+relocations would produce a kernel VA. Programmers had to be extremely
+careful with C semantics to not break this fragile setup. See
+hyp_symbol_addr comments for details.
+
+Now that we're moving to all nVHE hyp code/data being in separate ELF
+sections from the rest of the kernel, it is becoming possible to revisit
+relocations during early boot, filter those used by nVHE hyp and
+converting those (already relocated) kern VAs to hyp VAs.
+
+Sending this as an RFC, mainly to get feedback but also because it's
+only lightly tested. It still feels hacky but much more robust than the
+existing approach. The one place where I see somebody breaking this is
+the list of ELF sections owned by ELF. That list is currently evolving
+but should stabilize over time.
+
+The patches are based on kvmarm/queue (with Marc's "Host EL2 entry
+improvements") and my "Opt-in always-on nVHE hypervisor" v2 series.
+
+-David
+
+David Brazdil (6):
+  kvm: arm64: Set up .hyp.rodata ELF section
+  kvm: arm64: Fix up RELA relocations in hyp code/data
+  kvm: arm64: Fix up RELR relocation in hyp code/data
+  kvm: arm64: Remove patching of fn pointers in hyp
+  kvm: arm64: Fix constant-pool users in hyp
+  kvm: arm64: Remove hyp_symbol_addr
+
+ arch/arm64/include/asm/kvm_asm.h         |  20 ----
+ arch/arm64/include/asm/kvm_mmu.h         |  48 ++++-----
+ arch/arm64/include/asm/sections.h        |   2 +-
+ arch/arm64/kernel/image-vars.h           |   1 -
+ arch/arm64/kernel/smp.c                  |   4 +-
+ arch/arm64/kernel/vmlinux.lds.S          |   7 +-
+ arch/arm64/kvm/arm.c                     |   7 +-
+ arch/arm64/kvm/hyp/include/hyp/switch.h  |   4 +-
+ arch/arm64/kvm/hyp/nvhe/host.S           |  29 +++---
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c       |  11 +-
+ arch/arm64/kvm/hyp/nvhe/hyp-smp.c        |   4 +-
+ arch/arm64/kvm/hyp/nvhe/hyp.lds.S        |   1 +
+ arch/arm64/kvm/hyp/nvhe/psci-relay.c     |   4 +-
+ arch/arm64/kvm/hyp/vgic-v2-cpuif-proxy.c |   2 +-
+ arch/arm64/kvm/va_layout.c               | 123 +++++++++++++++++++++--
+ 15 files changed, 175 insertions(+), 92 deletions(-)
+
+-- 
+2.29.2.299.gdc1121823c-goog
+
