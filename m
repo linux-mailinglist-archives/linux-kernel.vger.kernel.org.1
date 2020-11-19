@@ -2,89 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8C22B8B9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 749122B8BA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgKSG3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 01:29:23 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:47480 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725907AbgKSG3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 01:29:23 -0500
-X-UUID: 4000dd806cf34255bf2b698982f66a2f-20201119
-X-UUID: 4000dd806cf34255bf2b698982f66a2f-20201119
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1887966917; Thu, 19 Nov 2020 14:29:18 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 19 Nov 2020 14:29:17 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 19 Nov 2020 14:29:17 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v1] scsi: ufs: Fix race between shutdown and runtime resume flow
-Date:   Thu, 19 Nov 2020 14:29:16 +0800
-Message-ID: <20201119062916.12931-1-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S1726268AbgKSGaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 01:30:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725873AbgKSGaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 01:30:18 -0500
+Received: from localhost (unknown [122.171.203.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F9E2246A5;
+        Thu, 19 Nov 2020 06:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605767417;
+        bh=pbjxqJYxs2h8BKkAMHOF56IVNV1ESX5tvFquYGytkEQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aEYl0IHIOk31cTSJJ33KRpfnbntJx8l+QTGsS9jUfrpNznR4Iczlq3e5cNKxzS5tV
+         IkfMntJXEeyQYfmRzuo05byZ5O4au3MNXgBiT6fqDh8voZF+vaBf/hrU4O+/Pp/IZk
+         2DDA04kWGoTrijPouW4YvNqf/9AYqRsx/conNW3o=
+Date:   Thu, 19 Nov 2020 12:00:12 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        bcm-kernel-feedback-list@broadcom.com,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH] dt-bindings: phy: bcm-ns-usb3-phy: convert to yaml
+Message-ID: <20201119063012.GF50232@vkoul-mobl>
+References: <20201116074650.16070-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201116074650.16070-1-zajec5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If UFS host device is in runtime-suspended state while
-UFS shutdown callback is invoked, UFS device shall be
-resumed for register accesses. Currently only UFS local
-runtime resume function will be invoked to wake up the host.
-This is not enough because if someone triggers runtime
-resume from block layer, then race may happen between
-shutdown and runtime resume flow, and finally lead to
-unlocked register access.
+On 16-11-20, 08:46, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> 1. Change syntax from txt to yaml
+> 2. Drop "Driver for" from the title
+> 3. Drop "reg = <0x0>;" from example (noticed by dt_binding_check)
+> 4. Specify license
 
-To fix this kind of issues, in ufshcd_shutdown(), use
-pm_runtime_get_sync() instead of resuming UFS device by
-ufshcd_runtime_resume() "internally" to let runtime PM
-framework manage the whole resume flow.
+You missed Ccing Rob
 
-Fixes: 57d104c153d3 ("ufs: add UFS power management support")
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
----
- drivers/scsi/ufs/ufshcd.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> I think this should go through linux-phy tree. Kishon, Vinod, can you
+> take this patch?
+> 
+> This patch generates a false positive checkpatch.pl warning [0].
+> Please ignore:
+> WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 80cbce414678..bb16cc04f106 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -8941,11 +8941,7 @@ int ufshcd_shutdown(struct ufs_hba *hba)
- 	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
- 		goto out;
- 
--	if (pm_runtime_suspended(hba->dev)) {
--		ret = ufshcd_runtime_resume(hba);
--		if (ret)
--			goto out;
--	}
-+	pm_runtime_get_sync(hba->dev);
- 
- 	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
- out:
+That is okay, it is a warning ;-)
+
+> 
+> [0] https://lkml.org/lkml/2020/2/18/1084
+> ---
+>  .../bindings/phy/bcm-ns-usb3-phy.txt          | 34 ----------
+>  .../bindings/phy/bcm-ns-usb3-phy.yaml         | 62 +++++++++++++++++++
+>  2 files changed, 62 insertions(+), 34 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/phy/bcm-ns-usb3-phy.txt
+>  create mode 100644 Documentation/devicetree/bindings/phy/bcm-ns-usb3-phy.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/bcm-ns-usb3-phy.txt b/Documentation/devicetree/bindings/phy/bcm-ns-usb3-phy.txt
+> deleted file mode 100644
+> index 32f057260351..000000000000
+> --- a/Documentation/devicetree/bindings/phy/bcm-ns-usb3-phy.txt
+> +++ /dev/null
+> @@ -1,34 +0,0 @@
+> -Driver for Broadcom Northstar USB 3.0 PHY
+> -
+> -Required properties:
+> -
+> -- compatible: one of: "brcm,ns-ax-usb3-phy", "brcm,ns-bx-usb3-phy".
+> -- reg: address of MDIO bus device
+> -- usb3-dmp-syscon: phandle to syscon with DMP (Device Management Plugin)
+> -		   registers
+> -- #phy-cells: must be 0
+> -
+> -Initialization of USB 3.0 PHY depends on Northstar version. There are currently
+> -three known series: Ax, Bx and Cx.
+> -Known A0: BCM4707 rev 0
+> -Known B0: BCM4707 rev 4, BCM53573 rev 2
+> -Known B1: BCM4707 rev 6
+> -Known C0: BCM47094 rev 0
+> -
+> -Example:
+> -	mdio: mdio@0 {
+> -		reg = <0x0>;
+> -		#size-cells = <1>;
+> -		#address-cells = <0>;
+> -
+> -		usb3-phy@10 {
+> -			compatible = "brcm,ns-ax-usb3-phy";
+> -			reg = <0x10>;
+> -			usb3-dmp-syscon = <&usb3_dmp>;
+> -			#phy-cells = <0>;
+> -		};
+> -	};
+> -
+> -	usb3_dmp: syscon@18105000 {
+> -		reg = <0x18105000 0x1000>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/phy/bcm-ns-usb3-phy.yaml b/Documentation/devicetree/bindings/phy/bcm-ns-usb3-phy.yaml
+> new file mode 100644
+> index 000000000000..7fd419db45d0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/bcm-ns-usb3-phy.yaml
+> @@ -0,0 +1,62 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/phy/bcm-ns-usb3-phy.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Broadcom Northstar USB 3.0 PHY
+> +
+> +description: |
+> +  Initialization of USB 3.0 PHY depends on Northstar version. There are currently
+> +  three known series: Ax, Bx and Cx.
+> +  Known A0: BCM4707 rev 0
+> +  Known B0: BCM4707 rev 4, BCM53573 rev 2
+> +  Known B1: BCM4707 rev 6
+> +  Known C0: BCM47094 rev 0
+> +
+> +maintainers:
+> +  - Rafał Miłecki <rafal@milecki.pl>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - brcm,ns-ax-usb3-phy
+> +      - brcm,ns-bx-usb3-phy
+> +
+> +  reg:
+> +    description: address of MDIO bus device
+> +    maxItems: 1
+> +
+> +  usb3-dmp-syscon:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      Phandle to the DMP (Device Management Plugin) syscon
+> +
+> +  "#phy-cells":
+> +    const: 0
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - usb3-dmp-syscon
+> +  - "#phy-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    mdio {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        usb3-phy@10 {
+> +            compatible = "brcm,ns-ax-usb3-phy";
+> +            reg = <0x10>;
+> +            usb3-dmp-syscon = <&usb3_dmp>;
+> +            #phy-cells = <0>;
+> +        };
+> +    };
+> +
+> +    usb3_dmp: syscon@18105000 {
+> +        reg = <0x18105000 0x1000>;
+> +    };
+> -- 
+> 2.27.0
+
 -- 
-2.18.0
-
+~Vinod
