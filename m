@@ -2,106 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841FE2B9958
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA592B995C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729053AbgKSRdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:33:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
+        id S1729061AbgKSRf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:35:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728672AbgKSRdg (ORCPT
+        with ESMTP id S1728175AbgKSRf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:33:36 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7CEC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:33:34 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id 131so5141984pfb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:33:34 -0800 (PST)
+        Thu, 19 Nov 2020 12:35:56 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6F2C0613CF;
+        Thu, 19 Nov 2020 09:35:56 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id y4so6701433edy.5;
+        Thu, 19 Nov 2020 09:35:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lTDVZu78sQRjzGc9f1m4SYFSbzIEF2W5wGuEGt9FlSM=;
-        b=xHfwpgtKrk1Df4SjR7jUsrMdAFTDc7OgvNY6trictLf5Ln9RuV/h6HV5ooqXOHH9cT
-         T7onq3l77JCiY18+f4dkMsWgy4IG1b3EDG2yVcHRXLjvGmigo6ve2YPgdrcksU/q0AQq
-         URYaTadUQbkdGx+XtnT5fiE6KfwSlLclOmf/hvD3RCT4kQuy0YXFPv0qOP4tD0Agzs1U
-         0l3Q5e1TMiKsNNt4ruCn72x/UPhf1G7Bbr06wOaYjJRUrhAVNiQ7p6/ShQzzmZZq7nIK
-         pqGtMYbtUL/h5ArThLru1U9kFYsw/V6d/ETFNOz2ihLWoueSSYPsGMN3OjuzJwJrYcAq
-         HJNg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RsLldTWt03SahwoT1u6jHBmnbvDuG2f1cJeVhx0lFZ8=;
+        b=SFwmYQB+4kmPYts35/QnmiJX0+vl5jvjmY0xEwO5yDf/g4dSemKlTPwdszyGBcplGz
+         fccg8jT13IuNz8CsGrzCHYfXlqXLFJ0iXB5ArnK+Ki4KRbWeMH1RMjY4AnOHQPrUVj3M
+         Bs/1z+L8yMtUGeKUIhmEilTpZ1psIsVJzx0gEw+kHdoiBnRHeFhqWY/ggycQ5dMTTTID
+         vNAkAlxvytqCTTKlej3JsLZaqUkCW0sWW6t50kxdW6KKBoDSg7w4owv4BRNEdA29R3hN
+         svwLv+iaHIdLPTnqH8xb1KPr8AFcukyU0pd/5xA2rriNNeKx7iMbZK2V41Icucn0W4Wf
+         rixA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lTDVZu78sQRjzGc9f1m4SYFSbzIEF2W5wGuEGt9FlSM=;
-        b=cxAzlxg+33tGrzT5NcWU0EofO6ZA0ZpVpDjDGQwbDAM98xqXzwGagVQ2uyekw0PELW
-         0HL3UqZ3XcUSA9riq33/El5+/yHXs+Og/+B+VsrA+2huBsE0y4q/j9HGJdhOLZI+iVOo
-         0omedKQcrWajZPP8EzKfU9fPfTfpCxQIe8VTS82Xoeww7ABs6PyF5c2HUz30z3BZT6Z0
-         bCrbDEukAUiZYK+ptEHHq3NCNWG5l7pmiPBQawit5Y5KVIIl5x54XPRQuhG4wQfhakXe
-         47AX3XPXDi2M17XLgga/EP8KuQ3SklCtmMPHU/5Nj4agbD2o5ewH9J9ofYnuCWo95bhc
-         TWZw==
-X-Gm-Message-State: AOAM531sD6ZKnRqGqSJM8qHzaMzwo5A/luUuXFBvulAkNjZHAiLmhoMG
-        8tLIaXCuHSnL4lENFBrndNUcow==
-X-Google-Smtp-Source: ABdhPJyp+ND5pp7SrhY7dYPw47jJui8zSPlJCkdZ1E6KXwXexCgFwpH18AyjuAjnTeXgeuQnVHxUgw==
-X-Received: by 2002:a17:90b:3789:: with SMTP id mz9mr5612540pjb.123.1605807214335;
-        Thu, 19 Nov 2020 09:33:34 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id a123sm400557pfd.218.2020.11.19.09.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 09:33:33 -0800 (PST)
-Date:   Thu, 19 Nov 2020 10:33:32 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 8/8] rpmsg: Turn name service into a stand alone driver
-Message-ID: <20201119173332.GA94178@xps15>
-References: <20201118213700.74106-1-mathieu.poirier@linaro.org>
- <20201118213700.74106-9-mathieu.poirier@linaro.org>
- <447fdbd6-2e3d-2786-c444-25148efcb9f8@st.com>
- <20201119171051.GA6464@ubuntu>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RsLldTWt03SahwoT1u6jHBmnbvDuG2f1cJeVhx0lFZ8=;
+        b=T7Zt5ItrJF8BU+BFbS1bSbRNLblva5bSGq8is9JFHNxlsRwe0f1NoRzTNGTNmzdrRU
+         pXnEDcZJySUOxftT5QwtdOBqMWO8B9qjMX33qw9u8/JTeEdY/jqZUWHLPEmjSmfCr8ug
+         NGY5BIbBNblSGjI6RQPC3n8CZrKva5f1aGxeCUfMSLnPrgOiCpzQ6zELjCcQO880pwj2
+         axlIlg/erTSuzu+Atcwy92y4dsRx2WiuRbMyxobGEy8ERIQZnis0CgfQicRN05ATs8tW
+         2Bi8azfuyIwN3bl3H+JleRBZQmGaPQRZy6+O1F/3gUOpJFktZCfFr9sosSCiBVvCNN8Y
+         VeKw==
+X-Gm-Message-State: AOAM532b8mKyNXoLq8x1t46PmvrMf1JPJfn/ADEsPG+sYLBwhsmcKMTX
+        GTz/qev2ALHTToLZ5bLjFi8gT8zeqVk=
+X-Google-Smtp-Source: ABdhPJx8xcX+oCllV118F+qizS9a6k5G+ecvcPOmKCsWERgrd3uKaRzfuwnJs53h5xdlOCJBs6H0Cw==
+X-Received: by 2002:a05:6402:1119:: with SMTP id u25mr33723485edv.37.1605807354723;
+        Thu, 19 Nov 2020 09:35:54 -0800 (PST)
+Received: from [192.168.2.202] (pd9ea3084.dip0.t-ipconnect.de. [217.234.48.132])
+        by smtp.gmail.com with ESMTPSA id a1sm66889edk.52.2020.11.19.09.35.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 09:35:53 -0800 (PST)
+Subject: Re: [PATCH 1/9] platform/surface: Add Surface Aggregator subsystem
+To:     =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+References: <20201115192143.21571-1-luzmaximilian@gmail.com>
+ <20201115192143.21571-2-luzmaximilian@gmail.com>
+ <nJyowYoxGM_0dU6iqDLowrPuVIErZbgZLAkXASFlEKvvSkgGtLxGQ7wGFDpXAaqAc3wourELsji6s3lO7N4aHOb8sK0wI500Oq5ZMdeZwJ8=@protonmail.com>
+ <68af3474-b576-da7e-2b11-3aa4c319cceb@gmail.com>
+ <5Qk-wNPtfpjNiK7HHId4qBNTWj9K_2h7fNe15o2J80gZsrSOfVYoKzdzPE8-r3NT7PLjxIgx08YLv2s38CWROho_womMqN2yGl3v13dJlMg=@protonmail.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <dc6cc00a-4761-96e7-78f6-99dbf2447bad@gmail.com>
+Date:   Thu, 19 Nov 2020 18:35:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119171051.GA6464@ubuntu>
+In-Reply-To: <5Qk-wNPtfpjNiK7HHId4qBNTWj9K_2h7fNe15o2J80gZsrSOfVYoKzdzPE8-r3NT7PLjxIgx08YLv2s38CWROho_womMqN2yGl3v13dJlMg=@protonmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 06:10:51PM +0100, Guennadi Liakhovetski wrote:
-> Hi Mathieu,
-> 
-> I haven't tested it yet, but I've compared it to the previous version 
-> and all the changed except the one, mentioned by Arnaud, seem to be 
-> there! So, let's just fix this one and should be good to go!
->
+On 11/19/20 4:54 PM, Barnabás Pőcze wrote:
+> Hi
 
-Apologies for the brain bug - the code got lost in the thread...
- 
-> Thanks
-> Guennadi
+[...]
+
+>>>> +enum ssam_ssh_tc {
+>>>> +	/* Known SSH/EC target categories. */
+>>>> +				// category 0x00 is invalid for EC use
+>>>> +	SSAM_SSH_TC_SAM = 0x01,	// generic system functionality, real-time clock
+>>>> +	SSAM_SSH_TC_BAT = 0x02,	// battery/power subsystem
+>>>> +	SSAM_SSH_TC_TMP = 0x03,	// thermal subsystem
+>>>> +	SSAM_SSH_TC_PMC = 0x04,
+>>>> +	SSAM_SSH_TC_FAN = 0x05,
+>>>> +	SSAM_SSH_TC_PoM = 0x06,
+>>>> +	SSAM_SSH_TC_DBG = 0x07,
+>>>> +	SSAM_SSH_TC_KBD = 0x08,	// legacy keyboard (Laptop 1/2)
+>>>> +	SSAM_SSH_TC_FWU = 0x09,
+>>>> +	SSAM_SSH_TC_UNI = 0x0a,
+>>>> +	SSAM_SSH_TC_LPC = 0x0b,
+>>>> +	SSAM_SSH_TC_TCL = 0x0c,
+>>>> +	SSAM_SSH_TC_SFL = 0x0d,
+>>>> +	SSAM_SSH_TC_KIP = 0x0e,
+>>>> +	SSAM_SSH_TC_EXT = 0x0f,
+>>>> +	SSAM_SSH_TC_BLD = 0x10,
+>>>> +	SSAM_SSH_TC_BAS = 0x11,	// detachment system (Surface Book 2/3)
+>>>> +	SSAM_SSH_TC_SEN = 0x12,
+>>>> +	SSAM_SSH_TC_SRQ = 0x13,
+>>>> +	SSAM_SSH_TC_MCU = 0x14,
+>>>> +	SSAM_SSH_TC_HID = 0x15,	// generic HID input subsystem
+>>>> +	SSAM_SSH_TC_TCH = 0x16,
+>>>> +	SSAM_SSH_TC_BKL = 0x17,
+>>>> +	SSAM_SSH_TC_TAM = 0x18,
+>>>> +	SSAM_SSH_TC_ACC = 0x19,
+>>>> +	SSAM_SSH_TC_UFI = 0x1a,
+>>>> +	SSAM_SSH_TC_USC = 0x1b,
+>>>> +	SSAM_SSH_TC_PEN = 0x1c,
+>>>> +	SSAM_SSH_TC_VID = 0x1d,
+>>>> +	SSAM_SSH_TC_AUD = 0x1e,
+>>>> +	SSAM_SSH_TC_SMC = 0x1f,
+>>>> +	SSAM_SSH_TC_KPD = 0x20,
+>>>> +	SSAM_SSH_TC_REG = 0x21,
+>>>> +};
+>>>
+>>> Is it known what these abbreviations stand for? Maybe I missed them?
+>>
+>> The comments state all we really know about these (through observation
+>> and experimentation). The table itself has been extracted from the
+>> Windows driver, but the abbreviations and values are all we're getting
+>> from it.
 > 
-> On Thu, Nov 19, 2020 at 03:52:50PM +0100, Arnaud POULIQUEN wrote:
-> 
-> [snip]
-> 
-> > As Guennadi mentionned in a previous mail
-> > a kfree(vch) is missing on error
-> > 
-> > @@ -949,10 +949,11 @@ static int rpmsg_probe(struct virtio_device *vdev)
-> >  	dev_info(&vdev->dev, "rpmsg host is online\n");
-> > 
-> >  	return 0;
-> > 
-> >  free_coherent:
-> > +	kfree(vch);
-> >  	dma_free_coherent(vdev->dev.parent, total_buf_space,
-> >  			  bufs_va, vrp->bufs_dma);
-> >  vqs_del:
-> > 
-> > Otherwise i tested this series successfully.
-> > 
-> > Thanks,
-> > Arnaud
+> I see, thanks for the clarification. For some reason, I believed the
+> "Known SSH/EC target categories" comment means that those are known, as in,
+> it is known what they are for, etc., not just the abbreviation.
+
+Right, that can be misunderstood, sorry. It's probably best if I add a
+comment explaining that in a bit more detail and noting where those
+values and abbreviations come from.
+
+Thanks,
+Max
