@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5647A2B97D7
+	by mail.lfdr.de (Postfix) with ESMTP id C60A02B97D8
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728691AbgKSQZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:25:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        id S1728719AbgKSQZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:25:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728011AbgKSQZ4 (ORCPT
+        with ESMTP id S1728183AbgKSQZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:25:56 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749BFC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:25:56 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id l5so6431691edq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:25:56 -0800 (PST)
+        Thu, 19 Nov 2020 11:25:59 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913CDC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:25:58 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id a16so8774360ejj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:25:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4v/cI0W618Ll5oLWISpFhPxrIsIv3CzVb2jjngYJV1Y=;
-        b=d5PO+tqR8NqolGIpflVwHQcaoSm8nizbEKWRPNduNGR++veNurs6hl8d+bpaVieFyx
-         N/4qzptR0qOSoxQx7FQPsoe+iJswnHDVYtCadJO3C2slcCcPefUTQ+zOiNyarho+GJTQ
-         eQVq93/itpn3uOMr/bNlKeAjhJZdy4EqJV6kjmkrHbofx2egXY3zQ+yRKs+a7dQtwgdK
-         4NoSRABTZAqopd6clg6Riim7meD6ewWkye8RYV/TV41uhgV3OcI7IOBtaWy6jDfV+Jfn
-         HS8RCnV4PSHXaSeawTEOygjXqwZVK8R/FKpjfbB4tqH67KPho4pLvDzc9Uy4bjYb/kik
-         IvoA==
+        bh=U1Lcn6Bd4XfPJVZpg/iAgt9bwB62SK3e+mkMsQgmis4=;
+        b=k1mkH5VpRWxoRHM6/4uXMQ+2mNIrTpI3bzeVzL4Eq+TBVCrAhI6WY51UNkvUnkHkok
+         sU1uyk5P398N4LFdkxWjG7dsnqAwLumIjARIWorBlisj1MlNzwfrmNTts90+aLS7JKNz
+         gkZ4bewA7vI4XC511gEy5PnX1QNLEy7PS6q/z/rKoQaldCgOX6wvAVrbAbahJmo8YtOi
+         7rJ+ZrpdENaqoIX1FUtGI5xUs7CVKoKAwZVWRcS8BfsPSovMOfZ1/GCNrbvtGVCB/yN9
+         makp3oDRXdUvcItXGaXJW+Iw9jX+yej1cJsMThWyp+lSPCdh0JdW4i3W3QkO9Hpy6vdY
+         nE9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4v/cI0W618Ll5oLWISpFhPxrIsIv3CzVb2jjngYJV1Y=;
-        b=Ij1Wsdj1yPsJ/tpQG9dUrmH2+Dro4dI3RiK6lFf5k7r7dPX0iERDMNc86IDvt2svkl
-         2mVKPMW1kgY5gQUa0Uck+Ka6tkOGZWWt9tWJ8SgprIaExb6o02/2Lm2DTnfonK1W33B1
-         7yHbLkM0H87fQ9yHudYvFS1nGDTiuI3O5QKK7ox6zo7MLt8cRP0xKt9KiyInUojms+Xu
-         KsWW64vlmasoBkl8P71w3IRgz7nd/CvEl8F6VDNT7dNTHkn/TVPycKekcWxMriFEJCqc
-         lM1umZv5zckWGG8ux5zZ3jeMW0+h8u7vBBQksraaRiedeNpi+gZyrLdcZslFiYb7Xk0H
-         bqoQ==
-X-Gm-Message-State: AOAM532KU35e4ih7UtJ/uendh5aGoDkUYU7T6Hdsvb3wJ+eLm2B1gHnf
-        o5hLvVLjYHkTdhBBDJVmasw0LQ==
-X-Google-Smtp-Source: ABdhPJwsWb2PZ6sVei/sp7eotqJ6Uj+ntArrx/BCAAQKZymcK4INkpViSTd4Aa9KHDTnkjsffwkiyQ==
-X-Received: by 2002:a50:ccdb:: with SMTP id b27mr9198862edj.253.1605803154843;
-        Thu, 19 Nov 2020 08:25:54 -0800 (PST)
+        bh=U1Lcn6Bd4XfPJVZpg/iAgt9bwB62SK3e+mkMsQgmis4=;
+        b=XePojLrONxN1Y97nIbOu8W2wZZ0O6NnpH7Qz3F+oLevDN081w9dYQIws1WFo8oXeNP
+         EX+V12AotScFxLoiZD4ydk5gtQ6dSp8L/K7FPsckK0zwQPBVvjg3JrNLlt7EcWaqctdY
+         6D2apvVh7ORqKmaLnXFOCclF+Ew42vEMB3ke5lGT4oUUcDP5K1u2CYvJkN5Y0LCk77Ti
+         wKFGkirKq8FEPc3RvQo/Me7Tpx5GkWZXcN/p3xjeZih5WG9DkKGG+LlFBb7sVBsCi3r8
+         ujlkuenIecmGHTHjtGsOy0R6DEEiOnWMBSj6cK7Zpxqc8EGS5yiXb4e9Ivi8zwO/2k9u
+         ooWw==
+X-Gm-Message-State: AOAM533fTdySCfCO5lO/KAJtqnRqKitrZwOsVuBXTnYvHj54WLRSerNG
+        F5FTlz9tdmVG4YZZuSJ2CRr9M2noAJfyYQ==
+X-Google-Smtp-Source: ABdhPJzsWcD3nhXsO2UcH2+U86idS8BWqbdQMCqEdUgqzp7r5etX5V0OtmywF0Avo8pCoOQSclM4yw==
+X-Received: by 2002:a17:906:ad85:: with SMTP id la5mr30963406ejb.423.1605803157084;
+        Thu, 19 Nov 2020 08:25:57 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:9843:cd3f:f36b:d55c])
-        by smtp.gmail.com with ESMTPSA id k2sm84334ejp.6.2020.11.19.08.25.53
+        by smtp.gmail.com with ESMTPSA id jw7sm72123ejb.54.2020.11.19.08.25.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 08:25:53 -0800 (PST)
+        Thu, 19 Nov 2020 08:25:56 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -61,9 +61,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Andrew Scull <ascull@google.com>,
         Ard Biesheuvel <ardb@kernel.org>, kernel-team@android.com,
         David Brazdil <dbrazdil@google.com>
-Subject: [RFC PATCH 3/6] kvm: arm64: Fix up RELR relocation in hyp code/data
-Date:   Thu, 19 Nov 2020 16:25:40 +0000
-Message-Id: <20201119162543.78001-4-dbrazdil@google.com>
+Subject: [RFC PATCH 4/6] kvm: arm64: Remove patching of fn pointers in hyp
+Date:   Thu, 19 Nov 2020 16:25:41 +0000
+Message-Id: <20201119162543.78001-5-dbrazdil@google.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201119162543.78001-1-dbrazdil@google.com>
 References: <20201119162543.78001-1-dbrazdil@google.com>
@@ -73,74 +73,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The arm64 kernel also supports packing of relocation data using the RELR
-format. Implement a parser of RELR data and fixup the relocations using
-the same infra as RELA relocs.
+Taking a function pointer will now generate a R_AARCH64_RELATIVE that is
+fixed up at early boot. Remove the alternative-based mechanism for
+converting the address from a kernel VA.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/kvm/va_layout.c | 41 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ arch/arm64/include/asm/kvm_mmu.h   | 18 ------------------
+ arch/arm64/kernel/image-vars.h     |  1 -
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c | 11 ++++-------
+ arch/arm64/kvm/va_layout.c         |  6 ------
+ 4 files changed, 4 insertions(+), 32 deletions(-)
 
+diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+index e5226f7e4732..8cb8974ec9cc 100644
+--- a/arch/arm64/include/asm/kvm_mmu.h
++++ b/arch/arm64/include/asm/kvm_mmu.h
+@@ -121,24 +121,6 @@ static __always_inline unsigned long __kern_hyp_va(unsigned long v)
+ 
+ #define kern_hyp_va(v) 	((typeof(v))(__kern_hyp_va((unsigned long)(v))))
+ 
+-static __always_inline unsigned long __kimg_hyp_va(unsigned long v)
+-{
+-	unsigned long offset;
+-
+-	asm volatile(ALTERNATIVE_CB("movz %0, #0\n"
+-				    "movk %0, #0, lsl #16\n"
+-				    "movk %0, #0, lsl #32\n"
+-				    "movk %0, #0, lsl #48\n",
+-				    kvm_update_kimg_phys_offset)
+-		     : "=r" (offset));
+-
+-	return __kern_hyp_va((v - offset) | PAGE_OFFSET);
+-}
+-
+-#define kimg_fn_hyp_va(v) 	((typeof(*v))(__kimg_hyp_va((unsigned long)(v))))
+-
+-#define kimg_fn_ptr(x)	(typeof(x) **)(x)
+-
+ /*
+  * We currently support using a VM-specified IPA size. For backward
+  * compatibility, the default IPA size is fixed to 40bits.
+diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
+index 8539f34d7538..6379721236cf 100644
+--- a/arch/arm64/kernel/image-vars.h
++++ b/arch/arm64/kernel/image-vars.h
+@@ -64,7 +64,6 @@ __efistub__ctype		= _ctype;
+ /* Alternative callbacks for init-time patching of nVHE hyp code. */
+ KVM_NVHE_ALIAS(kvm_patch_vector_branch);
+ KVM_NVHE_ALIAS(kvm_update_va_mask);
+-KVM_NVHE_ALIAS(kvm_update_kimg_phys_offset);
+ KVM_NVHE_ALIAS(kvm_get_kimage_voffset);
+ 
+ /* Global kernel state accessed by nVHE hyp code. */
+diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+index b3db5f4eea27..7998eff5f0a2 100644
+--- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
++++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+@@ -110,9 +110,9 @@ static void handle___vgic_v3_restore_aprs(struct kvm_cpu_context *host_ctxt)
+ 
+ typedef void (*hcall_t)(struct kvm_cpu_context *);
+ 
+-#define HANDLE_FUNC(x)	[__KVM_HOST_SMCCC_FUNC_##x] = kimg_fn_ptr(handle_##x)
++#define HANDLE_FUNC(x)	[__KVM_HOST_SMCCC_FUNC_##x] = (hcall_t)handle_##x
+ 
+-static const hcall_t *host_hcall[] = {
++static const hcall_t host_hcall[] = {
+ 	HANDLE_FUNC(__kvm_vcpu_run),
+ 	HANDLE_FUNC(__kvm_flush_vm_context),
+ 	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa),
+@@ -132,7 +132,6 @@ static const hcall_t *host_hcall[] = {
+ static void handle_host_hcall(struct kvm_cpu_context *host_ctxt)
+ {
+ 	DECLARE_REG(unsigned long, id, host_ctxt, 0);
+-	const hcall_t *kfn;
+ 	hcall_t hfn;
+ 
+ 	id -= KVM_HOST_SMCCC_ID(0);
+@@ -140,13 +139,11 @@ static void handle_host_hcall(struct kvm_cpu_context *host_ctxt)
+ 	if (unlikely(id >= ARRAY_SIZE(host_hcall)))
+ 		goto inval;
+ 
+-	kfn = host_hcall[id];
+-	if (unlikely(!kfn))
++	hfn = host_hcall[id];
++	if (unlikely(!hfn))
+ 		goto inval;
+ 
+ 	cpu_reg(host_ctxt, 0) = SMCCC_RET_SUCCESS;
+-
+-	hfn = kimg_fn_hyp_va(kfn);
+ 	hfn(host_ctxt);
+ 
+ 	return;
 diff --git a/arch/arm64/kvm/va_layout.c b/arch/arm64/kvm/va_layout.c
-index b80fab974896..7f45a98eacfd 100644
+index 7f45a98eacfd..0494315f71f2 100644
 --- a/arch/arm64/kvm/va_layout.c
 +++ b/arch/arm64/kvm/va_layout.c
-@@ -145,6 +145,43 @@ static void __fixup_hyp_rela(void)
- 		__fixup_hyp_rel(rel[i].r_offset);
+@@ -373,12 +373,6 @@ static void generate_mov_q(u64 val, __le32 *origptr, __le32 *updptr, int nr_inst
+ 	*updptr++ = cpu_to_le32(insn);
  }
  
-+#ifdef CONFIG_RELR
-+static void __fixup_hyp_relr(void)
-+{
-+	u64 *rel, *end;
-+
-+	rel = (u64*)(kimage_vaddr + __load_elf_u64(__relr_offset));
-+	end = rel + (__load_elf_u64(__relr_size) / sizeof(*rel));
-+
-+	while (rel < end) {
-+		unsigned n;
-+		u64 addr = *(rel++);
-+
-+		/* Address must not have the LSB set. */
-+		BUG_ON(addr & BIT(0));
-+
-+		/* Fix up the first address of the chain. */
-+		__fixup_hyp_rel(addr);
-+
-+		/*
-+		 * Loop over bitmaps, i.e. as long as words' LSB is 1.
-+		 * Each bit (ordered from LSB to MSB) represents one word from
-+		 * the last full address (exclusive). If the corresponding bit
-+		 * is 1, there is a relative relocation on that word.
-+		 */
-+		for (n = 0; rel < end && (*rel & BIT(0)); n++) {
-+			unsigned i;
-+			u64 bitmap = *(rel++);
-+
-+			for (i = 1; i < 64; ++i) {
-+				if ((bitmap & BIT(i)))
-+					__fixup_hyp_rel(addr + 8 * (63 * n + i));
-+			}
-+		}
-+	}
-+}
-+#endif
-+
- /*
-  * The kernel relocated pointers to kernel VA. Iterate over relocations in
-  * the hypervisor ELF sections and convert them to hyp VA. This avoids the
-@@ -156,6 +193,10 @@ __init void kvm_fixup_hyp_relocations(void)
- 		return;
- 
- 	__fixup_hyp_rela();
-+
-+#ifdef CONFIG_RELR
-+	__fixup_hyp_relr();
-+#endif
- }
- 
- static u32 compute_instruction(int n, u32 rd, u32 rn)
+-void kvm_update_kimg_phys_offset(struct alt_instr *alt,
+-				 __le32 *origptr, __le32 *updptr, int nr_inst)
+-{
+-	generate_mov_q(kimage_voffset + PHYS_OFFSET, origptr, updptr, nr_inst);
+-}
+-
+ void kvm_get_kimage_voffset(struct alt_instr *alt,
+ 			    __le32 *origptr, __le32 *updptr, int nr_inst)
+ {
 -- 
 2.29.2.299.gdc1121823c-goog
 
