@@ -2,58 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3672B9DC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6BC2B9DCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727048AbgKSWo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 17:44:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726105AbgKSWo4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:44:56 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2697C22227;
-        Thu, 19 Nov 2020 22:44:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605825895;
-        bh=OtvJO8yvmIDxhqSkBjQjFoBGFp/nQ39GEQmF1YaXcsE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QGVKQ+m6/Nc+feFugcLakgmc/ol17FoOF5zCFohuHmRT181t/2WKSssYpZMmfnjME
-         syhjfkVUxTyE3BxFf/eBLh8ybjnASTxUTXLKDmXrI7EPmCTq1b5vldIT+GmCbTt5tG
-         bItZtP6k9YNlv16RHGZciUY62Zt6Q4Ml58vVT+EM=
-Date:   Thu, 19 Nov 2020 14:44:53 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        robh+dt@kernel.org, sboyd@kernel.org, mturquette@baylibre.com,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [Patch v2 0/6] Enable Qualcomm Crypto Engine on sdm845
-Message-ID: <X7b1ZX5SEMq1PbVN@sol.localdomain>
-References: <20201119155233.3974286-1-thara.gopinath@linaro.org>
+        id S1726302AbgKSWtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 17:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgKSWtf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 17:49:35 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F34DC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 14:49:34 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id s10so7956036ioe.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 14:49:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lG84oj+KzplapoPBfyDcN5rycHsHCOPWyTIYNB3xyxc=;
+        b=k1KWkJaxmwi21dpwLl2hsfdB5UEL21p9O2kibLzF6Jcdeiuv17Ob24iwSAq8KQkira
+         Lwf98tZ1U8E/ZGwDbn32ctODmFK/LGz1s2+esx2mIiwomHaBER7I65/ASVYbbB8IRDY5
+         NHUu6XK85cVxnSdfFBfFabZ3GCE9kzHLY7Nw0WX1gnTO2PgMuKeJIn/Xa0CI9kmfu2fL
+         iOF5rW5t1/X0wjeB5gsAE8uMGu1GeKQPgIO0zoRgzC5S6Nox33dH/5qfsa+h0xKlrIHM
+         Jixc3ivJ1T7du0ce12UfSd8SkDAiM/sob8rbDV40C35SJhNItCBV/3tQ0PaJ2/c6OvOw
+         ApKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lG84oj+KzplapoPBfyDcN5rycHsHCOPWyTIYNB3xyxc=;
+        b=oAZ6bEgYWCoWfp8isyqy54Xk2LqhCpeG9TVZIeqsQplaPgO1qHyzXFSovrRWoOiMQn
+         ZsQ00GvqJzRa3RMkXAfoqvegxc+z2fusvRA3hkRO1A39eVFEvJ98lH+YIDtwyyl2/AEO
+         4KdBG3Vg0Q7QC8UMNUaRLujgsmr9uAkJ6pKsXk+w0j7BTZI8gSnGTpYj8OY0VGse73pf
+         Yop79Rbw1X+j3ocic4kQBjgDgQOXBEUHiWxjQQRTdJEK4zE2bXrFcrxVWU6X58G953H5
+         MCgSL9nphvteqx/EB7cL/Mwt8RzjAUcpl+sH43z0gLQgaQkfeSZo5dIUP/08i2rB0qzm
+         WpvQ==
+X-Gm-Message-State: AOAM531j5jSJqXcevTvPuCLQQTBbUSBFWCV7Co738oyl9B0+ISMRoIA3
+        +a7NVzoXwAQkte8aNpqfEcCH8A==
+X-Google-Smtp-Source: ABdhPJzn9N7oMO+PzNzu5FRBkzrXlXpune7+U0aZLjG+CufNvtVrLhUOPtISuxiQKnrtOque7+AN6w==
+X-Received: by 2002:a02:70ce:: with SMTP id f197mr16715819jac.120.1605826173494;
+        Thu, 19 Nov 2020 14:49:33 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id i3sm446532iom.8.2020.11.19.14.49.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 14:49:32 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/6] net: ipa: add a driver shutdown callback
+Date:   Thu, 19 Nov 2020 16:49:23 -0600
+Message-Id: <20201119224929.23819-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119155233.3974286-1-thara.gopinath@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 10:52:27AM -0500, Thara Gopinath wrote:
-> Qualcomm crypto engine supports hardware accelerated algorithms for
-> encryption and authentication. Enable support for aes,des,3des encryption
-> algorithms and sha1,sha256, hmac(sha1),hmac(sha256) authentication
-> algorithms on sdm845.The patch series has been tested using the kernel
-> crypto testing module tcrypto.ko.
+The final patch in this series adds a driver shutdown callback for
+the IPA driver.  The patches leading up to that address some issues
+encountered while ensuring that callback worked as expected:
+  - The first just reports a little more information when channels
+    or event rings are in unexpected states
+  - The second patch recognizes a condition where an as-yet-unused
+    channel does not require a reset during teardown
+  - The third patch explicitly ignores a certain error condition,
+    because it can't be avoided, and is harmless if it occurs
+  - The fourth properly handles requests to retry a channel HALT
+    request
+  - The fifth makes a second attempt to stop modem activity during
+    shutdown if it's busy
 
-Can you please test CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y too?  Implementations of
-crypto algorithms shouldn't be enabled unless they are passing all tests.
+The shutdown callback is implemented by calling the existing remove
+callback function (reporting if that returns an error).
 
-Also, did you compare the performance of this hardware to ARMv8 CE?  I thought
-that QCE (at least on other SoCs) isn't very useful because ARMv8 CE is faster.
+					-Alex
 
-- Eric
+Alex Elder (6):
+  net: ipa: print channel/event ring number on error
+  net: ipa: don't reset an ALLOCATED channel
+  net: ipa: ignore CHANNEL_NOT_RUNNING errors
+  net: ipa: support retries on generic GSI commands
+  net: ipa: retry modem stop if busy
+  net: ipa: add driver shutdown callback
+
+ drivers/net/ipa/gsi.c      | 101 ++++++++++++++++++++++++++++---------
+ drivers/net/ipa/gsi.h      |   1 +
+ drivers/net/ipa/ipa_main.c |  19 ++++++-
+ 3 files changed, 94 insertions(+), 27 deletions(-)
+
+-- 
+2.20.1
+
