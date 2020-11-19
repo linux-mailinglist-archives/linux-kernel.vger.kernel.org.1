@@ -2,163 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FFC2B8CB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251052B8C9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726511AbgKSH6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:58:17 -0500
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:58483 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgKSH6R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:58:17 -0500
-X-Greylist: delayed 415 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Nov 2020 02:58:16 EST
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 69A6C280052F9;
-        Thu, 19 Nov 2020 08:51:16 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 4016222EA8D; Thu, 19 Nov 2020 08:51:20 +0100 (CET)
-Date:   Thu, 19 Nov 2020 08:51:20 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Ashok Raj <ashok.raj@intel.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] pci: pciehp: Handle MRL interrupts to enable slot
- for hotplug.
-Message-ID: <20201119075120.GA542@wunner.de>
-References: <20200925230138.29011-1-ashok.raj@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925230138.29011-1-ashok.raj@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726321AbgKSHxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:53:09 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:35084 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726087AbgKSHxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 02:53:09 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutBdJLZf7JcSAA--.29651S2;
+        Thu, 19 Nov 2020 15:53:02 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH 0/2] Clean up and fix up cpu_cache_init()
+Date:   Thu, 19 Nov 2020 15:52:59 +0800
+Message-Id: <1605772381-25535-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxutBdJLZf7JcSAA--.29651S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYO7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z2
+        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
+        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx
+        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIF
+        xwCY02Avz4vE14v_GF4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
+        ZEXa7VUjrbbtUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ashok,
+Tiezhu Yang (2):
+  MIPS: Remove cpu_has_6k_cache and cpu_has_8k_cache in cpu_cache_init()
+  MIPS: Loongson64: Fix wrong scache size when execute lscpu
 
-my sincere apologies for the delay.
+ arch/mips/include/asm/cpu-features.h |  2 --
+ arch/mips/mm/c-r4k.c                 | 10 ++++------
+ arch/mips/mm/cache.c                 | 10 ----------
+ 3 files changed, 4 insertions(+), 18 deletions(-)
 
-On Fri, Sep 25, 2020 at 04:01:38PM -0700, Ashok Raj wrote:
-> When Mechanical Retention Lock (MRL) is present, Linux doesn't process
-> those change events.
-> 
-> The following changes need to be enabled when MRL is present.
-> 
-> 1. Subscribe to MRL change events in SlotControl.
-> 2. When MRL is closed,
->    - If there is no ATTN button, then POWER on the slot.
->    - If there is ATTN button, and an MRL event pending, ignore
->      Presence Detect. Since we want ATTN button to drive the
->      hotplug event.
+-- 
+2.1.0
 
-So I understand you have a hardware platform which has both MRL and
-Attention Button on its hotplug slots?  It may be useful to name the
-hardware platform in the commit message.
-
-If an Attention Button is present, the current behavior is to bring up
-the hotplug slot as soon as presence or link is detected.  We don't wait
-for a button press.  This is intended as a convience feature to bring up
-slots as quickly as possible, but the behavior can be changed if the
-button press and 5 second delay is preferred.
-
-In any case the behavior in response to an Attention Button press should
-be the same regardless whether an MRL is present or not.  (The spec
-doesn't seem to say otherwise.)
-
-
-> +		if (MRL_SENS(ctrl)) {
-> +			pciehp_get_latch_status(ctrl, &getstatus);
-> +			/*
-> +			 * If slot is closed && ATTN button exists
-> +			 * don't continue, let the ATTN button
-> +			 * drive the hot-plug
-> +			 */
-> +			if (!getstatus && ATTN_BUTTN(ctrl))
-> +				return;
-> +		}
-
-For the sake of readability I'd suggest adding a pciehp_latch_closed()
-helper similar to pciehp_card_present_or_link_active() which returns
-true if no MRL is present (i.e. !MRL_SENS(ctrl)), otherwise retrieves
-and returns the status with pciehp_get_latch_status().
-
-
-> +void pciehp_handle_mrl_change(struct controller *ctrl)
-> +{
-> +	u8 getstatus = 0;
-> +	int present, link_active;
-> +
-> +	pciehp_get_latch_status(ctrl, &getstatus);
-> +
-> +	present = pciehp_card_present(ctrl);
-> +	link_active = pciehp_check_link_active(ctrl);
-> +
-> +	ctrl_info(ctrl, "Slot(%s): Card %spresent\n",
-> +		  slot_name(ctrl), present ? "" : "not ");
-> +
-> +	ctrl_info(ctrl, "Slot(%s): Link %s\n",
-> +		  slot_name(ctrl), link_active ? "Up" : "Down");
-
-This duplicates a lot of code from pciehp_handle_presence_or_link_change(),
-which I think suggests handling MRL events in that function.  After all,
-an MRL event may lead to bringup or bringdown of a slot similar to
-a link or presence event.
-
-Basically pciehp_handle_presence_or_link_change() just needs to be
-amended to bring down the slot if an MRL event occurred, and
-afterwards only bring up the slot if MRL is closed.  Like this:
-
--	if (present <= 0 && link_active <= 0) {
-+	if ((present <= 0 && link_active <= 0) || !latch_closed) {
-		mutex_unlock(&ctrl->state_lock);
-		return;
-	}
-
-
-> +	/*
-> +	 * Need to handle only MRL Open. When MRL is closed with
-> +	 * a Card Present, either the ATTN button, or the PDC indication
-> +	 * should power the slot and add the card in the slot
-> +	 */
-
-I agree with the second sentence.  You may want to refer to PCIe Base Spec
-r4.0, section 6.7.1.3 either in the commit message or a code comment,
-which says:
-
-"If an MRL Sensor is implemented without a corresponding MRL Sensor input
-on the Hot-Plug Controller, it is recommended that the MRL Sensor be
-routed to power fault input of the Hot-Plug Controller.
-This allows an active adapter to be powered off when the MRL is opened."
-
-This seems to suggest that the slot should be brought down as soon as MRL
-is opened.
-
-
-> +	/*
-> +	 * If MRL is triggered, if ATTN button exists, ignore the event.
-> +	 */
-> +	if (ATTN_BUTTN(ctrl) && (events & PCI_EXP_SLTSTA_MRLSC))
-> +		events &= ~PCI_EXP_SLTSTA_PDC;
-
-Hm, the spec doesn't seem to imply a connection between presence of
-an MRL and presence of an Attention Button, so I find this confusing.
-
-
-> +	/*
-> +	 * If ATTN is present and MRL is triggered
-> +	 * ignore the Presence Change Event.
-> +	 */
-> +	if (ATTN_BUTTN(ctrl) && (events & PCI_EXP_SLTSTA_MRLSC))
-> +		events &= ~PCI_EXP_SLTSTA_PDC;
-
-An Attention Button press results in a synthesized PDC event after
-5 seconds, which may get lost due to the above if-statement.
-
-Thanks,
-
-Lukas
