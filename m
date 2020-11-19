@@ -2,151 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48102B9A6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B59F2B9A72
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729180AbgKSSNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:13:34 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:46791 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727117AbgKSSNd (ORCPT
+        id S1729384AbgKSSPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:15:36 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14926 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727761AbgKSSPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:13:33 -0500
-Received: by mail-ot1-f67.google.com with SMTP id g19so6160281otp.13;
-        Thu, 19 Nov 2020 10:13:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wRCdNCjOfunXbAIS7K4tkE2IMIlCbdlGRdRWxA2SgIU=;
-        b=Xdugvpfoqt0PLHESs/y2YlIeC5xc9WTVX8Ix87eHFkX5flqTS3glWxTVAxwYkrKyCM
-         0lu59pBq+qMCNib71wpJJX53ugMleqFVIgjvK3CRMubJaftm70eObqMqrZH8ohm+cL9v
-         3TRq7PEP/DTKBd8PBSD6PxLCBKsofGm+yiZkkcXfztRF/9X7ddcbgHnjUMy8gLKSrmvX
-         nHD8DIH+xbSjA3L6hT6/eQbDguyZVjclVF9J+UidFHzEO7stDlaLd6xtQifaqG+IRnyM
-         YFTC0ex1bFq0KzVwUcE0SWEyrrKVqPfMoff2CCYUgSP48FOIfcuHUlLoDvJmh2tYVlUy
-         ldlg==
-X-Gm-Message-State: AOAM530VkLevXwHWbLg4P+MYLhyi+duIP44bzAMalS1tXJj79NQ5Tall
-        2TPtMsY2we90W+wppoLcEP0FKeJPOZx4oT3iLi4=
-X-Google-Smtp-Source: ABdhPJwiRPjiimByPjBBGnZzxNa++f2UPo5zI1YYZtL4mFWCeBNcbtF/rVxR4NFxBHTRzuryPJSmoe/F8WTtRw16Ep4=
-X-Received: by 2002:a9d:171a:: with SMTP id i26mr11558331ota.260.1605809612651;
- Thu, 19 Nov 2020 10:13:32 -0800 (PST)
+        Thu, 19 Nov 2020 13:15:35 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJI2pnq134068;
+        Thu, 19 Nov 2020 13:15:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=27GOfRCLmrOpPdwc1nWg0zzBxV0oor0zhKyOQGBMgFU=;
+ b=NO2/ozUEVxERFF5dV67w1PyQlqBz4Ms8aPvuj9IVGrUzmQCsP2RMoYkjBPDsGcV6sjaP
+ 688z1V6XvqMck+p2q8ezVE9RO0IwQQw8m/5lr9hrzYFK4DrS0syNjyyNxy31kVtjTEoe
+ LUzydpafkourCIcTiiqC56PuFHfYtUvSzrmAqEXHAFjfvguIVrZh64ilYv4/Rp4Lesqv
+ 2KsatajQte/b4f2dh4wRB13F+JNQwbguv6KB6hFRLZaoh5djcKLxY6aeQcqI5OkAstjw
+ YONyiGr+lO+V6c1g6OfRmiH6gaWCGfDZaBLgQ81pdWL6yyGt5aAg80XOSfbUmaa+bdji Fg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34w4xqvmc8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 13:15:32 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AJI33Zv135438;
+        Thu, 19 Nov 2020 13:15:31 -0500
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34w4xqvmb6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 13:15:31 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AJIBxIk021543;
+        Thu, 19 Nov 2020 18:15:30 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03wdc.us.ibm.com with ESMTP id 34t6v9g4ae-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 18:15:30 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AJIFLSv36241710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Nov 2020 18:15:21 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 55C03BE04F;
+        Thu, 19 Nov 2020 18:15:27 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D3DC0BE059;
+        Thu, 19 Nov 2020 18:15:25 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.152.80])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 19 Nov 2020 18:15:25 +0000 (GMT)
+Subject: Re: [PATCH v11 07/14] s390/vfio-ap: sysfs attribute to display the
+ guest's matrix
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
+ <20201022171209.19494-8-akrowiak@linux.ibm.com>
+ <20201028091758.73aa77a3.pasic@linux.ibm.com>
+ <b96fe876-c67a-fe6c-0e3a-7b4948edeef4@linux.ibm.com>
+ <20201114001248.3b397c8c.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <d25a6810-00df-a2fc-4541-548917fdcc40@linux.ibm.com>
+Date:   Thu, 19 Nov 2020 13:15:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20201119001822.31617-1-david.e.box@linux.intel.com>
- <20201119001822.31617-2-david.e.box@linux.intel.com> <CAJZ5v0hGhyPySUdabwW5_LhyAKC3A4zdgj7H=55R=Xk3jvt3Yw@mail.gmail.com>
- <cdb520abba97ccf083788ed8ccb44fc042939468.camel@linux.intel.com>
-In-Reply-To: <cdb520abba97ccf083788ed8ccb44fc042939468.camel@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 19 Nov 2020 19:13:21 +0100
-Message-ID: <CAJZ5v0gyzYEiFWC4qvQZNDUC4wwcXK60mR=zJ9=Bwb27K1F=Ng@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PCI: Disable Precision Time Measurement during suspend
-To:     David Box <david.e.box@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Len Brown <len.brown@intel.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201114001248.3b397c8c.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-19_09:2020-11-19,2020-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 spamscore=0 impostorscore=0 mlxscore=0 adultscore=0
+ phishscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190125
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 6:45 PM David E. Box
-<david.e.box@linux.intel.com> wrote:
->
-> On Thu, 2020-11-19 at 13:01 +0100, Rafael J. Wysocki wrote:
-> > On Thu, Nov 19, 2020 at 1:17 AM David E. Box
-> > <david.e.box@linux.intel.com> wrote:
-> > > On Intel client platforms that support suspend-to-idle, like Ice
-> > > Lake,
-> > > root ports that have Precision Time Management (PTM) enabled can
-> > > prevent
-> > > the port from being fully power gated, causing higher power
-> > > consumption
-> > > while suspended.  To prevent this, after saving the PTM control
-> > > register,
-> > > disable the feature.  The feature will be returned to its previous
-> > > state
-> > > during restore.
-> > >
-> > > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=209361
-> > > Reported-by: Len Brown <len.brown@intel.com>
-> > > Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > > ---
-> > >  drivers/pci/pci.c | 14 +++++++++++++-
-> > >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > index 6fd4ae910a88..a2b40497d443 100644
-> > > --- a/drivers/pci/pci.c
-> > > +++ b/drivers/pci/pci.c
-> > > @@ -21,6 +21,7 @@
-> > >  #include <linux/module.h>
-> > >  #include <linux/spinlock.h>
-> > >  #include <linux/string.h>
-> > > +#include <linux/suspend.h>
-> > >  #include <linux/log2.h>
-> > >  #include <linux/logic_pio.h>
-> > >  #include <linux/pm_wakeup.h>
-> > > @@ -1543,7 +1544,7 @@ static void pci_save_ptm_state(struct pci_dev
-> > > *dev)
-> > >  {
-> > >         int ptm;
-> > >         struct pci_cap_saved_state *save_state;
-> > > -       u16 *cap;
-> > > +       u16 *cap, ctrl;
-> > >
-> > >         if (!pci_is_pcie(dev))
-> > >                 return;
-> > > @@ -1560,6 +1561,17 @@ static void pci_save_ptm_state(struct
-> > > pci_dev *dev)
-> > >
-> > >         cap = (u16 *)&save_state->cap.data[0];
-> > >         pci_read_config_word(dev, ptm + PCI_PTM_CTRL, cap);
-> > > +
-> > > +       /*
-> > > +        * On Intel systems that support suspend-to-idle,
-> > > additional
-> > > +        * power savings can be gained by disabling PTM on root
-> > > ports,
-> > > +        * as this allows the port to enter a deeper pm state.
-> >
-> > I would say "There are systems (for example, ...) where the power
-> > drawn while suspended can be significantly reduced by disabling PTM
-> > on
-> > PCIe root ports, as this allows the port to enter a lower-power PM
-> > state and the SoC to reach a lower-power idle state as a whole".
->
-> Okay.
->
-> >
-> > > +        */
-> > > +       if (pm_suspend_target_state == PM_SUSPEND_TO_IDLE &&
-> >
-> > AFAICS the target sleep state doesn't matter here, so I'd skip the
-> > check above, but otherwise it LGTM.
->
-> The target sleep state doesn't matter so much but that it's suspending
-> does. pci_save_state() is called during probe for the root ports (and
-> many other pci devices - I'm curious as to why).
 
-I tend to forget about this, sorry.
 
-> So without this check the capability gets disabled on boot.
+On 11/13/20 6:12 PM, Halil Pasic wrote:
+> On Fri, 13 Nov 2020 12:27:32 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>>
+>> On 10/28/20 4:17 AM, Halil Pasic wrote:
+>>> On Thu, 22 Oct 2020 13:12:02 -0400
+>>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>>>
+>>>> +static ssize_t guest_matrix_show(struct device *dev,
+>>>> +				 struct device_attribute *attr, char *buf)
+>>>> +{
+>>>> +	ssize_t nchars;
+>>>> +	struct mdev_device *mdev = mdev_from_dev(dev);
+>>>> +	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+>>>> +
+>>>> +	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
+>>>> +		return -ENODEV;
+>>> I'm wondering, would it make sense to have guest_matrix display the would
+>>> be guest matrix when we don't have a KVM? With the filtering in
+>>> place, the question in what guest_matrix would my (assign) matrix result
+>>> right now if I were to hook up my vfio_ap_mdev to a guest seems a
+>>> legitimate one.
+>> A couple of thoughts here:
+>> * The ENODEV informs the user that there is no guest running
+>>      which makes sense to me given this interface displays the
+>>      guest matrix. The alternative, which I considered, was to
+>>      display an empty matrix (i.e., nothing).
+>> * This would be a pretty drastic change to the design because
+>>      the shadow_apcb - which is what is displayed via this interface - is
+>>      only updated when the guest is started and while it is running (i.e.,
+>>      hot plug of new adapters/domains). Making this change would
+>>      require changing that entire design concept which I am reluctant
+>>      to do at this point in the game.
+>>
+>>
+> No problem. My thinking was, that, because we can do the
+> assign/unassing ops also for the running guest, that we also have
+> the code to do the maintenance on the shadow_apcb. In this
+> series this code is conditional with respect to vfio_ap_mdev_has_crycb().
+> E.g.
+>
+> static ssize_t assign_adapter_store(struct device *dev,
+>                                      struct device_attribute *attr,
+>                                      const char *buf, size_t count)
+> {
+> [..]
+>          if (vfio_ap_mdev_has_crycb(matrix_mdev))
+>                  if (vfio_ap_mdev_filter_guest_matrix(matrix_mdev, true))
+>                          vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
+>
+> If one were to move the
+> vfio_ap_mdev_has_crycb() check into vfio_ap_mdev_commit_shadow_apcb()
+> then we would have an always up to date shatdow_apcb, we could display.
+>
+> I don't feel strongly about this. Was just an idea, because if the result
+> of the filtering is surprising, currently the only to see, without
+> knowing the algorithm, and possibly the state, and the history of the
+> system, is to actually start a guest.
+
+Okay, I can buy this and will make the change.
+
+>
+> Regards,
+> Halil
 >
 
-So instead of calling this from here, why don't we invoke the code
-below from pci_prepare_to_sleep() and pci_finish_runtime_suspend(),
-before enabling wakeup (and it needs to be re-done on failures, eg. by
-restoring the cap from the saved copy)?
-
-> > > +           pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
-> > > +               ctrl = *cap & ~(PCI_PTM_CTRL_ENABLE |
-> > > PCI_PTM_CTRL_ROOT);
-> > > +               pci_write_config_word(dev, ptm + PCI_PTM_CTRL,
-> > > ctrl);
-> > > +       }
-> > >  }
-> > >
-> > >  static void pci_restore_ptm_state(struct pci_dev *dev)
-> > > --
