@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9878A2B8E6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB192B8E73
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgKSJKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:10:25 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18082 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726433AbgKSJKY (ORCPT
+        id S1726549AbgKSJMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:12:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725888AbgKSJMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:10:24 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb636760002>; Thu, 19 Nov 2020 01:10:14 -0800
-Received: from [10.25.102.126] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Nov
- 2020 09:10:20 +0000
-Subject: Re: [PATCH v5 1/6] ASoC: dt-bindings: tegra: Add graph bindings
-To:     Rob Herring <robh@kernel.org>
-CC:     <broonie@kernel.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>
-References: <1605119676-32273-1-git-send-email-spujar@nvidia.com>
- <1605119676-32273-2-git-send-email-spujar@nvidia.com>
- <20201112143855.GA3553055@bogus>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <bfac9d56-7cb5-6c75-6f1b-48f8ab43fa1c@nvidia.com>
-Date:   Thu, 19 Nov 2020 14:40:17 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 19 Nov 2020 04:12:12 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4035C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:12:11 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c198so4528143wmd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:12:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=qrvNFqIshFToJZ8d6/WF6C/Crs0qG1otBamb+mHYUl8=;
+        b=WiwugfDa9s4Dh5Kd+43uSCfEG86ljd1UiK0QrdShHAw7RpkhNGTapw++vyhFaJMfcY
+         on/FSJb5XtIHuApwVqbT1LG+Mk9eXM+pzNecoh2zG9qia/s706DOcpdc3NioPmwKjv8r
+         x8B9UAscQofTbLQLrdou54zFSwYsfaKvsREH54x3wuifIRrO5v81n4P/vCKfKJOCLb0F
+         42fSSJldaIxWKRVd0tZVX9Zyf9bJCM7ind4ULhtgTGWSHChcVlDeG9fQvIxTI6BSWXbh
+         yjwFWLps5dnwgZr5UuR1S+/HDTcOFY69vdIs1RpzBW7k6T9TVdbr6WxFBMvr5GsAgH3u
+         zbNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qrvNFqIshFToJZ8d6/WF6C/Crs0qG1otBamb+mHYUl8=;
+        b=qbDc7XaYZZ6Vlgshvf2wykgU727w0PO+P7opFoBHZO+UvcKGF6IkWMvP46/+eF7N2i
+         +vbi7KVr5kQNnR+Q9igvOhaVIvuMgMACdKhhXVqR3ehA8VI52K6FXU9OfGF39xcul6EV
+         9v/GNknKEZhgezDoGsk/8O1kGEexZgTNCxu2TPS4Ljd2dhjvdwZZOXENH+PV5Srzm4h+
+         EDvgJBl3keJxmafUXYMyooGL/8bIVFEWLi80pmzEZRL2axFc51QefaITHZyr07NLSYiF
+         WYxT9fQ3ywv9fuc1Begqn46V0i5iDwnn9fyFQndMVB4BPR+Kz6GHACYzOCJJRodBxiyO
+         0qoA==
+X-Gm-Message-State: AOAM531LrydusXbQ/lW66YsHruGzzyKvzBZuJzVbHds3PEna615aA6BH
+        3No1irIDQ0BM7jb8ONyuyvTflg==
+X-Google-Smtp-Source: ABdhPJzzSx2Nv+LpqWm35A4XApOvrsh/u2QGuNG32M/53E82KFLWKyZFMWSSY4Ws0YMxNVe86TPxnQ==
+X-Received: by 2002:a1c:7d13:: with SMTP id y19mr3309797wmc.98.1605777130663;
+        Thu, 19 Nov 2020 01:12:10 -0800 (PST)
+Received: from dell ([91.110.221.241])
+        by smtp.gmail.com with ESMTPSA id l16sm36483432wrx.5.2020.11.19.01.12.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 01:12:09 -0800 (PST)
+Date:   Thu, 19 Nov 2020 09:12:08 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Haibo Chen <haibo.chen@freescale.com>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH 05/15] input: touchscreen: imx6ul_tsc: Remove set but
+ unused variable 'value'
+Message-ID: <20201119091208.GX1869941@dell>
+References: <20201112110204.2083435-1-lee.jones@linaro.org>
+ <20201112110204.2083435-6-lee.jones@linaro.org>
+ <20201113073718.GH356503@dtor-ws>
 MIME-Version: 1.0
-In-Reply-To: <20201112143855.GA3553055@bogus>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605777014; bh=utlwG7nu71X3qIUCNZ88e7I6oHNRaiQbemkseQHnGtM=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=LCPMoJEay/B07UbKTKJ7s0fDXmJl0skB1I4MjEijOeUVHpdnQXbgAi4stdGZJG2zR
-         uMG8K5NwzXuBeIoZx6nMmfbp5vbNhsQuqxG7nLh04LLJFOb6e3yyDBVfZgXjrIjCu0
-         Iq66N5LIyX4aFoj1GyvG65kMYL5wFiaBkWezf+c0+WK+X3cDralim8KETTze1X0//+
-         yc1M1U9hxk8J3AeKj+/lmXp5pjIFKWy5Xq1cZeM1XREtZtRgjzXWW25VFQDhCPmzX1
-         A3TqPg/kc0iGNGR1fjs5BefmJiXBnhmaWj0KxM6MWAUb98KvgVvZPdC7PKbmSzChU6
-         bd9svJgRQNtQA==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201113073718.GH356503@dtor-ws>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Thu, 12 Nov 2020, Dmitry Torokhov wrote:
 
->> Add device tree binding properties of generic graph to ASoC component
->> devices. This allows to define audio ports out of these components or
->> DAIs and audio graph based sound card can be realised with this.
-> This is all dependent on graph.yaml being applied which hasn't happened
-> yet. I guess I'll need to provide a branch as there's multiple
-> subsystems needing it.
->
->> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> ---
->>   .../devicetree/bindings/sound/nvidia,tegra186-dspk.yaml     |  6 ++++++
->>   .../devicetree/bindings/sound/nvidia,tegra210-admaif.yaml   |  6 ++++++
->>   .../devicetree/bindings/sound/nvidia,tegra210-ahub.yaml     | 13 +++++++++++--
->>   .../devicetree/bindings/sound/nvidia,tegra210-dmic.yaml     |  6 ++++++
->>   .../devicetree/bindings/sound/nvidia,tegra210-i2s.yaml      |  6 ++++++
->>   5 files changed, 35 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
->> index ed2fb32..3c9364d 100644
->> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
->> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
->> @@ -55,6 +55,12 @@ properties:
->>         The name can be "DSPK1" or "DSPKx", where x depends on the maximum
->>         available instances on a Tegra SoC.
+> On Thu, Nov 12, 2020 at 11:01:54AM +0000, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/input/touchscreen/imx6ul_tsc.c: In function ‘adc_irq_fn’:
+> >  drivers/input/touchscreen/imx6ul_tsc.c:307:6: warning: variable ‘value’ set but not used [-Wunused-but-set-variable]
+> > 
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: Shawn Guo <shawnguo@kernel.org>
+> > Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> > Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+> > Cc: Fabio Estevam <festevam@gmail.com>
+> > Cc: NXP Linux Team <linux-imx@nxp.com>
+> > Cc: Haibo Chen <haibo.chen@freescale.com>
+> > Cc: linux-input@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> Applied, thank you.
 
->>
->> +  ports:
->> +    $ref: /schemas/graph.yaml#/properties/ports
-> If you have 'ports', then that means you have multiple ports and you
-> have to enumerate what each port is.
->
->> +
->> +  port:
->> +    $ref: /schemas/sound/audio-graph.yaml#/properties/port
-> If you only have 1 port then, you can use 'port'.
->
->
-> So listing both is an error.
+Good morning Dmitry,
 
-Since "ASoC: graph card schema rework" series is merged now, referencing 
-"audio-graph-port.yaml" should be sufficient here?
+Are you planning on finishing this review?
 
-...
+About half of the patches are unreviewed and there are a couple of
+open questions on others.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
