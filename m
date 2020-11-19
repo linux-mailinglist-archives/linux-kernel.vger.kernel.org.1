@@ -2,131 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026152B8F25
+	by mail.lfdr.de (Postfix) with ESMTP id 718452B8F26
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgKSJik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:38:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56340 "EHLO mx2.suse.de"
+        id S1726644AbgKSJio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:38:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56450 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbgKSJij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:38:39 -0500
+        id S1726385AbgKSJio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 04:38:44 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605778723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mqkr7WtOsPXe7Agi04uzzO7bVBcbEN8bGbm8NL0o4BY=;
+        b=MGimUoL/EXI0gCRJnn+SvO9mgBJqu5D6uQq41Cl8ixTts8MToGxOHS3Pa73LD0F27ujEx1
+        hiJFO3CzmZWCY7hAqA6h/Zx9m33/L9N5Xo1VnWmeDv7B1g66fts27rtk5p/CldraM0SFGz
+        TMq4Z653Vzndpcc5/CJAVtKsj09Rv+c=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A2886AC59;
-        Thu, 19 Nov 2020 09:38:37 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 09:38:34 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [patch V4 4/8] sched: Make migrate_disable/enable() independent
- of RT
-Message-ID: <20201119093834.GH3306@suse.de>
-References: <20201118194838.753436396@linutronix.de>
- <20201118204007.269943012@linutronix.de>
+        by mx2.suse.de (Postfix) with ESMTP id 1AA0AAA4F;
+        Thu, 19 Nov 2020 09:38:43 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 10:38:42 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     hughd@google.com, xuyu@linux.alibaba.com,
+        akpm@linux-foundation.org, mgorman@suse.de, aarcange@redhat.com,
+        willy@infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Subject: Re: [PATCH 2/2] mm,thp,shm: limit gfp mask to no more than specified
+Message-ID: <20201119093842.GC12284@dhcp22.suse.cz>
+References: <20201105191508.1961686-1-riel@surriel.com>
+ <20201105191508.1961686-3-riel@surriel.com>
+ <20201112112242.GA12240@dhcp22.suse.cz>
+ <05f80e300fd4907b99837b5973db8985b7312d3f.camel@surriel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118204007.269943012@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <05f80e300fd4907b99837b5973db8985b7312d3f.camel@surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 13-11-20 22:40:40, Rik van Riel wrote:
+> On Thu, 2020-11-12 at 12:22 +0100, Michal Hocko wrote:
+> > [Cc Chris for i915 and Andray]
+> > 
+> > On Thu 05-11-20 14:15:08, Rik van Riel wrote:
+> > > Matthew Wilcox pointed out that the i915 driver opportunistically
+> > > allocates tmpfs memory, but will happily reclaim some of its
+> > > pool if no memory is available.
+> > 
+> > It would be good to explicitly mention the requested gfp flags for
+> > those
+> > allocations. i915 uses __GFP_NORETRY | __GFP_NOWARN, or GFP_KERNEL.
+> > Is
+> > __shmem_rw really meant to not allocate from highmeme/movable zones?
+> > Can
+> > it be ever backed by THPs?
+> 
+> You are right, I need to copy the zone flags __GFP_DMA
+> through
+> __GFP_MOVABLE straight from the limiting gfp_mask
+> into the gfp_mask used for THP allocations, and not use
+> the default THP zone flags if the caller specifies something
+> else.
+> 
+> I'll send out a new version that fixes that.
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Nov 18, 2020 at 08:48:42PM +0100, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
->=20
-> Now that the scheduler can deal with migrate disable properly, there is no
-> real compelling reason to make it only available for RT.
->=20
-> There are quite some code pathes which needlessly disable preemption in
-> order to prevent migration and some constructs like kmap_atomic() enforce
-> it implicitly.
->=20
-> Making it available independent of RT allows to provide a preemptible
-> variant of kmap_atomic() and makes the code more consistent in general.
->=20
-> FIXME: Rework the comment in preempt.h - Peter?
->=20
-
-I didn't keep up to date and there is clearly a dependency on patches in
-tip for migrate_enable/migrate_disable . It's not 100% clear to me what
-reworking you're asking for but then again, I'm not Peter!
-
-=46rom tip;
-
-/**
- * migrate_disable - Prevent migration of the current task
- *
- * Maps to preempt_disable() which also disables preemption. Use
- * migrate_disable() to annotate that the intent is to prevent migration,
- * but not necessarily preemption.
- *
- * Can be invoked nested like preempt_disable() and needs the corresponding
- * number of migrate_enable() invocations.
- */
-
-I assume that the rework is to document the distinction between
-migrate_disable and preempt_disable() because it may not be clear to some
-people why one should be used over another and the risk of cut&paste
-cargo cult programming.
-
-So I assume the rework is for the middle paragraph
-
- * Maps to preempt_disable() which also disables preemption. Use
- * migrate_disable() to annotate that the intent is to prevent migration,
- * but not necessarily preemption. The distinction is that preemption
- * disabling will protect a per-cpu structure from concurrent
- * modifications due to preemption. migrate_disable partially protects
- * the tasks address space and potentially preserves the TLB entries
- * even if preempted such as an needed for a local IO mapping or a
- * kmap_atomic() referenced by on-stack pointers to avoid interference
- * between user threads or kernel threads sharing the same address space.
-
-I know it can have other examples that are rt-specific and some tricks on
-percpu page alloc draining that relies on a combination of migrate_disable
-and interrupt disabling to protect the structures but the above example
-might be understandable to a non-RT audience.
-
---=20
-Mel Gorman
+Can we make one step back here and actually check whether all this is
+actually needed for those shmem users before adding more hacks here and
+there?
+-- 
+Michal Hocko
 SUSE Labs
-
---HcAYCG3uE/tztfnV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEElcbIJ2qkxLDKryriKjSY26pIcMkFAl+2PRoACgkQKjSY26pI
-cMnvPgf8C0Rz6379u3SiizulY/2x+DGd943six/cqbAevyKsHg44fG6DLNobVUIY
-vzIcm+xG8K3Y6JoLem7YN05cIW8ex36spIKu3Efjc5f7jnrr+kpkJ4iM9M6P1o32
-UnEXwAJrONi/DpJxyNT/oWhAsyvPiHam/XeOL+b6w6OuUclG4z/zWSVaWIoE1l6t
-kiTuAXrLRNeY7oUk4tWLd/eFSj+IqGB/te3+d/MO/rS4uKE6CArLpmvH0X/TcvGC
-su9aEnObX/kRphCpcAXH+DBaiVryoC1G8k6GQYhG6ymlksq3jNpfidB9zwsgJee8
-KgH+bSJw22QhfZjni+fv63YXgTjpyQ==
-=600v
------END PGP SIGNATURE-----
-
---HcAYCG3uE/tztfnV--
