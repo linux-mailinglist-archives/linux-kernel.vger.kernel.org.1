@@ -2,121 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8FE2B973D
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFB42B973E
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728752AbgKSQAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:00:18 -0500
-Received: from mail.pqgruber.com ([52.59.78.55]:36716 "EHLO mail.pqgruber.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728726AbgKSQAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:00:17 -0500
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 053F4C6866D;
-        Thu, 19 Nov 2020 17:00:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1605801615;
-        bh=+EByFA9DgtbSpmJVu8ypTg5YXyFZQXFlJcvMgKd16EE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d5B0zJsDUxZxq9qxtD/TtfPWDMIw/2NXszmc2emvIuWAX6mEKbMbbtVnCo741AA3n
-         +ll6+OFWJwX94DGuAVKOiwwLdju5EZVHG/gV37yvM+y6BwybWY7KIrG0LAx9PhWV4x
-         b0yCvdQ54KhOcn7hPvnOZHHFF2mgKbUe5WvqxNgc=
-Date:   Thu, 19 Nov 2020 17:00:13 +0100
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH 1/3] pwm: pca9685: Switch to atomic API
-Message-ID: <20201119160013.GA217674@workstation.tuxnet>
-References: <20201118174417.278011-1-clemens.gruber@pqgruber.com>
- <CAGngYiV+oDeagaCfpeACMzQyDHVzk9ERbSBjW_fW5hoQANHqog@mail.gmail.com>
- <20201119100005.GA703@workstation.tuxnet>
- <CAGngYiU7+X1AbadQ0kFBQOqxK-adowg6CTOMx260fyF1-rpO-Q@mail.gmail.com>
+        id S1727967AbgKSQCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:02:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37471 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727762AbgKSQCJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:02:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605801728;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=gfcSfWuzLrD9SijmafEfAdUeDPupEiDhjQNw30FxyxU=;
+        b=MjVyncsQ2xGjSJE9tjKcQuqAl7wDRDdPArrRvK6NOHX4sVCZdEFWLogAHDU+yY9ZpEPkzU
+        eeQ3Lii7OehV+2+bFuPPQ9Ve7GJBJekF80YHCoh/6cVRua/82mI6I/SbcmCF8tMH82xUv/
+        wkzQiNXfQNqrLU5aib17w8WsCuJLvSI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281-eDEA2GMSMfCin-lOUXq_wg-1; Thu, 19 Nov 2020 11:02:05 -0500
+X-MC-Unique: eDEA2GMSMfCin-lOUXq_wg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6EECF1842140;
+        Thu, 19 Nov 2020 16:02:02 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.164])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 455415D6AC;
+        Thu, 19 Nov 2020 16:01:55 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 19 Nov 2020 17:02:02 +0100 (CET)
+Date:   Thu, 19 Nov 2020 17:01:54 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] powerpc/ptrace: Hard wire PT_SOFTE value to 1 in
+ gpr_get() too
+Message-ID: <20201119160154.GA5183@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGngYiU7+X1AbadQ0kFBQOqxK-adowg6CTOMx260fyF1-rpO-Q@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 09:58:26AM -0500, Sven Van Asbroeck wrote:
-> On Thu, Nov 19, 2020 at 5:00 AM Clemens Gruber
-> <clemens.gruber@pqgruber.com> wrote:
-> >
-> > > You appear to mix cached and uncached uses of prescale,
-> > > is there a need for this? If not, perhaps pick one and use
-> > > it consistently?
-> >
-> > Yes, sticking to the cached value is probably the way to go.
-> >
-> 
-> I would suggest going one step further, and turn on the cache in
-> regmap, i.e. .cache_type = REGCACHE_RBTREE, then:
-> - no need to cache pca->prescale explicitly, you can just read it with
->   regmap_read() every time, and it won't result in bus activity.
->   then you can eliminate pca->prescale, which simplifies the driver.
-> - pca9685_pwm_get_state() no longer results in bus reads, every regmap_read()
->   is cached, this is extremely efficient.
-> - pca9685_pwm_apply() and pca9685_pwm_gpio_set() now only does bus writes if
->   registers actually change, i.e. calling pwm_apply() multiple times in a row
->   with the same parameters, writes the registers only once.
+Can we finally fix this problem? ;)
 
-Interesting, I will look into that.
+My previous attempt was ignored, see
 
-> 
-> We can do this safely because this chip never actively writes to its
-> registers (as far as I know).
+	https://lore.kernel.org/lkml/20190917121256.GA8659@redhat.com/
 
-I think so too.
+Now that gpr_get() was changed to use membuf API we can make a simpler fix.
 
-> 
-> But maybe that's a suggestion for a follow-up patch...
-> 
-> > > Also, if the prescale register contains an invalid value
-> > > during probe(), e.g. 0x00 or 0x01, would it make sense
-> > > to explicitly overwrite it with a valid setting?
-> >
-> > As long as it is overwritten with a correct setting when the PWM is used
-> > for the first time, it should be OK?
-> 
-> I'm not sure. Consider the following scenario:
-> - prescale register is invalid at probe, say it contains 0x02
-> - user calls pwm_apply() but with an invalid period, which results
->   in a calculated prescale value of 0x02
-> - pca9685_pwm_apply() skips prescale setup because prescale does not
->   change, returns OK(0)
-> - user believes setup was ok, actually it's broken...
+Sorry, uncompiled/untested, I don't have a ppc machine.
 
-Makes sense. I will write the default prescale setting in case we read
-an invalid one from the register.
+Oleg.
 
-> 
-> Also, some people use this chip exclusively as a gpiochip, in that
-> case the prescale register is never touched. So an invalid prescale
-> at probe is never corrected.
-> 
-> Speaking of the gpiochip side, would it make sense to call
-> pca9685_pwm_full_on()/_off() in pca9685_pwm_gpio_set() too?
+ arch/powerpc/kernel/ptrace/ptrace-tm.c   | 21 ++++++++++++---------
+ arch/powerpc/kernel/ptrace/ptrace-view.c | 21 ++++++++++++---------
+ include/linux/regset.h                   | 12 ++++++++++++
+ 3 files changed, 36 insertions(+), 18 deletions(-)
 
-Yes, I think so. Would be cleaner and we avoid setting all registers to
-0 when the GPIO is disabled.
-
---
-
-One thing I noticed: The driver currently assumes that it comes out of
-POR in "active" state (comment at end of probe and PM calls).
-However, the SLEEP bit is set by default / after POR.
-
-Do you agree with the following solution?
-1) In .probe: call pm_runtime_set_suspended() instead of _set_active()
-   (If CONFIG_PM is enabled, the SLEEP bit will be cleared in .resume)
-2) If !CONFIG_PM: Clear the SLEEP bit in .probe
-
-Thanks,
-Clemens
