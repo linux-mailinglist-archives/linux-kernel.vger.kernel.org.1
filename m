@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0552B977A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4D22B977C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728570AbgKSQKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:10:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727841AbgKSQKE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:10:04 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C429C0613CF;
-        Thu, 19 Nov 2020 08:10:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gT+aycviSHZiSVl6jswLbLNrg/uiSiMYLbgQMN7rMto=; b=AI2lVVKrmsVKgsicoDpaTb0HIr
-        OzOqlDqCZxXvpG7NHAX7weDFKlljBL6wnqCy//WM6TW/yMtdFKChH4FCSRKwES7Ff2+D5OmmmNjfY
-        oUvepoJexunxdO7bbuqOVJhgpQpQ4vcQx8LiDhHixGr1ExZ3Lgsu2g8JAJGEhaHtkpH5xrGxzZE14
-        F/1gLv41pIiaiJpC69307E1sUnlFAdn8GscUktxjPy7nxrVQQ9kv4OipQAdoRugjFHmkfhseCvNPk
-        SiHL1EpaFewLIJKCSdmywkJsRJUNmzPm42Q4EL9+w2qrefjfnVGh9BSe5w/4d2heVKdBt6EAvtvKS
-        cicepZ8g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfmVI-0006ei-9y; Thu, 19 Nov 2020 16:09:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1728586AbgKSQKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:10:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727841AbgKSQKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:10:08 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 228793019CE;
-        Thu, 19 Nov 2020 17:09:45 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 01C5F200E0A45; Thu, 19 Nov 2020 17:09:44 +0100 (CET)
-Date:   Thu, 19 Nov 2020 17:09:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 07/14] sched: Introduce restrict_cpus_allowed_ptr() to
- limit task CPU affinity
-Message-ID: <20201119160944.GP3121392@hirez.programming.kicks-ass.net>
-References: <20201113093720.21106-1-will@kernel.org>
- <20201113093720.21106-8-will@kernel.org>
- <jhj8saxwm1l.mognet@arm.com>
- <20201119131319.GE4331@willie-the-truck>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42C4222256;
+        Thu, 19 Nov 2020 16:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605802207;
+        bh=pkWYntOwT/PnZUfibEMXRvwL1Gcj68yCloYFtIvABSg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZAHN5+xvRmtW52qqhiUEwFwh9SpDmwS+Jg0tXPVs57KOHkapz95VvV/zIrmC3tn8M
+         S+ZIEpLBbChr30CXIe+KnIWApaQaQKo3setXS3NFg/0a5N41iuNK6efyobQ5y+052K
+         e7Z/XFDAS4hczr6b+7I1el6lY89NBtH1c1oG+SK4=
+Date:   Thu, 19 Nov 2020 16:09:47 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH 1/3] spi: fix resource leak for drivers without .remove
+ callback
+Message-ID: <20201119160947.GD5554@sirena.org.uk>
+References: <20201119152059.2631650-1-u.kleine-koenig@pengutronix.de>
+ <20201119152416.GB5554@sirena.org.uk>
+ <20201119153540.zehj2ppdt433xrsv@pengutronix.de>
+ <20201119154139.GC5554@sirena.org.uk>
+ <20201119160412.nhu2rmwygyh6yg6e@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zbGR4y+acU1DwHSi"
 Content-Disposition: inline
-In-Reply-To: <20201119131319.GE4331@willie-the-truck>
+In-Reply-To: <20201119160412.nhu2rmwygyh6yg6e@pengutronix.de>
+X-Cookie: Chocolate chip.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 01:13:20PM +0000, Will Deacon wrote:
 
-> Sure, but I was talking about what userspace sees, and I don't think it ever
-> sees CPUs that have been hotplugged off, right? That is, sched_getaffinity()
-> masks its result with the active_mask.
+--zbGR4y+acU1DwHSi
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-# for i in /sys/devices/system/cpu/cpu*/online; do echo -n $i ":"; cat $i; done
-/sys/devices/system/cpu/cpu1/online :0
-/sys/devices/system/cpu/cpu2/online :1
-/sys/devices/system/cpu/cpu3/online :1
-/sys/devices/system/cpu/cpu4/online :1
-/sys/devices/system/cpu/cpu5/online :1
-/sys/devices/system/cpu/cpu6/online :1
-/sys/devices/system/cpu/cpu7/online :1
+On Thu, Nov 19, 2020 at 05:04:12PM +0100, Uwe Kleine-K=F6nig wrote:
+> On Thu, Nov 19, 2020 at 03:41:39PM +0000, Mark Brown wrote:
+> > On Thu, Nov 19, 2020 at 04:35:40PM +0100, Uwe Kleine-K=F6nig wrote:
 
-# grep Cpus_allowed /proc/self/status
-Cpus_allowed:   ff
-Cpus_allowed_list:      0-7
+> > > (Not sure this makes a difference in real life, are there drivers
+> > > without a .probe callback?)
 
+> > Your changelog seemed to say that it would make remove mandatory.
 
-:-)
+> No, that's not what the patch did. It made unconditional use of
+> spi_drv_remove(), but an spi_driver without .remove() was still ok. I
+> will reword to make this clearer.
+
+Ah, OK - I hadn't read the patch closely as the description sounded
+wrong.
+
+--zbGR4y+acU1DwHSi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+2mMoACgkQJNaLcl1U
+h9DyHgf8CQ6aSsrw23q6Kt2ULY0QTBJO9zpVuZfq+qsTcrAZD7y+64Cb8Z9C7mS3
+bA6UIXnsXA1GAqm4iDS/S+JPVJ5GRf7+CfC2XJ4r5pCsWuxtonls3+O7rLH4wOuc
+SYlulRbmmLUcHEpdJrz4rGGvyY8oJPgwTEP7/RylQFY34z+UNcQ3DBMZ+QC/b/hS
+SPLd5s0DG/P3AlDQNjqjv3pRqFxvQlIiS+D3u533umoVaxGw0zKVCX64iByHqKj4
+IOOa8+M/x575Bxln/36XzGsZC//QB/6vXhDsLfyDtuf0YDnqomZpkSKRkvKN2Jio
+KWo0Xg12iPIpyL0KwP5Tks1jiQ88xQ==
+=uAoB
+-----END PGP SIGNATURE-----
+
+--zbGR4y+acU1DwHSi--
