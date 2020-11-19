@@ -2,105 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB0F2B95DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6AD2B95DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgKSPLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:11:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726580AbgKSPLL (ORCPT
+        id S1727254AbgKSPNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:13:19 -0500
+Received: from brightrain.aerifal.cx ([216.12.86.13]:48266 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726474AbgKSPNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:11:11 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEBFC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:11:09 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id k26so6678205oiw.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:11:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JdqkWSW9a1z1SVdGoG8hy8zdS0knZMDZmMXxm1Wmdt8=;
-        b=KrpNjX0WODmJF84y1iHPQX2qZzuES2LX2P221m9sJNTfwuwxu6hpK4JWFdrL2/H5lY
-         Pu2WuXCypBceXoEf03QRJdC7ZJdypKeOjpID7SvyV9Kp8PqELasCnGMV2vabViZccRXg
-         Z3lf1rvu/Q6tKBeVdO3AFO9IamwuuvldZgG68=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JdqkWSW9a1z1SVdGoG8hy8zdS0knZMDZmMXxm1Wmdt8=;
-        b=FUPMZunuyFhx/yLrotvCLuotOISwID7kEFj4VQu8XrzWczkM/GeXRFXnDcuCGUGb0L
-         voJZlsvHYySKiM+9mjw2NNdOMUSUrxftOTENWGXC4TBqHp4bZsBKOzE1VqrD3GC5gaM2
-         Yi5QrU8rGXBuCymCx/cVNH4ax016jFSFyqnoYc/YQLUMQByZk/BntgBTjqv8Mp1GADkL
-         VkbMpNF366eJnlhQywaPPK1t3JHwS1MlalMcPIaxRkMt+Dl6uSoMvumFdGTx/pkkvNy4
-         RY69ruKxmFXv4Flncs66tgb8P48EjEPiDzGoI0r4oJjVbZrzLRxsoEmOe+Q8rg3cKRJ9
-         YAzg==
-X-Gm-Message-State: AOAM530JslfHVyZzmpvw4LO8B6b8H4ktOgew9/X6WfHe9s2qTvIiR2KK
-        NbvUZ3TMP+2fNPp62XpZecoJGoM/Xv6pl2AN3LQL4qglQSg=
-X-Google-Smtp-Source: ABdhPJyc3DHapCPUR/HHhc1a36YrqgEuXr50FTsLT0tmaXXDtJYaO8t+L+SGEMGffyuWBGHKy8w0p+PMlAMqkU19f0Q=
-X-Received: by 2002:aca:7506:: with SMTP id q6mr3200770oic.128.1605798668916;
- Thu, 19 Nov 2020 07:11:08 -0800 (PST)
+        Thu, 19 Nov 2020 10:13:19 -0500
+Date:   Thu, 19 Nov 2020 10:13:18 -0500
+From:   Rich Felker <dalias@libc.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     libc-alpha@sourceware.org, Florian Weimer <fw@deneb.enyo.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Kernel prctl feature for syscall interception and emulation
+Message-ID: <20201119151317.GF534@brightrain.aerifal.cx>
+References: <873616v6g9.fsf@collabora.com>
 MIME-Version: 1.0
-References: <cover.1605169912.git.yepeilin.cs@gmail.com> <20201113211633.GY401619@phenom.ffwll.local>
- <X68NFzaAuImemnqh@kroah.com> <20201114081021.GA11811@PWN> <X6/K/S9V7rj2hI5p@kroah.com>
- <X6/L/lE2pA7csBwd@kroah.com> <20201119083257.GA9468@PWN>
-In-Reply-To: <20201119083257.GA9468@PWN>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 19 Nov 2020 16:10:57 +0100
-Message-ID: <CAKMK7uF_AOrfTDVZwmxn_C-5sTBDu_v9KGH07wO5hTa98Z8Ucg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
- FNTCHARCNT() in fbcon.c
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <873616v6g9.fsf@collabora.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 9:33 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
->
-> On Sat, Nov 14, 2020 at 01:22:22PM +0100, Greg Kroah-Hartman wrote:
-> > Ah, here's a hint:
-> >       https://wiki.archlinux.org/index.php/Linux_console#Fonts
-> >
-> > The setfont tool should help you out here.
->
-> setfont seems to work fine, I tried Georgian-Fixed16 (256 chars) and
-> Uni2-VGA16 (512 chars) under /usr/share/consolefonts/ in my Ubuntu box,
-> including setting all consoles to the same font:
->
-> for i in {1..6}; do
->         sudo setfont -C /dev/tty${i} /usr/share/consolefonts/Georgian-Fixed16.psf.gz
-> done
->
-> Font rotation also seems to work fine:
->
-> for i in {1..4}; do
->         echo $i | sudo tee /sys/class/graphics/fbcon/rotate
->         sleep 1
-> done
+On Wed, Nov 18, 2020 at 01:57:26PM -0500, Gabriel Krisman Bertazi via Libc-alpha wrote:
+> Hi,
+> 
+> I'm proposing a kernel patch for a feature I'm calling Syscall User
+> Dispatch (SUD).  It is a mechanism to efficiently redirect system calls
+> of only part of a binary back to userspace to be emulated by a
+> compatibility layer.  The patchset is close to being accepted, but
+> Florian suggested the feature might pose some constraints on glibc, and
+> requested I raise the discussion here.
+> 
+> The problem I am trying to solve is that modern Windows games running
+> over Wine are issuing Windows system calls directly from the Windows
+> code, without going through the "WinAPI", which doesn't give Wine a
+> chance to emulate the library calls and implement the behavior.  As a
+> result, Windows syscalls reache the Linux kernel, and the kernel has
+> no context to differentiate them from native syscalls coming from the
+> Wine side, since it cannot trust the ABI, not even syscall numbers to be
+> something sane.  Historically, Windows applications were very respectful
+> of the WinAPI, not bypassing it, but we are seeing modern applications
+> like games doing it more often for reasons, I believe, of DRM.
+> 
+> It is worth mentioning that, by design, Wine and the Windows application
+> run on the same process space, so we really cannot just filter specific
+> threads or the entire application. We need some kind of filter executed
+> on each system call.
+> 
+> Now, the obvious way to solve this problem would be cBPF filtering
+> memory regions, through Seccomp.  The main problem with that approach is
+> the performance of executing a large cBPF filter.  The goal is to run
+> games, and we observed the Seccomp filter become a bottleneck, since we
+> have many, many memory areas that need to be checked by cBPF.  In
+> addition, seccomp, as a security mechanism, doesn't support some filter
+> update operations, like removing them.  Another approaches were
+> explored, like making a new mode out of seccomp, but the kernel
+> community preferred to make it a separate, self-contained mechanism.
+> Other solutions, like (live) patching the Windows application are out
+> of question, as they would trip DRM and anti-cheat protection
+> mechanisms.
+> 
+> The SUD interface I proposed to the kernel community is self-contained
+> and exposed as a prctl option.  It lets userspace define a switch
+> variable per-thread that, when set, will raise a SIGSYS for any syscall
+> attempted.  The idea is that Wine can just flip this switch efficiently
+> before delivering control to the Windows portions of the binary, and
+> flip it back off when it needs to execute native syscalls.  It is
+> important for us that the switch flip doesn't require a syscall, for
+> performance reasons.  The interface also lets userspace define a
+> "dispatcher region" from where any syscalls are always executed,
+> regardless of the selector variable.  This is important for the return
+> of the SIGSYS directly to a Windows segment, where we need to execute
+> the signal return trampoline with the selector blocked.  Ideally, Wine
+> would simply define this dispatcher region as the entire libc code
+> segment, and just use the selector to safe-guard against Linux libraries
+> issuing syscalls by themselves (they exist).
+> 
+> I think my questions to libc are: what are the constraints, if any, that
+> libc would face with this new interface?  I expected this to be
+> completely invisible to libc.  In addition, are there any problems you
+> foresee with the current interface?
+> 
+> Finally, I don't think it makes sense to bother you immediately with
+> the kernel implementation patches, but if you want to see the them,
+> they are archived in the link below.  I can also share them directly on
+> this ML if you request it.
+> 
+>   https://lkml.org/lkml/2020/11/17/2347
+> 
+> Nevertheless, I think it is useful the share the final patch, that has
+> the in-tree documentation for the interface, which I inlined in this
+> message.
 
-Thanks a lot for checking all this.
+SIGSYS (or signal handling in general) is not the right way to do
+this. It has all the same problems that came up in seccomp filtering
+with SIGSYS, and which were solved by user_notif mode (running the
+interception in a separate thread rather than an async context
+interrupting the syscall. In fact I wouldn't be surprised if what you
+want can already be done with reasonable efficiency using seccomp
+user_notif.
 
-> One last thing I can think of is tile blitting, but I don't have the
-> hardware (e.g. a Matrox G400 card, see FB_TILEBLITTING in
-> drivers/video/fbdev/Kconfig) at hand, nor did I figure out how to
-> simulate it after searching for a while.  However based on the other
-> tests above I believe vc->vc_font.charcount is set properly.
+The default-intercept and excepting libc code segment is also bogus,
+and will break stuff, including vdso syscall mechanism on i386 and any
+code outside libc that makes its own syscalls from asm. If you need to
+tag regions to control interception, it should be tagging the emulated
+Windows guest code, which is bounded and you have full control over,
+rather than the host code, which is unbounded and includes any
+libraries that get linked indirectly by Wine. But I'm skeptical that
+doing any new kernel-side logic for tagging is needed. Seccomp already
+lets you filter on instruction pointer so you can install filters that
+will trigger user_notif just for guest code, then let you execute the
+emulation in the watcher thread and skip the actual syscall in the
+watched thread.
 
-tbh I'll just go ahead and delete it if it's broken :-)
-
-Userspace we have to keep working (and there's actually people
-creating new products on top of drm display drivers using fbdev
-emulation and /dev/fb/0 interface!), but kernel internal stuff like
-fbcon acceleration we can trim pretty aggressively I think.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Rich
