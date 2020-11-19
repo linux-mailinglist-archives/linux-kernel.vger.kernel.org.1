@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376492B9DDB
+	by mail.lfdr.de (Postfix) with ESMTP id AE8D22B9DDC
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgKSWwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 17:52:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35608 "EHLO mail.kernel.org"
+        id S1726630AbgKSWyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 17:54:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726163AbgKSWwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:52:30 -0500
-Received: from localhost (unknown [176.167.53.63])
+        id S1726234AbgKSWyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 17:54:00 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D7CC22227;
-        Thu, 19 Nov 2020 22:52:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B8022078D;
+        Thu, 19 Nov 2020 22:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605826349;
-        bh=YLqkp5mZrk9CzpMu4+a95ZqlYmTlizCb/DRTtNW383U=;
+        s=default; t=1605826439;
+        bh=cyOhmgdck5bcUe3yZHXRL+9ZgqweKbNI89Rawb9k2oA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KRZQqwvxbeFf/W1N7gd/3zhLy6+ReIC1tIAYoB02wMTpS5S57L0KqoVejeKj8Rj7p
-         E9g7O+Q+m7koeWwx0OuXxbiJ6etNatPA6fDWE9KS4bpj1kCKbN0eZg37dSdjeWnUCG
-         XMceozTbM8+W147S5bCl7/IP6SDwziwSVHGxRQFk=
-Date:   Thu, 19 Nov 2020 23:52:27 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        b=kL3PAxbGhIafzcP+yn+XTRJ5cnGQQusUt3dwLbUjKVttfqpW5ZKn7G9As98kHpgEh
+         yrkXB/xjTOmWrUUK4IlpdZ4fxY0fVLSoXqlTShkI7PEm4TELJqOrdO+OAF3PiQy0Zd
+         lIwLSfGTlM1h+e5zNMrhujlorNkmMS7GA7cV+3ig=
+Date:   Thu, 19 Nov 2020 22:53:53 +0000
+From:   Will Deacon <will@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Marco Elver <elver@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch 12/19] softirq: Add RT specific softirq accounting
-Message-ID: <20201119225227.GA29717@lothringen>
-References: <20201113140207.499353218@linutronix.de>
- <20201113141734.096224353@linutronix.de>
- <20201119121801.GA20115@lothringen>
- <87ima1p55m.fsf@nanos.tec.linutronix.de>
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
+ kfence: Avoid stalling...)
+Message-ID: <20201119225352.GA5251@willie-the-truck>
+References: <20201117105236.GA1964407@elver.google.com>
+ <20201117182915.GM1437@paulmck-ThinkPad-P72>
+ <20201118225621.GA1770130@elver.google.com>
+ <20201118233841.GS1437@paulmck-ThinkPad-P72>
+ <20201119125357.GA2084963@elver.google.com>
+ <20201119151409.GU1437@paulmck-ThinkPad-P72>
+ <20201119170259.GA2134472@elver.google.com>
+ <20201119184854.GY1437@paulmck-ThinkPad-P72>
+ <20201119193819.GA2601289@elver.google.com>
+ <20201119213512.GB1437@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87ima1p55m.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20201119213512.GB1437@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 07:34:13PM +0100, Thomas Gleixner wrote:
-> On Thu, Nov 19 2020 at 13:18, Frederic Weisbecker wrote:
-> > On Fri, Nov 13, 2020 at 03:02:19PM +0100, Thomas Gleixner wrote:
-> >> RT requires the softirq to be preemptible and uses a per CPU local lock to
-> >> protect BH disabled sections and softirq processing. Therefore RT cannot
-> >> use the preempt counter to keep track of BH disabled/serving.
-> >> 
-> >> Add a RT only counter to task struct and adjust the relevant macros in
-> >> preempt.h.
-> >
-> > You may want to describe a bit the reason for this per task counter.
-> > It's not intuitive at this stage.
+On Thu, Nov 19, 2020 at 01:35:12PM -0800, Paul E. McKenney wrote:
+> On Thu, Nov 19, 2020 at 08:38:19PM +0100, Marco Elver wrote:
+> > On Thu, Nov 19, 2020 at 10:48AM -0800, Paul E. McKenney wrote:
+> > > On Thu, Nov 19, 2020 at 06:02:59PM +0100, Marco Elver wrote:
 > 
-> Something like this:
+> [ . . . ]
 > 
->  RT requires the softirq processing and local bottomhalf disabled regions
->  to be preemptible. Using the normal preempt count based serialization is
->  therefore not possible because this implicitely disables preemption.
+> > > > I can try bisection again, or reverting some commits that might be
+> > > > suspicious? But we'd need some selection of suspicious commits.
+> > > 
+> > > The report claims that one of the rcu_node ->lock fields is held
+> > > with interrupts enabled, which would indeed be bad.  Except that all
+> > > of the stack traces that it shows have these locks held within the
+> > > scheduling-clock interrupt handler.  Now with the "rcu: Don't invoke
+> > > try_invoke_on_locked_down_task() with irqs disabled" but without the
+> > > "sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled"
+> > > commit, I understand why.  With both, I don't see how this happens.
+> > 
+> > I'm at a loss, but happy to keep bisecting and trying patches. I'm also
+> > considering:
+> > 
+> > 	Is it the compiler? Probably not, I tried 2 versions of GCC.
+> > 
+> > 	Can we trust lockdep to precisely know IRQ state? I know there's
+> > 	been some recent work around this, but hopefully we're not
+> > 	affected here?
+> > 
+> > 	Is QEMU buggy?
+> > 
+> > > At this point, I am reduced to adding lockdep_assert_irqs_disabled()
+> > > calls at various points in that code, as shown in the patch below.
+> > > 
+> > > At this point, I would guess that your first priority would be the
+> > > initial bug rather than this following issue, but you never know, this
+> > > might well help diagnose the initial bug.
+> > 
+> > I don't mind either way. I'm worried deadlocking the whole system might
+> > be worse.
 > 
->  RT kernels use a per CPU local lock to serialize bottomhalfs. As
->  local_bh_disable() can nest the lock can only be acquired on the
->  outermost invocation of local_bh_disable() and released when the nest
->  count becomes zero. Tasks which hold the local lock can be preempted so
->  its required to keep track of the nest count per task.
-> 
->  Add a RT only counter to task struct and adjust the relevant macros in
->  preempt.h.
-> 
-> Thanks,
+> Here is another set of lockdep_assert_irqs_disabled() calls on the
+> off-chance that they actually find something.
 
-Very good, thanks!
+FWIW, arm64 is known broken wrt lockdep and irq tracing atm. Mark has been
+looking at that and I think he is close to having something workable.
+
+Mark -- is there anything Marco and Paul can try out?
+
+Will
