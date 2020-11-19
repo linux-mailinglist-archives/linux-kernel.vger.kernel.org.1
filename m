@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571A82B9646
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B32A2B963F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbgKSPdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:33:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727513AbgKSPdG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:33:06 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B54C0613D4;
-        Thu, 19 Nov 2020 07:33:06 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id s25so8493207ejy.6;
-        Thu, 19 Nov 2020 07:33:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=sFYsMGmOpK2x4QIviMW7uuidVMr9J7XluhnZW1l09Wk=;
-        b=StPY5tN5VAfKv4uWxkdpEA8p5ZVTA1L+pQ9JhBSobscj5LrYtzPM8iiEw0Zj7DA6dO
-         6/HjguHrscTyXFA8pM93ilRJBN69VX3ae7cXzYKZeYoA1MeaklpaOCWmDT8/dEkMIu8j
-         satnwS2f402EMwRkLWTBdJpM7PY3cP6faAhitemb20r/MqL5dlU+jnlvp76J1OSVhcli
-         oKAjKE2fzkrDVrq76bUHtkGpiSCCY8TNuM0qnW1jhgfdoOH5m1+RWOh41D8YvzFTi2NZ
-         AyMcC7Tv744hnPrd2tFkGBah5U+yN36BzjehNuS0DIXdtjJPhAbFHOBmmkizq3nR2XKP
-         HriQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sFYsMGmOpK2x4QIviMW7uuidVMr9J7XluhnZW1l09Wk=;
-        b=lWufVpbwQz4zFs1YTzQeDUg4JmtMEVJMo5BnI3p4QP9Mj7JdwWV3Tv/ABfXQlZNC+l
-         YsEy0P0TxZ6aUg6cjVvYuxhUYdjwU2y6u3z6Sy47HORON1+ZzyWOUDh91YMu/xnAVuoz
-         rYhFiJjvj0rm/8rqIaQiXNq8qKGhyNtQufkcLm8CLZuIAzdbIeb+c4lOvn7J77/T4Pcd
-         ACgfO2Jg/66DOzqcsUJx3OztUAiq/zZ//1ese/J11qfwpO9nz9MXjQIObksj0GYkhd4h
-         hHfsYSMmwvbtQNVFSONcx2t/752TNbkmZRHJbFZBLazc19kZxvxDPzGm9vxTheobyV6V
-         ZibQ==
-X-Gm-Message-State: AOAM5324lgna4Z+PnO1UoK0hBf4svShxB3WemQHdjSpR3zpYH25yCwri
-        /njUFTeMcDwbPXCDLHlIk6wrHHqToejk/w==
-X-Google-Smtp-Source: ABdhPJwxuK0ZItBAQZ8zBn4p87medVgNiMcX4WT9XRG513M40yp5Q9zSbvoIIN9eN9RAkgOtQieZCg==
-X-Received: by 2002:a17:906:e2c3:: with SMTP id gr3mr28209617ejb.471.1605799985120;
-        Thu, 19 Nov 2020 07:33:05 -0800 (PST)
-Received: from localhost.localdomain (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
-        by smtp.gmail.com with ESMTPSA id u7sm3595612ejf.83.2020.11.19.07.33.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 07:33:04 -0800 (PST)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] iov_iter: optimise iter type checking
-Date:   Thu, 19 Nov 2020 15:29:43 +0000
-Message-Id: <9bc27cb3ef6ab49b6b2ccee3db6613838aee17af.1605799583.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1605799583.git.asml.silence@gmail.com>
-References: <cover.1605799583.git.asml.silence@gmail.com>
+        id S1727986AbgKSPbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:31:01 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:2640 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726691AbgKSPbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:31:00 -0500
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb68fb20000>; Thu, 19 Nov 2020 23:30:58 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Nov
+ 2020 15:30:54 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 19 Nov 2020 15:30:54 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C3w1B5NqvLpnc7pOAIhdqWs9psiOf15COXaMj53eSVWKgFqKXaawJpjtRs8hFsEYeNdJbLYf2cqjnud5tJtPIEThsx8JD1kcMvrFghdVM0dRxd8KvNCRukN2E8YrFe+MTS8D/OsnwD/kfyVQufjanzJCSFegySvECGvGnBR57f6NpXUY7rklhIgD25sjB7d9DpIkJq9qZUC68nkH/nIvkZ8yFH17x9SsiFLPgqSqj4UBU0xmlBhABzE0J6RErds8thl8dqU7r8Qaks1zynx2vmX/TnbZIPzQdZZvqyg8rPxa5kH0XZ6/2a0P1iZ2RLMOcq7WCac47Wl72Beq7XBfNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bpxPmkk/QmdinUr1rcPJTGyxpgrcO/YAYQSLBpuzy/w=;
+ b=ikA9SvEkkWdm09YvzIeWurDP5/1dKg0O8or8NHroQeMA7jLOoBOIq2hFXcL9iwL6BfXkAu6y9CYdJ5PQZSi7TRsjE5Xq1p3boU+sbw1YgZgL2ODhuCLS0lc/KlUDWwsQhcD11ICJQLZsXad6ipnq+aUp78UIK+2jHWPPcacw76Uk0lmWpX2cShF5ujVmQnGHgoHIFm/AZlLI0XmHk1dWJJlj3smWScK4hX6wkqmU+9nDsEUU4546jB5iWSRn8rFrytNxnnwx+ecAP5bnUD+ami5WirjoZv50OZroFZqFVNYzF/7grgjcokxrSqtRVHbtzcyV76/amF4mCSUy6BvObw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1754.namprd12.prod.outlook.com (2603:10b6:3:10f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Thu, 19 Nov
+ 2020 15:30:52 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3589.022; Thu, 19 Nov 2020
+ 15:30:52 +0000
+Date:   Thu, 19 Nov 2020 11:30:50 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
+CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] IB/mthca: fix return value of error branch in
+ mthca_init_cq()
+Message-ID: <20201119153050.GA1960484@nvidia.com>
+References: <1605789529-54808-1-git-send-email-wangxiongfeng2@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1605789529-54808-1-git-send-email-wangxiongfeng2@huawei.com>
+X-ClientProxiedBy: MN2PR19CA0041.namprd19.prod.outlook.com
+ (2603:10b6:208:19b::18) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR19CA0041.namprd19.prod.outlook.com (2603:10b6:208:19b::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Thu, 19 Nov 2020 15:30:51 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kflta-008FIr-Li; Thu, 19 Nov 2020 11:30:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605799858; bh=bpxPmkk/QmdinUr1rcPJTGyxpgrcO/YAYQSLBpuzy/w=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=W66E96HYcoSD9CRgtSphzl4ESm2g2Y1RCkXtri18TT7OOktIXiwtShnACTzOTdHAy
+         ULSmbTkiIyqWb+oZPG64GMRBk95xGQ7M24ELbSr63RHQmGblERL+BiqFV81x8neYQG
+         F1OvZhfJrR2HzRVPxX0wE+y13kfiPoy/jMq3C2Hc7lkNJDpJAKfr1wpC82NKOj007b
+         SrF4i0norNOmQR1Z5rH5eCvU4zZywZgTYD8MQW/abNwT/EuW5VfkvEFGOm1S+wNMgd
+         /C13bUPFCsW+MhMVyRYKty8BlgpZftqMvGFoqSVn011O24U+hnczACzRa0o/DZintv
+         CmGuFFkkS/fjA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The problem here is that iov_iter_is_*() helpers check types for
-equality, but all iterate_* helpers do bitwise ands. This confuses
-a compiler, so even if some cases were handled separately with
-iov_iter_is_*(), it can't eliminate and skip unreachable branches in
-following iterate*().
+On Thu, Nov 19, 2020 at 08:38:49PM +0800, Xiongfeng Wang wrote:
+> We return 'err' in the error branch, but this variable may be set as
+> zero by the above code. Fix it by setting 'err'  as a negative value
+> before we goto the error label.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 
-E.g. iov_iter_npages() first handles bvecs and discards, but
-iterate_all_kinds() still generate branches for them.
+Missing fixes line
 
-Making checks consistent solves that.
+>  drivers/infiniband/hw/mthca/mthca_cq.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
+> index c3cfea2..98d697b 100644
+> --- a/drivers/infiniband/hw/mthca/mthca_cq.c
+> +++ b/drivers/infiniband/hw/mthca/mthca_cq.c
+> @@ -803,8 +803,10 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
+>  	}
+>  
+>  	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
+> -	if (IS_ERR(mailbox))
+> +	if (IS_ERR(mailbox)) {
+> +		err = -ENOMEM;
+>  		goto err_out_arm;
+> +	}
 
-size lib/iov_iter.o
-before:
-   text    data     bss     dec     hex filename
-  24409     805       0   25214    627e lib/iov_iter.o
+mthca_alloc_mailbox returns err_ptr so this should do 
 
-after:
-   text    data     bss     dec     hex filename
-  23785     793       0   24578    6002 lib/iov_iter.o
+   err = ERR_PTR(mailbox)
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- include/linux/uio.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+>  	cq_context = mailbox->buf;
+>  
+> @@ -850,6 +852,7 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
+>  			    cq->cqn & (dev->limits.num_cqs - 1),
+>  			    cq)) {
+>  		spin_unlock_irq(&dev->cq_table.lock);
+> +		err = -ENOMEM;
 
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index 72d88566694e..c5970b2d3307 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -57,27 +57,27 @@ static inline enum iter_type iov_iter_type(const struct iov_iter *i)
- 
- static inline bool iter_is_iovec(const struct iov_iter *i)
- {
--	return iov_iter_type(i) == ITER_IOVEC;
-+	return iov_iter_type(i) & ITER_IOVEC;
- }
- 
- static inline bool iov_iter_is_kvec(const struct iov_iter *i)
- {
--	return iov_iter_type(i) == ITER_KVEC;
-+	return iov_iter_type(i) & ITER_KVEC;
- }
- 
- static inline bool iov_iter_is_bvec(const struct iov_iter *i)
- {
--	return iov_iter_type(i) == ITER_BVEC;
-+	return iov_iter_type(i) & ITER_BVEC;
- }
- 
- static inline bool iov_iter_is_pipe(const struct iov_iter *i)
- {
--	return iov_iter_type(i) == ITER_PIPE;
-+	return iov_iter_type(i) & ITER_PIPE;
- }
- 
- static inline bool iov_iter_is_discard(const struct iov_iter *i)
- {
--	return iov_iter_type(i) == ITER_DISCARD;
-+	return iov_iter_type(i) & ITER_DISCARD;
- }
- 
- static inline unsigned char iov_iter_rw(const struct iov_iter *i)
--- 
-2.24.0
+And this should assign err to the output of mthca_array_set
 
+Please fix and resend.
+
+Thanks,
+Jason
