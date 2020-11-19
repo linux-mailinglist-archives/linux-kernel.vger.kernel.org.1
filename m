@@ -2,300 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC572B92CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398CB2B92CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727395AbgKSMuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:50:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727198AbgKSMuK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:50:10 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC74DC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 04:50:10 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id d9so5102720qke.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 04:50:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dHiKWRmrhx/M7ROA/6Ra9StQon1bxkYSZ1/aCkuHe5A=;
-        b=SNhf8i20TDv83xkIGGtKsyS5ow9/jc/Cq8mV6FKh5ioX9Zaw2F18WaI3wy+Va7CO6A
-         KDwDLyagkjiXIzBjmkr7GhTtGf9HOoTKvfQazEG3CowQSIRju+c8pZqBjKAuwP6D0P9h
-         xTcs+Ozdtd6vIQ2G9dyriT8EkbACsNvwJ8hKfbMEbkLy/6ogyERBsctrrMSJh3GhvD1M
-         scso7nWN3fgbVP4Scf65Uajd97Fwgz/0GpS41ZEtakGreTjuf8FrRH6EZpLXA6oKAPmA
-         cmYedgHwfdeR+kFXxDjvpy+TnP5oG/NwFqIRNMzN1C4s8D4gfCU7/4zV+QQSG1MhGV/9
-         PbSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dHiKWRmrhx/M7ROA/6Ra9StQon1bxkYSZ1/aCkuHe5A=;
-        b=cyLJmmSLzQYl8ARG33Ccv4AU++dWm3lkKzeHxEkrUzxG1jys38x+tjp0P+HHMG67TY
-         Ry97i0IJu2r0UxGa7SNXc96obApsYFPlckmMsKoPkDnU0VErgshptDvB4uBUQ66aPqeC
-         NHdaY3ypQMiIbxQ7OXcylwyaH3CiLXdEBt2wNNgFHBUKAmK2jgZu8aDF8wFG1iXGuXOW
-         aYOoAHT6IyBL+0yiNaZHjxsdnI1NnIjTmr9lky/ZeKsbAj64j421EvhVJ2rucrLTHwaR
-         j5Nosk27YdihJqCKwknxpx62SEqLNqfrFtYe7RQ+UBzd2fLg2K9t5raNnV0vKqZ9CEWE
-         Hgfw==
-X-Gm-Message-State: AOAM533qNnn+jJGwhdAwXdUoFICZWf8GzIw5PeYlYsvvsBnR/1zvGvXg
-        M2K5veBEeviNUg6ecxTozTdKmjW8RsfULf5Km2W2oQ==
-X-Google-Smtp-Source: ABdhPJwPQVcPx0kLO3+gzm7gybmN6O4dw1kzcmYbtkBcyu80NAugHWMuH4/xvlPlKS2DdWR0tvvGXNoQFUwwU5Rw6YU=
-X-Received: by 2002:a37:b207:: with SMTP id b7mr265439qkf.424.1605790209574;
- Thu, 19 Nov 2020 04:50:09 -0800 (PST)
+        id S1727414AbgKSMuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:50:16 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:62188 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727200AbgKSMuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 07:50:16 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605790215; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=IaxDyN0zVVfn696/u90QGUG+9uOUlx4Eok4grDksNsc=;
+ b=r/EXTseK9DnkTZ0iaSYiDhuqmXhrvGyliUX/IFh/B8cfnVM0gIasKeXwGFT5pTIrq3Gcw+wF
+ wUxfG/P5lhlUbER+A0My63tREuFaVn4RoGMJnop8rTT0F5LF2w3g/5Tcf4GL3cW2lYsZXd9a
+ iY4XsiIaKoy9bL/jy/FOJ7fG370=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5fb66a04e714ea65012c2f64 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Nov 2020 12:50:12
+ GMT
+Sender: gubbaven=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 33B58C43461; Thu, 19 Nov 2020 12:50:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: gubbaven)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8FDA8C43460;
+        Thu, 19 Nov 2020 12:50:11 +0000 (UTC)
 MIME-Version: 1.0
-References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
- <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
- <0eb519fa-e77b-b655-724a-4e9eecc64626@i-love.sakura.ne.jp>
- <6933e938-f219-5e13-aee6-fe4de87eb43e@i-love.sakura.ne.jp>
- <81ab0ffd-6e80-c96c-053a-b1b4fe8694c1@i-love.sakura.ne.jp>
- <20201118142357.GW3121392@hirez.programming.kicks-ass.net>
- <1778f2e5-0a0c-2c6e-2c83-fe51d938e8a2@i-love.sakura.ne.jp>
- <20201118151038.GX3121392@hirez.programming.kicks-ass.net>
- <9bc4e07d-2a58-077b-b4c7-ab056ba33cf1@i-love.sakura.ne.jp>
- <CACT4Y+ZJNkssAQLuwfcKPTTKLZhHRAo0POGOMVsGFGizoHaNMg@mail.gmail.com> <CACT4Y+Zh10241gchu6e_=LwxPSEzXT-0HSmhnTtkXFZevKi_yQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+Zh10241gchu6e_=LwxPSEzXT-0HSmhnTtkXFZevKi_yQ@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 19 Nov 2020 13:49:58 +0100
-Message-ID: <CACT4Y+a8TjV+Pe6mwne777RV+xB+aHT6GxuMLAVBn5mtK4P0Lw@mail.gmail.com>
-Subject: Re: [PATCH v3] lockdep: Allow tuning tracing capacity constants.
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     syzkaller <syzkaller@googlegroups.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 19 Nov 2020 18:20:11 +0530
+From:   gubbaven@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        bgodavar@codeaurora.org, rjliao@codeaurora.org,
+        hbandi@codeaurora.org, abhishekpandit@chromium.org
+Subject: Re: [PATCH v1] Bluetooth: Use NVM files based on SoC ID for WCN3991
+In-Reply-To: <20200916180229.GA3560556@google.com>
+References: <1600184605-31611-1-git-send-email-gubbaven@codeaurora.org>
+ <20200916180229.GA3560556@google.com>
+Message-ID: <7d9a95bc2b1c11487662c8b4c0ffa29f@codeaurora.org>
+X-Sender: gubbaven@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 1:43 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > On Wed, Nov 18, 2020 at 4:32 PM Tetsuo Handa
-> > <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> > >
-> > > On 2020/11/19 0:10, Peter Zijlstra wrote:
-> > > > On Wed, Nov 18, 2020 at 11:30:05PM +0900, Tetsuo Handa wrote:
-> > > >> The problem is that we can't know what exactly is consuming these resources.
-> > > >> My question is do you have a plan to make it possible to know what exactly is
-> > > >> consuming these resources.
-> > > >
-> > > > I'm pretty sure it's in /proc/lockdep* somewhere.
-> > >
-> > > OK. Then...
-> > >
-> > > Dmitry, can you update syzkaller to dump /proc/lockdep* before terminating as
-> > > a crash as soon as encountering one of
-> > >
-> > >   BUG: MAX_LOCKDEP_ENTRIES too low!
-> > >   BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-> > >   BUG: MAX_LOCKDEP_CHAINS too low!
-> > >   BUG: MAX_LOCKDEP_KEYS too low!
-> > >   WARNING in print_bfs_bug
-> > >
-> > > messages?
-> > >
-> > > On 2020/09/16 21:14, Dmitry Vyukov wrote:
-> > > > On Wed, Sep 16, 2020 at 1:51 PM <peterz@infradead.org> wrote:
-> > > >>
-> > > >> On Wed, Sep 16, 2020 at 01:28:19PM +0200, Dmitry Vyukov wrote:
-> > > >>> On Fri, Sep 4, 2020 at 6:05 PM Tetsuo Handa
-> > > >>> <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> > > >>>>
-> > > >>>> Hello. Can we apply this patch?
-> > > >>>>
-> > > >>>> This patch addresses top crashers for syzbot, and applying this patch
-> > > >>>> will help utilizing syzbot's resource for finding other bugs.
-> > > >>>
-> > > >>> Acked-by: Dmitry Vyukov <dvyukov@google.com>
-> > > >>>
-> > > >>> Peter, do you still have concerns with this?
-> > > >>
-> > > >> Yeah, I still hate it with a passion; it discourages thinking. A bad
-> > > >> annotation that blows up the lockdep storage, no worries, we'll just
-> > > >> increase this :/
-> > > >>
-> > > >> IIRC the issue with syzbot is that the current sysfs annotation is
-> > > >> pretty terrible and generates a gazillion classes, and syzbot likes
-> > > >> poking at /sys a lot and thus floods the system.
-> > > >>
-> > > >> I don't know enough about sysfs to suggest an alternative, and haven't
-> > > >> exactly had spare time to look into it either :/
-> > > >>
-> > > >> Examples of bad annotations is getting every CPU a separate class, that
-> > > >> leads to nr_cpus! chains if CPUs arbitrarily nest (nr_cpus^2 if there's
-> > > >> only a single nesting level).
-> > > >
-> > > > Maybe on "BUG: MAX_LOCKDEP_CHAINS too low!" we should then aggregate,
-> > > > sort and show existing chains so that it's possible to identify if
-> > > > there are any worst offenders and who they are.
-> > > >
-> > > > Currently we only have a hypothesis that there are some worst
-> > > > offenders vs lots of normal load. And we can't point fingers which
-> > > > means that, say, sysfs, or other maintainers won't be too inclined to
-> > > > fix anything.
-> > > >
-> > > > If we would know for sure that lock class X is guilty. That would make
-> > > > the situation much more actionable.
-> >
-> > I am trying to reproduce this locally first. syzbot caims it can
-> > reproduce it with a number of very simpler reproducers (like spawn
-> > process, unshare, create socket):
-> > https://syzkaller.appspot.com/bug?id=8a18efe79140782a88dcd098808d6ab20ed740cc
-> >
-> > I see a very slow drift, but it's very slow, so get only to:
-> >  direct dependencies:                 22072 [max: 32768]
-> >
-> > But that's running a very uniform workload.
-> >
-> > However when I tried to cat /proc/lockdep to see if there is anything
-> > fishy already,
-> > I got this (on c2e7554e1b85935d962127efa3c2a76483b0b3b6).
-> >
-> > Some missing locks?
-> >
-> > ==================================================================
-> > BUG: KASAN: use-after-free in string_nocheck lib/vsprintf.c:611 [inline]
-> > BUG: KASAN: use-after-free in string+0x39c/0x3d0 lib/vsprintf.c:693
-> > Read of size 1 at addr ffff888295833740 by task less/1855
-> >
-> > CPU: 0 PID: 1855 Comm: less Tainted: G        W         5.10.0-rc4+ #68
-> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-> > rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:77 [inline]
-> >  dump_stack+0x107/0x163 lib/dump_stack.c:118
-> >  print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
-> >  __kasan_report mm/kasan/report.c:545 [inline]
-> >  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
-> >  string_nocheck lib/vsprintf.c:611 [inline]
-> >  string+0x39c/0x3d0 lib/vsprintf.c:693
-> >  vsnprintf+0x71b/0x14f0 lib/vsprintf.c:2618
-> >  seq_vprintf fs/seq_file.c:398 [inline]
-> >  seq_printf+0x195/0x240 fs/seq_file.c:413
-> >  print_name+0x98/0x1d0 kernel/locking/lockdep_proc.c:50
-> >  l_show+0x111/0x2c0 kernel/locking/lockdep_proc.c:82
-> >  seq_read_iter+0xae4/0x10c0 fs/seq_file.c:268
-> >  proc_reg_read_iter+0x1fb/0x2d0 fs/proc/inode.c:310
-> >  call_read_iter include/linux/fs.h:1897 [inline]
-> >  new_sync_read+0x41e/0x6e0 fs/read_write.c:415
-> >  vfs_read+0x35c/0x570 fs/read_write.c:496
-> >  ksys_read+0x12d/0x250 fs/read_write.c:634
-> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > RIP: 0033:0x7f1d48906310
-> > Code: 73 01 c3 48 8b 0d 28 4b 2b 00 31 d2 48 29 c2 64 89 11 48 83 c8
-> > ff eb ea 90 90 83 3d e5 a2 2b 00 00 75 10 b8 00 00 00 00 0f 05 <48> 3d
-> > 01 f04
-> > RSP: 002b:00007fff8ad3f048 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> > RAX: ffffffffffffffda RBX: 0000000000ae0ec0 RCX: 00007f1d48906310
-> > RDX: 0000000000002000 RSI: 0000000000ae0eec RDI: 0000000000000004
-> > RBP: 0000000000072000 R08: 0000000000000038 R09: 0000000001000000
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000a6d7f0
-> > R13: 0000000000000000 R14: 0000000000000039 R15: 0000000000ae0ec0
-> >
-> > Allocated by task 2828:
-> >  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
-> >  kasan_set_track mm/kasan/common.c:56 [inline]
-> >  __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
-> >  kmalloc include/linux/slab.h:557 [inline]
-> >  kzalloc include/linux/slab.h:664 [inline]
-> >  tomoyo_encode2.part.0+0xe9/0x3a0 security/tomoyo/realpath.c:45
-> >  tomoyo_encode2 security/tomoyo/realpath.c:31 [inline]
-> >  tomoyo_encode+0x28/0x50 security/tomoyo/realpath.c:80
-> >  tomoyo_path_perm+0x368/0x400 security/tomoyo/file.c:831
-> >  tomoyo_path_symlink+0x94/0xe0 security/tomoyo/tomoyo.c:200
-> >  security_path_symlink+0xdf/0x150 security/security.c:1110
-> >  do_symlinkat+0x123/0x2c0 fs/namei.c:3985
-> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >
-> > Freed by task 2828:
-> >  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
-> >  kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
-> >  kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
-> >  __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
-> >  slab_free_hook mm/slub.c:1544 [inline]
-> >  slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
-> >  slab_free mm/slub.c:3142 [inline]
-> >  kfree+0xdb/0x360 mm/slub.c:4124
-> >  tomoyo_path_perm+0x3b0/0x400 security/tomoyo/file.c:840
-> >  tomoyo_path_symlink+0x94/0xe0 security/tomoyo/tomoyo.c:200
-> >  security_path_symlink+0xdf/0x150 security/security.c:1110
-> >  do_symlinkat+0x123/0x2c0 fs/namei.c:3985
-> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >
-> > The buggy address belongs to the object at ffff888295833740
-> >  which belongs to the cache kmalloc-32 of size 32
-> > The buggy address is located 0 bytes inside of
-> >  32-byte region [ffff888295833740, ffff888295833760)
-> > The buggy address belongs to the page:
-> > page:00000000706b2f94 refcount:1 mapcount:0 mapping:0000000000000000
-> > index:0x0 pfn:0x295833
-> > flags: 0x57ffe0000000200(slab)
-> > raw: 057ffe0000000200 ffffea0004adca40 0000000200000002 ffff888100041a00
-> > raw: 0000000000000000 0000000000400040 00000001ffffffff 0000000000000000
-> > page dumped because: kasan: bad access detected
-> >
-> > Memory state around the buggy address:
-> >  ffff888295833600: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
-> >  ffff888295833680: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
-> > >ffff888295833700: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
-> >                                            ^
-> >  ffff888295833780: 00 00 00 fc fc fc fc fc 00 00 00 fc fc fc fc fc
-> >  ffff888295833800: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
-> > ==================================================================
->
->
-> Trying again I wasn't able to reproduce the drift.
-> Then I realized that running that simple workload I am getting a mix of:
-> [ 1459.589213][ T3142] WARNING: CPU: 1 PID: 3142 at
-> drivers/net/bonding/bond_main.c:4310
-> bond_update_slave_arr+0xcaf/0x10c0
-> [  222.027968][ T8662] BUG: sleeping function called from invalid
-> context at net/mac80211/sta_info.c:1962
-> which torns off lockdep completely.
-> Perhaps it would be useful to add ON/OFF status to lockdep_stats.
+Hi Matthias,
 
-I can reproduce slow drift by running just:
-
-#define _GNU_SOURCE
-#include <unistd.h>
-#include <sched.h>
-int main() {
-    for (int i = 0; i < 16; i++) {
-        if (fork() == 0) {
-            for (;;) {
-                unshare(CLONE_NEWNET);
-            }
-        }
-    }
-    sleep(1<<20);
-}
-
- lock-classes:                         1765 [max: 8192]
- direct dependencies:                 12882 [max: 32768]
- dependency chains:                   16841 [max: 65536]
- dependency chain hlocks used:        65720 [max: 327680]
- stack-trace entries:                141213 [max: 524288]
-...
- lock-classes:                         1768 [max: 8192]
- direct dependencies:                 13048 [max: 32768]
- dependency chains:                   17144 [max: 65536]
- dependency chain hlocks used:        67194 [max: 327680]
- stack-trace entries:                143043 [max: 524288]
-...
- lock-classes:                         1768 [max: 8192]
- direct dependencies:                 13056 [max: 32768]
- dependency chains:                   17173 [max: 65536]
- dependency chain hlocks used:        67353 [max: 327680]
- stack-trace entries:                143138 [max: 524288]
-...
- lock-classes:                         1770 [max: 8192]
- direct dependencies:                 13072 [max: 32768]
- dependency chains:                   17232 [max: 65536]
- dependency chain hlocks used:        67604 [max: 327680]
- stack-trace entries:                143390 [max: 524288]
+On 2020-09-16 23:32, Matthias Kaehlcke wrote:
+> Hi Venkata,
+> 
+> I agree with Marcel that the version magic is confusing ...
+> 
+> On Tue, Sep 15, 2020 at 09:13:25PM +0530, Venkata Lakshmi Narayana 
+> Gubba wrote:
+>> This change will allow to use different NVM file based
+>> on WCN3991 BT SoC ID.Need to use different NVM file based on
+>> fab location for WCN3991 BT SoC.
+>> 
+>> Signed-off-by: Venkata Lakshmi Narayana Gubba 
+>> <gubbaven@codeaurora.org>
+>> ---
+>>  drivers/bluetooth/btqca.c   | 41 
+>> +++++++++++++++++++++++++----------------
+>>  drivers/bluetooth/btqca.h   | 13 ++++++++-----
+>>  drivers/bluetooth/hci_qca.c | 11 +++++------
+>>  3 files changed, 38 insertions(+), 27 deletions(-)
+>> 
+>> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+>> index ce9dcff..a7e72f1 100644
+>> --- a/drivers/bluetooth/btqca.c
+>> +++ b/drivers/bluetooth/btqca.c
+>> @@ -14,12 +14,11 @@
+>> 
+>>  #define VERSION "0.1"
+>> 
+>> -int qca_read_soc_version(struct hci_dev *hdev, u32 *soc_version,
+>> +int qca_read_soc_version(struct hci_dev *hdev, struct 
+>> qca_btsoc_version *ver,
+>>  			 enum qca_btsoc_type soc_type)
+>>  {
+>>  	struct sk_buff *skb;
+>>  	struct edl_event_hdr *edl;
+>> -	struct qca_btsoc_version *ver;
+>>  	char cmd;
+>>  	int err = 0;
+>>  	u8 event_type = HCI_EV_VENDOR;
+>> @@ -70,9 +69,9 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 
+>> *soc_version,
+>>  	}
+>> 
+>>  	if (soc_type >= QCA_WCN3991)
+>> -		memmove(&edl->data, &edl->data[1], sizeof(*ver));
+>> -
+>> -	ver = (struct qca_btsoc_version *)(edl->data);
+>> +		memcpy(ver, &edl->data[1], sizeof(*ver));
+>> +	else
+>> +		memcpy(ver, &edl->data, sizeof(*ver));
+>> 
+>>  	bt_dev_info(hdev, "QCA Product ID   :0x%08x",
+>>  		    le32_to_cpu(ver->product_id));
+>> @@ -83,13 +82,7 @@ int qca_read_soc_version(struct hci_dev *hdev, u32 
+>> *soc_version,
+>>  	bt_dev_info(hdev, "QCA Patch Version:0x%08x",
+>>  		    le16_to_cpu(ver->patch_ver));
+>> 
+>> -	/* QCA chipset version can be decided by patch and SoC
+>> -	 * version, combination with upper 2 bytes from SoC
+>> -	 * and lower 2 bytes from patch will be used.
+>> -	 */
+>> -	*soc_version = (le32_to_cpu(ver->soc_id) << 16) |
+>> -		       (le16_to_cpu(ver->rom_ver) & 0x0000ffff);
+>> -	if (*soc_version == 0)
+>> +	if (le32_to_cpu(ver->soc_id) == 0 || le16_to_cpu(ver->rom_ver) == 0)
+>>  		err = -EILSEQ;
+>> 
+>>  out:
+>> @@ -446,15 +439,25 @@ int qca_set_bdaddr_rome(struct hci_dev *hdev, 
+>> const bdaddr_t *bdaddr)
+>>  EXPORT_SYMBOL_GPL(qca_set_bdaddr_rome);
+>> 
+>>  int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+>> -		   enum qca_btsoc_type soc_type, u32 soc_ver,
+>> +		   enum qca_btsoc_type soc_type, struct qca_btsoc_version ver,
+>>  		   const char *firmware_name)
+>>  {
+>>  	struct qca_fw_config config;
+>>  	int err;
+>>  	u8 rom_ver = 0;
+>> +	u32 soc_ver;
+>> 
+>>  	bt_dev_dbg(hdev, "QCA setup on UART");
+>> 
+>> +	/* QCA chipset version can be decided by patch and SoC
+>> +	 * version, combination with upper 2 bytes from SoC
+>> +	 * and lower 2 bytes from patch will be used.
+>> +	 */
+>> +	soc_ver = (le32_to_cpu(ver.soc_id) << 16) |
+>> +		       (le16_to_cpu(ver.rom_ver) & 0x0000ffff);
+>> +
+> 
+> Can we at least do the leN_to_cpu conversions in qca_read_soc_version()
+> as previously to make this less clunky?
+> 
+> And/or define a macro to extract 'soc_ver' to unclunkify this further.
+> 
+[Venkata]:
+I will define a macro to extract soc_ver and will update in next 
+patchset.
+>> +	bt_dev_info(hdev, "QCA controller version 0x%08x", soc_ver);
+>> +
+>>  	config.user_baud_rate = baudrate;
+>> 
+>>  	/* Download rampatch file */
+>> @@ -491,9 +494,15 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t 
+>> baudrate,
+>>  	if (firmware_name)
+>>  		snprintf(config.fwname, sizeof(config.fwname),
+>>  			 "qca/%s", firmware_name);
+>> -	else if (qca_is_wcn399x(soc_type))
+>> -		snprintf(config.fwname, sizeof(config.fwname),
+>> -			 "qca/crnv%02x.bin", rom_ver);
+>> +	else if (qca_is_wcn399x(soc_type)) {
+>> +		if (ver.soc_id == QCA_WCN3991_SOC_ID) {
+>> +			snprintf(config.fwname, sizeof(config.fwname),
+>> +				 "qca/crnv%02xu.bin", rom_ver);
+>> +		} else {
+>> +			snprintf(config.fwname, sizeof(config.fwname),
+>> +				 "qca/crnv%02x.bin", rom_ver);
+>> +		}
+>> +	}
+>>  	else if (soc_type == QCA_QCA6390)
+>>  		snprintf(config.fwname, sizeof(config.fwname),
+>>  			 "qca/htnv%02x.bin", rom_ver);
+>> diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
+>> index d81b74c..d01a9f5 100644
+>> --- a/drivers/bluetooth/btqca.h
+>> +++ b/drivers/bluetooth/btqca.h
+>> @@ -34,6 +34,8 @@
+>>  #define QCA_HCI_CC_OPCODE		0xFC00
+>>  #define QCA_HCI_CC_SUCCESS		0x00
+>> 
+>> +#define QCA_WCN3991_SOC_ID		(0x40014320)
+> 
+> The QCA_ prefix seems a bit verbose, given that this is a QCA driver 
+> and
+> WCN3991 uniquely identifies the chip. Having the prefix just needlessly
+> clutters conditions, I suggest to just call it SOC_ID_WCN3991.
