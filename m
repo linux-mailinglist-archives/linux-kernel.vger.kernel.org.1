@@ -2,95 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AC82B8D36
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7C22B8D39
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgKSI3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:29:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
+        id S1726599AbgKSIaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:30:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726468AbgKSI3R (ORCPT
+        with ESMTP id S1726302AbgKSIaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:29:17 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE6CC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:29:16 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id z29so6161965ybi.23
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:29:16 -0800 (PST)
+        Thu, 19 Nov 2020 03:30:17 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA315C0613CF;
+        Thu, 19 Nov 2020 00:30:15 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id i9so5128100ioo.2;
+        Thu, 19 Nov 2020 00:30:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=81mSmqAt+DDKbAEgLE/Wz5sPpfws9ggf7r+1ve0W/Wk=;
-        b=E0aZcpxN2P2AVWhKSW6to7t826wYwxN2CGTKh0jlSZ901IvKkL1SD/LA4PuvwCOwjx
-         usZhKMy1RBhEOeg2S17DjOk7VLen/MDrogsMuB5TcyAQe/lmau8naLmkciQM5oueDU4j
-         H9gzsKWRve4WARBlmMsJyd+6GNRrKkm/u/Gbgy6K+fLggV6sea1Ij5x8uKmUlpA7zBAY
-         Jt+T8iq6LTvaylImilgj/R2DZ9/9mdVjP2RQbIjS0pjpWzJ38yI1jJ/6yx1/d2oKc+H/
-         22diMlbN0GvTKl+aPU2ZUCbB9TMUYJjXKDELUbfAiOXkBst3UYBwFL9ZeColpxu8tf+l
-         Iz9w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+4Iz1s1fJTxP7zb4NvtW/FqHShCUWaNlwUSR2sabpVU=;
+        b=qxEYb6xiR0jOFA3N26xEwKdBfFHjLchAIWmvRrJVw/eM7tU4v3RH4qhoOW6xy1JLti
+         g68ampZF6Kcjzf/70O2nMcPisohdohdLBtj2C8plop4rVpUl41rnxRelhezdEcbArfoU
+         HzPq0Sniw8h3F9cQXbYaoNEcP4MkonGyECuwZrjlYZAKoDdNmN8T2Y6m7DF7+usqPj2g
+         Elxwby8nGGD2lM+X+/O8ALY5u9yO2rm8lPpqxgOJ7h+ceZqWG1bsr1piUpjDED6hQH+m
+         cshA0QB5MpBLTRupWLm/qbPs//ZQy+lO4u7ZEYpwKM69EBdLFz7CHaCXYnqAZ8r7Dp31
+         QyIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=81mSmqAt+DDKbAEgLE/Wz5sPpfws9ggf7r+1ve0W/Wk=;
-        b=Hi28fa3F0txP9lZg7YITnx8CCKA1aNn/qVLpnLyi+MyKD8ePiAu5/i2Rxrgq29j/eb
-         ayxe62m7BTb3S3nvvduA7n2JHmSi/08GnsqYYSMFJkyKmMwAnwHDTjg7ac57izzINFZO
-         B2X56nnNnlKf0MlUctyKWgmnlEp3aF5OJjd64rUDmEiTF0zP65/P9ez89eW0FuIpMSZx
-         2/fqGYeOGU6dpjkaWa4wRSzC0iZuRwGbOFoIHczvSgbsDgKKA46U+tri8C3W5SUY9H4N
-         hG0xwspO/v6IY7YWVV1O7bTd4it/fZFp5TF2+XHsdudos6OP+SoCgnkmS/eP8ewWs4kt
-         0S3Q==
-X-Gm-Message-State: AOAM530OkxwMS6BDTIADRUSLGLclgfemA6pSy13fUQ2VMEN0OtAlUt3a
-        W28WOOwS4iBi4huhbaLjKf67tChSnvo4hg==
-X-Google-Smtp-Source: ABdhPJx4nHRJ9HBK0xGsF349VilqjBdUds2kPWTNILQ3mVJ7qMYLaGPDTbfU1Jm6LFL+Sf/pntsdHR1i+rj2PQ==
-Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
- (user=davidgow job=sendgmr) by 2002:a25:4686:: with SMTP id
- t128mr14653855yba.109.1605774555483; Thu, 19 Nov 2020 00:29:15 -0800 (PST)
-Date:   Thu, 19 Nov 2020 00:29:03 -0800
-Message-Id: <20201119082903.3601758-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH] staging: hikey9xx: Specify HAS_IOMEM dependency for MFD_HI6421_SPMI
-From:   David Gow <davidgow@google.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+4Iz1s1fJTxP7zb4NvtW/FqHShCUWaNlwUSR2sabpVU=;
+        b=XIl4fJH+Hu6NsRaSTP2dwOA+2DrLDyXY+71u9aVFuTZahUKX3EgQ9J71OqpJ9mk0TX
+         6/IGEz6+REmQ/K8Wu4zp4v6OBdeicu5Sq0P+/IkjvggJQLuuISg8kIfm471QdImpm6yl
+         Bop5YGjsnR4AuGrQSv4JxVh/AUy2Qo54jXWIgCeKUgm/1YjdwXeXeF7qz0j60++CubE8
+         sj6T4mi9y0QEBr1BS3mFpMwaShZObMPj6SnxTKgqSq2LP8osip4YEugNPESu5C3U1Meq
+         ogY1x8xbiJZqqGF/rO9wftIYZRxwMV0ZkBAkqCMg1TUAmX5K+0GDWuU/AJ6Iyiz+krto
+         GoYA==
+X-Gm-Message-State: AOAM530V2gxs4+rmR8woFLNXUfRFPZC0inr/INEKH/V90AvM091hc65y
+        nGxTYFTFC2O0xKpWZYE7dhL/jKV9fbFgJH0iMcRw9cnPT/E=
+X-Google-Smtp-Source: ABdhPJx8TCb81IEibNNxnAybbh0S5BurAvdq3dyZxFVlAQAuadY4n5277AvTM/dP3alxf3T5Bnq6jpmJeICtRhZzZpE=
+X-Received: by 2002:a02:208:: with SMTP id 8mr13316809jau.79.1605774615047;
+ Thu, 19 Nov 2020 00:30:15 -0800 (PST)
+MIME-Version: 1.0
+References: <20201112091050.84991-1-alexandru.ardelean@analog.com>
+ <20201113094059.152651-1-alexandru.ardelean@analog.com> <20201114162021.3caebdab@archlinux>
+In-Reply-To: <20201114162021.3caebdab@archlinux>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Thu, 19 Nov 2020 10:30:02 +0200
+Message-ID: <CA+U=DsqYqBGf3VsUqxxuc3M+=DZgU-tt0vhGqXR_AUS5TmJ3mg@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: ad_sigma_delta: Don't put SPI transfer buffer on
+ the stack
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        alexandru.tachici@analog.com, Lars-Peter Clausen <lars@metafoo.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MFD_CORE is selected by MFD_HI6421_SPMI, and MFD_CORE depends on
-HAS_IOMEM. If HAS_IOMEM is not set, this can cause a conflict in Kconfig
-resolution, yielding the following error:
+On Sat, Nov 14, 2020 at 6:20 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Fri, 13 Nov 2020 11:40:59 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > From: Lars-Peter Clausen <lars@metafoo.de>
+> >
+> > Use a heap allocated memory for the SPI transfer buffer. Using stack memory
+> > can corrupt stack memory when using DMA on some systems.
+> >
+> > This change moves the buffer from the stack of the trigger handler call to
+> > the heap of the buffer of the state struct. The size increases takes into
+> > account the alignment for the timestamp, which is 8 bytes.
+> > So the buffer is put at an offset of 8 bytes.
+> >
+> > Fixes: af3008485ea03 ("iio:adc: Add common code for ADI Sigma Delta devices")
+> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+>
+> There are neater options for solving this problem - see inline.
+>
+> In particular I don't think you have a problem with setting the
+> rx and tx buffers to use the same memory.
+>
+> > ---
+> >
+> > Changelog v1 -> v2:
+> > * bumped the buffer on state struct to 24 bytes
+> > * increased the offset to 8 bytes to account for the timestamp alignment
+> >
+> >  drivers/iio/adc/ad_sigma_delta.c       | 2 +-
+> >  include/linux/iio/adc/ad_sigma_delta.h | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
+> > index 86039e9ecaca..9f730c9d6aaa 100644
+> > --- a/drivers/iio/adc/ad_sigma_delta.c
+> > +++ b/drivers/iio/adc/ad_sigma_delta.c
+> > @@ -395,9 +395,9 @@ static irqreturn_t ad_sd_trigger_handler(int irq, void *p)
+> >       struct iio_poll_func *pf = p;
+> >       struct iio_dev *indio_dev = pf->indio_dev;
+> >       struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
+> > +     uint8_t *data = &sigma_delta->data[8];
+> >       unsigned int reg_size;
+> >       unsigned int data_reg;
+> > -     uint8_t data[16];
+> >
+> >       memset(data, 0x00, 16);
+> >
+> > diff --git a/include/linux/iio/adc/ad_sigma_delta.h b/include/linux/iio/adc/ad_sigma_delta.h
+> > index a3a838dcf8e4..8fb74755f873 100644
+> > --- a/include/linux/iio/adc/ad_sigma_delta.h
+> > +++ b/include/linux/iio/adc/ad_sigma_delta.h
+> > @@ -80,7 +80,7 @@ struct ad_sigma_delta {
+> >        * DMA (thus cache coherency maintenance) requires the
+> >        * transfer buffers to live in their own cache lines.
+> >        */
+>
+> If you do end up with something like this, it needs a clear explanation of 'why'
+> the size is 24 bytes.  No good just having it in the patch description.
+>
+> > -     uint8_t                         data[4] ____cacheline_aligned;
+> > +     uint8_t                         data[24] ____cacheline_aligned;
+>
+> This is downright confusing.  I'd just split the buffer into tx and rx
+> parts.   The first (doesn't matter which) needs to be marked __cacheline_aligned.
+> If the rx is second mark it __aligned(8) to force that to be appropriate for
+> the timestamp.
+>
+> Or... (I haven't checked thoroughly for this from point of view of how it is used
+> in the drivers) use the same buffer for tx and rx.  That is supposed to be safe for
+> SPI drivers though wonderfully there is a ? after the statement of that in
+> include/linux/spi.h.  I think that is just pointing out that microwire doesn't
+> support duplex rather than saying it's invalid in general...
 
-WARNING: unmet direct dependencies detected for MFD_CORE
-  Depends on [n]: HAS_IOMEM [=n]
-  Selected by [y]:
-  - MFD_HI6421_SPMI [=y] && STAGING [=y] && OF [=y] && SPMI [=y]
+I'm a bit paranoid to use the same buffer for RX & TX [in general].
+It sounds like this could hide some bugs in some weird DMA implementations.
+The DMA implementations could be fine on their own, but they wouldn't
+expect that TX & RX buffers point to the same place.
 
-By specifying HAS_IOMEM as a dependency for MFD_HI6421_SPMI (as
-SPMI_HISI3670 already dows), this issue is resolved, and no such warning
-appears when building on architectures without HAS_IOMEM.
-
-Signed-off-by: David Gow <davidgow@google.com>
----
- drivers/staging/hikey9xx/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/staging/hikey9xx/Kconfig b/drivers/staging/hikey9xx/Kconfig
-index b29f5d5df134..2e48ded92a7e 100644
---- a/drivers/staging/hikey9xx/Kconfig
-+++ b/drivers/staging/hikey9xx/Kconfig
-@@ -25,6 +25,7 @@ config SPMI_HISI3670
- # to be placed at drivers/mfd
- config MFD_HI6421_SPMI
- 	tristate "HiSilicon Hi6421v600 SPMI PMU/Codec IC"
-+	depends on HAS_IOMEM
- 	depends on OF
- 	depends on SPMI
- 	select MFD_CORE
--- 
-2.29.2.454.gaff20da3a2-goog
-
+>
+>
+>
+> >  };
+> >
+> >  static inline int ad_sigma_delta_set_channel(struct ad_sigma_delta *sd,
+>
