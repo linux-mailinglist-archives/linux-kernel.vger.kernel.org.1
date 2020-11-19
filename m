@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCC72B9B64
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 938042B9B5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgKSTSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:18:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36588 "EHLO mail.kernel.org"
+        id S1728241AbgKSTRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:17:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727952AbgKSTRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728194AbgKSTRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Nov 2020 14:17:53 -0500
-Subject: Re: [GIT PULL] SPI fixes for v5.10-rc4
+Subject: Re: [GIT PULL] ACPI fixes for v5.10-rc5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1605813472;
-        bh=9c9M5aepTvT8EfFgu84GA5zqCUYnEsqE6UbqBT6hPBs=;
+        bh=uGeVwwFQyy+WjgsYO0CUmz3sI1IwpoB3ePuxkKPwikc=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=T6QTX31eudzQ/rGxZudKj10yATHhsKN0WBQlmRkseA6tpHlHDrzDWbo+rh5FAqHwC
-         cwcNzgt05mdmCjzIi3zGqtD1yyMFjsar1jCpwoMQGWPBy9z7axXJiLf+Ij6Y/xjtzg
-         0n9qabbDAKM2iRY/EopiDprHHbTRzRWEz1qve6d8=
+        b=TdAZA6cCDIHAXD5Rm1hYPzKzqJms0ogIYEki/7WWPMP02ZoDQLpkVVKggbCjtxyiy
+         lBO38i4b3dwkn5tR4FvcltILV+dEI7p9Y/iPjpJu2YpzhGWjvJb/RosPcfOIGVOhYb
+         fD6Ht7lfGuZcE10q6V+fbpxMPH1wHbmQzeRc8w2I=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201119174538.A2FC5246D1@mail.kernel.org>
-References: <20201119174538.A2FC5246D1@mail.kernel.org>
+In-Reply-To: <CAJZ5v0hEqP=GgF3VZpn8GVX4ajnzDV4T3ZMMMGUbEe-BqUoHOA@mail.gmail.com>
+References: <CAJZ5v0hEqP=GgF3VZpn8GVX4ajnzDV4T3ZMMMGUbEe-BqUoHOA@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201119174538.A2FC5246D1@mail.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.10-rc4
-X-PR-Tracked-Commit-Id: 04a9cd51d3f3308a98cbc6adc07acb12fbade011
+X-PR-Tracked-Message-Id: <CAJZ5v0hEqP=GgF3VZpn8GVX4ajnzDV4T3ZMMMGUbEe-BqUoHOA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.10-rc5
+X-PR-Tracked-Commit-Id: de15e20f50b126b3a5a753dd259df775e6a0ea5c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fee3c824edf24fd4c497bb3b887d1447150ec4ec
-Message-Id: <160581347250.16071.1014504023233233804.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 131ad0b6f5294dd4eb1c8e5e5c611a85cbae0c4e
+Message-Id: <160581347286.16071.9183254427463286959.pr-tracker-bot@kernel.org>
 Date:   Thu, 19 Nov 2020 19:17:52 +0000
-To:     Mark Brown <broonie@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 19 Nov 2020 17:45:17 +0000:
+The pull request you sent on Thu, 19 Nov 2020 19:28:37 +0100:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.10-rc4
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.10-rc5
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fee3c824edf24fd4c497bb3b887d1447150ec4ec
+https://git.kernel.org/torvalds/c/131ad0b6f5294dd4eb1c8e5e5c611a85cbae0c4e
 
 Thank you!
 
