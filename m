@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8F52B9174
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:54:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6682B9171
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727591AbgKSLn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:43:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
+        id S1727533AbgKSLnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727416AbgKSLnG (ORCPT
+        with ESMTP id S1727026AbgKSLnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:43:06 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D84C08E85E
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:43:06 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id c198so4991011wmd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:43:06 -0800 (PST)
+        Thu, 19 Nov 2020 06:43:07 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623D9C061A4A
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:43:07 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id d12so6027780wrr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:43:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=apiQTlE/nQ6vGfvEi/I7tsjxSIcMbp1twFG9p/luK2k=;
-        b=1afVP7tKUbv2dklGMJFaViXca5xz8iWEj0rParlDkrSNicm5jd94KiDoXM2btU40JP
-         oByz1D7w5d29n8R60p3mVtuuEpDXcHugNKnz/H/gFCHU6KXIqqxjJJqT+si7zN6wv5md
-         JRIe2OTKHNP0+miQHsD+K5sJReNn6GWzCfmEjk51X8hNGaAd3GWsDux1rKZzRD09Xtfs
-         0HzgsUV9mR/q2KPzsknFA3YV2zPx3rnRBHt/SmYNBuMlOWYyo14pF/056TVPSsMUu1hu
-         20N6tT4TaTVvKHdKodNKuS344VU8iMOrXdNFusjQaEkOS6ZBpd7Vf1RgwIo65eH9/T40
-         bLHQ==
+        bh=j/KBRlaFKGbe0xLBXMmc6glwV3M4cZcHY9cORvEW9Nw=;
+        b=E9+h4fQeQczTxBc6rm0Z9Tjagek/wUuDp/EJygIf9sbee98ZCh9VfjZG1hILt+Uty7
+         tpdvQCk9I9xtbIc5llhFcrvAt2uCBGAqN80YvUNEo1TRKO6GwP3hfRI9zzwk7R+T75MS
+         peBBIO5tV4+kXS1JSWYsvZ4OGQoDszf7VslAkUBGAg5dGGtpiYgSxB6gl0BJLz9yrUma
+         RRMf2vVb1or2009APoSc/CRHJ098YsFXLk962uG17747CjiUlbkZviSZs2u5MN4Trh1I
+         XArk3aLr7ZYmMjT9wpRrVILgv5Vj2q8Mn5Kj9C6jEber1vvEJ+THENWxF5PhuH/u8IIW
+         l9fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=apiQTlE/nQ6vGfvEi/I7tsjxSIcMbp1twFG9p/luK2k=;
-        b=pVpKte1I0RL32ihs7eZgJlV7I0Mtb5/zaqM5cxP6/lTD6u1gz5KEsnSS2RblmgCxbt
-         SyRFei8ZUVmXBOlObPxVySAaEb3N5p1mP9U6ATI2aXad39f2JpQC4sd1y6rWVJng3X3N
-         HT6IGhU84oRY+RVCR0ptQOlV3XXnJ/dgvF4doo/X8+31ikxdMcKmFndfIFE5lH4UwvmE
-         UvdTXMhYgNgTSL28H3h3kPx+AS9FkbjNN2j7LRLn415jOcoiNa3BpuMM1WQp4f38yJXd
-         vuIx4OYH/JgsrzuqDd700RPPlKiJgjZ7EiL20Jm44rq6GB064qX5bnp1BT1DQqXunc5g
-         056Q==
-X-Gm-Message-State: AOAM533OtzKoFEeNUe4TVL1N5n3ywMjM0JthmfHqy0xQGvNsmU/BsU+d
-        k6d6SrrV+o9dIAtDIcYJAw7YtQ==
-X-Google-Smtp-Source: ABdhPJxTP3tGPNfscEpaeN4iTtEmTTcAMr21XxGLG4/bW4ptMB/xyBLpxxBns58GS0SQBBO3DHS2sA==
-X-Received: by 2002:a1c:4055:: with SMTP id n82mr4441264wma.68.1605786185104;
-        Thu, 19 Nov 2020 03:43:05 -0800 (PST)
+        bh=j/KBRlaFKGbe0xLBXMmc6glwV3M4cZcHY9cORvEW9Nw=;
+        b=RQdKmtSI00jJBdMGoOtGzgTceF5eU2bQbEq3EtXzF/IDULdzFFhHZDAexom8ZExpgo
+         JjUf0celyNhligPcgnb5C4IW3xHuaypCNFw5N7nAjGUH/XpqNzNpJgXZ3GjpggAeRipB
+         N+DtQYojI+9SE75j+WOGeQXn81nXGeXMotCmZGR+qIKKxC83dl7FAsvnyEftgHYnJTNE
+         SC3gxagvz9dmJakVDD2yQltp0cZgGIelm0HCVEVHf68K/WXANRpG6yLlsGXBxPfxrN9C
+         0JpsJDt00adDyeDlRJmc66WUVc3xK2nTwafAmTknluCtBq6Jx9+m4l44hj/jFieJAlA8
+         LV6w==
+X-Gm-Message-State: AOAM533AY7jeX8rkLQ6cKFaUrgCgaYvVxIkspxGcTbIVD9wDaEDquLSu
+        2tJjuOYip8jrEgvqeJ/7SVwmmXU1EO4Y4w==
+X-Google-Smtp-Source: ABdhPJy1R84q6TSGacEWcJ6YNL53nSDBm+4VPXV6/GVYPsIy/+H7OQmgRU0PVd/mk1B7EmaohYyyHQ==
+X-Received: by 2002:a5d:43c6:: with SMTP id v6mr9683172wrr.295.1605786186137;
+        Thu, 19 Nov 2020 03:43:06 -0800 (PST)
 Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr. [2.15.39.206])
-        by smtp.gmail.com with ESMTPSA id u23sm9745178wmc.32.2020.11.19.03.43.03
+        by smtp.gmail.com with ESMTPSA id u23sm9745178wmc.32.2020.11.19.03.43.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 03:43:04 -0800 (PST)
+        Thu, 19 Nov 2020 03:43:05 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 56/59] rtc: msm6242: stop using deprecated RTC API
-Date:   Thu, 19 Nov 2020 12:41:46 +0100
-Message-Id: <20201119114149.4117-57-brgl@bgdev.pl>
+Subject: [PATCH 57/59] rtc: as3722: stop using deprecated RTC API
+Date:   Thu, 19 Nov 2020 12:41:47 +0100
+Message-Id: <20201119114149.4117-58-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201119114149.4117-1-brgl@bgdev.pl>
 References: <20201119114149.4117-1-brgl@bgdev.pl>
@@ -72,31 +72,42 @@ and devm_rtc_register_device() pair instead.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/rtc/rtc-msm6242.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/rtc/rtc-as3722.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/rtc/rtc-msm6242.c b/drivers/rtc/rtc-msm6242.c
-index 80e364baac53..b194f8bff403 100644
---- a/drivers/rtc/rtc-msm6242.c
-+++ b/drivers/rtc/rtc-msm6242.c
-@@ -205,13 +205,14 @@ static int __init msm6242_rtc_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	platform_set_drvdata(pdev, priv);
+diff --git a/drivers/rtc/rtc-as3722.c b/drivers/rtc/rtc-as3722.c
+index 0f21af27f4cf..90e70279a5d4 100644
+--- a/drivers/rtc/rtc-as3722.c
++++ b/drivers/rtc/rtc-as3722.c
+@@ -189,14 +189,11 @@ static int as3722_rtc_probe(struct platform_device *pdev)
  
--	rtc = devm_rtc_device_register(&pdev->dev, "rtc-msm6242",
--				&msm6242_rtc_ops, THIS_MODULE);
-+	rtc = devm_rtc_allocate_device(&pdev->dev);
- 	if (IS_ERR(rtc))
- 		return PTR_ERR(rtc);
+ 	device_init_wakeup(&pdev->dev, 1);
  
-+	rtc->ops = &msm6242_rtc_ops;
- 	priv->rtc = rtc;
+-	as3722_rtc->rtc = devm_rtc_device_register(&pdev->dev, "as3722-rtc",
+-				&as3722_rtc_ops, THIS_MODULE);
+-	if (IS_ERR(as3722_rtc->rtc)) {
+-		ret = PTR_ERR(as3722_rtc->rtc);
+-		dev_err(&pdev->dev, "RTC register failed: %d\n", ret);
+-		return ret;
+-	}
++	as3722_rtc->rtc = devm_rtc_allocate_device(&pdev->dev);
++	if (IS_ERR(as3722_rtc->rtc))
++		return PTR_ERR(as3722_rtc->rtc);
+ 
++	as3722_rtc->rtc->ops = &as3722_rtc_ops;
+ 	as3722_rtc->alarm_irq = platform_get_irq(pdev, 0);
+ 	dev_info(&pdev->dev, "RTC interrupt %d\n", as3722_rtc->alarm_irq);
+ 
+@@ -209,7 +206,8 @@ static int as3722_rtc_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 	disable_irq(as3722_rtc->alarm_irq);
 -	return 0;
 +
-+	return devm_rtc_register_device(rtc);
++	return devm_rtc_register_device(as3722_rtc->rtc);
  }
  
- static struct platform_driver msm6242_rtc_driver = {
+ #ifdef CONFIG_PM_SLEEP
 -- 
 2.29.1
 
