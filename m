@@ -2,87 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5992B8BF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A362B8C06
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgKSHER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:04:17 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7935 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgKSHEQ (ORCPT
+        id S1726155AbgKSHJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgKSHJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:04:16 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cc9dR4JJxz70G2;
-        Thu, 19 Nov 2020 15:03:55 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 19 Nov 2020 15:04:01 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] stm class: Fix a double vfree in stm_register_device()
-Date:   Thu, 19 Nov 2020 15:08:44 +0800
-Message-ID: <20201119070844.1123-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 19 Nov 2020 02:09:39 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866D0C0613CF;
+        Wed, 18 Nov 2020 23:09:39 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id t8so3564003pfg.8;
+        Wed, 18 Nov 2020 23:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GtcxaV35zaQRZNQwGx10xNryN/Ejb+d7UdwUR5iPs18=;
+        b=K6SO9RsFPuZC+Tj+izd9dpW/f/vlQkhBuvouEkRBh+QE2DeXCPClLURlm3i0ZKeXex
+         jDSNEdiUZlHTWp2YkU9yTRbdQg/jpyFV9w82fu+xmpVV6OxGG/7iLCsXMfI8+/9KffEs
+         C5PdcjK2D9rbQ/h2uM6+ThMepQeSRw1uzdRPIcoj843TsACdquJe1XJxO9O7DQ+RGOxR
+         HILi1ExOU9plux9vFBmsOl8jMSk53Sl7HrV+bUaHrfx15Q50xqXEI0ShJOflreaI/4I5
+         iDkfzaJ7iBxDBkfu62fG4sxBUeHKFQHN9tNRpxkZENstoCWYSCcDNZC2mKWe2WEB79xg
+         /Qbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GtcxaV35zaQRZNQwGx10xNryN/Ejb+d7UdwUR5iPs18=;
+        b=JR1xyBUljqIKU5j48vavBQi+gFa9ncJf3e3bviALz+n63O7lHghqqy52OzWft6h+g6
+         cyr6zeG513i9rPx9Y7ZxlEo/j+C72TNJ6C5xVkZku0TVGT0xV4lT8ktlYzdURyv96WO+
+         k1MeknqHk1OT9H4NMEQ8z/sR1mLNuSYR4kNqGM9M+gMXiuJmilbab8QiKkNKy2O0zt/L
+         vWcA3/DyGWf7nO1J0mnANKZEpzUQpljLCKvZmsRJ6CjejVrfdz9tpdw6zCXblS8U44rb
+         4n9XW5RPZ/naai3VynGupyXutMIjPMgtevihBmcn1zM06tpj+VXxicI5qMnbi0sDssGL
+         ujCA==
+X-Gm-Message-State: AOAM533B7W/PJiKKD1RltMFqAqTUd1NN0N6vtu8F94JmEFzLDbjNVEBk
+        fEVe5ND/d3pC7c7iirSz4lXbyfWrGwc=
+X-Google-Smtp-Source: ABdhPJyvqmVycfgWtJwqOKCjaApSD0hNAIYa79+6eYppN3ENgUbSvFhYx6jqBWkA5tGOOHvBMzgGzg==
+X-Received: by 2002:a17:90b:3583:: with SMTP id mm3mr3107556pjb.118.1605769779030;
+        Wed, 18 Nov 2020 23:09:39 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id t10sm10361630pfq.110.2020.11.18.23.09.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 23:09:38 -0800 (PST)
+Date:   Wed, 18 Nov 2020 23:09:35 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] Input: adp5589: use device-managed function in
+ adp5589_keypad_add()
+Message-ID: <20201119070935.GD2034289@dtor-ws>
+References: <20201112074308.71351-1-alexandru.ardelean@analog.com>
+ <20201112074308.71351-3-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112074308.71351-3-alexandru.ardelean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While testing stm, stm_register_device() caused a vfree issue:
------
-Trying to vfree() nonexistent vm area (00000000ad30ebb6)
+Hi Alexandru,
 
-Call Trace:
-__vfree+0x41/0xe0
-vfree+0x5f/0xa0
-stm_register_device+0x4b1/0x660 [stm_core]
-dummy_stm_init+0x248/0x360 [dummy_stm]
-do_one_initcall+0x149/0x7e0
-do_init_module+0x1ef/0x700
-load_module+0x3467/0x4140
-__do_sys_finit_module+0x10d/0x1a0
-do_syscall_64+0x34/0x80
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x468ded
------
+On Thu, Nov 12, 2020 at 09:43:05AM +0200, Alexandru Ardelean wrote:
+> This change makes use of the devm_input_allocate_device() function, which
+> gets rid of the input_free_device() and input_unregister_device() calls.
+> 
+> When a device is allocated via input_allocate_device(), the
+> input_register_device() call will also be device-managed, so there is no
+> longer need to manually call unregister.
+> 
+> Also, the irq is allocated with the devm_request_threaded_irq(), so with
+> these two changes, the adp5589_keypad_remove() function is no longer
+> needed.
+> 
+> This cleans up the error & exit paths.
+> It also looks like the input_free_device() should have been called on the
+> remove() hook, but doesn't look like it is.
 
-This is because put_device(&stm->dev) calls stm_device_release,
-which would call vfree(stm) inside, so there's no need to do
-vfree again.
+Actually it should not be called once input_unregister_device() is
+called. If you check, you will see that in probe() we set the pointer to
+input device to NULL after calling unregister, which makes subsequent
+call to input_free_device() a noop. We did that so that we have single
+error handling flow.
 
-Fix this problem by simply return err after put_device().
+I dropped this paragraph.
 
-Fixes: b5e2ced9bf81 ("stm class: Use vmalloc for the master map")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/hwtracing/stm/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+> 
+> This change may also also fix some potential leaks that were probably
+> omitted earlier.
 
-diff --git a/drivers/hwtracing/stm/core.c b/drivers/hwtracing/stm/core.c
-index 2712e699b..80b7c81d5 100644
---- a/drivers/hwtracing/stm/core.c
-+++ b/drivers/hwtracing/stm/core.c
-@@ -915,6 +915,8 @@ int stm_register_device(struct device *parent, struct stm_data *stm_data,
- 
- 	/* matches device_initialize() above */
- 	put_device(&stm->dev);
-+
-+	return err;
- err_free:
- 	vfree(stm);
- 
+This one too.
+
+> 
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  drivers/input/keyboard/adp5589-keys.c | 47 +++++++--------------------
+>  1 file changed, 11 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/input/keyboard/adp5589-keys.c b/drivers/input/keyboard/adp5589-keys.c
+> index 922497b65ab0..e96ffd5ed69e 100644
+> --- a/drivers/input/keyboard/adp5589-keys.c
+> +++ b/drivers/input/keyboard/adp5589-keys.c
+> @@ -909,7 +909,7 @@ static int adp5589_keypad_add(struct adp5589_kpad *kpad, unsigned int revid)
+>  		return -EINVAL;
+>  	}
+>  
+> -	input = input_allocate_device();
+> +	input = devm_input_allocate_device(&client->dev);
+>  	if (!input)
+>  		return -ENOMEM;
+>  
+> @@ -953,38 +953,19 @@ static int adp5589_keypad_add(struct adp5589_kpad *kpad, unsigned int revid)
+>  		__set_bit(kpad->gpimap[i].sw_evt, input->swbit);
+>  
+>  	error = input_register_device(input);
+> -	if (error) {
+> -		dev_err(&client->dev, "unable to register input device\n");
+
+If you want to drop error messages, please send a separate patch with
+justification.
+
+I restored error messgaes, and applied.
+
+Thank you.
+
 -- 
-2.23.0
-
+Dmitry
