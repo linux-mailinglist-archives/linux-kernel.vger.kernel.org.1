@@ -2,57 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC072B98D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 765902B98E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728532AbgKSRDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:03:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
+        id S1728608AbgKSRFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:05:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728264AbgKSRDn (ORCPT
+        with ESMTP id S1728264AbgKSRFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:03:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FCFC0613CF;
-        Thu, 19 Nov 2020 09:03:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=q3JjqbRd48LNj800JFPvs1d5D002k9sDxOXNuujNm60=; b=F4P0jttwBRfF2JEdJB1WcdvUYA
-        j/H/VVCn0x7Mc6hFOFeUEHGIQkU/R4EKO41zsb55h/Wt8mRkH7cFZKat3f6FeGwm+PhkZIb51VDQs
-        tpKFvqWkjXXpjiG/0n5c4l9q9C/zmytnpCn7Setkkbw2f3O3dVkTLzfnNjfBfGTZAsOldTCQdiK0T
-        I7LQ2a3UAYPy8MzCu+Fhq0dDYw6P29iuFw2ghSGpuRz+803EndC2Qy+uQZhE+pd1vU6909ChUHlZS
-        FKYqYPExU1nRYa72R/oaiEJQnd6rOZp4xM9DyRgpx6n50S/H5fdp1pqa6Mih567m44pNgHAfxEJ+4
-        BD6N8w6w==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfnLR-00025i-14; Thu, 19 Nov 2020 17:03:41 +0000
-Date:   Thu, 19 Nov 2020 17:03:40 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] iov_iter: optimise iter type checking
-Message-ID: <20201119170340.GA6179@infradead.org>
-References: <cover.1605799583.git.asml.silence@gmail.com>
- <9bc27cb3ef6ab49b6b2ccee3db6613838aee17af.1605799583.git.asml.silence@gmail.com>
+        Thu, 19 Nov 2020 12:05:11 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9306EC0613CF;
+        Thu, 19 Nov 2020 09:05:10 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id b17so6974747ljf.12;
+        Thu, 19 Nov 2020 09:05:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pdp2px/iS7YqbK+0lbuHDAjLg5kKmJIdvkTVN3rm+HA=;
+        b=nFrkjPYj5vl0YiVByyuAPfx+cb+3H+MDG1Ianvgu4Z3URGmiV/WLvmnINr9f48kYUc
+         IicByixTxjFT5pH2OUi+DWW31g+xU1ygpPrqSPGe8cvlFDjvlHmg0J4TTFJheDpVMYCY
+         ChwdeoTwJqwOzksjwYT+9ij7EPq4qX+/a0ovn/RRQ7U4Ae9gmV6CY3MkHAAel72nvxp5
+         osb3wGZD8j0TB5Y/sDFl2svkDZavV2/tegJ2IL8GMsN01D0ew9RSdsUySK7Q4tLxWUw8
+         NocXBsPOvWw0fNXh4njlqGJ2RBlH2XWFKHwQG6NwMuf6FpfavlKjrx77OH9dkAsEx+JS
+         WNCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pdp2px/iS7YqbK+0lbuHDAjLg5kKmJIdvkTVN3rm+HA=;
+        b=V24MVvuunDRgfciNGS4mVmmM0zWZw7NS2HP6FolAi5Fh1PaLwBo6Qao9JQu3EvNhEw
+         RcdnyDreVs3NENE7UvhGGfAhuDJ42CkNELwyAY/RkK/Uso5uL3ZO8OWDnD55SBeXlLO8
+         UdEj5aZH8jOXbubmRCbeNuRXBosz2EuOSmEFRM/CsBp4iP6qfhFTw9QZgE2/AN2+ZrA0
+         S6fqNcpdXKgn9S+ZUvFLdFB4UxOC4ZY7Yh2T6KXXY4nKC2FrsCHL0q4tJsUrVfzJ2MvJ
+         t1m8ppwGgvXbNNThfsLit3Uq5QjxX6pLFo5vG0Xtfw5mCvkrPD3opaADzVj4YONst9dz
+         cJFw==
+X-Gm-Message-State: AOAM533UNG9XHJhX4NOsYni9RRz7dSywNbAAnbNVi/W2I7cLOmOoZJmE
+        CZUaaTyqJLX9YpfTrnxRDXy0kw2sInsqVaW/q3w=
+X-Google-Smtp-Source: ABdhPJz84FHFdyN0TSp9MADPx8nbmsZjfZw5H5CotVdL+2BNemeMDX8r8YbIfwGewwb0rZZYIvJ0RyMGCdRdeeoHSHk=
+X-Received: by 2002:a2e:b1c9:: with SMTP id e9mr5441355lja.283.1605805508987;
+ Thu, 19 Nov 2020 09:05:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9bc27cb3ef6ab49b6b2ccee3db6613838aee17af.1605799583.git.asml.silence@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+ <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+ <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
+ <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org>
+ <87o8jutt2h.fsf@mid.deneb.enyo.de> <20201118135823.3f0d24b7@gandalf.local.home>
+ <20201118191127.GM2672@gate.crashing.org> <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
+ <20201119143735.GU2672@gate.crashing.org> <20201119095951.30269233@gandalf.local.home>
+In-Reply-To: <20201119095951.30269233@gandalf.local.home>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 19 Nov 2020 09:04:57 -0800
+Message-ID: <CAADnVQL8d5zKTE_TohUcGgKKp6K1Noo7M22t_hKYQjO_g0Mb0g@mail.gmail.com>
+Subject: Re: violating function pointer signature
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 03:29:43PM +0000, Pavel Begunkov wrote:
-> The problem here is that iov_iter_is_*() helpers check types for
-> equality, but all iterate_* helpers do bitwise ands. This confuses
-> a compiler, so even if some cases were handled separately with
-> iov_iter_is_*(), it can't eliminate and skip unreachable branches in
-> following iterate*().
+On Thu, Nov 19, 2020 at 6:59 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> Linux obviously
+> supports multiple architectures (more than any other OS), but it is pretty
+> stuck to gcc as a compiler (with LLVM just starting to work too).
+>
+> We are fine with being stuck to a compiler if it gives us what we want.
 
-I think we need to kill the iov_iter_is_* helpers, renumber to not do
-the pointless bitmask and just check for equality (might turn into a
-bunch of nice switch statements actually).
+I beg to disagree.
+android, chrome and others changed their kernel builds to
+"make LLVM=1" some time ago.
+It's absolutely vital for the health of the kernel to be built with
+both gcc and llvm.
