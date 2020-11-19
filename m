@@ -2,208 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21912B99FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296E92B99FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729388AbgKSRtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729442AbgKSRto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:49:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729329AbgKSRtn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Nov 2020 12:49:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:36200 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729329AbgKSRtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:49:42 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1940E1396;
-        Thu, 19 Nov 2020 09:49:42 -0800 (PST)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 76BB23F70D;
-        Thu, 19 Nov 2020 09:49:40 -0800 (PST)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        egranata@google.com, jbhayana@google.com,
-        peter.hilber@opensynergy.com, mikhail.golubev@opensynergy.com,
-        Igor.Skalkin@opensynergy.com,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v4 5/6] firmware: arm_scmi: add SCMIv3.0 Sensor configuration support
-Date:   Thu, 19 Nov 2020 17:49:05 +0000
-Message-Id: <20201119174906.43862-6-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201119174906.43862-1-cristian.marussi@arm.com>
-References: <20201119174906.43862-1-cristian.marussi@arm.com>
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1059C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:49:43 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id l14so6007110ybq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:49:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VOr6koQF+IBLIVc9r3QuKU141fh3NjeHnysl+nNQ1mY=;
+        b=ZdNkW2Ed0WCu+MUenjPzGWiCfRrssAbsJEhfH/B1GsUNDozZ7I7BNQwSSXKGiZf2wr
+         PgFtyPDEAQnJpmztTEReCK8hab3fa9qJxBWKYb9ijJ+UDQWvAVYjY0YYCwJwCDcKkr4f
+         1IvEqbXg23tng7tyq/8ELY0xA8H3PwsjAx215RHzTkiMJyIatPmD3gnm0VRcBCM+SKPn
+         eQLQ4N/iI3MPabzYOKeqJWgKLNVTTwQHy/P6RhZLFG1wBieupzW8WLd7M+/qRNtfhUri
+         C9xH607KUhIj3u+t4OU3/se96SoP9s0Gr2ZTWFHYOcx7ahkiGXWjLkLMROZQVnjptq6r
+         4AWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VOr6koQF+IBLIVc9r3QuKU141fh3NjeHnysl+nNQ1mY=;
+        b=Kcqnm78l5Xx9oCuC7xWsG7Bq9sVeNHWPrMwpQ0CzIv6kAkLCbokAiRW+APamiX4RBl
+         0XiZZwk7fwXx4FywzhkZ2en7RQtyFunW2kDLzW5xoyZJmC1eEasG4PHL8LTwLItXq3yZ
+         3hZPTlWzm03qJe1D8O8WyA/DQI7nsYkxcQiI1p4qolWKA/AOdt8AFxYxoBu6XksB38F+
+         dKlmZCNpU3ipdKS9zSKLZEI89KdZwawx/mBwEbB1wJj6AUeX+/TjPKhMddjk2ZiYemmn
+         AvqgVuLg7eFlCH2q4HHXcN8YG6bFo5kD9lQ1fIKIuA9jmlutBn3Uy/pzKkfJ1hrQLzcE
+         SQSw==
+X-Gm-Message-State: AOAM531QP3czeBnwgAEXn2Uw8hTN4RZ0RWZybg2uSkxzytv73nAPdIZC
+        nulnc72U9sttbHqf3oRbxS0QCd1s32MNWxPesBWlJ4VbzwCRR143
+X-Google-Smtp-Source: ABdhPJw2i3gwQRDyzO6sOhaflWBk70JDyjkMq6XWSXLGIdeAMir9vPqqb/V0cCaciPoIK4W5YNfbLEEx9xSJG5MXLp0=
+X-Received: by 2002:a25:8401:: with SMTP id u1mr24460099ybk.96.1605808182804;
+ Thu, 19 Nov 2020 09:49:42 -0800 (PST)
+MIME-Version: 1.0
+References: <20201119110036.19959-1-aisheng.dong@nxp.com> <20201119110036.19959-3-aisheng.dong@nxp.com>
+In-Reply-To: <20201119110036.19959-3-aisheng.dong@nxp.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 19 Nov 2020 09:49:06 -0800
+Message-ID: <CAGETcx_vHdZ0TwSj+Qbgoe1nEwKkQO=TJd7XKZ+nO0iLjMEUJw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] of: property: fix document of of_get_next_parent_dev
+To:     Dong Aisheng <aisheng.dong@nxp.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Dong Aisheng <dongas86@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SCMIv3.0 Sensor support for CONFIG_GET/CONFIG_SET commands.
+On Thu, Nov 19, 2020 at 3:18 AM Dong Aisheng <aisheng.dong@nxp.com> wrote:
+>
+> Fix document of of_get_next_parent_dev.
+>
+> Cc: devicetree@vger.kernel.org
+> Cc: Saravana Kannan <saravanak@google.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> ---
+>  drivers/of/property.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 21a854e85234..5bd4a9bead47 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1038,7 +1038,7 @@ static bool of_is_ancestor_of(struct device_node *test_ancestor,
+>  }
+>
+>  /**
+> - * of_get_next_parent_dev - Add device link to supplier from supplier phandle
+> + * of_get_next_parent_dev - Get the closest ancestor device of a device node
+>   * @np: device tree node
+>   *
+>   * Given a device tree node (@np), this function finds its closest ancestor
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-v3 --> v4
-- dropped single field structs
----
- drivers/firmware/arm_scmi/sensors.c | 63 +++++++++++++++++++++++++++++
- include/linux/scmi_protocol.h       | 37 +++++++++++++++++
- 2 files changed, 100 insertions(+)
+All of this is going away[1].
+So, Nack.
 
-diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
-index 2239af5f9e6e..10c271d430e7 100644
---- a/drivers/firmware/arm_scmi/sensors.c
-+++ b/drivers/firmware/arm_scmi/sensors.c
-@@ -23,6 +23,8 @@ enum scmi_sensor_protocol_cmd {
- 	SENSOR_READING_GET = 0x6,
- 	SENSOR_AXIS_DESCRIPTION_GET = 0x7,
- 	SENSOR_LIST_UPDATE_INTERVALS = 0x8,
-+	SENSOR_CONFIG_GET = 0x9,
-+	SENSOR_CONFIG_SET = 0xA,
- };
- 
- struct scmi_msg_resp_sensor_attributes {
-@@ -149,6 +151,11 @@ struct scmi_msg_set_sensor_trip_point {
- 	__le32 value_high;
- };
- 
-+struct scmi_msg_sensor_config_set {
-+	__le32 id;
-+	__le32 sensor_config;
-+};
-+
- struct scmi_msg_sensor_reading_get {
- 	__le32 id;
- 	__le32 flags;
-@@ -592,6 +599,60 @@ scmi_sensor_trip_point_config(const struct scmi_handle *handle, u32 sensor_id,
- 	return ret;
- }
- 
-+static int scmi_sensor_config_get(const struct scmi_handle *handle,
-+				  u32 sensor_id, u32 *sensor_config)
-+{
-+	int ret;
-+	struct scmi_xfer *t;
-+
-+	ret = scmi_xfer_get_init(handle, SENSOR_CONFIG_GET,
-+				 SCMI_PROTOCOL_SENSOR, sizeof(__le32),
-+				 sizeof(__le32), &t);
-+	if (ret)
-+		return ret;
-+
-+	put_unaligned_le32(cpu_to_le32(sensor_id), t->tx.buf);
-+	ret = scmi_do_xfer(handle, t);
-+	if (!ret) {
-+		struct sensors_info *si = handle->sensor_priv;
-+		struct scmi_sensor_info *s = si->sensors + sensor_id;
-+
-+		*sensor_config = get_unaligned_le64(t->rx.buf);
-+		s->sensor_config = *sensor_config;
-+	}
-+
-+	scmi_xfer_put(handle, t);
-+	return ret;
-+}
-+
-+static int scmi_sensor_config_set(const struct scmi_handle *handle,
-+				  u32 sensor_id, u32 sensor_config)
-+{
-+	int ret;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_sensor_config_set *msg;
-+
-+	ret = scmi_xfer_get_init(handle, SENSOR_CONFIG_SET,
-+				 SCMI_PROTOCOL_SENSOR, sizeof(*msg), 0, &t);
-+	if (ret)
-+		return ret;
-+
-+	msg = t->tx.buf;
-+	msg->id = cpu_to_le32(sensor_id);
-+	msg->sensor_config = cpu_to_le32(sensor_config);
-+
-+	ret = scmi_do_xfer(handle, t);
-+	if (!ret) {
-+		struct sensors_info *si = handle->sensor_priv;
-+		struct scmi_sensor_info *s = si->sensors + sensor_id;
-+
-+		s->sensor_config = sensor_config;
-+	}
-+
-+	scmi_xfer_put(handle, t);
-+	return ret;
-+}
-+
- /**
-  * scmi_sensor_reading_get  - Read scalar sensor value
-  * @handle: Platform handle
-@@ -745,6 +806,8 @@ static const struct scmi_sensor_ops sensor_ops = {
- 	.trip_point_config = scmi_sensor_trip_point_config,
- 	.reading_get = scmi_sensor_reading_get,
- 	.reading_get_timestamped = scmi_sensor_reading_get_timestamped,
-+	.config_get = scmi_sensor_config_get,
-+	.config_set = scmi_sensor_config_set,
- };
- 
- static int scmi_sensor_set_notify_enabled(const struct scmi_handle *handle,
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 0c52bf0cbee4..7e9e2cd3d46b 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -286,7 +286,38 @@ struct scmi_sensor_info {
- 	unsigned int num_axis;
- 	struct scmi_sensor_axis_info *axis;
- 	struct scmi_sensor_intervals_info intervals;
-+	unsigned int sensor_config;
-+#define SCMI_SENS_CFG_UPDATE_SECS_MASK		GENMASK(31, 16)
-+#define SCMI_SENS_CFG_GET_UPDATE_SECS(x)				\
-+	FIELD_GET(SCMI_SENS_CFG_UPDATE_SECS_MASK, (x))
-+
-+#define SCMI_SENS_CFG_UPDATE_EXP_MASK		GENMASK(15, 11)
-+#define SCMI_SENS_CFG_GET_UPDATE_EXP(x)					\
-+	({								\
-+		int __signed_exp =					\
-+			FIELD_GET(SCMI_SENS_CFG_UPDATE_EXP_MASK, (x));	\
-+									\
-+		if (__signed_exp & BIT(4))				\
-+			__signed_exp |= GENMASK(31, 5);			\
-+		__signed_exp;						\
-+	})
-+
-+#define SCMI_SENS_CFG_ROUND_MASK		GENMASK(10, 9)
-+#define SCMI_SENS_CFG_ROUND_AUTO		2
-+#define SCMI_SENS_CFG_ROUND_UP			1
-+#define SCMI_SENS_CFG_ROUND_DOWN		0
-+
-+#define SCMI_SENS_CFG_TSTAMP_ENABLED_MASK	BIT(1)
-+#define SCMI_SENS_CFG_TSTAMP_ENABLE		1
-+#define SCMI_SENS_CFG_TSTAMP_DISABLE		0
-+#define SCMI_SENS_CFG_IS_TSTAMP_ENABLED(x)				\
-+	FIELD_GET(SCMI_SENS_CFG_TSTAMP_ENABLED_MASK, (x))
-+
-+#define SCMI_SENS_CFG_SENSOR_ENABLED_MASK	BIT(0)
-+#define SCMI_SENS_CFG_SENSOR_ENABLE		1
-+#define SCMI_SENS_CFG_SENSOR_DISABLE		0
- 	char name[SCMI_MAX_STR_SIZE];
-+#define SCMI_SENS_CFG_IS_ENABLED(x)		FIELD_GET(BIT(0), (x))
- 	bool extended_scalar_attrs;
- 	unsigned int sensor_power;
- 	unsigned int resolution;
-@@ -409,6 +440,8 @@ enum scmi_sensor_class {
-  *			     Supports multi-axis sensors for sensors which
-  *			     supports it and if the @reading array size of
-  *			     @count entry equals the sensor num_axis
-+ * @config_get: Get sensor current configuration
-+ * @config_set: Set sensor current configuration
-  */
- struct scmi_sensor_ops {
- 	int (*count_get)(const struct scmi_handle *handle);
-@@ -421,6 +454,10 @@ struct scmi_sensor_ops {
- 	int (*reading_get_timestamped)(const struct scmi_handle *handle,
- 				       u32 sensor_id, u8 count,
- 				       struct scmi_sensor_reading *readings);
-+	int (*config_get)(const struct scmi_handle *handle,
-+			  u32 sensor_id, u32 *sensor_config);
-+	int (*config_set)(const struct scmi_handle *handle,
-+			  u32 sensor_id, u32 sensor_config);
- };
- 
- /**
--- 
-2.17.1
-
+-Saravana
+[1] - https://lore.kernel.org/lkml/20201104232356.4038506-1-saravanak@google.com/
