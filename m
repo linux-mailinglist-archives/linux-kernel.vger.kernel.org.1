@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AB82B8E12
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2DA2B8E11
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgKSIya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726763AbgKSIya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 19 Nov 2020 03:54:30 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:13017 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726616AbgKSIy3 (ORCPT
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16335 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726667AbgKSIy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Nov 2020 03:54:29 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb632cf0000>; Thu, 19 Nov 2020 00:54:39 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Nov
- 2020 08:54:24 +0000
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb632ba0001>; Thu, 19 Nov 2020 00:54:18 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Nov
+ 2020 08:54:27 +0000
 Received: from jckuo-lt.nvidia.com (10.124.1.5) by mail.nvidia.com
  (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 19 Nov 2020 08:54:23 +0000
+ Transport; Thu, 19 Nov 2020 08:54:25 +0000
 From:   JC Kuo <jckuo@nvidia.com>
 To:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
         <robh@kernel.org>, <jonathanh@nvidia.com>, <kishon@ti.com>
 CC:     <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nkristam@nvidia.com>, JC Kuo <jckuo@nvidia.com>
-Subject: [PATCH v5 07/16] phy: tegra: xusb: Add sleepwalk and suspend/resume
-Date:   Thu, 19 Nov 2020 16:53:56 +0800
-Message-ID: <20201119085405.556138-8-jckuo@nvidia.com>
+        <nkristam@nvidia.com>, JC Kuo <jckuo@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH v5 08/16] soc/tegra: pmc: Provide USB sleepwalk register map
+Date:   Thu, 19 Nov 2020 16:53:57 +0800
+Message-ID: <20201119085405.556138-9-jckuo@nvidia.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201119085405.556138-1-jckuo@nvidia.com>
 References: <20201119085405.556138-1-jckuo@nvidia.com>
@@ -37,247 +38,259 @@ X-NVConfidentiality: public
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605776079; bh=vXYf3LWZ8w8CPnSFOE8KIMYF91wXcqkyWF5qCBY7XG8=;
+        t=1605776058; bh=OOuD/quPSMiiD6H53clL1vvG6YD/MzQg6Vs97UY24/A=;
         h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
          References:MIME-Version:X-NVConfidentiality:
          Content-Transfer-Encoding:Content-Type;
-        b=drEwzvjemDRMTxZ0bEnWUQihLeYeYeCigeELQvy5O7A+5yPwvxEY+Hm57T2t+Ld+X
-         Br/CaMuBPHWZCwHrsXg6csnh26mQeiHvbXWz3yK0mXkO79ZDs8J+HHxXvabVyGyctC
-         Sq3rH1SRFdUmDnXYtGkxRVD+mwAB36wfC1r0hK371qlZE7YKuhbGTQDx1VXNNHsdl/
-         pbXCQ/+tvAKR4kFTQy+JkbKy+XXA3FAYW7ZzawsmP/SILLFtGOVL/vEBTvMw5R1g0v
-         evZkCvyBhbMjRyrcrMP2bt8iz0FYd98GeetU9cwhofCIUP9JbfpczbLemtR7/NFdl/
-         VfKsS0d2AUuIg==
+        b=AGcCnyxg+dEMg3SxMf3Ye0Uwo+2ltVix8YG1FhpDmR/6gOMEkZf/zzv+LwgoOGAEf
+         YRaZuRdWJLWG8qJS7eqomBv980hdB7sKoOIIJz6uqo6u5zRMbQoCilAxc5fajoa3bq
+         PPHrt+FrfFO6S1CtpV+aD4HOKgYYtCbZ2S80XBi/P++JDduhDh9saxHG4LVKUskF5P
+         nQ4optUp/vNVGx7aAE4b1MNUHOhNUaCGdrCHi1I3vBgcgIAQjZLmKzDjnvmI+Re9nr
+         zCbkuMBaE9PlE067buCWSTSh9Pg2hHOp2te6KXeWZtkMoJyrgwyzrqMyI0ZmdaQAf6
+         Ob6AHhqSWtx6w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds sleepwalk/wake and suspend/resume interfaces
-to Tegra XUSB PHY driver.
-
-Tegra XUSB host controller driver makes use of sleepwalk functions
-to enable/disable sleepwalk circuit which is in always-on partition
-and can respond to USB resume signals when controller is not powered.
-Sleepwalk can be enabled/disabled for any USB UPHY individually.
-
-  - tegra_xusb_padctl_enable_phy_sleepwalk()
-  - tegra_xusb_padctl_disable_phy_sleepwalk()
-
-Tegra XUSB host controller driver makes use of wake functions to
-enable/disable/query wake circuit which is in always-on partition
-can wake system up when USB resume happens.
-Wake circuit can be enabled/disabled for any USB PHY individually.
-
-  - tegra_xusb_padctl_enable_phy_wake()
-  - tegra_xusb_padctl_disable_phy_wake()
-  - tegra_xusb_padctl_remote_wake_detected()
-
-This commit also adds two system suspend stubs that can be used to
-save and restore XUSB PADCTL context during system suspend and
-resume.
-  - tegra_xusb_padctl_suspend_noirq()
-  - tegra_xusb_padctl_resume_noirq()
+This commit implements a register map which grants USB (UTMI and HSIC)
+sleepwalk registers access to USB PHY drivers. The USB sleepwalk logic
+is in PMC hardware block but USB PHY drivers have the best knowledge
+of proper programming sequence.
 
 Signed-off-by: JC Kuo <jckuo@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
 ---
 v5:
    no change
 v4:
-   move sleepwalk/wake stubs from 'struct tegra_xusb_padctl_ops' to
-   'struct tegra_xusb_lane_ops'
+   commit message improvement
+   remove an unnecessary type cast when invokes devm_regmap_init()
 v3:
-   commit message improvement, no change in code
+   commit message improvement
+   drop regmap_reg() usage
+   rename 'reg' with 'offset'
+   rename 'val' with 'value'
+   drop '__force' when invokes devm_regmap_init()
+   print error code of devm_regmap_init()
+   move devm_regmap_init() a litter bit earlier
+   explicitly set '.has_usb_sleepwalk=3Dfalse'
 
- drivers/phy/tegra/xusb.c       | 82 ++++++++++++++++++++++++++++++++++
- drivers/phy/tegra/xusb.h       |  8 ++++
- include/linux/phy/tegra/xusb.h | 10 ++++-
- 3 files changed, 99 insertions(+), 1 deletion(-)
+ drivers/soc/tegra/pmc.c | 94 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
 
-diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
-index e81ac7a088e9..0fdee9ab64da 100644
---- a/drivers/phy/tegra/xusb.c
-+++ b/drivers/phy/tegra/xusb.c
-@@ -1275,10 +1275,36 @@ static int tegra_xusb_padctl_remove(struct platform=
-_device *pdev)
- 	return err;
- }
+diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
+index df9a5ca8c99c..a619a23f9592 100644
+--- a/drivers/soc/tegra/pmc.c
++++ b/drivers/soc/tegra/pmc.c
+@@ -43,6 +43,7 @@
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
++#include <linux/regmap.h>
 =20
-+static int tegra_xusb_padctl_suspend_noirq(struct device *dev)
-+{
-+	struct tegra_xusb_padctl *padctl =3D dev_get_drvdata(dev);
-+
-+	if (padctl->soc && padctl->soc->ops && padctl->soc->ops->suspend_noirq)
-+		return padctl->soc->ops->suspend_noirq(padctl);
-+
-+	return 0;
-+}
-+
-+static int tegra_xusb_padctl_resume_noirq(struct device *dev)
-+{
-+	struct tegra_xusb_padctl *padctl =3D dev_get_drvdata(dev);
-+
-+	if (padctl->soc && padctl->soc->ops && padctl->soc->ops->resume_noirq)
-+		return padctl->soc->ops->resume_noirq(padctl);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops tegra_xusb_padctl_pm_ops =3D {
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(tegra_xusb_padctl_suspend_noirq,
-+				      tegra_xusb_padctl_resume_noirq)
-+};
-+
- static struct platform_driver tegra_xusb_padctl_driver =3D {
- 	.driver =3D {
- 		.name =3D "tegra-xusb-padctl",
- 		.of_match_table =3D tegra_xusb_padctl_of_match,
-+		.pm =3D &tegra_xusb_padctl_pm_ops,
- 	},
- 	.probe =3D tegra_xusb_padctl_probe,
- 	.remove =3D tegra_xusb_padctl_remove,
-@@ -1345,6 +1371,62 @@ int tegra_xusb_padctl_hsic_set_idle(struct tegra_xus=
-b_padctl *padctl,
- }
- EXPORT_SYMBOL_GPL(tegra_xusb_padctl_hsic_set_idle);
+ #include <soc/tegra/common.h>
+ #include <soc/tegra/fuse.h>
+@@ -102,6 +103,9 @@
 =20
-+int tegra_xusb_padctl_enable_phy_sleepwalk(struct tegra_xusb_padctl *padct=
-l, struct phy *phy,
-+					   enum usb_device_speed speed)
-+{
-+	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
-+
-+	if (lane->pad->ops->enable_phy_sleepwalk)
-+		return lane->pad->ops->enable_phy_sleepwalk(lane, speed);
-+
-+	return -EOPNOTSUPP;
-+}
-+EXPORT_SYMBOL_GPL(tegra_xusb_padctl_enable_phy_sleepwalk);
-+
-+int tegra_xusb_padctl_disable_phy_sleepwalk(struct tegra_xusb_padctl *padc=
-tl, struct phy *phy)
-+{
-+	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
-+
-+	if (lane->pad->ops->disable_phy_sleepwalk)
-+		return lane->pad->ops->disable_phy_sleepwalk(lane);
-+
-+	return -EOPNOTSUPP;
-+}
-+EXPORT_SYMBOL_GPL(tegra_xusb_padctl_disable_phy_sleepwalk);
-+
-+int tegra_xusb_padctl_enable_phy_wake(struct tegra_xusb_padctl *padctl, st=
-ruct phy *phy)
-+{
-+	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
-+
-+	if (lane->pad->ops->enable_phy_wake)
-+		return lane->pad->ops->enable_phy_wake(lane);
-+
-+	return -EOPNOTSUPP;
-+}
-+EXPORT_SYMBOL_GPL(tegra_xusb_padctl_enable_phy_wake);
-+
-+int tegra_xusb_padctl_disable_phy_wake(struct tegra_xusb_padctl *padctl, s=
-truct phy *phy)
-+{
-+	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
-+
-+	if (lane->pad->ops->disable_phy_wake)
-+		return lane->pad->ops->disable_phy_wake(lane);
-+
-+	return -EOPNOTSUPP;
-+}
-+EXPORT_SYMBOL_GPL(tegra_xusb_padctl_disable_phy_wake);
-+
-+bool tegra_xusb_padctl_remote_wake_detected(struct tegra_xusb_padctl *padc=
-tl, struct phy *phy)
-+{
-+	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
-+
-+	if (lane->pad->ops->remote_wake_detected)
-+		return lane->pad->ops->remote_wake_detected(lane);
-+
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(tegra_xusb_padctl_remote_wake_detected);
-+
- int tegra_xusb_padctl_usb3_set_lfps_detect(struct tegra_xusb_padctl *padct=
-l,
- 					   unsigned int port, bool enable)
- {
-diff --git a/drivers/phy/tegra/xusb.h b/drivers/phy/tegra/xusb.h
-index e789d5ff4eb8..034f7a2c28d6 100644
---- a/drivers/phy/tegra/xusb.h
-+++ b/drivers/phy/tegra/xusb.h
-@@ -11,6 +11,7 @@
- #include <linux/mutex.h>
- #include <linux/workqueue.h>
+ #define PMC_PWR_DET_VALUE		0xe4
 =20
-+#include <linux/usb/ch9.h>
- #include <linux/usb/otg.h>
- #include <linux/usb/role.h>
++#define PMC_USB_DEBOUNCE_DEL		0xec
++#define PMC_USB_AO			0xf0
++
+ #define PMC_SCRATCH41			0x140
 =20
-@@ -132,6 +133,11 @@ struct tegra_xusb_lane_ops {
- 	void (*remove)(struct tegra_xusb_lane *lane);
- 	void (*iddq_enable)(struct tegra_xusb_lane *lane);
- 	void (*iddq_disable)(struct tegra_xusb_lane *lane);
-+	int (*enable_phy_sleepwalk)(struct tegra_xusb_lane *lane, enum usb_device=
-_speed speed);
-+	int (*disable_phy_sleepwalk)(struct tegra_xusb_lane *lane);
-+	int (*enable_phy_wake)(struct tegra_xusb_lane *lane);
-+	int (*disable_phy_wake)(struct tegra_xusb_lane *lane);
-+	bool (*remote_wake_detected)(struct tegra_xusb_lane *lane);
+ #define PMC_WAKE2_MASK			0x160
+@@ -133,6 +137,13 @@
+ #define IO_DPD2_STATUS			0x1c4
+ #define SEL_DPD_TIM			0x1c8
+=20
++#define PMC_UTMIP_UHSIC_TRIGGERS	0x1ec
++#define PMC_UTMIP_UHSIC_SAVED_STATE	0x1f0
++
++#define PMC_UTMIP_TERM_PAD_CFG		0x1f8
++#define PMC_UTMIP_UHSIC_SLEEP_CFG	0x1fc
++#define PMC_UTMIP_UHSIC_FAKE		0x218
++
+ #define PMC_SCRATCH54			0x258
+ #define  PMC_SCRATCH54_DATA_SHIFT	8
+ #define  PMC_SCRATCH54_ADDR_SHIFT	0
+@@ -145,8 +156,18 @@
+ #define  PMC_SCRATCH55_CHECKSUM_SHIFT	16
+ #define  PMC_SCRATCH55_I2CSLV1_SHIFT	0
+=20
++#define  PMC_UTMIP_UHSIC_LINE_WAKEUP	0x26c
++
++#define PMC_UTMIP_BIAS_MASTER_CNTRL	0x270
++#define PMC_UTMIP_MASTER_CONFIG		0x274
++#define PMC_UTMIP_UHSIC2_TRIGGERS	0x27c
++#define PMC_UTMIP_MASTER2_CONFIG	0x29c
++
+ #define GPU_RG_CNTRL			0x2d4
+=20
++#define PMC_UTMIP_PAD_CFG0		0x4c0
++#define PMC_UTMIP_UHSIC_SLEEP_CFG1	0x4d0
++#define PMC_UTMIP_SLEEPWALK_P3		0x4e0
+ /* Tegra186 and later */
+ #define WAKE_AOWAKE_CNTRL(x) (0x000 + ((x) << 2))
+ #define WAKE_AOWAKE_CNTRL_LEVEL (1 << 3)
+@@ -334,6 +355,7 @@ struct tegra_pmc_soc {
+ 	const struct pmc_clk_init_data *pmc_clks_data;
+ 	unsigned int num_pmc_clks;
+ 	bool has_blink_output;
++	bool has_usb_sleepwalk;
  };
 =20
- bool tegra_xusb_lane_check(struct tegra_xusb_lane *lane, const char *funct=
-ion);
-@@ -396,6 +402,8 @@ struct tegra_xusb_padctl_ops {
- 			 const struct tegra_xusb_padctl_soc *soc);
- 	void (*remove)(struct tegra_xusb_padctl *padctl);
+ /**
+@@ -2443,6 +2465,67 @@ static void tegra_pmc_clock_register(struct tegra_pm=
+c *pmc,
+ 			 err);
+ }
 =20
-+	int (*suspend_noirq)(struct tegra_xusb_padctl *padctl);
-+	int (*resume_noirq)(struct tegra_xusb_padctl *padctl);
- 	int (*usb3_save_context)(struct tegra_xusb_padctl *padctl,
- 				 unsigned int index);
- 	int (*hsic_set_idle)(struct tegra_xusb_padctl *padctl,
-diff --git a/include/linux/phy/tegra/xusb.h b/include/linux/phy/tegra/xusb.=
-h
-index 71d956935405..3a35e74cdc61 100644
---- a/include/linux/phy/tegra/xusb.h
-+++ b/include/linux/phy/tegra/xusb.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- /*
-- * Copyright (c) 2016, NVIDIA CORPORATION.  All rights reserved.
-+ * Copyright (c) 2016-2020, NVIDIA CORPORATION.  All rights reserved.
-  */
-=20
- #ifndef PHY_TEGRA_XUSB_H
-@@ -8,6 +8,7 @@
-=20
- struct tegra_xusb_padctl;
- struct device;
-+enum usb_device_speed;
-=20
- struct tegra_xusb_padctl *tegra_xusb_padctl_get(struct device *dev);
- void tegra_xusb_padctl_put(struct tegra_xusb_padctl *padctl);
-@@ -23,4 +24,11 @@ int tegra_xusb_padctl_set_vbus_override(struct tegra_xus=
-b_padctl *padctl,
- int tegra_phy_xusb_utmi_port_reset(struct phy *phy);
- int tegra_xusb_padctl_get_usb3_companion(struct tegra_xusb_padctl *padctl,
- 					 unsigned int port);
-+int tegra_xusb_padctl_enable_phy_sleepwalk(struct tegra_xusb_padctl *padct=
-l, struct phy *phy,
-+					   enum usb_device_speed speed);
-+int tegra_xusb_padctl_disable_phy_sleepwalk(struct tegra_xusb_padctl *padc=
-tl, struct phy *phy);
-+int tegra_xusb_padctl_enable_phy_wake(struct tegra_xusb_padctl *padctl, st=
-ruct phy *phy);
-+int tegra_xusb_padctl_disable_phy_wake(struct tegra_xusb_padctl *padctl, s=
-truct phy *phy);
-+bool tegra_xusb_padctl_remote_wake_detected(struct tegra_xusb_padctl *padc=
-tl, struct phy *phy);
++static const struct regmap_range pmc_usb_sleepwalk_ranges[] =3D {
++	regmap_reg_range(PMC_USB_DEBOUNCE_DEL, PMC_USB_AO),
++	regmap_reg_range(PMC_UTMIP_UHSIC_TRIGGERS, PMC_UTMIP_UHSIC_SAVED_STATE),
++	regmap_reg_range(PMC_UTMIP_TERM_PAD_CFG, PMC_UTMIP_UHSIC_FAKE),
++	regmap_reg_range(PMC_UTMIP_UHSIC_LINE_WAKEUP, PMC_UTMIP_UHSIC_LINE_WAKEUP=
+),
++	regmap_reg_range(PMC_UTMIP_BIAS_MASTER_CNTRL, PMC_UTMIP_MASTER_CONFIG),
++	regmap_reg_range(PMC_UTMIP_UHSIC2_TRIGGERS, PMC_UTMIP_MASTER2_CONFIG),
++	regmap_reg_range(PMC_UTMIP_PAD_CFG0, PMC_UTMIP_UHSIC_SLEEP_CFG1),
++	regmap_reg_range(PMC_UTMIP_SLEEPWALK_P3, PMC_UTMIP_SLEEPWALK_P3),
++};
 +
- #endif /* PHY_TEGRA_XUSB_H */
++static const struct regmap_access_table pmc_usb_sleepwalk_table =3D {
++	.yes_ranges =3D pmc_usb_sleepwalk_ranges,
++	.n_yes_ranges =3D ARRAY_SIZE(pmc_usb_sleepwalk_ranges),
++};
++
++static int tegra_pmc_regmap_readl(void *context, unsigned int offset, unsi=
+gned int *value)
++{
++	struct tegra_pmc *pmc =3D context;
++
++	*value =3D tegra_pmc_readl(pmc, offset);
++	return 0;
++}
++
++static int tegra_pmc_regmap_writel(void *context, unsigned int offset, uns=
+igned int value)
++{
++	struct tegra_pmc *pmc =3D context;
++
++	tegra_pmc_writel(pmc, value, offset);
++	return 0;
++}
++
++static const struct regmap_config usb_sleepwalk_regmap_config =3D {
++	.name =3D "usb_sleepwalk",
++	.reg_bits =3D 32,
++	.val_bits =3D 32,
++	.reg_stride =3D 4,
++	.fast_io =3D true,
++	.rd_table =3D &pmc_usb_sleepwalk_table,
++	.wr_table =3D &pmc_usb_sleepwalk_table,
++	.reg_read =3D tegra_pmc_regmap_readl,
++	.reg_write =3D tegra_pmc_regmap_writel,
++};
++
++static int tegra_pmc_regmap_init(struct tegra_pmc *pmc)
++{
++	struct regmap *regmap;
++	int err;
++
++	if (pmc->soc->has_usb_sleepwalk) {
++		regmap =3D devm_regmap_init(pmc->dev, NULL, pmc, &usb_sleepwalk_regmap_c=
+onfig);
++		if (IS_ERR(regmap)) {
++			err =3D PTR_ERR(regmap);
++			dev_err(pmc->dev, "failed to allocate register map (%d)\n", err);
++			return err;
++		}
++	}
++
++	return 0;
++}
++
+ static int tegra_pmc_probe(struct platform_device *pdev)
+ {
+ 	void __iomem *base;
+@@ -2548,6 +2631,10 @@ static int tegra_pmc_probe(struct platform_device *p=
+dev)
+ 	if (err)
+ 		goto cleanup_restart_handler;
+=20
++	err =3D tegra_pmc_regmap_init(pmc);
++	if (err < 0)
++		goto cleanup_restart_handler;
++
+ 	err =3D tegra_powergate_init(pmc, pdev->dev.of_node);
+ 	if (err < 0)
+ 		goto cleanup_powergates;
+@@ -2706,6 +2793,7 @@ static const struct tegra_pmc_soc tegra20_pmc_soc =3D=
+ {
+ 	.pmc_clks_data =3D NULL,
+ 	.num_pmc_clks =3D 0,
+ 	.has_blink_output =3D true,
++	.has_usb_sleepwalk =3D false,
+ };
+=20
+ static const char * const tegra30_powergates[] =3D {
+@@ -2764,6 +2852,7 @@ static const struct tegra_pmc_soc tegra30_pmc_soc =3D=
+ {
+ 	.pmc_clks_data =3D tegra_pmc_clks_data,
+ 	.num_pmc_clks =3D ARRAY_SIZE(tegra_pmc_clks_data),
+ 	.has_blink_output =3D true,
++	.has_usb_sleepwalk =3D false,
+ };
+=20
+ static const char * const tegra114_powergates[] =3D {
+@@ -2818,6 +2907,7 @@ static const struct tegra_pmc_soc tegra114_pmc_soc =
+=3D {
+ 	.pmc_clks_data =3D tegra_pmc_clks_data,
+ 	.num_pmc_clks =3D ARRAY_SIZE(tegra_pmc_clks_data),
+ 	.has_blink_output =3D true,
++	.has_usb_sleepwalk =3D false,
+ };
+=20
+ static const char * const tegra124_powergates[] =3D {
+@@ -2932,6 +3022,7 @@ static const struct tegra_pmc_soc tegra124_pmc_soc =
+=3D {
+ 	.pmc_clks_data =3D tegra_pmc_clks_data,
+ 	.num_pmc_clks =3D ARRAY_SIZE(tegra_pmc_clks_data),
+ 	.has_blink_output =3D true,
++	.has_usb_sleepwalk =3D true,
+ };
+=20
+ static const char * const tegra210_powergates[] =3D {
+@@ -3059,6 +3150,7 @@ static const struct tegra_pmc_soc tegra210_pmc_soc =
+=3D {
+ 	.pmc_clks_data =3D tegra_pmc_clks_data,
+ 	.num_pmc_clks =3D ARRAY_SIZE(tegra_pmc_clks_data),
+ 	.has_blink_output =3D true,
++	.has_usb_sleepwalk =3D true,
+ };
+=20
+ #define TEGRA186_IO_PAD_TABLE(_pad)                                       =
+   \
+@@ -3214,6 +3306,7 @@ static const struct tegra_pmc_soc tegra186_pmc_soc =
+=3D {
+ 	.pmc_clks_data =3D NULL,
+ 	.num_pmc_clks =3D 0,
+ 	.has_blink_output =3D false,
++	.has_usb_sleepwalk =3D false,
+ };
+=20
+ #define TEGRA194_IO_PAD_TABLE(_pad)                                       =
+       \
+@@ -3347,6 +3440,7 @@ static const struct tegra_pmc_soc tegra194_pmc_soc =
+=3D {
+ 	.pmc_clks_data =3D NULL,
+ 	.num_pmc_clks =3D 0,
+ 	.has_blink_output =3D false,
++	.has_usb_sleepwalk =3D false,
+ };
+=20
+ static const struct tegra_pmc_regs tegra234_pmc_regs =3D {
 --=20
 2.25.1
 
