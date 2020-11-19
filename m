@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20ACA2B8AC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 06:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA5A2B8AC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 06:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgKSFQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 00:16:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
+        id S1725930AbgKSFRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 00:17:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgKSFQy (ORCPT
+        with ESMTP id S1725648AbgKSFRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 00:16:54 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3D0C0613D4;
-        Wed, 18 Nov 2020 21:16:53 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id p12so3539996qtp.7;
-        Wed, 18 Nov 2020 21:16:53 -0800 (PST)
+        Thu, 19 Nov 2020 00:17:46 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966F8C0613D4;
+        Wed, 18 Nov 2020 21:17:45 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id ek7so2297631qvb.6;
+        Wed, 18 Nov 2020 21:17:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=B3EsZPkEoXT4zxYNqPu9hgFRzc3MjaFuHgLigF/TdUA=;
-        b=mB18Ck6Tz7z0cXqOihGrAMiJ/GnPs9KT900EfdjJLwpeP5GN4lwiXu3CAijjoyu7zs
-         d1NJ0vPeWKwN3Zg1DbXu/cE7WCd1rfOSy5iV78pV2EGE1+PBA0KhLx8MTGTJjxEo37so
-         K8s2xLtBBa4HkGUE8ZwHgSxApEXIWuNn2UyHw=
+        bh=pS7KdQ8JkGLBhZmDEyT+dB0u8xhj5n1AeXL63Pha2Fo=;
+        b=izmRNWMIYthZ/HU5FjfWgpUBzj4kR1JnWFFMkGF9fWC8m3Bry4y2YWkKQ9kTZ0JfNy
+         x9a3amTxT60ls9Yh3gdyZ3rBj2ZWoanrxWybhglwkU01JtOK0XRXo6cqVATtUuUZrWym
+         8OWum+pJbyXSqxZZ24YYML/AGcCmc3nAosQgg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=B3EsZPkEoXT4zxYNqPu9hgFRzc3MjaFuHgLigF/TdUA=;
-        b=XIjJO7wztMSuCP2qZw+DGDzV0tvHKCCMarBfTJXTW22lwt511Al6MgbnsHSJ0Y4tWa
-         z/bLxz3BIp31lUVdQeIkk7x0btICms6GX7HTBFBtuT4oFR+FM6EZiTyDo+YU/xqCnqda
-         NpR8XqjneSSRHN48BS6VUWLtMUQ/RfVpK3EfPOBq2EAep6HD5HkRL2KSE94pmsDDon2O
-         5WQwlS+UdgZfy8f4GinrSuYydCCynG4Au4G0j7RHZBSA0W3NLlMK+f/kYflgfm51BGFQ
-         OSlcQHU3mBd2hqgarhWCc+zQRW2FO1EIGytFI82jhioZrWop5hAB2GsVuHwZafnOXqY7
-         S7iQ==
-X-Gm-Message-State: AOAM532K5uvdZxtxaSWDUp9f4KDQn1Zx6EU7NWlXVz2t5JwipcNx+1Rw
-        KOTqpK5pXT1t02ZbvOQM+Fn78YlLzfp7IAMwfXNOoGixUYtBZA==
-X-Google-Smtp-Source: ABdhPJwaZ2P8OVw0eTYSMERex8ss/IbbVRE4igK+EhHFqzAxCx62g6h7rOfvyNtGh1y12f4jZ5BPpknmovuWitSNJOQ=
-X-Received: by 2002:ac8:75c9:: with SMTP id z9mr9218129qtq.363.1605763012893;
- Wed, 18 Nov 2020 21:16:52 -0800 (PST)
+        bh=pS7KdQ8JkGLBhZmDEyT+dB0u8xhj5n1AeXL63Pha2Fo=;
+        b=TiPV7L2wB05GL45CSb/46Ku4oeWJq7MZLNiqfVKGhEyXPku8pzpSGF3hmZK4RMSk2g
+         PGHzB7PX3nKqOu5lMw+YSZxXwP/P844HLaxfZhbQ7RJt/q/QH6DoJ9GsAV/QVrURkdvd
+         DHAsjyvZ7YJhTPBJO0zQluiCyJ7FwKfo8tIw1kQ4DCPDP3tNDYJzgVzccQ5olItJxjbY
+         YSnL+7ZGIkjVMdKe6h7ojbGHLv4Dk7oFE8kAfTo66zhW+DODhcwePdrCU67trmwzNbTo
+         7GP04J9w2pANoiLZw317dahy9GEOEB0VKkT0ZlR5OhzoyDQbYbmaoBpdGARSEGUQKzGx
+         UmKA==
+X-Gm-Message-State: AOAM530jMqE7r8ksHkRGpmyjxj6I7LhVf8PSOTowEzKrUr9C6hgPyNnb
+        iAAyRVschwx8CwoDX7MQAuEeXAVV4Ph2TUZ8hYM=
+X-Google-Smtp-Source: ABdhPJx5L4CA73TSB0ya3N3l8FjwQz/kudIn9JyskAAXeCrGCIE68jEVLG6uaVFZcwqsCyDdVssgOLVsAX8WYXEvCFQ=
+X-Received: by 2002:a0c:c984:: with SMTP id b4mr9219438qvk.10.1605763064832;
+ Wed, 18 Nov 2020 21:17:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20201022014731.2035438-1-andrew@aj.id.au> <20201022014731.2035438-2-andrew@aj.id.au>
-In-Reply-To: <20201022014731.2035438-2-andrew@aj.id.au>
+References: <20201022014731.2035438-1-andrew@aj.id.au> <20201022014731.2035438-6-andrew@aj.id.au>
+In-Reply-To: <20201022014731.2035438-6-andrew@aj.id.au>
 From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 19 Nov 2020 05:16:40 +0000
-Message-ID: <CACPK8XeGoJWt_DW0q-mZf7LKTM_mFPWf8odL+BUjA7FDzL=y3A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] ARM: dts: tacoma: Fix node vs reg mismatch for
- flash memory
+Date:   Thu, 19 Nov 2020 05:17:32 +0000
+Message-ID: <CACPK8XfaF_ZzhL1mQxK5Rcpkq9UmBtas+MzxJvFTFC3Bm2UGuw@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] ARM: dts: rainier: Add reserved memory for ramoops
 To:     Andrew Jeffery <andrew@aj.id.au>
 Cc:     Rob Herring <robh+dt@kernel.org>,
         devicetree <devicetree@vger.kernel.org>,
@@ -62,31 +61,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, 22 Oct 2020 at 01:48, Andrew Jeffery <andrew@aj.id.au> wrote:
 >
-> The mismatch lead to a miscalculation of regions in another patch, and
-> shouldn't be mismatched anyway, so make them consistent.
+> Reserve a 1.5MiB region of memory to record kmsg dumps, console and
+> userspace message state into 16kiB ring-buffer slots. The sizing allows
+> for up to 16 dumps to be captured and read out.
+>
+> Set max-reason to KMSG_DUMP_EMERG to capture bad-path reboots.
 >
 > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 
-Fixes: 575640201e66 ("ARM: dts: aspeed: tacoma: Use 64MB for firmware memory")
 Reviewed-by: Joel Stanley <joel@jms.id.au>
 
 > ---
->  arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 >
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-> index 4d070d6ba09f..e86c22ce6d12 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-> @@ -26,7 +26,7 @@ reserved-memory {
->                 #size-cells = <1>;
->                 ranges;
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+> index 802027a3c43c..8431cf1b32e6 100644
+> --- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+> +++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+> @@ -55,6 +55,15 @@ flash_memory: region@B8000000 {
 >
-> -               flash_memory: region@ba000000 {
-> +               flash_memory: region@b8000000 {
+>                 /* 48MB region from the end of flash to start of vga memory */
+>
+> +               ramoops@bc000000 {
+> +                       compatible = "ramoops";
+> +                       reg = <0xbc000000 0x180000>; /* 16 * (3 * 0x8000) */
+> +                       record-size = <0x8000>;
+> +                       console-size = <0x8000>;
+> +                       pmsg-size = <0x8000>;
+> +                       max-reason = <3>; /* KMSG_DUMP_EMERG */
+> +               };
+> +
+>                 /* VGA region is dictated by hardware strapping */
+>                 vga_memory: region@bf000000 {
 >                         no-map;
->                         reg = <0xb8000000 0x4000000>; /* 64M */
->                 };
 > --
 > 2.25.1
 >
