@@ -2,122 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E062B8CC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB73F2B8CC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgKSIDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:03:06 -0500
-Received: from outbound-ip24a.ess.barracuda.com ([209.222.82.206]:54310 "EHLO
-        outbound-ip24a.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725850AbgKSIDF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:03:05 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2107.outbound.protection.outlook.com [104.47.58.107]) by mx2.us-east-2a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Thu, 19 Nov 2020 08:02:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kYEPT+1A14hxnC/4GZWdz0vHOgFKUTHdJpzssBWZX6xqAuF4ZM+NMh8lOr2KPj0Ygd4mCAjJKdbQBwXy7lLXV4cCaGoRvSIFuw+CR3GY7PtnjXJfR5h0ygWGqO7AfnwMUPqogYeQxXeiMUXw670voMAYAfEKkQSenc2iEGf9DSShF9rcx8h3TY4f/jfGM7Zzk5zpX2y2GKrS0+zwcVZYSfT1Z0IHIqGmcjkBt+LItu5R2djLk3gbJu7liGhAwhIy8jsHU1eQ+QooeY/8AKcxfGEW9275nqliO5CaNXAaYsSqohgIoVrTVGR2bC4f2oVbFM7vCCX07AeMMPDYdVLgyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xZyIIcbULkqFuqRRVCOgfB002r4JFCtYt2FmxhjIbMk=;
- b=cd5kxUmUj5N+x5coFd3Z6M0WFpXQF33/DLDy6VNPGUWVfTYJR/G2RcYtbQtfwJQfhidwKo+dmO0LBtWs89K78JREFixHnYVDY2H3wNS5cuvheADo0mCAhyuv0i3SwLY2j0bnNXDIc3RiPRfY9Vh+jxG+c9+Vmp280Dw8VosZ4L2It8CUl0YkfAR6WXFI205iUeiGBbN81RyebWm7sp6TzIgNen1l9+mK1ECm/KvkoX7aKybbzcbMt6UHGN9lHk4Pv5QfBO2fsLNMDABx7dynkYOeQfhpZTNLripFROBKurkudlv5VotFk03auHyo/ktmif283480v7wkM9bCBJQYCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=digi.com; dmarc=pass action=none header.from=digi.com;
- dkim=pass header.d=digi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digi.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xZyIIcbULkqFuqRRVCOgfB002r4JFCtYt2FmxhjIbMk=;
- b=IvDUlNcRozWKt0Tp1gGSmtnAm7znFL0yXKP5euXgcQXZtfxtOXFXcGVmlHJ8xLmaj2dsXbPT0SHQshCuZ+T/WEmyERggMr13OLwspH6WtC5/sH6oUmEsHkO6QYoLYwge84FW0X9HoH+oCy+IldVGvSdfc83EB6NuvWjCZmqlzNA=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=digi.com;
-Received: from MN2PR10MB4174.namprd10.prod.outlook.com (2603:10b6:208:1dd::21)
- by MN2PR10MB4399.namprd10.prod.outlook.com (2603:10b6:208:1d9::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Thu, 19 Nov
- 2020 08:02:52 +0000
-Received: from MN2PR10MB4174.namprd10.prod.outlook.com
- ([fe80::b505:75ae:58c9:eb32]) by MN2PR10MB4174.namprd10.prod.outlook.com
- ([fe80::b505:75ae:58c9:eb32%9]) with mapi id 15.20.3564.028; Thu, 19 Nov 2020
- 08:02:52 +0000
-From:   Pavana Sharma <pavana.sharma@digi.com>
-To:     kuba@kernel.org
-Cc:     andrew@lunn.ch, ashkan.boldaji@digi.com, davem@davemloft.net,
-        f.fainelli@gmail.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, marek.behun@nic.cz,
-        netdev@vger.kernel.org, pavana.sharma@digi.com,
-        vivien.didelot@gmail.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v9 1/4] dt-bindings: net: Add 5GBASER phy interface mode
-Date:   Thu, 19 Nov 2020 18:02:27 +1000
-Message-Id: <e4c8097e78a3277a7ac90d6a4899b110657b13bc.1605684865.git.pavana.sharma@digi.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1605684865.git.pavana.sharma@digi.com>
-References: <cover.1605684865.git.pavana.sharma@digi.com>
-Content-Type: text/plain
-X-Originating-IP: [14.200.39.236]
-X-ClientProxiedBy: SYAPR01CA0046.ausprd01.prod.outlook.com (2603:10c6:1:1::34)
- To MN2PR10MB4174.namprd10.prod.outlook.com (2603:10b6:208:1dd::21)
+        id S1726292AbgKSICy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:02:54 -0500
+Received: from mga05.intel.com ([192.55.52.43]:39746 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725850AbgKSICy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 03:02:54 -0500
+IronPort-SDR: vwyxxlJi7AqzKKGpk/v2wVoMQZxLx//kehW9xu/22weM62D8TRGnnVbFcD/KjCZMx6pq6VSigT
+ gr9o3u+cGq4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="255959835"
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="255959835"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 00:02:53 -0800
+IronPort-SDR: YZIJXDj6Oc005giTLdXw/6wZC7V4AznSc3jfbXisgAILn9ikzw9e1hZAqFL3LjOh1ug57IEMYl
+ OCv9qRKSdiWQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="359862232"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Nov 2020 00:02:49 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [RFC -V5] autonuma: Migrate on fault among multiple bound nodes
+References: <20201118051952.39097-1-ying.huang@intel.com>
+        <20201118095637.GC3306@suse.de> <878saxvpji.fsf@yhuang-dev.intel.com>
+        <20201119075052.GF3306@suse.de>
+Date:   Thu, 19 Nov 2020 16:02:48 +0800
+In-Reply-To: <20201119075052.GF3306@suse.de> (Mel Gorman's message of "Thu, 19
+        Nov 2020 07:50:52 +0000")
+Message-ID: <874kllvknr.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (14.200.39.236) by SYAPR01CA0046.ausprd01.prod.outlook.com (2603:10c6:1:1::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Thu, 19 Nov 2020 08:02:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4e0eb68a-2210-4781-4fbf-08d88c61836f
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4399:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4399C11D327C6F72C00417F195E00@MN2PR10MB4399.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:296;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xepD4bEtHKEwsuhyakMgleAZY9uOIP7pDVn9CmKuYoqhlwfdpEONbEuJ5/vGlqFi5AtFKqSshrDRXRTe1YSJpJ6fH5NpP+7hBrmgiuL+5vXyhV+hXn5PJoJY+BKd7mW28FzX/+s7H3GoJ3OgOt45iUGi/9HF56hunxRUDnJgycGuvwew+lDpc/9OqvCyGaZy+E/eyU+XhYpY/Qy0S/NNORmjFyIMQdZ4Sjf4ZMmpe5m+B7dOp4KznBa/15T4s0aPXnEpI0B7yqg5Aa1pWzoLK2IXj5NWN33RlKrjx3h67FklJbgESyZRh4lLtUrsVWAamCn9mIU2BWbJjCmYt/3WY3wiCwdLSa15acMXS+0hbdKpxEqrKa0hCkaAb7UnPzr4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4174.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(396003)(39850400004)(7416002)(6486002)(956004)(8676002)(44832011)(26005)(86362001)(6506007)(8936002)(6512007)(6916009)(36756003)(52116002)(478600001)(16526019)(66476007)(66556008)(2906002)(316002)(5660300002)(2616005)(4744005)(186003)(4326008)(6666004)(69590400008)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: d7PbkK9esf3C+K9wRSwHs90hrFpw5aqNumwRiXajKIMBrOCXZ9iJSN/z+gQUHJy0+CC4AgnH28XLt+9zNzu+F4C6cYwLiJlNSA3rZWaJLBN9PWJ2bCNOrLiJggjCv/Qm9cPY+dupQQczlDrUxRYxmy1+uxLvpkFJTmrpwwCQzpVjadA/OtZj93v99vn6ynyp01eYQyFisFpQcspgmpRO6fIVwd9nHxJ8Ay4lCl7XKVxVJwmnDINnuMuZh7qowYOXFqRXFW40EsO0U9nITJi/AnisDaTsRfLJfw9X89NTeC74ZmIvJSpRS/QaGRZkx+TTX4FP8uvrE+/db89r2dD575BzOTzyoU3yy7iJ8Wc8GMmu6QbLuXJFTCMHxXntQE1YVSW3ctY3O3KwSp8xNiGwEVtK24aWB0qRkzrdMhYjgcsHqBNNr6mP3zn9GzJ7sb66Vo/q3GlgCzhAjXsM/B1xuMVZmJIQcQYIGaKUW6O4nq277MYjHBDx1uNm9P0+PpgHpLOy9+Ka20NkMVSxLdpyWVuggiFj/EqV+pPnby20Pi0Jcm1CvGsT9vom5ey2GBVcflySX5/ytqHywImC8qKeoGRljR26jIyGYzN9wuD2/7Q8TXT/T1849EFjAnKKPubWQUVbXT0mD3zZeIhcCpcIoKYTfh/JfzQvaDaaBdZVitT39eLrbRY+TvzC+5Ft9nQsWjO/oltpARqvYEFGhtHrrBVOvhYUG3xmIPYyllSf1dlE4zG0GOTHWrSWyYthbYiCjI8CnPGwVUcIytXbNDzXkMDCuNE+S0arzX49bkGFTYB2rXDO6bdHTAfCL4LS7dphqGIULqZbKri+GuQenVInjBAsEpLWeP7VAlTpMIcdW9owLyzEKQiDooGq9KCjrlEs6qpcKAjfgT7bXe2ASVeXyQ==
-X-OriginatorOrg: digi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e0eb68a-2210-4781-4fbf-08d88c61836f
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4174.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2020 08:02:52.3795
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: abb4cdb7-1b7e-483e-a143-7ebfd1184b9e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VbGYyVchib7TX8VJeVdleglD/o+dlJzzc6RghwLIgKHp2J+dT+++XUm37QhK/LzY5MVoAacY0AD7wgrRX/FZOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4399
-X-BESS-ID: 1605772974-893002-12923-54978-1
-X-BESS-VER: 2019.1_20201118.2036
-X-BESS-Apparent-Source-IP: 104.47.58.107
-X-BESS-Outbound-Spam-Score: 0.00
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.228292 [from 
-        cloudscan12-147.us-east-2a.ess.aws.cudaops.com]
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------
-        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-        0.00 MSGID_FROM_MTA_HEADER  META: Message-Id was added by a relay 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS112744 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND, MSGID_FROM_MTA_HEADER
-X-BESS-BRTS-Status: 1
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 5gbase-r PHY interface mode.
+Mel Gorman <mgorman@suse.de> writes:
 
-Signed-off-by: Pavana Sharma <pavana.sharma@digi.com>
----
- Documentation/devicetree/bindings/net/ethernet-controller.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+> On Thu, Nov 19, 2020 at 02:17:21PM +0800, Huang, Ying wrote:
+>> >> Various page placement optimization based on the NUMA balancing can be
+>> >> done with these flags.  As the first step, in this patch, if the
+>> >> memory of the application is bound to multiple nodes (MPOL_BIND), and
+>> >> in the hint page fault handler the accessing node are in the policy
+>> >> nodemask, the page will be tried to be migrated to the accessing node
+>> >> to reduce the cross-node accessing.
+>> >> 
+>> >
+>> > The patch still lacks supporting data. It really should have a basic
+>> > benchmark of some sort serving as an example of how the policies should
+>> > be set and a before/after comparison showing the throughput of MPOL_BIND
+>> > accesses spanning 2 or more nodes is faster when numa balancing is enabled.
+>> 
+>> Sure.  Will add some basic benchmark data and usage example.
+>> 
+>
+> Thanks
+>
+>> > A man page update should also be added clearly outlining when an
+>> > application should consider using it with the linux-api people cc'd
+>> > for review.
+>> 
+>> Yes.  Will Cc linux-api for review and will submit patches to
+>> manpages.git after the API is finalized.
+>> 
+>
+> Add the manpages patch to this series. While it is not merged through
+> the kernel, it's important for review purposes.
+>
+>> > The main limitation is that if this requires application modification,
+>> > it may never be used. For example, if an application uses openmp places
+>> > that translates into bind then openmp needs knowledge of the flag.
+>> > Similar limitations apply to MPI. This feature has a risk that no one
+>> > uses it.
+>> 
+>> My plan is to add a new option to `numactl`
+>> (https://github.com/numactl/numactl/), so users who want to enable NUMA
+>> balancing within the constrains of NUMA binding can use that.  I can
+>> reach some Openstack and Kubernate developers to check whether it's
+>> possible to add the support to these software.  For other applications,
+>> Yes, it may take long time for the new flag to be used.
+>> 
+>
+> Patch for numactl should also be included to see what it looks like in
+> practice. Document what happens if the flag does not exist in the
+> running kernel.
+>
+> I know this is awkward, but it's an interface exposed to userspace and
+> as it is expected that applications will exist that then try run on
+> older kernels, it needs to be very up-front about what happens on older
+> kernels. It would not be a complete surprise for openmp and openmpi
+> packages to be updated on distributions with older kernels (either by
+> source or via packaging) leading to surprises.
 
-diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.yaml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-index fdf709817218..aa6ae7851de9 100644
---- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-+++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-@@ -89,6 +89,8 @@ properties:
-       - trgmii
-       - 1000base-x
-       - 2500base-x
-+      # 5GBASE-R
-+      - 5gbase-r
-       - rxaui
-       - xaui
- 
--- 
-2.17.1
+Sure.  I understand that we should be careful about the user space
+interface.  I will send out a new version together with the man pages
+and numactl patches with all your comments addressed.
 
+Best Regards,
+Huang, Ying
