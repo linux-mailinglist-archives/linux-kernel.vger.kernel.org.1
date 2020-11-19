@@ -2,214 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB062B8F3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175042B8F4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726612AbgKSJpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:45:52 -0500
-Received: from mail.katalix.com ([3.9.82.81]:46508 "EHLO mail.katalix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbgKSJpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:45:51 -0500
-Received: from localhost (82-69-49-219.dsl.in-addr.zen.co.uk [82.69.49.219])
-        (Authenticated sender: tom)
-        by mail.katalix.com (Postfix) with ESMTPSA id 492747EBB6;
-        Thu, 19 Nov 2020 09:45:49 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=katalix.com; s=mail;
-        t=1605779149; bh=qZYA4hRJanvw75BeKRiUx+glJe1ExsAwlK0VZObC4Ic=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Disposition:In-Reply-To:From;
-        z=Date:=20Thu,=2019=20Nov=202020=2009:45:48=20+0000|From:=20Tom=20P
-         arkin=20<tparkin@katalix.com>|To:=20siddhant=20gupta=20<siddhantgu
-         pta416@gmail.com>|Cc:=20davem@davemloft.net,=20kuba@kernel.org,=20
-         corbet@lwn.net,=0D=0A=09netdev@vger.kernel.org,=20linux-doc@vger.k
-         ernel.org,=0D=0A=09linux-kernel@vger.kernel.org,=0D=0A=09Mamta=20S
-         hukla=20<mamtashukla555@gmail.com>,=0D=0A=09Himadri=20Pandya=20<hi
-         madrispandya@gmail.com>|Subject:=20Re:=20[PATCH]=20Documentation:=
-         20networking:=20Fix=20Column=20span=20alignment=0D=0A=20warnings=2
-         0in=20l2tp.rst|Message-ID:=20<20201119094548.GA3927@katalix.com>|R
-         eferences:=20<20201117095207.GA16407@Sleakybeast>=0D=0A=20<2020111
-         8102307.GA4903@katalix.com>=0D=0A=20<CA+imup-3pT47CVL7GZn_vJtHGngN
-         exBR060y2gRfw2v5Gr8P0Q@mail.gmail.com>|MIME-Version:=201.0|Content
-         -Disposition:=20inline|In-Reply-To:=20<CA+imup-3pT47CVL7GZn_vJtHGn
-         gNexBR060y2gRfw2v5Gr8P0Q@mail.gmail.com>;
-        b=jHGQYkIhlT4bQULB4OuAlUsI4LhjKmSqSOXuzkCBoFdACySbiC5nXHLAu9mrm7fdQ
-         WViDVAa1gNUVlbkkq+uJLRW8vXzRExhOo7JqaxI0erR7O13eSLz+Dg5AxBvWfa3aqM
-         EFvYm7v0RQy07A3ChOwBXoY5kcU/xW70+fzYgUEKsZ+u+9y44p6FsqCyZasnOwWnto
-         pUwp6CPUUfXJwM8NjpDEoM6qUPL6Gfmuo2SnGOybCF/FqCsTLd9fmo+oD735l+bdMJ
-         nUSaZ5Neo0Kav2/n8vCLIOLRsSdZWMB2auvBfMcyU/4q09DyH75xlj3OHbM68qUtVq
-         +cHxZ2YWsipdQ==
-Date:   Thu, 19 Nov 2020 09:45:48 +0000
-From:   Tom Parkin <tparkin@katalix.com>
-To:     siddhant gupta <siddhantgupta416@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        id S1726768AbgKSJru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:47:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgKSJru (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 04:47:50 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB717C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:47:49 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p8so5738390wrx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:47:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g38xN0FDkwhpZzEhM271vqmkWxD69SkDmYogp+3razQ=;
+        b=boKOL+16LzadIMhdXR656SedOKYpIvGLcI2AlaTC8Cq/lTr1baf1u6HUNT0bASYkOa
+         oAu7td6myhRWROuJEHaBafytCXTqNsIGaFKD6r2Mct8z14nDy99MyyDHmv5KE67UW7IG
+         llq1B0K5zfJc6KCxhEQnfYFzwXSeZkQ0S4rtHHbNkXkO6fz8U7dNbxpe1pRGExnF+28q
+         rC2hPzCMf0ru3+/G4fUey+Mrm4v0ZgLHqaQfKxA5DTv+WEtv4CugZoqnv4a8FkHi/Dz/
+         2o5xBJeoBZjGCYxP8UyZomtfMeQHNYoqI+RKO57kxdbpaKGNkl/mV2xQypznsLu1wTx2
+         rnyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g38xN0FDkwhpZzEhM271vqmkWxD69SkDmYogp+3razQ=;
+        b=udJwqPi9zhvCWoPIEDhdiUVGxaLvhYqG0nc8jTwv3gHLWTLXorqrTwgDqDAERTXbz9
+         iOJaRjL6rDwah/bgIOCkA+YmqiB0kvVSYhfk0xZPtU8kdVIjcrpoYovgepHlauBFtrtS
+         380CY8/xWs2T6K7GFVNDGkCLmHw5qKWeC982KM3J/1E574QsKovntkHweSsH5akzl9n0
+         i0FtSinwI/IhSKwiE+ewWnRk+Lwpqeh2RcQgR/K9QVBOer731XrEcqBwzqubDnSAGVjL
+         ndW8pf+89QCQOVXmOWL/op6pwmmPu1WgDxj7tlLnMMnTD5KTLeDdUYNopcvMDynmasf9
+         4fAw==
+X-Gm-Message-State: AOAM530UCck9Uhzcc48rgA9ce+y7v2bt7xvlCKlqm+LmcfnEh9IOHVWk
+        w7y6EM8rImtwFLvbt1hJ/C+35A==
+X-Google-Smtp-Source: ABdhPJzSkfKT2wUMTd6J8oqmowCmaCTnckpBFf352uxLmwWqYQq4slZX+ptNmWR0V342nxkaJPvwNg==
+X-Received: by 2002:a5d:4612:: with SMTP id t18mr9098818wrq.401.1605779268509;
+        Thu, 19 Nov 2020 01:47:48 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id h20sm8303072wmb.29.2020.11.19.01.47.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 01:47:48 -0800 (PST)
+Date:   Thu, 19 Nov 2020 09:47:44 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Mamta Shukla <mamtashukla555@gmail.com>,
-        Himadri Pandya <himadrispandya@gmail.com>
-Subject: Re: [PATCH] Documentation: networking: Fix Column span alignment
- warnings in l2tp.rst
-Message-ID: <20201119094548.GA3927@katalix.com>
-References: <20201117095207.GA16407@Sleakybeast>
- <20201118102307.GA4903@katalix.com>
- <CA+imup-3pT47CVL7GZn_vJtHGngNexBR060y2gRfw2v5Gr8P0Q@mail.gmail.com>
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 11/14] sched: Reject CPU affinity changes based on
+ arch_cpu_allowed_mask()
+Message-ID: <20201119094744.GE2416649@google.com>
+References: <20201113093720.21106-1-will@kernel.org>
+ <20201113093720.21106-12-will@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+imup-3pT47CVL7GZn_vJtHGngNexBR060y2gRfw2v5Gr8P0Q@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201113093720.21106-12-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Friday 13 Nov 2020 at 09:37:16 (+0000), Will Deacon wrote:
+> Reject explicit requests to change the affinity mask of a task via
+> set_cpus_allowed_ptr() if the requested mask is not a subset of the
+> mask returned by arch_cpu_allowed_mask(). This ensures that the
+> 'cpus_mask' for a given task cannot contain CPUs which are incapable of
+> executing it, except in cases where the affinity is forced.
+> 
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  kernel/sched/core.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 8df38ebfe769..13bdb2ae4d3f 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1877,6 +1877,7 @@ static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
+>  					 struct rq_flags *rf)
+>  {
+>  	const struct cpumask *cpu_valid_mask = cpu_active_mask;
+> +	const struct cpumask *cpu_allowed_mask = arch_cpu_allowed_mask(p);
+>  	unsigned int dest_cpu;
+>  	int ret = 0;
+>  
+> @@ -1887,6 +1888,9 @@ static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
+>  		 * Kernel threads are allowed on online && !active CPUs
+>  		 */
+>  		cpu_valid_mask = cpu_online_mask;
+> +	} else if (!cpumask_subset(new_mask, cpu_allowed_mask)) {
+> +		ret = -EINVAL;
+> +		goto out;
 
---SLDf9lqlvOQaIe6s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So, IIUC, this should make the sched_setaffinity() syscall fail and
+return -EINVAL to userspace if it tries to put 64bits CPUs in the
+affinity mask of a 32 bits task, which I think makes sense.
 
-On  Wed, Nov 18, 2020 at 16:44:11 +0530, siddhant gupta wrote:
-> On Wed, 18 Nov 2020 at 15:53, Tom Parkin <tparkin@katalix.com> wrote:
-> >
-> > On  Tue, Nov 17, 2020 at 15:22:07 +0530, Siddhant Gupta wrote:
-> > > Fix Column span alignment problem warnings in the file
-> > >
-> >
-> > Thanks for the patch, Siddhant.
-> >
-> > Could you provide some information on how these warnings were
-> > triggered?  Using Sphinx 2.4.4 I can't reproduce any warnings for
-> > l2tp.rst using the "make htmldocs" target.
-> >
->=20
-> I am currently using Sphinx v1.8.5 and I made use of command "make
-> htmldocs >> doc_xxx.log 2>&1" for directing the errors into a file and
-> the statements in the file showed me these warning, also to confirm
-> those I tried using "rst2html" on l2tp.rst file and got same set of
-> warnings.
+But what about affinity change via cpusets? e.g., if a 32 bit task is
+migrated to a cpuset with 64 bit CPUs, then the migration will be
+'successful' and the task will appear to be in the destination cgroup,
+but the actual affinity of the task will be something completely
+different?
 
-Thanks for confirming.
+That's a bit yuck, but I'm not sure what else can be done here :/
 
-I tried 1.8.5 here in a new virtualenv and I didn't see warnings there
-either.
-
-I can easily imagine different toolchains triggering different
-warnings, but it's frustrating we can't reproduce them.
-
-I have no objection to merging the patch, more interested in catching
-similar problems in the future.
-
-> > > Signed-off-by: Siddhant Gupta <siddhantgupta416@gmail.com>
-> > > ---
-> > >  Documentation/networking/l2tp.rst | 26 +++++++++++++-------------
-> > >  1 file changed, 13 insertions(+), 13 deletions(-)
-> > >
-> > > diff --git a/Documentation/networking/l2tp.rst b/Documentation/networ=
-king/l2tp.rst
-> > > index 498b382d25a0..0c0ac4e70586 100644
-> > > --- a/Documentation/networking/l2tp.rst
-> > > +++ b/Documentation/networking/l2tp.rst
-> > > @@ -171,7 +171,8 @@ DEBUG              N        Debug flags.
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=
-=3D=3D=3D=3D =3D=3D=3D
-> > >  Attribute          Required Use
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=
-=3D=3D=3D=3D =3D=3D=3D
-> > > -CONN_ID            N        Identifies the tunnel id to be queried.
-> > > +CONN_ID            N        Identifies the tunnel id
-> > > +                            to be queried.
-> > >                              Ignored in DUMP requests.
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=
-=3D=3D=3D=3D =3D=3D=3D
-> > >
-> > > @@ -208,8 +209,8 @@ onto the new session. This is covered in "PPPoL2T=
-P Sockets" later.
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=
-=3D=3D=3D=3D =3D=3D=3D
-> > >  Attribute          Required Use
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=
-=3D=3D=3D=3D =3D=3D=3D
-> > > -CONN_ID            Y        Identifies the parent tunnel id of the s=
-ession
-> > > -                            to be destroyed.
-> > > +CONN_ID            Y        Identifies the parent tunnel id
-> > > +                            of the session to be destroyed.
-> > >  SESSION_ID         Y        Identifies the session id to be destroye=
-d.
-> > >  IFNAME             N        Identifies the session by interface name=
-=2E If
-> > >                              set, this overrides any CONN_ID and SESS=
-ION_ID
-> > > @@ -222,13 +223,12 @@ IFNAME             N        Identifies the sess=
-ion by interface name. If
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=
-=3D=3D=3D=3D =3D=3D=3D
-> > >  Attribute          Required Use
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=
-=3D=3D=3D=3D =3D=3D=3D
-> > > -CONN_ID            Y        Identifies the parent tunnel id of the s=
-ession
-> > > -                            to be modified.
-> > > +CONN_ID            Y        Identifies the parent tunnel
-> > > +                            id of the session to be modified.
-> > >  SESSION_ID         Y        Identifies the session id to be modified.
-> > > -IFNAME             N        Identifies the session by interface name=
-=2E If
-> > > -                            set, this overrides any CONN_ID and SESS=
-ION_ID
-> > > -                            attributes. Currently supported for L2TP=
-v3
-> > > -                            Ethernet sessions only.
-> > > +IFNAME             N        Identifies the session by interface name=
-=2E If set,
-> > > +                            this overrides any CONN_ID and SESSION_ID
-> > > +                            attributes. Currently supported for L2TP=
-v3 Ethernet sessions only.
-> > >  DEBUG              N        Debug flags.
-> > >  RECV_SEQ           N        Enable rx data sequence numbers.
-> > >  SEND_SEQ           N        Enable tx data sequence numbers.
-> > > @@ -243,10 +243,10 @@ RECV_TIMEOUT       N        Timeout to wait whe=
-n reordering received
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=
-=3D=3D=3D=3D =3D=3D=3D
-> > >  Attribute          Required Use
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=
-=3D=3D=3D=3D =3D=3D=3D
-> > > -CONN_ID            N        Identifies the tunnel id to be queried.
-> > > -                            Ignored for DUMP requests.
-> > > -SESSION_ID         N        Identifies the session id to be queried.
-> > > -                            Ignored for DUMP requests.
-> > > +CONN_ID            N        Identifies the tunnel id
-> > > +                            to be queried. Ignored for DUMP requests.
-> > > +SESSION_ID         N        Identifies the session id
-> > > +                            to be queried. Ignored for DUMP requests.
-> > >  IFNAME             N        Identifies the session by interface name.
-> > >                              If set, this overrides any CONN_ID and
-> > >                              SESSION_ID attributes. Ignored for DUMP
-> > > --
-> > > 2.25.1
-> > >
-
---=20
-Tom Parkin
-Katalix Systems Ltd
-https://katalix.com
-Catalysts for your Embedded Linux software development
-
---SLDf9lqlvOQaIe6s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEsUkgyDzMwrj81nq0lIwGZQq6i9AFAl+2PsgACgkQlIwGZQq6
-i9BnrQf9FdingP4j1x+yAX6Qfk2Aj1cc9hbxrzarGj/rSXVrR/GaKGJlh3o4tKVg
-ijM/GxAoTrEXLcJ4Ovz3BrmrYIesHk3Bks2PXOaKL8RfLvneSRyo8zinMVh1nAva
-UcmKyeKDvjPWc2GpCLsnXSHvxICyfSn15vuI2ctlp1vo4p6ohEIH2zPsJaph53IH
-ZOANB+IMVFf2tmAZb5cUZijcwPqd9NUrkqHv7MtamjocdTPUKRBrKgs6V58tzHw3
-u+sQVHVU60mYmJhZXWIPNoPHdqGbjIHgV1xy5TJWmnTlLhiEUNCbe2/EHq/Hk+rf
-TG6Ka9mBBpAXg0lIxrsbmGJoNR8l6A==
-=CJrS
------END PGP SIGNATURE-----
-
---SLDf9lqlvOQaIe6s--
+Thanks,
+Quentin
