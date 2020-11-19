@@ -2,107 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97C92B9B26
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5291F2B9B39
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727534AbgKSTEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:04:50 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:56000 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727267AbgKSTEu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:04:50 -0500
-Date:   Thu, 19 Nov 2020 19:04:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1605812687; bh=mGRxcfYAolC/NAFMZCqEsZ2XXtf/Sf6e5ygXw0wgKUk=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=MEvmfNVu1l/+M20A+8ShDsCBsLr3t1Is6Icz36mhsLHKeha+urkYFvIxxi4H4kuTm
-         LOJs7Bn5M8NQ+EGt1LHHPoj1HxZJ/NcFvQY2DK2aDYLx028jtyy9PYjymdLx9dr89q
-         Us/fH6fD4mNdUTbq6HdRrYGlM2OZxtmZiRlgijTKkLpDcwl06Wp0jQqQIxJ5q1ezES
-         yk0AioPpW7PtAVr6cn8FQiNH7z0eyDjhO8j5ZiOE4Hp3xu5xhkA9Yf5wu7v+u7/T9F
-         Lm44VJfG6ZFGxLx6l8Gv18rhNNOLLNMUP89GCYhRKURqMk+C0eUCCX7+A0YC/hPm/1
-         GBAnwv1cAcHRw==
-To:     Bjorn Helgaas <bhelgaas@google.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Lobakin <alobakin@pm.me>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH pci-next] pci: remap: keep both device name and resource name for config space
-Message-ID: <JvyOzv8K8n5CCdP1xfLOdOWh4AbFrXdMMOEExr6em8@cp4-web-036.plabs.ch>
+        id S1727434AbgKSTJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:09:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:37860 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727244AbgKSTJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 14:09:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CE621396;
+        Thu, 19 Nov 2020 11:09:19 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7DE2E3F70D;
+        Thu, 19 Nov 2020 11:09:17 -0800 (PST)
+Date:   Thu, 19 Nov 2020 19:09:15 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, lukasz.luba@arm.com,
+        Jonathan.Cameron@Huawei.com, broonie@kernel.org, robh@kernel.org,
+        satyakim@qti.qualcomm.com, etienne.carriere@linaro.org,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com
+Subject: Re: [PATCH v5 5/5] dt-bindings: arm: add support for SCMI Regulators
+Message-ID: <20201119190915.GC16158@e120937-lin>
+References: <20201117123415.55105-1-cristian.marussi@arm.com>
+ <20201117123415.55105-6-cristian.marussi@arm.com>
+ <20201119152719.pkba7bz23s4bzo46@bogus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119152719.pkba7bz23s4bzo46@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Follow the rule taken in commit 35bd8c07db2c
-("devres: keep both device name and resource name in pretty name")
-and keep both device and resource names while requesting memory
-regions for PCI config space to prettify e.g. /proc/iomem output:
+On Thu, Nov 19, 2020 at 03:27:19PM +0000, Sudeep Holla wrote:
+> On Tue, Nov 17, 2020 at 12:34:15PM +0000, Cristian Marussi wrote:
+> > Add devicetree bindings to support regulators based on SCMI Voltage
+> > Domain Protocol.
+> >
+> 
+> Ideally, the DT binding should be first one, rather before the binding
+> is used in the code. I can move the order while applying.
+> 
 
-Before (DWC Host Controller):
+I'll do in v6
 
-18b00000-18b01fff : dbi
-18b10000-18b11fff : config
-18b20000-18b21fff : dbi
-18b30000-18b31fff : config
-19000000-19ffffff : pci@18b00000
-  19000000-190fffff : PCI Bus 0000:01
-    19000000-1900ffff : 0000:01:00.0
-  19100000-191fffff : PCI Bus 0000:01
-1a000000-1affffff : pci@18b20000
-  1a000000-1a0fffff : PCI Bus 0001:01
-    1a000000-1a00ffff : 0001:01:00.0
-  1a100000-1a1fffff : PCI Bus 0001:01
-
-After:
-
-18b00000-18b01fff : 18b00000.pci dbi
-18b10000-18b11fff : 18b00000.pci config
-18b20000-18b21fff : 18b20000.pci dbi
-18b30000-18b31fff : 18b20000.pci config
-19000000-19ffffff : pci@18b00000
-  19000000-190fffff : PCI Bus 0000:01
-    19000000-1900ffff : 0000:01:00.0
-  19100000-191fffff : PCI Bus 0000:01
-1a000000-1affffff : pci@18b20000
-  1a000000-1a0fffff : PCI Bus 0001:01
-    1a000000-1a00ffff : 0001:01:00.0
-  1a100000-1a1fffff : PCI Bus 0001:01
-
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- drivers/pci/pci.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index e578d34095e9..0716691f7d14 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4188,7 +4188,14 @@ void __iomem *devm_pci_remap_cfg_resource(struct dev=
-ice *dev,
- =09}
-=20
- =09size =3D resource_size(res);
--=09name =3D res->name ?: dev_name(dev);
-+
-+=09if (res->name)
-+=09=09name =3D devm_kasprintf(dev, GFP_KERNEL, "%s %s", dev_name(dev),
-+=09=09=09=09      res->name);
-+=09else
-+=09=09name =3D devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
-+=09if (!name)
-+=09=09return IOMEM_ERR_PTR(-ENOMEM);
-=20
- =09if (!devm_request_mem_region(dev, res->start, size, name)) {
- =09=09dev_err(dev, "can't request region for resource %pR\n", res);
---=20
-2.29.2
-
-
+Cristian
+> -- 
+> Regards,
+> Sudeep
