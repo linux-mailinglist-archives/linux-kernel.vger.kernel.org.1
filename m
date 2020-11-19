@@ -2,81 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF592B9289
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE19F2B928C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgKSMYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:24:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:55718 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726052AbgKSMYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:24:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D0891396;
-        Thu, 19 Nov 2020 04:24:25 -0800 (PST)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A594F3F718;
-        Thu, 19 Nov 2020 04:24:23 -0800 (PST)
-Date:   Thu, 19 Nov 2020 12:24:21 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lukasz.luba@arm.com, Jonathan.Cameron@Huawei.com,
-        egranata@google.com, jbhayana@google.com,
-        peter.hilber@opensynergy.com, mikhail.golubev@opensynergy.com,
-        Igor.Skalkin@opensynergy.com
-Subject: Re: [PATCH v3 4/6] firmware: arm_scmi: add SCMIv3.0 Sensors
- timestamped reads
-Message-ID: <20201119122421.GC56553@e120937-lin>
-References: <20201118162905.10439-1-cristian.marussi@arm.com>
- <20201118162905.10439-5-cristian.marussi@arm.com>
- <20201119114216.qqprw2rydmi2wfop@bogus>
+        id S1726831AbgKSM27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:28:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgKSM25 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 07:28:57 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4735CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 04:28:57 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id u12so6301652wrt.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 04:28:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nk6ndwLNkHXR1KZ6KubRVDQdUjrvbsIwDbnpAbqsS8s=;
+        b=joeY1dUKxoqThAjnOvu1ZdBc0EE1b739MQZOmwNt+Dfnn/bYA3HG7FN7RTJgMRh8nl
+         ecd8korNIyRv3lI60/xa+AHlKRKGk2EElT4MUnxjsx533IOlO332ILTqsaqdnKda0kJV
+         sqEuI0G92S8oKv7f4akqtVj5IcO6Od3TL2+ayDA8VFNfPeHqhWIAUCsGBGGC8mPerYTO
+         rFEPJCjCgDgVL+3yRNNe57OEv0ChWPnotIeux8tELyouYYJx/HaBz8/CBtCZogY5qYiq
+         gLBM4m3SyJwn8uRE8d1oyh+QGvyxKqfheT5QLjyROkYhzNorKzVCgXPW+8CpmoYSgk2m
+         i8kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nk6ndwLNkHXR1KZ6KubRVDQdUjrvbsIwDbnpAbqsS8s=;
+        b=T102umvyYZDbpP1x+dZQeKyaZjCQDwlZJxXGgVrF3hRox/aJ+3dWCG3GyUaP+zaSES
+         O0B9oymHvl6yKw2cWjwfRUHTSNTudkCerBbN19uoxqudkDHeWi2GliLdfr6s9sG0GTA6
+         /ELAxa1gjgppWZU6ULGpJtpiBwMqu7RuwmX1N2+hkwCtQAFBBBg6bONCD3Gyo2lMpV5A
+         /1gKL6VXfTahkS7KdkTeD9+fHu69rh8YbkaHgKNr8uf/x7xM02YkO/hrnXOVAZlEuME2
+         SYOuTRpFf1levFT9/EGHE8TYtdCRYKvtn1hH6M3mXfT5FGnhrSM4SAqPs76KZpXMVZxp
+         xNHA==
+X-Gm-Message-State: AOAM532Klgxagx6ZUKkCbE91vPnAbNIN3aDzfCyPSxu8Q9GP8u+0f6f3
+        Ryk0RUpJokDfjL+wV+jx5wg=
+X-Google-Smtp-Source: ABdhPJygB+5SOpdZQVy+Chngx4Pkoqd6FruYwpo+6Jet4HCmMCq9VkprgeVidnfSLEfqgVF0cLT0YQ==
+X-Received: by 2002:a5d:4fc1:: with SMTP id h1mr10645955wrw.226.1605788935926;
+        Thu, 19 Nov 2020 04:28:55 -0800 (PST)
+Received: from localhost.localdomain (59.red-81-32-35.dynamicip.rima-tde.net. [81.32.35.59])
+        by smtp.gmail.com with ESMTPSA id h20sm9005590wmb.29.2020.11.19.04.28.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 04:28:55 -0800 (PST)
+From:   Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>
+Cc:     Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        Jiri Kosina <trivial@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: trivial: hikey9xx: fix be32<->u32 casting warnings
+Date:   Thu, 19 Nov 2020 13:27:38 +0100
+Message-Id: <20201119122737.189675-1-juant.aldea@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201119114029.183828-1-juant.aldea@gmail.com>
+References: <20201119114029.183828-1-juant.aldea@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119114216.qqprw2rydmi2wfop@bogus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 11:42:16AM +0000, Sudeep Holla wrote:
-> On Wed, Nov 18, 2020 at 04:29:03PM +0000, Cristian Marussi wrote:
-> > Add new .reading_get_timestamped() method to sensor_ops to support SCMIv3.0
-> > timestamped reads.
-> > 
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> > V2 --> v3
-> > - setting rx_size to 0 in sensor_reading_get to allow fw to send
-> >   both v2 and v3 replies...even if sensor_reading_get() only handles
-> >   v2 spec and returns one single value
-> > - using get_unaligned_le64 in lieu of le64_to_cpu
-> > - removed refs to v2.1
-> > ---
-> >  drivers/firmware/arm_scmi/sensors.c | 137 ++++++++++++++++++++++++++--
-> >  include/linux/scmi_protocol.h       |  22 +++++
-> >  2 files changed, 152 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
-> > index 1c83aaae0012..0adc545116a4 100644
-> > --- a/drivers/firmware/arm_scmi/sensors.c
-> > +++ b/drivers/firmware/arm_scmi/sensors.c
-> > @@ -156,6 +156,27 @@ struct scmi_msg_sensor_reading_get {
-> >  #define SENSOR_READ_ASYNC	BIT(0)
-> >  };
-> >  
-> > +struct scmi_resp_sensor_reading_get {
-> > +	__le64 readings;
-> 
-> Generally I have avoided such single element structures so far. Any
-> particular reasons for having it ?
-> 
- Just because there are a few of them so I found it easy and preferable
- to have some typing to distinguish them, but I can drop it.
+This patch fixes the following warnings reported by sparse, by adding
+missing __force annotations.
 
- Cristian
+drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
+drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
+drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
+drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
+drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
+drivers/staging/hikey9xx/hisi-spmi-controller.c:164:24: warning: cast to restricted __be32
 
-> -- 
-> Regards,
-> Sudeep
+drivers/staging/hikey9xx/hisi-spmi-controller.c:239:25: warning: cast from restricted __be32
+
+Rationale for #164:
+data is declared as u32, and it is read and then converted by means of
+be32_to_cpu(). Said function expects a __be32 but data is u32, therefore
+there's a type missmatch here.
+
+Rationale for #239:
+Is the dual of #164. This time data going to be  written so it
+needs to be converted from cpu to __be32, but writel() expects u32 and the
+output of cpu_to_be32 returns a __be32.
+
+Signed-off-by: Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>
+---
+ Changes in V2:
+    - Fix typo in commit message.
+
+ drivers/staging/hikey9xx/hisi-spmi-controller.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/hikey9xx/hisi-spmi-controller.c b/drivers/staging/hikey9xx/hisi-spmi-controller.c
+index f831c43f4783..861aedd5de48 100644
+--- a/drivers/staging/hikey9xx/hisi-spmi-controller.c
++++ b/drivers/staging/hikey9xx/hisi-spmi-controller.c
+@@ -161,7 +161,7 @@ static int spmi_read_cmd(struct spmi_controller *ctrl,
+ 			     SPMI_SLAVE_OFFSET * slave_id +
+ 			     SPMI_APB_SPMI_RDATA0_BASE_ADDR +
+ 			     i * SPMI_PER_DATAREG_BYTE);
+-		data = be32_to_cpu((__be32)data);
++		data = be32_to_cpu((__be32 __force)data);
+ 		if ((bc - i * SPMI_PER_DATAREG_BYTE) >> 2) {
+ 			memcpy(buf, &data, sizeof(data));
+ 			buf += sizeof(data);
+@@ -236,7 +236,7 @@ static int spmi_write_cmd(struct spmi_controller *ctrl,
+ 			buf += (bc % SPMI_PER_DATAREG_BYTE);
+ 		}
+ 
+-		writel((u32)cpu_to_be32(data),
++		writel((u32 __force)cpu_to_be32(data),
+ 		       spmi_controller->base + chnl_ofst +
+ 		       SPMI_APB_SPMI_WDATA0_BASE_ADDR +
+ 		       SPMI_PER_DATAREG_BYTE * i);
+-- 
+2.28.0
+
