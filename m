@@ -2,133 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD0C2B9094
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9555A2B909A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgKSLD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:03:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgKSLD3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:03:29 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF27C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:03:28 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id 23so5946427wrc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:03:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RFamxyJgml0Q9lHKOib3+a+7JzEnrNZtCyqpmdEgFHY=;
-        b=kqHAg9poMnjna6jkicJdxbX2pallignKnsZm7PQ3J7+Ievqg93epHWgtVUtyVeXpcN
-         +dWCkcIlLGnmoH/IM64UFp7UdWFeLgTLKx52vuX/MHI/KwP13XQG2gFghMaFoTmqebdM
-         wGfEw2BLqmPenDc5qhti9xHWOcyQNxJGEqBUzVWKmvluSFSqa8BEDWypBBpgaNDKyzKJ
-         tjSng7pmL0bcMiWZL7m0Sy3fGUCIu3UAdP3qSRQuiPBJvbyl73ZxRL88w5vCHGzW1Cvc
-         b0BUGDp4O6yx6G9f9FsZruoQcsz1tY02WsLSsX7nKzB3C072ukmtf0gg4H5zqr+fPCIf
-         oQhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RFamxyJgml0Q9lHKOib3+a+7JzEnrNZtCyqpmdEgFHY=;
-        b=guhCkuWt3FeUwamiYJHf2+eMzpMbjU4aiBwr2XHJv0KydBNun6Uo2PdCc5UbKsyDuW
-         7iapC9ktySdzsD0f7KixKu7+Jklc8634zq4v9k3HRjO7sgU+8oaQVmJOIu8sYTM2Slr1
-         ms8880nlJtxxuPv8BSDA+DhPubOMUcXOjmqc4rCtbq7NkZJ11oJGMYKh+iw0SKGtlCpn
-         c67zDcrVav4EUSUEZPKYcVMkOZk93ThMSnEIdwyBIWUry6Ol1Xq5AUFLmnvYbE5QkYEX
-         7eCv88qO68CTPXjGFOZCgKlwoACMNHZyxqy/0yVwgG9PGPGnRW7sjq320ytcz3a6ULKR
-         wNhA==
-X-Gm-Message-State: AOAM531jrKteFQOFnEn754op/XQMT5WxgWfuoi/OJJo+zsslRzPMnosD
-        8OmsdQ3WfaviQ0zneoF+TPleHw==
-X-Google-Smtp-Source: ABdhPJxgfj9H8n3fel6QzaGF5nPAhtC4qg27fy9D1pg2d5UCDEatBq3WasqWdPx/X7TiE6RaHNO7oQ==
-X-Received: by 2002:a5d:4d86:: with SMTP id b6mr9558362wru.80.1605783807260;
-        Thu, 19 Nov 2020 03:03:27 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id o4sm5525797wmh.33.2020.11.19.03.03.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 03:03:26 -0800 (PST)
-Date:   Thu, 19 Nov 2020 11:03:23 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
+        id S1726778AbgKSLFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:05:10 -0500
+Received: from mga18.intel.com ([134.134.136.126]:19168 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725877AbgKSLFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 06:05:10 -0500
+IronPort-SDR: OHvjf+HkuhwiA/cLeDBPRwnQgeyNzNrxLzNAuEHog4Ue3teL7cos6X7HnhmsNSQ9bfZR8DMLea
+ lP/cHkXbpb7w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="159043364"
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="159043364"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 03:05:09 -0800
+IronPort-SDR: 8U+MHKbLCabV6ZlOoD80RU5+uJfFmBy34CAjWTVQxN2vZA9AVlTnJhji1C1G97jTSmzJ2G0jTF
+ 488Lq3YP8Rvg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="431191813"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 19 Nov 2020 03:05:06 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 19 Nov 2020 13:05:06 +0200
+Date:   Thu, 19 Nov 2020 13:05:06 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     Benson Leung <bleung@chromium.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 07/14] sched: Introduce restrict_cpus_allowed_ptr() to
- limit task CPU affinity
-Message-ID: <20201119110323.GA2432333@google.com>
-References: <20201113093720.21106-1-will@kernel.org>
- <20201113093720.21106-8-will@kernel.org>
- <20201119091820.GA2416649@google.com>
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [RFC PATCH 2/3] usb: typec: Add product_type sysfs attribute
+ file for partners and cables
+Message-ID: <20201119110506.GA3774817@kuha.fi.intel.com>
+References: <20201118150059.3419-1-heikki.krogerus@linux.intel.com>
+ <20201118150059.3419-3-heikki.krogerus@linux.intel.com>
+ <20201118185350.GB3652649@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119091820.GA2416649@google.com>
+In-Reply-To: <20201118185350.GB3652649@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 19 Nov 2020 at 09:18:20 (+0000), Quentin Perret wrote:
-> Hey Will,
+On Wed, Nov 18, 2020 at 10:53:50AM -0800, Prashant Malani wrote:
+> > +What:		/sys/class/typec/<port>-cable/product_type
+> > +Date:		December 2020
+> > +Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > +Description:	USB Power Delivery Specification defines a set of product types
+> > +		for the cables. This file will show the product type of the
+> > +		cable if it is known. If the product type of the cable is not
+> > +		visible to the device driver, this file will not exist.
+> > +
+> > +		When the cable product type is detected, uvevent is also raised
+> > +		with PRODUCT_TYPE showing the product type of the cable.
+> > +
+> > +		Valid values:
+> > +
+> > +		========================  ==========================
+> > +		undefined		  -
+> > +		active			  Active Cable
+> > +		passive			  Passive Cable
+> > +		========================  ==========================
 > 
-> On Friday 13 Nov 2020 at 09:37:12 (+0000), Will Deacon wrote:
-> > -static int __set_cpus_allowed_ptr(struct task_struct *p,
-> > -				  const struct cpumask *new_mask, bool check)
-> > +static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
-> > +					 const struct cpumask *new_mask,
-> > +					 bool check,
-> > +					 struct rq *rq,
-> > +					 struct rq_flags *rf)
-> >  {
-> >  	const struct cpumask *cpu_valid_mask = cpu_active_mask;
-> >  	unsigned int dest_cpu;
-> > -	struct rq_flags rf;
-> > -	struct rq *rq;
-> >  	int ret = 0;
-> 
-> Should we have a lockdep assertion here?
-> 
-> > -	rq = task_rq_lock(p, &rf);
-> >  	update_rq_clock(rq);
-> >  
-> >  	if (p->flags & PF_KTHREAD) {
-> > @@ -1929,7 +1923,7 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
-> >  	if (task_running(rq, p) || p->state == TASK_WAKING) {
-> >  		struct migration_arg arg = { p, dest_cpu };
-> >  		/* Need help from migration thread: drop lock and wait. */
-> > -		task_rq_unlock(rq, p, &rf);
-> > +		task_rq_unlock(rq, p, rf);
-> >  		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
-> >  		return 0;
-> >  	} else if (task_on_rq_queued(p)) {
-> > @@ -1937,20 +1931,69 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
-> >  		 * OK, since we're going to drop the lock immediately
-> >  		 * afterwards anyway.
-> >  		 */
-> > -		rq = move_queued_task(rq, &rf, p, dest_cpu);
-> > +		rq = move_queued_task(rq, rf, p, dest_cpu);
-> >  	}
-> >  out:
-> > -	task_rq_unlock(rq, p, &rf);
-> > +	task_rq_unlock(rq, p, rf);
-> 
-> And that's a little odd to have here no? Can we move it back on the
-> caller's side?
+> There exists a /sys/class/typec/<port>-cable/type attribute (connected
+> to the "active" field in struct typec_cable [1]), which is supposed
+> to be populated by the Type C port driver. Won't the newly introduced
+> attribute duplicate the same information as "type"?
 
-Yeah, no, that obviously doesn't work for the stop_one_cpu() call above,
-so feel free to ignore ...
+True. So we don't need add this for the cable separately. I'll just
+modify the code so that it considers also the response to Discover
+Identity command if we have access to it.
 
-Thanks,
-Quentin
+Would it be OK if we name the file "type" instead of "product_type"
+also with the partners?
+
+thanks,
+
+-- 
+heikki
