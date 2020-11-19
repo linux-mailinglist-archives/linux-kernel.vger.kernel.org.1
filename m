@@ -2,201 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AEF2B8BBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD772B8BC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725931AbgKSGg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 01:36:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57816 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725843AbgKSGg1 (ORCPT
+        id S1726252AbgKSGkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 01:40:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbgKSGkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 01:36:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605767786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iMc/gvKwqM4AzkZ+P2n75WcftR/IHFubAtNec01gIhI=;
-        b=EHw+1sN2O8+cZm7aNpgOxl9dYpwIThVDKDwVzDeasCVGnmflRZcErgjAopiruR3F6lMgzq
-        Wiqf6mb6u/ISL1xmMdJOzIsv3nxOxCUQi7Ha1qGfsmvhnPoyVFpF0o9TO1SISeEBvnIE9o
-        GjyCsV3yLA7KQXw3HNmm/rJVLBPa6lM=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-ET4HHYKsM9OvNQqw5FqTRQ-1; Thu, 19 Nov 2020 01:36:23 -0500
-X-MC-Unique: ET4HHYKsM9OvNQqw5FqTRQ-1
-Received: by mail-io1-f71.google.com with SMTP id z7so3917349iom.14
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:36:23 -0800 (PST)
+        Thu, 19 Nov 2020 01:40:07 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C06C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:40:05 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id r18so3333088pgu.6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:40:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TCQz/KA2hqKOOlA4bPgpxQWY3cHnJO4JZ3EX7aXtvFw=;
+        b=KNy4dSWS83T6VD0q14ZlJtRpheQDJqycKKgG0LErsdAYOJoJUlJR8ETl3s/YJ2TfrK
+         5VC5poR0aAwEFQxHuJbXN8PYDAJ6MEF26OXZeFu24AnWoZZrxuyQBTTig1inhqi224bq
+         /FMWDYOoqE3JmW9DLCR1gbcxfanCGYNg4KFqNPZfwN/oqVjTgIWkprigETIGeftI1D2h
+         gB5HlTOdQh4CFqFJQCo/QTnHgMMpK11d0vGmlAtBMOZ7ciqQSUFo6bLvMICU2eOTAQH3
+         v4M8n8loqyG7HI5er1sghVu50OuF3HVieCTjhQnDIVxbrrx2N1KiBz8jsHFSnz6KasxP
+         cVlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=iMc/gvKwqM4AzkZ+P2n75WcftR/IHFubAtNec01gIhI=;
-        b=f0pGGlS0+Tcr6HaFUkEj3JJTUc2F1xc6OJk+kM3JcopIP+VvG9aU53yIOoWpo50SYS
-         4SwZ/vwztV/hr6I0/lRg3Xsvguvq90UtM3bvDVEy7070qT6CdOgE2kAyGM+Rp0NLX8Yv
-         CX5pEPvOj/LRn+8O1bfXSjt9w17FY7ToINU9mVuKxOZx4LmrfMEw5lfD9CH/vbeB/nl1
-         3cOVEcWfLICbivCWv80st3JMAV4Eds8KTMxE8S6bkRfhIZIooBmA+45HV+o8KHX1L7Vy
-         4GTLcp2S4aXpws0Z+FY2yk7QDuzq5Bs2hKoD9Jd999Nld1lyLJ/hnHHnxoq7K4FwHiYU
-         Ncnw==
-X-Gm-Message-State: AOAM530BgwlYBrQtI7PnPQa4kamp95gdRhsxY+j7gd6C0oU/4Ui2qEfG
-        OZhPXz9k9wwDCWWKZBfQ7xez+azn6z4Pj18DnV8cO9oe8nxXVHD3GG5uhtKrXFeoWTz3Uvu9tqb
-        Nv+dmfrO3vwY3jgO4bvh92zS9
-X-Received: by 2002:a92:dd91:: with SMTP id g17mr17780374iln.12.1605767783260;
-        Wed, 18 Nov 2020 22:36:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzUlv74DqDRPtC8qPdQ8fwEPR18nkvA8Itzpp4H34wf7FxcIXXI77Cz6yyypbD4U5uD+lQqLA==
-X-Received: by 2002:a92:dd91:: with SMTP id g17mr17780357iln.12.1605767782910;
-        Wed, 18 Nov 2020 22:36:22 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id b4sm16931032ile.13.2020.11.18.22.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 22:36:22 -0800 (PST)
-References: <20201015214430.17937-1-jsnitsel@redhat.com>
- <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Matthew Garrett <mjg59@google.com>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TCQz/KA2hqKOOlA4bPgpxQWY3cHnJO4JZ3EX7aXtvFw=;
+        b=cozYfBipdL46Hjwsy4QDU4Ni5gkDplXBuAGksTkZrV6/3IQ8cU5TZ9t2gd2B5zvqHB
+         o4dZq5sQIQ1h8/jY5fS2eOcpQQY13St5CfU2bJSkARdSa+NF54DS6Td3Jz3HAzNiJuWZ
+         +AFe/vc1XPocdcYdaW+yifObAvZfHRXnRTs4y8JbxVK80ILXWX6Nu/675+nsZar8V7SQ
+         UCPo99HwGPaBXQ3A85K1ySML1+doz2NLVntJI4NYLXM3jVWA62x7Y6zF2newKoDxK3w4
+         wZR+p6ngBJvpYXEdG5c4rI0dvdJDdS8+G7z1SAIzTnJna17QLMv9HI876NipL6gQ63W6
+         /UIw==
+X-Gm-Message-State: AOAM5301HOniQO4QkbOrbFu/u6DdjH/VSXMiR+Jb0Gs5PkgaZu8F2+vz
+        45Hp/aLu3PqF8ZQshkiKyaBpsA==
+X-Google-Smtp-Source: ABdhPJwrMgKHhEo1sifq6kgROK90gyHcKMGZfBb7j74eDKQYs6R7joDCoSh9SD2KOGWzFehj1TkWQA==
+X-Received: by 2002:a63:1d55:: with SMTP id d21mr11313790pgm.324.1605768005139;
+        Wed, 18 Nov 2020 22:40:05 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id h127sm28398286pfe.16.2020.11.18.22.40.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Nov 2020 22:40:04 -0800 (PST)
+Date:   Thu, 19 Nov 2020 12:10:01 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jarkko@kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
-In-reply-to: <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
-Date:   Wed, 18 Nov 2020 23:36:20 -0700
-Message-ID: <87d009c0pn.fsf@redhat.com>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Chris Redpath <chris.redpath@arm.com>
+Subject: Re: [PATCH v3 3/3] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201119064001.45iibj3u6mx3cgu2@vireshk-i7>
+References: <20201106105514.bhtdklyhn7goml64@vireshk-i7>
+ <7f73bcd6-0f06-4ef0-7f02-0751e6c4d94b@arm.com>
+ <20201109065742.22czfgyjhsjmkytf@vireshk-i7>
+ <2fa8a5c0-f66d-34bc-7f1c-8462e7532e0a@arm.com>
+ <20201117101128.6uapqg56arwqmm5p@vireshk-i7>
+ <0858962e-3a30-d177-594b-bb8e3149dd8d@arm.com>
+ <20201117105337.vjwtig3qxpc6owmw@vireshk-i7>
+ <CAJZ5v0iRs-uxzdV4vikN1VOwGuoorkRt2uqFSvbN2kySG-6duA@mail.gmail.com>
+ <20201118044244.gbr4ujz6ilxatkde@vireshk-i7>
+ <CAJZ5v0hgmMBHEdPFm7Fhj-eQr+zh5=ZGnm7S2e0aTz3juFmGPQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hgmMBHEdPFm7Fhj-eQr+zh5=ZGnm7S2e0aTz3juFmGPQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18-11-20, 13:00, Rafael J. Wysocki wrote:
+> On Wed, Nov 18, 2020 at 5:42 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 17-11-20, 14:06, Rafael J. Wysocki wrote:
+> > > Is this really a cpufreq thing, though, or is it arch stuff?  I think
+> > > the latter, because it is not necessary for anything in cpufreq.
+> > >
+> > > Yes, acpi-cpufreq happens to know this information, because it uses
+> > > processor_perflib, but the latter may as well be used by the arch
+> > > enumeration of CPUs and the freqdomain_cpus mask may be populated from
+> > > there.
+> > >
+> > > As far as cpufreq is concerned, if the interface to the hardware is
+> > > per-CPU, there is one CPU per policy and cpufreq has no business
+> > > knowing anything about the underlying hardware coordination.
+> >
+> > It won't be used by cpufreq for now at least and yes I understand your
+> > concern. I opted for this because we already have a cpufreq
+> > implementation for the same thing and it is usually better to reuse
+> > this kind of stuff instead of inventing it over.
+> 
+> Do you mean related_cpus and real_cpus?
 
-Matthew Garrett @ 2020-10-15 15:39 MST:
+Sorry about the confusion, I meant freqdomain_cpus only.
 
-> On Thu, Oct 15, 2020 at 2:44 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
->>
->> There is a misconfiguration in the bios of the gpio pin used for the
->> interrupt in the T490s. When interrupts are enabled in the tpm_tis
->> driver code this results in an interrupt storm. This was initially
->> reported when we attempted to enable the interrupt code in the tpm_tis
->> driver, which previously wasn't setting a flag to enable it. Due to
->> the reports of the interrupt storm that code was reverted and we went back
->> to polling instead of using interrupts. Now that we know the T490s problem
->> is a firmware issue, add code to check if the system is a T490s and
->> disable interrupts if that is the case. This will allow us to enable
->> interrupts for everyone else. If the user has a fixed bios they can
->> force the enabling of interrupts with tpm_tis.interrupts=1 on the
->> kernel command line.
->
-> I think an implication of this is that systems haven't been
-> well-tested with interrupts enabled. In general when we've found a
-> firmware issue in one place it ends up happening elsewhere as well, so
-> it wouldn't surprise me if there are other machines that will also be
-> unhappy with interrupts enabled. Would it be possible to automatically
-> detect this case (eg, if we get more than a certain number of
-> interrupts in a certain timeframe immediately after enabling the
-> interrupt) and automatically fall back to polling in that case? It
-> would also mean that users with fixed firmware wouldn't need to pass a
-> parameter.
+> That's the granularity of the interface to the hardware I'm talking about.
+> 
+> Strictly speaking, it means "these CPUs share a HW interface for perf
+> control" and it need not mean "these CPUs are in the same
+> clock/voltage domain".  Specifically, it need not mean "these CPUs are
+> the only CPUs in the given clock/voltage domain".  That's what it
+> means when the control is exercised by manipulating OPPs directly, but
+> not in general.
+> 
+> In the ACPI case, for example, what the firmware tells you need not
+> reflect the HW topology in principle.  It only tells you whether or
+> not it wants you to coordinate a given group of CPUs and in what way,
+> but this may not be the whole picture from the HW perspective.  If you
+> need the latter, you need more information in general (at least you
+> need to assume that what the firmware tells you actually does reflect
+> the HW topology on the given SoC).
+> 
+> So yes, in the particular case of OPP-based perf control, cpufreq
+> happens to have the same information that is needed by the other
+> subsystems, but otherwise it may not and what I'm saying is that it
+> generally is a mistake to expect cpufreq to have that information or
+> to be able to obtain it without the help of the arch/platform code.
+> Hence, it would be a mistake to design an interface based on that
+> expectation.
+> 
+> Or looking at it from a different angle, today a cpufreq driver is
+> only required to specify the granularity of the HW interface for perf
+> control via related_cpus.  It is not required to obtain extra
+> information beyond that.  If a new mask to be populated by it is
+> added, the driver may need to do more work which is not necessary from
+> the perf control perspective.  That doesn't look particularly clean to
+> me.
+> 
+> Moreover, adding such a mask to cpufreq_policy would make the users of
+> it depend on cpufreq sort of artificially, which need not be useful
+> even.
+> 
+> IMO, the information needed by all of the subsystems in question
+> should be obtained and made available at the arch/platform level and
+> everyone who needs it should be able to access it from there,
+> including the cpufreq driver for the given platform if that's what it
+> needs to do.
+> 
+> BTW, cpuidle may need the information in question too, so why should
+> it be provided via cpufreq rather than via cpuidle?
 
-I believe Matthew is correct here. I found another system today
-with completely different vendor for both the system and the tpm chip.
-In addition another Lenovo model, the L490, has the issue.
+Right.
 
-This initial attempt at a solution like Matthew suggested works on
-the system I found today, but I imagine it is all sorts of wrong.
-In the 2 systems where I've seen it, there are about 100000 interrupts
-in around 1.5 seconds, and then the irq code shuts down the interrupt
-because they aren't being handled.
-
-
-diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-index 49ae09ac604f..478e9d02a3fa 100644
---- a/drivers/char/tpm/tpm_tis_core.c
-+++ b/drivers/char/tpm/tpm_tis_core.c
-@@ -27,6 +27,11 @@
- #include "tpm.h"
- #include "tpm_tis_core.h"
-
-+static unsigned int time_start = 0;
-+static bool storm_check = true;
-+static bool storm_killed = false;
-+static u32 irqs_fired = 0;
-+
- static void tpm_tis_clkrun_enable(struct tpm_chip *chip, bool value);
-
- static void tpm_tis_enable_interrupt(struct tpm_chip *chip, u8 mask)
-@@ -464,25 +469,31 @@ static int tpm_tis_send_data(struct tpm_chip *chip, const u8 *buf, size_t len)
-        return rc;
- }
-
--static void disable_interrupts(struct tpm_chip *chip)
-+static void __disable_interrupts(struct tpm_chip *chip)
- {
-        struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
-        u32 intmask;
-        int rc;
-
--       if (priv->irq == 0)
--               return;
--
-        rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
-        if (rc < 0)
-                intmask = 0;
-
-        intmask &= ~TPM_GLOBAL_INT_ENABLE;
-        rc = tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality), intmask);
-+       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
-+}
-+
-+static void disable_interrupts(struct tpm_chip *chip)
-+{
-+       struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
-
-+       if (priv->irq == 0)
-+               return;
-+
-+       __disable_interrupts(chip);
-        devm_free_irq(chip->dev.parent, priv->irq, chip);
-        priv->irq = 0;
--       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
- }
-
- /*
-@@ -528,6 +539,12 @@ static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
-        int rc, irq;
-        struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
-
-+       if (unlikely(storm_killed)) {
-+               devm_free_irq(chip->dev.parent, priv->irq, chip);
-+               priv->irq = 0;
-+               storm_killed = false;
-+       }
-+
-        if (!(chip->flags & TPM_CHIP_FLAG_IRQ) || priv->irq_tested)
-                return tpm_tis_send_main(chip, buf, len);
-
-@@ -748,6 +765,21 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
-        u32 interrupt;
-        int i, rc;
-
-+       if (storm_check) {
-+               irqs_fired++;
-+
-+               if (!time_start) {
-+                       time_start = jiffies_to_msecs(jiffies);
-+               } else if ((irqs_fired > 1000) && (jiffies_to_msecs(jiffies) - jiffies < 500)) {
-+                       __disable_interrupts(chip);
-+                       storm_check = false;
-+                       storm_killed = true;
-+                       return IRQ_HANDLED;
-+               } else if ((jiffies_to_msecs(jiffies) - time_start > 500) && (irqs_fired < 1000)) {
-+                       storm_check = false;
-+               }
-+       }
-+
-        rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &interrupt);
-        if (rc < 0)
-                return IRQ_NONE;
-
+-- 
+viresh
