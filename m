@@ -2,89 +2,406 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538372B93E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:46:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 187A32B93E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727240AbgKSNpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 08:45:31 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:53871 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726480AbgKSNpb (ORCPT
+        id S1727212AbgKSNsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 08:48:06 -0500
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:40531 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726644AbgKSNsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 08:45:31 -0500
-Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0AJDjTc9008098;
-        Thu, 19 Nov 2020 22:45:29 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
- Thu, 19 Nov 2020 22:45:29 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0AJDjS0O008048
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 19 Nov 2020 22:45:29 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v3] lockdep: Allow tuning tracing capacity constants.
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzkaller <syzkaller@googlegroups.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
- <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
- <0eb519fa-e77b-b655-724a-4e9eecc64626@i-love.sakura.ne.jp>
- <6933e938-f219-5e13-aee6-fe4de87eb43e@i-love.sakura.ne.jp>
- <81ab0ffd-6e80-c96c-053a-b1b4fe8694c1@i-love.sakura.ne.jp>
- <20201118142357.GW3121392@hirez.programming.kicks-ass.net>
- <1778f2e5-0a0c-2c6e-2c83-fe51d938e8a2@i-love.sakura.ne.jp>
- <20201118151038.GX3121392@hirez.programming.kicks-ass.net>
- <9bc4e07d-2a58-077b-b4c7-ab056ba33cf1@i-love.sakura.ne.jp>
- <CACT4Y+ZJNkssAQLuwfcKPTTKLZhHRAo0POGOMVsGFGizoHaNMg@mail.gmail.com>
- <CACT4Y+Zh10241gchu6e_=LwxPSEzXT-0HSmhnTtkXFZevKi_yQ@mail.gmail.com>
- <CACT4Y+a8TjV+Pe6mwne777RV+xB+aHT6GxuMLAVBn5mtK4P0Lw@mail.gmail.com>
- <CACT4Y+ZSsKjvojD8iFVFv9F5X5BvZR8vLyaKrgxUxyknma04Sg@mail.gmail.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <5e8342c4-702f-80a9-e669-8a7386ce0da1@i-love.sakura.ne.jp>
-Date:   Thu, 19 Nov 2020 22:45:25 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Thu, 19 Nov 2020 08:48:05 -0500
+Received: by mail-oo1-f68.google.com with SMTP id t142so1351104oot.7;
+        Thu, 19 Nov 2020 05:48:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t9+s1ApXC1taKZdVie+MQcAAj+ApC6em5/9UfA0Cqa4=;
+        b=YWxv4g/0B8QijLSD1tABVNCIRoQ8RHvHfepsRsxEkvPD6m9Px8DzT5/DA/qCfy9/S0
+         9+NyCaL8YHnDSaA30GRTtEIKyh+1/XOYSslHsBDuWO5Bu4BDSrlWvvIFySW62a/bYBPN
+         TzBwhyGP+nTXOSCMdcrtzUOF9JQ/tLep8V44KMD9e5/ooJnaDDrUXKS6ftTfiyv9oTJc
+         vScfqTzPI7pcGEDzBS+UaW9lmudtV35L20LFXPKsIaGIcrE0xId8cwec6g5IP/R29fAv
+         qcq68w0GUmsVzMPU3NiD1nDxW/NdRZr7je7ksMoi4iv//AAqxe2hHLBpcUfSR95tpUG/
+         R9kA==
+X-Gm-Message-State: AOAM532JZ+vYVNcKUH6o+WrqX7D/H8O6rn4GCRVm/j1LmnZBREFzxFPT
+        FhcVxto6+L00QoEDfrOh9w==
+X-Google-Smtp-Source: ABdhPJxio6D8tQt9OxKmeGLgNbbJpbzhZDaoVQX6XiRtZ3HghBgRL/sNUbG5IbGsw00PCxLUoQHuhw==
+X-Received: by 2002:a4a:8742:: with SMTP id a2mr10109788ooi.23.1605793683419;
+        Thu, 19 Nov 2020 05:48:03 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l19sm8896459otp.65.2020.11.19.05.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 05:48:02 -0800 (PST)
+Received: (nullmailer pid 3157673 invoked by uid 1000);
+        Thu, 19 Nov 2020 13:48:01 -0000
+Date:   Thu, 19 Nov 2020 07:48:01 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 01/12] dt-bindings: net: dsa: convert ksz
+ bindings document to yaml
+Message-ID: <20201119134801.GB3149565@bogus>
+References: <20201118203013.5077-1-ceggers@arri.de>
+ <20201118203013.5077-2-ceggers@arri.de>
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+ZSsKjvojD8iFVFv9F5X5BvZR8vLyaKrgxUxyknma04Sg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118203013.5077-2-ceggers@arri.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/19 22:06, Dmitry Vyukov wrote:
->>>>
->>>> I am trying to reproduce this locally first. syzbot caims it can
->>>> reproduce it with a number of very simpler reproducers (like spawn
->>>> process, unshare, create socket):
->>>> https://syzkaller.appspot.com/bug?id=8a18efe79140782a88dcd098808d6ab20ed740cc
->>>>
->>>> I see a very slow drift, but it's very slow, so get only to:
->>>>  direct dependencies:                 22072 [max: 32768]
->>>>
->>>> But that's running a very uniform workload.
->>>>
->>>> However when I tried to cat /proc/lockdep to see if there is anything
->>>> fishy already,
->>>> I got this (on c2e7554e1b85935d962127efa3c2a76483b0b3b6).
->>>>
->>>> Some missing locks?
-
-Not a TOMOYO's bug. Maybe a lockdep's bug.
-
+On Wed, Nov 18, 2020 at 09:30:02PM +0100, Christian Eggers wrote:
+> Convert the bindings document for Microchip KSZ Series Ethernet switches
+> from txt to yaml.
 > 
-> But I don't know if it's enough to explain the overflow or not...
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> ---
+>  .../devicetree/bindings/net/dsa/ksz.txt       | 125 --------------
+>  .../bindings/net/dsa/microchip,ksz.yaml       | 152 ++++++++++++++++++
+>  MAINTAINERS                                   |   2 +-
+>  3 files changed, 153 insertions(+), 126 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/dsa/ksz.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/net/dsa/ksz.txt b/Documentation/devicetree/bindings/net/dsa/ksz.txt
+> deleted file mode 100644
+> index 95e91e84151c..000000000000
+> --- a/Documentation/devicetree/bindings/net/dsa/ksz.txt
+> +++ /dev/null
+> @@ -1,125 +0,0 @@
+> -Microchip KSZ Series Ethernet switches
+> -==================================
+> -
+> -Required properties:
+> -
+> -- compatible: For external switch chips, compatible string must be exactly one
+> -  of the following:
+> -  - "microchip,ksz8765"
+> -  - "microchip,ksz8794"
+> -  - "microchip,ksz8795"
+> -  - "microchip,ksz9477"
+> -  - "microchip,ksz9897"
+> -  - "microchip,ksz9896"
+> -  - "microchip,ksz9567"
+> -  - "microchip,ksz8565"
+> -  - "microchip,ksz9893"
+> -  - "microchip,ksz9563"
+> -  - "microchip,ksz8563"
+> -
+> -Optional properties:
+> -
+> -- reset-gpios		: Should be a gpio specifier for a reset line
+> -- microchip,synclko-125 : Set if the output SYNCLKO frequency should be set to
+> -			  125MHz instead of 25MHz.
+> -
+> -See Documentation/devicetree/bindings/net/dsa/dsa.txt for a list of additional
+> -required and optional properties.
+> -
+> -Examples:
+> -
+> -Ethernet switch connected via SPI to the host, CPU port wired to eth0:
+> -
+> -	eth0: ethernet@10001000 {
+> -		fixed-link {
+> -			speed = <1000>;
+> -			full-duplex;
+> -		};
+> -	};
+> -
+> -	spi1: spi@f8008000 {
+> -		pinctrl-0 = <&pinctrl_spi_ksz>;
+> -		cs-gpios = <&pioC 25 0>;
+> -		id = <1>;
+> -
+> -		ksz9477: ksz9477@0 {
+> -			compatible = "microchip,ksz9477";
+> -			reg = <0>;
+> -
+> -			spi-max-frequency = <44000000>;
+> -			spi-cpha;
+> -			spi-cpol;
+> -
+> -			ports {
+> -				#address-cells = <1>;
+> -				#size-cells = <0>;
+> -				port@0 {
+> -					reg = <0>;
+> -					label = "lan1";
+> -				};
+> -				port@1 {
+> -					reg = <1>;
+> -					label = "lan2";
+> -				};
+> -				port@2 {
+> -					reg = <2>;
+> -					label = "lan3";
+> -				};
+> -				port@3 {
+> -					reg = <3>;
+> -					label = "lan4";
+> -				};
+> -				port@4 {
+> -					reg = <4>;
+> -					label = "lan5";
+> -				};
+> -				port@5 {
+> -					reg = <5>;
+> -					label = "cpu";
+> -					ethernet = <&eth0>;
+> -					fixed-link {
+> -						speed = <1000>;
+> -						full-duplex;
+> -					};
+> -				};
+> -			};
+> -		};
+> -		ksz8565: ksz8565@0 {
+> -			compatible = "microchip,ksz8565";
+> -			reg = <0>;
+> -
+> -			spi-max-frequency = <44000000>;
+> -			spi-cpha;
+> -			spi-cpol;
+> -
+> -			ports {
+> -				#address-cells = <1>;
+> -				#size-cells = <0>;
+> -				port@0 {
+> -					reg = <0>;
+> -					label = "lan1";
+> -				};
+> -				port@1 {
+> -					reg = <1>;
+> -					label = "lan2";
+> -				};
+> -				port@2 {
+> -					reg = <2>;
+> -					label = "lan3";
+> -				};
+> -				port@3 {
+> -					reg = <3>;
+> -					label = "lan4";
+> -				};
+> -				port@6 {
+> -					reg = <6>;
+> -					label = "cpu";
+> -					ethernet = <&eth0>;
+> -					fixed-link {
+> -						speed = <1000>;
+> -						full-duplex;
+> -					};
+> -				};
+> -			};
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> new file mode 100644
+> index 000000000000..010adb09a68f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> @@ -0,0 +1,152 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/dsa/microchip,ksz.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip KSZ Series Ethernet switches
+> +
+> +allOf:
+> +  - $ref: dsa.yaml#
 
-Since you can't hit the limit locally, I guess we need to ask syzbot to
-run massive testcases.
+Move this after 'maintainers'.
 
+> +
+> +maintainers:
+> +  - Marek Vasut <marex@denx.de>
+> +  - Woojung Huh <Woojung.Huh@microchip.com>
+> +
+> +properties:
+> +  # See Documentation/devicetree/bindings/net/dsa/dsa.yaml for a list of additional
+> +  # required and optional properties.
+> +  compatible:
+> +    enum:
+> +      - microchip,ksz8765
+> +      - microchip,ksz8794
+> +      - microchip,ksz8795
+> +      - microchip,ksz9477
+> +      - microchip,ksz9897
+> +      - microchip,ksz9896
+> +      - microchip,ksz9567
+> +      - microchip,ksz8565
+> +      - microchip,ksz9893
+> +      - microchip,ksz9563
+> +      - microchip,ksz8563
+> +
+> +  reset-gpios:
+> +    description:
+> +      Should be a gpio specifier for a reset line.
+> +    maxItems: 1
+> +
+> +  microchip,synclko-125:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Set if the output SYNCLKO frequency should be set to 125MHz instead of 25MHz.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+
+You need to use unevaluatedProperties instead.
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    // Ethernet switch connected via SPI to the host, CPU port wired to eth0:
+> +    eth0 {
+> +        fixed-link {
+> +            speed = <1000>;
+> +            full-duplex;
+> +        };
+> +    };
+> +
+> +    spi0 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        pinctrl-0 = <&pinctrl_spi_ksz>;
+> +        cs-gpios = <&pioC 25 0>;
+> +        id = <1>;
+> +
+> +        ksz9477: switch@0 {
+> +            compatible = "microchip,ksz9477";
+> +            reg = <0>;
+> +            reset-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
+> +
+> +            spi-max-frequency = <44000000>;
+> +            spi-cpha;
+> +            spi-cpol;
+
+Are these 2 optional or required? Being optional is rare as most 
+devices support 1 mode, but not unheard of. In general, you shouldn't 
+need them as the driver should know how to configure the mode if the h/w 
+is fixed.
+
+> +
+> +            ethernet-ports {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                port@0 {
+> +                    reg = <0>;
+> +                    label = "lan1";
+> +                };
+> +                port@1 {
+> +                    reg = <1>;
+> +                    label = "lan2";
+> +                };
+> +                port@2 {
+> +                    reg = <2>;
+> +                    label = "lan3";
+> +                };
+> +                port@3 {
+> +                    reg = <3>;
+> +                    label = "lan4";
+> +                };
+> +                port@4 {
+> +                    reg = <4>;
+> +                    label = "lan5";
+> +                };
+> +                port@5 {
+> +                    reg = <5>;
+> +                    label = "cpu";
+> +                    ethernet = <&eth0>;
+> +                    fixed-link {
+> +                        speed = <1000>;
+> +                        full-duplex;
+> +                    };
+> +                };
+> +            };
+> +        };
+> +
+> +        ksz8565: switch@1 {
+> +            compatible = "microchip,ksz8565";
+> +            reg = <1>;
+> +
+> +            spi-max-frequency = <44000000>;
+> +            spi-cpha;
+> +            spi-cpol;
+> +
+> +            ethernet-ports {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                port@0 {
+> +                    reg = <0>;
+> +                    label = "lan1";
+> +                };
+> +                port@1 {
+> +                    reg = <1>;
+> +                    label = "lan2";
+> +                };
+> +                port@2 {
+> +                    reg = <2>;
+> +                    label = "lan3";
+> +                };
+> +                port@3 {
+> +                    reg = <3>;
+> +                    label = "lan4";
+> +                };
+> +                port@6 {
+> +                    reg = <6>;
+> +                    label = "cpu";
+> +                    ethernet = <&eth0>;
+> +                    fixed-link {
+> +                        speed = <1000>;
+> +                        full-duplex;
+> +                    };
+> +                };
+> +            };
+> +        };
+> +    };
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 18b5b7896af8..d1003033412f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11508,7 +11508,7 @@ M:	Woojung Huh <woojung.huh@microchip.com>
+>  M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+>  L:	netdev@vger.kernel.org
+>  S:	Maintained
+> -F:	Documentation/devicetree/bindings/net/dsa/ksz.txt
+> +F:	Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+>  F:	drivers/net/dsa/microchip/*
+>  F:	include/linux/platform_data/microchip-ksz.h
+>  F:	net/dsa/tag_ksz.c
+> -- 
+> Christian Eggers
+> Embedded software developer
+> 
+> Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+> Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+> Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+> Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+> Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+> 
