@@ -2,173 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3FC2B8B7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE412B8B7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725944AbgKSGR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 01:17:26 -0500
-Received: from mga03.intel.com ([134.134.136.65]:48854 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725799AbgKSGR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 01:17:26 -0500
-IronPort-SDR: 3VHxOBo/3r9QhwtJQ9sywydYbDKQLH0nC7HblTFH2jj8DGzyn9Qv1qy2qDj0vph+B14SxqroCV
- Y0MuLUhMymFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="171337424"
-X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
-   d="scan'208";a="171337424"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 22:17:25 -0800
-IronPort-SDR: OA95P/mumrFOyGLRic1vf16FHbcadOWffRt5CO8ri96UhVMHBr/VcrLrv/NJWsQ2+gT/AO/9Qz
- j+6IlsSSFIeg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
-   d="scan'208";a="476686621"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
-  by orsmga004.jf.intel.com with ESMTP; 18 Nov 2020 22:17:22 -0800
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Johannes Weiner" <hannes@cmpxchg.org>,
-        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [RFC -V5] autonuma: Migrate on fault among multiple bound nodes
-References: <20201118051952.39097-1-ying.huang@intel.com>
-        <20201118095637.GC3306@suse.de>
-Date:   Thu, 19 Nov 2020 14:17:21 +0800
-In-Reply-To: <20201118095637.GC3306@suse.de> (Mel Gorman's message of "Wed, 18
-        Nov 2020 09:56:38 +0000")
-Message-ID: <878saxvpji.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1726189AbgKSGSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 01:18:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725783AbgKSGSB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 01:18:01 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA59C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:18:00 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id 62so3272837pgg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:18:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7pQ2zj7Jlr1PXAZIscOwv68xrKkz77uBgfi3u8q3/iE=;
+        b=SlQ9yXcPGWcqpNgsvUA5elpHwLWom+AQYZiYOdSgGaRs4scyCqq6tE/AKEJ5uZ5b81
+         lF/hyH+57tlZdv2coRV+X45arqUqjkR0aAKl7EvCtUTrgZP+Uzms/5sBiY3pTURzH+NC
+         6Jq2WJzC83rdSI2D2P+t4I2rC91XAWEmdYYGuaTMprvtZR9RngYuSZDfDBvCIalkaajC
+         YNIP91xlct/SLzjaBBdRAp3jZjyj7Tb1pv7IN8kaOASxqS7Gh8Z/TBedIdlo1Q/pY6JQ
+         cWKq1j2A4i2DOxMN3dAlM7OXOublT36ylMrsTYwjHxLJk5ZpCUi0cAvL165vdMl/2bDy
+         oXXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7pQ2zj7Jlr1PXAZIscOwv68xrKkz77uBgfi3u8q3/iE=;
+        b=YXSLD+e7yEOePyR1BYOxJ0K8wzlu4gpL056/L2ixTQDp9J9kZKcc8GtQ8o/F2GBRvg
+         N65OFPJEkku1ilTKYcBOQUffwFBe9fTrd1LQlXpvRq8SYV0f2PwFK5KcJDvHyCkEPsZC
+         f9s09qToEz2/BeXTv55FzLZrvtxAtv/k/9+7vc1yGQTXaHmwzVyqQ0j+hU4COvhGoet2
+         MtQMpZRwMbDU8MMzgU8YoeiRXIUmISqSoardK+DDMBhvcMckQ0Z6PAkH2a5qqwKXfRse
+         el8GrKzW3gb9qQzEwq5mDkZxjhP3P0BtfIqeIqfTuCjoJkhUbNup9tRG4h/8zPVJON9g
+         aP/Q==
+X-Gm-Message-State: AOAM53360+bF/7ehz6Scr6JMpJEec//aKjiRiHmLvrGDC5ze2kRElE/l
+        5g7GZt6+ePCsjTb79G1fY664CkoEa9yogFtmvNsnhQ==
+X-Google-Smtp-Source: ABdhPJzMCPjAh/2kqnjwOxyzOIsWkWSrhvfMsYkNgJM3IRKRm7eO5+zvHPlxtMjOwCYAaHDaqSWr4Tkcrzo6Lbmbiss=
+X-Received: by 2002:a17:90b:88b:: with SMTP id bj11mr2853956pjb.229.1605766680507;
+ Wed, 18 Nov 2020 22:18:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20201113105952.11638-1-songmuchun@bytedance.com>
+ <20201113105952.11638-6-songmuchun@bytedance.com> <20201117150604.GA15679@linux>
+In-Reply-To: <20201117150604.GA15679@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 19 Nov 2020 14:17:21 +0800
+Message-ID: <CAMZfGtW=Oyaoooow9_i+R1LkvGpcFoUjBxYzGqBZsOa-t-sFsg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v4 05/21] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mel Gorman <mgorman@suse.de> writes:
-
-> On Wed, Nov 18, 2020 at 01:19:52PM +0800, Huang Ying wrote:
->> Now, AutoNUMA can only optimize the page placement among the NUMA
+On Tue, Nov 17, 2020 at 11:06 PM Oscar Salvador <osalvador@suse.de> wrote:
 >
-> Note that the feature is referred to as NUMA_BALANCING in the kernel
-> configs as AUTONUMA as it was first presented was not merged. The sysctl
-> for it is kernel.numa_balancing as you already note. So use NUMAB or
-> NUMA_BALANCING but not AUTONUMA because at least a new person grepping
-> for NUMA_BALANCING or variants will find it where as autonuma only creeped
-> into the powerpc arch code.
+> On Fri, Nov 13, 2020 at 06:59:36PM +0800, Muchun Song wrote:
+> > +#define page_huge_pte(page)          ((page)->pmd_huge_pte)
+>
+> Seems you do not need this one anymore.
+>
+> > +void vmemmap_pgtable_free(struct page *page)
+> > +{
+> > +     struct page *pte_page, *t_page;
+> > +
+> > +     list_for_each_entry_safe(pte_page, t_page, &page->lru, lru) {
+> > +             list_del(&pte_page->lru);
+> > +             pte_free_kernel(&init_mm, page_to_virt(pte_page));
+> > +     }
+> > +}
+> > +
+> > +int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+> > +{
+> > +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> > +
+> > +     /* Store preallocated pages on huge page lru list */
+> > +     INIT_LIST_HEAD(&page->lru);
+> > +
+> > +     while (nr--) {
+> > +             pte_t *pte_p;
+> > +
+> > +             pte_p = pte_alloc_one_kernel(&init_mm);
+> > +             if (!pte_p)
+> > +                     goto out;
+> > +             list_add(&virt_to_page(pte_p)->lru, &page->lru);
+> > +     }
+>
+> Definetely this looks better and easier to handle.
+> Btw, did you explore Matthew's hint about instead of allocating a new page,
+> using one of the ones you are going to free to store the ptes?
+> I am not sure whether it is feasible at all though.
 
-Sure.  Will change this.
+Hi Oscar and Matthew,
+
+I have started an investigation about this. Finally, I think that it
+may not be feasible. If we use a vmemmap page frame as a
+page table when we split the PMD table firstly, in this stage,
+we need to set 512 pte entry to the vmemmap page frame. If
+someone reads the tail struct page struct of the HugeTLB,
+it can get the arbitrary value (I am not sure it actually exists,
+maybe the memory compaction module can do this). So on
+the safe side, I think that allocating a new page is a good
+choice.
+
+Thanks.
 
 >
-> If exposing to userspace, the naming should definitely be consistent.
 >
->> - sysctl knob numa_balancing can enable/disable the NUMA balancing
->>   globally.
->> 
->> - even if sysctl numa_balancing is enabled, the NUMA balancing will be
->>   disabled for the memory areas or applications with the explicit memory
->>   policy by default.
->> 
->> - MPOL_F_AUTONUMA can be used to enable the NUMA balancing for the
->>   applications when specifying the explicit memory policy.
->> 
+> > --- a/mm/hugetlb_vmemmap.h
+> > +++ b/mm/hugetlb_vmemmap.h
+> > @@ -9,12 +9,24 @@
+> >  #ifndef _LINUX_HUGETLB_VMEMMAP_H
+> >  #define _LINUX_HUGETLB_VMEMMAP_H
+> >  #include <linux/hugetlb.h>
+> > +#include <linux/mm.h>
 >
-> MPOL_F_NUMAB
-
-Sure, will change it to MPOL_F_NUMA_BALANCING.
-
->> Various page placement optimization based on the NUMA balancing can be
->> done with these flags.  As the first step, in this patch, if the
->> memory of the application is bound to multiple nodes (MPOL_BIND), and
->> in the hint page fault handler the accessing node are in the policy
->> nodemask, the page will be tried to be migrated to the accessing node
->> to reduce the cross-node accessing.
->> 
+> why do we need this here?
 >
-> The patch still lacks supporting data. It really should have a basic
-> benchmark of some sort serving as an example of how the policies should
-> be set and a before/after comparison showing the throughput of MPOL_BIND
-> accesses spanning 2 or more nodes is faster when numa balancing is enabled.
+> --
+> Oscar Salvador
+> SUSE L3
 
-Sure.  Will add some basic benchmark data and usage example.
 
-> A man page update should also be added clearly outlining when an
-> application should consider using it with the linux-api people cc'd
-> for review.
 
-Yes.  Will Cc linux-api for review and will submit patches to
-manpages.git after the API is finalized.
-
-> The main limitation is that if this requires application modification,
-> it may never be used. For example, if an application uses openmp places
-> that translates into bind then openmp needs knowledge of the flag.
-> Similar limitations apply to MPI. This feature has a risk that no one
-> uses it.
-
-My plan is to add a new option to `numactl`
-(https://github.com/numactl/numactl/), so users who want to enable NUMA
-balancing within the constrains of NUMA binding can use that.  I can
-reach some Openstack and Kubernate developers to check whether it's
-possible to add the support to these software.  For other applications,
-Yes, it may take long time for the new flag to be used.
-
->> Huang Ying (2):
->>   mempolicy: Rename MPOL_F_MORON to MPOL_F_MOPRON
->>   autonuma: Migrate on fault among multiple bound nodes
->> ---
->>  include/uapi/linux/mempolicy.h | 4 +++-
->>  mm/mempolicy.c                 | 9 +++++++++
->>  2 files changed, 12 insertions(+), 1 deletion(-)
->> 
->> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
->> index 3354774af61e..adb49f13840e 100644
->> --- a/include/uapi/linux/mempolicy.h
->> +++ b/include/uapi/linux/mempolicy.h
->> @@ -28,12 +28,14 @@ enum {
->>  /* Flags for set_mempolicy */
->>  #define MPOL_F_STATIC_NODES	(1 << 15)
->>  #define MPOL_F_RELATIVE_NODES	(1 << 14)
->> +#define MPOL_F_AUTONUMA		(1 << 13) /* Optimize with AutoNUMA if possible */
->>  
->
-> Order by flag usage, correct the naming.
-
-I will correct the naming.  Sorry, what does "order" refer to?
-
->>  /*
->>   * MPOL_MODE_FLAGS is the union of all possible optional mode flags passed to
->>   * either set_mempolicy() or mbind().
->>   */
->> -#define MPOL_MODE_FLAGS	(MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES)
->> +#define MPOL_MODE_FLAGS							\
->> +	(MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES | MPOL_F_AUTONUMA)
->>  
->>  /* Flags for get_mempolicy */
->>  #define MPOL_F_NODE	(1<<0)	/* return next IL mode instead of node mask */
->
-> How does an application discover if MPOL_F_NUMAB is supported by the
-> current running kernel? It looks like they might receive -EINVAL (didn't
-> check for sure).
-
-Yes.
-
-> In that case, a manual page is defintely needed to
-> explain that an error can be returned if the flag is used and the kernel
-> does not support it so the application can cover by falling back to a
-> strict binding. If it fails silently, then that also needs to be documented
-> because it'll lead to different behaviour depending on the running
-> kernel.
-
-Sure.  Will describe this in the manual page.
-
-Best Regards,
-Huang, Ying
+-- 
+Yours,
+Muchun
