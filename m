@@ -2,134 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C622B89AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C092B89AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727360AbgKSBjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 20:39:55 -0500
-Received: from mga02.intel.com ([134.134.136.20]:61942 "EHLO mga02.intel.com"
+        id S1727395AbgKSBkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 20:40:33 -0500
+Received: from mga05.intel.com ([192.55.52.43]:12987 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726413AbgKSBjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 20:39:54 -0500
-IronPort-SDR: c8MIROG6OgH54s0WkOffaYy4is7DqUbMSn8tPKC1ZZqi4oMTQbrRb6yYHn+0y/c9JU+OXCTITB
- nLewoFoJWvbg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="158248755"
+        id S1727136AbgKSBkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 20:40:33 -0500
+IronPort-SDR: OqfthuLFg0MSezFJv0Mi1G3sIz48tIlmE9eFcgc5iAZsH+HVMZdHlF8ODsSJwhQdPiGee045iN
+ mt0i8YW3o7OA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="255925586"
 X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
-   d="scan'208";a="158248755"
+   d="scan'208";a="255925586"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 17:39:54 -0800
-IronPort-SDR: FyWagM392snwNLeLy57jhT52y7risszr7gvIqKkdnUCQ2fCR+7Ug/PTQ97Pn3kQzGqz3CsCMqK
- 4bAGK705/1Uw==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 17:40:32 -0800
+IronPort-SDR: /m/vbItLyd2oyz9x2V6TwUFWFBoTHt+spnU9wCof8SwbnDxU4EE1dY5oVBst2vn6nJm1SqRY8l
+ lyU6NVaes3SA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
-   d="scan'208";a="357214172"
-Received: from hhuan26-mobl1.amr.corp.intel.com (HELO fgctuval.land.test) ([10.209.121.50])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 18 Nov 2020 17:39:51 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Andy Lutomirski" <luto@kernel.org>, "Dr. Greg" <greg@enjellic.com>
-Cc:     "Dave Hansen" <dave.hansen@intel.com>,
-        "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>,
-        "X86 ML" <x86@kernel.org>, linux-sgx@vger.kernel.org,
+   d="scan'208";a="359744167"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
+  by fmsmga004.fm.intel.com with ESMTP; 18 Nov 2020 17:40:29 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     huang ying <huang.ying.caritas@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         LKML <linux-kernel@vger.kernel.org>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Jethro Beekman" <jethro@fortanix.com>,
-        "Darren Kenny" <darren.kenny@oracle.com>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, "Borislav Petkov" <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        "Conrad Parker" <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>,
-        "Keith Moyer" <kmoy@google.com>,
-        "Christian Ludloff" <ludloff@google.com>,
-        "Neil Horman" <nhorman@redhat.com>,
-        "Nathaniel McCallum" <npmccallum@redhat.com>,
-        "Patrick Uiterwijk" <puiterwijk@redhat.com>,
-        "David Rientjes" <rientjes@google.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>, yaozhangx@google.com,
-        "Mikko Ylinen" <mikko.ylinen@intel.com>
-Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct
- vm_operations_struct
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com>
- <20201106174359.GA24109@wind.enjellic.com>
- <e70c9e92-0bd4-59a4-21b1-bccf8621c6bb@intel.com>
- <20201107150930.GA29530@wind.enjellic.com>
- <c7157bc6-8a65-11f4-e961-17163730df5d@intel.com>
- <20201112205819.GA9172@wind.enjellic.com>
- <5c22300c-0956-48ed-578d-00cf62cb5c09@intel.com>
- <CALCETrWaUDO1eG7PE_bpA2C_OVeNZ7VbEVaznkg2U7Qx=X=oEw@mail.gmail.com>
- <20201116180023.GA32481@wind.enjellic.com>
-Date:   Wed, 18 Nov 2020 19:39:50 -0600
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 2/2] mm/vmalloc: rework the drain logic
+References: <20201116220033.1837-1-urezki@gmail.com>
+        <20201116220033.1837-2-urezki@gmail.com>
+        <CAC=cRTN77LAn-9-6rGukc2aUZQzx7oP9eKt_hJeb=wbnhGqObQ@mail.gmail.com>
+        <20201117130434.GA10769@pc636>
+        <CAC=cRTN-JyZKyFkRgC0BrBjnu4mMTJ_hXBYszJ9HLXaLqeMfgQ@mail.gmail.com>
+        <20201118161623.GA21171@pc636>
+Date:   Thu, 19 Nov 2020 09:40:29 +0800
+In-Reply-To: <20201118161623.GA21171@pc636> (Uladzislau Rezki's message of
+        "Wed, 18 Nov 2020 17:16:23 +0100")
+Message-ID: <87mtzeunsi.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel Corp
-Message-ID: <op.0ua2t306wjvjmi@fgctuval.land.test>
-In-Reply-To: <20201116180023.GA32481@wind.enjellic.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 12:00:23 -0600, Dr. Greg <greg@enjellic.com> wrote:
+Uladzislau Rezki <urezki@gmail.com> writes:
 
-> On Thu, Nov 12, 2020 at 02:41:00PM -0800, Andy Lutomirski wrote:
->
-> Good morning, I hope the week is starting well for everyone.
->
->> On Thu, Nov 12, 2020 at 1:31 PM Dave Hansen <dave.hansen@intel.com>  
->> wrote:
+> On Wed, Nov 18, 2020 at 10:44:13AM +0800, huang ying wrote:
+>> On Tue, Nov 17, 2020 at 9:04 PM Uladzislau Rezki <urezki@gmail.com> wrote:
 >> >
->> > On 11/12/20 12:58 PM, Dr. Greg wrote:
->> > > @@ -270,11 +270,10 @@ static int sgx_vma_mprotect(struct  
->> vm_area_struct *vma,
->> > >                           struct vm_area_struct **pprev, unsigned  
->> long start,
->> > >                           unsigned long end, unsigned long newflags)
->> > >  {
->> > > -     int ret;
->> > > +     struct sgx_encl *encl = vma->vm_private_data;
+>> > On Tue, Nov 17, 2020 at 10:37:34AM +0800, huang ying wrote:
+>> > > On Tue, Nov 17, 2020 at 6:00 AM Uladzislau Rezki (Sony)
+>> > > <urezki@gmail.com> wrote:
+>> > > >
+>> > > > A current "lazy drain" model suffers from at least two issues.
+>> > > >
+>> > > > First one is related to the unsorted list of vmap areas, thus
+>> > > > in order to identify the [min:max] range of areas to be drained,
+>> > > > it requires a full list scan. What is a time consuming if the
+>> > > > list is too long.
+>> > > >
+>> > > > Second one and as a next step is about merging all fragments
+>> > > > with a free space. What is also a time consuming because it
+>> > > > has to iterate over entire list which holds outstanding lazy
+>> > > > areas.
+>> > > >
+>> > > > See below the "preemptirqsoff" tracer that illustrates a high
+>> > > > latency. It is ~24 676us. Our workloads like audio and video
+>> > > > are effected by such long latency:
 >> > >
->> > > -     ret = sgx_encl_may_map(vma->vm_private_data, start, end,  
->> newflags);
->> > > -     if (ret)
->> > > -             return ret;
->> > > +     if ( test_bit(SGX_ENCL_INITIALIZED, &encl->flags) )
->> > > +             return -EACCES;
+>> > > This seems like a real problem.  But I found there's long latency
+>> > > avoidance mechanism in the loop in __purge_vmap_area_lazy() as
+>> > > follows,
 >> > >
->> > >       return mprotect_fixup(vma, pprev, start, end, newflags);
->> > >  }
->> >
->> > This rules out mprotect() on running enclaves.  Does that break any
->> > expectations from enclave authors, or take away capabilities that  
->> folks
->> > need?
+>> > >         if (atomic_long_read(&vmap_lazy_nr) < resched_threshold)
+>> > >             cond_resched_lock(&free_vmap_area_lock);
+>> > >
+>> > I have added that "resched threshold" because of on my tests i could
+>> > simply hit out of memory, due to the fact that a drain work is not up
+>> > to speed to process such long outstanding list of vmap areas.
+>> 
+>> OK.  Now I think I understand the problem.  For free area purging,
+>> there are multiple "producers" but one "consumer", and it lacks enough
+>> mechanism to slow down the "producers" if "consumer" can not catch up.
+>> And your patch tries to resolve the problem via accelerating the
+>> "consumer".
+>>
+> Seems, correct. But just in case one more time:
 >
->> It certainly prevents any scheme in which an enclave coordinates
->> with the outside world to do W-and-then-X JIT inside.  I'm also not
->> convinced it has any real effect at all unless there's some magic I
->> missed to prevent someone from using mmap(2) to effectively change
->> permissions.
->
-> The patch that I posted yesterday addresses the security issue for
-> both mmap and mprotect by trapping the permission change request at
-> the level of the sgx_encl_may_map() function.
->
-> With respect to the W-and-then-X JIT issue, the stated purpose of the
-> driver is to implement basic SGX functionality, which is SGX1
-> semantics, it has been stated formally for a year by the developers
-> themselves that they are not entertaining a driver that addresses any
-> of the issues associated with non-static memory permissions.
->
+> the cond_resched_lock was added once upon a time to get rid of long
+> preemption off time. Due to dropping the lock, "producers" can start
+> generate further vmap area, so "consumer" can not catch up. Seems
 
-The JIT issue is applicable even to SGX1 platforms. We can do EADD with  
-EPCM.RWX in sec_info and with PTE.RW, EINIT, then mprotect to set PTE.RX  
-when JIT is done.
+Yes.  And in theory there are vfree() storm, that is, thousands vfree()
+can be called in short time.  But I don't think that's practical use
+case.
 
-Haitao
+> Later on, a resched threshold was added. It is just a simple protection
+> threshold, passing which, a freeing is prioritized back over allocation,
+> so we guarantee that we do not hit out of memory.
+
+Yes.  That can accelerate freeing if necessary.
+
+>>
+>> That isn't perfect, but I think we may have quite some opportunities
+>> to merge the free areas, so it should just work.
+>> 
+> Yes, merging opportunity should do the work. But of course there are
+> exceptions.
+>
+>> And I found the long latency avoidance logic in
+>> __purge_vmap_area_lazy() appears problematic,
+>> 
+>>          if (atomic_long_read(&vmap_lazy_nr) < resched_threshold)
+>>              cond_resched_lock(&free_vmap_area_lock);
+>> 
+>> Shouldn't it be something as follows?
+>> 
+>>          if (i >= BATCH && atomic_long_read(&vmap_lazy_nr) <
+>> resched_threshold) {
+>>              cond_resched_lock(&free_vmap_area_lock);
+>>              i = 0;
+>>          } else
+>>              i++;
+>> 
+>> This will accelerate the purging via batching and slow down vmalloc()
+>> via holding free_vmap_area_lock.  If it makes sense, can we try this?
+>> 
+> Probably we can switch to just using "batch" methodology:
+>
+> <snip>
+>     if (!(i++ % batch_threshold))
+>         cond_resched_lock(&free_vmap_area_lock);
+> <snip>
+
+That's the typical long latency avoidance method.
+
+> The question is, which value we should use as a batch_threshold: 100, 1000, etc.
+
+I think we can do some measurement to determine it?
+
+> Apart of it and in regard to CONFIG_KASAN_VMALLOC, it seems that we are not
+> allowed to drop the free_vmap_area_lock at all. Because any simultaneous
+> allocations are not allowed within a drain region, so it should occur in
+> disjoint regions. But i need to double check it.
+>
+>>
+>> And, can we reduce lazy_max_pages() to control the length of the
+>> purging list?  It could be > 8K if the vmalloc/vfree size is small.
+>>
+> We can adjust it for sure. But it will influence on number of global
+> TLB flushes that must be performed.
+
+Em...  For example, if we set it to 100, then the number of the TLB
+flushes can be reduced to 1% of the un-optimized implementation
+already.  Do you think so?
+
+Best Regards,
+Huang, Ying
