@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA5A2B8AC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 06:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10252B8ACA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 06:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725930AbgKSFRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 00:17:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
+        id S1725991AbgKSFSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 00:18:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgKSFRq (ORCPT
+        with ESMTP id S1725648AbgKSFSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 00:17:46 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966F8C0613D4;
-        Wed, 18 Nov 2020 21:17:45 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id ek7so2297631qvb.6;
-        Wed, 18 Nov 2020 21:17:45 -0800 (PST)
+        Thu, 19 Nov 2020 00:18:14 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AEFC0613D4;
+        Wed, 18 Nov 2020 21:18:13 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id ek7so2297954qvb.6;
+        Wed, 18 Nov 2020 21:18:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pS7KdQ8JkGLBhZmDEyT+dB0u8xhj5n1AeXL63Pha2Fo=;
-        b=izmRNWMIYthZ/HU5FjfWgpUBzj4kR1JnWFFMkGF9fWC8m3Bry4y2YWkKQ9kTZ0JfNy
-         x9a3amTxT60ls9Yh3gdyZ3rBj2ZWoanrxWybhglwkU01JtOK0XRXo6cqVATtUuUZrWym
-         8OWum+pJbyXSqxZZ24YYML/AGcCmc3nAosQgg=
+        bh=OqZSptQt27MJXF+QZPVZ7r04kV7IR2mYe4GqqPa6IEE=;
+        b=TKzahsrNBrqKjnKyDEivIbVJkMZS8RSwV+0GvMgueNjzBlMPDIaREBkYIDjwypWiT+
+         QhlRvpGGsMXvrM09LdEh+CiAF2BU8+mUSRJP66L9xoi38ariG+czv6aPlQkvbWxDSo6e
+         /vmLVCVISKYw4gUvl0iHqdP+g2ZKdrxDwlBvQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pS7KdQ8JkGLBhZmDEyT+dB0u8xhj5n1AeXL63Pha2Fo=;
-        b=TiPV7L2wB05GL45CSb/46Ku4oeWJq7MZLNiqfVKGhEyXPku8pzpSGF3hmZK4RMSk2g
-         PGHzB7PX3nKqOu5lMw+YSZxXwP/P844HLaxfZhbQ7RJt/q/QH6DoJ9GsAV/QVrURkdvd
-         DHAsjyvZ7YJhTPBJO0zQluiCyJ7FwKfo8tIw1kQ4DCPDP3tNDYJzgVzccQ5olItJxjbY
-         YSnL+7ZGIkjVMdKe6h7ojbGHLv4Dk7oFE8kAfTo66zhW+DODhcwePdrCU67trmwzNbTo
-         7GP04J9w2pANoiLZw317dahy9GEOEB0VKkT0ZlR5OhzoyDQbYbmaoBpdGARSEGUQKzGx
-         UmKA==
-X-Gm-Message-State: AOAM530jMqE7r8ksHkRGpmyjxj6I7LhVf8PSOTowEzKrUr9C6hgPyNnb
-        iAAyRVschwx8CwoDX7MQAuEeXAVV4Ph2TUZ8hYM=
-X-Google-Smtp-Source: ABdhPJx5L4CA73TSB0ya3N3l8FjwQz/kudIn9JyskAAXeCrGCIE68jEVLG6uaVFZcwqsCyDdVssgOLVsAX8WYXEvCFQ=
-X-Received: by 2002:a0c:c984:: with SMTP id b4mr9219438qvk.10.1605763064832;
- Wed, 18 Nov 2020 21:17:44 -0800 (PST)
+        bh=OqZSptQt27MJXF+QZPVZ7r04kV7IR2mYe4GqqPa6IEE=;
+        b=LQRCaQA1YgHAlxj+D8A+EflT5FYN7gaTxSQWOJKNF/F1JykKwYSwi3GvthsH+Dg8HZ
+         qeHU37+FoKrbSmpdKbufTgiKww363sXjkfkNxkFdVg5rEE/oNhfIRLeLFWJi/NmmoYbp
+         wpHhaM2LZPtuwWlusW/dGbjVvv/ecgHAFN64Fvk0h1Ri/jIPNJdXtW40YuVihPJvQKXc
+         gKuQAQSwyZDSncDbVOvAbERw84gJzHnNO5LwDzANFbJL9Ahpo02MvzqkH6+dbTGr4zTT
+         wTYsB1kUrfj9aduNsaaFbLWdZ/wTndAFk32iyeFiVfMnpGdXynYbm+BTmatflCQgvtT6
+         gxGQ==
+X-Gm-Message-State: AOAM531dyWUMilw08aparqLTHyVDZSMf3b0uOcQZf2/w99Ufo04XZ7dn
+        EqupkyLETPvEwZuco4Hf6rvrZ3PKOkTdPpp0vtnOTRr+X2AC2Q==
+X-Google-Smtp-Source: ABdhPJw/SAZ1gn3TFv6uB9mAMXTyHDmcqQqrp9QINmtcapIeeLWmWk6j34yHR/RZuXmPgs7hMBWrUoKmp/tl4N3D2z8=
+X-Received: by 2002:a0c:aed4:: with SMTP id n20mr9290736qvd.16.1605763093184;
+ Wed, 18 Nov 2020 21:18:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20201022014731.2035438-1-andrew@aj.id.au> <20201022014731.2035438-6-andrew@aj.id.au>
-In-Reply-To: <20201022014731.2035438-6-andrew@aj.id.au>
+References: <20201022014731.2035438-1-andrew@aj.id.au> <20201022014731.2035438-7-andrew@aj.id.au>
+In-Reply-To: <20201022014731.2035438-7-andrew@aj.id.au>
 From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 19 Nov 2020 05:17:32 +0000
-Message-ID: <CACPK8XfaF_ZzhL1mQxK5Rcpkq9UmBtas+MzxJvFTFC3Bm2UGuw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] ARM: dts: rainier: Add reserved memory for ramoops
+Date:   Thu, 19 Nov 2020 05:18:01 +0000
+Message-ID: <CACPK8XeU866qVx4hdv4s9ZM99WoWDL9Ek+SBbOQMqTsxV+8Hdg@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] ARM: dts: tacoma: Add reserved memory for ramoops
 To:     Andrew Jeffery <andrew@aj.id.au>
 Cc:     Rob Herring <robh+dt@kernel.org>,
         devicetree <devicetree@vger.kernel.org>,
@@ -72,14 +72,14 @@ On Thu, 22 Oct 2020 at 01:48, Andrew Jeffery <andrew@aj.id.au> wrote:
 Reviewed-by: Joel Stanley <joel@jms.id.au>
 
 > ---
->  arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 9 +++++++++
+>  arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts | 9 +++++++++
 >  1 file changed, 9 insertions(+)
 >
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-> index 802027a3c43c..8431cf1b32e6 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-> @@ -55,6 +55,15 @@ flash_memory: region@B8000000 {
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
+> index 09b561429579..04efabe70d9f 100644
+> --- a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
+> +++ b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
+> @@ -34,6 +34,15 @@ flash_memory: region@b8000000 {
 >
 >                 /* 48MB region from the end of flash to start of vga memory */
 >
