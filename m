@@ -2,308 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1892B9D0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8EC2B9D0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgKSVmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 16:42:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgKSVmH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 16:42:07 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9900C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:42:06 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id p12so7856415ljc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:42:06 -0800 (PST)
+        id S1726509AbgKSVm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 16:42:27 -0500
+Received: from mail-dm6nam11on2073.outbound.protection.outlook.com ([40.107.223.73]:30528
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726306AbgKSVm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 16:42:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iwofPzCgIm73Ozi3a2bVSN/VqKQOkrMeSNkzLOtn8on0O2axSRVZzusA6Qwi99xCv+FTrq0iVQz9FEpzKt2N2NpAWUdLF2/MWVU2uRgJsoQfxVHKVGzuESdxAudNbGq5wQbG5u81WNSpIFyzrPG4/q7KNLU7Ljjqw5sMye9aomoujacATHMMU0F0dhxm5zF0yCEhAZHV14DOCdla+iG4x0EifvbK0pswom0urbcUOkTY6C/LQyZhJh6oZLmlQ7mpoZ9xnrkNW3xO/H0OBeJbc9HDZQr6QylmFmDma5so4EYwLC0DGdB97Fdh2CsY0CtH5ytLgAPEFzAAm2G94WD3Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yfpi7yI1TVdBzTqvLFePuRGNsJH5mCSOyVtEinVvuCA=;
+ b=WVRNB5Eyvgs8nFSn62ms1poL+Q+d1U2AEY/07Ywjv2eXH+kLgdyc+Hzx9blL1B8l+KEegqx7tdfhvTSGgDNX1wHmsxemb6TISplTO9pqlO0K5hG/fSkCuzAda3v+Ts5DXDcuB8eDGlMzVaS9ZGkzbY8lDKpfV6xGD8Fi6jdssteqQMy4JYOCDjuWE5OPh8MYQHE0bTj8FCQPftOmT2ixg5Se9fd9RiS5Tj/hoh9v3wzOEUXNgbwxCwVKbhh0ce6w5DquQ8OJmuOMKXJI1d6qo4oWAURZGzEr//ZE7I9lvUZrnzHb+5/2DGmUTKJk6YEEgOsS1BoTyylXki04GjncqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YFkhGODobbzscYbsSLvNA9esMh0aaLBLRIgEaTHlg0Q=;
-        b=V7SJ0bU1TRqB34SR542Skh+B3DoXX93hK/87i3egewmUjkgnDDLc0BEFjgOmu8tdC5
-         fJUmedd/BDAs6dCTzYa72tU3gS56bkO2zSyb2p4KWAu4/kBnt3xqOBYPwU41zAogXBLd
-         5uepg4JrDaMxwSfA+PuE847OvVJm2pE3q3dXQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YFkhGODobbzscYbsSLvNA9esMh0aaLBLRIgEaTHlg0Q=;
-        b=IOclyjXHd/eOMqRKhnAhso0XXx5uQBLDO8bpJls9n7NOf69igiRtwd4uFmenk1afmx
-         s82dHJfufESLiw0YWAhXQ0zPDfnbWu93kUDp0YNvBi7FNk+nq6CT7PEYfvmd/TIZa+Px
-         JiHenBuhNrgm+dDJJXizRVzZpaWKn4A/yPGh6Okq+knwAVymAm9fkAw6rjZQHbn+Z7JB
-         VZtkJsT4DQkFIDj7OwZ7/9AD0w5j7vvlDevvTdAMgQw+IHJOflUsq0jnjfHxfct3FPZ0
-         Doi0kNUUbvmKGRvWm4+//6XIwjef7mKGLB6HOj7f0GHOM/mxGjb1NoQ4rdrtBopHiOH1
-         cGzw==
-X-Gm-Message-State: AOAM530d9vM5x0fVjptm49nz4txOuhgKYspQXZT9pRWfcNq0L5oYPzDa
-        YcPxt3OC3vgIsUNKewQFcWZ8koBIIAly2gwSNp/uyA==
-X-Google-Smtp-Source: ABdhPJyu+RaCXT86/IyEVefxZW+raWLyGyY6P5DffMuj2ymfKnTJCZjkJWXuok51uEUPjIW0DKcr0TspHJWyION66Uc=
-X-Received: by 2002:a2e:b0cc:: with SMTP id g12mr7039513ljl.309.1605822124931;
- Thu, 19 Nov 2020 13:42:04 -0800 (PST)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yfpi7yI1TVdBzTqvLFePuRGNsJH5mCSOyVtEinVvuCA=;
+ b=mZtOGOm8YVPK1YHrdnmXOCjq34nobz5d0Boul66uup58PCeXl8O2GXPVT/f2DFEgwvFrSwq9w+62Qy8ciM7Riw3ZUI64V5vrwce4WDNQx9SCL1uHaxu+Rzv0lzLmU2WjqWnsaH3mbeaVjeceBLZNztNweKBXCOKD+HUmfVpJ+u0=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SN6PR12MB2687.namprd12.prod.outlook.com (2603:10b6:805:73::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Thu, 19 Nov
+ 2020 21:42:17 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3541.025; Thu, 19 Nov 2020
+ 21:42:17 +0000
+From:   Ashish Kalra <Ashish.Kalra@amd.com>
+To:     konrad.wilk@oracle.com
+Cc:     hch@lst.de, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, jon.grimm@amd.com,
+        rientjes@google.com
+Subject: [PATCH v6] swiotlb: Adjust SWIOTBL bounce buffer size for SEV guests.
+Date:   Thu, 19 Nov 2020 21:42:05 +0000
+Message-Id: <20201119214205.11062-1-Ashish.Kalra@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: DM6PR02CA0092.namprd02.prod.outlook.com
+ (2603:10b6:5:1f4::33) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-References: <20201119162654.2410685-1-revest@chromium.org>
-In-Reply-To: <20201119162654.2410685-1-revest@chromium.org>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Thu, 19 Nov 2020 22:41:54 +0100
-Message-ID: <CACYkzJ5W_4o7iqa4rsDQBYWtuByjO23=w5L=vXyvbu_dtTStLA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] net: Remove the err argument from sock_from_file
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by DM6PR02CA0092.namprd02.prod.outlook.com (2603:10b6:5:1f4::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Thu, 19 Nov 2020 21:42:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 7ab84f45-026e-4e05-22ff-08d88cd3fc84
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2687:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB268795F06FC46B1D108F2E9E8EE00@SN6PR12MB2687.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JAiv7Sv5Ph2AKc5Imi8aa3hqfExW4bRgbrvH4rX36yeuSQVIS9LR2Q6XIWhXKL0+xqzCY8eqbL9j3wwxuk48G05sUxQ5Si3woy54iJoq2nYe25ZFrxblxenEsU13ANdPT74ZHz2YM/q+7WIh0eZAi4tLQPlScVm5OVvKMok37M62ez4U60YZMDaj2NfFnvbA46RRrv8jSnwrx42MtCPc5Ghey/lQyR8onebylupmbF5Il2vbF00OOKSjcUXDgsQEZM0Q9zolXsMSHav/CCkoScwVAoYus3MDLEvpeRkuhxtFNAQYNJTmdwrnxSb6Yxf8A5rGHOX1VIr8UMBf9Ayojw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(396003)(136003)(39850400004)(478600001)(8676002)(956004)(1076003)(36756003)(52116002)(16526019)(26005)(186003)(6666004)(86362001)(7696005)(83380400001)(66556008)(66946007)(6916009)(4326008)(66476007)(2616005)(8936002)(2906002)(6486002)(5660300002)(7416002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: tXVGWxC2iH9Jrn0Gsx8l6DPaYodfTbgyMdNFku94k0hCUYxcVkWS4mmn1Zjvr4zwkIky28zzyY8E1oJobOwpcMf7KlJ0sfd/o+Il09LGpNG0+tqSq7+ydyqtC1CSSDHB0WrG23BQp3/0itKo6KwuttcjOZrMOkPHVQMr6hQlHj/bX4KAo5BBtpzicZKVeU7BPEFFu9Ot+i+GtbgyJiSPEV09o6zyLn1dNjlVDPPIMQ7POs0VAVhw61QLy48GfsDO+6mZ+il2g49qd2LKxJyBgs2YJ2JlixQM9jJ9PQdViTzUj4EahmTJ1A0gu2EH1gihZOJDpYJpD8/XE3tnLuPia0CdydttZBgGh0Zqn22Yh9iC2YcqqM4Q69hxxstAkBhtGcugYiFY7lipa7hsOwBCkFclKc/kTfkJ9RrawBrOPgmKnNVifQmBwcSSo+NBNrzGCe1/7GMKSEnONtrIrIRKlyVI2sATHNeyztO7VdBkom2kY+3TlpKxwBKdyz/XMVC3jozRrxDNU6/GXTcp88Dl6yd8wOxdRMb+c/erc0wzrhSjRYnV20fMfCtWg2Q/bs8jhM4hnziCmbldjcVc3W2FIOQOE6sQKdDB1B9NwZuJd3oyfmdt05VDYCDXobPGMChg1MddKeU1EoVpMevjxqH3qHoBQhkkTMsTxzPZfvFS2NjCQRZkkdaf7m2Ou/l7NrJqzwoM1pGtIijzboAU6wkq7u1e0J430My2Q2MMG0UK/IRQbxkPn2SJMAkwiJDZfpwHKI4nz//4ZWiy/uY4/IbNRHkoEGNU+KtYyVoJsBdTBqpV3iny1e815Qxe/EBKgIeoqxQLGjiCZiNDZumqw1f0BASx+hl31B3zp9l+HWBiFBIUqp3f8okMhRvaLPubPIrIF9LD/MZj7fkHSOt21FpzJA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ab84f45-026e-4e05-22ff-08d88cd3fc84
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2020 21:42:17.8299
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H9CsL71tQpML9AyCsQ1ASvTlhXC4va7f2e/gvfNRWrtE6TreL4ZMjeBLLzhsv/WVee81AwxVuwpl+Cfl9YExXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2687
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think you meant to send these as [PATCH bpf-next] for bpf-next.
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-I guess we can do a round of reviews and update the next revision (if
-any) with the correct prefixes.
+For SEV, all DMA to and from guest has to use shared (un-encrypted) pages.
+SEV uses SWIOTLB to make this happen without requiring changes to device
+drivers.  However, depending on workload being run, the default 64MB of
+SWIOTLB might not be enough and SWIOTLB may run out of buffers to use
+for DMA, resulting in I/O errors and/or performance degradation for
+high I/O workloads.
 
-On Thu, Nov 19, 2020 at 5:27 PM Florent Revest <revest@chromium.org> wrote:
->
-> From: Florent Revest <revest@google.com>
->
-> Currently, the sock_from_file prototype takes an "err" pointer that is
-> either not set or set to -ENOTSOCK IFF the returned socket is NULL. This
-> makes the error redundant and it is ignored by a few callers.
->
-> This patch simplifies the API by letting callers deduce the error based
-> on whether the returned socket is NULL or not.
->
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Florent Revest <revest@google.com>
-> ---
->  fs/eventpoll.c               |  3 +--
->  fs/io_uring.c                | 16 ++++++++--------
->  include/linux/net.h          |  2 +-
->  net/core/netclassid_cgroup.c |  3 +--
->  net/core/netprio_cgroup.c    |  3 +--
->  net/core/sock.c              |  8 +-------
->  net/socket.c                 | 27 ++++++++++++++++-----------
->  7 files changed, 29 insertions(+), 33 deletions(-)
->
-> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-> index 4df61129566d..c764d8d5a76a 100644
-> --- a/fs/eventpoll.c
-> +++ b/fs/eventpoll.c
-> @@ -415,12 +415,11 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
->         unsigned int napi_id;
->         struct socket *sock;
->         struct sock *sk;
-> -       int err;
->
->         if (!net_busy_loop_on())
->                 return;
->
-> -       sock = sock_from_file(epi->ffd.file, &err);
-> +       sock = sock_from_file(epi->ffd.file);
->         if (!sock)
->                 return;
->
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 8018c7076b25..ace99b15cbd3 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -4341,9 +4341,9 @@ static int io_sendmsg(struct io_kiocb *req, bool force_nonblock,
->         unsigned flags;
->         int ret;
->
-> -       sock = sock_from_file(req->file, &ret);
-> +       sock = sock_from_file(req->file);
->         if (unlikely(!sock))
-> -               return ret;
-> +               return -ENOTSOCK;
->
->         if (req->async_data) {
->                 kmsg = req->async_data;
-> @@ -4390,9 +4390,9 @@ static int io_send(struct io_kiocb *req, bool force_nonblock,
->         unsigned flags;
->         int ret;
->
-> -       sock = sock_from_file(req->file, &ret);
-> +       sock = sock_from_file(req->file);
->         if (unlikely(!sock))
-> -               return ret;
-> +               return -ENOTSOCK;
->
->         ret = import_single_range(WRITE, sr->buf, sr->len, &iov, &msg.msg_iter);
->         if (unlikely(ret))
-> @@ -4569,9 +4569,9 @@ static int io_recvmsg(struct io_kiocb *req, bool force_nonblock,
->         unsigned flags;
->         int ret, cflags = 0;
->
-> -       sock = sock_from_file(req->file, &ret);
-> +       sock = sock_from_file(req->file);
->         if (unlikely(!sock))
-> -               return ret;
-> +               return -ENOTSOCK;
->
->         if (req->async_data) {
->                 kmsg = req->async_data;
-> @@ -4632,9 +4632,9 @@ static int io_recv(struct io_kiocb *req, bool force_nonblock,
->         unsigned flags;
->         int ret, cflags = 0;
->
-> -       sock = sock_from_file(req->file, &ret);
-> +       sock = sock_from_file(req->file);
->         if (unlikely(!sock))
-> -               return ret;
-> +               return -ENOTSOCK;
->
->         if (req->flags & REQ_F_BUFFER_SELECT) {
->                 kbuf = io_recv_buffer_select(req, !force_nonblock);
-> diff --git a/include/linux/net.h b/include/linux/net.h
-> index 0dcd51feef02..9e2324efc26a 100644
-> --- a/include/linux/net.h
-> +++ b/include/linux/net.h
-> @@ -240,7 +240,7 @@ int sock_sendmsg(struct socket *sock, struct msghdr *msg);
->  int sock_recvmsg(struct socket *sock, struct msghdr *msg, int flags);
->  struct file *sock_alloc_file(struct socket *sock, int flags, const char *dname);
->  struct socket *sockfd_lookup(int fd, int *err);
-> -struct socket *sock_from_file(struct file *file, int *err);
-> +struct socket *sock_from_file(struct file *file);
->  #define                     sockfd_put(sock) fput(sock->file)
->  int net_ratelimit(void);
->
-> diff --git a/net/core/netclassid_cgroup.c b/net/core/netclassid_cgroup.c
-> index 41b24cd31562..b49c57d35a88 100644
-> --- a/net/core/netclassid_cgroup.c
-> +++ b/net/core/netclassid_cgroup.c
-> @@ -68,9 +68,8 @@ struct update_classid_context {
->
->  static int update_classid_sock(const void *v, struct file *file, unsigned n)
->  {
-> -       int err;
->         struct update_classid_context *ctx = (void *)v;
-> -       struct socket *sock = sock_from_file(file, &err);
-> +       struct socket *sock = sock_from_file(file);
->
->         if (sock) {
->                 spin_lock(&cgroup_sk_update_lock);
-> diff --git a/net/core/netprio_cgroup.c b/net/core/netprio_cgroup.c
-> index 9bd4cab7d510..99a431c56f23 100644
-> --- a/net/core/netprio_cgroup.c
-> +++ b/net/core/netprio_cgroup.c
-> @@ -220,8 +220,7 @@ static ssize_t write_priomap(struct kernfs_open_file *of,
->
->  static int update_netprio(const void *v, struct file *file, unsigned n)
->  {
-> -       int err;
-> -       struct socket *sock = sock_from_file(file, &err);
-> +       struct socket *sock = sock_from_file(file);
->         if (sock) {
->                 spin_lock(&cgroup_sk_update_lock);
->                 sock_cgroup_set_prioidx(&sock->sk->sk_cgrp_data,
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 727ea1cc633c..dd0598d831ef 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -2808,14 +2808,8 @@ EXPORT_SYMBOL(sock_no_mmap);
->  void __receive_sock(struct file *file)
->  {
->         struct socket *sock;
-> -       int error;
->
-> -       /*
-> -        * The resulting value of "error" is ignored here since we only
-> -        * need to take action when the file is a socket and testing
-> -        * "sock" for NULL is sufficient.
-> -        */
-> -       sock = sock_from_file(file, &error);
-> +       sock = sock_from_file(file);
->         if (sock) {
->                 sock_update_netprioidx(&sock->sk->sk_cgrp_data);
->                 sock_update_classid(&sock->sk->sk_cgrp_data);
-> diff --git a/net/socket.c b/net/socket.c
-> index 6e6cccc2104f..c799d9652a2c 100644
-> --- a/net/socket.c
-> +++ b/net/socket.c
-> @@ -445,17 +445,15 @@ static int sock_map_fd(struct socket *sock, int flags)
->  /**
->   *     sock_from_file - Return the &socket bounded to @file.
->   *     @file: file
-> - *     @err: pointer to an error code return
->   *
-> - *     On failure returns %NULL and assigns -ENOTSOCK to @err.
-> + *     On failure returns %NULL.
->   */
->
-> -struct socket *sock_from_file(struct file *file, int *err)
-> +struct socket *sock_from_file(struct file *file)
->  {
->         if (file->f_op == &socket_file_ops)
->                 return file->private_data;      /* set in sock_map_fd */
->
-> -       *err = -ENOTSOCK;
->         return NULL;
->  }
->  EXPORT_SYMBOL(sock_from_file);
-> @@ -484,9 +482,11 @@ struct socket *sockfd_lookup(int fd, int *err)
->                 return NULL;
->         }
->
-> -       sock = sock_from_file(file, err);
-> -       if (!sock)
-> +       sock = sock_from_file(file);
-> +       if (!sock) {
-> +               *err = -ENOTSOCK;
->                 fput(file);
-> +       }
->         return sock;
->  }
->  EXPORT_SYMBOL(sockfd_lookup);
-> @@ -498,11 +498,12 @@ static struct socket *sockfd_lookup_light(int fd, int *err, int *fput_needed)
->
->         *err = -EBADF;
->         if (f.file) {
-> -               sock = sock_from_file(f.file, err);
-> +               sock = sock_from_file(f.file);
->                 if (likely(sock)) {
->                         *fput_needed = f.flags & FDPUT_FPUT;
->                         return sock;
->                 }
-> +               *err = -ENOTSOCK;
->                 fdput(f);
->         }
->         return NULL;
-> @@ -1715,9 +1716,11 @@ int __sys_accept4_file(struct file *file, unsigned file_flags,
->         if (SOCK_NONBLOCK != O_NONBLOCK && (flags & SOCK_NONBLOCK))
->                 flags = (flags & ~SOCK_NONBLOCK) | O_NONBLOCK;
->
-> -       sock = sock_from_file(file, &err);
-> -       if (!sock)
-> +       sock = sock_from_file(file);
-> +       if (!sock) {
-> +               err = -ENOTSOCK;
->                 goto out;
-> +       }
->
->         err = -ENFILE;
->         newsock = sock_alloc();
-> @@ -1840,9 +1843,11 @@ int __sys_connect_file(struct file *file, struct sockaddr_storage *address,
->         struct socket *sock;
->         int err;
->
-> -       sock = sock_from_file(file, &err);
-> -       if (!sock)
-> +       sock = sock_from_file(file);
-> +       if (!sock) {
-> +               err = -ENOTSOCK;
->                 goto out;
-> +       }
->
->         err =
->             security_socket_connect(sock, (struct sockaddr *)address, addrlen);
-> --
-> 2.29.2.299.gdc1121823c-goog
->
+Increase the default size of SWIOTLB for SEV guests using a minimum
+value of 128MB and a maximum value of 512MB, determining on amount
+of provisioned guest memory.
+
+Using late_initcall() interface to invoke swiotlb_adjust() does not
+work as the size adjustment needs to be done before mem_encrypt_init()
+and reserve_crashkernel() which use the allocated SWIOTLB buffer size,
+hence calling it explicitly from setup_arch().
+
+The SWIOTLB default size adjustment is added as an architecture specific
+interface/callback to allow architectures such as those supporting memory
+encryption to adjust/expand SWIOTLB size for their use.
+
+v5 fixed build errors and warnings as
+Reported-by: kbuild test robot <lkp@intel.com>
+
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+---
+ arch/x86/kernel/setup.c   |  2 ++
+ arch/x86/mm/mem_encrypt.c | 32 ++++++++++++++++++++++++++++++++
+ include/linux/swiotlb.h   |  6 ++++++
+ kernel/dma/swiotlb.c      | 24 ++++++++++++++++++++++++
+ 4 files changed, 64 insertions(+)
+
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 3511736fbc74..b073d58dd4a3 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1166,6 +1166,8 @@ void __init setup_arch(char **cmdline_p)
+ 	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+ 		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+ 
++	swiotlb_adjust();
++
+ 	/*
+ 	 * Reserve memory for crash kernel after SRAT is parsed so that it
+ 	 * won't consume hotpluggable memory.
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index 3f248f0d0e07..c79a0d761db5 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -490,6 +490,38 @@ static void print_mem_encrypt_feature_info(void)
+ }
+ 
+ /* Architecture __weak replacement functions */
++unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
++{
++	unsigned long size = 0;
++
++	/*
++	 * For SEV, all DMA has to occur via shared/unencrypted pages.
++	 * SEV uses SWOTLB to make this happen without changing device
++	 * drivers. However, depending on the workload being run, the
++	 * default 64MB of SWIOTLB may not be enough & SWIOTLB may
++	 * run out of buffers for DMA, resulting in I/O errors and/or
++	 * performance degradation especially with high I/O workloads.
++	 * Increase the default size of SWIOTLB for SEV guests using
++	 * a minimum value of 128MB and a maximum value of 512MB,
++	 * depending on amount of provisioned guest memory.
++	 */
++	if (sev_active()) {
++		phys_addr_t total_mem = memblock_phys_mem_size();
++
++		if (total_mem <= SZ_1G)
++			size = max(iotlb_default_size, (unsigned long) SZ_128M);
++		else if (total_mem <= SZ_4G)
++			size = max(iotlb_default_size, (unsigned long) SZ_256M);
++		else
++			size = max(iotlb_default_size, (unsigned long) SZ_512M);
++
++		pr_info("SWIOTLB bounce buffer size adjusted to %luMB for SEV platform",
++			size >> 20);
++	}
++
++	return size;
++}
++
+ void __init mem_encrypt_init(void)
+ {
+ 	if (!sme_me_mask)
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 046bb94bd4d6..46a693f76f1e 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -33,6 +33,7 @@ extern void swiotlb_init(int verbose);
+ int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
+ extern unsigned long swiotlb_nr_tbl(void);
+ unsigned long swiotlb_size_or_default(void);
++unsigned long __init arch_swiotlb_adjust(unsigned long size);
+ extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
+ extern void __init swiotlb_update_mem_attributes(void);
+ 
+@@ -80,6 +81,7 @@ void __init swiotlb_exit(void);
+ unsigned int swiotlb_max_segment(void);
+ size_t swiotlb_max_mapping_size(struct device *dev);
+ bool is_swiotlb_active(void);
++void __init swiotlb_adjust(void);
+ #else
+ #define swiotlb_force SWIOTLB_NO_FORCE
+ static inline bool is_swiotlb_buffer(phys_addr_t paddr)
+@@ -102,6 +104,10 @@ static inline bool is_swiotlb_active(void)
+ {
+ 	return false;
+ }
++
++static inline void swiotlb_adjust(void)
++{
++}
+ #endif /* CONFIG_SWIOTLB */
+ 
+ extern void swiotlb_print_info(void);
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index c19379fabd20..3be9a19ea0a5 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -163,6 +163,30 @@ unsigned long swiotlb_size_or_default(void)
+ 	return size ? size : (IO_TLB_DEFAULT_SIZE);
+ }
+ 
++unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
++{
++	return 0;
++}
++
++void __init swiotlb_adjust(void)
++{
++	unsigned long size;
++
++	/*
++	 * If swiotlb parameter has not been specified, give a chance to
++	 * architectures such as those supporting memory encryption to
++	 * adjust/expand SWIOTLB size for their use.
++	 */
++	if (!io_tlb_nslabs) {
++		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
++		if (size) {
++			size = ALIGN(size, 1 << IO_TLB_SHIFT);
++			io_tlb_nslabs = size >> IO_TLB_SHIFT;
++			io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
++		}
++	}
++}
++
+ void swiotlb_print_info(void)
+ {
+ 	unsigned long bytes = io_tlb_nslabs << IO_TLB_SHIFT;
+-- 
+2.17.1
+
