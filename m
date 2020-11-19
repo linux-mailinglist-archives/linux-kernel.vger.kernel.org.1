@@ -2,19 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3682B8F97
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E812B8F93
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgKSJzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:55:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgKSJzM (ORCPT
+        id S1727081AbgKSJzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:55:14 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:60910 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726998AbgKSJzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:55:12 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CA7C0613CF;
-        Thu, 19 Nov 2020 01:55:12 -0800 (PST)
+        Thu, 19 Nov 2020 04:55:13 -0500
 Date:   Thu, 19 Nov 2020 09:55:10 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1605779711;
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=K6App+KcX+r/jWBAsb55NuXVlCWquOXczy9PqAyZ7CY=;
-        b=xG/ygSLV7WX8RhK/BADeg1HfN1qO88WpAmROBpO3VUvPqcagFGG/4WI44dbgdOaYAAOmDb
-        OsrsfON8CAK52wBPXbqcuUwLpUKFsybw4k9Er0wwCcOFMU8wKvRrcEd8mo5e82VzPsD5pT
-        ptN8cCG7ooVlk68aN59z6mmPyRBJBPVmZArUlylyRyr2TVi7xhU7g98iSD4BuoqnyR7k4U
-        nWJMx9V48XpygbNGNXMc+Uy+vipfBjq/z+zLfdrLGp3V04A0wIs80rHGJP5DR23Yba3sQb
-        QZfeZ4V0OfsrfJIxTRP0iZP9Rf3VSRccRSCkynk3o8fXFou3ssLfeT93rHgjCw==
+        bh=oujh6hIaL/Ey5/RMDEctVzFNIo6dGc9hf0anc77FTYE=;
+        b=hC0Ol8ZTjIXEvXqyjzdR6od0ekOXjRYj8dTWixWwXrUiOeazpWbwofI3NEOxETQZLGkhgv
+        inqvjuKiIxjaKMe3QmOH9WQzu8zhl9XuIT38MNgfqob4u7QhD0f+lbqAoagaHu+JULbWsq
+        3wZE5Qba2GjD64RyrqvvzO3OMROBOIUdUwEBXc1JFbZk0ciiBvIwx4Y28IgaHQn29sDY+j
+        NmT0h0j25fUSwY+0x0eIlUaDjVEV2gYHGhU+yC5/RnqFhGtWSt28F4aY20XVhRCaHPk8xw
+        GzzaHpw2ZE9KIdJq77ES2CcH5igcSaa9oPAHx84FJiiufZoWlgzgcQegCTbYjg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1605779711;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,20 +33,20 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=K6App+KcX+r/jWBAsb55NuXVlCWquOXczy9PqAyZ7CY=;
-        b=4DT4f+R9TeX+TFXBL8Zo+myoOSU3FIPtWcR2x4aUDgQkLEe6uVNfdEGr1C4wN2I8hnzm23
-        Roz1oUtdZ4VdzcBQ==
+        bh=oujh6hIaL/Ey5/RMDEctVzFNIo6dGc9hf0anc77FTYE=;
+        b=STjSEDVL3jhADgNJWsoksuLN+oi7Xt7I4ca3OlEJit1p7CsGTQekVaeswlkFe4sRXdk3g9
+        leMOLe2VpEpY86AQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] tick: Document protections for tick related data
+Subject: [tip: timers/core] tick/broadcast: Serialize access to tick_next_period
 Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201117132006.197713794@linutronix.de>
-References: <20201117132006.197713794@linutronix.de>
+In-Reply-To: <20201117132006.061341507@linutronix.de>
+References: <20201117132006.061341507@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160577971028.11244.17384834287904608390.tip-bot2@tip-bot2>
+Message-ID: <160577971090.11244.13109009707653054704.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,53 +57,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     c398960cd82b233886fbff163986f998b5a5c008
-Gitweb:        https://git.kernel.org/tip/c398960cd82b233886fbff163986f998b5a5c008
+Commit-ID:     f73f64d5687192bc8eb7f3d9521ca6256b79f224
+Gitweb:        https://git.kernel.org/tip/f73f64d5687192bc8eb7f3d9521ca6256b79f224
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 17 Nov 2020 14:19:44 +01:00
+AuthorDate:    Tue, 17 Nov 2020 14:19:43 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Thu, 19 Nov 2020 10:48:28 +01:00
 
-tick: Document protections for tick related data
+tick/broadcast: Serialize access to tick_next_period
 
-The protection rules for tick_next_period and last_jiffies_update are blury
-at best. Clarify this.
+tick_broadcast_setup_oneshot() accesses tick_next_period twice without any
+serialization. This is wrong in two aspects:
+
+  - Reading it twice might make the broadcast data inconsistent if the
+    variable is updated concurrently.
+
+  - On 32bit systems the access might see an partial update
+
+Protect it with jiffies_lock. That's safe as none of the callchains leading
+up to this function can create a lock ordering violation:
+
+timer interrupt
+  run_local_timers()
+    hrtimer_run_queues()
+      hrtimer_switch_to_hres()
+        tick_init_highres()
+	  tick_switch_to_oneshot()
+	    tick_broadcast_switch_to_oneshot()
+or
+     tick_check_oneshot_change()
+       tick_nohz_switch_to_nohz()
+         tick_switch_to_oneshot()
+           tick_broadcast_switch_to_oneshot()
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201117132006.197713794@linutronix.de
+Link: https://lore.kernel.org/r/20201117132006.061341507@linutronix.de
 
 ---
- kernel/time/tick-common.c | 4 +++-
- kernel/time/tick-sched.c  | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ kernel/time/tick-broadcast.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/time/tick-common.c b/kernel/time/tick-common.c
-index 6c9c342..68504eb 100644
---- a/kernel/time/tick-common.c
-+++ b/kernel/time/tick-common.c
-@@ -27,7 +27,9 @@
-  */
- DEFINE_PER_CPU(struct tick_device, tick_cpu_device);
- /*
-- * Tick next event: keeps track of the tick time
-+ * Tick next event: keeps track of the tick time. It's updated by the
-+ * CPU which handles the tick and protected by jiffies_lock. There is
-+ * no requirement to write hold the jiffies seqcount for it.
-  */
- ktime_t tick_next_period;
- ktime_t tick_period;
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 81632cd..15360e6 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -44,7 +44,9 @@ struct tick_sched *tick_get_tick_sched(int cpu)
+diff --git a/kernel/time/tick-broadcast.c b/kernel/time/tick-broadcast.c
+index 36d7464..2a47c8f 100644
+--- a/kernel/time/tick-broadcast.c
++++ b/kernel/time/tick-broadcast.c
+@@ -877,6 +877,22 @@ static void tick_broadcast_init_next_event(struct cpumask *mask,
+ 	}
+ }
  
- #if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
- /*
-- * The time, when the last jiffy update happened. Protected by jiffies_lock.
-+ * The time, when the last jiffy update happened. Write access must hold
-+ * jiffies_lock and jiffies_seq. tick_nohz_next_event() needs to get a
-+ * consistent view of jiffies and last_jiffies_update.
++static inline ktime_t tick_get_next_period(void)
++{
++	ktime_t next;
++
++	/*
++	 * Protect against concurrent updates (store /load tearing on
++	 * 32bit). It does not matter if the time is already in the
++	 * past. The broadcast device which is about to be programmed will
++	 * fire in any case.
++	 */
++	raw_spin_lock(&jiffies_lock);
++	next = tick_next_period;
++	raw_spin_unlock(&jiffies_lock);
++	return next;
++}
++
+ /**
+  * tick_broadcast_setup_oneshot - setup the broadcast device
   */
- static ktime_t last_jiffies_update;
+@@ -905,10 +921,11 @@ static void tick_broadcast_setup_oneshot(struct clock_event_device *bc)
+ 			   tick_broadcast_oneshot_mask, tmpmask);
  
+ 		if (was_periodic && !cpumask_empty(tmpmask)) {
++			ktime_t nextevt = tick_get_next_period();
++
+ 			clockevents_switch_state(bc, CLOCK_EVT_STATE_ONESHOT);
+-			tick_broadcast_init_next_event(tmpmask,
+-						       tick_next_period);
+-			tick_broadcast_set_event(bc, cpu, tick_next_period);
++			tick_broadcast_init_next_event(tmpmask, nextevt);
++			tick_broadcast_set_event(bc, cpu, nextevt);
+ 		} else
+ 			bc->next_event = KTIME_MAX;
+ 	} else {
