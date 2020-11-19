@@ -2,77 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E692B94B2
+	by mail.lfdr.de (Postfix) with ESMTP id BC1272B94B3
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbgKSOfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:35:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:59074 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726860AbgKSOfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:35:16 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3ACC71042;
-        Thu, 19 Nov 2020 06:35:16 -0800 (PST)
-Received: from bogus (unknown [10.57.54.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFE273F719;
-        Thu, 19 Nov 2020 06:35:14 -0800 (PST)
-Date:   Thu, 19 Nov 2020 14:35:12 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lukasz.luba@arm.com, Jonathan.Cameron@Huawei.com,
-        egranata@google.com, jbhayana@google.com,
-        peter.hilber@opensynergy.com, mikhail.golubev@opensynergy.com,
-        Igor.Skalkin@opensynergy.com
-Subject: Re: [PATCH v3 3/6] hwmon: scmi: update hwmon internal scale data type
-Message-ID: <20201119143512.ucfztxczpde7jvpo@bogus>
-References: <20201118162905.10439-1-cristian.marussi@arm.com>
- <20201118162905.10439-4-cristian.marussi@arm.com>
- <20201119114029.w5hqcquhsyxcp5s3@bogus>
- <20201119122235.GB56553@e120937-lin>
+        id S1727464AbgKSOff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:35:35 -0500
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:58692 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726860AbgKSOff (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:35:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605796534; x=1637332534;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rdPD2tobjbKM87vuWHy5hhAuH/xzJsy0d0QgdbOGAiE=;
+  b=nuUBbJ2+oKxbESJughjOJvOaJ6+N5UtT9+x0KRqNi177wzqEp4xY0CsU
+   VHNzpE3EZORAwcfbStmFyU0Qqg/d1yETI751ThCdSbNGpWwx420PbuZM0
+   5Z5xHU0ChiTFbPVtnXBV5ThjEztAhcBt7sjEXw0NnqUtF5I1p5u5pKaGA
+   1pYMm2aSMmNZWH6X6aqQufHpLaJ6FHqR9CotQtQO1KEshByfRJ+lMuOkV
+   k+tAtH4ZeIg7YQNv3pCJTDIQLuM3Fh6WbyimafcXcXt9lBBvicN0ugoqr
+   gW4anwsy0RhXLzQg7nlU/ZCZJqNYkjtI/WfgudEmIfELZjSnr0P5OdnzY
+   A==;
+IronPort-SDR: Szn9cUG0csNZRSwfKWBQcEJxrSeZCA9YRtGs3L6vthhFkFvUMnJ2hQlyigsuTNGFhFFwutR45l
+ 0btv81E5Rk/GuOQBibuCFCXVEzLon+CoWHdCx4Pl0WPG+9Urb9QZfYbmBZj32OArKbPVt42Gjh
+ bvbj9VIcXeDbDqxPtk9DzvK9cAp2tgJC/0ALS1FjTXNqiXHNfoZyOytJtB+4YFrsWac4nL4LO5
+ GhXs1XIVYjCY4jKDtphgJaS99owpgjFeAwTNeDUdv7blLfMi/+ze7kJCNa7/+itTqKLP/C/9Wh
+ BeI=
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="104250935"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Nov 2020 07:35:33 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 19 Nov 2020 07:35:33 -0700
+Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 19 Nov 2020 07:35:32 -0700
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/4] Adding the Sparx5 Serdes driver
+Date:   Thu, 19 Nov 2020 15:35:23 +0100
+Message-ID: <20201119143527.1881404-1-steen.hegelund@microchip.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201119122235.GB56553@e120937-lin>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 12:22:49PM +0000, Cristian Marussi wrote:
-> On Thu, Nov 19, 2020 at 11:40:29AM +0000, Sudeep Holla wrote:
-> > On Wed, Nov 18, 2020 at 04:29:02PM +0000, Cristian Marussi wrote:
-> > > Use an int to calculate scale values inside scmi_hwmon_scale() to match
-> > > the updated scale data type in struct scmi_sensor_info.
-> > > 
-> > > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > > ---
-> > >  drivers/hwmon/scmi-hwmon.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
-> > > index 09ce30cba54b..17d064e58938 100644
-> > > --- a/drivers/hwmon/scmi-hwmon.c
-> > > +++ b/drivers/hwmon/scmi-hwmon.c
-> > > @@ -30,7 +30,7 @@ static inline u64 __pow10(u8 x)
-> > >  
-> > >  static int scmi_hwmon_scale(const struct scmi_sensor_info *sensor, u64 *value)
-> > >  {
-> > > -	s8 scale = sensor->scale;
-> > > +	int scale = sensor->scale;
-> > 
-> > Can this go independent of the series ? You haven't cc-ed the hwmon maintainer
-> > and the list. We need their ack if we have to take it as part of the series.
-> > 
-> Sure, I did not know in fact what's better to in this case (maybe
-> bouncing/fwd the single patch ? CC the whole series ? ).
-> I'll split and send to the maintainer
+Adding the Sparx5 Serdes driver
 
-I see this can be independent of the series. I can provide my review/ack
-tag once the maintainer is in cc. No point giving that here 😄 
+This series of patches provides the serdes driver for the Microchip Sparx5
+ethernet switch.
 
+The serdes driver supports the 10G and 25G serdes instances available in the
+Sparx5.
+
+The Sparx5 serdes support several interface modes with several speeds and also
+allows the client to change the mode and the speed according to changing in the
+environment such as changing cables from DAC to fiber.
+
+The serdes driver is to be used by the Sparx5 switchdev driver that
+will follow in subsequent series.
+
+History:
+--------
+v2 -> v3:
+    - Sorted the Kconfig sourced folders
+    - Sorted the Makefile included folders
+    - Changed the configuration interface documentation to use kernel style
+
+v1 -> v2: Fixed kernel test robot warnings
+    - Made these structures static:
+      - media_presets_25g
+      - mode_presets_25g
+      - media_presets_10g
+      - mode_presets_10g
+    - Removed these duplicate initializations:
+      - sparx5_sd25g28_params.cfg_rx_reserve_15_8
+      - sparx5_sd25g28_params.cfg_pi_en
+      - sparx5_sd25g28_params.cfg_cdrck_en
+      - sparx5_sd10g28_params.cfg_cdrck_en
+
+Lars Povlsen (2):
+  dt-bindings: phy: Add sparx5-serdes bindings
+  arm64: dts: sparx5: Add Sparx5 serdes driver node
+
+Steen Hegelund (2):
+  phy: Add ethernet serdes configuration option
+  phy: Add Sparx5 ethernet serdes PHY driver
+
+ .../bindings/phy/microchip,sparx5-serdes.yaml |  283 ++
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  195 ++
+ drivers/phy/Kconfig                           |    3 +-
+ drivers/phy/Makefile                          |    1 +
+ drivers/phy/microchip/Kconfig                 |   12 +
+ drivers/phy/microchip/Makefile                |    6 +
+ drivers/phy/microchip/sparx5_serdes.c         | 2464 +++++++++++++++
+ drivers/phy/microchip/sparx5_serdes_regs.h    | 2773 +++++++++++++++++
+ include/linux/phy/phy-ethernet-serdes.h       |   33 +
+ include/linux/phy/phy.h                       |    4 +
+ 10 files changed, 5773 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+ create mode 100644 drivers/phy/microchip/Kconfig
+ create mode 100644 drivers/phy/microchip/Makefile
+ create mode 100644 drivers/phy/microchip/sparx5_serdes.c
+ create mode 100644 drivers/phy/microchip/sparx5_serdes_regs.h
+ create mode 100644 include/linux/phy/phy-ethernet-serdes.h
+
+
+base-commit: 3cea11cd5e3b00d91caf0b4730194039b45c5891
+prerequisite-patch-id: b155844f6a5e402ba62a39b1a2b276c8378eeb49
+prerequisite-patch-id: 1605ab05e4212d0bba88a858c6dd16df64194282
+prerequisite-patch-id: 8d9741ec8a716b179e39d640b3aab8f934c2573d
 -- 
-Regards,
-Sudeep
+2.29.2
+
