@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CABA2B987A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B225D2B9878
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729340AbgKSQqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:46:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:34688 "EHLO foss.arm.com"
+        id S1729332AbgKSQqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:46:45 -0500
+Received: from foss.arm.com ([217.140.110.172]:34672 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729280AbgKSQqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:46:47 -0500
+        id S1729280AbgKSQqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:46:43 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA0111478;
-        Thu, 19 Nov 2020 08:46:36 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B21DF1650;
+        Thu, 19 Nov 2020 08:46:38 -0800 (PST)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5DE8A3F718;
-        Thu, 19 Nov 2020 08:46:35 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2FB3B3F718;
+        Thu, 19 Nov 2020 08:46:37 -0800 (PST)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
@@ -25,9 +25,9 @@ Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v4 24/25] arm64: Add TRFCR_ELx definitions
-Date:   Thu, 19 Nov 2020 16:45:46 +0000
-Message-Id: <20201119164547.2982871-25-suzuki.poulose@arm.com>
+Subject: [PATCH v4 25/25] coresight: Add support for v8.4 SelfHosted tracing
+Date:   Thu, 19 Nov 2020 16:45:47 +0000
+Message-Id: <20201119164547.2982871-26-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20201119164547.2982871-1-suzuki.poulose@arm.com>
 References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
@@ -39,61 +39,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Zhou <jonathan.zhouwen@huawei.com>
 
-Add definitions for the Arm v8.4 SelfHosted trace extensions registers.
+v8.4 tracing extensions added support for trace filtering controlled
+by TRFCR_ELx. This must be programmed to allow tracing at EL1/EL2 and
+EL0. The timestamp used is the virtual time. Also enable CONTEXIDR_EL2
+tracing if we are running the kernel at EL2.
 
 Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Mike Leach <mike.leach@linaro.org>
 Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
-[ split the register definitions to separate patch
-  rename some of the symbols ]
+[ Move the trace filtering setup etm_init_arch_data() and
+ clean ups]
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- arch/arm64/include/asm/sysreg.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ .../coresight/coresight-etm4x-core.c          | 25 +++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index d52c1b3ce589..8bfca08ea839 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -187,6 +187,7 @@
- #define SYS_GCR_EL1			sys_reg(3, 0, 1, 0, 6)
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index 1d054d2ab2a0..647685736134 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -760,6 +760,30 @@ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
+ 	return false;
+ }
  
- #define SYS_ZCR_EL1			sys_reg(3, 0, 1, 2, 0)
-+#define SYS_TRFCR_EL1			sys_reg(3, 0, 1, 2, 1)
- 
- #define SYS_TTBR0_EL1			sys_reg(3, 0, 2, 0, 0)
- #define SYS_TTBR1_EL1			sys_reg(3, 0, 2, 0, 1)
-@@ -462,6 +463,7 @@
- #define SYS_PMCCFILTR_EL0		sys_reg(3, 3, 14, 15, 7)
- 
- #define SYS_ZCR_EL2			sys_reg(3, 4, 1, 2, 0)
-+#define SYS_TRFCR_EL2			sys_reg(3, 4, 1, 2, 1)
- #define SYS_DACR32_EL2			sys_reg(3, 4, 3, 0, 0)
- #define SYS_SPSR_EL2			sys_reg(3, 4, 4, 0, 0)
- #define SYS_ELR_EL2			sys_reg(3, 4, 4, 0, 1)
-@@ -814,6 +816,7 @@
- #define ID_AA64MMFR2_CNP_SHIFT		0
- 
- /* id_aa64dfr0 */
-+#define ID_AA64DFR0_TRACE_FILT_SHIFT	40
- #define ID_AA64DFR0_DOUBLELOCK_SHIFT	36
- #define ID_AA64DFR0_PMSVER_SHIFT	32
- #define ID_AA64DFR0_CTX_CMPS_SHIFT	28
-@@ -988,6 +991,14 @@
- /* Safe value for MPIDR_EL1: Bit31:RES1, Bit30:U:0, Bit24:MT:0 */
- #define SYS_MPIDR_SAFE_VAL	(BIT(31))
- 
-+#define TRFCR_ELx_TS_SHIFT		5
-+#define TRFCR_ELx_TS_VIRTUAL		((0x1) << TRFCR_ELx_TS_SHIFT)
-+#define TRFCR_ELx_TS_GUEST_PHYSICAL	((0x2) << TRFCR_ELx_TS_SHIFT)
-+#define TRFCR_ELx_TS_PHYSICAL		((0x3) << TRFCR_ELx_TS_SHIFT)
-+#define TRFCR_EL2_CX			BIT(3)
-+#define TRFCR_ELx_ExTRE			BIT(1)
-+#define TRFCR_ELx_E0TRE			BIT(0)
++static void cpu_enable_tracing(void)
++{
++	u64 dfr0 = read_sysreg(id_aa64dfr0_el1);
++	u64 trfcr;
 +
- #ifdef __ASSEMBLY__
++	if (!(dfr0 >> ID_AA64DFR0_TRACE_FILT_SHIFT))
++		return;
++
++	/*
++	 * If the CPU supports v8.4 SelfHosted Tracing, enable
++	 * tracing at the kernel EL and EL0, forcing to use the
++	 * virtual time as the timestamp.
++	 */
++	trfcr = (TRFCR_ELx_TS_VIRTUAL |
++		 TRFCR_ELx_ExTRE |
++		 TRFCR_ELx_E0TRE);
++
++	/* If we are running at EL2, allow tracing the CONTEXTIDR_EL2. */
++	if (is_kernel_in_hyp_mode())
++		trfcr |= TRFCR_EL2_CX;
++
++	write_sysreg_s(trfcr, SYS_TRFCR_EL1);
++}
++
+ static void etm4_init_arch_data(void *info)
+ {
+ 	u32 etmidr0;
+@@ -943,6 +967,7 @@ static void etm4_init_arch_data(void *info)
+ 	/* NUMCNTR, bits[30:28] number of counters available for tracing */
+ 	drvdata->nr_cntr = BMVAL(etmidr5, 28, 30);
+ 	etm4_cs_lock(drvdata, csa);
++	cpu_enable_tracing();
+ }
  
- 	.irp	num,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30
+ static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
 -- 
 2.24.1
 
