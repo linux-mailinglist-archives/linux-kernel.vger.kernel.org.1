@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2372B8E9E
+	by mail.lfdr.de (Postfix) with ESMTP id 678192B8E9D
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgKSJUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:20:05 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:45666 "EHLO
+        id S1726794AbgKSJUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:20:04 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:45672 "EHLO
         smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726731AbgKSJT7 (ORCPT
+        by vger.kernel.org with ESMTP id S1726732AbgKSJT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Nov 2020 04:19:59 -0500
 Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id C37734031A;
-        Thu, 19 Nov 2020 09:19:58 +0000 (UTC)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 806B540338;
+        Thu, 19 Nov 2020 09:19:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1605777599; bh=hjAVmHC62hqnPFQCk0S7Hm21hPzEXOtAr+1vKzySnq0=;
+        t=1605777599; bh=edcXyPrdp8R9RXRFViAqqPMvR+va6Qr0GQL20fU0Ss0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
          References:From;
-        b=JYeU0IjQRrOD3F2HxtnmBzv9dQVb5rSDrehZp1ZCqwfNP8oxPf3jsUpHr0tvMe2O/
-         2rqGjIwTXzyequyl9Oh7LzLdaNuIzLUU+VPjfj5Gy3lkZXmVwulCqt1SYu3ny62/Hb
-         QOfN3cAL1/leoBMnESn+H3Y9cIBBizwyKbPyfP+UPmiW/FhUAUBok4Ziq1kjuOzNmX
-         sKW6nMmOG+g/HkOkwvG1DG8NnXFosirD3FMUQS2xjF9GChBcgDIJsbgB4Rtqhn2ixb
-         2cuYlzyA9+5G1NDWw4hn9xHcFen+rYKJLhn8c8xdznYtN/u89lffUvHkv2cwFEWj7o
-         lx7EnVQ9cgJ/A==
+        b=E4rg76oZS2mxOcaeqhceOZYzY47PSjyzmo42j2WmrlxM4VBcQ+CfszmHaI9s08az3
+         pjzoNPBEDpsg+aZKCU8EqyvxpehhSvd572OuoiAwCseMpIzsuea37vV23Pp9gKvXl4
+         fxMioEZoLWzHSmStruh7xfUWyvdk7D8cMfhmg8fu1rJkpOCh8/LaBdjb2u1sdv7K0J
+         Lw4VjpjHhdAK/TMLhDsqXT5qlWEokiWp5o4ELHtVmv7R6Rkt/PMdkqTbvEs3g8njeR
+         KXvwNxE4DMEYmOsRcHtqDOcaf4lhKSyZ7C6n1t9UlYNhKvJR9vKVZfM3OKZu2httYS
+         ax8LCgcvnRjJQ==
 Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 90E79A0061;
-        Thu, 19 Nov 2020 09:19:57 +0000 (UTC)
+        by mailhost.synopsys.com (Postfix) with ESMTP id 41F5CA005E;
+        Thu, 19 Nov 2020 09:19:58 +0000 (UTC)
 X-SNPS-Relay: synopsys.com
 From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+To:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Joao Pinto <Joao.Pinto@synopsys.com>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH v3 1/5] misc: Add Synopsys DesignWare xData IP driver
-Date:   Thu, 19 Nov 2020 10:19:38 +0100
-Message-Id: <f065d07272e96c16f6c4d721e515c683cc25d918.1605777306.git.gustavo.pimentel@synopsys.com>
+Cc:     Joao Pinto <Joao.Pinto@synopsys.com>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/5] misc: Add Synopsys DesignWare xData IP driver to Makefile
+Date:   Thu, 19 Nov 2020 10:19:39 +0100
+Message-Id: <7e3629eefe00add85cf6cd9587c9dd893ae4f247.1605777306.git.gustavo.pimentel@synopsys.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1605777306.git.gustavo.pimentel@synopsys.com>
 References: <cover.1605777306.git.gustavo.pimentel@synopsys.com>
@@ -49,401 +51,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Synopsys DesignWare xData IP driver. This driver enables/disables
-the PCI traffic generator module pertain to the Synopsys DesignWare
-prototype.
+Add Synopsys DesignWare xData IP driver to Makefile.
+
+This driver enables/disables the PCIe traffic generator module
+pertain to the Synopsys DesignWare prototype.
 
 Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
 ---
- drivers/misc/dw-xdata-pcie.c | 379 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 379 insertions(+)
- create mode 100644 drivers/misc/dw-xdata-pcie.c
+ drivers/misc/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/misc/dw-xdata-pcie.c b/drivers/misc/dw-xdata-pcie.c
-new file mode 100644
-index 00000000..683bfda
---- /dev/null
-+++ b/drivers/misc/dw-xdata-pcie.c
-@@ -0,0 +1,379 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2020 Synopsys, Inc. and/or its affiliates.
-+ * Synopsys DesignWare xData driver
-+ *
-+ * Author: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/pci-epf.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/bitops.h>
-+#include <linux/delay.h>
-+#include <linux/pci.h>
-+
-+#define DW_XDATA_DRIVER_NAME		"dw-xdata-pcie"
-+
-+#define DW_XDATA_EP_MEM_OFFSET		0x8000000
-+
-+struct dw_xdata_pcie_data {
-+	/* xData registers location */
-+	enum pci_barno			rg_bar;
-+	off_t				rg_off;
-+	size_t				rg_sz;
-+};
-+
-+static const struct dw_xdata_pcie_data snps_edda_data = {
-+	/* xData registers location */
-+	.rg_bar				= BAR_0,
-+	.rg_off				= 0x00000000,   /*   0 Kbytes */
-+	.rg_sz				= 0x0000012c,   /* 300  bytes */
-+};
-+
-+#define STATUS_DONE			BIT(0)
-+
-+#define CONTROL_DOORBELL		BIT(0)
-+#define CONTROL_IS_WRITE		BIT(1)
-+#define CONTROL_LENGTH(a)		FIELD_PREP(GENMASK(13, 2), a)
-+#define CONTROL_PATTERN_INC		BIT(16)
-+#define CONTROL_NO_ADDR_INC		BIT(18)
-+
-+#define XPERF_CONTROL_ENABLE		BIT(5)
-+
-+struct dw_xdata_regs {
-+	u32 addr_lsb;					/* 0x000 */
-+	u32 addr_msb;					/* 0x004 */
-+	u32 burst_cnt;					/* 0x008 */
-+	u32 control;					/* 0x00c */
-+	u32 pattern;					/* 0x010 */
-+	u32 status;					/* 0x014 */
-+	u32 RAM_addr;					/* 0x018 */
-+	u32 RAM_port;					/* 0x01c */
-+	u32 _reserved0[14];				/* 0x020..0x054 */
-+	u32 perf_control;				/* 0x058 */
-+	u32 _reserved1[41];				/* 0x05c..0x0fc */
-+	u32 wr_cnt_lsb;					/* 0x100 */
-+	u32 wr_cnt_msb;					/* 0x104 */
-+	u32 rd_cnt_lsb;					/* 0x108 */
-+	u32 rd_cnt_msb;					/* 0x10c */
-+} __packed;
-+
-+struct dw_xdata_region {
-+	phys_addr_t paddr;				/* physical address */
-+	void __iomem *vaddr;				/* virtual address */
-+	size_t sz;					/* size */
-+};
-+
-+struct dw_xdata {
-+	struct dw_xdata_region rg_region;		/* registers */
-+	size_t max_wr_len;				/* max wr xfer len */
-+	size_t max_rd_len;				/* max rd xfer len */
-+	struct pci_dev *pdev;
-+};
-+
-+static inline struct dw_xdata_regs __iomem *__dw_regs(struct dw_xdata *dw)
-+{
-+	return dw->rg_region.vaddr;
-+}
-+
-+static void dw_xdata_stop(struct dw_xdata *dw)
-+{
-+	u32 burst = readl(&(__dw_regs(dw)->burst_cnt));
-+
-+	if (burst & BIT(31)) {
-+		burst &= ~(u32)BIT(31);
-+		writel(burst, &(__dw_regs(dw)->burst_cnt));
-+	}
-+}
-+
-+static void dw_xdata_start(struct dw_xdata *dw, bool write)
-+{
-+	u32 control, status;
-+
-+	/* Stop first if xfer in progress */
-+	dw_xdata_stop(dw);
-+
-+	/* Clear status register */
-+	writel(0x0, &(__dw_regs(dw)->status));
-+
-+	/* Burst count register set for continuous until stopped */
-+	writel(0x80001001, &(__dw_regs(dw)->burst_cnt));
-+
-+	/* Pattern register */
-+	writel(0x0, &(__dw_regs(dw)->pattern));
-+
-+	/* Control register */
-+	control = CONTROL_DOORBELL | CONTROL_PATTERN_INC | CONTROL_NO_ADDR_INC;
-+	if (write) {
-+		control |= CONTROL_IS_WRITE;
-+		control |= CONTROL_LENGTH(dw->max_wr_len);
-+	} else {
-+		control |= CONTROL_LENGTH(dw->max_rd_len);
-+	}
-+	writel(control, &(__dw_regs(dw)->control));
-+
-+	usleep_range(100, 150);
-+
-+	status = readl(&(__dw_regs(dw)->status));
-+	if (!(status & STATUS_DONE))
-+		pci_dbg(dw->pdev, "xData: started %s direction\n",
-+			write ? "write" : "read");
-+}
-+
-+static void dw_xdata_perf_meas(struct dw_xdata *dw, u64 *data, bool write)
-+{
-+	if (write) {
-+		*data = readl(&(__dw_regs(dw)->wr_cnt_msb));
-+		*data <<= 32;
-+		*data |= readl(&(__dw_regs(dw)->wr_cnt_lsb));
-+	} else {
-+		*data = readl(&(__dw_regs(dw)->rd_cnt_msb));
-+		*data <<= 32;
-+		*data |= readl(&(__dw_regs(dw)->rd_cnt_lsb));
-+	}
-+}
-+
-+static u64 dw_xdata_perf_diff(u64 *m1, u64 *m2, u64 time)
-+{
-+	u64 rate = (*m1 - *m2);
-+
-+	rate *= (1000 * 1000 * 1000);
-+	rate >>= 20;
-+	rate = DIV_ROUND_CLOSEST_ULL(rate, time);
-+
-+	return rate;
-+}
-+
-+static void dw_xdata_perf(struct dw_xdata *dw, u64 *rate, bool write)
-+{
-+	u64 data[2], time[2], diff;
-+
-+	/* First measurement */
-+	writel(0x0, &(__dw_regs(dw)->perf_control));
-+	dw_xdata_perf_meas(dw, &data[0], write);
-+	time[0] = jiffies;
-+	writel((u32)XPERF_CONTROL_ENABLE, &(__dw_regs(dw)->perf_control));
-+
-+	/* Delay 100ms */
-+	mdelay(100);
-+
-+	/* Second measurement */
-+	writel(0x0, &(__dw_regs(dw)->perf_control));
-+	dw_xdata_perf_meas(dw, &data[1], write);
-+	time[1] = jiffies;
-+	writel((u32)XPERF_CONTROL_ENABLE, &(__dw_regs(dw)->perf_control));
-+
-+	/* Calculations */
-+	diff = jiffies_to_nsecs(time[1] - time[0]);
-+	*rate = dw_xdata_perf_diff(&data[1], &data[0], diff);
-+
-+	pci_dbg(dw->pdev, "xData: time=%llu us, %s=%llu MB/s\n",
-+		diff, write ? "write" : "read", *rate);
-+}
-+
-+static inline struct device *kobj2device(struct kobject *kobj)
-+{
-+	return container_of(kobj, struct device, kobj);
-+}
-+
-+static inline struct pci_dev *device2pci_dev(struct device *dev)
-+{
-+	return container_of(dev, struct pci_dev, dev);
-+}
-+
-+static ssize_t sysfs_write_show(struct kobject *kobj,
-+				struct kobj_attribute *attr, char *buf)
-+{
-+	struct device *dev = kobj2device(kobj);
-+	struct pci_dev *pdev = device2pci_dev(dev);
-+	struct dw_xdata *dw = pci_get_drvdata(pdev);
-+	u64 rate;
-+
-+	dw_xdata_perf(dw, &rate, true);
-+	return sprintf(buf, "%llu MB/s\n", rate);
-+}
-+
-+static ssize_t sysfs_write_store(struct kobject *kobj,
-+				 struct kobj_attribute *attr, const char *buf,
-+				 size_t count)
-+{
-+	struct device *dev = kobj2device(kobj);
-+	struct pci_dev *pdev = device2pci_dev(dev);
-+	struct dw_xdata *dw = pci_get_drvdata(pdev);
-+
-+	pci_dbg(pdev, "xData: requested write transfer\n");
-+	dw_xdata_start(dw, true);
-+
-+	return count;
-+}
-+
-+struct kobj_attribute sysfs_write_attr = __ATTR(write, 0644,
-+						sysfs_write_show,
-+						sysfs_write_store);
-+
-+static ssize_t sysfs_read_show(struct kobject *kobj,
-+			       struct kobj_attribute *attr, char *buf)
-+{
-+	struct device *dev = kobj2device(kobj);
-+	struct pci_dev *pdev = device2pci_dev(dev);
-+	struct dw_xdata *dw = pci_get_drvdata(pdev);
-+	u64 rate;
-+
-+	dw_xdata_perf(dw, &rate, false);
-+	return sprintf(buf, "%llu MB/s\n", rate);
-+}
-+
-+static ssize_t sysfs_read_store(struct kobject *kobj,
-+				struct kobj_attribute *attr, const char *buf,
-+				size_t count)
-+{
-+	struct device *dev = kobj2device(kobj);
-+	struct pci_dev *pdev = device2pci_dev(dev);
-+	struct dw_xdata *dw = pci_get_drvdata(pdev);
-+
-+	pci_dbg(pdev, "xData: requested read transfer\n");
-+	dw_xdata_start(dw, false);
-+
-+	return count;
-+}
-+
-+struct kobj_attribute sysfs_read_attr = __ATTR(read, 0644,
-+					       sysfs_read_show,
-+					       sysfs_read_store);
-+
-+static ssize_t sysfs_stop_store(struct kobject *kobj,
-+				struct kobj_attribute *attr, const char *buf,
-+				size_t count)
-+{
-+	struct device *dev = kobj2device(kobj);
-+	struct pci_dev *pdev = device2pci_dev(dev);
-+	struct dw_xdata *dw = pci_get_drvdata(pdev);
-+
-+	pci_dbg(pdev, "xData: requested stop any transfer\n");
-+	dw_xdata_stop(dw);
-+
-+	return count;
-+}
-+
-+struct kobj_attribute sysfs_stop_attr = __ATTR(stop, 0644,
-+					       NULL,
-+					       sysfs_stop_store);
-+
-+static int dw_xdata_pcie_probe(struct pci_dev *pdev,
-+			       const struct pci_device_id *pid)
-+{
-+	const struct dw_xdata_pcie_data *pdata = (void *)pid->driver_data;
-+	struct device *dev = &pdev->dev;
-+	struct dw_xdata *dw;
-+	u64 addr;
-+	int err;
-+
-+	/* Enable PCI device */
-+	err = pcim_enable_device(pdev);
-+	if (err) {
-+		pci_err(pdev, "enabling device failed\n");
-+		return err;
-+	}
-+
-+	/* Mapping PCI BAR regions */
-+	err = pcim_iomap_regions(pdev, BIT(pdata->rg_bar), pci_name(pdev));
-+	if (err) {
-+		pci_err(pdev, "xData BAR I/O remapping failed\n");
-+		return err;
-+	}
-+
-+	pci_set_master(pdev);
-+
-+	/* Allocate memory */
-+	dw = devm_kzalloc(&pdev->dev, sizeof(*dw), GFP_KERNEL);
-+	if (!dw)
-+		return -ENOMEM;
-+
-+	/* Data structure initialization */
-+	dw->rg_region.vaddr = pcim_iomap_table(pdev)[pdata->rg_bar];
-+	if (!dw->rg_region.vaddr)
-+		return -ENOMEM;
-+
-+	dw->rg_region.vaddr += pdata->rg_off;
-+	dw->rg_region.paddr = pdev->resource[pdata->rg_bar].start;
-+	dw->rg_region.paddr += pdata->rg_off;
-+	dw->rg_region.sz = pdata->rg_sz;
-+
-+	dw->max_wr_len = pcie_get_mps(pdev);
-+	dw->max_wr_len >>= 2;
-+
-+	dw->max_rd_len = pcie_get_readrq(pdev);
-+	dw->max_rd_len >>= 2;
-+
-+	dw->pdev = pdev;
-+
-+	writel(0x0, &(__dw_regs(dw)->RAM_addr));
-+	writel(0x0, &(__dw_regs(dw)->RAM_port));
-+
-+	addr = dw->rg_region.paddr + DW_XDATA_EP_MEM_OFFSET;
-+	writel(lower_32_bits(addr), &(__dw_regs(dw)->addr_lsb));
-+	writel(upper_32_bits(addr), &(__dw_regs(dw)->addr_msb));
-+	pci_dbg(pdev, "xData: target address = 0x%.16llx\n", addr);
-+
-+	pci_dbg(pdev, "xData: wr_len=%zu, rd_len=%zu\n",
-+		dw->max_wr_len * 4, dw->max_rd_len * 4);
-+
-+	err = sysfs_create_file(&dev->kobj, &sysfs_write_attr.attr);
-+	if (err)
-+		return err;
-+
-+	err = sysfs_create_file(&dev->kobj, &sysfs_read_attr.attr);
-+	if (err)
-+		return err;
-+
-+	err = sysfs_create_file(&dev->kobj, &sysfs_stop_attr.attr);
-+	if (err)
-+		return err;
-+
-+	err = sysfs_create_link(kernel_kobj, &dev->kobj, DW_XDATA_DRIVER_NAME);
-+	if (err)
-+		return err;
-+
-+	/* Saving data structure reference */
-+	pci_set_drvdata(pdev, dw);
-+
-+	return 0;
-+}
-+
-+static void dw_xdata_pcie_remove(struct pci_dev *pdev)
-+{
-+	struct dw_xdata *dw = pci_get_drvdata(pdev);
-+	struct device *dev = &pdev->dev;
-+
-+	if (dw)
-+		dw_xdata_stop(dw);
-+
-+	sysfs_remove_link(kernel_kobj, DW_XDATA_DRIVER_NAME);
-+	sysfs_remove_file(&dev->kobj, &sysfs_stop_attr.attr);
-+	sysfs_remove_file(&dev->kobj, &sysfs_read_attr.attr);
-+	sysfs_remove_file(&dev->kobj, &sysfs_write_attr.attr);
-+	kobject_put(&dev->kobj);
-+}
-+
-+static const struct pci_device_id dw_xdata_pcie_id_table[] = {
-+	{ PCI_DEVICE_DATA(SYNOPSYS, EDDA, &snps_edda_data) },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(pci, dw_xdata_pcie_id_table);
-+
-+static struct pci_driver dw_xdata_pcie_driver = {
-+	.name		= DW_XDATA_DRIVER_NAME,
-+	.id_table	= dw_xdata_pcie_id_table,
-+	.probe		= dw_xdata_pcie_probe,
-+	.remove		= dw_xdata_pcie_remove,
-+};
-+
-+module_pci_driver(dw_xdata_pcie_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Synopsys DesignWare xData PCIe driver");
-+MODULE_AUTHOR("Gustavo Pimentel <gustavo.pimentel@synopsys.com>");
-+
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 2521359..26a27d2 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -50,6 +50,7 @@ obj-y				+= mic/
+ obj-$(CONFIG_GENWQE)		+= genwqe/
+ obj-$(CONFIG_ECHO)		+= echo/
+ obj-$(CONFIG_CXL_BASE)		+= cxl/
++obj-$(CONFIG_DW_XDATA_PCIE)	+= dw-xdata-pcie.o
+ obj-$(CONFIG_PCI_ENDPOINT_TEST)	+= pci_endpoint_test.o
+ obj-$(CONFIG_OCXL)		+= ocxl/
+ obj-y				+= cardreader/
 -- 
 2.7.4
 
