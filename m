@@ -2,225 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FE22B8DEA
+	by mail.lfdr.de (Postfix) with ESMTP id A25F02B8DEB
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgKSIuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
+        id S1726601AbgKSIud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:50:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726274AbgKSIuX (ORCPT
+        with ESMTP id S1726569AbgKSIuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:50:23 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7948FC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:50:23 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 46EA21F455CA
-Subject: Re: next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Marc Zyngier <maz@kernel.org>
-References: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
-Cc:     kernelci-results@groups.io, Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <a0bec7c4-9bec-8858-4879-52f4688d9992@collabora.com>
-Date:   Thu, 19 Nov 2020 08:50:14 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 19 Nov 2020 03:50:32 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5A5C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:50:32 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id w8so6383355ybq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:50:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Lsk7hPQQOXXPeOPRHLqGluFNcrQrklmQ2zZLxLBVLEs=;
+        b=rogoZdLHkK0xlRT93V3sjOf2k/+zziO5yCc17GRsdtdcl/vROKPuKcx8Qib+EkHwWo
+         OcrzbmZrVHVINxU4jaVXAbkWA683YhcZ6rUAaCICZ6x1GTGGF93hntH1nDTFbJJX0rdT
+         zmdHZ2mcVRX5OFxLcmLICbLlBdPNVYhonLyP7gkRlh1VLeOI4pwGXrZvnBC3RTgrowyT
+         c3oq0OLEpdLKYdno0rAG1qMP27Vv7tXyRRnHgvDVA+ox/iNOih3mUMhK/6mFpkEDVY75
+         mgGa7yYQLwMdWpvU1MgIcT3JdzWwmbquZoJPsgbrjY+yv6KRvLocplkna3m6ORKzGVij
+         c2GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Lsk7hPQQOXXPeOPRHLqGluFNcrQrklmQ2zZLxLBVLEs=;
+        b=ud6fSpoLa/3bERHamxKyXxebgqnHA5H8O8fTv1lNC+9OE+d3S6e7O07Hwb8Uf/vp2f
+         y+5ee65HG4YJBYL58N3wjbrJm0qT3lYYpzQu7a1n6fugp1TtTvdnOAbCtdoeFOHd8uI4
+         bvVUBEyIZvU3KdL2yi49bogqR1f/i4OZoceqJXOMqB+jZJQXvVNyskDGStMxpoyVBctk
+         Z1F4xTB++NTnmT15BQsbNoiZUhypOxh5PiqusZiJFWRtgWcvAu0kypv45oeq5bpD1Zpe
+         9ANGbYB9Lj2ROZ6MZ2BFobdXWD/xi7Ghgv47X53F4BlVLKlW7TeilcEEP8o+RZmESuQe
+         h2wA==
+X-Gm-Message-State: AOAM532sur4NanKkhkFsxCyaMYfEjfqIqUJRkCI8Qrp9JfDaTHR9ytYK
+        Xr4xCN6iSWova+TPb3m2v15vo22hGQ8BtQ==
+X-Google-Smtp-Source: ABdhPJyrroyyQkrwDV1SmRHiPKxqKP9nfODkyTYXKi1U9UQl1FrOg4j1o6b5L4mSSOwEKmcT9CA5t/3WuvrtbA==
+Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
+ (user=davidgow job=sendgmr) by 2002:a05:6902:72e:: with SMTP id
+ l14mr12601049ybt.175.1605775831888; Thu, 19 Nov 2020 00:50:31 -0800 (PST)
+Date:   Thu, 19 Nov 2020 00:50:23 -0800
+Message-Id: <20201119085022.3606135-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [RFC PATCH] bpf: preload: Fix build error when O= is set
+From:   David Gow <davidgow@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>
+Cc:     David Gow <davidgow@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please see the automated bisection report below about some kernel
-errors on meson-gxbb-p200.
+If BPF_PRELOAD is enabled, and an out-of-tree build is requested with
+make O=<path>, compilation seems to fail with:
 
-Reports aren't automatically sent to the public while we're
-trialing new bisection features on kernelci.org, however this one
-looks valid.
+tools/scripts/Makefile.include:4: *** O=.kunit does not exist.  Stop.
+make[4]: *** [../kernel/bpf/preload/Makefile:8: kernel/bpf/preload/libbpf.a] Error 2
+make[3]: *** [../scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+make[2]: *** [../scripts/Makefile.build:500: kernel/bpf] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [.../Makefile:1799: kernel] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:185: __sub-make] Error 2
 
-The bisection started with next-20201118 but the errors are still
-present in next-20201119.  Details for this regression:
+By the looks of things, this is because the (relative path) O= passed on
+the command line is being passed to the libbpf Makefile, which then
+can't find the directory. Given OUTPUT= is being passed anyway, we can
+work around this by explicitly setting an empty O=, which will be
+ignored in favour of OUTPUT= in tools/scripts/Makefile.include.
 
-  https://kernelci.org/test/case/id/5fb6196bfd0127fd68d8d902/
+Signed-off-by: David Gow <davidgow@google.com>
+---
 
-The first error is:
+Hi all,
 
-  [   14.757489] Internal error: synchronous external abort: 96000210 [#1] PREEMPT SMP
+I'm not 100% sure this is the correct fix here -- it seems to work for
+me, and makes some sense, but let me know if there's a better way.
 
-Full log:
+One other thing worth noting is that I've been hitting this with
+make allyesconfig on ARCH=um, but there's a comment in the Kconfig
+suggesting that, because BPF_PRELOAD depends on !COMPILE_TEST, that
+maybe it shouldn't be being built at all. I figured that it was worth
+trying to fix this anyway.
 
-  https://storage.kernelci.org/next/master/next-20201119/arm64/defconfig/gcc-8/lab-baylibre/baseline-meson-gxbb-p200.html#L410
-
-Some other platforms are failing to boot starting with
-next-20201118 but it's unclear whether that's due to the same
-issue.  They might lead to a successful bisection which would
-help clarify this.  All the baseline test results can be found
-here:
-
-  https://kernelci.org/test/job/next/branch/master/kernel/next-20201119/plan/baseline/
+Cheers,
+-- David
 
 
-Hope this helps.  Pleas let us know if you need some help to
-reproduce the issue or try a fix.
+ kernel/bpf/preload/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Guillaume
-
-On 19/11/2020 03:03, KernelCI bot wrote:
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> * This automated bisection report was sent to you on the basis  *
-> * that you may be involved with the breaking commit it has      *
-> * found.  No manual investigation has been done to verify it,   *
-> * and the root cause of the problem may be somewhere else.      *
-> *                                                               *
-> * If you do send a fix, please include this trailer:            *
-> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
-> *                                                               *
-> * Hope this helps!                                              *
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> 
-> next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
-> 
-> Summary:
->   Start:      205292332779 Add linux-next specific files for 20201118
->   Plain log:  https://storage.kernelci.org/next/master/next-20201118/arm64/defconfig/gcc-8/lab-baylibre/baseline-meson-gxbb-p200.txt
->   HTML log:   https://storage.kernelci.org/next/master/next-20201118/arm64/defconfig/gcc-8/lab-baylibre/baseline-meson-gxbb-p200.html
->   Result:     b33340e33acd drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers
-> 
-> Checks:
->   revert:     PASS
->   verify:     PASS
-> 
-> Parameters:
->   Tree:       next
->   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->   Branch:     master
->   Target:     meson-gxbb-p200
->   CPU arch:   arm64
->   Lab:        lab-baylibre
->   Compiler:   gcc-8
->   Config:     defconfig
->   Test case:  baseline.dmesg.emerg
-> 
-> Breaking commit found:
-> 
-> -------------------------------------------------------------------------------
-> commit b33340e33acdfe5ca6a5aa1244709575ae1e0432
-> Author: Marc Zyngier <maz@kernel.org>
-> Date:   Mon Nov 16 20:07:44 2020 +0000
-> 
->     drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers
->     
->     Removing the meson-dw-hdmi module and re-inserting it results in a hang
->     as the driver writes to HDMITX_TOP_SW_RESET. Similar effects can be seen
->     when booting with mainline u-boot and using the u-boot provided DT (which
->     is highly desirable).
->     
->     The reason for the hang seem to be that the clocks are not always
->     enabled by the time we enter meson_dw_hdmi_init(). Moving this call
->     *after* dw_hdmi_probe() ensures that the clocks are enabled.
->     
->     Fixes: 1374b8375c2e ("drm/meson: dw_hdmi: add resume/suspend hooks")
->     Signed-off-by: Marc Zyngier <maz@kernel.org>
->     Acked-by: Neil Armstrong <narmstrong@baylibre.com>
->     Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->     Link: https://patchwork.freedesktop.org/patch/msgid/20201116200744.495826-5-maz@kernel.org
-> 
-> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-> index 68826cf9993f..7f8eea494147 100644
-> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
-> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-> @@ -1073,8 +1073,6 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
->  
->  	DRM_DEBUG_DRIVER("encoder initialized\n");
->  
-> -	meson_dw_hdmi_init(meson_dw_hdmi);
-> -
->  	/* Bridge / Connector */
->  
->  	dw_plat_data->priv_data = meson_dw_hdmi;
-> @@ -1097,6 +1095,8 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
->  	if (IS_ERR(meson_dw_hdmi->hdmi))
->  		return PTR_ERR(meson_dw_hdmi->hdmi);
->  
-> +	meson_dw_hdmi_init(meson_dw_hdmi);
-> +
->  	next_bridge = of_drm_find_bridge(pdev->dev.of_node);
->  	if (next_bridge)
->  		drm_bridge_attach(encoder, next_bridge,
-> -------------------------------------------------------------------------------
-> 
-> 
-> Git bisection log:
-> 
-> -------------------------------------------------------------------------------
-> git bisect start
-> # good: [0fa8ee0d9ab95c9350b8b84574824d9a384a9f7d] Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input
-> git bisect good 0fa8ee0d9ab95c9350b8b84574824d9a384a9f7d
-> # bad: [2052923327794192c5d884623b5ee5fec1867bda] Add linux-next specific files for 20201118
-> git bisect bad 2052923327794192c5d884623b5ee5fec1867bda
-> # good: [8ca2209e1117911bdca879e28c72ee59ad5b97f7] Merge remote-tracking branch 'crypto/master' into master
-> git bisect good 8ca2209e1117911bdca879e28c72ee59ad5b97f7
-> # bad: [3d72f72d6bf743e13c948737bac115114c93fd1b] Merge remote-tracking branch 'block/for-next' into master
-> git bisect bad 3d72f72d6bf743e13c948737bac115114c93fd1b
-> # good: [f017853ee200d5cac32099d5dd88a7e5fc30dde7] gpu: drm: radeon: radeon_device: Fix a bunch of kernel-doc misdemeanours
-> git bisect good f017853ee200d5cac32099d5dd88a7e5fc30dde7
-> # bad: [04e03037129068647393bee87dbcd8123465c271] Merge remote-tracking branch 'drm-misc/for-linux-next' into master
-> git bisect bad 04e03037129068647393bee87dbcd8123465c271
-> # good: [fc5d5d9744bc9c001c80d0a7b8b1f0ceb04314b2] drm/amdgpu: add DID for dimgrey_cavefish
-> git bisect good fc5d5d9744bc9c001c80d0a7b8b1f0ceb04314b2
-> # skip: [cc40c4752593c04ccd3f6ef6270c509823af42e0] drm/exynos/exynos_drm_fimd: Add missing description for param 'ctx'
-> git bisect skip cc40c4752593c04ccd3f6ef6270c509823af42e0
-> # good: [2b5b95b1ff3d70a95013a45e3b5b90f1daf42348] mm: introduce vma_set_file function v4
-> git bisect good 2b5b95b1ff3d70a95013a45e3b5b90f1daf42348
-> # bad: [511881a8301fc87fa479dd67d8e56c2ba3fc8c70] drm/mediatek/mtk_dpi: Remove unused struct definition 'mtk_dpi_encoder_funcs'
-> git bisect bad 511881a8301fc87fa479dd67d8e56c2ba3fc8c70
-> # good: [1b409fda60414186688d94a125ce5306f323af6d] drm: omapdrm: Replace HTTP links with HTTPS ones
-> git bisect good 1b409fda60414186688d94a125ce5306f323af6d
-> # skip: [1b72ea1eaa9e4168d7486d85463fbd2d57a1452c] drm/panel: s6e63m0: Implement reading from panel
-> git bisect skip 1b72ea1eaa9e4168d7486d85463fbd2d57a1452c
-> # good: [a7319c8f50c5e93a12997e2d0821a2f7946fb734] drm/udl: Fix missing error code in udl_handle_damage()
-> git bisect good a7319c8f50c5e93a12997e2d0821a2f7946fb734
-> # good: [4ee573086bd88ff3060dda07873bf755d332e9ba] Fonts: Add charcount field to font_desc
-> git bisect good 4ee573086bd88ff3060dda07873bf755d332e9ba
-> # good: [0405f94a1ae0586ca237aec0e859f1b796d6325d] drm/meson: dw-hdmi: Register a callback to disable the regulator
-> git bisect good 0405f94a1ae0586ca237aec0e859f1b796d6325d
-> # skip: [7467389bdafb77357090512d42a452bea31d53b5] drm/panel: Add ABT Y030XX067A 3.0" 320x480 panel
-> git bisect skip 7467389bdafb77357090512d42a452bea31d53b5
-> # skip: [400fb19dd63d7d2e3ab7243631704cf731f4b5ca] drm/exynos/exynos7_drm_decon: Supply missing description for param 'ctx'
-> git bisect skip 400fb19dd63d7d2e3ab7243631704cf731f4b5ca
-> # bad: [f8ef48ffa9d3bfd067416785efacf60d2a25a568] drm/armada/armada_overlay: Staticify local function 'armada_overlay_duplicate_state'
-> git bisect bad f8ef48ffa9d3bfd067416785efacf60d2a25a568
-> # bad: [e366a644c69d0909cb3ff3921c9c9ef4cff9a41d] dt-bindings: display: Add ABT Y030XX067A panel bindings
-> git bisect bad e366a644c69d0909cb3ff3921c9c9ef4cff9a41d
-> # bad: [81b7608e2b190426c33b9e7fc69fe96ae8408ebb] dt-bindings: vendor-prefixes: Add abt vendor prefix
-> git bisect bad 81b7608e2b190426c33b9e7fc69fe96ae8408ebb
-> # bad: [b33340e33acdfe5ca6a5aa1244709575ae1e0432] drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers
-> git bisect bad b33340e33acdfe5ca6a5aa1244709575ae1e0432
-> # first bad commit: [b33340e33acdfe5ca6a5aa1244709575ae1e0432] drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers
-> -------------------------------------------------------------------------------
-> 
-> 
-> -=-=-=-=-=-=-=-=-=-=-=-
-> Groups.io Links: You receive all messages sent to this group.
-> View/Reply Online (#3519): https://groups.io/g/kernelci-results/message/3519
-> Mute This Topic: https://groups.io/mt/78357476/924702
-> Group Owner: kernelci-results+owner@groups.io
-> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
-> -=-=-=-=-=-=-=-=-=-=-=-
-> 
-> 
+diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
+index 23ee310b6eb4..39848d296097 100644
+--- a/kernel/bpf/preload/Makefile
++++ b/kernel/bpf/preload/Makefile
+@@ -5,7 +5,7 @@ LIBBPF_A = $(obj)/libbpf.a
+ LIBBPF_OUT = $(abspath $(obj))
+ 
+ $(LIBBPF_A):
+-	$(Q)$(MAKE) -C $(LIBBPF_SRCS) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
++	$(Q)$(MAKE) -C $(LIBBPF_SRCS) O= OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+ 
+ userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
+ 	-I $(srctree)/tools/lib/ -Wno-unused-result
+-- 
+2.29.2.454.gaff20da3a2-goog
 
