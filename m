@@ -2,139 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A72A2B96D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AD12B9701
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728807AbgKSPsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:48:53 -0500
-Received: from mga04.intel.com ([192.55.52.120]:52700 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728794AbgKSPsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:48:52 -0500
-IronPort-SDR: DESW6EuCMi0qi3LgtR3KJBXlqnU1VIRBQvn6ZwCMUYsgrN4PRLIk+E+u8PG2IPW84qOWEJpzir
- 6Ib1tio/nZGQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="168735896"
-X-IronPort-AV: E=Sophos;i="5.78,490,1599548400"; 
-   d="scan'208";a="168735896"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 07:48:52 -0800
-IronPort-SDR: 7nyJA55w6VuCGIhdXrOWeTOsyorzZkAKSMwBzgtUfEPEOZwDmspLMi05fvJnwDG1WU28n/4ECb
- pU6P+E54kgOA==
-X-IronPort-AV: E=Sophos;i="5.78,490,1599548400"; 
-   d="scan'208";a="326012096"
-Received: from johnsa1-desk.jf.intel.com ([10.54.75.131])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 07:48:51 -0800
-Date:   Thu, 19 Nov 2020 07:52:17 -0800
-From:   "Andersen, John" <john.s.andersen@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
-Subject: [RFC] checkpatch.pl Is "does MAINTAINERS need updating" check broken?
-Message-ID: <20201119155217.GA631033@johnsa1-desk.jf.intel.com>
+        id S1728912AbgKSPxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:53:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728854AbgKSPwg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:52:36 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D69C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:52:36 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id b16so4678566qtb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:52:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bvhfCLHTYs7l5lsgLwNrBMAcXk6yVVYBXG3jF5cS+kE=;
+        b=MjOP4uTZ8G2drLy+R/RvDTmkhN1lqBygMFznKx7ziyTeTkXMBCOuGlBlydlYEhLWX7
+         ngUt75ThmQcdsQuf23omAO99hc0OHT4DMkNHzyw35nmR0qg0s6at9GgiN+un8UB0ZKyt
+         CN4stsYDR09rcHDLMSmGEJrVrd4zlDh1e4KeQIIWdH5+qDmKUYeCd//oeo/cqgs6nsdt
+         j8qQee8N+1vo5OCO9WkAZ4udArOify2tn9Nx90pk4hRlDz5UHBL6bXfaCzizk8pLV5yO
+         Hp4BsToydhApUMbA8R8RMc5zkYXqh6w6yNqGjPM5FdTUNrV2PYxa4yX/hHiDjNfprfqw
+         Yggg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bvhfCLHTYs7l5lsgLwNrBMAcXk6yVVYBXG3jF5cS+kE=;
+        b=reKBVX01ZlRTHeniu0hA2XhwyVcVfUZQYkyPU6q+qmAu6VO3ewknQIcYS/1+xCpnef
+         LPOUjLamXNhDmdFqASYP4DuHJW4zV8xrb0gBL0YnCygiCKTSo9GVLa5RKuWfmtEy4Cwb
+         3PQ7/lUUATVrz2Mzo4QYKQGHHaVtfjGEC3fujyvm4cKnv8ISUWFP3OS6yATiA4ORg2w4
+         noFO3j/vuYaSbuWzgb20o5WSPVukyzsxVyoGqaj/LQ6/x5HpNSvmWbnb+sDaR1W/oYaV
+         MDWO0lu7YzbgwXOAo6uEr96kgMYKEEz3eOhWT5RD+zE+iTHwdMQ3mPeCXefTn3fxvdiK
+         +N+Q==
+X-Gm-Message-State: AOAM531T4hY5zDOjwEYx+wxBOIecANBVjoMsW+g5jRQ+5v3+suwL1Axb
+        WnM0jYjr42sDhE9t0Uk76ZDSzg==
+X-Google-Smtp-Source: ABdhPJwnQTWrrSwIs3w5+5w6NPMKWMWsTkoh980avt1UnXUDjYSHhhrtOQyVDGTYO0PGKo4rz9f6pg==
+X-Received: by 2002:aed:2084:: with SMTP id 4mr10469682qtb.81.1605801155263;
+        Thu, 19 Nov 2020 07:52:35 -0800 (PST)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id g70sm127290qke.8.2020.11.19.07.52.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 07:52:34 -0800 (PST)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        robh+dt@kernel.org, sboyd@kernel.org, mturquette@baylibre.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [Patch v2 0/6] Enable Qualcomm Crypto Engine on sdm845
+Date:   Thu, 19 Nov 2020 10:52:27 -0500
+Message-Id: <20201119155233.3974286-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Qualcomm crypto engine supports hardware accelerated algorithms for
+encryption and authentication. Enable support for aes,des,3des encryption
+algorithms and sha1,sha256, hmac(sha1),hmac(sha256) authentication
+algorithms on sdm845.The patch series has been tested using the kernel
+crypto testing module tcrypto.ko.
 
-I just noticed that patches which have "added, moved or deleted file(s)" and
-updated MAINTAINERS still trigger the following warning:
+v1->v2:
+- Rebased to linux-next v5.10-rc4.
+- Fixed subject line format in all patches as per Bjorn's feedback.
 
-  WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
+Thara Gopinath (6):
+  dt-binding:clock: Add entry for crypto engine RPMH clock resource
+  clk:qcom:rpmh: Add CE clock on sdm845.
+  drivers:crypto:qce: Enable support for crypto engine on sdm845.
+  drivers:crypto:qce: Fix SHA result buffer corruption issues.
+  dts:qcom:sdm845: Add dt entries to support crypto engine.
+  devicetree:bindings:crypto: Extend qcom-qce binding to add support for
+    crypto engine version 5.4
 
+ .../devicetree/bindings/crypto/qcom-qce.txt   |  4 ++-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          | 30 +++++++++++++++++++
+ drivers/clk/qcom/clk-rpmh.c                   |  2 ++
+ drivers/crypto/qce/core.c                     | 17 ++++++++++-
+ drivers/crypto/qce/sha.c                      |  2 +-
+ include/dt-bindings/clock/qcom,rpmh.h         |  1 +
+ 6 files changed, 53 insertions(+), 3 deletions(-)
 
-Here's two examples using existing patches
+-- 
+2.25.1
 
-$ git show --format=email a7305e684fcfb33029fe3d0af6b7d8dc4c8ca7a1 | ./scripts/checkpatch.pl
-WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-#103:
-rename from drivers/power/avs/qcom-cpr.c
-
-total: 0 errors, 1 warnings, 39 lines checked
-
-NOTE: For some of the reported defects, checkpatch may be able to
-      mechanically convert to the typical style using --fix or --fix-inplace.
-
-"[PATCH] PM: AVS: qcom-cpr: Move the driver to the qcom specific" has style problems, please review.
-
-NOTE: If any of the errors are false positives, please report
-      them to the maintainer, see CHECKPATCH in MAINTAINERS.
-
-$ git show --format=email bca815d620544c27288abf4841e39922d694425c | ./scripts/checkpatch.pl
-WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-#89:
-rename from drivers/power/avs/smartreflex.c
-
-total: 0 errors, 1 warnings, 44 lines checked
-
-NOTE: For some of the reported defects, checkpatch may be able to
-      mechanically convert to the typical style using --fix or --fix-inplace.
-
-"[PATCH] PM: AVS: smartreflex Move driver to soc specific drivers" has style problems, please review.
-
-NOTE: If any of the errors are false positives, please report
-      them to the maintainer, see CHECKPATCH in MAINTAINERS.
-
-
-After applying the patch below it seems that checkpatch now picks up the change
-to MAINTAINERS correctly.
-
-
-$ git show --format=email a7305e684fcfb33029fe3d0af6b7d8dc4c8ca7a1 | ./scripts/checkpatch.pl
-total: 0 errors, 0 warnings, 39 lines checked
-
-"[PATCH] PM: AVS: qcom-cpr: Move the driver to the qcom specific" has no obvious style problems and is ready for submission.
-
-$ git show --format=email bca815d620544c27288abf4841e39922d694425c | ./scripts/checkpatch.pl
-total: 0 errors, 0 warnings, 44 lines checked
-
-"[PATCH] PM: AVS: smartreflex Move driver to soc specific drivers" has no obvious style problems and is ready for submission.
-
-
-I am not sure if this is a "doesn't work on my machine" situation or if there is
-really an issue here. Please let me know your thoughts.
-
-I didn't do much digging into this but found that simply changing the regex
-wasn't enough. I had to put a separate loop above the main loop. I've never
-touched pearl so that's they this is such a dumb fix.
-
-Thanks,
-John
-
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fab38b493cef..74e27cd64c58 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2510,6 +2510,14 @@ sub process {
- 
- 	$prefix = '';
- 
-+# Check if MAINTAINERS is being updated.  If so, there's probably no need to
-+# emit the "does MAINTAINERS need updating?" message on file add/move/delete
-+	foreach my $line (@lines) {
-+		if ($line =~ /\+\+\+ b\/MAINTAINERS$/) {
-+			$reported_maintainer_file = 1;
-+		}
-+	}
-+
- 	$realcnt = 0;
- 	$linenr = 0;
- 	$fixlinenr = -1;
-@@ -2744,12 +2752,6 @@ sub process {
- 			$in_commit_log = 0;
- 		}
- 
--# Check if MAINTAINERS is being updated.  If so, there's probably no need to
--# emit the "does MAINTAINERS need updating?" message on file add/move/delete
--		if ($line =~ /^\s*MAINTAINERS\s*\|/) {
--			$reported_maintainer_file = 1;
--		}
--
- # Check signature styles
- 		if (!$in_header_lines &&
- 		    $line =~ /^(\s*)([a-z0-9_-]+by:|$signature_tags)(\s*)(.*)/i) {
