@@ -2,201 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D582B9864
+	by mail.lfdr.de (Postfix) with ESMTP id BED732B9865
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729108AbgKSQpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:45:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55154 "EHLO mail.kernel.org"
+        id S1729114AbgKSQqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:46:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:34412 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728140AbgKSQpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:45:20 -0500
-Received: from kozik-lap.mshome.net (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FAC022227;
-        Thu, 19 Nov 2020 16:45:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605804319;
-        bh=mXY6R0JYv9mPZeaRTe3GbHETYhXc5gsUwqUBxsCHotA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ryg5g3W0Vx46s7wfUJ1y28FBctVJEX1idl4DHQUzFksXj1Cg8wwPCnCjJn9cfMsHl
-         2ShZRUX6zT+y2y3tQZbrG31mNPn96KZa4XXJ+hF7rHMAlr2KeRJYXjbRfei3Vewvs+
-         5MFAR2J07lASd9JAUR3+1YXzSyQwqGDeV4bbFeKo=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] clk: samsung: allow compile testing of Exynos, S3C64xx and S5Pv210
-Date:   Thu, 19 Nov 2020 17:45:09 +0100
-Message-Id: <20201119164509.754851-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1727369AbgKSQqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:46:02 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7CC9A1478;
+        Thu, 19 Nov 2020 08:46:01 -0800 (PST)
+Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 617023F719;
+        Thu, 19 Nov 2020 08:46:00 -0800 (PST)
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
+        jonathan.zhouwen@huawei.com, coresight@lists.linaro.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH v4 00/26] coresight: etm4x: Support for system instructions
+Date:   Thu, 19 Nov 2020 16:45:22 +0000
+Message-Id: <20201119164547.2982871-1-suzuki.poulose@arm.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So far all Exynos, S3C64xx and S5Pv210 clock units were selected by
-respective SOC/ARCH Kconfig option.  On a kernel built for selected
-SoCs, this allowed to build only limited set of matching clock drivers.
-However compile testing was not possible in such case as Makefile object
-depent on SOC/ARCH option.
+CoreSight ETMv4.4 obsoletes memory mapped access to ETM and
+mandates the system instructions for registers.
+This also implies that they may not be on the amba bus.
+Right now all the CoreSight components are accessed via memory
+map. Also, we have some common routines in coresight generic
+code driver (e.g, CS_LOCK, claim/disclaim), which assume the
+mmio. In order to preserve the generic algorithms at a single
+place and to allow dynamic switch for ETMs, this series introduces
+an abstraction layer for accessing a coresight device. It is
+designed such that the mmio access are fast tracked (i.e, without
+an indirect function call).
 
-Add separate Kconfig options for each of them to be able to compile
-test.
+This will also help us to get rid of the driver+attribute specific
+sysfs show/store routines and replace them with a single routine
+to access a given register offset (which can be embedded in the
+dev_ext_attribute). This is not currently implemented in the series,
+but can be achieved.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/clk/samsung/Kconfig  | 67 ++++++++++++++++++++++++++++++++++--
- drivers/clk/samsung/Makefile | 22 ++++++------
- include/linux/clk/samsung.h  |  4 +--
- 3 files changed, 78 insertions(+), 15 deletions(-)
+Further we switch the generic routines to work with the abstraction.
+With this in place, we refactor the etm4x code a bit to allow for
+supporting the system instructions with very little new code. The
+changes also switch to using the system instructions by default
+even when we may have an MMIO.
 
-diff --git a/drivers/clk/samsung/Kconfig b/drivers/clk/samsung/Kconfig
-index 7e9c186e57ef..0441c4f73ac9 100644
---- a/drivers/clk/samsung/Kconfig
-+++ b/drivers/clk/samsung/Kconfig
-@@ -2,10 +2,73 @@
- # Recent Exynos platforms should just select COMMON_CLK_SAMSUNG:
- config COMMON_CLK_SAMSUNG
- 	bool "Samsung Exynos clock controller support" if COMPILE_TEST
--	# Clocks on ARM64 SoCs (e.g. Exynos5433, Exynos7) are chosen by
--	# EXYNOS_ARM64_COMMON_CLK to avoid building them on ARMv7:
-+	select S3C64XX_COMMON_CLK if ARM && ARCH_S3C64XX
-+	select S5PV210_COMMON_CLK if ARM && ARCH_S5PV210
-+	select EXYNOS_3250_COMMON_CLK if ARM && SOC_EXYNOS3250
-+	select EXYNOS_4_COMMON_CLK if ARM && ARCH_EXYNOS4
-+	select EXYNOS_5250_COMMON_CLK if ARM && SOC_EXYNOS5250
-+	select EXYNOS_5260_COMMON_CLK if ARM && SOC_EXYNOS5260
-+	select EXYNOS_5410_COMMON_CLK if ARM && SOC_EXYNOS5410
-+	select EXYNOS_5420_COMMON_CLK if ARM && SOC_EXYNOS5420
- 	select EXYNOS_ARM64_COMMON_CLK if ARM64 && ARCH_EXYNOS
- 
-+config S3C64XX_COMMON_CLK
-+	bool "Samsung S3C64xx clock controller support" if COMPILE_TEST
-+	depends on COMMON_CLK_SAMSUNG
-+	help
-+	  Support for the clock controller present on the Samsung S3C64xx SoCs.
-+	  Choose Y here only if you build for this SoC.
-+
-+config S5PV210_COMMON_CLK
-+	bool "Samsung S5Pv210 clock controller support" if COMPILE_TEST
-+	depends on COMMON_CLK_SAMSUNG
-+	help
-+	  Support for the clock controller present on the Samsung S5Pv210 SoCs.
-+	  Choose Y here only if you build for this SoC.
-+
-+config EXYNOS_3250_COMMON_CLK
-+	bool "Samsung Exynos3250 clock controller support" if COMPILE_TEST
-+	depends on COMMON_CLK_SAMSUNG
-+	help
-+	  Support for the clock controller present on the Samsung
-+	  Exynos3250 SoCs. Choose Y here only if you build for this SoC.
-+
-+config EXYNOS_4_COMMON_CLK
-+	bool "Samsung Exynos4 clock controller support" if COMPILE_TEST
-+	depends on COMMON_CLK_SAMSUNG
-+	help
-+	  Support for the clock controller present on the Samsung
-+	  Exynos4212 and Exynos4412 SoCs. Choose Y here only if you build for
-+	  this SoC.
-+
-+config EXYNOS_5250_COMMON_CLK
-+	bool "Samsung Exynos5250 clock controller support" if COMPILE_TEST
-+	depends on COMMON_CLK_SAMSUNG
-+	help
-+	  Support for the clock controller present on the Samsung
-+	  Exynos5250 SoCs. Choose Y here only if you build for this SoC.
-+
-+config EXYNOS_5260_COMMON_CLK
-+	bool "Samsung Exynos5260 clock controller support" if COMPILE_TEST
-+	depends on COMMON_CLK_SAMSUNG
-+	help
-+	  Support for the clock controller present on the Samsung
-+	  Exynos5260 SoCs. Choose Y here only if you build for this SoC.
-+
-+config EXYNOS_5410_COMMON_CLK
-+	bool "Samsung Exynos5410 clock controller support" if COMPILE_TEST
-+	depends on COMMON_CLK_SAMSUNG
-+	help
-+	  Support for the clock controller present on the Samsung
-+	  Exynos5410 SoCs. Choose Y here only if you build for this SoC.
-+
-+config EXYNOS_5420_COMMON_CLK
-+	bool "Samsung Exynos5420 clock controller support" if COMPILE_TEST
-+	depends on COMMON_CLK_SAMSUNG
-+	help
-+	  Support for the clock controller present on the Samsung
-+	  Exynos5420 SoCs. Choose Y here only if you build for this SoC.
-+
- config EXYNOS_ARM64_COMMON_CLK
- 	bool "Samsung Exynos ARMv8-family clock controller support" if COMPILE_TEST
- 	depends on COMMON_CLK_SAMSUNG
-diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
-index 6891b087acff..028b2e27a37e 100644
---- a/drivers/clk/samsung/Makefile
-+++ b/drivers/clk/samsung/Makefile
-@@ -4,15 +4,15 @@
- #
- 
- obj-$(CONFIG_COMMON_CLK)	+= clk.o clk-pll.o clk-cpu.o
--obj-$(CONFIG_SOC_EXYNOS3250)	+= clk-exynos3250.o
--obj-$(CONFIG_ARCH_EXYNOS4)	+= clk-exynos4.o
--obj-$(CONFIG_ARCH_EXYNOS4)	+= clk-exynos4412-isp.o
--obj-$(CONFIG_SOC_EXYNOS5250)	+= clk-exynos5250.o
--obj-$(CONFIG_SOC_EXYNOS5250)	+= clk-exynos5-subcmu.o
--obj-$(CONFIG_SOC_EXYNOS5260)	+= clk-exynos5260.o
--obj-$(CONFIG_SOC_EXYNOS5410)	+= clk-exynos5410.o
--obj-$(CONFIG_SOC_EXYNOS5420)	+= clk-exynos5420.o
--obj-$(CONFIG_SOC_EXYNOS5420)	+= clk-exynos5-subcmu.o
-+obj-$(CONFIG_EXYNOS_3250_COMMON_CLK)	+= clk-exynos3250.o
-+obj-$(CONFIG_EXYNOS_4_COMMON_CLK)	+= clk-exynos4.o
-+obj-$(CONFIG_EXYNOS_4_COMMON_CLK)	+= clk-exynos4412-isp.o
-+obj-$(CONFIG_EXYNOS_5250_COMMON_CLK)	+= clk-exynos5250.o
-+obj-$(CONFIG_EXYNOS_5250_COMMON_CLK)	+= clk-exynos5-subcmu.o
-+obj-$(CONFIG_EXYNOS_5260_COMMON_CLK)	+= clk-exynos5260.o
-+obj-$(CONFIG_EXYNOS_5410_COMMON_CLK)	+= clk-exynos5410.o
-+obj-$(CONFIG_EXYNOS_5420_COMMON_CLK)	+= clk-exynos5420.o
-+obj-$(CONFIG_EXYNOS_5420_COMMON_CLK)	+= clk-exynos5-subcmu.o
- obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos5433.o
- obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
- obj-$(CONFIG_EXYNOS_CLKOUT)	+= clk-exynos-clkout.o
-@@ -21,5 +21,5 @@ obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
- obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
- obj-$(CONFIG_S3C2412_COMMON_CLK)+= clk-s3c2412.o
- obj-$(CONFIG_S3C2443_COMMON_CLK)+= clk-s3c2443.o
--obj-$(CONFIG_ARCH_S3C64XX)	+= clk-s3c64xx.o
--obj-$(CONFIG_ARCH_S5PV210)	+= clk-s5pv210.o clk-s5pv210-audss.o
-+obj-$(CONFIG_S3C64XX_COMMON_CLK)	+= clk-s3c64xx.o
-+obj-$(CONFIG_S5PV210_COMMON_CLK)	+= clk-s5pv210.o clk-s5pv210-audss.o
-diff --git a/include/linux/clk/samsung.h b/include/linux/clk/samsung.h
-index 79097e365f7f..38b774001712 100644
---- a/include/linux/clk/samsung.h
-+++ b/include/linux/clk/samsung.h
-@@ -10,7 +10,7 @@
- 
- struct device_node;
- 
--#ifdef CONFIG_ARCH_S3C64XX
-+#ifdef CONFIG_S3C64XX_COMMON_CLK
- void s3c64xx_clk_init(struct device_node *np, unsigned long xtal_f,
- 		      unsigned long xusbxti_f, bool s3c6400,
- 		      void __iomem *base);
-@@ -19,7 +19,7 @@ static inline void s3c64xx_clk_init(struct device_node *np,
- 				    unsigned long xtal_f,
- 				    unsigned long xusbxti_f,
- 				    bool s3c6400, void __iomem *base) { }
--#endif /* CONFIG_ARCH_S3C64XX */
-+#endif /* CONFIG_S3C64XX_COMMON_CLK */
- 
- #ifdef CONFIG_S3C2410_COMMON_CLK
- void s3c2410_common_clk_init(struct device_node *np, unsigned long xti_f,
+We use TRCDEVARCH for the detection of the ETM component, which
+is a standard register as per CoreSight architecture, rather than
+the etm specific id register TRCIDR1. This is for making sure
+that we are able to detect the ETM via system instructions accurately,
+when the the trace unit could be anything (etm or a custom trace unit).
+To keep the backward compatibility for any existing broken
+impelementation which may not implement TRCDEVARCH, we fall back to TRCIDR1.
+Also this covers us for the changes in the future architecture [0].
+
+Also, v8.4 self-hosted tracing extensions (coupled with ETMv4.4) adds
+new filtering registers for trace by exception level. So on a v8.4
+system, with Trace Filtering support, without the appropriate
+programming of the Trace filter registers (TRFCR_ELx), tracing
+will not be enabled. This series also includes the TraceFiltering
+support to cover the ETM-v4.4 support.
+
+The series has been mildly tested on a model for system instructions.
+I would really appreciate any testing on real hardware.
+
+Applies on coresight/next.
+
+[0] https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers/trcidr1
+
+Known issues: 
+  Checkpatch failure for "coresight: etm4x: Add sysreg access helpers" :
+
+  ERROR: Macros with complex values should be enclosed in parentheses
+  #121: FILE: drivers/hwtracing/coresight/coresight-etm4x.h:153:
+  +#define CASE_READ(res, x)                                      \
+  +    case (x): { (res) = read_etm4x_sysreg_const_offset((x)); break; }
+
+ I don't know a way to fix the warning without loosing the code
+ readability, which I believe is crucial for such a construct.
+
+Changes since v3:
+  - Device tree compatible changed to etm4x
+  - Use etm4x_** instead of generalizing etm_ in etm4x driver.
+  - Added v8.4 self hosted trace support patches, reworked
+    from Jonathan's series.
+  - Dropped queued patches.
+  - Expose TRCDEVARCH via trcidr, as this will be needed for
+    the userspace tools to determine the trace major/minor
+    arch versions.
+  - Remove csa argument to read()/write() (Mathieu)
+  - Fix secure exception mask calculation (Mathieu)
+  - Fix various coding style comments (Mathieu)
+   (See individual patches for change log)
+  
+Changes since V2:
+  - Several fixes to the ETM register accesses. Access a register
+    when it is present.
+  - Add support for TRCIDR3.NUMPROCS for v4.2+
+  - Drop OS lock detection. Use software lock only in case of mmio.
+  - Fix issues with the Exception level masks (Mike Leach)
+  - Fall back to using TRCIDR1 when TRCDEVARCH is not "present"
+  - Use a generic notion of ETM architecture (rather than using
+    the encoding as in registers)
+  - Fixed some checkpatch issues.
+  - Changed the dts compatible string to "arm,coresight-etm-sysreg"
+    (Mike Leach)
+
+Changes since V1:
+  - Flip the switch for iomem from no_iomem to io_mem in csdev_access.
+  - Split patches for claim/disclaim and CS_LOCK/UNLOCK conversions.
+  - Move device access initialisation for etm4x to the target CPU
+  - Cleanup secure exception level mask handling.
+  - Switch to use TRCDEVARCH for ETM component discovery. This
+    is for making 
+  - Check the availability of OS/Software Locks before using them.
+
+
+Jonathan Zhou (2):
+  arm64: Add TRFCR_ELx definitions
+  coresight: Add support for v8.4 SelfHosted tracing
+
+Suzuki K Poulose (23):
+  coresight: etm4x: Handle access to TRCSSPCICRn
+  coresight: etm4x: Skip accessing TRCPDCR in save/restore
+  coresight: Introduce device access abstraction
+  coresight: tpiu: Prepare for using coresight device access abstraction
+  coresight: Convert coresight_timeout to use access abstraction
+  coresight: Convert claim/disclaim operations to use access wrappers
+  coresight: etm4x: Always read the registers on the host CPU
+  coresight: etm4x: Convert all register accesses
+  coresight: etm4x: Add commentary on the registers
+  coresight: etm4x: Add sysreg access helpers
+  coresight: etm4x: Define DEVARCH register fields
+  coresight: etm4x: Check for Software Lock
+  coresight: etm4x: Cleanup secure exception level masks
+  coresight: etm4x: Clean up exception level masks
+  coresight: etm4x: Handle ETM architecture version
+  coresight: etm4x: Detect access early on the target CPU
+  coresight: etm4x: Use TRCDEVARCH for component discovery
+  coresight: etm4x: Expose trcdevarch via trcidr
+  coresight: etm4x: Add necessary synchronization for sysreg access
+  coresight: etm4x: Detect system instructions support
+  coresight: etm4x: Refactor probing routine
+  coresight: etm4x: Add support for sysreg only devices
+  dts: bindings: coresight: ETM system register access only units
+
+ .../devicetree/bindings/arm/coresight.txt     |   5 +-
+ arch/arm64/include/asm/sysreg.h               |  11 +
+ drivers/hwtracing/coresight/coresight-catu.c  |  12 +-
+ drivers/hwtracing/coresight/coresight-core.c  | 122 ++-
+ .../hwtracing/coresight/coresight-cti-core.c  |  18 +-
+ drivers/hwtracing/coresight/coresight-etb10.c |  10 +-
+ .../coresight/coresight-etm3x-core.c          |   9 +-
+ .../coresight/coresight-etm4x-core.c          | 771 +++++++++++-------
+ .../coresight/coresight-etm4x-sysfs.c         |  46 +-
+ drivers/hwtracing/coresight/coresight-etm4x.h | 498 ++++++++++-
+ .../hwtracing/coresight/coresight-funnel.c    |   7 +-
+ .../coresight/coresight-replicator.c          |  13 +-
+ drivers/hwtracing/coresight/coresight-stm.c   |   4 +-
+ .../hwtracing/coresight/coresight-tmc-core.c  |  16 +-
+ .../hwtracing/coresight/coresight-tmc-etf.c   |  10 +-
+ .../hwtracing/coresight/coresight-tmc-etr.c   |   4 +-
+ drivers/hwtracing/coresight/coresight-tpiu.c  |  31 +-
+ include/linux/coresight.h                     | 227 +++++-
+ 18 files changed, 1386 insertions(+), 428 deletions(-)
+
 -- 
-2.25.1
+2.24.1
 
