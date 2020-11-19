@@ -2,93 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA3B2B966F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A712B9672
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgKSPmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:42:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726712AbgKSPmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:42:01 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E10442469D;
-        Thu, 19 Nov 2020 15:41:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605800520;
-        bh=mqSuhL+C5LO9HZszz8keWBeiJzbUUK81OVta7LoQeCw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rJNBhCHw4Cgd+2A3MiT+WaUWkZCU5XMU/GV0eSQcjPqqvMVbdpPedYr7hFa+IcEY3
-         nCfVM/oxsCz56qUNSzqJJ/jnSvP1hss9l/v7T2bkP0VoR8iEAWb4XrZ3Ykv1Mvjac2
-         0KqGRbZS+F5Jhgabi5p3cB1XraX658CxdbhX7TJo=
-Date:   Thu, 19 Nov 2020 15:41:39 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH 1/3] spi: fix resource leak for drivers without .remove
- callback
-Message-ID: <20201119154139.GC5554@sirena.org.uk>
-References: <20201119152059.2631650-1-u.kleine-koenig@pengutronix.de>
- <20201119152416.GB5554@sirena.org.uk>
- <20201119153540.zehj2ppdt433xrsv@pengutronix.de>
+        id S1728622AbgKSPm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:42:26 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:55650 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726712AbgKSPmZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:42:25 -0500
+Received: by mail-il1-f198.google.com with SMTP id w10so5113967ila.22
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:42:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=FcdTaSWLdsax1Db4lxSAy+okurY2LoZrT3Xpi1qIi2I=;
+        b=I4+UAuOGMIKzCCY1seNjVf3W0nid3rdSCL/fHIWJmucwCvSv98pdBQ0LDK5QQQAeqh
+         rYcvxPQVMCCV4TSzHzkr1U2hOEuPaFzhmyFlzjx5tgxHBlGu8EjFX10k8HUwiHG4J+t5
+         3YBDjnoV+uMd4KQvv1s+sx702gPJWtoeWCJxtr2OhScAK7osWW/9wFbVO5cUS5erorWp
+         wf3tDogcrACPdjV0hw8XgXaMbt5zYeMn33iv3vC602u8JqdcBIHLEUs5UAmmwwB1W00B
+         RVAXPO5NkODKb4oKeh0nlzKbZcfmPyVC+1j4oOcBe+pVMdl9U8xVyQSZHH3maiytNGKa
+         9D2w==
+X-Gm-Message-State: AOAM53306G0RKcRqo2no51HbFH6Lld623+/j7Xb4YyLct37+Cr7TOcqr
+        tOJxxnRz/+xfwJGmburLCl7t7lrq7xVPPgAJdDHqKQ3ZxLso
+X-Google-Smtp-Source: ABdhPJwhiP+INO67eVYmSG+nKKuDRo/zm2frUguSFnP+VYjAgDuFpWPtZO6cVLN1DKRwTabNu4evtr5xFBlZzn5a6z9kHyy0rPEg
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TYecfFk8j8mZq+dy"
-Content-Disposition: inline
-In-Reply-To: <20201119153540.zehj2ppdt433xrsv@pengutronix.de>
-X-Cookie: Chocolate chip.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a05:6e02:90:: with SMTP id l16mr23259127ilm.228.1605800543910;
+ Thu, 19 Nov 2020 07:42:23 -0800 (PST)
+Date:   Thu, 19 Nov 2020 07:42:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000003ef05b477936c@google.com>
+Subject: INFO: task can't die in perf_event_free_task
+From:   syzbot <syzbot+f02b92479b7065807a2a@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
+        kafai@fb.com, kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---TYecfFk8j8mZq+dy
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+syzbot found the following issue on:
 
-On Thu, Nov 19, 2020 at 04:35:40PM +0100, Uwe Kleine-K=F6nig wrote:
+HEAD commit:    92edc4ae Add linux-next specific files for 20201113
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15982d72500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=79ad4f8ad2d96176
+dashboard link: https://syzkaller.appspot.com/bug?extid=f02b92479b7065807a2a
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116fb7be500000
 
-> Yes, I thought that this is not the final fix. I just sent the minimal
-> change to prevent the imbalance. So if I understand correctly, I will
-> have to respin with the following squashed into patch 1:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f02b92479b7065807a2a@syzkaller.appspotmail.com
 
-> -	if (sdrv->probe || sdrv->remove) {
-> -		sdrv->driver.probe =3D spi_drv_probe;
-> -		sdrv->driver.remove =3D spi_drv_remove;
-> -	}
-> +	sdrv->driver.probe =3D spi_drv_probe;
-> +	sdrv->driver.remove =3D spi_drv_remove;
->  	if (sdrv->shutdown)
->  		sdrv->driver.shutdown =3D spi_drv_shutdown;
->  	return driver_register(&sdrv->driver);
+INFO: task syz-executor.0:26152 can't die for more than 143 seconds.
+task:syz-executor.0  state:D stack:28544 pid:26152 ppid:  8500 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4269 [inline]
+ __schedule+0x890/0x2030 kernel/sched/core.c:5019
+ schedule+0xcf/0x270 kernel/sched/core.c:5098
+ perf_event_free_task+0x514/0x6b0 kernel/events/core.c:12605
+ copy_process+0x48e0/0x6f90 kernel/fork.c:2360
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2462
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2579
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45deb9
+Code: Unable to access opcode bytes at RIP 0x45de8f.
+RSP: 002b:00007ffb605e6c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 0000000000002040 RCX: 000000000045deb9
+RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000000000000100
+RBP: 000000000118bf70 R08: ffffffffffffffff R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007fff8d97524f R14: 00007ffb605e79c0 R15: 000000000118bf2c
+INFO: task syz-executor.0:26152 blocked for more than 143 seconds.
+      Not tainted 5.10.0-rc3-next-20201113-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:28544 pid:26152 ppid:  8500 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4269 [inline]
+ __schedule+0x890/0x2030 kernel/sched/core.c:5019
+ schedule+0xcf/0x270 kernel/sched/core.c:5098
+ perf_event_free_task+0x514/0x6b0 kernel/events/core.c:12605
+ copy_process+0x48e0/0x6f90 kernel/fork.c:2360
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2462
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2579
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45deb9
+Code: Unable to access opcode bytes at RIP 0x45de8f.
+RSP: 002b:00007ffb605e6c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 0000000000002040 RCX: 000000000045deb9
+RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000000000000100
+RBP: 000000000118bf70 R08: ffffffffffffffff R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007fff8d97524f R14: 00007ffb605e79c0 R15: 000000000118bf2c
 
-I think so, I'd need to see the full patch to check of course.
+Showing all locks held in the system:
+1 lock held by khungtaskd/1567:
+ #0: ffffffff8b339ce0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6252
+1 lock held by in:imklog/8178:
+ #0: ffff88801c937c70 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
 
-> (Not sure this makes a difference in real life, are there drivers
-> without a .probe callback?)
+=============================================
 
-Your changelog seemed to say that it would make remove mandatory.
+NMI backtrace for cpu 0
+CPU: 0 PID: 1567 Comm: khungtaskd Not tainted 5.10.0-rc3-next-20201113-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
+ watchdog+0xd89/0xf30 kernel/hung_task.c:338
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
+NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
+NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
+NMI backtrace for cpu 1 skipped: idling at acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:517
 
---TYecfFk8j8mZq+dy
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+2kjMACgkQJNaLcl1U
-h9DMBwf/dedpAjqkzElw+dzhL1GCU1NwUYjdZMsBqMQxXUJK3qPAKYJRqciI3lG4
-GE8UzhtmRYoo+YUNwaLCdhdHnGEKIfczkdJf3fLCVBxUiMM5er/YjBjgOgiBkfnT
-GJ6m8mnbdBH3aYOjlDkky2KocW0zqtBZUZf26f2FErYh8Cxz7oGo2h2l712ZB53P
-ndiDJlf4LivEp6l49wk0mi34ephD6qIUE86kip0FKZyC7Zl4INlfd+f9iHO2NzuV
-lWT50hU8SX+IhIo4kd4Osf57+d/x73g7FcV0psaQNjk6VMm+bqaszYPTVm2CniUD
-gROjCQ0xWuhnGXoHCw7HJjly5a7+vA==
-=Oeu8
------END PGP SIGNATURE-----
-
---TYecfFk8j8mZq+dy--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
