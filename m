@@ -2,214 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BF22B9E04
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5272B9E27
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgKSXQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 18:16:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726433AbgKSXQx (ORCPT
+        id S1727053AbgKSXYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 18:24:31 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:43234 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbgKSXYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 18:16:53 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7DEC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 15:16:53 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id a18so6012941pfl.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 15:16:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=7V6HW0uZuPxD4oivZNUKIuh1HcZCqZcN06gwsTMyfHY=;
-        b=Nhrn61zr8B2jey4iFaGBScLhgVVLhUCA+2D/s04CbHQYpVlWyTrZwYBaZi+xx3GXgq
-         58zK0gyCYbE1F01oBgy962FWG60Dqt/XejTlxq+avHqEVoCwJ9w3oh4otR4P45TfNQmc
-         6rlOmTZz0d1v2AHU5dJtPz4TMblVBg4B9mQd4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=7V6HW0uZuPxD4oivZNUKIuh1HcZCqZcN06gwsTMyfHY=;
-        b=EIAyb4I9JZV+KGcyiaxfguDxPgW26k3JQbh9jJ8PzGPgjKntSzgzgM1qDzihBIEUIm
-         Y5Evr9W6+8MWbz2Bbis8IIN2vnqcGiDr0DorRlw5fP1uHnhEe3PWsAQoP4O1KNNUbsQr
-         xFxZBxBe6mGYbxz31vsXlUChHF9BOubdw2vNnOCpvEhlZQUe1T7Zy38YeyPXyshstNso
-         xvVwtQ9Tm7IRkXsHkXpgrCmsfKrn5LcuRW4VKDhhaeJrZNGXIU17P/6T0clpEO+zRz0u
-         xbIausmMfCBXfb6sWXjoOCl0Vg0gItcSXG60Oovstsy9uX72AOHa8uuH1uS1VMADc1SW
-         Fynw==
-X-Gm-Message-State: AOAM531KI70iArkyZ4CmFH9oEYWNPfK9BRVuaEuxVJQNQNE9BcA47tya
-        V+gaN+uzYR+4/FxTARSUEbgA4bxYmkHsBvWY
-X-Google-Smtp-Source: ABdhPJy6Js2gQTf5Eko4Ltg+SoaYQgIBw7x8TJk5knilGaUN+9ypEnLF4sczB1sK/XANhhqgNbfbSw==
-X-Received: by 2002:a17:90b:508:: with SMTP id r8mr2282396pjz.151.1605827813060;
-        Thu, 19 Nov 2020 15:16:53 -0800 (PST)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id a18sm1055446pfa.151.2020.11.19.15.16.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 15:16:52 -0800 (PST)
-Subject: Re: [PATCH v7 02/13] misc: bcm-vk: add Broadcom VK driver
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Desmond Yan <desmond.yan@broadcom.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Olof Johansson <olof@lixom.net>
-References: <20201117232320.4958-1-scott.branden@broadcom.com>
- <20201117232320.4958-3-scott.branden@broadcom.com>
- <20201119224256.GA16032@duo.ucw.cz>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <4ffc8ed7-5b35-0867-d1c3-8ea7ac66d014@broadcom.com>
-Date:   Thu, 19 Nov 2020 15:16:44 -0800
+        Thu, 19 Nov 2020 18:24:30 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJNJi8S109296;
+        Thu, 19 Nov 2020 23:21:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=GfpuRBjcGPdXLBnfKyBS75dHIdLZ8ysgivpC94EPeoo=;
+ b=oAErOylkGBKb/WjMroHHPzf3cqVSD59FmuTWCdrVLMC7TB9PEopmMWYRvj+99daHeS/H
+ QRrFAhHP1UUogJEHyqZ7joTr3cGYY+nkBAR/gc+c4arMXrnpSUN8VFkz0D95vWKYWp20
+ E2T/X0oYGBaTFd9S5Y6exzJcgLL/fJ7z4g9ZTEMEhrnZGVU/XP2N3+PDLbdQl4H6fp94
+ wbuRBPZwrXcVDrY2IfxXEoj8QFT077A7iWb04AvKcOwNZt1zjZTcbVTuEKccbTbhGgrY
+ cs0yK0FACAXctJZEucQ0jzwfEbwckygRctQggaxOtdbzCaQgINgiQj30CyTNK0nVr56t gQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 34t7vng6m0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Nov 2020 23:21:53 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJNJax9156353;
+        Thu, 19 Nov 2020 23:21:52 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 34ts0uew3v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Nov 2020 23:21:52 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AJNLaVH011344;
+        Thu, 19 Nov 2020 23:21:36 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 19 Nov 2020 15:21:35 -0800
+Subject: Re: [External] Re: [PATCH v4 05/21] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+To:     Muchun Song <songmuchun@bytedance.com>,
+        Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201113105952.11638-1-songmuchun@bytedance.com>
+ <20201113105952.11638-6-songmuchun@bytedance.com>
+ <20201117150604.GA15679@linux>
+ <CAMZfGtW=Oyaoooow9_i+R1LkvGpcFoUjBxYzGqBZsOa-t-sFsg@mail.gmail.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <44efc25e-525b-9e51-60e4-da20deb25ded@oracle.com>
+Date:   Thu, 19 Nov 2020 15:21:32 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <20201119224256.GA16032@duo.ucw.cz>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000006416fd05b47decc0"
+In-Reply-To: <CAMZfGtW=Oyaoooow9_i+R1LkvGpcFoUjBxYzGqBZsOa-t-sFsg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 suspectscore=2 spamscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190160
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=2
+ malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011190160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000006416fd05b47decc0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-CA
-
-Hi Pavel,
-
-On 2020-11-19 2:42 p.m., Pavel Machek wrote:
-> Hi!
->
->> Add initial version of Broadcom VK driver to enumerate PCI device IDs
->> of Valkyrie and Viper device IDs.
+On 11/18/20 10:17 PM, Muchun Song wrote:
+> On Tue, Nov 17, 2020 at 11:06 PM Oscar Salvador <osalvador@suse.de> wrote:
 >>
->> VK based cards provide real-time high performance, high throughput,
->> low latency offload compute engine operations.
->> They are used for multiple parallel offload tasks as:
->> audio, video and image processing and crypto operations.
+>> On Fri, Nov 13, 2020 at 06:59:36PM +0800, Muchun Song wrote:
+>>> +#define page_huge_pte(page)          ((page)->pmd_huge_pte)
 >>
->> Further commits add additional features to driver beyond probe/remove.
+>> Seems you do not need this one anymore.
 >>
->> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
->> +++ b/drivers/misc/bcm-vk/Kconfig
->> @@ -0,0 +1,15 @@
->> +# SPDX-License-Identifier: GPL-2.0-only
->> +#
->> +# Broadcom VK device
->> +#
->> +config BCM_VK
->> +	tristate "Support for Broadcom VK Accelerators"
->> +	depends on PCI_MSI
->> +	help
->> +	  Select this option to enable support for Broadcom
->> +	  VK Accelerators.  VK is used for performing
->> +	  specific offload processing.
->> +	  This driver enables userspace programs to access these
->> +	  accelerators via /dev/bcm-vk.N devices.
->> +
->> +	  If unsure, say N.
-> Could we
->
-> a) align the text the usual way
-Please explain what "the usual way" is?
->
-> b) explain what the VK is here? What kind of offloads does it do? What
-> does "VK" mean?
-Sure I can add some more details to the menu.
-Offloads such as many parallel crypto, video, compression, and transcode operations are some such offloads.
-VK has no real meaning, it is just short for Valkyrie, the first device in the "VK" family.
->
-> c) explain where such accelerators might be found.
-Such accelerators won't be found in any consumer devices but in high compute data center type locations.
->
-> (Is remoteproc framework unusable for this?)
-remoteproc has been discussed previously [1] and doesn't suite this application.
+>>> +void vmemmap_pgtable_free(struct page *page)
+>>> +{
+>>> +     struct page *pte_page, *t_page;
+>>> +
+>>> +     list_for_each_entry_safe(pte_page, t_page, &page->lru, lru) {
+>>> +             list_del(&pte_page->lru);
+>>> +             pte_free_kernel(&init_mm, page_to_virt(pte_page));
+>>> +     }
+>>> +}
+>>> +
+>>> +int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+>>> +{
+>>> +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+>>> +
+>>> +     /* Store preallocated pages on huge page lru list */
+>>> +     INIT_LIST_HEAD(&page->lru);
+>>> +
+>>> +     while (nr--) {
+>>> +             pte_t *pte_p;
+>>> +
+>>> +             pte_p = pte_alloc_one_kernel(&init_mm);
+>>> +             if (!pte_p)
+>>> +                     goto out;
+>>> +             list_add(&virt_to_page(pte_p)->lru, &page->lru);
+>>> +     }
+>>
+>> Definetely this looks better and easier to handle.
+>> Btw, did you explore Matthew's hint about instead of allocating a new page,
+>> using one of the ones you are going to free to store the ptes?
+>> I am not sure whether it is feasible at all though.
+> 
+> Hi Oscar and Matthew,
+> 
+> I have started an investigation about this. Finally, I think that it
+> may not be feasible. If we use a vmemmap page frame as a
+> page table when we split the PMD table firstly, in this stage,
+> we need to set 512 pte entry to the vmemmap page frame. If
+> someone reads the tail struct page struct of the HugeTLB,
+> it can get the arbitrary value (I am not sure it actually exists,
+> maybe the memory compaction module can do this). So on
+> the safe side, I think that allocating a new page is a good
+> choice.
 
-[1] https://lore.kernel.org/lkml/CAOesGMg6f2pK4ZZ8bz=0nMgCJG-8JhLZe41prZoGsBhgGs6_jA@mail.gmail.com/
+Thanks for looking into this.
 
->
-> Thanks,
-> 									Pavel
+If I understand correctly, the issue is that you need the pte page to set
+up the new mappings.  In your current code, this is done before removing
+the pages of struct pages.  This keeps everything 'consistent' as things
+are remapped.
 
+If you want to use one of the 'pages of struct pages' for the new pte
+page, then there will be a period of time when things are inconsistent.
+Before setting up the mapping, some code could potentially access that
+pages of struct pages.
 
---0000000000006416fd05b47decc0
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-I/3RRboOeC9M13VNr5feU91O0iDoMreAgPQJ0Lo7YrodKYug0Tt/fFDjkW3v3VIbEr2liUN69U0C
-AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
-MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
-YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
-ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
-FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
-HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
-MmczLmNybDAlBgNVHREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUWOK7
-qiyDSt/IDm/SRcNi/sTEiyswDQYJKoZIhvcNAQELBQADggEBAEe2edd4F9tpp0GPmrFrQ+xp9kY7
-uxBzPdCw588bgVrPemjLwiwV37XTT4iWJtNhPfEpaguM6jeLm58LCvHq5/IBjcyHyf4URQVwAg7B
-pqkH8/M+IBstu4/D+znPHB59X+c+au3Q8D+xoNFd7I30kaE+oJuBuFsGXRBc0Ci+FM86x9k7SF8U
-aui1E7Y9wDfsRSCL2TSwU773f09WkrvVdlKxNqQZj2z7bQUUn+yfXdFfBz0LqlYNfn7xJOpQE3HI
-H4jq6U9+b0Qf+J0n0wyysjXPSeQ7EKXVkT8dM2KSpIN86v5dd9LkAz3C1dmjuPRGEC8ZhI1IjMBt
-0itrn6C23NsxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
-RzMCDFtD165RQeUC8DvoCDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgH7fSYlkx
-ASl0g2C//wM66sSriZEo7OMkuPJzgaIrO1owGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
-hkiG9w0BCQUxDxcNMjAxMTE5MjMxNjUzWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
-BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
-9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBACpRAScGD8sw1jOkpnjIPZHGThP5
-H6KA35R1j8D1p6mjlvtE21m6KUb6bvGtQjz9Pj6J8Lego0iyP2A9R5JerAP3GZc2+Inj/unLPJxv
-tYHKZ+tKvfVhBUGSA+7qT2ESb05W5/UTbvYhaflojnfSt5idjLNjlw4GRiIpYrX1LiYa47Kh+Z/u
-P7Q0V4tvLi/Bu2UlxTaD5uE2keKMgjRdbNjsDUw6olqLTT1g8bsek5/WPuTPb5taOiiLi1uVPN6H
-hy4pyfnxfgVchuQE6b3PThVhgV6v3hmQ6q4JpgvJefCSefojgTpInjDm5jphjFk2QADfL+iIjQkl
-3YF9OtWVI5A=
---0000000000006416fd05b47decc0--
+I tend to agree that allocating allocating a new page is the safest thing
+to do here.  Or, perhaps someone can think of a way make this safe.
+-- 
+Mike Kravetz
