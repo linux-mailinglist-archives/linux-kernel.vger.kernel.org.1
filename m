@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50DB2B9658
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BB82B965C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgKSPhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:37:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727445AbgKSPhl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:37:41 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A988CC0613CF;
-        Thu, 19 Nov 2020 07:37:40 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id q3so6243621edr.12;
-        Thu, 19 Nov 2020 07:37:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b4gMOcWlnFb0pTMSF2kWeMu2/q9rHNE4gmklm/yiZ7A=;
-        b=UETKaPZa/Pu1lF3CjEfP5RRE0uKWs7ABHzirqjS2wJbF4us8xHz4XfbmfSYLwWe84i
-         yZIZy6fkjxr6v9xg7YxPTd/euOF3fiqHERv1dcu26/6sglDbyajLuht54CPhVaWSAOsf
-         KrT1+GKguUbHXYAEaQXTOqcfQ0FKZRf3VBK+1gb2jCF3YjfVbJjYjS+coW8SK/wm/C0j
-         eApV8DoKN2Ijh+C1KGziaPGu3NOAUkj3y0Zf+cVBFgo5EpcUs+ay4L7OBvD8cizSb/Vc
-         Z9p8yFDooWAiFymYYxhGQPmhUxrZY4/GZ2sgyZV51g27ng0cIq65UQPPf9bld2njJCVW
-         9kHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b4gMOcWlnFb0pTMSF2kWeMu2/q9rHNE4gmklm/yiZ7A=;
-        b=s3pLgdKHyyOM70VEKj5SH2RdgNSp7HgQADmUq4rsWgudEnjfqQzcZeTYcLiOnVZW1A
-         KoIj7nUIqh0XtjoKdNp5NmYC7+s7MXmnewFQs4wapkYp6C5FP3bxIKc6rDW0IqTgKDUN
-         mk4j2CfoWUibvTf/W7eWOt3WP5Zdx5TPml+gQyRjfsIdXkNQxupexdXK1+B/1stjiuxv
-         eAGjVndRjDPXd+bqxvrxis2hWna+iyzz6C7ZplS1a7NoTv7Z2xkQNLM4/KQ4qKgPi3Ax
-         yVJFeyKCMYwYC1eaKlXIklOXtos12mX2SMHnFXPjG56bxy6/pxvuvECWC1KSc/VqP0O7
-         BeMA==
-X-Gm-Message-State: AOAM530lQPS8j+k71TuZGvy3vUR0W+fDpzyFPKVi9h+8mszSmkEZLFhU
-        tWm0uCLmfP7nk0+1LGPcBjxojz7pDsA57xZChlo=
-X-Google-Smtp-Source: ABdhPJySAVSl5vKRWWLWWs4qyqHSWl1z+eOESKdyOUWwp5K0oWZhgswzw0WVVDE4LPsiAOao4pOtZ9r9MIM33Brm14w=
-X-Received: by 2002:aa7:ce82:: with SMTP id y2mr31737469edv.6.1605800259455;
- Thu, 19 Nov 2020 07:37:39 -0800 (PST)
+        id S1728531AbgKSPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:39:10 -0500
+Received: from foss.arm.com ([217.140.110.172]:60854 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727758AbgKSPjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:39:10 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A59AC1478;
+        Thu, 19 Nov 2020 07:39:09 -0800 (PST)
+Received: from e112269-lin.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03C5E3F719;
+        Thu, 19 Nov 2020 07:39:06 -0800 (PST)
+From:   Steven Price <steven.price@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: [PATCH v5 0/2] MTE support for KVM guest
+Date:   Thu, 19 Nov 2020 15:38:59 +0000
+Message-Id: <20201119153901.53705-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20201118144617.986860-1-willemdebruijn.kernel@gmail.com>
- <20201118144617.986860-2-willemdebruijn.kernel@gmail.com> <20201118150041.GF29991@casper.infradead.org>
- <CA+FuTSdxNBvNMy341EHeiKOWZ19H++aw-tfr6Fx1mFmbg-z4zQ@mail.gmail.com>
- <CAK8P3a0t02o77+8QNZwXF2k1pY3Xrm5bydv8Vx1TW060P7BKqA@mail.gmail.com>
- <893e8ed21e544d048bff7933013332a0@AcuMS.aculab.com> <CAF=yD-+arBFuZCU3UDx0XKmUGaEz8P1EaDLPK0YFCz82MdwBcg@mail.gmail.com>
- <20201119143131.GG29991@casper.infradead.org>
-In-Reply-To: <20201119143131.GG29991@casper.infradead.org>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 19 Nov 2020 10:37:02 -0500
-Message-ID: <CAF=yD-+D8E9ksXrWe8ezd-B9pdu7PhMwGjG4gCBvuABRahrsAw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] epoll: add nsec timeout support with epoll_pwait2
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 9:31 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, Nov 19, 2020 at 09:19:35AM -0500, Willem de Bruijn wrote:
-> > But for epoll, this is inefficient: in ep_set_mstimeout it calls
-> > ktime_get_ts64 to convert timeout to an offset from current time, only
-> > to pass it to select_estimate_accuracy to then perform another
-> > ktime_get_ts64 and subtract this to get back to (approx.) the original
-> > timeout.
-> >
-> > How about a separate patch that adds epoll_estimate_accuracy with
-> > the same rules (wrt rt_task, current->timer_slack, nice and upper bound)
-> > but taking an s64 timeout.
-> >
-> > One variation, since it is approximate, I suppose we could even replace
-> > division by a right shift?
-> >
-> > After that, using s64 everywhere is indeed much simpler. And with that
-> > I will revise the new epoll_pwait2 interface to take a long long
-> > instead of struct timespec.
->
-> I think the userspace interface should take a struct timespec
-> for consistency with ppoll and pselect. And epoll should use
-> poll_select_set_timeout() to convert the relative timeout to an absolute
-> endtime.  Make epoll more consistent with select/poll, not less ...
+This series adds support for Arm's Memory Tagging Extension (MTE) to
+KVM, allowing KVM guests to make use of it. This builds on the existing
+user space support already in v5.10-rc1, see [1] for an overview.
 
-Okay. The absolute time is also needed for schedule_hrtimeout_range,
-so it could not be entirely avoided, anyway.
+[1] https://lwn.net/Articles/834289/
+
+Changes since v4[2]:
+
+ * Rebased on v5.10-rc4.
+
+ * Require the VMM to map all guest memory PROT_MTE if MTE is enabled
+   for the guest.
+
+ * Add a kvm_has_mte() accessor.
+
+[2] http://lkml.kernel.org/r/20201026155727.36685-1-steven.price%40arm.com
+
+The change to require the VMM to map all guest memory PROT_MTE is
+significant as it means that the VMM has to deal with the MTE tags even
+if it doesn't care about them (e.g. for virtual devices or if the VMM
+doesn't support migration). Also unfortunately because the VMM can
+change the memory layout at any time the check for PROT_MTE/VM_MTE has
+to be done very late (at the point of faulting pages into stage 2).
+
+The alternative would be to modify the set_pte_at() handler to always
+check if there is MTE data relating to a swap page even if the PTE
+doesn't have the MTE bit set. I haven't initially done this because of
+ordering issues during early boot, but could investigate further if the
+above VMM requirement is too strict.
+
+Steven Price (2):
+  arm64: kvm: Save/restore MTE registers
+  arm64: kvm: Introduce MTE VCPU feature
+
+ arch/arm64/include/asm/kvm_emulate.h       |  3 +++
+ arch/arm64/include/asm/kvm_host.h          |  8 ++++++++
+ arch/arm64/include/asm/sysreg.h            |  3 ++-
+ arch/arm64/kvm/arm.c                       |  9 +++++++++
+ arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 14 ++++++++++++++
+ arch/arm64/kvm/mmu.c                       |  6 ++++++
+ arch/arm64/kvm/sys_regs.c                  | 20 +++++++++++++++-----
+ include/uapi/linux/kvm.h                   |  1 +
+ 8 files changed, 58 insertions(+), 6 deletions(-)
+
+-- 
+2.20.1
+
