@@ -2,144 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A712B9672
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 403FE2B9678
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728622AbgKSPm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:42:26 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:55650 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726712AbgKSPmZ (ORCPT
+        id S1728345AbgKSPn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:43:26 -0500
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:51538 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbgKSPn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:42:25 -0500
-Received: by mail-il1-f198.google.com with SMTP id w10so5113967ila.22
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:42:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=FcdTaSWLdsax1Db4lxSAy+okurY2LoZrT3Xpi1qIi2I=;
-        b=I4+UAuOGMIKzCCY1seNjVf3W0nid3rdSCL/fHIWJmucwCvSv98pdBQ0LDK5QQQAeqh
-         rYcvxPQVMCCV4TSzHzkr1U2hOEuPaFzhmyFlzjx5tgxHBlGu8EjFX10k8HUwiHG4J+t5
-         3YBDjnoV+uMd4KQvv1s+sx702gPJWtoeWCJxtr2OhScAK7osWW/9wFbVO5cUS5erorWp
-         wf3tDogcrACPdjV0hw8XgXaMbt5zYeMn33iv3vC602u8JqdcBIHLEUs5UAmmwwB1W00B
-         RVAXPO5NkODKb4oKeh0nlzKbZcfmPyVC+1j4oOcBe+pVMdl9U8xVyQSZHH3maiytNGKa
-         9D2w==
-X-Gm-Message-State: AOAM53306G0RKcRqo2no51HbFH6Lld623+/j7Xb4YyLct37+Cr7TOcqr
-        tOJxxnRz/+xfwJGmburLCl7t7lrq7xVPPgAJdDHqKQ3ZxLso
-X-Google-Smtp-Source: ABdhPJwhiP+INO67eVYmSG+nKKuDRo/zm2frUguSFnP+VYjAgDuFpWPtZO6cVLN1DKRwTabNu4evtr5xFBlZzn5a6z9kHyy0rPEg
+        Thu, 19 Nov 2020 10:43:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605800605; x=1637336605;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=HPhDzt0MMGUh03C9iz8ZPA1mDE/B4co092DdSZBLSf0=;
+  b=gJ83pag0NwFYlCbqVW6nd94BcHdzTqONAFKE1/sFemSOpasL7Lgk/maj
+   TJao8ghmOzGkMBybi1YnHTAj8zF1X/U8xf4oj+5pGAnwlk9ZpsQjFIdQl
+   y96Dt/Wu+OOHtqxSRKmK5rp3BXIBZLiZobyLaSs5biaKoxe1spg6zR2y5
+   zynt5MwZaHOHLPRTAfsGi30fONn62BTdaKYTLujzsY12f1Kn5/kdQhlgM
+   xbjw748N7VtdhZqQnLSfZ9CpIP9If7VtV85xsdHBpo+cZxwZRXrRuPyVP
+   rirrv7muRDXUtt6qGl50NbkKPlO3HAtKYtJRlNv/913Lsmg83Oc1noZyJ
+   g==;
+IronPort-SDR: 8PHcsgbI0SaTHh3ZFbbOtsVW33UTZa6o6zfARDvqWDP2lBBhMF0OwwyHOQ2x4pZJIqQRCSKD0G
+ MWSy6l1I2B1bnYT2PDIdCNx7P/htcq7Q5R01qiNBgBo5XK2Q2H+OH59D4UgG9inZUEnfG2zUgo
+ SbBxYXuDTzQ/ToFUA2yAkS4hHVv9KfMyG4XfnBwKsKrHxQnk0xGclIE2/APFCsvQIMoR11uJcy
+ zy8v63AjMeXYxxcSRJ5ROoRAXfS06/8k1E3gs5MbOCzemUCysilX9YVEZcChYOljV/m0t8znkm
+ Y08=
+X-IronPort-AV: E=Sophos;i="5.78,490,1599548400"; 
+   d="scan'208";a="96941953"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Nov 2020 08:43:24 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 19 Nov 2020 08:43:24 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 19 Nov 2020 08:43:20 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>
+CC:     <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v6 00/11] clk: at91: clk-master: re-factor master clock
+Date:   Thu, 19 Nov 2020 17:43:06 +0200
+Message-ID: <1605800597-16720-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:90:: with SMTP id l16mr23259127ilm.228.1605800543910;
- Thu, 19 Nov 2020 07:42:23 -0800 (PST)
-Date:   Thu, 19 Nov 2020 07:42:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000003ef05b477936c@google.com>
-Subject: INFO: task can't die in perf_event_free_task
-From:   syzbot <syzbot+f02b92479b7065807a2a@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+SAMA7G5 is capable of DVFS. The supported CPU clock frequencies could be
+obtained from CPU PLL. The hardware block diagram for clock feeding the
+CPU is as follows:
 
-HEAD commit:    92edc4ae Add linux-next specific files for 20201113
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15982d72500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=79ad4f8ad2d96176
-dashboard link: https://syzkaller.appspot.com/bug?extid=f02b92479b7065807a2a
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116fb7be500000
+                               +--------+
+                           +-->|divider1|--> CPU clock
+                           |   +--------+
++--------+   +----------+  |   +--------+
+|CPU PLL |-->|prescaller|--+-->|divider0|--> MCK0 clock
++--------+   +----------+      +--------+
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f02b92479b7065807a2a@syzkaller.appspotmail.com
+When switching CPU clock frequencies the MCK0 is also changed by DVFS
+driver to avoid its over/under clocking (depending on CPU clock frequency
+requested by DVFS algorithms). Some of IPs feed by MCK0 are MCK0 glich
+aware, some are not. For this MCK0 was removed from the parents list of
+the IPs which are not MCK0 glitch aware (patch 7/11).
 
-INFO: task syz-executor.0:26152 can't die for more than 143 seconds.
-task:syz-executor.0  state:D stack:28544 pid:26152 ppid:  8500 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4269 [inline]
- __schedule+0x890/0x2030 kernel/sched/core.c:5019
- schedule+0xcf/0x270 kernel/sched/core.c:5098
- perf_event_free_task+0x514/0x6b0 kernel/events/core.c:12605
- copy_process+0x48e0/0x6f90 kernel/fork.c:2360
- kernel_clone+0xe7/0xab0 kernel/fork.c:2462
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2579
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45deb9
-Code: Unable to access opcode bytes at RIP 0x45de8f.
-RSP: 002b:00007ffb605e6c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
-RAX: ffffffffffffffda RBX: 0000000000002040 RCX: 000000000045deb9
-RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000000000000100
-RBP: 000000000118bf70 R08: ffffffffffffffff R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007fff8d97524f R14: 00007ffb605e79c0 R15: 000000000118bf2c
-INFO: task syz-executor.0:26152 blocked for more than 143 seconds.
-      Not tainted 5.10.0-rc3-next-20201113-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:28544 pid:26152 ppid:  8500 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4269 [inline]
- __schedule+0x890/0x2030 kernel/sched/core.c:5019
- schedule+0xcf/0x270 kernel/sched/core.c:5098
- perf_event_free_task+0x514/0x6b0 kernel/events/core.c:12605
- copy_process+0x48e0/0x6f90 kernel/fork.c:2360
- kernel_clone+0xe7/0xab0 kernel/fork.c:2462
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2579
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45deb9
-Code: Unable to access opcode bytes at RIP 0x45de8f.
-RSP: 002b:00007ffb605e6c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
-RAX: ffffffffffffffda RBX: 0000000000002040 RCX: 000000000045deb9
-RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000000000000100
-RBP: 000000000118bf70 R08: ffffffffffffffff R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007fff8d97524f R14: 00007ffb605e79c0 R15: 000000000118bf2c
+This series adapt AT91 clocks (mostly sam9x60-pll and master clock drivers)
+so that runtime changes of these clocks to be allowed.
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/1567:
- #0: ffffffff8b339ce0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6252
-1 lock held by in:imklog/8178:
- #0: ffff88801c937c70 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+The CPU clock was registered from prescaller clock (see above diagram)
+and no software control has been added for divider1 because the frequencies
+supported by SAMA7G5's CPU could be directly obtained from CPU PLL +
+prescaller.
 
-=============================================
+On top of this series I also added a fix for sama7g5.c code (patch 1/11).
+Please let me know if you would like me to send this one separtely (it
+would be nice if this fix could be integrated in 5.10).
 
-NMI backtrace for cpu 0
-CPU: 0 PID: 1567 Comm: khungtaskd Not tainted 5.10.0-rc3-next-20201113-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
- watchdog+0xd89/0xf30 kernel/hung_task.c:338
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
-NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
-NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
-NMI backtrace for cpu 1 skipped: idling at acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:517
+Changes were tested on SAMA5D2, SAMA5D3, SAM9X60 and SAMA7G5.
 
+Thank you,
+Claudiu Beznea
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Changes in v6:
+- remove if (clk_hw_get_flags(hw) & CLK_SET_RATE_GATE) in patch 10/11 as
+  we use different clock ops now for pres, div supporting run-time changes
+  
+Changes in v5:
+- use separate clk_ops for PLLs and master clock div, pres supporting
+  run-time changes (patches 6/11, 10/11)
+- use unsigned long type for f member of struct typeof(sama7g5_plls)
+- document the usage of CLK_IS_CRITICAL
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Changes in v4:
+- added Reviewed-by, Tested-by tags forgoten in v3
+
+Changes in v3:
+- collected Reviewed-by, Tested-by tags
+- add patches 4/11, 5/11, 9/11
+- in patch 10/11 use CLK_SET_RATE_GATE on MCK div and MCK pres for all
+  the platforms except sama7g5
+
+Changes in v2:
+- s/at91rm9200_mck_lock/at91sam9260_mck_lock in patch 7/8
+
+Claudiu Beznea (7):
+  clk: at91: sama7g5: fix compilation error
+  clk: at91: clk-sam9x60-pll: allow runtime changes for pll
+  clk: at91: sama7g5: remove mck0 from parent list of other clocks
+  clk: at91: sama7g5: decrease lower limit for MCK0 rate
+  clk: at91: sama7g5: do not allow cpu pll to go higher than 1GHz
+  clk: at91: clk-master: re-factor master clock
+  clk: at91: sama7g5: register cpu clock
+
+Eugen Hristev (4):
+  dt-bindings: clock: at91: add sama7g5 pll defines
+  clk: at91: sama7g5: allow SYS and CPU PLLs to be exported and
+    referenced in DT
+  clk: at91: clk-master: add 5th divisor for mck master
+  clk: at91: sama7g5: add 5th divisor for mck0 layout and
+    characteristics
+
+ drivers/clk/at91/at91rm9200.c      |  21 ++-
+ drivers/clk/at91/at91sam9260.c     |  26 ++-
+ drivers/clk/at91/at91sam9g45.c     |  32 +++-
+ drivers/clk/at91/at91sam9n12.c     |  36 ++--
+ drivers/clk/at91/at91sam9rl.c      |  23 ++-
+ drivers/clk/at91/at91sam9x5.c      |  28 ++-
+ drivers/clk/at91/clk-master.c      | 337 ++++++++++++++++++++++++++++++++-----
+ drivers/clk/at91/clk-sam9x60-pll.c | 145 ++++++++++++++--
+ drivers/clk/at91/dt-compat.c       |  15 +-
+ drivers/clk/at91/pmc.h             |  22 ++-
+ drivers/clk/at91/sam9x60.c         |  45 +++--
+ drivers/clk/at91/sama5d2.c         |  42 +++--
+ drivers/clk/at91/sama5d3.c         |  38 +++--
+ drivers/clk/at91/sama5d4.c         |  40 +++--
+ drivers/clk/at91/sama7g5.c         | 223 ++++++++++++++++--------
+ include/dt-bindings/clock/at91.h   |  11 ++
+ 16 files changed, 840 insertions(+), 244 deletions(-)
+
+-- 
+2.7.4
+
