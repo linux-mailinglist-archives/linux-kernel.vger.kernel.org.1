@@ -2,68 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F832B92A9
+	by mail.lfdr.de (Postfix) with ESMTP id A30C22B92AA
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgKSMic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:38:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
+        id S1727319AbgKSMif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727096AbgKSMib (ORCPT
+        with ESMTP id S1727096AbgKSMif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:38:31 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC88AC0613CF;
-        Thu, 19 Nov 2020 04:38:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EXnB16mLl4Y+IqQmV0xsRFSOkOPyaDc6osJseO3iLTI=; b=drrbmnTRqep/Do0FL85M9Uvcah
-        ThoUFK+/hVu6fq5mx7QmjXlr/llb5xABXDrf+Ch1e4pFCS+wBPGr+JhT5o0a/7cnltGgyez8wmMfS
-        yhh5G2fj/TTBExpJUgIDpU3Gkjg3XdS/ogMjpERgHx1tmrhCCCs2Al2hsFrRsdr8bMq7l2AWysDds
-        q4aaZ3EggGAR2St1Mukeq47OXdk0Kxb0id0GnZ2Rw6baevqicgqnFkpf1zTRzrjxrNwc2hLkW8WaA
-        afj9p4GZVPoQpJQbx8nvbW4ypTlILNsinOPaZjlhsVt0wmo27g35kCmLNiltfPa7xfLMbwJx6ByDW
-        rHmWa6MQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfjCm-0001BQ-NF; Thu, 19 Nov 2020 12:38:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 17F8C3019CE;
-        Thu, 19 Nov 2020 13:38:28 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 035712C12590E; Thu, 19 Nov 2020 13:38:27 +0100 (CET)
-Date:   Thu, 19 Nov 2020 13:38:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org,
-        christian.brauner@ubuntu.com, willy@infradead.org,
-        shuah@kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        x86@kernel.org, gofmanp@gmail.com, kernel@collabora.com
-Subject: Re: [PATCH v7 0/7] Syscall User Dispatch
-Message-ID: <20201119123827.GL3121392@hirez.programming.kicks-ass.net>
-References: <20201118032840.3429268-1-krisman@collabora.com>
+        Thu, 19 Nov 2020 07:38:35 -0500
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3660AC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 04:38:35 -0800 (PST)
+Received: by mail-oo1-xc44.google.com with SMTP id g4so1301762oom.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 04:38:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n2bv/cLDYS+WfqbFySGfXKEkQq1vveQfrw1XHuIr4p8=;
+        b=DG2lS0KRrtmTbGaOTGL73LGIfcxvcB/qubpdw3HQcUXA08EAmRvbJ5LrPEEQWhOWNi
+         Zx8na/p+GbCHEOWwcPKOXdgD5Jr3BGtQobhGnDDdWzj4I0bOqHg+N+vFKJXjqpNd4137
+         N+rqyG0ZbthbJyNyW1Rab1x0ui6O0qEIop7FNZ+bRWk6ZvglCiTzhpgWR/Vp/xqPC6Lv
+         s9MEb7hha0rLipwEqR0Gufdj/fwkw9h3IkMyZPzCrqLkAJPMTfenYwm4fe0Saul7TjrS
+         +c/YbiYd5mBAGDWxoy8kUHoUDWGGwEZf8/BShNk/Di2cz58rwCoIWghaOx1Zw4COdV+5
+         Ppkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=n2bv/cLDYS+WfqbFySGfXKEkQq1vveQfrw1XHuIr4p8=;
+        b=SmbLC25AsFIAnA2Izej4q01KT/+qpDWx06t6GDPDCjUglkRMWgPkUS1iDCQ72f37Pj
+         7Fut0sXrRnRJI3CGOQ2zi2epa28y2nZYuaiAVe/8M+0tJ7b0Pq6U8BsvW0+fH79Kh/rV
+         nmwUBaGx4LO8TK/HV9XPdQfFOZepqPvbGFzGq1GG78HlVA++4wmknzFeB9kTTJ/5f1u2
+         0n52YUinXA6Yeppmr9vxw6UNQ2TVCrXUvnLbhJud0U7qoneGUwVRsbJeRXzvNbd+xfH/
+         JIFrP+6Mh4T7xvyG7YmULyvB0Zx5sUhu9cvNl7ISZNGBAvQzOyUj8CSWM5bnc5t0jeXh
+         VhLA==
+X-Gm-Message-State: AOAM5321YEPXnD9U+E+FwSaRYVnizqPJFBAnYTIj9sDI8F7UlQ2RShTx
+        Q8LkO4qcLB+ii4KZ/0M25Q==
+X-Google-Smtp-Source: ABdhPJwQ6NyAbg2GhlN6KPKdOqUneJzzoExcKVfN/jx/ZurB3E8jB62sxyTvcadsW75q7GW8YNoNKA==
+X-Received: by 2002:a4a:b689:: with SMTP id v9mr10440361ooo.0.1605789514480;
+        Thu, 19 Nov 2020 04:38:34 -0800 (PST)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id f20sm6348550otp.70.2020.11.19.04.38.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 04:38:33 -0800 (PST)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:1d26:c11b:68a6:17b3])
+        by serve.minyard.net (Postfix) with ESMTPSA id 738D1180048;
+        Thu, 19 Nov 2020 12:38:32 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 06:38:31 -0600
+From:   Corey Minyard <minyard@acm.org>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipmi: msghandler: Suppress suspicious RCU usage warning
+Message-ID: <20201119123831.GH3710@minyard.net>
+Reply-To: minyard@acm.org
+References: <20201119070839.381-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118032840.3429268-1-krisman@collabora.com>
+In-Reply-To: <20201119070839.381-1-miaoqinglang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:28:33PM -0500, Gabriel Krisman Bertazi wrote:
-> Gabriel Krisman Bertazi (7):
->   x86: vdso: Expose sigreturn address on vdso to the kernel
->   signal: Expose SYS_USER_DISPATCH si_code type
->   kernel: Implement selective syscall userspace redirection
->   entry: Support Syscall User Dispatch on common syscall entry
->   selftests: Add kselftest for syscall user dispatch
->   selftests: Add benchmark for syscall user dispatch
->   docs: Document Syscall User Dispatch
+On Thu, Nov 19, 2020 at 03:08:39PM +0800, Qinglang Miao wrote:
+> while running ipmi, ipmi_smi_watcher_register() caused
+> a suspicious RCU usage warning.
 
-Aside from the one little nit this looks good to me.
+Thanks.  I had looked at this and found it was ok, but I hand't spent
+the time to figure out how to suppress it.  It's in my next queue.
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+-corey
+
+> 
+> -----
+> 
+> =============================
+> WARNING: suspicious RCU usage
+> 5.10.0-rc3+ #1 Not tainted
+> -----------------------------
+> drivers/char/ipmi/ipmi_msghandler.c:750 RCU-list traversed in non-reader section!!
+> other info that might help us debug this:
+> rcu_scheduler_active = 2, debug_locks = 1
+> 2 locks held by syz-executor.0/4254:
+> stack backtrace:
+> CPU: 0 PID: 4254 Comm: syz-executor.0 Not tainted 5.10.0-rc3+ #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/ 01/2014
+> Call Trace:
+> dump_stack+0x19d/0x200
+> ipmi_smi_watcher_register+0x2d3/0x340 [ipmi_msghandler]
+> acpi_ipmi_init+0xb1/0x1000 [acpi_ipmi]
+> do_one_initcall+0x149/0x7e0
+> do_init_module+0x1ef/0x700
+> load_module+0x3467/0x4140
+> __do_sys_finit_module+0x10d/0x1a0
+> do_syscall_64+0x34/0x80
+> entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x468ded
+> 
+> -----
+> 
+> It is safe because smi_watchers_mutex is locked and srcu_read_lock
+> has been used, so simply pass lockdep_is_held() to the
+> list_for_each_entry_rcu() to suppress this warning.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  drivers/char/ipmi/ipmi_msghandler.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+> index 8774a3b8f..c44ad1846 100644
+> --- a/drivers/char/ipmi/ipmi_msghandler.c
+> +++ b/drivers/char/ipmi/ipmi_msghandler.c
+> @@ -747,7 +747,8 @@ int ipmi_smi_watcher_register(struct ipmi_smi_watcher *watcher)
+>  	list_add(&watcher->link, &smi_watchers);
+>  
+>  	index = srcu_read_lock(&ipmi_interfaces_srcu);
+> -	list_for_each_entry_rcu(intf, &ipmi_interfaces, link) {
+> +	list_for_each_entry_rcu(intf, &ipmi_interfaces, link,
+> +			lockdep_is_held(&smi_watchers_mutex)) {
+>  		int intf_num = READ_ONCE(intf->intf_num);
+>  
+>  		if (intf_num == -1)
+> -- 
+> 2.23.0
+> 
