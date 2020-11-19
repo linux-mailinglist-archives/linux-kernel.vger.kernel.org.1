@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887A12B992D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FD42B992A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgKSRUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:20:14 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:12009 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726474AbgKSRUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:20:13 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CcRJT281zzB09Zn;
-        Thu, 19 Nov 2020 18:20:09 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id GDt-2XrDYLSx; Thu, 19 Nov 2020 18:20:09 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CcRJT1FSgzB09Zm;
-        Thu, 19 Nov 2020 18:20:09 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 32DD88B80C;
-        Thu, 19 Nov 2020 18:20:09 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 7odlXmS1EpR6; Thu, 19 Nov 2020 18:20:09 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 906408B78A;
-        Thu, 19 Nov 2020 18:20:02 +0100 (CET)
-Subject: Re: [PATCH v3 0/2] powerpc/ptrace: Hard wire PT_SOFTE value to 1 in
- gpr_get() too
-To:     Oleg Nesterov <oleg@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20201119160154.GA5183@redhat.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <d7c3ed05-b7e7-fac0-871f-4c43c1a7e90c@csgroup.eu>
-Date:   Thu, 19 Nov 2020 18:19:55 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1728884AbgKSRUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:20:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727677AbgKSRUE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:20:04 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7888C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:20:04 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id y18so5990413ilp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:20:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Cuh0RTTSFAlmIPVhGB92scgG2gp7uIXGl6U8eaIkwws=;
+        b=VGMYR7GIyigGqFMlURJN1OniF74reh1UdQXfBzrlKlnYeM+WRXlnHYCvAek+XLZl+j
+         fnMW4SKO1FBIJPHj2Yi6SohZxhvFabSdCp+cz9YCH2FNIeSNV62dzclA+evfaJH2QBOs
+         Or3W4G6dSf6MJ1czMoPcLasp5lrGvUJu9RH+cPxkDlBy4F/tLGo6R8vg1bhpk8h1xlPH
+         IvcvRDOyW/1XkjXvhwz6Jdg17E9LYTylvdyqaf7yXdmNocIbZLtvoDsXU01T+/2RfZkY
+         6xDKT6SF2aNEgX7rlD69MPQQakerXRxeaE3nPaaZ/WCkz12FdpPJxXHzisFXq1ATjZy+
+         LFOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Cuh0RTTSFAlmIPVhGB92scgG2gp7uIXGl6U8eaIkwws=;
+        b=GYo9BkEGhxB1yki53x/aHU4+5R3QZpHSeU0F60ioJA9vV+zRNUWoQj68URmC2NFKtq
+         HrHdWPYUjOeisrWcZhNp9luX+Hb/4VPamT3MfesrpqJ/YlkWseuSfWxlr/suk6933lT0
+         AfY+1BFcBZQ1Syae5EGB7o8kUgIkCXyU7MTQyB+kzlsePtXCCTSsXq6bruu4qTv4H48Z
+         2g86/E5LOf0P9U+RApLZ8Df0vj9U/9D4eXfjTnZ6bV+vj0E/n9qS3axqyqtn3yoVu49S
+         GF2JZ0s762dSXHmYXOy10W9Ay4iwy5D0j30JD1pRKfJ4yAtvTSkTczOUWm/7vXHyxqoP
+         rpsw==
+X-Gm-Message-State: AOAM533T7oo8M3HFb0LLcxe8cRJpE4RefChS8DhWqe77AD+EH0UwIpOd
+        UPFjIlyIAosVNbCDIIipbD+t+8z/dNUnHw==
+X-Google-Smtp-Source: ABdhPJxqW+pxzeKvGrbOkUbneyIPxMDLzPVQq32823a3f0cted9sUHxsKt6LdBhk+atDCT70aCQa4g==
+X-Received: by 2002:a92:d143:: with SMTP id t3mr2340629ilg.35.1605806403250;
+        Thu, 19 Nov 2020 09:20:03 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id x5sm237863ilc.15.2020.11.19.09.20.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 09:20:02 -0800 (PST)
+Subject: Re: [PATCH 0/2] optimise iov_iter
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        linux-block@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+References: <cover.1605799583.git.asml.silence@gmail.com>
+ <2b50322d-821f-469e-6f57-072b54e25ef4@kernel.dk>
+ <629cabf2-3a23-9d95-dd88-281ef4d49ddd@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <72a1df1a-810b-5bf1-39bd-b702188a875b@kernel.dk>
+Date:   Thu, 19 Nov 2020 10:20:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201119160154.GA5183@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <629cabf2-3a23-9d95-dd88-281ef4d49ddd@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 19/11/2020 à 17:01, Oleg Nesterov a écrit :
-> Can we finally fix this problem? ;)
+On 11/19/20 10:14 AM, Pavel Begunkov wrote:
+> On 19/11/2020 16:46, Jens Axboe wrote:
+>> On 11/19/20 8:29 AM, Pavel Begunkov wrote:
+>>> The first patch optimises iov_iter_npages() for the bvec case, and the
+>>> second helps code generation to kill unreachable code.
+>>>
+>>> Pavel Begunkov (2):
+>>>   iov_iter: optimise iov_iter_npages for bvec
+>>>   iov_iter: optimise iter type checking
+>>>
+>>>  include/linux/uio.h | 10 +++++-----
+>>>  lib/iov_iter.c      | 10 +++++-----
+>>>  2 files changed, 10 insertions(+), 10 deletions(-)
+>>
+>> Nice! Tested this and confirmed both the better code generation,
+>> and reduction in overhead in iov_iter_npages().
 > 
-> My previous attempt was ignored, see
+> Thanks! Did you find t-put/etc. boost with your setup?
 
-That doesn't seems right.
+Yeah, for this kind of test, if we shave 1% off the stack overhead,
+that directly yields an increase in peak IOPS. My numbers were close
+to yours, dropped about 1% of system overhead.
 
-Michael made some suggestion it seems, can you respond to it ?
+-- 
+Jens Axboe
 
-> 
-> 	https://lore.kernel.org/lkml/20190917121256.GA8659@redhat.com/
-> 
-> Now that gpr_get() was changed to use membuf API we can make a simpler fix.
-> 
-> Sorry, uncompiled/untested, I don't have a ppc machine.
-
-I compiled with ppc64_defconfig, that seems ok. Still untested.
-
-Christophe
-
-> 
-> Oleg.
-> 
->   arch/powerpc/kernel/ptrace/ptrace-tm.c   | 21 ++++++++++++---------
->   arch/powerpc/kernel/ptrace/ptrace-view.c | 21 ++++++++++++---------
->   include/linux/regset.h                   | 12 ++++++++++++
->   3 files changed, 36 insertions(+), 18 deletions(-)
-> 
