@@ -2,122 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD2E2B98E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4584B2B98E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:08:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbgKSRFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:05:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60174 "EHLO
+        id S1728935AbgKSRFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:05:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35503 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728264AbgKSRFN (ORCPT
+        by vger.kernel.org with ESMTP id S1727677AbgKSRFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:05:13 -0500
+        Thu, 19 Nov 2020 12:05:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605805512;
+        s=mimecast20190719; t=1605805535;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rphq9zvAUmd4d4wT5fgUborloPcVcl2GbeePfTvH6N0=;
-        b=SKT/jHAG5yq0bNW7KUNwhSeNyossTwlr2tgpUWXe4tsGw6ugomf7VvsTe1TcUa2mbgtLOH
-        5qSZMoVIpVl58WtwaW55xVHvx33rAipqO4y8i4n+3Kh8IPm0zFxAt4HVJT0zY7V1PxYEb2
-        bUYgU7ZjW6GQEruO6N2eF/JeGdV1LH8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-348-RZjdcy3WN0i0kC_9VafJCg-1; Thu, 19 Nov 2020 12:05:10 -0500
-X-MC-Unique: RZjdcy3WN0i0kC_9VafJCg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 633BE8144E1;
-        Thu, 19 Nov 2020 17:05:09 +0000 (UTC)
-Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1AB1F13470;
-        Thu, 19 Nov 2020 17:05:09 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 10:05:08 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio iommu type1: Bypass the vma permission check in
- vfio_pin_pages_remote()
-Message-ID: <20201119100508.483c6503@w520.home>
-In-Reply-To: <20201119142737.17574-1-justin.he@arm.com>
-References: <20201119142737.17574-1-justin.he@arm.com>
+        bh=7noBqjP7X7X7F1znylhK1IyBB+iXa4PXKrYGSK1I+Q4=;
+        b=eAFuNuIqfn7+JfsZ26YSpy+TJyYK+mM4deUrVLapxMXI/HEqJXmLs/mO06oJ5oheGbUDm0
+        GqBRXwCagmJalFSa+SQTqpRjHvQH2vYtPMtQEFtnmcXQ6zkWukEUDeh5uKP9cQwpRDuvSR
+        oeBTbqwea8EpeAvPSLaAdyDbMcp1lTU=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-JW9HQrUIOCifTqBZ-e__nw-1; Thu, 19 Nov 2020 12:05:33 -0500
+X-MC-Unique: JW9HQrUIOCifTqBZ-e__nw-1
+Received: by mail-qk1-f200.google.com with SMTP id f9so5540697qkg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:05:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=7noBqjP7X7X7F1znylhK1IyBB+iXa4PXKrYGSK1I+Q4=;
+        b=mEkxoZljQNwGiyJBeQfZNzefmhMjwDna1IEcyBf7Ato0Nv5GeMHMrQ0J8APkNp8u82
+         vjj1lxnhcdMF1Mub2sPf6gIVB+6CSV2j/UGfpte8n9KUH4OLiN2J7XuIquokAq7lcUhh
+         PQzbfqHZUqEd0E2QwXvqou/Lrqwwh6ivDxo20J2bWWzXlnYCYA+1nCLb+9pFRHD7n6z4
+         4n7VbbXaqMuXeh9Zhvo73LcaUt9LQH7s5XbYp1fSB88ONvssKBd4HvIhVl6mHjwcWITo
+         74ZumCqXZzCoWLIcD65DooyC3iAPXAEn67MTKPDcb+xBgPdLLMNLow3mZ1W+sLnELmYg
+         yDwg==
+X-Gm-Message-State: AOAM531EtufLnu0YH4CYIIvKlxb+dNMcdstvlQip1sxsXkBar5TumkxB
+        1nLh3jMnmEdmwuBaYD9MVZ4MDPwfR4BqGaGS07Y30Y4RS1r/RUVpIMvhl1h1rhG1wud90cfpNT/
+        UGsJbDJ3j5N82Z2t9w/QtNyfH
+X-Received: by 2002:ac8:4914:: with SMTP id e20mr11079619qtq.210.1605805533030;
+        Thu, 19 Nov 2020 09:05:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxAdwWhaOkY9QamylGcjAqWf3ynrNhCJQ9K9PX56a0MzYhN2QPwW4BWl+yyq6EB/3J0DYRhsw==
+X-Received: by 2002:ac8:4914:: with SMTP id e20mr11079589qtq.210.1605805532728;
+        Thu, 19 Nov 2020 09:05:32 -0800 (PST)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id c199sm226227qke.111.2020.11.19.09.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 09:05:31 -0800 (PST)
+References: <20201015214430.17937-1-jsnitsel@redhat.com>
+ <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
+ <87d009c0pn.fsf@redhat.com>
+ <77498b10-cf2c-690b-8dad-78cbd61712ba@redhat.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Matthew Garrett <mjg59@google.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        jarkko@kernel.org, Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
+In-reply-to: <77498b10-cf2c-690b-8dad-78cbd61712ba@redhat.com>
+Date:   Thu, 19 Nov 2020 10:05:29 -0700
+Message-ID: <87a6vdb7l2.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 22:27:37 +0800
-Jia He <justin.he@arm.com> wrote:
 
-> The permission of vfio iommu is different and incompatible with vma
-> permission. If the iotlb->perm is IOMMU_NONE (e.g. qemu side), qemu will
-> simply call unmap ioctl() instead of mapping. Hence vfio_dma_map() can't
-> map a dma region with NONE permission.
-> 
-> This corner case will be exposed in coming virtio_fs cache_size
-> commit [1]
->  - mmap(NULL, size, PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
->    memory_region_init_ram_ptr()
->  - re-mmap the above area with read/write authority.
->  - vfio_dma_map() will be invoked when vfio device is hotplug added.
-> 
-> qemu:
-> vfio_listener_region_add()
-> 	vfio_dma_map(..., readonly=false)
-> 		map.flags is set to VFIO_DMA_MAP_FLAG_READ|VFIO_..._WRITE
-> 		ioctl(VFIO_IOMMU_MAP_DMA)
-> 
-> kernel:
-> vfio_dma_do_map()
-> 	vfio_pin_map_dma()
-> 		vfio_pin_pages_remote()
-> 			vaddr_get_pfn()
-> 			...
-> 				check_vma_flags() failed! because
-> 				vm_flags hasn't VM_WRITE && gup_flags
-> 				has FOLL_WRITE
-> 
-> It will report error in qemu log when hotplug adding(vfio) a nvme disk
-> to qemu guest on an Ampere EMAG server:
-> "VFIO_MAP_DMA failed: Bad address"
+Hans de Goede @ 2020-11-19 07:42 MST:
 
-I don't fully understand the argument here, I think this is suggesting
-that because QEMU won't call VFIO_IOMMU_MAP_DMA on a region that has
-NONE permission, the kernel can ignore read/write permission by using
-FOLL_FORCE.  Not only is QEMU not the only userspace driver for vfio,
-but regardless of that, we can't trust the behavior of any given
-userspace driver.  Bypassing the permission check with FOLL_FORCE seems
-like it's placing the trust in the user, which seems like a security
-issue.  Thanks,
+> Hi,
+>
+> On 11/19/20 7:36 AM, Jerry Snitselaar wrote:
+>> 
+>> Matthew Garrett @ 2020-10-15 15:39 MST:
+>> 
+>>> On Thu, Oct 15, 2020 at 2:44 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
+>>>>
+>>>> There is a misconfiguration in the bios of the gpio pin used for the
+>>>> interrupt in the T490s. When interrupts are enabled in the tpm_tis
+>>>> driver code this results in an interrupt storm. This was initially
+>>>> reported when we attempted to enable the interrupt code in the tpm_tis
+>>>> driver, which previously wasn't setting a flag to enable it. Due to
+>>>> the reports of the interrupt storm that code was reverted and we went back
+>>>> to polling instead of using interrupts. Now that we know the T490s problem
+>>>> is a firmware issue, add code to check if the system is a T490s and
+>>>> disable interrupts if that is the case. This will allow us to enable
+>>>> interrupts for everyone else. If the user has a fixed bios they can
+>>>> force the enabling of interrupts with tpm_tis.interrupts=1 on the
+>>>> kernel command line.
+>>>
+>>> I think an implication of this is that systems haven't been
+>>> well-tested with interrupts enabled. In general when we've found a
+>>> firmware issue in one place it ends up happening elsewhere as well, so
+>>> it wouldn't surprise me if there are other machines that will also be
+>>> unhappy with interrupts enabled. Would it be possible to automatically
+>>> detect this case (eg, if we get more than a certain number of
+>>> interrupts in a certain timeframe immediately after enabling the
+>>> interrupt) and automatically fall back to polling in that case? It
+>>> would also mean that users with fixed firmware wouldn't need to pass a
+>>> parameter.
+>> 
+>> I believe Matthew is correct here. I found another system today
+>> with completely different vendor for both the system and the tpm chip.
+>> In addition another Lenovo model, the L490, has the issue.
+>> 
+>> This initial attempt at a solution like Matthew suggested works on
+>> the system I found today, but I imagine it is all sorts of wrong.
+>> In the 2 systems where I've seen it, there are about 100000 interrupts
+>> in around 1.5 seconds, and then the irq code shuts down the interrupt
+>> because they aren't being handled.
+>
+> Is that with your patch? The IRQ should be silenced as soon as
+> devm_free_irq(chip->dev.parent, priv->irq, chip); is called.
+>
 
-Alex
+No that is just with James' patchset that enables interrupts for
+tpm_tis. It looks like the irq is firing, but the tpm's int_status
+register is clear, so the handler immediately returns IRQ_NONE. After
+that happens 100000 times the core irq code shuts down the irq, but it
+isn't released so I could still see the stats in /proc/interrupts.  With
+my attempt below on top of that patchset it releases the irq. I had to
+stick the check prior to it checking the int_status register because it
+is cleared and the handler returns, and I couldn't do the devm_free_irq
+directly in tis_int_handler, so I tried sticking it in tpm_tis_send
+where the other odd irq testing code was already located. I'm not sure
+if there is another place that would work better for calling the
+devm_free_irq.
 
+> Depending on if we can get your storm-detection to work or not,
+> we might also choose to just never try to use the IRQ (at least on
+> x86 systems). AFAIK the TPM is never used for high-throughput stuff
+> so the polling overhead should not be a big deal (and I'm getting the feeling
+> that Windows always polls).
+>
 
-> [1] https://gitlab.com/virtio-fs/qemu/-/blob/virtio-fs-dev/hw/virtio/vhost-user-fs.c#L502
-> 
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 67e827638995..33faa6b7dbd4 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -453,7 +453,8 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
->  		flags |= FOLL_WRITE;
->  
->  	mmap_read_lock(mm);
-> -	ret = pin_user_pages_remote(mm, vaddr, 1, flags | FOLL_LONGTERM,
-> +	ret = pin_user_pages_remote(mm, vaddr, 1,
-> +				    flags | FOLL_LONGTERM | FOLL_FORCE,
->  				    page, NULL, NULL);
->  	if (ret == 1) {
->  		*pfn = page_to_pfn(page[0]);
+I was wondering about Windows as well. In addition to the Lenovo systems
+which the T490s had Nuvoton tpm, the system I found yesterday was a development
+system we have from a partner with an Infineon tpm. Dan Williams has
+seen it internally at Intel as well on some system.
+
+> Regards,
+>
+> Hans
+>
+>
+>
+>> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+>> index 49ae09ac604f..478e9d02a3fa 100644
+>> --- a/drivers/char/tpm/tpm_tis_core.c
+>> +++ b/drivers/char/tpm/tpm_tis_core.c
+>> @@ -27,6 +27,11 @@
+>>  #include "tpm.h"
+>>  #include "tpm_tis_core.h"
+>> 
+>> +static unsigned int time_start = 0;
+>> +static bool storm_check = true;
+>> +static bool storm_killed = false;
+>> +static u32 irqs_fired = 0;
+>> +
+>>  static void tpm_tis_clkrun_enable(struct tpm_chip *chip, bool value);
+>> 
+>>  static void tpm_tis_enable_interrupt(struct tpm_chip *chip, u8 mask)
+>> @@ -464,25 +469,31 @@ static int tpm_tis_send_data(struct tpm_chip *chip, const u8 *buf, size_t len)
+>>         return rc;
+>>  }
+>> 
+>> -static void disable_interrupts(struct tpm_chip *chip)
+>> +static void __disable_interrupts(struct tpm_chip *chip)
+>>  {
+>>         struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+>>         u32 intmask;
+>>         int rc;
+>> 
+>> -       if (priv->irq == 0)
+>> -               return;
+>> -
+>>         rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
+>>         if (rc < 0)
+>>                 intmask = 0;
+>> 
+>>         intmask &= ~TPM_GLOBAL_INT_ENABLE;
+>>         rc = tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality), intmask);
+>> +       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
+>> +}
+>> +
+>> +static void disable_interrupts(struct tpm_chip *chip)
+>> +{
+>> +       struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+>> 
+>> +       if (priv->irq == 0)
+>> +               return;
+>> +
+>> +       __disable_interrupts(chip);
+>>         devm_free_irq(chip->dev.parent, priv->irq, chip);
+>>         priv->irq = 0;
+>> -       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
+>>  }
+>> 
+>>  /*
+>> @@ -528,6 +539,12 @@ static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
+>>         int rc, irq;
+>>         struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+>> 
+>> +       if (unlikely(storm_killed)) {
+>> +               devm_free_irq(chip->dev.parent, priv->irq, chip);
+>> +               priv->irq = 0;
+>> +               storm_killed = false;
+>> +       }
+>> +
+>>         if (!(chip->flags & TPM_CHIP_FLAG_IRQ) || priv->irq_tested)
+>>                 return tpm_tis_send_main(chip, buf, len);
+>> 
+>> @@ -748,6 +765,21 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
+>>         u32 interrupt;
+>>         int i, rc;
+>> 
+>> +       if (storm_check) {
+>> +               irqs_fired++;
+>> +
+>> +               if (!time_start) {
+>> +                       time_start = jiffies_to_msecs(jiffies);
+>> +               } else if ((irqs_fired > 1000) && (jiffies_to_msecs(jiffies) - jiffies < 500)) {
+>> +                       __disable_interrupts(chip);
+>> +                       storm_check = false;
+>> +                       storm_killed = true;
+>> +                       return IRQ_HANDLED;
+>> +               } else if ((jiffies_to_msecs(jiffies) - time_start > 500) && (irqs_fired < 1000)) {
+>> +                       storm_check = false;
+>> +               }
+>> +       }
+>> +
+>>         rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &interrupt);
+>>         if (rc < 0)
+>>                 return IRQ_NONE;
+>> 
 
