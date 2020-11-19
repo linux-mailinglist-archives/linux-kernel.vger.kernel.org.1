@@ -2,95 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF402B9611
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DED2B9622
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728541AbgKSPX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:23:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:60256 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727804AbgKSPX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:23:27 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 070C511D4;
-        Thu, 19 Nov 2020 07:23:27 -0800 (PST)
-Received: from [10.57.24.96] (unknown [10.57.24.96])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 79ADE3F719;
-        Thu, 19 Nov 2020 07:23:22 -0800 (PST)
-Subject: Re: [PATCH v8 2/3] dt-bindings: arm: cpus: Document
- 'mediatek,freq-domain' property
-To:     Rob Herring <robh@kernel.org>,
-        Hector Yuan <hector.yuan@mediatek.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com
-References: <1603700349-5922-1-git-send-email-hector.yuan@mediatek.com>
- <1603700349-5922-3-git-send-email-hector.yuan@mediatek.com>
- <20201028150858.GA4029348@bogus>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <65a4e167-9d2c-7fcb-5373-33af5e002333@arm.com>
-Date:   Thu, 19 Nov 2020 15:23:20 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728603AbgKSPZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:25:25 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43916 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728587AbgKSPZW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:25:22 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJF3o0K178201;
+        Thu, 19 Nov 2020 10:25:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=bZWeach1hpqIl7RkSlIKJPYnf7keLEg/eCDF2QMudGY=;
+ b=AFHXbVnlSsJ3MAa+tlSs32PwIEzK89R7S6vrvUsZWnb1Cc6Pph9KCVcs8AWilA55NYRJ
+ l+mUU7mMgHmKbNWSJmnuZlY/TLThF4SpaVtjQ2eDzDillBTNlzd1P5KYwJo/Ih3N7Plb
+ TKHJCrC/1ZwDQCFMFxpqljFbWlMIn+Iuep4V5yXV2Yc7eYVG0FoiALItR7GGUquVH1qK
+ t+USKxYpnGgAznNueXrnLne/DDFzHd7n1WnEeuefjZbZ3PNTttmycFRiHOH7KRigKsOo
+ 443cgTmfDtMEq15T3rKcQnaadQqhSLKfVBO2FuXpDj50F8T3xRGFA1HdouqITTakUfTd 1w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34wg133jma-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 10:25:20 -0500
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AJF4A4Y180667;
+        Thu, 19 Nov 2020 10:25:19 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34wg133jk4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 10:25:19 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AJF7fEV032766;
+        Thu, 19 Nov 2020 15:25:16 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 34w4yfh6uc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 15:25:16 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AJFPDGX50463172
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Nov 2020 15:25:13 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7E2E0A4057;
+        Thu, 19 Nov 2020 15:25:13 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 43A6FA404D;
+        Thu, 19 Nov 2020 15:25:11 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.85.99.210])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 19 Nov 2020 15:25:10 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     acme@kernel.org
+Cc:     jolsa@redhat.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, irogers@google.com,
+        ravi.bangoria@linux.ibm.com, kjain@linux.ibm.com,
+        maddy@linux.ibm.com
+Subject: [PATCH] perf test: Fix metric parsing test
+Date:   Thu, 19 Nov 2020 20:54:11 +0530
+Message-Id: <20201119152411.46041-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201028150858.GA4029348@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-19_09:2020-11-19,2020-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ impostorscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 adultscore=0 suspectscore=1 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit e1c92a7fbbc5 ("perf tests: Add another metric parsing test")
+add another test for metric parsing. The test goes through all metrics
+compiled for arch within pmu events and try to parse them.
 
+Right now this test is failing in powerpc machine.
 
-On 10/28/20 3:08 PM, Rob Herring wrote:
-> On Mon, Oct 26, 2020 at 04:19:08PM +0800, Hector Yuan wrote:
->> From: "Hector.Yuan" <hector.yuan@mediatek.com>
->>
->> Add devicetree documentation for 'mediatek,freq-domain' property specific
->> to Mediatek CPUs. This property is used to reference the CPUFREQ node
->> along with the domain id.
->>
->> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
->> ---
->>   Documentation/devicetree/bindings/arm/cpus.yaml |    6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
->> index 1222bf1..e995b26 100644
->> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
->> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
->> @@ -255,6 +255,12 @@ properties:
->>   
->>         where voltage is in V, frequency is in MHz.
->>   
->> +  mediatek,freq-domain:
->> +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
->> +    description:
->> +      CPUs supporting freq-domain must set their "mediatek,freq-domain" property
->> +      with phandle to a cpufreq_hw node followed by the domain id.
-> 
-> This needs to be a common binding shared with SCMI domains.
+Result in power9 platform:
 
-Would it be accurate to create a new binding file:
-Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.txt
-?
+[command]# ./perf test 10
+10: PMU events                                                      :
+10.1: PMU event table sanity                                        : Ok
+10.2: PMU event map aliases                                         : Ok
+10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
+10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
 
-There is already cpufreq-qcom-hw.txt with 'qcom,freq-domain'
-and analogous purpose.
+Issue is we are passing different runtime parameter value in "expr__find_other"
+and "expr__parse" function which is called from function `metric_parse_fake`.
+And because of this parsing of hv-24x7 metrics is failing.
 
-Regards,
-Lukasz
+[command]# ./perf test 10 -vv
+.....
+hv_24x7/pm_mcs01_128b_rd_disp_port01,chip=1/ not found
+expr__parse failed
+test child finished with -1
+---- end ----
+PMU events subtest 4: FAILED!
+
+This patch fix this issue and change runtime parameter value to '0' in
+expr__parse function.
+
+Result in power9 platform after this patch:
+
+[command]# ./perf test 10
+10: PMU events                                                      :
+10.1: PMU event table sanity                                        : Ok
+10.2: PMU event map aliases                                         : Ok
+10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
+10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+
+Fixes: e1c92a7fbbc5 ("perf tests: Add another metric parsing test")
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+---
+ tools/perf/tests/pmu-events.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index ad2b21591275..0ca6a5a53523 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -575,7 +575,7 @@ static int metric_parse_fake(const char *str)
+ 		}
+ 	}
+ 
+-	if (expr__parse(&result, &ctx, str, 1))
++	if (expr__parse(&result, &ctx, str, 0))
+ 		pr_err("expr__parse failed\n");
+ 	else
+ 		ret = 0;
+-- 
+2.27.0
+
