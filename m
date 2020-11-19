@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33812B8900
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 01:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5497D2B890D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 01:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgKSAVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 19:21:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726374AbgKSAVK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 19:21:10 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63A4C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 16:21:10 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id x18so3736841ilq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 16:21:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AssRh8wltYpwnLIMHdRyWzG/VTXz5aIhKwDWHkLnZe0=;
-        b=IpsYh07mMmjA204ym64OUXzgMOlRPRhH3k+4dYGh3nSVLwQ0/nn/hEHoF0MhhaB7M/
-         b1Qm5ZlMCrCmrO0jPj1LL0eEJeH1IKLTWpaG7ksbq/JQccqDUdYelGgtmTtMreYcBrWj
-         YNj3uyt4gsk96kVYdcvufDbgqwZ6Gj4kU9ubw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AssRh8wltYpwnLIMHdRyWzG/VTXz5aIhKwDWHkLnZe0=;
-        b=jsDtRV3hmH7gSANDnnAVP5NLnR12CzMZAM8sMBtvOCsh6YCgnOz0ODaWbiSkaglTCy
-         G/cvtgoWzVL2xFmLQjR77TScDZuPsB/+kTpEK7CbV6SCPrLW3hlqJmPUGY6deDN3/elA
-         fo1xTxo400slYFiuFWeoaLIsMBWs9RCH1v2pplN2nTeOKaok+wv/qNGUdmAXoL8ILZAJ
-         2Wa2C9iZD/NVGMDKsedzUUe3sWZZe26j34WRVD8TZboKzkIjDmXuBO1DYrrfKNoLZ7fb
-         Az5kie5aElMkYCUlho5/U4mIEh5bw/O1iwjg1xzfwbiDIDkqWTC7upF7iHToRvgbwqFC
-         urNA==
-X-Gm-Message-State: AOAM531j6wbTR8ArhflGBX9E2D+zVoY6KSxaLZJaSgz/7p8Hi8wkDINY
-        64qKFisbZv0T2IqsdorqcURevLLDEl8X//8dNXA5Jw==
-X-Google-Smtp-Source: ABdhPJxf09B2xNeOqcg4M0cq77Grb3qdYe0wDLINSjLt2SvyZGjxeV3KWQsJHhFUeRqvakZ4c8efyZaemXiSiQS4O7k=
-X-Received: by 2002:a92:c8c4:: with SMTP id c4mr19341540ilq.161.1605745270268;
- Wed, 18 Nov 2020 16:21:10 -0800 (PST)
+        id S1726641AbgKSAaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 19:30:00 -0500
+Received: from ms.lwn.net ([45.79.88.28]:47478 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726098AbgKSA37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 19:29:59 -0500
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 412B22B2;
+        Thu, 19 Nov 2020 00:29:59 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 17:29:58 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 00/26] Make reporting-bugs easier to grasp and
+ yet more detailed & helpful
+Message-ID: <20201118172958.5b014a44@lwn.net>
+In-Reply-To: <458eb542-ff4d-e734-67fd-01e8378d4864@leemhuis.info>
+References: <cover.1605203187.git.linux@leemhuis.info>
+        <20201113153313.68ff210c@lwn.net>
+        <458eb542-ff4d-e734-67fd-01e8378d4864@leemhuis.info>
+Organization: LWN.net
 MIME-Version: 1.0
-References: <1605501291-23040-1-git-send-email-pillair@codeaurora.org>
-In-Reply-To: <1605501291-23040-1-git-send-email-pillair@codeaurora.org>
-From:   Abhishek Kumar <kuabhs@chromium.org>
-Date:   Wed, 18 Nov 2020 16:20:58 -0800
-Message-ID: <CACTWRwvG=BqKAeJm18jAtMuah-=NyRPzAJMv-930eQtp+PBArw@mail.gmail.com>
-Subject: Re: [PATCH v3] ath10k: Fix the parsing error in service available event
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     ath10k <ath10k@lists.infradead.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Brian Norris <briannorris@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, 15 Nov 2020 11:13:52 +0100
+Thorsten Leemhuis <linux@leemhuis.info> wrote:
 
-The patch LGTM there is small nit, though.
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -5751,8 +5751,13 @@ void ath10k_wmi_event_service_available(struct ath10k *ar, struct sk_buff *skb)
->                             ret);
->         }
->
-> -       ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
-> -                              __le32_to_cpu(arg.service_map_ext_len));
-> +       /*
-> +        * Initialization of "arg.service_map_ext_valid" to ZERO is necessary
-> +        * for the below logic to work.
-> +        */
+> > So I've not had a chance to try to read through the whole thing again,
+> > will try to do so in the near future.  
+> 
+> Great, thx, looking forward to it.
 
-Nit: The comment will throw a checkpatch warning.  "networking block
-comments don't use an empty /* line, use /* Comment..."
+OK, I have made a *quick* pass through the whole thing and sent a small
+number of comments separately. There are things that could be tweaked
+(there always will be) but I'm not sure we should worry about those yet.
+I would suggest doing this:
 
--Abhishek
+ - Collapse the whole thing down to a patch adding reporting-bugs-v2.rst
+   (or some suitable name).  I do wonder if it should also move to the
+   process manual as part of this; not only admins will report bugs.
+
+ - Add a comment at the top saying it's a proposed replacement and
+   soliciting comments.  You could also put some of your other questions
+   into the text for now and see if anybody reacts.  
+
+ - In a separate patch you could add a comment to the existing document
+   pointing to the new one as the true source of wisdom.
+
+ - Dual licensed CC-SA-4.0 is fine with me.  CC-BY is OK if you really
+   want to do it that way.  Either way, though, you'll need to add the
+   license itself under LICENSES/preferred before it can go into the SPDX
+   tag.
+
+With that, I'd say let's just merge it and bash on it from there.
+
+Thanks,
+
+jon
