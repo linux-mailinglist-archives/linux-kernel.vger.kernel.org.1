@@ -2,81 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545602B8C6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A922B8C6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:39:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgKSHeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:34:31 -0500
-Received: from smtprelay0186.hostedemail.com ([216.40.44.186]:41808 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725931AbgKSHeb (ORCPT
+        id S1726300AbgKSHhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:37:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgKSHhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:34:31 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 6D0BC837F253;
-        Thu, 19 Nov 2020 07:34:30 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2914:3138:3139:3140:3141:3142:3352:3622:3866:3867:3868:3870:4321:5007:7875:9036:10004:10400:10848:11026:11232:11658:11914:12043:12295:12297:12679:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: able15_1f0184d27341
-X-Filterd-Recvd-Size: 1903
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 19 Nov 2020 07:34:29 +0000 (UTC)
-Message-ID: <9100d801f26e0a068462f9582b7ce193be813966.camel@perches.com>
-Subject: Re: [PATCH] Input: adp5589-keys - use BIT()
-From:   Joe Perches <joe@perches.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 18 Nov 2020 23:34:28 -0800
-In-Reply-To: <20201119072440.GA116840@dtor-ws>
-References: <20201119072440.GA116840@dtor-ws>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 19 Nov 2020 02:37:53 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46BFC0613CF;
+        Wed, 18 Nov 2020 23:37:53 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id a18so3640699pfl.3;
+        Wed, 18 Nov 2020 23:37:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l/3JMDRVZProLbkhyFdNZPSvqTlToyEj4ZGqnHUtqyw=;
+        b=jBsCDC/ax1VmYPFKpUqNPYkvoEtI9Z5q7LgWeGaLKOInIL6lkS+TA9HtG3XxaXKxJ/
+         mJMy+D//PDO1Z4EL30/whH83kB09TZqq61jZwlumHcVSvIgWG/ZcHdTz7SOVEj9Ywf7B
+         XMAFpT/inCNbhBVUgAWajMrxjNEOZ23Hak60csLlyJzZCqws6NIMKyE0fd2BNqNvawxD
+         5dDyhvrlQ3jQ/n79Bg+DZo0Iflvg6tqH9tX053OJWBcuG2FS1CACa9+PmhSD3lCHqUlR
+         VGAUomrwSD1KRFCkJc4tQVq0b8SpSuKZOVzjQGz1UDuwYtAYWFA46gmG4B1MpClOIoxQ
+         u0XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l/3JMDRVZProLbkhyFdNZPSvqTlToyEj4ZGqnHUtqyw=;
+        b=MO2T8G+IP56WeZxvvnPET2IQnkauKRVNGvf42xExLxzmeh0ghqJoFwghsif+gQ1kgv
+         uSthszz3UnebU55FqWl7qONrEbjV7OYWMeSNX5gWYXrHUQ9lfxqzJYYyAAnEorTCP+AP
+         Ozu4jCG3LpHDaAhUeiHcRKHl6W16UyWCfV4Etkw9jOiAitXddtOkQOYd63/xc1DxnkCS
+         DBvh9l2sow8AByagcJp3ocUHLFUcKGhrOVEJKDMwTzjJuKXa/chSe2bCgWKU161jTH4o
+         GL3XWDupibpD1iMOczTZfz+SAq9NNSw4ud//+iSYOn8FrEWPzfFAOjp8q9hpmRfJTvSR
+         1vxA==
+X-Gm-Message-State: AOAM532RtOh5RxkB1I/obzbIul8nnkARctmgZPS+BostWLvLyuOpCkRv
+        YYSdp0PyZO1YQe3MnSYS+Ol53Q0tGEhaeO1G
+X-Google-Smtp-Source: ABdhPJzPbt7Ea2Xha1T7WKMC99KIUo0xz3SjrpF9fGF5MpNkWN6OLT95v2vamzggsn+fqT6A5K5Zbw==
+X-Received: by 2002:a17:90a:e28a:: with SMTP id d10mr2592351pjz.70.1605771473052;
+        Wed, 18 Nov 2020 23:37:53 -0800 (PST)
+Received: from localhost.localdomain ([240d:1a:ea:ea00:1b41:22b1:3b31:fc27])
+        by smtp.gmail.com with ESMTPSA id b16sm5636678pju.16.2020.11.18.23.37.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 23:37:52 -0800 (PST)
+From:   n01e0 <reoshiseki@gmail.com>
+To:     linux-kernel@vger.kernel.org, marcel@holtmann.org,
+        johan.hedberg@gmail.com
+Cc:     linux-bluetooth@vger.kernel.org, n01e0 <reoshiseki@gmail.com>
+Subject: [PATCH] include/net/bluetooth/mgmt.h: fix typo in struct name
+Date:   Thu, 19 Nov 2020 16:37:11 +0900
+Message-Id: <20201119073710.385004-1-reoshiseki@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-18 at 23:24 -0800, Dmitry Torokhov wrote:
-> Let's use BIT() macro instead of explicitly shifting '1'.
-[]
-> diff --git a/drivers/input/keyboard/adp5589-keys.c b/drivers/input/keyboard/adp5589-keys.c
+Signed-off-by: n01e0 <reoshiseki@gmail.com>
+---
+ include/net/bluetooth/mgmt.h | 4 ++--
+ net/bluetooth/mgmt.c         | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-> @@ -651,13 +652,13 @@ static int adp5589_setup(struct adp5589_kpad *kpad)
->  		unsigned short pin = pdata->gpimap[i].pin;
->  
-
-trivia:
-
-Perhaps nicer to create and use a temporary
-
-	unsigned int bit = BIT(pin - kpad->var->gpi_pin_col_base);
-
-so in these places below:
-
->  		if (pin <= kpad->var->gpi_pin_row_end) {
-> -			evt_mode1 |= (1 << (pin - kpad->var->gpi_pin_row_base));
-> +			evt_mode1 |= BIT(pin - kpad->var->gpi_pin_row_base);
-
-			evt_mode1 |= bit;
-
->  		} else {
->  			evt_mode2 |=
-> -			    ((1 << (pin - kpad->var->gpi_pin_col_base)) & 0xFF);
-> +			    BIT(pin - kpad->var->gpi_pin_col_base) & 0xFF;
-
-			evt_mode2 |= bit & 0xff;
-
->  			if (!kpad->is_adp5585)
-> -				evt_mode3 |= ((1 << (pin -
-> -					kpad->var->gpi_pin_col_base)) >> 8);
-> +				evt_mode3 |=
-> +				    BIT(pin - kpad->var->gpi_pin_col_base) >> 8;
-
-				evt_mode3 |= bit >> 8;
-
+diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
+index 6b55155e05e9..d8367850e8cd 100644
+--- a/include/net/bluetooth/mgmt.h
++++ b/include/net/bluetooth/mgmt.h
+@@ -621,7 +621,7 @@ struct mgmt_cp_set_appearance {
+ #define MGMT_SET_APPEARANCE_SIZE	2
+ 
+ #define MGMT_OP_GET_PHY_CONFIGURATION	0x0044
+-struct mgmt_rp_get_phy_confguration {
++struct mgmt_rp_get_phy_configuration {
+ 	__le32	supported_phys;
+ 	__le32	configurable_phys;
+ 	__le32	selected_phys;
+@@ -658,7 +658,7 @@ struct mgmt_rp_get_phy_confguration {
+ 			     MGMT_PHY_LE_CODED_RX)
+ 
+ #define MGMT_OP_SET_PHY_CONFIGURATION	0x0045
+-struct mgmt_cp_set_phy_confguration {
++struct mgmt_cp_set_phy_configuration {
+ 	__le32	selected_phys;
+ } __packed;
+ #define MGMT_SET_PHY_CONFIGURATION_SIZE	4
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 12d7b368b428..3dfed4efa078 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -3387,7 +3387,7 @@ static int set_appearance(struct sock *sk, struct hci_dev *hdev, void *data,
+ static int get_phy_configuration(struct sock *sk, struct hci_dev *hdev,
+ 				 void *data, u16 len)
+ {
+-	struct mgmt_rp_get_phy_confguration rp;
++	struct mgmt_rp_get_phy_configuration rp;
+ 
+ 	bt_dev_dbg(hdev, "sock %p", sk);
+ 
+@@ -3451,7 +3451,7 @@ static void set_default_phy_complete(struct hci_dev *hdev, u8 status,
+ static int set_phy_configuration(struct sock *sk, struct hci_dev *hdev,
+ 				 void *data, u16 len)
+ {
+-	struct mgmt_cp_set_phy_confguration *cp = data;
++	struct mgmt_cp_set_phy_configuration *cp = data;
+ 	struct hci_cp_le_set_default_phy cp_phy;
+ 	struct mgmt_pending_cmd *cmd;
+ 	struct hci_request req;
+-- 
+2.25.1
 
