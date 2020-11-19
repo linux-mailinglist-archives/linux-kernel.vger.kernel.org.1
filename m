@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0752B9CAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8782B9C9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgKSVKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 16:10:39 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36598 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgKSVKi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 16:10:38 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJLAMpo113729;
-        Thu, 19 Nov 2020 15:10:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605820222;
-        bh=Aa9owdtChBq0Vud6FElifszzVskd35I01WdLJoXGt6Y=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=CNLibd4Pbgu+wJ8eCiQFCeVs7NkcwXdjwDMr08Vl7wTwn0KRTgaVNKKzULj3DHA0i
-         5fc6OI5m9hVpffkzEpg27gRYs9xw3/hBOgB5Jg89CaLNq3zEOUlZ1t42CpKxi9QU3z
-         Iy15Bafvc8f00VtwhFJ/qKShePgKCmYKWm7Rcf6Q=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJLAMwk071440
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 15:10:22 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
- Nov 2020 15:10:22 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 19 Nov 2020 15:10:22 -0600
-Received: from [10.250.70.26] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJLAM99021659;
-        Thu, 19 Nov 2020 15:10:22 -0600
-Subject: Re: [PATCH v2] leds: lp50xx: add missing fwnode_handle_put in error
- handling case
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Pavel Machek <pavel@ucw.cz>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201119070841.712-1-miaoqinglang@huawei.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <978b21a3-57da-e49f-975c-f803a18d1b7a@ti.com>
-Date:   Thu, 19 Nov 2020 15:10:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726580AbgKSVHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 16:07:45 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:10019 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726304AbgKSVHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 16:07:44 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CcXM14zGlz9v4nj;
+        Thu, 19 Nov 2020 22:07:41 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id F-4BTdxGLIpJ; Thu, 19 Nov 2020 22:07:41 +0100 (CET)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CcXM13sgdz9v4nh;
+        Thu, 19 Nov 2020 22:07:41 +0100 (CET)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id 5D1733AF; Thu, 19 Nov 2020 22:10:33 +0100 (CET)
+Received: from 192.168.4.90 ([192.168.4.90]) by messagerie.c-s.fr (Horde
+ Framework) with HTTP; Thu, 19 Nov 2020 22:10:33 +0100
+Date:   Thu, 19 Nov 2020 22:10:33 +0100
+Message-ID: <20201119221033.Horde.be-msjDTeIW4XeXARjUu7g1@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] powerpc/ptrace: Hard wire PT_SOFTE value to 1 in
+ gpr_get() too
+References: <20201119160154.GA5183@redhat.com>
+ <20201119160247.GB5188@redhat.com>
+In-Reply-To: <20201119160247.GB5188@redhat.com>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-In-Reply-To: <20201119070841.712-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
 
-On 11/19/20 1:08 AM, Qinglang Miao wrote:
-> Fix to set ret and goto child_out for fwnode_handle_put(child)
-> in the error handling case rather than simply return, as done
-> elsewhere in this function.
+Quoting Oleg Nesterov <oleg@redhat.com>:
+
+> The commit a8a4b03ab95f ("powerpc: Hard wire PT_SOFTE value to 1 in
+> ptrace & signals") changed ptrace_get_reg(PT_SOFTE) to report 0x1,
+> but PTRACE_GETREGS still copies pt_regs->softe as is.
 >
-> Fixes: 242b81170fb8 ("leds: lp50xx: Add the LP50XX family of the RGB LED driver")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Suggested-by: Pavel Machek <pavel@ucw.cz>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> This is not consistent and this breaks the user-regs-peekpoke test
+> from https://sourceware.org/systemtap/wiki/utrace/tests/
+>
+> Reported-by: Jan Kratochvil <jan.kratochvil@redhat.com>
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 > ---
->   v2: forget to set ret on v1
+>  arch/powerpc/kernel/ptrace/ptrace-tm.c   | 8 +++++++-
+>  arch/powerpc/kernel/ptrace/ptrace-view.c | 8 +++++++-
+>  2 files changed, 14 insertions(+), 2 deletions(-)
 >
->   drivers/leds/leds-lp50xx.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
-> index 5fb4f24ae..f13117eed 100644
-> --- a/drivers/leds/leds-lp50xx.c
-> +++ b/drivers/leds/leds-lp50xx.c
-> @@ -487,8 +487,10 @@ static int lp50xx_probe_dt(struct lp50xx *priv)
->   		 */
->   		mc_led_info = devm_kcalloc(priv->dev, LP50XX_LEDS_PER_MODULE,
->   					   sizeof(*mc_led_info), GFP_KERNEL);
-> -		if (!mc_led_info)
-> -			return -ENOMEM;
-> +		if (!mc_led_info) {
-> +			ret = -ENOMEM;
-> +			goto child_out;
-> +		}
->   
->   		fwnode_for_each_child_node(child, led_node) {
->   			ret = fwnode_property_read_u32(led_node, "color",
-Reviewed-by: Dan Murphy <dmurphy@ti.com>
+
+I think the following should work, and not require the first patch  
+(compile tested only).
+
+diff --git a/arch/powerpc/kernel/ptrace/ptrace-tm.c  
+b/arch/powerpc/kernel/ptrace/ptrace-tm.c
+index 54f2d076206f..f779b3bc0279 100644
+--- a/arch/powerpc/kernel/ptrace/ptrace-tm.c
++++ b/arch/powerpc/kernel/ptrace/ptrace-tm.c
+@@ -104,8 +104,14 @@ int tm_cgpr_get(struct task_struct *target, const  
+struct user_regset *regset,
+  		     offsetof(struct pt_regs, msr) + sizeof(long));
+
+  	membuf_write(&to, &target->thread.ckpt_regs.orig_gpr3,
+-			sizeof(struct user_pt_regs) -
+-			offsetof(struct pt_regs, orig_gpr3));
++		     offsetof(struct pt_regs, softe) - offsetof(struct pt_regs,  
+orig_gpr3));
++	membuf_store(&to, 1UL);
++
++	BUILD_BUG_ON(offsetof(struct pt_regs, trap) !=
++		     offsetof(struct pt_regs, softe) + sizeof(long));
++
++	membuf_write(&to, &target->thread.ckpt_regs.trap,
++		     sizeof(struct user_pt_regs) - offsetof(struct pt_regs, trap));
+  	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
+  			sizeof(struct user_pt_regs));
+  }
+diff --git a/arch/powerpc/kernel/ptrace/ptrace-view.c  
+b/arch/powerpc/kernel/ptrace/ptrace-view.c
+index 7e6478e7ed07..736bfbf33890 100644
+--- a/arch/powerpc/kernel/ptrace/ptrace-view.c
++++ b/arch/powerpc/kernel/ptrace/ptrace-view.c
+@@ -234,9 +234,21 @@ static int gpr_get(struct task_struct *target,  
+const struct user_regset *regset,
+  	BUILD_BUG_ON(offsetof(struct pt_regs, orig_gpr3) !=
+  		     offsetof(struct pt_regs, msr) + sizeof(long));
+
++#ifdef CONFIG_PPC64
++	membuf_write(&to, &target->thread.regs->orig_gpr3,
++		     offsetof(struct pt_regs, softe) - offsetof(struct pt_regs,  
+orig_gpr3));
++	membuf_store(&to, 1UL);
++
++	BUILD_BUG_ON(offsetof(struct pt_regs, trap) !=
++		     offsetof(struct pt_regs, softe) + sizeof(long));
++
++	membuf_write(&to, &target->thread.regs->trap,
++		     sizeof(struct user_pt_regs) - offsetof(struct pt_regs, trap));
++#else
+  	membuf_write(&to, &target->thread.regs->orig_gpr3,
+  			sizeof(struct user_pt_regs) -
+  			offsetof(struct pt_regs, orig_gpr3));
++#endif
+  	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
+  				 sizeof(struct user_pt_regs));
+  }
+---
+Christophe
