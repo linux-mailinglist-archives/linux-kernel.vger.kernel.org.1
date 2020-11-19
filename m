@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C0A2B9AFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7F42B9B00
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727312AbgKSSyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:54:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
+        id S1728926AbgKSSyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727292AbgKSSyB (ORCPT
+        with ESMTP id S1728316AbgKSSyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:54:01 -0500
+        Thu, 19 Nov 2020 13:54:24 -0500
 Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1E4C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:54:00 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id s18so6343526oih.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:54:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88459C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:54:24 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id m13so7467833oih.8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:54:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ck6zUvr7j7fPMycVVDBHrelSey5wOo7Sha29ftV8jDM=;
-        b=OhHCeaosqmyoA8x2gcPGoZl2Aa08hjJJiz45Y0TYnA+pIreoR8LCD83ogQdeJYP//v
-         Q+iLO4X4mNQ2J1DtzNi9j7TnaUeMT7SiWLamddYkmoHYo0GruwAxrXx1CPgG7kEYHW64
-         j8vFuvsVZqlfiqMB0kwGJSEd2iS3zeTGy26yA=
+        bh=pMeZvPMUViieFz96QH5k5rZFgdwxQ3T8yNvjgVDpT6A=;
+        b=aBPqoQRGh++GEnDaKXYix0KOPWiTPTx7iuwYOQhyp5Q9bpQgOsPy7rrzmvNPj41hnG
+         i0yipbB67KuRNbCNlpmPjmIbcRJ+xtTDUSH8qy2ImgOAYb8cGCI1uDla2qEMS/g1pUcG
+         X2haeZItlBiO53D7bKmKeb2lHFsBk0zVpeLZo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ck6zUvr7j7fPMycVVDBHrelSey5wOo7Sha29ftV8jDM=;
-        b=tCzDNTpc5vUaQp21zzDMZS1RiGlEy9hQw/WB2Z9vAXxgqa36xOhp81hPlhWWapIBCo
-         SCeMaVHVvG0hT2F934dRQi48rXT5VeJ6Is7pCNBq4n8HTThsrShizn7VKGIS/gBHWhWr
-         W1Qr77T3VwKfUKss3x4VzZ+yZ+5F7Y7nHzab34BFHYXGS0+qPmRRsorxfy941WQmFMiN
-         LiZxxjFGV7WJaZ4yp9c8cnx7IiU8a7s8JzGUE1EtU8b0Mu+h5+7GsIr/gcBDlU66F2qu
-         QUvEMID6x08O0fUyyv4W1jyRh5sqYxdjuqjU4MLt3OYh5XwNRXvyx8ryPGOqvS4yIoQ8
-         lI3A==
-X-Gm-Message-State: AOAM533vMhyAXUkJQhHKj4RduibFA+QwZQCsoHjDmrTrfK+IhSAFy2kD
-        jfSxZ6rrunjl8X2i09o6WAlVtHtuDWMiR2CCpy/7Fw==
-X-Google-Smtp-Source: ABdhPJzjS1AsNywrfktGe2sxbr/AXupe0AQ87lTJE0DmsjYeXbOX965LB4PcwX+J2I+s2UW8mEBs6LW8h22Q2+ib4mg=
-X-Received: by 2002:aca:da89:: with SMTP id r131mr4043105oig.166.1605812040211;
- Thu, 19 Nov 2020 10:54:00 -0800 (PST)
+        bh=pMeZvPMUViieFz96QH5k5rZFgdwxQ3T8yNvjgVDpT6A=;
+        b=ZlpjxIZ4vAONKGbkuD4jBPzuv4nkeyjYAPX6m83egpxMcRTdRea26sEs+8wI7u9x7q
+         Lf//yC8nATtdota3ToIStvHv9T77Fn1KuO71S2kmWoi5jtqW2rvaJtj/dzicwdcgPCvC
+         eI14KJekfORHFI/P2UhNLRlYwi0y2gxWoprqGXfm36uPxj1sTt6n83SIPo9dMXqwwhjz
+         cqHrbnyacnnY6CA9Fx968m3h08tzAD6xH98NWfsmV2Wo2dew9aJvUkxA4FnKXi0QgGuA
+         oLUuVFs2PmTNYlsYIp8J1/iFfglJf6SSzuLy3CGrvZDtzgHXt28QSwUnyK+J/6B67nu/
+         90lg==
+X-Gm-Message-State: AOAM530+slSphHBrghenTu6NkPwRjNZsXst0QewR1BImJtllv09QjBo5
+        K2h+snb4+OL4znQCE6s0AW/erUJ6IQj8AlF9pmrthQ==
+X-Google-Smtp-Source: ABdhPJxPPFqcjOF5jPxYbAE3dQ672oz4gwC8W2A5ynxUIcUbGL9ji/3Zvd1VS3C/w0s4ZWqwh92ujiSWb45WYSP4vFI=
+X-Received: by 2002:aca:30d2:: with SMTP id w201mr3791213oiw.8.1605812063818;
+ Thu, 19 Nov 2020 10:54:23 -0800 (PST)
 MIME-Version: 1.0
-References: <1605792621-6268-1-git-send-email-zhangchangzhong@huawei.com>
-In-Reply-To: <1605792621-6268-1-git-send-email-zhangchangzhong@huawei.com>
+References: <1605701851-20270-1-git-send-email-zhangchangzhong@huawei.com>
+In-Reply-To: <1605701851-20270-1-git-send-email-zhangchangzhong@huawei.com>
 From:   Edwin Peer <edwin.peer@broadcom.com>
-Date:   Thu, 19 Nov 2020 10:53:23 -0800
-Message-ID: <CAKOOJTyJ_R6cTij0uZweOm2aFCDg+AG3qGcOSb=wsOSQKzL60g@mail.gmail.com>
-Subject: Re: [PATCH net] bnxt_en: fix error return code in bnxt_init_board()
+Date:   Thu, 19 Nov 2020 10:53:47 -0800
+Message-ID: <CAKOOJTy8AnrX9N51G1C73+G-7pLaip_Vt1FBk44RRQzDec9Y7w@mail.gmail.com>
+Subject: Re: [PATCH net] bnxt_en: fix error return code in bnxt_init_one()
 To:     Zhang Changzhong <zhangchangzhong@huawei.com>
 Cc:     Michael Chan <michael.chan@broadcom.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, prashant@broadcom.com,
-        huangjw@broadcom.com, Eddie Wai <eddie.wai@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         netdev <netdev@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004144db05b47a4093"
+        boundary="000000000000a936ee05b47a4181"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000004144db05b47a4093
+--000000000000a936ee05b47a4181
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Nov 19, 2020 at 5:29 AM Zhang Changzhong
+On Wed, Nov 18, 2020 at 4:17 AM Zhang Changzhong
 <zhangchangzhong@huawei.com> wrote:
 
 > Fix to return a negative error code from the error handling
 > case instead of 0, as done elsewhere in this function.
 >
-> Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
+> Fixes: c213eae8d3cd ("bnxt_en: Improve VF/PF link change logic.")
 > Reported-by: Hulk Robot <hulkci@huawei.com>
 > Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 > ---
@@ -78,26 +77,25 @@ On Thu, Nov 19, 2020 at 5:29 AM Zhang Changzhong
 >  1 file changed, 1 insertion(+)
 >
 > diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> index 7c21aaa8..11d0542 100644
+> index 7c21aaa8..092775e 100644
 > --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 > +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> @@ -11590,6 +11590,7 @@ static int bnxt_init_board(struct pci_dev *pdev, struct net_device *dev)
->         if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) != 0 &&
->             dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) != 0) {
->                 dev_err(&pdev->dev, "System does not support DMA, aborting\n");
-> +               rc = -EIO;
->                 goto init_err_disable;
->         }
->
+> @@ -12674,6 +12674,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>                                 create_singlethread_workqueue("bnxt_pf_wq");
+>                         if (!bnxt_pf_wq) {
+>                                 dev_err(&pdev->dev, "Unable to create workqueue.\n");
+> +                               rc = -ENOMEM;
+>                                 goto init_err_pci_clean;
+>                         }
+>                 }
 > --
-> 2.9.5
 
 Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
 
 Regards,
 Edwin Peer
 
---0000000000004144db05b47a4093
+--000000000000a936ee05b47a4181
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -167,13 +165,13 @@ wL3owFiCmLmw5R8OH22wqf/7sQFMRpH5IQFLRYdU9uCUy5FlUAgiCEXegph8ytxvo8MgYyQcCOeg
 BMfFgFEHuM2IgsDQyFC6XUViX6BQny67nlrO8pqwNRJ9Bdd7ykLCzCLOuR1znBAc2wAL9OKQe0cx
 ggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMw
 MQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCXgDAeB
-YW0HGKjSdzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg7mH+R+R5k1LehuwK4Z2U
-Wgmb16SFD5zQN3qAhBOrz5QwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMjAxMTE5MTg1NDAwWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQME
+YW0HGKjSdzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgQJWQeuLZpEr3w1CY6PPL
+xb154ZhkLGA4tZ30jP1yKKIwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
+DxcNMjAxMTE5MTg1NDI0WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQME
 ARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJ
-YIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBALGHeZNMrNQmktVLNEd4x9Rd+5zKaSIG/BjIj/Jo
-/v1x3SIvGi4sbu+LIhJa+IFT++vIpEmjuBnH5kVFm1AP2HNjD8BJi150P+qLNNvxhm5pOtX2IvXq
-bQCKSgBsdEFzqEUmRqnQ7PHkEw2q/FKeZfaXGsyaSh1os0eCUvIT3NRlF7LJXadpl6tKz/J0/YHV
-ygCJR7KO3sXeb+2ciPN9w1pgd+qZfxR6s64/Rq8HTBV6omEHmDl2eojzha/09fSGz5q1IY4v/gjO
-zkGADwB7kps2IIy6VLVUhfKUJHmVm8yX8pu1gbIrTX0dJMVHPRXth3oeLIWbPIlye4ZKQKTkryA=
---0000000000004144db05b47a4093--
+YIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAFoqbIsbHRVmoB44QAUaKSNkVjAP4kSWdxlbYdIJ
+ovxGKp83AZTd9XEMiHu2QkVNLBHJHMsRl/J2MOIKshOE6LR1ny020cbHWEeiphSYFoxRyJOjFzC3
+0DNs3yV6mqY93wbCy+6DfigpaEzmBU13A0e+kQgqhoctElvwoBQL8bP3WpfwibS7VeF0tUF0dip3
+YtElsrXKCdJmKRLtvl6fB//fbGyWo1WTN8XxxwF4ZumxXMMXNakFu6zCudcv584sT6sivMwS21/e
+bVkCxFezll9CtrBhgTsLFpL4mottcOJGBkNKe/sSGA8pPhVSkgU/dZGNs2KGhI+fGNfjRvuJ5bk=
+--000000000000a936ee05b47a4181--
