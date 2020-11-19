@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919EB2B96C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 190AD2B96CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbgKSPpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:45:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgKSPpx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:45:53 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5759FC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:45:53 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id gj5so8554143ejb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:45:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=45e0VgNBbvYnn00UZUV/75YCSw3FH7awq7f1yZmGnIA=;
-        b=yd+dDD5sCyrZHocr/ApiPlXl8Vodq1TGFhwOHBFO8f6IhOtQwsioH35yKK7UONHdH5
-         TitQsHK6lA8fYRer+u4YnGR1szOVLD1j7PQF214pS7Ce6d2fyplN4xEO63Z0fMf+eo5F
-         +D7s7HaiYkc1/gXas5BwAL1r0YHLx3mzjYUBJ3VVkquNN71MOzWoSStwN2EHOedXyFIr
-         Ro9F1WQY4P81qMbCgNbC/Ev/imG/WmHAd4i9hs/qUPN2WgCzFgjiXtJGT7k0K/b08nuD
-         3c0yMqnN3mBXKuySRziRYw0DuO4lMXk7AGWqZHMjPIhhmOGjOj8ao0ADRhK4NexKY+xa
-         jw1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=45e0VgNBbvYnn00UZUV/75YCSw3FH7awq7f1yZmGnIA=;
-        b=bs0PFlO9f0X5rgSHbODPC6qDLIIdOKwhysTh0XL6qQapidZCP1WiVoaBhyPJiNgf51
-         G/I07P7C2l8zwSmY54g/8z66tO7LiVJCC5lnuqJlK1OPmrnSlZfW+CnxV8J8qx9mqK5P
-         MIOAqqXSLp8wgwBfUM4v4s8TWeNnYEuojGEehCCNBJTUkxsoQ6gK20kCMqWYEgZsWR1O
-         nMyXfF3f2YFdS6XDUbONf1t4NwBpWpndcGw1cy0HVX7tNVFuHzeCIbtJ7HqK92Lf3nER
-         U/0fjMtCuemZY0XyTSuHv/eKmgfQV89OFotTZaEsq6MQ17Gzxlkt5adxrapNpROe7V2p
-         KxEg==
-X-Gm-Message-State: AOAM531qkC5b7YP8PgHmi92qpm88p+k5WP9QNLcIUXLnHSlJ7uoU3mJw
-        e+JpGzlP/1m2hI5cNxGPQOeDvBQQYK/R2BXLpb5K6A==
-X-Google-Smtp-Source: ABdhPJwerYJJayn5lWpV2YdXL6eFXH1urcMvWimgMV3daCqtLlvmtu4pEM2RJAtpVko5A8pZi6+uXKrICI4dBfpc4FU=
-X-Received: by 2002:a17:906:6896:: with SMTP id n22mr30365553ejr.56.1605800751989;
- Thu, 19 Nov 2020 07:45:51 -0800 (PST)
+        id S1728921AbgKSPqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:46:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728583AbgKSPqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:46:37 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 813182224A;
+        Thu, 19 Nov 2020 15:46:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605800796;
+        bh=ZvKprxlPeDR11nAv0IeB4RNZKc7/A57CYBYK8dwYGvA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eJFgy/ERDAHnV44gummxbYRBsX1kbc6TtE7RiXMtxbNIkKe7OhRg5AJfcPrxFKqjD
+         RvGoJEuoxmZSF+VACQj2A8eU2SVNDpagHniFKlgF8AkQdfRkaQSpgD5aLptwItPHad
+         ogoqmgOfEn08wfYIcOdiAOnWKZDBDMa2FN3swJpI=
+Date:   Thu, 19 Nov 2020 07:46:34 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Tao Ren <rentao.bupt@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, openbmc@lists.ozlabs.org, taoren@fb.com,
+        mikechoi@fb.com
+Subject: Re: [PATCH v2 0/2] hwmon: (max127) Add Maxim MAX127 hardware
+ monitoring
+Message-ID: <20201119074634.2e9cb21b@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201119012653.GA249502@roeck-us.net>
+References: <20201118230929.18147-1-rentao.bupt@gmail.com>
+        <20201118232719.GI1853236@lunn.ch>
+        <20201118234252.GA18681@taoren-ubuntu-R90MNF91>
+        <20201119010119.GA248686@roeck-us.net>
+        <20201119012653.GA249502@roeck-us.net>
 MIME-Version: 1.0
-References: <20201119153901.53705-1-steven.price@arm.com>
-In-Reply-To: <20201119153901.53705-1-steven.price@arm.com>
-From:   Peter Maydell <peter.maydell@linaro.org>
-Date:   Thu, 19 Nov 2020 15:45:40 +0000
-Message-ID: <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-To:     Steven Price <steven.price@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 at 15:39, Steven Price <steven.price@arm.com> wrote:
-> This series adds support for Arm's Memory Tagging Extension (MTE) to
-> KVM, allowing KVM guests to make use of it. This builds on the existing
-> user space support already in v5.10-rc1, see [1] for an overview.
+On Wed, 18 Nov 2020 17:26:53 -0800 Guenter Roeck wrote:
+> On Wed, Nov 18, 2020 at 05:01:19PM -0800, Guenter Roeck wrote:
+> > On Wed, Nov 18, 2020 at 03:42:53PM -0800, Tao Ren wrote:  
+> > > On Thu, Nov 19, 2020 at 12:27:19AM +0100, Andrew Lunn wrote:  
+> > > > On Wed, Nov 18, 2020 at 03:09:27PM -0800, rentao.bupt@gmail.com wrote:  
+> > > > > From: Tao Ren <rentao.bupt@gmail.com>
+> > > > > 
+> > > > > The patch series adds hardware monitoring driver for the Maxim MAX127
+> > > > > chip.  
+> > > > 
+> > > > Hi Tao
+> > > > 
+> > > > Why are using sending a hwmon driver to the networking mailing list?
+> > > > 
+> > > >     Andrew  
+> > > 
+> > > Hi Andrew,
+> > > 
+> > > I added netdev because the mailing list is included in "get_maintainer.pl
+> > > Documentation/hwmon/index.rst" output. Is it the right command to find
+> > > reviewers? Could you please suggest? Thank you.  
+> > 
+> > I have no idea why running get_maintainer.pl on
+> > Documentation/hwmon/index.rst returns such a large list of mailing
+> > lists and people. For some reason it includes everyone in the XDP
+> > maintainer list. If anyone has an idea how that happens, please
+> > let me know - we'll want to get this fixed to avoid the same problem
+> > in the future.
+> 
+> I found it. The XDP maintainer entry has:
+> 
+> K:    xdp
+> 
+> This matches Documentation/hwmon/index.rst.
+> 
+> $ grep xdp Documentation/hwmon/index.rst
+>    xdpe12284
+> 
+> It seems to me that a context match such as "xdp" in MAINTAINERS isn't
+> really appropriate. "xdp" matches a total of 348 files in the kernel.
+> The large majority of those is not XDP related. The maintainers
+> of XDP (and all the listed mailing lists) should not be surprised
+> to get a large number of odd review requests if they want to review
+> every single patch on files which include the term "xdp".
 
-> The change to require the VMM to map all guest memory PROT_MTE is
-> significant as it means that the VMM has to deal with the MTE tags even
-> if it doesn't care about them (e.g. for virtual devices or if the VMM
-> doesn't support migration). Also unfortunately because the VMM can
-> change the memory layout at any time the check for PROT_MTE/VM_MTE has
-> to be done very late (at the point of faulting pages into stage 2).
+Agreed, we should fix this. For maintainers with high patch volume life
+would be so much easier if people CCed the right folks to get reviews,
+so we should try our best to fix get_maintainer.
 
-I'm a bit dubious about requring the VMM to map the guest memory
-PROT_MTE unless somebody's done at least a sketch of the design
-for how this would work on the QEMU side. Currently QEMU just
-assumes the guest memory is guest memory and it can access it
-without special precautions...
+XDP folks, any opposition to changing the keyword / filename to:
 
-thanks
--- PMM
+	[^a-z0-9]xdp[^a-z0-9]
+
+?
