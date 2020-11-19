@@ -2,145 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941D62B99AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2582B99AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729738AbgKSRjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:39:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729474AbgKSRiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:38:14 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29EAB246CE;
-        Thu, 19 Nov 2020 17:38:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605807494;
-        bh=j8yoUgNPwUrAH9hWklc4JtHbyJwtdVtZfAXrNV5fMkU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MWotZzvHI///F7nXbNuhmcE23HQZ5TAHfxi5tuIfW5aKphZWo8XXUCe3ChRSAXaMu
-         wdcf27o/gc8PdtGoPAg1WYJ59h/sNaDRhEECk9lUAzchusO/CfDlzZTbWrUpOojACA
-         jzma0oyE1R2w5WYeSpqXSn/IUhBY8iEJuAZsXlrg=
-Date:   Thu, 19 Nov 2020 19:38:00 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Alexander Graf <graf@amazon.de>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Catangiu, Adrian Costin" <acatan@amazon.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jann Horn <jannh@google.com>, Willy Tarreau <w@1wt.eu>,
-        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "bonzini@gnu.org" <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>,
-        "oridgar@gmail.com" <oridgar@gmail.com>,
-        "ghammer@redhat.com" <ghammer@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Qemu Developers <qemu-devel@nongnu.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux API <linux-api@vger.kernel.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "areber@redhat.com" <areber@redhat.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Andrey Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        "gil@azul.com" <gil@azul.com>,
-        "asmehra@redhat.com" <asmehra@redhat.com>,
-        "dgunigun@redhat.com" <dgunigun@redhat.com>,
-        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>
-Subject: Re: [PATCH v2] drivers/virt: vmgenid: add vm generation id driver
-Message-ID: <20201119173800.GD8537@kernel.org>
-References: <3E05451B-A9CD-4719-99D0-72750A304044@amazon.com>
- <300d4404-3efe-880e-ef30-692eabbff5f7@de.ibm.com>
- <da1a1fa7-a1de-d0e6-755b-dd587687765e@amazon.de>
+        id S1729507AbgKSRjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:39:49 -0500
+Received: from brightrain.aerifal.cx ([216.12.86.13]:48366 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729737AbgKSRjp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:39:45 -0500
+Date:   Thu, 19 Nov 2020 12:39:42 -0500
+From:   Rich Felker <dalias@libc.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     libc-alpha@sourceware.org, Florian Weimer <fw@deneb.enyo.de>,
+        linux-kernel@vger.kernel.org, Paul Gofman <gofmanp@gmail.com>
+Subject: Re: Kernel prctl feature for syscall interception and emulation
+Message-ID: <20201119173938.GJ534@brightrain.aerifal.cx>
+References: <873616v6g9.fsf@collabora.com>
+ <20201119151317.GF534@brightrain.aerifal.cx>
+ <87h7pltj9p.fsf@collabora.com>
+ <20201119162801.GH534@brightrain.aerifal.cx>
+ <87eekpmeux.fsf@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <da1a1fa7-a1de-d0e6-755b-dd587687765e@amazon.de>
+In-Reply-To: <87eekpmeux.fsf@collabora.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 01:51:18PM +0100, Alexander Graf wrote:
+On Thu, Nov 19, 2020 at 12:32:54PM -0500, Gabriel Krisman Bertazi wrote:
+> Rich Felker <dalias@libc.org> writes:
 > 
+> > On Thu, Nov 19, 2020 at 11:15:46AM -0500, Gabriel Krisman Bertazi wrote:
+> >> Rich Felker <dalias@libc.org> writes:
+> >> 
+> >> > On Wed, Nov 18, 2020 at 01:57:26PM -0500, Gabriel Krisman Bertazi via Libc-alpha wrote:
+> >> 
+> >> [...]
+> >> 
+> >> >
+> >> > SIGSYS (or signal handling in general) is not the right way to do
+> >> > this. It has all the same problems that came up in seccomp filtering
+> >> > with SIGSYS, and which were solved by user_notif mode (running the
+> >> > interception in a separate thread rather than an async context
+> >> > interrupting the syscall. In fact I wouldn't be surprised if what you
+> >> > want can already be done with reasonable efficiency using seccomp
+> >> > user_notif.
+> >> 
+> >> Hi Rich,
+> >> 
+> >> User_notif was raised in the kernel discussion and we had experimented
+> >> with it, but the latency of user_notif is even worse than what we can do
+> >> right now with other seccomp actions.
+> >
+> > Is there a compelling argument that the latency matters here? What
+> > syscalls are windows binaries making like this? Is there a reason you
+> > can't do something like intercepting the syscall with seccomp the
+> > first time it happens, then rewriting the code not to use a direct
+> > syscall on future invocations?
 > 
-> On 19.11.20 13:02, Christian Borntraeger wrote:
-> > 
-> > On 16.11.20 16:34, Catangiu, Adrian Costin wrote:
-> > > - Background
-> > > 
-> > > The VM Generation ID is a feature defined by Microsoft (paper:
-> > > http://go.microsoft.com/fwlink/?LinkId=260709) and supported by
-> > > multiple hypervisor vendors.
-> > > 
-> > > The feature is required in virtualized environments by apps that work
-> > > with local copies/caches of world-unique data such as random values,
-> > > uuids, monotonically increasing counters, etc.
-> > > Such apps can be negatively affected by VM snapshotting when the VM
-> > > is either cloned or returned to an earlier point in time.
-> > > 
-> > > The VM Generation ID is a simple concept meant to alleviate the issue
-> > > by providing a unique ID that changes each time the VM is restored
-> > > from a snapshot. The hw provided UUID value can be used to
-> > > differentiate between VMs or different generations of the same VM.
-> > > 
-> > > - Problem
-> > > 
-> > > The VM Generation ID is exposed through an ACPI device by multiple
-> > > hypervisor vendors but neither the vendors or upstream Linux have no
-> > > default driver for it leaving users to fend for themselves.
-> > 
-> > I see that the qemu implementation is still under discussion. What is
-> 
-> Uh, the ACPI Vmgenid device emulation is in QEMU since 2.9.0 :).
-> 
-> > the status of the other existing implementations. Do they already exist?
-> > In other words is ACPI a given?
-> > I think the majority of this driver could be used with just a different
-> > backend for platforms without ACPI so in any case we could factor out
-> > the backend (acpi, virtio, whatever) but if we are open we could maybe
-> > start with something else.
-> 
-> I agree 100%. I don't think we really need a new framework in the kernel for
-> that. We can just have for example an s390x specific driver that also
-> provides the same notification mechanism through a device node that is also
-> named "/dev/vmgenid", no?
-> 
-> Or alternatively we can split the generic part of this driver as soon as a
-> second one comes along and then have both driver include that generic logic.
-> 
-> The only piece where I'm unsure is how this will interact with CRIU.
+> We can't do any code rewriting without tripping DRM protections and
+> anti-cheating mechanisms.
 
-To C/R applications that use /dev/vmgenid CRIU need to be aware of it.
-Checkpointing and restoring withing the same "VM generation" shouldn't be
-a problem, but IMHO, making restore work after genid bump could be
-challenging.
+I think you could if you maintained separate versions of the code for
+read vs exec access ala some oldschool hardening tricks, but maybe
+that's not compatible with windows code (or with 64-bit mode?).
+Actually it's rather impressive that an DRM/anti-cheat mess works on
+Wine at all..
 
-Alex, what scenario involving CRIU did you have in mind?
+> I should correct myself here.  While it is true that user_notif is
+> slower than other seccomp actions, this is not a problem in itself.  The
+> frequency of syscalls that need to be emulated is much smaller than
+> regular syscalls, and the performance problem actually appears due to
+> the filtering.  I should investigate user_notif more, but I don't oppose
+> SUD doing user_notif instead of SIGSYS.  I will raise that with Wine
+> developers and the kernel community.
 
-> Can containers emulate ioctls and device nodes?
+Thanks! Avoiding repetition of the SIGSYS pitfall would be a good
+thing.
 
-Containers do not emulate ioctls but they can have /dev/vmgenid inside
-the container, so applications can use it the same way as outside the
-container.
+> >> Regarding SIGSYS, the x86 maintainer suggested redirecting the syscall
+> >> return to a userspace thunk, but the understanding among Wine developers
+> >> is that SIGSYS is enough for their emulation needs.
+> >
+> > It might work for Wine needs, if Wine can guarantee it will never be
+> > running code with signals blocked and some other constraints, but then
+> > you end up with a mechanism that's designed just for Wine and that
+> > will have gratuitous reasons it's not usable elsewhere. That does not
+> > seem appropriate for inclusion in kernel.
+> >
+> >> > The default-intercept and excepting libc code segment is also bogus,
+> >> > and will break stuff, including vdso syscall mechanism on i386 and any
+> >> > code outside libc that makes its own syscalls from asm. If you need to
+> >> > tag regions to control interception, it should be tagging the emulated
+> >> > Windows guest code, which is bounded and you have full control over,
+> >> > rather than the host code, which is unbounded and includes any
+> >> > libraries that get linked indirectly by Wine.
+> >> 
+> >> The vdso trampoline, for the architectures that have it, is solved by
+> >> the kernel implementation, who makes sure that region is allowed.
+> >
+> > I guess that works but it's ugly and assumes particular policy goals
+> > matching Wine's rather than being a general mechanism.
+> >
+> >> The Linux code is not bounded, but the dispatcher region main goal is to
+> >> support trampolines outside of the vdso case. The correct userspace
+> >> implementation requires flipping the selector on any Windows/Linux code
+> >> boundary cross, exactly because other libraries can issue syscalls
+> >> directly.  The fact that libc is not the only one issuing syscalls is
+> >> the exact reason we need something more complex than a few seccomp
+> >> filters.
+> >
+> > I don't think this is correct. Rather than listing all the host
+> > library code ranges to allow, you just list all the guest Windows code
+> > ranges to intercept. Wine knows them by virtue of being the loader for
+> > them. This all seems really easy to do with seccomp with a very small
+> > filter.
+> 
+> The Windows code is not completely loaded at initialization time.  It
+> also has dynamic libraries loaded later.  yes, wine knows the memory
+> regions, but there is no guarantee there is a small number of segments
+> or that the full picture is known at any given moment.
 
- 
-> Alex
+Yes, I didn't mean it was known statically at init time (although
+maybe it can be; see below) just that all the code doing the loading
+is under Wine's control (vs having system dynamic linker doing stuff
+it can't reliably see, which is the case with host libraries).
 
--- 
-Sincerely yours,
-Mike.
+> >> > But I'm skeptical that doing any new kernel-side logic for tagging is
+> >> > needed. Seccomp already lets you filter on instruction pointer so you
+> >> > can install filters that will trigger user_notif just for guest code,
+> >> > then let you execute the emulation in the watcher thread and skip the
+> >> > actual syscall in the watched thread.
+> >> 
+> >> As I mentioned, we can check IP in seccomp and write filters.  But this
+> >> has two problems:
+> >> 
+> >> 1) Performance.  seccomp filters use cBPF which means 32bit comparisons,
+> >> no maps and a very limited instruction set.  We need to generate
+> >> boundary checks for each memory segment.  The filter becomes very large
+> >> very quickly and becomes a observable bottleneck.
+> >
+> > This sounds like you're doing something wrong. Range checking is O(log
+> > n) and n cannot be large enough to make log n significant. If you do
+> > it with a linear search rather than binary then of course it's slow.
+> 
+> And SUD is O(1).  The filtering overhead is the big point here.  The
+
+OK, but for practical purposes O(log n) == O(1).
+
+> >> 2) Seccomp filters cannot be removed.  And we'd need to update them
+> >> frequently.
+> >
+> > What are the updating requirements?
+> 
+> As far as I understand (I'm not a wine developer), they need to remove
+> and modify filters.  Given seccomp is a security feature, It would be a
+> hard sell to support these operations. We discussed this on the kernel
+> list.
+> 
+> > I'm not sure if Windows code is properly PIC or not, but if it is,
+> > then you just do your own address assignment in a single huge range
+> > (first allocated with PROT_NONE, then MAP_FIXED over top of it) so
+> > that a single static range check suffices.
+> 
+> I'm Cc'ing some wine developers who can assist with this point.
+
+Great!
+
+Rich
