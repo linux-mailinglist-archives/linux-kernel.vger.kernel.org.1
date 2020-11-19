@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7F62B9623
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 560BE2B9624
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728612AbgKSPZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44304 "EHLO
+        id S1728619AbgKSPZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:25:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728587AbgKSPZ0 (ORCPT
+        with ESMTP id S1728520AbgKSPZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:25:26 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE82C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:25:26 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id 18so3089639pli.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:25:26 -0800 (PST)
+        Thu, 19 Nov 2020 10:25:31 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7934C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:25:30 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id y7so4787691pfq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:25:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=O87RqMurf7pPIx11yyX1x4VsxqTigVqv7i7uvntvbNs=;
-        b=Pfvm6bqEMnypvbHE6q7WcG1qY9swcIWDM/yRibx6LingVppXeuUoUofX/t4Y+14Wdc
-         aLnIqKRMYN/r+Q1Vb90A1PSGhl8e4UX/p6DJS4mjaQ/so1VobXZGn71bzIyBjy8trYxm
-         GFElnRGzdmYwhUOIkpzK6sSNuxTKBl2W1IjIf3M0X/NRRY7qNb+Ejs6/SuJPp1+fQUvL
-         0X6QBG5DeZgOEH4k81x/5bQzQWlvVyEvkFEpich/d6mmu5KpcW9rl4dvaZaumbSFAiRk
-         ddRjoty4gt6xywRgL+J1be80RMk3iMkIv0A6hN+X9Bpag5kMdSyz0Kyr0JNC/1cBuAHp
-         OYVQ==
+        bh=Ey8d1UlWJG1Zz2Q3K1zIf680YY3GF+PiDiDzSdWK8Ls=;
+        b=jOtZW9CydrxYkVP/D6zAZs/SxnrT1zzgb0ZFNqxTt2nEWp4CwmZk6wBCYH+ThpFBJA
+         7V3izyv35rbsBjVOUiWk5Jgx2jVq/TPofeJ665dkM4nfvixIS5oHAuEl8smZW6PMhSFo
+         u5MfGkXLOEeAeD5OKMk9sf/xHiYMq8rCRhd+e8eKjtjRAnzeIZrr6Pa1wsD2+QUx4pXr
+         ngPGEZ3hAZ55VVFDrKhMNC0yXbmhW1X+Q3uNaCv54eVXAnQ6/49fM4M6QR/NbowywUk7
+         LZowTZzUmxuFz+xgrSC8sCPXBhFzvRcMDehIqCTWacZpJcWgENzfO8CD2i6PKCt6uxXo
+         IxMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=O87RqMurf7pPIx11yyX1x4VsxqTigVqv7i7uvntvbNs=;
-        b=BFZRXQCfEfzbqVUcWgxRBezCCENmIuaifFucrfIl6dMf7T6eXLplwoXepO1QDhrgmC
-         vmf8uwwyYY90CcyQKChIRStjA6Q7Wah5J2utRaZd73CnD+ut6uIVQI78lLIzwL88fwiD
-         hqcdgJDTbp1KFZhn98GTqfrwvNDrPi/55wc0Wo7Xi18MS1dmMvj9o42HYZzVGeWDUt4s
-         XtkHEePuEMao6L3p4z4wtg0xa2VZv6OI/aI7Vcf3yyvNC29Vt7SsQVe00WVGsMi997FZ
-         zpb60mRhyEPWm9/9xb53NBTjW64XD0wIw14h+xmFWtbdk47c+9kp0CI6sAiaw9pUwEN4
-         +PGQ==
-X-Gm-Message-State: AOAM533UD1yrkTBOLm8RMU2Fr2hu4V/ujdnKB+RdkLIpw85d9pHV25yA
-        pHG0h1HZm8ZeolZbiPva/nPYjQ==
-X-Google-Smtp-Source: ABdhPJw2I8Tj8xztSNsYObB61zG2p7iznEGuvyZY+NqZkGZE/52RvOMfEPYEb153MIiMGV6Vjk95fA==
-X-Received: by 2002:a17:902:a504:b029:d8:ebc7:a864 with SMTP id s4-20020a170902a504b02900d8ebc7a864mr9072483plq.60.1605799525723;
-        Thu, 19 Nov 2020 07:25:25 -0800 (PST)
+        bh=Ey8d1UlWJG1Zz2Q3K1zIf680YY3GF+PiDiDzSdWK8Ls=;
+        b=ooDa5AXpAynwkaCXdu36WiCWhei3DjAldiJBOLC9OQktEYyp8HYo/K/nyqWE5uE6jg
+         dHXCX/uGFggjvY6FfwOAW44yDBbwX1tV8gf1MP9IK7kzUnCDA/bpvBhCWHl/PZTtlDg6
+         sbj5vIZ4VPPazg90Q02EcZNeKPiZbVk2cMmralE4leQOWFKnR3YOlzdDtSZusOdNDkeq
+         sxzNuLaZL+acm2rGAr65IAc2si6+BRNy8cLS6ualNjBQXJo9cQv7ZmvJ6BCC/knnFGIu
+         Em8NQhyzu+Q2lOmyKauxlcqyWjaoBO8u7wxVO9NG6HJd9XACJd1wC8KQpfOrMhf8ngqf
+         LqiQ==
+X-Gm-Message-State: AOAM5337kbpKFfUFh+qD18FjLesaD+5rdjJIfdipPIf1EIiX2ks84i6S
+        fb5Cd4IqnR44EEKvcdYO27cI/A==
+X-Google-Smtp-Source: ABdhPJzqActfVd1qN/uFr68PlWsqyNGdCiOFpnL60hPtElLJVaz70jRInZe4qIqLXC8pf+hFg6CjFA==
+X-Received: by 2002:a63:1057:: with SMTP id 23mr10286955pgq.41.1605799530395;
+        Thu, 19 Nov 2020 07:25:30 -0800 (PST)
 Received: from localhost ([45.137.216.7])
-        by smtp.gmail.com with ESMTPSA id h127sm135416pfe.16.2020.11.19.07.25.24
+        by smtp.gmail.com with ESMTPSA id 6sm136156pfb.22.2020.11.19.07.25.29
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 19 Nov 2020 07:25:25 -0800 (PST)
+        Thu, 19 Nov 2020 07:25:29 -0800 (PST)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Andre Przywara <andre.przywara@arm.com>,
@@ -64,9 +64,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v9 08/16] perf arm-spe: Refactor counter packet handling
-Date:   Thu, 19 Nov 2020 23:24:33 +0800
-Message-Id: <20201119152441.6972-9-leo.yan@linaro.org>
+Subject: [PATCH v9 09/16] perf arm-spe: Add new function arm_spe_pkt_desc_event()
+Date:   Thu, 19 Nov 2020 23:24:34 +0800
+Message-Id: <20201119152441.6972-10-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201119152441.6972-1-leo.yan@linaro.org>
 References: <20201119152441.6972-1-leo.yan@linaro.org>
@@ -74,71 +74,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch defines macros for counter packet header, and uses macros to
-replace hard code values in functions arm_spe_get_counter() and
-arm_spe_pkt_desc().
-
-In the function arm_spe_get_counter(), adds a new line for more
-readable.
+This patch moves out the event packet parsing from arm_spe_pkt_desc()
+to the new function arm_spe_pkt_desc_event().
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 ---
- tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 11 ++++++-----
- tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h |  5 +++++
- 2 files changed, 11 insertions(+), 5 deletions(-)
+ .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 63 +++++++++++--------
+ 1 file changed, 37 insertions(+), 26 deletions(-)
 
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 397ade5ffdeb..52f4339b1f0c 100644
+index 52f4339b1f0c..da6b9f76739c 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -152,10 +152,11 @@ static int arm_spe_get_counter(const unsigned char *buf, size_t len,
- 			       const unsigned char ext_hdr, struct arm_spe_pkt *packet)
- {
- 	packet->type = ARM_SPE_COUNTER;
-+
- 	if (ext_hdr)
--		packet->index = ((buf[0] & 0x3) << 3) | (buf[1] & 0x7);
-+		packet->index = SPE_HDR_EXTENDED_INDEX(buf[0], buf[1]);
- 	else
--		packet->index = buf[0] & 0x7;
-+		packet->index = SPE_HDR_SHORT_INDEX(buf[0]);
- 
- 	return arm_spe_get_payload(buf, len, ext_hdr, packet);
+@@ -287,6 +287,42 @@ static int arm_spe_pkt_out_string(int *err, char **buf_p, size_t *blen,
+ 	return ret;
  }
-@@ -333,13 +334,13 @@ static int arm_spe_pkt_desc_counter(const struct arm_spe_pkt *packet,
- 			       (unsigned short)payload);
  
- 	switch (packet->index) {
--	case 0:
-+	case SPE_CNT_PKT_HDR_INDEX_TOTAL_LAT:
- 		arm_spe_pkt_out_string(&err, &buf, &buf_len, "TOT");
- 		break;
--	case 1:
-+	case SPE_CNT_PKT_HDR_INDEX_ISSUE_LAT:
- 		arm_spe_pkt_out_string(&err, &buf, &buf_len, "ISSUE");
- 		break;
--	case 2:
-+	case SPE_CNT_PKT_HDR_INDEX_TRANS_LAT:
- 		arm_spe_pkt_out_string(&err, &buf, &buf_len, "XLAT");
- 		break;
- 	default:
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-index 9bc876bffd35..7d8e34e35f05 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-@@ -82,6 +82,11 @@ struct arm_spe_pkt {
- /* Context packet header */
- #define SPE_CTX_PKT_HDR_INDEX(h)		((h) & GENMASK_ULL(1, 0))
- 
-+/* Counter packet header */
-+#define SPE_CNT_PKT_HDR_INDEX_TOTAL_LAT		0x0
-+#define SPE_CNT_PKT_HDR_INDEX_ISSUE_LAT		0x1
-+#define SPE_CNT_PKT_HDR_INDEX_TRANS_LAT		0x2
++static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
++				  char *buf, size_t buf_len)
++{
++	u64 payload = packet->payload;
++	int err = 0;
 +
- const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
- 
- int arm_spe_get_packet(const unsigned char *buf, size_t len,
++	arm_spe_pkt_out_string(&err, &buf, &buf_len, "EV");
++
++	if (payload & 0x1)
++		arm_spe_pkt_out_string(&err, &buf, &buf_len, " EXCEPTION-GEN");
++	if (payload & 0x2)
++		arm_spe_pkt_out_string(&err, &buf, &buf_len, " RETIRED");
++	if (payload & 0x4)
++		arm_spe_pkt_out_string(&err, &buf, &buf_len, " L1D-ACCESS");
++	if (payload & 0x8)
++		arm_spe_pkt_out_string(&err, &buf, &buf_len, " L1D-REFILL");
++	if (payload & 0x10)
++		arm_spe_pkt_out_string(&err, &buf, &buf_len, " TLB-ACCESS");
++	if (payload & 0x20)
++		arm_spe_pkt_out_string(&err, &buf, &buf_len, " TLB-REFILL");
++	if (payload & 0x40)
++		arm_spe_pkt_out_string(&err, &buf, &buf_len, " NOT-TAKEN");
++	if (payload & 0x80)
++		arm_spe_pkt_out_string(&err, &buf, &buf_len, " MISPRED");
++	if (packet->index > 1) {
++		if (payload & 0x100)
++			arm_spe_pkt_out_string(&err, &buf, &buf_len, " LLC-ACCESS");
++		if (payload & 0x200)
++			arm_spe_pkt_out_string(&err, &buf, &buf_len, " LLC-REFILL");
++		if (payload & 0x400)
++			arm_spe_pkt_out_string(&err, &buf, &buf_len, " REMOTE-ACCESS");
++	}
++
++	return err;
++}
++
+ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
+ 				 char *buf, size_t buf_len)
+ {
+@@ -367,32 +403,7 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+ 		arm_spe_pkt_out_string(&err, &buf, &blen, "%s", name);
+ 		break;
+ 	case ARM_SPE_EVENTS:
+-		arm_spe_pkt_out_string(&err, &buf, &blen, "EV");
+-
+-		if (payload & 0x1)
+-			arm_spe_pkt_out_string(&err, &buf, &blen, " EXCEPTION-GEN");
+-		if (payload & 0x2)
+-			arm_spe_pkt_out_string(&err, &buf, &blen, " RETIRED");
+-		if (payload & 0x4)
+-			arm_spe_pkt_out_string(&err, &buf, &blen, " L1D-ACCESS");
+-		if (payload & 0x8)
+-			arm_spe_pkt_out_string(&err, &buf, &blen, " L1D-REFILL");
+-		if (payload & 0x10)
+-			arm_spe_pkt_out_string(&err, &buf, &blen, " TLB-ACCESS");
+-		if (payload & 0x20)
+-			arm_spe_pkt_out_string(&err, &buf, &blen, " TLB-REFILL");
+-		if (payload & 0x40)
+-			arm_spe_pkt_out_string(&err, &buf, &blen, " NOT-TAKEN");
+-		if (payload & 0x80)
+-			arm_spe_pkt_out_string(&err, &buf, &blen, " MISPRED");
+-		if (idx > 1) {
+-			if (payload & 0x100)
+-				arm_spe_pkt_out_string(&err, &buf, &blen, " LLC-ACCESS");
+-			if (payload & 0x200)
+-				arm_spe_pkt_out_string(&err, &buf, &blen, " LLC-REFILL");
+-			if (payload & 0x400)
+-				arm_spe_pkt_out_string(&err, &buf, &blen, " REMOTE-ACCESS");
+-		}
++		err = arm_spe_pkt_desc_event(packet, buf, buf_len);
+ 		break;
+ 	case ARM_SPE_OP_TYPE:
+ 		switch (idx) {
 -- 
 2.17.1
 
