@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE592B8D8A
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3262B8D8B
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgKSIdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:33:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        id S1726781AbgKSIdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:33:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgKSIdJ (ORCPT
+        with ESMTP id S1726096AbgKSIdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:33:09 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752A8C0613CF;
-        Thu, 19 Nov 2020 00:33:08 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id i13so3566460pgm.9;
-        Thu, 19 Nov 2020 00:33:08 -0800 (PST)
+        Thu, 19 Nov 2020 03:33:12 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF79C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:33:11 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id j7so5520136wrp.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:33:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AWtaE3tXlX6KkF6SbACxjxmzIgZO2jw7wJIis4kxiFE=;
-        b=erzuebpFnP6Gt2cVg+ear4rCVwZ7bV1TMmBphb8RKyD3jrIiAaNEYF/RsgesHqObP0
-         He6fyxoxyGGmeUZVMu55DzEB7jcra6cRQnvkfN30U6IDH2AVMoZ3r4zz+yw4phczW/Jg
-         5DjouAw+3mtdOjcmUn00gTai5TFmLOOALsNQjAMBdj0hv+RDsdHAH6LIu1vdCvwZuRvk
-         ABxoG8DSqgG6cKZwCREawmItYpU4ofbFmo8XNIFaxMPJZ2Bz3RTZj4T3PbEz2A4i54tL
-         vDc5j2p+cebrIwdKl0TAv9l5C1jvtPY8WU0arSK9KRm8+cU0n/85YEKbOOyC1USDLDGC
-         ff+g==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mT7p+ygMs80OOlLLDtUTXJKq2ctK4oP6GCRNYht5ITE=;
+        b=p/kmwGO62WfItNBLk1iqXhGihrcrhM3nrZ+ZCCybKG7wYP24mkrevXgNWFLkBZO5Pa
+         ygl6l2oyxpQ7QMXpyh0SwoL+ZE+UsJq1Q/4H6GX/2mffepZz0y5KisRh7GjiaPcSEzFH
+         DS9+Q21I59ciSEDZaVwvp27HaLg8jXV8gUmzYDqPImrXtpyTr8RZISntawD8974u+4TY
+         s8bSPA0689J/69iGYOKdurvrZKiQbgg8GNxgBj0TXBYT4pRWMUoK/NaSu+SIDb1iDvak
+         243rVzmcEzAf6pGSBGz9On7CCeYYXdSrJLeFNdVx6FBdiJoZWSWWiPqLldkOirMAJyi9
+         4cgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AWtaE3tXlX6KkF6SbACxjxmzIgZO2jw7wJIis4kxiFE=;
-        b=UTru85PJ+51NhWm+g+7vyk5yu7eP+C22Y/WKbxYhFSYvl2aJpVGXC61FryXM/byrP6
-         tqQBAwItWE+nbuoiW7yn92uxIMFm1jRsAM1Y+QMl5AYFY8huFsT6mB49gIe+U/EZGPAa
-         Doo1Ly1kH1zHVXMAp7/kXdKUGaqiXXhZQp4P2ECVxeh5OGloapHiXGRIV3H7KeUM7HGO
-         /Vf4Jp0+d7bBIgLez3AjND0ltD05dujlZdb/b3s53KcGb3ih2o83BA+4087JhGYUWoEU
-         NNgTd9BYrzzl/Y0Z4mXhegHpGfSuac+PgJvJH3TJ9doPJqRETOUP+ySUYWik1ml6bFlE
-         u/Xw==
-X-Gm-Message-State: AOAM533nYzIQIKsYDKDuLWDqrGZET8MwDJSrcKDmPILr9voEPOHQbOpM
-        XGF0RdpSTFlGOGJXu4Uj3zcoy8UyixunGPg=
-X-Google-Smtp-Source: ABdhPJw2SvWZ1XI9W5K8nt/BB7nN8YTnKz+xeBgYnSGTG7BKTqQH4kXyF10cnpjO+13wTWBoHwQsNw==
-X-Received: by 2002:a63:c745:: with SMTP id v5mr11584885pgg.389.1605774787959;
-        Thu, 19 Nov 2020 00:33:07 -0800 (PST)
-Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
-        by smtp.gmail.com with ESMTPSA id z5sm1626030pgi.27.2020.11.19.00.33.03
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mT7p+ygMs80OOlLLDtUTXJKq2ctK4oP6GCRNYht5ITE=;
+        b=gIdbrDijXUfmwvKkXf82AV+QK6naRJNju7NFE87i1V9f18sPARLdBUpQWEnr9mHe5U
+         Kj7QOcq1nQKbd9BT5G5Cc2yRGycXz17hMZvJgkG3o5LBrhsjsevaYJLADJe+s3qUtODp
+         u2bwcfysgqJJZpGtBqwvjiAw5jiwshdEnsOOwvuuI1car+Eh8znN9RTdZ15ww+aadNXV
+         V1N2wJpRc7O6VRfgBtDp12PSmmuGMGrvWt6U5+NCaUb5KoE3VERLf9GHkl9AoRPZbxDB
+         JI4uCbJ1Pn7HnD5V1HV7lG4HcpHKMYg9BcfdD2idRuTBFnEYHC6hc3xGDzT/z1bxUTkt
+         OU7A==
+X-Gm-Message-State: AOAM5311HQsn1RgSCj0offFTnyOYIGKvptU2ABOIVioC0XjTtpxO9gNF
+        GUlgCcEkSwNZb7AfYqCt6BgFhg==
+X-Google-Smtp-Source: ABdhPJw8Vg1OcjLMQsbIJHJx4HEfhN8RJS+Zwh+q1zE/ojG2Yvcz3D5Bx99r+6xfnWsxTbjh+L4sqg==
+X-Received: by 2002:a5d:6250:: with SMTP id m16mr8976722wrv.400.1605774790531;
+        Thu, 19 Nov 2020 00:33:10 -0800 (PST)
+Received: from dell ([91.110.221.241])
+        by smtp.gmail.com with ESMTPSA id p12sm37031490wrw.28.2020.11.19.00.33.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 00:33:07 -0800 (PST)
-Date:   Thu, 19 Nov 2020 03:32:57 -0500
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
- FNTCHARCNT() in fbcon.c
-Message-ID: <20201119083257.GA9468@PWN>
-References: <cover.1605169912.git.yepeilin.cs@gmail.com>
- <20201113211633.GY401619@phenom.ffwll.local>
- <X68NFzaAuImemnqh@kroah.com>
- <20201114081021.GA11811@PWN>
- <X6/K/S9V7rj2hI5p@kroah.com>
- <X6/L/lE2pA7csBwd@kroah.com>
+        Thu, 19 Nov 2020 00:33:09 -0800 (PST)
+Date:   Thu, 19 Nov 2020 08:33:08 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [GIT PULL] Immutable branch between MFD and MediaTek due for the
+ v5.11 merge window
+Message-ID: <20201119083308.GW1869941@dell>
+References: <20201110161338.18198-1-enric.balletbo@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <X6/L/lE2pA7csBwd@kroah.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201110161338.18198-1-enric.balletbo@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 01:22:22PM +0100, Greg Kroah-Hartman wrote:
-> Ah, here's a hint:
-> 	https://wiki.archlinux.org/index.php/Linux_console#Fonts
-> 
-> The setfont tool should help you out here.
+Enjoy!
 
-setfont seems to work fine, I tried Georgian-Fixed16 (256 chars) and
-Uni2-VGA16 (512 chars) under /usr/share/consolefonts/ in my Ubuntu box,
-including setting all consoles to the same font:
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
-for i in {1..6}; do
-        sudo setfont -C /dev/tty${i} /usr/share/consolefonts/Georgian-Fixed16.psf.gz
-done
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
 
-Font rotation also seems to work fine:
+are available in the Git repository at:
 
-for i in {1..4}; do
-        echo $i | sudo tee /sys/class/graphics/fbcon/rotate
-        sleep 1
-done
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-mediatek-v5.11
 
-One last thing I can think of is tile blitting, but I don't have the
-hardware (e.g. a Matrox G400 card, see FB_TILEBLITTING in
-drivers/video/fbdev/Kconfig) at hand, nor did I figure out how to
-simulate it after searching for a while.  However based on the other
-tests above I believe vc->vc_font.charcount is set properly.
+for you to fetch changes up to 86b9d170da98bae13b307d621638954aef645331:
 
-Thanks,
-Peilin Ye
+  mfd: syscon: Add syscon_regmap_lookup_by_phandle_optional() function. (2020-11-19 08:30:11 +0000)
 
+----------------------------------------------------------------
+Immutable branch between MFD and MediaTek due for the v5.11 merge window
+
+----------------------------------------------------------------
+Enric Balletbo i Serra (1):
+      mfd: syscon: Add syscon_regmap_lookup_by_phandle_optional() function.
+
+ drivers/mfd/syscon.c       | 18 ++++++++++++++++++
+ include/linux/mfd/syscon.h | 11 +++++++++++
+ 2 files changed, 29 insertions(+)
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
