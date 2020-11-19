@@ -2,149 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31252B8A77
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 04:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B422B8A79
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 04:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgKSDu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 22:50:57 -0500
-Received: from pbmsgap02.intersil.com ([192.157.179.202]:44846 "EHLO
-        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgKSDu4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 22:50:56 -0500
-Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
-        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 0AJ3osCa031213;
-        Wed, 18 Nov 2020 22:50:54 -0500
-Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
-        by pbmsgap02.intersil.com with ESMTP id 34ta9m27jq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 18 Nov 2020 22:50:54 -0500
-Received: from pbmxdp01.intersil.corp (132.158.200.222) by
- pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.1979.3; Wed, 18 Nov 2020 22:50:47 -0500
-Received: from localhost (132.158.202.109) by pbmxdp01.intersil.corp
- (132.158.200.222) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 18 Nov 2020 22:50:47 -0500
-From:   <min.li.xe@renesas.com>
-To:     <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH v2 net] ptp: clockmatrix: bug fix for idtcm_strverscmp
-Date:   Wed, 18 Nov 2020 22:50:24 -0500
-Message-ID: <1605757824-3292-1-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
-X-TM-AS-MML: disable
+        id S1726234AbgKSDwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 22:52:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbgKSDwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 22:52:24 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DA34246AD;
+        Thu, 19 Nov 2020 03:52:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605757943;
+        bh=GfsNWaK4zLZL5twA89vEMHprhnQvtuU55IquHbncKh0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=U2J4Boc+L+2wfAIrGQ0Rw3RhhZm3p2iLHOa/1MFSGOnsucDtSWyy9FhnVITUOsQAb
+         BkcuR1k2cbYzBzj1rJy11zsISFJfPJBMOWH1WYowoOxiXYPWhTd2nuJ3lBcn+qd0oZ
+         LiWL1CFugUCvoTQ48Fwh9YTxDVJcxNuqfg4hNkiU=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 076C335227BD; Wed, 18 Nov 2020 19:52:23 -0800 (PST)
+Date:   Wed, 18 Nov 2020 19:52:23 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2] rcu/segcblist: Add debug checks for segment lengths
+Message-ID: <20201119035222.GA18458@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201118161541.3844924-1-joel@joelfernandes.org>
+ <20201118201335.GR1437@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-18_10:2020-11-17,2020-11-18 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 phishscore=0 adultscore=0 mlxscore=0
- spamscore=0 suspectscore=4 bulkscore=0 malwarescore=0 mlxlogscore=783
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011190024
-X-Proofpoint-Spam-Reason: mlx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118201335.GR1437@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
+On Wed, Nov 18, 2020 at 12:13:35PM -0800, Paul E. McKenney wrote:
+> On Wed, Nov 18, 2020 at 11:15:41AM -0500, Joel Fernandes (Google) wrote:
+> > After rcu_do_batch(), add a check for whether the seglen counts went to
+> > zero if the list was indeed empty.
+> > 
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> Queued for testing and further review, thank you!
 
-Feed kstrtou8 with NULL terminated string.
+FYI, the second of the two checks triggered in all four one-hour runs of
+TREE01, all four one-hour runs of TREE04, and one of the four one-hour
+runs of TREE07.  This one:
 
-Changes since v1:
--Only strcpy 15 characters to leave 1 space for '\0'
+WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
 
-Signed-off-by: Min Li <min.li.xe@renesas.com>
----
- drivers/ptp/ptp_clockmatrix.c | 52 +++++++++++++++++++++++++++++++------------
- 1 file changed, 38 insertions(+), 14 deletions(-)
+That is, there are callbacks in the list, but the sum of the segment
+counts is nevertheless zero.  The ->nocb_lock is held.
 
-diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
-index e020faf..efe5639 100644
---- a/drivers/ptp/ptp_clockmatrix.c
-+++ b/drivers/ptp/ptp_clockmatrix.c
-@@ -103,42 +103,66 @@ static int timespec_to_char_array(struct timespec64 const *ts,
- 	return 0;
- }
- 
--static int idtcm_strverscmp(const char *ver1, const char *ver2)
-+static int idtcm_strverscmp(const char *version1, const char *version2)
- {
- 	u8 num1;
- 	u8 num2;
- 	int result = 0;
-+	char ver1[16];
-+	char ver2[16];
-+	char *cur1;
-+	char *cur2;
-+	char *next1;
-+	char *next2;
-+
-+	strncpy(ver1, version1, 15);
-+	strncpy(ver2, version2, 15);
-+	cur1 = ver1;
-+	cur2 = ver2;
- 
- 	/* loop through each level of the version string */
- 	while (result == 0) {
-+		next1 = strchr(cur1, '.');
-+		next2 = strchr(cur2, '.');
-+
-+		/* kstrtou8 could fail for dot */
-+		if (next1) {
-+			*next1 = '\0';
-+			next1++;
-+		}
-+
-+		if (next2) {
-+			*next2 = '\0';
-+			next2++;
-+		}
-+
- 		/* extract leading version numbers */
--		if (kstrtou8(ver1, 10, &num1) < 0)
-+		if (kstrtou8(cur1, 10, &num1) < 0)
- 			return -1;
- 
--		if (kstrtou8(ver2, 10, &num2) < 0)
-+		if (kstrtou8(cur2, 10, &num2) < 0)
- 			return -1;
- 
- 		/* if numbers differ, then set the result */
--		if (num1 < num2)
-+		if (num1 < num2) {
- 			result = -1;
--		else if (num1 > num2)
-+		} else if (num1 > num2) {
- 			result = 1;
--		else {
-+		} else {
- 			/* if numbers are the same, go to next level */
--			ver1 = strchr(ver1, '.');
--			ver2 = strchr(ver2, '.');
--			if (!ver1 && !ver2)
-+			if (!next1 && !next2)
- 				break;
--			else if (!ver1)
-+			else if (!next1) {
- 				result = -1;
--			else if (!ver2)
-+			} else if (!next2) {
- 				result = 1;
--			else {
--				ver1++;
--				ver2++;
-+			} else {
-+				cur1 = next1;
-+				cur2 = next2;
- 			}
- 		}
- 	}
-+
- 	return result;
- }
- 
--- 
-2.7.4
+Thoughts?
 
+							Thanx, Paul
+
+> > ---
+> > v1->v2: Added more debug checks.
+> > 
+> >  kernel/rcu/rcu_segcblist.c | 12 ++++++++++++
+> >  kernel/rcu/rcu_segcblist.h |  3 +++
+> >  kernel/rcu/tree.c          |  2 ++
+> >  3 files changed, 17 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > index 5059b6102afe..6e98bb3804f0 100644
+> > --- a/kernel/rcu/rcu_segcblist.c
+> > +++ b/kernel/rcu/rcu_segcblist.c
+> > @@ -94,6 +94,18 @@ static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
+> >  	return READ_ONCE(rsclp->seglen[seg]);
+> >  }
+> >  
+> > +/* Return number of callbacks in segmented callback list by totalling seglen. */
+> > +long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp)
+> > +{
+> > +	long len = 0;
+> > +	int i;
+> > +
+> > +	for (i = RCU_DONE_TAIL; i < RCU_CBLIST_NSEGS; i++)
+> > +		len += rcu_segcblist_get_seglen(rsclp, i);
+> > +
+> > +	return len;
+> > +}
+> > +
+> >  /* Set the length of a segment of the rcu_segcblist structure. */
+> >  static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
+> >  {
+> > diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> > index cd35c9faaf51..46a42d77f7e1 100644
+> > --- a/kernel/rcu/rcu_segcblist.h
+> > +++ b/kernel/rcu/rcu_segcblist.h
+> > @@ -15,6 +15,9 @@ static inline long rcu_cblist_n_cbs(struct rcu_cblist *rclp)
+> >  	return READ_ONCE(rclp->len);
+> >  }
+> >  
+> > +/* Return number of callbacks in segmented callback list by totalling seglen. */
+> > +long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp);
+> > +
+> >  void rcu_cblist_init(struct rcu_cblist *rclp);
+> >  void rcu_cblist_enqueue(struct rcu_cblist *rclp, struct rcu_head *rhp);
+> >  void rcu_cblist_flush_enqueue(struct rcu_cblist *drclp,
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index f5b61e10f1de..91e35b521e51 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2553,6 +2553,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+> >  	WARN_ON_ONCE(count == 0 && !rcu_segcblist_empty(&rdp->cblist));
+> >  	WARN_ON_ONCE(!IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> >  		     count != 0 && rcu_segcblist_empty(&rdp->cblist));
+> > +	WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
+> > +	WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+> >  
+> >  	rcu_nocb_unlock_irqrestore(rdp, flags);
+> >  
+> > -- 
+> > 2.29.2.299.gdc1121823c-goog
