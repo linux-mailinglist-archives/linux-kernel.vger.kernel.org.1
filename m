@@ -2,157 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9AF2B92F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:00:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6AD2B92FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727269AbgKSM5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:57:22 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39736 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726790AbgKSM5T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:57:19 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJCvD9f062375;
-        Thu, 19 Nov 2020 06:57:13 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605790633;
-        bh=xiRtA5FYZ6iAiUYGUphkNw2hMyqBTr+KLMd36v13y7Y=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=MQ7px4nOSErv2I9cBLM6Ga1RHWEY3S2VPhjwv43HkmF5GGYVH1OUfWzhCHoCImxE1
-         cdmxDSgY3bMH7uiOrIup5BZ4M/u8/udRZ10oZwtD/0JxHLNMWBMGuAjNzCs9p4kHuL
-         9JZ2wSFbRkIqgE7xd/vtmUuTuVxWRkeEOsTQCfWE=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJCvDjE054676
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 06:57:13 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+        id S1727117AbgKSM6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:58:09 -0500
+Received: from smtp.asem.it ([151.1.184.197]:64704 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726575AbgKSM6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 07:58:08 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000618689.MSG 
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:58:04 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
- Nov 2020 06:57:12 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 19 Nov 2020 06:57:12 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJCv9G6120288;
-        Thu, 19 Nov 2020 06:57:10 -0600
-Subject: Re: [PATCH v8 3/6] spi: cadence-quadspi: Add multi-chipselect support
- for Intel LGM SoC
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>
-CC:     <linux-mtd@lists.infradead.org>, <p.yadav@ti.com>,
-        <cheol.yong.kim@intel.com>, <qi-ming.wu@intel.com>
-References: <20201119055551.26493-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201119055551.26493-4-vadivel.muruganx.ramuthevar@linux.intel.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <9fc328cc-1f4d-1896-6dde-a107d76e14cb@ti.com>
-Date:   Thu, 19 Nov 2020 18:27:09 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Nov 2020 13:58:02 +0100
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 19 Nov 2020 13:58:02 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Alexander A . Klimov" <grandmaster@al2klimov.de>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v1] docs: ACPI: dsd: enable hyperlink in final references
+Date:   Thu, 19 Nov 2020 13:58:01 +0100
+Message-ID: <20201119125801.719775-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201119055551.26493-4-vadivel.muruganx.ramuthevar@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A090203.5FB66BDA.006B,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For inline web links, no special markup are needed.
 
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
+ Documentation/firmware-guide/acpi/dsd/leds.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-On 11/19/20 11:25 AM, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> Add multiple chipselect support for Intel LGM SoCs,
-> currently QSPI-NOR and QSPI-NAND supported.
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  drivers/spi/spi-cadence-quadspi.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-> index d12b765e87be..337778f75d5d 100644
-> --- a/drivers/spi/spi-cadence-quadspi.c
-> +++ b/drivers/spi/spi-cadence-quadspi.c
-> @@ -38,6 +38,7 @@
->  
->  /* Capabilities */
->  #define CQSPI_SUPPORTS_OCTAL		BIT(0)
-> +#define CQSPI_SUPPORTS_MULTI_CHIPSELECT BIT(1)
->  
->  struct cqspi_st;
->  
-> @@ -75,6 +76,7 @@ struct cqspi_st {
->  	bool			is_decoded_cs;
->  	u32			fifo_depth;
->  	u32			fifo_width;
-> +	u32			num_chipselect;
->  	bool			rclk_en;
->  	u32			trigger_address;
->  	u32			wr_delay;
-> @@ -1049,6 +1051,7 @@ static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
->  
->  static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
->  {
-> +	const struct cqspi_driver_platdata *ddata;
+diff --git a/Documentation/firmware-guide/acpi/dsd/leds.rst b/Documentation/firmware-guide/acpi/dsd/leds.rst
+index aba1e9abfeeb..b99fff8e06f2 100644
+--- a/Documentation/firmware-guide/acpi/dsd/leds.rst
++++ b/Documentation/firmware-guide/acpi/dsd/leds.rst
+@@ -90,10 +90,10 @@ where
+ References
+ ==========
+ 
+-[1] Device tree. <URL:https://www.devicetree.org>, referenced 2019-02-21.
++[1] Device tree. https://www.devicetree.org, referenced 2019-02-21.
+ 
+ [2] Advanced Configuration and Power Interface Specification.
+-    <URL:https://uefi.org/sites/default/files/resources/ACPI_6_3_final_Jan30.pdf>,
++    https://uefi.org/sites/default/files/resources/ACPI_6_3_final_Jan30.pdf,
+     referenced 2019-02-21.
+ 
+ [3] Documentation/devicetree/bindings/leds/common.txt
+@@ -101,11 +101,11 @@ References
+ [4] Documentation/devicetree/bindings/media/video-interfaces.txt
+ 
+ [5] Device Properties UUID For _DSD.
+-    <URL:https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf>,
++    https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf,
+     referenced 2019-02-21.
+ 
+ [6] Hierarchical Data Extension UUID For _DSD.
+-    <URL:https://www.uefi.org/sites/default/files/resources/_DSD-hierarchical-data-extension-UUID-v1.1.pdf>,
++    https://www.uefi.org/sites/default/files/resources/_DSD-hierarchical-data-extension-UUID-v1.1.pdf,
+     referenced 2019-02-21.
+ 
+ [7] Documentation/firmware-guide/acpi/dsd/data-node-references.rst
+-- 
+2.25.1
 
-Unused variable?
-
->  	struct device *dev = &cqspi->pdev->dev;
->  	struct device_node *np = dev->of_node;
->  
-> @@ -1070,6 +1073,14 @@ static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
->  		return -ENXIO;
->  	}
->  
-> +	ddata  = of_device_get_match_data(dev);
-> +	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT) {
-
-I don't see a need for this flag... Controller by default supports
-multiple CS.
-
-> +		if (of_property_read_u32(np, "num-cs", &cqspi->num_chipselect)) {
-> +			dev_err(dev, "couldn't determine number of cs\n");
-> +			return -ENXIO;
-> +		}
-> +	}
-> +
-
-
-Entire hunk can be replaced with:
-
-        if (of_property_read_u32(np, "num-cs", &cqspi->num_chipselect))
-		cqspi->num_chipselect = CQSPI_MAX_CHIPSELECT;
-
-
->  	cqspi->rclk_en = of_property_read_bool(np, "cdns,rclk-en");
->  
->  	return 0;
-> @@ -1302,6 +1313,9 @@ static int cqspi_probe(struct platform_device *pdev)
->  	cqspi->current_cs = -1;
->  	cqspi->sclk = 0;
->  
-> +	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT)
-> +		master->num_chipselect = cqspi->num_chipselect;
-> +
-
-And then this becomes:
-	master->num_chipselect = cqspi->num_chipselect;
-
->  	ret = cqspi_setup_flash(cqspi);
->  	if (ret) {
->  		dev_err(dev, "failed to setup flash parameters %d\n", ret);
-> @@ -1391,6 +1405,7 @@ static const struct cqspi_driver_platdata am654_ospi = {
->  };
->  
->  static const struct cqspi_driver_platdata intel_lgm_qspi = {
-> +	.hwcaps_mask = CQSPI_SUPPORTS_MULTI_CHIPSELECT,
->  	.quirks = CQSPI_DISABLE_DAC_MODE,
->  };
->  
-> 
