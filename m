@@ -2,73 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBEE2B8999
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FF82B89A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727426AbgKSB2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 20:28:48 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:37188 "EHLO vps0.lunn.ch"
+        id S1726875AbgKSBeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 20:34:11 -0500
+Received: from mga03.intel.com ([134.134.136.65]:29619 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727030AbgKSB2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 20:28:47 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kfYkM-007q6N-QM; Thu, 19 Nov 2020 02:28:26 +0100
-Date:   Thu, 19 Nov 2020 02:28:26 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Tao Ren <rentao.bupt@gmail.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, openbmc@lists.ozlabs.org, taoren@fb.com,
-        mikechoi@fb.com
-Subject: Re: [PATCH v2 0/2] hwmon: (max127) Add Maxim MAX127 hardware
- monitoring
-Message-ID: <20201119012826.GP1804098@lunn.ch>
-References: <20201118230929.18147-1-rentao.bupt@gmail.com>
- <20201118232719.GI1853236@lunn.ch>
- <20201118234252.GA18681@taoren-ubuntu-R90MNF91>
+        id S1726098AbgKSBeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 20:34:11 -0500
+IronPort-SDR: 6JRl9OYj/UJcT+fk/kqgN3Disi9f/PW1k6FzxmTURALUJZSdBdKLgcyTbjHpsOWkVW/GZSFAbc
+ OtpXAa+afYqg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="171313471"
+X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
+   d="scan'208";a="171313471"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 17:34:10 -0800
+IronPort-SDR: 93guyZuNiCxkJxShwB2ID0+wYYaAkwGCCV+fb+s7iFJScyIea6YB1UFm7k/osM0s0CcwyU4aAq
+ sX7uoP0wrByw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
+   d="scan'208";a="368583597"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by FMSMGA003.fm.intel.com with ESMTP; 18 Nov 2020 17:34:06 -0800
+Subject: Re: [RFC PATCH v4] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, Mel Gorman <mgorman@suse.de>,
+        Jiang Biao <benbjiang@gmail.com>
+References: <20201116200428.47359-1-aubrey.li@linux.intel.com>
+ <CAKfTPtD_Q1riUBm1S5=bGgmMsoi64_33Turs_W+v9eiqJn=wyA@mail.gmail.com>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <9d840684-95ad-ece9-8068-29ea72fb61b7@linux.intel.com>
+Date:   Thu, 19 Nov 2020 09:34:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118234252.GA18681@taoren-ubuntu-R90MNF91>
+In-Reply-To: <CAKfTPtD_Q1riUBm1S5=bGgmMsoi64_33Turs_W+v9eiqJn=wyA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 03:42:53PM -0800, Tao Ren wrote:
-> On Thu, Nov 19, 2020 at 12:27:19AM +0100, Andrew Lunn wrote:
-> > On Wed, Nov 18, 2020 at 03:09:27PM -0800, rentao.bupt@gmail.com wrote:
-> > > From: Tao Ren <rentao.bupt@gmail.com>
-> > > 
-> > > The patch series adds hardware monitoring driver for the Maxim MAX127
-> > > chip.
-> > 
-> > Hi Tao
-> > 
-> > Why are using sending a hwmon driver to the networking mailing list?
-> > 
-> >     Andrew
+Hi Vincent,
+
+On 2020/11/18 21:36, Vincent Guittot wrote:
+> On Wed, 18 Nov 2020 at 04:48, Aubrey Li <aubrey.li@linux.intel.com> wrote:
+>>
+>> From: Aubrey Li <aubrey.li@intel.com>
+>>
+>> Add idle cpumask to track idle cpus in sched domain. When a CPU
+>> enters idle, if the idle driver indicates to stop tick, this CPU
+>> is set in the idle cpumask to be a wakeup target. And if the CPU
+>> is not in idle, the CPU is cleared in idle cpumask during scheduler
+>> tick to ratelimit idle cpumask update.
+>>
+>> When a task wakes up to select an idle cpu, scanning idle cpumask
+>> has low cost than scanning all the cpus in last level cache domain,
+>> especially when the system is heavily loaded.
+>>
+>> Benchmarks were tested on a x86 4 socket system with 24 cores per
+>> socket and 2 hyperthreads per core, total 192 CPUs. Hackbench and
+>> schbench have no notable change, uperf has:
+>>
+>> uperf throughput: netperf workload, tcp_nodelay, r/w size = 90
+>>
+>>   threads       baseline-avg    %std    patch-avg       %std
+>>   96            1               0.83    1.23            3.27
+>>   144           1               1.03    1.67            2.67
+>>   192           1               0.69    1.81            3.59
+>>   240           1               2.84    1.51            2.67
+>>
+>> Cc: Mel Gorman <mgorman@suse.de>
+>> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+>> Cc: Qais Yousef <qais.yousef@arm.com>
+>> Cc: Valentin Schneider <valentin.schneider@arm.com>
+>> Cc: Jiang Biao <benbjiang@gmail.com>
+>> Cc: Tim Chen <tim.c.chen@linux.intel.com>
+>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+>> ---
+>>  include/linux/sched/topology.h | 13 +++++++++
+>>  kernel/sched/core.c            |  2 ++
+>>  kernel/sched/fair.c            | 52 +++++++++++++++++++++++++++++++++-
+>>  kernel/sched/idle.c            |  7 +++--
+>>  kernel/sched/sched.h           |  2 ++
+>>  kernel/sched/topology.c        |  3 +-
+>>  6 files changed, 74 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+>> index 820511289857..b47b85163607 100644
+>> --- a/include/linux/sched/topology.h
+>> +++ b/include/linux/sched/topology.h
+>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+>>         atomic_t        ref;
+>>         atomic_t        nr_busy_cpus;
+>>         int             has_idle_cores;
+>> +       /*
+>> +        * Span of all idle CPUs in this domain.
+>> +        *
+>> +        * NOTE: this field is variable length. (Allocated dynamically
+>> +        * by attaching extra space to the end of the structure,
+>> +        * depending on how many CPUs the kernel has booted up with)
+>> +        */
+>> +       unsigned long   idle_cpus_span[];
+>>  };
+>>
+>> +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
+>> +{
+>> +       return to_cpumask(sds->idle_cpus_span);
+>> +}
+>> +
+>>  struct sched_domain {
+>>         /* These fields must be setup */
+>>         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index b1e0da56abca..c86ae0495163 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -3994,6 +3994,7 @@ void scheduler_tick(void)
+>>         rq_lock(rq, &rf);
+>>
+>>         update_rq_clock(rq);
+>> +       update_idle_cpumask(rq, false);
+>>         thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
+>>         update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+>>         curr->sched_class->task_tick(rq, curr, 0);
+>> @@ -7192,6 +7193,7 @@ void __init sched_init(void)
+>>                 rq_csd_init(rq, &rq->nohz_csd, nohz_csd_func);
+>>  #endif
+>>  #endif /* CONFIG_SMP */
+>> +               rq->last_idle_state = 1;
+>>                 hrtick_rq_init(rq);
+>>                 atomic_set(&rq->nr_iowait, 0);
+>>         }
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 48a6d442b444..d67fba5e406b 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -6145,7 +6145,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>>
+>>         time = cpu_clock(this);
+>>
+>> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+>> +       /*
+>> +        * sched_domain_shared is set only at shared cache level,
+>> +        * this works only because select_idle_cpu is called with
+>> +        * sd_llc.
+>> +        */
+>> +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+>>
+>>         for_each_cpu_wrap(cpu, cpus, target) {
+>>                 if (!--nr)
+>> @@ -6807,6 +6812,51 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>>  }
+>>  #endif /* CONFIG_SMP */
+>>
+>> +/*
+>> + * Update cpu idle state and record this information
+>> + * in sd_llc_shared->idle_cpus_span.
+>> + */
+>> +void update_idle_cpumask(struct rq *rq, bool set_idle)
+>> +{
+>> +       struct sched_domain *sd;
+>> +       int cpu = cpu_of(rq);
+>> +       int idle_state;
+>> +
+>> +       /*
+>> +        * If called from scheduler tick, only update
+>> +        * idle cpumask if the CPU is busy, as idle
+>> +        * cpumask is also updated on idle entry.
+>> +        *
+>> +        */
+>> +       if (!set_idle && idle_cpu(cpu))
+>> +               return;
+>> +       /*
+>> +        * Also set SCHED_IDLE cpu in idle cpumask to
+>> +        * allow SCHED_IDLE cpu as a wakeup target
+>> +        */
+>> +       idle_state = set_idle || sched_idle_cpu(cpu);
+>> +       /*
+>> +        * No need to update idle cpumask if the state
+>> +        * does not change.
+>> +        */
+>> +       if (rq->last_idle_state == idle_state)
+>> +               return;
+>> +
+>> +       rcu_read_lock();
+>> +       sd = rcu_dereference(per_cpu(sd_llc, cpu));
+>> +       if (!sd || !sd->shared)
+>> +               goto unlock;
+>> +
+>> +       if (idle_state)
+>> +               cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
+>> +       else
+>> +               cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
+>> +
+>> +       rq->last_idle_state = idle_state;
+>> +unlock:
+>> +       rcu_read_unlock();
+>> +}
+>> +
+>>  static unsigned long wakeup_gran(struct sched_entity *se)
+>>  {
+>>         unsigned long gran = sysctl_sched_wakeup_granularity;
+>> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+>> index f324dc36fc43..0bd83c00c22a 100644
+>> --- a/kernel/sched/idle.c
+>> +++ b/kernel/sched/idle.c
+>> @@ -164,7 +164,7 @@ static void cpuidle_idle_call(void)
+>>
+>>         if (cpuidle_not_available(drv, dev)) {
+>>                 tick_nohz_idle_stop_tick();
+>> -
+>> +               update_idle_cpumask(this_rq(), true);
+>>                 default_idle_call();
+>>                 goto exit_idle;
+>>         }
+>> @@ -205,9 +205,10 @@ static void cpuidle_idle_call(void)
+>>                  */
+>>                 next_state = cpuidle_select(drv, dev, &stop_tick);
+>>
+>> -               if (stop_tick || tick_nohz_tick_stopped())
+>> +               if (stop_tick || tick_nohz_tick_stopped()) {
+>> +                       update_idle_cpumask(this_rq(), true);
+>>                         tick_nohz_idle_stop_tick();
 > 
-> Hi Andrew,
+> please keep same ordering here and above
+> tick_nohz_idle_stop_tick();
+> update_idle_cpumask(this_rq(), true);
+
+okay, will do, thanks!
+
 > 
-> I added netdev because the mailing list is included in "get_maintainer.pl
-> Documentation/hwmon/index.rst" output. Is it the right command to find
-> reviewers? Could you please suggest? Thank you.
+> Also, it might be good to call update_idle_cpumask everywhere
+> tick_nohz_idle_stop_tick is called. For example S2Idle case should
+> also set the mask
 
-Hi Tae
+Hmm, I did think about this, but not sure what's the point here to
+set the mask when the whole system suspend to idle and all user space
+are forzen?
 
-What you are doing is correct. I suspected it was a get_maintainers
-problem. Now we know this, we can figure out why it is adding all
-these extra addresses which make no sense. Maybe a bug in the
-MAINTAINERS file?
+Also tick_nohz_idle_stop_tick is called when cpu is offline in cpuidle_idle_call,
+I think adding an offlined cpu to idle cpumask may not be right.
 
-       Andrew
+> 
+> 
+>> -               else
+>> +               } else
+> 
+> Also add { } in the else
+> 
+
+Thanks, will added it.
+
+-Aubrey
