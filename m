@@ -2,93 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7445D2B9C21
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 21:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 673232B9C2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 21:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgKSUfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 15:35:01 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55632 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727211AbgKSUfB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 15:35:01 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJKYsx4062615;
-        Thu, 19 Nov 2020 14:34:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605818094;
-        bh=61iPk1aGKqeRJig3dLVfDUO3FiK2c1IwV08di/OTMes=;
-        h=From:To:CC:Subject:Date;
-        b=V+/E2mxXOvVDy2tIo/RcYPh44ZmDcQNv6sopm/G5MU6Bhe9LTBGwyiZsrJcBlq557
-         6Le5YEuMOMOQir50d+KUXKzoKyLnVxhILEa7BGOYcS/KAAz19rjeluZVYJJdjAP49x
-         mI58dM2obzMDlSn8NwRC2QUWnNbkd+8dRLaA9cZs=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJKYsX4108917
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 14:34:54 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
- Nov 2020 14:34:54 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 19 Nov 2020 14:34:54 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJKYriq090339;
-        Thu, 19 Nov 2020 14:34:53 -0600
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH v2] mdio_bus: suppress err message for reset gpio EPROBE_DEFER
-Date:   Thu, 19 Nov 2020 22:34:46 +0200
-Message-ID: <20201119203446.20857-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726298AbgKSUjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 15:39:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725887AbgKSUjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 15:39:15 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0012720888;
+        Thu, 19 Nov 2020 20:39:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605818354;
+        bh=fvpCr+a9O+Y1yL2+2TReoWD/IuwSGHB9+sXcjjtLcvw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EbG09We/Nz78MMVDFtrYLXZNMaT4FSWbbbgJ9mXUy+AjoYVLyZerlm09pJPcfPX3C
+         t75DYlftONIZEBuSVS+s+HjC/T2Te+j1Oxz25IxbEPqYKnW+4PnnxwKXR3uSbWWgID
+         VHYhM7e4DHbqpdDV5/QH2K70rFz1tBkL0pGUESqQ=
+Date:   Thu, 19 Nov 2020 20:39:07 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 10/14] sched: Introduce arch_cpu_allowed_mask() to
+ limit fallback rq selection
+Message-ID: <20201119203906.GA5099@willie-the-truck>
+References: <20201113093720.21106-1-will@kernel.org>
+ <20201113093720.21106-11-will@kernel.org>
+ <20201119093850.GD2416649@google.com>
+ <20201119110709.GD3946@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119110709.GD3946@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mdio_bus may have dependencies from GPIO controller and so got
-deferred. Now it will print error message every time -EPROBE_DEFER is
-returned which from:
-__mdiobus_register()
- |-devm_gpiod_get_optional()
-without actually identifying error code.
+On Thu, Nov 19, 2020 at 11:07:09AM +0000, Will Deacon wrote:
+> On Thu, Nov 19, 2020 at 09:38:50AM +0000, Quentin Perret wrote:
+> > On Friday 13 Nov 2020 at 09:37:15 (+0000), Will Deacon wrote:
+> > > Asymmetric systems may not offer the same level of userspace ISA support
+> > > across all CPUs, meaning that some applications cannot be executed by
+> > > some CPUs. As a concrete example, upcoming arm64 big.LITTLE designs do
+> > > not feature support for 32-bit applications on both clusters.
+> > > 
+> > > On such a system, we must take care not to migrate a task to an
+> > > unsupported CPU when forcefully moving tasks in select_fallback_rq()
+> > > in response to a CPU hot-unplug operation.
+> > > 
+> > > Introduce an arch_cpu_allowed_mask() hook which, given a task argument,
+> > > allows an architecture to return a cpumask of CPUs that are capable of
+> > > executing that task. The default implementation returns the
+> > > cpu_possible_mask, since sane machines do not suffer from per-cpu ISA
+> > > limitations that affect scheduling. The new mask is used when selecting
+> > > the fallback runqueue as a last resort before forcing a migration to the
+> > > first active CPU.
+> > > 
+> > > Signed-off-by: Will Deacon <will@kernel.org>
+> > > ---
+> > >  kernel/sched/core.c | 13 ++++++++++---
+> > >  1 file changed, 10 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > index 818c8f7bdf2a..8df38ebfe769 100644
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -1696,6 +1696,11 @@ void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags)
+> > >  
+> > >  #ifdef CONFIG_SMP
+> > >  
+> > > +/* Must contain at least one active CPU */
+> > > +#ifndef arch_cpu_allowed_mask
+> > > +#define  arch_cpu_allowed_mask(p)	cpu_possible_mask
+> > > +#endif
+> > > +
+> > >  /*
+> > >   * Per-CPU kthreads are allowed to run on !active && online CPUs, see
+> > >   * __set_cpus_allowed_ptr() and select_fallback_rq().
+> > > @@ -1708,7 +1713,10 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
+> > >  	if (is_per_cpu_kthread(p))
+> > >  		return cpu_online(cpu);
+> > >  
+> > > -	return cpu_active(cpu);
+> > > +	if (!cpu_active(cpu))
+> > > +		return false;
+> > > +
+> > > +	return cpumask_test_cpu(cpu, arch_cpu_allowed_mask(p));
+> > >  }
+> > >  
+> > >  /*
+> > > @@ -2361,10 +2369,9 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
+> > >  			}
+> > >  			fallthrough;
+> > >  		case possible:
+> > > -			do_set_cpus_allowed(p, cpu_possible_mask);
+> > > +			do_set_cpus_allowed(p, arch_cpu_allowed_mask(p));
+> > 
+> > Nit: I'm wondering if this should be called arch_cpu_possible_mask()
+> > instead?
+> 
+> I'm open to renaming it, so if nobody else has any better ideas then I'll
+> go with this.
 
-"mdio_bus 4a101000.mdio: mii_bus 4a101000.mdio couldn't get reset GPIO"
+Ah, so in doing this I realised I don't like arch_cpu_possible_mask() so
+much because it makes it sound like a back-end to cpu_possible_mask, but
+the two are really different things.
 
-Hence, suppress error message for devm_gpiod_get_optional() returning
--EPROBE_DEFER case by using dev_err_probe().
+arch_task_cpu_possible_mask() might work?
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/phy/mdio_bus.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 757e950fb745..83cd61c3dd01 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -546,10 +546,10 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
- 	/* de-assert bus level PHY GPIO reset */
- 	gpiod = devm_gpiod_get_optional(&bus->dev, "reset", GPIOD_OUT_LOW);
- 	if (IS_ERR(gpiod)) {
--		dev_err(&bus->dev, "mii_bus %s couldn't get reset GPIO\n",
--			bus->id);
-+		err = dev_err_probe(&bus->dev, PTR_ERR(gpiod),
-+				    "mii_bus %s couldn't get reset GPIO\n", bus->id);
- 		device_del(&bus->dev);
--		return PTR_ERR(gpiod);
-+		return err;
- 	} else	if (gpiod) {
- 		bus->reset_gpiod = gpiod;
- 
--- 
-2.17.1
-
+Will
