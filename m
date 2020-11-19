@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787CF2B9D8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD532B9D78
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726849AbgKSWUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 17:20:13 -0500
-Received: from drummond.us ([74.95.14.229]:4564 "EHLO
-        talisker.home.drummond.us" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726464AbgKSWUN (ORCPT
+        id S1726878AbgKSWNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 17:13:44 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:52159 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726644AbgKSWNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:20:13 -0500
-X-Greylist: delayed 469 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Nov 2020 17:20:12 EST
-Received: from talisker.home.drummond.us (localhost [127.0.0.1])
-        by talisker.home.drummond.us (8.15.2/8.15.2/Debian-20) with ESMTP id 0AJMBolN1515759;
-        Thu, 19 Nov 2020 14:11:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=home.drummond.us;
-        s=default; t=1605823911;
-        bh=Ayx7/03KKR9LNFXEVXiNjLwjKsBf8QCVWMy0RTPXC3A=;
-        h=From:To:Subject:Date:From;
-        b=E1o03DRpQSuWoGSlGl/mfkHO4gTUiBjNeD5f6fi2f+8uQRlkMJsIGjBsUAD1WUIor
-         wY6ioximfxcU0h2Rc6mBdt//7Wiu/bD0YXlVqj4l8li7SJ7USPbnSoxqwdILOonX1d
-         viNn1+6TPmngWXWSLPu9InO/rPuI3g8JEi4Epcmvw9dHb10Z4OnoRlNRJCWBLIUW3T
-         C6Om90k6BrPMBWx80OFdw+0vd2gKGIy+dXP7UzxWF4cWdf7qQ3kgVOa8jjrqQlWjkG
-         uSRaCWlrXIiWxWeTE/ljDWJIe41gKCDkp8Eo7fE2WAacJ7rKxwoXRleiMph+lc6X0i
-         rZU9CjFTW4KxA==
-Received: (from walt@localhost)
-        by talisker.home.drummond.us (8.15.2/8.15.2/Submit) id 0AJMBlFG1515758;
-        Thu, 19 Nov 2020 14:11:47 -0800
-From:   Walt Drummond <walt@drummond.us>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, viro@zeniv.linux.org.uk, brgerst@gmail.com,
-        linux@dominikbrodowski.net, walt@drummond.us,
-        gustavoars@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/signals: Fix save/restore signal stack to correctly support sigset_t
-Date:   Thu, 19 Nov 2020 14:11:33 -0800
-Message-Id: <20201119221132.1515696-1-walt@drummond.us>
-X-Mailer: git-send-email 2.27.0
+        Thu, 19 Nov 2020 17:13:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1605824022; x=1637360022;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=6ZqawRj90596OyIiJCq+GBiWpU5fbf5vnBgay7an51Y=;
+  b=p2hZ+FACO3ZWm+JqwImGcBOq8I60J5EUrJAVjUOOJ+Iu7duT/Oz3urG/
+   onGzjPiJr+jlODsH12HqMMtvLZvQsNKx5v94MeEzeOAC6KGIhozcKckNl
+   Lik76WxePy5NPtNtabV82wNpsh8ayocJNzhtrNirX83yIEry8Aw3zPWas
+   I=;
+X-IronPort-AV: E=Sophos;i="5.78,354,1599523200"; 
+   d="scan'208";a="67539107"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-c7f73527.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 19 Nov 2020 22:13:41 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-c7f73527.us-east-1.amazon.com (Postfix) with ESMTPS id D8B9EAEF15;
+        Thu, 19 Nov 2020 22:13:40 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 19 Nov 2020 22:13:40 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.160.67) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 19 Nov 2020 22:13:35 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kafai@fb.com>
+CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
+        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next 7/8] bpf: Call bpf_run_sk_reuseport() for socket migration.
+Date:   Fri, 20 Nov 2020 07:13:31 +0900
+Message-ID: <20201119221331.77586-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+In-Reply-To: <20201119010045.a6mqkzuv4tjruny6@kafai-mbp.dhcp.thefacebook.com>
+References: <20201119010045.a6mqkzuv4tjruny6@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.67]
+X-ClientProxiedBy: EX13d09UWC002.ant.amazon.com (10.43.162.102) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The macro unsafe_put_sigmask() only handles the first 64 bits of the
-sigmask_t, which works today.  However, if the definition of the
-sigset_t structure ever changed, this would fail to setup/restore the
-signal stack properly and likely corrupt the sigset. This patch
-updates unsafe_put_sigmask() to correctly save all the fields in the
-sigmask_t struct, and adds unsafe_put_compat_sigmask() to handle the
-compat_sigset_t cases.
+From:   Martin KaFai Lau <kafai@fb.com>
+Date:   Wed, 18 Nov 2020 17:00:45 -0800
+> On Tue, Nov 17, 2020 at 06:40:22PM +0900, Kuniyuki Iwashima wrote:
+> > This patch makes it possible to select a new listener for socket migration
+> > by eBPF.
+> > 
+> > The noteworthy point is that we select a listening socket in
+> > reuseport_detach_sock() and reuseport_select_sock(), but we do not have
+> > struct skb in the unhash path.
+> > 
+> > Since we cannot pass skb to the eBPF program, we run only the
+> > BPF_PROG_TYPE_SK_REUSEPORT program by calling bpf_run_sk_reuseport() with
+> > skb NULL. So, some fields derived from skb are also NULL in the eBPF
+> > program.
+> More things need to be considered here when skb is NULL.
+> 
+> Some helpers are probably assuming skb is not NULL.
+> 
+> Also, the sk_lookup in filter.c is actually passing a NULL skb to avoid
+> doing the reuseport select.
 
-Signed-off-by: Walt Drummond <walt@drummond.us>
----
- arch/x86/kernel/signal.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+Honestly, I have missed this point...
+I wanted users to reuse the same eBPF program seamlessly, but it seems unsafe.
 
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index be0d7d4152ec..4d5134b4bb5f 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -203,11 +203,18 @@ do {									\
- 		goto label;						\
- } while(0);
- 
--#define unsafe_put_sigmask(set, frame, label) \
-+#define unsafe_put_compat_sigmask(set, frame, label) \
- 	unsafe_put_user(*(__u64 *)(set), \
- 			(__u64 __user *)&(frame)->uc.uc_sigmask, \
- 			label)
- 
-+#define unsafe_put_sigmask(set, frame, label)           \
-+do {                                                    \
-+	int i;								\
-+	for (i = 0; i < _NSIG_WORDS; i++)				\
-+		unsafe_put_user((set)->sig[i], &(frame)->uc.uc_sigmask.sig[i], label); \
-+} while(0);
-+
- /*
-  * Set up a signal frame.
-  */
-@@ -566,7 +573,7 @@ static int x32_setup_rt_frame(struct ksignal *ksig,
- 	restorer = ksig->ka.sa.sa_restorer;
- 	unsafe_put_user(restorer, (unsigned long __user *)&frame->pretcode, Efault);
- 	unsafe_put_sigcontext(&frame->uc.uc_mcontext, fp, regs, set, Efault);
--	unsafe_put_sigmask(set, frame, Efault);
-+	unsafe_put_compat_sigmask(set, frame, Efault);
- 	user_access_end();
- 
- 	if (ksig->ka.sa.sa_flags & SA_SIGINFO) {
-@@ -643,7 +650,7 @@ SYSCALL_DEFINE0(rt_sigreturn)
- 	frame = (struct rt_sigframe __user *)(regs->sp - sizeof(long));
- 	if (!access_ok(frame, sizeof(*frame)))
- 		goto badframe;
--	if (__get_user(*(__u64 *)&set, (__u64 __user *)&frame->uc.uc_sigmask))
-+	if (copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(sigset_t)))
- 		goto badframe;
- 	if (__get_user(uc_flags, &frame->uc.uc_flags))
- 		goto badframe;
--- 
-2.27.0
 
+> > Moreover, we can cancel migration by returning SK_DROP. This feature is
+> > useful when listeners have different settings at the socket API level or
+> > when we want to free resources as soon as possible.
+> > 
+> > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> > ---
+> >  net/core/filter.c          | 26 +++++++++++++++++++++-----
+> >  net/core/sock_reuseport.c  | 23 ++++++++++++++++++++---
+> >  net/ipv4/inet_hashtables.c |  2 +-
+> >  3 files changed, 42 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 01e28f283962..ffc4591878b8 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -8914,6 +8914,22 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+> >  	SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(S, NS, F, NF,		       \
+> >  					     BPF_FIELD_SIZEOF(NS, NF), 0)
+> >  
+> > +#define SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF_OR_NULL(S, NS, F, NF, SIZE, OFF)	\
+> > +	do {									\
+> > +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(S, F), si->dst_reg,	\
+> > +				      si->src_reg, offsetof(S, F));		\
+> > +		*insn++ = BPF_JMP_IMM(BPF_JEQ, si->dst_reg, 0, 1);		\
+> Although it may not matter much, always doing this check seems not very ideal
+> considering the fast path will always have skb and only the slow
+> path (accept-queue migrate) has skb is NULL.  I think the req_sk usually
+> has the skb also except the timer one.
+
+Yes, but the migration happens only when/after the listener is closed, so
+I think it does not occur so frequently and will not be a problem.
+
+
+> First thought is to create a temp skb but it has its own issues.
+> or it may actually belong to a new prog type.  However, lets keep
+> exploring possible options (including NULL skb).
+
+I also thought up the two ideas, but the former will be a bit complicated.
+And the latter makes users implement the new eBPF program. I did not want
+users to struggle anymore, so I have selected the NULL skb. However, it is
+not safe, so adding a new prog type seems to be the better way.
