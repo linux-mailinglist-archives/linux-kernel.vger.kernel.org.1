@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3312B8B9D
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8C22B8B9E
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgKSG10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 01:27:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725778AbgKSG10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 01:27:26 -0500
-Received: from localhost (unknown [122.171.203.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48EF4246AD;
-        Thu, 19 Nov 2020 06:27:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605767245;
-        bh=2cPdxv/aidp+RTwTPRs1N04PixksnJO6TyfiZnvlIrs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iySRVa3Vor5ebmlMvirwz6LcE/cK83Z50SHin4jcM63e+pEmefCA7FRC4dSwphk/n
-         MbFTOQFIKBKTpxOcfcrIpywFuJDXrofD7PHE2YlLMIrdxAxSoFm40gh3Y+ss4b91Io
-         T6FChglMmdKP6/3bhCVfYCZ0ezHQRf5IeeGjHey0=
-Date:   Thu, 19 Nov 2020 11:57:20 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH] phy: phy-bcm-ns-usb3: drop support for deprecated DT
- binding
-Message-ID: <20201119062720.GE50232@vkoul-mobl>
-References: <20201113113423.9466-1-zajec5@gmail.com>
+        id S1726200AbgKSG3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 01:29:23 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:47480 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725907AbgKSG3X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 01:29:23 -0500
+X-UUID: 4000dd806cf34255bf2b698982f66a2f-20201119
+X-UUID: 4000dd806cf34255bf2b698982f66a2f-20201119
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1887966917; Thu, 19 Nov 2020 14:29:18 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 19 Nov 2020 14:29:17 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 19 Nov 2020 14:29:17 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v1] scsi: ufs: Fix race between shutdown and runtime resume flow
+Date:   Thu, 19 Nov 2020 14:29:16 +0800
+Message-ID: <20201119062916.12931-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201113113423.9466-1-zajec5@gmail.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-11-20, 12:34, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> Initially this PHY driver was implementing MDIO access on its own. It
-> was caused by lack of proper hardware design understanding.
-> 
-> It has been changed back in 2017. DT bindings were changed and driver
-> was updated to use MDIO layer.
-> 
-> It should be really safe now to drop the old deprecated code. All Linux
-> stored DT files don't use it for 3,5 year. There is close to 0 chance
-> there is any bootloader with its own DTB using old the binding.
+If UFS host device is in runtime-suspended state while
+UFS shutdown callback is invoked, UFS device shall be
+resumed for register accesses. Currently only UFS local
+runtime resume function will be invoked to wake up the host.
+This is not enough because if someone triggers runtime
+resume from block layer, then race may happen between
+shutdown and runtime resume flow, and finally lead to
+unlocked register access.
 
-Applied, thanks
+To fix this kind of issues, in ufshcd_shutdown(), use
+pm_runtime_get_sync() instead of resuming UFS device by
+ufshcd_runtime_resume() "internally" to let runtime PM
+framework manage the whole resume flow.
 
-While applying, it gave me a minor conflict, please do check the
-resolution
+Fixes: 57d104c153d3 ("ufs: add UFS power management support")
+Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 80cbce414678..bb16cc04f106 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -8941,11 +8941,7 @@ int ufshcd_shutdown(struct ufs_hba *hba)
+ 	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
+ 		goto out;
+ 
+-	if (pm_runtime_suspended(hba->dev)) {
+-		ret = ufshcd_runtime_resume(hba);
+-		if (ret)
+-			goto out;
+-	}
++	pm_runtime_get_sync(hba->dev);
+ 
+ 	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
+ out:
 -- 
-~Vinod
+2.18.0
+
