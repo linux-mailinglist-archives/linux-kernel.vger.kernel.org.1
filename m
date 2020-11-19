@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4D22B977C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BB42B977E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728586AbgKSQKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:10:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727841AbgKSQKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:10:08 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42C4222256;
-        Thu, 19 Nov 2020 16:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605802207;
-        bh=pkWYntOwT/PnZUfibEMXRvwL1Gcj68yCloYFtIvABSg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZAHN5+xvRmtW52qqhiUEwFwh9SpDmwS+Jg0tXPVs57KOHkapz95VvV/zIrmC3tn8M
-         S+ZIEpLBbChr30CXIe+KnIWApaQaQKo3setXS3NFg/0a5N41iuNK6efyobQ5y+052K
-         e7Z/XFDAS4hczr6b+7I1el6lY89NBtH1c1oG+SK4=
-Date:   Thu, 19 Nov 2020 16:09:47 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH 1/3] spi: fix resource leak for drivers without .remove
- callback
-Message-ID: <20201119160947.GD5554@sirena.org.uk>
-References: <20201119152059.2631650-1-u.kleine-koenig@pengutronix.de>
- <20201119152416.GB5554@sirena.org.uk>
- <20201119153540.zehj2ppdt433xrsv@pengutronix.de>
- <20201119154139.GC5554@sirena.org.uk>
- <20201119160412.nhu2rmwygyh6yg6e@pengutronix.de>
+        id S1728198AbgKSQLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:11:07 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57172 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728057AbgKSQLG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:11:06 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJGB0Gh006667;
+        Thu, 19 Nov 2020 10:11:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605802260;
+        bh=yxsGpYL205LqA0daxvYUX0HBguANmgaeAUkE/ZYmpRI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=U0Ti9VoAd27wVoOtxahq9xI2gKTQETn1gM5wT7W2kJiJLFNssjL57jhkVXYl/7ktF
+         2H2z5Gdq8SkKiajFUrLh3B2iPCWV0oZN6hlHwE4nrKwcb7tqnho/SSNw52hZSlUd0O
+         UzO9vsepWXzIyZAKo+dNdqwkgM2OvVwdk+T8ZeQ4=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJGB0fY131015
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Nov 2020 10:11:00 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
+ Nov 2020 10:11:00 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 19 Nov 2020 10:11:00 -0600
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJGAvdk090430;
+        Thu, 19 Nov 2020 10:10:58 -0600
+Subject: Re: [PATCH 2/2] arm64: dts: ti: k3-j7200-common-proc-board: Correct
+ the name of io expander on main_i2c1
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <nm@ti.com>,
+        <t-kristo@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nsekhar@ti.com>
+References: <20201119132627.8041-1-peter.ujfalusi@ti.com>
+ <20201119132627.8041-3-peter.ujfalusi@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <dc2f740a-e53e-d612-0ec7-e69bf8228e71@ti.com>
+Date:   Thu, 19 Nov 2020 21:40:57 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zbGR4y+acU1DwHSi"
-Content-Disposition: inline
-In-Reply-To: <20201119160412.nhu2rmwygyh6yg6e@pengutronix.de>
-X-Cookie: Chocolate chip.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201119132627.8041-3-peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---zbGR4y+acU1DwHSi
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 19, 2020 at 05:04:12PM +0100, Uwe Kleine-K=F6nig wrote:
-> On Thu, Nov 19, 2020 at 03:41:39PM +0000, Mark Brown wrote:
-> > On Thu, Nov 19, 2020 at 04:35:40PM +0100, Uwe Kleine-K=F6nig wrote:
+On 11/19/20 6:56 PM, Peter Ujfalusi wrote:
+> J7200 main_i2c1 is connected to the i2c bus on the CPB marked as main_i2c3
+> 
+> The i2c1 devices on the CPB are _not_ connected to the SoC, they are not
+> usable with the J7200 SOM.
+> 
+> Correct the expander name from exp4 to exp3 and at the same time add the
+> line names as well.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
 
-> > > (Not sure this makes a difference in real life, are there drivers
-> > > without a .probe callback?)
+Yes, the schematics call this expander as exp3. Thanks for the fix
 
-> > Your changelog seemed to say that it would make remove mandatory.
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
 
-> No, that's not what the patch did. It made unconditional use of
-> spi_drv_remove(), but an spi_driver without .remove() was still ok. I
-> will reword to make this clearer.
+>  arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> index 2721137d8943..83e043c65f81 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> @@ -159,11 +159,14 @@ &main_i2c1 {
+>  	pinctrl-0 = <&main_i2c1_pins_default>;
+>  	clock-frequency = <400000>;
+>  
+> -	exp4: gpio@20 {
+> +	exp3: gpio@20 {
+>  		compatible = "ti,tca6408";
+>  		reg = <0x20>;
+>  		gpio-controller;
+>  		#gpio-cells = <2>;
+> +		gpio-line-names = "CODEC_RSTz", "CODEC_SPARE1", "UB926_RESETn",
+> +				  "UB926_LOCK", "UB926_PWR_SW_CNTRL",
+> +				  "UB926_TUNER_RESET", "UB926_GPIO_SPARE", "";
 
-Ah, OK - I hadn't read the patch closely as the description sounded
-wrong.
+I assume these lines have same meaning in J721e and J7200? If so, then
+no issues.
 
---zbGR4y+acU1DwHSi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+2mMoACgkQJNaLcl1U
-h9DyHgf8CQ6aSsrw23q6Kt2ULY0QTBJO9zpVuZfq+qsTcrAZD7y+64Cb8Z9C7mS3
-bA6UIXnsXA1GAqm4iDS/S+JPVJ5GRf7+CfC2XJ4r5pCsWuxtonls3+O7rLH4wOuc
-SYlulRbmmLUcHEpdJrz4rGGvyY8oJPgwTEP7/RylQFY34z+UNcQ3DBMZ+QC/b/hS
-SPLd5s0DG/P3AlDQNjqjv3pRqFxvQlIiS+D3u533umoVaxGw0zKVCX64iByHqKj4
-IOOa8+M/x575Bxln/36XzGsZC//QB/6vXhDsLfyDtuf0YDnqomZpkSKRkvKN2Jio
-KWo0Xg12iPIpyL0KwP5Tks1jiQ88xQ==
-=uAoB
------END PGP SIGNATURE-----
-
---zbGR4y+acU1DwHSi--
+>  	};
+>  };
+>  
+> 
