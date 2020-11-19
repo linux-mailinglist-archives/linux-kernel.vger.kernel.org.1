@@ -2,147 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104302B8CF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0632B8CF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgKSIPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:15:06 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:50199 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726435AbgKSIPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:15:05 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605773705; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=VXp5SnSN9uEFFUl9UwtEc5ed7pOgL8l/fp0l4w8Ivb4=; b=Gu3r2wG5EBwY051Kg+B3Qk+kVnpz2lpR8XCqJjbuEypjfNj1ZdPHf7OhxfpDX1+wamtA43wM
- ll0ymeD0Pio8SzaZvbHAbCsdBeaEu9tdgDkEC7H1qmF2sb2T9eibG0g7Ic8UiI1XC2gJowLE
- lJI5nUaN1WWX8tq0wm0i9ztxaSI=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5fb62983e9b7088622072652 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Nov 2020 08:14:59
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 59DCCC43463; Thu, 19 Nov 2020 08:14:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.101] (unknown [124.123.182.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03377C433ED;
-        Thu, 19 Nov 2020 08:14:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 03377C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH RFC tip/core/rcu 1/5] srcu: Make Tiny SRCU use multi-bit
- grace-period counter
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, rcu@vger.kernel.org
-References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
- <20201117004052.14758-1-paulmck@kernel.org>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <72dffe43-b746-6d75-1f6a-9936d709be63@codeaurora.org>
-Date:   Thu, 19 Nov 2020 13:44:49 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S1726205AbgKSIQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:16:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbgKSIQI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 03:16:08 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E70C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:16:06 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id e18so4897097edy.6
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:16:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0N03fUfoN8yfl3q/oDJDvpvzt8NJMQouo/L6XzQZyqE=;
+        b=1pzoHtWyRoTkv4lqbFhi5pTwVfsmr0MSDurmgfcXMgBob/7SAGtVi24jGa5GrmG2rs
+         r3ceIE/MYG/nfTYlUgkNsnd/qXHMLdF5rh0bK04g0degO5jT43dTT9tJZw/NOjdOd6lk
+         PC4rf1+BHegMRRYpO08FN56xpg0Fer7FHMlDtzQ7efTyN92wqFdp2io92c1WXYB4i/Hl
+         XQhpI1HAu8tfHjRXVk9n4oXtuGjlw6FHVcnO6zpNbFPfrQ/7ZrxPa8KnzuXF0dgr6vRV
+         +llHTbCOd6xqIzKGF9WPIIgq7YCeVJQtsBWBYVbQLpd6F1a7NBzqKtQJRicVuqFIUotN
+         xQXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0N03fUfoN8yfl3q/oDJDvpvzt8NJMQouo/L6XzQZyqE=;
+        b=bQIMtbjLFQuRriq+OQVfcpjJpP9rwJZBPPFAzhfhKv2WsR4s19TJQOf141iwOBqXLN
+         KQrA+RUxGgPgaApnBt+1A7QXMK1ZoiMT7/j1wXLzQju7CERNB85g+5BbEz3cHNTjWB/X
+         KcCaCO7MjO/dkB44vAiufVm1+rH/Kb4LuQYZL/sxG8mHZyu+MB2M71THhJCczOVqGDml
+         5DuKWjuYBJEs0kzhGfPKyD5i3f08ZScFWh355tSy5lVUIwnWGQd382auc/5+rH6OI6T7
+         6JpGxhI8O3IEeTphezjgNsubyyDixbxL1/jUmPR0Zzos2Q85riPslf+LAXygxABNBxTm
+         Zl+Q==
+X-Gm-Message-State: AOAM5320KRRZFdJ8GzwTI9E16ZFEH3OVurX1NoL7oS4294Ay5aGd6DAP
+        PPFxJk6mUXLU4kLuTnp8Yr4osZQS3e4QXA==
+X-Google-Smtp-Source: ABdhPJzCyLol7tDRuOKIesbLbReSC+eycr32hWVDSpLjGpuMpF1hcZXdQ22LcclRTimvBOOCNCvyAg==
+X-Received: by 2002:a50:a845:: with SMTP id j63mr30780645edc.32.1605773765277;
+        Thu, 19 Nov 2020 00:16:05 -0800 (PST)
+Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:f696:2fcd:4e91:8958])
+        by smtp.gmail.com with ESMTPSA id y4sm14658940edr.20.2020.11.19.00.16.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 00:16:04 -0800 (PST)
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Netdev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, mptcp@lists.01.org
+Cc:     Shuah Khan <shuah@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Geliang Tang <geliangtang@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>
+References: <CA+G9fYvkRAKBzthvdurQ44q_f9HimG2ur9+M=bgyZ0c+XWucgg@mail.gmail.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [MPTCP] WARNING: net/mptcp/protocol.c:719
+ mptcp_reset_timer+0x40/0x50
+Message-ID: <67f05a8c-d582-1748-bf74-9fa9a761427b@tessares.net>
+Date:   Thu, 19 Nov 2020 09:16:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <20201117004052.14758-1-paulmck@kernel.org>
+In-Reply-To: <CA+G9fYvkRAKBzthvdurQ44q_f9HimG2ur9+M=bgyZ0c+XWucgg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Hi Naresh,
 
-On 11/17/2020 6:10 AM, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> There is a need for a polling interface for SRCU grace periods.  This
-> polling needs to distinguish between an SRCU instance being idle on the
-> one hand or in the middle of a grace period on the other.  This commit
-> therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
-> a defacto boolean to a free-running counter, using the bottom bit to
-> indicate that a grace period is in progress.  The second-from-bottom
-> bit is thus used as the index returned by srcu_read_lock().
-> 
-> Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-> Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->   include/linux/srcutiny.h | 4 ++--
->   kernel/rcu/srcutiny.c    | 5 +++--
->   2 files changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> index 5a5a194..fed4a2d 100644
-> --- a/include/linux/srcutiny.h
-> +++ b/include/linux/srcutiny.h
-> @@ -15,7 +15,7 @@
->   
->   struct srcu_struct {
->   	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
-> -	short srcu_idx;			/* Current reader array element. */
-> +	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
->   	u8 srcu_gp_running;		/* GP workqueue running? */
->   	u8 srcu_gp_waiting;		/* GP waiting for readers? */
->   	struct swait_queue_head srcu_wq;
-> @@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
->   {
->   	int idx;
->   
-> -	idx = READ_ONCE(ssp->srcu_idx);
-> +	idx = (READ_ONCE(ssp->srcu_idx) & 0x2) / 2;
+On 19/11/2020 08:04, Naresh Kamboju wrote:
+> While running kselftest net/mptcp: mptcp_join.sh on x86_64 device running
+> linux next 20201118 tag the following warning was noticed.
 
-Should we use bit 0x2 of (READ_ONCE(ssp->srcu_idx) + 1) , if GP 
-(srcu_drive_gp()) is in progress? Or am I missing something here?
+Thank you for testing MPTCP and having reported this bug!
 
-idx = ((READ_ONCE(ssp->srcu_idx) +1) & 0x2) / 2;
+It looks like it is similar to what syzbot reported yesterday:
 
-Also, any reason for using divison instead of shift; something to
-do with 16-bit srcu_idx which I am missing here?
+https://lists.01.org/hyperkitty/list/mptcp@lists.01.org/thread/N4IWIL6CYR6VSOOOXF25N3EWDW4GTQ6A/
 
-Thanks
-Neeraj
+If it is the same, a patch has already been sent to netdev ML:
 
->   	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
->   	return idx;
->   }
-> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> index 6208c1d..5598cf6 100644
-> --- a/kernel/rcu/srcutiny.c
-> +++ b/kernel/rcu/srcutiny.c
-> @@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *wp)
->   	ssp->srcu_cb_head = NULL;
->   	ssp->srcu_cb_tail = &ssp->srcu_cb_head;
->   	local_irq_enable();
-> -	idx = ssp->srcu_idx;
-> -	WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
-> +	idx = (ssp->srcu_idx & 0x2) / 2;
-> +	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
->   	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
->   	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
->   	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
-> +	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
->   
->   	/* Invoke the callbacks we removed above. */
->   	while (lh) {
-> 
+https://patchwork.kernel.org/project/netdevbpf/patch/1a72039f112cae048c44d398ffa14e0a1432db3d.1605737083.git.pabeni@redhat.com/
 
+If it is easy for you to reproduce the issue, please feel free to 
+validate Paolo's patch :)
+
+Cheers,
+Matt
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
