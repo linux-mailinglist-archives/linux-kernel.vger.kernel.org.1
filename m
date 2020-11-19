@@ -2,147 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8632B9A80
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C33622B9A82
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:20:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729407AbgKSSSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:18:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32431 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728888AbgKSSSU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:18:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605809899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=REJOcYJm1HuEasvL8M7Bb1y/jfMw6RKMEKdfka8jXq0=;
-        b=TUsAv38RtYRmkE4kINlExTAfR2G6SFao/pIlRqy1Bh+hIO3R+5b7LlD7xBK/RC8vy8duBw
-        TYDsTYd3HjHSXIq8b3Z/VoGuvMNhoJcYMw2gEraITnRsBj3lTmGLpbt4Qeh8jq690eMclL
-        hrrqX/k4mlcmrjfnVq2L7Mr4y2BDe+k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-312-EeAH8zqlMkSHrFVA4tBZ-w-1; Thu, 19 Nov 2020 13:18:15 -0500
-X-MC-Unique: EeAH8zqlMkSHrFVA4tBZ-w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63A6610B9CBD;
-        Thu, 19 Nov 2020 18:18:13 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.164])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6765D60C0F;
-        Thu, 19 Nov 2020 18:18:05 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 19 Nov 2020 19:18:13 +0100 (CET)
-Date:   Thu, 19 Nov 2020 19:18:04 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] powerpc/ptrace: simplify gpr_get/tm_cgpr_get
-Message-ID: <20201119181804.GA5138@redhat.com>
-References: <20201119160154.GA5183@redhat.com>
- <20201119160221.GA5188@redhat.com>
- <94c56c46-e336-f61c-3623-1b2014fcbb2e@csgroup.eu>
+        id S1729438AbgKSSSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:18:30 -0500
+Received: from foss.arm.com ([217.140.110.172]:36996 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728145AbgKSSS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:18:29 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DCDF11595;
+        Thu, 19 Nov 2020 10:18:28 -0800 (PST)
+Received: from [192.168.2.21] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1DD923F70D;
+        Thu, 19 Nov 2020 10:18:25 -0800 (PST)
+Subject: Re: [PATCH v6 1/7] arm64: mm: Move reserve_crashkernel() into
+ mem_init()
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     robh+dt@kernel.org, catalin.marinas@arm.com, hch@lst.de,
+        ardb@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        will@kernel.org, jeremy.linton@arm.com,
+        iommu@lists.linux-foundation.org,
+        linux-rpi-kernel@lists.infradead.org, guohanjun@huawei.com,
+        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org
+References: <20201103173159.27570-1-nsaenzjulienne@suse.de>
+ <20201103173159.27570-2-nsaenzjulienne@suse.de>
+ <e60d643e-4879-3fc3-737d-2c145332a6d7@arm.com>
+ <88c69ac0c9d7e144c80cebc7e9f82b000828e7f5.camel@suse.de>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <f15ad06d-faa8-65fc-6fc1-d5c77115b1f1@arm.com>
+Date:   Thu, 19 Nov 2020 18:18:23 +0000
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <94c56c46-e336-f61c-3623-1b2014fcbb2e@csgroup.eu>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <88c69ac0c9d7e144c80cebc7e9f82b000828e7f5.camel@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19, Christophe Leroy wrote:
->
->
-> Le 19/11/2020 à 17:02, Oleg Nesterov a écrit :
-> >gpr_get() does membuf_write() twice to override pt_regs->msr in between.
->
-> Is there anything wrong with that ?
+Hi,
 
-Nothing wrong, but imo the code and 2/2 looks simpler after this patch.
-I tried to explain this in the changelog.
+(sorry for the late response)
 
-> >  int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
-> >  		struct membuf to)
-> >  {
-> >+	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
-> >+
-> >  	if (!cpu_has_feature(CPU_FTR_TM))
-> >  		return -ENODEV;
-> >@@ -97,17 +99,12 @@ int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
-> >  	flush_altivec_to_thread(target);
-> >  	membuf_write(&to, &target->thread.ckpt_regs,
-> >-			offsetof(struct pt_regs, msr));
-> >-	membuf_store(&to, get_user_ckpt_msr(target));
-> >+				sizeof(struct user_pt_regs));
->
-> This looks mis-aligned. But it should fit on a single line, now we allow up to 100 chars on a line.
+On 06/11/2020 18:46, Nicolas Saenz Julienne wrote:
+> On Thu, 2020-11-05 at 16:11 +0000, James Morse wrote:>> We also depend on this when skipping the checksum code in purgatory, which can be
+>> exceedingly slow.
+> 
+> This one I don't fully understand, so I'll lazily assume the prerequisite is
+> the same WRT how memory is mapped. :)
 
-OK, I can change this.
+The aim is its never normally mapped by the kernel. This is so that if we can't get rid of
+the secondary CPUs (e.g. they have IRQs masked), but they are busy scribbling all over
+memory, we have a rough guarantee that they aren't scribbling over the kdump kernel.
 
-> >-	BUILD_BUG_ON(offsetof(struct pt_regs, orig_gpr3) !=
-> >-		     offsetof(struct pt_regs, msr) + sizeof(long));
-> >+	membuf_store(&to_msr, get_user_ckpt_msr(target));
-> >-	membuf_write(&to, &target->thread.ckpt_regs.orig_gpr3,
-> >-			sizeof(struct user_pt_regs) -
-> >-			offsetof(struct pt_regs, orig_gpr3));
-> >  	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
-> >-			sizeof(struct user_pt_regs));
-> >+				sizeof(struct user_pt_regs));
->
-> I can't see any change here except the alignment. Can you leave it as is ?
+We can skip the checksum in purgatory, as there is very little risk of the memory having
+been corrupted.
 
-I just tried to make tm_cgpr_get() and gpr_get() look similar.
 
-Sure, I can leave it as is.
+> Ultimately there's also /sys/kernel/kexec_crash_size's handling. Same
+> prerequisite.
 
-Better yet, could you please fix this problem somehow so that I could forget
-about the bug assigned to me?
+Yeah, this lets you release PAGE_SIZEs back to the allocator, which means the
+marked-invalid page tables we have hidden there need to be PAGE_SIZE mappings.
 
-I know nothing about powerpc, and personally I do not care about this (minor)
-bug, I agree with any changes.
 
-> >-	membuf_write(&to, target->thread.regs, offsetof(struct pt_regs, msr));
-> >-	membuf_store(&to, get_user_msr(target));
-> >+	membuf_write(&to, target->thread.regs,
-> >+				sizeof(struct user_pt_regs));
->
-> This should fit on a single line.
->
-> >  	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
-> >-				 sizeof(struct user_pt_regs));
-> >+				sizeof(struct user_pt_regs));
->
-> This should not change, it's not part of the changes for this patch.
+Thanks,
 
-See above, I can leave it as is.
+James
 
-> >--- a/include/linux/regset.h
-> >+++ b/include/linux/regset.h
-> >@@ -46,6 +46,18 @@ static inline int membuf_write(struct membuf *s, const void *v, size_t size)
-> >  	return s->left;
-> >  }
-> >+static inline struct membuf membuf_at(const struct membuf *s, size_t offs)
-> >+{
-> >+	struct membuf n = *s;
->
-> Is there any point in using a struct membuf * instaed of a struct membuf as parameter ?
 
-This matches other membuf_ helpers.
-
-Oleg.
-
+> Keeping in mind acpi_table_upgrade() and unflatten_device_tree() depend on
+> having the linear mappings available. I don't see any simple way of solving
+> this. Both moving the firmware description routines to use fixmap or correcting
+> the linear mapping further down the line so as to include kdump's regions, seem
+> excessive/impossible (feel free to correct me here). I'd be happy to hear
+> suggestions. Otherwise we're back to hard-coding the information as we
+> initially did.
+> 
+> Let me stress that knowing the DMA constraints in the system before reserving
+> crashkernel's regions is necessary if we ever want it to work seamlessly on all
+> platforms. Be it small stuff like the Raspberry Pi or huge servers with TB of
+> memory.
