@@ -2,81 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F69F2B9933
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52AE12B9935
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729013AbgKSRWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:22:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728551AbgKSRWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:22:48 -0500
-Received: from gaia (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EEB42468B;
-        Thu, 19 Nov 2020 17:22:46 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 17:22:43 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, linux-kernel@vger.kernel.org,
-        anshuman.khandual@arm.com, jonathan.zhouwen@huawei.com,
-        coresight@lists.linaro.org, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v4 25/25] coresight: Add support for v8.4 SelfHosted
- tracing
-Message-ID: <20201119172243.GF4376@gaia>
-References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
- <20201119164547.2982871-26-suzuki.poulose@arm.com>
+        id S1728798AbgKSRYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:24:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728147AbgKSRYI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:24:08 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E233C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:24:08 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id y16so7121742ljk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:24:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=roKed23LgH2ixqxBEBzRYh8QoZ0Y+ahXxWrHQPjuH7U=;
+        b=R25wBXI23xncSP774w9yY17VRXi5gWwtiFn5B5y0aCu8Ej56oJnYXT4a52YWJrErvL
+         aHstvk6tzU7PKlrfe0Rtveex72l4tsEaaTYslKzHXiF/HffAijHs1WhL7CZRm8rT4vzh
+         ddMAdfw98+K4N6JgZ99dj+rjCTxhZvk+DkSy8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=roKed23LgH2ixqxBEBzRYh8QoZ0Y+ahXxWrHQPjuH7U=;
+        b=qib7V3cKRpFxOSY8+KWprcZ+cDUbkSn3psdUih7h08hZ7y1WvmAjW8XS+80avjoky5
+         9tPjOyX71xkq4u+fkYl5As+hYPlvHshRS3cv46GO5bHFTVSmWih+nS0sVXYI2AgL9fM2
+         tEZdWSyUxBu8X5gMVpbg4/VixOOMosdtFtO5P/+UwTBmp0powL7XBMi+wMqIRWO/1gIs
+         JURigGtMFkWsWEZUCm3eaJHVndtBzqntIxwOD3POSEOL7USI4dvUlYPW5UqolbkR+j1N
+         Lp6zxrRfQ4jElz95AH+KpfyYl1X4b4l6NSnsSmOwQ4iumLTOa4DYxyYqj4YG16Q7eP5u
+         N/Gw==
+X-Gm-Message-State: AOAM533+WlkfT8769ZRmeELmERtfAH7ayvtUHlHWR+nrKpiGX3NmUaUl
+        h76arCPKJgFitpy8SRR1P55zE1g3EDf9Uw==
+X-Google-Smtp-Source: ABdhPJxOzeVIix0ZlmDJ4MGJxOdnPJ98A/BaPmBTPay3AGK4Ncm9eyBxXBREJXWGmEIH6k5askp3FQ==
+X-Received: by 2002:a2e:b0c4:: with SMTP id g4mr6580695ljl.20.1605806645467;
+        Thu, 19 Nov 2020 09:24:05 -0800 (PST)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id w6sm28137lfn.64.2020.11.19.09.24.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 09:24:03 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id i17so7111849ljd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:24:03 -0800 (PST)
+X-Received: by 2002:a2e:8e33:: with SMTP id r19mr5946254ljk.102.1605806643076;
+ Thu, 19 Nov 2020 09:24:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119164547.2982871-26-suzuki.poulose@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201118194838.753436396@linutronix.de> <20201118204007.269943012@linutronix.de>
+ <20201119093834.GH3306@suse.de> <20201119111411.GL3121378@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201119111411.GL3121378@hirez.programming.kicks-ass.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Nov 2020 09:23:47 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wire3dzhHx=KiL_f5Rj0=1u9ustsa33QoR-F9-v-NU9Ng@mail.gmail.com>
+Message-ID: <CAHk-=wire3dzhHx=KiL_f5Rj0=1u9ustsa33QoR-F9-v-NU9Ng@mail.gmail.com>
+Subject: Re: [patch V4 4/8] sched: Make migrate_disable/enable() independent
+ of RT
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mel Gorman <mgorman@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 04:45:47PM +0000, Suzuki K Poulose wrote:
-> From: Jonathan Zhou <jonathan.zhouwen@huawei.com>
-> 
-> v8.4 tracing extensions added support for trace filtering controlled
-> by TRFCR_ELx. This must be programmed to allow tracing at EL1/EL2 and
-> EL0. The timestamp used is the virtual time. Also enable CONTEXIDR_EL2
-> tracing if we are running the kernel at EL2.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
-> [ Move the trace filtering setup etm_init_arch_data() and
->  clean ups]
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  .../coresight/coresight-etm4x-core.c          | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 1d054d2ab2a0..647685736134 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -760,6 +760,30 @@ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
->  	return false;
->  }
->  
-> +static void cpu_enable_tracing(void)
-> +{
-> +	u64 dfr0 = read_sysreg(id_aa64dfr0_el1);
-> +	u64 trfcr;
-> +
-> +	if (!(dfr0 >> ID_AA64DFR0_TRACE_FILT_SHIFT))
-> +		return;
+On Thu, Nov 19, 2020 at 3:14 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> I still hate all of this, and I really fear that with migrate_disable()
+> available, people will be lazy and usage will increase :/
+>
+> Case at hand is this series, the only reason we need it here is because
+> per-cpu page-tables are expensive...
 
-What if we get a new field at position 44 while the FILT one at 40 is 0?
-We should use cpuid_feature_extract_field() here.
+No, I think you as a scheduler person just need to accept it.
 
-BTW, can this function not go in the cpufeature.c code?
+Because this is certainly not the only time migration limiting has
+come up, and no, it has absolutely nothing to do with per-cpu page
+tables being completely unacceptable.
 
--- 
-Catalin
+The scheduler people need to get used to this. Really. Because ASMP is
+just going to be a fact.
+
+There are few things more futile than railing against reality, Peter.
+
+Honestly, the only argument I've ever heard against limiting migration
+is the whole "our scheduling theory doesn't cover it".
+
+So either throw the broken theory away, or live with it. Theory that
+doesn't match reality isn't theory, it's religion.
+
+          Linus
