@@ -2,139 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFCB2B9926
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5382B992C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728831AbgKSRSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:18:49 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:32207 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727166AbgKSRSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:18:49 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CcRGs1mzCzB09Zm;
-        Thu, 19 Nov 2020 18:18:45 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id AMfvyq5zNv_N; Thu, 19 Nov 2020 18:18:45 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CcRGs0lyxzB09Zl;
-        Thu, 19 Nov 2020 18:18:45 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A3D128B78A;
-        Thu, 19 Nov 2020 18:18:45 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id bf7Xb12tnYPC; Thu, 19 Nov 2020 18:18:45 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0FFB08B80C;
-        Thu, 19 Nov 2020 18:18:31 +0100 (CET)
-Subject: Re: [PATCH v3 2/2] powerpc/ptrace: Hard wire PT_SOFTE value to 1 in
- gpr_get() too
-To:     Oleg Nesterov <oleg@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20201119160154.GA5183@redhat.com>
- <20201119160247.GB5188@redhat.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <4e132957-c53c-4b06-9546-26d1de0a672f@csgroup.eu>
-Date:   Thu, 19 Nov 2020 18:18:23 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1728971AbgKSRUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:20:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727677AbgKSRUH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:20:07 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC27C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:20:07 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id l11so9419177lfg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:20:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kdtThT2vJGo6Wdq53TPlyIKnQQ6EAzbrw7SbM7qAaa4=;
+        b=KtKkL/bDLeFxOu5LQGzpdhHGbQcQiZojE1Hwikc0m0D212LbNnl+k45phZKTDGy1eB
+         96t/WiI8l4XGutRfemSkL6TPvDyFyWWNpvGV5SPJIJZa3sFF0WeQwNdrSR4OGyrEHFFp
+         mLVxA8UY9dwUahqDuuxY6hmT6SvIWpNxxB4w4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kdtThT2vJGo6Wdq53TPlyIKnQQ6EAzbrw7SbM7qAaa4=;
+        b=VdVItZADSqlhus/kvVzZ5FHIXK+NN8axs2CuaXJx1rsueI17uCx9ORkSYG3Usgl7JY
+         6ZpbsBDnbeMbUM6pnISjZuQwD35lPH5g30XB8Du7A1uIsrPezJDpqK72oakEdxpsY3IF
+         Fp7zcBc9t9/7mtT0eBbXP/lfCA4Rb0aoVX2ODfvpxyjYLHlkmGll720Elo10r1rP2Nz+
+         9h+L/y6munYpEmHAX8QZGbk6MRp31MdN0jojZ7jcBv1liN4U3KV+IoDZyqzgGCm7gYiv
+         9oaBHInKImU+BhuYDO0xS+zhNpUGPNpMxGjXWbo7KlV648OVpZa1i9k+pvtTsmDH6fhM
+         pI/Q==
+X-Gm-Message-State: AOAM533wqH21hcs1lBWwL6de2f8IQMLLVQLd01bQM+m91t33YLWxkBeE
+        d4gNXxQkSlIJ/V31e1T4G8sUre/0hHrOzA==
+X-Google-Smtp-Source: ABdhPJyK4N2sVtSk0e4Aq5btYjbasUTeqpdWY3OngrkivsALxTM2f2vJe7pE8YpfIjdYzWXZL8VUaQ==
+X-Received: by 2002:a19:8346:: with SMTP id f67mr7499300lfd.569.1605806404853;
+        Thu, 19 Nov 2020 09:20:04 -0800 (PST)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id y12sm27016lfh.120.2020.11.19.09.20.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 09:20:03 -0800 (PST)
+Received: by mail-lj1-f182.google.com with SMTP id y16so7107366ljk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:20:02 -0800 (PST)
+X-Received: by 2002:a2e:8e33:: with SMTP id r19mr5940506ljk.102.1605806402308;
+ Thu, 19 Nov 2020 09:20:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201119160247.GB5188@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20201118194838.753436396@linutronix.de> <20201118204007.028261233@linutronix.de>
+ <CAHk-=wh6+VXQASpG+X_v8E25X9mARyHULeOfHk1RsNFMMWHafQ@mail.gmail.com> <20201119084601.GG3306@suse.de>
+In-Reply-To: <20201119084601.GG3306@suse.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Nov 2020 09:19:46 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgtYWV_d-hH=iZYF1nhwvB=1wvJvE1fNEXSEDhomvHuvg@mail.gmail.com>
+Message-ID: <CAHk-=wgtYWV_d-hH=iZYF1nhwvB=1wvJvE1fNEXSEDhomvHuvg@mail.gmail.com>
+Subject: Re: [patch V4 2/8] mm/highmem: Provide CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 19, 2020 at 12:46 AM Mel Gorman <mgorman@suse.de> wrote:
+>
+> And not start thinking it as a security hardening option.
 
+It's probably the reverse of a hardening option, since it will cause
+mapping of stuff in known and controllable virtual addresses.
 
-Le 19/11/2020 à 17:02, Oleg Nesterov a écrit :
-> The commit a8a4b03ab95f ("powerpc: Hard wire PT_SOFTE value to 1 in
-> ptrace & signals") changed ptrace_get_reg(PT_SOFTE) to report 0x1,
-> but PTRACE_GETREGS still copies pt_regs->softe as is.
-> 
-> This is not consistent and this breaks the user-regs-peekpoke test
-> from https://sourceware.org/systemtap/wiki/utrace/tests/
-> 
-> Reported-by: Jan Kratochvil <jan.kratochvil@redhat.com>
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-> ---
->   arch/powerpc/kernel/ptrace/ptrace-tm.c   | 8 +++++++-
->   arch/powerpc/kernel/ptrace/ptrace-view.c | 8 +++++++-
->   2 files changed, 14 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/ptrace/ptrace-tm.c b/arch/powerpc/kernel/ptrace/ptrace-tm.c
-> index f8fcbd85d4cb..d0d339f86e61 100644
-> --- a/arch/powerpc/kernel/ptrace/ptrace-tm.c
-> +++ b/arch/powerpc/kernel/ptrace/ptrace-tm.c
-> @@ -87,6 +87,10 @@ int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
->   		struct membuf to)
->   {
->   	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
-> +#ifdef CONFIG_PPC64
-> +	struct membuf to_softe = membuf_at(&to,
-> +					offsetof(struct pt_regs, softe));
+Although any kmap'able page is likely to already be something you can
+read anyway (ie page cache long after security checks have been done).
+So it probably really doesn't matter either way.
 
-Should fit on a single line I think.
+The only thing that is certain is that it's going to slow down
+important code-paths.
 
-> +#endif
->   
->   	if (!cpu_has_feature(CPU_FTR_TM))
->   		return -ENODEV;
-> @@ -102,7 +106,9 @@ int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
->   				sizeof(struct user_pt_regs));
->   
->   	membuf_store(&to_msr, get_user_ckpt_msr(target));
-> -
-> +#ifdef CONFIG_PPC64
-> +	membuf_store(&to_softe, 0x1ul);
-> +#endif
->   	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
->   				sizeof(struct user_pt_regs));
->   }
-> diff --git a/arch/powerpc/kernel/ptrace/ptrace-view.c b/arch/powerpc/kernel/ptrace/ptrace-view.c
-> index 39686ede40b3..f554ccfcbfae 100644
-> --- a/arch/powerpc/kernel/ptrace/ptrace-view.c
-> +++ b/arch/powerpc/kernel/ptrace/ptrace-view.c
-> @@ -218,6 +218,10 @@ static int gpr_get(struct task_struct *target, const struct user_regset *regset,
->   		   struct membuf to)
->   {
->   	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
-> +#ifdef CONFIG_PPC64
-> +	struct membuf to_softe = membuf_at(&to,
-> +					offsetof(struct pt_regs, softe));
-
-Should fit on a single line I think.
-
-> +#endif
->   	int i;
->   
->   	if (target->thread.regs == NULL)
-> @@ -233,7 +237,9 @@ static int gpr_get(struct task_struct *target, const struct user_regset *regset,
->   				sizeof(struct user_pt_regs));
->   
->   	membuf_store(&to_msr, get_user_msr(target));
-> -
-> +#ifdef CONFIG_PPC64
-> +	membuf_store(&to_softe, 0x1ul);
-> +#endif
->   	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
->   				sizeof(struct user_pt_regs));
->   }
-> 
-
-Christophe
+             Linus
