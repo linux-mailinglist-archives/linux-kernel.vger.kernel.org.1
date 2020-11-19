@@ -2,94 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092002B9396
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 775182B939C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbgKSNXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 08:23:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
+        id S1727114AbgKSNZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 08:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbgKSNXY (ORCPT
+        with ESMTP id S1726474AbgKSNZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 08:23:24 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65CBC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 05:23:24 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfjuE-0004IH-PP; Thu, 19 Nov 2020 14:23:22 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfjuE-0005J0-Bn; Thu, 19 Nov 2020 14:23:22 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Thorsten Scherer <t.scherer@eckelmann.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] siox: Make remove callback return void
-Date:   Thu, 19 Nov 2020 14:23:11 +0100
-Message-Id: <20201119132311.2604232-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201119132311.2604232-1-u.kleine-koenig@pengutronix.de>
-References: <20201119132311.2604232-1-u.kleine-koenig@pengutronix.de>
+        Thu, 19 Nov 2020 08:25:18 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4504EC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 05:25:18 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id w142so8192664lff.8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 05:25:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KLQf36DeOut5/5BOL2GcUQMrMJwzUV5j8KCDhBu2E+k=;
+        b=iht9VFEu0IoOXoakcowuQegaWzvNUB079aNJiHsBjuQGCXqC/IP+4OEEOAHES8o/N3
+         a4yjIvhvwGK08M6wWpjQ/m/kk1bdfQBGIuCAaiap1PpzVAi2y8tdqics7XCDyV1fzJ6i
+         pQXaXHgZvt/F2P+14xTwdEwULl1VRCF4gDMBzwKAOYbeY2yWB7xdVz5dooqRtKpkvZyY
+         oZw6kBUfP9jSKkfNf7Xiax4jy7VbHldPSz3MSEYkoBBzBUsvsu6G+RjmTrrp+g27YtUN
+         OGEK5KD41ujZfWmTuWQSSPRgtq6kP+vX7mm5+XtD9La8qHGYyzHRnF12/fhCcmYU+JBG
+         DLyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KLQf36DeOut5/5BOL2GcUQMrMJwzUV5j8KCDhBu2E+k=;
+        b=N6ACwrurMmUNVcVaKR4GcToKW/7fjaEZ8FpbTpX2jBnQqDYENmsNizOH1uwc98n6ne
+         zhplPn7wsccUiCrerFC3OuCqMjEDrBdohAu0Fx73ezdlaQbSPi0wH/2mA9zAqpIB0Zkq
+         0PPlAXrTIUqQxUeq+t4cfddR8scMOaxzBM5VT1AJmQWPvU386odT2Mtee8ulBz0MpJ89
+         J7tYRd6WMz2XM+YaPxMskxVS1A+S+pKtRKd4fYLTlMr2ChYyrHT6p9Q+4wnmogpjKhgN
+         GOTQ2RN3W290/+dvTi5NkzjR1yL+u/zqkXCeOidzetiFAcxiPOXkWye2pJe+BtPqaJbb
+         zfoQ==
+X-Gm-Message-State: AOAM533c7AhCvNHm+bzobfDU8UtMKCyQs8eo/UewY3R5dynYG08N6+FU
+        6N/tB662mFMo9Dl0RFda+pJcVsoXVeX7MhG2fHS34Q==
+X-Google-Smtp-Source: ABdhPJyOzK0Kea8uVCED1TnJFYe2hbyhH6rNZcb5m72i+hCtQQ80j7LJ2WsPyw1/5uCdaulSo3B7yoofIKqFlgXyvfE=
+X-Received: by 2002:a19:a0c:: with SMTP id 12mr6292839lfk.568.1605792316677;
+ Thu, 19 Nov 2020 05:25:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <17fc60a3-cc50-7cff-eb46-904c2f0c416e@canonical.com>
+ <20201118235015.GB6015@geo.homenetwork> <20201119003319.GA6805@geo.homenetwork>
+ <CAKfTPtBYm8UtBBnbc7qddA2_OAa3vwH=KoHNgvsQJ9zO2KocYQ@mail.gmail.com> <7c9462c9-8908-8592-0727-9117d4173724@canonical.com>
+In-Reply-To: <7c9462c9-8908-8592-0727-9117d4173724@canonical.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 19 Nov 2020 14:25:05 +0100
+Message-ID: <CAKfTPtAfzxbm0qM+8r2i+3jWjpJ2OLbU4F1WE8GrzTZH6Ck7FA@mail.gmail.com>
+Subject: Re: [PATCH v3] sched/fair: fix unthrottle_cfs_rq for leaf_cfs_rq list
+To:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>
+Cc:     Tao Zhou <t1zhou@163.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Ben Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Tao Zhou <zohooouoto@zoho.com.cn>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Tao Zhou <ouwen210@hotmail.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        Gavin Guo <gavin.guo@canonical.com>, halves@canonical.com,
+        nivedita.singhvi@canonical.com,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "# v4 . 16+" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver core ignores the return value of the remove callback, so
-don't give siox drivers the chance to provide a value.
+On Thu, 19 Nov 2020 at 12:36, Guilherme G. Piccoli
+<gpiccoli@canonical.com> wrote:
+>
+>
+>
+> On 19/11/2020 05:36, Vincent Guittot wrote:
+> > On Thu, 19 Nov 2020 at 01:36, Tao Zhou <t1zhou@163.com> wrote:
+> >>
+> >> On Thu, Nov 19, 2020 at 07:50:15AM +0800, Tao Zhou wrote:
+> >>> On Wed, Nov 18, 2020 at 07:56:38PM -0300, Guilherme G. Piccoli wrote:
+> >>>> Hi Vincent (and all CCed), I'm sorry to ping about such "old" patch, but
+> >>>> we experienced a similar condition to what this patch addresses; it's an
+> >>>> older kernel (4.15.x) but when suggesting the users to move to an
+> >>>> updated 5.4.x kernel, we noticed that this patch is not there, although
+> >>>> similar ones are (like [0] and [1]).
+> >>>>
+> >>>> So, I'd like to ask if there's any particular reason to not backport
+> >>>> this fix to stable kernels, specially the longterm 5.4. The main reason
+> >>>> behind the question is that the code is very complex for non-experienced
+> >>>> scheduler developers, and I'm afraid in suggesting such backport to 5.4
+> >>>> and introduce complex-to-debug issues.
+> >>>>
+> >>>> Let me know your thoughts Vincent (and all CCed), thanks in advance.
+> >>>> Cheers,
+> >>>>
+> >>>>
+> >>>> Guilherme
+> >>>>
+> >>>>
+> >>>> P.S. For those that deleted this thread from the email client, here's a
+> >>>> link:
+> >>>> https://lore.kernel.org/lkml/20200513135528.4742-1-vincent.guittot@linaro.org/
+> >>>>
+> >>>>
+> >>>> [0]
+> >>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe61468b2cb
+> >>>>
+> >>>> [1]
+> >>>> https://lore.kernel.org/lkml/20200506141821.GA9773@lorien.usersys.redhat.com/
+> >>>> <- great thread BTW!
+> >>>
+> >>> 'sched/fair: Fix unthrottle_cfs_rq() for leaf_cfs_rq list" failed to apply to
+> >>> 5.4-stable tree'
+> >>>
+> >>> You could check above. But I do not have the link about this. Can't search it
+> >>> on LKML web: https://lore.kernel.org/lkml/
+> >>>
+> >>> BTW: 'ouwen210@hotmail.com' and 'zohooouoto@zoho.com.cn' all is myself.
+> >>>
+> >>> Sorry for the confusing..
+> >>>
+> >>> Thanks.
+> >>
+> >> Sorry again. I forget something. It is in the stable.
+> >>
+> >> Here it is:
+> >>
+> >>   https://lore.kernel.org/stable/159041776924279@kroah.com/
+> >
+> > I think it has never been applied to stable.
+> > As you mentioned, the backport has been sent :
+> > https://lore.kernel.org/stable/20200525172709.GB7427@vingu-book/
+> >
+> > I received another emailed in September and pointed out to the
+> > backport : https://www.spinics.net/lists/stable/msg410445.html
+> >
+> >
+> >>
+>
+> Thanks a lot Tao and Vincent! Nice to know that you already worked the
+> backport, gives much more confidence when the author does that heheh
+>
+> So, this should go to stable 5.4.y, but not 4.19.y IIUC?
 
-As there only siox driver only allocates devm-managed resources in
-.probe, there is no .remove callback to fix.
+Yeah. they should be backported up to v5.1 but not earlier
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/siox/siox-core.c | 5 ++---
- include/linux/siox.h     | 2 +-
- 2 files changed, 3 insertions(+), 4 deletions(-)
+Regards,
+Vincent
 
-diff --git a/drivers/siox/siox-core.c b/drivers/siox/siox-core.c
-index 7b3a2b63304b..b4ad87ca1838 100644
---- a/drivers/siox/siox-core.c
-+++ b/drivers/siox/siox-core.c
-@@ -529,12 +529,11 @@ static int siox_remove(struct device *dev)
- 	struct siox_driver *sdriver =
- 		container_of(dev->driver, struct siox_driver, driver);
- 	struct siox_device *sdevice = to_siox_device(dev);
--	int ret = 0;
- 
- 	if (sdriver->remove)
--		ret = sdriver->remove(sdevice);
-+		sdriver->remove(sdevice);
- 
--	return ret;
-+	return 0;
- }
- 
- static void siox_shutdown(struct device *dev)
-diff --git a/include/linux/siox.h b/include/linux/siox.h
-index da7225bf1877..6bfbda3f634c 100644
---- a/include/linux/siox.h
-+++ b/include/linux/siox.h
-@@ -36,7 +36,7 @@ bool siox_device_connected(struct siox_device *sdevice);
- 
- struct siox_driver {
- 	int (*probe)(struct siox_device *sdevice);
--	int (*remove)(struct siox_device *sdevice);
-+	void (*remove)(struct siox_device *sdevice);
- 	void (*shutdown)(struct siox_device *sdevice);
- 
- 	/*
--- 
-2.28.0
-
+> Cheers,
+>
+>
+> Guilherme
