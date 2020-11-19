@@ -2,188 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865822B9565
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9360C2B956E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728475AbgKSOoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:44:11 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:42097 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728440AbgKSOoB (ORCPT
+        id S1728481AbgKSOp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:45:29 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37814 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728214AbgKSOp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:44:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605797041; x=1637333041;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ODOE2kIkgZGI3tHS05FNlvmfmNJrwKtpsxbo9DmSxmo=;
-  b=GuJmXDDodMxpNnBeo6v8tbCan+6/CGSKA1H53SpXUdW5HXcA8ANXWDBT
-   6DdbvhOEFWHUu6u+tUUm9V61dS37ITt9q3RUzsCCWmPgibDEn0+k88EXP
-   6X4BW9Nho3TDgWiQKorSWqJJBwVSXcJ5RzjG2TicgwIy2+h6PXmU+XK+D
-   HtsrQC5U/Tkbpy8pxtcar9WGuX1Pj18ifzcfzYOK/23V9EY/wr3/pYBls
-   lVgVisV3LHPhiHjJF+JB+LAYkTOhnTFGQvKCrAnh2l6OIoQW5xvbrNcfh
-   I0XrYCHKV9dQuZ9RE4fXdFfXj/ssPUD60dO2UXaw4PEmEYtDZmSLab66u
-   w==;
-IronPort-SDR: lqN/zlpZ7diKaDwUdOCSNeNK8VxuGnzUCjZUpG4U2/tZExBugUdfB274HdscUwnTdv6ZDJMuGn
- 7k4YRAJy9tbBMC/VSKNGEAGLs7e3693niPMxmsYfXoa2vhWfQPofkXINASj7MKQtEzV1zsJUfO
- YPuG/mKrxfSJJPcVti7/QWWEX9ULh3qtbXJdxKZFc7QrhJbFYZnqJjUymM2BKqZ0jY0uWSPOA/
- 2hD3n0JTjBmxm140hQFx2q9bVlDtiArAqK2nHyA8ELaamV37P7i6S0UghkW67t4shmg36XwGtY
- lxY=
-X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="94238519"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Nov 2020 07:44:00 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 19 Nov 2020 07:44:00 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Thu, 19 Nov 2020 07:44:00 -0700
-Date:   Thu, 19 Nov 2020 15:43:59 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/4] phy: Add ethernet serdes configuration option
-Message-ID: <20201119144359.y5scnscmb7nvptnv@mchp-dev-shegelun>
-References: <20201110144910.558164-1-steen.hegelund@microchip.com>
- <20201110144910.558164-3-steen.hegelund@microchip.com>
- <20201119060727.GA50232@vkoul-mobl>
+        Thu, 19 Nov 2020 09:45:28 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJEjMO3067579;
+        Thu, 19 Nov 2020 08:45:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605797122;
+        bh=KsKbukhmAd8emgYJwItNnBQsIjp8rGjR04mDjYgnDMI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=dui0cc5Kpz131YaPMGnkuKFu3FOMwu0/NlOh7f1/GdPdEF39JcWSZFEviC5advmaQ
+         xZWRIgSy3DXEdp2UUCCH+aS/GN/WmqRgo3MDvTMcYUgOwpRY7VoIXMlOalxdmhb+Om
+         V4zp6N1MCm2OlTmp+XpZyk31b746rlqUYTrA8XwQ=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJEjML1127732
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Nov 2020 08:45:22 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
+ Nov 2020 08:45:21 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 19 Nov 2020 08:45:21 -0600
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJEjJfL117651;
+        Thu, 19 Nov 2020 08:45:19 -0600
+Subject: Re: [PATCH 1/2] arm64: dts: ti: k3-j7200-som-p0: main_i2c0 have an
+ ioexpander on the SOM
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <nm@ti.com>,
+        <t-kristo@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nsekhar@ti.com>
+References: <20201119132627.8041-1-peter.ujfalusi@ti.com>
+ <20201119132627.8041-2-peter.ujfalusi@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <3a4cb3c0-2242-cb81-9c38-85e93ddc7dfc@ti.com>
+Date:   Thu, 19 Nov 2020 20:15:17 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201119060727.GA50232@vkoul-mobl>
+In-Reply-To: <20201119132627.8041-2-peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.11.2020 11:37, Vinod Koul wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->
->On 10-11-20, 15:49, Steen Hegelund wrote:
->> Provide a new ethernet phy configuration structure, that
->> allow PHYs used for ethernet to be configured with
->> speed, media type and clock information.
->>
->> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
->> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
->> ---
->>  include/linux/phy/phy-ethernet-serdes.h | 49 +++++++++++++++++++++++++
->>  include/linux/phy/phy.h                 |  4 ++
->>  2 files changed, 53 insertions(+)
->>  create mode 100644 include/linux/phy/phy-ethernet-serdes.h
->>
->> diff --git a/include/linux/phy/phy-ethernet-serdes.h b/include/linux/phy/phy-ethernet-serdes.h
->> new file mode 100644
->> index 000000000000..04f496855b00
->> --- /dev/null
->> +++ b/include/linux/phy/phy-ethernet-serdes.h
->> @@ -0,0 +1,49 @@
->> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
->> +/*
->> + * Microchip Sparx5 Ethernet SerDes driver
->> + *
->> + * Copyright (c) 2020 Microschip Inc
->> + */
->> +#ifndef __PHY_ETHERNET_SERDES_H_
->> +#define __PHY_ETHERNET_SERDES_H_
->> +
->> +#include <linux/phy.h>
->> +
->> +enum ethernet_media_type {
->> +     ETH_MEDIA_DEFAULT,
->> +     ETH_MEDIA_SR,
->> +     ETH_MEDIA_DAC,
->> +};
->> +
->> +/**
->> + * struct phy_configure_opts_eth_serdes - Ethernet SerDes
->> + *
->> + * This structure is used to represent the configuration state of a
->> + * Ethernet Serdes PHY.
->> + */
->> +struct phy_configure_opts_eth_serdes {
->> +     /**
->> +      * @speed
->> +      *
->> +      * Speed of the serdes interface in Mbps
->> +      */
->
->Can we have this in kernel-doc style pls
->
-I will update the documentation.
->> +     u32                        speed;
->> +
->> +     /**
->> +      * @media_type
->> +      *
->> +      * Specifies which media the serdes will be using
->> +      */
->> +     enum ethernet_media_type   media_type;
->> +
->> +     /**
->> +      * @clk
->> +      *
->> +      * Specifies the serdes clock in MHz
->> +      * Default: 0 will provide the highest supported clock.
->> +      */
->> +     u32                        clk;
->
->Why not use std clk interface for this..?
 
-I am not familiar with that.  Is that the max_link_rate in struct phy_attrs?
 
->
->> +};
->> +
->> +#endif
->> +
->> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
->> index e435bdb0bab3..78ecb375cede 100644
->> --- a/include/linux/phy/phy.h
->> +++ b/include/linux/phy/phy.h
->> @@ -18,6 +18,7 @@
->>
->>  #include <linux/phy/phy-dp.h>
->>  #include <linux/phy/phy-mipi-dphy.h>
->> +#include <linux/phy/phy-ethernet-serdes.h>
->>
->>  struct phy;
->>
->> @@ -49,11 +50,14 @@ enum phy_mode {
->>   *
->>   * @mipi_dphy:       Configuration set applicable for phys supporting
->>   *           the MIPI_DPHY phy mode.
->> + * @eth_serdes: Configuration set applicable for phys supporting
->> + *           the ethernet serdes.
->>   * @dp:              Configuration set applicable for phys supporting
->>   *           the DisplayPort protocol.
->>   */
->>  union phy_configure_opts {
->>       struct phy_configure_opts_mipi_dphy     mipi_dphy;
->> +     struct phy_configure_opts_eth_serdes    eth_serdes;
->
->Kishon, does this look okay for you..?
->
->>       struct phy_configure_opts_dp            dp;
->>  };
->>
->> --
->> 2.29.2
->
->--
->~Vinod
+On 11/19/20 6:56 PM, Peter Ujfalusi wrote:
+> It is used to control several SOM level muxes to make sure that the correct
+> signals are routed to the correct pin on the SOM <-> CPB connectors.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
 
-BR
-Steen
+Yes, there is indeed a I2C GPIO expander on SOM that's missing from DT
+today. So this change looks good to me.
 
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+Regards
+Vignesh
+
+>  .../dts/ti/k3-j7200-common-proc-board.dts     | 11 --------
+>  arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi   | 26 +++++++++++++++++++
+>  2 files changed, 26 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> index 6b3863108571..2721137d8943 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> @@ -43,13 +43,6 @@ J721E_WKUP_IOPAD(0x0098, PIN_INPUT, 0) /* (L4) MCU_MDIO0_MDIO */
+>  };
+>  
+>  &main_pmx0 {
+> -	main_i2c0_pins_default: main-i2c0-pins-default {
+> -		pinctrl-single,pins = <
+> -			J721E_IOPAD(0xd4, PIN_INPUT_PULLUP, 0) /* (V3) I2C0_SCL */
+> -			J721E_IOPAD(0xd8, PIN_INPUT_PULLUP, 0) /* (W2) I2C0_SDA */
+> -		>;
+> -	};
+> -
+>  	main_i2c1_pins_default: main-i2c1-pins-default {
+>  		pinctrl-single,pins = <
+>  			J721E_IOPAD(0xdc, PIN_INPUT_PULLUP, 3) /* (U3) ECAP0_IN_APWM_OUT.I2C1_SCL */
+> @@ -146,10 +139,6 @@ &cpsw_port1 {
+>  };
+>  
+>  &main_i2c0 {
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&main_i2c0_pins_default>;
+> -	clock-frequency = <400000>;
+> -
+>  	exp1: gpio@20 {
+>  		compatible = "ti,tca6416";
+>  		reg = <0x20>;
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> index fbd17d38f6b6..7b5e9aa0324e 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> @@ -48,6 +48,15 @@ J721E_WKUP_IOPAD(0x28, PIN_INPUT, 1) /* (A7) MCU_OSPI0_D7.MCU_HYPERBUS0_DQ7 */
+>  	};
+>  };
+>  
+> +&main_pmx0 {
+> +	main_i2c0_pins_default: main-i2c0-pins-default {
+> +		pinctrl-single,pins = <
+> +			J721E_IOPAD(0xd4, PIN_INPUT_PULLUP, 0) /* (V3) I2C0_SCL */
+> +			J721E_IOPAD(0xd8, PIN_INPUT_PULLUP, 0) /* (W2) I2C0_SDA */
+> +		>;
+> +	};
+> +};
+> +
+>  &hbmc {
+>  	/* OSPI and HBMC are muxed inside FSS, Bootloader will enable
+>  	 * appropriate node based on board detection
+> @@ -131,3 +140,20 @@ &mailbox0_cluster10 {
+>  &mailbox0_cluster11 {
+>  	status = "disabled";
+>  };
+> +
+> +&main_i2c0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_i2c0_pins_default>;
+> +	clock-frequency = <400000>;
+> +
+> +	exp_som: gpio@21 {
+> +		compatible = "ti,tca6408";
+> +		reg = <0x21>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +		gpio-line-names = "USB2.0_MUX_SEL", "CANUART_MUX1_SEL0",
+> +				  "CANUART_MUX2_SEL0", "CANUART_MUX_SEL1",
+> +				  "UART/LIN_MUX_SEL", "TRC_D17/AUDIO_REFCLK_SEL",
+> +				  "GPIO_LIN_EN", "CAN_STB";
+> +	};
+> +};
+> 
