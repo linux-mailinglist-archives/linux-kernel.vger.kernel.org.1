@@ -2,61 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5932B9CD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0672B2B9CD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgKSVQE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Nov 2020 16:16:04 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:37575 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726468AbgKSVQE (ORCPT
+        id S1727042AbgKSVRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 16:17:20 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37802 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbgKSVRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 16:16:04 -0500
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 04D19E0009;
-        Thu, 19 Nov 2020 21:16:00 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 22:15:58 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     YouChing Lin <ycllin@mxic.com.tw>, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com
-Cc:     juliensu@mxic.com.tw, linux-mtd@lists.infradead.org,
-        gch981213@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spinand: macronix: Add support for MX35LFxGE4AD
-Message-ID: <20201119221558.7b484949@xps13>
-In-Reply-To: <20201119211133.31590-1-miquel.raynal@bootlin.com>
-References: <1604490442-9052-1-git-send-email-ycllin@mxic.com.tw>
-        <20201119211133.31590-1-miquel.raynal@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 19 Nov 2020 16:17:20 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJLHC1g079602;
+        Thu, 19 Nov 2020 15:17:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605820632;
+        bh=6x5+zSmGmoZLYsG84UhFq8eMCxFBYISt4Ge2M1I4b50=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=i41BoCsjjdj3PMOH9lqKSjqL27a/NJpnksn6kfANG6hJ3P4r4+qPYuu5lyxKd7FOe
+         hKl3PYI/Q6axPVfOauK+lzIKVFvrdnXulNPJkYCQXUEV6FciAT27dvF14aKTUeE343
+         83IHkXKLCNT4VDsBeiOBCBtCeJWHfZpSdVbQBGPc=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJLHC59041139
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Nov 2020 15:17:12 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
+ Nov 2020 15:17:11 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 19 Nov 2020 15:17:12 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJLH9Qh126529;
+        Thu, 19 Nov 2020 15:17:10 -0600
+Subject: Re: [PATCH v2] mdio_bus: suppress err message for reset gpio
+ EPROBE_DEFER
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20201119203446.20857-1-grygorii.strashko@ti.com>
+ <1a59fbe1-6a5d-81a3-4a86-fa3b5dbfdf8e@gmail.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <cabad89e-23cc-18b3-8306-e5ef1ee4bfa6@ti.com>
+Date:   Thu, 19 Nov 2020 23:17:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1a59fbe1-6a5d-81a3-4a86-fa3b5dbfdf8e@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
 
-Miquel Raynal <miquel.raynal@bootlin.com> wrote on Thu, 19 Nov 2020
-22:11:33 +0100:
 
-> On Wed, 2020-11-04 at 11:47:22 UTC, YouChing Lin wrote:
-> > The Macronix MX35LF2GE4AD / MX35LF4GE4AD are 3V, 2G / 4Gbit serial
-> > SLC NAND flash device (with on-die ECC).
-> > 
-> > Validated by read, erase, read back, write, read back and nandtest
-> > on Xilinx Zynq PicoZed FPGA board which included Macronix SPI Host
-> > (drivers/spi/spi-mxic.c).
-> > 
-> > Signed-off-by: YouChing Lin <ycllin@mxic.com.tw>  
+On 19/11/2020 23:11, Heiner Kallweit wrote:
+> Am 19.11.2020 um 21:34 schrieb Grygorii Strashko:
+>> The mdio_bus may have dependencies from GPIO controller and so got
+>> deferred. Now it will print error message every time -EPROBE_DEFER is
+>> returned which from:
+>> __mdiobus_register()
+>>   |-devm_gpiod_get_optional()
+>> without actually identifying error code.
+>>
+>> "mdio_bus 4a101000.mdio: mii_bus 4a101000.mdio couldn't get reset GPIO"
+>>
+>> Hence, suppress error message for devm_gpiod_get_optional() returning
+>> -EPROBE_DEFER case by using dev_err_probe().
+>>
+>> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+>> ---
+>>   drivers/net/phy/mdio_bus.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+>> index 757e950fb745..83cd61c3dd01 100644
+>> --- a/drivers/net/phy/mdio_bus.c
+>> +++ b/drivers/net/phy/mdio_bus.c
+>> @@ -546,10 +546,10 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+>>   	/* de-assert bus level PHY GPIO reset */
+>>   	gpiod = devm_gpiod_get_optional(&bus->dev, "reset", GPIOD_OUT_LOW);
+>>   	if (IS_ERR(gpiod)) {
+>> -		dev_err(&bus->dev, "mii_bus %s couldn't get reset GPIO\n",
+>> -			bus->id);
+>> +		err = dev_err_probe(&bus->dev, PTR_ERR(gpiod),
+>> +				    "mii_bus %s couldn't get reset GPIO\n", bus->id);
 > 
-> Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+> Doesn't checkpatch complain about line length > 80 here?
 
-Please use "v2" as prefix next time you change something in your patch
-instead of "RESEND", it confuses me. I applied the wrong patch, I will
-drop this one and take the "RESEND, v1" instead.
+:)
 
-Thanks,
-Miquèl
+commit bdc48fa11e46f867ea4d75fa59ee87a7f48be144
+Author: Joe Perches <joe@perches.com>
+Date:   Fri May 29 16:12:21 2020 -0700
+
+     checkpatch/coding-style: deprecate 80-column warning
+
+> 
+>>   		device_del(&bus->dev);
+>> -		return PTR_ERR(gpiod);
+>> +		return err;
+>>   	} else	if (gpiod) {
+>>   		bus->reset_gpiod = gpiod;
+>>   
+>>
+> 
+> Last but not least the net or net-next patch annotation is missing.
+> I'd be fine with treating the change as an improvement (net-next).
+> 
+> Apart from that change looks good to me.
+> 
+
+-- 
+Best regards,
+grygorii
