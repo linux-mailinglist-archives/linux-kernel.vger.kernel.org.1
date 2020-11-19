@@ -2,99 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FAA2B994F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B112B9954
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728849AbgKSRax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:30:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728255AbgKSRaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:30:52 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 888B5208B6;
-        Thu, 19 Nov 2020 17:30:49 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 12:30:47 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: violating function pointer signature
-Message-ID: <20201119123047.66a22235@gandalf.local.home>
-In-Reply-To: <CAADnVQL8d5zKTE_TohUcGgKKp6K1Noo7M22t_hKYQjO_g0Mb0g@mail.gmail.com>
-References: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
-        <20201117153451.3015c5c9@gandalf.local.home>
-        <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
-        <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
-        <20201118121730.12ee645b@gandalf.local.home>
-        <20201118181226.GK2672@gate.crashing.org>
-        <87o8jutt2h.fsf@mid.deneb.enyo.de>
-        <20201118135823.3f0d24b7@gandalf.local.home>
-        <20201118191127.GM2672@gate.crashing.org>
-        <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
-        <20201119143735.GU2672@gate.crashing.org>
-        <20201119095951.30269233@gandalf.local.home>
-        <CAADnVQL8d5zKTE_TohUcGgKKp6K1Noo7M22t_hKYQjO_g0Mb0g@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728992AbgKSRbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:31:07 -0500
+Received: from mail-eopbgr150059.outbound.protection.outlook.com ([40.107.15.59]:28036
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728077AbgKSRbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:31:07 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hI46MBshFKqu6mfAlzkRux0xSVEC9VLuS8WqKrXvTgJvEeUrna2J1p1Ane2WFtzoUDYatPRdfkpI+aPTTlDf9EJpuFXXsQ8cTwLeXposBKgp7LrhdnkSqB8xsjG+SmcV2BUsdT2od5nV9dE34I/za2cqCZ1QGzw1d8Xogo+rBi9BxxWbY10lLBqHFqeK84X578uiTiwHPUJR317r5T5pX7bCdRTpv4pYYKWxYTl9ryWV8AuFTQQ6/y9hbIO/GbDkdeQO8GaJQe/vV7bdGzCpGcLwCSetBXhlkNNbuK53MWQvIKKonrYk4Ybb53INwHKoJ1uZ2wdxEQdlivqR5/Qb3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CgrxvMj3VobVRTz5+t9k2mRET9lRpnLYIPfWQdyR+tA=;
+ b=hJCbd3GDI/Ar2Fd12MMlaWKDCuYQEr91Xi3NFxgz3AiNl80r6GSsrmm/deDlpA9+jVUuHcYKJgeDVlYMM9ETFX4/kkyoeyWBKIK8stmAOMHOEmODzL+wS6pvNHkHVQh3NDTBPkuKhVE+hRKtexFK3wOOi8VTDx1T8yBUcH226IZacN+7g4UY07CTCWB1Tf1WX3aQdVKN1guxJkDsJTQg0fKG3IXVfm8mFsfth/3/JeiZoXyCGnuKOX5FW3g0uVfFC/dhvg0co+2pDMxb0pnknZscFFwbyUnuWFC9t2/vmSdhB8pr6a94xsYjvpSRNmTYB0JKkHvglAtmeyy2xDmmng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CgrxvMj3VobVRTz5+t9k2mRET9lRpnLYIPfWQdyR+tA=;
+ b=DUW5RHtG6ngNFul9CAxvzakbGaUstJnEPd6YgTLz23cHVSEs0JDYlPnNVb5FP74n0YaArasAY4e97XM6g9cHr5yxhBZqrjXCFswjK59ajE4tIvNEwjaDslLyUtopb0jPXMfS0KmdMyu1jM3ecHtGrmzJZVY4FYgAdOzOFTp4RFM=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
+ (2603:10a6:803:22::27) by VI1PR04MB4477.eurprd04.prod.outlook.com
+ (2603:10a6:803:6e::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Thu, 19 Nov
+ 2020 17:31:00 +0000
+Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
+ ([fe80::705a:b82f:c52f:5f5a]) by VI1PR0402MB3902.eurprd04.prod.outlook.com
+ ([fe80::705a:b82f:c52f:5f5a%6]) with mapi id 15.20.3589.022; Thu, 19 Nov 2020
+ 17:31:00 +0000
+Date:   Thu, 19 Nov 2020 19:30:55 +0200
+From:   Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tzimmermann@suse.de,
+        airlied@linux.ie, s.hauer@pengutronix.de, robh+dt@kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH 0/8] drm/imx: Introduce i.MX8qxp DPU DRM
+Message-ID: <20201119173055.geaaori62wgtrfvh@fsr-ub1864-141>
+References: <1605777745-23625-1-git-send-email-victor.liu@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605777745-23625-1-git-send-email-victor.liu@nxp.com>
+User-Agent: NeoMutt/20171215
+X-Originating-IP: [83.217.231.2]
+X-ClientProxiedBy: AM4PR0302CA0014.eurprd03.prod.outlook.com
+ (2603:10a6:205:2::27) To VI1PR0402MB3902.eurprd04.prod.outlook.com
+ (2603:10a6:803:22::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1864-141 (83.217.231.2) by AM4PR0302CA0014.eurprd03.prod.outlook.com (2603:10a6:205:2::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Thu, 19 Nov 2020 17:30:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: bb5aa52d-c5ad-40ff-4f9b-08d88cb0e14b
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4477:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4477B1A168E1FCD1336CFBA8BEE00@VI1PR04MB4477.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: q8cSK4EJ1n8ESDnJ/e32x3XW6peRH0QdaEab5KUP82aE4xjJndJfzqX5q5zSdu+WI467ldFREgy8gqyNzBK99HT1ZCVfiVZR9dEmlTu3AnGt0U+MUeHQsEgKR+6CZQzV8ek2xlvghP9Xn4uhtukyXbgi0ZSvT72BD7sVkkzKhxQc6P318FDGugtNf7Vgx4OZSDrDvTPVu//k/pBZ7tTyQxFgcevlwYbE9HoF34cfYtuMcV4yXYBFbXMaURdlxPrYQ6NcUOdz1nshYBT/Mi3h6iYFHP+6GllHGXx4qaLdSh3V6E5VY/FmnOUCZw1TLjrpVEOM0neuc/BJxrKEnVelpltnp/4zGoLDLIZ5jTzI0RN83w2h548SMGafgseHASkh79M2cixPrch4rsKbW/LEJg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3902.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(346002)(396003)(136003)(55016002)(9686003)(26005)(16526019)(956004)(966005)(6496006)(44832011)(478600001)(33716001)(186003)(8676002)(4326008)(8936002)(316002)(86362001)(6862004)(2906002)(7416002)(52116002)(6666004)(83380400001)(5660300002)(66476007)(66946007)(1076003)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: IlMR5aXYIwZGFO7fDGIaIee9gCqh4YOfWN71TPaPJ+E6Q1fy0xz6ckeKUI0k8pZbO0mI2joScm6aehQKVTgpDK8V3hmpDRgsxiBTwNjRXB3UdnlfmLtOn6wAHymtg6ifltHjUZa9iFK5DeaMvRkK7lmOjCGivD8zEAl5bH+oW16wj1R9gqcx4VjVcNU/3uUdXWEX9jkkXdjS+kc5RSMGbaSva7LVuVsye0CWAZyxu0vMQHNHN2sMLMn7l3qCTo7kkVaJ6Bam+iY+eW6oFhjqGMrDcjBoQz+9UrzeJrNiYUPqljld49zsytjzDSSVUjDoR2elhzEFIioMrFZGjGYCYPuOHaQ0cHSBUi4mMN1FlAWpGBDxOKPQJNHsn+tIx17xGdXwzHNgBV/61cnOdkUPcOu1rWzFviFx4tvAD/gDDDicEu8OvbuZ01gUCmX3JwJR7TIU9bMAnI2anyRkQJsZSNfx5coN3t0bRREqqxkhEAu/8+N6i7ZQ0iFLuHjSSH1SxOuVnsD5nJme1M/4Mtwen7lYzd+EfR7++oH8WZCLoHq+2SmHqVuSkGLNpLD03CH/SpkG3TFzsxZEht7EnCRNiKj3izZFX3JYxlCoKxMwrbmgZqbGEocToXXW5BzMJinVFh9vfO6xjHIwkEQjpAnTdET6K+y+c2c1riFubQ0vT3Y+GyPwuT5LOqdzINq1kUzNfHY9qqgV/Y/BECMMhC28KRfV/0bdz+0bg75qlDjKhI0kXfd1RRmSaJnYYs5Pg69I9EbNRKT3It8NNyLEYlHGjYhUaG2jj/0X6zLj5I5tj0TT7P1oqepbjZ+BUvyIcloR/6wnFuHqadQc8yoINjYMFL1C6sZXE1n3YgVtvt0wNhTF4+RdapW3N9tLKbEoepqX3wzdWr2ISR0LKLnuRd+Nig==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb5aa52d-c5ad-40ff-4f9b-08d88cb0e14b
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3902.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2020 17:30:59.8934
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +5xhGWxOmN8WOV+2NG1Y+UvU20HGU6fd5nx2GUQQoi9trsU06QWy4lZ2eRiTaES6mG49sWTRpfKDJMB8fLesjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4477
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 09:04:57 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Hi Liu Ying,
 
-> On Thu, Nov 19, 2020 at 6:59 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > Linux obviously
-> > supports multiple architectures (more than any other OS), but it is pretty
-> > stuck to gcc as a compiler (with LLVM just starting to work too).
-> >
-> > We are fine with being stuck to a compiler if it gives us what we want.  
+On Thu, Nov 19, 2020 at 05:22:17PM +0800, Liu Ying wrote:
+> Hi,
 > 
-> I beg to disagree.
+> 
+> This patch set introduces i.MX8qxp Display Processing Unit(DPU) DRM support.
 
-I think you misunderstood.
+Glad to see this series out. However, something went wrong with it as
+patch 5/8 didn't make it to dri-devel mailing list... :/
 
-> android, chrome and others changed their kernel builds to
-> "make LLVM=1" some time ago.
-> It's absolutely vital for the health of the kernel to be built with
-> both gcc and llvm.
+https://lists.freedesktop.org/archives/dri-devel/2020-November/thread.html
 
-That's what I meant with "LLVM just starting to work too".
+So, people on to dri-devel may not be able to review it...
 
-LLVM has been working hard to make sure that it can do the same tricks that
-the kernel depends on gcc for. And LLVM appears to be working fine with the
-nop stub logic (it's already in 5.10-rc with with the static callers).
+However, it did make it to LKML:
 
-We can easily create a boot up test (config option) that will test it, and
-if a compiler breaks it, this test would trigger a failure.
+https://lkml.org/lkml/2020/11/19/249
 
-Again, both static calls and tracepoint callbacks are limited in what they
-can do. Both return void, and both do are not variadic functions. Although
-passing in a struct as a parameter is possible, we could add testing to
-detect this, as that's rather slow to begin with.
+Not sure what happened here... :/
 
--- Steve
+Thanks,
+laurentiu
+
+
+> 
+> DPU is comprised of a blit engine for 2D graphics, a display controller
+> and a command sequencer.  Outside of DPU, optional prefetch engines can
+> fetch data from memory prior to some DPU fetchunits of blit engine and
+> display controller.  The pre-fetchers support linear formats and Vivante
+> GPU tile formats.
+> 
+> Reference manual can be found at:
+> https://www.nxp.com/webapp/Download?colCode=IMX8DQXPRM
+> 
+> 
+> This patch set adds kernel modesetting support for the display controller part.
+> It supports two CRTCs per display controller, several planes, prefetch
+> engines and some properties of CRTC and plane.  Currently, the registers of
+> the controller is accessed without command sequencer involved, instead just by
+> using CPU.  DRM connectors would be created from the DPU KMS driver.
+> 
+> 
+> If people want to try this series, clock patches can be found at:
+> https://www.spinics.net/lists/arm-kernel/msg856137.html
+> 
+> and, power domain patches at:
+> https://www.spinics.net/lists/arm-kernel/msg856097.html
+> 
+> 
+> I will send other patch sets to add downstream bridges(embedded in i.MX8qxp)
+> to support LVDS displays.
+> 
+> A brief look at the pipe:
+> prefetch eng -> DPU -> pixel combiner -> pixel link -> pixel to DPI(pxl2dpi) ->
+> LVDS display bridge(LDB)
+> 
+> 
+> Patch 1 ~ 3 add dt-bindings for DPU and prefetch engines.
+> Patch 4 is a minor improvement of a macro to suppress warning as the KMS driver
+> uses it.
+> Patch 5 introduces the DPU DRM support.
+> Patch 6 updates MAINTAINERS.
+> Patch 7 & 8 add DPU and prefetch engines support in the device tree of
+> i.MX8qxp MEK platform.
+> 
+> 
+> Welcome comments, thanks.
+> 
+> 
+> Liu Ying (8):
+>   dt-bindings: display: imx: Add i.MX8qxp/qm DPU binding
+>   dt-bindings: display: imx: Add i.MX8qxp/qm PRG binding
+>   dt-bindings: display: imx: Add i.MX8qxp/qm DPR channel binding
+>   drm/atomic: Avoid unused-but-set-variable warning on
+>     for_each_old_plane_in_state
+>   drm/imx: Introduce i.MX8qxp DPU DRM
+>   MAINTAINERS: add maintainer for i.MX8qxp DPU DRM driver
+>   arm64: imx8qxp:dtsi: Introduce DC0 subsystem
+>   arm64: dts: imx8qxp-mek: Enable DPU and it's prefetch engines
+> 
+>  .../bindings/display/imx/fsl,imx8qxp-dprc.yaml     |  87 ++
+>  .../bindings/display/imx/fsl,imx8qxp-dpu.yaml      | 358 ++++++++
+>  .../bindings/display/imx/fsl,imx8qxp-prg.yaml      |  60 ++
+>  MAINTAINERS                                        |   9 +
+>  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts      |  64 ++
+>  arch/arm64/boot/dts/freescale/imx8qxp.dtsi         | 313 +++++++
+>  drivers/gpu/drm/imx/Kconfig                        |   1 +
+>  drivers/gpu/drm/imx/Makefile                       |   1 +
+>  drivers/gpu/drm/imx/dpu/Kconfig                    |  10 +
+>  drivers/gpu/drm/imx/dpu/Makefile                   |  10 +
+>  drivers/gpu/drm/imx/dpu/dpu-constframe.c           | 170 ++++
+>  drivers/gpu/drm/imx/dpu/dpu-core.c                 | 880 ++++++++++++++++++++
+>  drivers/gpu/drm/imx/dpu/dpu-crtc.c                 | 926 +++++++++++++++++++++
+>  drivers/gpu/drm/imx/dpu/dpu-crtc.h                 |  62 ++
+>  drivers/gpu/drm/imx/dpu/dpu-disengcfg.c            | 114 +++
+>  drivers/gpu/drm/imx/dpu/dpu-dprc.c                 | 721 ++++++++++++++++
+>  drivers/gpu/drm/imx/dpu/dpu-dprc.h                 |  40 +
+>  drivers/gpu/drm/imx/dpu/dpu-drv.c                  | 296 +++++++
+>  drivers/gpu/drm/imx/dpu/dpu-drv.h                  |  28 +
+>  drivers/gpu/drm/imx/dpu/dpu-extdst.c               | 296 +++++++
+>  drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c          | 291 +++++++
+>  drivers/gpu/drm/imx/dpu/dpu-fetcheco.c             | 221 +++++
+>  drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c           | 151 ++++
+>  drivers/gpu/drm/imx/dpu/dpu-fetchunit.c            | 609 ++++++++++++++
+>  drivers/gpu/drm/imx/dpu/dpu-fetchunit.h            | 191 +++++
+>  drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c            | 247 ++++++
+>  drivers/gpu/drm/imx/dpu/dpu-framegen.c             | 392 +++++++++
+>  drivers/gpu/drm/imx/dpu/dpu-gammacor.c             | 220 +++++
+>  drivers/gpu/drm/imx/dpu/dpu-hscaler.c              | 272 ++++++
+>  drivers/gpu/drm/imx/dpu/dpu-kms.c                  | 543 ++++++++++++
+>  drivers/gpu/drm/imx/dpu/dpu-kms.h                  |  23 +
+>  drivers/gpu/drm/imx/dpu/dpu-layerblend.c           | 345 ++++++++
+>  drivers/gpu/drm/imx/dpu/dpu-plane.c                | 703 ++++++++++++++++
+>  drivers/gpu/drm/imx/dpu/dpu-plane.h                |  56 ++
+>  drivers/gpu/drm/imx/dpu/dpu-prg.c                  | 389 +++++++++
+>  drivers/gpu/drm/imx/dpu/dpu-prg.h                  |  45 +
+>  drivers/gpu/drm/imx/dpu/dpu-prv.h                  | 203 +++++
+>  drivers/gpu/drm/imx/dpu/dpu-tcon.c                 | 249 ++++++
+>  drivers/gpu/drm/imx/dpu/dpu-vscaler.c              | 305 +++++++
+>  drivers/gpu/drm/imx/dpu/dpu.h                      | 389 +++++++++
+>  include/drm/drm_atomic.h                           |   4 +-
+>  41 files changed, 10293 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
+>  create mode 100644 drivers/gpu/drm/imx/dpu/Kconfig
+>  create mode 100644 drivers/gpu/drm/imx/dpu/Makefile
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-constframe.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-core.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.h
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-disengcfg.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.h
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.h
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-extdst.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetcheco.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.h
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-framegen.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-gammacor.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-hscaler.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.h
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-layerblend.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.h
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.h
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prv.h
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-tcon.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-vscaler.c
+>  create mode 100644 drivers/gpu/drm/imx/dpu/dpu.h
+> 
+> -- 
+> 2.7.4
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
