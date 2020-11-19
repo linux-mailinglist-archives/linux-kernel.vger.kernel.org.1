@@ -2,117 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3742B91E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A408E2B91E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727724AbgKSLv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:51:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727212AbgKSLv6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:51:58 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38268C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:51:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dY3xCz1US42IgUQKvQZydem55nNev0dCCyUsmh22YNA=; b=c075Zv/rt9hDk0DBiY3b9jGPqB
-        mzkAi0MZcNSlkjxpMVH3kpo8s4csl9dZJvktJ5dvdqHJ/QY7UoroqjdUMkSXnNSxm4QB13j8dsSdT
-        y/LlYYLB0MrH2mIuEVH8zpzhkK67Ec23tDdlu/SANoxS/ZywxjZpt3mmP0ZHGySU2my8Pq31qkJLU
-        EQfuucPWrjF10uaiLJhqKT3PJTAOlGGVIuf8S18TVQv/qshjwJ6qeiSgimLQtFPGC7CRnwdERpLTr
-        1+i74V5qMpMUtJ6MKXBzMUF53e1uqhGuoZsyNpHnse7W4Oh/CfKTp3zzySvn57K48jRnEYnkPusii
-        V5Q5Xj0Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfiTO-00015A-52; Thu, 19 Nov 2020 11:51:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 92B833060AE;
-        Thu, 19 Nov 2020 12:51:32 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5A56820126362; Thu, 19 Nov 2020 12:51:32 +0100 (CET)
-Date:   Thu, 19 Nov 2020 12:51:32 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        id S1727776AbgKSLwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:52:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38972 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727212AbgKSLwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 06:52:03 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605786720; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0orS1kguKvUDUAcNIvHV8RnxWd3fbv2oJIa1VA4KWp4=;
+        b=kGTPNdtAOvAhUZQxiF+jjUmHO6YpE055dV46rXIiqzmWgMDpHBVXIs0ejY1IcSdv6VQI7L
+        UPKPypxheXaSAQTNDAG9W/PQ0jDorD9t++gaUjWQfPJDNG7ZDsxakl7WhLRelf/qm3PYLD
+        T/K7SIb5v89++Zb3Zr0vHi7rPCAGLBg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A2E0AABF4;
+        Thu, 19 Nov 2020 11:52:00 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 12:52:00 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [patch V4 5/8] sched: highmem: Store local kmaps in task struct
-Message-ID: <20201119115132.GN3121378@hirez.programming.kicks-ass.net>
-References: <20201118194838.753436396@linutronix.de>
- <20201118204007.372935758@linutronix.de>
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, live-patching@vger.kernel.org
+Subject: Re: [PATCH 3/3 v7] livepatch: Use the default ftrace_ops instead of
+ REGS when ARGS is available
+Message-ID: <X7ZcYIWJEPXW6Z9s@alley>
+References: <20201113171811.288150055@goodmis.org>
+ <20201113171939.455339580@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118204007.372935758@linutronix.de>
+In-Reply-To: <20201113171939.455339580@goodmis.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 08:48:43PM +0100, Thomas Gleixner wrote:
-
-> @@ -4073,6 +4089,7 @@ prepare_task_switch(struct rq *rq, struc
->  	perf_event_task_sched_out(prev, next);
->  	rseq_preempt(prev);
->  	fire_sched_out_preempt_notifiers(prev, next);
-> +	kmap_local_sched_out();
->  	prepare_task(next);
->  	prepare_arch_switch(next);
->  }
-> @@ -4139,6 +4156,7 @@ static struct rq *finish_task_switch(str
->  	finish_lock_switch(rq);
->  	finish_arch_post_lock_switch();
->  	kcov_finish_switch(current);
-> +	kmap_local_sched_in();
+On Fri 2020-11-13 12:18:14, Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> When CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS is available, the ftrace call
+> will be able to set the ip of the calling function. This will improve the
+> performance of live kernel patching where it does not need all the regs to
+> be stored just to change the instruction pointer.
+> 
+> If all archs that support live kernel patching also support
+> HAVE_DYNAMIC_FTRACE_WITH_ARGS, then the architecture specific function
+> klp_arch_set_pc() could be made generic.
+> 
+> It is possible that an arch can support HAVE_DYNAMIC_FTRACE_WITH_ARGS but
+> not HAVE_DYNAMIC_FTRACE_WITH_REGS and then have access to live patching.
+> 
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: live-patching@vger.kernel.org
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Acked-by: Miroslav Benes <mbenes@suse.cz>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+> Changes since v6:
+>  - Updated to use ftrace_instruction_pointer_set() macro
+> 
+>  arch/powerpc/include/asm/livepatch.h | 4 +++-
+>  arch/s390/include/asm/livepatch.h    | 5 ++++-
+>  arch/x86/include/asm/ftrace.h        | 3 +++
+>  arch/x86/include/asm/livepatch.h     | 4 ++--
+>  arch/x86/kernel/ftrace_64.S          | 4 ++++
+>  include/linux/ftrace.h               | 7 +++++++
+>  kernel/livepatch/Kconfig             | 2 +-
+>  kernel/livepatch/patch.c             | 9 +++++----
+>  8 files changed, 29 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/livepatch.h b/arch/powerpc/include/asm/livepatch.h
+> index 4a3d5d25fed5..ae25e6e72997 100644
+> --- a/arch/powerpc/include/asm/livepatch.h
+> +++ b/arch/powerpc/include/asm/livepatch.h
+> @@ -12,8 +12,10 @@
+>  #include <linux/sched/task_stack.h>
 >  
->  	fire_sched_in_preempt_notifiers(current);
->  	/*
+>  #ifdef CONFIG_LIVEPATCH
+> -static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
+> +static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
+>  {
+> +	struct pt_regs *regs = ftrace_get_regs(fregs);
 
-> +void __kmap_local_sched_out(void)
-> +{
-> +	struct task_struct *tsk = current;
-> +	pte_t *kmap_pte = kmap_get_pte();
-> +	int i;
+Should we check for NULL pointer here?
+
 > +
-> +	/* Clear kmaps */
-> +	for (i = 0; i < tsk->kmap_ctrl.idx; i++) {
-> +	}
-> +}
+>  	regs->nip = ip;
+>  }
+>  
+> diff --git a/arch/s390/include/asm/livepatch.h b/arch/s390/include/asm/livepatch.h
+> index 818612b784cd..d578a8c76676 100644
+> --- a/arch/s390/include/asm/livepatch.h
+> +++ b/arch/s390/include/asm/livepatch.h
+> @@ -11,10 +11,13 @@
+>  #ifndef ASM_LIVEPATCH_H
+>  #define ASM_LIVEPATCH_H
+>  
+> +#include <linux/ftrace.h>
+>  #include <asm/ptrace.h>
+>  
+> -static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
+> +static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
+>  {
+> +	struct pt_regs *regs = ftrace_get_regs(fregs);
+
+And here?
+
 > +
-> +void __kmap_local_sched_in(void)
-> +{
-> +	struct task_struct *tsk = current;
-> +	pte_t *kmap_pte = kmap_get_pte();
-> +	int i;
-> +
-> +	/* Restore kmaps */
-> +	for (i = 0; i < tsk->kmap_ctrl.idx; i++) {
-> +	}
-> +}
+>  	regs->psw.addr = ip;
+>  }
+>  
 
-So even in the optimal case, this adds an unconditional load of
-tsk->kmap_ctrl.idx to schedule() (2 misses, one pre and one post).
+Otherwise, it looks for me.
 
-Munging preempt-notifiers behind a static_branch, which in that same
-optimal case, avoided touching curr->preempt_notifier, resulted in a
-measurable performance improvement. See commit:
-
-  1cde2930e154 ("sched/preempt: Add static_key() to preempt_notifiers")
-
-Can we fudge some state in a cacheline we're already touching to avoid
-this?
+Best Regards,
+Petr
