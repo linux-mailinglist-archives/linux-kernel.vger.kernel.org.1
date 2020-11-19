@@ -2,129 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A408E2B91E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEF22B911D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgKSLwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:52:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38972 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727212AbgKSLwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:52:03 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605786720; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0orS1kguKvUDUAcNIvHV8RnxWd3fbv2oJIa1VA4KWp4=;
-        b=kGTPNdtAOvAhUZQxiF+jjUmHO6YpE055dV46rXIiqzmWgMDpHBVXIs0ejY1IcSdv6VQI7L
-        UPKPypxheXaSAQTNDAG9W/PQ0jDorD9t++gaUjWQfPJDNG7ZDsxakl7WhLRelf/qm3PYLD
-        T/K7SIb5v89++Zb3Zr0vHi7rPCAGLBg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A2E0AABF4;
-        Thu, 19 Nov 2020 11:52:00 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 12:52:00 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>, live-patching@vger.kernel.org
-Subject: Re: [PATCH 3/3 v7] livepatch: Use the default ftrace_ops instead of
- REGS when ARGS is available
-Message-ID: <X7ZcYIWJEPXW6Z9s@alley>
-References: <20201113171811.288150055@goodmis.org>
- <20201113171939.455339580@goodmis.org>
+        id S1726921AbgKSLhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:37:09 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7558 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726785AbgKSLhJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 06:37:09 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CcHhM12FHzhcqL;
+        Thu, 19 Nov 2020 19:36:51 +0800 (CST)
+Received: from huawei.com (10.151.151.249) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Thu, 19 Nov 2020
+ 19:36:58 +0800
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>,
+        <dan.j.williams@intel.com>, <p.zabel@pengutronix.de>,
+        <gengdongjiu@huawei.com>, <devicetree@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+Subject: [PATCH v5 0/4] Enable Hi3559A SOC clock and HiSilicon Hiedma Controller
+Date:   Thu, 19 Nov 2020 20:01:25 +0000
+Message-ID: <20201119200129.28532-1-gengdongjiu@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113171939.455339580@goodmis.org>
+Content-Type: text/plain
+X-Originating-IP: [10.151.151.249]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-11-13 12:18:14, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> When CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS is available, the ftrace call
-> will be able to set the ip of the calling function. This will improve the
-> performance of live kernel patching where it does not need all the regs to
-> be stored just to change the instruction pointer.
-> 
-> If all archs that support live kernel patching also support
-> HAVE_DYNAMIC_FTRACE_WITH_ARGS, then the architecture specific function
-> klp_arch_set_pc() could be made generic.
-> 
-> It is possible that an arch can support HAVE_DYNAMIC_FTRACE_WITH_ARGS but
-> not HAVE_DYNAMIC_FTRACE_WITH_REGS and then have access to live patching.
-> 
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: live-patching@vger.kernel.org
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Acked-by: Miroslav Benes <mbenes@suse.cz>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
-> Changes since v6:
->  - Updated to use ftrace_instruction_pointer_set() macro
-> 
->  arch/powerpc/include/asm/livepatch.h | 4 +++-
->  arch/s390/include/asm/livepatch.h    | 5 ++++-
->  arch/x86/include/asm/ftrace.h        | 3 +++
->  arch/x86/include/asm/livepatch.h     | 4 ++--
->  arch/x86/kernel/ftrace_64.S          | 4 ++++
->  include/linux/ftrace.h               | 7 +++++++
->  kernel/livepatch/Kconfig             | 2 +-
->  kernel/livepatch/patch.c             | 9 +++++----
->  8 files changed, 29 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/livepatch.h b/arch/powerpc/include/asm/livepatch.h
-> index 4a3d5d25fed5..ae25e6e72997 100644
-> --- a/arch/powerpc/include/asm/livepatch.h
-> +++ b/arch/powerpc/include/asm/livepatch.h
-> @@ -12,8 +12,10 @@
->  #include <linux/sched/task_stack.h>
->  
->  #ifdef CONFIG_LIVEPATCH
-> -static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-> +static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
->  {
-> +	struct pt_regs *regs = ftrace_get_regs(fregs);
+v4->v5:
+1. change the patch author mail name
 
-Should we check for NULL pointer here?
+v3->v4:
+1. fix the 'make dt_binding_check' issues.
+2. Combine the 'Enable HiSilicon Hiedma Controller' series patches to this series.
+3. fix the 'make dt_binding_check' issues in 'Enable HiSilicon Hiedma Controller' patchset
 
-> +
->  	regs->nip = ip;
->  }
->  
-> diff --git a/arch/s390/include/asm/livepatch.h b/arch/s390/include/asm/livepatch.h
-> index 818612b784cd..d578a8c76676 100644
-> --- a/arch/s390/include/asm/livepatch.h
-> +++ b/arch/s390/include/asm/livepatch.h
-> @@ -11,10 +11,13 @@
->  #ifndef ASM_LIVEPATCH_H
->  #define ASM_LIVEPATCH_H
->  
-> +#include <linux/ftrace.h>
->  #include <asm/ptrace.h>
->  
-> -static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
-> +static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
->  {
-> +	struct pt_regs *regs = ftrace_get_regs(fregs);
 
-And here?
+v2->v3:
+1. change dt-bindings documents from txt to yaml format.
+2. Add SHUB clock to access the devices of m7
 
-> +
->  	regs->psw.addr = ip;
->  }
->  
+Dongjiu Geng (4):
+  dt-bindings: Document the hi3559a clock bindings
+  clk: hisilicon: Add clock driver for hi3559A SoC
+  dt: bindings: dma: Add DT bindings for HiSilicon Hiedma Controller
+  dmaengine: dma: Add Hiedma Controller v310 Device Driver
 
-Otherwise, it looks for me.
+ .../clock/hisilicon,hi3559av100-clock.yaml    |   66 +
+ .../bindings/dma/hisilicon,hiedmacv310.yaml   |  103 ++
+ drivers/clk/hisilicon/Kconfig                 |    7 +
+ drivers/clk/hisilicon/Makefile                |    1 +
+ drivers/clk/hisilicon/clk-hi3559a.c           |  865 ++++++++++
+ drivers/dma/Kconfig                           |   14 +
+ drivers/dma/Makefile                          |    1 +
+ drivers/dma/hiedmacv310.c                     | 1441 +++++++++++++++++
+ drivers/dma/hiedmacv310.h                     |  136 ++
+ include/dt-bindings/clock/hi3559av100-clock.h |  165 ++
+ 10 files changed, 2799 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
+ create mode 100644 drivers/clk/hisilicon/clk-hi3559a.c
+ create mode 100644 drivers/dma/hiedmacv310.c
+ create mode 100644 drivers/dma/hiedmacv310.h
+ create mode 100644 include/dt-bindings/clock/hi3559av100-clock.h
 
-Best Regards,
-Petr
+-- 
+2.17.1
+
