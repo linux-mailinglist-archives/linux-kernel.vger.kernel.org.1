@@ -2,89 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33622B9A82
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B31E02B9A84
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729438AbgKSSSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:18:30 -0500
-Received: from foss.arm.com ([217.140.110.172]:36996 "EHLO foss.arm.com"
+        id S1729450AbgKSSTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:19:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728145AbgKSSS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:18:29 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DCDF11595;
-        Thu, 19 Nov 2020 10:18:28 -0800 (PST)
-Received: from [192.168.2.21] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1DD923F70D;
-        Thu, 19 Nov 2020 10:18:25 -0800 (PST)
-Subject: Re: [PATCH v6 1/7] arm64: mm: Move reserve_crashkernel() into
- mem_init()
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     robh+dt@kernel.org, catalin.marinas@arm.com, hch@lst.de,
-        ardb@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        will@kernel.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org,
-        linux-rpi-kernel@lists.infradead.org, guohanjun@huawei.com,
-        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org
-References: <20201103173159.27570-1-nsaenzjulienne@suse.de>
- <20201103173159.27570-2-nsaenzjulienne@suse.de>
- <e60d643e-4879-3fc3-737d-2c145332a6d7@arm.com>
- <88c69ac0c9d7e144c80cebc7e9f82b000828e7f5.camel@suse.de>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <f15ad06d-faa8-65fc-6fc1-d5c77115b1f1@arm.com>
-Date:   Thu, 19 Nov 2020 18:18:23 +0000
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727923AbgKSSTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:19:17 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D297F22248;
+        Thu, 19 Nov 2020 18:19:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605809956;
+        bh=pdN07KfFepAiIg0a4V4k+BFudMXTpaC64OLF7rj1IYU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bSy7fAIDgF+/P5DMTXrkR8NZOdkOphMtAYFCcJjUVdoPghWjkOU+w9K+6mvNcaoFH
+         GVm3F3SX2dipFo1YVUCG7UBLsTFT1Mys9FZlAF6d/Hoj6q3CoIwLYF1nZw6KaLn9wj
+         djmiD2FJFrVOXQv+XGoyYwNzMoY8rD1ABC3dTpZ0=
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH] x86/PCI: Convert force_disable_hpet() to standard quirk
+Date:   Thu, 19 Nov 2020 12:19:04 -0600
+Message-Id: <20201119181904.149129-1-helgaas@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <88c69ac0c9d7e144c80cebc7e9f82b000828e7f5.camel@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-(sorry for the late response)
+62187910b0fc ("x86/intel: Add quirk to disable HPET for the Baytrail
+platform") implemented force_disable_hpet() as a special early quirk.
+These run before the PCI core is initialized and depend on the
+x86/pci/early.c accessors that use I/O ports 0xcf8 and 0xcfc.
 
-On 06/11/2020 18:46, Nicolas Saenz Julienne wrote:
-> On Thu, 2020-11-05 at 16:11 +0000, James Morse wrote:>> We also depend on this when skipping the checksum code in purgatory, which can be
->> exceedingly slow.
-> 
-> This one I don't fully understand, so I'll lazily assume the prerequisite is
-> the same WRT how memory is mapped. :)
+But force_disable_hpet() doesn't need to be one of these special early
+quirks.  It merely sets "boot_hpet_disable", which is tested by
+is_hpet_capable(), which is only used by hpet_enable() and hpet_disable().
+hpet_enable() is an fs_initcall(), so it runs after the PCI core is
+initialized.
 
-The aim is its never normally mapped by the kernel. This is so that if we can't get rid of
-the secondary CPUs (e.g. they have IRQs masked), but they are busy scribbling all over
-memory, we have a rough guarantee that they aren't scribbling over the kdump kernel.
+Convert force_disable_hpet() to the standard PCI quirk mechanism.
 
-We can skip the checksum in purgatory, as there is very little risk of the memory having
-been corrupted.
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ arch/x86/kernel/early-quirks.c | 24 ------------------------
+ arch/x86/pci/fixup.c           | 25 +++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 24 deletions(-)
 
+diff --git a/arch/x86/kernel/early-quirks.c b/arch/x86/kernel/early-quirks.c
+index a4b5af03dcc1..674967fc1071 100644
+--- a/arch/x86/kernel/early-quirks.c
++++ b/arch/x86/kernel/early-quirks.c
+@@ -604,14 +604,6 @@ static void __init intel_graphics_quirks(int num, int slot, int func)
+ 	}
+ }
+ 
+-static void __init force_disable_hpet(int num, int slot, int func)
+-{
+-#ifdef CONFIG_HPET_TIMER
+-	boot_hpet_disable = true;
+-	pr_info("x86/hpet: Will disable the HPET for this platform because it's not reliable\n");
+-#endif
+-}
+-
+ #define BCM4331_MMIO_SIZE	16384
+ #define BCM4331_PM_CAP		0x40
+ #define bcma_aread32(reg)	ioread32(mmio + 1 * BCMA_CORE_SIZE + reg)
+@@ -701,22 +693,6 @@ static struct chipset early_qrk[] __initdata = {
+ 	  PCI_BASE_CLASS_BRIDGE, 0, intel_remapping_check },
+ 	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, PCI_CLASS_DISPLAY_VGA, PCI_ANY_ID,
+ 	  QFLAG_APPLY_ONCE, intel_graphics_quirks },
+-	/*
+-	 * HPET on the current version of the Baytrail platform has accuracy
+-	 * problems: it will halt in deep idle state - so we disable it.
+-	 *
+-	 * More details can be found in section 18.10.1.3 of the datasheet:
+-	 *
+-	 *    http://www.intel.com/content/dam/www/public/us/en/documents/datasheets/atom-z8000-datasheet-vol-1.pdf
+-	 */
+-	{ PCI_VENDOR_ID_INTEL, 0x0f00,
+-		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
+-	{ PCI_VENDOR_ID_INTEL, 0x3e20,
+-		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
+-	{ PCI_VENDOR_ID_INTEL, 0x3ec4,
+-		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
+-	{ PCI_VENDOR_ID_INTEL, 0x8a12,
+-		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
+ 	{ PCI_VENDOR_ID_BROADCOM, 0x4331,
+ 	  PCI_CLASS_NETWORK_OTHER, PCI_ANY_ID, 0, apple_airport_reset},
+ 	{}
+diff --git a/arch/x86/pci/fixup.c b/arch/x86/pci/fixup.c
+index 0a0e168be1cb..865bc3c5188b 100644
+--- a/arch/x86/pci/fixup.c
++++ b/arch/x86/pci/fixup.c
+@@ -780,3 +780,28 @@ DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_AMD, 0x15b1, pci_amd_enable_64bit_bar);
+ DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_AMD, 0x1601, pci_amd_enable_64bit_bar);
+ 
+ #endif
++
++/*
++ * HPET on the current version of the Baytrail platform has accuracy
++ * problems: it will halt in deep idle state - so we disable it.
++ *
++ * More details can be found in section 18.10.1.3 of the datasheet
++ * (Intel Document Number 332065-003, March 2016):
++ *
++ *    http://www.intel.com/content/dam/www/public/us/en/documents/datasheets/atom-z8000-datasheet-vol-1.pdf
++ */
++static void force_disable_hpet(struct pci_dev *dev)
++{
++#ifdef CONFIG_HPET_TIMER
++	boot_hpet_disable = true;
++	pci_info(dev, "x86/hpet: Will disable the HPET for this platform because it's not reliable\n");
++#endif
++}
++DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_INTEL, 0x0f00,
++			      PCI_CLASS_BRIDGE_HOST, 8, force_disable_hpet);
++DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_INTEL, 0x3e20,
++			      PCI_CLASS_BRIDGE_HOST, 8, force_disable_hpet);
++DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_INTEL, 0x3ec4,
++			      PCI_CLASS_BRIDGE_HOST, 8, force_disable_hpet);
++DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_INTEL, 0x8a12,
++			      PCI_CLASS_BRIDGE_HOST, 8, force_disable_hpet);
+-- 
+2.25.1
 
-> Ultimately there's also /sys/kernel/kexec_crash_size's handling. Same
-> prerequisite.
-
-Yeah, this lets you release PAGE_SIZEs back to the allocator, which means the
-marked-invalid page tables we have hidden there need to be PAGE_SIZE mappings.
-
-
-Thanks,
-
-James
-
-
-> Keeping in mind acpi_table_upgrade() and unflatten_device_tree() depend on
-> having the linear mappings available. I don't see any simple way of solving
-> this. Both moving the firmware description routines to use fixmap or correcting
-> the linear mapping further down the line so as to include kdump's regions, seem
-> excessive/impossible (feel free to correct me here). I'd be happy to hear
-> suggestions. Otherwise we're back to hard-coding the information as we
-> initially did.
-> 
-> Let me stress that knowing the DMA constraints in the system before reserving
-> crashkernel's regions is necessary if we ever want it to work seamlessly on all
-> platforms. Be it small stuff like the Raspberry Pi or huge servers with TB of
-> memory.
