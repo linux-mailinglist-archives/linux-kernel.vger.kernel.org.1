@@ -2,70 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3BF2B9DC2
+	by mail.lfdr.de (Postfix) with ESMTP id CE6E62B9DC3
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgKSWoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 17:44:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725918AbgKSWoA (ORCPT
+        id S1727037AbgKSWoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 17:44:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42124 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727004AbgKSWoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:44:00 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B7FC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 14:44:00 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id z21so10617734lfe.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 14:44:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lS2ziAVItkqEx2SqUODDHSlWmSIFo8HRkkEU7BX2L3o=;
-        b=Zp0HLWq0Gd81klL3naebwMq47XHq3qGVLpz/+ELC34vtM+h0SCVRbwqOe8PNvnXotV
-         bgGIVXy61qLL1g4h3GAgbZHvoFQcvDfpuVXWgjOJOYpeIz3GQKo7I95yshdAjUsNfu9E
-         FUlXgfIxfXKrAO/bHsHrpP4C4Ls2ND4EDsq/BDOSOoDLOIriH/rnCcRA7JGm+2s6ocuk
-         JHQ0MaINt6BdFKnhtprLPXfeCWxgTGR7ipIBBRAxtUCNVMgQUm8hMVD435CR0q2zswcv
-         XN7NXR4cuQNN9S1883PSTQv0zFJ/WcDzBdluZXnogvlDe68DxwPCJNMgkeh2rrjPfgyD
-         QFbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lS2ziAVItkqEx2SqUODDHSlWmSIFo8HRkkEU7BX2L3o=;
-        b=IoaX/ZmisHjLofdVzdi1hOzB7+hQ3PToNGRXfP4BlMQ2q0YQTdcs2/bz7Fu4tZgiqs
-         9qzafwHwf/1/8cFZkU/FN/aQWpVTELeOnvPk1ruwIZIJBj42PibhMlPsxUXnySxMIugH
-         nF6cQtXVTCAlrRnpZkDhX335eTXP1am1zgj1DhCpsZYv6qjppsnfPYn7Bic9Xn4Us/3g
-         X9dWrXJfeW3Q58McnjiptDrpYMzL7S3oht4Zsh36ohkAibFMo9zucNFnIygQRi0cfXbv
-         SydvxSr+It//a3YJWQ6aalUKH+BH6v+4Cy7lElvMsSFHblRskDKoBayFNiF9abowe0ge
-         trqQ==
-X-Gm-Message-State: AOAM530Ey/0kEmv5WGl88qtRsfUIvbUiB+UpS8q/JB8LHzMMT6fahgl1
-        wl5WxuDgPN4Sm35cw4lVnjikNk3eZ+YfnbVA5OOBYA==
-X-Google-Smtp-Source: ABdhPJyOFxXPk10FgyOBdoONY7hsC26aNygRvmBzCcUSDQ6YoVn4/SWQJv32hHxm1JmcSFwvxAJq5LUT8sG05pYvK6c=
-X-Received: by 2002:ac2:51b4:: with SMTP id f20mr7181693lfk.338.1605825838254;
- Thu, 19 Nov 2020 14:43:58 -0800 (PST)
+        Thu, 19 Nov 2020 17:44:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605825840;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tKxRHxunHt1N9ZBPxfMk6k1u2rcoVcD83DVFC6TLu74=;
+        b=O8qS+tQVZU/WCrPPws3/28yAQUAqGPuzM6oQ0Uu+z+GC90Y/C44oD8ccOUuQpVrD7sxSmc
+        EjcoMKdB4Im2DlFLnAvAeR9CA9005OsB+SbbKjYawah7cdyGQaIhsKYRU1JpW96qnMPOzi
+        ENGGJHdegQfigwt4Kbc+A613Jfb10sM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-417-uu7psJv2MnuTKJxL3UojBg-1; Thu, 19 Nov 2020 17:43:58 -0500
+X-MC-Unique: uu7psJv2MnuTKJxL3UojBg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C2F78143F3;
+        Thu, 19 Nov 2020 22:43:56 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.164])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CADE919C47;
+        Thu, 19 Nov 2020 22:43:49 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 19 Nov 2020 23:43:56 +0100 (CET)
+Date:   Thu, 19 Nov 2020 23:43:48 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] powerpc/ptrace: Hard wire PT_SOFTE value to 1 in
+ gpr_get() too
+Message-ID: <20201119224347.GC5138@redhat.com>
+References: <20201119160154.GA5183@redhat.com>
+ <20201119160247.GB5188@redhat.com>
+ <20201119221033.Horde.be-msjDTeIW4XeXARjUu7g1@messagerie.c-s.fr>
 MIME-Version: 1.0
-References: <20201117003135.1749391-1-rkir@google.com> <X7OUZmlRAuwWWHEn@kroah.com>
-In-Reply-To: <X7OUZmlRAuwWWHEn@kroah.com>
-From:   Roman Kiryanov <rkir@google.com>
-Date:   Thu, 19 Nov 2020 14:43:47 -0800
-Message-ID: <CAOGAQequ6hhzCjpf8V9vp=0xrAS3rs283goSFFfxVFw0ByjfPg@mail.gmail.com>
-Subject: Re: [PATCH] Update MAINTAINERS for goldfish-rtc
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        =?UTF-8?B?6ZmI5Y2O5omN?= <chenhc@lemote.com>,
-        Rob Herring <robh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lingfeng Yang <lfy@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119221033.Horde.be-msjDTeIW4XeXARjUu7g1@messagerie.c-s.fr>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +M:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-> > +M:   Huacai Chen <chenhc@lemote.com>
+On 11/19, Christophe Leroy wrote:
 >
-> It would be nice to get an ack from the people you are removing and
-> adding to this entry :(
+> I think the following should work, and not require the first patch (compile
+> tested only).
+>
+> --- a/arch/powerpc/kernel/ptrace/ptrace-view.c
+> +++ b/arch/powerpc/kernel/ptrace/ptrace-view.c
+> @@ -234,9 +234,21 @@ static int gpr_get(struct task_struct *target, const
+> struct user_regset *regset,
+>  	BUILD_BUG_ON(offsetof(struct pt_regs, orig_gpr3) !=
+>  		     offsetof(struct pt_regs, msr) + sizeof(long));
+> 
+> +#ifdef CONFIG_PPC64
+> +	membuf_write(&to, &target->thread.regs->orig_gpr3,
+> +		     offsetof(struct pt_regs, softe) - offsetof(struct pt_regs,
+> orig_gpr3));
+> +	membuf_store(&to, 1UL);
+> +
+> +	BUILD_BUG_ON(offsetof(struct pt_regs, trap) !=
+> +		     offsetof(struct pt_regs, softe) + sizeof(long));
+> +
+> +	membuf_write(&to, &target->thread.regs->trap,
+> +		     sizeof(struct user_pt_regs) - offsetof(struct pt_regs, trap));
+> +#else
+>  	membuf_write(&to, &target->thread.regs->orig_gpr3,
+>  			sizeof(struct user_pt_regs) -
+>  			offsetof(struct pt_regs, orig_gpr3));
+> +#endif
+>  	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
+>  				 sizeof(struct user_pt_regs));
+>  }
 
-Hi Jiaxun and Huacai, could you please ack this change?
+Probably yes.
+
+This mirrors the previous patch I sent (https://lore.kernel.org/lkml/20190917143753.GA12300@redhat.com/)
+and this is exactly what I tried to avoid, we can make a simpler fix now.
+
+But let me repeat, I agree with any fix even if imp my version simplifies the code, just
+commit this change and lets forget this problem.
+
+Oleg.
+
