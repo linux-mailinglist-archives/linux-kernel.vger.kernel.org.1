@@ -2,94 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31FB2B9468
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DCD2B948A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgKSOPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:15:55 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:50244 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727942AbgKSOPx (ORCPT
+        id S1727647AbgKSOWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:22:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727106AbgKSOWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:15:53 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJEEYlK029032;
-        Thu, 19 Nov 2020 09:15:50 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34t9ybt85d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 09:15:50 -0500
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0AJEFm9N029123
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 19 Nov 2020 09:15:49 -0500
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 19 Nov 2020 06:15:47 -0800
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 19 Nov 2020 06:14:37 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 19 Nov 2020 06:15:47 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AJEFidk028071;
-        Thu, 19 Nov 2020 09:15:44 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <nandor.han@ge.com>, <semi.malinen@ge.com>,
-        <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] gpio: xra1403: remove unneeded spi_set_drvdata()
-Date:   Thu, 19 Nov 2020 16:21:04 +0200
-Message-ID: <20201119142104.85566-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 19 Nov 2020 09:22:49 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A62C0613CF;
+        Thu, 19 Nov 2020 06:22:47 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id e139so8515559lfd.1;
+        Thu, 19 Nov 2020 06:22:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZvOd3z2dVnB5SZQwK/dvDpMXJ4eITwmefRvuKa9tb0Q=;
+        b=Y21dZRMZ+kNYHUNLiNCHQoS5QxGFMKf7KaEd+6a06G/hQ1bejJXAcijD6xiDcBiBUn
+         JS4yWyB2+zZqqxEzarQ7y2NC3cKCRKUZ2CchFnZU6Kn5vLrutkvXtu+Lq1OFhxgn8Epp
+         UuLT88qmv67A3sWVg1l8Ws05tNM98wJWDlT1hgGfbwXfCiTxIVlprvN48xiVZLuFi3Cn
+         KI3oT4rlzLRHtD8EKwZRS29BsqsZh07SrjWWBHtLowX/toS83Dhlqd9OCn9mvofvfXic
+         DHhrzPVHyIWzxM0YW/p1ZFuzvZaox6YeG/KIcRnpB6NKJzCgXsklV6r9OCr7nnEUUhRd
+         hptw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZvOd3z2dVnB5SZQwK/dvDpMXJ4eITwmefRvuKa9tb0Q=;
+        b=i7ba6A/r1lx38CySMfQ+TDUl7Ug5P1w27iAO+JNLA3mdxNi6OJU0Dyqalbxsw01iB0
+         VAsNVwAXW1PqPUXXSjGz0epzuBBCbtyiUFWhin0O2XLXgQRzlY1akQvQtW/ko39PobAl
+         YqRKgEYYe3YFDLqG9cjS0d36YmKabjvOpUI6c76OKGdqYg3fS5LkGKk6O+yUnTz3eRHz
+         PWSciz9HMFkctnmfRE7e4I7307OLnlqaz8QPpkNVd/aym1Zj/CRTKjfv3D9eULG/nYuE
+         2fZ5e3RZt0B5qhOLiz610v07pBXK8W2tBlr9mbSx1CHjsYAJC6p0df7hm4FpmuX71rKU
+         978w==
+X-Gm-Message-State: AOAM530du4USguA/p3pLaUicqA2meLa3ozpjxZ7O2FXF+na2ZDg6G4DO
+        96bNH1Rf87fJcnpUjW52tmsWQdbw810=
+X-Google-Smtp-Source: ABdhPJyUwmqVByndGgJFiM7woqjbf8UJz72yW3W4B1Jv93hEMk1YatxireTGBSQxqAyLLyxkuXCkKw==
+X-Received: by 2002:a19:844a:: with SMTP id g71mr6446029lfd.414.1605795766096;
+        Thu, 19 Nov 2020 06:22:46 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id m16sm3851652lfa.57.2020.11.19.06.22.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 06:22:45 -0800 (PST)
+Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
+ scaling
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20201112171600.GD4742@sirena.org.uk>
+ <b4b06c1d-c9d4-43b2-c6eb-93f8cb6c677d@gmail.com>
+ <20201112200123.GF4742@sirena.org.uk>
+ <ce9e2d9f-917e-fb8a-7323-f3bf1a367e9d@gmail.com>
+ <20201113142937.GB4828@sirena.org.uk>
+ <7f066805-97d9-088f-e89d-a554fe478574@gmail.com>
+ <20201113161550.GC4828@sirena.org.uk>
+ <3beaa12b-4a50-a3b6-fc43-ebb5ce7a8db7@gmail.com>
+ <20201113172859.GF4828@sirena.org.uk>
+ <74cfc6a9-3f59-d679-14b7-51102a6f11b3@gmail.com>
+ <20201116133311.GB4739@sirena.org.uk>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <332ab946-daee-bb83-24ab-0bda4fd8e1ef@gmail.com>
+Date:   Thu, 19 Nov 2020 17:22:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_09:2020-11-19,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 lowpriorityscore=0
- bulkscore=0 clxscore=1011 spamscore=0 adultscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190107
+In-Reply-To: <20201116133311.GB4739@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no matching spi_get_drvdata() call in the driver, so there is no
-need to do spi_set_drvdata(). This looks like it probably was copied from a
-driver that used both spi_set_drvdata() & spi_get_drvdata().
+16.11.2020 16:33, Mark Brown пишет:
+> On Sun, Nov 15, 2020 at 08:42:10PM +0300, Dmitry Osipenko wrote:
+>> 13.11.2020 20:28, Mark Brown пишет:
+> 
+>>>> What should we do?
+> 
+>>> As I keep saying the consumer driver should be enumerating the voltages
+>>> it can set, if it can't find any and wants to continue then it can just
+>>> skip setting voltages later on.  If only some are unavailable then it
+>>> probably wants to eliminate those specific OPPs instead.
+> 
+>> I'm seeing a dummy regulator as a helper for consumer drivers which
+>> removes burden of handling an absent (optional) regulator. Is this a
+>> correct understanding of a dummy regulator?
+> 
+>> Older DTBs don't have a regulator and we want to keep them working. This
+>> is equal to a physically absent regulator and in this case it's an
+>> optional regulator, IMO.
+> 
+> No, you are failing to understand the purpose of this code.  To
+> reiterate unless the device supports operating with the supply
+> physically absent then the driver should not be attempting to use
+> regulator_get_optional().  That exists specifically for the case where
+> the supply may be absent, nothing else.  The dummy regulator is there
+> precisely for the case where the system does not describe supplies that
+> we know are required for the device to function, it fixes up that
+> omission so we don't need to open code handling of this in every single
+> consumer driver.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/gpio/gpio-xra1403.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+The original intention of regulator_get_optional() is clear to me, but
+nothing really stops drivers from slightly re-purposing this API, IMO.
 
-diff --git a/drivers/gpio/gpio-xra1403.c b/drivers/gpio/gpio-xra1403.c
-index e2cac12092af..49c878cfd5c6 100644
---- a/drivers/gpio/gpio-xra1403.c
-+++ b/drivers/gpio/gpio-xra1403.c
-@@ -186,15 +186,7 @@ static int xra1403_probe(struct spi_device *spi)
- 		return ret;
- 	}
- 
--	ret = devm_gpiochip_add_data(&spi->dev, &xra->chip, xra);
--	if (ret < 0) {
--		dev_err(&spi->dev, "Unable to register gpiochip\n");
--		return ret;
--	}
--
--	spi_set_drvdata(spi, xra);
--
--	return 0;
-+	return devm_gpiochip_add_data(&spi->dev, &xra->chip, xra);
- }
- 
- static const struct spi_device_id xra1403_ids[] = {
--- 
-2.17.1
+Drivers should be free to assume that if regulator isn't defined by
+firmware, then it's physically absent if this doesn't break anything. Of
+course in some cases it's unsafe to make such assumptions. I think it's
+a bit unpractical to artificially limit API usage without a good reason,
+i.e. if nothing breaks underneath of a driver.
 
+> Regulators that are present but not described by the firmware are a
+> clearly different case to regulators that are not physically there,
+> hardware with actually optional regulators will generally require some
+> configuration for this case.
+> 
+
+I have good news. After spending some more time on trying out different
+things, I found that my previous assumption about the fixed-regulator
+was wrong, it actually accepts voltage changes, i.e. regulator consumer
+doesn't get a error on a voltage-change. This is exactly what is needed
+for the OPP core to work properly.
+
+This means that there is no need to add special quirks to work around
+absent regulators, we will just add a fixed regulator to the DTs which
+don't specify a real regulator. The OPP core will perform voltage
+checking and filter out unsupported OPPs. The older DTBs will continue
+to work as well.
