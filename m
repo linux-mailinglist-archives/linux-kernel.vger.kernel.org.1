@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055442B9473
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FADF2B9444
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727851AbgKSORk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:17:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727408AbgKSORj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:17:39 -0500
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BFA724199;
-        Thu, 19 Nov 2020 14:17:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605795458;
-        bh=tRhzgdnm49wLGYBksavMXrneoZPG3bG+rYPWCGwty94=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=an3c4i3/DR0eegqVhBgJASPzCAUqbuw0i6yqXdVFm63zrutAXecwqwhxsbd2T8/+0
-         Vx/sUvWnGfyrMTxDMmD/Cgj6e7pKor/xTDNlebSCRfoSUH/8F3gCMMq02UxVNnIfR2
-         BmmSwsaYs1PtAhkC1J3iX5IKxqJijwUETa+7QiH8=
-Received: by mail-oi1-f170.google.com with SMTP id s18so5313016oih.1;
-        Thu, 19 Nov 2020 06:17:38 -0800 (PST)
-X-Gm-Message-State: AOAM530jMBODYN8FFCMWLHWdGAbh703z8CDQzJc3EnBnIwRNYtHjO0IB
-        DWlYVf+xsx9pxg/BL0MdUKZkGmby+EYoWgfCtQ==
-X-Google-Smtp-Source: ABdhPJy5aycKt4bA/mJAKjfO7Q4kZb+EgCZ07oXCa+mWpPC51S/i92s2ptkiAs0/ZTKg40x95hPXeAYFk9BQvyQfpiw=
-X-Received: by 2002:aca:fdd4:: with SMTP id b203mr3032696oii.152.1605795457466;
- Thu, 19 Nov 2020 06:17:37 -0800 (PST)
+        id S1727794AbgKSOMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:12:17 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:55380 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727298AbgKSOMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:12:17 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJEAamo013250;
+        Thu, 19 Nov 2020 09:12:15 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34t9ybt7rh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 09:12:14 -0500
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0AJECDYK031194
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 19 Nov 2020 09:12:13 -0500
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 19 Nov 2020 09:12:12 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 19 Nov 2020 09:12:12 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 19 Nov 2020 09:12:12 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AJECAhV027837;
+        Thu, 19 Nov 2020 09:12:11 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] iio: accel: adis16201: remove unneeded spi_set_drvdata()
+Date:   Thu, 19 Nov 2020 16:17:29 +0200
+Message-ID: <20201119141729.84185-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200921074953.25289-1-narmstrong@baylibre.com>
- <CAL_JsqLZzxXcvoqd29NM45UjL-mbSiHphTO_zOwbCwPKd+jWEw@mail.gmail.com> <20201119111201.GA19942@e121166-lin.cambridge.arm.com>
-In-Reply-To: <20201119111201.GA19942@e121166-lin.cambridge.arm.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 19 Nov 2020 08:17:26 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKxLxijhcG7SHEqfA3j6xM6cJpv-3fT2r1Nysst_8ireg@mail.gmail.com>
-Message-ID: <CAL_JsqKxLxijhcG7SHEqfA3j6xM6cJpv-3fT2r1Nysst_8ireg@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc/meson: do not fail on wait linkup timeout
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Yue Wang <yue.wang@amlogic.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-19_09:2020-11-19,2020-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 suspectscore=0 impostorscore=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1015 spamscore=0 adultscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 5:12 AM Lorenzo Pieralisi
-<lorenzo.pieralisi@arm.com> wrote:
->
-> On Tue, Sep 22, 2020 at 11:30:30AM -0600, Rob Herring wrote:
-> > On Mon, Sep 21, 2020 at 1:50 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
-> > >
-> > > When establish link timeouts, probe fails but the error is unrelated since
-> > > the PCIe controller has been probed succesfully.
-> > >
-> > > Align with most of the other dw-pcie drivers and ignore return of
-> > > dw_pcie_wait_for_link() in the host_init callback.
-> >
-> > I think all, not most DWC drivers should be aligned. Plus the code
-> > here is pretty much the same, so I'm working on moving all this to the
-> > common DWC code. Drivers that need to bring up the link will need to
-> > implement .start_link() (currently only used for EP mode). Most of the
-> > time that is just setting the LTSSM bit which Synopsys thought letting
-> > every vendor do their own register for was a good idea. Sigh.
->
-> Should I drop this patch then ?
+There is no matching spi_get_drvdata() in the driver. This looks like a
+left-over from before the driver was converted to device-managed functions.
 
-Yes, this is done by my series.
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/accel/adis16201.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Rob
+diff --git a/drivers/iio/accel/adis16201.c b/drivers/iio/accel/adis16201.c
+index f955cccb3e77..3633a4e302c6 100644
+--- a/drivers/iio/accel/adis16201.c
++++ b/drivers/iio/accel/adis16201.c
+@@ -268,7 +268,6 @@ static int adis16201_probe(struct spi_device *spi)
+ 		return -ENOMEM;
+ 
+ 	st = iio_priv(indio_dev);
+-	spi_set_drvdata(spi, indio_dev);
+ 
+ 	indio_dev->name = spi->dev.driver->name;
+ 	indio_dev->info = &adis16201_info;
+-- 
+2.17.1
+
