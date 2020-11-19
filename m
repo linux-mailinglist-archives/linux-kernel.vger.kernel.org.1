@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AB52B9A9E
+	by mail.lfdr.de (Postfix) with ESMTP id AE8D92B9A9F
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728918AbgKSS2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:28:49 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:33801 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728591AbgKSS2s (ORCPT
+        id S1729133AbgKSS3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727869AbgKSS3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:28:48 -0500
-Received: by mail-oi1-f194.google.com with SMTP id s18so6255093oih.1;
-        Thu, 19 Nov 2020 10:28:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=679DbEgEKUHSQ/f4lkOzU7rgexZjgi5oxyhY1SdFMHA=;
-        b=hlYFASEvNXpCoM/xLcL+blyVIs11eVl7+8+0LWJys99Akdpvemkdo8f3Udy4aImYtV
-         dmqGtkB54ICFIivH54Vv04bBIFX/JsKnBAeIcWr6j3j0mcO1HVtkxm9DAPiI/8KCFOJ8
-         vj8keddjqgJrTvlqP458Png53JYlz2Sw+IsIAtuu8d3baJjg3mivTAo9AJYaGXQvSwqV
-         MZxsz2xDkcwAW97vWHKx+ZznuUzFRUThNlUxai5IzLmeGnTvSqcR8GlZfVDZcbf4qdtm
-         Z/TMWvs/TDV1dnsSRUT8Gk+kqoOUUYqjWjm4t++6+DxPpC+jdIqKuG9BCy0qQpuiQs9n
-         KAIQ==
-X-Gm-Message-State: AOAM5321bKZPRi7TfsZ/atZ9cNDYRJ0YFZ2Ih9ha3IKhtv/lBRJ8JO1m
-        3T6CpU0CjtdCA5QldaPZ9nM58rtotLPBfWgewU0=
-X-Google-Smtp-Source: ABdhPJw+fh+QivBQNhApdmdRdN/pzxqE7rfkU6EMW5ISKbgEowIynOnGbF746b8HurzPYS7kUTzkqzS+1E/MXmxnr1A=
-X-Received: by 2002:aca:5a42:: with SMTP id o63mr3222658oib.69.1605810527882;
- Thu, 19 Nov 2020 10:28:47 -0800 (PST)
-MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 19 Nov 2020 19:28:37 +0100
-Message-ID: <CAJZ5v0hEqP=GgF3VZpn8GVX4ajnzDV4T3ZMMMGUbEe-BqUoHOA@mail.gmail.com>
-Subject: [GIT PULL] ACPI fixes for v5.10-rc5
+        Thu, 19 Nov 2020 13:29:11 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BB6C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:29:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4LIkeskhd935eUwqijtsoAM0pfoT4xJqUA6L3kxJuH8=; b=QHiwHIIeWOa4GXy2EfG3PvLNfv
+        El4CyX0m4VRDLmmHgs/MqsjjtO1m76j94PU7c8Roomj2tZJPPIq+kD5nM78g6OBFOE7iYRAjt9jQ2
+        mWUEXSOPUKVSwO0bWj7RnXzIzrtR80Edx0Wx1oMc8OdT4hPo6Eqwh1nfCP7QwDF34ZyF0hp24olZW
+        kvSUIBxwEFDXRusQdYPgqZbsPzEjJqVmmh07Ybjrtp7UuqVAcu5CWzTZv9WKH+3pYu+RoopPDWn70
+        lu95GTGwxvNIVK31Qi/DPM8usTa0FvB2TTjPBTMj2ABok+EBoCk3b5EcRwpqBd2I/slfTs7/yShUj
+        5zknQSMQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kfofo-0008Bj-6o; Thu, 19 Nov 2020 18:28:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B03FC3060AE;
+        Thu, 19 Nov 2020 19:28:43 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8E27E20234C36; Thu, 19 Nov 2020 19:28:43 +0100 (CET)
+Date:   Thu, 19 Nov 2020 19:28:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Mel Gorman <mgorman@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [patch V4 4/8] sched: Make migrate_disable/enable() independent
+ of RT
+Message-ID: <20201119182843.GA2414@hirez.programming.kicks-ass.net>
+References: <20201118194838.753436396@linutronix.de>
+ <20201118204007.269943012@linutronix.de>
+ <20201119093834.GH3306@suse.de>
+ <20201119111411.GL3121378@hirez.programming.kicks-ass.net>
+ <CAHk-=wire3dzhHx=KiL_f5Rj0=1u9ustsa33QoR-F9-v-NU9Ng@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wire3dzhHx=KiL_f5Rj0=1u9ustsa33QoR-F9-v-NU9Ng@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Nov 19, 2020 at 09:23:47AM -0800, Linus Torvalds wrote:
+> On Thu, Nov 19, 2020 at 3:14 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > I still hate all of this, and I really fear that with migrate_disable()
+> > available, people will be lazy and usage will increase :/
+> >
+> > Case at hand is this series, the only reason we need it here is because
+> > per-cpu page-tables are expensive...
+> 
+> No, I think you as a scheduler person just need to accept it.
 
-Please pull from the tag
+Well, I did do write the patches.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.10-rc5
+> Because this is certainly not the only time migration limiting has
+> come up, and no, it has absolutely nothing to do with per-cpu page
+> tables being completely unacceptable.
 
-with top-most commit de15e20f50b126b3a5a753dd259df775e6a0ea5c
+It is for this instance; but sure, it's come up before in other
+contexts.
 
- Merge branch 'acpi-fan'
+> The scheduler people need to get used to this. Really. Because ASMP is
+> just going to be a fact.
 
-on top of commit 09162bc32c880a791c6c0668ce0745cf7958f576
+ASMP is different in that it is a hardware constraint, you're just not
+going to be able to run more of X than there's X capable hardware units
+on (be if FPUs, Vector units, 32bit or whatever)
 
- Linux 5.10-rc4
+> There are few things more futile than railing against reality, Peter.
 
-to receive ACPI fixes for 5.10-rc5.
+But, but, my windmills! :-)
 
-These fix recent regression in the APEI code and initialization
-issue in the ACPI fan driver.
+> Honestly, the only argument I've ever heard against limiting migration
+> is the whole "our scheduling theory doesn't cover it".
+> 
+> So either throw the broken theory away, or live with it. Theory that
+> doesn't match reality isn't theory, it's religion.
 
-Specifics:
+The first stage of throwing it out is understanding the problem, which
+is just about where we're at. Next is creating a new formalism (if
+possible) that covers this new issue. That might take a while.
 
- - Make the APEI code avoid attempts to obtain logical addresses for
-   registers located in the I/O address space to fix initialization
-   issues (Aili Yao).
+Thing is though; without a formalism to reason about timeliness
+guarantees, there is no Real-Time.
 
- - Fix sysfs attribute initialization in the ACPI fan driver (Guenter
-   Roeck).
-
-Thanks!
-
-
----------------
-
-Aili Yao (1):
-      ACPI, APEI, Fix error return value in apei_map_generic_address()
-
-Guenter Roeck (1):
-      ACPI: fan: Initialize performance state sysfs attribute
-
----------------
-
- drivers/acpi/apei/apei-base.c | 4 ++++
- drivers/acpi/fan.c            | 1 +
- 2 files changed, 5 insertions(+)
+So sure, I've written the patches, doesn't mean I have to like the place
+we're in due to it.
