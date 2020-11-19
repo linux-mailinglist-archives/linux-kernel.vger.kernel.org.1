@@ -2,111 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B122B8D91
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC472B8D96
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbgKSIfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:35:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37444 "EHLO
+        id S1726596AbgKSIhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:37:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgKSIfb (ORCPT
+        with ESMTP id S1726457AbgKSIhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:35:31 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81FEC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:35:30 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id h23so5305736ljg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:35:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CUAPPILQ+HlU7cec+WyW0vmuUkycQGR+EKCfVOKR5DA=;
-        b=xxlskXAtX870lOpywdkalnsMzFjOX7jemtarV+C0XroXPqfrChwDn/g05wGLVXiLwx
-         DZv2npwrVk2RKdH45J7ZWqU2vAt1m10srMqDqYyRxB61d26qoaxXSMRTETG9DXJ2hAcJ
-         N4kLWQX9cJNH3RH5lR3umlSF1OOyI0UJPv1RHKjx7zCyrRKjspUv/27o0lxRWuMcYYrI
-         O+IiOqTP0Or30LBmpNOxt2QBo25FdQEYfEWRO4sFrMf/TPM8AMtiIRXUj9ZgCTQClZG6
-         /2ulQQHD9n1kuB837CEi2PVIGJ89reg37c1AlK0zowtZLpiS7sfPwzHj9ot7ktmbWrJH
-         bCCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CUAPPILQ+HlU7cec+WyW0vmuUkycQGR+EKCfVOKR5DA=;
-        b=LIM/MB95SuqnPxaabcGQm/vrGxcyn9/dKS1pGc3V6oDRk4BoFYvUuaDTqcu+7bUJ93
-         IylokOoi0xf9jug6i3n3rquH4BtjmnI4PpXqLlSVD3R0h4OTYr980omZbc2cLg1qbok7
-         A2Tzh7CjA/4zaJr3blifcB2sLlVLNi5HFhV1QF0XyrP7hy9THEWKd+Ab6HhRfsAw9MPG
-         lfKLCnAyTiPIG+RHhistePTfODW1l6AHur2I4NYdfpENBPSPf58+aRpTb4ADhflcAGL4
-         cqPONxCtvBrjH0h6n347/m1BfqG/iBYuxyQICK9d/UamvBoQJ4ACi6ng7hzmumH8c8or
-         6yFQ==
-X-Gm-Message-State: AOAM530Qgrog9bIY5odu5m0ltyQUA5VnCDbgZVtOh0QHvywkgFVng9D6
-        GFRolg429tFbhAyRHgz92jcgmIgj8tzIIWieEchItaY2cUkyAhEN
-X-Google-Smtp-Source: ABdhPJzb1eF+H7SQdr5ic1GZqIMIfLsKmdGEtadZ2F1hyOuZbWr/cgjdxlUVeSHl72yR9JRuHYa3dyZlsxsodk0gZic=
-X-Received: by 2002:a2e:998e:: with SMTP id w14mr5942998lji.100.1605774929224;
- Thu, 19 Nov 2020 00:35:29 -0800 (PST)
+        Thu, 19 Nov 2020 03:37:13 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E8BC0613CF;
+        Thu, 19 Nov 2020 00:37:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EQ5bBRTWq6ELqPUgP7TVxM2lYlJzPItyKiYHy5i08tU=; b=RUZctQwcZN8oIJJn+j5hHOtuSI
+        VGVegOMV0ogh8QHOuimZalpzMAMUxd/bbKIMQ3cKPZY5hbgrX0m3yeQb+nnhYGfqmWp59lXpBdtcI
+        8vcEMQj+9ww5i60gcb8L+08RM5hyKPBmNFjwVgPH5Lgz9FZLpfwGR4O/Rb4LdSUDZELcT1nHvoqJL
+        WTCuAMFsuIwOkDpXDbsMqIoC5HmJVjYbmClOhHrBpgFPP8+tO4lWZEwu4ivix9tFfAun0JGr2Zj1v
+        N+dWrdYRyavq3WpDcyXIhsfhuc7zkWZjs76X8C5WpX40AR08FnRq0PzY71Brso55d7WfDM9eq2i/e
+        f3idustw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kffQv-0003tZ-JT; Thu, 19 Nov 2020 08:36:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A4F0300F7A;
+        Thu, 19 Nov 2020 09:36:48 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3604B200DF1AB; Thu, 19 Nov 2020 09:36:48 +0100 (CET)
+Date:   Thu, 19 Nov 2020 09:36:48 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: violating function pointer signature
+Message-ID: <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
+References: <20201117142145.43194f1a@gandalf.local.home>
+ <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+ <20201117153451.3015c5c9@gandalf.local.home>
+ <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+ <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
+ <20201118121730.12ee645b@gandalf.local.home>
+ <20201118181226.GK2672@gate.crashing.org>
+ <87o8jutt2h.fsf@mid.deneb.enyo.de>
+ <20201118135823.3f0d24b7@gandalf.local.home>
+ <20201118191127.GM2672@gate.crashing.org>
 MIME-Version: 1.0
-References: <cover.1605688147.git.agx@sigxcpu.org>
-In-Reply-To: <cover.1605688147.git.agx@sigxcpu.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 19 Nov 2020 09:35:17 +0100
-Message-ID: <CACRpkda97nJ+nJX4CuZHQnDVh1mhykc_vb6xFh7BcAWQoNjz7Q@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] drm/panel: mantix and st7703 fixes and additions
-To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        allen <allen.chen@ite.com.tw>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118191127.GM2672@gate.crashing.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 9:29 AM Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
+On Wed, Nov 18, 2020 at 01:11:27PM -0600, Segher Boessenkool wrote:
+> Calling this via a different declared function type is undefined
+> behaviour, but that is independent of how the function is *defined*.
+> Your program can make ducks appear from your nose even if that function
+> is never called, if you do that.  Just don't do UB, not even once!
 
-> This adds new panel type to the mantix driver as found on the Librem 5 an=
-d
-> fixes a glitch in the init sequence (affecting both panels). The fix is a=
-t the
-> start of the series to make backporting simpler.
-> It also adds a patch to make st7703 use dev_err_probe().
->
-> changes from v1
-> - as per review comments by Linus Walleij
->   - fix alphabetical ordering in Documentation/devicetree/bindings/vendor=
--prefixes.yaml
->     https://lore.kernel.org/dri-devel/CACRpkdao_TMcpRsdK=3D7K5fNKJse0Bqwk=
-58iWu0xsXdDNdcffVA@mail.gmail.com/
->   - add reviewed by to all except 5/6, thanks
+Ah, see, here I think we disagree. UB is a flaw of the spec, but the
+real world often has very sane behaviour there (sometimes also very
+much not).
 
-The whole v2 looks fine to me, I'd give the devicetree
-maintainers some slack to review the DT patches then I can
-apply the whole series unless you have commit access yourself,
-just tell me.
+In this particular instance the behaviour is UB because the C spec
+doesn't want to pin down the calling convention, which is something I
+can understand. But once you combine the C spec with the ABI(s) at hand,
+there really isn't two ways about it. This has to work, under the
+premise that the ABI defines a caller cleanup calling convention.
 
-For all v2 patches:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+So in the view that the compiler is a glorified assembler, I'll take UB
+every day if it means I can get the thing to do what I want it to.
 
-If you have time, please review my s6e63m0 series.
-https://lore.kernel.org/dri-devel/20201117175621.870085-1-linus.walleij@lin=
-aro.org/
-https://lore.kernel.org/dri-devel/20201117175621.870085-2-linus.walleij@lin=
-aro.org/
-https://lore.kernel.org/dri-devel/20201117175621.870085-3-linus.walleij@lin=
-aro.org/
+Obviously in the interest of co-operation and longer term viability, it
+would be nice if we can agree on the behaviour and get a language
+extention covering it.
 
-Yours,
-Linus Walleij
+Note that we have a fairly extensive tradition of defining away UB with
+language extentions, -fno-strict-overflow, -fno-strict-aliasing,
+-fno-delete-null-pointer-checks etc..
+
+
