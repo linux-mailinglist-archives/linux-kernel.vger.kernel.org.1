@@ -2,189 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61ABE2B9305
+	by mail.lfdr.de (Postfix) with ESMTP id D02E12B9306
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgKSNAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 08:00:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726719AbgKSNAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 08:00:42 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1726775AbgKSNCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 08:02:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbgKSNCx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 08:02:53 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F322C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 05:02:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qDJ9dFT1TQeRLVCH6+gHWjIntmBnj22nN7yL7lZxrIw=; b=I+LDNZM0EOBRMSJ6c/WICiNebP
+        akMOVO86TXH1VKDIEmFc8E/UEHs187pt48E9UOWnWBIX2pKDXJxrYCkjdUUMQxVLs2UBqvFXvQjVB
+        SVdupqJxdRzV37PH2cMef6XtmVPpGy9T1lA9IUZZ4rMwJxrw3PMiSGp1CEmQelbVT7WDD4PzLZ4s6
+        W770ZqkGCVpmw1YONfpZX8nZPgrs9PDl0ntKM48fWVc1QPNxXEgKAfbsPeManWXIo/hd0h6pqQb/R
+        5xgFs6EGwKoC28TCr+r3Ufnv0M5oii6hZmSwaPCMh1fZ7QPLXjb30K0446C1+Edhbn2cG7b6tazX2
+        QXKLLYgg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kfjaH-0002Z9-KJ; Thu, 19 Nov 2020 13:02:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDE3D21D7A;
-        Thu, 19 Nov 2020 13:00:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605790841;
-        bh=ja+JT64H0gAXExMDxLYTjSNxoWo2kCsdj3sIaapeov0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dZtiwdg8DaBZXZmXS6Ob+AqkJSsAt7Wp0rJ1sQiO0DmRUk+3SQQ7AOso9LLG4++/c
-         XfMAjTawBdBrsDym3KZ1uV9mi7uSKhCKjJFqCl8FxzggC5bii73sMpg4oJ4g3kYvmE
-         iliUFMORnSzBKxZNdfmt3SZnssSxYzXr8BbnAB90=
-Date:   Thu, 19 Nov 2020 13:00:36 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] scs: switch to vmapped shadow stacks
-Message-ID: <20201119130036.GA4331@willie-the-truck>
-References: <20201022202355.3529836-1-samitolvanen@google.com>
- <20201022202355.3529836-2-samitolvanen@google.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 109C1300F7A;
+        Thu, 19 Nov 2020 14:02:44 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BA0FA2C125914; Thu, 19 Nov 2020 14:02:44 +0100 (CET)
+Date:   Thu, 19 Nov 2020 14:02:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Subject: Re: Deadlock cpuctx_mutex / pmus_lock / &mm->mmap_lock#2
+Message-ID: <20201119130244.GN3121392@hirez.programming.kicks-ass.net>
+References: <1185a97a-3780-3bce-d97d-ff9c2830e35d@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201022202355.3529836-2-samitolvanen@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1185a97a-3780-3bce-d97d-ff9c2830e35d@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sami,
 
-On Thu, Oct 22, 2020 at 01:23:54PM -0700, Sami Tolvanen wrote:
-> The kernel currently uses kmem_cache to allocate shadow call stacks,
-> which means an overflow may not be immediately detected and can
-> potentially result in another task's shadow stack to be overwritten.
+Chris, I suspect this is due to i915 calling stop machine with all sorts
+of locks held. Is there anything to be done about this? stop_machine()
+is really nasty to begin with.
+
+What problem is it typing to solve?
+
+On Thu, Nov 19, 2020 at 12:04:56AM +0100, Heiner Kallweit wrote:
+> Just got the following when running perf.
 > 
-> This change switches SCS to use virtually mapped shadow stacks,
-> which increases shadow stack size to a full page and provides more
-> robust overflow detection similarly to VMAP_STACK.
+> [  648.247718] ======================================================
+> [  648.247725] WARNING: possible circular locking dependency detected
+> [  648.247734] 5.10.0-rc4-next-20201118+ #1 Not tainted
+> [  648.247740] ------------------------------------------------------
+> [  648.247748] perf/19761 is trying to acquire lock:
+> [  648.247755] ffffa00200abad18 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0x2f/0x80
+> [  648.247777]
+>                but task is already holding lock:
+> [  648.247785] ffffa0027bc2edb0 (&cpuctx_mutex){+.+.}-{3:3}, at: perf_event_ctx_lock_nested+0xd8/0x1f0
+> [  648.247801]
+>                which lock already depends on the new lock.
 > 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> ---
->  include/linux/scs.h |  7 +----
->  kernel/scs.c        | 63 ++++++++++++++++++++++++++++++++++++++-------
->  2 files changed, 55 insertions(+), 15 deletions(-)
-
-Cheers for posting this. I _much_ prefer handling the SCS this way, but I
-have some comments on the implementation below.
-
-> diff --git a/include/linux/scs.h b/include/linux/scs.h
-> index 6dec390cf154..86e3c4b7b714 100644
-> --- a/include/linux/scs.h
-> +++ b/include/linux/scs.h
-> @@ -15,12 +15,7 @@
->  
->  #ifdef CONFIG_SHADOW_CALL_STACK
->  
-> -/*
-> - * In testing, 1 KiB shadow stack size (i.e. 128 stack frames on a 64-bit
-> - * architecture) provided ~40% safety margin on stack usage while keeping
-> - * memory allocation overhead reasonable.
-> - */
-> -#define SCS_SIZE		SZ_1K
-> +#define SCS_SIZE		PAGE_SIZE
-
-We could make this SCS_ORDER and then forget about alignment etc.
-
->  #define GFP_SCS			(GFP_KERNEL | __GFP_ZERO)
->  
->  /* An illegal pointer value to mark the end of the shadow stack. */
-> diff --git a/kernel/scs.c b/kernel/scs.c
-> index 4ff4a7ba0094..2136edba548d 100644
-> --- a/kernel/scs.c
-> +++ b/kernel/scs.c
-> @@ -5,50 +5,95 @@
->   * Copyright (C) 2019 Google LLC
->   */
->  
-> +#include <linux/cpuhotplug.h>
->  #include <linux/kasan.h>
->  #include <linux/mm.h>
->  #include <linux/scs.h>
-> -#include <linux/slab.h>
-> +#include <linux/vmalloc.h>
->  #include <linux/vmstat.h>
->  
-> -static struct kmem_cache *scs_cache;
-> -
->  static void __scs_account(void *s, int account)
->  {
-> -	struct page *scs_page = virt_to_page(s);
-> +	struct page *scs_page = vmalloc_to_page(s);
->  
->  	mod_node_page_state(page_pgdat(scs_page), NR_KERNEL_SCS_KB,
->  			    account * (SCS_SIZE / SZ_1K));
->  }
->  
-> +/* Matches NR_CACHED_STACKS for VMAP_STACK */
-> +#define NR_CACHED_SCS 2
-> +static DEFINE_PER_CPU(void *, scs_cache[NR_CACHED_SCS]);
-> +
->  static void *scs_alloc(int node)
->  {
-> -	void *s = kmem_cache_alloc_node(scs_cache, GFP_SCS, node);
-> +	int i;
-> +	void *s;
-> +
-> +	for (i = 0; i < NR_CACHED_SCS; i++) {
-> +		s = this_cpu_xchg(scs_cache[i], NULL);
-> +		if (s) {
-> +			memset(s, 0, SCS_SIZE);
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * We allocate a full page for the shadow stack, which should be
-> +	 * more than we need. Check the assumption nevertheless.
-> +	 */
-> +	BUILD_BUG_ON(SCS_SIZE > PAGE_SIZE);i
-
-With SCS_ORDER, you can drop this.
-
-> +
-> +	s = __vmalloc_node_range(PAGE_SIZE, SCS_SIZE,
-> +				 VMALLOC_START, VMALLOC_END,
-> +				 GFP_SCS, PAGE_KERNEL, 0,
-> +				 node, __builtin_return_address(0));
-
-Do we actually need vmalloc here? If we used alloc_pages() + vmap()
-instead, then we could avoid the expensive call to vmalloc_to_page()
-in __scs_account().
-
->  
->  	if (!s)
->  		return NULL;
->  
-> +out:
->  	*__scs_magic(s) = SCS_END_MAGIC;
->  
->  	/*
->  	 * Poison the allocation to catch unintentional accesses to
->  	 * the shadow stack when KASAN is enabled.
->  	 */
-> -	kasan_poison_object_data(scs_cache, s);
-> +	kasan_poison_vmalloc(s, SCS_SIZE);
->  	__scs_account(s, 1);
->  	return s;
->  }
->  
->  static void scs_free(void *s)
->  {
-> +	int i;
-> +
->  	__scs_account(s, -1);
-> -	kasan_unpoison_object_data(scs_cache, s);
-> -	kmem_cache_free(scs_cache, s);
-> +	kasan_unpoison_vmalloc(s, SCS_SIZE);
-
-I don't see the point in unpoisoning here tbh; vfree_atomic() re-poisons
-almost immediately, so we should probably defer this to scs_alloc() and
-only when picking the stack out of the cache.
-
-> +
-> +	for (i = 0; i < NR_CACHED_SCS; i++)
-
-Can you add a comment about the re-entrancy here and why we're using
-this_cpu_cmpxchg() please?
-
-Tnanks,
-
-Will
+> [  648.247810]
+>                the existing dependency chain (in reverse order) is:
+> [  648.247818]
+>                -> #5 (&cpuctx_mutex){+.+.}-{3:3}:
+> [  648.247834]        __mutex_lock+0x88/0x900
+> [  648.247840]        mutex_lock_nested+0x16/0x20
+> [  648.247848]        perf_event_init_cpu+0x89/0x140
+> [  648.247857]        perf_event_init+0x172/0x1a0
+> [  648.247864]        start_kernel+0x655/0x7de
+> [  648.247871]        x86_64_start_reservations+0x24/0x26
+> [  648.247878]        x86_64_start_kernel+0x70/0x74
+> [  648.247887]        secondary_startup_64_no_verify+0xb0/0xbb
+> [  648.247894]
+>                -> #4 (pmus_lock){+.+.}-{3:3}:
+> [  648.247907]        __mutex_lock+0x88/0x900
+> [  648.247914]        mutex_lock_nested+0x16/0x20
+> [  648.247921]        perf_event_init_cpu+0x52/0x140
+> [  648.247929]        cpuhp_invoke_callback+0xa4/0x810
+> [  648.247937]        _cpu_up+0xaa/0x150
+> [  648.247943]        cpu_up+0x79/0x90
+> [  648.247949]        bringup_nonboot_cpus+0x4d/0x60
+> [  648.247958]        smp_init+0x25/0x65
+> [  648.247964]        kernel_init_freeable+0x144/0x267
+> [  648.247972]        kernel_init+0x9/0xf8
+> [  648.247978]        ret_from_fork+0x22/0x30
+> [  648.247984]
+>                -> #3 (cpu_hotplug_lock){++++}-{0:0}:
+> [  648.247998]        cpus_read_lock+0x38/0xb0
+> [  648.248006]        stop_machine+0x18/0x40
+> [  648.248075]        bxt_vtd_ggtt_insert_entries__BKL+0x37/0x50 [i915]
+> [  648.248129]        ggtt_bind_vma+0x43/0x60 [i915]
+> [  648.248192]        __vma_bind+0x38/0x40 [i915]
+> [  648.248242]        fence_work+0x21/0xac [i915]
+> [  648.248292]        fence_notify+0x95/0x134 [i915]
+> [  648.248342]        __i915_sw_fence_complete+0x3b/0x1d0 [i915]
+> [  648.248394]        i915_sw_fence_commit+0x12/0x20 [i915]
+> [  648.248458]        i915_vma_pin_ww+0x25c/0x8c0 [i915]
+> [  648.248520]        i915_ggtt_pin+0x52/0xf0 [i915]
+> [  648.248576]        intel_ring_pin+0x5b/0x110 [i915]
+> [  648.248628]        __intel_context_do_pin_ww+0xd3/0x510 [i915]
+> [  648.248681]        __intel_context_do_pin+0x55/0x90 [i915]
+> [  648.248734]        intel_engines_init+0x43d/0x570 [i915]
+> [  648.248787]        intel_gt_init+0x119/0x2d0 [i915]
+> [  648.248848]        i915_gem_init+0x133/0x1c0 [i915]
+> [  648.248895]        i915_driver_probe+0x68d/0xc90 [i915]
+> [  648.248943]        i915_pci_probe+0x45/0x120 [i915]
+> [  648.248952]        pci_device_probe+0xd8/0x150
+> [  648.248960]        really_probe+0x259/0x460
+> [  648.248967]        driver_probe_device+0x50/0xb0
+> [  648.248973]        device_driver_attach+0xad/0xc0
+> [  648.248980]        __driver_attach+0x75/0x110
+> [  648.248988]        bus_for_each_dev+0x7c/0xc0
+> [  648.248995]        driver_attach+0x19/0x20
+> [  648.249001]        bus_add_driver+0x117/0x1c0
+> [  648.249008]        driver_register+0x8c/0xe0
+> [  648.249015]        __pci_register_driver+0x6e/0x80
+> [  648.249022]        0xffffffffc0a5c061
+> [  648.249028]        do_one_initcall+0x5a/0x2c0
+> [  648.249036]        do_init_module+0x5d/0x240
+> [  648.249043]        load_module+0x2367/0x2710
+> [  648.249049]        __do_sys_finit_module+0xb6/0xf0
+> [  648.249056]        __x64_sys_finit_module+0x15/0x20
+> [  648.249064]        do_syscall_64+0x38/0x50
+> [  648.249071]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [  648.249078]
+>                -> #2 (reservation_ww_class_mutex){+.+.}-{3:3}:
+> [  648.249093]        __ww_mutex_lock.constprop.0+0xac/0x1090
+> [  648.249100]        ww_mutex_lock+0x3d/0xa0
+> [  648.249108]        dma_resv_lockdep+0x141/0x281
+> [  648.249114]        do_one_initcall+0x5a/0x2c0
+> [  648.249121]        kernel_init_freeable+0x220/0x267
+> [  648.249129]        kernel_init+0x9/0xf8
+> [  648.249135]        ret_from_fork+0x22/0x30
+> [  648.249140]
+>                -> #1 (reservation_ww_class_acquire){+.+.}-{0:0}:
+> [  648.249155]        dma_resv_lockdep+0x115/0x281
+> [  648.249162]        do_one_initcall+0x5a/0x2c0
+> [  648.249168]        kernel_init_freeable+0x220/0x267
+> [  648.249176]        kernel_init+0x9/0xf8
+> [  648.249182]        ret_from_fork+0x22/0x30
+> [  648.249188]
+>                -> #0 (&mm->mmap_lock#2){++++}-{3:3}:
+> [  648.249203]        __lock_acquire+0x125d/0x2160
+> [  648.249210]        lock_acquire+0x137/0x3e0
+> [  648.249217]        __might_fault+0x59/0x80
+> [  648.249223]        perf_copy_attr+0x35/0x340
+> [  648.249230]        _perf_ioctl+0x3e1/0xd40
+> [  648.249237]        perf_ioctl+0x34/0x60
+> [  648.249245]        __x64_sys_ioctl+0x8c/0xb0
+> [  648.249252]        do_syscall_64+0x38/0x50
+> [  648.249259]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [  648.249265]
+>                other info that might help us debug this:
+> 
+> [  648.249277] Chain exists of:
+>                  &mm->mmap_lock#2 --> pmus_lock --> &cpuctx_mutex
+> 
+> [  648.249295]  Possible unsafe locking scenario:
+> 
+> [  648.249302]        CPU0                    CPU1
+> [  648.249308]        ----                    ----
+> [  648.249314]   lock(&cpuctx_mutex);
+> [  648.249321]                                lock(pmus_lock);
+> [  648.249330]                                lock(&cpuctx_mutex);
+> [  648.249339]   lock(&mm->mmap_lock#2);
+> [  648.249347]
+>                 *** DEADLOCK ***
+> 
+> [  648.249355] 1 lock held by perf/19761:
+> [  648.249360]  #0: ffffa0027bc2edb0 (&cpuctx_mutex){+.+.}-{3:3}, at: perf_event_ctx_lock_nested+0xd8/0x1f0
+> [  648.249377]
+>                stack backtrace:
+> [  648.249386] CPU: 0 PID: 19761 Comm: perf Not tainted 5.10.0-rc4-next-20201118+ #1
+> [  648.249395] Hardware name: NA ZBOX-CI327NANO-GS-01/ZBOX-CI327NANO-GS-01, BIOS 5.12 04/28/2020
+> [  648.249405] Call Trace:
+> [  648.249413]  dump_stack+0x7d/0x9f
+> [  648.249420]  print_circular_bug.cold+0x13c/0x141
+> [  648.249428]  check_noncircular+0xf1/0x110
+> [  648.249435]  __lock_acquire+0x125d/0x2160
+> [  648.249442]  lock_acquire+0x137/0x3e0
+> [  648.249449]  ? __might_fault+0x2f/0x80
+> [  648.249456]  __might_fault+0x59/0x80
+> [  648.249463]  ? __might_fault+0x2f/0x80
+> [  648.249469]  perf_copy_attr+0x35/0x340
+> [  648.249476]  _perf_ioctl+0x3e1/0xd40
+> [  648.249482]  ? __mutex_lock+0x88/0x900
+> [  648.249489]  ? perf_event_ctx_lock_nested+0xd8/0x1f0
+> [  648.249497]  ? perf_event_ctx_lock_nested+0x1a/0x1f0
+> [  648.249504]  ? mutex_lock_nested+0x16/0x20
+> [  648.249511]  perf_ioctl+0x34/0x60
+> [  648.249518]  __x64_sys_ioctl+0x8c/0xb0
+> [  648.249524]  do_syscall_64+0x38/0x50
+> [  648.249531]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [  648.249539] RIP: 0033:0x7f68dd378f6b
+> [  648.249548] Code: 89 d8 49 8d 3c 1c 48 f7 d8 49 39 c4 72 b5 e8 1c ff ff ff 85 c0 78 ba 4c 89 e0 5b 5d 41 5c c3 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d d5 ae 0c 00 f7 d8 64 89 01 48
+> [  648.249566] RSP: 002b:00007ffd6c018c58 EFLAGS: 00000202 ORIG_RAX: 0000000000000010
+> [  648.249577] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f68dd378f6b
+> [  648.249586] RDX: 00007ffd6c018c90 RSI: 000000004008240b RDI: 0000000000000003
+> [  648.249594] RBP: 00007ffd6c018d40 R08: 0000000000000008 R09: 0000003000000018
+> [  648.249602] R10: fffffffffffff8f8 R11: 0000000000000202 R12: 0000000000000003
+> [  648.249611] R13: 00007ffd6c018c90 R14: 0000007800000005 R15: 000080056c01a5a0
