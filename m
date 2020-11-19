@@ -2,154 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9360C2B956E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EF92B9574
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgKSOp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:45:29 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37814 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728214AbgKSOp2 (ORCPT
+        id S1728086AbgKSOqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:46:08 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:1166 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727875AbgKSOqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:45:28 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJEjMO3067579;
-        Thu, 19 Nov 2020 08:45:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605797122;
-        bh=KsKbukhmAd8emgYJwItNnBQsIjp8rGjR04mDjYgnDMI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=dui0cc5Kpz131YaPMGnkuKFu3FOMwu0/NlOh7f1/GdPdEF39JcWSZFEviC5advmaQ
-         xZWRIgSy3DXEdp2UUCCH+aS/GN/WmqRgo3MDvTMcYUgOwpRY7VoIXMlOalxdmhb+Om
-         V4zp6N1MCm2OlTmp+XpZyk31b746rlqUYTrA8XwQ=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJEjML1127732
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 08:45:22 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
- Nov 2020 08:45:21 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 19 Nov 2020 08:45:21 -0600
-Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJEjJfL117651;
-        Thu, 19 Nov 2020 08:45:19 -0600
-Subject: Re: [PATCH 1/2] arm64: dts: ti: k3-j7200-som-p0: main_i2c0 have an
- ioexpander on the SOM
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <nm@ti.com>,
-        <t-kristo@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nsekhar@ti.com>
-References: <20201119132627.8041-1-peter.ujfalusi@ti.com>
- <20201119132627.8041-2-peter.ujfalusi@ti.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <3a4cb3c0-2242-cb81-9c38-85e93ddc7dfc@ti.com>
-Date:   Thu, 19 Nov 2020 20:15:17 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 19 Nov 2020 09:46:07 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJEgx6g023029;
+        Thu, 19 Nov 2020 09:46:06 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34td19hx6f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 09:46:06 -0500
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0AJEk5qr031326
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 19 Nov 2020 09:46:05 -0500
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 19 Nov 2020 09:46:04 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 19 Nov 2020 09:46:04 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 19 Nov 2020 09:46:04 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AJEk2KT029332;
+        Thu, 19 Nov 2020 09:46:02 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2] uio: pruss: use devm_clk_get() for clk init
+Date:   Thu, 19 Nov 2020 16:50:59 +0200
+Message-ID: <20201119145059.48326-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201111112242.62116-2-alexandru.ardelean@analog.com>
+References: <20201111112242.62116-2-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-In-Reply-To: <20201119132627.8041-2-peter.ujfalusi@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-19_09:2020-11-19,2020-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=3
+ impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0 clxscore=1015
+ phishscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ mlxlogscore=676 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This change uses devm_clk_get() to obtain a reference to the clock. It has
+the benefit that clk_put() is no longer required, and cleans up the exit &
+error path.
 
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
 
-On 11/19/20 6:56 PM, Peter Ujfalusi wrote:
-> It is used to control several SOM level muxes to make sure that the correct
-> signals are routed to the correct pin on the SOM <-> CPB connectors.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
+Changelog v1 -> v2:
+* reverted silly/goofed `return ret` to `return PTR_ERR(gdev->pruss_clk);`
+  this caused a warning about `ret` being uninitialized
 
-Yes, there is indeed a I2C GPIO expander on SOM that's missing from DT
-today. So this change looks good to me.
+ drivers/uio/uio_pruss.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+diff --git a/drivers/uio/uio_pruss.c b/drivers/uio/uio_pruss.c
+index 41470c4dba02..e9096f53b4cc 100644
+--- a/drivers/uio/uio_pruss.c
++++ b/drivers/uio/uio_pruss.c
+@@ -110,7 +110,6 @@ static void pruss_cleanup(struct device *dev, struct uio_pruss_dev *gdev)
+ 			      gdev->sram_vaddr,
+ 			      sram_pool_sz);
+ 	clk_disable(gdev->pruss_clk);
+-	clk_put(gdev->pruss_clk);
+ }
+ 
+ static int pruss_probe(struct platform_device *pdev)
+@@ -131,7 +130,7 @@ static int pruss_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	/* Power on PRU in case its not done as part of boot-loader */
+-	gdev->pruss_clk = clk_get(dev, "pruss");
++	gdev->pruss_clk = devm_clk_get(dev, "pruss");
+ 	if (IS_ERR(gdev->pruss_clk)) {
+ 		dev_err(dev, "Failed to get clock\n");
+ 		return PTR_ERR(gdev->pruss_clk);
+@@ -140,7 +139,7 @@ static int pruss_probe(struct platform_device *pdev)
+ 	ret = clk_enable(gdev->pruss_clk);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to enable clock\n");
+-		goto err_clk_put;
++		return ret;
+ 	}
+ 
+ 	regs_prussio = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+@@ -229,8 +228,6 @@ static int pruss_probe(struct platform_device *pdev)
+ 		gen_pool_free(gdev->sram_pool, gdev->sram_vaddr, sram_pool_sz);
+ err_clk_disable:
+ 	clk_disable(gdev->pruss_clk);
+-err_clk_put:
+-	clk_put(gdev->pruss_clk);
+ 
+ 	return ret;
+ }
+-- 
+2.17.1
 
-Regards
-Vignesh
-
->  .../dts/ti/k3-j7200-common-proc-board.dts     | 11 --------
->  arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi   | 26 +++++++++++++++++++
->  2 files changed, 26 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> index 6b3863108571..2721137d8943 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> @@ -43,13 +43,6 @@ J721E_WKUP_IOPAD(0x0098, PIN_INPUT, 0) /* (L4) MCU_MDIO0_MDIO */
->  };
->  
->  &main_pmx0 {
-> -	main_i2c0_pins_default: main-i2c0-pins-default {
-> -		pinctrl-single,pins = <
-> -			J721E_IOPAD(0xd4, PIN_INPUT_PULLUP, 0) /* (V3) I2C0_SCL */
-> -			J721E_IOPAD(0xd8, PIN_INPUT_PULLUP, 0) /* (W2) I2C0_SDA */
-> -		>;
-> -	};
-> -
->  	main_i2c1_pins_default: main-i2c1-pins-default {
->  		pinctrl-single,pins = <
->  			J721E_IOPAD(0xdc, PIN_INPUT_PULLUP, 3) /* (U3) ECAP0_IN_APWM_OUT.I2C1_SCL */
-> @@ -146,10 +139,6 @@ &cpsw_port1 {
->  };
->  
->  &main_i2c0 {
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&main_i2c0_pins_default>;
-> -	clock-frequency = <400000>;
-> -
->  	exp1: gpio@20 {
->  		compatible = "ti,tca6416";
->  		reg = <0x20>;
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-> index fbd17d38f6b6..7b5e9aa0324e 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-> @@ -48,6 +48,15 @@ J721E_WKUP_IOPAD(0x28, PIN_INPUT, 1) /* (A7) MCU_OSPI0_D7.MCU_HYPERBUS0_DQ7 */
->  	};
->  };
->  
-> +&main_pmx0 {
-> +	main_i2c0_pins_default: main-i2c0-pins-default {
-> +		pinctrl-single,pins = <
-> +			J721E_IOPAD(0xd4, PIN_INPUT_PULLUP, 0) /* (V3) I2C0_SCL */
-> +			J721E_IOPAD(0xd8, PIN_INPUT_PULLUP, 0) /* (W2) I2C0_SDA */
-> +		>;
-> +	};
-> +};
-> +
->  &hbmc {
->  	/* OSPI and HBMC are muxed inside FSS, Bootloader will enable
->  	 * appropriate node based on board detection
-> @@ -131,3 +140,20 @@ &mailbox0_cluster10 {
->  &mailbox0_cluster11 {
->  	status = "disabled";
->  };
-> +
-> +&main_i2c0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&main_i2c0_pins_default>;
-> +	clock-frequency = <400000>;
-> +
-> +	exp_som: gpio@21 {
-> +		compatible = "ti,tca6408";
-> +		reg = <0x21>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +		gpio-line-names = "USB2.0_MUX_SEL", "CANUART_MUX1_SEL0",
-> +				  "CANUART_MUX2_SEL0", "CANUART_MUX_SEL1",
-> +				  "UART/LIN_MUX_SEL", "TRC_D17/AUDIO_REFCLK_SEL",
-> +				  "GPIO_LIN_EN", "CAN_STB";
-> +	};
-> +};
-> 
