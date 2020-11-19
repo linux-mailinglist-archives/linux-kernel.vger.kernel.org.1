@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7B02B9295
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 151562B9296
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgKSM36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
+        id S1727240AbgKSMaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:30:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgKSM35 (ORCPT
+        with ESMTP id S1725783AbgKSMaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:29:57 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43288C0613CF;
-        Thu, 19 Nov 2020 04:29:57 -0800 (PST)
-Received: from ip4d149f6e.dynamic.kabel-deutschland.de ([77.20.159.110] helo=[192.168.66.101]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kfj4S-0001JF-0u; Thu, 19 Nov 2020 13:29:52 +0100
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1605203187.git.linux@leemhuis.info>
- <20201113153313.68ff210c@lwn.net>
- <458eb542-ff4d-e734-67fd-01e8378d4864@leemhuis.info>
- <20201118172958.5b014a44@lwn.net>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [RFC PATCH v2 00/26] Make reporting-bugs easier to grasp and yet
- more detailed & helpful
-Message-ID: <ada5d01f-47a9-5734-2fc8-3de2d7aa86e4@leemhuis.info>
-Date:   Thu, 19 Nov 2020 13:29:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 19 Nov 2020 07:30:16 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0228C0613CF;
+        Thu, 19 Nov 2020 04:30:15 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id w24so6600680wmi.0;
+        Thu, 19 Nov 2020 04:30:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=QlqkN556Z49lQcx0JT0IHaJ4dDGmyG5HBtei0m8ZDK0=;
+        b=uWKXMulA/l2HDQwFoxDoO0K+E4/PnXJoCvDZy0KJ/f/jfwMuAHQS0w5NZnBMnYW28T
+         i2CTXqH4/TYe/RXPJa2lQMPd6SkC5SRKWNLepdma2rhbkOeFGcb2SLH2GC8Nur94ptmn
+         u0OidKFo47z1P0Hk044BkMENkjasROBW0y83zizTmL7LTW0rKShdNkR78W4rdQdWm5rE
+         jdESRO56vLcwtmjAEvrRqtsGECDehFfIzqVEbzjZg7kzKQrTNe+4wqebK+MMgH0aLPMK
+         r8dQCSTOOd6CSQamlNeY0pnwPYea8BA/Wn3niLk8z61yLNAbJZ/9Tu6yI+WoflKT8hGQ
+         NWvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=QlqkN556Z49lQcx0JT0IHaJ4dDGmyG5HBtei0m8ZDK0=;
+        b=P9IGWo0HleE+AvLtb7ZbP6LdQURGUf9Grk5uOmLTD8s+MEgUAf8fMYRffyw8BmVE7Q
+         H3bTmXf+nmKo6GrZ0rH6+QpvRvQSYTd+WhTN12I1NSNiPgUzjqtOfBMF94g6pj3sT6rE
+         AXM7fvyIt44yA3/Y9nIS3lIfwbzUEAzeyw97/1rC5EVtzdWu4RwwHOxvUgNiLqqZX8Bz
+         ip6lalb65jPQuqad7bZygjrZYK6O2FPt1LZ38JK/KaTsR/P95/ajGzapb5mIx72v/j0o
+         8xKBGk5gdgJ2gqMEh+p77O6uHSKpL6tqgKuSBEpQfayUp8CqsLAoDUTWGlvwG2InyNU7
+         phgA==
+X-Gm-Message-State: AOAM530LUR2sOHg0mN/i3B0uEXfWbEbH6inQYGNo8/fwDFH+thFnz3qC
+        43eSnhrqmyQvnbRJxTvy2iASYsYkpVD2Aw==
+X-Google-Smtp-Source: ABdhPJwn42w0d1UXsMoJq025+Vw8IYfhyncqwDJfPhvbaBFx+yDmHU+m6exFyEM3E0+LTM7RdKeSNw==
+X-Received: by 2002:a1c:4909:: with SMTP id w9mr4271659wma.15.1605789014302;
+        Thu, 19 Nov 2020 04:30:14 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f23:2800:180e:21bb:3b0d:82c8? (p200300ea8f232800180e21bb3b0d82c8.dip0.t-ipconnect.de. [2003:ea:8f23:2800:180e:21bb:3b0d:82c8])
+        by smtp.googlemail.com with ESMTPSA id h20sm9012300wmb.29.2020.11.19.04.30.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 04:30:13 -0800 (PST)
+Subject: Re: [PATCH] mdio_bus: suppress err message for reset gpio
+ EPROBE_DEFER
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Cc:     linux-kernel@vger.kernel.org
+References: <20201118142426.25369-1-grygorii.strashko@ti.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <0329ed05-371b-0bb5-4f85-75ecaff6a70b@gmail.com>
+Date:   Thu, 19 Nov 2020 13:30:09 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <20201118172958.5b014a44@lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1605788997;cd067995;
-X-HE-SMSGID: 1kfj4S-0001JF-0u
+In-Reply-To: <20201118142426.25369-1-grygorii.strashko@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 19.11.20 um 01:29 schrieb Jonathan Corbet:
-> On Sun, 15 Nov 2020 11:13:52 +0100
-> Thorsten Leemhuis <linux@leemhuis.info> wrote:
+Am 18.11.2020 um 15:24 schrieb Grygorii Strashko:
+> The mdio_bus may have dependencies from GPIO controller and so got
+> deferred. Now it will print error message every time -EPROBE_DEFER is
+> returned from:
+> __mdiobus_register()
+>  |-devm_gpiod_get_optional()
+> without actually identifying error code.
 > 
->>> So I've not had a chance to try to read through the whole thing again,
->>> will try to do so in the near future.
->> Great, thx, looking forward to it.
-> OK, I have made a *quick* pass through the whole thing and sent a small
-> number of comments separately.
-
-Great, thx, much appreciated.
-
-> There are things that could be tweaked
-> (there always will be) but I'm not sure we should worry about those yet.
-> I would suggest doing this:
+> "mdio_bus 4a101000.mdio: mii_bus 4a101000.mdio couldn't get reset GPIO"
 > 
->   - Collapse the whole thing down to a patch adding reporting-bugs-v2.rst
->     (or some suitable name).
-
-Maybe just "reporting-issues.rst" or "reporting-issues-wip.rst". The 
-text talks about issues anyway and rarely uses the word "bug".
-
->  I do wonder if it should also move to the
->     process manual as part of this; not only admins will report bugs.
-
-
-I had wondered about this myself a few weeks ago, but I assumed someone 
-had good reasons to put it in the admin section.
-
-/me looks closer
-
-Hmmm, now I'm unsure myself where to place it:
-
-  * Documentation/admin/ is introduced as "The Linux kernel user’s and 
-administrator’s guide" 
-(https://www.kernel.org/doc/html/latest/admin-guide/). So maybe it's the 
-right place that just uses a directory name that's easily misunderstood :-/
-
-  * the process section starts with the words "So you want to be a Linux 
-kernel developer? Welcome!" 
-(https://www.kernel.org/doc/html/latest/process/). That might be a bit 
-intimidating for people that just want to report a bug.
-
-I guess it's best if you decide.
-
->   - Add a comment at the top saying it's a proposed replacement and
->     soliciting comments.  You could also put some of your other questions
->     into the text for now and see if anybody reacts.
+> Hence, suppress error message when devm_gpiod_get_optional() returning
+> -EPROBE_DEFER case.
 > 
->   - In a separate patch you could add a comment to the existing document
->     pointing to the new one as the true source of wisdom.
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> ---
+>  drivers/net/phy/mdio_bus.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+> index 757e950fb745..54fc13043656 100644
+> --- a/drivers/net/phy/mdio_bus.c
+> +++ b/drivers/net/phy/mdio_bus.c
+> @@ -546,10 +546,11 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+>  	/* de-assert bus level PHY GPIO reset */
+>  	gpiod = devm_gpiod_get_optional(&bus->dev, "reset", GPIOD_OUT_LOW);
+>  	if (IS_ERR(gpiod)) {
+> -		dev_err(&bus->dev, "mii_bus %s couldn't get reset GPIO\n",
+> -			bus->id);
+> +		err = PTR_ERR(gpiod);
+> +		if (err != -EPROBE_DEFER)
+> +			dev_err(&bus->dev, "mii_bus %s couldn't get reset GPIO %d\n", bus->id, err);
+>  		device_del(&bus->dev);
+> -		return PTR_ERR(gpiod);
+> +		return err;
+>  	} else	if (gpiod) {
+>  		bus->reset_gpiod = gpiod;
+>  
+> 
 
-Will do.
-
->   - Dual licensed CC-SA-4.0 is fine with me.  CC-BY is OK if you really
->     want to do it that way.  
-
-I'm unsure and would appreciate options from others here.
-
-Here are some of my thoughts about this:
-
-What do we loose by dual-licensing it under a liberal license like 
-CC-BY? It afaics makes it a lot more attractive for websites or books 
-authors to use this text as a base, as they don't need to fear that 
-"share alike" or the GPL might have consequences on the surroundings. 
-I'd say that's a good thing for the kernel, as it increases the chances 
-the texts built upon ours remain close to what we expect on this topic.
-
-That's why I currently think using CC-BY is a good idea.
-
-> Either way, though, you'll need to add the
->     license itself under LICENSES/preferred before it can go into the SPDX
->     tag.
-
-Agh, yes, of course, will keep it in mind when above point is settled.
-
-Ciao, Thorsten
+Using dev_err_probe() here would simplify the code.
