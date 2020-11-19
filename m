@@ -2,103 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0342B908B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DB42B90CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgKSLAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:00:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbgKSLAh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:00:37 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E4BC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:00:36 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id p8so5973644wrx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:00:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=+FzrNTcpFE9hDbVxONey2uDdLqJnkfcKNBqwstAfUjA=;
-        b=oc9IXkSAKZdgGh0nCj2FWENZoZQAVnZAFzUO91wu7J4rIJqXVbDeYRbmhnV9wbi3TX
-         a0xsXwr5ILwgOAiSWUR5QNWCJ355QgTFq8gkwm9YVhNPEnHq1/A/zuDsT/AjJnxXr2Vw
-         GSyJ64+rR74/6bZXfwcSVREK9oMg16POSwrPlkGGp8FGuY2i2Fm+IXv2Tsa7x9YWg69j
-         /V1X3y8oFr4tWnPioN7aCSfO+RKCcUj1AmTCSTecmYVb6RmCPAWHIBjOQ+YOLbgy+dmw
-         XLC+R1Xcc+JvoQZBSwxKT/SibR2zipn3EwUQ1YlvncOshQAmKyA91HFxG1aTd42T7hlb
-         0gxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=+FzrNTcpFE9hDbVxONey2uDdLqJnkfcKNBqwstAfUjA=;
-        b=BHf2L3TKwVBvE4jBsMa4rP+TCRjm/fpaFc8/inoeM8sUwRTkSKAec98MUc/UJasyBb
-         ePX6lHHiIwUlndnSgJW9SOUtaxj9doQunP3618eMa4QUkegM/oHqYwKHa4thep1ys0b1
-         M5L6dimlY9UXuXYFsbvgVBncUwm5wvnkA/cpmHYteMx2FMv4vqshzjRL2mKDGFgLxyGv
-         KSHu4jBcV+nha5On4PUUyYmZj6l9ET1cngrfzZV/7SJ/mT+ucsk8ZniqSLUg+qOBL5Sb
-         tWX0TR3S5SJRxxSdMx/v0chHkVsLfehEhsOkoG/ckbEpen7t4PV81sANbeHoPhvGsOHf
-         lVCA==
-X-Gm-Message-State: AOAM533m4zp4qH7N4lWSNB6rH9c2iYpB3xtjxwksNEE+wZLCOg3sRPaq
-        SqMb8iZcysiFWF85lsvCjOuKng==
-X-Google-Smtp-Source: ABdhPJyA/UJ/ti4GuYRSAsZTj6mTwwzCy2CX/kou5bCokcWDSY3BNtaV+I7WuIlcwYTqGk5Ojq/lBg==
-X-Received: by 2002:adf:f94b:: with SMTP id q11mr10027320wrr.351.1605783634533;
-        Thu, 19 Nov 2020 03:00:34 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5150:1004:6c70:8db9? ([2a01:e34:ed2f:f020:5150:1004:6c70:8db9])
-        by smtp.googlemail.com with ESMTPSA id u5sm33690784wro.56.2020.11.19.03.00.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 03:00:33 -0800 (PST)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Tony Lindgren <tony@atomide.com>, Keerthy <j-keerthy@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] thermal fixes for v5.10-rc5
-Message-ID: <e1bcd711-a3bf-58aa-7efd-053fa0fe5514@linaro.org>
-Date:   Thu, 19 Nov 2020 12:00:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1726830AbgKSLSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:18:01 -0500
+Received: from mail-eopbgr80058.outbound.protection.outlook.com ([40.107.8.58]:22656
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726485AbgKSLSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 06:18:00 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=awSIONBXMjV8tbweTDmvaCxErryjGCxAtpgtuLB7twKCCATqmIDR9OcV271yA6HA3RkZ/rVznIT+yf2AW4f0sCxtxblJfmyiEJQr5omSF67waMjbjSXpb/J2D700rz6emcQ8uG5b6ThVQpWAAHwKB94cHobY5cpSn0KTXSIaTQI5ED0qeGr94VgFV9gsXQ9vQjca6UAfyRFRQTT9M0STHvPQcgQr+Erwte9X/iIk76bFm14DwPwqdwjD8rQ6qtjjNZkNJ9yNyzA7OHlm8jnRa7oQ394mnnzRP9iGRDRHm50fznUKo1+Utt6Vwm5+MzpAWNeVfkTLKwtVVzscZV+rhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+g784nD/VVvmmt5hBphtXKt7f1kPIYsYpVPxBFGO5po=;
+ b=R6jFb7aIbFUtKV+cwcn0WrF3ptsOPz/m6XUaHJ1CKS8A5o/SGfzqvzvBC9Jwdkp9NluVTV51Pz/sKC5PgmGOAfejA3677Y7rDrRP9iTEfou9jYYBlWcRKSRlYiYINvQWshjqFR5QM2zJuUjg+gLqDYM7ngzZ38sxiTr0h6ZYLCdVogETvH9//kmL9YIa6a365NppkUUQtlsf4kUCD6FNmXA9zLTGVheBjf6d/MBwLV3Fow3sXPc0lp9zHdeDhLzXrDsJoJEO1gz5FM7h7wVS+bGmUv4bDzt7KRiAqdib4COzwWNWO7ckFAteL902ScfuIcba8KlyV3FvytyvPQmlSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+g784nD/VVvmmt5hBphtXKt7f1kPIYsYpVPxBFGO5po=;
+ b=MCi71j1zEy4ulAMrQ9/YAncqBVPMkH5WIToCYrKtZvNc/MI3zrcshcHHTtzrB42RyfPJFzOYlqdy6FwUANah2IDXP/OeUT+MSzIyebkeJG0Ts723qpoxD+FyXu8hCPkSNKiAynagQsfVxCCUWGqgJ5DVdEQ+jMXBqEOXyD6mJsE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
+ by AS8PR04MB7687.eurprd04.prod.outlook.com (2603:10a6:20b:291::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Thu, 19 Nov
+ 2020 11:17:56 +0000
+Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
+ ([fe80::3cfc:a92e:75ad:ce4a]) by AM6PR04MB4966.eurprd04.prod.outlook.com
+ ([fe80::3cfc:a92e:75ad:ce4a%3]) with mapi id 15.20.3564.029; Thu, 19 Nov 2020
+ 11:17:56 +0000
+From:   Dong Aisheng <aisheng.dong@nxp.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-imx@nxp.com, dongas86@gmail.com,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [PATCH 1/3] driver core: simply go out if the same device_link is added again
+Date:   Thu, 19 Nov 2020 19:00:34 +0800
+Message-Id: <20201119110036.19959-1-aisheng.dong@nxp.com>
+X-Mailer: git-send-email 2.23.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR06CA0194.apcprd06.prod.outlook.com (2603:1096:4:1::26)
+ To AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from b29396-OptiPlex-7040.ap.freescale.net (119.31.174.66) by SG2PR06CA0194.apcprd06.prod.outlook.com (2603:1096:4:1::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3589.21 via Frontend Transport; Thu, 19 Nov 2020 11:17:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: b7c943f8-41ed-4868-0ae8-08d88c7cc3c7
+X-MS-TrafficTypeDiagnostic: AS8PR04MB7687:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AS8PR04MB7687D27DD22139EAC71C4EE280E00@AS8PR04MB7687.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pgmftl7jOnsJJ1cqSty+l6+//X+hcuSUB9rdlGm0EYDVzXOmd9YLZdwwScXSsj28rd9zq2U2GLMAt9b39SwYE+UmWJUdlT4n1boYVD5380hQD+4/J5FYpoOkAaLRBY77QnXW0OuSKtK7AxuGCWu0Hn/7KfspF+1SKmvGS8BlbQhJ9GsGiIqTK3pmmcOw3gpYg1G//h79oNL/mlH1/kckFzveeuU8OacTXw184zwZ2wUGwZkVu4vKn42EIp3QMuc0av5f0xGLa1A7P+w1KI2OpG757AuXJkRMk2udYVzvh/cYFRdna4de6D+vpS/gu+cN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(136003)(376002)(346002)(66476007)(66946007)(66556008)(6506007)(83380400001)(52116002)(6666004)(2616005)(6916009)(4744005)(6486002)(316002)(1076003)(956004)(4326008)(478600001)(16526019)(2906002)(8936002)(86362001)(26005)(186003)(5660300002)(6512007)(36756003)(54906003)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ewbTlF9STv9a+XVuPAjg6eDQSBa62bhKtHU7Wi8Fj66Gmn9yXaAZiw4o41OCFDtipxmNdDcCOE7YGLLm0ArVp6x3S9T3CTS+67vbcStNR/sriQ5CHB7KIp1vAGxSguJO5Tg5ZbCFGpMk7qN+MwhgmGqPJ9xeZzabmOckGCy9eCj+/A1CXTf1AcQlXAIHyIBLH/HFeCPr/ihBdJniou2IJ8abSh+bfSA7S73lfz8yJ7CoaJ6F7R/dN/kVpaomKjgSITqNKIkZ06FIfqyErFTqp0CkwcvAGMnwyHCwusGrpoy9saNG6m5HJCdSTQp/to5KtTBfopf3uYGXF7GECfAvgXcKqUhNueFduLBocrhgDBvgRdrlbPg+nIubS+UXUGBdLXxOul18kLerZiCUY77ypAYtldxDYLNrxFaeFu0LccA5s7O6TQI/ao03LcQCXc2EI+pIYyZdAPbGvwMEQz8HfI5LQdJKwTq2UIPihn5I3s0SYyqgEVHo1Xj9tC4ZyIvynhNO6p2cZet+rDc2VL8F8+eePSNHEcLhqELIwtOMvHwQ+ZfruEg4MCnYzQffZHz+bOQzB5mkKt0NaChBrArLyEqa8eOpbiOfOGKzGtT0mTgBxuL5jRjJRJZk97LXDQqHFVKOH8S5xZwEdgIszJgUHg==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7c943f8-41ed-4868-0ae8-08d88c7cc3c7
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2020 11:17:56.6527
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AM+4kV6zpbZWxTfWmUDz6nz70N+aq20bh1LBZmNtiVGLyX19pwD4NaeyDPDoRT9wY3q+aBc9097V3sjhy9eU0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7687
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit f8394f232b1eab649ce2df5c5f15b0e528c92091:
+It's possible that the same device link may be added by parsing the
+function dependecy in DT. e.g. clock/gpio/regulators.
+Simply go out for this case.
 
-  Linux 5.10-rc3 (2020-11-08 16:10:16 -0800)
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+---
+ drivers/base/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-are available in the Git repository at:
-
-
-ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-tags/thermal-v5.10-rc5
-
-for you to fetch changes up to b98467fe96d2415836d154ecfe1cd389bf4147b5:
-
-  thermal: ti-soc-thermal: Disable the CPU PM notifier for OMAP4430
-(2020-11-12 12:30:29 +0100)
-
-----------------------------------------------------------------
-- Disable the CPU PM notifier for OMAP4430 for suspend in order to
-  prevent wrong temperature leading to a critical shutdown (Peter
-  Ujfalusi)
-
-----------------------------------------------------------------
-Peter Ujfalusi (1):
-      thermal: ti-soc-thermal: Disable the CPU PM notifier for OMAP4430
-
- drivers/thermal/ti-soc-thermal/ti-bandgap.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 4c03bdd3a268..7d91d4074136 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -567,6 +567,9 @@ struct device_link *device_link_add(struct device *consumer,
+ 		if (link->consumer != consumer)
+ 			continue;
+ 
++		if (flags == link->flags)
++			goto out;
++
+ 		if (flags & DL_FLAG_PM_RUNTIME) {
+ 			if (!(link->flags & DL_FLAG_PM_RUNTIME)) {
+ 				pm_runtime_new_link(consumer);
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.23.0
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
