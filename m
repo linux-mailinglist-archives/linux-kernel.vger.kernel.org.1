@@ -2,133 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10452B9E5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE052B9E60
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727232AbgKSX2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 18:28:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34142 "EHLO
+        id S1726433AbgKSXcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 18:32:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726580AbgKSX15 (ORCPT
+        with ESMTP id S1725890AbgKSXcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 18:27:57 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E09C0613D4;
-        Thu, 19 Nov 2020 15:27:57 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id y17so10300389ejh.11;
-        Thu, 19 Nov 2020 15:27:57 -0800 (PST)
+        Thu, 19 Nov 2020 18:32:01 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61198C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 15:32:01 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 81so5687843pgf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 15:32:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PEG2CD9QwVdNv/i79I+tmKVH9JHsgkoJa/Bpyng44Pw=;
-        b=pDS4YWZM0xDCSyd7nQ6UXWzJ6iVm+gjhGcLXJPGeQAuGW+RgzJJJwSUJeeJ28Scfa0
-         OavWqmLPvWVxtQf5u+xeEUtJaJexbLO5SQV7wnuk4pce+xjeXBpbqUtMGUBnQB/L/823
-         FDnHmUCBsGIyQUZeKFf2cT4ru7uBHB9X+yFY/Zoq7M6MiRfBRl8fTsCswNc6s3guI35k
-         6XbEYg5j4bZMiAigGMBWoofx2q5iIfgFNKAemAVOF8RAEnIV8kcnCfkjjNPQ8k+1ztgO
-         e7h+CeFWlam70lGYaehyBuqoZi0BC9m6pVrtOV8abLkOMq7iNFIyZ1oK12MZ9cXKGa1P
-         sgmg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xw+g+F80uZmD1GmLRMgTYJeVANg0df1WU0QZmgwAnXY=;
+        b=FXg4YhoYxuvVKCRaP+Z4oXHYagXHA+E9YIEQRET2goUn0QFD5+KIF3vYerqOq4aiMT
+         TDHoN4RKfzrNh1/s8ui6eo+Jd8sBJbNSvWZo+4oLqYXNN/ixs97D2PQpSC13IFi+v3qm
+         Sx00zxvjiKIJkxTy6WOmoEjI3UCmwyVlwNbrRcltuwlK0MN6k11yb0sJNvj9GRZQrgLY
+         DPjFfygorfvXrqlN33IHovaiIFHCFCH0s8dI0sUQQMmMn3kXz3e1PLf1YIygc5aB2LSs
+         121iS4OXCAJeyV7Es+ncZW6O/ixIoV0sFF9Y1Qdb22iwvPl12TBrGF+w8SdbGICqEvnO
+         ULng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PEG2CD9QwVdNv/i79I+tmKVH9JHsgkoJa/Bpyng44Pw=;
-        b=S/dKgnG18JW0UolUcrXmnwWV9ggYHDu+WSW1JMcVGjgyB5sbDRX/mQ78G+vs9YITCq
-         bnLwS1eepGcG8WxA4pdDVAoL6t1u90y1mv6b4P+fp6DFJH3NLEgEdydIrIvJ0uZNOnN5
-         Oo3H4a1S7tOILbIOg+i/mKBK4koE67eC4jgmUcWobwjuTDK64DKrW25zeO7t0xsB+DWO
-         D3jJowK7lfRpvuORNNk5IsH1uBf+DQLdAn3/HeCJqbk8cV8UnfW02QIyfzdW42cB+MYd
-         5rcb1T35hxcoF5XeDCHZ9qL6SxgL7odnfcn+EBdclPMYaZ5eo8Tpm9IBXsrjQQMD8SdD
-         WRiQ==
-X-Gm-Message-State: AOAM532km5Dh6qadsIEget2Z7cptaNFwPuNKwamYgADo9MDF0LrPSzjV
-        10o4wsQtXZFxmLMPq+wCObkgyH0ledWRiA==
-X-Google-Smtp-Source: ABdhPJxrJaJb5bLlCj4U3qmJ2UGveo4KTfxI/RC3Z19irfRIvbrRMnlilouwTp2Y4RfowAF4ODg1FQ==
-X-Received: by 2002:a17:906:b745:: with SMTP id fx5mr20185565ejb.103.1605828475893;
-        Thu, 19 Nov 2020 15:27:55 -0800 (PST)
-Received: from localhost.localdomain (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
-        by smtp.gmail.com with ESMTPSA id n3sm458114ejl.33.2020.11.19.15.27.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 15:27:55 -0800 (PST)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xw+g+F80uZmD1GmLRMgTYJeVANg0df1WU0QZmgwAnXY=;
+        b=K9ToiuUhcVXKqH5ZcvZ6bV2t61wtYc5JS9BIId8dmrGIttQPb4Od16+RvEjpDY/urV
+         afKQdS4Pc8lnlOBKkWkW4rysecL7hM4MyKjClZoX5nFQglu2LiC/K0iMSgj8E+pgdEV0
+         yzHXbhtpZFCt/zl9jYk7rKm7JZ93roj1m+4Q5mxR9wTDoqtYBXhbJ/OX9Efg1Sf6piGf
+         cLNlRXnAd+pJ46r3bn88klhfak4J0QyPVBqj/WV2hZE2uVpFdNc0XmZqKVzXUrCabX6t
+         bo8hYvhj6cvIEmtulXshSEMXnUPDG9F3BRgriGZgp5lpkBkCf5LAFEZ8cnSGWyhaGFKz
+         J4hg==
+X-Gm-Message-State: AOAM533rn1JKv9HPLSV0j/T9p11cW63Av6a4MYqKBAB42UBOdfNzhgXi
+        +1cTEfJtlKEVgPO5DewyKfI=
+X-Google-Smtp-Source: ABdhPJxPHYyjJ4HJ6b2nEo+vep/0O4tHnLBu0wBGidg0MUk+J1JRkRq7hTUXlmPVs8EVJ6Z2fNRPog==
+X-Received: by 2002:aa7:9f0c:0:b029:18a:e524:3b90 with SMTP id g12-20020aa79f0c0000b029018ae5243b90mr11414788pfr.77.1605828720703;
+        Thu, 19 Nov 2020 15:32:00 -0800 (PST)
+Received: from f8ffc2228008.ant.amazon.com (61-68-227-232.tpgi.com.au. [61.68.227.232])
+        by smtp.gmail.com with ESMTPSA id m18sm1030821pfk.10.2020.11.19.15.31.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 15:31:59 -0800 (PST)
+Subject: Re: [PATCH -tip 01/32] sched: Wrap rq::lock access
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] iov_iter: optimise iter type checking
-Date:   Thu, 19 Nov 2020 23:24:39 +0000
-Message-Id: <70d65e06b22cfb11f70b92c12c4d176f36b0e646.1605827965.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1605827965.git.asml.silence@gmail.com>
-References: <cover.1605827965.git.asml.silence@gmail.com>
+Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-2-joel@joelfernandes.org>
+From:   "Singh, Balbir" <bsingharora@gmail.com>
+Message-ID: <1489211d-594c-d244-0111-8bd8a27fb945@gmail.com>
+Date:   Fri, 20 Nov 2020 10:31:39 +1100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201117232003.3580179-2-joel@joelfernandes.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The problem here is that iov_iter_is_*() helpers check types for
-equality, but all iterate_* helpers do bitwise ands. This confuses
-compilers, so even if some cases were handled separately with
-iov_iter_is_*(), corresponding ifs in iterate*() right after are not
-eliminated.
+On 18/11/20 10:19 am, Joel Fernandes (Google) wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> In preparation of playing games with rq->lock, abstract the thing
+> using an accessor.
+> 
 
-E.g. iov_iter_npages() first handles bvecs and discards, but
-iterate_all_kinds() still checks those iter types and generates actually
-unreachable code including iter init, for(), etc.
+Could you clarify games? I presume the intention is to redefine the scope of the lock based on whether core sched is enabled or not? I presume patch 4/32 has the details.
 
-size lib/iov_iter.o
-before:
-   text    data     bss     dec     hex filename
-  24409     805       0   25214    627e lib/iov_iter.o
-
-after:
-   text    data     bss     dec     hex filename
-  23785     793       0   24578    6002 lib/iov_iter.o
-
-Most of it is ifs that are executed but never true.
-
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- include/linux/uio.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index 72d88566694e..c5970b2d3307 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -57,27 +57,27 @@ static inline enum iter_type iov_iter_type(const struct iov_iter *i)
- 
- static inline bool iter_is_iovec(const struct iov_iter *i)
- {
--	return iov_iter_type(i) == ITER_IOVEC;
-+	return iov_iter_type(i) & ITER_IOVEC;
- }
- 
- static inline bool iov_iter_is_kvec(const struct iov_iter *i)
- {
--	return iov_iter_type(i) == ITER_KVEC;
-+	return iov_iter_type(i) & ITER_KVEC;
- }
- 
- static inline bool iov_iter_is_bvec(const struct iov_iter *i)
- {
--	return iov_iter_type(i) == ITER_BVEC;
-+	return iov_iter_type(i) & ITER_BVEC;
- }
- 
- static inline bool iov_iter_is_pipe(const struct iov_iter *i)
- {
--	return iov_iter_type(i) == ITER_PIPE;
-+	return iov_iter_type(i) & ITER_PIPE;
- }
- 
- static inline bool iov_iter_is_discard(const struct iov_iter *i)
- {
--	return iov_iter_type(i) == ITER_DISCARD;
-+	return iov_iter_type(i) & ITER_DISCARD;
- }
- 
- static inline unsigned char iov_iter_rw(const struct iov_iter *i)
--- 
-2.24.0
-
+Balbir Singh
