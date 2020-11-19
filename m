@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190AD2B96CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 924792B96CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728921AbgKSPqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:46:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728583AbgKSPqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:46:37 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 813182224A;
-        Thu, 19 Nov 2020 15:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605800796;
-        bh=ZvKprxlPeDR11nAv0IeB4RNZKc7/A57CYBYK8dwYGvA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eJFgy/ERDAHnV44gummxbYRBsX1kbc6TtE7RiXMtxbNIkKe7OhRg5AJfcPrxFKqjD
-         RvGoJEuoxmZSF+VACQj2A8eU2SVNDpagHniFKlgF8AkQdfRkaQSpgD5aLptwItPHad
-         ogoqmgOfEn08wfYIcOdiAOnWKZDBDMa2FN3swJpI=
-Date:   Thu, 19 Nov 2020 07:46:34 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Tao Ren <rentao.bupt@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, openbmc@lists.ozlabs.org, taoren@fb.com,
-        mikechoi@fb.com
-Subject: Re: [PATCH v2 0/2] hwmon: (max127) Add Maxim MAX127 hardware
- monitoring
-Message-ID: <20201119074634.2e9cb21b@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201119012653.GA249502@roeck-us.net>
-References: <20201118230929.18147-1-rentao.bupt@gmail.com>
-        <20201118232719.GI1853236@lunn.ch>
-        <20201118234252.GA18681@taoren-ubuntu-R90MNF91>
-        <20201119010119.GA248686@roeck-us.net>
-        <20201119012653.GA249502@roeck-us.net>
+        id S1728750AbgKSPrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:47:03 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:44499 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727824AbgKSPrC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:47:02 -0500
+Received: by mail-oi1-f195.google.com with SMTP id t16so6747229oie.11;
+        Thu, 19 Nov 2020 07:47:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i1tNp2KgBd14FkkpCIHyiNr1qV+4/KrTXMEh9UM4OyA=;
+        b=qWJdHpJvbx0G0+Vup1XZBMBUwnC0CXaKw44s66pMJWN5NccbNjaGObiE5W6gVLT9iA
+         0YT7qEbzJksI2Mtywx8OI7VuVVAuWDPaIn+lr2var911DzIkj+6spz4mTQRxe1t7kbU9
+         gvjkVRMTG0TX96AS02CYDD6kPN5Xxd3rLgJfXASSYbR8KobVE8drkEpnkb42Ml2Gxczf
+         j21KceX9eBDExinTbLGB4m8ZGV6kqMEmQlSxnC3T0aOCBR9I7sp2dc86TQjmaKKJLoln
+         FocrEUXyDoxapAA0l9LzXSfGAiKGGljsQVzlT6njx53B4H/eMMuhxwTij8/LdVeI5JC8
+         jhWw==
+X-Gm-Message-State: AOAM532K6H8U1Kpmlt7Inx7/PWKy420sWm7EgKTLKHXzWCBVda1UTXel
+        iyLlJFIegHBg51xB64xFgw==
+X-Google-Smtp-Source: ABdhPJwkrz3+GCohSQnDOih8nPEsaXejgRb4izFB+vIbBFRIMNrgLzBmWvAhWHS986gyCl3cLw7szQ==
+X-Received: by 2002:a54:480b:: with SMTP id j11mr3182548oij.31.1605800820893;
+        Thu, 19 Nov 2020 07:47:00 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x7sm29561otb.19.2020.11.19.07.46.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 07:46:59 -0800 (PST)
+Received: (nullmailer pid 3306861 invoked by uid 1000);
+        Thu, 19 Nov 2020 15:46:59 -0000
+Date:   Thu, 19 Nov 2020 09:46:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     s.hauer@pengutronix.de, linux-imx@nxp.com, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, shawnguo@kernel.org,
+        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, tzimmermann@suse.de
+Subject: Re: [PATCH 1/8] dt-bindings: display: imx: Add i.MX8qxp/qm DPU
+ binding
+Message-ID: <20201119154659.GA3306242@bogus>
+References: <1605777745-23625-1-git-send-email-victor.liu@nxp.com>
+ <1605777745-23625-2-git-send-email-victor.liu@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605777745-23625-2-git-send-email-victor.liu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 17:26:53 -0800 Guenter Roeck wrote:
-> On Wed, Nov 18, 2020 at 05:01:19PM -0800, Guenter Roeck wrote:
-> > On Wed, Nov 18, 2020 at 03:42:53PM -0800, Tao Ren wrote:  
-> > > On Thu, Nov 19, 2020 at 12:27:19AM +0100, Andrew Lunn wrote:  
-> > > > On Wed, Nov 18, 2020 at 03:09:27PM -0800, rentao.bupt@gmail.com wrote:  
-> > > > > From: Tao Ren <rentao.bupt@gmail.com>
-> > > > > 
-> > > > > The patch series adds hardware monitoring driver for the Maxim MAX127
-> > > > > chip.  
-> > > > 
-> > > > Hi Tao
-> > > > 
-> > > > Why are using sending a hwmon driver to the networking mailing list?
-> > > > 
-> > > >     Andrew  
-> > > 
-> > > Hi Andrew,
-> > > 
-> > > I added netdev because the mailing list is included in "get_maintainer.pl
-> > > Documentation/hwmon/index.rst" output. Is it the right command to find
-> > > reviewers? Could you please suggest? Thank you.  
-> > 
-> > I have no idea why running get_maintainer.pl on
-> > Documentation/hwmon/index.rst returns such a large list of mailing
-> > lists and people. For some reason it includes everyone in the XDP
-> > maintainer list. If anyone has an idea how that happens, please
-> > let me know - we'll want to get this fixed to avoid the same problem
-> > in the future.
+On Thu, 19 Nov 2020 17:22:18 +0800, Liu Ying wrote:
+> This patch adds bindings for i.MX8qxp/qm Display Processing Unit.
 > 
-> I found it. The XDP maintainer entry has:
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+>  .../bindings/display/imx/fsl,imx8qxp-dpu.yaml      | 358 +++++++++++++++++++++
+>  1 file changed, 358 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
 > 
-> K:    xdp
-> 
-> This matches Documentation/hwmon/index.rst.
-> 
-> $ grep xdp Documentation/hwmon/index.rst
->    xdpe12284
-> 
-> It seems to me that a context match such as "xdp" in MAINTAINERS isn't
-> really appropriate. "xdp" matches a total of 348 files in the kernel.
-> The large majority of those is not XDP related. The maintainers
-> of XDP (and all the listed mailing lists) should not be surprised
-> to get a large number of odd review requests if they want to review
-> every single patch on files which include the term "xdp".
 
-Agreed, we should fix this. For maintainers with high patch volume life
-would be so much easier if people CCed the right folks to get reviews,
-so we should try our best to fix get_maintainer.
 
-XDP folks, any opposition to changing the keyword / filename to:
+My bot found errors running 'make dt_binding_check' on your patch:
 
-	[^a-z0-9]xdp[^a-z0-9]
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml:29:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
+./Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml:69:111: [warning] line too long (111 > 110 characters) (line-length)
+./Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml:70:111: [warning] line too long (111 > 110 characters) (line-length)
+./Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml:71:111: [warning] line too long (112 > 110 characters) (line-length)
+./Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml:72:111: [warning] line too long (112 > 110 characters) (line-length)
+./Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml:73:111: [warning] line too long (111 > 110 characters) (line-length)
+./Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml:74:111: [warning] line too long (111 > 110 characters) (line-length)
+./Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml:75:111: [warning] line too long (112 > 110 characters) (line-length)
+./Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml:76:111: [warning] line too long (112 > 110 characters) (line-length)
 
-?
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.example.dts:85.33-34 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1364: dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1402850
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
