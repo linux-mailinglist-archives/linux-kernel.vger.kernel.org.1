@@ -2,113 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726F32B959D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 298962B959E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgKSO6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:58:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727512AbgKSO6j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:58:39 -0500
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E663FC0613CF;
-        Thu, 19 Nov 2020 06:58:38 -0800 (PST)
-Received: by mail-ua1-x943.google.com with SMTP id x13so2001728uar.4;
-        Thu, 19 Nov 2020 06:58:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0X6ei3+dw0Ixie54vJ6xzjoLnN3RiQKq6WUuQ/cy9nE=;
-        b=nSCUSMcsc87MgfVVWxgQ3p9zU/yWpk9azEszsZ+ip8PIgBW1c4GC0jSe/zPWJoHWTZ
-         r6uB0lo1yzn8vmzdilpX+zG/sTkdypXBFVhw0t/3UELss7Nbg2nRSdv7a9ZAQf/CJaoA
-         bJCLu63Ao/qnPxwQpyiGfQbD6YnDSvVJFNzi9CN+t6elmBz370FroTmN2Dc8C+fXQw3Q
-         lHa7sEIwbtwQWr6nyiRnEakgA/5ldBnyqvGXjh7FPuQNHl/r6ktYVmHW33Jsw3A/9UKO
-         FkrgRRlfl1v2sqEedV2hh+5EP5SFyKffFHuSGKzB9R9ec8q9c7iwintxQksrfZhJAhnx
-         IzxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0X6ei3+dw0Ixie54vJ6xzjoLnN3RiQKq6WUuQ/cy9nE=;
-        b=cBsVJtnVw5oGrSeMTIQWFmgCVfjidtH3zL7+gTfmKKBQRe9v04o6yrzoTvv6cRZ2Os
-         DZZVBnEZ2VCmlW55fgvM9dNNnFYIr/a9AIkdquwFjYuS26tpTJaEDXNCTrd1/tldOjzu
-         0ZswXf64kTApJgeF7/5D5b0LpJcWPt/emGF4yTWduutPKickdBl8nSG58g3LBvSagy+b
-         W1xtzv1Uy3Vmo7BOAoRnVOOW+ckxsj3pi5QXa/VwBSJKsLfArj0SAXT4TkiJEApjf59L
-         Z0K7DsgZxhU5C1jinrB7CnTaXZ9lDOc9GJ4eEzSbl3S7vu9xbQDsbZvhm3OwKNg1rHD6
-         rL6w==
-X-Gm-Message-State: AOAM532asXfqmor6syWh1dyUhhCFitFj2ES7e71zfOTl/CtFukj5ZNX8
-        FzuvDA1BRcKUwan9bPe9s00K+Kr2wtkYAwZ5H5o=
-X-Google-Smtp-Source: ABdhPJybH08eUOhkjXA+uy1MK5oybKgxRANfgJy2clNuS38q+12ZHNjvPr0fBnTO5j+7AUIDD1aA3PwhK5Hv/WZnqMs=
-X-Received: by 2002:a9f:2583:: with SMTP id 3mr6980138uaf.134.1605797917764;
- Thu, 19 Nov 2020 06:58:37 -0800 (PST)
+        id S1728065AbgKSO74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:59:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726641AbgKSO74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:59:56 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDAB624695;
+        Thu, 19 Nov 2020 14:59:52 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 09:59:51 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: violating function pointer signature
+Message-ID: <20201119095951.30269233@gandalf.local.home>
+In-Reply-To: <20201119143735.GU2672@gate.crashing.org>
+References: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+        <20201117153451.3015c5c9@gandalf.local.home>
+        <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+        <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
+        <20201118121730.12ee645b@gandalf.local.home>
+        <20201118181226.GK2672@gate.crashing.org>
+        <87o8jutt2h.fsf@mid.deneb.enyo.de>
+        <20201118135823.3f0d24b7@gandalf.local.home>
+        <20201118191127.GM2672@gate.crashing.org>
+        <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
+        <20201119143735.GU2672@gate.crashing.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201118174417.278011-1-clemens.gruber@pqgruber.com>
- <CAGngYiV+oDeagaCfpeACMzQyDHVzk9ERbSBjW_fW5hoQANHqog@mail.gmail.com> <20201119100005.GA703@workstation.tuxnet>
-In-Reply-To: <20201119100005.GA703@workstation.tuxnet>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Thu, 19 Nov 2020 09:58:26 -0500
-Message-ID: <CAGngYiU7+X1AbadQ0kFBQOqxK-adowg6CTOMx260fyF1-rpO-Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] pwm: pca9685: Switch to atomic API
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 5:00 AM Clemens Gruber
-<clemens.gruber@pqgruber.com> wrote:
->
-> > You appear to mix cached and uncached uses of prescale,
-> > is there a need for this? If not, perhaps pick one and use
-> > it consistently?
->
-> Yes, sticking to the cached value is probably the way to go.
->
+On Thu, 19 Nov 2020 08:37:35 -0600
+Segher Boessenkool <segher@kernel.crashing.org> wrote:
 
-I would suggest going one step further, and turn on the cache in
-regmap, i.e. .cache_type = REGCACHE_RBTREE, then:
-- no need to cache pca->prescale explicitly, you can just read it with
-  regmap_read() every time, and it won't result in bus activity.
-  then you can eliminate pca->prescale, which simplifies the driver.
-- pca9685_pwm_get_state() no longer results in bus reads, every regmap_read()
-  is cached, this is extremely efficient.
-- pca9685_pwm_apply() and pca9685_pwm_gpio_set() now only does bus writes if
-  registers actually change, i.e. calling pwm_apply() multiple times in a row
-  with the same parameters, writes the registers only once.
+> > Note that we have a fairly extensive tradition of defining away UB with
+> > language extentions, -fno-strict-overflow, -fno-strict-aliasing,  
+> 
+> These are options to make a large swath of not correct C programs
+> compile (and often work) anyway.  This is useful because there are so
+> many such programs, because a) people did not lint; and/or b) the
+> problem never was obvious with some other (or older) compiler; and/or
+> c) people do not care about writing portable C and prefer writing in
+> their own non-C dialect.
 
-We can do this safely because this chip never actively writes to its
-registers (as far as I know).
 
-But maybe that's a suggestion for a follow-up patch...
+Note, this is not about your average C program. This is about the Linux
+kernel, which already does a lot of tricks in C. There's a lot of code in
+assembly that gets called from C (and vise versa). We modify code on the
+fly (which tracepoints use two methods of that - with asm-goto/jump-labels
+and static functions).
 
-> > Also, if the prescale register contains an invalid value
-> > during probe(), e.g. 0x00 or 0x01, would it make sense
-> > to explicitly overwrite it with a valid setting?
->
-> As long as it is overwritten with a correct setting when the PWM is used
-> for the first time, it should be OK?
+As for your point c), I'm not sure what you mean about portable C (stuck to
+a single compiler, or stuck to a single architecture?). Linux obviously
+supports multiple architectures (more than any other OS), but it is pretty
+stuck to gcc as a compiler (with LLVM just starting to work too).
 
-I'm not sure. Consider the following scenario:
-- prescale register is invalid at probe, say it contains 0x02
-- user calls pwm_apply() but with an invalid period, which results
-  in a calculated prescale value of 0x02
-- pca9685_pwm_apply() skips prescale setup because prescale does not
-  change, returns OK(0)
-- user believes setup was ok, actually it's broken...
+We are fine with being stuck to a compiler if it gives us what we want.
 
-Also, some people use this chip exclusively as a gpiochip, in that
-case the prescale register is never touched. So an invalid prescale
-at probe is never corrected.
-
-Speaking of the gpiochip side, would it make sense to call
-pca9685_pwm_full_on()/_off() in pca9685_pwm_gpio_set() too?
+-- Steve
