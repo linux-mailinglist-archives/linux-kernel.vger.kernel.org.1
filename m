@@ -2,121 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355562B9B8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E06F2B9B91
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgKSTcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:32:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20441 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727961AbgKSTcx (ORCPT
+        id S1728274AbgKSTd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:33:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727059AbgKSTd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:32:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605814371;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HQsc0/0SJtGzJx5uopunB4YDTQRW/2pwvJvnUC3t0DI=;
-        b=K6LvM1Kc2Q8prsdBhKpZ5b8GWUB1t6p6Yk/3IFo1XWb/ZVchDXzE71X+cQvdxEqd9IjH9K
-        lI6RnlJBxWXWxMvOOIejxMjcg+ZNJMN+eTUdKDW4eDR4M+aUbI8vrxVyTMQq8jWrxJYcV5
-        nfk4/ANZoDgYs/UVjJW2G/F7gaqu0TI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-BdNL_hT_M0SmM5_X4uyOeA-1; Thu, 19 Nov 2020 14:32:47 -0500
-X-MC-Unique: BdNL_hT_M0SmM5_X4uyOeA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E28C31842140;
-        Thu, 19 Nov 2020 19:32:45 +0000 (UTC)
-Received: from krava (unknown [10.40.192.83])
-        by smtp.corp.redhat.com (Postfix) with SMTP id ED4B85D9C6;
-        Thu, 19 Nov 2020 19:32:43 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 20:32:42 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Kajol Jain <kjain@linux.ibm.com>
-Cc:     acme@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, irogers@google.com,
-        ravi.bangoria@linux.ibm.com, maddy@linux.ibm.com
-Subject: Re: [PATCH] perf test: Fix metric parsing test
-Message-ID: <20201119193242.GJ1475102@krava>
-References: <20201119152411.46041-1-kjain@linux.ibm.com>
+        Thu, 19 Nov 2020 14:33:58 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FE7C0613CF;
+        Thu, 19 Nov 2020 11:33:58 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id 63so3465218qva.7;
+        Thu, 19 Nov 2020 11:33:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=gziYjKkMg0T3fda4PLPmPFitx5z4Cip2iKsXyoEML/s=;
+        b=fEILrQsuqmm7C3jki72PWAuLo9yXZKuY+NTeUlUHEiKXyiEUvI4TuXBuiFrIoUzwf2
+         rJ7gq8g1lcO/jKDCjcRC9J9ajbXNVLZysRxXzX4Vr+Fce4d2oMTpsJsB5oh7/RODJt4r
+         GmdRFWZUCw8LJMeTSnk6JSsz0sJoLZqnNfRnSPjYyswiTd7oFb4rdTA9mH+I99wgymmV
+         9PRxhvYjQQ/313sey0FkoXOqTQwWb/nxGUR1C6BGwG1fakx7JNIsPKS4Q27J2go1RdqO
+         M3Xsa3dtr3AVeMvUgNfFlQUjVSUYgYjaTQ7GYGw5sA4oGzZ0sZCrU1ihwpn2LYvKtLaa
+         Eg7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=gziYjKkMg0T3fda4PLPmPFitx5z4Cip2iKsXyoEML/s=;
+        b=pJjJnEaIWunU3SFMoD7Lv1gqDvCANlpiMdapSNr9V/TAuoeWV/HVAqIHZs07jcSnph
+         nWflcbGf+oGQ9Ig8WMXKIsy50324aBqUc3rFKgYwFm/iwDRm8sPR3pb4FEXvtobPv2lU
+         3+1anK8WKDYAwYVFw0xpl9yp4eMwGwXl2znCHp97d0HBk66ISLG0nNmg6qLebYmmxNP1
+         0koVyFxAkHqd5fNLGgzqHC2uFbDpB2+2ikA2Fc4WyxAv5fXEPtO5CvWcm2ccUb921M5u
+         AbdFGyMWxzQWXLO3h0xJnO/MAzsVZFE4UcOwi8gKxz0wBaAu4V7F15BsypIc89baNrmR
+         wwRQ==
+X-Gm-Message-State: AOAM530qWBZEC9WVWoIeuS+H3j18ch+nydfcd6GOYU3O66ILuyLjVxgV
+        yEgvBdMyKgctimtOBqf9fl4=
+X-Google-Smtp-Source: ABdhPJwdaaT7gNq9Yefd1mBZgnLtZ2leAAeBVUx/ottu+ecz+LQC62c5CaqIYapYEnqyOJQIKe6fqQ==
+X-Received: by 2002:ad4:4514:: with SMTP id k20mr12374804qvu.18.1605814437722;
+        Thu, 19 Nov 2020 11:33:57 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id p48sm570704qtp.67.2020.11.19.11.33.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 11:33:56 -0800 (PST)
+Date:   Thu, 19 Nov 2020 12:33:55 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jian Cai <jiancai@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Fangrui Song <maskray@google.com>,
+        Dan Rue <dan.rue@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Alan Modra <amodra@gmail.com>
+Subject: Re: [PATCH] kbuild: Always link with '-z norelro'
+Message-ID: <20201119193355.GA3235069@ubuntu-m3-large-x86>
+References: <20201112183839.1009297-1-natechancellor@gmail.com>
+ <CAKwvOdkShrqgNDWO0bsPcPZLx-+u79mfmPrGy7CnSKZVdcYzSA@mail.gmail.com>
+ <20201113005347.GA3625030@ubuntu-m3-large-x86>
+ <CAMj1kXHYG7d-BDtbZ-4+wGdHb0rxXiMLuSvSMW_JFHgp3G6kTg@mail.gmail.com>
+ <CAKwvOdk1ir=D---9xVAxcErJWSGVxK1Mv6AC=TK3RVwNdcvFjw@mail.gmail.com>
+ <CAKwvOdnauFdUgS0Ww=O-PHrXWhXQEEYd806NUcy8_7MOG0Uo2g@mail.gmail.com>
+ <CAMj1kXFrm+M6vN+e8KqBDHxMxSPTaH_hWT2fg+Z3iY3hV4Hcsw@mail.gmail.com>
+ <CAKwvOdnNzd6wZoDJEgwjnEuTusU8jUcsLDiYoKipkcTubQ+t5g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201119152411.46041-1-kjain@linux.ibm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOdnNzd6wZoDJEgwjnEuTusU8jUcsLDiYoKipkcTubQ+t5g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 08:54:11PM +0530, Kajol Jain wrote:
-> Commit e1c92a7fbbc5 ("perf tests: Add another metric parsing test")
-> add another test for metric parsing. The test goes through all metrics
-> compiled for arch within pmu events and try to parse them.
+On Wed, Nov 18, 2020 at 03:24:04PM -0800, Nick Desaulniers wrote:
+> On Wed, Nov 18, 2020 at 3:07 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Thu, 19 Nov 2020 at 00:05, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > >
+> > > > > > > > To avoid playing whack-a-mole with different architectures over time,
+> > > > > > > > hoist '-z norelro' into the main Makefile. This does not affect ld.bfd
+> > > > > > > > because '-z norelro' is the default for it.
+> > >
+> > > Fangrui pointed out off list that this might need an ld-option wrapper
+> > > for older versions of GNU binutils.  Dan was showing me some build
+> > > logs today, and I thought I spotted such warnings about `-z norelro
+> > > will be ignored`.
+> >
+> > Does ld-option catch options that cause warnings but no errors?
 > 
-> Right now this test is failing in powerpc machine.
+> $ ld.bfd -z foo /dev/null
+> ld.bfd: warning: -z foo ignored
+> ld.bfd: warning: cannot find entry symbol _start; not setting start address
+> ➜ echo $?
+> 0
 > 
-> Result in power9 platform:
+> Probably not. Can be a version check then (yuck); next is to find when
+> ld.bfd supported `-z norelro`.
 > 
-> [command]# ./perf test 10
-> 10: PMU events                                                      :
-> 10.1: PMU event table sanity                                        : Ok
-> 10.2: PMU event map aliases                                         : Ok
-> 10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
-> 10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+> commit 8c37241be3b1 in binutils looks like it.
+> Date:   Tue May 11 17:08:38 2004 +0000
 > 
-> Issue is we are passing different runtime parameter value in "expr__find_other"
-> and "expr__parse" function which is called from function `metric_parse_fake`.
-> And because of this parsing of hv-24x7 metrics is failing.
+> which looks like either
+> 2004-05-17 19:46:23 +0000  (tag: binutils-2_15)
+> or
+> 2005-05-02 22:04:18 +0000  (tag: binutils-2_16)
 > 
-> [command]# ./perf test 10 -vv
-> .....
-> hv_24x7/pm_mcs01_128b_rd_disp_port01,chip=1/ not found
-> expr__parse failed
-> test child finished with -1
-> ---- end ----
-> PMU events subtest 4: FAILED!
+> So I think that would be fine then, since the kernel only supports 2.23+.
 > 
-> This patch fix this issue and change runtime parameter value to '0' in
-> expr__parse function.
+> Though maybe it's
+> commit 5fd104addfddb68844fb8df67be832ee98ad9888
+>     Emit a warning when -z relro is unsupported
 > 
-> Result in power9 platform after this patch:
+>     ld silently accepts -z relro and -z norelro for targets that lack the
+>     necessary GNU_RELRO support.  This patch makes those targets emit a
+>     warning instead, and adds testsuite infrastructure to detect when
+>     relro is unsupported.
 > 
-> [command]# ./perf test 10
-> 10: PMU events                                                      :
-> 10.1: PMU event table sanity                                        : Ok
-> 10.2: PMU event map aliases                                         : Ok
-> 10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
-> 10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
-> 
-> Fixes: e1c92a7fbbc5 ("perf tests: Add another metric parsing test")
-> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> So maybe then alpha and xtensa are getting new warnings (IIUC).  If
+> that's the case, then we might not be able to set `-z norelro`
+> globally, and instead have to play whack a mole per architecture.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Sure, I can just submit the arch/arm patch that I had before this for
+now and we can always revisit something like this later, if you feel it
+is best.
 
-thanks,
-jirka
-
-> ---
->  tools/perf/tests/pmu-events.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-> index ad2b21591275..0ca6a5a53523 100644
-> --- a/tools/perf/tests/pmu-events.c
-> +++ b/tools/perf/tests/pmu-events.c
-> @@ -575,7 +575,7 @@ static int metric_parse_fake(const char *str)
->  		}
->  	}
->  
-> -	if (expr__parse(&result, &ctx, str, 1))
-> +	if (expr__parse(&result, &ctx, str, 0))
->  		pr_err("expr__parse failed\n");
->  	else
->  		ret = 0;
-> -- 
-> 2.27.0
-> 
-
+Cheers,
+Nathan
