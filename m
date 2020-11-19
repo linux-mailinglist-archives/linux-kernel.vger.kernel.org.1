@@ -2,113 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43942B90CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:18:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD0C2B9094
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgKSLSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:18:15 -0500
-Received: from mail-vi1eur05on2068.outbound.protection.outlook.com ([40.107.21.68]:61721
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726843AbgKSLSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:18:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OK8CyCSVbVKEFiRFljx5oS3UlLv1rcwAkiGPzhc4WOP/PJ/nBrwy0UzARqebxTTchs0OnoYVCY66CeUttAYO+VLrX7vAXZQ0KDL+q+u3qUGwaiFwHcApjjY4U+JzgdRnhIV8VVmqiAxRFTqYs9GsbJtH9EMSRYlvgY+ALlUPhmitP+BVTPY9XCmVIsYGuLNiA0ZSstPTUbMMrwS2hTMaqhK67Z/5nnYTYeNBGiM1lQScH4aUHTZMg6KQs5SCyRDTgDBRQG7Y+nSVpJ67f6I6fHVil6GIW/ReDRv68sKXbTs1ooFlqTQrxlVPTdFnI/ATEb/C+iZmpvC/+2ugitaEcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9gQ5JRoT/fKJo916Za656pYn7tm1hOCXBVbgoFOOpFU=;
- b=eRbb1dnvMUKQ5ymixj9sQR9rA4pyXm/PGdnTzOItOFRE/NAoHLJ1v79de1dgtUT/Mk+k48U6cMkcQ71uPz0rC02jrBfrEFdylKN+ayKH4zNnJK4rW3BRp3Y9M1PaP+pjg50V+yekXJwOqgRy/EO/dbxTtoVAmZcwO7symktlRsGiYw3wHQ4kzLv3N+fc7X+yUSR+ZwlJhoGEyl8iE0mCqpJcZLKS7kHZK7C5WM4S+HcnnI+SDH7tF6bXAv9BfsP9AWPupG1LziABfPARLQ8RPOkEsob2lkSBrvMVwxtJJEw5uOtOoK+YQko4TJBjAnpeQix9zkbt9dXTvdu5S+POfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9gQ5JRoT/fKJo916Za656pYn7tm1hOCXBVbgoFOOpFU=;
- b=TeNdAD+Hwscs+ONmIlnMDwrkmUh+in4DSeEqc0txmXdD2jBAd/CdQS37nhBzQkIcxhSx/PgCNwV8Veng1s8VSk0MLcnROujipHNbcIL4fV8vwYkDSAvGXA+6SG81WFioqaQPrIZ9ZIICCLKhNs9rjmA+9RQcjTfU7Z7zsQEuR8I=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
- by AS8PR04MB7687.eurprd04.prod.outlook.com (2603:10a6:20b:291::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Thu, 19 Nov
- 2020 11:18:11 +0000
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::3cfc:a92e:75ad:ce4a]) by AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::3cfc:a92e:75ad:ce4a%3]) with mapi id 15.20.3564.029; Thu, 19 Nov 2020
- 11:18:11 +0000
-From:   Dong Aisheng <aisheng.dong@nxp.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-imx@nxp.com, dongas86@gmail.com,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        devicetree@vger.kernel.org, Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 3/3] of: property: fix document of of_get_next_parent_dev
-Date:   Thu, 19 Nov 2020 19:00:36 +0800
-Message-Id: <20201119110036.19959-3-aisheng.dong@nxp.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20201119110036.19959-1-aisheng.dong@nxp.com>
-References: <20201119110036.19959-1-aisheng.dong@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR06CA0194.apcprd06.prod.outlook.com (2603:1096:4:1::26)
- To AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
+        id S1726619AbgKSLD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:03:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgKSLD3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 06:03:29 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF27C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:03:28 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 23so5946427wrc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:03:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RFamxyJgml0Q9lHKOib3+a+7JzEnrNZtCyqpmdEgFHY=;
+        b=kqHAg9poMnjna6jkicJdxbX2pallignKnsZm7PQ3J7+Ievqg93epHWgtVUtyVeXpcN
+         +dWCkcIlLGnmoH/IM64UFp7UdWFeLgTLKx52vuX/MHI/KwP13XQG2gFghMaFoTmqebdM
+         wGfEw2BLqmPenDc5qhti9xHWOcyQNxJGEqBUzVWKmvluSFSqa8BEDWypBBpgaNDKyzKJ
+         tjSng7pmL0bcMiWZL7m0Sy3fGUCIu3UAdP3qSRQuiPBJvbyl73ZxRL88w5vCHGzW1Cvc
+         b0BUGDp4O6yx6G9f9FsZruoQcsz1tY02WsLSsX7nKzB3C072ukmtf0gg4H5zqr+fPCIf
+         oQhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RFamxyJgml0Q9lHKOib3+a+7JzEnrNZtCyqpmdEgFHY=;
+        b=guhCkuWt3FeUwamiYJHf2+eMzpMbjU4aiBwr2XHJv0KydBNun6Uo2PdCc5UbKsyDuW
+         7iapC9ktySdzsD0f7KixKu7+Jklc8634zq4v9k3HRjO7sgU+8oaQVmJOIu8sYTM2Slr1
+         ms8880nlJtxxuPv8BSDA+DhPubOMUcXOjmqc4rCtbq7NkZJ11oJGMYKh+iw0SKGtlCpn
+         c67zDcrVav4EUSUEZPKYcVMkOZk93ThMSnEIdwyBIWUry6Ol1Xq5AUFLmnvYbE5QkYEX
+         7eCv88qO68CTPXjGFOZCgKlwoACMNHZyxqy/0yVwgG9PGPGnRW7sjq320ytcz3a6ULKR
+         wNhA==
+X-Gm-Message-State: AOAM531jrKteFQOFnEn754op/XQMT5WxgWfuoi/OJJo+zsslRzPMnosD
+        8OmsdQ3WfaviQ0zneoF+TPleHw==
+X-Google-Smtp-Source: ABdhPJxgfj9H8n3fel6QzaGF5nPAhtC4qg27fy9D1pg2d5UCDEatBq3WasqWdPx/X7TiE6RaHNO7oQ==
+X-Received: by 2002:a5d:4d86:: with SMTP id b6mr9558362wru.80.1605783807260;
+        Thu, 19 Nov 2020 03:03:27 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id o4sm5525797wmh.33.2020.11.19.03.03.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 03:03:26 -0800 (PST)
+Date:   Thu, 19 Nov 2020 11:03:23 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 07/14] sched: Introduce restrict_cpus_allowed_ptr() to
+ limit task CPU affinity
+Message-ID: <20201119110323.GA2432333@google.com>
+References: <20201113093720.21106-1-will@kernel.org>
+ <20201113093720.21106-8-will@kernel.org>
+ <20201119091820.GA2416649@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from b29396-OptiPlex-7040.ap.freescale.net (119.31.174.66) by SG2PR06CA0194.apcprd06.prod.outlook.com (2603:1096:4:1::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3589.21 via Frontend Transport; Thu, 19 Nov 2020 11:18:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9e309239-9539-4ebd-67d9-08d88c7ccca2
-X-MS-TrafficTypeDiagnostic: AS8PR04MB7687:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AS8PR04MB7687956E205401A1F52DCFBD80E00@AS8PR04MB7687.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:370;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bxoOLjUEO/84jt26NPz9cQS39bH/TT2+8LO0+TBTU2Ve8tO7Pl/Sbkjl6EbNAZIFxtKn/hYnUSsy/TWED3lnLnG4LxX1In4EuvmyusV+JxYeE50G7fKKa8cH7QBiLDGZQ3jJCRtHA1x3lrtaoj3z6jXU0EW+tve98oYwL+CXsZ01GLHjcOWUxHad+oDmXWxprPW7JYrCs/rzPOvzA9rXJmHiuquZPn9ZhULAzpQ6C4rd+0KbD7vdk7d4/c8R9g64eJ+ngRdeeG3SvqzNXoCcLrUAiOHB1YESXtgxZ5VlmajigeCqmIpQm9zh8qwuIHqiK2nwcIv+eHmZxaQeZsJwig==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(136003)(376002)(346002)(66476007)(66946007)(66556008)(6506007)(83380400001)(52116002)(6666004)(2616005)(6916009)(4744005)(6486002)(316002)(1076003)(956004)(4326008)(478600001)(16526019)(2906002)(8936002)(86362001)(26005)(186003)(5660300002)(6512007)(36756003)(54906003)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: O0MmoOAKWUXDRmgaAhLO6gvL7QLe/YopzmCiQM+vkzgrpkyweDH50n+QkEJgJNw4uVOwa/PpzRP+rW1cmvwP3qOYGfFfzWExauMW63dkvYdxj4xOW/nZyhvWa4d9Ox0alKKUlFH1Up+8HujAjK7RbeOeCifFllJJ55PL4sKkFk/kuUUVSNLARcLgZEiGz4CMp/VxsdtJsG5RExgAryOGPCMqZc1Or0FIHsUOmKKmw4WagDHbJmirZ8ezmdtXeBNX3va9i7NYOzh+s2TjVs+0dHKzITNwKKXJDX+ZBJ2NnVG0Zeur6TDwMu5yzBzXAA/7ZMLsr5qhYlGvjXAdWqIjlUCVmud63YdbgdFFamBCZ/iRo1zPzzG/p8VVPjf5ED6VVEbu4nnFxUS+6m/XNpm/r5TghNgnZS4IcJpecmfggMbQiQyON3LZ78x5+4O0w5TJEhuR8ytSzhO6aYGiQawXKqyrJ/RDIQJ+hO26XLH7/qfcVo+0hAEsDfT8Vs98gEhqljchqr9yXWAMeo6THpCtDt1O7ibO6ACfm95+cZK2E2EPNreW4XpaMPGoXMuvE22a1/rJE5pDWpMBZqu0E+Y7zb0KiPUvTncVWLGtq/vhv1akCBvNmQpck3t0zveZ3XthxZX3/+Ts1f193S3ftdepTQ==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e309239-9539-4ebd-67d9-08d88c7ccca2
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2020 11:18:11.3681
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zZcknUpW+c4PI+Cgz50YAnBJEtStsN400+umTtVw1lRJfHbObCIu968laY9zQfjRjLxUf3nGAA+CO3zUz0EEog==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7687
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119091820.GA2416649@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix document of of_get_next_parent_dev.
+On Thursday 19 Nov 2020 at 09:18:20 (+0000), Quentin Perret wrote:
+> Hey Will,
+> 
+> On Friday 13 Nov 2020 at 09:37:12 (+0000), Will Deacon wrote:
+> > -static int __set_cpus_allowed_ptr(struct task_struct *p,
+> > -				  const struct cpumask *new_mask, bool check)
+> > +static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
+> > +					 const struct cpumask *new_mask,
+> > +					 bool check,
+> > +					 struct rq *rq,
+> > +					 struct rq_flags *rf)
+> >  {
+> >  	const struct cpumask *cpu_valid_mask = cpu_active_mask;
+> >  	unsigned int dest_cpu;
+> > -	struct rq_flags rf;
+> > -	struct rq *rq;
+> >  	int ret = 0;
+> 
+> Should we have a lockdep assertion here?
+> 
+> > -	rq = task_rq_lock(p, &rf);
+> >  	update_rq_clock(rq);
+> >  
+> >  	if (p->flags & PF_KTHREAD) {
+> > @@ -1929,7 +1923,7 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+> >  	if (task_running(rq, p) || p->state == TASK_WAKING) {
+> >  		struct migration_arg arg = { p, dest_cpu };
+> >  		/* Need help from migration thread: drop lock and wait. */
+> > -		task_rq_unlock(rq, p, &rf);
+> > +		task_rq_unlock(rq, p, rf);
+> >  		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
+> >  		return 0;
+> >  	} else if (task_on_rq_queued(p)) {
+> > @@ -1937,20 +1931,69 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+> >  		 * OK, since we're going to drop the lock immediately
+> >  		 * afterwards anyway.
+> >  		 */
+> > -		rq = move_queued_task(rq, &rf, p, dest_cpu);
+> > +		rq = move_queued_task(rq, rf, p, dest_cpu);
+> >  	}
+> >  out:
+> > -	task_rq_unlock(rq, p, &rf);
+> > +	task_rq_unlock(rq, p, rf);
+> 
+> And that's a little odd to have here no? Can we move it back on the
+> caller's side?
 
-Cc: devicetree@vger.kernel.org
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
----
- drivers/of/property.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah, no, that obviously doesn't work for the stop_one_cpu() call above,
+so feel free to ignore ...
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 21a854e85234..5bd4a9bead47 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1038,7 +1038,7 @@ static bool of_is_ancestor_of(struct device_node *test_ancestor,
- }
- 
- /**
-- * of_get_next_parent_dev - Add device link to supplier from supplier phandle
-+ * of_get_next_parent_dev - Get the closest ancestor device of a device node
-  * @np: device tree node
-  *
-  * Given a device tree node (@np), this function finds its closest ancestor
--- 
-2.23.0
-
+Thanks,
+Quentin
