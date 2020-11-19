@@ -2,208 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01BF2B92C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDED2B92CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727339AbgKSMtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:49:00 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38500 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgKSMtA (ORCPT
+        id S1727355AbgKSMtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:49:04 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:12632 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgKSMtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:49:00 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJClvEt059528;
-        Thu, 19 Nov 2020 06:47:57 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605790077;
-        bh=LI2IoJ63ARbNnEA51i0+8fqNIJSk4cDS6Mj0qP1u1ys=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=UXQS+sJ5L/lenC6ngFBk+j6ypLa0ZcINtQjXNAnR8/CiKnib2kD/PoCT+wzzxJj3h
-         uL+UpWRWFBklil2wzixHPIZO0i89IgKutI/iDEqa+YlYvQtoiJk8QtJzp9tPn76Axv
-         QlyyMXHw7lVP3GR0XqAxUnRe2ggxH6sgLW1tIVjE=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJClvC5073017
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 06:47:57 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
- Nov 2020 06:47:56 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 19 Nov 2020 06:47:56 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJClrcS021813;
-        Thu, 19 Nov 2020 06:47:53 -0600
-Subject: Re: [RFC PATCH] ASoC: ak4458: use reset control instead of reset gpio
-To:     "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Viorel Suman <viorel.suman@nxp.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-References: <20201116222036.343635-1-viorel.suman@oss.nxp.com>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <cee287f3-29c1-771f-ca20-812de1ae8044@ti.com>
-Date:   Thu, 19 Nov 2020 14:48:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <20201116222036.343635-1-viorel.suman@oss.nxp.com>
-Content-Type: text/plain; charset="utf-8"
+        Thu, 19 Nov 2020 07:49:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1605790141; x=1637326141;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=D0Am/jkmbbxbUQlLmHOPEstM+UE7Ov0JhAnQ6WJzXU0=;
+  b=McjYRgbROUX7Q6FW9UZxXRI4eU0wHYe24hbN5+enJS0rW+QDgL8nWhax
+   fZMk7Y0eXCoAnYMPN8zuoOm2dTkqpcNmC5/Oy2XO7hj45pmrdQ1XJ6N6m
+   rtU2vh3h8TyLVctZmzq2DC5kjIZvGycY5/9uSeNOjp7QVc7+90Q3Ub92Y
+   bD99+XqoUGmt9+43F7gXdZiurx6OoTEtbMzpTpYqA3YStINYnFYaphKPp
+   BcFomMf++RwIFkUANIb3vpWywXLIPYtbqLMmAWBnzYmx/8MBPKrrmrMF8
+   qxHGNFPoAbzTTqEyblscHDGQ16DG9XV8lh85S+RdId1OB4Xn/m2C2sdok
+   w==;
+IronPort-SDR: 6eox4MqJB7fwa7Xe1R3ya13eNSJhRpMkXIi5rcQeQ7XsfB0XBW3OoZYxnk0haQfEe88pnmwXCY
+ YNm7L+iSaHgfF/zmY6mHqabJviOoVnrtZi0hxQel6EaqdbjhYxOOak1twVyBmfoRP58VTqqkT0
+ ACtOURbyb946njGnzw5XZrYPQsMM86UVVoqRec9xXm/tCuH2E4VK5tKX7yzsflp4GuqgA1ojnZ
+ Scrs3KmBql/2FlSgOkYHEZXt32J10m996O/Al4jkX4wuovmrn/TDPbM8Kemh6HeQXs5C6CSuoh
+ g+A=
+X-IronPort-AV: E=Sophos;i="5.77,490,1596470400"; 
+   d="scan'208";a="157458553"
+Received: from mail-bn3nam04lp2058.outbound.protection.outlook.com (HELO NAM04-BN3-obe.outbound.protection.outlook.com) ([104.47.46.58])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Nov 2020 20:49:00 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WspkAUnWyz8sXrkk8UEgA2uoI1BO5YNRH1k+7oi+AEdaDofuhiWhvCCB3jelwC5ZhOJgEd5lt7SSMuvCmCm9TYS+MfFYuLdjo+8o3Oi0+3tvhPvdx5ZHgTec8EKf6uGZeBpFDcDyGOOhcSaOsOAj1cmYrYyWgU5LFge4QnwpZaEZjbVN64GhXYbP2oDCuIkuYDt1vI/+Gx/CO3R9f5Jgu60WDmxVcMooP0wn2hpWUZAL7j8F6EGkvB3SyaRAYbCx3r9W/O36Tz7w6anyyez57wo70fX2giuM4dMHJmGPw897j5lGB7A71wTkGxBMAtiFi4ZJDY7DvC7U059lEit4yA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D0Am/jkmbbxbUQlLmHOPEstM+UE7Ov0JhAnQ6WJzXU0=;
+ b=SQqwlW0sQ8UFsMDvSmmCl9AyaUwBS8QJsolW0/XL5A9jE+dLUn7Wd1RomwhONdytVfG7bbEj5v5Q1A2JGvZBRqU1JusAhfUeicJDOdlshDK+6WWL4zH/at1tDx/sgU9MiAcvgmRN6OZu1+V6LqTRlfP6m3FxsFzaJzRL4pEr9bL5fPt9p+VxnoYmBCRk1uvTlb5zoAF8d7ZGOZjltu8rpzMCgx6dNvrxWkMJzFUoh00K9T4FrPkidgPuihZd9VboUDizkrChyYzp5oWJ1coaM1ZN+ntmP5Ma6IK8ObiMi1vWEqeXjD7PiSXtSBl6J0NnaFyF1IiE1j2a9Na7cCcW6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D0Am/jkmbbxbUQlLmHOPEstM+UE7Ov0JhAnQ6WJzXU0=;
+ b=NDtxNOx3Smm7EdqcUzpYCJEy1ub3u5RbTcZ04yfVb2PTCgqHwW4MpJ00tR5jB2X86S4zhrsMDHvZES6Gv4dRLRMyWVC6OLUn9lACNNBqO6/LAabWoWTA2D/9MTcoD++RilWmLFijATqrEmr6KL7I5+3BjfIma5PQI1a3ACDUXeA=
+Received: from BYAPR04MB3800.namprd04.prod.outlook.com (2603:10b6:a02:ad::20)
+ by SJ0PR04MB7583.namprd04.prod.outlook.com (2603:10b6:a03:319::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Thu, 19 Nov
+ 2020 12:48:58 +0000
+Received: from BYAPR04MB3800.namprd04.prod.outlook.com
+ ([fe80::5154:e14a:2e36:bc95]) by BYAPR04MB3800.namprd04.prod.outlook.com
+ ([fe80::5154:e14a:2e36:bc95%3]) with mapi id 15.20.3541.029; Thu, 19 Nov 2020
+ 12:48:58 +0000
+From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        X86 ML <x86@kernel.org>
+Subject: Re: WARNING: can't access registers at asm_common_interrupt
+Thread-Topic: WARNING: can't access registers at asm_common_interrupt
+Thread-Index: AQHWtAKoC1N6UC8gbUaAN5Wk5A+R6KnDMbkAgAALvACAAAc6AIAACUOAgAAPgQCAAAS5AIAAAmAAgAACHwCAAALvAIAC9PyAgARYcQCAABLpgIACu3AAgAAaoACAAcx5gIAAAuYAgAANSgA=
+Date:   Thu, 19 Nov 2020 12:48:57 +0000
+Message-ID: <20201119124856.wpvhzstbtrujvdxa@shindev.dhcp.fujisawa.hgst.com>
+References: <20201111200730.GM2628@hirez.programming.kicks-ass.net>
+ <20201111201506.bftpmx4svxn376tn@treble>
+ <61b2538f-7be6-8f4a-9395-03071b5cc6f0@citrix.com>
+ <CALCETrXcTKB_j9MQC1mcZobKGt_cZ5ivDPjU3zwRBmj7DAUCsA@mail.gmail.com>
+ <f105a63d-6b51-3afb-83e0-e899ea40813e@suse.com>
+ <20201116130413.GC3121392@hirez.programming.kicks-ass.net>
+ <e1ca6c8c-e32d-879a-1972-5605f0892176@suse.com>
+ <20201118082254.GH3121378@hirez.programming.kicks-ass.net>
+ <20201119115059.dns4hvull3l3dwx3@shindev.dhcp.fujisawa.hgst.com>
+ <20201119120122.GJ3121392@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201119120122.GJ3121392@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.182.60]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8248d38b-4a71-445c-fe84-08d88c897b55
+x-ms-traffictypediagnostic: SJ0PR04MB7583:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR04MB75838F7E662D790D0BEF3249EDE00@SJ0PR04MB7583.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BPtTJqragxkH17l3imL9q3NjQE+SxCHIVdSGWuu59Fh7r7IjNbPW06h00mkRbRBrdeI5PkrwyF0ntUuGp1o2fMjzcz09GZCYnM2Zc/YGMtbnkRx51epAwXyvtRZa4qHYD8nihRVmDE5wxN7v40LS3NUAz0b6mOEmgrILWkr9SxlSpEfI4oIUVw+71p34H4WkL/0a08Uzoxs1Y4KG3XHjzM8rEl5GxrmVTHOfS7lt4LMWx1IAHMQRP/WzUXpONUYqHuGFT710CR6RUkgri+10Ling8MQz5NOMXrIsK0XzHh/KQea85gyiPtDQc7kS4hNe
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB3800.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(39860400002)(376002)(366004)(83380400001)(186003)(6916009)(3716004)(4744005)(5660300002)(4326008)(6506007)(54906003)(6512007)(8676002)(9686003)(478600001)(26005)(1076003)(8936002)(86362001)(2906002)(44832011)(66476007)(316002)(6486002)(91956017)(64756008)(76116006)(66556008)(71200400001)(66946007)(66446008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: OuPEFPNWyVSq8swQOCLTof6V2Y9DM3sNrWGmQQKaLYD1jnqqwy2A5gE5bf/ef5qUmt21W3p32fNQDpqvnGyWN8ThlO4JqOj5eJ+nODoAbvdZ6zvYlH6pVh3TYWGPyU2VEi7b993cTQyhLuNGwf0BYwHiAU0DZNBoQD/2OmXFIEktPj3u+aUAbt8e5h1bHgWCE+eYW77pFcR26tzaH8t/UKQtrM5HqZNdbx0K2jTfjIA8RQE+dhz+NrtXzZjRTe/7ihLR1dbH71FnMu4aeuf7Wm8Vx5GfdU7XLaxhM5i4q6waGy3Fgal01mb68LfEYo3cbLdkkQ/NOPfv/iMM3d4TW3uP1+PUSuvjmGnQZvY5XKRFULfsuJh0GVb1o9umg7tRZjzKPKHUkSOZDCak9bArDqq4NpDYWkfrvbB9DDe8fe7ENUTk2Pt4YUG4TlaRY74+omPCEupNOAWbo07mpeat8UO4+9lUwDG9SfDvfZS/Rr12cdx3BcnPqNnH5yBZHZbm5K7+h98w4nh0AVzxohpytdbQtd3RhBqx6FBP3xnY9DrtuoeA6ZWaYdrlE0uAwGDN9XXkJFxC9/iyqv7XKr1OaBPgsIHDaY7pu7nDhV0IOlpd0vWDoI+ZbzhDdy23DVP+5mUpHUp1T3sAEx/Sh2EH6xfMNrJlzT0WYSZ9ibyS9FcSoYBCClewRFDeqKyrz+hP/ZQ0LYx61hXz6J4R6Wow2Pv9xV63Vzip20To3Oe2DrmqnVQg59bjkuKo0OApWwxtAgKn15j5lSqJJPklPlO0HLlm6I8U4wKnxucCwE0TPbynVftY/N9iCbfT1hNQc0EOVkmB/t4PCn3eiqBSHeTqLG8qGuvfzhTp/0BqdKfO5FuFgW7sLCT94OZo1FQTKU9uD+LJws3CmDD6Geok1RalGQ==
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <F957B247B4AF654F8940DE8D0635A8A6@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB3800.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8248d38b-4a71-445c-fe84-08d88c897b55
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2020 12:48:57.9767
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KWIV9MwtiAvYSwG+D+BL+4oGwykghJbQpnJH9mIoQkJCx+Jh3xpy4XBf2kGSaYQPCueTU5XT/602ymZ5odZRdQQAutLVGkYw/kO12asbhUs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7583
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Nov 19, 2020 / 13:01, Peter Zijlstra wrote:
+> On Thu, Nov 19, 2020 at 11:51:00AM +0000, Shinichiro Kawasaki wrote:
+> > I tried Peter's patch in my test system and result looks good. The warn=
+ing is
+> > still observed with 5.10-rc4. With the patch on top of 5.10-rc4, the wa=
+rning
+> > disappeared.
+>=20
+> The patch on its own is not sufficient to fix things; there needs to be
+> an accompanying objtool patch to generate the correct unwind
+> information.
+>=20
+> This patch only ensures objtool has enough information to be able to
+> dtrt, but as it stands it shouldn't even compile, it should complain
+> about an alternative trying to modify the stack and bail.
 
-On 17/11/2020 0.20, Viorel Suman (OSS) wrote:
-> From: Viorel Suman <viorel.suman@nxp.com>
-> 
-> Using GPIO API seems not a way to go for the case
-> when the same reset GPIO is used to control several codecs.
-> For a such case we can use the "gpio-reset" driver
-> and the "shared" reset API to manage the reset GPIO -
-> to deassert the reset when the first codec is powered up
-> and assert it when there is no codec in use.
-> DTS is supposed to look as follows:
-> 
-> / {
->     ak4458_reset: gpio-reset {
->        compatible = "gpio-reset";
->        reset-gpios = <&pca6416 4 GPIO_ACTIVE_LOW>;
->        #reset-cells = <0>;
->        initially-in-reset;
+Thanks for the clarification. It was too early to try out... When it gets r=
+eady
+to try and test, please let me know.
 
-I can not find anything resembling to this in next-20201119.
-
-Where is the implementation and documentation for this gpio-reset?
-
->     };
-> };
-> 
-> &i2c3 {
->     pca6416: gpio@20 {
->        compatible = "ti,tca6416";
->        reg = <0x20>;
->        gpio-controller;
->        #gpio-cells = <2>;
->     };
-> 
->     ak4458_1: ak4458@10 {
->        compatible = "asahi-kasei,ak4458";
->        reg = <0x10>;
->        resets = <&ak4458_reset>;
->     };
-> 
->     ak4458_2: ak4458@11 {
->        compatible = "asahi-kasei,ak4458";
->        reg = <0x11>;
->        resets = <&ak4458_reset>;
->     };
-> 
->     ak4458_3: ak4458@12 {
->        compatible = "asahi-kasei,ak4458";
->        reg = <0x12>;
->        resets = <&ak4458_reset>;
->     };
-> };
-> 
-> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-> ---
->  sound/soc/codecs/ak4458.c | 23 +++++++++++------------
->  1 file changed, 11 insertions(+), 12 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-> index 1010c9ee2e83..f27727cb1382 100644
-> --- a/sound/soc/codecs/ak4458.c
-> +++ b/sound/soc/codecs/ak4458.c
-> @@ -13,6 +13,7 @@
->  #include <linux/of_gpio.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/regulator/consumer.h>
-> +#include <linux/reset.h>
->  #include <linux/slab.h>
->  #include <sound/initval.h>
->  #include <sound/pcm_params.h>
-> @@ -45,7 +46,7 @@ struct ak4458_priv {
->  	const struct ak4458_drvdata *drvdata;
->  	struct device *dev;
->  	struct regmap *regmap;
-> -	struct gpio_desc *reset_gpiod;
-> +	struct reset_control *reset;
->  	struct gpio_desc *mute_gpiod;
->  	int digfil;	/* SSLOW, SD, SLOW bits */
->  	int fs;		/* sampling rate */
-> @@ -597,17 +598,17 @@ static struct snd_soc_dai_driver ak4497_dai = {
->  
->  static void ak4458_power_off(struct ak4458_priv *ak4458)
->  {
-> -	if (ak4458->reset_gpiod) {
-> -		gpiod_set_value_cansleep(ak4458->reset_gpiod, 0);
-> -		usleep_range(1000, 2000);
-> +	if (ak4458->reset) {
-> +		reset_control_assert(ak4458->reset);
-> +		msleep(20);
->  	}
->  }
->  
->  static void ak4458_power_on(struct ak4458_priv *ak4458)
->  {
-> -	if (ak4458->reset_gpiod) {
-> -		gpiod_set_value_cansleep(ak4458->reset_gpiod, 1);
-> -		usleep_range(1000, 2000);
-> +	if (ak4458->reset) {
-> +		reset_control_deassert(ak4458->reset);
-> +		msleep(20);
->  	}
->  }
->  
-> @@ -685,7 +686,6 @@ static int __maybe_unused ak4458_runtime_resume(struct device *dev)
->  	if (ak4458->mute_gpiod)
->  		gpiod_set_value_cansleep(ak4458->mute_gpiod, 1);
->  
-> -	ak4458_power_off(ak4458);
->  	ak4458_power_on(ak4458);
->  
->  	regcache_cache_only(ak4458->regmap, false);
-> @@ -771,10 +771,9 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
->  
->  	ak4458->drvdata = of_device_get_match_data(&i2c->dev);
->  
-> -	ak4458->reset_gpiod = devm_gpiod_get_optional(ak4458->dev, "reset",
-> -						      GPIOD_OUT_LOW);
-> -	if (IS_ERR(ak4458->reset_gpiod))
-> -		return PTR_ERR(ak4458->reset_gpiod);
-> +	ak4458->reset = devm_reset_control_get_optional_shared(ak4458->dev, NULL);
-> +	if (IS_ERR(ak4458->reset))
-> +		return PTR_ERR(ak4458->reset);
-
-The binding documentation must be updated and you must support the gpio
-way as well.
-
-When I had this discussion around using the reset framework for shared
-enable and/or reset pins it was suggested that _if_ such a driver makes
-sense then it should internally handle (by using magic strings) the
-fallback and work with pre-reset binding.
-
->  
->  	ak4458->mute_gpiod = devm_gpiod_get_optional(ak4458->dev, "mute",
->  						     GPIOD_OUT_LOW);
-> 
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+--=20
+Best Regards,
+Shin'ichiro Kawasaki=
