@@ -2,53 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A9D2B9924
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFCB2B9926
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728737AbgKSRSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:18:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38290 "EHLO mail.kernel.org"
+        id S1728831AbgKSRSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:18:49 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:32207 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727166AbgKSRSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:18:06 -0500
-Received: from gaia (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A7782468B;
-        Thu, 19 Nov 2020 17:18:04 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 17:18:01 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, linux-kernel@vger.kernel.org,
-        anshuman.khandual@arm.com, jonathan.zhouwen@huawei.com,
-        coresight@lists.linaro.org, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v4 24/25] arm64: Add TRFCR_ELx definitions
-Message-ID: <20201119171801.GE4376@gaia>
-References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
- <20201119164547.2982871-25-suzuki.poulose@arm.com>
+        id S1727166AbgKSRSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:18:49 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CcRGs1mzCzB09Zm;
+        Thu, 19 Nov 2020 18:18:45 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id AMfvyq5zNv_N; Thu, 19 Nov 2020 18:18:45 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CcRGs0lyxzB09Zl;
+        Thu, 19 Nov 2020 18:18:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A3D128B78A;
+        Thu, 19 Nov 2020 18:18:45 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id bf7Xb12tnYPC; Thu, 19 Nov 2020 18:18:45 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0FFB08B80C;
+        Thu, 19 Nov 2020 18:18:31 +0100 (CET)
+Subject: Re: [PATCH v3 2/2] powerpc/ptrace: Hard wire PT_SOFTE value to 1 in
+ gpr_get() too
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20201119160154.GA5183@redhat.com>
+ <20201119160247.GB5188@redhat.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <4e132957-c53c-4b06-9546-26d1de0a672f@csgroup.eu>
+Date:   Thu, 19 Nov 2020 18:18:23 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119164547.2982871-25-suzuki.poulose@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201119160247.GB5188@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 04:45:46PM +0000, Suzuki K Poulose wrote:
-> @@ -988,6 +991,14 @@
->  /* Safe value for MPIDR_EL1: Bit31:RES1, Bit30:U:0, Bit24:MT:0 */
->  #define SYS_MPIDR_SAFE_VAL	(BIT(31))
->  
-> +#define TRFCR_ELx_TS_SHIFT		5
-> +#define TRFCR_ELx_TS_VIRTUAL		((0x1) << TRFCR_ELx_TS_SHIFT)
-> +#define TRFCR_ELx_TS_GUEST_PHYSICAL	((0x2) << TRFCR_ELx_TS_SHIFT)
-> +#define TRFCR_ELx_TS_PHYSICAL		((0x3) << TRFCR_ELx_TS_SHIFT)
 
-For consistency, I'd use 0x1UL etc. in case the shift goes beyond 32
-(not the case here though).
 
-Otherwise:
+Le 19/11/2020 à 17:02, Oleg Nesterov a écrit :
+> The commit a8a4b03ab95f ("powerpc: Hard wire PT_SOFTE value to 1 in
+> ptrace & signals") changed ptrace_get_reg(PT_SOFTE) to report 0x1,
+> but PTRACE_GETREGS still copies pt_regs->softe as is.
+> 
+> This is not consistent and this breaks the user-regs-peekpoke test
+> from https://sourceware.org/systemtap/wiki/utrace/tests/
+> 
+> Reported-by: Jan Kratochvil <jan.kratochvil@redhat.com>
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>   arch/powerpc/kernel/ptrace/ptrace-tm.c   | 8 +++++++-
+>   arch/powerpc/kernel/ptrace/ptrace-view.c | 8 +++++++-
+>   2 files changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/ptrace/ptrace-tm.c b/arch/powerpc/kernel/ptrace/ptrace-tm.c
+> index f8fcbd85d4cb..d0d339f86e61 100644
+> --- a/arch/powerpc/kernel/ptrace/ptrace-tm.c
+> +++ b/arch/powerpc/kernel/ptrace/ptrace-tm.c
+> @@ -87,6 +87,10 @@ int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
+>   		struct membuf to)
+>   {
+>   	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
+> +#ifdef CONFIG_PPC64
+> +	struct membuf to_softe = membuf_at(&to,
+> +					offsetof(struct pt_regs, softe));
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Should fit on a single line I think.
+
+> +#endif
+>   
+>   	if (!cpu_has_feature(CPU_FTR_TM))
+>   		return -ENODEV;
+> @@ -102,7 +106,9 @@ int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
+>   				sizeof(struct user_pt_regs));
+>   
+>   	membuf_store(&to_msr, get_user_ckpt_msr(target));
+> -
+> +#ifdef CONFIG_PPC64
+> +	membuf_store(&to_softe, 0x1ul);
+> +#endif
+>   	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
+>   				sizeof(struct user_pt_regs));
+>   }
+> diff --git a/arch/powerpc/kernel/ptrace/ptrace-view.c b/arch/powerpc/kernel/ptrace/ptrace-view.c
+> index 39686ede40b3..f554ccfcbfae 100644
+> --- a/arch/powerpc/kernel/ptrace/ptrace-view.c
+> +++ b/arch/powerpc/kernel/ptrace/ptrace-view.c
+> @@ -218,6 +218,10 @@ static int gpr_get(struct task_struct *target, const struct user_regset *regset,
+>   		   struct membuf to)
+>   {
+>   	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
+> +#ifdef CONFIG_PPC64
+> +	struct membuf to_softe = membuf_at(&to,
+> +					offsetof(struct pt_regs, softe));
+
+Should fit on a single line I think.
+
+> +#endif
+>   	int i;
+>   
+>   	if (target->thread.regs == NULL)
+> @@ -233,7 +237,9 @@ static int gpr_get(struct task_struct *target, const struct user_regset *regset,
+>   				sizeof(struct user_pt_regs));
+>   
+>   	membuf_store(&to_msr, get_user_msr(target));
+> -
+> +#ifdef CONFIG_PPC64
+> +	membuf_store(&to_softe, 0x1ul);
+> +#endif
+>   	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
+>   				sizeof(struct user_pt_regs));
+>   }
+> 
+
+Christophe
