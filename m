@@ -2,140 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132262B8D40
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 557232B8D5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgKSIai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:30:38 -0500
-Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:42192 "EHLO
-        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726095AbgKSIaa (ORCPT
+        id S1726738AbgKSIcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:32:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbgKSIcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:30:30 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id CCFDBCB2D0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:30:28 +0000 (GMT)
-Received: (qmail 4716 invoked from network); 19 Nov 2020 08:30:28 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 19 Nov 2020 08:30:28 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 4/4] sched: Limit the amount of NUMA imbalance that can exist at fork time
-Date:   Thu, 19 Nov 2020 08:30:27 +0000
-Message-Id: <20201119083027.31335-5-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201119083027.31335-1-mgorman@techsingularity.net>
-References: <20201119083027.31335-1-mgorman@techsingularity.net>
+        Thu, 19 Nov 2020 03:32:20 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45505C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:32:20 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id r17so5549286wrw.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:32:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=l/6bVpIvOCq/GrVdlyeJSm66Y2GHJD5vt1P0y0W4pG4=;
+        b=IQ8FPGf5l7RQbuG6WaahVa6AVuFn3ngdqxMvPIi6QGd3zmMxYkREuclOZScPCJisYP
+         bK5z484RN41BobujVMXhDX77w5DDM10YbrHV+2Ma6rIkAo2AwKZeVZWOsK6JEe5iNebG
+         LYh7wFwcNmChIS//5GRBcXwH0Vp2ZwXdcBEllP4KUy2Q0BdH6vWx+E+Zt48rDALgVSPb
+         f+dqJeDy2hfRPE3PIduTLwiay8RqTVJ974NZS++mYjgPALeQOTgi1Iazm+b/0Aw9fA1B
+         mssxAP2RY4q78jiNjCtfz2Df7fThTP+0oxbVJxBO6XUbgxyNWUlngrpi/xpadNNWxWwk
+         sgbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=l/6bVpIvOCq/GrVdlyeJSm66Y2GHJD5vt1P0y0W4pG4=;
+        b=hUAGVOlyj2y+IOb0RIj0RjFSeL4cv5AnLvOpMgdiqAVQmLrQB9kUfwLqRreCT4plye
+         ZhSpJrK0kAOGfJsZUiejhuD+IituPaskYXoFT7XmyE68xZOrxjt0hMb7ATreWaV5izif
+         rk3SEb9rNEEHefKJP1DXwFgpkcnzxc95xqiPpbK82r/NyevPQ4+E1qQdaiJsI6oo+Aah
+         uE/pM7aZuAsSuRn0L1B8GwthxrCnDGMR5Y7C7NWjJFFMODMnTXCKPiPalv26UmWFz1y4
+         Nixdz1ktLwUJT6Lbam5PCsyXdt379499pt1dcNBKel5XowKDvFyFmzAJIke9Ohy00w9e
+         omIQ==
+X-Gm-Message-State: AOAM530dJ13vg/dOkmXF3NRaJY7GLYLUusPz5PK7nlZ3BymGDE73gLo/
+        yB11XQxuiVFjCzuSqgNEiFLRErhkmj3lS62k
+X-Google-Smtp-Source: ABdhPJx0aYn5xPc970ccTRivsMpKH1dfpyqW+axDLPt0cOvuXhfmYYwkMnr9akMSgkktkjVepe5QMQ==
+X-Received: by 2002:adf:ea47:: with SMTP id j7mr8728367wrn.126.1605774738911;
+        Thu, 19 Nov 2020 00:32:18 -0800 (PST)
+Received: from dell ([91.110.221.241])
+        by smtp.gmail.com with ESMTPSA id f17sm8224995wmh.10.2020.11.19.00.32.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 00:32:18 -0800 (PST)
+Date:   Thu, 19 Nov 2020 08:32:13 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2] mfd: syscon: Add
+ syscon_regmap_lookup_by_phandle_optional() function.
+Message-ID: <20201119083213.GV1869941@dell>
+References: <20201110161338.18198-1-enric.balletbo@collabora.com>
+ <20201113101940.GH3718728@dell>
+ <c4ed34d5-83a1-98d1-580f-8f8504c5ca0a@gmail.com>
+ <20201117123741.GH1869941@dell>
+ <d4424323-25a9-9f70-b2c8-ce464180f788@gmail.com>
+ <20201117160501.GJ1869941@dell>
+ <CAK8P3a3mPQzDr3gzdKAoWKLVKDzysfTvJuFNKR7FM7NWLZ0dDg@mail.gmail.com>
+ <42e50578-c122-e23b-f21f-c4723d008333@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <42e50578-c122-e23b-f21f-c4723d008333@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At fork time currently, a local node can be allowed to fill completely
-and allow the periodic load balancer to fix the problem. This can be
-problematic in cases where a task creates lots of threads that idle until
-woken as part of a worker poll causing a memory bandwidth problem.
+On Wed, 18 Nov 2020, Matthias Brugger wrote:
 
-However, a "real" workload suffers badly from this behaviour. The workload
-in question is mostly NUMA aware but spawns large numbers of threads
-that act as a worker pool that can be called from anywhere. These need
-to spread early to get reasonable behaviour.
+> 
+> 
+> On 17/11/2020 17:40, Arnd Bergmann wrote:
+> > On Tue, Nov 17, 2020 at 5:07 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > On Tue, 17 Nov 2020, Matthias Brugger wrote:
+> > > > On 17/11/2020 13:37, Lee Jones wrote:
+> > > > > On Tue, 17 Nov 2020, Matthias Brugger wrote:
+> > > > 
+> > > > If you want to go the route for me rebasing my tree on top of for-mfd-next
+> > > > then I'd like to have at least a stable tag, so that it will be easier to
+> > > > provide the pull-request later on. Would that be a compromise?
+> > > 
+> > > I don't usually provide immutable branches/tags unless I'm sharing
+> > > topic branches for other maintainers to pick-up, in order to avoid
+> > > merge conflicts.
+> > 
+> > I think that's what Matthias is planning to do though. If he wants
+> > to send me a Mediatek specific branch for the soc tree, it needs to
+> > be based on a stable commit in the mtd tree to avoid duplicating
+> > the commit.
+> > 
+> 
+> Exactly, I'm the maintainer of MediaTek SoCs and I would need to pull this
+> patch into my tree to be able to accept the series I mentioned [1]. Can you
+> provide me a stable tag/branch, against just that patch or against your
+> whole tree?
 
-This patch limits how much a local node can fill before spilling over
-to another node and it will not be a universal win. Specifically,
-very short-lived workloads that fit within a NUMA node would prefer
-the memory bandwidth.
+Oh, I see.  I thought you wanted to develop on top of it.  Apologies.
 
-As I cannot describe the "real" workload, the best proxy measure I found
-for illustration was a page fault microbenchmark. It's not representative
-of the workload but demonstrates the hazard of the current behaviour.
+PR to follow (I'll reply directly to the patch).
 
-pft timings
-                                 5.10.0-rc2             5.10.0-rc2
-                          imbalancefloat-v2          forkspread-v2
-Amean     elapsed-1        46.37 (   0.00%)       46.05 *   0.69%*
-Amean     elapsed-4        12.43 (   0.00%)       12.49 *  -0.47%*
-Amean     elapsed-7         7.61 (   0.00%)        7.55 *   0.81%*
-Amean     elapsed-12        4.79 (   0.00%)        4.80 (  -0.17%)
-Amean     elapsed-21        3.13 (   0.00%)        2.89 *   7.74%*
-Amean     elapsed-30        3.65 (   0.00%)        2.27 *  37.62%*
-Amean     elapsed-48        3.08 (   0.00%)        2.13 *  30.69%*
-Amean     elapsed-79        2.00 (   0.00%)        1.90 *   4.95%*
-Amean     elapsed-80        2.00 (   0.00%)        1.90 *   4.70%*
-
-This is showing the time to fault regions belonging to threads. The target
-machine has 80 logical CPUs and two nodes. Note the ~30% gain when the
-machine is approximately the point where one node becomes fully utilised.
-The slower results are borderline noise.
-
-Kernel building shows similar benefits around the same balance point.
-Generally performance was either neutral or better in the tests conducted.
-The main consideration with this patch is the point where fork stops
-spreading a task so some workloads may benefit from different balance
-points but it would be a risky tuning parameter.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/fair.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index e17e6c5da1d5..00b366347d90 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1550,6 +1550,7 @@ struct task_numa_env {
- static unsigned long cpu_load(struct rq *rq);
- static unsigned long cpu_runnable(struct rq *rq);
- static unsigned long cpu_util(int cpu);
-+static inline bool allow_numa_imbalance(int dst_running, int dst_weight);
- static inline long adjust_numa_imbalance(int imbalance,
- 					int dst_running, int dst_weight);
- 
-@@ -8893,7 +8894,7 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 			 * a real need of migration, periodic load balance will
- 			 * take care of it.
- 			 */
--			if (local_sgs.idle_cpus)
-+			if (allow_numa_imbalance(local_sgs.sum_nr_running, sd->span_weight))
- 				return NULL;
- 		}
- 
-@@ -8997,14 +8998,27 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 
- #define NUMA_IMBALANCE_MIN 2
- 
-+/*
-+ * Allow a NUMA imbalance if busy CPUs is less than 25% of the domain.
-+ * This is an approximation as the number of running tasks may not be
-+ * related to the number of busy CPUs due to sched_setaffinity.
-+ */
-+static inline bool allow_numa_imbalance(int dst_running, int dst_weight)
-+{
-+	return (dst_running < (dst_weight >> 2));
-+}
-+
- static inline long adjust_numa_imbalance(int imbalance,
- 				int dst_running, int dst_weight)
- {
-+	if (!allow_numa_imbalance(dst_running, dst_weight))
-+		return imbalance;
-+
- 	/*
- 	 * Allow a small imbalance based on a simple pair of communicating
- 	 * tasks that remain local when the destination is lightly loaded.
- 	 */
--	if (dst_running < (dst_weight >> 2) && imbalance <= NUMA_IMBALANCE_MIN)
-+	if (imbalance <= NUMA_IMBALANCE_MIN)
- 		return 0;
- 
- 	return imbalance;
 -- 
-2.26.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
