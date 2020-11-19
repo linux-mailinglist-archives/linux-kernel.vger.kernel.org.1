@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFE42B9769
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD3B2B976B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgKSQHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:07:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728459AbgKSQHU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:07:20 -0500
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2800DC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:07:20 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id E42A7C01B; Thu, 19 Nov 2020 17:07:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1605802038; bh=eK6/Q/abk4MPm5E1E9fU+K69kfbIstGf/YUDyuJZEG0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MqbGoote7pDVzt+aCgVzGUEojP1xi9hk+JdvrMw6yr+451nTk80Nt+DnBs5e+IbC7
-         r8FIRiCE/TJOPXgv7OSuzIW5GvKyFDFQe18RJpSKPXVLCbRuOXcMlEbAj0SLwUTdfM
-         BS9tsAXx5puT04bx0YSfIBWn7MSwuX5XHZTIdyHPxmYi3d1VWXGjkKasFj9K5t96ge
-         /LmKup1BqrOjKs7iv5XCCy8YLXC3Exly515Y+FpJvUpBpaXxZIlVyVacicOad/e+Xi
-         7Lja1p76du44tIaL5wvbYX9N1aCaEJO/mDDRFm8mnrw3/hoOeKpD8TgEkAylAX5z5H
-         muS8ALvu6vGUQ==
-From:   Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Jianyong Wu <jianyong.wu@arm.com>, lucho@ionkov.net,
-        justin.he@arm.com, ericvh@gmail.com, qemu_oss@crudebyte.com,
-        groug@kaod.org, linux-kernel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: [PATCH 2/2] 9p: Fix writeback fid incorrectly being attached to dentry
-Date:   Thu, 19 Nov 2020 17:06:52 +0100
-Message-Id: <1605802012-31133-3-git-send-email-asmadeus@codewreck.org>
-X-Mailer: git-send-email 1.7.10.4
-In-Reply-To: <1605802012-31133-1-git-send-email-asmadeus@codewreck.org>
-References: <20201103104116.GA19587@nautica>
- <1605802012-31133-1-git-send-email-asmadeus@codewreck.org>
-To:     unlisted-recipients:; (no To-header on input)
+        id S1728550AbgKSQHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:07:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41676 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727940AbgKSQHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:07:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605802070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4jFe/antxe2FdZg8tiI+iVpO8o5c97eszsK32kDY/L0=;
+        b=XjEKbQF+CRK7Grbmpu4QGNIoe8yvloChqKqubPlpPVMBd2KPctnIOX3s05U43AGV47bI43
+        tCq/dZ1VMlCouCOpESzUA+W044kdlRXB+5M65TNCoJw5OF94MhSrdcmZNhWnXQ9dZXQPfB
+        QsC3TXlgoI+95hGKB1Txie+i8//BLrM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BDF31AA4F;
+        Thu, 19 Nov 2020 16:07:50 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 17:07:50 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, live-patching@vger.kernel.org
+Subject: Re: [PATCH 3/3 v7] livepatch: Use the default ftrace_ops instead of
+ REGS when ARGS is available
+Message-ID: <X7aYVgRa5uP8sAMM@alley>
+References: <20201113171811.288150055@goodmis.org>
+ <20201113171939.455339580@goodmis.org>
+ <X7ZcYIWJEPXW6Z9s@alley>
+ <20201119091235.60be696e@gandalf.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119091235.60be696e@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v9fs_dir_release needs fid->ilist to have been initialized for filp's
-fid, not the inode's writeback fid's.
+On Thu 2020-11-19 09:12:35, Steven Rostedt wrote:
+> On Thu, 19 Nov 2020 12:52:00 +0100
+> Petr Mladek <pmladek@suse.com> wrote:
+> 
+> > >  #ifdef CONFIG_LIVEPATCH
+> > > -static inline void klp_arch_set_pc(struct pt_regs *regs, unsigned long ip)
+> > > +static inline void klp_arch_set_pc(struct ftrace_regs *fregs, unsigned long ip)
+> > >  {
+> > > +	struct pt_regs *regs = ftrace_get_regs(fregs);  
+> > 
+> > Should we check for NULL pointer here?
+> 
+> As mentioned in my last email. regs could have been NULL for the same
+> reasons before this patch, and we didn't check it then. Why should we check
+> it now?
+> 
+> The ftrace_get_regs() only makes sure that a ftrace_ops that set
+> FL_SAVE_REGS gets it, and those that did not, don't.
+> 
+> But that's not entirely true either. If there's two callbacks to the same
+> function, and one has FL_SAVE_REGS set, they both can have access to the
+> regs (before and after this patch). It's just that the one that did not
+> have FL_SAVE_REGS set, isn't guaranteed to have it.
 
-With refcounting this can be improved on later but this appears to fix
-null deref issues.
+Makes sense. Thanks for explanation. Feel free to use:
 
-Fixes: xxx ("fs/9p: track open fids")
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
----
-(note: fixes tag can't be filled here, will be corrected later)
- fs/9p/vfs_file.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Acked-by: Petr Mladek <pmladek@suse.com>
 
-diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-index b0ef225cecd0..c5e49c88688d 100644
---- a/fs/9p/vfs_file.c
-+++ b/fs/9p/vfs_file.c
-@@ -46,7 +46,7 @@ int v9fs_file_open(struct inode *inode, struct file *file)
- 	int err;
- 	struct v9fs_inode *v9inode;
- 	struct v9fs_session_info *v9ses;
--	struct p9_fid *fid;
-+	struct p9_fid *fid, *writeback_fid;
- 	int omode;
- 
- 	p9_debug(P9_DEBUG_VFS, "inode: %p file: %p\n", inode, file);
-@@ -85,13 +85,13 @@ int v9fs_file_open(struct inode *inode, struct file *file)
- 		 * because we want write after unlink usecase
- 		 * to work.
- 		 */
--		fid = v9fs_writeback_fid(file_dentry(file));
-+		writeback_fid = v9fs_writeback_fid(file_dentry(file));
- 		if (IS_ERR(fid)) {
- 			err = PTR_ERR(fid);
- 			mutex_unlock(&v9inode->v_mutex);
- 			goto out_error;
- 		}
--		v9inode->writeback_fid = (void *) fid;
-+		v9inode->writeback_fid = (void *) writeback_fid;
- 	}
- 	mutex_unlock(&v9inode->v_mutex);
- 	if (v9ses->cache == CACHE_LOOSE || v9ses->cache == CACHE_FSCACHE)
--- 
-2.28.0
+I actually did review of all patches and they looked fine to me.
+I just did not check all corner cases, assembly, and did not test
+it, so I give it just my ack. I believe your testing ;-)
 
+Best Regards,
+Petr
