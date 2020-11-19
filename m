@@ -2,84 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1FA2B8AAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 05:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B1D2B8AB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 05:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726172AbgKSEpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 23:45:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgKSEpY (ORCPT
+        id S1726272AbgKSEve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 23:51:34 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34814 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725970AbgKSEvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 23:45:24 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBC1C0613D4;
-        Wed, 18 Nov 2020 20:45:24 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id q10so3272874pfn.0;
-        Wed, 18 Nov 2020 20:45:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=/68HdcONNdfxqmI5NXeK/Rq9pZHHixki1T94CcD+01g=;
-        b=I+m6UTeofulo4NbM+pe+OCPDHvY5PVoyljlaDLItiCEtvcMIx7voSoITiJ4KOXHr19
-         9E4ndoNIrVfNmjyzkFvaVIbgDesdNcszk7aaxTZt1OQKzLUgkCV9kyFHBqr1Jl2+IRuS
-         2WuUe1jZCM8lois0B/NG/9hxnTssX21aftln+ElA8eEe6/Z5vJEZrmebRKa9hIbSq+VZ
-         CMwUoM44uIyckbOplWHponYuxlv2b8CAqGAWwL4Mw7auuIs3AJy2L6HQfM2X88U/cmYy
-         uVcMSLM9HSJ91Dc68SS7siWSZTx2IYCbVGVbCeFBK7jQ+WssLuHtfeStH16N8LxmC3JS
-         R6cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/68HdcONNdfxqmI5NXeK/Rq9pZHHixki1T94CcD+01g=;
-        b=bYjasS78Z0KeXwdKMraYaitMTHeAb91ynykkaSuI780OtYWFFP3hdp7Wafbp1bDYqS
-         ArdhGrBDjMaM7PYvviN7XW68yX/NePLa4d4K5u1lI7oMyzEX5zmeitAh27opPjj5xAE8
-         oRY49FFeoxEuEhCyaj+8+BwphOKv9Vix/KJhEXkGjkBh9Mce9jkZhXUJNpwjG8QgUQ/s
-         Z86fWb6x9Q77FNMil57SVMalZJO7sqEmKHOWYbL3XptAds+WWkjsjfqPlfouoSFgxCTy
-         RUxzidNusZ8uhV9IuDNbZYtRSJLpH+qJbOMFC8fC6Ih4OpPt63pc0ur7cNi6fdOkI+CV
-         DiHw==
-X-Gm-Message-State: AOAM530kgOCGIYtWOtQAqgr0FCtok3dmERnClQHZwOSovIZarYAXmzn8
-        uC1+KCUpNzC0v4Edqdrrey7qy3AV/yZpVg==
-X-Google-Smtp-Source: ABdhPJyy17LiL37vAytwsAgqZW3JtdBC8BRpGixmXQp0VAbXDX9xkvgUfy6ztTCaAJVm0AXTbB7BHg==
-X-Received: by 2002:a17:90b:1218:: with SMTP id gl24mr2377843pjb.131.1605761123713;
-        Wed, 18 Nov 2020 20:45:23 -0800 (PST)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id r36sm24662974pgb.75.2020.11.18.20.45.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 20:45:23 -0800 (PST)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH] soc/tegra: fuse: Fix index bug in get_process_id
-Date:   Wed, 18 Nov 2020 20:44:57 -0800
-Message-Id: <20201119044457.29528-1-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 18 Nov 2020 23:51:33 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0AJ4ohPm012475
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 20:51:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=PmKS75Xrv7Kke1VkeKehrXT+xlpU2bXjjyoz5QH6p18=;
+ b=YGWiUhzEfPokrz5UwWyERddMOTo6OGY8Dm/QM6zH0jr4LQzcuVBBMmFOKtrF0nl7SI8R
+ FqiIHOK3CAehle0h4aYbx/bPFtW3KcjQXUNi8aP/k26Qdusu+w25lxZ79OG4MCmNDQfp
+ y5SI6BNU7tA23Kmi5MkchTQ8BcCEisJLJ1o= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 34wfdq1nug-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 20:51:10 -0800
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 18 Nov 2020 20:50:59 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id BF83A62E572B; Wed, 18 Nov 2020 20:50:51 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, Song Liu <songliubraving@fb.com>
+Subject: [RFC 0/2] Introduce perf-stat -b for BPF programs
+Date:   Wed, 18 Nov 2020 20:50:44 -0800
+Message-ID: <20201119045046.1491106-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-19_01:2020-11-17,2020-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 phishscore=0 impostorscore=0 clxscore=1015
+ mlxlogscore=979 malwarescore=0 bulkscore=0 suspectscore=1
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011190035
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch simply fixes a bug of referencing speedos[num] in every
-for-loop iteration in get_process_id function.
+This set introduces perf-stat -b option to count events for BPF programs.
+This is similar to bpftool-prog-profile. But perf-stat makes it much more
+flexible.
 
-Fixes: 0dc5a0d83675 ("soc/tegra: fuse: Add Tegra210 support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- drivers/soc/tegra/fuse/speedo-tegra210.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sending as RFC because I would like comments on some key design choices:
+  1. We are using BPF skeletons here, which is by far the easiest way to
+     write and ship BPF programs. However, this requires bpftool, which
+     makes building perf slower.
+  2. A Makefile is added to tools/perf/util/bpf_skel/ to build bpftool,
+     and BPF skeletons. This keeps main perf Makefiles simple. But we may
+     not like it for some reason?
 
-diff --git a/drivers/soc/tegra/fuse/speedo-tegra210.c b/drivers/soc/tegra/fuse/speedo-tegra210.c
-index 7394a8d694cb..695d0b7f9a8a 100644
---- a/drivers/soc/tegra/fuse/speedo-tegra210.c
-+++ b/drivers/soc/tegra/fuse/speedo-tegra210.c
-@@ -94,7 +94,7 @@ static int get_process_id(int value, const u32 *speedos, unsigned int num)
- 	unsigned int i;
- 
- 	for (i = 0; i < num; i++)
--		if (value < speedos[num])
-+		if (value < speedos[i])
- 			return i;
- 
- 	return -EINVAL;
--- 
-2.17.1
+Some known limitations (or work to be done):
+  1. Only counting events for one BPF program at a time.
+  2. Need extra logic in target__validate().
 
+Song Liu (2):
+  perf: support build BPF skeletons with perf
+  perf-stat: enable counting events for BPF programs
+
+ tools/build/Makefile.feature                  |   3 +-
+ tools/perf/Makefile.config                    |   8 +
+ tools/perf/Makefile.perf                      |  15 +-
+ tools/perf/builtin-stat.c                     |  59 ++++-
+ tools/perf/util/Build                         |   1 +
+ tools/perf/util/bpf_counter.c                 | 215 ++++++++++++++++++
+ tools/perf/util/bpf_counter.h                 |  71 ++++++
+ tools/perf/util/bpf_skel/.gitignore           |   3 +
+ tools/perf/util/bpf_skel/Makefile             |  71 ++++++
+ .../util/bpf_skel/bpf_prog_profiler.bpf.c     |  96 ++++++++
+ tools/perf/util/bpf_skel/dummy.bpf.c          |  19 ++
+ tools/perf/util/evsel.c                       |  10 +
+ tools/perf/util/evsel.h                       |   5 +
+ tools/perf/util/target.h                      |   6 +
+ 14 files changed, 571 insertions(+), 11 deletions(-)
+ create mode 100644 tools/perf/util/bpf_counter.c
+ create mode 100644 tools/perf/util/bpf_counter.h
+ create mode 100644 tools/perf/util/bpf_skel/.gitignore
+ create mode 100644 tools/perf/util/bpf_skel/Makefile
+ create mode 100644 tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
+ create mode 100644 tools/perf/util/bpf_skel/dummy.bpf.c
+
+--
+2.24.1
