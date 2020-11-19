@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DEB2B9D2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6422B9D36
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgKSVv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 16:51:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47568 "EHLO
+        id S1726567AbgKSVzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 16:55:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgKSVvY (ORCPT
+        with ESMTP id S1725887AbgKSVzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 16:51:24 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62540C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:51:24 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id j205so10463344lfj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:51:24 -0800 (PST)
+        Thu, 19 Nov 2020 16:55:15 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70B8C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:55:12 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h21so8070589wmb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:55:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zNkP1BfoND8tPkUFRfpyqdTZsuDNt6M1lpZgWEkn6Jc=;
-        b=RAH4dACOk6p+Hl0CUknO6IqaObL74j1ij3JIrmV4Sxb2GuXcuW0/A7vF+XR9RhhFSp
-         GPbynKn+i2ldVeFGmkbi3Ywr0Gu6zT9mlfPOchTMUS2kACmG/ekXrxinbmzEOFWcyYbz
-         /5C73fBQ28oRR8OuM5kZQCthv6ve/myWVsRbg=
+         :cc:content-transfer-encoding;
+        bh=QPqvc1x5t7qLXCW8n18+RH8/nuMRFmIb+j6wkjvSoac=;
+        b=Gwqz797TCkbOAVXSCqrZyYHhgCS7dzOjYtHH0GBsaR7yAMjfsqRYgOOflkXnGQoqak
+         sQ9s5hKxA3pyQoNSOp12r4A+7s8b69QGMD3QIdbXngX7xoUK7N4c5E7NSiy6u8iaxP5H
+         jIWTiAuptzNvlg/xBNvDmCANQYgytMNEnsMU1EDPZlYmBQ/9EDcOWj60bOZaKOIzZP/S
+         ujjFP/4/RCnlt+H8abbC0kmLlmuagt9dLZFUklOFACs+21kZifVVdWqbNVyWng3YGFZH
+         izvPt6qHxkhRnb6D0A8sL1LVc9B6G579wlb/QBQ8eTwx0Rk4frvNeRLCNqjV3jYNLSBF
+         jw6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zNkP1BfoND8tPkUFRfpyqdTZsuDNt6M1lpZgWEkn6Jc=;
-        b=Tb3ecdrII17ORrnJrr8O/IFQi/2KJOHpb2d8GgMV/jeyxwzpoLRc3Wnx3G0r0Bbwdb
-         iM4s/y/2AAU+h/6nNdLxeEHHt2GnxIH0IV+yA+q1ykfhwZDGcBvPJOIhq6Ygrfnim6P+
-         UgNKptyzwIFcR/zw3/gstIcxtB89ZXvMSYHEvrec5rtvk00rR0l8ESRvQTqrxgq1bI3+
-         lGIYt6v4CUPICtr9ZC6W5cGeSUf8KmWgcv99vKuU5VJQgwFanQafzkzp2WejVOxAPElW
-         /OQHejVhNJM4L2l+YwOfi3aw727jC+6WE8XvTXQXnlU4tFS5Vt7+WaQOYHxRx3nOCqEq
-         uXlg==
-X-Gm-Message-State: AOAM533f4mkPEgU7nOeKnWlt2+Q9rRj+zapUFIN8hCKDGoWETQKxvelL
-        fBMbuEuor8r9XAYE4eSmloIoqAoLq19/QxTyuNjfyA==
-X-Google-Smtp-Source: ABdhPJzAav3mWCYz/rq8AYwkC5wyEpFUWloem8MmqonR2PXl1rjJxoQVJCUYjeBQizBZlQtlvaImLgveQ0rxVWRKRgA=
-X-Received: by 2002:ac2:43b4:: with SMTP id t20mr6247176lfl.146.1605822682841;
- Thu, 19 Nov 2020 13:51:22 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QPqvc1x5t7qLXCW8n18+RH8/nuMRFmIb+j6wkjvSoac=;
+        b=ApiVWWakdfqlxeHI9kVDuyMX5G765TWtU9hUS5ky6Ze/1cCabJ4OSZKZZ8m3mi+xr9
+         sxIvi5CFQS3QDi2obrS03n5boIl2ovRdpg2wUlnAoFfOkdrEfhIi7Uv+5+YzKQV3UiEo
+         YGoc6GFuH9cWtSLa6ZA3dnLhVfa2Ka0ACrDIyaEC3fbd6HpFfapc5r/GzuRI7WWLDP/E
+         D/RhYLjEEVGe1HFt+U5JxSMDF2EBkQVUGzmqGB8BKeIP436bCchj88WA5rhSvkhJZt+A
+         fmt0KUQRjgZj2/WZNJ+lD0z5OB/zIe/vzTHQx4t6TXtf3CQISM2rq8gctwDz9xKauKMx
+         8UpA==
+X-Gm-Message-State: AOAM532tOuPYOZtYGCWHiY1BOgVpspN4kmdwuu11mBOYp030j3KbWuyJ
+        W3q386JDjKz0kuKkbFqzMmvujQgnKi9vplc71AY=
+X-Google-Smtp-Source: ABdhPJwrarEP3o+nZ/cPmHQ+jbwoZm614gVVX5gD94S1cshyD2zw2A1NRL4NTTbfz8YAMyeIztWkhAVqGhHgLec1fR0=
+X-Received: by 2002:a1c:f017:: with SMTP id a23mr6746684wmb.56.1605822911406;
+ Thu, 19 Nov 2020 13:55:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20201119162654.2410685-1-revest@chromium.org> <20201119162654.2410685-2-revest@chromium.org>
-In-Reply-To: <20201119162654.2410685-2-revest@chromium.org>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Thu, 19 Nov 2020 22:51:12 +0100
-Message-ID: <CACYkzJ79eOai+k1=YfwvP_DNdxX1G+yJ-1vyhgoCqxWyJZGAGQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] bpf: Add a bpf_sock_from_file helper
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
+References: <20201118024234.102485-1-bernard@vivo.com> <d61726de-c9a9-ee9c-cb8a-c34f0625a973@amd.com>
+In-Reply-To: <d61726de-c9a9-ee9c-cb8a-c34f0625a973@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 19 Nov 2020 16:54:59 -0500
+Message-ID: <CADnq5_M+seQ8Ui4p2uMKuGZ_9Y=jwmbSm1YiWxQV_=5PmEw9UA@mail.gmail.com>
+Subject: Re: [PATCH] amdgpu/amdgpu_ids: fix kmalloc_array not uses number as
+ first arg
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Bernard Zhao <bernard@vivo.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 5:27 PM Florent Revest <revest@chromium.org> wrote:
+Applied.  Thanks!
+
+Alex
+
+On Wed, Nov 18, 2020 at 3:17 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
 >
-> From: Florent Revest <revest@google.com>
+> Am 18.11.20 um 03:42 schrieb Bernard Zhao:
+> > Fix check_patch.pl warning:
+> > kmalloc_array uses number as first arg, sizeof is generally wrong.
+> > +fences =3D kmalloc_array(sizeof(void *), id_mgr->num_ids,
+> > GFP_KERNEL);
+> >
+> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
 >
-> While eBPF programs can check whether a file is a socket by file->f_op
-> == &socket_file_ops, they cannot convert the void private_data pointer
-> to a struct socket BTF pointer. In order to do this a new helper
-> wrapping sock_from_file is added.
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
 >
-> This is useful to tracing programs but also other program types
-> inheriting this set of helpers such as iterators or LSM programs.
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c b/drivers/gpu/drm/=
+amd/amdgpu/amdgpu_ids.c
+> > index 6e9a9e5dbea0..f2bd4b0e06f6 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
+> > @@ -208,7 +208,7 @@ static int amdgpu_vmid_grab_idle(struct amdgpu_vm *=
+vm,
+> >       if (ring->vmid_wait && !dma_fence_is_signaled(ring->vmid_wait))
+> >               return amdgpu_sync_fence(sync, ring->vmid_wait);
+> >
+> > -     fences =3D kmalloc_array(sizeof(void *), id_mgr->num_ids, GFP_KER=
+NEL);
+> > +     fences =3D kmalloc_array(id_mgr->num_ids, sizeof(void *), GFP_KER=
+NEL);
+> >       if (!fences)
+> >               return -ENOMEM;
+> >
 >
-> Signed-off-by: Florent Revest <revest@google.com>
-
-Acked-by: KP Singh <kpsingh@google.com>
-
-Some minor comments.
-
-> ---
->  include/uapi/linux/bpf.h       |  7 +++++++
->  kernel/trace/bpf_trace.c       | 20 ++++++++++++++++++++
->  scripts/bpf_helpers_doc.py     |  4 ++++
->  tools/include/uapi/linux/bpf.h |  7 +++++++
->  4 files changed, 38 insertions(+)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 162999b12790..7d598f161dc0 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3787,6 +3787,12 @@ union bpf_attr {
->   *             *ARG_PTR_TO_BTF_ID* of type *task_struct*.
->   *     Return
->   *             Pointer to the current task.
-> + *
-> + * struct socket *bpf_sock_from_file(struct file *file)
-> + *     Description
-> + *             If the given file contains a socket, returns the associated socket.
-
-"If the given file is a socket" or "represents a socket" would fit better here.
-
-> + *     Return
-> + *             A pointer to a struct socket on success or NULL on failure.
-
-NULL if the file is not a socket.
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
