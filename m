@@ -2,123 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4735F2B8DE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FE22B8DEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgKSIt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:49:26 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7703 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726274AbgKSItZ (ORCPT
+        id S1726562AbgKSIuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726274AbgKSIuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:49:25 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CcCyk4tr9zkY2y;
-        Thu, 19 Nov 2020 16:49:02 +0800 (CST)
-Received: from [10.63.139.185] (10.63.139.185) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 19 Nov 2020 16:49:12 +0800
-Subject: Re: [PATCH] crypto: hisilicon/zip - add a work_queue for zip irq
-To:     Yang Shen <shenyang39@huawei.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>
-References: <1605259955-17796-1-git-send-email-shenyang39@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>
-From:   Zhou Wang <wangzhou1@hisilicon.com>
-Message-ID: <5FB63188.5050303@hisilicon.com>
-Date:   Thu, 19 Nov 2020 16:49:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        Thu, 19 Nov 2020 03:50:23 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7948FC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:50:23 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 46EA21F455CA
+Subject: Re: next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        Marc Zyngier <maz@kernel.org>
+References: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
+Cc:     kernelci-results@groups.io, Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <a0bec7c4-9bec-8858-4879-52f4688d9992@collabora.com>
+Date:   Thu, 19 Nov 2020 08:50:14 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <1605259955-17796-1-git-send-email-shenyang39@huawei.com>
-Content-Type: text/plain; charset="windows-1252"
+In-Reply-To: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.63.139.185]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/13 17:32, Yang Shen wrote:
-> The patch 'irqchip/gic-v3-its: Balance initial LPI affinity across CPUs'
-> set the IRQ to an uncentain CPU. If an IRQ is bound to the CPU used by the
-> thread which is sending request, the throughput will be just half.
-> 
-> So allocate a 'work_queue' and set as 'WQ_UNBOUND' to do the back half work
-> on some different CPUS.
-> 
-> Signed-off-by: Yang Shen <shenyang39@huawei.com>
-> Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
+Please see the automated bisection report below about some kernel
+errors on meson-gxbb-p200.
 
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org, however this one
+looks valid.
+
+The bisection started with next-20201118 but the errors are still
+present in next-20201119.  Details for this regression:
+
+  https://kernelci.org/test/case/id/5fb6196bfd0127fd68d8d902/
+
+The first error is:
+
+  [   14.757489] Internal error: synchronous external abort: 96000210 [#1] PREEMPT SMP
+
+Full log:
+
+  https://storage.kernelci.org/next/master/next-20201119/arm64/defconfig/gcc-8/lab-baylibre/baseline-meson-gxbb-p200.html#L410
+
+Some other platforms are failing to boot starting with
+next-20201118 but it's unclear whether that's due to the same
+issue.  They might lead to a successful bisection which would
+help clarify this.  All the baseline test results can be found
+here:
+
+  https://kernelci.org/test/job/next/branch/master/kernel/next-20201119/plan/baseline/
+
+
+Hope this helps.  Pleas let us know if you need some help to
+reproduce the issue or try a fix.
 
 Thanks,
-Zhou
+Guillaume
 
-> ---
->  drivers/crypto/hisilicon/zip/zip_main.c | 26 +++++++++++++++++++++++---
->  1 file changed, 23 insertions(+), 3 deletions(-)
+On 19/11/2020 03:03, KernelCI bot wrote:
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> * This automated bisection report was sent to you on the basis  *
+> * that you may be involved with the breaking commit it has      *
+> * found.  No manual investigation has been done to verify it,   *
+> * and the root cause of the problem may be somewhere else.      *
+> *                                                               *
+> * If you do send a fix, please include this trailer:            *
+> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+> *                                                               *
+> * Hope this helps!                                              *
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 > 
-> diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-> index 3d1524b..4fb5a32b 100644
-> --- a/drivers/crypto/hisilicon/zip/zip_main.c
-> +++ b/drivers/crypto/hisilicon/zip/zip_main.c
-> @@ -747,6 +747,8 @@ static int hisi_zip_pf_probe_init(struct hisi_zip *hisi_zip)
+> next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
 > 
->  static int hisi_zip_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
->  {
-> +	int ret;
+> Summary:
+>   Start:      205292332779 Add linux-next specific files for 20201118
+>   Plain log:  https://storage.kernelci.org/next/master/next-20201118/arm64/defconfig/gcc-8/lab-baylibre/baseline-meson-gxbb-p200.txt
+>   HTML log:   https://storage.kernelci.org/next/master/next-20201118/arm64/defconfig/gcc-8/lab-baylibre/baseline-meson-gxbb-p200.html
+>   Result:     b33340e33acd drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers
+> 
+> Checks:
+>   revert:     PASS
+>   verify:     PASS
+> 
+> Parameters:
+>   Tree:       next
+>   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>   Branch:     master
+>   Target:     meson-gxbb-p200
+>   CPU arch:   arm64
+>   Lab:        lab-baylibre
+>   Compiler:   gcc-8
+>   Config:     defconfig
+>   Test case:  baseline.dmesg.emerg
+> 
+> Breaking commit found:
+> 
+> -------------------------------------------------------------------------------
+> commit b33340e33acdfe5ca6a5aa1244709575ae1e0432
+> Author: Marc Zyngier <maz@kernel.org>
+> Date:   Mon Nov 16 20:07:44 2020 +0000
+> 
+>     drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers
+>     
+>     Removing the meson-dw-hdmi module and re-inserting it results in a hang
+>     as the driver writes to HDMITX_TOP_SW_RESET. Similar effects can be seen
+>     when booting with mainline u-boot and using the u-boot provided DT (which
+>     is highly desirable).
+>     
+>     The reason for the hang seem to be that the clocks are not always
+>     enabled by the time we enter meson_dw_hdmi_init(). Moving this call
+>     *after* dw_hdmi_probe() ensures that the clocks are enabled.
+>     
+>     Fixes: 1374b8375c2e ("drm/meson: dw_hdmi: add resume/suspend hooks")
+>     Signed-off-by: Marc Zyngier <maz@kernel.org>
+>     Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+>     Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>     Link: https://patchwork.freedesktop.org/patch/msgid/20201116200744.495826-5-maz@kernel.org
+> 
+> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> index 68826cf9993f..7f8eea494147 100644
+> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> @@ -1073,8 +1073,6 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+>  
+>  	DRM_DEBUG_DRIVER("encoder initialized\n");
+>  
+> -	meson_dw_hdmi_init(meson_dw_hdmi);
+> -
+>  	/* Bridge / Connector */
+>  
+>  	dw_plat_data->priv_data = meson_dw_hdmi;
+> @@ -1097,6 +1095,8 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+>  	if (IS_ERR(meson_dw_hdmi->hdmi))
+>  		return PTR_ERR(meson_dw_hdmi->hdmi);
+>  
+> +	meson_dw_hdmi_init(meson_dw_hdmi);
 > +
->  	qm->pdev = pdev;
->  	qm->ver = pdev->revision;
->  	qm->algs = "zlib\ngzip";
-> @@ -772,7 +774,25 @@ static int hisi_zip_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
->  		qm->qp_num = HZIP_QUEUE_NUM_V1 - HZIP_PF_DEF_Q_NUM;
->  	}
+>  	next_bridge = of_drm_find_bridge(pdev->dev.of_node);
+>  	if (next_bridge)
+>  		drm_bridge_attach(encoder, next_bridge,
+> -------------------------------------------------------------------------------
 > 
-> -	return hisi_qm_init(qm);
-> +	qm->wq = alloc_workqueue("%s", WQ_HIGHPRI | WQ_MEM_RECLAIM |
-> +				 WQ_UNBOUND, num_online_cpus(),
-> +				 pci_name(qm->pdev));
-> +	if (!qm->wq) {
-> +		pci_err(qm->pdev, "fail to alloc workqueue\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	ret = hisi_qm_init(qm);
-> +	if (ret)
-> +		destroy_workqueue(qm->wq);
-> +
-> +	return ret;
-> +}
-> +
-> +static void hisi_zip_qm_uninit(struct hisi_qm *qm)
-> +{
-> +	hisi_qm_uninit(qm);
-> +	destroy_workqueue(qm->wq);
->  }
 > 
->  static int hisi_zip_probe_init(struct hisi_zip *hisi_zip)
-> @@ -854,7 +874,7 @@ static int hisi_zip_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	hisi_qm_dev_err_uninit(qm);
+> Git bisection log:
 > 
->  err_qm_uninit:
-> -	hisi_qm_uninit(qm);
-> +	hisi_zip_qm_uninit(qm);
+> -------------------------------------------------------------------------------
+> git bisect start
+> # good: [0fa8ee0d9ab95c9350b8b84574824d9a384a9f7d] Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input
+> git bisect good 0fa8ee0d9ab95c9350b8b84574824d9a384a9f7d
+> # bad: [2052923327794192c5d884623b5ee5fec1867bda] Add linux-next specific files for 20201118
+> git bisect bad 2052923327794192c5d884623b5ee5fec1867bda
+> # good: [8ca2209e1117911bdca879e28c72ee59ad5b97f7] Merge remote-tracking branch 'crypto/master' into master
+> git bisect good 8ca2209e1117911bdca879e28c72ee59ad5b97f7
+> # bad: [3d72f72d6bf743e13c948737bac115114c93fd1b] Merge remote-tracking branch 'block/for-next' into master
+> git bisect bad 3d72f72d6bf743e13c948737bac115114c93fd1b
+> # good: [f017853ee200d5cac32099d5dd88a7e5fc30dde7] gpu: drm: radeon: radeon_device: Fix a bunch of kernel-doc misdemeanours
+> git bisect good f017853ee200d5cac32099d5dd88a7e5fc30dde7
+> # bad: [04e03037129068647393bee87dbcd8123465c271] Merge remote-tracking branch 'drm-misc/for-linux-next' into master
+> git bisect bad 04e03037129068647393bee87dbcd8123465c271
+> # good: [fc5d5d9744bc9c001c80d0a7b8b1f0ceb04314b2] drm/amdgpu: add DID for dimgrey_cavefish
+> git bisect good fc5d5d9744bc9c001c80d0a7b8b1f0ceb04314b2
+> # skip: [cc40c4752593c04ccd3f6ef6270c509823af42e0] drm/exynos/exynos_drm_fimd: Add missing description for param 'ctx'
+> git bisect skip cc40c4752593c04ccd3f6ef6270c509823af42e0
+> # good: [2b5b95b1ff3d70a95013a45e3b5b90f1daf42348] mm: introduce vma_set_file function v4
+> git bisect good 2b5b95b1ff3d70a95013a45e3b5b90f1daf42348
+> # bad: [511881a8301fc87fa479dd67d8e56c2ba3fc8c70] drm/mediatek/mtk_dpi: Remove unused struct definition 'mtk_dpi_encoder_funcs'
+> git bisect bad 511881a8301fc87fa479dd67d8e56c2ba3fc8c70
+> # good: [1b409fda60414186688d94a125ce5306f323af6d] drm: omapdrm: Replace HTTP links with HTTPS ones
+> git bisect good 1b409fda60414186688d94a125ce5306f323af6d
+> # skip: [1b72ea1eaa9e4168d7486d85463fbd2d57a1452c] drm/panel: s6e63m0: Implement reading from panel
+> git bisect skip 1b72ea1eaa9e4168d7486d85463fbd2d57a1452c
+> # good: [a7319c8f50c5e93a12997e2d0821a2f7946fb734] drm/udl: Fix missing error code in udl_handle_damage()
+> git bisect good a7319c8f50c5e93a12997e2d0821a2f7946fb734
+> # good: [4ee573086bd88ff3060dda07873bf755d332e9ba] Fonts: Add charcount field to font_desc
+> git bisect good 4ee573086bd88ff3060dda07873bf755d332e9ba
+> # good: [0405f94a1ae0586ca237aec0e859f1b796d6325d] drm/meson: dw-hdmi: Register a callback to disable the regulator
+> git bisect good 0405f94a1ae0586ca237aec0e859f1b796d6325d
+> # skip: [7467389bdafb77357090512d42a452bea31d53b5] drm/panel: Add ABT Y030XX067A 3.0" 320x480 panel
+> git bisect skip 7467389bdafb77357090512d42a452bea31d53b5
+> # skip: [400fb19dd63d7d2e3ab7243631704cf731f4b5ca] drm/exynos/exynos7_drm_decon: Supply missing description for param 'ctx'
+> git bisect skip 400fb19dd63d7d2e3ab7243631704cf731f4b5ca
+> # bad: [f8ef48ffa9d3bfd067416785efacf60d2a25a568] drm/armada/armada_overlay: Staticify local function 'armada_overlay_duplicate_state'
+> git bisect bad f8ef48ffa9d3bfd067416785efacf60d2a25a568
+> # bad: [e366a644c69d0909cb3ff3921c9c9ef4cff9a41d] dt-bindings: display: Add ABT Y030XX067A panel bindings
+> git bisect bad e366a644c69d0909cb3ff3921c9c9ef4cff9a41d
+> # bad: [81b7608e2b190426c33b9e7fc69fe96ae8408ebb] dt-bindings: vendor-prefixes: Add abt vendor prefix
+> git bisect bad 81b7608e2b190426c33b9e7fc69fe96ae8408ebb
+> # bad: [b33340e33acdfe5ca6a5aa1244709575ae1e0432] drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers
+> git bisect bad b33340e33acdfe5ca6a5aa1244709575ae1e0432
+> # first bad commit: [b33340e33acdfe5ca6a5aa1244709575ae1e0432] drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers
+> -------------------------------------------------------------------------------
 > 
->  	return ret;
->  }
-> @@ -872,7 +892,7 @@ static void hisi_zip_remove(struct pci_dev *pdev)
->  	hisi_zip_debugfs_exit(qm);
->  	hisi_qm_stop(qm, QM_NORMAL);
->  	hisi_qm_dev_err_uninit(qm);
-> -	hisi_qm_uninit(qm);
-> +	hisi_zip_qm_uninit(qm);
->  }
 > 
->  static const struct pci_error_handlers hisi_zip_err_handler = {
-> --
-> 2.7.4
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Groups.io Links: You receive all messages sent to this group.
+> View/Reply Online (#3519): https://groups.io/g/kernelci-results/message/3519
+> Mute This Topic: https://groups.io/mt/78357476/924702
+> Group Owner: kernelci-results+owner@groups.io
+> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
+> -=-=-=-=-=-=-=-=-=-=-=-
 > 
-> .
 > 
+
