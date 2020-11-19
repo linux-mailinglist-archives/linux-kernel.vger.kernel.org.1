@@ -2,166 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816CF2B9838
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 689872B983A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728042AbgKSQil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:38:41 -0500
-Received: from mail-eopbgr00079.outbound.protection.outlook.com ([40.107.0.79]:5121
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727768AbgKSQik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:38:40 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R2U9nx4pfdXRs3Y7VNbG4ncTIrIscC5K6uXu4H7VBuH4B5lrA+ytSnpxEvXSwHCU0ycJBCp8+nSFTrOGy8EPS783o35c27JFZmEy8AzImmBj71mI4o76OnvtajKtXVcZgMRXbS2/bhY3gO/a07s6t3h+2+c5vKn752YoTWFRguIixz/lEDeEcy1g9bN2WMQrrGk7tl1vnp37xDIx/6ec9KFzHvtHcAwYp8Z00jWo0ypc8baGdYaPhvjvFJr2swIosvZVCW03Zs4cJrmWDeYxJlNNZe+qnaqGAvY0PYzmw8sVPbePgOB7SOIvs0hduvaoOVjWyB798V9WyLoNJhiN7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r8BdkVVhKUjvcFBOQ7tBzkg+/N5SXzAoqi4eENemrB8=;
- b=nxO5BAgVrfYKd0CEKHTKH3zf+SMnyFwZQgCFUiTG0+3tznyuc5yze8rXbehYEvOY2R+zcPAwVqKySgHNo8+WIrDntSdoM5Jl4iMdVwbyiT8wk8guINwxyTxziMwpUvw/Ct9qz8ASOc6rVYWAfsncWseefTO4cckKeJN9MGDYO1IUVzXf0XPdxvtrTBvjVuT1ZBhpkd+C7xQnd1S9aTb4VNHVI/Ih+YMTB/eNSLtIFV+9ywq42/IDu18HhKPcUTL32QJbIAv4YwMrTUkScW8BVEh8IW5Nvxj2ldlELrGKtkDeuDTPUARBdGrdLJG/3FpSDQMbh1LWn5Q3sTl/naWuww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r8BdkVVhKUjvcFBOQ7tBzkg+/N5SXzAoqi4eENemrB8=;
- b=hF9s33V8S7ABqVQ/H/j8+BR7rtzmwo0YXRfxYKkNEw/nhFDs0foN0Rtz7drlYH2pjZM+1QuD5o6kVkokf7H+Ksp7JiwOIPk7YH+pc5xro5LYvENHFDVhuXhuWZozbtJp8MpQaX3KVHwQMO08sbQDRyIfKCc5Zm5DrzpLjggjpMU=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VI1PR04MB5501.eurprd04.prod.outlook.com (2603:10a6:803:d3::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Thu, 19 Nov
- 2020 16:38:34 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::2dd6:8dc:2da7:ad84]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::2dd6:8dc:2da7:ad84%5]) with mapi id 15.20.3589.024; Thu, 19 Nov 2020
- 16:38:34 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ashish Kumar <Ashish.Kumar@nxp.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>, Michael Walle <michael@walle.cc>
-Subject: [PATCH v2] arm64: dts: ls1028a: make the eMMC and SD card controllers use fixed indices
-Date:   Thu, 19 Nov 2020 18:38:21 +0200
-Message-Id: <20201119163821.980841-1-vladimir.oltean@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [188.25.2.177]
-X-ClientProxiedBy: AM8P190CA0025.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:219::30) To VI1PR04MB5696.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::13)
+        id S1728783AbgKSQjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:39:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727195AbgKSQjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:39:36 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F288D2220B;
+        Thu, 19 Nov 2020 16:39:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605803975;
+        bh=M+kNcVmgZDYx9/XBbh47SkB+8hU/YO4GMxDOKxbKuBI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OoOlcSvldEoYJaIMOCSULQUSD80i3+NbGdDZG2nY6iHp5pNC4I9LUAnGAinnxtl4f
+         7f1V3LDx2osEyhUeP0Kkx3gz6/BltwwCqzJobo7nf+By2d5n+ub9kuVHo8kxcijdOc
+         V/1ovyniJzscos2uhY0+wCVoZHZ6tl5kMFaVX5n4=
+Date:   Thu, 19 Nov 2020 16:39:28 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 00/14] An alternative series for asymmetric AArch32
+ systems
+Message-ID: <20201119163928.GC4582@willie-the-truck>
+References: <20201113093720.21106-1-will@kernel.org>
+ <20201119161127.GQ3121392@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (188.25.2.177) by AM8P190CA0025.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:219::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Thu, 19 Nov 2020 16:38:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e998aa9b-053a-4da2-7064-08d88ca98e5f
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5501:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB550155FFC5A7C21B1428984EE0E00@VI1PR04MB5501.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nr1dT/ycFp+jWLv3vTuLbVRoiZlAXgJDufvpotZT8j7YeWFZlrE6rK5mAnJnMMM4lzYRoIzEXZs048VwWaUWitDm9t5qLIfevpxatdOGzbDfL45pPNoD48bxmiOz2p+/tQBhIun2SF4aV3jSBBEmmgXIzJYyiijYHoZYnM91gUssycxXjfYQmogjZcwejiXdhYeEXbrWWrH1TZDvpECXkgXsogDW3C8UpCEzJsJjekByPvYRQ72dmfNIpvGclVnDBVM+VQW6IgSdTVTY3rw8uN253YEyk+q0j4Rc+e7yRbXWH5lt7h5Hy/73MSO86O9/Ur3W6vv7Y/bBbaoyKZ8UxAfkwC85mtHA7k+XIRsmNJkDLXY6L9bEaAu2WWd4Xjga
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(39860400002)(376002)(8936002)(2906002)(66556008)(86362001)(54906003)(66476007)(110136005)(83380400001)(316002)(6506007)(5660300002)(44832011)(8676002)(52116002)(186003)(16526019)(36756003)(1076003)(69590400008)(6486002)(4326008)(6666004)(956004)(6512007)(2616005)(26005)(478600001)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: bQjU1aXEKcZSNr3qHIXZBzW4fw0wHwURJlUrvt2rqF3KTXnD22hz2vE2ZuuGYVWV7SSYmMypLXKoxVr4dKWPd0dZ07PPf3yyPbGZbdMrjsIND8nFU2wsHg56s/jFefrn0p+B1TzgL9vv+uIS1xlv2Ruh/AtIfhjwdT9lC1QQXtU/+dGziJMmbg501ZmwHdPYK3KUn31M+kE8UYL2xLSDnZg4PabHnvAj6Sy6tFKBbGtXYF4fPb4kzd/TDA4fAUxdDR1d0JIi84O2yVTbIhmtaQ8skc+CoETZimPgvaxRIhELxJOkTkGgDtaxCSA+pwYYPkopNCiL0G3KdpJakiO35TC8GXFhuoFkYOthHloQVgGfjr06NYh33GwUhnCj5oHBofa2aQWcmRTblvDi+3JhRtVd1TsZIX7pKvbAAWyO65VXF+GPUp9yw0URZsx0q589TJ8lXr6jnvV2KMMPV4df4QByyUhFhXge5LW0ParxLwjtgW1cdDolcx4/tLAudeHmmcOZoRyexajJ76SV2V8UEvk1KCfkCLJ3vtUX2hzhdpK7g/L5Bsu8wlps8hPmU5Vyd+1Ql+u5rTeu1wPs0KSfUFPypoQY39hGXwKrYgCzWwWOeVFARxWT+8Np32cywi5UAyrvzavJ+JUsXXlk+Wj/1A==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e998aa9b-053a-4da2-7064-08d88ca98e5f
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2020 16:38:34.0645
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VQ8hKG5rxLEWdAFrigF1RfAkC4RZ0Y84fccLQ3qQR5jY5M+9w0hYdPdegXdfe8ggC4PvZrGLm14H2nHnHCVowg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5501
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119161127.GQ3121392@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the boot order in the kernel continues to change, sometimes it may
-happen that the eSDHC controller mmc@2150000 (the one for eMMC) gets
-probed before the one at mmc@2140000 (for external SD cards). The effect
-is that the eMMC controller gets the /dev/mmcblk0 name, and the SD card
-gets /dev/mmcblk1.
+On Thu, Nov 19, 2020 at 05:11:27PM +0100, Peter Zijlstra wrote:
+> On Fri, Nov 13, 2020 at 09:37:05AM +0000, Will Deacon wrote:
+> 
+> > The aim of this series is to allow 32-bit ARM applications to run on
+> > arm64 SoCs where not all of the CPUs support the 32-bit instruction set.
+> > 
+> > There are some major changes in v3:
+> > 
+> >   * Add some scheduler hooks for restricting a task's affinity mask
+> >   * Implement these hooks for arm64 so that we can avoid 32-bit tasks
+> >     running on 64-bit-only cores
+> >   * Restrict affinity mask of 32-bit tasks on execve()
+> >   * Prevent hot-unplug of all 32-bit CPUs if we have a mismatched system
+> >   * Ensure 32-bit EL0 cpumask is zero-initialised (oops)
+> > 
+> > It's worth mentioning that this approach goes directly against my
+> > initial proposal for punting the affinity management to userspace,
+> > because it turns out that doesn't really work. There are cases where the
+> > kernel has to muck with the affinity mask explicitly, such as execve(),
+> > CPU hotplug and cpuset balancing. Ensuring that these don't lead to
+> > random SIGKILLs as far as userspace is concerned means avoiding any
+> 
+> Mooo, I thought we were okay with that... Use does stupid, user gets
+> SIGKIL. What changed?
 
-Since the introduction of this SoC, that has never happened in practice,
-even though it was never guaranteed in theory. Setting
-"root=/dev/mmcblk0p2" in /proc/cmdline has always caused the kernel to
-use the second partition from the SD card as the rootfs.
+See my other reply, but there are 64-bit apps that execve() a 32-bit
+payload. I was hoping this could be handling in the C library, but that
+has no idea about what it's exec'ing beyond the path.
 
-The NXP development boards are typically shipped with either
-- LSDK, which uses "root=UUID=", or
-- OpenIL, which uses "root=/dev/mmcblkNp2"
-
-So for OpenIL, let's preserve that old behavior by adding some aliases
-which create naming consistency (for LSDK it doesn't matter):
-- the SD card controller uses /dev/mmcblk0
-- the eMMC controller uses /dev/mmcblk1
-
-For the Kontron SL28 boards, Michael Walle says that they are shipped
-with "root=UUID=" already, so the probing order doesn't matter, but it
-is more natural to him for /dev/mmcblk0 to be the eMMC, so let's do it
-the other way around there.
-
-The aliases are parsed by mmc_alloc_host() in drivers/mmc/core/host.c.
-
-Cc: Ashish Kumar <Ashish.Kumar@nxp.com>
-Cc: Yangbo Lu <yangbo.lu@nxp.com>
-Cc: Michael Walle <michael@walle.cc>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
----
- arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts | 2 ++
- arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts          | 2 ++
- arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts          | 2 ++
- 3 files changed, 6 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-index 8161dd237971..99a17c187aa8 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-@@ -23,6 +23,8 @@ aliases {
- 		serial2 = &lpuart1;
- 		spi0 = &fspi;
- 		spi1 = &dspi2;
-+		mmc0 = &esdhc1;
-+		mmc1 = &esdhc;
- 	};
- 
- 	buttons0 {
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-index 13cdc958ba3e..c0786b713791 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-@@ -23,6 +23,8 @@ aliases {
- 		gpio2 = &gpio3;
- 		serial0 = &duart0;
- 		serial1 = &duart1;
-+		mmc0 = &esdhc;
-+		mmc1 = &esdhc1;
- 	};
- 
- 	chosen {
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-index 1efb61cff454..c1d1ba459307 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-@@ -19,6 +19,8 @@ aliases {
- 		crypto = &crypto;
- 		serial0 = &duart0;
- 		serial1 = &duart1;
-+		mmc0 = &esdhc;
-+		mmc1 = &esdhc1;
- 	};
- 
- 	chosen {
--- 
-2.25.1
-
+Will
