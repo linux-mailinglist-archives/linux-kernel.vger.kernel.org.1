@@ -2,78 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F71A2B92F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B292B92CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727499AbgKSM5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:57:47 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8122 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727048AbgKSM5r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:57:47 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CcKTH03pJzLqKp;
-        Thu, 19 Nov 2020 20:57:23 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 19 Nov 2020 20:57:37 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <kishon@ti.com>, <lorenzo.pieralisi@arm.com>, <arnd@arndb.de>,
-        <gregkh@linuxfoundation.org>, <gustavo.pimentel@synopsys.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangxiongfeng2@huawei.com>
-Subject: [PATCH] misc: pci_endpoint_test: fix return value of error branch
-Date:   Thu, 19 Nov 2020 20:49:18 +0800
-Message-ID: <1605790158-6780-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1727374AbgKSMtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:49:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726495AbgKSMtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 07:49:33 -0500
+Received: from localhost (unknown [122.171.203.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E4C320771;
+        Thu, 19 Nov 2020 12:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605790172;
+        bh=hXFi6CtGZSxav0zmnu3jho3+3VLGyLXbm+gUoORgMYs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=piuMob8R+MUetHZpMVcp+2exAl54jS0RoB2ZnmJVkAVU1WVsjd+hy0XYt/i4awpUj
+         AL1EcByCPZVrmUM3X41zL5fk2za2KLsAaULFnhiGkMjM1SATGYhMqGSM7cbSFOpG1g
+         IoQmlJJXU/toaqUlanCT3KEprT1AYRLop6VtDchg=
+Date:   Thu, 19 Nov 2020 18:19:26 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, John Stultz <john.stultz@linaro.org>
+Subject: Re: [PATCH] arm64: defconfig: Enable QCOM_SCM as builtin
+Message-ID: <20201119124926.GA2925@vkoul-mobl>
+References: <20201118162528.454729-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118162528.454729-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We return 'err' in the error branch, but this variable may be set as
-zero before. Fix it by setting 'err' as a negative value before we
-goto the error label.
+On 18-11-20, 08:25, Bjorn Andersson wrote:
+> The Qualcomm SCM driver was never explicitly enabled in the defconfig.
+> Instead it was (apparently) selected by DRM_MSM and by the recent change
+> to make it tristate now became =m.
+> 
+> Unfortunately this removes the ability for PINCTRL_MSM and ARM_SMMU to
+> be =y and with deferred_probe_timeout defaulting to 0 this means that
+> things such as UART, USB, PCIe and SDHCI probes with their dependencies
+> ignored.
+> 
+> The lack of pinctrl results in invalid pin configuration and the lack of
+> iommu results in the system locking up as soon as any form of data
+> transfer is attempted from any of the affected peripherals.
+> 
+> Mark QCOM_SCM as builtin, to avoid this.
 
-Fixes: e03327122e2c ("pci_endpoint_test: Add 2 ioctl commands")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/misc/pci_endpoint_test.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
 
-diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
-index 146ca6f..d384473 100644
---- a/drivers/misc/pci_endpoint_test.c
-+++ b/drivers/misc/pci_endpoint_test.c
-@@ -811,8 +811,10 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
- 
- 	pci_set_master(pdev);
- 
--	if (!pci_endpoint_test_alloc_irq_vectors(test, irq_type))
-+	if (!pci_endpoint_test_alloc_irq_vectors(test, irq_type)) {
-+		err = -EINVAL;
- 		goto err_disable_irq;
-+	}
- 
- 	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
- 		if (pci_resource_flags(pdev, bar) & IORESOURCE_MEM) {
-@@ -849,8 +851,10 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
- 		goto err_ida_remove;
- 	}
- 
--	if (!pci_endpoint_test_request_irq(test))
-+	if (!pci_endpoint_test_request_irq(test)) {
-+		err = -EINVAL;
- 		goto err_kfree_test_name;
-+	}
- 
- 	misc_device = &test->miscdev;
- 	misc_device->minor = MISC_DYNAMIC_MINOR;
 -- 
-1.7.12.4
-
+~Vinod
