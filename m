@@ -2,140 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975612B9E90
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4CC2B9E91
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727376AbgKSXiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 18:38:03 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:52450 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727028AbgKSXiB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 18:38:01 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJNYp1V138161;
-        Thu, 19 Nov 2020 23:37:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=MszqefOJcdbabdMne6HpW6zW0+wj9g5wPcoppzWfBRw=;
- b=KbfS9xyoLYd9f+1tXyKP2N9pPIg5wIv5h1lEyTOCL9Zt0uZIPY/9ifXv92/ct+6eDVjV
- wHfLnCwUxx9Q1YOPRUsv+/lvjU7vKJo1iZ/jnXcfB8Y+BfGIeeUhSxbnpehYWlxSJLd+
- Q7hygayEZy8mt+KJsQHshVxJOT9ZQ1qklH7XDFpV6jpznoJp6VwMAXI/JQ7Z+ePVzXRD
- cvvlkISXBgM/kgJoL5P3cZh8TURAQrb4wx7Szl/3HjrNWJzr2TNd3iyPIJKuz4PnxPwv
- ImThZf+gpItUVMV441kI05KshfgnaF9Ul8bYtiCy3iZq36mzR1j8xppN7mYP07oxInQy Ng== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 34t7vng7ru-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 23:37:31 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJNZbnW195048;
-        Thu, 19 Nov 2020 23:37:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34ts0ufh77-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Nov 2020 23:37:31 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AJNbRN5010801;
-        Thu, 19 Nov 2020 23:37:28 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Nov 2020 15:37:27 -0800
-Subject: Re: [PATCH v4 05/21] mm/hugetlb: Introduce pgtable allocation/freeing
- helpers
-To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, osalvador@suse.de, mhocko@suse.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201113105952.11638-1-songmuchun@bytedance.com>
- <20201113105952.11638-6-songmuchun@bytedance.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <b3cadba4-5cef-a1ba-418d-bd08af60c656@oracle.com>
-Date:   Thu, 19 Nov 2020 15:37:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1727401AbgKSXiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 18:38:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727028AbgKSXix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 18:38:53 -0500
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B29C022248;
+        Thu, 19 Nov 2020 23:38:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605829133;
+        bh=XJSKtvpgEybgfJcO0SJsTybzoZJuV4CZibv1f3Vm9Q4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=1w6tnffGLWdZheAqgLLRjoFP66HuyXPIcYm238SHq4vJaaDHD5I/G2qoN9AynmR/r
+         Zfb0giKkohOvZdwTIHwba6fSf5YO0MvGzc1EQg2mdbXbtn35bBh1NIBbwZLTpYF30i
+         dWzoExbrSn5VYaFfD9LEkGHVXdH8mjuOVKAiD6EI=
+Received: by mail-ej1-f47.google.com with SMTP id lv15so4510548ejb.12;
+        Thu, 19 Nov 2020 15:38:52 -0800 (PST)
+X-Gm-Message-State: AOAM531I2WqeosR08ojhNM75lCRmCKRP1ruoJexoJBLCNf4h6zUD1wBO
+        buYQ5el9o2bZ7x64krLpVQglleWZgaYacwM1hA==
+X-Google-Smtp-Source: ABdhPJyCTosQ1GLHfnPlHYYUBtA/b5PCwSHB1U+bWLkPDbn0q/TbtAXAoCGE19frEgpV/RtrhRZkovX5D61bPOn2L44=
+X-Received: by 2002:a17:906:6a4e:: with SMTP id n14mr13380254ejs.194.1605829131052;
+ Thu, 19 Nov 2020 15:38:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201113105952.11638-6-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- bulkscore=0 suspectscore=2 spamscore=0 malwarescore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190162
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=2
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011190162
+References: <20201118082126.42701-1-chunfeng.yun@mediatek.com> <20201118082126.42701-7-chunfeng.yun@mediatek.com>
+In-Reply-To: <20201118082126.42701-7-chunfeng.yun@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 20 Nov 2020 07:38:41 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_81uZ7MY1ZyfsyYL_62wkNvG2VCT3+G4Zr1bZBG9_Yg1w@mail.gmail.com>
+Message-ID: <CAAOTY_81uZ7MY1ZyfsyYL_62wkNvG2VCT3+G4Zr1bZBG9_Yg1w@mail.gmail.com>
+Subject: Re: [PATCH v3 07/11] dt-bindings: phy: convert MIP DSI PHY binding to
+ YAML schema
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Min Guo <min.guo@mediatek.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/20 2:59 AM, Muchun Song wrote:
-> On x86_64, vmemmap is always PMD mapped if the machine has hugepages
-> support and if we have 2MB contiguos pages and PMD aligned. If we want
-                             contiguous              alignment
-> to free the unused vmemmap pages, we have to split the huge pmd firstly.
-> So we should pre-allocate pgtable to split PMD to PTE.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Hi, Chunfeng:
+
+Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=88=
+18=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:21=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Convert MIPI DSI PHY binding to YAML schema mediatek,dsi-phy.yaml
+>
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 > ---
->  mm/hugetlb_vmemmap.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->  mm/hugetlb_vmemmap.h | 12 +++++++++
->  2 files changed, 85 insertions(+)
-
-Thanks for the cleanup.
-
-Oscar made some other comments.  I only have one additional minor comment
-below.
-
-With those minor cleanups,
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-...
-> +int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
-> +{
-> +	unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> v3: new patch
+> ---
+>  .../display/mediatek/mediatek,dsi.txt         | 18 +---
+>  .../bindings/phy/mediatek,dsi-phy.yaml        | 83 +++++++++++++++++++
+>  2 files changed, 84 insertions(+), 17 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/phy/mediatek,dsi-ph=
+y.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+dsi.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.t=
+xt
+> index f06f24d405a5..8238a86686be 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.txt
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.txt
+> @@ -22,23 +22,7 @@ Required properties:
+>  MIPI TX Configuration Module
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>
+> -The MIPI TX configuration module controls the MIPI D-PHY.
+> -
+> -Required properties:
+> -- compatible: "mediatek,<chip>-mipi-tx"
+> -- the supported chips are mt2701, 7623, mt8173 and mt8183.
+> -- reg: Physical base address and length of the controller's registers
+> -- clocks: PLL reference clock
+> -- clock-output-names: name of the output clock line to the DSI encoder
+> -- #clock-cells: must be <0>;
+> -- #phy-cells: must be <0>.
+> -
+> -Optional properties:
+> -- drive-strength-microamp: adjust driving current, should be 3000 ~ 6000=
+. And
+> -                                                  the step is 200.
+> -- nvmem-cells: A phandle to the calibration data provided by a nvmem dev=
+ice. If
+> -               unspecified default values shall be used.
+> -- nvmem-cell-names: Should be "calibration-data"
+> +See phy/mediatek,dsi-phy.yaml
+>
+>  Example:
+>
+> diff --git a/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml =
+b/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
+> new file mode 100644
+> index 000000000000..87f8df251ab0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
+> @@ -0,0 +1,83 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2020 MediaTek
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/phy/mediatek,dsi-phy.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	/* Store preallocated pages on huge page lru list */
-
-Let's expland the above comment to something like this:
-
-	/*
-	 * Use the huge page lru list to temporarily store the preallocated
-	 * pages.  The preallocated pages are used and the list is emptied
-	 * before the huge page is put into use.  When the huge page is put
-	 * into use by prep_new_huge_page() the list will be reinitialized.
-	 */
-
-> +	INIT_LIST_HEAD(&page->lru);
+> +title: MediaTek MIPI Display Serial Interface (DSI) PHY binding
 > +
-> +	while (nr--) {
-> +		pte_t *pte_p;
-> +
-> +		pte_p = pte_alloc_one_kernel(&init_mm);
-> +		if (!pte_p)
-> +			goto out;
-> +		list_add(&virt_to_page(pte_p)->lru, &page->lru);
-> +	}
-> +
-> +	return 0;
-> +out:
-> +	vmemmap_pgtable_free(page);
-> +	return -ENOMEM;
-> +}
+> +maintainers:
+> +  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> +  - Chunfeng Yun <chunfeng.yun@mediatek.com>
 
--- 
-Mike Kravetz
+Please add Philipp Zabel because he is Mediatek DRM driver maintainer.
+
+DRM DRIVERS FOR MEDIATEK
+M: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+M: Philipp Zabel <p.zabel@pengutronix.de>
+L: dri-devel@lists.freedesktop.org
+S: Supported
+F: Documentation/devicetree/bindings/display/mediatek/
+
+> +
+> +description: The MIPI DSI PHY supports up to 4-lane output.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^dsi-phy@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt2701-mipi-tx
+> +      - mediatek,mt7623-mipi-tx
+> +      - mediatek,mt8173-mipi-tx
+
+Add mediatek,mt8183-mipi-tx
+
+Regards,
+Chun-Kuang.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: PLL reference clock
+> +
+> +  clock-output-names:
+> +    maxItems: 1
+> +
+> +  "#phy-cells":
+> +    const: 0
+> +
+> +  "#clock-cells":
+> +    const: 0
+> +
+> +  nvmem-cells:
+> +    maxItems: 1
+> +    description: A phandle to the calibration data provided by a nvmem d=
+evice,
+> +      if unspecified, default values shall be used.
+> +
+> +  nvmem-cell-names:
+> +    items:
+> +      - const: calibration-data
+> +
+> +  drive-strength-microamp:
+> +    description: adjust driving current, the step is 200.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 2000
+> +    maximum: 6000
+> +    default: 4600
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-output-names
+> +  - "#phy-cells"
+> +  - "#clock-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8173-clk.h>
+> +    dsi-phy@10215000 {
+> +        compatible =3D "mediatek,mt8173-mipi-tx";
+> +        reg =3D <0x10215000 0x1000>;
+> +        clocks =3D <&clk26m>;
+> +        clock-output-names =3D "mipi_tx0_pll";
+> +        drive-strength-microamp =3D <4000>;
+> +        nvmem-cells=3D <&mipi_tx_calibration>;
+> +        nvmem-cell-names =3D "calibration-data";
+> +        #clock-cells =3D <0>;
+> +        #phy-cells =3D <0>;
+> +    };
+> +
+> +...
+> --
+> 2.18.0
+>
