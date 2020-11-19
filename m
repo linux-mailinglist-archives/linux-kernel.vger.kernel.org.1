@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEE12B9BA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149C82B9BB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgKSTpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:45:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbgKSTpm (ORCPT
+        id S1728133AbgKSTrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:47:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32722 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726567AbgKSTrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:45:42 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38A3C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 11:45:41 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id q1so6451731ilt.6
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 11:45:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0KGIu9QRLsnQRLw4m01WgKEPBTZoDdSdeLkEBZ2tnKA=;
-        b=wFtV9CzTOhb0ygSMdv7pxPCcDzW5ecgnSj9bV0GLsBaHBjOjZH+dQAUZHvfAN5nr9z
-         jhy8r/GaWxtSdwlC8C9jvnq8lACIvAvInSLgqr835nKCGRMjyNohDU9HkVvi9tjnrLRm
-         zfJVvv39fRmXm8+uGVjYwjZokiwhlRLPzjfbNbMKt6joieaJa+9Z1XMuZASwugDJy2fo
-         F7wv8MN0LgZEKCkTcB85WG9euTP1j3OoSpcz+ZaHdQ9ZtwIklMULl3LzLe2PXlSK2v9G
-         PVhp0ut2Zm+iu6KHy5k+r6ALFj9ve6zGgRTnkvvEGZxmIbKZSSnHdMCU2xvzf02TMZnn
-         VBQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0KGIu9QRLsnQRLw4m01WgKEPBTZoDdSdeLkEBZ2tnKA=;
-        b=kYTCsHIeldHbcbxl/plcvTdHKfYmqVZqktxC9PhU++XHemFwgU5COwLoR4Vbwyj7JB
-         NqTzgSaV5eXEOovw6hx0Ga8tee5NQBC+P7zcgNfaPdm9osjw9jSAY0Sk08KvCaB8u9rb
-         Jnmd8H77CT1PIlHNAq3zb9LiPianTXTwDlK8YHbJgbwgI44I+uw1xu7IxB6MFM8AHlpa
-         /x2jRCmBbN2TREpXhRmlvxCITyDmqP+Z+lT1A/jLSUwMZ4pEmqm8b7qjvoIT8L6KXrCx
-         h9oEev+aTZhi0LB0aedLfqVCGTZtj1UfgNz6vbPHXgGxe7OvnlUjiV0TUoplI8RmEKqp
-         Tdlg==
-X-Gm-Message-State: AOAM533U1n9u84epa6LBUxNLvW+SU4AJUQXKZXcldGtQU7VHql1nXgqB
-        +7N8m1C7F25L2/neObQF608SyY5qxFrrwoUV5U47ew==
-X-Google-Smtp-Source: ABdhPJxlB8Q7lqvk727IIAPd6mMOTst+FmA6fjvZmwfS5aUWIM9610IC4XHnlI9OG3hUQJVhY76qjm1q6yF39QXYBGo=
-X-Received: by 2002:a92:358e:: with SMTP id c14mr6919106ilf.69.1605815140718;
- Thu, 19 Nov 2020 11:45:40 -0800 (PST)
+        Thu, 19 Nov 2020 14:47:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605815238;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E82s7cBwHPscd6rsa5ytoY+Np8WhFrIOZa+AfiYKSuo=;
+        b=QkampcSmTVckuhLlAWuhWJEYU66HdsU2tasua+LV1ewydtGRh7Y+FW4mQQe0lmiMAZGoem
+        X3/nf/Ttmm6IfcXo3aycCu4R5f/ODfKBnHfX+Fuq6pJERAa6L17YNZI0p3YtWnhBAQERTS
+        NgwpzoFlufQIlyXU9lCCxrHYNiqzMH4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-297-ef5n5jnXOTCyVGCQuUXRpw-1; Thu, 19 Nov 2020 14:47:14 -0500
+X-MC-Unique: ef5n5jnXOTCyVGCQuUXRpw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7C9D80476B;
+        Thu, 19 Nov 2020 19:47:11 +0000 (UTC)
+Received: from krava (unknown [10.40.192.83])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6E31A6064B;
+        Thu, 19 Nov 2020 19:47:08 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 20:47:07 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Sandeep Dasgupta <sdasgup@google.com>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] perf metric: Use NAN for missing event IDs.
+Message-ID: <20201119194707.GK1475102@krava>
+References: <20201118050335.2347358-1-irogers@google.com>
+ <20201118050335.2347358-3-irogers@google.com>
 MIME-Version: 1.0
-References: <20201119192442.GA820741@rdias-suse-pc.lan>
-In-Reply-To: <20201119192442.GA820741@rdias-suse-pc.lan>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 19 Nov 2020 20:45:29 +0100
-Message-ID: <CANn89i+WL9G0vsr4HYJc==g0R+=cRPP7MkVZb120M5S4Q+NLbA@mail.gmail.com>
-Subject: Re: [PATCH v7] tcp: fix race condition when creating child sockets
- from syncookies
-To:     Ricardo Dias <rdias@singlestore.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118050335.2347358-3-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 8:24 PM Ricardo Dias <rdias@singlestore.com> wrote:
->
-> When the TCP stack is in SYN flood mode, the server child socket is
-> created from the SYN cookie received in a TCP packet with the ACK flag
-> set.
->
-> The child socket is created when the server receives the first TCP
-> packet with a valid SYN cookie from the client. Usually, this packet
-> corresponds to the final step of the TCP 3-way handshake, the ACK
-> packet. But is also possible to receive a valid SYN cookie from the
-> first TCP data packet sent by the client, and thus create a child socket
-> from that SYN cookie.
->
-> Since a client socket is ready to send data as soon as it receives the
-> SYN+ACK packet from the server, the client can send the ACK packet (sent
-> by the TCP stack code), and the first data packet (sent by the userspace
-> program) almost at the same time, and thus the server will equally
-> receive the two TCP packets with valid SYN cookies almost at the same
-> instant.
->
-> When such event happens, the TCP stack code has a race condition that
-> occurs between the momement a lookup is done to the established
-> connections hashtable to check for the existence of a connection for the
-> same client, and the moment that the child socket is added to the
-> established connections hashtable. As a consequence, this race condition
-> can lead to a situation where we add two child sockets to the
-> established connections hashtable and deliver two sockets to the
-> userspace program to the same client.
->
-> This patch fixes the race condition by checking if an existing child
-> socket exists for the same client when we are adding the second child
-> socket to the established connections socket. If an existing child
-> socket exists, we return that socket and use it to process the TCP
-> packet received, and discard the second child socket to the same client.
->
-> Signed-off-by: Ricardo Dias <rdias@singlestore.com>
+On Tue, Nov 17, 2020 at 09:03:32PM -0800, Ian Rogers wrote:
+> If during computing a metric an event (id) is missing the parsing
+> aborts. A later patch will make it so that events that aren't used in
+> the output are deliberately omitted, in which case we don't want the
+> abort. Modify the missing ID case to report NAN for these cases.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
-> v7 (2020-11-19):
->   * Changed the approach to re-use the first (existing) socket created
->     from thge syncookie. Instead of returning the existing socket in
->     tcp_(v4|v6)_syn_recv_sock and continue the protocol state machine
->     execution, tcp_(v4|v6)_syn_recv_sock signals that already exists a
->     socket, and tells tcp_(v4|v6)_rcv to lookup the socket again in the
->     established connections table.
->     This new approach fixes the errors reported by Eric for the previous
->     version of the patch.
->   * Also fixes the memory leaks by making sure that the newly created
->     socket in syn_recv_sock is destroyed in case an already existing
->     socket exists.
+>  tools/perf/util/expr.y | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
+> index b2ada8f8309a..c22e3500a40f 100644
+> --- a/tools/perf/util/expr.y
+> +++ b/tools/perf/util/expr.y
+> @@ -1,6 +1,7 @@
+>  /* Simple expression parser */
+>  %{
+>  #define YYDEBUG 1
+> +#include <math.h>
+>  #include <stdio.h>
+>  #include "util.h"
+>  #include "util/debug.h"
+> @@ -89,8 +90,7 @@ expr:	  NUMBER
+>  					struct expr_id_data *data;
+>  
+>  					if (expr__resolve_id(ctx, $1, &data)) {
+> -						free($1);
+> -						YYABORT;
+> +						$$ = NAN;
 
-I think this is going too far. Your patch is too complex/risky, and
-will be hard to backport to old kernels, because TCP stack has changed
-a lot.
+hum, it's directly overwriten in the next line, no?
 
-Alternative approach would be to detect the race and simply drop the
-packet that lost the battle.
+jirka
+
+>  					}
+>  
+>  					$$ = expr_id_data__value(data);
+
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
+
