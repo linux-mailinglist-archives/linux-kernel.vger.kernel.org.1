@@ -2,81 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6982B983D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9ABD2B984E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729118AbgKSQkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:40:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51910 "EHLO mail.kernel.org"
+        id S1728779AbgKSQll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:41:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727309AbgKSQkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:40:10 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1727916AbgKSQll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:41:41 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D2CD2220B;
-        Thu, 19 Nov 2020 16:40:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA7022220B;
+        Thu, 19 Nov 2020 16:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605804010;
-        bh=IOVe+AC/shQvrZP4K3jnnH+Vv+CBsYUmCFGN/gzv1Ds=;
+        s=default; t=1605804100;
+        bh=IdNj10e/sr3b3LdQtcOLRRg2JJyeeh5XmiDCYsVk77I=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dseIXiv0Gh4VPZppHJn5b/I2ec7D2cdrt43E8Bbd5MG848BsqNNDgZiq7uiwTBUoU
-         RSW8yHb004H5gGA03o/Oa70vc3TFZ7EKgG88l21r9JQl93JcSrPDLaynEKYJswoG+g
-         deFQtyaoLIalbrYst0vUZFNbKsa88n3kBynyBBuI=
-Date:   Thu, 19 Nov 2020 16:39:49 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, lukasz.luba@arm.com,
-        Jonathan.Cameron@Huawei.com, robh@kernel.org,
-        satyakim@qti.qualcomm.com, etienne.carriere@linaro.org,
-        f.fainelli@gmail.com, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com
-Subject: Re: [PATCH v5 4/5] regulator: add SCMI driver
-Message-ID: <20201119163949.GF5554@sirena.org.uk>
-References: <20201117123415.55105-1-cristian.marussi@arm.com>
- <20201117123415.55105-5-cristian.marussi@arm.com>
- <20201119161308.xhyohop5fspb4b5l@bogus>
+        b=wdqvydQZQ26mI0gT3SQ5VKM5IhdXfEQ8VgwTBlmOBqVHfH0/KPdIOgwcdOGFzH6v1
+         /0MGPlofiGzxedOeEeBZz+RuTolxNUXr8TN05c8PqWwG+Y+YvjMckmsHgIOYykIGs2
+         mGxx0kU96+vE7hoxIFRJXZZoaaQu2VFmrUe6T4IE=
+Date:   Thu, 19 Nov 2020 16:41:33 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Quentin Perret <qperret@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 07/14] sched: Introduce restrict_cpus_allowed_ptr() to
+ limit task CPU affinity
+Message-ID: <20201119164133.GD4582@willie-the-truck>
+References: <20201113093720.21106-1-will@kernel.org>
+ <20201113093720.21106-8-will@kernel.org>
+ <20201119091820.GA2416649@google.com>
+ <20201119110549.GA3946@willie-the-truck>
+ <jhja6vdwpqc.mognet@arm.com>
+ <20201119131301.GD4331@willie-the-truck>
+ <jhj7dqhwg5z.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="l+goss899txtYvYf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119161308.xhyohop5fspb4b5l@bogus>
-X-Cookie: Chocolate chip.
+In-Reply-To: <jhj7dqhwg5z.mognet@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 19, 2020 at 02:54:32PM +0000, Valentin Schneider wrote:
+> 
+> On 19/11/20 13:13, Will Deacon wrote:
+> > On Thu, Nov 19, 2020 at 11:27:55AM +0000, Valentin Schneider wrote:
+> >>
+> >> On 19/11/20 11:05, Will Deacon wrote:
+> >> > On Thu, Nov 19, 2020 at 09:18:20AM +0000, Quentin Perret wrote:
+> >> >> > @@ -1937,20 +1931,69 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+> >> >> >             * OK, since we're going to drop the lock immediately
+> >> >> >             * afterwards anyway.
+> >> >> >             */
+> >> >> > -		rq = move_queued_task(rq, &rf, p, dest_cpu);
+> >> >> > +		rq = move_queued_task(rq, rf, p, dest_cpu);
+> >> >> >    }
+> >> >> >  out:
+> >> >> > -	task_rq_unlock(rq, p, &rf);
+> >> >> > +	task_rq_unlock(rq, p, rf);
+> >> >>
+> >> >> And that's a little odd to have here no? Can we move it back on the
+> >> >> caller's side?
+> >> >
+> >> > I don't think so, unfortunately. __set_cpus_allowed_ptr_locked() can trigger
+> >> > migration, so it can drop the rq lock as part of that and end up relocking a
+> >> > new rq, which it also unlocks before returning. Doing the unlock in the
+> >> > caller is therfore even weirder, because you'd have to return the lock
+> >> > pointer or something horrible like that.
+> >> >
+> >> > I did add a comment about this right before the function and it's an
+> >> > internal function to the scheduler so I think it's ok.
+> >> >
+> >>
+> >> An alternative here would be to add a new SCA_RESTRICT flag for
+> >> __set_cpus_allowed_ptr() (see migrate_disable() faff in
+> >> tip/sched/core). Not fond of either approaches, but the flag thing would
+> >> avoid this "quirk".
+> >
+> > I tried this when I read about the migrate_disable() stuff on lwn, but I
+> > didn't really find it any better to work with tbh. It also doesn't help
+> > with the locking that Quentin was mentioning, does it? (i.e. you still
+> > have to allocate).
+> >
+> 
+> You could keep it all bundled within __set_cpus_allowed_ptr() (i.e. not
+> have a _locked() version) and use the flag as indicator of any extra work.
 
---l+goss899txtYvYf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ah, gotcha. Still not convinced it's any better, but I see that it works.
 
-On Thu, Nov 19, 2020 at 04:13:08PM +0000, Sudeep Holla wrote:
+> Also FWIW we have this pattern of pre-allocating pcpu cpumasks
+> (select_idle_mask, load_balance_mask), but given this is AIUI a
+> very-not-hot path, this might be overkill (and reusing an existing one
+> would be on the icky side of things).
 
-> I was thinking about how to merge this if and when you have reviewed it
-> and happy with it. Is it OK to take via ARM SoC with dependent and other
-> SCMI changes ? Or we can merge the SCMI part next release and the regulator
-> in the following, up to you.
+I think that makes sense for static masks, but since this is dynamic I was
+following the lead of sched_setaffinity().
 
-I was expecting you to send me a pull request for the firmware bits once
-you've applied them.
-
---l+goss899txtYvYf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+2n9QACgkQJNaLcl1U
-h9BNQgf/TXDqtKuU+a9jUTY6+cP8XYV4FUmZac7s1chvbdKzCrT41hp+a5hiXWsj
-J0lCk66XcDgB0K0egGwSztrH2ho5v34IMypEJvS60Unug/ssyn0nWVPLuoE59/me
-sRWJrcJ1hPmLx8zM2XUOlEbCanmbPAVilr1e6LQ+jblmWNlHK/i4d1hnX4teZi4N
-Z808xq7KbAfodu5RuJo3s7kIfA0sxLOvbHI+YSChGYlErt7k+xFD5ybUMCHfLuRE
-2V4DkvmgGm9n9Pf/0fGeJJWvrAVBv7We86UQDSn6LYz0bX1oHDrFHjQR/k/xIv52
-hUi61K2B/ALY0TgPbqaeQ5Y+E3QuZg==
-=o+Pm
------END PGP SIGNATURE-----
-
---l+goss899txtYvYf--
+Will
