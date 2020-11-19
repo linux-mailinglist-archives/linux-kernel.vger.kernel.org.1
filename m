@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0FC2B98B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFB22B98C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728317AbgKSQ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:56:16 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:51114 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727935AbgKSQ4Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:56:16 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8ABEE20B717A;
-        Thu, 19 Nov 2020 08:56:14 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8ABEE20B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605804975;
-        bh=ToNxDyfGA4wixS43zJTeceyWT80apD0yIIOjKTZu5rE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P5ksUOWchJroHHytE3K+6dqWBFzXYVxjICKBXfBV6SRBRhc+v1WETY5j8vacFlpz8
-         V7I/1mwfrfXx/DQFN52nQD4CrSoedHaaOdYeTiXkXLNMIQLOYt0h9o4jtUglbkbDiU
-         YAY1kUGNZNcd3uDvxnybPt8ipohfRPLHaVRxbKPA=
-Date:   Thu, 19 Nov 2020 10:56:12 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] arm64: Implement CONFIG_CMDLINE_EXTEND
-Message-ID: <20201119165612.GB3973@sequoia>
-References: <20200921191557.350256-1-tyhicks@linux.microsoft.com>
- <20201103155952.GA4335@sequoia>
- <20201104120812.GA6632@willie-the-truck>
- <20201105054009.GA4472@sequoia>
- <20201105095853.GA7952@willie-the-truck>
- <20201105152836.GB4472@sequoia>
+        id S1729181AbgKSQ5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:57:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:35034 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727935AbgKSQ5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:57:30 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5C441396;
+        Thu, 19 Nov 2020 08:57:29 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 868F53F718;
+        Thu, 19 Nov 2020 08:57:27 -0800 (PST)
+References: <20201113093720.21106-1-will@kernel.org> <20201113093720.21106-8-will@kernel.org> <jhj8saxwm1l.mognet@arm.com> <20201119131319.GE4331@willie-the-truck> <20201119160944.GP3121392@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 07/14] sched: Introduce restrict_cpus_allowed_ptr() to limit task CPU affinity
+Message-ID: <jhj4kllwahv.mognet@arm.com>
+In-reply-to: <20201119160944.GP3121392@hirez.programming.kicks-ass.net>
+Date:   Thu, 19 Nov 2020 16:57:22 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105152836.GB4472@sequoia>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-05 09:28:38, Tyler Hicks wrote:
-> On 2020-11-05 09:58:54, Will Deacon wrote:
-> > On Wed, Nov 04, 2020 at 11:40:09PM -0600, Tyler Hicks wrote:
-> > > On 2020-11-04 12:08:12, Will Deacon wrote:
-> > > > On Tue, Nov 03, 2020 at 09:59:52AM -0600, Tyler Hicks wrote:
-> > > > > On 2020-09-21 14:15:55, Tyler Hicks wrote:
-> > > > > > Provide the CONFIG_CMDLINE_EXTEND config option for arm64 kernels. This
-> > > > > > config option can be used to extend the kernel command line parameters,
-> > > > > > specified by the bootloader, with additional command line parameters
-> > > > > > specified in the kernel configuration.
-> > > > > 
-> > > > > Hi Catalin and Will - Friendly ping on this series now that we're
-> > > > > on the other side of the 5.10 merge window. I hope it can be considered
-> > > > > for 5.10+1. Let me know if I need to rebase/resubmit. Thanks!
-> > > > 
-> > > > Can you use bootconfig to achieve what you need?
-> > > 
-> > > Thanks for mentioning bootconfig. I hadn't considered it.
-> > > 
-> > > After reading the docs and code, I see a few reasons why I can't use it
-> > > out of the box:
-> > > 
-> > >  1) It requires "bootconfig" to be appended to the kernel command line.
-> > >     My proposed patch series makes it possible to append new options to
-> > >     the kernel command line in situations where the bootloader is not
-> > >     interactive. This presents a circular dependency problem for my use
-> > >     case.
-> > > 
-> > >     A new config option could be added to force the enablement of
-> > >     bootconfig but that would sort of be a single-use duplicate of
-> > >     CONFIG_CMDLINE_EXTEND's functionality.
-> > > 
-> > >  2) Not all kernel command line options can be configured using
-> > >     bootconfig. For example, the "nokaslr" and "crashkernel=" parameters
-> > >     are parsed/handled before setup_boot_config() is called. KASLR can
-> > >     be disabled via a kernel config change but there's no config option
-> > >     equivalent for "crashkernel=". Changing the "crashkernel=" command
-> > >     line option is something that I need to support because a
-> > >     development/debug kernel build often requires a larger reservation
-> > >     and we find ourselves adjusting the "crashkernel=" value fairly
-> > >     often.
-> > > 
-> > >  3) External FIT image build systems do not yet support bootconfig since
-> > >     it is so new. It is completely fair if you file this away in your
-> > >     not-my-problem folder but simple kernel config modifications, as
-> > >     needed for CONFIG_CMDLINE_EXTEND, are something that every image
-> > >     build system is likely to support today.
-> > > 
-> > > All that said, I do really like the look of bootconfig. Unfortunately,
-> > > it doesn't let me achieve everything I need.
-> > 
-> > Ok, well thanks for having a look. A follow-up question I have is how is
-> > this handled on x86? They don't appear to have CONFIG_CMDLINE_EXTEND either
-> > afaict. Is it because their bootloader story tends to be more uniform?
-> 
-> x86's equivalent was implemented by commit 516cbf3730c4 ("x86, bootup:
-> add built-in kernel command line for x86 (v2)"). To summarize, you have
-> to enable CONFIG_CMDLINE_BOOL and then that lets you define built-in
-> command line parameters in CONFIG_CMDLINE. However, it is backwards in
-> that the command line provided by the bootloader is appended onto the
-> end of CONFIG_CMDLINE.
-> 
-> This doesn't seem as useful to me because, using the crashkernel=
-> example from above, the bootloader provided crashkernel= value may need
-> to be overridden by the built-in command line to provide a different
-> crashkernel= value for the particular kernel build being booted. Most
-> kernel command line parameter parsers are implemented in a way that
-> supports multiple instances of the parameter while only honoring the
-> last instance.
 
-Hey Will - Do you any additional concerns that I should look into?
+On 19/11/20 16:09, Peter Zijlstra wrote:
+> On Thu, Nov 19, 2020 at 01:13:20PM +0000, Will Deacon wrote:
+>
+>> Sure, but I was talking about what userspace sees, and I don't think it ever
+>> sees CPUs that have been hotplugged off, right? That is, sched_getaffinity()
+>> masks its result with the active_mask.
+>
+> # for i in /sys/devices/system/cpu/cpu*/online; do echo -n $i ":"; cat $i; done
+> /sys/devices/system/cpu/cpu1/online :0
+> /sys/devices/system/cpu/cpu2/online :1
+> /sys/devices/system/cpu/cpu3/online :1
+> /sys/devices/system/cpu/cpu4/online :1
+> /sys/devices/system/cpu/cpu5/online :1
+> /sys/devices/system/cpu/cpu6/online :1
+> /sys/devices/system/cpu/cpu7/online :1
+>
+> # grep Cpus_allowed /proc/self/status
+> Cpus_allowed:   ff
+> Cpus_allowed_list:      0-7
+>
+>
+> :-)
 
-Thanks!
+Harumph, so there is that...
 
-Tyler
-
-> 
-> Tyler
-> 
-> > 
-> > Will
-> > 
+$ while true; do continue; done &
+$ PID=$!
+$ taskset -pc 0-1 $PID
+  pid 849's current affinity list: 0-5
+  pid 849's new affinity list: 0,1
+$ echo 0 > /sys/devices/system/cpu/cpu1/online
+  [12578.545726] CPU1: shutdown
+  [12578.548454] psci: CPU1 killed (polled 0 ms)
+$ taskset -pc $PID
+  pid 849's current affinity list: 0
+$ cat /proc/$PID/status | grep Cpus
+  Cpus_allowed:   03
+  Cpus_allowed_list:      0-1
