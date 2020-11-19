@@ -2,76 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00992B9403
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F1C2B9410
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727379AbgKSN6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 08:58:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726580AbgKSN6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 08:58:49 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726407AbgKSOEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:04:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22352 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726480AbgKSOEI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:04:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605794646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5i0QQLQYjbLsqpaS34Eui+z4V/aK5oQzbMdDLABiWqk=;
+        b=UYrsF5wU+5fkOfmtigTy/pY+OIGuPNAYZ/0LE+FnETTqPTzTqAfnBvz0PjjUNA6gn7VX67
+        UGJs29lwqkMNOUPWMtkgW0UT5AGW4cfLHMxkYIiv+D3xQnFoYKqDXSF/qp/5QbAOVdyf7z
+        +xR7FuDYYW6PGzihnANWZEqJK0kR4EQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-3e9V50SVNvWmnv3lUDd_rQ-1; Thu, 19 Nov 2020 09:04:04 -0500
+X-MC-Unique: 3e9V50SVNvWmnv3lUDd_rQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9256E246D3;
-        Thu, 19 Nov 2020 13:58:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605794329;
-        bh=vL9FMK10jyhD5Do2SCSHwQNqu8UxDPPPWe9jB9xQQ9M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XbOEuoizZo7NxWl5zLYh8y3JPPgT+R/9Li7sJlWvaO2jB9aKvISMBWL6uCA2hK7+v
-         rpWUZNU8DgePKASs+40x18d8vEep6o1g6zcKUeeN4/A+s0Ry2qGEcz83oTPeiEcOZm
-         PY5TuhXFX+G/OgN2fAi2BvrHDrPoiojIYjFCY4zg=
-Date:   Thu, 19 Nov 2020 14:59:32 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     =?utf-8?B?5b2t5rWp?= <penghao@uniontech.com>,
-        johan <johan@kernel.org>, jonathan <jonathan@jdcox.net>,
-        tomasz <tomasz@meresinski.eu>,
-        Hans de Goede <hdegoede@redhat.com>,
-        dlaz <dlaz@chromium.org>,
-        "richard.o.dodd" <richard.o.dodd@gmail.com>,
-        kerneldev <kerneldev@karsmulder.nl>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk
- forLenovo A630Z TIO built-in usb-audio card
-Message-ID: <X7Z6RKu4T5IrhUFB@kroah.com>
-References: <20201118123039.11696-1-penghao@uniontech.com>
- <49219711-84BE-44FC-BBFE-DD8D609CA26D@canonical.com>
- <1892790617.185900.1605788248261.JavaMail.xmail@bj-wm-cp-6>
- <7D73C39C-C3E2-4C08-A773-3D7582A6AA7D@canonical.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 38165107ACE3;
+        Thu, 19 Nov 2020 14:04:02 +0000 (UTC)
+Received: from localhost (ovpn-115-68.ams2.redhat.com [10.36.115.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A9ED19D80;
+        Thu, 19 Nov 2020 14:04:00 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 14:03:59 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     netdev@vger.kernel.org, Jorgen Hansen <jhansen@vmware.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dexuan Cui <decui@microsoft.com>,
+        Anthony Liguori <aliguori@amazon.com>,
+        David Duncan <davdunc@amazon.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Alexander Graf <graf@amazon.de>
+Subject: Re: [PATCH net] vsock: forward all packets to the host when no H2G
+ is registered
+Message-ID: <20201119140359.GE838210@stefanha-x1.localdomain>
+References: <20201112133837.34183-1-sgarzare@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201112133837.34183-1-sgarzare@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=stefanha@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LSp5EJdfMPwZcMS1"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7D73C39C-C3E2-4C08-A773-3D7582A6AA7D@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 09:41:32PM +0800, Kai-Heng Feng wrote:
-> Hi penghao,
-> 
-> > On Nov 19, 2020, at 20:17, 彭浩 <penghao@uniontech.com> wrote:
-> > 
-> > root@uos-PC:/sys/bus/usb/devices/usb7# dmesg
-> > [ 0.000000] Linux version 4.19.0-6-amd64 (debian-kernel@lists.debian.org) (gcc version 8.3.0 (Debian 8.3.0-6)) #1 SMP Uos 4.19.67-11eagle (2020-03-21)
-> 
-> Thanks for the dmesg. But would it be possible to use mainline kernel enable dynamic debug?
-> 
-> But anyway, this is not a regular AMD or Intel platform, so I guess we can merge the quirk as is...
-> 
-> Kai-Heng
-> 
-> > [ 0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-4.19.0-6-amd64 root=UUID=e5a40c4f-d88e-4a4d-9414-a27892a31be7 ro splash console=ttyS0,115200n8 loglevel=7 DEEPIN_GFXMODE=0,1920x1080,1600x1200,1280x1024,1024x768
-> > [ 0.000000] Zhaoxin Linux Patch Version is V3.0.2 
-> > [ 0.000000] With Zhaoxin Shanghai CPU patch V2.0.0
+--LSp5EJdfMPwZcMS1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-What do you mean "not a regular"?  This is an x86-variant chip platform,
-but what does that have to do with the USB quirk detection?
+On Thu, Nov 12, 2020 at 02:38:37PM +0100, Stefano Garzarella wrote:
+> Before commit c0cfa2d8a788 ("vsock: add multi-transports support"),
+> if a G2H transport was loaded (e.g. virtio transport), every packets
+> was forwarded to the host, regardless of the destination CID.
+> The H2G transports implemented until then (vhost-vsock, VMCI) always
+> responded with an error, if the destination CID was not
+> VMADDR_CID_HOST.
+>=20
+> From that commit, we are using the remote CID to decide which
+> transport to use, so packets with remote CID > VMADDR_CID_HOST(2)
+> are sent only through H2G transport. If no H2G is available, packets
+> are discarded directly in the guest.
+>=20
+> Some use cases (e.g. Nitro Enclaves [1]) rely on the old behaviour
+> to implement sibling VMs communication, so we restore the old
+> behavior when no H2G is registered.
+> It will be up to the host to discard packets if the destination is
+> not the right one. As it was already implemented before adding
+> multi-transport support.
+>=20
+> Tested with nested QEMU/KVM by me and Nitro Enclaves by Andra.
+>=20
+> [1] Documentation/virt/ne_overview.rst
+>=20
+> Cc: Jorgen Hansen <jhansen@vmware.com>
+> Cc: Dexuan Cui <decui@microsoft.com>
+> Fixes: c0cfa2d8a788 ("vsock: add multi-transports support")
+> Reported-by: Andra Paraschiv <andraprs@amazon.com>
+> Tested-by: Andra Paraschiv <andraprs@amazon.com>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>  net/vmw_vsock/af_vsock.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+Acked-by: Stefan Hajnoczi <stefanha@redhat.com>
 
-greg k-h
+--LSp5EJdfMPwZcMS1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl+2e08ACgkQnKSrs4Gr
+c8jnpAf/ZlfAs5UL1VEQIlS5BEGEE+bicGoAleU1Yh5k7eUzzORP8xdTs4yYcgFL
+/xMVz10txbvI76GY3XmqVo6Ozo59vb6fpitwugFkKaj68PtFvrtYphdEEcbr8zXz
+K6/5OXeODb/V+7ZGTmXaJbBwQt7gUpTPaDdIqRVg+IPySeVPFv3AFuO8CnUb9h6u
+zJ+ApyCa286w8y8ZuUv14QZ2hVxh6GxSt7VM8Z0iMCLzv3HwQc/esv1A2Hpx+OFv
+qAaR8olM9gZ4jdWMBWaPL6pWQ2EPqeLCsb4bAOfGdb2+4oVyk/Um/AKiOaCzt+D1
+3aEgST74NbQjYmSzdWDr9pknnxCeyw==
+=YQlg
+-----END PGP SIGNATURE-----
+
+--LSp5EJdfMPwZcMS1--
+
