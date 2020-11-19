@@ -2,93 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EB52B9A6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B53E92B9A6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729346AbgKSSMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:12:42 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:45795 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727117AbgKSSMl (ORCPT
+        id S1728605AbgKSSNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:13:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727117AbgKSSNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:12:41 -0500
-X-Greylist: delayed 7433 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Nov 2020 13:12:40 EST
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 0F96422EE4;
-        Thu, 19 Nov 2020 19:12:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1605809558;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vC7HVwjANH5oc4E2w8W2S6yvBbfs+xSzba3U+jaONBg=;
-        b=N0g9lCumldkfoC6XZ82nBq+ZP+XoHM2K2t5RBTkSUZAv2ll9vNFdufhH4xFSsIXnNfCYj5
-        NxYAJpcyYaGN69MOHWOMHellRWDQrKwxSy42nRljHrBq6MOE0UhOkq716mgJTfB4Nt6Qdi
-        3rRweMg8Z68m5MeavEODNYPdoY0dowI=
+        Thu, 19 Nov 2020 13:13:16 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9293FC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:13:14 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id 23so7424973wrc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:13:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=i+JS9nIAw+GECBNSoIwtkPpHIDmmFYQRGIixkpNJ1pw=;
+        b=zg6rI6FjWtx5yXqCC3eLHjTWvBWBjg1h2q5QYfvH2FmSPWi64lw4J4yqCKxsAOikhQ
+         tzatBgAynf2r72trUribQ+sF17eI4FYvcxa6wH6GTY+rt81q/N2RItEeLEuAENcle01k
+         CHhlKNpdsW5aUypWfT1vJf47i2TaWTh0MkkO0lkx/nIaS4Zdi1r9aytKDGORWIyWXO3a
+         CBGnycWSk3Md5BGDVTtO+X/7KV3EoZbKHyPjnGiAVFWa+H4eZfZmWs1IRG8f7gq+LCO5
+         5M1rbmYd8wXa76/+VCuj1+MRTu+6hoHfG/+LhHOvw+FqGKBPFelQ+JjKXQUJR++G70Zc
+         uwZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=i+JS9nIAw+GECBNSoIwtkPpHIDmmFYQRGIixkpNJ1pw=;
+        b=T41CflAfOVuW+FgIx+nE5wt0/hl1laZgO6F1eItRt9P26So6qh2q1cBZgpmD0nTplA
+         ai8vgVpNdcvQDLWsRAfF/GaCmXzbwNGMZ8ymtQZ2qDn88g5AyZx0qlL+l6xhhqLCIjJ8
+         oEglyE3+VUPRjaO5vdT8dof/re/3uNUJUQ1AxL6SvI9WS0k2myPu+K1Vw/BJkFbKdADJ
+         R3qo/s19BiCgQcgkwQq7CFg0WPd0O8AYClGLaw+o9wi0c6eIbv8zZ0Cnwp+RkYBknu8V
+         NYJfFiBJFl4p9k70/MQ5q8acaFL57bB3wGLybYiLIlBI7UyXW791SBi6YHmm5q/73/hI
+         iWzA==
+X-Gm-Message-State: AOAM532VSxra2bsoflw4QLCchnpIoW9+2qULzu3/wyv/yARija8XxhLJ
+        ihiET2QX0rSE+UBoZ3BV+cVGKA==
+X-Google-Smtp-Source: ABdhPJzsKDmON4o/OFAQF109oAW2KjCYCtZryKNUSxju9G/qMlZIa1InhW5YzsVRVjcRJsvkGCD7uQ==
+X-Received: by 2002:a5d:4bc7:: with SMTP id l7mr12495950wrt.105.1605809593341;
+        Thu, 19 Nov 2020 10:13:13 -0800 (PST)
+Received: from localhost (253.35.17.109.rev.sfr.net. [109.17.35.253])
+        by smtp.gmail.com with ESMTPSA id 90sm1029734wrl.60.2020.11.19.10.13.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 10:13:12 -0800 (PST)
+References: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
+ <a0bec7c4-9bec-8858-4879-52f4688d9992@collabora.com>
+ <630e00e83cdd07ee5a0eaba9d3479554@kernel.org>
+ <3f54de27-0fef-c5a1-8991-0a0614c90667@baylibre.com>
+ <c76273f5fe483766e6a7f509f82d928a@kernel.org>
+ <f59922c6-69f5-c70e-b424-0659bf91a4fd@collabora.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     kernelci-results@groups.io, Kevin Hilman <khilman@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
+In-reply-to: <f59922c6-69f5-c70e-b424-0659bf91a4fd@collabora.com>
+Message-ID: <1jr1op8bbc.fsf@starbuckisacylon.baylibre.com>
+Date:   Thu, 19 Nov 2020 19:13:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 19 Nov 2020 19:12:37 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ashish Kumar <Ashish.Kumar@nxp.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>
-Subject: Re: [PATCH v2] arm64: dts: ls1028a: make the eMMC and SD card
- controllers use fixed indices
-In-Reply-To: <20201119163821.980841-1-vladimir.oltean@nxp.com>
-References: <20201119163821.980841-1-vladimir.oltean@nxp.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <31099f0d12b87ad330a59c84f0fa9b42@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-11-19 17:38, schrieb Vladimir Oltean:
-> As the boot order in the kernel continues to change, sometimes it may
-> happen that the eSDHC controller mmc@2150000 (the one for eMMC) gets
-> probed before the one at mmc@2140000 (for external SD cards). The 
-> effect
-> is that the eMMC controller gets the /dev/mmcblk0 name, and the SD card
-> gets /dev/mmcblk1.
-> 
-> Since the introduction of this SoC, that has never happened in 
-> practice,
-> even though it was never guaranteed in theory. Setting
-> "root=/dev/mmcblk0p2" in /proc/cmdline has always caused the kernel to
-> use the second partition from the SD card as the rootfs.
-> 
-> The NXP development boards are typically shipped with either
-> - LSDK, which uses "root=UUID=", or
-> - OpenIL, which uses "root=/dev/mmcblkNp2"
-> 
-> So for OpenIL, let's preserve that old behavior by adding some aliases
-> which create naming consistency (for LSDK it doesn't matter):
-> - the SD card controller uses /dev/mmcblk0
-> - the eMMC controller uses /dev/mmcblk1
-> 
-> For the Kontron SL28 boards, Michael Walle says that they are shipped
-> with "root=UUID=" already, so the probing order doesn't matter, but it
-> is more natural to him for /dev/mmcblk0 to be the eMMC, so let's do it
-> the other way around there.
-> 
-> The aliases are parsed by mmc_alloc_host() in drivers/mmc/core/host.c.
-> 
-> Cc: Ashish Kumar <Ashish.Kumar@nxp.com>
-> Cc: Yangbo Lu <yangbo.lu@nxp.com>
-> Cc: Michael Walle <michael@walle.cc>
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Acked-by: Michael Walle <michael@walle.cc> [for the sl28 boards]
+On Thu 19 Nov 2020 at 19:04, Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
 
--michael
+> Hi Marc,
+>
+> On 19/11/2020 11:58, Marc Zyngier wrote:
+>> On 2020-11-19 10:26, Neil Armstrong wrote:
+>>> On 19/11/2020 11:20, Marc Zyngier wrote:
+>>>> On 2020-11-19 08:50, Guillaume Tucker wrote:
+>>>>> Please see the automated bisection report below about some kernel
+>>>>> errors on meson-gxbb-p200.
+>>>>>
+>>>>> Reports aren't automatically sent to the public while we're
+>>>>> trialing new bisection features on kernelci.org, however this one
+>>>>> looks valid.
+>>>>>
+>>>>> The bisection started with next-20201118 but the errors are still
+>>>>> present in next-20201119.  Details for this regression:
+>>>>>
+>>>>>   https://kernelci.org/test/case/id/5fb6196bfd0127fd68d8d902/
+>>>>>
+>>>>> The first error is:
+>>>>>
+>>>>>   [   14.757489] Internal error: synchronous external abort: 96000210
+>>>>> [#1] PREEMPT SMP
+>>>>
+>>>> Looks like yet another clock ordering setup. I guess different Amlogic
+>>>> platforms have slightly different ordering requirements.
+>>>>
+>>>> Neil, do you have any idea of which platform requires which ordering?
+>>>> The variability in DT and platforms is pretty difficult to follow (and
+>>>> I don't think I have such board around).
+>>>
+>>> The requirements should be the same, here the init was done before calling
+>>> dw_hdmi_probe to be sure the clocks and internals resets were deasserted.
+>>> But since you boot from u-boot already enabling these, it's already active.
+>>>
+>>> The solution would be to revert and do some check in meson_dw_hdmi_init() to
+>>> check if already enabled and do nothing.
+>> 
+>> A better fix seems to be this, which makes it explicit that there is
+>> a dependency between some of the registers accessed from meson_dw_hdmi_init()
+>> and the iahb clock.
+>> 
+>> Guillaume, can you give this a go on your failing box?
+>
+> I confirm it solves the problem.  Please add this to your fix
+> patch if it's OK with you:
+>
+>   Reported-by: "kernelci.org bot" <bot@kernelci.org>
+>   Tested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+>
+>
+> For the record, it passed all the tests when applied on top of
+> the "bad" revision found by the bisection:
+>
+>   http://lava.baylibre.com:10080/scheduler/alljobs?search=v5.10-rc3-1021-gb8668a2e5ea1
+>
+> and the exact same test on the "bad" revision without the fix
+> consistently showed the error:
+>
+>   http://lava.baylibre.com:10080/scheduler/job/374176
+>
+>
+> Thanks,
+> Guillaume
+>
+>
+>> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>> index 7f8eea494147..52af8ba94311 100644
+>> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>> @@ -146,6 +146,7 @@ struct meson_dw_hdmi {
+>>      struct reset_control *hdmitx_ctrl;
+>>      struct reset_control *hdmitx_phy;
+>>      struct clk *hdmi_pclk;
+>> +    struct clk *iahb_clk;
+>>      struct clk *venci_clk;
+>>      struct regulator *hdmi_supply;
+>>      u32 irq_stat;
+>> @@ -1033,6 +1034,13 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+>>      }
+>>      clk_prepare_enable(meson_dw_hdmi->hdmi_pclk);
+>> 
+>> +    meson_dw_hdmi->iahb_clk = devm_clk_get(dev, "iahb");
+>> +    if (IS_ERR(meson_dw_hdmi->iahb_clk)) {
+>> +        dev_err(dev, "Unable to get iahb clk\n");
+>> +        return PTR_ERR(meson_dw_hdmi->iahb_clk);
+>> +    }
+>> +    clk_prepare_enable(meson_dw_hdmi->iahb_clk);
+
+If you guys are going ahead with this fix, this call to
+clk_prepare_enable() needs to be balanced with clk_disable_unprepare() somehow
+
+>> +
+>>      meson_dw_hdmi->venci_clk = devm_clk_get(dev, "venci");
+>>      if (IS_ERR(meson_dw_hdmi->venci_clk)) {
+>>          dev_err(dev, "Unable to get venci clk\n");
+>> @@ -1071,6 +1079,8 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+>> 
+>>      encoder->possible_crtcs = BIT(0);
+>> 
+>> +    meson_dw_hdmi_init(meson_dw_hdmi);
+>> +
+>>      DRM_DEBUG_DRIVER("encoder initialized\n");
+>> 
+>>      /* Bridge / Connector */
+>> @@ -1095,8 +1105,6 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+>>      if (IS_ERR(meson_dw_hdmi->hdmi))
+>>          return PTR_ERR(meson_dw_hdmi->hdmi);
+>> 
+>> -    meson_dw_hdmi_init(meson_dw_hdmi);
+>> -
+>>      next_bridge = of_drm_find_bridge(pdev->dev.of_node);
+>>      if (next_bridge)
+>>          drm_bridge_attach(encoder, next_bridge,
+>> 
+>> 
+
