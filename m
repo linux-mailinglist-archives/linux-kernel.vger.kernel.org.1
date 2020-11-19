@@ -2,130 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3692B93F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C682B9405
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727238AbgKSNz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 08:55:27 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44554 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727059AbgKSNz1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 08:55:27 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJDYmFJ077900;
-        Thu, 19 Nov 2020 08:55:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=/nniWQ9gxk6j4moDBZb7uwbmsTjEjPijA19ANSHPheY=;
- b=Fg34m7w8r7RPSo65njyOS8jbe/xa0WI6JlK7WvVTxJdDl/iB1xNvizAOGoygmfu3AWqj
- uXOmkK5JMq5kxwP7HOUI0VHNovR5l7JLAa6KeFXNuKE3DH1XXrHwjdKP8TKqHOO+j88w
- QwIPPJ3SlbJkVJ62yEL7FXX5cZhxN9y7rE40OW++AaaBnKZmprKyTeCv7h6tyeYdBzYP
- /7uxp7NTqcJhVuMwBrALejFGEH2ruHQZAW52VLA5eI3uDFaoz5W+rCYFyszZX2P4NK/i
- W1l/IW8mczbm8M9rOpgmzYygtJhmm7JGO5rUclaZUbmg6zt/m8ba/4SijwfJOld6TPki CA== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34wg669jmm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 08:55:24 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AJDkqwO022880;
-        Thu, 19 Nov 2020 13:55:23 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02dal.us.ibm.com with ESMTP id 34vgjmu21t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 13:55:23 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AJDtJPQ11797070
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Nov 2020 13:55:19 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D0DF67805F;
-        Thu, 19 Nov 2020 13:55:19 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 760737805E;
-        Thu, 19 Nov 2020 13:55:16 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.99.210])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Nov 2020 13:55:15 +0000 (GMT)
-Subject: Re: [PATCH] perf test: Omit test 68 for s390.
-To:     Thomas Richter <tmricht@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        heiko.carstens@de.ibm.com
-References: <20201104082954.57338-1-tmricht@linux.ibm.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <c2c7cd99-0e89-8d20-a8e9-42df49656c68@linux.ibm.com>
-Date:   Thu, 19 Nov 2020 19:25:14 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727391AbgKSN7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 08:59:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726580AbgKSN7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 08:59:05 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A39B246D3;
+        Thu, 19 Nov 2020 13:59:04 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 08:59:02 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Chen Yu <yu.chen.surf@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v4 2/4] tools/bootconfig: Fix to check the write failure
+ correctly
+Message-ID: <20201119085902.05df502b@gandalf.local.home>
+In-Reply-To: <20201119104109.8ab69359ce81d74c7d2d9c3f@kernel.org>
+References: <160571371674.277955.11736890010190945946.stgit@devnote2>
+        <160571373504.277955.1260524414275036851.stgit@devnote2>
+        <20201118110437.36e84496@gandalf.local.home>
+        <20201119104109.8ab69359ce81d74c7d2d9c3f@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201104082954.57338-1-tmricht@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_09:2020-11-19,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- suspectscore=0 adultscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999
- lowpriorityscore=0 priorityscore=1501 spamscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011190102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 19 Nov 2020 10:41:09 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
+> > If the first write fails (doesn't modify the initrd), and then this fails,
+> > you will show a message of: "may be corrupted. Recommend to rebuild", when
+> > that would not be the case. Should a test of the size be done again, to see
+> > if it is already the same?  
+> 
+> Please see the above 2 write error check. You can find
+> 
+> if (ret < 0)
+> 	goto out;
+> 
+> only in the first check. (I know, it might a bit misleadable)
+> So, the first write is failed with error message, it doesn't call rollback.
 
-On 11/4/20 1:59 PM, Thomas Richter wrote:
-> Commit ed21d6d7c48e6e ("perf tests: Add test for PE binary format support")
-> adds a WINDOWS EXE file named tests/pe-file.exe, which is
-> examined by the test case 'PE file support'.
-> 
-> This test reads the buildid from the file tests/pe-file.exe,
-> which is a Portable Executable (PE) binary file used by the
-> Windows operating system.
-> 
-> Since s390 does not support PE files, omit this test.
-> 
-> Output before:
-> [root@t35lp46 perf]# ./perf test -F 68
-> 68: PE file support                               : Failed!
-> [root@t35lp46 perf]#
-> 
-> Output after:
-> [root@t35lp46 perf]# ./perf test -F 68
-> 68: PE file support                               : Skip
-> [root@t35lp46 perf]#
-> 
-> 
+Ah right, I missed check within the error check. I was only looking at the
+first error and the goto at the end.
 
-Patch looks good to me. Thanks for correcting it. Since in powerpc also we are having similar issue,
-I send patch on top of this change. 
-
-Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
-
-Thanks,
-Kajol Jain
-
-> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> ---
->  tools/perf/tests/pe-file-parsing.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/pe-file-parsing.c b/tools/perf/tests/pe-file-parsing.c
-> index 58b90c42eb38..4e45178c50f6 100644
-> --- a/tools/perf/tests/pe-file-parsing.c
-> +++ b/tools/perf/tests/pe-file-parsing.c
-> @@ -18,7 +18,7 @@
->  
->  #include "tests.h"
->  
-> -#ifdef HAVE_LIBBFD_SUPPORT
-> +#if defined(HAVE_LIBBFD_SUPPORT) && !defined(__s390x__)
->  
->  static int run_dir(const char *d)
->  {
-> 
+-- Steve
