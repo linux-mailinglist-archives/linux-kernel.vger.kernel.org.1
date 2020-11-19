@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB192B8E73
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AF52B8E75
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbgKSJMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:12:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725888AbgKSJMM (ORCPT
+        id S1726592AbgKSJM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:12:28 -0500
+Received: from mail-wr1-f46.google.com ([209.85.221.46]:35748 "EHLO
+        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbgKSJM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:12:12 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4035C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:12:11 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c198so4528143wmd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:12:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=qrvNFqIshFToJZ8d6/WF6C/Crs0qG1otBamb+mHYUl8=;
-        b=WiwugfDa9s4Dh5Kd+43uSCfEG86ljd1UiK0QrdShHAw7RpkhNGTapw++vyhFaJMfcY
-         on/FSJb5XtIHuApwVqbT1LG+Mk9eXM+pzNecoh2zG9qia/s706DOcpdc3NioPmwKjv8r
-         x8B9UAscQofTbLQLrdou54zFSwYsfaKvsREH54x3wuifIRrO5v81n4P/vCKfKJOCLb0F
-         42fSSJldaIxWKRVd0tZVX9Zyf9bJCM7ind4ULhtgTGWSHChcVlDeG9fQvIxTI6BSWXbh
-         yjwFWLps5dnwgZr5UuR1S+/HDTcOFY69vdIs1RpzBW7k6T9TVdbr6WxFBMvr5GsAgH3u
-         zbNw==
+        Thu, 19 Nov 2020 04:12:27 -0500
+Received: by mail-wr1-f46.google.com with SMTP id k2so5658361wrx.2;
+        Thu, 19 Nov 2020 01:12:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=qrvNFqIshFToJZ8d6/WF6C/Crs0qG1otBamb+mHYUl8=;
-        b=qbDc7XaYZZ6Vlgshvf2wykgU727w0PO+P7opFoBHZO+UvcKGF6IkWMvP46/+eF7N2i
-         +vbi7KVr5kQNnR+Q9igvOhaVIvuMgMACdKhhXVqR3ehA8VI52K6FXU9OfGF39xcul6EV
-         9v/GNknKEZhgezDoGsk/8O1kGEexZgTNCxu2TPS4Ljd2dhjvdwZZOXENH+PV5Srzm4h+
-         EDvgJBl3keJxmafUXYMyooGL/8bIVFEWLi80pmzEZRL2axFc51QefaITHZyr07NLSYiF
-         WYxT9fQ3ywv9fuc1Begqn46V0i5iDwnn9fyFQndMVB4BPR+Kz6GHACYzOCJJRodBxiyO
-         0qoA==
-X-Gm-Message-State: AOAM531LrydusXbQ/lW66YsHruGzzyKvzBZuJzVbHds3PEna615aA6BH
-        3No1irIDQ0BM7jb8ONyuyvTflg==
-X-Google-Smtp-Source: ABdhPJzzSx2Nv+LpqWm35A4XApOvrsh/u2QGuNG32M/53E82KFLWKyZFMWSSY4Ws0YMxNVe86TPxnQ==
-X-Received: by 2002:a1c:7d13:: with SMTP id y19mr3309797wmc.98.1605777130663;
-        Thu, 19 Nov 2020 01:12:10 -0800 (PST)
-Received: from dell ([91.110.221.241])
-        by smtp.gmail.com with ESMTPSA id l16sm36483432wrx.5.2020.11.19.01.12.09
+        bh=ghQatJV2M5BRcgigmzEkdEj1L3L/t40fnfIoSb+yJJM=;
+        b=WnfyOxRwhV826cYSNurRxaYYLg6R9GjUALJuIF1Xx2W7AOZy/9qIZLda+2SOvDGfM0
+         BVPqO73s2UgYW01Huag+UktCV4h3FmbLMJvuLy3n5GHfxV10iqOYgROe/PVJZoIrGh+F
+         8X0klO49+r4p8OUWJE2k+bECN1hpH7vMDX1HdYc/3wZ5PFYavik8natlDRhzTtFZj2go
+         h6J0s+2Cb4y0/YWdIDqeWJWfb92uWQB1r49tyww2D7SzwysgYtowrR3F6P0SpAeR1RIO
+         JXIKRXA4sAndnPQIgEz48I/WmtIAGvW7rn6TJ593iOB9+Dqus2CK568G4admkWeuljTJ
+         03jA==
+X-Gm-Message-State: AOAM533bRClw6334T7ZL0kSe7EmPobvQ31tdWJR7gFpCZwjFq9KUnNjc
+        SUsI2NXcpvPZgf4OAJ/iYtU=
+X-Google-Smtp-Source: ABdhPJzzcgaiwcSqyP0kF1k1oISICrFDm+KRxUbhiFBADz8WMUdOrLoI5pRgpbX5hJStLDu/MkhukA==
+X-Received: by 2002:a5d:514f:: with SMTP id u15mr8651782wrt.385.1605777146080;
+        Thu, 19 Nov 2020 01:12:26 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id h15sm37495915wrw.15.2020.11.19.01.12.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 01:12:09 -0800 (PST)
-Date:   Thu, 19 Nov 2020 09:12:08 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Haibo Chen <haibo.chen@freescale.com>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH 05/15] input: touchscreen: imx6ul_tsc: Remove set but
- unused variable 'value'
-Message-ID: <20201119091208.GX1869941@dell>
-References: <20201112110204.2083435-1-lee.jones@linaro.org>
- <20201112110204.2083435-6-lee.jones@linaro.org>
- <20201113073718.GH356503@dtor-ws>
+        Thu, 19 Nov 2020 01:12:25 -0800 (PST)
+Date:   Thu, 19 Nov 2020 10:12:24 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Joao Pinto <Joao.Pinto@synopsys.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Decode PCIe 64 GT/s link speed
+Message-ID: <X7Y2+DvRmAxvobtR@rocinante>
+References: <aaaab33fe18975e123a84aebce2adb85f44e2bbe.1605739760.git.gustavo.pimentel@synopsys.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201113073718.GH356503@dtor-ws>
+In-Reply-To: <aaaab33fe18975e123a84aebce2adb85f44e2bbe.1605739760.git.gustavo.pimentel@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020, Dmitry Torokhov wrote:
+Hi Gustavo,
 
-> On Thu, Nov 12, 2020 at 11:01:54AM +0000, Lee Jones wrote:
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/input/touchscreen/imx6ul_tsc.c: In function ‘adc_irq_fn’:
-> >  drivers/input/touchscreen/imx6ul_tsc.c:307:6: warning: variable ‘value’ set but not used [-Wunused-but-set-variable]
-> > 
-> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > Cc: Shawn Guo <shawnguo@kernel.org>
-> > Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> > Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-> > Cc: Fabio Estevam <festevam@gmail.com>
-> > Cc: NXP Linux Team <linux-imx@nxp.com>
-> > Cc: Haibo Chen <haibo.chen@freescale.com>
-> > Cc: linux-input@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> PCIe r6.0, sec 7.5.3.18, defines a new 64.0 GT/s bit in the Supported
+> Link Speeds Vector of Link Capabilities 2.
+
+64 GT/s already, nice.
+ 
+> This does not affect the speed of the link, which should be negotiated
+> automatically by the hardware; it only adds decoding when showing the
+> speed to the user.
 > 
-> Applied, thank you.
+> This patch adds the decoding of this new speed, previously, reading the
+> speed of a link operating at this speed showed "Unknown speed" instead
+> of "64.0 GT/s".
 
-Good morning Dmitry,
+Looks good!  Thank you for taking care about this.
 
-Are you planning on finishing this review?
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 
-About half of the patches are unreviewed and there are a couple of
-open questions on others.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Krzysztof
