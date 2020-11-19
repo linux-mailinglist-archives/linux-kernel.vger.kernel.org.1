@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B367D2B8937
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4A42B893A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgKSBB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 20:01:26 -0500
-Received: from gproxy10-pub.mail.unifiedlayer.com ([69.89.20.226]:44913 "EHLO
-        gproxy10-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726098AbgKSBBZ (ORCPT
+        id S1727127AbgKSBFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 20:05:49 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:56752 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726616AbgKSBFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 20:01:25 -0500
-Received: from cmgw12.unifiedlayer.com (unknown [10.9.0.12])
-        by gproxy10.mail.unifiedlayer.com (Postfix) with ESMTP id E73C7140531
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 18:01:21 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id fYK9k8w0QeMJHfYK9kHWO3; Wed, 18 Nov 2020 18:01:21 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=BsOzP7f5 c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=nNwsprhYR40A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=pGLkceISAAAA:8
- a=Q3Wkuqm_2-rY-xIXcIMA:9 a=CjuIK1q_8ugA:10:nop_charset_2
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=OgnrqXLq5/S+DH9C+VfZjZgrwNPc+RbuiHFVXIWuaeY=; b=cnmT6i+A45udFmFlPPXcn3blKa
-        rUAHR/g8Y7jFBElyc1S7M59TmcZBFkQxZh9BcZPT8xKz/9hoCiOUyUjGks8tCdwSsacS44BNlO4mf
-        WbkQ387cMufUNADxp7tNpsRNwnNzrz5LAdxwewt93SJA9p3Heo8R4xUpIKFZRPoC31tQN0/kfAd9E
-        81zmoa8RbNUjv0Hf91AG1ltKE2ipRKv9W+wDYyeQUZfAtBa90+ck/PqOwnEusn2/FXAfiuPueEn0K
-        N1FLQEEG1lNR5Elxw/vN7MKSdhx7kfU0oOrY4CQhf03Y6j0wrbzXK0oYGjTNIDPzFT+CE1fknh/PP
-        O202M12A==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:57080 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kfYK8-000BCM-A4; Thu, 19 Nov 2020 01:01:20 +0000
-Date:   Wed, 18 Nov 2020 17:01:19 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Tao Ren <rentao.bupt@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, openbmc@lists.ozlabs.org, taoren@fb.com,
-        mikechoi@fb.com
-Subject: Re: [PATCH v2 0/2] hwmon: (max127) Add Maxim MAX127 hardware
- monitoring
-Message-ID: <20201119010119.GA248686@roeck-us.net>
-References: <20201118230929.18147-1-rentao.bupt@gmail.com>
- <20201118232719.GI1853236@lunn.ch>
- <20201118234252.GA18681@taoren-ubuntu-R90MNF91>
+        Wed, 18 Nov 2020 20:05:48 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJ15fnv069950;
+        Wed, 18 Nov 2020 19:05:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605747941;
+        bh=1gRjiKyj/jZJizdpNerB6Rxx3miu2PjfU9zpoj7KcHQ=;
+        h=From:To:CC:Subject:Date;
+        b=eozVu1Ay3gX0vgWvy6YYxZlmgCsgdOPDXjqfVDo3lYHfMcuO3g71vlaCRXaIE92qa
+         K5QFB7WwfvmHJLF/CGPFUMeviLgT8YrkDI7tAo3gJnXTvOU5PvOHY0BTv62P46heqp
+         e07ZPoXDFFp+1fXLWXvUTuHGzBqXMsEKpHmTQSRo=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJ15f3H054074
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Nov 2020 19:05:41 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 18
+ Nov 2020 19:05:41 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 18 Nov 2020 19:05:41 -0600
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJ15f3d074558;
+        Wed, 18 Nov 2020 19:05:41 -0600
+Received: from localhost ([10.250.38.244])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 0AJ15fmd076042;
+        Wed, 18 Nov 2020 19:05:41 -0600
+From:   Suman Anna <s-anna@ti.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH 0/3] TI K3 R5F remoteproc support on J7200 SoCs
+Date:   Wed, 18 Nov 2020 19:05:28 -0600
+Message-ID: <20201119010531.21083-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118234252.GA18681@taoren-ubuntu-R90MNF91>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kfYK8-000BCM-A4
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:57080
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 6
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 03:42:53PM -0800, Tao Ren wrote:
-> On Thu, Nov 19, 2020 at 12:27:19AM +0100, Andrew Lunn wrote:
-> > On Wed, Nov 18, 2020 at 03:09:27PM -0800, rentao.bupt@gmail.com wrote:
-> > > From: Tao Ren <rentao.bupt@gmail.com>
-> > > 
-> > > The patch series adds hardware monitoring driver for the Maxim MAX127
-> > > chip.
-> > 
-> > Hi Tao
-> > 
-> > Why are using sending a hwmon driver to the networking mailing list?
-> > 
-> >     Andrew
-> 
-> Hi Andrew,
-> 
-> I added netdev because the mailing list is included in "get_maintainer.pl
-> Documentation/hwmon/index.rst" output. Is it the right command to find
-> reviewers? Could you please suggest? Thank you.
+Hi All,
 
-I have no idea why running get_maintainer.pl on
-Documentation/hwmon/index.rst returns such a large list of mailing
-lists and people. For some reason it includes everyone in the XDP
-maintainer list. If anyone has an idea how that happens, please
-let me know - we'll want to get this fixed to avoid the same problem
-in the future.
+The following series enhances the K3 R5F remoteproc driver to add support
+for the R5F clusters on the newer TI K3 J7200 SoC family. The J7200 SoCs
+have 2 R5FSS clusters, and both clusters are capable of supporting either
+the LockStep or Split-modes like on the existing AM65x and J721E SoCs.
 
-Guenter
+The R5FSS IP though is revised compared to K3 AM65x and J721E SoCs and has
+two new features: 
+ 1. TCMs are auto-initialized during module power-up, and the behavior
+    is programmable through a SEC_MMR register bit.
+ 2. The LockStep-mode allows the Core1 TCMs to be combined with the 
+    Core0 TCMs effectively doubling the amount of TCMs available.
+    The LockStep-mode on previous SoCs could only use the Core0 TCMs.
+    This combined TCMs appear contiguous at the respective Core0 TCM
+    addresses.
+
+The series is based on 5.10-rc1, and can apply on top of the current rproc-next
+branch as well. Following is the patch summary:
+ - Patch 1 updates the dt-bindings
+ - Patch 2 introduces new SoC data logic and handles the TCM auto-init
+   feature
+ - Patch 3 handles the TCM adjustment logic in Split-mode
+
+regards
+Suman
+
+Suman Anna (3):
+  dt-bindings: remoteproc: k3-r5f: Update bindings for J7200 SoCs
+  remoteproc: k3-r5: Extend support to R5F clusters on J7200 SoCs
+  remoteproc: k3-r5: Adjust TCM sizes in Split-mode on J7200 SoCs
+
+ .../bindings/remoteproc/ti,k3-r5f-rproc.yaml  |  2 +
+ drivers/remoteproc/ti_k3_r5_remoteproc.c      | 95 ++++++++++++++++++-
+ 2 files changed, 95 insertions(+), 2 deletions(-)
+
+-- 
+2.28.0
+
