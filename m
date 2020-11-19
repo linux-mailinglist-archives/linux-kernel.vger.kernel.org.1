@@ -2,224 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542F82B8C42
+	by mail.lfdr.de (Postfix) with ESMTP id C05552B8C43
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgKSHYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:24:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
+        id S1726392AbgKSHYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:24:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgKSHYn (ORCPT
+        with ESMTP id S1726315AbgKSHYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:24:43 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB37C0613CF;
-        Wed, 18 Nov 2020 23:24:43 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id w14so3604113pfd.7;
-        Wed, 18 Nov 2020 23:24:43 -0800 (PST)
+        Thu, 19 Nov 2020 02:24:52 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C7FC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 23:24:52 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id 199so4465876qkg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 23:24:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=/eBdrO7bYyRYe7szj2qIYVBbFCCjGwpHth1+5TUwWBE=;
-        b=XYl2b9RamSgaiq3XTVG/eWk4XF7pG1BS5TkNE6SliYsRUxXqKDw36BNw+96f+m2Q+Q
-         OwnWP6W5622UeJ2OUZjx/LCa83Kj9ng+tgLYZle2HveyY+dOjAe2eIsZM0aEgj/gmL//
-         yzu35FWeKG9JrdgPwtRKTmI27F4qdwftlrUzoGCA1YbLIhMrFj2Umt+jEsMIf0x4Hqvb
-         J8nZsUVA28grdbOQZk3vaOV/kfoEsptbZ+2mjvGhbt590lm5xc7UeXtvy9StfXY0ZzfD
-         qeYlDkiqarkuTBpnsGCOqNadixMjbRW9XeTRcYaQq7TEc7uHXQhQp0h4Fc4onv+Vc2kZ
-         YXVw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KJvxtkKdIZbJIrTjjcf776wJG723M+Fx0Qi+vbSWmSA=;
+        b=m/H6PFwkb8nODNrDDXNAGXyXDeh2e2LJ9H6mDokTkLYq+krvuO3acvJwuHyef6fGtG
+         yo45erauXgbhNYosQ72rPLkAyOcr8mZ0k/EYN9dHzjb3K/MEUb6F7VZgSt9PQqE3WoH2
+         J/mDzO6MroIRLnRAkplJxCnqkbgjnvw7P0uk2rpaUPJTivIPxKuTB/GL2fLkSB/l9gu4
+         pq043302UQQpOdXTYNDeBoQKx7hcZqcurD+WXWcrQc8GIqgKCFhBdnvVWNEfN7cnO7xS
+         TCJOaeuxUyTUgNsNdJzjQB/clD8fJIS1abhxSigDpeLb6lfnpWRRbk1fXk5FD7kVEgS1
+         xmFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=/eBdrO7bYyRYe7szj2qIYVBbFCCjGwpHth1+5TUwWBE=;
-        b=K7uhYhGapd9Oj/ocogKkJeSQqnnQleHn5esO24OovhCldOIp+YxCNUsPQyV+xtp0E8
-         Us2KTe43OqWKbOtwtutYmMeTYrckiaRzwMhd/DrvN88TA+vdFNEBmNQgc8RdyK/05Z8Y
-         l/K8w+VO8VHi2MwrfWacKCRPfiQM0phfzXQlI93pLc6RyJhGtfbQOy4UURykM41w54rU
-         YeTAZ601Kiv0qhK15s91BJW/JoX5f9cwtMaecbRXcxEvP1XRT7u4SAEgwtPkr5+BlFRM
-         d9SiTYrUDJXSnUkwYX0rChM0fD/9uvxT2MCaRf2jChUxD0EX+DjlCbRwWnuEae5FFn65
-         22lg==
-X-Gm-Message-State: AOAM532t/QK1ZUhI16gA8im4zl9OsScFVaoDUF0VBaR3WbQHuN6q0QST
-        IN5ITSk/Ipaa1T0inRF9KS3yQhnoKkA=
-X-Google-Smtp-Source: ABdhPJxMz0vYNC6uXSQ9jkXhnsrMDEteJnydMeLK/smydZH7itMLiHqSaUOFOmeZp2uSEgZ7KLzIdg==
-X-Received: by 2002:a17:90a:5309:: with SMTP id x9mr3005234pjh.98.1605770683033;
-        Wed, 18 Nov 2020 23:24:43 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id t12sm28067731pfq.79.2020.11.18.23.24.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 23:24:42 -0800 (PST)
-Date:   Wed, 18 Nov 2020 23:24:40 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: adp5589-keys - use BIT()
-Message-ID: <20201119072440.GA116840@dtor-ws>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KJvxtkKdIZbJIrTjjcf776wJG723M+Fx0Qi+vbSWmSA=;
+        b=U6+1eQQZ4SLJJgWBu8jfy12ofqm2aKWgnjLvewZ+9j+TKt8RZIemYcYUg0uHBPHGRQ
+         KtOBgqM6qm2VvDxn7cuVrsFf334Pgwsdr9WthQQ3g0ts5UJ2d+G5nS1k7cmMpFYVhB5R
+         20oNFA4PaXklLJysDsSUgpu8ChhjqfjMcCHkw9axblLv+tnj5WqTtBAe3xgaCcyiiBU1
+         5vAj/i9l7pmlbBwVW2o1dVZ5SgEEutiTXy5Uq9TIHOymS8QRUxiM2SabDwXYs1n1yxDX
+         +HUgNNezkzpnqc3X1nuPlpcEZTAumk2pb0/OYQQ31saQgUgDUVBHs2s45ERVxqQ76p5k
+         JxAw==
+X-Gm-Message-State: AOAM532kMe5C00lzQFZOqm0vBEC78OtfevqIr3On+nzx7pwgnPsT+Yv0
+        hBi/gAJHW0SNOeV7xngVh33ulNa58EW13AgvD+AH9dcqkNhhiA==
+X-Google-Smtp-Source: ABdhPJw4WlvKAxa6w1Ko4cuKVKlJz9aqZQEqSLIOMhLRB96UUQC0kWFnBCZkuecnCiuVlzFZ4cIfNv75cjq7kXTrBGE=
+X-Received: by 2002:a37:49d6:: with SMTP id w205mr9852750qka.501.1605770691430;
+ Wed, 18 Nov 2020 23:24:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20201116023846.awjtbzh2o2yj4fvn@mozz.bu.edu> <CACT4Y+bh_QfSNVKVE=zODNKL5_8RLdcLf-j2ky0FJE_1hUi_hw@mail.gmail.com>
+ <CAAeHK+wxupr3kqnr69QphciLLp13+A_7CgU+o_J7xBBxnRdbMg@mail.gmail.com> <20201118022036.dpi36duvtnwnuj2o@mozz.bu.edu>
+In-Reply-To: <20201118022036.dpi36duvtnwnuj2o@mozz.bu.edu>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 19 Nov 2020 08:24:40 +0100
+Message-ID: <CACT4Y+a-D2bhzrgtMaR_J+j_db72BjDxE+yFCQY_cnNawqtMrQ@mail.gmail.com>
+Subject: Re: Collecting both remote and "local" coverage with KCOV
+To:     Alexander Bulekov <alxndr@bu.edu>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's use BIT() macro instead of explicitly shifting '1'.
+On Wed, Nov 18, 2020 at 3:21 AM Alexander Bulekov <alxndr@bu.edu> wrote:
+>
+> On 201116 1805, Andrey Konovalov wrote:
+> > On Mon, Nov 16, 2020 at 9:35 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > >
+> > > On Mon, Nov 16, 2020 at 3:39 AM Alexander Bulekov <alxndr@bu.edu> wrote:
+> > > >
+> > > > Hello,
+> > > > I'm trying to collect coverage over the syscalls issued by my process,
+> > > > as well as the kthreads spawned as a result of these syscalls
+> > > > (eg coverage over vhost ioctls and the worker kthread). Is there a way
+> > > > to collect coverage with both KCOV_REMOTE_ENABLE(with common_handle) and
+> > > > KCOV_ENABLE, simultaneously?
+> > > >
+> > > > Based on the code it seems that these two modes are mutually
+> > > > exclusive within a single task, but I don't think this is mentioned in
+> > > > the Documentation, so I want to make sure I'm not missing something.
+> > >
+> > > Hi Alex,
+> > >
+> > > Yes, it's probably not supported within a single task. The easiest way
+> > > to verify is to try it ;)
+> > >
+> > > It is possible to collect both coverages, but you will need 2 threads
+> > > (one just to set up remote KCOV).
+> > >
+> > > Unless I am missing any fundamental limitations, I would say it would
+> > > be reasonable to support this within a single task as well.
+> >
+> > I think the reason we did that initially, is because we don't care
+> > about normal coverage for USB emitting pseudo-syscalls. Filed a bug
+> > for this: https://bugzilla.kernel.org/show_bug.cgi?id=210225
+>
+> I'm interested in adding support for this. Looking through the code, I
+> can think of ~two approaches:
+>
+> 1.) Allow the same kcov fd to be used to track coverage with both
+> KCOV_REMOTE_ENABLE and KCOV_ENABLE. If we try to use the same coverage
+> bitmap for both the remote and the local coverage, I think the local
+> part would have to deal with the kcov_remote_lock. If the local part
+> continues to write directly into the user-space coverage-area, as it
+> does now, it seems it would require locking for each __sanitizer_cov
+> call.  Alternatively, the local and the remote parts could write into
+> different coverage-bitmaps, but I'm not sure if there is a neat way to
+> do this.
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/keyboard/adp5589-keys.c | 69 ++++++++++++++-------------
- 1 file changed, 35 insertions(+), 34 deletions(-)
+This has 2 problems:
+ - performance (__sanitizer_cov is by far the most performance
+critical part of kernel with KCOV=y)
+ - recurions, locks are also traced, so it's not that we really can
+call anything there
 
-diff --git a/drivers/input/keyboard/adp5589-keys.c b/drivers/input/keyboard/adp5589-keys.c
-index a9b69a268c09..70c8d1c298ee 100644
---- a/drivers/input/keyboard/adp5589-keys.c
-+++ b/drivers/input/keyboard/adp5589-keys.c
-@@ -7,6 +7,7 @@
-  * Copyright (C) 2010-2011 Analog Devices Inc.
-  */
- 
-+#include <linux/bitops.h>
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-@@ -153,48 +154,48 @@
- #define ADP5589_5_MAN_ID		0x02
- 
- /* GENERAL_CFG Register */
--#define OSC_EN		(1 << 7)
-+#define OSC_EN		BIT(7)
- #define CORE_CLK(x)	(((x) & 0x3) << 5)
--#define LCK_TRK_LOGIC	(1 << 4)	/* ADP5589 only */
--#define LCK_TRK_GPI	(1 << 3)	/* ADP5589 only */
--#define INT_CFG		(1 << 1)
--#define RST_CFG		(1 << 0)
-+#define LCK_TRK_LOGIC	BIT(4)		/* ADP5589 only */
-+#define LCK_TRK_GPI	BIT(3)		/* ADP5589 only */
-+#define INT_CFG		BIT(1)
-+#define RST_CFG		BIT(0)
- 
- /* INT_EN Register */
--#define LOGIC2_IEN	(1 << 5)	/* ADP5589 only */
--#define LOGIC1_IEN	(1 << 4)
--#define LOCK_IEN	(1 << 3)	/* ADP5589 only */
--#define OVRFLOW_IEN	(1 << 2)
--#define GPI_IEN		(1 << 1)
--#define EVENT_IEN	(1 << 0)
-+#define LOGIC2_IEN	BIT(5)		/* ADP5589 only */
-+#define LOGIC1_IEN	BIT(4)
-+#define LOCK_IEN	BIT(3)		/* ADP5589 only */
-+#define OVRFLOW_IEN	BIT(2)
-+#define GPI_IEN		BIT(1)
-+#define EVENT_IEN	BIT(0)
- 
- /* Interrupt Status Register */
--#define LOGIC2_INT	(1 << 5)	/* ADP5589 only */
--#define LOGIC1_INT	(1 << 4)
--#define LOCK_INT	(1 << 3)	/* ADP5589 only */
--#define OVRFLOW_INT	(1 << 2)
--#define GPI_INT		(1 << 1)
--#define EVENT_INT	(1 << 0)
-+#define LOGIC2_INT	BIT(5)		/* ADP5589 only */
-+#define LOGIC1_INT	BIT(4)
-+#define LOCK_INT	BIT(3)		/* ADP5589 only */
-+#define OVRFLOW_INT	BIT(2)
-+#define GPI_INT		BIT(1)
-+#define EVENT_INT	BIT(0)
- 
- /* STATUS Register */
--#define LOGIC2_STAT	(1 << 7)	/* ADP5589 only */
--#define LOGIC1_STAT	(1 << 6)
--#define LOCK_STAT	(1 << 5)	/* ADP5589 only */
-+#define LOGIC2_STAT	BIT(7)		/* ADP5589 only */
-+#define LOGIC1_STAT	BIT(6)
-+#define LOCK_STAT	BIT(5)		/* ADP5589 only */
- #define KEC		0x1F
- 
- /* PIN_CONFIG_D Register */
--#define C4_EXTEND_CFG	(1 << 6)	/* RESET2 */
--#define R4_EXTEND_CFG	(1 << 5)	/* RESET1 */
-+#define C4_EXTEND_CFG	BIT(6)		/* RESET2 */
-+#define R4_EXTEND_CFG	BIT(5)		/* RESET1 */
- 
- /* LOCK_CFG */
--#define LOCK_EN		(1 << 0)
-+#define LOCK_EN		BIT(0)
- 
- #define PTIME_MASK	0x3
- #define LTIME_MASK	0x3		/* ADP5589 only */
- 
- /* Key Event Register xy */
--#define KEY_EV_PRESSED		(1 << 7)
--#define KEY_EV_MASK		(0x7F)
-+#define KEY_EV_PRESSED	BIT(7)
-+#define KEY_EV_MASK	0x7F
- 
- #define KEYP_MAX_EVENT		16
- #define ADP5589_MAXGPIO		19
-@@ -472,7 +473,7 @@ static int adp5589_build_gpiomap(struct adp5589_kpad *kpad,
- 	memset(pin_used, false, sizeof(pin_used));
- 
- 	for (i = 0; i < kpad->var->maxgpio; i++)
--		if (pdata->keypad_en_mask & (1 << i))
-+		if (pdata->keypad_en_mask & BIT(i))
- 			pin_used[i] = true;
- 
- 	for (i = 0; i < kpad->gpimapsize; i++)
-@@ -651,13 +652,13 @@ static int adp5589_setup(struct adp5589_kpad *kpad)
- 		unsigned short pin = pdata->gpimap[i].pin;
- 
- 		if (pin <= kpad->var->gpi_pin_row_end) {
--			evt_mode1 |= (1 << (pin - kpad->var->gpi_pin_row_base));
-+			evt_mode1 |= BIT(pin - kpad->var->gpi_pin_row_base);
- 		} else {
- 			evt_mode2 |=
--			    ((1 << (pin - kpad->var->gpi_pin_col_base)) & 0xFF);
-+			    BIT(pin - kpad->var->gpi_pin_col_base) & 0xFF;
- 			if (!kpad->is_adp5585)
--				evt_mode3 |= ((1 << (pin -
--					kpad->var->gpi_pin_col_base)) >> 8);
-+				evt_mode3 |=
-+				    BIT(pin - kpad->var->gpi_pin_col_base) >> 8;
- 		}
- 	}
- 
-@@ -677,7 +678,7 @@ static int adp5589_setup(struct adp5589_kpad *kpad)
- 		dev_warn(&client->dev, "Conflicting pull resistor config\n");
- 
- 	for (i = 0; i <= kpad->var->max_row_num; i++) {
--		unsigned val = 0, bit = (1 << i);
-+		unsigned val = 0, bit = BIT(i);
- 		if (pdata->pullup_en_300k & bit)
- 			val = 0;
- 		else if (pdata->pulldown_en_300k & bit)
-@@ -697,7 +698,7 @@ static int adp5589_setup(struct adp5589_kpad *kpad)
- 	}
- 
- 	for (i = 0; i <= kpad->var->max_col_num; i++) {
--		unsigned val = 0, bit = 1 << (i + kpad->var->col_shift);
-+		unsigned val = 0, bit = BIT(i + kpad->var->col_shift);
- 		if (pdata->pullup_en_300k & bit)
- 			val = 0;
- 		else if (pdata->pulldown_en_300k & bit)
-@@ -813,7 +814,7 @@ static void adp5589_report_switch_state(struct adp5589_kpad *kpad)
- 
- 		input_report_switch(kpad->input,
- 				    kpad->gpimap[i].sw_evt,
--				    !(gpi_stat_tmp & (1 << pin_loc)));
-+				    !(gpi_stat_tmp & BIT(pin_loc)));
- 	}
- 
- 	input_sync(kpad->input);
-@@ -859,7 +860,7 @@ static int adp5589_keypad_add(struct adp5589_kpad *kpad, unsigned int revid)
- 			return -EINVAL;
- 		}
- 
--		if ((1 << (pin - kpad->var->gpi_pin_row_base)) &
-+		if (BIT(pin - kpad->var->gpi_pin_row_base) &
- 				pdata->keypad_en_mask) {
- 			dev_err(&client->dev, "invalid gpi row/col data\n");
- 			return -EINVAL;
--- 
-2.29.2.299.gdc1121823c-goog
+> 2.) Allow multiple kcov fds to be used by the same task. In the task,
+> keep a linked-list of pointers to kcov objects (remote or local). For
+> each __sanitizer_... call, walk the linked list and check if any of the
+> kcov objects match the requirements (trace_cmp/trace_pc/remote). This
+> would also have the side-effect of enabling simultaneous PC and CMP
+> tracing. Of course, it seems that this would add some overhead (in the
+> case of a single open fd, there would be extra pointer dereferences to
+> get the area[], size, etc).
 
+Walking linked list in __sanitizer_... has the same performance
+problems, but I think we don't really need to do it.
+Assuming we have at most 1 KCOV that traces the task itself we can
+continue keeping it cached in task_struct:
+https://elixir.bootlin.com/linux/v5.10-rc4/source/include/linux/sched.h#L1254
+and __sanitizer_... will continue using these fields.
 
--- 
-Dmitry
+For the kcov pointer in task struct:
+https://elixir.bootlin.com/linux/v5.10-rc4/source/include/linux/sched.h#L1257
+we either have a linked list, or 1 pointer for local tracking and a
+separate list for remote kcov's:
+struct kcov *kcov; // local tracing
+struct kcov *remote_kcovs; // remote tracing, can be more than 1
+Whichever is better I am not sure, it seems that some functions would
+benefit from a single list (KCOV_DISABLE), while others would benefit
+from separate fields (KCOV_ENABLE).
+Maybe the simplest code will be if we use both approaches -- put all
+kcov's into a list, but also cache the local kcov into a separate
+field? Then KCOV_DISABLE could just walk the list, but KCOV_ENABLE can
+continue checking 1 field.
