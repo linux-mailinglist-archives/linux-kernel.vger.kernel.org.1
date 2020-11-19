@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF592B97DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 279FF2B97F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728542AbgKSQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:27:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726820AbgKSQ1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:27:32 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C10322264;
-        Thu, 19 Nov 2020 16:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605803251;
-        bh=/2m0UE5hapRt4xJpiOoTf2TgBaWZK9N+sr6VYXqk/x8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WyjYlDNbHSZv76PQ4zRZDZguqFWthwVKkK3b6h5A5Zke0STt50ZD3F0VPn7r12TIe
-         OY+67VcNRWbP9pI1egGTini2nwbt2WAC1yXfW0S1CYiYHwD9tBFNZNfteIsjFIkUxs
-         3+kax8D0seJooMkdHfECXXtzJsZ0qbdVkDjW4K6Y=
-Date:   Thu, 19 Nov 2020 16:27:11 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Viorel Suman <viorel.suman@nxp.com>
-Cc:     "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] ASoC: ak4458: use reset control instead of reset gpio
-Message-ID: <20201119162711.GE5554@sirena.org.uk>
-References: <20201116222036.343635-1-viorel.suman@oss.nxp.com>
- <20201117173901.GH5142@sirena.org.uk>
- <VI1PR0401MB2272061C958E91FCAA239EB892E20@VI1PR0401MB2272.eurprd04.prod.outlook.com>
- <20201118115500.GB4827@sirena.org.uk>
- <VI1PR0401MB22726479D60E9B603A6848BC92E00@VI1PR0401MB2272.eurprd04.prod.outlook.com>
+        id S1729012AbgKSQ2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:28:07 -0500
+Received: from brightrain.aerifal.cx ([216.12.86.13]:48318 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728998AbgKSQ2E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:28:04 -0500
+Date:   Thu, 19 Nov 2020 11:28:02 -0500
+From:   Rich Felker <dalias@libc.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     libc-alpha@sourceware.org, Florian Weimer <fw@deneb.enyo.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Kernel prctl feature for syscall interception and emulation
+Message-ID: <20201119162801.GH534@brightrain.aerifal.cx>
+References: <873616v6g9.fsf@collabora.com>
+ <20201119151317.GF534@brightrain.aerifal.cx>
+ <87h7pltj9p.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <VI1PR0401MB22726479D60E9B603A6848BC92E00@VI1PR0401MB2272.eurprd04.prod.outlook.com>
-X-Cookie: Chocolate chip.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87h7pltj9p.fsf@collabora.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 19, 2020 at 11:15:46AM -0500, Gabriel Krisman Bertazi wrote:
+> Rich Felker <dalias@libc.org> writes:
+> 
+> > On Wed, Nov 18, 2020 at 01:57:26PM -0500, Gabriel Krisman Bertazi via Libc-alpha wrote:
+> 
+> [...]
+> 
+> >
+> > SIGSYS (or signal handling in general) is not the right way to do
+> > this. It has all the same problems that came up in seccomp filtering
+> > with SIGSYS, and which were solved by user_notif mode (running the
+> > interception in a separate thread rather than an async context
+> > interrupting the syscall. In fact I wouldn't be surprised if what you
+> > want can already be done with reasonable efficiency using seccomp
+> > user_notif.
+> 
+> Hi Rich,
+> 
+> User_notif was raised in the kernel discussion and we had experimented
+> with it, but the latency of user_notif is even worse than what we can do
+> right now with other seccomp actions.
 
---imjhCm/Pyz7Rq5F2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Is there a compelling argument that the latency matters here? What
+syscalls are windows binaries making like this? Is there a reason you
+can't do something like intercepting the syscall with seccomp the
+first time it happens, then rewriting the code not to use a direct
+syscall on future invocations?
 
-On Thu, Nov 19, 2020 at 04:22:42PM +0000, Viorel Suman wrote:
+> Regarding SIGSYS, the x86 maintainer suggested redirecting the syscall
+> return to a userspace thunk, but the understanding among Wine developers
+> is that SIGSYS is enough for their emulation needs.
 
-> > Flip side of that then, how do we know when a reset has actually happened?
+It might work for Wine needs, if Wine can guarantee it will never be
+running code with signals blocked and some other constraints, but then
+you end up with a mechanism that's designed just for Wine and that
+will have gratuitous reasons it's not usable elsewhere. That does not
+seem appropriate for inclusion in kernel.
 
-> I don't see how this can be achieved - I'd imagine some "shared" reset
-> framework notification mechanism calling back all "listeners" in the moment
-> the assert/deassert actually happened, there is no such mechanism currently
-> implemented.
+> > The default-intercept and excepting libc code segment is also bogus,
+> > and will break stuff, including vdso syscall mechanism on i386 and any
+> > code outside libc that makes its own syscalls from asm. If you need to
+> > tag regions to control interception, it should be tagging the emulated
+> > Windows guest code, which is bounded and you have full control over,
+> > rather than the host code, which is unbounded and includes any
+> > libraries that get linked indirectly by Wine.
+> 
+> The vdso trampoline, for the architectures that have it, is solved by
+> the kernel implementation, who makes sure that region is allowed.
 
-Yes, I'd expect some notification via callback or sometihng.
+I guess that works but it's ugly and assumes particular policy goals
+matching Wine's rather than being a general mechanism.
 
-> In this specific case the GPIO purpose is to just to power on/off all codecs.
-> In my view with this approach it's enough to know that all codecs will be
-> powered on the first _deassert_ call and will be powered off on the last
-> _assert_ call.
+> The Linux code is not bounded, but the dispatcher region main goal is to
+> support trampolines outside of the vdso case. The correct userspace
+> implementation requires flipping the selector on any Windows/Linux code
+> boundary cross, exactly because other libraries can issue syscalls
+> directly.  The fact that libc is not the only one issuing syscalls is
+> the exact reason we need something more complex than a few seccomp
+> filters.
 
-In general it can be useful to know if the device was actually reset
-since then you can skip any reinitialization you might need to do due to
-that in cases where the reset didn't actually end up happening.  Not a
-blocker but it would be useful.
+I don't think this is correct. Rather than listing all the host
+library code ranges to allow, you just list all the guest Windows code
+ranges to intercept. Wine knows them by virtue of being the loader for
+them. This all seems really easy to do with seccomp with a very small
+filter.
 
---imjhCm/Pyz7Rq5F2
-Content-Type: application/pgp-signature; name="signature.asc"
+> > But I'm skeptical that doing any new kernel-side logic for tagging is
+> > needed. Seccomp already lets you filter on instruction pointer so you
+> > can install filters that will trigger user_notif just for guest code,
+> > then let you execute the emulation in the watcher thread and skip the
+> > actual syscall in the watched thread.
+> 
+> As I mentioned, we can check IP in seccomp and write filters.  But this
+> has two problems:
+> 
+> 1) Performance.  seccomp filters use cBPF which means 32bit comparisons,
+> no maps and a very limited instruction set.  We need to generate
+> boundary checks for each memory segment.  The filter becomes very large
+> very quickly and becomes a observable bottleneck.
 
------BEGIN PGP SIGNATURE-----
+This sounds like you're doing something wrong. Range checking is O(log
+n) and n cannot be large enough to make log n significant. If you do
+it with a linear search rather than binary then of course it's slow.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+2nN4ACgkQJNaLcl1U
-h9Bn8gf+Nb8Aw5P4LUp+fdufSBFwKEGFetQnq1XD3TvBypHN71zl/v54c11k8sRy
-LIPaUtApaaXa20ln6E4WfvGv0AWkpK2kHw2Uoc7hfLvcnVY4MOabqyZ1NstDE9yT
-WPW4uvLwJjDeWWNdMRLyqNoi/2XkqE5f6/Jy2HsflLnEX7h/vOQF/mjUq/leUSws
-H11EIM1XKMtnIhnLuhcOLIXIse7i9nPLML7FGwn7Y7ShLP1PPpzANAa5Cn9AzonK
-7Wa1hrq6eNuZRkdU3aZ5THDTphhQpbOAfhD8j/zsuYtoVhvu2za6LjQx6srTDFWc
-O6uQlQpvWMyKCRrA0sLHmp8YRSnu6Q==
-=LLq9
------END PGP SIGNATURE-----
+> 2) Seccomp filters cannot be removed.  And we'd need to update them
+> frequently.
 
---imjhCm/Pyz7Rq5F2--
+What are the updating requirements?
+
+I'm not sure if Windows code is properly PIC or not, but if it is,
+then you just do your own address assignment in a single huge range
+(first allocated with PROT_NONE, then MAP_FIXED over top of it) so
+that a single static range check suffices.
+
+Rich
