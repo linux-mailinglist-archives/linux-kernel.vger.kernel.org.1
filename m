@@ -2,59 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BE52B9A50
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B98A62B9A53
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729703AbgKSSDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:03:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728880AbgKSSDS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:03:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F13C0613CF;
-        Thu, 19 Nov 2020 10:03:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/T+8AFyLl36EP0BJCpl/7y0TJdJH2AjtO1rZ2kV15Ho=; b=dp022ZLCgTAUhuPA52+TqG9Dq8
-        pT8vqGrYW1pWTS8qo2oRay9oXZ3bZQ4RTr3pMkcdUlYXPGyf4w0od2HZRkMFimWQ9hGdFcFdWf0PI
-        3BmJkKNKOTLfBYRmKt1HYZa6293WVZUtSLdP0SOKMqyoBHesPqyyV0T23Jo3KISkOuiOHumMU0rLs
-        6Nmtusy6xH/OnEdqZ0UfaydbgXXN0w3sJBd8/HOUzJUW7rAvuWskRYw/ZDNeB9kux4iUjCpHcKYjI
-        tYK8CydDWwAPscox0LN28xB3z9tAVH4Ngupja5uOw3XUgkegiTTMC8iVOug8Jz1Sf4BTL+TD9tdwp
-        QH06PwFA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfoH5-0006S6-Qy; Thu, 19 Nov 2020 18:03:15 +0000
-Date:   Thu, 19 Nov 2020 18:03:15 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] eventfd: convert to ->write_iter()
-Message-ID: <20201119180315.GB24054@infradead.org>
-References: <ed4484a3dc8297296bfcd16810f7dc1976d6f7d0.1605808477.git.mkubecek@suse.cz>
+        id S1729821AbgKSSDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:03:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728692AbgKSSDw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:03:52 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D56AC21D46;
+        Thu, 19 Nov 2020 18:03:49 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 18:03:47 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Shiju Jose <shiju.jose@huawei.com>, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        guohanjun@huawei.com, sudeep.holla@arm.com, rjw@rjwysocki.net,
+        lenb@kernel.org, linuxarm@huawei.com, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 1/1] ACPI/IORT: Fix doc warnings in iort.c
+Message-ID: <20201119180346.GI4376@gaia>
+References: <20201014093139.1580-1-shiju.jose@huawei.com>
+ <20201119180120.GA25142@e121166-lin.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ed4484a3dc8297296bfcd16810f7dc1976d6f7d0.1605808477.git.mkubecek@suse.cz>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201119180120.GA25142@e121166-lin.cambridge.arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 07:00:19PM +0100, Michal Kubecek wrote:
-> While eventfd ->read() callback was replaced by ->read_iter() recently by
-> commit 12aceb89b0bc ("eventfd: convert to f_op->read_iter()"), ->write()
-> was not replaced.
-> 
-> Convert also ->write() to ->write_iter() to make the interface more
-> consistent and allow non-blocking writes from e.g. io_uring. Also
-> reorganize the code and return value handling in a similar way as it was
-> done in eventfd_read().
+On Thu, Nov 19, 2020 at 06:01:20PM +0000, Lorenzo Pieralisi wrote:
+> [+Catalin - I hope it can go via arm64 tree, trivial doc fixup]
 
-But this patch does not allow non-blocking writes.  I'm really
-suspicious as you're obviously trying to hide something from us.
+Or Will if you want it in 5.10, otherwise I can pick it up for 5.11.
+
+> On Wed, Oct 14, 2020 at 10:31:39AM +0100, Shiju Jose wrote:
+> > Fix following warnings caused by mismatch between
+> > function parameters and function comments.
+> > 
+> > drivers/acpi/arm64/iort.c:55: warning: Function parameter or member 'iort_node' not described in 'iort_set_fwnode'
+> > drivers/acpi/arm64/iort.c:55: warning: Excess function parameter 'node' description in 'iort_set_fwnode'
+> > drivers/acpi/arm64/iort.c:682: warning: Function parameter or member 'id' not described in 'iort_get_device_domain'
+> > drivers/acpi/arm64/iort.c:682: warning: Function parameter or member 'bus_token' not described in 'iort_get_device_domain'
+> > drivers/acpi/arm64/iort.c:682: warning: Excess function parameter 'req_id' description in 'iort_get_device_domain'
+> > drivers/acpi/arm64/iort.c:1142: warning: Function parameter or member 'dma_size' not described in 'iort_dma_setup'
+> > drivers/acpi/arm64/iort.c:1142: warning: Excess function parameter 'size' description in 'iort_dma_setup'
+> > drivers/acpi/arm64/iort.c:1534: warning: Function parameter or member 'ops' not described in 'iort_add_platform_device'
+> > 
+> > Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+> > ---
+> >  drivers/acpi/arm64/iort.c | 8 +++++---
+> >  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> 
+> > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> > index 9929ff50c0c0..770d84071a32 100644
+> > --- a/drivers/acpi/arm64/iort.c
+> > +++ b/drivers/acpi/arm64/iort.c
+> > @@ -44,7 +44,7 @@ static DEFINE_SPINLOCK(iort_fwnode_lock);
+> >   * iort_set_fwnode() - Create iort_fwnode and use it to register
+> >   *		       iommu data in the iort_fwnode_list
+> >   *
+> > - * @node: IORT table node associated with the IOMMU
+> > + * @iort_node: IORT table node associated with the IOMMU
+> >   * @fwnode: fwnode associated with the IORT node
+> >   *
+> >   * Returns: 0 on success
+> > @@ -673,7 +673,8 @@ static int iort_dev_find_its_id(struct device *dev, u32 id,
+> >  /**
+> >   * iort_get_device_domain() - Find MSI domain related to a device
+> >   * @dev: The device.
+> > - * @req_id: Requester ID for the device.
+> > + * @id: Requester ID for the device.
+> > + * @bus_token: irq domain bus token.
+> >   *
+> >   * Returns: the MSI domain for this device, NULL otherwise
+> >   */
+> > @@ -1136,7 +1137,7 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
+> >   *
+> >   * @dev: device to configure
+> >   * @dma_addr: device DMA address result pointer
+> > - * @size: DMA range size result pointer
+> > + * @dma_size: DMA range size result pointer
+> >   */
+> >  void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
+> >  {
+> > @@ -1526,6 +1527,7 @@ static __init const struct iort_dev_config *iort_get_dev_cfg(
+> >  /**
+> >   * iort_add_platform_device() - Allocate a platform device for IORT node
+> >   * @node: Pointer to device ACPI IORT node
+> > + * @ops: Pointer to IORT device config struct
+> >   *
+> >   * Returns: 0 on success, <0 failure
+> >   */
+> > -- 
+> > 2.17.1
