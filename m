@@ -2,137 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4205F2B9B43
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E3A2B9B40
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgKSTLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51010 "EHLO
+        id S1727834AbgKSTKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:10:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727240AbgKSTLA (ORCPT
+        with ESMTP id S1727240AbgKSTKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:11:00 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B311C0613CF;
-        Thu, 19 Nov 2020 11:11:00 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 34so5076919pgp.10;
-        Thu, 19 Nov 2020 11:11:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ET473FpFp3FzmBYHYLYam48z0xHPg334N2d9XOKTrpI=;
-        b=M9O64TUOsf61++A5YWBgorUTqsUhConEUSLgnhF2hmpRoMo9gbHMK0Y5lS02yWOQMn
-         xrFztSbuLNQ+ucnJjCg73QRIECuWEG+UR2GOfVP2Mi+rJVZf9I83c8TB9KF9Mx0DCQIA
-         S5xL24QjlB8rFTuwVcmUY0UFBOak89hVYYiTrzQTOcOr09VZvuHUqOPNvaTHx/uOSWzr
-         y5ZKb595uyBSpRpNI0CZNInd4rqqkQmzLNBTRx/yGjwDlJzPes7Gmth90pGXMZKrnfRh
-         FJxt8mxU95GAFuC0N0CG+/whmIcWoGZUPxlmWUy8+JWcC8kzHnkSMrOxTotefn/d24i1
-         cF5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ET473FpFp3FzmBYHYLYam48z0xHPg334N2d9XOKTrpI=;
-        b=saAL8lAtYi9pQyFFS6FlAAtdo6kJfCBBe1ZknAiZoZkhnxBCA1AnNXThFI+yssJzfv
-         nie7tHjvDJFLXkji5J9pMvxf+LmOEwS0xi0sNsZ8+YtCeiIR+XYHnj1Fqf1JHFlLtX+c
-         I0McBcdWFDBdyyDGbCLGosK6mZF9hBkD72CBzIJYCAvGg7a+lA3gCXiZvdaoIhZIi1lw
-         J2RQfQ1t96oMqufph44q2zuq/LeZQJKotdFy/erQDLVDNSV8a/trNeqscLaJzopMgRkt
-         90COlAU75tWqfIN8K5S6gcgKPwjwlrz3pDZL0uKndNoPVi8ev4ebwBI39c5m/i9WMbnV
-         i6kg==
-X-Gm-Message-State: AOAM530G382UljjIs/IMy6k8o9j4eFS/0LfE5kQujf94ggrf4ZaI6XSn
-        RrXl6Aetj0XpePhuNJj+RC0=
-X-Google-Smtp-Source: ABdhPJypWIrTZZnDbwimuxmJITaEMB9QJgxNpUGeZf5bAuv3w+zqFXccFDnDvw5F0qjTUHsJf5qQlQ==
-X-Received: by 2002:aa7:8105:0:b029:18e:c8d9:2c24 with SMTP id b5-20020aa781050000b029018ec8d92c24mr10267432pfi.49.1605813059959;
-        Thu, 19 Nov 2020 11:10:59 -0800 (PST)
-Received: from localhost.localdomain ([45.118.167.196])
-        by smtp.googlemail.com with ESMTPSA id x3sm452245pjk.17.2020.11.19.11.10.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 11:10:58 -0800 (PST)
-From:   Anmol Karn <anmol.karan123@gmail.com>
-To:     ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org
-Cc:     saeed@kernel.org, gregkh@linuxfoundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hams@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, anmol.karan123@gmail.com,
-        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
-Subject: [Linux-kernel-mentees] [PATCH v5 net] rose: Fix Null pointer dereference in rose_send_frame()
-Date:   Fri, 20 Nov 2020 00:40:43 +0530
-Message-Id: <20201119191043.28813-1-anmol.karan123@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201115114448.GA40574@Thinkpad>
-References: <20201115114448.GA40574@Thinkpad>
+        Thu, 19 Nov 2020 14:10:49 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45DCC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 11:10:48 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605813047;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fqTlt+xmV+wxcpS5yo4wjoab1yCJzP8iG04Acn2vaKA=;
+        b=FU/TB9NKttAWjhk1K07OlHEPQFhYFoPYGEZ0DUIdWthJ5rznjwFWEBmTm0IfmPzdJmG0hj
+        eTGegEMk8exhni9N1UsGdF4oWrTgABHv8n1r00A9iRVn5UGkrzlSDRraZ4WQo0sqzpetZr
+        NCC6B9cCNRd1vRenYoGyrO/ajGEVpc3lWMtxl6n5Iooeu8f5Mr79U76x/fdmhC9k6YqP2e
+        iVcvbNf+7CLE8xuXHm4mX/9ymp7ipU07ju96haHsNaXmVOsCxJ0ipN9R9sHSv5eGeCaiX3
+        2v3Yy7vm4oA/AS+W8Sg4WDnwtmKzuU7l/a1VSN1Z/EVfgANqh2ymSopry+mRcg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605813047;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fqTlt+xmV+wxcpS5yo4wjoab1yCJzP8iG04Acn2vaKA=;
+        b=cqA167oJl8YpjT3h2H01mJN4qfrIVA7UJcPEWlupJM+9T0y03BkbkNla3eZmyK4rxX1qmk
+        FUoi/S1jlPi7kHBw==
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        jan.setjeeilers@oracle.com, Junaid Shahid <junaids@google.com>,
+        oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
+        kuzuno@gmail.com
+Subject: Re: [RFC][PATCH v2 12/21] x86/pti: Use PTI stack instead of trampoline stack
+In-Reply-To: <bc8a254e-deaa-388e-99ea-0291f5625b5b@oracle.com>
+References: <20201116144757.1920077-1-alexandre.chartre@oracle.com> <20201116144757.1920077-13-alexandre.chartre@oracle.com> <CALCETrUSCwtR41CCo_cAQf_BwG7istH6fM=bxWh_VfOjSNFmSw@mail.gmail.com> <bc8a254e-deaa-388e-99ea-0291f5625b5b@oracle.com>
+Date:   Thu, 19 Nov 2020 20:10:46 +0100
+Message-ID: <87ft55p3gp.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rose_send_frame() dereferences `neigh->dev` when called from
-rose_transmit_clear_request(), and the first occurrence of the
-`neigh` is in rose_loopback_timer() as `rose_loopback_neigh`,
-and it is initialized in rose_add_loopback_neigh() as NULL.
-i.e when `rose_loopback_neigh` used in rose_loopback_timer()
-its `->dev` was still NULL and rose_loopback_timer() was calling
-rose_rx_call_request() without checking for NULL.
+On Mon, Nov 16 2020 at 19:10, Alexandre Chartre wrote:
+> On 11/16/20 5:57 PM, Andy Lutomirski wrote:
+>> On Mon, Nov 16, 2020 at 6:47 AM Alexandre Chartre
+>> <alexandre.chartre@oracle.com> wrote:
+> When executing more code in the kernel, we are likely to reach a point
+> where we need to sleep while we are using the user page-table, so we need
+> to be using a per-thread stack.
+>
+>> I can't immediately evaluate how nasty the page table setup is because
+>> it's not in this patch.
+>
+> The page-table is the regular page-table as introduced by PTI. It is just
+> augmented with a few additional mapping which are in patch 11 (x86/pti:
+> Extend PTI user mappings).
+>
+>>  But AFAICS the only thing that this enables is sleeping with user pagetables.
+>
+> That's precisely the point, it allows to sleep with the user page-table.
 
-- net/rose/rose_link.c
-This bug seems to get triggered in this line:
+Coming late, but this does not make any sense to me.
 
-rose_call = (ax25_address *)neigh->dev->dev_addr;
+Unless you map most of the kernel into the user page-table sleeping with
+the user page-table _cannot_ work. And if you do that you broke KPTI.
 
-Fix it by adding NULL checking for `rose_loopback_neigh->dev`
-in rose_loopback_timer().
+You can neither pick arbitrary points in the C code of an exception
+handler to switch to the kernel mapping unless you mapped everything
+which might be touched before that into user space.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
-Tested-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3
-Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
----
-Changes in v5:
-	- Free `dev` in rose_rx_call_request() and add NULL check for `dev` before freeing it.
-	(Suggested-by: Jakub Kicinski <kuba@kernel.org>)
-Changes in v4:
-	- Free `dev`(on dev_hold()), when neigh->dev is NULL. (Suggested-by: Jakub Kicinski <kuba@kernel.org>)
-Changes in v3:
-        - Corrected checkpatch warnings and errors (Suggested-by: Saeed Mahameed <saeed@kernel.org>)
-        - Added "Fixes:" tag (Suggested-by: Saeed Mahameed <saeed@kernel.org>)
-Changes in v2:
-        - Added NULL check in rose_loopback_timer() (Suggested-by: Greg KH <gregkh@linuxfoundation.org>)
+How is that supposed to work?
 
- net/rose/rose_loopback.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+Thanks,
 
-diff --git a/net/rose/rose_loopback.c b/net/rose/rose_loopback.c
-index 7b094275ea8b..11c45c8c6c16 100644
---- a/net/rose/rose_loopback.c
-+++ b/net/rose/rose_loopback.c
-@@ -96,10 +96,19 @@ static void rose_loopback_timer(struct timer_list *unused)
- 		}
-
- 		if (frametype == ROSE_CALL_REQUEST) {
--			if ((dev = rose_dev_get(dest)) != NULL) {
--				if (rose_rx_call_request(skb, dev, rose_loopback_neigh, lci_o) == 0)
--					kfree_skb(skb);
--			} else {
-+			if (!rose_loopback_neigh->dev) {
-+				kfree_skb(skb);
-+				continue;
-+			}
-+
-+			dev = rose_dev_get(dest);
-+			if (!dev) {
-+				kfree_skb(skb);
-+				continue;
-+			}
-+
-+			if (rose_rx_call_request(skb, dev, rose_loopback_neigh, lci_o) == 0) {
-+				dev_put(dev);
- 				kfree_skb(skb);
- 			}
- 		} else {
---
-2.29.2
+        tglx
 
