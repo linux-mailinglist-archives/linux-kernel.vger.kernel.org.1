@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECAD2B8C3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCC52B8C40
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgKSHXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:23:50 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14906 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgKSHXu (ORCPT
+        id S1725930AbgKSHYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:24:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgKSHYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:23:50 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb61d8a0000>; Wed, 18 Nov 2020 23:23:54 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Nov
- 2020 07:23:49 +0000
-Received: from jckuo-lt.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 19 Nov 2020 07:23:48 +0000
-From:   JC Kuo <jckuo@nvidia.com>
-To:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <stable@vger.kernel.org>,
-        JC Kuo <jckuo@nvidia.com>
-Subject: [PATCH v3] arm64: tegra: jetson-tx1: Fix USB_VBUS_EN0 regulator
-Date:   Thu, 19 Nov 2020 15:23:45 +0800
-Message-ID: <20201119072345.447793-1-jckuo@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 19 Nov 2020 02:24:22 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D84C0613CF;
+        Wed, 18 Nov 2020 23:24:21 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 62so3413261pgg.12;
+        Wed, 18 Nov 2020 23:24:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=hEJLsZT8Aqe5PMU2l/Eicvoj6XPSoqGky9zOzFnUW7A=;
+        b=G47tsyv7jBofpIvJByu7Dfv0IqhO6MuEJwzvBkCr8D1pXpa597Vc39qgRtX4LyN/gb
+         K8n52j0tjN5iPMU55rwQnm5tx/vnA3EwLObvjcuHMJkAs4lIQ7YDkBYS1dFaS6Ln/vuW
+         39v/OI035wQ89m1Wpbsi4Ud7bgv1kDBmUITl6H4AXVITSJzBVMYtlzySjp3KqOOAXJJZ
+         tOnCg7+WC9LY6m4YM/7OYoB1LwMD7FMOAkb+016vdKtzsxu9diN281kMviROPohCkuBu
+         65pE3Mnr3SV6k9Nbc9cLXF98AoV3Lqp1BeLP8eRADW1xoj2BnRoy4qcKVv1bvKWfxyx2
+         wsWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=hEJLsZT8Aqe5PMU2l/Eicvoj6XPSoqGky9zOzFnUW7A=;
+        b=JALfopfBMMuqFG0Hfqkrbaph6azlOLcrQ6uK8Dfv58wI3oYAri+l8hzEm6wwoVahzM
+         9uOUdluiTYpVaH6uXHPz3xTn6uLmfxebBWVrM6462dgjmCQxdtmuN1iddipW/DF59/dQ
+         MDCVE93l0fTAebR/EEInupUhKd8AVUvNSF2us0Q5PfvGRJCL/rOKgpdTCAJZtC5fgJYn
+         ntT/5c1oY7uGMmyLhNsyAXxNdnuAftKvG+JSgL06welAPFayxiJgDCAB4iDXKiMdw3Bd
+         +wg4/Um5tmTBFnVxemTJ+DVqZc49XVYYgcoe6QdMwQd2ak/uw8WWiPsFXw5MvUjMmcpK
+         0TnQ==
+X-Gm-Message-State: AOAM532twdX+SjSSvGDfTCrCw9nwu63iN7GWZNfAcXxDpmZE194OJy9O
+        l1+fBhbl6f3X9qChD1rOQKR5KJhacp8=
+X-Google-Smtp-Source: ABdhPJx7J8jedbQ9Sy9/bbXBYzN3FATAYxLZdYs00wB7tkonFFXC2oTKLa0biPdQVHQSZ7XMl0RrUA==
+X-Received: by 2002:a63:c945:: with SMTP id y5mr11829559pgg.118.1605770661070;
+        Wed, 18 Nov 2020 23:24:21 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id x3sm2312182pjk.17.2020.11.18.23.24.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 23:24:20 -0800 (PST)
+Date:   Wed, 18 Nov 2020 23:24:18 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     linux-input@vger.kernel.org
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: adp5589-keys - mark suspend and resume methods as
+ __maybe_unused
+Message-ID: <20201119072418.GA114677@dtor-ws>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605770634; bh=3XWTs7ZkN8QqsGVpILVS7Gg9g0hCVWZ+/eRA2kxPJ08=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=TlF0TkF4fGfMm0r8dsgcvLGGL55t09EbSmmbop1Uc/weqNFO4UWU6d1/o4EddUxzG
-         yvpt6AJn7Egn+YwKk/3B5xq3jabBpm/FWiyhJ2aeze3STjcdTS8pRZ9oA/JUIcLhgm
-         IjOdhXLKSEBh6pcMrq1J3HU5XCITZsBrB6ORgSWuMmCJXJlLuf+ZoC84sZCL/Zxf7G
-         i8XfzzJKy5WKYSBZCIt2ELKy6Poc3HolO9ewQ0CxWnlJUvM/FuHwTMOWgt+B8HaZue
-         bVKkU+cNfjppFMRo4srA8tID935UVfTFG9bUIZDpOTwW8VpjVQlp/s1Y1bgE3/r0zK
-         2XUs3CAsvN6Ng==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-USB Host mode is broken at OTG port of Jetson-TX1 platform because
-USB_VBUS_EN0 regulator (regulator@11) is being overwritten by vdd-cam-1v2
-regulator. This commit rearrange USB_VBUS_EN0 to be regulator@14.
+This improves compile coverage of the code; unused code will be dropped by
+the linker.
 
-Fixes: 257c8047be44 ("arm64: tegra: jetson-tx1: Add camera supplies")
-Cc: stable@vger.kernel.org
-Signed-off-by: JC Kuo <jckuo@nvidia.com>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
-v3:
-    add 'Cc: stable@vger.kernel.org' tag
-v2:
-    add 'Fixes:' tag
-    add Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+ drivers/input/keyboard/adp5589-keys.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
- .../arm64/boot/dts/nvidia/tegra210-p2597.dtsi | 20 +++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+diff --git a/drivers/input/keyboard/adp5589-keys.c b/drivers/input/keyboard/adp5589-keys.c
+index 31145a85c819..a9b69a268c09 100644
+--- a/drivers/input/keyboard/adp5589-keys.c
++++ b/drivers/input/keyboard/adp5589-keys.c
+@@ -1016,8 +1016,7 @@ static int adp5589_probe(struct i2c_client *client,
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int adp5589_suspend(struct device *dev)
++static int __maybe_unused adp5589_suspend(struct device *dev)
+ {
+ 	struct adp5589_kpad *kpad = dev_get_drvdata(dev);
+ 	struct i2c_client *client = kpad->client;
+@@ -1033,7 +1032,7 @@ static int adp5589_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int adp5589_resume(struct device *dev)
++static int __maybe_unused adp5589_resume(struct device *dev)
+ {
+ 	struct adp5589_kpad *kpad = dev_get_drvdata(dev);
+ 	struct i2c_client *client = kpad->client;
+@@ -1048,7 +1047,6 @@ static int adp5589_resume(struct device *dev)
+ 
+ 	return 0;
+ }
+-#endif
+ 
+ static SIMPLE_DEV_PM_OPS(adp5589_dev_pm_ops, adp5589_suspend, adp5589_resume);
+ 
+-- 
+2.29.2.299.gdc1121823c-goog
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi b/arch/arm64/bo=
-ot/dts/nvidia/tegra210-p2597.dtsi
-index e18e1a9a3011..a9caaf7c0d67 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p2597.dtsi
-@@ -1663,16 +1663,6 @@ vdd_usb_vbus: regulator@9 {
- 		vin-supply =3D <&vdd_5v0_sys>;
- 	};
-=20
--	vdd_usb_vbus_otg: regulator@11 {
--		compatible =3D "regulator-fixed";
--		regulator-name =3D "USB_VBUS_EN0";
--		regulator-min-microvolt =3D <5000000>;
--		regulator-max-microvolt =3D <5000000>;
--		gpio =3D <&gpio TEGRA_GPIO(CC, 4) GPIO_ACTIVE_HIGH>;
--		enable-active-high;
--		vin-supply =3D <&vdd_5v0_sys>;
--	};
--
- 	vdd_hdmi: regulator@10 {
- 		compatible =3D "regulator-fixed";
- 		regulator-name =3D "VDD_HDMI_5V0";
-@@ -1712,4 +1702,14 @@ vdd_cam_1v8: regulator@13 {
- 		enable-active-high;
- 		vin-supply =3D <&vdd_3v3_sys>;
- 	};
-+
-+	vdd_usb_vbus_otg: regulator@14 {
-+		compatible =3D "regulator-fixed";
-+		regulator-name =3D "USB_VBUS_EN0";
-+		regulator-min-microvolt =3D <5000000>;
-+		regulator-max-microvolt =3D <5000000>;
-+		gpio =3D <&gpio TEGRA_GPIO(CC, 4) GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		vin-supply =3D <&vdd_5v0_sys>;
-+	};
- };
---=20
-2.25.1
 
+-- 
+Dmitry
