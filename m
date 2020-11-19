@@ -2,91 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F9C2B9D3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F27102B9D44
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgKSV53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 16:57:29 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:50896 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgKSV51 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 16:57:27 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1A8D11C0B87; Thu, 19 Nov 2020 22:57:22 +0100 (CET)
-Date:   Thu, 19 Nov 2020 22:57:21 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Gene Chen <gene.chen.richtek@gmail.com>, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v7 2/5] dt-bindings: leds: Add LED_COLOR_ID_MOONLIGHT
- definitions
-Message-ID: <20201119215721.GA5337@amd>
-References: <1605696462-391-1-git-send-email-gene.chen.richtek@gmail.com>
- <1605696462-391-3-git-send-email-gene.chen.richtek@gmail.com>
- <20201118213712.GA22371@amd>
- <6068b1e3-a4c8-6c7d-d33d-f2238e905e43@gmail.com>
+        id S1726734AbgKSV7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 16:59:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726474AbgKSV7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 16:59:05 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39CE322259;
+        Thu, 19 Nov 2020 21:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605823144;
+        bh=rYXCdAv0ws7mGMrf2cy/TA9RSMhL8NBTEOMnK4NtAcY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uuT4q9m2ooxD2K+nN7z8sA/PCckTszcgO2pa+ZVlcu/zOUBD77VatqBtnxIRdCf/4
+         EGKRHm+r0fAML+jPO2iiTQFjtKfgIOSgxPMInMpTURJUw6k8XAVXhYoIaA9z9OhTiU
+         g8BNwZd4yBeIaPCeh+Jp2Qdl66DWRsGVhVdVCfZ8=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E782935225D3; Thu, 19 Nov 2020 13:59:03 -0800 (PST)
+Date:   Thu, 19 Nov 2020 13:59:03 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH] tools/rcutorture: Make identify_qemu_vcpus() independant
+ of local language
+Message-ID: <20201119215903.GD1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201119003024.10701-1-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <6068b1e3-a4c8-6c7d-d33d-f2238e905e43@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201119003024.10701-1-frederic@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 19, 2020 at 01:30:24AM +0100, Frederic Weisbecker wrote:
+> The implementation expects `lscpu` to have a "CPU: " line, for example:
+> 
+> 	CPU(s):		8
+> 
+> But some local language settings may advocate for their own version:
+> 
+> 	Processeur(s) :		8
+> 
+> As a result the function may return an empty string and rcutorture would
+> dump the following warning (still with the local taste):
+> 
+> 	kvm-test-1-run.sh: ligne 138 : test:  : nombre entier attendu comme expression
+> 
+> Just use a command whose output every language agree with.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: rcu@vger.kernel.org
 
---h31gzZEtNLTqOjlF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Queued for review and testing, thank you!  As usual, I could not resist
+the urge to edit a bit, so please let me know if I messed anything up.
 
-On Thu 2020-11-19 22:03:14, Jacek Anaszewski wrote:
-> Hi Pavel, Gene,
->=20
-> On 11/18/20 10:37 PM, Pavel Machek wrote:
-> >Hi!
-> >
-> >>From: Gene Chen <gene_chen@richtek.com>
-> >>
-> >>Add LED_COLOR_ID_MOONLIGHT definitions
-> >
-> >Why is moonlight a color? Camera flashes are usually white, no?
-> >
-> >At least it needs a comment...
->=20
-> That's my fault, In fact I should have asked about adding
-> LED_FUNCTION_MOONLIGHT, it was evidently too late for me that evening...
+If there are too many of these, it might be easier for kvm.sh to switch
+itself to EN-US mode, but this change both simplified the code and helped
+defend the purity of the French language, so steady as she goes!  ;-)
 
-Aha, that makes more sense.
+							Thanx, Paul
 
-But please let's call it "torch" if we do that, as that is already
-used in kernel sources... and probably in the interface, too:
+------------------------------------------------------------------------
 
-=2E/arch/arm/mach-pxa/ezx.c:    	       	  .name =3D "a910::torch",
+commit 655f941b96cbfc6f8869142ece092d8617425948
+Author: Frederic Weisbecker <frederic@kernel.org>
+Date:   Thu Nov 19 01:30:24 2020 +0100
 
-Best regards,
-							Pavel
+    tools/rcutorture: Make identify_qemu_vcpus() independent of local language
+    
+    The rcutorture scripts' identify_qemu_vcpus() function expects `lscpu`
+    to have a "CPU: " line, for example:
+    
+            CPU(s):         8
+    
+    But different local language settings can give different results:
+    
+            Processeur(s) :         8
+    
+    As a result, identify_qemu_vcpus() may return an empty string, resulting
+    in the following warning (with the same local language settings):
+    
+            kvm-test-1-run.sh: ligne 138 : test:  : nombre entier attendu comme expression
+    
+    This commit therefore changes identify_qemu_vcpus() to use getconf,
+    which produces local-language-independend output.
+    
+    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+    Cc: Paul E. McKenney <paulmck@kernel.org>
+    Cc: Josh Triplett <josh@joshtriplett.org>
+    Cc: Steven Rostedt <rostedt@goodmis.org>
+    Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+    Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+    Cc: rcu@vger.kernel.org
 
---=20
-http://www.livejournal.com/~pavelmachek
-
---h31gzZEtNLTqOjlF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+26kEACgkQMOfwapXb+vKrkQCeOnUki/+AAb7OvcuVl9km4zJ7
-pT8AoLcioYOxJI356ZmTRwZvWeNdo/i3
-=YtzM
------END PGP SIGNATURE-----
-
---h31gzZEtNLTqOjlF--
+diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+index 8266349..fef8b4b 100644
+--- a/tools/testing/selftests/rcutorture/bin/functions.sh
++++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+@@ -232,7 +232,7 @@ identify_qemu_args () {
+ # Returns the number of virtual CPUs available to the aggregate of the
+ # guest OSes.
+ identify_qemu_vcpus () {
+-	lscpu | grep '^CPU(s):' | sed -e 's/CPU(s)://' -e 's/[ 	]*//g'
++	getconf _NPROCESSORS_ONLN
+ }
+ 
+ # print_bug
