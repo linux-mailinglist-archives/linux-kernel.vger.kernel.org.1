@@ -2,95 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E3A2B9B40
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B522B9B45
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgKSTKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:10:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727240AbgKSTKt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:10:49 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45DCC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 11:10:48 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605813047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fqTlt+xmV+wxcpS5yo4wjoab1yCJzP8iG04Acn2vaKA=;
-        b=FU/TB9NKttAWjhk1K07OlHEPQFhYFoPYGEZ0DUIdWthJ5rznjwFWEBmTm0IfmPzdJmG0hj
-        eTGegEMk8exhni9N1UsGdF4oWrTgABHv8n1r00A9iRVn5UGkrzlSDRraZ4WQo0sqzpetZr
-        NCC6B9cCNRd1vRenYoGyrO/ajGEVpc3lWMtxl6n5Iooeu8f5Mr79U76x/fdmhC9k6YqP2e
-        iVcvbNf+7CLE8xuXHm4mX/9ymp7ipU07ju96haHsNaXmVOsCxJ0ipN9R9sHSv5eGeCaiX3
-        2v3Yy7vm4oA/AS+W8Sg4WDnwtmKzuU7l/a1VSN1Z/EVfgANqh2ymSopry+mRcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605813047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fqTlt+xmV+wxcpS5yo4wjoab1yCJzP8iG04Acn2vaKA=;
-        b=cqA167oJl8YpjT3h2H01mJN4qfrIVA7UJcPEWlupJM+9T0y03BkbkNla3eZmyK4rxX1qmk
-        FUoi/S1jlPi7kHBw==
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        jan.setjeeilers@oracle.com, Junaid Shahid <junaids@google.com>,
-        oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
-        kuzuno@gmail.com
-Subject: Re: [RFC][PATCH v2 12/21] x86/pti: Use PTI stack instead of trampoline stack
-In-Reply-To: <bc8a254e-deaa-388e-99ea-0291f5625b5b@oracle.com>
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com> <20201116144757.1920077-13-alexandre.chartre@oracle.com> <CALCETrUSCwtR41CCo_cAQf_BwG7istH6fM=bxWh_VfOjSNFmSw@mail.gmail.com> <bc8a254e-deaa-388e-99ea-0291f5625b5b@oracle.com>
-Date:   Thu, 19 Nov 2020 20:10:46 +0100
-Message-ID: <87ft55p3gp.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1727030AbgKSTLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:11:25 -0500
+Received: from foss.arm.com ([217.140.110.172]:37910 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726495AbgKSTLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 14:11:25 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7880B1396;
+        Thu, 19 Nov 2020 11:11:24 -0800 (PST)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 797BC3F70D;
+        Thu, 19 Nov 2020 11:11:22 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        broonie@kernel.org, robh@kernel.org, satyakim@qti.qualcomm.com,
+        etienne.carriere@linaro.org, f.fainelli@gmail.com,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: [PATCH v6 0/5] Add support for SCMIv3.0 Voltage Domain Protocol and SCMI-Regulator
+Date:   Thu, 19 Nov 2020 19:10:46 +0000
+Message-Id: <20201119191051.46363-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16 2020 at 19:10, Alexandre Chartre wrote:
-> On 11/16/20 5:57 PM, Andy Lutomirski wrote:
->> On Mon, Nov 16, 2020 at 6:47 AM Alexandre Chartre
->> <alexandre.chartre@oracle.com> wrote:
-> When executing more code in the kernel, we are likely to reach a point
-> where we need to sleep while we are using the user page-table, so we need
-> to be using a per-thread stack.
->
->> I can't immediately evaluate how nasty the page table setup is because
->> it's not in this patch.
->
-> The page-table is the regular page-table as introduced by PTI. It is just
-> augmented with a few additional mapping which are in patch 11 (x86/pti:
-> Extend PTI user mappings).
->
->>  But AFAICS the only thing that this enables is sleeping with user pagetables.
->
-> That's precisely the point, it allows to sleep with the user page-table.
+Hi,
 
-Coming late, but this does not make any sense to me.
+this series introduces the support for the new SCMI Voltage Domain Protocol
+defined by the upcoming SCMIv3.0 specification, whose BETA release is
+available at [1].
 
-Unless you map most of the kernel into the user page-table sleeping with
-the user page-table _cannot_ work. And if you do that you broke KPTI.
+Afterwards, a new generic SCMI Regulator driver is developed on top of the
+new SCMI VD Protocol.
 
-You can neither pick arbitrary points in the C code of an exception
-handler to switch to the kernel mapping unless you mapped everything
-which might be touched before that into user space.
+In V4 Patch 3/5 introduced a needed fix in Regulator framework to cope with
+generic named nodes.
 
-How is that supposed to work?
+The series is currently based on for-next/scmi [2] on top of:
+
+commit b141fca08207 ("firmware: arm_scmi: Fix missing destroy_workqueue()")
+
+Any feedback welcome,
 
 Thanks,
 
-        tglx
+Cristian
+
+---
+v5 --> v6
+- reordered dt bindings patch
+- removed single field struct
+- reviewed args to scmi_init_voltage_levels()
+- allocating scmi_voltage_info_array contiguously
+
+v4 --> v5
+- rebased
+- VD Protocol
+ - removed inline
+ - moved segmented intervals defines
+ - fixed some macros complaints by checkpatch
+
+v3 --> v4
+- DT bindings
+ - using generic node names
+ - listing explicitly subset of supported regulators bindings
+- SCMI Regulator
+ - using of_match_full_name core regulator flag
+ - avoid coccinelle false flag complaints
+- VD Protocol
+ - avoid coccinelle false flag complaints
+ - avoiding fixed size typing
+
+v2 --> v3
+- DT bindings
+  - avoid awkard examples based on _cpu/_gpu regulators
+- SCMI Regulator
+  - remove multiple linear mappings support
+  - removed duplicated voltage name printout
+  - added a few comments
+  - simplified return path in scmi_reg_set_voltage_sel()
+- VD Protocol
+  - restrict segmented voltage domain descriptors to one triplet
+  - removed unneeded inline
+  - free allocated resources for invalid voltage domain
+  - added __must_check to info_get voltage operations
+  - added a few comments
+  - removed fixed size typing from struct voltage_info
+    
+v1 --> v2
+- rebased on for-next/scmi v5.10
+- DT bindings
+  - removed any reference to negative voltages
+- SCMI Regulator
+  - removed duplicate regulator naming
+  - removed redundant .get/set_voltage ops: only _sel variants implemented
+  - removed condexpr on fail path to increase readability
+- VD Protocol
+  - fix voltage levels query loop to reload full cmd description
+    between iterations as reported by Etienne Carriere
+  - ensure transport rx buffer is properly sized calli scmi_reset_rx_to_maxsz
+    between transfers
+
+[1]:https://developer.arm.com/documentation/den0056/c/
+[2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+
+
+Cristian Marussi (5):
+  firmware: arm_scmi: Add Voltage Domain Support
+  firmware: arm_scmi: add SCMI Voltage Domain devname
+  regulator: core: add of_match_full_name boolean flag
+  dt-bindings: arm: add support for SCMI Regulators
+  regulator: add SCMI driver
+
+ .../devicetree/bindings/arm/arm,scmi.txt      |  43 ++
+ drivers/firmware/arm_scmi/Makefile            |   2 +-
+ drivers/firmware/arm_scmi/common.h            |   1 +
+ drivers/firmware/arm_scmi/driver.c            |   3 +
+ drivers/firmware/arm_scmi/voltage.c           | 380 ++++++++++++++++
+ drivers/regulator/Kconfig                     |   9 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/of_regulator.c              |   8 +-
+ drivers/regulator/scmi-regulator.c            | 409 ++++++++++++++++++
+ include/linux/regulator/driver.h              |   3 +
+ include/linux/scmi_protocol.h                 |  64 +++
+ 11 files changed, 920 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/firmware/arm_scmi/voltage.c
+ create mode 100644 drivers/regulator/scmi-regulator.c
+
+-- 
+2.17.1
 
