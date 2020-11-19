@@ -2,111 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B662B99DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C748F2B99E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729626AbgKSRmm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Nov 2020 12:42:42 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:37349 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729557AbgKSRmj (ORCPT
+        id S1729280AbgKSRnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:43:12 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:51660 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbgKSRnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:42:39 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-235-PuInSl5ZO8GDYxP6JCcNgw-1; Thu, 19 Nov 2020 17:42:35 +0000
-X-MC-Unique: PuInSl5ZO8GDYxP6JCcNgw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 19 Nov 2020 17:42:34 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 19 Nov 2020 17:42:34 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Segher Boessenkool' <segher@kernel.crashing.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>
-Subject: RE: violating function pointer signature
-Thread-Topic: violating function pointer signature
-Thread-Index: AQHWvpH9jLd/DjVTQ26YGUc47fMkpqnPtbCA
-Date:   Thu, 19 Nov 2020 17:42:34 +0000
-Message-ID: <fac6049651cf4cef92162bec84550458@AcuMS.aculab.com>
-References: <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
- <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
- <20201118121730.12ee645b@gandalf.local.home>
- <20201118181226.GK2672@gate.crashing.org> <87o8jutt2h.fsf@mid.deneb.enyo.de>
- <20201118135823.3f0d24b7@gandalf.local.home>
- <20201118191127.GM2672@gate.crashing.org>
- <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
- <20201119143735.GU2672@gate.crashing.org>
- <20201119095951.30269233@gandalf.local.home>
- <20201119163529.GV2672@gate.crashing.org>
-In-Reply-To: <20201119163529.GV2672@gate.crashing.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 19 Nov 2020 12:43:10 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 4F6B71F45ABF
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     luto@kernel.org, Rich Felker <dalias@libc.org>
+Cc:     tglx@linutronix.de, keescook@chromium.org,
+        christian.brauner@ubuntu.com, peterz@infradead.org,
+        willy@infradead.org, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, x86@kernel.org, gofmanp@gmail.com,
+        kernel@collabora.com
+Subject: Re: [PATCH v7 3/7] kernel: Implement selective syscall userspace
+ redirection
+Organization: Collabora
+References: <20201118032840.3429268-1-krisman@collabora.com>
+        <20201118032840.3429268-4-krisman@collabora.com>
+Date:   Thu, 19 Nov 2020 12:43:05 -0500
+In-Reply-To: <20201118032840.3429268-4-krisman@collabora.com> (Gabriel Krisman
+        Bertazi's message of "Tue, 17 Nov 2020 22:28:36 -0500")
+Message-ID: <87a6vdmedy.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Segher Boessenkool
-> Sent: 19 November 2020 16:35
-...
-> I just meant "valid C language code as defined by the standards".  Many
-> people want all UB to just go away, while that is *impossible* to do for
-> many compilers: for example where different architectures or different
-> ABIs have contradictory requirements.
+Gabriel Krisman Bertazi <krisman@collabora.com> writes:
 
-Some of the UB in the C language are (probably) there because
-certain (now obscure) hardware behaved that way.
-For instance integer arithmetic may saturate on overflow
-(or do even stranger things if the sign is a separate bit).
-I'm not quite sure it was ever possible to write a C compiler
-for a cpu that processed numbers in ASCII (up to 10 digits),
-binary arithmetic was almost impossible.
-There are also the CPU that only have 'word' addressing - so
-that 'pointers to characters' take extra instructions.
+> Introduce a mechanism to quickly disable/enable syscall handling for a
+> specific process and redirect to userspace via SIGSYS.  This is useful
+> for processes with parts that require syscall redirection and parts that
+> don't, but who need to perform this boundary crossing really fast,
+> without paying the cost of a system call to reconfigure syscall handling
+> on each boundary transition.  This is particularly important for Windows
+> games running over Wine.
 
-ISTM that a few years ago the gcc developers started looking
-at some of these 'UB' and decided they could make use of
-them to make some code faster (and break other code).
+I raised a discussion about this on libc-alpha, as requested by Florian.
+At the moment, there was some back and forth on why the use-case is not
+done by seccomp, but a more interesting point about user_notif was
+raised by Rich Felker (cc'ed).
 
-One of the problems with UB is that whereas you might expect
-UB arithmetic to generate an unexpected result and/or signal
-it is completely open-ended and could fire an ICBM at the coder.
+SIGSYS, as a signal handler, is limited in what can be done inside it.
+Rich suggested the user_notif design is a better solution.  I understand
+that from a Wine perspective, SIGSYS suffices for their work, but would
+it make sense to extend SUD interface to support a user_notif-like
+interface?  Would this be acceptable as future work to be added when/if
+needed, or should we design it from the start?
 
-	David
+The existing interface could be extended with a flags field as part of
+the opcode passed in argument 2, which is currently reserved, and then
+return a FD, just like seccomp(2) does.  So it is not like the current
+patches couldn't be extended in the future if needed, unless I'm
+mistaken.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Gabriel Krisman Bertazi
