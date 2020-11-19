@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27102B9D44
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA01C2B9D47
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgKSV7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 16:59:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726474AbgKSV7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 16:59:05 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39CE322259;
-        Thu, 19 Nov 2020 21:59:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605823144;
-        bh=rYXCdAv0ws7mGMrf2cy/TA9RSMhL8NBTEOMnK4NtAcY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uuT4q9m2ooxD2K+nN7z8sA/PCckTszcgO2pa+ZVlcu/zOUBD77VatqBtnxIRdCf/4
-         EGKRHm+r0fAML+jPO2iiTQFjtKfgIOSgxPMInMpTURJUw6k8XAVXhYoIaA9z9OhTiU
-         g8BNwZd4yBeIaPCeh+Jp2Qdl66DWRsGVhVdVCfZ8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id E782935225D3; Thu, 19 Nov 2020 13:59:03 -0800 (PST)
-Date:   Thu, 19 Nov 2020 13:59:03 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH] tools/rcutorture: Make identify_qemu_vcpus() independant
- of local language
-Message-ID: <20201119215903.GD1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201119003024.10701-1-frederic@kernel.org>
+        id S1726620AbgKSWBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 17:01:54 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:6946 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726154AbgKSWBy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 17:01:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1605823315; x=1637359315;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=dPnWxdnajZFQOuvUOMzQJleM8jxXhD+BGr5YatZS0dM=;
+  b=fGm014lUe221JAnqbs/JOQ+AmCqGPju2VlSj6aOLf6pMZ2+TloMHnkTT
+   QFgZI/gocJMGjObddNXctPT5pAIz+t0fe3kkPfQRjBl5kZOVyPrPDH3B+
+   ajuMpgMVRgVs9SP5nRsiUw9wJmeLbbHGk2SPtIlHIS5+dxGJCWIGndBsG
+   E=;
+X-IronPort-AV: E=Sophos;i="5.78,354,1599523200"; 
+   d="scan'208";a="66094964"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-c5104f52.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 19 Nov 2020 22:01:53 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-c5104f52.us-west-2.amazon.com (Postfix) with ESMTPS id 4D42AA1F2D;
+        Thu, 19 Nov 2020 22:01:51 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 19 Nov 2020 22:01:50 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.161.102) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 19 Nov 2020 22:01:46 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <david.laight@aculab.com>
+CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
+        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+Subject: RE: [RFC PATCH bpf-next 0/8] Socket migration for SO_REUSEPORT.
+Date:   Fri, 20 Nov 2020 07:01:41 +0900
+Message-ID: <20201119220141.73844-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+In-Reply-To: <01a5c211a87a4dd69940e19c2ff00334@AcuMS.aculab.com>
+References: <01a5c211a87a4dd69940e19c2ff00334@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201119003024.10701-1-frederic@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.102]
+X-ClientProxiedBy: EX13D46UWB004.ant.amazon.com (10.43.161.204) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 01:30:24AM +0100, Frederic Weisbecker wrote:
-> The implementation expects `lscpu` to have a "CPU: " line, for example:
+From:   David Laight <David.Laight@ACULAB.COM>
+Date:   Wed, 18 Nov 2020 09:18:24 +0000
+> From: Kuniyuki Iwashima
+> > Sent: 17 November 2020 09:40
+> > 
+> > The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > accept connections evenly. However, there is a defect in the current
+> > implementation. When a SYN packet is received, the connection is tied to a
+> > listening socket. Accordingly, when the listener is closed, in-flight
+> > requests during the three-way handshake and child sockets in the accept
+> > queue are dropped even if other listeners could accept such connections.
+> > 
+> > This situation can happen when various server management tools restart
+> > server (such as nginx) processes. For instance, when we change nginx
+> > configurations and restart it, it spins up new workers that respect the new
+> > configuration and closes all listeners on the old workers, resulting in
+> > in-flight ACK of 3WHS is responded by RST.
 > 
-> 	CPU(s):		8
+> Can't you do something to stop new connections being queued (like
+> setting the 'backlog' to zero), then carry on doing accept()s
+> for a guard time (or until the queue length is zero) before finally
+> closing the listening socket.
+
+Yes, but with eBPF.
+There are some ideas suggested and well discussed in the thread below,
+resulting in that connection draining by eBPF was merged.
+https://lore.kernel.org/netdev/1443313848-751-1-git-send-email-tolga.ceylan@gmail.com/
+
+
+Also, setting zero to backlog does not work well.
+https://lore.kernel.org/netdev/1447262610.17135.114.camel@edumazet-glaptop2.roam.corp.google.com/
+
+---8<---
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as
+ drain mode
+Date: Wed, 11 Nov 2015 09:23:30 -0800
+> Actually listen(fd, 0) is not going to work well :
 > 
-> But some local language settings may advocate for their own version:
+> For request_sock that were created (by incoming SYN packet) before this
+> listen(fd, 0) call, the 3rd packet (ACK coming from client) would not be
+> able to create a child attached to this listener.
 > 
-> 	Processeur(s) :		8
-> 
-> As a result the function may return an empty string and rcutorture would
-> dump the following warning (still with the local taste):
-> 
-> 	kvm-test-1-run.sh: ligne 138 : test:  : nombre entier attendu comme expression
-> 
-> Just use a command whose output every language agree with.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: rcu@vger.kernel.org
-
-Queued for review and testing, thank you!  As usual, I could not resist
-the urge to edit a bit, so please let me know if I messed anything up.
-
-If there are too many of these, it might be easier for kvm.sh to switch
-itself to EN-US mode, but this change both simplified the code and helped
-defend the purity of the French language, so steady as she goes!  ;-)
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 655f941b96cbfc6f8869142ece092d8617425948
-Author: Frederic Weisbecker <frederic@kernel.org>
-Date:   Thu Nov 19 01:30:24 2020 +0100
-
-    tools/rcutorture: Make identify_qemu_vcpus() independent of local language
-    
-    The rcutorture scripts' identify_qemu_vcpus() function expects `lscpu`
-    to have a "CPU: " line, for example:
-    
-            CPU(s):         8
-    
-    But different local language settings can give different results:
-    
-            Processeur(s) :         8
-    
-    As a result, identify_qemu_vcpus() may return an empty string, resulting
-    in the following warning (with the same local language settings):
-    
-            kvm-test-1-run.sh: ligne 138 : test:  : nombre entier attendu comme expression
-    
-    This commit therefore changes identify_qemu_vcpus() to use getconf,
-    which produces local-language-independend output.
-    
-    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-    Cc: Paul E. McKenney <paulmck@kernel.org>
-    Cc: Josh Triplett <josh@joshtriplett.org>
-    Cc: Steven Rostedt <rostedt@goodmis.org>
-    Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-    Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-    Cc: rcu@vger.kernel.org
-
-diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
-index 8266349..fef8b4b 100644
---- a/tools/testing/selftests/rcutorture/bin/functions.sh
-+++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-@@ -232,7 +232,7 @@ identify_qemu_args () {
- # Returns the number of virtual CPUs available to the aggregate of the
- # guest OSes.
- identify_qemu_vcpus () {
--	lscpu | grep '^CPU(s):' | sed -e 's/CPU(s)://' -e 's/[ 	]*//g'
-+	getconf _NPROCESSORS_ONLN
- }
- 
- # print_bug
+> sk_acceptq_is_full() test in tcp_v4_syn_recv_sock() would simply drop
+> the thing.
+---8<---
