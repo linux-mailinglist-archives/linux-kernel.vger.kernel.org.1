@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14682B96D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3E52B96A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbgKSPsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:48:42 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:38784 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728337AbgKSPsl (ORCPT
+        id S1728828AbgKSPod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:44:33 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:44224 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728821AbgKSPoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:48:41 -0500
-Received: by mail-ot1-f66.google.com with SMTP id 92so2632305otd.5;
-        Thu, 19 Nov 2020 07:48:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lIAE4uzT+8vC+EjZ/7M0VoomkRn2xJpo+773Y2o0nSA=;
-        b=XdbZzp5yP9ndEb/PBG5cda94cS32of3hri2ct/8Qpss7AizlrnpnBztWhSJX3b0CvV
-         hphahe3g6V6onME1yuUc3+NT21poLFvi9A+lAxB+9CWP1ywXCZe3r+AgbFXt1+IzZBCL
-         oupq8z3fxM6I0f6e9WBK0aBtMtZHB5Am1JaE9ojeLKxn/tOI7zrcd1R4ABlrBDUlpoFi
-         YA7IsXt54o785RiT7W2Jua3VTiVh2+tIFiuqbaLDLM9YCFyK7ITj7Eia3SknJO3MRGqT
-         t2a9R9iQiiKTo1bzk4CaUtByMyxfGzSOvwm4CeK97GizLb4G0vP7NSCaMer85JpSdhVR
-         Uw9g==
-X-Gm-Message-State: AOAM531XDvLuv4328X9Pyw7W8Emdpxm9O8KBstn6Nt/NBQHjT5QCjum6
-        oiIB1WC1S5RMHJsfDMpClw==
-X-Google-Smtp-Source: ABdhPJzTxVOEW8YGQa60XmqmgMXCcZhJsnkbKKeiQk6v95zH5TTqI6+EhayfcsXXG4TUs/ahIGv2mw==
-X-Received: by 2002:a9d:8d7:: with SMTP id 81mr10744011otf.345.1605800920267;
-        Thu, 19 Nov 2020 07:48:40 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u63sm106798oia.50.2020.11.19.07.48.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 07:48:39 -0800 (PST)
-Received: (nullmailer pid 3309224 invoked by uid 1000);
-        Thu, 19 Nov 2020 15:48:38 -0000
-Date:   Thu, 19 Nov 2020 09:48:38 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        airlied@linux.ie, s.hauer@pengutronix.de, robh+dt@kernel.org,
-        shawnguo@kernel.org, kernel@pengutronix.de, linux-imx@nxp.com,
-        tzimmermann@suse.de
-Subject: Re: [PATCH 3/8] dt-bindings: display: imx: Add i.MX8qxp/qm DPR
- channel binding
-Message-ID: <20201119154838.GA3308916@bogus>
-References: <1605777745-23625-1-git-send-email-victor.liu@nxp.com>
- <1605777745-23625-4-git-send-email-victor.liu@nxp.com>
+        Thu, 19 Nov 2020 10:44:30 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJFiTjG025051;
+        Thu, 19 Nov 2020 10:44:29 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34t9ybtmkg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 10:44:29 -0500
+Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0AJFiG1a035828
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 19 Nov 2020 10:44:18 -0500
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 19 Nov 2020 07:43:53 -0800
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 19 Nov 2020 07:43:53 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 19 Nov 2020 07:43:52 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AJFhotP032189;
+        Thu, 19 Nov 2020 10:43:50 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH 1/4] uio: uio_cif: use devm_kzalloc() for uio_info object
+Date:   Thu, 19 Nov 2020 17:49:00 +0200
+Message-ID: <20201119154903.82099-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605777745-23625-4-git-send-email-victor.liu@nxp.com>
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-19_09:2020-11-19,2020-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 suspectscore=3 impostorscore=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1015 spamscore=0 adultscore=0 mlxlogscore=639
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 17:22:20 +0800, Liu Ying wrote:
-> This patch adds bindings for i.MX8qxp/qm Display Prefetch Resolve Channel.
-> 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
->  .../bindings/display/imx/fsl,imx8qxp-dprc.yaml     | 87 ++++++++++++++++++++++
->  1 file changed, 87 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
-> 
+The uio_info object is free'd last, so it's life-time is tied PCI device
+object. Using devm_kzalloc() cleans up the error path a bit and the exit
+path.
 
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/uio/uio_cif.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.example.dts:26.33-34 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1364: dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1402852
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/drivers/uio/uio_cif.c b/drivers/uio/uio_cif.c
+index ab60186f9759..653f842a1491 100644
+--- a/drivers/uio/uio_cif.c
++++ b/drivers/uio/uio_cif.c
+@@ -43,12 +43,12 @@ static int hilscher_pci_probe(struct pci_dev *dev,
+ {
+ 	struct uio_info *info;
+ 
+-	info = kzalloc(sizeof(struct uio_info), GFP_KERNEL);
++	info = devm_kzalloc(&dev->dev, sizeof(struct uio_info), GFP_KERNEL);
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+ 	if (pci_enable_device(dev))
+-		goto out_free;
++		return -ENODEV;
+ 
+ 	if (pci_request_regions(dev, "hilscher"))
+ 		goto out_disable;
+@@ -92,8 +92,6 @@ static int hilscher_pci_probe(struct pci_dev *dev,
+ 	pci_release_regions(dev);
+ out_disable:
+ 	pci_disable_device(dev);
+-out_free:
+-	kfree (info);
+ 	return -ENODEV;
+ }
+ 
+@@ -105,8 +103,6 @@ static void hilscher_pci_remove(struct pci_dev *dev)
+ 	pci_release_regions(dev);
+ 	pci_disable_device(dev);
+ 	iounmap(info->mem[0].internal_addr);
+-
+-	kfree (info);
+ }
+ 
+ static struct pci_device_id hilscher_pci_ids[] = {
+-- 
+2.17.1
 
