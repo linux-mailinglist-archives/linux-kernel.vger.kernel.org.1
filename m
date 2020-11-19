@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC6A2B88FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 01:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A33812B8900
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 01:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgKSARh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 19:17:37 -0500
-Received: from mga04.intel.com ([192.55.52.120]:42527 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgKSARg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 19:17:36 -0500
-IronPort-SDR: xVmg+ZTE45vTjaA1Z12DM1lrGJwEsccig8ip4gjq9uQgNzJJH261aXSHtjh9EVVOX7YiEhNIOk
- xEW1xo+QxdmA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="168636023"
-X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
-   d="scan'208";a="168636023"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 16:17:36 -0800
-IronPort-SDR: K0yjAZy610D6k9RTK94qF0OPB+3/hO7QSMCyxoZ+6lbEMfm5eu7RIxWukRyc/CU0x/sZOJJ5BT
- vasYfCf1i1Tw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
-   d="scan'208";a="368559667"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 18 Nov 2020 16:17:36 -0800
-Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
-        by linux.intel.com (Postfix) with ESMTP id CDAC458088D;
-        Wed, 18 Nov 2020 16:17:35 -0800 (PST)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     bhelgaas@google.com, rafael@kernel.org, len.brown@intel.com
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] PCI: Disable Precision Time Measurement during suspend
-Date:   Wed, 18 Nov 2020 16:18:22 -0800
-Message-Id: <20201119001822.31617-2-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201119001822.31617-1-david.e.box@linux.intel.com>
-References: <20201119001822.31617-1-david.e.box@linux.intel.com>
+        id S1726983AbgKSAVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 19:21:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726374AbgKSAVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 19:21:10 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63A4C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 16:21:10 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id x18so3736841ilq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 16:21:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AssRh8wltYpwnLIMHdRyWzG/VTXz5aIhKwDWHkLnZe0=;
+        b=IpsYh07mMmjA204ym64OUXzgMOlRPRhH3k+4dYGh3nSVLwQ0/nn/hEHoF0MhhaB7M/
+         b1Qm5ZlMCrCmrO0jPj1LL0eEJeH1IKLTWpaG7ksbq/JQccqDUdYelGgtmTtMreYcBrWj
+         YNj3uyt4gsk96kVYdcvufDbgqwZ6Gj4kU9ubw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AssRh8wltYpwnLIMHdRyWzG/VTXz5aIhKwDWHkLnZe0=;
+        b=jsDtRV3hmH7gSANDnnAVP5NLnR12CzMZAM8sMBtvOCsh6YCgnOz0ODaWbiSkaglTCy
+         G/cvtgoWzVL2xFmLQjR77TScDZuPsB/+kTpEK7CbV6SCPrLW3hlqJmPUGY6deDN3/elA
+         fo1xTxo400slYFiuFWeoaLIsMBWs9RCH1v2pplN2nTeOKaok+wv/qNGUdmAXoL8ILZAJ
+         2Wa2C9iZD/NVGMDKsedzUUe3sWZZe26j34WRVD8TZboKzkIjDmXuBO1DYrrfKNoLZ7fb
+         Az5kie5aElMkYCUlho5/U4mIEh5bw/O1iwjg1xzfwbiDIDkqWTC7upF7iHToRvgbwqFC
+         urNA==
+X-Gm-Message-State: AOAM531j6wbTR8ArhflGBX9E2D+zVoY6KSxaLZJaSgz/7p8Hi8wkDINY
+        64qKFisbZv0T2IqsdorqcURevLLDEl8X//8dNXA5Jw==
+X-Google-Smtp-Source: ABdhPJxf09B2xNeOqcg4M0cq77Grb3qdYe0wDLINSjLt2SvyZGjxeV3KWQsJHhFUeRqvakZ4c8efyZaemXiSiQS4O7k=
+X-Received: by 2002:a92:c8c4:: with SMTP id c4mr19341540ilq.161.1605745270268;
+ Wed, 18 Nov 2020 16:21:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1605501291-23040-1-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1605501291-23040-1-git-send-email-pillair@codeaurora.org>
+From:   Abhishek Kumar <kuabhs@chromium.org>
+Date:   Wed, 18 Nov 2020 16:20:58 -0800
+Message-ID: <CACTWRwvG=BqKAeJm18jAtMuah-=NyRPzAJMv-930eQtp+PBArw@mail.gmail.com>
+Subject: Re: [PATCH v3] ath10k: Fix the parsing error in service available event
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k <ath10k@lists.infradead.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Brian Norris <briannorris@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Intel client platforms that support suspend-to-idle, like Ice Lake,
-root ports that have Precision Time Management (PTM) enabled can prevent
-the port from being fully power gated, causing higher power consumption
-while suspended.  To prevent this, after saving the PTM control register,
-disable the feature.  The feature will be returned to its previous state
-during restore.
+Hi,
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=209361
-Reported-by: Len Brown <len.brown@intel.com>
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
- drivers/pci/pci.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+The patch LGTM there is small nit, though.
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -5751,8 +5751,13 @@ void ath10k_wmi_event_service_available(struct ath10k *ar, struct sk_buff *skb)
+>                             ret);
+>         }
+>
+> -       ath10k_wmi_map_svc_ext(ar, arg.service_map_ext, ar->wmi.svc_map,
+> -                              __le32_to_cpu(arg.service_map_ext_len));
+> +       /*
+> +        * Initialization of "arg.service_map_ext_valid" to ZERO is necessary
+> +        * for the below logic to work.
+> +        */
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 6fd4ae910a88..a2b40497d443 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -21,6 +21,7 @@
- #include <linux/module.h>
- #include <linux/spinlock.h>
- #include <linux/string.h>
-+#include <linux/suspend.h>
- #include <linux/log2.h>
- #include <linux/logic_pio.h>
- #include <linux/pm_wakeup.h>
-@@ -1543,7 +1544,7 @@ static void pci_save_ptm_state(struct pci_dev *dev)
- {
- 	int ptm;
- 	struct pci_cap_saved_state *save_state;
--	u16 *cap;
-+	u16 *cap, ctrl;
- 
- 	if (!pci_is_pcie(dev))
- 		return;
-@@ -1560,6 +1561,17 @@ static void pci_save_ptm_state(struct pci_dev *dev)
- 
- 	cap = (u16 *)&save_state->cap.data[0];
- 	pci_read_config_word(dev, ptm + PCI_PTM_CTRL, cap);
-+
-+	/*
-+	 * On Intel systems that support suspend-to-idle, additional
-+	 * power savings can be gained by disabling PTM on root ports,
-+	 * as this allows the port to enter a deeper pm state.
-+	 */
-+	if (pm_suspend_target_state == PM_SUSPEND_TO_IDLE &&
-+	    pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
-+		ctrl = *cap & ~(PCI_PTM_CTRL_ENABLE | PCI_PTM_CTRL_ROOT);
-+		pci_write_config_word(dev, ptm + PCI_PTM_CTRL, ctrl);
-+	}
- }
- 
- static void pci_restore_ptm_state(struct pci_dev *dev)
--- 
-2.20.1
+Nit: The comment will throw a checkpatch warning.  "networking block
+comments don't use an empty /* line, use /* Comment..."
 
+-Abhishek
