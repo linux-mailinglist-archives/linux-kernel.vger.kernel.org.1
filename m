@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21582B9AC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EA92B9AD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729602AbgKSSkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:40:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59099 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727761AbgKSSkN (ORCPT
+        id S1729817AbgKSSkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:40:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729220AbgKSSkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:40:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605811212;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rgy/V0UxwiGYR9z/XPHQctCh3F8LfVyhlf5Ot3bhOUg=;
-        b=NuJeSDq2if5SWYNMBJnmtRy5goZxKsYFAhR5YLTsx/Zcd8GWLI6ZCpJ7CK6wJZyNQXPZ3G
-        g8oBZkF2ytvOxJzhwGZ5iUlutcaOCSVAAgnG2509YvIAmKC96YWa7OBzdYrjERMjS8wq+N
-        1kPOeexjlV3eVgVeJBMRZOQx3b5tiVI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-i49NzqxAM5SHG_1MjCuMKw-1; Thu, 19 Nov 2020 13:40:09 -0500
-X-MC-Unique: i49NzqxAM5SHG_1MjCuMKw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D9CF911EC;
-        Thu, 19 Nov 2020 18:40:08 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-63.rdu2.redhat.com [10.10.117.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B48A5C1D5;
-        Thu, 19 Nov 2020 18:40:07 +0000 (UTC)
-Subject: Re: [RFC PATCH 5/5] locking/rwsem: Remove reader optimistic spinning
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>
-References: <20201118030429.23017-1-longman@redhat.com>
- <20201118030429.23017-6-longman@redhat.com>
- <20201118053556.3fmmtat7upv6dtvd@linux-p48b.lan>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <ee34bc01-9fef-23ff-ada1-1ec2d39533c9@redhat.com>
-Date:   Thu, 19 Nov 2020 13:40:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 19 Nov 2020 13:40:42 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B132C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:40:42 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id b17so7302499ljf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:40:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=au469p9zNDfgQl3YuPnVjJXrVJoWnWoruzOG8UjNgGY=;
+        b=JZSAlZlPuBlxQ0nuN/uoo+TEedexwo/b6B3fshF+TpuFw8crNJAfWtrQ3Qg04u+Q/h
+         mciY8jrsrbVTF0gl99ATsUZ17TzH9bpiyZdXaZsZqi4iuJAlDRGjqadzl/XcrIH5ev3Y
+         9z+kb1x6C/lH/74ARZBFlQL+vvyu7NnZ/Knq0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=au469p9zNDfgQl3YuPnVjJXrVJoWnWoruzOG8UjNgGY=;
+        b=MjvJBbhXi7cUpUxdcCogvWsnKzUvcbnqiJPIVN87yDI7jukvSisuvb3i/u6ZRg4llU
+         U7VlNqid+KyHNj3tuNwBjaVrYLEgf4rKRDs9A8als57pOtfe20FxZtetrnT8RddXciOr
+         DEXVSHGqNy1mpCmw9a+4zS/zP9Kvt8CYKX7N4AWFa+Grj69/hRyZopq50bL/TGCvstlS
+         0FsNlIAeousfEnGDnLwHJrNbV+iQYnJarbAWVKGAn8vW5Q/KBQWf+AyshxAi5sxa+d2K
+         fQ/2AtUqunI2FFF9z2U+0gMTnrWylVAyL4xixn6t+fvF9WSNT8l1sG0BAa4VJ9WT6wYi
+         B1Rw==
+X-Gm-Message-State: AOAM530CpN3astxVrLP/W7j+dLa4QAGN+Kuqzc5NsLBdLu6CRfH8ADov
+        KZlA1DSkPS538c0Qw5OCHFcjduVEsluVEg==
+X-Google-Smtp-Source: ABdhPJwPegYhnm1s5Iy1YMjUtnEcs377OCoKR1/E2m9MBUtWVr5eO2/oFkd2/N+z3N35iUzGdx7YyQ==
+X-Received: by 2002:a2e:948:: with SMTP id 69mr7596854ljj.180.1605811240213;
+        Thu, 19 Nov 2020 10:40:40 -0800 (PST)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id t2sm50934lfc.21.2020.11.19.10.40.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 10:40:38 -0800 (PST)
+Received: by mail-lf1-f48.google.com with SMTP id u18so9715543lfd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:40:38 -0800 (PST)
+X-Received: by 2002:a19:c301:: with SMTP id t1mr5994156lff.105.1605811237959;
+ Thu, 19 Nov 2020 10:40:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201118053556.3fmmtat7upv6dtvd@linux-p48b.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <cover.1605642949.git.dxu@dxuuu.xyz> <21efc982b3e9f2f7b0379eed642294caaa0c27a7.1605642949.git.dxu@dxuuu.xyz>
+ <CAADnVQ+0=59xkFcpQMdqmZ7CcsTiXx2PDp1T6Hi2hnhj+otnhA@mail.gmail.com> <CAADnVQLi6sS36fqV+xuaz0W5ircU5U=ictnj=mF4KWEFUDSqPQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLi6sS36fqV+xuaz0W5ircU5U=ictnj=mF4KWEFUDSqPQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Nov 2020 10:40:21 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiG3jYsfPQBHabTmMagT71Uzx=wxq=Bh41A40zQ74pwEQ@mail.gmail.com>
+Message-ID: <CAHk-=wiG3jYsfPQBHabTmMagT71Uzx=wxq=Bh41A40zQ74pwEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v7 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
+ after NUL terminator
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/20 12:35 AM, Davidlohr Bueso wrote:
-> On Tue, 17 Nov 2020, Waiman Long wrote:
+On Thu, Nov 19, 2020 at 10:34 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->> The column "CS Load" represents the number of pause instructions issued
->> in the locking critical section. A CS load of 1 is extremely short and
->> is not likey in real situations. A load of 20 (moderate) and 100 (long)
->> are more realistic.
->>
->> It can be seen that the previous patches in this series have reduced
->> performance in general except in highly contended cases with moderate
->> or long critical sections that performance improves a bit. This change
->> is mostly caused by the "Prevent potential lock starvation" patch that
->> reduce reader optimistic spinning and hence reduce reader fragmentation.
->>
->> The patch that further limit reader optimistic spinning doesn't seem to
->> have too much impact on overall performance as shown in the benchmark
->> data.
->>
->> The patch that disables reader optimistic spinning shows reduced
->> performance at lightly loaded cases, but comparable or slightly better
->> performance on with heavier contention.
->
-> I'm not overly worried about the lightly loaded cases here as the users
-> (mostly thinking mmap_sem) most likely won't care for real workloads,
-> not, ie: will-it-scale type things.
-I am not that worry about the lightly loaded cases either. I just state 
-the fact that some workloads may see a slightly reduced performance 
-because of that.
->
-> So at SUSE we also ran into this very same problem with reader optimistic
-> spinning and considering the fragmentation went with disabling it, much
-> like this patch - but without the reader optimistic lock stealing bits
-> you have. So far nothing has really shown to fall out in our performance
-> automation. And per your data a single reader spinner does not seem to be
-> worth the added complexity of keeping reader spinning vs ripping it out. 
+> ping.
 
-My own testing also show not too much performance difference when 
-removing reader spinning except in the lightly loaded cases.
+I'm ok with this series that adds explanations for why you care and
+what bpf does that makes it valid.
 
-Cheers,
-Longman
+So this one you can put in the bpf tree.
 
+Or, if you want me to just apply it as a series, I can do that too, I
+just generally assume that when there's a git tree I usually get
+things from, that's the default, so then it needs ot be a very loud
+and explicit "Linus, can you apply this directly".
+
+              Linus
