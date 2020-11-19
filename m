@@ -2,106 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421F22B9D9F
+	by mail.lfdr.de (Postfix) with ESMTP id AECE22B9DA0
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgKSWZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 17:25:31 -0500
-Received: from mga01.intel.com ([192.55.52.88]:26654 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726105AbgKSWZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:25:31 -0500
-IronPort-SDR: jPutyleZCuA5th77TLJg6X7KIpHlwXK2FCV2tBBgt/5ax56cwHGqIDSONaWzwxJVOpXb69pxZJ
- dn0BPXod3ptQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="189471936"
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="189471936"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 14:25:30 -0800
-IronPort-SDR: LmGCMt4qb3T1rKgJrsrSNZCnA5fx/qTFRH3Cj7MTclQZhGYUFHIrB4xm40mL6xuQ8a2lvZIgPq
- LOOH4iwIZjkA==
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="476988121"
-Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.51])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 14:25:28 -0800
-Date:   Thu, 19 Nov 2020 22:25:19 +0000
-From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        qat-linux@intel.com, Denis Efremov <efremov@linux.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org
-Subject: [PATCH RESEND] crypto: qat - fix excluded_middle.cocci warnings
-Message-ID: <20201119222519.GA138362@silpixa00400314>
-References: <alpine.DEB.2.22.394.2011131811110.2840@hadrien>
- <20201119195816.GA131726@silpixa00400314>
+        id S1726958AbgKSW0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 17:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726481AbgKSW0O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 17:26:14 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C64EC0613CF;
+        Thu, 19 Nov 2020 14:26:14 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id r18so5532706pgu.6;
+        Thu, 19 Nov 2020 14:26:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=b2H+78byClGdmIdPEifk9zjxHk4lwzN95YFOCTF8v/M=;
+        b=d+4xOo4b+776mhQeBNd/eD+W1pk9/fuMEexUcTnAbiGDHmFDlAcdYM4yexuae26qC9
+         pjYIeA+4r2ydH5sYKe6S6jnhCv0gbW3O+5wSHS+D7Rxr55eIxXYUEgALMp4qo4jf8HfL
+         lzEJspjgj1+t3fycPabvGWm/ivt7U5xB8+MTfVf2RdddDAV1+CRSqkGHUOrIy65FF3cW
+         p5olQKMBUHy7VOtJ96GkTtnhlwW2QwFkgM1DPDJSkEh7s+fx+kzU3L2fb9XEhxE78cCl
+         neN7J5lWR9lvPeoKCsnYKvmqF4MVRxGly4cVCqOva70X8MUIlzPst4ZVystRI90cjTYb
+         GDGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=b2H+78byClGdmIdPEifk9zjxHk4lwzN95YFOCTF8v/M=;
+        b=AcJn50ihhlp5V1Rl6O1AOq0loqyj90nadgu4grylBmjvz16ELhBLROeh+9ZxsHt8t1
+         Fu9pEc2qqH/KVLGS1mN5sIQCNMN4t5dPs7IbNsGE7+2woci9Z4dxjRvQJtLvIMoy0Ds/
+         MeW4aMsga3UrugKD6SbLyd6E2iMp+KqmrBpX8Twm7HZKmAimeJyV0a+tsNjpJf7maQox
+         +5QpKbYZLkmfu8TA0OztC1mZojrS9MBxPe/d92ZISpHob39BcRmyVhUFN5nU6ihJuW/S
+         trhTXfjOgHeiQ98zSVZTf6c/LBLGg2r9+Lp3/lZSi/BpINv/DJZfgrWlC+kqIYS/P3yD
+         7M3Q==
+X-Gm-Message-State: AOAM532WE3bA9gXFjVFzsT8OsfFTLuuyg8Gkot7+aPwRHAsywz42r1UX
+        irTimKu1sN+FdB6zTjjxBJxhn8xw5U0=
+X-Google-Smtp-Source: ABdhPJwl/u32kBC6hM/96HpAJaygHZ5Z29CLTLxgq7flJzGrxqWm/mJVKebgHAI69RfjcHZDW8LS1w==
+X-Received: by 2002:a62:2ac2:0:b029:18c:25ff:d68 with SMTP id q185-20020a622ac20000b029018c25ff0d68mr11327301pfq.64.1605824773761;
+        Thu, 19 Nov 2020 14:26:13 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id g18sm923397pfu.131.2020.11.19.14.26.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 14:26:12 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 19 Nov 2020 14:26:10 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Rui Salvaterra <rsalvaterra@gmail.com>
+Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] zram: break the strict dependency from lzo
+Message-ID: <20201119222610.GD3113267@google.com>
+References: <20201115101514.954-1-rsalvaterra@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119195816.GA131726@silpixa00400314>
+In-Reply-To: <20201115101514.954-1-rsalvaterra@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 07:58:16PM +0000, Giovanni Cabiddu wrote:
-> On Fri, Nov 13, 2020 at 06:14:00PM +0100, Julia Lawall wrote:
-> > From: kernel test robot <lkp@intel.com>
-> > 
-> >  Condition !A || A && B is equivalent to !A || B.
-> A similar change was submitted and discussed some time ago:
-> https://patchwork.kernel.org/project/linux-crypto/patch/78b1532c-f8bf-48e4-d0a7-30ea0137d408@huawei.com/
+On Sun, Nov 15, 2020 at 10:15:14AM +0000, Rui Salvaterra wrote:
+> From the beginning, the zram block device always enabled CRYPTO_LZO, since
+> lzo-rle is hardcoded as the fallback compression algorithm. As a consequence, on
+> systems where another compression algorithm is chosen (e.g. CRYPTO_ZSTD), the
+> lzo kernel module becomes unused, while still having to be built/loaded.
 > 
-> The change simplifies the logic but makes the code less readable.
-> I added a comment to clarify it.
-Resending as it skipped linux-crypto patchwork.
+> This patch removes the hardcoded lzo-rle dependency and allows the user to
+> select the default compression algorithm for zram at build time. The previous
+> behaviour is kept, as the default algorithm is still lzo-rle.
+> 
+> Suggested-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+> Suggested-by: Minchan Kim <minchan@kernel.org>
+> Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+> ---
+> v5: incorporate Minchan's feedback. Allow the user to choose a default algorithm.
+> v4: incorporate Sergey's feedback and fix a small typo.
+> v3: fix the default selection when lzo isn't present. Rebase against 5.10-rc1.
+> v2: fix the dependency on CRYPTO.
+> 
+> I believe this is the final version, but it does deserve some comment. Given the
+> choice of having more preprocessor #if/#endif directives in C files or making
+> the kconfig a bit more complex, I went for the latter. However, since kconfig
+> choices can only be boolean, I had to devise a way to make a string selection
+> based on the boolean choice, hence the ZRAM_DEF_COMP symbol.
+> I also tried to make the ZRAM_AUTOSEL_ALGO definition a bit less painful to the
+> eye, while still allowing for the compression algorithms to be selected as
+> modules, as per Sergey's suggestion.
+> 
+>  drivers/block/zram/Kconfig    | 49 ++++++++++++++++++++++++++++++++++-
+>  drivers/block/zram/zcomp.c    |  2 ++
+>  drivers/block/zram/zram_drv.c |  2 +-
+>  3 files changed, 51 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
+> index fe7a4b7d30cf..cde089c30ffb 100644
+> --- a/drivers/block/zram/Kconfig
+> +++ b/drivers/block/zram/Kconfig
+> @@ -2,7 +2,6 @@
+>  config ZRAM
+>  	tristate "Compressed RAM block device support"
+>  	depends on BLOCK && SYSFS && ZSMALLOC && CRYPTO
+> -	select CRYPTO_LZO
+>  	help
+>  	  Creates virtual block devices called /dev/zramX (X = 0, 1, ...).
+>  	  Pages written to these disks are compressed and stored in memory
+> @@ -14,6 +13,54 @@ config ZRAM
+>  
+>  	  See Documentation/admin-guide/blockdev/zram.rst for more information.
+>  
+> +choice
+> +	prompt "Default zram compression algorithm"
+> +	depends on ZRAM
+> +
+> +config ZRAM_DEF_COMP_LZORLE
+> +	bool "lzo-rle"
+> +	depends on CRYPTO_LZO
+> +
+> +config ZRAM_DEF_COMP_ZSTD
+> +	bool "zstd"
+> +	depends on CRYPTO_ZSTD
+> +
+> +config ZRAM_DEF_COMP_LZ4
+> +	bool "lz4"
+> +	depends on CRYPTO_LZ4
+> +
+> +config ZRAM_DEF_COMP_LZO
+> +	bool "lzo"
+> +	depends on CRYPTO_LZO
+> +
+> +config ZRAM_DEF_COMP_LZ4HC
+> +	bool "lz4hc"
+> +	depends on CRYPTO_LZ4HC
+> +
+> +config ZRAM_DEF_COMP_842
+> +	bool "842"
+> +	depends on CRYPTO_842
+> +
+> +endchoice
+> +
+> +config ZRAM_DEF_COMP
+> +	string
+> +	default "lzo-rle" if ZRAM_DEF_COMP_LZORLE
+> +	default "zstd" if ZRAM_DEF_COMP_ZSTD
+> +	default "lz4" if ZRAM_DEF_COMP_LZ4
+> +	default "lzo" if ZRAM_DEF_COMP_LZO
+> +	default "lz4hc" if ZRAM_DEF_COMP_LZ4HC
+> +	default "842" if ZRAM_DEF_COMP_842
+> +
+> +config ZRAM_AUTOSEL_ALGO
+> +	def_bool y
+> +	depends on ZRAM && \
+> +		!(CRYPTO_LZ4=m   || CRYPTO_LZ4=y   || \
+> +		  CRYPTO_LZ4HC=m || CRYPTO_LZ4HC=y || \
+> +		  CRYPTO_842=m   || CRYPTO_842=y   || \
+> +		  CRYPTO_ZSTD=m  || CRYPTO_ZSTD=y)
+> +	select CRYPTO_LZO
+> +
 
-----8<----
+Hi Rui,
 
-From: kernel test robot <lkp@intel.com>
-Date: Fri, 13 Nov 2020 18:14:00 +0100
-Subject: [PATCH] crypto: qat - fix excluded_middle.cocci warnings
+What's the purpose of ZRAM_AUTOSEL_ALGO?
+If you and Sergey already discussed, sorry about the missing it.
 
- Condition !A || A && B is equivalent to !A || B.
+Below doesn't work for your goal?
 
-Generated by: scripts/coccinelle/misc/excluded_middle.cocci
+diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
+index fe7a4b7d30cf..7f3c50f5f87e 100644
+--- a/drivers/block/zram/Kconfig
++++ b/drivers/block/zram/Kconfig
+@@ -2,7 +2,6 @@
+ config ZRAM
+        tristate "Compressed RAM block device support"
+        depends on BLOCK && SYSFS && ZSMALLOC && CRYPTO
+-       select CRYPTO_LZO
+        help
+          Creates virtual block devices called /dev/zramX (X = 0, 1, ...).
+          Pages written to these disks are compressed and stored in memory
+@@ -14,6 +13,32 @@ config ZRAM
 
-Fixes: b76f0ea01312 ("coccinelle: misc: add excluded_middle.cocci script")
-CC: Denis Efremov <efremov@linux.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- drivers/crypto/qat/qat_common/adf_dev_mgr.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+          See Documentation/admin-guide/blockdev/zram.rst for more information.
 
-diff --git a/drivers/crypto/qat/qat_common/adf_dev_mgr.c b/drivers/crypto/qat/qat_common/adf_dev_mgr.c
-index 29dc2e3d38ff..4c752eed10fe 100644
---- a/drivers/crypto/qat/qat_common/adf_dev_mgr.c
-+++ b/drivers/crypto/qat/qat_common/adf_dev_mgr.c
-@@ -151,8 +151,8 @@ int adf_devmgr_add_dev(struct adf_accel_dev *accel_dev,
- 	mutex_lock(&table_lock);
- 	atomic_set(&accel_dev->ref_count, 0);
- 
--	/* PF on host or VF on guest */
--	if (!accel_dev->is_vf || (accel_dev->is_vf && !pf)) {
-+	/* PF on host or VF on guest - optimized to remove redundant is_vf */
-+	if (!accel_dev->is_vf || !pf) {
- 		struct vf_id_map *map;
- 
- 		list_for_each(itr, &accel_table) {
-@@ -248,7 +248,8 @@ void adf_devmgr_rm_dev(struct adf_accel_dev *accel_dev,
- 		       struct adf_accel_dev *pf)
- {
- 	mutex_lock(&table_lock);
--	if (!accel_dev->is_vf || (accel_dev->is_vf && !pf)) {
-+	/* PF on host or VF on guest - optimized to remove redundant is_vf */
-+	if (!accel_dev->is_vf || !pf) {
- 		id_map[accel_dev->accel_id] = 0;
- 		num_devices--;
- 	} else if (accel_dev->is_vf && pf) {
--- 
-2.28.0
++
++choice
++       prompt "zram default compressor"
++       default ZRAM_COMP_LZO_DEF
++       depends on ZRAM || CRYPTO_LZ4
++       help
++         a
++
++config ZRAM_COMP_LZO_DEF
++       bool "lzo"
++       select CRYPTO_LZO
++       help
++         b
++
++config ZRAM_COMP_LZ4_DEF
++       bool "lz4"
++       depends on CRYPTO_LZ4
++       help
++         c
++endchoice
++
++config ZRAM_DEF_COMP
++       string
++       default "lzo" if ZRAM_COMP_LZO_DEF
++       default "lz4" if ZRAM_COMP_LZ4_DEF
+
