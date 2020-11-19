@@ -2,225 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361E12B92BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7042B92C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727189AbgKSMqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:46:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgKSMqU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:46:20 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF9EC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 04:46:19 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfjKL-00084o-Qp; Thu, 19 Nov 2020 13:46:17 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfjKK-0003gd-BH; Thu, 19 Nov 2020 13:46:16 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki " <rafael@kernel.org>
-Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH 3/3] driver core: platform: use bus_type functions
-Date:   Thu, 19 Nov 2020 13:46:11 +0100
-Message-Id: <20201119124611.2573057-3-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201119124611.2573057-1-u.kleine-koenig@pengutronix.de>
-References: <20201119124611.2573057-1-u.kleine-koenig@pengutronix.de>
+        id S1727288AbgKSMrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:47:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:56420 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726719AbgKSMrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 07:47:39 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D7FD21396;
+        Thu, 19 Nov 2020 04:47:38 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C0093F718;
+        Thu, 19 Nov 2020 04:47:36 -0800 (PST)
+References: <20201113093720.21106-1-will@kernel.org> <20201113093720.21106-8-will@kernel.org>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 07/14] sched: Introduce restrict_cpus_allowed_ptr() to limit task CPU affinity
+In-reply-to: <20201113093720.21106-8-will@kernel.org>
+Date:   Thu, 19 Nov 2020 12:47:34 +0000
+Message-ID: <jhj8saxwm1l.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This works towards the goal mentioned in 2006 in commit 594c8281f905
-("[PATCH] Add bus_type probe, remove, shutdown methods.").
 
-The functions are moved to where the other bus_type functions are
-defined and renamed to match the already established naming scheme.
+On 13/11/20 09:37, Will Deacon wrote:
+> Asymmetric systems may not offer the same level of userspace ISA support
+> across all CPUs, meaning that some applications cannot be executed by
+> some CPUs. As a concrete example, upcoming arm64 big.LITTLE designs do
+> not feature support for 32-bit applications on both clusters.
+>
+> Although userspace can carefully manage the affinity masks for such
+> tasks, one place where it is particularly problematic is execve()
+> because the CPU on which the execve() is occurring may be incompatible
+> with the new application image. In such a situation, it is desirable to
+> restrict the affinity mask of the task and ensure that the new image is
+> entered on a compatible CPU.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/base/platform.c | 132 ++++++++++++++++++++--------------------
- 1 file changed, 65 insertions(+), 67 deletions(-)
+> From userspace's point of view, this looks the same as if the
+> incompatible CPUs have been hotplugged off in its affinity mask.
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index b847f5f8f992..8ad06daa2eaa 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -743,70 +743,6 @@ struct platform_device *platform_device_register_full(
- }
- EXPORT_SYMBOL_GPL(platform_device_register_full);
- 
--static int platform_probe_fail(struct platform_device *pdev);
--
--static int platform_drv_probe(struct device *_dev)
--{
--	struct platform_driver *drv = to_platform_driver(_dev->driver);
--	struct platform_device *dev = to_platform_device(_dev);
--	int ret;
--
--	/*
--	 * A driver registered using platform_driver_probe() cannot be bound
--	 * again later because the probe function usually lives in __init code
--	 * and so is gone. For these drivers .probe is set to
--	 * platform_probe_fail in __platform_driver_probe(). Don't even
--	 * prepare clocks and PM domains for these to match the traditional
--	 * behaviour.
--	 */
--	if (unlikely(drv->probe == platform_probe_fail))
--		return -ENXIO;
--
--	ret = of_clk_set_defaults(_dev->of_node, false);
--	if (ret < 0)
--		return ret;
--
--	ret = dev_pm_domain_attach(_dev, true);
--	if (ret)
--		goto out;
--
--	if (drv->probe) {
--		ret = drv->probe(dev);
--		if (ret)
--			dev_pm_domain_detach(_dev, true);
--	}
--
--out:
--	if (drv->prevent_deferred_probe && ret == -EPROBE_DEFER) {
--		dev_warn(_dev, "probe deferral not supported\n");
--		ret = -ENXIO;
--	}
--
--	return ret;
--}
--
--static int platform_drv_remove(struct device *_dev)
--{
--	struct platform_driver *drv = to_platform_driver(_dev->driver);
--	struct platform_device *dev = to_platform_device(_dev);
--	int ret = 0;
--
--	if (drv->remove)
--		ret = drv->remove(dev);
--	dev_pm_domain_detach(_dev, true);
--
--	return ret;
--}
--
--static void platform_drv_shutdown(struct device *_dev)
--{
--	struct platform_driver *drv = to_platform_driver(_dev->driver);
--	struct platform_device *dev = to_platform_device(_dev);
--
--	if (drv->shutdown)
--		drv->shutdown(dev);
--}
--
- /**
-  * __platform_driver_register - register a driver for platform-level devices
-  * @drv: platform driver structure
-@@ -817,9 +753,6 @@ int __platform_driver_register(struct platform_driver *drv,
- {
- 	drv->driver.owner = owner;
- 	drv->driver.bus = &platform_bus_type;
--	drv->driver.probe = platform_drv_probe;
--	drv->driver.remove = platform_drv_remove;
--	drv->driver.shutdown = platform_drv_shutdown;
- 
- 	return driver_register(&drv->driver);
- }
-@@ -1349,6 +1282,68 @@ static int platform_uevent(struct device *dev, struct kobj_uevent_env *env)
- 	return 0;
- }
- 
-+static int platform_probe(struct device *_dev)
-+{
-+	struct platform_driver *drv = to_platform_driver(_dev->driver);
-+	struct platform_device *dev = to_platform_device(_dev);
-+	int ret;
-+
-+	/*
-+	 * A driver registered using platform_driver_probe() cannot be bound
-+	 * again later because the probe function usually lives in __init code
-+	 * and so is gone. For these drivers .probe is set to
-+	 * platform_probe_fail in __platform_driver_probe(). Don't even prepare
-+	 * clocks and PM domains for these to match the traditional behaviour.
-+	 */
-+	if (unlikely(drv->probe == platform_probe_fail))
-+		return -ENXIO;
-+
-+	ret = of_clk_set_defaults(_dev->of_node, false);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = dev_pm_domain_attach(_dev, true);
-+	if (ret)
-+		goto out;
-+
-+	if (drv->probe) {
-+		ret = drv->probe(dev);
-+		if (ret)
-+			dev_pm_domain_detach(_dev, true);
-+	}
-+
-+out:
-+	if (drv->prevent_deferred_probe && ret == -EPROBE_DEFER) {
-+		dev_warn(_dev, "probe deferral not supported\n");
-+		ret = -ENXIO;
-+	}
-+
-+	return ret;
-+}
-+
-+static int platform_remove(struct device *_dev)
-+{
-+	struct platform_driver *drv = to_platform_driver(_dev->driver);
-+	struct platform_device *dev = to_platform_device(_dev);
-+	int ret = 0;
-+
-+	if (drv->remove)
-+		ret = drv->remove(dev);
-+	dev_pm_domain_detach(_dev, true);
-+
-+	return ret;
-+}
-+
-+static void platform_shutdown(struct device *_dev)
-+{
-+	struct platform_driver *drv = to_platform_driver(_dev->driver);
-+	struct platform_device *dev = to_platform_device(_dev);
-+
-+	if (drv->shutdown)
-+		drv->shutdown(dev);
-+}
-+
-+
- int platform_dma_configure(struct device *dev)
- {
- 	enum dev_dma_attr attr;
-@@ -1375,6 +1370,9 @@ struct bus_type platform_bus_type = {
- 	.dev_groups	= platform_dev_groups,
- 	.match		= platform_match,
- 	.uevent		= platform_uevent,
-+	.probe		= platform_probe,
-+	.remove		= platform_remove,
-+	.shutdown	= platform_shutdown,
- 	.dma_configure	= platform_dma_configure,
- 	.pm		= &platform_dev_pm_ops,
- };
--- 
-2.28.0
+{pedantic reading warning}
 
+Hotplugged CPUs *can* be set in a task's affinity mask, though interact
+weirdly with cpusets [1]. Having it be the same as hotplug would mean
+keeping incompatible CPUs allowed in the affinity mask, but preventing them
+from being picked via e.g. is_cpu_allowed().
+
+I was actually hoping this could be a feasible approach, i.e. have an
+extra CPU active mask filter for any task:
+
+  cpu_active_mask & arch_cpu_allowed_mask(p)
+
+rather than fiddle with task affinity. Sadly this would also require fixing
+up pretty much any place that uses cpu_active_mask(), and probably places
+that use p->cpus_ptr as well. RT / DL balancing comes to mind, because that
+uses either a task's affinity or a CPU's root domain (which reflects the
+cpu_active_mask) to figure out where to push a task.
+
+So while I'm wary of hacking up affinity, I fear it might be the lesser
+evil :(
+
+[1]: https://lore.kernel.org/lkml/1251528473.590671.1579196495905.JavaMail.zimbra@efficios.com/
+
+> In preparation for restricting the affinity mask for compat tasks on
+> arm64 systems without uniform support for 32-bit applications, introduce
+> a restrict_cpus_allowed_ptr(), which allows the current affinity mask
+> for a task to be shrunk to the intersection of a parameter mask.
+>
+> Signed-off-by: Will Deacon <will@kernel.org>
