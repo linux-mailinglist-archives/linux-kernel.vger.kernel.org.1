@@ -2,170 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63952B9741
+	by mail.lfdr.de (Postfix) with ESMTP id 738FA2B9740
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727762AbgKSQCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:02:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42136 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727153AbgKSQCk (ORCPT
+        id S1727468AbgKSQCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:02:39 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:46188 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727117AbgKSQCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:02:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605801758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vg7/y2C8Tl2E1kWC5s1i5HxVqewxBng3nB4i5mKcMo8=;
-        b=KSpJ1ebWdAziSrkUU8QVxCVbJbDl5qdoMnpU2BfwqINZq/smtiIhzINSCPthrDppeVpehF
-        X/a4B4TnDO/RdLjdTJtcgHGXiX2mo90asJ10dirqN8vAIcufqgrr53Uehdqr8c5Ue/6Z5z
-        MlOFALQ2djYy6uISZyMntaS8IM4FCXk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-VEYUBObsMDmN0mj0ozlGgg-1; Thu, 19 Nov 2020 11:02:33 -0500
-X-MC-Unique: VEYUBObsMDmN0mj0ozlGgg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 23CF3101C7D9;
-        Thu, 19 Nov 2020 16:02:31 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.164])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6CE715D76F;
-        Thu, 19 Nov 2020 16:02:22 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 19 Nov 2020 17:02:30 +0100 (CET)
-Date:   Thu, 19 Nov 2020 17:02:21 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/2] powerpc/ptrace: simplify gpr_get/tm_cgpr_get
-Message-ID: <20201119160221.GA5188@redhat.com>
-References: <20201119160154.GA5183@redhat.com>
+        Thu, 19 Nov 2020 11:02:39 -0500
+Received: by mail-wr1-f65.google.com with SMTP id d12so6912861wrr.13;
+        Thu, 19 Nov 2020 08:02:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FqJuuO3oFn6sc/Mabmp5niVjk2ercB6QBinOywxH+ks=;
+        b=l5+aqI5yDwJ/ehm5eiYYZkPLj3ODVOJmhoeibWh7pNCreBML5+Y3rsgFk5/bZrNKhJ
+         azMWSKdONkVMGlRlyOK2LCRSabCz+c8/9d2XUkh6v3dFwsYzhikpw+0lfSzrFGmEI3Gn
+         vTJU1dXIilipjz2OqnqRL0zAdKhyj2AfUcnRel1iKXESgrjmvWbUB+B5lvC3txl5uPqH
+         haqt1KyDsYRrh9BFq5INl8KJEi97rY7r7O4XVrYQHN4lhUNkKEYaJ62VDDKuo1vA2Hag
+         aCI5nkbGM+6r/QmaE9yiy5zzGebyQ8awo8BKL80fq4xhzP2EfGjwzKY8w0xP27QVC9Ip
+         RhRA==
+X-Gm-Message-State: AOAM530TbJVlaRDtHjBZ154HDAyQV/9b3oCW0829qquy4XMBpT8sLoBu
+        WJbkRMW+NG7tEEsLz/8vtgxeUF7/ZR8SKj827/w=
+X-Google-Smtp-Source: ABdhPJyqXkX+sDUCwwrazynaCVBYxhiPLqFOBXd9WLXRmj9HZ2tPiUn4Fzs2uZyXy90b6V2FfuCYDA==
+X-Received: by 2002:a5d:518e:: with SMTP id k14mr10966143wrv.253.1605801757038;
+        Thu, 19 Nov 2020 08:02:37 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id h17sm300396wrp.54.2020.11.19.08.02.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 08:02:36 -0800 (PST)
+Date:   Thu, 19 Nov 2020 17:02:35 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     Jisheng.Zhang@synaptics.com, jingoohan1@gmail.com,
+        gustavo.pimentel@synopsys.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: dwc: fix error return code in dw_pcie_host_init()
+Message-ID: <X7aXG6kC5zZWlpqg@rocinante>
+References: <20201117064142.32903-1-wanghai38@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201119160154.GA5183@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20201117064142.32903-1-wanghai38@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gpr_get() does membuf_write() twice to override pt_regs->msr in between.
-We can call membuf_write() once and change ->msr in the kernel buffer,
-this simplifies the code and the next fix.
+Hi Hai,
 
-The patch adds a new simple helper, membuf_at(offs), it returns the new
-membuf which can be safely used after membuf_write().
+Thank you for taking care about this.
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- arch/powerpc/kernel/ptrace/ptrace-tm.c   | 13 +++++--------
- arch/powerpc/kernel/ptrace/ptrace-view.c | 13 +++++--------
- include/linux/regset.h                   | 12 ++++++++++++
- 3 files changed, 22 insertions(+), 16 deletions(-)
+On 20-11-17 14:41:42, Wang Hai wrote:
 
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-tm.c b/arch/powerpc/kernel/ptrace/ptrace-tm.c
-index 54f2d076206f..f8fcbd85d4cb 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-tm.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-tm.c
-@@ -86,6 +86,8 @@ int tm_cgpr_active(struct task_struct *target, const struct user_regset *regset)
- int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
- 		struct membuf to)
- {
-+	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
-+
- 	if (!cpu_has_feature(CPU_FTR_TM))
- 		return -ENODEV;
- 
-@@ -97,17 +99,12 @@ int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
- 	flush_altivec_to_thread(target);
- 
- 	membuf_write(&to, &target->thread.ckpt_regs,
--			offsetof(struct pt_regs, msr));
--	membuf_store(&to, get_user_ckpt_msr(target));
-+				sizeof(struct user_pt_regs));
- 
--	BUILD_BUG_ON(offsetof(struct pt_regs, orig_gpr3) !=
--		     offsetof(struct pt_regs, msr) + sizeof(long));
-+	membuf_store(&to_msr, get_user_ckpt_msr(target));
- 
--	membuf_write(&to, &target->thread.ckpt_regs.orig_gpr3,
--			sizeof(struct user_pt_regs) -
--			offsetof(struct pt_regs, orig_gpr3));
- 	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
--			sizeof(struct user_pt_regs));
-+				sizeof(struct user_pt_regs));
- }
- 
- /*
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-view.c b/arch/powerpc/kernel/ptrace/ptrace-view.c
-index 7e6478e7ed07..39686ede40b3 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-view.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-view.c
-@@ -217,6 +217,7 @@ int ptrace_put_reg(struct task_struct *task, int regno, unsigned long data)
- static int gpr_get(struct task_struct *target, const struct user_regset *regset,
- 		   struct membuf to)
- {
-+	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
- 	int i;
- 
- 	if (target->thread.regs == NULL)
-@@ -228,17 +229,13 @@ static int gpr_get(struct task_struct *target, const struct user_regset *regset,
- 			target->thread.regs->gpr[i] = NV_REG_POISON;
- 	}
- 
--	membuf_write(&to, target->thread.regs, offsetof(struct pt_regs, msr));
--	membuf_store(&to, get_user_msr(target));
-+	membuf_write(&to, target->thread.regs,
-+				sizeof(struct user_pt_regs));
- 
--	BUILD_BUG_ON(offsetof(struct pt_regs, orig_gpr3) !=
--		     offsetof(struct pt_regs, msr) + sizeof(long));
-+	membuf_store(&to_msr, get_user_msr(target));
- 
--	membuf_write(&to, &target->thread.regs->orig_gpr3,
--			sizeof(struct user_pt_regs) -
--			offsetof(struct pt_regs, orig_gpr3));
- 	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
--				 sizeof(struct user_pt_regs));
-+				sizeof(struct user_pt_regs));
- }
- 
- static int gpr_set(struct task_struct *target, const struct user_regset *regset,
-diff --git a/include/linux/regset.h b/include/linux/regset.h
-index c3403f328257..a00765f0e8cf 100644
---- a/include/linux/regset.h
-+++ b/include/linux/regset.h
-@@ -46,6 +46,18 @@ static inline int membuf_write(struct membuf *s, const void *v, size_t size)
- 	return s->left;
- }
- 
-+static inline struct membuf membuf_at(const struct membuf *s, size_t offs)
-+{
-+	struct membuf n = *s;
-+
-+	if (offs > n.left)
-+		offs = n.left;
-+	n.p += offs;
-+	n.left -= offs;
-+
-+	return n;
-+}
-+
- /* current s->p must be aligned for v; v must be a scalar */
- #define membuf_store(s, v)				\
- ({							\
--- 
-2.25.1.362.g51ebf55
+I would have to ask you to capitalise the first letter in the subject
+line as it has been done for other patches.  Check Git history to see
+what it normally would look like.
 
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
 
+The above commit message was taken from the first patch, and might not
+be accurate any more.  As now you are passing an error code from the
+dma_mapping_error() function rather than just setting the ret variable.
+
+Also, the ret variable might have either undetermined value or some
+other value from previous assignment, not necessarily 0 there.
+
+Krzysztof
