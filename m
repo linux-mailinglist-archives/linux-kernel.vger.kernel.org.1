@@ -2,175 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2582B99AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A00FE2B99B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729507AbgKSRjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:39:49 -0500
-Received: from brightrain.aerifal.cx ([216.12.86.13]:48366 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729737AbgKSRjp (ORCPT
+        id S1729766AbgKSRkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:40:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729761AbgKSRkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:39:45 -0500
-Date:   Thu, 19 Nov 2020 12:39:42 -0500
-From:   Rich Felker <dalias@libc.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     libc-alpha@sourceware.org, Florian Weimer <fw@deneb.enyo.de>,
-        linux-kernel@vger.kernel.org, Paul Gofman <gofmanp@gmail.com>
-Subject: Re: Kernel prctl feature for syscall interception and emulation
-Message-ID: <20201119173938.GJ534@brightrain.aerifal.cx>
-References: <873616v6g9.fsf@collabora.com>
- <20201119151317.GF534@brightrain.aerifal.cx>
- <87h7pltj9p.fsf@collabora.com>
- <20201119162801.GH534@brightrain.aerifal.cx>
- <87eekpmeux.fsf@collabora.com>
+        Thu, 19 Nov 2020 12:40:12 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9549AC0613CF;
+        Thu, 19 Nov 2020 09:40:12 -0800 (PST)
+Date:   Thu, 19 Nov 2020 17:40:09 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605807610;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6EUwIaTvhKlhY/ECgSJd6ijmLm0pgbclTSXiBzlh9SU=;
+        b=Elhl4/DtU3N1aQ4FpY9dwmuTN3hBCBxgWSFE6AIuxH/iUyJ74Ka83RrGDLzyKaP77F6OD1
+        k6NrMy4SCQs7T287vxoumi5R1Zqs0iTsBIkaupnuNVPiLrWfcjimWSzTnprvAuiP0B9cZx
+        dSPAT7vjCII4TSdaRn4pxNZeswrSnRWDi/bfUBBpV8EVaSeO/UEbeta77sAnRF3H2c2Tw/
+        Orx2+nWzMWMpD/mM3efAKOt8Zc1RghooRqRsW5uzhgsBHW1BV973BGsb86P7gLvDj46lko
+        kyfL02f0VD45J9DHXwFQE1mK4D+dfS1fHyw1vZwWeNEc8ICZJqzSqu6pTb+DuQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605807610;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6EUwIaTvhKlhY/ECgSJd6ijmLm0pgbclTSXiBzlh9SU=;
+        b=u11FErYZJrMx4VQAQKlzHoge0yDkqCzjNKL+3oT+ChT35+RXwzaCzG/NQCa6lIkhRsLceX
+        45ie+4bR/XUXGiAQ==
+From:   "tip-bot2 for Rikard Falkeborn" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cache] x86/resctrl: Constify kernfs_ops
+Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201110230228.801785-1-rikard.falkeborn@gmail.com>
+References: <20201110230228.801785-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87eekpmeux.fsf@collabora.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Message-ID: <160580760905.11244.68091296565115435.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 12:32:54PM -0500, Gabriel Krisman Bertazi wrote:
-> Rich Felker <dalias@libc.org> writes:
-> 
-> > On Thu, Nov 19, 2020 at 11:15:46AM -0500, Gabriel Krisman Bertazi wrote:
-> >> Rich Felker <dalias@libc.org> writes:
-> >> 
-> >> > On Wed, Nov 18, 2020 at 01:57:26PM -0500, Gabriel Krisman Bertazi via Libc-alpha wrote:
-> >> 
-> >> [...]
-> >> 
-> >> >
-> >> > SIGSYS (or signal handling in general) is not the right way to do
-> >> > this. It has all the same problems that came up in seccomp filtering
-> >> > with SIGSYS, and which were solved by user_notif mode (running the
-> >> > interception in a separate thread rather than an async context
-> >> > interrupting the syscall. In fact I wouldn't be surprised if what you
-> >> > want can already be done with reasonable efficiency using seccomp
-> >> > user_notif.
-> >> 
-> >> Hi Rich,
-> >> 
-> >> User_notif was raised in the kernel discussion and we had experimented
-> >> with it, but the latency of user_notif is even worse than what we can do
-> >> right now with other seccomp actions.
-> >
-> > Is there a compelling argument that the latency matters here? What
-> > syscalls are windows binaries making like this? Is there a reason you
-> > can't do something like intercepting the syscall with seccomp the
-> > first time it happens, then rewriting the code not to use a direct
-> > syscall on future invocations?
-> 
-> We can't do any code rewriting without tripping DRM protections and
-> anti-cheating mechanisms.
+The following commit has been merged into the x86/cache branch of tip:
 
-I think you could if you maintained separate versions of the code for
-read vs exec access ala some oldschool hardening tricks, but maybe
-that's not compatible with windows code (or with 64-bit mode?).
-Actually it's rather impressive that an DRM/anti-cheat mess works on
-Wine at all..
+Commit-ID:     2002d2951398317d0f46e64ae6d8dd58ed541c6d
+Gitweb:        https://git.kernel.org/tip/2002d2951398317d0f46e64ae6d8dd58ed541c6d
+Author:        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+AuthorDate:    Wed, 11 Nov 2020 00:02:28 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 19 Nov 2020 18:23:45 +01:00
 
-> I should correct myself here.  While it is true that user_notif is
-> slower than other seccomp actions, this is not a problem in itself.  The
-> frequency of syscalls that need to be emulated is much smaller than
-> regular syscalls, and the performance problem actually appears due to
-> the filtering.  I should investigate user_notif more, but I don't oppose
-> SUD doing user_notif instead of SIGSYS.  I will raise that with Wine
-> developers and the kernel community.
+x86/resctrl: Constify kernfs_ops
 
-Thanks! Avoiding repetition of the SIGSYS pitfall would be a good
-thing.
+The only usage of the kf_ops field in the rftype struct is to pass
+it as argument to __kernfs_create_file(), which accepts a pointer to
+const. Make it a pointer to const. This makes it possible to make
+rdtgroup_kf_single_ops and kf_mondata_ops const, which allows the
+compiler to put them in read-only memory.
 
-> >> Regarding SIGSYS, the x86 maintainer suggested redirecting the syscall
-> >> return to a userspace thunk, but the understanding among Wine developers
-> >> is that SIGSYS is enough for their emulation needs.
-> >
-> > It might work for Wine needs, if Wine can guarantee it will never be
-> > running code with signals blocked and some other constraints, but then
-> > you end up with a mechanism that's designed just for Wine and that
-> > will have gratuitous reasons it's not usable elsewhere. That does not
-> > seem appropriate for inclusion in kernel.
-> >
-> >> > The default-intercept and excepting libc code segment is also bogus,
-> >> > and will break stuff, including vdso syscall mechanism on i386 and any
-> >> > code outside libc that makes its own syscalls from asm. If you need to
-> >> > tag regions to control interception, it should be tagging the emulated
-> >> > Windows guest code, which is bounded and you have full control over,
-> >> > rather than the host code, which is unbounded and includes any
-> >> > libraries that get linked indirectly by Wine.
-> >> 
-> >> The vdso trampoline, for the architectures that have it, is solved by
-> >> the kernel implementation, who makes sure that region is allowed.
-> >
-> > I guess that works but it's ugly and assumes particular policy goals
-> > matching Wine's rather than being a general mechanism.
-> >
-> >> The Linux code is not bounded, but the dispatcher region main goal is to
-> >> support trampolines outside of the vdso case. The correct userspace
-> >> implementation requires flipping the selector on any Windows/Linux code
-> >> boundary cross, exactly because other libraries can issue syscalls
-> >> directly.  The fact that libc is not the only one issuing syscalls is
-> >> the exact reason we need something more complex than a few seccomp
-> >> filters.
-> >
-> > I don't think this is correct. Rather than listing all the host
-> > library code ranges to allow, you just list all the guest Windows code
-> > ranges to intercept. Wine knows them by virtue of being the loader for
-> > them. This all seems really easy to do with seccomp with a very small
-> > filter.
-> 
-> The Windows code is not completely loaded at initialization time.  It
-> also has dynamic libraries loaded later.  yes, wine knows the memory
-> regions, but there is no guarantee there is a small number of segments
-> or that the full picture is known at any given moment.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Reinette Chatre <reinette.chatre@intel.com>
+Link: https://lkml.kernel.org/r/20201110230228.801785-1-rikard.falkeborn@gmail.com
+---
+ arch/x86/kernel/cpu/resctrl/internal.h | 2 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Yes, I didn't mean it was known statically at init time (although
-maybe it can be; see below) just that all the code doing the loading
-is under Wine's control (vs having system dynamic linker doing stuff
-it can't reliably see, which is the case with host libraries).
-
-> >> > But I'm skeptical that doing any new kernel-side logic for tagging is
-> >> > needed. Seccomp already lets you filter on instruction pointer so you
-> >> > can install filters that will trigger user_notif just for guest code,
-> >> > then let you execute the emulation in the watcher thread and skip the
-> >> > actual syscall in the watched thread.
-> >> 
-> >> As I mentioned, we can check IP in seccomp and write filters.  But this
-> >> has two problems:
-> >> 
-> >> 1) Performance.  seccomp filters use cBPF which means 32bit comparisons,
-> >> no maps and a very limited instruction set.  We need to generate
-> >> boundary checks for each memory segment.  The filter becomes very large
-> >> very quickly and becomes a observable bottleneck.
-> >
-> > This sounds like you're doing something wrong. Range checking is O(log
-> > n) and n cannot be large enough to make log n significant. If you do
-> > it with a linear search rather than binary then of course it's slow.
-> 
-> And SUD is O(1).  The filtering overhead is the big point here.  The
-
-OK, but for practical purposes O(log n) == O(1).
-
-> >> 2) Seccomp filters cannot be removed.  And we'd need to update them
-> >> frequently.
-> >
-> > What are the updating requirements?
-> 
-> As far as I understand (I'm not a wine developer), they need to remove
-> and modify filters.  Given seccomp is a security feature, It would be a
-> hard sell to support these operations. We discussed this on the kernel
-> list.
-> 
-> > I'm not sure if Windows code is properly PIC or not, but if it is,
-> > then you just do your own address assignment in a single huge range
-> > (first allocated with PROT_NONE, then MAP_FIXED over top of it) so
-> > that a single static range check suffices.
-> 
-> I'm Cc'ing some wine developers who can assist with this point.
-
-Great!
-
-Rich
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 6cb068f..5540b02 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -264,7 +264,7 @@ void __exit rdtgroup_exit(void);
+ struct rftype {
+ 	char			*name;
+ 	umode_t			mode;
+-	struct kernfs_ops	*kf_ops;
++	const struct kernfs_ops	*kf_ops;
+ 	unsigned long		flags;
+ 	unsigned long		fflags;
+ 
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index af323e2..78dcbb8 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -240,13 +240,13 @@ static ssize_t rdtgroup_file_write(struct kernfs_open_file *of, char *buf,
+ 	return -EINVAL;
+ }
+ 
+-static struct kernfs_ops rdtgroup_kf_single_ops = {
++static const struct kernfs_ops rdtgroup_kf_single_ops = {
+ 	.atomic_write_len	= PAGE_SIZE,
+ 	.write			= rdtgroup_file_write,
+ 	.seq_show		= rdtgroup_seqfile_show,
+ };
+ 
+-static struct kernfs_ops kf_mondata_ops = {
++static const struct kernfs_ops kf_mondata_ops = {
+ 	.atomic_write_len	= PAGE_SIZE,
+ 	.seq_show		= rdtgroup_mondata_show,
+ };
