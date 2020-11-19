@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87E22B95AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABDF2B95AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgKSPC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:02:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgKSPC0 (ORCPT
+        id S1728214AbgKSPEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:04:33 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:45924 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727309AbgKSPEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:02:26 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A45C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:02:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QXCOSnjJzv6+kMylUuxg36Vf5y0gSWMInG77AGsBW0Q=; b=D953w/npFj813PHioY+cJ1N7YX
-        ua66cINcF/HMqAlrOB3UwB+1jvH11hos+HiAioAyC2aq5+9IOfv/2jxoKZlRZprQIhlSyPWt0SXuH
-        kxDFGFVJYj+8WTj0Ld7dV9bEJExpzmKxPh00Lc36rGchpFjBK94PYSkwX/1tB+soMh52HnlpjKe2r
-        z7rmuLjzEtLYHqIBs/MWqsHlFVyKhYcl6hfTxXFRzvHwI+Mmc+xJknokKjLYfFkifrX3XF4nynd0n
-        FJslcnfTYiVS6hDiAJiFsuidMteCCEI9NMdvlEp2mp/71rGfBFF0FtGWeCscsoZ8O3VTNCtVbDtFf
-        C1MR26jg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kflRz-000207-6x; Thu, 19 Nov 2020 15:02:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 34B90300F7A;
-        Thu, 19 Nov 2020 16:02:17 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DCF89200E0A45; Thu, 19 Nov 2020 16:02:17 +0100 (CET)
-Date:   Thu, 19 Nov 2020 16:02:17 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: Deadlock cpuctx_mutex / pmus_lock / &mm->mmap_lock#2
-Message-ID: <20201119150217.GH3121429@hirez.programming.kicks-ass.net>
-References: <1185a97a-3780-3bce-d97d-ff9c2830e35d@gmail.com>
- <20201119130244.GN3121392@hirez.programming.kicks-ass.net>
- <160579231162.30679.12645532537616868812@build.alporthouse.com>
- <20201119141914.GO3121392@hirez.programming.kicks-ass.net>
+        Thu, 19 Nov 2020 10:04:32 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJEsLhu178597;
+        Thu, 19 Nov 2020 15:03:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=3iuJfllWNDFpqOP3OVs2BGzQRlYzNjiqptp4PKzPruQ=;
+ b=DiaP0WjOqSq2NAlRahxAGjn4veMBSzfQFPzrijjpUV4Y0fYlYG4PaIk86y+mAvvk6CNh
+ LpTBs6nzZVaqXeueHMNb/COo/L43wgNtyv5ukmziJYzHbVPa1V9719+7eAYXW4Zy8VMl
+ oT709r3b/Rn+DBWqdP5qK1BgE7mZP6czBTpsnjup7JaxPf8FQVMLa62D67/w6g/uMJyV
+ ygLNeF4rKyK/Eg1xhtyUzghLZCRisrzvQld76u5PtUcn6sVuqugXslAdaAYewjeKGwWD
+ TEq1NCpMJFaZDdlu2mkHL0Cgz+SfIXPm8dqwogj6cFuyOaWZPiwKyz4AM7HKto47JR0x jQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 34t4rb5y65-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Nov 2020 15:03:48 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJEtNIN138932;
+        Thu, 19 Nov 2020 15:03:47 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 34umd22n8a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Nov 2020 15:03:47 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AJF3iaO013403;
+        Thu, 19 Nov 2020 15:03:44 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 19 Nov 2020 07:03:43 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     salyzyn@google.com, kernel-team@android.com,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        saravanak@google.com, asutoshd@codeaurora.org,
+        Can Guo <cang@codeaurora.org>, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Subject: Re: [PATCH] scsi: ufs: Make sure clk scaling happens only when hba is runtime ACTIVE
+Date:   Thu, 19 Nov 2020 10:03:41 -0500
+Message-Id: <160579821161.27938.15426150263135159232.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <1600758548-28576-1-git-send-email-cang@codeaurora.org>
+References: <1600758548-28576-1-git-send-email-cang@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119141914.GO3121392@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011190113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 03:19:14PM +0100, Peter Zijlstra wrote:
-> On Thu, Nov 19, 2020 at 01:25:11PM +0000, Chris Wilson wrote:
-> > Quoting Peter Zijlstra (2020-11-19 13:02:44)
-> > > 
-> > > Chris, I suspect this is due to i915 calling stop machine with all sorts
-> > > of locks held. Is there anything to be done about this? stop_machine()
-> > > is really nasty to begin with.
-> > > 
-> > > What problem is it typing to solve?
-> > 
-> > If there is any concurrent access through a PCI bar (that is exported to
-> > userspace via mmap) as the GTT is updated, results in undefined HW
-> > behaviour (where that is not limited to users writing to other system
-> > pages).
-> > 
-> > stop_machine() is the most foolproof method we know that works.
+On Tue, 22 Sep 2020 00:09:04 -0700, Can Guo wrote:
+
+> If someone plays with the UFS clk scaling devfreq governor through sysfs,
+> ufshcd_devfreq_scale may be called even when hba is not runtime ACTIVE,
+> which can lead to unexpected error. We cannot just protect it by calling
+> pm_runtime_get_sync, because that may cause racing problem since hba
+> runtime suspend ops needs to suspend clk scaling. In order to fix it, call
+> pm_runtime_get_noresume and check hba's runtime status, then only proceed
+> if hba is runtime ACTIVE, otherwise just bail.
 > 
-> Sorry, I don't understand. It tries to do what? And why does it need to
-> do that holding locks.
-> 
-> Really, this is very bad form.
+> [...]
 
-Having poked around at the code; do I get it correct that this is using
-stop-machine to set IOMMU page-table entries, because the hardware
-cannot deal with two CPUs writing to the same device page-tables; which
-would be possible because that memory is exposed through PCI bars?
+Applied to 5.10/scsi-fixes, thanks!
 
-Can't you simply exclude that memory from being visible through the PCI
-bar crud? Having to use stop-machine seems tragic, doubly so because
-nobody should actually be having that memory mapped in the first place.
+[1/1] scsi: ufs: Make sure clk scaling happens only when HBA is runtime ACTIVE
+      https://git.kernel.org/mkp/scsi/c/73cc291c2702
 
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
