@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F502B9795
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8A42B9799
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgKSQQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:16:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbgKSQQQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:16:16 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F71AC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:16:16 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfmbU-0004Lm-0h; Thu, 19 Nov 2020 17:16:12 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfmbT-0003pA-ND; Thu, 19 Nov 2020 17:16:11 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 3/3] spi: Warn when a driver's remove callback returns an error
-Date:   Thu, 19 Nov 2020 17:16:04 +0100
-Message-Id: <20201119161604.2633521-3-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201119161604.2633521-1-u.kleine-koenig@pengutronix.de>
-References: <20201119161604.2633521-1-u.kleine-koenig@pengutronix.de>
+        id S1727807AbgKSQR0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Nov 2020 11:17:26 -0500
+Received: from smtp.asem.it ([151.1.184.197]:50036 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725877AbgKSQRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:17:25 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000619548.MSG 
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 17:17:21 +0100
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
+ Nov 2020 17:17:20 +0100
+Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
+ mapi id 15.01.1979.003; Thu, 19 Nov 2020 17:17:20 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v1] docs: ACPI: enumeration: add PCI hierarchy
+ representation
+Thread-Topic: [PATCH v1] docs: ACPI: enumeration: add PCI hierarchy
+ representation
+Thread-Index: AQHWvlyAjXLlwduncU2KU0iBvT+xrKnPO2CAgABk9nA=
+Date:   Thu, 19 Nov 2020 16:17:19 +0000
+Message-ID: <9b5ab860bb77427892edbe443889a006@asem.it>
+References: <20201119101233.701918-1-f.suligoi@asem.it>
+ <20201119110921.GB4077@smile.fi.intel.com>
+In-Reply-To: <20201119110921.GB4077@smile.fi.intel.com>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.17.208]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A090214.5FB69A90.0068,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver core ignores the return value of struct device_driver::remove
-(because in general there is nothing that can be done about that). So
-add a warning when an spi driver returns an error.
+Hi Andy!
 
-This simplifies the quest to make struct device_driver::remove return void.
-A consequent change would be to make struct spi_driver::remove return void,
-but I'm keeping this quest for later (or someone else).
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/spi/spi.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+> On Thu, Nov 19, 2020 at 11:12:33AM +0100, Flavio Suligoi wrote:
+> 
+> Thank you very much for nice piece of documentation!
+> My comments below.
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index e8c0a000ee19..6b7c19bf7715 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -408,13 +408,20 @@ static int spi_probe(struct device *dev)
- static int spi_remove(struct device *dev)
- {
- 	const struct spi_driver		*sdrv = to_spi_driver(dev->driver);
--	int ret = 0;
- 
--	if (sdrv->remove)
-+	if (sdrv->remove) {
-+		int ret;
-+
- 		ret = sdrv->remove(to_spi_device(dev));
-+		if (ret)
-+			dev_warn(dev,
-+				 "Failed to unbind driver (%pe), ignoring\n",
-+				 ERR_PTR(ret));
-+	}
-+
- 	dev_pm_domain_detach(dev, true);
- 
--	return ret;
-+	return 0;
- }
- 
- static void spi_shutdown(struct device *dev)
--- 
-2.28.0
+Thanks for your suggestions! I'll use them in the next version
+of the patch!
 
+> > +particular the DSDT (see also [2])::
+> 
+> > +	cd /sys/firmware/acpi
+> > +	cp -a tables/ ~
+> > +	cd ~/tables/
+> 
+> acpidump followed by acpixtract from ACPI tools is better to advertise.
+
+Ok, I'll use acpixtract
+
+> 
+> > +	find . -type f -exec mv {} {}.aml \;
+> 
+> Unnecessary step. But I think you wanted to have it to distinguish sources
+> and
+> binaries in the text below.
+
+Right, I think that is important include the SSDT tables for external
+symbol resolution. For this reason I renamed the binary tables, to
+use the following command:
+
+> > +	iasl -e SSDT?.* -d DSDT.aml
+
+> --
+> With Best Regards,
+> Andy Shevchenko
+> 
+
+Best regards,
+Flavio
