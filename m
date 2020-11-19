@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C0E2B923D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A93892B923F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727187AbgKSMLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:11:49 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24322 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726860AbgKSMLs (ORCPT
+        id S1727229AbgKSMM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:12:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726860AbgKSMM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:11:48 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJC2NJ5086457;
-        Thu, 19 Nov 2020 07:11:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=iyU21aQmMQey/jdmhEXsxXVUZJgvfWQLOibvrBCl8Uw=;
- b=Z6kP2hpZznJq0TBB9Y6027Q3ud/P48N3M6YKY8QPU36Ux1tQJO6QdUnDax49rj98wN0l
- omFD+yfcpRoWlCoo4+6h88qdqOWXls9zKAmkFFc+i6FO0bZZah9x/zVcHixVS6oeBguZ
- O9mIZ8Vpw2Iv5vRcvY9EF1jJ7Qs3aHDBhBp1gCnC1aTxHI1ftnyiySmTb1Wpf/UB1969
- MOwkUzVpX4qFQxH4lWfOgtY55b6eJBPAw8aSn595L+5olzsH/JdGlRWX2GmxkV5NGFNF
- LZTmbIn+3XWH6GhTUYyjm0zItIuzbkcckXkLWdhHjaImZ6vPrXOqQaWYvsG6JNTLbGOm mw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34wg5s5n8b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 07:11:46 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AJC2bV3087715;
-        Thu, 19 Nov 2020 07:11:46 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34wg5s5n7h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 07:11:46 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AJCBV4C004320;
-        Thu, 19 Nov 2020 12:11:44 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03fra.de.ibm.com with ESMTP id 34t6v82pnx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 12:11:44 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AJCBgpP9830928
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Nov 2020 12:11:42 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 84CB7A405C;
-        Thu, 19 Nov 2020 12:11:42 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5FBEFA4054;
-        Thu, 19 Nov 2020 12:11:42 +0000 (GMT)
-Received: from [9.145.59.141] (unknown [9.145.59.141])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Nov 2020 12:11:42 +0000 (GMT)
-Subject: Re: [PATCH] gcov: fix kernel-doc markup issue
-To:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <1605252352-63983-1-git-send-email-alex.shi@linux.alibaba.com>
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-Message-ID: <13e07309-45dc-af6f-7e71-b9cc11a28b11@linux.ibm.com>
-Date:   Thu, 19 Nov 2020 13:11:42 +0100
+        Thu, 19 Nov 2020 07:12:26 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF04CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 04:12:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l3xEnAx4q8O0EP6AAD5sJP833p89scGo7JAtlQmqAnM=; b=sWVv8WMZgyy6TyKuaeo5wkfASG
+        Q25ZE2SOW/e9952expcHVgWvFp0TgKBiz3YJIwgmsW1vdtynDYk0HY2FaMlN1X0k+a4NttdR+SVrk
+        X53X+Iw+NF0AcWtvAUH492STL35zM4HXfHg2PJ++A+yXmLTUGWRGoT5tlVbT+JXHAWieIUSenrL72
+        mP839E/mJJ/b/KHeeAcqzjG1m//HTx54i9l/QwUSS0ldDexD3kdcYPECxpkJage+sWSWhowFa8TTE
+        1f8teRtm4q47way9aJ1g+eOqBnG7szbh3Ti5OR/lGa+m6L1ZJL3TlYxf1q+bBqvRdCOgGZf50nNP1
+        5mRXf/AQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kfinC-0003Ro-Mz; Thu, 19 Nov 2020 12:12:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 32AEA306BCA;
+        Thu, 19 Nov 2020 13:12:01 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F3BB120126362; Thu, 19 Nov 2020 13:12:00 +0100 (CET)
+Date:   Thu, 19 Nov 2020 13:12:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [patch V4 5/8] sched: highmem: Store local kmaps in task struct
+Message-ID: <20201119121200.GG3121429@hirez.programming.kicks-ass.net>
+References: <20201118194838.753436396@linutronix.de>
+ <20201118204007.372935758@linutronix.de>
+ <20201119115132.GN3121378@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <1605252352-63983-1-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_08:2020-11-19,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=1 mlxlogscore=999 phishscore=0 clxscore=1015
- priorityscore=1501 impostorscore=0 spamscore=0 bulkscore=0 mlxscore=0
- malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011190087
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119115132.GN3121378@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.11.2020 08:25, Alex Shi wrote:
-> Fix the following kernel-doc issue in gcov:
-> kernel/gcov/gcc_4_7.c:238: warning: Function parameter or member 'dst'
-> not described in 'gcov_info_add'
-> kernel/gcov/gcc_4_7.c:238: warning: Function parameter or member 'src'
-> not described in 'gcov_info_add'
-> kernel/gcov/gcc_4_7.c:238: warning: Excess function parameter 'dest'
-> description in 'gcov_info_add'
-> kernel/gcov/gcc_4_7.c:238: warning: Excess function parameter 'source'
-> description in 'gcov_info_add'
+On Thu, Nov 19, 2020 at 12:51:32PM +0100, Peter Zijlstra wrote:
+> On Wed, Nov 18, 2020 at 08:48:43PM +0100, Thomas Gleixner wrote:
 > 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
-> Cc: linux-kernel@vger.kernel.org
+> > @@ -4073,6 +4089,7 @@ prepare_task_switch(struct rq *rq, struc
+> >  	perf_event_task_sched_out(prev, next);
+> >  	rseq_preempt(prev);
+> >  	fire_sched_out_preempt_notifiers(prev, next);
+> > +	kmap_local_sched_out();
+> >  	prepare_task(next);
+> >  	prepare_arch_switch(next);
+> >  }
+> > @@ -4139,6 +4156,7 @@ static struct rq *finish_task_switch(str
+> >  	finish_lock_switch(rq);
+> >  	finish_arch_post_lock_switch();
+> >  	kcov_finish_switch(current);
+> > +	kmap_local_sched_in();
+> >  
+> >  	fire_sched_in_preempt_notifiers(current);
+> >  	/*
+> 
+> > +void __kmap_local_sched_out(void)
+> > +{
+> > +	struct task_struct *tsk = current;
+> > +	pte_t *kmap_pte = kmap_get_pte();
+> > +	int i;
+> > +
+> > +	/* Clear kmaps */
+> > +	for (i = 0; i < tsk->kmap_ctrl.idx; i++) {
+> > +	}
+> > +}
+> > +
+> > +void __kmap_local_sched_in(void)
+> > +{
+> > +	struct task_struct *tsk = current;
+> > +	pte_t *kmap_pte = kmap_get_pte();
+> > +	int i;
+> > +
+> > +	/* Restore kmaps */
+> > +	for (i = 0; i < tsk->kmap_ctrl.idx; i++) {
+> > +	}
+> > +}
+> 
+> So even in the optimal case, this adds an unconditional load of
+> tsk->kmap_ctrl.idx to schedule() (2 misses, one pre and one post).
+> 
+> Munging preempt-notifiers behind a static_branch, which in that same
+> optimal case, avoided touching curr->preempt_notifier, resulted in a
+> measurable performance improvement. See commit:
+> 
+>   1cde2930e154 ("sched/preempt: Add static_key() to preempt_notifiers")
+> 
+> Can we fudge some state in a cacheline we're already touching to avoid
+> this?
 
-Looks good - thanks for the fix!
+The only state we seem to consistently look at after schedule() is
+need_resched()'s TIF_NEED_RESCHED.
 
-Acked-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+But adding a TIF_flag to all archs and setting/clearing it from
+kmap_local might be a bit daft.. :/
 
-Andrew, could you add this patch via your tree?
-
-
-Regards,
-  Peter
-
--- 
-Peter Oberparleiter
-Linux on Z Development - IBM Germany
