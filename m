@@ -2,91 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349602B8F21
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 026152B8F25
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgKSJiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:38:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725873AbgKSJiM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:38:12 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406FDC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:38:12 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id y16so5554489ljk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:38:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=erCajAw+jtgnhi3473cQeq7vjXLR3UGq4IbrHE7urh0=;
-        b=HpaZyvid9ojpitjh7JCCKcoFzB2wW4JWmg3+l3+0GJliD6wduqOxBkcQ/FN+fSQ+7Y
-         bgFGUcOmw8Ag5sodGTi2y+3Jo7KcVPLBUS3Twf2GyvV1OHbvW7XwNidsETOCq2GKPSQE
-         KhMLb/BACMK50tsWQErCJ3dhwJFduTlIYh2NdmM3pnOySTk535jiaOxM3as1s12WlTgN
-         s1vYNoSSbM5kr1fsq3ISOVfCgDi4hNdCjcJAF6haP6SC2nWrMtujvrG/rgcvJo6NtywH
-         3cUPQ+U/HimQUCyFdWrTF5K8NpfvpfjM7J36MdFrqYbUtDw3bJy14bVJB4wbs9k78dUH
-         B5yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=erCajAw+jtgnhi3473cQeq7vjXLR3UGq4IbrHE7urh0=;
-        b=hoJOR6FWdbGT/VDz8Qum/igKO33uA7xAU7F9xgSPstVaOtoX7xGE2l9sOeao9jkDdL
-         BrxiFD9Jh19QJK+AOwG6sPB/iZFnkwjB75bD7w+AlKDQokh4MmsoihQLcSMzwczYRwMp
-         PJbuzNuDVoDr8lmisDLWSrp0J55rSKRwy/wysbnf0LFr0c7e6hLekUenWPS0CvCgIBmG
-         wyLTucwBECTOCHGECswf4cULKGl/GtUhJt8kyzH7l+01+oRhNExEguf1DpF3nkIYPFZl
-         sD1Mx/qsBFa/KnNG5uvVfZqe8A6S01i9apgEihqsOOJaScmjRPKMmODe7iw+k8iPWo7O
-         0v6g==
-X-Gm-Message-State: AOAM533fuv1jwkOdSJPp2s8qEzppaHj3JirOJt1A/+PA21tsXNGLnedv
-        s0/157wzyeIr6Rmwt25cc+xqTZVvirOzc+BgaEc=
-X-Google-Smtp-Source: ABdhPJw8nNTXY4RbDgCHBPbKOFg2g2wRLPpfxG+Xe2Cdmq9FRF4tJTasdB1tmZOW5+rR3xPqmhD+KO36T/TCwZTT2Z0=
-X-Received: by 2002:a2e:9893:: with SMTP id b19mr5468402ljj.99.1605778690663;
- Thu, 19 Nov 2020 01:38:10 -0800 (PST)
+        id S1726530AbgKSJik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:38:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56340 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726385AbgKSJij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 04:38:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A2886AC59;
+        Thu, 19 Nov 2020 09:38:37 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 09:38:34 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [patch V4 4/8] sched: Make migrate_disable/enable() independent
+ of RT
+Message-ID: <20201119093834.GH3306@suse.de>
+References: <20201118194838.753436396@linutronix.de>
+ <20201118204007.269943012@linutronix.de>
 MIME-Version: 1.0
-Reply-To: oliviaeorge@hotmail.com
-Sender: psiepaulmartinien@gmail.com
-Received: by 2002:a05:651c:106c:0:0:0:0 with HTTP; Thu, 19 Nov 2020 01:38:10
- -0800 (PST)
-From:   George Olivia <oliviaeorge@gmail.com>
-Date:   Thu, 19 Nov 2020 02:38:10 -0700
-X-Google-Sender-Auth: 0JW7e6Dw4SU5IyF609lSj93vwSk
-Message-ID: <CAGU6fqE6+EifT3E6g38f5fDTnsB=g5kNtOBG7mQ0QXx_6gnAdA@mail.gmail.com>
-Subject: I wish you read my mail in a good heart.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Disposition: inline
+In-Reply-To: <20201118204007.269943012@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With due respect, I am Mrs. George Olivia; I have decided to donate
-what I have to  Motherless babies/Less privileged/Widows' because I am
-dying and diagnosed for cancer for about 4 years ago. I have been
-touched by God Almighty to donate from what I have inherited from my
-late husband to you for good work of God Almighty. I have asked
-Almighty God to forgive me and believe he has, because he is a
-Merciful God I will be going in for an operation surgery soon.
 
-I decided to donate the sum of ($ 8.1 million DOLLARS) to you for the
-good work of God Almighty for you to help the motherless and less
-privilege and also forth assistance of the widows. At the moment I
-cannot take any telephone calls right now due to the fact that my
-relatives (that have squandered the funds gave them for this purpose
-before) are around me and my health status also. I have adjusted my
-will.
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I wish you all the best and May the good Lord bless you abundantly,
-and please use the funds judiciously and always extend the good work
-to others. As soon as you get back to me, I shall give you info on
-what I need from you, then you will contact the bank and tell them I
-have willed those properties to you by quoting my personal file
-routing and account information. And I have also notified the bank
-that I am willing that properties to you for a good, effective and
-prudent work. I know I don't know you but I have been directed to do
-this by God Almighty.
+On Wed, Nov 18, 2020 at 08:48:42PM +0100, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+>=20
+> Now that the scheduler can deal with migrate disable properly, there is no
+> real compelling reason to make it only available for RT.
+>=20
+> There are quite some code pathes which needlessly disable preemption in
+> order to prevent migration and some constructs like kmap_atomic() enforce
+> it implicitly.
+>=20
+> Making it available independent of RT allows to provide a preemptible
+> variant of kmap_atomic() and makes the code more consistent in general.
+>=20
+> FIXME: Rework the comment in preempt.h - Peter?
+>=20
 
-If you are interested in carrying out this task, get back to me for
-more details on this noble project of mine.
+I didn't keep up to date and there is clearly a dependency on patches in
+tip for migrate_enable/migrate_disable . It's not 100% clear to me what
+reworking you're asking for but then again, I'm not Peter!
 
-Yours Faithfully,
-Mrs. George Olivia
+=46rom tip;
+
+/**
+ * migrate_disable - Prevent migration of the current task
+ *
+ * Maps to preempt_disable() which also disables preemption. Use
+ * migrate_disable() to annotate that the intent is to prevent migration,
+ * but not necessarily preemption.
+ *
+ * Can be invoked nested like preempt_disable() and needs the corresponding
+ * number of migrate_enable() invocations.
+ */
+
+I assume that the rework is to document the distinction between
+migrate_disable and preempt_disable() because it may not be clear to some
+people why one should be used over another and the risk of cut&paste
+cargo cult programming.
+
+So I assume the rework is for the middle paragraph
+
+ * Maps to preempt_disable() which also disables preemption. Use
+ * migrate_disable() to annotate that the intent is to prevent migration,
+ * but not necessarily preemption. The distinction is that preemption
+ * disabling will protect a per-cpu structure from concurrent
+ * modifications due to preemption. migrate_disable partially protects
+ * the tasks address space and potentially preserves the TLB entries
+ * even if preempted such as an needed for a local IO mapping or a
+ * kmap_atomic() referenced by on-stack pointers to avoid interference
+ * between user threads or kernel threads sharing the same address space.
+
+I know it can have other examples that are rt-specific and some tricks on
+percpu page alloc draining that relies on a combination of migrate_disable
+and interrupt disabling to protect the structures but the above example
+might be understandable to a non-RT audience.
+
+--=20
+Mel Gorman
+SUSE Labs
+
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEElcbIJ2qkxLDKryriKjSY26pIcMkFAl+2PRoACgkQKjSY26pI
+cMnvPgf8C0Rz6379u3SiizulY/2x+DGd943six/cqbAevyKsHg44fG6DLNobVUIY
+vzIcm+xG8K3Y6JoLem7YN05cIW8ex36spIKu3Efjc5f7jnrr+kpkJ4iM9M6P1o32
+UnEXwAJrONi/DpJxyNT/oWhAsyvPiHam/XeOL+b6w6OuUclG4z/zWSVaWIoE1l6t
+kiTuAXrLRNeY7oUk4tWLd/eFSj+IqGB/te3+d/MO/rS4uKE6CArLpmvH0X/TcvGC
+su9aEnObX/kRphCpcAXH+DBaiVryoC1G8k6GQYhG6ymlksq3jNpfidB9zwsgJee8
+KgH+bSJw22QhfZjni+fv63YXgTjpyQ==
+=600v
+-----END PGP SIGNATURE-----
+
+--HcAYCG3uE/tztfnV--
