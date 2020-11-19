@@ -2,102 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069122B8CAC
+	by mail.lfdr.de (Postfix) with ESMTP id 74C822B8CAD
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgKSH47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:56:59 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:51582 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725877AbgKSH46 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:56:58 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJ7llaD016520;
-        Thu, 19 Nov 2020 08:56:46 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type : content-id :
- content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=LZmy/q8OG+YP+knBreOKw8LvxF/u+yMxTz+nQ0yAExw=;
- b=Nf5HVRPo5Zg4ge9qzpZU8dp33kE8JtRhcqiq1DLhF1/S9SIauRyw04rA0zvp0pv5yHrU
- uGKhcCcYegn6EjLdWeOWALfB31GUFK1B6ROSozlTF26BQPhSyfwl9lsx3b9zq0CnESMs
- tO61DVq1uH2zJMU5IqIcYP9zGxnDuuXmG9qvXrAUJLYKh7ZI55f1PVAYbcYxrdo1H4Ot
- WBaAS/FTR05o9jQWNLy8LIsFHAXvCWAkeJmiklz8c2fWlpYfVTro9lT3CXPHyCU5cI0T
- GatlvcPw2yXabXxeczisiCkgy9M2GrX3JNLLgq6hhyFI+mt0pq0894MuKAHCFTp5Ml2h Gw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34t5w25n2r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 08:56:46 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4322C100034;
-        Thu, 19 Nov 2020 08:56:46 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 35C1922E87C;
-        Thu, 19 Nov 2020 08:56:46 +0100 (CET)
-Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Nov
- 2020 08:56:46 +0100
-Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
- SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
- 15.00.1473.003; Thu, 19 Nov 2020 08:56:46 +0100
-From:   Patrice CHOTARD <patrice.chotard@st.com>
-To:     Alain Volmat <avolmat@me.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        id S1726457AbgKSH5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:57:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725877AbgKSH5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 02:57:31 -0500
+Received: from kernel.org (unknown [77.125.7.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 418E52220B;
+        Thu, 19 Nov 2020 07:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605772650;
+        bh=gOXz1u76tWhkvKp6lt1lxVqTdmPvAJOuOUyzXoABdes=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BrazXTMrRpQpk3FBERDS4HgvufWUdlOuxH113+vXxRKCyNjPiwCeJ8499H4Ot3JWk
+         xTAEuBPVpEglWKCNb36P/Hlu63w2G19v65+QiqIwdJ8NgP/QO9ylojUT/HuKKUKNXl
+         mVaeJ74KLAyTUymZt1ZzNTR9XmHV2pE+3d6+H4wg=
+Date:   Thu, 19 Nov 2020 09:57:22 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Will Deacon <will@kernel.org>,
+        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] reset: sti: reset-syscfg: fix struct description warnings
-Thread-Topic: [PATCH] reset: sti: reset-syscfg: fix struct description
- warnings
-Thread-Index: AQHWf9ajUS1GG2kbV0GxVIxTwjD+g6nPgpoA
-Date:   Thu, 19 Nov 2020 07:56:45 +0000
-Message-ID: <295ebff6-e00c-878e-8fbd-f3d9883ed192@st.com>
-References: <20200831203804.6568-1-avolmat@me.com>
-In-Reply-To: <20200831203804.6568-1-avolmat@me.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.46]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E99A916D3048CB4597144524E3C58112@st.com>
-Content-Transfer-Encoding: base64
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] arm64: mm: add support for memmap kernel parameters
+Message-ID: <20201119075722.GC8537@kernel.org>
+References: <20201118063314.22940-1-song.bao.hua@hisilicon.com>
+ <20201118173854.GA8537@kernel.org>
+ <20201118191528.GA2680@willie-the-truck>
+ <1d3780422d2648dfa80a6de87585819a@hisilicon.com>
+ <CAMj1kXE-Ea7K_U9JUp2uq+kpmTEYaiKrqMK1J1DOG-UAA3J6ow@mail.gmail.com>
+ <0a1de2555ed2458d97e5c79929f74380@hisilicon.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_05:2020-11-17,2020-11-19 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a1de2555ed2458d97e5c79929f74380@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWxhaW4NCg0KT24gOC8zMS8yMCAxMDozOCBQTSwgQWxhaW4gVm9sbWF0IHdyb3RlOg0KPiBG
-aXggZm9ybWF0aW5nIG9mIHN0cnVjdCBkZXNjcmlwdGlvbiB0byBhdm9pZCB3YXJuaW5nIGhpZ2hs
-aWdodGVkDQo+IGJ5IFc9MSBjb21waWxhdGlvbi4NCj4NCj4gRml4ZXM6IGU1ZDc2MDc1ZDkzMCAo
-ImRyaXZlcnM6IHJlc2V0OiBTVGkgU29DIHN5c3RlbSBjb25maWd1cmF0aW9uIHJlc2V0IGNvbnRy
-b2xsZXIgc3VwcG9ydCIpDQo+IFNpZ25lZC1vZmYtYnk6IEFsYWluIFZvbG1hdCA8YXZvbG1hdEBt
-ZS5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9yZXNldC9zdGkvcmVzZXQtc3lzY2ZnLmMgfCA3ICsr
-KystLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0p
-DQo+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Jlc2V0L3N0aS9yZXNldC1zeXNjZmcuYyBiL2Ry
-aXZlcnMvcmVzZXQvc3RpL3Jlc2V0LXN5c2NmZy5jDQo+IGluZGV4IDkxMjE1YmI4OGY2Mi4uOTli
-NjMwMzVmZTcyIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3Jlc2V0L3N0aS9yZXNldC1zeXNjZmcu
-Yw0KPiArKysgYi9kcml2ZXJzL3Jlc2V0L3N0aS9yZXNldC1zeXNjZmcuYw0KPiBAQCAtMTcsNyAr
-MTcsNyBAQA0KPiAgI2luY2x1ZGUgInJlc2V0LXN5c2NmZy5oIg0KPiAgDQo+ICAvKioNCj4gLSAq
-IFJlc2V0IGNoYW5uZWwgcmVnbWFwIGNvbmZpZ3VyYXRpb24NCj4gKyAqIHN0cnVjdCBzeXNjZmdf
-cmVzZXRfY2hhbm5lbCAtIFJlc2V0IGNoYW5uZWwgcmVnbWFwIGNvbmZpZ3VyYXRpb24NCj4gICAq
-DQo+ICAgKiBAcmVzZXQ6IHJlZ21hcCBmaWVsZCBmb3IgdGhlIGNoYW5uZWwncyByZXNldCBiaXQu
-DQo+ICAgKiBAYWNrOiByZWdtYXAgZmllbGQgZm9yIHRoZSBjaGFubmVsJ3MgYWNrIGJpdCAob3B0
-aW9uYWwpLg0KPiBAQCAtMjgsOCArMjgsOSBAQCBzdHJ1Y3Qgc3lzY2ZnX3Jlc2V0X2NoYW5uZWwg
-ew0KPiAgfTsNCj4gIA0KPiAgLyoqDQo+IC0gKiBBIHJlc2V0IGNvbnRyb2xsZXIgd2hpY2ggZ3Jv
-dXBzIHRvZ2V0aGVyIGEgc2V0IG9mIHJlbGF0ZWQgcmVzZXQgYml0cywgd2hpY2gNCj4gLSAqIG1h
-eSBiZSBsb2NhdGVkIGluIGRpZmZlcmVudCBzeXN0ZW0gY29uZmlndXJhdGlvbiByZWdpc3RlcnMu
-DQo+ICsgKiBzdHJ1Y3Qgc3lzY2ZnX3Jlc2V0X2NvbnRyb2xsZXIgLSBBIHJlc2V0IGNvbnRyb2xs
-ZXIgd2hpY2ggZ3JvdXBzIHRvZ2V0aGVyDQo+ICsgKiBhIHNldCBvZiByZWxhdGVkIHJlc2V0IGJp
-dHMsIHdoaWNoIG1heSBiZSBsb2NhdGVkIGluIGRpZmZlcmVudCBzeXN0ZW0NCj4gKyAqIGNvbmZp
-Z3VyYXRpb24gcmVnaXN0ZXJzLg0KPiAgICoNCj4gICAqIEByc3Q6IGJhc2UgcmVzZXQgY29udHJv
-bGxlciBzdHJ1Y3R1cmUuDQo+ICAgKiBAYWN0aXZlX2xvdzogYXJlIHRoZSByZXNldHMgaW4gdGhp
-cyBjb250cm9sbGVyIGFjdGl2ZSBsb3csIGkuZS4gY2xlYXJpbmcNCg0KUmV2aWV3ZWQtYnk6IFBh
-dHJpY2UgQ2hvdGFyZCA8cGF0cmljZS5jaG90YXJkQHN0LmNvbT4NCg0KVGhhbmtzDQoNClBhdHJp
-Y2UNCg==
+On Wed, Nov 18, 2020 at 11:55:33PM +0000, Song Bao Hua (Barry Song) wrote:
+> > From: Ard Biesheuvel [mailto:ardb@kernel.org]
+> > 
+> > On Wed, 18 Nov 2020 at 21:27, Song Bao Hua (Barry Song)
+> > <song.bao.hua@hisilicon.com> wrote:
+> > >
+> > > Good question. Originally I wrote this patch to debug and verify the
+> > vmemmap
+> > > leak issue reported in this patch:
+> > > [PATCH v2] arm64: mm: free unused memmap for sparse memory model that
+> > define VMEMMAP
+> > >
+> > https://lore.kernel.org/linux-arm-kernel/20200812010655.96339-1-liwei213@
+> > huawei.com/
+> > > I don't have a machine which really has holes in memory_section to debug,
+> > but memmap
+> > > can help. With memmap, I could specified a machine with various holds in
+> > mem_sections.
+> > >
+> > > After that, I figured out this is not only useful for debugging purpose. it can
+> > have some real user cases.
+> > > For example:
+> > >
+> > > 1. DAX on DRAM.
+> > > kernel parameter memmap=XG!YG specifies a range of RAM to emulate
+> > pmem. Then we are able
+> > > to run DAX and filesystem on top of it. Furthermore, this will probably also
+> > benefit the case
+> > > this big patchset wants to "fix" via direct access to memory:
+> > >
+> > https://lore.kernel.org/lkml/cover.1602093760.git.yuleixzhang@tencent.com/T
+> > /#m1a77074b8e1dadc590a5f45a52d9c3cda69c0780
+> > > as the comments have clearly shown.
+> > >
+> > > 2. reserve some memory for userspace to manage via /dev/mem
+> > >
+> > 
+> > Apologies for the bluntness, but what you are saying here is that you
+> > need a hack to pile those other hacks onto.
+> > 
+> > Currently, we use the NOMAP attribute in memblock to describe memory
+> > that is omitted from the direct map. Removing memory from memblock
+> > entirely also strips it of this annotation, which means that
+> > phys_mem_access_prot() will identify it as device memory not DRAM, and
+> > use the wrong attributes when using /dev/mem.
+> > 
+> > There are likely other places where this distinction matters, and so I
+> > am not buying the justification that we can make meaningful use of
+> > this memory in the general case, and anything that relies on it will
+> > be fragile, and probably only limited to very specific debug
+> > scenarios.
+> 
+> Yep. originally I did that for debugging purpose to emulate a machine with
+> some holes in mem_section. I guess it should be also useful to other people
+> if they need the same thing for debugging.
+> 
+> > 
+> > So I don't think we should merge this.
+> 
+> It should be in the same situation for other platforms like x86, mips and xtensa
+> but they have enabled this kernel parameter.
+
+I didn't check mips and xtensa, but x86 carries this from nineties when
+they needed a way to work around broken BIOSes.
+I really doubt x86 maintainers would merge such feature these days.
+ 
+> maybe the emulated pmem by DRAM is an useful scenario other than debugging.
+> 
+> Later, https://lore.kernel.org/lkml/cover.1602093760.git.yuleixzhang@tencent.com/T/#m1a77074b8e1dadc590a5f45a52d9c3cda69c0780
+> might be able to use this parameter.
+
+Using kernel parameters to describe complex memory configuration does
+not seem scalable and maintainable. 
+A simple mem=X should be enough for features like dmemfs to start with
+and if/when anything more complex will be required I doubt a kernel
+parameter would fit that purpose.
+
+Another thing as as soon as we expose this parameter to the user we'd
+have to make sure they can always get the memory layout they defined
+with it. Keeping the kernel parameter in sync with other means of memory
+detection would complicate things on both sides. Ard mentioned NOMAP
+property, there may be some NUMA considerations that could create a
+conflict between what user asked and what is possible and other things
+that may come up in the future. 
+
+> Anyway, I don't mind keeping it local for debugging at this stage and waiting for a
+> more convincing use case.
+> 
+> Thanks
+> Barry
+> 
+
+-- 
+Sincerely yours,
+Mike.
