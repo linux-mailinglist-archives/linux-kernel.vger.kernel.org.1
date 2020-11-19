@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A832B91D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F94C2B91CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbgKSLr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:47:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
+        id S1727851AbgKSLro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727181AbgKSLmS (ORCPT
+        with ESMTP id S1727188AbgKSLmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:42:18 -0500
+        Thu, 19 Nov 2020 06:42:19 -0500
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC0BC061A49
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:42:18 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id 10so6883790wml.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:42:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F748C061A4F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:42:19 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id w24so6470129wmi.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:42:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qS0nuXOPHBI1RuVlcfb4tmmEAJXNLz9cTtjsZUs/ZKQ=;
-        b=DMg0f3aszor5bVjHLsr0GVN0eFFyDfsxVtAiH1KNee2S9anTT68wfRI5MHKySfjwii
-         JWpxZaXSVDBRMMDwIH7cItU3+J5SNGraZY5lImND44mShI5RNyVHTMv6xsK57WZRwzBl
-         EZ/tmEtFx5g6G901oIJzcPAeHvDT5bWWnisz9S51XgR46oRbO5+xNDdOYioeZ8JiUe1u
-         L0g8HP+pPlW6S4wnny7mTzyZ/H/1L3kKLLAyZhLHuoVqeW7WRcEvQHdNUeq1wGJXwNj6
-         yJbUt5Iz7a6UkqJ8p00s/CoI5Kjy1zfsRXK1J5wtO5Ckm1DdIc7PH3LK0yodweupyL/g
-         lNsA==
+        bh=hcFVpN2LhvD71VSXEoptj+peb8gaYvZ6QlNRmI0brdI=;
+        b=ppzWkeMBINnD8eNHi+4/Kuq6ipFcMuhnm8P+3ZkJtMCw1K29TIy/JpVgDupbgLuJfX
+         NI0h+gRmCQSBfIxg2c+UhnGl6ChUe2edzzr4gfqo9wLIBqgDRPmpXObm4ynWxJ//8IX6
+         eEn0htFSHZALnCExfZN5fLIjGxQS0LiEuJLt6626nJRBerJj/7oVnG6pzy037HX0Vf/r
+         x5WSCDY3n8rvIuha/OdrK73yLSvzWXBNJECf9JGDEP/iCeUiowevmnRwfmHWeYfqxXPg
+         B8s/LvClAnDiRK4cjR4nLzi49duKoRV3osGDBTuPwBd9zjykBMpQjDIBGuED0t6eH6oo
+         TSBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qS0nuXOPHBI1RuVlcfb4tmmEAJXNLz9cTtjsZUs/ZKQ=;
-        b=B5tE13pGeRBHLPchma7n3aFx3XcrOEPnX7kZJIiU8CVUF3u0sdqGV9gQ23NGvcoyrt
-         yT6TS6LeusB1F+rwNioT4AYP6/xYdIB3q8UxyZtxuhiPoKTmNSqWpFw1iQm7zU7dSde2
-         3k6mryDgTCM7rdaiQ+xE/7gfgyO0LdJ6a9aF7BPaalaYTzwIdbn7wfZOUM4XJh7kSeBF
-         THTBNYvH9XU8EFhLPcRWNApPqn10HbsN8heIQMznxhshBTd65DSlMH5ovNvwkUitvqLS
-         PYf1V4hcDPPy/8TggzDkkhUeLzckFtugZ99YNIIbVJXIEMIbakcwqVsWNRA0PMPoY/kU
-         xM0Q==
-X-Gm-Message-State: AOAM532H/ivH/+EqmyrhpAUWTpc4M16UwWKs5QbZvgABHYv2AGzo7XJG
-        TkFaEkZb1PcHjWCfdr62Cb0oqg==
-X-Google-Smtp-Source: ABdhPJzXju8Fm8+KyXwCANsS/1mB/ZX7c30OH9RrP2P6V8fkgTmSraIeoWzQT9qaLjcDQ98PB1br6A==
-X-Received: by 2002:a1c:a70b:: with SMTP id q11mr4326088wme.90.1605786137305;
-        Thu, 19 Nov 2020 03:42:17 -0800 (PST)
+        bh=hcFVpN2LhvD71VSXEoptj+peb8gaYvZ6QlNRmI0brdI=;
+        b=SfmJ0ICT4n0RqZcbIh6rkHoVS3SlJCr3c4EQpIikdtUDUnOAZc8VsW9LGc/Fnl7Ofh
+         xUcX+Z0aBvwi1bdybIKbp/DsQBI19ipoVtTxelUheC5kRjj7/Ei6sZ5brfWu98bdFmjw
+         QxkidB2M/rrKGyVktLbrh04bsZNFCxKYZTfEz7LxxQK/YrNPqjxXj4/zyMkao4ZZaADj
+         KeuTIlKvvi50lcKzC42NP7JEbNmxKXaIvgNzexcsCXN+eo9VbPGwkntT+MPIkXGxUQwi
+         xizxfHReLJpOe+yqLb2S8m4lvCoq3t6ekcYftsBdXLy035WtBLlpPRgoJoSzZGFND5H5
+         DHkg==
+X-Gm-Message-State: AOAM532i7EoPLC0KKUVkfWJX7elyzsDYm9hNR0EJiDYP/UifJIj8c4uX
+        Ewcql8szNsfIDjdmfninBQdmHg==
+X-Google-Smtp-Source: ABdhPJwjr/FIvvMw8TZHmw4gfXRSRpDK1unPRTIRxPJR+N/aBbO303TWwa4cVcvqrLY4HRAXDXeSPg==
+X-Received: by 2002:a1c:c909:: with SMTP id f9mr3972485wmb.87.1605786138319;
+        Thu, 19 Nov 2020 03:42:18 -0800 (PST)
 Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr. [2.15.39.206])
-        by smtp.gmail.com with ESMTPSA id u23sm9745178wmc.32.2020.11.19.03.42.16
+        by smtp.gmail.com with ESMTPSA id u23sm9745178wmc.32.2020.11.19.03.42.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 03:42:16 -0800 (PST)
+        Thu, 19 Nov 2020 03:42:17 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 12/59] rtc: pcf8523: stop using deprecated RTC API
-Date:   Thu, 19 Nov 2020 12:41:02 +0100
-Message-Id: <20201119114149.4117-13-brgl@bgdev.pl>
+Subject: [PATCH 13/59] rtc: stm32: stop using deprecated RTC API
+Date:   Thu, 19 Nov 2020 12:41:03 +0100
+Message-Id: <20201119114149.4117-14-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201119114149.4117-1-brgl@bgdev.pl>
 References: <20201119114149.4117-1-brgl@bgdev.pl>
@@ -72,30 +72,46 @@ and devm_rtc_register_device() pair instead.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/rtc/rtc-pcf8523.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/rtc/rtc-stm32.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/rtc/rtc-pcf8523.c b/drivers/rtc/rtc-pcf8523.c
-index 57d351dfe272..b525998cd70e 100644
---- a/drivers/rtc/rtc-pcf8523.c
-+++ b/drivers/rtc/rtc-pcf8523.c
-@@ -356,12 +356,13 @@ static int pcf8523_probe(struct i2c_client *client,
- 	if (err < 0)
- 		return err;
+diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
+index d774aa18f57a..9d6be4fa885d 100644
+--- a/drivers/rtc/rtc-stm32.c
++++ b/drivers/rtc/rtc-stm32.c
+@@ -795,14 +795,11 @@ static int stm32_rtc_probe(struct platform_device *pdev)
  
--	rtc = devm_rtc_device_register(&client->dev, DRIVER_NAME,
--				       &pcf8523_rtc_ops, THIS_MODULE);
-+	rtc = devm_rtc_allocate_device(&client->dev);
- 	if (IS_ERR(rtc))
- 		return PTR_ERR(rtc);
+ 	platform_set_drvdata(pdev, rtc);
  
--	return 0;
-+	rtc->ops = &pcf8523_rtc_ops;
+-	rtc->rtc_dev = devm_rtc_device_register(&pdev->dev, pdev->name,
+-						&stm32_rtc_ops, THIS_MODULE);
+-	if (IS_ERR(rtc->rtc_dev)) {
+-		ret = PTR_ERR(rtc->rtc_dev);
+-		dev_err(&pdev->dev, "rtc device registration failed, err=%d\n",
+-			ret);
+-		goto err;
+-	}
++	rtc->rtc_dev = devm_rtc_allocate_device(&pdev->dev);
++	if (IS_ERR(rtc->rtc_dev))
++		return PTR_ERR(rtc->rtc_dev);
 +
-+	return devm_rtc_register_device(rtc);
- }
++	rtc->rtc_dev->ops = &stm32_rtc_ops;
  
- static const struct i2c_device_id pcf8523_id[] = {
+ 	/* Handle RTC alarm interrupts */
+ 	ret = devm_request_threaded_irq(&pdev->dev, rtc->irq_alarm, NULL,
+@@ -829,7 +826,12 @@ static int stm32_rtc_probe(struct platform_device *pdev)
+ 			 (ver >> STM32_RTC_VERR_MINREV_SHIFT) & 0xF);
+ 	}
+ 
++	ret = devm_rtc_register_device(rtc->rtc_dev);
++	if (ret)
++		goto err;
++
+ 	return 0;
++
+ err:
+ 	if (rtc->data->has_pclk)
+ 		clk_disable_unprepare(rtc->pclk);
 -- 
 2.29.1
 
