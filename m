@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D812B94E3
+	by mail.lfdr.de (Postfix) with ESMTP id 6E26C2B94E4
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgKSOjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:39:21 -0500
+        id S1728150AbgKSOjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:39:23 -0500
 Received: from esa4.microchip.iphmx.com ([68.232.154.123]:41650 "EHLO
         esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728124AbgKSOjQ (ORCPT
+        with ESMTP id S1728133AbgKSOjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:39:16 -0500
+        Thu, 19 Nov 2020 09:39:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605796756; x=1637332756;
+  t=1605796760; x=1637332760;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=eqQ9vmVzKd47SLJ7QkzkwDhKpQw3LnBtfzn630VKALc=;
-  b=CSCfoDTXu6dDWMoMujHYDba/B0QHPE6mk1C5bTtYrbZFXeP3TbuWsIKP
-   /j8W03nf+xwf2mBa7kVpRQ1g5DTHdyWukhB/1y3zfqraAaq8LOGOVkEEh
-   U0iUyec+8kxSWPYOOGYLiHREb+jW185N4wgRB2qFigQwA0OeHiG4WfRgV
-   5ZWi9WlQTEiUO74ZyxfzMjpxDj5RNqE1+Lh2PAmZW5K25rkOsW21yDj6U
-   l3lnjHFUJUtg1hJyxePjgjXr5RHVdD871bFTDSbna4tV5mF1zmr4WQvlR
-   l3129EcK9NQaACPjyQhGV7I20nwgGmc98G5BemXjup4Ca9TTD9JqfhITI
+  bh=mFo7Lykj8nUmT+PyFDQPIplbGAsg0SFvdbzRDFHc4CE=;
+  b=AsHrOQfWqxdLWCupgHcUJEiXEQF/fu5iAku+G4J4N1U1ZRviPUHvfV80
+   Tj31WeGZ0+idkn6HWJ/s9Yl3o1FgeH4siw8QurfythE1IUnKAExOatDPr
+   BoWD0FMu46AOCNLU2ThdKVx4ycWT679Q7UJFDH6bq3lwqPCxdeSaWMLcn
+   XZ+fslaYJGDnLgve2IXlQqx0rmgQgFrwW5E0QiUDl5fQXytJ5la24AIgp
+   +EQBgKkS2IE4jfD4gxeepoTiCYYlMS9Hi7uOXqCQZQ4bVzO/0eTEiuSUx
+   NGLk+CWDT/AyNlbx2o4byW7yllGYlJ/mBb5HpZEPzdtOkpm55r1FQdwYc
    g==;
-IronPort-SDR: LvLq8RPeKUXohZbgAU7OKDttudJCTtRit0bQ0VPE+H0HJdCfQQh6pt3BrkXBC9/XWGeD26o4bi
- 3EUi8nBnjgpZSUHijGcBwFrk39fJGOywDkcN1u7DLic5LeYdpQ8pEorhLFgKPv0zlrkSg4TG6u
- 8BH99MhpAD3GUqHlaRE2vizrdYjLDVXAM1VsIlAq9XupsdJFVW3jv522IJu8TEnhvEh5VRKUtu
- 11KUZclVAXqO1jfjfbb5ateDaizjvo/SFeB0yfmpQxrRnTfFamtdzDej6CdRsmRKIo1Eayl9fm
- Myo=
+IronPort-SDR: SoUwQx/K1fz0o4JrHHWTTEtilYKrNQUK03JwC4zUJ/XPqK7uteBX2hRA4MAu2Mm2jbJUhECH+g
+ MEf4DdpDOrVZ9+aSQNc7DHgcjbm44iB5zHGS1gbPrOW05WfkFSRIQ0PXSd8/Z2RyNxdZ65s6jX
+ fs1lA7xhK+0HZN6ay+xRFX1ZXcJMRlBOTEeZAlE2r0D5UtwH6aQO4Twqr2ajrcI+4hQRiU8szf
+ 8HelHNY94LvYGhM7t0BjJ2OfZgRJB2Tyyh7VmM0wzj3Ohp+vuWo02i5hgAAaXCSNOBd/iKXF1f
+ b18=
 X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="94238025"
+   d="scan'208";a="94238048"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Nov 2020 07:39:15 -0700
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Nov 2020 07:39:20 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 19 Nov 2020 07:39:15 -0700
+ 15.1.1979.3; Thu, 19 Nov 2020 07:39:18 -0700
 Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 19 Nov 2020 07:39:11 -0700
+ 15.1.1979.3 via Frontend Transport; Thu, 19 Nov 2020 07:39:15 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -49,9 +49,9 @@ CC:     <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v5 09/11] clk: at91: sama7g5: do not allow cpu pll to go higher than 1GHz
-Date:   Thu, 19 Nov 2020 16:38:25 +0200
-Message-ID: <1605796707-8378-10-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH v5 10/11] clk: at91: clk-master: re-factor master clock
+Date:   Thu, 19 Nov 2020 16:38:26 +0200
+Message-ID: <1605796707-8378-11-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1605796707-8378-1-git-send-email-claudiu.beznea@microchip.com>
 References: <1605796707-8378-1-git-send-email-claudiu.beznea@microchip.com>
@@ -61,221 +61,1269 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since CPU PLL feeds both CPU clock and MCK0, MCK0 cannot go higher
-than 200MHz and MCK0 maximum prescaller is 5 limit the CPU PLL at
-1GHz to avoid MCK0 overclocking while CPU PLL is changed by DVFS.
+Re-factor master clock driver by splitting it into 2 clocks: prescaller
+and divider clocks. Based on registered clock flags the prescaler's rate
+could be changed at runtime. This is necessary for platforms supporting
+DVFS (e.g. SAMA7G5) where master clock could be changed at run-time.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- drivers/clk/at91/sama7g5.c | 61 +++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 47 insertions(+), 14 deletions(-)
+ drivers/clk/at91/at91rm9200.c  |  21 ++-
+ drivers/clk/at91/at91sam9260.c |  26 ++-
+ drivers/clk/at91/at91sam9g45.c |  32 ++--
+ drivers/clk/at91/at91sam9n12.c |  36 +++--
+ drivers/clk/at91/at91sam9rl.c  |  23 ++-
+ drivers/clk/at91/at91sam9x5.c  |  28 +++-
+ drivers/clk/at91/clk-master.c  | 347 +++++++++++++++++++++++++++++++++++------
+ drivers/clk/at91/dt-compat.c   |  15 +-
+ drivers/clk/at91/pmc.h         |  16 +-
+ drivers/clk/at91/sam9x60.c     |  23 ++-
+ drivers/clk/at91/sama5d2.c     |  42 +++--
+ drivers/clk/at91/sama5d3.c     |  38 +++--
+ drivers/clk/at91/sama5d4.c     |  40 +++--
+ drivers/clk/at91/sama7g5.c     |  13 +-
+ 14 files changed, 554 insertions(+), 146 deletions(-)
 
+diff --git a/drivers/clk/at91/at91rm9200.c b/drivers/clk/at91/at91rm9200.c
+index 2c3d8e6ca63c..0fad1009f315 100644
+--- a/drivers/clk/at91/at91rm9200.c
++++ b/drivers/clk/at91/at91rm9200.c
+@@ -7,6 +7,8 @@
+ 
+ #include "pmc.h"
+ 
++static DEFINE_SPINLOCK(rm9200_mck_lock);
++
+ struct sck {
+ 	char *n;
+ 	char *p;
+@@ -137,9 +139,20 @@ static void __init at91rm9200_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "pllack";
+ 	parent_names[3] = "pllbck";
+-	hw = at91_clk_register_master(regmap, "masterck", 4, parent_names,
+-				      &at91rm9200_master_layout,
+-				      &rm9200_mck_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", 4,
++					   parent_names,
++					   &at91rm9200_master_layout,
++					   &rm9200_mck_characteristics,
++					   &rm9200_mck_lock, CLK_SET_RATE_GATE,
++					   INT_MIN);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "masterck_div",
++					  "masterck_pres",
++					  &at91rm9200_master_layout,
++					  &rm9200_mck_characteristics,
++					  &rm9200_mck_lock, CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+@@ -181,7 +194,7 @@ static void __init at91rm9200_pmc_setup(struct device_node *np)
+ 	for (i = 0; i < ARRAY_SIZE(at91rm9200_periphck); i++) {
+ 		hw = at91_clk_register_peripheral(regmap,
+ 						  at91rm9200_periphck[i].n,
+-						  "masterck",
++						  "masterck_div",
+ 						  at91rm9200_periphck[i].id);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+diff --git a/drivers/clk/at91/at91sam9260.c b/drivers/clk/at91/at91sam9260.c
+index bb81ff731ad8..ceb5495f723a 100644
+--- a/drivers/clk/at91/at91sam9260.c
++++ b/drivers/clk/at91/at91sam9260.c
+@@ -32,6 +32,8 @@ struct at91sam926x_data {
+ 	bool has_slck;
+ };
+ 
++static DEFINE_SPINLOCK(at91sam9260_mck_lock);
++
+ static const struct clk_master_characteristics sam9260_mck_characteristics = {
+ 	.output = { .min = 0, .max = 105000000 },
+ 	.divisors = { 1, 2, 4, 0 },
+@@ -218,8 +220,8 @@ static const struct sck at91sam9261_systemck[] = {
+ 	{ .n = "pck1",  .p = "prog1",    .id = 9 },
+ 	{ .n = "pck2",  .p = "prog2",    .id = 10 },
+ 	{ .n = "pck3",  .p = "prog3",    .id = 11 },
+-	{ .n = "hclk0", .p = "masterck", .id = 16 },
+-	{ .n = "hclk1", .p = "masterck", .id = 17 },
++	{ .n = "hclk0", .p = "masterck_div", .id = 16 },
++	{ .n = "hclk1", .p = "masterck_div", .id = 17 },
+ };
+ 
+ static const struct pck at91sam9261_periphck[] = {
+@@ -413,9 +415,21 @@ static void __init at91sam926x_pmc_setup(struct device_node *np,
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "pllack";
+ 	parent_names[3] = "pllbck";
+-	hw = at91_clk_register_master(regmap, "masterck", 4, parent_names,
+-				      &at91rm9200_master_layout,
+-				      data->mck_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", 4,
++					   parent_names,
++					   &at91rm9200_master_layout,
++					   data->mck_characteristics,
++					   &at91sam9260_mck_lock,
++					   CLK_SET_RATE_GATE, INT_MIN);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "masterck_div",
++					  "masterck_pres",
++					  &at91rm9200_master_layout,
++					  data->mck_characteristics,
++					  &at91sam9260_mck_lock,
++					  CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+@@ -457,7 +471,7 @@ static void __init at91sam926x_pmc_setup(struct device_node *np,
+ 	for (i = 0; i < data->num_pck; i++) {
+ 		hw = at91_clk_register_peripheral(regmap,
+ 						  data->pck[i].n,
+-						  "masterck",
++						  "masterck_div",
+ 						  data->pck[i].id);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+diff --git a/drivers/clk/at91/at91sam9g45.c b/drivers/clk/at91/at91sam9g45.c
+index cb4a406ed15d..0214333dedd3 100644
+--- a/drivers/clk/at91/at91sam9g45.c
++++ b/drivers/clk/at91/at91sam9g45.c
+@@ -7,6 +7,8 @@
+ 
+ #include "pmc.h"
+ 
++static DEFINE_SPINLOCK(at91sam9g45_mck_lock);
++
+ static const struct clk_master_characteristics mck_characteristics = {
+ 	.output = { .min = 0, .max = 133333333 },
+ 	.divisors = { 1, 2, 4, 3 },
+@@ -40,10 +42,10 @@ static const struct {
+ 	char *p;
+ 	u8 id;
+ } at91sam9g45_systemck[] = {
+-	{ .n = "ddrck", .p = "masterck", .id = 2 },
+-	{ .n = "uhpck", .p = "usbck",    .id = 6 },
+-	{ .n = "pck0",  .p = "prog0",    .id = 8 },
+-	{ .n = "pck1",  .p = "prog1",    .id = 9 },
++	{ .n = "ddrck", .p = "masterck_div", .id = 2 },
++	{ .n = "uhpck", .p = "usbck",        .id = 6 },
++	{ .n = "pck0",  .p = "prog0",        .id = 8 },
++	{ .n = "pck1",  .p = "prog1",        .id = 9 },
+ };
+ 
+ struct pck {
+@@ -148,9 +150,21 @@ static void __init at91sam9g45_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	hw = at91_clk_register_master(regmap, "masterck", 4, parent_names,
+-				      &at91rm9200_master_layout,
+-				      &mck_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", 4,
++					   parent_names,
++					   &at91rm9200_master_layout,
++					   &mck_characteristics,
++					   &at91sam9g45_mck_lock,
++					   CLK_SET_RATE_GATE, INT_MIN);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "masterck_div",
++					  "masterck_pres",
++					  &at91rm9200_master_layout,
++					  &mck_characteristics,
++					  &at91sam9g45_mck_lock,
++					  CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+@@ -166,7 +180,7 @@ static void __init at91sam9g45_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	parent_names[4] = "masterck";
++	parent_names[4] = "masterck_div";
+ 	for (i = 0; i < 2; i++) {
+ 		char name[6];
+ 
+@@ -195,7 +209,7 @@ static void __init at91sam9g45_pmc_setup(struct device_node *np)
+ 	for (i = 0; i < ARRAY_SIZE(at91sam9g45_periphck); i++) {
+ 		hw = at91_clk_register_peripheral(regmap,
+ 						  at91sam9g45_periphck[i].n,
+-						  "masterck",
++						  "masterck_div",
+ 						  at91sam9g45_periphck[i].id);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+diff --git a/drivers/clk/at91/at91sam9n12.c b/drivers/clk/at91/at91sam9n12.c
+index 93f7eb216122..f9db5316a7f1 100644
+--- a/drivers/clk/at91/at91sam9n12.c
++++ b/drivers/clk/at91/at91sam9n12.c
+@@ -7,6 +7,8 @@
+ 
+ #include "pmc.h"
+ 
++static DEFINE_SPINLOCK(at91sam9n12_mck_lock);
++
+ static const struct clk_master_characteristics mck_characteristics = {
+ 	.output = { .min = 0, .max = 133333333 },
+ 	.divisors = { 1, 2, 4, 3 },
+@@ -54,12 +56,12 @@ static const struct {
+ 	char *p;
+ 	u8 id;
+ } at91sam9n12_systemck[] = {
+-	{ .n = "ddrck", .p = "masterck", .id = 2 },
+-	{ .n = "lcdck", .p = "masterck", .id = 3 },
+-	{ .n = "uhpck", .p = "usbck",    .id = 6 },
+-	{ .n = "udpck", .p = "usbck",    .id = 7 },
+-	{ .n = "pck0",  .p = "prog0",    .id = 8 },
+-	{ .n = "pck1",  .p = "prog1",    .id = 9 },
++	{ .n = "ddrck", .p = "masterck_div", .id = 2 },
++	{ .n = "lcdck", .p = "masterck_div", .id = 3 },
++	{ .n = "uhpck", .p = "usbck",        .id = 6 },
++	{ .n = "udpck", .p = "usbck",        .id = 7 },
++	{ .n = "pck0",  .p = "prog0",        .id = 8 },
++	{ .n = "pck1",  .p = "prog1",        .id = 9 },
+ };
+ 
+ static const struct clk_pcr_layout at91sam9n12_pcr_layout = {
+@@ -175,9 +177,21 @@ static void __init at91sam9n12_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "pllbck";
+-	hw = at91_clk_register_master(regmap, "masterck", 4, parent_names,
+-				      &at91sam9x5_master_layout,
+-				      &mck_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", 4,
++					   parent_names,
++					   &at91sam9x5_master_layout,
++					   &mck_characteristics,
++					   &at91sam9n12_mck_lock,
++					   CLK_SET_RATE_GATE, INT_MIN);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "masterck_div",
++					  "masterck_pres",
++					  &at91sam9x5_master_layout,
++					  &mck_characteristics,
++					  &at91sam9n12_mck_lock,
++					  CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+@@ -191,7 +205,7 @@ static void __init at91sam9n12_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "pllbck";
+-	parent_names[4] = "masterck";
++	parent_names[4] = "masterck_div";
+ 	for (i = 0; i < 2; i++) {
+ 		char name[6];
+ 
+@@ -221,7 +235,7 @@ static void __init at91sam9n12_pmc_setup(struct device_node *np)
+ 		hw = at91_clk_register_sam9x5_peripheral(regmap, &pmc_pcr_lock,
+ 							 &at91sam9n12_pcr_layout,
+ 							 at91sam9n12_periphck[i].n,
+-							 "masterck",
++							 "masterck_div",
+ 							 at91sam9n12_periphck[i].id,
+ 							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+diff --git a/drivers/clk/at91/at91sam9rl.c b/drivers/clk/at91/at91sam9rl.c
+index a343eb69bb35..66736e03cfef 100644
+--- a/drivers/clk/at91/at91sam9rl.c
++++ b/drivers/clk/at91/at91sam9rl.c
+@@ -7,6 +7,8 @@
+ 
+ #include "pmc.h"
+ 
++static DEFINE_SPINLOCK(sam9rl_mck_lock);
++
+ static const struct clk_master_characteristics sam9rl_mck_characteristics = {
+ 	.output = { .min = 0, .max = 94000000 },
+ 	.divisors = { 1, 2, 4, 0 },
+@@ -117,9 +119,20 @@ static void __init at91sam9rl_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "pllack";
+ 	parent_names[3] = "utmick";
+-	hw = at91_clk_register_master(regmap, "masterck", 4, parent_names,
+-				      &at91rm9200_master_layout,
+-				      &sam9rl_mck_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", 4,
++					   parent_names,
++					   &at91rm9200_master_layout,
++					   &sam9rl_mck_characteristics,
++					   &sam9rl_mck_lock, CLK_SET_RATE_GATE,
++					   INT_MIN);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "masterck_div",
++					  "masterck_pres",
++					  &at91rm9200_master_layout,
++					  &sam9rl_mck_characteristics,
++					  &sam9rl_mck_lock, CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+@@ -129,7 +142,7 @@ static void __init at91sam9rl_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "pllack";
+ 	parent_names[3] = "utmick";
+-	parent_names[4] = "masterck";
++	parent_names[4] = "masterck_div";
+ 	for (i = 0; i < 2; i++) {
+ 		char name[6];
+ 
+@@ -158,7 +171,7 @@ static void __init at91sam9rl_pmc_setup(struct device_node *np)
+ 	for (i = 0; i < ARRAY_SIZE(at91sam9rl_periphck); i++) {
+ 		hw = at91_clk_register_peripheral(regmap,
+ 						  at91sam9rl_periphck[i].n,
+-						  "masterck",
++						  "masterck_div",
+ 						  at91sam9rl_periphck[i].id);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+diff --git a/drivers/clk/at91/at91sam9x5.c b/drivers/clk/at91/at91sam9x5.c
+index 22b9aad9efb8..79b9d3667228 100644
+--- a/drivers/clk/at91/at91sam9x5.c
++++ b/drivers/clk/at91/at91sam9x5.c
+@@ -7,6 +7,8 @@
+ 
+ #include "pmc.h"
+ 
++static DEFINE_SPINLOCK(mck_lock);
++
+ static const struct clk_master_characteristics mck_characteristics = {
+ 	.output = { .min = 0, .max = 133333333 },
+ 	.divisors = { 1, 2, 4, 3 },
+@@ -41,7 +43,7 @@ static const struct {
+ 	char *p;
+ 	u8 id;
+ } at91sam9x5_systemck[] = {
+-	{ .n = "ddrck", .p = "masterck", .id = 2 },
++	{ .n = "ddrck", .p = "masterck_div", .id = 2 },
+ 	{ .n = "smdck", .p = "smdclk",   .id = 4 },
+ 	{ .n = "uhpck", .p = "usbck",    .id = 6 },
+ 	{ .n = "udpck", .p = "usbck",    .id = 7 },
+@@ -196,9 +198,19 @@ static void __init at91sam9x5_pmc_setup(struct device_node *np,
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	hw = at91_clk_register_master(regmap, "masterck", 4, parent_names,
+-				      &at91sam9x5_master_layout,
+-				      &mck_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", 4,
++					   parent_names,
++					   &at91sam9x5_master_layout,
++					   &mck_characteristics, &mck_lock,
++					   CLK_SET_RATE_GATE, INT_MIN);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "masterck_div",
++					  "masterck_pres",
++					  &at91sam9x5_master_layout,
++					  &mck_characteristics, &mck_lock,
++					  CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+@@ -218,7 +230,7 @@ static void __init at91sam9x5_pmc_setup(struct device_node *np,
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	parent_names[4] = "masterck";
++	parent_names[4] = "masterck_div";
+ 	for (i = 0; i < 2; i++) {
+ 		char name[6];
+ 
+@@ -245,7 +257,7 @@ static void __init at91sam9x5_pmc_setup(struct device_node *np,
+ 	}
+ 
+ 	if (has_lcdck) {
+-		hw = at91_clk_register_system(regmap, "lcdck", "masterck", 3);
++		hw = at91_clk_register_system(regmap, "lcdck", "masterck_div", 3);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
+ 
+@@ -256,7 +268,7 @@ static void __init at91sam9x5_pmc_setup(struct device_node *np,
+ 		hw = at91_clk_register_sam9x5_peripheral(regmap, &pmc_pcr_lock,
+ 							 &at91sam9x5_pcr_layout,
+ 							 at91sam9x5_periphck[i].n,
+-							 "masterck",
++							 "masterck_div",
+ 							 at91sam9x5_periphck[i].id,
+ 							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+@@ -269,7 +281,7 @@ static void __init at91sam9x5_pmc_setup(struct device_node *np,
+ 		hw = at91_clk_register_sam9x5_peripheral(regmap, &pmc_pcr_lock,
+ 							 &at91sam9x5_pcr_layout,
+ 							 extra_pcks[i].n,
+-							 "masterck",
++							 "masterck_div",
+ 							 extra_pcks[i].id,
+ 							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+diff --git a/drivers/clk/at91/clk-master.c b/drivers/clk/at91/clk-master.c
+index aafd003b30cf..000ae95f5f1c 100644
+--- a/drivers/clk/at91/clk-master.c
++++ b/drivers/clk/at91/clk-master.c
+@@ -58,83 +58,321 @@ static inline bool clk_master_ready(struct clk_master *master)
+ static int clk_master_prepare(struct clk_hw *hw)
+ {
+ 	struct clk_master *master = to_clk_master(hw);
++	unsigned long flags;
++
++	spin_lock_irqsave(master->lock, flags);
+ 
+ 	while (!clk_master_ready(master))
+ 		cpu_relax();
+ 
++	spin_unlock_irqrestore(master->lock, flags);
++
+ 	return 0;
+ }
+ 
+ static int clk_master_is_prepared(struct clk_hw *hw)
+ {
+ 	struct clk_master *master = to_clk_master(hw);
++	unsigned long flags;
++	bool status;
+ 
+-	return clk_master_ready(master);
++	spin_lock_irqsave(master->lock, flags);
++	status = clk_master_ready(master);
++	spin_unlock_irqrestore(master->lock, flags);
++
++	return status;
+ }
+ 
+-static unsigned long clk_master_recalc_rate(struct clk_hw *hw,
+-					    unsigned long parent_rate)
++static unsigned long clk_master_div_recalc_rate(struct clk_hw *hw,
++						unsigned long parent_rate)
+ {
+-	u8 pres;
+ 	u8 div;
+-	unsigned long rate = parent_rate;
++	unsigned long flags, rate = parent_rate;
+ 	struct clk_master *master = to_clk_master(hw);
+ 	const struct clk_master_layout *layout = master->layout;
+ 	const struct clk_master_characteristics *characteristics =
+ 						master->characteristics;
+ 	unsigned int mckr;
+ 
++	spin_lock_irqsave(master->lock, flags);
+ 	regmap_read(master->regmap, master->layout->offset, &mckr);
++	spin_unlock_irqrestore(master->lock, flags);
++
+ 	mckr &= layout->mask;
+ 
+-	pres = (mckr >> layout->pres_shift) & MASTER_PRES_MASK;
+ 	div = (mckr >> MASTER_DIV_SHIFT) & MASTER_DIV_MASK;
+ 
+-	if (characteristics->have_div3_pres && pres == MASTER_PRES_MAX)
+-		rate /= 3;
+-	else
+-		rate >>= pres;
+-
+ 	rate /= characteristics->divisors[div];
+ 
+ 	if (rate < characteristics->output.min)
+-		pr_warn("master clk is underclocked");
++		pr_warn("master clk div is underclocked");
+ 	else if (rate > characteristics->output.max)
+-		pr_warn("master clk is overclocked");
++		pr_warn("master clk div is overclocked");
+ 
+ 	return rate;
+ }
+ 
+-static u8 clk_master_get_parent(struct clk_hw *hw)
++static const struct clk_ops master_div_ops = {
++	.prepare = clk_master_prepare,
++	.is_prepared = clk_master_is_prepared,
++	.recalc_rate = clk_master_div_recalc_rate,
++};
++
++static int clk_master_div_set_rate(struct clk_hw *hw, unsigned long rate,
++				   unsigned long parent_rate)
++{
++	struct clk_master *master = to_clk_master(hw);
++	const struct clk_master_characteristics *characteristics =
++						master->characteristics;
++	unsigned long flags;
++	int div, i;
++
++	if (clk_hw_get_flags(hw) & CLK_SET_RATE_GATE)
++		return 0;
++
++	div = DIV_ROUND_CLOSEST(parent_rate, rate);
++	if (div > ARRAY_SIZE(characteristics->divisors))
++		return -EINVAL;
++
++	for (i = 0; i < ARRAY_SIZE(characteristics->divisors); i++) {
++		if (!characteristics->divisors[i])
++			break;
++
++		if (div == characteristics->divisors[i]) {
++			div = i;
++			break;
++		}
++	}
++
++	if (i == ARRAY_SIZE(characteristics->divisors))
++		return -EINVAL;
++
++	spin_lock_irqsave(master->lock, flags);
++	regmap_update_bits(master->regmap, master->layout->offset,
++			   (MASTER_DIV_MASK << MASTER_DIV_SHIFT),
++			   (div << MASTER_DIV_SHIFT));
++	while (!clk_master_ready(master))
++		cpu_relax();
++	spin_unlock_irqrestore(master->lock, flags);
++
++	return 0;
++}
++
++static int clk_master_div_determine_rate(struct clk_hw *hw,
++					 struct clk_rate_request *req)
++{
++	struct clk_master *master = to_clk_master(hw);
++	const struct clk_master_characteristics *characteristics =
++						master->characteristics;
++	struct clk_hw *parent;
++	unsigned long parent_rate, tmp_rate, best_rate = 0;
++	int i, best_diff = INT_MIN, tmp_diff;
++
++	if (clk_hw_get_flags(hw) & CLK_SET_RATE_GATE)
++		return -EOPNOTSUPP;
++
++	parent = clk_hw_get_parent(hw);
++	if (!parent)
++		return -EINVAL;
++
++	parent_rate = clk_hw_get_rate(parent);
++	if (!parent_rate)
++		return -EINVAL;
++
++	for (i = 0; i < ARRAY_SIZE(characteristics->divisors); i++) {
++		if (!characteristics->divisors[i])
++			break;
++
++		tmp_rate = DIV_ROUND_CLOSEST_ULL(parent_rate,
++						 characteristics->divisors[i]);
++		tmp_diff = abs(tmp_rate - req->rate);
++
++		if (!best_rate || best_diff > tmp_diff) {
++			best_diff = tmp_diff;
++			best_rate = tmp_rate;
++		}
++
++		if (!best_diff)
++			break;
++	}
++
++	req->best_parent_rate = best_rate;
++	req->best_parent_hw = parent;
++	req->rate = best_rate;
++
++	return 0;
++}
++
++static const struct clk_ops master_div_ops_chg = {
++	.prepare = clk_master_prepare,
++	.is_prepared = clk_master_is_prepared,
++	.recalc_rate = clk_master_div_recalc_rate,
++	.determine_rate = clk_master_div_determine_rate,
++	.set_rate = clk_master_div_set_rate,
++};
++
++static void clk_sama7g5_master_best_diff(struct clk_rate_request *req,
++					 struct clk_hw *parent,
++					 unsigned long parent_rate,
++					 long *best_rate,
++					 long *best_diff,
++					 u32 div)
++{
++	unsigned long tmp_rate, tmp_diff;
++
++	if (div == MASTER_PRES_MAX)
++		tmp_rate = parent_rate / 3;
++	else
++		tmp_rate = parent_rate >> div;
++
++	tmp_diff = abs(req->rate - tmp_rate);
++
++	if (*best_diff < 0 || *best_diff >= tmp_diff) {
++		*best_rate = tmp_rate;
++		*best_diff = tmp_diff;
++		req->best_parent_rate = parent_rate;
++		req->best_parent_hw = parent;
++	}
++}
++
++static int clk_master_pres_determine_rate(struct clk_hw *hw,
++					  struct clk_rate_request *req)
+ {
+ 	struct clk_master *master = to_clk_master(hw);
++	struct clk_rate_request req_parent = *req;
++	const struct clk_master_characteristics *characteristics =
++							master->characteristics;
++	struct clk_hw *parent;
++	long best_rate = LONG_MIN, best_diff = LONG_MIN;
++	u32 pres;
++	int i;
++
++	if (clk_hw_get_flags(hw) & CLK_SET_RATE_GATE)
++		return 0;
++
++	if (master->chg_pid < 0)
++		return -EOPNOTSUPP;
++
++	parent = clk_hw_get_parent_by_index(hw, master->chg_pid);
++	if (!parent)
++		return -EOPNOTSUPP;
++
++	for (i = 0; i <= MASTER_PRES_MAX; i++) {
++		if (characteristics->have_div3_pres && i == MASTER_PRES_MAX)
++			pres = 3;
++		else
++			pres = 1 << i;
++
++		req_parent.rate = req->rate * pres;
++		if (__clk_determine_rate(parent, &req_parent))
++			continue;
++
++		clk_sama7g5_master_best_diff(req, parent, req_parent.rate,
++					     &best_diff, &best_rate, pres);
++		if (!best_diff)
++			break;
++	}
++
++	return 0;
++}
++
++static int clk_master_pres_set_rate(struct clk_hw *hw, unsigned long rate,
++				    unsigned long parent_rate)
++{
++	struct clk_master *master = to_clk_master(hw);
++	unsigned long flags;
++	unsigned int pres;
++
++	if (clk_hw_get_flags(hw) & CLK_SET_RATE_GATE)
++		return 0;
++
++	pres = DIV_ROUND_CLOSEST(parent_rate, rate);
++	if (pres > MASTER_PRES_MAX)
++		return -EINVAL;
++
++	else if (pres == 3)
++		pres = MASTER_PRES_MAX;
++	else
++		pres = ffs(pres) - 1;
++
++	spin_lock_irqsave(master->lock, flags);
++	regmap_update_bits(master->regmap, master->layout->offset,
++			   (MASTER_PRES_MASK << master->layout->pres_shift),
++			   (pres << master->layout->pres_shift));
++
++	while (!clk_master_ready(master))
++		cpu_relax();
++	spin_unlock_irqrestore(master->lock, flags);
++
++	return 0;
++}
++
++static unsigned long clk_master_pres_recalc_rate(struct clk_hw *hw,
++						 unsigned long parent_rate)
++{
++	struct clk_master *master = to_clk_master(hw);
++	const struct clk_master_characteristics *characteristics =
++						master->characteristics;
++	unsigned long flags;
++	unsigned int val, pres;
++
++	spin_lock_irqsave(master->lock, flags);
++	regmap_read(master->regmap, master->layout->offset, &val);
++	spin_unlock_irqrestore(master->lock, flags);
++
++	pres = (val >> master->layout->pres_shift) & MASTER_PRES_MASK;
++	if (pres == 3 && characteristics->have_div3_pres)
++		pres = 3;
++	else
++		pres = (1 << pres);
++
++	return DIV_ROUND_CLOSEST_ULL(parent_rate, pres);
++}
++
++static u8 clk_master_pres_get_parent(struct clk_hw *hw)
++{
++	struct clk_master *master = to_clk_master(hw);
++	unsigned long flags;
+ 	unsigned int mckr;
+ 
++	spin_lock_irqsave(master->lock, flags);
+ 	regmap_read(master->regmap, master->layout->offset, &mckr);
++	spin_unlock_irqrestore(master->lock, flags);
+ 
+ 	return mckr & AT91_PMC_CSS;
+ }
+ 
+-static const struct clk_ops master_ops = {
++static const struct clk_ops master_pres_ops = {
+ 	.prepare = clk_master_prepare,
+ 	.is_prepared = clk_master_is_prepared,
+-	.recalc_rate = clk_master_recalc_rate,
+-	.get_parent = clk_master_get_parent,
++	.recalc_rate = clk_master_pres_recalc_rate,
++	.get_parent = clk_master_pres_get_parent,
+ };
+ 
+-struct clk_hw * __init
+-at91_clk_register_master(struct regmap *regmap,
++static const struct clk_ops master_pres_ops_chg = {
++	.prepare = clk_master_prepare,
++	.is_prepared = clk_master_is_prepared,
++	.determine_rate = clk_master_pres_determine_rate,
++	.recalc_rate = clk_master_pres_recalc_rate,
++	.get_parent = clk_master_pres_get_parent,
++	.set_rate = clk_master_pres_set_rate,
++};
++
++static struct clk_hw * __init
++at91_clk_register_master_internal(struct regmap *regmap,
+ 		const char *name, int num_parents,
+ 		const char **parent_names,
+ 		const struct clk_master_layout *layout,
+-		const struct clk_master_characteristics *characteristics)
++		const struct clk_master_characteristics *characteristics,
++		const struct clk_ops *ops, spinlock_t *lock, u32 flags,
++		int chg_pid)
+ {
+ 	struct clk_master *master;
+ 	struct clk_init_data init;
+ 	struct clk_hw *hw;
+ 	int ret;
+ 
+-	if (!name || !num_parents || !parent_names)
++	if (!name || !num_parents || !parent_names || !lock)
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	master = kzalloc(sizeof(*master), GFP_KERNEL);
+@@ -142,15 +380,17 @@ at91_clk_register_master(struct regmap *regmap,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	init.name = name;
+-	init.ops = &master_ops;
++	init.ops = ops;
+ 	init.parent_names = parent_names;
+ 	init.num_parents = num_parents;
+-	init.flags = 0;
++	init.flags = flags;
+ 
+ 	master->hw.init = &init;
+ 	master->layout = layout;
+ 	master->characteristics = characteristics;
+ 	master->regmap = regmap;
++	master->chg_pid = chg_pid;
++	master->lock = lock;
+ 
+ 	hw = &master->hw;
+ 	ret = clk_hw_register(NULL, &master->hw);
+@@ -162,37 +402,54 @@ at91_clk_register_master(struct regmap *regmap,
+ 	return hw;
+ }
+ 
+-static unsigned long
+-clk_sama7g5_master_recalc_rate(struct clk_hw *hw,
+-			       unsigned long parent_rate)
++struct clk_hw * __init
++at91_clk_register_master_pres(struct regmap *regmap,
++		const char *name, int num_parents,
++		const char **parent_names,
++		const struct clk_master_layout *layout,
++		const struct clk_master_characteristics *characteristics,
++		spinlock_t *lock, u32 flags, int chg_pid)
+ {
+-	struct clk_master *master = to_clk_master(hw);
++	const struct clk_ops *ops;
+ 
+-	return DIV_ROUND_CLOSEST_ULL(parent_rate, (1 << master->div));
++	if (flags & CLK_SET_RATE_GATE)
++		ops = &master_pres_ops;
++	else
++		ops = &master_pres_ops_chg;
++
++	return at91_clk_register_master_internal(regmap, name, num_parents,
++						 parent_names, layout,
++						 characteristics, ops,
++						 lock, flags, chg_pid);
+ }
+ 
+-static void clk_sama7g5_master_best_diff(struct clk_rate_request *req,
+-					 struct clk_hw *parent,
+-					 unsigned long parent_rate,
+-					 long *best_rate,
+-					 long *best_diff,
+-					 u32 div)
++struct clk_hw * __init
++at91_clk_register_master_div(struct regmap *regmap,
++		const char *name, const char *parent_name,
++		const struct clk_master_layout *layout,
++		const struct clk_master_characteristics *characteristics,
++		spinlock_t *lock, u32 flags)
+ {
+-	unsigned long tmp_rate, tmp_diff;
++	const struct clk_ops *ops;
+ 
+-	if (div == MASTER_PRES_MAX)
+-		tmp_rate = parent_rate / 3;
++	if (flags & CLK_SET_RATE_GATE)
++		ops = &master_div_ops;
+ 	else
+-		tmp_rate = parent_rate >> div;
++		ops = &master_div_ops_chg;
+ 
+-	tmp_diff = abs(req->rate - tmp_rate);
++	return at91_clk_register_master_internal(regmap, name, 1,
++						 &parent_name, layout,
++						 characteristics, ops,
++						 lock, flags, -EINVAL);
++}
+ 
+-	if (*best_diff < 0 || *best_diff >= tmp_diff) {
+-		*best_rate = tmp_rate;
+-		*best_diff = tmp_diff;
+-		req->best_parent_rate = parent_rate;
+-		req->best_parent_hw = parent;
+-	}
++static unsigned long
++clk_sama7g5_master_recalc_rate(struct clk_hw *hw,
++			       unsigned long parent_rate)
++{
++	struct clk_master *master = to_clk_master(hw);
++
++	return DIV_ROUND_CLOSEST_ULL(parent_rate, (1 << master->div));
+ }
+ 
+ static int clk_sama7g5_master_determine_rate(struct clk_hw *hw,
+diff --git a/drivers/clk/at91/dt-compat.c b/drivers/clk/at91/dt-compat.c
+index a50084de97d4..a97b99c2dc12 100644
+--- a/drivers/clk/at91/dt-compat.c
++++ b/drivers/clk/at91/dt-compat.c
+@@ -24,6 +24,8 @@
+ 
+ #define GCK_INDEX_DT_AUDIO_PLL	5
+ 
++static DEFINE_SPINLOCK(mck_lock);
++
+ #ifdef CONFIG_HAVE_AT91_AUDIO_PLL
+ static void __init of_sama5d2_clk_audio_pll_frac_setup(struct device_node *np)
+ {
+@@ -388,9 +390,16 @@ of_at91_clk_master_setup(struct device_node *np,
+ 	if (IS_ERR(regmap))
+ 		return;
+ 
+-	hw = at91_clk_register_master(regmap, name, num_parents,
+-				      parent_names, layout,
+-				      characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", num_parents,
++					   parent_names, layout,
++					   characteristics, &mck_lock,
++					   CLK_SET_RATE_GATE, INT_MIN);
++	if (IS_ERR(hw))
++		goto out_free_characteristics;
++
++	hw = at91_clk_register_master_div(regmap, name, "masterck_pres",
++					  layout, characteristics,
++					  &mck_lock, CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto out_free_characteristics;
+ 
+diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
+index bedcd85ad750..a49076c804a9 100644
+--- a/drivers/clk/at91/pmc.h
++++ b/drivers/clk/at91/pmc.h
+@@ -155,10 +155,18 @@ at91_clk_register_sam9x5_main(struct regmap *regmap, const char *name,
+ 			      const char **parent_names, int num_parents);
+ 
+ struct clk_hw * __init
+-at91_clk_register_master(struct regmap *regmap, const char *name,
+-			 int num_parents, const char **parent_names,
+-			 const struct clk_master_layout *layout,
+-			 const struct clk_master_characteristics *characteristics);
++at91_clk_register_master_pres(struct regmap *regmap, const char *name,
++			      int num_parents, const char **parent_names,
++			      const struct clk_master_layout *layout,
++			      const struct clk_master_characteristics *characteristics,
++			      spinlock_t *lock, u32 flags, int chg_pid);
++
++struct clk_hw * __init
++at91_clk_register_master_div(struct regmap *regmap, const char *name,
++			     const char *parent_names,
++			     const struct clk_master_layout *layout,
++			     const struct clk_master_characteristics *characteristics,
++			     spinlock_t *lock, u32 flags);
+ 
+ struct clk_hw * __init
+ at91_clk_sama7g5_register_master(struct regmap *regmap,
+diff --git a/drivers/clk/at91/sam9x60.c b/drivers/clk/at91/sam9x60.c
+index dd62bb2880cf..240e48149bcd 100644
+--- a/drivers/clk/at91/sam9x60.c
++++ b/drivers/clk/at91/sam9x60.c
+@@ -8,6 +8,7 @@
+ #include "pmc.h"
+ 
+ static DEFINE_SPINLOCK(pmc_pll_lock);
++static DEFINE_SPINLOCK(mck_lock);
+ 
+ static const struct clk_master_characteristics mck_characteristics = {
+ 	.output = { .min = 140000000, .max = 200000000 },
+@@ -76,11 +77,11 @@ static const struct {
+ 	char *p;
+ 	u8 id;
+ } sam9x60_systemck[] = {
+-	{ .n = "ddrck",  .p = "masterck", .id = 2 },
++	{ .n = "ddrck",  .p = "masterck_div", .id = 2 },
+ 	{ .n = "uhpck",  .p = "usbck",    .id = 6 },
+ 	{ .n = "pck0",   .p = "prog0",    .id = 8 },
+ 	{ .n = "pck1",   .p = "prog1",    .id = 9 },
+-	{ .n = "qspick", .p = "masterck", .id = 19 },
++	{ .n = "qspick", .p = "masterck_div", .id = 19 },
+ };
+ 
+ static const struct {
+@@ -272,9 +273,17 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
+ 	parent_names[0] = md_slck_name;
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "pllack_divck";
+-	hw = at91_clk_register_master(regmap, "masterck", 3, parent_names,
+-				      &sam9x60_master_layout,
+-				      &mck_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", 3,
++					   parent_names, &sam9x60_master_layout,
++					   &mck_characteristics, &mck_lock,
++					   CLK_SET_RATE_GATE, INT_MIN);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "masterck_div",
++					  "masterck_pres", &sam9x60_master_layout,
++					  &mck_characteristics, &mck_lock,
++					  CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+@@ -290,7 +299,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
+ 	parent_names[0] = md_slck_name;
+ 	parent_names[1] = td_slck_name;
+ 	parent_names[2] = "mainck";
+-	parent_names[3] = "masterck";
++	parent_names[3] = "masterck_div";
+ 	parent_names[4] = "pllack_divck";
+ 	parent_names[5] = "upllck_divck";
+ 	for (i = 0; i < 2; i++) {
+@@ -322,7 +331,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
+ 		hw = at91_clk_register_sam9x5_peripheral(regmap, &pmc_pcr_lock,
+ 							 &sam9x60_pcr_layout,
+ 							 sam9x60_periphck[i].n,
+-							 "masterck",
++							 "masterck_div",
+ 							 sam9x60_periphck[i].id,
+ 							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+diff --git a/drivers/clk/at91/sama5d2.c b/drivers/clk/at91/sama5d2.c
+index 8b220762941a..9a5cbc7cd55a 100644
+--- a/drivers/clk/at91/sama5d2.c
++++ b/drivers/clk/at91/sama5d2.c
+@@ -7,6 +7,8 @@
+ 
+ #include "pmc.h"
+ 
++static DEFINE_SPINLOCK(mck_lock);
++
+ static const struct clk_master_characteristics mck_characteristics = {
+ 	.output = { .min = 124000000, .max = 166000000 },
+ 	.divisors = { 1, 2, 4, 3 },
+@@ -40,14 +42,14 @@ static const struct {
+ 	char *p;
+ 	u8 id;
+ } sama5d2_systemck[] = {
+-	{ .n = "ddrck", .p = "masterck", .id = 2 },
+-	{ .n = "lcdck", .p = "masterck", .id = 3 },
+-	{ .n = "uhpck", .p = "usbck",    .id = 6 },
+-	{ .n = "udpck", .p = "usbck",    .id = 7 },
+-	{ .n = "pck0",  .p = "prog0",    .id = 8 },
+-	{ .n = "pck1",  .p = "prog1",    .id = 9 },
+-	{ .n = "pck2",  .p = "prog2",    .id = 10 },
+-	{ .n = "iscck", .p = "masterck", .id = 18 },
++	{ .n = "ddrck", .p = "masterck_div", .id = 2 },
++	{ .n = "lcdck", .p = "masterck_div", .id = 3 },
++	{ .n = "uhpck", .p = "usbck",        .id = 6 },
++	{ .n = "udpck", .p = "usbck",        .id = 7 },
++	{ .n = "pck0",  .p = "prog0",        .id = 8 },
++	{ .n = "pck1",  .p = "prog1",        .id = 9 },
++	{ .n = "pck2",  .p = "prog2",        .id = 10 },
++	{ .n = "iscck", .p = "masterck_div", .id = 18 },
+ };
+ 
+ static const struct {
+@@ -235,15 +237,25 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	hw = at91_clk_register_master(regmap, "masterck", 4, parent_names,
+-				      &at91sam9x5_master_layout,
+-				      &mck_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", 4,
++					   parent_names,
++					   &at91sam9x5_master_layout,
++					   &mck_characteristics, &mck_lock,
++					   CLK_SET_RATE_GATE, INT_MIN);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "masterck_div",
++					  "masterck_pres",
++					  &at91sam9x5_master_layout,
++					  &mck_characteristics, &mck_lock,
++					  CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+ 	sama5d2_pmc->chws[PMC_MCK] = hw;
+ 
+-	hw = at91_clk_register_h32mx(regmap, "h32mxck", "masterck");
++	hw = at91_clk_register_h32mx(regmap, "h32mxck", "masterck_div");
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+@@ -259,7 +271,7 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	parent_names[4] = "masterck";
++	parent_names[4] = "masterck_div";
+ 	parent_names[5] = "audiopll_pmcck";
+ 	for (i = 0; i < 3; i++) {
+ 		char name[6];
+@@ -290,7 +302,7 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
+ 		hw = at91_clk_register_sam9x5_peripheral(regmap, &pmc_pcr_lock,
+ 							 &sama5d2_pcr_layout,
+ 							 sama5d2_periphck[i].n,
+-							 "masterck",
++							 "masterck_div",
+ 							 sama5d2_periphck[i].id,
+ 							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
+@@ -317,7 +329,7 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	parent_names[4] = "masterck";
++	parent_names[4] = "masterck_div";
+ 	parent_names[5] = "audiopll_pmcck";
+ 	for (i = 0; i < ARRAY_SIZE(sama5d2_gck); i++) {
+ 		hw = at91_clk_register_generated(regmap, &pmc_pcr_lock,
+diff --git a/drivers/clk/at91/sama5d3.c b/drivers/clk/at91/sama5d3.c
+index 7c6e0a5b9dc8..87009ee8effc 100644
+--- a/drivers/clk/at91/sama5d3.c
++++ b/drivers/clk/at91/sama5d3.c
+@@ -7,6 +7,8 @@
+ 
+ #include "pmc.h"
+ 
++static DEFINE_SPINLOCK(mck_lock);
++
+ static const struct clk_master_characteristics mck_characteristics = {
+ 	.output = { .min = 0, .max = 166000000 },
+ 	.divisors = { 1, 2, 4, 3 },
+@@ -40,14 +42,14 @@ static const struct {
+ 	char *p;
+ 	u8 id;
+ } sama5d3_systemck[] = {
+-	{ .n = "ddrck", .p = "masterck", .id = 2 },
+-	{ .n = "lcdck", .p = "masterck", .id = 3 },
+-	{ .n = "smdck", .p = "smdclk",   .id = 4 },
+-	{ .n = "uhpck", .p = "usbck",    .id = 6 },
+-	{ .n = "udpck", .p = "usbck",    .id = 7 },
+-	{ .n = "pck0",  .p = "prog0",    .id = 8 },
+-	{ .n = "pck1",  .p = "prog1",    .id = 9 },
+-	{ .n = "pck2",  .p = "prog2",    .id = 10 },
++	{ .n = "ddrck", .p = "masterck_div", .id = 2 },
++	{ .n = "lcdck", .p = "masterck_div", .id = 3 },
++	{ .n = "smdck", .p = "smdclk",       .id = 4 },
++	{ .n = "uhpck", .p = "usbck",        .id = 6 },
++	{ .n = "udpck", .p = "usbck",        .id = 7 },
++	{ .n = "pck0",  .p = "prog0",        .id = 8 },
++	{ .n = "pck1",  .p = "prog1",        .id = 9 },
++	{ .n = "pck2",  .p = "prog2",        .id = 10 },
+ };
+ 
+ static const struct {
+@@ -170,9 +172,19 @@ static void __init sama5d3_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	hw = at91_clk_register_master(regmap, "masterck", 4, parent_names,
+-				      &at91sam9x5_master_layout,
+-				      &mck_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", 4,
++					   parent_names,
++					   &at91sam9x5_master_layout,
++					   &mck_characteristics, &mck_lock,
++					   CLK_SET_RATE_GATE, INT_MIN);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "masterck_div",
++					  "masterck_pres",
++					  &at91sam9x5_master_layout,
++					  &mck_characteristics, &mck_lock,
++					  CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+@@ -192,7 +204,7 @@ static void __init sama5d3_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	parent_names[4] = "masterck";
++	parent_names[4] = "masterck_div";
+ 	for (i = 0; i < 3; i++) {
+ 		char name[6];
+ 
+@@ -222,7 +234,7 @@ static void __init sama5d3_pmc_setup(struct device_node *np)
+ 		hw = at91_clk_register_sam9x5_peripheral(regmap, &pmc_pcr_lock,
+ 							 &sama5d3_pcr_layout,
+ 							 sama5d3_periphck[i].n,
+-							 "masterck",
++							 "masterck_div",
+ 							 sama5d3_periphck[i].id,
+ 							 &sama5d3_periphck[i].r,
+ 							 INT_MIN);
+diff --git a/drivers/clk/at91/sama5d4.c b/drivers/clk/at91/sama5d4.c
+index 92d8d4141b43..57fff790188b 100644
+--- a/drivers/clk/at91/sama5d4.c
++++ b/drivers/clk/at91/sama5d4.c
+@@ -7,6 +7,8 @@
+ 
+ #include "pmc.h"
+ 
++static DEFINE_SPINLOCK(mck_lock);
++
+ static const struct clk_master_characteristics mck_characteristics = {
+ 	.output = { .min = 125000000, .max = 200000000 },
+ 	.divisors = { 1, 2, 4, 3 },
+@@ -39,14 +41,14 @@ static const struct {
+ 	char *p;
+ 	u8 id;
+ } sama5d4_systemck[] = {
+-	{ .n = "ddrck", .p = "masterck", .id = 2 },
+-	{ .n = "lcdck", .p = "masterck", .id = 3 },
+-	{ .n = "smdck", .p = "smdclk",   .id = 4 },
+-	{ .n = "uhpck", .p = "usbck",    .id = 6 },
+-	{ .n = "udpck", .p = "usbck",    .id = 7 },
+-	{ .n = "pck0",  .p = "prog0",    .id = 8 },
+-	{ .n = "pck1",  .p = "prog1",    .id = 9 },
+-	{ .n = "pck2",  .p = "prog2",    .id = 10 },
++	{ .n = "ddrck", .p = "masterck_div", .id = 2 },
++	{ .n = "lcdck", .p = "masterck_div", .id = 3 },
++	{ .n = "smdck", .p = "smdclk",       .id = 4 },
++	{ .n = "uhpck", .p = "usbck",        .id = 6 },
++	{ .n = "udpck", .p = "usbck",        .id = 7 },
++	{ .n = "pck0",  .p = "prog0",        .id = 8 },
++	{ .n = "pck1",  .p = "prog1",        .id = 9 },
++	{ .n = "pck2",  .p = "prog2",        .id = 10 },
+ };
+ 
+ static const struct {
+@@ -185,15 +187,25 @@ static void __init sama5d4_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	hw = at91_clk_register_master(regmap, "masterck", 4, parent_names,
+-				      &at91sam9x5_master_layout,
+-				      &mck_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "masterck_pres", 4,
++					   parent_names,
++					   &at91sam9x5_master_layout,
++					   &mck_characteristics, &mck_lock,
++					   CLK_SET_RATE_GATE, INT_MIN);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "masterck_div",
++					  "masterck_pres",
++					  &at91sam9x5_master_layout,
++					  &mck_characteristics, &mck_lock,
++					  CLK_SET_RATE_GATE);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+ 	sama5d4_pmc->chws[PMC_MCK] = hw;
+ 
+-	hw = at91_clk_register_h32mx(regmap, "h32mxck", "masterck");
++	hw = at91_clk_register_h32mx(regmap, "h32mxck", "masterck_div");
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+@@ -215,7 +227,7 @@ static void __init sama5d4_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "plladivck";
+ 	parent_names[3] = "utmick";
+-	parent_names[4] = "masterck";
++	parent_names[4] = "masterck_div";
+ 	for (i = 0; i < 3; i++) {
+ 		char name[6];
+ 
+@@ -245,7 +257,7 @@ static void __init sama5d4_pmc_setup(struct device_node *np)
+ 		hw = at91_clk_register_sam9x5_peripheral(regmap, &pmc_pcr_lock,
+ 							 &sama5d4_pcr_layout,
+ 							 sama5d4_periphck[i].n,
+-							 "masterck",
++							 "masterck_div",
+ 							 sama5d4_periphck[i].id,
+ 							 &range, INT_MIN);
+ 		if (IS_ERR(hw))
 diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
-index 29d9781e6712..e0c4d2eb9f59 100644
+index e0c4d2eb9f59..927eb3b2b126 100644
 --- a/drivers/clk/at91/sama7g5.c
 +++ b/drivers/clk/at91/sama7g5.c
-@@ -89,11 +89,40 @@ static const struct clk_pll_layout pll_layout_divio = {
- 	.endiv_shift	= 30,
- };
+@@ -32,6 +32,7 @@
+ 	} while (0)
  
-+/*
-+ * CPU PLL output range.
-+ * Notice: The upper limit has been setup to 1000000002 due to hardware
-+ * block which cannot output exactly 1GHz.
-+ */
-+static const struct clk_range cpu_pll_outputs[] = {
-+	{ .min = 2343750, .max = 1000000002 },
-+};
-+
-+/* PLL output range. */
-+static const struct clk_range pll_outputs[] = {
-+	{ .min = 2343750, .max = 1200000000 },
-+};
-+
-+/* CPU PLL characteristics. */
-+static const struct clk_pll_characteristics cpu_pll_characteristics = {
-+	.input = { .min = 12000000, .max = 50000000 },
-+	.num_output = ARRAY_SIZE(cpu_pll_outputs),
-+	.output = cpu_pll_outputs,
-+};
-+
-+/* PLL characteristics. */
-+static const struct clk_pll_characteristics pll_characteristics = {
-+	.input = { .min = 12000000, .max = 50000000 },
-+	.num_output = ARRAY_SIZE(pll_outputs),
-+	.output = pll_outputs,
-+};
-+
+ static DEFINE_SPINLOCK(pmc_pll_lock);
++static DEFINE_SPINLOCK(pmc_mck0_lock);
+ static DEFINE_SPINLOCK(pmc_mckX_lock);
+ 
  /**
-  * PLL clocks description
-  * @n:		clock name
-  * @p:		clock parent
-  * @l:		clock layout
-+ * @c:		clock characteristics
-  * @t:		clock type
-  * @f:		clock flags
-  * @eid:	export index in sama7g5->chws[] array
-@@ -102,6 +131,7 @@ static const struct {
- 	const char *n;
- 	const char *p;
- 	const struct clk_pll_layout *l;
-+	const struct clk_pll_characteristics *c;
- 	unsigned long f;
- 	u8 t;
- 	u8 eid;
-@@ -110,6 +140,7 @@ static const struct {
- 		{ .n = "cpupll_fracck",
- 		  .p = "mainck",
- 		  .l = &pll_layout_frac,
-+		  .c = &cpu_pll_characteristics,
- 		  .t = PLL_TYPE_FRAC,
- 		   /*
- 		    * This feeds cpupll_divpmcck which feeds CPU. It should
-@@ -120,6 +151,7 @@ static const struct {
- 		{ .n = "cpupll_divpmcck",
- 		  .p = "cpupll_fracck",
- 		  .l = &pll_layout_divpmc,
-+		  .c = &cpu_pll_characteristics,
- 		  .t = PLL_TYPE_DIV,
- 		   /* This feeds CPU. It should not be disabled. */
- 		  .f = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
-@@ -130,6 +162,7 @@ static const struct {
- 		{ .n = "syspll_fracck",
- 		  .p = "mainck",
- 		  .l = &pll_layout_frac,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_FRAC,
- 		   /*
- 		    * This feeds syspll_divpmcck which may feed critial parts
-@@ -141,6 +174,7 @@ static const struct {
- 		{ .n = "syspll_divpmcck",
- 		  .p = "syspll_fracck",
- 		  .l = &pll_layout_divpmc,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_DIV,
- 		   /*
- 		    * This may feed critial parts of the systems like timers.
-@@ -154,6 +188,7 @@ static const struct {
- 		{ .n = "ddrpll_fracck",
- 		  .p = "mainck",
- 		  .l = &pll_layout_frac,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_FRAC,
- 		   /*
- 		    * This feeds ddrpll_divpmcck which feeds DDR. It should not
-@@ -164,6 +199,7 @@ static const struct {
- 		{ .n = "ddrpll_divpmcck",
- 		  .p = "ddrpll_fracck",
- 		  .l = &pll_layout_divpmc,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_DIV,
- 		   /* This feeds DDR. It should not be disabled. */
- 		  .f = CLK_IS_CRITICAL | CLK_SET_RATE_GATE, },
-@@ -173,12 +209,14 @@ static const struct {
- 		{ .n = "imgpll_fracck",
- 		  .p = "mainck",
- 		  .l = &pll_layout_frac,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_FRAC,
- 		  .f = CLK_SET_RATE_GATE, },
+@@ -984,8 +985,16 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
+ 	parent_names[1] = "mainck";
+ 	parent_names[2] = "cpupll_divpmcck";
+ 	parent_names[3] = "syspll_divpmcck";
+-	hw = at91_clk_register_master(regmap, "mck0", 4, parent_names,
+-				      &mck0_layout, &mck0_characteristics);
++	hw = at91_clk_register_master_pres(regmap, "mck0_pres", 4, parent_names,
++					   &mck0_layout, &mck0_characteristics,
++					   &pmc_mck0_lock,
++					   CLK_SET_RATE_PARENT, 0);
++	if (IS_ERR(hw))
++		goto err_free;
++
++	hw = at91_clk_register_master_div(regmap, "mck0_div", "mck0_pres",
++					  &mck0_layout, &mck0_characteristics,
++					  &pmc_mck0_lock, 0);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
  
- 		{ .n = "imgpll_divpmcck",
- 		  .p = "imgpll_fracck",
- 		  .l = &pll_layout_divpmc,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_DIV,
- 		  .f = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
- 		       CLK_SET_RATE_PARENT, },
-@@ -188,12 +226,14 @@ static const struct {
- 		{ .n = "baudpll_fracck",
- 		  .p = "mainck",
- 		  .l = &pll_layout_frac,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_FRAC,
- 		  .f = CLK_SET_RATE_GATE, },
- 
- 		{ .n = "baudpll_divpmcck",
- 		  .p = "baudpll_fracck",
- 		  .l = &pll_layout_divpmc,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_DIV,
- 		  .f = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
- 		       CLK_SET_RATE_PARENT, },
-@@ -203,12 +243,14 @@ static const struct {
- 		{ .n = "audiopll_fracck",
- 		  .p = "main_xtal",
- 		  .l = &pll_layout_frac,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_FRAC,
- 		  .f = CLK_SET_RATE_GATE, },
- 
- 		{ .n = "audiopll_divpmcck",
- 		  .p = "audiopll_fracck",
- 		  .l = &pll_layout_divpmc,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_DIV,
- 		  .f = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
- 		       CLK_SET_RATE_PARENT,
-@@ -217,6 +259,7 @@ static const struct {
- 		{ .n = "audiopll_diviock",
- 		  .p = "audiopll_fracck",
- 		  .l = &pll_layout_divio,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_DIV,
- 		  .f = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
- 		       CLK_SET_RATE_PARENT,
-@@ -227,12 +270,14 @@ static const struct {
- 		{ .n = "ethpll_fracck",
- 		  .p = "main_xtal",
- 		  .l = &pll_layout_frac,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_FRAC,
- 		  .f = CLK_SET_RATE_GATE, },
- 
- 		{ .n = "ethpll_divpmcck",
- 		  .p = "ethpll_fracck",
- 		  .l = &pll_layout_divpmc,
-+		  .c = &pll_characteristics,
- 		  .t = PLL_TYPE_DIV,
- 		  .f = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
- 		       CLK_SET_RATE_PARENT, },
-@@ -793,18 +838,6 @@ static const struct {
- 	  .pp_chg_id = INT_MIN, },
- };
- 
--/* PLL output range. */
--static const struct clk_range pll_outputs[] = {
--	{ .min = 2343750, .max = 1200000000 },
--};
--
--/* PLL characteristics. */
--static const struct clk_pll_characteristics pll_characteristics = {
--	.input = { .min = 12000000, .max = 50000000 },
--	.num_output = ARRAY_SIZE(pll_outputs),
--	.output = pll_outputs,
--};
--
- /* MCK0 characteristics. */
- static const struct clk_master_characteristics mck0_characteristics = {
- 	.output = { .min = 50000000, .max = 200000000 },
-@@ -921,7 +954,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 				hw = sam9x60_clk_register_frac_pll(regmap,
- 					&pmc_pll_lock, sama7g5_plls[i][j].n,
- 					sama7g5_plls[i][j].p, parent_hw, i,
--					&pll_characteristics,
-+					sama7g5_plls[i][j].c,
- 					sama7g5_plls[i][j].l,
- 					sama7g5_plls[i][j].f);
- 				break;
-@@ -930,7 +963,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 				hw = sam9x60_clk_register_div_pll(regmap,
- 					&pmc_pll_lock, sama7g5_plls[i][j].n,
- 					sama7g5_plls[i][j].p, i,
--					&pll_characteristics,
-+					sama7g5_plls[i][j].c,
- 					sama7g5_plls[i][j].l,
- 					sama7g5_plls[i][j].f);
- 				break;
 -- 
 2.7.4
 
