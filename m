@@ -2,244 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4584B2B98E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D252B98E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728935AbgKSRFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:05:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35503 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727677AbgKSRFh (ORCPT
+        id S1728986AbgKSRG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:06:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728168AbgKSRGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:05:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605805535;
+        Thu, 19 Nov 2020 12:06:25 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D33C0613CF;
+        Thu, 19 Nov 2020 09:06:25 -0800 (PST)
+Date:   Thu, 19 Nov 2020 18:06:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605805584;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7noBqjP7X7X7F1znylhK1IyBB+iXa4PXKrYGSK1I+Q4=;
-        b=eAFuNuIqfn7+JfsZ26YSpy+TJyYK+mM4deUrVLapxMXI/HEqJXmLs/mO06oJ5oheGbUDm0
-        GqBRXwCagmJalFSa+SQTqpRjHvQH2vYtPMtQEFtnmcXQ6zkWukEUDeh5uKP9cQwpRDuvSR
-        oeBTbqwea8EpeAvPSLaAdyDbMcp1lTU=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-JW9HQrUIOCifTqBZ-e__nw-1; Thu, 19 Nov 2020 12:05:33 -0500
-X-MC-Unique: JW9HQrUIOCifTqBZ-e__nw-1
-Received: by mail-qk1-f200.google.com with SMTP id f9so5540697qkg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:05:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=7noBqjP7X7X7F1znylhK1IyBB+iXa4PXKrYGSK1I+Q4=;
-        b=mEkxoZljQNwGiyJBeQfZNzefmhMjwDna1IEcyBf7Ato0Nv5GeMHMrQ0J8APkNp8u82
-         vjj1lxnhcdMF1Mub2sPf6gIVB+6CSV2j/UGfpte8n9KUH4OLiN2J7XuIquokAq7lcUhh
-         PQzbfqHZUqEd0E2QwXvqou/Lrqwwh6ivDxo20J2bWWzXlnYCYA+1nCLb+9pFRHD7n6z4
-         4n7VbbXaqMuXeh9Zhvo73LcaUt9LQH7s5XbYp1fSB88ONvssKBd4HvIhVl6mHjwcWITo
-         74ZumCqXZzCoWLIcD65DooyC3iAPXAEn67MTKPDcb+xBgPdLLMNLow3mZ1W+sLnELmYg
-         yDwg==
-X-Gm-Message-State: AOAM531EtufLnu0YH4CYIIvKlxb+dNMcdstvlQip1sxsXkBar5TumkxB
-        1nLh3jMnmEdmwuBaYD9MVZ4MDPwfR4BqGaGS07Y30Y4RS1r/RUVpIMvhl1h1rhG1wud90cfpNT/
-        UGsJbDJ3j5N82Z2t9w/QtNyfH
-X-Received: by 2002:ac8:4914:: with SMTP id e20mr11079619qtq.210.1605805533030;
-        Thu, 19 Nov 2020 09:05:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxAdwWhaOkY9QamylGcjAqWf3ynrNhCJQ9K9PX56a0MzYhN2QPwW4BWl+yyq6EB/3J0DYRhsw==
-X-Received: by 2002:ac8:4914:: with SMTP id e20mr11079589qtq.210.1605805532728;
-        Thu, 19 Nov 2020 09:05:32 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id c199sm226227qke.111.2020.11.19.09.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 09:05:31 -0800 (PST)
-References: <20201015214430.17937-1-jsnitsel@redhat.com>
- <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
- <87d009c0pn.fsf@redhat.com>
- <77498b10-cf2c-690b-8dad-78cbd61712ba@redhat.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Matthew Garrett <mjg59@google.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jarkko@kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
-In-reply-to: <77498b10-cf2c-690b-8dad-78cbd61712ba@redhat.com>
-Date:   Thu, 19 Nov 2020 10:05:29 -0700
-Message-ID: <87a6vdb7l2.fsf@redhat.com>
+        bh=bfpqeXRvpn1SL3kgLsKl7DAHmAFazpLRET3v8Rfi1hU=;
+        b=q15BS6T8StWZOi1cLi9Q11EBokwQlBl8gOlE6gifMyrK936NQ4rlK4rrmHEFwKqpHdVbIi
+        MN/ATzg24htROT2MB3yntTwEBMtHlj6kx880ZYGaGCMF83aOKSm58r6Zmm7nOfZKuRCJWn
+        zCjZK4zFAPFNMciPjTEmgF1YfKRHPKrV1vGgovCqFfv/xUpxmjD0xJfkjvmd5jiOslEbrY
+        sqMF0hfpynqU4+QRaLChEW1TYkG5O1x2MbJjN6FkTKH4SytSw1vilF5nsrgAu/9R0Fg97Y
+        8e5+7B77ghWzVTbj8F+/SqtpRZRd9ERKaXnlSG38QVkv+Oacx6oJy9nZe428rw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605805584;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bfpqeXRvpn1SL3kgLsKl7DAHmAFazpLRET3v8Rfi1hU=;
+        b=FvoylmmGvyvC5EgwoEZVd5+xcPeAs07OuXxHDWxnwFkjQJ1DVb0qJMMYwgdqgwIwKVXbC+
+        97Xl4kFAuDu+qwBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Yoichi Yuasa <yuasa@linux-mips.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH REPOST] pcmcia: Remove NEC VRC4173 CARDU
+Message-ID: <20201119170622.yan5bt2chxvoxqgn@linutronix.de>
+References: <20201113213408.2244169-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201113213408.2244169-1-bigeasy@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-11-13 22:34:08 [+0100], To linux-kernel@vger.kernel.org wrote:
+> This driver is the very definition of bitrotting:
+> - Introduced in commit
+>   79a140932c776 ("[PATCH] mips: vR41xx updates")
+>   which is 2.6.11-rc3.
+>=20
+> - Provides ->register_callback which was removed in commit
+>   7f316b033b36a ("[PATCH] pcmcia: remove socket register_callback")
+>   which is v2.6.14-rc3
+>=20
+> - Uses INIT_WORK() with three arguments which was removed in commit
+>   65f27f38446e1 ("WorkStruct: Pass the work_struct pointer instead of con=
+text data")
+>   which is v2.6.20-rc1
+>=20
+> - Provides ->inquire_socket and uses socket_cap_t which was removed in
+>   commit
+>   b7949fdacbe00 ("[PCMCIA] Remove inquire_socket")
+>   which is 2.5.72
+>=20
+> - Provides ->get_io_map which was removed in commit
+>   d7de1b64a23b9 ("[PCMCIA] pcmcia-2: Remove get_io_map and get_mem_map so=
+cket methods.")
+>   which is 2.5.66
+>=20
+> Remove VRC4173 CARDU from the tree because it never had the luck to be
+> successfully compiled. Let it finally find peace in byte heaven.
+=E2=80=A6
+> This is a repost of
+> 	https://lkml.kernel.org/r/20201001193234.gi6fp4vk3dypwifv@linutronix.de
+>=20
+> which was a repost of
+> 	https://lkml.kernel.org/r/20200916081629.cfi6svr3yjvzimqs@linutronix.de
 
-Hans de Goede @ 2020-11-19 07:42 MST:
+Andrew, are you okay with routing this via your tree?
+Nobody responded to this and as I documented in the patch description it
+never compiled so.
 
-> Hi,
->
-> On 11/19/20 7:36 AM, Jerry Snitselaar wrote:
->> 
->> Matthew Garrett @ 2020-10-15 15:39 MST:
->> 
->>> On Thu, Oct 15, 2020 at 2:44 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
->>>>
->>>> There is a misconfiguration in the bios of the gpio pin used for the
->>>> interrupt in the T490s. When interrupts are enabled in the tpm_tis
->>>> driver code this results in an interrupt storm. This was initially
->>>> reported when we attempted to enable the interrupt code in the tpm_tis
->>>> driver, which previously wasn't setting a flag to enable it. Due to
->>>> the reports of the interrupt storm that code was reverted and we went back
->>>> to polling instead of using interrupts. Now that we know the T490s problem
->>>> is a firmware issue, add code to check if the system is a T490s and
->>>> disable interrupts if that is the case. This will allow us to enable
->>>> interrupts for everyone else. If the user has a fixed bios they can
->>>> force the enabling of interrupts with tpm_tis.interrupts=1 on the
->>>> kernel command line.
->>>
->>> I think an implication of this is that systems haven't been
->>> well-tested with interrupts enabled. In general when we've found a
->>> firmware issue in one place it ends up happening elsewhere as well, so
->>> it wouldn't surprise me if there are other machines that will also be
->>> unhappy with interrupts enabled. Would it be possible to automatically
->>> detect this case (eg, if we get more than a certain number of
->>> interrupts in a certain timeframe immediately after enabling the
->>> interrupt) and automatically fall back to polling in that case? It
->>> would also mean that users with fixed firmware wouldn't need to pass a
->>> parameter.
->> 
->> I believe Matthew is correct here. I found another system today
->> with completely different vendor for both the system and the tpm chip.
->> In addition another Lenovo model, the L490, has the issue.
->> 
->> This initial attempt at a solution like Matthew suggested works on
->> the system I found today, but I imagine it is all sorts of wrong.
->> In the 2 systems where I've seen it, there are about 100000 interrupts
->> in around 1.5 seconds, and then the irq code shuts down the interrupt
->> because they aren't being handled.
->
-> Is that with your patch? The IRQ should be silenced as soon as
-> devm_free_irq(chip->dev.parent, priv->irq, chip); is called.
->
-
-No that is just with James' patchset that enables interrupts for
-tpm_tis. It looks like the irq is firing, but the tpm's int_status
-register is clear, so the handler immediately returns IRQ_NONE. After
-that happens 100000 times the core irq code shuts down the irq, but it
-isn't released so I could still see the stats in /proc/interrupts.  With
-my attempt below on top of that patchset it releases the irq. I had to
-stick the check prior to it checking the int_status register because it
-is cleared and the handler returns, and I couldn't do the devm_free_irq
-directly in tis_int_handler, so I tried sticking it in tpm_tis_send
-where the other odd irq testing code was already located. I'm not sure
-if there is another place that would work better for calling the
-devm_free_irq.
-
-> Depending on if we can get your storm-detection to work or not,
-> we might also choose to just never try to use the IRQ (at least on
-> x86 systems). AFAIK the TPM is never used for high-throughput stuff
-> so the polling overhead should not be a big deal (and I'm getting the feeling
-> that Windows always polls).
->
-
-I was wondering about Windows as well. In addition to the Lenovo systems
-which the T490s had Nuvoton tpm, the system I found yesterday was a development
-system we have from a partner with an Infineon tpm. Dan Williams has
-seen it internally at Intel as well on some system.
-
-> Regards,
->
-> Hans
->
->
->
->> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
->> index 49ae09ac604f..478e9d02a3fa 100644
->> --- a/drivers/char/tpm/tpm_tis_core.c
->> +++ b/drivers/char/tpm/tpm_tis_core.c
->> @@ -27,6 +27,11 @@
->>  #include "tpm.h"
->>  #include "tpm_tis_core.h"
->> 
->> +static unsigned int time_start = 0;
->> +static bool storm_check = true;
->> +static bool storm_killed = false;
->> +static u32 irqs_fired = 0;
->> +
->>  static void tpm_tis_clkrun_enable(struct tpm_chip *chip, bool value);
->> 
->>  static void tpm_tis_enable_interrupt(struct tpm_chip *chip, u8 mask)
->> @@ -464,25 +469,31 @@ static int tpm_tis_send_data(struct tpm_chip *chip, const u8 *buf, size_t len)
->>         return rc;
->>  }
->> 
->> -static void disable_interrupts(struct tpm_chip *chip)
->> +static void __disable_interrupts(struct tpm_chip *chip)
->>  {
->>         struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
->>         u32 intmask;
->>         int rc;
->> 
->> -       if (priv->irq == 0)
->> -               return;
->> -
->>         rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
->>         if (rc < 0)
->>                 intmask = 0;
->> 
->>         intmask &= ~TPM_GLOBAL_INT_ENABLE;
->>         rc = tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality), intmask);
->> +       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
->> +}
->> +
->> +static void disable_interrupts(struct tpm_chip *chip)
->> +{
->> +       struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
->> 
->> +       if (priv->irq == 0)
->> +               return;
->> +
->> +       __disable_interrupts(chip);
->>         devm_free_irq(chip->dev.parent, priv->irq, chip);
->>         priv->irq = 0;
->> -       chip->flags &= ~TPM_CHIP_FLAG_IRQ;
->>  }
->> 
->>  /*
->> @@ -528,6 +539,12 @@ static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
->>         int rc, irq;
->>         struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
->> 
->> +       if (unlikely(storm_killed)) {
->> +               devm_free_irq(chip->dev.parent, priv->irq, chip);
->> +               priv->irq = 0;
->> +               storm_killed = false;
->> +       }
->> +
->>         if (!(chip->flags & TPM_CHIP_FLAG_IRQ) || priv->irq_tested)
->>                 return tpm_tis_send_main(chip, buf, len);
->> 
->> @@ -748,6 +765,21 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
->>         u32 interrupt;
->>         int i, rc;
->> 
->> +       if (storm_check) {
->> +               irqs_fired++;
->> +
->> +               if (!time_start) {
->> +                       time_start = jiffies_to_msecs(jiffies);
->> +               } else if ((irqs_fired > 1000) && (jiffies_to_msecs(jiffies) - jiffies < 500)) {
->> +                       __disable_interrupts(chip);
->> +                       storm_check = false;
->> +                       storm_killed = true;
->> +                       return IRQ_HANDLED;
->> +               } else if ((jiffies_to_msecs(jiffies) - time_start > 500) && (irqs_fired < 1000)) {
->> +                       storm_check = false;
->> +               }
->> +       }
->> +
->>         rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &interrupt);
->>         if (rc < 0)
->>                 return IRQ_NONE;
->> 
-
+Sebastian
