@@ -2,113 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E892B9C76
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C952B9C7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgKSVEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 16:04:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgKSVEP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 16:04:15 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC926C0613CF;
-        Thu, 19 Nov 2020 13:04:14 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id d17so10279226lfq.10;
-        Thu, 19 Nov 2020 13:04:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vuoOcEDX9Qk97tEXio5KifV8glbdNQVJZyvTphvDqvk=;
-        b=Z7nCUKE/RQ9qg0YGyxWOSuPZzYClCIPVG4dDKfgZzvnvTz+99/YQDvGHCnf2I8CnGW
-         pkAsHgEoGSwjk8OYL63JspMqMqxAzRUP5d0wxkfE4lVzgYFcZMXxvfmRsSvUvWQPyP7x
-         LahO0WpXbtbIKsm9ZwYvUbynYvK0V0wg/JbPCCP5/9fsQDK9lQ3hCVM+eaEDvrFjMMMt
-         DjRG4PfvdeoM2ECV8SP01up2ardmTKM4KOC/SwGwFlTeWnVtvfcswkdL+mxdxijByohA
-         49fnigdv7xhIi6jPOhXAN2/jDVK5yfVH2dXU5Zi4oxPj+yCg+xe9hQfco0qZEaGUeZfI
-         NVkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vuoOcEDX9Qk97tEXio5KifV8glbdNQVJZyvTphvDqvk=;
-        b=IL18VSMELiBKzlrzQTROIRGPzjCEsSsWVOwCNma7bbBc5V6UAS+YcGgW5z+RYr4FFu
-         xg2SZyYE6jhawyAc6paOBQ7n/uhimPK4uPRV0OyuIC4VyWEwB8xaHlZhmPdHavooJ5dt
-         yWvtkrag/sW77jzkrHHCyYmyha3rQMW/h1tmG5UDEH7cABaAJJ2JK5ksO7M7+uG9PQed
-         3qB3qLXzhzKA37IOxnqYEqwaGiXlmjrFAxALAC25hQ74OmtrkUZZr7IxvQKYKYlNzcOr
-         lkg/zNEkpXa/hTXotE8bv6914PXiArLfO912DEXKcJizs2vPsbSQFIdrymNSN1U5Octn
-         gWyg==
-X-Gm-Message-State: AOAM530hYJWAzCZXHlAZMsujzYI6v7wUhBL9jBvUNr0SuKVDyjxuaSTp
-        sJKoiOGjKq5e9Vl55xMm4q7XXL4wVDw=
-X-Google-Smtp-Source: ABdhPJy+CtxWZMIEcLdTw+ve3E4A1aRfbrnZczo8enZeKkTgfMpY2z1d+lCeAwy727IwHQB3omIh1g==
-X-Received: by 2002:a19:2390:: with SMTP id j138mr6480480lfj.390.1605819853222;
-        Thu, 19 Nov 2020 13:04:13 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id y11sm91684lfl.119.2020.11.19.13.04.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 13:04:12 -0800 (PST)
-Subject: Re: [PATCH v9 07/17] PM / devfreq: tegra30: Support interconnect and
- OPPs from device-tree
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201115212922.4390-1-digetx@gmail.com>
- <20201115212922.4390-8-digetx@gmail.com>
- <20201117100705.i62qr4gosvu76o22@vireshk-i7>
- <956315a9-e806-3b18-6792-f01057a6c511@gmail.com>
- <20201118042117.q6nkwm7exakgfvu3@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <150be162-cb1a-4e30-8937-e99cd1c4255b@gmail.com>
-Date:   Fri, 20 Nov 2020 00:04:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <20201118042117.q6nkwm7exakgfvu3@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726500AbgKSVF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 16:05:57 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:63075 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726313AbgKSVFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 16:05:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605819954; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=p02axMjNocUH+jqzcrSgerd2G87SR9mTMt14pK8m/ok=; b=QQVlsZsJwfzVf/w4A/RV8uixTchAwcL5IFMidN18pszg3KqOsRAnmu1qiLWQo7gsE/kf8K9s
+ eLm8XgszdhyUIk02ZRg2d7FrewBrfgysKNCbOQYgI1Dw1dyn7+Fu9X/RhHLDgAv5A7dj3I8j
+ dLEF0zZJ+EquuDmB/fmkjprnrzI=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5fb6de319e87e16352b13eee (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Nov 2020 21:05:53
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 62AA2C43463; Thu, 19 Nov 2020 21:05:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ED978C433C6;
+        Thu, 19 Nov 2020 21:05:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ED978C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org
+Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v8 0/4] Introduce mini-dump support for remoteproc
+Date:   Thu, 19 Nov 2020 13:05:31 -0800
+Message-Id: <1605819935-10726-1-git-send-email-sidgup@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.11.2020 07:21, Viresh Kumar пишет:
-...
->>>> +	/* legacy device-trees don't have OPP table and must be updated */
->>>> +	if (!device_property_present(&pdev->dev, "operating-points-v2")) {
->>>> +		dev_err(&pdev->dev,
->>>> +			"OPP table not found, please update your device tree\n");
->>>> +		return -ENODEV;
->>>> +	}
->>>> +
->>>
->>> You forgot to remove this ?
->>
->> Yes, good catch. I'm planning to replace this code with a common helper
->> sometime soon, so if there won't be another reasons to make a new
->> revision, then I'd prefer to keep it as-is for now.
-> 
-> You should just replace this patch only with a version of V9.1 and you
-> aren't really required to resend the whole series. And you should fix
-> it before it gets merged. This isn't a formatting issue which we just
-> let through. I trust you when you say that you will fix it, but this
-> must be fixed now.
-> 
+Sometimes firmware sizes can be in tens of MB's and reading all the memory
+during coredump can consume lot of time and memory.
 
-Should be easier to resend it all. I'll update it over the weekend, thanks.
+Introducing support for mini-dumps. Mini-dump contains smallest amount of
+useful information, that could help to debug subsystem crashes.
+
+During bootup memory is allocated in SMEM (Shared memory) in the form of a
+table that contains the physical addresses and sizes of the regions that
+are supposed to be collected during coredump. This memory is shared amongst
+all processors in a Qualcomm platform, so all remoteprocs fill in their
+entry in the global table once they are out of reset.
+
+This patch series adds support for parsing the global minidump table and
+uses the current coredump frameork to expose this memory to userspace
+during remoteproc's recovery.
+
+This patch series also integrates the patch:
+https://patchwork.kernel.org/patch/11695541/ sent by Siddharth.
+
+Changelog:
+v7 -> v8:
+- Addressed all comments from Bjorn:
+    * Renamed set_section_name to elf_strtbl_add.
+    * Renamed rproc_minidump to rproc_coredump_using_sections.
+    * Removed qcom_minidump header and moved structures to qcom_common source files.
+    * Moved minidump specific functions to qcom_common source files.
+    * Other minor fixes.
+
+v6 -> v7:
+- The STR_TAB size is calculated dynamically now instead of a predefined size.
+- Added comments to indicate details about the reserved null section header. More
+  details can be found at https://refspecs.linuxfoundation.org/elf/elf.pdf.
+
+v5 -> v6:
+- Removed priv_cleanup operation from rproc_ops. The dump_segments list is
+  updated and cleaned up each time minidump is invoked.
+- Split patch #2 into 2 parts - one that adds the rproc_minidump function, and
+  the other that uses the new function in the qcom_q6v5_pas driver.
+- Updated structs in qcom_minidump to explicitly indicate the endianness of the
+  data stored in SMEM, also updated member names.
+- Read the global table of contents in SMEM each time adsp_minidump is invoked.
+
+v4 -> v5:
+- Fixed adsp_add_minidump_segments to read IO memory using appropriate functions.
+
+v3 -> v4:
+- Made adsp_priv_cleanup a static function.
+
+v2 -> v3:
+- Refactored code to remove dependency on Qualcomm configs.
+- Renamed do_rproc_minidump to rproc_minidump and marked as exported
+  symbol.
+
+v1 -> v2:
+- 3 kernel test robot warnings have been resolved.
+- Introduced priv_cleanup op in order to making the cleaning of
+  private elements used by the remoteproc more readable.
+- Removed rproc_cleanup_priv as it is no longer needed.
+- Switched to if/else format for rproc_alloc in order to keep 
+  the static const decalaration of adsp_minidump_ops.
+
+Siddharth Gupta (4):
+  remoteproc: core: Add ops to enable custom coredump functionality
+  remoteproc: coredump: Add minidump functionality
+  remoteproc: qcom: Add capability to collect minidumps
+  remoteproc: qcom: Add minidump id for sm8150 modem
+
+ drivers/remoteproc/qcom_common.c            | 147 ++++++++++++++++++++++++++++
+ drivers/remoteproc/qcom_common.h            |   2 +
+ drivers/remoteproc/qcom_q6v5_pas.c          |  28 +++++-
+ drivers/remoteproc/remoteproc_core.c        |   6 +-
+ drivers/remoteproc/remoteproc_coredump.c    | 140 ++++++++++++++++++++++++++
+ drivers/remoteproc/remoteproc_elf_helpers.h |  26 +++++
+ include/linux/remoteproc.h                  |   3 +
+ 7 files changed, 349 insertions(+), 3 deletions(-)
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
