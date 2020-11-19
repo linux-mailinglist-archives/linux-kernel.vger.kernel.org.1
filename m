@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE2D2B8E80
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F492B8E85
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgKSJOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
+        id S1726489AbgKSJQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:16:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgKSJOI (ORCPT
+        with ESMTP id S1725873AbgKSJQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:14:08 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4875C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:14:06 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id 10so6427790wml.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 01:14:06 -0800 (PST)
+        Thu, 19 Nov 2020 04:16:20 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F5EC0613CF;
+        Thu, 19 Nov 2020 01:16:20 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id h23so5421972ljg.13;
+        Thu, 19 Nov 2020 01:16:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=q1kCKO2Wajos9XCYv+42QajKl+b5nwdS+s4fQXMXkC0=;
-        b=aHOJude4XUYBYjMHIXIqvPOfAJzFbbFBGbY5wBxiUcWK3+/nHouZjtA7/WMBcAkiHz
-         gQ66gQ7MTko4w0yV/MsSX8nZ3MP4plP2aiBbnPMAr5ojbCMY46+sYgtkBjND7pnVCjRb
-         zah9CpF0jKDxPeNgDaIUtGFyOE9Cc7nsfubxmbozzEaGLgSpaGNir0A6W6RT7UgVT/hD
-         EBMLBiBueBBra7fy1k5YpGhKiUFbLGn+3spcyNr3MhqRp/M9VDqyjgSuGM8st9+2qzba
-         YujN/QBFgpxCTLjZjZxq1gOMMNy4Ecw6Jn57htDgPDXmo0xWVEzQgeyVpZNbOZbxwRm/
-         CsPg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ntgtXrL0m1MaqlEPJt4hou8mjG+zy232AlU7iZoP3lc=;
+        b=TpdGT+uOCBhbdb/D1DPEtLzh+6t+zDIZyjldqTx+gQWjMpFZzWdLnxHOnFVac58FYM
+         XLO9lkKWdP5cJ8uq6uknT4NzypW0IjmNrj4NSE/ubfWCZNuJww1466Z9AUklyz6iN3rm
+         JxHO/D4pVsiDJlRqZfVq/BSlVFshPXya94I41O6DAVrAI8RVwlmyhb21agdTiF7THB93
+         uCvMsWiJq1v9USlWKIoSpyPzsVDUW5EmH9ZFAVv4RP+CV30L/35nmpRYUoGAgcfvvptk
+         DWt0bMsOTW7vZUmhkRSQid4aHJWCFeKw5syjrPW98XKG1+Wk5XlwrRFia9/PhM+1JuAJ
+         Yp6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=q1kCKO2Wajos9XCYv+42QajKl+b5nwdS+s4fQXMXkC0=;
-        b=IoM+sMvaN1CzeVNUF4ATMl5u/YB1SqEJsyOH1Om6w0umAIMkNCVGGfNzuZPkUtwGPh
-         rSt3S3yavJJIyXr72trAli2Elj1PYbVfoIunUz0RSpPJrwwb8S2ZG3FtXRLzyYAOCsk0
-         BW72fvIdBgB5KRNZdNl4CG1QnRIcGwbj9UcH5x/7t4I5lXHSezHSlfj1UU+OA+D1D3sS
-         amS3FeKTT4NUZyj2obucU7L/PjLhXXRgqHwJh5OnJU/KIGxWNEuuhDqgBPFMgWnlzQRU
-         dYwX2zrId0QYrbcEo1ocwm8I+VZ1PGqGplOuzyRtyT4w79ozynm96MhLsxnv8TRK+ocs
-         NbUQ==
-X-Gm-Message-State: AOAM530oGKj8tPLYyE9zJWthNzSrcZkGb+dzlT2/DZ5gq5BTx1m2fDFB
-        Z3WgSsrSvlVcvKJASlmRec6vx7aGQ8wq8o7z
-X-Google-Smtp-Source: ABdhPJwE7lzWIduefdcr1ejwZbR/vePOO0xyNX6/Qw/49e6vJ75qt37PcLbLMcgnz+VSxsYH51hUiA==
-X-Received: by 2002:a1c:6306:: with SMTP id x6mr2659954wmb.154.1605777244745;
-        Thu, 19 Nov 2020 01:14:04 -0800 (PST)
-Received: from dell ([91.110.221.241])
-        by smtp.gmail.com with ESMTPSA id g186sm24648747wma.1.2020.11.19.01.14.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 01:14:03 -0800 (PST)
-Date:   Thu, 19 Nov 2020 09:14:02 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Thomas Gleixner <gleixner@linutronix.de>,
-        David Woodhouse <dwmw2@infradead.org>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 01/23] mtd: mtdpart: Fix misdocumented function
- parameter 'mtd'
-Message-ID: <20201119091402.GY1869941@dell>
-References: <20201106213655.1838861-1-lee.jones@linaro.org>
- <20201106213655.1838861-2-lee.jones@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ntgtXrL0m1MaqlEPJt4hou8mjG+zy232AlU7iZoP3lc=;
+        b=YsVn0IA4lctGRjQe7MEfpyLjzztmnMsC2sYyPLbT3Z96Rz5HkV8G7BqdkRPXEDUyWp
+         IHnwLW34d3bnkD6lxg5ihIGb+6NySakb85Gx6BiUviSJLPN3yBTSQPg8xkC2AUDuenmx
+         15mjNFYw17A1sb/4KrBrhO78sFAqARoirQeweo02FPZwokLeeASqlWIqwn7Cydbi+XBg
+         9uxxkoLyaK0vMfJ8DN0Z3BAhkNYqg4Fyf7A4vF+k/yWW7O8cRbRxViit6x0eQueS31z+
+         A/iUw1XhbbARAslMTPv1P8dDd81RsOXJeqnePBTQg0VESH9UFxIyrYhDy81U+FUxpq6q
+         EEhA==
+X-Gm-Message-State: AOAM533mgfJv+DqJPm0QHPVsS69kzJjWAnAvyjokqM/ahkxcfJJ+1K+Y
+        05NWPArGe9rCEDuRqM+HSE6jpSWtBgS9Ew==
+X-Google-Smtp-Source: ABdhPJw1yjaczjdHKDlSU/uCMhzDZIMKbHNsg2zJ9/G+YCZuxtlgUw5VTrOCOWj1IqXMSxMhAM2J0w==
+X-Received: by 2002:a2e:958e:: with SMTP id w14mr5827704ljh.367.1605777378993;
+        Thu, 19 Nov 2020 01:16:18 -0800 (PST)
+Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id f25sm3675308ljk.57.2020.11.19.01.16.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 01:16:18 -0800 (PST)
+Subject: Re: [PATCH v4] mm: Optional full ASLR for mmap() and mremap()
+To:     Jann Horn <jannh@google.com>, Matthew Wilcox <willy@infradead.org>
+Cc:     linux-hardening@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mateusz Jurczyk <mjurczyk@google.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>
+References: <20201026160518.9212-1-toiwoton@gmail.com>
+ <20201117165455.GN29991@casper.infradead.org>
+ <CAG48ez0LyOMnA4Khv9eV1_JpEJhjZy4jJYF=ze3Ha2vSNAfapw@mail.gmail.com>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <7a10cb0c-4426-c0b9-7933-8de5f1a86d67@gmail.com>
+Date:   Thu, 19 Nov 2020 11:16:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106213655.1838861-2-lee.jones@linaro.org>
+In-Reply-To: <CAG48ez0LyOMnA4Khv9eV1_JpEJhjZy4jJYF=ze3Ha2vSNAfapw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Nov 2020, Lee Jones wrote:
-
-> Fixes the following W=1 kernel build warning(s):
+On 19.11.2020 0.42, Jann Horn wrote:
+> On Tue, Nov 17, 2020 at 5:55 PM Matthew Wilcox <willy@infradead.org> wrote:
+>> On Mon, Oct 26, 2020 at 06:05:18PM +0200, Topi Miettinen wrote:
+>>> Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
+>>> enables full randomization of memory mappings created with mmap(NULL,
+>>> ...). With 2, the base of the VMA used for such mappings is random,
+>>> but the mappings are created in predictable places within the VMA and
+>>> in sequential order. With 3, new VMAs are created to fully randomize
+>>> the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
+>>> even if not necessary.
+>>
+>> Is this worth it?
+>>
+>> https://www.ndss-symposium.org/ndss2017/ndss-2017-programme/aslrcache-practical-cache-attacks-mmu/
 > 
->  drivers/mtd/mtdpart.c:300: warning: Function parameter or member 'mtd' not described in '__mtd_del_partition'
->  drivers/mtd/mtdpart.c:300: warning: Excess function parameter 'priv' description in '__mtd_del_partition'
+> Yeah, against local attacks (including from JavaScript), ASLR isn't
+> very robust; but it should still help against true remote attacks
+> (modulo crazyness like NetSpectre).
 > 
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: Nicolas Pitre <nico@fluxnic.net>
-> Cc: Thomas Gleixner <gleixner@linutronix.de>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> E.g. Mateusz Jurczyk's remote Samsung phone exploit via MMS messages
+> (https://googleprojectzero.blogspot.com/2020/08/mms-exploit-part-5-defeating-aslr-getting-rce.html)
+> would've probably been quite a bit harder to pull off if he hadn't
+> been able to rely on having all those memory mappings sandwiched
+> together.
 
-Is there anything else you need from me Miquel, or does the set now
-look suitable for inclusion?
+Compiling the system with -mcmodel=large should also help, since then 
+even within one library, the address space layout of various segments 
+(text, data, rodata) could be randomized individually and then finding 
+the XOM wouldn't aid in finding the other segments. But this model isn't 
+so well supported yet (GCC: 
+https://gcc.gnu.org/onlinedocs/gcc/AArch64-Options.html, not sure about 
+LLVM).
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+-Topi
