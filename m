@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBE02B9B22
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B97C92B9B26
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgKSTEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:04:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60687 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726886AbgKSTEI (ORCPT
+        id S1727534AbgKSTEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:04:50 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:56000 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727267AbgKSTEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:04:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605812647;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1qNxLY7LLhUH6+ZHrJNh82Tq2sizSDbuMmtO7hAo1E4=;
-        b=biR031L0aFb4IhStVNFtnqK6UE9luGUO+VvmWDt/fSMJOGPTPMTN2QQbU8UkdZ1NM7GuAK
-        wrDJV/hlJCg7EVlc31D2ORUB/8eKN1rAqApQSaHpiGt5kR9+bzTwiq3r2Obh1ZpiZdkkOk
-        AWj3AcfE04j2Ypv270Ck0n66ElYlLYU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-LbHB2hLRMcWuB9cQjprhtA-1; Thu, 19 Nov 2020 14:04:05 -0500
-X-MC-Unique: LbHB2hLRMcWuB9cQjprhtA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7ED1881440E;
-        Thu, 19 Nov 2020 19:04:04 +0000 (UTC)
-Received: from mail (ovpn-113-32.rdu2.redhat.com [10.10.113.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 062EA5C1D1;
-        Thu, 19 Nov 2020 19:03:59 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 14:03:58 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/1] x86: restore the write back cache of reserved RAM in
- iounmap()
-Message-ID: <X7bBnsSJk33IyY6k@redhat.com>
-References: <20201119175902.17394-1-aarcange@redhat.com>
- <20201119180206.GA24054@infradead.org>
+        Thu, 19 Nov 2020 14:04:50 -0500
+Date:   Thu, 19 Nov 2020 19:04:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1605812687; bh=mGRxcfYAolC/NAFMZCqEsZ2XXtf/Sf6e5ygXw0wgKUk=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=MEvmfNVu1l/+M20A+8ShDsCBsLr3t1Is6Icz36mhsLHKeha+urkYFvIxxi4H4kuTm
+         LOJs7Bn5M8NQ+EGt1LHHPoj1HxZJ/NcFvQY2DK2aDYLx028jtyy9PYjymdLx9dr89q
+         Us/fH6fD4mNdUTbq6HdRrYGlM2OZxtmZiRlgijTKkLpDcwl06Wp0jQqQIxJ5q1ezES
+         yk0AioPpW7PtAVr6cn8FQiNH7z0eyDjhO8j5ZiOE4Hp3xu5xhkA9Yf5wu7v+u7/T9F
+         Lm44VJfG6ZFGxLx6l8Gv18rhNNOLLNMUP89GCYhRKURqMk+C0eUCCX7+A0YC/hPm/1
+         GBAnwv1cAcHRw==
+To:     Bjorn Helgaas <bhelgaas@google.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <alobakin@pm.me>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH pci-next] pci: remap: keep both device name and resource name for config space
+Message-ID: <JvyOzv8K8n5CCdP1xfLOdOWh4AbFrXdMMOEExr6em8@cp4-web-036.plabs.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119180206.GA24054@infradead.org>
-User-Agent: Mutt/2.0.0 (2020-11-07)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Christoph,
+Follow the rule taken in commit 35bd8c07db2c
+("devres: keep both device name and resource name in pretty name")
+and keep both device and resource names while requesting memory
+regions for PCI config space to prettify e.g. /proc/iomem output:
 
-On Thu, Nov 19, 2020 at 06:02:06PM +0000, Christoph Hellwig wrote:
-> What is the callers?  The whole SetPageReservered + ioremap* thing
-> you mention in the actual patch is completely bogus.  I think we'll
-> need to reject that as well and fix the caller.
+Before (DWC Host Controller):
 
-The actual caller is not so much the focus here: the point here is to
-be able to either handle the caller gracefully or to get a synchronous
-kernel crash in __free_pages.
+18b00000-18b01fff : dbi
+18b10000-18b11fff : config
+18b20000-18b21fff : dbi
+18b30000-18b31fff : config
+19000000-19ffffff : pci@18b00000
+  19000000-190fffff : PCI Bus 0000:01
+    19000000-1900ffff : 0000:01:00.0
+  19100000-191fffff : PCI Bus 0000:01
+1a000000-1affffff : pci@18b20000
+  1a000000-1a0fffff : PCI Bus 0001:01
+    1a000000-1a00ffff : 0001:01:00.0
+  1a100000-1a1fffff : PCI Bus 0001:01
 
-Otherwise the problem induced by such a caller (no matter if right or
-wrong) becomes hardly debuggable.
+After:
 
-The caller in question was the EFI_BOOT_SERVICE_DATA that is aliased
-on non RAM but then freed later by swapping RAM under it.
+18b00000-18b01fff : 18b00000.pci dbi
+18b10000-18b11fff : 18b00000.pci config
+18b20000-18b21fff : 18b20000.pci dbi
+18b30000-18b31fff : 18b20000.pci config
+19000000-19ffffff : pci@18b00000
+  19000000-190fffff : PCI Bus 0000:01
+    19000000-1900ffff : 0000:01:00.0
+  19100000-191fffff : PCI Bus 0000:01
+1a000000-1affffff : pci@18b20000
+  1a000000-1a0fffff : PCI Bus 0001:01
+    1a000000-1a00ffff : 0001:01:00.0
+  1a100000-1a1fffff : PCI Bus 0001:01
 
-Of course the caller has already been changed to stick to write back
-and that specific caller is not a concern anymore. My concern is if we
-leave the callee (iounmap) as it is, what does guarantee us that we
-won't hit again in production a few years down the road?
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ drivers/pci/pci.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-When I first read the caller it felt nothing should have gone wrong,
-it looked ok even the version that would leave PCD leftovers bits in
-the direct map. So I didn't get why switching to write back would
-prevent the PCD leftovers until I looked at the callee (iounmap).
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index e578d34095e9..0716691f7d14 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -4188,7 +4188,14 @@ void __iomem *devm_pci_remap_cfg_resource(struct dev=
+ice *dev,
+ =09}
+=20
+ =09size =3D resource_size(res);
+-=09name =3D res->name ?: dev_name(dev);
++
++=09if (res->name)
++=09=09name =3D devm_kasprintf(dev, GFP_KERNEL, "%s %s", dev_name(dev),
++=09=09=09=09      res->name);
++=09else
++=09=09name =3D devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
++=09if (!name)
++=09=09return IOMEM_ERR_PTR(-ENOMEM);
+=20
+ =09if (!devm_request_mem_region(dev, res->start, size, name)) {
+ =09=09dev_err(dev, "can't request region for resource %pR\n", res);
+--=20
+2.29.2
 
-Thanks,
-Andrea
 
