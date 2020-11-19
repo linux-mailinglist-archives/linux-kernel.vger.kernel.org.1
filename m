@@ -2,113 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B95C2B8A2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 03:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DF82B8A2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 03:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgKSCvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 21:51:01 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7652 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgKSCvA (ORCPT
+        id S1726195AbgKSC6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 21:58:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726077AbgKSC6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 21:51:00 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cc41G35s5z15MtC;
-        Thu, 19 Nov 2020 10:50:42 +0800 (CST)
-Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.50) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 19 Nov 2020 10:50:50 +0800
-From:   Zhe Li <lizhe67@huawei.com>
-To:     <lizhe67@huawei.com>, <richard@nod.at>, <dwmw2@infradead.org>
-CC:     <chenjie6@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <qiuxi1@huawei.com>,
-        <wangfangpeng1@huawei.com>, <zhongjubin@huawei.com>
-Subject: Re: [PATCH 2/2] jffs2: fix can't set rp_size to zero during remounting
-Date:   Thu, 19 Nov 2020 10:50:50 +0800
-Message-ID: <20201119025050.38472-1-lizhe67@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20201014065443.18512-2-lizhe67@huawei.com>
-References: <20201014065443.18512-2-lizhe67@huawei.com>
+        Wed, 18 Nov 2020 21:58:08 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23305C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 18:58:07 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id v21so2901478pgi.2
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 18:58:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nMDyMKTQeFRc7yeGhXHo8zHPJWY1P6b/K25pZmIgFYk=;
+        b=EfXFS93VEaptGzfoi7iQxHBA+fqlyRqA84rwc/Dhoi7kvNk2u5QrUVyxb80KKEGi1C
+         JJIRX7w2Xz7F90CSAjum4I26DjDKqOhx4WwXaUg8mkQMd8r8f4MMYGmqY8Yf5XMnDUjg
+         pDipGbKTkFVsWPZTeRMSM/0jR6exchpPeaGJkpeGnKQKQaDzJ4qRHsSwwnAmApe1Uwld
+         PJNack2y/Y2wbnEUfJDZ3zebg8Hu/StYU8EjyBH/9g19KITMcSBSrOOobga7IucPLiag
+         SRNdUL69P3fuEL5xMzXwCZVzYYe0CrJU5uCppQPlIWTkwrkn8BpmnieOepvTdYW2IRHI
+         Z6Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nMDyMKTQeFRc7yeGhXHo8zHPJWY1P6b/K25pZmIgFYk=;
+        b=rXbn9TWQibo7wSRqBtbLARvCzsxZnRqvGoi8RAKMTvKlelhi9ZdOQEtNlANQJFl0sP
+         X1IGgTZDoygFXCnI5HWMBHF0yk/rwzn/vxkIFbyWb4bBzYTF5QKOPEtjX2hHySm75POw
+         yfg3lKuWVMpnPIeoZ3w3IEtOBnCJDkfluHV1n4H4uACitPrr8a41dclYwnAVmwy54vjL
+         YsnKkGt/jUwstmp0lnWHs0lB1W3lMVmdIloHf1YRot/F14vQVjkON/eb4MohNMFWxFpO
+         LUeXW4TyKtrHiRAn7c7P4zuKDg8PTjbKCixbzGvRvtpes4O8fo3GOvKg/NWflLzNnexS
+         fWhw==
+X-Gm-Message-State: AOAM533srM+ITevSDZmBISZ/VwihKVrxa+wYmIsDyAGwYL0tdVl9u9YF
+        Sp3CNW5BjEQssa42W5i94U9CVz0vdGSs8j8Tkd2RsA==
+X-Google-Smtp-Source: ABdhPJz4TyvVow/bo1K81Z+vBi5tNHWEfGc/bR90jI2nZwU8E3rePDbcio8+1u/XpwDH+CzmBWGMYqJYSsw5rLAuOnw=
+X-Received: by 2002:aa7:8105:0:b029:18e:c8d9:2c24 with SMTP id
+ b5-20020aa781050000b029018ec8d92c24mr7167536pfi.49.1605754686646; Wed, 18 Nov
+ 2020 18:58:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.101.50]
-X-CFilter-Loop: Reflected
+References: <20201113105952.11638-1-songmuchun@bytedance.com>
+ <20201113105952.11638-4-songmuchun@bytedance.com> <697ee4b7-edcc-e3b8-676c-935ec445c05d@oracle.com>
+In-Reply-To: <697ee4b7-edcc-e3b8-676c-935ec445c05d@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 19 Nov 2020 10:57:28 +0800
+Message-ID: <CAMZfGtW6f-zPxT6m7vvhEaq8R9GnwZFar39NOgYTbhLPBJEq5Q@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v4 03/21] mm/hugetlb: Introduce a new
+ config HUGETLB_PAGE_FREE_VMEMMAP
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maintainer ping?
+On Thu, Nov 19, 2020 at 6:39 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 11/13/20 2:59 AM, Muchun Song wrote:
+> > The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
+> > whether to enable the feature of freeing unused vmemmap associated
+> > with HugeTLB pages. Now only support x86.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  arch/x86/mm/init_64.c |  2 +-
+> >  fs/Kconfig            | 14 ++++++++++++++
+> >  2 files changed, 15 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> > index 0a45f062826e..0435bee2e172 100644
+> > --- a/arch/x86/mm/init_64.c
+> > +++ b/arch/x86/mm/init_64.c
+> > @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
+> >
+> >  static void __init register_page_bootmem_info(void)
+> >  {
+> > -#ifdef CONFIG_NUMA
+> > +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
+> >       int i;
+> >
+> >       for_each_online_node(i)
+> > diff --git a/fs/Kconfig b/fs/Kconfig
+> > index 976e8b9033c4..67e1bc99574f 100644
+> > --- a/fs/Kconfig
+> > +++ b/fs/Kconfig
+> > @@ -245,6 +245,20 @@ config HUGETLBFS
+> >  config HUGETLB_PAGE
+> >       def_bool HUGETLBFS
+> >
+> > +config HUGETLB_PAGE_FREE_VMEMMAP
+> > +     def_bool HUGETLB_PAGE
+> > +     depends on X86
+> > +     depends on SPARSEMEM_VMEMMAP
+> > +     depends on HAVE_BOOTMEM_INFO_NODE
+> > +     help
+> > +       When using SPARSEMEM_VMEMMAP, the system can save up some memory
+>
+> Should that read,
+>
+>         When using HUGETLB_PAGE_FREE_VMEMMAP, ...
+>
+> as the help message is for this config option.
 
-	Zhe
+Got it. Thanks
 
-On Tue, 13 Oct 2020 19:41:30 +0800, Zhe Li wrote:
 >
->Set rp_size to zero will be ignore during remounting.
->
->The method to identify whether we input a remounting option of
->rp_size is to check if the rp_size input is zero. It can not work
->well if we pass "rp_size=0".
->
->This patch add a bool variable "set_rp_size" to fix this problem.
->
->By the way, the problem of NULL pointer dereference in rp_size
->fs option parsing showed at
->https://lore.kernel.org/linux-mtd/20201012131204.59102-1-jamie@nuviainc.com/T/#u
->should be applyed before this patch to make sure it works well.
->
->Reported-by: Jubin Zhong <zhongjubin@huawei.com>
->Signed-off-by: lizhe <lizhe67@huawei.com>
->---
-> fs/jffs2/jffs2_fs_sb.h | 1 +
-> fs/jffs2/super.c       | 7 +++++--
-> 2 files changed, 6 insertions(+), 2 deletions(-)
->
->diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
->index 778275f48a87..5a7091746f68 100644
->--- a/fs/jffs2/jffs2_fs_sb.h
->+++ b/fs/jffs2/jffs2_fs_sb.h
->@@ -38,6 +38,7 @@ struct jffs2_mount_opts {
-> 	 * users. This is implemented simply by means of not allowing the
-> 	 * latter users to write to the file system if the amount if the
-> 	 * available space is less then 'rp_size'. */
->+	bool set_rp_size;
-> 	unsigned int rp_size;
-> };
-> 
->diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
->index 4fd297bdf0f3..c523adaca79f 100644
->--- a/fs/jffs2/super.c
->+++ b/fs/jffs2/super.c
->@@ -88,7 +88,7 @@ static int jffs2_show_options(struct seq_file *s, struct dentry *root)
-> 
-> 	if (opts->override_compr)
-> 		seq_printf(s, ",compr=%s", jffs2_compr_name(opts->compr));
->-	if (opts->rp_size)
->+	if (opts->set_rp_size)
-> 		seq_printf(s, ",rp_size=%u", opts->rp_size / 1024);
-> 
-> 	return 0;
->@@ -206,6 +206,7 @@ static int jffs2_parse_param(struct fs_context *fc, struct fs_parameter *param)
-> 		if (opt > c->mtd->size)
-> 			return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
-> 				      c->mtd->size / 1024);
->+		c->mount_opts.set_rp_size = true;
-> 		c->mount_opts.rp_size = opt;
-> 		break;
-> 	default:
->@@ -225,8 +226,10 @@ static inline void jffs2_update_mount_opts(struct fs_context *fc)
-> 		c->mount_opts.override_compr = new_c->mount_opts.override_compr;
-> 		c->mount_opts.compr = new_c->mount_opts.compr;
-> 	}
->-	if (new_c->mount_opts.rp_size)
->+	if (new_c->mount_opts.set_rp_size) {
->+		c->mount_opts.set_rp_size = new_c->mount_opts.set_rp_size;
-> 		c->mount_opts.rp_size = new_c->mount_opts.rp_size;
->+	}
-> 	mutex_unlock(&c->alloc_sem);
-> }
-> 
->-- 
->2.12.3
->
+> --
+> Mike Kravetz
+
+
+
+-- 
+Yours,
+Muchun
