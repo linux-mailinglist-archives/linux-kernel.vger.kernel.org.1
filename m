@@ -2,124 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4583F2B9E61
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D8F2B9E6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgKSXcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 18:32:13 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53548 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725890AbgKSXcN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 18:32:13 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJNQN2l006103;
-        Thu, 19 Nov 2020 15:31:54 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=3+OTaXk70jTD2A91N+tLzEAfFhoiQOCQzygMd8PWFYo=;
- b=aWFDqQlZe70pDjDp9Jr8SvvGB3W13/vvyK6c9bwQfvUXPYlCUI2wTQB9WQaAsICvCxqB
- +PRXtzMS0tbxrDQXJsu55niyjbZadfATLNsZ6hteq3seVr1T2eIHzeYnKTI+8QYxcdIC
- bpHbwj58TnJa0OHwI9XFRWbPwFBTgphgmqA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34wx1shqc5-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 19 Nov 2020 15:31:54 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 19 Nov 2020 15:31:52 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rtywz7aAeiHMhcHhPx1qOoY+slbp0NP1eVXzyXnJvHO6EdCnlgkKrcmnY5TIkUelaf7W7SSW2qqxOKO9+S/cxjOPJS4jl70wCHUZ3xh/GtoKaMTKRtz20gdtX9vdWLgT2r4BL46dwZ9zV+AUYzTnRCpaG27gIWm6Rafwo9Soc3+8ZvGu+ttstWeBXKkjagAIx9NVuTO8Q5PFWpzhVUJHxbf06hMJ4hQbqjKGa5cJ0X9jYoMpEJ1XAnTFkBZaSnhUpPuu5R80wZ9Sl2eOELsfiVVvOutxXdP68MDWkgf+MRyTci+LJ8NHYujiKPDt45mzAytvdn97kTzLZjApRtcASQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3+OTaXk70jTD2A91N+tLzEAfFhoiQOCQzygMd8PWFYo=;
- b=AFv+FkddO6B+pyILvMtOies2wd9/WYDhYElnzxKOAcrdadKONJbScZbe+DncO4ykUiZ2g3LEMRmajh1ssmf2Ag7GIt9A3tWJrtjuunBndPxJ8uSPcbdNjKsRZ1EO4LefLfJAo57kcgGVtjnJqJlZZ0DwPHyh3WcDxXdCqhvz51GDQVYlvzw2aCbsP6bJFZUKmBnVQx7zTNUfrpx9pXfAcZ+K0ooguAjk6OOVmZ+c7FOt4scE+6uIIKDcmHQxge6/r3vVzO3CnQ1KAH5aJ82cMH4DYSgPlMYu967fqqoiWrGXLl03xYBe8QrxOWPALpfhWywptkfrf6+CSQgUfI341Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3+OTaXk70jTD2A91N+tLzEAfFhoiQOCQzygMd8PWFYo=;
- b=JIyjmdZ5PL1JlFO2zP1UdqeoCBYhpgfyphb0BZFmmmOoKY5b3y46tr8n67M4qBgrux/LdtRn+Id4kWm+dI6md8gZ5W0t7aWdB3n5UHQtqsCi3LviYiJNYf5xG4YxxYk+ZP5erh61xZbwZWuPldl6tJJOhXysSTyx1OAgiDqTYKg=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BY5PR15MB3668.namprd15.prod.outlook.com (2603:10b6:a03:1fb::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Thu, 19 Nov
- 2020 23:31:52 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3564.034; Thu, 19 Nov 2020
- 23:31:52 +0000
-Date:   Thu, 19 Nov 2020 15:31:44 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Florent Revest <revest@chromium.org>
-CC:     <bpf@vger.kernel.org>, <viro@zeniv.linux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <yhs@fb.com>, <andrii@kernel.org>,
-        <kpsingh@chromium.org>, <revest@google.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 2/5] bpf: Add a bpf_sock_from_file helper
-Message-ID: <20201119233127.pvaisojjos75tpo2@kafai-mbp.dhcp.thefacebook.com>
-References: <20201119162654.2410685-1-revest@chromium.org>
- <20201119162654.2410685-2-revest@chromium.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119162654.2410685-2-revest@chromium.org>
-X-Originating-IP: [2620:10d:c090:400::5:603e]
-X-ClientProxiedBy: MWHPR02CA0014.namprd02.prod.outlook.com
- (2603:10b6:300:4b::24) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:603e) by MWHPR02CA0014.namprd02.prod.outlook.com (2603:10b6:300:4b::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Thu, 19 Nov 2020 23:31:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0bc868e0-db9d-4c2b-2d30-08d88ce34ad5
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3668:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR15MB366860330AA30CE298FA405AD5E00@BY5PR15MB3668.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Bp6GORzVFYieHxjUXGSvTogbEQAQmOhcKCpZvlXN40QFP89pzlCYzoFkw1p/O+FwqkNyuKq1F9VZaKA5t2Pn68WhEZIn09BrFnl2nQ3SDhD1J7vE9QbMUxE8vjkAa7uafQg8S2c3uPtIxuz4FwqFmW+5qMuGFtSHWjKhvtKAWX5i8ezsla9r6VuW3CjnQmb9lnInC49xrlOnrEl4T0TUyqqZ/smYrgNG7LPWE6cvpca2xtlXvOezkZOFKXsT9uLp4JlJBff+0EM2kkaDzWK/zNvZao9LcGAppq8JKYAW0ABBD0l+j9iS3vI9rbR1kbHNFG3OFsV0Gev5SbtWst/K7g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(396003)(39860400002)(366004)(1076003)(8676002)(7416002)(66556008)(7696005)(52116002)(6666004)(4326008)(55016002)(5660300002)(66476007)(66946007)(86362001)(2906002)(83380400001)(478600001)(8936002)(6916009)(316002)(9686003)(4744005)(16526019)(186003)(6506007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 8u+ZJQ+Df9PnSgyuHWjMaIb18w8KVsREJ3agcBgHmazC5VTQhF69hx1Ks0nGCibjvFwQkyWmFakdliG5/CxfVdbZB+6UqkV5w2p4SczClZZz1+XhAr0S8tUP62qkNE7uyZ3eNYvPDa9J7pnnnEK9FUvMCFvAqc2D31q26eIPrf9RnMaMMI6z4+HmlNV93hXFV9n3w37O8kOCq5GfpnvrxaWl2K0kDFJI0f7QQYNcY9DgyqNMMVKqmPUlBuHcA+56fNn5HbckqAknIFJNCvG0Q+AEsJ0N0McSEz9iKxAfAcoEK9YLnAFMgZUAO/EJY6i/k86FvePwTu7Q1pyWHhaqg04WT7lqcGIovZb3GemEHJR69zhh48lZ8/QaAU+1418RoMyFJ7uvRdwm7l2nuhrUMdcGeTDIZG0+IVbB8sDC7jWe3e1l3EUse6Dl2VmO+X1Z3DjelIK2+/J5J3K+me8I7JK/kxTRVZT+EWK9Cx6s2f+x2m9AdKYCZK5qhugIiPR/u0jSuETZ4iIN3WeKm+gQZoEeAc11GjD6s8xBMKNKVO6P0dgXULWHr1BnvwDg6shJUZFPiWwIlYKwLzlGkYsRL4wOIuvOmS+S4sHETMGpMikFTiYjFm745s5E2CnknGGh4KJByqbA7Mue4Yd/Mx54ssVwmXDsVszb+ufhtTy44qkg8x27GpIwGP9QodWzfDCxYI2QgpAggxkiNNrIvfRU63ZYxpl2bwy6pOECl2aMbAVzbXMO7LbMCuMFoV6/xJKLs1LskfxVYKynKM+YBsNxtlXiWw35aztNNCRIG6XfXvOwcMKgChoU4j/40z75v00AU1bDGusoMERAoC1pueMqHNoPNO5VMLYPdtKoDzS4gQhsTmOIfbzjgB0D7tnFamxJGzc6yptyKwpNHG/ESn6CsBpqAXP41MRkLu2XkKH0KGI=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bc868e0-db9d-4c2b-2d30-08d88ce34ad5
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2020 23:31:51.9321
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SmtjJ6tMqB2XbmfPhyniT/zxeHiPI95F97T1wjpfiV8BNuruaLTYlRys+FO7dWm4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3668
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_14:2020-11-19,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- priorityscore=1501 mlxlogscore=581 spamscore=0 impostorscore=0 mlxscore=0
- suspectscore=1 malwarescore=0 adultscore=0 clxscore=1011 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190161
-X-FB-Internal: deliver
+        id S1726654AbgKSXhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 18:37:00 -0500
+Received: from mga03.intel.com ([134.134.136.65]:10765 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726365AbgKSXhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 18:37:00 -0500
+IronPort-SDR: FSJFF+zTw8eEf0dQS877hMyk/JyHHzwO0IXaQI2HTR9R2eudKMxfu1K93I+t5qsu9lkhcDflTH
+ Mu2fnJQKI7mQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="171481773"
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="171481773"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 15:36:59 -0800
+IronPort-SDR: +0G5sjFCtVQxIjd0ghpYOn7v2uuadLcnopT/Lo8mZLmmjsQ4dnJ3OwZpaYWmfNdr28iRuSLWzx
+ N2Ffxq5PhoQA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="431392181"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Nov 2020 15:36:59 -0800
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
+        x86@kernel.org
+Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com
+Subject: [PATCH v2 00/22] x86: Support Intel Advanced Matrix Extensions
+Date:   Thu, 19 Nov 2020 15:32:35 -0800
+Message-Id: <20201119233257.2939-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 05:26:51PM +0100, Florent Revest wrote:
-> From: Florent Revest <revest@google.com>
-> 
-> While eBPF programs can check whether a file is a socket by file->f_op
-> == &socket_file_ops, they cannot convert the void private_data pointer
-> to a struct socket BTF pointer. In order to do this a new helper
-> wrapping sock_from_file is added.
-> 
-> This is useful to tracing programs but also other program types
-> inheriting this set of helpers such as iterators or LSM programs.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+[ We know there are a lot of Intel patches out there this week. We're
+  posting this as early as we can in case anyone has bandwidth to take a
+  look.  We don't think these are quite ready to be merged, but any review
+  is appreciated. ]
+
+Intel Advanced Matrix Extensions (AMX)[1][2] will be shipping on servers
+soon.  AMX consists of configurable TMM "TILE" registers plus new
+accelerator instructions that operate on them.  TMUL (Tile matrix MULtiply)
+is the first accelerator instruction set to use the new registers, and we
+anticipate additional instructions in the future.
+
+Neither AMX state nor TMUL instructions depend on AVX.  However, AMX and
+AVX do share common challenges.  The TMM registers are 8KB today, and
+architecturally as large as 64KB, which merits updates to hardware and
+software state management.
+
+Further, both technologies run faster when they are not simultaneously
+running on SMT siblings, and both technologies use of power and bandwidth
+impact the power and performance available to neighboring cores.  (This
+impact has measurably improved in recent hardware.)
+
+If the existing kernel approach for managing XSAVE state was employed to
+handle AMX, 8KB space would be added to every task, but possibly rarely
+used.  So Linux support is optimized by using a new XSAVE feature: eXtended
+Feature Disabling (XFD).  The kernel arms XFD to provide a #NM exception
+upon a tasks' first access to TILE state. The kernel exception handler
+installs the appropriate XSAVE context switch buffer, and the task behaves
+as if the kernel had done that for all tasks.  Using XFD, AMX space is
+allocated only when needed, eliminating the memory waste for unused state
+components.
+
+This series requires the new minimum sigaltstack support [3] and is based
+on the mainline. The series is composed of three parts:
+* Patch 01-16: Foundation to support dynamic user state management
+* Patch 16-20: AMX enablement, including unit tests
+* Patch 21-22: Signal handling optimization and new boot-parameters
+
+Thanks to Len Brown and Dave Hansen for help with the cover letter.
+
+Changes from v1 [4]:
+* Added vmalloc() error tracing (Dave Hansen, PeterZ, and Andy Lutomirski)
+* Inlined the #NM handling code (Andy Lutomirski)
+* Made signal handling optimization revertible
+* Revised the new parameter handling code (Andy Lutomirski and Dave Hansen)
+* Rebased on the upstream kernel
+
+[1]: Intel Architecture Instruction Set Extension Programming Reference
+    June 2020, https://software.intel.com/content/dam/develop/public/us/en/documents/architecture-instruction-set-extensions-programming-reference.pdf
+[2]: https://software.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-reference/intrinsics/intrinsics-for-intel-advanced-matrix-extensions-intel-amx-instructions.html
+[3]: https://lore.kernel.org/lkml/20201119190237.626-1-chang.seok.bae@intel.com/
+[4]: https://lore.kernel.org/lkml/20201001203913.9125-1-chang.seok.bae@intel.com/
+
+Chang S. Bae (22):
+  x86/fpu/xstate: Modify area init helper prototypes to access all the
+    possible areas
+  x86/fpu/xstate: Modify xstate copy helper prototypes to access all the
+    possible areas
+  x86/fpu/xstate: Modify address finder prototypes to access all the
+    possible areas
+  x86/fpu/xstate: Modify save and restore helper prototypes to access
+    all the possible areas
+  x86/fpu/xstate: Introduce a new variable for dynamic user states
+  x86/fpu/xstate: Outline dynamic xstate area size in the task context
+  x86/fpu/xstate: Introduce helpers to manage an xstate area dynamically
+  x86/fpu/xstate: Define the scope of the initial xstate data
+  x86/fpu/xstate: Introduce wrapper functions for organizing xstate area
+    access
+  x86/fpu/xstate: Update xstate save function for supporting dynamic
+    user xstate
+  x86/fpu/xstate: Update xstate area address finder for supporting
+    dynamic user xstate
+  x86/fpu/xstate: Update xstate context copy function for supporting
+    dynamic area
+  x86/fpu/xstate: Expand dynamic user state area on first use
+  x86/fpu/xstate: Inherit dynamic user state when used in the parent
+  x86/fpu/xstate: Support ptracer-induced xstate area expansion
+  x86/fpu/xstate: Extend the table for mapping xstate components with
+    features
+  x86/cpufeatures/amx: Enumerate Advanced Matrix Extension (AMX) feature
+    bits
+  x86/fpu/amx: Define AMX state components and have it used for
+    boot-time checks
+  x86/fpu/amx: Enable the AMX feature in 64-bit mode
+  selftest/x86/amx: Include test cases for the AMX state management
+  x86/fpu/xstate: Support dynamic user state in the signal handling path
+  x86/fpu/xstate: Introduce boot-parameters for control some state
+    component support
+
+ .../admin-guide/kernel-parameters.txt         |  15 +
+ arch/x86/include/asm/cpufeatures.h            |   4 +
+ arch/x86/include/asm/fpu/internal.h           |  97 ++-
+ arch/x86/include/asm/fpu/types.h              |  62 +-
+ arch/x86/include/asm/fpu/xstate.h             |  61 +-
+ arch/x86/include/asm/msr-index.h              |   2 +
+ arch/x86/include/asm/pgtable.h                |   2 +-
+ arch/x86/include/asm/processor.h              |  10 +-
+ arch/x86/include/asm/trace/fpu.h              |  11 +-
+ arch/x86/kernel/cpu/common.c                  |   2 +-
+ arch/x86/kernel/cpu/cpuid-deps.c              |   3 +
+ arch/x86/kernel/fpu/core.c                    |  70 +-
+ arch/x86/kernel/fpu/init.c                    | 108 ++-
+ arch/x86/kernel/fpu/regset.c                  |  65 +-
+ arch/x86/kernel/fpu/signal.c                  |  41 +-
+ arch/x86/kernel/fpu/xstate.c                  | 487 ++++++++++--
+ arch/x86/kernel/process.c                     |  11 +
+ arch/x86/kernel/process_32.c                  |   2 +-
+ arch/x86/kernel/process_64.c                  |   2 +-
+ arch/x86/kernel/traps.c                       |  40 +
+ arch/x86/kvm/x86.c                            |  43 +-
+ arch/x86/mm/pkeys.c                           |   2 +-
+ tools/testing/selftests/x86/Makefile          |   2 +-
+ tools/testing/selftests/x86/amx.c             | 736 ++++++++++++++++++
+ 24 files changed, 1650 insertions(+), 228 deletions(-)
+ create mode 100644 tools/testing/selftests/x86/amx.c
+
+-- 
+2.17.1
+
