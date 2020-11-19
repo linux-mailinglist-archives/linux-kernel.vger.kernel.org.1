@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CCE2B95AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDD52B95B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgKSPEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:04:20 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:58074 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbgKSPEU (ORCPT
+        id S1728234AbgKSPEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727309AbgKSPEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:04:20 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJEsNT7178525;
-        Thu, 19 Nov 2020 15:03:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=698JySp1SeXV+YubtoacJTUwxrI0tGvgTfAK1MnErAs=;
- b=V3g2wOzeK+XtCHOWXcjII0yj3YBOCGdDQ9s8g9HWcmBwXWgKrdY9T8De75dWRMjRe0bz
- wJqYCjB7YdNxG9NvS1izn2/EwO+aM46mfH6iJWSnyhXN6npwk6nIFwL5+dvLxElSLSH2
- X+fedRm3eORsSWmeAAFdlwDGMk5U+1bgD2VmnGixpC9WXlaudae+tDat9uV1ymmAOPpp
- 9qwqAPit/344oXTz05uwaMm8zZR5Ry94k8avk7YwKthW7hEdwV2TlkVAxT+oOz+5wdby
- 9iT+YFCIH43TEzMOzDGDt3KXtmLpuO8EeCJzA2nfU6w0n9BuuAHMD/6RVXOSiLyYEJ0f cg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 34t76m5uek-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 15:03:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJEsdGG056602;
-        Thu, 19 Nov 2020 15:03:48 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 34ts602v40-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Nov 2020 15:03:47 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AJF3jYQ022090;
-        Thu, 19 Nov 2020 15:03:45 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Nov 2020 07:03:45 -0800
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     salyzyn@google.com, kernel-team@android.com,
-        asutoshd@codeaurora.org, hongwus@codeaurora.org,
-        saravanak@google.com, nguyenb@codeaurora.org,
-        Can Guo <cang@codeaurora.org>, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Subject: Re: [PATCH v2 1/1] scsi: ufs: Fix unexpected values get from ufshcd_read_desc_param()
-Date:   Thu, 19 Nov 2020 10:03:42 -0500
-Message-Id: <160579821160.27938.2855666994784444501.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <1603346348-14149-1-git-send-email-cang@codeaurora.org>
-References: <1603346348-14149-1-git-send-email-cang@codeaurora.org>
+        Thu, 19 Nov 2020 10:04:33 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1DFC0613CF;
+        Thu, 19 Nov 2020 07:04:33 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f18so4430252pgi.8;
+        Thu, 19 Nov 2020 07:04:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gv+tzIwOh54GKgX+GFGq0lY1+3CA0ggLubRGTd2BE9w=;
+        b=eey761QUD0kQfmjSWIEkvJhy6HgeRa0qwTMd8qAQYJHAf6XipLC83zhX+lFC7gFNVp
+         GAVVyBLALpmN1TGnka6oRBVRyzFp6bt4DOQyi4fwhzqGOmpf34oFkOWbHO9Avcn4w+vE
+         ZH0RoBdEG/uYDPbKr+bnUVELM2ADphDESll9xy1COCLk6Fxo47UL5CyVn2awv/iit+BJ
+         TNa5DtqK5Nr6tHznyGmnMgEGdlI0BiPAkv+GdKUmh4M0aRujbNcCPhLNWuqLpAECiVrM
+         xRE1N52tC8xF23Vk9HvbyWxM8ZrudSLopbmym9+V5O5xgxONTj1jEKbjbrtYpvnA81XR
+         GmmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gv+tzIwOh54GKgX+GFGq0lY1+3CA0ggLubRGTd2BE9w=;
+        b=jvRJSg09A8/5lMTCR1VH+jhTVIBujzZXcR+dGFFLJfgMNqvnnZ+kt5B0Sf+q++2F0+
+         sxhpHy6sL9GO5lzRqg0UEFZyL0HFULOwh3oq37hqgLQ6eyu1cHPfNvx09f7TuQ+TGqdH
+         Q0vWDhs35jFROYtBkJcqn0fCvTjzr5dhIn1U41mtq339yfKTd6Pp+VN50+Vh6IvZMXu9
+         m2cRH1erBPBo6CNhf0SZQyVAuwwG3wdE0qzeQg18ew535XxkdbPc4RR4qsA9A9a4bPDv
+         jQrvTmQ4JG2qZ738j06tfvCQ+kgIHx03Hgt736X4vfpsoCC2nbAomYZSXEwCS27LPqyz
+         aDgg==
+X-Gm-Message-State: AOAM533SM5NwC9HOcJ7OMq8P45GKS9+/jG6t8C5X02xS6zeK97e5EUeL
+        VCwS07//qfKeqEeQ+y/JuY9+NKME1Aw1EITsILk=
+X-Google-Smtp-Source: ABdhPJxBx4+20B+iQxlNqY3VfjJdR8vGKMeLoUnzFwTDb3xl1QJayrvQwiGDDBxSGU5xKTlZIwdb02NXUDXJ35OaDi0=
+X-Received: by 2002:a17:90a:4816:: with SMTP id a22mr5138400pjh.228.1605798273031;
+ Thu, 19 Nov 2020 07:04:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011190113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011190113
+References: <20201119142104.85566-1-alexandru.ardelean@analog.com>
+In-Reply-To: <20201119142104.85566-1-alexandru.ardelean@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 19 Nov 2020 17:05:21 +0200
+Message-ID: <CAHp75VdkomLMPYZbB7-KerGmyxXxB8hQuAjLtJ0bhB5f5vfuNA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: xra1403: remove unneeded spi_set_drvdata()
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nandor Han <nandor.han@ge.com>,
+        Semi Malinen <semi.malinen@ge.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 22:59:00 -0700, Can Guo wrote:
+On Thu, Nov 19, 2020 at 4:17 PM Alexandru Ardelean
+<alexandru.ardelean@analog.com> wrote:
+>
+> There is no matching spi_get_drvdata() call in the driver, so there is no
+> need to do spi_set_drvdata(). This looks like it probably was copied from a
+> driver that used both spi_set_drvdata() & spi_get_drvdata().
 
-> Since WB feature has been added, WB related sysfs entries can be accessed
-> even when an UFS device does not support WB feature. In that case, the
-> descriptors which are not supported by the UFS device may be wrongly
-> reported when they are accessed from their corrsponding sysfs entries.
-> Fix it by adding a sanity check of parameter offset against the actual
-> decriptor length.
+While above luckily (*) okay it may not always be the case.
 
-Applied to 5.10/scsi-fixes, thanks!
+*) it can be paired with dev_get_drvdata() which is usual for PM callbacks.
 
-[1/1] scsi: ufs: Fix unexpected values from ufshcd_read_desc_param()
-      https://git.kernel.org/mkp/scsi/c/1699f980d87f
+With amended commit message
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  drivers/gpio/gpio-xra1403.c | 10 +---------
+>  1 file changed, 1 insertion(+), 9 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-xra1403.c b/drivers/gpio/gpio-xra1403.c
+> index e2cac12092af..49c878cfd5c6 100644
+> --- a/drivers/gpio/gpio-xra1403.c
+> +++ b/drivers/gpio/gpio-xra1403.c
+> @@ -186,15 +186,7 @@ static int xra1403_probe(struct spi_device *spi)
+>                 return ret;
+>         }
+>
+> -       ret = devm_gpiochip_add_data(&spi->dev, &xra->chip, xra);
+> -       if (ret < 0) {
+> -               dev_err(&spi->dev, "Unable to register gpiochip\n");
+> -               return ret;
+> -       }
+> -
+> -       spi_set_drvdata(spi, xra);
+> -
+> -       return 0;
+> +       return devm_gpiochip_add_data(&spi->dev, &xra->chip, xra);
+>  }
+>
+>  static const struct spi_device_id xra1403_ids[] = {
+> --
+> 2.17.1
+>
+
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+With Best Regards,
+Andy Shevchenko
