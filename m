@@ -2,133 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FDB2B92AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24D22B92B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgKSMlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:41:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:56190 "EHLO foss.arm.com"
+        id S1726886AbgKSMn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:43:26 -0500
+Received: from mga12.intel.com ([192.55.52.136]:47183 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727000AbgKSMlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:41:45 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C50911396;
-        Thu, 19 Nov 2020 04:41:44 -0800 (PST)
-Received: from [10.57.24.96] (unknown [10.57.24.96])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3AAD3F718;
-        Thu, 19 Nov 2020 04:41:40 -0800 (PST)
-Subject: Re: [PATCH v8 1/3] cpufreq: mediatek-hw: Add support for CPUFREQ HW
-To:     Hector Yuan <hector.yuan@mediatek.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com
-References: <1603700349-5922-1-git-send-email-hector.yuan@mediatek.com>
- <1603700349-5922-2-git-send-email-hector.yuan@mediatek.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <9382b917-f20d-c7b5-42e4-46d11465073f@arm.com>
-Date:   Thu, 19 Nov 2020 12:41:38 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726052AbgKSMnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 07:43:25 -0500
+IronPort-SDR: 9D51fmJJQHp7vyLr2wSnWuIIfgDXFXNzkopfq8PJMchmZ5ySYqoOeXX8Yb5YRxPlAoBBtj4Q48
+ boem6BPRZboQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="150550278"
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="150550278"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 04:43:25 -0800
+IronPort-SDR: ca3YWcpWWf4MiZI2AkFW7p27fwL5t+6oel7nwYIhCCciSlAEqLanofl3zUOrhEAMM7FaGpzYAo
+ fPXX/l3UX04A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="533161160"
+Received: from lkp-server01.sh.intel.com (HELO 1b817e3f8ad2) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 19 Nov 2020 04:43:23 -0800
+Received: from kbuild by 1b817e3f8ad2 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kfjHX-000022-7C; Thu, 19 Nov 2020 12:43:23 +0000
+Date:   Thu, 19 Nov 2020 20:43:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/clang-ft/for-next] BUILD SUCCESS
+ 4785df3608c3ae5eab604cc067dd1c34d2176c79
+Message-ID: <5fb6685e.AVeG4gWhr3qk572w%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <1603700349-5922-2-git-send-email-hector.yuan@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hector,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/clang-ft/for-next
+branch HEAD: 4785df3608c3ae5eab604cc067dd1c34d2176c79  zd1201: Fix fall-through warnings for Clang
 
-On 10/26/20 8:19 AM, Hector Yuan wrote:
-> From: "Hector.Yuan" <hector.yuan@mediatek.com>
-> 
-> Add cpufreq HW support.
-> 
-> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+elapsed time: 724m
 
-[snip]
+configs tested: 157
+configs skipped: 2
 
-> +
-> +static int mtk_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
-> +{
-> +	struct cpufreq_mtk *c;
-> +	struct device *cpu_dev;
-> +	struct em_data_callback em_cb = EM_DATA_CB(mtk_cpufreq_get_cpu_power);
-> +	struct pm_qos_request *qos_request;
-> +	int sig, pwr_hw = CPUFREQ_HW_STATUS | SVS_HW_STATUS;
-> +
-> +	qos_request = kzalloc(sizeof(*qos_request), GFP_KERNEL);
-> +	if (!qos_request)
-> +		return -ENOMEM;
-> +
-> +	cpu_dev = get_cpu_device(policy->cpu);
-> +	if (!cpu_dev) {
-> +		pr_err("failed to get cpu%d device\n", policy->cpu);
-> +		return -ENODEV;
-> +	}
-> +
-> +	c = mtk_freq_domain_map[policy->cpu];
-> +	if (!c) {
-> +		pr_err("No scaling support for CPU%d\n", policy->cpu);
-> +		return -ENODEV;
-> +	}
-> +
-> +	cpumask_copy(policy->cpus, &c->related_cpus);
-> +
-> +	policy->freq_table = c->table;
-> +	policy->driver_data = c;
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-To control frequency transition rate in schedutil, you might
-be interested in setting:
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         mpc30x_defconfig
+sh                           se7780_defconfig
+nios2                               defconfig
+powerpc                    socrates_defconfig
+um                           x86_64_defconfig
+powerpc                        fsp2_defconfig
+powerpc                      ppc6xx_defconfig
+arm                            mps2_defconfig
+mips                        workpad_defconfig
+sh                         ap325rxa_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                           sunxi_defconfig
+powerpc                     akebono_defconfig
+powerpc                 linkstation_defconfig
+arm                            xcep_defconfig
+arc                     nsimosci_hs_defconfig
+arm                     davinci_all_defconfig
+powerpc                    klondike_defconfig
+arm                            mmp2_defconfig
+arm                          pcm027_defconfig
+parisc                generic-32bit_defconfig
+arm                         shannon_defconfig
+arc                          axs101_defconfig
+mips                         db1xxx_defconfig
+m68k                          amiga_defconfig
+sh                ecovec24-romimage_defconfig
+arm                            zeus_defconfig
+powerpc                      ep88xc_defconfig
+arm                           sama5_defconfig
+powerpc                      cm5200_defconfig
+arm                        realview_defconfig
+powerpc                     rainier_defconfig
+xtensa                           alldefconfig
+powerpc                     stx_gp3_defconfig
+sh                           se7206_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                          g5_defconfig
+arm                           omap1_defconfig
+arm                       versatile_defconfig
+sh                            hp6xx_defconfig
+mips                     loongson1c_defconfig
+mips                        jmr3927_defconfig
+arm                        oxnas_v6_defconfig
+sh                           se7712_defconfig
+sh                   sh7770_generic_defconfig
+sh                        apsh4ad0a_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                    vt8500_v6_v7_defconfig
+nios2                         10m50_defconfig
+sh                          sdk7786_defconfig
+sparc                            alldefconfig
+arc                            hsdk_defconfig
+ia64                      gensparse_defconfig
+arm                  colibri_pxa300_defconfig
+arm                        magician_defconfig
+powerpc                     kmeter1_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                 mpc836x_mds_defconfig
+mips                   sb1250_swarm_defconfig
+sh                        sh7763rdp_defconfig
+arm                           u8500_defconfig
+arm                         lubbock_defconfig
+arm                       multi_v4t_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                       aspeed_g4_defconfig
+powerpc                 mpc8540_ads_defconfig
+sparc                               defconfig
+sh                        sh7757lcr_defconfig
+mips                         tb0287_defconfig
+sh                          kfr2r09_defconfig
+sh                            titan_defconfig
+sparc64                             defconfig
+mips                            gpr_defconfig
+powerpc                     skiroot_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                        spear6xx_defconfig
+arc                    vdk_hs38_smp_defconfig
+h8300                    h8300h-sim_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201119
+i386                 randconfig-a005-20201119
+i386                 randconfig-a002-20201119
+i386                 randconfig-a001-20201119
+i386                 randconfig-a003-20201119
+i386                 randconfig-a004-20201119
+x86_64               randconfig-a015-20201119
+x86_64               randconfig-a014-20201119
+x86_64               randconfig-a011-20201119
+x86_64               randconfig-a013-20201119
+x86_64               randconfig-a016-20201119
+x86_64               randconfig-a012-20201119
+i386                 randconfig-a012-20201119
+i386                 randconfig-a014-20201119
+i386                 randconfig-a016-20201119
+i386                 randconfig-a011-20201119
+i386                 randconfig-a013-20201119
+i386                 randconfig-a015-20201119
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-policy->cpuinfo.transition_latency = <mtk_value_here>;
+clang tested configs:
+x86_64               randconfig-a005-20201119
+x86_64               randconfig-a003-20201119
+x86_64               randconfig-a004-20201119
+x86_64               randconfig-a002-20201119
+x86_64               randconfig-a006-20201119
+x86_64               randconfig-a001-20201119
+x86_64               randconfig-a015-20201118
+x86_64               randconfig-a014-20201118
+x86_64               randconfig-a011-20201118
+x86_64               randconfig-a013-20201118
+x86_64               randconfig-a016-20201118
+x86_64               randconfig-a012-20201118
 
-Example, when this latency value comes from FW [1]
-
-> +
-> +	/* Let CPUs leave idle-off state for SVS CPU initializing */
-> +	cpu_latency_qos_add_request(qos_request, 0);
-> +
-> +	/* HW should be in enabled state to proceed now */
-> +	writel_relaxed(0x1, c->reg_bases[REG_FREQ_ENABLE]);
-> +
-> +	if (readl_poll_timeout(c->reg_bases[REG_FREQ_HW_STATE], sig,
-> +			       (sig & pwr_hw) == pwr_hw, POLL_USEC,
-> +			       TIMEOUT_USEC)) {
-> +		if (!(sig & CPUFREQ_HW_STATUS)) {
-> +			pr_info("cpufreq hardware of CPU%d is not enabled\n",
-> +				policy->cpu);
-> +			return -ENODEV;
-> +		}
-> +
-> +		pr_info("SVS of CPU%d is not enabled\n", policy->cpu);
-> +	}
-> +
-> +	em_dev_register_perf_domain(cpu_dev, c->nr_opp, &em_cb, policy->cpus);
-
-Please keep in mind that this is going to be changed soon with a new
-argument: 'milliwatts'. It's queued in pm/linux-next [2].
-
-Regards,
-Lukasz
-
-[1] 
-https://elixir.bootlin.com/linux/latest/source/drivers/cpufreq/scmi-cpufreq.c#L194
-[2] 
-https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=linux-next&id=c250d50fe2ce627ca9805d9c8ac11cbbf922a4a6
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
