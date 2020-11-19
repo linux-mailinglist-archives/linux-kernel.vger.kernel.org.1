@@ -2,95 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9732B9A68
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC772B9A66
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728893AbgKSSMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:12:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728509AbgKSSMk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:12:40 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590C6C0613CF;
-        Thu, 19 Nov 2020 10:12:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=Fo7XA1P7L7ydAINyh811w5lW8AIHaI8eTME21i7qTwg=; b=V7ahkSEbh8W1W/0PwZOAXxUU2c
-        yzevupau9gfPxZ8mowU+Xg9Fkq/5Y26Tng93lxjNb5Tb6Kp5LRv/K39nqa5sw3+fj2F/U9FSPlcIl
-        68PjBeKjC96HmTaPgxYgwfXcSrTExosF/puNJvIt5cx87Ja+Uw4oyf6C/PayrAEk7KKJbisDLMFrg
-        vkgOsR29npRmZAAuavmgFZt2FHk1mu1VzjJ2hWibg4QxiDjwTlK/MZS7XC17nCN3wDcavp8MQVedg
-        jDreCleJxU+oG5hAQhuCxHQbNADFp2QLE3BHpHpcVchJYOp3rLuEAfr2Gj7trPLC65uldmpcl9Typ
-        nhDqHwLQ==;
-Received: from [2601:1c0:6280:3f0::bcc4]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfoQ5-0005pf-0B; Thu, 19 Nov 2020 18:12:33 +0000
-Subject: Re: linux-next: Tree for Nov 19 (drivers/edac/igen6_edac.c)
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>
-References: <20201119170832.614bf46d@canb.auug.org.au>
- <6d36cd23-2647-f3b1-5f55-1e00105698eb@infradead.org>
- <0ad9aeffcd5342f59bae6fe64218d011@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d8880e79-40a0-4d92-29dd-82b0b59d653b@infradead.org>
-Date:   Thu, 19 Nov 2020 10:12:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728082AbgKSSMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:12:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727117AbgKSSMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:12:36 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D8D72225B;
+        Thu, 19 Nov 2020 18:12:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605809556;
+        bh=BQglaJdKNtKWX2Zk4RYXa7mU1pwvbWzO/F2vKmVQHAI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=TmdG7jJCw4y5pRWzc6q4L+fJvWD1Th+9C1p416Qbbde86cU1ehvrTyntyeRV9kcGj
+         wAtN0nAJJK+BuM6QWfojq2DZgINmG78FggOYR0GtYoGm/ovdxYd4CD8DkkVfeX0Jiq
+         ViP6s54Ik1QQrPKcR0fslFFawiZPXjssr5sl5jGI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C2B6035225CF; Thu, 19 Nov 2020 10:12:35 -0800 (PST)
+Date:   Thu, 19 Nov 2020 10:12:35 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     qiang.zhang@windriver.com
+Cc:     jiangshanlai@gmail.com, rostedt@goodmis.org, josh@joshtriplett.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] srcu: Remove srcu_cblist_invoking member from sdp
+Message-ID: <20201119181235.GX1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201119053411.11698-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <0ad9aeffcd5342f59bae6fe64218d011@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119053411.11698-1-qiang.zhang@windriver.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/20 9:53 AM, Luck, Tony wrote:
->> ../drivers/edac/igen6_edac.c: In function 'ecclog_nmi_handler':
->> ../drivers/edac/igen6_edac.c:525:10: error: 'NMI_DONE' undeclared (first use in this function); did you mean 'DMI_NONE'?
->>    return NMI_DONE;
+On Thu, Nov 19, 2020 at 01:34:11PM +0800, qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
 > 
-> This driver has a #include <linux/nmi.h>
+> Workqueue can ensure the multiple same sdp->work sequential
+> execution in rcu_gp_wq, not need srcu_cblist_invoking to
+> prevent concurrent execution, so remove it.
 > 
-> But inside that file it says:
-> 
-> #if defined(CONFIG_HAVE_NMI_WATCHDOG)
-> #include <asm/nmi.h>
-> #endif
-> 
-> and the randconfig used doesn't set CONFIG_HAVE_NMI_WATCHDOG
-> 
-> 
-> Some options:
-> 
-> 1) Drop that #ifdef from <linux/nmi.h>
-> It was introduced as part of this commit:
-> f2e0cff85ed1 ("kernel/watchdog: introduce arch_touch_nmi_watchdog()")
-> presumably for some good reason.
-> 
-> 2) Make this edac driver select CONFIG_HAVE_NMI_WATCHDOG
-> Yuck!
-> 
-> 3) Make this driver #include <asm/nmi.h> instead of <linux/nmi.h>
-> This fixes this build error, but I thought that general policy was to
-> use the <linux/*.h> if it exists rather than the <asm/*.h> one.
-> Maybe that's ok here because this is an x86 specific driver?
-> 
-> I'm leaning toward option #3.
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 
-I lean toward option #1 but #3 would be OK.
+Good job analyzing the code, which is very good to see!!!
 
-We generally try NOT to surround #include lines
-with ifdef/endif as was done here for some reason.
+But these do have a potential purpose.  Right now, it is OK to invoke
+synchronize_srcu() during early boot, that is, before the scheduler
+has started.  But there is a gap from the time that the scheduler has
+initialized (so that preemption and blocking are possible) and the time
+that workqueues are initialized and fully functional.  Only after that
+is it once again OK to use synchronize_srcu().
 
+If synchronize_srcu() is ever required to work correctly during that
+time period, it will need to directly invoke the functions that are
+currently run in workqueue context.  Which means that there will then be
+the possibility of two instances of these functions running just after
+workqueues are available.
 
--- 
-~Randy
+							Thanx, Paul
 
+> ---
+>  include/linux/srcutree.h | 1 -
+>  kernel/rcu/srcutree.c    | 8 ++------
+>  2 files changed, 2 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index 9cfcc8a756ae..62d8312b5451 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -31,7 +31,6 @@ struct srcu_data {
+>  	struct rcu_segcblist srcu_cblist;	/* List of callbacks.*/
+>  	unsigned long srcu_gp_seq_needed;	/* Furthest future GP needed. */
+>  	unsigned long srcu_gp_seq_needed_exp;	/* Furthest future exp GP. */
+> -	bool srcu_cblist_invoking;		/* Invoking these CBs? */
+>  	struct timer_list delay_work;		/* Delay for CB invoking */
+>  	struct work_struct work;		/* Context for CB invoking. */
+>  	struct rcu_head srcu_barrier_head;	/* For srcu_barrier() use. */
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 3c5e2806e0b9..c4d5cd2567a6 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -134,7 +134,6 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
+>  		sdp = per_cpu_ptr(ssp->sda, cpu);
+>  		spin_lock_init(&ACCESS_PRIVATE(sdp, lock));
+>  		rcu_segcblist_init(&sdp->srcu_cblist);
+> -		sdp->srcu_cblist_invoking = false;
+>  		sdp->srcu_gp_seq_needed = ssp->srcu_gp_seq;
+>  		sdp->srcu_gp_seq_needed_exp = ssp->srcu_gp_seq;
+>  		sdp->mynode = &snp_first[cpu / levelspread[level]];
+> @@ -1254,14 +1253,11 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+>  	spin_lock_irq_rcu_node(sdp);
+>  	rcu_segcblist_advance(&sdp->srcu_cblist,
+>  			      rcu_seq_current(&ssp->srcu_gp_seq));
+> -	if (sdp->srcu_cblist_invoking ||
+> -	    !rcu_segcblist_ready_cbs(&sdp->srcu_cblist)) {
+> +	if (!rcu_segcblist_ready_cbs(&sdp->srcu_cblist)) {
+>  		spin_unlock_irq_rcu_node(sdp);
+>  		return;  /* Someone else on the job or nothing to do. */
+>  	}
+>  
+> -	/* We are on the job!  Extract and invoke ready callbacks. */
+> -	sdp->srcu_cblist_invoking = true;
+>  	rcu_segcblist_extract_done_cbs(&sdp->srcu_cblist, &ready_cbs);
+>  	len = ready_cbs.len;
+>  	spin_unlock_irq_rcu_node(sdp);
+> @@ -1282,7 +1278,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+>  	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
+>  	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+>  				       rcu_seq_snap(&ssp->srcu_gp_seq));
+> -	sdp->srcu_cblist_invoking = false;
+> +
+>  	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
+>  	spin_unlock_irq_rcu_node(sdp);
+>  	if (more)
+> -- 
+> 2.17.1
+> 
