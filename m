@@ -2,132 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852D22B9751
+	by mail.lfdr.de (Postfix) with ESMTP id F294E2B9752
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgKSQDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:03:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31114 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727356AbgKSQDB (ORCPT
+        id S1727914AbgKSQET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:04:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727356AbgKSQET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:03:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605801779;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BsFZ0hQNQRNmuGnSwAh2380F9EOTYHnybWt5Ieopw9A=;
-        b=gf1pMC55NnVfvG+6A6XJrM0XE3EddkAyzYDB0zC0tmqsGelpsgCab2OkFzdQOsXS0C284b
-        ODZp1pldXMxRLfMzPGHNSFEioOUHlcAL8289hxdhZ2SGZ1AgmD9mkfKG2CcmM5aY0DJTfH
-        ASVixUN6VBHPwrSjKWdPiVzdq8PJOpM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-37pkQnoHPu-nnk6oAV5kEA-1; Thu, 19 Nov 2020 11:02:55 -0500
-X-MC-Unique: 37pkQnoHPu-nnk6oAV5kEA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4606518C43D0;
-        Thu, 19 Nov 2020 16:02:54 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.164])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E02B51002382;
-        Thu, 19 Nov 2020 16:02:48 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 19 Nov 2020 17:02:53 +0100 (CET)
-Date:   Thu, 19 Nov 2020 17:02:47 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] powerpc/ptrace: Hard wire PT_SOFTE value to 1 in
- gpr_get() too
-Message-ID: <20201119160247.GB5188@redhat.com>
-References: <20201119160154.GA5183@redhat.com>
+        Thu, 19 Nov 2020 11:04:19 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05B6C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:04:18 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfmPu-0002YN-HH; Thu, 19 Nov 2020 17:04:14 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfmPu-0002Tc-2N; Thu, 19 Nov 2020 17:04:14 +0100
+Date:   Thu, 19 Nov 2020 17:04:12 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH 1/3] spi: fix resource leak for drivers without .remove
+ callback
+Message-ID: <20201119160412.nhu2rmwygyh6yg6e@pengutronix.de>
+References: <20201119152059.2631650-1-u.kleine-koenig@pengutronix.de>
+ <20201119152416.GB5554@sirena.org.uk>
+ <20201119153540.zehj2ppdt433xrsv@pengutronix.de>
+ <20201119154139.GC5554@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rmqir3z3i5d6ibg2"
 Content-Disposition: inline
-In-Reply-To: <20201119160154.GA5183@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20201119154139.GC5554@sirena.org.uk>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit a8a4b03ab95f ("powerpc: Hard wire PT_SOFTE value to 1 in
-ptrace & signals") changed ptrace_get_reg(PT_SOFTE) to report 0x1,
-but PTRACE_GETREGS still copies pt_regs->softe as is.
 
-This is not consistent and this breaks the user-regs-peekpoke test
-from https://sourceware.org/systemtap/wiki/utrace/tests/
+--rmqir3z3i5d6ibg2
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Jan Kratochvil <jan.kratochvil@redhat.com>
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- arch/powerpc/kernel/ptrace/ptrace-tm.c   | 8 +++++++-
- arch/powerpc/kernel/ptrace/ptrace-view.c | 8 +++++++-
- 2 files changed, 14 insertions(+), 2 deletions(-)
+Hello Mark,
 
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-tm.c b/arch/powerpc/kernel/ptrace/ptrace-tm.c
-index f8fcbd85d4cb..d0d339f86e61 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-tm.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-tm.c
-@@ -87,6 +87,10 @@ int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
- 		struct membuf to)
- {
- 	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
-+#ifdef CONFIG_PPC64
-+	struct membuf to_softe = membuf_at(&to,
-+					offsetof(struct pt_regs, softe));
-+#endif
- 
- 	if (!cpu_has_feature(CPU_FTR_TM))
- 		return -ENODEV;
-@@ -102,7 +106,9 @@ int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
- 				sizeof(struct user_pt_regs));
- 
- 	membuf_store(&to_msr, get_user_ckpt_msr(target));
--
-+#ifdef CONFIG_PPC64
-+	membuf_store(&to_softe, 0x1ul);
-+#endif
- 	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
- 				sizeof(struct user_pt_regs));
- }
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-view.c b/arch/powerpc/kernel/ptrace/ptrace-view.c
-index 39686ede40b3..f554ccfcbfae 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-view.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-view.c
-@@ -218,6 +218,10 @@ static int gpr_get(struct task_struct *target, const struct user_regset *regset,
- 		   struct membuf to)
- {
- 	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
-+#ifdef CONFIG_PPC64
-+	struct membuf to_softe = membuf_at(&to,
-+					offsetof(struct pt_regs, softe));
-+#endif
- 	int i;
- 
- 	if (target->thread.regs == NULL)
-@@ -233,7 +237,9 @@ static int gpr_get(struct task_struct *target, const struct user_regset *regset,
- 				sizeof(struct user_pt_regs));
- 
- 	membuf_store(&to_msr, get_user_msr(target));
--
-+#ifdef CONFIG_PPC64
-+	membuf_store(&to_softe, 0x1ul);
-+#endif
- 	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
- 				sizeof(struct user_pt_regs));
- }
--- 
-2.25.1.362.g51ebf55
+On Thu, Nov 19, 2020 at 03:41:39PM +0000, Mark Brown wrote:
+> On Thu, Nov 19, 2020 at 04:35:40PM +0100, Uwe Kleine-K=F6nig wrote:
+>=20
+> > Yes, I thought that this is not the final fix. I just sent the minimal
+> > change to prevent the imbalance. So if I understand correctly, I will
+> > have to respin with the following squashed into patch 1:
+>=20
+> > -	if (sdrv->probe || sdrv->remove) {
+> > -		sdrv->driver.probe =3D spi_drv_probe;
+> > -		sdrv->driver.remove =3D spi_drv_remove;
+> > -	}
+> > +	sdrv->driver.probe =3D spi_drv_probe;
+> > +	sdrv->driver.remove =3D spi_drv_remove;
+> >  	if (sdrv->shutdown)
+> >  		sdrv->driver.shutdown =3D spi_drv_shutdown;
+> >  	return driver_register(&sdrv->driver);
+>=20
+> I think so, I'd need to see the full patch to check of course.
 
+ok.
+=20
+> > (Not sure this makes a difference in real life, are there drivers
+> > without a .probe callback?)
+>=20
+> Your changelog seemed to say that it would make remove mandatory.
 
+No, that's not what the patch did. It made unconditional use of
+spi_drv_remove(), but an spi_driver without .remove() was still ok. I
+will reword to make this clearer.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--rmqir3z3i5d6ibg2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+2l3gACgkQwfwUeK3K
+7AnCAAf+IRPrMX+u6PY9dY3FiFrasPt1waNBHafpoJuBF2t9bgI8Os2Kd7bfrLVI
+Ug+o+5GaTgm1n6DZPjdwuOwLtUKlzYuJ4HJKpbY7Ao2Fp+ebE8Dy4aBenP9ZTkdZ
+P8ugGoji132gp5jGqkCxPlCYyBOClfmnK4IZ5L8luqetRK3ziVdbLTWU2CT+qVzk
+RG2jorydutq55DJLV6C1ZEFFD6AdY5hTyKuTRIOz7/H4/bQ1PYLK1+kTagFLdF/7
+DifptE7/3b0xY/FsHJDuJnURcyIhE4yANUy5ANaksNWXWdUefD2e+MuaySPoEaIF
+rdjpK1BGtKAannQ5xUYrHSb/jp8XxA==
+=UFeg
+-----END PGP SIGNATURE-----
+
+--rmqir3z3i5d6ibg2--
