@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F294E2B9752
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8ACC2B9754
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727914AbgKSQET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:04:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727356AbgKSQET (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:04:19 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05B6C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:04:18 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfmPu-0002YN-HH; Thu, 19 Nov 2020 17:04:14 +0100
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kfmPu-0002Tc-2N; Thu, 19 Nov 2020 17:04:14 +0100
-Date:   Thu, 19 Nov 2020 17:04:12 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH 1/3] spi: fix resource leak for drivers without .remove
- callback
-Message-ID: <20201119160412.nhu2rmwygyh6yg6e@pengutronix.de>
-References: <20201119152059.2631650-1-u.kleine-koenig@pengutronix.de>
- <20201119152416.GB5554@sirena.org.uk>
- <20201119153540.zehj2ppdt433xrsv@pengutronix.de>
- <20201119154139.GC5554@sirena.org.uk>
+        id S1727960AbgKSQE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:04:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38582 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727151AbgKSQE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:04:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605801864; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/3TE/0VHRs9SOe8v/y8uvMKxuFo2wQveqxMzaIV2RCk=;
+        b=LOCs+VrTcR9sCo8N0NzF33sCSgaAc3jNsAZtuiF9d/apTlGH1s2jMudPEiBiZVv3Wwn9k8
+        5pOgNRD2UTG599iJGUbfk3dGAP9zsI2ue3MW39gJaBo5onOP9lzcNxACH1fUDjSNkfnMIg
+        VYXfnRpfNQbYHjpU4U9sdsdBdhJwlIA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6F31AAE1C;
+        Thu, 19 Nov 2020 16:04:24 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 17:04:23 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>
+Subject: Re: [PATCH 1/3 v7] ftrace: Have the callbacks receive a struct
+ ftrace_regs instead of pt_regs
+Message-ID: <X7aXh3wivkz4tEMm@alley>
+References: <20201113171811.288150055@goodmis.org>
+ <20201113171939.162178036@goodmis.org>
+ <X7ZRiPw136nZE3JL@alley>
+ <20201119090758.02e0bafa@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rmqir3z3i5d6ibg2"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119154139.GC5554@sirena.org.uk>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201119090758.02e0bafa@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 2020-11-19 09:07:58, Steven Rostedt wrote:
+> On Thu, 19 Nov 2020 12:05:44 +0100
+> Petr Mladek <pmladek@suse.com> wrote:
+> 
+> > >  void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+> > > -			   struct ftrace_ops *ops, struct pt_regs *regs)
+> > > +			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> > >  {
+> > >  	int bit;
+> > >  	bool lr_saver = false;
+> > >  	struct kprobe *p;
+> > >  	struct kprobe_ctlblk *kcb;
+> > > +	struct pt_regs *regs;
+> > >  
+> > >  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+> > >  	if (bit < 0)
+> > >  		return;
+> > >  
+> > > +	regs = ftrace_get_regs(fregs);  
+> > 
+> > Should we check for NULL here?
+> > Same in all callers?
+> 
+> If regs is NULL that's a major bug.
+> 
+> It's no different than what we have today. If you set FL_SAVE_REGS, then
+> the regs parameter will have regs. If you don't, it will be NULL. We don't
+> check regs for NULL today, so we shouldn't need to check regs for NULL with
+> this.
+> 
+> One of my bootup tests checks if this works. I work hard to make sure that
+> regs is set for everything that wants it, otherwise bad things happen.
+> 
+> In other words, the functionality in this regard hasn't changed with this
+> patch.
 
---rmqir3z3i5d6ibg2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for explanation. Feel free to use:
 
-Hello Mark,
+Acked-by: Petr Mladek <pmladek@suse.com>
 
-On Thu, Nov 19, 2020 at 03:41:39PM +0000, Mark Brown wrote:
-> On Thu, Nov 19, 2020 at 04:35:40PM +0100, Uwe Kleine-K=F6nig wrote:
->=20
-> > Yes, I thought that this is not the final fix. I just sent the minimal
-> > change to prevent the imbalance. So if I understand correctly, I will
-> > have to respin with the following squashed into patch 1:
->=20
-> > -	if (sdrv->probe || sdrv->remove) {
-> > -		sdrv->driver.probe =3D spi_drv_probe;
-> > -		sdrv->driver.remove =3D spi_drv_remove;
-> > -	}
-> > +	sdrv->driver.probe =3D spi_drv_probe;
-> > +	sdrv->driver.remove =3D spi_drv_remove;
-> >  	if (sdrv->shutdown)
-> >  		sdrv->driver.shutdown =3D spi_drv_shutdown;
-> >  	return driver_register(&sdrv->driver);
->=20
-> I think so, I'd need to see the full patch to check of course.
-
-ok.
-=20
-> > (Not sure this makes a difference in real life, are there drivers
-> > without a .probe callback?)
->=20
-> Your changelog seemed to say that it would make remove mandatory.
-
-No, that's not what the patch did. It made unconditional use of
-spi_drv_remove(), but an spi_driver without .remove() was still ok. I
-will reword to make this clearer.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---rmqir3z3i5d6ibg2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+2l3gACgkQwfwUeK3K
-7AnCAAf+IRPrMX+u6PY9dY3FiFrasPt1waNBHafpoJuBF2t9bgI8Os2Kd7bfrLVI
-Ug+o+5GaTgm1n6DZPjdwuOwLtUKlzYuJ4HJKpbY7Ao2Fp+ebE8Dy4aBenP9ZTkdZ
-P8ugGoji132gp5jGqkCxPlCYyBOClfmnK4IZ5L8luqetRK3ziVdbLTWU2CT+qVzk
-RG2jorydutq55DJLV6C1ZEFFD6AdY5hTyKuTRIOz7/H4/bQ1PYLK1+kTagFLdF/7
-DifptE7/3b0xY/FsHJDuJnURcyIhE4yANUy5ANaksNWXWdUefD2e+MuaySPoEaIF
-rdjpK1BGtKAannQ5xUYrHSb/jp8XxA==
-=UFeg
------END PGP SIGNATURE-----
-
---rmqir3z3i5d6ibg2--
+Best Regards,
+Petr
