@@ -2,111 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF692B9D73
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 787CF2B9D8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgKSWKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 17:10:52 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:42599 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgKSWKv (ORCPT
+        id S1726849AbgKSWUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 17:20:13 -0500
+Received: from drummond.us ([74.95.14.229]:4564 "EHLO
+        talisker.home.drummond.us" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726464AbgKSWUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:10:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1605823850; x=1637359850;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=KakZVEyQaYj6Wtym9hbgZZFBg0Ru32Ep8T3605AucoY=;
-  b=Wh2XjkHsHKxTM5jzH3Kh3dTGVG1bLAR7D6IBUDJrfg81GdgVLxUTZxsn
-   E2rY/bh5d+kKSG98vYXbCk8eXH+Ts2DYhSkMI2+sebP2m3vedLJEV+hmL
-   AMhrl2Eog1qiS+qkqh1YGGpbKM+kXPamnijK0NpDp2lZ3GIRS3Oi3SEY8
-   o=;
-X-IronPort-AV: E=Sophos;i="5.78,354,1599523200"; 
-   d="scan'208";a="97174361"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 19 Nov 2020 22:10:50 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com (Postfix) with ESMTPS id 2BC1EBEB14;
-        Thu, 19 Nov 2020 22:10:47 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 19 Nov 2020 22:10:47 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.162.144) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 19 Nov 2020 22:10:43 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 6/8] bpf: Add cookie in sk_reuseport_md.
-Date:   Fri, 20 Nov 2020 07:10:39 +0900
-Message-ID: <20201119221039.77142-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201119001154.kapwihc2plp4f7zc@kafai-mbp.dhcp.thefacebook.com>
-References: <20201119001154.kapwihc2plp4f7zc@kafai-mbp.dhcp.thefacebook.com>
+        Thu, 19 Nov 2020 17:20:13 -0500
+X-Greylist: delayed 469 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Nov 2020 17:20:12 EST
+Received: from talisker.home.drummond.us (localhost [127.0.0.1])
+        by talisker.home.drummond.us (8.15.2/8.15.2/Debian-20) with ESMTP id 0AJMBolN1515759;
+        Thu, 19 Nov 2020 14:11:50 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=home.drummond.us;
+        s=default; t=1605823911;
+        bh=Ayx7/03KKR9LNFXEVXiNjLwjKsBf8QCVWMy0RTPXC3A=;
+        h=From:To:Subject:Date:From;
+        b=E1o03DRpQSuWoGSlGl/mfkHO4gTUiBjNeD5f6fi2f+8uQRlkMJsIGjBsUAD1WUIor
+         wY6ioximfxcU0h2Rc6mBdt//7Wiu/bD0YXlVqj4l8li7SJ7USPbnSoxqwdILOonX1d
+         viNn1+6TPmngWXWSLPu9InO/rPuI3g8JEi4Epcmvw9dHb10Z4OnoRlNRJCWBLIUW3T
+         C6Om90k6BrPMBWx80OFdw+0vd2gKGIy+dXP7UzxWF4cWdf7qQ3kgVOa8jjrqQlWjkG
+         uSRaCWlrXIiWxWeTE/ljDWJIe41gKCDkp8Eo7fE2WAacJ7rKxwoXRleiMph+lc6X0i
+         rZU9CjFTW4KxA==
+Received: (from walt@localhost)
+        by talisker.home.drummond.us (8.15.2/8.15.2/Submit) id 0AJMBlFG1515758;
+        Thu, 19 Nov 2020 14:11:47 -0800
+From:   Walt Drummond <walt@drummond.us>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, viro@zeniv.linux.org.uk, brgerst@gmail.com,
+        linux@dominikbrodowski.net, walt@drummond.us,
+        gustavoars@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/signals: Fix save/restore signal stack to correctly support sigset_t
+Date:   Thu, 19 Nov 2020 14:11:33 -0800
+Message-Id: <20201119221132.1515696-1-walt@drummond.us>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.144]
-X-ClientProxiedBy: EX13D14UWC004.ant.amazon.com (10.43.162.99) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Wed, 18 Nov 2020 16:11:54 -0800
-> On Tue, Nov 17, 2020 at 06:40:21PM +0900, Kuniyuki Iwashima wrote:
-> > We will call sock_reuseport.prog for socket migration in the next commit,
-> > so the eBPF program has to know which listener is closing in order to
-> > select the new listener.
-> > 
-> > Currently, we can get a unique ID for each listener in the userspace by
-> > calling bpf_map_lookup_elem() for BPF_MAP_TYPE_REUSEPORT_SOCKARRAY map.
-> > This patch exposes the ID to the eBPF program.
-> > 
-> > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
-> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > ---
-> >  include/linux/bpf.h            | 1 +
-> >  include/uapi/linux/bpf.h       | 1 +
-> >  net/core/filter.c              | 8 ++++++++
-> >  tools/include/uapi/linux/bpf.h | 1 +
-> >  4 files changed, 11 insertions(+)
-> > 
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 581b2a2e78eb..c0646eceffa2 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -1897,6 +1897,7 @@ struct sk_reuseport_kern {
-> >  	u32 hash;
-> >  	u32 reuseport_id;
-> >  	bool bind_inany;
-> > +	u64 cookie;
-> >  };
-> >  bool bpf_tcp_sock_is_valid_access(int off, int size, enum bpf_access_type type,
-> >  				  struct bpf_insn_access_aux *info);
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 162999b12790..3fcddb032838 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -4403,6 +4403,7 @@ struct sk_reuseport_md {
-> >  	__u32 ip_protocol;	/* IP protocol. e.g. IPPROTO_TCP, IPPROTO_UDP */
-> >  	__u32 bind_inany;	/* Is sock bound to an INANY address? */
-> >  	__u32 hash;		/* A hash of the packet 4 tuples */
-> > +	__u64 cookie;		/* ID of the listener in map */
-> Instead of only adding the cookie of a sk, lets make the sk pointer available:
-> 
-> 	__bpf_md_ptr(struct bpf_sock *, sk);
-> 
-> and then use the BPF_FUNC_get_socket_cookie to get the cookie.
-> 
-> Other fields of the sk can also be directly accessed too once
-> the sk pointer is available.
+The macro unsafe_put_sigmask() only handles the first 64 bits of the
+sigmask_t, which works today.  However, if the definition of the
+sigset_t structure ever changed, this would fail to setup/restore the
+signal stack properly and likely corrupt the sigset. This patch
+updates unsafe_put_sigmask() to correctly save all the fields in the
+sigmask_t struct, and adds unsafe_put_compat_sigmask() to handle the
+compat_sigset_t cases.
 
-Oh, I did not know BPF_FUNC_get_socket_cookie.
-I will add the sk pointer and use the helper function in the next spin!
-Thank you.
+Signed-off-by: Walt Drummond <walt@drummond.us>
+---
+ arch/x86/kernel/signal.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index be0d7d4152ec..4d5134b4bb5f 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -203,11 +203,18 @@ do {									\
+ 		goto label;						\
+ } while(0);
+ 
+-#define unsafe_put_sigmask(set, frame, label) \
++#define unsafe_put_compat_sigmask(set, frame, label) \
+ 	unsafe_put_user(*(__u64 *)(set), \
+ 			(__u64 __user *)&(frame)->uc.uc_sigmask, \
+ 			label)
+ 
++#define unsafe_put_sigmask(set, frame, label)           \
++do {                                                    \
++	int i;								\
++	for (i = 0; i < _NSIG_WORDS; i++)				\
++		unsafe_put_user((set)->sig[i], &(frame)->uc.uc_sigmask.sig[i], label); \
++} while(0);
++
+ /*
+  * Set up a signal frame.
+  */
+@@ -566,7 +573,7 @@ static int x32_setup_rt_frame(struct ksignal *ksig,
+ 	restorer = ksig->ka.sa.sa_restorer;
+ 	unsafe_put_user(restorer, (unsigned long __user *)&frame->pretcode, Efault);
+ 	unsafe_put_sigcontext(&frame->uc.uc_mcontext, fp, regs, set, Efault);
+-	unsafe_put_sigmask(set, frame, Efault);
++	unsafe_put_compat_sigmask(set, frame, Efault);
+ 	user_access_end();
+ 
+ 	if (ksig->ka.sa.sa_flags & SA_SIGINFO) {
+@@ -643,7 +650,7 @@ SYSCALL_DEFINE0(rt_sigreturn)
+ 	frame = (struct rt_sigframe __user *)(regs->sp - sizeof(long));
+ 	if (!access_ok(frame, sizeof(*frame)))
+ 		goto badframe;
+-	if (__get_user(*(__u64 *)&set, (__u64 __user *)&frame->uc.uc_sigmask))
++	if (copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(sigset_t)))
+ 		goto badframe;
+ 	if (__get_user(uc_flags, &frame->uc.uc_flags))
+ 		goto badframe;
+-- 
+2.27.0
+
