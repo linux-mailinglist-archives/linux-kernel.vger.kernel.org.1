@@ -2,191 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE7C2B962E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 857C72B9617
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728675AbgKSP0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:26:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44402 "EHLO
+        id S1728500AbgKSPYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:24:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728658AbgKSPZ7 (ORCPT
+        with ESMTP id S1728018AbgKSPYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:25:59 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFFFC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:25:58 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id w14so4809752pfd.7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:25:58 -0800 (PST)
+        Thu, 19 Nov 2020 10:24:54 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB71BC0613D4;
+        Thu, 19 Nov 2020 07:24:53 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id b63so4789918pfg.12;
+        Thu, 19 Nov 2020 07:24:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+xcIkPaY2Uh+7Kl1sCcJhB1bqk9+hZ74A/aurRuPm88=;
-        b=tSQ586OY0IIHNa5E2RluJVsYAZ2UbAZA3ERxFpV2kE1JVs9v/eKNHaoiNvKeboz1Jr
-         LURClOVClokAmdYL3hNgqV1f1i9SdVqYGTLOio+I+HXZjHB1JOpHNZV6r0ntWumZajOb
-         n9tI05e0PHTuxqqn7CeyfJYm+CQDLnG+dIMZw29xs7pBd+odTVT8XPXnOzjiSe8O1ALv
-         pXt3XmCSO76F0lYxzaxPZhBSbofLUkatbVo/zA8zsVF9tSxu1LlDUHPRYMGxi8VoEtxU
-         cgly28vejkNznc++ot/A2mDHcClMASEsM1jYoRPfFu2yMMmnZ1CjTF9YuK5n1NUxKwLe
-         ubgw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rKGDvwwf0BJyiVgQU7KDz2JZW6ZWNxeRA71HGxrlgOk=;
+        b=J/YCGZvtwlX/8XtYEmysFnKDvjpTRHkzdA9UPpf6ZIS+l5g8K/pF1ED7LmloVVi7fk
+         G3kThb1661IT5QXdx5MS1h5fAsOUkTVQENCAzMchCk/rdVnlVVO6rkour8GUG4Eah2Rt
+         ItInq+Fncz3f2G6BTN2cFW9/ZHi6nBra6y+UZkABzYLtcJZowzNDKUHsT/EPzUM5obWH
+         VzzMFxH+qgrqz8MTwlOflibya14AYn5riuyiwGqtET+qiYGUpea9npZwvaWeX3fAPFJY
+         s0htUe6ht37nAH1ElBZXXatYoUTErd85Y4mf/nIKORJgJ343CWb0jXjGhoFlDDAiYEnF
+         HIUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=+xcIkPaY2Uh+7Kl1sCcJhB1bqk9+hZ74A/aurRuPm88=;
-        b=OfC3A1Q+ku835Tpq248hxNDKzuYBk0nlsfDlvfzUkXwTn1AWkPJGW1Z5loh/arpLPL
-         J3TkLs8eW5hC48wM8TfWkrzvEu1PkePLM6ucf22vHejJ7gqnIg8ukdM8ONXuDy0k6cOK
-         OGrSEHR27qGcICMg5b0b/T/VC9ab7M6lfOyCge8ptScOrBEkHBljIdN8/uNHRf2sNwW0
-         WxGWe3sjxr0ecbbHRT84F4Iod0xJOhgz58cfvMmqO3eBuHQYP9waLjd6zZWH46ezh5KK
-         4BL+eRLLSP5WM+dFo9W3e1htuI2z6Uh4CWWo3Es07XOaC9SHhe/1/RRTCxt/mHtJY7Fu
-         f6+g==
-X-Gm-Message-State: AOAM532rzgfqPyckJNBWr0fa1tRPbQWxwpzfPfsCTc67284wldRQ9i81
-        rgh4fEpgVP4Vrdu1+T2UrsT9kQ==
-X-Google-Smtp-Source: ABdhPJxbLgJtHuTR08KXRzG3oLunFlYNB2WxxhXuH1HI45+kXErqbVQvGNMREOXI2NHvY3MJDhPbcg==
-X-Received: by 2002:a63:6585:: with SMTP id z127mr13773044pgb.210.1605799558409;
-        Thu, 19 Nov 2020 07:25:58 -0800 (PST)
-Received: from localhost ([45.137.216.7])
-        by smtp.gmail.com with ESMTPSA id e10sm107640pfl.162.2020.11.19.07.25.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 19 Nov 2020 07:25:57 -0800 (PST)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v9 16/16] perf arm-spe: Add support for ARMv8.3-SPE
-Date:   Thu, 19 Nov 2020 23:24:41 +0800
-Message-Id: <20201119152441.6972-17-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201119152441.6972-1-leo.yan@linaro.org>
-References: <20201119152441.6972-1-leo.yan@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rKGDvwwf0BJyiVgQU7KDz2JZW6ZWNxeRA71HGxrlgOk=;
+        b=avvWIKpK/LDCMRacXd+cqWMuMZmUtd1aqPEfHAOp2HMxyAkCWGdPrCJlwt3ltvb6BO
+         4rh8PrJqJkn7sJo5YEUIhdkFqbpjVBAlsKbq2ye811mYTNpSj9VIauAW38U3rq8Xnq5T
+         mW8RQaY2XKcjwo+8Gh3fFb7aCuLw6s8xnmiVcEeMAT8sOscHss1bv4DPeZ0U8di4gsht
+         IPiVwVLUhJOcXqtjzS+lh39TYplhiFuAFMnxMsKuYW3a2tylEZJudViDqqZCHwSvzGLV
+         I1fq0rEwekIuhi69xKjVxq90hlaRzVs+VVt6iMmW/S9aQU3rWUA8PkJ/teCZ6n+62knc
+         mvLQ==
+X-Gm-Message-State: AOAM533/K9O9EyLS/uqRgNYgOIfQlV2yHFTAGlEtqHtjoLFjILZeAGED
+        HUF7sz8gUdyoOZLn+1436IY0/+3wZw6sbNMZSZo=
+X-Google-Smtp-Source: ABdhPJxqG/ieC3mvkvSTZcfaj7z1cqJDpHXN5/j873Xrx9Ga3FWV2TtW5+HAMHSR5worVSvdSuA3xelbBzzNvBE4/88=
+X-Received: by 2002:a63:1514:: with SMTP id v20mr13609620pgl.203.1605799493298;
+ Thu, 19 Nov 2020 07:24:53 -0800 (PST)
+MIME-Version: 1.0
+References: <20201118234025.376412-1-evgreen@chromium.org> <20201118153951.RESEND.v3.2.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
+In-Reply-To: <20201118153951.RESEND.v3.2.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 19 Nov 2020 17:25:41 +0200
+Message-ID: <CAHp75VdtwyCj7emc7Bk87q7kMQA0sSX81-aK-fMq4qTfTF-c_g@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3 2/2] i2c: i2c-mux-gpio: Enable this driver in
+ ACPI land
+To:     Evan Green <evgreen@chromium.org>
+Cc:     Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Li <liwei391@huawei.com>
+On Thu, Nov 19, 2020 at 1:40 AM Evan Green <evgreen@chromium.org> wrote:
+>
+> Enable i2c-mux-gpio devices to be defined via ACPI. The idle-state
+> property translates directly to a fwnode_property_*() call. The child
+> reg property translates naturally into _ADR in ACPI.
+>
+> The i2c-parent binding is a relic from the days when the bindings
+> dictated that all direct children of an I2C controller had to be I2C
+> devices. These days that's no longer required. The i2c-mux can sit as a
+> direct child of its parent controller, which is where it makes the most
+> sense from a hardware description perspective. For the ACPI
+> implementation we'll assume that's always how the i2c-mux-gpio is
+> instantiated.
 
-This patch is to support Armv8.3 extension for SPE, it adds alignment
-field in the Events packet and it supports the Scalable Vector Extension
-(SVE) for Operation packet and Events packet with two additions:
+...
 
-  - The vector length for SVE operations in the Operation Type packet;
-  - The incomplete predicate and empty predicate fields in the Events
-    packet.
+> +#ifdef CONFIG_ACPI
+> +
+> +static int i2c_mux_gpio_get_acpi_adr(struct device *dev,
+> +                                    struct fwnode_handle *fwdev,
+> +                                    unsigned int *adr)
+> +
+> +{
+> +       unsigned long long adr64;
+> +       acpi_status status;
+> +
+> +       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwdev),
+> +                                      METHOD_NAME__ADR,
+> +                                      NULL, &adr64);
+> +
+> +       if (!ACPI_SUCCESS(status)) {
+> +               dev_err(dev, "Cannot get address\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       *adr = adr64;
+> +       if (*adr != adr64) {
+> +               dev_err(dev, "Address out of range\n");
+> +               return -ERANGE;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +#else
+> +
+> +static int i2c_mux_gpio_get_acpi_adr(struct device *dev,
+> +                                    struct fwnode_handle *fwdev,
+> +                                    unsigned int *adr)
+> +{
+> +       return -EINVAL;
+> +}
+> +
+> +#endif
 
-Signed-off-by: Wei Li <liwei391@huawei.com>
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
----
- .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 36 +++++++++++++++++--
- .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 16 +++++++++
- 2 files changed, 50 insertions(+), 2 deletions(-)
+I'm wondering if you may use acpi_find_child_device() here.
+Or is it a complementary function?
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 57c01ce27915..f3ac9d40cebf 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -317,6 +317,12 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
- 		arm_spe_pkt_out_string(&err, &buf, &buf_len, " LLC-REFILL");
- 	if (payload & BIT(EV_REMOTE_ACCESS))
- 		arm_spe_pkt_out_string(&err, &buf, &buf_len, " REMOTE-ACCESS");
-+	if (payload & BIT(EV_ALIGNMENT))
-+		arm_spe_pkt_out_string(&err, &buf, &buf_len, " ALIGNMENT");
-+	if (payload & BIT(EV_PARTIAL_PREDICATE))
-+		arm_spe_pkt_out_string(&err, &buf, &buf_len, " SVE-PARTIAL-PRED");
-+	if (payload & BIT(EV_EMPTY_PREDICATE))
-+		arm_spe_pkt_out_string(&err, &buf, &buf_len, " SVE-EMPTY-PRED");
- 
- 	return err;
- }
-@@ -329,8 +335,23 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 
- 	switch (packet->index) {
- 	case SPE_OP_PKT_HDR_CLASS_OTHER:
--		arm_spe_pkt_out_string(&err, &buf, &buf_len,
--			payload & SPE_OP_PKT_COND ? "COND-SELECT" : "INSN-OTHER");
-+		if (SPE_OP_PKT_IS_OTHER_SVE_OP(payload)) {
-+			arm_spe_pkt_out_string(&err, &buf, &buf_len, "SVE-OTHER");
-+
-+			/* SVE effective vector length */
-+			arm_spe_pkt_out_string(&err, &buf, &buf_len, " EVLEN %d",
-+					       SPE_OP_PKG_SVE_EVL(payload));
-+
-+			if (payload & SPE_OP_PKT_SVE_FP)
-+				arm_spe_pkt_out_string(&err, &buf, &buf_len, " FP");
-+			if (payload & SPE_OP_PKT_SVE_PRED)
-+				arm_spe_pkt_out_string(&err, &buf, &buf_len, " PRED");
-+		} else {
-+			arm_spe_pkt_out_string(&err, &buf, &buf_len, "OTHER");
-+			arm_spe_pkt_out_string(&err, &buf, &buf_len, " %s",
-+					       payload & SPE_OP_PKT_COND ?
-+					       "COND-SELECT" : "INSN-OTHER");
-+		}
- 		break;
- 	case SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC:
- 		arm_spe_pkt_out_string(&err, &buf, &buf_len,
-@@ -361,6 +382,17 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 		default:
- 			break;
- 		}
-+
-+		if (SPE_OP_PKT_IS_LDST_SVE(payload)) {
-+			/* SVE effective vector length */
-+			arm_spe_pkt_out_string(&err, &buf, &buf_len, " EVLEN %d",
-+					       SPE_OP_PKG_SVE_EVL(payload));
-+
-+			if (payload & SPE_OP_PKT_SVE_PRED)
-+				arm_spe_pkt_out_string(&err, &buf, &buf_len, " PRED");
-+			if (payload & SPE_OP_PKT_SVE_SG)
-+				arm_spe_pkt_out_string(&err, &buf, &buf_len, " SG");
-+		}
- 		break;
- 	case SPE_OP_PKT_HDR_CLASS_BR_ERET:
- 		arm_spe_pkt_out_string(&err, &buf, &buf_len, "B");
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-index 1ad14885c2a1..9b970e7bf1e2 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-@@ -113,6 +113,8 @@ enum arm_spe_events {
- #define SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC	0x1
- #define SPE_OP_PKT_HDR_CLASS_BR_ERET		0x2
- 
-+#define SPE_OP_PKT_IS_OTHER_SVE_OP(v)		(((v) & (BIT(7) | BIT(3) | BIT(0))) == 0x8)
-+
- #define SPE_OP_PKT_COND				BIT(0)
- 
- #define SPE_OP_PKT_LDST_SUBCLASS_GET(v)		((v) & GENMASK_ULL(7, 1))
-@@ -128,6 +130,20 @@ enum arm_spe_events {
- #define SPE_OP_PKT_AT				BIT(2)
- #define SPE_OP_PKT_ST				BIT(0)
- 
-+#define SPE_OP_PKT_IS_LDST_SVE(v)		(((v) & (BIT(3) | BIT(1))) == 0x8)
-+
-+#define SPE_OP_PKT_SVE_SG			BIT(7)
-+/*
-+ * SVE effective vector length (EVL) is stored in byte 0 bits [6:4];
-+ * the length is rounded up to a power of two and use 32 as one step,
-+ * so EVL calculation is:
-+ *
-+ *   32 * (2 ^ bits [6:4]) = 32 << (bits [6:4])
-+ */
-+#define SPE_OP_PKG_SVE_EVL(v)			(32 << (((v) & GENMASK_ULL(6, 4)) >> 4))
-+#define SPE_OP_PKT_SVE_PRED			BIT(2)
-+#define SPE_OP_PKT_SVE_FP			BIT(1)
-+
- #define SPE_OP_PKT_IS_INDIRECT_BRANCH(v)	(((v) & GENMASK_ULL(7, 1)) == 0x2)
- 
- const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
+...
+
+> +       device_for_each_child_node(dev, child) {
+> +               if (is_of_node(child)) {
+> +                       fwnode_property_read_u32(child, "reg", values + i);
+> +
+> +               } else if (is_acpi_node(child)) {
+> +                       rc = i2c_mux_gpio_get_acpi_adr(dev, child, values + i);
+> +                       if (rc)
+> +                               return rc;
+> +               }
+> +
+>                 i++;
+>         }
+
+And for this I already told in two different threads with similar code
+that perhaps we need common helper that will check reg followed by
+_ADR.
+
 -- 
-2.17.1
-
+With Best Regards,
+Andy Shevchenko
