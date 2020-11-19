@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394B62B8D88
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE592B8D8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgKSIdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:33:01 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:43642 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726096AbgKSIdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:33:00 -0500
-Received: from [10.130.0.193] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx73+wLbZfRZ8SAA--.29334S3;
-        Thu, 19 Nov 2020 16:32:49 +0800 (CST)
-Subject: Re: [PATCH] arm64: vmlinux.lds.S: Drop redundant *.init.rodata.*
-To:     Ard Biesheuvel <ardb@kernel.org>
-References: <1605750340-910-1-git-send-email-tangyouling@loongson.cn>
- <CAMj1kXFr+1Khbisq2je41j_nFQnFhdYBW9bg+Ka5xbBJXHHkyg@mail.gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Youling Tang <tangyouling@loongson.cn>
-Message-ID: <f1c18bdb-69a5-9260-d931-69f6bc926170@loongson.cn>
-Date:   Thu, 19 Nov 2020 16:32:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726766AbgKSIdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726096AbgKSIdJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 03:33:09 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752A8C0613CF;
+        Thu, 19 Nov 2020 00:33:08 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id i13so3566460pgm.9;
+        Thu, 19 Nov 2020 00:33:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AWtaE3tXlX6KkF6SbACxjxmzIgZO2jw7wJIis4kxiFE=;
+        b=erzuebpFnP6Gt2cVg+ear4rCVwZ7bV1TMmBphb8RKyD3jrIiAaNEYF/RsgesHqObP0
+         He6fyxoxyGGmeUZVMu55DzEB7jcra6cRQnvkfN30U6IDH2AVMoZ3r4zz+yw4phczW/Jg
+         5DjouAw+3mtdOjcmUn00gTai5TFmLOOALsNQjAMBdj0hv+RDsdHAH6LIu1vdCvwZuRvk
+         ABxoG8DSqgG6cKZwCREawmItYpU4ofbFmo8XNIFaxMPJZ2Bz3RTZj4T3PbEz2A4i54tL
+         vDc5j2p+cebrIwdKl0TAv9l5C1jvtPY8WU0arSK9KRm8+cU0n/85YEKbOOyC1USDLDGC
+         ff+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AWtaE3tXlX6KkF6SbACxjxmzIgZO2jw7wJIis4kxiFE=;
+        b=UTru85PJ+51NhWm+g+7vyk5yu7eP+C22Y/WKbxYhFSYvl2aJpVGXC61FryXM/byrP6
+         tqQBAwItWE+nbuoiW7yn92uxIMFm1jRsAM1Y+QMl5AYFY8huFsT6mB49gIe+U/EZGPAa
+         Doo1Ly1kH1zHVXMAp7/kXdKUGaqiXXhZQp4P2ECVxeh5OGloapHiXGRIV3H7KeUM7HGO
+         /Vf4Jp0+d7bBIgLez3AjND0ltD05dujlZdb/b3s53KcGb3ih2o83BA+4087JhGYUWoEU
+         NNgTd9BYrzzl/Y0Z4mXhegHpGfSuac+PgJvJH3TJ9doPJqRETOUP+ySUYWik1ml6bFlE
+         u/Xw==
+X-Gm-Message-State: AOAM533nYzIQIKsYDKDuLWDqrGZET8MwDJSrcKDmPILr9voEPOHQbOpM
+        XGF0RdpSTFlGOGJXu4Uj3zcoy8UyixunGPg=
+X-Google-Smtp-Source: ABdhPJw2SvWZ1XI9W5K8nt/BB7nN8YTnKz+xeBgYnSGTG7BKTqQH4kXyF10cnpjO+13wTWBoHwQsNw==
+X-Received: by 2002:a63:c745:: with SMTP id v5mr11584885pgg.389.1605774787959;
+        Thu, 19 Nov 2020 00:33:07 -0800 (PST)
+Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
+        by smtp.gmail.com with ESMTPSA id z5sm1626030pgi.27.2020.11.19.00.33.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 00:33:07 -0800 (PST)
+Date:   Thu, 19 Nov 2020 03:32:57 -0500
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
+ FNTCHARCNT() in fbcon.c
+Message-ID: <20201119083257.GA9468@PWN>
+References: <cover.1605169912.git.yepeilin.cs@gmail.com>
+ <20201113211633.GY401619@phenom.ffwll.local>
+ <X68NFzaAuImemnqh@kroah.com>
+ <20201114081021.GA11811@PWN>
+ <X6/K/S9V7rj2hI5p@kroah.com>
+ <X6/L/lE2pA7csBwd@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXFr+1Khbisq2je41j_nFQnFhdYBW9bg+Ka5xbBJXHHkyg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dx73+wLbZfRZ8SAA--.29334S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr47ZFWfKw47WF48Zr4rAFb_yoW8Xw4rpF
-        WUC34vkr4DKay5G3WftwnY9F1293sIgrW3Gr4UCr4akrnxW34IqrnrKrWIkrZF9r4vkF40
-        gFn2vFWa9a4DAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9mb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        c7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I
-        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
-        GVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI
-        0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0
-        rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jzlksUUUUU=
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X6/L/lE2pA7csBwd@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Ard
+On Sat, Nov 14, 2020 at 01:22:22PM +0100, Greg Kroah-Hartman wrote:
+> Ah, here's a hint:
+> 	https://wiki.archlinux.org/index.php/Linux_console#Fonts
+> 
+> The setfont tool should help you out here.
 
-On 11/19/2020 03:18 PM, Ard Biesheuvel wrote:
-> On Thu, 19 Nov 2020 at 02:45, Youling Tang <tangyouling@loongson.cn> wrote:
->> We currently try to emit *.init.rodata.* twice, once in INIT_DATA, and once
->> in the line immediately following it. As the two section definitions are
->> identical, the latter is redundant and can be dropped.
->>
->> This patch drops the redundant *.init.rodata.* section definition.
->>
->> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-> .init.rodata.* was added to INIT_DATA in
-> 266ff2a8f51f02b429a987d87634697eb0d01d6a, so removing it here seems
-> reasonable. However, it does conflict with the for-next/lto branch in
-> the arm64 tree.
->
-The possible causes of the conflict are e35123d83ee submit.
+setfont seems to work fine, I tried Georgian-Fixed16 (256 chars) and
+Uni2-VGA16 (512 chars) under /usr/share/consolefonts/ in my Ubuntu box,
+including setting all consoles to the same font:
 
-master branch code as follows:
-     ...
-     INIT_RAM_FS
-     *(.init.rodata.* .init.bss)     /* from the EFI stub */
+for i in {1..6}; do
+        sudo setfont -C /dev/tty${i} /usr/share/consolefonts/Georgian-Fixed16.psf.gz
+done
 
-for-next/lto branch code as follows:
-     ...
-     INIT_RAM_FS
-     *(.init.altinstructions .init.rodata.* .init.bss) /* from the EFI 
-stub */
+Font rotation also seems to work fine:
+
+for i in {1..4}; do
+        echo $i | sudo tee /sys/class/graphics/fbcon/rotate
+        sleep 1
+done
+
+One last thing I can think of is tile blitting, but I don't have the
+hardware (e.g. a Matrox G400 card, see FB_TILEBLITTING in
+drivers/video/fbdev/Kconfig) at hand, nor did I figure out how to
+simulate it after searching for a while.  However based on the other
+tests above I believe vc->vc_font.charcount is set properly.
 
 Thanks,
-Youling
->> ---
->>   arch/arm64/kernel/vmlinux.lds.S | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
->> index 1bda604..7dba3c4 100644
->> --- a/arch/arm64/kernel/vmlinux.lds.S
->> +++ b/arch/arm64/kernel/vmlinux.lds.S
->> @@ -201,7 +201,7 @@ SECTIONS
->>                  INIT_CALLS
->>                  CON_INITCALL
->>                  INIT_RAM_FS
->> -               *(.init.rodata.* .init.bss)     /* from the EFI stub */
->> +               *(.init.bss)    /* from the EFI stub */
->>          }
->>          .exit.data : {
->>                  EXIT_DATA
->> --
->> 2.1.0
->>
+Peilin Ye
 
