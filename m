@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5497D2B890D
+	by mail.lfdr.de (Postfix) with ESMTP id CD8092B890E
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 01:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgKSAaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 19:30:00 -0500
-Received: from ms.lwn.net ([45.79.88.28]:47478 "EHLO ms.lwn.net"
+        id S1726980AbgKSAaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 19:30:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726098AbgKSA37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 19:29:59 -0500
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726837AbgKSAaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Nov 2020 19:30:30 -0500
+Received: from localhost.localdomain (unknown [176.167.53.63])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 412B22B2;
-        Thu, 19 Nov 2020 00:29:59 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 17:29:58 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 00/26] Make reporting-bugs easier to grasp and
- yet more detailed & helpful
-Message-ID: <20201118172958.5b014a44@lwn.net>
-In-Reply-To: <458eb542-ff4d-e734-67fd-01e8378d4864@leemhuis.info>
-References: <cover.1605203187.git.linux@leemhuis.info>
-        <20201113153313.68ff210c@lwn.net>
-        <458eb542-ff4d-e734-67fd-01e8378d4864@leemhuis.info>
-Organization: LWN.net
+        by mail.kernel.org (Postfix) with ESMTPSA id EC257246E4;
+        Thu, 19 Nov 2020 00:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605745829;
+        bh=JUxAzR2m1reJ8WdHEL+xpyi7SrhDsmfAbQiH/wG25cQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=v2CsU4S+jMbJHZKogD5HKjxs6x5Iyg2bvdKz06OvvCF7SxM4EIosnSDNppg93QL0L
+         BpovX8dxd3T2nqDJT4Ks+1VZDzoDFTPyyxMxhLzXqH72GkyJOLmMYoP17V/NSL0/wH
+         9FWMU6Pw3CdPGBDQsc7SvpIaiiyA1EQ3YrcmivKo=
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: [PATCH] tools/rcutorture: Make identify_qemu_vcpus() independant of local language
+Date:   Thu, 19 Nov 2020 01:30:24 +0100
+Message-Id: <20201119003024.10701-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Nov 2020 11:13:52 +0100
-Thorsten Leemhuis <linux@leemhuis.info> wrote:
+The implementation expects `lscpu` to have a "CPU: " line, for example:
 
-> > So I've not had a chance to try to read through the whole thing again,
-> > will try to do so in the near future.  
-> 
-> Great, thx, looking forward to it.
+	CPU(s):		8
 
-OK, I have made a *quick* pass through the whole thing and sent a small
-number of comments separately. There are things that could be tweaked
-(there always will be) but I'm not sure we should worry about those yet.
-I would suggest doing this:
+But some local language settings may advocate for their own version:
 
- - Collapse the whole thing down to a patch adding reporting-bugs-v2.rst
-   (or some suitable name).  I do wonder if it should also move to the
-   process manual as part of this; not only admins will report bugs.
+	Processeur(s) :		8
 
- - Add a comment at the top saying it's a proposed replacement and
-   soliciting comments.  You could also put some of your other questions
-   into the text for now and see if anybody reacts.  
+As a result the function may return an empty string and rcutorture would
+dump the following warning (still with the local taste):
 
- - In a separate patch you could add a comment to the existing document
-   pointing to the new one as the true source of wisdom.
+	kvm-test-1-run.sh: ligne 138 : test:  : nombre entier attendu comme expression
 
- - Dual licensed CC-SA-4.0 is fine with me.  CC-BY is OK if you really
-   want to do it that way.  Either way, though, you'll need to add the
-   license itself under LICENSES/preferred before it can go into the SPDX
-   tag.
+Just use a command whose output every language agree with.
 
-With that, I'd say let's just merge it and bash on it from there.
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: rcu@vger.kernel.org
+---
+ tools/testing/selftests/rcutorture/bin/functions.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
+diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+index 82663495fb38..fef8b4b55c27 100644
+--- a/tools/testing/selftests/rcutorture/bin/functions.sh
++++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+@@ -232,7 +232,7 @@ identify_qemu_args () {
+ # Returns the number of virtual CPUs available to the aggregate of the
+ # guest OSes.
+ identify_qemu_vcpus () {
+-	lscpu | grep '^CPU(s):' | sed -e 's/CPU(s)://' -e 's/[ 	]*//g'
++	getconf _NPROCESSORS_ONLN
+ }
+ 
+ # print_bug
+-- 
+2.25.1
 
-jon
