@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6B02B972B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A3C2B9726
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729064AbgKSPz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:55:58 -0500
-Received: from mga14.intel.com ([192.55.52.115]:40299 "EHLO mga14.intel.com"
+        id S1729024AbgKSPzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:55:35 -0500
+Received: from mga02.intel.com ([134.134.136.20]:65089 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728893AbgKSPz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:55:27 -0500
-IronPort-SDR: pnbMJq1NjcFMe2qQ5Lzf8P4X9qWAMX8fQ1sSh1DgSyFbAAHdKCm3LKtgRIrd+/y5Ku8j9LAtnM
- HrMgCq+6u6XA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="170527256"
+        id S1728980AbgKSPza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:55:30 -0500
+IronPort-SDR: he0+Go827i2Nmdn64GwnUIXRDQrq97W0LnHw4+4m5UX1FAy2XmnEE29gJBWkVcmgsFan5DwINu
+ JZjUTYSNp7jg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="158342916"
 X-IronPort-AV: E=Sophos;i="5.78,490,1599548400"; 
-   d="scan'208";a="170527256"
+   d="scan'208";a="158342916"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 07:55:26 -0800
-IronPort-SDR: LbEXB00T3Xt0bqvCp/0/QGK7mGpZ5zmWwLzTG+K/fKg+WD/rSXnU3u63m9FueP1nf62AQrn/hC
- 3r4e5kdIWyYg==
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 07:55:29 -0800
+IronPort-SDR: SjRyIXEzIq57x6z7qYadRpAMIW2O4VKSv19lD7gjPWyuaDzA7A3A3IGWIMoX82aDZHnqgXZbTG
+ U9/gD9ctzvMw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,490,1599548400"; 
-   d="scan'208";a="330971885"
+   d="scan'208";a="341725623"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 19 Nov 2020 07:55:24 -0800
+  by orsmga002.jf.intel.com with ESMTP; 19 Nov 2020 07:55:27 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id DB2AC48A; Thu, 19 Nov 2020 17:55:23 +0200 (EET)
+        id E70C449A; Thu, 19 Nov 2020 17:55:23 +0200 (EET)
 From:   Mika Westerberg <mika.westerberg@linux.intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Yehezkel Bernat <YehezkelShB@gmail.com>,
@@ -37,9 +37,9 @@ Cc:     Yehezkel Bernat <YehezkelShB@gmail.com>,
         Lukas Wunner <lukas@wunner.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH 04/12] thunderbolt: Keep the parent runtime resumed for a while on device disconnect
-Date:   Thu, 19 Nov 2020 18:55:15 +0300
-Message-Id: <20201119155523.41332-5-mika.westerberg@linux.intel.com>
+Subject: [PATCH 05/12] thunderbolt: Return -ENOTCONN when ERR_CONN is received
+Date:   Thu, 19 Nov 2020 18:55:16 +0300
+Message-Id: <20201119155523.41332-6-mika.westerberg@linux.intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201119155523.41332-1-mika.westerberg@linux.intel.com>
 References: <20201119155523.41332-1-mika.westerberg@linux.intel.com>
@@ -49,47 +49,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When doing device firmware upgrade the device will disconnect for a
-while and then reconnect back. Keep the parent device (and the whole
-domain) powered for a while so we don't need to runtime resume
-immediately when the device is connected back after the device upgrade
-completes.
+This allows the calling code to distinguish if the error was due to
+ERR_CONN (adapter is disconneced or disabled) or something else. Will be
+needed in USB4 router NVM update in the following patch.
 
 Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 ---
- drivers/thunderbolt/icm.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/thunderbolt/ctl.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/thunderbolt/icm.c b/drivers/thunderbolt/icm.c
-index beee6e6b8b6e..635b949fb1d6 100644
---- a/drivers/thunderbolt/icm.c
-+++ b/drivers/thunderbolt/icm.c
-@@ -870,7 +870,13 @@ icm_fr_device_disconnected(struct tb *tb, const struct icm_pkg_header *hdr)
- 		return;
- 	}
+diff --git a/drivers/thunderbolt/ctl.c b/drivers/thunderbolt/ctl.c
+index 1d86e27a0ef3..bac08b820015 100644
+--- a/drivers/thunderbolt/ctl.c
++++ b/drivers/thunderbolt/ctl.c
+@@ -962,6 +962,9 @@ static int tb_cfg_get_error(struct tb_ctl *ctl, enum tb_cfg_space space,
  
-+	pm_runtime_get_sync(sw->dev.parent);
+ 	if (res->tb_error == TB_CFG_ERROR_LOCK)
+ 		return -EACCES;
++	else if (res->tb_error == TB_CFG_ERROR_PORT_NOT_CONNECTED)
++		return -ENOTCONN;
 +
- 	remove_switch(sw);
-+
-+	pm_runtime_mark_last_busy(sw->dev.parent);
-+	pm_runtime_put_autosuspend(sw->dev.parent);
-+
- 	tb_switch_put(sw);
- }
- 
-@@ -1280,8 +1286,13 @@ icm_tr_device_disconnected(struct tb *tb, const struct icm_pkg_header *hdr)
- 		tb_warn(tb, "no switch exists at %llx, ignoring\n", route);
- 		return;
- 	}
-+	pm_runtime_get_sync(sw->dev.parent);
- 
- 	remove_switch(sw);
-+
-+	pm_runtime_mark_last_busy(sw->dev.parent);
-+	pm_runtime_put_autosuspend(sw->dev.parent);
-+
- 	tb_switch_put(sw);
+ 	return -EIO;
  }
  
 -- 
