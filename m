@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1612B9768
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFE42B9769
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728492AbgKSQHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:07:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50872 "EHLO
+        id S1728523AbgKSQHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:07:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727678AbgKSQHT (ORCPT
+        with ESMTP id S1728459AbgKSQHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:07:19 -0500
+        Thu, 19 Nov 2020 11:07:20 -0500
 Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D78C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:07:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2800DC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 08:07:20 -0800 (PST)
 Received: by nautica.notk.org (Postfix, from userid 1001)
-        id 1EAA0C01A; Thu, 19 Nov 2020 17:07:18 +0100 (CET)
+        id E42A7C01B; Thu, 19 Nov 2020 17:07:18 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1605802038; bh=FgwVOGrQRgSaXC/c3SASSffjnbPG4AmXzCDcQORhByg=;
+        t=1605802038; bh=eK6/Q/abk4MPm5E1E9fU+K69kfbIstGf/YUDyuJZEG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0lf2G7K2lKoVaavnFtQbb1FO4UFaw1BEp0YxrN2XOn3AZ5fyAEVIgdytk1JxZEVGm
-         GUtMrTyYebQdVaU6k50motBOb38Fs7eQCE4opHi+UoekJsvpPZLSzTbdkzw0Z/2TeI
-         y2+YDcuWBsibkVM+nTTIuIxFHF0mpSmJYvvdQlATVf3Uva0t2hOp3wYXAPh+L62we5
-         2DxbyUH6b3S6eWfS3C/053zpmfxTO+6glIBsUZv4X0xc+GxS0oognuVvMynVh6EOlu
-         eZSxiTJzysr9mNkiGKhAP8iz6kFnsYl7N6Q5+jcQr5gVUx0VIEm1Sk5i4PsWOeT9HB
-         bsz4V0Jvp0hmQ==
+        b=MqbGoote7pDVzt+aCgVzGUEojP1xi9hk+JdvrMw6yr+451nTk80Nt+DnBs5e+IbC7
+         r8FIRiCE/TJOPXgv7OSuzIW5GvKyFDFQe18RJpSKPXVLCbRuOXcMlEbAj0SLwUTdfM
+         BS9tsAXx5puT04bx0YSfIBWn7MSwuX5XHZTIdyHPxmYi3d1VWXGjkKasFj9K5t96ge
+         /LmKup1BqrOjKs7iv5XCCy8YLXC3Exly515Y+FpJvUpBpaXxZIlVyVacicOad/e+Xi
+         7Lja1p76du44tIaL5wvbYX9N1aCaEJO/mDDRFm8mnrw3/hoOeKpD8TgEkAylAX5z5H
+         muS8ALvu6vGUQ==
 From:   Dominique Martinet <asmadeus@codewreck.org>
 Cc:     Jianyong Wu <jianyong.wu@arm.com>, lucho@ionkov.net,
         justin.he@arm.com, ericvh@gmail.com, qemu_oss@crudebyte.com,
         groug@kaod.org, linux-kernel@vger.kernel.org,
         v9fs-developer@lists.sourceforge.net,
         Dominique Martinet <asmadeus@codewreck.org>
-Subject: [PATCH 1/2] 9p: apply review requests for fid refcounting
-Date:   Thu, 19 Nov 2020 17:06:51 +0100
-Message-Id: <1605802012-31133-2-git-send-email-asmadeus@codewreck.org>
+Subject: [PATCH 2/2] 9p: Fix writeback fid incorrectly being attached to dentry
+Date:   Thu, 19 Nov 2020 17:06:52 +0100
+Message-Id: <1605802012-31133-3-git-send-email-asmadeus@codewreck.org>
 X-Mailer: git-send-email 1.7.10.4
 In-Reply-To: <1605802012-31133-1-git-send-email-asmadeus@codewreck.org>
 References: <20201103104116.GA19587@nautica>
@@ -44,121 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix style issues in parent commit ("apply review requests for fid
-refcounting"), no functional change.
+v9fs_dir_release needs fid->ilist to have been initialized for filp's
+fid, not the inode's writeback fid's.
 
+With refcounting this can be improved on later but this appears to fix
+null deref issues.
+
+Fixes: xxx ("fs/9p: track open fids")
 Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 ---
- fs/9p/fid.c             | 10 ++++------
- fs/9p/fid.h             |  2 +-
- include/net/9p/client.h |  2 +-
- net/9p/client.c         |  4 ++--
- 4 files changed, 8 insertions(+), 10 deletions(-)
+(note: fixes tag can't be filled here, will be corrected later)
+ fs/9p/vfs_file.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/9p/fid.c b/fs/9p/fid.c
-index 89643dabcdae..50118ec72a92 100644
---- a/fs/9p/fid.c
-+++ b/fs/9p/fid.c
-@@ -28,7 +28,6 @@
+diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+index b0ef225cecd0..c5e49c88688d 100644
+--- a/fs/9p/vfs_file.c
++++ b/fs/9p/vfs_file.c
+@@ -46,7 +46,7 @@ int v9fs_file_open(struct inode *inode, struct file *file)
+ 	int err;
+ 	struct v9fs_inode *v9inode;
+ 	struct v9fs_session_info *v9ses;
+-	struct p9_fid *fid;
++	struct p9_fid *fid, *writeback_fid;
+ 	int omode;
  
- static inline void __add_fid(struct dentry *dentry, struct p9_fid *fid)
- {
--	atomic_set(&fid->count, 1);
- 	hlist_add_head(&fid->dlist, (struct hlist_head *)&dentry->d_fsdata);
- }
- 
-@@ -62,7 +61,7 @@ static struct p9_fid *v9fs_fid_find_inode(struct inode *inode, kuid_t uid)
+ 	p9_debug(P9_DEBUG_VFS, "inode: %p file: %p\n", inode, file);
+@@ -85,13 +85,13 @@ int v9fs_file_open(struct inode *inode, struct file *file)
+ 		 * because we want write after unlink usecase
+ 		 * to work.
+ 		 */
+-		fid = v9fs_writeback_fid(file_dentry(file));
++		writeback_fid = v9fs_writeback_fid(file_dentry(file));
+ 		if (IS_ERR(fid)) {
+ 			err = PTR_ERR(fid);
+ 			mutex_unlock(&v9inode->v_mutex);
+ 			goto out_error;
  		}
+-		v9inode->writeback_fid = (void *) fid;
++		v9inode->writeback_fid = (void *) writeback_fid;
  	}
- 	if (ret && !IS_ERR(ret))
--		atomic_inc(&ret->count);
-+		refcount_inc(&ret->count);
- 	spin_unlock(&inode->i_lock);
- 	return ret;
- }
-@@ -77,7 +76,6 @@ static struct p9_fid *v9fs_fid_find_inode(struct inode *inode, kuid_t uid)
- void v9fs_open_fid_add(struct inode *inode, struct p9_fid *fid)
- {
- 	spin_lock(&inode->i_lock);
--	atomic_set(&fid->count, 1);
- 	hlist_add_head(&fid->ilist, (struct hlist_head *)&inode->i_private);
- 	spin_unlock(&inode->i_lock);
- }
-@@ -110,7 +108,7 @@ static struct p9_fid *v9fs_fid_find(struct dentry *dentry, kuid_t uid, int any)
- 		hlist_for_each_entry(fid, h, dlist) {
- 			if (any || uid_eq(fid->uid, uid)) {
- 				ret = fid;
--				atomic_inc(&ret->count);
-+				refcount_inc(&ret->count);
- 				break;
- 			}
- 		}
-@@ -201,7 +199,7 @@ static struct p9_fid *v9fs_fid_lookup_with_uid(struct dentry *dentry,
- 	}
- 	/* If we are root ourself just return that */
- 	if (dentry->d_sb->s_root == dentry) {
--		atomic_inc(&fid->count);
-+		refcount_inc(&fid->count);
- 		return fid;
- 	}
- 	/*
-@@ -250,7 +248,7 @@ static struct p9_fid *v9fs_fid_lookup_with_uid(struct dentry *dentry,
- 			fid = ERR_PTR(-ENOENT);
- 		} else {
- 			__add_fid(dentry, fid);
--			atomic_inc(&fid->count);
-+			refcount_inc(&fid->count);
- 			spin_unlock(&dentry->d_lock);
- 		}
- 	}
-diff --git a/fs/9p/fid.h b/fs/9p/fid.h
-index 1fed96546728..f7f33509e169 100644
---- a/fs/9p/fid.h
-+++ b/fs/9p/fid.h
-@@ -28,7 +28,7 @@ static inline struct p9_fid *v9fs_fid_clone(struct dentry *dentry)
- 	if (!fid || IS_ERR(fid))
- 		return fid;
- 
--	nfid = p9_client_walk(fid, 0, NULL, 1);
-+	nfid = clone_fid(fid);
- 	p9_client_clunk(fid);
- 	return nfid;
- }
-diff --git a/include/net/9p/client.h b/include/net/9p/client.h
-index 58ed9bd306bd..e1c308d8d288 100644
---- a/include/net/9p/client.h
-+++ b/include/net/9p/client.h
-@@ -149,7 +149,7 @@ enum fid_source {
- struct p9_fid {
- 	struct p9_client *clnt;
- 	u32 fid;
--	atomic_t count;
-+	refcount_t count;
- 	int mode;
- 	struct p9_qid qid;
- 	u32 iounit;
-diff --git a/net/9p/client.c b/net/9p/client.c
-index a6c8a915e0d8..ba4910138c5b 100644
---- a/net/9p/client.c
-+++ b/net/9p/client.c
-@@ -901,7 +901,7 @@ static struct p9_fid *p9_fid_create(struct p9_client *clnt)
- 	fid->clnt = clnt;
- 	fid->rdir = NULL;
- 	fid->fid = 0;
--	atomic_set(&fid->count, 1);
-+	refcount_set(&fid->count, 1);
- 
- 	idr_preload(GFP_KERNEL);
- 	spin_lock_irq(&clnt->lock);
-@@ -1466,7 +1466,7 @@ int p9_client_clunk(struct p9_fid *fid)
- 		dump_stack();
- 		return 0;
- 	}
--	if (!atomic_dec_and_test(&fid->count))
-+	if (!refcount_dec_and_test(&fid->count))
- 		return 0;
- 
- again:
+ 	mutex_unlock(&v9inode->v_mutex);
+ 	if (v9ses->cache == CACHE_LOOSE || v9ses->cache == CACHE_FSCACHE)
 -- 
 2.28.0
 
