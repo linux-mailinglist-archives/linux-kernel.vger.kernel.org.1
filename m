@@ -2,98 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC70E2B9B8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 355562B9B8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgKSTcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:32:45 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35606 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbgKSTcp (ORCPT
+        id S1728194AbgKSTcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:32:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20441 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727961AbgKSTcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:32:45 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605814363;
+        Thu, 19 Nov 2020 14:32:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605814371;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1nEiuqX8D0Hjh49w7YgahfQzlRwYTomndSpFA0ZJvps=;
-        b=Y25WU2VG/1hnFuBZRBYGMNOzLjY56C7Zjf2LBbgYu/AuZ8qppdvAQSfjxX9rpU5G2Z9hsm
-        crWxEJB4d9AS9Zga6wOiY4mjLENKCuUJfi+MX6X7cOJxqURlPgV8Bu4U9/x3Ls8LoU+yW7
-        cH1KiJIcWM3l39Ie1MPW5RWqtf/OZwQnjGorXG7esov/tqyFW1zUMv+KmdgTpfcC+s2DAl
-        dSphrHUGrAGYRRby9dn6/NXjnIXSWBYVWh3R6bAV1JfoHJUbviPWn5on3BNDiKCX11qKXx
-        GWsJbKzzzb7/d6vRXKTyUxzfKnPveIQmGFXXzABfTcJ365A7kAdN6F7wJ3z93A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605814363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1nEiuqX8D0Hjh49w7YgahfQzlRwYTomndSpFA0ZJvps=;
-        b=Yttwd3PPzvJap/9bPlXWHLsi05ynqDcWEKomY3HiJ0AtEldJAvzadBu+kBCr4T7opulLiK
-        uNds7+EHDN8DSiAQ==
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     mingo@redhat.com, hpa@zytor.com, x86@kernel.org,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
-        jroedel@suse.de, konrad.wilk@oracle.com,
-        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
-        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
-        kuzuno@gmail.com
-Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
-In-Reply-To: <692599af-53c8-7881-2bc7-8898085400cd@oracle.com>
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com> <20201116202426.GF1131@zn.tnic> <692599af-53c8-7881-2bc7-8898085400cd@oracle.com>
+        bh=HQsc0/0SJtGzJx5uopunB4YDTQRW/2pwvJvnUC3t0DI=;
+        b=K6LvM1Kc2Q8prsdBhKpZ5b8GWUB1t6p6Yk/3IFo1XWb/ZVchDXzE71X+cQvdxEqd9IjH9K
+        lI6RnlJBxWXWxMvOOIejxMjcg+ZNJMN+eTUdKDW4eDR4M+aUbI8vrxVyTMQq8jWrxJYcV5
+        nfk4/ANZoDgYs/UVjJW2G/F7gaqu0TI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-BdNL_hT_M0SmM5_X4uyOeA-1; Thu, 19 Nov 2020 14:32:47 -0500
+X-MC-Unique: BdNL_hT_M0SmM5_X4uyOeA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E28C31842140;
+        Thu, 19 Nov 2020 19:32:45 +0000 (UTC)
+Received: from krava (unknown [10.40.192.83])
+        by smtp.corp.redhat.com (Postfix) with SMTP id ED4B85D9C6;
+        Thu, 19 Nov 2020 19:32:43 +0000 (UTC)
 Date:   Thu, 19 Nov 2020 20:32:42 +0100
-Message-ID: <87a6vdp2g5.fsf@nanos.tec.linutronix.de>
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Kajol Jain <kjain@linux.ibm.com>
+Cc:     acme@kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, irogers@google.com,
+        ravi.bangoria@linux.ibm.com, maddy@linux.ibm.com
+Subject: Re: [PATCH] perf test: Fix metric parsing test
+Message-ID: <20201119193242.GJ1475102@krava>
+References: <20201119152411.46041-1-kjain@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119152411.46041-1-kjain@linux.ibm.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17 2020 at 09:19, Alexandre Chartre wrote:
-> On 11/16/20 9:24 PM, Borislav Petkov wrote:
->> On Mon, Nov 16, 2020 at 03:47:36PM +0100, Alexandre Chartre wrote:
->> So PTI was added exactly to *not* have kernel memory mapped in the user
->> page table. You're partially reversing that...
->
-> We are not reversing PTI, we are extending it.
+On Thu, Nov 19, 2020 at 08:54:11PM +0530, Kajol Jain wrote:
+> Commit e1c92a7fbbc5 ("perf tests: Add another metric parsing test")
+> add another test for metric parsing. The test goes through all metrics
+> compiled for arch within pmu events and try to parse them.
+> 
+> Right now this test is failing in powerpc machine.
+> 
+> Result in power9 platform:
+> 
+> [command]# ./perf test 10
+> 10: PMU events                                                      :
+> 10.1: PMU event table sanity                                        : Ok
+> 10.2: PMU event map aliases                                         : Ok
+> 10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
+> 10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+> 
+> Issue is we are passing different runtime parameter value in "expr__find_other"
+> and "expr__parse" function which is called from function `metric_parse_fake`.
+> And because of this parsing of hv-24x7 metrics is failing.
+> 
+> [command]# ./perf test 10 -vv
+> .....
+> hv_24x7/pm_mcs01_128b_rd_disp_port01,chip=1/ not found
+> expr__parse failed
+> test child finished with -1
+> ---- end ----
+> PMU events subtest 4: FAILED!
+> 
+> This patch fix this issue and change runtime parameter value to '0' in
+> expr__parse function.
+> 
+> Result in power9 platform after this patch:
+> 
+> [command]# ./perf test 10
+> 10: PMU events                                                      :
+> 10.1: PMU event table sanity                                        : Ok
+> 10.2: PMU event map aliases                                         : Ok
+> 10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
+> 10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+> 
+> Fixes: e1c92a7fbbc5 ("perf tests: Add another metric parsing test")
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
 
-You widen the exposure surface without providing an argument why it is safe.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-> PTI removes all kernel mapping from the user page-table. However there's
-> no issue with mapping some kernel data into the user page-table as long as
-> these data have no sensitive information.
+thanks,
+jirka
 
-Define sensitive information. 
-
-> Actually, PTI is already doing that but with a very limited scope. PTI adds
-> into the user page-table some kernel mappings which are needed for userland
-> to enter the kernel (such as the kernel entry text, the ESPFIX, the
-> CPU_ENTRY_AREA_BASE...).
->
-> So here, we are extending the PTI mapping so that we can execute more kernel
-> code while using the user page-table; it's a kind of PTI on steroids.
-
-Let's just look at a syscall:
-
-noinstr long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
-{
-	long ret;
-
-	enter_from_user_mode(regs);
-          lockdep_hardirqs_off();
-          user_exit_irqoff();
-          trace_hardirqs_off_finish();
-
-So just looking at the 3 calls above, how are you going to guarantee
-that everything these callchains touch is mapped into user space?
-
-Not to talk about everything which comes after that.
-
-Thanks,
-
-        tglx
-
+> ---
+>  tools/perf/tests/pmu-events.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+> index ad2b21591275..0ca6a5a53523 100644
+> --- a/tools/perf/tests/pmu-events.c
+> +++ b/tools/perf/tests/pmu-events.c
+> @@ -575,7 +575,7 @@ static int metric_parse_fake(const char *str)
+>  		}
+>  	}
+>  
+> -	if (expr__parse(&result, &ctx, str, 1))
+> +	if (expr__parse(&result, &ctx, str, 0))
+>  		pr_err("expr__parse failed\n");
+>  	else
+>  		ret = 0;
+> -- 
+> 2.27.0
+> 
 
