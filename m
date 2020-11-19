@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC772B9A66
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EB52B9A6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728082AbgKSSMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:12:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727117AbgKSSMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:12:36 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        id S1729346AbgKSSMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:12:42 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:45795 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727117AbgKSSMl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:12:41 -0500
+X-Greylist: delayed 7433 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Nov 2020 13:12:40 EST
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D8D72225B;
-        Thu, 19 Nov 2020 18:12:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605809556;
-        bh=BQglaJdKNtKWX2Zk4RYXa7mU1pwvbWzO/F2vKmVQHAI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=TmdG7jJCw4y5pRWzc6q4L+fJvWD1Th+9C1p416Qbbde86cU1ehvrTyntyeRV9kcGj
-         wAtN0nAJJK+BuM6QWfojq2DZgINmG78FggOYR0GtYoGm/ovdxYd4CD8DkkVfeX0Jiq
-         ViP6s54Ik1QQrPKcR0fslFFawiZPXjssr5sl5jGI=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C2B6035225CF; Thu, 19 Nov 2020 10:12:35 -0800 (PST)
-Date:   Thu, 19 Nov 2020 10:12:35 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     qiang.zhang@windriver.com
-Cc:     jiangshanlai@gmail.com, rostedt@goodmis.org, josh@joshtriplett.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] srcu: Remove srcu_cblist_invoking member from sdp
-Message-ID: <20201119181235.GX1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201119053411.11698-1-qiang.zhang@windriver.com>
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 0F96422EE4;
+        Thu, 19 Nov 2020 19:12:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1605809558;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vC7HVwjANH5oc4E2w8W2S6yvBbfs+xSzba3U+jaONBg=;
+        b=N0g9lCumldkfoC6XZ82nBq+ZP+XoHM2K2t5RBTkSUZAv2ll9vNFdufhH4xFSsIXnNfCYj5
+        NxYAJpcyYaGN69MOHWOMHellRWDQrKwxSy42nRljHrBq6MOE0UhOkq716mgJTfB4Nt6Qdi
+        3rRweMg8Z68m5MeavEODNYPdoY0dowI=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119053411.11698-1-qiang.zhang@windriver.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 19 Nov 2020 19:12:37 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ashish Kumar <Ashish.Kumar@nxp.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>
+Subject: Re: [PATCH v2] arm64: dts: ls1028a: make the eMMC and SD card
+ controllers use fixed indices
+In-Reply-To: <20201119163821.980841-1-vladimir.oltean@nxp.com>
+References: <20201119163821.980841-1-vladimir.oltean@nxp.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <31099f0d12b87ad330a59c84f0fa9b42@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 01:34:11PM +0800, qiang.zhang@windriver.com wrote:
-> From: Zqiang <qiang.zhang@windriver.com>
+Am 2020-11-19 17:38, schrieb Vladimir Oltean:
+> As the boot order in the kernel continues to change, sometimes it may
+> happen that the eSDHC controller mmc@2150000 (the one for eMMC) gets
+> probed before the one at mmc@2140000 (for external SD cards). The 
+> effect
+> is that the eMMC controller gets the /dev/mmcblk0 name, and the SD card
+> gets /dev/mmcblk1.
 > 
-> Workqueue can ensure the multiple same sdp->work sequential
-> execution in rcu_gp_wq, not need srcu_cblist_invoking to
-> prevent concurrent execution, so remove it.
+> Since the introduction of this SoC, that has never happened in 
+> practice,
+> even though it was never guaranteed in theory. Setting
+> "root=/dev/mmcblk0p2" in /proc/cmdline has always caused the kernel to
+> use the second partition from the SD card as the rootfs.
 > 
-> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-
-Good job analyzing the code, which is very good to see!!!
-
-But these do have a potential purpose.  Right now, it is OK to invoke
-synchronize_srcu() during early boot, that is, before the scheduler
-has started.  But there is a gap from the time that the scheduler has
-initialized (so that preemption and blocking are possible) and the time
-that workqueues are initialized and fully functional.  Only after that
-is it once again OK to use synchronize_srcu().
-
-If synchronize_srcu() is ever required to work correctly during that
-time period, it will need to directly invoke the functions that are
-currently run in workqueue context.  Which means that there will then be
-the possibility of two instances of these functions running just after
-workqueues are available.
-
-							Thanx, Paul
-
-> ---
->  include/linux/srcutree.h | 1 -
->  kernel/rcu/srcutree.c    | 8 ++------
->  2 files changed, 2 insertions(+), 7 deletions(-)
+> The NXP development boards are typically shipped with either
+> - LSDK, which uses "root=UUID=", or
+> - OpenIL, which uses "root=/dev/mmcblkNp2"
 > 
-> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> index 9cfcc8a756ae..62d8312b5451 100644
-> --- a/include/linux/srcutree.h
-> +++ b/include/linux/srcutree.h
-> @@ -31,7 +31,6 @@ struct srcu_data {
->  	struct rcu_segcblist srcu_cblist;	/* List of callbacks.*/
->  	unsigned long srcu_gp_seq_needed;	/* Furthest future GP needed. */
->  	unsigned long srcu_gp_seq_needed_exp;	/* Furthest future exp GP. */
-> -	bool srcu_cblist_invoking;		/* Invoking these CBs? */
->  	struct timer_list delay_work;		/* Delay for CB invoking */
->  	struct work_struct work;		/* Context for CB invoking. */
->  	struct rcu_head srcu_barrier_head;	/* For srcu_barrier() use. */
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 3c5e2806e0b9..c4d5cd2567a6 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -134,7 +134,6 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
->  		sdp = per_cpu_ptr(ssp->sda, cpu);
->  		spin_lock_init(&ACCESS_PRIVATE(sdp, lock));
->  		rcu_segcblist_init(&sdp->srcu_cblist);
-> -		sdp->srcu_cblist_invoking = false;
->  		sdp->srcu_gp_seq_needed = ssp->srcu_gp_seq;
->  		sdp->srcu_gp_seq_needed_exp = ssp->srcu_gp_seq;
->  		sdp->mynode = &snp_first[cpu / levelspread[level]];
-> @@ -1254,14 +1253,11 @@ static void srcu_invoke_callbacks(struct work_struct *work)
->  	spin_lock_irq_rcu_node(sdp);
->  	rcu_segcblist_advance(&sdp->srcu_cblist,
->  			      rcu_seq_current(&ssp->srcu_gp_seq));
-> -	if (sdp->srcu_cblist_invoking ||
-> -	    !rcu_segcblist_ready_cbs(&sdp->srcu_cblist)) {
-> +	if (!rcu_segcblist_ready_cbs(&sdp->srcu_cblist)) {
->  		spin_unlock_irq_rcu_node(sdp);
->  		return;  /* Someone else on the job or nothing to do. */
->  	}
->  
-> -	/* We are on the job!  Extract and invoke ready callbacks. */
-> -	sdp->srcu_cblist_invoking = true;
->  	rcu_segcblist_extract_done_cbs(&sdp->srcu_cblist, &ready_cbs);
->  	len = ready_cbs.len;
->  	spin_unlock_irq_rcu_node(sdp);
-> @@ -1282,7 +1278,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
->  	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
->  	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
->  				       rcu_seq_snap(&ssp->srcu_gp_seq));
-> -	sdp->srcu_cblist_invoking = false;
-> +
->  	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
->  	spin_unlock_irq_rcu_node(sdp);
->  	if (more)
-> -- 
-> 2.17.1
+> So for OpenIL, let's preserve that old behavior by adding some aliases
+> which create naming consistency (for LSDK it doesn't matter):
+> - the SD card controller uses /dev/mmcblk0
+> - the eMMC controller uses /dev/mmcblk1
 > 
+> For the Kontron SL28 boards, Michael Walle says that they are shipped
+> with "root=UUID=" already, so the probing order doesn't matter, but it
+> is more natural to him for /dev/mmcblk0 to be the eMMC, so let's do it
+> the other way around there.
+> 
+> The aliases are parsed by mmc_alloc_host() in drivers/mmc/core/host.c.
+> 
+> Cc: Ashish Kumar <Ashish.Kumar@nxp.com>
+> Cc: Yangbo Lu <yangbo.lu@nxp.com>
+> Cc: Michael Walle <michael@walle.cc>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+
+Acked-by: Michael Walle <michael@walle.cc> [for the sl28 boards]
+
+-michael
