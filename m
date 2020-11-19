@@ -2,83 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330E52B8D0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FFD2B8D11
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgKSI0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:26:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgKSI0r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:26:47 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A1EC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:26:46 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id u18so6986173lfd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 00:26:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M8JwtN78V0y3LtuFBPrCqFfDlj9ETq7c6vrIeeVTI3Y=;
-        b=Hd+x2DN6bvP8Pd1Fih8E3hCkkV0s7Cm8EIKuwmm3vuh87Pt4CAI1SQwvzy+zURl2uo
-         iCt1lBxTwpCrflCetImgfDrQO2QYrlezoKBx9tGveWgLLufbGnidT7XFAhL9kd+JbTE2
-         hw6u7vlYJTxM/m+HdnCaQ9ds7dYZlIoPZXJgfJeajRyWwBOIKIcCpIq+hRT79QdZNHVh
-         dY64pgCwv7QCNwabWMaJMvQ+IpDl7RsrPHeQzwbrTSshsXZzm49uSCnBaDboOypxs1F8
-         mQEYXd8BdjhSIwFX1qRZXWmY/ETF2kKdxkREEHcJi5dVKMnp+jr6o7MMd8iAj3z5ykwX
-         7CeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M8JwtN78V0y3LtuFBPrCqFfDlj9ETq7c6vrIeeVTI3Y=;
-        b=X8xrtwCS7dSgC7cgTt2wSNyZwHxRzbe2Mzqb6j4y+tU0sEuiWxOnz4QJKyBCKYtwO8
-         ywZHtaR5FnaDjdoUSkjaoZRN9O3IaDqzSoGGWRvox4ayfdqkTYUrdKRpZ6iOa0/qHwgh
-         G7ZQh8SN3VrHuCvBdDUHLT+YxD1cuTxPdRElQ45f0Yn9DljDRiE+RGSj4ni7c+83LSbo
-         m61t6ws9OU2QfB+DSrkVhKWBQcY+xh1raOS02YF9t1OuNU918LTO1jStj9u6zl1LNfM3
-         vNa2OFWwXMwlII8br+F6BWqZeJy4wxgY6CUFDZa7p+0xyHWcPJDDnA5qzGMAsLqmGphB
-         LmQg==
-X-Gm-Message-State: AOAM530wwTUMkucRYfXPHcWOxuddZM/y73W13m6JG73kDmWf77HlM/TC
-        r2CiiO/RV27H+6WzoloazxLuFjnXrEC4X0AokMPSRQ==
-X-Google-Smtp-Source: ABdhPJwpRKucEldYlvFjnIH3kbEU2/F5jqZXQ79w2Ac/VPAuc8Fwyu0wznu7xYvTIkwHd9lTzjFX0gzmXw63fe5dcNY=
-X-Received: by 2002:a19:7b06:: with SMTP id w6mr5731102lfc.260.1605774405331;
- Thu, 19 Nov 2020 00:26:45 -0800 (PST)
+        id S1726489AbgKSI1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:27:53 -0500
+Received: from mga12.intel.com ([192.55.52.136]:27795 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725783AbgKSI1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 03:27:53 -0500
+IronPort-SDR: gnHsiTL7JBKueRs3mwSDteqWdn877kteKCt0yLoyckAbb/uQGrcu7IHC94BT0dfi0zfL0a3XcP
+ uN4f315E8JtQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="150521935"
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="150521935"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 00:27:52 -0800
+IronPort-SDR: UBBUIewnin4kXuQADohghTzUEFTzy9/xz6+9Vl65UU003DY89cy0KZMaQDvtZKEmwU9/6g0DT7
+ H2niybv1F/jA==
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="544918359"
+Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.117])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 00:27:48 -0800
+Date:   Thu, 19 Nov 2020 16:27:01 +0800
+From:   kernel test robot <rong.a.chen@intel.com>
+To:     Mat Martineau <mathew.j.martineau@linux.intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Krystad <peter.krystad@linux.intel.com>,
+        Florian Westphal <fw@strlen.de>,
+        Christoph Paasch <cpaasch@apple.com>
+Subject: net/mptcp/options.c:203:3: warning: Assignment of function parameter
+ has no effect outside the function.
+Message-ID: <20201119082701.GT3723@shao2-debian>
 MIME-Version: 1.0
-References: <20200830195748.30221-1-avolmat@me.com> <4597cef9-a9f9-bbde-69ac-dd9f96cb7c30@st.com>
-In-Reply-To: <4597cef9-a9f9-bbde-69ac-dd9f96cb7c30@st.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 19 Nov 2020 09:26:34 +0100
-Message-ID: <CACRpkdbigTHKtfwQQSVf7EiJyG8Lby=ksBdmvBKDt0jqPXjUsA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] arm: sti: LL_UART updates & STiH418 addition
-To:     Patrice CHOTARD <patrice.chotard@st.com>
-Cc:     Alain Volmat <avolmat@me.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Olof Johansson <olof@lixom.net>,
-        Nathan Huckleberry <nhuck15@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Enrico Weigelt <info@metux.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 9:08 AM Patrice CHOTARD <patrice.chotard@st.com> wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c2e7554e1b85935d962127efa3c2a76483b0b3b6
+commit: 6d0060f600adfddaa43fefb96b6b12643331961e mptcp: Write MPTCP DSS headers to outgoing data packets
+compiler: h8300-linux-gcc (GCC) 9.3.0
 
-> Is there any reason for this series not being merged ?
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <rong.a.chen@intel.com>
 
-Did you put them into Russell's patch tracker as I asked?
-I haven't seen them there.
-https://www.armlinux.org.uk/developer/patches/
 
-Yours,
-Linus Walleij
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+
+   net/mptcp/options.c:57:4: warning: Assignment of function parameter has no effect outside the function. Did you forget dereferencing it? [uselessAssignmentPtrArg]
+      ptr += 8;
+      ^
+>> net/mptcp/options.c:203:3: warning: Assignment of function parameter has no effect outside the function. [uselessAssignmentArg]
+     remaining -= map_size;
+     ^
+   net/mptcp/options.c:257:2: warning: Assignment of function parameter has no effect outside the function. [uselessAssignmentArg]
+    remaining -= opt_size;
+    ^
+
+vim +203 net/mptcp/options.c
+
+6d0060f600adfdd Mat Martineau 2020-01-21  177  
+6d0060f600adfdd Mat Martineau 2020-01-21  178  static bool mptcp_established_options_dss(struct sock *sk, struct sk_buff *skb,
+6d0060f600adfdd Mat Martineau 2020-01-21  179  					  unsigned int *size,
+6d0060f600adfdd Mat Martineau 2020-01-21  180  					  unsigned int remaining,
+6d0060f600adfdd Mat Martineau 2020-01-21  181  					  struct mptcp_out_options *opts)
+6d0060f600adfdd Mat Martineau 2020-01-21  182  {
+6d0060f600adfdd Mat Martineau 2020-01-21  183  	struct mptcp_subflow_context *subflow = mptcp_subflow_ctx(sk);
+6d0060f600adfdd Mat Martineau 2020-01-21  184  	unsigned int dss_size = 0;
+6d0060f600adfdd Mat Martineau 2020-01-21  185  	struct mptcp_ext *mpext;
+6d0060f600adfdd Mat Martineau 2020-01-21  186  	struct mptcp_sock *msk;
+6d0060f600adfdd Mat Martineau 2020-01-21  187  	unsigned int ack_size;
+6d0060f600adfdd Mat Martineau 2020-01-21  188  	u8 tcp_fin;
+6d0060f600adfdd Mat Martineau 2020-01-21  189  
+6d0060f600adfdd Mat Martineau 2020-01-21  190  	if (skb) {
+6d0060f600adfdd Mat Martineau 2020-01-21  191  		mpext = mptcp_get_ext(skb);
+6d0060f600adfdd Mat Martineau 2020-01-21  192  		tcp_fin = TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN;
+6d0060f600adfdd Mat Martineau 2020-01-21  193  	} else {
+6d0060f600adfdd Mat Martineau 2020-01-21  194  		mpext = NULL;
+6d0060f600adfdd Mat Martineau 2020-01-21  195  		tcp_fin = 0;
+6d0060f600adfdd Mat Martineau 2020-01-21  196  	}
+6d0060f600adfdd Mat Martineau 2020-01-21  197  
+6d0060f600adfdd Mat Martineau 2020-01-21  198  	if (!skb || (mpext && mpext->use_map) || tcp_fin) {
+6d0060f600adfdd Mat Martineau 2020-01-21  199  		unsigned int map_size;
+6d0060f600adfdd Mat Martineau 2020-01-21  200  
+6d0060f600adfdd Mat Martineau 2020-01-21  201  		map_size = TCPOLEN_MPTCP_DSS_BASE + TCPOLEN_MPTCP_DSS_MAP64;
+6d0060f600adfdd Mat Martineau 2020-01-21  202  
+6d0060f600adfdd Mat Martineau 2020-01-21 @203  		remaining -= map_size;
+6d0060f600adfdd Mat Martineau 2020-01-21  204  		dss_size = map_size;
+6d0060f600adfdd Mat Martineau 2020-01-21  205  		if (mpext)
+6d0060f600adfdd Mat Martineau 2020-01-21  206  			opts->ext_copy = *mpext;
+6d0060f600adfdd Mat Martineau 2020-01-21  207  
+6d0060f600adfdd Mat Martineau 2020-01-21  208  		if (skb && tcp_fin &&
+6d0060f600adfdd Mat Martineau 2020-01-21  209  		    subflow->conn->sk_state != TCP_ESTABLISHED)
+6d0060f600adfdd Mat Martineau 2020-01-21  210  			mptcp_write_data_fin(subflow, &opts->ext_copy);
+6d0060f600adfdd Mat Martineau 2020-01-21  211  	}
+6d0060f600adfdd Mat Martineau 2020-01-21  212  
+6d0060f600adfdd Mat Martineau 2020-01-21  213  	ack_size = TCPOLEN_MPTCP_DSS_ACK64;
+6d0060f600adfdd Mat Martineau 2020-01-21  214  
+6d0060f600adfdd Mat Martineau 2020-01-21  215  	/* Add kind/length/subtype/flag overhead if mapping is not populated */
+6d0060f600adfdd Mat Martineau 2020-01-21  216  	if (dss_size == 0)
+6d0060f600adfdd Mat Martineau 2020-01-21  217  		ack_size += TCPOLEN_MPTCP_DSS_BASE;
+6d0060f600adfdd Mat Martineau 2020-01-21  218  
+6d0060f600adfdd Mat Martineau 2020-01-21  219  	dss_size += ack_size;
+6d0060f600adfdd Mat Martineau 2020-01-21  220  
+6d0060f600adfdd Mat Martineau 2020-01-21  221  	msk = mptcp_sk(mptcp_subflow_ctx(sk)->conn);
+6d0060f600adfdd Mat Martineau 2020-01-21  222  	if (msk) {
+6d0060f600adfdd Mat Martineau 2020-01-21  223  		opts->ext_copy.data_ack = msk->ack_seq;
+6d0060f600adfdd Mat Martineau 2020-01-21  224  	} else {
+6d0060f600adfdd Mat Martineau 2020-01-21  225  		mptcp_crypto_key_sha(mptcp_subflow_ctx(sk)->remote_key,
+6d0060f600adfdd Mat Martineau 2020-01-21  226  				     NULL, &opts->ext_copy.data_ack);
+6d0060f600adfdd Mat Martineau 2020-01-21  227  		opts->ext_copy.data_ack++;
+6d0060f600adfdd Mat Martineau 2020-01-21  228  	}
+6d0060f600adfdd Mat Martineau 2020-01-21  229  
+6d0060f600adfdd Mat Martineau 2020-01-21  230  	opts->ext_copy.ack64 = 1;
+6d0060f600adfdd Mat Martineau 2020-01-21  231  	opts->ext_copy.use_ack = 1;
+6d0060f600adfdd Mat Martineau 2020-01-21  232  
+6d0060f600adfdd Mat Martineau 2020-01-21  233  	*size = ALIGN(dss_size, 4);
+6d0060f600adfdd Mat Martineau 2020-01-21  234  	return true;
+6d0060f600adfdd Mat Martineau 2020-01-21  235  }
+6d0060f600adfdd Mat Martineau 2020-01-21  236  
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
