@@ -2,253 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F232B98D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 267E32B98D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgKSRDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:03:04 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:37844 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727241AbgKSRDD (ORCPT
+        id S1728299AbgKSRDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:03:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29379 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727241AbgKSRDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:03:03 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJGriC1121092;
-        Thu, 19 Nov 2020 17:00:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=BxEtFb49MUqdhhgGVcDAcXipwluSP8THkqTEGkvhFx0=;
- b=lnd44dL+/LXrPmq0Y9sB2k81GYCyJ4g4QSGCQlhFyFOblr1G2K/Oj+sc3kk//9r8ckZn
- 5gM0xCOB4BG4T6zss/23yIPg4iTnXig6grk/O2dExV7ToOpjP+2lwODhZCg6x2cIFnkb
- f6zMhAuhIwj1BasvcS51TIQGQvGerL43u3fX4Vv5Y4w43vClzU4OFpSoYkRd+l0x1Lsv
- K9VGv+gtzdqEWk6xDkKdC4ow24iu8fFWEhidfJOBcK7jF3AvuXEJ0dE258S7jk8q8a+q
- blD6Xv1huZGYdYEGzOr6p3ffhdxZjA9K3HUz80MvwH304aUMYb6RlzdB7wc9IyyRkjNe Ow== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 34t7vnegck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 17:00:13 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJGph5t147069;
-        Thu, 19 Nov 2020 17:00:12 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 34uspwdqkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Nov 2020 17:00:12 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AJH07Ns023333;
-        Thu, 19 Nov 2020 17:00:08 GMT
-Received: from linux.home (/92.157.89.78)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Nov 2020 09:00:07 -0800
-Subject: Re: [RFC][PATCH v2 12/21] x86/pti: Use PTI stack instead of
- trampoline stack
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        jan.setjeeilers@oracle.com, Junaid Shahid <junaids@google.com>,
-        oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
-        kuzuno@gmail.com
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116144757.1920077-13-alexandre.chartre@oracle.com>
- <CALCETrUSCwtR41CCo_cAQf_BwG7istH6fM=bxWh_VfOjSNFmSw@mail.gmail.com>
- <bc8a254e-deaa-388e-99ea-0291f5625b5b@oracle.com>
- <CALCETrUJQJRi6fE=bs3iAySgM8wjmGU1f464FqOuU+PiBwwnQQ@mail.gmail.com>
- <bf919e4b-d56f-711d-f7ae-b463b8fdadfd@oracle.com>
- <CALCETrWS8_yugbLGFpGUbj2Z5bV04jnCNcnc40QUXWCdmJQU-g@mail.gmail.com>
- <6f513efb-cde8-50f4-7872-13a18a10c4a6@oracle.com>
- <CALCETrWBwFifg3mniUcdB7PO1CgzcxaNPYuWK3c7zK9H-hv=6Q@mail.gmail.com>
- <2f6a446a-e656-627c-27f2-8411f318448c@oracle.com>
- <88bab705-4b33-bda9-3ece-563234822095@oracle.com>
- <CALCETrV9ckeSwyjLn4hxuJeakxnkRQ71RAVf44nTWOFva9EJFA@mail.gmail.com>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <2e976c6b-26e6-7baa-d351-726d7eeb6dcf@oracle.com>
-Date:   Thu, 19 Nov 2020 18:02:27 +0100
+        Thu, 19 Nov 2020 12:03:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605805385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s+vcXswPPyHcHAAVc0M1ASPG390ljEeLpzZYdPJy6Xw=;
+        b=JeoPgyZ+Qhj41BRmyTMzP01R911hrVxngbTpbkGtyTG3UrG4/XkW8v6zVEz6ZcdS11xFGM
+        w0CuIFbfp8Tapq8C5e6/E8EL1lZPrY2FWUokZvjRxTjSElR1uHK/MBqQ0txs491/iRd3+E
+        9pextueKKU7N31xlUDEsj/qGuSC2GfM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-186-e0-fHSz0P4OKym8_uQlcQQ-1; Thu, 19 Nov 2020 12:03:01 -0500
+X-MC-Unique: e0-fHSz0P4OKym8_uQlcQQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5A0A91207;
+        Thu, 19 Nov 2020 17:02:58 +0000 (UTC)
+Received: from [10.36.115.104] (ovpn-115-104.ams2.redhat.com [10.36.115.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5E8E65D6AD;
+        Thu, 19 Nov 2020 17:02:50 +0000 (UTC)
+Subject: Re: [PATCH v13 01/15] iommu: Introduce attach/detach_pasid_table API
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, will@kernel.org, joro@8bytes.org,
+        maz@kernel.org, robin.murphy@arm.com, alex.williamson@redhat.com,
+        jean-philippe@linaro.org, zhangfei.gao@linaro.org,
+        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
+        shameerali.kolothum.thodi@huawei.com, yi.l.liu@intel.com,
+        tn@semihalf.com, nicoleotsuka@gmail.com, yuzenghui@huawei.com
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <20201118112151.25412-2-eric.auger@redhat.com>
+ <20201118081940.3192ac1c@jacob-builder>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <002fb3b6-99d4-2c3c-d86d-d290c30ba936@redhat.com>
+Date:   Thu, 19 Nov 2020 18:02:48 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <CALCETrV9ckeSwyjLn4hxuJeakxnkRQ71RAVf44nTWOFva9EJFA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201118081940.3192ac1c@jacob-builder>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 bulkscore=0 suspectscore=0 adultscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190120
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011190121
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/19/20 5:06 PM, Andy Lutomirski wrote:
-> On Thu, Nov 19, 2020 at 4:06 AM Alexandre Chartre
-> <alexandre.chartre@oracle.com> wrote:
->>
->> On 11/19/20 9:05 AM, Alexandre Chartre wrote:
->>>>>>>>>>>
->>>>>>>>>>> When entering the kernel from userland, use the per-task PTI stack
->>>>>>>>>>> instead of the per-cpu trampoline stack. Like the trampoline stack,
->>>>>>>>>>> the PTI stack is mapped both in the kernel and in the user page-table.
->>>>>>>>>>> Using a per-task stack which is mapped into the kernel and the user
->>>>>>>>>>> page-table instead of a per-cpu stack will allow executing more code
->>>>>>>>>>> before switching to the kernel stack and to the kernel page-table.
->>>>>>>>>>
->>>>>>>>>> Why?
->>>>>>>>>
->>>>>>>>> When executing more code in the kernel, we are likely to reach a point
->>>>>>>>> where we need to sleep while we are using the user page-table, so we need
->>>>>>>>> to be using a per-thread stack.
->>>>>>>>>
->>>>>>>>>> I can't immediately evaluate how nasty the page table setup is because
->>>>>>>>>> it's not in this patch.
->>>>>>>>>
->>>>>>>>> The page-table is the regular page-table as introduced by PTI. It is just
->>>>>>>>> augmented with a few additional mapping which are in patch 11 (x86/pti:
->>>>>>>>> Extend PTI user mappings).
->>>>>>>>>
->>>>>>>>>>      But AFAICS the only thing that this enables is sleeping with user pagetables.
->>>>>>>>>
->>>>>>>>> That's precisely the point, it allows to sleep with the user page-table.
->>>>>>>>>
->>>>>>>>>> Do we really need to do that?
->>>>>>>>>
->>>>>>>>> Actually, probably not with this particular patchset, because I do the page-table
->>>>>>>>> switch at the very beginning and end of the C handler. I had some code where I
->>>>>>>>> moved the page-table switch deeper in the kernel handler where you definitively
->>>>>>>>> can sleep (for example, if you switch back to the user page-table before
->>>>>>>>> exit_to_user_mode_prepare()).
->>>>>>>>>
->>>>>>>>> So a first step should probably be to not introduce the per-task PTI trampoline stack,
->>>>>>>>> and stick with the existing trampoline stack. The per-task PTI trampoline stack can
->>>>>>>>> be introduced later when the page-table switch is moved deeper in the C handler and
->>>>>>>>> we can effectively sleep while using the user page-table.
->>>>>>>>
->>>>>>>> Seems reasonable.
->>>>>>>>
->>>>>>>
->>>>>>> I finally remember why I have introduced a per-task PTI trampoline stack right now:
->>>>>>> that's to be able to move the CR3 switch anywhere in the C handler. To do so, we need
->>>>>>> a per-task stack to enter (and return) from the C handler as the handler can potentially
->>>>>>> go to sleep.
->>>>>>>
->>>>>>> Without a per-task trampoline stack, we would be limited to call the switch CR3 functions
->>>>>>> from the assembly entry code before and after calling the C function handler (also called
->>>>>>> from assembly).
->>>>>>
->>>>>> The noinstr part of the C entry code won't sleep.
->>>>>>
->>>>>
->>>>> But the noinstr part of the handler can sleep, and if it does we will need to
->>>>> preserve the trampoline stack (even if we switch to the per-task kernel stack to
->>>>> execute the noinstr part).
->>>>>
->>>>> Example:
->>>>>
->>>>> #define DEFINE_IDTENTRY(func)                                           \
->>>>> static __always_inline void __##func(struct pt_regs *regs);             \
->>>>>                                                                            \
->>>>> __visible noinstr void func(struct pt_regs *regs)                       \
->>>>> {                                                                       \
->>>>>            irqentry_state_t state;         -+                              \
->>>>>                                             |                              \
->>>>>            user_pagetable_escape(regs);     | use trampoline stack (1)
->>>>>            state = irqentry_enter(regs);    |                              \
->>>>>            instrumentation_begin();        -+                              \
->>>>>            run_idt(__##func, regs);       |===| run __func() on kernel stack (this can sleep)
->>>>>            instrumentation_end();          -+                              \
->>>>>            irqentry_exit(regs, state);      | use trampoline stack (2)
->>>>>            user_pagetable_return(regs);    -+                              \
->>>>> }
->>>>>
->>>>> Between (1) and (2) we need to preserve and use the same trampoline stack
->>>>> in case __func() went sleeping.
->>>>>
->>>>
->>>> Why?  Right now, we have the percpu entry stack, and we do just fine
->>>> if we enter on one percpu stack and exit from a different one.
->>>> We would need to call from asm to C on the entry stack, return back to
->>>> asm, and then switch stacks.
->>>>
->>>
->>> That's the problem: I didn't want to return back to asm, so that the pagetable
->>> switch can be done anywhere in the C handler.
->>>
->>> So yes, returning to asm to switch the stack is the solution if we want to avoid
->>> having per-task trampoline stack. The drawback is that this forces to do the
->>> page-table switch at the beginning and end of the handler; the pagetable switch
->>> cannot be moved deeper down into the C handler.
->>>
->>> But that's probably a good first step (effectively just moving CR3 switch to C
->>> without adding per-task trampoline stack). I will update the patches to do that,
->>> and we can defer the per-task trampoline stack to later if there's an effective
->>> need for it.
->>>
->>
->> That might not be a good first step after all... Calling CR3 switch C functions
->> from assembly introduces extra pt_regs copies between the trampoline stack and the
->> kernel stack.
->>
->> Currently when entering syscall, we immediately switches CR3 and builds pt_regs
->> directly on the kernel stack. On return, registers are restored from pt_regs from
->> the kernel stack, the return frame is built on the trampoline stack and then we
->> switch CR3.
->>
->> To call CR3 switch C functions on syscall entry, we need to switch to the trampoline
->> stack, build pt_regs on the trampoline stack, call CR3 switch, switch to the kernel
->> stack, copy pt_regs to the kernel stack. On return, we have to copy pt_regs back to
->> the trampoline stack, call CR3 switch, restore registers.
->>
->> This is less of an impact for interrupt because we enter on the trampoline stack and
->> the current code already builds pt_regs on the trampoline stack and copies it to the
->> kernel stack (although this can certainly be avoided in the current code).
->>
->> I am not comfortable adding these extra steps in syscall and interrupt as the current
->> code is fairly optimized. With a per-task trampoline stack, we don't have extra copy
->> because we can build pt_regs directly on the trampoline stack and it will preserved
->> even when switching to the kernel stack. On syscall/interrupt return, it also saves
->> a copy of the iret frame from the kernel stack to the trampoline stack.
+Hi Jacob,
+On 11/18/20 5:19 PM, Jacob Pan wrote:
+> Hi Eric,
 > 
-> IIRC during the early KPTI development, we went through a stage with
-> per-task stacks.  It was a mess, and we got rid of it for good reason.
-> Your series has a bad diffstat, is a lot of churn, doesn't even handle
-> the unmap part yet, and, by itself, adds basically no value.
+> On Wed, 18 Nov 2020 12:21:37 +0100, Eric Auger <eric.auger@redhat.com>
+> wrote:
+> 
+>> In virtualization use case, when a guest is assigned
+>> a PCI host device, protected by a virtual IOMMU on the guest,
+>> the physical IOMMU must be programmed to be consistent with
+>> the guest mappings. If the physical IOMMU supports two
+>> translation stages it makes sense to program guest mappings
+>> onto the first stage/level (ARM/Intel terminology) while the host
+>> owns the stage/level 2.
+>>
+>> In that case, it is mandated to trap on guest configuration
+>> settings and pass those to the physical iommu driver.
+>>
+>> This patch adds a new API to the iommu subsystem that allows
+>> to set/unset the pasid table information.
+>>
+>> A generic iommu_pasid_table_config struct is introduced in
+>> a new iommu.h uapi header. This is going to be used by the VFIO
+>> user API.
+>>
+>> Signed-off-by: Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
+>> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
+>> Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+>> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>>
+>> ---
+>>
+>> v12 -> v13:
+>> - Fix config check
+>>
+>> v11 -> v12:
+>> - add argsz, name the union
+>> ---
+>>  drivers/iommu/iommu.c      | 68 ++++++++++++++++++++++++++++++++++++++
+>>  include/linux/iommu.h      | 21 ++++++++++++
+>>  include/uapi/linux/iommu.h | 54 ++++++++++++++++++++++++++++++
+>>  3 files changed, 143 insertions(+)
+>>
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index b53446bb8c6b..978fe34378fb 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -2171,6 +2171,74 @@ int iommu_uapi_sva_unbind_gpasid(struct
+>> iommu_domain *domain, struct device *dev }
+>>  EXPORT_SYMBOL_GPL(iommu_uapi_sva_unbind_gpasid);
+>>  
+>> +int iommu_attach_pasid_table(struct iommu_domain *domain,
+>> +			     struct iommu_pasid_table_config *cfg)
+>> +{
+>> +	if (unlikely(!domain->ops->attach_pasid_table))
+>> +		return -ENODEV;
+>> +
+>> +	return domain->ops->attach_pasid_table(domain, cfg);
+>> +}
+>> +
+>> +int iommu_uapi_attach_pasid_table(struct iommu_domain *domain,
+>> +				  void __user *uinfo)
+>> +{
+>> +	struct iommu_pasid_table_config pasid_table_data = { 0 };
+>> +	u32 minsz;
+>> +
+>> +	if (unlikely(!domain->ops->attach_pasid_table))
+>> +		return -ENODEV;
+>> +
+>> +	/*
+>> +	 * No new spaces can be added before the variable sized union,
+>> the
+>> +	 * minimum size is the offset to the union.
+>> +	 */
+>> +	minsz = offsetof(struct iommu_pasid_table_config, vendor_data);
+>> +
+>> +	/* Copy minsz from user to get flags and argsz */
+>> +	if (copy_from_user(&pasid_table_data, uinfo, minsz))
+>> +		return -EFAULT;
+>> +
+>> +	/* Fields before the variable size union are mandatory */
+>> +	if (pasid_table_data.argsz < minsz)
+>> +		return -EINVAL;
+>> +
+>> +	/* PASID and address granu require additional info beyond minsz
+>> */
+>> +	if (pasid_table_data.version != PASID_TABLE_CFG_VERSION_1)
+>> +		return -EINVAL;
+>> +	if (pasid_table_data.format == IOMMU_PASID_FORMAT_SMMUV3 &&
+>> +	    pasid_table_data.argsz <
+>> +		offsetofend(struct iommu_pasid_table_config,
+>> vendor_data.smmuv3))
+>> +		return -EINVAL;
+>> +
+>> +	/*
+>> +	 * User might be using a newer UAPI header which has a larger
+>> data
+>> +	 * size, we shall support the existing flags within the current
+>> +	 * size. Copy the remaining user data _after_ minsz but not more
+>> +	 * than the current kernel supported size.
+>> +	 */
+>> +	if (copy_from_user((void *)&pasid_table_data + minsz, uinfo +
+>> minsz,
+>> +			   min_t(u32, pasid_table_data.argsz,
+>> sizeof(pasid_table_data)) - minsz))
+>> +		return -EFAULT;
+>> +
+>> +	/* Now the argsz is validated, check the content */
+>> +	if (pasid_table_data.config < IOMMU_PASID_CONFIG_TRANSLATE ||
+>> +	    pasid_table_data.config > IOMMU_PASID_CONFIG_ABORT)
+>> +		return -EINVAL;
+>> +
+>> +	return domain->ops->attach_pasid_table(domain,
+>> &pasid_table_data); +}
+>> +EXPORT_SYMBOL_GPL(iommu_uapi_attach_pasid_table);
+>> +
+>> +void iommu_detach_pasid_table(struct iommu_domain *domain)
+>> +{
+>> +	if (unlikely(!domain->ops->detach_pasid_table))
+>> +		return;
+>> +
+>> +	domain->ops->detach_pasid_table(domain);
+>> +}
+>> +EXPORT_SYMBOL_GPL(iommu_detach_pasid_table);
+>> +
+>>  static void __iommu_detach_device(struct iommu_domain *domain,
+>>  				  struct device *dev)
+>>  {
+>> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+>> index b95a6f8db6ff..464fcbecf841 100644
+>> --- a/include/linux/iommu.h
+>> +++ b/include/linux/iommu.h
+>> @@ -223,6 +223,8 @@ struct iommu_iotlb_gather {
+>>   * @cache_invalidate: invalidate translation caches
+>>   * @sva_bind_gpasid: bind guest pasid and mm
+>>   * @sva_unbind_gpasid: unbind guest pasid and mm
+>> + * @attach_pasid_table: attach a pasid table
+>> + * @detach_pasid_table: detach the pasid table
+>>   * @def_domain_type: device default domain type, return value:
+>>   *		- IOMMU_DOMAIN_IDENTITY: must use an identity domain
+>>   *		- IOMMU_DOMAIN_DMA: must use a dma domain
+>> @@ -287,6 +289,9 @@ struct iommu_ops {
+>>  				      void *drvdata);
+>>  	void (*sva_unbind)(struct iommu_sva *handle);
+>>  	u32 (*sva_get_pasid)(struct iommu_sva *handle);
+>> +	int (*attach_pasid_table)(struct iommu_domain *domain,
+>> +				  struct iommu_pasid_table_config *cfg);
+>> +	void (*detach_pasid_table)(struct iommu_domain *domain);
+>>  
+>>  	int (*page_response)(struct device *dev,
+>>  			     struct iommu_fault_event *evt,
+>> @@ -434,6 +439,11 @@ extern int iommu_uapi_sva_unbind_gpasid(struct
+>> iommu_domain *domain, struct device *dev, void __user *udata);
+>>  extern int iommu_sva_unbind_gpasid(struct iommu_domain *domain,
+>>  				   struct device *dev, ioasid_t pasid);
+>> +extern int iommu_attach_pasid_table(struct iommu_domain *domain,
+>> +				    struct iommu_pasid_table_config
+>> *cfg); +extern int iommu_uapi_attach_pasid_table(struct iommu_domain
+>> *domain,
+>> +					 void __user *udata);
+>> +extern void iommu_detach_pasid_table(struct iommu_domain *domain);
+>>  extern struct iommu_domain *iommu_get_domain_for_dev(struct device *dev);
+>>  extern struct iommu_domain *iommu_get_dma_domain(struct device *dev);
+>>  extern int iommu_map(struct iommu_domain *domain, unsigned long iova,
+>> @@ -639,6 +649,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device
+>> *dev, void iommu_sva_unbind_device(struct iommu_sva *handle);
+>>  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
+>>  
+>> +
+>>  #else /* CONFIG_IOMMU_API */
+>>  
+>>  struct iommu_ops {};
+>> @@ -1020,6 +1031,16 @@ iommu_aux_get_pasid(struct iommu_domain *domain,
+>> struct device *dev) return -ENODEV;
+>>  }
+>>  
+>> +static inline
+>> +int iommu_attach_pasid_table(struct iommu_domain *domain,
+>> +			     struct iommu_pasid_table_config *cfg)
+>> +{
+>> +	return -ENODEV;
+>> +}
+>> +
+>> +static inline
+>> +void iommu_detach_pasid_table(struct iommu_domain *domain) {}
+>> +
+>>  static inline struct iommu_sva *
+>>  iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void
+>> *drvdata) {
+>> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
+>> index e1d9e75f2c94..082d758dd016 100644
+>> --- a/include/uapi/linux/iommu.h
+>> +++ b/include/uapi/linux/iommu.h
+>> @@ -338,4 +338,58 @@ struct iommu_gpasid_bind_data {
+>>  	} vendor;
+>>  };
+>>  
+>> +/**
+>> + * struct iommu_pasid_smmuv3 - ARM SMMUv3 Stream Table Entry stage 1
+>> related
+>> + *     information
+>> + * @version: API version of this structure
+>> + * @s1fmt: STE s1fmt (format of the CD table: single CD, linear table
+>> + *         or 2-level table)
+>> + * @s1dss: STE s1dss (specifies the behavior when @pasid_bits != 0
+>> + *         and no PASID is passed along with the incoming transaction)
+>> + * @padding: reserved for future use (should be zero)
+>> + *
+>> + * The PASID table is referred to as the Context Descriptor (CD) table
+>> on ARM
+>> + * SMMUv3. Please refer to the ARM SMMU 3.x spec (ARM IHI 0070A) for full
+>> + * details.
+>> + */
+>> +struct iommu_pasid_smmuv3 {
+>> +#define PASID_TABLE_SMMUV3_CFG_VERSION_1 1
+>> +	__u32	version;
+>> +	__u8	s1fmt;
+>> +	__u8	s1dss;
+>> +	__u8	padding[2];
+>> +};
+>> +
+>> +/**
+>> + * struct iommu_pasid_table_config - PASID table data used to bind guest
+>> PASID
+>> + *     table to the host IOMMU
+>> + * @argsz: User filled size of this data
+>> + * @version: API version to prepare for future extensions
+>> + * @format: format of the PASID table
+>> + * @base_ptr: guest physical address of the PASID table
+>> + * @pasid_bits: number of PASID bits used in the PASID table
+>> + * @config: indicates whether the guest translation stage must
+>> + *          be translated, bypassed or aborted.
+>> + * @padding: reserved for future use (should be zero)
+>> + * @vendor_data.smmuv3: table information when @format is
+>> + * %IOMMU_PASID_FORMAT_SMMUV3
+>> + */
+>> +struct iommu_pasid_table_config {
+>> +	__u32	argsz;
+>> +#define PASID_TABLE_CFG_VERSION_1 1
+>> +	__u32	version;
+>> +#define IOMMU_PASID_FORMAT_SMMUV3	1
+>> +	__u32	format;
+> There will be a u32 gap here, right? perhaps another padding?
+Yes you're right (as per
+https://lists.cs.columbia.edu/pipermail/kvmarm/2019-January/034414.html).
+I will add some padding here and add some additional padding below.
 
-I had some concerns about this RFC and they have been confirmed :-)
+Thanks
 
-> We need to take a big step back and figure out what problem any of
-> this is solving.  As I understand it, most of the issue is that you
-> want to be able to switch between kernel and guest mode on one core
-> without exposing kernel memory to Meltdown or Spectre attacks from
-> guest code on another core.  If so, it seems to me that a much nicer
-> solution would be to use a per-cpu or per-vcpu stack for the vm entry.
-> It could plausibly even use the existing entry stack.  If you used a
-> per-vcpu stack, though, you could even sleep with some care.
+Eric
+> 
+>> +	__u64	base_ptr;
+>> +	__u8	pasid_bits;
+>> +#define IOMMU_PASID_CONFIG_TRANSLATE	1
+>> +#define IOMMU_PASID_CONFIG_BYPASS	2
+>> +#define IOMMU_PASID_CONFIG_ABORT	3
+>> +	__u8	config;
+>> +	__u8    padding[2];
+>> +	union {
+>> +		struct iommu_pasid_smmuv3 smmuv3;
+>> +	} vendor_data;
+>> +};
+>> +
+>>  #endif /* _UAPI_IOMMU_H */
+> 
+> 
+> Thanks,
+> 
+> Jacob
 > 
 
-A goal for this change was to prepare a smoother integration for Address
-Space Isolation (ASI), in particular to meet the recommendation to have
-KPTI uses ASI. Given the extra complication to refactor the CR3 switch,
-hence to plug ASI into KPTI, I think it is probably best that we first focus
-on having a clean and simple ASI implementation (but still generic) which
-initially will only be used by KVM. Once we have the ASI framework in place
-(with KVM being a consumer of ASI) will certainly be in a better position to
-re-evaluate if there is a simple way to integrate with KPTI.
-
-Thanks all feedback and for your time.
-
-alex.
