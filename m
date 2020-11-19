@@ -2,187 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224002B8B7A
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3FC2B8B7B
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgKSGQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 01:16:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30376 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726287AbgKSGQ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 01:16:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605766585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KlkXr7s48FDSqN7LK4mEk+UbmSZsrG7b5ixjGj4X+PA=;
-        b=ODOLZRlRF4bdwnh00VPbWNIHBnc7GAUnpFmFOMJ0F2qZeeHqLeV+BJoDq8UC1TyQz+3Z2w
-        Qgiinx9InHfKeMMR3ksNZWq+agtbjkmUCWOhCM6qWT5w09iwBC+whKXQpVsB/i7N3UOEMB
-        IHtcnn+1O6s5xa8SIv02LlpbiR918KA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-gBdEjmyPNSyEQT-EZNqE8w-1; Thu, 19 Nov 2020 01:16:23 -0500
-X-MC-Unique: gBdEjmyPNSyEQT-EZNqE8w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 432AD80EDA8;
-        Thu, 19 Nov 2020 06:16:22 +0000 (UTC)
-Received: from [10.72.13.63] (ovpn-13-63.pek2.redhat.com [10.72.13.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D46CC19728;
-        Thu, 19 Nov 2020 06:16:07 +0000 (UTC)
-Subject: Re: [PATCH RFC 02/12] vdpa: split vdpasim to core and net modules
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-References: <20201113134712.69744-1-sgarzare@redhat.com>
- <20201113134712.69744-3-sgarzare@redhat.com>
- <d2224629-6ca1-ed06-e2e9-f6008a3af727@redhat.com>
- <20201118131408.4denectqx3bvcmxq@steredhat>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <8d941b5d-f691-226c-b31f-c92c45fa0d2a@redhat.com>
-Date:   Thu, 19 Nov 2020 14:16:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725944AbgKSGR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 01:17:26 -0500
+Received: from mga03.intel.com ([134.134.136.65]:48854 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725799AbgKSGR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 01:17:26 -0500
+IronPort-SDR: 3VHxOBo/3r9QhwtJQ9sywydYbDKQLH0nC7HblTFH2jj8DGzyn9Qv1qy2qDj0vph+B14SxqroCV
+ Y0MuLUhMymFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="171337424"
+X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
+   d="scan'208";a="171337424"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 22:17:25 -0800
+IronPort-SDR: OA95P/mumrFOyGLRic1vf16FHbcadOWffRt5CO8ri96UhVMHBr/VcrLrv/NJWsQ2+gT/AO/9Qz
+ j+6IlsSSFIeg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
+   d="scan'208";a="476686621"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
+  by orsmga004.jf.intel.com with ESMTP; 18 Nov 2020 22:17:22 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [RFC -V5] autonuma: Migrate on fault among multiple bound nodes
+References: <20201118051952.39097-1-ying.huang@intel.com>
+        <20201118095637.GC3306@suse.de>
+Date:   Thu, 19 Nov 2020 14:17:21 +0800
+In-Reply-To: <20201118095637.GC3306@suse.de> (Mel Gorman's message of "Wed, 18
+        Nov 2020 09:56:38 +0000")
+Message-ID: <878saxvpji.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20201118131408.4denectqx3bvcmxq@steredhat>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mel Gorman <mgorman@suse.de> writes:
 
-On 2020/11/18 下午9:14, Stefano Garzarella wrote:
-> Hi Jason,
-> I just discovered that I missed the other questions in this email,
-> sorry for that!
+> On Wed, Nov 18, 2020 at 01:19:52PM +0800, Huang Ying wrote:
+>> Now, AutoNUMA can only optimize the page placement among the NUMA
+>
+> Note that the feature is referred to as NUMA_BALANCING in the kernel
+> configs as AUTONUMA as it was first presented was not merged. The sysctl
+> for it is kernel.numa_balancing as you already note. So use NUMAB or
+> NUMA_BALANCING but not AUTONUMA because at least a new person grepping
+> for NUMA_BALANCING or variants will find it where as autonuma only creeped
+> into the powerpc arch code.
 
-
-No problem :)
-
+Sure.  Will change this.
 
 >
-> On Mon, Nov 16, 2020 at 12:00:11PM +0800, Jason Wang wrote:
->>
->> On 2020/11/13 下午9:47, Stefano Garzarella wrote:
->>> From: Max Gurtovoy <mgurtovoy@nvidia.com>
->>>
->>> Introduce new vdpa_sim_net and vdpa_sim (core) drivers. This is a
->>> preparation for adding a vdpa simulator module for block devices.
->>>
->>> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
->>> [sgarzare: various cleanups/fixes]
->>> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
->>> ---
->>> v1:
->>> - Removed unused headers
->>> - Removed empty module_init() module_exit()
->>> - Moved vdpasim_is_little_endian() in vdpa_sim.h
->>> - Moved vdpasim16_to_cpu/cpu_to_vdpasim16() in vdpa_sim.h
->>> - Added vdpasim*_to_cpu/cpu_to_vdpasim*() also for 32 and 64
->>> - Replaced 'select VDPA_SIM' with 'depends on VDPA_SIM' since selected
->>>   option can not depend on other [Jason]
->>
->>
->> If possible, I would suggest to split this patch further:
->>
->> 1) convert to use void *config, and an attribute for setting config 
->> size during allocation
->> 2) introduce supported_features
->> 3) other attributes (#vqs)
->> 4) rename config ops (more generic one)
->> 5) introduce ops for set|get_config, set_get_features
->> 6) real split
->>
->>
+> If exposing to userspace, the naming should definitely be consistent.
 >
-> [...]
+>> - sysctl knob numa_balancing can enable/disable the NUMA balancing
+>>   globally.
+>> 
+>> - even if sysctl numa_balancing is enabled, the NUMA balancing will be
+>>   disabled for the memory areas or applications with the explicit memory
+>>   policy by default.
+>> 
+>> - MPOL_F_AUTONUMA can be used to enable the NUMA balancing for the
+>>   applications when specifying the explicit memory policy.
+>> 
 >
->>> -static const struct vdpa_config_ops vdpasim_net_config_ops;
->>> -static const struct vdpa_config_ops vdpasim_net_batch_config_ops;
->>> +static const struct vdpa_config_ops vdpasim_config_ops;
->>> +static const struct vdpa_config_ops vdpasim_batch_config_ops;
->>> -static struct vdpasim *vdpasim_create(void)
->>> +struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
->>>  {
->>>      const struct vdpa_config_ops *ops;
->>>      struct vdpasim *vdpasim;
->>> +    u32 device_id;
->>>      struct device *dev;
->>> -    int ret = -ENOMEM;
->>> +    int i, size, ret = -ENOMEM;
->>> -    if (batch_mapping)
->>> -        ops = &vdpasim_net_batch_config_ops;
->>> +    device_id = attr->device_id;
->>> +    /* Currently, we only accept the network and block devices. */
->>> +    if (device_id != VIRTIO_ID_NET && device_id != VIRTIO_ID_BLOCK)
->>> +        return ERR_PTR(-EOPNOTSUPP);
->>> +
->>> +    if (attr->batch_mapping)
->>> +        ops = &vdpasim_batch_config_ops;
->>>      else
->>> -        ops = &vdpasim_net_config_ops;
->>> +        ops = &vdpasim_config_ops;
->>>      vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL, ops, 
->>> VDPASIM_VQ_NUM);
->>>      if (!vdpasim)
->>>          goto err_alloc;
->>> -    INIT_WORK(&vdpasim->work, vdpasim_work);
->>> +    if (device_id == VIRTIO_ID_NET)
->>> +        size = sizeof(struct virtio_net_config);
->>> +    else
->>> +        size = sizeof(struct virtio_blk_config);
->>
->>
->> It's better to avoid such if/else consider we may introduce more type 
->> of devices.
->>
->> Can we have an attribute of config size instead?
+> MPOL_F_NUMAB
+
+Sure, will change it to MPOL_F_NUMA_BALANCING.
+
+>> Various page placement optimization based on the NUMA balancing can be
+>> done with these flags.  As the first step, in this patch, if the
+>> memory of the application is bound to multiple nodes (MPOL_BIND), and
+>> in the hint page fault handler the accessing node are in the policy
+>> nodemask, the page will be tried to be migrated to the accessing node
+>> to reduce the cross-node accessing.
+>> 
 >
-> Yes, I'll move the patch 7 before this.
+> The patch still lacks supporting data. It really should have a basic
+> benchmark of some sort serving as an example of how the policies should
+> be set and a before/after comparison showing the throughput of MPOL_BIND
+> accesses spanning 2 or more nodes is faster when numa balancing is enabled.
+
+Sure.  Will add some basic benchmark data and usage example.
+
+> A man page update should also be added clearly outlining when an
+> application should consider using it with the linux-api people cc'd
+> for review.
+
+Yes.  Will Cc linux-api for review and will submit patches to
+manpages.git after the API is finalized.
+
+> The main limitation is that if this requires application modification,
+> it may never be used. For example, if an application uses openmp places
+> that translates into bind then openmp needs knowledge of the flag.
+> Similar limitations apply to MPI. This feature has a risk that no one
+> uses it.
+
+My plan is to add a new option to `numactl`
+(https://github.com/numactl/numactl/), so users who want to enable NUMA
+balancing within the constrains of NUMA binding can use that.  I can
+reach some Openstack and Kubernate developers to check whether it's
+possible to add the support to these software.  For other applications,
+Yes, it may take long time for the new flag to be used.
+
+>> Huang Ying (2):
+>>   mempolicy: Rename MPOL_F_MORON to MPOL_F_MOPRON
+>>   autonuma: Migrate on fault among multiple bound nodes
+>> ---
+>>  include/uapi/linux/mempolicy.h | 4 +++-
+>>  mm/mempolicy.c                 | 9 +++++++++
+>>  2 files changed, 12 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
+>> index 3354774af61e..adb49f13840e 100644
+>> --- a/include/uapi/linux/mempolicy.h
+>> +++ b/include/uapi/linux/mempolicy.h
+>> @@ -28,12 +28,14 @@ enum {
+>>  /* Flags for set_mempolicy */
+>>  #define MPOL_F_STATIC_NODES	(1 << 15)
+>>  #define MPOL_F_RELATIVE_NODES	(1 << 14)
+>> +#define MPOL_F_AUTONUMA		(1 << 13) /* Optimize with AutoNUMA if possible */
+>>  
 >
-> About config size and set/get_config ops, I'm not sure if it is better 
-> to hidden everything under the new set/get_config ops, allocating the 
-> config structure in each device, or leave the allocation in the core 
-> and update it like now.
+> Order by flag usage, correct the naming.
 
+I will correct the naming.  Sorry, what does "order" refer to?
 
-I think we'd better to avoid having any type specific codes in generic 
-sim codes.
-
-
-[...]
-
-
->>> +config VDPA_SIM_NET
->>> +    tristate "vDPA simulator for networking device"
->>> +    depends on VDPA_SIM
->>> +    default n
->>
->>
->> I remember somebody told me that if we don't enable a module it was 
->> disabled by default.
+>>  /*
+>>   * MPOL_MODE_FLAGS is the union of all possible optional mode flags passed to
+>>   * either set_mempolicy() or mbind().
+>>   */
+>> -#define MPOL_MODE_FLAGS	(MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES)
+>> +#define MPOL_MODE_FLAGS							\
+>> +	(MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES | MPOL_F_AUTONUMA)
+>>  
+>>  /* Flags for get_mempolicy */
+>>  #define MPOL_F_NODE	(1<<0)	/* return next IL mode instead of node mask */
 >
-> So, should I remove "default n" from vdpa_sim* entries?
+> How does an application discover if MPOL_F_NUMAB is supported by the
+> current running kernel? It looks like they might receive -EINVAL (didn't
+> check for sure).
 
+Yes.
 
-Yes, but please do that in another patch.
+> In that case, a manual page is defintely needed to
+> explain that an error can be returned if the flag is used and the kernel
+> does not support it so the application can cover by falling back to a
+> strict binding. If it fails silently, then that also needs to be documented
+> because it'll lead to different behaviour depending on the running
+> kernel.
 
-Thanks
+Sure.  Will describe this in the manual page.
 
-
->
-> Thanks,
-> Stefano
->
-
+Best Regards,
+Huang, Ying
