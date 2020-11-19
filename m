@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684342B9ED1
+	by mail.lfdr.de (Postfix) with ESMTP id D44FE2B9ED2
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727237AbgKSX4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 18:56:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
+        id S1727257AbgKSX4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 18:56:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727138AbgKSX43 (ORCPT
+        with ESMTP id S1727138AbgKSX4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 18:56:29 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1688C0613CF;
-        Thu, 19 Nov 2020 15:56:28 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id cq7so7699702edb.4;
-        Thu, 19 Nov 2020 15:56:28 -0800 (PST)
+        Thu, 19 Nov 2020 18:56:30 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2950CC0613CF;
+        Thu, 19 Nov 2020 15:56:30 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id bo9so4662962ejb.13;
+        Thu, 19 Nov 2020 15:56:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=V2nMrkstdfaLwFQPrDRfpgWYF3hxA8+qBOcuVrcUVdU=;
-        b=QG0WjrUyiSQyl1uPZUKyCtBUSPT8K9qMbALM4qRh1lT/o4anAGNMAMzdtOOutzqr2j
-         vCreXFHVSI4rbfKsQpAgHaUw8BfIrxbZGgQ6P6lVJVe1SdgNflMF95ainw9c3YIvq5P6
-         uEsP/rn3UtFHJM6qE2yJJ/NUk295HS2RtEufc8Nsf3cZEJaY2TTcJQwFod2/jVZRVVm1
-         O7267ALG/cdIYgx54+tu8e+98JGXUZUhEhzhYUUq1js0yZ4ZeG/OwcuL4C97ULunFKms
-         hXj+E+8/IQNLpft095NOEx2N5ABdlyXq1vmoVG4KQKzbEMpq25eFF+ie4dkt5tpcGF3x
-         v0Gg==
+        bh=mAXSIdjDaBZjNU/PUty/VD0YiGWKRCs/msZcPqHHsQ8=;
+        b=olV0CftbaPm3wWBGcUTe/JrVCRjs1vlS6jtf6cakzlmOHaddocroxYBpjjGkm3VBSc
+         qWjDE3PtAr2+pM856zO01Zg2SRXDDTMtyJa++5IAkehJhci2wuw0ZU8mBF9iu3oxqqmV
+         nUqXw1tRdbyz8DPb3cDwZbEI5hL9PAzP4qgGqfr66r5oeRiOJ3w8oRd/uQQk3oJggsSe
+         YkY+TSQOoaztDtfWGvKzPEz+t48WTVylrs8lj6z0esCtoTUOs9EbASmYTIvbF4uZpz3v
+         /Jmu9fFqbIg2dfP3j9ZLdqunel0vc3hMhSU9BXLbWkMit8umdWG9L8MQ8KvtqQRar9Ms
+         s3Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=V2nMrkstdfaLwFQPrDRfpgWYF3hxA8+qBOcuVrcUVdU=;
-        b=ttAloN/51HBmSYbuCspfi7f/Vv17vd6hHvyyWlU74i1IwilJmBL106VoO/zxrv97K5
-         gjuR3KmQR7SQn4g8DBdI4TLEoEmWOLHh/846d8nSW87Uo2UJHZPwJ+v1cQjWzhOd70ch
-         79ueQuI3bWjh9saldpgDQX8gKxNanQVM3T/tj29pzYGHRzvBi/DwRzV0hmy5dD/o0PAW
-         ArKFaAsV0kCAPLM9wj9xuIy+iC25PjIArjMK7FJyRx8EousoYlX89oiZG62BzVYjAqlc
-         2f5ih0xkyJY+L7xbqPcJBhKv8HNol/oJyMHUtumD0eChgBw950jAUXB0x/85i1b6TUMW
-         uGTA==
-X-Gm-Message-State: AOAM530aclse9ykjiqiyIqFWC1TMiBVHDniDXYTedN3leuljR/U4lzrG
-        PrpOsGIDxEge+/OGUiiKIsc=
-X-Google-Smtp-Source: ABdhPJyKKb86MrjM+HtW2Mw3fcm/pY4Y6IzNi8CjmaqbB1/5FxnZ+xhG+fpQ89KivVofPrXQhtzpsA==
-X-Received: by 2002:a50:ec86:: with SMTP id e6mr20060994edr.111.1605830187508;
-        Thu, 19 Nov 2020 15:56:27 -0800 (PST)
+        bh=mAXSIdjDaBZjNU/PUty/VD0YiGWKRCs/msZcPqHHsQ8=;
+        b=jEfksC2/r9GiTXgtURWjTNQAEVb8IiRpQWyxWZZWHQAmmnQubLZp945m96JiwI5Unv
+         H9QDrpDNTUc7KFUv28SuG1giOTgz+7UNbWIuVI0bf5iaKDHoxznwC2PzeGq4+cLFQMcU
+         g81XXHmz9+M6/DEo8cb4OIjRXSrOqpk8SYhOVpq6BfoKek8uFxUvpxLCwMzLRX0LfRne
+         Pm0ZzIGF9+OuulGoIE/03LbciPwG9xTMdJ9DH0U/ZMPDxcCg2N+MZmzbebH0aRjmsSI6
+         v9Y1GzGFU+qp7TnzlIhYSs9O8DSF6RQiIA1LNyCsXTg2tc/ZYM4rQcrEr2u8xbr9JDY6
+         iX4A==
+X-Gm-Message-State: AOAM531hTpLAycbRqoULm6hGUMTaZG9Ksj5aD3gC4l4M28+Uuw2fAzBd
+        PfMrBzM+uVRktzex7zLCsG0=
+X-Google-Smtp-Source: ABdhPJxJ9NF0uQrsEv911V2ZQs1HR7OBlh0Z91TxvvGAnGVt+fxu9f4A1XX4ZtnjTpfEgC+TxVpAIQ==
+X-Received: by 2002:a17:906:7813:: with SMTP id u19mr4102780ejm.153.1605830188881;
+        Thu, 19 Nov 2020 15:56:28 -0800 (PST)
 Received: from localhost.localdomain ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id i3sm452987ejh.80.2020.11.19.15.56.26
+        by smtp.gmail.com with ESMTPSA id i3sm452987ejh.80.2020.11.19.15.56.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 15:56:26 -0800 (PST)
+        Thu, 19 Nov 2020 15:56:28 -0800 (PST)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+To:     Rob Herring <robh+dt@kernel.org>, Wolfram Sang <wsa@kernel.org>,
         =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Subject: [PATCH v2 09/18] arm: dts: owl-s500: Add MMC support
-Date:   Fri, 20 Nov 2020 01:56:03 +0200
-Message-Id: <0556399f1ce8b1255d1f7961f04fcb95c96ab928.1605823502.git.cristian.ciocaltea@gmail.com>
+        linux-i2c@vger.kernel.org
+Subject: [PATCH v2 10/18] dt-bindings: i2c: owl: Convert Actions Semi Owl binding to a schema
+Date:   Fri, 20 Nov 2020 01:56:04 +0200
+Message-Id: <2521d2e63efcd125a4fe93ee55435f399157ab39.1605823502.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
 References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
@@ -68,57 +67,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MMC controller nodes for Actions Semi S500 SoC, in order to
-facilitate access to SD/EMMC/SDIO cards.
+Convert the Actions Semi Owl I2C DT binding to a YAML schema for
+enabling DT validation.
+
+Additionally, add a new compatible string corresponding to the I2C
+controller found in the S500 variant of the Actions Semi Owl SoCs
+family.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
- arch/arm/boot/dts/owl-s500.dtsi | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ .../devicetree/bindings/i2c/i2c-owl.txt       | 29 ---------
+ .../devicetree/bindings/i2c/i2c-owl.yaml      | 62 +++++++++++++++++++
+ 2 files changed, 62 insertions(+), 29 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-owl.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-owl.yaml
 
-diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-index b16172615db0..7af7c9e1119d 100644
---- a/arch/arm/boot/dts/owl-s500.dtsi
-+++ b/arch/arm/boot/dts/owl-s500.dtsi
-@@ -241,5 +241,38 @@ dma: dma-controller@b0260000 {
- 			clocks = <&cmu CLK_DMAC>;
- 			power-domains = <&sps S500_PD_DMA>;
- 		};
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-owl.txt b/Documentation/devicetree/bindings/i2c/i2c-owl.txt
+deleted file mode 100644
+index 54c05dbdb2e4..000000000000
+--- a/Documentation/devicetree/bindings/i2c/i2c-owl.txt
++++ /dev/null
+@@ -1,29 +0,0 @@
+-Actions Semiconductor Owl I2C controller
+-
+-Required properties:
+-
+-- compatible        : Should be one of the following:
+-		      - "actions,s700-i2c" for S700 SoC
+-		      - "actions,s900-i2c" for S900 SoC
+-- reg               : Offset and length of the register set for the device.
+-- #address-cells    : Should be 1.
+-- #size-cells       : Should be 0.
+-- interrupts        : A single interrupt specifier.
+-- clocks            : Phandle of the clock feeding the I2C controller.
+-
+-Optional properties:
+-
+-- clock-frequency   : Desired I2C bus clock frequency in Hz. As only Normal and
+-                      Fast modes are supported, possible values are 100000 and
+-                      400000.
+-Examples:
+-
+-        i2c0: i2c@e0170000 {
+-                compatible = "actions,s900-i2c";
+-                reg = <0 0xe0170000 0 0x1000>;
+-                #address-cells = <1>;
+-                #size-cells = <0>;
+-                interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+-                clocks = <&clock CLK_I2C0>;
+-                clock-frequency = <100000>;
+-        };
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-owl.yaml b/Documentation/devicetree/bindings/i2c/i2c-owl.yaml
+new file mode 100644
+index 000000000000..d96908badf81
+--- /dev/null
++++ b/Documentation/devicetree/bindings/i2c/i2c-owl.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/i2c/i2c-owl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+		mmc0: mmc@b0230000 {
-+			compatible = "actions,s500-mmc", "actions,owl-mmc";
-+			reg = <0xb0230000 0x38>;
-+			interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_SD0>;
-+			resets = <&cmu RESET_SD0>;
-+			dmas = <&dma 2>;
-+			dma-names = "mmc";
-+			status = "disabled";
-+		};
++title: Actions Semi Owl I2C Controller
 +
-+		mmc1: mmc@b0234000 {
-+			compatible = "actions,s500-mmc", "actions,owl-mmc";
-+			reg = <0xb0234000 0x38>;
-+			interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_SD1>;
-+			resets = <&cmu RESET_SD1>;
-+			dmas = <&dma 3>;
-+			dma-names = "mmc";
-+			status = "disabled";
-+		};
++maintainers:
++  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 +
-+		mmc2: mmc@b0238000 {
-+			compatible = "actions,s500-mmc", "actions,owl-mmc";
-+			reg = <0xb0238000 0x38>;
-+			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cmu CLK_SD2>;
-+			resets = <&cmu RESET_SD2>;
-+			dmas = <&dma 4>;
-+			dma-names = "mmc";
-+			status = "disabled";
-+		};
- 	};
- };
++description: |
++  This I2C controller is found in the Actions Semi Owl SoCs:
++  S500, S700 and S900.
++
++allOf:
++  - $ref: /schemas/i2c/i2c-controller.yaml#
++
++properties:
++  compatible:
++    enum:
++      - actions,s500-i2c # Actions Semi S500 compatible SoCs
++      - actions,s700-i2c # Actions Semi S700 compatible SoCs
++      - actions,s900-i2c # Actions Semi S900 compatible SoCs
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    description: Phandle of the clock feeding the I2C controller.
++    minItems: 1
++
++  clock-frequency:
++    description: |
++      Desired I2C bus clock frequency in Hz. As only Standard and Fast
++      modes are supported, possible values are 100000 and 400000.
++    enum: [100000, 400000]
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/actions,s900-cmu.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    i2c@e0170000 {
++        compatible = "actions,s900-i2c";
++        reg = <0xe0170000 0x1000>;
++        interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&cmu CLK_I2C0>;
++        clock-frequency = <100000>;
++    };
++
++...
 -- 
 2.29.2
 
