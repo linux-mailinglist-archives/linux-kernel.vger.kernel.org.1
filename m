@@ -2,98 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A002B8C81
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3281B2B8C87
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgKSHoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:44:20 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:38636 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725816AbgKSHoU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:44:20 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2D57E1C0B8C; Thu, 19 Nov 2020 08:44:17 +0100 (CET)
-Date:   Thu, 19 Nov 2020 08:44:16 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v7 2/5] dt-bindings: leds: Add LED_COLOR_ID_MOONLIGHT
- definitions
-Message-ID: <20201119074416.GA27576@amd>
-References: <1605696462-391-1-git-send-email-gene.chen.richtek@gmail.com>
- <1605696462-391-3-git-send-email-gene.chen.richtek@gmail.com>
- <20201118213712.GA22371@amd>
- <CAE+NS36rnHzhdk5Os+vL=uK225HJT-bUHSRJ6KccaOHc-kCjpA@mail.gmail.com>
+        id S1726282AbgKSHpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:45:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48674 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726182AbgKSHpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 02:45:43 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 11F17AD45;
+        Thu, 19 Nov 2020 07:45:42 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 07:45:39 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
+Subject: Re: [RFC PATCH 2/4] sched: make schedstats helpers not depend on
+ cfs_rq
+Message-ID: <20201119074539.GE3306@suse.de>
+References: <20201119035230.45330-1-laoar.shao@gmail.com>
+ <20201119035230.45330-3-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <CAE+NS36rnHzhdk5Os+vL=uK225HJT-bUHSRJ6KccaOHc-kCjpA@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201119035230.45330-3-laoar.shao@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 19, 2020 at 11:52:28AM +0800, Yafang Shao wrote:
+> The 'cfs_rq' in these helpers is only used to get the rq_clock, so we
+> can pass the rq_clock directly. After that, these helpers can be used by
+> all sched class.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This introduces overhead in the general case even when schedstats is
+disabled. Previously, update_stats_wait_start was a static inline so
+function call overhead was avoided and schedstat_enabled() meant the
+overhead was negligible. As it's now a function call, the cost of the
+function entry/exit will be unconditionally hit regardless of intrest
+in schedstat.
 
-Hi!
+Regardless of the merit of adding schedstats for RT, the overhead of
+schedstats when stats are disabled should remain the same with the
+static branch check done in an inline function.
 
-> > > From: Gene Chen <gene_chen@richtek.com>
-> > >
-> > > Add LED_COLOR_ID_MOONLIGHT definitions
-> >
-> > Why is moonlight a color? Camera flashes are usually white, no?
-> >
-> > At least it needs a comment...
-> >
-> > Best regards,
-> >                                                                 Pavel
-> >
->=20
-> Moonlight has more current level(150mA) from general RGB LED (24mA).
-> It can be used as night-light and usually use color AMBER.
-> Camera flashes are usually use two flash LED. One is YELLOW, and one
->is WHITE.
-
-=46rom what I seen, night-lights are usually differetent "temperatures"
-of white. Cool white + warm white.
-
-I believe "warm white" would be easier to understand than
-"moonlight"...
-
-Best regards,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+2IlAACgkQMOfwapXb+vLdBQCgw6Mjjjv/SdV6hkGTYQl/7cQh
-GQgAn3WXoyjkpxWPpQZ9WyjNM0ewu0S2
-=DlK0
------END PGP SIGNATURE-----
-
---mP3DRpeJDSE+ciuQ--
+-- 
+Mel Gorman
+SUSE Labs
