@@ -2,273 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8187E2B910A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A35D2B90EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:30:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgKSL3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:29:42 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:33168 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgKSL3j (ORCPT
+        id S1726739AbgKSL0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:26:06 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7704 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726637AbgKSL0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:29:39 -0500
-Date:   Thu, 19 Nov 2020 11:29:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605785376;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T8YXdnP+Nmj3s3U+MNRMdf+nz08Xzm1J5VBMWifNZzE=;
-        b=T44NX0C+BiMgPsyiKyif9WesJ1RJ1qaBLGWj7Dn6wEReTNvnNlS5IZTxFuI+Q8ld61NzhL
-        cUCKhWFhXZvUtGDSmrq6kodbfsvkctIZjjhK/r4sytZOTNUZv2FC/Ym363wUTXSqueKJ5K
-        djF/x+Y/EXxsfiQqpWFUsq89m4JJseJcAzHObqzvmACZ5GC1+QNruhdb0KVmiuxu6Rp8la
-        aqjFB6OWfGK9nBPrFrPNbDeN/MLjxSJlKRbf5DR+Km5C9bEKgySkXBi1RH9BiDrrHgFWc/
-        ZomMOCKxz5lxzBQm3s/bqunq23JdS3HNQ2p6Fn145LRnHeyEycNLj1/8WbnrJQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605785376;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T8YXdnP+Nmj3s3U+MNRMdf+nz08Xzm1J5VBMWifNZzE=;
-        b=caKfdEkrtCWyoyFRWnQCa7pmH2ih0QoATkeIaxNg7M7V/vjpd0XJYaffg7iHVFp/rPEboA
-        KOGf9FwQkxV54vBg==
-From:   "tip-bot2 for Yazen Ghannam" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/CPU/AMD: Save AMD NodeId as cpu_die_id
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201109210659.754018-2-Yazen.Ghannam@amd.com>
-References: <20201109210659.754018-2-Yazen.Ghannam@amd.com>
+        Thu, 19 Nov 2020 06:26:06 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CcHRT37phzkWqx;
+        Thu, 19 Nov 2020 19:25:41 +0800 (CST)
+Received: from huawei.com (10.151.151.249) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Thu, 19 Nov 2020
+ 19:25:53 +0800
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>,
+        <dan.j.williams@intel.com>, <p.zabel@pengutronix.de>,
+        <gengdongjiu@huawei.com>, <devicetree@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+Subject: [PATCH v4 0/4] Enable Hi3559A SOC clock and HiSilicon Hiedma Controller
+Date:   Thu, 19 Nov 2020 19:50:20 +0000
+Message-ID: <20201119195024.28392-1-gengdongjiu@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Message-ID: <160578537513.11244.11279002116385896537.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.151.151.249]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cpu branch of tip:
+From: g00384164 <g00384164@huawei.com>
 
-Commit-ID:     028c221ed1904af9ac3c5162ee98f48966de6b3d
-Gitweb:        https://git.kernel.org/tip/028c221ed1904af9ac3c5162ee98f48966de6b3d
-Author:        Yazen Ghannam <yazen.ghannam@amd.com>
-AuthorDate:    Mon, 09 Nov 2020 21:06:56 
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 19 Nov 2020 11:43:13 +01:00
+v3->v4:
+1. fix the 'make dt_binding_check' issues.
+2. Combine the 'Enable HiSilicon Hiedma Controller' series patches to this series.
+3. fix the 'make dt_binding_check' issues in 'Enable HiSilicon Hiedma Controller' patchset
 
-x86/CPU/AMD: Save AMD NodeId as cpu_die_id
 
-AMD systems provide a "NodeId" value that represents a global ID
-indicating to which "Node" a logical CPU belongs. The "Node" is a
-physical structure equivalent to a Die, and it should not be confused
-with logical structures like NUMA nodes. Logical nodes can be adjusted
-based on firmware or other settings whereas the physical nodes/dies are
-fixed based on hardware topology.
+v2->v3:
+1. change dt-bindings documents from txt to yaml format.
+2. Add SHUB clock to access the devices of m7
 
-The NodeId value can be used when a physical ID is needed by software.
+Dongjiu Geng (4):
+  dt-bindings: Document the hi3559a clock bindings
+  clk: hisilicon: Add clock driver for hi3559A SoC
+  dt: bindings: dma: Add DT bindings for HiSilicon Hiedma Controller
+  dmaengine: dma: Add Hiedma Controller v310 Device Driver
 
-Save the AMD NodeId to struct cpuinfo_x86.cpu_die_id. Use the value
-from CPUID or MSR as appropriate. Default to phys_proc_id otherwise.
-Do so for both AMD and Hygon systems.
+ .../clock/hisilicon,hi3559av100-clock.yaml    |   66 +
+ .../bindings/dma/hisilicon,hiedmacv310.yaml   |  103 ++
+ drivers/clk/hisilicon/Kconfig                 |    7 +
+ drivers/clk/hisilicon/Makefile                |    1 +
+ drivers/clk/hisilicon/clk-hi3559a.c           |  865 ++++++++++
+ drivers/dma/Kconfig                           |   14 +
+ drivers/dma/Makefile                          |    1 +
+ drivers/dma/hiedmacv310.c                     | 1441 +++++++++++++++++
+ drivers/dma/hiedmacv310.h                     |  136 ++
+ include/dt-bindings/clock/hi3559av100-clock.h |  165 ++
+ 10 files changed, 2799 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
+ create mode 100644 drivers/clk/hisilicon/clk-hi3559a.c
+ create mode 100644 drivers/dma/hiedmacv310.c
+ create mode 100644 drivers/dma/hiedmacv310.h
+ create mode 100644 include/dt-bindings/clock/hi3559av100-clock.h
 
-Drop the node_id parameter from cacheinfo_*_init_llc_id() as it is no
-longer needed.
+-- 
+2.17.1
 
-Update the x86 topology documentation.
-
-Suggested-by: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201109210659.754018-2-Yazen.Ghannam@amd.com
----
- Documentation/x86/topology.rst   |  9 +++++++++
- arch/x86/include/asm/cacheinfo.h |  4 ++--
- arch/x86/kernel/cpu/amd.c        | 11 +++++------
- arch/x86/kernel/cpu/cacheinfo.c  |  6 +++---
- arch/x86/kernel/cpu/hygon.c      | 11 +++++------
- 5 files changed, 24 insertions(+), 17 deletions(-)
-
-diff --git a/Documentation/x86/topology.rst b/Documentation/x86/topology.rst
-index e297399..7f58010 100644
---- a/Documentation/x86/topology.rst
-+++ b/Documentation/x86/topology.rst
-@@ -41,6 +41,8 @@ Package
- Packages contain a number of cores plus shared resources, e.g. DRAM
- controller, shared caches etc.
- 
-+Modern systems may also use the term 'Die' for package.
-+
- AMD nomenclature for package is 'Node'.
- 
- Package-related topology information in the kernel:
-@@ -53,11 +55,18 @@ Package-related topology information in the kernel:
- 
-     The number of dies in a package. This information is retrieved via CPUID.
- 
-+  - cpuinfo_x86.cpu_die_id:
-+
-+    The physical ID of the die. This information is retrieved via CPUID.
-+
-   - cpuinfo_x86.phys_proc_id:
- 
-     The physical ID of the package. This information is retrieved via CPUID
-     and deduced from the APIC IDs of the cores in the package.
- 
-+    Modern systems use this value for the socket. There may be multiple
-+    packages within a socket. This value may differ from cpu_die_id.
-+
-   - cpuinfo_x86.logical_proc_id:
- 
-     The logical ID of the package. As we do not trust BIOSes to enumerate the
-diff --git a/arch/x86/include/asm/cacheinfo.h b/arch/x86/include/asm/cacheinfo.h
-index 86b63c7..86b2e0d 100644
---- a/arch/x86/include/asm/cacheinfo.h
-+++ b/arch/x86/include/asm/cacheinfo.h
-@@ -2,7 +2,7 @@
- #ifndef _ASM_X86_CACHEINFO_H
- #define _ASM_X86_CACHEINFO_H
- 
--void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c, int cpu, u8 node_id);
--void cacheinfo_hygon_init_llc_id(struct cpuinfo_x86 *c, int cpu, u8 node_id);
-+void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c, int cpu);
-+void cacheinfo_hygon_init_llc_id(struct cpuinfo_x86 *c, int cpu);
- 
- #endif /* _ASM_X86_CACHEINFO_H */
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index 6062ce5..2f1fbd8 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -330,7 +330,6 @@ static void legacy_fixup_core_id(struct cpuinfo_x86 *c)
-  */
- static void amd_get_topology(struct cpuinfo_x86 *c)
- {
--	u8 node_id;
- 	int cpu = smp_processor_id();
- 
- 	/* get information required for multi-node processors */
-@@ -340,7 +339,7 @@ static void amd_get_topology(struct cpuinfo_x86 *c)
- 
- 		cpuid(0x8000001e, &eax, &ebx, &ecx, &edx);
- 
--		node_id  = ecx & 0xff;
-+		c->cpu_die_id  = ecx & 0xff;
- 
- 		if (c->x86 == 0x15)
- 			c->cu_id = ebx & 0xff;
-@@ -360,15 +359,15 @@ static void amd_get_topology(struct cpuinfo_x86 *c)
- 		if (!err)
- 			c->x86_coreid_bits = get_count_order(c->x86_max_cores);
- 
--		cacheinfo_amd_init_llc_id(c, cpu, node_id);
-+		cacheinfo_amd_init_llc_id(c, cpu);
- 
- 	} else if (cpu_has(c, X86_FEATURE_NODEID_MSR)) {
- 		u64 value;
- 
- 		rdmsrl(MSR_FAM10H_NODE_ID, value);
--		node_id = value & 7;
-+		c->cpu_die_id = value & 7;
- 
--		per_cpu(cpu_llc_id, cpu) = node_id;
-+		per_cpu(cpu_llc_id, cpu) = c->cpu_die_id;
- 	} else
- 		return;
- 
-@@ -393,7 +392,7 @@ static void amd_detect_cmp(struct cpuinfo_x86 *c)
- 	/* Convert the initial APIC ID into the socket ID */
- 	c->phys_proc_id = c->initial_apicid >> bits;
- 	/* use socket ID also for last level cache */
--	per_cpu(cpu_llc_id, cpu) = c->phys_proc_id;
-+	per_cpu(cpu_llc_id, cpu) = c->cpu_die_id = c->phys_proc_id;
- }
- 
- static void amd_detect_ppin(struct cpuinfo_x86 *c)
-diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
-index 57074cf..f9ac682 100644
---- a/arch/x86/kernel/cpu/cacheinfo.c
-+++ b/arch/x86/kernel/cpu/cacheinfo.c
-@@ -646,7 +646,7 @@ static int find_num_cache_leaves(struct cpuinfo_x86 *c)
- 	return i;
- }
- 
--void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c, int cpu, u8 node_id)
-+void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c, int cpu)
- {
- 	/*
- 	 * We may have multiple LLCs if L3 caches exist, so check if we
-@@ -657,7 +657,7 @@ void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c, int cpu, u8 node_id)
- 
- 	if (c->x86 < 0x17) {
- 		/* LLC is at the node level. */
--		per_cpu(cpu_llc_id, cpu) = node_id;
-+		per_cpu(cpu_llc_id, cpu) = c->cpu_die_id;
- 	} else if (c->x86 == 0x17 && c->x86_model <= 0x1F) {
- 		/*
- 		 * LLC is at the core complex level.
-@@ -684,7 +684,7 @@ void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c, int cpu, u8 node_id)
- 	}
- }
- 
--void cacheinfo_hygon_init_llc_id(struct cpuinfo_x86 *c, int cpu, u8 node_id)
-+void cacheinfo_hygon_init_llc_id(struct cpuinfo_x86 *c, int cpu)
- {
- 	/*
- 	 * We may have multiple LLCs if L3 caches exist, so check if we
-diff --git a/arch/x86/kernel/cpu/hygon.c b/arch/x86/kernel/cpu/hygon.c
-index ac6c30e..dc0840a 100644
---- a/arch/x86/kernel/cpu/hygon.c
-+++ b/arch/x86/kernel/cpu/hygon.c
-@@ -65,7 +65,6 @@ static void hygon_get_topology_early(struct cpuinfo_x86 *c)
-  */
- static void hygon_get_topology(struct cpuinfo_x86 *c)
- {
--	u8 node_id;
- 	int cpu = smp_processor_id();
- 
- 	/* get information required for multi-node processors */
-@@ -75,7 +74,7 @@ static void hygon_get_topology(struct cpuinfo_x86 *c)
- 
- 		cpuid(0x8000001e, &eax, &ebx, &ecx, &edx);
- 
--		node_id  = ecx & 0xff;
-+		c->cpu_die_id  = ecx & 0xff;
- 
- 		c->cpu_core_id = ebx & 0xff;
- 
-@@ -93,14 +92,14 @@ static void hygon_get_topology(struct cpuinfo_x86 *c)
- 		/* Socket ID is ApicId[6] for these processors. */
- 		c->phys_proc_id = c->apicid >> APICID_SOCKET_ID_BIT;
- 
--		cacheinfo_hygon_init_llc_id(c, cpu, node_id);
-+		cacheinfo_hygon_init_llc_id(c, cpu);
- 	} else if (cpu_has(c, X86_FEATURE_NODEID_MSR)) {
- 		u64 value;
- 
- 		rdmsrl(MSR_FAM10H_NODE_ID, value);
--		node_id = value & 7;
-+		c->cpu_die_id = value & 7;
- 
--		per_cpu(cpu_llc_id, cpu) = node_id;
-+		per_cpu(cpu_llc_id, cpu) = c->cpu_die_id;
- 	} else
- 		return;
- 
-@@ -123,7 +122,7 @@ static void hygon_detect_cmp(struct cpuinfo_x86 *c)
- 	/* Convert the initial APIC ID into the socket ID */
- 	c->phys_proc_id = c->initial_apicid >> bits;
- 	/* use socket ID also for last level cache */
--	per_cpu(cpu_llc_id, cpu) = c->phys_proc_id;
-+	per_cpu(cpu_llc_id, cpu) = c->cpu_die_id = c->phys_proc_id;
- }
- 
- static void srat_detect_node(struct cpuinfo_x86 *c)
