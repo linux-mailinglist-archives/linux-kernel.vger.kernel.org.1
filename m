@@ -2,183 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEF92B9CCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B267D2B9CCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 22:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgKSVNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 16:13:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
+        id S1726799AbgKSVOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 16:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726551AbgKSVNk (ORCPT
+        with ESMTP id S1726810AbgKSVOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 16:13:40 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C58C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:13:40 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id q28so5388274pgk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:13:40 -0800 (PST)
+        Thu, 19 Nov 2020 16:14:14 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E89C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:14:14 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id k7so3670976plk.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 13:14:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=v4GZ/jYkXszE1mls+kEMDdrPEPVfJzO/2ICpEIaBNDQ=;
-        b=VX9vMNKumxYjb1MaiOgA8BYXWmZVJDiTW6P01b9rG1rPFKPOjSfowk4zaRH1rXRNir
-         BtNu2L/lhkEgxsDBVm5+hwahoKlcdKx8DSfHEvvF9koYNFXSPx+TqpjXadTh2ckpyrEn
-         LPRrqR2nTFG9fkBNgO6K7sSMsjq9j5w7XVC/YqMh/5mCy4tlsbZt8u5jaaCN7inZBCZ3
-         KqCnmRWetMpK1EIMWJnCEmxwayXO5SCYdsiunWSlbvt5gCFY4m7Mqnk47VBIHFU1IKw2
-         se5KST+MC+lt9D5LyUhQiwfEntRz78UomESsMPm9dc/J0TdU7KKuOC0d0zDuJvAGm00a
-         Yt3g==
+        bh=tZGj0oIna+UduCQLR0+PjVPjVl9hL9hj6VDeUHmIQpA=;
+        b=mswBFci17dGbCtf84CRFOcgst+BzEvYcSvutJupIJsxPzrnAaZM58FBbcME4BQOd3I
+         WX4GKvP31SkrTbEIk+/yGrSQLDEdsRJnR9Kdauz2KbGlpOT4MRbqxZsGeRFblBKz83vU
+         IkuFiuB97Xx4I6/2zcoZU1431r2zCJeJsfXcsZZhi0T8RyYO4ydPGiECVbpNlk8i2OQx
+         yCdMfrMhX0GWQSfEO7IEK8vN5UivuFmllua/U5sUbGXMMya+3naXZ5kCxelw1ZnNqtGC
+         O+GagxXO6Uur8HF5Y6oi+1cp00ppga2qZaOizSy8dYbqs/Cax63LxvD6kyZv/ACf51R2
+         grLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=v4GZ/jYkXszE1mls+kEMDdrPEPVfJzO/2ICpEIaBNDQ=;
-        b=h4sFHhOyDno2MeacSS/V4dDOvg/SN5eZIm8K0qFLLw5kmhVrSjObf3/ViNKTcirGc1
-         YGKYa6LyJAbxpCaTRhqeUL6in2OcJXJBUKMMEet3Z4DIBXTptv0Qw7xaYA98C02EuzoP
-         t+RdKQ9BbE20xgKYNGG4XX4ONiGZZUUEwmXA9BTuUsb/lmiURkk/a6EOfxbGKPXyYucW
-         bNY4wpa+gPYr915R/1/r9wvDFfJ58p9tKlHsGTrE9YdfctRXgDJYcOU5ay+z2Ce2ekfW
-         ENeYpFWHtQUwlj7v/lQbSaAd4juERHZnA+W+8aHqjKhtyj/qiHEUvV4bDuiSZzCWQJCI
-         XiYw==
-X-Gm-Message-State: AOAM531S54Gg4AjblWYcXyMZtmXwJxBaqIhBiV9A2ZHPb7zUDpWV+SKZ
-        tkmMzfJ3Jph986bwz7u7WFnHcppASJw2vuk3TXBN3A==
-X-Google-Smtp-Source: ABdhPJxZrPh18rHCKywSfaLz+afmz6qeTTM23n3N+yG4DUvwsOZWdSWRDWD6fR2nhxs02pK/JPvBxMBwXKRZ5ZsZb4M=
-X-Received: by 2002:a65:4485:: with SMTP id l5mr14014104pgq.10.1605820419400;
- Thu, 19 Nov 2020 13:13:39 -0800 (PST)
+        bh=tZGj0oIna+UduCQLR0+PjVPjVl9hL9hj6VDeUHmIQpA=;
+        b=ixNthrm0WmmTOxcXAdQjG56oEe1/ISQx0ud1HOdh/teAHjyG9CDfl4pualbG9Jqtv+
+         VZ2kkEmd174rL3pwFj1q5bOvrbAIEtAZU2nmPY6c8VGiJEuQiQ4sAmVV8s7PIBkC7JgQ
+         2E59RUwQ3z4a/y+P8DOkkpYN75z6IEVCc/9h6//Pykxu+8D3ZYYMZ7bOrUNd1k/D3a6w
+         ZhWloWnQdK/fmSpBDsXy0MzJ5Lpf+Oy1QH5OwMtQC6uFVwPFuMurxXUBiJYYlvX7/sfv
+         s0hR9YoCY3XJrKmo7pjlUF72utoao1NojAgZYkVD8U09l+UYpTldIaB2gII0qdMm0vjx
+         Ni4g==
+X-Gm-Message-State: AOAM530+RbEe5gmmQ7IIZw9FLqQNacUOfOH79ipPG9s++ZOETPZswktY
+        QxKNJcRueh52uFmxvTB8UAeudqbwHsHU6/rVCJG0Pw==
+X-Google-Smtp-Source: ABdhPJzLoefWxNuolViSU2dd6TqJGgosXjrWgwaTjJFj+EN5lBIGqVWU4UsWIXZu0IVhHR3wbrC9hahuKnGZLmqWIPY=
+X-Received: by 2002:a17:902:b28a:b029:d5:f36b:44af with SMTP id
+ u10-20020a170902b28ab02900d5f36b44afmr9918635plr.51.1605820453161; Thu, 19
+ Nov 2020 13:14:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20201113195553.1487659-1-natechancellor@gmail.com> <20201119204656.3261686-2-natechancellor@gmail.com>
-In-Reply-To: <20201119204656.3261686-2-natechancellor@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 19 Nov 2020 13:13:27 -0800
-Message-ID: <CAKwvOdkPgwL8H4EGF6=-VuxTdmxA8JHhGbLHVYcLJj9MmAvW=g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] kbuild: Disable CONFIG_LD_ORPHAN_WARN for ld.lld 10.0.1
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Kees Cook <keescook@chromium.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        Mark Brown <broonie@kernel.org>
+References: <20201119085022.3606135-1-davidgow@google.com>
+In-Reply-To: <20201119085022.3606135-1-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Thu, 19 Nov 2020 13:14:02 -0800
+Message-ID: <CAFd5g45MO-F-Jw9oRzdvOHJ0+19OQWDC-HwgRDwz2iPrkXJAww@mail.gmail.com>
+Subject: Re: [RFC PATCH] bpf: preload: Fix build error when O= is set
+To:     David Gow <davidgow@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 12:57 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
+On Thu, Nov 19, 2020 at 12:50 AM David Gow <davidgow@google.com> wrote:
 >
-> ld.lld 10.0.1 spews a bunch of various warnings about .rela sections,
-> along with a few others. Newer versions of ld.lld do not have these
-> warnings. As a result, do not add '--orphan-handling=warn' to
-> LDFLAGS_vmlinux if ld.lld's version is not new enough.
+> If BPF_PRELOAD is enabled, and an out-of-tree build is requested with
+> make O=<path>, compilation seems to fail with:
 >
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1187
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1193
-> Reported-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Reported-by: kernelci.org bot <bot@kernelci.org>
-> Reported-by: Mark Brown <broonie@kernel.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> tools/scripts/Makefile.include:4: *** O=.kunit does not exist.  Stop.
+> make[4]: *** [../kernel/bpf/preload/Makefile:8: kernel/bpf/preload/libbpf.a] Error 2
+> make[3]: *** [../scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+> make[2]: *** [../scripts/Makefile.build:500: kernel/bpf] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [.../Makefile:1799: kernel] Error 2
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:185: __sub-make] Error 2
+>
+> By the looks of things, this is because the (relative path) O= passed on
+> the command line is being passed to the libbpf Makefile, which then
+> can't find the directory. Given OUTPUT= is being passed anyway, we can
+> work around this by explicitly setting an empty O=, which will be
+> ignored in favour of OUTPUT= in tools/scripts/Makefile.include.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-Thanks for the additions in v2.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Seems sensible to me. I have no strong feeling as to whether we just
+turn this off on UML or whether we do the fix you proposed here
+though. Nevertheless, I would like to see *some* fix go in before
+v5.10 is released.
 
-> ---
->
-> v1 -> v2:
->
-> * Add condition as a depends on line (Kees Cook)
->
-> * Capture output of "$* --version" to avoid invoking linker twice (Nick
->   Desaulniers)
->
-> * Improve documentation of script in comments (Nick Desaulniers)
->
-> * Pick up review tag from Kees
->
->  MAINTAINERS            |  1 +
->  init/Kconfig           |  5 +++++
->  scripts/lld-version.sh | 20 ++++++++++++++++++++
->  3 files changed, 26 insertions(+)
->  create mode 100755 scripts/lld-version.sh
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e451dcce054f..e6f74f130ae1 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4284,6 +4284,7 @@ B:        https://github.com/ClangBuiltLinux/linux/issues
->  C:     irc://chat.freenode.net/clangbuiltlinux
->  F:     Documentation/kbuild/llvm.rst
->  F:     scripts/clang-tools/
-> +F:     scripts/lld-version.sh
->  K:     \b(?i:clang|llvm)\b
->
->  CLEANCACHE API
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 92c58b45abb8..b9037d6c5ab3 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -47,6 +47,10 @@ config CLANG_VERSION
->         int
->         default $(shell,$(srctree)/scripts/clang-version.sh $(CC))
->
-> +config LLD_VERSION
-> +       int
-> +       default $(shell,$(srctree)/scripts/lld-version.sh $(LD))
-> +
->  config CC_CAN_LINK
->         bool
->         default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag)) if 64BIT
-> @@ -1351,6 +1355,7 @@ config LD_DEAD_CODE_DATA_ELIMINATION
->  config LD_ORPHAN_WARN
->         def_bool y
->         depends on ARCH_WANT_LD_ORPHAN_WARN
-> +       depends on !LD_IS_LLD || LLD_VERSION >= 110000
->         depends on $(ld-option,--orphan-handling=warn)
->
->  config SYSCTL
-> diff --git a/scripts/lld-version.sh b/scripts/lld-version.sh
-> new file mode 100755
-> index 000000000000..d70edb4d8a4f
-> --- /dev/null
-> +++ b/scripts/lld-version.sh
-> @@ -0,0 +1,20 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Usage: $ ./scripts/lld-version.sh ld.lld
-> +#
-> +# Print the linker version of `ld.lld' in a 5 or 6-digit form
-> +# such as `100001' for ld.lld 10.0.1 etc.
-> +
-> +linker_string="$($* --version)"
-> +
-> +if ! ( echo $linker_string | grep -q LLD ); then
-> +       echo 0
-> +       exit 1
-> +fi
-> +
-> +VERSION=$(echo $linker_string | cut -d ' ' -f 2)
-> +MAJOR=$(echo $VERSION | cut -d . -f 1)
-> +MINOR=$(echo $VERSION | cut -d . -f 2)
-> +PATCHLEVEL=$(echo $VERSION | cut -d . -f 3)
-> +printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
-> --
-> 2.29.2
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
