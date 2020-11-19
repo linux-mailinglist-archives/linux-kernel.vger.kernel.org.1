@@ -2,335 +2,543 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267E32B98D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F69D2B98D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:04:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbgKSRDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:03:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29379 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727241AbgKSRDI (ORCPT
+        id S1728457AbgKSRDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:03:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728182AbgKSRDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Nov 2020 12:03:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605805385;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s+vcXswPPyHcHAAVc0M1ASPG390ljEeLpzZYdPJy6Xw=;
-        b=JeoPgyZ+Qhj41BRmyTMzP01R911hrVxngbTpbkGtyTG3UrG4/XkW8v6zVEz6ZcdS11xFGM
-        w0CuIFbfp8Tapq8C5e6/E8EL1lZPrY2FWUokZvjRxTjSElR1uHK/MBqQ0txs491/iRd3+E
-        9pextueKKU7N31xlUDEsj/qGuSC2GfM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-186-e0-fHSz0P4OKym8_uQlcQQ-1; Thu, 19 Nov 2020 12:03:01 -0500
-X-MC-Unique: e0-fHSz0P4OKym8_uQlcQQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5A0A91207;
-        Thu, 19 Nov 2020 17:02:58 +0000 (UTC)
-Received: from [10.36.115.104] (ovpn-115-104.ams2.redhat.com [10.36.115.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5E8E65D6AD;
-        Thu, 19 Nov 2020 17:02:50 +0000 (UTC)
-Subject: Re: [PATCH v13 01/15] iommu: Introduce attach/detach_pasid_table API
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, will@kernel.org, joro@8bytes.org,
-        maz@kernel.org, robin.murphy@arm.com, alex.williamson@redhat.com,
-        jean-philippe@linaro.org, zhangfei.gao@linaro.org,
-        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
-        shameerali.kolothum.thodi@huawei.com, yi.l.liu@intel.com,
-        tn@semihalf.com, nicoleotsuka@gmail.com, yuzenghui@huawei.com
-References: <20201118112151.25412-1-eric.auger@redhat.com>
- <20201118112151.25412-2-eric.auger@redhat.com>
- <20201118081940.3192ac1c@jacob-builder>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <002fb3b6-99d4-2c3c-d86d-d290c30ba936@redhat.com>
-Date:   Thu, 19 Nov 2020 18:02:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2E6C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:03:08 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id c198so5989484wmd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:03:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=z95GPwS+xvHGOD5r0CNYnBBj+LG8gXugvjHLF5gxxjE=;
+        b=rPkuEZvMwifW9I0XdwzB7z8Rz3y5rChYirSkaRp8I4SjkGjA93nA4xwItbBsLfocDD
+         B7xgfOcgWJdb88Y7B/bg4WTu10t4C/L1a8xZCsoiCSyoC7sTmLKhOHD09e/TLEUuxYya
+         lw1GE9chfI+I1q+UDrXf09j5hkTzEJlrEglVXUHlt17sLtnY+VVd8mBL8c9qqW45Oi5C
+         eeIj9ddQt6qY5BEwCgsqYidPDU+2n+KW2Unj9cGVDWGz1fYZeTyH00sfo1kQq43a5NGD
+         J9vzX4CipO/S1xx1CcKmzRO+19Gln38wF0XBwiOj9zKwbC0PUlbPSCXQdqi5dNkICWye
+         2HLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=z95GPwS+xvHGOD5r0CNYnBBj+LG8gXugvjHLF5gxxjE=;
+        b=o8dED0e80lwcR2iXOy6ySQung9Ojfkgh8kIrbc8f9a4aTE7pCLCS/Dfe6d00kUWAA5
+         08qrhfwqXAMeO7uBj2xfrmgim2/V2pDoxggjXLfAQXBZWV8llsicVmtPrR4JiDuQQdgf
+         C/UfBYV/9NjbpfO004BCvTkbO0fng4cjp7eSaL2CyIQVMs2aMfJWaDi3WVv6zLey1n0e
+         rPmVKoNf3r40lgAkLoyYi9omruHIBSVutVrck74KXVuPMX/mmMce/zcdGMPOu5bvo5to
+         2MTcLHdr42dz6qS/wXzZkf2HHWuxXc//EjbxiwJKahyg2g0SyPkxdwY1HfGvDGS7hHnt
+         vtgQ==
+X-Gm-Message-State: AOAM530rlC9WYoQ36tr+4E0L/j2l933iwF7Y24aqujHijdWgOaHuIXBU
+        w23Jt+/+IxOI4pVeA5bevYRrbA==
+X-Google-Smtp-Source: ABdhPJzVMhRGYjEUVwlvZc2/3mzLzt9ZkAoMpPAljq7WCQtgQ4+NjEWtOpLHJqrRtcZD0soR5FBH7w==
+X-Received: by 2002:a1c:2d5:: with SMTP id 204mr5730900wmc.181.1605805386527;
+        Thu, 19 Nov 2020 09:03:06 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id c2sm667848wrf.68.2020.11.19.09.03.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 09:03:05 -0800 (PST)
+Date:   Thu, 19 Nov 2020 18:02:59 +0100
+From:   Marco Elver <elver@google.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
+ allocations
+Message-ID: <20201119170259.GA2134472@elver.google.com>
+References: <CANpmjNNyZs6NrHPmomC4=9MPEvCy1bFA5R2pRsMhG7=c3LhL_Q@mail.gmail.com>
+ <20201112161439.GA2989297@elver.google.com>
+ <20201112175406.GF3249@paulmck-ThinkPad-P72>
+ <20201113175754.GA6273@paulmck-ThinkPad-P72>
+ <20201117105236.GA1964407@elver.google.com>
+ <20201117182915.GM1437@paulmck-ThinkPad-P72>
+ <20201118225621.GA1770130@elver.google.com>
+ <20201118233841.GS1437@paulmck-ThinkPad-P72>
+ <20201119125357.GA2084963@elver.google.com>
+ <20201119151409.GU1437@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20201118081940.3192ac1c@jacob-builder>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: multipart/mixed; boundary="jRHKVT23PllUwdXP"
+Content-Disposition: inline
+In-Reply-To: <20201119151409.GU1437@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacob,
-On 11/18/20 5:19 PM, Jacob Pan wrote:
-> Hi Eric,
-> 
-> On Wed, 18 Nov 2020 12:21:37 +0100, Eric Auger <eric.auger@redhat.com>
-> wrote:
-> 
->> In virtualization use case, when a guest is assigned
->> a PCI host device, protected by a virtual IOMMU on the guest,
->> the physical IOMMU must be programmed to be consistent with
->> the guest mappings. If the physical IOMMU supports two
->> translation stages it makes sense to program guest mappings
->> onto the first stage/level (ARM/Intel terminology) while the host
->> owns the stage/level 2.
->>
->> In that case, it is mandated to trap on guest configuration
->> settings and pass those to the physical iommu driver.
->>
->> This patch adds a new API to the iommu subsystem that allows
->> to set/unset the pasid table information.
->>
->> A generic iommu_pasid_table_config struct is introduced in
->> a new iommu.h uapi header. This is going to be used by the VFIO
->> user API.
->>
->> Signed-off-by: Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
->> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
->> Signed-off-by: Ashok Raj <ashok.raj@intel.com>
->> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
->> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->>
->> ---
->>
->> v12 -> v13:
->> - Fix config check
->>
->> v11 -> v12:
->> - add argsz, name the union
->> ---
->>  drivers/iommu/iommu.c      | 68 ++++++++++++++++++++++++++++++++++++++
->>  include/linux/iommu.h      | 21 ++++++++++++
->>  include/uapi/linux/iommu.h | 54 ++++++++++++++++++++++++++++++
->>  3 files changed, 143 insertions(+)
->>
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index b53446bb8c6b..978fe34378fb 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -2171,6 +2171,74 @@ int iommu_uapi_sva_unbind_gpasid(struct
->> iommu_domain *domain, struct device *dev }
->>  EXPORT_SYMBOL_GPL(iommu_uapi_sva_unbind_gpasid);
->>  
->> +int iommu_attach_pasid_table(struct iommu_domain *domain,
->> +			     struct iommu_pasid_table_config *cfg)
->> +{
->> +	if (unlikely(!domain->ops->attach_pasid_table))
->> +		return -ENODEV;
->> +
->> +	return domain->ops->attach_pasid_table(domain, cfg);
->> +}
->> +
->> +int iommu_uapi_attach_pasid_table(struct iommu_domain *domain,
->> +				  void __user *uinfo)
->> +{
->> +	struct iommu_pasid_table_config pasid_table_data = { 0 };
->> +	u32 minsz;
->> +
->> +	if (unlikely(!domain->ops->attach_pasid_table))
->> +		return -ENODEV;
->> +
->> +	/*
->> +	 * No new spaces can be added before the variable sized union,
->> the
->> +	 * minimum size is the offset to the union.
->> +	 */
->> +	minsz = offsetof(struct iommu_pasid_table_config, vendor_data);
->> +
->> +	/* Copy minsz from user to get flags and argsz */
->> +	if (copy_from_user(&pasid_table_data, uinfo, minsz))
->> +		return -EFAULT;
->> +
->> +	/* Fields before the variable size union are mandatory */
->> +	if (pasid_table_data.argsz < minsz)
->> +		return -EINVAL;
->> +
->> +	/* PASID and address granu require additional info beyond minsz
->> */
->> +	if (pasid_table_data.version != PASID_TABLE_CFG_VERSION_1)
->> +		return -EINVAL;
->> +	if (pasid_table_data.format == IOMMU_PASID_FORMAT_SMMUV3 &&
->> +	    pasid_table_data.argsz <
->> +		offsetofend(struct iommu_pasid_table_config,
->> vendor_data.smmuv3))
->> +		return -EINVAL;
->> +
->> +	/*
->> +	 * User might be using a newer UAPI header which has a larger
->> data
->> +	 * size, we shall support the existing flags within the current
->> +	 * size. Copy the remaining user data _after_ minsz but not more
->> +	 * than the current kernel supported size.
->> +	 */
->> +	if (copy_from_user((void *)&pasid_table_data + minsz, uinfo +
->> minsz,
->> +			   min_t(u32, pasid_table_data.argsz,
->> sizeof(pasid_table_data)) - minsz))
->> +		return -EFAULT;
->> +
->> +	/* Now the argsz is validated, check the content */
->> +	if (pasid_table_data.config < IOMMU_PASID_CONFIG_TRANSLATE ||
->> +	    pasid_table_data.config > IOMMU_PASID_CONFIG_ABORT)
->> +		return -EINVAL;
->> +
->> +	return domain->ops->attach_pasid_table(domain,
->> &pasid_table_data); +}
->> +EXPORT_SYMBOL_GPL(iommu_uapi_attach_pasid_table);
->> +
->> +void iommu_detach_pasid_table(struct iommu_domain *domain)
->> +{
->> +	if (unlikely(!domain->ops->detach_pasid_table))
->> +		return;
->> +
->> +	domain->ops->detach_pasid_table(domain);
->> +}
->> +EXPORT_SYMBOL_GPL(iommu_detach_pasid_table);
->> +
->>  static void __iommu_detach_device(struct iommu_domain *domain,
->>  				  struct device *dev)
->>  {
->> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->> index b95a6f8db6ff..464fcbecf841 100644
->> --- a/include/linux/iommu.h
->> +++ b/include/linux/iommu.h
->> @@ -223,6 +223,8 @@ struct iommu_iotlb_gather {
->>   * @cache_invalidate: invalidate translation caches
->>   * @sva_bind_gpasid: bind guest pasid and mm
->>   * @sva_unbind_gpasid: unbind guest pasid and mm
->> + * @attach_pasid_table: attach a pasid table
->> + * @detach_pasid_table: detach the pasid table
->>   * @def_domain_type: device default domain type, return value:
->>   *		- IOMMU_DOMAIN_IDENTITY: must use an identity domain
->>   *		- IOMMU_DOMAIN_DMA: must use a dma domain
->> @@ -287,6 +289,9 @@ struct iommu_ops {
->>  				      void *drvdata);
->>  	void (*sva_unbind)(struct iommu_sva *handle);
->>  	u32 (*sva_get_pasid)(struct iommu_sva *handle);
->> +	int (*attach_pasid_table)(struct iommu_domain *domain,
->> +				  struct iommu_pasid_table_config *cfg);
->> +	void (*detach_pasid_table)(struct iommu_domain *domain);
->>  
->>  	int (*page_response)(struct device *dev,
->>  			     struct iommu_fault_event *evt,
->> @@ -434,6 +439,11 @@ extern int iommu_uapi_sva_unbind_gpasid(struct
->> iommu_domain *domain, struct device *dev, void __user *udata);
->>  extern int iommu_sva_unbind_gpasid(struct iommu_domain *domain,
->>  				   struct device *dev, ioasid_t pasid);
->> +extern int iommu_attach_pasid_table(struct iommu_domain *domain,
->> +				    struct iommu_pasid_table_config
->> *cfg); +extern int iommu_uapi_attach_pasid_table(struct iommu_domain
->> *domain,
->> +					 void __user *udata);
->> +extern void iommu_detach_pasid_table(struct iommu_domain *domain);
->>  extern struct iommu_domain *iommu_get_domain_for_dev(struct device *dev);
->>  extern struct iommu_domain *iommu_get_dma_domain(struct device *dev);
->>  extern int iommu_map(struct iommu_domain *domain, unsigned long iova,
->> @@ -639,6 +649,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device
->> *dev, void iommu_sva_unbind_device(struct iommu_sva *handle);
->>  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
->>  
->> +
->>  #else /* CONFIG_IOMMU_API */
->>  
->>  struct iommu_ops {};
->> @@ -1020,6 +1031,16 @@ iommu_aux_get_pasid(struct iommu_domain *domain,
->> struct device *dev) return -ENODEV;
->>  }
->>  
->> +static inline
->> +int iommu_attach_pasid_table(struct iommu_domain *domain,
->> +			     struct iommu_pasid_table_config *cfg)
->> +{
->> +	return -ENODEV;
->> +}
->> +
->> +static inline
->> +void iommu_detach_pasid_table(struct iommu_domain *domain) {}
->> +
->>  static inline struct iommu_sva *
->>  iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void
->> *drvdata) {
->> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
->> index e1d9e75f2c94..082d758dd016 100644
->> --- a/include/uapi/linux/iommu.h
->> +++ b/include/uapi/linux/iommu.h
->> @@ -338,4 +338,58 @@ struct iommu_gpasid_bind_data {
->>  	} vendor;
->>  };
->>  
->> +/**
->> + * struct iommu_pasid_smmuv3 - ARM SMMUv3 Stream Table Entry stage 1
->> related
->> + *     information
->> + * @version: API version of this structure
->> + * @s1fmt: STE s1fmt (format of the CD table: single CD, linear table
->> + *         or 2-level table)
->> + * @s1dss: STE s1dss (specifies the behavior when @pasid_bits != 0
->> + *         and no PASID is passed along with the incoming transaction)
->> + * @padding: reserved for future use (should be zero)
->> + *
->> + * The PASID table is referred to as the Context Descriptor (CD) table
->> on ARM
->> + * SMMUv3. Please refer to the ARM SMMU 3.x spec (ARM IHI 0070A) for full
->> + * details.
->> + */
->> +struct iommu_pasid_smmuv3 {
->> +#define PASID_TABLE_SMMUV3_CFG_VERSION_1 1
->> +	__u32	version;
->> +	__u8	s1fmt;
->> +	__u8	s1dss;
->> +	__u8	padding[2];
->> +};
->> +
->> +/**
->> + * struct iommu_pasid_table_config - PASID table data used to bind guest
->> PASID
->> + *     table to the host IOMMU
->> + * @argsz: User filled size of this data
->> + * @version: API version to prepare for future extensions
->> + * @format: format of the PASID table
->> + * @base_ptr: guest physical address of the PASID table
->> + * @pasid_bits: number of PASID bits used in the PASID table
->> + * @config: indicates whether the guest translation stage must
->> + *          be translated, bypassed or aborted.
->> + * @padding: reserved for future use (should be zero)
->> + * @vendor_data.smmuv3: table information when @format is
->> + * %IOMMU_PASID_FORMAT_SMMUV3
->> + */
->> +struct iommu_pasid_table_config {
->> +	__u32	argsz;
->> +#define PASID_TABLE_CFG_VERSION_1 1
->> +	__u32	version;
->> +#define IOMMU_PASID_FORMAT_SMMUV3	1
->> +	__u32	format;
-> There will be a u32 gap here, right? perhaps another padding?
-Yes you're right (as per
-https://lists.cs.columbia.edu/pipermail/kvmarm/2019-January/034414.html).
-I will add some padding here and add some additional padding below.
 
-Thanks
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Eric
+On Thu, Nov 19, 2020 at 07:14AM -0800, Paul E. McKenney wrote:
+> On Thu, Nov 19, 2020 at 01:53:57PM +0100, Marco Elver wrote:
+> > On Wed, Nov 18, 2020 at 03:38PM -0800, Paul E. McKenney wrote:
+> > > On Wed, Nov 18, 2020 at 11:56:21PM +0100, Marco Elver wrote:
+> > > > [...]
+> > > > I think I figured out one piece of the puzzle. Bisection keeps pointing
+> > > > me at some -rcu merge commit, which kept throwing me off. Nor did it
+> > > > help that reproduction is a bit flaky. However, I think there are 2
+> > > > independent problems, but the manifestation of 1 problem triggers the
+> > > > 2nd problem:
+> > > > 
+> > > > 1. problem: slowed forward progress (workqueue lockup / RCU stall reports)
+> > > > 
+> > > > 2. problem: DEADLOCK which causes complete system lockup
+> > > > 
+> > > > 	| ...
+> > > > 	|        CPU0
+> > > > 	|        ----
+> > > > 	|   lock(rcu_node_0);
+> > > > 	|   <Interrupt>
+> > > > 	|     lock(rcu_node_0);
+> > > > 	| 
+> > > > 	|  *** DEADLOCK ***
+> > > > 	| 
+> > > > 	| 1 lock held by event_benchmark/105:
+> > > > 	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: print_other_cpu_stall kernel/rcu/tree_stall.h:493 [inline]
+> > > > 	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: check_cpu_stall kernel/rcu/tree_stall.h:652 [inline]
+> > > > 	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: rcu_pending kernel/rcu/tree.c:3752 [inline]
+> > > > 	|  #0: ffffbb6e0b804458 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x428/0xd40 kernel/rcu/tree.c:2581
+> > > > 	| ...
+> > > > 
+> > > > Problem 2 can with reasonable confidence (5 trials) be fixed by reverting:
+> > > > 
+> > > > 	rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
+> > > > 
+> > > > At which point the system always boots to user space -- albeit with a
+> > > > bunch of warnings still (attached). The supposed "good" version doesn't
+> > > > end up with all those warnings deterministically, so I couldn't say if
+> > > > the warnings are expected due to recent changes or not (Arm64 QEMU
+> > > > emulation, 1 CPU, and lots of debugging tools on).
+> > > > 
+> > > > Does any of that make sense?
+> > > 
+> > > Marco, it makes all too much sense!  :-/
+> > > 
+> > > Does the patch below help?
+> > > 
+> > > 							Thanx, Paul
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > commit 444ef3bbd0f243b912fdfd51f326704f8ee872bf
+> > > Author: Peter Zijlstra <peterz@infradead.org>
+> > > Date:   Sat Aug 29 10:22:24 2020 -0700
+> > > 
+> > >     sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled
+> > 
+> > My assumption is that this is a replacement for "rcu: Don't invoke
+> > try_invoke_on_locked_down_task() with irqs disabled", right?
 > 
->> +	__u64	base_ptr;
->> +	__u8	pasid_bits;
->> +#define IOMMU_PASID_CONFIG_TRANSLATE	1
->> +#define IOMMU_PASID_CONFIG_BYPASS	2
->> +#define IOMMU_PASID_CONFIG_ABORT	3
->> +	__u8	config;
->> +	__u8    padding[2];
->> +	union {
->> +		struct iommu_pasid_smmuv3 smmuv3;
->> +	} vendor_data;
->> +};
->> +
->>  #endif /* _UAPI_IOMMU_H */
+> Hmmm...  It was actually intended to be in addition.
 > 
+> > That seems to have the same result (same test setup) as only reverting
+> > "rcu: Don't invoke..." does: still results in a bunch of workqueue
+> > lockup warnings and RCU stall warnings, but boots to user space. I
+> > attached a log. If the warnings are expected (are they?), then it looks
+> > fine to me.
 > 
-> Thanks,
+> No, they are not at all expected, but might be a different symptom
+> of the original problem.  Please see below.
 > 
-> Jacob
+> > (And just in case: with "rcu: Don't invoke..." and "sched/core:
+> > Allow..." both applied I still get DEADLOCKs -- but that's probably
+> > expected.)
 > 
+> As noted earlier, it is a surprise.  Could you please send me the
+> console output?
+ 
+I've attached the output of a run with both commits applied.
 
+> > Testing all events: OK
+> > hrtimer: interrupt took 17120368 ns
+> > Running tests again, along with the function tracer
+> > Running tests on all trace events:
+> > Testing all events: 
+> > BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 12s!
+> > Showing busy workqueues and worker pools:
+> > workqueue events: flags=0x0
+> >   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+> >     pending: vmstat_shepherd
+> > BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 17s!
+> > Showing busy workqueues and worker pools:
+> > workqueue events: flags=0x0
+> >   pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+> >     pending: vmstat_shepherd
+> > workqueue events_power_efficient: flags=0x82
+> >   pwq 2: cpus=0 flags=0x4 nice=0 active=1/256 refcnt=3
+> >     pending: neigh_periodic_work
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 0 PID: 1 at kernel/rcu/tree_stall.h:758 rcu_check_gp_start_stall kernel/rcu/tree_stall.h:750 [inline]
+> > WARNING: CPU: 0 PID: 1 at kernel/rcu/tree_stall.h:758 rcu_check_gp_start_stall.isra.0+0x14c/0x210 kernel/rcu/tree_stall.h:711
+> 
+> I have different line numbering,
+
+This is still using next-20201110. I'll rerun with latest -next as well.
+
+> but the only warning that I see in this
+> function is the one complaining that RCU has been ignoring a request to
+> start a grace period for too long.  This usually happens because the RCU
+> grace-period kthread (named "rcu_preempt" in your case, but can also be
+> named "rcu_sched") is being prevented from running, but can be caused
+> by other things as well.
+> 
+> > Modules linked in:
+> > CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc3-next-20201110-00003-g920304642405-dirty #30
+> > Hardware name: linux,dummy-virt (DT)
+> > pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
+> > pc : rcu_check_gp_start_stall kernel/rcu/tree_stall.h:750 [inline]
+> > pc : rcu_check_gp_start_stall.isra.0+0x14c/0x210 kernel/rcu/tree_stall.h:711
+> > lr : __xchg_mb arch/arm64/include/asm/cmpxchg.h:88 [inline]
+> > lr : atomic_xchg include/asm-generic/atomic-instrumented.h:615 [inline]
+> > lr : rcu_check_gp_start_stall kernel/rcu/tree_stall.h:751 [inline]
+> > lr : rcu_check_gp_start_stall.isra.0+0x148/0x210 kernel/rcu/tree_stall.h:711
+> 
+> Two program counters and four link registers?  Awesome!  ;-)
+
+Ah I'm using syzkaller's symbolizer, which duplicates lines if there was
+an inline function (remove all the "[inline]" and it should make sense,
+but the "[inline]" tell you the actual line). Obviously for things like
+this it's a bit unintuitive. :-)
+ 
+> > sp : ffff800010003d20
+> > x29: ffff800010003d20 x28: ffff274ac3a10000 
+> > x27: 0000000000000000 x26: ffff274b3dbe72d8 
+> > x25: ffffbcb867722000 x24: 0000000000000000 
+> > x23: 0000000000000000 x22: ffffbcb8681d1260 
+> > x21: ffffbcb86735b000 x20: ffffbcb867404440 
+> > x19: ffffbcb867404440 x18: 0000000000000123 
+> > x17: ffffbcb865d400f0 x16: 0000000000000002 
+> > x15: 0000000000000002 x14: 0000000000000000 
+> > x13: 003d090000000000 x12: 00001e8480000000 
+> > x11: ffffbcb867958980 x10: ffff800010003cf0 
+> > x9 : ffffbcb864f4b7c8 x8 : 0000000000000080 
+> > x7 : 0000000000000026 x6 : ffffbcb86774e4c0 
+> > x5 : 0000000000000000 x4 : 00000000d4001f4b 
+> > x3 : 0000000000000000 x2 : 0000000000000000 
+> > x1 : 0000000000000001 x0 : 0000000000000000 
+> > Call trace:
+> >  rcu_check_gp_start_stall kernel/rcu/tree_stall.h:750 [inline]
+> >  rcu_check_gp_start_stall.isra.0+0x14c/0x210 kernel/rcu/tree_stall.h:711
+> >  rcu_core+0x168/0x9e0 kernel/rcu/tree.c:2719
+> >  rcu_core_si+0x18/0x28 kernel/rcu/tree.c:2737
+> 
+> The RCU_SOFTIRQ handler is causing this checking to occur, for whatever
+> that is worth.
+> 
+> >  __do_softirq+0x188/0x6b4 kernel/softirq.c:298
+> >  do_softirq_own_stack include/linux/interrupt.h:568 [inline]
+> >  invoke_softirq kernel/softirq.c:393 [inline]
+> >  __irq_exit_rcu kernel/softirq.c:423 [inline]
+> >  irq_exit+0x1cc/0x1e0 kernel/softirq.c:447
+> >  __handle_domain_irq+0xb4/0x130 kernel/irq/irqdesc.c:690
+> >  handle_domain_irq include/linux/irqdesc.h:170 [inline]
+> >  gic_handle_irq+0x70/0x108 drivers/irqchip/irq-gic.c:370
+> >  el1_irq+0xc0/0x180 arch/arm64/kernel/entry.S:651
+> >  arch_local_irq_restore+0x8/0x10 arch/arm64/include/asm/irqflags.h:124
+> >  release_probes kernel/tracepoint.c:113 [inline]
+> >  tracepoint_remove_func kernel/tracepoint.c:315 [inline]
+> >  tracepoint_probe_unregister+0x220/0x378 kernel/tracepoint.c:382
+> >  trace_event_reg+0x58/0x150 kernel/trace/trace_events.c:298
+> >  __ftrace_event_enable_disable+0x424/0x608 kernel/trace/trace_events.c:412
+> >  ftrace_event_enable_disable kernel/trace/trace_events.c:495 [inline]
+> >  __ftrace_set_clr_event_nolock+0x120/0x180 kernel/trace/trace_events.c:811
+> >  __ftrace_set_clr_event+0x60/0x90 kernel/trace/trace_events.c:833
+> >  event_trace_self_tests+0xd4/0x114 kernel/trace/trace_events.c:3661
+> >  event_trace_self_test_with_function kernel/trace/trace_events.c:3734 [inline]
+> >  event_trace_self_tests_init+0x88/0xa8 kernel/trace/trace_events.c:3747
+> >  do_one_initcall+0xa4/0x500 init/main.c:1212
+> >  do_initcall_level init/main.c:1285 [inline]
+> >  do_initcalls init/main.c:1301 [inline]
+> >  do_basic_setup init/main.c:1321 [inline]
+> >  kernel_init_freeable+0x344/0x3c4 init/main.c:1521
+> >  kernel_init+0x20/0x16c init/main.c:1410
+> >  ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
+> > irq event stamp: 3274113
+> > hardirqs last  enabled at (3274112): [<ffffbcb864f8aee4>] rcu_core+0x974/0x9e0 kernel/rcu/tree.c:2716
+> > hardirqs last disabled at (3274113): [<ffffbcb866233bf0>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+> > hardirqs last disabled at (3274113): [<ffffbcb866233bf0>] _raw_spin_lock_irqsave+0xb8/0x14c kernel/locking/spinlock.c:159
+> > softirqs last  enabled at (3272576): [<ffffbcb864e10b80>] __do_softirq+0x630/0x6b4 kernel/softirq.c:325
+> > softirqs last disabled at (3274101): [<ffffbcb864ec6c54>] do_softirq_own_stack include/linux/interrupt.h:568 [inline]
+> > softirqs last disabled at (3274101): [<ffffbcb864ec6c54>] invoke_softirq kernel/softirq.c:393 [inline]
+> > softirqs last disabled at (3274101): [<ffffbcb864ec6c54>] __irq_exit_rcu kernel/softirq.c:423 [inline]
+> > softirqs last disabled at (3274101): [<ffffbcb864ec6c54>] irq_exit+0x1cc/0x1e0 kernel/softirq.c:447
+> > ---[ end trace 902768efebf5a607 ]---
+> > rcu: rcu_preempt: wait state: RCU_GP_WAIT_GPS(1) ->state: 0x0 delta ->gp_activity 4452 ->gp_req_activity 3848 ->gp_wake_time 3848 ->gp_wake_seq 2696 ->gp_seq 2696 ->gp_seq_needed 2700 ->gp_flags 0x1
+> 
+> The last thing that RCU's grace-period kthread did was to go to sleep
+> waiting for a grace-period request (RCU_GP_WAIT_GPS).
+> 
+> > rcu: 	rcu_node 0:0 ->gp_seq 2696 ->gp_seq_needed 2700
+> > rcu: RCU callbacks invoked since boot: 2583
+> > rcu_tasks: RTGS_WAIT_CBS(11) since 567120 g:1 i:0/0 k. 
+> > rcu_tasks_rude: RTGS_WAIT_CBS(11) since 567155 g:1 i:0/1 k. 
+> > rcu_tasks_trace: RTGS_INIT(0) since 4295464549 g:0 i:0/0 k. N0 h:0/0/0
+> > rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> > 	(detected by 0, t=3752 jiffies, g=2705, q=8)
+> > rcu: All QSes seen, last rcu_preempt kthread activity 557 (4295471128-4295470571), jiffies_till_next_fqs=1, root ->qsmask 0x0
+> > rcu: rcu_preempt kthread starved for 557 jiffies! g2705 f0x2 RCU_GP_CLEANUP(7) ->state=0x0 ->cpu=0
+> 
+> And here we see that RCU's grace-period kthread has in fact been starved.
+> 
+> This kthread is now in RCU_GP_CLEANUP, perhaps because of the wakeup that is
+> sent in rcu_check_gp_kthread_starvation().
+> 
+> My current guess is that this is a consequence of the earlier failures,
+> but who knows?
+ 
+I can try bisection again, or reverting some commits that might be
+suspicious? But we'd need some selection of suspicious commits.
+
+Thanks,
+-- Marco
+
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=report
+
+Testing all events: OK
+Running tests again, along with the function tracer
+Running tests on all trace events:
+Testing all events: 
+hrtimer: interrupt took 10901376 ns
+BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 12s!
+Showing busy workqueues and worker pools:
+workqueue events: flags=0x0
+  pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+    pending: vmstat_shepherd
+workqueue events_power_efficient: flags=0x82
+  pwq 2: cpus=0 flags=0x4 nice=0 active=1/256 refcnt=3
+    pending: neigh_periodic_work
+BUG: workqueue lockup - pool cpus=0 flags=0x5 nice=0 stuck for 11s!
+Showing busy workqueues and worker pools:
+workqueue events_power_efficient: flags=0x82
+  pwq 2: cpus=0 flags=0x5 nice=0 active=3/256 refcnt=5
+    in-flight: 99:check_lifetime
+    pending: neigh_periodic_work, do_cache_clean
+pool 2: cpus=0 flags=0x5 nice=0 hung=11s workers=2 manager: 61
+BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 10s!
+Showing busy workqueues and worker pools:
+workqueue events: flags=0x0
+  pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+    pending: vmstat_shepherd
+workqueue events_power_efficient: flags=0x82
+  pwq 2: cpus=0 flags=0x4 nice=0 active=1/256 refcnt=3
+    in-flight: 107:check_lifetime
+pool 2: cpus=0 flags=0x4 nice=0 hung=8s workers=4 idle: 99 106 61
+BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 20s!
+Showing busy workqueues and worker pools:
+workqueue events: flags=0x0
+  pwq 0: cpus=0 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+    pending: vmstat_shepherd
+workqueue events_power_efficient: flags=0x82
+  pwq 2: cpus=0 flags=0x4 nice=0 active=1/256 refcnt=3
+    in-flight: 107:check_lifetime
+pool 2: cpus=0 flags=0x4 nice=0 hung=2s workers=4 idle: 99 106 61
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+	(detected by 0, t=3752 jiffies, g=2501, q=1)
+rcu: All QSes seen, last rcu_preempt kthread activity 3472 (4295298049-4295294577), jiffies_till_next_fqs=1, root ->qsmask 0x0
+rcu: rcu_preempt kthread starved for 3472 jiffies! g2501 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:I stack:    0 pid:   10 ppid:     2 flags:0x0000042a
+Call trace:
+ dump_backtrace+0x0/0x240 arch/arm64/kernel/stacktrace.c:100
+ show_stack+0x34/0x88 arch/arm64/kernel/stacktrace.c:196
+ sched_show_task kernel/sched/core.c:6444 [inline]
+ sched_show_task+0x1fc/0x228 kernel/sched/core.c:6419
+ rcu_check_gp_kthread_starvation+0xc8/0xe4 kernel/rcu/tree_stall.h:465
+ print_other_cpu_stall kernel/rcu/tree_stall.h:532 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:652 [inline]
+ rcu_pending kernel/rcu/tree.c:3752 [inline]
+ rcu_sched_clock_irq+0xc2c/0xd40 kernel/rcu/tree.c:2581
+ update_process_times+0x6c/0xb8 kernel/time/timer.c:1709
+ tick_sched_handle.isra.0+0x58/0x88 kernel/time/tick-sched.c:176
+ tick_sched_timer+0x68/0xe0 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x288/0x730 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x114/0x288 kernel/time/hrtimer.c:1645
+ timer_handler drivers/clocksource/arm_arch_timer.c:647 [inline]
+ arch_timer_handler_virt+0x50/0x70 drivers/clocksource/arm_arch_timer.c:658
+ handle_percpu_devid_irq+0x104/0x4c0 kernel/irq/chip.c:930
+ generic_handle_irq_desc include/linux/irqdesc.h:152 [inline]
+ generic_handle_irq+0x54/0x78 kernel/irq/irqdesc.c:650
+ __handle_domain_irq+0xac/0x130 kernel/irq/irqdesc.c:687
+ handle_domain_irq include/linux/irqdesc.h:170 [inline]
+ gic_handle_irq+0x70/0x108 drivers/irqchip/irq-gic.c:370
+ el1_irq+0xc0/0x180 arch/arm64/kernel/entry.S:651
+ arch_local_irq_restore arch/arm64/include/asm/irqflags.h:124 [inline]
+ rcu_irq_enter_irqson+0x40/0x78 kernel/rcu/tree.c:1078
+ trace_preempt_disable_rcuidle include/trace/events/preemptirq.h:51 [inline]
+ trace_preempt_off+0x108/0x1f8 kernel/trace/trace_preemptirq.c:130
+ preempt_latency_start kernel/sched/core.c:4163 [inline]
+ preempt_latency_start kernel/sched/core.c:4156 [inline]
+ preempt_schedule_common+0x170/0x1a8 kernel/sched/core.c:4679
+ preempt_schedule+0x38/0x40 kernel/sched/core.c:4705
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+ _raw_spin_unlock_irqrestore+0x90/0xa0 kernel/locking/spinlock.c:191
+ prepare_to_swait_event+0x84/0xe8 kernel/sched/swait.c:120
+ rcu_gp_fqs_loop kernel/rcu/tree.c:1942 [inline]
+ rcu_gp_kthread+0x630/0x1bd8 kernel/rcu/tree.c:2115
+ kthread+0x13c/0x188 kernel/kthread.c:292
+ ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
+
+================================
+WARNING: inconsistent lock state
+5.10.0-rc3-next-20201110-00003-g891a69a3957e #1 Not tainted
+--------------------------------
+inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+rcu_preempt/10 [HC0[0]:SC0[0]:HE0:SE1] takes:
+ffffb80c721e4458 (rcu_node_0){?.-.}-{2:2}, at: print_other_cpu_stall kernel/rcu/tree_stall.h:493 [inline]
+ffffb80c721e4458 (rcu_node_0){?.-.}-{2:2}, at: check_cpu_stall kernel/rcu/tree_stall.h:652 [inline]
+ffffb80c721e4458 (rcu_node_0){?.-.}-{2:2}, at: rcu_pending kernel/rcu/tree.c:3752 [inline]
+ffffb80c721e4458 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x428/0xd40 kernel/rcu/tree.c:2581
+{IN-HARDIRQ-W} state was registered at:
+  mark_lock kernel/locking/lockdep.c:4374 [inline]
+  mark_usage kernel/locking/lockdep.c:4302 [inline]
+  __lock_acquire+0xaa8/0x1a50 kernel/locking/lockdep.c:4785
+  lock_acquire kernel/locking/lockdep.c:5436 [inline]
+  lock_acquire+0x268/0x508 kernel/locking/lockdep.c:5401
+  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+  _raw_spin_lock_irqsave+0x78/0x14c kernel/locking/spinlock.c:159
+  print_other_cpu_stall kernel/rcu/tree_stall.h:493 [inline]
+  check_cpu_stall kernel/rcu/tree_stall.h:652 [inline]
+  rcu_pending kernel/rcu/tree.c:3752 [inline]
+  rcu_sched_clock_irq+0x428/0xd40 kernel/rcu/tree.c:2581
+  update_process_times+0x6c/0xb8 kernel/time/timer.c:1709
+  tick_sched_handle.isra.0+0x58/0x88 kernel/time/tick-sched.c:176
+  tick_sched_timer+0x68/0xe0 kernel/time/tick-sched.c:1328
+  __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+  __hrtimer_run_queues+0x288/0x730 kernel/time/hrtimer.c:1583
+  hrtimer_interrupt+0x114/0x288 kernel/time/hrtimer.c:1645
+  timer_handler drivers/clocksource/arm_arch_timer.c:647 [inline]
+  arch_timer_handler_virt+0x50/0x70 drivers/clocksource/arm_arch_timer.c:658
+  handle_percpu_devid_irq+0x104/0x4c0 kernel/irq/chip.c:930
+  generic_handle_irq_desc include/linux/irqdesc.h:152 [inline]
+  generic_handle_irq+0x54/0x78 kernel/irq/irqdesc.c:650
+  __handle_domain_irq+0xac/0x130 kernel/irq/irqdesc.c:687
+  handle_domain_irq include/linux/irqdesc.h:170 [inline]
+  gic_handle_irq+0x70/0x108 drivers/irqchip/irq-gic.c:370
+  el1_irq+0xc0/0x180 arch/arm64/kernel/entry.S:651
+  arch_local_irq_restore arch/arm64/include/asm/irqflags.h:124 [inline]
+  rcu_irq_enter_irqson+0x40/0x78 kernel/rcu/tree.c:1078
+  trace_preempt_disable_rcuidle include/trace/events/preemptirq.h:51 [inline]
+  trace_preempt_off+0x108/0x1f8 kernel/trace/trace_preemptirq.c:130
+  preempt_latency_start kernel/sched/core.c:4163 [inline]
+  preempt_latency_start kernel/sched/core.c:4156 [inline]
+  preempt_schedule_common+0x170/0x1a8 kernel/sched/core.c:4679
+  preempt_schedule+0x38/0x40 kernel/sched/core.c:4705
+  __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+  _raw_spin_unlock_irqrestore+0x90/0xa0 kernel/locking/spinlock.c:191
+  prepare_to_swait_event+0x84/0xe8 kernel/sched/swait.c:120
+  rcu_gp_fqs_loop kernel/rcu/tree.c:1942 [inline]
+  rcu_gp_kthread+0x630/0x1bd8 kernel/rcu/tree.c:2115
+  kthread+0x13c/0x188 kernel/kthread.c:292
+  ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
+irq event stamp: 43978
+hardirqs last  enabled at (43977): [<ffffb80c6fd89db4>] rcu_irq_enter_irqson+0x64/0x78 kernel/rcu/tree.c:1078
+hardirqs last disabled at (43978): [<ffffb80c6fc123c0>] el1_irq+0x80/0x180 arch/arm64/kernel/entry.S:648
+softirqs last  enabled at (43682): [<ffffb80c6fc10b80>] __do_softirq+0x630/0x6b4 kernel/softirq.c:325
+softirqs last disabled at (43673): [<ffffb80c6fcc61c4>] do_softirq_own_stack include/linux/interrupt.h:568 [inline]
+softirqs last disabled at (43673): [<ffffb80c6fcc61c4>] invoke_softirq kernel/softirq.c:393 [inline]
+softirqs last disabled at (43673): [<ffffb80c6fcc61c4>] __irq_exit_rcu kernel/softirq.c:423 [inline]
+softirqs last disabled at (43673): [<ffffb80c6fcc61c4>] irq_exit+0x1cc/0x1e0 kernel/softirq.c:447
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(rcu_node_0);
+  <Interrupt>
+    lock(rcu_node_0);
+
+ *** DEADLOCK ***
+
+1 lock held by rcu_preempt/10:
+ #0: ffffb80c721e4458 (rcu_node_0){?.-.}-{2:2}, at: print_other_cpu_stall kernel/rcu/tree_stall.h:493 [inline]
+ #0: ffffb80c721e4458 (rcu_node_0){?.-.}-{2:2}, at: check_cpu_stall kernel/rcu/tree_stall.h:652 [inline]
+ #0: ffffb80c721e4458 (rcu_node_0){?.-.}-{2:2}, at: rcu_pending kernel/rcu/tree.c:3752 [inline]
+ #0: ffffb80c721e4458 (rcu_node_0){?.-.}-{2:2}, at: rcu_sched_clock_irq+0x428/0xd40 kernel/rcu/tree.c:2581
+
+stack backtrace:
+CPU: 0 PID: 10 Comm: rcu_preempt Not tainted 5.10.0-rc3-next-20201110-00003-g891a69a3957e #1
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+ dump_backtrace+0x0/0x240 arch/arm64/kernel/stacktrace.c:100
+ show_stack+0x34/0x88 arch/arm64/kernel/stacktrace.c:196
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x140/0x1bc lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:3739 [inline]
+ print_usage_bug+0x2a0/0x2f0 kernel/locking/lockdep.c:3706
+ valid_state kernel/locking/lockdep.c:3750 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3953 [inline]
+ mark_lock.part.0+0x438/0x4e8 kernel/locking/lockdep.c:4410
+ mark_lock kernel/locking/lockdep.c:4008 [inline]
+ mark_held_locks+0x54/0x90 kernel/locking/lockdep.c:4011
+ __trace_hardirqs_on_caller kernel/locking/lockdep.c:4029 [inline]
+ lockdep_hardirqs_on_prepare+0xe0/0x290 kernel/locking/lockdep.c:4097
+ trace_hardirqs_on+0x90/0x370 kernel/trace/trace_preemptirq.c:49
+ el1_irq+0xdc/0x180 arch/arm64/kernel/entry.S:685
+ arch_local_irq_restore arch/arm64/include/asm/irqflags.h:124 [inline]
+ rcu_irq_enter_irqson+0x40/0x78 kernel/rcu/tree.c:1078
+ trace_preempt_disable_rcuidle include/trace/events/preemptirq.h:51 [inline]
+ trace_preempt_off+0x108/0x1f8 kernel/trace/trace_preemptirq.c:130
+ preempt_latency_start kernel/sched/core.c:4163 [inline]
+ preempt_latency_start kernel/sched/core.c:4156 [inline]
+ preempt_schedule_common+0x170/0x1a8 kernel/sched/core.c:4679
+ preempt_schedule+0x38/0x40 kernel/sched/core.c:4705
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+ _raw_spin_unlock_irqrestore+0x90/0xa0 kernel/locking/spinlock.c:191
+ prepare_to_swait_event+0x84/0xe8 kernel/sched/swait.c:120
+ rcu_gp_fqs_loop kernel/rcu/tree.c:1942 [inline]
+ rcu_gp_kthread+0x630/0x1bd8 kernel/rcu/tree.c:2115
+ kthread+0x13c/0x188 kernel/kthread.c:292
+ ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
+BUG: scheduling while atomic: rcu_preempt/10/0x00000002
+INFO: lockdep is turned off.
+Modules linked in:
+Preemption disabled at:
+[<ffffb80c71009bf8>] preempt_schedule+0x38/0x40 kernel/sched/core.c:4705
+CPU: 0 PID: 10 Comm: rcu_preempt Not tainted 5.10.0-rc3-next-20201110-00003-g891a69a3957e #1
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+ dump_backtrace+0x0/0x240 arch/arm64/kernel/stacktrace.c:100
+ show_stack+0x34/0x88 arch/arm64/kernel/stacktrace.c:196
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x140/0x1bc lib/dump_stack.c:118
+ __schedule_bug+0xcc/0xe0 kernel/sched/core.c:4261
+ schedule_debug kernel/sched/core.c:4288 [inline]
+ __schedule+0x888/0x970 kernel/sched/core.c:4416
+ preempt_schedule_common+0x4c/0x1a8 kernel/sched/core.c:4680
+ preempt_schedule+0x38/0x40 kernel/sched/core.c:4705
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+ _raw_spin_unlock_irqrestore+0x90/0xa0 kernel/locking/spinlock.c:191
+ prepare_to_swait_event+0x84/0xe8 kernel/sched/swait.c:120
+ rcu_gp_fqs_loop kernel/rcu/tree.c:1942 [inline]
+ rcu_gp_kthread+0x630/0x1bd8 kernel/rcu/tree.c:2115
+ kthread+0x13c/0x188 kernel/kthread.c:292
+ ret_from_fork+0x10/0x34 arch/arm64/kernel/entry.S:961
+
+--jRHKVT23PllUwdXP--
