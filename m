@@ -2,111 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB012B9A42
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 059022B9A46
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729740AbgKSR7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:59:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59360 "EHLO mail.kernel.org"
+        id S1729803AbgKSR7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:59:46 -0500
+Received: from foss.arm.com ([217.140.110.172]:36530 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729265AbgKSR7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:59:30 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 382EC2225B;
-        Thu, 19 Nov 2020 17:59:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605808770;
-        bh=Ta3tsz+YYOgNDaVSrDSReSog0hdPUxrDoz7tjhPgBp8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=v4ZtqpY2LAz/9Nfm6jgZ5XJMCJesqYR/Z4WxVWn3ygJvWBVacjqbC2MVHDaO5xuuV
-         KHOQFQoHiIvHJ3UeOFKgiRAX5aVTwFGJ4B5NeinELaVuWGB3/aMAetQHqBghFvPb03
-         xS+00bjvrJE6FVTSlRLcXq9sfIhkgFS9Elb6L0wg=
-Date:   Thu, 19 Nov 2020 09:59:28 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Tao Ren <rentao.bupt@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, openbmc@lists.ozlabs.org, taoren@fb.com,
-        mikechoi@fb.com
-Subject: Re: XDP maintainer match (Was  [PATCH v2 0/2] hwmon: (max127) Add
- Maxim MAX127 hardware monitoring)
-Message-ID: <20201119095928.01fd10e0@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <088057533a9feb330964bdab0b1b8d2f69b7a22c.camel@perches.com>
-References: <20201118230929.18147-1-rentao.bupt@gmail.com>
-        <20201118232719.GI1853236@lunn.ch>
-        <20201118234252.GA18681@taoren-ubuntu-R90MNF91>
-        <20201119010119.GA248686@roeck-us.net>
-        <20201119012653.GA249502@roeck-us.net>
-        <20201119074634.2e9cb21b@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <20201119173535.1474743d@carbon>
-        <088057533a9feb330964bdab0b1b8d2f69b7a22c.camel@perches.com>
+        id S1729265AbgKSR7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:59:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B4EB1595;
+        Thu, 19 Nov 2020 09:59:45 -0800 (PST)
+Received: from bogus (unknown [10.57.54.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8907C3F70D;
+        Thu, 19 Nov 2020 09:59:43 -0800 (PST)
+Date:   Thu, 19 Nov 2020 17:59:41 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        lukasz.luba@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, egranata@google.com,
+        jbhayana@google.com, peter.hilber@opensynergy.com,
+        mikhail.golubev@opensynergy.com, Igor.Skalkin@opensynergy.com,
+        linux-hwmon@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH v4 3/6] hwmon: scmi: update hwmon internal scale data type
+Message-ID: <20201119175941.3pqqtoj3sd7itmkg@bogus>
+References: <20201119174906.43862-1-cristian.marussi@arm.com>
+ <20201119174906.43862-4-cristian.marussi@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119174906.43862-4-cristian.marussi@arm.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 09:09:53 -0800 Joe Perches wrote:
-> On Thu, 2020-11-19 at 17:35 +0100, Jesper Dangaard Brouer wrote:
-> > On Thu, 19 Nov 2020 07:46:34 -0800 Jakub Kicinski <kuba@kernel.org> wro=
-te: =20
->=20
-> > I think it is a good idea to change the keyword (K:), but I'm not sure
-> > this catch what we want, maybe it does.  The pattern match are meant to
-> > catch drivers containing XDP related bits.
-> >=20
-> > Previously Joe Perches <joe@perches.com> suggested this pattern match,
-> > which I don't fully understand... could you explain Joe?
-> >=20
-> > =C2=A0=C2=A0(?:\b|_)xdp(?:\b|_) =20
->=20
-> This regex matches only:
->=20
-> 	xdp
-> 	xdp_<anything>
-> 	<anything>_xdp_<anything>
-> 	<anything>_xdp
->=20
-> > For the filename (N:) regex match, I'm considering if we should remove
-> > it and list more files explicitly.  I think normal glob * pattern
-> > works, which should be sufficient. =20
->=20
-> Lists are generally more specific than regex globs.
+Hi Guenter,
 
-Checking like Alexei did it seems Joe's version is faster and better:
+On Thu, Nov 19, 2020 at 05:49:03PM +0000, Cristian Marussi wrote:
+> Use an int to calculate scale values inside scmi_hwmon_scale() to match
+> the updated scale data type in struct scmi_sensor_info.
+>
 
-$ git grep -l -E "[^a-z0-9]xdp[^a-z0-9]" | wc -l
-295
-$ git grep -l -E '(\b|_)xdp(\b|_)' | wc -l
-297
-$ time git grep -l -E '(\b|_)xdp(\b|_)' > /tmp/a
+You were not cc-ed in previous versions unfortunately. I plan to take this
+along with the rest of SCMI changes if you are fine with this change and
+provide Ack/Review. Sorry for the rush.
 
-real	0m5.171s
-user	0m32.657s
-sys	0m0.664s
-$ time git grep -l -E "[^a-z0-9]xdp[^a-z0-9]" > /tmp/b
-
-real	0m16.627s
-user	1m48.149s
-sys	0m0.977s
-09:56 linux$ diff /tmp/a /tmp/b
-4d3
-< Documentation/networking/index.rst
-189d187
-< samples/bpf/.gitignore
-
-
-Joe would you like to send a patch, or should I?
+-- 
+Regards,
+Sudeep
