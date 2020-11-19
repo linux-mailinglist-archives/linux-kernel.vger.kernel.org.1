@@ -2,139 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC712B9BDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 21:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD38D2B9BE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 21:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbgKSUNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 15:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726334AbgKSUNp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 15:13:45 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22399C0613CF;
-        Thu, 19 Nov 2020 12:13:43 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id o21so9718369ejb.3;
-        Thu, 19 Nov 2020 12:13:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ytDY3lgvXULFrVxphJeXz69M1pGNIZ7Kfu6CGGtsbzU=;
-        b=lUt0gpgOQcWF+BPObZOrL66x7ZT/EeuqT9y9GIp1uLdh3KeAh4nHO1G7Zo3IHB0nqG
-         wPlUIYb404F1DWOejOsrC6M93xFU3AChVkOKyce4qlolngQnD1Vws1sGqASnTBLij2tn
-         Qjo0jwOGV+cGFita5U/R66O0Mo2iuco5r8YPDO2Cozs1mgoT54RDmeoZMbyXqb2Kv/Wu
-         vP5RxehI39U0lKZj/ViZQS7ENTL4tAMXhLU+6sjMQkxD5xZS74KqTV4TMxv0cb9UCks3
-         Gc0a+gnPjCScLj6BhqraWYyXaQRM8/AToTErKzLIvh56aeoa0XgOtjZzTnKbQiplWw/e
-         DuAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ytDY3lgvXULFrVxphJeXz69M1pGNIZ7Kfu6CGGtsbzU=;
-        b=Y11CLsKbHFEHlcwUF2K66zZJhInn2dFrvweEUhcQzDcy/2KFnvPFcs0uMxniafGTws
-         Tq/kwoZH/fYLvVKwEBnpBEVOhdMseoCHsCrtSvUwdP5xwRfeubkh4Z3A3HNLtaZQqvtL
-         aQqosjfZ5SVa4HRQwgGwrO+qlMTRJtbaqO5Yvs1aC//sOSpOIGOXJKktTqSwmt3Cekye
-         9H48b0zD+aBDFbcXSgmopCxgktVVNHooKKkqgaPsj+8NyS7IsdzBOvIlh1QlHYqdr33k
-         Uzz2s8Teg8mmzZSzAU9EvledWc6PX9iKeb/Rx/6lftD4dW8lw31jGk5bcuoXDQrskmFc
-         T+Fw==
-X-Gm-Message-State: AOAM533E3l7MmCbZpiqzxr1bFZVZcQ05N2A/2d7R2yOdlH14o7u8D8Op
-        JI7iXpRQv/geh90to3c58EXaLyijy9H81jsOkAo=
-X-Google-Smtp-Source: ABdhPJyEQJUZJTBbjnme7vrNNluonOh9/+gzEn6XzuK9sHgg2qDy1W0EuCGBe9VRPK7ceUEEKr9+XWOxBtr91WHaZlo=
-X-Received: by 2002:a17:906:a4b:: with SMTP id x11mr30882606ejf.11.1605816821857;
- Thu, 19 Nov 2020 12:13:41 -0800 (PST)
+        id S1727430AbgKSUQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 15:16:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgKSUQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 15:16:17 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CCF422261;
+        Thu, 19 Nov 2020 20:16:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605816975;
+        bh=OdyXGwPZpUxQYJhRsdLxqySuFQ7DYfktfgPZ0jbfCmM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Y/O3k0AJ1LjHnKTcTKcTYKgrp9nptnbOrNetjrFdkf2/8Kj8OQW7B3tyZ5adEgtpO
+         UOxs5wg8yC2p2nCSSyZ/hK+3fh+jtpsoKrja6v+UJg2GjUBmrNURM2G8q7NHdUdOXy
+         IDVCZIK0iHILIu4iwK/OHz+fCl+IelDNdkYrbJSw=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 3DAD135225D3; Thu, 19 Nov 2020 12:16:15 -0800 (PST)
+Date:   Thu, 19 Nov 2020 12:16:15 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2] rcu/segcblist: Add debug checks for segment lengths
+Message-ID: <20201119201615.GA1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201118161541.3844924-1-joel@joelfernandes.org>
+ <20201118201335.GR1437@paulmck-ThinkPad-P72>
+ <20201119035222.GA18458@paulmck-ThinkPad-P72>
+ <20201119035613.GA18816@paulmck-ThinkPad-P72>
+ <20201119183252.GA812262@google.com>
+ <20201119192241.GZ1437@paulmck-ThinkPad-P72>
+ <CAEXW_YSRQ+r_CjFOOEZ38BBRpkhjs5UbpfhGCzA8=XywEU0u8Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201118144617.986860-1-willemdebruijn.kernel@gmail.com>
- <20201118144617.986860-2-willemdebruijn.kernel@gmail.com> <20201118150041.GF29991@casper.infradead.org>
- <CA+FuTSdxNBvNMy341EHeiKOWZ19H++aw-tfr6Fx1mFmbg-z4zQ@mail.gmail.com>
- <CAK8P3a0t02o77+8QNZwXF2k1pY3Xrm5bydv8Vx1TW060P7BKqA@mail.gmail.com>
- <893e8ed21e544d048bff7933013332a0@AcuMS.aculab.com> <CAF=yD-+arBFuZCU3UDx0XKmUGaEz8P1EaDLPK0YFCz82MdwBcg@mail.gmail.com>
- <20201119143131.GG29991@casper.infradead.org> <CAK8P3a1SwQ=L_qA1BmeAt=Xc-Q9Mv4V+J5LFLB5R6rMDST8UiA@mail.gmail.com>
-In-Reply-To: <CAK8P3a1SwQ=L_qA1BmeAt=Xc-Q9Mv4V+J5LFLB5R6rMDST8UiA@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 19 Nov 2020 15:13:05 -0500
-Message-ID: <CAF=yD-Kd-6f9wAYLD=dP1pk4qncWim424Fu6Hgj=ZrnUtEPORA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] epoll: add nsec timeout support with epoll_pwait2
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YSRQ+r_CjFOOEZ38BBRpkhjs5UbpfhGCzA8=XywEU0u8Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 10:45 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Thu, Nov 19, 2020 at 3:31 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Thu, Nov 19, 2020 at 09:19:35AM -0500, Willem de Bruijn wrote:
-> > > But for epoll, this is inefficient: in ep_set_mstimeout it calls
-> > > ktime_get_ts64 to convert timeout to an offset from current time, only
-> > > to pass it to select_estimate_accuracy to then perform another
-> > > ktime_get_ts64 and subtract this to get back to (approx.) the original
-> > > timeout.
->
-> Right, it would be good to avoid the second ktime_get_ts64(), as reading
-> the clocksource itself can be expensive.
->
-> > > How about a separate patch that adds epoll_estimate_accuracy with
-> > > the same rules (wrt rt_task, current->timer_slack, nice and upper bound)
-> > > but taking an s64 timeout.
+On Thu, Nov 19, 2020 at 02:44:35PM -0500, Joel Fernandes wrote:
+> On Thu, Nov 19, 2020 at 2:22 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > > On Wed, Nov 18, 2020 at 11:15:41AM -0500, Joel Fernandes (Google) wrote:
+> > > > > > > After rcu_do_batch(), add a check for whether the seglen counts went to
+> > > > > > > zero if the list was indeed empty.
+> > > > > > >
+> > > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > >
+> > > > > > Queued for testing and further review, thank you!
+> > > > >
+> > > > > FYI, the second of the two checks triggered in all four one-hour runs of
+> > > > > TREE01, all four one-hour runs of TREE04, and one of the four one-hour
+> > > > > runs of TREE07.  This one:
+> > > > >
+> > > > > WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+> > > > >
+> > > > > That is, there are callbacks in the list, but the sum of the segment
+> > > > > counts is nevertheless zero.  The ->nocb_lock is held.
+> > > > >
+> > > > > Thoughts?
+> > > >
+> > > > FWIW, TREE01 reproduces it very quickly compared to the other two
+> > > > scenarios, on all four run, within five minutes.
 > > >
-> > > One variation, since it is approximate, I suppose we could even replace
-> > > division by a right shift?
->
-> The right shift would work indeed, but it's also a bit ugly unless
-> __estimate_accuracy() is changed to always use the same shift.
->
-> I see that on 32-bit ARM, select_estimate_accuracy() calls
-> the external __aeabi_idiv() function to do the 32-bit division, so
-> changing it to a shift would speed up select as well.
->
-> Changing select_estimate_accuracy() to take the relative timeout
-> as an argument to avoid the extra ktime_get_ts64() should
-> have a larger impact.
-
-It could be done by having poll_select_set_timeout take an extra u64*
-slack, call select_estimate_accuracy before adding in the current time
-and then pass the slack down to do_select and do_sys_poll, also
-through core_sys_select and compat_core_sys_select.
-
-It could be a patch independent from this new syscall. Since it changes
-poll_select_set_timeout it clearly has a conflict with the planned next
-revision of this. I can include it in the next patchset to decide whether
-it's worth it.
-
-> > > After that, using s64 everywhere is indeed much simpler. And with that
-> > > I will revise the new epoll_pwait2 interface to take a long long
-> > > instead of struct timespec.
+> > > So far for TREE01, I traced it down to an rcu_barrier happening so it could
+> > > be related to some interaction with rcu_barrier() (Just a guess).
 > >
-> > I think the userspace interface should take a struct timespec
-> > for consistency with ppoll and pselect.  And epoll should use
-> > poll_select_set_timeout() to convert the relative timeout to an absolute
-> > endtime.  Make epoll more consistent with select/poll, not less ...
->
-> I don't see a problem with an s64 timeout if that makes the interface
-> simpler by avoiding differences between the 32-bit and 64-bit ABIs.
->
-> More importantly, I think it should differ from poll/select by calculating
-> and writing back the remaining timeout.
->
-> I don't know what the latest view on absolute timeouts at the syscall
-> ABI is, it would probably simplify the implementation, but make it
-> less consistent with the others. Futex uses absolute timeouts, but
-> is itself inconsistent about that.
+> > Well, rcu_barrier() and srcu_barrier() are the only users of
+> > rcu_segcblist_entrain(), if that helps.  Your modification to that
+> > function looks plausible to me, but the system's opinion always overrules
+> > mine.  ;-)
+> 
+> Right. Does anything the bypass code standout? That happens during
+> rcu_barrier() as well, and it messes with the lengths.
 
-If the implementation internally uses poll_select_set_timeout and
-passes around timespec64 *, it won't matter much in terms of
-performance or implementation. Then there seems to be no downside to
-following the consistency argument.
+In theory, rcu_barrier_func() flushes the bypass before doing the
+entrain, and does the rcu_segcblist_entrain() afterwards.
+
+Ah, and that is the issue.  If ->cblist is empty and ->nocb_bypass
+is not, then ->cblist length will be nonzero, and none of the
+segments will be nonzero.
+
+So you need something like this for that second WARN, correct?
+
+	WARN_ON_ONCE(!rcu_segcblist_empty(&rdp->cblist) &&
+		     rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+
+This is off the cuff, so should be taken with a grain of salt.  And
+there might well be other similar issues.
+
+> > > 'p2' print below is the panic on the second warning. It executes 43 callbacks
+> > > from the segcb list, but the list length still does not appear to be 0.
+> > >
+> > > I'll debug it more:
+> > >
+> > > [  191.085702]  rcuop/0-12        0.... 75782125us : rcu_invoke_callback: rcu_preempt rhp=000000006a881152 func=__d_free
+> > > [  191.844028]  rcuop/0-12        0d..1 75796122us : rcu_segcb_stats: SegCbDequeued seglen: (DONE=0, WAIT=43, NEXT_READY=0, NEXT=0) gp_seq: (DONE=0, WAIT=11656, NEXT_READY=11656, NEXT=0)
+> > > [  191.846493]  rcuop/0-12        0.... 75796122us : rcu_invoke_callback: rcu_preempt rhp=00000000017536a2 func=i_callback
+> > > [  191.848160]  rcuop/0-12        0.... 75796123us : rcu_invoke_callback: rcu_preempt rhp=0000000014235c71 func=__d_free
+> > > [  191.849695]  rcuop/0-12        0.... 75796123us : rcu_invoke_callback: rcu_preempt rhp=00000000368c5928 func=i_callback
+> > > [  191.851262]  rcuop/0-12        0.... 75796124us : rcu_invoke_callback: rcu_preempt rhp=00000000bdbea790 func=__d_free
+> > > [  191.852800]  rcuop/0-12        0.... 75796124us : rcu_invoke_callback: rcu_preempt rhp=0000000034b99f3d func=rcu_barrier_callback
+> > > [  192.526784]  rcuop/0-12        0d..1 75809162us : rcu_segcb_stats: SegCbDequeued seglen: (DONE=0, WAIT=0, NEXT_READY=0, NEXT=0) gp_seq: (DONE=0, WAIT=11656, NEXT_READY=11656, NEXT=0)
+> >
+> > Quite the coincidence that WAIT and NEXT_READY have exactly the same
+> > number of callbacks, isn't it?  Or am I being too suspicious today?
+> 
+> Those numbers are gp_seq :-D.
+
+That would explain it!  ;-)
+
+Still odd from a useful-information point of view.  If both gp_seq fields
+are identical, they should be merged.  But yes, if the second one is
+empty, this perhaps could happen.  And it probably predates your series.
+
+							Thanx, Paul
+
+> thanks,
+> 
+>  - Joel
+> 
+> 
+> 
+> >
+> >                                                                 Thanx, Paul
+> >
+> > > [  192.529132]  rcuop/0-12        0.... 75809163us : rcu_invoke_callback: rcu_preempt rhp=000000002d6a3fce func=rcu_sync_func
+> > > [  192.530807]  rcuop/0-12        0.... 75809165us : rcu_invoke_callback: rcu_preempt rhp=000000009aa91c97 func=destroy_sched_domains_rcu
+> > > [  192.532556]  rcuop/0-12        0.... 75809170us : rcu_invoke_callback: rcu_preempt rhp=000000002bb5a998 func=destroy_sched_domains_rcu
+> > > [  192.534303]  rcuop/0-12        0.... 75809172us : rcu_invoke_callback: rcu_preempt rhp=00000000bcc2369a func=destroy_sched_domains_rcu
+> > > [  192.536053]  rcuop/0-12        0.... 75809174us : rcu_invoke_callback: rcu_preempt rhp=000000004dcec39b func=destroy_sched_domains_rcu
+> > > [  192.537802]  rcuop/0-12        0.... 75809176us : rcu_invoke_callback: rcu_preempt rhp=00000000dedb509d func=destroy_sched_domains_rcu
+> > > [  192.539553]  rcuop/0-12        0.... 75809178us : rcu_invoke_callback: rcu_preempt rhp=000000006fe7dd9e func=destroy_sched_domains_rcu
+> > > [  192.541299]  rcuop/0-12        0.... 75809180us : rcu_invoke_callback: rcu_preempt rhp=000000005a212061 func=destroy_sched_domains_rcu
+> > > [  192.543043]  rcuop/0-12        0.... 75809182us : rcu_invoke_callback: rcu_preempt rhp=00000000c914935f func=destroy_sched_domains_rcu
+> > > [  192.544792]  rcuop/0-12        0.... 75809184us : rcu_invoke_callback: rcu_preempt rhp=0000000019fa3368 func=destroy_sched_domains_rcu
+> > > [  192.546539]  rcuop/0-12        0.... 75809186us : rcu_invoke_callback: rcu_preempt rhp=00000000ab06c069 func=destroy_sched_domains_rcu
+> > > [  192.548289]  rcuop/0-12        0.... 75809188us : rcu_invoke_callback: rcu_preempt rhp=000000003c134d6b func=destroy_sched_domains_rcu
+> > > [  192.550037]  rcuop/0-12        0.... 75809190us : rcu_invoke_callback: rcu_preempt rhp=00000000cd1fda6c func=destroy_sched_domains_rcu
+> > > [  192.551790]  rcuop/0-12        0.... 75809192us : rcu_invoke_callback: rcu_preempt rhp=000000005e2c676e func=destroy_sched_domains_rcu
+> > > [  192.553576]  rcuop/0-12        0.... 75809194us : rcu_invoke_callback: rcu_preempt rhp=00000000ef38f46f func=destroy_sched_domains_rcu
+> > > [  192.555314]  rcuop/0-12        0.... 75809196us : rcu_invoke_callback: rcu_preempt rhp=0000000080458170 func=destroy_sched_domains_rcu
+> > > [  192.557054]  rcuop/0-12        0.... 75809198us : rcu_invoke_callback: rcu_preempt rhp=0000000009316351 func=destroy_sched_domains_rcu
+> > > [  192.558793]  rcuop/0-12        0.... 75809200us : rcu_invoke_callback: rcu_preempt rhp=0000000022a2585e func=destroy_sched_domains_rcu
+> > > [  192.560539]  rcuop/0-12        0.... 75809202us : rcu_invoke_callback: rcu_preempt rhp=00000000b3aee55f func=destroy_sched_domains_rcu
+> > > [  192.562282]  rcuop/0-12        0.... 75809204us : rcu_invoke_callback: rcu_preempt rhp=0000000044bb7261 func=destroy_sched_domains_rcu
+> > > [  192.564028]  rcuop/0-12        0.... 75809206us : rcu_invoke_callback: rcu_preempt rhp=00000000d5c7ff62 func=destroy_sched_domains_rcu
+> > > [  192.565777]  rcuop/0-12        0.... 75809208us : rcu_invoke_callback: rcu_preempt rhp=00000000bc570a55 func=destroy_sched_domains_rcu
+> > > [  192.567568]  rcuop/0-12        0.... 75809210us : rcu_invoke_callback: rcu_preempt rhp=000000004d639757 func=destroy_sched_domains_rcu
+> > > [  192.569315]  rcuop/0-12        0.... 75809212us : rcu_invoke_callback: rcu_preempt rhp=00000000de702458 func=destroy_sched_domains_rcu
+> > > [  192.571111]  rcuop/0-12        0.... 75809214us : rcu_invoke_callback: rcu_preempt rhp=000000006f7cb15a func=destroy_sched_domains_rcu
+> > > [  192.572855]  rcuop/0-12        0.... 75809216us : rcu_invoke_callback: rcu_preempt rhp=0000000000893e5b func=destroy_sched_domains_rcu
+> > > [  192.574595]  rcuop/0-12        0.... 75809218us : rcu_invoke_callback: rcu_preempt rhp=0000000066d48c64 func=destroy_sched_domains_rcu
+> > > [  192.576435]  rcuop/0-12        0.... 75809220us : rcu_invoke_callback: rcu_preempt rhp=000000009a3df053 func=destroy_sched_domains_rcu
+> > > [  192.578182]  rcuop/0-12        0.... 75809221us : rcu_invoke_callback: rcu_preempt rhp=000000002b4a7d54 func=destroy_sched_domains_rcu
+> > > [  192.579981]  rcuop/0-12        0.... 75809223us : rcu_invoke_callback: rcu_preempt rhp=000000009cf78b8b func=destroy_sched_domains_rcu
+> > > [  192.581773]  rcuop/0-12        0.... 75809225us : rcu_invoke_callback: rcu_preempt rhp=000000000beafe8a func=destroy_sched_domains_rcu
+> > > [  192.583547]  rcuop/0-12        0.... 75809227us : rcu_invoke_callback: rcu_preempt rhp=000000007ade7189 func=destroy_sched_domains_rcu
+> > > [  192.585373]  rcuop/0-12        0.... 75809229us : rcu_invoke_callback: rcu_preempt rhp=00000000e9d1e487 func=destroy_sched_domains_rcu
+> > > [  192.587139]  rcuop/0-12        0.... 75809231us : rcu_invoke_callback: rcu_preempt rhp=000000002e04188d func=destroy_sched_domains_rcu
+> > > [  192.588984]  rcuop/0-12        0.... 75809233us : rcu_invoke_callback: rcu_preempt rhp=00000000bf10a58e func=destroy_sched_domains_rcu
+> > > [  192.590732]  rcuop/0-12        0.... 75809235us : rcu_invoke_callback: rcu_preempt rhp=00000000501d3290 func=destroy_sched_domains_rcu
+> > > [  192.592562]  rcuop/0-12        0.... 75809237us : rcu_invoke_callback: rcu_preempt rhp=00000000e129bf91 func=destroy_sched_domains_rcu
+> > > [  192.594309]  rcuop/0-12        0.... 75809239us : rcu_invoke_callback: rcu_preempt rhp=0000000072364c93 func=destroy_sched_domains_rcu
+> > > [  192.596063]  rcuop/0-12        0.... 75809241us : rcu_invoke_callback: rcu_preempt rhp=000000000342d994 func=destroy_sched_domains_rcu
+> > > [  192.597807]  rcuop/0-12        0.... 75809243us : rcu_invoke_callback: rcu_preempt rhp=00000000944f6695 func=destroy_sched_domains_rcu
+> > > [  192.599608]  rcuop/0-12        0.... 75809245us : rcu_invoke_callback: rcu_preempt rhp=00000000255bf397 func=destroy_sched_domains_rcu
+> > > [  192.601341]  rcuop/0-12        0.... 75809247us : rcu_invoke_callback: rcu_preempt rhp=00000000d4a4767b func=free_rootdomain
+> > > [  192.602958]  rcuop/0-12        0.... 75809251us : rcu_invoke_callback: rcu_preempt rhp=00000000b6688098 func=destroy_sched_domains_rcu
+> > > [  192.604779]  rcuop/0-12        0.... 75809269us : rcu_invoke_callback: rcu_preempt rhp=0000000034b99f3d func=rcu_barrier_callback
+> > > [  193.894910]  rcuop/0-12        0d..1 75873331us : rcu_do_batch: p2
+> > >
+> > > thanks,
+> > >
+> > >  - Joel
+> > >
+> > >
+> > > >
+> > > >                                                     Thanx, Paul
+> > > >
+> > > > > > > ---
+> > > > > > > v1->v2: Added more debug checks.
+> > > > > > >
+> > > > > > >  kernel/rcu/rcu_segcblist.c | 12 ++++++++++++
+> > > > > > >  kernel/rcu/rcu_segcblist.h |  3 +++
+> > > > > > >  kernel/rcu/tree.c          |  2 ++
+> > > > > > >  3 files changed, 17 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > > > > > > index 5059b6102afe..6e98bb3804f0 100644
+> > > > > > > --- a/kernel/rcu/rcu_segcblist.c
+> > > > > > > +++ b/kernel/rcu/rcu_segcblist.c
+> > > > > > > @@ -94,6 +94,18 @@ static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
+> > > > > > >       return READ_ONCE(rsclp->seglen[seg]);
+> > > > > > >  }
+> > > > > > >
+> > > > > > > +/* Return number of callbacks in segmented callback list by totalling seglen. */
+> > > > > > > +long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp)
+> > > > > > > +{
+> > > > > > > +     long len = 0;
+> > > > > > > +     int i;
+> > > > > > > +
+> > > > > > > +     for (i = RCU_DONE_TAIL; i < RCU_CBLIST_NSEGS; i++)
+> > > > > > > +             len += rcu_segcblist_get_seglen(rsclp, i);
+> > > > > > > +
+> > > > > > > +     return len;
+> > > > > > > +}
+> > > > > > > +
+> > > > > > >  /* Set the length of a segment of the rcu_segcblist structure. */
+> > > > > > >  static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
+> > > > > > >  {
+> > > > > > > diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> > > > > > > index cd35c9faaf51..46a42d77f7e1 100644
+> > > > > > > --- a/kernel/rcu/rcu_segcblist.h
+> > > > > > > +++ b/kernel/rcu/rcu_segcblist.h
+> > > > > > > @@ -15,6 +15,9 @@ static inline long rcu_cblist_n_cbs(struct rcu_cblist *rclp)
+> > > > > > >       return READ_ONCE(rclp->len);
+> > > > > > >  }
+> > > > > > >
+> > > > > > > +/* Return number of callbacks in segmented callback list by totalling seglen. */
+> > > > > > > +long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp);
+> > > > > > > +
+> > > > > > >  void rcu_cblist_init(struct rcu_cblist *rclp);
+> > > > > > >  void rcu_cblist_enqueue(struct rcu_cblist *rclp, struct rcu_head *rhp);
+> > > > > > >  void rcu_cblist_flush_enqueue(struct rcu_cblist *drclp,
+> > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > > > index f5b61e10f1de..91e35b521e51 100644
+> > > > > > > --- a/kernel/rcu/tree.c
+> > > > > > > +++ b/kernel/rcu/tree.c
+> > > > > > > @@ -2553,6 +2553,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+> > > > > > >       WARN_ON_ONCE(count == 0 && !rcu_segcblist_empty(&rdp->cblist));
+> > > > > > >       WARN_ON_ONCE(!IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> > > > > > >                    count != 0 && rcu_segcblist_empty(&rdp->cblist));
+> > > > > > > +     WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
+> > > > > > > +     WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+> > > > > > >
+> > > > > > >       rcu_nocb_unlock_irqrestore(rdp, flags);
+> > > > > > >
+> > > > > > > --
+> > > > > > > 2.29.2.299.gdc1121823c-goog
