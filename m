@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1E92B8EF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 386622B8EF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgKSJcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:32:17 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2130 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbgKSJcP (ORCPT
+        id S1727081AbgKSJc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbgKSJc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:32:15 -0500
-Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CcDtj28bWz67FXS;
-        Thu, 19 Nov 2020 17:30:37 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Thu, 19 Nov 2020 10:32:13 +0100
-Received: from [10.200.65.70] (10.200.65.70) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Thu, 19 Nov
- 2020 09:32:11 +0000
-Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
-To:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <martin.petersen@oracle.com>,
-        <jejb@linux.ibm.com>
-CC:     <linuxarm@huawei.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <maz@kernel.org>
-References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
- <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
- <874klmqu2r.fsf@nanos.tec.linutronix.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
-Date:   Thu, 19 Nov 2020 09:31:56 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Thu, 19 Nov 2020 04:32:27 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8D6C0613CF;
+        Thu, 19 Nov 2020 01:32:27 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id t13so4757867ilp.2;
+        Thu, 19 Nov 2020 01:32:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KNYi7k+SD7m8Q6dkb27HJ0eAGPSje9gd3Xmj2AuiEfo=;
+        b=a05oe/+RY1dw3WMRMmVe7SMqPBLJcalWI9jZ1o8ofqpMLY6y6RNxi3sNW5B1aQwuv1
+         2SYwdHkESFN72GFEtQnm8umwx9Uuu39WyCykmR8DkGf5w+vHnywzY5M6P4wldYEhdary
+         Fjh7M524CpZ4VTnT2gcBjxJsdh0e10WezDKUf5KikPMOTiLnU8UudCezsF5EFemV9nuy
+         wnlx4TIVPHE5yadPSTDYv0V8mtKE+cSvtXBSdRwoeKseq4a58ZjNbNOfF5gyf60EPQSE
+         QMWfoFRh9y2hYc7xR3mHSCwWhTbUNfEmzzaMbvPaX3qqXfZzeMzJnlCvDI8JPSh5fRP1
+         uP6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KNYi7k+SD7m8Q6dkb27HJ0eAGPSje9gd3Xmj2AuiEfo=;
+        b=BSJyelEuEnxQZsKyMQ0i/qigHmLJQUulvGmJ2NQ/PBbPxZ4BUSOhJDgcMpDPBWORPL
+         GmsIBgNKi7j8Wyf8ljqVMNlbcqAuY527IN8GX6mOKCNOI5EX79J9lueebzVdxPBy4Akr
+         CYy5wUKf0nVOXtceNiGodHbtST4p7i0GyoP1UJgNpX5PSr8JMUg4ad/iVBfNsoAtTX9p
+         hJroV1eANyJnM8f0JkP/mAZzbb9SX3+UVLgwyjgCerqwpQk8AzRKMwnHKumthLOw93uJ
+         IFPYQoRarlkh7pFPL5immtgDrpT8Q7X+2vSbwKmVxCTm2kM0SuCRlipfssohcCaFdrPz
+         3suQ==
+X-Gm-Message-State: AOAM531N3HaZexnhlKv/FQo9Cs8jtMnE4Ue9W4RPx1mS96GbHZCpHEha
+        B215MTlHrf0yvRc7xRlQqj4euo/bNALaImutWx4=
+X-Google-Smtp-Source: ABdhPJyd3hCc/8+RvwRQKTE0igheO/eHL6J48ND6UrkSHz8YgNeJK2v6pndGgRunYTXpv7qCNQZhEr2EkjXIlBsXRgg=
+X-Received: by 2002:a92:7914:: with SMTP id u20mr20826952ilc.203.1605778346666;
+ Thu, 19 Nov 2020 01:32:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <874klmqu2r.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.200.65.70]
-X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20201113154632.24973-1-sergio.paracuellos@gmail.com> <20201113154632.24973-4-sergio.paracuellos@gmail.com>
+In-Reply-To: <20201113154632.24973-4-sergio.paracuellos@gmail.com>
+From:   Chuanhong Guo <gch981213@gmail.com>
+Date:   Thu, 19 Nov 2020 17:32:16 +0800
+Message-ID: <CAJsYDVL1ZYc=OaCS7_NNu27aUKmpHp63nPuVq1V8xp8s6Vguxw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] clk: ralink: add clock driver for mt7621 SoC
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John Crispin <john@phrozen.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Weijie Gao <hackpascal@gmail.com>, jiaxun.yang@flygoat.com,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        NeilBrown <neil@brown.name>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Hi!
 
->>> +int irq_update_affinity_desc(unsigned int irq,
->>> +			     struct irq_affinity_desc *affinity)
->> Just a note on the return value, in the only current callsite -
->> platform_get_irqs_affinity() - we don't check the return value and
->> propagate the error. This is because we don't want to fail the interrupt
->> init just because of problems updating the affinity mask. So I could
->> print a message to inform the user of error (at the callsite).
-> Well, not sure about that. During init on a platform which does not have
-> the issues with reservation mode there failure cases are:
-> 
->   1) Interrupt does not exist. Definitely a full fail
-> 
->   2) Interrupt is already started up. Not a good idea on init() and
->      a clear fail.
-> 
->   3) Interrupt has already been switched to managed. Double init is not
->      really a good sign either.
+On Fri, Nov 13, 2020 at 11:46 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+> [...]
+> diff --git a/drivers/clk/ralink/Makefile b/drivers/clk/ralink/Makefile
+> new file mode 100644
+> index 000000000000..cf6f9216379d
+> --- /dev/null
+> +++ b/drivers/clk/ralink/Makefile
 
-I just tested that and case 3) would be a problem. I don't see us 
-clearing the managed flag when free'ing the interrupt. So with 
-CONFIG_DEBUG_TEST_DRIVER_REMOVE=y, we attempt this affinity update 
-twice, and error from the irqd_affinity_is_managed() check.
+Why ralink? The clock design of mt7621 doesn't seem
+to be part of ralink legacy stuff, and ralink is already
+acquired by mediatek anyway.
+I think it should be put in drivers/clk/mediatek instead.
 
-> 
->>> +	/* Requires the interrupt to be shut down */
->>> +	if (irqd_is_started(&desc->irq_data))
->> We're missing the unlock here, right?
-> Duh yes.
-> 
->>> +		return -EBUSY;
->>> +
->>> +	/* Interrupts which are already managed cannot be modified */
->>> +	if (irqd_is_managed(&desc->irq_data))
->> And here, and I figure that this should be irqd_affinity_is_managed()
-> More duh:)
-> 
-> I assume you send a fixed variant of this.
-
-Can do.
-
-Thanks,
-John
+-- 
+Regards,
+Chuanhong Guo
