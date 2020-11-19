@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBDC2B9B7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED7A2B9B95
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728091AbgKSTZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:25:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38354 "EHLO mail.kernel.org"
+        id S1728341AbgKSTgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:36:32 -0500
+Received: from gate.crashing.org ([63.228.1.57]:39398 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727905AbgKSTZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:25:58 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7AF6221FE;
-        Thu, 19 Nov 2020 19:25:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605813958;
-        bh=tpiSO13FbNyZ42kAbeVAMN0z3Q1MzKH9/3qggLww0uQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r7Gvj5r18o4ajlJFxbZptgsKAjyvN81ac7Vl0PWWW7vgY0S4IhHlyeIc5GLyIIw/h
-         pJN+A48yxUDNPeT2M/RVFraejiLdehZ5T+GwLeGCdGiZ/aPb/eGZ19Tm36d84efeEe
-         W3kpJD0CA6Sxju9AI3YUc85X4mQR6ey0TYoH/F3I=
-Date:   Thu, 19 Nov 2020 19:25:51 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S1727593AbgKSTgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 14:36:31 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AJJRBpu004150;
+        Thu, 19 Nov 2020 13:27:11 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AJJR87q004149;
+        Thu, 19 Nov 2020 13:27:08 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Thu, 19 Nov 2020 13:27:08 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
         Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 07/14] sched: Introduce restrict_cpus_allowed_ptr() to
- limit task CPU affinity
-Message-ID: <20201119192550.GD4906@willie-the-truck>
-References: <20201113093720.21106-1-will@kernel.org>
- <20201113093720.21106-8-will@kernel.org>
- <jhj8saxwm1l.mognet@arm.com>
- <20201119131319.GE4331@willie-the-truck>
- <20201119160944.GP3121392@hirez.programming.kicks-ass.net>
- <jhj4kllwahv.mognet@arm.com>
-MIME-Version: 1.0
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>
+Subject: Re: violating function pointer signature
+Message-ID: <20201119192708.GW2672@gate.crashing.org>
+References: <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org> <87o8jutt2h.fsf@mid.deneb.enyo.de> <20201118135823.3f0d24b7@gandalf.local.home> <20201118191127.GM2672@gate.crashing.org> <20201119083648.GE3121392@hirez.programming.kicks-ass.net> <20201119143735.GU2672@gate.crashing.org> <20201119095951.30269233@gandalf.local.home> <20201119163529.GV2672@gate.crashing.org> <fac6049651cf4cef92162bec84550458@AcuMS.aculab.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <jhj4kllwahv.mognet@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <fac6049651cf4cef92162bec84550458@AcuMS.aculab.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 04:57:22PM +0000, Valentin Schneider wrote:
+On Thu, Nov 19, 2020 at 05:42:34PM +0000, David Laight wrote:
+> From: Segher Boessenkool
+> > Sent: 19 November 2020 16:35
+> > I just meant "valid C language code as defined by the standards".  Many
+> > people want all UB to just go away, while that is *impossible* to do for
+> > many compilers: for example where different architectures or different
+> > ABIs have contradictory requirements.
 > 
-> On 19/11/20 16:09, Peter Zijlstra wrote:
-> > On Thu, Nov 19, 2020 at 01:13:20PM +0000, Will Deacon wrote:
-> >
-> >> Sure, but I was talking about what userspace sees, and I don't think it ever
-> >> sees CPUs that have been hotplugged off, right? That is, sched_getaffinity()
-> >> masks its result with the active_mask.
-> >
-> > # for i in /sys/devices/system/cpu/cpu*/online; do echo -n $i ":"; cat $i; done
-> > /sys/devices/system/cpu/cpu1/online :0
-> > /sys/devices/system/cpu/cpu2/online :1
-> > /sys/devices/system/cpu/cpu3/online :1
-> > /sys/devices/system/cpu/cpu4/online :1
-> > /sys/devices/system/cpu/cpu5/online :1
-> > /sys/devices/system/cpu/cpu6/online :1
-> > /sys/devices/system/cpu/cpu7/online :1
-> >
-> > # grep Cpus_allowed /proc/self/status
-> > Cpus_allowed:   ff
-> > Cpus_allowed_list:      0-7
-> >
-> >
-> > :-)
-> 
-> Harumph, so there is that...
-> 
-> $ while true; do continue; done &
-> $ PID=$!
-> $ taskset -pc 0-1 $PID
->   pid 849's current affinity list: 0-5
->   pid 849's new affinity list: 0,1
-> $ echo 0 > /sys/devices/system/cpu/cpu1/online
->   [12578.545726] CPU1: shutdown
->   [12578.548454] psci: CPU1 killed (polled 0 ms)
-> $ taskset -pc $PID
->   pid 849's current affinity list: 0
-> $ cat /proc/$PID/status | grep Cpus
->   Cpus_allowed:   03
->   Cpus_allowed_list:      0-1
+> Some of the UB in the C language are (probably) there because
+> certain (now obscure) hardware behaved that way.
 
-Yeah, I'm not sure this is worth tackling tbh. sched_getaffinity() does the
-right thing, but poking around in /proc and /sys is always going to defeat
-the illusion and I don't see what we gain in reporting CPUs on which the
-task is _never_ going to run anyway. But I'll revise my stance on it being
-identical to hotplug :) (I would've gotten away with it too, if it wasn't
-for those pesky hackers).
+Yes.
 
-Will
+> For instance integer arithmetic may saturate on overflow
+> (or do even stranger things if the sign is a separate bit).
+
+And some still does!
+
+> I'm not quite sure it was ever possible to write a C compiler
+> for a cpu that processed numbers in ASCII (up to 10 digits),
+> binary arithmetic was almost impossible.
+
+A machine that really stores decimal numbers?  Not BCD or the like?
+Yeah wow, that will be hard.
+
+> There are also the CPU that only have 'word' addressing - so
+> that 'pointers to characters' take extra instructions.
+
+Such machines are still made, and are programmed in C as well.
+
+> ISTM that a few years ago the gcc developers started looking
+> at some of these 'UB' and decided they could make use of
+> them to make some code faster (and break other code).
+
+When UB would happen in some situation, the compiler can simply assume
+that situation does not happen.  This makes it possible to do a lot of
+optimisations (many to do with loops) that cannot be done otherwise
+(including those to do with signed overflow).  And many of those
+optimisations are worthwhile.
+
+> One of the problems with UB is that whereas you might expect
+> UB arithmetic to generate an unexpected result and/or signal
+> it is completely open-ended and could fire an ICBM at the coder.
+
+Yes, UB is undefined behaviour.  Unspecified is something else (and C
+has that as well, also implementation-defined, etc.)
+
+In some cases GCC (and any other modern compiler) can make UB be IB
+instead, with some flag for example, like -fno-strict-* does.  In other
+cases it isn't so easy at all.  In cases like you have here (where the
+validity of what you want to do depends on the ABI in effect) things are
+not easy :-/
+
+
+Segher
