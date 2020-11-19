@@ -2,121 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA1D2B9E95
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD9C2B9EA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727235AbgKSXkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 18:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbgKSXkn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 18:40:43 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56E4C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 15:40:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=nbuMCLcHNoPm8FVITFvDqVnVa58wCfKUh959Z9CMoqc=; b=w8mDAJFf3fHHmZox3LAtlQZD18
-        vUwQsk9d00Of2HSJyZ+oGKfkU8Xtm9mQWJQx40wJrev42F8FGt25xjrC0LK2TzwkgmC369K6vsY3y
-        CCGSLGFpC198xVGVgghRzHQOplaArN47zugI1amyaCwP6aOmLZ0crIpopg8QvsYPJ3cuHUeujCXKX
-        CLdkKgBIAROnPL1ARH8n90t/hgohPkiB2vsWK4dy2OUu1ShkOb7kZh2QP8TWnA0ETfEOwbkiFwq+Z
-        S65SaDc913UtCzJbBC6PFT3mKA7aoS9J7gJbNjrp/E39Mlk9M5bJLa/+sI5mVWyBp9Yah48pDAIP4
-        lzFa7Mog==;
-Received: from [2601:1c0:6280:3f0::bcc4]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kftWU-00079l-7W; Thu, 19 Nov 2020 23:39:30 +0000
-Subject: Re: [PATCH -tip 31/32] sched: Add a coresched command line option
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org
-Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-32-joel@joelfernandes.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2080fa5d-0a64-b006-d746-eb6de42aed8f@infradead.org>
-Date:   Thu, 19 Nov 2020 15:39:15 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727241AbgKSXmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 18:42:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726680AbgKSXmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 18:42:49 -0500
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72CD422254;
+        Thu, 19 Nov 2020 23:42:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605829367;
+        bh=JW1A1AIJoN9PpzGhcADx31Z4mx3wWPs74PG/UyKWTyc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WSV37G/uB+kbkh5m4iyZCcetg/i8uGeEVSaynOqAPohVpnxqHuxKuvP/wBMZgh1ci
+         ouHmfOT/7dTeLdlrP5cP8tT6hlO22rtZ2FMNwDgTsS9F1z4rDnd6FVcUiLczcTscYf
+         iC32Vb8XZCiAl75Ou8QI/5k6bnh8vzIUicztAQVE=
+Received: by mail-ed1-f50.google.com with SMTP id e18so7686701edy.6;
+        Thu, 19 Nov 2020 15:42:47 -0800 (PST)
+X-Gm-Message-State: AOAM530HlfLDeSmhujVoj7LRh1DYMW7R+3XCtWyVmwC+pBOTLvUH/Mjo
+        ToyJWVJ+eM6f6T4PvyA10XZDRvBFUxKot82Brw==
+X-Google-Smtp-Source: ABdhPJzoOIkdvfjzQ6rnTB9cEDNydznFiETJ7HfdxkLrWoEHgiRI4U2yN3QuxRQN/WPS3HW2x5lbkSbMmlBW5Htu0YE=
+X-Received: by 2002:a50:8745:: with SMTP id 5mr32752275edv.49.1605829365718;
+ Thu, 19 Nov 2020 15:42:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201117232003.3580179-32-joel@joelfernandes.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201118082126.42701-1-chunfeng.yun@mediatek.com> <20201118082126.42701-6-chunfeng.yun@mediatek.com>
+In-Reply-To: <20201118082126.42701-6-chunfeng.yun@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 20 Nov 2020 07:42:35 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9dNyySJkyX78tHDQZPaqD+5Jqixbdbohp319FyXO1X5Q@mail.gmail.com>
+Message-ID: <CAAOTY_9dNyySJkyX78tHDQZPaqD+5Jqixbdbohp319FyXO1X5Q@mail.gmail.com>
+Subject: Re: [PATCH v3 06/11] dt-bindings: phy: convert HDMI PHY binding to
+ YAML schema
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Min Guo <min.guo@mediatek.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel,
+Hi, Chunfeng:
 
-On 11/17/20 3:20 PM, Joel Fernandes (Google) wrote:
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index b185c6ed4aba..9cd2cf7c18d4 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -698,6 +698,20 @@
->  			/proc/<pid>/coredump_filter.
->  			See also Documentation/filesystems/proc.rst.
->  
-> +	coresched=	[SCHED_CORE] This feature allows the Linux scheduler
-
-Unless I missed it somewhere else, this "SCHED_CORE" string should be
-added to Documentation/admin-guide/kernel-parameters.rst, where there is
-a list of "qualifiers" for kernel parameters.
-
-(It looks like you are using it as the name of a Kconfig option, which
-makes some sense, but that's not how it's [currently] done. :)
-
-
-> +			to force hyperthread siblings of a CPU to only execute tasks
-> +			concurrently on all hyperthreads that are running within the
-> +			same core scheduling group.
-> +			Possible values are:
-> +			'on' - Enable scheduler capability to core schedule.
-> +			By default, no tasks will be core scheduled, but the coresched
-> +			interface can be used to form groups of tasks that are forced
-> +			to share a core.
-> +			'off' - Disable scheduler capability to core schedule.
-> +			'secure' - Like 'on' but only enable on systems affected by
-> +			MDS or L1TF vulnerabilities. 'off' otherwise.
-> +			Default: 'secure'.
+Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=88=
+18=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:21=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Convert HDMI PHY binding to YAML schema mediatek,hdmi-phy.yaml
+>
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+> v3: add Reviewed-by Rob
+> v2: fix binding check warning of reg in example
+> ---
+>  .../display/mediatek/mediatek,hdmi.txt        | 18 +---
+>  .../bindings/phy/mediatek,hdmi-phy.yaml       | 91 +++++++++++++++++++
+>  2 files changed, 92 insertions(+), 17 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/phy/mediatek,hdmi-p=
+hy.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+hdmi.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi=
+.txt
+> index 6b1c586403e4..b284ca51b913 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.tx=
+t
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.tx=
+t
+> @@ -53,23 +53,7 @@ Required properties:
+>
+>  HDMI PHY
+>  =3D=3D=3D=3D=3D=3D=3D=3D
+> -
+> -The HDMI PHY serializes the HDMI encoder's three channel 10-bit parallel
+> -output and drives the HDMI pads.
+> -
+> -Required properties:
+> -- compatible: "mediatek,<chip>-hdmi-phy"
+> -- the supported chips are mt2701, mt7623 and mt8173
+> -- reg: Physical base address and length of the module's registers
+> -- clocks: PLL reference clock
+> -- clock-names: must contain "pll_ref"
+> -- clock-output-names: must be "hdmitx_dig_cts" on mt8173
+> -- #phy-cells: must be <0>
+> -- #clock-cells: must be <0>
+> -
+> -Optional properties:
+> -- mediatek,ibias: TX DRV bias current for <1.65Gbps, defaults to 0xa
+> -- mediatek,ibias_up: TX DRV bias current for >1.65Gbps, defaults to 0x1c
+> +See phy/mediatek,hdmi-phy.yaml
+>
+>  Example:
+>
+> diff --git a/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml=
+ b/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml
+> new file mode 100644
+> index 000000000000..96700bb8bc00
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml
+> @@ -0,0 +1,91 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2020 MediaTek
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/phy/mediatek,hdmi-phy.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  	coresight_cpu_debug.enable
->  			[ARM,ARM64]
->  			Format: <bool>
+> +title: MediaTek High Definition Multimedia Interface (HDMI) PHY binding
+> +
+> +maintainers:
+> +  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> +  - Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-thanks.
--- 
-~Randy
+Please add Philipp Zabel because he is Mediatek DRM driver maintainer.
 
+DRM DRIVERS FOR MEDIATEK
+M: Chun-Kuang Hu <chunkuang.hu at kernel.org>
+M: Philipp Zabel <p.zabel at pengutronix.de>
+L: dri-devel at lists.freedesktop.org
+S: Supported
+F: Documentation/devicetree/bindings/display/mediatek/
+
+Regards,
+Chun-Kuang.
+
+> +
+> +description: |
+> +  The HDMI PHY serializes the HDMI encoder's three channel 10-bit parall=
+el
+> +  output and drives the HDMI pads.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^hdmi-phy@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt2701-hdmi-phy
+> +      - mediatek,mt7623-hdmi-phy
+> +      - mediatek,mt8173-hdmi-phy
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: PLL reference clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pll_ref
+> +
+> +  clock-output-names:
+> +    items:
+> +      - const: hdmitx_dig_cts
+> +
+> +  "#phy-cells":
+> +    const: 0
+> +
+> +  "#clock-cells":
+> +    const: 0
+> +
+> +  mediatek,ibias:
+> +    description:
+> +      TX DRV bias current for < 1.65Gbps
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 63
+> +    default: 0xa
+> +
+> +  mediatek,ibias_up:
+> +    description:
+> +      TX DRV bias current for >=3D 1.65Gbps
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 63
+> +    default: 0x1c
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - clock-output-names
+> +  - "#phy-cells"
+> +  - "#clock-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8173-clk.h>
+> +    hdmi_phy: hdmi-phy@10209100 {
+> +        compatible =3D "mediatek,mt8173-hdmi-phy";
+> +        reg =3D <0x10209100 0x24>;
+> +        clocks =3D <&apmixedsys CLK_APMIXED_HDMI_REF>;
+> +        clock-names =3D "pll_ref";
+> +        clock-output-names =3D "hdmitx_dig_cts";
+> +        mediatek,ibias =3D <0xa>;
+> +        mediatek,ibias_up =3D <0x1c>;
+> +        #clock-cells =3D <0>;
+> +        #phy-cells =3D <0>;
+> +    };
+> +
+> +...
+> --
+> 2.18.0
+>
