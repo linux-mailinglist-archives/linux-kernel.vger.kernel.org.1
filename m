@@ -2,186 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6032B9ABC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F922B9ABD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729744AbgKSSfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:35:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55406 "EHLO mail.kernel.org"
+        id S1728277AbgKSSfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:35:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728851AbgKSSfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:35:07 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727292AbgKSSfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:35:31 -0500
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A391A22255;
-        Thu, 19 Nov 2020 18:35:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D46E0246CA
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 18:35:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605810906;
-        bh=bJya95Z1CX+o+B+3wr8vb6PON5dqknScWdUZYecD8RY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MsWxETebIKzGKBcYQlrhF/UiDv9lka8MDJqESPfFYr1ZkyeaAtFqbYFpvvRifTpTi
-         xuFCTTb4z7kiHp49CkkgbP2QlrpUvfzFF2sm33sokEQfeEX6pgqTbrN5/TDF+BsuZT
-         niEt4Jjh9v4YLFrR6vrNHJbHEPJSFtBjLE7M/wJ4=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kfols-00C36C-DX; Thu, 19 Nov 2020 18:35:04 +0000
+        s=default; t=1605810930;
+        bh=wlJ1GDVVeXAbBkkmi14KlMvU2urktf8h2JpAHV4i6jo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BaAKpY4B24EfvMT3uqE64Ferx5asNPPVeB0h3F6EBacxs0jOsVpc7iRJihmmQ/wP/
+         ByW6zT0cCrSh8fWOt4udvaftg1fJreYzb3Bj6HEFpGGhCC4bEM+dLkn1GxtMeAEQk7
+         bCXsuPXCMTCMBtNiYGWL+5ciHK9q+XcPGKpWoFfo=
+Received: by mail-oi1-f172.google.com with SMTP id k26so7446562oiw.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:35:29 -0800 (PST)
+X-Gm-Message-State: AOAM5312U6/f70WI0kW42ULeufEdZ1l6k973y2yIxHVwHLIicq3AtYdN
+        LSZfrcgAzCNENsvszBYWBmxu7q7uR7gkyb20wA==
+X-Google-Smtp-Source: ABdhPJzKvl9CsPFgaFOYAfzD0LmkB3MDOIJ60Uiqq/uiyvYNpehQHZjQ+nSnD3RWjz7ENROuocGO/gSfIDABqVHFqhs=
+X-Received: by 2002:aca:fdd4:: with SMTP id b203mr3863325oii.152.1605810928997;
+ Thu, 19 Nov 2020 10:35:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 19 Nov 2020 18:35:04 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        kernelci-results@groups.io, Kevin Hilman <khilman@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
-In-Reply-To: <1jr1op8bbc.fsf@starbuckisacylon.baylibre.com>
-References: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
- <a0bec7c4-9bec-8858-4879-52f4688d9992@collabora.com>
- <630e00e83cdd07ee5a0eaba9d3479554@kernel.org>
- <3f54de27-0fef-c5a1-8991-0a0614c90667@baylibre.com>
- <c76273f5fe483766e6a7f509f82d928a@kernel.org>
- <f59922c6-69f5-c70e-b424-0659bf91a4fd@collabora.com>
- <1jr1op8bbc.fsf@starbuckisacylon.baylibre.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <00a10c12a4eb2a9cdd9f50e88a293c3f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: jbrunet@baylibre.com, guillaume.tucker@collabora.com, narmstrong@baylibre.com, kernelci-results@groups.io, khilman@baylibre.com, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, martin.blumenstingl@googlemail.com, airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201001140116.651970-1-robh@kernel.org> <20201001140116.651970-3-robh@kernel.org>
+ <20201113180633.GE44988@C02TD0UTHF1T.local>
+In-Reply-To: <20201113180633.GE44988@C02TD0UTHF1T.local>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 19 Nov 2020 12:35:17 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKM+91Meg+u07VRsD5=O1srQooe1Dd_M3NA+CZgcN4QcQ@mail.gmail.com>
+Message-ID: <CAL_JsqKM+91Meg+u07VRsD5=O1srQooe1Dd_M3NA+CZgcN4QcQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/9] arm64: perf: Enable pmu counter direct access for
+ perf event on armv8
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-19 18:13, Jerome Brunet wrote:
-> On Thu 19 Nov 2020 at 19:04, Guillaume Tucker
-> <guillaume.tucker@collabora.com> wrote:
-> 
->> Hi Marc,
->> 
->> On 19/11/2020 11:58, Marc Zyngier wrote:
->>> On 2020-11-19 10:26, Neil Armstrong wrote:
->>>> On 19/11/2020 11:20, Marc Zyngier wrote:
->>>>> On 2020-11-19 08:50, Guillaume Tucker wrote:
->>>>>> Please see the automated bisection report below about some kernel
->>>>>> errors on meson-gxbb-p200.
->>>>>> 
->>>>>> Reports aren't automatically sent to the public while we're
->>>>>> trialing new bisection features on kernelci.org, however this one
->>>>>> looks valid.
->>>>>> 
->>>>>> The bisection started with next-20201118 but the errors are still
->>>>>> present in next-20201119.  Details for this regression:
->>>>>> 
->>>>>>   https://kernelci.org/test/case/id/5fb6196bfd0127fd68d8d902/
->>>>>> 
->>>>>> The first error is:
->>>>>> 
->>>>>>   [   14.757489] Internal error: synchronous external abort: 
->>>>>> 96000210
->>>>>> [#1] PREEMPT SMP
->>>>> 
->>>>> Looks like yet another clock ordering setup. I guess different 
->>>>> Amlogic
->>>>> platforms have slightly different ordering requirements.
->>>>> 
->>>>> Neil, do you have any idea of which platform requires which 
->>>>> ordering?
->>>>> The variability in DT and platforms is pretty difficult to follow 
->>>>> (and
->>>>> I don't think I have such board around).
->>>> 
->>>> The requirements should be the same, here the init was done before 
->>>> calling
->>>> dw_hdmi_probe to be sure the clocks and internals resets were 
->>>> deasserted.
->>>> But since you boot from u-boot already enabling these, it's already 
->>>> active.
->>>> 
->>>> The solution would be to revert and do some check in 
->>>> meson_dw_hdmi_init() to
->>>> check if already enabled and do nothing.
->>> 
->>> A better fix seems to be this, which makes it explicit that there is
->>> a dependency between some of the registers accessed from 
->>> meson_dw_hdmi_init()
->>> and the iahb clock.
->>> 
->>> Guillaume, can you give this a go on your failing box?
->> 
->> I confirm it solves the problem.  Please add this to your fix
->> patch if it's OK with you:
->> 
->>   Reported-by: "kernelci.org bot" <bot@kernelci.org>
->>   Tested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
->> 
->> 
->> For the record, it passed all the tests when applied on top of
->> the "bad" revision found by the bisection:
->> 
->>   
->> http://lava.baylibre.com:10080/scheduler/alljobs?search=v5.10-rc3-1021-gb8668a2e5ea1
->> 
->> and the exact same test on the "bad" revision without the fix
->> consistently showed the error:
->> 
->>   http://lava.baylibre.com:10080/scheduler/job/374176
->> 
->> 
->> Thanks,
->> Guillaume
->> 
->> 
->>> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c 
->>> b/drivers/gpu/drm/meson/meson_dw_hdmi.c
->>> index 7f8eea494147..52af8ba94311 100644
->>> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
->>> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
->>> @@ -146,6 +146,7 @@ struct meson_dw_hdmi {
->>>      struct reset_control *hdmitx_ctrl;
->>>      struct reset_control *hdmitx_phy;
->>>      struct clk *hdmi_pclk;
->>> +    struct clk *iahb_clk;
->>>      struct clk *venci_clk;
->>>      struct regulator *hdmi_supply;
->>>      u32 irq_stat;
->>> @@ -1033,6 +1034,13 @@ static int meson_dw_hdmi_bind(struct device 
->>> *dev, struct device *master,
->>>      }
->>>      clk_prepare_enable(meson_dw_hdmi->hdmi_pclk);
->>> 
->>> +    meson_dw_hdmi->iahb_clk = devm_clk_get(dev, "iahb");
->>> +    if (IS_ERR(meson_dw_hdmi->iahb_clk)) {
->>> +        dev_err(dev, "Unable to get iahb clk\n");
->>> +        return PTR_ERR(meson_dw_hdmi->iahb_clk);
->>> +    }
->>> +    clk_prepare_enable(meson_dw_hdmi->iahb_clk);
-> 
-> If you guys are going ahead with this fix, this call to
-> clk_prepare_enable() needs to be balanced with clk_disable_unprepare() 
-> somehow
+On Fri, Nov 13, 2020 at 12:06 PM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Hi Rob,
+>
+> Thanks for this, and sorry for the long delay since this was last
+> reviewed. Overall this is looking pretty good, but I have a couple of
+> remaining concerns.
+>
+> Will, I have a query for you below.
+>
+> On Thu, Oct 01, 2020 at 09:01:09AM -0500, Rob Herring wrote:
+> > From: Raphael Gault <raphael.gault@arm.com>
+> >
+> > Keep track of event opened with direct access to the hardware counters
+> > and modify permissions while they are open.
+> >
+> > The strategy used here is the same which x86 uses: everytime an event
+> > is mapped, the permissions are set if required. The atomic field added
+> > in the mm_context helps keep track of the different event opened and
+> > de-activate the permissions when all are unmapped.
+> > We also need to update the permissions in the context switch code so
+> > that tasks keep the right permissions.
+> >
+> > Signed-off-by: Raphael Gault <raphael.gault@arm.com>
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> > v2:
+> >  - Move mapped/unmapped into arm64 code. Fixes arm32.
+> >  - Rebase on cap_user_time_short changes
+> >
+> > Changes from Raphael's v4:
+> >   - Drop homogeneous check
+> >   - Disable access for chained counters
+> >   - Set pmc_width in user page
+> > ---
+> >  arch/arm64/include/asm/mmu.h         |  5 ++++
+> >  arch/arm64/include/asm/mmu_context.h |  2 ++
+> >  arch/arm64/include/asm/perf_event.h  | 14 ++++++++++
+> >  arch/arm64/kernel/perf_event.c       | 41 ++++++++++++++++++++++++++++
+> >  4 files changed, 62 insertions(+)
+> >
+> > diff --git a/arch/arm64/include/asm/mmu.h b/arch/arm64/include/asm/mmu.h
+> > index a7a5ecaa2e83..52cfdb676f06 100644
+> > --- a/arch/arm64/include/asm/mmu.h
+> > +++ b/arch/arm64/include/asm/mmu.h
+> > @@ -19,6 +19,11 @@
+> >
+> >  typedef struct {
+> >       atomic64_t      id;
+> > +     /*
+> > +      * non-zero if userspace have access to hardware
+> > +      * counters directly.
+> > +      */
+> > +     atomic_t        pmu_direct_access;
+> >  #ifdef CONFIG_COMPAT
+> >       void            *sigpage;
+> >  #endif
+> > diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+> > index f2d7537d6f83..d24589ecb07a 100644
+> > --- a/arch/arm64/include/asm/mmu_context.h
+> > +++ b/arch/arm64/include/asm/mmu_context.h
+> > @@ -21,6 +21,7 @@
+> >  #include <asm/proc-fns.h>
+> >  #include <asm-generic/mm_hooks.h>
+> >  #include <asm/cputype.h>
+> > +#include <asm/perf_event.h>
+> >  #include <asm/sysreg.h>
+> >  #include <asm/tlbflush.h>
+> >
+> > @@ -224,6 +225,7 @@ static inline void __switch_mm(struct mm_struct *next)
+> >       }
+> >
+> >       check_and_switch_context(next);
+> > +     perf_switch_user_access(next);
+> >  }
+> >
+> >  static inline void
+> > diff --git a/arch/arm64/include/asm/perf_event.h b/arch/arm64/include/asm/perf_event.h
+> > index 2c2d7dbe8a02..a025d9595d51 100644
+> > --- a/arch/arm64/include/asm/perf_event.h
+> > +++ b/arch/arm64/include/asm/perf_event.h
+> > @@ -8,6 +8,7 @@
+> >
+> >  #include <asm/stack_pointer.h>
+> >  #include <asm/ptrace.h>
+> > +#include <linux/mm_types.h>
+> >
+> >  #define      ARMV8_PMU_MAX_COUNTERS  32
+> >  #define      ARMV8_PMU_COUNTER_MASK  (ARMV8_PMU_MAX_COUNTERS - 1)
+> > @@ -251,4 +252,17 @@ extern unsigned long perf_misc_flags(struct pt_regs *regs);
+> >       (regs)->pstate = PSR_MODE_EL1h; \
+> >  }
+> >
+> > +static inline void perf_switch_user_access(struct mm_struct *mm)
+> > +{
+> > +     if (!IS_ENABLED(CONFIG_PERF_EVENTS))
+> > +             return;
+> > +
+> > +     if (atomic_read(&mm->context.pmu_direct_access)) {
+> > +             write_sysreg(ARMV8_PMU_USERENR_ER|ARMV8_PMU_USERENR_CR,
+> > +                          pmuserenr_el0);
+> > +     } else {
+> > +             write_sysreg(0, pmuserenr_el0);
+> > +     }
+> > +}
+>
+> PMUSERENR.ER gives RW access to PMSELR_EL0. While we no longer use
+> PMSELR_EL0 in the kernel, we can preempt and migrate userspace tasks
+> between homogeneous CPUs, and presumably need to context-switch this
+> with the task (like we do for TPIDR_EL0 and friends), or clear the
+> register on context-switch to prevent it becoming an unintended covert
+> channel.
 
-Yup, good point.
+Humm, now that I've read up on PMSELR_EL0 I'm now wondering if I
+should be using PMSELR_EL0 in libperf. If you look at patch 7, the
+counter read is pretty ugly because there's 32 possible mrs
+instructions. If PMSELR_EL0 is used, we can have a single read path.
+It's a msr and mrs vs. a function ptr load, branch/ret, and mrs. I'd
+guess there's no guarantees on system reg access times, but I'd guess
+typically the former is more optimal? It certainly simplifies the code
+which I'd rather have given the limited users.
 
-Although this driver *never* disables any clock it enables, and leaves 
-it
-to the main DW driver, which I guess makes it leak references.
+If I go that route and we don't context switch PMSELR_EL0, reads of
+PMXEVCNTR_EL0 could be stale. But does that matter? No, because
+reading PMEVCNTR<n>_EL0 can already be stale and the seq counter will
+catch that.
 
-So all 3 clocks need fixing.
+> These bits also enable AArch32 access. Is there any way an AArch32 task
+> can enable this? If so we should probably block that given we do not
+> support this interface on 32-bit arm.
 
-Thanks,
+I'd assume this works for AArch32 given we don't do anything here to
+prevent it. I suppose we could look at MMCF_AARCH32 flag in
+mm_context_t? But is not implemented for arch/arm/ really a reason to
+disable?
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Rob
