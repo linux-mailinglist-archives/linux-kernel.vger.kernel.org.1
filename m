@@ -2,46 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828342B93D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538372B93E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727343AbgKSNnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 08:43:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgKSNnk (ORCPT
+        id S1727240AbgKSNpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 08:45:31 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:53871 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbgKSNpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 08:43:40 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F96C0613CF;
-        Thu, 19 Nov 2020 05:43:40 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id D8C411F4585F
-Subject: Re: [PATCH v5 1/7] media: v4l2: Extend pixel formats to unify
- single/multi-planar handling (and more)
-From:   Helen Koike <helen.koike@collabora.com>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     mchehab@kernel.org, hans.verkuil@cisco.com,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi,
-        linux-media@vger.kernel.org,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        hiroh@chromium.org, nicolas@ndufresne.ca, Brian.Starkey@arm.com,
-        kernel@collabora.com, narmstrong@baylibre.com,
-        linux-kernel@vger.kernel.org, frkoenig@chromium.org,
-        mjourdan@baylibre.com, stanimir.varbanov@linaro.org
-References: <20200804192939.2251988-1-helen.koike@collabora.com>
- <20200804192939.2251988-2-helen.koike@collabora.com>
- <20201002194935.GB1131147@chromium.org>
- <f5c9f7cd-f8e1-0671-b4d9-8ed79917b0aa@collabora.com>
- <20201119054544.GA590258@chromium.org>
- <bec73ecd-e420-ccb3-810c-c98ba93dfdab@collabora.com>
-Message-ID: <c506f6d5-de80-9992-0316-89d35ad93d34@collabora.com>
-Date:   Thu, 19 Nov 2020 10:43:18 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 19 Nov 2020 08:45:31 -0500
+Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0AJDjTc9008098;
+        Thu, 19 Nov 2020 22:45:29 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
+ Thu, 19 Nov 2020 22:45:29 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0AJDjS0O008048
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 19 Nov 2020 22:45:29 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH v3] lockdep: Allow tuning tracing capacity constants.
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzkaller <syzkaller@googlegroups.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+ <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
+ <0eb519fa-e77b-b655-724a-4e9eecc64626@i-love.sakura.ne.jp>
+ <6933e938-f219-5e13-aee6-fe4de87eb43e@i-love.sakura.ne.jp>
+ <81ab0ffd-6e80-c96c-053a-b1b4fe8694c1@i-love.sakura.ne.jp>
+ <20201118142357.GW3121392@hirez.programming.kicks-ass.net>
+ <1778f2e5-0a0c-2c6e-2c83-fe51d938e8a2@i-love.sakura.ne.jp>
+ <20201118151038.GX3121392@hirez.programming.kicks-ass.net>
+ <9bc4e07d-2a58-077b-b4c7-ab056ba33cf1@i-love.sakura.ne.jp>
+ <CACT4Y+ZJNkssAQLuwfcKPTTKLZhHRAo0POGOMVsGFGizoHaNMg@mail.gmail.com>
+ <CACT4Y+Zh10241gchu6e_=LwxPSEzXT-0HSmhnTtkXFZevKi_yQ@mail.gmail.com>
+ <CACT4Y+a8TjV+Pe6mwne777RV+xB+aHT6GxuMLAVBn5mtK4P0Lw@mail.gmail.com>
+ <CACT4Y+ZSsKjvojD8iFVFv9F5X5BvZR8vLyaKrgxUxyknma04Sg@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <5e8342c4-702f-80a9-e669-8a7386ce0da1@i-love.sakura.ne.jp>
+Date:   Thu, 19 Nov 2020 22:45:25 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <bec73ecd-e420-ccb3-810c-c98ba93dfdab@collabora.com>
+In-Reply-To: <CACT4Y+ZSsKjvojD8iFVFv9F5X5BvZR8vLyaKrgxUxyknma04Sg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -49,288 +61,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/19/20 7:08 AM, Helen Koike wrote:
-> Hi Tomasz,
-> 
-> On 11/19/20 2:45 AM, Tomasz Figa wrote:
->> On Sat, Nov 14, 2020 at 11:21:26AM -0300, Helen Koike wrote:
->>> Hi Tomasz,
->>>
->>> On 10/2/20 4:49 PM, Tomasz Figa wrote:
->>>> Hi Helen,
+On 2020/11/19 22:06, Dmitry Vyukov wrote:
 >>>>
->>>> On Tue, Aug 04, 2020 at 04:29:33PM -0300, Helen Koike wrote:
->> [snip]
->>>>> +static void v4l_print_ext_pix_format(const void *arg, bool write_only)
->>>>> +{
->>>>> +	const struct v4l2_ext_pix_format *pix = arg;
->>>>> +	unsigned int i;
->>>>> +
->>>>> +	pr_cont("type=%s, width=%u, height=%u, format=%c%c%c%c, modifier %llx, field=%s, colorspace=%d, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
->>>>> +		prt_names(pix->type, v4l2_type_names),
->>>>> +		pix->width, pix->height,
->>>>> +		(pix->pixelformat & 0xff),
->>>>> +		(pix->pixelformat >>  8) & 0xff,
->>>>> +		(pix->pixelformat >> 16) & 0xff,
->>>>> +		(pix->pixelformat >> 24) & 0xff,
->>>>> +		pix->modifier, prt_names(pix->field, v4l2_field_names),
->>>>> +		pix->colorspace, pix->ycbcr_enc,
->>>>> +		pix->quantization, pix->xfer_func);
->>>>> +	for (i = 0; i < VIDEO_MAX_PLANES && pix->plane_fmt[i].sizeimage; i++)
+>>>> I am trying to reproduce this locally first. syzbot caims it can
+>>>> reproduce it with a number of very simpler reproducers (like spawn
+>>>> process, unshare, create socket):
+>>>> https://syzkaller.appspot.com/bug?id=8a18efe79140782a88dcd098808d6ab20ed740cc
 >>>>
->>>> This is going to print 8 lines every time. Maybe we could skip 0-sized
->>>> planes or something?
->>>
->>> I'm already checking pix->plane_fmt[i].sizeimage in the loop, it shouldn't
->>> print 8 lines every time.
->>>
->>
->> Oops, how could I not notice it. Sorry for the noise.
->>
->> [snip]
->>>>> +int v4l2_ext_pix_format_to_format(const struct v4l2_ext_pix_format *e,
->>>>> +				  struct v4l2_format *f, bool mplane_cap,
->>>>> +				  bool strict)
->>>>> +{
->>>>> +	const struct v4l2_plane_ext_pix_format *pe;
->>>>> +	struct v4l2_plane_pix_format *p;
->>>>> +	unsigned int i;
->>>>> +
->>>>> +	memset(f, 0, sizeof(*f));
->>>>> +
->>>>> +	/*
->>>>> +	 * Make sure no modifier is required before doing the
->>>>> +	 * conversion.
->>>>> +	 */
->>>>> +	if (e->modifier && strict &&
+>>>> I see a very slow drift, but it's very slow, so get only to:
+>>>>  direct dependencies:                 22072 [max: 32768]
 >>>>
->>>> Do we need the explicit check for e->modifier != 0 if we have to check for
->>>> the 2 specific values below anyway?
->>>
->>> We don't, since DRM_FORMAT_MOD_LINEAR is zero.
->>>
->>> But I wanted to make it explicit we don't support modifiers in this conversion.
->>> But I can remove this check, no problem.
->>>
->>
->> Yes, please. I think the double checking is confusing for the reader.
-> 
-> ok.
-> 
->>
+>>>> But that's running a very uniform workload.
 >>>>
->>>>> +	    e->modifier != DRM_FORMAT_MOD_LINEAR &&
->>>>> +	    e->modifier != DRM_FORMAT_MOD_INVALID)
->>>>> +		return -EINVAL;
->>>>> +
->>>>> +	if (!e->plane_fmt[0].sizeimage && strict)
->>>>> +		return -EINVAL;
+>>>> However when I tried to cat /proc/lockdep to see if there is anything
+>>>> fishy already,
+>>>> I got this (on c2e7554e1b85935d962127efa3c2a76483b0b3b6).
 >>>>
->>>> Why is this incorrect?
->>>
->>> !sizeimage for the first plane means that there are no planes in ef.
->>> strict is true if the result for the conversion should be returned to userspace
->>> and it is not some internal handling.
->>>
->>> So if there are no planes, we would return an incomplete v4l2_format struct
->>> to userspace.
->>>
->>> But this is not very clear, I'll improve this for the next version.
->>>
->>
->> So I can see 2 cases here:
->>
->> 1) Userspace gives ext struct and driver accepts legacy.
->>
->> In this case, the kernel needs to adjust the structure to be correct.
->> -EINVAL is only valid if
->>
->> "The struct v4l2_format type field is invalid or the requested buffer type not supported."
->>
->> as per the current uAPI documentation.
->>
->> 2) Driver gives ext struct and userspace accepts legacy.
->>
->> If at this point we get a struct with no planes, that sounds like a
->> driver bug, so rather than signaling -EINVAL to the userspace, we should
->> probably WARN()?
->>
->> Or am I getting something wrong? :)
-> 
-> Make sense, I'll restructure this for the next version.
-> 
->>
->> [snip]
->>>>> +{
->>>>> +	const struct v4l2_plane_pix_format *p;
->>>>> +	struct v4l2_plane_ext_pix_format *pe;
->>>>> +	unsigned int i;
->>>>> +
->>>>> +	memset(e, 0, sizeof(*e));
->>>>> +
->>>>> +	switch (f->type) {
->>>>> +	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
->>>>> +	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
->>>>> +		e->width = f->fmt.pix.width;
->>>>> +		e->height = f->fmt.pix.height;
->>>>> +		e->pixelformat = f->fmt.pix.pixelformat;
->>>>> +		e->field = f->fmt.pix.field;
->>>>> +		e->colorspace = f->fmt.pix.colorspace;
->>>>> +		if (f->fmt.pix.flags)
->>>>> +			pr_warn("Ignoring pixelformat flags 0x%x\n",
->>>>> +				f->fmt.pix.flags);
->>>>
->>>> Would it make sense to print something like video node name and/or function
->>>> name to explain where this warning comes from?
->>>
->>> I would need to update the function to receive this information, I can try but
->>> I'm not sure if it is worthy.
->>>
->>
->> I don't have a strong opinion on this, so maybe let's see if others have
->> any comments.
->>
->>>>
->>>>> +		e->ycbcr_enc = f->fmt.pix.ycbcr_enc;
->>>>> +		e->quantization = f->fmt.pix.quantization;
->>>>
->>>> Missing xfer_func?
->>>
->>> Yes, thanks for catching this.
->>>
->>>>
->>>>> +		e->plane_fmt[0].bytesperline = f->fmt.pix.bytesperline;
->>>>> +		e->plane_fmt[0].sizeimage = f->fmt.pix.sizeimage;
->>>>
->>>> This doesn't look right. In the ext API we expected the planes to describe
->>>> color planes, which means that bytesperline needs to be computed for planes
->>>>> = 1 and sizeimage replaced with per-plane sizes, according to the
->>>>> pixelformat.
->>>
->>> Ack.
->>>
->>> Just to be clear, even if we are using a planar format that isn't a V4L2_PIX_FMT_*M
->>> variant, we should describe every plane separatly.
->>>
->>> For instance, if V4L2_PIX_FMT_YVU420 is being used, then f->fmt.pix.bytesperline
->>> will have data, and we need to calculate bytesperline for all 3 planes, so we'll fill
->>> out:
->>>
->>> f->plane_fmt[0].bytesperline = f->fmt.pix.bytesperline;
->>> f->plane_fmt[1].bytesperline = f->fmt.pix.bytesperline / hdiv;
->>> f->plane_fmt[2].bytesperline = f->fmt.pix.bytesperline / hdiv;
->>>
->>> I'll update this for the next version.
->>>
->>
->> Yes. This basically gives us a unified representation across all
->> pixelformats and allows userspace to handle them in a uniform way, as
->> opposed to current uAPI.
-> 
-> Right, I already updated this in my wip branch for next version.
-> 
->>
->> [snip]
->>>>> +		if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
->>>>> +			e->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
->>>>> +		else
->>>>> +			e->type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
->>>>> +
->>>>> +		for (i = 0; i < VIDEO_MAX_PLANES; i++) {
->>>>> +			pe = &e->plane_fmt[i];
->>>>> +			p = &f->fmt.pix_mp.plane_fmt[i];
->>>>> +			pe->bytesperline = p->bytesperline;
->>>>> +			pe->sizeimage = p->sizeimage;
->>>>> +		}
->>>>
->>>> Same here. A blind copy is not enough. For non-M formats, the plane
->>>> parameters need to be filled according to the pixelformat.
->>>
->>>
->>> Right, following the idea above, we need a different handling if we
->>> aren't using a M-variant of the pixelformat, and we also need to
->>> convert the pixelformat from the M-variant to non-M-variant.
->>>
->>> I'll also need to save that the original format was a
->>> M-variant or not, so I can convert it back as expected.
->>
->> I'm still reading the rest of the series, so it might be answered
->> already, but did we decide to do anything about the pixelformat codes
->> themselves? If both M and non-M variants would be allowed with the new
->> API, then I guess there isn't anything to save, because the original
->> format would be preserved?
-> 
-> I was working with the idea that M-variants wouldn't be allowed.
-> But then, we have cases where non-M-variant don't exist, such as:
-> 
-> V4L2_PIX_FMT_YVU422M
-> V4L2_PIX_FMT_YVU444M
-> 
-> (at least, I couldn't find non-M-variant equivalent for those)
-> 
-> But actually, I don't think we formally decided this (and it seems
-> easier to implement if both are allowed).
-> 
-> Should we allow both variants in the Ext API ?
+>>>> Some missing locks?
 
-I see 3 options:
-
-1) Ext API doesn't accept M-variants and return -EINVAL.
-
-    But this doesn't seem to be the v4l2 way, where we avoid returning
-    errors and try to adjust to what we think it is better.
-
-    At the same time, this could allow us, in a very remote hypothetical
-    future situation, to remove the M-variants from the kernel when/if
-    the old API gets obsolete.
-
-    Future ENUM_EXT_FMT won't enumerate M-variants in this option.
-
-2) Ext API accept M-variants without normalization.
-
-    The driver can receive both variants, and need to handle both as
-    equivalents, i.e. if (V4L2_PIX_FMT_YUV420M || V4L2_PIX_FMT_YUV420)
-
-    Both can be returned to userspace.
-
-    Future ENUM_EXT_FMT can enumerate M-variants in this option.
-
-3) Ext API accept M-variants with normalization.
-
-    If userspace uses V4L2_PIX_FMT_YUV420M, the framework converts
-    to V4L2_PIX_FMT_YUV420 before passing it to the driver.
-
-    Only V4L2_PIX_FMT_YUV420 is sent back to userspace (even if userspace
-    used the M variant, the kernel normalizes it, which is a similar behavior
-    when userspace try to use a non-supported resolution and the kernel
-    adjusts it).
-
-    (we could also leave this pixelformat normalization to the driver,
-    but I don't see a reason to that)
-
-    Future ENUM_EXT_FMT won't enumerate M-variants in this option.
-
-
-
-I'm leaning towards option 3, please let me know your thoughts.
-
-Thanks
-Helen
-
+Not a TOMOYO's bug. Maybe a lockdep's bug.
 
 > 
-> Thanks
-> Helen
+> But I don't know if it's enough to explain the overflow or not...
 > 
->>
->>>
->>> I'll change this and submit for review.
->>>
->>
->> Cool, thanks.
->>
->> Best regards,
->> Tomasz
->>
+
+Since you can't hit the limit locally, I guess we need to ask syzbot to
+run massive testcases.
+
