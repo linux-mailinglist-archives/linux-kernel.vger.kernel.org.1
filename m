@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494552B9E8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296312B9E7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgKSXhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 18:37:51 -0500
-Received: from mga07.intel.com ([134.134.136.100]:49073 "EHLO mga07.intel.com"
+        id S1726540AbgKSXhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 18:37:38 -0500
+Received: from mga07.intel.com ([134.134.136.100]:49074 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727032AbgKSXhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 18:37:03 -0500
-IronPort-SDR: Zq/Pe0p5l91hzzx48DOjm3ebbChK80LW8s+OwnICX1nGafsr13H2JNTzNYk/SXmj3kEoZO8atX
- D/aR+DdAIJ6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="235531197"
+        id S1727123AbgKSXhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 18:37:06 -0500
+IronPort-SDR: rbgVMb5qINFvuJnb1rTo7wGy6eqNJG7hRanVtK8SVzmwtwkzSuPcPxJy+HLffht1vmEB/MPZDy
+ jeXC/OZekfaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="235531202"
 X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="235531197"
+   d="scan'208";a="235531202"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 15:37:02 -0800
-IronPort-SDR: VMCuB3rwBwInEHUHrFef2gQiRrhm7CgBMKml9/imwPF3Ks4pIjGh4SuRBPJusd72Ma53jJSb86
- TplYUTVs9q2w==
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 15:37:03 -0800
+IronPort-SDR: nOkcSmQWFr1VW0sFzKHT09cRT64x5tErrCBOFls+JsCwm0AswL9M9rA20EjzUmn1Njxw6SIy+u
+ sDgKzqDyAw7g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="431392221"
+   d="scan'208";a="431392224"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by fmsmga001.fm.intel.com with ESMTP; 19 Nov 2020 15:37:02 -0800
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -32,10 +32,10 @@ To:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
         x86@kernel.org
 Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, kvm@vger.kernel.org
-Subject: [PATCH v2 10/22] x86/fpu/xstate: Update xstate save function for supporting dynamic user xstate
-Date:   Thu, 19 Nov 2020 15:32:45 -0800
-Message-Id: <20201119233257.2939-11-chang.seok.bae@intel.com>
+        chang.seok.bae@intel.com
+Subject: [PATCH v2 11/22] x86/fpu/xstate: Update xstate area address finder for supporting dynamic user xstate
+Date:   Thu, 19 Nov 2020 15:32:46 -0800
+Message-Id: <20201119233257.2939-12-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201119233257.2939-1-chang.seok.bae@intel.com>
 References: <20201119233257.2939-1-chang.seok.bae@intel.com>
@@ -43,85 +43,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-copy_xregs_to_kernel() used to save all user states in an invariably
-sufficient buffer. When the dynamic user state is enabled, it becomes
-conditional which state to be saved.
+__raw_xsave_addr() returns the requested component's pointer in an XSAVE
+buffer, by simply looking up the offset table. The offset used to be fixed,
+but, with dynamic user states, it becomes variable.
 
-fpu->state_mask can indicate which state components are reserved to be
-saved in XSAVE buffer. Use it as XSAVE's instruction mask to select states.
+get_xstate_size() has a routine to find an offset at run-time. Refactor to
+use it for the address finder.
 
-KVM saves xstate in guest_fpu and user_fpu. With the change, the KVM code
-needs to ensure a valid fpu->state_mask before XSAVE.
-
-No functional change until the kernel supports dynamic user states.
+No functional change until the kernel enables dynamic user states.
 
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
 Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
-Cc: kvm@vger.kernel.org
 ---
- arch/x86/include/asm/fpu/internal.h |  3 +--
- arch/x86/kernel/fpu/core.c          |  2 +-
- arch/x86/kvm/x86.c                  | 11 ++++++++---
- 3 files changed, 10 insertions(+), 6 deletions(-)
+ arch/x86/kernel/fpu/xstate.c | 82 +++++++++++++++++++++++-------------
+ 1 file changed, 52 insertions(+), 30 deletions(-)
 
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index 3201468ff4aa..75196d10aa71 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -332,9 +332,8 @@ static inline void copy_kernel_to_xregs_booting(struct xregs_state *xstate)
- /*
-  * Save processor xstate to xsave area.
-  */
--static inline void copy_xregs_to_kernel(struct xregs_state *xstate)
-+static inline void copy_xregs_to_kernel(struct xregs_state *xstate, u64 mask)
- {
--	u64 mask = xfeatures_mask_all;
- 	u32 lmask = mask;
- 	u32 hmask = mask >> 32;
- 	int err;
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index dca4961fcc36..ece6428ba85b 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -99,7 +99,7 @@ int copy_fpregs_to_fpstate(struct fpu *fpu)
- 	if (likely(use_xsave())) {
- 		struct xregs_state *xsave = &xstate->xsave;
- 
--		copy_xregs_to_kernel(xsave);
-+		copy_xregs_to_kernel(xsave, fpu->state_mask);
- 
- 		/*
- 		 * AVX512 state is tracked here because its use is
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index abd5ff338155..023db770b55f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9212,15 +9212,20 @@ static int complete_emulated_mmio(struct kvm_vcpu *vcpu)
- 
- static void kvm_save_current_fpu(struct fpu *fpu)
- {
-+	struct fpu *src_fpu = &current->thread.fpu;
-+
- 	/*
- 	 * If the target FPU state is not resident in the CPU registers, just
- 	 * memcpy() from current, else save CPU state directly to the target.
- 	 */
--	if (test_thread_flag(TIF_NEED_FPU_LOAD))
--		memcpy(&fpu->state, &current->thread.fpu.state,
-+	if (test_thread_flag(TIF_NEED_FPU_LOAD)) {
-+		memcpy(&fpu->state, &src_fpu->state,
- 		       fpu_kernel_xstate_default_size);
--	else
-+	} else {
-+		if (fpu->state_mask != src_fpu->state_mask)
-+			fpu->state_mask = src_fpu->state_mask;
- 		copy_fpregs_to_fpstate(fpu);
-+	}
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index f8884dcdcc7c..0c0be0952194 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -133,15 +133,50 @@ static bool xfeature_is_supervisor(int xfeature_nr)
+ 	return ecx & 1;
  }
  
- /* Swap (qemu) user FPU context for the guest FPU context. */
++/*
++ * Available once those arrays for the offset, size, and alignment info are set up,
++ * by setup_xstate_features().
++ */
++static unsigned int __get_xstate_comp_offset(u64 mask, int feature_nr)
++{
++	u64 xmask = BIT_ULL(feature_nr + 1) - 1;
++	unsigned int next_offset, offset = 0;
++	int i;
++
++	if ((mask & xmask) == (xfeatures_mask_all & xmask))
++		return xstate_comp_offsets[feature_nr];
++
++	/*
++	 * Calculate the size by summing up each state together, since no known
++	 * offset found with the xstate area format out of the given mask.
++	 */
++
++	next_offset = FXSAVE_SIZE + XSAVE_HDR_SIZE;
++
++	for (i = FIRST_EXTENDED_XFEATURE; i <= feature_nr; i++) {
++		if (!(mask & BIT_ULL(i)))
++			continue;
++
++		offset = xstate_aligns[i] ? ALIGN(next_offset, 64) : next_offset;
++		next_offset += xstate_sizes[i];
++	}
++
++	return offset;
++}
++
++static unsigned int get_xstate_comp_offset(struct fpu *fpu, int feature_nr)
++{
++	return __get_xstate_comp_offset(fpu->state_mask, feature_nr);
++}
++
+ /*
+  * Available once those arrays for the offset, size, and alignment info are set up,
+  * by setup_xstate_features().
+  */
+ unsigned int get_xstate_size(u64 mask)
+ {
+-	unsigned int size;
+-	u64 xmask;
+-	int i, nr;
++	unsigned int offset;
++	int nr;
+ 
+ 	if (!mask)
+ 		return 0;
+@@ -155,24 +190,8 @@ unsigned int get_xstate_size(u64 mask)
+ 	if (!using_compacted_format())
+ 		return xstate_offsets[nr] + xstate_sizes[nr];
+ 
+-	xmask = BIT_ULL(nr + 1) - 1;
+-
+-	if (mask == (xmask & xfeatures_mask_all))
+-		return xstate_comp_offsets[nr] + xstate_sizes[nr];
+-
+-	/*
+-	 * Calculate the size by summing up each state together, since no known
+-	 * size found with the xstate area format out of the given mask.
+-	 */
+-	for (size = FXSAVE_SIZE + XSAVE_HDR_SIZE, i = FIRST_EXTENDED_XFEATURE; i <= nr; i++) {
+-		if (!(mask & BIT_ULL(i)))
+-			continue;
+-
+-		if (xstate_aligns[i])
+-			size = ALIGN(size, 64);
+-		size += xstate_sizes[i];
+-	}
+-	return size;
++	offset = __get_xstate_comp_offset(mask, nr);
++	return offset + xstate_sizes[nr];
+ }
+ 
+ /*
+@@ -991,17 +1010,20 @@ static void *__raw_xsave_addr(struct fpu *fpu, int xfeature_nr)
+ {
+ 	void *xsave;
+ 
+-	if (!xfeature_enabled(xfeature_nr)) {
+-		WARN_ON_FPU(1);
+-		return NULL;
+-	}
+-
+-	if (fpu)
+-		xsave = __xsave(fpu);
+-	else
++	if (!xfeature_enabled(xfeature_nr))
++		goto not_found;
++	else if (!fpu)
+ 		xsave = &init_fpstate.xsave;
++	else if (!(fpu->state_mask & BIT_ULL(xfeature_nr)))
++		goto not_found;
++	else
++		xsave = __xsave(fpu);
++
++	return (xsave + get_xstate_comp_offset(fpu, xfeature_nr));
+ 
+-	return xsave + xstate_comp_offsets[xfeature_nr];
++not_found:
++	WARN_ON_FPU(1);
++	return NULL;
+ }
+ 
+ /*
 -- 
 2.17.1
 
