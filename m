@@ -2,93 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4F22B9457
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AEA2B9476
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgKSOPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:15:22 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:42512 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727824AbgKSOPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:15:20 -0500
-Received: from zn.tnic (p200300ec2f0caf00568863aa7ed02326.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:af00:5688:63aa:7ed0:2326])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 71F171EC04D1;
-        Thu, 19 Nov 2020 15:15:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1605795318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ekf+AUaJ3paDxpFiCZgS74VrJkyt6cyk/9NBpR/fvyU=;
-        b=MV5CpmASljlCO/YUmy8/kf5qcI6xkATuS2O4eC3ZQj5p6yYsvQfVuwzXod7Rr28soYo+vm
-        KBmiQ6VLJJHgwtAp357XiE4VCK4f0OkctgXHYFxueSARLR8U8cOddqvZ9j3yl1mizcKXpO
-        7Onh/kRnf+CmvoYBWvMVhUjxEN2PV5g=
-Date:   Thu, 19 Nov 2020 15:15:12 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, nivedita@alum.mit.edu,
-        thomas.lendacky@amd.com, yazen.ghannam@amd.com, wei.huang2@amd.com
-Subject: Re: [RFC PATCH v3] tools/x86: add kcpuid tool to show raw CPU
- features
-Message-ID: <20201119141512.GB3769@zn.tnic>
-References: <1603344083-100742-1-git-send-email-feng.tang@intel.com>
- <20201118191529.GN7472@zn.tnic>
- <20201119072055.GA112648@shbuild999.sh.intel.com>
- <20201119091815.GA3769@zn.tnic>
- <20201119135010.GC112648@shbuild999.sh.intel.com>
+        id S1727989AbgKSOSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:18:30 -0500
+Received: from lilium.sigma-star.at ([109.75.188.150]:58060 "EHLO
+        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727813AbgKSOS3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:18:29 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lilium.sigma-star.at (Postfix) with ESMTP id 3FE14181C88E8;
+        Thu, 19 Nov 2020 15:18:26 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id KYEAPqzs0CVc; Thu, 19 Nov 2020 15:18:25 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id OqOEmPr6IOK7; Thu, 19 Nov 2020 15:18:25 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     miklos@szeredi.hu
+Cc:     miquel.raynal@bootlin.com, vigneshr@ti.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Subject: [PATCH 0/5] [RFC] MUSE: Userspace backed MTD
+Date:   Thu, 19 Nov 2020 15:16:54 +0100
+Message-Id: <20201119141659.26176-1-richard@nod.at>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201119135010.GC112648@shbuild999.sh.intel.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 09:50:10PM +0800, Feng Tang wrote:
-> That's really odd. I tried on 3 baremetal machines: one Skylake NUC device,
-> one Xeon E5-2699 and one Xeon E5-2680.
+When working with flash devices a common task is emulating them to run va=
+rious
+tests or inspect dumps from real hardware. To achieve that we have plenty=
+ of
+emulators in the mtd subsystem: mtdram, block2mtd, nandsim.
 
-Ah, sorry, not virt, virt is 0x4000_0000. Yeah, I remember now. It is
-function 4 which AMD doesn't implement and I'm running this on AMD:
+Each of them implements a adhoc MTD and have various drawbacks.
+Over the last years some developers tried to extend them but these attemp=
+ts
+often got rejected because they added just more adhoc feature instead of
+addressing overall problems.
 
-$ cpuid -1r
-CPU:
-   0x00000000 0x00: eax=0x0000000d ebx=0x68747541 ecx=0x444d4163 edx=0x69746e65
-   0x00000001 0x00: eax=0x00800f82 ebx=0x0c100800 ecx=0x7ed8320b edx=0x178bfbff
-   0x00000002 0x00: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
-   0x00000003 0x00: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
+MUSE is a novel approach to address the need of advanced MTD emulators.
+Advanced means in this context supporting different (vendor specific) ima=
+ge
+formats, different ways for fault injection (fuzzing) and recoding/replay=
+ing
+IOs to emulate power cuts.
 
-<-- no function 4.
+The core goal of MUSE is having the complexity on the userspace side and
+only a small MTD driver in kernelspace.
+While playing with different approaches I realized that FUSE offers every=
+thing
+we need. So MUSE is a little like CUSE except that it does not implement =
+a
+bare character device but an MTD.
 
-   0x00000005 0x00: eax=0x00000040 ebx=0x00000040 ecx=0x00000003 edx=0x00000011
-   ...
+To get early feedback I'm sending this series as RFC, so don't consider i=
+t as
+ready to merge yet.
 
-That's why.  :-)
+Open issues are:
 
-Btw, there are other funny ranges on Intel:
+1. Dummy file object
+The logic around fuse_direct_io() expects a file object.
+Unlike FUSE or CUSE we don't have such an object in MUSE because usually =
+an
+MTD is not opened by userspace. The kernel uses the MTD and makes it avai=
+lable
+to filesystems or other layers such as mtdblock, mtdchar or UBI.
+Currently a anon inode is (ab)used for that.
+Maybe there is a better way?
 
-./cpuid -1r
-CPU:
-   0x20000000 0x00: eax=0x00000000 ebx=0x00000001 ecx=0x00000001 edx=0x00000000
+2. Init parameter passing
+Currently parameter passing borrowed the logic from CUSE and parameters a=
+re
+passed as stringy key value pairs.
+Most MTD paramerters are numbers (erase size, etc..) so passing them via
+struct muse_init_out seems more natural.
+But I plan to pass also pure string parameters such as an mtdparts comman=
+d line.
+What is the perffered way these days in FUSE?
+Am I allowed to embed structs such as struct mtd_info_user (mtd-abi.h) in
+muse_init_out?
 
-That one has 2 bits set.
+3. MUSE specific FUSE ops
+At this time MUSE_INIT, FUSE_READ, FUSE_WRITE, FUSE_FSYNC and MUSE_ERASE =
+are
+used.
 
-   0x80860000 0x00: eax=0x00000000 ebx=0x00000001 ecx=0x00000001 edx=0x00000000
-   0xc0000000 0x00: eax=0x00000000 ebx=0x00000001 ecx=0x00000001 edx=0x00000000
+I plan to get rid of FUSE_READ and FUSE_WRITE too. On NAND'ish MTDs there=
+ is
+out of band (OOB) data which can be read and written. Strictly speaking f=
+or
+testing UBI/UBIFS OOB is not needed but for JFFS2 it is.
 
-And those too.
+FUSE_READ/WRITE also consider every non-zero return code as fatal and abo=
+rt
+the transfer. In MTD, -EUCLEAN and -EBADMSG are not fatal, a driver is
+expected to return possible corrupted data and let the next layer deal
+with it.
+So far I found no good way how to encode this in FUSE_READ. Maybe you can
+point me in the right direction?
 
-Fun.
+This series can also be found at:
+git://git.kernel.org/pub/scm/linux/kernel/git/rw/misc.git muse_v1
 
--- 
-Regards/Gruss,
-    Boris.
+Richard Weinberger (5):
+  fuse: Rename FUSE_DIO_CUSE
+  fuse: Export fuse_simple_request
+  fuse: Make cuse_parse_one a common helper
+  mtd: Add MTD_MUSE flag
+  fuse: Implement MUSE: MTD in userspace
 
-https://people.kernel.org/tglx/notes-about-netiquette
+ fs/fuse/Kconfig            |  15 ++
+ fs/fuse/Makefile           |   2 +
+ fs/fuse/cuse.c             |  62 +----
+ fs/fuse/dev.c              |   1 +
+ fs/fuse/file.c             |   4 +-
+ fs/fuse/fuse_i.h           |   7 +-
+ fs/fuse/helper.c           |  68 ++++++
+ fs/fuse/muse.c             | 450 +++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/fuse.h  |  25 ++-
+ include/uapi/mtd/mtd-abi.h |   1 +
+ 10 files changed, 571 insertions(+), 64 deletions(-)
+ create mode 100644 fs/fuse/helper.c
+ create mode 100644 fs/fuse/muse.c
+
+--=20
+2.26.2
+
