@@ -2,143 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10142B8F5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 10:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 245022B8F85
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgKSJt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:49:58 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:43732 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726853AbgKSJt5 (ORCPT
+        id S1726575AbgKSJzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 04:55:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgKSJzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:49:57 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJ9l1QY021572;
-        Thu, 19 Nov 2020 04:49:46 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34td19h442-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 04:49:46 -0500
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0AJ9nixg010210
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 19 Nov 2020 04:49:45 -0500
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 19 Nov 2020 01:49:44 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 19 Nov 2020 01:49:43 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AJ9nbw6017439;
-        Thu, 19 Nov 2020 04:49:41 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lars@metafoo.de>, <dmitry.torokhov@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 3/3] Input: adp5589-keys - add basic devicetree support
-Date:   Thu, 19 Nov 2020 11:54:54 +0200
-Message-ID: <20201119095454.48631-3-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201119095454.48631-1-alexandru.ardelean@analog.com>
-References: <20201119095454.48631-1-alexandru.ardelean@analog.com>
+        Thu, 19 Nov 2020 04:55:03 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DE9C0613CF;
+        Thu, 19 Nov 2020 01:55:03 -0800 (PST)
+Date:   Thu, 19 Nov 2020 09:55:00 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605779701;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3DQSNsph71EEutR0chQxF5I5BKA8rkECQKtDlpymFSE=;
+        b=ApoJztcibtoEhcl/J0J6qJ7UqKEpJLuU6QPUfaSXDgIEUJgCjbG3Prnr7dOvTDGeGqdBm0
+        u32lP4OxV68TvLONeSdSwnovMDFrbeb3AHK0vitvhLLJX1wUd94QyGUUo2p5kdZC6kBueu
+        gX2v9Vf2zXCbIyM5AdHkXYYEJxCoSBlrrlW68rg0TVX+BXKkTNaicxKhlgSyIO4NFcFaCw
+        2ebJvFVM9zgmtk8/fjsxFSmArIrHeYzQItVPCDFEot+Ou/f2mMerj9vNi8/fOL2qGw9a0d
+        YZiOGf0g8xUssx2X9KFFa/Cinofqr5JU+34R9rZEht00KR9M29Q/ab5WZQ1wVg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605779701;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3DQSNsph71EEutR0chQxF5I5BKA8rkECQKtDlpymFSE=;
+        b=yuDm4JkhHuYrFTCCN+7NhkIkjZasQzVA1T+B5RKCRkULmv+6RjF40ao3hPqcWYd3yiriou
+        a97v5k9vK+octoAw==
+From:   "tip-bot2 for Boqun Feng" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] lockdep: Put graph lock/unlock under
+ lock_recursion protection
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201113110512.1056501-1-boqun.feng@gmail.com>
+References: <20201113110512.1056501-1-boqun.feng@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_08:2020-11-17,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0 clxscore=1015
- phishscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190071
+Message-ID: <160577970070.11244.15107414792591573894.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+The following commit has been merged into the locking/urgent branch of tip:
 
-Add very basic devicetree suppport to the adp5589 allowing the device to be
-registered from devicetree and ACPI via PRP0001.
+Commit-ID:     43be4388e94b915799a24f0eaf664bf95b85231f
+Gitweb:        https://git.kernel.org/tip/43be4388e94b915799a24f0eaf664bf95b85231f
+Author:        Boqun Feng <boqun.feng@gmail.com>
+AuthorDate:    Fri, 13 Nov 2020 19:05:03 +08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 17 Nov 2020 13:15:35 +01:00
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+lockdep: Put graph lock/unlock under lock_recursion protection
+
+A warning was hit when running xfstests/generic/068 in a Hyper-V guest:
+
+[...] ------------[ cut here ]------------
+[...] DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())
+[...] WARNING: CPU: 2 PID: 1350 at kernel/locking/lockdep.c:5280 check_flags.part.0+0x165/0x170
+[...] ...
+[...] Workqueue: events pwq_unbound_release_workfn
+[...] RIP: 0010:check_flags.part.0+0x165/0x170
+[...] ...
+[...] Call Trace:
+[...]  lock_is_held_type+0x72/0x150
+[...]  ? lock_acquire+0x16e/0x4a0
+[...]  rcu_read_lock_sched_held+0x3f/0x80
+[...]  __send_ipi_one+0x14d/0x1b0
+[...]  hv_send_ipi+0x12/0x30
+[...]  __pv_queued_spin_unlock_slowpath+0xd1/0x110
+[...]  __raw_callee_save___pv_queued_spin_unlock_slowpath+0x11/0x20
+[...]  .slowpath+0x9/0xe
+[...]  lockdep_unregister_key+0x128/0x180
+[...]  pwq_unbound_release_workfn+0xbb/0xf0
+[...]  process_one_work+0x227/0x5c0
+[...]  worker_thread+0x55/0x3c0
+[...]  ? process_one_work+0x5c0/0x5c0
+[...]  kthread+0x153/0x170
+[...]  ? __kthread_bind_mask+0x60/0x60
+[...]  ret_from_fork+0x1f/0x30
+
+The cause of the problem is we have call chain lockdep_unregister_key()
+-> <irq disabled by raw_local_irq_save()> lockdep_unlock() ->
+arch_spin_unlock() -> __pv_queued_spin_unlock_slowpath() -> pv_kick() ->
+__send_ipi_one() -> trace_hyperv_send_ipi_one().
+
+Although this particular warning is triggered because Hyper-V has a
+trace point in ipi sending, but in general arch_spin_unlock() may call
+another function having a trace point in it, so put the arch_spin_lock()
+and arch_spin_unlock() after lock_recursion protection to fix this
+problem and avoid similiar problems.
+
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20201113110512.1056501-1-boqun.feng@gmail.com
 ---
- drivers/input/keyboard/adp5589-keys.c | 30 ++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+ kernel/locking/lockdep.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/keyboard/adp5589-keys.c b/drivers/input/keyboard/adp5589-keys.c
-index daa6d3cdbac5..4321bad10269 100644
---- a/drivers/input/keyboard/adp5589-keys.c
-+++ b/drivers/input/keyboard/adp5589-keys.c
-@@ -985,9 +985,25 @@ static void adp5589_clear_config(void *data)
- 	adp5589_write(client, kpad->var->reg(ADP5589_GENERAL_CFG), 0);
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index d9fb9e1..c1418b4 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -108,19 +108,21 @@ static inline void lockdep_lock(void)
+ {
+ 	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
+ 
++	__this_cpu_inc(lockdep_recursion);
+ 	arch_spin_lock(&__lock);
+ 	__owner = current;
+-	__this_cpu_inc(lockdep_recursion);
  }
  
-+static const struct adp5589_chip_info *adp5589_get_chip_info(struct device *dev,
-+							     const struct i2c_device_id *id)
-+{
-+	const struct adp5589_chip_info *info;
-+
-+	info = device_get_match_data(dev);
-+	if (info)
-+		return info;
-+
-+	if (id)
-+		return &adp5589_chip_info_tbl[id->driver_data];
-+
-+	return NULL;
-+}
-+
- static int adp5589_probe(struct i2c_client *client,
- 			 const struct i2c_device_id *id)
+ static inline void lockdep_unlock(void)
  {
-+	const struct adp5589_chip_info *info;
- 	struct adp5589_kpad *kpad;
- 	const struct adp5589_kpad_platform_data *pdata =
- 		adp5589_kpad_pdata_get(&client->dev);
-@@ -1000,13 +1016,17 @@ static int adp5589_probe(struct i2c_client *client,
- 		return -EIO;
- 	}
- 
-+	info = adp5589_get_chip_info(&client->dev, id);
-+	if (!info)
-+		return -ENODEV;
++	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
 +
- 	kpad = devm_kzalloc(&client->dev, sizeof(*kpad), GFP_KERNEL);
- 	if (!kpad)
- 		return -ENOMEM;
+ 	if (debug_locks && DEBUG_LOCKS_WARN_ON(__owner != current))
+ 		return;
  
- 	kpad->client = client;
+-	__this_cpu_dec(lockdep_recursion);
+ 	__owner = NULL;
+ 	arch_spin_unlock(&__lock);
++	__this_cpu_dec(lockdep_recursion);
+ }
  
--	kpad->info = &adp5589_chip_info_tbl[id->driver_data];
-+	kpad->info = info;
- 	kpad->var = kpad->info->constants;
- 
- 	error = devm_add_action_or_reset(&client->dev, adp5589_clear_config,
-@@ -1079,6 +1099,13 @@ static int adp5589_resume(struct device *dev)
- 
- static SIMPLE_DEV_PM_OPS(adp5589_dev_pm_ops, adp5589_suspend, adp5589_resume);
- 
-+static const struct of_device_id adp5589_of_match[] = {
-+	{ .compatible = "adi,adp5585", .data = &adp5589_chip_info_tbl[ADP5585_01] },
-+	{ .compatible = "adi,adp5585-02", .data = &adp5589_chip_info_tbl[ADP5585_02] },
-+	{ .compatible = "adi,adp5589", .data = &adp5589_chip_info_tbl[ADP5589] },
-+	{}
-+};
-+
- static const struct i2c_device_id adp5589_id[] = {
- 	{"adp5589-keys", ADP5589},
- 	{"adp5585-keys", ADP5585_01},
-@@ -1092,6 +1119,7 @@ static struct i2c_driver adp5589_driver = {
- 	.driver = {
- 		.name = KBUILD_MODNAME,
- 		.pm = &adp5589_dev_pm_ops,
-+		.of_match_table = adp5589_of_match,
- 	},
- 	.probe = adp5589_probe,
- 	.id_table = adp5589_id,
--- 
-2.17.1
-
+ static inline bool lockdep_assert_locked(void)
