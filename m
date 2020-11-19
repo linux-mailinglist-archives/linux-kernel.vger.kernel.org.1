@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB73F2B8CC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EF62B8CC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgKSICy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:02:54 -0500
-Received: from mga05.intel.com ([192.55.52.43]:39746 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725850AbgKSICy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:02:54 -0500
-IronPort-SDR: vwyxxlJi7AqzKKGpk/v2wVoMQZxLx//kehW9xu/22weM62D8TRGnnVbFcD/KjCZMx6pq6VSigT
- gr9o3u+cGq4w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="255959835"
-X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="255959835"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 00:02:53 -0800
-IronPort-SDR: YZIJXDj6Oc005giTLdXw/6wZC7V4AznSc3jfbXisgAILn9ikzw9e1hZAqFL3LjOh1ug57IEMYl
- OCv9qRKSdiWQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="359862232"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Nov 2020 00:02:49 -0800
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Johannes Weiner" <hannes@cmpxchg.org>,
-        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [RFC -V5] autonuma: Migrate on fault among multiple bound nodes
-References: <20201118051952.39097-1-ying.huang@intel.com>
-        <20201118095637.GC3306@suse.de> <878saxvpji.fsf@yhuang-dev.intel.com>
-        <20201119075052.GF3306@suse.de>
-Date:   Thu, 19 Nov 2020 16:02:48 +0800
-In-Reply-To: <20201119075052.GF3306@suse.de> (Mel Gorman's message of "Thu, 19
-        Nov 2020 07:50:52 +0000")
-Message-ID: <874kllvknr.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1726251AbgKSIDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:03:36 -0500
+Received: from outbound-ip24b.ess.barracuda.com ([209.222.82.221]:49134 "EHLO
+        outbound-ip24b.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725816AbgKSIDf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 03:03:35 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2107.outbound.protection.outlook.com [104.47.58.107]) by mx4.us-east-2b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Thu, 19 Nov 2020 08:03:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PQd1wbka2ZzlT+GS7cll8kRXTVIlc9EMTAx+0eyo/glm8cMvcLIkFZuTi7pILrUmvbfP0c18vRegHHHCnBQ2mYz9bFFYSpUiBCyxVs0xKkF/YDbBpBfR7BkyJcCYKXBFnRqHj6LCeq4MqhjLKq95sS7atz+proh96eYGJu4FgZalJiuaRMhMJpwqiQvpSIagwzSh/m12Aw82wZswh76qRaIOHWNOLeL3lO3UsE8FzDhUg2XuZ2kOge9fMRdQXuuVoNpyL/Nv7IZ6/Ur20NOUx1Pdq5Nbd4kDhm69aTz5Na5esN1f8M/tFgZ5x6o8dP3wmpTStAJC9EME396MxBACPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wzhu3HKrBF9WL7Cqr05yTjxR+KiotXQXs5GjHw4rN/g=;
+ b=Wz5WPl4PqnIKKvUX+wZryQEguFQpqPbBN0lWy2UFwgNfF1RJMcL0VT7H+sZueGe+7IaCsMEBYoJt0lPns+afBUTrwuJyrUzpCV+gQ+XcYgVD/2pvzDchhsHgECY8LhdXQ/iy0fdEfZsQefMMbtyNKPf3X51mOeEJ1IUPzplz1yvDQPGA8dYXjbT5kKp2rYi5LxKCkSlGrc9pb/fl/0rtceiZUFiQ8ACYpxepMFZlLPNQJmCtl8nJ+oKqWtqh2hGI3IAJw+UbLW4FPUNfyS6ptqhJ79cj37gfAoCz6/PbHdSS7Oxo7mgK0pR9jV23pecLIGZiqFtGs9OzaFOHmbNFQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=digi.com; dmarc=pass action=none header.from=digi.com;
+ dkim=pass header.d=digi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digi.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wzhu3HKrBF9WL7Cqr05yTjxR+KiotXQXs5GjHw4rN/g=;
+ b=avCl3tdaoSs4qaQ0KRiGb9KJ1MYJqcQBrpVvPXAn82cwW+NAMX5jnd5DqnCQSLlNg9dzeG8H1Z0oDiTr36zJI9sY19Ee3iI27uLNxmze1OlEHWPqf2wDIMHiwmE0bVvJb4lcbiyQLXCfrpWpb1Ymwz/JKk9Ia+YoYZUhDKx7DV4=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=digi.com;
+Received: from MN2PR10MB4174.namprd10.prod.outlook.com (2603:10b6:208:1dd::21)
+ by MN2PR10MB4399.namprd10.prod.outlook.com (2603:10b6:208:1d9::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Thu, 19 Nov
+ 2020 08:03:22 +0000
+Received: from MN2PR10MB4174.namprd10.prod.outlook.com
+ ([fe80::b505:75ae:58c9:eb32]) by MN2PR10MB4174.namprd10.prod.outlook.com
+ ([fe80::b505:75ae:58c9:eb32%9]) with mapi id 15.20.3564.028; Thu, 19 Nov 2020
+ 08:03:22 +0000
+From:   Pavana Sharma <pavana.sharma@digi.com>
+To:     kuba@kernel.org
+Cc:     andrew@lunn.ch, ashkan.boldaji@digi.com, davem@davemloft.net,
+        f.fainelli@gmail.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, marek.behun@nic.cz,
+        netdev@vger.kernel.org, pavana.sharma@digi.com,
+        vivien.didelot@gmail.com, robh+dt@kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v9 2/4] net: phy: Add 5GBASER interface mode
+Date:   Thu, 19 Nov 2020 18:03:01 +1000
+Message-Id: <ce2bdff4ef9a98e47d93b3e183327f16acf05768.1605684865.git.pavana.sharma@digi.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1605684865.git.pavana.sharma@digi.com>
+References: <cover.1605684865.git.pavana.sharma@digi.com>
+Content-Type: text/plain
+X-Originating-IP: [14.200.39.236]
+X-ClientProxiedBy: SYBPR01CA0121.ausprd01.prod.outlook.com
+ (2603:10c6:10:5::13) To MN2PR10MB4174.namprd10.prod.outlook.com
+ (2603:10b6:208:1dd::21)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (14.200.39.236) by SYBPR01CA0121.ausprd01.prod.outlook.com (2603:10c6:10:5::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Thu, 19 Nov 2020 08:03:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d1140df2-8a64-4590-0780-08d88c61955f
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4399:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4399CA8C2CF1CCC0B5E2054495E00@MN2PR10MB4399.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:296;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hCX9/P2NcUEFaS26U5333IhzOuDHhpX3H2R0hrWFhon0no3DP85UNTQ/RAro2mPMr3Tcdi0PthsS3TcmiI7L+NyGBK94ArPp/88yMB44Q3fd9tMl/Tf1qcWAD51ZkIKaGtWSDbRWRy4kSQlWj0PsfWthHSANCZQUh9jQQ8r11jeE3E4UE2nXlRQ3Jz3l6Upil56x6J2Pz8zglKxO6XjD8OXH0I9Nbfqt8Xb01wzBYZEK97GJiffTowxZj/iO6Mt/0IIfb5kPvM6VBVixMPBO3kAraKRpLVghXsmLCt69KY0Vnnqgr3p+FbRnLEIckUFOyVgO/rdmsKk2qSTfxy9oXTJAKAMDXNu8ZfO428DJMx2vMCP2XocerbaklaYdJ4ak
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4174.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(396003)(39850400004)(7416002)(6486002)(956004)(8676002)(44832011)(26005)(86362001)(6506007)(8936002)(6512007)(6916009)(36756003)(52116002)(478600001)(16526019)(66476007)(66556008)(2906002)(316002)(5660300002)(2616005)(186003)(4326008)(6666004)(69590400008)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: FGhJ3ij9rbRwNMmT2hghY9R3dIPbHnqYS9TZLkiUhCwIC9eUmL+vMgQl3YuBVHNELwgxWJD5mmuzaOY/DNyi/dSSYXUQsUoHA/edPm34v6XlHmcKRtgwCZRtnm6TbBtLa2jfb+r32slZqEWnkvK4qAHsxeD7kGI0I5LHN+LfrkC6A/+mEHuNXujVx2bI7RPVzzmUPn578frr9buJ3y17h6BcxTo+p9lJ33z0HvsoHz5ZyDOBMmZKttQE/b/vR7TAUQ2woVdpDbUFjNGAca8v5CSSFPZSXlGjTcbSxxHKG1ESCKr85KadBWaMyYwlXUb2p64O88SqQA2tnvA459ErTEBOkSxjLKIV0B56827vTHL8SbZxKOCUUqb1qwCxp+jG+djy0zrcnZskcf3HYb8hXrPzJVlyQHN0EtDDNiL75JB81Ny8anKFcRg59j9Kw7E5PrDpG6+8eygY4RJmY0vSAxh2ASIBngH0syyrPg2GOC6fqEe/YtsIc/isZTWgbt5R72pgAJRByLcoEIaHE9l0ygdEC4Wrv4UrPHpjzUKrwUe+zYDNR9ZW0E9fcY7qZ8pX/70p7HZyCJJXOnJlePNyxDqnBKg4zKbKcGElH3fnXGEWLUe1l3dHn7MX5Gmvqn+TCPF8OCHPBT+LnAbHgJY3OZqW7ZhbBOVGtDBTKv7BglRxWFzcXowqKanvK/sVGfWeGy2vEZgkzVQRiHgzs89A4qUQQ50Hc5Hcmcg516p8DyR9kYNZsQYF/X7TSVaXpaOFBQ4d+sPpoR1dKS9sH0P5KUpEOIrGIr+s/aoppCmKg5cw0mQ5/aQFeq1LvhtA9Efg7OhgxSfIGIWBhcdBTBGGjHSpsegYnJ0+l7VY7BwTJuW7/fUV3r2iGX7zlunD6CtLTj62i5/qo7v9phZUwJPC6Q==
+X-OriginatorOrg: digi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1140df2-8a64-4590-0780-08d88c61955f
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4174.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2020 08:03:22.3622
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: abb4cdb7-1b7e-483e-a143-7ebfd1184b9e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t+Y2n+V8W6+0M0prm8Wvz/jHHkxxN/jjUQTkevKnMhk/tAZ0o+LZMb2Ho4DBzbsEbYywmt13cvsJem84mBqv7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4399
+X-BESS-ID: 1605773003-893007-810-54468-1
+X-BESS-VER: 2019.1_20201118.2036
+X-BESS-Apparent-Source-IP: 104.47.58.107
+X-BESS-Outbound-Spam-Score: 0.00
+X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.228292 [from 
+        cloudscan10-124.us-east-2a.ess.aws.cudaops.com]
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------
+        0.00 MSGID_FROM_MTA_HEADER  META: Message-Id was added by a relay 
+        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
+X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS112744 scores of KILL_LEVEL=7.0 tests=MSGID_FROM_MTA_HEADER, BSF_BESS_OUTBOUND
+X-BESS-BRTS-Status: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mel Gorman <mgorman@suse.de> writes:
+Add 5GBASE-R phy interface mode
 
-> On Thu, Nov 19, 2020 at 02:17:21PM +0800, Huang, Ying wrote:
->> >> Various page placement optimization based on the NUMA balancing can be
->> >> done with these flags.  As the first step, in this patch, if the
->> >> memory of the application is bound to multiple nodes (MPOL_BIND), and
->> >> in the hint page fault handler the accessing node are in the policy
->> >> nodemask, the page will be tried to be migrated to the accessing node
->> >> to reduce the cross-node accessing.
->> >> 
->> >
->> > The patch still lacks supporting data. It really should have a basic
->> > benchmark of some sort serving as an example of how the policies should
->> > be set and a before/after comparison showing the throughput of MPOL_BIND
->> > accesses spanning 2 or more nodes is faster when numa balancing is enabled.
->> 
->> Sure.  Will add some basic benchmark data and usage example.
->> 
->
-> Thanks
->
->> > A man page update should also be added clearly outlining when an
->> > application should consider using it with the linux-api people cc'd
->> > for review.
->> 
->> Yes.  Will Cc linux-api for review and will submit patches to
->> manpages.git after the API is finalized.
->> 
->
-> Add the manpages patch to this series. While it is not merged through
-> the kernel, it's important for review purposes.
->
->> > The main limitation is that if this requires application modification,
->> > it may never be used. For example, if an application uses openmp places
->> > that translates into bind then openmp needs knowledge of the flag.
->> > Similar limitations apply to MPI. This feature has a risk that no one
->> > uses it.
->> 
->> My plan is to add a new option to `numactl`
->> (https://github.com/numactl/numactl/), so users who want to enable NUMA
->> balancing within the constrains of NUMA binding can use that.  I can
->> reach some Openstack and Kubernate developers to check whether it's
->> possible to add the support to these software.  For other applications,
->> Yes, it may take long time for the new flag to be used.
->> 
->
-> Patch for numactl should also be included to see what it looks like in
-> practice. Document what happens if the flag does not exist in the
-> running kernel.
->
-> I know this is awkward, but it's an interface exposed to userspace and
-> as it is expected that applications will exist that then try run on
-> older kernels, it needs to be very up-front about what happens on older
-> kernels. It would not be a complete surprise for openmp and openmpi
-> packages to be updated on distributions with older kernels (either by
-> source or via packaging) leading to surprises.
+Signed-off-by: Pavana Sharma <pavana.sharma@digi.com>
+---
+ include/linux/phy.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Sure.  I understand that we should be careful about the user space
-interface.  I will send out a new version together with the man pages
-and numactl patches with all your comments addressed.
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index eb3cb1a98b45..71e280059ec5 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -106,6 +106,7 @@ extern const int phy_10gbit_features_array[1];
+  * @PHY_INTERFACE_MODE_TRGMII: Turbo RGMII
+  * @PHY_INTERFACE_MODE_1000BASEX: 1000 BaseX
+  * @PHY_INTERFACE_MODE_2500BASEX: 2500 BaseX
++ * @PHY_INTERFACE_MODE_5GBASER: 5G BaseR
+  * @PHY_INTERFACE_MODE_RXAUI: Reduced XAUI
+  * @PHY_INTERFACE_MODE_XAUI: 10 Gigabit Attachment Unit Interface
+  * @PHY_INTERFACE_MODE_10GBASER: 10G BaseR
+@@ -137,6 +138,8 @@ typedef enum {
+ 	PHY_INTERFACE_MODE_TRGMII,
+ 	PHY_INTERFACE_MODE_1000BASEX,
+ 	PHY_INTERFACE_MODE_2500BASEX,
++	/* 5GBASE-R mode */
++	PHY_INTERFACE_MODE_5GBASER,
+ 	PHY_INTERFACE_MODE_RXAUI,
+ 	PHY_INTERFACE_MODE_XAUI,
+ 	/* 10GBASE-R, XFI, SFI - single lane 10G Serdes */
+@@ -215,6 +218,8 @@ static inline const char *phy_modes(phy_interface_t interface)
+ 		return "1000base-x";
+ 	case PHY_INTERFACE_MODE_2500BASEX:
+ 		return "2500base-x";
++	case PHY_INTERFACE_MODE_5GBASER:
++		return "5gbase-r";
+ 	case PHY_INTERFACE_MODE_RXAUI:
+ 		return "rxaui";
+ 	case PHY_INTERFACE_MODE_XAUI:
+-- 
+2.17.1
 
-Best Regards,
-Huang, Ying
