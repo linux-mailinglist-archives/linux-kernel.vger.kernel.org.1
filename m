@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38A02B89DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 870E12B89E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727754AbgKSByT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 20:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726468AbgKSByS (ORCPT
+        id S1727248AbgKSB4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 20:56:02 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8111 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726243AbgKSB4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 20:54:18 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A7BC0613D4;
-        Wed, 18 Nov 2020 17:54:18 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id g7so2928619pfc.2;
-        Wed, 18 Nov 2020 17:54:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=oilqbm0PbyF3KMvGCOoKWnR48rcsD2eNT+QPWjMgMFw=;
-        b=XBYO4bbob8cQz4HlqKLE1CpP4bo91AyKwEtYi6lLaUPpXPb/l43xjXhmlhsfhdcWtu
-         5dAK3cD7tFm1HvXrltDWAvY/qfCVXbzCCH/pq8cfwQsbnJsEi+L6fvP1aEuEjWjbjvmA
-         RChjXZK5uTYhshAWglI19xWnnaSQ3O1lojiCx/l0feXQ7FzdhI/lH0OhJnqug9VuFavk
-         iVWyEqBHCh12Pi6YwJJ+uHPhyKHK27yi8g5HKGmVTbXrIVrzU8qHWtvWhPvZ/EmYVwWc
-         A4g8VUUCvhQisNyLY1jjaN9BUR+r/hVCPfVOCHGtv19arFF1XFfcEdD3WHK8GxWOX9/Z
-         MZ9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=oilqbm0PbyF3KMvGCOoKWnR48rcsD2eNT+QPWjMgMFw=;
-        b=Re3uJFzzBz092FIm5QGklIWsqKD26DhRKKmX1m701hSx095oU/2RH1ktOXYvo37BzG
-         GBOJLht3p+P5V9jTQuo+bTsqC66G5q1nK3jlYagCnPdYzeVT08A7xrqtNGUgaZtx9U9y
-         C9qmc82gID7t/7XmtJAEwmUl2WoizgrFjHqwJMNuUXdxL2BSSJ+xX3yFmwlux/iZ4WM6
-         T2H8kfAmzr8/QeIuMlyEkG+SzfFt9cVoWKb8c03fUc1dn7HTT6pbDI7cFrWeq1I2sZeu
-         2tzrKc9oK42995QzJD6ReRVMwtii1Oxrj4uFvFtes0bxJ/ozD6ZlA+fd2Nsw0v75Gn+p
-         IK4g==
-X-Gm-Message-State: AOAM530z9YDbqZkYMOptncNOr3V5LctCKYnsR3EKDGlbsbLP3Loov/nW
-        p9zHOby1O0yKe+CEWfm3FIDW2Kkhqd2sUA==
-X-Google-Smtp-Source: ABdhPJyODx/iAkOp7RFSPXqLNcVJygh8K6z2gu97gOXFOyZNWaZZYMZ+k/FvdeND6jmU05sD+kwIxA==
-X-Received: by 2002:a63:4558:: with SMTP id u24mr10751984pgk.376.1605750857559;
-        Wed, 18 Nov 2020 17:54:17 -0800 (PST)
-Received: from [10.165.0.22] ([45.56.153.149])
-        by smtp.gmail.com with ESMTPSA id u5sm24066564pgj.28.2020.11.18.17.54.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Nov 2020 17:54:16 -0800 (PST)
-Subject: Re: [PATCH v2 1/4] rtlwifi: rtl8188ee: avoid accessing the data
- mapped to streaming DMA
-To:     Larry Finger <Larry.Finger@lwfinger.net>, pkshih@realtek.com,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201118015314.4979-1-baijiaju1990@gmail.com>
- <d3996305-136a-708b-0dba-e9428f9da5cb@lwfinger.net>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <9a4a11cf-6505-3434-85fa-262e3e16bc47@gmail.com>
-Date:   Thu, 19 Nov 2020 09:54:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Wed, 18 Nov 2020 20:56:01 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cc2nl1fXzzLq1y;
+        Thu, 19 Nov 2020 09:55:39 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.144) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 19 Nov 2020
+ 09:55:51 +0800
+Subject: Re: [PATCH 1/1] ACPI/nfit: correct the badrange to be reported in
+ nfit_handle_mce()
+To:     "Verma, Vishal L" <vishal.l.verma@intel.com>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>
+References: <20201118084117.1937-1-thunder.leizhen@huawei.com>
+ <1fa493113c74a0618d34f0e5d88e4402abe3e69c.camel@intel.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <b8396b38-ef3e-18d9-b9a7-d6e836d546e9@huawei.com>
+Date:   Thu, 19 Nov 2020 09:55:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <d3996305-136a-708b-0dba-e9428f9da5cb@lwfinger.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1fa493113c74a0618d34f0e5d88e4402abe3e69c.camel@intel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.144]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the advice.
-I have added the description of the changes and resent the patches.
 
 
-Best wishes,
-Jia-Ju Bai
-
-On 2020/11/19 1:20, Larry Finger wrote:
-> On 11/17/20 7:53 PM, Jia-Ju Bai wrote:
->> In rtl88ee_tx_fill_cmddesc(), skb->data is mapped to streaming DMA on
->> line 677:
->>    dma_addr_t mapping = dma_map_single(..., skb->data, ...);
+On 2020/11/19 4:50, Verma, Vishal L wrote:
+> On Wed, 2020-11-18 at 16:41 +0800, Zhen Lei wrote:
+>> The badrange to be reported should always cover mce->addr.
 >>
->> On line 680, skb->data is assigned to hdr after cast:
->>    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)(skb->data);
->>
->> Then hdr->frame_control is accessed on line 681:
->>    __le16 fc = hdr->frame_control;
->>
->> This DMA access may cause data inconsistency between CPU and hardwre.
->>
->> To fix this bug, hdr->frame_control is accessed before the DMA mapping.
->>
->> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 >> ---
->>   drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> What changed between v1 and v2?
->
-> As outlined in Documentation/process/submitting-patches.rst, you 
-> should add a '---' marker and descrive what was changed. I usually 
-> summarize the changes, but it is also possible to provide a diffstat 
-> of the changes as the above file shows.
->
+>>  drivers/acpi/nfit/mce.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Ah good find, agreed with Dan that this is stable material.
+> Minor nit, I'd recommend rewording the subject line to something like:
+> 
+> "acpi/nfit: fix badrange insertion in nfit_handle_mce()"
+
+OK, I will send v2.
+
+> 
+> Otherwise, looks good to me.
+> Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
+> 
+>>
+>> diff --git a/drivers/acpi/nfit/mce.c b/drivers/acpi/nfit/mce.c
+>> index ee8d9973f60b..053e719c7bea 100644
+>> --- a/drivers/acpi/nfit/mce.c
+>> +++ b/drivers/acpi/nfit/mce.c
+>> @@ -63,7 +63,7 @@ static int nfit_handle_mce(struct notifier_block *nb, unsigned long val,
+>>  
+>>  		/* If this fails due to an -ENOMEM, there is little we can do */
+>>  		nvdimm_bus_add_badrange(acpi_desc->nvdimm_bus,
+>> -				ALIGN(mce->addr, L1_CACHE_BYTES),
+>> +				ALIGN_DOWN(mce->addr, L1_CACHE_BYTES),
+>>  				L1_CACHE_BYTES);
+>>  		nvdimm_region_notify(nfit_spa->nd_region,
+>>  				NVDIMM_REVALIDATE_POISON);
+> 
+
