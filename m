@@ -2,198 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09C42B9BA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BE42B9BA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727231AbgKSTns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:43:48 -0500
-Received: from mga01.intel.com ([192.55.52.88]:13163 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727066AbgKSTnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:43:47 -0500
-IronPort-SDR: DKFPaGicrKP+403CGbzCo9u5Djopz6NYL3ZH3EUTMbm848H5cUsxmTCdBNIpeQxxaRTbeRHQgQ
- uTQtIBic+rUw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="189446269"
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="189446269"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 11:43:47 -0800
-IronPort-SDR: +NesDqHLCKzVXDMjWUuzlhoav1tIvwc4SGES1R6mISNzh9U1p5YVRMsyMJNMochRQQ5uDlX6t7
- O8oR8JKk5S5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="476939182"
-Received: from lkp-server01.sh.intel.com (HELO 1b817e3f8ad2) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 19 Nov 2020 11:43:45 -0800
-Received: from kbuild by 1b817e3f8ad2 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kfpqK-0000BN-Os; Thu, 19 Nov 2020 19:43:44 +0000
-Date:   Fri, 20 Nov 2020 03:43:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/apic] BUILD SUCCESS
- d1adcfbb520c43c10fc22fcdccdd4204e014fb53
-Message-ID: <5fb6cade.AofB6JhhvOA/DHwI%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727350AbgKSTor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:44:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727241AbgKSToq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 14:44:46 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E02DC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 11:44:46 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id m13so7387268ioq.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 11:44:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZBdgHtrvRP34RSnAfmHOTKMSxvqCn8hvNFIgOgdws5U=;
+        b=m0bPFlu3d8GigbDIU3D7U9XR7TgUvbNmSyf78zZxYCSqSiPS3B0TygXkPn7zqYuZfj
+         IAZO7ErqUA9G2idj+IXb1M/jIAeHAU9+j43jv0XVAPFVuTRO3QUw1nECZhDKkGK2zUdU
+         wHfVr8IIisOdltijfV+EAsmHi1BqHn4iH08Ak=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZBdgHtrvRP34RSnAfmHOTKMSxvqCn8hvNFIgOgdws5U=;
+        b=uPxCPUCYeRQE4kne+gjlOpsreV1olfxfzn5cdpJKxJmZ+azpkJy+Jttk0CVOq7WZ2e
+         D8QdAj6fyq6eTqtc7RJrHRAzCj9hWQ8dinZrSanF1sfrCNzjkvvXxY/pIskm5tSHGpcb
+         fgGp5gdl70rWMIN8X62W4DHVGI5wHFj67zFNr7DsoeQ/NX42F2s5Jdv9y8pUEua8+l42
+         GZUHUwskmd0vkWXtHj3Pbi/XX1UktqZd8Q+PcsZaN/QN+zkzg2Q2kOx8MhPNDR2OI09U
+         uBaBBudcXnGrdi3f6NBDJnpJMNUrG4BojMKVEkTrDz3Hj49ULzhkhaBX6THUu0X1Xh44
+         kEWA==
+X-Gm-Message-State: AOAM530T0gVIzKDBK6UcqcrzxbODe0/4L7Y29snvgS+zUHhz4RhQdxaQ
+        aTv9zHd7RZv29FlNkhMQdY8b01EV3+Qct2zH045hlw==
+X-Google-Smtp-Source: ABdhPJwuCmVJGNyOLlN5TwfpgyMbbmQnAeLFF8Bm54ZYZDsZzeSLJyBj3CvisSMZJAX/ES8J2CIbOn6KVzlIh89s6Co=
+X-Received: by 2002:a5d:89ce:: with SMTP id a14mr21671311iot.85.1605815085861;
+ Thu, 19 Nov 2020 11:44:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201118161541.3844924-1-joel@joelfernandes.org>
+ <20201118201335.GR1437@paulmck-ThinkPad-P72> <20201119035222.GA18458@paulmck-ThinkPad-P72>
+ <20201119035613.GA18816@paulmck-ThinkPad-P72> <20201119183252.GA812262@google.com>
+ <20201119192241.GZ1437@paulmck-ThinkPad-P72>
+In-Reply-To: <20201119192241.GZ1437@paulmck-ThinkPad-P72>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Thu, 19 Nov 2020 14:44:35 -0500
+Message-ID: <CAEXW_YSRQ+r_CjFOOEZ38BBRpkhjs5UbpfhGCzA8=XywEU0u8Q@mail.gmail.com>
+Subject: Re: [PATCH v2] rcu/segcblist: Add debug checks for segment lengths
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/apic
-branch HEAD: d1adcfbb520c43c10fc22fcdccdd4204e014fb53  iommu/amd: Fix IOMMU interrupt generation in X2APIC mode
+On Thu, Nov 19, 2020 at 2:22 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > On Wed, Nov 18, 2020 at 11:15:41AM -0500, Joel Fernandes (Google) wrote:
+> > > > > > After rcu_do_batch(), add a check for whether the seglen counts went to
+> > > > > > zero if the list was indeed empty.
+> > > > > >
+> > > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > >
+> > > > > Queued for testing and further review, thank you!
+> > > >
+> > > > FYI, the second of the two checks triggered in all four one-hour runs of
+> > > > TREE01, all four one-hour runs of TREE04, and one of the four one-hour
+> > > > runs of TREE07.  This one:
+> > > >
+> > > > WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+> > > >
+> > > > That is, there are callbacks in the list, but the sum of the segment
+> > > > counts is nevertheless zero.  The ->nocb_lock is held.
+> > > >
+> > > > Thoughts?
+> > >
+> > > FWIW, TREE01 reproduces it very quickly compared to the other two
+> > > scenarios, on all four run, within five minutes.
+> >
+> > So far for TREE01, I traced it down to an rcu_barrier happening so it could
+> > be related to some interaction with rcu_barrier() (Just a guess).
+>
+> Well, rcu_barrier() and srcu_barrier() are the only users of
+> rcu_segcblist_entrain(), if that helps.  Your modification to that
+> function looks plausible to me, but the system's opinion always overrules
+> mine.  ;-)
 
-elapsed time: 724m
+Right. Does anything the bypass code standout? That happens during
+rcu_barrier() as well, and it messes with the lengths.
 
-configs tested: 134
-configs skipped: 3
+> > 'p2' print below is the panic on the second warning. It executes 43 callbacks
+> > from the segcb list, but the list length still does not appear to be 0.
+> >
+> > I'll debug it more:
+> >
+> > [  191.085702]  rcuop/0-12        0.... 75782125us : rcu_invoke_callback: rcu_preempt rhp=000000006a881152 func=__d_free
+> > [  191.844028]  rcuop/0-12        0d..1 75796122us : rcu_segcb_stats: SegCbDequeued seglen: (DONE=0, WAIT=43, NEXT_READY=0, NEXT=0) gp_seq: (DONE=0, WAIT=11656, NEXT_READY=11656, NEXT=0)
+> > [  191.846493]  rcuop/0-12        0.... 75796122us : rcu_invoke_callback: rcu_preempt rhp=00000000017536a2 func=i_callback
+> > [  191.848160]  rcuop/0-12        0.... 75796123us : rcu_invoke_callback: rcu_preempt rhp=0000000014235c71 func=__d_free
+> > [  191.849695]  rcuop/0-12        0.... 75796123us : rcu_invoke_callback: rcu_preempt rhp=00000000368c5928 func=i_callback
+> > [  191.851262]  rcuop/0-12        0.... 75796124us : rcu_invoke_callback: rcu_preempt rhp=00000000bdbea790 func=__d_free
+> > [  191.852800]  rcuop/0-12        0.... 75796124us : rcu_invoke_callback: rcu_preempt rhp=0000000034b99f3d func=rcu_barrier_callback
+> > [  192.526784]  rcuop/0-12        0d..1 75809162us : rcu_segcb_stats: SegCbDequeued seglen: (DONE=0, WAIT=0, NEXT_READY=0, NEXT=0) gp_seq: (DONE=0, WAIT=11656, NEXT_READY=11656, NEXT=0)
+>
+> Quite the coincidence that WAIT and NEXT_READY have exactly the same
+> number of callbacks, isn't it?  Or am I being too suspicious today?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Those numbers are gp_seq :-D.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                    ge_imp3a_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                     powernv_defconfig
-mips                        nlm_xlr_defconfig
-parisc                           allyesconfig
-microblaze                    nommu_defconfig
-powerpc                      chrp32_defconfig
-arm                         hackkit_defconfig
-xtensa                    xip_kc705_defconfig
-arm                            lart_defconfig
-powerpc                      obs600_defconfig
-m68k                          atari_defconfig
-sh                           se7712_defconfig
-arm                       multi_v4t_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                         shannon_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                       holly_defconfig
-arm                         bcm2835_defconfig
-powerpc                     rainier_defconfig
-powerpc                     tqm8540_defconfig
-arm                        trizeps4_defconfig
-arm                     davinci_all_defconfig
-m68k                          sun3x_defconfig
-arm                          exynos_defconfig
-mips                      pistachio_defconfig
-mips                        nlm_xlp_defconfig
-mips                           ip27_defconfig
-powerpc                    gamecube_defconfig
-powerpc                  mpc866_ads_defconfig
-m68k                        m5407c3_defconfig
-powerpc                       eiger_defconfig
-um                            kunit_defconfig
-mips                      bmips_stb_defconfig
-sh                            titan_defconfig
-powerpc                 mpc85xx_cds_defconfig
-xtensa                         virt_defconfig
-arm                          prima2_defconfig
-xtensa                  audio_kc705_defconfig
-arm                          ixp4xx_defconfig
-powerpc                    klondike_defconfig
-mips                     cu1000-neo_defconfig
-arm                     am200epdkit_defconfig
-arm                           h5000_defconfig
-arm                  colibri_pxa270_defconfig
-mips                        vocore2_defconfig
-mips                          rm200_defconfig
-sparc                            alldefconfig
-m68k                       m5275evb_defconfig
-mips                        omega2p_defconfig
-arm                          badge4_defconfig
-xtensa                    smp_lx200_defconfig
-arm                         lpc32xx_defconfig
-mips                       bmips_be_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                       ebony_defconfig
-sh                          r7785rp_defconfig
-arm                      footbridge_defconfig
-sh                            shmin_defconfig
-openrisc                 simple_smp_defconfig
-arm                         nhk8815_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a005-20201119
-i386                 randconfig-a002-20201119
-i386                 randconfig-a001-20201119
-i386                 randconfig-a003-20201119
-i386                 randconfig-a004-20201119
-i386                 randconfig-a006-20201119
-x86_64               randconfig-a015-20201119
-x86_64               randconfig-a014-20201119
-x86_64               randconfig-a011-20201119
-x86_64               randconfig-a013-20201119
-x86_64               randconfig-a016-20201119
-x86_64               randconfig-a012-20201119
-i386                 randconfig-a012-20201119
-i386                 randconfig-a014-20201119
-i386                 randconfig-a016-20201119
-i386                 randconfig-a011-20201119
-i386                 randconfig-a013-20201119
-i386                 randconfig-a015-20201119
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+thanks,
 
-clang tested configs:
-x86_64               randconfig-a005-20201119
-x86_64               randconfig-a003-20201119
-x86_64               randconfig-a004-20201119
-x86_64               randconfig-a002-20201119
-x86_64               randconfig-a006-20201119
-x86_64               randconfig-a001-20201119
+ - Joel
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+
+>
+>                                                                 Thanx, Paul
+>
+> > [  192.529132]  rcuop/0-12        0.... 75809163us : rcu_invoke_callback: rcu_preempt rhp=000000002d6a3fce func=rcu_sync_func
+> > [  192.530807]  rcuop/0-12        0.... 75809165us : rcu_invoke_callback: rcu_preempt rhp=000000009aa91c97 func=destroy_sched_domains_rcu
+> > [  192.532556]  rcuop/0-12        0.... 75809170us : rcu_invoke_callback: rcu_preempt rhp=000000002bb5a998 func=destroy_sched_domains_rcu
+> > [  192.534303]  rcuop/0-12        0.... 75809172us : rcu_invoke_callback: rcu_preempt rhp=00000000bcc2369a func=destroy_sched_domains_rcu
+> > [  192.536053]  rcuop/0-12        0.... 75809174us : rcu_invoke_callback: rcu_preempt rhp=000000004dcec39b func=destroy_sched_domains_rcu
+> > [  192.537802]  rcuop/0-12        0.... 75809176us : rcu_invoke_callback: rcu_preempt rhp=00000000dedb509d func=destroy_sched_domains_rcu
+> > [  192.539553]  rcuop/0-12        0.... 75809178us : rcu_invoke_callback: rcu_preempt rhp=000000006fe7dd9e func=destroy_sched_domains_rcu
+> > [  192.541299]  rcuop/0-12        0.... 75809180us : rcu_invoke_callback: rcu_preempt rhp=000000005a212061 func=destroy_sched_domains_rcu
+> > [  192.543043]  rcuop/0-12        0.... 75809182us : rcu_invoke_callback: rcu_preempt rhp=00000000c914935f func=destroy_sched_domains_rcu
+> > [  192.544792]  rcuop/0-12        0.... 75809184us : rcu_invoke_callback: rcu_preempt rhp=0000000019fa3368 func=destroy_sched_domains_rcu
+> > [  192.546539]  rcuop/0-12        0.... 75809186us : rcu_invoke_callback: rcu_preempt rhp=00000000ab06c069 func=destroy_sched_domains_rcu
+> > [  192.548289]  rcuop/0-12        0.... 75809188us : rcu_invoke_callback: rcu_preempt rhp=000000003c134d6b func=destroy_sched_domains_rcu
+> > [  192.550037]  rcuop/0-12        0.... 75809190us : rcu_invoke_callback: rcu_preempt rhp=00000000cd1fda6c func=destroy_sched_domains_rcu
+> > [  192.551790]  rcuop/0-12        0.... 75809192us : rcu_invoke_callback: rcu_preempt rhp=000000005e2c676e func=destroy_sched_domains_rcu
+> > [  192.553576]  rcuop/0-12        0.... 75809194us : rcu_invoke_callback: rcu_preempt rhp=00000000ef38f46f func=destroy_sched_domains_rcu
+> > [  192.555314]  rcuop/0-12        0.... 75809196us : rcu_invoke_callback: rcu_preempt rhp=0000000080458170 func=destroy_sched_domains_rcu
+> > [  192.557054]  rcuop/0-12        0.... 75809198us : rcu_invoke_callback: rcu_preempt rhp=0000000009316351 func=destroy_sched_domains_rcu
+> > [  192.558793]  rcuop/0-12        0.... 75809200us : rcu_invoke_callback: rcu_preempt rhp=0000000022a2585e func=destroy_sched_domains_rcu
+> > [  192.560539]  rcuop/0-12        0.... 75809202us : rcu_invoke_callback: rcu_preempt rhp=00000000b3aee55f func=destroy_sched_domains_rcu
+> > [  192.562282]  rcuop/0-12        0.... 75809204us : rcu_invoke_callback: rcu_preempt rhp=0000000044bb7261 func=destroy_sched_domains_rcu
+> > [  192.564028]  rcuop/0-12        0.... 75809206us : rcu_invoke_callback: rcu_preempt rhp=00000000d5c7ff62 func=destroy_sched_domains_rcu
+> > [  192.565777]  rcuop/0-12        0.... 75809208us : rcu_invoke_callback: rcu_preempt rhp=00000000bc570a55 func=destroy_sched_domains_rcu
+> > [  192.567568]  rcuop/0-12        0.... 75809210us : rcu_invoke_callback: rcu_preempt rhp=000000004d639757 func=destroy_sched_domains_rcu
+> > [  192.569315]  rcuop/0-12        0.... 75809212us : rcu_invoke_callback: rcu_preempt rhp=00000000de702458 func=destroy_sched_domains_rcu
+> > [  192.571111]  rcuop/0-12        0.... 75809214us : rcu_invoke_callback: rcu_preempt rhp=000000006f7cb15a func=destroy_sched_domains_rcu
+> > [  192.572855]  rcuop/0-12        0.... 75809216us : rcu_invoke_callback: rcu_preempt rhp=0000000000893e5b func=destroy_sched_domains_rcu
+> > [  192.574595]  rcuop/0-12        0.... 75809218us : rcu_invoke_callback: rcu_preempt rhp=0000000066d48c64 func=destroy_sched_domains_rcu
+> > [  192.576435]  rcuop/0-12        0.... 75809220us : rcu_invoke_callback: rcu_preempt rhp=000000009a3df053 func=destroy_sched_domains_rcu
+> > [  192.578182]  rcuop/0-12        0.... 75809221us : rcu_invoke_callback: rcu_preempt rhp=000000002b4a7d54 func=destroy_sched_domains_rcu
+> > [  192.579981]  rcuop/0-12        0.... 75809223us : rcu_invoke_callback: rcu_preempt rhp=000000009cf78b8b func=destroy_sched_domains_rcu
+> > [  192.581773]  rcuop/0-12        0.... 75809225us : rcu_invoke_callback: rcu_preempt rhp=000000000beafe8a func=destroy_sched_domains_rcu
+> > [  192.583547]  rcuop/0-12        0.... 75809227us : rcu_invoke_callback: rcu_preempt rhp=000000007ade7189 func=destroy_sched_domains_rcu
+> > [  192.585373]  rcuop/0-12        0.... 75809229us : rcu_invoke_callback: rcu_preempt rhp=00000000e9d1e487 func=destroy_sched_domains_rcu
+> > [  192.587139]  rcuop/0-12        0.... 75809231us : rcu_invoke_callback: rcu_preempt rhp=000000002e04188d func=destroy_sched_domains_rcu
+> > [  192.588984]  rcuop/0-12        0.... 75809233us : rcu_invoke_callback: rcu_preempt rhp=00000000bf10a58e func=destroy_sched_domains_rcu
+> > [  192.590732]  rcuop/0-12        0.... 75809235us : rcu_invoke_callback: rcu_preempt rhp=00000000501d3290 func=destroy_sched_domains_rcu
+> > [  192.592562]  rcuop/0-12        0.... 75809237us : rcu_invoke_callback: rcu_preempt rhp=00000000e129bf91 func=destroy_sched_domains_rcu
+> > [  192.594309]  rcuop/0-12        0.... 75809239us : rcu_invoke_callback: rcu_preempt rhp=0000000072364c93 func=destroy_sched_domains_rcu
+> > [  192.596063]  rcuop/0-12        0.... 75809241us : rcu_invoke_callback: rcu_preempt rhp=000000000342d994 func=destroy_sched_domains_rcu
+> > [  192.597807]  rcuop/0-12        0.... 75809243us : rcu_invoke_callback: rcu_preempt rhp=00000000944f6695 func=destroy_sched_domains_rcu
+> > [  192.599608]  rcuop/0-12        0.... 75809245us : rcu_invoke_callback: rcu_preempt rhp=00000000255bf397 func=destroy_sched_domains_rcu
+> > [  192.601341]  rcuop/0-12        0.... 75809247us : rcu_invoke_callback: rcu_preempt rhp=00000000d4a4767b func=free_rootdomain
+> > [  192.602958]  rcuop/0-12        0.... 75809251us : rcu_invoke_callback: rcu_preempt rhp=00000000b6688098 func=destroy_sched_domains_rcu
+> > [  192.604779]  rcuop/0-12        0.... 75809269us : rcu_invoke_callback: rcu_preempt rhp=0000000034b99f3d func=rcu_barrier_callback
+> > [  193.894910]  rcuop/0-12        0d..1 75873331us : rcu_do_batch: p2
+> >
+> > thanks,
+> >
+> >  - Joel
+> >
+> >
+> > >
+> > >                                                     Thanx, Paul
+> > >
+> > > > > > ---
+> > > > > > v1->v2: Added more debug checks.
+> > > > > >
+> > > > > >  kernel/rcu/rcu_segcblist.c | 12 ++++++++++++
+> > > > > >  kernel/rcu/rcu_segcblist.h |  3 +++
+> > > > > >  kernel/rcu/tree.c          |  2 ++
+> > > > > >  3 files changed, 17 insertions(+)
+> > > > > >
+> > > > > > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > > > > > index 5059b6102afe..6e98bb3804f0 100644
+> > > > > > --- a/kernel/rcu/rcu_segcblist.c
+> > > > > > +++ b/kernel/rcu/rcu_segcblist.c
+> > > > > > @@ -94,6 +94,18 @@ static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
+> > > > > >       return READ_ONCE(rsclp->seglen[seg]);
+> > > > > >  }
+> > > > > >
+> > > > > > +/* Return number of callbacks in segmented callback list by totalling seglen. */
+> > > > > > +long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp)
+> > > > > > +{
+> > > > > > +     long len = 0;
+> > > > > > +     int i;
+> > > > > > +
+> > > > > > +     for (i = RCU_DONE_TAIL; i < RCU_CBLIST_NSEGS; i++)
+> > > > > > +             len += rcu_segcblist_get_seglen(rsclp, i);
+> > > > > > +
+> > > > > > +     return len;
+> > > > > > +}
+> > > > > > +
+> > > > > >  /* Set the length of a segment of the rcu_segcblist structure. */
+> > > > > >  static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
+> > > > > >  {
+> > > > > > diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> > > > > > index cd35c9faaf51..46a42d77f7e1 100644
+> > > > > > --- a/kernel/rcu/rcu_segcblist.h
+> > > > > > +++ b/kernel/rcu/rcu_segcblist.h
+> > > > > > @@ -15,6 +15,9 @@ static inline long rcu_cblist_n_cbs(struct rcu_cblist *rclp)
+> > > > > >       return READ_ONCE(rclp->len);
+> > > > > >  }
+> > > > > >
+> > > > > > +/* Return number of callbacks in segmented callback list by totalling seglen. */
+> > > > > > +long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp);
+> > > > > > +
+> > > > > >  void rcu_cblist_init(struct rcu_cblist *rclp);
+> > > > > >  void rcu_cblist_enqueue(struct rcu_cblist *rclp, struct rcu_head *rhp);
+> > > > > >  void rcu_cblist_flush_enqueue(struct rcu_cblist *drclp,
+> > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > > index f5b61e10f1de..91e35b521e51 100644
+> > > > > > --- a/kernel/rcu/tree.c
+> > > > > > +++ b/kernel/rcu/tree.c
+> > > > > > @@ -2553,6 +2553,8 @@ static void rcu_do_batch(struct rcu_data *rdp)
+> > > > > >       WARN_ON_ONCE(count == 0 && !rcu_segcblist_empty(&rdp->cblist));
+> > > > > >       WARN_ON_ONCE(!IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> > > > > >                    count != 0 && rcu_segcblist_empty(&rdp->cblist));
+> > > > > > +     WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
+> > > > > > +     WARN_ON_ONCE(count != 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
+> > > > > >
+> > > > > >       rcu_nocb_unlock_irqrestore(rdp, flags);
+> > > > > >
+> > > > > > --
+> > > > > > 2.29.2.299.gdc1121823c-goog
