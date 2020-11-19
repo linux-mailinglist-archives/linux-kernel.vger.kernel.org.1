@@ -2,255 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B112B9954
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB012B9956
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728992AbgKSRbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:31:07 -0500
-Received: from mail-eopbgr150059.outbound.protection.outlook.com ([40.107.15.59]:28036
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728077AbgKSRbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:31:07 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hI46MBshFKqu6mfAlzkRux0xSVEC9VLuS8WqKrXvTgJvEeUrna2J1p1Ane2WFtzoUDYatPRdfkpI+aPTTlDf9EJpuFXXsQ8cTwLeXposBKgp7LrhdnkSqB8xsjG+SmcV2BUsdT2od5nV9dE34I/za2cqCZ1QGzw1d8Xogo+rBi9BxxWbY10lLBqHFqeK84X578uiTiwHPUJR317r5T5pX7bCdRTpv4pYYKWxYTl9ryWV8AuFTQQ6/y9hbIO/GbDkdeQO8GaJQe/vV7bdGzCpGcLwCSetBXhlkNNbuK53MWQvIKKonrYk4Ybb53INwHKoJ1uZ2wdxEQdlivqR5/Qb3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CgrxvMj3VobVRTz5+t9k2mRET9lRpnLYIPfWQdyR+tA=;
- b=hJCbd3GDI/Ar2Fd12MMlaWKDCuYQEr91Xi3NFxgz3AiNl80r6GSsrmm/deDlpA9+jVUuHcYKJgeDVlYMM9ETFX4/kkyoeyWBKIK8stmAOMHOEmODzL+wS6pvNHkHVQh3NDTBPkuKhVE+hRKtexFK3wOOi8VTDx1T8yBUcH226IZacN+7g4UY07CTCWB1Tf1WX3aQdVKN1guxJkDsJTQg0fKG3IXVfm8mFsfth/3/JeiZoXyCGnuKOX5FW3g0uVfFC/dhvg0co+2pDMxb0pnknZscFFwbyUnuWFC9t2/vmSdhB8pr6a94xsYjvpSRNmTYB0JKkHvglAtmeyy2xDmmng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CgrxvMj3VobVRTz5+t9k2mRET9lRpnLYIPfWQdyR+tA=;
- b=DUW5RHtG6ngNFul9CAxvzakbGaUstJnEPd6YgTLz23cHVSEs0JDYlPnNVb5FP74n0YaArasAY4e97XM6g9cHr5yxhBZqrjXCFswjK59ajE4tIvNEwjaDslLyUtopb0jPXMfS0KmdMyu1jM3ecHtGrmzJZVY4FYgAdOzOFTp4RFM=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
- (2603:10a6:803:22::27) by VI1PR04MB4477.eurprd04.prod.outlook.com
- (2603:10a6:803:6e::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Thu, 19 Nov
- 2020 17:31:00 +0000
-Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
- ([fe80::705a:b82f:c52f:5f5a]) by VI1PR0402MB3902.eurprd04.prod.outlook.com
- ([fe80::705a:b82f:c52f:5f5a%6]) with mapi id 15.20.3589.022; Thu, 19 Nov 2020
- 17:31:00 +0000
-Date:   Thu, 19 Nov 2020 19:30:55 +0200
-From:   Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tzimmermann@suse.de,
-        airlied@linux.ie, s.hauer@pengutronix.de, robh+dt@kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, shawnguo@kernel.org
-Subject: Re: [PATCH 0/8] drm/imx: Introduce i.MX8qxp DPU DRM
-Message-ID: <20201119173055.geaaori62wgtrfvh@fsr-ub1864-141>
-References: <1605777745-23625-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605777745-23625-1-git-send-email-victor.liu@nxp.com>
-User-Agent: NeoMutt/20171215
-X-Originating-IP: [83.217.231.2]
-X-ClientProxiedBy: AM4PR0302CA0014.eurprd03.prod.outlook.com
- (2603:10a6:205:2::27) To VI1PR0402MB3902.eurprd04.prod.outlook.com
- (2603:10a6:803:22::27)
+        id S1728545AbgKSRc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:32:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728175AbgKSRc7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:32:59 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27CBC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:32:58 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 322851F45ABC
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Rich Felker <dalias@libc.org>
+Cc:     libc-alpha@sourceware.org, Florian Weimer <fw@deneb.enyo.de>,
+        linux-kernel@vger.kernel.org, Paul Gofman <gofmanp@gmail.com>
+Subject: Re: Kernel prctl feature for syscall interception and emulation
+In-Reply-To: <20201119162801.GH534@brightrain.aerifal.cx> (Rich Felker's
+        message of "Thu, 19 Nov 2020 11:28:02 -0500")
+Organization: Collabora
+References: <873616v6g9.fsf@collabora.com>
+        <20201119151317.GF534@brightrain.aerifal.cx>
+        <87h7pltj9p.fsf@collabora.com>
+        <20201119162801.GH534@brightrain.aerifal.cx>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+Date:   Thu, 19 Nov 2020 12:32:54 -0500
+Message-ID: <87eekpmeux.fsf@collabora.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fsr-ub1864-141 (83.217.231.2) by AM4PR0302CA0014.eurprd03.prod.outlook.com (2603:10a6:205:2::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Thu, 19 Nov 2020 17:30:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: bb5aa52d-c5ad-40ff-4f9b-08d88cb0e14b
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4477:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4477B1A168E1FCD1336CFBA8BEE00@VI1PR04MB4477.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q8cSK4EJ1n8ESDnJ/e32x3XW6peRH0QdaEab5KUP82aE4xjJndJfzqX5q5zSdu+WI467ldFREgy8gqyNzBK99HT1ZCVfiVZR9dEmlTu3AnGt0U+MUeHQsEgKR+6CZQzV8ek2xlvghP9Xn4uhtukyXbgi0ZSvT72BD7sVkkzKhxQc6P318FDGugtNf7Vgx4OZSDrDvTPVu//k/pBZ7tTyQxFgcevlwYbE9HoF34cfYtuMcV4yXYBFbXMaURdlxPrYQ6NcUOdz1nshYBT/Mi3h6iYFHP+6GllHGXx4qaLdSh3V6E5VY/FmnOUCZw1TLjrpVEOM0neuc/BJxrKEnVelpltnp/4zGoLDLIZ5jTzI0RN83w2h548SMGafgseHASkh79M2cixPrch4rsKbW/LEJg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3902.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(346002)(396003)(136003)(55016002)(9686003)(26005)(16526019)(956004)(966005)(6496006)(44832011)(478600001)(33716001)(186003)(8676002)(4326008)(8936002)(316002)(86362001)(6862004)(2906002)(7416002)(52116002)(6666004)(83380400001)(5660300002)(66476007)(66946007)(1076003)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: IlMR5aXYIwZGFO7fDGIaIee9gCqh4YOfWN71TPaPJ+E6Q1fy0xz6ckeKUI0k8pZbO0mI2joScm6aehQKVTgpDK8V3hmpDRgsxiBTwNjRXB3UdnlfmLtOn6wAHymtg6ifltHjUZa9iFK5DeaMvRkK7lmOjCGivD8zEAl5bH+oW16wj1R9gqcx4VjVcNU/3uUdXWEX9jkkXdjS+kc5RSMGbaSva7LVuVsye0CWAZyxu0vMQHNHN2sMLMn7l3qCTo7kkVaJ6Bam+iY+eW6oFhjqGMrDcjBoQz+9UrzeJrNiYUPqljld49zsytjzDSSVUjDoR2elhzEFIioMrFZGjGYCYPuOHaQ0cHSBUi4mMN1FlAWpGBDxOKPQJNHsn+tIx17xGdXwzHNgBV/61cnOdkUPcOu1rWzFviFx4tvAD/gDDDicEu8OvbuZ01gUCmX3JwJR7TIU9bMAnI2anyRkQJsZSNfx5coN3t0bRREqqxkhEAu/8+N6i7ZQ0iFLuHjSSH1SxOuVnsD5nJme1M/4Mtwen7lYzd+EfR7++oH8WZCLoHq+2SmHqVuSkGLNpLD03CH/SpkG3TFzsxZEht7EnCRNiKj3izZFX3JYxlCoKxMwrbmgZqbGEocToXXW5BzMJinVFh9vfO6xjHIwkEQjpAnTdET6K+y+c2c1riFubQ0vT3Y+GyPwuT5LOqdzINq1kUzNfHY9qqgV/Y/BECMMhC28KRfV/0bdz+0bg75qlDjKhI0kXfd1RRmSaJnYYs5Pg69I9EbNRKT3It8NNyLEYlHGjYhUaG2jj/0X6zLj5I5tj0TT7P1oqepbjZ+BUvyIcloR/6wnFuHqadQc8yoINjYMFL1C6sZXE1n3YgVtvt0wNhTF4+RdapW3N9tLKbEoepqX3wzdWr2ISR0LKLnuRd+Nig==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb5aa52d-c5ad-40ff-4f9b-08d88cb0e14b
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3902.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2020 17:30:59.8934
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +5xhGWxOmN8WOV+2NG1Y+UvU20HGU6fd5nx2GUQQoi9trsU06QWy4lZ2eRiTaES6mG49sWTRpfKDJMB8fLesjA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4477
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liu Ying,
+Rich Felker <dalias@libc.org> writes:
 
-On Thu, Nov 19, 2020 at 05:22:17PM +0800, Liu Ying wrote:
-> Hi,
-> 
-> 
-> This patch set introduces i.MX8qxp Display Processing Unit(DPU) DRM support.
+> On Thu, Nov 19, 2020 at 11:15:46AM -0500, Gabriel Krisman Bertazi wrote:
+>> Rich Felker <dalias@libc.org> writes:
+>> 
+>> > On Wed, Nov 18, 2020 at 01:57:26PM -0500, Gabriel Krisman Bertazi via Libc-alpha wrote:
+>> 
+>> [...]
+>> 
+>> >
+>> > SIGSYS (or signal handling in general) is not the right way to do
+>> > this. It has all the same problems that came up in seccomp filtering
+>> > with SIGSYS, and which were solved by user_notif mode (running the
+>> > interception in a separate thread rather than an async context
+>> > interrupting the syscall. In fact I wouldn't be surprised if what you
+>> > want can already be done with reasonable efficiency using seccomp
+>> > user_notif.
+>> 
+>> Hi Rich,
+>> 
+>> User_notif was raised in the kernel discussion and we had experimented
+>> with it, but the latency of user_notif is even worse than what we can do
+>> right now with other seccomp actions.
+>
+> Is there a compelling argument that the latency matters here? What
+> syscalls are windows binaries making like this? Is there a reason you
+> can't do something like intercepting the syscall with seccomp the
+> first time it happens, then rewriting the code not to use a direct
+> syscall on future invocations?
 
-Glad to see this series out. However, something went wrong with it as
-patch 5/8 didn't make it to dri-devel mailing list... :/
+We can't do any code rewriting without tripping DRM protections and
+anti-cheating mechanisms.
 
-https://lists.freedesktop.org/archives/dri-devel/2020-November/thread.html
+I should correct myself here.  While it is true that user_notif is
+slower than other seccomp actions, this is not a problem in itself.  The
+frequency of syscalls that need to be emulated is much smaller than
+regular syscalls, and the performance problem actually appears due to
+the filtering.  I should investigate user_notif more, but I don't oppose
+SUD doing user_notif instead of SIGSYS.  I will raise that with Wine
+developers and the kernel community.
 
-So, people on to dri-devel may not be able to review it...
+>> Regarding SIGSYS, the x86 maintainer suggested redirecting the syscall
+>> return to a userspace thunk, but the understanding among Wine developers
+>> is that SIGSYS is enough for their emulation needs.
+>
+> It might work for Wine needs, if Wine can guarantee it will never be
+> running code with signals blocked and some other constraints, but then
+> you end up with a mechanism that's designed just for Wine and that
+> will have gratuitous reasons it's not usable elsewhere. That does not
+> seem appropriate for inclusion in kernel.
+>
+>> > The default-intercept and excepting libc code segment is also bogus,
+>> > and will break stuff, including vdso syscall mechanism on i386 and any
+>> > code outside libc that makes its own syscalls from asm. If you need to
+>> > tag regions to control interception, it should be tagging the emulated
+>> > Windows guest code, which is bounded and you have full control over,
+>> > rather than the host code, which is unbounded and includes any
+>> > libraries that get linked indirectly by Wine.
+>> 
+>> The vdso trampoline, for the architectures that have it, is solved by
+>> the kernel implementation, who makes sure that region is allowed.
+>
+> I guess that works but it's ugly and assumes particular policy goals
+> matching Wine's rather than being a general mechanism.
+>
+>> The Linux code is not bounded, but the dispatcher region main goal is to
+>> support trampolines outside of the vdso case. The correct userspace
+>> implementation requires flipping the selector on any Windows/Linux code
+>> boundary cross, exactly because other libraries can issue syscalls
+>> directly.  The fact that libc is not the only one issuing syscalls is
+>> the exact reason we need something more complex than a few seccomp
+>> filters.
+>
+> I don't think this is correct. Rather than listing all the host
+> library code ranges to allow, you just list all the guest Windows code
+> ranges to intercept. Wine knows them by virtue of being the loader for
+> them. This all seems really easy to do with seccomp with a very small
+> filter.
 
-However, it did make it to LKML:
+The Windows code is not completely loaded at initialization time.  It
+also has dynamic libraries loaded later.  yes, wine knows the memory
+regions, but there is no guarantee there is a small number of segments
+or that the full picture is known at any given moment.
 
-https://lkml.org/lkml/2020/11/19/249
+>> > But I'm skeptical that doing any new kernel-side logic for tagging is
+>> > needed. Seccomp already lets you filter on instruction pointer so you
+>> > can install filters that will trigger user_notif just for guest code,
+>> > then let you execute the emulation in the watcher thread and skip the
+>> > actual syscall in the watched thread.
+>> 
+>> As I mentioned, we can check IP in seccomp and write filters.  But this
+>> has two problems:
+>> 
+>> 1) Performance.  seccomp filters use cBPF which means 32bit comparisons,
+>> no maps and a very limited instruction set.  We need to generate
+>> boundary checks for each memory segment.  The filter becomes very large
+>> very quickly and becomes a observable bottleneck.
+>
+> This sounds like you're doing something wrong. Range checking is O(log
+> n) and n cannot be large enough to make log n significant. If you do
+> it with a linear search rather than binary then of course it's slow.
 
-Not sure what happened here... :/
+And SUD is O(1).  The filtering overhead is the big point here.  The
+seccomp kselftests benchmark shows a 32% overhead introduced by seccomp
+for a simple getpid syscall.  With a second filter (not a second
+verification on the same filter), the overhead goes to 47%.  SUD shows
+an overhead of 13.4% over the same syscall.
 
-Thanks,
-laurentiu
+I understand two filters is very different than 1 filter with more vmas,
+but since we cannot remove filters, we'd need to add more filters to
+make it more strict.
 
+>> 2) Seccomp filters cannot be removed.  And we'd need to update them
+>> frequently.
+>
+> What are the updating requirements?
 
-> 
-> DPU is comprised of a blit engine for 2D graphics, a display controller
-> and a command sequencer.  Outside of DPU, optional prefetch engines can
-> fetch data from memory prior to some DPU fetchunits of blit engine and
-> display controller.  The pre-fetchers support linear formats and Vivante
-> GPU tile formats.
-> 
-> Reference manual can be found at:
-> https://www.nxp.com/webapp/Download?colCode=IMX8DQXPRM
-> 
-> 
-> This patch set adds kernel modesetting support for the display controller part.
-> It supports two CRTCs per display controller, several planes, prefetch
-> engines and some properties of CRTC and plane.  Currently, the registers of
-> the controller is accessed without command sequencer involved, instead just by
-> using CPU.  DRM connectors would be created from the DPU KMS driver.
-> 
-> 
-> If people want to try this series, clock patches can be found at:
-> https://www.spinics.net/lists/arm-kernel/msg856137.html
-> 
-> and, power domain patches at:
-> https://www.spinics.net/lists/arm-kernel/msg856097.html
-> 
-> 
-> I will send other patch sets to add downstream bridges(embedded in i.MX8qxp)
-> to support LVDS displays.
-> 
-> A brief look at the pipe:
-> prefetch eng -> DPU -> pixel combiner -> pixel link -> pixel to DPI(pxl2dpi) ->
-> LVDS display bridge(LDB)
-> 
-> 
-> Patch 1 ~ 3 add dt-bindings for DPU and prefetch engines.
-> Patch 4 is a minor improvement of a macro to suppress warning as the KMS driver
-> uses it.
-> Patch 5 introduces the DPU DRM support.
-> Patch 6 updates MAINTAINERS.
-> Patch 7 & 8 add DPU and prefetch engines support in the device tree of
-> i.MX8qxp MEK platform.
-> 
-> 
-> Welcome comments, thanks.
-> 
-> 
-> Liu Ying (8):
->   dt-bindings: display: imx: Add i.MX8qxp/qm DPU binding
->   dt-bindings: display: imx: Add i.MX8qxp/qm PRG binding
->   dt-bindings: display: imx: Add i.MX8qxp/qm DPR channel binding
->   drm/atomic: Avoid unused-but-set-variable warning on
->     for_each_old_plane_in_state
->   drm/imx: Introduce i.MX8qxp DPU DRM
->   MAINTAINERS: add maintainer for i.MX8qxp DPU DRM driver
->   arm64: imx8qxp:dtsi: Introduce DC0 subsystem
->   arm64: dts: imx8qxp-mek: Enable DPU and it's prefetch engines
-> 
->  .../bindings/display/imx/fsl,imx8qxp-dprc.yaml     |  87 ++
->  .../bindings/display/imx/fsl,imx8qxp-dpu.yaml      | 358 ++++++++
->  .../bindings/display/imx/fsl,imx8qxp-prg.yaml      |  60 ++
->  MAINTAINERS                                        |   9 +
->  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts      |  64 ++
->  arch/arm64/boot/dts/freescale/imx8qxp.dtsi         | 313 +++++++
->  drivers/gpu/drm/imx/Kconfig                        |   1 +
->  drivers/gpu/drm/imx/Makefile                       |   1 +
->  drivers/gpu/drm/imx/dpu/Kconfig                    |  10 +
->  drivers/gpu/drm/imx/dpu/Makefile                   |  10 +
->  drivers/gpu/drm/imx/dpu/dpu-constframe.c           | 170 ++++
->  drivers/gpu/drm/imx/dpu/dpu-core.c                 | 880 ++++++++++++++++++++
->  drivers/gpu/drm/imx/dpu/dpu-crtc.c                 | 926 +++++++++++++++++++++
->  drivers/gpu/drm/imx/dpu/dpu-crtc.h                 |  62 ++
->  drivers/gpu/drm/imx/dpu/dpu-disengcfg.c            | 114 +++
->  drivers/gpu/drm/imx/dpu/dpu-dprc.c                 | 721 ++++++++++++++++
->  drivers/gpu/drm/imx/dpu/dpu-dprc.h                 |  40 +
->  drivers/gpu/drm/imx/dpu/dpu-drv.c                  | 296 +++++++
->  drivers/gpu/drm/imx/dpu/dpu-drv.h                  |  28 +
->  drivers/gpu/drm/imx/dpu/dpu-extdst.c               | 296 +++++++
->  drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c          | 291 +++++++
->  drivers/gpu/drm/imx/dpu/dpu-fetcheco.c             | 221 +++++
->  drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c           | 151 ++++
->  drivers/gpu/drm/imx/dpu/dpu-fetchunit.c            | 609 ++++++++++++++
->  drivers/gpu/drm/imx/dpu/dpu-fetchunit.h            | 191 +++++
->  drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c            | 247 ++++++
->  drivers/gpu/drm/imx/dpu/dpu-framegen.c             | 392 +++++++++
->  drivers/gpu/drm/imx/dpu/dpu-gammacor.c             | 220 +++++
->  drivers/gpu/drm/imx/dpu/dpu-hscaler.c              | 272 ++++++
->  drivers/gpu/drm/imx/dpu/dpu-kms.c                  | 543 ++++++++++++
->  drivers/gpu/drm/imx/dpu/dpu-kms.h                  |  23 +
->  drivers/gpu/drm/imx/dpu/dpu-layerblend.c           | 345 ++++++++
->  drivers/gpu/drm/imx/dpu/dpu-plane.c                | 703 ++++++++++++++++
->  drivers/gpu/drm/imx/dpu/dpu-plane.h                |  56 ++
->  drivers/gpu/drm/imx/dpu/dpu-prg.c                  | 389 +++++++++
->  drivers/gpu/drm/imx/dpu/dpu-prg.h                  |  45 +
->  drivers/gpu/drm/imx/dpu/dpu-prv.h                  | 203 +++++
->  drivers/gpu/drm/imx/dpu/dpu-tcon.c                 | 249 ++++++
->  drivers/gpu/drm/imx/dpu/dpu-vscaler.c              | 305 +++++++
->  drivers/gpu/drm/imx/dpu/dpu.h                      | 389 +++++++++
->  include/drm/drm_atomic.h                           |   4 +-
->  41 files changed, 10293 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
->  create mode 100644 drivers/gpu/drm/imx/dpu/Kconfig
->  create mode 100644 drivers/gpu/drm/imx/dpu/Makefile
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-constframe.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-core.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.h
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-disengcfg.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.h
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.h
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-extdst.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetcheco.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.h
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-framegen.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-gammacor.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-hscaler.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.h
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-layerblend.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.h
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.h
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prv.h
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-tcon.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-vscaler.c
->  create mode 100644 drivers/gpu/drm/imx/dpu/dpu.h
-> 
-> -- 
-> 2.7.4
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+As far as I understand (I'm not a wine developer), they need to remove
+and modify filters.  Given seccomp is a security feature, It would be a
+hard sell to support these operations. We discussed this on the kernel
+list.
+
+> I'm not sure if Windows code is properly PIC or not, but if it is,
+> then you just do your own address assignment in a single huge range
+> (first allocated with PROT_NONE, then MAP_FIXED over top of it) so
+> that a single static range check suffices.
+
+I'm Cc'ing some wine developers who can assist with this point.
+
+-- 
+Gabriel Krisman Bertazi
