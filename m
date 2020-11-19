@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7412B991F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC392B9917
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbgKSRPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:15:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgKSRPy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:15:54 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CF1C0613CF;
-        Thu, 19 Nov 2020 09:15:54 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id 23so7233120wrc.8;
-        Thu, 19 Nov 2020 09:15:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NTlQpRFAgXi7+2j38CXpVzx++h7WQhzOl2JIZlqcQMo=;
-        b=bB+5+IQFMAn7TruC2V9EDh7t4Q/nD+Zw6xMmK+C3lUwYamWSYNjj59OD5FZFKQozaF
-         tFDzWSjTmkY+Fyupab8JlLci8FVScj+kaBXgFK1+Muw3Ode2ybxVEBXvZpt8b63+oXqL
-         PPNNGK0xFjl0xwA+WQln/vUbFKhxV3G5QYS5q5Q34G1ysVlLF4g800wE3B0l6epgfo4m
-         SIiz0SF1nBJT1zfJzbshoikiztLDcJ1RbuXbjWuUeFrQ6t6oMfDhzH6y3k5YYdh0UR7P
-         99k0y36x46+zAkWmrSOYMSE8L6e4zbHaRg8Pyl4TfDBjdBVJm6a95JLcQWsifU/NFZ+9
-         KUgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=NTlQpRFAgXi7+2j38CXpVzx++h7WQhzOl2JIZlqcQMo=;
-        b=RCVnMIhNiAF21t5kWioZW1N54K59R7RBOeMo3SxkkQcJIBciTlwnNdgvAvc1MAYHcQ
-         0zW1yk3ymegukO51Qr5caxBlrj6IFEg0plV3PF7HDjmyAhcJ6FKsvmZRBMdte51ATY8E
-         ZvBwoQ7omDZsrT1H+gHsB+46IABS7f6Bp6CgBsxGf46CL15zWvSzN8+QcCQ316ABvLE3
-         Psdy/gKFVn/O/OsHrc9g+3GM73v/weiVjAPNezN0garmiNloHwl9Ek5V/vIGstNOKpJi
-         +hopX2KG066fbj/cIZsCJ40typkLh6fS/UYzlk7BeUXCtsV3yLxECdocFrM6wP8gNdhc
-         J9rA==
-X-Gm-Message-State: AOAM530cGuRadnokwME5i96y4nc0ks+C1g1PV1fgDaRMjekNB+6jp/Ub
-        bO3KovX0gzK6PTWirY9/Zy52cDkKS6MGgg==
-X-Google-Smtp-Source: ABdhPJxeN4KFaxlkucVrJDBuSLY9maKj44xrKp75Xz2n08/pB5e61mhKYTtJ+x1eD2RkPW504r0eUg==
-X-Received: by 2002:a5d:4acf:: with SMTP id y15mr4178161wrs.333.1605806152898;
-        Thu, 19 Nov 2020 09:15:52 -0800 (PST)
-Received: from [192.168.1.23] (host109-152-100-189.range109-152.btcentralplus.com. [109.152.100.189])
-        by smtp.gmail.com with ESMTPSA id h15sm684772wrw.15.2020.11.19.09.15.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 09:15:52 -0800 (PST)
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org
-References: <cover.1605799583.git.asml.silence@gmail.com>
- <9bc27cb3ef6ab49b6b2ccee3db6613838aee17af.1605799583.git.asml.silence@gmail.com>
- <20201119170340.GA6179@infradead.org>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Subject: Re: [PATCH 2/2] iov_iter: optimise iter type checking
-Message-ID: <ce79f47e-2ec0-ba29-a991-c537a8990dee@gmail.com>
-Date:   Thu, 19 Nov 2020 17:12:44 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1728507AbgKSRNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:13:32 -0500
+Received: from foss.arm.com ([217.140.110.172]:35512 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727513AbgKSRNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:13:31 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 016C61396;
+        Thu, 19 Nov 2020 09:13:31 -0800 (PST)
+Received: from bogus (unknown [10.57.54.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 465353F718;
+        Thu, 19 Nov 2020 09:13:28 -0800 (PST)
+Date:   Thu, 19 Nov 2020 17:13:22 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wsd_upstream@mediatek.com
+Subject: Re: [PATCH v8 2/3] dt-bindings: arm: cpus: Document
+ 'mediatek,freq-domain' property
+Message-ID: <20201119171322.2gxrv5h7sqwllgsv@bogus>
+References: <1603700349-5922-1-git-send-email-hector.yuan@mediatek.com>
+ <1603700349-5922-3-git-send-email-hector.yuan@mediatek.com>
+ <20201028150858.GA4029348@bogus>
+ <65a4e167-9d2c-7fcb-5373-33af5e002333@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201119170340.GA6179@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65a4e167-9d2c-7fcb-5373-33af5e002333@arm.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/11/2020 17:03, Christoph Hellwig wrote:
-> On Thu, Nov 19, 2020 at 03:29:43PM +0000, Pavel Begunkov wrote:
->> The problem here is that iov_iter_is_*() helpers check types for
->> equality, but all iterate_* helpers do bitwise ands. This confuses
->> a compiler, so even if some cases were handled separately with
->> iov_iter_is_*(), it can't eliminate and skip unreachable branches in
->> following iterate*().
+On Thu, Nov 19, 2020 at 03:23:20PM +0000, Lukasz Luba wrote:
 > 
-> I think we need to kill the iov_iter_is_* helpers, renumber to not do
-> the pointless bitmask and just check for equality (might turn into a
-> bunch of nice switch statements actually).
+> 
+> On 10/28/20 3:08 PM, Rob Herring wrote:
+> > On Mon, Oct 26, 2020 at 04:19:08PM +0800, Hector Yuan wrote:
+> > > From: "Hector.Yuan" <hector.yuan@mediatek.com>
+> > > 
+> > > Add devicetree documentation for 'mediatek,freq-domain' property specific
+> > > to Mediatek CPUs. This property is used to reference the CPUFREQ node
+> > > along with the domain id.
+> > > 
+> > > Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> > > ---
+> > >   Documentation/devicetree/bindings/arm/cpus.yaml |    6 ++++++
+> > >   1 file changed, 6 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
+> > > index 1222bf1..e995b26 100644
+> > > --- a/Documentation/devicetree/bindings/arm/cpus.yaml
+> > > +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
+> > > @@ -255,6 +255,12 @@ properties:
+> > >         where voltage is in V, frequency is in MHz.
+> > > +  mediatek,freq-domain:
+> > > +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
+> > > +    description:
+> > > +      CPUs supporting freq-domain must set their "mediatek,freq-domain" property
+> > > +      with phandle to a cpufreq_hw node followed by the domain id.
+> > 
+> > This needs to be a common binding shared with SCMI domains.
+> 
+> Would it be accurate to create a new binding file:
+> Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.txt
+> ?
+>
 
-There are uses like below though, and that would also add some overhead
-on iov_iter_type(), so it's not apparent to me which version would be
-cleaner/faster in the end. But yeah, we can experiment after landing
-this patch.
-
-if (type & (ITER_BVEC|ITER_KVEC))
+Nope, Rob already asked to unify all such bindings and generalise it.
+Here is my attempt[1] and this must just use it or help to enhance that
+in order to make use of that binding.
 
 -- 
-Pavel Begunkov
+Regards,
+Sudeep
+
+[1] https://lore.kernel.org/lkml/20201116181356.804590-1-sudeep.holla@arm.com
