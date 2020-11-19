@@ -2,187 +2,446 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E1C2B8FAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE3D2B8FAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgKSJ75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 04:59:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727021AbgKSJ75 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 04:59:57 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C9DC0613CF;
-        Thu, 19 Nov 2020 01:59:55 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id l10so5590912lji.4;
-        Thu, 19 Nov 2020 01:59:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VpSJiDhCgMXVtdc+xXt3tjjyP45VYRI5zWX/U6Fc/KM=;
-        b=UNf5RxgBM6QAWh6S84EDomEzoQCpyO0vJWebodKZafTDtazcLhUUgh/yygFNb6xIsM
-         3tMcH+T2igfpPb9lwTo8VB64UBVLhzDxExfg+LKgf1EH5uTyPaGsfIVHsl4AUzA0L4CK
-         D00Hlj5Wj29KOdUAgbp3FIje8oY5ZWxZFqW3UVgCxEleItbFtGwAnbA5XqgNLsUjZWbo
-         s/I8sP4hyPfy3qSJVtsgTkj/OZbFebpUxUwHMCo2bnB7VSJzwC/Z0v+oL64/JTwNt4c5
-         NufNMoTKjK0Dkcagvczbm2DhuKuSCOtEBJei9sIrKowjHFX8EXGwGei4Z9zL8VUAQO0m
-         EmCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VpSJiDhCgMXVtdc+xXt3tjjyP45VYRI5zWX/U6Fc/KM=;
-        b=QrUplEE+USc56F4dF37fWtkmwm0j+Evhdi6UAwDIoc9+h5Vsj1Mp8DY8miNx4vmHrW
-         fzdnr27cH+Gezp4RPVuxEuz4kbDBMlcxrsQ6d0zGf7zdINAK+oklD7dzcTfEAHkiofF/
-         V9aAarPopHfiUrgpD4wJa5LIIwjj8v3AweZ8qwxKm+773xdh3HvkKX4a3MQdBvASqhLr
-         FSye7kSTpn1E5VXsF0lAfLxngj97y/0XvzNhW98I5hAD4hAZN9Qk24VUFxqdrJdaycyp
-         K7xcZnLtuicAULd+UHNd/eKqRqXKwGY9nNnkkiDLOZuicBnkfevL9tmKitbqzPIWAgRE
-         dOVQ==
-X-Gm-Message-State: AOAM533Z5t9aLgADRROyM9FARcqkwU80ypMAreHpSM5/604e4Vo5Y2D6
-        y0o2JJmGpR4aya7NQhj/psY=
-X-Google-Smtp-Source: ABdhPJwIx4gXUxWoO9R5JXD84YJ9i0wT3CxMjJ5LdJVCqxUNbgYyDpcQBlQbdROI73kV2llxmJujIw==
-X-Received: by 2002:a2e:8008:: with SMTP id j8mr5701982ljg.452.1605779993900;
-        Thu, 19 Nov 2020 01:59:53 -0800 (PST)
-Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id j22sm3653895ljb.5.2020.11.19.01.59.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 01:59:53 -0800 (PST)
-Subject: Re: [PATCH v4] mm: Optional full ASLR for mmap() and mremap()
-To:     Cristiano Giuffrida <c.giuffrida@vu.nl>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>
-References: <20201026160518.9212-1-toiwoton@gmail.com>
- <20201117165455.GN29991@casper.infradead.org>
- <19373af5-2272-7615-27a7-6734c584f8bd@gmail.com>
- <6810b874c8df456b890d1092273b354a@pexch011a.vu.local>
- <CANWxqZ=fSi15fi6n-Ei4KJ8MtPcfiU8j=cQS-DycMig6s1oQBA@mail.gmail.com>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <14367005-a27b-c5b4-ca21-28863264e0fa@gmail.com>
-Date:   Thu, 19 Nov 2020 11:59:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726692AbgKSKAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 05:00:11 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:33684 "EHLO mail.pqgruber.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726095AbgKSKAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 05:00:10 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 265E6C6866D;
+        Thu, 19 Nov 2020 11:00:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1605780007;
+        bh=+ReeNOrjmwxxuP2eckrbbrSAgLxOW9HzJbUF7M7rBZc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pNBM/nb6GK4RKWe3VLatmvIo76yeVXIMYiv3MhQ63Cqbk0mO7n0voMAwXOz2+Ju5W
+         wmRcrXKl5VYQkH4YRiJky5TWECmWn0KgDk4WXVhTJX9B/scwTI/d7e4uDLA/FfoGQC
+         2+WiQ3RHURy08lve8JACBVvY37kcY88MQsU//aaU=
+Date:   Thu, 19 Nov 2020 11:00:05 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH 1/3] pwm: pca9685: Switch to atomic API
+Message-ID: <20201119100005.GA703@workstation.tuxnet>
+References: <20201118174417.278011-1-clemens.gruber@pqgruber.com>
+ <CAGngYiV+oDeagaCfpeACMzQyDHVzk9ERbSBjW_fW5hoQANHqog@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CANWxqZ=fSi15fi6n-Ei4KJ8MtPcfiU8j=cQS-DycMig6s1oQBA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGngYiV+oDeagaCfpeACMzQyDHVzk9ERbSBjW_fW5hoQANHqog@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.11.2020 20.49, Cristiano Giuffrida wrote:
-> Interesting mitigation and discussion!
+Hi Sven,
+
+thank you for your fast response and helpful feedback! I'll answer below.
+
+On Wed, Nov 18, 2020 at 07:18:04PM -0500, Sven Van Asbroeck wrote:
+> Hi Clemens, thank you so much for this contribution.
+> I no longer have access to this chip, so I cannot test
+> the changes.
 > 
-> Regarding the impact on the AnC attack, indeed fine-grained (or full)
-> mmap() randomization affects AnC in two ways: (i) it breaks the
-> contiguity of the mmap() region, crippling the sliding primitive AnC
-> relies on; (ii) it ensures an attacker leaking an address in a
-> particular VMA can't easily infer addresses in other VMAs. So, in
-> short, the mitigation does raise the bar against AnC-like attacks and
-> I see this as a useful addition.
-
-In your paper the timing for Chrome attacks were not presented, which 
-would be interesting if they are comparable to the effect of 
-randomize_va_space=3 for Firefox. What's your estimate, how much slower 
-it was to break Chrome ASLR vs. Firefox/randomize_va_space=2?
-
-> Indeed, we're aware some vendors implemented a similar randomization
-> strategy in the browser as a mitigation against AnC.
+> Some friendly/constructive feedback below.
 > 
-> Nonetheless, some additional notes on the two points I raised above:
+> On Wed, Nov 18, 2020 at 12:44 PM Clemens Gruber
+> <clemens.gruber@pqgruber.com> wrote:
+> >
+> > This switch to the atomic API goes hand in hand with a few fixes to
+> > previously experienced issues:
+> > - The duty cycle is no longer lost after disable/enable (previously the
+> >   OFF registers were cleared in disable and the user was required to
+> >   call config to restore the duty cycle settings)
+> > - The prescale register is now read out. If one sets a period resulting
+> >   in the same prescale register value, the sleep and write to the
+> >   register is skipped
+> >
+> > The hardware readout may return slightly different values than those
+> > that were set in apply due to the limited range of possible prescale and
+> > counter register values. If one channel is reconfigured with new duty
+> > cycle and period, the others will keep the same relative duty cycle to
+> > period ratio as they had before, even though the per-chip / global
+> > frequency changed. (The PCA9685 has only one prescaler!)
+> >
+> > Note that although the datasheet mentions 200 Hz as default frequency
+> > when using the internal 25 MHz oscillator, the calculated period from
+> > the default prescaler register setting of 30 is 5079040ns.
+> >
+> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > ---
+> >  drivers/pwm/pwm-pca9685.c | 233 ++++++++++++++++++++------------------
+> >  1 file changed, 124 insertions(+), 109 deletions(-)
+> >
+> > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> > index 4a55dc18656c..20f1314e6754 100644
+> > --- a/drivers/pwm/pwm-pca9685.c
+> > +++ b/drivers/pwm/pwm-pca9685.c
+> > @@ -51,7 +51,6 @@
+> >  #define PCA9685_PRESCALE_MAX   0xFF    /* => min. frequency of 24 Hz */
+> >
+> >  #define PCA9685_COUNTER_RANGE  4096
+> > -#define PCA9685_DEFAULT_PERIOD 5000000 /* Default period_ns = 1/200 Hz */
+> >  #define PCA9685_OSC_CLOCK_MHZ  25      /* Internal oscillator with 25 MHz */
+> >
+> >  #define PCA9685_NUMREGS                0xFF
+> > @@ -74,7 +73,7 @@
+> >  struct pca9685 {
+> >         struct pwm_chip chip;
+> >         struct regmap *regmap;
+> > -       int period_ns;
+> > +       int prescale;
 > 
-> - (i) [Sliding] Note that an attacker can do away with sliding
-> depending on the randomization entropy and other available side
-> channels. For instance, with the recent TagBleed, we show how to
-> combine a TLB side channel with AnC to exhaust the KASLR entropy.
-> However, similar attacks should be possible in userland, again
-> depending on the randomization entropy used. See
-> https://download.vusec.net/papers/tagbleed_eurosp20.pdf. Combining
-> side channels with transient/speculative execution attacks can further
-> lower the bar.
-
-I think the equivalent of randomize_va_space=3 for KASLR would be that 
-various kernel structures could be placed randomly with full use of all 
-bits in the hardware, instead of low numbers like 9, 10 or 15 bits. 
-Maybe also each module could be placed in individual random address 
-instead of stuffing all modules together and likewise, instead of single 
-page_offset_base, vmalloc_base and vmemmap_base, kernel would use the 
-full address space to place various internal structures. I suppose this 
-is not trivial.
-
-> - (ii) [Leaks] Depending on the software vulnerability used for
-> exploitation, it might not be difficult for an attacker to break
-> fine-grained randomization across VMAs. That is, leak an address from
-> VMA 1, use the vulnerability to trigger a normally illegal access to
-> VMA 2, leak an address from VMA 2, repeat. Of course, the exploit
-> might take much longer depending on how far on the pointer chasing
-> chain the target is.
-
-Pointers between VMAs may also exist, for example libz.so needs to call 
-open(), close(), malloc(), free() etc. from libc.so.
-
--Topi
-
-> Best,
-> Cristiano
+> You've decided to cache the prescale register...
 > 
-> On Wed, Nov 18, 2020 at 6:40 PM Mike Rapoport <rppt@kernel.org> wrote:
->>
->> (added one of the AnC paper authors)
->>
->> On Tue, Nov 17, 2020 at 10:21:30PM +0200, Topi Miettinen wrote:
->>> On 17.11.2020 18.54, Matthew Wilcox wrote:
->>>> On Mon, Oct 26, 2020 at 06:05:18PM +0200, Topi Miettinen wrote:
->>>>> Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
->>>>> enables full randomization of memory mappings created with mmap(NULL,
->>>>> ...). With 2, the base of the VMA used for such mappings is random,
->>>>> but the mappings are created in predictable places within the VMA and
->>>>> in sequential order. With 3, new VMAs are created to fully randomize
->>>>> the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
->>>>> even if not necessary.
->>>>
->>>> Is this worth it?
->>>>
->>>> https://www.ndss-symposium.org/ndss2017/ndss-2017-programme/aslrcache-practical-cache-attacks-mmu/
->>>
->>> Thanks, very interesting. The paper presents an attack (AnC) which can break
->>> ASLR even from JavaScript in browsers. In the process it compares the memory
->>> allocators of Firefox and Chrome. Firefox relies on Linux mmap() to
->>> randomize the memory location, but Chrome internally chooses the randomized
->>> address. The paper doesn't present exact numbers to break ASLR for Chrome
->>> case, but it seems to require more effort. Chrome also aggressively
->>> randomizes the memory on each allocation, which seems to enable further
->>> possibilities for AnC to probe the MMU tables.
->>>
->>> Disregarding the difference in aggressiveness of memory allocators, I think
->>> with sysctl.kernel.randomize_va_space=3, the effort for breaking ASLR with
->>> Firefox should be increased closer to Chrome case since mmap() will use the
->>> address space more randomly.
->>>
->>> I have used this setting now for a month without any visible performance
->>> issues, so I think the extra bits (for some additional effort to attackers)
->>> are definitely worth the low cost.
->>>
->>> Furthermore, the paper does not describe in detail how the attack would
->>> continue after breaking ASLR. Perhaps there are assumptions which are not
->>> valid when the different memory areas are no longer sequential. For example,
->>> if ASLR is initially broken wrt. the JIT buffer but continuing the attack
->>> would require other locations to be determined (like stack, data segment for
->>> main exe or libc etc), further efforts may be needed to resolve these
->>> locations. With randomize_va_space=2, resolving any address (JIT buffer) can
->>> reveal the addresses of many other memory areas but this is not the case
->>> with 3.
->>>
->>> -Topi
->>
->> --
->> Sincerely yours,
->> Mike.
+> >  #if IS_ENABLED(CONFIG_GPIOLIB)
+> >         struct mutex lock;
+> >         struct gpio_chip gpio;
+> > @@ -246,18 +245,117 @@ static void pca9685_set_sleep_mode(struct pca9685 *pca, bool enable)
+> >         }
+> >  }
+> >
+> > -static int pca9685_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+> > -                             int duty_ns, int period_ns)
+> > +static void pca9685_pwm_full_off(struct pwm_chip *chip,
+> > +                                struct pwm_device *pwm)
+> > +{
+> > +       struct pca9685 *pca = to_pca(chip);
+> > +       int reg;
+> > +
+> > +       /*
+> > +        * Set the full OFF bit to cause the PWM channel to be always off.
+> > +        * The full OFF bit has precedence over the other register values.
+> > +        */
+> > +
+> > +       if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > +               reg = PCA9685_ALL_LED_OFF_H;
+> > +       else
+> > +               reg = LED_N_OFF_H(pwm->hwpwm);
+> > +
+> > +       regmap_write(pca->regmap, reg, LED_FULL);
+> > +}
+> > +
+> > +static void pca9685_pwm_full_on(struct pwm_chip *chip,
+> > +                               struct pwm_device *pwm)
+> > +{
+> > +       struct pca9685 *pca = to_pca(chip);
+> > +       int reg;
+> > +
+> > +       /*
+> > +        * Clear the OFF registers (including the full OFF bit) and set
+> > +        * the full ON bit to cause the PWM channel to be always on.
+> > +        */
+> > +
+> > +       if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > +               reg = PCA9685_ALL_LED_OFF_L;
+> > +       else
+> > +               reg = LED_N_OFF_L(pwm->hwpwm);
+> > +
+> > +       regmap_write(pca->regmap, reg, 0x0);
+> > +
+> > +       if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > +               reg = PCA9685_ALL_LED_OFF_H;
+> > +       else
+> > +               reg = LED_N_OFF_H(pwm->hwpwm);
+> > +
+> > +       regmap_write(pca->regmap, reg, 0x0);
+> > +
+> > +       if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > +               reg = PCA9685_ALL_LED_ON_H;
+> > +       else
+> > +               reg = LED_N_ON_H(pwm->hwpwm);
+> > +
+> > +       regmap_write(pca->regmap, reg, LED_FULL);
+> > +}
+> > +
+> > +static int pca9685_pwm_read_global_period(struct pca9685 *pca)
+> 
+> but in this function, you don't seem to use the cached prescale
+> value, but read it out again instead?
 
+Good point.
+I wanted .get_state to read out the actual HW state but the cached
+prescale register should always be identical to that, so it should be OK
+to use it here.
+
+> > +{
+> > +       unsigned int prescale = 0;
+> > +
+> > +       regmap_read(pca->regmap, PCA9685_PRESCALE, &prescale);
+> > +
+> > +       if (prescale < PCA9685_PRESCALE_MIN || prescale > PCA9685_PRESCALE_MAX)
+> > +               return 0;
+> > +
+> > +       return (PCA9685_COUNTER_RANGE * 1000 / PCA9685_OSC_CLOCK_MHZ) *
+> > +               (prescale + 1);
+> > +}
+> > +
+> > +static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+> > +                                 struct pwm_state *state)
+> > +{
+> > +       struct pca9685 *pca = to_pca(chip);
+> > +       unsigned int val, duty;
+> > +       int reg;
+> > +
+> > +       /* Read out (chip-wide) period */
+> > +       state->period = pca9685_pwm_read_global_period(pca);
+> > +
+> > +       /* The (per-channel) polarity is fixed */
+> > +       state->polarity = PWM_POLARITY_NORMAL;
+> > +
+> > +       /* Read out current duty cycle and enabled state */
+> > +       reg = pwm->hwpwm >= PCA9685_MAXCHAN ? PCA9685_ALL_LED_OFF_H :
+> > +               LED_N_OFF_H(pwm->hwpwm);
+> > +       regmap_read(pca->regmap, reg, &val);
+> > +       duty = (val & 0xf) << 8;
+> > +
+> > +       state->enabled = !(val & LED_FULL);
+> > +
+> > +       reg = pwm->hwpwm >= PCA9685_MAXCHAN ? PCA9685_ALL_LED_OFF_L :
+> > +               LED_N_OFF_L(pwm->hwpwm);
+> > +       regmap_read(pca->regmap, reg, &val);
+> > +       duty |= (val & 0xff);
+> > +
+> > +       if (duty < PCA9685_COUNTER_RANGE) {
+> > +               duty *= state->period;
+> > +               state->duty_cycle = duty / (PCA9685_COUNTER_RANGE - 1);
+> > +       } else
+> > +               state->duty_cycle = 0;
+> > +}
+> > +
+> > +static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> > +                            const struct pwm_state *state)
+> >  {
+> >         struct pca9685 *pca = to_pca(chip);
+> > -       unsigned long long duty;
+> > +       unsigned long long duty, prescale;
+> >         unsigned int reg;
+> > -       int prescale;
+> >
+> > -       if (period_ns != pca->period_ns) {
+> > -               prescale = DIV_ROUND_CLOSEST(PCA9685_OSC_CLOCK_MHZ * period_ns,
+> > -                                            PCA9685_COUNTER_RANGE * 1000) - 1;
+> > +       if (state->polarity != PWM_POLARITY_NORMAL)
+> > +               return -EOPNOTSUPP;
+> >
+> > +       prescale = DIV_ROUND_CLOSEST_ULL(PCA9685_OSC_CLOCK_MHZ * state->period,
+> > +                                        PCA9685_COUNTER_RANGE * 1000) - 1;
+> > +       if (prescale != pca->prescale) {
+> 
+> Use of cached prescale here, all good.
+> 
+> >                 if (prescale >= PCA9685_PRESCALE_MIN &&
+> >                         prescale <= PCA9685_PRESCALE_MAX) {
+> >                         /*
+> > @@ -270,12 +368,13 @@ static int pca9685_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+> >                         pca9685_set_sleep_mode(pca, true);
+> >
+> >                         /* Change the chip-wide output frequency */
+> > -                       regmap_write(pca->regmap, PCA9685_PRESCALE, prescale);
+> > +                       regmap_write(pca->regmap, PCA9685_PRESCALE,
+> > +                                    (int)prescale);
+> >
+> >                         /* Wake the chip up */
+> >                         pca9685_set_sleep_mode(pca, false);
+> >
+> > -                       pca->period_ns = period_ns;
+> > +                       pca->prescale = (int)prescale;
+> >                 } else {
+> >                         dev_err(chip->dev,
+> >                                 "prescaler not set: period out of bounds!\n");
+> > @@ -283,46 +382,18 @@ static int pca9685_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+> >                 }
+> >         }
+> >
+> > -       if (duty_ns < 1) {
+> > -               if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > -                       reg = PCA9685_ALL_LED_OFF_H;
+> > -               else
+> > -                       reg = LED_N_OFF_H(pwm->hwpwm);
+> > -
+> > -               regmap_write(pca->regmap, reg, LED_FULL);
+> > -
+> > +       if (!state->enabled || state->duty_cycle < 1) {
+> > +               pca9685_pwm_full_off(chip, pwm);
+> >                 return 0;
+> >         }
+> >
+> > -       if (duty_ns == period_ns) {
+> > -               /* Clear both OFF registers */
+> > -               if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > -                       reg = PCA9685_ALL_LED_OFF_L;
+> > -               else
+> > -                       reg = LED_N_OFF_L(pwm->hwpwm);
+> > -
+> > -               regmap_write(pca->regmap, reg, 0x0);
+> > -
+> > -               if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > -                       reg = PCA9685_ALL_LED_OFF_H;
+> > -               else
+> > -                       reg = LED_N_OFF_H(pwm->hwpwm);
+> > -
+> > -               regmap_write(pca->regmap, reg, 0x0);
+> > -
+> > -               /* Set the full ON bit */
+> > -               if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > -                       reg = PCA9685_ALL_LED_ON_H;
+> > -               else
+> > -                       reg = LED_N_ON_H(pwm->hwpwm);
+> > -
+> > -               regmap_write(pca->regmap, reg, LED_FULL);
+> > -
+> > +       if (state->duty_cycle == state->period) {
+> > +               pca9685_pwm_full_on(chip, pwm);
+> >                 return 0;
+> >         }
+> >
+> > -       duty = PCA9685_COUNTER_RANGE * (unsigned long long)duty_ns;
+> > -       duty = DIV_ROUND_UP_ULL(duty, period_ns);
+> > +       duty = (PCA9685_COUNTER_RANGE - 1) * state->duty_cycle;
+> > +       duty = DIV_ROUND_UP_ULL(duty, state->period);
+> >
+> >         if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> >                 reg = PCA9685_ALL_LED_OFF_L;
+> > @@ -349,64 +420,6 @@ static int pca9685_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+> >         return 0;
+> >  }
+> >
+> > -static int pca9685_pwm_enable(struct pwm_chip *chip, struct pwm_device *pwm)
+> > -{
+> > -       struct pca9685 *pca = to_pca(chip);
+> > -       unsigned int reg;
+> > -
+> > -       /*
+> > -        * The PWM subsystem does not support a pre-delay.
+> > -        * So, set the ON-timeout to 0
+> > -        */
+> > -       if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > -               reg = PCA9685_ALL_LED_ON_L;
+> > -       else
+> > -               reg = LED_N_ON_L(pwm->hwpwm);
+> > -
+> > -       regmap_write(pca->regmap, reg, 0);
+> > -
+> > -       if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > -               reg = PCA9685_ALL_LED_ON_H;
+> > -       else
+> > -               reg = LED_N_ON_H(pwm->hwpwm);
+> > -
+> > -       regmap_write(pca->regmap, reg, 0);
+> > -
+> > -       /*
+> > -        * Clear the full-off bit.
+> > -        * It has precedence over the others and must be off.
+> > -        */
+> > -       if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > -               reg = PCA9685_ALL_LED_OFF_H;
+> > -       else
+> > -               reg = LED_N_OFF_H(pwm->hwpwm);
+> > -
+> > -       regmap_update_bits(pca->regmap, reg, LED_FULL, 0x0);
+> > -
+> > -       return 0;
+> > -}
+> > -
+> > -static void pca9685_pwm_disable(struct pwm_chip *chip, struct pwm_device *pwm)
+> > -{
+> > -       struct pca9685 *pca = to_pca(chip);
+> > -       unsigned int reg;
+> > -
+> > -       if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > -               reg = PCA9685_ALL_LED_OFF_H;
+> > -       else
+> > -               reg = LED_N_OFF_H(pwm->hwpwm);
+> > -
+> > -       regmap_write(pca->regmap, reg, LED_FULL);
+> > -
+> > -       /* Clear the LED_OFF counter. */
+> > -       if (pwm->hwpwm >= PCA9685_MAXCHAN)
+> > -               reg = PCA9685_ALL_LED_OFF_L;
+> > -       else
+> > -               reg = LED_N_OFF_L(pwm->hwpwm);
+> > -
+> > -       regmap_write(pca->regmap, reg, 0x0);
+> > -}
+> > -
+> >  static int pca9685_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
+> >  {
+> >         struct pca9685 *pca = to_pca(chip);
+> > @@ -422,15 +435,14 @@ static void pca9685_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
+> >  {
+> >         struct pca9685 *pca = to_pca(chip);
+> >
+> > -       pca9685_pwm_disable(chip, pwm);
+> > +       pca9685_pwm_full_off(chip, pwm);
+> >         pm_runtime_put(chip->dev);
+> >         pca9685_pwm_clear_inuse(pca, pwm->hwpwm);
+> >  }
+> >
+> >  static const struct pwm_ops pca9685_pwm_ops = {
+> > -       .enable = pca9685_pwm_enable,
+> > -       .disable = pca9685_pwm_disable,
+> > -       .config = pca9685_pwm_config,
+> > +       .get_state = pca9685_pwm_get_state,
+> > +       .apply = pca9685_pwm_apply,
+> >         .request = pca9685_pwm_request,
+> >         .free = pca9685_pwm_free,
+> >         .owner = THIS_MODULE,
+> > @@ -448,7 +460,7 @@ static int pca9685_pwm_probe(struct i2c_client *client,
+> >  {
+> >         struct pca9685 *pca;
+> >         unsigned int reg;
+> > -       int ret;
+> > +       int prescale = 0, ret;
+> >
+> >         pca = devm_kzalloc(&client->dev, sizeof(*pca), GFP_KERNEL);
+> >         if (!pca)
+> > @@ -461,10 +473,13 @@ static int pca9685_pwm_probe(struct i2c_client *client,
+> >                         ret);
+> >                 return ret;
+> >         }
+> > -       pca->period_ns = PCA9685_DEFAULT_PERIOD;
+> >
+> >         i2c_set_clientdata(client, pca);
+> >
+> > +       regmap_read(pca->regmap, PCA9685_PRESCALE, &prescale);
+> > +       if (prescale < PCA9685_PRESCALE_MIN || prescale > PCA9685_PRESCALE_MAX)
+> > +               pca->prescale = prescale;
+> 
+> I'm not sure this will cache the prescale value correctly,
+> the logic seems inverted
+
+You are right, that's a mistake.
+
+> You appear to mix cached and uncached uses of prescale,
+> is there a need for this? If not, perhaps pick one and use
+> it consistently?
+
+Yes, sticking to the cached value is probably the way to go.
+
+> Perhaps you can define a is_prescale_valid() helper,
+> which is easier to read.
+> And it can be easily negated:
+>     if (!is_prescale_valid(prescale))
+> without getting confused between </>. <=/>=, and ||/&&.
+
+Good idea!
+
+> Also, if the prescale register contains an invalid value
+> during probe(), e.g. 0x00 or 0x01, would it make sense
+> to explicitly overwrite it with a valid setting?
+
+As long as it is overwritten with a correct setting when the PWM is used
+for the first time, it should be OK?
+
+Thanks,
+Clemens
