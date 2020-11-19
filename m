@@ -2,161 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B59F2B9A72
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8632B9A80
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729384AbgKSSPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:15:36 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14926 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727761AbgKSSPf (ORCPT
+        id S1729407AbgKSSSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:18:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32431 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728888AbgKSSSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:15:35 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJI2pnq134068;
-        Thu, 19 Nov 2020 13:15:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=27GOfRCLmrOpPdwc1nWg0zzBxV0oor0zhKyOQGBMgFU=;
- b=NO2/ozUEVxERFF5dV67w1PyQlqBz4Ms8aPvuj9IVGrUzmQCsP2RMoYkjBPDsGcV6sjaP
- 688z1V6XvqMck+p2q8ezVE9RO0IwQQw8m/5lr9hrzYFK4DrS0syNjyyNxy31kVtjTEoe
- LUzydpafkourCIcTiiqC56PuFHfYtUvSzrmAqEXHAFjfvguIVrZh64ilYv4/Rp4Lesqv
- 2KsatajQte/b4f2dh4wRB13F+JNQwbguv6KB6hFRLZaoh5djcKLxY6aeQcqI5OkAstjw
- YONyiGr+lO+V6c1g6OfRmiH6gaWCGfDZaBLgQ81pdWL6yyGt5aAg80XOSfbUmaa+bdji Fg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34w4xqvmc8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 13:15:32 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AJI33Zv135438;
-        Thu, 19 Nov 2020 13:15:31 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34w4xqvmb6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 13:15:31 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AJIBxIk021543;
-        Thu, 19 Nov 2020 18:15:30 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03wdc.us.ibm.com with ESMTP id 34t6v9g4ae-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 18:15:30 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AJIFLSv36241710
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Nov 2020 18:15:21 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55C03BE04F;
-        Thu, 19 Nov 2020 18:15:27 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D3DC0BE059;
-        Thu, 19 Nov 2020 18:15:25 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.152.80])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Nov 2020 18:15:25 +0000 (GMT)
-Subject: Re: [PATCH v11 07/14] s390/vfio-ap: sysfs attribute to display the
- guest's matrix
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-References: <20201022171209.19494-1-akrowiak@linux.ibm.com>
- <20201022171209.19494-8-akrowiak@linux.ibm.com>
- <20201028091758.73aa77a3.pasic@linux.ibm.com>
- <b96fe876-c67a-fe6c-0e3a-7b4948edeef4@linux.ibm.com>
- <20201114001248.3b397c8c.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <d25a6810-00df-a2fc-4541-548917fdcc40@linux.ibm.com>
-Date:   Thu, 19 Nov 2020 13:15:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 19 Nov 2020 13:18:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605809899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=REJOcYJm1HuEasvL8M7Bb1y/jfMw6RKMEKdfka8jXq0=;
+        b=TUsAv38RtYRmkE4kINlExTAfR2G6SFao/pIlRqy1Bh+hIO3R+5b7LlD7xBK/RC8vy8duBw
+        TYDsTYd3HjHSXIq8b3Z/VoGuvMNhoJcYMw2gEraITnRsBj3lTmGLpbt4Qeh8jq690eMclL
+        hrrqX/k4mlcmrjfnVq2L7Mr4y2BDe+k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-312-EeAH8zqlMkSHrFVA4tBZ-w-1; Thu, 19 Nov 2020 13:18:15 -0500
+X-MC-Unique: EeAH8zqlMkSHrFVA4tBZ-w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63A6610B9CBD;
+        Thu, 19 Nov 2020 18:18:13 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.164])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6765D60C0F;
+        Thu, 19 Nov 2020 18:18:05 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 19 Nov 2020 19:18:13 +0100 (CET)
+Date:   Thu, 19 Nov 2020 19:18:04 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] powerpc/ptrace: simplify gpr_get/tm_cgpr_get
+Message-ID: <20201119181804.GA5138@redhat.com>
+References: <20201119160154.GA5183@redhat.com>
+ <20201119160221.GA5188@redhat.com>
+ <94c56c46-e336-f61c-3623-1b2014fcbb2e@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <20201114001248.3b397c8c.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_09:2020-11-19,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 spamscore=0 impostorscore=0 mlxscore=0 adultscore=0
- phishscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0 bulkscore=0
- suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190125
+In-Reply-To: <94c56c46-e336-f61c-3623-1b2014fcbb2e@csgroup.eu>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/19, Christophe Leroy wrote:
+>
+>
+> Le 19/11/2020 � 17:02, Oleg Nesterov a �crit�:
+> >gpr_get() does membuf_write() twice to override pt_regs->msr in between.
+>
+> Is there anything wrong with that ?
 
+Nothing wrong, but imo the code and 2/2 looks simpler after this patch.
+I tried to explain this in the changelog.
 
-On 11/13/20 6:12 PM, Halil Pasic wrote:
-> On Fri, 13 Nov 2020 12:27:32 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >  int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
+> >  		struct membuf to)
+> >  {
+> >+	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
+> >+
+> >  	if (!cpu_has_feature(CPU_FTR_TM))
+> >  		return -ENODEV;
+> >@@ -97,17 +99,12 @@ int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
+> >  	flush_altivec_to_thread(target);
+> >  	membuf_write(&to, &target->thread.ckpt_regs,
+> >-			offsetof(struct pt_regs, msr));
+> >-	membuf_store(&to, get_user_ckpt_msr(target));
+> >+				sizeof(struct user_pt_regs));
 >
->>
->> On 10/28/20 4:17 AM, Halil Pasic wrote:
->>> On Thu, 22 Oct 2020 13:12:02 -0400
->>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->>>
->>>> +static ssize_t guest_matrix_show(struct device *dev,
->>>> +				 struct device_attribute *attr, char *buf)
->>>> +{
->>>> +	ssize_t nchars;
->>>> +	struct mdev_device *mdev = mdev_from_dev(dev);
->>>> +	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->>>> +
->>>> +	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
->>>> +		return -ENODEV;
->>> I'm wondering, would it make sense to have guest_matrix display the would
->>> be guest matrix when we don't have a KVM? With the filtering in
->>> place, the question in what guest_matrix would my (assign) matrix result
->>> right now if I were to hook up my vfio_ap_mdev to a guest seems a
->>> legitimate one.
->> A couple of thoughts here:
->> * The ENODEV informs the user that there is no guest running
->>      which makes sense to me given this interface displays the
->>      guest matrix. The alternative, which I considered, was to
->>      display an empty matrix (i.e., nothing).
->> * This would be a pretty drastic change to the design because
->>      the shadow_apcb - which is what is displayed via this interface - is
->>      only updated when the guest is started and while it is running (i.e.,
->>      hot plug of new adapters/domains). Making this change would
->>      require changing that entire design concept which I am reluctant
->>      to do at this point in the game.
->>
->>
-> No problem. My thinking was, that, because we can do the
-> assign/unassing ops also for the running guest, that we also have
-> the code to do the maintenance on the shadow_apcb. In this
-> series this code is conditional with respect to vfio_ap_mdev_has_crycb().
-> E.g.
->
-> static ssize_t assign_adapter_store(struct device *dev,
->                                      struct device_attribute *attr,
->                                      const char *buf, size_t count)
-> {
-> [..]
->          if (vfio_ap_mdev_has_crycb(matrix_mdev))
->                  if (vfio_ap_mdev_filter_guest_matrix(matrix_mdev, true))
->                          vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
->
-> If one were to move the
-> vfio_ap_mdev_has_crycb() check into vfio_ap_mdev_commit_shadow_apcb()
-> then we would have an always up to date shatdow_apcb, we could display.
->
-> I don't feel strongly about this. Was just an idea, because if the result
-> of the filtering is surprising, currently the only to see, without
-> knowing the algorithm, and possibly the state, and the history of the
-> system, is to actually start a guest.
+> This looks mis-aligned. But it should fit on a single line, now we allow up to 100 chars on a line.
 
-Okay, I can buy this and will make the change.
+OK, I can change this.
 
+> >-	BUILD_BUG_ON(offsetof(struct pt_regs, orig_gpr3) !=
+> >-		     offsetof(struct pt_regs, msr) + sizeof(long));
+> >+	membuf_store(&to_msr, get_user_ckpt_msr(target));
+> >-	membuf_write(&to, &target->thread.ckpt_regs.orig_gpr3,
+> >-			sizeof(struct user_pt_regs) -
+> >-			offsetof(struct pt_regs, orig_gpr3));
+> >  	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
+> >-			sizeof(struct user_pt_regs));
+> >+				sizeof(struct user_pt_regs));
 >
-> Regards,
-> Halil
+> I can't see any change here except the alignment. Can you leave it as is ?
+
+I just tried to make tm_cgpr_get() and gpr_get() look similar.
+
+Sure, I can leave it as is.
+
+Better yet, could you please fix this problem somehow so that I could forget
+about the bug assigned to me?
+
+I know nothing about powerpc, and personally I do not care about this (minor)
+bug, I agree with any changes.
+
+> >-	membuf_write(&to, target->thread.regs, offsetof(struct pt_regs, msr));
+> >-	membuf_store(&to, get_user_msr(target));
+> >+	membuf_write(&to, target->thread.regs,
+> >+				sizeof(struct user_pt_regs));
 >
+> This should fit on a single line.
+>
+> >  	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
+> >-				 sizeof(struct user_pt_regs));
+> >+				sizeof(struct user_pt_regs));
+>
+> This should not change, it's not part of the changes for this patch.
+
+See above, I can leave it as is.
+
+> >--- a/include/linux/regset.h
+> >+++ b/include/linux/regset.h
+> >@@ -46,6 +46,18 @@ static inline int membuf_write(struct membuf *s, const void *v, size_t size)
+> >  	return s->left;
+> >  }
+> >+static inline struct membuf membuf_at(const struct membuf *s, size_t offs)
+> >+{
+> >+	struct membuf n = *s;
+>
+> Is there any point in using a struct membuf * instaed of a struct membuf as parameter ?
+
+This matches other membuf_ helpers.
+
+Oleg.
 
