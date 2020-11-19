@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008762B9A63
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9732B9A68
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729335AbgKSSJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:09:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:36786 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727211AbgKSSJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:09:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D1E81396;
-        Thu, 19 Nov 2020 10:09:56 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 94C0B3F70D;
-        Thu, 19 Nov 2020 10:09:54 -0800 (PST)
-Date:   Thu, 19 Nov 2020 18:09:48 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Shiju Jose <shiju.jose@huawei.com>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        guohanjun@huawei.com, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        lenb@kernel.org, linuxarm@huawei.com, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 1/1] ACPI/IORT: Fix doc warnings in iort.c
-Message-ID: <20201119180948.GA25181@e121166-lin.cambridge.arm.com>
-References: <20201014093139.1580-1-shiju.jose@huawei.com>
- <20201119180120.GA25142@e121166-lin.cambridge.arm.com>
- <20201119180346.GI4376@gaia>
+        id S1728893AbgKSSMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:12:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728509AbgKSSMk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:12:40 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590C6C0613CF;
+        Thu, 19 Nov 2020 10:12:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Fo7XA1P7L7ydAINyh811w5lW8AIHaI8eTME21i7qTwg=; b=V7ahkSEbh8W1W/0PwZOAXxUU2c
+        yzevupau9gfPxZ8mowU+Xg9Fkq/5Y26Tng93lxjNb5Tb6Kp5LRv/K39nqa5sw3+fj2F/U9FSPlcIl
+        68PjBeKjC96HmTaPgxYgwfXcSrTExosF/puNJvIt5cx87Ja+Uw4oyf6C/PayrAEk7KKJbisDLMFrg
+        vkgOsR29npRmZAAuavmgFZt2FHk1mu1VzjJ2hWibg4QxiDjwTlK/MZS7XC17nCN3wDcavp8MQVedg
+        jDreCleJxU+oG5hAQhuCxHQbNADFp2QLE3BHpHpcVchJYOp3rLuEAfr2Gj7trPLC65uldmpcl9Typ
+        nhDqHwLQ==;
+Received: from [2601:1c0:6280:3f0::bcc4]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kfoQ5-0005pf-0B; Thu, 19 Nov 2020 18:12:33 +0000
+Subject: Re: linux-next: Tree for Nov 19 (drivers/edac/igen6_edac.c)
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
+        Nicholas Piggin <npiggin@gmail.com>
+References: <20201119170832.614bf46d@canb.auug.org.au>
+ <6d36cd23-2647-f3b1-5f55-1e00105698eb@infradead.org>
+ <0ad9aeffcd5342f59bae6fe64218d011@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d8880e79-40a0-4d92-29dd-82b0b59d653b@infradead.org>
+Date:   Thu, 19 Nov 2020 10:12:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119180346.GI4376@gaia>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <0ad9aeffcd5342f59bae6fe64218d011@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 06:03:47PM +0000, Catalin Marinas wrote:
-> On Thu, Nov 19, 2020 at 06:01:20PM +0000, Lorenzo Pieralisi wrote:
-> > [+Catalin - I hope it can go via arm64 tree, trivial doc fixup]
+On 11/19/20 9:53 AM, Luck, Tony wrote:
+>> ../drivers/edac/igen6_edac.c: In function 'ecclog_nmi_handler':
+>> ../drivers/edac/igen6_edac.c:525:10: error: 'NMI_DONE' undeclared (first use in this function); did you mean 'DMI_NONE'?
+>>    return NMI_DONE;
 > 
-> Or Will if you want it in 5.10, otherwise I can pick it up for 5.11.
+> This driver has a #include <linux/nmi.h>
+> 
+> But inside that file it says:
+> 
+> #if defined(CONFIG_HAVE_NMI_WATCHDOG)
+> #include <asm/nmi.h>
+> #endif
+> 
+> and the randconfig used doesn't set CONFIG_HAVE_NMI_WATCHDOG
+> 
+> 
+> Some options:
+> 
+> 1) Drop that #ifdef from <linux/nmi.h>
+> It was introduced as part of this commit:
+> f2e0cff85ed1 ("kernel/watchdog: introduce arch_touch_nmi_watchdog()")
+> presumably for some good reason.
+> 
+> 2) Make this edac driver select CONFIG_HAVE_NMI_WATCHDOG
+> Yuck!
+> 
+> 3) Make this driver #include <asm/nmi.h> instead of <linux/nmi.h>
+> This fixes this build error, but I thought that general policy was to
+> use the <linux/*.h> if it exists rather than the <asm/*.h> one.
+> Maybe that's ok here because this is an x86 specific driver?
+> 
+> I'm leaning toward option #3.
 
-Thanks, not really urgent so I am not sure it can make the cut for an
--rc5+, either way is fine.
+I lean toward option #1 but #3 would be OK.
 
-Thanks !
-Lorenzo
+We generally try NOT to surround #include lines
+with ifdef/endif as was done here for some reason.
 
-> > On Wed, Oct 14, 2020 at 10:31:39AM +0100, Shiju Jose wrote:
-> > > Fix following warnings caused by mismatch between
-> > > function parameters and function comments.
-> > > 
-> > > drivers/acpi/arm64/iort.c:55: warning: Function parameter or member 'iort_node' not described in 'iort_set_fwnode'
-> > > drivers/acpi/arm64/iort.c:55: warning: Excess function parameter 'node' description in 'iort_set_fwnode'
-> > > drivers/acpi/arm64/iort.c:682: warning: Function parameter or member 'id' not described in 'iort_get_device_domain'
-> > > drivers/acpi/arm64/iort.c:682: warning: Function parameter or member 'bus_token' not described in 'iort_get_device_domain'
-> > > drivers/acpi/arm64/iort.c:682: warning: Excess function parameter 'req_id' description in 'iort_get_device_domain'
-> > > drivers/acpi/arm64/iort.c:1142: warning: Function parameter or member 'dma_size' not described in 'iort_dma_setup'
-> > > drivers/acpi/arm64/iort.c:1142: warning: Excess function parameter 'size' description in 'iort_dma_setup'
-> > > drivers/acpi/arm64/iort.c:1534: warning: Function parameter or member 'ops' not described in 'iort_add_platform_device'
-> > > 
-> > > Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
-> > > ---
-> > >  drivers/acpi/arm64/iort.c | 8 +++++---
-> > >  1 file changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > 
-> > > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> > > index 9929ff50c0c0..770d84071a32 100644
-> > > --- a/drivers/acpi/arm64/iort.c
-> > > +++ b/drivers/acpi/arm64/iort.c
-> > > @@ -44,7 +44,7 @@ static DEFINE_SPINLOCK(iort_fwnode_lock);
-> > >   * iort_set_fwnode() - Create iort_fwnode and use it to register
-> > >   *		       iommu data in the iort_fwnode_list
-> > >   *
-> > > - * @node: IORT table node associated with the IOMMU
-> > > + * @iort_node: IORT table node associated with the IOMMU
-> > >   * @fwnode: fwnode associated with the IORT node
-> > >   *
-> > >   * Returns: 0 on success
-> > > @@ -673,7 +673,8 @@ static int iort_dev_find_its_id(struct device *dev, u32 id,
-> > >  /**
-> > >   * iort_get_device_domain() - Find MSI domain related to a device
-> > >   * @dev: The device.
-> > > - * @req_id: Requester ID for the device.
-> > > + * @id: Requester ID for the device.
-> > > + * @bus_token: irq domain bus token.
-> > >   *
-> > >   * Returns: the MSI domain for this device, NULL otherwise
-> > >   */
-> > > @@ -1136,7 +1137,7 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
-> > >   *
-> > >   * @dev: device to configure
-> > >   * @dma_addr: device DMA address result pointer
-> > > - * @size: DMA range size result pointer
-> > > + * @dma_size: DMA range size result pointer
-> > >   */
-> > >  void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
-> > >  {
-> > > @@ -1526,6 +1527,7 @@ static __init const struct iort_dev_config *iort_get_dev_cfg(
-> > >  /**
-> > >   * iort_add_platform_device() - Allocate a platform device for IORT node
-> > >   * @node: Pointer to device ACPI IORT node
-> > > + * @ops: Pointer to IORT device config struct
-> > >   *
-> > >   * Returns: 0 on success, <0 failure
-> > >   */
-> > > -- 
-> > > 2.17.1
+
+-- 
+~Randy
+
