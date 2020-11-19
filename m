@@ -2,100 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3036A2B97F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E432B9802
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729034AbgKSQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:28:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728999AbgKSQ2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:28:31 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D7AB20719;
-        Thu, 19 Nov 2020 16:28:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605803310;
-        bh=0q3Z8JWSNAuRKy54FCbmn/BRIWds1WQi464xUGKdScs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FWf3zxTkV6Y46boUvNDMrTMhUPO9cyUHj2FwSDBWGKPHIWJbJUH5DyeZjqi7v/b6Q
-         tboSw+hSyfu5ZlZv/JLkz5dhjbGKDHh0mN5jw3ORPjN9J8SqTkdO4WA2ipbJQooNMK
-         XKvYMwxgAeo1PkKg56VeWvNzYJpSz0LYXiL23spA=
-Date:   Thu, 19 Nov 2020 16:28:23 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 08/14] arm64: exec: Adjust affinity for compat tasks
- with mismatched 32-bit EL0
-Message-ID: <20201119162822.GA4582@willie-the-truck>
-References: <20201113093720.21106-1-will@kernel.org>
- <20201113093720.21106-9-will@kernel.org>
- <20201119161448.GR3121392@hirez.programming.kicks-ass.net>
+        id S1729096AbgKSQ3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:29:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728707AbgKSQ3r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:29:47 -0500
+Received: from latitanza.investici.org (latitanza.investici.org [IPv6:2001:888:2000:56::19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F444C0613CF;
+        Thu, 19 Nov 2020 08:29:46 -0800 (PST)
+Received: from mx3.investici.org (unknown [127.0.0.1])
+        by latitanza.investici.org (Postfix) with ESMTP id 4CcQBJ153Pz8shH;
+        Thu, 19 Nov 2020 16:29:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
+        s=stigmate; t=1605803384;
+        bh=as/FP3+UtccsQc0KiRNQ/5PQHycuMz7qOGok4Ha1beI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DCQ/jYaVXjRnpWR6Dv9XBaXUg4NRYXFa+IE9G8bTXwa/HBfDEaSY+EfLrt1YgTFnD
+         N3NycX5FuQ1lmkW33nEwy88pE3mrBnFWx2Pu7MEyPVzVjQW/2f+9qGAAub7cM/fIh3
+         KOL9+YjSWZG2auZLX+ZhCLKRjizLQPE39ksFDRpw=
+Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4CcQBH3sCxz8shD;
+        Thu, 19 Nov 2020 16:29:43 +0000 (UTC)
+From:   Francis Laniel <laniel_francis@privacyrequired.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     akpm@linux-foundation.org, linux-hardening@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, dja@axtens.net
+Subject: Re: [PATCH v5 4/5] Add new file in LKDTM to test fortified strscpy.
+Date:   Thu, 19 Nov 2020 17:29:42 +0100
+Message-ID: <17083947.HZsgYSklLr@machine>
+In-Reply-To: <202011181201.59B1B947A@keescook>
+References: <20201118110731.15833-1-laniel_francis@privacyrequired.com> <20201118110731.15833-5-laniel_francis@privacyrequired.com> <202011181201.59B1B947A@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119161448.GR3121392@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 05:14:48PM +0100, Peter Zijlstra wrote:
-> On Fri, Nov 13, 2020 at 09:37:13AM +0000, Will Deacon wrote:
-> > When exec'ing a 32-bit task on a system with mismatched support for
-> > 32-bit EL0, try to ensure that it starts life on a CPU that can actually
-> > run it.
-> > 
-> > Signed-off-by: Will Deacon <will@kernel.org>
+Le mercredi 18 novembre 2020, 21:02:32 CET Kees Cook a =E9crit :
+> On Wed, Nov 18, 2020 at 12:07:30PM +0100, laniel_francis@privacyrequired.=
+com=20
+wrote:
+> > From: Francis Laniel <laniel_francis@privacyrequired.com>
+> >=20
+> > This new test ensures that fortified strscpy has the same behavior than
+> > vanilla strscpy (e.g. returning -E2BIG when src content is truncated).
+> > Finally, it generates a crash at runtime because there is a write overf=
+low
+> > in destination string.
+> >=20
+> > Signed-off-by: Francis Laniel <laniel_francis@privacyrequired.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
 > > ---
-> >  arch/arm64/kernel/process.c | 12 +++++++++++-
-> >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> > index 1540ab0fbf23..17b94007fed4 100644
-> > --- a/arch/arm64/kernel/process.c
-> > +++ b/arch/arm64/kernel/process.c
-> > @@ -625,6 +625,16 @@ unsigned long arch_align_stack(unsigned long sp)
-> >  	return sp & ~0xf;
-> >  }
-> >  
-> > +static void adjust_compat_task_affinity(struct task_struct *p)
-> > +{
-> > +	const struct cpumask *mask = system_32bit_el0_cpumask();
-> > +
-> > +	if (restrict_cpus_allowed_ptr(p, mask))
-> > +		set_cpus_allowed_ptr(p, mask);
-> 
-> This silently destroys user state, at the very least that ought to go
-> with a WARN or something. Ideally SIGKILL though. What's to stop someone
-> from doing a sched_setaffinity() right after the execve, same problem.
-> So why bother..
+> >=20
+> >  drivers/misc/lkdtm/Makefile             |  1 +
+> >  drivers/misc/lkdtm/core.c               |  1 +
+> >  drivers/misc/lkdtm/fortify.c            | 82 +++++++++++++++++++++++++
+> >  drivers/misc/lkdtm/lkdtm.h              |  3 +
+> >  tools/testing/selftests/lkdtm/tests.txt |  1 +
+> >  5 files changed, 88 insertions(+)
+> >  create mode 100644 drivers/misc/lkdtm/fortify.c
+> >=20
+> > diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
+> > index c70b3822013f..d898f7b22045 100644
+> > --- a/drivers/misc/lkdtm/Makefile
+> > +++ b/drivers/misc/lkdtm/Makefile
+> > @@ -10,6 +10,7 @@ lkdtm-$(CONFIG_LKDTM)		+=3D rodata_objcopy.o
+> >=20
+> >  lkdtm-$(CONFIG_LKDTM)		+=3D usercopy.o
+> >  lkdtm-$(CONFIG_LKDTM)		+=3D stackleak.o
+> >  lkdtm-$(CONFIG_LKDTM)		+=3D cfi.o
+> >=20
+> > +lkdtm-$(CONFIG_LKDTM)		+=3D fortify.o
+> >=20
+> >  KASAN_SANITIZE_stackleak.o	:=3D n
+> >  KCOV_INSTRUMENT_rodata.o	:=3D n
+> >=20
+> > diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
+> > index b8c51a633fcc..3c0a67f072c0 100644
+> > --- a/drivers/misc/lkdtm/core.c
+> > +++ b/drivers/misc/lkdtm/core.c
+> > @@ -175,6 +175,7 @@ static const struct crashtype crashtypes[] =3D {
+> >=20
+> >  	CRASHTYPE(USERCOPY_KERNEL),
+> >  	CRASHTYPE(STACKLEAK_ERASING),
+> >  	CRASHTYPE(CFI_FORWARD_PROTO),
+> >=20
+> > +	CRASHTYPE(FORTIFIED_STRSCPY),
+> >=20
+> >  #ifdef CONFIG_X86_32
+> > =20
+> >  	CRASHTYPE(DOUBLE_FAULT),
+> > =20
+> >  #endif
+> >=20
+> > diff --git a/drivers/misc/lkdtm/fortify.c b/drivers/misc/lkdtm/fortify.c
+> > new file mode 100644
+> > index 000000000000..790d46591bf5
+> > --- /dev/null
+> > +++ b/drivers/misc/lkdtm/fortify.c
+> > @@ -0,0 +1,82 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2020 Francis Laniel <laniel_francis@privacyrequired.c=
+om>
+> > + *
+> > + * Add tests related to fortified functions in this file.
+> > + */
+> > +#include <linux/string.h>
+> > +#include <linux/slab.h>
+> > +#include "lkdtm.h"
+>=20
+> Ah, I just noticed one small nit here during build testing: lkdtm.h
+> needs to be included first to get the correct pr_fmt to avoid a warning:
+>=20
+> In file included from drivers/misc/lkdtm/fortify.c:9:
+> drivers/misc/lkdtm/lkdtm.h:5: warning: "pr_fmt" redefined
+>     5 | #define pr_fmt(fmt) "lkdtm: " fmt
+>=20
+> -Kees
 
-It's no different to CPU hot-unplug though, is it? From the perspective of
-the 32-bit task, the 64-bit-only cores were hot-unplugged at the point of
-execve(). Calls to sched_setaffinity() for 32-bit tasks will reject attempts
-to include 64-bit-only cores.
+This my bad, I noticed this warning but though it was "normal" with LKDTM.
+I should have asked about it!
 
-I initially wanted to punt this all to userspace, but one of the big
-problems with that is when a 64-bit task is running on a CPU only capable
-of running 64-bit tasks and it execve()s a 32-bit task. At the point, we
-have to do something because we can't even run the new task for it to do
-a sched_affinity() call (and we also can't deliver SIGILL).
+I will send the v6 soon!
 
-Will
+
