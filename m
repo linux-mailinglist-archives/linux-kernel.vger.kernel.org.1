@@ -2,83 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF6B2B8B3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CF82B8B40
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725873AbgKSGDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 01:03:40 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:51637 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725648AbgKSGDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 01:03:40 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cc8Hs6Rdnz9sTv;
-        Thu, 19 Nov 2020 17:03:37 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1605765817;
-        bh=+pZz8i6g7OW4NmP3Iuj693zPmlv8QYjXt7afMQdN6hE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=V4dsU87ALmKVfy4tqYomzsbnaVJHR20L5N3ndFKpV2IVqKhJ/yqxgQ8p151HOofey
-         1xrEuX6BOPCEF5p9l3fGBjt+CiS2hkL1YGoFyxG2zfi04+UNz5nwZoixuYHj01+Sae
-         2haUvRoyfyYWCCGT0wMp/3I3l16XUkFrh7+40y81m6X3hFxD3AXYQy+Tfc7tn94Fjg
-         dr4sefW4e08FS5xumP7CmJHp48+8kEriOc85xKdgorrf8K0i8/ig+LO/S2HD+0rlxC
-         Digtvx5vBb+UvSVaRyuMms4qN8wSmUj7XFWwds7EiJxQPqU3KY962y+gsUBSGoP//u
-         6jNsEKLf97VFA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests/seccomp: powerpc: Fix typo in macro variable name
-In-Reply-To: <20201117210104.1000661-1-keescook@chromium.org>
-References: <20201117210104.1000661-1-keescook@chromium.org>
-Date:   Thu, 19 Nov 2020 17:03:34 +1100
-Message-ID: <87y2ix2895.fsf@mpe.ellerman.id.au>
+        id S1725937AbgKSGFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 01:05:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgKSGFK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 01:05:10 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3689EC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:05:09 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id d9so4360237qke.8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:05:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=afgDn2umda6QgnA0T4nNfO0qOaQP4kyxzthFa3SdSFE=;
+        b=GeHvjHAaXVWHe47UtcIRS4vrSBEdINyrcJ8wDFKIB70hQKrcBT4vdCSHWLHGPdHnDK
+         /OLAYZm7nD/ldSC0YfZGtTGbgrMUxOHGNh5nCPHxT7A205g/KwJuag6SPrs5thp5Dbga
+         zYoZMz2LzUBnDq2HeyPzro/Q6J2HyeKjhej5QlHs9OJITgS1BEDefIpjE9ST9P9k8/oJ
+         idI1krkePOsHfIKHMsSxkTnp/I9NDY53hW1RTe5/Ejd7wsKyM/kppCa86DIs1kgYL9j3
+         GHohFLV4MITqLk56Iw8ogdu+emoHOO01cce4PfJw9UObyGt7q+WHlj9A65gXYxm7lSSx
+         SRyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=afgDn2umda6QgnA0T4nNfO0qOaQP4kyxzthFa3SdSFE=;
+        b=nwIjex8ESUI8QllKnStwD5qdY36x/Yla/H9LpCNyVT9Jja4kzkKnPpaJw17EVkiVhw
+         B6rLO3PjTqIi7aoaR7NXjCmMZGrUtF5m38mD9CdmEnEIXK7aPB90OuJr5FU3TBHELpso
+         X3Z9DGSCyGQJe0puqgXaicYiqQNGY5LYWhT+9dcXD8woiPqRFfrsjHAiVkC+1qN5Z491
+         a9sm8cfLB2h8IEVfumJ09cr3M21sW/5BMhcovZgK/kj6q8otyliZmfoMVW9ycWwSEBgN
+         Ycy+Ees4Oc1nXaWAr5Q/WwpqZf1IBZPDQqrYlwGPl04r7yZo2t6JOg+chmY0e4kzwNbV
+         SJJg==
+X-Gm-Message-State: AOAM5319PU6PG/4tP32w1VuAtM+RPPjaDb6Ya8SXTySjXJdKQcBa6Oqg
+        pPK2yKr7jAwDhdz9g5Ku30vqQOig+QVZhuSgPRc=
+X-Google-Smtp-Source: ABdhPJw4ldiy0UOoaJKLIc/wQOv2QQLlKmJpH68m7Y/6USvRX1laUXgpAW85JgEWR6O1s71WFQ37KQdGxadYdcOaBdI=
+X-Received: by 2002:ae9:e317:: with SMTP id v23mr9438913qkf.152.1605765908487;
+ Wed, 18 Nov 2020 22:05:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1605752956-17397-1-git-send-email-shengjiu.wang@nxp.com>
+ <20201119050120.GA7124@Asurada-Nvidia> <CAA+D8AOuaeZCnvY0h2stzkiMnNCe7zvK_D4M2irT7y7NC+iZFg@mail.gmail.com>
+ <20201119055340.GA1666@Asurada-Nvidia>
+In-Reply-To: <20201119055340.GA1666@Asurada-Nvidia>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Thu, 19 Nov 2020 14:04:57 +0800
+Message-ID: <CAA+D8AOkios28X0n0cC4RbVnkkQ5U3fWaBNrp1AvN0rr_wbb-g@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Correct the clock source for mclk0
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, alsa-devel@alsa-project.org,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-> A typo sneaked into the powerpc selftest. Fix the name so it builds again.
+On Thu, Nov 19, 2020 at 1:54 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
 >
-> Fixes: 46138329faea ("selftests/seccomp: powerpc: Fix seccomp return value testing")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  tools/testing/selftests/seccomp/seccomp_bpf.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> On Thu, Nov 19, 2020 at 01:28:32PM +0800, Shengjiu Wang wrote:
+> > On Thu, Nov 19, 2020 at 1:02 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> > >
+> > > On Thu, Nov 19, 2020 at 10:29:16AM +0800, Shengjiu Wang wrote:
+> > > > On VF610, mclk0 = bus_clk;
+> > > > On i.MX6SX/6UL/6ULL/7D, mclk0 = mclk1;
+> > > > On i.MX7ULP, mclk0 = bus_clk;
+> > > > On i.MX8QM/8QXP, mclk0 = bus_clk;
+> > > > On i.MX8MQ/8MN/8MM/8MP, mclk0 = bus_clk;
+> > > >
+> > > > So add variable mclk0_mclk1_match in fsl_sai_soc_data To
+> > >
+> > > Not in favor of "mclk0_mclk1_match" as it doesn't sound explicit
+> > > to me. Instead, "mclk0_is_bus_clk" or "mclk0_is_mclk1" might be
+> > > better. Or in case that you foresee some other implementation:
+> > >
+> > > enum {
+> > >         MCLK0_IS_BUS_CLK,
+> > >         MCLK0_IS_MCLK1,
+> > > };
+> > >
+> > > static const struct fsl_sai_soc_data fsl_sai_vf610_data = {
+> > > +       .mclk0_alias = MCLK0_IS_BUS_CLK,
+> > > };
+> >
+> > No problem.
+> >
+> > But I just find this patch doesn't consider the mqs case.
+> > MCLK0 can't be used for mqs, it needs MCLK1, even
+> > the MCLK0 is same as MCLK1,  MCLK1 need to be
+> > selected for mqs case.
+> >
+> > Is there a decent way for this case?
+>
+> Is there any use case that we have to use MCLK0 instead of MCLK1
+> on SoCs where MCLK0=MCLK1? If no, how about skip MCLK0 at all in
+> the for-loop at fsl_sai_set_bclk?
+>
+>         /*
+>          * There is no point in polling MCLK0 if it is identical to MCLK1.
+>          * And given that MQS use case has to use MCLK1 though two clocks
+>          * are the same, we simply skip MCLK0 and start to find from MCLK1.
+>          */
+>         id = mclk0_is_mclk1 ? 1 : 0;
+>
+>         for (; id < FSL_SAI_MCLK_MAX; id++) {
 
-I hit that and thought I'd sent a patch for it, but seems I never
-actually sent it.
+Ok, thanks, will update the patch.
 
-So thanks. I assume Shuah will take it.
-
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-
-cheers
-
-
-> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> index 76c458055c54..26c72f2b61b1 100644
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -1758,10 +1758,10 @@ TEST_F(TRACE_poke, getpid_runs_normally)
->  		 * and the code is stored as a positive value.	\
->  		 */						\
->  		if (_result < 0) {				\
-> -			SYSCALL_RET(_regs) = -result;		\
-> +			SYSCALL_RET(_regs) = -_result;		\
->  			(_regs).ccr |= 0x10000000;		\
->  		} else {					\
-> -			SYSCALL_RET(_regs) = result;		\
-> +			SYSCALL_RET(_regs) = _result;		\
->  			(_regs).ccr &= ~0x10000000;		\
->  		}						\
->  	} while (0)
-> -- 
-> 2.25.1
+best regards
+wang shengjiu
