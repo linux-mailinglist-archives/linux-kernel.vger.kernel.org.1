@@ -2,264 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C65B2B8C26
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404C82B8C28
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgKSHPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:15:18 -0500
-Received: from mga17.intel.com ([192.55.52.151]:8024 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726198AbgKSHPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:15:18 -0500
-IronPort-SDR: 5Hs5hi+dhGeT4cVB+5BmVB9QgUvfnrI8jWUQLGlFCA/Otj2E25ptFxDWGGDzERAHb8UkAqx8fx
- infonHMC+nWg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="151092879"
-X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
-   d="scan'208";a="151092879"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 23:15:17 -0800
-IronPort-SDR: WhTTokhFzNta2fiCakG5D0zwF7dH7VW0PTbXaeLVJrnV5O8IKvl4K9CMk+jQ0cWxHhA1snv9Y2
- meaeGCGyzL4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
-   d="scan'208";a="341597000"
-Received: from lkp-server01.sh.intel.com (HELO beb8a34b6883) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 18 Nov 2020 23:15:16 -0800
-Received: from kbuild by beb8a34b6883 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kfe9z-00003O-BM; Thu, 19 Nov 2020 07:15:15 +0000
-Date:   Thu, 19 Nov 2020 15:14:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 31d8546033053b98de00846ede8088bdbe38651d
-Message-ID: <5fb61b5a.kqyp9D1bbx4+8lxW%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726483AbgKSHPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:15:30 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:35589 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726198AbgKSHP3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 02:15:29 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1E55D5C00F8;
+        Thu, 19 Nov 2020 02:15:27 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 19 Nov 2020 02:15:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=r9ogtAo3XhfvKOKYsNolAmPWauE
+        4G+aRWIG5cjlau9o=; b=es0ai3aq8pOXMVmRuENaonI2JWLjAOBKco8Cv4DwkwX
+        h9q8JNFNftOmJavzFrbscuE+UgYZRV9vzJUNTcqT95iL7B4ja+c/7IuK8EP0OMSz
+        /eaFZn2pB01T/4ZiF5Z/alGzARAWLfGS+0QIAPUcAsYTdVgWKfhpv8QZNyR6y354
+        LOigE1yOVcKtLw6vaYoyfSC6WrovsfzpvrrzZBElvjD2hd7TtgqNtxo8wWb69nIs
+        mCRsFYZ3aXLUlyOsJ0/PDzpFSUhZCN8GykyTSckPnMjNUDXryWwhUfKxFOFSZOQ4
+        eXr3Pvbg02MzRaC1lpWRUSeSmMQJ6CIxLxLWfYGqlfA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=r9ogtA
+        o3XhfvKOKYsNolAmPWauE4G+aRWIG5cjlau9o=; b=SJ82YAG53QJFraaLcVVu1h
+        KHOBrfGNxSpFreUpquBtfRVt/UKqlGhct2LIayUBUPnXb/b2zsTr3gPfKqo6ffzC
+        vhJVdI1aj0YR2m3ADAw1WK5xA+KeAvz9idf8U+sKoVlbw/xYz+oaXfePQ0Uv68dj
+        PGpuIF51i1j/XUcZE4crC3IrSAQ0m89wqdEIvslnj4fzXeLYKUuQVrffYe6Z/RBd
+        nr7W535Gr8APXdts3/M/WlpMKKEFuj2d0GycUXt1xGZBacIwgEAQMQ84CryCfWjQ
+        5IvO/f8RI169M7y6cnAlt4bTikMvv1yDoDBfRvRk8v2aeEIVu9puVDTuxOZWaQqA
+        ==
+X-ME-Sender: <xms:jRu2X85JxG0AyleH1oNl7YCRGZYUPvH4WwUHEjMca4QKy1eTBmCIVw>
+    <xme:jRu2X96cwAxb_zFaZivUlTvJmYKA9OE0HZ_wHkslY5gI9UPg4Ew88tfKjp8iH1O90
+    1cOLWPeXtCj1SjaYaw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudefiedguddtgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeevveefffduveeitdegtefhhfetueffteefffdvheevvdehteethedvleff
+    gfejvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeeltddrkeelrdeike
+    drjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+    mhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:jRu2X7eW-pJq58UcIcDI4JeII0TqK1renNJ8APNwv9M1Sb2ec6Yxrw>
+    <xmx:jRu2XxICsp-_WgcEKnjPlZmB2FiJ-e5ZMD15ZZn0s9ClvFoNjggBYQ>
+    <xmx:jRu2XwLSgq1XSNqSH3vKEXfX5QTNww_wFPdpxIdD8_rQ6akM4sgufw>
+    <xmx:jxu2X6h2SJC1ponELYdm5pTTtjxNf1d0HuBMYWkDvBhXk6jsKo1q_Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 853D9328005E;
+        Thu, 19 Nov 2020 02:15:25 -0500 (EST)
+Date:   Thu, 19 Nov 2020 08:15:23 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH 2/2] hwspinlock: add sunxi hardware spinlock support
+Message-ID: <20201119071523.5cbpgy2cpo5cmuev@gilmour.lan>
+References: <cover.1605693132.git.wilken.gottwalt@posteo.net>
+ <149526a0ba8d18ebb68baa24e95d946ede90b4c0.1605693132.git.wilken.gottwalt@posteo.net>
+ <20201118153733.jgiokn6jkwu6rv6c@gilmour.lan>
+ <20201118203624.7221ba8b@monster.powergraphx.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yffm423zihwi5zdg"
+Content-Disposition: inline
+In-Reply-To: <20201118203624.7221ba8b@monster.powergraphx.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
-branch HEAD: 31d8546033053b98de00846ede8088bdbe38651d  x86/head/64: Remove unused GET_CR2_INTO() macro
 
-elapsed time: 723m
+--yffm423zihwi5zdg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-configs tested: 200
-configs skipped: 2
+On Wed, Nov 18, 2020 at 08:36:24PM +0100, Wilken Gottwalt wrote:
+> On Wed, 18 Nov 2020 16:37:33 +0100
+> Maxime Ripard <maxime@cerno.tech> wrote:
+> > Hi Wilken,
+> >=20
+> > On Wed, Nov 18, 2020 at 11:02:40AM +0100, Wilken Gottwalt wrote:
+> > > Adds the sunxi_hwspinlock driver and updates makefiles/maintainers.
+> > >=20
+> > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+> >=20
+> > A more descriptive commit log would be welcome here, for example
+> > containing on which SoC this driver can be used, and on which it was
+> > tested.
+>=20
+> can you help me here a bit? I still try to figure out how to do patch sets
+> properly. Some kernel submitting documentation says everything goes into =
+the
+> coverletter and other documentation only tells how to split the patches. =
+So
+> what would be the right way? A quick example based on my patch set would =
+be
+> really helpful.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I mean, the split between your patches and so on is good, you got that right
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                         ap325rxa_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                      pic32mzda_defconfig
-powerpc                      bamboo_defconfig
-powerpc                     tqm8560_defconfig
-nios2                               defconfig
-powerpc                    socrates_defconfig
-um                           x86_64_defconfig
-powerpc                        fsp2_defconfig
-powerpc                      ppc6xx_defconfig
-arm                            mps2_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                      arches_defconfig
-m68k                          sun3x_defconfig
-powerpc                     tqm8555_defconfig
-sh                        apsh4ad0a_defconfig
-mips                        workpad_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                           sunxi_defconfig
-powerpc                    adder875_defconfig
-sh                ecovec24-romimage_defconfig
-m68k                            mac_defconfig
-sh                           sh2007_defconfig
-sh                          urquell_defconfig
-riscv                               defconfig
-arm                     davinci_all_defconfig
-powerpc                    klondike_defconfig
-arm                            mmp2_defconfig
-arm                          pcm027_defconfig
-parisc                generic-32bit_defconfig
-sh                          polaris_defconfig
-arm                       aspeed_g5_defconfig
-arm                           stm32_defconfig
-powerpc                     sbc8548_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                         shannon_defconfig
-arc                          axs101_defconfig
-mips                         db1xxx_defconfig
-m68k                          amiga_defconfig
-powerpc                   motionpro_defconfig
-arm                         mv78xx0_defconfig
-sh                        dreamcast_defconfig
-arm                            zeus_defconfig
-powerpc                      ep88xc_defconfig
-arm                           sama5_defconfig
-powerpc                      cm5200_defconfig
-arm                        realview_defconfig
-powerpc                     rainier_defconfig
-xtensa                           alldefconfig
-powerpc                     stx_gp3_defconfig
-sh                           se7206_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                          g5_defconfig
-arm                           omap1_defconfig
-arm                       versatile_defconfig
-sh                            hp6xx_defconfig
-s390                          debug_defconfig
-powerpc                     pq2fads_defconfig
-parisc                generic-64bit_defconfig
-arm                             rpc_defconfig
-powerpc                      katmai_defconfig
-arm                         hackkit_defconfig
-arm                        clps711x_defconfig
-xtensa                    xip_kc705_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                        nlm_xlr_defconfig
-sh                           se7712_defconfig
-sh                   sh7770_generic_defconfig
-powerpc                 mpc85xx_cds_defconfig
-riscv                    nommu_k210_defconfig
-powerpc                    ge_imp3a_defconfig
-m68k                        mvme16x_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                      pcm030_defconfig
-sparc                            allyesconfig
-powerpc                      ppc64e_defconfig
-mips                      loongson3_defconfig
-powerpc                     skiroot_defconfig
-sh                         ecovec24_defconfig
-sh                           se7722_defconfig
-arc                        vdk_hs38_defconfig
-sh                          kfr2r09_defconfig
-arm                     am200epdkit_defconfig
-arm                           efm32_defconfig
-arm                           corgi_defconfig
-powerpc                 mpc837x_rdb_defconfig
-mips                         rt305x_defconfig
-sh                               alldefconfig
-arm                      tct_hammer_defconfig
-sh                             sh03_defconfig
-arm                         axm55xx_defconfig
-powerpc                       ebony_defconfig
-sparc                       sparc32_defconfig
-nios2                         10m50_defconfig
-arm                       netwinder_defconfig
-arm                         s3c2410_defconfig
-mips                        bcm63xx_defconfig
-sh                           se7705_defconfig
-arm                         cm_x300_defconfig
-sh                          r7780mp_defconfig
-arc                              alldefconfig
-powerpc                     mpc83xx_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                         wii_defconfig
-m68k                           sun3_defconfig
-powerpc                     kmeter1_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20201118
-x86_64               randconfig-a003-20201118
-x86_64               randconfig-a004-20201118
-x86_64               randconfig-a002-20201118
-x86_64               randconfig-a006-20201118
-x86_64               randconfig-a001-20201118
-i386                 randconfig-a006-20201119
-i386                 randconfig-a005-20201119
-i386                 randconfig-a002-20201119
-i386                 randconfig-a001-20201119
-i386                 randconfig-a003-20201119
-i386                 randconfig-a004-20201119
-i386                 randconfig-a006-20201118
-i386                 randconfig-a005-20201118
-i386                 randconfig-a002-20201118
-i386                 randconfig-a001-20201118
-i386                 randconfig-a003-20201118
-i386                 randconfig-a004-20201118
-x86_64               randconfig-a015-20201119
-x86_64               randconfig-a014-20201119
-x86_64               randconfig-a011-20201119
-x86_64               randconfig-a013-20201119
-x86_64               randconfig-a016-20201119
-x86_64               randconfig-a012-20201119
-i386                 randconfig-a012-20201119
-i386                 randconfig-a014-20201119
-i386                 randconfig-a016-20201119
-i386                 randconfig-a011-20201119
-i386                 randconfig-a013-20201119
-i386                 randconfig-a015-20201119
-i386                 randconfig-a012-20201118
-i386                 randconfig-a014-20201118
-i386                 randconfig-a016-20201118
-i386                 randconfig-a011-20201118
-i386                 randconfig-a013-20201118
-i386                 randconfig-a015-20201118
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+The thing I wanted better details on is the commit log itself, so the
+message attached to that patch.
 
-clang tested configs:
-x86_64               randconfig-a005-20201119
-x86_64               randconfig-a003-20201119
-x86_64               randconfig-a004-20201119
-x86_64               randconfig-a002-20201119
-x86_64               randconfig-a006-20201119
-x86_64               randconfig-a001-20201119
-x86_64               randconfig-a015-20201118
-x86_64               randconfig-a014-20201118
-x86_64               randconfig-a011-20201118
-x86_64               randconfig-a013-20201118
-x86_64               randconfig-a016-20201118
-x86_64               randconfig-a012-20201118
+> > This is the third attempt at that driver, and you can find the previous
+> > versions here:
+> > https://patchwork.kernel.org/project/linux-arm-kernel/cover/20200210170=
+143.20007-1-nborisov@suse.com/
+> > https://lore.kernel.org/patchwork/patch/706512/
+> >=20
+> > Most of the comments on those series still apply to yours.
+>=20
+> Oh, I wrote my driver 2-3 years ago and just prepared it for mainline. I
+> wasn't aware of other attempts. I really should have checked this. Though,
+> I really want to get to the point where this driver is good enough for
+> mainline. Hmmm, it is interesting how similar these drivers are. Looks li=
+ke
+> the other developers also got inspired by the already existing hwspinlock
+> drivers. :D
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Yeah, it looks like you all got the same inspiration :)
+
+> > Most importantly, this hwspinlock is used to synchronize the ARM cores
+> > and the ARISC. How did you test this driver?
+>=20
+> Yes, you are right, I should have mentioned this. I have a simple test ke=
+rnel
+> module for this. But I must admit, testing the ARISC is very hard and I h=
+ave
+> no real idea how to do it. Testing the hwspinlocks in general seems to wo=
+rk
+> with my test kernel module, but I'm not sure if this is really sufficient=
+=2E I
+> can provide the code for it if you like. What would be the best way? Gith=
+ub?
+> Just mailing a patch?
+>=20
+> The test module produces these results:
+>=20
+> # insmod /lib/modules/5.9.8/kernel/drivers/hwspinlock/sunxi_hwspinlock_te=
+st.ko=20
+> [   45.395672] [init] sunxi hwspinlock test driver start
+> [   45.400775] [init] start test locks
+> [   45.404263] [run ] testing 32 locks
+> [   45.407804] [test] testing lock 0 -----
+> [   45.411652] [test] taking lock attempt #0 succeded
+> [   45.416438] [test] try taken lock attempt #0
+> [   45.420735] [test] unlock/take attempt #0
+> [   45.424752] [test] taking lock attempt #1 succeded
+> [   45.429556] [test] try taken lock attempt #1
+> [   45.433823] [test] unlock/take attempt #1
+> [   45.437862] [test] testing lock 1 -----
+> [   45.441699] [test] taking lock attempt #0 succeded
+> [   45.446484] [test] try taken lock attempt #0
+> [   45.450768] [test] unlock/take attempt #0
+> [   45.454774] [test] taking lock attempt #1 succeded
+> [   45.459576] [test] try taken lock attempt #1
+> [   45.463843] [test] unlock/take attempt #1
+> .
+> .
+> .
+> [   46.309925] [test] testing lock 30 -----
+> [   46.313852] [test] taking lock attempt #0 succeded
+> [   46.318654] [test] try taken lock attempt #0
+> [   46.322920] [test] unlock/take attempt #0
+> [   46.326944] [test] taking lock attempt #1 succeded
+> [   46.331729] [test] try taken lock attempt #1
+> [   46.335994] [test] unlock/take attempt #1
+> [   46.340021] [test] testing lock 31 -----
+> [   46.343947] [test] taking lock attempt #0 succeded
+> [   46.348749] [test] try taken lock attempt #0
+> [   46.353016] [test] unlock/take attempt #0
+> [   46.357040] [test] taking lock attempt #1 succeded
+> [   46.361825] [test] try taken lock attempt #1
+> [   46.366090] [test] unlock/take attempt #1
+> [   46.370112] [init] end test locks
+
+That doesn't really test for contention though, and dealing with
+contention is mostly what this hardware is about. Could you make a small
+test with crust to see if when the arisc has taken the lock, the ARM
+cores can't take it?
+
+Maxime
+
+--yffm423zihwi5zdg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX7YbiwAKCRDj7w1vZxhR
+xdXCAPsFBDsW3OHbhbbI7loRjGxv7uBsvLF7Jq40jw6ghi4k2QEAns3rMbeYvoYF
+8qGfZklCDZTF45RlndqxO0I+yHIXLQc=
+=4ZUC
+-----END PGP SIGNATURE-----
+
+--yffm423zihwi5zdg--
