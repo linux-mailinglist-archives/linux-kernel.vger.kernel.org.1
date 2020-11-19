@@ -2,285 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926112B94B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5421A2B94BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgKSOfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:35:50 -0500
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:58730 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbgKSOft (ORCPT
+        id S1728025AbgKSOgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:36:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727356AbgKSOgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:35:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605796548; x=1637332548;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gmfSTmbZrIe0/XCpY9+CpFxXZTmo4ihW6dXadVTsN1g=;
-  b=zX8t7o+YPf4BeH1bggA6IEUsM5SaFytyqyqdYwm5EVjlaAAc2UxBK2AO
-   cP9KJPAhWAutSuDsjMiAO9B2cwdIk6LHd2m6QXt5VtQTR1EM+Iu/aSl+N
-   EN9pNq2Jfi1jlKaEtLlrx3rm+8xIMn/Y1TLceSlffk29AEXERItTh3Q/+
-   yqPZ8p5MNc2Tq0wuhIB2IKMcwY/wy7iF0y1Nf8F/7Gr1FTRkDCOQQZxfo
-   AVaD1o+wjtVhQwaUVlTf2wwcC76w1bphuC2XE3Wa4efAuO5bwXpt6mwZ2
-   3/GGLfaffMSRUFghvkAo2rTmpnMXm0UKEUc+QQa1iV7F8F29cm8L7wcLt
-   A==;
-IronPort-SDR: eOnlvIut4edJc3bidSXx/I5S2q5e9OiXMj+Iarwc09SeooP+vHPcDFYlHWS+RuQxBl4Xcha6SC
- vgerhT/lDfy/KRHhz9k4apjdkDWGY12fRpyMjk0JZ3pk4nYv7C2nmXVsmiZeAB/DmO9dMbYCr7
- p934+hxCMiaTe7AZB5kRrH68MgQV3/MwA50VHUTp9OdaCs19RZsLotHIkTikCDNALVhNS/Apcu
- RihnkOLuASMa+auqJLaZxCv12MnulI3GIUINNAIfn6v2iQxiGekJTKK3tNT5U7BjsSGmUQkIH7
- loE=
-X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="104250983"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Nov 2020 07:35:47 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 19 Nov 2020 07:35:47 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 19 Nov 2020 07:35:45 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 4/4] arm64: dts: sparx5: Add Sparx5 serdes driver node
-Date:   Thu, 19 Nov 2020 15:35:27 +0100
-Message-ID: <20201119143527.1881404-5-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201119143527.1881404-1-steen.hegelund@microchip.com>
-References: <20201119143527.1881404-1-steen.hegelund@microchip.com>
+        Thu, 19 Nov 2020 09:36:22 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C83C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 06:36:21 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id x13so2912548qvk.8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 06:36:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pCARG4QZtMHnFpafj1OT+P5fHUKr/uQzChLy5RLnZB0=;
+        b=Ke+b0AgHE803lafhEwwOjxoamU7d6CtbMuUxOt/Hi10Ppo5C29SltT+zO3DuyRWoch
+         TcGVPN9NZCzCfFs1eGMLx+Q2nlRhfxYtgTxWSqAyTubwq8W1j0udwh1ylfpNswxIJnuC
+         +lxC8xIoHmmuuOJX0GslUH9Y52nvTQWzHQW0kf9DIN98L6nz1/qJ998YQ8/YliqCuy7t
+         GukyBTAwj/LUe+xjOmP0jkQZiXwLIYoUhrPHi7Wx+IzauHqwZQAuD6qG+RZ1oXg29SZp
+         mIiRoeG7QE3k3kv+XUIwWH0l+BcSQlqF/21HQ01SzQS7kgwglFjJLOVz1cuE6p6f8CCs
+         ITzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pCARG4QZtMHnFpafj1OT+P5fHUKr/uQzChLy5RLnZB0=;
+        b=IYCmeOYVy2oQqqgDGH4ts84lEisejdB2e4hLdiCczPpAsNXfAGxpVV4IX0y78AwQ3n
+         7LkeIVs0tUbI0OMd/fT1D7pwoCI3AMy+gmcfXoVepjOp5Lk180f1iScHOHJS5zWayYEr
+         J3X/JKIjHMKGDJ7kvaV+vXkHrgzcsQhIkJtkRWgV4qqt9kPURIGYtsJp3L2tfoP34Q6C
+         eK0y58J98QEIGn/48P7TU+dJiWr4KC/6gne6b1ifn9uSZzOcyGsCpeD7S74XBNmBfqu5
+         NJF1wx3htXUPqR5PqE6o1X/LdqvFg9F/0+sUbiSH6/plKhJHyP2LdJBgNhOIqNLkiucQ
+         Om6A==
+X-Gm-Message-State: AOAM533T/MdtcfIRP2Tb/m+NpXovurtoyKHj8lnfkT0v6wo8/OLpyh8D
+        iqbjbRP7SoHtE38CWjS8Pokj1+xTVbQQLkNBV5xLIg==
+X-Google-Smtp-Source: ABdhPJxzPN0p1iFCAS8pPEuTQYMaumL6n4V3vbLMNS9VlTg4kVv7qjyT0OnrIQ6hjB0wXxrw843YNS394hYLTgtOoV0=
+X-Received: by 2002:a0c:e911:: with SMTP id a17mr11585880qvo.18.1605796580560;
+ Thu, 19 Nov 2020 06:36:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+ <384ce711-25c5-553b-8d22-965847132fbd@i-love.sakura.ne.jp>
+ <0eb519fa-e77b-b655-724a-4e9eecc64626@i-love.sakura.ne.jp>
+ <6933e938-f219-5e13-aee6-fe4de87eb43e@i-love.sakura.ne.jp>
+ <81ab0ffd-6e80-c96c-053a-b1b4fe8694c1@i-love.sakura.ne.jp>
+ <20201118142357.GW3121392@hirez.programming.kicks-ass.net>
+ <1778f2e5-0a0c-2c6e-2c83-fe51d938e8a2@i-love.sakura.ne.jp>
+ <20201118151038.GX3121392@hirez.programming.kicks-ass.net>
+ <9bc4e07d-2a58-077b-b4c7-ab056ba33cf1@i-love.sakura.ne.jp>
+ <CACT4Y+ZJNkssAQLuwfcKPTTKLZhHRAo0POGOMVsGFGizoHaNMg@mail.gmail.com>
+ <CACT4Y+Zh10241gchu6e_=LwxPSEzXT-0HSmhnTtkXFZevKi_yQ@mail.gmail.com>
+ <CACT4Y+a8TjV+Pe6mwne777RV+xB+aHT6GxuMLAVBn5mtK4P0Lw@mail.gmail.com>
+ <CACT4Y+ZSsKjvojD8iFVFv9F5X5BvZR8vLyaKrgxUxyknma04Sg@mail.gmail.com>
+ <5e8342c4-702f-80a9-e669-8a7386ce0da1@i-love.sakura.ne.jp>
+ <CACT4Y+a4X4MNkWsvRySokKE=gO8AH1kegtUQk9T0M37EfWtN-w@mail.gmail.com> <CACT4Y+aNJmuhk0KicX4FzKW6PhawFBgvrC2gSJcWwUkR8VSSmg@mail.gmail.com>
+In-Reply-To: <CACT4Y+aNJmuhk0KicX4FzKW6PhawFBgvrC2gSJcWwUkR8VSSmg@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 19 Nov 2020 15:36:09 +0100
+Message-ID: <CACT4Y+ZBVOHD79Mbdpmuxn6OC757BSA7p+JF_YNyUEVfvRFdGQ@mail.gmail.com>
+Subject: Re: [PATCH v3] lockdep: Allow tuning tracing capacity constants.
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     syzkaller <syzkaller@googlegroups.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Povlsen <lars.povlsen@microchip.com>
+On Thu, Nov 19, 2020 at 3:30 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > On Thu, Nov 19, 2020 at 2:45 PM Tetsuo Handa
+> > <penguin-kernel@i-love.sakura.ne.jp> wrote:
+> > >
+> > > On 2020/11/19 22:06, Dmitry Vyukov wrote:
+> > > >>>>
+> > > >>>> I am trying to reproduce this locally first. syzbot caims it can
+> > > >>>> reproduce it with a number of very simpler reproducers (like spawn
+> > > >>>> process, unshare, create socket):
+> > > >>>> https://syzkaller.appspot.com/bug?id=8a18efe79140782a88dcd098808d6ab20ed740cc
+> > > >>>>
+> > > >>>> I see a very slow drift, but it's very slow, so get only to:
+> > > >>>>  direct dependencies:                 22072 [max: 32768]
+> > > >>>>
+> > > >>>> But that's running a very uniform workload.
+> > > >>>>
+> > > >>>> However when I tried to cat /proc/lockdep to see if there is anything
+> > > >>>> fishy already,
+> > > >>>> I got this (on c2e7554e1b85935d962127efa3c2a76483b0b3b6).
+> > > >>>>
+> > > >>>> Some missing locks?
+> > >
+> > > Not a TOMOYO's bug. Maybe a lockdep's bug.
+> > >
+> > > >
+> > > > But I don't know if it's enough to explain the overflow or not...
+> > > >
+> > >
+> > > Since you can't hit the limit locally, I guess we need to ask syzbot to
+> > > run massive testcases.
+> >
+> > I am trying to test the code that will do this. Otherwise we will get
+> > days-long round-trips for stupid bugs. These files are also quite
+> > huge, I afraid that may not fit into storage.
+> >
+> > So far I get to at most:
+> >
+> >  lock-classes:                         2901 [max: 8192]
+> >  direct dependencies:                 25574 [max: 32768]
+> >  dependency chains:                   40605 [max: 65536]
+> >  dependency chain hlocks used:       176814 [max: 327680]
+> >  stack-trace entries:                258590 [max: 524288]
+> >
+> > with these worst offenders:
+> >
+> > # egrep "BD: [0-9]" /proc/lockdep
+> > 00000000df5b6792 FD:    2 BD: 1235 -.-.: &obj_hash[i].lock
+> > 000000005dfeb73c FD:    1 BD: 1236 ..-.: pool_lock
+> > 00000000b86254b1 FD:   14 BD: 1111 -.-.: &rq->lock
+> > 00000000866efb75 FD:    1 BD: 1112 ....: &cfs_b->lock
+> > 000000006970cf1a FD:    2 BD: 1126 ----: tk_core.seq.seqcount
+> > 00000000f49d95b0 FD:    3 BD: 1180 -.-.: &base->lock
+> > 00000000ba3f8454 FD:    5 BD: 1115 -.-.: hrtimer_bases.lock
+> > 00000000fb340f16 FD:   16 BD: 1030 -.-.: &p->pi_lock
+> > 00000000c9f6f58c FD:    1 BD: 1114 -.-.: &per_cpu_ptr(group->pcpu, cpu)->seq
+> > 0000000049d3998c FD:    1 BD: 1112 -.-.: &cfs_rq->removed.lock
+> > 00000000fdf7f396 FD:    7 BD: 1112 -...: &rt_b->rt_runtime_lock
+> > 0000000021aedb8d FD:    1 BD: 1113 -...: &rt_rq->rt_runtime_lock
+> > 000000004e34c8d4 FD:    1 BD: 1112 ....: &cp->lock
+> > 00000000b2ac5d96 FD:    1 BD: 1127 -.-.: pvclock_gtod_data
+> > 00000000c5df4dc3 FD:    1 BD: 1031 ..-.: &tsk->delays->lock
+> > 00000000fe623698 FD:    1 BD: 1112 -...:
+> > per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu)
+> >
+> >
+> > But the kernel continues to crash on different unrelated bugs...
+>
+>
+> Here is one successful sample. How do we debug it? What should we be
+> looking for?
+>
+> p.s. it's indeed huge, full log was 11MB, this probably won't be
+> chewed by syzbot.
+> Peter, are these [hex numbers] needed? Could we strip them during
+> post-processing? At first sight they look like derivatives of the
+> name.
 
-Add Sparx5 serdes driver node, and enable it generally for all
-reference boards.
+The worst back-edge offenders are:
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi | 195 ++++++++++++++++++++++
- 1 file changed, 195 insertions(+)
+00000000b445a595 FD:    2 BD: 1595 -.-.: &obj_hash[i].lock
+0000000055ae0468 FD:    1 BD: 1596 ..-.: pool_lock
+00000000b1336dc4 FD:    2 BD: 1002 ..-.: &zone->lock
+000000009a0cabce FD:    1 BD: 1042 ...-: &____s->seqcount
+000000001f2849b5 FD:    1 BD: 1192 ..-.: depot_lock
+00000000d044255b FD:    1 BD: 1038 -.-.: &n->list_lock
+000000005868699e FD:   17 BD: 1447 -.-.: &rq->lock
+00000000bb52ab59 FD:    1 BD: 1448 ....: &cfs_b->lock
+000000004f442fff FD:    2 BD: 1469 ----: tk_core.seq.seqcount
+00000000c908cc32 FD:    3 BD: 1512 -.-.: &base->lock
+00000000478677cc FD:    5 BD: 1435 -.-.: hrtimer_bases.lock
+00000000b5b65cb1 FD:   19 BD: 1255 -.-.: &p->pi_lock
+000000007f313bd5 FD:    1 BD: 1451 -.-.: &per_cpu_ptr(group->pcpu, cpu)->seq
+00000000bac5d8ed FD:    1 BD: 1004 ...-: &____s->seqcount#2
+000000000f57e411 FD:    1 BD: 1448 -.-.: &cfs_rq->removed.lock
+0000000013c1ab65 FD:    7 BD: 1449 -.-.: &rt_b->rt_runtime_lock
+000000003bdf78f4 FD:    1 BD: 1450 -.-.: &rt_rq->rt_runtime_lock
+00000000975d5b80 FD:    1 BD: 1448 ....: &cp->lock
+000000002586e81b FD:    1 BD: 1471 -.-.: pvclock_gtod_data
+00000000d03aed24 FD:    1 BD: 1275 ..-.: &tsk->delays->lock
+000000001119414f FD:    1 BD: 1448 -...:
+per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu)
+000000006f3d793b FD:    6 BD: 1449 -.-.: &ctx->lock
+00000000f3f0190c FD:    9 BD: 1448 -...: &rq->lock/1
+000000007410cf1a FD:    1 BD: 1448 -...: &rd->rto_lock
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 8e7724d413fb..af927e0002ff 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -287,5 +287,200 @@ tmon0: tmon@610508110 {
- 			#thermal-sensor-cells = <0>;
- 			clocks = <&ahb_clk>;
- 		};
-+
-+		serdes: serdes@10808000 {
-+			compatible = "microchip,sparx5-serdes";
-+			#phy-cells = <1>;
-+			reg =	<0x6 0x10808000 0x8000>, /* sd_cmu_0 */
-+				<0x6 0x10810000 0x8000>, /* sd_cmu_1 */
-+				<0x6 0x10818000 0x8000>, /* sd_cmu_2 */
-+				<0x6 0x10820000 0x8000>, /* sd_cmu_3 */
-+				<0x6 0x10828000 0x8000>, /* sd_cmu_4 */
-+				<0x6 0x10830000 0x8000>, /* sd_cmu_5 */
-+				<0x6 0x10838000 0x8000>, /* sd_cmu_6 */
-+				<0x6 0x10840000 0x8000>, /* sd_cmu_7 */
-+				<0x6 0x10848000 0x8000>, /* sd_cmu_8 */
-+				<0x6 0x10850000 0x8000>, /* sd_cmu_cfg_0 */
-+				<0x6 0x10858000 0x8000>, /* sd_cmu_cfg_1 */
-+				<0x6 0x10860000 0x8000>, /* sd_cmu_cfg_2 */
-+				<0x6 0x10868000 0x8000>, /* sd_cmu_cfg_3 */
-+				<0x6 0x10870000 0x8000>, /* sd_cmu_cfg_4 */
-+				<0x6 0x10878000 0x8000>, /* sd_cmu_cfg_5 */
-+				<0x6 0x10880000 0x8000>, /* sd_cmu_cfg_6 */
-+				<0x6 0x10888000 0x8000>, /* sd_cmu_cfg_7 */
-+				<0x6 0x10890000 0x8000>, /* sd_cmu_cfg_8 */
-+				<0x6 0x10898000 0x8000>, /* sd6g_lane_0 */
-+				<0x6 0x108a0000 0x8000>, /* sd6g_lane_1 */
-+				<0x6 0x108a8000 0x8000>, /* sd6g_lane_2 */
-+				<0x6 0x108b0000 0x8000>, /* sd6g_lane_3 */
-+				<0x6 0x108b8000 0x8000>, /* sd6g_lane_4 */
-+				<0x6 0x108c0000 0x8000>, /* sd6g_lane_5 */
-+				<0x6 0x108c8000 0x8000>, /* sd6g_lane_6 */
-+				<0x6 0x108d0000 0x8000>, /* sd6g_lane_7 */
-+				<0x6 0x108d8000 0x8000>, /* sd6g_lane_8 */
-+				<0x6 0x108e0000 0x8000>, /* sd6g_lane_9 */
-+				<0x6 0x108e8000 0x8000>, /* sd6g_lane_10 */
-+				<0x6 0x108f0000 0x8000>, /* sd6g_lane_11 */
-+				<0x6 0x108f8000 0x8000>, /* sd6g_lane_12 */
-+				<0x6 0x10900000 0x8000>, /* sd10g_lane_0 */
-+				<0x6 0x10908000 0x8000>, /* sd10g_lane_1 */
-+				<0x6 0x10910000 0x8000>, /* sd10g_lane_2 */
-+				<0x6 0x10918000 0x8000>, /* sd10g_lane_3 */
-+				<0x6 0x109a8000 0x8000>, /* sd_lane_0 */
-+				<0x6 0x109b0000 0x8000>, /* sd_lane_1 */
-+				<0x6 0x109b8000 0x8000>, /* sd_lane_2 */
-+				<0x6 0x109c0000 0x8000>, /* sd_lane_3 */
-+				<0x6 0x109c8000 0x8000>, /* sd_lane_4 */
-+				<0x6 0x109d0000 0x8000>, /* sd_lane_5 */
-+				<0x6 0x109d8000 0x8000>, /* sd_lane_6 */
-+				<0x6 0x109e0000 0x8000>, /* sd_lane_7 */
-+				<0x6 0x109e8000 0x8000>, /* sd_lane_8 */
-+				<0x6 0x109f0000 0x8000>, /* sd_lane_9 */
-+				<0x6 0x109f8000 0x8000>, /* sd_lane_10 */
-+				<0x6 0x10a00000 0x8000>, /* sd_lane_11 */
-+				<0x6 0x10a08000 0x8000>, /* sd_lane_12 */
-+				<0x6 0x10a10000 0x8000>, /* sd_lane_13 */
-+				<0x6 0x10a18000 0x8000>, /* sd_lane_14 */
-+				<0x6 0x10a20000 0x8000>, /* sd_lane_15 */
-+				<0x6 0x10a28000 0x8000>, /* sd_lane_16 */
-+				<0x6 0x10c08000 0x8000>, /* sd_cmu_9 */
-+				<0x6 0x10c10000 0x8000>, /* sd_cmu_10 */
-+				<0x6 0x10c18000 0x8000>, /* sd_cmu_11 */
-+				<0x6 0x10c20000 0x8000>, /* sd_cmu_12 */
-+				<0x6 0x10c28000 0x8000>, /* sd_cmu_13 */
-+				<0x6 0x10c30000 0x8000>, /* sd_cmu_cfg_9 */
-+				<0x6 0x10c38000 0x8000>, /* sd_cmu_cfg_10 */
-+				<0x6 0x10c40000 0x8000>, /* sd_cmu_cfg_11 */
-+				<0x6 0x10c48000 0x8000>, /* sd_cmu_cfg_12 */
-+				<0x6 0x10c50000 0x8000>, /* sd_cmu_cfg_13 */
-+				<0x6 0x10c58000 0x8000>, /* sd10g_lane_4 */
-+				<0x6 0x10c60000 0x8000>, /* sd10g_lane_5 */
-+				<0x6 0x10c68000 0x8000>, /* sd10g_lane_6 */
-+				<0x6 0x10c70000 0x8000>, /* sd10g_lane_7 */
-+				<0x6 0x10c78000 0x8000>, /* sd10g_lane_8 */
-+				<0x6 0x10c80000 0x8000>, /* sd10g_lane_9 */
-+				<0x6 0x10c88000 0x8000>, /* sd10g_lane_10 */
-+				<0x6 0x10c90000 0x8000>, /* sd10g_lane_11 */
-+				<0x6 0x10c98000 0x8000>, /* sd25g_lane_0 */
-+				<0x6 0x10ca0000 0x8000>, /* sd25g_lane_1 */
-+				<0x6 0x10ca8000 0x8000>, /* sd25g_lane_2 */
-+				<0x6 0x10cb0000 0x8000>, /* sd25g_lane_3 */
-+				<0x6 0x10cb8000 0x8000>, /* sd25g_lane_4 */
-+				<0x6 0x10cc0000 0x8000>, /* sd25g_lane_5 */
-+				<0x6 0x10cc8000 0x8000>, /* sd25g_lane_6 */
-+				<0x6 0x10cd0000 0x8000>, /* sd25g_lane_7 */
-+				<0x6 0x10d58000 0x8000>, /* sd_lane_17 */
-+				<0x6 0x10d60000 0x8000>, /* sd_lane_18 */
-+				<0x6 0x10d68000 0x8000>, /* sd_lane_19 */
-+				<0x6 0x10d70000 0x8000>, /* sd_lane_20 */
-+				<0x6 0x10d78000 0x8000>, /* sd_lane_21 */
-+				<0x6 0x10d80000 0x8000>, /* sd_lane_22 */
-+				<0x6 0x10d88000 0x8000>, /* sd_lane_23 */
-+				<0x6 0x10d90000 0x8000>, /* sd_lane_24 */
-+				<0x6 0x10d98000 0x8000>, /* sd_lane_25g_25 */
-+				<0x6 0x10da0000 0x8000>, /* sd_lane_25g_26 */
-+				<0x6 0x10da8000 0x8000>, /* sd_lane_25g_27 */
-+				<0x6 0x10db0000 0x8000>, /* sd_lane_25g_28 */
-+				<0x6 0x10db8000 0x8000>, /* sd_lane_25g_29 */
-+				<0x6 0x10dc0000 0x8000>, /* sd_lane_25g_30 */
-+				<0x6 0x10dc8000 0x8000>, /* sd_lane_25g_31 */
-+				<0x6 0x10dd0000 0x8000>; /* sd_lane_25g_32 */
-+			reg-names =
-+				"sd_cmu_0",
-+				"sd_cmu_1",
-+				"sd_cmu_2",
-+				"sd_cmu_3",
-+				"sd_cmu_4",
-+				"sd_cmu_5",
-+				"sd_cmu_6",
-+				"sd_cmu_7",
-+				"sd_cmu_8",
-+				"sd_cmu_cfg_0",
-+				"sd_cmu_cfg_1",
-+				"sd_cmu_cfg_2",
-+				"sd_cmu_cfg_3",
-+				"sd_cmu_cfg_4",
-+				"sd_cmu_cfg_5",
-+				"sd_cmu_cfg_6",
-+				"sd_cmu_cfg_7",
-+				"sd_cmu_cfg_8",
-+				"sd6g_lane_0",
-+				"sd6g_lane_1",
-+				"sd6g_lane_2",
-+				"sd6g_lane_3",
-+				"sd6g_lane_4",
-+				"sd6g_lane_5",
-+				"sd6g_lane_6",
-+				"sd6g_lane_7",
-+				"sd6g_lane_8",
-+				"sd6g_lane_9",
-+				"sd6g_lane_10",
-+				"sd6g_lane_11",
-+				"sd6g_lane_12",
-+				"sd10g_lane_0",
-+				"sd10g_lane_1",
-+				"sd10g_lane_2",
-+				"sd10g_lane_3",
-+				"sd_lane_0",
-+				"sd_lane_1",
-+				"sd_lane_2",
-+				"sd_lane_3",
-+				"sd_lane_4",
-+				"sd_lane_5",
-+				"sd_lane_6",
-+				"sd_lane_7",
-+				"sd_lane_8",
-+				"sd_lane_9",
-+				"sd_lane_10",
-+				"sd_lane_11",
-+				"sd_lane_12",
-+				"sd_lane_13",
-+				"sd_lane_14",
-+				"sd_lane_15",
-+				"sd_lane_16",
-+				"sd_cmu_9",
-+				"sd_cmu_10",
-+				"sd_cmu_11",
-+				"sd_cmu_12",
-+				"sd_cmu_13",
-+				"sd_cmu_cfg_9",
-+				"sd_cmu_cfg_10",
-+				"sd_cmu_cfg_11",
-+				"sd_cmu_cfg_12",
-+				"sd_cmu_cfg_13",
-+				"sd10g_lane_4",
-+				"sd10g_lane_5",
-+				"sd10g_lane_6",
-+				"sd10g_lane_7",
-+				"sd10g_lane_8",
-+				"sd10g_lane_9",
-+				"sd10g_lane_10",
-+				"sd10g_lane_11",
-+				"sd25g_lane_0",
-+				"sd25g_lane_1",
-+				"sd25g_lane_2",
-+				"sd25g_lane_3",
-+				"sd25g_lane_4",
-+				"sd25g_lane_5",
-+				"sd25g_lane_6",
-+				"sd25g_lane_7",
-+				"sd_lane_17",
-+				"sd_lane_18",
-+				"sd_lane_19",
-+				"sd_lane_20",
-+				"sd_lane_21",
-+				"sd_lane_22",
-+				"sd_lane_23",
-+				"sd_lane_24",
-+				"sd_lane_25g_25",
-+				"sd_lane_25g_26",
-+				"sd_lane_25g_27",
-+				"sd_lane_25g_28",
-+				"sd_lane_25g_29",
-+				"sd_lane_25g_30",
-+				"sd_lane_25g_31",
-+				"sd_lane_25g_32";
-+		};
-+
- 	};
- };
--- 
-2.29.2
+There are 19 with ~1500 incoming edges. So that's 20K.
 
+In my local testing I was at around 20-something K and these worst
+offenders were at ~1000 back edges.
+Now they got to 1500, so that is what got us over the 32K limit, right?
+
+Does this analysis make sense?
+
+Any ideas what to do with these?
