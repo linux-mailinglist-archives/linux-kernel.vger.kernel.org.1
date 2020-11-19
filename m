@@ -2,184 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974442B8CEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 104302B8CF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgKSIOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:14:04 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60374 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgKSIOD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:14:03 -0500
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605773641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=fsM3MOW7VcBlFGlF2WTn1/yDE1kwl59IbpeJ7qJYx4M=;
-        b=bldivxMIzK8MJBiYQMIkKPGGmYs78H99H+MHdu0llpMIkjlexR7kwaIRqMCIc1hg4KLg47
-        9Clh+6wZUjYr90ldJ1OfDXDAx5P2Z07nvbvlyaGOo7RwC50mfcbsW5uGRYE6uHDNeIsEea
-        yfBVK8SWBsdQL2SjxU00SvOHwsORoskxMu20gFQpqy1Pb78/WvDTbSLEqlWV1ARx+gDSVl
-        MyYnSUlLBZa0xvmm5nVjHP0cspEzpeH0YYTBfoUBkIE0ZW54ynAWDL5DSnph4ItsKYmRNG
-        j1MbogQk5G/GV8j6ghisv5Wla6PpaptIz6Ag+iPPDgappGhsfeS24x36XU4Gkg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605773641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=fsM3MOW7VcBlFGlF2WTn1/yDE1kwl59IbpeJ7qJYx4M=;
-        b=XhNClj1/IRzVQIf2OBlYUnP+XNU4pGt1XfzkkWZifePI8MoKLinaDOec7sJ1qRt8e0fzWa
-        q6v1Z72V+qExf5BA==
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Cliff Whickman <cpw@sgi.com>, Arnd Bergmann <arnd@arndb.de>,
-        Robin Holt <robinmholt@gmail.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: [PATCH] misc/sgi-xp: Replace in_interrupt() usage
-Date:   Thu, 19 Nov 2020 09:13:54 +0100
-Message-Id: <20201119081354.836813-1-bigeasy@linutronix.de>
+        id S1726485AbgKSIPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:15:06 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:50199 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgKSIPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 03:15:05 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605773705; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=VXp5SnSN9uEFFUl9UwtEc5ed7pOgL8l/fp0l4w8Ivb4=; b=Gu3r2wG5EBwY051Kg+B3Qk+kVnpz2lpR8XCqJjbuEypjfNj1ZdPHf7OhxfpDX1+wamtA43wM
+ ll0ymeD0Pio8SzaZvbHAbCsdBeaEu9tdgDkEC7H1qmF2sb2T9eibG0g7Ic8UiI1XC2gJowLE
+ lJI5nUaN1WWX8tq0wm0i9ztxaSI=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5fb62983e9b7088622072652 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Nov 2020 08:14:59
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 59DCCC43463; Thu, 19 Nov 2020 08:14:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.101] (unknown [124.123.182.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03377C433ED;
+        Thu, 19 Nov 2020 08:14:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 03377C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH RFC tip/core/rcu 1/5] srcu: Make Tiny SRCU use multi-bit
+ grace-period counter
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, rcu@vger.kernel.org
+References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
+ <20201117004052.14758-1-paulmck@kernel.org>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <72dffe43-b746-6d75-1f6a-9936d709be63@codeaurora.org>
+Date:   Thu, 19 Nov 2020 13:44:49 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201117004052.14758-1-paulmck@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Hi Paul,
 
-The usage of in_interrupt() in xpc_partition_disengaged() is clearly
-intended to avoid canceling the timeout timer when the function is invoked
-from the timer callback.
+On 11/17/2020 6:10 AM, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> There is a need for a polling interface for SRCU grace periods.  This
+> polling needs to distinguish between an SRCU instance being idle on the
+> one hand or in the middle of a grace period on the other.  This commit
+> therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
+> a defacto boolean to a free-running counter, using the bottom bit to
+> indicate that a grace period is in progress.  The second-from-bottom
+> bit is thus used as the index returned by srcu_read_lock().
+> 
+> Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+> Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>   include/linux/srcutiny.h | 4 ++--
+>   kernel/rcu/srcutiny.c    | 5 +++--
+>   2 files changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+> index 5a5a194..fed4a2d 100644
+> --- a/include/linux/srcutiny.h
+> +++ b/include/linux/srcutiny.h
+> @@ -15,7 +15,7 @@
+>   
+>   struct srcu_struct {
+>   	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
+> -	short srcu_idx;			/* Current reader array element. */
+> +	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
+>   	u8 srcu_gp_running;		/* GP workqueue running? */
+>   	u8 srcu_gp_waiting;		/* GP waiting for readers? */
+>   	struct swait_queue_head srcu_wq;
+> @@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
+>   {
+>   	int idx;
+>   
+> -	idx = READ_ONCE(ssp->srcu_idx);
+> +	idx = (READ_ONCE(ssp->srcu_idx) & 0x2) / 2;
 
-While in_interrupt() is deprecated and ill defined as it does not provide
-what the name suggests it catches the intended case.
+Should we use bit 0x2 of (READ_ONCE(ssp->srcu_idx) + 1) , if GP 
+(srcu_drive_gp()) is in progress? Or am I missing something here?
 
-Add an argument to xpc_partition_disengaged() which is true if called
-from timer and otherwise false.
-Use del_timer_sync() instead of del_singleshot_timer_sync() which is the
-same thing.
+idx = ((READ_ONCE(ssp->srcu_idx) +1) & 0x2) / 2;
 
-Note: This does not prevent reentrancy into the function as the function
-has no concurrency control and timer callback and regular task context
-callers can happen concurrently on different CPUs or the timer can
-interrupt the task context before it is able to cancel it.
+Also, any reason for using divison instead of shift; something to
+do with 16-bit srcu_idx which I am missing here?
 
-While the only driver which is providing the arch_xpc_ops callbacks
-(xpc_uv) seems not to have a reentrancy problem and the only negative
-effect would be a double dev_info() entry in dmesg, the whole mechanism is
-conceptually broken.
+Thanks
+Neeraj
 
-But that's not subject of this cleanup endeavour and left as an exercise to
-the folks who might have interest to make that code fully correct.
+>   	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
+>   	return idx;
+>   }
+> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> index 6208c1d..5598cf6 100644
+> --- a/kernel/rcu/srcutiny.c
+> +++ b/kernel/rcu/srcutiny.c
+> @@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *wp)
+>   	ssp->srcu_cb_head = NULL;
+>   	ssp->srcu_cb_tail = &ssp->srcu_cb_head;
+>   	local_irq_enable();
+> -	idx = ssp->srcu_idx;
+> -	WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
+> +	idx = (ssp->srcu_idx & 0x2) / 2;
+> +	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+>   	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
+>   	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
+>   	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
+> +	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+>   
+>   	/* Invoke the callbacks we removed above. */
+>   	while (lh) {
+> 
 
-[bigeasy: Add the argument, use del_timer_sync().]
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Cliff Whickman <cpw@sgi.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Robin Holt <robinmholt@gmail.com>
-Cc: Steve Wahl <steve.wahl@hpe.com>
-Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
-Cc: Russ Anderson <russ.anderson@hpe.com>
----
- drivers/misc/sgi-xp/xpc.h           | 2 +-
- drivers/misc/sgi-xp/xpc_main.c      | 8 ++++----
- drivers/misc/sgi-xp/xpc_partition.c | 9 ++++-----
- 3 files changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/misc/sgi-xp/xpc.h b/drivers/misc/sgi-xp/xpc.h
-index 71db60edff655..bbcf10ca3ab7f 100644
---- a/drivers/misc/sgi-xp/xpc.h
-+++ b/drivers/misc/sgi-xp/xpc.h
-@@ -633,7 +633,7 @@ extern void *xpc_kmalloc_cacheline_aligned(size_t, gfp_=
-t, void **);
- extern int xpc_setup_rsvd_page(void);
- extern void xpc_teardown_rsvd_page(void);
- extern int xpc_identify_activate_IRQ_sender(void);
--extern int xpc_partition_disengaged(struct xpc_partition *);
-+extern int xpc_partition_disengaged(struct xpc_partition *, bool from_time=
-r);
- extern enum xp_retval xpc_mark_partition_active(struct xpc_partition *);
- extern void xpc_mark_partition_inactive(struct xpc_partition *);
- extern void xpc_discovery(void);
-diff --git a/drivers/misc/sgi-xp/xpc_main.c b/drivers/misc/sgi-xp/xpc_main.c
-index e5244fc1dab30..c85f2434fb091 100644
---- a/drivers/misc/sgi-xp/xpc_main.c
-+++ b/drivers/misc/sgi-xp/xpc_main.c
-@@ -179,7 +179,7 @@ xpc_timeout_partition_disengage(struct timer_list *t)
-=20
- 	DBUG_ON(time_is_after_jiffies(part->disengage_timeout));
-=20
--	(void)xpc_partition_disengaged(part);
-+	xpc_partition_disengaged(part, true);
-=20
- 	DBUG_ON(part->disengage_timeout !=3D 0);
- 	DBUG_ON(xpc_arch_ops.partition_engaged(XPC_PARTID(part)));
-@@ -341,7 +341,7 @@ xpc_channel_mgr(struct xpc_partition *part)
- {
- 	while (part->act_state !=3D XPC_P_AS_DEACTIVATING ||
- 	       atomic_read(&part->nchannels_active) > 0 ||
--	       !xpc_partition_disengaged(part)) {
-+	       !xpc_partition_disengaged(part, false)) {
-=20
- 		xpc_process_sent_chctl_flags(part);
-=20
-@@ -364,7 +364,7 @@ xpc_channel_mgr(struct xpc_partition *part)
- 				 part->chctl.all_flags !=3D 0 ||
- 				 (part->act_state =3D=3D XPC_P_AS_DEACTIVATING &&
- 				 atomic_read(&part->nchannels_active) =3D=3D 0 &&
--				 xpc_partition_disengaged(part))));
-+				 xpc_partition_disengaged(part, false))));
- 		atomic_set(&part->channel_mgr_requests, 1);
- 	}
- }
-@@ -983,7 +983,7 @@ xpc_do_exit(enum xp_retval reason)
- 		for (partid =3D 0; partid < xp_max_npartitions; partid++) {
- 			part =3D &xpc_partitions[partid];
-=20
--			if (xpc_partition_disengaged(part) &&
-+			if (xpc_partition_disengaged(part, false) &&
- 			    part->act_state =3D=3D XPC_P_AS_INACTIVE) {
- 				continue;
- 			}
-diff --git a/drivers/misc/sgi-xp/xpc_partition.c b/drivers/misc/sgi-xp/xpc_=
-partition.c
-index 57df06820bae2..30fa9998c5629 100644
---- a/drivers/misc/sgi-xp/xpc_partition.c
-+++ b/drivers/misc/sgi-xp/xpc_partition.c
-@@ -262,8 +262,7 @@ xpc_get_remote_rp(int nasid, unsigned long *discovered_=
-nasids,
-  * from us. Though we requested the remote partition to deactivate with re=
-gard
-  * to us, we really only need to wait for the other side to disengage from=
- us.
-  */
--int
--xpc_partition_disengaged(struct xpc_partition *part)
-+int xpc_partition_disengaged(struct xpc_partition *part, bool from_timer)
- {
- 	short partid =3D XPC_PARTID(part);
- 	int disengaged;
-@@ -289,9 +288,9 @@ xpc_partition_disengaged(struct xpc_partition *part)
- 		}
- 		part->disengage_timeout =3D 0;
-=20
--		/* cancel the timer function, provided it's not us */
--		if (!in_interrupt())
--			del_singleshot_timer_sync(&part->disengage_timer);
-+		/* Cancel the timer function if not called from it */
-+		if (!from_timer)
-+			del_timer_sync(&part->disengage_timer);
-=20
- 		DBUG_ON(part->act_state !=3D XPC_P_AS_DEACTIVATING &&
- 			part->act_state !=3D XPC_P_AS_INACTIVE);
---=20
-2.29.2
-
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
