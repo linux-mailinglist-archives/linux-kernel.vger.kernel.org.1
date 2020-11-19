@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55BC2B9627
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8847D2B9629
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 16:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgKSPZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
+        id S1728646AbgKSPZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 10:25:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728520AbgKSPZj (ORCPT
+        with ESMTP id S1728635AbgKSPZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:25:39 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF41C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:25:39 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id 10so4820746pfp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:25:39 -0800 (PST)
+        Thu, 19 Nov 2020 10:25:43 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05BEC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:25:42 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id m9so4504051pgb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 07:25:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=RNtEb68izJVAcV9f+qMY6oQBAbB/qZEtMrJUW/skAUU=;
-        b=qBCDcY6uYTiPqr2967myhbeYRI1KluGpbxUHw07NadjjGGFQ8HybJK8/S2Z/cd/dwI
-         22Mfj9f9FMC2Jj9aJEDrYFNcj6SZSZGX4PBEWDxM7wcfzIua3NJxKGHlk4iNJLAHWz+7
-         harPa9AC2B50O/rlarAqy1sBpcGg4EK360LajqLYa030e9lQHmAJr4H+oKde0xVTO+1O
-         QpJhwjKPbo2EvVOKbTEBQeRc5nUpJP6HMx6EhOPcZelDRqJ2dk2P2YwsrtzRk4Us8giI
-         AtG13ylh70AnyBhUPlUsNny03zqheEeuJJo26k2r00jtayymq0JGJNH/8GHSLTRiETWF
-         eSZw==
+        bh=eryxeHiT/KAiiehli8L2CTDZzn3NZF9ONjOE5TeFEnY=;
+        b=MZAAWdRNUNIOzvxmmP8KXuqqfOb77EQoiC7N8URwtWbA2xYlrgxSBJm2R858TnbITz
+         csuI7Xoa15s/xqB5q05QA2HmsXcc0t6IHoZkIeY9PA3bDgYsi78fa3gXW0fqMt+6nBoe
+         GPbJo4pYi0TL4Ps43wnGH+97FnRbNdFm0yOoa3Aw8U+1ceU315C4fh4TBZjmnPahv+ck
+         SmqMFHNjiZZ2JUC1F/pyuN4AwVgjyavlGSWNrwhenC+8zh1vT+qtUDsFLzvNhqy1Ufj9
+         MfSQG5WiXs6mOr/KowyQbzvczHDCD+H3eUly9yuGR318+hz3K4JQXMwGTFylbcrcuAbz
+         85aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=RNtEb68izJVAcV9f+qMY6oQBAbB/qZEtMrJUW/skAUU=;
-        b=MkZr0YLBIqxd1Vb7kNsitfHDL8rEygfBXHCMiXRAxXQTXDdByj6hjmt7Ia5TXsnwxs
-         fnJd/gjZQJ5Tq0V1qbn2SfwmfzyPSPprPlTy9sQ7NnDSzmdrzwQFJCydI2j7BGgQ5j++
-         jtja77/UQlSkeya4RiyDthIVk5iReYf93PVC/qc9+QDPe8c6wy6XMrNTGAsDjyw23DRT
-         A5oG1zpZG0bBU11Tzl2TFZS9hSTY6GA7lMkl28+zpVFFAfR6GmZI6E2IKO/7YM7/sdNh
-         gYdieJB88N0p7ZRn4i7i6bS4wb256rwYGaQoxyfRLavw7LuFnZs09SksZHwpBHL0m13b
-         gqhw==
-X-Gm-Message-State: AOAM533ALOT1KawcOf8LJGrU92D/XX9dVPVRDrHuz5ORhnrY4uFoxChS
-        uUtpwoP//cK8EAUQ1oj5y5nBSA==
-X-Google-Smtp-Source: ABdhPJz6fgAwQCQlc5i+1VUf368xcuqdFmqi3UwjxKYjnPkJVCYg4aCsLGSGXTkMFdpM+1Z5G0zaVQ==
-X-Received: by 2002:a17:90a:5c83:: with SMTP id r3mr4164808pji.134.1605799538813;
-        Thu, 19 Nov 2020 07:25:38 -0800 (PST)
+        bh=eryxeHiT/KAiiehli8L2CTDZzn3NZF9ONjOE5TeFEnY=;
+        b=pm9+VgqfEwrTghyNc53kZnMtq1SEoZ9GWaIT2y4kCc8S3WCnec8GmSInlhvYg4yMgt
+         90CpjAag0LUD53caJ5etaBIQGqzZcwTbaNIh4N2xJGHUuCd9i3P6zXjOhDEdycpq56QP
+         HdJlPbL838eRyWg35nURCsa/QNeWFrcYSCzxYW60X35BU9jZRDwVNgr9/D5kqTo7xfJ1
+         DQhhQvmO/ujs2l8S6mLCm32lIC8kSGF5DQbXuAOyY4Dtkv83rc1EW31+YJUw1uYr4tS/
+         Gw3CS5lnSLLl+m9xFwA7mFYQokMCc9iyECgpBeB4PQzW3twvKA4akNEssyfdRyLGWfTR
+         7tdg==
+X-Gm-Message-State: AOAM532nh9Id1E3nrNUNon+U4yli+VS5OAsayztVv9lYFn7RnzpB1sgV
+        0XvL/+dAychzEompIkjno6YTZA==
+X-Google-Smtp-Source: ABdhPJzPAmmCs4kh1UJ5ecGJmST0qv0tBkNJ71nexwuD/JbbmXrqsX/Q39s+LchXBpC/dEFiNbh5MA==
+X-Received: by 2002:aa7:9a5b:0:b029:197:c897:23b4 with SMTP id x27-20020aa79a5b0000b0290197c89723b4mr1703530pfj.77.1605799542382;
+        Thu, 19 Nov 2020 07:25:42 -0800 (PST)
 Received: from localhost ([45.137.216.7])
-        by smtp.gmail.com with ESMTPSA id 144sm130250pfb.71.2020.11.19.07.25.37
+        by smtp.gmail.com with ESMTPSA id f1sm118013pfc.56.2020.11.19.07.25.41
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 19 Nov 2020 07:25:38 -0800 (PST)
+        Thu, 19 Nov 2020 07:25:41 -0800 (PST)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Andre Przywara <andre.przywara@arm.com>,
@@ -64,9 +64,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v9 11/16] perf arm-spe: Remove size condition checking for events
-Date:   Thu, 19 Nov 2020 23:24:36 +0800
-Message-Id: <20201119152441.6972-12-leo.yan@linaro.org>
+Subject: [PATCH v9 12/16] perf arm-spe: Add new function arm_spe_pkt_desc_op_type()
+Date:   Thu, 19 Nov 2020 23:24:37 +0800
+Message-Id: <20201119152441.6972-13-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201119152441.6972-1-leo.yan@linaro.org>
 References: <20201119152441.6972-1-leo.yan@linaro.org>
@@ -74,82 +74,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the Armv8 ARM (ARM DDI 0487F.c), chapter "D10.2.6 Events packet", it
-describes the event bit is valid with specific payload requirement.  For
-example, the Last Level cache access event, the bit is defined as:
+The operation type packet is complex and contains subclass; the parsing
+flow causes deep indentation; for more readable, this patch introduces
+a new function arm_spe_pkt_desc_op_type() which is used for operation
+type parsing.
 
-  E[8], byte 1 bit [0], when SZ == 0b01 , when SZ == 0b10 ,
-  		     or when SZ == 0b11
-
-It requires the payload size is at least 2 bytes, when byte 1 (start
-counting from 0) is valid, E[8] (bit 0 in byte 1) can be used for LLC
-access event type.  For safety, the code checks the condition for
-payload size firstly, if meet the requirement for payload size, then
-continue to parse event type.
-
-If review function arm_spe_get_payload(), it has used cast, so any bytes
-beyond the valid size have been set to zeros.
-
-For this reason, we don't need to check payload size anymore afterwards
-when parse events, thus this patch removes payload size conditions.
-
-Suggested-by: Andre Przywara <andre.przywara@arm.com>
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 ---
- tools/perf/util/arm-spe-decoder/arm-spe-decoder.c  |  9 +++------
- .../util/arm-spe-decoder/arm-spe-pkt-decoder.c     | 14 ++++++--------
- 2 files changed, 9 insertions(+), 14 deletions(-)
+ .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 79 +++++++++++--------
+ 1 file changed, 45 insertions(+), 34 deletions(-)
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-index cac2ef79c025..90d575cee1b9 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-@@ -192,16 +192,13 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
- 			if (payload & BIT(EV_TLB_ACCESS))
- 				decoder->record.type |= ARM_SPE_TLB_ACCESS;
- 
--			if ((idx == 2 || idx == 4 || idx == 8) &&
--			    (payload & BIT(EV_LLC_MISS)))
-+			if (payload & BIT(EV_LLC_MISS))
- 				decoder->record.type |= ARM_SPE_LLC_MISS;
- 
--			if ((idx == 2 || idx == 4 || idx == 8) &&
--			    (payload & BIT(EV_LLC_ACCESS)))
-+			if (payload & BIT(EV_LLC_ACCESS))
- 				decoder->record.type |= ARM_SPE_LLC_ACCESS;
- 
--			if ((idx == 2 || idx == 4 || idx == 8) &&
--			    (payload & BIT(EV_REMOTE_ACCESS)))
-+			if (payload & BIT(EV_REMOTE_ACCESS))
- 				decoder->record.type |= ARM_SPE_REMOTE_ACCESS;
- 
- 			if (payload & BIT(EV_MISPRED))
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 3f30b2937715..88bcf7e5be76 100644
+index 88bcf7e5be76..d6c060f119b4 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -311,14 +311,12 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
- 		arm_spe_pkt_out_string(&err, &buf, &buf_len, " NOT-TAKEN");
- 	if (payload & BIT(EV_MISPRED))
- 		arm_spe_pkt_out_string(&err, &buf, &buf_len, " MISPRED");
--	if (packet->index > 1) {
--		if (payload & BIT(EV_LLC_ACCESS))
--			arm_spe_pkt_out_string(&err, &buf, &buf_len, " LLC-ACCESS");
--		if (payload & BIT(EV_LLC_MISS))
--			arm_spe_pkt_out_string(&err, &buf, &buf_len, " LLC-REFILL");
--		if (payload & BIT(EV_REMOTE_ACCESS))
--			arm_spe_pkt_out_string(&err, &buf, &buf_len, " REMOTE-ACCESS");
--	}
-+	if (payload & BIT(EV_LLC_ACCESS))
-+		arm_spe_pkt_out_string(&err, &buf, &buf_len, " LLC-ACCESS");
-+	if (payload & BIT(EV_LLC_MISS))
-+		arm_spe_pkt_out_string(&err, &buf, &buf_len, " LLC-REFILL");
-+	if (payload & BIT(EV_REMOTE_ACCESS))
-+		arm_spe_pkt_out_string(&err, &buf, &buf_len, " REMOTE-ACCESS");
- 
+@@ -321,6 +321,50 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
  	return err;
  }
+ 
++static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
++				    char *buf, size_t buf_len)
++{
++	u64 payload = packet->payload;
++	int err = 0;
++
++	switch (packet->index) {
++	case 0:
++		arm_spe_pkt_out_string(&err, &buf, &buf_len,
++				payload & 0x1 ? "COND-SELECT" : "INSN-OTHER");
++		break;
++	case 1:
++		arm_spe_pkt_out_string(&err, &buf, &buf_len,
++				       payload & 0x1 ? "ST" : "LD");
++
++		if (payload & 0x2) {
++			if (payload & 0x4)
++				arm_spe_pkt_out_string(&err, &buf, &buf_len, " AT");
++			if (payload & 0x8)
++				arm_spe_pkt_out_string(&err, &buf, &buf_len, " EXCL");
++			if (payload & 0x10)
++				arm_spe_pkt_out_string(&err, &buf, &buf_len, " AR");
++		} else if (payload & 0x4) {
++			arm_spe_pkt_out_string(&err, &buf, &buf_len, " SIMD-FP");
++		}
++		break;
++	case 2:
++		arm_spe_pkt_out_string(&err, &buf, &buf_len, "B");
++
++		if (payload & 0x1)
++			arm_spe_pkt_out_string(&err, &buf, &buf_len, " COND");
++		if (payload & 0x2)
++			arm_spe_pkt_out_string(&err, &buf, &buf_len, " IND");
++
++		break;
++	default:
++		/* Unknown index */
++		err = -1;
++		break;
++	}
++
++	return err;
++}
++
+ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
+ 				 char *buf, size_t buf_len)
+ {
+@@ -404,40 +448,7 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+ 		err = arm_spe_pkt_desc_event(packet, buf, buf_len);
+ 		break;
+ 	case ARM_SPE_OP_TYPE:
+-		switch (idx) {
+-		case 0:
+-			arm_spe_pkt_out_string(&err, &buf, &blen,
+-					payload & 0x1 ? "COND-SELECT" : "INSN-OTHER");
+-			break;
+-		case 1:
+-			arm_spe_pkt_out_string(&err, &buf, &blen,
+-					       payload & 0x1 ? "ST" : "LD");
+-
+-			if (payload & 0x2) {
+-				if (payload & 0x4)
+-					arm_spe_pkt_out_string(&err, &buf, &blen, " AT");
+-				if (payload & 0x8)
+-					arm_spe_pkt_out_string(&err, &buf, &blen, " EXCL");
+-				if (payload & 0x10)
+-					arm_spe_pkt_out_string(&err, &buf, &blen, " AR");
+-			} else if (payload & 0x4) {
+-				arm_spe_pkt_out_string(&err, &buf, &blen, " SIMD-FP");
+-			}
+-			break;
+-		case 2:
+-			arm_spe_pkt_out_string(&err, &buf, &blen, "B");
+-
+-			if (payload & 0x1)
+-				arm_spe_pkt_out_string(&err, &buf, &blen, " COND");
+-			if (payload & 0x2)
+-				arm_spe_pkt_out_string(&err, &buf, &blen, " IND");
+-
+-			break;
+-		default:
+-			/* Unknown index */
+-			err = -1;
+-			break;
+-		}
++		err = arm_spe_pkt_desc_op_type(packet, buf, buf_len);
+ 		break;
+ 	case ARM_SPE_DATA_SOURCE:
+ 	case ARM_SPE_TIMESTAMP:
 -- 
 2.17.1
 
