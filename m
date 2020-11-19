@@ -2,107 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A1F2B942F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5A92B9439
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727566AbgKSOJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:09:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
+        id S1727682AbgKSOJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:09:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727518AbgKSOJH (ORCPT
+        with ESMTP id S1727187AbgKSOJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:09:07 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF28AC061A49
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 06:09:06 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id v20so6353406ljk.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 06:09:06 -0800 (PST)
+        Thu, 19 Nov 2020 09:09:30 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755BFC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 06:09:29 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id u21so6167227iol.12
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 06:09:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=l9kv5ypktfFS76EMW63e64X/f0uR7ySsDU39jrAiFDI=;
-        b=Sa/D7qQ86p451smntmbeF/O/U1vvSz67zs6dJpuflYXT87tA+EWJ7DRu+8R+fAl9ss
-         ewikoM1Tl2B3hTjNEIEqSFcccnQylCQ7A6YcjX66LOPWnddixrGEDup/IloxkAnIPuPC
-         IALd8M8rmSx37qjG0lgxeTUGn0Y5z4OWTasKrA7kaNsh611ooX182poRQBRtc3Q6Zr9X
-         M4+jejvwVNO/Xzd9/uPBxOSM4VrBDvuO8B8L3+McoggEaINxRD25UE3sTJCQ6YGjyayA
-         CexueqEyubduZyWRB93DEW/MStD6UseQXIILA2jnjHSHgmO29rGz2OeJpdNkXUup3l0k
-         Uvlw==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=mnHOygy1PgffUAB5HlGDF2Tb3dmNcBIqKWkdAUfGyJc=;
+        b=lwPsg2sDpOJPI70hHSmB+dTEMb9dqySfIZthlP4l2nbx8Og+9CGYNkQJFkRgKyp1gd
+         rpUlmUD62ErZm55fmkfBGUnmKVktlj4AJ+cxYKw1Zwh+i0yqri+fucXRcA6U11gtAYri
+         DhrSgRkgy6R1h00pUtslwWzpc9iKtPIeBXsdbnXhml1PLl6RbYh0lFwShIwGXGDFH7r0
+         gEpDTDRDmf6fpogKF+rynQOTxabj315/z3zhFvI4vZX/5XrQ5jxy3oOy81XznsTFHilE
+         Cf3i5Zqyx3uA+Luij3RkgTrYGBvLLjvlDZloX4XCvS7JyYmahFSJAII9J6FxITa1pz4G
+         o9vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=l9kv5ypktfFS76EMW63e64X/f0uR7ySsDU39jrAiFDI=;
-        b=A9ZFKLwiPS5AGaod+CqwXzFvJjPruQWontmg2wUJ+TPRTJl7Yjq8nJPwVr4H/O2osF
-         wVbK7l/POLrvUPUEKeZEGYk/Cs6ibFh7Ilh2FJmi0po5tU8Jd/neu5cCR7l5zaJOwcby
-         G5ICmoGNzebyfkNgPZVFmrrOtwsmwqmDPD898wPvK0FIS4kinJ2XMQmJCb+cuYzGj9fE
-         pFlUDn1v4YDN8A3lJp3mZYTO8obJI9U5IfMwZcJnmO8aeGpjZeEo0ssBTN3kXBKteyaB
-         uIr1aaYUrQkzwKtM5QKjvlCzD02bXxMGLnG4caFcYHsO85V2N/MOqIHDnIiK++9rrqMl
-         eaAg==
-X-Gm-Message-State: AOAM530OOz+M0xzfl0Izin5dVF0qrLnxeaNP0SxzdYV1lB2DmfEDOFFI
-        2VrmJH/FE5VPNjSK25KGkzE8eg==
-X-Google-Smtp-Source: ABdhPJyEXcpyMIeuyfkgMLGfjBSHpgtrtIm8t7Ab6zndFUE3w8Wp+K09U6mPyXOxgO3DfD6zVZbmhw==
-X-Received: by 2002:a2e:98da:: with SMTP id s26mr6324722ljj.182.1605794945193;
-        Thu, 19 Nov 2020 06:09:05 -0800 (PST)
-Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id h12sm4024706lfl.74.2020.11.19.06.09.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Nov 2020 06:09:04 -0800 (PST)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, s-anna@ti.com
-Cc:     grzegorz.jaszczyk@linaro.org, linux-remoteproc@vger.kernel.org,
-        robh+dt@kernel.org, lee.jones@linaro.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        praneeth@ti.com, rogerq@ti.com
-Subject: [PATCH v2 6/6] remoteproc/pru: Add support for various PRU cores on K3 J721E SoCs
-Date:   Thu, 19 Nov 2020 15:08:50 +0100
-Message-Id: <20201119140850.12268-7-grzegorz.jaszczyk@linaro.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201119140850.12268-1-grzegorz.jaszczyk@linaro.org>
-References: <20201119140850.12268-1-grzegorz.jaszczyk@linaro.org>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=mnHOygy1PgffUAB5HlGDF2Tb3dmNcBIqKWkdAUfGyJc=;
+        b=FUh2+5NWBh/TzNwSsWFk5/M1qwFLFaE1stRw9ADEhtBKeQmeDB96R6bc2QjkF5i+c0
+         NL//RsSkX3GgLvZuRGEKhZxqATeqxlXX0BvE1iaCP4jgJdmqGhX45epmuVfS6A+dKmXl
+         WFViyTwpuzIysXBSqrcodOHZtyKqDV/yiulvvw0mHKn6DZBdp6URhY3CERn5a4r0sU/q
+         EwEb0BgC1Kh/nIg45vP8Gtru8qjnPupSsm+wRcV9I5/hsPWGzJpHe5ylIXISp37fubqt
+         qtgGaB+QAPIQfYaviiZegDrRDVCktTkVE6CkIEumS/IyHGKdQ6Iko1z4lhE5dVj4CMWQ
+         7XhA==
+X-Gm-Message-State: AOAM532d8cGwgSGJwonlFumbBnNK0zq9G0zuBk1cbEXrTe1fpyGZAte4
+        XJjD/4PiGZPf+5yzHhtQvYx5Z2fuCBCc04hkXEsObGxPyPc=
+X-Google-Smtp-Source: ABdhPJzrsut7xyNpH0TErjEhbNebEapRN3i4cl4BbfhrvgNGSSo0O24GiFzP1fjbvrvaadLioOtpvvrSKfUKCZJT7SQ=
+X-Received: by 2002:a02:7fd0:: with SMTP id r199mr9145763jac.69.1605794968544;
+ Thu, 19 Nov 2020 06:09:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Thu, 19 Nov 2020 16:09:17 +0200
+Message-ID: <CA+U=Dspy5+RE9agcLr6eY9DCMa1c5+++0JLeugMMBRXz4YLj1w@mail.gmail.com>
+Subject: Proposal for a new checkpatch check; matching _set_drvdata() & _get_drvdata()
+To:     apw@canonical.com, joe@perches.com,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suman Anna <s-anna@ti.com>
+Hey,
 
-The K3 J721E family of SoCs have a revised version of the AM65x ICSSG IP
-and contains two instances of this newer ICSSG IP. Each ICSSG processor
-subsystem contains 2 primary PRU cores, 2 auxiliary PRU cores called RTUs,
-and 2 new auxiliary cores called Transmit PRUs (Tx_PRUs).
+So, I stumbled on a new check that could be added to checkpatch.
+Since it's in Perl, I'm reluctant to try it.
 
-Enhance the existing PRU remoteproc driver to support these new PRU
-and RTU cores by using specific compatibles. The cores have the same
-memory copying limitations as on AM65x, so reuses the custom memcpy
-function within the driver's ELF loader implementation. The initial
-names for the firmware images for each PRU core are retrieved from
-DT nodes, and can be adjusted through sysfs if required.
+Seems many drivers got to a point where they now call (let's say)
+spi_set_drvdata(), but never access that information via
+spi_get_drvdata().
+Reasons for this seem to be:
+1. They got converted to device-managed functions and there is no
+longer a remove hook to require the _get_drvdata() access
+2. They look like they were copied from a driver that had a
+_set_drvdata() and when the code got finalized, the _set_drvdata() was
+omitted
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
----
- drivers/remoteproc/pru_rproc.c | 3 +++
- 1 file changed, 3 insertions(+)
+There are a few false positives that I can notice at a quick look,
+like the data being set via some xxx_set_drvdata() and retrieved via a
+dev_get_drvdata().
+I think checkpatch reporting these as well would be acceptable simply
+from a reviewability perspective.
 
-diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-index 48c1c51e0d42..96f689283a8b 100644
---- a/drivers/remoteproc/pru_rproc.c
-+++ b/drivers/remoteproc/pru_rproc.c
-@@ -852,6 +852,9 @@ static const struct of_device_id pru_rproc_match[] = {
- 	{ .compatible = "ti,am654-pru",		.data = &k3_pru_data },
- 	{ .compatible = "ti,am654-rtu",		.data = &k3_rtu_data },
- 	{ .compatible = "ti,am654-tx-pru",	.data = &k3_tx_pru_data },
-+	{ .compatible = "ti,j721e-pru",		.data = &k3_pru_data },
-+	{ .compatible = "ti,j721e-rtu",		.data = &k3_rtu_data },
-+	{ .compatible = "ti,j721e-tx-pru",	.data = &k3_tx_pru_data },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, pru_rproc_match);
--- 
-2.29.0
+I did a shell script to quickly check these. See below.
+It's pretty badly written but it is enough for me to gather a list.
+And I wrote it in 5 minutes :P
+I initially noticed this in some IIO drivers, and then I suspected
+that this may be more widespread.
 
+The shell script gathers a list of xxx_set_drvdata() functions then
+greps through all files and also checks if there are any matching
+xxx_get_drvdata().
+
+Thanks
+Alex
+
+Shell script:
+-----------------------------------------------------------------------
+#!/bin/bash
+
+fns1=$(git grep _set_drvdata | cut -d: -f2 | cut -d'(' -f1 | sort -u)
+
+for fn in $fns1 ; do
+        if [ "$fn" == "//pci_set_drvdata" ] ; then
+                continue
+        fi
+        if [ "$fn" == '``dev_set_drvdata' ] ; then
+                continue
+        fi
+        if [ "$fn" == '"pci_set_drvdata' ] ; then
+                continue
+        fi
+        if [[ "$fn" == *"_set_drvdata" ]]; then
+                fns2="$fns2 $fn"
+        fi
+done
+
+fns1=$(echo $fns2 | tr ' ' '\n' | sort -u | tr '\n' ' ')
+
+for fn in $fns1 ; do
+        get_fn=$(echo $fn | sed 's/_set_/_get_/g')
+
+        echo "Matching $fn - $get_fn"
+        for file in $(git grep $fn | cut -d: -f1 | sort -u) ; do
+                if ! grep -q $get_fn $file ; then
+                        echo "   Maybe $file"
+                fi
+        done
+done
+-----------------------------------------------------------------------
