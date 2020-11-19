@@ -2,139 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E156A2B8B42
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C77AD2B8B44
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 07:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgKSGFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 01:05:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
+        id S1726163AbgKSGGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 01:06:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgKSGFd (ORCPT
+        with ESMTP id S1725802AbgKSGGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 01:05:33 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54542C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:05:32 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f18so3250718pgi.8
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:05:32 -0800 (PST)
+        Thu, 19 Nov 2020 01:06:21 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C35C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:06:20 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id y7so3407474pfq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 22:06:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hun/OAngGrWt5xNF4OKuvgNV5Y4rbLzPI9hScBNeOTs=;
-        b=RfttMH+BDrq0ZOzuKzT8m3LU5ozqFyTek4vlGN5y/SzqlwoW8ABlyQKU8euWi6QirQ
-         ojF4E2v4T/UHxzq+35AYZM9AYYOGTlzYG/4AeOyp6+kt1kFhpMEeOWj69d3kDHp/AiLG
-         JMtJKZdVnRqVB1vhi5WTQEgOKR8cHfnsysDBEa3lIGackwp72rn9G01cPkqGHPyXfdHE
-         iWB/tbGp1ORyTFJy4l/prxTY1gG4MeFy9e61+DN8zXkeYFyfqaoq3JYcn7hRXskpo0ep
-         CG5E6sJgEcglR5LsX3EgWQDb+UQoS6ASCODmq8KfO8d8wkt2iyHRzl5H3PD9SmdVlRxq
-         MASg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IomRGRIUUKoHDndCyhGBwVfU4P/jhWiv1ig1BoI3gF8=;
+        b=s0/jCYgwS/sLeOVNCKtlEwbgmIWthbEbn7dsveVESIfChJXh/XH1X4bVE6ZNPgk+4D
+         8guC92UHS/p5N6IeEPk5noIWDovt0ShmBpLvkom+qZW3r7HCjFeMGTKWMtJ99oIU4TZi
+         6q24UBIQPIFbJP2YSMvwv/b1quVaH/Yz32kq4B+oPbnoAa3wJyCCkLnO8Jizov8DerJf
+         6DAVhB0jyF7QCVOsgmyrI2pGqpxPmct/6uUw6yz4fFWam+UEmAnN4NcYB/z5LmWq0s9v
+         HY5YlBEGFfLjfu454o9UEt52qCCNfASF59GEvTLAt97oBsM4NgLNn56v67L/9RDj6WDj
+         yAbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hun/OAngGrWt5xNF4OKuvgNV5Y4rbLzPI9hScBNeOTs=;
-        b=KyLCRHSc9lp6g7HBlSzO04/nIhSGrKz8vJNVPDv4neqFL3nQTXM27M05DMdJvoGwvv
-         5nc6mPJ3pkWMTC5I0PrG89Rw23jlohal5DwKw/HVu+Lg3LIRpj68R/Nr+y1Kbcv4mR+2
-         IcQ7+g9+3jsdiTZajRu37I+lv9082DigzSicf2P64PSr+S44kBn61KUAvH4ZwSxkZYY+
-         9Kr9E+t4PmPllaVBVLoe7kRHVISVgJH0S3jpcz6CKrNZvlpDezoSFoT3PRKUdAQ3Ks9z
-         dt7wt6VIKrbfi1T9+NSmLLYWW/cpD0sZeVcsiSeQGQoVJOOPHNncWB0SduM3yDaBbrlj
-         unrQ==
-X-Gm-Message-State: AOAM5309p6RpbqCps72+nmzDY6kDVORgW6DcbqWT8U4nqxSPCJg48CP9
-        a0rLSeLlLO93SJfsh59Fm1pqI5MxKnUx9w==
-X-Google-Smtp-Source: ABdhPJyejtWFpUyfLUKh7nIyXJ6zqb7Sr9dcwlU9SrQ2KUFQB8jEuQ5+YlLVHrabHjX3RZR8MlQKhw==
-X-Received: by 2002:aa7:96f9:0:b029:18a:aaea:20f6 with SMTP id i25-20020aa796f90000b029018aaaea20f6mr7959532pfq.41.1605765931808;
-        Wed, 18 Nov 2020 22:05:31 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IomRGRIUUKoHDndCyhGBwVfU4P/jhWiv1ig1BoI3gF8=;
+        b=QfQMN54HFUYv3TrFeiBJ/G9fs33CJNi97ylvX4uMNR6bGI4gsULmS256I6UQ+IfASO
+         YwHuayNNf+pNOvbn+ZsbscLk/Smjg9kNoc2EBm/haHL1RI/lEWWE7j93VtsuZama3+iq
+         w9apnuDxCF8+vv77QHEBnE4WuK/x0qygrGU6P4eglZvt8+MpF6wklHIlL5LqMxfHLtDK
+         gFy1WDyErlPfH0IxDnAEaHlC5OZdIqZa89llNttbq8EXW9Qtf3BzOJwlhETWRyiMibL+
+         oIQ4pVg0khbagFczX2BMvkxG13xU4i0JmBaXy5eQ6R1gVi582Vfq40UN04LHv0n/OEWY
+         zPxQ==
+X-Gm-Message-State: AOAM5318UYxiAxtNbBo7DIPzSHOaDl7peqQCbUt2/oJZKjO4h7ieRu1b
+        Dj7OZAgD9C5BdpWuF5t7ITWN8Q==
+X-Google-Smtp-Source: ABdhPJx8lGHoI+b43W1nPNovzf7uF6MtzFXk5g3Cr/FR1KU1SQuPHGFgBpHN+rWP7wffBhlYnR4WjA==
+X-Received: by 2002:a63:5758:: with SMTP id h24mr11882286pgm.109.1605765980389;
+        Wed, 18 Nov 2020 22:06:20 -0800 (PST)
 Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id x4sm10506860pgg.94.2020.11.18.22.05.30
+        by smtp.gmail.com with ESMTPSA id u6sm906769pgp.57.2020.11.18.22.06.19
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 18 Nov 2020 22:05:30 -0800 (PST)
-Date:   Thu, 19 Nov 2020 11:35:28 +0530
+        Wed, 18 Nov 2020 22:06:19 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Menon, Nishanth" <nm@ti.com>
-Subject: Re: [PATCH v2 07/22] drm/msm: Do rpm get sooner in the submit path
-Message-ID: <20201119060528.qscedvc4jlmxakqo@vireshk-i7>
-References: <CAF6AEGv6RMCsK4yp-W2d1mVTMcEiiwFGAb+V8rYLhDdMhqP80Q@mail.gmail.com>
- <20201027113532.nriqqws7gdcu5su6@vireshk-i7>
- <20201103054715.4l5j57pyjz6zd6ed@vireshk-i7>
- <CAF6AEGtgUVXm6Wwod0FC38g91Q8CotLFSoC4NmXx7GzcA=1mOA@mail.gmail.com>
- <20201104030353.ny7zvakgb4fsye6r@vireshk-i7>
- <CAF6AEGv215ixcAWmaOWs7UKAqmbMs=aFyTBBYLU-bt8XBnWb7g@mail.gmail.com>
- <20201106071621.j732gt4nqifjrccd@vireshk-i7>
- <CAF6AEGt_wbWuQA7gBw4yn4f2x0SVbfub4eRDX59PCvnd_0uFxg@mail.gmail.com>
- <20201118052829.ugt7i7ac6eqsj4l6@vireshk-i7>
- <CAF6AEGv=-h7GFj5LR97FkeBBn+gk6TNS5hZkwBwufpE4yO7GyA@mail.gmail.com>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] opp: Reduce the size of critical section in _opp_kref_release()
+Date:   Thu, 19 Nov 2020 11:36:16 +0530
+Message-Id: <ed40e33c0b912abb271e5b884e4e4e518326ebe0.1605765973.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGv=-h7GFj5LR97FkeBBn+gk6TNS5hZkwBwufpE4yO7GyA@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
-
-On 18-11-20, 08:53, Rob Clark wrote:
-> On Tue, Nov 17, 2020 at 9:28 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > On 17-11-20, 09:02, Rob Clark wrote:
-> > > With that on top of the previous patch,
-> >
-> > Don't you still have this ? Which fixed the lockdep in the remove path.
-> >
-> > https://lore.kernel.org/lkml/20201022080644.2ck4okrxygmkuatn@vireshk-i7/
-> >
-> > To make it clear you need these patches to fix the OPP stuff:
-> >
-> > //From 5.10-rc3 (the one from the above link).
-> > commit e0df59de670b ("opp: Reduce the size of critical section in _opp_table_kref_release()")
-
-This fixes debugfs stuff while the OPP table is removed.
-
-> > //Below two from linux-next
-> > commit ef43f01ac069 ("opp: Always add entries in dev_list with opp_table->lock held")
-> > commit 27c09484dd3d ("opp: Allocate the OPP table outside of opp_table_lock")
-
-This fixes debugfs stuff while the OPP table is added.
-
-> > This matches the diff I gave you earlier.
-> >
-> 
-> no, I did not have all three, only "opp: Allocate the OPP table
-> outside of opp_table_lock" plus the fixup.  But with all three:
-
-And looking at the lockdep you gave now, it looks like we have a
-problem with OPP table's internal lock (opp_table->lock) as well apart
-from the global opp_table_lock.
-
-I wish there was a way for me to reproduce the lockdep :(
-
-I know this is exhausting for both of us and I really want to be over
-with it as soon as possible, this really should be the last patch
-here, please try this along with other two. This fixes the debugfs
-thing while the OPPs in the OPP table are removed (they are already
-added without a lock around debugfs stuff).
-
-AFAIU, there is no further debugfs stuff that happens from within the
-locks and so this really should be the last patch unless I missed
-something.
-
--- 
-viresh
-
--------------------------8<-------------------------
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 19 Nov 2020 11:24:32 +0530
-Subject: [PATCH] opp: Reduce the size of critical section in
- _opp_kref_release()
 
 There is a lot of stuff here which can be done outside of the
 opp_table->lock, do that. This helps avoiding a circular dependency
@@ -305,3 +234,6 @@ index 9d145bb99a59..4268eb359915 100644
  
  	/* Drop the references taken by dev_pm_opp_add() */
  	while (count--)
+-- 
+2.25.0.rc1.19.g042ed3e048af
+
