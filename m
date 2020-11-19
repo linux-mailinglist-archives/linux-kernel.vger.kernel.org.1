@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149C82B9BB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F061B2B9BB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 20:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgKSTrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 14:47:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32722 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726567AbgKSTrU (ORCPT
+        id S1727307AbgKSTvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 14:51:19 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:35702 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726820AbgKSTvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 14:47:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605815238;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E82s7cBwHPscd6rsa5ytoY+Np8WhFrIOZa+AfiYKSuo=;
-        b=QkampcSmTVckuhLlAWuhWJEYU66HdsU2tasua+LV1ewydtGRh7Y+FW4mQQe0lmiMAZGoem
-        X3/nf/Ttmm6IfcXo3aycCu4R5f/ODfKBnHfX+Fuq6pJERAa6L17YNZI0p3YtWnhBAQERTS
-        NgwpzoFlufQIlyXU9lCCxrHYNiqzMH4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-ef5n5jnXOTCyVGCQuUXRpw-1; Thu, 19 Nov 2020 14:47:14 -0500
-X-MC-Unique: ef5n5jnXOTCyVGCQuUXRpw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7C9D80476B;
-        Thu, 19 Nov 2020 19:47:11 +0000 (UTC)
-Received: from krava (unknown [10.40.192.83])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6E31A6064B;
-        Thu, 19 Nov 2020 19:47:08 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 20:47:07 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Sandeep Dasgupta <sdasgup@google.com>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] perf metric: Use NAN for missing event IDs.
-Message-ID: <20201119194707.GK1475102@krava>
-References: <20201118050335.2347358-1-irogers@google.com>
- <20201118050335.2347358-3-irogers@google.com>
+        Thu, 19 Nov 2020 14:51:19 -0500
+Date:   Thu, 19 Nov 2020 19:51:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605815476;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=e/pC9tS0I7XU9S3D/OLvhwm2F+qD6KVc4sckpDDb8u0=;
+        b=cYG4FNxmKPSQZd8G9Gya1o2IEzOLiS4+ChnKNs7KIJqXZaxrL2vjQVm1DypdtUHl7IASIY
+        3/F9fCbkk07FwF/4ycMmldl23mOBg5fh+g/HUAmp+ALigCey4dgJ7P5k73i7m7MqHdV7Zc
+        tx4liksYPTu2f/d6NeXt924bLHAUnNQFdh/UmQn7nQzm6K6Yo0j3tH9UefNh66QOr7e6I2
+        XxQSkunv4hIOq759RzlabZb5MSFwTiW4D2ieEpjSv7Nx2hohM799zR+HYw/HVR8apQC3cA
+        k95FU00uCDH9gN4l8RK8WIyaWAVPyhaQuO1GD6Bk3Gk8NMxoQz/5BJnclWy8iQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605815476;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=e/pC9tS0I7XU9S3D/OLvhwm2F+qD6KVc4sckpDDb8u0=;
+        b=lKeGVYIXdsWobyG/0WsNbKzhkFOvP5ix+MynwTHtO4jr4OOAo80VZXHJ0qJbDMBQKqAVBZ
+        auLC4lsTKv+Gd9DA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/mm] microblaze/mm/highmem: Add dropped #ifdef back
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michal Simek <monstr@monstr.eu>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118050335.2347358-3-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Message-ID: <160581547501.11244.627337755797620780.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 09:03:32PM -0800, Ian Rogers wrote:
-> If during computing a metric an event (id) is missing the parsing
-> aborts. A later patch will make it so that events that aren't used in
-> the output are deliberately omitted, in which case we don't want the
-> abort. Modify the missing ID case to report NAN for these cases.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/expr.y | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-> index b2ada8f8309a..c22e3500a40f 100644
-> --- a/tools/perf/util/expr.y
-> +++ b/tools/perf/util/expr.y
-> @@ -1,6 +1,7 @@
->  /* Simple expression parser */
->  %{
->  #define YYDEBUG 1
-> +#include <math.h>
->  #include <stdio.h>
->  #include "util.h"
->  #include "util/debug.h"
-> @@ -89,8 +90,7 @@ expr:	  NUMBER
->  					struct expr_id_data *data;
->  
->  					if (expr__resolve_id(ctx, $1, &data)) {
-> -						free($1);
-> -						YYABORT;
-> +						$$ = NAN;
+The following commit has been merged into the core/mm branch of tip:
 
-hum, it's directly overwriten in the next line, no?
+Commit-ID:     a0e169978303ee5873142599c8c9660b2d296243
+Gitweb:        https://git.kernel.org/tip/a0e169978303ee5873142599c8c9660b2d296243
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Thu, 19 Nov 2020 20:45:03 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 19 Nov 2020 20:49:44 +01:00
 
-jirka
+microblaze/mm/highmem: Add dropped #ifdef back
 
->  					}
->  
->  					$$ = expr_id_data__value(data);
+The conversion to generic kmap atomic broke microblaze by removing the
+build fail.
 
-> -- 
-> 2.29.2.299.gdc1121823c-goog
-> 
+Add it back.
 
+Fixes: 7ac1b26b0a72 ("microblaze/mm/highmem: Switch to generic kmap atomic")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Michal Simek <monstr@monstr.eu>
+---
+ arch/microblaze/mm/init.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
+index 1f4b5b3..a444778 100644
+--- a/arch/microblaze/mm/init.c
++++ b/arch/microblaze/mm/init.c
+@@ -49,6 +49,7 @@ unsigned long lowmem_size;
+ EXPORT_SYMBOL(min_low_pfn);
+ EXPORT_SYMBOL(max_low_pfn);
+ 
++#ifdef CONFIG_HIGHMEM
+ static void __init highmem_init(void)
+ {
+ 	pr_debug("%x\n", (u32)PKMAP_BASE);
