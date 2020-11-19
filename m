@@ -2,134 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39122B9D9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421F22B9D9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 23:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgKSWX4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Nov 2020 17:23:56 -0500
-Received: from mga12.intel.com ([192.55.52.136]:38388 "EHLO mga12.intel.com"
+        id S1726935AbgKSWZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 17:25:31 -0500
+Received: from mga01.intel.com ([192.55.52.88]:26654 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725877AbgKSWXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:23:55 -0500
-IronPort-SDR: k4i+zSMw4xda2NAFwdjKQfwgWCcwTP2Z3U1EtpVKy0pPTaFLK5kj1H7zo9iHM8zbYgDHuIFXSs
- Zs4vf50V2Bww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="150643515"
+        id S1726105AbgKSWZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 17:25:31 -0500
+IronPort-SDR: jPutyleZCuA5th77TLJg6X7KIpHlwXK2FCV2tBBgt/5ax56cwHGqIDSONaWzwxJVOpXb69pxZJ
+ dn0BPXod3ptQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="189471936"
 X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="150643515"
+   d="scan'208";a="189471936"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 14:23:54 -0800
-IronPort-SDR: dP6HCZlNXDz1NsBiTXGFFaIBrS7of0Yj+0DUbKRY2Lm0exCHk+4poOGlE8dT4YrMW+CNaG1LNv
- bPlxbbv2835A==
-X-ExtLoop1: 1
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 14:25:30 -0800
+IronPort-SDR: LmGCMt4qb3T1rKgJrsrSNZCnA5fx/qTFRH3Cj7MTclQZhGYUFHIrB4xm40mL6xuQ8a2lvZIgPq
+ LOOH4iwIZjkA==
 X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="545202729"
-Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
-  by orsmga005.jf.intel.com with ESMTP; 19 Nov 2020 14:23:54 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 19 Nov 2020 14:23:54 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 19 Nov 2020 14:23:53 -0800
-Received: from orsmsx611.amr.corp.intel.com ([10.22.229.24]) by
- ORSMSX611.amr.corp.intel.com ([10.22.229.24]) with mapi id 15.01.1713.004;
- Thu, 19 Nov 2020 14:23:53 -0800
-From:   "Yu, Fenghua" <fenghua.yu@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Li, Xiaoyao" <xiaoyao.li@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-Subject: RE: [PATCH v2 2/4] x86/bus_lock: Handle warn and fatal in #DB for bus
- lock
-Thread-Topic: [PATCH v2 2/4] x86/bus_lock: Handle warn and fatal in #DB for
- bus lock
-Thread-Index: AQHWuF/UusXszEAgtU+4M68272E2dKnMzqyAgANEr9A=
-Date:   Thu, 19 Nov 2020 22:23:53 +0000
-Message-ID: <6eb1e38d9d184a188e0c2f12aabc370e@intel.com>
-References: <20201111192048.2602065-1-fenghua.yu@intel.com>
- <20201111192048.2602065-3-fenghua.yu@intel.com>
- <20201117122455.GG3121406@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201117122455.GG3121406@hirez.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+   d="scan'208";a="476988121"
+Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.51])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 14:25:28 -0800
+Date:   Thu, 19 Nov 2020 22:25:19 +0000
+From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        qat-linux@intel.com, Denis Efremov <efremov@linux.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org
+Subject: [PATCH RESEND] crypto: qat - fix excluded_middle.cocci warnings
+Message-ID: <20201119222519.GA138362@silpixa00400314>
+References: <alpine.DEB.2.22.394.2011131811110.2840@hadrien>
+ <20201119195816.GA131726@silpixa00400314>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119195816.GA131726@silpixa00400314>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Peter,
-
-> > #DB for bus lock is enabled by bus lock detection bit 2 in DEBUGCTL
-> > MSR while #AC for split lock is enabled by split lock detection bit 29
-> > in TEST_CTRL MSR.
-> >
-> > Delivery of #DB for bus lock in userspace clears DR6[11]. To avoid
-> > confusion in identifying #DB, #DB handler sets the bit to 1 before
-> > returning to the interrupted task.
-> >
-> > Use the existing kernel command line option "split_lock_detect=" to
-> > handle #DB for bus lock:
-> >
-> > split_lock_detect=
-> > 		#AC for split lock		#DB for bus lock
-> >
-> > off		Do nothing			Do nothing
-> >
-> > warn		Kernel OOPs			Warn once per task and
-> > 		Warn once per task and		and continues to run.
-> > 		disable future checking 	When both features are
-> > 						supported, warn in #DB
-> >
-> > fatal		Kernel OOPs			Send SIGBUS to user
-> > 		Send SIGBUS to user
-> > 		When both features are
-> > 		supported, fatal in #AC.
-> >
-> > Default option is "warn".
-> >
-> > Hardware only generates #DB for bus lock detect when CPL>0 to avoid
-> > nested #DB from multiple bus locks while the first #DB is being handled.
-> > So no need to handle #DB for bus lock detected in the kernel.
-> >
-> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> > Reviewed-by: Tony Luck <tony.luck@intel.com>
+On Thu, Nov 19, 2020 at 07:58:16PM +0000, Giovanni Cabiddu wrote:
+> On Fri, Nov 13, 2020 at 06:14:00PM +0100, Julia Lawall wrote:
+> > From: kernel test robot <lkp@intel.com>
+> > 
+> >  Condition !A || A && B is equivalent to !A || B.
+> A similar change was submitted and discussed some time ago:
+> https://patchwork.kernel.org/project/linux-crypto/patch/78b1532c-f8bf-48e4-d0a7-30ea0137d408@huawei.com/
 > 
-> Sane enough I suppose,
-> 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> The change simplifies the logic but makes the code less readable.
+> I added a comment to clarify it.
+Resending as it skipped linux-crypto patchwork.
 
-Thank you very much for your review!
+----8<----
 
-Can I put your Acked-by tag in all 4 patches?
+From: kernel test robot <lkp@intel.com>
+Date: Fri, 13 Nov 2020 18:14:00 +0100
+Subject: [PATCH] crypto: qat - fix excluded_middle.cocci warnings
 
-> 
-> The one thing I found still missing is a better description of the things tickling
-> SLD vs BLD. IIRC BLD detects a wider range of issues.
-> Therefore it _might_ make sense to allow SLD && BLD when fatal, instead of
-> only SLD.
-> 
-> Still, that's nitpicking.
+ Condition !A || A && B is equivalent to !A || B.
 
-You are right. BLD can detect both split lock and UC memory access while SLD
-only detects split lock. Enabling both SLD and BLD when fatal can capture
-both split lock in #AC and UC access in #DB.
+Generated by: scripts/coccinelle/misc/excluded_middle.cocci
 
-I will send the fixing series to enable both SLD and BLD when fatal.
+Fixes: b76f0ea01312 ("coccinelle: misc: add excluded_middle.cocci script")
+CC: Denis Efremov <efremov@linux.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+---
+ drivers/crypto/qat/qat_common/adf_dev_mgr.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
--Fenghua
+diff --git a/drivers/crypto/qat/qat_common/adf_dev_mgr.c b/drivers/crypto/qat/qat_common/adf_dev_mgr.c
+index 29dc2e3d38ff..4c752eed10fe 100644
+--- a/drivers/crypto/qat/qat_common/adf_dev_mgr.c
++++ b/drivers/crypto/qat/qat_common/adf_dev_mgr.c
+@@ -151,8 +151,8 @@ int adf_devmgr_add_dev(struct adf_accel_dev *accel_dev,
+ 	mutex_lock(&table_lock);
+ 	atomic_set(&accel_dev->ref_count, 0);
+ 
+-	/* PF on host or VF on guest */
+-	if (!accel_dev->is_vf || (accel_dev->is_vf && !pf)) {
++	/* PF on host or VF on guest - optimized to remove redundant is_vf */
++	if (!accel_dev->is_vf || !pf) {
+ 		struct vf_id_map *map;
+ 
+ 		list_for_each(itr, &accel_table) {
+@@ -248,7 +248,8 @@ void adf_devmgr_rm_dev(struct adf_accel_dev *accel_dev,
+ 		       struct adf_accel_dev *pf)
+ {
+ 	mutex_lock(&table_lock);
+-	if (!accel_dev->is_vf || (accel_dev->is_vf && !pf)) {
++	/* PF on host or VF on guest - optimized to remove redundant is_vf */
++	if (!accel_dev->is_vf || !pf) {
+ 		id_map[accel_dev->accel_id] = 0;
+ 		num_devices--;
+ 	} else if (accel_dev->is_vf && pf) {
+-- 
+2.28.0
