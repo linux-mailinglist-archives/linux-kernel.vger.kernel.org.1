@@ -2,131 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673232B9C2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 21:40:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C82592B9C2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 21:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgKSUjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 15:39:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgKSUjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 15:39:15 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0012720888;
-        Thu, 19 Nov 2020 20:39:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605818354;
-        bh=fvpCr+a9O+Y1yL2+2TReoWD/IuwSGHB9+sXcjjtLcvw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EbG09We/Nz78MMVDFtrYLXZNMaT4FSWbbbgJ9mXUy+AjoYVLyZerlm09pJPcfPX3C
-         t75DYlftONIZEBuSVS+s+HjC/T2Te+j1Oxz25IxbEPqYKnW+4PnnxwKXR3uSbWWgID
-         VHYhM7e4DHbqpdDV5/QH2K70rFz1tBkL0pGUESqQ=
-Date:   Thu, 19 Nov 2020 20:39:07 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 10/14] sched: Introduce arch_cpu_allowed_mask() to
- limit fallback rq selection
-Message-ID: <20201119203906.GA5099@willie-the-truck>
-References: <20201113093720.21106-1-will@kernel.org>
- <20201113093720.21106-11-will@kernel.org>
- <20201119093850.GD2416649@google.com>
- <20201119110709.GD3946@willie-the-truck>
+        id S1726390AbgKSUja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 15:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgKSUja (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 15:39:30 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3CFC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 12:39:28 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id m16so7271121edr.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 12:39:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qJ4yHj2o6CJPlclc4Dlue1pFs+YW5Xtp3Pnvold2gGU=;
+        b=bzt7RHlpMxYBkqf5zz9ANDxyXQc65RQ67tJSR3v1pY5U4BJMAXZn1pI/d1T0zkdiPu
+         s8sO9+GMASROgyMF5j9RJhjjd9K7nN9ep+hNiSvgYp9G2Iu/3YQVYvfTon/4+VbuDJcN
+         H20qyMlRZ/uSGpibuTSbyFGscPAeMGVt7ZU92CMLshWBBIA6M/DP14AOIjjXNbwJqETL
+         w5S6LHYV5Y1FhOYbDtECPwtOIKeswdrBwWZDL3gj7MChde2jCFuhrVkfY9opGmun5+d3
+         lckS1vhfPZ4LTLvWbdO4GZOeNH1A48CiFvI4XIpe8Nh6tQw81rR5NSxvSStCtxSJHX/Y
+         Sccw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qJ4yHj2o6CJPlclc4Dlue1pFs+YW5Xtp3Pnvold2gGU=;
+        b=EjeWXAC2TbFiDADS0N4JJkUUtDqaI2ddE5EQbc4zIwFy0oSnSDcvvQFsVBbx3mqbSu
+         Aapy9ZwhRha8Lcwre+5zsMiwb/Ct/GUragiCVKy9H8Gkhi8JFy8YYCManuwv+cVe3gOh
+         bery7/UNv8c6JJOxN6nr3DwUhI1cBEp12WLoHGa/+TXlcw6BMDSPu3xUEEDK3Rvyv2hH
+         Q0lQXvEvET/MN8THIlSIxCkBiPp9DEHKjknLAlJyHxdJkhMGjjJv8KeIYw3GVzpBTiru
+         8CK3YYBbBtnriLIcKQ3+IhQSyujaMvP7YmhctKPujrHtgxmswLuo+pKSn5Q0JLnDDdaR
+         i0aA==
+X-Gm-Message-State: AOAM5326zleU7mh0c1DcO+RnK7Hq47+l9Z5msYRbdaF7DoIVYq6h3uTR
+        ZYiSd91QyTlO4vQovScnCdR0nBp+HYRNXGNFt4zWGg==
+X-Google-Smtp-Source: ABdhPJy8wzlppYBs8HMU5d+8U8upwmmjqwlOvisvT7hKI6zk7qZ47GGZpODqwvrwEGYytZDoFv1EuU3tAGJPtdUe2M4=
+X-Received: by 2002:aa7:cc14:: with SMTP id q20mr7978782edt.140.1605818367084;
+ Thu, 19 Nov 2020 12:39:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119110709.GD3946@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201026210052.3775167-1-lokeshgidra@google.com>
+In-Reply-To: <20201026210052.3775167-1-lokeshgidra@google.com>
+From:   Lokesh Gidra <lokeshgidra@google.com>
+Date:   Thu, 19 Nov 2020 12:39:15 -0800
+Message-ID: <CA+EESO7N7gFkG_Vqy5j1oCZif8RaiCJ146GrQAKq3P1SCUi+ng@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Control over userfaultfd kernel-fault handling
+To:     Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 11:07:09AM +0000, Will Deacon wrote:
-> On Thu, Nov 19, 2020 at 09:38:50AM +0000, Quentin Perret wrote:
-> > On Friday 13 Nov 2020 at 09:37:15 (+0000), Will Deacon wrote:
-> > > Asymmetric systems may not offer the same level of userspace ISA support
-> > > across all CPUs, meaning that some applications cannot be executed by
-> > > some CPUs. As a concrete example, upcoming arm64 big.LITTLE designs do
-> > > not feature support for 32-bit applications on both clusters.
-> > > 
-> > > On such a system, we must take care not to migrate a task to an
-> > > unsupported CPU when forcefully moving tasks in select_fallback_rq()
-> > > in response to a CPU hot-unplug operation.
-> > > 
-> > > Introduce an arch_cpu_allowed_mask() hook which, given a task argument,
-> > > allows an architecture to return a cpumask of CPUs that are capable of
-> > > executing that task. The default implementation returns the
-> > > cpu_possible_mask, since sane machines do not suffer from per-cpu ISA
-> > > limitations that affect scheduling. The new mask is used when selecting
-> > > the fallback runqueue as a last resort before forcing a migration to the
-> > > first active CPU.
-> > > 
-> > > Signed-off-by: Will Deacon <will@kernel.org>
-> > > ---
-> > >  kernel/sched/core.c | 13 ++++++++++---
-> > >  1 file changed, 10 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > index 818c8f7bdf2a..8df38ebfe769 100644
-> > > --- a/kernel/sched/core.c
-> > > +++ b/kernel/sched/core.c
-> > > @@ -1696,6 +1696,11 @@ void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags)
-> > >  
-> > >  #ifdef CONFIG_SMP
-> > >  
-> > > +/* Must contain at least one active CPU */
-> > > +#ifndef arch_cpu_allowed_mask
-> > > +#define  arch_cpu_allowed_mask(p)	cpu_possible_mask
-> > > +#endif
-> > > +
-> > >  /*
-> > >   * Per-CPU kthreads are allowed to run on !active && online CPUs, see
-> > >   * __set_cpus_allowed_ptr() and select_fallback_rq().
-> > > @@ -1708,7 +1713,10 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
-> > >  	if (is_per_cpu_kthread(p))
-> > >  		return cpu_online(cpu);
-> > >  
-> > > -	return cpu_active(cpu);
-> > > +	if (!cpu_active(cpu))
-> > > +		return false;
-> > > +
-> > > +	return cpumask_test_cpu(cpu, arch_cpu_allowed_mask(p));
-> > >  }
-> > >  
-> > >  /*
-> > > @@ -2361,10 +2369,9 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
-> > >  			}
-> > >  			fallthrough;
-> > >  		case possible:
-> > > -			do_set_cpus_allowed(p, cpu_possible_mask);
-> > > +			do_set_cpus_allowed(p, arch_cpu_allowed_mask(p));
-> > 
-> > Nit: I'm wondering if this should be called arch_cpu_possible_mask()
-> > instead?
-> 
-> I'm open to renaming it, so if nobody else has any better ideas then I'll
-> go with this.
-
-Ah, so in doing this I realised I don't like arch_cpu_possible_mask() so
-much because it makes it sound like a back-end to cpu_possible_mask, but
-the two are really different things.
-
-arch_task_cpu_possible_mask() might work?
-
-Will
+On Mon, Oct 26, 2020 at 2:00 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+>
+> This patch series is split from [1]. The other series enables SELinux
+> support for userfaultfd file descriptors so that its creation and
+> movement can be controlled.
+>
+> It has been demonstrated on various occasions that suspending kernel
+> code execution for an arbitrary amount of time at any access to
+> userspace memory (copy_from_user()/copy_to_user()/...) can be exploited
+> to change the intended behavior of the kernel. For instance, handling
+> page faults in kernel-mode using userfaultfd has been exploited in [2, 3].
+> Likewise, FUSE, which is similar to userfaultfd in this respect, has been
+> exploited in [4, 5] for similar outcome.
+>
+> This small patch series adds a new flag to userfaultfd(2) that allows
+> callers to give up the ability to handle kernel-mode faults with the
+> resulting UFFD file object. It then adds a 'user-mode only' option to
+> the unprivileged_userfaultfd sysctl knob to require unprivileged
+> callers to use this new flag.
+>
+> The purpose of this new interface is to decrease the chance of an
+> unprivileged userfaultfd user taking advantage of userfaultfd to
+> enhance security vulnerabilities by lengthening the race window in
+> kernel code.
+>
+> [1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
+> [2] https://duasynt.com/blog/linux-kernel-heap-spray
+> [3] https://duasynt.com/blog/cve-2016-6187-heap-off-by-one-exploit
+> [4] https://googleprojectzero.blogspot.com/2016/06/exploiting-recursion-in-linux-kernel_20.html
+> [5] https://bugs.chromium.org/p/project-zero/issues/detail?id=808
+>
+> Changes since v5:
+>
+>   - Added printk_once when unprivileged_userfaultfd is set to 0 and
+>     userfaultfd syscall is called without UFFD_USER_MODE_ONLY in the
+>     absence of CAP_SYS_PTRACE capability.
+>
+> Changes since v4:
+>
+>   - Added warning when bailing out from handling kernel fault.
+>
+> Changes since v3:
+>
+>   - Modified the meaning of value '0' of unprivileged_userfaultfd
+>     sysctl knob. Setting this knob to '0' now allows unprivileged users
+>     to use userfaultfd, but can handle page faults in user-mode only.
+>   - The default value of unprivileged_userfaultfd sysctl knob is changed
+>     to '0'.
+>
+> Changes since v2:
+>
+>   - Removed 'uffd_flags' and directly used 'UFFD_USER_MODE_ONLY' in
+>     userfaultfd().
+>
+> Changes since v1:
+>
+>   - Added external references to the threats from allowing unprivileged
+>     users to handle page faults from kernel-mode.
+>   - Removed the new sysctl knob restricting handling of page
+>     faults from kernel-mode, and added an option for the same
+>     in the existing 'unprivileged_userfaultfd' knob.
+>
+> Lokesh Gidra (2):
+>   Add UFFD_USER_MODE_ONLY
+>   Add user-mode only option to unprivileged_userfaultfd sysctl knob
+>
+>  Documentation/admin-guide/sysctl/vm.rst | 15 ++++++++++-----
+>  fs/userfaultfd.c                        | 20 +++++++++++++++++---
+>  include/uapi/linux/userfaultfd.h        |  9 +++++++++
+>  3 files changed, 36 insertions(+), 8 deletions(-)
+>
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
+It's been quite some time since this patch-series has received
+'Reviewed-by' by Andrea. Please let me know if anything is blocking it
+from taking forward.
