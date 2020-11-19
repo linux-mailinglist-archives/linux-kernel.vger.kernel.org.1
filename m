@@ -2,152 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA06C2B90D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817652B90C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgKSLSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:18:47 -0500
-Received: from mga05.intel.com ([192.55.52.43]:55916 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgKSLSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:18:46 -0500
-IronPort-SDR: qOYJml+ztwsf1rY0oniHS63qagCKKe0opzTH0/4LksQDA+J+q14Alxn0h31pRzpqLDI/mRxOn8
- T/8ydZsrUfdQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="255982109"
-X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="255982109"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 03:18:45 -0800
-IronPort-SDR: mrD7v+9BfN/icmiIRjGjnsi3DZPzwG1S08a5tdc9OCSc1Nigtkp53nE+LGxDwNAUAvgThA8nLY
- jzxYNKfmWqfw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="476785500"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga004.jf.intel.com with ESMTP; 19 Nov 2020 03:18:42 -0800
-Date:   Thu, 19 Nov 2020 19:14:30 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Richard Gong <richard.gong@linux.intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, trix@redhat.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinguyen@kernel.org, sridhar.rajagopal@intel.com,
-        Richard Gong <richard.gong@intel.com>
-Subject: Re: [PATCHv1 3/4] dt-bindings: fpga: add authenticate-fpga-config
-  property
-Message-ID: <20201119111430.GB26472@yilunxu-OptiPlex-7050>
-References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
- <1605204403-6663-4-git-send-email-richard.gong@linux.intel.com>
- <20201115192106.GB283592@epycbox.lan>
- <20201116024758.GA6810@yilunxu-OptiPlex-7050>
- <d83b37c2-2baa-b366-8ca4-bb2924bcd4f9@linux.intel.com>
- <20201117022453.GA12837@yilunxu-OptiPlex-7050>
- <e9492bbf-f3c5-41a7-0a08-8de142700880@linux.intel.com>
- <20201118054718.GB14665@yilunxu-OptiPlex-7050>
- <1713a966-5b0f-4e65-70ee-793d09e53cec@linux.intel.com>
+        id S1726790AbgKSLRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:17:47 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:49768 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726495AbgKSLRr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 06:17:47 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJBHd3w126102;
+        Thu, 19 Nov 2020 05:17:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605784659;
+        bh=QbbwgyAqM/69VBC4+TYRSR7wdrvDwDDwNcKhIoBITgs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=E9MDxgBfl6aAtX89MVQy5FxO8msncsWLhAI93nu6ZYCRRkWIljUA0n8WDjJbuUorJ
+         W3i/Ar1BGjp2TUSJ1EW4Y326wTte4L04hwVWUvd3XFa1d7HeoH5yp6Wjsk2+G2tt7N
+         bKv6WYUseoUs3PYxq4JSKvq9QYebEAiB4IeqvRgE=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJBHdqw081549
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Nov 2020 05:17:39 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
+ Nov 2020 05:17:38 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 19 Nov 2020 05:17:39 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJBHa5E116124;
+        Thu, 19 Nov 2020 05:17:37 -0600
+Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3: squelch warnings regarding no
+ #address-cells for interrupt-controller
+To:     Nishanth Menon <nm@ti.com>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Sekhar Nori <nsekhar@ti.com>, Tero Kristo <t-kristo@ti.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Andre Przywara <andre.przywara@arm.com>
+References: <20201117161942.38754-1-nsekhar@ti.com>
+ <20201117161942.38754-3-nsekhar@ti.com>
+ <ab9658ef-c8a7-155b-acb1-effa872132ca@ti.com>
+ <20201118151259.kpag44djji4ssiup@eldest>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <18e41dba-a3dd-308a-605e-63b76ca638e5@ti.com>
+Date:   Thu, 19 Nov 2020 13:17:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1713a966-5b0f-4e65-70ee-793d09e53cec@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201118151259.kpag44djji4ssiup@eldest>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 07:38:31AM -0600, Richard Gong wrote:
-> 
-> 
-> On 11/17/20 11:47 PM, Xu Yilun wrote:
-> >On Tue, Nov 17, 2020 at 09:39:55AM -0600, Richard Gong wrote:
-> >>
-> >>
-> >>On 11/16/20 8:24 PM, Xu Yilun wrote:
-> >>>On Mon, Nov 16, 2020 at 08:14:52AM -0600, Richard Gong wrote:
-> >>>>
-> >>>>Hi Yilun,
-> >>>>
-> >>>>On 11/15/20 8:47 PM, Xu Yilun wrote:
-> >>>>>On Sun, Nov 15, 2020 at 11:21:06AM -0800, Moritz Fischer wrote:
-> >>>>>>Hi Richard,
-> >>>>>>
-> >>>>>>On Thu, Nov 12, 2020 at 12:06:42PM -0600, richard.gong@linux.intel.com wrote:
-> >>>>>>>From: Richard Gong <richard.gong@intel.com>
-> >>>>>>>
-> >>>>>>>Add authenticate-fpga-config property for FPGA bitstream authentication.
-> >>>>>>>
-> >>>>>>>Signed-off-by: Richard Gong <richard.gong@intel.com>
-> >>>>>>>---
-> >>>>>>>  Documentation/devicetree/bindings/fpga/fpga-region.txt | 1 +
-> >>>>>>>  1 file changed, 1 insertion(+)
-> >>>>>>>
-> >>>>>>>diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> >>>>>>>index e811cf8..7a512bc 100644
-> >>>>>>>--- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> >>>>>>>+++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> >>>>>>>@@ -187,6 +187,7 @@ Optional properties:
-> >>>>>>>  - external-fpga-config : boolean, set if the FPGA has already been configured
-> >>>>>>>  	prior to OS boot up.
-> >>>>>>>  - encrypted-fpga-config : boolean, set if the bitstream is encrypted
-> >>>>>>>+- authenticate-fpga-config : boolean, set if do bitstream authentication
-> >>>>>>It is unclear to me from the description whether this entails
-> >>>>>>authentication + reconfiguration or just authentication.
-> >>>>>>
-> >>>>>>If the latter is the case this should probably be described as such.
-> >>>>>
-> >>>>>If it is just authentication, do we still need to disable bridges in
-> >>>>>fpga_region_program_fpga?
-> >>>>>
-> >>>>
-> >>>>Yes.
-> >>>>
-> >>>>Except for the actual configuration of the device, the authentication
-> >>>>feature is the same as FPGA configuration.
-> >>>
-> >>>FPGA Bridges gate bus signals between a host and FPGA. So the FPGA
-> >>>region could not be accessed by host when doing configuration. But for
-> >>>this authentication, we are just writing the flash, we don't actually
-> >>>touch the FPGA soft logic. The host should still be able to operate on
-> >>>the old logic before reboot, is it?
-> >>>
-> >>Yes, it's feasible in theory but doesn't make much sense in practice. I
-> >>prefer to keep fpga_region_program_fpga() unchanged.
-> >
-> >I'm thinking of the case of inband reprograming, that the QSPI flash
-> >controller itself is embedded in FPGA soft logic, then maybe host still
-> >need to access FPGA on authentication.
-> 
-> We can decide whether we should update fpga_region_program_fpga() function
-> when you update for inband reprogramming case.
 
-Sure, we could think about it later.
 
-Thanks,
-Yilun
-
+On 18/11/2020 17:12, Nishanth Menon wrote:
+> On 13:38-20201118, Grygorii Strashko wrote:
+>> Hi Rob,
+>>
+>> On 17/11/2020 18:19, Sekhar Nori wrote:
+>>> With dtc 1.6.0, building TI device-tree files with W=2 results in warnings
+>>> like below for all interrupt controllers.
+>>>
+>>> /bus@100000/bus@30000000/interrupt-controller1: Missing #address-cells in interrupt provider
+>>>
+>>> Fix these by adding #address-cells = <0>; for all interrupt controllers in
+>>> TI device-tree files. Any other #address-cells value is really only needed
+>>> if interrupt-map property is being used (which is not the case for existing
+>>> TI device-tree files)
+>>>
+>>> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+>>> ---
+>>>    arch/arm64/boot/dts/ti/k3-am65-main.dtsi              |  5 +++++
+>>>    arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi            |  2 ++
+>>>    arch/arm64/boot/dts/ti/k3-am654-base-board.dts        |  1 +
+>>>    arch/arm64/boot/dts/ti/k3-j7200-main.dtsi             |  3 +++
+>>>    arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi       |  1 +
+>>>    arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts |  1 +
+>>>    arch/arm64/boot/dts/ti/k3-j721e-main.dtsi             | 11 +++++++++++
+>>>    arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi       |  3 +++
+>>>    8 files changed, 27 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+>>> index aa8725db0187..55aaa1404d7d 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+>>> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+>>> @@ -440,6 +440,7 @@
+>>>    		interrupt-controller;
+>>>    		interrupt-parent = <&gic500>;
+>>>    		#interrupt-cells = <1>;
+>>> +		#address-cells = <0>;
+>> Does it really required or mandatory to have #address-cells = <0>; defined for interrupt-controller DT nodes which
+>> do not have child nodes and no "interrupt-map"?
 > 
-> Regards,
-> Richard
-> >
-> >Thanks,
-> >Yilun
-> >
-> >>>>
-> >>>>>I'm wondering if the FPGA functionalities could still be working when
-> >>>>>the authenticating is ongoing, or when the authenticating is failed.
-> >>>>>
-> >>>>
-> >>>>
-> >>>>
-> >>>>>Thanks,
-> >>>>>Yilun
-> >>>>>
-> >>>>>>
-> >>>>>>>  - region-unfreeze-timeout-us : The maximum time in microseconds to wait for
-> >>>>>>>  	bridges to successfully become enabled after the region has been
-> >>>>>>>  	programmed.
-> >>>>>>>-- 
-> >>>>>>>2.7.4
-> >>>>>>>
-> >>>>>>
-> >>>>>>Thanks
+> Just to help clarify (I could be mistaken as well): is'nt the
+> interrupt map for user interrupt map nodes that refer to this
+> interrupt controller node to state they dont need a parent address
+> specifier - so are we claiming none of the users will have an
+> interrupt-map (now and never in the future as well) - we we might want
+> to explain why we think that is the case, and if we are expecting dtc
+> to deduce that (if so how?)?
+> 
+
+The main reason I commented - is hope to get some clarification from DT maintainers.
+90% of interrupt-controller nodes do not have #address-cells and I never seen in in GPIO nodes
+(most often is present in PCI and GIC nodes).
+and nobody seems fixing it. So, if we are going to move this direction it's reasonable to get clarification to be sure.
+
+And there is no "never" here - #address-cells always can be added if really required.
+
+-- 
+Best regards,
+grygorii
