@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24B22B9AD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A242B9AD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729115AbgKSSoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:44:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728591AbgKSSoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:44:15 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B75822255;
-        Thu, 19 Nov 2020 18:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605811455;
-        bh=hAtWZOOEggXYNF07rt3mds1WRGCi/8ckKjjaTTdIQSs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hAfN8+Rauv+Jr6l1g1tt/CdH3KcPjw3o9SdCBpf9ZgShvX+ikhp7YE02zMaXoPi06
-         FCq4oygpaB2gsMQgukoBUFqMMHvv5eC29CUGR4xOts/zuAu1daIIJuyMwbOaipmMCm
-         aIvEFTlQoLaAiAfGP00E0pN0WBXhMw4AHGpqfE6g=
-Date:   Thu, 19 Nov 2020 10:44:13 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Dmytro Shytyi <dmytro@shytyi.net>
-Cc:     "yoshfuji" <yoshfuji@linux-ipv6.org>,
-        "kuznet" <kuznet@ms2.inr.ac.ru>,
-        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
-        "netdev" <netdev@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next V6] net: Variable SLAAC: SLAAC with prefixes of
- arbitrary length in PIO
-Message-ID: <20201119104413.75ca9888@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <175e0b9826b.c3bb0aae425910.5834444036489233360@shytyi.net>
-References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
-        <202011110944.7zNVZmvB-lkp@intel.com>
-        <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net>
-        <175bf515624.c67e02e8130655.7824060160954233592@shytyi.net>
-        <175c31c6260.10eef97f6180313.755036504412557273@shytyi.net>
-        <20201117124348.132862b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <175e0b9826b.c3bb0aae425910.5834444036489233360@shytyi.net>
+        id S1729417AbgKSSo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:44:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728591AbgKSSo2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:44:28 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E6CC0613CF;
+        Thu, 19 Nov 2020 10:44:28 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 34so5012377pgp.10;
+        Thu, 19 Nov 2020 10:44:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iuwg6IYEd7EKVGUt96wlfcbkMOsvzHw4fPieXvt+LKQ=;
+        b=rua3zrDa2ATl8eRD4ZvrJ/u0/zhgyeEFCb8/umw2v/TzgrYjv4NSwcJbZ4ZKFV/ViK
+         2vy7hJFILziUTxZ7BOUiuzkEfniZm2AN1LC+jvAQqoimFeLCohaqjjfiQYnLsyJdt0sX
+         I3ulbYNtuRndXdyXvmnzbvz88HWhEtPSleyNr20mSWZEuS5q+36xaG5yfsfC7hHjjExY
+         8sWYZpckwdQheykw1i+96FCNSPZyIbwJi1whubGuWPu8vgjfl709s5GSPUZTlKP9D75O
+         ZBpvndJUSwGnc8nquOCrjMXbRnI64v/KZ7AxgATbDpVuJBccij+H0vs2iIWhn28u4P/2
+         flkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iuwg6IYEd7EKVGUt96wlfcbkMOsvzHw4fPieXvt+LKQ=;
+        b=b184UASfNHTCKGoZi8JAXhiar4l0qZHinXesCqz+6XrlKoPkKp/7MC25Hy3m9Zg937
+         zwg27MyVv4Z1v+vHRBeEa4twa/XzbYvu3GL2QxvfQ9Q6aRc64wVOjK9rOp7XGiNBd6js
+         6EJYm7ImYaDFzr9HOLkrDfHXu6cLaMm+rNeVIWFfFUtpNMnxOEGOIBojvOb+q4o/L1h2
+         0SdU4SW5XvjR5Oto0+EEfE8KQgKxLm7y2ww/6m6LiPQ2CMHlTuL8nA+BJf0otO6Ohdjf
+         8PRuLpdICU/geMTQxkZ4m3CgseT03lLxn035X1hqaBIhwUK4Zi2AmrkKE/PqBdl5/W9q
+         AfPg==
+X-Gm-Message-State: AOAM530Yvzj9QilH/pHmX7LSYhwpnH5audwb1EfZy39kpvR5pHCO+smM
+        bybmvuAw1bNqZZHabSLsFdMCMjGzTrI=
+X-Google-Smtp-Source: ABdhPJxeZ0q3hA3ZQegTJlS7udKKI8t3Nju4P20Pg/NUQPAXEew4eYko2HevzOiV8+to+XN/zRdxGA==
+X-Received: by 2002:a17:90a:f3d3:: with SMTP id ha19mr5805389pjb.177.1605811467748;
+        Thu, 19 Nov 2020 10:44:27 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:c1e7])
+        by smtp.gmail.com with ESMTPSA id t10sm558898pfq.110.2020.11.19.10.44.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 10:44:26 -0800 (PST)
+Date:   Thu, 19 Nov 2020 10:44:24 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf v7 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
+ after NUL terminator
+Message-ID: <20201119184424.deufdcmxymd6ep7j@ast-mbp>
+References: <cover.1605642949.git.dxu@dxuuu.xyz>
+ <21efc982b3e9f2f7b0379eed642294caaa0c27a7.1605642949.git.dxu@dxuuu.xyz>
+ <CAADnVQ+0=59xkFcpQMdqmZ7CcsTiXx2PDp1T6Hi2hnhj+otnhA@mail.gmail.com>
+ <CAADnVQLi6sS36fqV+xuaz0W5ircU5U=ictnj=mF4KWEFUDSqPQ@mail.gmail.com>
+ <CAHk-=wiG3jYsfPQBHabTmMagT71Uzx=wxq=Bh41A40zQ74pwEQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiG3jYsfPQBHabTmMagT71Uzx=wxq=Bh41A40zQ74pwEQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 14:37:35 +0100 Dmytro Shytyi wrote:
-> +struct inet6_ifaddr *ipv6_cmp_rcvd_prsnt_prfxs(struct inet6_ifaddr *ifp,
-> +					       struct inet6_dev *in6_dev,
-> +					       struct net *net,
-> +					       const struct prefix_info *pinfo)
-> +{
-> +	struct inet6_ifaddr *result_base =3D NULL;
-> +	struct inet6_ifaddr *result =3D NULL;
-> +	struct in6_addr curr_net_prfx;
-> +	struct in6_addr net_prfx;
-> +	bool prfxs_equal;
-> +
-> +	result_base =3D result;
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) {
-> +		if (!net_eq(dev_net(ifp->idev->dev), net))
-> +			continue;
-> +		ipv6_addr_prefix_copy(&net_prfx, &pinfo->prefix, pinfo->prefix_len);
-> +		ipv6_addr_prefix_copy(&curr_net_prfx, &ifp->addr, pinfo->prefix_len);
-> +		prfxs_equal =3D
-> +			ipv6_prefix_equal(&net_prfx, &curr_net_prfx, pinfo->prefix_len);
-> +		if (prfxs_equal && pinfo->prefix_len =3D=3D ifp->prefix_len) {
-> +			result =3D ifp;
-> +			in6_ifa_hold(ifp);
-> +			break;
-> +		}
-> +	}
-> +	rcu_read_unlock();
-> +	if (result_base !=3D result)
-> +		ifp =3D result;
-> +	else
-> +		ifp =3D NULL;
-> +
-> +	return ifp;
-> +}
+On Thu, Nov 19, 2020 at 10:40:21AM -0800, Linus Torvalds wrote:
+> On Thu, Nov 19, 2020 at 10:34 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > ping.
+> 
+> I'm ok with this series that adds explanations for why you care and
+> what bpf does that makes it valid.
 
-Thanks for adding the helper! Looks like it needs a touch up:
+Great.
 
-net/ipv6/addrconf.c:2579:22: warning: no previous prototype for =E2=80=98ip=
-v6_cmp_rcvd_prsnt_prfxs=E2=80=99 [-Wmissing-prototypes]
- 2579 | struct inet6_ifaddr *ipv6_cmp_rcvd_prsnt_prfxs(struct inet6_ifaddr =
-*ifp,
-      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~
-net/ipv6/addrconf.c:2579:21: warning: symbol 'ipv6_cmp_rcvd_prsnt_prfxs' wa=
-s not declared. Should it be static?
+> So this one you can put in the bpf tree.
+> 
+> Or, if you want me to just apply it as a series, I can do that too, I
+> just generally assume that when there's a git tree I usually get
+> things from, that's the default, so then it needs ot be a very loud
+> and explicit "Linus, can you apply this directly".
+
+Right. The set will go through the normal bpf.git->net.git route to make
+sure it is tested by humans and CIs.
+Thanks!
