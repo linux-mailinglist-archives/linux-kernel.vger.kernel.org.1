@@ -2,79 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69162B98C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE4B2B985C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729205AbgKSQ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 11:58:08 -0500
-Received: from m1330.mail.163.com ([220.181.13.30]:4938 "EHLO
-        m1330.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727798AbgKSQ6I (ORCPT
+        id S1728959AbgKSQo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:44:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727853AbgKSQo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:58:08 -0500
-X-Greylist: delayed 911 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Nov 2020 11:58:07 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=l6OD7
-        0CTtbuimAxjzTPrDiLlxh09vruXljgMPT+Po5M=; b=lvcrw96LmqBYYaExybLfN
-        Lxqa32+vBVFtKpVMc1sQzgYNjxduTPrIw8NErEgoFNDIJ+ynEGUwWIhq+8ifNFb7
-        84VQb4g9AHiq8CkJ23XE17+ZMmTX6xtT6qWJnuk0G7ed5KvpAF45cNEjLFbd76rj
-        FaCPu9Cl7SrXThys1tsuG4=
-Received: from bbw725$163.com ( [222.130.132.250] ) by ajax-webmail-wmsvr30
- (Coremail) ; Fri, 20 Nov 2020 00:42:54 +0800 (CST)
-X-Originating-IP: [222.130.132.250]
-Date:   Fri, 20 Nov 2020 00:42:54 +0800 (CST)
-From:   bbw725 <bbw725@163.com>
-To:     linux-kernel@vger.kernel.org
-Subject: ext2: How do we make sure indirect blocks are writeback before data
- block?
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190724(ac680a23)
- Copyright (c) 2002-2020 www.mailtech.cn 163com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 19 Nov 2020 11:44:26 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8C6C0613CF;
+        Thu, 19 Nov 2020 08:44:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wsLfXjOUb7k94iVGlwmbXuzfOOU9iLV4p1vlaVNg328=; b=aPw2cjLEbuAk9sffw1SyN12mzE
+        xGA3HaEVMjcPXoGk0MCUQlqIGOBeWK1oAX0Ji1bp9JH/5r3oohaA6Egr1/k3AU3+G4uTlULqeXlxZ
+        gYAEOukuxEpzsBfzFt3mly3eT9O33XM5BnyyHbTK6fN+WjvV6bpVYQmlyjVYBGJzSwmiH21JfQ5ht
+        22pms09JsVLwwFZ6UGElKJdY3scHWGGW/d4FQwI7qYAD8ngvf6IFcxpNXd/EzNLa4YOBf5pGE1kEc
+        2Qe6TFk/5FRrJGJcP3F0NKTlIgMcW/nXWEyT1Kg6rSjbSjrjUU9SBGNzgZOpd1+/P+Kf3uco3WWcq
+        f2GYv0ug==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kfn2c-0000Sq-BE; Thu, 19 Nov 2020 16:44:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3673E300F7A;
+        Thu, 19 Nov 2020 17:44:11 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 20E982C37252F; Thu, 19 Nov 2020 17:44:11 +0100 (CET)
+Date:   Thu, 19 Nov 2020 17:44:11 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Quentin Perret <qperret@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 08/14] arm64: exec: Adjust affinity for compat tasks
+ with mismatched 32-bit EL0
+Message-ID: <20201119164411.GV3121392@hirez.programming.kicks-ass.net>
+References: <20201113093720.21106-1-will@kernel.org>
+ <20201113093720.21106-9-will@kernel.org>
+ <20201119092407.GB2416649@google.com>
+ <20201119110603.GB3946@willie-the-truck>
+ <20201119161956.GS3121392@hirez.programming.kicks-ass.net>
+ <20201119163035.GB4582@willie-the-truck>
 MIME-Version: 1.0
-Message-ID: <1d4ef9b2.81bf.175e1632bfb.Coremail.bbw725@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: HsGowAAXEOiOoLZfyJqxAA--.4315W
-X-CM-SenderInfo: peezljqv6rljoofrz/xtbBFQThKlXlmnbihgABsj
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119163035.GB4582@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgYWxsLAoKSSBoYXZlIG9uZSBxdWVzdGlvbiBhYm91dCBob3cgZXh0MiAncyBpbmRpcmVjdCBi
-bG9jayBiZWluZyB3cml0ZSBiYWNrLiAoSSBrbm93IGV4dDIgaXMgb3V0IG9mIGRhdGUgYnV0IEkg
-YW0ganVzdCBzdGFydGluZyBsZWFybmluZykuCgpGcm9tIGV4dDJfYWxsb2NfYnJhbmNoKCksIGFm
-dGVyIGl0IGdvdCBpbmRpcmVjdCBibG9jayBhbmQgdGhlbiBpdCB3aWxsIHNldHVwIHRoZSAnY2hh
-aW4nLCBkdXJpbmcgdGhpcywgaXQgd2lsbCBtYXJrIGJ1ZmZlciBoZWFkIG9mIGluZGlyZWN0IGJs
-b2NrcyB0byBkaXJ0eSwgCmFuZCB0aGVuIHRoZSBpbm9kZSdzIGFzc29jaWF0ZWQgYmxvY2sgZGV2
-IHdpbGwgd3JpdGUgYmFjayB0aGlzIGRpcnR5IGJ1ZmZlciBoZWFkLgpNeSBxdWVzdGlvbiBpcyB0
-aGVzZSBpbmRpcmVjdCBibG9ja3MgYXJlIG1ldGEgZGF0YSBvZiB0aGlzIGlub2RlLCBhbmQgdXN1
-YWxseSB3ZSBzaG91bGQgd3JpdGUgYmFjayBpbm9kZSdzIGRhdGEgZmlyc3QgYW5kIHRoZW4gaXRz
-IG1ldGEgZGF0YSwgYnV0IGhlcmUsIGFmdGVyIHdlIG1hcmsgYnVmZmVyIGhlYWRzIG9mIGluZGly
-ZWN0IGJsb2NrcyBhbmQgaG93IGRvIHdlIG1ha2Ugc3VyZSB0aGV5IHdpbGwgYmUgd3JpdHRlbiBi
-YWNrIGJlZm9yZSBpdHMgZGF0YSA/CgoKZXh0Ml9hbGxvY19icmFuY2ggKC4uLikKewoKwqDCoMKg
-ICAgICAgICAgICAgICAgIGJoID0gc2JfZ2V0YmxrKGlub2RlLT5pX3NiLCBuZXdfYmxvY2tzW24t
-MV0pOwogICAgICAgICAgICAgICAgaWYgKHVubGlrZWx5KCFiaCkpIHsKICAgICAgICAgICAgICAg
-ICAgICAgICAgZXJyID0gLUVOT01FTTsKICAgICAgICAgICAgICAgICAgICAgICAgZ290byBmYWls
-ZWQ7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBicmFuY2hbbl0uYmggPSBiaDsK
-ICAgICAgICAgICAgICAgIGxvY2tfYnVmZmVyKGJoKTsKICAgICAgICAgICAgICAgIG1lbXNldChi
-aC0+Yl9kYXRhLCAwLCBibG9ja3NpemUpOwogICAgICAgICAgICAgICAgYnJhbmNoW25dLnAgPSAo
-X19sZTMyICopIGJoLT5iX2RhdGEgKyBvZmZzZXRzW25dOwogICAgICAgICAgICAgICAgYnJhbmNo
-W25dLmtleSA9IGNwdV90b19sZTMyKG5ld19ibG9ja3Nbbl0pOwogICAgICAgICAgICAgICAgKmJy
-YW5jaFtuXS5wID0gYnJhbmNoW25dLmtleTsKICAgICAgICAgICAgICAgIGlmICggbiA9PSBpbmRp
-cmVjdF9ibGtzKSB7CiAgICAgICAgICAgICAgICAgICAgICAgIGN1cnJlbnRfYmxvY2sgPSBuZXdf
-YmxvY2tzW25dOwogICAgICAgICAgICAgICAgICAgICAgICAvKgogICAgICAgICAgICAgICAgICAg
-ICAgICAgKiBFbmQgb2YgY2hhaW4sIHVwZGF0ZSB0aGUgbGFzdCBuZXcgbWV0YWJsb2NrIG9mCiAg
-ICAgICAgICAgICAgICAgICAgICAgICAqIHRoZSBjaGFpbiB0byBwb2ludCB0byB0aGUgbmV3IGFs
-bG9jYXRlZAogICAgICAgICAgICAgICAgICAgICAgICAgKiBkYXRhIGJsb2NrcyBudW1iZXJzCiAg
-ICAgICAgICAgICAgICAgICAgICAgICAqLwogICAgICAgICAgICAgICAgICAgICAgICBmb3IgKGk9
-MTsgaSA8IG51bTsgaSsrKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICooYnJhbmNo
-W25dLnAgKyBpKSA9IGNwdV90b19sZTMyKCsrY3VycmVudF9ibG9jayk7CiAgICAgICAgICAgICAg
-ICB9CiAgICAgICAgICAgICAgICBzZXRfYnVmZmVyX3VwdG9kYXRlKGJoKTsKICAgICAgICAgICAg
-ICAgIHVubG9ja19idWZmZXIoYmgpOwogICAgICAgICAgICAgICAgbWFya19idWZmZXJfZGlydHlf
-aW5vZGUoYmgsIGlub2RlKTsgICAKICAgICAgICAgICAgICAgIC8qIFdlIHVzZWQgdG8gc3luYyBi
-aCBoZXJlIGlmIElTX1NZTkMoaW5vZGUpLgogICAgICAgICAgICAgICAgICogQnV0IHdlIG5vdyBy
-ZWx5IHVwb24gZ2VuZXJpY193cml0ZV9zeW5jKCkKICAgICAgICAgICAgICAgICAqIGFuZCBiX2lu
-b2RlX2J1ZmZlcnMuICBCdXQgbm90IGZvciBkaXJlY3Rvcmllcy4KICAgICAgICAgICAgICAgICAq
-LwoKICAgICBUaGFua3MgdmVyeSBtdWNoLgoK
+On Thu, Nov 19, 2020 at 04:30:36PM +0000, Will Deacon wrote:
+> On Thu, Nov 19, 2020 at 05:19:56PM +0100, Peter Zijlstra wrote:
+> > On Thu, Nov 19, 2020 at 11:06:04AM +0000, Will Deacon wrote:
+> > > On Thu, Nov 19, 2020 at 09:24:07AM +0000, Quentin Perret wrote:
+> > > > On Friday 13 Nov 2020 at 09:37:13 (+0000), Will Deacon wrote:
+> > > > > When exec'ing a 32-bit task on a system with mismatched support for
+> > > > > 32-bit EL0, try to ensure that it starts life on a CPU that can actually
+> > > > > run it.
+> > > > > 
+> > > > > Signed-off-by: Will Deacon <will@kernel.org>
+> > > > > ---
+> > > > >  arch/arm64/kernel/process.c | 12 +++++++++++-
+> > > > >  1 file changed, 11 insertions(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> > > > > index 1540ab0fbf23..17b94007fed4 100644
+> > > > > --- a/arch/arm64/kernel/process.c
+> > > > > +++ b/arch/arm64/kernel/process.c
+> > > > > @@ -625,6 +625,16 @@ unsigned long arch_align_stack(unsigned long sp)
+> > > > >  	return sp & ~0xf;
+> > > > >  }
+> > > > >  
+> > > > > +static void adjust_compat_task_affinity(struct task_struct *p)
+> > > > > +{
+> > > > > +	const struct cpumask *mask = system_32bit_el0_cpumask();
+> > > > > +
+> > > > > +	if (restrict_cpus_allowed_ptr(p, mask))
+> > > > > +		set_cpus_allowed_ptr(p, mask);
+> > > > 
+> > > > My understanding of this call to set_cpus_allowed_ptr() is that you're
+> > > > mimicking the hotplug vs affinity case behaviour in some ways. That is,
+> > > > if a task is pinned to a CPU and userspace hotplugs that CPU, then the
+> > > > kernel will reset the affinity of the task to the remaining online CPUs.
+> > > 
+> > > Correct. It looks to the 32-bit application like all the 64-bit-only CPUs
+> > > were hotplugged off at the point of the execve().
+> > 
+> > This doesn't respect cpusets though :/
+> 
+> How does that differ from select_fallback_rq()?
+
+That has that cpuset state it tries first, only if that fails does it do
+the possible mask.
+
