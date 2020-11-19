@@ -2,107 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16EA2B9190
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C132B9143
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 12:43:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727736AbgKSLos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 06:44:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727353AbgKSLmt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 06:42:49 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCCAC061A51
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:42:47 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id p22so6876163wmg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 03:42:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wzKNqJHF/k+BxyxnqhMmFe/hNlc7WNmTxpYu93YpGLI=;
-        b=CZhYx6N768QPB9ef5sqVZFQu+0t/M29cnuTLJuHbRzFb8MBP/VaINu1lZGHy7RHkDM
-         9y8hu+zAh+Q7pQGaBf2yiUl/o3qsbSGyXRO4EnqDZIeCAHAvxu4OI1m8v1sfdfzqaOl6
-         ceehsAPbxFu0YKpu5YfUDl1RkPAhm1X/2KyXJzlkjpqK6EDrbhEsSm8cZvdrlfX1oXbZ
-         rE5LaIa4YwDpO3MqiGe75bFUevD9LdMbc0NEYCgRVyPZDt5Jfoebx+Q/dCjnOoMgyBfM
-         oMJdTN6QYwUh5KRuagn7RWOHQh/DDbtijqPx0qa0ES5O5jyjUY23dheL6/OudHWQBwp1
-         JIrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wzKNqJHF/k+BxyxnqhMmFe/hNlc7WNmTxpYu93YpGLI=;
-        b=hU+aQs/fV4QxOH1fFxve77K3zEtdE7HzAPg0w8UllDb+BwevMhj+7/eg/Db2sloh5+
-         rEnsVu7gPdrxOWPKNccznPWbWdNgylOB70ikZnhe0GNSWtbkkAsjXuoIKrSjneXe1dRW
-         83BHTPCGRfPYOZx88Zwp0uf8EkVPNF63qUZv0SWV8J2J7IoEFHgY0x+lwFMVioVZEaMN
-         /Quk8nliswrCRT71OyYprOUIKDQ7rELaXCFYF4vT3HOjJuWCWtLS4ratOkXwnAImr1s1
-         HOXxa4SPBVaFnk38ET2u6wJEE1QcMgch+FrEmEX+GBseaiG2a0DKX8LI1RQubX4VvleJ
-         CzEA==
-X-Gm-Message-State: AOAM533iVVjShVbCaTrT0mGT8G/GyxbG+/re5uyBN4m5rBUZURd7h20H
-        DcRX1QuGZeMbBjLP3DTawVRmTA==
-X-Google-Smtp-Source: ABdhPJwX1mLV1BSAwWv73kg8fb4Ma3+Ri656b0A6+ueMFnTfwgzcFGCJKEepfUjmvUnpzPt9LK/4fQ==
-X-Received: by 2002:a1c:6002:: with SMTP id u2mr3831585wmb.29.1605786166507;
-        Thu, 19 Nov 2020 03:42:46 -0800 (PST)
-Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr. [2.15.39.206])
-        by smtp.gmail.com with ESMTPSA id u23sm9745178wmc.32.2020.11.19.03.42.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 03:42:45 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 40/59] rtc: r7301: stop using deprecated RTC API
-Date:   Thu, 19 Nov 2020 12:41:30 +0100
-Message-Id: <20201119114149.4117-41-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201119114149.4117-1-brgl@bgdev.pl>
-References: <20201119114149.4117-1-brgl@bgdev.pl>
+        id S1726759AbgKSLli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 06:41:38 -0500
+Received: from mga17.intel.com ([192.55.52.151]:29896 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726334AbgKSLlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 06:41:37 -0500
+IronPort-SDR: Cznr2dYtgGtppze0X6tBazd7L59snpDmfFhtgNL3woOKRZpon0boDFZj+V+IfYmizrd+9pq47F
+ DImcDv8RZ4vg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="151123415"
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="151123415"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 03:41:36 -0800
+IronPort-SDR: lEjV9bkPOwmf05NHeMLf/OokgtxysKWgeKB05l6QY1couE3Bn2DD8uPL0fPFe2gul99j5LAMXV
+ sTSkBfjLoGvQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="368735122"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 Nov 2020 03:41:31 -0800
+Subject: Re: [RFC PATCH v4] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>, Mel Gorman <mgorman@suse.de>,
+        Jiang Biao <benbjiang@gmail.com>
+References: <20201116200428.47359-1-aubrey.li@linux.intel.com>
+ <CAKfTPtD_Q1riUBm1S5=bGgmMsoi64_33Turs_W+v9eiqJn=wyA@mail.gmail.com>
+ <9d840684-95ad-ece9-8068-29ea72fb61b7@linux.intel.com>
+ <CAKfTPtDuypRFH1hnLsMEwZV1-Zb4dcd8gwtuuZU11hi4_Aepyw@mail.gmail.com>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <4a660207-a67e-87a9-d422-cec497a9c245@linux.intel.com>
+Date:   Thu, 19 Nov 2020 19:41:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKfTPtDuypRFH1hnLsMEwZV1-Zb4dcd8gwtuuZU11hi4_Aepyw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On 2020/11/19 16:19, Vincent Guittot wrote:
+> On Thu, 19 Nov 2020 at 02:34, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
+>>
+>> Hi Vincent,
+>>
+>> On 2020/11/18 21:36, Vincent Guittot wrote:
+>>> On Wed, 18 Nov 2020 at 04:48, Aubrey Li <aubrey.li@linux.intel.com> wrote:
+>>>>
+>>>> From: Aubrey Li <aubrey.li@intel.com>
+>>>>
+>>>> Add idle cpumask to track idle cpus in sched domain. When a CPU
+>>>> enters idle, if the idle driver indicates to stop tick, this CPU
+>>>> is set in the idle cpumask to be a wakeup target. And if the CPU
+>>>> is not in idle, the CPU is cleared in idle cpumask during scheduler
+>>>> tick to ratelimit idle cpumask update.
+>>>>
+>>>> When a task wakes up to select an idle cpu, scanning idle cpumask
+>>>> has low cost than scanning all the cpus in last level cache domain,
+>>>> especially when the system is heavily loaded.
+>>>>
+>>>> Benchmarks were tested on a x86 4 socket system with 24 cores per
+>>>> socket and 2 hyperthreads per core, total 192 CPUs. Hackbench and
+>>>> schbench have no notable change, uperf has:
+>>>>
+>>>> uperf throughput: netperf workload, tcp_nodelay, r/w size = 90
+>>>>
+>>>>   threads       baseline-avg    %std    patch-avg       %std
+>>>>   96            1               0.83    1.23            3.27
+>>>>   144           1               1.03    1.67            2.67
+>>>>   192           1               0.69    1.81            3.59
+>>>>   240           1               2.84    1.51            2.67
+>>>>
+>>>> Cc: Mel Gorman <mgorman@suse.de>
+>>>> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+>>>> Cc: Qais Yousef <qais.yousef@arm.com>
+>>>> Cc: Valentin Schneider <valentin.schneider@arm.com>
+>>>> Cc: Jiang Biao <benbjiang@gmail.com>
+>>>> Cc: Tim Chen <tim.c.chen@linux.intel.com>
+>>>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+>>>> ---
+>>>>  include/linux/sched/topology.h | 13 +++++++++
+>>>>  kernel/sched/core.c            |  2 ++
+>>>>  kernel/sched/fair.c            | 52 +++++++++++++++++++++++++++++++++-
+>>>>  kernel/sched/idle.c            |  7 +++--
+>>>>  kernel/sched/sched.h           |  2 ++
+>>>>  kernel/sched/topology.c        |  3 +-
+>>>>  6 files changed, 74 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+>>>> index 820511289857..b47b85163607 100644
+>>>> --- a/include/linux/sched/topology.h
+>>>> +++ b/include/linux/sched/topology.h
+>>>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+>>>>         atomic_t        ref;
+>>>>         atomic_t        nr_busy_cpus;
+>>>>         int             has_idle_cores;
+>>>> +       /*
+>>>> +        * Span of all idle CPUs in this domain.
+>>>> +        *
+>>>> +        * NOTE: this field is variable length. (Allocated dynamically
+>>>> +        * by attaching extra space to the end of the structure,
+>>>> +        * depending on how many CPUs the kernel has booted up with)
+>>>> +        */
+>>>> +       unsigned long   idle_cpus_span[];
+>>>>  };
+>>>>
+>>>> +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
+>>>> +{
+>>>> +       return to_cpumask(sds->idle_cpus_span);
+>>>> +}
+>>>> +
+>>>>  struct sched_domain {
+>>>>         /* These fields must be setup */
+>>>>         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
+>>>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>>>> index b1e0da56abca..c86ae0495163 100644
+>>>> --- a/kernel/sched/core.c
+>>>> +++ b/kernel/sched/core.c
+>>>> @@ -3994,6 +3994,7 @@ void scheduler_tick(void)
+>>>>         rq_lock(rq, &rf);
+>>>>
+>>>>         update_rq_clock(rq);
+>>>> +       update_idle_cpumask(rq, false);
+>>>>         thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
+>>>>         update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+>>>>         curr->sched_class->task_tick(rq, curr, 0);
+>>>> @@ -7192,6 +7193,7 @@ void __init sched_init(void)
+>>>>                 rq_csd_init(rq, &rq->nohz_csd, nohz_csd_func);
+>>>>  #endif
+>>>>  #endif /* CONFIG_SMP */
+>>>> +               rq->last_idle_state = 1;
+>>>>                 hrtick_rq_init(rq);
+>>>>                 atomic_set(&rq->nr_iowait, 0);
+>>>>         }
+>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>>>> index 48a6d442b444..d67fba5e406b 100644
+>>>> --- a/kernel/sched/fair.c
+>>>> +++ b/kernel/sched/fair.c
+>>>> @@ -6145,7 +6145,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>>>>
+>>>>         time = cpu_clock(this);
+>>>>
+>>>> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+>>>> +       /*
+>>>> +        * sched_domain_shared is set only at shared cache level,
+>>>> +        * this works only because select_idle_cpu is called with
+>>>> +        * sd_llc.
+>>>> +        */
+>>>> +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+>>>>
+>>>>         for_each_cpu_wrap(cpu, cpus, target) {
+>>>>                 if (!--nr)
+>>>> @@ -6807,6 +6812,51 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>>>>  }
+>>>>  #endif /* CONFIG_SMP */
+>>>>
+>>>> +/*
+>>>> + * Update cpu idle state and record this information
+>>>> + * in sd_llc_shared->idle_cpus_span.
+>>>> + */
+>>>> +void update_idle_cpumask(struct rq *rq, bool set_idle)
+>>>> +{
+>>>> +       struct sched_domain *sd;
+>>>> +       int cpu = cpu_of(rq);
+>>>> +       int idle_state;
+>>>> +
+>>>> +       /*
+>>>> +        * If called from scheduler tick, only update
+>>>> +        * idle cpumask if the CPU is busy, as idle
+>>>> +        * cpumask is also updated on idle entry.
+>>>> +        *
+>>>> +        */
+>>>> +       if (!set_idle && idle_cpu(cpu))
+>>>> +               return;
+>>>> +       /*
+>>>> +        * Also set SCHED_IDLE cpu in idle cpumask to
+>>>> +        * allow SCHED_IDLE cpu as a wakeup target
+>>>> +        */
+>>>> +       idle_state = set_idle || sched_idle_cpu(cpu);
+>>>> +       /*
+>>>> +        * No need to update idle cpumask if the state
+>>>> +        * does not change.
+>>>> +        */
+>>>> +       if (rq->last_idle_state == idle_state)
+>>>> +               return;
+>>>> +
+>>>> +       rcu_read_lock();
+>>>> +       sd = rcu_dereference(per_cpu(sd_llc, cpu));
+>>>> +       if (!sd || !sd->shared)
+>>>> +               goto unlock;
+>>>> +
+>>>> +       if (idle_state)
+>>>> +               cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
+>>>> +       else
+>>>> +               cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
+>>>> +
+>>>> +       rq->last_idle_state = idle_state;
+>>>> +unlock:
+>>>> +       rcu_read_unlock();
+>>>> +}
+>>>> +
+>>>>  static unsigned long wakeup_gran(struct sched_entity *se)
+>>>>  {
+>>>>         unsigned long gran = sysctl_sched_wakeup_granularity;
+>>>> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+>>>> index f324dc36fc43..0bd83c00c22a 100644
+>>>> --- a/kernel/sched/idle.c
+>>>> +++ b/kernel/sched/idle.c
+>>>> @@ -164,7 +164,7 @@ static void cpuidle_idle_call(void)
+>>>>
+>>>>         if (cpuidle_not_available(drv, dev)) {
+>>>>                 tick_nohz_idle_stop_tick();
+>>>> -
+>>>> +               update_idle_cpumask(this_rq(), true);
+>>>>                 default_idle_call();
+>>>>                 goto exit_idle;
+>>>>         }
+>>>> @@ -205,9 +205,10 @@ static void cpuidle_idle_call(void)
+>>>>                  */
+>>>>                 next_state = cpuidle_select(drv, dev, &stop_tick);
+>>>>
+>>>> -               if (stop_tick || tick_nohz_tick_stopped())
+>>>> +               if (stop_tick || tick_nohz_tick_stopped()) {
+>>>> +                       update_idle_cpumask(this_rq(), true);
+>>>>                         tick_nohz_idle_stop_tick();
+>>>
+>>> please keep same ordering here and above
+>>> tick_nohz_idle_stop_tick();
+>>> update_idle_cpumask(this_rq(), true);
+>>
+>> okay, will do, thanks!
+>>
+>>>
+>>> Also, it might be good to call update_idle_cpumask everywhere
+>>> tick_nohz_idle_stop_tick is called. For example S2Idle case should
+>>> also set the mask
+>>
+>> Hmm, I did think about this, but not sure what's the point here to
+>> set the mask when the whole system suspend to idle and all user space
+>> are forzen?
+> 
+> when system is in suspend to idle state, the cpu is idle. Would be
+> good to set it in the mask so it can be used after the resume without
+> waiting for an idle load balance to pull task if any
+> 
 
-devm_rtc_device_register() is deprecated. Use devm_rtc_allocate_device()
-and devm_rtc_register_device() pair instead.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/rtc/rtc-r7301.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/rtc/rtc-r7301.c b/drivers/rtc/rtc-r7301.c
-index aaf1b95e3990..a879313dbb05 100644
---- a/drivers/rtc/rtc-r7301.c
-+++ b/drivers/rtc/rtc-r7301.c
-@@ -381,11 +381,12 @@ static int __init rtc7301_rtc_probe(struct platform_device *dev)
- 
- 	platform_set_drvdata(dev, priv);
- 
--	rtc = devm_rtc_device_register(&dev->dev, DRV_NAME, &rtc7301_rtc_ops,
--				       THIS_MODULE);
-+	rtc = devm_rtc_allocate_device(&dev->dev);
- 	if (IS_ERR(rtc))
- 		return PTR_ERR(rtc);
- 
-+	rtc->ops = &rtc7301_rtc_ops;
-+
- 	if (priv->irq > 0) {
- 		ret = devm_request_irq(&dev->dev, priv->irq,
- 				       rtc7301_irq_handler, IRQF_SHARED,
-@@ -398,7 +399,7 @@ static int __init rtc7301_rtc_probe(struct platform_device *dev)
- 		}
- 	}
- 
--	return 0;
-+	return devm_rtc_register_device(rtc);
- }
- 
- #ifdef CONFIG_PM_SLEEP
--- 
-2.29.1
-
+Okay, make sense, thanks!
