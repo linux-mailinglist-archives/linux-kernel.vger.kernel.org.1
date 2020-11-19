@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41442B89FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 03:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6AA2B8A01
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 03:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727472AbgKSCHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 21:07:09 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:55617 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727265AbgKSCHI (ORCPT
+        id S1727307AbgKSCMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 21:12:08 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:45256 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726243AbgKSCMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 21:07:08 -0500
-Received: by mail-io1-f72.google.com with SMTP id j10so3141345iog.22
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Nov 2020 18:07:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=C3VJue3RGqKKiz/dey+cwbB/cJZLcFnQvx6oQYKE/kA=;
-        b=R+Ldky7fmjTU7kiDpwvOKa56ueyGeZSg7N4Cg20JFJUKTs/E6TVA7IbkxcLC668nmf
-         gTsNN7ar639lbTXAPfocU5z1IUoGbS7qwoGy1qZeJLm0r8N1OWZ0lkVVtEMR3vGtrlJk
-         3bWtlwcN1SqYgxu2s6my12VL62luG+KG9cbbb5LngvWr2QogxE3K5rlh0AiLqTX1azW6
-         ObjeVWXa11HXCrUCoemYNi8gjitBy/xNOGzgTM9YWv92uQW9eRptvS7n7biNc1b7hQ6u
-         2a5TfaK/q0ZsN4MhbZnD97ucoTdXETFgVbwPCQq42wy1+gqhlnRqg+jhkBZHYIx1HfXO
-         ujxw==
-X-Gm-Message-State: AOAM533wa+iDQZ4gJ8C0stphxOjlu8qoBDoSRP/wz8meVlpZLL9DAui6
-        /9LvFyxz+RfeMaEx+hfvw+tydmUh0yWoWLzBaY/K5ktjcROq
-X-Google-Smtp-Source: ABdhPJwGnfqYhdSrWrWlFmOilVg/nbpNsCCtVfqEKKfBbwvtt+AtVgNH1kqI3lh4iC2puEfZ8izsr5iBAXYRKFBDRtB9wzApLcos
+        Wed, 18 Nov 2020 21:12:07 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UFqkO0o_1605751923;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFqkO0o_1605751923)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 19 Nov 2020 10:12:04 +0800
+Subject: Re: [PATCH] docs/vm: remove unused 3 items explanation for
+ /proc/vmstat
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, Zi Yan <ziy@nvidia.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1605520282-51993-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201118134629.31b3cdf8@lwn.net>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <4e4931f5-ee46-98c2-38f2-3e8d1f515b44@linux.alibaba.com>
+Date:   Thu, 19 Nov 2020 10:10:29 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:6e0a:: with SMTP id j10mr3269284ilc.272.1605751627741;
- Wed, 18 Nov 2020 18:07:07 -0800 (PST)
-Date:   Wed, 18 Nov 2020 18:07:07 -0800
-In-Reply-To: <00000000000055348705b43c701d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005e834e05b46c2f37@google.com>
-Subject: Re: KASAN: use-after-free Read in ath9k_hif_usb_rx_cb (2)
-From:   syzbot <syzbot+03110230a11411024147@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, ath9k-devel@qca.qualcomm.com,
-        davem@davemloft.net, johannes.berg@intel.com,
-        johannes@sipsolutions.net, kuba@kernel.org, kvalo@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201118134629.31b3cdf8@lwn.net>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
 
-commit dcd479e10a0510522a5d88b29b8f79ea3467d501
-Author: Johannes Berg <johannes.berg@intel.com>
-Date:   Fri Oct 9 12:17:11 2020 +0000
 
-    mac80211: always wind down STA state
+ÔÚ 2020/11/19 ÉÏÎç4:46, Jonathan Corbet Ð´µÀ:
+> On Mon, 16 Nov 2020 17:51:22 +0800
+> Alex Shi <alex.shi@linux.alibaba.com> wrote:
+> 
+>> Commit 5647bc293ab1 ("mm: compaction: Move migration fail/success
+>> stats to migrate.c"), removed 3 items in /proc/vmstat. but the docs
+>> still has their explanation. let's remove them.
+>>
+>> "compact_blocks_moved",
+>> "compact_pages_moved",
+>> "compact_pagemigrate_failed",
+> 
+> So a quick look says that the above-mentioned patch didn't remove those
+> three items; two of them were, instead, renamed.  Rather than just taking
+> out the old information, it seems we should actually update it to reflect
+> current reality?
+> 
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=100c9c16500000
-start commit:   0fa8ee0d Merge branch 'for-linus' of git://git.kernel.org/..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=120c9c16500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=140c9c16500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=75292221eb79ace2
-dashboard link: https://syzkaller.appspot.com/bug?extid=03110230a11411024147
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1587f841500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ec0fe6500000
+I thought about the replacement, but there are couple of migration events
+have no explanation:
 
-Reported-by: syzbot+03110230a11411024147@syzkaller.appspotmail.com
-Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
+#ifdef CONFIG_MIGRATION
+        "pgmigrate_success",
+        "pgmigrate_fail",
+        "thp_migration_success",
+        "thp_migration_fail",
+        "thp_migration_split",
+#endif
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+It's better to fill them together, also change current explanation accordinglly.
+but I'm not so confident on this now...
+
+Thanks
+Alex
