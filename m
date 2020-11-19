@@ -2,116 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3FF2B93BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBA62B93BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgKSNii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 08:38:38 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50916 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726480AbgKSNih (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 08:38:37 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJDcTYr042372;
-        Thu, 19 Nov 2020 07:38:29 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605793109;
-        bh=nHG4ole5ud6+/+q2v9aEYqrYVx8fqlP+wXkdMjeFNZA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=P/u19tPkmGmf0S+O9VCaSKHmoovk35StxJoaLMTWGWiy1smaplz0CMJHZ6y/jVVYJ
-         4VlZFprH+ZzCxbSrzR4CQY3n3e6VImdEfZgMOMz+ftcakwlpR41gibWSbOW3jWvIXI
-         81+JM+YpqPb1tnyeHJ8/S4TzdEYUpTI0gkFIqGNc=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJDcTjd034689
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 07:38:29 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
- Nov 2020 07:38:29 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 19 Nov 2020 07:38:29 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJDcRZx121192;
-        Thu, 19 Nov 2020 07:38:27 -0600
-Subject: Re: [PATCH] mdio_bus: suppress err message for reset gpio
- EPROBE_DEFER
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20201118142426.25369-1-grygorii.strashko@ti.com>
- <0329ed05-371b-0bb5-4f85-75ecaff6a70b@gmail.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <655ec6e4-6e75-1835-034c-ec18dac505e8@ti.com>
-Date:   Thu, 19 Nov 2020 15:38:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727160AbgKSNjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 08:39:45 -0500
+Received: from mga18.intel.com ([134.134.136.126]:31000 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726407AbgKSNjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 08:39:45 -0500
+IronPort-SDR: PjvZHtmNwVKS4koAbI8rSyZuAOF9ZMyPTFKy6N2uQqlQag0SOVcX9WTjb8vFfoeXAxVxOg7JAJ
+ 6xexPtg+EfbA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="159060287"
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="159060287"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 05:39:44 -0800
+IronPort-SDR: qmO9at6lIvf1VQofucHqKo4928urj40vKFCphf8Pa+VPm8R4L2bmqkU4LLMz1ZsQe6HmeVLxzp
+ 7S1hXpPimlug==
+X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
+   d="scan'208";a="357380931"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 05:39:41 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id E3E2420AA6; Thu, 19 Nov 2020 15:39:39 +0200 (EET)
+Date:   Thu, 19 Nov 2020 15:39:39 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Alexander A . Klimov" <grandmaster@al2klimov.de>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] docs: ACPI: dsd: enable hyperlink in final references
+Message-ID: <20201119133939.GW3940@paasikivi.fi.intel.com>
+References: <20201119125801.719775-1-f.suligoi@asem.it>
 MIME-Version: 1.0
-In-Reply-To: <0329ed05-371b-0bb5-4f85-75ecaff6a70b@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119125801.719775-1-f.suligoi@asem.it>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 19/11/2020 14:30, Heiner Kallweit wrote:
-> Am 18.11.2020 um 15:24 schrieb Grygorii Strashko:
->> The mdio_bus may have dependencies from GPIO controller and so got
->> deferred. Now it will print error message every time -EPROBE_DEFER is
->> returned from:
->> __mdiobus_register()
->>   |-devm_gpiod_get_optional()
->> without actually identifying error code.
->>
->> "mdio_bus 4a101000.mdio: mii_bus 4a101000.mdio couldn't get reset GPIO"
->>
->> Hence, suppress error message when devm_gpiod_get_optional() returning
->> -EPROBE_DEFER case.
->>
->> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
->> ---
->>   drivers/net/phy/mdio_bus.c | 7 ++++---
->>   1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
->> index 757e950fb745..54fc13043656 100644
->> --- a/drivers/net/phy/mdio_bus.c
->> +++ b/drivers/net/phy/mdio_bus.c
->> @@ -546,10 +546,11 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
->>   	/* de-assert bus level PHY GPIO reset */
->>   	gpiod = devm_gpiod_get_optional(&bus->dev, "reset", GPIOD_OUT_LOW);
->>   	if (IS_ERR(gpiod)) {
->> -		dev_err(&bus->dev, "mii_bus %s couldn't get reset GPIO\n",
->> -			bus->id);
->> +		err = PTR_ERR(gpiod);
->> +		if (err != -EPROBE_DEFER)
->> +			dev_err(&bus->dev, "mii_bus %s couldn't get reset GPIO %d\n", bus->id, err);
->>   		device_del(&bus->dev);
->> -		return PTR_ERR(gpiod);
->> +		return err;
->>   	} else	if (gpiod) {
->>   		bus->reset_gpiod = gpiod;
->>   
->>
+On Thu, Nov 19, 2020 at 01:58:01PM +0100, Flavio Suligoi wrote:
+> For inline web links, no special markup are needed.
 > 
-> Using dev_err_probe() here would simplify the code.
-> 
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 
-this was my first though, but was not sure if it's correct as dev_err_probe() will use dev
-to store defer reason, but the same 'dev' is deleted on the next line.
+Thanks!
 
-I also thought about using bus->parent, but it's not always provided.
-
-So, if you think dev_err_probe(0) can be used - I can change and re-send.
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
 -- 
-Best regards,
-grygorii
+Sakari Ailus
