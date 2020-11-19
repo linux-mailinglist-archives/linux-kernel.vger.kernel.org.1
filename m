@@ -2,220 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C872B9219
+	by mail.lfdr.de (Postfix) with ESMTP id 837BA2B921A
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbgKSMGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:06:36 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:57896 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726644AbgKSMGf (ORCPT
+        id S1727205AbgKSMHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:07:02 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:39488 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726988AbgKSMHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:06:35 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJC0Swt095992;
-        Thu, 19 Nov 2020 12:06:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=qEx9t7tQaIGsPorhAyQjWXsRJWZTv6KV0Zpr9SxOTcg=;
- b=O1CRShF/T+ymsaVuC6253zCPcnGXCyRAH5+u4IkMtSDcjINfMzvg+bP06A5PU45bt6tu
- iyJCDN0EVbGQ0x1qN4MwB9A4u2/U6IcmJPSNusFeKX+AvLKydZcKfVCNjqyfO085wZ8T
- AXXQXm0JR2PTTufuqW+RdHtBG+BFeB29revK2kmldl2oyCnULMi5BeeE2hF/MMTwID0y
- t2wQhOB6Ivz45WUJWMnB/5tQ+cYpXHXNRATRoMhwxnUorGrZF5J+Y7h5HdvaHF1ObaMj
- m7bvSJfOIYSz7SUN9J0NK7c8pJv69KYQYT68cWASczd6dHpvr5TCRaPBGNipxAuhtp0v vA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 34t4rb54tq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 12:06:05 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJC0ewN085635;
-        Thu, 19 Nov 2020 12:04:04 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 34ts5yv844-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Nov 2020 12:04:04 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AJC3wVn028390;
-        Thu, 19 Nov 2020 12:03:58 GMT
-Received: from linux.home (/10.175.56.254)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Nov 2020 04:03:58 -0800
-Subject: Re: [RFC][PATCH v2 12/21] x86/pti: Use PTI stack instead of
- trampoline stack
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Thu, 19 Nov 2020 07:07:01 -0500
+X-UUID: 791bf6180cfb4282bc04daf6fe3c4266-20201119
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=BxaKCvbGMroRDKzMiJNq1cYSi2kIAUSuDsxHbXnM8mQ=;
+        b=FbwBuPPNN5cwBZkUSqrmsarI4Rhd9BDiVJK2PKPAm6DW3wDtV6RROqrPAFb6Me2+4iCXm8assSoKK2VkZMUJ93D/P02bLIMisnhvVrgAK98xbZtRvHH4Xpn4g3Fcr/fi8ZSr2usLBPqa3OS2hS3OWCwWibw88zCxfHWlDrdhnx4=;
+X-UUID: 791bf6180cfb4282bc04daf6fe3c4266-20201119
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <kuan-ying.lee@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1422574732; Thu, 19 Nov 2020 20:06:55 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 19 Nov 2020 20:06:53 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 19 Nov 2020 20:06:53 +0800
+Message-ID: <1605787613.29084.32.camel@mtksdccf07>
+Subject: Re: [PATCH v2 1/1] kasan: fix object remain in offline per-cpu
+ quarantine
+From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+CC:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        jan.setjeeilers@oracle.com, Junaid Shahid <junaids@google.com>,
-        oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
-        kuzuno@gmail.com
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116144757.1920077-13-alexandre.chartre@oracle.com>
- <CALCETrUSCwtR41CCo_cAQf_BwG7istH6fM=bxWh_VfOjSNFmSw@mail.gmail.com>
- <bc8a254e-deaa-388e-99ea-0291f5625b5b@oracle.com>
- <CALCETrUJQJRi6fE=bs3iAySgM8wjmGU1f464FqOuU+PiBwwnQQ@mail.gmail.com>
- <bf919e4b-d56f-711d-f7ae-b463b8fdadfd@oracle.com>
- <CALCETrWS8_yugbLGFpGUbj2Z5bV04jnCNcnc40QUXWCdmJQU-g@mail.gmail.com>
- <6f513efb-cde8-50f4-7872-13a18a10c4a6@oracle.com>
- <CALCETrWBwFifg3mniUcdB7PO1CgzcxaNPYuWK3c7zK9H-hv=6Q@mail.gmail.com>
- <2f6a446a-e656-627c-27f2-8411f318448c@oracle.com>
-Message-ID: <88bab705-4b33-bda9-3ece-563234822095@oracle.com>
-Date:   Thu, 19 Nov 2020 13:06:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <nicholas.tang@mediatek.com>,
+        Miles Chen <miles.chen@mediatek.com>,
+        <guangye.yang@mediatek.com>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Date:   Thu, 19 Nov 2020 20:06:53 +0800
+In-Reply-To: <CACT4Y+ZpK5YKLrN_jvaD60YFKQ-kVHc=91NTBzhX5PZRTHVd7g@mail.gmail.com>
+References: <1605508168-7418-1-git-send-email-Kuan-Ying.Lee@mediatek.com>
+         <1605508168-7418-2-git-send-email-Kuan-Ying.Lee@mediatek.com>
+         <CACT4Y+Zy_JQ3y7_P2NXffiijTuxcnh7VPcAGL66Ks2LaLTj-eg@mail.gmail.com>
+         <1605595583.29084.24.camel@mtksdccf07>
+         <CACT4Y+ZpK5YKLrN_jvaD60YFKQ-kVHc=91NTBzhX5PZRTHVd7g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <2f6a446a-e656-627c-27f2-8411f318448c@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011190091
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190091
+X-TM-SNTS-SMTP: D7C440176C6B4D09255888CCD89F8353F4DFF4A81CDD6B698FE89F10231667002000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gVHVlLCAyMDIwLTExLTE3IGF0IDA4OjEzICswMTAwLCBEbWl0cnkgVnl1a292IHdyb3RlOg0K
+PiBPbiBUdWUsIE5vdiAxNywgMjAyMCBhdCA3OjQ2IEFNIEt1YW4tWWluZyBMZWUNCj4gPEt1YW4t
+WWluZy5MZWVAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IE9uIE1vbiwgMjAyMC0xMS0x
+NiBhdCAxMDoyNiArMDEwMCwgRG1pdHJ5IFZ5dWtvdiB3cm90ZToNCj4gPiA+IE9uIE1vbiwgTm92
+IDE2LCAyMDIwIGF0IDc6MzAgQU0gS3Vhbi1ZaW5nIExlZQ0KPiA+ID4gPEt1YW4tWWluZy5MZWVA
+bWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPiA+ID4NCj4gPiA+ID4gV2UgaGl0IHRoaXMgaXNzdWUg
+aW4gb3VyIGludGVybmFsIHRlc3QuDQo+ID4gPiA+IFdoZW4gZW5hYmxpbmcgZ2VuZXJpYyBrYXNh
+biwgYSBrZnJlZSgpJ2Qgb2JqZWN0IGlzIHB1dCBpbnRvIHBlci1jcHUNCj4gPiA+ID4gcXVhcmFu
+dGluZSBmaXJzdC4gSWYgdGhlIGNwdSBnb2VzIG9mZmxpbmUsIG9iamVjdCBzdGlsbCByZW1haW5z
+IGluDQo+ID4gPiA+IHRoZSBwZXItY3B1IHF1YXJhbnRpbmUuIElmIHdlIGNhbGwga21lbV9jYWNo
+ZV9kZXN0cm95KCkgbm93LCBzbHViDQo+ID4gPiA+IHdpbGwgcmVwb3J0ICJPYmplY3RzIHJlbWFp
+bmluZyIgZXJyb3IuDQo+ID4gPiA+DQo+ID4gPiA+IFsgICA3NC45ODI2MjVdID09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09DQo+ID4gPiA+IFsgICA3NC45ODMzODBdIEJVRyB0ZXN0X21vZHVsZV9zbGFiIChO
+b3QgdGFpbnRlZCk6IE9iamVjdHMgcmVtYWluaW5nIGluIHRlc3RfbW9kdWxlX3NsYWIgb24gX19r
+bWVtX2NhY2hlX3NodXRkb3duKCkNCj4gPiA+ID4gWyAgIDc0Ljk4NDE0NV0gLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0NCj4gPiA+ID4gWyAgIDc0Ljk4NDE0NV0NCj4gPiA+ID4gWyAgIDc0Ljk4NDg4M10g
+RGlzYWJsaW5nIGxvY2sgZGVidWdnaW5nIGR1ZSB0byBrZXJuZWwgdGFpbnQNCj4gPiA+ID4gWyAg
+IDc0Ljk4NTU2MV0gSU5GTzogU2xhYiAweChfX19fcHRydmFsX19fXykgb2JqZWN0cz0zNCB1c2Vk
+PTEgZnA9MHgoX19fX3B0cnZhbF9fX18pIGZsYWdzPTB4MmZmZmYwMDAwMDAxMDIwMA0KPiA+ID4g
+PiBbICAgNzQuOTg2NjM4XSBDUFU6IDMgUElEOiAxNzYgQ29tbTogY2F0IFRhaW50ZWQ6IEcgICAg
+QiAgICAgICAgICAgICA1LjEwLjAtcmMxLTAwMDA3LWc0NTI1Yzg3ODFlYzAtZGlydHkgIzEwDQo+
+ID4gPiA+IFsgICA3NC45ODcyNjJdIEhhcmR3YXJlIG5hbWU6IGxpbnV4LGR1bW15LXZpcnQgKERU
+KQ0KPiA+ID4gPiBbICAgNzQuOTg3NjA2XSBDYWxsIHRyYWNlOg0KPiA+ID4gPiBbICAgNzQuOTg3
+OTI0XSAgZHVtcF9iYWNrdHJhY2UrMHgwLzB4MmIwDQo+ID4gPiA+IFsgICA3NC45ODgyOTZdICBz
+aG93X3N0YWNrKzB4MTgvMHg2OA0KPiA+ID4gPiBbICAgNzQuOTg4Njk4XSAgZHVtcF9zdGFjaysw
+eGZjLzB4MTY4DQo+ID4gPiA+IFsgICA3NC45ODkwMzBdICBzbGFiX2VycisweGFjLzB4ZDQNCj4g
+PiA+ID4gWyAgIDc0Ljk4OTM0Nl0gIF9fa21lbV9jYWNoZV9zaHV0ZG93bisweDFlNC8weDNjOA0K
+PiA+ID4gPiBbICAgNzQuOTg5Nzc5XSAga21lbV9jYWNoZV9kZXN0cm95KzB4NjgvMHgxMzANCj4g
+PiA+ID4gWyAgIDc0Ljk5MDE3Nl0gIHRlc3RfdmVyc2lvbl9zaG93KzB4ODQvMHhmMA0KPiA+ID4g
+PiBbICAgNzQuOTkwNjc5XSAgbW9kdWxlX2F0dHJfc2hvdysweDQwLzB4NjANCj4gPiA+ID4gWyAg
+IDc0Ljk5MTIxOF0gIHN5c2ZzX2tmX3NlcV9zaG93KzB4MTI4LzB4MWMwDQo+ID4gPiA+IFsgICA3
+NC45OTE2NTZdICBrZXJuZnNfc2VxX3Nob3crMHhhMC8weGI4DQo+ID4gPiA+IFsgICA3NC45OTIw
+NTldICBzZXFfcmVhZCsweDFmMC8weDdlOA0KPiA+ID4gPiBbICAgNzQuOTkyNDE1XSAga2VybmZz
+X2ZvcF9yZWFkKzB4NzAvMHgzMzgNCj4gPiA+ID4gWyAgIDc0Ljk5MzA1MV0gIHZmc19yZWFkKzB4
+ZTQvMHgyNTANCj4gPiA+ID4gWyAgIDc0Ljk5MzQ5OF0gIGtzeXNfcmVhZCsweGM4LzB4MTgwDQo+
+ID4gPiA+IFsgICA3NC45OTM4MjVdICBfX2FybTY0X3N5c19yZWFkKzB4NDQvMHg1OA0KPiA+ID4g
+PiBbICAgNzQuOTk0MjAzXSAgZWwwX3N2Y19jb21tb24uY29uc3Rwcm9wLjArMHhhYy8weDIyOA0K
+PiA+ID4gPiBbICAgNzQuOTk0NzA4XSAgZG9fZWwwX3N2YysweDM4LzB4YTANCj4gPiA+ID4gWyAg
+IDc0Ljk5NTA4OF0gIGVsMF9zeW5jX2hhbmRsZXIrMHgxNzAvMHgxNzgNCj4gPiA+ID4gWyAgIDc0
+Ljk5NTQ5N10gIGVsMF9zeW5jKzB4MTc0LzB4MTgwDQo+ID4gPiA+IFsgICA3NC45OTYwNTBdIElO
+Rk86IE9iamVjdCAweChfX19fcHRydmFsX19fXykgQG9mZnNldD0xNTg0OA0KPiA+ID4gPiBbICAg
+NzQuOTk2NzUyXSBJTkZPOiBBbGxvY2F0ZWQgaW4gdGVzdF92ZXJzaW9uX3Nob3crMHg5OC8weGYw
+IGFnZT04MTg4IGNwdT02IHBpZD0xNzINCj4gPiA+ID4gWyAgIDc1LjAwMDgwMl0gIHN0YWNrX3Ry
+YWNlX3NhdmUrMHg5Yy8weGQwDQo+ID4gPiA+IFsgICA3NS4wMDI0MjBdICBzZXRfdHJhY2srMHg2
+NC8weGYwDQo+ID4gPiA+IFsgICA3NS4wMDI3NzBdICBhbGxvY19kZWJ1Z19wcm9jZXNzaW5nKzB4
+MTA0LzB4MWEwDQo+ID4gPiA+IFsgICA3NS4wMDMxNzFdICBfX19zbGFiX2FsbG9jKzB4NjI4LzB4
+NjQ4DQo+ID4gPiA+IFsgICA3NS4wMDQyMTNdICBfX3NsYWJfYWxsb2MuaXNyYS4wKzB4MmMvMHg1
+OA0KPiA+ID4gPiBbICAgNzUuMDA0NzU3XSAga21lbV9jYWNoZV9hbGxvYysweDU2MC8weDU4OA0K
+PiA+ID4gPiBbICAgNzUuMDA1Mzc2XSAgdGVzdF92ZXJzaW9uX3Nob3crMHg5OC8weGYwDQo+ID4g
+PiA+IFsgICA3NS4wMDU3NTZdICBtb2R1bGVfYXR0cl9zaG93KzB4NDAvMHg2MA0KPiA+ID4gPiBb
+ICAgNzUuMDA3MDM1XSAgc3lzZnNfa2Zfc2VxX3Nob3crMHgxMjgvMHgxYzANCj4gPiA+ID4gWyAg
+IDc1LjAwNzQzM10gIGtlcm5mc19zZXFfc2hvdysweGEwLzB4YjgNCj4gPiA+ID4gWyAgIDc1LjAw
+NzgwMF0gIHNlcV9yZWFkKzB4MWYwLzB4N2U4DQo+ID4gPiA+IFsgICA3NS4wMDgxMjhdICBrZXJu
+ZnNfZm9wX3JlYWQrMHg3MC8weDMzOA0KPiA+ID4gPiBbICAgNzUuMDA4NTA3XSAgdmZzX3JlYWQr
+MHhlNC8weDI1MA0KPiA+ID4gPiBbICAgNzUuMDA4OTkwXSAga3N5c19yZWFkKzB4YzgvMHgxODAN
+Cj4gPiA+ID4gWyAgIDc1LjAwOTQ2Ml0gIF9fYXJtNjRfc3lzX3JlYWQrMHg0NC8weDU4DQo+ID4g
+PiA+IFsgICA3NS4wMTAwODVdICBlbDBfc3ZjX2NvbW1vbi5jb25zdHByb3AuMCsweGFjLzB4MjI4
+DQo+ID4gPiA+IFsgICA3NS4wMTEwMDZdIGttZW1fY2FjaGVfZGVzdHJveSB0ZXN0X21vZHVsZV9z
+bGFiOiBTbGFiIGNhY2hlIHN0aWxsIGhhcyBvYmplY3RzDQo+ID4gPiA+DQo+ID4gPiA+IFJlZ2lz
+dGVyIGEgY3B1IGhvdHBsdWcgZnVuY3Rpb24gdG8gcmVtb3ZlIGFsbCBvYmplY3RzIGluIHRoZSBv
+ZmZsaW5lDQo+ID4gPiA+IHBlci1jcHUgcXVhcmFudGluZSB3aGVuIGNwdSBpcyBnb2luZyBvZmZs
+aW5lLiBTZXQgYSBwZXItY3B1IHZhcmlhYmxlDQo+ID4gPiA+IHRvIGluZGljYXRlIHRoaXMgY3B1
+IGlzIG9mZmxpbmUuDQo+ID4gPiA+DQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEt1YW4tWWluZyBM
+ZWUgPEt1YW4tWWluZy5MZWVAbWVkaWF0ZWsuY29tPg0KPiA+ID4gPiBTdWdnZXN0ZWQtYnk6IERt
+aXRyeSBWeXVrb3YgPGR2eXVrb3ZAZ29vZ2xlLmNvbT4NCj4gPiA+ID4gUmVwb3J0ZWQtYnk6IEd1
+YW5neWUgWWFuZyA8Z3Vhbmd5ZS55YW5nQG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4gQ2M6IEFuZHJl
+eSBSeWFiaW5pbiA8YXJ5YWJpbmluQHZpcnR1b3p6by5jb20+DQo+ID4gPiA+IENjOiBBbGV4YW5k
+ZXIgUG90YXBlbmtvIDxnbGlkZXJAZ29vZ2xlLmNvbT4NCj4gPiA+ID4gQ2M6IEFuZHJldyBNb3J0
+b24gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+DQo+ID4gPiA+IENjOiBNYXR0aGlhcyBCcnVn
+Z2VyIDxtYXR0aGlhcy5iZ2dAZ21haWwuY29tPg0KPiA+ID4gPiAtLS0NCj4gPiA+ID4gIG1tL2th
+c2FuL3F1YXJhbnRpbmUuYyB8IDM1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+DQo+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMzUgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gPg0KPiA+
+ID4gPiBkaWZmIC0tZ2l0IGEvbW0va2FzYW4vcXVhcmFudGluZS5jIGIvbW0va2FzYW4vcXVhcmFu
+dGluZS5jDQo+ID4gPiA+IGluZGV4IDRjNTM3NTgxMDQ0OS4uMTZlNjE4ZWE4MDVlIDEwMDY0NA0K
+PiA+ID4gPiAtLS0gYS9tbS9rYXNhbi9xdWFyYW50aW5lLmMNCj4gPiA+ID4gKysrIGIvbW0va2Fz
+YW4vcXVhcmFudGluZS5jDQo+ID4gPiA+IEBAIC0yOSw2ICsyOSw3IEBADQo+ID4gPiA+ICAjaW5j
+bHVkZSA8bGludXgvc3JjdS5oPg0KPiA+ID4gPiAgI2luY2x1ZGUgPGxpbnV4L3N0cmluZy5oPg0K
+PiA+ID4gPiAgI2luY2x1ZGUgPGxpbnV4L3R5cGVzLmg+DQo+ID4gPiA+ICsjaW5jbHVkZSA8bGlu
+dXgvY3B1aG90cGx1Zy5oPg0KPiA+ID4gPg0KPiA+ID4gPiAgI2luY2x1ZGUgIi4uL3NsYWIuaCIN
+Cj4gPiA+ID4gICNpbmNsdWRlICJrYXNhbi5oIg0KPiA+ID4gPiBAQCAtNDMsNiArNDQsNyBAQCBz
+dHJ1Y3QgcWxpc3RfaGVhZCB7DQo+ID4gPiA+ICAgICAgICAgc3RydWN0IHFsaXN0X25vZGUgKmhl
+YWQ7DQo+ID4gPiA+ICAgICAgICAgc3RydWN0IHFsaXN0X25vZGUgKnRhaWw7DQo+ID4gPiA+ICAg
+ICAgICAgc2l6ZV90IGJ5dGVzOw0KPiA+ID4gPiArICAgICAgIGJvb2wgb2ZmbGluZTsNCj4gPiA+
+ID4gIH07DQo+ID4gPiA+DQo+ID4gPiA+ICAjZGVmaW5lIFFMSVNUX0lOSVQgeyBOVUxMLCBOVUxM
+LCAwIH0NCj4gPiA+ID4gQEAgLTE4OCw2ICsxOTAsMTEgQEAgdm9pZCBxdWFyYW50aW5lX3B1dChz
+dHJ1Y3Qga2FzYW5fZnJlZV9tZXRhICppbmZvLCBzdHJ1Y3Qga21lbV9jYWNoZSAqY2FjaGUpDQo+
+ID4gPiA+ICAgICAgICAgbG9jYWxfaXJxX3NhdmUoZmxhZ3MpOw0KPiA+ID4gPg0KPiA+ID4gPiAg
+ICAgICAgIHEgPSB0aGlzX2NwdV9wdHIoJmNwdV9xdWFyYW50aW5lKTsNCj4gPiA+ID4gKyAgICAg
+ICBpZiAocS0+b2ZmbGluZSkgew0KPiA+ID4gPiArICAgICAgICAgICAgICAgcWxpbmtfZnJlZSgm
+aW5mby0+cXVhcmFudGluZV9saW5rLCBjYWNoZSk7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICBs
+b2NhbF9pcnFfcmVzdG9yZShmbGFncyk7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICByZXR1cm47
+DQo+ID4gPiA+ICsgICAgICAgfQ0KPiA+DQo+ID4gSSB0aGluayB3ZSBuZWVkIHRvIG1ha2Ugc3Vy
+ZSBvYmplY3RzIHdpbGwgbm90IGJlIHB1dCBpbiBwZXItY3B1DQo+ID4gcXVhcmFudGluZSB3aGlj
+aCBpcyBvZmZsaW5lLg0KPiA+DQo+ID4gPiA+ICAgICAgICAgcWxpc3RfcHV0KHEsICZpbmZvLT5x
+dWFyYW50aW5lX2xpbmssIGNhY2hlLT5zaXplKTsNCj4gPiA+ID4gICAgICAgICBpZiAodW5saWtl
+bHkocS0+Ynl0ZXMgPiBRVUFSQU5USU5FX1BFUkNQVV9TSVpFKSkgew0KPiA+ID4gPiAgICAgICAg
+ICAgICAgICAgcWxpc3RfbW92ZV9hbGwocSwgJnRlbXApOw0KPiA+ID4gPiBAQCAtMzI4LDMgKzMz
+NSwzMSBAQCB2b2lkIHF1YXJhbnRpbmVfcmVtb3ZlX2NhY2hlKHN0cnVjdCBrbWVtX2NhY2hlICpj
+YWNoZSkNCj4gPiA+ID4NCj4gPiA+ID4gICAgICAgICBzeW5jaHJvbml6ZV9zcmN1KCZyZW1vdmVf
+Y2FjaGVfc3JjdSk7DQo+ID4gPiA+ICB9DQo+ID4gPiA+ICsNCj4gPiA+ID4gK3N0YXRpYyBpbnQg
+a2FzYW5fY3B1X29ubGluZSh1bnNpZ25lZCBpbnQgY3B1KQ0KPiA+ID4gPiArew0KPiA+ID4gPiAr
+ICAgICAgIHRoaXNfY3B1X3B0cigmY3B1X3F1YXJhbnRpbmUpLT5vZmZsaW5lID0gZmFsc2U7DQo+
+ID4gPiA+ICsgICAgICAgcmV0dXJuIDA7DQo+ID4gPiA+ICt9DQo+ID4gPiA+ICsNCj4gPiA+ID4g
+K3N0YXRpYyBpbnQga2FzYW5fY3B1X29mZmxpbmUodW5zaWduZWQgaW50IGNwdSkNCj4gPiA+ID4g
+K3sNCj4gPiA+ID4gKyAgICAgICBzdHJ1Y3QgcWxpc3RfaGVhZCAqcTsNCj4gPiA+ID4gKw0KPiA+
+ID4gPiArICAgICAgIHEgPSB0aGlzX2NwdV9wdHIoJmNwdV9xdWFyYW50aW5lKTsNCj4gPiA+ID4g
+KyAgICAgICBxLT5vZmZsaW5lID0gdHJ1ZTsNCj4gPiA+ID4gKyAgICAgICBxbGlzdF9mcmVlX2Fs
+bChxLCBOVUxMKTsNCj4gPiA+DQo+ID4gPiBMb29rcyBtdWNoIG5pY2VyIG5vdyENCj4gPiA+DQo+
+ID4gPiBXaGF0IGlzIHRoZSBzdG9yeSB3aXRoIGludGVycnVwdHMgaW4gdGhlc2UgY2FsbGJhY2tz
+Pw0KPiA+ID4gSW4gdGhlIHByZXZpb3VzIHBhdGNoIHlvdSBtZW50aW9uZWQgdGhhdCB0aGlzIENQ
+VSBjYW4gc3RpbGwgcmVjZWl2ZQ0KPiA+ID4gaW50ZXJydXB0cyBmb3IgYSBicmllZiBwZXJpb2Qg
+b2YgdGltZS4gSWYgdGhlc2UgaW50ZXJydXB0cyBhbHNvIGZyZWUNCj4gPiA+IHNvbWV0aGluZywg
+Y2FuJ3Qgd2UgY29ycnVwdCB0aGUgcGVyLWNwdSBxdWFyYW50aW5lPyBJbiBxdWFyYW50aW5lX3B1
+dA0KPiA+ID4gd2UgcHJvdGVjdCBpdCBieSBkaXNhYmxpbmcgaW50ZXJydXB0cyBJIHRoaW5rLg0K
+PiA+ID4NCj4gPg0KPiA+IEhlcmUgaXMgYSBzaXR1YXRpb24uDQo+ID4gQWZ0ZXIgd2UgZnJlZWQg
+YWxsIG9iamVjdHMgZnJvbSB0aGUgcGVyLWNwdSBxdWFyYW50aW5lIHdoaWNoIGlzIGdvaW5nDQo+
+ID4gb2ZmbGluZSwgdGhlIGludGVycnVwdHMgaGFwcGVuZWQuIFRoZXNlIGludGVycnVwdHMgZnJl
+ZSBzb21ldGhpbmcgYW5kDQo+ID4gcHV0IG9iamVjdHMgaW50byB0aGlzIHBlci1jcHUgcXVhcmFu
+dGluZS4gSWYgd2UgY2FsbA0KPiA+IGttZW1fY2FjaGVfZGVzdHJveSgpIG5vdywgc2x1YiBzdGls
+bCBkZXRlY3Qgb2JqZWN0cyByZW1haW4gaW4NCj4gPiB0aGUgcGVyLWNwdSBxdWFyYW50aW5lIGFu
+ZCByZXBvcnQgIk9iamVjdCByZW1haW5pbmciIGVycm9yLg0KPiA+DQo+ID4gVGh1cywgd2UgbmVl
+ZCB0byBjaGVjayBxLT5vZmZsaW5lIGluIHF1YXJhbnRpbmVfcHV0IGFuZCBtYWtlIHN1cmUNCj4g
+PiB0aGUgb2ZmbGluZSBwZXItY3B1IHF1YXJhbnRpbmUgaXMgbm90IGNvcnJ1cHRlZC4NCj4gDQo+
+IElmIGFuIGludGVycnVwdCBjYW4gaGFwcGVuIGxhdGVyLCBjYW4ndCBpdCBoYXBwZW4gcmlnaHQg
+ZHVyaW5nIG91cg0KPiBjYWxsIHRvIHFsaXN0X2ZyZWVfYWxsIGFuZCBjb3JydXB0IHRoZSBwZXIt
+Y3B1IGNhY2hlPw0KPiBQZXJoYXBzIHdlIG5lZWQgc29tZXRoaW5nIGxpa2U6DQo+IA0KPiAvLyAu
+Li4gZXhwbGFpbiB0aGUgc3VidGxlbmVzcyAuLi4NCj4gV1JJVEVfT05DRShxLT5vZmZsaW5lLCB0
+cnVlKTsNCj4gYmFycmllcigpOw0KPiBxbGlzdF9mcmVlX2FsbChxLCBOVUxMKTsNCj4gDQo+ID8N
+Cg0KWWVzLCB3ZSBuZWVkIHRvIGFkZCBiYXJyaWVyIHRvIGVuc3VyZSB0aGUgb3JkZXJpbmcuDQpJ
+IGRpZCBub3QgdGhpbmsgYWJvdXQgdGhhdCBiZWZvcmUuDQpUaGFua3MgZm9yIHRoZSByZW1pbmRl
+ci4NCkkgd2lsbCBmaXggaW4gdjMuDQoNCj4gDQo+ID4gPiA+ICsgICAgICAgcmV0dXJuIDA7DQo+
+ID4gPiA+ICt9DQo+ID4gPiA+ICsNCj4gPiA+ID4gK3N0YXRpYyBpbnQgX19pbml0IGthc2FuX2Nw
+dV9vZmZsaW5lX3F1YXJhbnRpbmVfaW5pdCh2b2lkKQ0KPiA+ID4gPiArew0KPiA+ID4gPiArICAg
+ICAgIGludCByZXQgPSAwOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgcmV0ID0gY3B1aHBf
+c2V0dXBfc3RhdGUoQ1BVSFBfQVBfT05MSU5FX0RZTiwgIm1tL2thc2FuOm9ubGluZSIsDQo+ID4g
+PiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAga2FzYW5fY3B1X29ubGluZSwga2Fz
+YW5fY3B1X29mZmxpbmUpOw0KPiA+ID4gPiArICAgICAgIGlmIChyZXQgPCAwKQ0KPiA+ID4gPiAr
+ICAgICAgICAgICAgICAgcHJfZXJyKCJrYXNhbiBvZmZsaW5lIGNwdSBxdWFyYW50aW5lIHJlZ2lz
+dGVyIGZhaWxlZCBbJWRdXG4iLCByZXQpOw0KPiA+ID4gPiArICAgICAgIHJldHVybiByZXQ7DQo+
+ID4gPiA+ICt9DQo+ID4gPiA+ICtsYXRlX2luaXRjYWxsKGthc2FuX2NwdV9vZmZsaW5lX3F1YXJh
+bnRpbmVfaW5pdCk7DQo+ID4gPiA+IC0tDQo+ID4gPiA+IDIuMTguMA0KDQo=
 
-
-On 11/19/20 9:05 AM, Alexandre Chartre wrote:
->>>>>>>>>
->>>>>>>>> When entering the kernel from userland, use the per-task PTI stack
->>>>>>>>> instead of the per-cpu trampoline stack. Like the trampoline stack,
->>>>>>>>> the PTI stack is mapped both in the kernel and in the user page-table.
->>>>>>>>> Using a per-task stack which is mapped into the kernel and the user
->>>>>>>>> page-table instead of a per-cpu stack will allow executing more code
->>>>>>>>> before switching to the kernel stack and to the kernel page-table.
->>>>>>>>
->>>>>>>> Why?
->>>>>>>
->>>>>>> When executing more code in the kernel, we are likely to reach a point
->>>>>>> where we need to sleep while we are using the user page-table, so we need
->>>>>>> to be using a per-thread stack.
->>>>>>>
->>>>>>>> I can't immediately evaluate how nasty the page table setup is because
->>>>>>>> it's not in this patch.
->>>>>>>
->>>>>>> The page-table is the regular page-table as introduced by PTI. It is just
->>>>>>> augmented with a few additional mapping which are in patch 11 (x86/pti:
->>>>>>> Extend PTI user mappings).
->>>>>>>
->>>>>>>>     But AFAICS the only thing that this enables is sleeping with user pagetables.
->>>>>>>
->>>>>>> That's precisely the point, it allows to sleep with the user page-table.
->>>>>>>
->>>>>>>> Do we really need to do that?
->>>>>>>
->>>>>>> Actually, probably not with this particular patchset, because I do the page-table
->>>>>>> switch at the very beginning and end of the C handler. I had some code where I
->>>>>>> moved the page-table switch deeper in the kernel handler where you definitively
->>>>>>> can sleep (for example, if you switch back to the user page-table before
->>>>>>> exit_to_user_mode_prepare()).
->>>>>>>
->>>>>>> So a first step should probably be to not introduce the per-task PTI trampoline stack,
->>>>>>> and stick with the existing trampoline stack. The per-task PTI trampoline stack can
->>>>>>> be introduced later when the page-table switch is moved deeper in the C handler and
->>>>>>> we can effectively sleep while using the user page-table.
->>>>>>
->>>>>> Seems reasonable.
->>>>>>
->>>>>
->>>>> I finally remember why I have introduced a per-task PTI trampoline stack right now:
->>>>> that's to be able to move the CR3 switch anywhere in the C handler. To do so, we need
->>>>> a per-task stack to enter (and return) from the C handler as the handler can potentially
->>>>> go to sleep.
->>>>>
->>>>> Without a per-task trampoline stack, we would be limited to call the switch CR3 functions
->>>>> from the assembly entry code before and after calling the C function handler (also called
->>>>> from assembly).
->>>>
->>>> The noinstr part of the C entry code won't sleep.
->>>>
->>>
->>> But the noinstr part of the handler can sleep, and if it does we will need to
->>> preserve the trampoline stack (even if we switch to the per-task kernel stack to
->>> execute the noinstr part).
->>>
->>> Example:
->>>
->>> #define DEFINE_IDTENTRY(func)                                           \
->>> static __always_inline void __##func(struct pt_regs *regs);             \
->>>                                                                           \
->>> __visible noinstr void func(struct pt_regs *regs)                       \
->>> {                                                                       \
->>>           irqentry_state_t state;         -+                              \
->>>                                            |                              \
->>>           user_pagetable_escape(regs);     | use trampoline stack (1)
->>>           state = irqentry_enter(regs);    |                              \
->>>           instrumentation_begin();        -+                              \
->>>           run_idt(__##func, regs);       |===| run __func() on kernel stack (this can sleep)
->>>           instrumentation_end();          -+                              \
->>>           irqentry_exit(regs, state);      | use trampoline stack (2)
->>>           user_pagetable_return(regs);    -+                              \
->>> }
->>>
->>> Between (1) and (2) we need to preserve and use the same trampoline stack
->>> in case __func() went sleeping.
->>>
->>
->> Why?  Right now, we have the percpu entry stack, and we do just fine
->> if we enter on one percpu stack and exit from a different one.
->> We would need to call from asm to C on the entry stack, return back to
->> asm, and then switch stacks.
->>
-> 
-> That's the problem: I didn't want to return back to asm, so that the pagetable
-> switch can be done anywhere in the C handler.
-> 
-> So yes, returning to asm to switch the stack is the solution if we want to avoid
-> having per-task trampoline stack. The drawback is that this forces to do the
-> page-table switch at the beginning and end of the handler; the pagetable switch
-> cannot be moved deeper down into the C handler.
-> 
-> But that's probably a good first step (effectively just moving CR3 switch to C
-> without adding per-task trampoline stack). I will update the patches to do that,
-> and we can defer the per-task trampoline stack to later if there's an effective
-> need for it.
-> 
-
-That might not be a good first step after all... Calling CR3 switch C functions
-from assembly introduces extra pt_regs copies between the trampoline stack and the
-kernel stack.
-
-Currently when entering syscall, we immediately switches CR3 and builds pt_regs
-directly on the kernel stack. On return, registers are restored from pt_regs from
-the kernel stack, the return frame is built on the trampoline stack and then we
-switch CR3.
-
-To call CR3 switch C functions on syscall entry, we need to switch to the trampoline
-stack, build pt_regs on the trampoline stack, call CR3 switch, switch to the kernel
-stack, copy pt_regs to the kernel stack. On return, we have to copy pt_regs back to
-the trampoline stack, call CR3 switch, restore registers.
-
-This is less of an impact for interrupt because we enter on the trampoline stack and
-the current code already builds pt_regs on the trampoline stack and copies it to the
-kernel stack (although this can certainly be avoided in the current code).
-
-I am not comfortable adding these extra steps in syscall and interrupt as the current
-code is fairly optimized. With a per-task trampoline stack, we don't have extra copy
-because we can build pt_regs directly on the trampoline stack and it will preserved
-even when switching to the kernel stack. On syscall/interrupt return, it also saves
-a copy of the iret frame from the kernel stack to the trampoline stack.
-
-alex.
