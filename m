@@ -2,125 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42E02B9ABE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A18602B9AC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729302AbgKSShL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728908AbgKSShL (ORCPT
+        id S1729537AbgKSShW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:37:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46054 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728814AbgKSShW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:37:11 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B606C0613CF;
-        Thu, 19 Nov 2020 10:37:11 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id a18so5325732pfl.3;
-        Thu, 19 Nov 2020 10:37:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:reply-to:mime-version
-         :content-transfer-encoding;
-        bh=12as8FlhjKsw6Yc9OgHJwzJoKwzpusnZd9yPEeWisJQ=;
-        b=Lyj6PPZ+l5+1QVqnlOl2S2tCrsnUcYjCnxX2HiO+FVlduBUJMlQ/c7bFIXhkGAgJa3
-         FVvgvtizoEGxXXOfX89ypoMYaqah529fTGIYPkOj+Uxihi+9WcthTxqc1s6JvRd7vpo/
-         rSx/obTYb3JtpUgcU5YtILoSpeOrOMESpxxo2Ldu6lptGGuVNoYxOhtbDmxMyLf8t6PR
-         kx6PVmofW6Oc6+Rj648br0+b7uEkB90xdZitlR60665OinNi+hXrvCPKVaulHTqISSlv
-         m7xluoxpDGV3XihfPOcfN5u05PadGe24hLteDQz0+agmi5FLiWdOb5nlMDlEm8Gh9Igg
-         JY/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :mime-version:content-transfer-encoding;
-        bh=12as8FlhjKsw6Yc9OgHJwzJoKwzpusnZd9yPEeWisJQ=;
-        b=pGP6Gm9VN2UBzfQhmOt7TQdaXwtg0dICn2hoea1h1czOiGpxp6LtLbFHmsU2z0XbMO
-         BD3wUlbdqrJoB5q7QzclW1k6InrhMbEpDlOKdkHYtdqXc6r1dzSy9gMdy22oMSI7LidY
-         RTk779V9QY00eJiTBaNirbgiuF6xzjc3u/tStlksW6koaLE0RZ1g3EdV8Jl/Rzlf/AcN
-         oywXM1ezn3zbVsNGx8efmm/aqwUxwGxLHYugJKjwo7qn164jljHg53PsLQQx4e7M1lrm
-         pYDdTwEC1puZucVYjr5+k6SEJOjwOaW2GZzBmcI1mBeH39F5uHz1LQnpGQI0hnP5eotW
-         aD+g==
-X-Gm-Message-State: AOAM531lbqr1CtlMXaQy3n4v0c619vn7TE+khVlGRtZjoHjjupaHt5eA
-        gJ0PKSKOr0Pk2zGYPwWWGak=
-X-Google-Smtp-Source: ABdhPJw/X81bu2htCXilelR2XkX2DvhC/1T2NPfXTlJav8EixSzp7vT8vcqh2eogM3F80vCyd5iQxg==
-X-Received: by 2002:a17:90a:b904:: with SMTP id p4mr5488997pjr.81.1605811030710;
-        Thu, 19 Nov 2020 10:37:10 -0800 (PST)
-Received: from seanjc-glaptop.roam.corp.google.com (c-71-238-67-106.hsd1.or.comcast.net. [71.238.67.106])
-        by smtp.gmail.com with ESMTPSA id b3sm525758pfd.66.2020.11.19.10.37.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 10:37:10 -0800 (PST)
-From:   Sean Christopherson <sean.kvm@gmail.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
-Subject: [PATCH] MAINTAINERS: Update email address for Sean Christopherson
-Date:   Thu, 19 Nov 2020 10:37:07 -0800
-Message-Id: <20201119183707.291864-1-sean.kvm@gmail.com>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Reply-To: Sean Christopherson <seanjc@google.com>
+        Thu, 19 Nov 2020 13:37:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605811041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HNuPfYb6QpUO0dpq/+CinmBMNnGjxsjuYOWF3kUqYn4=;
+        b=jUKwVxERPJ6V3NYa6/JJxGEXY1mtvDgOgAc9GAnk8jj/HeVO7ZEGCIPZwHIWy8adM8mEiK
+        t4ow6Hohk/n4DZSAw3JbLnize8UPqrh72XrTppbzDMWbHp3CnqFdt9i+qZsawUXF5QeK3W
+        Aj01CYEncNOuussYr0j5VDzKJlzHkMc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-bOQ27-woPTKUT69XVp6DNw-1; Thu, 19 Nov 2020 13:37:17 -0500
+X-MC-Unique: bOQ27-woPTKUT69XVp6DNw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45AAE8143F3;
+        Thu, 19 Nov 2020 18:37:16 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-63.rdu2.redhat.com [10.10.117.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D9235D9C2;
+        Thu, 19 Nov 2020 18:37:15 +0000 (UTC)
+Subject: Re: [PATCH 4/5] locking/rwsem: Wake up all waiting readers if
+ RWSEM_WAKE_READ_OWNED
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>
+References: <20201118030429.23017-1-longman@redhat.com>
+ <20201118030429.23017-5-longman@redhat.com>
+ <20201118045345.hpw2fjmd247xpnwl@linux-p48b.lan>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <a148b930-ae25-29a6-4f02-6c6c582ca2cd@redhat.com>
+Date:   Thu, 19 Nov 2020 13:37:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20201118045345.hpw2fjmd247xpnwl@linux-p48b.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+On 11/17/20 11:53 PM, Davidlohr Bueso wrote:
+> On Tue, 17 Nov 2020, Waiman Long wrote:
+>
+>> The rwsem wakeup logic has been modified by commit d3681e269fff
+>> ("locking/rwsem: Wake up almost all readers in wait queue") to wake up
+>> all readers in the wait queue if the first waiter is a reader. In the
+>> case of RWSEM_WAKE_READ_OWNED, not all readers can be woken up if the
+>> first waiter happens to be a writer. Complete the logic by waking up
+>> all readers even for this case.
+>
+> While rwsems are certainly not fifo, I'm concerned this would give too
+> much priority to the readers by having the reader owned lock just skip
+> over the first waiter. And I'd say most users are more concerned about
+> the writer side. Basically this would affect the phase-fair properties. 
 
-Update my email address to one provided by my new benefactor.
+The idea of phase-fair is that when a reader acquires the lock, all the 
+current readers are allowed to join. Other readers that come after that 
+will not be allowed to join the read phase until the next round. In that 
+sense, waking up all readers in the wait queue doesn't violate this 
+fact. Patch 2 will guarantee  the later constraint though it has the 
+exception that if the reader count reach 0, it will allow reader to 
+proceed. I am relying on the handoff mechanism to make sure that there 
+will be no lock starvation.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Wanpeng Li <wanpengli@tencent.com>
-Cc: Jim Mattson <jmattson@google.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: kvm@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
-Resorted to sending this via a private dummy account as getting my corp
-email to play nice with git-sendemail has been further delayed, and I
-assume y'all are tired of getting bounces.
+Cheers,
+Longman
 
- .mailmap    | 1 +
- MAINTAINERS | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/.mailmap b/.mailmap
-index 1e14566a3d56..a0d1685a165a 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -287,6 +287,7 @@ Santosh Shilimkar <ssantosh@kernel.org>
- Sarangdhar Joshi <spjoshi@codeaurora.org>
- Sascha Hauer <s.hauer@pengutronix.de>
- S.Çağlar Onur <caglar@pardus.org.tr>
-+Sean Christopherson <seanjc@google.com> <sean.j.christopherson@intel.com>
- Sean Nyekjaer <sean@geanix.com> <sean.nyekjaer@prevas.dk>
- Sebastian Reichel <sre@kernel.org> <sebastian.reichel@collabora.co.uk>
- Sebastian Reichel <sre@kernel.org> <sre@debian.org>
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4a34b25ecc1f..0478d9ef72fc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9662,7 +9662,7 @@ F:	tools/testing/selftests/kvm/s390x/
- 
- KERNEL VIRTUAL MACHINE FOR X86 (KVM/x86)
- M:	Paolo Bonzini <pbonzini@redhat.com>
--R:	Sean Christopherson <sean.j.christopherson@intel.com>
-+R:	Sean Christopherson <seanjc@google.com>
- R:	Vitaly Kuznetsov <vkuznets@redhat.com>
- R:	Wanpeng Li <wanpengli@tencent.com>
- R:	Jim Mattson <jmattson@google.com>
--- 
-2.29.2.299.gdc1121823c-goog
 
