@@ -2,70 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE4C2B89DC
+	by mail.lfdr.de (Postfix) with ESMTP id F38A02B89DE
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 02:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727717AbgKSBxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Nov 2020 20:53:40 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8110 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726468AbgKSBxk (ORCPT
+        id S1727754AbgKSByT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Nov 2020 20:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726468AbgKSByS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Nov 2020 20:53:40 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cc2l23NVQzLmCY;
-        Thu, 19 Nov 2020 09:53:18 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.144) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 19 Nov 2020
- 09:53:33 +0800
-Subject: Re: [PATCH 1/1] ACPI/nfit: correct the badrange to be reported in
- nfit_handle_mce()
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-acpi <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201118084117.1937-1-thunder.leizhen@huawei.com>
- <9b8310ed-e93f-e708-eefa-520701e6d044@huawei.com>
- <CAPcyv4hc0bw=+HQ-Zj0AWfB2-xMEEC--64zNxBkyapkiQRVVdg@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <390a0fb5-5feb-527c-b90e-1c7b6ea65d5f@huawei.com>
-Date:   Thu, 19 Nov 2020 09:53:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 18 Nov 2020 20:54:18 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A7BC0613D4;
+        Wed, 18 Nov 2020 17:54:18 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id g7so2928619pfc.2;
+        Wed, 18 Nov 2020 17:54:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=oilqbm0PbyF3KMvGCOoKWnR48rcsD2eNT+QPWjMgMFw=;
+        b=XBYO4bbob8cQz4HlqKLE1CpP4bo91AyKwEtYi6lLaUPpXPb/l43xjXhmlhsfhdcWtu
+         5dAK3cD7tFm1HvXrltDWAvY/qfCVXbzCCH/pq8cfwQsbnJsEi+L6fvP1aEuEjWjbjvmA
+         RChjXZK5uTYhshAWglI19xWnnaSQ3O1lojiCx/l0feXQ7FzdhI/lH0OhJnqug9VuFavk
+         iVWyEqBHCh12Pi6YwJJ+uHPhyKHK27yi8g5HKGmVTbXrIVrzU8qHWtvWhPvZ/EmYVwWc
+         A4g8VUUCvhQisNyLY1jjaN9BUR+r/hVCPfVOCHGtv19arFF1XFfcEdD3WHK8GxWOX9/Z
+         MZ9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=oilqbm0PbyF3KMvGCOoKWnR48rcsD2eNT+QPWjMgMFw=;
+        b=Re3uJFzzBz092FIm5QGklIWsqKD26DhRKKmX1m701hSx095oU/2RH1ktOXYvo37BzG
+         GBOJLht3p+P5V9jTQuo+bTsqC66G5q1nK3jlYagCnPdYzeVT08A7xrqtNGUgaZtx9U9y
+         C9qmc82gID7t/7XmtJAEwmUl2WoizgrFjHqwJMNuUXdxL2BSSJ+xX3yFmwlux/iZ4WM6
+         T2H8kfAmzr8/QeIuMlyEkG+SzfFt9cVoWKb8c03fUc1dn7HTT6pbDI7cFrWeq1I2sZeu
+         2tzrKc9oK42995QzJD6ReRVMwtii1Oxrj4uFvFtes0bxJ/ozD6ZlA+fd2Nsw0v75Gn+p
+         IK4g==
+X-Gm-Message-State: AOAM530z9YDbqZkYMOptncNOr3V5LctCKYnsR3EKDGlbsbLP3Loov/nW
+        p9zHOby1O0yKe+CEWfm3FIDW2Kkhqd2sUA==
+X-Google-Smtp-Source: ABdhPJyODx/iAkOp7RFSPXqLNcVJygh8K6z2gu97gOXFOyZNWaZZYMZ+k/FvdeND6jmU05sD+kwIxA==
+X-Received: by 2002:a63:4558:: with SMTP id u24mr10751984pgk.376.1605750857559;
+        Wed, 18 Nov 2020 17:54:17 -0800 (PST)
+Received: from [10.165.0.22] ([45.56.153.149])
+        by smtp.gmail.com with ESMTPSA id u5sm24066564pgj.28.2020.11.18.17.54.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Nov 2020 17:54:16 -0800 (PST)
+Subject: Re: [PATCH v2 1/4] rtlwifi: rtl8188ee: avoid accessing the data
+ mapped to streaming DMA
+To:     Larry Finger <Larry.Finger@lwfinger.net>, pkshih@realtek.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201118015314.4979-1-baijiaju1990@gmail.com>
+ <d3996305-136a-708b-0dba-e9428f9da5cb@lwfinger.net>
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+Message-ID: <9a4a11cf-6505-3434-85fa-262e3e16bc47@gmail.com>
+Date:   Thu, 19 Nov 2020 09:54:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4hc0bw=+HQ-Zj0AWfB2-xMEEC--64zNxBkyapkiQRVVdg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <d3996305-136a-708b-0dba-e9428f9da5cb@lwfinger.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.144]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for the advice.
+I have added the description of the changes and resent the patches.
 
 
-On 2020/11/19 3:16, Dan Williams wrote:
-> On Wed, Nov 18, 2020 at 12:55 AM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
+Best wishes,
+Jia-Ju Bai
+
+On 2020/11/19 1:20, Larry Finger wrote:
+> On 11/17/20 7:53 PM, Jia-Ju Bai wrote:
+>> In rtl88ee_tx_fill_cmddesc(), skb->data is mapped to streaming DMA on
+>> line 677:
+>>    dma_addr_t mapping = dma_map_single(..., skb->data, ...);
 >>
+>> On line 680, skb->data is assigned to hdr after cast:
+>>    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)(skb->data);
 >>
+>> Then hdr->frame_control is accessed on line 681:
+>>    __le16 fc = hdr->frame_control;
 >>
->> On 2020/11/18 16:41, Zhen Lei wrote:
->>> The badrange to be reported should always cover mce->addr.
->> Maybe I should change this description to:
->> Make sure the badrange to be reported can always cover mce->addr.
-> 
-> Yes, I like that better. Can you also say a bit more about how you
-> found this bug? As far as I can see this looks like -stable material.
-
-I found it when I was learning the code. I'm looking at it carefully.
-
-> 
-> 
-
+>> This DMA access may cause data inconsistency between CPU and hardwre.
+>>
+>> To fix this bug, hdr->frame_control is accessed before the DMA mapping.
+>>
+>> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+>> ---
+>>   drivers/net/wireless/realtek/rtlwifi/rtl8188ee/trx.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> What changed between v1 and v2?
+>
+> As outlined in Documentation/process/submitting-patches.rst, you 
+> should add a '---' marker and descrive what was changed. I usually 
+> summarize the changes, but it is also possible to provide a diffstat 
+> of the changes as the above file shows.
+>
