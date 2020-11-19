@@ -2,89 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48E32B9944
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C4E2B9939
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgKSRZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:25:38 -0500
-Received: from smtp6-g21.free.fr ([212.27.42.6]:27206 "EHLO smtp6-g21.free.fr"
+        id S1729145AbgKSRY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:24:57 -0500
+Received: from foss.arm.com ([217.140.110.172]:35730 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728568AbgKSRZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:25:35 -0500
-Received: from mail.corsac.net (unknown [IPv6:2a01:e34:ec2f:4e20::5])
-        by smtp6-g21.free.fr (Postfix) with ESMTPS id A6992780310
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 18:25:32 +0100 (CET)
-Received: from scapa.corsac.net (unknown [IPv6:2a01:e34:ec2f:4e20:6af7:28ff:fe8d:2119])
-        by mail.corsac.net (Postfix) with ESMTPS id 97A33A0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 18:24:55 +0100 (CET)
-Received: from corsac (uid 1000)
-        (envelope-from corsac@corsac.net)
-        id a024c
-        by scapa.corsac.net (DragonFly Mail Agent v0.12);
-        Thu, 19 Nov 2020 18:24:55 +0100
-From:   Yves-Alexis Perez <corsac@corsac.net>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin Habets <mhabets@solarflare.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        "Michael S. Tsirkin" <mst@redhat.com>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Yves-Alexis Perez <corsac@corsac.net>,
-        Matti Vuorela <matti.vuorela@bitfactor.fi>,
-        stable@vger.kernel.org
-Subject: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
-Date:   Thu, 19 Nov 2020 18:24:39 +0100
-Message-Id: <20201119172439.94988-1-corsac@corsac.net>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com>
-References: <CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com>
+        id S1727874AbgKSRY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:24:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E2951396;
+        Thu, 19 Nov 2020 09:24:56 -0800 (PST)
+Received: from bogus (unknown [10.57.54.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 852CD3F718;
+        Thu, 19 Nov 2020 09:24:54 -0800 (PST)
+Date:   Thu, 19 Nov 2020 17:24:52 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, lukasz.luba@arm.com,
+        Jonathan.Cameron@Huawei.com, robh@kernel.org,
+        satyakim@qti.qualcomm.com, etienne.carriere@linaro.org,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com
+Subject: Re: [PATCH v5 4/5] regulator: add SCMI driver
+Message-ID: <20201119172452.ns3ebteu45n7amkz@bogus>
+References: <20201117123415.55105-1-cristian.marussi@arm.com>
+ <20201117123415.55105-5-cristian.marussi@arm.com>
+ <20201119161308.xhyohop5fspb4b5l@bogus>
+ <20201119163949.GF5554@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119163949.GF5554@sirena.org.uk>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with iOS 14 released in September 2020, connectivity using the
-personal hotspot USB tethering function of iOS devices is broken.
+On Thu, Nov 19, 2020 at 04:39:49PM +0000, Mark Brown wrote:
+> On Thu, Nov 19, 2020 at 04:13:08PM +0000, Sudeep Holla wrote:
+> 
+> > I was thinking about how to merge this if and when you have reviewed it
+> > and happy with it. Is it OK to take via ARM SoC with dependent and other
+> > SCMI changes ? Or we can merge the SCMI part next release and the regulator
+> > in the following, up to you.
+> 
+> I was expecting you to send me a pull request for the firmware bits once
+> you've applied them.
 
-Communication between the host and the device (for example ICMP traffic
-or DNS resolution using the DNS service running in the device itself)
-works fine, but communication to endpoints further away doesn't work.
+Sure, I can do that.
 
-Investigation on the matter shows that UDP and ICMP traffic from the
-tethered host is reaching the Internet at all. For TCP traffic there are
-exchanges between tethered host and server but packets are modified in
-transit leading to impossible communication.
-
-After some trials Matti Vuorela discovered that reducing the URB buffer
-size by two bytes restored the previous behavior. While a better
-solution might exist to fix the issue, since the protocol is not
-publicly documented and considering the small size of the fix, let's do
-that.
-
-Tested-by: Matti Vuorela <matti.vuorela@bitfactor.fi>
-Signed-off-by: Yves-Alexis Perez <corsac@corsac.net>
-Link: https://lore.kernel.org/linux-usb/CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com/
-Link: https://github.com/libimobiledevice/libimobiledevice/issues/1038
-Cc: stable@vger.kernel.org
----
- drivers/net/usb/ipheth.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/usb/ipheth.c b/drivers/net/usb/ipheth.c
-index b09b45382faf..207e59e74935 100644
---- a/drivers/net/usb/ipheth.c
-+++ b/drivers/net/usb/ipheth.c
-@@ -59,7 +59,7 @@
- #define IPHETH_USBINTF_SUBCLASS 253
- #define IPHETH_USBINTF_PROTO    1
- 
--#define IPHETH_BUF_SIZE         1516
-+#define IPHETH_BUF_SIZE         1514
- #define IPHETH_IP_ALIGN		2	/* padding at front of URB */
- #define IPHETH_TX_TIMEOUT       (5 * HZ)
- 
 -- 
-2.29.2
-
+Regards,
+Sudeep
