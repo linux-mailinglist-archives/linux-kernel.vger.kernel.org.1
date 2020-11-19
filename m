@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0892B8CA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 069122B8CAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgKSH4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:56:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgKSH4A (ORCPT
+        id S1726431AbgKSH47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:56:59 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:51582 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725877AbgKSH46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:56:00 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CEFC0613CF;
-        Wed, 18 Nov 2020 23:56:00 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id x17so4331850ybr.8;
-        Wed, 18 Nov 2020 23:56:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OiHRsGcZg1w0E5ZjU76Blkh6IvdY56ulMPtY4im3OCw=;
-        b=m69mxgT4zcQ1qpqO96S3lNt2gfYYwTzUyT+1dXwdMX10Y+LAAdK9ZFTi2hk4uoHsJa
-         8OcA1PP2NjpGkH0eRLwB9xctSoj0vyFOMYY/RGpZjduXkvyVKI3+8ew8Gh4bYVHK6naD
-         tACWA8SBJluD9pSqddkWPEhe/9V8XV/uxkzlIpKfYevTGk58pjv21ilyVfPKh716C1SW
-         vc7fl2V1jNZ35dAWPTKrvk5ah3K9PauFpTkwwQIdVJXxfek1NDKxx4tToDd9OlT/Wc4O
-         NN9hOtwzUyC7JNxbSFpXki9GvNIDFXOy3Xx7wen+U5iIRweQsxaCcTaSI68hnoPMn9R3
-         uu9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OiHRsGcZg1w0E5ZjU76Blkh6IvdY56ulMPtY4im3OCw=;
-        b=tb8c9N5Vs4lFh7pt2Rip0EoT/Yr4KHY/dXpqMAW1F+XR0G2prRoxHoUz/7kGEbr5D/
-         WMyNfwXEzxEdBHDE88+adpTYKxp7OOxdWlaGRD4Knt87OZHhwGoWFa837eltApdFsuBo
-         yPK5xYrDFlGzpmkaijhnB92xZuqo8LbJFROmqQZ+kBnufqz36/Uvo7AvtRWP7X3uu7KO
-         fMn0QXcT9rLKijnf4Qb+wqvdnRFMAWlznnnsl8Os2cnUsPnTlKTkQsNyeuswy6st3hF8
-         f6zLDmbq7N5AKkaSXizUeZcpqY2VAgkkL7cGQbY0XOgxaOvLqPR1dT0TBUDdCD0Q0qYP
-         fvtg==
-X-Gm-Message-State: AOAM533mW2wPR8tjmSl+KEKrBvycCzHcnk8n1vhfYlWOxRQBg2YtyNcx
-        HFNVqwAMJau/OBNPi8VMGHyrd66VuGnj9RBtlcw=
-X-Google-Smtp-Source: ABdhPJwlInwKifhXedN+JA79ksUpobBcF81Kk9oujdzZ4rqQzXymVQ9bdU214fdCje+S4aS2jnVr/CN9QkewmNCTq7U=
-X-Received: by 2002:a25:7711:: with SMTP id s17mr14202248ybc.240.1605772559987;
- Wed, 18 Nov 2020 23:55:59 -0800 (PST)
+        Thu, 19 Nov 2020 02:56:58 -0500
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJ7llaD016520;
+        Thu, 19 Nov 2020 08:56:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type : content-id :
+ content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=LZmy/q8OG+YP+knBreOKw8LvxF/u+yMxTz+nQ0yAExw=;
+ b=Nf5HVRPo5Zg4ge9qzpZU8dp33kE8JtRhcqiq1DLhF1/S9SIauRyw04rA0zvp0pv5yHrU
+ uGKhcCcYegn6EjLdWeOWALfB31GUFK1B6ROSozlTF26BQPhSyfwl9lsx3b9zq0CnESMs
+ tO61DVq1uH2zJMU5IqIcYP9zGxnDuuXmG9qvXrAUJLYKh7ZI55f1PVAYbcYxrdo1H4Ot
+ WBaAS/FTR05o9jQWNLy8LIsFHAXvCWAkeJmiklz8c2fWlpYfVTro9lT3CXPHyCU5cI0T
+ GatlvcPw2yXabXxeczisiCkgy9M2GrX3JNLLgq6hhyFI+mt0pq0894MuKAHCFTp5Ml2h Gw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34t5w25n2r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 08:56:46 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4322C100034;
+        Thu, 19 Nov 2020 08:56:46 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 35C1922E87C;
+        Thu, 19 Nov 2020 08:56:46 +0100 (CET)
+Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Nov
+ 2020 08:56:46 +0100
+Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
+ SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
+ 15.00.1473.003; Thu, 19 Nov 2020 08:56:46 +0100
+From:   Patrice CHOTARD <patrice.chotard@st.com>
+To:     Alain Volmat <avolmat@me.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] reset: sti: reset-syscfg: fix struct description warnings
+Thread-Topic: [PATCH] reset: sti: reset-syscfg: fix struct description
+ warnings
+Thread-Index: AQHWf9ajUS1GG2kbV0GxVIxTwjD+g6nPgpoA
+Date:   Thu, 19 Nov 2020 07:56:45 +0000
+Message-ID: <295ebff6-e00c-878e-8fbd-f3d9883ed192@st.com>
+References: <20200831203804.6568-1-avolmat@me.com>
+In-Reply-To: <20200831203804.6568-1-avolmat@me.com>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.46]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E99A916D3048CB4597144524E3C58112@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20201113113423.9466-1-zajec5@gmail.com> <20201119062720.GE50232@vkoul-mobl>
-In-Reply-To: <20201119062720.GE50232@vkoul-mobl>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date:   Thu, 19 Nov 2020 08:55:48 +0100
-Message-ID: <CACna6ryH6Ptdbs25Uv_ySYRXTaWsG4+dz2LD-5=By1_31VWEyQ@mail.gmail.com>
-Subject: Re: [PATCH] phy: phy-bcm-ns-usb3: drop support for deprecated DT binding
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Hauke Mehrtens <hauke@hauke-m.de>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-19_05:2020-11-17,2020-11-19 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 at 07:27, Vinod Koul <vkoul@kernel.org> wrote:
-> On 13-11-20, 12:34, Rafa=C5=82 Mi=C5=82ecki wrote:
-> > From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> >
-> > Initially this PHY driver was implementing MDIO access on its own. It
-> > was caused by lack of proper hardware design understanding.
-> >
-> > It has been changed back in 2017. DT bindings were changed and driver
-> > was updated to use MDIO layer.
-> >
-> > It should be really safe now to drop the old deprecated code. All Linux
-> > stored DT files don't use it for 3,5 year. There is close to 0 chance
-> > there is any bootloader with its own DTB using old the binding.
->
-> Applied, thanks
->
-> While applying, it gave me a minor conflict, please do check the
-> resolution
-
-Oops, I used your master branch instead of next. Waiting for your push :)
-
---=20
-Rafa=C5=82
+SGkgQWxhaW4NCg0KT24gOC8zMS8yMCAxMDozOCBQTSwgQWxhaW4gVm9sbWF0IHdyb3RlOg0KPiBG
+aXggZm9ybWF0aW5nIG9mIHN0cnVjdCBkZXNjcmlwdGlvbiB0byBhdm9pZCB3YXJuaW5nIGhpZ2hs
+aWdodGVkDQo+IGJ5IFc9MSBjb21waWxhdGlvbi4NCj4NCj4gRml4ZXM6IGU1ZDc2MDc1ZDkzMCAo
+ImRyaXZlcnM6IHJlc2V0OiBTVGkgU29DIHN5c3RlbSBjb25maWd1cmF0aW9uIHJlc2V0IGNvbnRy
+b2xsZXIgc3VwcG9ydCIpDQo+IFNpZ25lZC1vZmYtYnk6IEFsYWluIFZvbG1hdCA8YXZvbG1hdEBt
+ZS5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9yZXNldC9zdGkvcmVzZXQtc3lzY2ZnLmMgfCA3ICsr
+KystLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0p
+DQo+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Jlc2V0L3N0aS9yZXNldC1zeXNjZmcuYyBiL2Ry
+aXZlcnMvcmVzZXQvc3RpL3Jlc2V0LXN5c2NmZy5jDQo+IGluZGV4IDkxMjE1YmI4OGY2Mi4uOTli
+NjMwMzVmZTcyIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3Jlc2V0L3N0aS9yZXNldC1zeXNjZmcu
+Yw0KPiArKysgYi9kcml2ZXJzL3Jlc2V0L3N0aS9yZXNldC1zeXNjZmcuYw0KPiBAQCAtMTcsNyAr
+MTcsNyBAQA0KPiAgI2luY2x1ZGUgInJlc2V0LXN5c2NmZy5oIg0KPiAgDQo+ICAvKioNCj4gLSAq
+IFJlc2V0IGNoYW5uZWwgcmVnbWFwIGNvbmZpZ3VyYXRpb24NCj4gKyAqIHN0cnVjdCBzeXNjZmdf
+cmVzZXRfY2hhbm5lbCAtIFJlc2V0IGNoYW5uZWwgcmVnbWFwIGNvbmZpZ3VyYXRpb24NCj4gICAq
+DQo+ICAgKiBAcmVzZXQ6IHJlZ21hcCBmaWVsZCBmb3IgdGhlIGNoYW5uZWwncyByZXNldCBiaXQu
+DQo+ICAgKiBAYWNrOiByZWdtYXAgZmllbGQgZm9yIHRoZSBjaGFubmVsJ3MgYWNrIGJpdCAob3B0
+aW9uYWwpLg0KPiBAQCAtMjgsOCArMjgsOSBAQCBzdHJ1Y3Qgc3lzY2ZnX3Jlc2V0X2NoYW5uZWwg
+ew0KPiAgfTsNCj4gIA0KPiAgLyoqDQo+IC0gKiBBIHJlc2V0IGNvbnRyb2xsZXIgd2hpY2ggZ3Jv
+dXBzIHRvZ2V0aGVyIGEgc2V0IG9mIHJlbGF0ZWQgcmVzZXQgYml0cywgd2hpY2gNCj4gLSAqIG1h
+eSBiZSBsb2NhdGVkIGluIGRpZmZlcmVudCBzeXN0ZW0gY29uZmlndXJhdGlvbiByZWdpc3RlcnMu
+DQo+ICsgKiBzdHJ1Y3Qgc3lzY2ZnX3Jlc2V0X2NvbnRyb2xsZXIgLSBBIHJlc2V0IGNvbnRyb2xs
+ZXIgd2hpY2ggZ3JvdXBzIHRvZ2V0aGVyDQo+ICsgKiBhIHNldCBvZiByZWxhdGVkIHJlc2V0IGJp
+dHMsIHdoaWNoIG1heSBiZSBsb2NhdGVkIGluIGRpZmZlcmVudCBzeXN0ZW0NCj4gKyAqIGNvbmZp
+Z3VyYXRpb24gcmVnaXN0ZXJzLg0KPiAgICoNCj4gICAqIEByc3Q6IGJhc2UgcmVzZXQgY29udHJv
+bGxlciBzdHJ1Y3R1cmUuDQo+ICAgKiBAYWN0aXZlX2xvdzogYXJlIHRoZSByZXNldHMgaW4gdGhp
+cyBjb250cm9sbGVyIGFjdGl2ZSBsb3csIGkuZS4gY2xlYXJpbmcNCg0KUmV2aWV3ZWQtYnk6IFBh
+dHJpY2UgQ2hvdGFyZCA8cGF0cmljZS5jaG90YXJkQHN0LmNvbT4NCg0KVGhhbmtzDQoNClBhdHJp
+Y2UNCg==
