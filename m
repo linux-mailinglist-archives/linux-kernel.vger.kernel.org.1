@@ -2,179 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613B92B8CFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA502B8D0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgKSIWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:22:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
+        id S1726384AbgKSIZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:25:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgKSIWW (ORCPT
+        with ESMTP id S1725648AbgKSIZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:22:22 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04774C0613CF;
-        Thu, 19 Nov 2020 00:22:21 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id 1so5897339wme.3;
-        Thu, 19 Nov 2020 00:22:20 -0800 (PST)
+        Thu, 19 Nov 2020 03:25:11 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7758C0613CF;
+        Thu, 19 Nov 2020 00:25:10 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id v92so4401656ybi.4;
+        Thu, 19 Nov 2020 00:25:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=WacJpfQKRB3BwL5o2ivrhIEnIpS2jg5Q0aCU51RK5eE=;
-        b=EyS3pQs58yz3Uf73knHb1GNjtFMM9k2doALYiF0aGBerD5H1KblUV6Uz48pjeE4VZ5
-         887hD2UwK4m+JoEx+dcmjHaBf4/XTDUwvJfcJnQaQhUFZLl1bUsN57XEEZew00ZazTSN
-         aDkPcgGCus4MUJxMohKe0YFD97bJf1Z/JnaliqJwfYt/0h/J4U5m34B2XFaHNwEYinG+
-         OJKpfq0t6odI3DU8geL2whUQ2rWTFqULxDHHW7XZCgWZl9V7Be8PVfOiHC9GVzdbOT/w
-         Wv1UMh6Gz5aBPEvxRLFRKyd/OaZiUNCfZLf+oKB8X9URrsaKl8Mj/0YhlWy9jBJkSA0I
-         DzbQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=e1f+fQfsOmUnA6/dHY7qSh+3HPGss0Yw9e5UG3bpbW8=;
+        b=NGfgxj1h8FQPW7e3CjHZ3RlcUb228SM97kaapzzML3mtW4QiiIO3Ob79jefzelbrIe
+         ym8XR9DqFaOCytU5uyeTMnw4LZV+8dTgxxWcGIhFARvuN6ds+AEFRq8sSqosLQ5swxfm
+         w4I5B40yN9WLQr0vM5sGAdjkiFiPCeGYFMKclZrfPD/yXrhyXWvYQUyXjA69/2UvFJrc
+         1LL2AKeBwBQzGomOUkIkGXHgrIWGiIDvfgGCiviuV1542nY22M2s0MjLLOT/NhAJDL/6
+         B6n+2u44rWd+ARBI8Z1VlTf5k+Z+r8aFy+/eBYKvcw1Kaq4vlbAvQM9IFEnMV+dPHupy
+         R1qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=WacJpfQKRB3BwL5o2ivrhIEnIpS2jg5Q0aCU51RK5eE=;
-        b=MivA2uNIiuI9+AsWxtApww8+ih60nT90MOMJFkXKNsWM+/Yoa1HFljNFKS9gIgzXf7
-         qbijzGl0eayUApjL5Gnrl01Q3QOaYdrKf0AadfxnxUfVSdhoyi4rvQlolebAMA/gqm6W
-         HkNGVeLZwlA8YKlc1sptozisx5mGTHFSOpVEuMVMMQpZ5mnkOepZ69q8voxg5F02BTjk
-         5YnnKJ93+LMh+vNLMdF+uteAquS5kFTsKZnraxhvjlGpjI/AeiwOErHRNbkUC/AdqyZP
-         kSngAk2kGa2MSeFYaeVfVE4ujq7tLe4HCJafESwEEzIX/kG5pmA66xXrlUq/ZwgQ0lE7
-         rkCg==
-X-Gm-Message-State: AOAM5307R2+gdUqjDGXMdEwg03tfs98X6S1lvZDbpdDFuyT0za4rrUgL
-        GIuSTACE6/kbL9ea5e32jMY=
-X-Google-Smtp-Source: ABdhPJymNK92TC6ViKAP45B84ih2DIwRAra5etXo/rqCdAe7AGBeve/9iYLYe19NXDUae9Gt7Z5zmw==
-X-Received: by 2002:a1c:984f:: with SMTP id a76mr3120294wme.40.1605774139742;
-        Thu, 19 Nov 2020 00:22:19 -0800 (PST)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id u6sm7989655wmj.40.2020.11.19.00.22.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 00:22:18 -0800 (PST)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH] media: rc: add keymap for KHAMSIN remote
-Date:   Thu, 19 Nov 2020 08:22:15 +0000
-Message-Id: <20201119082215.12430-1-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=e1f+fQfsOmUnA6/dHY7qSh+3HPGss0Yw9e5UG3bpbW8=;
+        b=dPN/tABUjmGNH2JHn03s3530+OequxjCaBpb7XMnCFei5JN3wd2X0b/kVi9LA3AV/1
+         tBAzMzXDcOa3FZZx328nTjhcNd9gCgVzzmIdeTo80ntsneS/on1W5sugJ88F+OOEG497
+         lEbGXbs96A++/vzrhK99CGPRSjSVEvJnVi2WGbtIve3RQhTvDXRpyLMSRL7ydm+r3f52
+         5hG0nAmJPRAlZQJFuiNPO5KU1iHCrgfj4KWUWKCwOSt14Xe93bh7UBjLPCqcYUPfRZZI
+         G4sotFOSa4n0TTCjow4hfplCwybAaBY5RGjI717L5wY9BbIhdNBpOihW3fLIej6LPDIJ
+         QaJA==
+X-Gm-Message-State: AOAM531loW1eW3qX3aDc7P4WRlDAWeZD+VVc8EsbByoENcDHmRB5Fuq1
+        mAS+16MBmwuuGzl6DpIih9wlqB5doZytOWR+Bn4=
+X-Google-Smtp-Source: ABdhPJxJtpTCNTfjMxiXEt4eAsiY6NDQKYWYDWq4YpVFTsX/c7ppdtkLEPa6/tXeXuSG7d+CSSWFzVd3wXBb32hsYs8=
+X-Received: by 2002:a25:bc0a:: with SMTP id i10mr11389858ybh.10.1605774306722;
+ Thu, 19 Nov 2020 00:25:06 -0800 (PST)
+MIME-Version: 1.0
+References: <20201113113423.9466-1-zajec5@gmail.com> <20201119062720.GE50232@vkoul-mobl>
+In-Reply-To: <20201119062720.GE50232@vkoul-mobl>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Date:   Thu, 19 Nov 2020 09:24:55 +0100
+Message-ID: <CACna6rzLwQFcTLU6WwhtAHZ-GXo7cJZGrCn+SXRTHa3B=ZQ9Mw@mail.gmail.com>
+Subject: Re: [PATCH] phy: phy-bcm-ns-usb3: drop support for deprecated DT binding
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Hauke Mehrtens <hauke@hauke-m.de>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This remote ships with the Amlogic SML-5442TW IPTV/VOD Set-tob Box [0]
-used by O2.cz. This keymap adds support for the default IR controls.
+On Thu, 19 Nov 2020 at 07:27, Vinod Koul <vkoul@kernel.org> wrote:
+>
+> On 13-11-20, 12:34, Rafa=C5=82 Mi=C5=82ecki wrote:
+> > From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> >
+> > Initially this PHY driver was implementing MDIO access on its own. It
+> > was caused by lack of proper hardware design understanding.
+> >
+> > It has been changed back in 2017. DT bindings were changed and driver
+> > was updated to use MDIO layer.
+> >
+> > It should be really safe now to drop the old deprecated code. All Linux
+> > stored DT files don't use it for 3,5 year. There is close to 0 chance
+> > there is any bootloader with its own DTB using old the binding.
+>
+> Applied, thanks
+>
+> While applying, it gave me a minor conflict, please do check the
+> resolution
 
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
----
- drivers/media/rc/keymaps/Makefile     |  1 +
- drivers/media/rc/keymaps/rc-khamsin.c | 75 +++++++++++++++++++++++++++
- include/media/rc-map.h                |  1 +
- 3 files changed, 77 insertions(+)
- create mode 100644 drivers/media/rc/keymaps/rc-khamsin.c
+Looks good, thank you!
 
-diff --git a/drivers/media/rc/keymaps/Makefile b/drivers/media/rc/keymaps/Makefile
-index aaa1bf81d00d..1c4d6bec0ae4 100644
---- a/drivers/media/rc/keymaps/Makefile
-+++ b/drivers/media/rc/keymaps/Makefile
-@@ -60,6 +60,7 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
- 			rc-it913x-v2.o \
- 			rc-kaiomy.o \
- 			rc-khadas.o \
-+			rc-khamsin.o \
- 			rc-kworld-315u.o \
- 			rc-kworld-pc150u.o \
- 			rc-kworld-plus-tv-analog.o \
-diff --git a/drivers/media/rc/keymaps/rc-khamsin.c b/drivers/media/rc/keymaps/rc-khamsin.c
-new file mode 100644
-index 000000000000..8a397590009a
---- /dev/null
-+++ b/drivers/media/rc/keymaps/rc-khamsin.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+// Copyright (c) 2020 Christian Hewitt
-+
-+#include <media/rc-map.h>
-+#include <linux/module.h>
-+
-+/*
-+ * KHAMSIN is an IR/Bluetooth RCU supplied with the SmartLabs
-+ * SML-5442TW DVB-S/VOD box. The RCU has separate IR (TV) and
-+ * BT (STB) modes. This keymap suppors the IR controls.
-+ */
-+
-+static struct rc_map_table khamsin[] = {
-+	{ 0x70702, KEY_POWER},
-+
-+	{ 0x70701, KEY_VIDEO}, // source
-+
-+	{ 0x7076c, KEY_RED},
-+	{ 0x70714, KEY_GREEN},
-+	{ 0x70715, KEY_YELLOW},
-+	{ 0x70716, KEY_BLUE},
-+
-+	{ 0x7071a, KEY_MENU},
-+	{ 0x7074f, KEY_EPG},
-+
-+	{ 0x70760, KEY_UP },
-+	{ 0x70761, KEY_DOWN },
-+	{ 0x70765, KEY_LEFT },
-+	{ 0x70762, KEY_RIGHT },
-+	{ 0x70768, KEY_ENTER },
-+
-+	{ 0x7072d, KEY_ESC }, // back
-+
-+	{ 0x70707, KEY_VOLUMEUP },
-+	{ 0x7070b, KEY_VOLUMEDOWN },
-+	{ 0x7070f, KEY_MUTE },
-+	{ 0x70712, KEY_CHANNELUP },
-+	{ 0x70710, KEY_CHANNELDOWN },
-+
-+	{ 0x70704, KEY_1 },
-+	{ 0x70705, KEY_2 },
-+	{ 0x70706, KEY_3 },
-+	{ 0x70708, KEY_4 },
-+	{ 0x70709, KEY_5 },
-+	{ 0x7070a, KEY_6 },
-+	{ 0x7070c, KEY_7 },
-+	{ 0x7070d, KEY_8 },
-+	{ 0x7070e, KEY_9 },
-+	{ 0x70711, KEY_0 },
-+};
-+
-+static struct rc_map_list khamsin_map = {
-+	.map = {
-+		.scan     = khamsin,
-+		.size     = ARRAY_SIZE(khamsin),
-+		.rc_proto = RC_PROTO_NEC,
-+		.name     = RC_MAP_KHAMSIN,
-+	}
-+};
-+
-+static int __init init_rc_map_khamsin(void)
-+{
-+	return rc_map_register(&khamsin_map);
-+}
-+
-+static void __exit exit_rc_map_khamsin(void)
-+{
-+	rc_map_unregister(&khamsin_map);
-+}
-+
-+module_init(init_rc_map_khamsin)
-+module_exit(exit_rc_map_khamsin)
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Christian Hewitt <christianshewitt@gmail.com>");
-diff --git a/include/media/rc-map.h b/include/media/rc-map.h
-index 7dbb91c601a7..fa270f16a97b 100644
---- a/include/media/rc-map.h
-+++ b/include/media/rc-map.h
-@@ -263,6 +263,7 @@ struct rc_map *rc_map_get(const char *name);
- #define RC_MAP_IT913X_V2                 "rc-it913x-v2"
- #define RC_MAP_KAIOMY                    "rc-kaiomy"
- #define RC_MAP_KHADAS                    "rc-khadas"
-+#define RC_MAP_KHAMSIN                   "rc-khamsin"
- #define RC_MAP_KWORLD_315U               "rc-kworld-315u"
- #define RC_MAP_KWORLD_PC150U             "rc-kworld-pc150u"
- #define RC_MAP_KWORLD_PLUS_TV_ANALOG     "rc-kworld-plus-tv-analog"
--- 
-2.17.1
-
+--=20
+Rafa=C5=82
