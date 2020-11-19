@@ -2,148 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0352B9A18
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695062B9A1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729385AbgKSRxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:53:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727535AbgKSRxh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:53:37 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293A9C0613CF;
-        Thu, 19 Nov 2020 09:53:37 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w6so5223914pfu.1;
-        Thu, 19 Nov 2020 09:53:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ohg0oJ87lTSLWpA2Zkajq7Ec19JHlvcX3mrDjoh7A+4=;
-        b=SPWvYU2D1eVcQ+2w65iVGl6q6+jVTpgUw6pDny2n4jrNj7rmt3cUTzZiIQ99HHK91C
-         q+2dl9IfxOD/LVL6WfRkI2e7KZ8wFVljPXrACM2voGt0m4glw3em/VZu66t+BIdIUbfW
-         aZmUNft6r0lH7XxXvNy3S4L7eqYhsdMoORwW8SsYoleoy/7q/gvqK//hBvZJ1PVE3gFy
-         maAy+n2BY4tu+F7gDVvi9VKKpybuRpmL3J0qI1IG+gDe/mgneH+BgmwBijiidvvDxX8X
-         ooJYQ9RB8YXOsl+KMtDuqaca3OMQq86YVCuVafECchW+A+E4Q9pkqM3q6LFXiTk8LFRM
-         bVGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ohg0oJ87lTSLWpA2Zkajq7Ec19JHlvcX3mrDjoh7A+4=;
-        b=RK/HCpaDx4wuLiHNiVfXlxC4FuuIiY62KfjEeEHQetFZFf+sktIACCuVslK3QSWwCW
-         IH52t2cqjJGpqWjPJRFW3qQ73R7srFfjkAftAjUCLs4rNDqY7u5ugyxJUMnlf7Xx3BvP
-         FSRusxK/wtwa7AF5edMuw022QF2YdAnoQDKBRLrAh8Y/tBXf3qRYL2cgqXleDlM+xLSj
-         hA5cfePvLoezTiF45tfeWMRD+/eE3jihfSOx9l/j2e3BL+vJ96pRFLpGKNvq+k53P0W3
-         LHA+br9DuDr48uRmB1TBeUdJ3NDxzc+UGB364D6sJ/YupvKeNaUCqTOjd91PYizDBcT9
-         QR+Q==
-X-Gm-Message-State: AOAM533gExDgZU46Q96UrXaTUxAMAS7uPHx5rRCPF1eyXCkodNUaFNOO
-        26OHVz+JFrGxzgipx60AIvrdPmhDzSz+sTWt
-X-Google-Smtp-Source: ABdhPJyBohN3X1dbPoB5yZrMXkCYfOLlvE8+V0Q6voVdgLbu5TjNEaqQp2A9zwKfkl3gKwtJJ1Uc0g==
-X-Received: by 2002:a17:90a:940f:: with SMTP id r15mr5639577pjo.219.1605808416714;
-        Thu, 19 Nov 2020 09:53:36 -0800 (PST)
-Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id 144sm482858pfb.71.2020.11.19.09.53.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 09:53:36 -0800 (PST)
-From:   rentao.bupt@gmail.com
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, taoren@fb.com, mikechoi@fb.com
-Cc:     Tao Ren <rentao.bupt@gmail.com>
-Subject: [PATCH v3 2/2] docs: hwmon: Document max127 driver
-Date:   Thu, 19 Nov 2020 09:53:24 -0800
-Message-Id: <20201119175324.22472-3-rentao.bupt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201119175324.22472-1-rentao.bupt@gmail.com>
-References: <20201119175324.22472-1-rentao.bupt@gmail.com>
+        id S1729484AbgKSRxw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Nov 2020 12:53:52 -0500
+Received: from mga17.intel.com ([192.55.52.151]:64365 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727535AbgKSRxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:53:51 -0500
+IronPort-SDR: btkbCkH8b6aKYrEPUzP+zWiDE8duK9MBdTtV90vPnrEBERtJELo+Axs/zFBkcpO84+fLvITvid
+ w9pHXY+3g8cA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="151180995"
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="151180995"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 09:53:38 -0800
+IronPort-SDR: kuBrmj3Emw5SL/nwTZszHOH/UC4ToC/fEvfBVgDAeUCOsNMnEb5zEbj0MGjNqHP9PTYh8OPhW8
+ N4Rb1rbXu1Ng==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,353,1599548400"; 
+   d="scan'208";a="368940085"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP; 19 Nov 2020 09:53:38 -0800
+Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 19 Nov 2020 09:53:37 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ SHSMSX605.ccr.corp.intel.com (10.109.6.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 20 Nov 2020 01:53:34 +0800
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
+ Thu, 19 Nov 2020 09:53:33 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: RE: linux-next: Tree for Nov 19 (drivers/edac/igen6_edac.c)
+Thread-Topic: linux-next: Tree for Nov 19 (drivers/edac/igen6_edac.c)
+Thread-Index: AQHWvpP6tFIyQC3x9Uaq/hhnP8oH8qnPt5Wg
+Date:   Thu, 19 Nov 2020 17:53:33 +0000
+Message-ID: <0ad9aeffcd5342f59bae6fe64218d011@intel.com>
+References: <20201119170832.614bf46d@canb.auug.org.au>
+ <6d36cd23-2647-f3b1-5f55-1e00105698eb@infradead.org>
+In-Reply-To: <6d36cd23-2647-f3b1-5f55-1e00105698eb@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Ren <rentao.bupt@gmail.com>
+> ../drivers/edac/igen6_edac.c: In function 'ecclog_nmi_handler':
+> ../drivers/edac/igen6_edac.c:525:10: error: 'NMI_DONE' undeclared (first use in this function); did you mean 'DMI_NONE'?
+>    return NMI_DONE;
 
-Add documentation for the max127 hardware monitoring driver.
+This driver has a #include <linux/nmi.h>
 
-Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
----
- Changes in v3:
-   - no code change. xdp maintainers were removed from to/cc list.
- Changes in v2:
-   - add more description for min/max sysfs nodes.
-   - convert values from volt to millivolt in the document.
+But inside that file it says:
 
- Documentation/hwmon/index.rst  |  1 +
- Documentation/hwmon/max127.rst | 45 ++++++++++++++++++++++++++++++++++
- 2 files changed, 46 insertions(+)
- create mode 100644 Documentation/hwmon/max127.rst
+#if defined(CONFIG_HAVE_NMI_WATCHDOG)
+#include <asm/nmi.h>
+#endif
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 408760d13813..0a07b6000c20 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -111,6 +111,7 @@ Hardware Monitoring Kernel Drivers
-    ltc4245
-    ltc4260
-    ltc4261
-+   max127
-    max16064
-    max16065
-    max1619
-diff --git a/Documentation/hwmon/max127.rst b/Documentation/hwmon/max127.rst
-new file mode 100644
-index 000000000000..dc192dd9c37c
---- /dev/null
-+++ b/Documentation/hwmon/max127.rst
-@@ -0,0 +1,45 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Kernel driver max127
-+====================
-+
-+Author:
-+
-+  * Tao Ren <rentao.bupt@gmail.com>
-+
-+Supported chips:
-+
-+  * Maxim MAX127
-+
-+    Prefix: 'max127'
-+
-+    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX127-MAX128.pdf
-+
-+Description
-+-----------
-+
-+The MAX127 is a multirange, 12-bit data acquisition system (DAS) providing
-+8 analog input channels that are independently software programmable for
-+a variety of ranges. The available ranges are {0,5V}, {0,10V}, {-5,5V}
-+and {-10,10V}.
-+
-+The MAX127 features a 2-wire, I2C-compatible serial interface that allows
-+communication among multiple devices using SDA and SCL lines.
-+
-+Sysfs interface
-+---------------
-+
-+  ============== ==============================================================
-+  in[0-7]_input  The input voltage (in mV) of the corresponding channel.
-+		 RO
-+
-+  in[0-7]_min    The lower input limit (in mV) for the corresponding channel.
-+		 ADC range and LSB will be updated when the limit is changed.
-+		 For the MAX127, it will be adjusted to -10000, -5000, or 0.
-+		 RW
-+
-+  in[0-7]_max    The higher input limit (in mV) for the corresponding channel.
-+		 ADC range and LSB will be updated when the limit is changed.
-+		 For the MAX127, it will be adjusted to 0, 5000, or 10000.
-+		 RW
-+  ============== ==============================================================
--- 
-2.17.1
+and the randconfig used doesn't set CONFIG_HAVE_NMI_WATCHDOG
 
+
+Some options:
+
+1) Drop that #ifdef from <linux/nmi.h>
+It was introduced as part of this commit:
+f2e0cff85ed1 ("kernel/watchdog: introduce arch_touch_nmi_watchdog()")
+presumably for some good reason.
+
+2) Make this edac driver select CONFIG_HAVE_NMI_WATCHDOG
+Yuck!
+
+3) Make this driver #include <asm/nmi.h> instead of <linux/nmi.h>
+This fixes this build error, but I thought that general policy was to
+use the <linux/*.h> if it exists rather than the <asm/*.h> one.
+Maybe that's ok here because this is an x86 specific driver?
+
+I'm leaning toward option #3.
+
+-Tony
