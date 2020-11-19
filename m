@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C4A2B8BFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3304D2B8BF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 08:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgKSHGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 02:06:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgKSHGK (ORCPT
+        id S1726300AbgKSHEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 02:04:15 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7951 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726255AbgKSHEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:06:10 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEC0C0613CF;
-        Wed, 18 Nov 2020 23:06:10 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id q28so3403631pgk.1;
-        Wed, 18 Nov 2020 23:06:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ayYk+CLpbPqFDGheTWGLWJByA3PKUlBGP2wbtuMSk5g=;
-        b=Gf1JER74hE92j718zjtQKRHqVHA/1x3kIk17/RAV22kRIdO747d0KNAOu1XZ7tubtj
-         sbwSf+og8FnBF7EzFbMIBVFjjLgNgAFKxOqJziIqgtcsfJZRyfzhd3E7WhnuL9fQKLzX
-         XWykZG5LFOWe0iM7MKlgymyKGr4c2IdCLM/YxoVHA/PNqlV1SjjlzwxOjQjlOwXajhg6
-         SfETbrSvhAaISjDHWbZijM5mlCHi53k6pexHckPq+YzOCtyjTo6CI8h7nLhkC1NowMVR
-         LJ6xFfvqv1/qE7jztBFjSJZ6S2qRslaMumIfLWM/YEsixBfKAAj86Q6rckFS+xP0Vwo+
-         oAWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ayYk+CLpbPqFDGheTWGLWJByA3PKUlBGP2wbtuMSk5g=;
-        b=Ep0Ha/pCNyZY+fAnWUhvtxIijp0gdlIO3tHjeF4Kz+LWk+ChdlpjqqucFgLoK4lxoG
-         V1QCxE1hzL9xyHe+YOY62KQOqaqNCrN6y3SGINt5BENeQ6JEr+P4aZUbCF24NVSvJ4bq
-         5Ef1suZ23CkzW9ZVere+wEvytDMrisEFau3DkPIZM/jvzgRN4792triv3zuAf8HbLS+b
-         0Gm23x7FNuNOqw2xpkl0OVdlAPsJTd5cbrfga6OKg80JMM7bU1WOrOsADHS2cRhtVFeK
-         CZejOojKJm3PEVm4MtAVpLLNWhMIhDRdGx2t7jxJ7t/mO/uuftkSi99m+Fv27A3dTCcR
-         I8gA==
-X-Gm-Message-State: AOAM530wwp15Bjf5t1oySKOIn0PMKF3FnXD8lcBAORkxur7f+dn8MIre
-        wIp39qTGNTl0tCOlar+zbSJ5gR8U4Is=
-X-Google-Smtp-Source: ABdhPJw+wHRwabNGFldhWGrNpfK4GQPCNmTs/OEfzg4Y2bFxtsuNYze9g7TY9kSJlpIqBDrLGx8DBw==
-X-Received: by 2002:a63:f318:: with SMTP id l24mr11659522pgh.193.1605769569645;
-        Wed, 18 Nov 2020 23:06:09 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id w63sm28085063pfc.120.2020.11.18.23.06.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 23:06:08 -0800 (PST)
-Date:   Wed, 18 Nov 2020 23:06:06 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] Input: adp5589: use devm_kzalloc() to allocate
- the kpad object
-Message-ID: <20201119070606.GC2034289@dtor-ws>
-References: <20201112074308.71351-1-alexandru.ardelean@analog.com>
- <20201112074308.71351-2-alexandru.ardelean@analog.com>
+        Thu, 19 Nov 2020 02:04:14 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cc9dS0srczhdH9;
+        Thu, 19 Nov 2020 15:03:56 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 19 Nov 2020 15:03:57 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Corey Minyard <minyard@acm.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+CC:     <openipmi-developer@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH] ipmi: msghandler: Suppress suspicious RCU usage warning
+Date:   Thu, 19 Nov 2020 15:08:39 +0800
+Message-ID: <20201119070839.381-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112074308.71351-2-alexandru.ardelean@analog.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 09:43:04AM +0200, Alexandru Ardelean wrote:
-> This removes the need to manually free the kpad object and cleans up some
-> exit/error paths.
-> The error path cleanup should reduce the risk of any memory leaks with this
-> object.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+while running ipmi, ipmi_smi_watcher_register() caused
+a suspicious RCU usage warning.
 
-Applied, thank you.
+-----
 
+=============================
+WARNING: suspicious RCU usage
+5.10.0-rc3+ #1 Not tainted
+-----------------------------
+drivers/char/ipmi/ipmi_msghandler.c:750 RCU-list traversed in non-reader section!!
+other info that might help us debug this:
+rcu_scheduler_active = 2, debug_locks = 1
+2 locks held by syz-executor.0/4254:
+stack backtrace:
+CPU: 0 PID: 4254 Comm: syz-executor.0 Not tainted 5.10.0-rc3+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/ 01/2014
+Call Trace:
+dump_stack+0x19d/0x200
+ipmi_smi_watcher_register+0x2d3/0x340 [ipmi_msghandler]
+acpi_ipmi_init+0xb1/0x1000 [acpi_ipmi]
+do_one_initcall+0x149/0x7e0
+do_init_module+0x1ef/0x700
+load_module+0x3467/0x4140
+__do_sys_finit_module+0x10d/0x1a0
+do_syscall_64+0x34/0x80
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x468ded
+
+-----
+
+It is safe because smi_watchers_mutex is locked and srcu_read_lock
+has been used, so simply pass lockdep_is_held() to the
+list_for_each_entry_rcu() to suppress this warning.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ drivers/char/ipmi/ipmi_msghandler.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index 8774a3b8f..c44ad1846 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -747,7 +747,8 @@ int ipmi_smi_watcher_register(struct ipmi_smi_watcher *watcher)
+ 	list_add(&watcher->link, &smi_watchers);
+ 
+ 	index = srcu_read_lock(&ipmi_interfaces_srcu);
+-	list_for_each_entry_rcu(intf, &ipmi_interfaces, link) {
++	list_for_each_entry_rcu(intf, &ipmi_interfaces, link,
++			lockdep_is_held(&smi_watchers_mutex)) {
+ 		int intf_num = READ_ONCE(intf->intf_num);
+ 
+ 		if (intf_num == -1)
 -- 
-Dmitry
+2.23.0
+
