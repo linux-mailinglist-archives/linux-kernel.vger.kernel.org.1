@@ -2,109 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0912B9064
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B19B22B906B
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgKSKsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 05:48:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726407AbgKSKsL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 05:48:11 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4428EC0613CF;
-        Thu, 19 Nov 2020 02:48:11 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id d142so6709904wmd.4;
-        Thu, 19 Nov 2020 02:48:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0oiSOde3ukUdcW4AaR1Bcp0zwTptRMD9+MwlC9b8EXA=;
-        b=dwNq3gNSdLSLMHFiIRSZdeVYmIyCSlCPaJpEMuU0a7cY1zCA+Liivh/uoEFlcHX8U1
-         ao3dLEsceMZ50qmChMah17laga7xiTYDtATAjGnOF83GucLlyErEhJ7YJ/5uF+RTDlyt
-         ZrHLzvJQ46/MZsG7fj9GALoFRUKxvSzfv1eYt2DZcZZooDtl0jUP3JTg6PkxVJLHBvC6
-         NfIthf5XJYcbEAc0ybyfwi1sowODLCexwwStnPZsrrsctCkqXq7xZ9pZMX9GpWzLOcaL
-         pcJnBL4+gmkI76lzUQAdWS5jNsTQqTSDRMqDHRvu+YZhIQO7HEjl/TVl7mH6V0e37fLG
-         aKSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0oiSOde3ukUdcW4AaR1Bcp0zwTptRMD9+MwlC9b8EXA=;
-        b=rLEZLUVypPz3zqdA5PnMz+sk5rg4SJpsey6xpY3FCYveH10E9a0AQHRsnsODT5VhYW
-         LxgNjZSucOQCqcKowlbi5pTVxBD2W7qEhXYsLa95Z5Xv3WVzEAfbGTSEwjcRUuhyG9QJ
-         Nk2WN56FUZS42T1fJk209t8++15/BzNTh7fNGx1la4AxaECgPJNDdxAuo9NlKKKGuZPl
-         JxspouzEjR9NhE+vENfYTXkEoVygQ3D25EznN4YgbwjZ55X1raidlO+vJa+l+DVWZjw3
-         TgRCP8xmtvYLhvVhHCiiFX5D+nMp5dmVS7IX4jeGgeBEsj97GjTFcpaEcdiCAPFfm44y
-         6MvA==
-X-Gm-Message-State: AOAM530PLMjvXIVXHe+560qQvcLwb4gn0z2nG21SrhDVWxfKI+Yoo+WZ
-        JFXQxpSVZvgGZl2sv46+ck/s/ndVOfA=
-X-Google-Smtp-Source: ABdhPJy7FA7YOl/ouCKQDzY9pwrfgXBwGzFQSG5LKeKYRw4JElSG96VmFwazErvLl8FPKWgZjOJ7Gg==
-X-Received: by 2002:a1c:4909:: with SMTP id w9mr3811365wma.15.1605782889972;
-        Thu, 19 Nov 2020 02:48:09 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id q66sm9561801wme.6.2020.11.19.02.48.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 02:48:08 -0800 (PST)
-Date:   Thu, 19 Nov 2020 11:48:07 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH] soc/tegra: fuse: Fix index bug in get_process_id
-Message-ID: <20201119104807.GC3559705@ulmo>
-References: <20201119044457.29528-1-nicoleotsuka@gmail.com>
+        id S1726738AbgKSKsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 05:48:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54218 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726691AbgKSKsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 05:48:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 85D91AA4F;
+        Thu, 19 Nov 2020 10:48:49 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 11:48:47 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     mhocko@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com
+Subject: Re: [RFC PATCH 3/3] mm,memory_hotplug: Allocate memmap from the
+ added memory range
+Message-ID: <20201119104847.GA5281@localhost.localdomain>
+References: <20201022125835.26396-1-osalvador@suse.de>
+ <20201022125835.26396-4-osalvador@suse.de>
+ <3cc37927-538e-ae7d-27bc-45aaabe06b3a@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="oJ71EGRlYNjSvfq7"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119044457.29528-1-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <3cc37927-538e-ae7d-27bc-45aaabe06b3a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 17, 2020 at 04:38:52PM +0100, David Hildenbrand wrote:
+> Sorry for the late replay, fairly busy with all kinds of things.
 
---oJ71EGRlYNjSvfq7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Heh, no worries, I appreciate the time :-)
 
-On Wed, Nov 18, 2020 at 08:44:57PM -0800, Nicolin Chen wrote:
-> This patch simply fixes a bug of referencing speedos[num] in every
-> for-loop iteration in get_process_id function.
->=20
-> Fixes: 0dc5a0d83675 ("soc/tegra: fuse: Add Tegra210 support")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/soc/tegra/fuse/speedo-tegra210.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > diff --git a/drivers/acpi/acpi_memhotplug.c b/drivers/acpi/acpi_memhotplug.c
+> > index b02fd51e5589..6b57bf90ca72 100644
+> > --- a/drivers/acpi/acpi_memhotplug.c
+> > +++ b/drivers/acpi/acpi_memhotplug.c
+> > @@ -195,7 +195,7 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
+> >   			node = memory_add_physaddr_to_nid(info->start_addr);
+> >   		result = __add_memory(node, info->start_addr, info->length,
+> > -				      MHP_NONE);
+> > +				      MEMHP_MEMMAP_ON_MEMORY);
+> 
+> I'd suggest moving that into a separate patch.
 
-Good catch! Applied, thanks.
+Fine by me
 
-Thierry
+> > diff --git a/include/linux/memory.h b/include/linux/memory.h
+> > index 439a89e758d8..7cc93de5856c 100644
+> > --- a/include/linux/memory.h
+> > +++ b/include/linux/memory.h
+> > @@ -30,6 +30,7 @@ struct memory_block {
+> >   	int phys_device;		/* to which fru does this belong? */
+> >   	struct device dev;
+> >   	int nid;			/* NID for this memory block */
+> > +	unsigned long nr_vmemmap_pages;	/* Number for vmemmap pages */
+> 
+> Maybe also document that these pages are directly at the beginning of the
+> memory block.
 
---oJ71EGRlYNjSvfq7
-Content-Type: application/pgp-signature; name="signature.asc"
+Sure
 
------BEGIN PGP SIGNATURE-----
+> > -static inline int offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+> > +static inline int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+> > +				unsigned long nr_vmemmap_pages)
+> >   {
+> >   	return -EINVAL;
+> >   }
+> > @@ -369,10 +372,12 @@ extern int add_memory_driver_managed(int nid, u64 start, u64 size,
+> >   				     mhp_t mhp_flags);
+> >   extern void move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
+> >   				   unsigned long nr_pages,
+> > +				   unsigned long nr_vmemmap_pages,
+> >   				   struct vmem_altmap *altmap, int migratetype);
+> >   extern void remove_pfn_range_from_zone(struct zone *zone,
+> >   				       unsigned long start_pfn,
+> > -				       unsigned long nr_pages);
+> > +				       unsigned long nr_pages,
+> > +				       unsigned long nr_vmemmap_pages);
+> 
+> I think we should not pass nr_vmemmap_pages down here but instead do two
+> separate calls to move_pfn_range_to_zone()/remove_pfn_range_from_zone() from
+> online_pages()/offline_pages()
+> 
+> 1. for vmemmap pages, migratetype = MIGRATE_UNMOVABLE
+> 2. for remaining pages, migratetype = MIGRATE_ISOLATE
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+2TWYACgkQ3SOs138+
-s6Fn0BAAjQeG/dgCzE7gY76KXQXtr9WvpHe6/WxAws8BjmNl1RQqIgs8NMsmmyOE
-0U2bzhyHD7FQQf5BFxAhpgEcwV3G3vk737mbovsO9HPYFgU6DkYtxXAMrLt1HsEX
-7Icc8TtTdmB9p9C3Yucl73FiYohLx/dAsA3ruaE3O679fOopL7l1H3xxcFGUg6GK
-4mDymqorTp+pMIAUT2p+CRONp8d/3bp4SqNo8N5lTC6GyeBvVZSW+ZpIsbhXDuxr
-bfz6h+KtleTymeTzRaaN7GQtqjvt4qxgXV4+ftwZb+HQcPbW8PqwGJDfKspHVAAv
-eFSiGYGXpdXnwbUcNYotek1/hevwJwseSkS7Owu1xhJ8z84ayb8rXPORfYPqsuAp
-1uBB/BLSMKyjoS+9TVYQs6qH37mLSfnGy94bV5lWRgHg9GcmH2SgF1mOrMlpy9Ie
-buZ5jTJgPKGZULzhGgxf9zJMJVzCdERGS8NYP9us0zvq4jxDrqcesYGEPiSve+G3
-sbZtnPUlHRFiIuAbchBNPet7hhQzXoiH1OdLu6wzrDj7nrgNUTbP9lmwMwk8ZlCM
-t3IIk+/8VrW392Z2Mfgwc0lfpX7rPulXsU8vjyQ7uWcr1NDJOuGQsBbM2kyKumHe
-ow2KPCjqbUZztsutQN2Ib0F4swR7hiJQCitvl/K9oIj9l9l6t5I=
-=R6rf
------END PGP SIGNATURE-----
+Ok, that was the other option, it might be even cleaner.
 
---oJ71EGRlYNjSvfq7--
+> > +	valid_start_pfn = pfn + nr_vmemmap_pages;
+> > +	valid_nr_pages = nr_pages - nr_vmemmap_pages;
+> 
+> Hm, valid sounds strange. More like "free_start_pfn" or "buddy_start_pfn".
+
+Agreed, I might lean towards buddy_start_pfn.
+
+> > -	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL, MIGRATE_ISOLATE);
+> > +	move_pfn_range_to_zone(zone, pfn, nr_pages, nr_vmemmap_pages, NULL,
+> > +			       MIGRATE_ISOLATE);
+> 
+> As mentioned, I'd suggest properly initializing the memmap here
+> 
+> if (nr_vmemmap_pages) {
+> 	move_pfn_range_to_zone(zone, pfn, nr_vmemmap_pages, NULL,
+> 			       MIGRATE_UNMOVABLE);
+> }
+> move_pfn_range_to_zone(zone, valid_start_pfn, valid_nr_pages, NULL,
+
+Sure, agreed.
+
+> > +	if (!support_memmap_on_memory(size))
+> > +		mhp_flags &= ~MEMHP_MEMMAP_ON_MEMORY;
+> 
+> Callers (e.g., virtio-mem) might rely on this. We should reject this with
+> -EINVAL and provide a way for callers to test whether this flag is possible.
+
+Uhm, we might want to make "support_memmap_on_memory" public, and
+callers who might want to it use can check its return value?
+Or do you have something else in mind?
+
+Agreed on the -EINVAIL.
+
+> > +	if (mhp_flags & MEMHP_MEMMAP_ON_MEMORY)
+> > +		mhp_mark_vmemmap_pages(params.altmap);
+> 
+> Do we really still need that? Pages are offline, so we're messing with an
+> invalid memmap. online_pages() should handle initializing the memmap of
+> these pages.
+
+Yeah, on a second thought we do not need this.
+Since the pages are still offline, no one should be messing with that
+range yet anyway.
+
+> 
+> [...]
+> 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index e74ca22baaa1..043503fb8c6e 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -8761,6 +8761,13 @@ void __offline_isolated_pages(unsigned long start_pfn, unsigned long end_pfn)
+> >   	spin_lock_irqsave(&zone->lock, flags);
+> >   	while (pfn < end_pfn) {
+> >   		page = pfn_to_page(pfn);
+> > +		/*
+> > +		 * Skip vmemmap pages
+> > +		 */
+> > +		if (PageVmemmap(page)) {
+> > +			pfn += vmemmap_nr_pages(page);
+> > +			continue;
+> > +		}
+> 
+> I'd assume calling code can handle that and exclude isolating such pages.
+
+The thing is that __offline_isolated_pages calls offline_mem_sections(),
+so we really need the first pfn, and not the "pfn + nr_vmemmap_pages".
+Instead of skipping it in the loop, I might just skip it before entering
+the loop.
+
+Thanks!
+
+-- 
+Oscar Salvador
+SUSE L3
