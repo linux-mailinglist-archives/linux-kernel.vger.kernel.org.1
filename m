@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5382B992C
+	by mail.lfdr.de (Postfix) with ESMTP id 887A12B992D
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728971AbgKSRUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:20:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727677AbgKSRUH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:20:07 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC27C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:20:07 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id l11so9419177lfg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:20:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kdtThT2vJGo6Wdq53TPlyIKnQQ6EAzbrw7SbM7qAaa4=;
-        b=KtKkL/bDLeFxOu5LQGzpdhHGbQcQiZojE1Hwikc0m0D212LbNnl+k45phZKTDGy1eB
-         96t/WiI8l4XGutRfemSkL6TPvDyFyWWNpvGV5SPJIJZa3sFF0WeQwNdrSR4OGyrEHFFp
-         mLVxA8UY9dwUahqDuuxY6hmT6SvIWpNxxB4w4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kdtThT2vJGo6Wdq53TPlyIKnQQ6EAzbrw7SbM7qAaa4=;
-        b=VdVItZADSqlhus/kvVzZ5FHIXK+NN8axs2CuaXJx1rsueI17uCx9ORkSYG3Usgl7JY
-         6ZpbsBDnbeMbUM6pnISjZuQwD35lPH5g30XB8Du7A1uIsrPezJDpqK72oakEdxpsY3IF
-         Fp7zcBc9t9/7mtT0eBbXP/lfCA4Rb0aoVX2ODfvpxyjYLHlkmGll720Elo10r1rP2Nz+
-         9h+L/y6munYpEmHAX8QZGbk6MRp31MdN0jojZ7jcBv1liN4U3KV+IoDZyqzgGCm7gYiv
-         9oaBHInKImU+BhuYDO0xS+zhNpUGPNpMxGjXWbo7KlV648OVpZa1i9k+pvtTsmDH6fhM
-         pI/Q==
-X-Gm-Message-State: AOAM533wqH21hcs1lBWwL6de2f8IQMLLVQLd01bQM+m91t33YLWxkBeE
-        d4gNXxQkSlIJ/V31e1T4G8sUre/0hHrOzA==
-X-Google-Smtp-Source: ABdhPJyK4N2sVtSk0e4Aq5btYjbasUTeqpdWY3OngrkivsALxTM2f2vJe7pE8YpfIjdYzWXZL8VUaQ==
-X-Received: by 2002:a19:8346:: with SMTP id f67mr7499300lfd.569.1605806404853;
-        Thu, 19 Nov 2020 09:20:04 -0800 (PST)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id y12sm27016lfh.120.2020.11.19.09.20.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 09:20:03 -0800 (PST)
-Received: by mail-lj1-f182.google.com with SMTP id y16so7107366ljk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 09:20:02 -0800 (PST)
-X-Received: by 2002:a2e:8e33:: with SMTP id r19mr5940506ljk.102.1605806402308;
- Thu, 19 Nov 2020 09:20:02 -0800 (PST)
+        id S1728013AbgKSRUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:20:14 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:12009 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726474AbgKSRUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:20:13 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CcRJT281zzB09Zn;
+        Thu, 19 Nov 2020 18:20:09 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id GDt-2XrDYLSx; Thu, 19 Nov 2020 18:20:09 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CcRJT1FSgzB09Zm;
+        Thu, 19 Nov 2020 18:20:09 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 32DD88B80C;
+        Thu, 19 Nov 2020 18:20:09 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 7odlXmS1EpR6; Thu, 19 Nov 2020 18:20:09 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 906408B78A;
+        Thu, 19 Nov 2020 18:20:02 +0100 (CET)
+Subject: Re: [PATCH v3 0/2] powerpc/ptrace: Hard wire PT_SOFTE value to 1 in
+ gpr_get() too
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20201119160154.GA5183@redhat.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <d7c3ed05-b7e7-fac0-871f-4c43c1a7e90c@csgroup.eu>
+Date:   Thu, 19 Nov 2020 18:19:55 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-References: <20201118194838.753436396@linutronix.de> <20201118204007.028261233@linutronix.de>
- <CAHk-=wh6+VXQASpG+X_v8E25X9mARyHULeOfHk1RsNFMMWHafQ@mail.gmail.com> <20201119084601.GG3306@suse.de>
-In-Reply-To: <20201119084601.GG3306@suse.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 19 Nov 2020 09:19:46 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgtYWV_d-hH=iZYF1nhwvB=1wvJvE1fNEXSEDhomvHuvg@mail.gmail.com>
-Message-ID: <CAHk-=wgtYWV_d-hH=iZYF1nhwvB=1wvJvE1fNEXSEDhomvHuvg@mail.gmail.com>
-Subject: Re: [patch V4 2/8] mm/highmem: Provide CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201119160154.GA5183@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 12:46 AM Mel Gorman <mgorman@suse.de> wrote:
->
-> And not start thinking it as a security hardening option.
 
-It's probably the reverse of a hardening option, since it will cause
-mapping of stuff in known and controllable virtual addresses.
 
-Although any kmap'able page is likely to already be something you can
-read anyway (ie page cache long after security checks have been done).
-So it probably really doesn't matter either way.
+Le 19/11/2020 à 17:01, Oleg Nesterov a écrit :
+> Can we finally fix this problem? ;)
+> 
+> My previous attempt was ignored, see
 
-The only thing that is certain is that it's going to slow down
-important code-paths.
+That doesn't seems right.
 
-             Linus
+Michael made some suggestion it seems, can you respond to it ?
+
+> 
+> 	https://lore.kernel.org/lkml/20190917121256.GA8659@redhat.com/
+> 
+> Now that gpr_get() was changed to use membuf API we can make a simpler fix.
+> 
+> Sorry, uncompiled/untested, I don't have a ppc machine.
+
+I compiled with ppc64_defconfig, that seems ok. Still untested.
+
+Christophe
+
+> 
+> Oleg.
+> 
+>   arch/powerpc/kernel/ptrace/ptrace-tm.c   | 21 ++++++++++++---------
+>   arch/powerpc/kernel/ptrace/ptrace-view.c | 21 ++++++++++++---------
+>   include/linux/regset.h                   | 12 ++++++++++++
+>   3 files changed, 36 insertions(+), 18 deletions(-)
+> 
