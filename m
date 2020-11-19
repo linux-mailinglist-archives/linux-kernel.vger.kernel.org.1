@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C922B990B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D942B990D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbgKSRJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:09:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726474AbgKSRJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:09:38 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 008222469D;
-        Thu, 19 Nov 2020 17:09:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605805777;
-        bh=70tCoEq9/FYcYDMF8Mq56bnaLykaoi8Dcb4Ao5hv/jo=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=x8+uAopbQoGBBj12OHyOQ4Ywx5KDw9pvIMKeoSNzkGffSpk+L0CpuA4OoV9j3WFdS
-         DNT56KmYclVkEPfx254FJd1KEo++IMYL/ZjVSYEIQevxtgo9yxEdxcn9NfuskeoxZe
-         Ewaa+2dsGlyWdsHjgFzf4L8oVSUWy5YtnBtZM+Vk=
-Date:   Thu, 19 Nov 2020 17:09:17 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, alsa-devel@alsa-project.org,
-        lgirdwood@gmail.com
-In-Reply-To: <20201105113458.12360-1-srinivas.kandagatla@linaro.org>
-References: <20201105113458.12360-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 0/6] ASoC: codecs: add support for LPASS Codec macros
-Message-Id: <160580573378.54454.13024216102656641940.b4-ty@kernel.org>
+        id S1729260AbgKSRKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:10:00 -0500
+Received: from smtprelay0220.hostedemail.com ([216.40.44.220]:45286 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728461AbgKSRKA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:10:00 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id B61D8837F24A;
+        Thu, 19 Nov 2020 17:09:58 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2610:2692:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:3873:4250:4321:5007:6119:6120:6742:7901:8531:9010:10004:10400:10848:10967:11232:11658:11783:11914:12297:12663:12740:12895:13069:13172:13229:13255:13311:13357:13439:13894:14181:14659:14721:21080:21212:21627:21740:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: honey44_0e0784727344
+X-Filterd-Recvd-Size: 2491
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 19 Nov 2020 17:09:55 +0000 (UTC)
+Message-ID: <088057533a9feb330964bdab0b1b8d2f69b7a22c.camel@perches.com>
+Subject: Re: XDP maintainer match (Was  [PATCH v2 0/2] hwmon: (max127) Add
+ Maxim MAX127 hardware monitoring)
+From:   Joe Perches <joe@perches.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Tao Ren <rentao.bupt@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, openbmc@lists.ozlabs.org, taoren@fb.com,
+        mikechoi@fb.com
+Date:   Thu, 19 Nov 2020 09:09:53 -0800
+In-Reply-To: <20201119173535.1474743d@carbon>
+References: <20201118230929.18147-1-rentao.bupt@gmail.com>
+         <20201118232719.GI1853236@lunn.ch>
+         <20201118234252.GA18681@taoren-ubuntu-R90MNF91>
+         <20201119010119.GA248686@roeck-us.net>
+         <20201119012653.GA249502@roeck-us.net>
+         <20201119074634.2e9cb21b@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+         <20201119173535.1474743d@carbon>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020 11:34:52 +0000, Srinivas Kandagatla wrote:
-> This patchset adds support for two Codec Macro blocks( WSA and VA) available in
-> Qualcomm LPASS (Low Power Audio SubSystem).
+On Thu, 2020-11-19 at 17:35 +0100, Jesper Dangaard Brouer wrote:
+> On Thu, 19 Nov 2020 07:46:34 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
+
+> I think it is a good idea to change the keyword (K:), but I'm not sure
+> this catch what we want, maybe it does.  The pattern match are meant to
+> catch drivers containing XDP related bits.
 > 
-> There are WSA, VA, TX and RX Macros on LPASS IP, each of the Macro block
-> has specific connectivity like WSA Macros are intended to connect
-> to WSA Smart speaker codecs via SoundWire. VA Macro is intended for DMICs,
-> and TX/RX for Analog codecs via SoundWire like other WCD Codecs to provide
-> headphone/ear/lineout etc ..
+> Previously Joe Perches <joe@perches.com> suggested this pattern match,
+> which I don't fully understand... could you explain Joe?
 > 
-> [...]
+>   (?:\b|_)xdp(?:\b|_)
 
-Applied to
+This regex matches only:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+	xdp
+	xdp_<anything>
+	<anything>_xdp_<anything>
+	<anything>_xdp
 
-Thanks!
+> For the filename (N:) regex match, I'm considering if we should remove
+> it and list more files explicitly.  I think normal glob * pattern
+> works, which should be sufficient.
 
-[1/6] ASoC: qcom: dt-bindings: add bindings for lpass wsa macro codec
-      commit: ccbd847f15b0f08f8c6ed3ab5384e5f7055b08e5
-[2/6] ASoC: codecs: lpass-wsa-macro: Add support to WSA Macro
-      commit: 809bcbcecebff86003e13f07444d21b9d6652a64
-[3/6] ASoC: codecs: lpass-wsa-macro: add dapm widgets and route
-      commit: 2c4066e5d428d47a28f87407b3d73ebe40c06fd4
-[4/6] ASoC: qcom: dt-bindings: add bindings for lpass va macro codec
-      commit: 67d99b23c881b1411fc6907bc844d63565b536d6
-[5/6] ASoC: codecs: lpass-va-macro: Add support to VA Macro
-      commit: 908e6b1df26efc9d2df70c9a7bf4f5eae5c5702f
-[6/6] ASoC: codecs: lpass-va-macro: add dapm widgets and routes
-      commit: 58aad93015b9dc7cb8966c1dc775ec69f0280b79
+Lists are generally more specific than regex globs.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
