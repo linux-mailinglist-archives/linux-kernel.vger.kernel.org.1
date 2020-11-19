@@ -2,88 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2922B9387
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 749E52B9397
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727729AbgKSNO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 08:14:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
+        id S1726974AbgKSNXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 08:23:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727160AbgKSNOZ (ORCPT
+        with ESMTP id S1726105AbgKSNXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 08:14:25 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70939C0613CF;
-        Thu, 19 Nov 2020 05:14:25 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id j19so4180748pgg.5;
-        Thu, 19 Nov 2020 05:14:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=y39Ja2Qa+p03XEnu3YP7k8KD0CyXh3oLYmik5VnqQLk=;
-        b=bTyNnkBySDQVrsd4b1nzl2+6VTopPh8yIZSxu/mVi46eMI2/wbHEgidQbJlfH1XkKC
-         /RI/t9gk29e64kidByzhHiBM0m28q+BnK5X4zPEy1v7lLj62UBznWAVhXL6I1iJJGcpA
-         ZBRdWpj5u9Y1E211iG9NkevS8yWY7qCxsFc3VLw9AGBUXNhXAPBbONKcMGv2r91Ect6N
-         5RtxQlyNBtTIvAYcDoPHUAi8CUOIbz5QsmqIxwkhY1+vSYwu0LVQPWuazBxCtAB6//IV
-         JVw5+fgrw0kfB340cpTCMW1v7XMYmbBVzPqLHIDEABtoapm1kaJ11iM0tOu8lzB7sMuJ
-         bxsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=y39Ja2Qa+p03XEnu3YP7k8KD0CyXh3oLYmik5VnqQLk=;
-        b=E/hySzQ+IzRnhDEOH9lCSfPVJx0JFK63iRRtWprkslqYlm9uLpO5tPFt6vzM6EYJ2v
-         4PimJ9mdav6QrqbsbpdirbKjzyrZ8Io8LQ9U6ILScR4k+epWOeNJQpS+ymuuZNZRxAYk
-         f/HSVkEgMJ8xaMi70wSrw0JdbwTwfIjc+TfTarRn4zbv72JtrKBDUay9QTJEtTYgjoE7
-         2TMiQAnMXe7bNRcZxYmv3cC0+OncCNyEs2kRNB174lOq7tED+7Eh3lAfR7t6rcv0hG1c
-         9/2XSJzCxEavI5RWZGUgLi7ZDWLZM1V4VWc98ayiXbiQ80eAzuxXLn9L9KFFmrzltUvQ
-         6fZA==
-X-Gm-Message-State: AOAM532Q6tjB1TwlcYw0W0bSDt0HSJeDyqWg9CZF86mbnoq0Q7IRsqLX
-        BeLeqfPX1+fzMmboy+y+THE=
-X-Google-Smtp-Source: ABdhPJz7MdA1FnKj4U1mGcgh4hr8O84BT6MlKvOaenxlYMFBIb+X16cP7QwujL2rK3DkCnb+rrY9lw==
-X-Received: by 2002:a17:90a:b782:: with SMTP id m2mr4608363pjr.185.1605791664993;
-        Thu, 19 Nov 2020 05:14:24 -0800 (PST)
-Received: from adolin ([49.207.204.100])
-        by smtp.gmail.com with ESMTPSA id m2sm5218994pgv.0.2020.11.19.05.14.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 05:14:24 -0800 (PST)
-Date:   Thu, 19 Nov 2020 18:44:19 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     Julia.Lawall@lip6.fr
-Cc:     corbet@lwn.net, cocci@systeme.lip6.fr, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, michal.lkml@markovi.net,
-        nicolas.palix@imag.fr, Gilles.Muller@lip6.fr
-Subject: [PATCH] Documentation: Coccinelle: Improve command example for
- debugging patches
-Message-ID: <20201119131419.ygiqhzg5cezif5ow@adolin>
+        Thu, 19 Nov 2020 08:23:24 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1CFC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 05:23:24 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfjuE-0004Ho-PP; Thu, 19 Nov 2020 14:23:22 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kfjuE-0005Ix-5U; Thu, 19 Nov 2020 14:23:22 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Thorsten Scherer <t.scherer@eckelmann.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] siox: Use bus_type functions for probe, remote and shutdown
+Date:   Thu, 19 Nov 2020 14:23:10 +0100
+Message-Id: <20201119132311.2604232-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify Coccinelle documentation to clarify usage of make command to
-run coccicheck on a single file.
+The eventual goal is to get rid of the callbacks in struct
+device_driver.
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- Documentation/dev-tools/coccinelle.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/siox/siox-core.c | 39 +++++++++++++++++++++------------------
+ 1 file changed, 21 insertions(+), 18 deletions(-)
 
-diff --git a/Documentation/dev-tools/coccinelle.rst b/Documentation/dev-tools/coccinelle.rst
-index 74c5e6aeeff5..9e60cf175fd6 100644
---- a/Documentation/dev-tools/coccinelle.rst
-+++ b/Documentation/dev-tools/coccinelle.rst
-@@ -224,7 +224,7 @@ you may want to use::
+diff --git a/drivers/siox/siox-core.c b/drivers/siox/siox-core.c
+index f8c08fb9891d..7b3a2b63304b 100644
+--- a/drivers/siox/siox-core.c
++++ b/drivers/siox/siox-core.c
+@@ -512,41 +512,49 @@ static int siox_match(struct device *dev, struct device_driver *drv)
+ 	return 1;
+ }
  
-     rm -f err.log
-     export COCCI=scripts/coccinelle/misc/irqf_oneshot.cocci
--    make coccicheck DEBUG_FILE="err.log" MODE=report SPFLAGS="--profile --show-trying" M=./drivers/mfd/arizona-irq.c
-+    make C=2 CHECK=scripts/coccicheck DEBUG_FILE="err.log" MODE=report SPFLAGS="--profile --show-trying" ./drivers/mfd/arizona-irq.c
+-static struct bus_type siox_bus_type = {
+-	.name = "siox",
+-	.match = siox_match,
+-};
+-
+-static int siox_driver_probe(struct device *dev)
++static int siox_probe(struct device *dev)
+ {
+ 	struct siox_driver *sdriver = to_siox_driver(dev->driver);
+ 	struct siox_device *sdevice = to_siox_device(dev);
+-	int ret;
++	int ret = 0;
++
++	if (sdriver->probe)
++		ret = sdriver->probe(sdevice);
  
- err.log will now have the profiling information, while stdout will
- provide some progress information as Coccinelle moves forward with
+-	ret = sdriver->probe(sdevice);
+ 	return ret;
+ }
+ 
+-static int siox_driver_remove(struct device *dev)
++static int siox_remove(struct device *dev)
+ {
+ 	struct siox_driver *sdriver =
+ 		container_of(dev->driver, struct siox_driver, driver);
+ 	struct siox_device *sdevice = to_siox_device(dev);
+-	int ret;
++	int ret = 0;
++
++	if (sdriver->remove)
++		ret = sdriver->remove(sdevice);
+ 
+-	ret = sdriver->remove(sdevice);
+ 	return ret;
+ }
+ 
+-static void siox_driver_shutdown(struct device *dev)
++static void siox_shutdown(struct device *dev)
+ {
+ 	struct siox_driver *sdriver =
+ 		container_of(dev->driver, struct siox_driver, driver);
+ 	struct siox_device *sdevice = to_siox_device(dev);
+ 
+-	sdriver->shutdown(sdevice);
++	if (sdriver->shutdown)
++		sdriver->shutdown(sdevice);
+ }
+ 
++static struct bus_type siox_bus_type = {
++	.name = "siox",
++	.match = siox_match,
++	.probe = siox_probe,
++	.remove = siox_remove,
++	.shutdown = siox_shutdown,
++};
++
+ static ssize_t active_show(struct device *dev,
+ 			   struct device_attribute *attr, char *buf)
+ {
+@@ -892,11 +900,6 @@ int __siox_driver_register(struct siox_driver *sdriver, struct module *owner)
+ 	sdriver->driver.bus = &siox_bus_type;
+ 
+ 	if (sdriver->probe)
+-		sdriver->driver.probe = siox_driver_probe;
+-	if (sdriver->remove)
+-		sdriver->driver.remove = siox_driver_remove;
+-	if (sdriver->shutdown)
+-		sdriver->driver.shutdown = siox_driver_shutdown;
+ 
+ 	ret = driver_register(&sdriver->driver);
+ 	if (ret)
 -- 
-2.25.1
+2.28.0
 
