@@ -2,137 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE732B8DC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB60E2B8DC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 09:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgKSImU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 03:42:20 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:46041 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726358AbgKSImU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:42:20 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id AC71B5800F5;
-        Thu, 19 Nov 2020 03:42:18 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 19 Nov 2020 03:42:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=5DqwnmNe5MZ1oBWo8rYgCJvgNX/
-        nBUSLLMd4qJKLVwo=; b=QMvJsxuS+F230z5kmRQhjhxPWJN3BwS5U5NDc+s6xel
-        uve9cUDM9e2DtwJM4HSQG1nKnq5Rkdgr7cY8y2vAE/cEkUGj8XOa3ASIs4z9aJkL
-        YYHCBVE7R0laK3vo67NItzCK1nDWVSC4qU01mLTSLLzDGL0yJPs8GLM46pHYi8/3
-        Wf3L2XNps2W9dvMEpuM7V5Z06F6Tb3SJSDGbymFdsMpSfgj6+Ny/deGVpZl2xXCm
-        53SZGr85emNDDI86qLdLL7JaF+XbkiBz8PDcz8tgt5JpSoprB/Qo+nglwBZ4MwhO
-        17V+8w3dHl3/a9uWSmtmziP+MTLY36piPpkbkU+layw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=5Dqwnm
-        Ne5MZ1oBWo8rYgCJvgNX/nBUSLLMd4qJKLVwo=; b=XM+viXwm8de4uydp9rVcYE
-        Dv4fOMl3pEKGARRtkgPmDU76FI+NdnJHwtpW0btAFHNpd+T7RNRWTXGiRwrwvuqW
-        coIC4mY5/9PiJnimz0V9WJe17tqKeDgbcw8NuAifOqdJZgMn0SJ5MFVpNEjLWi8f
-        AGEjoYfEkCD74Zc45slkrG3k2sylT8Hcm3uXO907n7mC4ZaejiZJ0/jBNCeKRp1+
-        EoteZSXRxC7XlAlhk3zA6U0TRA8WdbcghyT07icgNJSIYdaGJBkNDwx/3IvvGm9R
-        Z+db4YjhcLNsXZ7OnDWWObQYKRz2gzC7ZoE8GLD75xiKjngLH+TqkOZJupc1sF4A
-        ==
-X-ME-Sender: <xms:6S-2X9xQcg1gPCZ_ylxT_8PP1xmff6hWLyNRBgwMwVP_KmF0r4vUvA>
-    <xme:6S-2X9QxGAngEQKHOU-dMheqXI4YLjvl8BQBRcuNahSUlodFnHqrQilPqT6Uv6n7N
-    uaPO5fuOhthAOZFbcM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudefiedguddvtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeevveefffduveeitdegtefhhfetueffteefffdvheevvdehteethedvleff
-    gfejvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeeltddrkeelrdeike
-    drjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    mhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:6S-2X3UH4loHGjFMH6yAk6vQU4SS7v6LQuCzDtr2auC1xTlPvXCniw>
-    <xmx:6S-2X_i2r1_uw_W0bFd6G5-IH6FV3HousApy6PkQkl2l3W0HHu5AZA>
-    <xmx:6S-2X_B7F5XEw3h6CwQ_4hbOvf2KsTeaUvpQnFquw_lLb3Zq3ANauw>
-    <xmx:6i-2X3YzK6YtDeJ81cm3LvWYBMbSFGDzLYt1skFBYLCUSMHCfzGOfg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E12C5328005D;
-        Thu, 19 Nov 2020 03:42:16 -0500 (EST)
-Date:   Thu, 19 Nov 2020 09:42:15 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>, wens@kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Yong Deng <yong.deng@magewell.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH 0/7] sunxi: Remove the calls to dma_direct_set_offset
-Message-ID: <20201119084215.pnzypitnyfgxsgrg@gilmour.lan>
-References: <20201106151411.321743-1-maxime@cerno.tech>
- <20201106160737.GA31913@lst.de>
- <20201109094303.llqsxqoxjagiqa55@gilmour.lan>
- <20201119075959.GA15942@lst.de>
+        id S1726182AbgKSIni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 03:43:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725648AbgKSIni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 03:43:38 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB0B121D40;
+        Thu, 19 Nov 2020 08:43:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1605775417;
+        bh=GP7AYcVUPOh23WPA8GgN0PDVztnolsPIrPEVVI5te+I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Eb+ZsPczYI4/ZTWJ1/Q2AcUm8GHpqDQx/GL0DRroxJ21DxSCs8FvI3bsNRDpe9l5d
+         ZTolWybz/IOaLH16nVKrHQzGTDeq3Jt2pL0jNxBraTqf8n7w3H0500ZidhWubBaboI
+         PMwX/cQlnkKaWH1Bklkfy2ZxglvurV7Uyp0NH4us=
+Date:   Thu, 19 Nov 2020 09:44:21 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Cliff Whickman <cpw@sgi.com>, Arnd Bergmann <arnd@arndb.de>,
+        Robin Holt <robinmholt@gmail.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>
+Subject: Re: [PATCH] misc/sgi-xp: Replace in_interrupt() usage
+Message-ID: <X7YwZZgvk92Cghl7@kroah.com>
+References: <20201119081354.836813-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7dwjhxt6inc72kiy"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119075959.GA15942@lst.de>
+In-Reply-To: <20201119081354.836813-1-bigeasy@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 19, 2020 at 09:13:54AM +0100, Sebastian Andrzej Siewior wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> The usage of in_interrupt() in xpc_partition_disengaged() is clearly
+> intended to avoid canceling the timeout timer when the function is invoked
+> from the timer callback.
+> 
+> While in_interrupt() is deprecated and ill defined as it does not provide
+> what the name suggests it catches the intended case.
+> 
+> Add an argument to xpc_partition_disengaged() which is true if called
+> from timer and otherwise false.
+> Use del_timer_sync() instead of del_singleshot_timer_sync() which is the
+> same thing.
+> 
+> Note: This does not prevent reentrancy into the function as the function
+> has no concurrency control and timer callback and regular task context
+> callers can happen concurrently on different CPUs or the timer can
+> interrupt the task context before it is able to cancel it.
+> 
+> While the only driver which is providing the arch_xpc_ops callbacks
+> (xpc_uv) seems not to have a reentrancy problem and the only negative
+> effect would be a double dev_info() entry in dmesg, the whole mechanism is
+> conceptually broken.
+> 
+> But that's not subject of this cleanup endeavour and left as an exercise to
+> the folks who might have interest to make that code fully correct.
+> 
+> [bigeasy: Add the argument, use del_timer_sync().]
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Cliff Whickman <cpw@sgi.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Robin Holt <robinmholt@gmail.com>
+> Cc: Steve Wahl <steve.wahl@hpe.com>
+> Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
+> Cc: Russ Anderson <russ.anderson@hpe.com>
+> ---
+>  drivers/misc/sgi-xp/xpc.h           | 2 +-
+>  drivers/misc/sgi-xp/xpc_main.c      | 8 ++++----
+>  drivers/misc/sgi-xp/xpc_partition.c | 9 ++++-----
+>  3 files changed, 9 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/misc/sgi-xp/xpc.h b/drivers/misc/sgi-xp/xpc.h
+> index 71db60edff655..bbcf10ca3ab7f 100644
+> --- a/drivers/misc/sgi-xp/xpc.h
+> +++ b/drivers/misc/sgi-xp/xpc.h
+> @@ -633,7 +633,7 @@ extern void *xpc_kmalloc_cacheline_aligned(size_t, gfp_t, void **);
+>  extern int xpc_setup_rsvd_page(void);
+>  extern void xpc_teardown_rsvd_page(void);
+>  extern int xpc_identify_activate_IRQ_sender(void);
+> -extern int xpc_partition_disengaged(struct xpc_partition *);
+> +extern int xpc_partition_disengaged(struct xpc_partition *, bool from_timer);
 
---7dwjhxt6inc72kiy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+These types of "flags" for functions are horrible as they do not
+describe what is happening when you read the places the function is
+called.
 
-Hi Christoph,
+Instead, make it part of the function name itself:
+	xpc_partition_disengaged_from_timer()
+and then handle it that way, by using a shared static function with the
+flag.
 
-On Thu, Nov 19, 2020 at 08:59:59AM +0100, Christoph Hellwig wrote:
-> On Mon, Nov 09, 2020 at 10:43:03AM +0100, Maxime Ripard wrote:
-> > Hi Christoph, Chen-Yu, Hans,
-> >=20
-> > On Fri, Nov 06, 2020 at 05:07:37PM +0100, Christoph Hellwig wrote:
-> > > Thanks,
-> > >=20
-> > > this looks good to me:
-> > >=20
-> > > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > >=20
-> > > Can you include this patch at the end of your series to that it gets
-> > > picked up with the other patches?
-> >=20
-> > I guess the easiest to avoid bisection issues would be to merge all this
-> > through drm-misc, would that work for you?
->=20
-> Is this going to get picked up in drm-misc?  I don't see it in linux-next
-> so far.
+Otherwise this type of change just does not age well at all.
 
-After some discussion with Arnd and Daniel, this will go through
-arm-soc, and I sent the PR here:
-https://lore.kernel.org/linux-arm-kernel/20201118091303.wa5npxyop3cdsczb@gi=
-lmour.lan/
+thanks,
 
-It hasn't been merged yet though
-
-Maxime
-
---7dwjhxt6inc72kiy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX7Yv5wAKCRDj7w1vZxhR
-xS5FAQCYXp84yiCjK6DzHMXuvqUyjuQ2zW50D8gIbktS+6dxsgD8CZD6PR2bxjbU
-MvZ5WHoaGibeUb5SbiM7G0oySMAPyAg=
-=FD/c
------END PGP SIGNATURE-----
-
---7dwjhxt6inc72kiy--
+greg k-h
