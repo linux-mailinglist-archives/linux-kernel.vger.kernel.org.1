@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C8F2B9041
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 656E02B904A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgKSKiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 05:38:16 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7936 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgKSKiP (ORCPT
+        id S1726691AbgKSKlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 05:41:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725905AbgKSKlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 05:38:15 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CcGNN4TCpz6wHs;
-        Thu, 19 Nov 2020 18:37:56 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Thu, 19 Nov 2020
- 18:38:10 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <horms@verge.net.au>, <ja@ssi.bg>, <pablo@netfilter.org>,
-        <kadlec@netfilter.org>, <fw@strlen.de>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <christian@brauner.io>,
-        <hans.schillstrom@ericsson.com>
-CC:     <lvs-devel@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
-        <coreteam@netfilter.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] ipvs: fix possible memory leak in ip_vs_control_net_init
-Date:   Thu, 19 Nov 2020 18:41:02 +0800
-Message-ID: <20201119104102.67427-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 19 Nov 2020 05:41:50 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6A4C0613CF;
+        Thu, 19 Nov 2020 02:41:49 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p1so5839488wrf.12;
+        Thu, 19 Nov 2020 02:41:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MHnEOrvbhSGLANAE+Q8C5QoyY9bWqAkkZShUSQ8tDPw=;
+        b=aOwMUqi6ySn9E5v+v354chGwzw4NAxicuP1Dlbo815E1QJ2MJmueKxnMK5+6hb7aDg
+         98Acb3w11R3Od8qNR0PuEYTKwbSH4R21rLCmhtVbHk37qoqzIQzqN+lCC4OqFHqMMHej
+         pNkZa7tBWlh7BZZ33T+XEKiXKC1rKQWNoHHUptFkDt+tuUno0hdN8dXxx8kUT4K6jUM+
+         +xTA+pNiKkehIoHCiO2ErriO6akMaY7hIyu7OaXgHXTWeZlre7lwy8cJ9xiOvUi25C6H
+         E9KCf/xcGrnr+0e3nP32LpKth8WTLhTkvhmrq80KXtQIFfP6GUHO4ROUt2skIOn9x+FM
+         CexA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MHnEOrvbhSGLANAE+Q8C5QoyY9bWqAkkZShUSQ8tDPw=;
+        b=Ltu5UJPpnJBO6zIZ6Ek1g60CbNqrOZIe2G3b/YaHgDmcRy/2Y7gBYWNoAM1OOaATfD
+         XP2V18kaJ4hF0AmMTyfMFj5HivqjzcMLOEmiliJu6FnzJ75wPGGOwq2GyxuasWxi7peZ
+         Y7tK7Sp1KGo7oDXQMNsE48fkXLzuWbmj4GxdL5mlrhE8NHceqkE3OamLs5HqNNn9a9py
+         6Cju1pQ0vZGZuhV8GRHBxfx+rp8wx7bC7YzIHq4/SDGrhIiiDyanyaIBVxC1qHFo2xhE
+         14Sg16OgiHRS2rc+u4eUJGvZWQO3skPjinT8HokzDNTnFQeEhvl9vIC9IeEWNABet4kh
+         r6MQ==
+X-Gm-Message-State: AOAM53346bg9MUFN7N1dr93bAAn5noNqQXaKndG4xZksSQY9ayjV3BIR
+        59PydIkbzbOoTisYVbQvm40=
+X-Google-Smtp-Source: ABdhPJzkcln9b61qXWm4b6rcBoHmz0B4k78//yNJQV2rRUVSxv/jIkZUVrCbcFlDY7IwkvnKZecX7g==
+X-Received: by 2002:adf:f542:: with SMTP id j2mr9431236wrp.107.1605782508408;
+        Thu, 19 Nov 2020 02:41:48 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id v8sm9267340wmg.28.2020.11.19.02.41.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 02:41:47 -0800 (PST)
+Date:   Thu, 19 Nov 2020 11:41:45 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     JC Kuo <jckuo@nvidia.com>
+Cc:     gregkh@linuxfoundation.org, jonathanh@nvidia.com,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v3] arm64: tegra: jetson-tx1: Fix USB_VBUS_EN0 regulator
+Message-ID: <20201119104145.GA3559705@ulmo>
+References: <20201119072345.447793-1-jckuo@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bp/iNruPH9dso1Pn"
+Content-Disposition: inline
+In-Reply-To: <20201119072345.447793-1-jckuo@nvidia.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak report a memory leak as follows:
 
-BUG: memory leak
-unreferenced object 0xffff8880759ea000 (size 256):
-comm "syz-executor.3", pid 6484, jiffies 4297476946 (age 48.546s)
-hex dump (first 32 bytes):
-00 00 00 00 01 00 00 00 08 a0 9e 75 80 88 ff ff ...........u....
-08 a0 9e 75 80 88 ff ff 00 00 00 00 ad 4e ad de ...u.........N..
-backtrace:
-[<00000000c0bf2deb>] kmem_cache_zalloc include/linux/slab.h:656 [inline]
-[<00000000c0bf2deb>] __proc_create+0x23d/0x7d0 fs/proc/generic.c:421
-[<000000009d718d02>] proc_create_reg+0x8e/0x140 fs/proc/generic.c:535
-[<0000000097bbfc4f>] proc_create_net_data+0x8c/0x1b0 fs/proc/proc_net.c:126
-[<00000000652480fc>] ip_vs_control_net_init+0x308/0x13a0 net/netfilter/ipvs/ip_vs_ctl.c:4169
-[<000000004c927ebe>] __ip_vs_init+0x211/0x400 net/netfilter/ipvs/ip_vs_core.c:2429
-[<00000000aa6b72d9>] ops_init+0xa8/0x3c0 net/core/net_namespace.c:151
-[<00000000153fd114>] setup_net+0x2de/0x7e0 net/core/net_namespace.c:341
-[<00000000be4e4f07>] copy_net_ns+0x27d/0x530 net/core/net_namespace.c:482
-[<00000000f1c23ec9>] create_new_namespaces+0x382/0xa30 kernel/nsproxy.c:110
-[<00000000098a5757>] copy_namespaces+0x2e6/0x3b0 kernel/nsproxy.c:179
-[<0000000026ce39e9>] copy_process+0x220a/0x5f00 kernel/fork.c:2072
-[<00000000b71f4efe>] _do_fork+0xc7/0xda0 kernel/fork.c:2428
-[<000000002974ee96>] __do_sys_clone3+0x18a/0x280 kernel/fork.c:2703
-[<0000000062ac0a4d>] do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
-[<0000000093f1ce2c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+--bp/iNruPH9dso1Pn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In the error path of ip_vs_control_net_init(), remove_proc_entry() needs
-to be called to remove the added proc entry, otherwise a memory leak
-will occur.
+On Thu, Nov 19, 2020 at 03:23:45PM +0800, JC Kuo wrote:
+> USB Host mode is broken at OTG port of Jetson-TX1 platform because
+> USB_VBUS_EN0 regulator (regulator@11) is being overwritten by vdd-cam-1v2
+> regulator. This commit rearrange USB_VBUS_EN0 to be regulator@14.
+>=20
+> Fixes: 257c8047be44 ("arm64: tegra: jetson-tx1: Add camera supplies")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+> v3:
+>     add 'Cc: stable@vger.kernel.org' tag
+> v2:
+>     add 'Fixes:' tag
+>     add Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>=20
+>  .../arm64/boot/dts/nvidia/tegra210-p2597.dtsi | 20 +++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
 
-Fixes: b17fc9963f83 ("IPVS: netns, ip_vs_stats and its procfs")
-Fixes: 61b1ab4583e2 ("IPVS: netns, add basic init per netns.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- net/netfilter/ipvs/ip_vs_ctl.c | 3 +++
- 1 file changed, 3 insertions(+)
+Applied, thanks.
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index e279ded4e306..d99bb89e7c25 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -4180,6 +4180,9 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
- 	return 0;
- 
- err:
-+	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
-+	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
-+	remove_proc_entry("ip_vs", ipvs->net->proc_net);
- 	free_percpu(ipvs->tot_stats.cpustats);
- 	return -ENOMEM;
- }
--- 
-2.17.1
+Thierry
 
+--bp/iNruPH9dso1Pn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+2S+cACgkQ3SOs138+
+s6HYIRAAq92ZFhrbwrU0jsQytIdgpzznSQqFr8t3RAw/JxmWcR0UhY2Zavv3OjRg
+z/pj0hVWdBYLboF8m7794n5yL7E2e2KjntsKrd2nquXQNt+XKeZhlg3loRzc8J1x
+ZUO2jWn3TxGowKbMhm7w1LLSo52nWN5+VNux8rC6WM+Y3EBTZ3/byof0bmiTb3Fd
+NI6/HwitV3K+YOiPq1ZUVldz5ZEFrTu2gH/Vmv6PPTrLqCqdJkKLNrAMqVxFweYx
+KXt+pdaxCWR/A8U7E96MmqBRK1naRU7yqaZZoU1lyiPV5tG2U5eZYCnhrWYkAl0h
+vycVFHNhn3P/Gtd6QkALR0zJNA/q27/YG1agsZqMN0vF61VxOceQp2x34mtT9TQD
+e7WEQ1zySu0OJJg/4MxMChsIgPniWxEdtKxNVAQ2AreSC5+sZCbzK9/4C2xFCrYE
+x8A3vP0PaLG3Noi7uOfoyc1sEJY6rCXmCl1IqQdDRgIBeJ11uVdA3PWuYHCB5pQ1
+cT/quo0tHvgZTKS3uqzRuTuN55FMlcq4+l6dlNuOpHYeWDsIkEXtwX7wsvsrPw0X
+JAtDpupIcN+07c04R8rjDNPPEuITfFIkZRiciECnip7JMZqG4nKgVl2UaWMNNV8B
+9SsWS/FfcKt2bsO6YM37fEHTLfrRP+OeLKURMjc0tSwcl8BDEz0=
+=O36O
+-----END PGP SIGNATURE-----
+
+--bp/iNruPH9dso1Pn--
