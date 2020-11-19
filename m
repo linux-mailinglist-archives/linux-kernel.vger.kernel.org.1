@@ -2,154 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DCD2B948A
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6229E2B948E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727647AbgKSOWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:22:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727106AbgKSOWt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:22:49 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A62C0613CF;
-        Thu, 19 Nov 2020 06:22:47 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id e139so8515559lfd.1;
-        Thu, 19 Nov 2020 06:22:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZvOd3z2dVnB5SZQwK/dvDpMXJ4eITwmefRvuKa9tb0Q=;
-        b=Y21dZRMZ+kNYHUNLiNCHQoS5QxGFMKf7KaEd+6a06G/hQ1bejJXAcijD6xiDcBiBUn
-         JS4yWyB2+zZqqxEzarQ7y2NC3cKCRKUZ2CchFnZU6Kn5vLrutkvXtu+Lq1OFhxgn8Epp
-         UuLT88qmv67A3sWVg1l8Ws05tNM98wJWDlT1hgGfbwXfCiTxIVlprvN48xiVZLuFi3Cn
-         KI3oT4rlzLRHtD8EKwZRS29BsqsZh07SrjWWBHtLowX/toS83Dhlqd9OCn9mvofvfXic
-         DHhrzPVHyIWzxM0YW/p1ZFuzvZaox6YeG/KIcRnpB6NKJzCgXsklV6r9OCr7nnEUUhRd
-         hptw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZvOd3z2dVnB5SZQwK/dvDpMXJ4eITwmefRvuKa9tb0Q=;
-        b=i7ba6A/r1lx38CySMfQ+TDUl7Ug5P1w27iAO+JNLA3mdxNi6OJU0Dyqalbxsw01iB0
-         VAsNVwAXW1PqPUXXSjGz0epzuBBCbtyiUFWhin0O2XLXgQRzlY1akQvQtW/ko39PobAl
-         YqRKgEYYe3YFDLqG9cjS0d36YmKabjvOpUI6c76OKGdqYg3fS5LkGKk6O+yUnTz3eRHz
-         PWSciz9HMFkctnmfRE7e4I7307OLnlqaz8QPpkNVd/aym1Zj/CRTKjfv3D9eULG/nYuE
-         2fZ5e3RZt0B5qhOLiz610v07pBXK8W2tBlr9mbSx1CHjsYAJC6p0df7hm4FpmuX71rKU
-         978w==
-X-Gm-Message-State: AOAM530du4USguA/p3pLaUicqA2meLa3ozpjxZ7O2FXF+na2ZDg6G4DO
-        96bNH1Rf87fJcnpUjW52tmsWQdbw810=
-X-Google-Smtp-Source: ABdhPJyUwmqVByndGgJFiM7woqjbf8UJz72yW3W4B1Jv93hEMk1YatxireTGBSQxqAyLLyxkuXCkKw==
-X-Received: by 2002:a19:844a:: with SMTP id g71mr6446029lfd.414.1605795766096;
-        Thu, 19 Nov 2020 06:22:46 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id m16sm3851652lfa.57.2020.11.19.06.22.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 06:22:45 -0800 (PST)
-Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
- scaling
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20201112171600.GD4742@sirena.org.uk>
- <b4b06c1d-c9d4-43b2-c6eb-93f8cb6c677d@gmail.com>
- <20201112200123.GF4742@sirena.org.uk>
- <ce9e2d9f-917e-fb8a-7323-f3bf1a367e9d@gmail.com>
- <20201113142937.GB4828@sirena.org.uk>
- <7f066805-97d9-088f-e89d-a554fe478574@gmail.com>
- <20201113161550.GC4828@sirena.org.uk>
- <3beaa12b-4a50-a3b6-fc43-ebb5ce7a8db7@gmail.com>
- <20201113172859.GF4828@sirena.org.uk>
- <74cfc6a9-3f59-d679-14b7-51102a6f11b3@gmail.com>
- <20201116133311.GB4739@sirena.org.uk>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <332ab946-daee-bb83-24ab-0bda4fd8e1ef@gmail.com>
-Date:   Thu, 19 Nov 2020 17:22:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1727792AbgKSOXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:23:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727512AbgKSOXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:23:10 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21BDE2222A;
+        Thu, 19 Nov 2020 14:23:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1605795789;
+        bh=P9U0+AiYZ1j6MYp8T9AkJ7YQKwTSGN1e2U2URWeskQI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=znA916Tob8+E0QcTLDETsD0WDyq7TW+FM+luH1LnQnhLtBeuO1chHkew8SpT7RFVp
+         HTm+j223Pelx78jUU5eubmfVjnDdOeL8UdLptQP52PQPedww5zncSQ+ocQGdC8WLJf
+         0dTmeN1IW2XLrmV+aS/DRHX7pzCnFIWNBlTm44e0=
+Date:   Thu, 19 Nov 2020 15:23:53 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     =?utf-8?B?5b2t5rWp?= <penghao@uniontech.com>,
+        johan <johan@kernel.org>, jonathan <jonathan@jdcox.net>,
+        tomasz <tomasz@meresinski.eu>,
+        Hans de Goede <hdegoede@redhat.com>,
+        dlaz <dlaz@chromium.org>,
+        "richard.o.dodd" <richard.o.dodd@gmail.com>,
+        kerneldev <kerneldev@karsmulder.nl>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] USB: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND quirk
+ forLenovo A630Z TIO built-in usb-audio card
+Message-ID: <X7Z/+Tehbmx54Fzb@kroah.com>
+References: <20201118123039.11696-1-penghao@uniontech.com>
+ <49219711-84BE-44FC-BBFE-DD8D609CA26D@canonical.com>
+ <1892790617.185900.1605788248261.JavaMail.xmail@bj-wm-cp-6>
+ <7D73C39C-C3E2-4C08-A773-3D7582A6AA7D@canonical.com>
+ <X7Z6RKu4T5IrhUFB@kroah.com>
+ <FB40A0E5-5E3C-4FC6-B690-02F9785EC7D5@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20201116133311.GB4739@sirena.org.uk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <FB40A0E5-5E3C-4FC6-B690-02F9785EC7D5@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-16.11.2020 16:33, Mark Brown пишет:
-> On Sun, Nov 15, 2020 at 08:42:10PM +0300, Dmitry Osipenko wrote:
->> 13.11.2020 20:28, Mark Brown пишет:
+On Thu, Nov 19, 2020 at 10:12:02PM +0800, Kai-Heng Feng wrote:
 > 
->>>> What should we do?
 > 
->>> As I keep saying the consumer driver should be enumerating the voltages
->>> it can set, if it can't find any and wants to continue then it can just
->>> skip setting voltages later on.  If only some are unavailable then it
->>> probably wants to eliminate those specific OPPs instead.
+> > On Nov 19, 2020, at 21:59, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > 
+> > On Thu, Nov 19, 2020 at 09:41:32PM +0800, Kai-Heng Feng wrote:
+> >> Hi penghao,
+> >> 
+> >>> On Nov 19, 2020, at 20:17, 彭浩 <penghao@uniontech.com> wrote:
+> >>> 
+> >>> root@uos-PC:/sys/bus/usb/devices/usb7# dmesg
+> >>> [ 0.000000] Linux version 4.19.0-6-amd64 (debian-kernel@lists.debian.org) (gcc version 8.3.0 (Debian 8.3.0-6)) #1 SMP Uos 4.19.67-11eagle (2020-03-21)
+> >> 
+> >> Thanks for the dmesg. But would it be possible to use mainline kernel enable dynamic debug?
+> >> 
+> >> But anyway, this is not a regular AMD or Intel platform, so I guess we can merge the quirk as is...
+> >> 
+> >> Kai-Heng
+> >> 
+> >>> [ 0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-4.19.0-6-amd64 root=UUID=e5a40c4f-d88e-4a4d-9414-a27892a31be7 ro splash console=ttyS0,115200n8 loglevel=7 DEEPIN_GFXMODE=0,1920x1080,1600x1200,1280x1024,1024x768
+> >>> [ 0.000000] Zhaoxin Linux Patch Version is V3.0.2 
+> >>> [ 0.000000] With Zhaoxin Shanghai CPU patch V2.0.0
+> > 
+> > What do you mean "not a regular"?  This is an x86-variant chip platform,
+> > but what does that have to do with the USB quirk detection?
 > 
->> I'm seeing a dummy regulator as a helper for consumer drivers which
->> removes burden of handling an absent (optional) regulator. Is this a
->> correct understanding of a dummy regulator?
+> USB quirk detection should work fine. I was trying to find the root cause, but seeing it's a Zhaoxin CPU, that could be the reason why mainline kernel, which has many USB power management fixes, wasn't used.
 > 
->> Older DTBs don't have a regulator and we want to keep them working. This
->> is equal to a physically absent regulator and in this case it's an
->> optional regulator, IMO.
-> 
-> No, you are failing to understand the purpose of this code.  To
-> reiterate unless the device supports operating with the supply
-> physically absent then the driver should not be attempting to use
-> regulator_get_optional().  That exists specifically for the case where
-> the supply may be absent, nothing else.  The dummy regulator is there
-> precisely for the case where the system does not describe supplies that
-> we know are required for the device to function, it fixes up that
-> omission so we don't need to open code handling of this in every single
-> consumer driver.
+> penghao, is it possible to boot mainline kernel on Zhaoxin CPU?
 
-The original intention of regulator_get_optional() is clear to me, but
-nothing really stops drivers from slightly re-purposing this API, IMO.
+There have been a number of small patches for this type of CPU merged
+over the past months, so I hope a mainline kernel works here :)
 
-Drivers should be free to assume that if regulator isn't defined by
-firmware, then it's physically absent if this doesn't break anything. Of
-course in some cases it's unsafe to make such assumptions. I think it's
-a bit unpractical to artificially limit API usage without a good reason,
-i.e. if nothing breaks underneath of a driver.
+That being said, why would the platform matter for a USB device quirk?
 
-> Regulators that are present but not described by the firmware are a
-> clearly different case to regulators that are not physically there,
-> hardware with actually optional regulators will generally require some
-> configuration for this case.
-> 
+thanks,
 
-I have good news. After spending some more time on trying out different
-things, I found that my previous assumption about the fixed-regulator
-was wrong, it actually accepts voltage changes, i.e. regulator consumer
-doesn't get a error on a voltage-change. This is exactly what is needed
-for the OPP core to work properly.
-
-This means that there is no need to add special quirks to work around
-absent regulators, we will just add a fixed regulator to the DTs which
-don't specify a real regulator. The OPP core will perform voltage
-checking and filter out unsupported OPPs. The older DTBs will continue
-to work as well.
+greg k-h
