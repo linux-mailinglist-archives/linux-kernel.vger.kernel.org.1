@@ -2,201 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5DF2B9739
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8FE2B973D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 17:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728652AbgKSP7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 10:59:22 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:55605 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728570AbgKSP7V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 10:59:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605801561; x=1637337561;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QqKU8RsumFWvmBmfNxGY6N6knRaT1KrUd5CsDqftczo=;
-  b=kofFiNjF+rNEDTN8gQftr1UWaYq+3+jqxgdzPVUjzmDiEZC73HfDwQIu
-   DDSq5ACQrUC0+KmAGR2UFxfuz+afCIRauYAdNeTFngpxA5nucj929a9xZ
-   9dLbVeGNkeUEaFFIRXQkGDLWVX7h4fM5KkLTlSblEb9beZ0tZWmlyfclO
-   1LC80bkv9EDoXHrsVCDBMKQJ8KftCzd54SwkPyCygniH2N+eylbwMYj3E
-   ttN1Ybviysh6bYQT8RDNJiMhVU8TibuollNwwL6SyN0IBYbA94lgS3x0D
-   fQhqfwU6HQwi2VvlFs80cFaLk6dWf6HalVpgICs236SQPIAtkBVrqUuVH
-   A==;
-IronPort-SDR: 7XyGbOm3ua8v5inlFP+qy3hJBmzJdAQDQfQm9OV/pxX8C0p2jH/c5dYz9jGzScxLDv7fvDlQ/Y
- l5N5G/3yBuSEuYxgOUkzX0HBGGyognwrZX44nBVq1MmT3oy7ADGlXDMydHieEjJmpln3U1/L7H
- vIPALPEzCTd/P82p63d15bxpoRzve+UUS4Zxzu3SaqjM2fYViTjR1SDuXzdJuhPfjjAT/dV1G+
- 9fa1HaRmeEK41esL22ED/RoKRpB7xIMcfkUQIJi67Y2aFP3qnxq6EoHW/M+W+H6YFh9QeEIOef
- K3k=
-X-IronPort-AV: E=Sophos;i="5.78,353,1599548400"; 
-   d="scan'208";a="94246608"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Nov 2020 08:59:18 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 19 Nov 2020 08:59:17 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Thu, 19 Nov 2020 08:59:17 -0700
-Date:   Thu, 19 Nov 2020 16:59:16 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/4] phy: Add ethernet serdes configuration option
-Message-ID: <20201119155916.ies46qesbp7e32gk@mchp-dev-shegelun>
-References: <20201110144910.558164-1-steen.hegelund@microchip.com>
- <20201110144910.558164-3-steen.hegelund@microchip.com>
- <20201119060727.GA50232@vkoul-mobl>
- <20201119144359.y5scnscmb7nvptnv@mchp-dev-shegelun>
+        id S1728752AbgKSQAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 11:00:18 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:36716 "EHLO mail.pqgruber.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728726AbgKSQAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:00:17 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 053F4C6866D;
+        Thu, 19 Nov 2020 17:00:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1605801615;
+        bh=+EByFA9DgtbSpmJVu8ypTg5YXyFZQXFlJcvMgKd16EE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d5B0zJsDUxZxq9qxtD/TtfPWDMIw/2NXszmc2emvIuWAX6mEKbMbbtVnCo741AA3n
+         +ll6+OFWJwX94DGuAVKOiwwLdju5EZVHG/gV37yvM+y6BwybWY7KIrG0LAx9PhWV4x
+         b0yCvdQ54KhOcn7hPvnOZHHFF2mgKbUe5WvqxNgc=
+Date:   Thu, 19 Nov 2020 17:00:13 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH 1/3] pwm: pca9685: Switch to atomic API
+Message-ID: <20201119160013.GA217674@workstation.tuxnet>
+References: <20201118174417.278011-1-clemens.gruber@pqgruber.com>
+ <CAGngYiV+oDeagaCfpeACMzQyDHVzk9ERbSBjW_fW5hoQANHqog@mail.gmail.com>
+ <20201119100005.GA703@workstation.tuxnet>
+ <CAGngYiU7+X1AbadQ0kFBQOqxK-adowg6CTOMx260fyF1-rpO-Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119144359.y5scnscmb7nvptnv@mchp-dev-shegelun>
+In-Reply-To: <CAGngYiU7+X1AbadQ0kFBQOqxK-adowg6CTOMx260fyF1-rpO-Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.11.2020 15:43, Steen Hegelund wrote:
->On 19.11.2020 11:37, Vinod Koul wrote:
->>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->>On 10-11-20, 15:49, Steen Hegelund wrote:
->>>Provide a new ethernet phy configuration structure, that
->>>allow PHYs used for ethernet to be configured with
->>>speed, media type and clock information.
->>>
->>>Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
->>>Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
->>>---
->>> include/linux/phy/phy-ethernet-serdes.h | 49 +++++++++++++++++++++++++
->>> include/linux/phy/phy.h                 |  4 ++
->>> 2 files changed, 53 insertions(+)
->>> create mode 100644 include/linux/phy/phy-ethernet-serdes.h
->>>
->>>diff --git a/include/linux/phy/phy-ethernet-serdes.h b/include/linux/phy/phy-ethernet-serdes.h
->>>new file mode 100644
->>>index 000000000000..04f496855b00
->>>--- /dev/null
->>>+++ b/include/linux/phy/phy-ethernet-serdes.h
->>>@@ -0,0 +1,49 @@
->>>+/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
->>>+/*
->>>+ * Microchip Sparx5 Ethernet SerDes driver
->>>+ *
->>>+ * Copyright (c) 2020 Microschip Inc
->>>+ */
->>>+#ifndef __PHY_ETHERNET_SERDES_H_
->>>+#define __PHY_ETHERNET_SERDES_H_
->>>+
->>>+#include <linux/phy.h>
->>>+
->>>+enum ethernet_media_type {
->>>+     ETH_MEDIA_DEFAULT,
->>>+     ETH_MEDIA_SR,
->>>+     ETH_MEDIA_DAC,
->>>+};
->>>+
->>>+/**
->>>+ * struct phy_configure_opts_eth_serdes - Ethernet SerDes
->>>+ *
->>>+ * This structure is used to represent the configuration state of a
->>>+ * Ethernet Serdes PHY.
->>>+ */
->>>+struct phy_configure_opts_eth_serdes {
->>>+     /**
->>>+      * @speed
->>>+      *
->>>+      * Speed of the serdes interface in Mbps
->>>+      */
->>
->>Can we have this in kernel-doc style pls
->>
->I will update the documentation.
->>>+     u32                        speed;
->>>+
->>>+     /**
->>>+      * @media_type
->>>+      *
->>>+      * Specifies which media the serdes will be using
->>>+      */
->>>+     enum ethernet_media_type   media_type;
->>>+
->>>+     /**
->>>+      * @clk
->>>+      *
->>>+      * Specifies the serdes clock in MHz
->>>+      * Default: 0 will provide the highest supported clock.
->>>+      */
->>>+     u32                        clk;
->>
->>Why not use std clk interface for this..?
->
->I am not familiar with that.  Is that the max_link_rate in struct phy_attrs?
+On Thu, Nov 19, 2020 at 09:58:26AM -0500, Sven Van Asbroeck wrote:
+> On Thu, Nov 19, 2020 at 5:00 AM Clemens Gruber
+> <clemens.gruber@pqgruber.com> wrote:
+> >
+> > > You appear to mix cached and uncached uses of prescale,
+> > > is there a need for this? If not, perhaps pick one and use
+> > > it consistently?
+> >
+> > Yes, sticking to the cached value is probably the way to go.
+> >
+> 
+> I would suggest going one step further, and turn on the cache in
+> regmap, i.e. .cache_type = REGCACHE_RBTREE, then:
+> - no need to cache pca->prescale explicitly, you can just read it with
+>   regmap_read() every time, and it won't result in bus activity.
+>   then you can eliminate pca->prescale, which simplifies the driver.
+> - pca9685_pwm_get_state() no longer results in bus reads, every regmap_read()
+>   is cached, this is extremely efficient.
+> - pca9685_pwm_apply() and pca9685_pwm_gpio_set() now only does bus writes if
+>   registers actually change, i.e. calling pwm_apply() multiple times in a row
+>   with the same parameters, writes the registers only once.
 
-Now I get it: A DT clock node referred by the SerDes: Yes that should be
-possible.  I will try that out...
+Interesting, I will look into that.
 
->
->>
->>>+};
->>>+
->>>+#endif
->>>+
->>>diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
->>>index e435bdb0bab3..78ecb375cede 100644
->>>--- a/include/linux/phy/phy.h
->>>+++ b/include/linux/phy/phy.h
->>>@@ -18,6 +18,7 @@
->>>
->>> #include <linux/phy/phy-dp.h>
->>> #include <linux/phy/phy-mipi-dphy.h>
->>>+#include <linux/phy/phy-ethernet-serdes.h>
->>>
->>> struct phy;
->>>
->>>@@ -49,11 +50,14 @@ enum phy_mode {
->>>  *
->>>  * @mipi_dphy:       Configuration set applicable for phys supporting
->>>  *           the MIPI_DPHY phy mode.
->>>+ * @eth_serdes: Configuration set applicable for phys supporting
->>>+ *           the ethernet serdes.
->>>  * @dp:              Configuration set applicable for phys supporting
->>>  *           the DisplayPort protocol.
->>>  */
->>> union phy_configure_opts {
->>>      struct phy_configure_opts_mipi_dphy     mipi_dphy;
->>>+     struct phy_configure_opts_eth_serdes    eth_serdes;
->>
->>Kishon, does this look okay for you..?
->>
->>>      struct phy_configure_opts_dp            dp;
->>> };
->>>
->>>--
->>>2.29.2
->>
->>--
->>~Vinod
->
->BR
->Steen
->
->---------------------------------------
->Steen Hegelund
->steen.hegelund@microchip.com
+> 
+> We can do this safely because this chip never actively writes to its
+> registers (as far as I know).
 
-BR
-Steen
+I think so too.
 
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
+> 
+> But maybe that's a suggestion for a follow-up patch...
+> 
+> > > Also, if the prescale register contains an invalid value
+> > > during probe(), e.g. 0x00 or 0x01, would it make sense
+> > > to explicitly overwrite it with a valid setting?
+> >
+> > As long as it is overwritten with a correct setting when the PWM is used
+> > for the first time, it should be OK?
+> 
+> I'm not sure. Consider the following scenario:
+> - prescale register is invalid at probe, say it contains 0x02
+> - user calls pwm_apply() but with an invalid period, which results
+>   in a calculated prescale value of 0x02
+> - pca9685_pwm_apply() skips prescale setup because prescale does not
+>   change, returns OK(0)
+> - user believes setup was ok, actually it's broken...
+
+Makes sense. I will write the default prescale setting in case we read
+an invalid one from the register.
+
+> 
+> Also, some people use this chip exclusively as a gpiochip, in that
+> case the prescale register is never touched. So an invalid prescale
+> at probe is never corrected.
+> 
+> Speaking of the gpiochip side, would it make sense to call
+> pca9685_pwm_full_on()/_off() in pca9685_pwm_gpio_set() too?
+
+Yes, I think so. Would be cleaner and we avoid setting all registers to
+0 when the GPIO is disabled.
+
+--
+
+One thing I noticed: The driver currently assumes that it comes out of
+POR in "active" state (comment at end of probe and PM calls).
+However, the SLEEP bit is set by default / after POR.
+
+Do you agree with the following solution?
+1) In .probe: call pm_runtime_set_suspended() instead of _set_active()
+   (If CONFIG_PM is enabled, the SLEEP bit will be cleared in .resume)
+2) If !CONFIG_PM: Clear the SLEEP bit in .probe
+
+Thanks,
+Clemens
