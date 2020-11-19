@@ -2,104 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FA72B94AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDF82B94B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbgKSOcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:32:42 -0500
-Received: from mga01.intel.com ([192.55.52.88]:46393 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727853AbgKSOcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:32:42 -0500
-IronPort-SDR: +WJf2UhpNur9RgDJnmWZXRcjbzCB1kjXi7/VP20e2s/C8fCUP4cUaOAwqYp9NPfIErMH0YCkAs
- KSwaK0cMMNrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="189382828"
+        id S1727994AbgKSOda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:33:30 -0500
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:2466 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727853AbgKSOd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:33:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605796409; x=1637332409;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EryXLtksqUTjCr90l+ELQYDzcQvepnCIxru6lel/q0E=;
+  b=oPoFIcaJGF+qGgI450zML+AlocTpufvtWFIzCoyOE/5zlqwkSMTPMVI9
+   MekxrxWqQmzVNHG+wn6kywZDeZ9owasV5sOYPuS0XMzVj0rKVqYedv+Ta
+   8S6ZeDanzWUmGiLhidf+L+ZRIFhNT0e1Agqkj55qYqEND8ubr0L8Op4bU
+   5qnv/yiuI2IcKw7TsLA5s8/dmsI7lps+QsVBOivMptoJ1QAAaNCEMMzO4
+   KQxW8YuEaTEV8chkB6OlH2ZDWd1q+sS0ANAKJSWTCfBOmnA53XVw68XuW
+   9spv6m5+4mKRR3jTkNYGCsqTSj982QGCIbsNFEdRTjoRX0CYsTergZmqn
+   A==;
+IronPort-SDR: OdCWfTHBDJVQQL5ZZmW6ySzM3O6dHpZ4p6kF/1MJaPn6pEwOgkYXvjmVNRNlhv8aDFKYJ5ysIP
+ i32L2ehtFc0f3j0xonFGEQxYKQthnFi/KEtOczGklMtrOJ1AI9id8oiSkbYEJOneNlGj2StYpi
+ qvR/TqbE5Z4/z++WBiplI4iEKnShQFiJK5JwmkoPox7gqbMFQFoRhvpC8H17vYFTBmgP7dCezL
+ 2KOZ+uuDl+jaYvG4XWJXxOKZuECJUqGWFHJ2r6DCPvid+4JdJkk40T4fmEm69BwMyX12Wvq6Hj
+ GSY=
 X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="189382828"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 06:32:41 -0800
-IronPort-SDR: nN06MWhHMP+zpE6EN2l0/wEpVq1pu3x5J9r+z4fdJZkMcnWlgCsG0L2h9YxoqJka7xWk2CYLRw
- 73q3sx9Pk1Ug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,490,1596524400"; 
-   d="scan'208";a="534800729"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by fmsmga005.fm.intel.com with ESMTP; 19 Nov 2020 06:32:38 -0800
-Date:   Thu, 19 Nov 2020 22:32:37 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, nivedita@alum.mit.edu,
-        thomas.lendacky@amd.com, yazen.ghannam@amd.com, wei.huang2@amd.com
-Subject: Re: [RFC PATCH v3] tools/x86: add kcpuid tool to show raw CPU
- features
-Message-ID: <20201119143237.GA129558@shbuild999.sh.intel.com>
-References: <1603344083-100742-1-git-send-email-feng.tang@intel.com>
- <20201118191529.GN7472@zn.tnic>
- <20201119072055.GA112648@shbuild999.sh.intel.com>
- <20201119091815.GA3769@zn.tnic>
- <20201119135010.GC112648@shbuild999.sh.intel.com>
- <20201119141512.GB3769@zn.tnic>
+   d="scan'208";a="96923968"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Nov 2020 07:33:28 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 19 Nov 2020 07:33:28 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 19 Nov 2020 07:33:28 -0700
+Date:   Thu, 19 Nov 2020 15:33:27 +0100
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/4] phy: Add Sparx5 ethernet serdes PHY driver
+Message-ID: <20201119143327.z7hnl5ajedarvkhx@mchp-dev-shegelun>
+References: <20201110144910.558164-1-steen.hegelund@microchip.com>
+ <20201110144910.558164-4-steen.hegelund@microchip.com>
+ <20201119061401.GB50232@vkoul-mobl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201119141512.GB3769@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201119061401.GB50232@vkoul-mobl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 03:15:12PM +0100, Borislav Petkov wrote:
-> On Thu, Nov 19, 2020 at 09:50:10PM +0800, Feng Tang wrote:
-> > That's really odd. I tried on 3 baremetal machines: one Skylake NUC device,
-> > one Xeon E5-2699 and one Xeon E5-2680.
-> 
-> Ah, sorry, not virt, virt is 0x4000_0000. Yeah, I remember now. It is
-> function 4 which AMD doesn't implement and I'm running this on AMD:
+On 19.11.2020 11:44, Vinod Koul wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>
+>On 10-11-20, 15:49, Steen Hegelund wrote:
+>> Add the Microchip Sparx5 ethernet serdes PHY driver for the 6G, 10G and 25G
+>> interfaces available in the Sparx5 SoC.
+>>
+>> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
+>> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+>> ---
+>>  drivers/phy/Kconfig                        |    1 +
+>>  drivers/phy/Makefile                       |    1 +
+>>  drivers/phy/microchip/Kconfig              |   12 +
+>>  drivers/phy/microchip/Makefile             |    6 +
+>>  drivers/phy/microchip/sparx5_serdes.c      | 2464 +++++++++++++++++
+>>  drivers/phy/microchip/sparx5_serdes_regs.h | 2773 ++++++++++++++++++++
+>>  6 files changed, 5257 insertions(+)
+>>  create mode 100644 drivers/phy/microchip/Kconfig
+>>  create mode 100644 drivers/phy/microchip/Makefile
+>>  create mode 100644 drivers/phy/microchip/sparx5_serdes.c
+>>  create mode 100644 drivers/phy/microchip/sparx5_serdes_regs.h
+>>
+>> diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
+>> index 01b53f86004c..ef0d17829610 100644
+>> --- a/drivers/phy/Kconfig
+>> +++ b/drivers/phy/Kconfig
+>> @@ -71,6 +71,7 @@ source "drivers/phy/marvell/Kconfig"
+>>  source "drivers/phy/mediatek/Kconfig"
+>>  source "drivers/phy/motorola/Kconfig"
+>>  source "drivers/phy/mscc/Kconfig"
+>> +source "drivers/phy/microchip/Kconfig"
+>
+>Sorted please
 
-Great! That's the trick :) I will be more careful with these special ranges
-from different vendors.   
+I will update the list.
+>
+>>  source "drivers/phy/qualcomm/Kconfig"
+>>  source "drivers/phy/ralink/Kconfig"
+>>  source "drivers/phy/renesas/Kconfig"
+>> diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
+>> index 6eb2916773c5..822040e1aaa7 100644
+>> --- a/drivers/phy/Makefile
+>> +++ b/drivers/phy/Makefile
+>> @@ -21,6 +21,7 @@ obj-y                                       += allwinner/   \
+>>                                          mediatek/    \
+>>                                          motorola/    \
+>>                                          mscc/        \
+>> +                                        microchip/   \
+>
+>Here as well
 
-Thanks,
-Feng
+OK
+>
+>>                                          qualcomm/    \
+>>                                          ralink/      \
+>>                                          renesas/     \
 
-> $ cpuid -1r
-> CPU:
->    0x00000000 0x00: eax=0x0000000d ebx=0x68747541 ecx=0x444d4163 edx=0x69746e65
->    0x00000001 0x00: eax=0x00800f82 ebx=0x0c100800 ecx=0x7ed8320b edx=0x178bfbff
->    0x00000002 0x00: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
->    0x00000003 0x00: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
-> 
-> <-- no function 4.
-> 
->    0x00000005 0x00: eax=0x00000040 ebx=0x00000040 ecx=0x00000003 edx=0x00000011
->    ...
-> 
-> That's why.  :-)
-> 
-> Btw, there are other funny ranges on Intel:
-> 
-> ./cpuid -1r
-> CPU:
->    0x20000000 0x00: eax=0x00000000 ebx=0x00000001 ecx=0x00000001 edx=0x00000000
-> 
-> That one has 2 bits set.
-> 
->    0x80860000 0x00: eax=0x00000000 ebx=0x00000001 ecx=0x00000001 edx=0x00000000
->    0xc0000000 0x00: eax=0x00000000 ebx=0x00000001 ecx=0x00000001 edx=0x00000000
-> 
-> And those too.
-> 
-> Fun.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+...
+
+
+>> 2.29.2
+>
+>--
+>~Vinod
+
+BR
+Steen
+
+---------------------------------------
+Steen Hegelund
+steen.hegelund@microchip.com
