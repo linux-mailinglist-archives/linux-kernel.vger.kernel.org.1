@@ -2,95 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288A12B8B23
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 06:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3D82B8B2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 06:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726155AbgKSFxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 00:53:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45198 "EHLO mail.kernel.org"
+        id S1726235AbgKSF4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 00:56:00 -0500
+Received: from mga02.intel.com ([134.134.136.20]:15558 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725648AbgKSFxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 00:53:53 -0500
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF31A22227;
-        Thu, 19 Nov 2020 05:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605765232;
-        bh=Te2tFxY1BOS4uysqvA7qp8kR0pfzUS27egjsYkCWDd4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EUeepXHBFRXs061r95yHg1npdl2tQ0iT70IrPQcwxZd9EM36TbjMsnSFuUCbZzaNc
-         NaowggaRtMKuwrQZy59/mjecoBZrSRX70tL9BHQya/w+2619X/lSPD4U/1Z5znNkUY
-         RyHn3xtvYIYc3Pl7u1gSGw+jbp1jVqPXVeOI7gXc=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Chen Yu <yu.c.chen@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v5 4/4] docs: bootconfig: Update file format on initrd image
-Date:   Thu, 19 Nov 2020 14:53:49 +0900
-Message-Id: <160576522916.320071.4145530996151028855.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <160576519277.320071.14260402851742732108.stgit@devnote2>
-References: <160576519277.320071.14260402851742732108.stgit@devnote2>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S1725802AbgKSF4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 00:56:00 -0500
+IronPort-SDR: 5RUsDhwvmNKemmHVOsKttUWtekwayyv5XUe1n37yaMvFbZna9SkAUSOQClSiOaI/d5KWvgH5Q0
+ OQX16A9gTjYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="158271207"
+X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
+   d="scan'208";a="158271207"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 21:55:59 -0800
+IronPort-SDR: qhCoXBTzx2RuVGZpT419s2GlRQj2B8oe99XSfRrEo6ipEeTIBJQHj8BdwfdjV3R0P0F6iOrXWk
+ /KA41RtV5BvA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,489,1596524400"; 
+   d="scan'208";a="330800049"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga006.jf.intel.com with ESMTP; 18 Nov 2020 21:55:57 -0800
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     broonie@kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Cc:     linux-mtd@lists.infradead.org, vigneshr@ti.com, p.yadav@ti.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v8 0/6] spi: cadence-quadspi: Add QSPI controller support for Intel LGM SoC
+Date:   Thu, 19 Nov 2020 13:55:48 +0800
+Message-Id: <20201119055551.26493-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To align the total file size, add padding null character when appending
-the bootconfig to initrd image.
+Add QSPI controller support for Intel LGM SoC.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Note from Vignesh(mtd subsystem maintainer):
+This series is a subset of "[PATCH v12 0/4] spi: cadence-quadspi: Add
+support for the Cadence QSPI controller" by Ramuthevar,Vadivel MuruganX
+<vadivel.muruganx.ramuthevar@linux.intel.com> that intended to move
+cadence-quadspi driver to spi-mem framework
+
+Those patches were trying to accomplish too many things in a single set
+of patches and need to split into smaller patches. This is reduced
+version of above series.
+
+Changes that are intended to make migration easy are split into separate
+patches. Patches 1 to 3 drop features that cannot be supported under
+spi-mem at the moment (backward compatibility is maintained).
+Patch 4-5 are trivial cleanups. Patch 6 does the actual conversion to
+spi-mem and patch 7 moves the driver to drivers/spi folder.
+
+I have tested both INDAC mode (used by non TI platforms like Altera
+SoCFPGA) and DAC mode (used by TI platforms) on TI EVMs.
+
+Patches to move move bindings over to
+"Documentation/devicetree/bindings/spi/" directory and also conversion
+of bindig doc to YAML will be posted separately.  Support for Intel
+platform would follow that.
+
+Reference:
+        https://lkml.org/lkml/2020/6/1/50
+
 ---
- 0 files changed
+v8:
+  - As Mark suggested to add the dt-bindings documentation patches
+    end of the series , so dropped.  
+v7:
+  - Rob's review comments address and fixed dt-schema warning
+  - Pratyush review comments address and update
+  - DAC bit reset to 0 and 1 (enable/disable)
+  - tested QSI-NOR flash mx25l12805d on LGM soc, it's working after disable DAC
+  - Linus suggested to use 'num-cs' prperty instead of 'num-chipselect'
+v6:
+  - Rob's review comments update
+  - add compatible string in properly aligned
+  - remove cadence-qspi extra comaptible string in example
+v5:
+  - Rob's review comments update
+  - const with single compatible string kept
+v4:
+  - Rob's review comments update
+  - remove '|' no formatting to preserve
+  - child node attributes follows under 'properties' under '@[0-9a-f]+$'.
+v3:
+  - Pratyush review comments update
+  - CQSPI_SUPPORTS_MULTI_CHIPSELECT macro used instead of cqspi->use_direct_mode
+  - disable DAC support placed in end of controller_init
+v2:
+  - Rob's review comments update for dt-bindings
+  - add 'oneOf' for compatible selection
+  - drop un-neccessary descriptions
+  - add the cdns,is-decoded-cs and cdns,rclk-en properties as schema
+  - remove 'allOf' in not required place
+  - add AdditionalProperties false
+  - add minItems/maxItems for qspi reset attributes
 
-diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
-index a22024f9175e..363599683784 100644
---- a/Documentation/admin-guide/bootconfig.rst
-+++ b/Documentation/admin-guide/bootconfig.rst
-@@ -137,15 +137,22 @@ Boot Kernel With a Boot Config
- ==============================
- 
- Since the boot configuration file is loaded with initrd, it will be added
--to the end of the initrd (initramfs) image file with size, checksum and
--12-byte magic word as below.
-+to the end of the initrd (initramfs) image file with padding, size,
-+checksum and 12-byte magic word as below.
- 
--[initrd][bootconfig][size(u32)][checksum(u32)][#BOOTCONFIG\n]
-+[initrd][bootconfig][padding][size(u32)][checksum(u32)][#BOOTCONFIG\n]
-+
-+When the boot configuration is added to the initrd image, the total
-+file size is aligned to 4 bytes. To fill the gap, null characters
-+(``\0``) will be added. Thus the ``size`` is the length of the bootconfig
-+file + padding bytes.
- 
- The Linux kernel decodes the last part of the initrd image in memory to
- get the boot configuration data.
- Because of this "piggyback" method, there is no need to change or
--update the boot loader and the kernel image itself.
-+update the boot loader and the kernel image itself as long as the boot
-+loader passes the correct initrd file size. If by any chance, the boot
-+loader passes a longer size, the kernel feils to find the bootconfig data.
- 
- To do this operation, Linux kernel provides "bootconfig" command under
- tools/bootconfig, which allows admin to apply or delete the config file
-@@ -176,7 +183,8 @@ up to 512 key-value pairs. If keys contains 3 words in average, it can
- contain 256 key-value pairs. In most cases, the number of config items
- will be under 100 entries and smaller than 8KB, so it would be enough.
- If the node number exceeds 1024, parser returns an error even if the file
--size is smaller than 32KB.
-+size is smaller than 32KB. (Note that this maximum size is not including
-+the padding null characters.)
- Anyway, since bootconfig command verifies it when appending a boot config
- to initrd image, user can notice it before boot.
- 
+resend-v1:
+  - As per Mark's suggestion , reorder the patch series 1-3 driver
+    support patches, series 4-6 dt-bindings patches.
+v1:
+  - initial version
+
+Ramuthevar Vadivel Murugan (6):
+  spi: cadence-quadspi: Add QSPI support for Intel LGM SoC
+  spi: cadence-quadspi: Disable the DAC for Intel LGM SoC
+  spi: cadence-quadspi: Add multi-chipselect support for Intel LGM SoC
+  spi: Move cadence-quadspi.txt to Documentation/devicetree/bindings/spi
+  dt-bindings: spi: Convert cadence-quadspi.txt to cadence-quadspi.yaml
+  dt-bindings: spi: Add compatible for Intel LGM SoC
+
+ .../devicetree/bindings/mtd/cadence-quadspi.txt    |  67 ----------
+ .../devicetree/bindings/spi/cdns,qspi-nor.yaml     | 148 +++++++++++++++++++++
+ drivers/spi/Kconfig                                |   2 +-
+ drivers/spi/spi-cadence-quadspi.c                  |  33 ++++-
+ 4 files changed, 178 insertions(+), 72 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+
+-- 
+2.11.0
 
