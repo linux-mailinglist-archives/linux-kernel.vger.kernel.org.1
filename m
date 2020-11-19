@@ -2,270 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC702B9E71
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 975612B9E90
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbgKSXhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 18:37:16 -0500
-Received: from mga07.intel.com ([134.134.136.100]:49077 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727040AbgKSXhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 18:37:08 -0500
-IronPort-SDR: BlFZnxtu6/zIpcP3XEXFga0Mck3WCA6Chz0UO+8upL0nzuOcPmarVuf6TEEVxyqhdkVdL4K9YV
- e2AqC2owvSuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="235531211"
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="235531211"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 15:37:04 -0800
-IronPort-SDR: 2uATYGm567Y9AV2x3n0e71fAoCC+ZgZd35ZUcAp55gLkJ/6m2xFiWvS333vbIVCKN8vAKEsOBD
- BnSEj3H4wY4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="431392259"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Nov 2020 15:37:03 -0800
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, linux-doc@vger.kernel.org
-Subject: [PATCH v2 22/22] x86/fpu/xstate: Introduce boot-parameters for control some state component support
-Date:   Thu, 19 Nov 2020 15:32:57 -0800
-Message-Id: <20201119233257.2939-23-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201119233257.2939-1-chang.seok.bae@intel.com>
-References: <20201119233257.2939-1-chang.seok.bae@intel.com>
+        id S1727376AbgKSXiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 18:38:03 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:52450 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727028AbgKSXiB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 18:38:01 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJNYp1V138161;
+        Thu, 19 Nov 2020 23:37:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=MszqefOJcdbabdMne6HpW6zW0+wj9g5wPcoppzWfBRw=;
+ b=KbfS9xyoLYd9f+1tXyKP2N9pPIg5wIv5h1lEyTOCL9Zt0uZIPY/9ifXv92/ct+6eDVjV
+ wHfLnCwUxx9Q1YOPRUsv+/lvjU7vKJo1iZ/jnXcfB8Y+BfGIeeUhSxbnpehYWlxSJLd+
+ Q7hygayEZy8mt+KJsQHshVxJOT9ZQ1qklH7XDFpV6jpznoJp6VwMAXI/JQ7Z+ePVzXRD
+ cvvlkISXBgM/kgJoL5P3cZh8TURAQrb4wx7Szl/3HjrNWJzr2TNd3iyPIJKuz4PnxPwv
+ ImThZf+gpItUVMV441kI05KshfgnaF9Ul8bYtiCy3iZq36mzR1j8xppN7mYP07oxInQy Ng== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 34t7vng7ru-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Nov 2020 23:37:31 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJNZbnW195048;
+        Thu, 19 Nov 2020 23:37:31 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 34ts0ufh77-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Nov 2020 23:37:31 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AJNbRN5010801;
+        Thu, 19 Nov 2020 23:37:28 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 19 Nov 2020 15:37:27 -0800
+Subject: Re: [PATCH v4 05/21] mm/hugetlb: Introduce pgtable allocation/freeing
+ helpers
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, osalvador@suse.de, mhocko@suse.com
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201113105952.11638-1-songmuchun@bytedance.com>
+ <20201113105952.11638-6-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <b3cadba4-5cef-a1ba-418d-bd08af60c656@oracle.com>
+Date:   Thu, 19 Nov 2020 15:37:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+MIME-Version: 1.0
+In-Reply-To: <20201113105952.11638-6-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 suspectscore=2 spamscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190162
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=2
+ malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011190162
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename XFEATURE_MASK_USER_SUPPORTED to XFEATURE_MASK_USER_ENABLED to
-literally align with new boot-parameters.
+On 11/13/20 2:59 AM, Muchun Song wrote:
+> On x86_64, vmemmap is always PMD mapped if the machine has hugepages
+> support and if we have 2MB contiguos pages and PMD aligned. If we want
+                             contiguous              alignment
+> to free the unused vmemmap pages, we have to split the huge pmd firstly.
+> So we should pre-allocate pgtable to split PMD to PTE.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/hugetlb_vmemmap.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  mm/hugetlb_vmemmap.h | 12 +++++++++
+>  2 files changed, 85 insertions(+)
 
-"xstate.disable=0x60000" will disable AMX on a system that has AMX compiled
-into XFEATURE_MASK_USER_ENABLED.
+Thanks for the cleanup.
 
-"xstate.enable=0x60000" will enable AMX on a system that does NOT have AMX
-compiled into XFEATURE_MASK_USER_ENABLED (assuming the kernel is new enough
-to support this feature).
+Oscar made some other comments.  I only have one additional minor comment
+below.
 
-While this cmdline is currently enabled only for AMX, it is intended to be
-easily enabled to be useful for future XSAVE-enabled features.
+With those minor cleanups,
+Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Cc: x86@kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
-Changes from v1:
-* Renamed the user state mask define (Andy Lutomirski and Dave Hansen)
-* Changed the error message (Dave Hansen)
-* Fixed xfeatures_mask_user()
-* Rebased the upstream kernel (5.10) -- revived the param parse function
----
- .../admin-guide/kernel-parameters.txt         | 15 ++++
- arch/x86/include/asm/fpu/types.h              |  6 ++
- arch/x86/include/asm/fpu/xstate.h             | 24 +++---
- arch/x86/kernel/fpu/init.c                    | 73 +++++++++++++++++--
- 4 files changed, 101 insertions(+), 17 deletions(-)
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+...
+> +int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+> +{
+> +	unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> +
+> +	/* Store preallocated pages on huge page lru list */
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 526d65d8573a..c41528cfe39f 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5995,6 +5995,21 @@
- 			which allow the hypervisor to 'idle' the guest on lock
- 			contention.
- 
-+	xstate.enable=	[X86-64]
-+	xstate.disable=	[X86-64]
-+			The kernel is compiled with a default xstate bitmask --
-+			enabling it to use the XSAVE hardware to efficiently
-+			save and restore thread states on context switch.
-+			xstate.enable allows adding to that default mask at
-+			boot-time without recompiling the kernel just to support
-+			the new thread state. (Note that the kernel will ignore
-+			any bits in the mask that do not correspond to features
-+			that are actually available in CPUID)  xstate.disable
-+			allows clearing bits in the default mask, forcing the
-+			kernel to forget that it supports the specified thread
-+			state. When a bit set for both, the kernel takes
-+			xstate.disable in a priority.
-+
- 	xirc2ps_cs=	[NET,PCMCIA]
- 			Format:
- 			<irq>,<irq_mask>,<io>,<full_duplex>,<do_sound>,<lockup_hack>[,<irq2>[,<irq3>[,<irq4>]]]
-diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-index 18eb50fc95e8..ababb748cc8e 100644
---- a/arch/x86/include/asm/fpu/types.h
-+++ b/arch/x86/include/asm/fpu/types.h
-@@ -149,6 +149,12 @@ enum xfeature {
- #define XFEATURE_MASK_XTILE		(XFEATURE_MASK_XTILE_DATA \
- 					 | XFEATURE_MASK_XTILE_CFG)
- 
-+#define XFEATURE_REGION_MASK(max_bit, min_bit) \
-+	((BIT_ULL((max_bit) - (min_bit) + 1) - 1) << (min_bit))
-+
-+#define XFEATURE_MASK_CONFIGURABLE \
-+	XFEATURE_REGION_MASK(XFEATURE_XTILE_DATA, XFEATURE_XTILE_CFG)
-+
- #define FIRST_EXTENDED_XFEATURE	XFEATURE_YMM
- 
- struct reg_128_bit {
-diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index 1544a874b748..683a8503c1c6 100644
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -25,17 +25,17 @@
- 
- #define XSAVE_ALIGNMENT     64
- 
--/* All currently supported user features */
--#define XFEATURE_MASK_USER_SUPPORTED (XFEATURE_MASK_FP | \
--				      XFEATURE_MASK_SSE | \
--				      XFEATURE_MASK_YMM | \
--				      XFEATURE_MASK_OPMASK | \
--				      XFEATURE_MASK_ZMM_Hi256 | \
--				      XFEATURE_MASK_Hi16_ZMM	 | \
--				      XFEATURE_MASK_PKRU | \
--				      XFEATURE_MASK_BNDREGS | \
--				      XFEATURE_MASK_BNDCSR | \
--				      XFEATURE_MASK_XTILE)
-+/* All currently enabled user features */
-+#define XFEATURE_MASK_USER_ENABLED (XFEATURE_MASK_FP | \
-+				    XFEATURE_MASK_SSE | \
-+				    XFEATURE_MASK_YMM | \
-+				    XFEATURE_MASK_OPMASK | \
-+				    XFEATURE_MASK_ZMM_Hi256 | \
-+				    XFEATURE_MASK_Hi16_ZMM	 | \
-+				    XFEATURE_MASK_PKRU | \
-+				    XFEATURE_MASK_BNDREGS | \
-+				    XFEATURE_MASK_BNDCSR | \
-+				    XFEATURE_MASK_XTILE)
- 
- /* All currently supported supervisor features */
- #define XFEATURE_MASK_SUPERVISOR_SUPPORTED (XFEATURE_MASK_PASID)
-@@ -87,7 +87,7 @@ static inline u64 xfeatures_mask_supervisor(void)
- 
- static inline u64 xfeatures_mask_user(void)
- {
--	return xfeatures_mask_all & XFEATURE_MASK_USER_SUPPORTED;
-+	return xfeatures_mask_all & ~(XFEATURE_MASK_SUPERVISOR_ALL);
- }
- 
- static inline u64 xfeatures_mask_supervisor_dynamic(void)
-diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index 954ac4f0f761..f1cdac3321c8 100644
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -5,6 +5,7 @@
- #include <asm/fpu/internal.h>
- #include <asm/tlbflush.h>
- #include <asm/setup.h>
-+#include <asm/cmdline.h>
- 
- #include <linux/sched.h>
- #include <linux/sched/task.h>
-@@ -224,14 +225,44 @@ static void __init fpu__init_system_xstate_size_legacy(void)
- /*
-  * Find supported xfeatures based on cpu features and command-line input.
-  * This must be called after fpu__init_parse_early_param() is called and
-- * xfeatures_mask is enumerated.
-+ * xfeatures_mask_all is enumerated.
-  */
-+
-+static u64 xstate_enable;
-+static u64 xstate_disable;
-+
- u64 __init fpu__get_supported_xfeatures_mask(void)
- {
--	u64 mask = XFEATURE_MASK_USER_SUPPORTED | XFEATURE_MASK_SUPERVISOR_SUPPORTED;
--
--	if (!IS_ENABLED(CONFIG_X86_64))
--		mask &= ~(XFEATURE_MASK_XTILE);
-+	u64 mask = XFEATURE_MASK_USER_ENABLED | XFEATURE_MASK_SUPERVISOR_SUPPORTED;
-+
-+	if (!IS_ENABLED(CONFIG_X86_64)) {
-+		mask  &= ~(XFEATURE_MASK_XTILE);
-+	} else if (xstate_enable || xstate_disable) {
-+		u64 custom = mask;
-+		u64 unknown;
-+
-+		custom |= xstate_enable;
-+		custom &= ~xstate_disable;
-+
-+		unknown = custom & ~mask;
-+		if (unknown) {
-+			/*
-+			 * User should fully understand the result of using undocumented
-+			 * xstate component.
-+			 */
-+			pr_warn("x86/fpu: Attempt to enable unknown xstate features 0x%llx\n",
-+				unknown);
-+			WARN_ON_FPU(1);
-+		}
-+
-+		if ((custom & XFEATURE_MASK_XTILE) != XFEATURE_MASK_XTILE) {
-+			pr_warn("x86/fpu: Error in xstate.disable. Additionally disabling 0x%x components.\n",
-+				XFEATURE_MASK_XTILE);
-+			custom &= ~(XFEATURE_MASK_XTILE);
-+		}
-+
-+		mask = custom;
-+	}
- 
- 	return mask;
- }
-@@ -245,12 +276,44 @@ static void __init fpu__init_system_ctx_switch(void)
- 	on_boot_cpu = 0;
- }
- 
-+#define HEXA_BASE	16
-+/*
-+ * Longest parameter of 'xstate.enable=' is 16 hexadecimal characters with '0x' prefix and
-+ * an extra '\0' for termination.
-+ */
-+#define MAX_XSTATE_MASK_CHARS	19
-+
-+/*
-+ * We parse xstate parameters early because fpu__init_system() is executed
-+ * before parse_early_param().
-+ */
-+static void __init fpu__init_parse_early_param(void)
-+{
-+	char arg[MAX_XSTATE_MASK_CHARS];
-+	u64 mask;
-+
-+	if (cmdline_find_option(boot_command_line, "xstate.enable", arg,
-+				sizeof(arg)) &&
-+	    !kstrtoull(arg, HEXA_BASE, &mask))
-+		xstate_enable = mask & XFEATURE_MASK_CONFIGURABLE;
-+	else
-+		xstate_enable = 0;
-+
-+	if (cmdline_find_option(boot_command_line, "xstate.disable", arg,
-+				sizeof(arg)) &&
-+	    !kstrtoull(arg, HEXA_BASE, &mask))
-+		xstate_disable = mask & XFEATURE_MASK_CONFIGURABLE;
-+	else
-+		xstate_disable = 0;
-+}
-+
- /*
-  * Called on the boot CPU once per system bootup, to set up the initial
-  * FPU state that is later cloned into all processes:
-  */
- void __init fpu__init_system(struct cpuinfo_x86 *c)
- {
-+	fpu__init_parse_early_param();
- 	fpu__init_system_early_generic(c);
- 
- 	/*
+Let's expland the above comment to something like this:
+
+	/*
+	 * Use the huge page lru list to temporarily store the preallocated
+	 * pages.  The preallocated pages are used and the list is emptied
+	 * before the huge page is put into use.  When the huge page is put
+	 * into use by prep_new_huge_page() the list will be reinitialized.
+	 */
+
+> +	INIT_LIST_HEAD(&page->lru);
+> +
+> +	while (nr--) {
+> +		pte_t *pte_p;
+> +
+> +		pte_p = pte_alloc_one_kernel(&init_mm);
+> +		if (!pte_p)
+> +			goto out;
+> +		list_add(&virt_to_page(pte_p)->lru, &page->lru);
+> +	}
+> +
+> +	return 0;
+> +out:
+> +	vmemmap_pgtable_free(page);
+> +	return -ENOMEM;
+> +}
+
 -- 
-2.17.1
-
+Mike Kravetz
