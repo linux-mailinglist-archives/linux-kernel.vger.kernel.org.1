@@ -2,199 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F922B9ABD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCC42B9AC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728277AbgKSSfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:35:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727292AbgKSSfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:35:31 -0500
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D46E0246CA
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 18:35:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605810930;
-        bh=wlJ1GDVVeXAbBkkmi14KlMvU2urktf8h2JpAHV4i6jo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BaAKpY4B24EfvMT3uqE64Ferx5asNPPVeB0h3F6EBacxs0jOsVpc7iRJihmmQ/wP/
-         ByW6zT0cCrSh8fWOt4udvaftg1fJreYzb3Bj6HEFpGGhCC4bEM+dLkn1GxtMeAEQk7
-         bCXsuPXCMTCMBtNiYGWL+5ciHK9q+XcPGKpWoFfo=
-Received: by mail-oi1-f172.google.com with SMTP id k26so7446562oiw.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:35:29 -0800 (PST)
-X-Gm-Message-State: AOAM5312U6/f70WI0kW42ULeufEdZ1l6k973y2yIxHVwHLIicq3AtYdN
-        LSZfrcgAzCNENsvszBYWBmxu7q7uR7gkyb20wA==
-X-Google-Smtp-Source: ABdhPJzKvl9CsPFgaFOYAfzD0LmkB3MDOIJ60Uiqq/uiyvYNpehQHZjQ+nSnD3RWjz7ENROuocGO/gSfIDABqVHFqhs=
-X-Received: by 2002:aca:fdd4:: with SMTP id b203mr3863325oii.152.1605810928997;
- Thu, 19 Nov 2020 10:35:28 -0800 (PST)
+        id S1729594AbgKSSim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:38:42 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:51623 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728525AbgKSSil (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:38:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1605811120; x=1637347120;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=82Rk73IpbZeskBh4MpmRnlAzQdRj3TbKP1cGbKkpEmg=;
+  b=UgXQk7s5AGwlRZruodHG+ctdFILs4qLDTtPuWU4ts1SAQdlsyOE2XPCq
+   fPdyXzys8XQiG8OtsXR7MYP48hmqXcgs6PQ8cuKdMcA4lH/CEbii6aToV
+   pL0xZT/HmrCkHfGpMK34a3yp1eoC0//wEW8J0lHn+DJHIkXjFJB3YX354
+   U=;
+X-IronPort-AV: E=Sophos;i="5.78,354,1599523200"; 
+   d="scan'208";a="95837366"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 19 Nov 2020 18:37:10 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id CDC9AA1794;
+        Thu, 19 Nov 2020 18:36:59 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 19 Nov 2020 18:36:58 +0000
+Received: from freeip.amazon.com (10.43.161.237) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 19 Nov 2020 18:36:51 +0000
+Subject: Re: [PATCH v2] drivers/virt: vmgenid: add vm generation id driver
+To:     Mike Rapoport <rppt@kernel.org>
+CC:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jann Horn <jannh@google.com>, Willy Tarreau <w@1wt.eu>,
+        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "bonzini@gnu.org" <bonzini@gnu.org>,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>,
+        "oridgar@gmail.com" <oridgar@gmail.com>,
+        "ghammer@redhat.com" <ghammer@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Qemu Developers <qemu-devel@nongnu.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux API <linux-api@vger.kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        "areber@redhat.com" <areber@redhat.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Andrey Vagin <avagin@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        "gil@azul.com" <gil@azul.com>,
+        "asmehra@redhat.com" <asmehra@redhat.com>,
+        "dgunigun@redhat.com" <dgunigun@redhat.com>,
+        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>
+References: <3E05451B-A9CD-4719-99D0-72750A304044@amazon.com>
+ <300d4404-3efe-880e-ef30-692eabbff5f7@de.ibm.com>
+ <da1a1fa7-a1de-d0e6-755b-dd587687765e@amazon.de>
+ <20201119173800.GD8537@kernel.org>
+From:   Alexander Graf <graf@amazon.de>
+Message-ID: <1cdb6fac-0d50-3399-74a6-24c119ebbaa5@amazon.de>
+Date:   Thu, 19 Nov 2020 19:36:49 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0)
+ Gecko/20100101 Thunderbird/84.0
 MIME-Version: 1.0
-References: <20201001140116.651970-1-robh@kernel.org> <20201001140116.651970-3-robh@kernel.org>
- <20201113180633.GE44988@C02TD0UTHF1T.local>
-In-Reply-To: <20201113180633.GE44988@C02TD0UTHF1T.local>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 19 Nov 2020 12:35:17 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKM+91Meg+u07VRsD5=O1srQooe1Dd_M3NA+CZgcN4QcQ@mail.gmail.com>
-Message-ID: <CAL_JsqKM+91Meg+u07VRsD5=O1srQooe1Dd_M3NA+CZgcN4QcQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/9] arm64: perf: Enable pmu counter direct access for
- perf event on armv8
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201119173800.GD8537@kernel.org>
+Content-Language: en-US
+X-Originating-IP: [10.43.161.237]
+X-ClientProxiedBy: EX13D46UWC004.ant.amazon.com (10.43.162.173) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:06 PM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> Hi Rob,
->
-> Thanks for this, and sorry for the long delay since this was last
-> reviewed. Overall this is looking pretty good, but I have a couple of
-> remaining concerns.
->
-> Will, I have a query for you below.
->
-> On Thu, Oct 01, 2020 at 09:01:09AM -0500, Rob Herring wrote:
-> > From: Raphael Gault <raphael.gault@arm.com>
-> >
-> > Keep track of event opened with direct access to the hardware counters
-> > and modify permissions while they are open.
-> >
-> > The strategy used here is the same which x86 uses: everytime an event
-> > is mapped, the permissions are set if required. The atomic field added
-> > in the mm_context helps keep track of the different event opened and
-> > de-activate the permissions when all are unmapped.
-> > We also need to update the permissions in the context switch code so
-> > that tasks keep the right permissions.
-> >
-> > Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> > v2:
-> >  - Move mapped/unmapped into arm64 code. Fixes arm32.
-> >  - Rebase on cap_user_time_short changes
-> >
-> > Changes from Raphael's v4:
-> >   - Drop homogeneous check
-> >   - Disable access for chained counters
-> >   - Set pmc_width in user page
-> > ---
-> >  arch/arm64/include/asm/mmu.h         |  5 ++++
-> >  arch/arm64/include/asm/mmu_context.h |  2 ++
-> >  arch/arm64/include/asm/perf_event.h  | 14 ++++++++++
-> >  arch/arm64/kernel/perf_event.c       | 41 ++++++++++++++++++++++++++++
-> >  4 files changed, 62 insertions(+)
-> >
-> > diff --git a/arch/arm64/include/asm/mmu.h b/arch/arm64/include/asm/mmu.h
-> > index a7a5ecaa2e83..52cfdb676f06 100644
-> > --- a/arch/arm64/include/asm/mmu.h
-> > +++ b/arch/arm64/include/asm/mmu.h
-> > @@ -19,6 +19,11 @@
-> >
-> >  typedef struct {
-> >       atomic64_t      id;
-> > +     /*
-> > +      * non-zero if userspace have access to hardware
-> > +      * counters directly.
-> > +      */
-> > +     atomic_t        pmu_direct_access;
-> >  #ifdef CONFIG_COMPAT
-> >       void            *sigpage;
-> >  #endif
-> > diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-> > index f2d7537d6f83..d24589ecb07a 100644
-> > --- a/arch/arm64/include/asm/mmu_context.h
-> > +++ b/arch/arm64/include/asm/mmu_context.h
-> > @@ -21,6 +21,7 @@
-> >  #include <asm/proc-fns.h>
-> >  #include <asm-generic/mm_hooks.h>
-> >  #include <asm/cputype.h>
-> > +#include <asm/perf_event.h>
-> >  #include <asm/sysreg.h>
-> >  #include <asm/tlbflush.h>
-> >
-> > @@ -224,6 +225,7 @@ static inline void __switch_mm(struct mm_struct *next)
-> >       }
-> >
-> >       check_and_switch_context(next);
-> > +     perf_switch_user_access(next);
-> >  }
-> >
-> >  static inline void
-> > diff --git a/arch/arm64/include/asm/perf_event.h b/arch/arm64/include/asm/perf_event.h
-> > index 2c2d7dbe8a02..a025d9595d51 100644
-> > --- a/arch/arm64/include/asm/perf_event.h
-> > +++ b/arch/arm64/include/asm/perf_event.h
-> > @@ -8,6 +8,7 @@
-> >
-> >  #include <asm/stack_pointer.h>
-> >  #include <asm/ptrace.h>
-> > +#include <linux/mm_types.h>
-> >
-> >  #define      ARMV8_PMU_MAX_COUNTERS  32
-> >  #define      ARMV8_PMU_COUNTER_MASK  (ARMV8_PMU_MAX_COUNTERS - 1)
-> > @@ -251,4 +252,17 @@ extern unsigned long perf_misc_flags(struct pt_regs *regs);
-> >       (regs)->pstate = PSR_MODE_EL1h; \
-> >  }
-> >
-> > +static inline void perf_switch_user_access(struct mm_struct *mm)
-> > +{
-> > +     if (!IS_ENABLED(CONFIG_PERF_EVENTS))
-> > +             return;
-> > +
-> > +     if (atomic_read(&mm->context.pmu_direct_access)) {
-> > +             write_sysreg(ARMV8_PMU_USERENR_ER|ARMV8_PMU_USERENR_CR,
-> > +                          pmuserenr_el0);
-> > +     } else {
-> > +             write_sysreg(0, pmuserenr_el0);
-> > +     }
-> > +}
->
-> PMUSERENR.ER gives RW access to PMSELR_EL0. While we no longer use
-> PMSELR_EL0 in the kernel, we can preempt and migrate userspace tasks
-> between homogeneous CPUs, and presumably need to context-switch this
-> with the task (like we do for TPIDR_EL0 and friends), or clear the
-> register on context-switch to prevent it becoming an unintended covert
-> channel.
+CgpPbiAxOS4xMS4yMCAxODozOCwgTWlrZSBSYXBvcG9ydCB3cm90ZToKPiAKPiBPbiBUaHUsIE5v
+diAxOSwgMjAyMCBhdCAwMTo1MToxOFBNICswMTAwLCBBbGV4YW5kZXIgR3JhZiB3cm90ZToKPj4K
+Pj4KPj4gT24gMTkuMTEuMjAgMTM6MDIsIENocmlzdGlhbiBCb3JudHJhZWdlciB3cm90ZToKPj4+
+Cj4+PiBPbiAxNi4xMS4yMCAxNjozNCwgQ2F0YW5naXUsIEFkcmlhbiBDb3N0aW4gd3JvdGU6Cj4+
+Pj4gLSBCYWNrZ3JvdW5kCj4+Pj4KPj4+PiBUaGUgVk0gR2VuZXJhdGlvbiBJRCBpcyBhIGZlYXR1
+cmUgZGVmaW5lZCBieSBNaWNyb3NvZnQgKHBhcGVyOgo+Pj4+IGh0dHA6Ly9nby5taWNyb3NvZnQu
+Y29tL2Z3bGluay8/TGlua0lkPTI2MDcwOSkgYW5kIHN1cHBvcnRlZCBieQo+Pj4+IG11bHRpcGxl
+IGh5cGVydmlzb3IgdmVuZG9ycy4KPj4+Pgo+Pj4+IFRoZSBmZWF0dXJlIGlzIHJlcXVpcmVkIGlu
+IHZpcnR1YWxpemVkIGVudmlyb25tZW50cyBieSBhcHBzIHRoYXQgd29yawo+Pj4+IHdpdGggbG9j
+YWwgY29waWVzL2NhY2hlcyBvZiB3b3JsZC11bmlxdWUgZGF0YSBzdWNoIGFzIHJhbmRvbSB2YWx1
+ZXMsCj4+Pj4gdXVpZHMsIG1vbm90b25pY2FsbHkgaW5jcmVhc2luZyBjb3VudGVycywgZXRjLgo+
+Pj4+IFN1Y2ggYXBwcyBjYW4gYmUgbmVnYXRpdmVseSBhZmZlY3RlZCBieSBWTSBzbmFwc2hvdHRp
+bmcgd2hlbiB0aGUgVk0KPj4+PiBpcyBlaXRoZXIgY2xvbmVkIG9yIHJldHVybmVkIHRvIGFuIGVh
+cmxpZXIgcG9pbnQgaW4gdGltZS4KPj4+Pgo+Pj4+IFRoZSBWTSBHZW5lcmF0aW9uIElEIGlzIGEg
+c2ltcGxlIGNvbmNlcHQgbWVhbnQgdG8gYWxsZXZpYXRlIHRoZSBpc3N1ZQo+Pj4+IGJ5IHByb3Zp
+ZGluZyBhIHVuaXF1ZSBJRCB0aGF0IGNoYW5nZXMgZWFjaCB0aW1lIHRoZSBWTSBpcyByZXN0b3Jl
+ZAo+Pj4+IGZyb20gYSBzbmFwc2hvdC4gVGhlIGh3IHByb3ZpZGVkIFVVSUQgdmFsdWUgY2FuIGJl
+IHVzZWQgdG8KPj4+PiBkaWZmZXJlbnRpYXRlIGJldHdlZW4gVk1zIG9yIGRpZmZlcmVudCBnZW5l
+cmF0aW9ucyBvZiB0aGUgc2FtZSBWTS4KPj4+Pgo+Pj4+IC0gUHJvYmxlbQo+Pj4+Cj4+Pj4gVGhl
+IFZNIEdlbmVyYXRpb24gSUQgaXMgZXhwb3NlZCB0aHJvdWdoIGFuIEFDUEkgZGV2aWNlIGJ5IG11
+bHRpcGxlCj4+Pj4gaHlwZXJ2aXNvciB2ZW5kb3JzIGJ1dCBuZWl0aGVyIHRoZSB2ZW5kb3JzIG9y
+IHVwc3RyZWFtIExpbnV4IGhhdmUgbm8KPj4+PiBkZWZhdWx0IGRyaXZlciBmb3IgaXQgbGVhdmlu
+ZyB1c2VycyB0byBmZW5kIGZvciB0aGVtc2VsdmVzLgo+Pj4KPj4+IEkgc2VlIHRoYXQgdGhlIHFl
+bXUgaW1wbGVtZW50YXRpb24gaXMgc3RpbGwgdW5kZXIgZGlzY3Vzc2lvbi4gV2hhdCBpcwo+Pgo+
+PiBVaCwgdGhlIEFDUEkgVm1nZW5pZCBkZXZpY2UgZW11bGF0aW9uIGlzIGluIFFFTVUgc2luY2Ug
+Mi45LjAgOikuCj4+Cj4+PiB0aGUgc3RhdHVzIG9mIHRoZSBvdGhlciBleGlzdGluZyBpbXBsZW1l
+bnRhdGlvbnMuIERvIHRoZXkgYWxyZWFkeSBleGlzdD8KPj4+IEluIG90aGVyIHdvcmRzIGlzIEFD
+UEkgYSBnaXZlbj8KPj4+IEkgdGhpbmsgdGhlIG1ham9yaXR5IG9mIHRoaXMgZHJpdmVyIGNvdWxk
+IGJlIHVzZWQgd2l0aCBqdXN0IGEgZGlmZmVyZW50Cj4+PiBiYWNrZW5kIGZvciBwbGF0Zm9ybXMg
+d2l0aG91dCBBQ1BJIHNvIGluIGFueSBjYXNlIHdlIGNvdWxkIGZhY3RvciBvdXQKPj4+IHRoZSBi
+YWNrZW5kIChhY3BpLCB2aXJ0aW8sIHdoYXRldmVyKSBidXQgaWYgd2UgYXJlIG9wZW4gd2UgY291
+bGQgbWF5YmUKPj4+IHN0YXJ0IHdpdGggc29tZXRoaW5nIGVsc2UuCj4+Cj4+IEkgYWdyZWUgMTAw
+JS4gSSBkb24ndCB0aGluayB3ZSByZWFsbHkgbmVlZCBhIG5ldyBmcmFtZXdvcmsgaW4gdGhlIGtl
+cm5lbCBmb3IKPj4gdGhhdC4gV2UgY2FuIGp1c3QgaGF2ZSBmb3IgZXhhbXBsZSBhbiBzMzkweCBz
+cGVjaWZpYyBkcml2ZXIgdGhhdCBhbHNvCj4+IHByb3ZpZGVzIHRoZSBzYW1lIG5vdGlmaWNhdGlv
+biBtZWNoYW5pc20gdGhyb3VnaCBhIGRldmljZSBub2RlIHRoYXQgaXMgYWxzbwo+PiBuYW1lZCAi
+L2Rldi92bWdlbmlkIiwgbm8/Cj4+Cj4+IE9yIGFsdGVybmF0aXZlbHkgd2UgY2FuIHNwbGl0IHRo
+ZSBnZW5lcmljIHBhcnQgb2YgdGhpcyBkcml2ZXIgYXMgc29vbiBhcyBhCj4+IHNlY29uZCBvbmUg
+Y29tZXMgYWxvbmcgYW5kIHRoZW4gaGF2ZSBib3RoIGRyaXZlciBpbmNsdWRlIHRoYXQgZ2VuZXJp
+YyBsb2dpYy4KPj4KPj4gVGhlIG9ubHkgcGllY2Ugd2hlcmUgSSdtIHVuc3VyZSBpcyBob3cgdGhp
+cyB3aWxsIGludGVyYWN0IHdpdGggQ1JJVS4KPiAKPiBUbyBDL1IgYXBwbGljYXRpb25zIHRoYXQg
+dXNlIC9kZXYvdm1nZW5pZCBDUklVIG5lZWQgdG8gYmUgYXdhcmUgb2YgaXQuCj4gQ2hlY2twb2lu
+dGluZyBhbmQgcmVzdG9yaW5nIHdpdGhpbmcgdGhlIHNhbWUgIlZNIGdlbmVyYXRpb24iIHNob3Vs
+ZG4ndCBiZQo+IGEgcHJvYmxlbSwgYnV0IElNSE8sIG1ha2luZyByZXN0b3JlIHdvcmsgYWZ0ZXIg
+Z2VuaWQgYnVtcCBjb3VsZCBiZQo+IGNoYWxsZW5naW5nLgo+IAo+IEFsZXgsIHdoYXQgc2NlbmFy
+aW8gaW52b2x2aW5nIENSSVUgZGlkIHlvdSBoYXZlIGluIG1pbmQ/CgpZb3UgY2FuIGluIHRoZW9y
+eSBydW4gaW50byB0aGUgc2FtZSBzaXR1YXRpb24gd2l0aCBjb250YWluZXJzIHRoYXQgdGhpcyAK
+cGF0Y2ggaXMgc29sdmluZyBmb3IgdmlydHVhbCBtYWNoaW5lcy4gWW91IGNvdWxkIGZvciBleGFt
+cGxlIGRvIGEgCnNuYXBzaG90IG9mIGEgcHJld2FybWVkIEphdmEgcnVudGltZSB3aXRoIENSSVUg
+dG8gZ2V0IGZ1bGwgSklUIHNwZWVkcyAKc3RhcnRpbmcgZnJvbSB0aGUgZmlyc3QgcmVxdWVzdC4K
+ClRoYXQgaG93ZXZlciBtZWFucyB5b3UgcnVuIGludG8gdGhlIHByb2JsZW0gb2YgcHJlZGljdGFi
+bGUgcmFuZG9tbmVzcyBhZ2Fpbi4KCj4gCj4+IENhbiBjb250YWluZXJzIGVtdWxhdGUgaW9jdGxz
+IGFuZCBkZXZpY2Ugbm9kZXM/Cj4gCj4gQ29udGFpbmVycyBkbyBub3QgZW11bGF0ZSBpb2N0bHMg
+YnV0IHRoZXkgY2FuIGhhdmUgL2Rldi92bWdlbmlkIGluc2lkZQo+IHRoZSBjb250YWluZXIsIHNv
+IGFwcGxpY2F0aW9ucyBjYW4gdXNlIGl0IHRoZSBzYW1lIHdheSBhcyBvdXRzaWRlIHRoZQo+IGNv
+bnRhaW5lci4KCkhtLiBJIHN1cHBvc2Ugd2UgY291bGQgYWRkIGEgQ0FQX0FETUlOIGlvY3RsIGlu
+dGVyZmFjZSB0byAvZGV2L3ZtZ2VuaWQgCih3aGVuIGNvbnRhaW5lciBwZW9wbGUgZ2V0IHRvIHRo
+ZSBwb2ludCBvZiBuZWVkaW5nIGl0KSB0aGF0IHNldHMgdGhlIApnZW5lcmF0aW9uIHRvICJhdCBs
+ZWFzdCBYIi4gVGhhdCB3YXkgb24gcmVzdG9yZSwgeW91IGNvdWxkIGp1c3QgY2FsbCAKdGhhdCB3
+aXRoICJnZW5lcmF0aW9uIGF0IHNuYXBzaG90IisxLgoKVGhhdCBhbHNvIG1lYW5zIHdlIG5lZWQg
+dG8gaGF2ZSB0aGlzIGludGVyZmFjZSBhdmFpbGFibGUgd2l0aG91dCB2aXJ0dWFsIAptYWNoaW5l
+cyB0aGVuIHRob3VnaCwgcmlnaHQ/CgoKQWxleAoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVy
+IEdlcm1hbnkgR21iSApLcmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhy
+dW5nOiBDaHJpc3RpYW4gU2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBB
+bXRzZ2VyaWNodCBDaGFybG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGlu
+ClVzdC1JRDogREUgMjg5IDIzNyA4NzkKCgo=
 
-Humm, now that I've read up on PMSELR_EL0 I'm now wondering if I
-should be using PMSELR_EL0 in libperf. If you look at patch 7, the
-counter read is pretty ugly because there's 32 possible mrs
-instructions. If PMSELR_EL0 is used, we can have a single read path.
-It's a msr and mrs vs. a function ptr load, branch/ret, and mrs. I'd
-guess there's no guarantees on system reg access times, but I'd guess
-typically the former is more optimal? It certainly simplifies the code
-which I'd rather have given the limited users.
-
-If I go that route and we don't context switch PMSELR_EL0, reads of
-PMXEVCNTR_EL0 could be stale. But does that matter? No, because
-reading PMEVCNTR<n>_EL0 can already be stale and the seq counter will
-catch that.
-
-> These bits also enable AArch32 access. Is there any way an AArch32 task
-> can enable this? If so we should probably block that given we do not
-> support this interface on 32-bit arm.
-
-I'd assume this works for AArch32 given we don't do anything here to
-prevent it. I suppose we could look at MMCF_AARCH32 flag in
-mm_context_t? But is not implemented for arch/arm/ really a reason to
-disable?
-
-Rob
