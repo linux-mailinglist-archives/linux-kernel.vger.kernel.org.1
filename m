@@ -2,154 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AED2B92F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9AF2B92F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 14:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgKSM4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:56:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726580AbgKSM4L (ORCPT
+        id S1727269AbgKSM5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:57:22 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39736 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726790AbgKSM5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:56:11 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889B0C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 04:56:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sWbrc4VvF/o948WHuvCmfd0y3g9QMiU9AieEM9zFY14=; b=Tn6FvpBrFUTga/6Eh9JSuaROM5
-        z4rbME/IGJZPoxtm5TQ4bhIx518j2Pnbjp4UI0yFU3py6SOI7/qFtqv/hR97icQqDcyNR0Nd1dw3A
-        c9ElpP4PJPYTnwMKhheneq3tlpjO+kqkq2RFsmFM/wLXKEoeXKHIFBTYbOUZWvI7m6loy+2R2+oDd
-        3+CS3gjoqyuvyHhvBvi37wBV41Bd367YHnTXys/XMoh2z6/zyBLAKwe9nkmf4ouEMnD5HQsglssy0
-        HucI9NXU8dQcA3AROQRBDmSPTmi4W8gosQGSDOy8l9RsV359Fu1us6WmeXPKFNlx0bokqeKl5oiTK
-        lbLC40wA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfjTl-00029L-GU; Thu, 19 Nov 2020 12:56:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5E51E3060AE;
-        Thu, 19 Nov 2020 13:55:57 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2B2FB2009C627; Thu, 19 Nov 2020 13:55:57 +0100 (CET)
-Date:   Thu, 19 Nov 2020 13:55:57 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, hannes@cmpxchg.org
-Subject: Re: [RFC PATCH] mm: bail out from psi memstall when cond_resched
-Message-ID: <20201119125557.GM3121392@hirez.programming.kicks-ass.net>
-References: <1605669776-24242-1-git-send-email-zhaoyang.huang@unisoc.com>
+        Thu, 19 Nov 2020 07:57:19 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AJCvD9f062375;
+        Thu, 19 Nov 2020 06:57:13 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605790633;
+        bh=xiRtA5FYZ6iAiUYGUphkNw2hMyqBTr+KLMd36v13y7Y=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=MQ7px4nOSErv2I9cBLM6Ga1RHWEY3S2VPhjwv43HkmF5GGYVH1OUfWzhCHoCImxE1
+         cdmxDSgY3bMH7uiOrIup5BZ4M/u8/udRZ10oZwtD/0JxHLNMWBMGuAjNzCs9p4kHuL
+         9JZ2wSFbRkIqgE7xd/vtmUuTuVxWRkeEOsTQCfWE=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AJCvDjE054676
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Nov 2020 06:57:13 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 19
+ Nov 2020 06:57:12 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 19 Nov 2020 06:57:12 -0600
+Received: from [10.250.233.179] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AJCv9G6120288;
+        Thu, 19 Nov 2020 06:57:10 -0600
+Subject: Re: [PATCH v8 3/6] spi: cadence-quadspi: Add multi-chipselect support
+ for Intel LGM SoC
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>
+CC:     <linux-mtd@lists.infradead.org>, <p.yadav@ti.com>,
+        <cheol.yong.kim@intel.com>, <qi-ming.wu@intel.com>
+References: <20201119055551.26493-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201119055551.26493-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <9fc328cc-1f4d-1896-6dde-a107d76e14cb@ti.com>
+Date:   Thu, 19 Nov 2020 18:27:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605669776-24242-1-git-send-email-zhaoyang.huang@unisoc.com>
+In-Reply-To: <20201119055551.26493-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 11:22:56AM +0800, Zhaoyang Huang wrote:
-> Memory reclaiming will run as several seconds in memory constraint system, which
-> will be deemed as heavy memstall. Have the memory reclaim be more presiced by
-> bailing out when cond_resched
 
-How is this supposed to work on PREEMPT=y where cond_resched() is a NOP
-and you can get preempted at any random point?
 
-(leaving the rest for Johannes)
- 
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> ---
->  mm/vmscan.c | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
+On 11/19/20 11:25 AM, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 > 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index a815f73..a083c85 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -316,6 +316,15 @@ static inline bool memcg_congested(struct pglist_data *pgdat,
->  }
->  #endif
+> Add multiple chipselect support for Intel LGM SoCs,
+> currently QSPI-NOR and QSPI-NAND supported.
+> 
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
+>  drivers/spi/spi-cadence-quadspi.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+> index d12b765e87be..337778f75d5d 100644
+> --- a/drivers/spi/spi-cadence-quadspi.c
+> +++ b/drivers/spi/spi-cadence-quadspi.c
+> @@ -38,6 +38,7 @@
 >  
-> +static inline void psi_cond_resched(void)
-> +{
-> +	unsigned long *flags;
-> +
-> +	if (current->flags & PF_MEMSTALL)
-> +		psi_memstall_leave(&flags);
-> +	cond_resched();
-> +	psi_memstall_enter(&flags);
-> +}
->  /*
->   * This misses isolated pages which are not accounted for to save counters.
->   * As the data only determines if reclaim or compaction continues, it is
-> @@ -557,7 +566,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
->  		total_scan -= shrinkctl->nr_scanned;
->  		scanned += shrinkctl->nr_scanned;
+>  /* Capabilities */
+>  #define CQSPI_SUPPORTS_OCTAL		BIT(0)
+> +#define CQSPI_SUPPORTS_MULTI_CHIPSELECT BIT(1)
 >  
-> -		cond_resched();
-> +		psi_cond_resched();
+>  struct cqspi_st;
+>  
+> @@ -75,6 +76,7 @@ struct cqspi_st {
+>  	bool			is_decoded_cs;
+>  	u32			fifo_depth;
+>  	u32			fifo_width;
+> +	u32			num_chipselect;
+>  	bool			rclk_en;
+>  	u32			trigger_address;
+>  	u32			wr_delay;
+> @@ -1049,6 +1051,7 @@ static int cqspi_of_get_flash_pdata(struct platform_device *pdev,
+>  
+>  static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
+>  {
+> +	const struct cqspi_driver_platdata *ddata;
+
+Unused variable?
+
+>  	struct device *dev = &cqspi->pdev->dev;
+>  	struct device_node *np = dev->of_node;
+>  
+> @@ -1070,6 +1073,14 @@ static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
+>  		return -ENXIO;
 >  	}
 >  
->  	if (next_deferred >= scanned)
-> @@ -714,7 +723,7 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
+> +	ddata  = of_device_get_match_data(dev);
+> +	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT) {
+
+I don't see a need for this flag... Controller by default supports
+multiple CS.
+
+> +		if (of_property_read_u32(np, "num-cs", &cqspi->num_chipselect)) {
+> +			dev_err(dev, "couldn't determine number of cs\n");
+> +			return -ENXIO;
+> +		}
+> +	}
+> +
+
+
+Entire hunk can be replaced with:
+
+        if (of_property_read_u32(np, "num-cs", &cqspi->num_chipselect))
+		cqspi->num_chipselect = CQSPI_MAX_CHIPSELECT;
+
+
+>  	cqspi->rclk_en = of_property_read_bool(np, "cdns,rclk-en");
 >  
->  	up_read(&shrinker_rwsem);
->  out:
-> -	cond_resched();
-> +	psi_cond_resched();
->  	return freed;
->  }
+>  	return 0;
+> @@ -1302,6 +1313,9 @@ static int cqspi_probe(struct platform_device *pdev)
+>  	cqspi->current_cs = -1;
+>  	cqspi->sclk = 0;
 >  
-> @@ -1109,7 +1118,7 @@ static unsigned long shrink_page_list(struct list_head *page_list,
->  	unsigned nr_reclaimed = 0;
+> +	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT)
+> +		master->num_chipselect = cqspi->num_chipselect;
+> +
+
+And then this becomes:
+	master->num_chipselect = cqspi->num_chipselect;
+
+>  	ret = cqspi_setup_flash(cqspi);
+>  	if (ret) {
+>  		dev_err(dev, "failed to setup flash parameters %d\n", ret);
+> @@ -1391,6 +1405,7 @@ static const struct cqspi_driver_platdata am654_ospi = {
+>  };
 >  
->  	memset(stat, 0, sizeof(*stat));
-> -	cond_resched();
-> +	psi_cond_resched();
+>  static const struct cqspi_driver_platdata intel_lgm_qspi = {
+> +	.hwcaps_mask = CQSPI_SUPPORTS_MULTI_CHIPSELECT,
+>  	.quirks = CQSPI_DISABLE_DAC_MODE,
+>  };
 >  
->  	while (!list_empty(page_list)) {
->  		struct address_space *mapping;
-> @@ -1118,7 +1127,7 @@ static unsigned long shrink_page_list(struct list_head *page_list,
->  		enum page_references references = PAGEREF_RECLAIM_CLEAN;
->  		bool dirty, writeback;
->  
-> -		cond_resched();
-> +		psi_cond_resched();
->  
->  		page = lru_to_page(page_list);
->  		list_del(&page->lru);
-> @@ -2084,7 +2093,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
->  	spin_unlock_irq(&pgdat->lru_lock);
->  
->  	while (!list_empty(&l_hold)) {
-> -		cond_resched();
-> +		psi_cond_resched();
->  		page = lru_to_page(&l_hold);
->  		list_del(&page->lru);
->  
-> @@ -2500,7 +2509,7 @@ static void shrink_node_memcg(struct pglist_data *pgdat, struct mem_cgroup *memc
->  			}
->  		}
->  
-> -		cond_resched();
-> +		psi_cond_resched();
->  
->  		if (nr_reclaimed < nr_to_reclaim || scan_adjusted)
->  			continue;
-> @@ -4149,7 +4158,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
->  		.reclaim_idx = gfp_zone(gfp_mask),
->  	};
->  
-> -	cond_resched();
-> +	psi_cond_resched();
->  	fs_reclaim_acquire(sc.gfp_mask);
->  	/*
->  	 * We need to be able to allocate from the reserves for RECLAIM_UNMAP
-> -- 
-> 1.9.1
 > 
