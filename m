@@ -2,196 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53E92B9A6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A48102B9A6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728605AbgKSSNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727117AbgKSSNQ (ORCPT
+        id S1729180AbgKSSNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:13:34 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:46791 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727117AbgKSSNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:13:16 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9293FC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:13:14 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 23so7424973wrc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 10:13:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=i+JS9nIAw+GECBNSoIwtkPpHIDmmFYQRGIixkpNJ1pw=;
-        b=zg6rI6FjWtx5yXqCC3eLHjTWvBWBjg1h2q5QYfvH2FmSPWi64lw4J4yqCKxsAOikhQ
-         tzatBgAynf2r72trUribQ+sF17eI4FYvcxa6wH6GTY+rt81q/N2RItEeLEuAENcle01k
-         CHhlKNpdsW5aUypWfT1vJf47i2TaWTh0MkkO0lkx/nIaS4Zdi1r9aytKDGORWIyWXO3a
-         CBGnycWSk3Md5BGDVTtO+X/7KV3EoZbKHyPjnGiAVFWa+H4eZfZmWs1IRG8f7gq+LCO5
-         5M1rbmYd8wXa76/+VCuj1+MRTu+6hoHfG/+LhHOvw+FqGKBPFelQ+JjKXQUJR++G70Zc
-         uwZw==
+        Thu, 19 Nov 2020 13:13:33 -0500
+Received: by mail-ot1-f67.google.com with SMTP id g19so6160281otp.13;
+        Thu, 19 Nov 2020 10:13:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=i+JS9nIAw+GECBNSoIwtkPpHIDmmFYQRGIixkpNJ1pw=;
-        b=T41CflAfOVuW+FgIx+nE5wt0/hl1laZgO6F1eItRt9P26So6qh2q1cBZgpmD0nTplA
-         ai8vgVpNdcvQDLWsRAfF/GaCmXzbwNGMZ8ymtQZ2qDn88g5AyZx0qlL+l6xhhqLCIjJ8
-         oEglyE3+VUPRjaO5vdT8dof/re/3uNUJUQ1AxL6SvI9WS0k2myPu+K1Vw/BJkFbKdADJ
-         R3qo/s19BiCgQcgkwQq7CFg0WPd0O8AYClGLaw+o9wi0c6eIbv8zZ0Cnwp+RkYBknu8V
-         NYJfFiBJFl4p9k70/MQ5q8acaFL57bB3wGLybYiLIlBI7UyXW791SBi6YHmm5q/73/hI
-         iWzA==
-X-Gm-Message-State: AOAM532VSxra2bsoflw4QLCchnpIoW9+2qULzu3/wyv/yARija8XxhLJ
-        ihiET2QX0rSE+UBoZ3BV+cVGKA==
-X-Google-Smtp-Source: ABdhPJzsKDmON4o/OFAQF109oAW2KjCYCtZryKNUSxju9G/qMlZIa1InhW5YzsVRVjcRJsvkGCD7uQ==
-X-Received: by 2002:a5d:4bc7:: with SMTP id l7mr12495950wrt.105.1605809593341;
-        Thu, 19 Nov 2020 10:13:13 -0800 (PST)
-Received: from localhost (253.35.17.109.rev.sfr.net. [109.17.35.253])
-        by smtp.gmail.com with ESMTPSA id 90sm1029734wrl.60.2020.11.19.10.13.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 10:13:12 -0800 (PST)
-References: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
- <a0bec7c4-9bec-8858-4879-52f4688d9992@collabora.com>
- <630e00e83cdd07ee5a0eaba9d3479554@kernel.org>
- <3f54de27-0fef-c5a1-8991-0a0614c90667@baylibre.com>
- <c76273f5fe483766e6a7f509f82d928a@kernel.org>
- <f59922c6-69f5-c70e-b424-0659bf91a4fd@collabora.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Cc:     kernelci-results@groups.io, Kevin Hilman <khilman@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
-In-reply-to: <f59922c6-69f5-c70e-b424-0659bf91a4fd@collabora.com>
-Message-ID: <1jr1op8bbc.fsf@starbuckisacylon.baylibre.com>
-Date:   Thu, 19 Nov 2020 19:13:11 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wRCdNCjOfunXbAIS7K4tkE2IMIlCbdlGRdRWxA2SgIU=;
+        b=Xdugvpfoqt0PLHESs/y2YlIeC5xc9WTVX8Ix87eHFkX5flqTS3glWxTVAxwYkrKyCM
+         0lu59pBq+qMCNib71wpJJX53ugMleqFVIgjvK3CRMubJaftm70eObqMqrZH8ohm+cL9v
+         3TRq7PEP/DTKBd8PBSD6PxLCBKsofGm+yiZkkcXfztRF/9X7ddcbgHnjUMy8gLKSrmvX
+         nHD8DIH+xbSjA3L6hT6/eQbDguyZVjclVF9J+UidFHzEO7stDlaLd6xtQifaqG+IRnyM
+         YFTC0ex1bFq0KzVwUcE0SWEyrrKVqPfMoff2CCYUgSP48FOIfcuHUlLoDvJmh2tYVlUy
+         ldlg==
+X-Gm-Message-State: AOAM530VkLevXwHWbLg4P+MYLhyi+duIP44bzAMalS1tXJj79NQ5Tall
+        2TPtMsY2we90W+wppoLcEP0FKeJPOZx4oT3iLi4=
+X-Google-Smtp-Source: ABdhPJwiRPjiimByPjBBGnZzxNa++f2UPo5zI1YYZtL4mFWCeBNcbtF/rVxR4NFxBHTRzuryPJSmoe/F8WTtRw16Ep4=
+X-Received: by 2002:a9d:171a:: with SMTP id i26mr11558331ota.260.1605809612651;
+ Thu, 19 Nov 2020 10:13:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201119001822.31617-1-david.e.box@linux.intel.com>
+ <20201119001822.31617-2-david.e.box@linux.intel.com> <CAJZ5v0hGhyPySUdabwW5_LhyAKC3A4zdgj7H=55R=Xk3jvt3Yw@mail.gmail.com>
+ <cdb520abba97ccf083788ed8ccb44fc042939468.camel@linux.intel.com>
+In-Reply-To: <cdb520abba97ccf083788ed8ccb44fc042939468.camel@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 19 Nov 2020 19:13:21 +0100
+Message-ID: <CAJZ5v0gyzYEiFWC4qvQZNDUC4wwcXK60mR=zJ9=Bwb27K1F=Ng@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PCI: Disable Precision Time Measurement during suspend
+To:     David Box <david.e.box@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Len Brown <len.brown@intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 19, 2020 at 6:45 PM David E. Box
+<david.e.box@linux.intel.com> wrote:
+>
+> On Thu, 2020-11-19 at 13:01 +0100, Rafael J. Wysocki wrote:
+> > On Thu, Nov 19, 2020 at 1:17 AM David E. Box
+> > <david.e.box@linux.intel.com> wrote:
+> > > On Intel client platforms that support suspend-to-idle, like Ice
+> > > Lake,
+> > > root ports that have Precision Time Management (PTM) enabled can
+> > > prevent
+> > > the port from being fully power gated, causing higher power
+> > > consumption
+> > > while suspended.  To prevent this, after saving the PTM control
+> > > register,
+> > > disable the feature.  The feature will be returned to its previous
+> > > state
+> > > during restore.
+> > >
+> > > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=209361
+> > > Reported-by: Len Brown <len.brown@intel.com>
+> > > Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > > ---
+> > >  drivers/pci/pci.c | 14 +++++++++++++-
+> > >  1 file changed, 13 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > index 6fd4ae910a88..a2b40497d443 100644
+> > > --- a/drivers/pci/pci.c
+> > > +++ b/drivers/pci/pci.c
+> > > @@ -21,6 +21,7 @@
+> > >  #include <linux/module.h>
+> > >  #include <linux/spinlock.h>
+> > >  #include <linux/string.h>
+> > > +#include <linux/suspend.h>
+> > >  #include <linux/log2.h>
+> > >  #include <linux/logic_pio.h>
+> > >  #include <linux/pm_wakeup.h>
+> > > @@ -1543,7 +1544,7 @@ static void pci_save_ptm_state(struct pci_dev
+> > > *dev)
+> > >  {
+> > >         int ptm;
+> > >         struct pci_cap_saved_state *save_state;
+> > > -       u16 *cap;
+> > > +       u16 *cap, ctrl;
+> > >
+> > >         if (!pci_is_pcie(dev))
+> > >                 return;
+> > > @@ -1560,6 +1561,17 @@ static void pci_save_ptm_state(struct
+> > > pci_dev *dev)
+> > >
+> > >         cap = (u16 *)&save_state->cap.data[0];
+> > >         pci_read_config_word(dev, ptm + PCI_PTM_CTRL, cap);
+> > > +
+> > > +       /*
+> > > +        * On Intel systems that support suspend-to-idle,
+> > > additional
+> > > +        * power savings can be gained by disabling PTM on root
+> > > ports,
+> > > +        * as this allows the port to enter a deeper pm state.
+> >
+> > I would say "There are systems (for example, ...) where the power
+> > drawn while suspended can be significantly reduced by disabling PTM
+> > on
+> > PCIe root ports, as this allows the port to enter a lower-power PM
+> > state and the SoC to reach a lower-power idle state as a whole".
+>
+> Okay.
+>
+> >
+> > > +        */
+> > > +       if (pm_suspend_target_state == PM_SUSPEND_TO_IDLE &&
+> >
+> > AFAICS the target sleep state doesn't matter here, so I'd skip the
+> > check above, but otherwise it LGTM.
+>
+> The target sleep state doesn't matter so much but that it's suspending
+> does. pci_save_state() is called during probe for the root ports (and
+> many other pci devices - I'm curious as to why).
 
-On Thu 19 Nov 2020 at 19:04, Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
+I tend to forget about this, sorry.
 
-> Hi Marc,
+> So without this check the capability gets disabled on boot.
 >
-> On 19/11/2020 11:58, Marc Zyngier wrote:
->> On 2020-11-19 10:26, Neil Armstrong wrote:
->>> On 19/11/2020 11:20, Marc Zyngier wrote:
->>>> On 2020-11-19 08:50, Guillaume Tucker wrote:
->>>>> Please see the automated bisection report below about some kernel
->>>>> errors on meson-gxbb-p200.
->>>>>
->>>>> Reports aren't automatically sent to the public while we're
->>>>> trialing new bisection features on kernelci.org, however this one
->>>>> looks valid.
->>>>>
->>>>> The bisection started with next-20201118 but the errors are still
->>>>> present in next-20201119.  Details for this regression:
->>>>>
->>>>>   https://kernelci.org/test/case/id/5fb6196bfd0127fd68d8d902/
->>>>>
->>>>> The first error is:
->>>>>
->>>>>   [   14.757489] Internal error: synchronous external abort: 96000210
->>>>> [#1] PREEMPT SMP
->>>>
->>>> Looks like yet another clock ordering setup. I guess different Amlogic
->>>> platforms have slightly different ordering requirements.
->>>>
->>>> Neil, do you have any idea of which platform requires which ordering?
->>>> The variability in DT and platforms is pretty difficult to follow (and
->>>> I don't think I have such board around).
->>>
->>> The requirements should be the same, here the init was done before calling
->>> dw_hdmi_probe to be sure the clocks and internals resets were deasserted.
->>> But since you boot from u-boot already enabling these, it's already active.
->>>
->>> The solution would be to revert and do some check in meson_dw_hdmi_init() to
->>> check if already enabled and do nothing.
->> 
->> A better fix seems to be this, which makes it explicit that there is
->> a dependency between some of the registers accessed from meson_dw_hdmi_init()
->> and the iahb clock.
->> 
->> Guillaume, can you give this a go on your failing box?
->
-> I confirm it solves the problem.  Please add this to your fix
-> patch if it's OK with you:
->
->   Reported-by: "kernelci.org bot" <bot@kernelci.org>
->   Tested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
->
->
-> For the record, it passed all the tests when applied on top of
-> the "bad" revision found by the bisection:
->
->   http://lava.baylibre.com:10080/scheduler/alljobs?search=v5.10-rc3-1021-gb8668a2e5ea1
->
-> and the exact same test on the "bad" revision without the fix
-> consistently showed the error:
->
->   http://lava.baylibre.com:10080/scheduler/job/374176
->
->
-> Thanks,
-> Guillaume
->
->
->> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
->> index 7f8eea494147..52af8ba94311 100644
->> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
->> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
->> @@ -146,6 +146,7 @@ struct meson_dw_hdmi {
->>      struct reset_control *hdmitx_ctrl;
->>      struct reset_control *hdmitx_phy;
->>      struct clk *hdmi_pclk;
->> +    struct clk *iahb_clk;
->>      struct clk *venci_clk;
->>      struct regulator *hdmi_supply;
->>      u32 irq_stat;
->> @@ -1033,6 +1034,13 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
->>      }
->>      clk_prepare_enable(meson_dw_hdmi->hdmi_pclk);
->> 
->> +    meson_dw_hdmi->iahb_clk = devm_clk_get(dev, "iahb");
->> +    if (IS_ERR(meson_dw_hdmi->iahb_clk)) {
->> +        dev_err(dev, "Unable to get iahb clk\n");
->> +        return PTR_ERR(meson_dw_hdmi->iahb_clk);
->> +    }
->> +    clk_prepare_enable(meson_dw_hdmi->iahb_clk);
 
-If you guys are going ahead with this fix, this call to
-clk_prepare_enable() needs to be balanced with clk_disable_unprepare() somehow
+So instead of calling this from here, why don't we invoke the code
+below from pci_prepare_to_sleep() and pci_finish_runtime_suspend(),
+before enabling wakeup (and it needs to be re-done on failures, eg. by
+restoring the cap from the saved copy)?
 
->> +
->>      meson_dw_hdmi->venci_clk = devm_clk_get(dev, "venci");
->>      if (IS_ERR(meson_dw_hdmi->venci_clk)) {
->>          dev_err(dev, "Unable to get venci clk\n");
->> @@ -1071,6 +1079,8 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
->> 
->>      encoder->possible_crtcs = BIT(0);
->> 
->> +    meson_dw_hdmi_init(meson_dw_hdmi);
->> +
->>      DRM_DEBUG_DRIVER("encoder initialized\n");
->> 
->>      /* Bridge / Connector */
->> @@ -1095,8 +1105,6 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
->>      if (IS_ERR(meson_dw_hdmi->hdmi))
->>          return PTR_ERR(meson_dw_hdmi->hdmi);
->> 
->> -    meson_dw_hdmi_init(meson_dw_hdmi);
->> -
->>      next_bridge = of_drm_find_bridge(pdev->dev.of_node);
->>      if (next_bridge)
->>          drm_bridge_attach(encoder, next_bridge,
->> 
->> 
-
+> > > +           pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
+> > > +               ctrl = *cap & ~(PCI_PTM_CTRL_ENABLE |
+> > > PCI_PTM_CTRL_ROOT);
+> > > +               pci_write_config_word(dev, ptm + PCI_PTM_CTRL,
+> > > ctrl);
+> > > +       }
+> > >  }
+> > >
+> > >  static void pci_restore_ptm_state(struct pci_dev *dev)
+> > > --
