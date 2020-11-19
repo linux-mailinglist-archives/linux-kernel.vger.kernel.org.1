@@ -2,98 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05102B9ABA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6032B9ABC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 19:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729675AbgKSSeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 13:34:36 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:36030 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728705AbgKSSee (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 13:34:34 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJITohF128981;
-        Thu, 19 Nov 2020 18:34:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=w9M2+if15vunLknC1wy2lWFuK0w0jsKKPPwIlLNNRbc=;
- b=YTFNxchfMLbxvd+d1TDTSlfKw+hR77l2qK/nMrEOLdxWo6lJtk+CPZ9xlsgD5yrEBaea
- gsfwR0+s4G7/IlXCD7+9+PQS63oFSTn6UhnWWeEf+7mMco7ezCrhRdIiVVwNLLeNPLP/
- rUNj0XGT7kNHZPCZI7zr/z7q3mqZg4k4jadd3vcWlqHLA//R1cTfwGMPxY30YbjvwWhR
- aiQC5DvWvsCpg7vw0JouHNik5aYbSnNdTQUwec4BEZ6Y9TV1W3bO3uoaZylB15Djrc0T
- tTRQOR28T8H46sMl3Zh3IwFzuJsD9eGrddOjs90+qAb+GTawlDM6Sc//aoYlh6QJuK7i Mw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 34t7vneyxv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 18:34:25 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJIVaFS108354;
-        Thu, 19 Nov 2020 18:34:24 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 34ts0u4dtt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Nov 2020 18:34:24 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AJIYKGv013817;
-        Thu, 19 Nov 2020 18:34:20 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Nov 2020 10:34:20 -0800
-Subject: Re: [PATCH v2] mm: hugetlb: fix type of delta parameter and related
- local variables in gather_surplus_pages()
-To:     Liu Xiang <liu.xiang@zlingsmart.com>, linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        liuxiang_1999@126.com, Pan Jiagen <pan.jiagen@zlingsmart.com>
-References: <1605793733-3573-1-git-send-email-liu.xiang@zlingsmart.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <9dbafb55-a1f7-7f6e-d0e9-00dfabc8e2b6@oracle.com>
-Date:   Thu, 19 Nov 2020 10:34:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1729744AbgKSSfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 13:35:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728851AbgKSSfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 13:35:07 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A391A22255;
+        Thu, 19 Nov 2020 18:35:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605810906;
+        bh=bJya95Z1CX+o+B+3wr8vb6PON5dqknScWdUZYecD8RY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MsWxETebIKzGKBcYQlrhF/UiDv9lka8MDJqESPfFYr1ZkyeaAtFqbYFpvvRifTpTi
+         xuFCTTb4z7kiHp49CkkgbP2QlrpUvfzFF2sm33sokEQfeEX6pgqTbrN5/TDF+BsuZT
+         niEt4Jjh9v4YLFrR6vrNHJbHEPJSFtBjLE7M/wJ4=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kfols-00C36C-DX; Thu, 19 Nov 2020 18:35:04 +0000
 MIME-Version: 1.0
-In-Reply-To: <1605793733-3573-1-git-send-email-liu.xiang@zlingsmart.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190130
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011190130
+Date:   Thu, 19 Nov 2020 18:35:04 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        kernelci-results@groups.io, Kevin Hilman <khilman@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
+In-Reply-To: <1jr1op8bbc.fsf@starbuckisacylon.baylibre.com>
+References: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
+ <a0bec7c4-9bec-8858-4879-52f4688d9992@collabora.com>
+ <630e00e83cdd07ee5a0eaba9d3479554@kernel.org>
+ <3f54de27-0fef-c5a1-8991-0a0614c90667@baylibre.com>
+ <c76273f5fe483766e6a7f509f82d928a@kernel.org>
+ <f59922c6-69f5-c70e-b424-0659bf91a4fd@collabora.com>
+ <1jr1op8bbc.fsf@starbuckisacylon.baylibre.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <00a10c12a4eb2a9cdd9f50e88a293c3f@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: jbrunet@baylibre.com, guillaume.tucker@collabora.com, narmstrong@baylibre.com, kernelci-results@groups.io, khilman@baylibre.com, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, martin.blumenstingl@googlemail.com, airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/20 5:48 AM, Liu Xiang wrote:
-> On 64-bit machine, delta variable in hugetlb_acct_memory() may be larger
-> than 0xffffffff, but gather_surplus_pages() can only use the low 32-bit
-> value now. So we need to fix type of delta parameter and related local
-> variables in gather_surplus_pages().
+On 2020-11-19 18:13, Jerome Brunet wrote:
+> On Thu 19 Nov 2020 at 19:04, Guillaume Tucker
+> <guillaume.tucker@collabora.com> wrote:
 > 
-> Reported-by: Ma Chenggong <ma.chenggong@zlingsmart.com>
-> Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
-> Signed-off-by: Pan Jiagen <pan.jiagen@zlingsmart.com>
+>> Hi Marc,
+>> 
+>> On 19/11/2020 11:58, Marc Zyngier wrote:
+>>> On 2020-11-19 10:26, Neil Armstrong wrote:
+>>>> On 19/11/2020 11:20, Marc Zyngier wrote:
+>>>>> On 2020-11-19 08:50, Guillaume Tucker wrote:
+>>>>>> Please see the automated bisection report below about some kernel
+>>>>>> errors on meson-gxbb-p200.
+>>>>>> 
+>>>>>> Reports aren't automatically sent to the public while we're
+>>>>>> trialing new bisection features on kernelci.org, however this one
+>>>>>> looks valid.
+>>>>>> 
+>>>>>> The bisection started with next-20201118 but the errors are still
+>>>>>> present in next-20201119.  Details for this regression:
+>>>>>> 
+>>>>>>   https://kernelci.org/test/case/id/5fb6196bfd0127fd68d8d902/
+>>>>>> 
+>>>>>> The first error is:
+>>>>>> 
+>>>>>>   [   14.757489] Internal error: synchronous external abort: 
+>>>>>> 96000210
+>>>>>> [#1] PREEMPT SMP
+>>>>> 
+>>>>> Looks like yet another clock ordering setup. I guess different 
+>>>>> Amlogic
+>>>>> platforms have slightly different ordering requirements.
+>>>>> 
+>>>>> Neil, do you have any idea of which platform requires which 
+>>>>> ordering?
+>>>>> The variability in DT and platforms is pretty difficult to follow 
+>>>>> (and
+>>>>> I don't think I have such board around).
+>>>> 
+>>>> The requirements should be the same, here the init was done before 
+>>>> calling
+>>>> dw_hdmi_probe to be sure the clocks and internals resets were 
+>>>> deasserted.
+>>>> But since you boot from u-boot already enabling these, it's already 
+>>>> active.
+>>>> 
+>>>> The solution would be to revert and do some check in 
+>>>> meson_dw_hdmi_init() to
+>>>> check if already enabled and do nothing.
+>>> 
+>>> A better fix seems to be this, which makes it explicit that there is
+>>> a dependency between some of the registers accessed from 
+>>> meson_dw_hdmi_init()
+>>> and the iahb clock.
+>>> 
+>>> Guillaume, can you give this a go on your failing box?
+>> 
+>> I confirm it solves the problem.  Please add this to your fix
+>> patch if it's OK with you:
+>> 
+>>   Reported-by: "kernelci.org bot" <bot@kernelci.org>
+>>   Tested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+>> 
+>> 
+>> For the record, it passed all the tests when applied on top of
+>> the "bad" revision found by the bisection:
+>> 
+>>   
+>> http://lava.baylibre.com:10080/scheduler/alljobs?search=v5.10-rc3-1021-gb8668a2e5ea1
+>> 
+>> and the exact same test on the "bad" revision without the fix
+>> consistently showed the error:
+>> 
+>>   http://lava.baylibre.com:10080/scheduler/job/374176
+>> 
+>> 
+>> Thanks,
+>> Guillaume
+>> 
+>> 
+>>> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c 
+>>> b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>>> index 7f8eea494147..52af8ba94311 100644
+>>> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>>> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>>> @@ -146,6 +146,7 @@ struct meson_dw_hdmi {
+>>>      struct reset_control *hdmitx_ctrl;
+>>>      struct reset_control *hdmitx_phy;
+>>>      struct clk *hdmi_pclk;
+>>> +    struct clk *iahb_clk;
+>>>      struct clk *venci_clk;
+>>>      struct regulator *hdmi_supply;
+>>>      u32 irq_stat;
+>>> @@ -1033,6 +1034,13 @@ static int meson_dw_hdmi_bind(struct device 
+>>> *dev, struct device *master,
+>>>      }
+>>>      clk_prepare_enable(meson_dw_hdmi->hdmi_pclk);
+>>> 
+>>> +    meson_dw_hdmi->iahb_clk = devm_clk_get(dev, "iahb");
+>>> +    if (IS_ERR(meson_dw_hdmi->iahb_clk)) {
+>>> +        dev_err(dev, "Unable to get iahb clk\n");
+>>> +        return PTR_ERR(meson_dw_hdmi->iahb_clk);
+>>> +    }
+>>> +    clk_prepare_enable(meson_dw_hdmi->iahb_clk);
 > 
-> ---
-> Changes in v2:
->   as suggested by Mike, apply the same fix to the related local
->   variables in gather_surplus_pages().
-> ---
-> ---
->  mm/hugetlb.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+> If you guys are going ahead with this fix, this call to
+> clk_prepare_enable() needs to be balanced with clk_disable_unprepare() 
+> somehow
 
-Thank you,
+Yup, good point.
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Although this driver *never* disables any clock it enables, and leaves 
+it
+to the main DW driver, which I guess makes it leak references.
 
+So all 3 clocks need fixing.
+
+Thanks,
+
+         M.
 -- 
-Mike Kravetz
+Jazz is not dead. It just smells funny...
