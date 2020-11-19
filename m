@@ -2,87 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98E92B949B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D782B949F
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 15:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgKSO1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 09:27:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:58922 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727809AbgKSO1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:27:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7555D1042;
-        Thu, 19 Nov 2020 06:27:53 -0800 (PST)
-Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.110])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7E36E3F719;
-        Thu, 19 Nov 2020 06:27:51 -0800 (PST)
-From:   Jia He <justin.he@arm.com>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia He <justin.he@arm.com>
-Subject: [PATCH] vfio iommu type1: Bypass the vma permission check in vfio_pin_pages_remote()
-Date:   Thu, 19 Nov 2020 22:27:37 +0800
-Message-Id: <20201119142737.17574-1-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727882AbgKSOaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 09:30:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727758AbgKSOaS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:30:18 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0ADC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 06:30:18 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 1so6946879wme.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 06:30:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uRlbyeBiYk1IUBo5HOH3WItMevxm3ru4Xm8qrRT2wyg=;
+        b=SSZqdpj4RKoJCWr8oozomLprKyqS+l9AkT5kISQ17LF6RpK1CSWLxQlc4sTGOsxyHN
+         yYmTFS5gRxoB86T6LfrrF24hrVqbIqulJ8UH//svICGbKaBjLtoTcnaDEXFWGPzc4Ul2
+         wpAIpiuIALpUL/C2M++d/zMV1a0YRSycbaBbl1o6BOBNIbSpAza5h5ANnCNVsEmhic4o
+         YAkmkOgha5FGHYaEmLHJM0dh8zNxc3MzcU/frv+JV2GFeXl4bkQorrqvYt6HGVpI/xku
+         0C6nk6HeyRLeG8UH1/LSJaIX2Tn04O50iOD0dc3aTQv5ok3z5cr6fQ3paiCkX2G/ly7O
+         zWsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uRlbyeBiYk1IUBo5HOH3WItMevxm3ru4Xm8qrRT2wyg=;
+        b=WHzJGxlJZzVvVwpkCmPLybTalGpiDxQOJyv6P3y1bvh1xLJ2/0DJ60EGdk3wR+J1ga
+         ClaGajJglH/XJXE+peER4XeTGqu2WmKl6fQbZHhO5NClxzBPhWuOBFErgcVkVcxcpFfl
+         ihj+9wkYnPwBCUDD+oSFJulLLRg30yERhve8eyWL+e2rQX2lFCdQVHUfJVGYYPl4m4JR
+         7oHZvkOuO9DTFYVPt/85KezPQOMNIyYccLQJ3WgGKmrM5WNaaZzhTfNz0FgDWFRsagyy
+         q4VSNqrrJLbBYhGTq2SsjQxNaTHbB6CzS7n0pNrbvexRH4t0kskx6JtMW4sKxVVAEWR1
+         DU2A==
+X-Gm-Message-State: AOAM533lEy0J+zLnqeY58oE4nCSxIrkOsmj3RS0VQdi4/lwv9IIdD+Lf
+        /sWn4T313eRMD/LEPqkSpaB8oQ==
+X-Google-Smtp-Source: ABdhPJy8A5U+1WfeWMxxbnZ1WJ30eOzYlz6bx9wFXE1uJ7iC3YyfUJKLcd4aeL9iz56NGihKFjAC8A==
+X-Received: by 2002:a05:600c:218c:: with SMTP id e12mr1443488wme.28.1605796216613;
+        Thu, 19 Nov 2020 06:30:16 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id p4sm40134200wrm.51.2020.11.19.06.30.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 06:30:16 -0800 (PST)
+Date:   Thu, 19 Nov 2020 14:30:12 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 11/14] sched: Reject CPU affinity changes based on
+ arch_cpu_allowed_mask()
+Message-ID: <20201119143012.GA2458028@google.com>
+References: <20201113093720.21106-1-will@kernel.org>
+ <20201113093720.21106-12-will@kernel.org>
+ <20201119094744.GE2416649@google.com>
+ <20201119110723.GE3946@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119110723.GE3946@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The permission of vfio iommu is different and incompatible with vma
-permission. If the iotlb->perm is IOMMU_NONE (e.g. qemu side), qemu will
-simply call unmap ioctl() instead of mapping. Hence vfio_dma_map() can't
-map a dma region with NONE permission.
+On Thursday 19 Nov 2020 at 11:07:24 (+0000), Will Deacon wrote:
+> Yeah, the cpuset code ignores the return value of set_cpus_allowed_ptr() in
+> update_tasks_cpumask() so the failure won't be propagated, but then again I
+> think that might be the right thing to do. Nothing prevents 32-bit and
+> 64-bit tasks from co-existing in the same cpuseti afaict, so forcing the
+> 64-bit tasks onto the 32-bit-capable cores feels much worse than the
+> approach taken here imo.
 
-This corner case will be exposed in coming virtio_fs cache_size
-commit [1]
- - mmap(NULL, size, PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-   memory_region_init_ram_ptr()
- - re-mmap the above area with read/write authority.
- - vfio_dma_map() will be invoked when vfio device is hotplug added.
+Ack. And thinking about it more, failing the cgroup operation wouldn't
+guarantee that the task's affinity and the cpuset are aligned anyway. We
+could still exec into a 32 bit task from within a 64 bit-only cpuset.
 
-qemu:
-vfio_listener_region_add()
-	vfio_dma_map(..., readonly=false)
-		map.flags is set to VFIO_DMA_MAP_FLAG_READ|VFIO_..._WRITE
-		ioctl(VFIO_IOMMU_MAP_DMA)
+> The interesting case is what happens if the cpuset for a 32-bit task is
+> changed to contain only the 64-bit-only cores. I think that's a userspace
+> bug
 
-kernel:
-vfio_dma_do_map()
-	vfio_pin_map_dma()
-		vfio_pin_pages_remote()
-			vaddr_get_pfn()
-			...
-				check_vma_flags() failed! because
-				vm_flags hasn't VM_WRITE && gup_flags
-				has FOLL_WRITE
+Maybe, but I think Android will do exactly that in some cases :/
 
-It will report error in qemu log when hotplug adding(vfio) a nvme disk
-to qemu guest on an Ampere EMAG server:
-"VFIO_MAP_DMA failed: Bad address"
+> but the fallback rq selection should avert disaster.
 
-[1] https://gitlab.com/virtio-fs/qemu/-/blob/virtio-fs-dev/hw/virtio/vhost-user-fs.c#L502
+I thought _this_ patch was 'fixing' this case by making the cpuset
+operation pretty much a nop on the task affinity? The fallback rq stuff
+is all about hotplug no?
 
-Signed-off-by: Jia He <justin.he@arm.com>
----
- drivers/vfio/vfio_iommu_type1.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 67e827638995..33faa6b7dbd4 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -453,7 +453,8 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
- 		flags |= FOLL_WRITE;
- 
- 	mmap_read_lock(mm);
--	ret = pin_user_pages_remote(mm, vaddr, 1, flags | FOLL_LONGTERM,
-+	ret = pin_user_pages_remote(mm, vaddr, 1,
-+				    flags | FOLL_LONGTERM | FOLL_FORCE,
- 				    page, NULL, NULL);
- 	if (ret == 1) {
- 		*pfn = page_to_pfn(page[0]);
--- 
-2.17.1
-
+Thanks,
+Quentin
