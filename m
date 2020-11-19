@@ -2,148 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076ED2B8FCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82C52B8FE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 11:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727208AbgKSKCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 05:02:50 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:4960 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727174AbgKSKCr (ORCPT
+        id S1726843AbgKSKIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 05:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726650AbgKSKIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 05:02:47 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJA0Mmm010496;
-        Thu, 19 Nov 2020 05:02:45 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34t9ybsjhh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Nov 2020 05:02:45 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0AJA2h0x011186
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 19 Nov 2020 05:02:43 -0500
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 19 Nov 2020 02:02:42 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 19 Nov 2020 02:02:42 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AJA2Ydf018635;
-        Thu, 19 Nov 2020 05:02:39 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>
-CC:     <robh+dt@kernel.org>, <jic23@kernel.org>,
-        <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2 4/4] dt-bindings: adc: ad7887: add binding doc for AD7887
-Date:   Thu, 19 Nov 2020 12:07:48 +0200
-Message-ID: <20201119100748.57689-4-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201119100748.57689-1-alexandru.ardelean@analog.com>
-References: <20201119100748.57689-1-alexandru.ardelean@analog.com>
+        Thu, 19 Nov 2020 05:08:20 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA523C0613CF;
+        Thu, 19 Nov 2020 02:08:19 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id C38311F4566F
+Subject: Re: [PATCH v5 1/7] media: v4l2: Extend pixel formats to unify
+ single/multi-planar handling (and more)
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     mchehab@kernel.org, hans.verkuil@cisco.com,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi,
+        linux-media@vger.kernel.org,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        hiroh@chromium.org, nicolas@ndufresne.ca, Brian.Starkey@arm.com,
+        kernel@collabora.com, narmstrong@baylibre.com,
+        linux-kernel@vger.kernel.org, frkoenig@chromium.org,
+        mjourdan@baylibre.com, stanimir.varbanov@linaro.org
+References: <20200804192939.2251988-1-helen.koike@collabora.com>
+ <20200804192939.2251988-2-helen.koike@collabora.com>
+ <20201002194935.GB1131147@chromium.org>
+ <f5c9f7cd-f8e1-0671-b4d9-8ed79917b0aa@collabora.com>
+ <20201119054544.GA590258@chromium.org>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <bec73ecd-e420-ccb3-810c-c98ba93dfdab@collabora.com>
+Date:   Thu, 19 Nov 2020 07:08:09 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_08:2020-11-17,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 lowpriorityscore=0
- bulkscore=0 clxscore=1015 spamscore=0 adultscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190073
+In-Reply-To: <20201119054544.GA590258@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds a simple device-tree binding for thhe Analog Devices
-AD7887 ADC.
+Hi Tomasz,
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- .../bindings/iio/adc/adi,ad7887.yaml          | 70 +++++++++++++++++++
- 1 file changed, 70 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7887.yaml
+On 11/19/20 2:45 AM, Tomasz Figa wrote:
+> On Sat, Nov 14, 2020 at 11:21:26AM -0300, Helen Koike wrote:
+>> Hi Tomasz,
+>>
+>> On 10/2/20 4:49 PM, Tomasz Figa wrote:
+>>> Hi Helen,
+>>>
+>>> On Tue, Aug 04, 2020 at 04:29:33PM -0300, Helen Koike wrote:
+> [snip]
+>>>> +static void v4l_print_ext_pix_format(const void *arg, bool write_only)
+>>>> +{
+>>>> +	const struct v4l2_ext_pix_format *pix = arg;
+>>>> +	unsigned int i;
+>>>> +
+>>>> +	pr_cont("type=%s, width=%u, height=%u, format=%c%c%c%c, modifier %llx, field=%s, colorspace=%d, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
+>>>> +		prt_names(pix->type, v4l2_type_names),
+>>>> +		pix->width, pix->height,
+>>>> +		(pix->pixelformat & 0xff),
+>>>> +		(pix->pixelformat >>  8) & 0xff,
+>>>> +		(pix->pixelformat >> 16) & 0xff,
+>>>> +		(pix->pixelformat >> 24) & 0xff,
+>>>> +		pix->modifier, prt_names(pix->field, v4l2_field_names),
+>>>> +		pix->colorspace, pix->ycbcr_enc,
+>>>> +		pix->quantization, pix->xfer_func);
+>>>> +	for (i = 0; i < VIDEO_MAX_PLANES && pix->plane_fmt[i].sizeimage; i++)
+>>>
+>>> This is going to print 8 lines every time. Maybe we could skip 0-sized
+>>> planes or something?
+>>
+>> I'm already checking pix->plane_fmt[i].sizeimage in the loop, it shouldn't
+>> print 8 lines every time.
+>>
+> 
+> Oops, how could I not notice it. Sorry for the noise.
+> 
+> [snip]
+>>>> +int v4l2_ext_pix_format_to_format(const struct v4l2_ext_pix_format *e,
+>>>> +				  struct v4l2_format *f, bool mplane_cap,
+>>>> +				  bool strict)
+>>>> +{
+>>>> +	const struct v4l2_plane_ext_pix_format *pe;
+>>>> +	struct v4l2_plane_pix_format *p;
+>>>> +	unsigned int i;
+>>>> +
+>>>> +	memset(f, 0, sizeof(*f));
+>>>> +
+>>>> +	/*
+>>>> +	 * Make sure no modifier is required before doing the
+>>>> +	 * conversion.
+>>>> +	 */
+>>>> +	if (e->modifier && strict &&
+>>>
+>>> Do we need the explicit check for e->modifier != 0 if we have to check for
+>>> the 2 specific values below anyway?
+>>
+>> We don't, since DRM_FORMAT_MOD_LINEAR is zero.
+>>
+>> But I wanted to make it explicit we don't support modifiers in this conversion.
+>> But I can remove this check, no problem.
+>>
+> 
+> Yes, please. I think the double checking is confusing for the reader.
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7887.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7887.yaml
-new file mode 100644
-index 000000000000..9b30f4569b4e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7887.yaml
-@@ -0,0 +1,70 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/adc/adi,ad7887.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices AD7887 low power, 12-bit ADC
-+
-+maintainers:
-+  - Michael Hennerich <michael.hennerich@analog.com>
-+
-+description: |
-+  Analog Devices AD7887 low power, 12-bit analog-to-digital converter (ADC)
-+  that operates from a single 2.7 V to 5.25 V power supply.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,ad7887
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-cpha: true
-+
-+  spi-cpol: true
-+
-+  avcc-supply: true
-+
-+  spi-max-frequency: true
-+
-+  vref-supply:
-+    description:
-+      ADC reference voltage supply
-+
-+  adi,dual-channel-mode:
-+    description:
-+      Configures dual-channel mode for the ADC. In dual-channel operation,
-+      the AIN1/VREF pin assumes its AIN1 function, providing a second analog
-+      input channel. In this case, he reference voltage for the part is provided
-+      via the VDD pin. As a result, the input voltage range on both the AIN0 and
-+      AIN1 inputs is 0 to VDD.
-+    type: boolean
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - spi-cpha
-+  - spi-cpol
-+
-+examples:
-+  - |
-+    spi0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        adc@0 {
-+                compatible = "adi,ad7887";
-+                reg = <0>;
-+                spi-max-frequency = <1000000>;
-+                spi-cpol;
-+                spi-cpha;
-+
-+                avcc-supply = <&adc_supply>;
-+                vref-supply = <&adc_vref>;
-+        };
-+    };
-+...
--- 
-2.17.1
+ok.
 
+> 
+>>>
+>>>> +	    e->modifier != DRM_FORMAT_MOD_LINEAR &&
+>>>> +	    e->modifier != DRM_FORMAT_MOD_INVALID)
+>>>> +		return -EINVAL;
+>>>> +
+>>>> +	if (!e->plane_fmt[0].sizeimage && strict)
+>>>> +		return -EINVAL;
+>>>
+>>> Why is this incorrect?
+>>
+>> !sizeimage for the first plane means that there are no planes in ef.
+>> strict is true if the result for the conversion should be returned to userspace
+>> and it is not some internal handling.
+>>
+>> So if there are no planes, we would return an incomplete v4l2_format struct
+>> to userspace.
+>>
+>> But this is not very clear, I'll improve this for the next version.
+>>
+> 
+> So I can see 2 cases here:
+> 
+> 1) Userspace gives ext struct and driver accepts legacy.
+> 
+> In this case, the kernel needs to adjust the structure to be correct.
+> -EINVAL is only valid if
+> 
+> "The struct v4l2_format type field is invalid or the requested buffer type not supported."
+> 
+> as per the current uAPI documentation.
+> 
+> 2) Driver gives ext struct and userspace accepts legacy.
+> 
+> If at this point we get a struct with no planes, that sounds like a
+> driver bug, so rather than signaling -EINVAL to the userspace, we should
+> probably WARN()?
+> 
+> Or am I getting something wrong? :)
+
+Make sense, I'll restructure this for the next version.
+
+> 
+> [snip]
+>>>> +{
+>>>> +	const struct v4l2_plane_pix_format *p;
+>>>> +	struct v4l2_plane_ext_pix_format *pe;
+>>>> +	unsigned int i;
+>>>> +
+>>>> +	memset(e, 0, sizeof(*e));
+>>>> +
+>>>> +	switch (f->type) {
+>>>> +	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+>>>> +	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+>>>> +		e->width = f->fmt.pix.width;
+>>>> +		e->height = f->fmt.pix.height;
+>>>> +		e->pixelformat = f->fmt.pix.pixelformat;
+>>>> +		e->field = f->fmt.pix.field;
+>>>> +		e->colorspace = f->fmt.pix.colorspace;
+>>>> +		if (f->fmt.pix.flags)
+>>>> +			pr_warn("Ignoring pixelformat flags 0x%x\n",
+>>>> +				f->fmt.pix.flags);
+>>>
+>>> Would it make sense to print something like video node name and/or function
+>>> name to explain where this warning comes from?
+>>
+>> I would need to update the function to receive this information, I can try but
+>> I'm not sure if it is worthy.
+>>
+> 
+> I don't have a strong opinion on this, so maybe let's see if others have
+> any comments.
+> 
+>>>
+>>>> +		e->ycbcr_enc = f->fmt.pix.ycbcr_enc;
+>>>> +		e->quantization = f->fmt.pix.quantization;
+>>>
+>>> Missing xfer_func?
+>>
+>> Yes, thanks for catching this.
+>>
+>>>
+>>>> +		e->plane_fmt[0].bytesperline = f->fmt.pix.bytesperline;
+>>>> +		e->plane_fmt[0].sizeimage = f->fmt.pix.sizeimage;
+>>>
+>>> This doesn't look right. In the ext API we expected the planes to describe
+>>> color planes, which means that bytesperline needs to be computed for planes
+>>>> = 1 and sizeimage replaced with per-plane sizes, according to the
+>>>> pixelformat.
+>>
+>> Ack.
+>>
+>> Just to be clear, even if we are using a planar format that isn't a V4L2_PIX_FMT_*M
+>> variant, we should describe every plane separatly.
+>>
+>> For instance, if V4L2_PIX_FMT_YVU420 is being used, then f->fmt.pix.bytesperline
+>> will have data, and we need to calculate bytesperline for all 3 planes, so we'll fill
+>> out:
+>>
+>> f->plane_fmt[0].bytesperline = f->fmt.pix.bytesperline;
+>> f->plane_fmt[1].bytesperline = f->fmt.pix.bytesperline / hdiv;
+>> f->plane_fmt[2].bytesperline = f->fmt.pix.bytesperline / hdiv;
+>>
+>> I'll update this for the next version.
+>>
+> 
+> Yes. This basically gives us a unified representation across all
+> pixelformats and allows userspace to handle them in a uniform way, as
+> opposed to current uAPI.
+
+Right, I already updated this in my wip branch for next version.
+
+> 
+> [snip]
+>>>> +		if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+>>>> +			e->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+>>>> +		else
+>>>> +			e->type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+>>>> +
+>>>> +		for (i = 0; i < VIDEO_MAX_PLANES; i++) {
+>>>> +			pe = &e->plane_fmt[i];
+>>>> +			p = &f->fmt.pix_mp.plane_fmt[i];
+>>>> +			pe->bytesperline = p->bytesperline;
+>>>> +			pe->sizeimage = p->sizeimage;
+>>>> +		}
+>>>
+>>> Same here. A blind copy is not enough. For non-M formats, the plane
+>>> parameters need to be filled according to the pixelformat.
+>>
+>>
+>> Right, following the idea above, we need a different handling if we
+>> aren't using a M-variant of the pixelformat, and we also need to
+>> convert the pixelformat from the M-variant to non-M-variant.
+>>
+>> I'll also need to save that the original format was a
+>> M-variant or not, so I can convert it back as expected.
+> 
+> I'm still reading the rest of the series, so it might be answered
+> already, but did we decide to do anything about the pixelformat codes
+> themselves? If both M and non-M variants would be allowed with the new
+> API, then I guess there isn't anything to save, because the original
+> format would be preserved?
+
+I was working with the idea that M-variants wouldn't be allowed.
+But then, we have cases where non-M-variant don't exist, such as:
+
+V4L2_PIX_FMT_YVU422M
+V4L2_PIX_FMT_YVU444M
+
+(at least, I couldn't find non-M-variant equivalent for those)
+
+But actually, I don't think we formally decided this (and it seems
+easier to implement if both are allowed).
+
+Should we allow both variants in the Ext API ?
+
+Thanks
+Helen
+
+> 
+>>
+>> I'll change this and submit for review.
+>>
+> 
+> Cool, thanks.
+> 
+> Best regards,
+> Tomasz
+> 
