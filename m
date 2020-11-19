@@ -2,136 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3721B2B9923
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4BE2B9920
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 18:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728677AbgKSRRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 12:17:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727166AbgKSRRv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 12:17:51 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A3FC0613CF;
-        Thu, 19 Nov 2020 09:17:50 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id 23so7240172wrc.8;
-        Thu, 19 Nov 2020 09:17:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AyiTrcyJm4Zi90FzgQEOotlLIRlz5XcC+YAbqlzEl/w=;
-        b=RUV5G90mlsRgstfCBIItHAX8vPujzP1AaEyoTbS3zRCO2I3zEGPFh1/KaEHPQGLnBu
-         2ELRULTBJVDoIvzpoJTGtR7LLONKu35u+LBWq3svQRAOhEnr3shSys9TXwqEjz22kzjg
-         zuxdLTEFqeM1dlNRSNMBmobkW2BsoOvC9OrwUCuUfbqWgK2Wi7y9CbZ09BmnrOa2mBRh
-         MruSvWFbGiqNItHNdt5PGkJarljXuK1r9OHQsovYQDq/tCk/cC7++fFAOoowaBmrCbhi
-         Hpb1/rpGigoLocJ1sJhPPK+oFSyHWjTpRBWj6N8fJahPD/EBpQ1+CM2v4pJr0kh3wfJx
-         Z78Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AyiTrcyJm4Zi90FzgQEOotlLIRlz5XcC+YAbqlzEl/w=;
-        b=SqbnGy0ul+jxFNyzmXPHbtmrV3XlDLujhXD2IWPZR/hBfPaT1ydQRsNYYKbuZOfzUC
-         jVYkiuY519uvUWsG8VAIAouY68MK4fCFaH6i7xVrGGBXFQz5yla8ptFbHBZRecmBKkiG
-         TMEtM4UXpPOz8ucX6QqnquXJ4FYWgVyrFfEsqRImvVmkuZdGbzOCWSteEpl8YupVkPV6
-         oeEKb9Z3VKNyz56TzmkCg77Yh6UDrfQDOe7V0yYylAQNGB6MBPiv0UF4johbfoJsWY55
-         xf3jSKJ5YFls63Yx+qGoh53bWS8m/989G+cCaKXvlGniCpAuRTLGKSTRpO+o4cTlV6rj
-         czJA==
-X-Gm-Message-State: AOAM5324gy6QbqzdYPNPrK3omH7VIkySHU1aI7ukhCm/x61C7fZL8c8D
-        641yGW06VUjJDKRi2gMO7UQHr+pdgaHJBg==
-X-Google-Smtp-Source: ABdhPJysLrAriSZOCdUdoziXnpetbfxIBxfEPi+pV6Vn1w6yccukiXKFU+0zLz8hifKIqRoqrHSczA==
-X-Received: by 2002:adf:a1c2:: with SMTP id v2mr11919882wrv.95.1605806269150;
-        Thu, 19 Nov 2020 09:17:49 -0800 (PST)
-Received: from [192.168.1.23] (host109-152-100-189.range109-152.btcentralplus.com. [109.152.100.189])
-        by smtp.gmail.com with ESMTPSA id a15sm658363wrn.75.2020.11.19.09.17.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 09:17:48 -0800 (PST)
-Subject: Re: [PATCH 0/2] optimise iov_iter
-To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org
-References: <cover.1605799583.git.asml.silence@gmail.com>
- <2b50322d-821f-469e-6f57-072b54e25ef4@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <629cabf2-3a23-9d95-dd88-281ef4d49ddd@gmail.com>
-Date:   Thu, 19 Nov 2020 17:14:41 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1728606AbgKSRQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 12:16:41 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:54136 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728551AbgKSRQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 12:16:41 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CcRDN3LDJzB09Zj;
+        Thu, 19 Nov 2020 18:16:36 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id ESYK-3qNMaWe; Thu, 19 Nov 2020 18:16:36 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CcRDN25C7zB09Zh;
+        Thu, 19 Nov 2020 18:16:36 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2339A8B809;
+        Thu, 19 Nov 2020 18:16:36 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 39ZHbWsp1Kn1; Thu, 19 Nov 2020 18:16:36 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AC7288B78A;
+        Thu, 19 Nov 2020 18:16:27 +0100 (CET)
+Subject: Re: [PATCH v3 1/2] powerpc/ptrace: simplify gpr_get/tm_cgpr_get
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20201119160154.GA5183@redhat.com>
+ <20201119160221.GA5188@redhat.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <94c56c46-e336-f61c-3623-1b2014fcbb2e@csgroup.eu>
+Date:   Thu, 19 Nov 2020 18:16:16 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <2b50322d-821f-469e-6f57-072b54e25ef4@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201119160221.GA5188@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/11/2020 16:46, Jens Axboe wrote:
-> On 11/19/20 8:29 AM, Pavel Begunkov wrote:
->> The first patch optimises iov_iter_npages() for the bvec case, and the
->> second helps code generation to kill unreachable code.
->>
->> Pavel Begunkov (2):
->>   iov_iter: optimise iov_iter_npages for bvec
->>   iov_iter: optimise iter type checking
->>
->>  include/linux/uio.h | 10 +++++-----
->>  lib/iov_iter.c      | 10 +++++-----
->>  2 files changed, 10 insertions(+), 10 deletions(-)
+
+
+Le 19/11/2020 à 17:02, Oleg Nesterov a écrit :
+> gpr_get() does membuf_write() twice to override pt_regs->msr in between.
+
+Is there anything wrong with that ?
+
+> We can call membuf_write() once and change ->msr in the kernel buffer,
+> this simplifies the code and the next fix.
 > 
-> Nice! Tested this and confirmed both the better code generation,
-> and reduction in overhead in iov_iter_npages().
-
-Thanks! Did you find t-put/etc. boost with your setup?
-
+> The patch adds a new simple helper, membuf_at(offs), it returns the new
+> membuf which can be safely used after membuf_write().
 > 
-> Reviewed-by: Jens Axboe <axboe@kernel.dk>
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>   arch/powerpc/kernel/ptrace/ptrace-tm.c   | 13 +++++--------
+>   arch/powerpc/kernel/ptrace/ptrace-view.c | 13 +++++--------
+>   include/linux/regset.h                   | 12 ++++++++++++
+>   3 files changed, 22 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/ptrace/ptrace-tm.c b/arch/powerpc/kernel/ptrace/ptrace-tm.c
+> index 54f2d076206f..f8fcbd85d4cb 100644
+> --- a/arch/powerpc/kernel/ptrace/ptrace-tm.c
+> +++ b/arch/powerpc/kernel/ptrace/ptrace-tm.c
+> @@ -86,6 +86,8 @@ int tm_cgpr_active(struct task_struct *target, const struct user_regset *regset)
+>   int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
+>   		struct membuf to)
+>   {
+> +	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
+> +
+>   	if (!cpu_has_feature(CPU_FTR_TM))
+>   		return -ENODEV;
+>   
+> @@ -97,17 +99,12 @@ int tm_cgpr_get(struct task_struct *target, const struct user_regset *regset,
+>   	flush_altivec_to_thread(target);
+>   
+>   	membuf_write(&to, &target->thread.ckpt_regs,
+> -			offsetof(struct pt_regs, msr));
+> -	membuf_store(&to, get_user_ckpt_msr(target));
+> +				sizeof(struct user_pt_regs));
 
--- 
-Pavel Begunkov
+This looks mis-aligned. But it should fit on a single line, now we allow up to 100 chars on a line.
+
+>   
+> -	BUILD_BUG_ON(offsetof(struct pt_regs, orig_gpr3) !=
+> -		     offsetof(struct pt_regs, msr) + sizeof(long));
+> +	membuf_store(&to_msr, get_user_ckpt_msr(target));
+>   
+> -	membuf_write(&to, &target->thread.ckpt_regs.orig_gpr3,
+> -			sizeof(struct user_pt_regs) -
+> -			offsetof(struct pt_regs, orig_gpr3));
+>   	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
+> -			sizeof(struct user_pt_regs));
+> +				sizeof(struct user_pt_regs));
+
+I can't see any change here except the alignment. Can you leave it as is ?
+
+
+>   }
+>   
+>   /*
+> diff --git a/arch/powerpc/kernel/ptrace/ptrace-view.c b/arch/powerpc/kernel/ptrace/ptrace-view.c
+> index 7e6478e7ed07..39686ede40b3 100644
+> --- a/arch/powerpc/kernel/ptrace/ptrace-view.c
+> +++ b/arch/powerpc/kernel/ptrace/ptrace-view.c
+> @@ -217,6 +217,7 @@ int ptrace_put_reg(struct task_struct *task, int regno, unsigned long data)
+>   static int gpr_get(struct task_struct *target, const struct user_regset *regset,
+>   		   struct membuf to)
+>   {
+> +	struct membuf to_msr = membuf_at(&to, offsetof(struct pt_regs, msr));
+>   	int i;
+>   
+>   	if (target->thread.regs == NULL)
+> @@ -228,17 +229,13 @@ static int gpr_get(struct task_struct *target, const struct user_regset *regset,
+>   			target->thread.regs->gpr[i] = NV_REG_POISON;
+>   	}
+>   
+> -	membuf_write(&to, target->thread.regs, offsetof(struct pt_regs, msr));
+> -	membuf_store(&to, get_user_msr(target));
+> +	membuf_write(&to, target->thread.regs,
+> +				sizeof(struct user_pt_regs));
+
+This should fit on a single line.
+
+>   
+> -	BUILD_BUG_ON(offsetof(struct pt_regs, orig_gpr3) !=
+> -		     offsetof(struct pt_regs, msr) + sizeof(long));
+> +	membuf_store(&to_msr, get_user_msr(target));
+>   
+> -	membuf_write(&to, &target->thread.regs->orig_gpr3,
+> -			sizeof(struct user_pt_regs) -
+> -			offsetof(struct pt_regs, orig_gpr3));
+>   	return membuf_zero(&to, ELF_NGREG * sizeof(unsigned long) -
+> -				 sizeof(struct user_pt_regs));
+> +				sizeof(struct user_pt_regs));
+
+This should not change, it's not part of the changes for this patch.
+
+>   }
+>   
+>   static int gpr_set(struct task_struct *target, const struct user_regset *regset,
+> diff --git a/include/linux/regset.h b/include/linux/regset.h
+> index c3403f328257..a00765f0e8cf 100644
+> --- a/include/linux/regset.h
+> +++ b/include/linux/regset.h
+> @@ -46,6 +46,18 @@ static inline int membuf_write(struct membuf *s, const void *v, size_t size)
+>   	return s->left;
+>   }
+>   
+> +static inline struct membuf membuf_at(const struct membuf *s, size_t offs)
+> +{
+> +	struct membuf n = *s;
+
+Is there any point in using a struct membuf * instaed of a struct membuf as parameter ?
+
+> +
+> +	if (offs > n.left)
+> +		offs = n.left;
+> +	n.p += offs;
+> +	n.left -= offs;
+> +
+> +	return n;
+> +}
+> +
+>   /* current s->p must be aligned for v; v must be a scalar */
+>   #define membuf_store(s, v)				\
+>   ({							\
+> 
+
+Christophe
