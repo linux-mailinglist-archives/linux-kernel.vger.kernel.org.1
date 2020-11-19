@@ -2,174 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9D32B921E
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E85752B9220
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Nov 2020 13:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgKSMHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 07:07:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgKSMHV (ORCPT
+        id S1727156AbgKSMJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 07:09:50 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:47848 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726866AbgKSMJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 07:07:21 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FEEC0613CF;
-        Thu, 19 Nov 2020 04:07:21 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id x9so5959522ljc.7;
-        Thu, 19 Nov 2020 04:07:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XNcQDlSky0473W8VySzMpMuIce1nRSFbAcunyERFzjM=;
-        b=BJV/VSOQ3xMoNz/C2XTRHFXlHvh/qldIAfJK0NVTpgWQbjLLMN3qwJLa2d5V7QpmeF
-         5q+7sBV/Ru5M+wEFbjLtafbEPwB4yIlLzfdirPbrQbqzbEXX8qcEcTZBtsmoH5LE8PV+
-         JE/FsB+p4FKIxKi1rY3paYHIRf5357+xtYzVLZiEexJoyYiZOaC2WdeilQSq4ct5htsm
-         IZGBRkwQc8qdtNCOnQuMJCtme/2FwPuKnZ2rUf1sjt/i4UTgH+uGXiGyNS4b+gFYQ6UD
-         2cY7FFYkkl8CfmCFjKvKwWtH3Wa/FgxZg/ewFq/F8uhly93waz6nvPcvGwEejLv+Ly2g
-         taVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XNcQDlSky0473W8VySzMpMuIce1nRSFbAcunyERFzjM=;
-        b=gobK9Tq0vNH6NAO4xAgXCJ4mPmaZZlm7a4Vpo2q4qf7xeUqgArqTPSGfAKlce307iD
-         BTH2f3GCPyNAXDe+25n4InZ3UyA765F62jxE6JxvAp5zGDzLfKTwLIWsl8mfLm95Cy+I
-         Fv+B6RYsTJCEKTRkQm7U9YChXS4xGcetDavAQ9wLvNnVusaAC+ncpLIIsyKw+cb9uyD5
-         haR7kz1hIl7l34GS+lkhNOSSoXfb8sOyxNMxLzNZst/AwfjlhhGnEvAHN3NK51bSvMRG
-         Aj3266DNq9PfDNzuS0tYlgRy10m0nwYffpvtfEUMdElQtYdtvM9jHcLMHBMbCFLMJJWJ
-         +fWg==
-X-Gm-Message-State: AOAM531XOgJlY9qBe3JCBtSPPsJRtWcK1Pqb3c/LRMuyQiIOypnHBg6R
-        WEH08at+elIsNXpCa4TP/3k=
-X-Google-Smtp-Source: ABdhPJzTGHmquQc4BHfAODo4wPFuYfs6q8K9WgflUR9F3k6wl2Eq2xQD6S3z58PAyprBfztKp9Ogcg==
-X-Received: by 2002:a2e:9083:: with SMTP id l3mr5729986ljg.118.1605787639748;
-        Thu, 19 Nov 2020 04:07:19 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id e15sm3960412lfn.292.2020.11.19.04.07.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 04:07:18 -0800 (PST)
-Subject: Re: [PATCH v9 01/17] memory: tegra30: Support interconnect framework
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201115212922.4390-1-digetx@gmail.com>
- <20201115212922.4390-2-digetx@gmail.com>
- <61e777d9-b730-02c6-cedf-cf0aa1a50fb8@linaro.org>
- <7e484678-43cc-e612-1017-73ed580f9840@gmail.com>
- <83a3f33b-3695-2a40-1c2b-5c38d117c1ad@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <2c186e6a-444c-c2b9-56fc-1d519ecd4e20@gmail.com>
-Date:   Thu, 19 Nov 2020 15:07:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Thu, 19 Nov 2020 07:09:49 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id F183C1F4579E
+Message-ID: <8cc657c5d41c8794fb62d854dfb6380f1553dc21.camel@collabora.com>
+Subject: Re: [PATCH v3 07/13] media: controls: Validate H264 stateless
+ controls
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Date:   Thu, 19 Nov 2020 09:09:38 -0300
+In-Reply-To: <20201118184700.331213-8-ezequiel@collabora.com>
+References: <20201118184700.331213-1-ezequiel@collabora.com>
+         <20201118184700.331213-8-ezequiel@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
 MIME-Version: 1.0
-In-Reply-To: <83a3f33b-3695-2a40-1c2b-5c38d117c1ad@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.11.2020 18:30, Georgi Djakov пишет:
-> On 18.11.20 0:02, Dmitry Osipenko wrote:
->> 17.11.2020 23:24, Georgi Djakov пишет:
->>> Hi Dmitry,
->>>
->>> Thank you working on this!
->>>
->>> On 15.11.20 23:29, Dmitry Osipenko wrote:
->>>> Now Internal and External memory controllers are memory interconnection
->>>> providers. This allows us to use interconnect API for tuning of memory
->>>> configuration. EMC driver now supports OPPs and DVFS. MC driver now
->>>> supports tuning of memory arbitration latency, which needs to be done
->>>> for ISO memory clients, like a Display client for example.
->>>>
->>>> Tested-by: Peter Geis <pgwipeout@gmail.com>
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>    drivers/memory/tegra/Kconfig       |   1 +
->>>>    drivers/memory/tegra/tegra30-emc.c | 349
->>>> +++++++++++++++++++++++++++--
->>>>    drivers/memory/tegra/tegra30.c     | 173 +++++++++++++-
->>>>    3 files changed, 501 insertions(+), 22 deletions(-)
->>>>
->>> [..]> diff --git a/drivers/memory/tegra/tegra30.c
->>> b/drivers/memory/tegra/tegra30.c
->>>> index d0314f29608d..ea849003014b 100644
->>>> --- a/drivers/memory/tegra/tegra30.c
->>>> +++ b/drivers/memory/tegra/tegra30.c
->>> [..]
->>>> +
->>>> +static int tegra30_mc_icc_set(struct icc_node *src, struct icc_node
->>>> *dst)
->>>> +{
->>>> +    struct tegra_mc *mc = icc_provider_to_tegra_mc(src->provider);
->>>> +    const struct tegra_mc_client *client = &mc->soc->clients[src->id];
->>>> +    u64 peak_bandwidth = icc_units_to_bps(src->peak_bw);
->>>> +
->>>> +    /*
->>>> +     * Skip pre-initialization that is done by icc_node_add(), which
->>>> sets
->>>> +     * bandwidth to maximum for all clients before drivers are loaded.
->>>> +     *
->>>> +     * This doesn't make sense for us because we don't have drivers
->>>> for all
->>>> +     * clients and it's okay to keep configuration left from
->>>> bootloader
->>>> +     * during boot, at least for today.
->>>> +     */
->>>> +    if (src == dst)
->>>> +        return 0;
->>>
->>> Nit: The "proper" way to express this should be to implement the
->>> .get_bw() callback to return zero as initial average/peak bandwidth.
->>> I'm wondering if this will work here?
->>>
->>> The rest looks good to me!
->>
->> Hello Georgi,
->>
->> Returning zeros doesn't allow us to skip the initialization that is done
->> by provider->set(node, node) in icc_node_add(). It will reconfigure
->> memory latency in accordance to a zero memory bandwidth, which is wrong
->> to do.
->>
->> It actually should be more preferred to preset bandwidth to a maximum
->> before all drivers are synced, but this should be done only once we will
->> wire up all drivers to use ICC framework. For now it's safer to keep the
->> default hardware configuration untouched.
+Hello,
+
+On Wed, 2020-11-18 at 15:46 -0300, Ezequiel Garcia wrote:
+> Check that all the fields that correspond or are related
+> to a H264 specification syntax element have legal values.
 > 
-> Ok, thanks for clarifying! Is there a way to read this hardware
-> configuration and convert it to initial bandwidth? That's the
-> idea of the get_bw() callback actually. I am just curious and
-> trying to get a better understanding how this works and if it
-> would be useful for Tegra.
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-ctrls.c | 83 ++++++++++++++++++++++++++++
+>  1 file changed, 83 insertions(+)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index 21c1928a9df8..adcf47bddbe3 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -1775,6 +1775,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  {
+>  	struct v4l2_ctrl_mpeg2_slice_params *p_mpeg2_slice_params;
+>  	struct v4l2_ctrl_vp8_frame_header *p_vp8_frame_header;
+> +	struct v4l2_ctrl_h264_sps *p_h264_sps;
+> +	struct v4l2_ctrl_h264_pps *p_h264_pps;
+> +	struct v4l2_ctrl_h264_pred_weights *p_h264_pred_weigths;
+>  	struct v4l2_ctrl_h264_slice_params *p_h264_slice_params;
+>  	struct v4l2_ctrl_h264_decode_params *p_h264_dec_params;
+>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+> @@ -1834,20 +1837,100 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  		break;
+>  
+>  	case V4L2_CTRL_TYPE_H264_SPS:
+> +		p_h264_sps = p;
+> +
+> +		/* Only monochrome and 4:2:0 allowed */
+> +		if (p_h264_sps->profile_idc < V4L2_H264_PROFILE_IDC_HIGH_422 &&
+> +		    p_h264_sps->chroma_format_idc > 1)
+> +				return -EINVAL;
+> +		/* 4:2:2 allowed */
+> +		else if (p_h264_sps->profile_idc < V4L2_H264_PROFILE_IDC_HIGH_444 &&
+> +			 p_h264_sps->chroma_format_idc > 2)
+> +				return -EINVAL;
+> +		else if (p_h264_sps->chroma_format_idc > 3)
+> +				return -EINVAL;
+> +
+> +		if (p_h264_sps->bit_depth_luma_minus8 > 6)
+> +			return -EINVAL;
+> +		if (p_h264_sps->bit_depth_chroma_minus8 > 6)
+> +			return -EINVAL;
+> +		if (p_h264_sps->log2_max_frame_num_minus4 > 12)
+> +			return -EINVAL;
+> +		if (p_h264_sps->pic_order_cnt_type > 2)
+> +			return -EINVAL;
+> +		if (p_h264_sps->log2_max_pic_order_cnt_lsb_minus4 > 12)
+> +			return -EINVAL;
 
-MC driver can't easily retrieve and convert initial bandwidths because
-they depend on knowing hardware state that is not accessible by the MC
-driver.
+After a round of testing and some discussions with Jernej
+on IRC, this patch needs some more discussion.
 
-But in fact it's unnecessary to know the initial bandwidth in the case
-of this MC ICC driver because if configuration is re-set to the same
-value, then this is equal to leaving configuration unchanged.
+For instance, syntax element log2_max_pic_order_cnt_lsb_minus4
+is only present if pic_order_cnt_type==0. It's easy to set it
+to 0 in that case (although the spec doesn't specify any value).
 
-It's okay to keep memory latency configuration unchanged if memory clock
-rate goes up, which is what happens here during init. Please notice that
-EMC ICC drivers (which control the clock rate) don't skip the initial
-bandwidth change.
+Similarly, chroma_format_idc, bit_depth_luma_minus8,
+bit_depth_chroma_minus8 elements are not present for some profiles.
+The spec defines what are the values to be inferred in this case.
+
+> +		if (p_h264_sps->max_num_ref_frames > V4L2_H264_REF_LIST_LEN)
+> +			return -EINVAL;
+> +		break;
+> +
+>  	case V4L2_CTRL_TYPE_H264_PPS:
+> +		p_h264_pps = p;
+> +
+[snip]
+
+>  
+>  	case V4L2_CTRL_TYPE_H264_SLICE_PARAMS:
+>  		p_h264_slice_params = p;
+>  
+> +		if (p_h264_slice_params->colour_plane_id > 2)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->cabac_init_idc > 2)
+> +			return -EINVAL;
+
+There are other cases which are more complex to solve. For instance,
+cabac_init_idc which is specified if PPS element
+entropy_coding_mode_flag is passed.
+
+I believe applications (most of them will have to be adapted
+anyway for the new API), will have to ensure cabac_init_idc is sane
+before passing it to the kernel.
+
+> +		if (p_h264_slice_params->disable_deblocking_filter_idc > 2)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->slice_alpha_c0_offset_div2 < -6 ||
+> +		    p_h264_slice_params->slice_alpha_c0_offset_div2 > 6)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->slice_beta_offset_div2 < -6 ||
+> +		    p_h264_slice_params->slice_beta_offset_div2 > 6)
+
+Same here, these depends on PPS element deblocking_filter_control_present_flag.
+
+I guess we can handle the simple ones, but those that depend
+on elements from other NALUs might have to remain as-is.
+
+Thanks,
+Ezequiel
+
