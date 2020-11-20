@@ -2,104 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083942BA518
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 697F32BA51B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgKTIv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:51:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
+        id S1727241AbgKTIwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:52:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725942AbgKTIv3 (ORCPT
+        with ESMTP id S1727043AbgKTIwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:51:29 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1510C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:51:28 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id 9so150398qvk.9
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:51:28 -0800 (PST)
+        Fri, 20 Nov 2020 03:52:42 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645CCC0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:52:42 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id x15so4535562pll.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:52:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TgKQ0jWCyLF8z2NTHwlOXu9zgvtMphj2U7UOjEtl2cs=;
-        b=mms/xhSWmqcXguiITMTxEYFxy5whwovPqXgDasVuSPBnzuvt+FaOG4Ocx5YOLZmmeH
-         XsQ7f+hPwMD5ZPlRWU84tn9MTwQBmAnYhPq1Vk1M+cMbMsMk+uGdqx+Wp+Hj8Ws/E8n3
-         BrSaGXtn9mrfrougXU23y147c9DFqgWVpU+RKqURylRzK7+8Dpvn9VFiNhe6rkBy9TMv
-         ppvrDtMlnXiNOaumSnWdps+prPKjegyPhtU8sGtW3wg9K7NzidlNAvKJi2RkucCpkkIF
-         Dttdnm9ON5cDBnYmnNqAR8iZs0CitgMYXpxVXYHFrNbSNgKyaFllLMtHxqi/jVPznegl
-         vCww==
+        bh=zpNptVEuWzTVs1t2YZA8V1BK1+nQ/xLKMvtlTpvsiNM=;
+        b=N5BsUqRdrzvSw9AHWZZyrIIthOxBDzszxZllUK77vwE59ZQelnxtVCObH/ZZK2Vw7M
+         rLy1RI+ru0XDHzycpGag2P2fSftv+XPBCzQf4DRTy40YMdKx93654iCy1prysMuHfnrd
+         XJYFtOgP3E7SEuxIPL3Gctaltw7yGhhyMeSvyTefv19A3WDZcpbKBVLtR7parCS5NiLG
+         uNpdTmc7TiRt7y3EW/ESytrDvqpv+7dJ2rV7MbLouSFomLdR7rbO1KDMDG3cJuJI3Sf3
+         skXK1rNeiKWVZZCSBhRQgDTJZW5EEN8yZ1bNVzie05HGjDQ4fZca2TSzpUU5ARswisw0
+         qvZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TgKQ0jWCyLF8z2NTHwlOXu9zgvtMphj2U7UOjEtl2cs=;
-        b=ZXNIaTze3+edL4HPXskFsxjVoIm1/UfPGBbZnZx7vCMYHw3W3SxvhnLIpNOk+4tYnl
-         AiNHSZt6oIyHCFcbAeMwFfALj9okUquCFIgfsmm+jLmkfulX4HnmDjm40OKWoAjGF6pj
-         tPifhOp1Y4maLHMCwandKVXVkrzJ0F1XxMIGm+v60KFricxA/5BPlyz/MFHqj0nqgfkC
-         tZfDs5T9qEMtyADS6ZNkHG9X/oYU9BGEqEDYA0vz8sVav/tqH/dGJtY4LB5ta+PbPuVw
-         RVFL894adJuqXBlqh51VtziDP4m9aiqjTpH5ppLnudU0TgqhNnQNZQmEJbkc3ubXdBY6
-         xoCA==
-X-Gm-Message-State: AOAM530oF94Ff2lT/G6PkmYJgxNTv+iOaT1ix2mPKWlfTxjMuhjWMtu1
-        1fMJ8m8fMHAJasUgiv7FGrmaXTXhmqc5FYWKrTwdFQ==
-X-Google-Smtp-Source: ABdhPJzb6O//6AjfiZ5KBkpRTUKELEs6fhxptpGzjNCjn5qXkB06zRlu+IyXmcm2Dm+OcXKk+D4see3m1wjyZHGr6I8=
-X-Received: by 2002:ad4:46cb:: with SMTP id g11mr15564762qvw.37.1605862287761;
- Fri, 20 Nov 2020 00:51:27 -0800 (PST)
+        bh=zpNptVEuWzTVs1t2YZA8V1BK1+nQ/xLKMvtlTpvsiNM=;
+        b=nfD6ie+bPovMLB+SafOCoENise+/seplzHbH3j0NPao6o9yfHPZU2JJs2V/cqk/moK
+         abA5z0OsZkjjHWrv1f6VCAS7r4N4uWGP0SNZvMR68EF0qx92ximzGfEPi0nyuiCeK2hP
+         C4ZaY1iNEi0j7PvPqdc0V4UgfMV+LwAqrPuuAbeZoBAVODBwES6fUjuqCynB8f+T8ROB
+         S7YFQz/66haQZU69fhYmz0ZBivJHpMyuTWRNO9t2aRht4ch5A/1iE2yVFlZ4UJwgg+8h
+         sahc43bxU1Zd171fqQ44Y3wrNKHX7uY96gdwLpKYlW/q61HyccOdPvsp1yH312ThdZYE
+         PgBQ==
+X-Gm-Message-State: AOAM531E4Ifin3UuCl6joVPZz+HVH8OxYIDwhHll9hDQTmywTaNB6K/e
+        pbOrgP9p5CNh41pr8rBk2nNGWQC7hmehY1/c12vKCw==
+X-Google-Smtp-Source: ABdhPJwlDBHCTerTRacGWw2itZ5Ez5TirD6WZf/c7BEGg462vAoZLIr8yw3+7RDjdDmEuv9EbGXEI9G5aPzAlqKWK8U=
+X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id
+ j8-20020a17090276c8b02900d9d6c3357dmr7764836plt.34.1605862361852; Fri, 20 Nov
+ 2020 00:52:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118035309.19144-1-qiang.zhang@windriver.com> <20201119214934.GC1437@paulmck-ThinkPad-P72>
-In-Reply-To: <20201119214934.GC1437@paulmck-ThinkPad-P72>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 20 Nov 2020 09:51:15 +0100
-Message-ID: <CACT4Y+bas5xfc-+W+wkpbx6Lw=9dsKv=ha83=hs1pytjfK+drg@mail.gmail.com>
-Subject: Re: [PATCH] rcu: kasan: record and print kvfree_call_rcu call stack
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Zhang, Qiang" <qiang.zhang@windriver.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Uladzislau Rezki <urezki@gmail.com>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-12-songmuchun@bytedance.com> <20201120081123.GC3200@dhcp22.suse.cz>
+In-Reply-To: <20201120081123.GC3200@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 20 Nov 2020 16:51:59 +0800
+Message-ID: <CAMZfGtWVxCPpL7=0dfHa7_qtakmGDMLP0twWoyM=gVou=HRmEg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 11/21] mm/hugetlb: Allocate the vmemmap
+ pages associated with each hugetlb page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 10:49 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+On Fri, Nov 20, 2020 at 4:11 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On Wed, Nov 18, 2020 at 11:53:09AM +0800, qiang.zhang@windriver.com wrote:
-> > From: Zqiang <qiang.zhang@windriver.com>
-> >
-> > Add kasan_record_aux_stack function for kvfree_call_rcu function to
-> > record call stacks.
-> >
-> > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> On Fri 20-11-20 14:43:15, Muchun Song wrote:
+> [...]
+> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> > index eda7e3a0b67c..361c4174e222 100644
+> > --- a/mm/hugetlb_vmemmap.c
+> > +++ b/mm/hugetlb_vmemmap.c
+> > @@ -117,6 +117,8 @@
+> >  #define RESERVE_VMEMMAP_NR           2U
+> >  #define RESERVE_VMEMMAP_SIZE         (RESERVE_VMEMMAP_NR << PAGE_SHIFT)
+> >  #define TAIL_PAGE_REUSE                      -1
+> > +#define GFP_VMEMMAP_PAGE             \
+> > +     (GFP_KERNEL | __GFP_NOFAIL | __GFP_MEMALLOC)
 >
-> Thank you, but this does not apply on the "dev" branch of the -rcu tree.
-> See file:///home/git/kernel.org/rcutodo.html for more info.
->
-> Adding others on CC who might have feedback on the general approach.
->
->                                                         Thanx, Paul
->
-> > ---
-> >  kernel/rcu/tree.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index da3414522285..a252b2f0208d 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3506,7 +3506,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >               success = true;
-> >               goto unlock_return;
-> >       }
-> > -
-> > +     kasan_record_aux_stack(ptr);
-> >       success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
-> >       if (!success) {
-> >               run_page_cache_worker(krcp);
+> This is really dangerous! __GFP_MEMALLOC would allow a complete memory
+> depletion. I am not even sure triggering the OOM killer is a reasonable
+> behavior. It is just unexpected that shrinking a hugetlb pool can have
+> destructive side effects. I believe it would be more reasonable to
+> simply refuse to shrink the pool if we cannot free those pages up. This
+> sucks as well but it isn't destructive at least.
+
+I find the instructions of __GFP_MEMALLOC from the kernel doc.
+
+%__GFP_MEMALLOC allows access to all memory. This should only be used when
+the caller guarantees the allocation will allow more memory to be freed
+very shortly.
+
+Our situation is in line with the description above. We will free a HugeTLB page
+to the buddy allocator which is much larger than that we allocated shortly.
+
+Thanks.
+
+> --
+> Michal Hocko
+> SUSE Labs
 
 
-kvfree_call_rcu is intended to free objects, right? If so this is:
 
-Acked-by: Dmitry Vyukov <dvyukov@google.com>
+-- 
+Yours,
+Muchun
