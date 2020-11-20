@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BA02BA536
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EB82BA53E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727379AbgKTIzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:55:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgKTIzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:55:40 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A36C0613CF;
-        Fri, 20 Nov 2020 00:55:40 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id u19so12368618lfr.7;
-        Fri, 20 Nov 2020 00:55:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eCE5S3AtPfjPlYA0YjZN8U5ZXZvn/LY2xX90AL/N/n4=;
-        b=k2cWikdNzhvRX1o1rxZQ/r3PGgWpEY+B7ESKW2u8t1R8t6f9mVujNibnb0xM6ing7A
-         KfwsHX+X6R14I3BFEZYAn2U7cIM6uOP4q9b31bn1BIYmLL7YkACHogP7alLylVznwrXp
-         BPAn6eXWw7S6VzXwesvbnJDVcNih5Yjsbj8bvdMWMFLvdh/L6RTLse/hcRaYliYD7n9b
-         2XaTSQKoJu7iUAzDApDSnX1PIvTJO5bd0jYPXkLkakYkB5bXMdNe+GiPa25QZqpWJJ9Q
-         WrGRsKc/OarUCS+WnMWlQxNUU9Puo5bdGbrV+FrGgFJIseSpXYTdgvJvH7jp82hq3rJ3
-         Vj1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eCE5S3AtPfjPlYA0YjZN8U5ZXZvn/LY2xX90AL/N/n4=;
-        b=hiXSAIl6GON8ioS+qTAGDJUkDZCvNkfeuSpruLXsZtf0HF5JrgsPX0KVJIzqQh7JRT
-         eeHCKWF/g8LINcL+7LyQFN3d12mtydouxBgMWR+ijs6jRxe/ST87BIBkeaQNfheH7WCb
-         MPgV6K71pOQGL6gWqo1gXj6xpMy0ItxxXg89fjpY53MM1sy53O/TusG9PemizW/Xv8wa
-         IRso2X7KUEGZDiVXmWScmxuVV0Ol85Kmmlk16WHatSSMnURq5NHccumElC58F0er8nM8
-         vBWHBpgE+S6yluSn7tkChhRziV+J7ZvGm3a3zIugXBZSGCVQsjZyeYTHLwqygH0Iz2O+
-         SnnA==
-X-Gm-Message-State: AOAM533/26bmWBL2NWikCYZnjZE6W89pGNNgVDB2C1F3GBsXPE9hyUtl
-        iFyi9DnJcRuhpJNnldb5zLFhFHunXGHEpa+/mEc=
-X-Google-Smtp-Source: ABdhPJyhgrajddGaPcfQLxvzIx4y0UvcooH+ce7MoDObk9cBX4B6NGc1idbwywPDrlRxQWjGIn5r/eswg6fHVuWIx00=
-X-Received: by 2002:a05:6512:20c:: with SMTP id a12mr7496565lfo.219.1605862538701;
- Fri, 20 Nov 2020 00:55:38 -0800 (PST)
+        id S1727415AbgKTI4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:56:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727208AbgKTI4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:56:34 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B12DD2225B;
+        Fri, 20 Nov 2020 08:56:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605862593;
+        bh=qqbbW/WYW8djm9O14VKV5AS5hfRXpB/xq6CzZTiK4jw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sQRmtxweZWYf8+ngQfhnlseoXKfRr6S7mM9xu4PBQ3kw3GCA2im/uHKTDtoK6yTcW
+         hy6fVGjxdHFWBbLgKCjedTRT0Mk5c7Uns+hdfA9KqTLKZ3qkBQSds14Y0zkBEzZhoM
+         QkzXHGewnfVrJRGVIxBdpqRioAg8u0UpJll94oKA=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kg2DX-00CCR4-I8; Fri, 20 Nov 2020 08:56:31 +0000
 MIME-Version: 1.0
-References: <CANL0fFQqsGU01Z8iEhznDLQjw5huayarNoqbJ8Nikujs0r+ecQ@mail.gmail.com>
- <6b71718c405541d681f4d8b045a66a79ade0dd4f.camel@intel.com>
-In-Reply-To: <6b71718c405541d681f4d8b045a66a79ade0dd4f.camel@intel.com>
-From:   Gonsolo <gonsolo@gmail.com>
-Date:   Fri, 20 Nov 2020 09:55:27 +0100
-Message-ID: <CANL0fFQeh0SdUd_v98X-YJewZRAOmiaKaCLO+7FsoZBO=SENvQ@mail.gmail.com>
-Subject: Kernel warning "TX on unused queue" for iwlwifi on 7260 with kernel 5.10-rc2
-To:     "Coelho, Luciano" <luciano.coelho@intel.com>
-Cc:     "Damary, Guy" <guy.damary@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Berg, Johannes" <johannes.berg@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        linuxwifi <linuxwifi@intel.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "longman@redhat.com" <longman@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 20 Nov 2020 08:56:31 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     ionela.voinescu@arm.com, valentin.schneider@arm.com,
+        mark.rutland@arm.com, suzuki.poulose@arm.com,
+        Will Deacon <will@kernel.org>, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>
+Subject: Re: AMU extension v1 support for cortex A76, A77, A78 CPUs
+In-Reply-To: <2cc9dd44-0b4b-94a8-155a-7a2446a1b892@codeaurora.org>
+References: <2cc9dd44-0b4b-94a8-155a-7a2446a1b892@codeaurora.org>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <1712842eb0767e51155a5396d282102c@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: neeraju@codeaurora.org, ionela.voinescu@arm.com, valentin.schneider@arm.com, mark.rutland@arm.com, suzuki.poulose@arm.com, will@kernel.org, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Output of lspci -nn:
+On 2020-11-20 04:30, Neeraj Upadhyay wrote:
+> Hi,
+> 
+> For ARM cortex A76, A77, A78 cores (which as per TRM, support AMU)
+> AA64PFR0[47:44] field is not set, and AMU does not get enabled for
+> them.
+> Can you please provide support for these CPUs in cpufeature.c?
 
-02:00.0 Network controller [0280]: Intel Corporation Wireless 7260
-[8086:08b1] (rev 73)
+If that was the case, that'd be an erratum, and it would need to be
+documented as such. It could also be that this is an optional feature
+for these cores (though the TRM doesn't suggest that).
 
-> Guy, can you help with this one? I believe there is a bugzilla issue
-> for this already...
+Can someone at ARM confirm what is the expected behaviour of these CPUs?
 
-I'd like to know this too.
-
+         M.
 -- 
-g
+Jazz is not dead. It just smells funny...
