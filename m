@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABB72BBA43
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1452BBA61
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbgKTXkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 18:40:14 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:45274 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbgKTXkN (ORCPT
+        id S1728560AbgKTXwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 18:52:20 -0500
+Received: from static-71-183-126-102.nycmny.fios.verizon.net ([71.183.126.102]:58288
+        "EHLO chicken.badula.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726426AbgKTXwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 18:40:13 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5F08E20B717A;
-        Fri, 20 Nov 2020 15:40:12 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5F08E20B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605915612;
-        bh=pm8lF2tlf3tvdq+Us/teGujaOR41+GOwf/8B1ECpHsg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=da9adWidx/Zz4+47O33LIzwsWL9VwM9KC98pw2gZ2ojU8IL67HUEK1c4E+CCzc0X7
-         NWIGEeFW8mwF+gDChkpQbRt7SLi/uhfaPIelOidwbNiixPz1yw35i+CXAwswMnSMtH
-         RG+PiWZ5vm/AkFgdmseXOj5SBQEZOfAOWj3C24tU=
-Subject: Re: [PATCH v6 8/8] selinux: measure state and hash of the policy
- using IMA
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
-        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
-        paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20201119232611.30114-1-tusharsu@linux.microsoft.com>
- <20201119232611.30114-9-tusharsu@linux.microsoft.com>
- <4634c6c12b2452849f73ed2d5a4d168707e0ac9a.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <0fb07bd3-c877-ab0f-cd45-dcfbe1fec044@linux.microsoft.com>
-Date:   Fri, 20 Nov 2020 15:40:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 20 Nov 2020 18:52:19 -0500
+X-Greylist: delayed 594 seconds by postgrey-1.27 at vger.kernel.org; Fri, 20 Nov 2020 18:52:19 EST
+Received: from chicken.badula.org (localhost [127.0.0.1])
+        by chicken.badula.org (8.14.4/8.14.4) with ESMTP id 0AKNgIfo024926
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 20 Nov 2020 18:42:24 -0500
+Received: (from defang@localhost)
+        by chicken.badula.org (8.14.4/8.14.4/Submit) id 0AKNf4Pt024904;
+        Fri, 20 Nov 2020 18:41:04 -0500
+X-Authentication-Warning: chicken.badula.org: defang set sender to <ionut@badula.org> using -f
+Received: from moisil.badula.org (pool-71-187-225-100.nwrknj.fios.verizon.net [71.187.225.100])
+        by chicken.badula.org (envelope-sender <ionut@badula.org>) (MIMEDefang) with ESMTP id 0AKNf3lq024894; Fri, 20 Nov 2020 18:41:04 -0500
+Subject: Re: [PATCH] net: adaptec: remove dead code in set_vlan_mode
+To:     Jakub Kicinski <kuba@kernel.org>, xiakaixu1987@gmail.com
+Cc:     leon@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <1605858600-7096-1-git-send-email-kaixuxia@tencent.com>
+ <20201120151714.0cc2f00b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Ion Badulescu <ionut@badula.org>
+Message-ID: <fe835089-3499-0d70-304e-cc3d2e58a8d8@badula.org>
+Date:   Fri, 20 Nov 2020 18:41:03 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <4634c6c12b2452849f73ed2d5a4d168707e0ac9a.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
+In-Reply-To: <20201120151714.0cc2f00b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on chicken.badula.org
+X-Spam-Level: 
+X-Spam-Language: en
+X-Spam-Status: No, score=0.122 required=5 tests=AWL=0.639,BAYES_00=-1.9,KHOP_HELO_FCRDNS=0.399,NICE_REPLY_A=-0.001,PDS_RDNS_DYNAMIC_FP=0.001,RDNS_DYNAMIC=0.982,SPF_FAIL=0.001,URIBL_BLOCKED=0.001
+X-Scanned-By: MIMEDefang 2.84 on 71.183.126.100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/20 7:49 AM, Mimi Zohar wrote:
-Hi Mimi,
-
-> 
-> On Thu, 2020-11-19 at 15:26 -0800, Tushar Sugandhi wrote:
->> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+On 11/20/20 6:17 PM, Jakub Kicinski wrote:
+> On Fri, 20 Nov 2020 15:50:00 +0800 xiakaixu1987@gmail.com wrote:
+>> From: Kaixu Xia <kaixuxia@tencent.com>
 >>
->> IMA measures files and buffer data such as keys, command line arguments
->> passed to the kernel on kexec system call, etc. While these measurements
->> enable monitoring and validating the integrity of the system, it is not
->> sufficient.
+>> The body of the if statement can be executed only when the variable
+>> vlan_count equals to 32, so the condition of the while statement can
+>> not be true and the while statement is dead code. Remove it.
+>>
+>> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+>> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+>> ---
+>>   drivers/net/ethernet/adaptec/starfire.c | 9 ++-------
+>>   1 file changed, 2 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/adaptec/starfire.c b/drivers/net/ethernet/adaptec/starfire.c
+>> index 555299737b51..ad27a9fa5e95 100644
+>> --- a/drivers/net/ethernet/adaptec/starfire.c
+>> +++ b/drivers/net/ethernet/adaptec/starfire.c
+>> @@ -1754,14 +1754,9 @@ static u32 set_vlan_mode(struct netdev_private *np)
+>>   		filter_addr += 16;
+>>   		vlan_count++;
+>>   	}
+>> -	if (vlan_count == 32) {
+>> +	if (vlan_count == 32)
+>>   		ret |= PerfectFilterVlan;
+>> -		while (vlan_count < 32) {
+>> -			writew(0, filter_addr);
+>> -			filter_addr += 16;
+>> -			vlan_count++;
+>> -		}
+>> -	}
+>> +
+>>   	return ret;
+>>   }
+>>   #endif /* VLAN_SUPPORT */
 > 
-> The above paragraph would make a good cover letter introduction.
-
-Agreed - will add this paragraph to the cover letter as well.
-
+> This got broken back in 2011:
 > 
->> In-memory data structures maintained by various kernel
->> components store the current state and policies configured for
->> the components.
+> commit 5da96be53a16a62488316810d0c7c5d58ce3ee4f
+> Author: Jiri Pirko <jpirko@redhat.com>
+> Date:   Wed Jul 20 04:54:31 2011 +0000
 > 
-> Various data structures, policies and state stored in kernel memory
-> also impact the  integrity of the system.
-
-Will update.
-
+>      starfire: do vlan cleanup
+>      
+>      - unify vlan and nonvlan rx path
+>      - kill np->vlgrp and netdev_vlan_rx_register
+>      
+>      Signed-off-by: Jiri Pirko <jpirko@redhat.com>
+>      Signed-off-by: David S. Miller <davem@davemloft.net>
 > 
-> The 2nd paragraph could provide examples of such integrity critical
-> data.
-
-Will do.
-
+> The comparison to 32 was on a different variable before that change.
 > 
-> This patch set introduces a new IMA hook named
-> ima_measure_critical_data() to measure kernel integrity critical data.
+> Ion, do you think anyone is still using this driver?
 > 
+> Maybe it's time we put it in the history book (by which I mean remove
+> from the kernel).
 
-*Question*
-I am not clear about this one - do you mean add the following line in 
-the patch description for the selinux patch?
+Frankly, no, I don't know of any users, and that unfortunately includes 
+myself. I still have two cards in my stash, but they're 64-bit PCI-X, so 
+plugging them in would likely require taking a dremel to a 32-bit PCI 
+slot to make it open-ended. (They do work in a 32-bit slot.)
 
-"This patch introduces the first use of the new IMA hook namely 
-ima_measures_critical_data() to measure the integrity critical data for 
-SELinux"
+Anyway, that filter code could use some fixing in other regards. So 
+either we fix it properly (which I can submit a patch for), or clean it 
+out for good.
 
-thanks,
-  -lakshmi
+-Ion
