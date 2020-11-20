@@ -2,115 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5CE2BA4CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 204DD2BA4CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727262AbgKTIiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:38:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgKTIiM (ORCPT
+        id S1727285AbgKTIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:38:18 -0500
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:37812 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727091AbgKTIiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:38:12 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32959C0613CF;
-        Fri, 20 Nov 2020 00:38:11 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id 18so4487066pli.13;
-        Fri, 20 Nov 2020 00:38:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QAUc4Ub5+Y3djr8Wh3AbCUd5SdWIv4X0tY5hn9hKdt8=;
-        b=snNm9pC6XV1go7TTASQGweKXyAqpCr/SaohJmx+I2RzFXmitx7H/F02KJuuzXTfT1+
-         cwSuCOIvlPm2GDpZOCinB+Iboyw79hJ2j7Ev39CHHihaudEtEnK2yJsuT9CcDm76qWMp
-         LDEgTAsi1yoSEtlcEGwOTNR6dwc0POo5XRsV6caDp2Rhk9X71FsRLR8URL9kFRu+sCIf
-         ZLL0D5IJVZ8cg858ij2Z8ofV7ebFDkjYC4+hrVDNbSD/6xUHbXa25BCrLTFz4gUEbAXE
-         7tvzOrF8nuOuQXhaKzQoUqT0JZmYct1CIp3H778ndnMVDazSjFGkIMkIdGym98hYVL9b
-         khaQ==
+        Fri, 20 Nov 2020 03:38:16 -0500
+Received: by mail-oo1-f67.google.com with SMTP id t10so2042888oon.4;
+        Fri, 20 Nov 2020 00:38:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QAUc4Ub5+Y3djr8Wh3AbCUd5SdWIv4X0tY5hn9hKdt8=;
-        b=SHvONzuV7SsoMjJH3XMJIZ5n+7QgjuClMGCJdyhYHOwwlXt6ekvYSP22VU/FQEawLs
-         xosd5AZFsxmpCaTz+rFxu1kaElpEjrM4ryyWCrPd3HBOd/gEoDcFoI0eSW5QjTtX3wCm
-         ebllDtGnwG4m9vC3H2Kgx/yFEXXtaoR6hf7Rq0cAmA5YoZio/Tzhb8vMq6yfuL1gBdZC
-         mU78jIDZn29Yx5NvGuA4jK4gWA8Xm9crCPMrYZDLIWwR8D+eRZ6CwN+Jh/9IALctjt15
-         h1pil/HB+5l8C6axI4d7/xANamZPEwMfNUb+2zmfc7ShYcXuuMBsGvnncSH+Pc3edeqQ
-         mB4w==
-X-Gm-Message-State: AOAM532rZY/3njJTYNJR23eJGL3Mz4XLvsM/KUrEY/QWGnzXnhwjK3aI
-        eU6/VKsu+v+W0TEMjP0eS3dV1x388yDMtbQ=
-X-Google-Smtp-Source: ABdhPJwlu2LHYylFDBD6KVOQDJWBCCnjVfbH4aRAQvBloxHrVnSqnSMTzRPOEsTTU1UbmLD35qMokg==
-X-Received: by 2002:a17:902:244:b029:d6:c451:8566 with SMTP id 62-20020a1709020244b02900d6c4518566mr12441583plc.46.1605861490749;
-        Fri, 20 Nov 2020 00:38:10 -0800 (PST)
-Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
-        by smtp.gmail.com with ESMTPSA id w18sm2715971pfi.216.2020.11.20.00.38.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 00:38:10 -0800 (PST)
-Date:   Fri, 20 Nov 2020 03:37:39 -0500
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
- FNTCHARCNT() in fbcon.c
-Message-ID: <20201120073245.GA24568@PWN>
-References: <cover.1605169912.git.yepeilin.cs@gmail.com>
- <20201113211633.GY401619@phenom.ffwll.local>
- <X68NFzaAuImemnqh@kroah.com>
- <20201114081021.GA11811@PWN>
- <X6/K/S9V7rj2hI5p@kroah.com>
- <X6/L/lE2pA7csBwd@kroah.com>
- <20201119083257.GA9468@PWN>
- <CAKMK7uF_AOrfTDVZwmxn_C-5sTBDu_v9KGH07wO5hTa98Z8Ucg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UV+TC/nIwAvGxe27TfWZuXpBFdXk+Z+MJcbi20RbkeU=;
+        b=eIacIT8z2vDIUOLlvn7KuqiYOxLlnNo79paIpbcE7SVGFSffMVyrQUtTZPBxUTJp5K
+         ROZsMJLwxRCwWr6zqrwzw3BD/hD9T5BszMwbvWmzVsigkh177O0kAzrt30XhB04XuvUt
+         euCDJunZb4/gkLuI2YsnGbn0rDinyPtPSEMtavSfMzS/bYTN/Yeyr5G1F7X+To8Y+CcF
+         aDAw40UkidmSGt3pha3FcFcnkdsPLQZyOLFRZ9bkFulkfmHK2O8Re9sgCILOpFiwZR1C
+         E2jM5uEbqjYT/l6XWR3IJzc0yW4N2aRsVea09TH2rgDYLCQ+Pft5IH5Jfzq4mvDjuySA
+         J/EA==
+X-Gm-Message-State: AOAM532JESzbsTFITWUUnh14OPNEhpD9Y4wq/zWG6ENd0IxkEPj5l/Iu
+        YHRQpXF2lKrF0EmXgz+SURtwuH17CbumCUTICkA=
+X-Google-Smtp-Source: ABdhPJzR2//2OJGmAKmRurcCF5Pmnvd6Zw26PQX+HmnocDInNWRSJsXMuOxEhUFxFac+BI2+l6sGNVQCQfmxyanSYpo=
+X-Received: by 2002:a4a:e5ce:: with SMTP id r14mr13417862oov.11.1605861496120;
+ Fri, 20 Nov 2020 00:38:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uF_AOrfTDVZwmxn_C-5sTBDu_v9KGH07wO5hTa98Z8Ucg@mail.gmail.com>
+References: <20201119130926.25692-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201119130926.25692-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201119130926.25692-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 20 Nov 2020 09:38:05 +0100
+Message-ID: <CAMuHMdV+FDJ2pFyC0rGgOS3LwpA-dg8siTiA6gCjNLr05iDSGw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] pinctrl: renesas: r8a77951: Add QSPI[01] pins, groups
+ and functions
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 04:10:57PM +0100, Daniel Vetter wrote:
-> On Thu, Nov 19, 2020 at 9:33 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> > setfont seems to work fine, I tried Georgian-Fixed16 (256 chars) and
-> > Uni2-VGA16 (512 chars) under /usr/share/consolefonts/ in my Ubuntu box,
-> > including setting all consoles to the same font:
-> >
-> > for i in {1..6}; do
-> >         sudo setfont -C /dev/tty${i} /usr/share/consolefonts/Georgian-Fixed16.psf.gz
-> > done
-> >
-> > Font rotation also seems to work fine:
-> >
-> > for i in {1..4}; do
-> >         echo $i | sudo tee /sys/class/graphics/fbcon/rotate
-> >         sleep 1
-> > done
-> 
-> Thanks a lot for checking all this.
+On Thu, Nov 19, 2020 at 2:09 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add pins, groups and functions for QSPIO[01].
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Not a problem, watching my console rotating was fun :)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-for-v5.11.
 
-> > One last thing I can think of is tile blitting, but I don't have the
-> > hardware (e.g. a Matrox G400 card, see FB_TILEBLITTING in
-> > drivers/video/fbdev/Kconfig) at hand, nor did I figure out how to
-> > simulate it after searching for a while.  However based on the other
-> > tests above I believe vc->vc_font.charcount is set properly.
-> 
-> tbh I'll just go ahead and delete it if it's broken :-)
-> 
-> Userspace we have to keep working (and there's actually people
-> creating new products on top of drm display drivers using fbdev
-> emulation and /dev/fb/0 interface!), but kernel internal stuff like
-> fbcon acceleration we can trim pretty aggressively I think.
+Gr{oetje,eeting}s,
 
-Ah, I see, I'll leave it be, then.
+                        Geert
 
-Thanks,
-Peilin Ye
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
