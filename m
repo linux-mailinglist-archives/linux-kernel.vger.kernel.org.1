@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8832BB858
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492712BB861
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgKTVaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:30:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgKTVai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:30:38 -0500
-Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7841E2240B;
-        Fri, 20 Nov 2020 21:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605907837;
-        bh=yYWeZ4bWNoarJNFW+Bl6kgWy2hoART6WL65Zj6FeDK0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=zCmRQXICfs6qq+5SYKY1oY/aj2+nMa4EtRC/zg6zm+CoTkMC/pw9nI/iSoqDlro9q
-         URc/rknIEgisXNb6lbQ8nLd8drRT9tOypVQcGz8DPkiPJo2znZ2Au5oCyAfrwNccji
-         jRQvdZi68LgYcYtAgfJhkioiIrqaZ7Q/wD/eLHe8=
-Date:   Fri, 20 Nov 2020 15:30:36 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH] PCI/MSI: Set device flag indicating only 32-bit MSI
- support
-Message-ID: <20201120213036.GA278887@bjorn-Precision-5520>
+        id S1728086AbgKTVeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:34:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727310AbgKTVeF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 16:34:05 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98F1C0613CF;
+        Fri, 20 Nov 2020 13:34:04 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1kgE2X-00BcGw-Fl; Fri, 20 Nov 2020 22:33:57 +0100
+Message-ID: <8ccd245040d047ce1a7ef7332fe001cdc671e047.camel@sipsolutions.net>
+Subject: Re: [PATCH net] cfg80211: fix callback type mismatches in
+ wext-compat
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 20 Nov 2020 22:33:56 +0100
+In-Reply-To: <202011201118.CE625B965@keescook> (sfid-20201120_202702_159340_988FC7C4)
+References: <20201117205902.405316-1-samitolvanen@google.com>
+         <202011171338.BB25DBD1E6@keescook>
+         <CABCJKudJojTh+is8mdMicczgWiTXw+KwCuepmG5gLVmqPWjnHA@mail.gmail.com>
+         <202011201118.CE625B965@keescook> (sfid-20201120_202702_159340_988FC7C4)
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117145728.4516-1-vidyas@nvidia.com>
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 08:27:28PM +0530, Vidya Sagar wrote:
-> There are devices (Ex:- Marvell SATA controller) that don't support
-> 64-bit MSIs and the same is advertised through their MSI capability
-> register. 
-
-I *think* you're saying these devices behave correctly per spec: they
-don't support 64-bit MSI, and they don't advertise support for 64-bit
-MSI.  Right?
-
-> Set no_64bit_msi flag explicitly for such devices in the
-> MSI setup code so that the msi_verify_entries() API would catch
-> if the MSI arch code tries to use 64-bit MSI.
-
-And you want msi_verify_entries() to catch attempts by the arch code
-to assign a 64-bit MSI address?
-
-That sounds OK, but the error message ("Device has broken 64-bit MSI")
-is not appropriate if the device is actually *not* broken.
-
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> ---
->  drivers/pci/msi.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+On Fri, 2020-11-20 at 11:26 -0800, Kees Cook wrote:
+> On Tue, Nov 17, 2020 at 02:07:43PM -0800, Sami Tolvanen wrote:
+> > On Tue, Nov 17, 2020 at 1:45 PM Kees Cook <keescook@chromium.org> wrote:
+> > > On Tue, Nov 17, 2020 at 12:59:02PM -0800, Sami Tolvanen wrote:
+> > > > Instead of casting callback functions to type iw_handler, which trips
+> > > > indirect call checking with Clang's Control-Flow Integrity (CFI), add
+> > > > stub functions with the correct function type for the callbacks.
+> > > 
+> > > Oh, wow. iw_handler with union iwreq_data look like really nasty hacks.
+> > > Aren't those just totally bypassing type checking? Where do the
+> > > callbacks actually happen? I couldn't find them...
+> > 
+> > The callbacks to these happen in ioctl_standard_call in wext-core.c.
 > 
-> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-> index d52d118979a6..af49da28854e 100644
-> --- a/drivers/pci/msi.c
-> +++ b/drivers/pci/msi.c
-> @@ -581,10 +581,12 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
->  	entry->msi_attrib.multi_cap	= (control & PCI_MSI_FLAGS_QMASK) >> 1;
->  	entry->msi_attrib.multiple	= ilog2(__roundup_pow_of_two(nvec));
->  
-> -	if (control & PCI_MSI_FLAGS_64BIT)
-> +	if (control & PCI_MSI_FLAGS_64BIT) {
->  		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_64;
-> -	else
-> +	} else {
->  		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_32;
-> +		dev->no_64bit_msi = 1;
-> +	}
->  
->  	/* Save the initial mask status */
->  	if (entry->msi_attrib.maskbit)
-> -- 
-> 2.17.1
-> 
+> Thanks! If this is all the 'old compat' code, this patch looks fine. I
+> think new stuff should probably encode types in some fashion (rather
+> than via wrappers).
+
+Everything mentioning wext has been deprecated for something like 15
+years ... so yeah. But people still use it :(
+
+johannes
+
