@@ -2,110 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522842B9F9D
+	by mail.lfdr.de (Postfix) with ESMTP id C124F2B9F9E
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgKTBT7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Nov 2020 20:19:59 -0500
-Received: from twhmllg4.macronix.com ([122.147.135.202]:41921 "EHLO
-        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbgKTBT7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:19:59 -0500
-Received: from TWHMLLG4.macronix.com (localhost [127.0.0.2] (may be forged))
-        by TWHMLLG4.macronix.com with ESMTP id 0AK1BLtT017244
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 09:11:21 +0800 (GMT-8)
-        (envelope-from ycllin@mxic.com.tw)
-Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
-        by TWHMLLG4.macronix.com with ESMTP id 0AK1Aeb6016744;
-        Fri, 20 Nov 2020 09:10:40 +0800 (GMT-8)
-        (envelope-from ycllin@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
-        by Forcepoint Email with ESMTP id C63533B68BD7F94D29D7;
-        Fri, 20 Nov 2020 09:10:40 +0800 (CST)
-In-Reply-To: <20201119221558.7b484949@xps13>
-References: <1604490442-9052-1-git-send-email-ycllin@mxic.com.tw>       <20201119211133.31590-1-miquel.raynal@bootlin.com> <20201119221558.7b484949@xps13>
-To:     "Miquel Raynal" <miquel.raynal@bootlin.com>
-Cc:     juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com
-Subject: =?Big5?B?pl6rSDogUmU6IFtQQVRDSF0gbXRkOiBzcGluYW5kOiBtYWNyb25peDogQWRk?=
- =?Big5?B?IHN1cHBvcnQgZm9yIE1YMzVMRnhHRTRBRA==?=
+        id S1726540AbgKTBUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 20:20:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726295AbgKTBUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 20:20:10 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4000E22254;
+        Fri, 20 Nov 2020 01:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605835209;
+        bh=bZjfUL1UblIM9s71DnjwsiTSdfRM7AR55mXRwOocJc8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=E8MpnOsNGeqopO5roB8ILOdC3mB7a19xAKbOX8voSBE4w4x37Jym1OmCMYz6SeLDg
+         sqy4hRrDUk+hKTJfJbK88QZtZZvbqHwvtWLFypCTgnF+K5XKrzmPCrmldQ0EKbuCwo
+         Lq71kermx0GKX5SCB5qg0UuCGR/hbjJyv5FB0gKI=
+Date:   Thu, 19 Nov 2020 17:20:08 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dmytro Shytyi <dmytro@shytyi.net>
+Cc:     "yoshfuji" <yoshfuji@linux-ipv6.org>,
+        "kuznet" <kuznet@ms2.inr.ac.ru>,
+        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
+        "netdev" <netdev@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next V6] net: Variable SLAAC: SLAAC with prefixes of
+ arbitrary length in PIO
+Message-ID: <20201119172008.4d26c0fb@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <175e1fdb250.1207dca53446410.2492811916841931466@shytyi.net>
+References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
+        <202011110944.7zNVZmvB-lkp@intel.com>
+        <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net>
+        <175bf515624.c67e02e8130655.7824060160954233592@shytyi.net>
+        <175c31c6260.10eef97f6180313.755036504412557273@shytyi.net>
+        <20201117124348.132862b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <175e0b9826b.c3bb0aae425910.5834444036489233360@shytyi.net>
+        <20201119104413.75ca9888@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <175e1fdb250.1207dca53446410.2492811916841931466@shytyi.net>
 MIME-Version: 1.0
-X-KeepSent: 13142059:F2BB13E4-48258626:00062B35;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF13142059.F2BB13E4-ON48258626.00062B35-48258626.00067881@mxic.com.tw>
-From:   ycllin@mxic.com.tw
-Date:   Fri, 20 Nov 2020 09:10:40 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2020/11/20 AM 09:10:40,
-        Serialize complete at 2020/11/20 AM 09:10:40
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-MAIL: TWHMLLG4.macronix.com 0AK1Aeb6016744
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 19 Nov 2020 20:31:41 +0100 Dmytro Shytyi wrote:
+>  > Thanks for adding the helper! Looks like it needs a touch up:  =20
+> =20
+> Understood. Thank you for pointing this out. I think I did not catch this=
+ warning as my Makefile didn't include "-Wmissing-prototypes"
+>=20
+>  > net/ipv6/addrconf.c:2579:22: warning: no previous prototype for =E2=80=
+=98ipv6_cmp_rcvd_prsnt_prfxs=E2=80=99 [-Wmissing-prototypes]=20
+>  >  2579 | struct inet6_ifaddr *ipv6_cmp_rcvd_prsnt_prfxs(struct inet6_if=
+addr *ifp,=20
+>  >  |                      ^~~~~~~~~~~~~~~~~~~~~~~~~=20
+>  > net/ipv6/addrconf.c:2579:21: warning: symbol 'ipv6_cmp_rcvd_prsnt_prfx=
+s' was not declared. Should it be static?=20
+>  >  =20
+>=20
+> Hideaki Yoshifuji helped to improve this patch with suggestions. @Hideaki=
+, should I add "Reported-by" tag in this case?
+> Jakub Kicinski also helped to find errors and help with improvement. @Jak=
+ub, should I add "Reported-by" tag in this case?=20
 
-Hi Miquel,
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote on Thu, 19 Nov 2020
-> 22:11:33 +0100:
-> 
-> > On Wed, 2020-11-04 at 11:47:22 UTC, YouChing Lin wrote:
-> > > The Macronix MX35LF2GE4AD / MX35LF4GE4AD are 3V, 2G / 4Gbit serial
-> > > SLC NAND flash device (with on-die ECC).
-> > > 
-> > > Validated by read, erase, read back, write, read back and nandtest
-> > > on Xilinx Zynq PicoZed FPGA board which included Macronix SPI Host
-> > > (drivers/spi/spi-mxic.c).
-> > > 
-> > > Signed-off-by: YouChing Lin <ycllin@mxic.com.tw> 
-> > 
-> > Applied to 
-https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git 
-> nand/next, thanks.
-> 
-> Please use "v2" as prefix next time you change something in your patch
-> instead of "RESEND", it confuses me. I applied the wrong patch, I will
-> drop this one and take the "RESEND, v1" instead.
- 
-  OK, I got it, sorry for the mistake!
-
-  Thanks for your time.
-
-  YouChing.
-
-> 
-> Thanks,
-> Miquèl
-
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+No need for a tag for me, it would be great if Hideaki was
+willing to provide his acked-by or reviewed-by though :)
