@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4FF2BB0FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8A92BB102
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730206AbgKTQ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:56:13 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:34777 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730139AbgKTQ4M (ORCPT
+        id S1730214AbgKTQ4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:56:24 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:36353 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730103AbgKTQ4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:56:12 -0500
-Received: by mail-il1-f199.google.com with SMTP id q10so3980049ile.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 08:56:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=oI2HelN6479IMKjrMrMI0tmXG34A5v3EmyEuvpZIjqU=;
-        b=AJJ2uHQzAaHSYw3IjsiU/ezipKfjagi3RibAlMnUwsgTAhhE5lJbp0a9ywOzvANI2b
-         kj4l/cbAqirv+Y/0upm3lN/RmI/Jstto/uap7oSEiVvB3vhnXMz7RWmCV28QwfSdkB0X
-         OQA8vJFvHHttc3XtRfeKryv4PlLXQobOQRM3xNvMTqF7pStTyuJjQtAlLa5m3ws9OuRt
-         I4ow2EXXorgzP45ImjiYm8z84kFj0TMQt2Dh4DuA7ilkfgiLZcvR3b9ghx79K3RsK6pt
-         dfkpxi3vcXNERDzaiFBcD46vT5BsI7JSfYIUSHLBINF6KF0Z9IN61LJjdc9nK2xrnDL2
-         Cm8Q==
-X-Gm-Message-State: AOAM532ohnIxThXByFHa8K1vaPn06J+jj/j89t+3ay5jujOJ3XmpgJTv
-        hZXp2zatamG4s0C9CTJKRa3nTS5djTkCkp92LzPAQEaCoxiC
-X-Google-Smtp-Source: ABdhPJyxyZTCrhxlxlE+sTR/HHSUkzXodUJCZTowhPxTkHkg6kdxUnkphKlr0mZsimNE5CP4OR3SGYoKSpq35baGrmJA+CQ+q3Hn
+        Fri, 20 Nov 2020 11:56:23 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id A06305C00E1;
+        Fri, 20 Nov 2020 11:56:22 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 20 Nov 2020 11:56:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=qKqAaN7huqBFTY1CCd2pvJiT0qq
+        gNumhzJuMiM1PToA=; b=G128wEp3WtyPBwsipktjQgC51ZmKDQ3hpqkwxlA7PQT
+        P21y0WtKpQ1ZYDA9cilEv5a/0sjV/rKy4Q7rSpdq9AIMjKAibBgRLO2TyekYtZs6
+        BBUTuFmss2b7RclIdhG1BFe9MAunqMSCwWosFnVicTPICmfDbd8nKOprdjkDu374
+        bm3XbJG9j64lSNZfIacaaqN+4qRG5virDyBN/K/nHT78RUrbKJAkrZizywOvPctW
+        bhxhvP7UcAdeYKd2wzic8tREjyceTbIs7m/8sZbWAyNslUL/UbPxwctaNJzRA71y
+        4czva1l/X+jSK0E2nqOZsX7s2KPj+HFFJjoJ7icv/Ww==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=qKqAaN
+        7huqBFTY1CCd2pvJiT0qqgNumhzJuMiM1PToA=; b=kBCX00cosIXbLWZeP2JpqU
+        VU5GzZjCKUSZrr9JS10OTtDgRi4ianYeWue/l6vfqytBNOFqFUgUB938x9CYgu8P
+        y83+JM/sHssaLU2qx3RRr1+HT6eS96wXcp7HU6QWaAg4iKcJmyqZwJeOebscN5TS
+        0uYlKjO3pAQxyH4l6SJJsbo7j4glvxMoWOHY/zhgqJS5dax7F3z/3oI4KSiVA5EE
+        vQTdMk7ZiQ34D+jt8V2KX7AkZCVYbqZzOIR6OA4uTEHkXW/MCRmG3Q1XUnPHILq0
+        QQ/sl2WWobzYwQLsoRxkCM6JUQSXMab69P9OUaH9LTrwrRScMyOnuv6EE2RIViJA
+        ==
+X-ME-Sender: <xms:NfW3XzkDf1QkTzzYmCwYyqXsf8JvaQEfl7WoVTFkNnLL8iJPPa-X3A>
+    <xme:NfW3X22xe8Wg0l6A-kGkgr-JnTTETcbsBdDaLNjZAIqmKwXbRbP0j6tEVskXlRAZO
+    TxfSPI3l6SP5Vzim84>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegtddgledvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:NfW3X5rR7kRmJqVIzcsoQy7lCMc5sXhKPG1pidwEClaGZeGJL5rg1Q>
+    <xmx:NfW3X7kG2_QjUhiMh7oWFfew6Cwqpfiu28CCfftlWX82fQzwk8kTRA>
+    <xmx:NfW3Xx3XG-Z4gtyDA16y_3Vd1gAwjvbZszJ01fK8xI_7CjTbLquzGQ>
+    <xmx:NvW3X8SttZ2yrlph8JlcUfwDJ4fMauzuu--dAeRhmGHn9UqfiYBdxQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CE8E33280066;
+        Fri, 20 Nov 2020 11:56:20 -0500 (EST)
+Date:   Fri, 20 Nov 2020 17:56:19 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH] ARM: dts: sun8i: v3s: fix GIC node memory range
+Message-ID: <20201120165619.ou4uigdg22qrehne@gilmour>
+References: <20201120050851.4123759-1-icenowy@aosc.io>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:deb:: with SMTP id m11mr26236341ilj.8.1605891371865;
- Fri, 20 Nov 2020 08:56:11 -0800 (PST)
-Date:   Fri, 20 Nov 2020 08:56:11 -0800
-In-Reply-To: <20201120165609.GE619708@rowland.harvard.edu>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c49c8b05b48cb833@google.com>
-Subject: Re: Re: memory leak in hub_event
-From:   syzbot <syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pche2hgr46ibicqn"
+Content-Disposition: inline
+In-Reply-To: <20201120050851.4123759-1-icenowy@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Nov 20, 2020 at 07:15:20AM -0800, syzbot wrote:
->> Hello,
->> 
->> syzbot found the following issue on:
->> 
->> HEAD commit:    4d02da97 Merge tag 'net-5.10-rc5' of git://git.kernel.org/..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=13a7d2b6500000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=c5353ac514ca5a43
->> dashboard link: https://syzkaller.appspot.com/bug?extid=44e64397bd81d5e84cba
->> compiler:       gcc (GCC) 10.1.0-syz 20200507
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14925089500000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16810051500000
->> 
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
->> 
->> BUG: memory leak
->> unreferenced object 0xffff88810d5ff800 (size 2048):
->>   comm "kworker/1:0", pid 17, jiffies 4294949188 (age 14.280s)
->>   hex dump (first 32 bytes):
->>     ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
->>     00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
->>   backtrace:
->>     [<00000000f0428224>] kmalloc include/linux/slab.h:552 [inline]
->>     [<00000000f0428224>] kzalloc include/linux/slab.h:664 [inline]
->>     [<00000000f0428224>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
->>     [<000000001802b3dd>] hub_port_connect drivers/usb/core/hub.c:5128 [inline]
->>     [<000000001802b3dd>] hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
->>     [<000000001802b3dd>] port_event drivers/usb/core/hub.c:5508 [inline]
->>     [<000000001802b3dd>] hub_event+0x118d/0x20d0 drivers/usb/core/hub.c:5590
->>     [<0000000092d3650d>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
->>     [<00000000d4629ab0>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
->>     [<000000003c358b45>] kthread+0x178/0x1b0 kernel/kthread.c:292
->>     [<000000003689dbb0>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
->
-> This looks like a reference is being taken but not released.  Hard to 
-> tell where it's happening, though.  Let's try to narrow it down.
->
-> Alan Stern
->
-> #syz test: upstream 4d02da97
 
-"upstream" does not look like a valid git repo address.
+--pche2hgr46ibicqn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Index: usb-devel/drivers/media/usb/gspca/gspca.c
-> ===================================================================
-> --- usb-devel.orig/drivers/media/usb/gspca/gspca.c
-> +++ usb-devel/drivers/media/usb/gspca/gspca.c
-> @@ -1489,6 +1489,8 @@ int gspca_dev_probe2(struct usb_interfac
->  	}
->  
->  	gspca_dev->v4l2_dev.release = gspca_release;
-> +	ret = -EIO;
-> +	goto out;
->  	ret = v4l2_device_register(&intf->dev, &gspca_dev->v4l2_dev);
->  	if (ret)
->  		goto out;
+On Fri, Nov 20, 2020 at 01:08:51PM +0800, Icenowy Zheng wrote:
+> Currently the GIC node in V3s DTSI follows some old DT examples, and
+> being broken. This leads a warning at boot.
+>=20
+> Fix this.
+>=20
+> Fixes: f989086ccbc6 ("ARM: dts: sunxi: add dtsi file for V3s SoC")
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+
+Applied, thanks!
+Maxime
+
+--pche2hgr46ibicqn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX7f1MwAKCRDj7w1vZxhR
+xUZBAP9QRE5hT0jW96ROUXmoNRdQ1tcb+Epmu0ONjtDfDNb1UwD8DYiy9nj2COwe
+kI8zIqBZ4DlOXwG6ZamC532PUGK7zgQ=
+=2jDO
+-----END PGP SIGNATURE-----
+
+--pche2hgr46ibicqn--
