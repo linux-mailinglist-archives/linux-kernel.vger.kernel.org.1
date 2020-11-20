@@ -2,109 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C93A2BAF3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8FB2BAF45
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729925AbgKTPpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44044 "EHLO
+        id S1728525AbgKTPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728699AbgKTPpM (ORCPT
+        with ESMTP id S1728234AbgKTPqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:45:12 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB043C061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:45:11 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id v202so7724351oia.9
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:45:11 -0800 (PST)
+        Fri, 20 Nov 2020 10:46:14 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710E4C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:46:14 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id j205so14063651lfj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:46:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Id0PLSSDAy7IJx/4b1nt//hEs7fdMVA6YPiIkR5zClg=;
-        b=dfRfRtqDF1RrZwS/1drnyGXFKRYG5zPQqdVzf4oNa4Km4m+WAgPk+uu7TX/an2oDZ2
-         vBVLU/Buv8L5yJxUzKzQqx57WMgV3BOEQu6XrPSxvCgoD7tiafoeKNJTaeHl6caT1Y4y
-         wW2aFKG1iJ1Hj3bcVkn0J1Hf8qog45qEjZLYM=
+        bh=Yps1e5KzrIWuWLTz7SlzGPsEJ9zx8qv8vtiS4Y+fzRs=;
+        b=rCTDRbJfZOnUWWo5y33U/5YZehyzFwE68YkK2VrRXJBFoHAjkpD+g/l4cHSC7NeZZ+
+         0YdW7KZNJiLLSMjnhI/QJa+HnUTyqF4HibOUOLQpcAj9pY4vYWR5nKmFdyqx7U2ZiFbr
+         +zpxSQ68zHlODo2Nqu/+4QkqHkHRvflqrzcniIdhcfbfrTtBZOaQttJu36xcRZxKnEK0
+         o8CZtUmcjVvZU0gNLITvw/RemOvT7mRKtsR1dbgulsKKC5NM7TiG2d0EvnZUByN3cVDV
+         6EjCnzhFD5ao5TOIXEIc6sHCkGfCLDbvnK+CQgFZEcL+em1/BlARllGspl6BLvu84RCJ
+         K0sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Id0PLSSDAy7IJx/4b1nt//hEs7fdMVA6YPiIkR5zClg=;
-        b=t4PL+TGMhU5Tji+PF/ZlTvl0vBaxMDqdjEgvKpErJ+db6GwNKZFIEi1T9XzDp32OiL
-         iQidD0YW8rOD7c+f7eIwToJorIn/CUX5544dHeT3X7DuWQWRMKFFJqrVWQOs7uDNoW33
-         baHWAzEuj47ClKccD0kNvwQ9+M9WOp9rWYIyVd8NQ8Bh9RG4bwakwZlVAdTsb6P0rWi3
-         gAuWf23Dk2KHUtX2UIGFP5OL5iyoG4jO2dxxu0HdoDzJmuX7KFYvqJLh8Nj/+zUoAjgn
-         GqtxNpLihHbdylQPVUCWNQRP6aEzzONPZNFhZFIdEVLzJZGmu8v8tQJp5zbEUMkXtZ61
-         R+oA==
-X-Gm-Message-State: AOAM533llK2n9l3dMAfntkOkgNNbQO3XkwOygx9GHp9rGIIwhPVm3uSM
-        /I5m4M0heN5UGp2nR3U0jIQnzQyDEoNtA1CrdRfRDA==
-X-Google-Smtp-Source: ABdhPJxZSOR3YzYlAKw2cDHpm+laMCMM24uLZLKA5lft7iigCepfxe2uQ21R2KlDjhY86FMJ7oZu/z5k8KghnWux0Yo=
-X-Received: by 2002:aca:4f14:: with SMTP id d20mr6827257oib.14.1605887111047;
- Fri, 20 Nov 2020 07:45:11 -0800 (PST)
+        bh=Yps1e5KzrIWuWLTz7SlzGPsEJ9zx8qv8vtiS4Y+fzRs=;
+        b=DDYw60QIxy9qI8N124wktGXpv77ToF090SxoR58l4u2SUWLZFzEGB6QpJGRU5IHNo7
+         396vhZJ2K3545WNKieecr1oAwiC4YWjiDYQuAb6uq602Bz9BkGQn83hmhezFA4CF9ZkS
+         6nmtb1wr6wlCqSNBsFeJBBil+t4xBGTTVnwMaxnyr4q3gI0gs9OWp6KUSTMnMwhWsksR
+         sfkysfdDBm9akCT/nFtJgyVXTPGyMTQQGjvTSCr84+HKYo6lOVgBSCJ8uDCtpliaoC7c
+         HNe0LNihAyEp33fBjb8Cd3pX4C93R/Jx1toketp1N2YwKufgDqjdibX1JFj1+evPzs2W
+         ptjg==
+X-Gm-Message-State: AOAM530+7AwkWw8j/k7IHSY47Qo7pvOgNIMHBdDyWx9SFkXuwLDtjWNw
+        /+jNsk4/WF1zv65u6dZhFVam62kRjBfcTk5ZVVnIZQ==
+X-Google-Smtp-Source: ABdhPJzqVdHx85a27hK4ZeMMJMNdsvH3jFYK4AvuGPChIjOe/zteMjcwE+Tgd+zwuo7mnmIVIAWeI0SXxcCKxVMk4Ho=
+X-Received: by 2002:a19:686:: with SMTP id 128mr7865344lfg.198.1605887172681;
+ Fri, 20 Nov 2020 07:46:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
- <20201119144146.1045202-17-daniel.vetter@ffwll.ch> <cd56eb8a-fbec-e81f-9c14-d1256a193b68@redhat.com>
-In-Reply-To: <cd56eb8a-fbec-e81f-9c14-d1256a193b68@redhat.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Fri, 20 Nov 2020 16:44:59 +0100
-Message-ID: <CAKMK7uHDrPDcsWyMgFgjf0+hdebSUT4hX5hKR=CnTH=soLU-Kg@mail.gmail.com>
-Subject: Re: [PATCH v6 16/17] RFC: kvm: pass kvm argument to follow_pfn callsites
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>
+References: <20201120015913.1375667-1-jannh@google.com> <20201120153559.GA4119@sequoia>
+In-Reply-To: <20201120153559.GA4119@sequoia>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 20 Nov 2020 16:45:46 +0100
+Message-ID: <CAG48ez22JooyfTbPkhhfU15Oo3vcRr-bc1d3SQV1aGFaQuwVfA@mail.gmail.com>
+Subject: Re: [PATCH] seccomp: Remove bogus __user annotations
+To:     Tyler Hicks <code@tyhicks.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        kernel list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 4:33 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Fri, Nov 20, 2020 at 4:36 PM Tyler Hicks <code@tyhicks.com> wrote:
+> Hey Jann - Thanks for cleaning this up!
 >
-> On 19/11/20 15:41, Daniel Vetter wrote:
-> > Both Christoph Hellwig and Jason Gunthorpe suggested that usage of
-> > follow_pfn by modules should be locked down more. To do so callers
-> > need to be able to pass the mmu_notifier subscription corresponding
-> > to the mm_struct to follow_pfn().
+> On 2020-11-20 02:59:13, Jann Horn wrote:
+> > Buffers that are passed to read_actions_logged() and write_actions_logged()
+> > are in kernel memory; the sysctl core takes care of copying from/to
+> > userspace.
 > >
-> > This patch does the rote work of doing that in the kvm subsystem. In
-> > most places this is solved by passing struct kvm * down the call
-> > stacks as an additional parameter, since that contains the
-> > mmu_notifier.
-> >
-> > Compile tested on all affected arch.
+> > Fixes: 0ddec0fc8900 ("seccomp: Sysctl to configure actions that are allowed to be logged")
 >
-> It's a bit of a pity, it's making an API more complex (the point of
-> gfn_to_pfn_memslot vs gfn_to_pfn is exactly that you don't need a
-> "struct kvm*" and it's clear that you've already done the lookup into
-> that struct kvm.
-
-Yeah I noticed that, I think pushing the lookups down should work, but
-that's a fairly large-scale change. I didn't want to do that for the
-RFC since it would distract from the actual change/goal.
--Daniel
-
-> But it's not a big deal, and the rationale at least makes sense.  So,
+> After tracing back through the code, I was struggling to understand why
+> I thought the __user annotation was needed back then. It turns out that
+> __user was correct when I wrote 0ddec0fc8900 and that the Fixes tag
+> should be changed to this:
 >
-> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+>  Fixes: 32927393dc1c ("sysctl: pass kernel pointers to ->proc_handler")
 >
-> Paolo
+> If you agree, please adjust and resubmit with:
+>
+>  Reviewed-by: Tyler Hicks <code@tyhicks.com>
+>
+> Thank you!
 
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Aaaah, that makes sense. Thanks, will do.
