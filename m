@@ -2,174 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392CE2BB1EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B272BB1F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729316AbgKTSDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:03:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
+        id S1729357AbgKTSEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:04:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728278AbgKTSDI (ORCPT
+        with ESMTP id S1728907AbgKTSEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:03:08 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51516C0613CF;
-        Fri, 20 Nov 2020 10:03:07 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id l12so9344532ilo.1;
-        Fri, 20 Nov 2020 10:03:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5qvqz11R6f8JI5zsBDFVuBEzAMW6fNdbI/OnEdkYk48=;
-        b=RHVlUyuc/jgWCGOtrINdtrjVi44N6tl4aeFWrZQXyiJSNNMXTwj4bAuUGrJNx+KZtz
-         3eB0wDFU4t4X2hmzFLvaJj/MWsktOi6XOL26dZNs69o2n4KEnU28En57NqL9a2HmDre7
-         GCeWDuCmgWnLPIwFoasY0b2vDyGSfJ8fBs/GFvrhrfvRvXDjVYjItQRaJ5lsu6FBvV9f
-         6/xenz4/TMXRhcbTjSafEgOgjdyGkgn1pDjmz1McA8I2o/y5EOb17A5zgi4qYAmZGV3z
-         EuSB+qy7OOn9NdxEwKv2U7FuSxkstVGLGvr9185+rOZVjMHeWkyYFJURQeyHvJgalCTb
-         6W9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5qvqz11R6f8JI5zsBDFVuBEzAMW6fNdbI/OnEdkYk48=;
-        b=q4UTZTs176d1ijZg+J42pW3dQK3kIY8mqSfavv0n4NXCepNRY+cJK2w85P9kxuoGkU
-         UMJ5KB3G3cXTKUA6tjchkjnBDK8TydJ9bkQhU4F3UdiHB0RZgsSeSwqA+XzgoSUxiqk8
-         xIjFJG3rPR3PEALHuHK52IkcabzaeNAHErRTE2OmuXenW03PMvRUfUHw+vMLD7wsR0op
-         PaWVDNqnXkLl92ecDTlJRkgUYWnfSZpxURhIyN03tCjx+oRlxS9NNjd0eMSJeueB4lOc
-         +cC4Kba2kbKv+FcwUI7rn58tY3BoazNahRtDWNd7QeqLoq8AZder0mgj0PtnQvsN2vvo
-         iXvw==
-X-Gm-Message-State: AOAM532YkpJd5OVmbU87Odm1cugDxZ9ZyQnr9EcEQayNznHGqzymTEXR
-        DiZJI1IOckxpa8l2IuCBFp+jRKHD9lv03o1olKw1ZLRb4NE=
-X-Google-Smtp-Source: ABdhPJyydj+hM5HvBcpEvaW9M2cKq6pn/UfAvmG9+CIxFGpE+iODkbPxPsMOBPozQuDc4258F6K0WtzIY9ML+5DtKrw=
-X-Received: by 2002:a92:96c1:: with SMTP id g184mr16340833ilh.205.1605895385704;
- Fri, 20 Nov 2020 10:03:05 -0800 (PST)
+        Fri, 20 Nov 2020 13:04:36 -0500
+Received: from smtp-42ae.mail.infomaniak.ch (smtp-42ae.mail.infomaniak.ch [IPv6:2001:1600:4:17::42ae])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797D3C061A47
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:04:36 -0800 (PST)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Cd4FF3WcZzlhSjB;
+        Fri, 20 Nov 2020 19:04:33 +0100 (CET)
+Received: from localhost (unknown [94.23.54.103])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Cd4FD09NRzlh8T4;
+        Fri, 20 Nov 2020 19:04:31 +0100 (CET)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH v1 0/9] Enable root to update the blacklist keyring
+Date:   Fri, 20 Nov 2020 19:04:17 +0100
+Message-Id: <20201120180426.922572-1-mic@digikod.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <cover.1605893641.git.syednwaris@gmail.com> <b2011fb2e0438bdfd0b663b9f0456d0aef20f04b.1605893642.git.syednwaris@gmail.com>
- <X7gD7Q/63qoUuGpi@shinobu>
-In-Reply-To: <X7gD7Q/63qoUuGpi@shinobu>
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-Date:   Fri, 20 Nov 2020 23:32:53 +0530
-Message-ID: <CACG_h5qjvPN-LFH-JGm=8xeM-k4KB9pd==xvf0DDBMgRb-TXUQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] bitmap: Modify bitmap_set_value() to check bitmap length
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 11:29 PM William Breathitt Gray
-<vilhelm.gray@gmail.com> wrote:
->
-> On Fri, Nov 20, 2020 at 11:14:16PM +0530, Syed Nayyar Waris wrote:
-> > Add explicit check to see if the value being written into the bitmap
-> > does not fall outside the bitmap.
-> > The situation that it is falling outside would never be possible in the
-> > code because the boundaries are required to be correct before the function
-> > is called. The responsibility is on the caller for ensuring the boundaries
-> > are correct.
-> > This is just to suppress the GCC -Wtype-limits warnings.
->
-> Hi Syed,
->
-> This commit message sounds a bit strange without the context of our
-> earlier discussion thread. Would you be able to reword the commit
-> message to explain the motivation for using __builtin_unreachable()?
->
-> Thanks,
->
-> William Breathitt Gray
+Hi,
 
-Hi William,
+This patch series mainly add a new configuration option to enable the
+root user to load signed keys in the blacklist keyring.  This keyring is
+useful to "untrust" certificates or files.  Enabling to safely update
+this keyring without recompiling the kernel makes it more usable.
 
-Actually I explained the motivation for using __builtin_unreachable()
-in the cover letter.
-So, left it here in this patch.
+Regards,
 
-I am sending this patch again updating the commit message.
+Mickaël Salaün (9):
+  certs: Fix blacklisted hexadecimal hash string check
+  certs: Make blacklist_vet_description() more strict
+  certs: Factor out the blacklist hash creation
+  certs: Check that builtin blacklist hashes are valid
+  PKCS#7: Fix missing include
+  certs: Fix blacklist flag type confusion
+  certs: Allow root user to append signed hashes to the blacklist
+    keyring
+  certs: Replace K{U,G}IDT_INIT() with GLOBAL_ROOT_{U,G}ID
+  tools/certs: Add print-cert-tbs-hash.sh
 
-Regards
-Syed Nayyar Waris
+ MAINTAINERS                                   |   2 +
+ certs/.gitignore                              |   1 +
+ certs/Kconfig                                 |  10 +
+ certs/Makefile                                |  15 +-
+ certs/blacklist.c                             | 210 +++++++++++++-----
+ certs/system_keyring.c                        |   5 +-
+ crypto/asymmetric_keys/x509_public_key.c      |   3 +-
+ include/keys/system_keyring.h                 |  14 +-
+ include/linux/verification.h                  |   2 +
+ scripts/check-blacklist-hashes.awk            |  37 +++
+ .../platform_certs/keyring_handler.c          |  26 +--
+ tools/certs/print-cert-tbs-hash.sh            |  91 ++++++++
+ 12 files changed, 335 insertions(+), 81 deletions(-)
+ create mode 100755 scripts/check-blacklist-hashes.awk
+ create mode 100755 tools/certs/print-cert-tbs-hash.sh
 
->
-> >
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
-> > Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> > ---
-> >  include/linux/bitmap.h | 35 +++++++++++++++++++++--------------
-> >  1 file changed, 21 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> > index 386d08777342..efb6199ea1e7 100644
-> > --- a/include/linux/bitmap.h
-> > +++ b/include/linux/bitmap.h
-> > @@ -78,8 +78,9 @@
-> >   *  bitmap_get_value(map, start, nbits)              Get bit value of size
-> >   *                                              'nbits' from map at start
-> >   *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
-> > - *  bitmap_set_value(map, value, start, nbits)       Set bit value of size 'nbits'
-> > - *                                              of map at start
-> > + *  bitmap_set_value(map, nbits, value, value_width, start)
-> > + *                                              Set bit value of size value_width
-> > + *                                              to map at start
-> >   *
-> >   * Note, bitmap_zero() and bitmap_fill() operate over the region of
-> >   * unsigned longs, that is, bits behind bitmap till the unsigned long
-> > @@ -610,30 +611,36 @@ static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
-> >  }
-> >
-> >  /**
-> > - * bitmap_set_value - set n-bit value within a memory region
-> > + * bitmap_set_value - set value within a memory region
-> >   * @map: address to the bitmap memory region
-> > - * @value: value of nbits
-> > - * @start: bit offset of the n-bit value
-> > - * @nbits: size of value in bits (must be between 1 and BITS_PER_LONG inclusive).
-> > + * @nbits: size of map in bits
-> > + * @value: value of clump
-> > + * @value_width: size of value in bits (must be between 1 and BITS_PER_LONG inclusive)
-> > + * @start: bit offset of the value
-> >   */
-> > -static inline void bitmap_set_value(unsigned long *map,
-> > -                                 unsigned long value,
-> > -                                 unsigned long start, unsigned long nbits)
-> > +static inline void bitmap_set_value(unsigned long *map, unsigned long nbits,
-> > +                                 unsigned long value, unsigned long value_width,
-> > +                                 unsigned long start)
-> >  {
-> > -     const size_t index = BIT_WORD(start);
-> > +     const unsigned long index = BIT_WORD(start);
-> > +     const unsigned long length = BIT_WORD(nbits);
-> >       const unsigned long offset = start % BITS_PER_LONG;
-> >       const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
-> >       const unsigned long space = ceiling - start;
-> >
-> > -     value &= GENMASK(nbits - 1, 0);
-> > +     value &= GENMASK(value_width - 1, 0);
-> >
-> > -     if (space >= nbits) {
-> > -             map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
-> > +     if (space >= value_width) {
-> > +             map[index] &= ~(GENMASK(value_width - 1, 0) << offset);
-> >               map[index] |= value << offset;
-> >       } else {
-> >               map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-> >               map[index + 0] |= value << offset;
-> > -             map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> > +
-> > +             if (index + 1 >= length)
-> > +                     __builtin_unreachable();
-> > +
-> > +             map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + value_width);
-> >               map[index + 1] |= value >> space;
-> >       }
-> >  }
-> > --
-> > 2.29.0
-> >
+
+base-commit: 09162bc32c880a791c6c0668ce0745cf7958f576
+-- 
+2.29.2
+
