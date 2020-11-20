@@ -2,170 +2,710 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C9C2BAE6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BF72BAE73
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:23:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729426AbgKTPQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:16:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729159AbgKTPQC (ORCPT
+        id S1729438AbgKTPQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:16:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26465 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729428AbgKTPQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:16:02 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115EFC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:16:01 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id m13so10222178ioq.9
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:16:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AvkIOP/BQjTv1vzhil/jbNpm0u7fR43A7TYITMLBF/I=;
-        b=jhSa5G4Y7iB3jkInwwKcGaLiphebWNBQASUBnIfeOQYHWOIwnanEB7EZkPypVn0E3G
-         TM21rq+CTTmVvcPTr/r/7J/1x+xit/WQQ/SDltQKqMLvr0oeFQD+Ldjm7F3Yup6tWuCA
-         +uUV6q7iND8srCqrhp3Vgba9Ehw5u++RVFVz8j3YXqT1JLrJpmPlH7Oh5QJJjKfaEzjN
-         pb3gFY90uiK3olPJcNbSFl8YEs/Sj6M5hsYdEA7kFBet5GIKoEZhDFEMaKr1HAsUAadB
-         VxLg2TQ2N01RCSfYSra0kq4gWdIKVmDbHxLq9Pj12sRvpJxfVG6iNpNbAsLRE6T9MyBz
-         lKcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AvkIOP/BQjTv1vzhil/jbNpm0u7fR43A7TYITMLBF/I=;
-        b=lJkfqOH6TuWKDZNJPANmzkXOT+fdVqpbnQnUYqDHKXIwNTnZtczwMHsfVkuRvFKrQD
-         V4B9wChQbrwCVNxHVdQNjI61bUHjV2/rOpu4tB6e5oKuqUWFa1cE3C7U7e+oXEgjuLXR
-         KsmybZuOo8xuyWSF8J5+i8MxAFKyllz3UI//mQdmWK/BKAeIm7zj/p1bjeyzHGPBIQRm
-         jB7WHxhxVvy8ihyQSiqqw0yR5rszpKOV1rC8FnA1Jy3TyKaRC7pdhpMg8JfL/S64JZeV
-         AC+1a6G6RU+tM1FV/mTN3C552n8Pi9L9BlQHJi3vgSanO0pK7F50oBjJEvZVtphze6Bq
-         1UUg==
-X-Gm-Message-State: AOAM531KzU/QcHd9PuYWL/54Z1fMAi+jTHMfjYR2Ia+pVwMN8C/RZrhz
-        /CKKkXpbLllTRpiDcXi3iHSC04ATn9q7KmAiwVeHkQ==
-X-Google-Smtp-Source: ABdhPJzpmYxrFIpHcbNNhBq8k3I0UAHRxpoQxKTX3u8IWfhd4Wr21krjkP7KNwzj918RRdobSAeNZjESNs4e6B1965w=
-X-Received: by 2002:a5d:8ad6:: with SMTP id e22mr22673857iot.154.1605885360111;
- Fri, 20 Nov 2020 07:16:00 -0800 (PST)
+        Fri, 20 Nov 2020 10:16:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605885364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1ihUnsnOn9tK+6Qddr1stH/CMJWgwXbZI2L5Xn+WPuc=;
+        b=Qe0OXdIS8Q8ciCl5ykvxmLojShioryrBsLyvUa3vqhE+Lk1/zIvOqVFdiw8sXO1n2cjzDK
+        0JglWceUNYSkX02Of8HX7Tj1Y9yt4GWRLbLQ1Ji5INvpu1sbu6iKmRkminPYyXzMdEe1WF
+        sLlV8z9K/Uzztt58rM2RXmvZYh9Lnts=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-79-TL2SSoE1NyyGqWvbN9Q3ug-1; Fri, 20 Nov 2020 10:16:00 -0500
+X-MC-Unique: TL2SSoE1NyyGqWvbN9Q3ug-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B3A418B6126;
+        Fri, 20 Nov 2020 15:15:57 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-246.rdu2.redhat.com [10.10.112.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F9405C1D5;
+        Fri, 20 Nov 2020 15:15:50 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [RFC PATCH 62/76] afs: Use ITER_XARRAY for writing
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 20 Nov 2020 15:15:50 +0000
+Message-ID: <160588535018.3465195.14509994354240338307.stgit@warthog.procyon.org.uk>
+In-Reply-To: <160588455242.3465195.3214733858273019178.stgit@warthog.procyon.org.uk>
+References: <160588455242.3465195.3214733858273019178.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-References: <1605839346-10648-1-git-send-email-daoyuan.huang@mediatek.com> <1605839346-10648-3-git-send-email-daoyuan.huang@mediatek.com>
-In-Reply-To: <1605839346-10648-3-git-send-email-daoyuan.huang@mediatek.com>
-From:   Fabien Parent <fparent@baylibre.com>
-Date:   Fri, 20 Nov 2020 16:15:48 +0100
-Message-ID: <CAOwMV_wqv4vJ4Pb3o61Gce7ia3c5wJDWDtapOTqHYRYGNsmYfQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] dts: arm64: mt8183: Add Mediatek MDP3 nodes
-To:     Daoyuan Huang <daoyuan.huang@mediatek.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        menghui.lin@mediatek.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        linux-media@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        sj.huang@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, pihsun@chromium.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        randy.wu@mediatek.com, srv_heupstream@mediatek.com,
-        acourbot@chromium.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        tfiga@chromium.org, ben.lok@mediatek.com, moudy.ho@mediatek.com,
-        Rob Landley <rob@landley.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daoyuan,
+Use a single ITER_XARRAY iterator to describe the portion of a file to be
+transmitted to the server rather than generating a series of small
+ITER_BVEC iterators on the fly.  This will make it easier to implement AIO
+in afs.
 
-> Depend on:
->    [1] https://lore.kernel.org/patchwork/patch/1164746/
->    [2] https://patchwork.kernel.org/patch/11703299/
->    [3] https://patchwork.kernel.org/patch/11283773/
+In theory we could maybe use one giant ITER_BVEC, but that means
+potentially allocating a huge array of bio_vec structs (max 256 per page)
+when in fact the pagecache already has a structure listing all the relevant
+pages (radix_tree/xarray) that can be walked over.
 
-Can you provide an updated list of dependencies because it seems this
-patch depends on more than the patch aboves. I applied the related
-patch series above but there is still missing node
-ERROR (phandle_references): /soc/mdp-rdma0@14001000: Reference to
-non-existent node or label "scp"
-ERROR (phandle_references): /soc/mdp-rdma0@14001000: Reference to
-non-existent node or label "mutex"
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-It would be even better if you could provide a branch with all the
-dependencies included.
+ fs/afs/fsclient.c          |   50 +++++++++------------
+ fs/afs/internal.h          |   15 +++---
+ fs/afs/rxrpc.c             |  103 ++++++--------------------------------------
+ fs/afs/write.c             |  100 ++++++++++++++++++++++++-------------------
+ fs/afs/yfsclient.c         |   25 +++--------
+ include/trace/events/afs.h |   51 ++++++++--------------
+ 6 files changed, 126 insertions(+), 218 deletions(-)
 
->                 mmsys: syscon@14000000 {
->                         compatible = "mediatek,mt8183-mmsys", "syscon";
-> +                       mdp-comps = "mediatek,mt8183-mdp-dl",
-> +                                   "mediatek,mt8183-mdp-dl";
-> +                       mdp-comp-ids = <0 1>;
->                         reg = <0 0x14000000 0 0x1000>;
-> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0 0x1000>;
->                         #clock-cells = <1>;
-> +                       clocks = <&mmsys CLK_MM_MDP_DL_TXCK>,
-> +                                <&mmsys CLK_MM_MDP_DL_RX>,
-> +                                <&mmsys CLK_MM_IPU_DL_TXCK>,
-> +                                <&mmsys CLK_MM_IPU_DL_RX>;
-> +               };
+diff --git a/fs/afs/fsclient.c b/fs/afs/fsclient.c
+index 897b37301851..31e6b3635541 100644
+--- a/fs/afs/fsclient.c
++++ b/fs/afs/fsclient.c
+@@ -1055,8 +1055,7 @@ static const struct afs_call_type afs_RXFSStoreData64 = {
+ /*
+  * store a set of pages to a very large file
+  */
+-static void afs_fs_store_data64(struct afs_operation *op,
+-				loff_t pos, loff_t size, loff_t i_size)
++static void afs_fs_store_data64(struct afs_operation *op)
+ {
+ 	struct afs_vnode_param *vp = &op->file[0];
+ 	struct afs_call *call;
+@@ -1071,7 +1070,7 @@ static void afs_fs_store_data64(struct afs_operation *op,
+ 	if (!call)
+ 		return afs_op_nomem(op);
+ 
+-	call->send_pages = true;
++	call->write_iter = op->store.write_iter;
+ 
+ 	/* marshall the parameters */
+ 	bp = call->request;
+@@ -1087,47 +1086,38 @@ static void afs_fs_store_data64(struct afs_operation *op,
+ 	*bp++ = 0; /* unix mode */
+ 	*bp++ = 0; /* segment size */
+ 
+-	*bp++ = htonl(upper_32_bits(pos));
+-	*bp++ = htonl(lower_32_bits(pos));
+-	*bp++ = htonl(upper_32_bits(size));
+-	*bp++ = htonl(lower_32_bits(size));
+-	*bp++ = htonl(upper_32_bits(i_size));
+-	*bp++ = htonl(lower_32_bits(i_size));
++	*bp++ = htonl(upper_32_bits(op->store.pos));
++	*bp++ = htonl(lower_32_bits(op->store.pos));
++	*bp++ = htonl(upper_32_bits(op->store.size));
++	*bp++ = htonl(lower_32_bits(op->store.size));
++	*bp++ = htonl(upper_32_bits(op->store.i_size));
++	*bp++ = htonl(lower_32_bits(op->store.i_size));
+ 
+ 	trace_afs_make_fs_call(call, &vp->fid);
+ 	afs_make_op_call(op, call, GFP_NOFS);
+ }
+ 
+ /*
+- * store a set of pages
++ * Write data to a file on the server.
+  */
+ void afs_fs_store_data(struct afs_operation *op)
+ {
+ 	struct afs_vnode_param *vp = &op->file[0];
+ 	struct afs_call *call;
+-	loff_t size, pos, i_size;
+ 	__be32 *bp;
+ 
+ 	_enter(",%x,{%llx:%llu},,",
+ 	       key_serial(op->key), vp->fid.vid, vp->fid.vnode);
+ 
+-	size = (loff_t)op->store.last_to - (loff_t)op->store.first_offset;
+-	if (op->store.first != op->store.last)
+-		size += (loff_t)(op->store.last - op->store.first) << PAGE_SHIFT;
+-	pos = (loff_t)op->store.first << PAGE_SHIFT;
+-	pos += op->store.first_offset;
+-
+-	i_size = i_size_read(&vp->vnode->vfs_inode);
+-	if (pos + size > i_size)
+-		i_size = size + pos;
+-
+ 	_debug("size %llx, at %llx, i_size %llx",
+-	       (unsigned long long) size, (unsigned long long) pos,
+-	       (unsigned long long) i_size);
++	       (unsigned long long)op->store.size,
++	       (unsigned long long)op->store.pos,
++	       (unsigned long long)op->store.i_size);
+ 
+-	if (upper_32_bits(pos) || upper_32_bits(i_size) || upper_32_bits(size) ||
+-	    upper_32_bits(pos + size))
+-		return afs_fs_store_data64(op, pos, size, i_size);
++	if (upper_32_bits(op->store.pos) ||
++	    upper_32_bits(op->store.size) ||
++	    upper_32_bits(op->store.i_size))
++		return afs_fs_store_data64(op);
+ 
+ 	call = afs_alloc_flat_call(op->net, &afs_RXFSStoreData,
+ 				   (4 + 6 + 3) * 4,
+@@ -1135,7 +1125,7 @@ void afs_fs_store_data(struct afs_operation *op)
+ 	if (!call)
+ 		return afs_op_nomem(op);
+ 
+-	call->send_pages = true;
++	call->write_iter = op->store.write_iter;
+ 
+ 	/* marshall the parameters */
+ 	bp = call->request;
+@@ -1151,9 +1141,9 @@ void afs_fs_store_data(struct afs_operation *op)
+ 	*bp++ = 0; /* unix mode */
+ 	*bp++ = 0; /* segment size */
+ 
+-	*bp++ = htonl(lower_32_bits(pos));
+-	*bp++ = htonl(lower_32_bits(size));
+-	*bp++ = htonl(lower_32_bits(i_size));
++	*bp++ = htonl(lower_32_bits(op->store.pos));
++	*bp++ = htonl(lower_32_bits(op->store.size));
++	*bp++ = htonl(lower_32_bits(op->store.i_size));
+ 
+ 	trace_afs_make_fs_call(call, &vp->fid);
+ 	afs_make_op_call(op, call, GFP_NOFS);
+diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+index a643d87315ed..3556500a1247 100644
+--- a/fs/afs/internal.h
++++ b/fs/afs/internal.h
+@@ -107,6 +107,7 @@ struct afs_call {
+ 	void			*request;	/* request data (first part) */
+ 	size_t			iov_len;	/* Size of *iter to be used */
+ 	struct iov_iter		def_iter;	/* Default buffer/data iterator */
++	struct iov_iter		*write_iter;	/* Iterator defining write to be made */
+ 	struct iov_iter		*iter;		/* Iterator currently in use */
+ 	union {	/* Convenience for ->def_iter */
+ 		struct kvec	kvec[1];
+@@ -133,7 +134,6 @@ struct afs_call {
+ 	unsigned char		unmarshall;	/* unmarshalling phase */
+ 	unsigned char		addr_ix;	/* Address in ->alist */
+ 	bool			drop_ref;	/* T if need to drop ref for incoming call */
+-	bool			send_pages;	/* T if data from mapping should be sent */
+ 	bool			need_attention;	/* T if RxRPC poked us */
+ 	bool			async;		/* T if asynchronous */
+ 	bool			upgrade;	/* T to request service upgrade */
+@@ -810,12 +810,13 @@ struct afs_operation {
+ 			afs_lock_type_t type;
+ 		} lock;
+ 		struct {
+-			struct address_space *mapping;	/* Pages being written from */
+-			pgoff_t		first;		/* first page in mapping to deal with */
+-			pgoff_t		last;		/* last page in mapping to deal with */
+-			unsigned	first_offset;	/* offset into mapping[first] */
+-			unsigned	last_to;	/* amount of mapping[last] */
+-			bool		laundering;	/* Laundering page, PG_writeback not set */
++			struct iov_iter	*write_iter;
++			loff_t	pos;
++			loff_t	size;
++			loff_t	i_size;
++			pgoff_t	first;		/* first page in mapping to deal with */
++			pgoff_t	last;		/* last page in mapping to deal with */
++			bool	laundering;	/* Laundering page, PG_writeback not set */
+ 		} store;
+ 		struct {
+ 			struct iattr	*attr;
+diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
+index ae68576f822f..23a1a92d64bb 100644
+--- a/fs/afs/rxrpc.c
++++ b/fs/afs/rxrpc.c
+@@ -271,40 +271,6 @@ void afs_flat_call_destructor(struct afs_call *call)
+ 	call->buffer = NULL;
+ }
+ 
+-#define AFS_BVEC_MAX 8
+-
+-/*
+- * Load the given bvec with the next few pages.
+- */
+-static void afs_load_bvec(struct afs_call *call, struct msghdr *msg,
+-			  struct bio_vec *bv, pgoff_t first, pgoff_t last,
+-			  unsigned offset)
+-{
+-	struct afs_operation *op = call->op;
+-	struct page *pages[AFS_BVEC_MAX];
+-	unsigned int nr, n, i, to, bytes = 0;
+-
+-	nr = min_t(pgoff_t, last - first + 1, AFS_BVEC_MAX);
+-	n = find_get_pages_contig(op->store.mapping, first, nr, pages);
+-	ASSERTCMP(n, ==, nr);
+-
+-	msg->msg_flags |= MSG_MORE;
+-	for (i = 0; i < nr; i++) {
+-		to = PAGE_SIZE;
+-		if (first + i >= last) {
+-			to = op->store.last_to;
+-			msg->msg_flags &= ~MSG_MORE;
+-		}
+-		bv[i].bv_page = pages[i];
+-		bv[i].bv_len = to - offset;
+-		bv[i].bv_offset = offset;
+-		bytes += to - offset;
+-		offset = 0;
+-	}
+-
+-	iov_iter_bvec(&msg->msg_iter, WRITE, bv, nr, bytes);
+-}
+-
+ /*
+  * Advance the AFS call state when the RxRPC call ends the transmit phase.
+  */
+@@ -317,42 +283,6 @@ static void afs_notify_end_request_tx(struct sock *sock,
+ 	afs_set_call_state(call, AFS_CALL_CL_REQUESTING, AFS_CALL_CL_AWAIT_REPLY);
+ }
+ 
+-/*
+- * attach the data from a bunch of pages on an inode to a call
+- */
+-static int afs_send_pages(struct afs_call *call, struct msghdr *msg)
+-{
+-	struct afs_operation *op = call->op;
+-	struct bio_vec bv[AFS_BVEC_MAX];
+-	unsigned int bytes, nr, loop, offset;
+-	pgoff_t first = op->store.first, last = op->store.last;
+-	int ret;
+-
+-	offset = op->store.first_offset;
+-	op->store.first_offset = 0;
+-
+-	do {
+-		afs_load_bvec(call, msg, bv, first, last, offset);
+-		trace_afs_send_pages(call, msg, first, last, offset);
+-
+-		offset = 0;
+-		bytes = msg->msg_iter.count;
+-		nr = msg->msg_iter.nr_segs;
+-
+-		ret = rxrpc_kernel_send_data(op->net->socket, call->rxcall, msg,
+-					     bytes, afs_notify_end_request_tx);
+-		for (loop = 0; loop < nr; loop++)
+-			put_page(bv[loop].bv_page);
+-		if (ret < 0)
+-			break;
+-
+-		first += nr;
+-	} while (first <= last);
+-
+-	trace_afs_sent_pages(call, op->store.first, last, first, ret);
+-	return ret;
+-}
+-
+ /*
+  * Initiate a call and synchronously queue up the parameters for dispatch.  Any
+  * error is stored into the call struct, which the caller must check for.
+@@ -384,21 +314,8 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
+ 	 * after the initial fixed part.
+ 	 */
+ 	tx_total_len = call->request_size;
+-	if (call->send_pages) {
+-		struct afs_operation *op = call->op;
+-
+-		if (op->store.last == op->store.first) {
+-			tx_total_len += op->store.last_to - op->store.first_offset;
+-		} else {
+-			/* It looks mathematically like you should be able to
+-			 * combine the following lines with the ones above, but
+-			 * unsigned arithmetic is fun when it wraps...
+-			 */
+-			tx_total_len += PAGE_SIZE - op->store.first_offset;
+-			tx_total_len += op->store.last_to;
+-			tx_total_len += (op->store.last - op->store.first - 1) * PAGE_SIZE;
+-		}
+-	}
++	if (call->write_iter)
++		tx_total_len += iov_iter_count(call->write_iter);
+ 
+ 	/* If the call is going to be asynchronous, we need an extra ref for
+ 	 * the call to hold itself so the caller need not hang on to its ref.
+@@ -440,7 +357,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
+ 	iov_iter_kvec(&msg.msg_iter, WRITE, iov, 1, call->request_size);
+ 	msg.msg_control		= NULL;
+ 	msg.msg_controllen	= 0;
+-	msg.msg_flags		= MSG_WAITALL | (call->send_pages ? MSG_MORE : 0);
++	msg.msg_flags		= MSG_WAITALL | (call->write_iter ? MSG_MORE : 0);
+ 
+ 	ret = rxrpc_kernel_send_data(call->net->socket, rxcall,
+ 				     &msg, call->request_size,
+@@ -448,8 +365,18 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
+ 	if (ret < 0)
+ 		goto error_do_abort;
+ 
+-	if (call->send_pages) {
+-		ret = afs_send_pages(call, &msg);
++	if (call->write_iter) {
++		msg.msg_iter = *call->write_iter;
++		msg.msg_flags &= ~MSG_MORE;
++		trace_afs_send_data(call, &msg);
++
++		ret = rxrpc_kernel_send_data(call->net->socket,
++					     call->rxcall, &msg,
++					     iov_iter_count(&msg.msg_iter),
++					     afs_notify_end_request_tx);
++		*call->write_iter = msg.msg_iter;
++
++		trace_afs_sent_data(call, &msg, ret);
+ 		if (ret < 0)
+ 			goto error_do_abort;
+ 	}
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index e78a9bc3b02d..dd4dc1c868b5 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -325,36 +325,27 @@ static void afs_redirty_pages(struct writeback_control *wbc,
+ /*
+  * completion of write to server
+  */
+-static void afs_pages_written_back(struct afs_vnode *vnode,
+-				   pgoff_t first, pgoff_t last)
++static void afs_pages_written_back(struct afs_vnode *vnode, pgoff_t start, pgoff_t last)
+ {
+-	struct pagevec pv;
+-	unsigned count, loop;
++	struct address_space *mapping = vnode->vfs_inode.i_mapping;
++	struct page *page;
++
++	XA_STATE(xas, &mapping->i_pages, start);
+ 
+ 	_enter("{%llx:%llu},{%lx-%lx}",
+-	       vnode->fid.vid, vnode->fid.vnode, first, last);
++	       vnode->fid.vid, vnode->fid.vnode, start, last);
+ 
+-	pagevec_init(&pv);
++	rcu_read_lock();
+ 
+-	do {
+-		_debug("done %lx-%lx", first, last);
++	xas_for_each(&xas, page, last) {
++		ASSERT(PageWriteback(page));
+ 
+-		count = last - first + 1;
+-		if (count > PAGEVEC_SIZE)
+-			count = PAGEVEC_SIZE;
+-		pv.nr = find_get_pages_contig(vnode->vfs_inode.i_mapping,
+-					      first, count, pv.pages);
+-		ASSERTCMP(pv.nr, ==, count);
++		detach_page_private(page);
++		trace_afs_page_dirty(vnode, tracepoint_string("clear"), page);
++		page_endio(page, true, 0);
++	}
+ 
+-		for (loop = 0; loop < count; loop++) {
+-			detach_page_private(pv.pages[loop]);
+-			trace_afs_page_dirty(vnode, tracepoint_string("clear"),
+-					     pv.pages[loop]);
+-			end_page_writeback(pv.pages[loop]);
+-		}
+-		first += count;
+-		__pagevec_release(&pv);
+-	} while (first <= last);
++	rcu_read_unlock();
+ 
+ 	afs_prune_wb_keys(vnode);
+ 	_leave("");
+@@ -411,9 +402,7 @@ static void afs_store_data_success(struct afs_operation *op)
+ 		if (!op->store.laundering)
+ 			afs_pages_written_back(vnode, op->store.first, op->store.last);
+ 		afs_stat_v(vnode, n_stores);
+-		atomic_long_add((op->store.last * PAGE_SIZE + op->store.last_to) -
+-				(op->store.first * PAGE_SIZE + op->store.first_offset),
+-				&afs_v2net(vnode)->n_store_bytes);
++		atomic_long_add(op->store.size, &afs_v2net(vnode)->n_store_bytes);
+ 	}
+ }
+ 
+@@ -426,21 +415,21 @@ static const struct afs_operation_ops afs_store_data_operation = {
+ /*
+  * write to a file
+  */
+-static int afs_store_data(struct address_space *mapping,
+-			  pgoff_t first, pgoff_t last,
+-			  unsigned offset, unsigned to, bool laundering)
++static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter,
++			  loff_t pos, pgoff_t first, pgoff_t last,
++			  bool laundering)
+ {
+-	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
+ 	struct afs_operation *op;
+ 	struct afs_wb_key *wbk = NULL;
+-	int ret;
++	loff_t size = iov_iter_count(iter), i_size;
++	int ret = -ENOKEY;
+ 
+-	_enter("%s{%llx:%llu.%u},%lx,%lx,%x,%x",
++	_enter("%s{%llx:%llu.%u},%llx,%llx",
+ 	       vnode->volume->name,
+ 	       vnode->fid.vid,
+ 	       vnode->fid.vnode,
+ 	       vnode->fid.unique,
+-	       first, last, offset, to);
++	       size, pos);
+ 
+ 	ret = afs_get_writeback_key(vnode, &wbk);
+ 	if (ret) {
+@@ -454,13 +443,16 @@ static int afs_store_data(struct address_space *mapping,
+ 		return -ENOMEM;
+ 	}
+ 
++	i_size = i_size_read(&vnode->vfs_inode);
++
+ 	afs_op_set_vnode(op, 0, vnode);
+ 	op->file[0].dv_delta = 1;
+-	op->store.mapping = mapping;
++	op->store.write_iter = iter;
++	op->store.pos = pos;
+ 	op->store.first = first;
+ 	op->store.last = last;
+-	op->store.first_offset = offset;
+-	op->store.last_to = to;
++	op->store.size = size;
++	op->store.i_size = max(pos + size, i_size);
+ 	op->store.laundering = laundering;
+ 	op->mtime = vnode->vfs_inode.i_mtime;
+ 	op->flags |= AFS_OPERATION_UNINTR;
+@@ -503,11 +495,12 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
+ 					   pgoff_t final_page)
+ {
+ 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
++	struct iov_iter iter;
+ 	struct page *pages[8], *page;
+ 	unsigned long count, priv;
+ 	unsigned n, offset, to, f, t;
+ 	pgoff_t start, first, last;
+-	loff_t i_size, end;
++	loff_t i_size, pos, end;
+ 	int loop, ret;
+ 
+ 	_enter(",%lx", primary_page->index);
+@@ -604,15 +597,28 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
+ 
+ 	first = primary_page->index;
+ 	last = first + count - 1;
++	_debug("write back %lx[%u..] to %lx[..%u]", first, offset, last, to);
+ 
+-	end = (loff_t)last * PAGE_SIZE + to;
+-	i_size = i_size_read(&vnode->vfs_inode);
++	pos = first;
++	pos <<= PAGE_SHIFT;
++	pos += offset;
++	end = last;
++	end <<= PAGE_SHIFT;
++	end += to;
+ 
+-	_debug("write back %lx[%u..] to %lx[..%u]", first, offset, last, to);
++	/* Trim the actual write down to the EOF */
++	i_size = i_size_read(&vnode->vfs_inode);
+ 	if (end > i_size)
+-		to = i_size & ~PAGE_MASK;
++		end = i_size;
++
++	if (pos < i_size) {
++		iov_iter_xarray(&iter, WRITE, &mapping->i_pages, pos, end - pos);
++		ret = afs_store_data(vnode, &iter, pos, first, last, false);
++	} else {
++		/* The dirty region was entirely beyond the EOF. */
++		ret = 0;
++	}
+ 
+-	ret = afs_store_data(mapping, first, last, offset, to, false);
+ 	switch (ret) {
+ 	case 0:
+ 		ret = count;
+@@ -913,6 +919,8 @@ int afs_launder_page(struct page *page)
+ {
+ 	struct address_space *mapping = page->mapping;
+ 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
++	struct iov_iter iter;
++	struct bio_vec bv[1];
+ 	unsigned long priv;
+ 	unsigned int f, t;
+ 	int ret = 0;
+@@ -928,8 +936,14 @@ int afs_launder_page(struct page *page)
+ 			t = afs_page_dirty_to(page, priv);
+ 		}
+ 
++		bv[0].bv_page = page;
++		bv[0].bv_offset = f;
++		bv[0].bv_len = t - f;
++		iov_iter_bvec(&iter, WRITE, bv, 1, bv[0].bv_len);
++
+ 		trace_afs_page_dirty(vnode, tracepoint_string("launder"), page);
+-		ret = afs_store_data(mapping, page->index, page->index, t, f, true);
++		ret = afs_store_data(vnode, &iter, (loff_t)page->index << PAGE_SHIFT,
++				     page->index, page->index, true);
+ 	}
+ 
+ 	detach_page_private(page);
+diff --git a/fs/afs/yfsclient.c b/fs/afs/yfsclient.c
+index abcec145db4b..363d6dd276c0 100644
+--- a/fs/afs/yfsclient.c
++++ b/fs/afs/yfsclient.c
+@@ -1078,25 +1078,15 @@ void yfs_fs_store_data(struct afs_operation *op)
+ {
+ 	struct afs_vnode_param *vp = &op->file[0];
+ 	struct afs_call *call;
+-	loff_t size, pos, i_size;
+ 	__be32 *bp;
+ 
+ 	_enter(",%x,{%llx:%llu},,",
+ 	       key_serial(op->key), vp->fid.vid, vp->fid.vnode);
+ 
+-	size = (loff_t)op->store.last_to - (loff_t)op->store.first_offset;
+-	if (op->store.first != op->store.last)
+-		size += (loff_t)(op->store.last - op->store.first) << PAGE_SHIFT;
+-	pos = (loff_t)op->store.first << PAGE_SHIFT;
+-	pos += op->store.first_offset;
+-
+-	i_size = i_size_read(&vp->vnode->vfs_inode);
+-	if (pos + size > i_size)
+-		i_size = size + pos;
+-
+ 	_debug("size %llx, at %llx, i_size %llx",
+-	       (unsigned long long)size, (unsigned long long)pos,
+-	       (unsigned long long)i_size);
++	       (unsigned long long)op->store.size,
++	       (unsigned long long)op->store.pos,
++	       (unsigned long long)op->store.i_size);
+ 
+ 	call = afs_alloc_flat_call(op->net, &yfs_RXYFSStoreData64,
+ 				   sizeof(__be32) +
+@@ -1109,8 +1099,7 @@ void yfs_fs_store_data(struct afs_operation *op)
+ 	if (!call)
+ 		return afs_op_nomem(op);
+ 
+-	call->key = op->key;
+-	call->send_pages = true;
++	call->write_iter = op->store.write_iter;
+ 
+ 	/* marshall the parameters */
+ 	bp = call->request;
+@@ -1118,9 +1107,9 @@ void yfs_fs_store_data(struct afs_operation *op)
+ 	bp = xdr_encode_u32(bp, 0); /* RPC flags */
+ 	bp = xdr_encode_YFSFid(bp, &vp->fid);
+ 	bp = xdr_encode_YFSStoreStatus_mtime(bp, &op->mtime);
+-	bp = xdr_encode_u64(bp, pos);
+-	bp = xdr_encode_u64(bp, size);
+-	bp = xdr_encode_u64(bp, i_size);
++	bp = xdr_encode_u64(bp, op->store.pos);
++	bp = xdr_encode_u64(bp, op->store.size);
++	bp = xdr_encode_u64(bp, op->store.i_size);
+ 	yfs_check_req(call, bp);
+ 
+ 	trace_afs_make_fs_call(call, &vp->fid);
+diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
+index f0b2565db2d9..f9e196c8798d 100644
+--- a/include/trace/events/afs.h
++++ b/include/trace/events/afs.h
+@@ -884,65 +884,52 @@ TRACE_EVENT(afs_call_done,
+ 		      __entry->rx_call)
+ 	    );
+ 
+-TRACE_EVENT(afs_send_pages,
+-	    TP_PROTO(struct afs_call *call, struct msghdr *msg,
+-		     pgoff_t first, pgoff_t last, unsigned int offset),
++TRACE_EVENT(afs_send_data,
++	    TP_PROTO(struct afs_call *call, struct msghdr *msg),
+ 
+-	    TP_ARGS(call, msg, first, last, offset),
++	    TP_ARGS(call, msg),
+ 
+ 	    TP_STRUCT__entry(
+ 		    __field(unsigned int,		call		)
+-		    __field(pgoff_t,			first		)
+-		    __field(pgoff_t,			last		)
+-		    __field(unsigned int,		nr		)
+-		    __field(unsigned int,		bytes		)
+-		    __field(unsigned int,		offset		)
+ 		    __field(unsigned int,		flags		)
++		    __field(loff_t,			offset		)
++		    __field(loff_t,			count		)
+ 			     ),
+ 
+ 	    TP_fast_assign(
+ 		    __entry->call = call->debug_id;
+-		    __entry->first = first;
+-		    __entry->last = last;
+-		    __entry->nr = msg->msg_iter.nr_segs;
+-		    __entry->bytes = msg->msg_iter.count;
+-		    __entry->offset = offset;
+ 		    __entry->flags = msg->msg_flags;
++		    __entry->offset = msg->msg_iter.xarray_start + msg->msg_iter.iov_offset;
++		    __entry->count = iov_iter_count(&msg->msg_iter);
+ 			   ),
+ 
+-	    TP_printk(" c=%08x %lx-%lx-%lx b=%x o=%x f=%x",
+-		      __entry->call,
+-		      __entry->first, __entry->first + __entry->nr - 1, __entry->last,
+-		      __entry->bytes, __entry->offset,
++	    TP_printk(" c=%08x o=%llx n=%llx f=%x",
++		      __entry->call, __entry->offset, __entry->count,
+ 		      __entry->flags)
+ 	    );
+ 
+-TRACE_EVENT(afs_sent_pages,
+-	    TP_PROTO(struct afs_call *call, pgoff_t first, pgoff_t last,
+-		     pgoff_t cursor, int ret),
++TRACE_EVENT(afs_sent_data,
++	    TP_PROTO(struct afs_call *call, struct msghdr *msg, int ret),
+ 
+-	    TP_ARGS(call, first, last, cursor, ret),
++	    TP_ARGS(call, msg, ret),
+ 
+ 	    TP_STRUCT__entry(
+ 		    __field(unsigned int,		call		)
+-		    __field(pgoff_t,			first		)
+-		    __field(pgoff_t,			last		)
+-		    __field(pgoff_t,			cursor		)
+ 		    __field(int,			ret		)
++		    __field(loff_t,			offset		)
++		    __field(loff_t,			count		)
+ 			     ),
+ 
+ 	    TP_fast_assign(
+ 		    __entry->call = call->debug_id;
+-		    __entry->first = first;
+-		    __entry->last = last;
+-		    __entry->cursor = cursor;
+ 		    __entry->ret = ret;
++		    __entry->offset = msg->msg_iter.xarray_start + msg->msg_iter.iov_offset;
++		    __entry->count = iov_iter_count(&msg->msg_iter);
+ 			   ),
+ 
+-	    TP_printk(" c=%08x %lx-%lx c=%lx r=%d",
+-		      __entry->call,
+-		      __entry->first, __entry->last,
+-		      __entry->cursor, __entry->ret)
++	    TP_printk(" c=%08x o=%llx n=%llx r=%x",
++		      __entry->call, __entry->offset, __entry->count,
++		      __entry->ret)
+ 	    );
+ 
+ TRACE_EVENT(afs_dir_check_failed,
 
-The kernel is not booting anymore when the 4 clocks above are added,
-if I remove them I can boot again. See the following log:
 
-[    0.401314] Unable to handle kernel paging request at virtual
-address fffffffffffffffe
-[    0.402320] Mem abort info:
-[    0.402674]   ESR = 0x96000004
-[    0.403062]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    0.403741]   SET = 0, FnV = 0
-[    0.404128]   EA = 0, S1PTW = 0
-[    0.404526] Data abort info:
-[    0.404890]   ISV = 0, ISS = 0x00000004
-[    0.405374]   CM = 0, WnR = 0
-[    0.405751] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000415ee000
-[    0.406595] [fffffffffffffffe] pgd=0000000000000000, p4d=0000000000000000
-[    0.407457] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[    0.408160] Modules linked in:
-[    0.408551] CPU: 4 PID: 51 Comm: kworker/4:1 Not tainted
-5.9.0-mtk-00010-g121ba830623e-dirty #2
-[    0.409646] Hardware name: MediaTek MT8183 evaluation board (DT)
-[    0.410416] Workqueue: events deferred_probe_work_func
-[    0.411067] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-[    0.411772] pc : clk_prepare+0x18/0x44
-[    0.412252] lr : scpsys_power_on+0x1e8/0x470
-[    0.412791] sp : ffff800011fa3a20
-[    0.413209] x29: ffff800011fa3a20 x28: 0000000000000000
-[    0.413881] x27: 0000000000000000 x26: 0000000000000000
-[    0.414551] x25: ffff00007a23ade0 x24: ffff00007a223b80
-[    0.415222] x23: ffff800011f5d30c x22: ffff00007a23a888
-[    0.415892] x21: fffffffffffffffe x20: 0000000000000000
-[    0.416563] x19: 0000000000000000 x18: 0000000000000020
-[    0.417233] x17: 0000000000000020 x16: 0000000052d9c4c7
-[    0.417904] x15: 0000000000000059 x14: ffff00007a23a640
-[    0.418575] x13: ffff00007a23a5c0 x12: 0000000000000000
-[    0.419245] x11: ffff8000108331c0 x10: ffff800010833030
-[    0.419916] x9 : 0000000000000000 x8 : ffff00007a751c00
-[    0.420587] x7 : ffff800011fa3a70 x6 : 00000000130f968d
-[    0.421257] x5 : ffff8000110043f0 x4 : 0000000000000184
-[    0.421927] x3 : 0000000000000000 x2 : 0000000000000008
-[    0.422598] x1 : 000000000000000d x0 : fffffffffffffffe
-[    0.423268] Call trace:
-[    0.423581]  clk_prepare+0x18/0x44
-[    0.424014]  scpsys_power_on+0x1e8/0x470
-[    0.424511]  scpsys_probe+0x3f4/0x66c
-[    0.424975]  platform_drv_probe+0x54/0xb0
-[    0.425483]  really_probe+0xe4/0x490
-[    0.425937]  driver_probe_device+0x58/0xc0
-[    0.426456]  __device_attach_driver+0xa8/0x10c
-[    0.427019]  bus_for_each_drv+0x78/0xcc
-[    0.427504]  __device_attach+0xdc/0x180
-[    0.427990]  device_initial_probe+0x14/0x20
-[    0.428521]  bus_probe_device+0x9c/0xa4
-[    0.429007]  deferred_probe_work_func+0x74/0xb0
-[    0.429582]  process_one_work+0x1cc/0x350
-[    0.430090]  worker_thread+0x2c0/0x470
-[    0.430565]  kthread+0x154/0x160
-[    0.430976]  ret_from_fork+0x10/0x30
-[    0.431431] Code: 910003fd f9000bf3 52800013 b40000e0 (f9400013)
-[    0.432200] ---[ end trace d3ecf925b254a559 ]---
