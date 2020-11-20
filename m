@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE552BA8A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C66142BA859
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728639AbgKTLKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:10:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54172 "EHLO mail.kernel.org"
+        id S1728430AbgKTLGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:06:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728388AbgKTLG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:06:26 -0500
+        id S1728339AbgKTLG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:06:29 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C54F206E3;
-        Fri, 20 Nov 2020 11:06:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 136742222F;
+        Fri, 20 Nov 2020 11:06:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605870385;
-        bh=J6jQKE/UZP5uU4IlM2NWyorOOshnTi1QfvDyzJgSTbM=;
+        s=korg; t=1605870388;
+        bh=S4yqVe9RGqCbG1WSJtpJTU8M4W8YbB3MYd/RdiTJ7fc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0PHAkoADupJp9hUpp4PunIGSr9iLmIr+98RrmjUYdEhqZ8mvTyCent3AmZRrjAOru
-         MR0vYPpKGs7Q/Mu1/0GTZ0LwB5Au9vGOFQ4KFQ6/iy3DbHOL7pt0a8OIwIGVjbZDWA
-         J2DeV/CrybIPhY4K1N4wBvEza8AZOXQ69bAg1NpY=
+        b=w+fajXk4LZ2s+/RimIZeCn+YdXGvdh98J8h1CQtSVRSa671mjansq2IkfIIoJAWUA
+         Wyd76Ri2EwApfR+6yDIwCMmumhgnEWYPwtRL0vQqmeu1vAQ0oFK9SMI3wgtgSqilHC
+         Zp65TofKSofikn1U/3tm4Fr7C7V7r/ndXMuDn/vg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        David Edmondson <david.edmondson@oracle.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.19 13/14] KVM: x86: clflushopt should be treated as a no-op by emulation
-Date:   Fri, 20 Nov 2020 12:03:34 +0100
-Message-Id: <20201120104540.471604502@linuxfoundation.org>
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.19 14/14] ACPI: GED: fix -Wformat
+Date:   Fri, 20 Nov 2020 12:03:35 +0100
+Message-Id: <20201120104540.521171626@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201120104539.806156260@linuxfoundation.org>
 References: <20201120104539.806156260@linuxfoundation.org>
@@ -44,47 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Edmondson <david.edmondson@oracle.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-commit 51b958e5aeb1e18c00332e0b37c5d4e95a3eff84 upstream.
+commit 9debfb81e7654fe7388a49f45bc4d789b94c1103 upstream.
 
-The instruction emulator ignores clflush instructions, yet fails to
-support clflushopt. Treat both similarly.
+Clang is more aggressive about -Wformat warnings when the format flag
+specifies a type smaller than the parameter. It turns out that gsi is an
+int. Fixes:
 
-Fixes: 13e457e0eebf ("KVM: x86: Emulator does not decode clflush well")
-Signed-off-by: David Edmondson <david.edmondson@oracle.com>
-Message-Id: <20201103120400.240882-1-david.edmondson@oracle.com>
-Reviewed-by: Joao Martins <joao.m.martins@oracle.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+drivers/acpi/evged.c:105:48: warning: format specifies type 'unsigned
+char' but the argument has type 'unsigned int' [-Wformat]
+trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
+                                            ^~~
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/378
+Fixes: ea6f3af4c5e6 ("ACPI: GED: add support for _Exx / _Lxx handler methods")
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/emulate.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/acpi/evged.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -3994,6 +3994,12 @@ static int em_clflush(struct x86_emulate
- 	return X86EMUL_CONTINUE;
- }
+--- a/drivers/acpi/evged.c
++++ b/drivers/acpi/evged.c
+@@ -110,7 +110,7 @@ static acpi_status acpi_ged_request_inte
  
-+static int em_clflushopt(struct x86_emulate_ctxt *ctxt)
-+{
-+	/* emulating clflushopt regardless of cpuid */
-+	return X86EMUL_CONTINUE;
-+}
-+
- static int em_movsxd(struct x86_emulate_ctxt *ctxt)
- {
- 	ctxt->dst.val = (s32) ctxt->src.val;
-@@ -4507,7 +4513,7 @@ static const struct opcode group11[] = {
- };
+ 	switch (gsi) {
+ 	case 0 ... 255:
+-		sprintf(ev_name, "_%c%02hhX",
++		sprintf(ev_name, "_%c%02X",
+ 			trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
  
- static const struct gprefix pfx_0f_ae_7 = {
--	I(SrcMem | ByteOp, em_clflush), N, N, N,
-+	I(SrcMem | ByteOp, em_clflush), I(SrcMem | ByteOp, em_clflushopt), N, N,
- };
- 
- static const struct group_dual group15 = { {
+ 		if (ACPI_SUCCESS(acpi_get_handle(handle, ev_name, &evt_handle)))
 
 
