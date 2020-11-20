@@ -2,86 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF652B9FCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C24612B9FCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgKTBfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 20:35:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38180 "EHLO mail.kernel.org"
+        id S1727200AbgKTBhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 20:37:25 -0500
+Received: from namei.org ([65.99.196.166]:54286 "EHLO namei.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726580AbgKTBfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:35:46 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5863322254;
-        Fri, 20 Nov 2020 01:35:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1605836144;
-        bh=mQahlZ4oBkXPItMF4u4Zjyv8WH7f9AQL+MGPFjxwPa4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Bl2Vu6Gt2cxOBoF8QYWx3yITQmECR0Z2YJdDa2eB/UlWFYiU2LxwmQmtu7aQf3t/c
-         FELxlAHHd25VPIMj9cSoy1JjV5rPGRiQCCOGAXbrF1u7g2usKbwJx+tIX18idLtseI
-         M8BiV1QglGu8U/7r6Y2q1Lphj/mPSSBIgM2FRWbg=
-Date:   Thu, 19 Nov 2020 17:35:43 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     laniel_francis@privacyrequired.com
-Cc:     linux-hardening@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, dja@axtens.net, keescook@chromium.org
-Subject: Re: [PATCH v6 0/5] Fortify strscpy()
-Message-Id: <20201119173543.8821881942022fc4f39c4c73@linux-foundation.org>
-In-Reply-To: <20201119164915.10618-1-laniel_francis@privacyrequired.com>
-References: <20201119164915.10618-1-laniel_francis@privacyrequired.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726806AbgKTBhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 20:37:24 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 0AK1b15J016168;
+        Fri, 20 Nov 2020 01:37:01 GMT
+Date:   Fri, 20 Nov 2020 12:37:01 +1100 (AEDT)
+From:   James Morris <jmorris@namei.org>
+To:     =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+cc:     Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v1 2/9] landlock: Cosmetic fixes for filesystem
+ management
+In-Reply-To: <20201111213442.434639-3-mic@digikod.net>
+Message-ID: <alpine.LRH.2.21.2011201236530.15634@namei.org>
+References: <20201111213442.434639-1-mic@digikod.net> <20201111213442.434639-3-mic@digikod.net>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="1665246916-1830264887-1605836222=:15634"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 17:49:10 +0100 laniel_francis@privacyrequired.com wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> From: Francis Laniel <laniel_francis@privacyrequired.com>
+--1665246916-1830264887-1605836222=:15634
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+On Wed, 11 Nov 2020, Mickaël Salaün wrote:
+
+> Improve comments and make get_inode_object() more readable.  The kfree()
+> call is correct but we should mimimize as much as possible lock windows.
 > 
-> Hi.
+> Cc: James Morris <jmorris@namei.org>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Serge E. Hallyn <serge@hallyn.com>
+> Signed-off-by: Mickaël Salaün <mic@digikod.net>
+
+
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+
+> ---
+>  security/landlock/fs.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
 > 
+> diff --git a/security/landlock/fs.c b/security/landlock/fs.c
+> index b67c821bb40b..33fc7ae17c7f 100644
+> --- a/security/landlock/fs.c
+> +++ b/security/landlock/fs.c
+> @@ -85,8 +85,8 @@ static struct landlock_object *get_inode_object(struct inode *const inode)
+>  			return object;
+>  		}
+>  		/*
+> -		 * We're racing with release_inode(), the object is going away.
+> -		 * Wait for release_inode(), then retry.
+> +		 * We are racing with release_inode(), the object is going
+> +		 * away.  Wait for release_inode(), then retry.
+>  		 */
+>  		spin_lock(&object->lock);
+>  		spin_unlock(&object->lock);
+> @@ -107,21 +107,21 @@ static struct landlock_object *get_inode_object(struct inode *const inode)
+>  			lockdep_is_held(&inode->i_lock));
+>  	if (unlikely(object)) {
+>  		/* Someone else just created the object, bail out and retry. */
+> -		kfree(new_object);
+>  		spin_unlock(&inode->i_lock);
+> +		kfree(new_object);
+>  
+>  		rcu_read_lock();
+>  		goto retry;
+> -	} else {
+> -		rcu_assign_pointer(inode_sec->object, new_object);
+> -		/*
+> -		 * @inode will be released by hook_sb_delete() on its
+> -		 * superblock shutdown.
+> -		 */
+> -		ihold(inode);
+> -		spin_unlock(&inode->i_lock);
+> -		return new_object;
+>  	}
+> +
+> +	rcu_assign_pointer(inode_sec->object, new_object);
+> +	/*
+> +	 * @inode will be released by hook_sb_delete() on its superblock
+> +	 * shutdown.
+> +	 */
+> +	ihold(inode);
+> +	spin_unlock(&inode->i_lock);
+> +	return new_object;
+>  }
+>  
+>  /* All access rights which can be tied to files. */
 > 
-> I hope your families, friends and yourselves are fine.
 
-Thanks.  You too ;)
+-- 
+James Morris
+<jmorris@namei.org>
 
-> This patch set answers to this issue:
-> https://github.com/KSPP/linux/issues/46
-
-I fail to understand what this patchset has to do with that
-one-element-array issue :(
-
-> I based my modifications on top of two patches from Daniel Axtens which modify
-> calls to __builtin_object_size to ensure the true size of char * are returned
-> and not the surrounding structure size.
-> 
-> To sum up, in my first patch I implemented a fortified version of strscpy.
-> This new version ensures the following before calling vanilla strscpy:
-> 1. There is no read overflow because either size is smaller than src length
-> or we shrink size to src length by calling fortified strnlen.
-> 2. There is no write overflow because we either failed during compilation or at
-> runtime by checking that size is smaller than dest size.
-> The second patch brings a new file in LKDTM driver to test this new version.
-> The test ensures the fortified version still returns the same value as the
-> vanilla one while panic'ing when there is a write overflow.
-> The third just corrects some typos in LKDTM related file.
-> 
-> If you see any problem or way to improve the code, feel free to share it.
-
-Could you please send along a reworked [0/n] cover letter?  Explain in
-your own words, without requiring that readers go off and read web
-pages
-
-- What problem the patchset solves
-- How it solves it
-- The value of the patchset (to kernel developers or to end-users) so that we
-  can understand why it should be merged.
-
-Thanks.
-
+--1665246916-1830264887-1605836222=:15634--
