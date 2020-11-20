@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849D72BA65D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4121A2BA664
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727370AbgKTJjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:39:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53966 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726799AbgKTJjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:39:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605865153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mzFwa4uF4sflYlaTRsoZJ0QNiCboZylJJW1JEuNMfaQ=;
-        b=OIvHhvW5sGymGR+I4Hc9tB/5ZE0OZK1hzZHygovuHVWtTmoOeoHjt4ep613RAIKn5cHD6N
-        lqy/sHOYVMDxNu5KV1CfSGqmSWjxGGjsa9bAaBTDiY+WpSFF6neEdR9c0w2fqeoSAZV0iK
-        FaOysJ/gsfkk6BqfWjl2dPhEGfgpcVA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 890E6AC23;
-        Fri, 20 Nov 2020 09:39:13 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 10:39:12 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, song.bao.hua@hisilicon.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 00/21] Free some vmemmap pages of hugetlb page
-Message-ID: <20201120093912.GM3200@dhcp22.suse.cz>
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120084202.GJ3200@dhcp22.suse.cz>
- <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
+        id S1726768AbgKTJko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:40:44 -0500
+Received: from devianza.investici.org ([198.167.222.108]:32879 "EHLO
+        devianza.investici.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727123AbgKTJkn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:40:43 -0500
+Received: from mx2.investici.org (unknown [127.0.0.1])
+        by devianza.investici.org (Postfix) with ESMTP id 4Ccs3r0wPLz6vPh;
+        Fri, 20 Nov 2020 09:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
+        s=stigmate; t=1605865240;
+        bh=PbWUrb7U17LvC7vdhx246zZkpUWYUniGXQoPakvg+tw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dmmoHeCUJNteqD2LffKlSylmuSZ/RAr9peLSSlkI3sYTVkUQ/etNyUoJbNnsI31o8
+         w+H26vDX4hzquiRN8/geZ3nQDmyHvBSad/d3dQwWJwGVohgm12KGfMiJacdElR99O+
+         uFTC99BF/ZDaivNJ+xIVbO8hpIQW+lZxuqiALhJg=
+Received: from [198.167.222.108] (mx2.investici.org [198.167.222.108]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4Ccs3q5Nv1z6vLB;
+        Fri, 20 Nov 2020 09:40:39 +0000 (UTC)
+From:   Francis Laniel <laniel_francis@privacyrequired.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, dja@axtens.net, keescook@chromium.org
+Subject: Re: [PATCH v6 0/5] Fortify strscpy()
+Date:   Fri, 20 Nov 2020 10:40:38 +0100
+Message-ID: <5676804.6kI0aEeX2c@machine>
+In-Reply-To: <20201119173543.8821881942022fc4f39c4c73@linux-foundation.org>
+References: <20201119164915.10618-1-laniel_francis@privacyrequired.com> <20201119173543.8821881942022fc4f39c4c73@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 20-11-20 10:27:05, David Hildenbrand wrote:
-> On 20.11.20 09:42, Michal Hocko wrote:
-> > On Fri 20-11-20 14:43:04, Muchun Song wrote:
-> > [...]
-> > 
-> > Thanks for improving the cover letter and providing some numbers. I have
-> > only glanced through the patchset because I didn't really have more time
-> > to dive depply into them.
-> > 
-> > Overall it looks promissing. To summarize. I would prefer to not have
-> > the feature enablement controlled by compile time option and the kernel
-> > command line option should be opt-in. I also do not like that freeing
-> > the pool can trigger the oom killer or even shut the system down if no
-> > oom victim is eligible.
-> > 
-> > One thing that I didn't really get to think hard about is what is the
-> > effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
-> > invalid when racing with the split. How do we enforce that this won't
-> > blow up?
-> 
-> I have the same concerns - the sections are online the whole time and
-> anybody with pfn_to_online_page() can grab them
-> 
-> I think we have similar issues with memory offlining when removing the
-> vmemmap, it's just very hard to trigger and we can easily protect by
-> grabbing the memhotplug lock.
+Le vendredi 20 novembre 2020, 02:35:43 CET Andrew Morton a =E9crit :
+> On Thu, 19 Nov 2020 17:49:10 +0100 laniel_francis@privacyrequired.com wro=
+te:
+> > From: Francis Laniel <laniel_francis@privacyrequired.com>
+> >=20
+> > Hi.
+> >=20
+> >=20
+> > I hope your families, friends and yourselves are fine.
+>=20
+> Thanks.  You too ;)
 
-I am not sure we can/want to span memory hotplug locking out to all pfn
-walkers. But you are right that the underlying problem is similar but
-much harder to trigger because vmemmaps are only removed when the
-physical memory is hotremoved and that happens very seldom. Maybe it
-will happen more with virtualization usecases. But this work makes it
-even more tricky. If a pfn walker races with a hotremove then it would
-just blow up when accessing the unmapped physical address space. For
-this feature a pfn walker would just grab a real struct page re-used for
-some unpredictable use under its feet. Any failure would be silent and
-hard to debug.
+Thank you!
 
-[...]
-> To keep things easy, maybe simply never allow to free these hugetlb pages
-> again for now? If they were reserved during boot and the vmemmap condensed,
-> then just let them stick around for all eternity.
+> > This patch set answers to this issue:
+> > https://github.com/KSPP/linux/issues/46
+>=20
+> I fail to understand what this patchset has to do with that
+> one-element-array issue :(
 
-Not sure I understand. Do you propose to only free those vmemmap pages
-when the pool is initialized during boot time and never allow to free
-them up? That would certainly make it safer and maybe even simpler wrt
-implementation.
+I think I linked another issue totally not related with that one...
 
--- 
-Michal Hocko
-SUSE Labs
+> > I based my modifications on top of two patches from Daniel Axtens which
+> > modify calls to __builtin_object_size to ensure the true size of char *
+> > are returned and not the surrounding structure size.
+> >=20
+> > To sum up, in my first patch I implemented a fortified version of strsc=
+py.
+> > This new version ensures the following before calling vanilla strscpy:
+> > 1. There is no read overflow because either size is smaller than src
+> > length
+> > or we shrink size to src length by calling fortified strnlen.
+> > 2. There is no write overflow because we either failed during compilati=
+on
+> > or at runtime by checking that size is smaller than dest size.
+> > The second patch brings a new file in LKDTM driver to test this new
+> > version. The test ensures the fortified version still returns the same
+> > value as the vanilla one while panic'ing when there is a write overflow.
+> > The third just corrects some typos in LKDTM related file.
+> >=20
+> > If you see any problem or way to improve the code, feel free to share i=
+t.
+>=20
+> Could you please send along a reworked [0/n] cover letter?  Explain in
+> your own words, without requiring that readers go off and read web
+> pages
+>=20
+> - What problem the patchset solves
+> - How it solves it
+> - The value of the patchset (to kernel developers or to end-users) so that
+> we can understand why it should be merged.
+>=20
+> Thanks.
+
+I will do it, moreover Kees Cook already told me that cover letter should=20
+suffices itself (e.g. if the issue disappeared on GitHub).
+So I will rework the cover letter for the v7!
+
+
+
