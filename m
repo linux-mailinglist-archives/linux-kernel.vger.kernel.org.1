@@ -2,138 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D4F2B9FB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF9F2B9FBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgKTB3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 20:29:21 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:40248 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726295AbgKTB3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:29:20 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kfvEY-0082d5-4S; Fri, 20 Nov 2020 02:29:06 +0100
-Date:   Fri, 20 Nov 2020 02:29:06 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pavana Sharma <pavana.sharma@digi.com>
-Cc:     lkp@intel.com, ashkan.boldaji@digi.com,
-        clang-built-linux@googlegroups.com, davem@davemloft.net,
-        f.fainelli@gmail.com, gregkh@linuxfoundation.org,
-        kbuild-all@lists.01.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, marek.behun@nic.cz,
-        netdev@vger.kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, vivien.didelot@gmail.com
-Subject: Re: [PATCH v10 4/4] net: dsa: mv88e6xxx: Add support for mv88e6393x
- family  of Marvell
-Message-ID: <20201120012906.GA1804098@lunn.ch>
-References: <cover.1605830552.git.pavana.sharma@digi.com>
- <df58a3716ab900a0c2a4d727ddae52ef1310fcdc.1605830552.git.pavana.sharma@digi.com>
+        id S1726224AbgKTBby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 20:31:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726644AbgKTBbx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 20:31:53 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E13C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 17:31:53 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id u2so3986047pls.10
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 17:31:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7YV7yUKCbPzL6ZbCOtKE9ZFlCqJ9wO4xzEn7Kzgi7LU=;
+        b=gO8BsWo6dOqcUs861gMwBL0HxSQcRuZTCcz57f1+CWxjckPXZL3zGJxZJV8LnGkgJw
+         F60hKSz70xDMl3AgtoEgZga0ibqcCY6clpBLNwfgZ11Pr9YImcJKvBwR/VtX3agVLpKX
+         pxr1yQ3B1u1C9fP5b6Sc3rtuMKxb7P1cnETMhhIhMebIlFrCOIQqz7NUQf7orGY9pGGc
+         6/YSMnl5V1YDXPb2NIvZxG3M/jdO6LKpafwKiRn9mlpeKu5xfGS4joS21gUzrgVIJSjm
+         ngCfJZYty2aDHXVwTNFDSyxYnFcbIq7WzXtwTFZL9XLgQVr2gvb11TklPEN26BYHcMDL
+         whSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7YV7yUKCbPzL6ZbCOtKE9ZFlCqJ9wO4xzEn7Kzgi7LU=;
+        b=PnTH91de3xqP3Ar3YbBy9PDBAnd4UAPgP/sjo+ON6KxC69nCeivaCcvYgXqwaQt6cl
+         kCtzok5tr8Up73QMpeAVmTTzwLp476B2X5YE8s31e/m2UssmwKcejl3DIs8ZXigs0XQo
+         TW/WXCtx83grSPq/Ow8YLrm9He8dOWg/za6darA7WqOn8VA7RsmX+xRlGF/Ln8246PrX
+         h3HpsVZhj5vzcgws73MAXDU3Yoh26X/vNqNGH4gGhwWZhuXzTbKTXpu6rsywDAAFY9qF
+         +qapoMxg4HJ9y3WG0RYUED1BwEycJkXo7Nr8flPNA08vX41xKps/Ak2waY4zlD3DywO5
+         oxrg==
+X-Gm-Message-State: AOAM533zGeUG6hAd8rmAwudnpD6IxLgSa9D3oED5QDyxV3RcJK/nvpnn
+        fdaUi8eMZa+9Cibt8BExaFiaUnNkhI4sAe6fNpgQvA==
+X-Google-Smtp-Source: ABdhPJwaTuwVNgMnGHMCtpK24Q0O7a5NuKfOgM3R0wMIColDWxbxSFChFeM5H6gT0IaMs1kOho8dDctJ4n9/K8K1QYE=
+X-Received: by 2002:a17:902:b18c:b029:d9:f:15fc with SMTP id
+ s12-20020a170902b18cb02900d9000f15fcmr11264546plr.29.1605835912854; Thu, 19
+ Nov 2020 17:31:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <df58a3716ab900a0c2a4d727ddae52ef1310fcdc.1605830552.git.pavana.sharma@digi.com>
+References: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+ <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+ <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
+ <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org>
+ <87o8jutt2h.fsf@mid.deneb.enyo.de> <20201118135823.3f0d24b7@gandalf.local.home>
+ <20201118191127.GM2672@gate.crashing.org> <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
+ <20201119143735.GU2672@gate.crashing.org> <20201119095951.30269233@gandalf.local.home>
+ <CAADnVQL8d5zKTE_TohUcGgKKp6K1Noo7M22t_hKYQjO_g0Mb0g@mail.gmail.com>
+In-Reply-To: <CAADnVQL8d5zKTE_TohUcGgKKp6K1Noo7M22t_hKYQjO_g0Mb0g@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 19 Nov 2020 17:31:41 -0800
+Message-ID: <CAKwvOdmKjsJGbR7hHACk3qUgguy-HWvJQerwTnArE0AwhPgfcQ@mail.gmail.com>
+Subject: Re: violating function pointer signature
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org, Bill Wendling <morbo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -222,8 +231,8 @@ static int mv88e6xxx_port_set_speed_duplex(struct mv88e6xxx_chip *chip,
->  		return err;
->  
->  	reg &= ~(MV88E6XXX_PORT_MAC_CTL_SPEED_MASK |
-> -		 MV88E6XXX_PORT_MAC_CTL_FORCE_DUPLEX |
-> -		 MV88E6XXX_PORT_MAC_CTL_DUPLEX_FULL);
-> +		MV88E6XXX_PORT_MAC_CTL_FORCE_DUPLEX |
-> +		MV88E6XXX_PORT_MAC_CTL_DUPLEX_FULL);
+On Thu, Nov 19, 2020 at 9:05 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Nov 19, 2020 at 6:59 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > Linux obviously
+> > supports multiple architectures (more than any other OS), but it is pretty
+> > stuck to gcc as a compiler (with LLVM just starting to work too).
+> >
+> > We are fine with being stuck to a compiler if it gives us what we want.
+>
+> I beg to disagree.
+> android, chrome and others changed their kernel builds to
+> "make LLVM=1" some time ago.
+> It's absolutely vital for the health of the kernel to be built with
+> both gcc and llvm.
 
-This looks like a white space change?
+Our fleet of machines in the data centers is currently mid-ramp, at
+around or slightly just over 50% of kernels built with Clang.  Soon to
+be 100%.  So "a good chunk of Google services," too, FWIW.
 
-
->  	if (alt_bit)
->  		reg &= ~MV88E6390_PORT_MAC_CTL_ALTSPEED;
-> @@ -390,6 +399,84 @@ phy_interface_t mv88e6390x_port_max_speed_mode(int port)
->  	return PHY_INTERFACE_MODE_NA;
->  }
->  
-> +/* Support 10, 100, 200, 1000, 2500, 5000, 10000 Mbps (e.g. 88E6393X) */
-> +int mv88e6393x_port_set_speed_duplex(struct mv88e6xxx_chip *chip, int port,
-> +		int speed, int duplex)
-> +{
-> +	u16 reg, ctrl;
-> +	int err;
-> +
-> +	if (speed == SPEED_MAX)
-> +		speed = (port > 0 && port < 9) ? 1000 : 10000;
-> +
-> +	if (speed == 200 && port != 0)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (speed >= 2500 && port > 0 && port < 9)
-> +		return -EOPNOTSUPP;
-
-Maybe i'm missing something, but it looks like at this point you can
-call
-
-	return mv88e6xxx_port_set_speed_duplex(chip, port, speed, true, true, duplex);
-
-
-> +/* Offset 0x0E: Policy & MGMT Control Register for FAMILY 6191X 6193X 6393X */
-> +
-> +static int mv88e6393x_port_policy_write(struct mv88e6xxx_chip *chip, u16 pointer,
-> +				u8 data)
-> +{
-> +
-> +	int err = 0;
-> +	int port;
-> +	u16 reg;
-> +
-> +	/* Setup per Port policy register */
-> +	for (port = 0; port < mv88e6xxx_num_ports(chip); port++) {
-> +		if (dsa_is_unused_port(chip->ds, port))
-> +			continue;
-> +
-> +		/* Prevent the use of an invalid port. */
-> +		if (mv88e6xxx_is_invalid_port(chip, port)) {
-> +			dev_err(chip->dev, "port %d is invalid\n", port);
-> +			return -EINVAL;
-> +		}
-
-        /* Mark certain ports as invalid. This is required for example for the
-         * MV88E6220 (which is in general a MV88E6250 with 7 ports) but the
-         * ports 2-4 are not routed to pins.
-         */
-        unsigned int invalid_port_mask;
-
-You have not set this in the info structure of the 6393x devices, so
-you can skip this check.
-
-
-> +/* Only Ports 0, 9 and 10 have SERDES lanes. Return the SERDES lane address
-> + * a port is using else Returns -ENODEV.
-> + */
-> +int mv88e6393x_serdes_get_lane(struct mv88e6xxx_chip *chip, int port)
-> +{
-> +	u8 cmode = chip->ports[port].cmode;
-> +	int lane = -ENODEV;
-> +
-> +	if (port == 0 || port == 9 || port == 10) {
-
-Maybe 
-
-	if (port != 0 && port != 9 && port == 10)
-		return -ENODEV
-
-> +		if (cmode == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
-> +			cmode == MV88E6XXX_PORT_STS_CMODE_SGMII ||
-> +		    cmode == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
-> +			cmode == MV88E6XXX_PORT_STS_CMODE_5GBASER ||
-> +		    cmode == MV88E6XXX_PORT_STS_CMODE_10GBASER ||
-> +		    cmode == MV88E6XXX_PORT_STS_CMODE_USXGMII)
-
-Indentation is messed up.
-
-> +			lane = port;
-
-	return port;
-
-	Andrew
+OpenMandriva is on track for their 4.2 release to use LLVM for their kernels.
+-- 
+Thanks,
+~Nick Desaulniers
