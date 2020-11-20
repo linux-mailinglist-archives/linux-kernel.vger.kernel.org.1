@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE32A2BA890
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 287212BA891
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgKTLJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:09:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54992 "EHLO mail.kernel.org"
+        id S1728494AbgKTLJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:09:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728497AbgKTLHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:07:08 -0500
+        id S1728505AbgKTLHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:07:10 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93F922236F;
-        Fri, 20 Nov 2020 11:07:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72B0C206E3;
+        Fri, 20 Nov 2020 11:07:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605870426;
-        bh=103XGpKqqJJXYGF3APmS4OrNO5mb4kz9Bq2Pk1kvUis=;
+        s=korg; t=1605870429;
+        bh=D3m/YqrMYV+36QMzjgyTut1Dk1n+SCwSuxCmEfCpaUk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PAKPFK/Gf2fzEm1RMdO1vd3HRHIggI7h9zad5aEaLabuUR0xAsY01zHqbZR3E/JJm
-         p1SzRgUdVhjmfe/qPc7Uo0I23KcIsoqjs77xs/RrBX689/RR26wFu1GPVjst0fiC+V
-         f2bH01+GDSB467WYTb+DfW6GFBpvejdYh90yI/no=
+        b=oGrVaP3N/fyAtTeDINVcKatTee5j2dpwkvdAl3Gdcc7ais+gVtnTiOYR2bcKFrlVk
+         rYEFmFoKAvAiJqLi8vv9d5pHXaed6iJRzOqERvhl8LlDJwlbbjQHopZ282TAw02Zac
+         BupBjEse4z3LgKwkfpQdx6y5TXDd5xVhzE+t8F/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eran Ben Elisha <eranbe@mellanox.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
         Timo Rothenpieler <timo@rothenpieler.org>
-Subject: [PATCH 5.4 08/17] net/mlx5: poll cmd EQ in case of command timeout
-Date:   Fri, 20 Nov 2020 12:03:35 +0100
-Message-Id: <20201120104541.477702135@linuxfoundation.org>
+Subject: [PATCH 5.4 09/17] net/mlx5: Fix a race when moving command interface to events mode
+Date:   Fri, 20 Nov 2020 12:03:36 +0100
+Message-Id: <20201120104541.518263886@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201120104541.058449969@linuxfoundation.org>
 References: <20201120104541.058449969@linuxfoundation.org>
@@ -45,213 +46,164 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eran Ben Elisha <eranbe@mellanox.com>
 
-commit 1d5558b1f0de81f54ddee05f3793acc5260d107f upstream.
+commit d43b7007dbd1195a5b6b83213e49b1516aaf6f5e upstream.
 
-Once driver detects a command interface command timeout, it warns the
-user and returns timeout error to the caller. In such case, the entry of
-the command is not evacuated (because only real event interrupt is allowed
-to clear command interface entry). If the HW event interrupt
-of this entry will never arrive, this entry will be left unused forever.
-Command interface entries are limited and eventually we can end up without
-the ability to post a new command.
+After driver creates (via FW command) an EQ for commands, the driver will
+be informed on new commands completion by EQE. However, due to a race in
+driver's internal command mode metadata update, some new commands will
+still be miss-handled by driver as if we are in polling mode. Such commands
+can get two non forced completion, leading to already freed command entry
+access.
 
-In addition, if driver will not consume the EQE of the lost interrupt and
-rearm the EQ, no new interrupts will arrive for other commands.
+CREATE_EQ command, that maps EQ to the command queue must be posted to the
+command queue while it is empty and no other command should be posted.
 
-Add a resiliency mechanism for manually polling the command EQ in case of
-a command timeout. In case resiliency mechanism will find non-handled EQE,
-it will consume it, and the command interface will be fully functional
-again. Once the resiliency flow finished, wait another 5 seconds for the
-command interface to complete for this command entry.
-
-Define mlx5_cmd_eq_recover() to manage the cmd EQ polling resiliency flow.
-Add an async EQ spinlock to avoid races between resiliency flows and real
-interrupts that might run simultaneously.
+Add SW mechanism that once the CREATE_EQ command is about to be executed,
+all other commands will return error without being sent to the FW. Allow
+sending other commands only after successfully changing the driver's
+internal command mode metadata.
+We can safely return error to all other commands while creating the command
+EQ, as all other commands might be sent from the user/application during
+driver load. Application can rerun them later after driver's load was
+finished.
 
 Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
 Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Cc: Timo Rothenpieler <timo@rothenpieler.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c    |   53 +++++++++++++++++++----
- drivers/net/ethernet/mellanox/mlx5/core/eq.c     |   40 ++++++++++++++++-
- drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h |    2 
- 3 files changed, 86 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c |   35 +++++++++++++++++++++++---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  |    3 ++
+ include/linux/mlx5/driver.h                   |    6 ++++
+ 3 files changed, 40 insertions(+), 4 deletions(-)
 
 --- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -853,11 +853,21 @@ static void cb_timeout_handler(struct wo
- 	struct mlx5_core_dev *dev = container_of(ent->cmd, struct mlx5_core_dev,
- 						 cmd);
+@@ -875,6 +875,14 @@ static void free_msg(struct mlx5_core_de
+ static void mlx5_free_cmd_msg(struct mlx5_core_dev *dev,
+ 			      struct mlx5_cmd_msg *msg);
  
-+	mlx5_cmd_eq_recover(dev);
++static bool opcode_allowed(struct mlx5_cmd *cmd, u16 opcode)
++{
++	if (cmd->allowed_opcode == CMD_ALLOWED_OPCODE_ALL)
++		return true;
 +
-+	/* Maybe got handled by eq recover ? */
-+	if (!test_bit(MLX5_CMD_ENT_STATE_PENDING_COMP, &ent->state)) {
-+		mlx5_core_warn(dev, "cmd[%d]: %s(0x%x) Async, recovered after timeout\n", ent->idx,
-+			       mlx5_command_str(msg_to_opcode(ent->in)), msg_to_opcode(ent->in));
-+		goto out; /* phew, already handled */
-+	}
++	return cmd->allowed_opcode == opcode;
++}
 +
- 	ent->ret = -ETIMEDOUT;
--	mlx5_core_warn(dev, "%s(0x%x) timeout. Will cause a leak of a command resource\n",
--		       mlx5_command_str(msg_to_opcode(ent->in)),
--		       msg_to_opcode(ent->in));
-+	mlx5_core_warn(dev, "cmd[%d]: %s(0x%x) Async, timeout. Will cause a leak of a command resource\n",
-+		       ent->idx, mlx5_command_str(msg_to_opcode(ent->in)), msg_to_opcode(ent->in));
- 	mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
-+
-+out:
- 	cmd_ent_put(ent); /* for the cmd_ent_get() took on schedule delayed work */
+ static void cmd_work_handler(struct work_struct *work)
+ {
+ 	struct mlx5_cmd_work_ent *ent = container_of(work, struct mlx5_cmd_work_ent, work);
+@@ -941,7 +949,8 @@ static void cmd_work_handler(struct work
+ 
+ 	/* Skip sending command to fw if internal error */
+ 	if (pci_channel_offline(dev->pdev) ||
+-	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR) {
++	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR ||
++	    !opcode_allowed(&dev->cmd, ent->op)) {
+ 		u8 status = 0;
+ 		u32 drv_synd;
+ 
+@@ -1459,6 +1468,22 @@ static void create_debugfs_files(struct
+ 	mlx5_cmdif_debugfs_init(dev);
  }
  
-@@ -987,6 +997,35 @@ static const char *deliv_status_to_str(u
- 	}
++void mlx5_cmd_allowed_opcode(struct mlx5_core_dev *dev, u16 opcode)
++{
++	struct mlx5_cmd *cmd = &dev->cmd;
++	int i;
++
++	for (i = 0; i < cmd->max_reg_cmds; i++)
++		down(&cmd->sem);
++	down(&cmd->pages_sem);
++
++	cmd->allowed_opcode = opcode;
++
++	up(&cmd->pages_sem);
++	for (i = 0; i < cmd->max_reg_cmds; i++)
++		up(&cmd->sem);
++}
++
+ static void mlx5_cmd_change_mod(struct mlx5_core_dev *dev, int mode)
+ {
+ 	struct mlx5_cmd *cmd = &dev->cmd;
+@@ -1751,12 +1776,13 @@ static int cmd_exec(struct mlx5_core_dev
+ 	int err;
+ 	u8 status = 0;
+ 	u32 drv_synd;
++	u16 opcode;
+ 	u8 token;
+ 
++	opcode = MLX5_GET(mbox_in, in, opcode);
+ 	if (pci_channel_offline(dev->pdev) ||
+-	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR) {
+-		u16 opcode = MLX5_GET(mbox_in, in, opcode);
+-
++	    dev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR ||
++	    !opcode_allowed(&dev->cmd, opcode)) {
+ 		err = mlx5_internal_err_ret_value(dev, opcode, &drv_synd, &status);
+ 		MLX5_SET(mbox_out, out, status, status);
+ 		MLX5_SET(mbox_out, out, syndrome, drv_synd);
+@@ -2058,6 +2084,7 @@ int mlx5_cmd_init(struct mlx5_core_dev *
+ 	mlx5_core_dbg(dev, "descriptor at dma 0x%llx\n", (unsigned long long)(cmd->dma));
+ 
+ 	cmd->mode = CMD_MODE_POLLING;
++	cmd->allowed_opcode = CMD_ALLOWED_OPCODE_ALL;
+ 
+ 	create_msg_cache(dev);
+ 
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -648,11 +648,13 @@ static int create_async_eqs(struct mlx5_
+ 		.nent = MLX5_NUM_CMD_EQE,
+ 		.mask[0] = 1ull << MLX5_EVENT_TYPE_CMD,
+ 	};
++	mlx5_cmd_allowed_opcode(dev, MLX5_CMD_OP_CREATE_EQ);
+ 	err = setup_async_eq(dev, &table->cmd_eq, &param, "cmd");
+ 	if (err)
+ 		goto err1;
+ 
+ 	mlx5_cmd_use_events(dev);
++	mlx5_cmd_allowed_opcode(dev, CMD_ALLOWED_OPCODE_ALL);
+ 
+ 	param = (struct mlx5_eq_param) {
+ 		.irq_index = 0,
+@@ -682,6 +684,7 @@ err2:
+ 	mlx5_cmd_use_polling(dev);
+ 	cleanup_async_eq(dev, &table->cmd_eq, "cmd");
+ err1:
++	mlx5_cmd_allowed_opcode(dev, CMD_ALLOWED_OPCODE_ALL);
+ 	mlx5_eq_notifier_unregister(dev, &table->cq_err_nb);
+ 	return err;
+ }
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -299,6 +299,7 @@ struct mlx5_cmd {
+ 	struct semaphore sem;
+ 	struct semaphore pages_sem;
+ 	int	mode;
++	u16     allowed_opcode;
+ 	struct mlx5_cmd_work_ent *ent_arr[MLX5_MAX_COMMANDS];
+ 	struct dma_pool *pool;
+ 	struct mlx5_cmd_debug dbg;
+@@ -890,10 +891,15 @@ mlx5_frag_buf_get_idx_last_contig_stride
+ 	return min_t(u32, last_frag_stride_idx - fbc->strides_offset, fbc->sz_m1);
  }
  
 +enum {
-+	MLX5_CMD_TIMEOUT_RECOVER_MSEC   = 5 * 1000,
++	CMD_ALLOWED_OPCODE_ALL,
 +};
 +
-+static void wait_func_handle_exec_timeout(struct mlx5_core_dev *dev,
-+					  struct mlx5_cmd_work_ent *ent)
-+{
-+	unsigned long timeout = msecs_to_jiffies(MLX5_CMD_TIMEOUT_RECOVER_MSEC);
-+
-+	mlx5_cmd_eq_recover(dev);
-+
-+	/* Re-wait on the ent->done after executing the recovery flow. If the
-+	 * recovery flow (or any other recovery flow running simultaneously)
-+	 * has recovered an EQE, it should cause the entry to be completed by
-+	 * the command interface.
-+	 */
-+	if (wait_for_completion_timeout(&ent->done, timeout)) {
-+		mlx5_core_warn(dev, "cmd[%d]: %s(0x%x) recovered after timeout\n", ent->idx,
-+			       mlx5_command_str(msg_to_opcode(ent->in)), msg_to_opcode(ent->in));
-+		return;
-+	}
-+
-+	mlx5_core_warn(dev, "cmd[%d]: %s(0x%x) No done completion\n", ent->idx,
-+		       mlx5_command_str(msg_to_opcode(ent->in)), msg_to_opcode(ent->in));
-+
-+	ent->ret = -ETIMEDOUT;
-+	mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
-+}
-+
- static int wait_func(struct mlx5_core_dev *dev, struct mlx5_cmd_work_ent *ent)
- {
- 	unsigned long timeout = msecs_to_jiffies(MLX5_CMD_TIMEOUT_MSEC);
-@@ -998,12 +1037,10 @@ static int wait_func(struct mlx5_core_de
- 		ent->ret = -ECANCELED;
- 		goto out_err;
- 	}
--	if (cmd->mode == CMD_MODE_POLLING || ent->polling) {
-+	if (cmd->mode == CMD_MODE_POLLING || ent->polling)
- 		wait_for_completion(&ent->done);
--	} else if (!wait_for_completion_timeout(&ent->done, timeout)) {
--		ent->ret = -ETIMEDOUT;
--		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
--	}
-+	else if (!wait_for_completion_timeout(&ent->done, timeout))
-+		wait_func_handle_exec_timeout(dev, ent);
+ int mlx5_cmd_init(struct mlx5_core_dev *dev);
+ void mlx5_cmd_cleanup(struct mlx5_core_dev *dev);
+ void mlx5_cmd_use_events(struct mlx5_core_dev *dev);
+ void mlx5_cmd_use_polling(struct mlx5_core_dev *dev);
++void mlx5_cmd_allowed_opcode(struct mlx5_core_dev *dev, u16 opcode);
  
- out_err:
- 	err = ent->ret;
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -190,6 +190,29 @@ u32 mlx5_eq_poll_irq_disabled(struct mlx
- 	return count_eqe;
- }
- 
-+static void mlx5_eq_async_int_lock(struct mlx5_eq_async *eq, unsigned long *flags)
-+	__acquires(&eq->lock)
-+{
-+	if (in_irq())
-+		spin_lock(&eq->lock);
-+	else
-+		spin_lock_irqsave(&eq->lock, *flags);
-+}
-+
-+static void mlx5_eq_async_int_unlock(struct mlx5_eq_async *eq, unsigned long *flags)
-+	__releases(&eq->lock)
-+{
-+	if (in_irq())
-+		spin_unlock(&eq->lock);
-+	else
-+		spin_unlock_irqrestore(&eq->lock, *flags);
-+}
-+
-+enum async_eq_nb_action {
-+	ASYNC_EQ_IRQ_HANDLER = 0,
-+	ASYNC_EQ_RECOVER = 1,
-+};
-+
- static int mlx5_eq_async_int(struct notifier_block *nb,
- 			     unsigned long action, void *data)
- {
-@@ -199,11 +222,14 @@ static int mlx5_eq_async_int(struct noti
- 	struct mlx5_eq_table *eqt;
+ struct mlx5_async_ctx {
  	struct mlx5_core_dev *dev;
- 	struct mlx5_eqe *eqe;
-+	unsigned long flags;
- 	int num_eqes = 0;
- 
- 	dev = eq->dev;
- 	eqt = dev->priv.eq_table;
- 
-+	mlx5_eq_async_int_lock(eq_async, &flags);
-+
- 	eqe = next_eqe_sw(eq);
- 	if (!eqe)
- 		goto out;
-@@ -224,8 +250,19 @@ static int mlx5_eq_async_int(struct noti
- 
- out:
- 	eq_update_ci(eq, 1);
-+	mlx5_eq_async_int_unlock(eq_async, &flags);
- 
--	return 0;
-+	return unlikely(action == ASYNC_EQ_RECOVER) ? num_eqes : 0;
-+}
-+
-+void mlx5_cmd_eq_recover(struct mlx5_core_dev *dev)
-+{
-+	struct mlx5_eq_async *eq = &dev->priv.eq_table->cmd_eq;
-+	int eqes;
-+
-+	eqes = mlx5_eq_async_int(&eq->irq_nb, ASYNC_EQ_RECOVER, NULL);
-+	if (eqes)
-+		mlx5_core_warn(dev, "Recovered %d EQEs on cmd_eq\n", eqes);
- }
- 
- static void init_eq_buf(struct mlx5_eq *eq)
-@@ -570,6 +607,7 @@ setup_async_eq(struct mlx5_core_dev *dev
- 	int err;
- 
- 	eq->irq_nb.notifier_call = mlx5_eq_async_int;
-+	spin_lock_init(&eq->lock);
- 
- 	err = create_async_eq(dev, &eq->core, param);
- 	if (err) {
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
-@@ -38,6 +38,7 @@ struct mlx5_eq {
- struct mlx5_eq_async {
- 	struct mlx5_eq          core;
- 	struct notifier_block   irq_nb;
-+	spinlock_t              lock; /* To avoid irq EQ handle races with resiliency flows */
- };
- 
- struct mlx5_eq_comp {
-@@ -82,6 +83,7 @@ void mlx5_cq_tasklet_cb(unsigned long da
- struct cpumask *mlx5_eq_comp_cpumask(struct mlx5_core_dev *dev, int ix);
- 
- u32 mlx5_eq_poll_irq_disabled(struct mlx5_eq_comp *eq);
-+void mlx5_cmd_eq_recover(struct mlx5_core_dev *dev);
- void mlx5_eq_synchronize_async_irq(struct mlx5_core_dev *dev);
- void mlx5_eq_synchronize_cmd_irq(struct mlx5_core_dev *dev);
- 
 
 
