@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAECF2BA390
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9108F2BA396
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727173AbgKTHip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:38:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
+        id S1727180AbgKTHjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 02:39:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgKTHip (ORCPT
+        with ESMTP id S1726775AbgKTHjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:38:45 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5024EC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 23:38:45 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id v21so3178293plo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 23:38:45 -0800 (PST)
+        Fri, 20 Nov 2020 02:39:24 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76475C0613CF;
+        Thu, 19 Nov 2020 23:39:24 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id a18so7055602pfl.3;
+        Thu, 19 Nov 2020 23:39:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=BPHueWPsAzZX4KIbpi2s6NnCrn6gqE31TO7Qw8ZTpxA=;
-        b=FOCqRMWV/Bcq2gUH3zBrLdf1fWn70LdOMd/c3/Ql46jWp6iKXzzUrCkXVmoDsrHO0y
-         WilWcVIUP4BIQrKbjta2j2kpPZufPo8rfrEXlTJ2Uu8rBRUsMvY6t3BLYb5pfI75lAck
-         t8/jCeBgTFSWmMS7S+27UeM9MLxYv12Z1g984=
+        bh=IWp3zDlJAaUqTC0OXFuSg6mMstAV4gZkHJCc90d2B2g=;
+        b=jYPhL6oxtEKpceK9BE0duZ4iD2Drdu3b66Ix64fmdvSEIHb6Znpz48K/tz8yk9CxCJ
+         diqbJlp8r381o6trmo7wESS3ZdnZ52VR39NCqcCwAPVuRE7UFUXYpdta39OljrLQYaK9
+         yj7yO3o0rmcOmsZJ9CyhK5B8f7bC0GKnAdLDYJhr6GK9Mdt9kcVHxibcipMFpru30O3l
+         4FXmcnxIZh9639M/mvJ5dhsfNtYR/16UdMfjpDDJ0It75AnaJa86fBS7SZ4b4G8XxgRy
+         +COrIm1K0hffebWaCFSG7D1xxoi2fcUMYZJffO7jwHli8Eeg9Lq3U8hVA3hyuJcOO8fM
+         fIhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=BPHueWPsAzZX4KIbpi2s6NnCrn6gqE31TO7Qw8ZTpxA=;
-        b=eQfbaC1A01MZsdAnb2cinTAutpgqPjvn7s7cmO1f0mvbr2HYO6NLgwnObuuYURjYIO
-         comW38WRc1ivkp8tfawVge5rHrNlLjFrEbb/ARUs/AmbkJRx/II8quWoyId65Pqo/6iO
-         rW6MLIzOUcMc/9vh7V/vsyJD3wX0QSSpV7T/VZbIkcZNLqKWP9axQF2N8Qqg5wYtmGvt
-         xehurLXQU1mEcsHYkHsgeZsiPdrZJ2sc5jZwg8M2CT5A0rQ0TLib302dsm3rh8n7d9W4
-         9SX0DrMLXaSuzGDuyaXCA1hZ00fQRoqL+nF6NTmVSipwTxNcWrIisxCYYrDltO7qQWtL
-         z6bw==
-X-Gm-Message-State: AOAM533kskeFEn05qovD05Ct6z3A7M7UfvOxEEQDeiwpFwK2+8wK8aCI
-        dWA0rhzzU+KdPAQ88cyEDSMZ9w==
-X-Google-Smtp-Source: ABdhPJwKINDMQKOdcjkPXg2iJjG8fKHb/zDVo/Wq0wmZWYnnZeuyXVNZYS1HqeVul8qCUnbH2q1Org==
-X-Received: by 2002:a17:902:74c2:b029:d7:cce5:1813 with SMTP id f2-20020a17090274c2b02900d7cce51813mr12506702plt.50.1605857924548;
-        Thu, 19 Nov 2020 23:38:44 -0800 (PST)
-Received: from smtp.gmail.com ([100.99.132.239])
-        by smtp.gmail.com with ESMTPSA id o9sm1742633pjr.2.2020.11.19.23.38.43
+        bh=IWp3zDlJAaUqTC0OXFuSg6mMstAV4gZkHJCc90d2B2g=;
+        b=pmz8hpsWw6ryKCvzDklXYLC5VJM3K5LACXhqk8XZ0k5pTmxxFAczHl6aEbb7bMHCSa
+         ClxVz4vxA+WqNbdHMJkcU8wXiJGDH9zaezCWnR1zc/OzDxsUwuI1WBggWaru6Zu+zSEY
+         zXaVl4YRbjFjc2oNrrRu08IRLeausrWVVNWu03yduFvRgOY4XBCZtMtwcwYFhhg+RpNn
+         YY/NWeJ+JdOo2/BoHm4EUVwCbLcqObTXUYpxAk/HhgZC07MTbvQg/q2qOfE5/H8y7Ohc
+         /DsgyNLvbzdI+hxXF7Kqmx7mwh1qlVRcErwuzTmEdNGy/50SSfOEbeQNtb6PYozBVlsp
+         kf+A==
+X-Gm-Message-State: AOAM531Fp9r6wIG7RF8xQHCSL9+NYxlcrKMJSMONMC24u5ges4kqqz+W
+        bWNMnHXrU3PP/dfCriZtxIVUrEpjAQg=
+X-Google-Smtp-Source: ABdhPJws7A9Tx9BTL4zZkWZnwTv7juAqUtVLVTnFxautS6dAFnk3SO8ldQit5Ug8f0oesoP/vnMAFQ==
+X-Received: by 2002:a65:4241:: with SMTP id d1mr15468131pgq.18.1605857963809;
+        Thu, 19 Nov 2020 23:39:23 -0800 (PST)
+Received: from dtor-ws.mtv.corp.google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id b3sm2324002pfd.66.2020.11.19.23.39.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 23:38:43 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Daniel Campello <campello@chromium.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Evan Green <evgreen@chromium.org>
-Subject: [PATCH] iio: sx9310: Fix semtech,avg-pos-strength setting when > 16
-Date:   Thu, 19 Nov 2020 23:38:42 -0800
-Message-Id: <20201120073842.3232458-1-swboyd@chromium.org>
+        Thu, 19 Nov 2020 23:39:23 -0800 (PST)
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     linux-input@vger.kernel.org
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] Input: adp5589 - do not unconditionally configure as wakeup source
+Date:   Thu, 19 Nov 2020 23:39:19 -0800
+Message-Id: <20201120073920.3214492-1-dmitry.torokhov@gmail.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,42 +62,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This DT property can be 0, 16, and then 64, but not 32. The math here
-doesn't recognize this slight bump in the power of 2 numbers and
-translates a DT property of 64 into the register value '3' when it
-really should be '2'. Fix it by subtracting one more if the number being
-translated is larger than 16.
+We should not be configuring the controller as a wakeup source in the
+driver, but rather rely on I2C core to mark it as such by either
+instantiating as I2C_CLIENT_WAKEUP or specifying "wakeup-source" device
+property.
 
-Cc: Daniel Campello <campello@chromium.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Gwendal Grignou <gwendal@chromium.org>
-Cc: Evan Green <evgreen@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
+ drivers/input/keyboard/adp5589-keys.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-This fixes commit 5b19ca2c78a0 ("iio: sx9310: Set various settings from
-DT") in the togreg branch.
-
- drivers/iio/proximity/sx9310.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-index a2f820997afc..5d8387ed9301 100644
---- a/drivers/iio/proximity/sx9310.c
-+++ b/drivers/iio/proximity/sx9310.c
-@@ -1305,7 +1305,7 @@ sx9310_get_default_reg(struct sx9310_data *data, int i,
- 		if (ret)
- 			break;
+diff --git a/drivers/input/keyboard/adp5589-keys.c b/drivers/input/keyboard/adp5589-keys.c
+index e2cdf14d90cd..d76b0e4e67c4 100644
+--- a/drivers/input/keyboard/adp5589-keys.c
++++ b/drivers/input/keyboard/adp5589-keys.c
+@@ -930,8 +930,6 @@ static int adp5589_keypad_add(struct adp5589_kpad *kpad, unsigned int revid)
+ 		return error;
+ 	}
  
--		pos = min(max(ilog2(pos), 3), 10) - 3;
-+		pos = min(max(ilog2(pos), 3), 11) - (pos > 16 ? 4 : 3);
- 		reg_def->def &= ~SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK;
- 		reg_def->def |= FIELD_PREP(SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK,
- 					   pos);
-
-base-commit: 5b19ca2c78a0838976064c0347e46a2c859b541d
+-	device_init_wakeup(&client->dev, 1);
+-
+ 	return 0;
+ }
+ 
 -- 
-https://chromeos.dev
+2.29.2.454.gaff20da3a2-goog
 
