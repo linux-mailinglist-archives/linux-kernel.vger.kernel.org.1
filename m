@@ -2,77 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8E62BA961
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CAB32BA963
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727457AbgKTLmw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Nov 2020 06:42:52 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:39519 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727401AbgKTLmw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:42:52 -0500
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id AE8DE240009;
-        Fri, 20 Nov 2020 11:42:47 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 12:42:46 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v3 23/23] mtd: devices: powernv_flash: Add function
- names to headers and fix 'dev'
-Message-ID: <20201120124246.4aee04d6@xps13>
-In-Reply-To: <20201120075000.GA1869941@dell>
-References: <20201109182206.3037326-24-lee.jones@linaro.org>
-        <20201119210716.25046-1-miquel.raynal@bootlin.com>
-        <20201120075000.GA1869941@dell>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727677AbgKTLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:44:30 -0500
+Received: from mga03.intel.com ([134.134.136.65]:27927 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727120AbgKTLoa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:44:30 -0500
+IronPort-SDR: n5dhM4T8aTo6Z3Xuf3mJh6tjfTUIBgY3QZvhPcYirOumsbTDO7GM0LFJM/8KHR2tCOUm8CTq8n
+ Auhyy0sKJRbA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="171557037"
+X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
+   d="scan'208";a="171557037"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 03:44:29 -0800
+IronPort-SDR: sD/CrGkoG6LVm/YDt8AtXAcCg7Tg1tzShXmFUato1xXvvtW6ZAwX6bH4UjWpCKf+FsP7CZztbi
+ aOWEyHe5AMZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
+   d="scan'208";a="360411401"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Nov 2020 03:44:25 -0800
+Date:   Fri, 20 Nov 2020 19:44:24 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Waiman Long <longman@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, zhengjun.xing@intel.com, ying.huang@intel.com
+Subject: Re: [LKP] Re: [mm/memcg] bd0b230fe1: will-it-scale.per_process_ops
+ -22.7% regression
+Message-ID: <20201120114424.GA103521@shbuild999.sh.intel.com>
+References: <20201102091543.GM31092@shao2-debian>
+ <20201102092754.GD22613@dhcp22.suse.cz>
+ <82d73ebb-a31e-4766-35b8-82afa85aa047@intel.com>
+ <20201102100247.GF22613@dhcp22.suse.cz>
+ <bd87e8bd-c918-3f41-0cc5-e2927d91625f@linux.intel.com>
+ <20201104081546.GB10052@dhcp22.suse.cz>
+ <20201112122844.GA11000@shbuild999.sh.intel.com>
+ <20201112141654.GC12240@dhcp22.suse.cz>
+ <20201113073436.GA113119@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113073436.GA113119@shbuild999.sh.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-Lee Jones <lee.jones@linaro.org> wrote on Fri, 20 Nov 2020 07:50:00
-+0000:
-
-> On Thu, 19 Nov 2020, Miquel Raynal wrote:
-> 
-> > On Mon, 2020-11-09 at 18:22:06 UTC, Lee Jones wrote:  
-> > > Fixes the following W=1 kernel build warning(s):
+On Fri, Nov 13, 2020 at 03:34:36PM +0800, Feng Tang wrote:
+> On Thu, Nov 12, 2020 at 03:16:54PM +0100, Michal Hocko wrote:
+> > > > > I add one phony page_counter after the union and re-test, the regression
+> > > > > reduced to -1.2%. It looks like the regression caused by the data structure
+> > > > > layout change.
+> > > > 
+> > > > Thanks for double checking. Could you try to cache align the
+> > > > page_counter struct? If that helps then we should figure which counters
+> > > > acks against each other by adding the alignement between the respective
+> > > > counters. 
 > > > 
-> > >  drivers/mtd/devices/powernv_flash.c:129: warning: Cannot understand  * @mtd: the device
-> > >  drivers/mtd/devices/powernv_flash.c:145: warning: Cannot understand  * @mtd: the device
-> > >  drivers/mtd/devices/powernv_flash.c:161: warning: Cannot understand  * @mtd: the device
-> > >  drivers/mtd/devices/powernv_flash.c:184: warning: Function parameter or member 'dev' not described in 'powernv_flash_set_driver_info'
+> > > We tried below patch to make the 'page_counter' aligned.
+> > >   
+> > >   diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
+> > >   index bab7e57..9efa6f7 100644
+> > >   --- a/include/linux/page_counter.h
+> > >   +++ b/include/linux/page_counter.h
+> > >   @@ -26,7 +26,7 @@ struct page_counter {
+> > >    	/* legacy */
+> > >    	unsigned long watermark;
+> > >    	unsigned long failcnt;
+> > >   -};
+> > >   +} ____cacheline_internodealigned_in_smp;
+> > >    
+> > > and with it, the -22.7% peformance change turns to a small -1.7%, which
+> > > confirms the performance bump is caused by the change to data alignment.
 > > > 
-> > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > Cc: Richard Weinberger <richard@nod.at>
-> > > Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> > > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > > Cc: Paul Mackerras <paulus@samba.org>
-> > > Cc: linux-mtd@lists.infradead.org
-> > > Cc: linuxppc-dev@lists.ozlabs.org
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>  
+> > > After the patch, size of 'page_counter' increases from 104 bytes to 128
+> > > bytes, and the size of 'mem_cgroup' increases from 2880 bytes to 3008
+> > > bytes(with our kernel config). Another major data structure which
+> > > contains 'page_counter' is 'hugetlb_cgroup', whose size will change
+> > > from 912B to 1024B.
+> > > 
+> > > Should we make these page_counters aligned to reduce cacheline conflict?
 > > 
-> > Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.  
+> > I would rather focus on a more effective mem_cgroup layout. It is very
+> > likely that we are just stumbling over two counters here.
+> > 
+> > Could you try to add cache alignment of counters after memory and see
+> > which one makes the difference? I do not expect memsw to be the one
+> > because that one is used together with the main counter. But who knows
+> > maybe the way it crosses the cache line has the exact effect. Hard to
+> > tell without other numbers.
 > 
-> Superstar.  Thanks for your help Miquel.
+> I added some alignments change around the 'memsw', but neither of them can
+> restore the -22.7%. Following are some log showing how the alignments
+> are:
 > 
+> tl: memcg=0x7cd1000 memory=0x7cd10d0 memsw=0x7cd1140 kmem=0x7cd11b0 tcpmem=0x7cd1220
+> t2: memcg=0x7cd0000 memory=0x7cd00d0 memsw=0x7cd0140 kmem=0x7cd01c0 tcpmem=0x7cd0230
+> 
+> So both of the 'memsw' are aligned, but t2's 'kmem' is aligned while
+> t1's is not.
+> 
+> I will check more on the perf data about detailed hotspots.
 
-haha :) well it was late, I applied these patches to the wrong branch,
-I just moved them to the mtd/next branch, sorry for the push -f :)
+Some more check updates about it:
 
-Cheers,
-Miquèl
+Waiman's patch is effectively removing one 'struct page_counter' between
+'memory' and "memsw'. And the mem_cgroup is: 
+
+struct mem_cgroup {
+
+	...
+
+	struct page_counter memory;		/* Both v1 & v2 */
+
+	union {
+		struct page_counter swap;	/* v2 only */
+		struct page_counter memsw;	/* v1 only */
+	};
+
+	/* Legacy consumer-oriented counters */
+	struct page_counter kmem;		/* v1 only */
+	struct page_counter tcpmem;		/* v1 only */
+
+	...
+	...
+
+	MEMCG_PADDING(_pad1_);
+
+	atomic_t		moving_account;
+	struct task_struct	*move_lock_task;
+	
+	...
+};
+
+
+I do experiments by inserting a 'page_counter' between 'memory'
+and the 'MEMCG_PADDING(_pad1_)', no matter where I put it, the
+benchmark result can be recovered from 145K to 185K, which is
+really confusing, as adding a 'page_counter' right before the
+'_pad1_' doesn't change cache alignment of any members.
+
+Thanks,
+Feng
+
+
+
