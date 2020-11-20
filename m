@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26FA2BA662
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 849D72BA65D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727599AbgKTJjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:39:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727347AbgKTJjg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:39:36 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769D5C0613CF;
-        Fri, 20 Nov 2020 01:39:36 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id s8so7969472yba.13;
-        Fri, 20 Nov 2020 01:39:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fFPfmPF5+IB1CSCpeDv7kPz4TOEhwS34Jbv+FQyjbaE=;
-        b=lSRqU0HuqlLznHw5Y4Tzuk7duPPcLptsUvZ++NYrpcw0k378LQNKqI98Ij0q22z04O
-         p8aTLxlfd66mCTL1QZ0+Ho/YSnraRtTphPl7jUnIgDZC5hxbcnwmUoKWevFFnTbvmumw
-         l7UXAXeobmeEFvG1rMaDnWoukISnpW5W2fSwjIrM8LGY3wZrulTKdRUuA9OKNeqnFtLq
-         caVy+w0V57jMil8jZEe+qnfVfQ//i6b8Whptjj1QbWP4GkZZIhSR5MhQppPfEllnoVjS
-         pzHtNS8zzct4Kj86sHTGCH9jWcwj+Ta7zAOadgglVKr8i3YVeHjjr3R6xrInvIstbJ4J
-         BgIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fFPfmPF5+IB1CSCpeDv7kPz4TOEhwS34Jbv+FQyjbaE=;
-        b=Ugr+cubYtMHyVKWHmWbxKNmfkFARlf9/Dr+VEZa+XB1k0VONGJCjbrjc+LMV3/X9x5
-         wH9rI5Nk9rTJooAbStHGMsmk4rgdGWPqaFQXcMP0FAMTTcO0J7YFbq0QfQgTw543HhaI
-         q+gKLQZDJVzXHH+Px7lF76epyuloaoAFHvIffBuwUIqQsfXgzWyKfNbC+Ix5X3N3tZ8W
-         DLD/vO862S1Kk8T1Ns11YSdtGI3dFk7Ls/SQJVsZYcz16yvg41Uv+QoHqzeKOkjLX8+6
-         5fJJHxTe4ukeQoaS1T9ZU7IMScmSVqc/qxY6TNhwmA+iZTvcMPYXLkZ9+rMWiIhNQmbi
-         l0lQ==
-X-Gm-Message-State: AOAM531qCFSGg3crxiLNedQN2H6Yu4TCnY5TFVnv7P7WVBqzdVyaG7vh
-        wR44O5pyO8d8SoTLYmPuevV7H/rFBWJcgX+8BP4=
-X-Google-Smtp-Source: ABdhPJywsq3Uz+rYF+hGDahyM01ugd8IVS1TQjg5eSb36+IlyId+U+B0N8Em2nDVUxaVgzM9mBR9ceUjSeS9ItrKmzs=
-X-Received: by 2002:a25:209:: with SMTP id 9mr26638905ybc.127.1605865175851;
- Fri, 20 Nov 2020 01:39:35 -0800 (PST)
+        id S1727370AbgKTJjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:39:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53966 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726799AbgKTJjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:39:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605865153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mzFwa4uF4sflYlaTRsoZJ0QNiCboZylJJW1JEuNMfaQ=;
+        b=OIvHhvW5sGymGR+I4Hc9tB/5ZE0OZK1hzZHygovuHVWtTmoOeoHjt4ep613RAIKn5cHD6N
+        lqy/sHOYVMDxNu5KV1CfSGqmSWjxGGjsa9bAaBTDiY+WpSFF6neEdR9c0w2fqeoSAZV0iK
+        FaOysJ/gsfkk6BqfWjl2dPhEGfgpcVA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 890E6AC23;
+        Fri, 20 Nov 2020 09:39:13 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 10:39:12 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 00/21] Free some vmemmap pages of hugetlb page
+Message-ID: <20201120093912.GM3200@dhcp22.suse.cz>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120084202.GJ3200@dhcp22.suse.cz>
+ <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
 MIME-Version: 1.0
-References: <20201119130926.25692-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201119130926.25692-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdUGqkqZVY9YZ1Xo=uq_4kn3ybh50VMSNBCLOSKWyDd3kw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUGqkqZVY9YZ1Xo=uq_4kn3ybh50VMSNBCLOSKWyDd3kw@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 20 Nov 2020 09:39:09 +0000
-Message-ID: <CA+V-a8uNsb3RGnNx8w3amhJCpOKk2df==9CbYPuermmUJM0y_w@mail.gmail.com>
-Subject: Re: [PATCH 1/4] pinctrl: renesas: r8a77990: Add QSPI[01] pins, groups
- and functions
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Fri 20-11-20 10:27:05, David Hildenbrand wrote:
+> On 20.11.20 09:42, Michal Hocko wrote:
+> > On Fri 20-11-20 14:43:04, Muchun Song wrote:
+> > [...]
+> > 
+> > Thanks for improving the cover letter and providing some numbers. I have
+> > only glanced through the patchset because I didn't really have more time
+> > to dive depply into them.
+> > 
+> > Overall it looks promissing. To summarize. I would prefer to not have
+> > the feature enablement controlled by compile time option and the kernel
+> > command line option should be opt-in. I also do not like that freeing
+> > the pool can trigger the oom killer or even shut the system down if no
+> > oom victim is eligible.
+> > 
+> > One thing that I didn't really get to think hard about is what is the
+> > effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
+> > invalid when racing with the split. How do we enforce that this won't
+> > blow up?
+> 
+> I have the same concerns - the sections are online the whole time and
+> anybody with pfn_to_online_page() can grab them
+> 
+> I think we have similar issues with memory offlining when removing the
+> vmemmap, it's just very hard to trigger and we can easily protect by
+> grabbing the memhotplug lock.
 
-Thank you for the review.
+I am not sure we can/want to span memory hotplug locking out to all pfn
+walkers. But you are right that the underlying problem is similar but
+much harder to trigger because vmemmaps are only removed when the
+physical memory is hotremoved and that happens very seldom. Maybe it
+will happen more with virtualization usecases. But this work makes it
+even more tricky. If a pfn walker races with a hotremove then it would
+just blow up when accessing the unmapped physical address space. For
+this feature a pfn walker would just grab a real struct page re-used for
+some unpredictable use under its feet. Any failure would be silent and
+hard to debug.
 
-On Fri, Nov 20, 2020 at 9:20 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> On Thu, Nov 19, 2020 at 2:09 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add pins, groups and functions for QSPIO[01].
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-pinctrl-for-v5.11...
->
-> > --- a/drivers/pinctrl/renesas/pfc-r8a77990.c
-> > +++ b/drivers/pinctrl/renesas/pfc-r8a77990.c
-> > @@ -2810,6 +2810,57 @@ static const unsigned int pwm6_b_mux[] = {
-> >         PWM6_B_MARK,
-> >  };
-> >
-> > +/* - QSPI0 ------------------------------------------------------------------ */
-> > +static const unsigned int qspi0_ctrl_pins[] = {
-> > +       /* SPCLK, SSL */
->
-> ... with the missing QSPI0_ prefix added...
->
-Argh missed that.
+[...]
+> To keep things easy, maybe simply never allow to free these hugetlb pages
+> again for now? If they were reserved during boot and the vmemmap condensed,
+> then just let them stick around for all eternity.
 
-> > +       RCAR_GP_PIN(2, 0), RCAR_GP_PIN(2, 5),
-> > +};
-> > +static const unsigned int qspi0_ctrl_mux[] = {
-> > +       QSPI0_SPCLK_MARK, QSPI0_SSL_MARK,
-> > +};
-> > +static const unsigned int qspi0_data2_pins[] = {
-> > +       /* QSPI0_MOSI_IO0, QSPI0_MISO_IO1 */
-> > +       RCAR_GP_PIN(2, 1), RCAR_GP_PIN(2, 2),
-> > +};
-> > +static const unsigned int qspi0_data2_mux[] = {
-> > +       QSPI0_MOSI_IO0_MARK, QSPI0_MISO_IO1_MARK,
-> > +};
-> > +static const unsigned int qspi0_data4_pins[] = {
-> > +       /* QSPI0_MOSI_IO0, QSPI0_MISO_IO1 */
-> > +       RCAR_GP_PIN(2, 1), RCAR_GP_PIN(2, 2),
-> > +       /*  QSPI0_IO2, QSPI0_IO3 */
->
-> ... and the bogus space dropped.
->
-Thanks for taking care of it.
+Not sure I understand. Do you propose to only free those vmemmap pages
+when the pool is initialized during boot time and never allow to free
+them up? That would certainly make it safer and maybe even simpler wrt
+implementation.
 
-Cheers,
-Prabhakar
-
-> > +       RCAR_GP_PIN(2, 3), RCAR_GP_PIN(2, 4),
-> > +};
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+-- 
+Michal Hocko
+SUSE Labs
