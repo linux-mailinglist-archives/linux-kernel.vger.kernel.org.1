@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5A72BA63B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C7A2BA638
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbgKTJbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:31:18 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:55334 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727591AbgKTJbK (ORCPT
+        id S1727663AbgKTJbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:31:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44868 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727646AbgKTJbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:31:10 -0500
-X-UUID: aaaa45181b4c4c9092ec3788acec7136-20201120
-X-UUID: aaaa45181b4c4c9092ec3788acec7136-20201120
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <zhiyong.tao@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 306028507; Fri, 20 Nov 2020 17:31:04 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 20 Nov 2020 17:31:02 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 20 Nov 2020 17:31:01 +0800
-From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
-To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
-        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
-        <sean.wang@kernel.org>
-CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
-        <hui.liu@mediatek.com>, <eddie.huang@mediatek.com>,
-        <jg_poxu@mediatek.com>, <biao.huang@mediatek.com>,
-        <hongzhou.yang@mediatek.com>, <erin.lo@mediatek.com>,
-        <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
-        <sj.huang@mediatek.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
-Subject: [PATCH] pinctrl: fix low level output voltage issue
-Date:   Fri, 20 Nov 2020 17:30:58 +0800
-Message-ID: <20201120093058.7248-2-zhiyong.tao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201120093058.7248-1-zhiyong.tao@mediatek.com>
-References: <20201120093058.7248-1-zhiyong.tao@mediatek.com>
+        Fri, 20 Nov 2020 04:31:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605864671;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6aBIYZe6QvsR3R+sgcDGxOKiaDPY1p+gBWyXVlapmTM=;
+        b=XhGLEFw5MXcPbaiNnsbxJC3qVhayRgjkUN6ZQmn9dEl3bluVfo01q2o7alUYTbRv15we9I
+        /Hv73L+/ko0BL/qY1aupSk6bye1QlYjLFggL5h3RFGJ4J6KrgWD5S46/wONU7E8b2WS6t+
+        5acoCO2IxeszyRfIQyzUnzrs3HI9+qE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-fkKSvjRaPlGNpOkGzmTmJg-1; Fri, 20 Nov 2020 04:31:08 -0500
+X-MC-Unique: fkKSvjRaPlGNpOkGzmTmJg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8853D8144E1;
+        Fri, 20 Nov 2020 09:31:07 +0000 (UTC)
+Received: from [10.36.114.78] (ovpn-114-78.ams2.redhat.com [10.36.114.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5993460854;
+        Fri, 20 Nov 2020 09:31:06 +0000 (UTC)
+Subject: Re: [RFC PATCH 3/3] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     mhocko@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com
+References: <20201022125835.26396-1-osalvador@suse.de>
+ <20201022125835.26396-4-osalvador@suse.de>
+ <3cc37927-538e-ae7d-27bc-45aaabe06b3a@redhat.com>
+ <20201119104847.GA5281@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <ddcb1d70-2e4b-a185-b749-d4f300feec18@redhat.com>
+Date:   Fri, 20 Nov 2020 10:31:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20201119104847.GA5281@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is used to fix low level output voltage issue.
-A pin is changed from input pull-up to output high.
-The Dout value of the pin is default as 0.
-If we change the direction of the pin before the dout value of the pin,
-It maybe produce a low level output voltage between "input pull-up" and
-"output high".
 
-Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
----
- drivers/pinctrl/mediatek/pinctrl-paris.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+>>> -	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL, MIGRATE_ISOLATE);
+>>> +	move_pfn_range_to_zone(zone, pfn, nr_pages, nr_vmemmap_pages, NULL,
+>>> +			       MIGRATE_ISOLATE);
+>>
+>> As mentioned, I'd suggest properly initializing the memmap here
+>>
+>> if (nr_vmemmap_pages) {
+>> 	move_pfn_range_to_zone(zone, pfn, nr_vmemmap_pages, NULL,
+>> 			       MIGRATE_UNMOVABLE);
+>> }
+>> move_pfn_range_to_zone(zone, valid_start_pfn, valid_nr_pages, NULL,
+> 
+> Sure, agreed.
+> 
+>>> +	if (!support_memmap_on_memory(size))
+>>> +		mhp_flags &= ~MEMHP_MEMMAP_ON_MEMORY;
+>>
+>> Callers (e.g., virtio-mem) might rely on this. We should reject this with
+>> -EINVAL and provide a way for callers to test whether this flag is possible.
+> 
+> Uhm, we might want to make "support_memmap_on_memory" public, and
+> callers who might want to it use can check its return value?
+> Or do you have something else in mind?
 
-diff --git a/drivers/pinctrl/mediatek/pinctrl-paris.c b/drivers/pinctrl/mediatek/pinctrl-paris.c
-index 623af4410b07..039ce9be19c5 100644
---- a/drivers/pinctrl/mediatek/pinctrl-paris.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-paris.c
-@@ -247,13 +247,13 @@ static int mtk_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
- 		err = mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_SR, !!arg);
- 		break;
- 	case PIN_CONFIG_OUTPUT:
--		err = mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_DIR,
--				       MTK_OUTPUT);
-+		err = mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_DO,
-+				       arg);
- 		if (err)
- 			goto err;
- 
--		err = mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_DO,
--				       arg);
-+		err = mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_DIR,
-+				       MTK_OUTPUT);
- 		break;
- 	case PIN_CONFIG_INPUT_SCHMITT:
- 	case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
+Right, a way for callers to check if it's supported. 
+"mhp_supports_memmap_on_memory" or sth. like that.
+
+Thanks!
+
 -- 
-2.18.0
+Thanks,
+
+David / dhildenb
 
