@@ -2,188 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4A12BAF79
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1B92BAF7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729947AbgKTP7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:59:43 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:46303 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728919AbgKTP7n (ORCPT
+        id S1730001AbgKTQBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:01:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729022AbgKTQBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:59:43 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6AFD05C00D0;
-        Fri, 20 Nov 2020 10:59:41 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 20 Nov 2020 10:59:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=T1SgiXg1TuJbavRTzfVKemq6SSp
-        RHfqpbA6KSfHRZ3A=; b=gE5ULDdLWhUA+NzBMolnoMD9lgWF8gh0PfpWMoF9dYa
-        BEEK5RJcgGrhXIEGQC/XTNwJyGUtpHa5szUh6RXT9vm9ZWnyhbrOy6m1PA4Sv/nF
-        eSeURNX+9PkuDE06XJqTS7I5HRdZCIkN1X213ZZK4yTSdNmnzUhCkiSllbI94xO1
-        m2Ng2DUbaqkfD3CoxzWLopvrn22BhPMu/doL2ltf8dnOBOUfj5juMWW2ZXWpBemo
-        EtlKMIVKZGo+1e3m6YRYiMKm5HdBCrBWwIc21ZV9pfTvpGBGgqmvKpv4J2+LldWI
-        iQmT2yVsUZVYJsStw82KhLeKjrMoiagoiuv22XIdehw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=T1SgiX
-        g1TuJbavRTzfVKemq6SSpRHfqpbA6KSfHRZ3A=; b=khT/YBqXeZ4OkkoVG2ymxs
-        N8R3KV9iauibyf3Rix7OFTwH1xv8JvlnnvtOqB6PUtNqt3etRvdGVsvEsCZWqpNX
-        +T69G1b51OJYtRnnE7gjJEAfj6xBAYEB/Vr50wEKsR1UZQIR+yRYyDs+RErgFw3Y
-        7Yl+dom98iHtyXcfzfI3A3wVR3quu2NdX59M0rxi1FZS9bPdfG6cJNMOb9IWn7R8
-        6OGo95HzWYIXc/1XAumfKjFO4YqKA1hRgWPzxWi8jt0lwrEf3H39lgGEW1IZVhhJ
-        61iDZ5eNJ70lDUuR0O+fWFtyVwgwSK/+7Us49yfYnZgEYBG/Yf1vMIpAVrnbv0sw
-        ==
-X-ME-Sender: <xms:7Oe3XweQ_jR16EsfgDfeaywcxxuzzBlEMk70l5yacLRHnIf89hVyyw>
-    <xme:7Oe3XyO5M2ayKsPc82DmJe-7dbBbzwzTEHICgm2YyOhaBsqhxMll2EK7yohkdsgJv
-    qLa3t4hHxoCd0FAfIA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegtddgkeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:7Oe3Xxie__mkaR4XlWZif5kynFYrbCkJ1jd9a9bBfko7Wp_4sbstZQ>
-    <xmx:7Oe3X19M4-ykQqbKbJEN90HAxXlkEtOqy4JIZLt1ncsBZpMX2FMF2w>
-    <xmx:7Oe3X8uiPBn6FEZVIrQNawUHRpqwANl0ZUKERjUyI7uedkwpgJmavw>
-    <xmx:7ee3X2U_7nuk06y3nedIE0QI9j0MD4jzR4cM67frbQdaLiA3bYZvSQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 719ED3280060;
-        Fri, 20 Nov 2020 10:59:40 -0500 (EST)
-Date:   Fri, 20 Nov 2020 16:59:39 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Icenowy Zheng <icenowy@aosc.io>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [linux-sunxi] Re: [PATCH 3/3] arm64: allwinner: dts: a64: add DT
- for PineTab developer sample
-Message-ID: <20201120155939.3ajmbny2pka2vsnf@gilmour>
-References: <20201107124958.2222253-1-icenowy@aosc.io>
- <20201107125332.2223197-1-icenowy@aosc.io>
- <20201110103925.rbej5ueo2fefbmlp@gilmour.lan>
- <6175E674-E8BC-4199-8BE8-A983065C32D5@aosc.io>
- <20201116155508.364dg6ycklwylswe@gilmour.lan>
- <8FFC1A6C-9CA4-4F94-91C4-F111A7519979@aosc.io>
+        Fri, 20 Nov 2020 11:01:40 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1F8C0613CF;
+        Fri, 20 Nov 2020 08:01:40 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id cf17so6472870edb.2;
+        Fri, 20 Nov 2020 08:01:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N5ufS8YhBlGkaOE2GFHQrgFXS65tQKW7VRXvHkB/tBM=;
+        b=cqeaWCZSqr4Ubfz70k/UuGdUeCrnTjNc5knHtoLsI2PduXPzqXSaDWxHPnj0fp6Tr1
+         AQFhTuEz/TrEJ4C+tj3lwbiT7P2P6dnV7VqEsowVfdW0YPaPuwOINvYxYllQdkhKToFl
+         1YTngHBnOMn3dbsMjAqtJA0aBoDpTa7gAh5ykxAebmXAFfUD4R2nK6M0fI3vrUGfQlDV
+         UXkN+14b69ZctJJT0xIG5I3abWxxELryPNOWhj87WxasbMnHs4CxGytcHufue6avRlEd
+         PZ9FkUWo685FGjfaNpVFL4tRzwc84I1SeSWc4pVuVoI4qHUF3UDaHvM3CnvbIHji9ei+
+         eEvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N5ufS8YhBlGkaOE2GFHQrgFXS65tQKW7VRXvHkB/tBM=;
+        b=PTdNMhvEQPK1vZm1xpi7MK2qav3oCD+LGXwNg8EcqY4N22iLSVDCVvxxhTxliSN0U0
+         BfIf9q1RYQiqUelzA6Q5+CDkTgWYUDLEnvuO8YYtVwWSMbQSplY2NAL4wfWv5HBtRWzw
+         rHbOgWqIeUXg8le6zGwXr4qAq6uDtrd1RDNZ9k0JUvL4pQsYO3GZREkspVyCg1+1ridV
+         tYY7LKk0yhVb0drdSGECpkmMX3uRc3TecKMAOHYyt2+70EEjeUpcIlmS7brpBRAFv3Ty
+         mlo4VCWTnocRDMcr0wi6m95kolO6nnnFeE0tOAS7+u4ynQkM6KnGquehfWZiQW05302v
+         nRUQ==
+X-Gm-Message-State: AOAM5310wlJhq0HFARaY/VrxpdLOGiac3QVjpVMN6cVszJyqS7a310Ad
+        CRUTF/mm2LMs0oWsc6xewpzaGmt1c3MK6be+FRk=
+X-Google-Smtp-Source: ABdhPJxmQl0Kw6ku/319ebrT/w5tjrPQRtZ46FVMoAgQMAl8AqSNmU8jP0XPBU93BkmncsDOamurV6T8a/7Oc56OGH0=
+X-Received: by 2002:aa7:c713:: with SMTP id i19mr35584705edq.296.1605888098848;
+ Fri, 20 Nov 2020 08:01:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kr27hb3hbkksxdbb"
-Content-Disposition: inline
-In-Reply-To: <8FFC1A6C-9CA4-4F94-91C4-F111A7519979@aosc.io>
+References: <20201118144617.986860-1-willemdebruijn.kernel@gmail.com>
+ <20201118144617.986860-2-willemdebruijn.kernel@gmail.com> <20201118150041.GF29991@casper.infradead.org>
+ <CA+FuTSdxNBvNMy341EHeiKOWZ19H++aw-tfr6Fx1mFmbg-z4zQ@mail.gmail.com>
+ <CAK8P3a0t02o77+8QNZwXF2k1pY3Xrm5bydv8Vx1TW060P7BKqA@mail.gmail.com>
+ <893e8ed21e544d048bff7933013332a0@AcuMS.aculab.com> <CAF=yD-+arBFuZCU3UDx0XKmUGaEz8P1EaDLPK0YFCz82MdwBcg@mail.gmail.com>
+ <20201119143131.GG29991@casper.infradead.org> <CAK8P3a1SwQ=L_qA1BmeAt=Xc-Q9Mv4V+J5LFLB5R6rMDST8UiA@mail.gmail.com>
+ <CAF=yD-Kd-6f9wAYLD=dP1pk4qncWim424Fu6Hgj=ZrnUtEPORA@mail.gmail.com> <CAK8P3a21JRFUJrz1+TYWcVL8s4uSfeSFyoMkGsqUPbV+F=r_yw@mail.gmail.com>
+In-Reply-To: <CAK8P3a21JRFUJrz1+TYWcVL8s4uSfeSFyoMkGsqUPbV+F=r_yw@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 20 Nov 2020 11:01:01 -0500
+Message-ID: <CAF=yD-Lzu9j6T4ubRjawF-EKOC3pkQTkpigg=PugWwybY-1ZyQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] epoll: add nsec timeout support with epoll_pwait2
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        Willem de Bruijn <willemb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---kr27hb3hbkksxdbb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Nov 17, 2020 at 02:36:48AM +0800, Icenowy Zheng wrote:
->=20
->=20
-> =E4=BA=8E 2020=E5=B9=B411=E6=9C=8816=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=
-=8811:55:08, Maxime Ripard <maxime@cerno.tech> =E5=86=99=E5=88=B0:
-> >On Tue, Nov 10, 2020 at 06:41:37PM +0800, Icenowy Zheng wrote:
-> >>=20
-> >>=20
-> >> =E4=BA=8E 2020=E5=B9=B411=E6=9C=8810=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=
-=8D=886:39:25, Maxime Ripard <maxime@cerno.tech>
-> >=E5=86=99=E5=88=B0:
-> >> >On Sat, Nov 07, 2020 at 08:53:32PM +0800, Icenowy Zheng wrote:
-> >> >> Some developers received PineTab samples that used an old LCD
-> >panel.
-> >> >>=20
-> >> >> Add device tree for these samples.
-> >> >>=20
-> >> >> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> >> >> ---
-> >> >>  arch/arm64/boot/dts/allwinner/Makefile        |  1 +
-> >> >>  .../dts/allwinner/sun50i-a64-pinetab-dev.dts  | 28
-> >> >+++++++++++++++++++
-> >> >>  2 files changed, 29 insertions(+)
-> >> >>  create mode 100644
-> >> >arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts
-> >> >>=20
-> >> >> diff --git a/arch/arm64/boot/dts/allwinner/Makefile
-> >> >b/arch/arm64/boot/dts/allwinner/Makefile
-> >> >> index 211d1e9d4701..a221dcebfad4 100644
-> >> >> --- a/arch/arm64/boot/dts/allwinner/Makefile
-> >> >> +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> >> >> @@ -13,6 +13,7 @@ dtb-$(CONFIG_ARCH_SUNXI) +=3D
-> >> >sun50i-a64-pinephone-1.0.dtb
-> >> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinephone-1.1.dtb
-> >> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinephone-1.2.dtb
-> >> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinetab.dtb
-> >> >> +dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinetab-dev.dtb
-> >> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-sopine-baseboard.dtb
-> >> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-teres-i.dtb
-> >> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a100-allwinner-perf1.dtb
-> >> >> diff --git
-> >a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts
-> >> >b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts
-> >> >> new file mode 100644
-> >> >> index 000000000000..3a4153890f3e
-> >> >> --- /dev/null
-> >> >> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts
-> >> >> @@ -0,0 +1,28 @@
-> >> >> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> >> >> +/*
-> >> >> + * Copyright (C) 2020 Icenowy Zheng <icenowy@aosc.io>
-> >> >> + *
-> >> >> + */
-> >> >> +
-> >> >> +/dts-v1/;
-> >> >> +
-> >> >> +#include "sun50i-a64-pinetab.dts"
-> >> >> +
-> >> >> +/ {
-> >> >> +	model =3D "PineTab Developer Sample";
-> >> >> +	compatible =3D "pine64,pinetab-dev", "allwinner,sun50i-a64";
-> >> >> +};
-> >> >
-> >> >Changing the DT and the compatible half-way through it isn't ok.
-> >Please
-> >> >add a new DT with the newer revision like we did for the pinephone
-> >>=20
-> >> We did this on Pine H64.
+On Fri, Nov 20, 2020 at 3:13 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Thu, Nov 19, 2020 at 9:13 PM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> > On Thu, Nov 19, 2020 at 10:45 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > > On Thu, Nov 19, 2020 at 3:31 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > The right shift would work indeed, but it's also a bit ugly unless
+> > > __estimate_accuracy() is changed to always use the same shift.
+> > >
+> > > I see that on 32-bit ARM, select_estimate_accuracy() calls
+> > > the external __aeabi_idiv() function to do the 32-bit division, so
+> > > changing it to a shift would speed up select as well.
+> > >
+> > > Changing select_estimate_accuracy() to take the relative timeout
+> > > as an argument to avoid the extra ktime_get_ts64() should
+> > > have a larger impact.
 > >
-> >What are you referring to? I couldn't find a commit where we did what
-> >you suggested in that patch to the pine H64.
->=20
-> Oh the situation is complex. On Pine H64, we didn't specify anything at
-> start (which is the same here), the DT is originally version-neutral
-> but then transitioned to model B, then reverted to model A. Here the DT i=
-s always
-> for the sample.
->=20
-> However, for Pine H64 there's model A/B names, but for PineTab there's no
-> any samples that are sold, thus except who got the samples, all PineTab
-> owners simply owns a "PineTab", not a "PineTab xxx version".
+> > It could be done by having poll_select_set_timeout take an extra u64*
+> > slack, call select_estimate_accuracy before adding in the current time
+> > and then pass the slack down to do_select and do_sys_poll, also
+> > through core_sys_select and compat_core_sys_select.
+> >
+> > It could be a patch independent from this new syscall. Since it changes
+> > poll_select_set_timeout it clearly has a conflict with the planned next
+> > revision of this. I can include it in the next patchset to decide whether
+> > it's worth it.
+>
+> Yes, that sounds good, not sure how much rework this would require.
+>
+> It would be easier to do if we first merged the native and compat
+> native versions of select/pselect/ppoll by moving the
+> in_compat_syscall() check into combined get_sigset()
+> and get_fd_set() helpers. I would assume you have enough
+> on your plate already and don't want to add that to it.
 
-It's fairly simple really, we can't really predict the future, so any DT
-submitted is for the current version of whatever board there is. This is
-what we (somewhat messily) did for the PineH64, for the pinephone, or
-really any other board that has several revisions
+Thanks for the suggestion.
 
-Maxime
+I do have an initial patchset. As expected, it does involve quite a
+bit of code churn to pass slack through the callers. I'll take a look
+at your suggestion to simplify it.
 
---kr27hb3hbkksxdbb
-Content-Type: application/pgp-signature; name="signature.asc"
+As is, the patchset is not ready to send to the list for possible
+merge. In the meantime, I did push the patchset to github at
+https://github.com/wdebruij/linux/commits/epoll-nstimeo-1 . I can send
+a version marked RFC to the list if that's easier.
 
------BEGIN PGP SIGNATURE-----
+I made the slack specific changes in two separate patches, one to
+fs/select.c and one to fs/eventpoll.c, and placed these at the end of
+the patchset. So we could first finish the syscall and then send this
+as a separate patchset if it proves complex enough.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX7fn6gAKCRDj7w1vZxhR
-xQDkAQCfC6YLcVIPzWXZLKF5hjULRGNX9s+snk1vmmRwyYTx+AD+ME8Rr9Zwu0/K
-hMZs3H3xTpAk0y09kQAE5aboePkK3wY=
-=u1dU
------END PGP SIGNATURE-----
+Btw, the other change, to convert epoll implementation to timespec64
+before adding the syscall, equally adds some code churn compared to
+patch v3. But perhaps the end state is cleaner and more consistent.
 
---kr27hb3hbkksxdbb--
+> > > I don't see a problem with an s64 timeout if that makes the interface
+> > > simpler by avoiding differences between the 32-bit and 64-bit ABIs.
+> > >
+> > > More importantly, I think it should differ from poll/select by calculating
+> > > and writing back the remaining timeout.
+> > >
+> > > I don't know what the latest view on absolute timeouts at the syscall
+> > > ABI is, it would probably simplify the implementation, but make it
+> > > less consistent with the others. Futex uses absolute timeouts, but
+> > > is itself inconsistent about that.
+> >
+> > If the implementation internally uses poll_select_set_timeout and
+> > passes around timespec64 *, it won't matter much in terms of
+> > performance or implementation. Then there seems to be no downside to
+> > following the consistency argument.
+>
+> Ok. So to clarify, you would stay with relative __kernel_timespec
+> pointers and not copy back the remaining time, correct?
+
+That's my understanding, and the current implementation.
