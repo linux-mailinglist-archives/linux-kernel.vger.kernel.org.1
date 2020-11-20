@@ -2,111 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6082BA61F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD712BA625
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:30:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbgKTJ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:28:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:32816 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725952AbgKTJ23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:28:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605864508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dbez7ErFvJuZe6ZD8gYe+a1RxASlxd7zqwTlgLltMgU=;
-        b=NOE4enZiHbfzoUBYVARPbYQ0R17cyWgwjNujaBaCqVa2JOtTD3yvVJn8+VwL8aB5WZAvTc
-        F/qmRlQmbldvzOLL8JppkAtnhOZoUwqwhfvHJwbTqga9KnFPTxgDEx/sYK78FI5Ek2GMkQ
-        QWGNbTaHs1ZDcmitlhIjg15XP5oz1eQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 211B9AC0C;
-        Fri, 20 Nov 2020 09:28:28 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 10:28:26 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v5 11/21] mm/hugetlb: Allocate the vmemmap
- pages associated with each hugetlb page
-Message-ID: <20201120092826.GL3200@dhcp22.suse.cz>
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120064325.34492-12-songmuchun@bytedance.com>
- <20201120081123.GC3200@dhcp22.suse.cz>
- <CAMZfGtWVxCPpL7=0dfHa7_qtakmGDMLP0twWoyM=gVou=HRmEg@mail.gmail.com>
+        id S1726704AbgKTJ3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:29:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgKTJ3A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:29:00 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3CDC0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:28:59 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id d142so9694163wmd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:28:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Ne6U1iN+VmwNbZxwYjqa57664T2M7DV98pQLWi7ApwE=;
+        b=lOd51iA9903iOxBuLB5MlPVdJyCk1yBKnXKkVkGNiGsTQLu4RWpABG+7fL7mxTzlcO
+         9eFU/3TYNawPdtb5XQgudMLSgpfeIdTsUmha/xn81Ih97Po/3EhUGl/NEqpa0DiId5i8
+         4OSTNlQftw1x4dXJtDXJ41QwDUJDC2Ae4BkWw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Ne6U1iN+VmwNbZxwYjqa57664T2M7DV98pQLWi7ApwE=;
+        b=B8nGoEpixXF/KRZVKhaKHK2pm9UdQ2VGJT03xrl4gjOFUuuI5dHeGx2HgwaSfPdTak
+         05WJDoROtJaqZdvy1+MZEMN/Ek0cLdk07ww35Rso0b/wPdp+Sj2Gt7Q56GksPT3R/bjb
+         TYyGvFzdnjaaHrt7E8baLifWcN0vFgFM0IjDHgwPB9iiG4BhEexpiU7cCo1HzAOdX8IC
+         uit65llNjjIBvRWkUfJePLqchBVyzhsUNr1qB7PuN8+CZVVGWdpGDYnerTLJ7GYtEHZs
+         07yX5iPIydtLSVKpXVomGJx3G79MghkPkr02kp413mbqJfEbJqsrkC4htFy/yKvOjMIi
+         n+lg==
+X-Gm-Message-State: AOAM533DRzGg71NZdEhOtfzWmMhg9L3yBe9QJKGo2WHgzgnqQfx1bcud
+        FB9/uR1qEFcPC5nbi+dhdo2RTg==
+X-Google-Smtp-Source: ABdhPJzDRfjOtVJeeZGHohEgz05mObGSGGcqjEHsfCvj55T8h5x2bLw4rOzlhprHhLNesGONKtsjFw==
+X-Received: by 2002:a1c:b487:: with SMTP id d129mr9180590wmf.38.1605864538603;
+        Fri, 20 Nov 2020 01:28:58 -0800 (PST)
+Received: from vpa2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id a14sm3561791wmj.40.2020.11.20.01.28.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 01:28:57 -0800 (PST)
+From:   vpalatin@chromium.org
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vincent Palatin <vpalatin@chromium.org>
+Subject: [PATCH v2] usb: serial: option: add Fibocom NL668 variants
+Date:   Fri, 20 Nov 2020 10:28:28 +0100
+Message-Id: <20201120092828.665931-1-vpalatin@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+In-Reply-To: <20201120090107.502832-1-vpalatin@chromium.org>
+References: <20201120090107.502832-1-vpalatin@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtWVxCPpL7=0dfHa7_qtakmGDMLP0twWoyM=gVou=HRmEg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 20-11-20 16:51:59, Muchun Song wrote:
-> On Fri, Nov 20, 2020 at 4:11 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Fri 20-11-20 14:43:15, Muchun Song wrote:
-> > [...]
-> > > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> > > index eda7e3a0b67c..361c4174e222 100644
-> > > --- a/mm/hugetlb_vmemmap.c
-> > > +++ b/mm/hugetlb_vmemmap.c
-> > > @@ -117,6 +117,8 @@
-> > >  #define RESERVE_VMEMMAP_NR           2U
-> > >  #define RESERVE_VMEMMAP_SIZE         (RESERVE_VMEMMAP_NR << PAGE_SHIFT)
-> > >  #define TAIL_PAGE_REUSE                      -1
-> > > +#define GFP_VMEMMAP_PAGE             \
-> > > +     (GFP_KERNEL | __GFP_NOFAIL | __GFP_MEMALLOC)
-> >
-> > This is really dangerous! __GFP_MEMALLOC would allow a complete memory
-> > depletion. I am not even sure triggering the OOM killer is a reasonable
-> > behavior. It is just unexpected that shrinking a hugetlb pool can have
-> > destructive side effects. I believe it would be more reasonable to
-> > simply refuse to shrink the pool if we cannot free those pages up. This
-> > sucks as well but it isn't destructive at least.
-> 
-> I find the instructions of __GFP_MEMALLOC from the kernel doc.
-> 
-> %__GFP_MEMALLOC allows access to all memory. This should only be used when
-> the caller guarantees the allocation will allow more memory to be freed
-> very shortly.
-> 
-> Our situation is in line with the description above. We will free a HugeTLB page
-> to the buddy allocator which is much larger than that we allocated shortly.
+From: Vincent Palatin <vpalatin@chromium.org>
 
-Yes that is a part of the description. But read it in its full entirety.
- * %__GFP_MEMALLOC allows access to all memory. This should only be used when
- * the caller guarantees the allocation will allow more memory to be freed
- * very shortly e.g. process exiting or swapping. Users either should
- * be the MM or co-ordinating closely with the VM (e.g. swap over NFS).
- * Users of this flag have to be extremely careful to not deplete the reserve
- * completely and implement a throttling mechanism which controls the
- * consumption of the reserve based on the amount of freed memory.
- * Usage of a pre-allocated pool (e.g. mempool) should be always considered
- * before using this flag.
+Update the USB serial option driver support for the Fibocom NL668 Cat.4
+LTE modules as there are actually several different variants.
+Got clarifications from Fibocom, there are distinct products:
+- VID:PID 1508:1001, NL668 for IOT (no MBIM interface)
+- VID:PID 2cb7:01a0, NL668-AM and NL652-EU are laptop M.2 cards (with
+  MBIM interfaces for Windows/Linux/Chrome OS), respectively for Americas
+  and Europe.
 
-GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_HIGH
+usb-devices output for the laptop M.2 cards:
+T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  4 Spd=480 MxCh= 0
+D:  Ver= 2.00 Cls=ef(misc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+P:  Vendor=2cb7 ProdID=01a0 Rev=03.18
+S:  Manufacturer=Fibocom Wireless Inc.
+S:  Product=Fibocom NL652-EU Modem
+S:  SerialNumber=0123456789ABCDEF
+C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
+I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+I:  If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+I:  If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
 
-sounds like a more reasonable fit to me.
+Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
+---
+ drivers/usb/serial/option.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
+index c773db129bf9..1dfde90765fd 100644
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -2036,12 +2036,13 @@ static const struct usb_device_id option_ids[] = {
+ 	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
+ 	{ USB_DEVICE(0x0489, 0xe0b5),						/* Foxconn T77W968 ESIM */
+ 	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
+-	{ USB_DEVICE(0x1508, 0x1001),						/* Fibocom NL668 */
++	{ USB_DEVICE(0x1508, 0x1001),						/* Fibocom NL668 (IOT version) */
+ 	  .driver_info = RSVD(4) | RSVD(5) | RSVD(6) },
+ 	{ USB_DEVICE(0x2cb7, 0x0104),						/* Fibocom NL678 series */
+ 	  .driver_info = RSVD(4) | RSVD(5) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x0105, 0xff),			/* Fibocom NL678 series */
+ 	  .driver_info = RSVD(6) },
++	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a0, 0xff) },			/* Fibocom NL668-AM/NL652-EU (laptop MBIM) */
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1406, 0xff) },			/* GosunCn GM500 ECM/NCM */
 -- 
-Michal Hocko
-SUSE Labs
+2.29.2.454.gaff20da3a2-goog
+
