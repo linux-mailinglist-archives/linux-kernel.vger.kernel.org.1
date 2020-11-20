@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804ED2BABF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2AE2BABF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgKTOel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 09:34:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33266 "EHLO mail.kernel.org"
+        id S1726614AbgKTOgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 09:36:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727083AbgKTOel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:34:41 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725805AbgKTOgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 09:36:04 -0500
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70B8322272;
-        Fri, 20 Nov 2020 14:34:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE6532224C;
+        Fri, 20 Nov 2020 14:36:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605882880;
-        bh=B1Br1hULK/WfkFwsjA8lmXos2eMfvYj83MqhQeXBjl4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pWXHsH0z0tux3KEnuNcTrE3ucHEpE+pUQMklPccP2WXiqkkOH0m2mUgQJgPZ8ExHy
-         tJp9JqoBj1RnqPZ9o6q2SuJHhvMdB7WVfTUOthKoiRNGsq2YUml+EU87WJLPcrCoy+
-         L+PBKCnrxbusCvFrlxTyXYcpyEAV5XcE6E2xob4s=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 11AC83522A6E; Fri, 20 Nov 2020 06:34:40 -0800 (PST)
-Date:   Fri, 20 Nov 2020 06:34:40 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     "Zhang, Qiang" <qiang.zhang@windriver.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH] rcu: kasan: record and print kvfree_call_rcu call stack
-Message-ID: <20201120143440.GF1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201118035309.19144-1-qiang.zhang@windriver.com>
- <20201119214934.GC1437@paulmck-ThinkPad-P72>
- <CACT4Y+bas5xfc-+W+wkpbx6Lw=9dsKv=ha83=hs1pytjfK+drg@mail.gmail.com>
+        s=default; t=1605882963;
+        bh=B2tsz1eLDySQbKv3rPA/SjqjJvraB6qR6zYVvcCJO3U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pfnWM6mpPr4mUovHZOqS0m5JTkFwwrPNej8iWne6LVWh44CuojQDQ2e8GbrwhJgPw
+         E51LRycawzpz8/vnMjAOh4WPU0NY32mcbFTDSF8NEx1XjZfJ/R/DKKZcwRS6Y95e91
+         ZyahIyR6nxGDdWxMPTqLMh6D0ytvmdQc3mPINgrQ=
+From:   Will Deacon <will@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 0/6] tlb: Fix access and (soft-)dirty bit management
+Date:   Fri, 20 Nov 2020 14:35:51 +0000
+Message-Id: <20201120143557.6715-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+bas5xfc-+W+wkpbx6Lw=9dsKv=ha83=hs1pytjfK+drg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 09:51:15AM +0100, Dmitry Vyukov wrote:
-> On Thu, Nov 19, 2020 at 10:49 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Wed, Nov 18, 2020 at 11:53:09AM +0800, qiang.zhang@windriver.com wrote:
-> > > From: Zqiang <qiang.zhang@windriver.com>
-> > >
-> > > Add kasan_record_aux_stack function for kvfree_call_rcu function to
-> > > record call stacks.
-> > >
-> > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> >
-> > Thank you, but this does not apply on the "dev" branch of the -rcu tree.
-> > See file:///home/git/kernel.org/rcutodo.html for more info.
-> >
-> > Adding others on CC who might have feedback on the general approach.
-> >
-> >                                                         Thanx, Paul
-> >
-> > > ---
-> > >  kernel/rcu/tree.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index da3414522285..a252b2f0208d 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -3506,7 +3506,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > >               success = true;
-> > >               goto unlock_return;
-> > >       }
-> > > -
-> > > +     kasan_record_aux_stack(ptr);
-> > >       success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
-> > >       if (!success) {
-> > >               run_page_cache_worker(krcp);
-> 
-> kvfree_call_rcu is intended to free objects, right? If so this is:
+Hi all,
 
-True, but mightn't there still be RCU readers referencing this object for
-some time, as in up to the point that the RCU grace period ends?  If so,
-won't adding this cause KASAN to incorrectly complain about those readers?
+This series attempts to fix some issues relating to our access and
+(soft-)dirty bit management relating to TLB invalidation. It's a bit all
+over the place because I kept running into new issues as I was trying to
+figure it out.
 
-Or am I missing something here?
+The first patch fixes a crash we've seen in practice. The other patches
+are all addressing things that I found by code inspection and I would
+_really_ appreciate others having a look. In particular, what can go
+wrong in practice if a CPU has a stale, writable entry in the TLB for a
+pte which is !pte_write()? It feels intuitively bad, but I couldn't find
+anywhere that would explode (the CoW path looks alright, for example).
 
-						Thanx, Paul
+Cheers,
 
-> Acked-by: Dmitry Vyukov <dvyukov@google.com>
+Will
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-mm@kvack.org
+Cc: linux-arm-kernel@lists.infradead.org
+
+--->8
+
+Will Deacon (6):
+  arm64: pgtable: Fix pte_accessible()
+  arm64: pgtable: Ensure dirty bit is preserved across pte_wrprotect()
+  tlb: mmu_gather: Remove unused start/end arguments from
+    tlb_finish_mmu()
+  mm: proc: Invalidate TLB after clearing soft-dirty page state
+  tlb: mmu_gather: Introduce tlb_gather_mmu_fullmm()
+  mm: proc: Avoid fullmm flush for young/dirty bit toggling
+
+ arch/arm64/include/asm/pgtable.h | 31 +++++++++++++++----------------
+ arch/ia64/include/asm/tlb.h      |  2 +-
+ arch/x86/kernel/ldt.c            |  2 +-
+ fs/exec.c                        |  2 +-
+ fs/proc/task_mmu.c               | 22 +++++++++++++---------
+ include/asm-generic/tlb.h        |  6 ++++--
+ include/linux/mm_types.h         |  4 ++--
+ mm/hugetlb.c                     |  2 +-
+ mm/madvise.c                     |  6 +++---
+ mm/memory.c                      |  4 ++--
+ mm/mmap.c                        |  6 +++---
+ mm/mmu_gather.c                  | 21 +++++++++++++++------
+ mm/oom_kill.c                    |  4 ++--
+ 13 files changed, 63 insertions(+), 49 deletions(-)
+
+-- 
+2.29.2.454.gaff20da3a2-goog
+
