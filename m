@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729F22BABC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE78C2BABCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727855AbgKTOWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 09:22:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726529AbgKTOWE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:22:04 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EEBC0613CF;
-        Fri, 20 Nov 2020 06:22:04 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id q5so8926406qkc.12;
-        Fri, 20 Nov 2020 06:22:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EmX/ngNfP74DHbaPRJurA58fwjUYLM23ga/X5HNDtRI=;
-        b=BAGMkHJDOW0Dgh1KeR514uFZghcbAcEyrshZBs7gost67aMx1cuXgsMAzOTzZghaab
-         ZkB5XdC6+rml+GFvARip3COIXAkRFOgT9M8ZZ3/40xKJoHcspGCtJBwJxWcoiaTCscpu
-         yfAdtsl68n5jffq1pG83IedcM0xp4J2FgFhx13PWhB/VHEaPF+N4hrP3XujOm/NgHDNw
-         SInh62R6ExXKyc0lbpPr72UKCO40px1hxs/rCls4j89923Zvu2vzMuuV16S4OU+oS4UP
-         aosJbNgEY2dVe9Ezr1b3R/MUmOMWb1l6oXO0lPbS0enfYWyDfwAeH78IChMGKWW9KPYI
-         BHCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EmX/ngNfP74DHbaPRJurA58fwjUYLM23ga/X5HNDtRI=;
-        b=a2U61VudAKgVplDoDYTBTWZCyULII4NWO96tn3rJAb3HrdDlLH3nsv5IUAsNRqm89e
-         m77mN0efa6OnryimbrJ2Vo1hiRUIueq5xbU3gAyQY19Xalftz2vBBjuLidRbLVYg/dNh
-         b3Yxng1Wc+zK09O+sdoKvxUMhjXlHzmSLRoOdEBYZQsPSWdqiL9UK+qRm4Pk+FBsKMQY
-         rGJ0g7W+hOp9b6gpeEh9My2ujI+aCx50aN/FPawondzCtCj+UhbPkVbkEXJOKm2QtDZ7
-         BaTr13OTi+Fi/fx5QYOjtLhmhqyUNHJTH3g1WtNRFRuRg0Zzvt5cbjJgb1RKZnjmTRQO
-         MjGg==
-X-Gm-Message-State: AOAM533PD6nLhLb7hTUcVIJ84rcDB5U+MAFofuHB/qC+hy/oWiJhftTN
-        DpcSfyMq1RtlI2y4JsarRqhyWLzfz/Q=
-X-Google-Smtp-Source: ABdhPJzNpWtTBtnYe+daeWNpk43qANKonaNPrt13DpGL/7oXJGXWtMkWIbPHru0c1eLpYZ0ofFtHMA==
-X-Received: by 2002:a37:9ac4:: with SMTP id c187mr12080708qke.159.1605882123440;
-        Fri, 20 Nov 2020 06:22:03 -0800 (PST)
-Received: from smtp.gmail.com ([2804:d57:1704:a400:2a23:f22c:fae0:6ec8])
-        by smtp.gmail.com with ESMTPSA id 21sm2145797qkv.78.2020.11.20.06.22.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 06:22:02 -0800 (PST)
-Date:   Fri, 20 Nov 2020 11:21:58 -0300
-From:   Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jic23@kernel.org
-Subject: Re: [PATCH] iio: adc: ad7292: remove unneeded spi_set_drvdata()
-Message-ID: <20201120142158.GA2179@smtp.gmail.com>
-References: <20201119142720.86326-1-alexandru.ardelean@analog.com>
+        id S1727780AbgKTOYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 09:24:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40492 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727241AbgKTOYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 09:24:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605882278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sBNRtXPgIFrwBxBRZV+yOpZA9Rsx/wRrIx/DAGNkojI=;
+        b=jKRUwi/pVrbuG0IzqKtCNs15kXkRGA3ebX5i3HZ8hH7rg45Brn1BjpgisDbA9mSHON0kWL
+        MJpBS4Ghj74nrz9jSXXJU+NXJg9QJoQ13PXpn+juVJHHEzlZDqRA0xwOird+M25rDkKn5V
+        DcwNIyiRWcIHd+yDI9jaem/TLNAp4zo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 732B5AE93;
+        Fri, 20 Nov 2020 14:24:38 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 15:24:37 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>,
+        shreyasjoshi15@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] printk/console: Use ttynull when no console is
+ available or wanted
+Message-ID: <X7fRpVezPnh2uCVc@alley>
+References: <20201111135450.11214-1-pmladek@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119142720.86326-1-alexandru.ardelean@analog.com>
+In-Reply-To: <20201111135450.11214-1-pmladek@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LGTM.
-Tested on raspberry pi kernel - rpi-5.9.y.
-
-ad7292 was heavily based on ad7768-1. 
-Maybe this might apply to ad7768-1 as well.
-
-Reviewed-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Tested-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-
-On 11/19, Alexandru Ardelean wrote:
-> This seems to have been copied from a driver that calls spi_set_drvdata()
-> but doesn't call spi_get_drvdata().
-> Setting a private object on the SPI device's object isn't necessary if it
-> won't be accessed.
-> This change removes the spi_set_drvdata() call.
+On Wed 2020-11-11 14:54:48, Petr Mladek wrote:
+> This is another attempt to solve regression caused by the commit
+> 48021f98130880dd74 ("printk: handle blank console arguments passed in.").
 > 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/adc/ad7292.c | 2 --
->  1 file changed, 2 deletions(-)
+> It prevented a crash caused by empty console= parameter. But it caused
+> performance problems on Chromebooks because they use it to disable
+> all consoles, see
+> see https://lore.kernel.org/r/20201006025935.GA597@jagdpanzerIV.localdomain
 > 
-> diff --git a/drivers/iio/adc/ad7292.c b/drivers/iio/adc/ad7292.c
-> index ab204e9199e9..70e33dd1c9f7 100644
-> --- a/drivers/iio/adc/ad7292.c
-> +++ b/drivers/iio/adc/ad7292.c
-> @@ -276,8 +276,6 @@ static int ad7292_probe(struct spi_device *spi)
->  		return -EINVAL;
->  	}
->  
-> -	spi_set_drvdata(spi, indio_dev);
-> -
->  	st->reg = devm_regulator_get_optional(&spi->dev, "vref");
->  	if (!IS_ERR(st->reg)) {
->  		ret = regulator_enable(st->reg);
-> -- 
-> 2.17.1
+> Solve both problems by using ttynull console driver that was crated
+> exactly for this purpose.
 > 
+> The 1st patch should prevent the crash for any invalid console name.
+> 
+> The 2nd patch allows to used the ttynull driver also with the widely
+> used console= and console=null parameters.
+> 
+> Best Regards,
+> Petr
+> 
+> Petr Mladek (2):
+>   init/console: Use ttynull as a fallback when there is no console
+>   printk/console: Allow to disable console output by using console="" or
+>     console=null
+
+The patchset has been committed into printk/linux.git, branch
+for-5.11-null-console.
+
+Best Regards,
+Petr
