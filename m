@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB5B2BB8B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 23:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1CC2BB8BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 23:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728499AbgKTWIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 17:08:23 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:44968 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgKTWIX (ORCPT
+        id S1728254AbgKTWOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 17:14:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726898AbgKTWOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 17:08:23 -0500
-Received: by mail-ot1-f67.google.com with SMTP id f16so10164029otl.11
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 14:08:22 -0800 (PST)
+        Fri, 20 Nov 2020 17:14:19 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23193C0613CF;
+        Fri, 20 Nov 2020 14:14:19 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id d28so10452600qka.11;
+        Fri, 20 Nov 2020 14:14:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z1pyZKUt70+7Oah4brRuaKPswnwh6VHan/l11sMx/Yg=;
+        b=ljsWDBMqGzGOgdCS3yCLBdUS4tlf5XcKxFGdE2y5hnGDPlHFCJvgNgONmquepZKXm3
+         gA3I75WL0l/JV+dAYNQwIwXg/ito2mPyy3WMIeEno7t+bzQLXNa+y1vhfB2r9f7Osb2/
+         Rc/lpcKXHbQGiSD1QNy3tpmxLvtnTVo+4G7XFjVtBL8QCCQUoKfYoD4A7cLOXlw20f3M
+         qGyxp/h6erD4hnK6wMCjix/lF3sUsQozSnQX6aSYEMelVacfe22lymxKLrTNQSMNK25I
+         a4JDZtUmf4RU4wuufHvcAW46kKpj++bgP5VpvRvQ047kFD7cyGCF54+mVNun1zsbvTdu
+         QSsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X7EStfrrK3A2LLJguUTC1OBIwTFPm9D6KESSud0Y9MM=;
-        b=NtiQvuiCZ2CCx/7gr6dgZAEcWSno2wYU/SUT5vanzFE6EfuxT+R/eFnqKiwnyLndaF
-         LbwcFqNifUZ/5U3u/iHzR6vFlx8LeXef46g9DnWy6t+oMR2l3uK+s7lOR0CG0PhP9GgR
-         LaSd6ECEdO0/SIy+N+r/7qrn3YrXqEiWlRAyby4YQl54LVHxAW1PI1xnzJWtIJNWINTg
-         3rIreaQUF2KxGIt542oVHnNW4DHXjO0qZ0vcHfl2DbHS5pgFgONNRFZMCFfB+/DFHeCA
-         SDLwoDSMmsN+PkftbmL2ZuOUpfVNfJ3pKK+FS3uP6Bb3I7H6oD1+fxhYKetZrynY/tIh
-         vo1w==
-X-Gm-Message-State: AOAM5319ghXxHQt/kt2KJmO9HQVG1UmzYnWpHhf7jyRVo73X5ueUCfsw
-        bRuX5YfAL0JAf9Yvhw/CbQ==
-X-Google-Smtp-Source: ABdhPJyHnoMKLYi4UUwlAfdkc5Vt3sQNBQ+SX5K4vzocY+HphsHPI/I1G6RVqmFT1rcfyFEgC6dBrQ==
-X-Received: by 2002:a9d:b96:: with SMTP id 22mr6468525oth.295.1605910102349;
-        Fri, 20 Nov 2020 14:08:22 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j8sm2384607oif.55.2020.11.20.14.08.20
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Z1pyZKUt70+7Oah4brRuaKPswnwh6VHan/l11sMx/Yg=;
+        b=l/rKvg8yy9yDUO5tjx8FbPw2RGX7PB6pYwJXGbYd1Nwrm6qHFI/3iSDayNyqDFlfwK
+         mZWKYLq2dV9E7oBgUqmRr2FyaujvJV8FK82EDKR9PaF7eor5GVv4YWNkIuP5j6MAWLV8
+         I+N43YleRbewLiv5AWJSM5EOWFoAr9d1Vv9qrOD7OtTkz9KP6TN2a+yNIcZMWXBoNY0f
+         xMW5hH4MOkDAE5G6mIOSwYxWQuGhISod2jKb2LKCfaf4/G6oRRnqhkrKgGEieI7aPzTX
+         m7DErReoJn/72ATaeMlH4BU27CtJPXt1x4jGD/pO+ngmScvGuqlzYRBFsL22MwetILcF
+         tynA==
+X-Gm-Message-State: AOAM532gm20Fy9eRy4wWUOTb+SXkTPUFlnHX58/G3hsQ387PlCQ9IILB
+        zK+ptepKvn+qLoTyXlWUaO8=
+X-Google-Smtp-Source: ABdhPJwWmiLh5lhE8VTo8bVOrHhqsC7gkA+K1WDhWiAkSx5wwDJmdi7e0C+ZoL3KAVGwoGYNzYqbtw==
+X-Received: by 2002:a37:5243:: with SMTP id g64mr18994470qkb.248.1605910458220;
+        Fri, 20 Nov 2020 14:14:18 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id r55sm3097330qte.8.2020.11.20.14.14.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 14:08:21 -0800 (PST)
-Received: (nullmailer pid 1840593 invoked by uid 1000);
-        Fri, 20 Nov 2020 22:08:20 -0000
-Date:   Fri, 20 Nov 2020 16:08:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com,
-        Itaru Kitayama <itaru.kitayama@gmail.com>
-Subject: Re: [PATCH v4 2/9] arm64: perf: Enable pmu counter direct access for
- perf event on armv8
-Message-ID: <20201120220820.GA1802040@robh.at.kernel.org>
-References: <20201001140116.651970-1-robh@kernel.org>
- <20201001140116.651970-3-robh@kernel.org>
- <20201113180633.GE44988@C02TD0UTHF1T.local>
- <20201119191515.GA4906@willie-the-truck>
- <20201120200345.GA1194400@robh.at.kernel.org>
+        Fri, 20 Nov 2020 14:14:17 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 20 Nov 2020 17:13:57 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, newella@fb.com
+Subject: Re: [PATCH 03/27] blk-iocost: use local[64]_t for percpu stat
+Message-ID: <X7g/pTLLJEQXdbD7@mtj.duckdns.org>
+References: <20200901185257.645114-1-tj@kernel.org>
+ <20200901185257.645114-4-tj@kernel.org>
+ <20201120215147.GB961977@lianli.shorne-pla.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120200345.GA1194400@robh.at.kernel.org>
+In-Reply-To: <20201120215147.GB961977@lianli.shorne-pla.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 02:03:45PM -0600, Rob Herring wrote:
-> On Thu, Nov 19, 2020 at 07:15:15PM +0000, Will Deacon wrote:
-> > On Fri, Nov 13, 2020 at 06:06:33PM +0000, Mark Rutland wrote:
-> > > On Thu, Oct 01, 2020 at 09:01:09AM -0500, Rob Herring wrote:
-> > > > +static void armv8pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
-> > > > +{
-> > > > +	if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR))
-> > > > +		return;
-> > > > +
-> > > > +	if (atomic_dec_and_test(&mm->context.pmu_direct_access))
-> > > > +		on_each_cpu_mask(mm_cpumask(mm), refresh_pmuserenr, NULL, 1);
-> > > > +}
-> > > 
-> > > I didn't think we kept our mm_cpumask() up-to-date in all cases on
-> > > arm64, so I'm not sure we can use it like this.
-> > > 
-> > > Will, can you confirm either way?
-> > 
-> > We don't update mm_cpumask() as the cost of the atomic showed up in some
-> > benchmarks I did years ago and we've never had any need for the thing anyway
-> > because out TLB invalidation is one or all.
-> 
-> That's good because we're also passing NULL instead of mm which would 
-> crash. So it must be more than it's not up to date, but it's always 0. 
-> It looks like event_mapped on x86 uses mm_cpumask(mm) which I guess was 
-> dropped when copying this code as it didn't work... For reference, the 
-> x86 version of this originated in commit 7911d3f7af14a6.
-> 
-> I'm not clear on why we need to update pmuserenr_el0 here anyways. To 
-> get here userspace has to mmap the event and then unmmap it. If we did 
-> nothing, then counter accesses would not fault until the next context 
-> switch.
-> 
-> If you all have any ideas, I'm all ears. I'm not a scheduler nor perf 
-> hacker. ;)
+Hello,
 
-Here's another issue that needs addressing:
+On Sat, Nov 21, 2020 at 06:51:47AM +0900, Stafford Horne wrote:
+> FYI, I am just noticing this but this breaks my allyesconfig build
+> on OpenRISC; as 32-bit arch/openrisc doesn't define local64.h
+> 
+> In general local64 is slow on 32-bit architectures, would that
+> be a problem with the usage here?  Are the calls to local64_*
+> below on critical paths?
 
-https://lore.kernel.org/lkml/20200821195754.20159-3-kan.liang@linux.intel.com/
+It gets hot when running on really high iops devices but that hopefully
+isn't a problem for 32bit openrisc.
 
-Rob
+> Either way I will submit a patch in include generic local64.h
+> on OpenRISC, I confirmed it fixes the build.  I do not know of anyone
+> using cgroups on OpenRISC systems.
+
+Yeah, sounds like the right fix.
+
+Thanks.
+
+-- 
+tejun
