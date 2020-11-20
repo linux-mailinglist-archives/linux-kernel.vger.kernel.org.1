@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71652BA201
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 06:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A04C12BA1EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 06:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgKTFl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 00:41:29 -0500
-Received: from mxout70.expurgate.net ([91.198.224.70]:36081 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgKTFl2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 00:41:28 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kfzAi-000S6Y-M4; Fri, 20 Nov 2020 06:41:24 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kfzAi-000JUM-1i; Fri, 20 Nov 2020 06:41:24 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id C3AC1240041;
-        Fri, 20 Nov 2020 06:41:23 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 4648C240040;
-        Fri, 20 Nov 2020 06:41:23 +0100 (CET)
-Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id A4F4B20D9C;
-        Fri, 20 Nov 2020 06:41:22 +0100 (CET)
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     andrew.hendry@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        xie.he.0141@gmail.com
-Cc:     linux-x25@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
-Subject: [PATCH net-next v4 5/5] net/x25: remove x25_kill_by_device()
-Date:   Fri, 20 Nov 2020 06:40:36 +0100
-Message-ID: <20201120054036.15199-6-ms@dev.tdt.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201120054036.15199-1-ms@dev.tdt.de>
-References: <20201120054036.15199-1-ms@dev.tdt.de>
+        id S1725841AbgKTFkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 00:40:55 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:12057 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgKTFky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 00:40:54 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605850854; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=rMmSjjnbyOzsRgThkDCdW/lmAgc5QuSLzvPD7FRGp28=;
+ b=GjoB2/Uf1kNm/zPrYzoj6rQY5BGyKdO4zW43yTshdLIuc31FvDZF+iFiQB3Gw/vMK5bD846u
+ pi8QU4eLaSDl3CxUZxwaTSIYarYO3gXA6Q7BC3BM7s4CJ7BfyO++bzb/ZLtNytwL/Gokeq/s
+ s0w/z6VVNSA0vM6y4W/ODbZvpDs=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5fb756e522377520ee6c25dd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Nov 2020 05:40:53
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 06524C43460; Fri, 20 Nov 2020 05:40:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2CF3AC433ED;
+        Fri, 20 Nov 2020 05:40:51 +0000 (UTC)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-Content-Transfer-Encoding: quoted-printable
-X-purgate-type: clean
-X-purgate-ID: 151534::1605850884-00008E89-CD28E413/0/0
-X-purgate: clean
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 20 Nov 2020 11:10:51 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, linux-kernel@vger.kernel.org,
+        anshuman.khandual@arm.com, jonathan.zhouwen@huawei.com,
+        coresight@lists.linaro.org, Tingwei Zhang <tingwei@codeaurora.org>
+Subject: Re: [PATCH v4 02/25] coresight: etm4x: Skip accessing TRCPDCR in
+ save/restore
+In-Reply-To: <20201119164547.2982871-3-suzuki.poulose@arm.com>
+References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
+ <20201119164547.2982871-3-suzuki.poulose@arm.com>
+Message-ID: <f255d5441b2665450231d953b7a3d1b1@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove obsolete function x25_kill_by_device(). It's not used any more.
+Hi Suzuki,
 
-Signed-off-by: Martin Schiller <ms@dev.tdt.de>
----
- net/x25/af_x25.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+On 2020-11-19 22:15, Suzuki K Poulose wrote:
+> When the ETM is affected by Qualcomm errata, modifying the
+> TRCPDCR could cause the system hang. Even though this is
+> taken care of during enable/disable ETM, the ETM state
+> save/restore could still access the TRCPDCR. Make sure
+> we skip the access during the save/restore.
+> 
+> Found by code inspection.
+> 
 
-diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-index 313a6222ded9..1432a05805ab 100644
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -199,22 +199,6 @@ static void x25_remove_socket(struct sock *sk)
- 	write_unlock_bh(&x25_list_lock);
- }
-=20
--/*
-- *	Kill all bound sockets on a dropped device.
-- */
--static void x25_kill_by_device(struct net_device *dev)
--{
--	struct sock *s;
--
--	write_lock_bh(&x25_list_lock);
--
--	sk_for_each(s, &x25_list)
--		if (x25_sk(s)->neighbour && x25_sk(s)->neighbour->dev =3D=3D dev)
--			x25_disconnect(s, ENETUNREACH, 0, 0);
--
--	write_unlock_bh(&x25_list_lock);
--}
--
- /*
-  *	Handle device status changes.
-  */
---=20
-2.20.1
+Thanks for the patch, I did test at the time if these accesses
+in save and restore cause any hang and they do not. But
+this patch doesn't leave anything to chances, so its good.
 
+Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
