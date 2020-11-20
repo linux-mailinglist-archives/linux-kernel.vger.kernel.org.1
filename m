@@ -2,145 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEAE2BB784
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6159C2BB6DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731709AbgKTUks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 15:40:48 -0500
-Received: from sonic317-38.consmr.mail.ne1.yahoo.com ([66.163.184.49]:38856
-        "EHLO sonic317-38.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731174AbgKTUks (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 15:40:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1605904846; bh=H+wPK3JtwKZOAj3KpQpuqAhGVYzQ6p+weYdxzzO+LqU=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject; b=Mh/JvBHahtyWZg07kydeDI4xkEBrglQ/zBvX41XK3jaFNvvE4YrIc7DNTcnGG41AoM01q7irUmYLltUwFEONSFI4otJglIwgGzjtSEywsm7B2+UTppyQNtGIfzgVMkm5NubQmjrzMtAIzp1jO7qdVEhnJ7BlZNLlzMC7sJD3tx+DewlXq2KHVtYa0/aQcPIFq4BcbBgZ6MgDeJ08CnaUehBqthimR4FA5eT9owfnLQSGVhE9QA6P6UfXDIo0StzvkJe4DEhxQuFqfzrAijA0hFSpSV7ZBxLcMrX+ImWH+X/5RNyB0a85W+9wabz1GWGMwNF+ok4Iw0B+jJkzLtyCsg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1605904846; bh=81Cpu7mvk7z0vmGNAmuWCRhB/FXZvR9qhmtroMCs3+a=; h=From:To:Subject:Date:From:Subject; b=dp0UE5v6w5iSODnjCW0+s71wbjuLG7Yx2FNVsvF+N/URJ8g5pdjULI3FzrmLphJ1T//jOrddWvo+5mAHWunKtARUUl4cUprS9PgBsloxJzCbgEmhGtQZcA3hA/zzCCo4EuqVUzpsTK2z5Uv3JHOuoX33wTKBPgtKaTM6PAABjs8p/Y2LdYws4sC0ObxEMlovPVGUEYwxUWZ1r19pVkvcI3N9iNqSuEWDFytWKK5zelQdhHY6NDJzQy5senh4B9+eHGhrINtv8kr5eCPTlPOrRYki8znB6Jp963bu8hrH6dXSWnYyZANRb3BCPNI5eVzqM51r0G8fFnEbKyXwJIgsjA==
-X-YMail-OSG: QEJ.gLkVM1lnDGmiGcbWtMD97I1p5_lv5qCQMR7BBOH_NXWRqjZX6BIrmOuWcxt
- 9uRulLo.lyjnNh3iOgQzjGFRKlzoKR.7xiGkWcvbolWUbzrnRXMzAm3Ry.mWMj.tx561X3NhOL0S
- nUqPaEqhh_.a_Rm.ek9EGWGPN3hcsn1NUFYBcBmeGO2vIUHmb7JPIXxAVNjF.ZxeDyqLz.urYexy
- JzXJXAYEjGmICr_z2xnhX3.cnSmi03_XMFB9zjVWxA5JwhflTOzQ3GcKuGCjnNcC8sn40Bu7JScd
- v6ER0HIrfvh4a524aGG4EVarDcJRNxznXT9sOUvIN8N4UJfyF5o2ojsn3seY1hdi5JQkHjtK5wG9
- 4NgAaeEfFiM7QfR0_7B0IN8ZGiB0gFDtZXpB.2ZLQP8cXJZBjxps7YCJvkblS5zTYs.sTiBOIyYA
- Wp7DbE5LmcZofVZy4Bvp62vW2tdjKFi97MwgKsZQ81jjZNXvBh4hCVLUjzuV.PnjQHhEAHZKiuu6
- 0YEaO3RJ9ZNr_2VZ7F_p_LOxkvQZ3tk.bkuuD1Gyc_dOGpcf0VDpWFJpAI9Ze8Nq8N8lML5uMfNa
- AHy9qynMlUCkfvNoIAeBl6xr.jtcuxgKitInaamUNk6k22kodEBQb1ks0i.zCbQtBb5TSLLk3pFX
- EmQ5KOIWZENObWQ6pTnTZ_kahuBqPOYbtcmnmfe..kxQ1UJ1.idJ8WRoR1h.zA1j3JW6JZU_MdZq
- q19lb6thWWPM8TuRKCiPzJK65tVs6daD8Rk5MVFmX_FBGGtfOrplQHYHmdkVJjAwsmD.q3sWPiz3
- TiMHNPyf8WYbGd5gjzCDtuHCAy4i1LUP5M..wCc22IwOWizU.bWeX8PyiY.pmA8boXr4_6O1eAKe
- mMAOGj4.0rhPgNRT.tcz36PLhZMZuZm3Y3dtZ9WccC.zwWNmnO1X73E0KZDhOfeygOYlxZn5ELgW
- Tf0L1IDx2h85fwo9RU3YRMlXv0Y5b1zXl2JEaEUwIfIKi_ZZjqRMHFZwMAiqe0Xzjfg7R4VYB2gW
- WlGuvl8bfCfscfRmB0he17vf7Yko__qkHBZZhciZ1BGIhQ0vb6cuNqnR78pdGbSE3jQlE1imNRRN
- KzMb2SrH0q7wG4R3MQmFegfnHExLM8rL7ISJ5GMYNReX9ELHsFLLGR4VSfqtJujG7jqMC0ZSq6h.
- _mfzppAzs12abgqWrXcSiyzWsRbhz7YF_13rGiB5n4sJX5b_Ve.0pDRM8KSvUsk5cl0FUSz0aiuQ
- 2bAI0L9SUBQsUavEWgAj_HKMmeG2sR9IQpeMiSkqdEYvxYMdKGNgb1WdWGJBzA8XAOX_ayfWbI4o
- 2KdvbktnFeyD8L5LPokNrXm.VsL2AB9A78Lm21pAUP9.7xh6aCLU5zBnh4u_tAta.bufmsybUICO
- nnnk2_bdnR20uix2QPstpUvk.neLGxTYvDeDMs8FlKQHYCKzGfhl8dWPSiOwHzFazdM.6ZcOtp9B
- Pj3t.VL.tDwAEZsiipDh_ZQ4a7IW7Zvx4wyPcRrQHewkfMiPltRoz_j6n3DR1kbgmdOMdIK5LGmC
- 9cMoYpljK_elZLWxSkBMt_mdUvB5PhpK0aIgWI2o2oZ3nFiYceZWwBkm2BRMJqypX6gAshaqp7nS
- oaV0GTJAGWlS0ZbvkZkNjxtnoJkj1gDpGgPkBpDeHT4SML91OXAbaBU5VSoO9iEgXY.2zjh.W8vN
- OQJkbSnIMjclCgu8ernh1PpXvcvTUd5mUHiYColmVsJdoLO6VXYnyQ5rrHK.mIMBV3oUXquyO0kf
- B2Dx_tDTXmi7CsdSjyfUrFElGfGj10acrsPXNpVR2tWd3znRQBSRp5BjSqyGLLF7R_oPXieA0gaA
- KkAc6tY9B.64nEKAT6bncPGmBrrgMIqk50K4Rm40lJ_idtA1w1iSOlGgeCpk4LXCq1RraM.RBWqJ
- DGM28QizcAVQ3yN2c0aiQiDQLka8hMAH06IytQisddGKGBVVM5fVzP2_TDnKAmTt7TnG.RBY8GBG
- oJOwDfSwdgx46Cgcx26N_WLHw9fZNGDMAkPyq_Ctfnw8tn4uxBqDXcnFw0SL45Uhs0zmKLANyHvi
- F677TNE_B74407YtP4UyuVloDxmZEyedaV2cx0H1fZUfpH0RkTBNBRT5FvhGqxUEzOlQOq3HXEsl
- YGU7IwbO1C.N0kVTAgJ0rAXS_c1Lb0PUZwsi3Twlq.OpEtvGBgxN6HkBTzsofzuwfiVrlEZllJul
- q3.VcsW1EU49IktTM5SSyiSio72rhM9m1phjuVF3oOSpjkVL_qlaIARCdbvACWTMAKrwnu_ReaQp
- BY40zvOyeB7Bm2Hk3ss2FK2AukoSbMxvK6xt__0xgVABilBn4KNwHwxqJuNjZW1cs3_iaOkbcC2k
- qhEMDqEASpOU9q7A0tho0dT52cR6zYjICrnkjAuHd4wdj_zm85z0lTytHCBH5z0xz3GJOMpqO.NZ
- LAxPGoISxObvGJczQwDqXKRkySIa0AP8drIAjRUt.rCVqTmvwbcJBmuVBD2uJwjHZA.KwH29CgEt
- RD2PepJ9QzuV3PgYgcp0xp876fZHckL2IIQzNPOw0Ps.CcPpWFmkzcubk8Wjzh9Pl_wgxjxSz5CQ
- sAxs76NSm_JzWQWLgYQA0GSjZJpqoCuTp.WD2qmDZqDV12Xpx_XyOqxQrLZrUWBwd8nCaCGCCn9l
- wKa7_3o9I_.Ff3QwFeuKzZx1ZNXhAR_ryAD_rrhoshF2XczO6RUpUOySLR6WCXPESaM_ibfIwq41
- DofM2RwvEeVbdS8e659741vRuvFW2reHZ3KDlViciC8BpdT3UQV7c5DfnJfSgDmcUquVH904xpJn
- psQLbe..8wvIT06qZ1mNeL3DWdOBQ5KEStlBgQPTVKw06RbP_TIsdTTHy7zJgO2Kv8HbJ.CQMsS_
- 3BpDJ_9mRPDClJpUEErZiy1dyBHUMD5w5SUv0k4MS.8qynvRAadfBX8w_SKyfZNpIRQhl1BpL5KQ
- 6owO6VpAMineoFYml12jBkii.CovMQqkphX7RTJACofNJKS63ByX93SYvUqw7H04DQ2bKrFX7.rf
- 7ZcZKHoXu5GAhackZr8YHm091ZpVDRFW7wtAQECHNkmCItZXkk6aPpZCDbAO2b7RxKkdO8ayNJWi
- pL.9nsqr2zWpr90nfb1OVAfEQqIF2xqpPYpIuDo2ID7JLU.rK_vLKeTbZSHspfk.nt.ovfrJqmA.
- fgWGzdyF3almS6.7ChKPSRPVcJYvxDEivqHkxeAyGGBRR0Qj4ecC7Tny_uOumgkeGxLYguh9CYbW
- aGYwP_RLr15QVszu.Uv44v77vZCVeYqncgXWD_dLBcJvP8Uf7Wg3.BULb.pO2umwbMTtVnw--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Fri, 20 Nov 2020 20:40:46 +0000
-Received: by smtp425.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID ece91be106397a13102061f9b7764c23;
-          Fri, 20 Nov 2020 20:40:42 +0000 (UTC)
-From:   Casey Schaufler <casey@schaufler-ca.com>
-To:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     casey@schaufler-ca.com, linux-audit@redhat.com,
-        keescook@chromium.org, john.johansen@canonical.com,
-        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
-        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org
-Subject: [PATCH v23 23/23] AppArmor: Remove the exclusive flag
-Date:   Fri, 20 Nov 2020 12:15:07 -0800
-Message-Id: <20201120201507.11993-24-casey@schaufler-ca.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201120201507.11993-1-casey@schaufler-ca.com>
-References: <20201120201507.11993-1-casey@schaufler-ca.com>
+        id S1731015AbgKTUaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 15:30:02 -0500
+Received: from mga07.intel.com ([134.134.136.100]:10342 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730856AbgKTUaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 15:30:02 -0500
+IronPort-SDR: yfiuLft2BH3yRBY0LYU3TRPBetlioIUZLdRIuXH8kYmF/+raMQxQlWvLaqDC3NZMonuicNhoto
+ Ld6ngUsNRFDg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="235683268"
+X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
+   d="scan'208";a="235683268"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 12:30:00 -0800
+IronPort-SDR: sTXiclG0+qdIk49kdKuFdIvhfYsyJ4n3iFnlThGvcFItygRQ78Q3TqB7Lf0riCkExkoWxuZ/xF
+ fllhfo/4/+zg==
+X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
+   d="scan'208";a="342163265"
+Received: from rpedgeco-mobl.amr.corp.intel.com (HELO localhost.intel.com) ([10.209.105.214])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 12:30:00 -0800
+From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
+To:     akpm@linux-foundation.org, jeyu@kernel.org, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, luto@kernel.org,
+        dave.hansen@linux.intel.com, peterz@infradead.org, x86@kernel.org,
+        rppt@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        dan.j.williams@intel.com
+Cc:     elena.reshetova@intel.com, ira.weiny@intel.com,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+Subject: [PATCH RFC 00/10] New permission vmalloc interface
+Date:   Fri, 20 Nov 2020 12:24:16 -0800
+Message-Id: <20201120202426.18009-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the inclusion of the interface LSM process attribute
-mechanism AppArmor no longer needs to be treated as an
-"exclusive" security module. Remove the flag that indicates
-it is exclusive. Remove the stub getpeersec_dgram AppArmor
-hook as it has no effect in the single LSM case and
-interferes in the multiple LSM case.
+This is a proposal to address some inefficiencies in how memory permissions
+are handled on vmalloc mappings. The way the interfaces are defined across
+vmalloc and cpa make it hard to fully address problems underneath the
+existing interfaces. So this creates a new interface in vmalloc that
+encapsulates what vmalloc memory permission usages need, but with more
+details handled on the back end. This allows for optimizations and shared caches
+of resources. The genesis for this was this conversation[0] and many of the
+ideas were suggested by Andy Lutomirski. In its current state it takes module
+load's down to usually one kernel range shootdown, and BPF JIT load's down to
+usually zero on x86. It also minimizes the direct map 4k breakage when possible.
 
-Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
-Acked-by: John Johansen <john.johansen@canonical.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
----
- security/apparmor/lsm.c | 20 +-------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+For the future, x86 also has new kernel memory permission types that would
+benefit from efficiently handling the direct map permissions/unmapping, for
+example [1]. However, this patchset is just targeting improving performance
+inefficiencies with existing usages in modules and normal eBPF JITs.
 
-diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-index 36be7bdc917b..29e8bbdba37c 100644
---- a/security/apparmor/lsm.c
-+++ b/security/apparmor/lsm.c
-@@ -1129,22 +1129,6 @@ static int apparmor_socket_getpeersec_stream(struct socket *sock,
- 	return error;
- }
- 
--/**
-- * apparmor_socket_getpeersec_dgram - get security label of packet
-- * @sock: the peer socket
-- * @skb: packet data
-- * @secid: pointer to where to put the secid of the packet
-- *
-- * Sets the netlabel socket state on sk from parent
-- */
--static int apparmor_socket_getpeersec_dgram(struct socket *sock,
--					    struct sk_buff *skb, u32 *secid)
--
--{
--	/* TODO: requires secid support */
--	return -ENOPROTOOPT;
--}
--
- /**
-  * apparmor_sock_graft - Initialize newly created socket
-  * @sk: child sock
-@@ -1248,8 +1232,6 @@ static struct security_hook_list apparmor_hooks[] __lsm_ro_after_init = {
- #endif
- 	LSM_HOOK_INIT(socket_getpeersec_stream,
- 		      apparmor_socket_getpeersec_stream),
--	LSM_HOOK_INIT(socket_getpeersec_dgram,
--		      apparmor_socket_getpeersec_dgram),
- 	LSM_HOOK_INIT(sock_graft, apparmor_sock_graft),
- #ifdef CONFIG_NETWORK_SECMARK
- 	LSM_HOOK_INIT(inet_conn_request, apparmor_inet_conn_request),
-@@ -1918,7 +1900,7 @@ static int __init apparmor_init(void)
- 
- DEFINE_LSM(apparmor) = {
- 	.name = "apparmor",
--	.flags = LSM_FLAG_LEGACY_MAJOR | LSM_FLAG_EXCLUSIVE,
-+	.flags = LSM_FLAG_LEGACY_MAJOR,
- 	.enabled = &apparmor_enabled,
- 	.blobs = &apparmor_blob_sizes,
- 	.init = apparmor_init,
+The code is early and very lightly tested. I was hoping to get some feedback on
+the approach.
+
+The Problem
+===========
+
+For a little background, the way executable code is loaded (modules, BPF
+JITs, etc) on x86 goes something like this:
+
+ptr = vmalloc_node_range(, PAGE_KERNEL)
+   alloc_page() - Get random pages from page allocator
+   map_kernel_range() - Map vmalloc range allocation as RW to those pages
+
+set_memory_ro(ptr)
+   set vmalloc alias to RO, break direct map aliases to 4k/RO, all-cpu shootdown
+   vm_unmap_alias() flush any lazy RW aliases to now RO pages, all-cpu shootdown
+
+set_memory_x(ptr)
+   set vmalloc alias to not-NX, all-cpu shootdown
+   vm_unmap_alias(), possible all-cpu shootdown
+
+So during this load operation, 4 shootdowns may take place and the direct map
+will be broken to 4k pages across whichever random pages got used in the
+executable region. When a split is required it can be even more. Besides the
+direct map, the other reason for this is having to change the permission of the
+vmalloc mapping several times in order to load it while it's writable, and then
+transition it to its final permission.
+
+Ideally we would unmap pages from the direct map in bulk to share a shootdown.
+For changing the vmalloc mappings permission, we should instead map it at its
+final permission from the start and use a temporary per-cpu mapping such as
+text_poke() to load the data such that it only requires a local TLB flush.
+
+For large page breakage on the direct map, if multiple JITs happen to get
+pages from the same 2MB physical region this can limit the damage to a
+smaller region. However, currently this depends on lucky physical distance of
+the pages picked inside vmalloc. Today it seems more likely to happen if
+allocations are made close together in time. Ideally we would make an effort
+to group pages used for permissioned vmallocs together physically so the
+direct map breakage would be minimized.
+
+But trying to improve this doesn't fit into the existing interfaces very well.
+
+ - vmalloc_node_range() doesn't know what it's final permission will be.
+
+ - There isn't any cross-arch way to describe to vmalloc what the permissions
+will be, since permissions are encoded into the name of the set_memory_foo()
+functions.
+
+ - text_poke() only exists on x86, and other HW ways of temporarily writing to
+RO mappings don't necessarily have standardized semantics.
+
+Proposed solution
+=================
+
+For text or RO allocations, to oversimplify, what usages want to do is just
+say:
+
+1. Give me a kva for this particular permission and size
+2. Load this data into it
+3. Make it "live" (no writable mapping, no direct map mapping, whatever
+permissions are set on it and ready to go)
+
+So this implements a new interface to do just that. I had in mind this
+interface should try to support the following optimizations on x86 even if
+they weren't implemented right away.
+
+1. Draw from 2MB physical pages that can be unmapped from the direct map in
+contiguous chunks
+
+In memory pressure situations a shrinker callback can free unused pages
+from the cache. These can get re-mapped on the fly without any flush since the
+direct map would be transitioning NP->RW. Since we can re-map the direct map
+cheaply, it's better to unmap more than we need. This part is close to
+secretmem[2] in implementation, and should possibly share infrastructure or
+caches of unmapped pages.
+
+2. Load text/special data via per-cpu mappings
+
+The mapping can be mapped in its "final" permission, and loaded via text_poke().
+This will reduce shootdowns during loads to zero is most cases. Just local
+flushes. The new interface provides a writable buffer for usages to stage their
+changes, and trigger the copying into the RO mapping via text_poke()
+
+3. Caching of virtual mappings as well as pages
+
+Normally executable mappings need to be zapped and flushed before the pages
+return to the page allocator to prevent random other memory that uses the
+page later from having an executable alias. But we could cache these live
+mappings and delay the flush until the page is needed for an allocation of a
+larger size or different permission. The "free" operations could just zero it
+with a per-cpu mapping to prevent unwanted text from remaining mapped.
+
+4. 2MB module space mappings
+
+It would be nice if the virtual mappings of the same permission types could
+be placed next to each other so that they could share 2MB mappings. This way we
+could have modules or PKS memory have 2MB pages. Of course allocating from a
+2MB block could cause internal fragmentation and wasted memory, however it
+might be possible to break the virtual mapping later and allow the wasted
+memory to be unmapped and freed in the formerly 2MB page. Often a bunch of
+modules are loaded at boot. If we placed the long lived "core sections" of
+these modules sequentially into the 2MB blocks, there is probably a good chance
+we could get some decent utilization out of one.
+
+
+This RFC just has 1 and 2 actually implemented on x86.
+
+Module loader changes
+=====================
+
+Of the text allocation usages, kernel modules are the most complex because a
+single vmalloc allocation has many memory permissions across it (RO+X for the
+text, RO, RO after init, and RW). In addition to this preventing having module
+text mapped in 2MB pages since the text is all scattered around in different
+allocations, it would require more complexity for the new interface.
+
+However, at least for x86, it doesn't seem like there is any requirement for
+a module allocation to be virtually contiguous. Instead we could have the
+module loader treat each of its 4 permission regions as separate allocations.
+Then the new interface could be simpler and it could have the option of putting
+similar permission allocations next to each other to achieve 2MB pages or more
+opportunities to reuse existing mappings.
+
+The challenge in changing this in the module loader is that most of it is
+cross-arch code and there could be relocation rules required by various
+arch's that depend on the existing virtual address distances. To try to
+transition to this interface without disturbing anything, the default
+module.c behavior is to layout the modules as they were before in both
+location and permissions, but wrapped separately as multiple instances of the
+new type of allocation. This way it could have no functional change for other
+architectures at first, but allow any to implement similar optimizations in the
+arch module.c breakouts. So this RFC also looks at handling things as separate
+allocations, and actually allocates them separately for x86.
+
+Of course, there are several areas outside of modules that are involved in
+modifying the module text and data such as alternatives, orc unwinding, etc.
+These components are changed to be aware they may need to opearate on the
+writable staging area buffer.
+
+[0] https://lore.kernel.org/lkml/CALCETrV_tGk=B3Hw0h9viW45wMqB_W+rwWzx6LnC3-vSATOUOA@mail.gmail.com/
+[1] https://lore.kernel.org/lkml/20201009201410.3209180-1-ira.weiny@intel.com/
+[2] https://lore.kernel.org/lkml/20200924132904.1391-1-rppt@kernel.org/
+
+This RFC has been acked by Dave Hansen.
+
+Rick Edgecombe (10):
+  vmalloc: Add basic perm alloc implementation
+  bpf: Use perm_alloc() for BPF JIT filters
+  module: Use perm_alloc() for modules
+  module: Support separate writable allocation
+  x86/modules: Use real perm_allocations
+  x86/alternatives: Handle perm_allocs for modules
+  x86/unwind: Unwind orc at module writable address
+  jump_label: Handle module writable address
+  ftrace: Use module writable address
+  vmalloc: Add perm_alloc x86 implementation
+
+ arch/Kconfig                      |   3 +
+ arch/arm/net/bpf_jit_32.c         |   3 +-
+ arch/arm64/net/bpf_jit_comp.c     |   5 +-
+ arch/mips/net/bpf_jit.c           |   2 +-
+ arch/mips/net/ebpf_jit.c          |   3 +-
+ arch/powerpc/net/bpf_jit_comp.c   |   2 +-
+ arch/powerpc/net/bpf_jit_comp64.c |  10 +-
+ arch/s390/net/bpf_jit_comp.c      |   5 +-
+ arch/sparc/net/bpf_jit_comp_32.c  |   2 +-
+ arch/sparc/net/bpf_jit_comp_64.c  |   5 +-
+ arch/x86/Kconfig                  |   1 +
+ arch/x86/include/asm/set_memory.h |   2 +
+ arch/x86/kernel/alternative.c     |  25 +-
+ arch/x86/kernel/jump_label.c      |  18 +-
+ arch/x86/kernel/module.c          |  84 ++++-
+ arch/x86/kernel/unwind_orc.c      |   8 +-
+ arch/x86/mm/Makefile              |   1 +
+ arch/x86/mm/pat/set_memory.c      |  13 +
+ arch/x86/mm/vmalloc.c             | 438 +++++++++++++++++++++++
+ arch/x86/net/bpf_jit_comp.c       |  15 +-
+ arch/x86/net/bpf_jit_comp32.c     |   3 +-
+ include/linux/filter.h            |  30 +-
+ include/linux/module.h            |  66 +++-
+ include/linux/vmalloc.h           |  82 +++++
+ kernel/bpf/core.c                 |  48 ++-
+ kernel/jump_label.c               |   2 +-
+ kernel/module.c                   | 561 ++++++++++++++++++------------
+ kernel/trace/ftrace.c             |   2 +-
+ mm/nommu.c                        |  66 ++++
+ mm/vmalloc.c                      | 135 +++++++
+ 30 files changed, 1308 insertions(+), 332 deletions(-)
+ create mode 100644 arch/x86/mm/vmalloc.c
+
 -- 
-2.24.1
+2.20.1
 
