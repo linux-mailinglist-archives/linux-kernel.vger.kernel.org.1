@@ -2,66 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C48D2BBA3F
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABB72BBA43
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgKTXjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 18:39:10 -0500
-Received: from foss.arm.com ([217.140.110.172]:56346 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726255AbgKTXjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 18:39:10 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4740F1042;
-        Fri, 20 Nov 2020 15:39:09 -0800 (PST)
-Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 379FD3F719;
-        Fri, 20 Nov 2020 15:39:09 -0800 (PST)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     linux-mmc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, Jeremy Linton <jeremy.linton@arm.com>
-Subject: [PATCH] mmc: sdhci: Update firmware interface API
-Date:   Fri, 20 Nov 2020 17:38:31 -0600
-Message-Id: <20201120233831.447365-1-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.26.2
+        id S1728454AbgKTXkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 18:40:14 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:45274 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726172AbgKTXkN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 18:40:13 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5F08E20B717A;
+        Fri, 20 Nov 2020 15:40:12 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5F08E20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1605915612;
+        bh=pm8lF2tlf3tvdq+Us/teGujaOR41+GOwf/8B1ECpHsg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=da9adWidx/Zz4+47O33LIzwsWL9VwM9KC98pw2gZ2ojU8IL67HUEK1c4E+CCzc0X7
+         NWIGEeFW8mwF+gDChkpQbRt7SLi/uhfaPIelOidwbNiixPz1yw35i+CXAwswMnSMtH
+         RG+PiWZ5vm/AkFgdmseXOj5SBQEZOfAOWj3C24tU=
+Subject: Re: [PATCH v6 8/8] selinux: measure state and hash of the policy
+ using IMA
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201119232611.30114-1-tusharsu@linux.microsoft.com>
+ <20201119232611.30114-9-tusharsu@linux.microsoft.com>
+ <4634c6c12b2452849f73ed2d5a4d168707e0ac9a.camel@linux.ibm.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <0fb07bd3-c877-ab0f-cd45-dcfbe1fec044@linux.microsoft.com>
+Date:   Fri, 20 Nov 2020 15:40:11 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4634c6c12b2452849f73ed2d5a4d168707e0ac9a.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device_* calls were added a few years ago to abstract
-DT/ACPI/fwnode firmware interfaces. Lets convert the two
-sdhci caps fields to use the generic calls rather than the OF
-specific ones. This has the side effect of allowing
-ACPI based devices to quirk themselves when the caps field
-is broken.
+On 11/20/20 7:49 AM, Mimi Zohar wrote:
+Hi Mimi,
 
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
----
- drivers/mmc/host/sdhci.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> On Thu, 2020-11-19 at 15:26 -0800, Tushar Sugandhi wrote:
+>> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>>
+>> IMA measures files and buffer data such as keys, command line arguments
+>> passed to the kernel on kexec system call, etc. While these measurements
+>> enable monitoring and validating the integrity of the system, it is not
+>> sufficient.
+> 
+> The above paragraph would make a good cover letter introduction.
 
-diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index 592a55a34b58..feba64fbde16 100644
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -3992,10 +3992,10 @@ void __sdhci_read_caps(struct sdhci_host *host, const u16 *ver,
- 	if (host->v4_mode)
- 		sdhci_do_enable_v4_mode(host);
- 
--	of_property_read_u64(mmc_dev(host->mmc)->of_node,
--			     "sdhci-caps-mask", &dt_caps_mask);
--	of_property_read_u64(mmc_dev(host->mmc)->of_node,
--			     "sdhci-caps", &dt_caps);
-+	device_property_read_u64_array(mmc_dev(host->mmc),
-+				       "sdhci-caps-mask", &dt_caps_mask, 1);
-+	device_property_read_u64_array(mmc_dev(host->mmc),
-+				       "sdhci-caps", &dt_caps, 1);
- 
- 	v = ver ? *ver : sdhci_readw(host, SDHCI_HOST_VERSION);
- 	host->version = (v & SDHCI_SPEC_VER_MASK) >> SDHCI_SPEC_VER_SHIFT;
--- 
-2.26.2
+Agreed - will add this paragraph to the cover letter as well.
 
+> 
+>> In-memory data structures maintained by various kernel
+>> components store the current state and policies configured for
+>> the components.
+> 
+> Various data structures, policies and state stored in kernel memory
+> also impact the  integrity of the system.
+
+Will update.
+
+> 
+> The 2nd paragraph could provide examples of such integrity critical
+> data.
+
+Will do.
+
+> 
+> This patch set introduces a new IMA hook named
+> ima_measure_critical_data() to measure kernel integrity critical data.
+> 
+
+*Question*
+I am not clear about this one - do you mean add the following line in 
+the patch description for the selinux patch?
+
+"This patch introduces the first use of the new IMA hook namely 
+ima_measures_critical_data() to measure the integrity critical data for 
+SELinux"
+
+thanks,
+  -lakshmi
