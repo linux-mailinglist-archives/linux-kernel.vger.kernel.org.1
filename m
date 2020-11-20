@@ -2,88 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70142BB451
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C81412BB457
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731858AbgKTSuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:50:13 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:30038 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727880AbgKTSuM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:50:12 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AKIjK1T014077;
-        Fri, 20 Nov 2020 10:50:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pfpt0220;
- bh=2Q+/Lc7L9HQ0KAAyRR4rlh48QHiyoVhXquehjGB4IYU=;
- b=OB69uT03ShtkRsi1S3WKlFV2xsMMhKw+QCmgIoiutjQVjKHDX80i3agBOY9gyS1PboIA
- OMv1eg26GTiy5+oLfUygpU+4BT5GaX5SczWZaLlhUOre6yd9akeYoymp36x/7UFt8S42
- u6zDKoVLEuQVn1y/Fa0x1wNde0LQ4TT+UCTGqV/dcTd5Z1yCesd3UOaj69PuDSmm4lIy
- /uoxn57OvA+TDNAyuhW+ksWqCQgr6wnkURhyX/JMVzvrIEnVb3K0s8mefXU594fzHvi3
- KnJwqCt+QdQdtumt4dOvpfG5CHLg4YLgqwE+trfosrsOw4mprJczKyi4R8q+o8epsnMi OA== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 34xbeyhqem-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 20 Nov 2020 10:50:10 -0800
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 20 Nov
- 2020 10:50:09 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 20 Nov
- 2020 10:50:09 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 20 Nov 2020 10:50:09 -0800
-Received: from [10.193.39.169] (NN-LT0019.marvell.com [10.193.39.169])
-        by maili.marvell.com (Postfix) with ESMTP id 2F4FD3F7044;
-        Fri, 20 Nov 2020 10:50:06 -0800 (PST)
-Subject: Re: [EXT] [PATCH 018/141] qed: Fix fall-through warnings for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ariel Elior <aelior@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <35915deb94f9ad166f8984259050cfadd80b2567.1605896059.git.gustavoars@kernel.org>
-From:   Igor Russkikh <irusskikh@marvell.com>
-Message-ID: <9bcfa09c-dd8d-f879-4762-1b88779fa397@marvell.com>
-Date:   Fri, 20 Nov 2020 21:50:06 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101
- Thunderbird/83.0
-MIME-Version: 1.0
-In-Reply-To: <35915deb94f9ad166f8984259050cfadd80b2567.1605896059.git.gustavoars@kernel.org>
+        id S1731884AbgKTSve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:51:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729012AbgKTSvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:51:32 -0500
+Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 637BD2242B;
+        Fri, 20 Nov 2020 18:51:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605898292;
+        bh=xpsW+j5Z95aEf14SEZ/cG4zHUfe+fcw4VxLFbmk0zE0=;
+        h=Subject:From:To:Date:From;
+        b=wSCPaTVT3oyvh6eYohEqaqZV0cPySdoZ/E485rh8O46grvmhq0ozrHLsr08dA0jP2
+         Hu3Hmy04NV6HpR6bTTcl7NXgyv/4HR93bP3Q39AhBGGFZMNZDERFQ+GycSVVq4LKE/
+         RA1X4lqyvEH1IQsRuzR0bYNkbZWjtCr22UT+PDQ0=
+Message-ID: <0a643944215d02582d5c7acd1cedcd90388e3353.camel@kernel.org>
+Subject: [ANNOUNCE] 4.19.152-rt66
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Clark Williams <williams@redhat.com>,
+        Pavel Machek <pavel@denx.de>, Tom Zanussi <zanussi@kernel.org>
+Date:   Fri, 20 Nov 2020 12:51:30 -0600
 Content-Type: text/plain; charset="UTF-8"
-Content-Language: en-US
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-20_12:2020-11-20,2020-11-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello RT Folks!
+
+I'm pleased to announce the 4.19.152-rt66 stable release.
+
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.19-rt
+  Head SHA1: 3b515711216822e708490d1c686813c819e237b1
+
+Or to build 4.19.152-rt66 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.152.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.152-rt66.patch.xz
 
 
-On 20/11/2020 9:26 pm, Gustavo A. R. Silva wrote:
-> External Email
-> 
-> ----------------------------------------------------------------------
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-> warnings by explicitly adding a couple of break statements instead of
-> just letting the code fall through to the next case.
-> 
-> Link:
-> https://urldefense.proofpoint.com/v2/url?u=https-3A__github.com_KSPP_linux
-> _issues_115&d=DwIBAg&c=nKjWec2b6R0mOyPaz7xtfQ&r=GtqbaEwqFLiM6BiwNMdKmpXb5o
-> up1VLiSIroUNQwbYA&m=6E7IvGvqcEGj8wEOVoN1BySZhGUVECVTBJCmNiRsHUw&s=J1SWrfEL
-> erJOzUlJdD_S5afGaZosmVP8lyKsu9DTULw&e= 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+You can also build from 4.19.152-rt65 by applying the incremental patch:
 
-Reviewed-by: Igor Russkikh <irusskikh@marvell.com>
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.152-rt65-rt66.patch.xz
 
-Thanks,
-  Igor
+Enjoy!
+
+   Tom
+
+Changes from v4.19.152-rt65:
+---
+
+Oleg Nesterov (1):
+      ptrace: fix ptrace_unfreeze_traced() race with rt-lock
+
+Sebastian Andrzej Siewior (1):
+      mm/memcontrol: Disable preemption in __mod_memcg_lruvec_state()
+
+Tom Zanussi (1):
+      Linux 4.19.152-rt66
+---
+include/linux/memcontrol.h |  2 ++
+ kernel/ptrace.c            | 23 +++++++++++++++--------
+ localversion-rt            |  2 +-
+ 3 files changed, 18 insertions(+), 9 deletions(-)
+---
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index cc6b6532eb56..dbb2c4e27277 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -665,6 +665,7 @@ static inline void __mod_lruvec_state(struct lruvec *lruvec,
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+ 
++	preempt_disable_rt();
+ 	/* Update memcg */
+ 	__mod_memcg_state(pn->memcg, idx, val);
+ 
+@@ -675,6 +676,7 @@ static inline void __mod_lruvec_state(struct lruvec *lruvec,
+ 		x = 0;
+ 	}
+ 	__this_cpu_write(pn->lruvec_stat_cpu->count[idx], x);
++	preempt_enable_rt();
+ }
+ 
+ static inline void mod_lruvec_state(struct lruvec *lruvec,
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index a38b304fb9fd..cbefb0234be3 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -191,8 +191,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
+ 
+ static void ptrace_unfreeze_traced(struct task_struct *task)
+ {
+-	if (task->state != __TASK_TRACED)
+-		return;
++	unsigned long flags;
++	bool frozen = true;
+ 
+ 	WARN_ON(!task->ptrace || task->parent != current);
+ 
+@@ -201,12 +201,19 @@ static void ptrace_unfreeze_traced(struct task_struct *task)
+ 	 * Recheck state under the lock to close this race.
+ 	 */
+ 	spin_lock_irq(&task->sighand->siglock);
+-	if (task->state == __TASK_TRACED) {
+-		if (__fatal_signal_pending(task))
+-			wake_up_state(task, __TASK_TRACED);
+-		else
+-			task->state = TASK_TRACED;
+-	}
++
++	raw_spin_lock_irqsave(&task->pi_lock, flags);
++	if (task->state == __TASK_TRACED)
++		task->state = TASK_TRACED;
++	else if (task->saved_state == __TASK_TRACED)
++		task->saved_state = TASK_TRACED;
++	else
++		frozen = false;
++	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++
++	if (frozen && __fatal_signal_pending(task))
++		wake_up_state(task, __TASK_TRACED);
++
+ 	spin_unlock_irq(&task->sighand->siglock);
+ }
+ 
+diff --git a/localversion-rt b/localversion-rt
+index e2eb19782d4c..d42c0971b041 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt65
++-rt66
+
