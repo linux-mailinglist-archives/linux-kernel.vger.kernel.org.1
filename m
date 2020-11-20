@@ -2,91 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6A12BA112
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A702BA115
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727370AbgKTDVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 22:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727216AbgKTDVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 22:21:24 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9793EC0613CF;
-        Thu, 19 Nov 2020 19:21:24 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id j19so6100319pgg.5;
-        Thu, 19 Nov 2020 19:21:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SZ5cGX6TIQzvHfc+sLD8WT1meM0zZCA5hfHOjkflICI=;
-        b=RQnejPO2QsJVsdL5s7jfvnMIKkKvnGInPMq28TkVUnW281UjV0vzL0HuPIJuAHuZcs
-         KGz0W0Ru1cBFkA/Ynn8cXNGHtN2bfhfQBoMnWScvWKMud/tgRtE2BtqTjYAa+De4AF3W
-         l4nCuol5Mbl9tBVhgtLCCeDp8RkFZEsMxw4f/HMDvlrPczfXAWFidKIOPm9RbhMqgP1x
-         xbg1pw01kparSJucCWuNkbhzmyvNfILnZfrSmLBdAVGoJjgCVNeZEpnGTqMzgVBg9njW
-         wh2ciLnZO1zoB7EB6Abp/AA4r/DZ0vAfnSlaFaZKwn94ffQ3AYno9QeU7P5I1xcCIJxj
-         C4Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SZ5cGX6TIQzvHfc+sLD8WT1meM0zZCA5hfHOjkflICI=;
-        b=c+9eS01jURh+/RSYTFmgyF2X3/8LRE1nJNAPmSG89NgKC/jaBYb+uiBuLC7Om4U1US
-         CZqsMGwkhVaGmTR4Uvvx0A8s9uEMlldQHet9swV/UnuHrsFsUTU+TRcqX4NH1XH8B7sz
-         NV+uCL1BOmoB0JvY3yUPxI0kZRCP3AF/mQp8VzS4JbWv+99aTPyA7AztByCxKxWEdQ/n
-         AXgDuCFsV8tchVIdFvs/97cv9jsULB5xvaieGa7M4PJ95GAqM1dHxam/C+wxHeVLh6HH
-         TZcxRyLkIAzGBVB06G2aRCDVfIIY3HaIdl/z2aDhSH632G81vZSv+gV0LefBzpXknzvc
-         2gKw==
-X-Gm-Message-State: AOAM530rfCMYNeMLSLX5iFnZSgT+tq9Hu2YD2/sdunKXXY9JVzvYODFv
-        XIvSq1Asuk1vfIj6FkDU8gI=
-X-Google-Smtp-Source: ABdhPJyiFKvALuFNYwCkyI+z5T+92dZbei18yeCsOjtUZJbZeRSWrs+ojtXI5ywzvEaw9LpfiaohAg==
-X-Received: by 2002:aa7:982b:0:b029:197:cb05:a315 with SMTP id q11-20020aa7982b0000b0290197cb05a315mr3705811pfl.33.1605842484147;
-        Thu, 19 Nov 2020 19:21:24 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id v191sm1493942pfc.19.2020.11.19.19.21.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 19:21:23 -0800 (PST)
-Date:   Thu, 19 Nov 2020 19:21:21 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH 15/15] input: mouse: vmmouse: Demote obvious abuse of
- kernel-doc header
-Message-ID: <20201120032121.GU2034289@dtor-ws>
-References: <20201112110204.2083435-1-lee.jones@linaro.org>
- <20201112110204.2083435-16-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112110204.2083435-16-lee.jones@linaro.org>
+        id S1726549AbgKTDYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 22:24:41 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:42452 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726094AbgKTDYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 22:24:41 -0500
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv9P0NrdfOlkTAA--.39544S2;
+        Fri, 20 Nov 2020 11:24:37 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+Cc:     linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] c6x: Use common DISCARDS in vmlinux.lds.S
+Date:   Fri, 20 Nov 2020 11:24:36 +0800
+Message-Id: <1605842676-7508-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxv9P0NrdfOlkTAA--.39544S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrWw13KF13ZFy7Ww18KF47CFg_yoWxXrg_GF
+        1aqw1xKr1F9FnxZryUCw4rZF90ya1rGFyS9rnrZr4xJFn8Xrs8t3Z3XFy3u3W5ZrW5CrW3
+        ZF4xur93Zw17ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gr4l42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0YiiDUUUUU==
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:02:04AM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/input/mouse/vmmouse.c:99: warning: Function parameter or member 'cmd' not described in 'VMMOUSE_CMD'
->  drivers/input/mouse/vmmouse.c:99: warning: Function parameter or member 'in1' not described in 'VMMOUSE_CMD'
->  drivers/input/mouse/vmmouse.c:99: warning: Function parameter or member 'out1' not described in 'VMMOUSE_CMD'
->  drivers/input/mouse/vmmouse.c:99: warning: Function parameter or member 'out2' not described in 'VMMOUSE_CMD'
->  drivers/input/mouse/vmmouse.c:99: warning: Function parameter or member 'out3' not described in 'VMMOUSE_CMD'
->  drivers/input/mouse/vmmouse.c:99: warning: Function parameter or member 'out4' not described in 'VMMOUSE_CMD'
-> 
-> Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
-> Cc: "VMware, Inc." <pv-drivers@vmware.com>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Thomas Hellstrom <thellstrom@vmware.com>
-> Cc: linux-input@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Use the common DISCARDS rule for the linker script in an effort to
+regularize the linker script.
 
-Applied, thank you.
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ arch/c6x/kernel/vmlinux.lds.S | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
+diff --git a/arch/c6x/kernel/vmlinux.lds.S b/arch/c6x/kernel/vmlinux.lds.S
+index ac99ba0..188a334 100644
+--- a/arch/c6x/kernel/vmlinux.lds.S
++++ b/arch/c6x/kernel/vmlinux.lds.S
+@@ -139,13 +139,9 @@ SECTIONS
+ 
+ 	DWARF_DEBUG
+ 
++	DISCARDS
+ 	/DISCARD/ :
+ 	{
+-		  EXIT_TEXT
+-		  EXIT_DATA
+-		  EXIT_CALL
+-		  *(.discard)
+-		  *(.discard.*)
+-		  *(.interp)
++		*(.interp)
+ 	}
+ }
 -- 
-Dmitry
+2.1.0
+
