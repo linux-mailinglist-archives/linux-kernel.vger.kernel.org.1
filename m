@@ -2,120 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068132BAC1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3012BAC1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728275AbgKTOoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 09:44:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
+        id S1728210AbgKTOoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 09:44:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727782AbgKTOoT (ORCPT
+        with ESMTP id S1727782AbgKTOoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:44:19 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA84C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 06:44:18 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id q5so9000495qkc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 06:44:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C1CYOETxY2mWhhteoELoIdcbW6dqQyY7MF0yoQEntsU=;
-        b=RTlyczdaOkh7geh5ZkV5GWqqUHxPFzM+/EHAond4ShJYOtFveN+sTMYTYpHgQ3qw9r
-         4OCkjKwSJHsceu0+nXK8loM3AVTBFS75aQPAYKdJgOphR7CRICAABfzh2r1lr150wYko
-         R+D3NyVAow6YMlcGvxOKbs41nuzOmhP+RWkQl7DrCHEGm0KGA0pr2pCv4AUF32psYd2Q
-         MUv4Hz7kJrHs6Vr4QMJoQ57rfNDvVFd+jOm23dB4GkMajSHqjOrHjWK+/6LejpwZb2E8
-         moGMGJMG9qiVmJOXe8kK1nAw7nH/ygEbeVvJccO1/wiK3Q7q4IPkor735omM5ig5how2
-         iifQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C1CYOETxY2mWhhteoELoIdcbW6dqQyY7MF0yoQEntsU=;
-        b=XEM4AQSFKkfHMtk6W3RXHrGcWIHpvET8mxMsQQtVnGSKz5azVBNyRFCShOFVACFQRv
-         WdecryqZWbocT1H/EAVoickZrNxp5CSYVuwQE27DF084M1Opog3hAHHpSkVPottYw9nU
-         me0z+Fw6s2FHRu49gWyVChc581x9xkjCDsqYdalE+Gco6G9kFryQeFqmoRIT+yQvll8h
-         Id/gkqyp2FqQDSZfx/NdQ+lBLC3o23+UsvUI8zQvNs6I/z5dhHsehcx0Tqd8hNKycUPf
-         hlpNcRm7eLb5qqUOhK7V4HT8UYrflCmQkjwOor8sdqtCCqRDpA5SGuexKpZzhS/lFx0L
-         8jZg==
-X-Gm-Message-State: AOAM531d70QSONfJmVM5q1Rc2QnM0mWTo9QItNfF5cFyfE4qtpIsws7k
-        69zlKboWykbhINZy4B7ww+9bCOgcShd9CXHltWJJzQ==
-X-Google-Smtp-Source: ABdhPJwZrlT2iMbWNY1ZMJAir2bIhu343U9ppzqmXLgR+ajdYkR5kBk2dzPNIsC8Na83xEoHeqe293oVTudB3x2YG5E=
-X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr17381328qkm.231.1605883457341;
- Fri, 20 Nov 2020 06:44:17 -0800 (PST)
+        Fri, 20 Nov 2020 09:44:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4A7C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 06:44:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zVm/SCH2gW0dx0JpynqROEWKXznlIIRkjjY5i7qnbLY=; b=jzP5MyELNOdaH5GRCvIj34NPLI
+        mKZx9Hc3lTj2VoOl3bxQmM/kecr1Q6k+y1jKQC8r8QqW97rqrTFkRcu3As+zn7A1M+dDBRlaDPyRF
+        IOJDxxc1pM+hdgX/VUrxeSws7srRH9J/YLZ6VYpAWPheSLyhwC+kY7UnR7DStttsoPcOuK7neD17N
+        UTSLGZEftJNf9EhMqyGHEeYj6caIXc2b//Qb7IK3oqs7WC6KE6EEEutTRuPVrH6k35p5m8nwsutoD
+        H480BGUJO40BWE+f4opPk/C5Gyrffyz39MUO4/TTu2jpSAQc41x7l2ruvidwoMhFsCXxSW/FJwz6S
+        ikoN67Iw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kg7dy-0007W0-Fi; Fri, 20 Nov 2020 14:44:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 93D25300B22;
+        Fri, 20 Nov 2020 15:44:08 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 86103201B4C51; Fri, 20 Nov 2020 15:44:08 +0100 (CET)
+Date:   Fri, 20 Nov 2020 15:44:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Phil Auld <pauld@redhat.com>
+Subject: Re: [RFC PATCH 5/5] locking/rwsem: Remove reader optimistic spinning
+Message-ID: <20201120144408.GF3040@hirez.programming.kicks-ass.net>
+References: <20201118030429.23017-1-longman@redhat.com>
+ <20201118030429.23017-6-longman@redhat.com>
+ <20201118053556.3fmmtat7upv6dtvd@linux-p48b.lan>
 MIME-Version: 1.0
-References: <20201118035309.19144-1-qiang.zhang@windriver.com>
- <20201119214934.GC1437@paulmck-ThinkPad-P72> <CACT4Y+bas5xfc-+W+wkpbx6Lw=9dsKv=ha83=hs1pytjfK+drg@mail.gmail.com>
- <20201120143440.GF1437@paulmck-ThinkPad-P72>
-In-Reply-To: <20201120143440.GF1437@paulmck-ThinkPad-P72>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 20 Nov 2020 15:44:04 +0100
-Message-ID: <CACT4Y+ZNBRaVOK4zjv7WyyJKeS54OL8212EtjQHshYDeOVmCGQ@mail.gmail.com>
-Subject: Re: [PATCH] rcu: kasan: record and print kvfree_call_rcu call stack
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Zhang, Qiang" <qiang.zhang@windriver.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Uladzislau Rezki <urezki@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118053556.3fmmtat7upv6dtvd@linux-p48b.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 3:34 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Fri, Nov 20, 2020 at 09:51:15AM +0100, Dmitry Vyukov wrote:
-> > On Thu, Nov 19, 2020 at 10:49 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Wed, Nov 18, 2020 at 11:53:09AM +0800, qiang.zhang@windriver.com wrote:
-> > > > From: Zqiang <qiang.zhang@windriver.com>
-> > > >
-> > > > Add kasan_record_aux_stack function for kvfree_call_rcu function to
-> > > > record call stacks.
-> > > >
-> > > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> > >
-> > > Thank you, but this does not apply on the "dev" branch of the -rcu tree.
-> > > See file:///home/git/kernel.org/rcutodo.html for more info.
-> > >
-> > > Adding others on CC who might have feedback on the general approach.
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > > ---
-> > > >  kernel/rcu/tree.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index da3414522285..a252b2f0208d 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -3506,7 +3506,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > >               success = true;
-> > > >               goto unlock_return;
-> > > >       }
-> > > > -
-> > > > +     kasan_record_aux_stack(ptr);
-> > > >       success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
-> > > >       if (!success) {
-> > > >               run_page_cache_worker(krcp);
-> >
-> > kvfree_call_rcu is intended to free objects, right? If so this is:
->
-> True, but mightn't there still be RCU readers referencing this object for
-> some time, as in up to the point that the RCU grace period ends?  If so,
-> won't adding this cause KASAN to incorrectly complain about those readers?
->
-> Or am I missing something here?
+On Tue, Nov 17, 2020 at 09:35:56PM -0800, Davidlohr Bueso wrote:
+> On Tue, 17 Nov 2020, Waiman Long wrote:
+> 
+> > The column "CS Load" represents the number of pause instructions issued
+> > in the locking critical section. A CS load of 1 is extremely short and
+> > is not likey in real situations. A load of 20 (moderate) and 100 (long)
+> > are more realistic.
+> > 
+> > It can be seen that the previous patches in this series have reduced
+> > performance in general except in highly contended cases with moderate
+> > or long critical sections that performance improves a bit. This change
+> > is mostly caused by the "Prevent potential lock starvation" patch that
+> > reduce reader optimistic spinning and hence reduce reader fragmentation.
+> > 
+> > The patch that further limit reader optimistic spinning doesn't seem to
+> > have too much impact on overall performance as shown in the benchmark
+> > data.
+> > 
+> > The patch that disables reader optimistic spinning shows reduced
+> > performance at lightly loaded cases, but comparable or slightly better
+> > performance on with heavier contention.
+> 
+> I'm not overly worried about the lightly loaded cases here as the users
+> (mostly thinking mmap_sem) most likely won't care for real workloads,
+> not, ie: will-it-scale type things.
+> 
+> So at SUSE we also ran into this very same problem with reader optimistic
+> spinning and considering the fragmentation went with disabling it, much
+> like this patch - but without the reader optimistic lock stealing bits
+> you have. So far nothing has really shown to fall out in our performance
+> automation. And per your data a single reader spinner does not seem to be
+> worth the added complexity of keeping reader spinning vs ripping it out.
 
-kvfree_call_rcu does not check anything, not poison the object for
-future accesses (it is also called in call_rcu which does not
-necessarily free the object).
-It just notes the current stack to provide in reports later.
-The problem is that the free stack is pointless for objects freed by
-rcu. In such cases we want call_rcu/kvfree_call_rcu stack in
-use-after-free reports.
+I'm fine with ripping it... It was finnicky to begin with.
