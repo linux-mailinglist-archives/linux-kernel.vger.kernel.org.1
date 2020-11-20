@@ -2,100 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52342BB6D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FEC2BB6F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730943AbgKTU3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 15:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730651AbgKTU3k (ORCPT
+        id S1731189AbgKTUag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 15:30:36 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:41520 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729540AbgKTUaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 15:29:40 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9761C0613CF;
-        Fri, 20 Nov 2020 12:29:38 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id t5so8112755qtp.2;
-        Fri, 20 Nov 2020 12:29:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fWEyiKtLOwc5BKH8g+Q/g+4/sPbOaRfc0dXxralt2Mw=;
-        b=slPQ//pemKZh9f5kkjudlch0CBWhSXQy2VCSu7HRkD1RW0Ao5+0ftQM2E6UPD3hccj
-         qjQNNmRuGGdK3qOvq5NYurgRaP3hJJuevD4jAH/fmKo+acNl1pILRNLqMDFd7QZ+2prZ
-         tmcUlDky6roTiagY+1Ks0VwGJwggfgRDYhMNyjlvUprVonMn9YqbkCKWYuYbATXQn2JP
-         H9tN2HQsAdXChUj0afdmZW/4fCcfq/VPLcHKF5jmoDMHeF6P0ZDz4TumaSvPvAlnmbSp
-         9HEAzto9pPBh3Vc65NGET29HWmFU7wMfbtObL4BW7Zce7yCYVt0G+SkyUa9ICW+0aIqa
-         CMtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fWEyiKtLOwc5BKH8g+Q/g+4/sPbOaRfc0dXxralt2Mw=;
-        b=c4pVaR9D+CoUU7W6+5RJsHy6xekr8zhxscgYuRaG64gQ74mjIU2J1YnG/4XloCL4Do
-         f8o90Bml3Ce/nyIqsK6sS+m8oSx4Z34a7MhigyGJyi7nYEURwOq2VGZ18r4x5F/KVrI2
-         yi5nkE38it1Pq9Ja4ClZnfdqefEYyIcyEbyeQP5/pbw5LjzMdrQgo7QFaUxRMHy5UVDW
-         FroqbFARRjaHpwYwvN7S4+3MyvIi7EdNWkj7WJdzuRKAS8KJzptxNCs9M8MViwsMpojC
-         FKEUgFg/3MxvMkqQ9v+o7/35wPifH4otpBw+1cs4ykHJEn+T78lvcHYv8dVaxB+fjMH4
-         1lrg==
-X-Gm-Message-State: AOAM533dD/CiJFobC4S8vncNo3dO0PzjSIayCbFSD7R+Zqj4TyKZRwe5
-        FEZWd0bsoMOtU0Ux5ifcpko=
-X-Google-Smtp-Source: ABdhPJyeXkg7uuNpc9skA29Vf8QCCxes8SLhmi9OBG/8zRZ22lxtrFLvm4CI1/fXBFji9v0sjbaDkA==
-X-Received: by 2002:ac8:3496:: with SMTP id w22mr17736541qtb.222.1605904178000;
-        Fri, 20 Nov 2020 12:29:38 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id v32sm2850385qtb.42.2020.11.20.12.29.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 12:29:36 -0800 (PST)
-Date:   Fri, 20 Nov 2020 13:29:35 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v7 02/17] kbuild: add support for Clang LTO
-Message-ID: <20201120202935.GA1220359@ubuntu-m3-large-x86>
-References: <20201118220731.925424-1-samitolvanen@google.com>
- <20201118220731.925424-3-samitolvanen@google.com>
- <CAKwvOdnYTMzaahnBqdNYPz3KMdnkp=jZ4hxiqkTYzM5+BBdezA@mail.gmail.com>
- <CABCJKucj_jUwoiLc35R7qFe+cNKTWgT+gsCa5pPiY66+1--3Lg@mail.gmail.com>
- <202011201144.3F2BB70C@keescook>
+        Fri, 20 Nov 2020 15:30:35 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 06C641280830;
+        Fri, 20 Nov 2020 12:30:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1605904235;
+        bh=1StEH8weMh7bH9VzkRwEbq/XSUpLZX5i2WtPjNi7hDQ=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=wMZsvMaAyGWae7x9WdraE6IHIDIS/XrQOxW3rGW5ooIlo4TSbp5l8Skjxw1TrvFhG
+         c5T5jrxsd0dav1HExSkOKmzFgu2qMkfPqSSr9gIbS6WyBPkCQtZgIOcgMKhS9lP7aH
+         N4sa2py0y2o5/j7AQS9dJEhHSkgTs58XEXrOKG8I=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id iB0CYymO9ID8; Fri, 20 Nov 2020 12:30:35 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id AC2C21280722;
+        Fri, 20 Nov 2020 12:30:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1605904234;
+        bh=1StEH8weMh7bH9VzkRwEbq/XSUpLZX5i2WtPjNi7hDQ=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=HJOhvszpFxrWn7xnpq56vE5NbWgUXgCVuxEPYOs8m5ZmLKFr2g8MQvEvfbZ+GQpLU
+         ibSK+drTjpvkrUX5YnvRmXqWmHfqPGIrmyLRFuJ3t0RA6hUVSeLPBy3+ZHK0OQJBPc
+         uIVK6eB86fLPtmOjfngYtdHip3MVOyseDuDTVAVU=
+Message-ID: <e7089b22f1e74855e76b64e5a0923771a108b770.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.10-rc4
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 20 Nov 2020 12:30:34 -0800
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202011201144.3F2BB70C@keescook>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 11:47:21AM -0800, Kees Cook wrote:
-> On Fri, Nov 20, 2020 at 08:23:11AM -0800, Sami Tolvanen wrote:
-> > Changing the ThinLTO config to a choice and moving it after the main
-> > LTO config sounds like a good idea to me. I'll see if I can change
-> > this in v8. Thanks!
-> 
-> Originally, I thought this might be a bit ugly once GCC LTO is added,
-> but this could be just a choice like we're done for the stack
-> initialization. Something like an "LTO" choice of NONE, CLANG_FULL,
-> CLANG_THIN, and in the future GCC, etc.
+Fixes for two fairly obscure but annoying when triggered races in
+iSCSI.
 
-Having two separate choices might be a little bit cleaner though? One
-for the compiler (LTO_CLANG versus LTO_GCC) and one for the type
-(THINLTO versus FULLLTO). The type one could just have a "depends on
-CC_IS_CLANG" to ensure it only showed up when needed.
+The patch is available here:
 
-Cheers,
-Nathan
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+
+The short changelog is:
+
+Lee Duncan (1):
+      scsi: libiscsi: Fix NOP race condition
+
+Mike Christie (1):
+      scsi: target: iscsi: Fix cmd abort fabric stop race
+
+and the diffstat:
+
+ drivers/scsi/libiscsi.c             | 23 +++++++++++++++--------
+ drivers/target/iscsi/iscsi_target.c | 17 +++++++++++++----
+ include/scsi/libiscsi.h             |  3 +++
+ 3 files changed, 31 insertions(+), 12 deletions(-)
+
+With full diff below.
+
+James
+
+---
+
+diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
+index 1e9c3171fa9f..f9314f1393fb 100644
+--- a/drivers/scsi/libiscsi.c
++++ b/drivers/scsi/libiscsi.c
+@@ -533,8 +533,8 @@ static void iscsi_complete_task(struct iscsi_task *task, int state)
+ 	if (conn->task == task)
+ 		conn->task = NULL;
+ 
+-	if (conn->ping_task == task)
+-		conn->ping_task = NULL;
++	if (READ_ONCE(conn->ping_task) == task)
++		WRITE_ONCE(conn->ping_task, NULL);
+ 
+ 	/* release get from queueing */
+ 	__iscsi_put_task(task);
+@@ -738,6 +738,9 @@ __iscsi_conn_send_pdu(struct iscsi_conn *conn, struct iscsi_hdr *hdr,
+ 						   task->conn->session->age);
+ 	}
+ 
++	if (unlikely(READ_ONCE(conn->ping_task) == INVALID_SCSI_TASK))
++		WRITE_ONCE(conn->ping_task, task);
++
+ 	if (!ihost->workq) {
+ 		if (iscsi_prep_mgmt_task(conn, task))
+ 			goto free_task;
+@@ -941,8 +944,11 @@ static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
+         struct iscsi_nopout hdr;
+ 	struct iscsi_task *task;
+ 
+-	if (!rhdr && conn->ping_task)
+-		return -EINVAL;
++	if (!rhdr) {
++		if (READ_ONCE(conn->ping_task))
++			return -EINVAL;
++		WRITE_ONCE(conn->ping_task, INVALID_SCSI_TASK);
++	}
+ 
+ 	memset(&hdr, 0, sizeof(struct iscsi_nopout));
+ 	hdr.opcode = ISCSI_OP_NOOP_OUT | ISCSI_OP_IMMEDIATE;
+@@ -957,11 +963,12 @@ static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
+ 
+ 	task = __iscsi_conn_send_pdu(conn, (struct iscsi_hdr *)&hdr, NULL, 0);
+ 	if (!task) {
++		if (!rhdr)
++			WRITE_ONCE(conn->ping_task, NULL);
+ 		iscsi_conn_printk(KERN_ERR, conn, "Could not send nopout\n");
+ 		return -EIO;
+ 	} else if (!rhdr) {
+ 		/* only track our nops */
+-		conn->ping_task = task;
+ 		conn->last_ping = jiffies;
+ 	}
+ 
+@@ -984,7 +991,7 @@ static int iscsi_nop_out_rsp(struct iscsi_task *task,
+ 	struct iscsi_conn *conn = task->conn;
+ 	int rc = 0;
+ 
+-	if (conn->ping_task != task) {
++	if (READ_ONCE(conn->ping_task) != task) {
+ 		/*
+ 		 * If this is not in response to one of our
+ 		 * nops then it must be from userspace.
+@@ -1923,7 +1930,7 @@ static void iscsi_start_tx(struct iscsi_conn *conn)
+  */
+ static int iscsi_has_ping_timed_out(struct iscsi_conn *conn)
+ {
+-	if (conn->ping_task &&
++	if (READ_ONCE(conn->ping_task) &&
+ 	    time_before_eq(conn->last_recv + (conn->recv_timeout * HZ) +
+ 			   (conn->ping_timeout * HZ), jiffies))
+ 		return 1;
+@@ -2058,7 +2065,7 @@ enum blk_eh_timer_return iscsi_eh_cmd_timed_out(struct scsi_cmnd *sc)
+ 	 * Checking the transport already or nop from a cmd timeout still
+ 	 * running
+ 	 */
+-	if (conn->ping_task) {
++	if (READ_ONCE(conn->ping_task)) {
+ 		task->have_checked_conn = true;
+ 		rc = BLK_EH_RESET_TIMER;
+ 		goto done;
+diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
+index f77e5eee6b80..518fac4864cf 100644
+--- a/drivers/target/iscsi/iscsi_target.c
++++ b/drivers/target/iscsi/iscsi_target.c
+@@ -483,8 +483,7 @@ EXPORT_SYMBOL(iscsit_queue_rsp);
+ void iscsit_aborted_task(struct iscsi_conn *conn, struct iscsi_cmd *cmd)
+ {
+ 	spin_lock_bh(&conn->cmd_lock);
+-	if (!list_empty(&cmd->i_conn_node) &&
+-	    !(cmd->se_cmd.transport_state & CMD_T_FABRIC_STOP))
++	if (!list_empty(&cmd->i_conn_node))
+ 		list_del_init(&cmd->i_conn_node);
+ 	spin_unlock_bh(&conn->cmd_lock);
+ 
+@@ -4083,12 +4082,22 @@ static void iscsit_release_commands_from_conn(struct iscsi_conn *conn)
+ 	spin_lock_bh(&conn->cmd_lock);
+ 	list_splice_init(&conn->conn_cmd_list, &tmp_list);
+ 
+-	list_for_each_entry(cmd, &tmp_list, i_conn_node) {
++	list_for_each_entry_safe(cmd, cmd_tmp, &tmp_list, i_conn_node) {
+ 		struct se_cmd *se_cmd = &cmd->se_cmd;
+ 
+ 		if (se_cmd->se_tfo != NULL) {
+ 			spin_lock_irq(&se_cmd->t_state_lock);
+-			se_cmd->transport_state |= CMD_T_FABRIC_STOP;
++			if (se_cmd->transport_state & CMD_T_ABORTED) {
++				/*
++				 * LIO's abort path owns the cleanup for this,
++				 * so put it back on the list and let
++				 * aborted_task handle it.
++				 */
++				list_move_tail(&cmd->i_conn_node,
++					       &conn->conn_cmd_list);
++			} else {
++				se_cmd->transport_state |= CMD_T_FABRIC_STOP;
++			}
+ 			spin_unlock_irq(&se_cmd->t_state_lock);
+ 		}
+ 	}
+diff --git a/include/scsi/libiscsi.h b/include/scsi/libiscsi.h
+index c25fb86ffae9..b3bbd10eb3f0 100644
+--- a/include/scsi/libiscsi.h
++++ b/include/scsi/libiscsi.h
+@@ -132,6 +132,9 @@ struct iscsi_task {
+ 	void			*dd_data;	/* driver/transport data */
+ };
+ 
++/* invalid scsi_task pointer */
++#define	INVALID_SCSI_TASK	(struct iscsi_task *)-1l
++
+ static inline int iscsi_task_has_unsol_data(struct iscsi_task *task)
+ {
+ 	return task->unsol_r2t.data_length > task->unsol_r2t.sent;
+
