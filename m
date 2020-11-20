@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2A72BA51D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23AA2BA52C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbgKTIwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:52:55 -0500
-Received: from mga11.intel.com ([192.55.52.93]:64252 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727043AbgKTIwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:52:54 -0500
-IronPort-SDR: NsHZ3dn8mZ7Up7qsfZeWyYlddby2i8v2pu0qMDCRjV0dGx/uqARTpg/CkSv8nuDt1mN5YR08jt
- nVVM8MXTwgzA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="167929497"
-X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
-   d="scan'208";a="167929497"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 00:52:53 -0800
-IronPort-SDR: 1dVlrbhq0+neEjxEnD9VmRkqOme23/MNbM9v6o03BPHR4HC9q4+SzQOcuQFh0oed43dl4Qk+iO
- fA0euFqMj+vQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
-   d="scan'208";a="431507966"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 20 Nov 2020 00:52:51 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 20 Nov 2020 10:52:50 +0200
-Date:   Fri, 20 Nov 2020 10:52:50 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     Utkarsh Patel <utkarsh.h.patel@intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        enric.balletbo@collabora.com, rajmohan.mani@intel.com,
-        azhar.shaikh@intel.com
-Subject: Re: [PATCH v3 1/4] usb: typec: Use Thunderbolt 3 cable discover mode
- VDO in Enter_USB message
-Message-ID: <20201120085250.GD4120550@kuha.fi.intel.com>
-References: <20201119063211.2264-1-utkarsh.h.patel@intel.com>
- <20201119063211.2264-2-utkarsh.h.patel@intel.com>
- <20201120080514.GC4120550@kuha.fi.intel.com>
- <20201120083625.GB4160865@google.com>
+        id S1727214AbgKTIyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:54:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgKTIyV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:54:21 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFB1C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:54:20 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id m9so6749378pgb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:54:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+/obyKwhLmELIOTNjIjMVdmJhk74zSgJefv372u+mWk=;
+        b=T4Bxv0LzpQqYFqnbeoS5z/ymTAG70N5QauApvRu4qkPvG7VYaK9AXKbvZlE86tp5yk
+         fcPnYwapwHzMDp+jEDGBEvDwx6spPXhDfJyf8sgWfTNABV200qxPHXrK3Rit6Oce0j5l
+         wLfS+XEwnskhpBt15tIZ6iOu4IDS00Khmp5i6lhieuw8Y8iAT+u/rx3Fo8BvBaASOEi/
+         iba04pd7eKQjZL9vCbNICUU4idRDKUOEEYQUOoAheAntgu6yoGk5inGNaVsx+E6lDiTT
+         2SCFgLs6lj3X/wvtIGkcFFI3BPo4tKQjVr1niCgGn1jiSixtv99mnKU0DJFAui7wSVSB
+         bcNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+/obyKwhLmELIOTNjIjMVdmJhk74zSgJefv372u+mWk=;
+        b=PTxkPtkUetPR2yuh4VT/uhXeB/MR9RKCIzHND/vPc5fmJG4tf8nk5bNlbx6KMSVYJw
+         B3Wb+5dBinBNusYISnBKf1AKydTw3eBUSw6awB763a5DdO4OQKwjptfmTgjv43K0yEZl
+         fvjRrfniiW4qdbOSp+BaaMT/PUr1WcQyUCBctDUUzLWitJcHRQBd5MmFgFEkwo2w6HSB
+         XOHaEyTsOFrgzOKHlUv+1Y2GZbnuxQWFx0WXvAHYkB3Bil8TFV2S/sIkrawP/eb1Gu3F
+         i84Ir50k2Y/ukmAqq/BBu+2ViZjOgBel6MBVyDlYOtwnhGnSwBENSRhbB34n3VKEdZiR
+         49MA==
+X-Gm-Message-State: AOAM533UpIj9RhfqJrdkskgSZYqh31bK35ah4+UVrPWZ6XXrtkv1GS8p
+        OXvK++iwwA1qbuk/dw89ps6iPOI7Lo7d9d9eswh47w==
+X-Google-Smtp-Source: ABdhPJy1+LfEuD8o9GFskPkG8bpoSM/jlOhzy1Ph5ajz7lZTeqmYNK0X1dfui/R4WQbABZDeaxI2ByEigdWN7vPUj54=
+X-Received: by 2002:a17:90a:ae14:: with SMTP id t20mr9193687pjq.13.1605862460402;
+ Fri, 20 Nov 2020 00:54:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120083625.GB4160865@google.com>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-4-songmuchun@bytedance.com> <20201120074950.GB3200@dhcp22.suse.cz>
+ <CAMZfGtWuCuuR+N8h-509BbDL8CN+s_djsodPN0Wb1+YHbF9PHw@mail.gmail.com> <20201120084750.GK3200@dhcp22.suse.cz>
+In-Reply-To: <20201120084750.GK3200@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 20 Nov 2020 16:53:37 +0800
+Message-ID: <CAMZfGtW2QEuRgYv_WXjN5OU+EhLPO9UHJ+8puSoVG8cwKQBvjA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 03/21] mm/hugetlb: Introduce a new
+ config HUGETLB_PAGE_FREE_VMEMMAP
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:36:25AM -0800, Prashant Malani wrote:
-> On Fri, Nov 20, 2020 at 10:05:14AM +0200, Heikki Krogerus wrote:
-> > On Wed, Nov 18, 2020 at 10:32:08PM -0800, Utkarsh Patel wrote:
-> > > When Thunderbolt 3 cable is being used to create USB4 connection, use
-> > > Thunderbolt 3 discover mode VDO to fill details such as active cable plug
-> > > link training and cable rounded support.
-> > > With USB4 cables, these VDO members need not be filled.
-> > > 
-> > > Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > > Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
-> > > 
-> > > --
-> > > Changes in v3:
-> > > - Changed the commit mesage to reflect why TBT3 VDO is being used.
-> > > - Added more details in the header file about the usage of TBT3 VDO.
-> > > 
-> > > Changes in v2:
-> > > - No change.
-> > > --
-> > > ---
-> > >  include/linux/usb/typec.h | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-> > > index 6be558045942..25731ed863fa 100644
-> > > --- a/include/linux/usb/typec.h
-> > > +++ b/include/linux/usb/typec.h
-> > > @@ -75,6 +75,10 @@ enum typec_orientation {
-> > >  /*
-> > >   * struct enter_usb_data - Enter_USB Message details
-> > >   * @eudo: Enter_USB Data Object
-> > > + * @tbt_cable_vdo: TBT3 Cable Discover Mode Response
-> > 
-> > This is fine..
-> > 
-> > > + * @tbt_cable_vdo needs to be filled with details of active cable plug link
-> > > + * training and cable rounded support when thunderbolt 3 cable is being used to
-> > > + * create USB4 connection. Do not fill this in case of USB4 cable.
-> > 
-> > But this is not. The description of the member tells what the member
-> > contains, but it does not make sense to explain also how to use the
-> > member in the same place.
-> 
-> Slightly tangential question here:
-> 
-> Is there a need to mention "active cable plug link training" and "cable
-> rounded support" at all? Wouldn't it be sufficient to omit those in the
-> description (in case some mux implementation wants to use the other fields
-> of the VDO) ?
+On Fri, Nov 20, 2020 at 4:47 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 20-11-20 16:35:16, Muchun Song wrote:
+> [...]
+> > > That being said, unless there are huge advantages to introduce a
+> > > config option I would rather not add it because our config space is huge
+> > > already and the more we add the more future code maintainance that will
+> > > add. If you want the config just for dependency checks then fine by me.
+> >
+> > Yeah, it is only for dependency checks :)
+>
+> OK, I must have misread the definition to think that it requires user to
+> enable explicitly.
+>
+> Anyway this feature cannot be really on by default due to overhead. So
+> the command line option default has to be flipped.
 
-No, I don't think so. I think it would be enough to just mention that
-we need the TBT3 Cable VDO only when the USB4 connection is created
-using TBT3 cables. And that's it.
+Got it. Thanks for your suggestion.
+
+>
+> --
+> Michal Hocko
+> SUSE Labs
 
 
-Br,
 
 -- 
-heikki
+Yours,
+Muchun
