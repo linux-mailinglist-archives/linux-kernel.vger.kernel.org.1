@@ -2,236 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291AD2BA5D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E8C2BA5DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727353AbgKTJSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:18:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgKTJSl (ORCPT
+        id S1727382AbgKTJTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:19:00 -0500
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:38130 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgKTJS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:18:41 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF75C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:18:39 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id g19so8075337otp.13
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:18:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OtrYQoEiROvCqqv4Jka4JIhMwLKRXKEHuB2b3PjkDRI=;
-        b=H9pmf4taWGwhJj0TCPHRqUSjU70cWnKJjp7fPbvY9crHvLcESWQq3LyuXCxK4oLrKU
-         cE0KMzfuWCfbRfL+I6J1/V6V741Gq4+hcyfquL+KRX7CcWHTILWoG6kc2xEtShyJEd6T
-         7BjZeDAZNI4WxIxvtHfYIUlI9hmefqlvmBIDQ=
+        Fri, 20 Nov 2020 04:18:59 -0500
+Received: by mail-ej1-f65.google.com with SMTP id a16so11905563ejj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:18:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OtrYQoEiROvCqqv4Jka4JIhMwLKRXKEHuB2b3PjkDRI=;
-        b=goh89ln+Tg8iKhOAEMGwFUDSWMcd4L2u7VtdWIdBkbVwTT2pI9tyI9IduPIUk8BTRT
-         pA/n1hYbHU/JmoBRJh3ctNQJw3OAQhwcV//Laz1yEEyrmxGyZqde0yGp9zDu+WWdXgie
-         4Uk35dfTFL7mLeaAXPA/SYL91EmId9JG/vxZSCVFgZHJRqNLVhO3w8PZ2O7Uc0vDoOks
-         LxcWbiI0DFvDMKf+7vH2I0iYLiSO0hDMlXQiJRoCJ5bm4/ari6rtQTgZ6K0n84RXTGvb
-         mhh1HrlFHOVmL7YzT1Ab3KwAgl2G5UDWb7xDG7ZTnF0X8LgagsRucGmQn8le0w6JZopi
-         e22A==
-X-Gm-Message-State: AOAM531t0muFa2pAWLjltK3JtoclU0LYAIylvrE5i6gnQnuME/kKPinC
-        gpdG5YUTwP0e5elmN3FcnYxRA3/MGP5Bcpf4YFkFWg==
-X-Google-Smtp-Source: ABdhPJwRO5d84BxTeYThG2QPCXAsJdc+1sEa8OQumtyte52NF7Ay2wUea1iF99xa2TqGcNyZBAN0DrcCHGfwp68L+Co=
-X-Received: by 2002:a05:6830:3155:: with SMTP id c21mr13756463ots.281.1605863919326;
- Fri, 20 Nov 2020 01:18:39 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CJNTakbFwhRaoDBBX2Qv2zKhLnFzPrZ8orJ8Gh15hms=;
+        b=LnrqGKYO8qT2RN9eZDwruEDqCGCoibddI6QIobPujvToJ05kAzatoeawR7CfTWxGM4
+         /0GVVMyvIsJH0LwKTORQkuw5kZuHtM0ZSsdk3DrOyTIgm6dUYvzD2jYHC3Xw2SkbxHBK
+         RlvwTsrARHluof0bj4GbkCPzxGKwAAu6cnYTLW/52Tj7UuIyxjTBS6gNCCZpABNf9SGu
+         wy8r2p8kuljFWb/8TxM+cSLbhkc0y1stsArDnxHArYQADV+2oCXU/5XJdy+yokDRRVL9
+         oKyxqVZmTRh3bMnNc5vjck9y6oNOYT51dCuktVwTsoDEYhRqy3iT9h7kqWrbc2271o+G
+         Q8tA==
+X-Gm-Message-State: AOAM533Tc1YIuROuZ6PU0hCc0Y64MGmJCyeMAVG3pNWTmAthnjcmJLjr
+        /yNH/Qdq5mgVxGcVmq622DI=
+X-Google-Smtp-Source: ABdhPJxhOs6nX3wl3JUpwyfylNA4SIDbFQHl5ntJ5lZXrQcioEy5Y1ufpt6zUhoD5apXZAJg0SDt9Q==
+X-Received: by 2002:a17:906:af8c:: with SMTP id mj12mr31556277ejb.85.1605863937742;
+        Fri, 20 Nov 2020 01:18:57 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id w15sm824295edx.37.2020.11.20.01.18.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 01:18:56 -0800 (PST)
+Date:   Fri, 20 Nov 2020 10:18:55 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Olivier Moysan <olivier.moysan@st.com>
+Cc:     linux@armlinux.org.uk, shawnguo@kernel.org, olof@lixom.net,
+        alexandre.torgue@st.com, geert+renesas@glider.be,
+        amelie.delaunay@st.com, aisheng.dong@nxp.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        christian.gmeiner@gmail.com, enric.balletbo@collabora.com,
+        lionel.debieve@st.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] ARM: multi_v7_defconfig: enable dfsdm audio
+ support
+Message-ID: <20201120091855.GA10412@kozik-lap>
+References: <20201120091506.18326-1-olivier.moysan@st.com>
+ <20201120091506.18326-3-olivier.moysan@st.com>
 MIME-Version: 1.0
-References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
- <20201119144146.1045202-10-daniel.vetter@ffwll.ch> <f1f3a1d8-d62a-6e93-afc1-87a8e51081e9@xs4all.nl>
- <e1f7d30b-2012-0249-66c7-cf9d7d6246ad@xs4all.nl>
-In-Reply-To: <e1f7d30b-2012-0249-66c7-cf9d7d6246ad@xs4all.nl>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Fri, 20 Nov 2020 10:18:27 +0100
-Message-ID: <CAKMK7uEzFAtr9yxjaxi-kiuZhb+hWT3q6E41OegJr+J2-zkT8w@mail.gmail.com>
-Subject: Re: [PATCH v6 09/17] media/videbuf1|2: Mark follow_pfn usage as unsafe
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Tomasz Figa <tfiga@chromium.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201120091506.18326-3-olivier.moysan@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 9:28 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> On 20/11/2020 09:06, Hans Verkuil wrote:
-> > On 19/11/2020 15:41, Daniel Vetter wrote:
-> >> The media model assumes that buffers are all preallocated, so that
-> >> when a media pipeline is running we never miss a deadline because the
-> >> buffers aren't allocated or available.
-> >>
-> >> This means we cannot fix the v4l follow_pfn usage through
-> >> mmu_notifier, without breaking how this all works. The only real fix
-> >> is to deprecate userptr support for VM_IO | VM_PFNMAP mappings and
-> >> tell everyone to cut over to dma-buf memory sharing for zerocopy.
-> >>
-> >> userptr for normal memory will keep working as-is, this only affects
-> >> the zerocopy userptr usage enabled in 50ac952d2263 ("[media]
-> >> videobuf2-dma-sg: Support io userptr operations on io memory").
-> >>
-> >> Acked-by: Tomasz Figa <tfiga@chromium.org>
-> >
-> > Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
->
-> Actually, cancel this Acked-by.
->
-> So let me see if I understand this right: VM_IO | VM_PFNMAP mappings can
-> move around. There is a mmu_notifier that can be used to be notified when
-> that happens, but that can't be used with media buffers since those buffe=
-rs
-> must always be available and in the same place.
->
-> So follow_pfn is replaced by unsafe_follow_pfn to signal that what is att=
-empted
-> is unsafe and unreliable.
->
-> If CONFIG_STRICT_FOLLOW_PFN is set, then unsafe_follow_pfn will fail, if =
-it
-> is unset, then it writes a warning to the kernel log but just continues w=
-hile
-> still unsafe.
->
-> I am very much inclined to just drop VM_IO | VM_PFNMAP support in the med=
-ia
-> subsystem. For vb2 there is a working alternative in the form of dmabuf, =
-and
-> frankly for vb1 I don't care. If someone really needs this for a vb1 driv=
-er,
-> then they can do the work to convert that driver to vb2.
->
-> I've added Mauro to the CC list and I'll ping a few more people to see wh=
-at
-> they think, but in my opinion support for USERPTR + VM_IO | VM_PFNMAP
-> should just be killed off.
->
-> If others would like to keep it, then frame_vector.c needs a comment befo=
-re
-> the 'while' explaining why the unsafe_follow_pfn is there and that using
-> dmabuf is the proper alternative to use. That will make it easier for
-> developers to figure out why they see a kernel warning and what to do to
-> fix it, rather than having to dig through the git history for the reason.
+On Fri, Nov 20, 2020 at 10:15:06AM +0100, Olivier Moysan wrote:
+> Add STM32 DFSDM audio support by enabling CONFIG_SND_SOC_STM32_DFSDM
+> as module.
+> 
+> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+> ---
+>  arch/arm/configs/multi_v7_defconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-I'm happy to add a comment, but otherwise if you all want to ditch
-this, can we do this as a follow up on top? There's quite a bit of
-code that can be deleted and I'd like to not hold up this patch set
-here on that - it's already a fairly sprawling pain touching about 7
-different subsystems (ok only 6-ish now since the s390 patch landed).
-For the comment, is the explanation next to unsafe_follow_pfn not good
-enough?
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-So ... can I get you to un-cancel your ack?
-
-Thanks, Daniel
-
->
-> Regards,
->
->         Hans
->
-> >
-> > Thanks!
-> >
-> >       Hans
-> >
-> >> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> >> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> >> Cc: Kees Cook <keescook@chromium.org>
-> >> Cc: Dan Williams <dan.j.williams@intel.com>
-> >> Cc: Andrew Morton <akpm@linux-foundation.org>
-> >> Cc: John Hubbard <jhubbard@nvidia.com>
-> >> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> >> Cc: Jan Kara <jack@suse.cz>
-> >> Cc: Dan Williams <dan.j.williams@intel.com>
-> >> Cc: linux-mm@kvack.org
-> >> Cc: linux-arm-kernel@lists.infradead.org
-> >> Cc: linux-samsung-soc@vger.kernel.org
-> >> Cc: linux-media@vger.kernel.org
-> >> Cc: Pawel Osciak <pawel@osciak.com>
-> >> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> >> Cc: Kyungmin Park <kyungmin.park@samsung.com>
-> >> Cc: Tomasz Figa <tfiga@chromium.org>
-> >> Cc: Laurent Dufour <ldufour@linux.ibm.com>
-> >> Cc: Vlastimil Babka <vbabka@suse.cz>
-> >> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-> >> Cc: Michel Lespinasse <walken@google.com>
-> >> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> >> --
-> >> v3:
-> >> - Reference the commit that enabled the zerocopy userptr use case to
-> >>   make it abundandtly clear that this patch only affects that, and not
-> >>   normal memory userptr. The old commit message already explained that
-> >>   normal memory userptr is unaffected, but I guess that was not clear
-> >>   enough.
-> >> ---
-> >>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
-> >>  drivers/media/v4l2-core/videobuf-dma-contig.c | 2 +-
-> >>  2 files changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/m=
-edia/common/videobuf2/frame_vector.c
-> >> index a0e65481a201..1a82ec13ea00 100644
-> >> --- a/drivers/media/common/videobuf2/frame_vector.c
-> >> +++ b/drivers/media/common/videobuf2/frame_vector.c
-> >> @@ -70,7 +70,7 @@ int get_vaddr_frames(unsigned long start, unsigned i=
-nt nr_frames,
-> >>                      break;
-> >>
-> >>              while (ret < nr_frames && start + PAGE_SIZE <=3D vma->vm_=
-end) {
-> >> -                    err =3D follow_pfn(vma, start, &nums[ret]);
-> >> +                    err =3D unsafe_follow_pfn(vma, start, &nums[ret])=
-;
-> >>                      if (err) {
-> >>                              if (ret =3D=3D 0)
-> >>                                      ret =3D err;
-> >> diff --git a/drivers/media/v4l2-core/videobuf-dma-contig.c b/drivers/m=
-edia/v4l2-core/videobuf-dma-contig.c
-> >> index 52312ce2ba05..821c4a76ab96 100644
-> >> --- a/drivers/media/v4l2-core/videobuf-dma-contig.c
-> >> +++ b/drivers/media/v4l2-core/videobuf-dma-contig.c
-> >> @@ -183,7 +183,7 @@ static int videobuf_dma_contig_user_get(struct vid=
-eobuf_dma_contig_memory *mem,
-> >>      user_address =3D untagged_baddr;
-> >>
-> >>      while (pages_done < (mem->size >> PAGE_SHIFT)) {
-> >> -            ret =3D follow_pfn(vma, user_address, &this_pfn);
-> >> +            ret =3D unsafe_follow_pfn(vma, user_address, &this_pfn);
-> >>              if (ret)
-> >>                      break;
-> >>
-> >>
-> >
->
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Best regards,
+Krzysztof
