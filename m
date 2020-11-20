@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDA42BAAA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9473B2BAAA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgKTM6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgKTM6S (ORCPT
+        id S1728131AbgKTM7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:59:07 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:34446 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726559AbgKTM7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:58:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF1EC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:58:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qfhCzsxk+FUHQt2BIkhhxlSNS+tUP6ViHlrOcs1g0EA=; b=Lrxb2NmTF+GkaHKD6TmVipchJY
-        KXlm8tjdrvi6Y7xr0F0i0jgDKpVECI3iQn6Yex70ZMqe8SEGl3vVbaDwkyeLkQF3xoXxI1LsjXja3
-        /qpQp7qbMpwLdrUlGz0lZZ17slUUzANLjZxjR6Tut9bLjEmNiL6lI3Bm5vXr+v9nPGWPi/zh6xnUH
-        aZA5WMoewkmnJX6yhjgI6Mn1nK6i3SjFvMxXhl26QSntunpCcO0pRIAtzI1pugrzOnjxvt/xLLYxI
-        0pO3UdIL+/EVX2pXD3K/tOw11LEEEyEQA+VZ5pmaa2gDHalZM5kTi/O4tNifSYLnTh0eBZsM4mxYR
-        SkVCXlwA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kg5zP-0001FA-R8; Fri, 20 Nov 2020 12:58:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 52A08304D28;
-        Fri, 20 Nov 2020 13:58:11 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3DC4C201D16DD; Fri, 20 Nov 2020 13:58:11 +0100 (CET)
-Date:   Fri, 20 Nov 2020 13:58:11 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/4] Revisit NUMA imbalance tolerance and fork
- balancing
-Message-ID: <20201120125811.GJ3021@hirez.programming.kicks-ass.net>
-References: <20201120090630.3286-1-mgorman@techsingularity.net>
+        Fri, 20 Nov 2020 07:59:06 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 755D28000831;
+        Fri, 20 Nov 2020 12:59:01 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id EPVS-tzsg51y; Fri, 20 Nov 2020 15:59:00 +0300 (MSK)
+Date:   Fri, 20 Nov 2020 15:58:59 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the nand tree
+Message-ID: <20201120125859.v7v4mr7rla5xd3xm@mobilestation>
+References: <20201120113929.0aff2f32@canb.auug.org.au>
+ <20201120122359.0bb7d98f@xps13>
+ <20201120130123.1ca9e7af@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201120090630.3286-1-mgorman@techsingularity.net>
+In-Reply-To: <20201120130123.1ca9e7af@collabora.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 09:06:26AM +0000, Mel Gorman wrote:
+Hello Miquel, Boris
 
-> Mel Gorman (4):
->   sched/numa: Rename nr_running and break out the magic number
->   sched: Avoid unnecessary calculation of load imbalance at clone time
->   sched/numa: Allow a floating imbalance between NUMA nodes
->   sched: Limit the amount of NUMA imbalance that can exist at fork time
+On Fri, Nov 20, 2020 at 01:01:23PM +0100, Boris Brezillon wrote:
+> On Fri, 20 Nov 2020 12:23:59 +0100
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
->  kernel/sched/fair.c | 44 +++++++++++++++++++++++++++++++-------------
->  1 file changed, 31 insertions(+), 13 deletions(-)
+> > Hi Serge,
+> > 
+> > Stephen Rothwell <sfr@canb.auug.org.au> wrote on Fri, 20 Nov 2020
+> > 11:39:29 +1100:
+> > 
+> > > Hi all,
+> > > 
+> > > After merging the nand tree, today's linux-next build (x86_64
+> > > allmodconfig) produced this warning:
+> > > 
+> > > drivers/mtd/maps/physmap-bt1-rom.c: In function 'bt1_rom_map_read':
+> > > drivers/mtd/maps/physmap-bt1-rom.c:39:10: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+> > >    39 |  shift = (unsigned int)src & 0x3;
+> > >       |          ^
+> > > drivers/mtd/maps/physmap-bt1-rom.c: In function 'bt1_rom_map_copy_from':
+> > > drivers/mtd/maps/physmap-bt1-rom.c:78:10: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+> > >    78 |  shift = (unsigned int)src & 0x3;
+> > >       |          ^
+> > > 
+> > > Introduced by commit
+> > > 
+> > >   69a75a1a47d8 ("mtd: physmap: physmap-bt1-rom: Fix __iomem addrspace removal warning")
+> > >   
+> > 
 
-OK, lets give this another go :-)
+> > Too bad :/ I'll drop this patch for now, let's look for another
+> > solution...
 
-Thanks!
+that'd be great. I've forgotten that my arch is 32-bit and the
+compiler just did print a warning for it.(
+
+> 
+> uintptr_t cast?
+
+Yep, most likely that will be the best option in this case to make
+sparse happy and not to cause the warning above.
+
+I'll send v2 patch shortly.
+
+-Sergey
