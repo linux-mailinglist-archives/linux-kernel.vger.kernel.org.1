@@ -2,116 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DC72BB876
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E432BB873
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgKTVin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:38:43 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:60948 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727905AbgKTVim (ORCPT
+        id S1727157AbgKTVgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:36:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgKTVgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:38:42 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AKLc9ED004163;
-        Fri, 20 Nov 2020 21:38:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=vdgWyMqTZ/KgANno+C5rCsxsLffEg7/4wEFhdg4BzwI=;
- b=hjCAAPiQuGKgg9PQlmF2CEhfXgsK4V3IL0TBllq3pwdLW2cAsCBNqTQ4ThGfPvnQoh9+
- V7EbbfgvR6mElEDy6mt+/BayXJ+D9umRbQoMUux/U76sqn2bBS0eFkGWVhKyhmvo+iOW
- pOZGAsOecys9/DjyqOootIsFGCbj54uTsMShNy2TgH7R72HHP4isQNzlEyT35/1CmhDI
- JCsQZTzIA37BdmeXrTiRI13i2DeCcMcrOP56wP6TIXdMpjjWdE4ef5e6oK3KN5BTnDFc
- Ak9rAB4fR9ngZI1whbbshi5ybA/yEtPOObnfChfOccclqBnRcR5YseEhI/aYwHBhJ2g3 3Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34t76mcr2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Nov 2020 21:38:31 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AKLVUlF003267;
-        Fri, 20 Nov 2020 21:36:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 34umd3yqg2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Nov 2020 21:36:31 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AKLaREe006534;
-        Fri, 20 Nov 2020 21:36:28 GMT
-Received: from [10.74.102.87] (/10.74.102.87)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 20 Nov 2020 13:36:27 -0800
-Subject: Re: [PATCH 058/141] xen-blkfront: Fix fall-through warnings for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <33057688012c34dd60315ad765ff63f070e98c0c.1605896059.git.gustavoars@kernel.org>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <e8d67ea1-3d0d-509a-a2f1-cf1758bb373f@oracle.com>
-Date:   Fri, 20 Nov 2020 16:36:26 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
+        Fri, 20 Nov 2020 16:36:49 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5854AC061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:36:48 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id 81so8446765pgf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:36:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DHNWrHEo57i/1LUKWT1gfRH8Crpq0Ri3U/SEXQGC8RU=;
+        b=ckJsL4oBfEPkG+HCzI2ne/EJyQSj/5hPVHRauvYxU0gHfWZFYKLRqU9quVjHfopl6f
+         KLaqjbXDQU4BczXuvvpQUGtM/n4rZicWG5HSaIt3ds7Im7eyFMhOxTUqFEZtOJ7T2ril
+         YW8TUEXwU7NITCn+IA8H2oAaC/8vjXI9CWwK0mukw5qUCNlrSNm8lPgAa0azgCYxse9x
+         synqBnLVZDscfB9CZYAWLVgzU+Glz5bcnl3iREu/mdNuAPB3P5spDb0FYmkcknIBFPhP
+         8qJU4X8K9/bWJl8YRm9FPY59uPewDfqss/d6E2+lchSuorZy1dMbb64A6qD+K7hmY0zf
+         0C8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DHNWrHEo57i/1LUKWT1gfRH8Crpq0Ri3U/SEXQGC8RU=;
+        b=rQdHmUk5zYZzvDCNFLyVZF/UfG47fRM53mcV9XcB2nnww870DN1pNzH/Lqs70+/jLa
+         EpW8hLgTfeX0RFNwGe+7VmZnfdQSppt/OqNoveJ3f8EVFEV7IKecu1nq0linxzmIh58v
+         h3WJA/kz3Lgj+wA4E6NEYiYhwmd6qq/02Tz3lJEq6vOOaIs5i8nFYwMj4OU+Mr1Zm+uK
+         yj6oi2iVo5zdLuCXOrlt5UTKl3F7pkVp/NEYbAPaV9CGHclXNV64q0qZvoHJtW6q2TaY
+         AMn5gF1PvwYSxRceCstxL8Y2bYxgII1F29m/K2k5RhCLVs1QKXJ4sBAYanjLX5iPEAmc
+         1kJw==
+X-Gm-Message-State: AOAM533iylTTXdrpnU7+Xy9y8pJwk++3hLhvJ7MDQFCXvmBlZpl6uHov
+        AdlsuAc6f7MG9N6/zWWEf6epvMVaCk+IDA==
+X-Google-Smtp-Source: ABdhPJyRduIYP7dcEHx/o2i35lEZoeS4+DzULfaPMWYA3RRqq+4QzgEvghH/2luEtYKWVfoODGsjYQ==
+X-Received: by 2002:a62:75c6:0:b029:18a:d510:ff60 with SMTP id q189-20020a6275c60000b029018ad510ff60mr15881388pfc.35.1605908207415;
+        Fri, 20 Nov 2020 13:36:47 -0800 (PST)
+Received: from ?IPv6:2620:10d:c085:21d6::18d9? ([2620:10d:c090:400::5:6aac])
+        by smtp.gmail.com with ESMTPSA id v63sm4615165pfb.217.2020.11.20.13.36.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 13:36:46 -0800 (PST)
+Subject: Re: [GIT PULL] io_uring fixes for 5.10-rc
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <6535286b-2532-dc86-3c6e-1b1e9bce358f@kernel.dk>
+ <CAHk-=wjrayP=rOB+v+2eTP8micykkM76t=6vp-hyy+vWYkL8=A@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4bcf3012-a4ad-ac2d-e70b-17f17441eea9@kernel.dk>
+Date:   Fri, 20 Nov 2020 14:36:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <33057688012c34dd60315ad765ff63f070e98c0c.1605896059.git.gustavoars@kernel.org>
+In-Reply-To: <CAHk-=wjrayP=rOB+v+2eTP8micykkM76t=6vp-hyy+vWYkL8=A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9811 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
- spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011200143
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9811 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1011 mlxlogscore=999
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011200143
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/20/20 1:02 PM, Linus Torvalds wrote:
+> On Fri, Nov 20, 2020 at 10:45 AM Jens Axboe <axboe@kernel.dk> wrote:
+>> Jens Axboe (4):
+>>       proc: don't allow async path resolution of /proc/self components
+> 
+> This one is ok.
+> 
+>>       io_uring: handle -EOPNOTSUPP on path resolution
+> 
+> But this one smells. It talks about how it shouldn't block, but the
+> fact is, it can easily block when the path going through another
+> filesystem (think ".." to get to root before even hitting /proc/self,
+> but also think /proc/self/cwd/randompathgoeshere).
+> 
+> The whole concept seems entirely broken anyway. Why would you retry
+> the failure after doing it asynchronously? If it really doesn't block,
+> then it shouldn't have been done async in the first place.
+> 
+> IMNSHO, the openat logic is just wrong. And that "ignore_nonblock"
+> thing is a disgusting hack that is everything that is wrong with
+> io_uring. Stop doing these kinds of hacky things that will just cause
+> problems down the line.
+> 
+> I think the correct thing to do is to just start the open
+> synchronously with an RCU lookup, and if that fails, go to the async
+> one. And if the async one fails because it's /proc/self, then it just
+> fails. None of this kind of "it should be ok" stuff.
+> 
+> And that would likely be the faster model anyway - do it synchronously
+> and immediately for the easy cases.
+> 
+> And if it really is something like "/proc/self/cwd/randompathgoeshere"
+> that actually will block, maybe io_uring just shouldn't support it?
+> 
+> I've pulled this, but I really object to how io_uring keeps having
+> subtle bugs, and then they get worked around with this kind of hackery
+> which really smells like "this will be a subtle bug some time in the
+> future".
 
-On 11/20/20 1:32 PM, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a break statement instead of letting the code fall
-> through to the next case.
->
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/block/xen-blkfront.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-> index 48629d3433b4..34b028be78ab 100644
-> --- a/drivers/block/xen-blkfront.c
-> +++ b/drivers/block/xen-blkfront.c
-> @@ -2462,6 +2462,7 @@ static void blkback_changed(struct xenbus_device *dev,
->  			break;
->  		if (talk_to_blkback(dev, info))
->  			break;
-> +		break;
->  	case XenbusStateInitialising:
->  	case XenbusStateInitialised:
->  	case XenbusStateReconfiguring:
+I don't disagree with you on that. I've been a bit gun shy on touching
+the VFS side of things, but this one isn't too bad. I hacked up a patch
+that allows io_uring to do LOOKUP_RCU and a quick test seems to indicate
+it's fine. On top of that, we just propagate the error if we do fail and
+get rid of that odd retry loop.
+
+And yes, it should be much better performance as well, for any sort of
+cached lookup. There's a reason why we made the close side more
+efficient like that, too.
+
+Lightly tested patch below, needs to be split into 2 parts of course.
+But the VFS side is just adding a few functions to fs/internal.h and the
+struct nameidata structure, no other changes needed.
 
 
-Reviewed-by Boris Ostrovsky <boris.ostrovsky@oracle.com>
+diff --git a/fs/internal.h b/fs/internal.h
+index 6fd14ea213c3..e100d5bca42d 100644
+--- a/fs/internal.h
++++ b/fs/internal.h
+@@ -131,11 +131,41 @@ struct open_flags {
+ };
+ extern struct file *do_filp_open(int dfd, struct filename *pathname,
+ 		const struct open_flags *op);
++extern struct file *path_openat(struct nameidata *nd,
++		const struct open_flags *op, unsigned flags);
+ extern struct file *do_file_open_root(struct dentry *, struct vfsmount *,
+ 		const char *, const struct open_flags *);
+ extern struct open_how build_open_how(int flags, umode_t mode);
+ extern int build_open_flags(const struct open_how *how, struct open_flags *op);
+ 
++#define EMBEDDED_LEVELS 2
++struct nameidata {
++	struct path	path;
++	struct qstr	last;
++	struct path	root;
++	struct inode	*inode; /* path.dentry.d_inode */
++	unsigned int	flags;
++	unsigned	seq, m_seq, r_seq;
++	int		last_type;
++	unsigned	depth;
++	int		total_link_count;
++	struct saved {
++		struct path link;
++		struct delayed_call done;
++		const char *name;
++		unsigned seq;
++	} *stack, internal[EMBEDDED_LEVELS];
++	struct filename	*name;
++	struct nameidata *saved;
++	unsigned	root_seq;
++	int		dfd;
++	kuid_t		dir_uid;
++	umode_t		dir_mode;
++} __randomize_layout;
++
++extern void set_nameidata(struct nameidata *p, int dfd, struct filename *name);
++extern void restore_nameidata(void);
++
+ long do_sys_ftruncate(unsigned int fd, loff_t length, int small);
+ int chmod_common(const struct path *path, umode_t mode);
+ int do_fchownat(int dfd, const char __user *filename, uid_t user, gid_t group,
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 43ba815e4107..896b7f92cfed 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4069,9 +4069,6 @@ static int io_openat2(struct io_kiocb *req, bool force_nonblock)
+ 	struct file *file;
+ 	int ret;
+ 
+-	if (force_nonblock && !req->open.ignore_nonblock)
+-		return -EAGAIN;
+-
+ 	ret = build_open_flags(&req->open.how, &op);
+ 	if (ret)
+ 		goto err;
+@@ -4080,25 +4077,28 @@ static int io_openat2(struct io_kiocb *req, bool force_nonblock)
+ 	if (ret < 0)
+ 		goto err;
+ 
+-	file = do_filp_open(req->open.dfd, req->open.filename, &op);
+-	if (IS_ERR(file)) {
+-		put_unused_fd(ret);
+-		ret = PTR_ERR(file);
++	if (!force_nonblock) {
++		struct nameidata nd;
++
++		set_nameidata(&nd, req->open.dfd, req->open.filename);
++		file = path_openat(&nd, &op, op.lookup_flags | LOOKUP_RCU);
++		restore_nameidata();
++
+ 		/*
+-		 * A work-around to ensure that /proc/self works that way
+-		 * that it should - if we get -EOPNOTSUPP back, then assume
+-		 * that proc_self_get_link() failed us because we're in async
+-		 * context. We should be safe to retry this from the task
+-		 * itself with force_nonblock == false set, as it should not
+-		 * block on lookup. Would be nice to know this upfront and
+-		 * avoid the async dance, but doesn't seem feasible.
++		 * If RCU lookup fails, then we need to retry this from
++		 * async context.
+ 		 */
+-		if (ret == -EOPNOTSUPP && io_wq_current_is_worker()) {
+-			req->open.ignore_nonblock = true;
+-			refcount_inc(&req->refs);
+-			io_req_task_queue(req);
+-			return 0;
++		if (file == ERR_PTR(-ECHILD)) {
++			put_unused_fd(ret);
++			return -EAGAIN;
+ 		}
++	} else {
++		file = do_filp_open(req->open.dfd, req->open.filename, &op);
++	}
++
++	if (IS_ERR(file)) {
++		put_unused_fd(ret);
++		ret = PTR_ERR(file);
+ 	} else {
+ 		fsnotify_open(file);
+ 		fd_install(ret, file);
+diff --git a/fs/namei.c b/fs/namei.c
+index 03d0e11e4f36..288fdae18221 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -498,32 +498,7 @@ void path_put(const struct path *path)
+ }
+ EXPORT_SYMBOL(path_put);
+ 
+-#define EMBEDDED_LEVELS 2
+-struct nameidata {
+-	struct path	path;
+-	struct qstr	last;
+-	struct path	root;
+-	struct inode	*inode; /* path.dentry.d_inode */
+-	unsigned int	flags;
+-	unsigned	seq, m_seq, r_seq;
+-	int		last_type;
+-	unsigned	depth;
+-	int		total_link_count;
+-	struct saved {
+-		struct path link;
+-		struct delayed_call done;
+-		const char *name;
+-		unsigned seq;
+-	} *stack, internal[EMBEDDED_LEVELS];
+-	struct filename	*name;
+-	struct nameidata *saved;
+-	unsigned	root_seq;
+-	int		dfd;
+-	kuid_t		dir_uid;
+-	umode_t		dir_mode;
+-} __randomize_layout;
+-
+-static void set_nameidata(struct nameidata *p, int dfd, struct filename *name)
++void set_nameidata(struct nameidata *p, int dfd, struct filename *name)
+ {
+ 	struct nameidata *old = current->nameidata;
+ 	p->stack = p->internal;
+@@ -534,7 +509,7 @@ static void set_nameidata(struct nameidata *p, int dfd, struct filename *name)
+ 	current->nameidata = p;
+ }
+ 
+-static void restore_nameidata(void)
++void restore_nameidata(void)
+ {
+ 	struct nameidata *now = current->nameidata, *old = now->saved;
+ 
+@@ -3346,8 +3321,8 @@ static int do_o_path(struct nameidata *nd, unsigned flags, struct file *file)
+ 	return error;
+ }
+ 
+-static struct file *path_openat(struct nameidata *nd,
+-			const struct open_flags *op, unsigned flags)
++struct file *path_openat(struct nameidata *nd, const struct open_flags *op,
++			 unsigned flags)
+ {
+ 	struct file *file;
+ 	int error;
 
-
-(for patch 138 as well)
-
-
-Although I thought using 'fallthrough' attribute was the more common approach.
-
-
--boris
+-- 
+Jens Axboe
 
