@@ -2,96 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B75A2BA340
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D07B62BA34A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgKTHcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:32:07 -0500
-Received: from mga11.intel.com ([192.55.52.93]:57306 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbgKTHcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:32:06 -0500
-IronPort-SDR: m2eJSOAYTOqwhStd0Ig++wVXNZy+In9J+KIf9KxV+bFjeGUE8w2unBrsFP/30pPF7MoSdbMcc5
- CfTDQLyp5VXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="167919019"
-X-IronPort-AV: E=Sophos;i="5.78,355,1599548400"; 
-   d="scan'208";a="167919019"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 23:32:06 -0800
-IronPort-SDR: ULJnjNKfCKziAeKfcCmRHq72FkOG0Rr7/LX1SpEwVx69d0kes8bHHHJvwzdsEqPzZjMeIR53gs
- /K3WZlOJ78tw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,355,1599548400"; 
-   d="scan'208";a="431495180"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 19 Nov 2020 23:32:03 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 20 Nov 2020 09:32:01 +0200
-Date:   Fri, 20 Nov 2020 09:32:01 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Keith Short <keithshort@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH] platform/chrome: cros_ec_typec: Tolerate unrecognized
- mux flags
-Message-ID: <20201120073201.GA4120550@kuha.fi.intel.com>
-References: <20201106020305.767202-1-pmalani@chromium.org>
+        id S1726426AbgKTHd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 02:33:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbgKTHd1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 02:33:27 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6870C0613CF;
+        Thu, 19 Nov 2020 23:33:25 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id m9so6589816pgb.4;
+        Thu, 19 Nov 2020 23:33:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=XHWcmf4j6qhvOy7PXXZw5LPjh7hOpfO4ojob44dbhos=;
+        b=MXpgvKpGtgLcXZ5j5lzMgiyyuIaGKzfk16uiFw6IMgxcs/0I80FwlHhNF0ubMH4OGC
+         0TlGo33N5ICV7+xD4VXAUpdAvE55HTb495HQuFGXKdfBmo5Wo6nXIErtgr4s2en9J5OI
+         INeY6ZOGQwXaM/0R+xsh8bifo0vh7ieUfmws04nRb+HwRweVG0zZUIp2trFblenWk61w
+         f1Ff2lwavAkUfY/8u2eL7ufVTZHz8PwU2wfvNQvQGGjS5B6oUt43Boqr7KepUZ3Q/Pne
+         0BQrHHilDSTPzGvFV4wcFss61seB5THpTaxKgue/1JByVbScTuujNwTUNh5tYSh/DhHp
+         XFLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=XHWcmf4j6qhvOy7PXXZw5LPjh7hOpfO4ojob44dbhos=;
+        b=czo5XwJx326tIdYm9iMt1dUVDAZHnPKC5dwlyW+yBXjNd6sxOoHC2mdgnLzdblDGrV
+         /oGmFNrn22T3dabyLfQpg/+/HS3BF9hs0VZ7C8i5Xn4T4dj27Wt+HkoLzmQQV7E2Fz9q
+         TaY7BKBVGCgbARbjwsD2qZ003ZkfqS/WLM9346vdMRSE9zQJlH8B7+ZwRy0fdvyGB9Ti
+         qm+ZfaA5UeNSJ+meSKTOkUPzFdbSP21n09qeZjJxd4xqDVfUrxYszbEX6WmC0VYDD5bE
+         6JFR/MXsPu2hrsq8n4gdJQ5RKqUUq/Bq7MoqwbC48u0NrcdLKzng9i3InOVlV9MAgUUm
+         8YXA==
+X-Gm-Message-State: AOAM533g0rSaEtOrZcz2fk444N4NCDCbTS46HSonj2Q7tTgIWfYHyrPo
+        ONjqYGhhcX3U53+I8prvpTbRVjL4Bbo=
+X-Google-Smtp-Source: ABdhPJy4rpj/NUdit36RmlX86JUPODfY3gN2irKzPV+X2QuZO3ooDLX1GLikLz53+SbvxdrSeLAq8A==
+X-Received: by 2002:a17:90a:384e:: with SMTP id l14mr8901885pjf.104.1605857605322;
+        Thu, 19 Nov 2020 23:33:25 -0800 (PST)
+Received: from [192.168.1.101] (122-58-181-142-adsl.sparkbb.co.nz. [122.58.181.142])
+        by smtp.gmail.com with ESMTPSA id h3sm2312527pfo.170.2020.11.19.23.33.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 19 Nov 2020 23:33:24 -0800 (PST)
+Subject: Re: [PATCH] scsi/NCR5380: Reduce NCR5380_maybe_release_dma_irq() call
+ sites
+To:     Finn Thain <fthain@telegraphics.com.au>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+References: <c1317ae8fdcb498460de5d7ea0bd62a42f5eeca8.1605847196.git.fthain@telegraphics.com.au>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <978a807e-0cfa-47f3-cf3c-f262836022d5@gmail.com>
+Date:   Fri, 20 Nov 2020 20:33:13 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106020305.767202-1-pmalani@chromium.org>
+In-Reply-To: <c1317ae8fdcb498460de5d7ea0bd62a42f5eeca8.1605847196.git.fthain@telegraphics.com.au>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 06:03:05PM -0800, Prashant Malani wrote:
-> On occasion, the Chrome Embedded Controller (EC) can send a mux
-> configuration which doesn't map to a particular data mode. For instance,
-> dedicated Type C chargers, when connected, may cause only
-> USB_PD_MUX_POLARITY_INVERTED to be set. This is a valid flag combination
-> and should not lead to a driver abort.
-> 
-> Modify the mux configuration handling to not return an error when an
-> unrecognized mux flag combination is encountered. Concordantly, make the
-> ensuing print a debug level print so as to not pollute the kernel logs.
-> 
-> Cc: Keith Short <keithshort@chromium.org>
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+Hi Finn,
 
-FWIW:
+thanks for your patch!
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Tested on Atari Falcon (with falconide, and pata_falcon modules).
 
+Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
+
+Am 20.11.2020 um 17:39 schrieb Finn Thain:
+> Refactor to avoid needless calls to NCR5380_maybe_release_dma_irq().
+> This makes the machine code smaller and the source more readable.
+>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 > ---
->  drivers/platform/chrome/cros_ec_typec.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index ce031a10eb1b..5b8db02ab84a 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -537,10 +537,9 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
->  		port->state.mode = TYPEC_STATE_USB;
->  		ret = typec_mux_set(port->mux, &port->state);
->  	} else {
-> -		dev_info(typec->dev,
-> -			 "Unsupported mode requested, mux flags: %x\n",
-> -			 mux_flags);
-> -		ret = -ENOTSUPP;
-> +		dev_dbg(typec->dev,
-> +			"Unrecognized mode requested, mux flags: %x\n",
-> +			mux_flags);
+>  drivers/scsi/NCR5380.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
+> index ea4b5749e7da..d597d7493a62 100644
+> --- a/drivers/scsi/NCR5380.c
+> +++ b/drivers/scsi/NCR5380.c
+> @@ -725,7 +725,6 @@ static void NCR5380_main(struct work_struct *work)
+>
+>  			if (!NCR5380_select(instance, cmd)) {
+>  				dsprintk(NDEBUG_MAIN, instance, "main: select complete\n");
+> -				maybe_release_dma_irq(instance);
+>  			} else {
+>  				dsprintk(NDEBUG_MAIN | NDEBUG_QUEUES, instance,
+>  				         "main: select failed, returning %p to queue\n", cmd);
+> @@ -737,8 +736,10 @@ static void NCR5380_main(struct work_struct *work)
+>  			NCR5380_information_transfer(instance);
+>  			done = 0;
+>  		}
+> -		if (!hostdata->connected)
+> +		if (!hostdata->connected) {
+>  			NCR5380_write(SELECT_ENABLE_REG, hostdata->id_mask);
+> +			maybe_release_dma_irq(instance);
+> +		}
+>  		spin_unlock_irq(&hostdata->lock);
+>  		if (!done)
+>  			cond_resched();
+> @@ -1844,7 +1845,6 @@ static void NCR5380_information_transfer(struct Scsi_Host *instance)
+>  					 */
+>  					NCR5380_write(TARGET_COMMAND_REG, 0);
+>
+> -					maybe_release_dma_irq(instance);
+>  					return;
+>  				case MESSAGE_REJECT:
+>  					/* Accept message by clearing ACK */
+> @@ -1976,7 +1976,6 @@ static void NCR5380_information_transfer(struct Scsi_Host *instance)
+>  					hostdata->busy[scmd_id(cmd)] &= ~(1 << cmd->device->lun);
+>  					cmd->result = DID_ERROR << 16;
+>  					complete_cmd(instance, cmd);
+> -					maybe_release_dma_irq(instance);
+>  					return;
+>  				}
+>  				msgout = NOP;
+> @@ -2312,7 +2311,6 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
 >  	}
->  
->  	return ret;
-> -- 
-> 2.29.1.341.ge80a0c044ae-goog
-
-thanks,
-
--- 
-heikki
+>
+>  	queue_work(hostdata->work_q, &hostdata->main_task);
+> -	maybe_release_dma_irq(instance);
+>  	spin_unlock_irqrestore(&hostdata->lock, flags);
+>
+>  	return result;
+> @@ -2368,7 +2366,6 @@ static void bus_reset_cleanup(struct Scsi_Host *instance)
+>  	hostdata->dma_len = 0;
+>
+>  	queue_work(hostdata->work_q, &hostdata->main_task);
+> -	maybe_release_dma_irq(instance);
+>  }
+>
+>  /**
+>
