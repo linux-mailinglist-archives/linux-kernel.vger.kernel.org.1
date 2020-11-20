@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F5E2BB3AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9325E2BB3AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731172AbgKTShG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:37:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55078 "EHLO mail.kernel.org"
+        id S1731180AbgKTShO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:37:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731147AbgKTShD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:37:03 -0500
+        id S1731148AbgKTShI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:37:08 -0500
 Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0455624181;
-        Fri, 20 Nov 2020 18:37:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9DEB24124;
+        Fri, 20 Nov 2020 18:37:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605897422;
-        bh=udADudDkChcMOUmnZIGrdCb9+vn9Qn+OTPsqWB7CIuE=;
+        s=default; t=1605897427;
+        bh=s2Ty/JLf5jolMy7JPfcU8PXsMKPLhxDS8ktLvPUxD90=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uxYLyx0ZzX0o17QnUqeSP/HNMQaVMLMiwDXjr44TUHtiSLSzuNzkWjeV8aupmSbt4
-         4HqG5B2x3fXVK4us9pYGhjoF+SWwguYzi+OIQ+3tODutBdKApaj/Qg2KRJCDfEsBzP
-         /Rwh4hY0pbO/TOzr3HjxWw847YwvzhtBlFYDVdus=
-Date:   Fri, 20 Nov 2020 12:37:08 -0600
+        b=f6aV58LKYF9rRJJqHIgNAFFLVKfNSOcsLwZng/7YOvXebN8H+AiL3ru8BAP//ZIkX
+         WkJdnUSUSE+M6wco+b0+Hjvu0GHtTv8I2jpKc2+YFLz7LLXTNZRlmLUJD+BR4CfxPr
+         SXmmSstvnAkhuDLPJycrDoohYCoerVsZ4Uzjgh5c=
+Date:   Fri, 20 Nov 2020 12:37:13 -0600
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 097/141] media: saa7134: Fix fall-through warnings for Clang
-Message-ID: <cc5053e144f9ff5901e9cf894c72aa933cf480f3.1605896060.git.gustavoars@kernel.org>
+Subject: [PATCH 098/141] mmc: sdhci-of-arasan: Fix fall-through warnings for
+ Clang
+Message-ID: <387cab3a466038aa5d1fc34b8b6a7c4f693826ea.1605896060.git.gustavoars@kernel.org>
 References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -41,28 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-by explicitly adding a break statement instead of letting the code fall
-through to the next case.
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding multiple break statements instead of
+letting the code fall through to the next case.
 
 Link: https://github.com/KSPP/linux/issues/115
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/media/pci/saa7134/saa7134-tvaudio.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mmc/host/sdhci-of-arasan.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/pci/saa7134/saa7134-tvaudio.c b/drivers/media/pci/saa7134/saa7134-tvaudio.c
-index 5cc4ef21f9d3..5dc97990fa0e 100644
---- a/drivers/media/pci/saa7134/saa7134-tvaudio.c
-+++ b/drivers/media/pci/saa7134/saa7134-tvaudio.c
-@@ -885,6 +885,7 @@ void saa7134_enable_i2s(struct saa7134_dev *dev)
- 	    saa_writeb(SAA7134_I2S_OUTPUT_FORMAT, i2s_format);
- 	    saa_writeb(SAA7134_I2S_OUTPUT_LEVEL,  0x0F);
- 	    saa_writeb(SAA7134_I2S_AUDIO_OUTPUT,  0x01);
-+	    break;
- 
+diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+index 829ccef87426..1f7e42b6ced5 100644
+--- a/drivers/mmc/host/sdhci-of-arasan.c
++++ b/drivers/mmc/host/sdhci-of-arasan.c
+@@ -627,6 +627,7 @@ static int sdhci_zynqmp_sdcardclk_set_phase(struct clk_hw *hw, int degrees)
+ 	case MMC_TIMING_MMC_HS200:
+ 		/* For 200MHz clock, 8 Taps are available */
+ 		tap_max = 8;
++		break;
  	default:
- 	    break;
+ 		break;
+ 	}
+@@ -695,6 +696,7 @@ static int sdhci_zynqmp_sampleclk_set_phase(struct clk_hw *hw, int degrees)
+ 	case MMC_TIMING_MMC_HS200:
+ 		/* For 200MHz clock, 30 Taps are available */
+ 		tap_max = 30;
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -760,6 +762,7 @@ static int sdhci_versal_sdcardclk_set_phase(struct clk_hw *hw, int degrees)
+ 	case MMC_TIMING_MMC_HS200:
+ 		/* For 200MHz clock, 8 Taps are available */
+ 		tap_max = 8;
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -831,6 +834,7 @@ static int sdhci_versal_sampleclk_set_phase(struct clk_hw *hw, int degrees)
+ 	case MMC_TIMING_MMC_HS200:
+ 		/* For 200MHz clock, 30 Taps are available */
+ 		tap_max = 30;
++		break;
+ 	default:
+ 		break;
+ 	}
 -- 
 2.27.0
 
