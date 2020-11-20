@@ -2,129 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A62E2BB4CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2662BB4CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732170AbgKTTDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:03:02 -0500
-Received: from mail.efficios.com ([167.114.26.124]:32996 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730102AbgKTTDC (ORCPT
+        id S1728772AbgKTTE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:04:56 -0500
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:36294 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728076AbgKTTEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:03:02 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C55562F9F4E;
-        Fri, 20 Nov 2020 14:03:00 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id efI1kqa5NS0P; Fri, 20 Nov 2020 14:03:00 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 85C2C2F9DD3;
-        Fri, 20 Nov 2020 14:03:00 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 85C2C2F9DD3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1605898980;
-        bh=2lWBfeEhSCmcICw5sckC5DFcqjwL1tQ46GUr03zBoRc=;
-        h=To:From:Message-ID:Date:MIME-Version;
-        b=oprDb/vh7lPPgtKDZqjAvIuEoT58VHdNjoqUercMdAjHdATesmTQ6windEMggp7xO
-         v/3QfyKx4YTohnvueyiYTGgNkyXU+yBZEaeSy458nJdVnEe8bK8O7GwYPNRlb1AJPI
-         u24T8/gbU2my0Hmj+ijn3tPguIwL3HmW9i8Y20bDsmZy0xc4qOeXbbN76eLViNpAlR
-         lGTBVXEBK49yz9irWolKvS6wVzm8nFt1V/H1K5z33Klk0G1Rnen3HII9XOR7n3Nkml
-         m5566RRm4Jv5Y10yG/iIQSDMNNNvK1NLxivoW/TD7hcrT/O9XasYOAIoWzD2rwYA1o
-         kDf/rx7CgBAXA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id McLHzE25gGeN; Fri, 20 Nov 2020 14:03:00 -0500 (EST)
-Received: from [172.16.0.90] (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id 4E9E32F9D49;
-        Fri, 20 Nov 2020 14:03:00 -0500 (EST)
-Subject: Re: Duplicate fields in event format of `regcache_sync `
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dimitris Papastamos <dp@opensource.wolfsonmicro.com>,
-        Mark Brown <broonie@opensource.wolfsonmicro.com>
-References: <53fe53a9-0589-2bc6-1883-6f696fdee9ac@efficios.com>
- <20201120134746.61626e57@gandalf.local.home>
-From:   Philippe Duplessis-Guindon <pduplessis@efficios.com>
-Message-ID: <76339068-99fe-53f8-c292-8b73900159b5@efficios.com>
-Date:   Fri, 20 Nov 2020 14:03:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 20 Nov 2020 14:04:55 -0500
+Received: by mail-oo1-f68.google.com with SMTP id l20so2443438oot.3;
+        Fri, 20 Nov 2020 11:04:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GZA3+M/VVNa3SUOOY7jLzWKoR84YmwgaI/DsfKj9aqU=;
+        b=HyP61hAt5Gr1OI2qdLLxiKGqwV9lUi9d/01uaGzaLMzXyXOFr/YthCzrLu319gAVZM
+         GS6MUln4+kyelqx2jXJ5kqjiTVihvp6rzbBqhJ8xO7LXUoN9jf5+mCSktW+ZrGU+yc2O
+         Y4C7JrzhABx2HzK1SV3HjRuWq6gpAXKtGsePM2UrX5WyVyKp+qk5Ej6F+QKdLp4FXFTg
+         PWXJWEogyxyjGN/3anO4Y1geUlvrR4UaMBBytWaPXhKjvLUMgr+wNT20Mkz30yYZE98r
+         2Vm9vUo55MWu43QuX2QYn0bhv2pzFiKfA4PCfJq79S2kqxN3aUMVjgMmkaXZOBqGZL0z
+         7l/w==
+X-Gm-Message-State: AOAM532nunou55uxjN3NviRLaI4mVAPfpPcD70N21wVcVBvKbE88ECE/
+        XTGtTyMlzG6JMkDyz8s+42o5METrWj2A4uLP0Pc=
+X-Google-Smtp-Source: ABdhPJwl/mRWeppvi1dwTiN5ioQWhB7KWKxlwUdKmlSbCN3evBAbGlx0526M4UT3y5zLWSFcqAWi5nCCaq59k6y+lv4=
+X-Received: by 2002:a4a:e80b:: with SMTP id b11mr14876540oob.1.1605899094394;
+ Fri, 20 Nov 2020 11:04:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201120134746.61626e57@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1605896059.git.gustavoars@kernel.org> <da20103af0c22424c5d08a12f7107771bf4c01c5.1605896059.git.gustavoars@kernel.org>
+In-Reply-To: <da20103af0c22424c5d08a12f7107771bf4c01c5.1605896059.git.gustavoars@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 20 Nov 2020 20:04:42 +0100
+Message-ID: <CAMuHMdWcooXsRULUVwZR35z=2fUN=5pJoV9arAK+baWCz8ECjg@mail.gmail.com>
+Subject: Re: [PATCH 049/141] pinctrl: Fix fall-through warnings for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry Steven I forgot to reply all.
-This is the original message:
-Perfect,
+On Fri, Nov 20, 2020 at 7:31 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of letting the code fall
+> through to the next case.
+>
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-I can prepare a patch, I think this would be a good learning opportunity 
-for me.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-for-v5.11.
 
+Gr{oetje,eeting}s,
 
-Thank you,
+                        Geert
 
-Philippe
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-On 2020-11-20 1:47 p.m., Steven Rostedt wrote:
-> On Fri, 20 Nov 2020 12:50:33 -0500
-> Philippe Duplessis-Guindon <pduplessis@efficios.com> wrote:
-> 
->> Hi,
->>
->> I am doing an ftrace plugin for Babeltrace 2 [1], and while I was
->> parsing the event fields I had an error saying that `regcache_sync` has
->> 2 fields named `type`. The problem seems to come from the
->> drivers/base/regmap/trace.h file [2]. This is the patch where this was
->> added: [3]. The `int field` type is not assigned, so I was wondering if
->> it is normal that the field is there.
->>
->> This is the format of this event:
->>
->> $ sudo cat /sys/kernel/debug/tracing/events/regmap/regcache_sync/format
->> name: regcache_sync
->> ID: 1216
->> format:
->>     field:unsigned short common_type;    offset:0;    size:2;    signed:0;
->>     field:unsigned char common_flags;    offset:2;    size:1;    signed:0;
->>     field:unsigned char common_preempt_count; offset:3; size:1;signed:0;
->>     field:int common_pid;    offset:4;    size:4;    signed:1;
->>
->>     field:__data_loc char[] name;    offset:8;    size:4;    signed:1;
->>     field:__data_loc char[] status;    offset:12;    size:4;    signed:1;
->>     field:__data_loc char[] type;    offset:16;    size:4;    signed:1;
->>     field:int type;    offset:20;    size:4;    signed:1;
->>
->>     print fmt: "%s type=%s status=%s", __get_str(name), __get_str(type),
->> __get_str(status)
->>
-> 
-> It looks like dumb luck that this ever worked. :-/
-> 
-> The correct fix is to nuke that "int type" field. It's not even assigned.
-> 
-> Thanks for pointing this out.
-> 
-> -- Steve
-> 
-> 
->> Thank you,
->>
->> Philippe
->>
->>
->> [1] https://babeltrace.org/
->>
->> [2]
->> https://github.com/torvalds/linux/blob/master/drivers/base/regmap/trace.h#L129
->>
->> [3]
->> https://github.com/torvalds/linux/commit/593600890110c02eb471cf844649dee213870416
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
