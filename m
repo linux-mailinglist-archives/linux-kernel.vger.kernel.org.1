@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5314B2BAFC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2402BAFCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgKTQOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728296AbgKTQOA (ORCPT
+        id S1728619AbgKTQPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:15:18 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:41420 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727872AbgKTQPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:14:00 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578BCC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 08:14:00 -0800 (PST)
-Received: from zn.tnic (p200300ec2f11ba002f58e87ff3ef848f.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:ba00:2f58:e87f:f3ef:848f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 655451EC04E4;
-        Fri, 20 Nov 2020 17:13:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1605888838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=KtO9yaqvZcz3NUWGPTgeRgf/kR7pds6O5UFlAwADpkQ=;
-        b=R2dKT3/AWv3hTfmPbhgbFl4GN/PVNtgFKLvveM8PAa+A2co4QD2tc05rD+i7SYWmlVWbTL
-        /Wis3G5l9fyaCChzuQ+aGwkE3C5MQXmZA4Yt1NORLtmx/QXW+KAya9Du9m7b+XF+KVcf30
-        jOSl2oG4hdyoHAIX35TOsB9p81q0/s8=
-Date:   Fri, 20 Nov 2020 17:13:51 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Xiaochen Shen <xiaochen.shen@intel.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        tony.luck@intel.com, fenghua.yu@intel.com,
-        reinette.chatre@intel.com, willemb@google.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, pei.p.jia@intel.com
-Subject: Re: [PATCH 1/3] x86/resctrl: Remove superfluous kernfs_get() calls
- to prevent refcount leak
-Message-ID: <20201120161351.GC712@zn.tnic>
-References: <1604084530-31048-1-git-send-email-xiaochen.shen>
- <1604084638-31197-1-git-send-email-xiaochen.shen@intel.com>
+        Fri, 20 Nov 2020 11:15:17 -0500
+Received: by mail-io1-f71.google.com with SMTP id y2so7755733ioy.8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 08:15:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=fCjbTYJhb9UCDrinwlyFQtGfkQaAPgsqQIPO6Ct1q98=;
+        b=sLJg4SJRV2zTb42GULqI8zlaDRDFhdonuldnyd9Rg12DjQHFkcmPhCzzHkBx1vclLE
+         I8a1lt3tdKYnQg9tg+LYrOO8LHplSUgM8siLIdp9BcpAPkboWV5ZRkIzX+evXLhJzSpB
+         NnHbFYscidQzNJmi3jkuznodJTGyf8NqcPTHdiyN9WZPShXD2AZeG2mhjXRRinVlxPXo
+         b+DgCjvRPBf6Po2RJ9wdra2nyk/OORkFQUnXN1HFQODaKhgazAEFYi+MpuUudx1eoqoY
+         b2KvyxZZ6wo29wJcIrjn50GxxV2WW6pdqRSwtliXQ8HJATDMg64rxurtUWAIn4je6wEl
+         S43g==
+X-Gm-Message-State: AOAM531D6VEVz0agHnnkWLgW2UIXjYUHEhSSvR6hQjxIwjCZ5Bo0Bh5N
+        r44u8nnXL3Xd6E8/0RykxJSDwbRU38vZhJwzyGu+Ina2ruh4
+X-Google-Smtp-Source: ABdhPJzgkCfymH4ZRnf3Ka/RpLzSJfM7iDEs6E7SGHEzOnDVHfLYOZZGb3M1zWaFBQd936Xq+xqNZmq5wYAd+0VIZFwJFDOH3flt
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1604084638-31197-1-git-send-email-xiaochen.shen@intel.com>
+X-Received: by 2002:a05:6638:d46:: with SMTP id d6mr18913707jak.124.1605888916800;
+ Fri, 20 Nov 2020 08:15:16 -0800 (PST)
+Date:   Fri, 20 Nov 2020 08:15:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006f4d3c05b48c263d@google.com>
+Subject: memory leak in kobject_set_name_vargs (4)
+From:   syzbot <syzbot+859119106243eb95085b@syzkaller.appspotmail.com>
+To:     konishi.ryusuke@gmail.com, linux-kernel@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 03:03:58AM +0800, Xiaochen Shen wrote:
-> Willem reported growing of kernfs_node_cache entries in slabtop when
-> repeatedly creating and removing resctrl subdirectories as well as when
-> repeatedly mounting and unmounting resctrl filesystem.
-> 
-> On resource group (control as well as monitoring) creation via a mkdir
-> an extra kernfs_node reference is obtained to ensure that the rdtgroup
-> structure remains accessible for the rdtgroup_kn_unlock() calls where it
-> is removed on deletion. The kernfs_node reference count is dropped by
-> kernfs_put() in rdtgroup_kn_unlock().
-> 
-> With the above explaining the need for one kernfs_get()/kernfs_put()
-> pair in resctrl there are more places where a kernfs_node reference is
-> obtained without a corresponding release. The excessive amount of
-> reference count on kernfs nodes will never be dropped to 0 and the
-> kernfs nodes will never be freed in the call paths of rmdir and umount.
-> It leads to reference count leak and kernfs_node_cache memory leak.
-> 
-> Remove the superfluous kernfs_get() calls and expand the existing
-> comments surrounding the remaining kernfs_get()/kernfs_put() pair that
-> remains in use.
-> 
-> Superfluous kernfs_get() calls are removed from two areas:
-> 
->   (1) In call paths of mount and mkdir, when kernfs nodes for "info",
->   "mon_groups" and "mon_data" directories and sub-directories are
->   created, the reference count of newly created kernfs node is set to 1.
->   But after kernfs_create_dir() returns, superfluous kernfs_get() are
->   called to take an additional reference.
-> 
->   (2) kernfs_get() calls in rmdir call paths.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 17eafd076291 ("x86/intel_rdt: Split resource group removal in two")
-> Fixes: 4af4a88e0c92 ("x86/intel_rdt/cqm: Add mount,umount support")
-> Fixes: f3cbeacaa06e ("x86/intel_rdt/cqm: Add rmdir support")
-> Fixes: d89b7379015f ("x86/intel_rdt/cqm: Add mon_data")
-> Fixes: c7d9aac61311 ("x86/intel_rdt/cqm: Add mkdir support for RDT monitoring")
-> Fixes: 5dc1d5c6bac2 ("x86/intel_rdt: Simplify info and base file lists")
-> Fixes: 60cf5e101fd4 ("x86/intel_rdt: Add mkdir to resctrl file system")
-> Fixes: 4e978d06dedb ("x86/intel_rdt: Add "info" files to resctrl file system")
+Hello,
 
-Are those 8(!) Fixes tags supposed to list *all* commits which add those
-wrong kernfs_get() calls?
+syzbot found the following issue on:
 
--- 
-Regards/Gruss,
-    Boris.
+HEAD commit:    c2e7554e Merge tag 'gfs2-v5.10-rc4-fixes' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=120277be500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dc8ee843c1fc6693
+dashboard link: https://syzkaller.appspot.com/bug?extid=859119106243eb95085b
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172afce2500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12c8a9d6500000
 
-https://people.kernel.org/tglx/notes-about-netiquette
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+859119106243eb95085b@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff8881110c8f40 (size 32):
+  comm "syz-executor894", pid 8479, jiffies 4294942790 (age 8.030s)
+  hex dump (first 32 bytes):
+    6c 6f 6f 70 30 00 00 00 00 00 00 00 00 00 00 00  loop0...........
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000002a879a43>] kstrdup+0x36/0x70 mm/util.c:60
+    [<0000000068356e6a>] kstrdup_const+0x53/0x80 mm/util.c:83
+    [<00000000beef27f8>] kvasprintf_const+0xc2/0x110 lib/kasprintf.c:48
+    [<00000000fa036169>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+    [<00000000c1ae635f>] kobject_add_varg lib/kobject.c:384 [inline]
+    [<00000000c1ae635f>] kobject_init_and_add+0x6d/0xc0 lib/kobject.c:473
+    [<0000000033a7e260>] nilfs_sysfs_create_device_group+0x98/0x3a0 fs/nilfs2/sysfs.c:999
+    [<00000000ed96fbb9>] init_nilfs+0x523/0x680 fs/nilfs2/the_nilfs.c:637
+    [<0000000047c27b86>] nilfs_fill_super fs/nilfs2/super.c:1046 [inline]
+    [<0000000047c27b86>] nilfs_mount+0x51b/0x890 fs/nilfs2/super.c:1316
+    [<00000000bc71acf1>] legacy_get_tree+0x2b/0x90 fs/fs_context.c:592
+    [<000000004ee940ed>] vfs_get_tree+0x28/0x100 fs/super.c:1549
+    [<00000000badf1d9b>] do_new_mount fs/namespace.c:2875 [inline]
+    [<00000000badf1d9b>] path_mount+0xc5e/0x1170 fs/namespace.c:3205
+    [<00000000214ca321>] do_mount fs/namespace.c:3218 [inline]
+    [<00000000214ca321>] __do_sys_mount fs/namespace.c:3426 [inline]
+    [<00000000214ca321>] __se_sys_mount fs/namespace.c:3403 [inline]
+    [<00000000214ca321>] __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3403
+    [<00000000106f08a7>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000534b6078>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
