@@ -2,200 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD9D2BA62F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9295C2BA636
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727520AbgKTJa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:30:29 -0500
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:33437 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726321AbgKTJa2 (ORCPT
+        id S1727656AbgKTJbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:31:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727621AbgKTJbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:30:28 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id g2kHk0xfglmd2g2kLkPgxH; Fri, 20 Nov 2020 10:30:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1605864625; bh=euwjf/1flaoFtA2L1HmEHhsxXmII9NFUyQC+UNU/XRY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=g+CMLlQHQkaVollEHtz8aRp5dlyKKBLz6Di71unWFtn/qAjR9GVRhHiB93LoXnlB/
-         CzaRd0ooQRgHztFQVCUvtdxZTJMF2lHtMqS/bZ9oUaVqpIhOFS/91u5USWFdCy2SpS
-         3h7qiSidshU4XbQsnAtnvBlK0wjZsOaqMxdGxEU/h1SAMLVdik/CmuVme4OHg9HmEL
-         qiwz2Wong0zx9Tw5sOeIcmGdx5sOP4mre5YKYIyW1qjP+awxOyvHndQBj6DC2W5nAY
-         tB4UYsxwQwVFS3CH3gEZ4oQiIOJHhGcdM6MrEsbT4UHFI/jrov4Lf84L2plzDSKOK7
-         ZHlpgTsJ/nSIA==
-Subject: Re: [PATCH v3 07/13] media: controls: Validate H264 stateless
- controls
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-References: <20201118184700.331213-1-ezequiel@collabora.com>
- <20201118184700.331213-8-ezequiel@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <ce737ae7-053d-1171-1c03-5ff1efb5ea8c@xs4all.nl>
-Date:   Fri, 20 Nov 2020 10:30:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 20 Nov 2020 04:31:10 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C8EC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:31:10 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id j19so6809530pgg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:31:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oOtWTRWUacCV4afBAmB0uz1HPtJWEPOQW4mb7oZY5Lc=;
+        b=sqBBFahKA/fWvvT6v0hWx9OTS0y3W0Pch9RhXjiAujkFb2wZDebmdh4H/dIgkQwMdh
+         zjXM/S8s20+UeBMZEUO+imZ9K18Bhz3HIMh4eoe274VbCtgQNRPcDlwBcFh6xNbsx9NM
+         rq/M0ZAqb/GbPrcvxM58dkKlX+EGOmCxGvjZ/Koljpog8ws+9Nez4m2crpKLLDhmpP+E
+         atZGgxJQxbC+ZcBg+cA3vzOCyb+GITC7PEf65rliKp6AJHBFwEME7x/syO0uxKc7r+jZ
+         P6vpz7oB5n0o8O9XPwlKNDlq9F0o7ve1MCE+UblxrBROFhlmkW4aYBxAQ0zWmQ7XUVyV
+         /LLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oOtWTRWUacCV4afBAmB0uz1HPtJWEPOQW4mb7oZY5Lc=;
+        b=jH7fV8XEa/Xly3uNYD6jlYmvvu6PKAO9uv8UPKUUffjSSCjxIm+OvBtObJ09qLcJjW
+         nxLLxkU7fpf5pO7X3J5BXUpwd9EXUhVfjMLwVPteIpDDdZIq/BycZ/LcCifZuGPhnzm0
+         pjF0WfTnLjCgigru7V8vmcWWlhx62tieWpk/37s/ccdstvhqFnpE1rR0Rc27Jg6IU6/h
+         5NPERR3B27E0RQvNRE7IcYo0qAO4VlzS8QpL4OP2zZ0XzrR8zm1akukJ64NB2/RBe4WZ
+         GPhYn6SL4maJo/bD5PLGV/GgAH9nR6m4SWZ4bxaKI0xaei+QIg8lucanIlgeLTrzYMKR
+         hmcg==
+X-Gm-Message-State: AOAM532KIkcSZ/yu5lbzSK4iXWk4ZlR3qmNLX+nxB0C1VHSjcYBVxrJ+
+        zR0dUIjDg4USeQROcj2TWyNp0sVqnxvo8aLwrG/veA==
+X-Google-Smtp-Source: ABdhPJzUrWQJPe2coyaCpG5TNvaEojKLO8WAH7jZ5NPrvrro/woXmv5lXw0Cz4SHGWe1FgYGyudNgCWSGaUyxNltC3g=
+X-Received: by 2002:a17:90b:88b:: with SMTP id bj11mr9514004pjb.229.1605864670167;
+ Fri, 20 Nov 2020 01:31:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201118184700.331213-8-ezequiel@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfLY4UGI7vVzgO+LnBO1AAjRWMBtnDJPQnLVzwhe1mvha+d9wMiiUyJkRzkaD30ZJRs5dpJUrXiUFrVL0BK6T9aZGoYn0pltpKIAak43QLO0AF1JSDSHZ
- 443nsf+/IQGiEHWVq6XYX0jaLwnuSuWfnBKZSD6ehRoifjq4XHIJpSnVDMpSAvRvt76B/7jcMp+LCApLXdA20+aOlyDJxYd8rhuIovVfyT6dUNxiVLsFOpuR
- rci+sVf0vhmh1OsDHEtUa2b4zXgKNQGdh7SNHNATvvNjZE2k2mJ9sryaF4MzkQqxKfiqmEbx+6M8RgP9PGZ8LI7EFkHyR+eHER30YTe50CR008E3NhXpKKX6
- O8wqcNNuFl841tY9rJkQWBcbZ3EF6iNNjLhw7XCgqHGn5rENtrM1BFXE2dHmDt43CODjn6neZhd0rszWyhgotdYO0vnKf/H0/RlHtfhbFrMcAH788pkKbRjr
- kZgEMVec8+uiy6eNje9lrD5Y6ZUGs2ogxkgfJBaehaHDwT3Cqm0fiiz1/oE=
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-14-songmuchun@bytedance.com> <20201120081638.GD3200@dhcp22.suse.cz>
+In-Reply-To: <20201120081638.GD3200@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 20 Nov 2020 17:30:27 +0800
+Message-ID: <CAMZfGtX3DUJggAzz_06Z2atHPknkCir6a49a983TsWOHt5ZQUQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 13/21] mm/hugetlb: Use PG_slab to
+ indicate split pmd
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/11/2020 19:46, Ezequiel Garcia wrote:
-> Check that all the fields that correspond or are related
-> to a H264 specification syntax element have legal values.
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> ---
->  drivers/media/v4l2-core/v4l2-ctrls.c | 83 ++++++++++++++++++++++++++++
->  1 file changed, 83 insertions(+)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-> index 21c1928a9df8..adcf47bddbe3 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> @@ -1775,6 +1775,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->  {
->  	struct v4l2_ctrl_mpeg2_slice_params *p_mpeg2_slice_params;
->  	struct v4l2_ctrl_vp8_frame_header *p_vp8_frame_header;
-> +	struct v4l2_ctrl_h264_sps *p_h264_sps;
-> +	struct v4l2_ctrl_h264_pps *p_h264_pps;
-> +	struct v4l2_ctrl_h264_pred_weights *p_h264_pred_weigths;
+On Fri, Nov 20, 2020 at 4:16 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 20-11-20 14:43:17, Muchun Song wrote:
+> > When we allocate hugetlb page from buddy, we may need split huge pmd
+> > to pte. When we free the hugetlb page, we can merge pte to pmd. So
+> > we need to distinguish whether the previous pmd has been split. The
+> > page table is not allocated from slab. So we can reuse the PG_slab
+> > to indicate that the pmd has been split.
+>
+> PageSlab is used outside of the slab allocator proper and that code
+> might get confused by this AFAICS.
 
-weigths -> weights
+I got your concerns. Maybe we can use PG_private instead of the
+PG_slab.
 
->  	struct v4l2_ctrl_h264_slice_params *p_h264_slice_params;
->  	struct v4l2_ctrl_h264_decode_params *p_h264_dec_params;
->  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
-> @@ -1834,20 +1837,100 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->  		break;
->  
->  	case V4L2_CTRL_TYPE_H264_SPS:
-> +		p_h264_sps = p;
-> +
-> +		/* Only monochrome and 4:2:0 allowed */
-> +		if (p_h264_sps->profile_idc < V4L2_H264_PROFILE_IDC_HIGH_422 &&
-> +		    p_h264_sps->chroma_format_idc > 1)
-> +				return -EINVAL;
-> +		/* 4:2:2 allowed */
-> +		else if (p_h264_sps->profile_idc < V4L2_H264_PROFILE_IDC_HIGH_444 &&
+>
+> From the above description it is not really clear why this is needed
+> though. Who is supposed to use this? Say you are allocating a fresh
+> hugetlb page. Once you have it, nobody else can be interfering. It is
+> exclusive to the caller. The later machinery can check the vmemmap page
+> tables to find out whether a split is needed or not. Or do I miss
+> something?
 
-You can drop the 'else'.
+Yeah, the commit log needs some improvement. The vmemmap pages
+can use huge page mapping or basepage(e.g. 4KB) mapping. These two
+cases may exist at the same time. I want to know which page size the
+vmemmap pages mapping to. If we have split a PMD page table then
+we set the flag, when we free the HugeTLB and the flag is set, we want
+to merge the PTE page table to PMD. If the flag is not set, we do nothing
+about the PTE page table.
 
-> +			 p_h264_sps->chroma_format_idc > 2)
-> +				return -EINVAL;
-> +		else if (p_h264_sps->chroma_format_idc > 3)
+Thanks.
 
-Ditto.
+>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  mm/hugetlb_vmemmap.c | 26 ++++++++++++++++++++++++--
+> >  1 file changed, 24 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> > index 06e2b8a7b7c8..e2ddc73ce25f 100644
+> > --- a/mm/hugetlb_vmemmap.c
+> > +++ b/mm/hugetlb_vmemmap.c
+> > @@ -293,6 +293,25 @@ static void remap_huge_page_pmd_vmemmap(struct hstate *h, pmd_t *pmd,
+> >       flush_tlb_kernel_range(start, end);
+> >  }
+> >
+> > +static inline bool pmd_split(pmd_t *pmd)
+> > +{
+> > +     return PageSlab(pmd_page(*pmd));
+> > +}
+> > +
+> > +static inline void set_pmd_split(pmd_t *pmd)
+> > +{
+> > +     /*
+> > +      * We should not use slab for page table allocation. So we can set
+> > +      * PG_slab to indicate that the pmd has been split.
+> > +      */
+> > +     __SetPageSlab(pmd_page(*pmd));
+> > +}
+> > +
+> > +static inline void clear_pmd_split(pmd_t *pmd)
+> > +{
+> > +     __ClearPageSlab(pmd_page(*pmd));
+> > +}
+> > +
+> >  static void __remap_huge_page_pte_vmemmap(struct page *reuse, pte_t *ptep,
+> >                                         unsigned long start,
+> >                                         unsigned long end,
+> > @@ -357,11 +376,12 @@ void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+> >       ptl = vmemmap_pmd_lock(pmd);
+> >       remap_huge_page_pmd_vmemmap(h, pmd, (unsigned long)head, &remap_pages,
+> >                                   __remap_huge_page_pte_vmemmap);
+> > -     if (!freed_vmemmap_hpage_dec(pmd_page(*pmd))) {
+> > +     if (!freed_vmemmap_hpage_dec(pmd_page(*pmd)) && pmd_split(pmd)) {
+> >               /*
+> >                * Todo:
+> >                * Merge pte to huge pmd if it has ever been split.
+> >                */
+> > +             clear_pmd_split(pmd);
+> >       }
+> >       spin_unlock(ptl);
+> >  }
+> > @@ -443,8 +463,10 @@ void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+> >       BUG_ON(!pmd);
+> >
+> >       ptl = vmemmap_pmd_lock(pmd);
+> > -     if (vmemmap_pmd_huge(pmd))
+> > +     if (vmemmap_pmd_huge(pmd)) {
+> >               split_vmemmap_huge_page(head, pmd);
+> > +             set_pmd_split(pmd);
+> > +     }
+> >
+> >       remap_huge_page_pmd_vmemmap(h, pmd, (unsigned long)head, &free_pages,
+> >                                   __free_huge_page_pte_vmemmap);
+> > --
+> > 2.11.0
+> >
+>
+> --
+> Michal Hocko
+> SUSE Labs
 
-> +				return -EINVAL;
-> +
-> +		if (p_h264_sps->bit_depth_luma_minus8 > 6)
-> +			return -EINVAL;
-> +		if (p_h264_sps->bit_depth_chroma_minus8 > 6)
-> +			return -EINVAL;
-> +		if (p_h264_sps->log2_max_frame_num_minus4 > 12)
-> +			return -EINVAL;
-> +		if (p_h264_sps->pic_order_cnt_type > 2)
-> +			return -EINVAL;
-> +		if (p_h264_sps->log2_max_pic_order_cnt_lsb_minus4 > 12)
-> +			return -EINVAL;
-> +		if (p_h264_sps->max_num_ref_frames > V4L2_H264_REF_LIST_LEN)
-> +			return -EINVAL;
-> +		break;
-> +
->  	case V4L2_CTRL_TYPE_H264_PPS:
-> +		p_h264_pps = p;
-> +
-> +		if (p_h264_pps->num_slice_groups_minus1 > 7)
-> +			return -EINVAL;
-> +		if (p_h264_pps->num_ref_idx_l0_default_active_minus1 >
-> +		    (V4L2_H264_REF_LIST_LEN - 1))
-> +			return -EINVAL;
-> +		if (p_h264_pps->num_ref_idx_l1_default_active_minus1 >
-> +		    (V4L2_H264_REF_LIST_LEN - 1))
-> +			return -EINVAL;
-> +		if (p_h264_pps->weighted_bipred_idc > 2)
-> +			return -EINVAL;
-> +		/*
-> +		 * pic_init_qp_minus26 shall be in the range of
-> +		 * -(26 + QpBdOffset_y) to +25, inclusive,
-> +		 *  where QpBdOffset_y is 6 * bit_depth_luma_minus8
-> +		 */
-> +		if (p_h264_pps->pic_init_qp_minus26 < -62 ||
-> +		    p_h264_pps->pic_init_qp_minus26 > 25)
-> +			return -EINVAL;
-> +		if (p_h264_pps->pic_init_qs_minus26 < -26 ||
-> +		    p_h264_pps->pic_init_qs_minus26 > 25)
-> +			return -EINVAL;
-> +		if (p_h264_pps->chroma_qp_index_offset < -12 ||
-> +		    p_h264_pps->chroma_qp_index_offset > 12)
-> +			return -EINVAL;
-> +		if (p_h264_pps->second_chroma_qp_index_offset < -12 ||
-> +		    p_h264_pps->second_chroma_qp_index_offset > 12)
-> +			return -EINVAL;
-> +		break;
-> +
->  	case V4L2_CTRL_TYPE_H264_SCALING_MATRIX:
-> +		break;
-> +
->  	case V4L2_CTRL_TYPE_H264_PRED_WEIGHTS:
-> +		p_h264_pred_weigths = p;
-> +
-> +		if (p_h264_pred_weigths->luma_log2_weight_denom > 7)
-> +			return -EINVAL;
-> +		if (p_h264_pred_weigths->chroma_log2_weight_denom > 7)
-> +			return -EINVAL;
->  		break;
->  
->  	case V4L2_CTRL_TYPE_H264_SLICE_PARAMS:
->  		p_h264_slice_params = p;
->  
-> +		if (p_h264_slice_params->colour_plane_id > 2)
-> +			return -EINVAL;
-> +		if (p_h264_slice_params->cabac_init_idc > 2)
-> +			return -EINVAL;
-> +		if (p_h264_slice_params->disable_deblocking_filter_idc > 2)
-> +			return -EINVAL;
-> +		if (p_h264_slice_params->slice_alpha_c0_offset_div2 < -6 ||
-> +		    p_h264_slice_params->slice_alpha_c0_offset_div2 > 6)
-> +			return -EINVAL;
-> +		if (p_h264_slice_params->slice_beta_offset_div2 < -6 ||
-> +		    p_h264_slice_params->slice_beta_offset_div2 > 6)
-> +			return -EINVAL;
->  		zero_reserved(*p_h264_slice_params);
->  		break;
->  
->  	case V4L2_CTRL_TYPE_H264_DECODE_PARAMS:
->  		p_h264_dec_params = p;
->  
-> +		if (p_h264_dec_params->nal_ref_idc > 3)
-> +			return -EINVAL;
->  		for (i = 0; i < V4L2_H264_NUM_DPB_ENTRIES; i++) {
->  			struct v4l2_h264_dpb_entry *dpb_entry =
->  				&p_h264_dec_params->dpb[i];
-> 
 
-General question: I don't see anything in std_init_compound() for these
-controls. Is initializing these compound controls to 0 enough to make them
-pass std_validate_compound()? It probably is, otherwise you'd see errors
-in the compliance test, I guess.
 
-Regards,
-
-	Hans
+-- 
+Yours,
+Muchun
