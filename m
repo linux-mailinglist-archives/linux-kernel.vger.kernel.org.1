@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A15E2BAA8E
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD132BAA8D
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728097AbgKTMwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728268AbgKTMwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 20 Nov 2020 07:52:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726898AbgKTMwD (ORCPT
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2136 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbgKTMwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Nov 2020 07:52:03 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF55C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:52:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=w8tWVD7LdEH5Iapb8dd0CG6GtxCHUaaVQtuBmEoXo/k=; b=sDWpWMaMlYX96L2HJWxU81bEsx
-        WGoBBfaObZ8OxW4Np7wTFfmTIB2pLzTU3BkkUo2tSKv4Berit7C+xkhckULK8mWDCINX2XXw27+0m
-        /BJdP8uhAK21HLEbLL5uWy8fb89ZrTukXtZO9XX+LpRRy/Vmg+EH/ODNZBf7xLYPvT+yYbepyseq+
-        tE1rrgnLpME9eTbIl9+qPswQnW5SJstbtef0BVIE72nbf8cnnghE7v26y6qLTf+5TEKl4XSDQvQAf
-        UnjdwAiBCceSwOgeHlT6anM2K6XIiPWhLN+S/PfmNJYgpqJPa1egLGbZVva2sNUWIs41KSn1IxQcP
-        tXf6UYew==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kg5tM-0000Qq-UJ; Fri, 20 Nov 2020 12:51:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C580304D28;
-        Fri, 20 Nov 2020 13:51:54 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4629F20244762; Fri, 20 Nov 2020 13:51:54 +0100 (CET)
-Date:   Fri, 20 Nov 2020 13:51:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, christophe.leroy@csgroup.eu,
-        Jakub Jelinek <jakub@redhat.com>, rdunlap@infradead.org
-Subject: [PATCH] ilog2: Improve ilog2 for constant arguments
-Message-ID: <20201120125154.GB3040@hirez.programming.kicks-ass.net>
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CcxGl1WXgz67Fvf;
+        Fri, 20 Nov 2020 20:50:23 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 20 Nov 2020 13:52:00 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
+ Fri, 20 Nov 2020 13:52:00 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        "Casey Schaufler" <casey@schaufler-ca.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        "James Morris" <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "Micah Morton" <mortonm@chromium.org>
+Subject: RE: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
+ ima_calc_file_hash()
+Thread-Topic: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
+ ima_calc_file_hash()
+Thread-Index: AQHWuZM+vbqfejrqe02000rC0h3xoqnHabyAgAMLzKCAAG/IAIAABvEAgAAOKACAAAEYgIAAB9QAgAAHL4CAAY8zAIAAU72AgAABvoCAAAHXAIAD/8pw
+Date:   Fri, 20 Nov 2020 12:52:00 +0000
+Message-ID: <6dafff7889d34bc799b4c5bfd0bfebc8@huawei.com>
+References: <20201113080132.16591-1-roberto.sassu@huawei.com>
+ <20201114111057.GA16415@infradead.org>
+ <0fd0fb3360194d909ba48f13220f9302@huawei.com>
+ <20201116162202.GA15010@infradead.org>
+ <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
+ <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
+ <20201116174127.GA4578@infradead.org>
+ <CAHk-=wjd0RNthZQTLVsnK_d9SFYH0rug2tkezLLB0J-YZzVC+Q@mail.gmail.com>
+ <3f8cc7c9462353ac2eef58e39beee079bdd9c7b4.camel@linux.ibm.com>
+ <CAHk-=wih-ibNUxeiKpuKrw3Rd2=QEAZ8zgRWt_CORAjbZykRWQ@mail.gmail.com>
+ <5d8fa26d376999f703aac9103166a572fc0df437.camel@linux.ibm.com>
+ <CAHk-=wiPfWZYsAqhQry=mhAbKei8bHZDyVPJS0XHZz_FH9Jymw@mail.gmail.com>
+ <CAHk-=wjinHpYRk_F1qiaXbXcMtn-ZHKkPkBvZpDJHjoN_2o4ag@mail.gmail.com>
+In-Reply-To: <CAHk-=wjinHpYRk_F1qiaXbXcMtn-ZHKkPkBvZpDJHjoN_2o4ag@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.220.96.108]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-From:   Jakub Jelinek <jakub@redhat.com>
-
-As discussed in https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97445
-the const_ilog2 macro generates a lot of code which interferes badly
-with GCC inlining heuristics, until it can be proven that the ilog2
-argument can or can't be simplified into a constant.
-
-It can be expressed using __builtin_clzll builtin which is supported
-by GCC 3.4 and later and when used only in the __builtin_constant_p guarded
-code it ought to always fold back to a constant.
-Other compilers support the same builtin for many years too.
-
-Other option would be to change the const_ilog2 macro, though as the
-description says it is meant to be used also in C constant expressions,
-and while GCC will fold it to constant with constant argument even in
-those, perhaps it is better to avoid using extensions in that case.
-
-Signed-off-by: Jakub Jelinek <jakub@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201021132718.GB2176@tucnak
----
- include/linux/log2.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
---- a/include/linux/log2.h
-+++ b/include/linux/log2.h
-@@ -156,7 +156,8 @@ unsigned long __rounddown_pow_of_two(uns
- #define ilog2(n) \
- ( \
- 	__builtin_constant_p(n) ?	\
--	const_ilog2(n) :		\
-+	((n) < 2 ? 0 :			\
-+	 63 - __builtin_clzll (n)) :	\
- 	(sizeof(n) <= 4) ?		\
- 	__ilog2_u32(n) :		\
- 	__ilog2_u64(n)			\
+PiBGcm9tOiBMaW51cyBUb3J2YWxkcyBbbWFpbHRvOnRvcnZhbGRzQGxpbnV4LWZvdW5kYXRpb24u
+b3JnXQ0KPiBTZW50OiBXZWRuZXNkYXksIE5vdmVtYmVyIDE4LCAyMDIwIDEyOjM3IEFNDQo+IE9u
+IFR1ZSwgTm92IDE3LCAyMDIwIGF0IDM6MjkgUE0gTGludXMgVG9ydmFsZHMNCj4gPHRvcnZhbGRz
+QGxpbnV4LWZvdW5kYXRpb24ub3JnPiB3cm90ZToNCj4gPg0KPiA+IE9uIFR1ZSwgTm92IDE3LCAy
+MDIwIGF0IDM6MjQgUE0gTWltaSBab2hhciA8em9oYXJAbGludXguaWJtLmNvbT4NCj4gd3JvdGU6
+DQo+ID4gPg0KPiA+ID4gSSByZWFsbHkgd2lzaCBpdCB3YXNuJ3QgbmVlZGVkLg0KPiA+DQo+ID4g
+U2VyaW91c2x5LCBJIGdldCB0aGUgZmVlbGluZyB0aGF0IElNQSBpcyBjb21wbGV0ZWx5IG1pcy1k
+ZXNpZ25lZCwgYW5kDQo+ID4gaXMgZG9pbmcgYWN0aXZlbHkgYmFkIHRoaW5ncy4NCj4gPg0KPiA+
+IFdobyB1c2VzIHRoaXMgImZlYXR1cmUiLCBhbmQgd2hvIGNhcmVzPyBCZWNhdXNlIEkgd291bGQg
+c3VnZ2VzdCB5b3UNCj4gPiBqdXN0IGNoYW5nZSB0aGUgcG9saWN5IGFuZCBiZSBkb25lIHdpdGgg
+aXQuDQo+IA0KPiBBbm90aGVyIGFsdGVybmF0aXZlIGlzIHRvIGNoYW5nZSB0aGUgcG9saWN5IGFu
+ZCBzYXkgImFueSB3cml0ZS1vbmx5DQo+IG9wZW4gZ2V0cyB0dXJuZWQgaW50byBhIHJlYWQtd3Jp
+dGUgb3BlbiIuDQoNCk9uZSBpc3N1ZSB0aGF0IHdvdWxkIGFyaXNlIGZyb20gZG9pbmcgaXQgaXMg
+dGhhdCBzZWN1cml0eSBwb2xpY2llcyBuZWVkDQp0byBiZSBtb2RpZmllZCB0byBncmFudCB0aGUg
+YWRkaXRpb25hbCByZWFkIHBlcm1pc3Npb24uIElmIHRoZSBvcGVuDQpmbGFnIGlzIGFkZGVkIGVh
+cmx5LCB0aGUgTFNNIGhvb2sgc2VjdXJpdHlfZmlsZV9vcGVuKCkgd2lsbCBzZWUgaXQuDQoNClRo
+aXMgc29sdXRpb24gc2VlbXMgbm90IG9wdGltYWwsIGFzIHdlIGFyZSBnaXZpbmcgdG8gcHJvY2Vz
+c2VzIGENCnBlcm1pc3Npb24gdGhhdCB0aGV5IHdvdWxkbid0IHJlYWxseSB0YWtlIGFkdmFudGFn
+ZSBvZiwgc2luY2UgdGhlDQpjb250ZW50IHJlYWQgcmVtYWlucyBpbiBrZXJuZWwgc3BhY2UuIEFu
+ZCBhbiBhZGRpdGlvbmFsIHBlcm1pc3Npb24NCmlzIGEgcGVybWlzc2lvbiB0aGF0IGNhbiBiZSBl
+eHBsb2l0ZWQuDQoNCkFzIE1pbWkgc2FpZCwgd2UgYWxyZWFkeSBoYXZlIGEgc2Vjb25kIG9wZW4g
+d2l0aCBkZW50cnlfb3BlbigpIHdoZW4NCnRoZSBvcmlnaW5hbCBmaWxlIGRlc2NyaXB0b3IgaXMg
+bm90IHN1aXRhYmxlLiBUaGUgb25seSBwcm9ibGVtLCB3aGljaCBpcw0Kd2h5IGNoYW5naW5nIHRo
+ZSBtb2RlIGlzIHN0aWxsIHRoZXJlLCBpcyB0aGF0IGEgcHJvY2VzcyBzdGlsbCBtaWdodCBub3QN
+CmhhdmUgdGhlIHByaXZpbGVnZSB0byByZWFkLCBhbmQgdGhpcyBpcyBhIGxlZ2l0aW1hdGUgY2Fz
+ZS4NCg0KV2UgY291bGQgYXNzaWduIGEgbW9yZSBwb3dlcmZ1bCBjcmVkZW50aWFsIHRvIHRoZSBw
+cm9jZXNzLCBzaW5jZQ0KZGVudHJ5X29wZW4oKSBhY2NlcHRzIGEgY3JlZGVudGlhbCBhcyBhbiBh
+cmd1bWVudC4gV2UgY291bGQgb2J0YWluDQpzdWNoIHBvd2VyZnVsIGNyZWRlbnRpYWwgZnJvbSBw
+cmVwYXJlX2tlcm5lbF9jcmVkKCkuIFRoaXMgb3B0aW9uDQpoYXMgYmV0dGVyIGNoYW5jZXMgdG8g
+d29yayB3aXRob3V0IG1vZGlmeWluZyBleGlzdGluZyBzZWN1cml0eSBwb2xpY2llcw0KYXMgbGlr
+ZWx5IHRob3NlIHBvbGljaWVzIGFscmVhZHkgYXNzaWduZWQgdGhlIHJlcXVpcmVkIHByaXZpbGVn
+ZSB0byB0aGUNCmtlcm5lbC4gSG93ZXZlciwgZG9pbmcgc28gbWlnaHQgbm90IGJlIHdoYXQgTFNN
+IHBlb3BsZSByZWNvbW1lbmQuDQoNCkFueSBzdWdnZXN0aW9uPw0KDQpUaGFua3MNCg0KUm9iZXJ0
+bw0KDQpIVUFXRUkgVEVDSE5PTE9HSUVTIER1ZXNzZWxkb3JmIEdtYkgsIEhSQiA1NjA2Mw0KTWFu
+YWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIExpIEppYW4sIFNoaSBZYW5saQ0K
