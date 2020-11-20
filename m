@@ -2,71 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E582BB429
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C80262BB434
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731712AbgKTSlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:41:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59446 "EHLO mail.kernel.org"
+        id S1730800AbgKTSmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:42:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731695AbgKTSlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:41:07 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        id S1731491AbgKTSmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:42:44 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1978422464;
-        Fri, 20 Nov 2020 18:41:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605897666;
-        bh=E/9PQe+ABgAMu3mq359DtgFOqDJztW3fbfkO/ssrrVk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ws0i64hKVRMe099Tp/vCX0psjsfXhgBpy0pDWmvv0XRx0/HO1hFxXZD9pDQDLpdCo
-         2pGJnuURwMZg7pXuPxfd3W1Bgbrnuk506JvcMwY+6k8ZdOiEK9eyB0Bo724hX7A5b/
-         OQ/Q/22SXL4PKQmkwkmhIAAbZQRa40gO/qR25/f8=
-Date:   Fri, 20 Nov 2020 12:41:12 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 141/141] Input: libps2 - Fix fall-through warnings for Clang
-Message-ID: <d2944854e3e118b837755abf4cbdb497662001b7.1605896060.git.gustavoars@kernel.org>
-References: <cover.1605896059.git.gustavoars@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id EEFDE21D91;
+        Fri, 20 Nov 2020 18:42:43 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 13:42:42 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Kernel development list <linux-kernel@vger.kernel.org>
+Subject: Re: Printk specifiers for __user pointers
+Message-ID: <20201120134242.6cae9e72@gandalf.local.home>
+In-Reply-To: <20201120164412.GD619708@rowland.harvard.edu>
+References: <20201120164412.GD619708@rowland.harvard.edu>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a
-warning by replacing a /* Fall through */ comment with the new
-pseudo-keyword macro fallthrough.
+On Fri, 20 Nov 2020 11:44:12 -0500
+Alan Stern <stern@rowland.harvard.edu> wrote:
 
-Notice that Clang doesn't recognize /* Fall through */ comments as
-implicit fall-through markings.
+> To the VSPRINTF maintainers:
+> 
+> Documentation/core-api/printk-formats.rst lists a large number of format 
+> specifiers for pointers of various sorts.  Yet as far as I can see, 
+> there is no specifier meant for use with __user pointers.
+> 
+> The security implications of printing the true, unmangled value of a 
+> __user pointer are minimal, since doing so does not leak any kernel 
+> information.  So %px would work, but tools like checkpatch.pl don't like 
+> it.
+> 
+> Should a new specifier be added?  If not, should we simply use %px?
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/input/serio/libps2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There's currently no user of '%pu' (although there is a '%pus'. Perhaps we
+should have a '%pux'?
 
-diff --git a/drivers/input/serio/libps2.c b/drivers/input/serio/libps2.c
-index 8a16e41f7b7f..250e213cc80c 100644
---- a/drivers/input/serio/libps2.c
-+++ b/drivers/input/serio/libps2.c
-@@ -405,7 +405,7 @@ bool ps2_handle_ack(struct ps2dev *ps2dev, u8 data)
- 			ps2dev->nak = PS2_RET_ERR;
- 			break;
- 		}
--		/* Fall through */
-+		fallthrough;
- 
- 	/*
- 	 * Workaround for mice which don't ACK the Get ID command.
--- 
-2.27.0
+I would even state that if it is used, that if makes sure that the value is
+indeed a user space pointer (goes through the same checks as accessing user
+space), before its printed, otherwise it shows "(fault)" or something.
+
+-- Steve
 
