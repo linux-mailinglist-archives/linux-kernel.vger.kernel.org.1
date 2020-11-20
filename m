@@ -2,158 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4B62BA030
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1272BA036
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgKTCLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 21:11:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726544AbgKTCLK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 21:11:10 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D23C0613CF;
-        Thu, 19 Nov 2020 18:11:09 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id f20so10752219ejz.4;
-        Thu, 19 Nov 2020 18:11:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+aVIMXj2rFgn16Xrm0d/2guwwvtnExyJbCEDtRJvgKY=;
-        b=kDVc/H+W8siWTHnQwPXvgzCvI4YC8jhvBSM35m6BW0h3MUhCS+BjEdvZX/0ctkYGwV
-         Rd1MpO3BW+FU0b0g99KVG6ryzLDfdae6F8+ThWjWVgyI2Y9OkDSAzzVPOVxdu+GK2zzB
-         MlO8OQdQTNgR/VCzkNsyfZyizry7n6JtLDQWwYNDxv1Pgy+MBP+fsyaw0Ko2YR3w7OWe
-         ZB12eMHtcgbrfKWwafZ7XuAW//5aBeCheHXjYunpDgXBSjcAi8grEncgBSoHxbcxvoez
-         5rPygHp+aUh0CE+dsmpPlHrJ0Ac0qV/mXyBbUXtgE14hpEuNU01lqItj8O9FHzkedMFQ
-         yqeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=+aVIMXj2rFgn16Xrm0d/2guwwvtnExyJbCEDtRJvgKY=;
-        b=n16ixZ9YTNyxjHYym6+9iy3sNJMnS0lCgZkIaItCYyc/TupUaV5+0ElEGFHy4ykdJs
-         bobY9Q++7yhGCEFkEeMJPUC98ggMxlO7Q6wgGF86LO+OZcwNt1D8+JI96sh9KfefnxvF
-         nE/Lf+/q4a0hywWCO1sK//jdLCK6DCsUcPS9Z4ao2NQHCOpzhCzMaMOZ06KqEwfA29cv
-         vYv/c70UCr/EU3zIMxTJM71hiNWXxU55ahP/8I7MyAOTtDXIZJOJUrXujPa4ZJKTi5gj
-         w0LboNI0v1WXWihruj8pJ8M7ZJL8QFd3eP1LVo6w/BxL4hb77dDLT1awfjQ3Mz+9LRe1
-         A/7w==
-X-Gm-Message-State: AOAM533cYfRk//I2sU3MrXqIUoKX2Uk3rfYU+zyFeqMNH1pXTVWO8QkF
-        hem0iNcMYXWHmcnjiq3CV3F3TVnTrDJKcg==
-X-Google-Smtp-Source: ABdhPJx5xNyLJM0m0PiH5loIHhXg8PpQBT9FAkj5FEPGhkQn+KkPlOcu4+KycVogPCbG3hn97vvskA==
-X-Received: by 2002:a17:906:35da:: with SMTP id p26mr31067484ejb.256.1605838268218;
-        Thu, 19 Nov 2020 18:11:08 -0800 (PST)
-Received: from [192.168.1.33] (host109-152-100-189.range109-152.btcentralplus.com. [109.152.100.189])
-        by smtp.gmail.com with ESMTPSA id i7sm489559edj.39.2020.11.19.18.11.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Nov 2020 18:11:07 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] iov_iter: optimise iov_iter_npages for bvec
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1605827965.git.asml.silence@gmail.com>
- <ab04202d0f8c1424da47251085657c436d762785.1605827965.git.asml.silence@gmail.com>
- <20201120012017.GJ29991@casper.infradead.org>
- <35d5db17-f6f6-ec32-944e-5ecddcbcb0f1@gmail.com>
- <20201120014904.GK29991@casper.infradead.org>
- <3dc0b17d-b907-d829-bfec-eab96a6f4c30@gmail.com>
- <20201120020610.GL29991@casper.infradead.org>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <506c8bce-784f-618f-0880-e18532f7fbae@gmail.com>
-Date:   Fri, 20 Nov 2020 02:08:00 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726417AbgKTCLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 21:11:08 -0500
+Received: from mga11.intel.com ([192.55.52.93]:33809 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726297AbgKTCLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 21:11:08 -0500
+IronPort-SDR: v8vC9+53bkWI0/dsRFB9RFlI0AHyTSuMyFQhScSLlga7J2z6Dm3NPKpJGyXIiDxkGI0pK9MS5o
+ Ll0U4yXbPLCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="167889437"
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="167889437"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 18:11:07 -0800
+IronPort-SDR: xdhgWjfdVBSebAZp+92YL80Yr0yUlG7ie64g/0nDdGzJrX7qk1E+Fgf3mMrDm6CQa4p0nFz9FB
+ mLoULuSA/mzw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="360261657"
+Received: from lkp-server01.sh.intel.com (HELO 1b817e3f8ad2) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Nov 2020 18:11:06 -0800
+Received: from kbuild by 1b817e3f8ad2 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kfvtC-0000Ht-0K; Fri, 20 Nov 2020 02:11:06 +0000
+Date:   Fri, 20 Nov 2020 10:10:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 01cf158e48d2b5ce947430de5896c10f4f7c1822
+Message-ID: <5fb72598.6dCTMa+FF4qgubzC%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20201120020610.GL29991@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2020 02:06, Matthew Wilcox wrote:
-> On Fri, Nov 20, 2020 at 01:56:22AM +0000, Pavel Begunkov wrote:
->> On 20/11/2020 01:49, Matthew Wilcox wrote:
->>> On Fri, Nov 20, 2020 at 01:39:05AM +0000, Pavel Begunkov wrote:
->>>> On 20/11/2020 01:20, Matthew Wilcox wrote:
->>>>> On Thu, Nov 19, 2020 at 11:24:38PM +0000, Pavel Begunkov wrote:
->>>>>> The block layer spends quite a while in iov_iter_npages(), but for the
->>>>>> bvec case the number of pages is already known and stored in
->>>>>> iter->nr_segs, so it can be returned immediately as an optimisation
->>>>>
->>>>> Er ... no, it doesn't.  nr_segs is the number of bvecs.  Each bvec can
->>>>> store up to 4GB of contiguous physical memory.
->>>>
->>>> Ah, really, missed min() with PAGE_SIZE in bvec_iter_len(), then it's a
->>>> stupid statement. Thanks!
->>>>
->>>> Are there many users of that? All these iterators are a huge burden,
->>>> just to count one 4KB page in bvec it takes 2% of CPU time for me.
->>>
->>> __bio_try_merge_page() will create multipage BIOs, and that's
->>> called from a number of places including
->>> bio_try_merge_hw_seg(), bio_add_page(), and __bio_iov_iter_get_pages()
->>
->> I get it that there are a lot of places, more interesting how often
->> it's actually triggered and if that's performance critical for anybody.
->> Not like I'm going to change it, just out of curiosity, but bvec.h
->> can be nicely optimised without it.
-> 
-> Typically when you're allocating pages for the page cache, they'll get
-> allocated in order and then you'll read or write them in order, so yes,
-> it ends up triggering quite a lot.  There was once a bug in the page
-> allocator which caused them to get allocated in reverse order and it
-> was a noticable performance hit (this was 15-20 years ago).
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: 01cf158e48d2b5ce947430de5896c10f4f7c1822  Revert "iommu/vt-d: Take CONFIG_PCI_ATS into account"
 
-I see, thanks for a bit of insight
+elapsed time: 720m
 
--- 
-Pavel Begunkov
+configs tested: 133
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      ep88xc_defconfig
+arm                     eseries_pxa_defconfig
+mips                      fuloong2e_defconfig
+arm                           spitz_defconfig
+arm                          badge4_defconfig
+powerpc                     mpc5200_defconfig
+arm                     davinci_all_defconfig
+arm                         hackkit_defconfig
+sparc                       sparc64_defconfig
+m68k                        mvme147_defconfig
+xtensa                           alldefconfig
+powerpc                      obs600_defconfig
+m68k                          atari_defconfig
+sh                           se7712_defconfig
+arm                       multi_v4t_defconfig
+mips                        omega2p_defconfig
+mips                       bmips_be_defconfig
+sh                           sh2007_defconfig
+h8300                               defconfig
+arm                          pxa910_defconfig
+powerpc                       maple_defconfig
+powerpc                      bamboo_defconfig
+arm                          ep93xx_defconfig
+powerpc                     mpc83xx_defconfig
+mips                     cu1830-neo_defconfig
+arm                         bcm2835_defconfig
+mips                          rm200_defconfig
+powerpc                     rainier_defconfig
+powerpc                     tqm8540_defconfig
+arm                        trizeps4_defconfig
+powerpc                     powernv_defconfig
+m68k                          sun3x_defconfig
+arm                          exynos_defconfig
+mips                      pistachio_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                        fsp2_defconfig
+arm                         s5pv210_defconfig
+arm                          tango4_defconfig
+arm                              alldefconfig
+powerpc                 mpc836x_rdk_defconfig
+h8300                     edosk2674_defconfig
+powerpc                  storcenter_defconfig
+mips                           ip27_defconfig
+powerpc                    gamecube_defconfig
+mips                      bmips_stb_defconfig
+sh                            titan_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                         cm_x300_defconfig
+mips                     loongson1b_defconfig
+powerpc                     asp8347_defconfig
+powerpc                      katmai_defconfig
+arm                        magician_defconfig
+powerpc                  mpc866_ads_defconfig
+s390                                defconfig
+xtensa                    smp_lx200_defconfig
+arm                         lpc32xx_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                            zeus_defconfig
+arc                         haps_hs_defconfig
+powerpc                       eiger_defconfig
+powerpc                           allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+i386                 randconfig-a006-20201119
+i386                 randconfig-a005-20201119
+i386                 randconfig-a002-20201119
+i386                 randconfig-a001-20201119
+i386                 randconfig-a003-20201119
+i386                 randconfig-a004-20201119
+x86_64               randconfig-a015-20201119
+x86_64               randconfig-a014-20201119
+x86_64               randconfig-a011-20201119
+x86_64               randconfig-a013-20201119
+x86_64               randconfig-a016-20201119
+x86_64               randconfig-a012-20201119
+i386                 randconfig-a012-20201119
+i386                 randconfig-a014-20201119
+i386                 randconfig-a016-20201119
+i386                 randconfig-a011-20201119
+i386                 randconfig-a013-20201119
+i386                 randconfig-a015-20201119
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+x86_64               randconfig-a005-20201119
+x86_64               randconfig-a003-20201119
+x86_64               randconfig-a004-20201119
+x86_64               randconfig-a002-20201119
+x86_64               randconfig-a006-20201119
+x86_64               randconfig-a001-20201119
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
