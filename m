@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388132BAC19
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068132BAC1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728217AbgKTOnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 09:43:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
+        id S1728275AbgKTOoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 09:44:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbgKTOnk (ORCPT
+        with ESMTP id S1727782AbgKTOoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:43:40 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623E6C0613CF;
-        Fri, 20 Nov 2020 06:43:40 -0800 (PST)
-Received: from [IPv6:2003:c7:cf41:a700:d85a:e53f:e26d:e760] (p200300c7cf41a700d85ae53fe26de760.dip0.t-ipconnect.de [IPv6:2003:c7:cf41:a700:d85a:e53f:e26d:e760])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id ECE8B1F46035;
-        Fri, 20 Nov 2020 14:43:38 +0000 (GMT)
-Subject: Re: [PATCH] media: rockchip: rkisp1: Constify static structs
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Helen Koike <helen.koike@collabora.com>,
-        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20201119221849.147984-1-rikard.falkeborn@gmail.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <5073bc92-df77-0ca0-c932-99037c92bfa5@collabora.com>
-Date:   Fri, 20 Nov 2020 15:43:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 20 Nov 2020 09:44:19 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA84C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 06:44:18 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id q5so9000495qkc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 06:44:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C1CYOETxY2mWhhteoELoIdcbW6dqQyY7MF0yoQEntsU=;
+        b=RTlyczdaOkh7geh5ZkV5GWqqUHxPFzM+/EHAond4ShJYOtFveN+sTMYTYpHgQ3qw9r
+         4OCkjKwSJHsceu0+nXK8loM3AVTBFS75aQPAYKdJgOphR7CRICAABfzh2r1lr150wYko
+         R+D3NyVAow6YMlcGvxOKbs41nuzOmhP+RWkQl7DrCHEGm0KGA0pr2pCv4AUF32psYd2Q
+         MUv4Hz7kJrHs6Vr4QMJoQ57rfNDvVFd+jOm23dB4GkMajSHqjOrHjWK+/6LejpwZb2E8
+         moGMGJMG9qiVmJOXe8kK1nAw7nH/ygEbeVvJccO1/wiK3Q7q4IPkor735omM5ig5how2
+         iifQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C1CYOETxY2mWhhteoELoIdcbW6dqQyY7MF0yoQEntsU=;
+        b=XEM4AQSFKkfHMtk6W3RXHrGcWIHpvET8mxMsQQtVnGSKz5azVBNyRFCShOFVACFQRv
+         WdecryqZWbocT1H/EAVoickZrNxp5CSYVuwQE27DF084M1Opog3hAHHpSkVPottYw9nU
+         me0z+Fw6s2FHRu49gWyVChc581x9xkjCDsqYdalE+Gco6G9kFryQeFqmoRIT+yQvll8h
+         Id/gkqyp2FqQDSZfx/NdQ+lBLC3o23+UsvUI8zQvNs6I/z5dhHsehcx0Tqd8hNKycUPf
+         hlpNcRm7eLb5qqUOhK7V4HT8UYrflCmQkjwOor8sdqtCCqRDpA5SGuexKpZzhS/lFx0L
+         8jZg==
+X-Gm-Message-State: AOAM531d70QSONfJmVM5q1Rc2QnM0mWTo9QItNfF5cFyfE4qtpIsws7k
+        69zlKboWykbhINZy4B7ww+9bCOgcShd9CXHltWJJzQ==
+X-Google-Smtp-Source: ABdhPJwZrlT2iMbWNY1ZMJAir2bIhu343U9ppzqmXLgR+ajdYkR5kBk2dzPNIsC8Na83xEoHeqe293oVTudB3x2YG5E=
+X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr17381328qkm.231.1605883457341;
+ Fri, 20 Nov 2020 06:44:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201119221849.147984-1-rikard.falkeborn@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201118035309.19144-1-qiang.zhang@windriver.com>
+ <20201119214934.GC1437@paulmck-ThinkPad-P72> <CACT4Y+bas5xfc-+W+wkpbx6Lw=9dsKv=ha83=hs1pytjfK+drg@mail.gmail.com>
+ <20201120143440.GF1437@paulmck-ThinkPad-P72>
+In-Reply-To: <20201120143440.GF1437@paulmck-ThinkPad-P72>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 20 Nov 2020 15:44:04 +0100
+Message-ID: <CACT4Y+ZNBRaVOK4zjv7WyyJKeS54OL8212EtjQHshYDeOVmCGQ@mail.gmail.com>
+Subject: Re: [PATCH] rcu: kasan: record and print kvfree_call_rcu call stack
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Zhang, Qiang" <qiang.zhang@windriver.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Uladzislau Rezki <urezki@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 20, 2020 at 3:34 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Fri, Nov 20, 2020 at 09:51:15AM +0100, Dmitry Vyukov wrote:
+> > On Thu, Nov 19, 2020 at 10:49 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > >
+> > > On Wed, Nov 18, 2020 at 11:53:09AM +0800, qiang.zhang@windriver.com wrote:
+> > > > From: Zqiang <qiang.zhang@windriver.com>
+> > > >
+> > > > Add kasan_record_aux_stack function for kvfree_call_rcu function to
+> > > > record call stacks.
+> > > >
+> > > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> > >
+> > > Thank you, but this does not apply on the "dev" branch of the -rcu tree.
+> > > See file:///home/git/kernel.org/rcutodo.html for more info.
+> > >
+> > > Adding others on CC who might have feedback on the general approach.
+> > >
+> > >                                                         Thanx, Paul
+> > >
+> > > > ---
+> > > >  kernel/rcu/tree.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index da3414522285..a252b2f0208d 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -3506,7 +3506,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > >               success = true;
+> > > >               goto unlock_return;
+> > > >       }
+> > > > -
+> > > > +     kasan_record_aux_stack(ptr);
+> > > >       success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
+> > > >       if (!success) {
+> > > >               run_page_cache_worker(krcp);
+> >
+> > kvfree_call_rcu is intended to free objects, right? If so this is:
+>
+> True, but mightn't there still be RCU readers referencing this object for
+> some time, as in up to the point that the RCU grace period ends?  If so,
+> won't adding this cause KASAN to incorrectly complain about those readers?
+>
+> Or am I missing something here?
 
-
-Am 19.11.20 um 23:18 schrieb Rikard Falkeborn:
-> These 'ops' structs are never modified, so make them const to allow the
-> compiler to put them in read-only memory.
-> 
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-
-Thanks!
-
-Reviewed-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-
-> ---
->   drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c | 6 +++---
->   drivers/media/platform/rockchip/rkisp1/rkisp1-common.h  | 2 +-
->   drivers/media/platform/rockchip/rkisp1/rkisp1-params.c  | 4 ++--
->   3 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> index b81235afd053..380582f68ace 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> @@ -565,7 +565,7 @@ static void rkisp1_sp_set_data_path(struct rkisp1_capture *cap)
->   	rkisp1_write(cap->rkisp1, dpcl, RKISP1_CIF_VI_DPCL);
->   }
->   
-> -static struct rkisp1_capture_ops rkisp1_capture_ops_mp = {
-> +static const struct rkisp1_capture_ops rkisp1_capture_ops_mp = {
->   	.config = rkisp1_mp_config,
->   	.enable = rkisp1_mp_enable,
->   	.disable = rkisp1_mp_disable,
-> @@ -574,7 +574,7 @@ static struct rkisp1_capture_ops rkisp1_capture_ops_mp = {
->   	.is_stopped = rkisp1_mp_is_stopped,
->   };
->   
-> -static struct rkisp1_capture_ops rkisp1_capture_ops_sp = {
-> +static const struct rkisp1_capture_ops rkisp1_capture_ops_sp = {
->   	.config = rkisp1_sp_config,
->   	.enable = rkisp1_sp_enable,
->   	.disable = rkisp1_sp_disable,
-> @@ -1038,7 +1038,7 @@ rkisp1_vb2_start_streaming(struct vb2_queue *queue, unsigned int count)
->   	return ret;
->   }
->   
-> -static struct vb2_ops rkisp1_vb2_ops = {
-> +static const struct vb2_ops rkisp1_vb2_ops = {
->   	.queue_setup = rkisp1_vb2_queue_setup,
->   	.buf_queue = rkisp1_vb2_buf_queue,
->   	.buf_prepare = rkisp1_vb2_buf_prepare,
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> index 3a134e97161c..038c303a8aed 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> @@ -214,7 +214,7 @@ struct rkisp1_capture {
->   	struct rkisp1_vdev_node vnode;
->   	struct rkisp1_device *rkisp1;
->   	enum rkisp1_stream_id id;
-> -	struct rkisp1_capture_ops *ops;
-> +	const struct rkisp1_capture_ops *ops;
->   	const struct rkisp1_capture_config *config;
->   	bool is_streaming;
->   	bool is_stopping;
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
-> index 03f9a81df440..6af4d551ffb5 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
-> @@ -1469,7 +1469,7 @@ static void rkisp1_params_vb2_stop_streaming(struct vb2_queue *vq)
->   		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
->   }
->   
-> -static struct vb2_ops rkisp1_params_vb2_ops = {
-> +static const struct vb2_ops rkisp1_params_vb2_ops = {
->   	.queue_setup = rkisp1_params_vb2_queue_setup,
->   	.wait_prepare = vb2_ops_wait_prepare,
->   	.wait_finish = vb2_ops_wait_finish,
-> @@ -1479,7 +1479,7 @@ static struct vb2_ops rkisp1_params_vb2_ops = {
->   
->   };
->   
-> -static struct v4l2_file_operations rkisp1_params_fops = {
-> +static const struct v4l2_file_operations rkisp1_params_fops = {
->   	.mmap = vb2_fop_mmap,
->   	.unlocked_ioctl = video_ioctl2,
->   	.poll = vb2_fop_poll,
-> 
+kvfree_call_rcu does not check anything, not poison the object for
+future accesses (it is also called in call_rcu which does not
+necessarily free the object).
+It just notes the current stack to provide in reports later.
+The problem is that the free stack is pointless for objects freed by
+rcu. In such cases we want call_rcu/kvfree_call_rcu stack in
+use-after-free reports.
