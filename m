@@ -2,115 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B352BAF98
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:07:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 212A62BAF9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgKTQHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:07:15 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:60873 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725766AbgKTQHP (ORCPT
+        id S1727307AbgKTQJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:09:05 -0500
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:57877 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgKTQJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:07:15 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0667A5C0055;
-        Fri, 20 Nov 2020 11:07:14 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 20 Nov 2020 11:07:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=4CUe3OsuPZ5KB0JzgYMc3vAw7fo
-        yq05iJjll0KKQjbA=; b=BXihaJdiTyTPjGuv2aij1PbrTDwehYtde2OkkD45NoD
-        RmbvrK2LT5w6wdqtlHOXKLJPP1jwuwBvuW7iPxESqQ2bnhbYlAmBzsbH/t7ndrVc
-        xSRW0tlfF7aMJtuhFzjYniwN5AeWCBCf9TSipOYeDVmwFfffOhl/3mmO+TnWFOpu
-        BOqebh1PwgV19j+TkjbOUpwQ4W/ThsD3kgNDLJsoiyuGxPMUAXkZIt08uT/wLSjP
-        +1FPDrzZ01nASVtcIDf4/C3wBlgvx82roIsGNJvo3YWK0tCBNZwNJkvbDfmYIBVK
-        A9EqgtuV95xZ8lfZWy1lFX6bAZtxGMXQ3b7Ef/3cOiQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4CUe3O
-        suPZ5KB0JzgYMc3vAw7foyq05iJjll0KKQjbA=; b=TKLarjNUTItoTQkJvHK15S
-        N6zesRn/CcQbok4G9b81z1aLRQSv18HvGoO84AyvbH3odw3o56xNT1Ap2u6fck04
-        J7xszlfhox8RYKNRNvIw7Cqp5X7D+N05Mt+DllBO/yin6VFvH8LEiSkYjdoIpBQB
-        VMUIIZ7gr5wJ4FZPURz8VnPyCsMLdTH+Z5hBOfwXtJuB6sEeexRlHBcwFZQHF9V8
-        j6J5dzvj5ulmXTHM0SES1+gl8RucxiYxsx2mNJnPB/UP6GqXEjDQHubRSYMJlE/U
-        N00qUHQOWArIZZl0fwDgM/DFjRvOwFDyhcqTiEfZd1VpAUJMXyw7ocAJXHEKIR3w
-        ==
-X-ME-Sender: <xms:sOm3XxPfx_Lu1EtJ_U6M1e4a11sr7iLiT431lQsD8Ncj2cip8KScnA>
-    <xme:sOm3Xz8p_1iYmbG3cvNi8YUrshWunwYYZCFzUTz8PfXHQI50LLS99lXS4PG1K8fF8
-    pnQ0AHQvxqA8IRiwfY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegtddgkeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
-    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
-    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeevveefffduveeitdegtefhhfetue
-    ffteefffdvheevvdehteethedvleffgfejvdenucffohhmrghinhepkhgvrhhnvghlrdho
-    rhhgnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:sOm3XwSCJ8MVck9Gwi1ij7xSkoFBN2aWLqQ46MGm5_21DzJbjxfm8w>
-    <xmx:sOm3X9tfNS9GKf_s_1muG-8YHQ3f33mzmVepXBAa2hZN5akcCwVI_Q>
-    <xmx:sOm3X5dWAJIciPxHdiZiinL3FxzNZy94DhiepfgXW1_dCdKxkfv_IQ>
-    <xmx:sem3X5FraDdWBJ2mNSOvb4rA4FpdEGHV3HZpK8L-0Gjmk17VOrOAQA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id CA13E3280066;
-        Fri, 20 Nov 2020 11:07:11 -0500 (EST)
-Date:   Fri, 20 Nov 2020 17:07:10 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     fuyao@allwinnertech.com
-Cc:     wens@csie.org, linux-remoteproc@vger.kernel.org,
+        Fri, 20 Nov 2020 11:09:04 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id BACACC0008;
+        Fri, 20 Nov 2020 16:09:01 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 17:09:01 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Device Tree List <devicetree@vger.kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] introduce sunxi hwspinlock
-Message-ID: <20201120160710.wlkl5cdfqlrym2fj@gilmour>
-References: <y>
- <cover.1605767679.git.fuyao@allwinnertech.com>
+Subject: Re: [PATCH v4 1/4] dt-bindings: phy: Add sparx5-serdes bindings
+Message-ID: <20201120160901.GA348979@piout.net>
+References: <20201120150359.2041940-1-steen.hegelund@microchip.com>
+ <20201120150359.2041940-2-steen.hegelund@microchip.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wvdbsbhph2y6vxbz"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1605767679.git.fuyao@allwinnertech.com>
+In-Reply-To: <20201120150359.2041940-2-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---wvdbsbhph2y6vxbz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 20/11/2020 16:03:56+0100, Steen Hegelund wrote:
+> Document the Sparx5 ethernet serdes phy driver bindings.
+> 
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> ---
+>  .../bindings/phy/microchip,sparx5-serdes.yaml | 296 ++++++++++++++++++
+>  1 file changed, 296 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml b/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+> new file mode 100644
+> index 000000000000..0bfb752e7686
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+> @@ -0,0 +1,296 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/phy/microchip,sparx5-serdes.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip Sparx5 Serdes controller
+> +
+> +maintainers:
+> +  - Steen Hegelund <steen.hegelund@microchip.com>
+> +
+> +description: |
+> +  The Sparx5 SERDES interfaces share the same basic functionality, but
+> +  support different operating modes and line rates.
+> +
+> +  The following list lists the SERDES features:
+> +
+> +  * RX Adaptive Decision Feedback Equalizer (DFE)
+> +  * Programmable continuous time linear equalizer (CTLE)
+> +  * Rx variable gain control
+> +  * Rx built-in fault detector (loss-of-lock/loss-of-signal)
+> +  * Adjustable tx de-emphasis (FFE)
+> +  * Tx output amplitude control
+> +  * Supports rx eye monitor
+> +  * Multiple loopback modes
+> +  * Prbs generator and checker
+> +  * Polarity inversion control
+> +
+> +  SERDES6G:
+> +
+> +  The SERDES6G is a high-speed SERDES interface, which can operate at
+> +  the following data rates:
+> +
+> +  * 100 Mbps (100BASE-FX)
+> +  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
+> +  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
+> +  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
+> +
+> +  SERDES10G
+> +
+> +  The SERDES10G is a high-speed SERDES interface, which can operate at
+> +  the following data rates:
+> +
+> +  * 100 Mbps (100BASE-FX)
+> +  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
+> +  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
+> +  * 5 Gbps (QSGMII/USGMII)
+> +  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
+> +  * 10 Gbps (10G-USGMII)
+> +  * 10.3125 Gbps (10GBASE-R/10GBASE-KR/USXGMII)
+> +
+> +  SERDES25G
+> +
+> +  The SERDES25G is a high-speed SERDES interface, which can operate at
+> +  the following data rates:
+> +
+> +  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
+> +  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
+> +  * 5 Gbps (QSGMII/USGMII)
+> +  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
+> +  * 10 Gbps (10G-USGMII)
+> +  * 10.3125 Gbps (10GBASE-R/10GBASE-KR/USXGMII)
+> +  * 25.78125 Gbps (25GBASE-KR/25GBASE-CR/25GBASE-SR/25GBASE-LR/25GBASE-ER)
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^serdes@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    const: microchip,sparx5-serdes.yaml
 
-Hi!
+This has a spurious .yaml suffix ;)
 
-On Thu, Nov 19, 2020 at 02:44:51PM +0800, fuyao@allwinnertech.com wrote:
-> From: fuyao <fuyao@allwinnertech.com>
->=20
-> this series add hwspinlock of sunxi. it provides hardware assistance for
-> synchronization between the multiple processors in the system.
-> (Or1k, Cortex-A7, Cortex-A53, Xtensa)
+> +
+> +  reg:
+> +    description: Address and length of the register set for the device
 
-Xtensa? Which SoC has an Xtensa core?
+You don't actually have to describe this property a sit comes from the
+generic schema. But maybe you could set maxItems
 
-Unfortunately, there's been a submission of the same driver earlier this we=
-ek:
-https://lore.kernel.org/lkml/cover.1605693132.git.wilken.gottwalt@posteo.ne=
-t/
+> +
+> +  reg-names:
+> +    description: |
+> +      Names for each of the address spaces defined in
+> +      the 'reg' property. Expects the names in the same order as the
+> +      corresponding memory region in the that property.
+> +
 
-It would be great if you could point out whatever issue there is with
-that patch series (it looks like the retry delay could be useful for
-example).
+Same comment, even better, I tink you could list the expected names in
+an enum or a const list
 
-Thanks!
-Maxime
+> +  '#phy-cells':
+> +    const: 1
+> +    description: |
+> +      - The main serdes input port
+> +
+> +  clocks:
+> +    description:
+> +      A list containing the phandle to the core clock of the Sparx5 device.
 
---wvdbsbhph2y6vxbz
-Content-Type: application/pgp-signature; name="signature.asc"
+You can drop the description and simply have maxItems: 1
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX7fprgAKCRDj7w1vZxhR
-xffJAQCaE5uHPjtJHu2/qTK2U4iyIBEO9mGgMR1pi2r8kwQ8BAD/RwifMTitHOEd
-lrcNueEDkhuO9gIH9a3haGBBuQsWWA8=
-=VDdt
------END PGP SIGNATURE-----
-
---wvdbsbhph2y6vxbz--
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
