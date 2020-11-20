@@ -2,175 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC3D2BA6BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5102E2BA6BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727682AbgKTJ4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:56:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        id S1727719AbgKTJ4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:56:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727655AbgKTJ4S (ORCPT
+        with ESMTP id S1727648AbgKTJ4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Nov 2020 04:56:18 -0500
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A849DC061A47
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:56:15 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id s8so9351809wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:56:15 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4904DC0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:56:17 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id m6so9366069wrg.7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:56:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ODWIjSITGhibxiu5sdcf8aVMrj4QUXzG8FJI3RynFGM=;
-        b=abxl7E4wo7jZpAfTzuunphaH5vlt/naI7HAiWaSpvixjFnf4sVbia8Q3BJ+dVpIqSd
-         rzyCZR6pVpoX67iLtk7QN881pKiYydMCbW2tIIk5Y0QHWn5wBSS/BB//JgXsoKgg8fVg
-         rRtlAoYdJtnHk5e8fU/kzRg05Ih+mmmH1kzj4=
+        bh=lnj1vSewnYJ6/gw6qejvRzkdxRWgCvvqGMHaDGl+NSM=;
+        b=YJHuMUqOdXD3RjBDXwq4xxm28eTiQkgXVF1XT/DPzqcSwCe7bJ+AxNmLfgQwjHIsKW
+         3SeM+TDUPXszr6Zc57JPx/POuZ5YPbxXs6IfAyzVdZ+bCJo3OgkoLmATYI/rVBFBr9pw
+         e/MhE42helKCwyMkK6vSTfE6uxAtZHvyO2IBs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ODWIjSITGhibxiu5sdcf8aVMrj4QUXzG8FJI3RynFGM=;
-        b=h5WdiiwycmyBDyVR9Eug9o4jAcALSuEYb3wNCSre59CAL5uu2kevC+CgT6jHYZMCzt
-         cpqCeRHNkFX12VUV5isg2TCv1kiR5DISQKM1z0S+xUBBARUilI5fe/Z+BL5ts5UwKpVt
-         w5HRp8bhKUs7/PpqV7TeF3mwqozHRicU7E6FjbUnd6WnwCmgU0+gv8KDZoKkyK7QGN+2
-         /F0HngqrhPc5usKvkrJyVdOdmILQiYE382QmzY8eVqRKrHBB3R/lQNcsjfDhzFkeiy7a
-         Iet3uJY3iGo7hSoHpRA0QmDQ2/Fs2PaFvj5Xg6UahMpDQlSvn4R8RI+wbLMiRt63ReiA
-         I6Tg==
-X-Gm-Message-State: AOAM531+SfajUrNxlEJ/ic0pvOOXcpFcY82OxvakO5+ZCVoNRTlW0PRH
-        dMqGJFvps9CteN6s6o8IfNBMsQ==
-X-Google-Smtp-Source: ABdhPJxJ2UyLnfvFIWnVmPKRqax6sfQkCZohfTD1sEUpZkqrYbW1bkqO7INNhAf+GB4nJI4JFKC4Ow==
-X-Received: by 2002:a5d:4d87:: with SMTP id b7mr15742781wru.115.1605866174422;
-        Fri, 20 Nov 2020 01:56:14 -0800 (PST)
+        bh=lnj1vSewnYJ6/gw6qejvRzkdxRWgCvvqGMHaDGl+NSM=;
+        b=TXEKcoU8QoOVPrNLC5fIE3CkJbMEf6M7W4oaojVwGmrmonXtP2UepILUxZ4YiRrF/X
+         P9rL9cTtxlxGREjNWXDzf76aR+OHVWRDzV7HtZJBeBoUBsAzDyqTZod6JCCPM8oUd1LH
+         v9WSkhSFSWqqPUMwznNRUa3Q8ODgx4eM9nq5R0zfvTqW+GscJvBojSaAVZ6C6vJDOscq
+         29Jm5Ifg9zi2rE0hQpL8C3llcpTYuWb+9HGe/gCqX3gl8vO+B8dI7CuVfXP+wNC331JU
+         uY1TAs9IEwu2WYgKrxoefx6vJcBAm+tUnnJPcUPwYU6JGC6LFAs/iDfhwHPrvD2lBU4j
+         8wcg==
+X-Gm-Message-State: AOAM533zISYCEqgAy872TY+hNXpmXDg5VNgUu+5NftRrAWAWEQyxP0V5
+        HwW21S6DgIFfzmme1KD1tg/5Eg==
+X-Google-Smtp-Source: ABdhPJweygNEvtsDvm694/J94/vH0HdxxfmvF5F1IyJUepsC34aungjZF3hY+8zZe4LmawNek04kBA==
+X-Received: by 2002:adf:b74d:: with SMTP id n13mr15648919wre.101.1605866176083;
+        Fri, 20 Nov 2020 01:56:16 -0800 (PST)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id t9sm4500208wrr.49.2020.11.20.01.56.13
+        by smtp.gmail.com with ESMTPSA id t9sm4500208wrr.49.2020.11.20.01.56.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 01:56:13 -0800 (PST)
+        Fri, 20 Nov 2020 01:56:15 -0800 (PST)
 From:   Daniel Vetter <daniel.vetter@ffwll.ch>
 To:     DRI Development <dri-devel@lists.freedesktop.org>
 Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
         linux-mm@kvack.org, linux-xfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
-        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas_os@shipmail.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@mellanox.com>, linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Brian Paul <brianp@vmware.com>,
         Daniel Vetter <daniel.vetter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Subject: [PATCH 3/3] locking/selftests: Add testcases for fs_reclaim
-Date:   Fri, 20 Nov 2020 10:54:44 +0100
-Message-Id: <20201120095445.1195585-4-daniel.vetter@ffwll.ch>
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>
+Subject: [PATCH] drm/ttm: don't set page->mapping
+Date:   Fri, 20 Nov 2020 10:54:45 +0100
+Message-Id: <20201120095445.1195585-5-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201120095445.1195585-1-daniel.vetter@ffwll.ch>
 References: <20201120095445.1195585-1-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since I butchered this I figured better to make sure we have testcases
-for this now. Since we only have a locking context for __GFP_FS that's
-the only thing we're testing right now.
+Random observation while trying to review Christian's patch series to
+stop looking at struct page for dma-buf imports.
 
-Cc: linux-fsdevel@vger.kernel.org
-Cc: Dave Chinner <david@fromorbit.com>
-Cc: Qian Cai <cai@lca.pw>
-Cc: linux-xfs@vger.kernel.org
-Cc: Thomas Hellström (Intel) <thomas_os@shipmail.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jason Gunthorpe <jgg@mellanox.com>
-Cc: linux-mm@kvack.org
-Cc: linux-rdma@vger.kernel.org
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+This was originally added in
+
+commit 58aa6622d32af7d2c08d45085f44c54554a16ed7
+Author: Thomas Hellstrom <thellstrom@vmware.com>
+Date:   Fri Jan 3 11:47:23 2014 +0100
+
+    drm/ttm: Correctly set page mapping and -index members
+
+    Needed for some vm operations; most notably unmap_mapping_range() with
+    even_cows = 0.
+
+    Signed-off-by: Thomas Hellstrom <thellstrom@vmware.com>
+    Reviewed-by: Brian Paul <brianp@vmware.com>
+
+but we do not have a single caller of unmap_mapping_range with
+even_cows == 0. And all the gem drivers don't do this, so another
+small thing we could standardize between drm and ttm drivers.
+
+Plus I don't really see a need for unamp_mapping_range where we don't
+want to indiscriminately shoot down all ptes.
+
+Cc: Thomas Hellstrom <thellstrom@vmware.com>
+Cc: Brian Paul <brianp@vmware.com>
 Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-kernel@vger.kernel.org
+Cc: Christian Koenig <christian.koenig@amd.com>
+Cc: Huang Rui <ray.huang@amd.com>
 ---
- lib/locking-selftest.c | 47 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ drivers/gpu/drm/ttm/ttm_tt.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-index a899b3f0e2e5..ad47c3358e30 100644
---- a/lib/locking-selftest.c
-+++ b/lib/locking-selftest.c
-@@ -15,6 +15,7 @@
- #include <linux/mutex.h>
- #include <linux/ww_mutex.h>
- #include <linux/sched.h>
-+#include <linux/sched/mm.h>
- #include <linux/delay.h>
- #include <linux/lockdep.h>
- #include <linux/spinlock.h>
-@@ -2357,6 +2358,50 @@ static void queued_read_lock_tests(void)
- 	pr_cont("\n");
+diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
+index da9eeffe0c6d..5b2eb6d58bb7 100644
+--- a/drivers/gpu/drm/ttm/ttm_tt.c
++++ b/drivers/gpu/drm/ttm/ttm_tt.c
+@@ -284,17 +284,6 @@ int ttm_tt_swapout(struct ttm_bo_device *bdev, struct ttm_tt *ttm)
+ 	return ret;
  }
  
-+static void fs_reclaim_correct_nesting(void)
-+{
-+	fs_reclaim_acquire(GFP_KERNEL);
-+	might_alloc(GFP_NOFS);
-+	fs_reclaim_release(GFP_KERNEL);
-+}
-+
-+static void fs_reclaim_wrong_nesting(void)
-+{
-+	fs_reclaim_acquire(GFP_KERNEL);
-+	might_alloc(GFP_KERNEL);
-+	fs_reclaim_release(GFP_KERNEL);
-+}
-+
-+static void fs_reclaim_protected_nesting(void)
-+{
-+	unsigned int flags;
-+
-+	fs_reclaim_acquire(GFP_KERNEL);
-+	flags = memalloc_nofs_save();
-+	might_alloc(GFP_KERNEL);
-+	memalloc_nofs_restore(flags);
-+	fs_reclaim_release(GFP_KERNEL);
-+}
-+
-+static void fs_reclaim_tests(void)
-+{
-+	printk("  --------------------\n");
-+	printk("  | fs_reclaim tests |\n");
-+	printk("  --------------------\n");
-+
-+	print_testname("correct nesting");
-+	dotest(fs_reclaim_correct_nesting, SUCCESS, 0);
-+	pr_cont("\n");
-+
-+	print_testname("wrong nesting");
-+	dotest(fs_reclaim_wrong_nesting, FAILURE, 0);
-+	pr_cont("\n");
-+
-+	print_testname("protected nesting");
-+	dotest(fs_reclaim_protected_nesting, SUCCESS, 0);
-+	pr_cont("\n");
-+}
-+
- void locking_selftest(void)
+-static void ttm_tt_add_mapping(struct ttm_bo_device *bdev, struct ttm_tt *ttm)
+-{
+-	pgoff_t i;
+-
+-	if (ttm->page_flags & TTM_PAGE_FLAG_SG)
+-		return;
+-
+-	for (i = 0; i < ttm->num_pages; ++i)
+-		ttm->pages[i]->mapping = bdev->dev_mapping;
+-}
+-
+ int ttm_tt_populate(struct ttm_bo_device *bdev,
+ 		    struct ttm_tt *ttm, struct ttm_operation_ctx *ctx)
  {
- 	/*
-@@ -2478,6 +2523,8 @@ void locking_selftest(void)
- 	if (IS_ENABLED(CONFIG_QUEUED_RWLOCKS))
- 		queued_read_lock_tests();
+@@ -313,7 +302,6 @@ int ttm_tt_populate(struct ttm_bo_device *bdev,
+ 	if (ret)
+ 		return ret;
  
-+	fs_reclaim_tests();
-+
- 	if (unexpected_testcase_failures) {
- 		printk("-----------------------------------------------------------------\n");
- 		debug_locks = 0;
+-	ttm_tt_add_mapping(bdev, ttm);
+ 	ttm->page_flags |= TTM_PAGE_FLAG_PRIV_POPULATED;
+ 	if (unlikely(ttm->page_flags & TTM_PAGE_FLAG_SWAPPED)) {
+ 		ret = ttm_tt_swapin(ttm);
 -- 
 2.29.2
 
