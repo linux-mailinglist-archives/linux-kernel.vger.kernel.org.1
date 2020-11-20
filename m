@@ -2,56 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20912BAA3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B1E2BAA3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728197AbgKTMeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:34:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727728AbgKTMeL (ORCPT
+        id S1728186AbgKTMeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:34:18 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:40342 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728106AbgKTMeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Nov 2020 07:34:11 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A337C0613CF;
-        Fri, 20 Nov 2020 04:34:11 -0800 (PST)
-Date:   Fri, 20 Nov 2020 12:34:08 -0000
+Date:   Fri, 20 Nov 2020 12:34:09 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605875649;
+        s=2020; t=1605875650;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6jLnTUfu5q7HFGMcvp9gG1DICGNnnjhFJ/HglxpNjIk=;
-        b=XYxZbx8aNirOJGDWuvhf+dR7KqCHeDhrx35HPbYVhVMCbSLMoNz45cYDcmlO7Ub1N4kTpZ
-        jRMYqWPFkWip9X229WBkpcnMLQVbKC/vgLNRRUftGMdIlI121MZ2XMHUdeB3ga2T1QOKSS
-        i3I7ttwpAwW9C+DIYFi6JATBXVfZJKmgLY1uIntoyzM18dxgaO5fDDoCex2uz0El4iC/ib
-        XlJQxT4BVUkO4bN77Ejaqp/dUYo7QBQuP5FDOY17KRFQBC9YUDlQorB6FwgHC72UgCTcoQ
-        HAKOmrlaz+tXk1FbHEw2pzGF6LkGgkX9g2WUvEVrQlzN05tPz0BfXgdE9OSnhw==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=/rgETGRt4SJs2ltxwrihKxj//pxN6G6zufCAp7MZWoI=;
+        b=OeltTjT/QdWwaKq3Dqt7rZbAustP3qddmkFTXU46fL/fkLxuXbuXmvl641LrQw4t96lsiq
+        s/7GWp40HTn5KmBm9QJQnIQ5ITjzee67OrhWNbRDQuVtjTWkZEMkhg4+uskCmKeim3kKkj
+        3+tAHLAux/xfGCiZheN/6S+xPGX78lwxWKkjXbNMY8AdMcc3nV5BEFduDKsyHTxZ9Y7Fl7
+        jnvJQPcXfGWKiVRrPtPn6aRirnbR2iqgWIZX/bC9Wtp4/4HLYn4nxeBh4RrOmee6ZSAGS7
+        d72Oq3xLgdA0rnwHSoLx3Vgzjq2Pk3szCA4Emlf1KYtJhkqc+/3+t3+/PHhLMg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605875649;
+        s=2020e; t=1605875650;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6jLnTUfu5q7HFGMcvp9gG1DICGNnnjhFJ/HglxpNjIk=;
-        b=vhEY7q3J+2XcxyOBfuizQG6slQmYZJgm5tRnHxgFTC7XN+7jAD6Hsg6DSaSyCUr4fVQbEE
-        qo3HdvYIHKgQWSBQ==
-From:   "tip-bot2 for Daniel Jordan" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=/rgETGRt4SJs2ltxwrihKxj//pxN6G6zufCAp7MZWoI=;
+        b=6lqiz6zrgLrYgyd8E2COTOPC6v6B0HOyJ972E/BBzRUK06I2mVPr9Vfch/ASKJJdNIH4UG
+        +ZLmfrTTlc8RtcAA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] cpuset: fix race between hotplug work and later CPU offline
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201112171711.639541-1-daniel.m.jordan@oracle.com>
-References: <20201112171711.639541-1-daniel.m.jordan@oracle.com>
+Subject: [tip: sched/core] sched: Fix migration_cpu_stop() WARN
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <160587564863.11244.11496515259891440886.tip-bot2@tip-bot2>
+Message-ID: <160587564920.11244.15431426465426576849.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,129 +52,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     406100f3da08066c00105165db8520bbc7694a36
-Gitweb:        https://git.kernel.org/tip/406100f3da08066c00105165db8520bbc7694a36
-Author:        Daniel Jordan <daniel.m.jordan@oracle.com>
-AuthorDate:    Thu, 12 Nov 2020 12:17:11 -05:00
+Commit-ID:     1293771e4353c148d5f6908fb32d1c1cfd653e47
+Gitweb:        https://git.kernel.org/tip/1293771e4353c148d5f6908fb32d1c1cfd653e47
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 17 Nov 2020 12:14:51 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Thu, 19 Nov 2020 11:25:45 +01:00
 
-cpuset: fix race between hotplug work and later CPU offline
+sched: Fix migration_cpu_stop() WARN
 
-One of our machines keeled over trying to rebuild the scheduler domains.
-Mainline produces the same splat:
+Oleksandr reported hitting the WARN in the 'task_rq(p) != rq' branch
+of migration_cpu_stop(). Valentin noted that using cpu_of(rq) in that
+case is just plain wrong to begin with, since per the earlier branch
+that isn't the actual CPU of the task.
 
-  BUG: unable to handle page fault for address: 0000607f820054db
-  CPU: 2 PID: 149 Comm: kworker/1:1 Not tainted 5.10.0-rc1-master+ #6
-  Workqueue: events cpuset_hotplug_workfn
-  RIP: build_sched_domains
-  Call Trace:
-   partition_sched_domains_locked
-   rebuild_sched_domains_locked
-   cpuset_hotplug_workfn
+Replace both instances of is_cpu_allowed() by a direct p->cpus_mask
+test using task_cpu().
 
-It happens with cgroup2 and exclusive cpusets only.  This reproducer
-triggers it on an 8-cpu vm and works most effectively with no
-preexisting child cgroups:
-
-  cd $UNIFIED_ROOT
-  mkdir cg1
-  echo 4-7 > cg1/cpuset.cpus
-  echo root > cg1/cpuset.cpus.partition
-
-  # with smt/control reading 'on',
-  echo off > /sys/devices/system/cpu/smt/control
-
-RIP maps to
-
-  sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
-
-from sd_init().  sd_id is calculated earlier in the same function:
-
-  cpumask_and(sched_domain_span(sd), cpu_map, tl->mask(cpu));
-  sd_id = cpumask_first(sched_domain_span(sd));
-
-tl->mask(cpu), which reads cpu_sibling_map on x86, returns an empty mask
-and so cpumask_first() returns >= nr_cpu_ids, which leads to the bogus
-value from per_cpu_ptr() above.
-
-The problem is a race between cpuset_hotplug_workfn() and a later
-offline of CPU N.  cpuset_hotplug_workfn() updates the effective masks
-when N is still online, the offline clears N from cpu_sibling_map, and
-then the worker uses the stale effective masks that still have N to
-generate the scheduling domains, leading the worker to read
-N's empty cpu_sibling_map in sd_init().
-
-rebuild_sched_domains_locked() prevented the race during the cgroup2
-cpuset series up until the Fixes commit changed its check.  Make the
-check more robust so that it can detect an offline CPU in any exclusive
-cpuset's effective mask, not just the top one.
-
-Fixes: 0ccea8feb980 ("cpuset: Make generate_sched_domains() work with partition")
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Reported-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+Debugged-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Tejun Heo <tj@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20201112171711.639541-1-daniel.m.jordan@oracle.com
 ---
- kernel/cgroup/cpuset.c | 33 ++++++++++++++++++++++++++++-----
- 1 file changed, 28 insertions(+), 5 deletions(-)
+ kernel/sched/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 57b5b5d..53c70c4 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -983,25 +983,48 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
-  */
- static void rebuild_sched_domains_locked(void)
- {
-+	struct cgroup_subsys_state *pos_css;
- 	struct sched_domain_attr *attr;
- 	cpumask_var_t *doms;
-+	struct cpuset *cs;
- 	int ndoms;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 4d1fd4b..28d541a 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1911,7 +1911,7 @@ static int migration_cpu_stop(void *data)
+ 			 * and we should be valid again. Nothing to do.
+ 			 */
+ 			if (!pending) {
+-				WARN_ON_ONCE(!is_cpu_allowed(p, cpu_of(rq)));
++				WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
+ 				goto out;
+ 			}
  
- 	lockdep_assert_cpus_held();
- 	percpu_rwsem_assert_held(&cpuset_rwsem);
+@@ -1950,7 +1950,7 @@ static int migration_cpu_stop(void *data)
+ 		 * valid again. Nothing to do.
+ 		 */
+ 		if (!pending) {
+-			WARN_ON_ONCE(!is_cpu_allowed(p, cpu_of(rq)));
++			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
+ 			goto out;
+ 		}
  
- 	/*
--	 * We have raced with CPU hotplug. Don't do anything to avoid
-+	 * If we have raced with CPU hotplug, return early to avoid
- 	 * passing doms with offlined cpu to partition_sched_domains().
--	 * Anyways, hotplug work item will rebuild sched domains.
-+	 * Anyways, cpuset_hotplug_workfn() will rebuild sched domains.
-+	 *
-+	 * With no CPUs in any subpartitions, top_cpuset's effective CPUs
-+	 * should be the same as the active CPUs, so checking only top_cpuset
-+	 * is enough to detect racing CPU offlines.
- 	 */
- 	if (!top_cpuset.nr_subparts_cpus &&
- 	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
- 		return;
- 
--	if (top_cpuset.nr_subparts_cpus &&
--	   !cpumask_subset(top_cpuset.effective_cpus, cpu_active_mask))
--		return;
-+	/*
-+	 * With subpartition CPUs, however, the effective CPUs of a partition
-+	 * root should be only a subset of the active CPUs.  Since a CPU in any
-+	 * partition root could be offlined, all must be checked.
-+	 */
-+	if (top_cpuset.nr_subparts_cpus) {
-+		rcu_read_lock();
-+		cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
-+			if (!is_partition_root(cs)) {
-+				pos_css = css_rightmost_descendant(pos_css);
-+				continue;
-+			}
-+			if (!cpumask_subset(cs->effective_cpus,
-+					    cpu_active_mask)) {
-+				rcu_read_unlock();
-+				return;
-+			}
-+		}
-+		rcu_read_unlock();
-+	}
- 
- 	/* Generate domain masks and attrs */
- 	ndoms = generate_sched_domains(&doms, &attr);
