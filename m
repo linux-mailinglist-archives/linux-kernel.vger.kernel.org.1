@@ -2,98 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABB72BA472
+	by mail.lfdr.de (Postfix) with ESMTP id A8EA92BA473
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgKTIP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:15:26 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:38666 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbgKTIPZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:15:25 -0500
-Received: by mail-lj1-f194.google.com with SMTP id r17so9144570ljg.5;
-        Fri, 20 Nov 2020 00:15:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WDs6obGTLR1+wdJ6BVB6dndSCVFd0as/yCTkI8gYmPU=;
-        b=Y/xPta9rvf7YKf4ZukcFJI5daQExV4qAMp40tpHdLOeUXuDb6YQ0Nxn36UQg1WFNWs
-         fkReHJeQ3naoM3VQIjwZ4XVldStY0TJ4BX2LJ8ljlAp9zjrmI/dctR7Sy3LjiuAR0RZf
-         n5u3UgKtTb7Wpcows8hreTNurE4CBobwpn9BgT9wsI6TYy+BvPbn5da0v2yMBt/pbPfs
-         YxdbVnX9O4VvnKXJ5819YZ+C2ZRHA/VH0B0yhsnXZ7dbMBaozuXOx1HM61V3+wbNAlkL
-         +tndx23C+gMd01/d6rBC9swXLkwR/9RZbQ6KsluVbq7OdjbdHmelrz22gCHGCiAZ36dF
-         otIg==
-X-Gm-Message-State: AOAM533G7gzApWGtyW1HkeXxnghiEHXppCuKQLaVJyKO9P7gEUnk4AIa
-        iUwdqeKeA4LttgM9uv9u0d8=
-X-Google-Smtp-Source: ABdhPJxmm2fXT+CqTHKLbKnoL9h2nvyj3DpRahFss6PyhtuoOWUmAs/POQ+0B/EFEX06/htv9hKBVw==
-X-Received: by 2002:a2e:9005:: with SMTP id h5mr6752085ljg.59.1605860122921;
-        Fri, 20 Nov 2020 00:15:22 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id p25sm261261lfc.125.2020.11.20.00.15.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 00:15:21 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kg1Zl-0006KK-9f; Fri, 20 Nov 2020 09:15:26 +0100
-Date:   Fri, 20 Nov 2020 09:15:25 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-unisoc@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: serial: rad-uart: replace spin_lock_irqsave by
- spin_lock in hard IRQ
-Message-ID: <X7d7HXBp01JN5It5@localhost>
-References: <1605835613-28359-1-git-send-email-tiantao6@hisilicon.com>
+        id S1727042AbgKTIQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:16:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33834 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725910AbgKTIQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:16:43 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605860202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=og4mLwEhlnEzEqYT0FKs57kE8f8M05otNa+C82lXQrM=;
+        b=kSYx8Hg6CjpxVrqTTqfDalDMPPgEs2qfsAszYOsU6jfHy5txl4GLOCHOCOyp4pZL2TQ2WC
+        hGb8nQDf//mUId99M3gQuxknMO4+AyEru0pfJLsmOmj3uqdIU8L9UmxqIGftAsZeykjKWg
+        9d5v0k8SL12tD2A3t2a3KkRXTEiWf/w=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2DE83ACB0;
+        Fri, 20 Nov 2020 08:16:42 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 09:16:38 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 13/21] mm/hugetlb: Use PG_slab to indicate split pmd
+Message-ID: <20201120081638.GD3200@dhcp22.suse.cz>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-14-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1605835613-28359-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <20201120064325.34492-14-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 09:26:53AM +0800, Tian Tao wrote:
-> The code has been in a irq-disabled context since it is hard IRQ. There
-> is no necessity to do it again.
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+On Fri 20-11-20 14:43:17, Muchun Song wrote:
+> When we allocate hugetlb page from buddy, we may need split huge pmd
+> to pte. When we free the hugetlb page, we can merge pte to pmd. So
+> we need to distinguish whether the previous pmd has been split. The
+> page table is not allocated from slab. So we can reuse the PG_slab
+> to indicate that the pmd has been split.
+
+PageSlab is used outside of the slab allocator proper and that code
+might get confused by this AFAICS.
+
+From the above description it is not really clear why this is needed
+though. Who is supposed to use this? Say you are allocating a fresh
+hugetlb page. Once you have it, nobody else can be interfering. It is
+exclusive to the caller. The later machinery can check the vmemmap page
+tables to find out whether a split is needed or not. Or do I miss
+something?
+
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > ---
->  drivers/tty/serial/rda-uart.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  mm/hugetlb_vmemmap.c | 26 ++++++++++++++++++++++++--
+>  1 file changed, 24 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/tty/serial/rda-uart.c b/drivers/tty/serial/rda-uart.c
-> index 85366e0..d6705a0 100644
-> --- a/drivers/tty/serial/rda-uart.c
-> +++ b/drivers/tty/serial/rda-uart.c
-> @@ -406,10 +406,9 @@ static void rda_uart_receive_chars(struct uart_port *port)
->  static irqreturn_t rda_interrupt(int irq, void *dev_id)
->  {
->  	struct uart_port *port = dev_id;
-> -	unsigned long flags;
->  	u32 val, irq_mask;
->  
-> -	spin_lock_irqsave(&port->lock, flags);
-> +	spin_lock(&port->lock);
-
-This will break with forced irq threading (i.e. "threadirqs") since the
-console code can still end up being called from interrupt context (which
-can result in a deadlock).
-
->  
->  	/* Clear IRQ cause */
->  	val = rda_uart_read(port, RDA_UART_IRQ_CAUSE);
-> @@ -426,7 +425,7 @@ static irqreturn_t rda_interrupt(int irq, void *dev_id)
->  		rda_uart_send_chars(port);
->  	}
->  
-> -	spin_unlock_irqrestore(&port->lock, flags);
-> +	spin_unlock(&port->lock);
->  
->  	return IRQ_HANDLED;
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index 06e2b8a7b7c8..e2ddc73ce25f 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -293,6 +293,25 @@ static void remap_huge_page_pmd_vmemmap(struct hstate *h, pmd_t *pmd,
+>  	flush_tlb_kernel_range(start, end);
 >  }
+>  
+> +static inline bool pmd_split(pmd_t *pmd)
+> +{
+> +	return PageSlab(pmd_page(*pmd));
+> +}
+> +
+> +static inline void set_pmd_split(pmd_t *pmd)
+> +{
+> +	/*
+> +	 * We should not use slab for page table allocation. So we can set
+> +	 * PG_slab to indicate that the pmd has been split.
+> +	 */
+> +	__SetPageSlab(pmd_page(*pmd));
+> +}
+> +
+> +static inline void clear_pmd_split(pmd_t *pmd)
+> +{
+> +	__ClearPageSlab(pmd_page(*pmd));
+> +}
+> +
+>  static void __remap_huge_page_pte_vmemmap(struct page *reuse, pte_t *ptep,
+>  					  unsigned long start,
+>  					  unsigned long end,
+> @@ -357,11 +376,12 @@ void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+>  	ptl = vmemmap_pmd_lock(pmd);
+>  	remap_huge_page_pmd_vmemmap(h, pmd, (unsigned long)head, &remap_pages,
+>  				    __remap_huge_page_pte_vmemmap);
+> -	if (!freed_vmemmap_hpage_dec(pmd_page(*pmd))) {
+> +	if (!freed_vmemmap_hpage_dec(pmd_page(*pmd)) && pmd_split(pmd)) {
+>  		/*
+>  		 * Todo:
+>  		 * Merge pte to huge pmd if it has ever been split.
+>  		 */
+> +		clear_pmd_split(pmd);
+>  	}
+>  	spin_unlock(ptl);
+>  }
+> @@ -443,8 +463,10 @@ void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+>  	BUG_ON(!pmd);
+>  
+>  	ptl = vmemmap_pmd_lock(pmd);
+> -	if (vmemmap_pmd_huge(pmd))
+> +	if (vmemmap_pmd_huge(pmd)) {
+>  		split_vmemmap_huge_page(head, pmd);
+> +		set_pmd_split(pmd);
+> +	}
+>  
+>  	remap_huge_page_pmd_vmemmap(h, pmd, (unsigned long)head, &free_pages,
+>  				    __free_huge_page_pte_vmemmap);
+> -- 
+> 2.11.0
+> 
 
-Johan
+-- 
+Michal Hocko
+SUSE Labs
