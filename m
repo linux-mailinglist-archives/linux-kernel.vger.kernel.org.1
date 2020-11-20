@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480332BB34A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB0D2BB34C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730683AbgKTScQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:32:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51354 "EHLO mail.kernel.org"
+        id S1730693AbgKTScV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:32:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730672AbgKTScP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:32:15 -0500
+        id S1730416AbgKTScV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:32:21 -0500
 Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6619E2415B;
-        Fri, 20 Nov 2020 18:32:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2C0B2415A;
+        Fri, 20 Nov 2020 18:32:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605897135;
-        bh=1LAVetlu7/DoDuj4EupAJxDLxzgWcayGBo/n+klWpis=;
+        s=default; t=1605897140;
+        bh=1LZU8FpZUMLgvhSd5M/jyE0eLp713Xrz3qaYf9NDI8I=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QOf0/sj6JF2ntImYXMfUidJDKesx/LrS4voEFH4J0mbMtpJICBZPYFgS19LUpLmrO
-         I8azen3eSM+Fbq0qCDjsGkQzb3XcWhgOzkzKrnRcqEOiPGm44UmEbdSG1P61JrXY2n
-         HmiNHE56Hi7Aq5iG225IaTidmidJQ59MK+kt3g1U=
-Date:   Fri, 20 Nov 2020 12:32:20 -0600
+        b=lQ2h4K/yHomv4tUQRLyfVMLME7HMghpj5JWLVl1UZ/TkGGGgBWgtaVtFS1a7riutP
+         7lSdn4OnbVULu5xGcs+lZX8SAEYIllOrNMZX7y2Bpmy9ZK9kdunhTaBXpMn07u70K8
+         6dYLo73W84y05FwjIIFl4ojPOmiF5K/sm8FmXL/E=
+Date:   Fri, 20 Nov 2020 12:32:26 -0600
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+To:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>
+Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 052/141] security: keys: Fix fall-through warnings for Clang
-Message-ID: <412e11590b667712c03c1e4d4c7573fda3a4b1cb.1605896059.git.gustavoars@kernel.org>
+Subject: [PATCH 053/141] selinux: Fix fall-through warnings for Clang
+Message-ID: <c543804fee333ba315ddf4056ceed79f94e10d19.1605896059.git.gustavoars@kernel.org>
 References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -51,21 +50,21 @@ through to the next case.
 Link: https://github.com/KSPP/linux/issues/115
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- security/keys/process_keys.c | 1 +
+ security/selinux/hooks.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/security/keys/process_keys.c b/security/keys/process_keys.c
-index 1fe8b934f656..e3d79a7b6db6 100644
---- a/security/keys/process_keys.c
-+++ b/security/keys/process_keys.c
-@@ -783,6 +783,7 @@ key_ref_t lookup_user_key(key_serial_t id, unsigned long lflags,
- 				if (need_perm != KEY_AUTHTOKEN_OVERRIDE &&
- 				    need_perm != KEY_DEFER_PERM_CHECK)
- 					goto invalid_key;
-+				break;
- 			case 0:
- 				break;
- 			}
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 6b1826fc3658..e57774367b3a 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -4029,6 +4029,7 @@ static int selinux_kernel_load_data(enum kernel_load_data_id id, bool contents)
+ 	switch (id) {
+ 	case LOADING_MODULE:
+ 		rc = selinux_kernel_module_from_file(NULL);
++		break;
+ 	default:
+ 		break;
+ 	}
 -- 
 2.27.0
 
