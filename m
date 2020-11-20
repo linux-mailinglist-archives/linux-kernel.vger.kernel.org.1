@@ -2,213 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EDD2BA01C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE232BA020
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727244AbgKTB4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 20:56:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
+        id S1726761AbgKTB7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 20:59:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgKTB4C (ORCPT
+        with ESMTP id S1726543AbgKTB7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:56:02 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB60C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 17:56:02 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id a186so6164177wme.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 17:56:02 -0800 (PST)
+        Thu, 19 Nov 2020 20:59:33 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DD8C0613CF;
+        Thu, 19 Nov 2020 17:59:31 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id o15so8465193wru.6;
+        Thu, 19 Nov 2020 17:59:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=N7bVOjtnq28P5S44wsw3TgMqekVGMHXn00P8fDMxIC4=;
-        b=nJbQSnSRvJmbF58brY8nQydFNz5q7Xc0cjRR4d9yHKrzBbVpGG+HMv0iqeSUToJY8t
-         RFaE2VvxnxUvXxpCjClZH8DD1iK42KNi2mqJhiaQGpdQvN4BsRtbKpkn5VVaXzgfSitN
-         HhpC7gCsLNpSxlvE0BDQBrLPL1OvRQO5BkUfbuy7O39IBm13hnkg2V5lV91SZgkuxyP8
-         OWMzuvdXE4iNw/96/5FfA52V1nZDfQEMa3CkmoRHXy74pmIomPtXJBBG09nJcP/7tZ1Y
-         ZBHJYlOD++AHB2AFzdM00L/i4tnX2TE5lsFZVuRpFER5hxuM+FkgkhnkkxjYYjdQ+HFN
-         NMmw==
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tE2r4RhBiyze62MB/tYhcRQ3eilFVvtOzjxDmSaU7uM=;
+        b=aY8QWqVxzD4kVJYDSHdP2pnjS/o+cSv6n8432zKb5lAX9HVx0qjy/e2zmeNCXW9kwM
+         FPo/nPkjFTIdBY23A1BL9YegSOj6iL6y3DXWJklESM3Uz9dit/0CmuCqMgm7S6+jLvUw
+         t1xNRpdfb5aaWp0DCcdwlrjYf1NdX4LV7AHEcUb97EkiPChFmdk65unOWIsBQD8af4+N
+         UBRnXYXcMJBS1IORYYWk/9nKEeq1NwWwfjg6Avq9DJ2LcFDPAkRSuBsK10VOYHQyO6ey
+         slEJ4C/Y+Uthyy2go0ChIwOLyliGBtJHY9AM5jdjQvVUATmyYyyfnDp2NBZGcXvQ3Wdt
+         uESw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=N7bVOjtnq28P5S44wsw3TgMqekVGMHXn00P8fDMxIC4=;
-        b=cX3jRJRksDBr2+zTq2J/bJkF9kCgyyd2d+LJYjkGN4V79BQLoBjA+elQzEFuVk/MCr
-         eFZGSs0wZn9xF0M5oQuN3mDFWIIXREHxXysiN56/+gahImQzgNQ5f96MvdSof9Ncf5p1
-         MmA/vn4B82v3YKO675K3rm46poMnlUWbBTB5/mqVoUkrdRK4tH20Ctziid+S6rfZUSaK
-         AjvfPA8vWoLBxrbUbn6vRWzzSNN5ZEQwEZavk6eXSor88eCfJAWMSXXbJ7DBEhTH/7ES
-         TiXFcVzGyChZ3vshlOsPJ4zZ/pn2US7lv5flS/OFZr1owo0nN0ycoO4/22bJuViaOdmv
-         0JZA==
-X-Gm-Message-State: AOAM532+8Q3dew4gTkaZgizqYb+JwfdNKFBSdfepp6MAW6Stc/g+RUk4
-        huqRc6fkNiIUI6ExT/GQtFShHDOsVdqKTdUz7Xo=
-X-Google-Smtp-Source: ABdhPJzMoLSeMddNFM3wPdaXLjfvh9morVSoLGdAV0EYh5k+EfzJqMadNZ9qAx5MgizbpdGpkN3rwhkiD9baNdn3ebw=
-X-Received: by 2002:a1c:a185:: with SMTP id k127mr7166478wme.23.1605837360948;
- Thu, 19 Nov 2020 17:56:00 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=tE2r4RhBiyze62MB/tYhcRQ3eilFVvtOzjxDmSaU7uM=;
+        b=UFqUvM9CqwfW2ALOAmyCOG/2hzS2nHRvsazDPa+WzJuNX4llLnV9r8QMRj8BMsiucl
+         LwyUETizE31sYCch5606zsqCuOSTE9+Y4xgaZmCVq1u4ZqwifYPmmUs5FCYpu+DIebRb
+         UGkYZjoTAnyjEhfnyToLIVg8B/bfT6GwRSzdkW6/PcKYIoNBMX2A+NSJ0LpoYmPXEOYl
+         qXwrGMz6r+FtHWYJZt2842Q7jrGaE+I6WBPlgdKQbtOsQtdTS97nxgoApjaFpdBhbmEm
+         3iiRyoz+RpK0CaNmH8QyMvxbUjuLqvTOE+Q3mw0Hiiu0t38gEF58m7Twe1W+3PEztoIZ
+         ubxQ==
+X-Gm-Message-State: AOAM530Psv1EQ+xNPkthB3jEugWgQKEAsPVnImZ14ol/2SnBKpnJ0Ugl
+        CPy2My9R4e0a+H79bMmU6YODqpXf3syiag==
+X-Google-Smtp-Source: ABdhPJw1fbgmmWtMgqBZkdo5IS8VxVtDvnM7jN+5cFGkxaNSfvyvRXZkNAckopFNA/otaN3jet1nfw==
+X-Received: by 2002:a5d:6342:: with SMTP id b2mr13493251wrw.67.1605837570107;
+        Thu, 19 Nov 2020 17:59:30 -0800 (PST)
+Received: from [192.168.1.33] (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
+        by smtp.gmail.com with ESMTPSA id t23sm2587234wmn.4.2020.11.19.17.59.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 17:59:29 -0800 (PST)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1605827965.git.asml.silence@gmail.com>
+ <ab04202d0f8c1424da47251085657c436d762785.1605827965.git.asml.silence@gmail.com>
+ <20201120012017.GJ29991@casper.infradead.org>
+ <35d5db17-f6f6-ec32-944e-5ecddcbcb0f1@gmail.com>
+ <20201120014904.GK29991@casper.infradead.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH v2 1/2] iov_iter: optimise iov_iter_npages for bvec
+Message-ID: <3dc0b17d-b907-d829-bfec-eab96a6f4c30@gmail.com>
+Date:   Fri, 20 Nov 2020 01:56:22 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 20 Nov 2020 11:55:49 +1000
-Message-ID: <CAPM=9twCYAR-+-fYi-HwbhZOtqYkjVO3aVqX2oAPsFA+GgJarw@mail.gmail.com>
-Subject: [git pull] drm fixes for v5.10-rc5
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201120014904.GK29991@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 20/11/2020 01:49, Matthew Wilcox wrote:
+> On Fri, Nov 20, 2020 at 01:39:05AM +0000, Pavel Begunkov wrote:
+>> On 20/11/2020 01:20, Matthew Wilcox wrote:
+>>> On Thu, Nov 19, 2020 at 11:24:38PM +0000, Pavel Begunkov wrote:
+>>>> The block layer spends quite a while in iov_iter_npages(), but for the
+>>>> bvec case the number of pages is already known and stored in
+>>>> iter->nr_segs, so it can be returned immediately as an optimisation
+>>>
+>>> Er ... no, it doesn't.  nr_segs is the number of bvecs.  Each bvec can
+>>> store up to 4GB of contiguous physical memory.
+>>
+>> Ah, really, missed min() with PAGE_SIZE in bvec_iter_len(), then it's a
+>> stupid statement. Thanks!
+>>
+>> Are there many users of that? All these iterators are a huge burden,
+>> just to count one 4KB page in bvec it takes 2% of CPU time for me.
+> 
+> __bio_try_merge_page() will create multipage BIOs, and that's
+> called from a number of places including
+> bio_try_merge_hw_seg(), bio_add_page(), and __bio_iov_iter_get_pages()
 
-Weekly fixes pull. This contains some fixes for sun4i/dw-hdmi probing,
-then amdgpu enables arcturus hw without experimental flag and two
-other fixes and a group of i915 fixes.
+I get it that there are a lot of places, more interesting how often
+it's actually triggered and if that's performance critical for anybody.
+Not like I'm going to change it, just out of curiosity, but bvec.h
+can be nicely optimised without it.
 
-It also has a backported from next fix for the warn on reported in
-ast/drm_gem_vram_helper code in the rc1 pull request thread. The rc4
-PR has a thread which initially looked to be the same problem, but I'm
-going to chase that up next week a bit more as I don't think the
-bisect landed anywhere useful.
+> 
+> so ... yeah, it's used a lot.
+> 
 
-Dave.
-
-drm-fixes-2020-11-20-2:
-drm fixes for v5.10-rc5
-
-core:
-- vram helper TTM regression fix
-
-amdgpu:
-- Pageflip fix for navi1x with 5 or 6 displays
-- Remove experimental flag for Arcturus
-- Fix regression in atomic commit tail rework
-
-i915:
-- Fix tgl power gating issue
-- Memory leak fixes
-- Selftest fixes
-- Display bpc fix
-- Fix TGL MOCS for PTE tracking
-
-dw-hdmi:
-- probing fix
-
-sun4i:
-- probing fix
-The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576=
-:
-
-  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-11-20-2
-
-for you to fetch changes up to 6600f9d52213b5c3455481b5c9e61cf5e305c0e6:
-
-  Merge tag 'drm-intel-fixes-2020-11-19' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2020-11-20
-11:21:54 +1000)
-
-----------------------------------------------------------------
-drm fixes for v5.10-rc5
-
-core:
-- vram helper TTM regression fix
-
-amdgpu:
-- Pageflip fix for navi1x with 5 or 6 displays
-- Remove experimental flag for Arcturus
-- Fix regression in atomic commit tail rework
-
-i915:
-- Fix tgl power gating issue
-- Memory leak fixes
-- Selftest fixes
-- Display bpc fix
-- Fix TGL MOCS for PTE tracking
-
-dw-hdmi:
-- probing fix
-
-sun4i:
-- probing fix
-
-----------------------------------------------------------------
-Alex Deucher (2):
-      drm/amd/display: Add missing pflip irq for dcn2.0
-      drm/amdgpu: remove experimental flag from arcturus
-
-Chris Wilson (2):
-      drm/i915/gt: Remember to free the virtual breadcrumbs
-      drm/i915/gt: Fixup tgl mocs for PTE tracking
-
-Colin Xu (1):
-      drm/i915/gvt: Temporarily disable vfio_edid for BXT/APL
-
-Dave Airlie (3):
-      Merge tag 'amd-drm-fixes-5.10-2020-11-18' of
-git://people.freedesktop.org/~agd5f/linux into drm-fixes
-      Merge tag 'drm-misc-fixes-2020-11-19' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-      Merge tag 'drm-intel-fixes-2020-11-19' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-
-Jonathan Liu (1):
-      drm: bridge: dw-hdmi: Avoid resetting force in the detect function
-
-Maxime Ripard (2):
-      drm/sun4i: backend: Fix probe failure with multiple backends
-      Merge tag 'drm/sun4i-dma-fix-pull-request' of
-ssh://gitolite.kernel.org/.../mripard/linux into drm-misc-fixes
-
-Rodrigo Siqueira (1):
-      drm/amd/display: Always get CRTC updated constant values inside
-commit tail
-
-Rodrigo Vivi (2):
-      drm/i915/tgl: Fix Media power gate sequence.
-      Merge tag 'gvt-fixes-2020-11-17' of
-https://github.com/intel/gvt-linux into drm-intel-fixes
-
-Thomas Zimmermann (1):
-      drm/vram-helper: Fix use of top-down placement
-
-Tina Zhang (1):
-      drm/i915/gvt: Set ENHANCED_FRAME_CAP bit
-
-Tvrtko Ursulin (1):
-      drm/i915: Avoid memory leak with more than 16 workarounds on a list
-
-Ville Syrj=C3=A4l=C3=A4 (1):
-      drm/i915: Handle max_bpc=3D=3D16
-
-Xiongfeng Wang (2):
-      drm/i915/gvt: return error when failing to take the module reference
-      drm/sun4i: dw-hdmi: fix error return code in sun8i_dw_hdmi_bind()
-
-Zhang Xiaoxu (2):
-      drm/i915/selftests: Fix wrong return value of perf_series_engines()
-      drm/i915/selftests: Fix wrong return value of perf_request_latency()
-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |  8 ++++----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  3 ++-
- .../amd/display/dc/irq/dcn20/irq_service_dcn20.c   |  4 ++--
- drivers/gpu/drm/bridge/synopsys/dw-hdmi.c          |  6 ------
- drivers/gpu/drm/drm_gem_vram_helper.c              |  2 +-
- drivers/gpu/drm/i915/display/intel_display.c       |  3 ++-
- drivers/gpu/drm/i915/gt/intel_lrc.c                |  1 +
- drivers/gpu/drm/i915/gt/intel_mocs.c               |  5 +++--
- drivers/gpu/drm/i915/gt/intel_rc6.c                | 22 +++++++++++++++++-=
-----
- drivers/gpu/drm/i915/gt/intel_workarounds.c        |  4 +++-
- drivers/gpu/drm/i915/gvt/display.c                 |  2 +-
- drivers/gpu/drm/i915/gvt/kvmgt.c                   |  4 +++-
- drivers/gpu/drm/i915/gvt/vgpu.c                    |  3 ++-
- drivers/gpu/drm/i915/i915_reg.h                    | 12 +++++-------
- drivers/gpu/drm/i915/intel_pm.c                    | 13 -------------
- drivers/gpu/drm/i915/selftests/i915_request.c      |  8 ++++++--
- drivers/gpu/drm/sun4i/sun4i_backend.c              |  8 +++++++-
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c              |  1 +
- 18 files changed, 60 insertions(+), 49 deletions(-)
+-- 
+Pavel Begunkov
