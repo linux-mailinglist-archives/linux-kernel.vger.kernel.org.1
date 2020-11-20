@@ -2,76 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45F82B9FA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E77A2B9FAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgKTBWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 20:22:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725936AbgKTBWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:22:07 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E467922254;
-        Fri, 20 Nov 2020 01:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1605835326;
-        bh=oyL8tyDHbJ3qIIoumYURc5U/JKtxezYzrlsKEz9We3g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=06OIwS6dO1uCJbzpKkAfU0LgV6NR0sEh63PDccOurGJc8jcYZca+MbtftmA4ozfT1
-         +XWNisle68uETojyIOjBOHcLdc5F81GbfN4/OJEnDpwW/QdD7GwGISM0/GjwiJ3A9K
-         lKnSoOzPVM7CBZkxQMlPAerewzNfZHktmX2nl7Go=
-Date:   Thu, 19 Nov 2020 17:22:04 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Nitin Gupta <nigupta@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH v6 0/2] Control over userfaultfd kernel-fault handling
-Message-Id: <20201119172204.6787046c9036d0bbdcbc2dfc@linux-foundation.org>
-In-Reply-To: <CA+EESO7N7gFkG_Vqy5j1oCZif8RaiCJ146GrQAKq3P1SCUi+ng@mail.gmail.com>
-References: <20201026210052.3775167-1-lokeshgidra@google.com>
-        <CA+EESO7N7gFkG_Vqy5j1oCZif8RaiCJ146GrQAKq3P1SCUi+ng@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726541AbgKTB0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 20:26:35 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8004 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726295AbgKTB0f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 20:26:35 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ccf5P0kYFzhbYS;
+        Fri, 20 Nov 2020 09:26:17 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 20 Nov 2020 09:26:28 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-unisoc@lists.infradead.org>, <linux-serial@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] tty: serial: rad-uart: replace spin_lock_irqsave by spin_lock in hard IRQ
+Date:   Fri, 20 Nov 2020 09:26:53 +0800
+Message-ID: <1605835613-28359-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 12:39:15 -0800 Lokesh Gidra <lokeshgidra@google.com> wrote:
+The code has been in a irq-disabled context since it is hard IRQ. There
+is no necessity to do it again.
 
-> It's been quite some time since this patch-series has received
-> 'Reviewed-by' by Andrea. Please let me know if anything is blocking it
-> from taking forward.
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/tty/serial/rda-uart.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-This series has not been shared with linux-mm@kvack.kernel.org, so many
-of the people who are familiar with userfaultfd will never have seen
-it.
+diff --git a/drivers/tty/serial/rda-uart.c b/drivers/tty/serial/rda-uart.c
+index 85366e0..d6705a0 100644
+--- a/drivers/tty/serial/rda-uart.c
++++ b/drivers/tty/serial/rda-uart.c
+@@ -406,10 +406,9 @@ static void rda_uart_receive_chars(struct uart_port *port)
+ static irqreturn_t rda_interrupt(int irq, void *dev_id)
+ {
+ 	struct uart_port *port = dev_id;
+-	unsigned long flags;
+ 	u32 val, irq_mask;
+ 
+-	spin_lock_irqsave(&port->lock, flags);
++	spin_lock(&port->lock);
+ 
+ 	/* Clear IRQ cause */
+ 	val = rda_uart_read(port, RDA_UART_IRQ_CAUSE);
+@@ -426,7 +425,7 @@ static irqreturn_t rda_interrupt(int irq, void *dev_id)
+ 		rda_uart_send_chars(port);
+ 	}
+ 
+-	spin_unlock_irqrestore(&port->lock, flags);
++	spin_unlock(&port->lock);
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.7.4
 
-Please fix that and resend, and we'll see how it goes?
