@@ -2,132 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BCD2BAF11
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803082BAF17
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729870AbgKTPe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:34:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42446 "EHLO
+        id S1729814AbgKTPgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:36:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728712AbgKTPez (ORCPT
+        with ESMTP id S1728958AbgKTPgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:34:55 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3A9C0613CF;
-        Fri, 20 Nov 2020 07:34:55 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id k27so13408272ejs.10;
-        Fri, 20 Nov 2020 07:34:55 -0800 (PST)
+        Fri, 20 Nov 2020 10:36:14 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1814C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:36:13 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id n11so9085926ota.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:36:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6uOgdlOhVXDU8mZtdZkmcMf4t6d0Tanr16y2zzS03oU=;
-        b=P/JQOoZ9GJdsHvoOcoEjmgKIZzC5EiOKdhx4NiogsPfYx4HPJNmjbRuA9qkmrhuEy4
-         vKgari3Nlo7Oqy3J22JytG/mvFV8DxbXhr9iTX81dS+tfxVL4w4Zn39NR69aeWCtvZJk
-         dCC1qEU+sIAeX5PzmcT7pYvBZRuo8iccG3WbOJCuXdFDtH3E1zOx/nhHN7Cl/YJp+oxW
-         dSS1Xrs9k9FhsTrK6T9RN6N6g33lIrutlb4EO/5kZ61XWLEcHU3Wx8gvvxYaI3jy6oA0
-         +ar9qXeLoALPTdrgdHgA4Q9j0CNh7gfWM+prU3rv1mWRnRk62AJhTfnImnh8BcUAiobX
-         KCKA==
+        d=tyhicks-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W3MInVIKjWz9dTqN1xgW7SjRxytR3xOKiE8bAyltq5E=;
+        b=J7NjtKdRCHvHTwfirbE9SRtnDzo1dy9iGTYkZoW9AVGCpiGYq0q64HAHuOowt0Ilzp
+         sC9dYGbLl2rc1ajfmhHOHR3GrhDhpdADQtxq0t4PiwSQX2XJc6f9HFxufn10cdJeV9og
+         dcjmCFsmEJ3pweYsk35jx+SFlfENDP4ee/XodCZTG1B+pH3mqw11eQ3C2r/Df8EVz1Jk
+         jcOxD0QJ16lx0W5duSn2i+PPx9lrbUu2LCVAXuNzpEOj67w6YFQKaItarAbnqotnpzL4
+         11YX38IiHib3ma2qVqsTfmeYcNX1TZSBaU6Ke9bDEvPKDGFk7YRKHzH8UkrtaPylhSY7
+         tDAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6uOgdlOhVXDU8mZtdZkmcMf4t6d0Tanr16y2zzS03oU=;
-        b=sQuIzGyzULzCXi+imhnAo4xm7y+Qwh9GLVaTaPKWdO6CTeodH/H9l75e2puPcac4dq
-         GiHxXCr1i/1VVnImbq1VCRalxxmX6AFkRGIahKhO1O7z4qvj+b3AVkDHKs1HIHGj/JNx
-         xg+Sybc0NQURk2wiMZLN2KzDoDKiRo27Iy6FCvGa8L+jwAc6X1oO38RTXADbPSOZQV+/
-         XsI3MQseFj6KlQ/q1i+1MtTmq5JnINP74nINhOSGUTsJX2rOa/HPceWlJFmkiZHCGFY/
-         hUL1XBauMDboO1V5gVC2NnGMEwFyoH11f38EI1zrg0TS5TTk97H5ID6A6U/YNyfBbJAB
-         f6VA==
-X-Gm-Message-State: AOAM531z7Nzv9IVaf6+YZ7vrkzBJ4oTmRqIIWBxiLGYzVeYeRgPAg9e1
-        Z59UAuve0MYwVlMepj0v27TkTL6waOg=
-X-Google-Smtp-Source: ABdhPJxHXB4MelqKTDMQcZu1qmvfW5ohwl6kGbGXpJdcwVOgcaXQ+5biEQtWEPvr2Ui5BwBW5bs0tw==
-X-Received: by 2002:a17:907:3da3:: with SMTP id he35mr6753591ejc.9.1605886493516;
-        Fri, 20 Nov 2020 07:34:53 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.googlemail.com with ESMTPSA id cw15sm1260640ejb.64.2020.11.20.07.34.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 07:34:52 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Update email address for Sean Christopherson
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org
-References: <20201119183707.291864-1-sean.kvm@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2d20bbfa-4ae0-6305-a502-852d6e70488a@redhat.com>
-Date:   Fri, 20 Nov 2020 16:34:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W3MInVIKjWz9dTqN1xgW7SjRxytR3xOKiE8bAyltq5E=;
+        b=Agt192mRmJ/AiKjt+ny0JOPeBlnsyIC539+YqIoD80vKlkntERVRkc1BR50rHtI1p0
+         9Mb7nZppoh9l2k7eMSThqnoXWFtFg/9J8z84QGSQpmhhmuA3s3ceaCEcqHJhCHfiU4y3
+         Y1+CYP53weN1raeTae+Du4Vi32Wnn/Cszv5I+eviDeCQfAFLuKHGdzAvBuZaRJZC0pTI
+         Si/zdOjlH0dXc6l+2YgMzbY5bt7retP2ZenOC4mCxu4PjDkxIZudjeBOFan41E8lImMj
+         kxYyyg7NZbzoaOgJLBsqPrIMaiCM/zTc6H+iTFnEkzrS2TopQRQRjZDSR/khI29C1+aY
+         c/fQ==
+X-Gm-Message-State: AOAM530mvta9LkBDRm11QcoA8vsx2zziG1pU7F5Vc/yGzZqhT8irfv9s
+        TppqN6DU/LirudhZuXojpzMcRw==
+X-Google-Smtp-Source: ABdhPJwYLyVPxmwaoKP6Kgl+t25DK17pv2lFelWU4fOaV59/QK4oWVo7v8aVdTX6m5QZwpO383FGjw==
+X-Received: by 2002:a9d:7d14:: with SMTP id v20mr13389184otn.106.1605886573387;
+        Fri, 20 Nov 2020 07:36:13 -0800 (PST)
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net. [162.237.133.238])
+        by smtp.gmail.com with ESMTPSA id t199sm1833383oif.25.2020.11.20.07.36.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 07:36:12 -0800 (PST)
+Date:   Fri, 20 Nov 2020 09:35:59 -0600
+From:   Tyler Hicks <code@tyhicks.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] seccomp: Remove bogus __user annotations
+Message-ID: <20201120153559.GA4119@sequoia>
+References: <20201120015913.1375667-1-jannh@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201119183707.291864-1-sean.kvm@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120015913.1375667-1-jannh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/11/20 19:37, Sean Christopherson wrote:
-> From: Sean Christopherson <seanjc@google.com>
+Hey Jann - Thanks for cleaning this up!
+
+On 2020-11-20 02:59:13, Jann Horn wrote:
+> Buffers that are passed to read_actions_logged() and write_actions_logged()
+> are in kernel memory; the sysctl core takes care of copying from/to
+> userspace.
 > 
-> Update my email address to one provided by my new benefactor.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Wanpeng Li <wanpengli@tencent.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: kvm@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Fixes: 0ddec0fc8900 ("seccomp: Sysctl to configure actions that are allowed to be logged")
+
+After tracing back through the code, I was struggling to understand why
+I thought the __user annotation was needed back then. It turns out that
+__user was correct when I wrote 0ddec0fc8900 and that the Fixes tag
+should be changed to this:
+
+ Fixes: 32927393dc1c ("sysctl: pass kernel pointers to ->proc_handler")
+
+If you agree, please adjust and resubmit with:
+
+ Reviewed-by: Tyler Hicks <code@tyhicks.com>
+
+Thank you!
+
+Tyler
+
+> Signed-off-by: Jann Horn <jannh@google.com>
 > ---
-> Resorted to sending this via a private dummy account as getting my corp
-> email to play nice with git-sendemail has been further delayed, and I
-> assume y'all are tired of getting bounces.
+>  kernel/seccomp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
->   .mailmap    | 1 +
->   MAINTAINERS | 2 +-
->   2 files changed, 2 insertions(+), 1 deletion(-)
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 8ad7a293255a..c2bff3561846 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -1968,7 +1968,7 @@ static bool seccomp_actions_logged_from_names(u32 *actions_logged, char *names)
+>  	return true;
+>  }
+>  
+> -static int read_actions_logged(struct ctl_table *ro_table, void __user *buffer,
+> +static int read_actions_logged(struct ctl_table *ro_table, void *buffer,
+>  			       size_t *lenp, loff_t *ppos)
+>  {
+>  	char names[sizeof(seccomp_actions_avail)];
+> @@ -1986,7 +1986,7 @@ static int read_actions_logged(struct ctl_table *ro_table, void __user *buffer,
+>  	return proc_dostring(&table, 0, buffer, lenp, ppos);
+>  }
+>  
+> -static int write_actions_logged(struct ctl_table *ro_table, void __user *buffer,
+> +static int write_actions_logged(struct ctl_table *ro_table, void *buffer,
+>  				size_t *lenp, loff_t *ppos, u32 *actions_logged)
+>  {
+>  	char names[sizeof(seccomp_actions_avail)];
 > 
-> diff --git a/.mailmap b/.mailmap
-> index 1e14566a3d56..a0d1685a165a 100644
-> --- a/.mailmap
-> +++ b/.mailmap
-> @@ -287,6 +287,7 @@ Santosh Shilimkar <ssantosh@kernel.org>
->   Sarangdhar Joshi <spjoshi@codeaurora.org>
->   Sascha Hauer <s.hauer@pengutronix.de>
->   S.Çağlar Onur <caglar@pardus.org.tr>
-> +Sean Christopherson <seanjc@google.com> <sean.j.christopherson@intel.com>
->   Sean Nyekjaer <sean@geanix.com> <sean.nyekjaer@prevas.dk>
->   Sebastian Reichel <sre@kernel.org> <sebastian.reichel@collabora.co.uk>
->   Sebastian Reichel <sre@kernel.org> <sre@debian.org>
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4a34b25ecc1f..0478d9ef72fc 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9662,7 +9662,7 @@ F:	tools/testing/selftests/kvm/s390x/
->   
->   KERNEL VIRTUAL MACHINE FOR X86 (KVM/x86)
->   M:	Paolo Bonzini <pbonzini@redhat.com>
-> -R:	Sean Christopherson <sean.j.christopherson@intel.com>
-> +R:	Sean Christopherson <seanjc@google.com>
->   R:	Vitaly Kuznetsov <vkuznets@redhat.com>
->   R:	Wanpeng Li <wanpengli@tencent.com>
->   R:	Jim Mattson <jmattson@google.com>
+> base-commit: 4d02da974ea85a62074efedf354e82778f910d82
+> -- 
+> 2.29.2.454.gaff20da3a2-goog
 > 
-
-Applied, thanks.
-
-Paolo
