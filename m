@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449DB2BA0C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79552BA0CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727216AbgKTDGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 22:06:21 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:51536 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726485AbgKTDGV (ORCPT
+        id S1726398AbgKTDIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 22:08:35 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2070 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726122AbgKTDIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 22:06:21 -0500
-X-UUID: 2a29a68fdc314804a1f67d0599b59c43-20201120
-X-UUID: 2a29a68fdc314804a1f67d0599b59c43-20201120
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <jiaxin.yu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 130192700; Fri, 20 Nov 2020 11:06:18 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 20 Nov 2020 11:06:17 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 20 Nov 2020 11:06:16 +0800
-From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
-To:     <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>,
-        <tzungbi@google.com>, <alsa-devel@alsa-project.org>,
-        <robh+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <shane.chien@mediatek.com>, <Trevor.Wu@mediatek.com>,
-        Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: [PATCH 2/2] dt-bindings: mediatek: mt6359: remove unused property for mt6359
-Date:   Fri, 20 Nov 2020 11:06:13 +0800
-Message-ID: <1605841573-1442-3-git-send-email-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1605841573-1442-1-git-send-email-jiaxin.yu@mediatek.com>
-References: <1605841573-1442-1-git-send-email-jiaxin.yu@mediatek.com>
+        Thu, 19 Nov 2020 22:08:35 -0500
+Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CchLr07SgzVqM7;
+        Fri, 20 Nov 2020 11:08:04 +0800 (CST)
+Received: from [10.140.157.68] (10.140.157.68) by
+ dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 20 Nov 2020 11:08:32 +0800
+Subject: Re: [v3] clk: hisilicon: refine hi3620_mmc_clk_init() and fix memory
+ leak issues
+To:     Markus Elfring <Markus.Elfring@web.de>, <linux-clk@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Julia Lawall <julia.lawall@lip6.fr>
+References: <20201112192214.48926-1-gengdongjiu@huawei.com>
+ <ef1eac81-c4f9-ca4d-f056-3cdbddcaad73@web.de>
+ <5b976ad4-43e2-a021-6a93-25642b44cec5@huawei.com>
+ <393a7eca-e6a0-ddf8-e0aa-ca9121acf4f3@web.de>
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+Message-ID: <ad55207f-5898-c967-fe98-29ea6e9ace0a@huawei.com>
+Date:   Fri, 20 Nov 2020 11:08:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: DDC9A826DC1B14BDD756F49287CC87C9B10F08EA4E9D16A937B0F009B1940D902000:8
-X-MTK:  N
+In-Reply-To: <393a7eca-e6a0-ddf8-e0aa-ca9121acf4f3@web.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.140.157.68]
+X-ClientProxiedBy: dggeme703-chm.china.huawei.com (10.1.199.99) To
+ dggeme755-chm.china.huawei.com (10.3.19.101)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 08651373808e16b01d3b12207f52504c17b6774c.
-("dt-bindings: mediatek: mt6359: Add new property for mt6359")
+On 2020/11/19 22:40, Markus Elfring wrote:
+>> How about we adjust such a function call in another series patches?
+> 
+> You can try to offer desirable changes also in a corresponding patch series as usual.
 
-Remove unused property "LDO_VAUD18-supply" in mt6359codec.
+sure, ok
 
-Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
----
- Documentation/devicetree/bindings/sound/mt6359.yaml | 9 ---------
- 1 file changed, 9 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/mt6359.yaml b/Documentation/devicetree/bindings/sound/mt6359.yaml
-index ef027c79032f..a54f466f769d 100644
---- a/Documentation/devicetree/bindings/sound/mt6359.yaml
-+++ b/Documentation/devicetree/bindings/sound/mt6359.yaml
-@@ -17,11 +17,6 @@ description: |
-   Must be a child node of PMIC wrapper.
- 
- properties:
--  LDO_VAUD18-supply:
--    $ref: /schemas/types.yaml#/definitions/phandle
--    description: |
--      Regulator of LDO VAUD18 at 1.8V.
--
-   mediatek,dmic-mode:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description: |
-@@ -54,15 +49,11 @@ properties:
-     description: |
-       Specifies the type of mic type connected to adc2
- 
--required:
--  - LDO_VAUD18-supply
--
- additionalProperties: false
- 
- examples:
-   - |
-     mt6359codec: mt6359codec {
--      LDO_VAUD18-supply = <&mt6359p_vaud18_reg>;
-       mediatek,dmic-mode = <0>;
-       mediatek,mic-type-0 = <2>;
-     };
--- 
-2.18.0
-
+> 
+> Regards,
+> Markus
+> .
+> 
