@@ -2,127 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B5A2BA994
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8E62BA961
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbgKTLua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:50:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727770AbgKTLu2 (ORCPT
+        id S1727457AbgKTLmw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Nov 2020 06:42:52 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:39519 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727401AbgKTLmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:50:28 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D574C061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 03:50:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=RhndaecUjQL70Aq1jqBoMpeXuVqONfb2qRNUEdHoCpQ=; b=AEocwjmO9uJtnNcjYJJpUpcLr9
-        NY9vP3rz9Q7PUa68znr0btj3sHeCh3XCjDqJQjOqPMpa2Eq+JJtYi3+FfPe7Z/87aER+pQanrKZbn
-        4n6MLYv85ZW0cB1s4wcyTShENWcN+QSmgJGrsdnfio92dHxX1W4b8w6TmDOIgeOT2MqJ+b7Jhe9yF
-        LVeo4CYumXZ08uX3bx88HaXBjXA+i49ezq3f8smaV4va07Rh3mi8DHXnHh0CAaS56D22vEPDfY2Si
-        r5Cd3hSxfQE+ns/xWCD0LsBy0LIUjxZEuF3oiA2x6LNiiKLN4QogzS0YU5mIMmxzRJuTtrjKi2nKi
-        FTbKVRqA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kg4vl-0003x9-Uv; Fri, 20 Nov 2020 11:50:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0AE29305C16;
-        Fri, 20 Nov 2020 12:50:20 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id E92302B06A144; Fri, 20 Nov 2020 12:50:19 +0100 (CET)
-Message-ID: <20201120114925.652731270@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 20 Nov 2020 12:41:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     rafael@kernel.org, viresh.kumar@linaro.org, mingo@kernel.org
-Cc:     x86@kernel.org, mark.rutland@arm.com, will@kernel.org,
-        svens@linux.ibm.com, linux-kernel@vger.kernel.org,
-        peterz@infradead.org
-Subject: [PATCH 2/2] intel_idle: Fix intel_idle() vs tracing
-References: <20201120114145.197714127@infradead.org>
+        Fri, 20 Nov 2020 06:42:52 -0500
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id AE8DE240009;
+        Fri, 20 Nov 2020 11:42:47 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 12:42:46 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v3 23/23] mtd: devices: powernv_flash: Add function
+ names to headers and fix 'dev'
+Message-ID: <20201120124246.4aee04d6@xps13>
+In-Reply-To: <20201120075000.GA1869941@dell>
+References: <20201109182206.3037326-24-lee.jones@linaro.org>
+        <20201119210716.25046-1-miquel.raynal@bootlin.com>
+        <20201120075000.GA1869941@dell>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cpuidle->enter() callbacks should not call into tracing because RCU
-has already been disabled. Instead of doing the broadcast thing
-itself, simply advertise to the cpuidle core that those states stop
-the timer.
+Hello,
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- drivers/idle/intel_idle.c |   37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+Lee Jones <lee.jones@linaro.org> wrote on Fri, 20 Nov 2020 07:50:00
++0000:
 
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -126,26 +126,9 @@ static __cpuidle int intel_idle(struct c
- 	struct cpuidle_state *state = &drv->states[index];
- 	unsigned long eax = flg2MWAIT(state->flags);
- 	unsigned long ecx = 1; /* break on interrupt flag */
--	bool tick;
--
--	if (!static_cpu_has(X86_FEATURE_ARAT)) {
--		/*
--		 * Switch over to one-shot tick broadcast if the target C-state
--		 * is deeper than C1.
--		 */
--		if ((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK) {
--			tick = true;
--			tick_broadcast_enter();
--		} else {
--			tick = false;
--		}
--	}
- 
- 	mwait_idle_with_hints(eax, ecx);
- 
--	if (!static_cpu_has(X86_FEATURE_ARAT) && tick)
--		tick_broadcast_exit();
--
- 	return index;
- }
- 
-@@ -1460,6 +1443,23 @@ static bool __init intel_idle_verify_cst
- 	return true;
- }
- 
-+static bool __init intel_idle_state_needs_timer_stop(struct cpuidle_state *state)
-+{
-+	unsigned long eax = flg2MWAIT(state->flags);
-+
-+	if (boot_cpu_has(X86_FEATURE_ARAT))
-+		return false;
-+
-+	/*
-+	 * Switch over to one-shot tick broadcast if the target C-state
-+	 * is deeper than C1.
-+	 */
-+	if ((eax >> MWAIT_SUBSTATE_SIZE) & MWAIT_CSTATE_MASK)
-+		return true;
-+
-+	return false;
-+}
-+
- static void __init intel_idle_init_cstates_icpu(struct cpuidle_driver *drv)
- {
- 	int cstate;
-@@ -1507,6 +1507,9 @@ static void __init intel_idle_init_cstat
- 		     !(cpuidle_state_table[cstate].flags & CPUIDLE_FLAG_ALWAYS_ENABLE)))
- 			drv->states[drv->state_count].flags |= CPUIDLE_FLAG_OFF;
- 
-+		if (intel_idle_state_needs_timer_stop(&drv->states[drv->state_count]))
-+			drv->states[drv->state_count].flags |= CPUIDLE_FLAG_TIMER_STOP;
-+
- 		drv->state_count++;
- 	}
- 
+> On Thu, 19 Nov 2020, Miquel Raynal wrote:
+> 
+> > On Mon, 2020-11-09 at 18:22:06 UTC, Lee Jones wrote:  
+> > > Fixes the following W=1 kernel build warning(s):
+> > > 
+> > >  drivers/mtd/devices/powernv_flash.c:129: warning: Cannot understand  * @mtd: the device
+> > >  drivers/mtd/devices/powernv_flash.c:145: warning: Cannot understand  * @mtd: the device
+> > >  drivers/mtd/devices/powernv_flash.c:161: warning: Cannot understand  * @mtd: the device
+> > >  drivers/mtd/devices/powernv_flash.c:184: warning: Function parameter or member 'dev' not described in 'powernv_flash_set_driver_info'
+> > > 
+> > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > Cc: Richard Weinberger <richard@nod.at>
+> > > Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> > > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > > Cc: Paul Mackerras <paulus@samba.org>
+> > > Cc: linux-mtd@lists.infradead.org
+> > > Cc: linuxppc-dev@lists.ozlabs.org
+> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>  
+> > 
+> > Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.  
+> 
+> Superstar.  Thanks for your help Miquel.
+> 
 
+haha :) well it was late, I applied these patches to the wrong branch,
+I just moved them to the mtd/next branch, sorry for the push -f :)
 
+Cheers,
+Miquèl
