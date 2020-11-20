@@ -2,611 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FE42BAB01
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20CA22BAB17
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgKTNVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 08:21:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727263AbgKTNVM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:21:12 -0500
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC10C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:21:10 -0800 (PST)
-Received: by mail-vs1-xe44.google.com with SMTP id y78so4973796vsy.6
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:21:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YK56yKmfXToTHG1Aog80N3QGp6B5xwGAT/pojMG3X24=;
-        b=kPvliV37SX9Aw4HJu6bnVq56Addz0VdnBN5IcECmXREQ2HsMxa+0yfSkfpvqJrSamM
-         ZDhjuImgApE5HiiqSO/QeWJuEnvx4iZUACq3vcEJoZBfRr2WnehG75mRRDpHsGH4kcP4
-         AK7pZGgPdhszL+w3AAbfAJ2DtdqV+ly3a8ll6KP11GCzL0bXWEopH7LS5aXaHmsBb8Ob
-         adlohVJGXTceEyfyDveW4OsYN0DRTJu/VF0f4s3wS83a3ioTTbPN/SeQVSYgxEc3dtfG
-         zvgcpoZZKv9jU6z5ww4rRXpVcxJyJz55gqm41AmvkPlR9Qjqxughd0YBDxuKxbj4AYtd
-         i+zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YK56yKmfXToTHG1Aog80N3QGp6B5xwGAT/pojMG3X24=;
-        b=TmXu1PWqUGtmE4BJi+gOIobPyv0TldhfC6+wxrb8lUiHLA+dXvlpdLSfFrP1qU6//u
-         GiaMIJZMiaEi+JRlDuV7ClWzTTDjc54KD3DDLwFHI0LXmqRDLBaU17BrLmgBZVnW8wZ5
-         FQSvKY5Dno7O32heXgoXo/bgw574buGzSYbg+qUXlqJCWzk3wRYdQUvjdBJNf2FKJNm2
-         g6X/ThfWGkeno/dvP6a0x2sZ/JWs6ViCveareK+NTrcnB60IQtdqztQIVkVKFFVI5rPG
-         iKcl3b6yZHl+K/xyaJypWLKnw08SLmtStUcl0fKv59EwQpZ1y/ViyFBByUSuEVxWr69y
-         D9gg==
-X-Gm-Message-State: AOAM53256pm88GRUzuHTSlcpkZKSoifJX1b8oHrYj4u0Xmtn8u29DvSX
-        1u8kfEuR4FUY1cUAM7agcbDeB3cE44siOKm72CvYsw==
-X-Google-Smtp-Source: ABdhPJzTngCZGBFx8AT7Z9dUTUDmNC7cmaIA8Odzur7G2W+hDQ+CaVo7eR3GJBrRlfdkgZ4ax4WMYoNqgX6ePB87dLE=
-X-Received: by 2002:a67:8c44:: with SMTP id o65mr12033513vsd.55.1605878469279;
- Fri, 20 Nov 2020 05:21:09 -0800 (PST)
+        id S1727160AbgKTN0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 08:26:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726719AbgKTN0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 08:26:53 -0500
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03E1E2236F;
+        Fri, 20 Nov 2020 13:26:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605878812;
+        bh=+RFM63VBDWH7JjmXp5qfMg6s8bW4Hxl04yTQdjzQX1Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NcwbmeHrDlmpvdoSJgqy4B5TDidwyTlm7Y65tjq3ZxcTxygP0cuTMkuZf9jIAMHGn
+         VDktvbmxrqsxq+a97VO4tbwM+1A82rtlLtk5PzpEf41Kt0a50aHolJivCO57J/89+Q
+         1G6hFWfh7mU6DB7oWcVcB2L/zQTHywxnTp6whhpI=
+Received: by mail-ot1-f52.google.com with SMTP id l36so8687244ota.4;
+        Fri, 20 Nov 2020 05:26:51 -0800 (PST)
+X-Gm-Message-State: AOAM533GR1tECVkwzZBm7mTvkHFk+gqRvWGizV39lb/P+bWOVUvJWKZm
+        NphEReH4LFthNeD21np6b6bkKjYwSaGAfQN9qEQ=
+X-Google-Smtp-Source: ABdhPJycdOt0E7taH95kL9xNWmd2z1tmptCoguqnNm7BPcbFhkWfH7eyh/Z4r9uWCWLSQqLWhUFBDe25sXtuyM0Xbk0=
+X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr12449744otc.305.1605878811162;
+ Fri, 20 Nov 2020 05:26:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20201112062422.32212-1-bbudiredla@marvell.com> <20201112062422.32212-2-bbudiredla@marvell.com>
-In-Reply-To: <20201112062422.32212-2-bbudiredla@marvell.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 20 Nov 2020 14:20:32 +0100
-Message-ID: <CAPDyKFqZij1_aZZs3EeEuNob37WsGYN+6N52H2N0nTzM427j3g@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] mmc: Support kmsg dumper based on pstore/blk
-To:     Bhaskara Budiredla <bbudiredla@marvell.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, sgoutham@marvell.com,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201109134128.GA5596@shinobu> <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
+ <20201109164529.GA28710@syed.domain.name> <20201109171140.GA14045@shinobu>
+ <20201109172220.GI4077@smile.fi.intel.com> <20201109173107.GA14643@shinobu>
+ <fe1cfe4c-e4d7-f9fb-1218-7a1d48e6f68a@xilinx.com> <20201110123538.GA3193@shinobu>
+ <CACG_h5p84sKjDnK5xYRNjGnRzwsbjZ-76P-cC13LKx=7x=4KqQ@mail.gmail.com>
+ <20201110174316.GA12192@shinobu> <20201110220004.GA25801@syed> <CACG_h5orr+smPGFdHbEDAgYS=RUJYZCvf10KjGkkvS9rkbzQFA@mail.gmail.com>
+In-Reply-To: <CACG_h5orr+smPGFdHbEDAgYS=RUJYZCvf10KjGkkvS9rkbzQFA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 20 Nov 2020 14:26:35 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a07ohL40kSgj1EJ-EuQk5HUGyVGXE1acsg50PiKf7j=mA@mail.gmail.com>
+Message-ID: <CAK8P3a07ohL40kSgj1EJ-EuQk5HUGyVGXE1acsg50PiKf7j=mA@mail.gmail.com>
+Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
+ and _set_value
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 at 07:24, Bhaskara Budiredla <bbudiredla@marvell.com> wrote:
+On Fri, Nov 13, 2020 at 5:52 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+> On Wed, Nov 11, 2020 at 3:30 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+> > On Tue, Nov 10, 2020 at 12:43:16PM -0500, William Breathitt Gray wrote:
+> > > On Tue, Nov 10, 2020 at 10:52:42PM +0530, Syed Nayyar Waris wrote:
+> > > > On Tue, Nov 10, 2020 at 6:05 PM William Breathitt Gray
+> > > > <vilhelm.gray@gmail.com> wrote:
+> > > > >
+> > > > > On Tue, Nov 10, 2020 at 11:02:43AM +0100, Michal Simek wrote:
+> > > > > >
+> > > > > >
+> > > > > > On 09. 11. 20 18:31, William Breathitt Gray wrote:
+> > > > > > > On Mon, Nov 09, 2020 at 07:22:20PM +0200, Andy Shevchenko wrote:
+> > > > > > >> On Mon, Nov 09, 2020 at 12:11:40PM -0500, William Breathitt Gray wrote:
+> > > > > > >>> On Mon, Nov 09, 2020 at 10:15:29PM +0530, Syed Nayyar Waris wrote:
+> > > > > > >>>> On Mon, Nov 09, 2020 at 03:41:53PM +0100, Arnd Bergmann wrote:
+> > > > > > >>
+> > > > > > >> ...
+> > > > > > >>
+> > > > > > >>>>  static inline void bitmap_set_value(unsigned long *map,
+> > > > > > >>>> -                                    unsigned long value,
+> > > > > > >>>> +                                    unsigned long value, const size_t length,
+> > > > > > >>>>                                      unsigned long start, unsigned long nbits)
+> > > > > > >>>>  {
+> > > > > > >>>>          const size_t index = BIT_WORD(start);
+> > > > > > >>>> @@ -15,6 +15,10 @@ static inline void bitmap_set_value(unsigned long *map,
+> > > > > > >>>>          } else {
+> > > > > > >>>>                  map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
+> > > > > > >>>>                  map[index + 0] |= value << offset;
+> > > > > > >>>> +
+> > > > > > >>>> +               if (index + 1 >= length)
+> > > > > > >>>> +                       __builtin_unreachable();
+> > > > > > >>>> +
+> > > > > > >>>>                  map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> > > > > > >>>>                  map[index + 1] |= value >> space;
+> > > > > > >>>>          }
+> > > > > > >>>
+> > > > > > >>> Hi Syed,
+> > > > > > >>>
+> > > > > > >>> Let's rename 'length' to 'nbits' as Arnd suggested, and rename 'nbits'
+> > > > > > >>> to value_width.
+> > > > > > >>
+> > > > > > >> length here is in longs. I guess this is the point of entire patch.
+> > > > > > >
+> > > > > > > Ah yes, this should become 'const unsigned long nbits' and represent the
+> > > > > > > length of the bitmap in bits and not longs.
+> > > >
+> > > > Hi William, Andy and All,
+> > > >
+> > > > Thank You for reviewing. I was looking into the review comments and I
+> > > > have a question on the above.
+> > > >
+> > > > Actually, in bitmap_set_value(), the intended comparison is to be made
+> > > > between 'index + 1' and 'length' (which is now renamed as 'nbits').
+> > > > That is, the comparison would look-like as follows:
+> > > > if (index + 1 >= nbits)
+> > > >
+> > > > The 'index' is getting populated with BIT_WORD(start).
+> > > > The 'index' variable in above is the actual index of the bitmap array,
+> > > > while in previous mail it is suggested to use 'nbits' which represent
+> > > > the length of the bitmap in bits and not longs.
+> > > >
+> > > > Isn't it comparing two different things? index of array (not the
+> > > > bit-wise-length) on left hand side and nbits (bit-wise-length) on
+> > > > right hand side?
+> > > >
+> > > > Have I misunderstood something? If yes, request to clarify.
+> > > >
+> > > > Or do I have to first divide 'nbits' by BITS_PER_LONG and then compare
+> > > > it with 'index + 1'? Something like this?
+> > > >
+> > > > Regards
+> > > > Syed Nayyar Waris
+> > >
+> > > The array elements of the bitmap memory region are abstracted away for
+> > > the covenience of the users of the bitmap_* functions; the driver
+> > > authors are able to treat their bitmaps as just a set of contiguous bits
+> > > and not worry about where the division between array elements happen.
+> > >
+> > > So to match the interface of the other bitmap_* functions, you should
+> > > take in nbits and figure out the actual array length by dividing by
+> > > BITS_PER_LONG inside bitmap_set_value(). Then you can use your
+> > > conditional check (index + 1 >= length) like you have been doing so far.
+> > >
+> > > William Breathitt Gray
+> >
+> > Hi Arnd,
+> >
+> > Sharing a new version of bitmap_set_value(). Let me know if it looks
+> > good and whether it suppresses the compiler warning.
+> >
+> > The below patch is created against the v12 version of bitmap_set_value().
+> >
+> > -static inline void bitmap_set_value(unsigned long *map,
+> > -                                    unsigned long value,
+> > -                                    unsigned long start, unsigned long nbits)
+> > +static inline void bitmap_set_value(unsigned long *map, unsigned long nbits,
+> > +                                   unsigned long value, unsigned long value_width,
+> > +                                   unsigned long start)
+> >  {
+> > -        const size_t index = BIT_WORD(start);
+> > +        const unsigned long index = BIT_WORD(start);
+> > +        const unsigned long length = BIT_WORD(nbits);
+> >          const unsigned long offset = start % BITS_PER_LONG;
+> >          const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
+> >          const unsigned long space = ceiling - start;
+> >
+> > -        value &= GENMASK(nbits - 1, 0);
+> > +        value &= GENMASK(value_width - 1, 0);
+> >
+> > -        if (space >= nbits) {
+> > -                map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
+> > +        if (space >= value_width) {
+> > +                map[index] &= ~(GENMASK(value_width - 1, 0) << offset);
+> >                  map[index] |= value << offset;
+> >          } else {
+> >                  map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
+> >                  map[index + 0] |= value << offset;
+> > -                map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> > +
+> > +               if (index + 1 >= length)
+> > +                       __builtin_unreachable();
+> > +
+> > +                map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + value_width);
+> >                  map[index + 1] |= value >> space;
+> >          }
+> >  }
+> >
+> >
 >
-> This patch introduces to mmcpstore. The functioning of mmcpstore is
-> is similar to mtdpstore. mmcpstore works on FTL based flash devices
-> whereas mtdpstore works on raw flash devices. When the system crashes,
-> mmcpstore stores the kmsg panic and oops logs to a user specified
-> MMC device.
+> Hi Arnd,
 >
-> It collects the details about the host MMC device through pstore/blk
-> "blkdev" parameter. The user can specify the MMC device in many ways
-> by checking in Documentation/admin-guide/pstore-blk.rst.
->
-> The individual mmc host drivers have to define suitable polling
-> subroutines to write kmsg panic/oops logs through mmcpstore.
+> What do you think of the above solution ( new version of
+> bitmap_set_value() )? Does it look good?
 
-I don't like that changes to host drivers are needed to support this,
-but perhaps there is no other good way!?
+Sorry for the late reply and thanks for continuing to look at solutions.
 
->
-> Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
-> ---
->  drivers/mmc/core/Kconfig     |   7 +
->  drivers/mmc/core/Makefile    |   1 +
->  drivers/mmc/core/block.c     |  20 +++
->  drivers/mmc/core/block.h     |   3 +
->  drivers/mmc/core/core.c      |  24 +++
->  drivers/mmc/core/mmcpstore.c | 318 +++++++++++++++++++++++++++++++++++
->  include/linux/mmc/card.h     |   4 +
->  include/linux/mmc/core.h     |   4 +
->  include/linux/mmc/host.h     |   6 +
->  9 files changed, 387 insertions(+)
->  create mode 100644 drivers/mmc/core/mmcpstore.c
->
-> diff --git a/drivers/mmc/core/Kconfig b/drivers/mmc/core/Kconfig
-> index c12fe13e4b14..cafb367c482d 100644
-> --- a/drivers/mmc/core/Kconfig
-> +++ b/drivers/mmc/core/Kconfig
-> @@ -81,3 +81,10 @@ config MMC_TEST
->           This driver is only of interest to those developing or
->           testing a host driver. Most people should say N here.
->
-> +config MMC_PSTORE
-> +       bool "Log panic/oops to a MMC buffer"
-> +       depends on PSTORE
-> +       depends on PSTORE_BLK
-> +       help
-> +         Backend driver to store the kmsg crash dumps to a user specified MMC
-> +         device. The driver is based on pstore/blk.
-> diff --git a/drivers/mmc/core/Makefile b/drivers/mmc/core/Makefile
-> index 95ffe008ebdf..5f4230b79ac6 100644
-> --- a/drivers/mmc/core/Makefile
-> +++ b/drivers/mmc/core/Makefile
-> @@ -17,4 +17,5 @@ mmc_core-$(CONFIG_DEBUG_FS)   += debugfs.o
->  obj-$(CONFIG_MMC_BLOCK)                += mmc_block.o
->  mmc_block-objs                 := block.o queue.o
->  obj-$(CONFIG_MMC_TEST)         += mmc_test.o
-> +obj-$(CONFIG_MMC_PSTORE)       += mmcpstore.o
->  obj-$(CONFIG_SDIO_UART)                += sdio_uart.o
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 8d3df0be0355..f11c21d60b67 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -2870,6 +2870,21 @@ static void mmc_blk_remove_debugfs(struct mmc_card *card,
->
->  #endif /* CONFIG_DEBUG_FS */
->
-> +#ifdef CONFIG_MMC_PSTORE
-> +sector_t mmc_blk_get_part(struct mmc_card *card, int part_num, sector_t *size)
-> +{
-> +       struct mmc_blk_data *md = dev_get_drvdata(&card->dev);
-> +       struct gendisk *disk = md->disk;
-> +       struct disk_part_tbl *part_tbl = disk->part_tbl;
-> +
-> +       if (part_num < 0 || part_num >= part_tbl->len)
-> +               return 0;
-> +
-> +       *size = part_tbl->part[part_num]->nr_sects << SECTOR_SHIFT;
-> +       return part_tbl->part[part_num]->start_sect;
-> +}
-> +#endif
-> +
->  static int mmc_blk_probe(struct mmc_card *card)
->  {
->         struct mmc_blk_data *md, *part_md;
-> @@ -2913,6 +2928,11 @@ static int mmc_blk_probe(struct mmc_card *card)
->                         goto out;
->         }
->
-> +#ifdef CONFIG_MMC_PSTORE
+I don't really like the idea of having the __builtin_unreachable() in
+there, since that would lead to even worse undefined behavior
+(jumping to a random instruction) than the previous one (writing
+to a random location) when invalid data gets passed.
 
-Avoid using ifdefs in common functions like these, please. I think
-it's more clean to add a stub function and then just call it
-unconditionally here.
+Isn't passing the length of the bitmap sufficient to suppress the
+warning (sorry I did not try myself)? If not, maybe this could
+be a "BUG_ON(index + 1 >= length)" instead of the
+__builtin_unreachable(). That way it would at least crash
+in a well-defined way.
 
-> +       if (mmc_card_mmc(card) || mmc_card_sd(card))
-> +               mmcpstore_card_set(card, md->disk->disk_name);
-> +#endif
-> +
->         /* Add two debugfs entries */
->         mmc_blk_add_debugfs(card, md);
->
-> diff --git a/drivers/mmc/core/block.h b/drivers/mmc/core/block.h
-> index 31153f656f41..2a2b81635508 100644
-> --- a/drivers/mmc/core/block.h
-> +++ b/drivers/mmc/core/block.h
-> @@ -16,5 +16,8 @@ void mmc_blk_mq_recovery(struct mmc_queue *mq);
->  struct work_struct;
->
->  void mmc_blk_mq_complete_work(struct work_struct *work);
-> +#ifdef CONFIG_MMC_PSTORE
-> +sector_t mmc_blk_get_part(struct mmc_card *card, int part_num, sector_t *size);
-> +#endif
->
->  #endif
-> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-> index d42037f0f10d..7cc3d81f6a9a 100644
-> --- a/drivers/mmc/core/core.c
-> +++ b/drivers/mmc/core/core.c
-> @@ -569,6 +569,30 @@ int mmc_cqe_recovery(struct mmc_host *host)
->  }
->  EXPORT_SYMBOL(mmc_cqe_recovery);
->
-> +
-> +#ifdef CONFIG_MMC_PSTORE
-> +/**
-> + *     mmc_wait_for_pstore_req - initiate a blocking mmc request
-> + *     @host: MMC host to start command
-> + *     @mrq: MMC request to start
-> + *
-> + *     Start a new MMC custom command request for a host, and
-> + *     wait for the command to complete based on request data timeout.
-> + */
-> +void mmc_wait_for_pstore_req(struct mmc_host *host, struct mmc_request *mrq)
-> +{
-> +       unsigned int timeout;
-> +
-> +       host->ops->req_cleanup_pending(host);
-> +       mmc_start_request(host, mrq);
-> +
-> +       if (mrq->data) {
-> +               timeout = mrq->data->timeout_ns / NSEC_PER_MSEC;
-> +               host->ops->req_completion_poll(host, timeout);
-> +       }
-> +}
-
-As I said above, I would like to avoid host specific deployments from
-being needed. Is there a way we can avoid this?
-
-> +#endif
-> +
->  /**
->   *     mmc_is_req_done - Determine if a 'cap_cmd_during_tfr' request is done
->   *     @host: MMC host
-> diff --git a/drivers/mmc/core/mmcpstore.c b/drivers/mmc/core/mmcpstore.c
-> new file mode 100644
-> index 000000000000..ffa44c859e10
-> --- /dev/null
-> +++ b/drivers/mmc/core/mmcpstore.c
-> @@ -0,0 +1,318 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/pstore_blk.h>
-> +#include <linux/blkdev.h>
-> +#include <linux/mount.h>
-> +#include <linux/slab.h>
-> +#include <linux/mmc/mmc.h>
-> +#include <linux/mmc/host.h>
-> +#include <linux/mmc/card.h>
-> +#include <linux/scatterlist.h>
-> +#include "block.h"
-> +#include "card.h"
-> +#include "core.h"
-> +
-> +static struct mmcpstore_context {
-> +       char dev_name[BDEVNAME_SIZE];
-> +       int partno;
-> +       sector_t start_sect;
-> +       sector_t size;
-> +       struct pstore_device_info dev;
-> +       struct pstore_blk_config conf;
-> +       struct pstore_blk_info info;
-> +
-> +       char *sub;
-> +       struct mmc_card *card;
-> +       struct mmc_request *mrq;
-> +} oops_cxt;
-> +
-> +static void mmc_prep_req(struct mmc_request *mrq,
-> +               unsigned int sect_offset, unsigned int nsects,
-> +               struct scatterlist *sg, u32 opcode, unsigned int flags)
-> +{
-> +       mrq->cmd->opcode = opcode;
-> +       mrq->cmd->arg = sect_offset;
-> +       mrq->cmd->flags = MMC_RSP_R1 | MMC_CMD_ADTC;
-> +
-> +       if (nsects == 1) {
-> +               mrq->stop = NULL;
-> +       } else {
-> +               mrq->stop->opcode = MMC_STOP_TRANSMISSION;
-> +               mrq->stop->arg = 0;
-> +               mrq->stop->flags = MMC_RSP_R1B | MMC_CMD_AC;
-> +       }
-> +
-> +       mrq->data->blksz = SECTOR_SIZE;
-> +       mrq->data->blocks = nsects;
-> +       mrq->data->flags = flags;
-> +       mrq->data->sg = sg;
-> +       mrq->data->sg_len = 1;
-> +}
-> +
-> +static int mmcpstore_rdwr_req(const char *buf, unsigned int nsects,
-> +                       unsigned int sect_offset, unsigned int flags)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       struct mmc_request *mrq = cxt->mrq;
-> +       struct mmc_card *card = cxt->card;
-> +       struct mmc_host *host = card->host;
-> +       struct scatterlist sg;
-> +       u32 opcode;
-> +
-> +       if (flags == MMC_DATA_READ)
-> +               opcode  = (nsects > 1) ?
-> +                       MMC_READ_MULTIPLE_BLOCK : MMC_READ_SINGLE_BLOCK;
-> +       else
-> +               opcode = (nsects > 1) ?
-> +                       MMC_WRITE_MULTIPLE_BLOCK : MMC_WRITE_BLOCK;
-> +
-> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode, flags);
-> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
-> +       mmc_set_data_timeout(mrq->data, cxt->card);
-> +
-> +       mmc_claim_host(host);
-> +       mmc_wait_for_req(host, mrq);
-> +       mdelay(mrq->data->timeout_ns / NSEC_PER_MSEC);
-> +       mmc_release_host(host);
-> +
-> +       if (mrq->cmd->error) {
-> +               pr_err("Cmd error: %d\n", mrq->cmd->error);
-> +               return mrq->cmd->error;
-> +       }
-> +       if (mrq->data->error) {
-> +               pr_err("Data error: %d\n", mrq->data->error);
-> +               return mrq->data->error;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static ssize_t mmcpstore_write(const char *buf, size_t size, loff_t off)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       int ret;
-> +
-> +       ret = mmcpstore_rdwr_req(buf, (size >> SECTOR_SHIFT),
-> +               cxt->start_sect + (off >> SECTOR_SHIFT), MMC_DATA_WRITE);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return size;
-> +}
-> +
-> +static ssize_t mmcpstore_read(char *buf, size_t size, loff_t off)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       unsigned int sect_off = cxt->start_sect  + (off >> SECTOR_SHIFT);
-> +       unsigned long sects = (cxt->conf.kmsg_size >> SECTOR_SHIFT);
-> +       int ret;
-> +
-> +       if (unlikely(!buf || !size))
-> +               return -EINVAL;
-> +
-> +       ret = mmcpstore_rdwr_req(cxt->sub, sects, sect_off, MMC_DATA_READ);
-> +       if (ret)
-> +               return ret;
-> +       memcpy(buf, cxt->sub, size);
-> +
-> +       return size;
-> +}
-> +
-> +static void mmcpstore_panic_write_req(const char *buf,
-> +               unsigned int nsects, unsigned int sect_offset)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       struct mmc_request *mrq = cxt->mrq;
-> +       struct mmc_card *card = cxt->card;
-> +       struct mmc_host *host = card->host;
-> +       struct scatterlist sg;
-> +       u32 opcode;
-> +
-> +       opcode = (nsects > 1) ? MMC_WRITE_MULTIPLE_BLOCK : MMC_WRITE_BLOCK;
-> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode, MMC_DATA_WRITE);
-> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
-> +       mmc_set_data_timeout(mrq->data, cxt->card);
-> +
-> +       mmc_claim_host(host);
-> +       mmc_wait_for_pstore_req(host, mrq);
-> +       mmc_release_host(card->host);
-> +}
-> +
-> +static ssize_t mmcpstore_panic_write(const char *buf, size_t size, loff_t off)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +
-> +       mmcpstore_panic_write_req(buf, (size >> SECTOR_SHIFT),
-> +                       cxt->start_sect + (off >> SECTOR_SHIFT));
-> +       return size;
-> +}
-> +
-> +static struct block_device *mmcpstore_open_backend(const char *device)
-> +{
-> +       struct block_device *bdev;
-> +       dev_t devt;
-> +
-> +       bdev = blkdev_get_by_path(device, FMODE_READ, NULL);
-> +       if (IS_ERR(bdev)) {
-> +               devt = name_to_dev_t(device);
-> +               if (devt == 0)
-> +                       return ERR_PTR(-ENODEV);
-> +
-> +               bdev = blkdev_get_by_dev(devt, FMODE_READ, NULL);
-> +               if (IS_ERR(bdev))
-> +                       return bdev;
-> +       }
-> +
-> +       return bdev;
-> +}
-> +
-> +static void mmcpstore_close_backend(struct block_device *bdev)
-> +{
-> +       if (!bdev)
-> +               return;
-> +       blkdev_put(bdev, FMODE_READ);
-> +}
-> +
-> +void mmcpstore_card_set(struct mmc_card *card, const char *disk_name)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       struct pstore_blk_config *conf = &cxt->conf;
-> +       struct pstore_device_info *dev = &cxt->dev;
-> +       struct block_device *bdev;
-> +       struct mmc_command *stop;
-> +       struct mmc_command *cmd;
-> +       struct mmc_request *mrq;
-> +       struct mmc_data *data;
-> +       int ret;
-> +
-> +       if (!conf->device[0])
-> +               return;
-> +
-> +       /* Multiple backend devices not allowed */
-> +       if (cxt->dev_name[0])
-> +               return;
-> +
-> +       bdev =  mmcpstore_open_backend(conf->device);
-> +       if (IS_ERR(bdev)) {
-> +               pr_err("%s failed to open with %ld\n",
-> +                               conf->device, PTR_ERR(bdev));
-> +               return;
-> +       }
-> +
-> +       bdevname(bdev, cxt->dev_name);
-> +       cxt->partno = bdev->bd_part->partno;
-> +       mmcpstore_close_backend(bdev);
-> +
-> +       if (strncmp(cxt->dev_name, disk_name, strlen(disk_name)))
-> +               return;
-> +
-> +       cxt->start_sect = mmc_blk_get_part(card, cxt->partno, &cxt->size);
-> +       if (!cxt->start_sect) {
-> +               pr_err("Non-existent partition %d selected\n", cxt->partno);
-> +               return;
-> +       }
-> +
-> +       /* Check for host mmc panic write polling function definitions */
-> +       if (!card->host->ops->req_cleanup_pending ||
-> +                       !card->host->ops->req_completion_poll)
-> +               return;
-> +
-> +       cxt->card = card;
-> +
-> +       cxt->sub = kmalloc(conf->kmsg_size, GFP_KERNEL);
-> +       if (!cxt->sub)
-> +               goto out;
-> +
-> +       mrq = kzalloc(sizeof(struct mmc_request), GFP_KERNEL);
-> +       if (!mrq)
-> +               goto free_sub;
-> +
-> +       cmd = kzalloc(sizeof(struct mmc_command), GFP_KERNEL);
-> +       if (!cmd)
-> +               goto free_mrq;
-> +
-> +       stop = kzalloc(sizeof(struct mmc_command), GFP_KERNEL);
-> +       if (!stop)
-> +               goto free_cmd;
-> +
-> +       data = kzalloc(sizeof(struct mmc_data), GFP_KERNEL);
-> +       if (!data)
-> +               goto free_stop;
-> +
-> +       mrq->cmd = cmd;
-> +       mrq->data = data;
-> +       mrq->stop = stop;
-> +       cxt->mrq = mrq;
-> +
-> +       dev->total_size = cxt->size;
-> +       dev->flags = PSTORE_FLAGS_DMESG;
-> +       dev->read = mmcpstore_read;
-> +       dev->write = mmcpstore_write;
-> +       dev->erase = NULL;
-> +       dev->panic_write = mmcpstore_panic_write;
-> +
-> +       ret = register_pstore_device(&cxt->dev);
-
-By looking at all of the code above, lots are duplicated from the mmc
-block device implementation. Isn't there a way to make the pstore
-block device to push a request through the regular blk-mq path
-instead?
-
-That said, I wonder why you don't call register_pstore_blk(), as I
-thought that was the interface to be used for regular block devices,
-no?
-
-
-> +       if (ret) {
-> +               pr_err("%s registering with psblk failed (%d)\n",
-> +                               cxt->dev_name, ret);
-> +               goto free_data;
-> +       }
-> +
-> +       pr_info("%s registered as psblk backend\n", cxt->dev_name);
-> +       return;
-> +
-> +free_data:
-> +       kfree(data);
-> +free_stop:
-> +       kfree(stop);
-> +free_cmd:
-> +       kfree(cmd);
-> +free_mrq:
-> +       kfree(mrq);
-> +free_sub:
-> +       kfree(cxt->sub);
-> +out:
-> +       return;
-> +}
-> +EXPORT_SYMBOL(mmcpstore_card_set);
-> +
-> +static int __init mmcpstore_init(void)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       struct pstore_blk_config *conf = &cxt->conf;
-> +       int err;
-> +
-> +       err = pstore_blk_get_config(conf);
-> +       if (unlikely(err))
-> +               return err;
-
-Looks like that this can be moved to mmc_blk_probe() function instead.
-
-> +
-> +       if (!conf->device[0]) {
-> +               pr_err("psblk backend is empty\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       return err;
-> +}
-> +
-> +static void __exit mmcpstore_exit(void)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +
-> +       unregister_pstore_device(&cxt->dev);
-> +       kfree(cxt->mrq->data);
-> +       kfree(cxt->mrq->stop);
-> +       kfree(cxt->mrq->cmd);
-> +       kfree(cxt->mrq);
-> +       kfree(cxt->sub);
-> +       cxt->card = NULL;
-
-Can we do this via mmc_blk_remove() instead?
-
-> +}
-> +
-> +module_init(mmcpstore_init);
-> +module_exit(mmcpstore_exit);
-> +
-> +MODULE_AUTHOR("Bhaskara Budiredla <bbudiredla@marvell.com>");
-> +MODULE_DESCRIPTION("MMC backend for pstore/blk");
-> diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-> index 42df06c6b19c..76ae8ae61d31 100644
-> --- a/include/linux/mmc/card.h
-> +++ b/include/linux/mmc/card.h
-> @@ -322,6 +322,10 @@ static inline bool mmc_large_sector(struct mmc_card *card)
->
->  bool mmc_card_is_blockaddr(struct mmc_card *card);
->
-> +#ifdef CONFIG_MMC_PSTORE
-> +void mmcpstore_card_set(struct mmc_card *card, const char *disk_name);
-> +#endif /* CONFIG_MMC_PSTORE */
-> +
->  #define mmc_card_mmc(c)                ((c)->type == MMC_TYPE_MMC)
->  #define mmc_card_sd(c)         ((c)->type == MMC_TYPE_SD)
->  #define mmc_card_sdio(c)       ((c)->type == MMC_TYPE_SDIO)
-> diff --git a/include/linux/mmc/core.h b/include/linux/mmc/core.h
-> index 29aa50711626..21dcd79f8f0e 100644
-> --- a/include/linux/mmc/core.h
-> +++ b/include/linux/mmc/core.h
-> @@ -166,6 +166,10 @@ struct mmc_request {
->
->  struct mmc_card;
->
-> +#ifdef CONFIG_MMC_PSTORE
-> +extern void mmc_wait_for_pstore_req(struct mmc_host *, struct mmc_request *);
-> +#endif /* CONFIG_MMC_PSTORE */
-> +
->  void mmc_wait_for_req(struct mmc_host *host, struct mmc_request *mrq);
->  int mmc_wait_for_cmd(struct mmc_host *host, struct mmc_command *cmd,
->                 int retries);
-> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-> index c079b932330f..ef57313ee3ea 100644
-> --- a/include/linux/mmc/host.h
-> +++ b/include/linux/mmc/host.h
-> @@ -173,6 +173,12 @@ struct mmc_host_ops {
->          */
->         int     (*multi_io_quirk)(struct mmc_card *card,
->                                   unsigned int direction, int blk_size);
-> +
-> +#ifdef CONFIG_MMC_PSTORE
-> +       void    (*req_cleanup_pending)(struct mmc_host *host);
-> +       int     (*req_completion_poll)(struct mmc_host *host,
-> +                                       unsigned long timeout);
-
-If these really will be needed, please add some comments about what
-they are intended to help with.
-
-> +#endif
->  };
->
->  struct mmc_cqe_ops {
-
-Kind regards
-Uffe
+     Arnd
