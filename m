@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BDE2BB5CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2715D2BB5D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729572AbgKTTqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:46:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53158 "EHLO
+        id S1729676AbgKTTrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729345AbgKTTpy (ORCPT
+        with ESMTP id S1728816AbgKTTrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:45:54 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08DBC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:45:53 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id u12so11273770wrt.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:45:53 -0800 (PST)
+        Fri, 20 Nov 2020 14:47:24 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA93BC061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:47:23 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id r18so8183417pgu.6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:47:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=C8pk3+3XmA9EuaPzcL+Mq85e1ZBFbHpA0gmAlogKnMU=;
-        b=BhkryZi3Y2xC3KUBGfOVMsXE+KYJELfJh8pm0FQZKxYSyH+dO8wGVehK8Q38axFABP
-         Ez3z/2tBYX83YxolCFpvcUEdz7Dp79qW8a5tsS7jR12MAmEd61fzeADiiR8zmVUQ1jsE
-         ipMzNAwbTqNdhx46m5ZsMDFWH9KI+mssqjIxMa/Z0aKalxwPPUNL9YGTuhdhC3uNnWZ3
-         Obak5Ul2plu3/f1uIumAojQ1ome9VNko+bM1tVBU0CCc0qcaX21bZgTgcnkEIU8cM5sz
-         hRMj0BBKAVgvWGOaPUeNj6hIMJaIItOhasw4yo7iJjTLrx3J5G0XSCtXpjd60sE4Tc1p
-         3zSg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=elr/neHdSPND1QBbHYVTIKRGGtBg1vE7OdThIsRU5pI=;
+        b=XzoPI1crChRR6wLQGUnQdTruNmuVNj0hkcwU6yjn8xXrOzmnTuw8bZwNjYOSUMiNjn
+         EBV38WHid50TNovyKvDuuqOK6ny2jvmInIM/dgDYVmxiGIxn7be54rsKduzrLe/jMV3q
+         ANWN/74SZ1EEZvtawKD5ujXQl6B2YxxD3r8JI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=C8pk3+3XmA9EuaPzcL+Mq85e1ZBFbHpA0gmAlogKnMU=;
-        b=ZRktcLi7ms7QvHfgPD3CKkHtJ3tGmdGPsSNMxOQ02Am0KTd0FZqx7s+v2br3O22ghP
-         f5LFRQnZTlyr4ssKayUv6szU7bz9U4hUteBUQiG9gN+zX2B2M25g+X3C2J9FLaevHWVr
-         +bmXskjLn7KzZtw4WpOJOHwr/RJHEKbWuXmPaE80sOHJwTirUiwh4wYrChk+z+Sy8n9x
-         UAE/f+aE4ieybJ52iNu7QCjrFYYKby2WxpOEATq84A7P5NjB+qWcQ/o68dEPTqDWz19q
-         h0yIL2WPmLRZiTawYgcz47H6mZ2KX+jcxB74/W6mj+MF8P/IvyQ2VGHysQ1x4CmuXdS3
-         +etg==
-X-Gm-Message-State: AOAM533GsXbMAT29SjnlWnfa71br9frmRTup+kXdk7C4Rwqvlv38XXc6
-        e8JmCjezVVoMpLBUX3ZV8b9UJZA/otP5RYhE66Y=
-X-Google-Smtp-Source: ABdhPJx1s2VWNHnr6Kwi0hRZESmXdVLf3f/zB4xBFNnc+j8qo3jEUK/vscFfbY69QgDyv+MnkTHktQ==
-X-Received: by 2002:adf:8030:: with SMTP id 45mr17735717wrk.407.1605901552466;
-        Fri, 20 Nov 2020 11:45:52 -0800 (PST)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id i10sm6628173wrs.22.2020.11.20.11.45.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=elr/neHdSPND1QBbHYVTIKRGGtBg1vE7OdThIsRU5pI=;
+        b=Cc06BA1Aoxe81EUqUM+m5ae+2PLJa9zells7+Q/9MwaHdHu8I+HZs1rhFHnDy7K4nJ
+         QXdQbthkhYyulv1O4jjjjB5XL5uq+tHFBBGL4Yr+bZ3L6s2RZGoU/CR0TvnDWMh1mjm/
+         y/ULwO6oJnBkkI4LzDAzNo6yGdH3b5LnTNo+3l4X7/esMxqgYikovsL6/OYXLDIjspbS
+         iag8W0rRdDXCEqWfRG5n6jzcomMlV6QNPun2r2OAipkZO6ceGPvSCqQbwOX5jrwYYVNj
+         JBMG6NW5Y7MFWh1iUF4/wXFUjW2fJC90gABxU9A2ucO8e/sUSfEwVqF4Vt6GacLD5zGP
+         ywMQ==
+X-Gm-Message-State: AOAM531uguAcKvsgRq42MDUoAfJHNctiBUEKuEJUCGd+FoQYi1g3EUmG
+        pMbtnxC4fBSOuaFE402tFAQk0w==
+X-Google-Smtp-Source: ABdhPJwnsGzh6rI5stQsBcWRn8N0h8Ns8b+OJp9DPF9o8s3fODKrXmSZ/a2sub1vz+HM8LuYBAXNBw==
+X-Received: by 2002:a62:ea09:0:b029:197:bad4:1e78 with SMTP id t9-20020a62ea090000b0290197bad41e78mr8311744pfh.22.1605901643516;
+        Fri, 20 Nov 2020 11:47:23 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h16sm4507596pfo.185.2020.11.20.11.47.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 11:45:51 -0800 (PST)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] arm64: dts: meson-axg-s400: add support for USB and PCIe
-In-Reply-To: <160589952950.11499.15261993036625823660.b4-ty@baylibre.com>
-References: <20201120153229.3920123-1-narmstrong@baylibre.com> <160589952950.11499.15261993036625823660.b4-ty@baylibre.com>
-Date:   Fri, 20 Nov 2020 11:45:48 -0800
-Message-ID: <7hwnyfstg3.fsf@baylibre.com>
+        Fri, 20 Nov 2020 11:47:22 -0800 (PST)
+Date:   Fri, 20 Nov 2020 11:47:21 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v7 02/17] kbuild: add support for Clang LTO
+Message-ID: <202011201144.3F2BB70C@keescook>
+References: <20201118220731.925424-1-samitolvanen@google.com>
+ <20201118220731.925424-3-samitolvanen@google.com>
+ <CAKwvOdnYTMzaahnBqdNYPz3KMdnkp=jZ4hxiqkTYzM5+BBdezA@mail.gmail.com>
+ <CABCJKucj_jUwoiLc35R7qFe+cNKTWgT+gsCa5pPiY66+1--3Lg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABCJKucj_jUwoiLc35R7qFe+cNKTWgT+gsCa5pPiY66+1--3Lg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kevin Hilman <khilman@baylibre.com> writes:
+On Fri, Nov 20, 2020 at 08:23:11AM -0800, Sami Tolvanen wrote:
+> Changing the ThinLTO config to a choice and moving it after the main
+> LTO config sounds like a good idea to me. I'll see if I can change
+> this in v8. Thanks!
 
-> On Fri, 20 Nov 2020 16:32:25 +0100, Neil Armstrong wrote:
->> This adds the USB and PCIe to AXG, and enables USB & the two M.2 PCIe ports on the S400 board.
->> 
->> Dependencies:
->> - Patch 1, 2, 4: None
->> - Patch 3: [1] arm64: dts: meson-axg-s400: add support for Power Controller & MIPI-DSI PHY
->> 
->> [1] https://lore.kernel.org/r/20201120152131.3918814-1-narmstrong@baylibre.com
->> 
->> [...]
->
-> Applied, thanks!
->
-> [1/4] arm64: dts: meson-axg: add USB nodes
->       commit: ca91acde9a9858a20522abbb2c79c6883ef9bc73
-> [2/4] arm64: dts: meson-axg-s400: enable USB OTG
->       commit: 160f1630878e11668336fded29eeb0fe82fb3faf
-> [3/4] arm64: dts: meson-axg: add PCIe nodes
->       commit: 9bfc5abed67ae7dcc837dd8f6d61396d1cc9ac2b
-> [4/4] arm64: dts: meson-axg-s400: enable PCIe M.2 Key E slots
->       commit: eee685ef92d8cbabb2a61c45fe7d976c3ebc9b1e
+Originally, I thought this might be a bit ugly once GCC LTO is added,
+but this could be just a choice like we're done for the stack
+initialization. Something like an "LTO" choice of NONE, CLANG_FULL,
+CLANG_THIN, and in the future GCC, etc.
 
-FYI... these commit IDs are no longer accurate.  I relized that the USB
-patches were already in my fixes branch, so needed a rebase.  I fixed
-everything up locally, but the commit IDs are no longer the same as
-above.
-
-Kevin
-
+-- 
+Kees Cook
