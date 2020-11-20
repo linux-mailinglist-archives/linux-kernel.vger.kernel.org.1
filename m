@@ -2,238 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE362BABB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8242BABB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727653AbgKTOLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 09:11:22 -0500
-Received: from mailin.vu.nl ([130.37.164.19]:9924 "EHLO mailin.vu.nl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725890AbgKTOLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:11:21 -0500
-Received: from pexch011a.vu.local (130.37.237.88) by mailin.vu.nl
- (130.37.164.19) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 20 Nov
- 2020 15:10:55 +0100
-Received: from mail-lj1-f182.google.com (130.37.253.6) by PEXCH011a.vu.local
- (130.37.237.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Fri, 20 Nov
- 2020 15:10:54 +0100
-Received: by mail-lj1-f182.google.com with SMTP id b17so10130610ljf.12;
-        Fri, 20 Nov 2020 06:10:54 -0800 (PST)
-X-Gm-Message-State: AOAM533uS/J6NDANUCyX7GDCzhumQC9Cs3x+9yl70ecqkaB8pPtrMYlc
-        nHMEynTHPwV5L9206+RYrh/S+s+x3Y5DI8gb3rM=
-X-Google-Smtp-Source: ABdhPJxGCCgr9cn5Agq1sNQOMeWVW87I+qizACpin7d+orv/t7+NR7/AmR2natwPlbfAoMWc5LcqUtonlcGISmJrh9A=
-X-Received: by 2002:a2e:9dda:: with SMTP id x26mr7837051ljj.331.1605881453688;
- Fri, 20 Nov 2020 06:10:53 -0800 (PST)
+        id S1727310AbgKTORP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 09:17:15 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41062 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726172AbgKTORO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 09:17:14 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605881832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Buf8x4Ou5MZhSoXZCYI+1T9A41SEQ6+K3dIHpAxreAo=;
+        b=FiHhmr5LKkTiUpMmJJTQELShRPvsd1KCl+PVqBeG80cq/bC6NtE1F7+BuIMmptZ4DgXPPq
+        zo/b2mfJp2N5PDzl75cEBaYnVaNPehWyGCuVmGRO4UZZJFioSHJ4/B81dG4giqYItIXmNB
+        bJwFfBUmLv7eX6nanyK3bt4i4/261u69D9YS2gWzW+PO6KGWfjveNU1i3ZqqA0YpVqw7QE
+        FOYNwDVRQPtq93uwFOqgTw5zr514XuAwUsmDwMeiQhoRRlRm7sNnVwZNTfT/C8y6/Ac0Xl
+        6F54O3AKpWo37tr3K2tq27v8gbl6fzdaueOCuxNAKOLHJUr1kHhkub8jKmOQaA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605881832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Buf8x4Ou5MZhSoXZCYI+1T9A41SEQ6+K3dIHpAxreAo=;
+        b=+9zoVf/cFYU0z4U9aTn174MgGCj8mQWitRl5QUxWdMO9ZWs84XBJFxI8bBXxy5oSwzDdKd
+        dBjQwbAGFQFkkCDg==
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        mark.rutland@arm.com
+Subject: Re: [PATCH 0/2] arm64: Allow the rescheduling IPI to bypass irq_enter/exit
+In-Reply-To: <91cde5eeb22eb2926515dd27113c664a@kernel.org>
+References: <20201101131430.257038-1-maz@kernel.org> <87ft5q18qs.fsf@nanos.tec.linutronix.de> <91cde5eeb22eb2926515dd27113c664a@kernel.org>
+Date:   Fri, 20 Nov 2020 15:17:12 +0100
+Message-ID: <87lfewnmdz.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201026160518.9212-1-toiwoton@gmail.com> <20201117165455.GN29991@casper.infradead.org>
- <19373af5-2272-7615-27a7-6734c584f8bd@gmail.com> <6810b874c8df456b890d1092273b354a@pexch011a.vu.local>
- <CANWxqZ=fSi15fi6n-Ei4KJ8MtPcfiU8j=cQS-DycMig6s1oQBA@mail.gmail.com>
- <0da9cb0a4d1a494d9ec15404f8decf01@pexch011a.vu.local> <CANWxqZkdSMFM4T2J-KNK_K-SHfbRnk3EUcgHAF9Xj+SRqDxXHw@mail.gmail.com>
- <d7e759c8ac444aa4b0ba6932563aca00@pexch011a.vu.local>
-In-Reply-To: <d7e759c8ac444aa4b0ba6932563aca00@pexch011a.vu.local>
-From:   Cristiano Giuffrida <c.giuffrida@vu.nl>
-Date:   Fri, 20 Nov 2020 15:10:42 +0100
-X-Gmail-Original-Message-ID: <CANWxqZmkRWPjLcq8Nmw-GR90qOacp=nwEuKcB9hGDYZ8w2psog@mail.gmail.com>
-Message-ID: <CANWxqZmkRWPjLcq8Nmw-GR90qOacp=nwEuKcB9hGDYZ8w2psog@mail.gmail.com>
-Subject: Re: [PATCH v4] mm: Optional full ASLR for mmap() and mremap()
-To:     Topi Miettinen <toiwoton@gmail.com>
-CC:     Mike Rapoport <rppt@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [130.37.253.6]
-X-ClientProxiedBy: pexch006b.vu.local (130.37.237.83) To PEXCH011a.vu.local
- (130.37.237.88)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 9:38 AM Topi Miettinen <toiwoton@gmail.com> wrote:
->
-> On 20.11.2020 0.20, Cristiano Giuffrida wrote:
-> > On Thu, Nov 19, 2020 at 10:59 AM Topi Miettinen <toiwoton@gmail.com> wrote:
-> >>
-> >> On 18.11.2020 20.49, Cristiano Giuffrida wrote:
-> >>> Interesting mitigation and discussion!
-> >>>
-> >>> Regarding the impact on the AnC attack, indeed fine-grained (or full)
-> >>> mmap() randomization affects AnC in two ways: (i) it breaks the
-> >>> contiguity of the mmap() region, crippling the sliding primitive AnC
-> >>> relies on; (ii) it ensures an attacker leaking an address in a
-> >>> particular VMA can't easily infer addresses in other VMAs. So, in
-> >>> short, the mitigation does raise the bar against AnC-like attacks and
-> >>> I see this as a useful addition.
-> >>
-> >> In your paper the timing for Chrome attacks were not presented, which
-> >> would be interesting if they are comparable to the effect of
-> >> randomize_va_space=3 for Firefox. What's your estimate, how much slower
-> >> it was to break Chrome ASLR vs. Firefox/randomize_va_space=2?
-> > We did present entropy reduction over time for Chrome (see Fig. 8).
-> > But without a proper sliding primitive due to mmap() randomization, we
-> > stopped at 2 bits of residual entropy. Getting the last 2 bits is not
-> > impossible, but indeed slower. Not sure by how much without actually
-> > trying (as mentioned, you might also be able to use other side
-> > channels to compensate).
-> >
-> > I forgot to mention that mmap() randomization actually makes attacks
-> > easier in cases where VMAs are not demand paged (see Section VI.B of
-> > the AnC paper), since proper sliding with nonrandomized mmap() would
-> > otherwise need to allocate too much memory.
-> >
-> >>
-> >>> Indeed, we're aware some vendors implemented a similar randomization
-> >>> strategy in the browser as a mitigation against AnC.
-> >>>
-> >>> Nonetheless, some additional notes on the two points I raised above:
-> >>>
-> >>> - (i) [Sliding] Note that an attacker can do away with sliding
-> >>> depending on the randomization entropy and other available side
-> >>> channels. For instance, with the recent TagBleed, we show how to
-> >>> combine a TLB side channel with AnC to exhaust the KASLR entropy.
-> >>> However, similar attacks should be possible in userland, again
-> >>> depending on the randomization entropy used. See
-> >>> https://download.vusec.net/papers/tagbleed_eurosp20.pdf. Combining
-> >>> side channels with transient/speculative execution attacks can further
-> >>> lower the bar.
-> >>
-> >> I think the equivalent of randomize_va_space=3 for KASLR would be that
-> >> various kernel structures could be placed randomly with full use of all
-> >> bits in the hardware, instead of low numbers like 9, 10 or 15 bits.
-> >> Maybe also each module could be placed in individual random address
-> >> instead of stuffing all modules together and likewise, instead of single
-> >> page_offset_base, vmalloc_base and vmemmap_base, kernel would use the
-> >> full address space to place various internal structures. I suppose this
-> >> is not trivial.
-> > Indeed it's nontrivial to get similar randomization guarantees for the
-> > kernel. I mentioned TagBleed because similar combined AnC + TLB
-> > attacks should also be possible in the browser. We just happened to
-> > focus on the kernel with TagBleed.
->
-> Perhaps kernel objects could be also compiled as relocatable shared
-> objects, like shared libraries for user applications, so that a they
-> could be relocated independently away from the base address of main
-> kernel. Also compiling the kernel with -mcmodel=large could allow
-> various segments (code, rodata, data) to be located more freely. These
-> would make the attacker to do more probing. Again, pointers between the
-> objects may make these less useful.
->
-> >
-> >>
-> >>> - (ii) [Leaks] Depending on the software vulnerability used for
-> >>> exploitation, it might not be difficult for an attacker to break
-> >>> fine-grained randomization across VMAs. That is, leak an address from
-> >>> VMA 1, use the vulnerability to trigger a normally illegal access to
-> >>> VMA 2, leak an address from VMA 2, repeat. Of course, the exploit
-> >>> might take much longer depending on how far on the pointer chasing
-> >>> chain the target is.
-> >>
-> >> Pointers between VMAs may also exist, for example libz.so needs to call
-> >> open(), close(), malloc(), free() etc. from libc.so.
-> > Indeed my example above assumed pointers between VMAs. At each step,
-> > you would use a vulnerability to craft a counterfeit object around
-> > existing pointers to other VMAs and move from there.
-> >
-> > Note that without existing pointers between VMAs, you can still mount
-> > similar attacks by crafting your own pointers to probe for other VMAs.
-> > Since you'd be blindly probing the address space, you'd need some page
-> > fault suppression mechanism to keep going. But branch misprediction a
-> > la Spectre and similar can do the trick. See our recent BlindSide for
-> > an example of such an attack against the kernel:
-> > https://download.vusec.net/papers/blindside_ccs20.pdf.
->
-> In 6.3 the base address of kernel is probed in 0.7s. Wouldn't going from
-> 9 bits to 32 increase this to 2^21 * 0.7s = ~17 days?
-In general, increasing the entropy can make the attack much more
-difficult to complete in bounded time, yes. However:
-- The time to complete a single probe is inherently
-vulnerability-specific and the probe we had was not particularly
-efficient.
-- We didn't really look at optimizations to speed things up, such as
-batching multiple probes in a single syscall.
-- If you're probing in the browser rather than in the kernel, you
-might be able to craft more efficient probes and also more easily fill
-up the address space with objects you want to probe for to reduce the
-entropy. See our thread spraying paper for an example:
-https://www.usenix.net/system/files/conference/usenixsecurity16/sec16_paper_goktas.pdf
+Marc,
 
+On Fri, Nov 20 2020 at 09:20, Marc Zyngier wrote:
+> On 2020-11-03 20:32, Thomas Gleixner wrote:
+>> On Sun, Nov 01 2020 at 13:14, Marc Zyngier wrote:
 >
-> Another mitigation could be to flush all caches on system call entry or
-> exit. This would of course decrease performance, but maybe if this was
-> done selectively only for critical system services and browsers (maybe
-> even only for its JIT thread but not others), perhaps it could be more
-> acceptable.
-Right. Something to keep in mind with these attacks is that flushing
-the caches only cripples one particular (although the most common)
-kind of covert channel to leak information. But an attacker could in
-principle switch to other microarchitectural side effects and covert
-channels. See SMoTherSpectre for an example.
 
+> More seriously, it seems to me that we have a bit of a
+> cross-architecture disconnect here. I have been trying to join the
+> dots between what you describe above, and the behaviour of arm64 (and
+> probably a large number of the non-x86 architectures), and I feel
+> massively confused.
 >
-> -Topi
+> Up to 5.9, our handling of the rescheduling IPI was "do as little as
+> possible": decode the interrupt from the lowest possible level (the
+> root irqchip), call into arch code, end-up in scheduler_ipi(), the end.
 >
-> >
-> >>
-> >> -Topi
-> >>
-> >>> Best,
-> >>> Cristiano
-> >>>
-> >>> On Wed, Nov 18, 2020 at 6:40 PM Mike Rapoport <rppt@kernel.org> wrote:
-> >>>>
-> >>>> (added one of the AnC paper authors)
-> >>>>
-> >>>> On Tue, Nov 17, 2020 at 10:21:30PM +0200, Topi Miettinen wrote:
-> >>>>> On 17.11.2020 18.54, Matthew Wilcox wrote:
-> >>>>>> On Mon, Oct 26, 2020 at 06:05:18PM +0200, Topi Miettinen wrote:
-> >>>>>>> Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
-> >>>>>>> enables full randomization of memory mappings created with mmap(NULL,
-> >>>>>>> ...). With 2, the base of the VMA used for such mappings is random,
-> >>>>>>> but the mappings are created in predictable places within the VMA and
-> >>>>>>> in sequential order. With 3, new VMAs are created to fully randomize
-> >>>>>>> the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
-> >>>>>>> even if not necessary.
-> >>>>>>
-> >>>>>> Is this worth it?
-> >>>>>>
-> >>>>>> https://www.ndss-symposium.org/ndss2017/ndss-2017-programme/aslrcache-practical-cache-attacks-mmu/
-> >>>>>
-> >>>>> Thanks, very interesting. The paper presents an attack (AnC) which can break
-> >>>>> ASLR even from JavaScript in browsers. In the process it compares the memory
-> >>>>> allocators of Firefox and Chrome. Firefox relies on Linux mmap() to
-> >>>>> randomize the memory location, but Chrome internally chooses the randomized
-> >>>>> address. The paper doesn't present exact numbers to break ASLR for Chrome
-> >>>>> case, but it seems to require more effort. Chrome also aggressively
-> >>>>> randomizes the memory on each allocation, which seems to enable further
-> >>>>> possibilities for AnC to probe the MMU tables.
-> >>>>>
-> >>>>> Disregarding the difference in aggressiveness of memory allocators, I think
-> >>>>> with sysctl.kernel.randomize_va_space=3, the effort for breaking ASLR with
-> >>>>> Firefox should be increased closer to Chrome case since mmap() will use the
-> >>>>> address space more randomly.
-> >>>>>
-> >>>>> I have used this setting now for a month without any visible performance
-> >>>>> issues, so I think the extra bits (for some additional effort to attackers)
-> >>>>> are definitely worth the low cost.
-> >>>>>
-> >>>>> Furthermore, the paper does not describe in detail how the attack would
-> >>>>> continue after breaking ASLR. Perhaps there are assumptions which are not
-> >>>>> valid when the different memory areas are no longer sequential. For example,
-> >>>>> if ASLR is initially broken wrt. the JIT buffer but continuing the attack
-> >>>>> would require other locations to be determined (like stack, data segment for
-> >>>>> main exe or libc etc), further efforts may be needed to resolve these
-> >>>>> locations. With randomize_va_space=2, resolving any address (JIT buffer) can
-> >>>>> reveal the addresses of many other memory areas but this is not the case
-> >>>>> with 3.
-> >>>>>
-> >>>>> -Topi
-> >>>>
-> >>>> --
-> >>>> Sincerely yours,
-> >>>> Mike.
-> >>
+> No lockdep, no RCU, no nothing.
 >
+> What changed? Have we missed some radical change in the way the core
+> kernel expects the arch code to do thing? I'm aware of the 
+> kernel/entry/common.c stuff, which implements most of the goodies you
+> mention, but this effectively is x86-only at the moment.
+>
+> If arm64 has forever been broken, I'd really like to know and fix it.
+
+So with the pre 5.8 scheduler IPI we had scheduler_ipi() doing wonderful
+things
+
+scheduler_ipi()
+       ...
+       if (llist_empty(&this_rq()->wake_list) && !got_nohz_idle_kick())
+               return;
+       irq_enter();
+       ...
+       irq_exit();
+
+When Peter and I started to investigate the correctness and robustness
+of syscalls, interrupts and exceptions versus RCU, instrumentation,
+breakpoints for live patching etc., we stumbled over this and a lot of
+other things.
+
+Especially instrumentation had grown warts over time to deal with the
+problem that it can hit into a RCU idle section. That started to get
+worse which made us look deeper and the decision was to have strict
+non-instrumentable sections which call out into instrumentable sections
+_after_ establishing state. That moved all of the context tracking, RCU,
+tracing muck out into C code which is what we have in kernel/entry/ now.
+
+Back to the scheduler IPI. 5.8 made the scheduler IPI an almost empty
+function which just folds need resched on architectures which need that.
+
+Of course when I wrote the last reply I had the current x86
+implementation in mind which does:
+
+DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_reschedule_ipi)
+{
+        ack_APIC_irq();
+        trace_reschedule_entry(RESCHEDULE_VECTOR);
+        inc_irq_stat(irq_resched_count);
+        scheduler_ipi();
+        trace_reschedule_exit(RESCHEDULE_VECTOR);
+}
+
+ack_APIC_irq() can be traced and the tracepoints of course want a proper
+established context too.
+
+Now you surely could do:
+
+ASM-IPI-enter:
+       asm_ack_irq();
+       asm_fold_need_resched();
+       reti();
+
+But that's not enough, because the point of the scheduler_ipi is
+unsurprisingly to reevaluate need_resched() and to schedule. So you get:
+
+ASM-IPI-enter:
+       asm_ack_irq();
+       asm_fold_need_resched()
+       if (!asm_need_resched())
+            reti();
+
+       /* context tracking, rcu, .... */
+       handle_enter_from_user_or_kernel();
+
+       preempt_schedule_irq();
+
+       /* context tracking, rcu, .... */
+       handle_exit_to_user_or_kernel();
+       reti();
+
+We did not do that because we have the tracepoints there and I couldn't
+find a reason why having yet another slightly different codepath to get
+straight vs. context tracking and RCU was desirable. So we ended up
+with:
+
+ASM-IPI-enter:
+  asm_enter();
+
+    irqentry_enter() {
+      handle_enter_from_user_or_kernel();
+
+      /* Start of safe and instrumentable section */
+    }
+
+    __irq_enter_raw();
+
+    sysvec_scheduler_ipi();
+
+    __irq_exit_raw();
+
+    irqentry_exit() {
+      if (need_resched())
+        preempt_schedule_irq();
+
+      /* End of safe and instrumentable section */
+
+      handle_exit_to_user_or_kernel();
+    }
+
+  asm_exit();
+
+The only difference to other IPIs is that it avoids the accounting
+overhead because accounting the almost empty scheduler_ipi() function is
+pretty much pointless.
+
+Hope that clarifies it.
+
+> If arm64 has forever been broken, I'd really like to know and fix it.
+
+Define broken. It kinda works with all the warts and bolts in tracing,
+context tracking and other places. Is it entirely correct? Probably not.
+
+The scheduler IPI is trivial compared to the more interesting ones like
+NMI, MCE, breakpoint, debug exceptions etc. We found quite some
+interesting issues with all of that muck during our 'noinstr' chase.
+
+Thanks,
+
+        tglx
