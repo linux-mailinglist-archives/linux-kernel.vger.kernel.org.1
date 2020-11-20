@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18BD2BAA8F
+	by mail.lfdr.de (Postfix) with ESMTP id 7A15E2BAA8E
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728291AbgKTMwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:52:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726586AbgKTMwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:52:05 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        id S1728097AbgKTMwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:52:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726898AbgKTMwD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 07:52:03 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF55C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:52:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=w8tWVD7LdEH5Iapb8dd0CG6GtxCHUaaVQtuBmEoXo/k=; b=sDWpWMaMlYX96L2HJWxU81bEsx
+        WGoBBfaObZ8OxW4Np7wTFfmTIB2pLzTU3BkkUo2tSKv4Berit7C+xkhckULK8mWDCINX2XXw27+0m
+        /BJdP8uhAK21HLEbLL5uWy8fb89ZrTukXtZO9XX+LpRRy/Vmg+EH/ODNZBf7xLYPvT+yYbepyseq+
+        tE1rrgnLpME9eTbIl9+qPswQnW5SJstbtef0BVIE72nbf8cnnghE7v26y6qLTf+5TEKl4XSDQvQAf
+        UnjdwAiBCceSwOgeHlT6anM2K6XIiPWhLN+S/PfmNJYgpqJPa1egLGbZVva2sNUWIs41KSn1IxQcP
+        tXf6UYew==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kg5tM-0000Qq-UJ; Fri, 20 Nov 2020 12:51:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B40422227;
-        Fri, 20 Nov 2020 12:52:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605876724;
-        bh=gVvuE4pkpAUADqJHVNPHHCwOvhV7mliptOrIX9C+MJI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F2aJL/dpZ0M3TK1/IKN2hppQ7aanyTMSHaiSUo/lnNjK6F+iikpAe1Xpz2EsItbi+
-         uPdcpPGKQEjIfT21xFL62DccJXFvDwF6SieVMVIqeavvRpAFtA289ZL/ob73s9l3ll
-         YCy0I3W1AKnPf5CR0p41Q0I3V5/3zxIzO+kP5pzk=
-Date:   Fri, 20 Nov 2020 12:51:43 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Adam Ward <adam.ward@diasemi.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 5/9] regulator: da9121: Add support for device variants
- via devicetree
-Message-ID: <20201120124851.GB6751@sirena.org.uk>
-References: <cover.1605868780.git.Adam.Ward.opensource@diasemi.com>
- <f5c4446ff019173127fba460948f152dc6f8cf6f.1605868780.git.Adam.Ward.opensource@diasemi.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C580304D28;
+        Fri, 20 Nov 2020 13:51:54 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4629F20244762; Fri, 20 Nov 2020 13:51:54 +0100 (CET)
+Date:   Fri, 20 Nov 2020 13:51:54 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, christophe.leroy@csgroup.eu,
+        Jakub Jelinek <jakub@redhat.com>, rdunlap@infradead.org
+Subject: [PATCH] ilog2: Improve ilog2 for constant arguments
+Message-ID: <20201120125154.GB3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="E13BgyNx05feLLmH"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5c4446ff019173127fba460948f152dc6f8cf6f.1605868780.git.Adam.Ward.opensource@diasemi.com>
-X-Cookie: Have at you!
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---E13BgyNx05feLLmH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From:   Jakub Jelinek <jakub@redhat.com>
 
-On Fri, Nov 20, 2020 at 12:14:55PM +0000, Adam Ward wrote:
+As discussed in https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97445
+the const_ilog2 macro generates a lot of code which interferes badly
+with GCC inlining heuristics, until it can be proven that the ilog2
+argument can or can't be simplified into a constant.
 
-> @@ -1,7 +1,21 @@
->  // SPDX-License-Identifier: GPL-2.0-only
-> -/* Copyright (C) 2020 Axis Communications AB */
-> +/* Copyright (C) 2020 Axis Communications AB
-> + *
-> + * DA9121 Single-channel dual-phase 10A buck converter
+It can be expressed using __builtin_clzll builtin which is supported
+by GCC 3.4 and later and when used only in the __builtin_constant_p guarded
+code it ought to always fold back to a constant.
+Other compilers support the same builtin for many years too.
 
-Please make the entire comment a C++ one so things look more
-intentional.
+Other option would be to change the const_ilog2 macro, though as the
+description says it is meant to be used also in C constant expressions,
+and while GCC will fold it to constant with constant argument even in
+those, perhaps it is better to avoid using extensions in that case.
 
-> +	node = of_get_child_by_name(chip->dev->of_node, "regulators");
-> +	if (!node) {
-> +		dev_err(chip->dev, "Regulators node not found\n");
-> +		return ERR_PTR(-ENODEV);
-> +	}
-> +
-> +	num = of_regulator_match(chip->dev, node, da9121_matches,
-> +				 ARRAY_SIZE(da9121_matches));
+Signed-off-by: Jakub Jelinek <jakub@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20201021132718.GB2176@tucnak
+---
+ include/linux/log2.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Use of_parse_cb().
-
-> +	/* interrupt assumptions require at least one buck to be configured */
-> +	if (num == 0) {
-> +		dev_err(chip->dev, "Did not match any regulators in the DT\n");
-> +		return ERR_PTR(-EINVAL);
-> +	}
-
-The physical presence of the regulator is not going to change based on
-the DT.
-
-> +		if (variant_parameters[chip->variant_id].num_bucks == 2) {
-> +			uint32_t ripple_cancel;
-> +			uint32_t reg = (i ? DA9xxx_REG_BUCK_BUCK2_7
-> +					  : DA9121_REG_BUCK_BUCK1_7);
-
-Please write normal conditional statements to improve legibility.
-
---E13BgyNx05feLLmH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+3u94ACgkQJNaLcl1U
-h9CLUwf+PKMjV6kQxmzcjBW63co2YHRDQYzMeqqTd/RzO6QZvlYT0k5WBHEicoPO
-FWQEUoT5oVU4CuzbhlLJu1gKkpm6yaUWvPODSj6BDO5wvlrHHWwZhhNQ1OEhWu67
-MAb0z/kYnoRMYVHyphd97yuAV3P4bnCg17sNUKpaE6x/rIeAQ/y2329zWV5ITCRR
-u+jZCLMnBrrbJxojlBpCjMUODPLvGyHh6dpjOHIqCCWtCn9TGZY56KWwZ3oXjSkV
-VRNComzykM1qMMj1xaVR51uEQJ9iUY8Hm04pEDORVmpLH5cFh93M+YkgAQ5/yzJt
-KWZzu1EBnRv2BYNUI8I6+CDqYoTFHQ==
-=AGtx
------END PGP SIGNATURE-----
-
---E13BgyNx05feLLmH--
+--- a/include/linux/log2.h
++++ b/include/linux/log2.h
+@@ -156,7 +156,8 @@ unsigned long __rounddown_pow_of_two(uns
+ #define ilog2(n) \
+ ( \
+ 	__builtin_constant_p(n) ?	\
+-	const_ilog2(n) :		\
++	((n) < 2 ? 0 :			\
++	 63 - __builtin_clzll (n)) :	\
+ 	(sizeof(n) <= 4) ?		\
+ 	__ilog2_u32(n) :		\
+ 	__ilog2_u64(n)			\
