@@ -2,112 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DD12BA171
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643CD2BA176
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgKTEYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 23:24:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgKTEYp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 23:24:45 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E10C061A04
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 20:24:43 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id y22so7585125oti.10
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 20:24:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=h7WuwHFiMngmuwO68KF9/HezTioINw/cSHUf/pGNYRU=;
-        b=lisRmeRhOXD4a8T6k2e6pfhp8n0joXPQ/mJYTlG0wjPzVC1NUMQ16JuhZx92CDkqa0
-         bVPO4tF+wVarxzjHw8LIwMHSvMie+uoBWP74YQEQK6Le57zEqgZ6xwAiPBRbWtZKQVtC
-         YCdQMT9ZblVhGznTJJwKWXsFKM0ErSiOKyQJoyQLg6yjoJU92Tm/VM8k9x559P3J5wn8
-         R+vE2/1VM3eLb8oHD/qhwgm1INFXLxP4QbzIrCE2sAZWxkd1WWvlDqtNdN0m99yUkalO
-         dnrMgIsarSnpjFr4B7mUCqEYMEdUOjrzCuE+d1rNAQLYI36CdrBLyrZdEABeBPsCIfnK
-         R83Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h7WuwHFiMngmuwO68KF9/HezTioINw/cSHUf/pGNYRU=;
-        b=A2K+AQx9IaRSU56PYqOGBecjfGn7cO+8UXyb+0GfHRiZArk1BMMWMyXkSd2sshuVN0
-         EXW8uu/L8OPS0JrjjJWu4casd2sNlw/A9J97ErjEV1+OpWoZ7HeDFyF0Hs2LAGHspBki
-         CZ5mRAsOt0M3XXe1I8rCc29ubgIIeM8/IRHu2/TE9hP5WEyrgLLwrP5FNVGcjpanUTc0
-         mJ9/Bg7ZgXnrgddvalsaTuNLlgtMEm1gsJYQ7HxhG8r4aHf5GWsrLbyrzjtsNNQlBrtv
-         t/84ve/rU6LnxTDy8RtJ/wGRrdCh8aFDxucn9cj1NusKyqsd+3Mc/e6kOzbzE8rf1xgv
-         cQKA==
-X-Gm-Message-State: AOAM5337wnQ0Ri4lW1cP/pvCwJlRb0tFCs4Th8HiWuLJhHcWk1RhDOEh
-        yXMS5WtTWZdbToHQq7u6JG4OSQ==
-X-Google-Smtp-Source: ABdhPJwByh8JFpQbDfuRz86C6Hsku5xHXImoqPiYlUIFt4m7uYcvwmMUfgdaC9OwVizRS/Zjm5ZZEA==
-X-Received: by 2002:a05:6830:1f11:: with SMTP id u17mr12860028otg.287.1605846282990;
-        Thu, 19 Nov 2020 20:24:42 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v73sm677319oif.30.2020.11.19.20.24.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 20:24:42 -0800 (PST)
-Date:   Thu, 19 Nov 2020 22:24:40 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Souradeep Chowdhury <schowdhu@codeaurora.org>
-Cc:     devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: Re: [PATCH V1 3/3] arm64: dts: qcom: sm8150: Add LLC support for
- sm8150
-Message-ID: <20201120042440.GL8532@builder.lan>
-References: <cover.1601452132.git.schowdhu@codeaurora.org>
- <8f0e818485941076d62a8dc9f711b0fb868ba080.1601452132.git.schowdhu@codeaurora.org>
+        id S1726297AbgKTEac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 23:30:32 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:34004 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725944AbgKTEac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 23:30:32 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605846631; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Date: Message-ID: Subject: From: Cc: To: Sender;
+ bh=ZkOWwP+2Jswe2K7eUxNAVYe3xfheSaLlSG01eKQAVx4=; b=Oig4NwQbQ/c95m+Lj1xyZcLnNKGaAUoET1bD85Iz+XXO1AT0HDRKE9G7EQAuYiM49P1Jjm6F
+ AbmGZQ4dDbsS/VJVeaySKs/52/ioz/l90us3adoXTa3B0t/l6bV9OhC15QOZzu8seNv0WY+D
+ /pZsJXAt2ouWEgZCYYI43kk8Qh0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5fb7465dfa67d9becf84b5e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Nov 2020 04:30:21
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 150EBC43462; Fri, 20 Nov 2020 04:30:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.101] (unknown [124.123.182.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6C189C433C6;
+        Fri, 20 Nov 2020 04:30:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6C189C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+To:     ionela.voinescu@arm.com, valentin.schneider@arm.com
+Cc:     mark.rutland@arm.com, Marc Zyngier <maz@kernel.org>,
+        suzuki.poulose@arm.com, Will Deacon <will@kernel.org>,
+        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: AMU extension v1 support for cortex A76, A77, A78 CPUs
+Message-ID: <2cc9dd44-0b4b-94a8-155a-7a2446a1b892@codeaurora.org>
+Date:   Fri, 20 Nov 2020 10:00:14 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f0e818485941076d62a8dc9f711b0fb868ba080.1601452132.git.schowdhu@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30 Sep 03:14 CDT 2020, Souradeep Chowdhury wrote:
+Hi,
 
-> Add LLCC system cache controller entry for sm8150 to support sm8150
-> for LLCC.
-> 
+For ARM cortex A76, A77, A78 cores (which as per TRM, support AMU) 
+AA64PFR0[47:44] field is not set, and AMU does not get enabled for them.
+Can you please provide support for these CPUs in cpufeature.c?
 
-Thank you for your patches Souradeep, unfortunately there where some
-indentation issues that you would have seen if you ran
-./scripts/checkpatch.pl --strict.
 
-I fixed these issues up and applied the patches towards v5.11.
 
-Thank you,
-Bjorn
+Thanks
+Neeraj
 
-> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sm8150.dtsi | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> index f0a872e02686..71037a1bb217 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> @@ -490,7 +490,14 @@
->  			qcom,bcm-voters = <&apps_bcm_voter>;
->  		};
->  
-> -		ufs_mem_hc: ufshc@1d84000 {
-> +	        system-cache-controller@9200000 {
-> +                        compatible = "qcom,sm8150-llcc";
-> +                        reg = <0 0x09200000 0 0x200000>, <0 0x09600000 0 0x50000>;
-> +                        reg-names = "llcc_base", "llcc_broadcast_base";
-> +                        interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
-> +                 };
-> +
-> +        	ufs_mem_hc: ufshc@1d84000 {
->  			compatible = "qcom,sm8150-ufshc", "qcom,ufshc",
->  				     "jedec,ufs-2.0";
->  			reg = <0 0x01d84000 0 0x2500>;
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
