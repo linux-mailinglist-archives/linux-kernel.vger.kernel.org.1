@@ -2,140 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493392BB589
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473DC2BB5A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732451AbgKTTas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:30:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732426AbgKTTap (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:30:45 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEB4C061A56
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:30:43 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id r18so8143637pgu.6
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:30:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3bv50j9tOMZCSWAChUvUk5K6TgooTRt3SRcQZBJ9fcA=;
-        b=GgFl3K9IS/lWsdMjkEVVAtTSDzsQ0sxEOabPKwuHzNJyTA7s1nVN/P5Py+wtAIOvbE
-         i43RryzoLL4QMDFVI6bDxTe0ngekUN0rycJ/u5dixn0o4ZWxiMdHtnF6M1zgV7bxdmjG
-         OxnZTS8PQwcd6ZCwnahaxVB8GYQEw6f4nxFx4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3bv50j9tOMZCSWAChUvUk5K6TgooTRt3SRcQZBJ9fcA=;
-        b=cHIKWlmUAjSAbiRv0k3g0h2kx/M41UTgY4I/lg1NnDxIbPXRHgcT+bi1DV2LnlJQ9K
-         hGe7/SsqtjbvceqKDmusF69qa2qbvDPcqziogRoL2KcohK9kMSFRieMHpa9yFah3lmI0
-         Di8gkNhxNy2Q88UrCxNkKCq4gwqkVVVMh86tW0WKeDTfpxMoHHWlkAMTAcv+i+YdiAb+
-         29MQFdJptzF2kxzi9L0fggx6jnwITuKPQebW0GfSTFwL3CXVgheI6eTf4Zc3s6ak0EWr
-         00wYOiqco/qNiaHOiYWhAUG6v6rfA+MYFcUXZxcBNIUccxiHfPHmDRdQAktn8B9GybOW
-         sofg==
-X-Gm-Message-State: AOAM532AzkyvP1U29cbUNEmlByUE8eaxzn/BPlBYf5qz4ExQZre3lKug
-        gdfJu1H13n2vCVc5zWfuUBIOqA==
-X-Google-Smtp-Source: ABdhPJwFn7oz/bfAp6J8E6Vk82WR2gtV/ls3AEWmwH/TblnvnVOa/FKFQXEYpz+4sj3KQLcuYCiPkA==
-X-Received: by 2002:a63:a84f:: with SMTP id i15mr19199286pgp.120.1605900643186;
-        Fri, 20 Nov 2020 11:30:43 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s5sm4261271pfh.164.2020.11.20.11.30.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 11:30:41 -0800 (PST)
-Date:   Fri, 20 Nov 2020 11:30:40 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        amd-gfx@lists.freedesktop.org, bridge@lists.linux-foundation.org,
-        ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
-        coreteam@netfilter.org, devel@driverdev.osuosl.org,
-        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
-        dri-devel@lists.freedesktop.org, GR-everest-linux-l2@marvell.com,
-        GR-Linux-NIC-Dev@marvell.com, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, linux-acpi@vger.kernel.org,
-        linux-afs@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
-        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
-        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
-        selinux@vger.kernel.org, target-devel@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        usb-storage@lists.one-eyed-alien.net,
-        virtualization@lists.linux-foundation.org,
-        wcn36xx@lists.infradead.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-Message-ID: <202011201129.B13FDB3C@keescook>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1728235AbgKTTeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:34:14 -0500
+Received: from m12-16.163.com ([220.181.12.16]:36016 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728131AbgKTTeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 14:34:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=OCXdv
+        bpLcHPqsyPAvHs2fAO+t2cUHARppytDiUNGqUs=; b=D7fTRsypZ5YlDOfASrJQA
+        D+WmO6bKjNsNIfq3M1HO2ThNNCQt+BdXXOMm0f9JgRI43b1T4h4Ld5xdPuecUPti
+        kG326WHvvDE3bASZ8HHIN6t8ejbayVpKDsgzx+odw19xA9/cc91qehauiGU+l9IM
+        icFNHlB/5pQSz5fwHsvW2U=
+Received: from localhost (unknown [101.86.213.141])
+        by smtp12 (Coremail) with SMTP id EMCowAAHWzreGbhfZQJnNA--.32030S2;
+        Sat, 21 Nov 2020 03:32:47 +0800 (CST)
+Date:   Sat, 21 Nov 2020 03:32:46 +0800
+From:   Hui Su <sh_def@163.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     hughd@google.com, mm-commits@vger.kernel.org, sh_def@163.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: + mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
+ added to -mm tree
+Message-ID: <20201120193246.GA19677@rlk>
+References: <20201116230526.NkEfmeDCH%akpm@linux-foundation.org>
+ <alpine.LSU.2.11.2011162149210.1082@eggly.anvils>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <alpine.LSU.2.11.2011162149210.1082@eggly.anvils>
+X-CM-TRANSID: EMCowAAHWzreGbhfZQJnNA--.32030S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZw4fWF1fAr4rKry3Zr1kKrg_yoW5ArW5pF
+        WfG3Zayws8JryxKryxtw4kWry093yfKFWUta45Xr18Z3Z8Z3WkKr4vyr1rZryUCFy5WFy2
+        vF4DGr48uF4UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zinjjkUUUUU=
+X-Originating-IP: [101.86.213.141]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbifx-iX1r6mslkqAAAsi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 10:53:44AM -0800, Jakub Kicinski wrote:
-> On Fri, 20 Nov 2020 12:21:39 -0600 Gustavo A. R. Silva wrote:
-> > This series aims to fix almost all remaining fall-through warnings in
-> > order to enable -Wimplicit-fallthrough for Clang.
+On Mon, Nov 16, 2020 at 10:17:20PM -0800, Hugh Dickins wrote:
+> On Mon, 16 Nov 2020, akpm@linux-foundation.org wrote:
 > > 
-> > In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
-> > add multiple break/goto/return/fallthrough statements instead of just
-> > letting the code fall through to the next case.
+> > The patch titled
+> >      Subject: mm/shmem: use kmem_cache_zalloc in shmem_alloc_inode()
+> > has been added to the -mm tree.  Its filename is
+> >      mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
 > > 
-> > Notice that in order to enable -Wimplicit-fallthrough for Clang, this
-> > change[1] is meant to be reverted at some point. So, this patch helps
-> > to move in that direction.
+> > This patch should soon appear at
+> >     https://ozlabs.org/~akpm/mmots/broken-out/mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
+> > and later at
+> >     https://ozlabs.org/~akpm/mmotm/broken-out/mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
 > > 
-> > Something important to mention is that there is currently a discrepancy
-> > between GCC and Clang when dealing with switch fall-through to empty case
-> > statements or to cases that only contain a break/continue/return
-> > statement[2][3][4].
+> > Before you just go and hit "reply", please:
+> >    a) Consider who else should be cc'ed
+> >    b) Prefer to cc a suitable mailing list as well
+> >    c) Ideally: find the original patch on the mailing list and do a
+> >       reply-to-all to that, adding suitable additional cc's
+> > 
+> > *** Remember to use Documentation/process/submit-checklist.rst when testing your code ***
+> > 
+> > The -mm tree is included into linux-next and is updated
+> > there every 3-4 working days
+> > 
+> > ------------------------------------------------------
+> > From: Hui Su <sh_def@163.com>
+> > Subject: mm/shmem: use kmem_cache_zalloc in shmem_alloc_inode()
 > 
-> Are we sure we want to make this change? Was it discussed before?
+> Andrew, Stephen, please revert this untested "cleanup" from your
+> trees a.s.a.p: it's a disaster for anyone using shmem/tmpfs.
 > 
-> Are there any bugs Clangs puritanical definition of fallthrough helped
-> find?
+> > 
+> > in shmem_get_inode():
+> > new_inode();
+> >   new_inode_pseudo();
+> >     alloc_inode();
+> >       ops->alloc_inode(); -> shmem_alloc_inode()
+> >         kmem_cache_alloc();
+> > 
+> > memset(info, 0, (char *)inode - (char *)info);
+> > 
+> > So use kmem_cache_zalloc() in shmem_alloc_inode(),
+> > and remove the memset in shmem_get_inode().
 > 
-> IMVHO compiler warnings are supposed to warn about issues that could
-> be bugs. Falling through to default: break; can hardly be a bug?!
+> I could not follow that argument at all.  The shmem_inode_cachep
+> uses a constructor, and the memset shown is of only a portion of
+> the whole inode.  zeroing the entire inode quickly crashes the
+> kernel, after showing errors.
+> 
+> (If you're lucky enough to have a readable display at that point:
+> I did not, but got on better with framebuffer than drm/i915; and
+> I wonder if there's a separate bug in that area too, because fixing
+> this shmem issue is not enough to get my drm/i915 rc4-mm1 booting.)
+> 
 
-It's certainly a place where the intent is not always clear. I think
-this makes all the cases unambiguous, and doesn't impact the machine
-code, since the compiler will happily optimize away any behavioral
-redundancy.
+Sorry, I thought it was a small change before, so I forgot to test it.
+It's SO STUPID. I'm really sorry.
 
+> > 
+> > Link: https://lkml.kernel.org/r/20201115174026.GA365412@rlk
+> > Signed-off-by: Hui Su <sh_def@163.com>
+> 
+> NAK.  Hui Su, please test your "cleanups" before sending them.
+> 
 
--- 
-Kees Cook
+I will remember it, thanks.
+
+I have spent two evenings building a patch automated test platform
+using qemu and jenkins.
+
+> I'm sorry for being slow to respond, but the priority appeared
+> to be to get Matthew Wilcox's series running reliably, so I had not
+> got around to checking the less urgent shmem patches before they
+> slipped into mmotm - there may well be more that I want to NAK,
+> but this is the dangerous one.
+> 
+> Thanks,
+> Hugh
+> 
+
