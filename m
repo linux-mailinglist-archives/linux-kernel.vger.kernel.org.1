@@ -2,103 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CE72BA671
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9B72BA672
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727747AbgKTJmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:42:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727691AbgKTJmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:42:13 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727707AbgKTJn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:43:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38580 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727464AbgKTJn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:43:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605865435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZwdHt+LWlPpn5AnW9j4bNwWOooSLgU3rF8T4LtW1bPs=;
+        b=gajonlih1PfsaIPo4Cvp6gFZ92/HE4hF8wgzoGTLO86BRJ7dMFux8T0hh5Y+HP4TC98h0M
+        Tmeul0jsO4FSBAvgqoQr3/3FH3ZxoUqTgr8SpOq4nVF9ZUYJ9FYIo7eo63EPkKog6NxznN
+        XXluYjjfsO4l5Wh0nKTQE8BgNL0iMMM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-415-fR3VtGVkMPKYU73JVMnOig-1; Fri, 20 Nov 2020 04:43:51 -0500
+X-MC-Unique: fR3VtGVkMPKYU73JVMnOig-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 228D62240A;
-        Fri, 20 Nov 2020 09:42:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605865332;
-        bh=iQcVnrGpf37U4002Avz2RPHVjfPk0q8ZDK+TTqhRmEU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tI0i1HgoMJfpibnKglXJjmS1wJO8PAk9CTLWx2bG4/DhR/xFFoQhhHvyKfMTQ7YQp
-         /kYqRu+xQDD/bOwUT1E60aktiEEdq46ogUSv9OGITvPFZvm4Utwctfj6FJTV3Csgmz
-         1mYvZpBIy4k2GzKUYWWF7ih/FQ8J1cxwfJYmxzQc=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kg2vi-00CDFB-92; Fri, 20 Nov 2020 09:42:10 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        kernel-team@android.com, dri-devel@lists.freedesktop.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] drm/meson: dw-hdmi: Enable the iahb clock early enough
-Date:   Fri, 20 Nov 2020 09:42:05 +0000
-Message-Id: <20201120094205.525228-3-maz@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201120094205.525228-1-maz@kernel.org>
-References: <20201120094205.525228-1-maz@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B6011835AA2;
+        Fri, 20 Nov 2020 09:43:47 +0000 (UTC)
+Received: from [10.36.114.78] (ovpn-114-78.ams2.redhat.com [10.36.114.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ECAF619D9F;
+        Fri, 20 Nov 2020 09:43:40 +0000 (UTC)
+Subject: Re: [PATCH v5 00/21] Free some vmemmap pages of hugetlb page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120084202.GJ3200@dhcp22.suse.cz>
+ <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
+ <20201120093912.GM3200@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <eda50930-05b5-0ad9-2985-8b6328f92cec@redhat.com>
+Date:   Fri, 20 Nov 2020 10:43:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: narmstrong@baylibre.com, khilman@baylibre.com, jbrunet@baylibre.com, martin.blumenstingl@googlemail.com, guillaume.tucker@collabora.com, kernel-team@android.com, dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <20201120093912.GM3200@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of moving meson_dw_hdmi_init() around which breaks existing
-platform, let's enable the clock meson_dw_hdmi_init() depends on.
-This means we don't have to worry about this clock being enabled or
-not, depending on the boot-loader features.
+On 20.11.20 10:39, Michal Hocko wrote:
+> On Fri 20-11-20 10:27:05, David Hildenbrand wrote:
+>> On 20.11.20 09:42, Michal Hocko wrote:
+>>> On Fri 20-11-20 14:43:04, Muchun Song wrote:
+>>> [...]
+>>>
+>>> Thanks for improving the cover letter and providing some numbers. I have
+>>> only glanced through the patchset because I didn't really have more time
+>>> to dive depply into them.
+>>>
+>>> Overall it looks promissing. To summarize. I would prefer to not have
+>>> the feature enablement controlled by compile time option and the kernel
+>>> command line option should be opt-in. I also do not like that freeing
+>>> the pool can trigger the oom killer or even shut the system down if no
+>>> oom victim is eligible.
+>>>
+>>> One thing that I didn't really get to think hard about is what is the
+>>> effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
+>>> invalid when racing with the split. How do we enforce that this won't
+>>> blow up?
+>>
+>> I have the same concerns - the sections are online the whole time and
+>> anybody with pfn_to_online_page() can grab them
+>>
+>> I think we have similar issues with memory offlining when removing the
+>> vmemmap, it's just very hard to trigger and we can easily protect by
+>> grabbing the memhotplug lock.
+> 
+> I am not sure we can/want to span memory hotplug locking out to all pfn
+> walkers. But you are right that the underlying problem is similar but
+> much harder to trigger because vmemmaps are only removed when the
+> physical memory is hotremoved and that happens very seldom. Maybe it
+> will happen more with virtualization usecases. But this work makes it
+> even more tricky. If a pfn walker races with a hotremove then it would
+> just blow up when accessing the unmapped physical address space. For
+> this feature a pfn walker would just grab a real struct page re-used for
+> some unpredictable use under its feet. Any failure would be silent and
+> hard to debug.
 
-Fixes: b33340e33acd ("drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers")
-Reported-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-Tested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- drivers/gpu/drm/meson/meson_dw_hdmi.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Right, we don't want the memory hotplug locking, thus discussions 
+regarding rcu. Luckily, for now I never saw a BUG report regarding this 
+- maybe because the time between memory offlining (offline_pages()) and 
+memory/vmemmap getting removed (try_remove_memory()) is just too long. 
+Someone would have to sleep after pfn_to_online_page() for quite a while 
+to trigger it.
 
-diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-index 29623b309cb1..aad75a22dc33 100644
---- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
-+++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-@@ -1051,6 +1051,10 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
- 	if (ret)
- 		return ret;
- 
-+	ret = meson_enable_clk(dev, "iahb");
-+	if (ret)
-+		return ret;
-+
- 	ret = meson_enable_clk(dev, "venci");
- 	if (ret)
- 		return ret;
-@@ -1086,6 +1090,8 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
- 
- 	encoder->possible_crtcs = BIT(0);
- 
-+	meson_dw_hdmi_init(meson_dw_hdmi);
-+
- 	DRM_DEBUG_DRIVER("encoder initialized\n");
- 
- 	/* Bridge / Connector */
-@@ -1110,8 +1116,6 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
- 	if (IS_ERR(meson_dw_hdmi->hdmi))
- 		return PTR_ERR(meson_dw_hdmi->hdmi);
- 
--	meson_dw_hdmi_init(meson_dw_hdmi);
--
- 	next_bridge = of_drm_find_bridge(pdev->dev.of_node);
- 	if (next_bridge)
- 		drm_bridge_attach(encoder, next_bridge,
+> 
+> [...]
+>> To keep things easy, maybe simply never allow to free these hugetlb pages
+>> again for now? If they were reserved during boot and the vmemmap condensed,
+>> then just let them stick around for all eternity.
+> 
+> Not sure I understand. Do you propose to only free those vmemmap pages
+> when the pool is initialized during boot time and never allow to free
+> them up? That would certainly make it safer and maybe even simpler wrt
+> implementation.
+
+Exactly, let's keep it simple for now. I guess most use cases of this 
+(virtualization, databases, ...) will allocate hugepages during boot and 
+never free them.
+
 -- 
-2.28.0
+Thanks,
+
+David / dhildenb
 
