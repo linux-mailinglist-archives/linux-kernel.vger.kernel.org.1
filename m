@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA7F2BB818
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D7E2BB813
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731636AbgKTVEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:04:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731276AbgKTVEh (ORCPT
+        id S1731086AbgKTVEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:04:31 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:38959 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730524AbgKTVEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:04:37 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30C4C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:04:36 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id l206so11920860oif.12
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:04:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=veXWdye4EPb1hf22k/yabOHMzQdWo29UrU9Jxr6Z+6g=;
-        b=B2TUNk7NCv+2OSJErtonoLqm/CVdIxLlDhUNhg9hUAKvLxHavqwTBEfy7xbTEig+pi
-         72h1LH2HQOEeZDXMsNSKayDVvWjo1Z96344pykxAqmngrq1s9duCmE4qUtu0oFjLWK8V
-         yuTqiR6RmH00V5KgVczlVzF0pnOm6OWCCfFlg=
+        Fri, 20 Nov 2020 16:04:31 -0500
+Received: by mail-ot1-f68.google.com with SMTP id z16so10024557otq.6;
+        Fri, 20 Nov 2020 13:04:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=veXWdye4EPb1hf22k/yabOHMzQdWo29UrU9Jxr6Z+6g=;
-        b=Cmp5tBuiIZbgwSVZquChaQ5siCLfneAhDfQqFR6USZny3GvobFgP2ptjFVTq9w6Z63
-         Ob5/q5Qp27rLW1w7As0rIUU02TkinfDWry0dKrna1wOQIVI91BKOB3txuwYUgZtwkXrb
-         tjukIaw8bz6u+NUdpYPfsjNEt6bheMSdxRuwrX1gfhrjqPa+9zXYeuCfB0aEiRjGnBxs
-         dDY3sbzRrvRDr8Qjpid+SgZCSfm0sV5LZHQzpLYKgNjT5ey5BY2kxKpHlLFvTFD3t+yI
-         csxOY761n1XE9jX59DpBfCE1F+HDy4XyG1gBtRe0M9klyNsiOXE/ydFyzLn3RLEjMTfZ
-         UuqA==
-X-Gm-Message-State: AOAM532oJj8tQpGKNNSti/3+GJHavfaygU8ZOZ3hoKIjIUZlZ0hn+pOV
-        MAGjGOE46YMEIdCCgJYb9wYAc9BquBwsPw==
-X-Google-Smtp-Source: ABdhPJyZSnDFH1W/vZux6eFNCBV3Iuw8bL6dopA9yKYDA/+eNVXcTtwvwtxaqRocHFzYB1/lhQNW6w==
-X-Received: by 2002:aca:3087:: with SMTP id w129mr7540470oiw.78.1605906273985;
-        Fri, 20 Nov 2020 13:04:33 -0800 (PST)
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
-        by smtp.gmail.com with ESMTPSA id j40sm2020812ota.8.2020.11.20.13.04.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 13:04:32 -0800 (PST)
-Received: by mail-ot1-f47.google.com with SMTP id h16so10030825otq.9
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:04:31 -0800 (PST)
-X-Received: by 2002:a05:6830:2083:: with SMTP id y3mr16408151otq.203.1605906270889;
- Fri, 20 Nov 2020 13:04:30 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hG0Yjdk9OimqrWpKYF/IkVWg6nsHdnZMFyZuaLz0d1k=;
+        b=M/WmwzU09ZqN89i/h+j5sU3eJv5VcQgJrLEAI0sWgrAVuyB9szLyD7n9K9eBv/wNTr
+         8ReidoP+Ph3/e1KDo8KYXu+m/kWBJoIhqEKdd6UcLUX/NLCzMV9v0UgD2apx8R7w5vd2
+         z8SPGfV6ree2X1bcy7rNBVM12hK9AHh+If9MHAdSIowld9cgW0XyVSfpvzIRyyXU9e+y
+         id9ENlpC+ZVj+lsa8g36ZfUSa2cpHOpw83QD/9NnB1n1/fw7mhgSKV6jCtbXb2V057fH
+         2Rlz7RlO1BM+zufq7xlxKxMWsIEGRxHJxk0sET5iAuvF1YVnWKOAxXoGK6OHRcmb9dJC
+         wb0g==
+X-Gm-Message-State: AOAM531Djiy7wQNDeFdOsrUs6A0S1oQdiO0NSsVFK4HY/OxH4osCrRLR
+        RVJ9uOqKYRiQ4F1YMOEwE6V5KagdFw==
+X-Google-Smtp-Source: ABdhPJwLeMlOc9JnvLCoMo/5Ni0hEffgWksdYu0UKsb07/EKXhO37Q+3KKYnD25MH0HsDzi9KghYyg==
+X-Received: by 2002:a05:6830:22c9:: with SMTP id q9mr16142414otc.48.1605906270299;
+        Fri, 20 Nov 2020 13:04:30 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n3sm2254605oif.42.2020.11.20.13.04.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 13:04:29 -0800 (PST)
+Received: (nullmailer pid 1736597 invoked by uid 1000);
+        Fri, 20 Nov 2020 21:04:28 -0000
+Date:   Fri, 20 Nov 2020 15:04:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Al Cooper <alcooperx@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-usb@vger.kernel.org,
+        linux-serial@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: Add support for the Broadcom UART driver
+Message-ID: <20201120210428.GA1736336@robh.at.kernel.org>
+References: <20201120194305.8847-1-alcooperx@gmail.com>
+ <20201120194305.8847-3-alcooperx@gmail.com>
 MIME-Version: 1.0
-References: <20201028142433.18501-1-kitakar@gmail.com> <20201028142433.18501-2-kitakar@gmail.com>
- <CA+ASDXMfuqy=kCECktP_mYm9cAapXukeLhe=1i3uPbTu9wS2Qw@mail.gmail.com> <8fa12bfff1cc30b655934e303cad78ae75b0fcde.camel@gmail.com>
-In-Reply-To: <8fa12bfff1cc30b655934e303cad78ae75b0fcde.camel@gmail.com>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Fri, 20 Nov 2020 13:04:19 -0800
-X-Gmail-Original-Message-ID: <CA+ASDXMUdYHTKphxFwcAim79N_DJiQFHFN0gDZsPB4rMHyxxXw@mail.gmail.com>
-Message-ID: <CA+ASDXMUdYHTKphxFwcAim79N_DJiQFHFN0gDZsPB4rMHyxxXw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mwifiex: disable ps_mode explicitly by default instead
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120194305.8847-3-alcooperx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 1:04 AM Tsuchiya Yuto <kitakar@gmail.com> wrote:
-> On Thu, 2020-10-29 at 11:25 -0700, Brian Norris wrote:
-> > For the record, Chrome OS supports plenty of mwifiex systems with 8897
-> > (SDIO only) and 8997 (PCIe), with PS enabled, and you're hurting
-> > those. Your problem sounds to be exclusively a problem with the PCIe
-> > 8897 firmware.
->
-> Actually, I already know that some Chromebooks use these mwifiex cards
-> (but not out PCIe-88W8897) because I personally like chromiumos. I'm
-> always wondering what is the difference. If the difference is firmware,
-> our PCIe-88W8897 firmware should really be fixed instead of this stupid
-> series.
+On Fri, 20 Nov 2020 14:43:04 -0500, Al Cooper wrote:
+> Add DT bindings for the Broadcom 8250 based UART driver. This
+> UART is based on an 8250 but adds additional functionality. The
+> additional features include the ability to use DMA for transfers and
+> a baud rate clock system that is more accurate at high baud rates.
+> This UART is backward compatible with the standard 8250 UART.
+> 
+> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+> ---
+>  .../bindings/serial/brcm,bcm7271-uart.yaml    | 94 +++++++++++++++++++
+>  1 file changed, 94 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
+> 
 
-PCIe is a very different beast. (For one, it uses DMA and
-memory-mapped registers, where SDIO has neither.) It was a very
-difficult slog to get PCIe/8997 working reliably for the few
-Chromebooks that shipped it, and lots of that work is in firmware. I
-would not be surprised if the PCIe-related changes Marvell made for
-8997 never fed back into their PCIe-8897 firmware. Or maybe they only
-ever launched PCIe-8897 for Windows, and the Windows driver included
-workarounds that were never published to their Linux driver. But now
-I'm just speculating.
 
-> Yes, I'm sorry that I know this series is just a stupid one but I have to
-> send this anyway because this stability issue has not been fixed for a
-> long time. I should have added this buglink to every commit as well:
->
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=109681
->
-> If the firmware can't be fixed, I'm afraid I have to go this way. It makes
-> no sense to keep enabling power_save for the affected devices if we know
-> it's broken.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Condolences and sympathy, seriously. You likely have little chance of
-getting the firmware fixed, so without new information (e.g,. other
-workarounds?), this is the probably the right way to go.
+yamllint warnings/errors:
 
-Brian
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml: 'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1404090
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
