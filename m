@@ -2,215 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8D92BAC46
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAAE2BAC4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728205AbgKTOzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 09:55:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726529AbgKTOzQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:55:16 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85BFC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 06:55:15 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id 1so10057028wme.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 06:55:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jm4OkDH2nCeoYwOCMfwAPaBKvP0WLi1KuZbg+Z+VjWg=;
-        b=RAJ3zYkmAdBGR+XQMSetSo2yuagBbyyEAhTIr0tqfENvJ7vcOJuNPpXZrXh5JMkXdD
-         hgtEFkG7JT7Ym4FNtLlVoTD3lWBMDZHOUXNikwVZhWmaOANIwioeCrOGj04wna61msOU
-         UXyUrR5yDReBQsL69HpT5GnjapIYgz1qhUXPv/swxW/YeqUx1TTpDnHKkz902GxtOwV7
-         xQnMY/5f5ckHaGQMqmGPZIWMtnuYtDopopkG2WiY+AYPyEk8DAbQ1/yT6cv2lqh8LH9q
-         LkX7zTlvntn92SIL4H9AAUHSEQxzEtbN4l4sVTrw3vbQy9zN2dQ8DZx4L2htXuayplKV
-         9MIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Jm4OkDH2nCeoYwOCMfwAPaBKvP0WLi1KuZbg+Z+VjWg=;
-        b=BS8TSpZTr7XCfA1Aw0VmEClCGutf1YdeLhCoPgoAG2PgwWIN+RO3WRBVI1HuP6VOSe
-         9al0fTAEwvfFJthQpoZ8gkNDG5kJLvZdQrThWZEmXDmYZclGyqeNM/e9C1TI0c73tHf5
-         SGvtURDyyqiaLpP/JTZ8zijxnw7QQiw0vWFMGLb6aK+VtON6Sye6ekO+xKqlppwQAnOy
-         0gx0mZCJHttTA3dVH7txZDUy+lZ++w5eFgRpnPdlCLpIHwrrpILKTCgO//YbzPDCvo9Z
-         TTRygln4XA1tzEozmQHw1K6ha7WgVEVqqfpMgblPLyTSzbp1TV0Io21MXo4cKreinIvs
-         WOeA==
-X-Gm-Message-State: AOAM533Y6OEj9T/iXGXa7NYG5d5Z6FqF5SFY7xzxLwb69K8Rgus/nyYV
-        J3A8Sb1q+/L5vKAxETbl7dqoPw==
-X-Google-Smtp-Source: ABdhPJwZw/qXHEEH/h3m70sEmm9f4sKarSNbjD9BqgezEDCOaFYQhMHtPuAtQrSHg8rdLJrgsf8Wtw==
-X-Received: by 2002:a05:600c:256:: with SMTP id 22mr10113073wmj.120.1605884114135;
-        Fri, 20 Nov 2020 06:55:14 -0800 (PST)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:419f:dca4:d17a:66a7? ([2a01:e35:2ec0:82b0:419f:dca4:d17a:66a7])
-        by smtp.gmail.com with ESMTPSA id d134sm4661133wmd.8.2020.11.20.06.55.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 06:55:13 -0800 (PST)
-Subject: Re: [RESEND PATCH v3 3/3] phy: amlogic:
- phy-meson-axg-mipi-pcie-analog: add support for MIPI DSI analog
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Remi Pommarel <repk@triplefau.lt>
-References: <20201116101647.73448-1-narmstrong@baylibre.com>
- <20201116101647.73448-4-narmstrong@baylibre.com>
- <20201120095825.GD2925@vkoul-mobl>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <593b8745-6cb5-b6c3-9540-07dc6bc429b0@baylibre.com>
-Date:   Fri, 20 Nov 2020 15:55:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727714AbgKTO7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 09:59:15 -0500
+Received: from mga09.intel.com ([134.134.136.24]:61932 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727123AbgKTO7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 09:59:15 -0500
+IronPort-SDR: fWIs9zrADxyGL3dfiOYruVRvMYPUP/Gwxr4M1B03oMs50PvGiZJAgJ2CwlINizb5mL3Lg0UObW
+ jPRr8Xp+UFGg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="171650401"
+X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
+   d="scan'208";a="171650401"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 06:59:14 -0800
+IronPort-SDR: od+0Ob7EYGxTQKhMv8FgGAbv88yE5df3E06bQs7JSvgpn7hzq1t2fnDib5CHO2w+gOdCwPMfph
+ gWccGfgoLGjg==
+X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
+   d="scan'208";a="477252469"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 06:59:12 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kg7tW-008ImW-K5; Fri, 20 Nov 2020 17:00:14 +0200
+Date:   Fri, 20 Nov 2020 17:00:14 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] docs: ACPI: enumeration: add PCI hierarchy
+ representation
+Message-ID: <20201120150014.GS4077@smile.fi.intel.com>
+References: <20201120111125.78296-1-f.suligoi@asem.it>
 MIME-Version: 1.0
-In-Reply-To: <20201120095825.GD2925@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120111125.78296-1-f.suligoi@asem.it>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2020 10:58, Vinod Koul wrote:
-> On 16-11-20, 11:16, Neil Armstrong wrote:
->> The AXG Analog MIPI-DSI PHY also provides functions to the PCIe PHY,
->> thus we need to have inclusive support for both interfaces at runtime.
->>
->> This fixes the regmap get from parent node, removes cell param
->> to select a mode and implement runtime configuration & power on/off
->> for both functions since they are not exclusive.
->>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> Reviewed-by: Remi Pommarel <repk@triplefau.lt>
->> ---
->>  drivers/phy/amlogic/Kconfig                   |   1 +
->>  .../amlogic/phy-meson-axg-mipi-pcie-analog.c  | 204 ++++++++++++------
->>  2 files changed, 136 insertions(+), 69 deletions(-)
->>
->> diff --git a/drivers/phy/amlogic/Kconfig b/drivers/phy/amlogic/Kconfig
->> index 99e8a4c7f1f3..db5d0cd757e3 100644
->> --- a/drivers/phy/amlogic/Kconfig
->> +++ b/drivers/phy/amlogic/Kconfig
->> @@ -66,6 +66,7 @@ config PHY_MESON_AXG_MIPI_PCIE_ANALOG
->>  	depends on OF && (ARCH_MESON || COMPILE_TEST)
->>  	select GENERIC_PHY
->>  	select REGMAP_MMIO
->> +	select GENERIC_PHY_MIPI_DPHY
->>  	help
->>  	  Enable this to support the Meson MIPI + PCIE analog PHY
->>  	  found in Meson AXG SoCs.
->> diff --git a/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c b/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c
->> index 1431cbf885e1..6eb21551bdd9 100644
->> --- a/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c
->> +++ b/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c
->> @@ -4,9 +4,13 @@
->>   *
->>   * Copyright (C) 2019 Remi Pommarel <repk@triplefau.lt>
->>   */
->> +#include <linux/bitfield.h>
->> +#include <linux/bitops.h>
->>  #include <linux/module.h>
->>  #include <linux/phy/phy.h>
->>  #include <linux/regmap.h>
->> +#include <linux/delay.h>
->> +#include <linux/mfd/syscon.h>
->>  #include <linux/platform_device.h>
->>  #include <dt-bindings/phy/phy.h>
->>  
->> @@ -14,10 +18,10 @@
->>  #define		HHI_MIPI_CNTL0_COMMON_BLOCK	GENMASK(31, 28)
->>  #define		HHI_MIPI_CNTL0_ENABLE		BIT(29)
->>  #define		HHI_MIPI_CNTL0_BANDGAP		BIT(26)
->> -#define		HHI_MIPI_CNTL0_DECODE_TO_RTERM	GENMASK(15, 12)
->> -#define		HHI_MIPI_CNTL0_OUTPUT_EN	BIT(3)
->> +#define		HHI_MIPI_CNTL0_DIF_REF_CTL1	GENMASK(25, 16)
->> +#define		HHI_MIPI_CNTL0_DIF_REF_CTL0	GENMASK(15, 0)
->>  
->> -#define HHI_MIPI_CNTL1 0x01
->> +#define HHI_MIPI_CNTL1 0x04
->>  #define		HHI_MIPI_CNTL1_CH0_CML_PDR_EN	BIT(12)
->>  #define		HHI_MIPI_CNTL1_LP_ABILITY	GENMASK(5, 4)
->>  #define		HHI_MIPI_CNTL1_LP_RESISTER	BIT(3)
->> @@ -25,100 +29,170 @@
->>  #define		HHI_MIPI_CNTL1_INPUT_SEL	BIT(1)
->>  #define		HHI_MIPI_CNTL1_PRBS7_EN		BIT(0)
->>  
->> -#define HHI_MIPI_CNTL2 0x02
->> +#define HHI_MIPI_CNTL2 0x08
->>  #define		HHI_MIPI_CNTL2_CH_PU		GENMASK(31, 25)
->>  #define		HHI_MIPI_CNTL2_CH_CTL		GENMASK(24, 19)
->>  #define		HHI_MIPI_CNTL2_CH0_DIGDR_EN	BIT(18)
->>  #define		HHI_MIPI_CNTL2_CH_DIGDR_EN	BIT(17)
->>  #define		HHI_MIPI_CNTL2_LPULPS_EN	BIT(16)
->> -#define		HHI_MIPI_CNTL2_CH_EN(n)		BIT(15 - (n))
->> +#define		HHI_MIPI_CNTL2_CH_EN		GENMASK(15, 11)
->>  #define		HHI_MIPI_CNTL2_CH0_LP_CTL	GENMASK(10, 1)
->>  
->> +#define DSI_LANE_0              (1 << 4)
->> +#define DSI_LANE_1              (1 << 3)
->> +#define DSI_LANE_CLK            (1 << 2)
->> +#define DSI_LANE_2              (1 << 1)
->> +#define DSI_LANE_3              (1 << 0)
->> +#define DSI_LANE_MASK		(0x1F)
+On Fri, Nov 20, 2020 at 12:11:25PM +0100, Flavio Suligoi wrote:
+> For "fixed" PCI devices, such as chips directly soldered
+> on the main board (ethernet, Wi-Fi, serial ports, etc.),
+> it is possible to find an ACPI enumeration.
 > 
-> This should use BIT(), also there are interesting helpers in bitfield.h
-> to help with register fields, do send follow up patches..
+> This allows to add useful properties to these devices.
+> Just for an example: the property "gpio-line-names" can be
+> added to the pins of a GPIO expander on the PCI bus.
+> 
+> In order to find the ACPI name of a PCI device, it's necessary
+> to disassemble the BIOS ACPI tables (in particular the DSDT)
+> and also to analyze the PCI bus topology of the board.
+> 
+> This patch, with a practical example, show how to do this.
+
+Good enough, we can amend style and formatting later on.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
+
+(Here you usually put a changelog what has been done in v2 vs. v1))
+
+>  .../firmware-guide/acpi/enumeration.rst       | 154 ++++++++++++++++++
+>  1 file changed, 154 insertions(+)
+> 
+> diff --git a/Documentation/firmware-guide/acpi/enumeration.rst b/Documentation/firmware-guide/acpi/enumeration.rst
+> index c13fee8b02ba..9f0d5c854fa4 100644
+> --- a/Documentation/firmware-guide/acpi/enumeration.rst
+> +++ b/Documentation/firmware-guide/acpi/enumeration.rst
+> @@ -461,3 +461,157 @@ Otherwise, the _DSD itself is regarded as invalid and therefore the "compatible"
+>  property returned by it is meaningless.
+>  
+>  Refer to :doc:`DSD-properties-rules` for more information.
+> +
+> +PCI hierarchy representation
+> +============================
+> +
+> +Sometimes could be useful to enumerate a PCI device, knowing its position on the
+> +PCI bus.
+> +
+> +For example, some systems use PCI devices soldered directly on the mother board,
+> +in a fixed position (ethernet, Wi-Fi, serial ports, etc.). In this conditions it
+> +is possible to refer to these PCI devices knowing their position on the PCI bus
+> +topology.
+> +
+> +To identify a PCI device, a complete hierarchical description is required, from
+> +the chipset root port to the final device, through all the intermediate
+> +bridges/switches of the board.
+> +
+> +For example, let us assume to have a system with a PCIe serial port, an
+> +Exar XR17V3521, soldered on the main board. This UART chip also includes
+> +16 GPIOs and we want to add the property ``gpio-line-names`` [1] to these pins.
+> +In this case, the ``lspci`` output for this component is::
+> +
+> +	07:00.0 Serial controller: Exar Corp. XR17V3521 Dual PCIe UART (rev 03)
+> +
+> +The complete ``lspci`` output (manually reduced in length) is::
+> +
+> +	00:00.0 Host bridge: Intel Corp... Host Bridge (rev 0d)
+> +	...
+> +	00:13.0 PCI bridge: Intel Corp... PCI Express Port A #1 (rev fd)
+> +	00:13.1 PCI bridge: Intel Corp... PCI Express Port A #2 (rev fd)
+> +	00:13.2 PCI bridge: Intel Corp... PCI Express Port A #3 (rev fd)
+> +	00:14.0 PCI bridge: Intel Corp... PCI Express Port B #1 (rev fd)
+> +	00:14.1 PCI bridge: Intel Corp... PCI Express Port B #2 (rev fd)
+> +	...
+> +	05:00.0 PCI bridge: Pericom Semiconductor Device 2404 (rev 05)
+> +	06:01.0 PCI bridge: Pericom Semiconductor Device 2404 (rev 05)
+> +	06:02.0 PCI bridge: Pericom Semiconductor Device 2404 (rev 05)
+> +	06:03.0 PCI bridge: Pericom Semiconductor Device 2404 (rev 05)
+> +	07:00.0 Serial controller: Exar Corp. XR17V3521 Dual PCIe UART (rev 03) <-- Exar
+> +	...
+> +
+> +The bus topology is::
+> +
+> +	-[0000:00]-+-00.0
+> +	           ...
+> +	           +-13.0-[01]----00.0
+> +	           +-13.1-[02]----00.0
+> +	           +-13.2-[03]--
+> +	           +-14.0-[04]----00.0
+> +	           +-14.1-[05-09]----00.0-[06-09]--+-01.0-[07]----00.0 <-- Exar
+> +	           |                               +-02.0-[08]----00.0
+> +	           |                               \-03.0-[09]--
+> +	           ...
+> +	           \-1f.1
+> +
+> +To describe this Exar device on the PCI bus, we must start from the ACPI name
+> +of the chipset bridge (also called "root port") with address::
+> +
+> +	Bus: 0 - Device: 14 - Function: 1
+> +
+> +To find this information is necessary disassemble the BIOS ACPI tables, in
+> +particular the DSDT (see also [2])::
+> +
+> +	mkdir ~/tables/
+> +	cd ~/tables/
+> +	acpidump > acpidump
+> +	acpixtract -a acpidump
+> +	iasl -e ssdt?.* -d dsdt.dat
+> +
+> +Now, in the dsdt.dsl, we have to search the device whose address is related to
+> +0x14 (device) and 0x01 (function). In this case we can find the following
+> +device::
+> +
+> +	Scope (_SB.PCI0)
+> +	{
+> +	... other definitions follow ...
+> +		Device (RP02)
+> +		{
+> +			Method (_ADR, 0, NotSerialized)  // _ADR: Address
+> +			{
+> +				If ((RPA2 != Zero))
+> +				{
+> +					Return (RPA2) /* \RPA2 */
+> +				}
+> +				Else
+> +				{
+> +					Return (0x00140001)
+> +				}
+> +			}
+> +	... other definitions follow ...
+> +
+> +and the _ADR method [3] returns exactly the device/function couple that
+> +we are looking for. With this information and analyzing the above ``lspci``
+> +output (both the devices list and the devices tree), we can write the following
+> +ACPI description for the Exar PCIe UART, also adding the list of its GPIO line
+> +names::
+> +
+> +	Scope (_SB.PCI0.RP02)
+> +	{
+> +		Device (BRG1) //Bridge
+> +		{
+> +			Name (_ADR, 0x0000)
+> +
+> +			Device (BRG2) //Bridge
+> +			{
+> +				Name (_ADR, 0x00010000)
+> +
+> +				Device (EXAR)
+> +				{
+> +					Name (_ADR, 0x0000)
+> +
+> +					Name (_DSD, Package ()
+> +					{
+> +						ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+> +						Package ()
+> +						{
+> +							Package ()
+> +							{
+> +								"gpio-line-names",
+> +								Package ()
+> +								{
+> +									"mode_232",
+> +									"mode_422",
+> +									"mode_485",
+> +									"misc_1",
+> +									"misc_2",
+> +									"misc_3",
+> +									"",
+> +									"",
+> +									"aux_1",
+> +									"aux_2",
+> +									"aux_3",
+> +								}
+> +							}
+> +						}
+> +					})
+> +				}
+> +			}
+> +		}
+> +	}
+> +
+> +The location "_SB.PCI0.RP02" is obtained by the above investigation in the
+> +dsdt.dsl table, whereas the device names "BRG1", "BRG2" and "EXAR" are
+> +created analyzing the position of the Exar UART in the PCI bus topology.
+> +
+> +References
+> +==========
+> +
+> +[1] Documentation/firmware-guide/acpi/gpio-properties.rst
+> +
+> +[2] Documentation/admin-guide/acpi/initrd_table_override.rst
+> +
+> +[3] ACPI Specifications, Version 6.3 - Paragraph 6.1.1 _ADR Address)
+> +    https://uefi.org/sites/default/files/resources/ACPI_6_3_May16.pdf,
+> +    referenced 2020-11-18
+> -- 
+> 2.25.1
 > 
 
-Ok, cleanup will follow
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks,
-Neil
 
