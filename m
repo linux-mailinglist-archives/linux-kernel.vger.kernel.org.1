@@ -2,101 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9582BB2F7
+	by mail.lfdr.de (Postfix) with ESMTP id 010F22BB2F6
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730349AbgKTS2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:28:16 -0500
-Received: from mga01.intel.com ([192.55.52.88]:57252 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730287AbgKTS2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730339AbgKTS2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 20 Nov 2020 13:28:15 -0500
-IronPort-SDR: F+k0hQ3dsst/wqsO7JAQCCr9rQPZlsZS5qlpfj8oj4CfgQ6tMIlr6S35lSfPEOUlVvE4lW9DpN
- 7uXVn6C4dAGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="189624492"
-X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
-   d="scan'208";a="189624492"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 10:28:15 -0800
-IronPort-SDR: Q3O3PelUozvsAwIsLFJYjoqAZ32eFUGMGUXFsA35UKca4UytL7TZE2ZjiqIY+zm6Ca0zAHCpU7
- zSy6CR7/Whsg==
-X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
-   d="scan'208";a="369251032"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 10:28:14 -0800
-Subject: [PATCH] libnvdimm/namespace: Fix reaping of invalidated
- block-window-namespace labels
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-nvdimm@lists.01.org
-Cc:     stable@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org
-Date:   Fri, 20 Nov 2020 10:28:14 -0800
-Message-ID: <160589689452.3253830.10997437402431159372.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+Received: from mail.kernel.org ([198.145.29.99]:48722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730287AbgKTS2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:28:13 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19ABA2415B;
+        Fri, 20 Nov 2020 18:28:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605896893;
+        bh=NeHeQJmUla3vmR7XyOy4O+i4tOPT/mQV3ZB26CkYB+k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0LzDxwT02XC/zjRyU2aD6yhNI2oqissMzOjVjZCP5ylJcVfyAIV5T8irwHobJkVy+
+         CTctFcyaWf/R65c/syCY7YsEHLDnzkUR0bfWa1vDgGJR9/WG1f0ognK7vembhXR+S1
+         Jhrxm8Uxe6WMzYBKIbyPx7vCINxT3gWiI++cnPFU=
+Date:   Fri, 20 Nov 2020 12:28:18 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 029/141] e1000: Fix fall-through warnings for Clang
+Message-ID: <ea9567cc53425566b874484143c4b44619b17ae7.1605896059.git.gustavoars@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent change to ndctl to attempt to reconfigure namespaces in place
-uncovered a label accounting problem in block-window-type namespaces.
-The ndctl "create.sh" test is able to trigger this signature:
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+by explicitly adding a break statement instead of just letting the code
+fall through to the next case.
 
- WARNING: CPU: 34 PID: 9167 at drivers/nvdimm/label.c:1100 __blk_label_update+0x9a3/0xbc0 [libnvdimm]
- [..]
- RIP: 0010:__blk_label_update+0x9a3/0xbc0 [libnvdimm]
- [..]
- Call Trace:
-  uuid_store+0x21b/0x2f0 [libnvdimm]
-  kernfs_fop_write+0xcf/0x1c0
-  vfs_write+0xcc/0x380
-  ksys_write+0x68/0xe0
-
-When allocated capacity for a namespace is renamed (new UUID) the labels
-with the old UUID need to be deleted. The ndctl behavior to always
-destroy namespaces on reconfiguration hid this problem.
-
-The immediate impact of this bug is limited since block-window-type
-namespaces only seem to exist in the specification and not in any
-shipping products. However, the label handling code is being reused for
-other technologies like CXL region labels, so there is a benefit to
-making sure both vertical labels sets (block-window) and horizontal
-label sets (pmem) have a functional reference implementation in
-libnvdimm.
-
-Fixes: c4703ce11c23 ("libnvdimm/namespace: Fix label tracking error")
-Cc: <stable@vger.kernel.org>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/nvdimm/label.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/ethernet/intel/e1000/e1000_hw.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvdimm/label.c b/drivers/nvdimm/label.c
-index 47a4828b8b31..6f2be7a34598 100644
---- a/drivers/nvdimm/label.c
-+++ b/drivers/nvdimm/label.c
-@@ -980,6 +980,15 @@ static int __blk_label_update(struct nd_region *nd_region,
+diff --git a/drivers/net/ethernet/intel/e1000/e1000_hw.c b/drivers/net/ethernet/intel/e1000/e1000_hw.c
+index 4c0c9433bd60..19cf36360933 100644
+--- a/drivers/net/ethernet/intel/e1000/e1000_hw.c
++++ b/drivers/net/ethernet/intel/e1000/e1000_hw.c
+@@ -1183,6 +1183,7 @@ static s32 e1000_copper_link_igp_setup(struct e1000_hw *hw)
+ 			break;
+ 		case e1000_ms_auto:
+ 			phy_data &= ~CR_1000T_MS_ENABLE;
++			break;
+ 		default:
+ 			break;
  		}
- 	}
- 
-+	/* release slots associated with any invalidated UUIDs */
-+	mutex_lock(&nd_mapping->lock);
-+	list_for_each_entry_safe(label_ent, e, &nd_mapping->labels, list)
-+		if (test_and_clear_bit(ND_LABEL_REAP, &label_ent->flags)) {
-+			reap_victim(nd_mapping, label_ent);
-+			list_move(&label_ent->list, &list);
-+		}
-+	mutex_unlock(&nd_mapping->lock);
-+
- 	/*
- 	 * Find the resource associated with the first label in the set
- 	 * per the v1.2 namespace specification.
+-- 
+2.27.0
 
