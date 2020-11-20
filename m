@@ -2,60 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1CF2BA4DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F354A2BA4E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbgKTIkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:40:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58110 "EHLO mail.kernel.org"
+        id S1727220AbgKTImF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:42:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55920 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726558AbgKTIkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:40:39 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0002722244;
-        Fri, 20 Nov 2020 08:40:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605861638;
-        bh=dMzZlCs5sLmUYyTkOdmbEULzF7orbNVTDESsGpFByl8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1oBieG22nyex1qdaCb4oeucEUir+1Bd12wZTeO9GLvXYsw+4eNO8YkgMk41OMMfls
-         gf40PB99fzXut/MsHbtH6TE2kwMPyfMx0lZV13QhhfBr0k67ZtiUvhwog08NpMh8vQ
-         Q/Wp4vLizAJaKYf0SC6ku6/TdFz+qpbbNLyzjr4Q=
-Date:   Fri, 20 Nov 2020 09:41:21 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     linux-usb@vger.kernel.org, heikki.krogerus@linux.intel.com,
-        linux-kernel@vger.kernel.org, sfr@canb.auug.org.au,
-        linux-next@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: Fix num_altmodes kernel-doc error
-Message-ID: <X7eBMRWAopEYu78r@kroah.com>
-References: <20201120063523.4159877-1-pmalani@chromium.org>
+        id S1727120AbgKTImF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:42:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605861723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MNOFiQtIQ/Y0rDgNN5kTTR1VqVa93kqccMa8KF0RIG4=;
+        b=GDiMTJsC4HaxfVv0+8YSZSejokk+wM15yKilSV79cAMmGEld8iatqZpL7x05RKawd1r7EA
+        CeEXdJtWgXQaKN9jeEQSbHEYtl0KboYq6AM21k4jrWN51rd55Vz+0E3gxx9SL/z3x0Jdle
+        ZWFxIELplvVBCkbBX8K4Z0O/KzYE2B0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7DECDACBA;
+        Fri, 20 Nov 2020 08:42:03 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 09:42:02 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 00/21] Free some vmemmap pages of hugetlb page
+Message-ID: <20201120084202.GJ3200@dhcp22.suse.cz>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120063523.4159877-1-pmalani@chromium.org>
+In-Reply-To: <20201120064325.34492-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 10:35:22PM -0800, Prashant Malani wrote:
-> The commit to introduce the num_altmodes attribute for partner had an
-> error where one of the parameters was named differently in the comment
-> and the function signature. Fix the version in the comment to align with
-> what is in the function signature.
-> 
-> This fixes the following htmldocs warning:
-> 
-> drivers/usb/typec/class.c:632: warning: Excess function parameter
-> 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
-> 
-> Fixes: a0ccdc4a77a1 ("usb: typec: Add number of altmodes partner attr")
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+On Fri 20-11-20 14:43:04, Muchun Song wrote:
+[...]
 
-You forgot a "Reported-by:" tag here :(
+Thanks for improving the cover letter and providing some numbers. I have
+only glanced through the patchset because I didn't really have more time
+to dive depply into them.
 
-I'll go add it by hand...
+Overall it looks promissing. To summarize. I would prefer to not have
+the feature enablement controlled by compile time option and the kernel
+command line option should be opt-in. I also do not like that freeing
+the pool can trigger the oom killer or even shut the system down if no
+oom victim is eligible.
 
-greg k-h
+One thing that I didn't really get to think hard about is what is the
+effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
+invalid when racing with the split. How do we enforce that this won't
+blow up?
+
+I have also asked in a previous version whether the vmemmap manipulation
+should be really unconditional. E.g. shortlived hugetlb pages allocated
+from the buddy allocator directly rather than for a pool. Maybe it
+should be restricted for the pool allocation as those are considered
+long term and therefore the overhead will be amortized and freeing path
+restrictions better understandable.
+
+>  Documentation/admin-guide/kernel-parameters.txt |   9 +
+>  Documentation/admin-guide/mm/hugetlbpage.rst    |   3 +
+>  arch/x86/include/asm/hugetlb.h                  |  17 +
+>  arch/x86/include/asm/pgtable_64_types.h         |   8 +
+>  arch/x86/mm/init_64.c                           |   7 +-
+>  fs/Kconfig                                      |  14 +
+>  include/linux/bootmem_info.h                    |  78 +++
+>  include/linux/hugetlb.h                         |  19 +
+>  include/linux/hugetlb_cgroup.h                  |  15 +-
+>  include/linux/memory_hotplug.h                  |  27 -
+>  mm/Makefile                                     |   2 +
+>  mm/bootmem_info.c                               | 124 ++++
+>  mm/hugetlb.c                                    | 163 ++++-
+>  mm/hugetlb_vmemmap.c                            | 765 ++++++++++++++++++++++++
+>  mm/hugetlb_vmemmap.h                            | 103 ++++
+
+I will need to look closer but I suspect that a non-trivial part of the
+vmemmap manipulation really belongs to mm/sparse-vmemmap.c because the
+split and remapping shouldn't really be hugetlb specific. Sure hugetlb
+knows how to split but all the splitting should be implemented in
+vmemmap proper.
+
+>  mm/memory_hotplug.c                             | 116 ----
+>  mm/sparse.c                                     |   5 +-
+>  17 files changed, 1295 insertions(+), 180 deletions(-)
+>  create mode 100644 include/linux/bootmem_info.h
+>  create mode 100644 mm/bootmem_info.c
+>  create mode 100644 mm/hugetlb_vmemmap.c
+>  create mode 100644 mm/hugetlb_vmemmap.h
+
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
