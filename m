@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917DC2BB87C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12732BB880
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgKTVkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:40:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
+        id S1727215AbgKTVms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:42:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727678AbgKTVkR (ORCPT
+        with ESMTP id S1726556AbgKTVmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:40:17 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8F0C0613CF;
-        Fri, 20 Nov 2020 13:40:17 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id t21so8445289pgl.3;
-        Fri, 20 Nov 2020 13:40:17 -0800 (PST)
+        Fri, 20 Nov 2020 16:42:47 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA11C061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:42:47 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id 10so9154225pfp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:42:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EwGlWFruZutLPh9i2RwZfVnE97aWU8s6UdBnfnWbVd4=;
-        b=QnlBcZOM2fJeY9Z5CLpd34mV+7UGn+t2xsYQWov6ZoWywLRUebEBa2jFm7RdoST92U
-         lvDmq8KSi3ER+aIwTMPb99lqTSPS5z6NyXDA4Ch1meeaYj+gCAp9/Twggu/WoNipy7P9
-         ZNKX7wyhBZokl1CGE2ih+jOvjNejm7Ct2Odk2UZ4gI7oo0/Cews2Ep6wrwEmCCy6u/nq
-         lsHWvBdx3CNmUK36mZW///6pIMh+9yOEZIToSihyUsG1hcahSEb+uYnzdBkREukzaLhy
-         sNCtlENHrQKu5ZsLF4SnEQpYSjvL7Vog817KVcrCmXoITTexL9sybksEXvCiCjnOptvU
-         RS2Q==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dGx7nkSRSOVB3yrhS2MIzy8whpUJXJfKVaIkI4vsSM8=;
+        b=nP0XcB/EoAS0ZTzM1sPdQQyChokGsEwcZHuGmkGuwR1gvwVRsEVlEZwpZNREwVL4Mg
+         5XOL5/gmF4nfcspINYHLVuBIaoBqiBUwfJEfGTuE3fL9A/fQVUP4rcJv8wNEWMUsb123
+         uw+QVdjQAoUA+1oR335Deo7n8p1FJtqn8MXo6Vi+xr2rUICOtvMIAZKxo8ov0ruu1y8z
+         62bU9XHeeSXQlp8MUUEchmafjS/9DqTdjFlAJCmvPOgQ2F/5AOCH4dJtLXiSYgpemNf2
+         eHoJ/eMourfaXNx8+EFvdJeFpnlJgo77Bor3SExtPzLfv8RT82qvDOWNFwpvESS3P0NQ
+         PMsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=EwGlWFruZutLPh9i2RwZfVnE97aWU8s6UdBnfnWbVd4=;
-        b=XC2h69ScRVKeAUnU5HGqENpXNCtRpWgZrWLNrYIscAw9C6qXlLHzrG0OfYEb6e7LkG
-         XyAW6HvstutTubeI0A7XsLx+nF+kYSAtHZ9/TvQWMfupju+xmTQex/MaCeCEg8roYx7e
-         Kf3sFAV4a2FSODMKpMio5vKhCUDn2j2POV1N0nRv1RbFlE2xxl1yx+AiyCZ0hoYdV9Ps
-         FKvjLAjujCHWkHWGYlutRxtz+kgJkFCo/JIDmyUGL1xUWLkCoH8nHmgOR2NuoBD0Qb25
-         7cURGXPLhndNamwqBT/w8zyMk0/SHlOHgwrgF267WEo/uGZgaMDN+7n16T06+S9cCCHW
-         1jPQ==
-X-Gm-Message-State: AOAM533aaCzVfmcpdMZHHv4k36WtthPDJ+NwuyTSPxbnrG+522odb1QH
-        eamFFmNh4/mFM/3yU1grCFE=
-X-Google-Smtp-Source: ABdhPJybvSSHPXf/oWSn23C7ksXtTNisxVBwhvtPM6xM/ErYqCFAc5XNRhFyEuh4ijqJKrHOOqbvsw==
-X-Received: by 2002:a17:90a:4dc8:: with SMTP id r8mr12043132pjl.1.1605908416770;
-        Fri, 20 Nov 2020 13:40:16 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id 143sm4756386pfc.119.2020.11.20.13.40.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dGx7nkSRSOVB3yrhS2MIzy8whpUJXJfKVaIkI4vsSM8=;
+        b=VScmtdf9Nm4cwnzldLNYGTynM9Q/gDdtzqFI035EaVDjBZ6dvQ+tdSRaWLQdzmI29W
+         jXzSwuh2ikZ8hH7RB5MIkdYj5rewA3o8e1vbFJsDF1MKg2NsxHTV/SZx/+4c4wDD23Ni
+         0LynIPY4x0j2jYEJ80tcEzmfY27y43316Lx0YsSN2sEM43mWHmf3SbrQYFG9w1Ahw1Tu
+         Gxc8lVK87A6MFYYw5IYQehaKVXHwhxLVORUK9a7ErNTFNJpuuwEm1GaQxpd48EiR+Mo5
+         RB+zGGJA5zBl52OmH/7/lHyNyxxFbUCO1kIx+pZvCIP05h8KQ7u8TG/eQz6MEtRo48Nd
+         ZBcA==
+X-Gm-Message-State: AOAM532yUQAW4IVDY1mq/a7GuixYM1/AA37ddc7sZiFebXI4WXKk55Wb
+        Ood7yP8br+lmjUT9xndq0wpY4mB+LIF2eg==
+X-Google-Smtp-Source: ABdhPJwpkmxeXoiY32/7plx/oiEDwJxxdXvmxvBuYauPRqc7zCnt0e5sO1YG2uK0hI85rwdSFr9RiA==
+X-Received: by 2002:a17:90a:eb04:: with SMTP id j4mr6482430pjz.103.1605908566588;
+        Fri, 20 Nov 2020 13:42:46 -0800 (PST)
+Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id e8sm4713197pfj.157.2020.11.20.13.42.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 13:40:15 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 20 Nov 2020 13:40:13 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Rui Salvaterra <rsalvaterra@gmail.com>
-Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] zram: break the strict dependency from lzo
-Message-ID: <20201120214013.GD3377168@google.com>
-References: <20201115101514.954-1-rsalvaterra@gmail.com>
- <20201119222610.GD3113267@google.com>
- <CALjTZvbK6_UqDQFhMxdEQAR-FbsZKrztkEFronvoFpLUWsi_gw@mail.gmail.com>
+        Fri, 20 Nov 2020 13:42:45 -0800 (PST)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org
+Cc:     guennadi.liakhovetski@linux.intel.com, arnaud.pouliquen@st.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/8] rpmsg: Make RPMSG name service modular 
+Date:   Fri, 20 Nov 2020 14:42:37 -0700
+Message-Id: <20201120214245.172963-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALjTZvbK6_UqDQFhMxdEQAR-FbsZKrztkEFronvoFpLUWsi_gw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 09:10:13AM +0000, Rui Salvaterra wrote:
-> Hi, Minchan,
-> 
-> On Thu, 19 Nov 2020 at 22:26, Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > What's the purpose of ZRAM_AUTOSEL_ALGO?
-> > If you and Sergey already discussed, sorry about the missing it.
-> 
-> The purpose of ZRAM_AUTOSEL_ALGO is to make sure at least one of the
-> required compression algorithms is enabled, either as a module or
-> built-in. I believe Sergey agreed with the reasoning behind it, but
-> he'll let us know if I misunderstood. :)
-> 
-> > Below doesn't work for your goal?
-> 
-> Unfortunately, it doesn't. :( It breaks the dependency chain, allowing
-> you to deselect all compression algorithms in the crypto menu, and
+This revision addresses comments received from the previous revision,
+i.e V6.  Please see details below.
 
-Hi Rui,
+It starts by making the RPMSG protocol transport agnostic by
+moving the headers it uses to generic types and using those in the
+current implementation.  From there it re-uses the work that Arnaud
+published[1] to make the name service modular.
 
-I don't understand it. Please see below.  ZRAM_COMP_LZO_DEF select
-CRYPTO_LZO, not relying on it. If system supports other CRYPTO module
-it will show on choice list. Otherwise, default lzo will be always
-there and select CRYPTO_LZO.
+Tested on stm32mp157 with the RPMSG client sample application.  Applies
+cleanly on rpmsg-next.
 
-Do I miss your point?
+Thanks,
+Mathieu
 
-+
-+choice
-+       prompt "zram default compressor"
-+       default ZRAM_COMP_LZO_DEF
-+       depends on ZRAM || CRYPTO_LZ4
-+       help
-+         a
-+
-+config ZRAM_COMP_LZO_DEF
-+       bool "lzo"
-+       select CRYPTO_LZO
-+       help
-+         b
-+
-+config ZRAM_COMP_LZ4_DEF
-+       bool "lz4"
-+       depends on CRYPTO_LZ4
-+       help
-+         c
-+endchoice
-+
-+config ZRAM_DEF_COMP
-+       string
-+       default "lzo" if ZRAM_COMP_LZO_DEF
-+       default "lz4" if ZRAM_COMP_LZ4_DEF
+[1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
 
+-------
+New for V7:
+- Fixed error path in rpmsg_probe() as reported by Guennadi
+
+Arnaud Pouliquen (4):
+  rpmsg: virtio: Rename rpmsg_create_channel
+  rpmsg: core: Add channel creation internal API
+  rpmsg: virtio: Add rpmsg channel device ops
+  rpmsg: Turn name service into a stand alone driver
+
+Mathieu Poirier (4):
+  rpmsg: Introduce __rpmsg{16|32|64} types
+  rpmsg: virtio: Move from virtio to rpmsg byte conversion
+  rpmsg: Move structure rpmsg_ns_msg to header file
+  rpmsg: Make rpmsg_{register|unregister}_device() public
+
+ drivers/rpmsg/Kconfig            |   9 ++
+ drivers/rpmsg/Makefile           |   1 +
+ drivers/rpmsg/rpmsg_core.c       |  44 ++++++++
+ drivers/rpmsg/rpmsg_internal.h   |  14 ++-
+ drivers/rpmsg/rpmsg_ns.c         | 126 +++++++++++++++++++++
+ drivers/rpmsg/virtio_rpmsg_bus.c | 186 +++++++++++--------------------
+ include/linux/rpmsg.h            |  63 ++++++++++-
+ include/linux/rpmsg/byteorder.h  |  67 +++++++++++
+ include/linux/rpmsg/ns.h         |  45 ++++++++
+ include/uapi/linux/rpmsg_types.h |  11 ++
+ 10 files changed, 439 insertions(+), 127 deletions(-)
+ create mode 100644 drivers/rpmsg/rpmsg_ns.c
+ create mode 100644 include/linux/rpmsg/byteorder.h
+ create mode 100644 include/linux/rpmsg/ns.h
+ create mode 100644 include/uapi/linux/rpmsg_types.h
+
+-- 
+2.25.1
 
