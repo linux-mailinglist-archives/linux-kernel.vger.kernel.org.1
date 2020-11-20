@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136732BA362
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAECF2BA390
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbgKTHew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:34:52 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40732 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726554AbgKTHev (ORCPT
+        id S1727173AbgKTHip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 02:38:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgKTHip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:34:51 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AK7Ymk2083277;
-        Fri, 20 Nov 2020 01:34:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605857688;
-        bh=keWuZXmMWanYbVCT7h7x7bRuK4QQGCy9wcihJZJ4H8c=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=d7+ZXiUDDm+ii7BY8oS0XSfQP22xCGWjwhyCD0KIkqkk/zHFb43jgPMQ8gaOYyDDP
-         q6s9toDEYKrjyWBNwOaWoPV9M2HQ+g3PE3bidvPTmTu4t1UXWDwwKISgeJjFyf1wHv
-         ms7u2UgokSyo3+REgwWgA3Rw/sp23751j9ro/8ZU=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AK7Ymgi092729
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Nov 2020 01:34:48 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 20
- Nov 2020 01:34:48 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 20 Nov 2020 01:34:48 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AK7YftX089749;
-        Fri, 20 Nov 2020 01:34:46 -0600
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <nm@ti.com>, <t-kristo@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nsekhar@ti.com>, <vigneshr@ti.com>
-Subject: [PATCH v2 2/2] arm64: dts: ti: k3-j7200-common-proc-board: Correct the name of io expander on main_i2c1
-Date:   Fri, 20 Nov 2020 09:35:33 +0200
-Message-ID: <20201120073533.24486-3-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201120073533.24486-1-peter.ujfalusi@ti.com>
-References: <20201120073533.24486-1-peter.ujfalusi@ti.com>
+        Fri, 20 Nov 2020 02:38:45 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5024EC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 23:38:45 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id v21so3178293plo.12
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 23:38:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BPHueWPsAzZX4KIbpi2s6NnCrn6gqE31TO7Qw8ZTpxA=;
+        b=FOCqRMWV/Bcq2gUH3zBrLdf1fWn70LdOMd/c3/Ql46jWp6iKXzzUrCkXVmoDsrHO0y
+         WilWcVIUP4BIQrKbjta2j2kpPZufPo8rfrEXlTJ2Uu8rBRUsMvY6t3BLYb5pfI75lAck
+         t8/jCeBgTFSWmMS7S+27UeM9MLxYv12Z1g984=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BPHueWPsAzZX4KIbpi2s6NnCrn6gqE31TO7Qw8ZTpxA=;
+        b=eQfbaC1A01MZsdAnb2cinTAutpgqPjvn7s7cmO1f0mvbr2HYO6NLgwnObuuYURjYIO
+         comW38WRc1ivkp8tfawVge5rHrNlLjFrEbb/ARUs/AmbkJRx/II8quWoyId65Pqo/6iO
+         rW6MLIzOUcMc/9vh7V/vsyJD3wX0QSSpV7T/VZbIkcZNLqKWP9axQF2N8Qqg5wYtmGvt
+         xehurLXQU1mEcsHYkHsgeZsiPdrZJ2sc5jZwg8M2CT5A0rQ0TLib302dsm3rh8n7d9W4
+         9SX0DrMLXaSuzGDuyaXCA1hZ00fQRoqL+nF6NTmVSipwTxNcWrIisxCYYrDltO7qQWtL
+         z6bw==
+X-Gm-Message-State: AOAM533kskeFEn05qovD05Ct6z3A7M7UfvOxEEQDeiwpFwK2+8wK8aCI
+        dWA0rhzzU+KdPAQ88cyEDSMZ9w==
+X-Google-Smtp-Source: ABdhPJwKINDMQKOdcjkPXg2iJjG8fKHb/zDVo/Wq0wmZWYnnZeuyXVNZYS1HqeVul8qCUnbH2q1Org==
+X-Received: by 2002:a17:902:74c2:b029:d7:cce5:1813 with SMTP id f2-20020a17090274c2b02900d7cce51813mr12506702plt.50.1605857924548;
+        Thu, 19 Nov 2020 23:38:44 -0800 (PST)
+Received: from smtp.gmail.com ([100.99.132.239])
+        by smtp.gmail.com with ESMTPSA id o9sm1742633pjr.2.2020.11.19.23.38.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 23:38:43 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Daniel Campello <campello@chromium.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+Subject: [PATCH] iio: sx9310: Fix semtech,avg-pos-strength setting when > 16
+Date:   Thu, 19 Nov 2020 23:38:42 -0800
+Message-Id: <20201120073842.3232458-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J7200 main_i2c1 is connected to the i2c bus on the CPB marked as main_i2c3
+This DT property can be 0, 16, and then 64, but not 32. The math here
+doesn't recognize this slight bump in the power of 2 numbers and
+translates a DT property of 64 into the register value '3' when it
+really should be '2'. Fix it by subtracting one more if the number being
+translated is larger than 16.
 
-The i2c1 devices on the CPB are _not_ connected to the SoC, they are not
-usable with the J7200 SOM.
-
-Correct the expander name from exp4 to exp3 and at the same time add the
-line names as well.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Daniel Campello <campello@chromium.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Gwendal Grignou <gwendal@chromium.org>
+Cc: Evan Green <evgreen@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- .../arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-index 2721137d8943..7110ef3e4092 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-@@ -154,16 +154,26 @@ exp2: gpio@22 {
- 	};
- };
+This fixes commit 5b19ca2c78a0 ("iio: sx9310: Set various settings from
+DT") in the togreg branch.
+
+ drivers/iio/proximity/sx9310.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
+index a2f820997afc..5d8387ed9301 100644
+--- a/drivers/iio/proximity/sx9310.c
++++ b/drivers/iio/proximity/sx9310.c
+@@ -1305,7 +1305,7 @@ sx9310_get_default_reg(struct sx9310_data *data, int i,
+ 		if (ret)
+ 			break;
  
-+/*
-+ * The j7200 CPB board is identical to the CPB used for J721E, the SOMs can be
-+ * swapped on the CPB.
-+ *
-+ * main_i2c1 of J7200 is connected to the CPB i2c bus labeled as i2c3.
-+ * The i2c1 of the CPB (as it is labeled) is not connected to j7200.
-+ */
- &main_i2c1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_i2c1_pins_default>;
- 	clock-frequency = <400000>;
- 
--	exp4: gpio@20 {
-+	exp3: gpio@20 {
- 		compatible = "ti,tca6408";
- 		reg = <0x20>;
- 		gpio-controller;
- 		#gpio-cells = <2>;
-+		gpio-line-names = "CODEC_RSTz", "CODEC_SPARE1", "UB926_RESETn",
-+				  "UB926_LOCK", "UB926_PWR_SW_CNTRL",
-+				  "UB926_TUNER_RESET", "UB926_GPIO_SPARE", "";
- 	};
- };
- 
+-		pos = min(max(ilog2(pos), 3), 10) - 3;
++		pos = min(max(ilog2(pos), 3), 11) - (pos > 16 ? 4 : 3);
+ 		reg_def->def &= ~SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK;
+ 		reg_def->def |= FIELD_PREP(SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK,
+ 					   pos);
+
+base-commit: 5b19ca2c78a0838976064c0347e46a2c859b541d
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+https://chromeos.dev
 
