@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47E82BB648
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB492BB64F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730394AbgKTUJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 15:09:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729683AbgKTUJQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 15:09:16 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412CFC061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:09:16 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id w14so8922309pfd.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:09:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TfymUBAMPnscgJxXttBDGIhTapd3XcXto9ob9Nf/8hk=;
-        b=cxREEUhu03A0vRrbnkG/czu2MN+ftWNFq1cQEgKatoha9fssBw1sYNwNYvyCwYWs+N
-         gVEw0g/WM3EavkUW4qVVXOpfC1vUDxHQruZiWIEoruLETt2GrO/3xSz0VSbAxijV9uAT
-         oo+yPjsUuD8XKlUSSHnMpABuffY0yDdY5Gzvo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TfymUBAMPnscgJxXttBDGIhTapd3XcXto9ob9Nf/8hk=;
-        b=DbAC12DA4bBYMe87Js/A5GzOwEUjLbvACfPSzJHWmUt7m/tt3Zt1vk/HTk9Suwhc5p
-         HuHxoOBQulMDCwTjp1g1eZrhkwTE9KDPmFRJNGlcA+XM7I084EfUzdD69Iyk0W2HQZfF
-         3SnftES/ZakztEU0u3d92RoJ80A5JZpE1qdamEWIkmQO0FQL6KV/ojOTaqVhWDqle5R/
-         ZmHlLgqIysI9Drkryw0NhQ0FGEPfW8w3wjxzQoZZd3E1WJ2/7Axko8SsndHGCodYa7E+
-         yHdU4bAMbY/Kznzd0o90LWQKXgOn8jntIvotKi+Z86mHrSUzTOrARJg9ZqXG1clD0z3p
-         c5rw==
-X-Gm-Message-State: AOAM532bHHYy24jH/wBazHxBpb1S66RkLOThM4l6wy+K8FFAEfUpo/ff
-        9NFStYLpJ2D8E7Jua4b+38jFTQ==
-X-Google-Smtp-Source: ABdhPJwVOpRGlhivqD9EaIH5+QG3WF/E6o8+aD9UZFedVwwkNHBrM+ysmz0MnYPwE5pi6m4YFOmS5w==
-X-Received: by 2002:a17:90a:aa13:: with SMTP id k19mr12444785pjq.145.1605902955659;
-        Fri, 20 Nov 2020 12:09:15 -0800 (PST)
-Received: from smtp.gmail.com ([100.99.132.239])
-        by smtp.gmail.com with ESMTPSA id r8sm4679626pfq.197.2020.11.20.12.09.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 12:09:15 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH] arm64: dts: qcom: sc7180: Remove double pull-up on p-sensor-int-l
-Date:   Fri, 20 Nov 2020 12:09:13 -0800
-Message-Id: <20201120200913.618274-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+        id S1729086AbgKTUO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 15:14:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728360AbgKTUO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 15:14:28 -0500
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A08B2245F;
+        Fri, 20 Nov 2020 20:14:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605903267;
+        bh=0nud5UudYzSYvDSjDSOinOA5/um3v/zH6Z3ObsR97t0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=X7YZqLn81wr4ibPUvpJWPzA3kGKLbasHaVS4KtSQmYUQnH68lLC7ujEc5DjefZsaW
+         +m1xZUVK8iLR7Gzbu2YLCTVhc+BFyifNYAoRwxopZ3LpX/a//pC2yV6B3uIGSxO2PS
+         +XdiVjSJCWLkwUFueS1fXEJfmoLeSAgZC4bz8cTE=
+Received: by mail-oo1-f48.google.com with SMTP id f8so2493447oou.0;
+        Fri, 20 Nov 2020 12:14:27 -0800 (PST)
+X-Gm-Message-State: AOAM531JiQqiLNPDlQUg/S4DDidhC/jOEMhxO6LExQRLvbEaMI12O9Xh
+        GqXumnDo8IrURRJC9pnQ0osdk4aqfYeU+EkQRA==
+X-Google-Smtp-Source: ABdhPJxDvHVEata44WRWpNmiCQnyKriXlGsKwYVrArhwm4ftDB2DYLVCk4f1155CAu3m4tuYyebCjMNfsVT0OAY28Yw=
+X-Received: by 2002:a4a:c4c7:: with SMTP id g7mr14542347ooq.50.1605903266545;
+ Fri, 20 Nov 2020 12:14:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1605296218-2510-1-git-send-email-skomatineni@nvidia.com>
+ <1605296218-2510-4-git-send-email-skomatineni@nvidia.com> <20201116150022.GA1642318@bogus>
+ <4b1d90b7-63e7-8b32-16f8-a1020827f207@nvidia.com>
+In-Reply-To: <4b1d90b7-63e7-8b32-16f8-a1020827f207@nvidia.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 20 Nov 2020 14:14:15 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLga9TDm_9g6gO54Upzcw8rwqFm-9E1K05FqPHB43kbkg@mail.gmail.com>
+Message-ID: <CAL_JsqLga9TDm_9g6gO54Upzcw8rwqFm-9E1K05FqPHB43kbkg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/6] dt-bindings: ata: tegra: Convert binding
+ documentation to YAML
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        devicetree@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This interrupt has an external pull-up so we don't need to pull it up
-again. Drop the internal pull here. Note I don't think this really
-changes anything, just noticed while looking at this irq pin.
+On Tue, Nov 17, 2020 at 10:15 AM Sowjanya Komatineni
+<skomatineni@nvidia.com> wrote:
+>
+>
+> On 11/16/20 7:00 AM, Rob Herring wrote:
+> > On Fri, 13 Nov 2020 11:36:55 -0800, Sowjanya Komatineni wrote:
+> >> This patch converts text based dt-binding document to YAML based
+> >> dt-binding document.
+> >>
+> >> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> >> ---
+> >>   .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 137 +++++++++++++++++++++
+> >>   .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 -------
+> >>   2 files changed, 137 insertions(+), 44 deletions(-)
+> >>   create mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
+> >>   delete mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
+> >>
+> >
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> >
+> > yamllint warnings/errors:
+> >
+> > dtschema/dtc warnings/errors:
+> > Error: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dts:27.31-32 syntax error
+> > FATAL ERROR: Unable to parse input tree
+> > make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dt.yaml] Error 1
+> > make[1]: *** Waiting for unfinished jobs....
+> > make: *** [Makefile:1364: dt_binding_check] Error 2
+> >
+> >
+> > See https://patchwork.ozlabs.org/patch/1400065
+> >
+> > The base for the patch is generally the last rc1. Any dependencies
+> > should be noted.
+> >
+> > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> > date:
+> >
+> > pip3 install dtschema --upgrade
+> >
+> > Please check and re-submit.
+>
+> Hi Rob,
+>
+> make dt_binding_check shows other yaml warmings and didn't go thru
+> tegra-ahci.yaml even with specifying DT_SHHEMA_FILES
 
-Cc: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+rc1 and rc3 were broken, so you need to use rc2.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index d48a75afdafb..3eb1ff2483be 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -1331,7 +1331,8 @@ pinmux {
- 
- 		pinconf {
- 			pins = "gpio24";
--			bias-pull-up;
-+			/* Has external pullup */
-+			bias-disable;
- 		};
- 	};
- 
+> But, When I do dtbs_check, I see
+> Documentation/devicetree/bindings/processed-schema.json generated and
+> also it passes for tegra-ahci.yaml
+>
+>
+> In v1 feedback discussion, you mentioned it should be good if dtbs_check
+> passes.
 
-base-commit: ead9f7d7ea9e20843e29e688b53859cea20044ee
-prerequisite-patch-id: 239dd75c9c3d2ef544f95466280f296fc217c096
--- 
-https://chromeos.dev
+dt_binding_check must pass without introducing errors/warnings. That's
+not yet a requirement for dtbs_check, but it is a good idea to run
+that and make sure any warnings are things that should be fixed in dts
+files rather than the binding schema.
 
+Rob
