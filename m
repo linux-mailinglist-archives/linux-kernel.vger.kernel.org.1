@@ -2,78 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC842BB141
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 18:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 560ED2BB149
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 18:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgKTRSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 12:18:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726255AbgKTRSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 12:18:10 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20E1822252;
-        Fri, 20 Nov 2020 17:18:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605892689;
-        bh=uy+51xeLLzq1vXGE7LGJb4vNbh6FZc0ca+/BpSaUnJ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TzOH+qDooBkM+qvyFtDXceRJ1uL8IxPw/J70qTrL7zQrK29OIKZBH7oM6az5lypL7
-         jd3ZlMeuno8YVqrLgLffY6Ui4owRy524YZhVa7lW1GJJOgrvMhBGU6mrjy/vlcieZo
-         iUem9dXye8RjtpAWFLrCcSs8Wn556NVCn8dNnurE=
-Date:   Fri, 20 Nov 2020 17:17:48 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] spi: Take the SPI IO-mutex in the spi_setup() method
-Message-ID: <20201120171629.GH6751@sirena.org.uk>
-References: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
+        id S1728039AbgKTRUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 12:20:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727345AbgKTRUe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 12:20:34 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB4DC0613CF;
+        Fri, 20 Nov 2020 09:20:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=S891HRVAXLMue2eb3ZaWv9TMDAthb1khr5PCwoXDFR4=; b=j66PMMpvppK+9LOqAod/s1ja5m
+        NVR3CJQ5wNAq2SNU16LOU8GllPMP3dWrlW0vWIkua0Q20gtch6gF283d57uK3CBa5mTngXGmftXl9
+        EoWhyx1dajSPLcrCy+az1qOxvLY8u/ryxMHXbLQY4wRWf6tfAyS5dJi34STTYLFpGVEVFckV6idcX
+        8A2ryyyeBQPvBlZuB3VZ25y1x3p3+fuI2rkDBjo2pRYLKAAe2ynNubYwTSeWn1a4EEhMMWl8UeGO+
+        kKNrUMokjBiTf6Q9XupujrSzp+9OEjo+AQ1SZhNy8Gpw+6odKCdO8aO/7liRmMFfqiVNjewZRd/+x
+        igbQutPg==;
+Received: from [2601:1c0:6280:3f0::bcc4]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kgA4p-0001xJ-Sm; Fri, 20 Nov 2020 17:20:04 +0000
+Subject: Re: [PATCH 2/3] mm: Extract might_alloc() debug check
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Michel Lespinasse <walken@google.com>,
+        Waiman Long <longman@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@intel.com>
+References: <20201120095445.1195585-1-daniel.vetter@ffwll.ch>
+ <20201120095445.1195585-3-daniel.vetter@ffwll.ch>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bfe3b1a4-9cc0-358f-a62e-b6d9a68e735a@infradead.org>
+Date:   Fri, 20 Nov 2020 09:19:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NqNl6FRZtoRUn5bW"
-Content-Disposition: inline
-In-Reply-To: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
-X-Cookie: Have at you!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201120095445.1195585-3-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---NqNl6FRZtoRUn5bW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 11/20/20 1:54 AM, Daniel Vetter wrote:
+> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+> index d5ece7a9a403..f94405d43fd1 100644
+> --- a/include/linux/sched/mm.h
+> +++ b/include/linux/sched/mm.h
+> @@ -180,6 +180,22 @@ static inline void fs_reclaim_acquire(gfp_t gfp_mask) { }
+>  static inline void fs_reclaim_release(gfp_t gfp_mask) { }
+>  #endif
+>  
+> +/**
+> + * might_alloc - Marks possible allocation sites
 
-On Tue, Nov 17, 2020 at 12:45:17PM +0300, Serge Semin wrote:
+                    Mark
 
-> Of course I could have provided a fix affecting the DW APB SSI driver
-> only, for instance, by creating a mutual exclusive access to the set_cs
-> callback and setting/clearing only the bit responsible for the
-> corresponding chip-select. But after a short research I've discovered that
+> + * @gfp_mask: gfp_t flags that would be use to allocate
 
-I think the driver needs a fix anyway for the case where there's a mix
-of devices with standard and inverted chip selects, it assumes they all
-have the same polarity AFAICT.
+                                           used
 
---NqNl6FRZtoRUn5bW
-Content-Type: application/pgp-signature; name="signature.asc"
+> + *
+> + * Similar to might_sleep() and other annotations this can be used in functions
 
------BEGIN PGP SIGNATURE-----
+                                         annotations,
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+3+jsACgkQJNaLcl1U
-h9BwLgf+Lis0gdGmaCp6BXLmrpL/5yxKSuQ4g3xHQigJuLJyrPf4GoaQSMv34u1z
-rGowoRkVYkjpfeqtFAG9ns/ozKKdVJkgcycEWl/KZI6Gia7COUdlNHHaiJaSeDQk
-qqTbB4ZoDVrSRqd7tE6hAurM18DxwY5fFYEvN39XOZEakqMeqgQ8x9+iwe59VPsw
-bwJV0FzAIPnCx/AbdIaU+FA6LTJpSJp1dWzzVW+tvxXkeEpBgVAHMOdSc8LwnkiS
-szD4KAaR3VRvQ3rjunaXQlJPVctdIhPnknVEFnZKDwaQIBlmoyvy0By1CZ3+woMZ
-Ogq5RaosPg+EOYnY3K0VFUFShzSd4w==
-=YaE4
------END PGP SIGNATURE-----
+> + * that might allocate, but often dont. Compiles to nothing without
 
---NqNl6FRZtoRUn5bW--
+                                     don't.
+
+> + * CONFIG_LOCKDEP. Includes a conditional might_sleep() if @gfp allows blocking.
+
+?                                            might_sleep_if() if
+
+> + */
+> +static inline void might_alloc(gfp_t gfp_mask)
+> +{
+> +	fs_reclaim_acquire(gfp_mask);
+> +	fs_reclaim_release(gfp_mask);
+> +
+> +	might_sleep_if(gfpflags_allow_blocking(gfp_mask));
+> +}
+
+
+-- 
+~Randy
+
