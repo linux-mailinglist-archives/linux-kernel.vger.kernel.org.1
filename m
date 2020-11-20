@@ -2,165 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35722BAA58
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 616CA2BAA55
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgKTMld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:41:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
+        id S1727971AbgKTMlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:41:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728041AbgKTMlb (ORCPT
+        with ESMTP id S1725952AbgKTMlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:41:31 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA0AC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:41:30 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id v12so7713958pfm.13
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:41:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2xmKB7TKmyuJqAeHaXMBy48tPAGfs/Dc4x/Ex91iYPg=;
-        b=QtGGwEfCUUfQtF6A4LP4HRak+3zHqLMer9XuFEfRr7YiX37HK0ez2RQIKrjEKckYk0
-         LlQ5hEPW49q3qOwBrRHEE9T6kimslhXPXCIt8+xP6cguuYLGRbjwn/oquxWnwlwi3+6D
-         cHPYyX6fg6/P5NVhLIjQ0409FlWkJ1a1MqS7P3vsxtyLDLnQo/wmrut9s9wyXCd1naMo
-         BOdclSR5a3Gev9lqt3duFEdBgSFQA0vIBxgTRHEq36RKzQicNOdOpBpn/aqvTBIxYAnS
-         gwRz5YivYvPPMiw6p16AwteVC8H1QpCWuQhLCXAmRFAgv8ybc/1uURlnaafFFttStnga
-         cXPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2xmKB7TKmyuJqAeHaXMBy48tPAGfs/Dc4x/Ex91iYPg=;
-        b=XrL0otQdjPrDHRVjFcAtdQX+RihLdO8tbNbRP8hRwGJehP/MFgxyviBal9LM5HjT+l
-         40jq3eSkIu2BL0JxOKNznkSPB+1hIVMq8htzv/C5IZtiF+JPzXQj9YDkFoVIfrSqgTEK
-         TfUr1abhMwIbpT7gVvTl7+ZP4kJ3o9CFgVYoT/uGbufM6nJNBFPUMfbcZyryNcBN/ZmN
-         0TRtInV5LENGAGxDxzviBzPIYdgwfmZ/m3wSyF0t31YRjY+n/eAYjPjzTXQCCkJzwjv0
-         3f0sohy+pIw4qgZdrp7Cei9seooeF7q//ADK/HKkmLXSEWg0Zu/W5OEzV2PG1B46dwTT
-         ELFA==
-X-Gm-Message-State: AOAM533AsTrKLjzQDuSthZ0SvZAV18qxkrnnAB0Z/KQvwZI28e2fI7p8
-        tsTamYP5d8uoYJUnmItfmhVnuRbjfH+kQs1jCMvzQw==
-X-Google-Smtp-Source: ABdhPJzaMHjGp7RmlCC2dPw3XwN836wo8cYS+yqSHJ8vjWJsnq+Pj+Qa4bwNtUmvR7lSR54QIGbJwmaQW9nRh3wcRQQ=
-X-Received: by 2002:aa7:9aaf:0:b029:197:c3e4:88e8 with SMTP id
- x15-20020aa79aaf0000b0290197c3e488e8mr5849185pfi.2.1605876089605; Fri, 20 Nov
- 2020 04:41:29 -0800 (PST)
+        Fri, 20 Nov 2020 07:41:22 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F40C0613CF;
+        Fri, 20 Nov 2020 04:41:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0W1qIKamdIi1WLhOTedot2TAOmMGy/szb5xPJbQDGhY=; b=d0IhNCASZr1XkFVXcG67Wn6Vok
+        5XliI+Ppobnq0CE/JhPQSmoSX9o79IJHV6MLKJa6sg81py8BJk7b88AUhukRmdYaoS6kDBUfzHy0v
+        ijmcf6pSHn8sjdGCALoTpNGLMYTUaNlWgYPgq8v5CggmPcT8AqpbG6d7uuCYWVhdDSuxn0GstP1U3
+        uZMxfwkMoyc2wKrVrP3AasRC0EREJa5NgOpeUgdi1fMu5OhtMJwUg5Xw4gr59E8bgE2u91yIfBQEa
+        P25X9473Mncgen8omogLoIi58K7TdGQFRYFzo5vg683kgjYlVjI7cgP5dSP/JdP91JvjVtHKT+mJl
+        k4gUNDLA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kg5j4-0000FM-VZ; Fri, 20 Nov 2020 12:41:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 576AD3011C6;
+        Fri, 20 Nov 2020 13:41:18 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4377320250969; Fri, 20 Nov 2020 13:41:18 +0100 (CET)
+Date:   Fri, 20 Nov 2020 13:41:18 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Jakub Jelinek <jakub@redhat.com>, x86@kernel.org
+Subject: Re: [tip: core/core] ilog2 vs. GCC inlining heuristics
+Message-ID: <20201120124118.GI3021@hirez.programming.kicks-ass.net>
+References: <20201021132718.GB2176@tucnak>
+ <160587563846.11244.17275939588139394513.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-References: <20201120064325.34492-1-songmuchun@bytedance.com> <20201120084202.GJ3200@dhcp22.suse.cz>
-In-Reply-To: <20201120084202.GJ3200@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 20 Nov 2020 20:40:46 +0800
-Message-ID: <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
- hugetlb page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160587563846.11244.17275939588139394513.tip-bot2@tip-bot2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 4:42 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 20-11-20 14:43:04, Muchun Song wrote:
-> [...]
->
-> Thanks for improving the cover letter and providing some numbers. I have
-> only glanced through the patchset because I didn't really have more time
-> to dive depply into them.
->
-> Overall it looks promissing. To summarize. I would prefer to not have
-> the feature enablement controlled by compile time option and the kernel
-> command line option should be opt-in. I also do not like that freeing
-> the pool can trigger the oom killer or even shut the system down if no
-> oom victim is eligible.
 
-Hi Michal,
+Sorry, I typoed the branch name. I'll make this branch go away.
 
-I have replied to you about those questions on the other mail thread.
+Anyway, Jacub, your patch seems to not upset the robots, so I'll go post
+it properly for you.
 
-Thanks.
-
->
-> One thing that I didn't really get to think hard about is what is the
-> effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
-> invalid when racing with the split. How do we enforce that this won't
-> blow up?
-
-This feature depends on the CONFIG_SPARSEMEM_VMEMMAP,
-in this case, the pfn_to_page can work. The return value of the
-pfn_to_page is actually the address of it's struct page struct.
-I can not figure out where the problem is. Can you describe the
-problem in detail please? Thanks.
-
->
-> I have also asked in a previous version whether the vmemmap manipulation
-> should be really unconditional. E.g. shortlived hugetlb pages allocated
-> from the buddy allocator directly rather than for a pool. Maybe it
-> should be restricted for the pool allocation as those are considered
-> long term and therefore the overhead will be amortized and freeing path
-> restrictions better understandable.
-
-Yeah, I agree with you. This can be an optimization. And we can
-add it to the todo list and implement it in the future. Now the patch
-series is already huge.
-
->
-> >  Documentation/admin-guide/kernel-parameters.txt |   9 +
-> >  Documentation/admin-guide/mm/hugetlbpage.rst    |   3 +
-> >  arch/x86/include/asm/hugetlb.h                  |  17 +
-> >  arch/x86/include/asm/pgtable_64_types.h         |   8 +
-> >  arch/x86/mm/init_64.c                           |   7 +-
-> >  fs/Kconfig                                      |  14 +
-> >  include/linux/bootmem_info.h                    |  78 +++
-> >  include/linux/hugetlb.h                         |  19 +
-> >  include/linux/hugetlb_cgroup.h                  |  15 +-
-> >  include/linux/memory_hotplug.h                  |  27 -
-> >  mm/Makefile                                     |   2 +
-> >  mm/bootmem_info.c                               | 124 ++++
-> >  mm/hugetlb.c                                    | 163 ++++-
-> >  mm/hugetlb_vmemmap.c                            | 765 ++++++++++++++++++++++++
-> >  mm/hugetlb_vmemmap.h                            | 103 ++++
->
-> I will need to look closer but I suspect that a non-trivial part of the
-> vmemmap manipulation really belongs to mm/sparse-vmemmap.c because the
-> split and remapping shouldn't really be hugetlb specific. Sure hugetlb
-> knows how to split but all the splitting should be implemented in
-> vmemmap proper.
->
-> >  mm/memory_hotplug.c                             | 116 ----
-> >  mm/sparse.c                                     |   5 +-
-> >  17 files changed, 1295 insertions(+), 180 deletions(-)
-> >  create mode 100644 include/linux/bootmem_info.h
-> >  create mode 100644 mm/bootmem_info.c
-> >  create mode 100644 mm/hugetlb_vmemmap.c
-> >  create mode 100644 mm/hugetlb_vmemmap.h
->
-> Thanks!
-> --
-> Michal Hocko
-> SUSE Labs
-
-
-
--- 
-Yours,
-Muchun
+On Fri, Nov 20, 2020 at 12:33:58PM -0000, tip-bot2 for Jakub Jelinek wrote:
+> The following commit has been merged into the core/core branch of tip:
+> 
+> Commit-ID:     ecbd43f6728a5cf79c8b50ed326658e9181531b1
+> Gitweb:        https://git.kernel.org/tip/ecbd43f6728a5cf79c8b50ed326658e9181531b1
+> Author:        Jakub Jelinek <jakub@redhat.com>
+> AuthorDate:    Wed, 21 Oct 2020 15:27:18 +02:00
+> Committer:     Peter Zijlstra <peterz@infradead.org>
+> CommitterDate: Thu, 19 Nov 2020 11:26:18 +01:00
+> 
+> ilog2 vs. GCC inlining heuristics
+> 
+> Hi!
+> 
+> Based on the GCC PR97445 discussions, I'd like to propose following change,
+> which should significantly decrease the amount of code in inline functions
+> that use ilog2, but as I'm already two decades out of the Linux kernel
+> development, I'd appreciate if some kernel developer could try that (all
+> I have done is check that it gives the same results as before) and if it
+> works submit it for inclusion into the kernel?
+> 
+> Thanks.
+> 
+> Improve ilog2 for constant arguments
+> 
+> As discussed in https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97445
+> the const_ilog2 macro generates a lot of code which interferes badly
+> with GCC inlining heuristics, until it can be proven that the ilog2
+> argument can or can't be simplified into a constant.
+> 
+> It can be expressed using __builtin_clzll builtin which is supported
+> by GCC 3.4 and later and when used only in the __builtin_constant_p guarded
+> code it ought to always fold back to a constant.
+> Other compilers support the same builtin for many years too.
+> 
+> Other option would be to change the const_ilog2 macro, though as the
+> description says it is meant to be used also in C constant expressions,
+> and while GCC will fold it to constant with constant argument even in
+> those, perhaps it is better to avoid using extensions in that case.
+> 
+> Signed-off-by: Jakub Jelinek <jakub@redhat.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Link: https://lkml.kernel.org/r/20201021132718.GB2176@tucnak
+> ---
+>  include/linux/log2.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/log2.h b/include/linux/log2.h
+> index c619ec6..4307d34 100644
+> --- a/include/linux/log2.h
+> +++ b/include/linux/log2.h
+> @@ -156,7 +156,8 @@ unsigned long __rounddown_pow_of_two(unsigned long n)
+>  #define ilog2(n) \
+>  ( \
+>  	__builtin_constant_p(n) ?	\
+> -	const_ilog2(n) :		\
+> +	((n) < 2 ? 0 :			\
+> +	 63 - __builtin_clzll (n)) :	\
+>  	(sizeof(n) <= 4) ?		\
+>  	__ilog2_u32(n) :		\
+>  	__ilog2_u64(n)			\
