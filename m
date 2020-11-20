@@ -2,138 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89152BA69B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48942BA697
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727438AbgKTJww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:52:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgKTJwt (ORCPT
+        id S1727344AbgKTJwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:52:44 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:35346 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726426AbgKTJwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:52:49 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098F3C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:52:49 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id z21so12542564lfe.12
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:52:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PBTsmNKv8vadYJg1/1024EHHBUem4NxR3vymSZL1jbg=;
-        b=fisWQZXUBIbv24FaTk612Nxy3lgfUzxISMMVSOnsg25d+wmMusuLXY/3ULelqap4nK
-         MEhR3Z7RnJFBv2j/bEMM3jnT8HBZZA4uIH0Mpu6TyHuB+xLBbcubXs8zc/dzq7L31p4P
-         UuWZEe4GlOdeSdWbVN0CGE/VvSjXdpMcfMG4cmYwwb/XCj8q7ae9F/IQBk/GTujSrHqt
-         xC6K0mTcaO3wNH2fAKRseLo2MPLJYWATL16BtbKB6d5Ikrc5JtbVz94CKNoaBkbhVQae
-         +tLzSA72EC5LUegS+sno/1Bi7lm4ql72ydNSZXgjmRpbaWns9gxxjvtU3aWyBRJX50jy
-         LLgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PBTsmNKv8vadYJg1/1024EHHBUem4NxR3vymSZL1jbg=;
-        b=s1qyEAyLtsQwMlPyIvG3JXf7A2UZsJITdFaWvWlYZJ4ecUSbcDZHsxjyakO+9LfnLs
-         bQIKLBNCzoB2QZYmMOdPdTCnsUpzZZNynmSoH0ITc4Z4nEKycr6ypHceMw7p6dBNIE/n
-         +1iT8xHd+Gn3o4xNKZwmVbXDNj1gSdH2sr3Nz9++Pqk1FdUxgNrNzcO0cqNsdRI+nU7F
-         QeddigD6+7xPVbWyAbZ3Wvsd2xSUUA7WJvEaLqAszGLwtAeFJMDrpNUfXtPgmhqCkI47
-         5ztv09bU7vcL7l2JETMoKrRnboqORiRUxrV8mI20rROdTh/9AfF8c6orcm5vza4SMBSz
-         i78g==
-X-Gm-Message-State: AOAM532o6L/rmpZE+a5+e1i6V/37ooqew4bFB7zczfI1c7jzV4cdDjp0
-        XhQ7jgOhR96YN0fhmgkkZVxW1pHNWLK5AHX/SLE=
-X-Google-Smtp-Source: ABdhPJx7IrNUc4/8BSBYVjO06wUwht/PU30NkY5hhoJJbLJ/3l7pec9BERrOd2eA/gC17gHvg8MGafFJO4cnYsgJpRU=
-X-Received: by 2002:a19:6e4c:: with SMTP id q12mr7149047lfk.162.1605865967567;
- Fri, 20 Nov 2020 01:52:47 -0800 (PST)
+        Fri, 20 Nov 2020 04:52:44 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-54-k6fxjDNiMd2_mdNhwQm0xA-1; Fri, 20 Nov 2020 09:52:39 +0000
+X-MC-Unique: k6fxjDNiMd2_mdNhwQm0xA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 20 Nov 2020 09:52:38 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 20 Nov 2020 09:52:38 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Thomas Zimmermann' <tzimmermann@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Huang, Ray" <ray.huang@amd.com>, Dave Airlie <airlied@redhat.com>,
+        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>
+Subject: RE: Linux 5.10-rc4; graphics alignment
+Thread-Topic: Linux 5.10-rc4; graphics alignment
+Thread-Index: Ada/IUdqcU2WLz13TDyBa91ssXd9zQ==
+Date:   Fri, 20 Nov 2020 09:52:38 +0000
+Message-ID: <2c474745ae884de3b4ecb8abe2152bfd@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <CAFcO6XN=cd=_K_2AY9OL7f+HWsazY-nJ81Ufrw4azvkjj-Mpng@mail.gmail.com>
- <e8c8ef27-1f09-40b5-e5e4-facfcc9956dd@oracle.com> <CAFcO6XMhrhJXWjRymKUWgFUov6OV7fTk-Nu9Tq=kOyPTMRnTug@mail.gmail.com>
- <298485e2-01de-048d-5515-44ac254167e4@oracle.com>
-In-Reply-To: <298485e2-01de-048d-5515-44ac254167e4@oracle.com>
-From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date:   Fri, 20 Nov 2020 17:52:36 +0800
-Message-ID: <CAFcO6XOvx2W1EvN7PORomgYj4U7kcyzjBC=OiQp9bfRZ33gBMg@mail.gmail.com>
-Subject: Re: UBSAN: array-index-out-of-bounds in dbAdjTree
-To:     Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 1
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You are welcome and have you submitted the patch to linux upstream ?
-If you have no time do that and I can do it.
+PiBIaSBEYXZpZA0KPiANCj4gQW0gMTguMTEuMjAgdW0gMjM6MDEgc2NocmllYiBEYXZpZCBMYWln
+aHQ6DQouLi4NCj4gRGlkIHlvdSB0cnkgRGFuaWVsJ3Mgc3VnZ2VzdGlvbiBvZiB0ZXN0aW5nIHdp
+dGggdGhlIGRpcmVjdCBwYXJlbnQgY29tbWl0Pw0KKEkgd2FzIG9uIGhvbGlkYXkgeWVzdGVyZGF5
+IGFuZCBkaWRuJ3Qgd2FudCB0byBzcGVuZCBhIHN1bm55DQphZnRlcm5vb24gZG9pbmcgYmlzZWN0
+cy4pDQoNCkkndmUganVzdCBkb25lIHRoYXQgYW5kIGl0IGlzIGJhZC4NCg0KSXMgdGhlcmUgYW55
+IHdheSB0byBiaXNlY3QgdGhyb3VnaCB0aGUgcGFydHMgb2YgdGhlDQpkcm0gbWVyZ2UgcGF0Y2gg
+aW50byB2NS4xMC1yYzEgPw0KDQpUaGF0IG91Z2h0IHRvIGJlIHF1aWNrZXIgKGFuZCBsZXNzIGVy
+cm9yIHByb25lKSB0aGFuDQp0aGUgYmlzZWN0IGJ1aWxkcyBJIHdhcyBkb2luZy4NCg0KTm90ZSB0
+aGF0IHRoZSBzdGFjayAnc3BsYXQnIGlzIGR1ZSB0byBhIGxhdGVyIGNoYW5nZS4NCkl0IGlzIHNl
+cGFyYXRlIGZyb20gdGhlIGJyb2tlbiBwaXhlbCBhbGlnbm1lbnQuDQoNCkkgYWN0dWFsbHkgc2F3
+IHRoZSB2Z2EgdGV4dCBnbyAnZnVubnknIHdoaWxlIHRoZSBib290DQp3YXMgb3V0cHV0dGluZyBh
+bGwgdGhlIFtPS10gbWVzc2FnZXMgKGZyb20gc3lzdGVtZD8pDQpiZWZvcmUgdGhlIGdyYXBoaWMg
+bG9naW4gc3RvbGUgdHR5MSAoYmxvb2R5IHN0dXBpZA0KdG8gdXNlIHR0eTEpLg0KDQpJIGRvbid0
+IG5lZWQgdG8gdXNlIHRoZSBmYWlsaW5nIHN5c3RlbSB0b2RheSwgSSdsbA0KaGF2ZSBhbm90aGVy
+IGdvIGF0IGlzb2xhdGluZyB0aGUgZmFpbHVyZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQg
+QWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVz
+LCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Regard,
- butt3rflyh4ck.
-
-On Sun, Nov 15, 2020 at 12:17 AM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
->
-> Thanks for reporting and testing this!
->
-> Shaggy
->
-> On 11/14/20 7:55 AM, butt3rflyh4ck wrote:
-> > Yes, I have tested the patch, it seem to fix the problem.
-> >
-> > Regard,
-> >  butt3rflyh4ck.
-> >
-> > On Sat, Nov 14, 2020 at 5:16 AM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
-> >>
-> >> On 10/8/20 12:00 PM, butt3rflyh4ck wrote:
-> >>> I report a array-index-out-of-bounds bug (in linux-5.9.0-rc6) found by
-> >>> kernel fuzz.
-> >>>
-> >>> kernel config: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.9.0-rc6-config
-> >>>
-> >>> and can reproduce.
-> >>>
-> >>> the dmtree_t is that
-> >>> typedef union dmtree {
-> >>> struct dmaptree t1;
-> >>> struct dmapctl t2;
-> >>> } dmtree_t;
-> >>>
-> >>> the dmaptree is that
-> >>> struct dmaptree {
-> >>> __le32 nleafs; /* 4: number of tree leafs */
-> >>> __le32 l2nleafs; /* 4: l2 number of tree leafs */
-> >>> __le32 leafidx; /* 4: index of first tree leaf */
-> >>> __le32 height; /* 4: height of the tree */
-> >>> s8 budmin; /* 1: min l2 tree leaf value to combine */
-> >>> s8 stree[TREESIZE]; /* TREESIZE: tree */
-> >>> u8 pad[2]; /* 2: pad to word boundary */
-> >>> };
-> >>> the TREESIZE is totally 341, but the leafidx type is __le32.
-> >>
-> >> Does this patch fix the problem?
-> >>
-> >> jfs: Fix array index bounds check in dbAdjTree
-> >>
-> >> Bounds checking tools can flag a bug in dbAdjTree() for an array index
-> >> out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
-> >> both structures dmaptree and dmapctl, use the larger array to eliminate
-> >> the false positive.
-> >>
-> >> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-> >> ---
-> >>  fs/jfs/jfs_dmap.h | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/jfs/jfs_dmap.h b/fs/jfs/jfs_dmap.h
-> >> index 29891fad3f09..aa03a904d5ab 100644
-> >> --- a/fs/jfs/jfs_dmap.h
-> >> +++ b/fs/jfs/jfs_dmap.h
-> >> @@ -183,7 +183,7 @@ typedef union dmtree {
-> >>  #define        dmt_leafidx     t1.leafidx
-> >>  #define        dmt_height      t1.height
-> >>  #define        dmt_budmin      t1.budmin
-> >> -#define        dmt_stree       t1.stree
-> >> +#define        dmt_stree       t2.stree
-> >>
-> >>  /*
-> >>   *     on-disk aggregate disk allocation map descriptor.
-> >> --
-> >> 2.29.2
-> >>
