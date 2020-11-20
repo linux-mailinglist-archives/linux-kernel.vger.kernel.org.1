@@ -2,163 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1005D2BB1E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:02:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 062542BB1E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgKTSAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:00:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53585 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729059AbgKTSAf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:00:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605895233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JxskEXwutt4P1nZSKgawl/xEgyUPfquuR5hR5qwSjZM=;
-        b=YAofb6qXRZb424IaniSlwERtCoNEUtaY7B5h73IDegWhCecykWHJKmr0i/bJPGtBYiFc24
-        wCKHF4rwNgVk0RMWjBdVXK+uLZumMhWmzgirwZ/n4hzgfRdRT1EO0rfTE9CZ097NtwLmZw
-        MGdEvpKqaQKTdXltp/K68k08lKT3N54=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-KXpfjzaZNAWdTW2OD65koQ-1; Fri, 20 Nov 2020 13:00:27 -0500
-X-MC-Unique: KXpfjzaZNAWdTW2OD65koQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729219AbgKTSB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:01:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729059AbgKTSBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:01:25 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C42D100C601;
-        Fri, 20 Nov 2020 18:00:23 +0000 (UTC)
-Received: from [10.36.114.78] (ovpn-114-78.ams2.redhat.com [10.36.114.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BCE8260862;
-        Fri, 20 Nov 2020 18:00:16 +0000 (UTC)
-Subject: Re: [PATCH v5 00/21] Free some vmemmap pages of hugetlb page
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, osalvador@suse.de, song.bao.hua@hisilicon.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120084202.GJ3200@dhcp22.suse.cz>
- <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
- <20201120093912.GM3200@dhcp22.suse.cz>
- <eda50930-05b5-0ad9-2985-8b6328f92cec@redhat.com>
- <55e53264-a07a-a3ec-4253-e72c718b4ee6@oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <af95bcad-80dd-d2a4-0178-b9d2869e97cf@redhat.com>
-Date:   Fri, 20 Nov 2020 19:00:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        by mail.kernel.org (Postfix) with ESMTPSA id E163F2240B;
+        Fri, 20 Nov 2020 18:01:22 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 18:01:20 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Khalid Aziz <khalid.aziz@oracle.com>
+Cc:     jannh@google.com, hch@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, anthony.yznaga@oracle.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH] sparc64: Use arch_validate_flags() to validate ADI flag
+Message-ID: <20201120180119.GM24344@gaia>
+References: <20201023175611.12819-1-khalid.aziz@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <55e53264-a07a-a3ec-4253-e72c718b4ee6@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023175611.12819-1-khalid.aziz@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.11.20 18:45, Mike Kravetz wrote:
-> On 11/20/20 1:43 AM, David Hildenbrand wrote:
->> On 20.11.20 10:39, Michal Hocko wrote:
->>> On Fri 20-11-20 10:27:05, David Hildenbrand wrote:
->>>> On 20.11.20 09:42, Michal Hocko wrote:
->>>>> On Fri 20-11-20 14:43:04, Muchun Song wrote:
->>>>> [...]
->>>>>
->>>>> Thanks for improving the cover letter and providing some numbers. I have
->>>>> only glanced through the patchset because I didn't really have more time
->>>>> to dive depply into them.
->>>>>
->>>>> Overall it looks promissing. To summarize. I would prefer to not have
->>>>> the feature enablement controlled by compile time option and the kernel
->>>>> command line option should be opt-in. I also do not like that freeing
->>>>> the pool can trigger the oom killer or even shut the system down if no
->>>>> oom victim is eligible.
->>>>>
->>>>> One thing that I didn't really get to think hard about is what is the
->>>>> effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
->>>>> invalid when racing with the split. How do we enforce that this won't
->>>>> blow up?
->>>>
->>>> I have the same concerns - the sections are online the whole time and
->>>> anybody with pfn_to_online_page() can grab them
->>>>
->>>> I think we have similar issues with memory offlining when removing the
->>>> vmemmap, it's just very hard to trigger and we can easily protect by
->>>> grabbing the memhotplug lock.
->>>
->>> I am not sure we can/want to span memory hotplug locking out to all pfn
->>> walkers. But you are right that the underlying problem is similar but
->>> much harder to trigger because vmemmaps are only removed when the
->>> physical memory is hotremoved and that happens very seldom. Maybe it
->>> will happen more with virtualization usecases. But this work makes it
->>> even more tricky. If a pfn walker races with a hotremove then it would
->>> just blow up when accessing the unmapped physical address space. For
->>> this feature a pfn walker would just grab a real struct page re-used for
->>> some unpredictable use under its feet. Any failure would be silent and
->>> hard to debug.
->>
->> Right, we don't want the memory hotplug locking, thus discussions regarding rcu. Luckily, for now I never saw a BUG report regarding this - maybe because the time between memory offlining (offline_pages()) and memory/vmemmap getting removed (try_remove_memory()) is just too long. Someone would have to sleep after pfn_to_online_page() for quite a while to trigger it.
->>
->>>
->>> [...]
->>>> To keep things easy, maybe simply never allow to free these hugetlb pages
->>>> again for now? If they were reserved during boot and the vmemmap condensed,
->>>> then just let them stick around for all eternity.
->>>
->>> Not sure I understand. Do you propose to only free those vmemmap pages
->>> when the pool is initialized during boot time and never allow to free
->>> them up? That would certainly make it safer and maybe even simpler wrt
->>> implementation.
->>
->> Exactly, let's keep it simple for now. I guess most use cases of this (virtualization, databases, ...) will allocate hugepages during boot and never free them.
-> 
-> Not sure if I agree with that last statement.  Database and virtualization
-> use cases from my employer allocate allocate hugetlb pages after boot.  It
-> is shortly after boot, but still not from boot/kernel command line.
+Hi Khalid,
 
-Right, but the ones that care about this optimization for now could be 
-converted, I assume? I mean we are talking about "opt-in" from 
-sysadmins, so requiring to specify a different cmdline parameter does 
-not sound to weird to me. And it should simplify a first version quite a 
-lot.
+On Fri, Oct 23, 2020 at 11:56:11AM -0600, Khalid Aziz wrote:
+> diff --git a/arch/sparc/include/asm/mman.h b/arch/sparc/include/asm/mman.h
+> index f94532f25db1..274217e7ed70 100644
+> --- a/arch/sparc/include/asm/mman.h
+> +++ b/arch/sparc/include/asm/mman.h
+> @@ -57,35 +57,39 @@ static inline int sparc_validate_prot(unsigned long prot, unsigned long addr)
+>  {
+>  	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_ADI))
+>  		return 0;
+> -	if (prot & PROT_ADI) {
+> -		if (!adi_capable())
+> -			return 0;
+> +	return 1;
+> +}
 
-The more I think about this, the more I believe doing these vmemmap 
-modifications after boot are very dangerous.
+We kept the equivalent of !adi_capable() check in the arm64
+arch_validate_prot() and left arch_validate_flags() more relaxed. I.e.
+you can pass PROT_MTE to mmap() even if the hardware doesn't support
+MTE. This is in line with the pre-MTE ABI where unknown mmap() flags
+would be ignored while mprotect() would reject them. This discrepancy
+isn't nice but we decided to preserve the pre-MTE mmap ABI behaviour.
+Anyway, it's up to you if you want to change the sparc behaviour, I
+don't think it matters in practice.
 
-> 
-> Somewhat related, but not exactly addressing this issue ...
-> 
-> One idea discussed in a previous patch set was to disable PMD/huge page
-> mapping of vmemmap if this feature was enabled.  This would eliminate a bunch
-> of the complex code doing page table manipulation.  It does not address
-> the issue of struct page pages going away which is being discussed here,
-> but it could be a way to simply the first version of this code.  If this
-> is going to be an 'opt in' feature as previously suggested, then eliminating
-> the  PMD/huge page vmemmap mapping may be acceptable.  My guess is that
-> sysadmins would only 'opt in' if they expect most of system memory to be used
-> by hugetlb pages.  We certainly have database and virtualization use cases
-> where this is true.
+I think with this patch, arch_validate_prot() no longer needs the 'addr'
+argument. Maybe you can submit an additional patch to remove them (not
+urgent, the compiler should get rid of them).
 
-It sounds like a hack to me, which does not fully solve the problem. But 
-yeah, it's a simplification.
+>  
+> -		if (addr) {
+> -			struct vm_area_struct *vma;
+> +#define arch_validate_flags(vm_flags) arch_validate_flags(vm_flags)
+> +/* arch_validate_flags() - Ensure combination of flags is valid for a
+> + *	VMA.
+> + */
+> +static inline bool arch_validate_flags(unsigned long vm_flags)
+> +{
+> +	/* If ADI is being enabled on this VMA, check for ADI
+> +	 * capability on the platform and ensure VMA is suitable
+> +	 * for ADI
+> +	 */
+> +	if (vm_flags & VM_SPARC_ADI) {
+> +		if (!adi_capable())
+> +			return false;
+>  
+> -			vma = find_vma(current->mm, addr);
+> -			if (vma) {
+> -				/* ADI can not be enabled on PFN
+> -				 * mapped pages
+> -				 */
+> -				if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
+> -					return 0;
+> +		/* ADI can not be enabled on PFN mapped pages */
+> +		if (vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
+> +			return false;
+>  
+> -				/* Mergeable pages can become unmergeable
+> -				 * if ADI is enabled on them even if they
+> -				 * have identical data on them. This can be
+> -				 * because ADI enabled pages with identical
+> -				 * data may still not have identical ADI
+> -				 * tags on them. Disallow ADI on mergeable
+> -				 * pages.
+> -				 */
+> -				if (vma->vm_flags & VM_MERGEABLE)
+> -					return 0;
+> -			}
+> -		}
+> +		/* Mergeable pages can become unmergeable
+> +		 * if ADI is enabled on them even if they
+> +		 * have identical data on them. This can be
+> +		 * because ADI enabled pages with identical
+> +		 * data may still not have identical ADI
+> +		 * tags on them. Disallow ADI on mergeable
+> +		 * pages.
+> +		 */
+> +		if (vm_flags & VM_MERGEABLE)
+> +			return false;
 
--- 
-Thanks,
+Ah, you added a check to the madvise(MADV_MERGEABLE) path to ignore the
+flag if VM_SPARC_ADI. On arm64 we intercept memcmp_pages() but we have a
+PG_arch_2 flag to mark a page as containing tags. Either way should
+work.
 
-David / dhildenb
+FWIW, if you are happy with the mmap() rejecting PROT_ADI on
+!adi_capable() hardware:
 
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
