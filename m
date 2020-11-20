@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AEB2BA4EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4922BA4E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgKTImZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:42:25 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:28318 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726460AbgKTImX (ORCPT
+        id S1727120AbgKTImU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:42:20 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:42321 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgKTImU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:42:23 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AK8YlQQ007000;
-        Fri, 20 Nov 2020 03:42:22 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34t9ybwndk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Nov 2020 03:42:22 -0500
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0AK8gLm5038125
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Fri, 20 Nov 2020 03:42:21 -0500
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 20 Nov 2020 03:42:20 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 20 Nov 2020 03:42:19 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Fri, 20 Nov 2020 03:42:19 -0500
-Received: from saturn.ad.analog.com ([10.48.65.107])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AK8gFSb027136;
-        Fri, 20 Nov 2020 03:42:17 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <gregkh@linuxfoundation.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 3/3] uio: uio_netx: use devm_kzalloc() for or uio_info object
-Date:   Fri, 20 Nov 2020 10:42:07 +0200
-Message-ID: <20201120084207.50736-3-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201120084207.50736-1-alexandru.ardelean@analog.com>
-References: <20201120084207.50736-1-alexandru.ardelean@analog.com>
+        Fri, 20 Nov 2020 03:42:20 -0500
+Received: by mail-io1-f72.google.com with SMTP id p67so6944566iod.9
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:42:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=mewp/Fhh0sUOZyUminT5HeGbtwpozji8nNrEqkSN9sA=;
+        b=TOK74AWBHTodjXN9NxpKHVKEUKko2Sb6odROLVUheah4rsEbEPntAeQo4AhbfBzfVt
+         gRKmw/qYg/fKUR409fMJmdRa9vxyHvABRjvn1DX9IzPFWd9Be286FYv6MYLivtHSVVDq
+         stzJgGYc/5hp4QvnEUPYI+xnw4LMelqb4CwiowiiXBefI1AUsyA4IOW5agOWEnie2AdT
+         eq10VwC5dKpNA+19ztB/82K6Bv+92DvtvFXmoyao5RL8NS1Su7gM1toYz0p1yvYf/U3Z
+         QGB7XrBuk7+EQUbQpZn9Zckby8POfAIMcWP2WXhFf9JBLAEJUcP7xXODzhXa+jl6hEj3
+         Yo5Q==
+X-Gm-Message-State: AOAM531lLYOw56x5udfiPVlUH5fZiMTsU1HLcwK1u43gZ8Sqdpj+fxPF
+        lt2Z/A5A76fIaeQuEpNSWdZz0UNKV8QlMcMbUxcjYToskWoj
+X-Google-Smtp-Source: ABdhPJz2kyGMHo/CfKs9S8pAbHA1KUN5H7SKQF7pIHjRk2bUDqP4ptFswplccsj2TJ71F+DY9Q6TWAWuurWx1Z12uO2LHwrUd4oS
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-20_03:2020-11-19,2020-11-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 suspectscore=3 impostorscore=0 lowpriorityscore=0
- bulkscore=0 clxscore=1015 spamscore=0 adultscore=0 mlxlogscore=717
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011200057
+X-Received: by 2002:a92:dc02:: with SMTP id t2mr25459633iln.82.1605861738052;
+ Fri, 20 Nov 2020 00:42:18 -0800 (PST)
+Date:   Fri, 20 Nov 2020 00:42:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000074835105b485d25c@google.com>
+Subject: general protection fault in gfs2_ri_update
+From:   syzbot <syzbot+e3f23ce40269a4c9053a@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change uses the devm_kzalloc() function to tie the life-time of the
-uio_info object to PCI device. This cleans up the exit & error path a bit.
+Hello,
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+syzbot found the following issue on:
+
+HEAD commit:    92edc4ae Add linux-next specific files for 20201113
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1564a81c500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=79ad4f8ad2d96176
+dashboard link: https://syzkaller.appspot.com/bug?extid=e3f23ce40269a4c9053a
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e3f23ce40269a4c9053a@syzkaller.appspotmail.com
+
+gfs2: fsid=syz:syz: Now mounting FS...
+gfs2: fsid=syz:syz.0: journal 0 mapped with 1 extents in 0ms
+gfs2: fsid=syz:syz.0: first mount done, others may mount
+general protection fault, probably for non-canonical address 0xdffffc000000000e: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000070-0x0000000000000077]
+CPU: 0 PID: 5537 Comm: syz-executor.4 Not tainted 5.10.0-rc3-next-20201113-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:set_rgrp_preferences fs/gfs2/rgrp.c:960 [inline]
+RIP: 0010:gfs2_ri_update+0x289/0x520 fs/gfs2/rgrp.c:988
+Code: e0 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 3c e7 22 fe 49 8d 7f 74 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 68
+RSP: 0018:ffffc9000175f7e0 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc900122b2000
+RDX: 000000000000000e RSI: ffffffff834dace4 RDI: 0000000000000074
+RBP: ffff8880680847d0 R08: 0000000000000000 R09: ffff8880680847d3
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff8880680847cc R15: 0000000000000000
+FS:  00007fccb3d41700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055af34aaf000 CR3: 0000000025b49000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ gfs2_rindex_update+0x3ce/0x450 fs/gfs2/rgrp.c:1028
+ init_inodes+0x1ddf/0x2650 fs/gfs2/ops_fstype.c:885
+ gfs2_fill_super+0x199c/0x23f0 fs/gfs2/ops_fstype.c:1184
+ get_tree_bdev+0x421/0x740 fs/super.c:1344
+ gfs2_get_tree+0x4a/0x270 fs/gfs2/ops_fstype.c:1260
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1549
+ do_new_mount fs/namespace.c:2896 [inline]
+ path_mount+0x12ae/0x1e70 fs/namespace.c:3227
+ do_mount fs/namespace.c:3240 [inline]
+ __do_sys_mount fs/namespace.c:3448 [inline]
+ __se_sys_mount fs/namespace.c:3425 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x46090a
+Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 ad 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 8a 89 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007fccb3d40a88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fccb3d40b20 RCX: 000000000046090a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fccb3d40ae0
+RBP: 00007fccb3d40ae0 R08: 00007fccb3d40b20 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
+R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020047a20
+Modules linked in:
+---[ end trace 30aa056702410d7c ]---
+RIP: 0010:set_rgrp_preferences fs/gfs2/rgrp.c:960 [inline]
+RIP: 0010:gfs2_ri_update+0x289/0x520 fs/gfs2/rgrp.c:988
+Code: e0 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 3c e7 22 fe 49 8d 7f 74 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 68
+RSP: 0018:ffffc9000175f7e0 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc900122b2000
+RDX: 000000000000000e RSI: ffffffff834dace4 RDI: 0000000000000074
+RBP: ffff8880680847d0 R08: 0000000000000000 R09: ffff8880680847d3
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff8880680847cc R15: 0000000000000000
+FS:  00007fccb3d41700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055af34a29900 CR3: 0000000025b49000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- drivers/uio/uio_netx.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/uio/uio_netx.c b/drivers/uio/uio_netx.c
-index 9ae29ffde410..2319d6de8d04 100644
---- a/drivers/uio/uio_netx.c
-+++ b/drivers/uio/uio_netx.c
-@@ -53,12 +53,12 @@ static int netx_pci_probe(struct pci_dev *dev,
- 	struct uio_info *info;
- 	int bar;
- 
--	info = kzalloc(sizeof(struct uio_info), GFP_KERNEL);
-+	info = devm_kzalloc(&dev->dev, sizeof(struct uio_info), GFP_KERNEL);
- 	if (!info)
- 		return -ENOMEM;
- 
- 	if (pci_enable_device(dev))
--		goto out_free;
-+		return -ENODEV;
- 
- 	if (pci_request_regions(dev, "netx"))
- 		goto out_disable;
-@@ -112,8 +112,6 @@ static int netx_pci_probe(struct pci_dev *dev,
- 	pci_release_regions(dev);
- out_disable:
- 	pci_disable_device(dev);
--out_free:
--	kfree(info);
- 	return -ENODEV;
- }
- 
-@@ -127,8 +125,6 @@ static void netx_pci_remove(struct pci_dev *dev)
- 	pci_release_regions(dev);
- 	pci_disable_device(dev);
- 	iounmap(info->mem[0].internal_addr);
--
--	kfree(info);
- }
- 
- static struct pci_device_id netx_pci_ids[] = {
--- 
-2.27.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
