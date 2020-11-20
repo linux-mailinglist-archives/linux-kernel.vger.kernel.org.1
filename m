@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B222BAEEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE512BAEEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729339AbgKTP0U convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Nov 2020 10:26:20 -0500
-Received: from smtp.asem.it ([151.1.184.197]:55711 "EHLO smtp.asem.it"
+        id S1728846AbgKTP0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:26:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728662AbgKTP0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:26:20 -0500
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000621942.MSG 
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:26:14 +0100
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 20
- Nov 2020 16:26:13 +0100
-Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
- mapi id 15.01.1979.003; Fri, 20 Nov 2020 16:26:13 +0100
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] docs: ACPI: enumeration: add PCI hierarchy
- representation
-Thread-Topic: [PATCH v2] docs: ACPI: enumeration: add PCI hierarchy
- representation
-Thread-Index: AQHWvy3o1QjrgEUP4UmaOryOTfF696nRDJQAgAAXbqA=
-Date:   Fri, 20 Nov 2020 15:26:13 +0000
-Message-ID: <d51ce85e8c474242a939e13f81c1a5a1@asem.it>
-References: <20201120111125.78296-1-f.suligoi@asem.it>
- <20201120150014.GS4077@smile.fi.intel.com>
-In-Reply-To: <20201120150014.GS4077@smile.fi.intel.com>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.17.208]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728628AbgKTP0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 10:26:17 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80E0322252;
+        Fri, 20 Nov 2020 15:26:15 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 10:26:13 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
+ kfence: Avoid stalling...)
+Message-ID: <20201120102613.3d18b90e@gandalf.local.home>
+In-Reply-To: <20201120141928.GB3120165@elver.google.com>
+References: <20201117105236.GA1964407@elver.google.com>
+        <20201117182915.GM1437@paulmck-ThinkPad-P72>
+        <20201118225621.GA1770130@elver.google.com>
+        <20201118233841.GS1437@paulmck-ThinkPad-P72>
+        <20201119125357.GA2084963@elver.google.com>
+        <20201119151409.GU1437@paulmck-ThinkPad-P72>
+        <20201119170259.GA2134472@elver.google.com>
+        <20201119184854.GY1437@paulmck-ThinkPad-P72>
+        <20201119193819.GA2601289@elver.google.com>
+        <20201119213512.GB1437@paulmck-ThinkPad-P72>
+        <20201120141928.GB3120165@elver.google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A090201.5FB7E016.001F,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Fri, 20 Nov 2020 15:19:28 +0100
+Marco Elver <elver@google.com> wrote:
 
-> > This patch, with a practical example, show how to do this.
+> None of those triggered either.
 > 
-> Good enough, we can amend style and formatting later on.
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> I found that disabling ftrace for some of kernel/rcu (see below) solved
+> the stalls (and any mention of deadlocks as a side-effect I assume),
+> resulting in successful boot.
 > 
-
-Thanks!
-
-> > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> > ---
+> Does that provide any additional clues? I tried to narrow it down to 1-2
+> files, but that doesn't seem to work.
 > 
-> (Here you usually put a changelog what has been done in v2 vs. v1))
-
-Yes, you are right! I forgot it!
-
+> Thanks,
+> -- Marco
 > 
-> --
-> With Best Regards,
-> Andy Shevchenko
+> ------ >8 ------  
 > 
+> diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
+> index 0cfb009a99b9..678b4b094f94 100644
+> --- a/kernel/rcu/Makefile
+> +++ b/kernel/rcu/Makefile
+> @@ -3,6 +3,13 @@
+>  # and is generally not a function of system call inputs.
+>  KCOV_INSTRUMENT := n
+>  
+> +ifdef CONFIG_FUNCTION_TRACER
+> +CFLAGS_REMOVE_update.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_sync.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_srcutree.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_tree.o = $(CC_FLAGS_FTRACE)
+> +endif
+> +
 
-Regards,
-Flavio
+Can you narrow it down further? That is, do you really need all of the
+above to stop the stalls?
+
+Also, since you are using linux-next, you have ftrace recursion debugging.
+Please enable:
+
+CONFIG_FTRACE_RECORD_RECURSION=y
+CONFIG_RING_BUFFER_RECORD_RECURSION=y
+
+when enabling any of the above. If you can get to a successful boot, you
+can then:
+
+ # cat /sys/kernel/tracing/recursed_functions
+
+Which would let me know if there's an recursion issue in RCU somewhere.
+
+-- Steve
+
+
+-- Steve
