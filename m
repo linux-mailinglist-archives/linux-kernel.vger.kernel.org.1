@@ -2,154 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283B22BA0E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B912BA0EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727382AbgKTDLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 22:11:16 -0500
-Received: from mail-bn7nam10on2075.outbound.protection.outlook.com ([40.107.92.75]:20321
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727363AbgKTDLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 22:11:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LyVxaCmO8chVbNtPWlNkMmNtV49FtsMbMQs7fmmRpXFHxkCOjxMw8tuflSpl+Isu33JRVyvXRDdeoUVx5ME8Xq5TRPSttqBRzLD/KGtIOtixfZu9fWcyDVR51d761BDiGC9yCDiRBz8Hc8yE3EAHGVl7IJzYbD+2gigTqvIn9tL0LcC2ikB1r0gmU76lOdWuf1kqVtpmW4jJwfRDdmgYA8oZU2YODxBfAfzKpUxGIC+z7iYXNYCKXZM5BW79KlifJT5ag3ZHmZlW5pa3uFQWSDkoZoL0EAp+IFUEfwEtauWKdksk7NTABp5hgG78Obyzu04oN42jacgh5+6A+hdrcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qI87c9l7JM346FRT8pYFB/mB8eCRs2m1FWXDwPwhoYI=;
- b=EsmxDceZdoyKoxtIZF8DQXIztA8Y2lxWHkyfEmdoKPm5JPxU0+RoIy3bIOQiwjvFjLKcMIBiJEeug9Mvd/ef3njbiDITQkqxDDqPbpWQcFH7G398uo9OIJtWPSeZFCNgoh/UlEHx52tRt4NDWgYPM912ihuTGIi2JdHsa86kRRDKsm0Q+y/H+gb0k8HuRexxZVwcEVWOd/qlBM0rz/siakTXcNoiN87InZ+2dvSmqsk8TwPtg8HwJiHVQ7isZh3xW5Y5UVlTcMcpORVOHLw2JKA3MxIIFKppy01+Bdqj8mY/84uU+hlMMN89YcnRHjoD1iEknSyL7wRKPy+Xf+KP5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qI87c9l7JM346FRT8pYFB/mB8eCRs2m1FWXDwPwhoYI=;
- b=kxtz9UlSQ+R8uzSDk2wF560rtl2qs4uCtHLsuM9nagkHEfaO25qSSTNPt/Amay1EpIKYn9EcFWcRVCETxhWYEAEVAdOSf0uEUhqMRkC93X/Ul8dVxp6vHX8Q9XMeag/OPK5JvNKIKGRLBSzckDLNrGXP/tNQYedhj11V0/f62Uo=
-Received: from DM6PR05MB5292.namprd05.prod.outlook.com (2603:10b6:5:5a::30) by
- DM5PR0501MB3719.namprd05.prod.outlook.com (2603:10b6:4:77::29) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3589.15; Fri, 20 Nov 2020 03:11:12 +0000
-Received: from DM6PR05MB5292.namprd05.prod.outlook.com
- ([fe80::fc60:3dd5:354e:e146]) by DM6PR05MB5292.namprd05.prod.outlook.com
- ([fe80::fc60:3dd5:354e:e146%7]) with mapi id 15.20.3589.016; Fri, 20 Nov 2020
- 03:11:12 +0000
-From:   Rahul Gopakumar <gopakumarr@vmware.com>
-To:     "bhe@redhat.com" <bhe@redhat.com>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "natechancellor@gmail.com" <natechancellor@gmail.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Rajender M <manir@vmware.com>,
-        Yiu Cho Lau <lauyiuch@vmware.com>,
-        Peter Jonasson <pjonasson@vmware.com>,
-        Venkatesh Rajaram <rajaramv@vmware.com>
-Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
-Thread-Topic: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
-Thread-Index: AQHWnjk5ihPzOwsVE02I7/jG5KTBz6mQW+kAgAPEkzyAAWl/gIALAETTgAAhwwCAAAD7T4ACZ34AgADZzMiAEREnqIAADZOAgAFrvxuADlGAgIALzC/8
-Date:   Fri, 20 Nov 2020 03:11:11 +0000
-Message-ID: <DM6PR05MB52920B2D4267AD7D073D3C36A4FF0@DM6PR05MB5292.namprd05.prod.outlook.com>
-References: <DM6PR05MB529281F914953691E0F52D1CA4070@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201013131735.GL25604@MiWiFi-R3L-srv>
- <DM6PR05MB52926FDAB0E58F5CFA2E892DA41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201020151814.GU25604@MiWiFi-R3L-srv>
- <DM6PR05MB529293AC2B077B5170FFE625A41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201022040440.GX25604@MiWiFi-R3L-srv>
- <DM6PR05MB5292D8B85FA9DDE263F6147AA41D0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <DM6PR05MB5292DF14DF1C82FFE001AC24A4100@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201102143035.GA3177@MiWiFi-R3L-srv>
- <DM6PR05MB5292FD196FF6B18DCB47CE25A4110@DM6PR05MB5292.namprd05.prod.outlook.com>,<20201112145149.GN8486@MiWiFi-R3L-srv>
-In-Reply-To: <20201112145149.GN8486@MiWiFi-R3L-srv>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=vmware.com;
-x-originating-ip: [103.224.32.238]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4c97b079-e3cf-4b54-4346-08d88d01ef41
-x-ms-traffictypediagnostic: DM5PR0501MB3719:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR0501MB3719BDDA16C4F5BB7E1ACAEBA4FF0@DM5PR0501MB3719.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XLDStVZ3wUHn5HwmP5YqnAzffHiFQQxiYEC25LPhD1nnsPdunfaXdzPfPDbDY6/KzuTRpAmseoxmjuSOE65Yz/IK6CufvzpKAv1t5fNEfrVD59rFSTnGT3nyi4j6MBH1iK25Ssm1IhKxPwU7CGoPWYZH62QrDz8nfBlKRNOl02L5jRYvtcEqWb19VSL1S5iajHrs9tQzKuYrQ9ok1Z2VUKAcWpZDkOhQMBzdE5nsBtTk3K3joEsFNPflSJ22ny0ILe4QUDJgvUlxQvxYNgHnydUzifE4n/oNl+ulwcH0dgrRAyNNtYA1+MyYBKX43wbYADhf9OL5lKLh9kYeqdpCtA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR05MB5292.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(396003)(376002)(136003)(316002)(8676002)(55016002)(26005)(186003)(66476007)(9686003)(2906002)(4326008)(71200400001)(66446008)(76116006)(86362001)(478600001)(64756008)(66556008)(107886003)(53546011)(54906003)(52536014)(8936002)(6916009)(91956017)(6506007)(66946007)(7696005)(5660300002)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: bRM8Et18YwVNMgQvEX3bNS6dOjM5mnROR69E+zZLDG9keucwmGVGLuLB8+R7ve5trKfeB2I4XnqFIDjIxNptSsTYyk+oKRbKGNTrp9iZ2GpO6uVQXvumubBgf7iXXEWL9FUnb8blSYtasDL52tBPQ9ex0upq426Tm7bIvFoif8YfsVOKU47ibXmHHCWIXUu+u0NGilE4Gm/gsNjNh5TWvQxuh95blprz+oWC2jEZBATkPqW3Tam7OJxZ6pZmZLpy04IneuIoCCO3+FCgdnDgLkZg7tMo5a943btbFHBnVjygmouYj7w6wnDB3gyf/EDD88bgmesW6fZfxnIZ0TsBriXnvup0aQd9Sr8I3SSgBGC65jiWO7WTT6rIxG012ySilkut3G8c0cVC3L7oNqekVSnVhz7NomHgosfbXOYEaWQxUps57a6QPaVpr+FkBo65HCZAYZ9Phx/TXs/HWuFjcaNU8vVjM6HkfdY1ZhEch6M7dlOszi0Gda+5qzFgmcdscnDhsv1/E6BsdgyK8FWGVLguygqPWxRQ0SnV9u3LdaY0TaQk0lTfw5W/iZaMu9fS6MQP+oNHL2xwXKpu2+SUUT19NCogvwJhzoXGdt0N2XntCzYrqRkC+wUkxz3KsY1B713f2MK8pznbHZCNOrQh1A==
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1726549AbgKTDOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 22:14:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbgKTDOG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 22:14:06 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912D6C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:14:04 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id q5so7708230qkc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:14:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/zGvD23D7UzPmkeJaICeLLr5BBiyIFomvZLFOZzlxm4=;
+        b=K/ex82SL594RfazFznOBdSPZAoIgw2gtJlLr4AhlET3fTfMnmidSmJ5v48KHjGQUiz
+         Bz4RUYB5LACvSG4sr8W5+BjRLaw4qYxFR6fHQzN3i2jG3AE7QyKRvbYJ5MQHQay0iWAe
+         JoX589dbEyXYyLjASuftwf6P/H1Xa/9J8MAzc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/zGvD23D7UzPmkeJaICeLLr5BBiyIFomvZLFOZzlxm4=;
+        b=sWZbptmGyS0HPorNQPHEBCpGT7PWD1PZ2YKUlV704TIbMKf0omwrJYNl9x1MggZZGS
+         3GC0IeLVmzgVRQ+swjXDkGwHoKyHVYFZBeKA8hH+6dX+jfKRDHYKXCa9fYE261x8sWZd
+         BwGl5kY150JkX7hYFtM+6K0u0WzEg2JKt4Xu5xu8WJ4+Iuj6eBtbuIZjLYny9WQosJn+
+         QMep6Nb1xb26cR5rFo4uIYqSfb7FG1ipIAnIfikSpMTHBkMiBwrmRNHi6vub9c2Sj4Ro
+         K8Bre5HXAv/H9dG4wxPiHOBGBhZl3ziMEbpHGzJa8kZ5z3v3eLuNjk0RGk7twMcfGh9T
+         34Ag==
+X-Gm-Message-State: AOAM531lFX9Lrzq20BmqlJzZ2zYNAIt7FeRjLy52Ltl1uQMqbvkbDTjC
+        iEdcsZPb+IcUBMe7HZiDdezU7lhjsfF/EL+qpH7ENg==
+X-Google-Smtp-Source: ABdhPJzjhP/CSxgRJgE+YlE4odaKeOT22nWwH6kRTVVzdqJFbEKMz324CiWy7zrV6wEReKB3J/v4H0DoOJs0nApprAA=
+X-Received: by 2002:a37:6195:: with SMTP id v143mr13545153qkb.71.1605842043665;
+ Thu, 19 Nov 2020 19:14:03 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR05MB5292.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c97b079-e3cf-4b54-4346-08d88d01ef41
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2020 03:11:12.0511
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2dL3vSEbpmZKiZV7CdtO3dd72ejHkwc4OZjyapq6+AJHQvtSMFDaCojAw9OnvhPT6HbweYp2d52YKPsBMTTDrw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR0501MB3719
+References: <20201119063211.2264-1-utkarsh.h.patel@intel.com>
+ <20201119063211.2264-3-utkarsh.h.patel@intel.com> <20201119080906.GE3652649@google.com>
+ <MWHPR11MB004898556A4CF622742D3EAAA9FF0@MWHPR11MB0048.namprd11.prod.outlook.com>
+In-Reply-To: <MWHPR11MB004898556A4CF622742D3EAAA9FF0@MWHPR11MB0048.namprd11.prod.outlook.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Thu, 19 Nov 2020 19:13:51 -0800
+Message-ID: <CACeCKafuh57RjjKJBxh96nvMDinbJ-QXho_8Kfzbe_-vPROmRg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] platform/chrome: cros_ec_typec: Use Thunderbolt 3
+ cable discover mode VDO in USB4 mode
+To:     "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
+        "enric.balletbo@collabora.com" <enric.balletbo@collabora.com>,
+        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
+        "Shaikh, Azhar" <azhar.shaikh@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baoquan,=0A=
-=0A=
-To which commit should we apply the draft patch. We tried applying=0A=
-the patch to the commit 3e4fb4346c781068610d03c12b16c0cfb0fd24a3=0A=
-(the one we used for applying the previous patch) but it fails.=0A=
-=0A=
-=0A=
-From: bhe@redhat.com <bhe@redhat.com>=0A=
-Sent: 12 November 2020 8:21 PM=0A=
-To: Rahul Gopakumar <gopakumarr@vmware.com>=0A=
-Cc: linux-mm@kvack.org <linux-mm@kvack.org>; linux-kernel@vger.kernel.org <=
-linux-kernel@vger.kernel.org>; akpm@linux-foundation.org <akpm@linux-founda=
-tion.org>; natechancellor@gmail.com <natechancellor@gmail.com>; ndesaulnier=
-s@google.com <ndesaulniers@google.com>; clang-built-linux@googlegroups.com =
-<clang-built-linux@googlegroups.com>; rostedt@goodmis.org <rostedt@goodmis.=
-org>; Rajender M <manir@vmware.com>; Yiu Cho Lau <lauyiuch@vmware.com>; Pet=
-er Jonasson <pjonasson@vmware.com>; Venkatesh Rajaram <rajaramv@vmware.com>=
-=0A=
-Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kern=
-el =0A=
-=A0=0A=
-On 11/03/20 at 12:34pm, Rahul Gopakumar wrote:=0A=
-> >> So, you mean with the draft patch applied, the initial performance=0A=
-> regression goes away, just many page corruption errors with call trace=0A=
-> are seen, right?=0A=
-> =0A=
-> Yes, that's right.=0A=
-> =0A=
-> >> And the performance regression is about 2sec delay in=0A=
-> your system?=0A=
-> =0A=
-> The delay due to this new page corruption issue is about=0A=
-> 3 secs.=0A=
-> =0A=
-> Here is the summary=0A=
-> =0A=
-> * Initial problem - 2 secs=0A=
-> * Draft patch - Fixes initial problem (recovers 2 secs) but=0A=
-> brings in new page corruption issue (3 secs)=0A=
-> =0A=
-> >> Could you tell how you setup vmware VM so that I can ask our QA for=0A=
-> help to create a vmware VM for me to test?=0A=
-> =0A=
-> * Use vSphere ESXi 6.7 or 7.0 GA.=0A=
-> * Create VM using vSphere Web Client and specify 1TB VM Memory.=0A=
-> * Install RHEL 8.1, that's the guest used in this test.=0A=
-=0A=
-Can you try the attached draft patch?=0A=
-=0A=
-> =0A=
-> With draft patch, you should be able to reproduce the issue.=0A=
-> Let me know if you need more details.=0A=
+Hi Utkarsh,
+
+On Thu, Nov 19, 2020 at 6:32 PM Patel, Utkarsh H
+<utkarsh.h.patel@intel.com> wrote:
+>
+> Hi Prashant,
+>
+> > -----Original Message-----
+> > From: Prashant Malani <pmalani@chromium.org>
+> > Sent: Thursday, November 19, 2020 12:09 AM
+> > To: Patel, Utkarsh H <utkarsh.h.patel@intel.com>
+> > Cc: linux-kernel@vger.kernel.org; linux-usb@vger.kernel.org;
+> > heikki.krogerus@linux.intel.com; enric.balletbo@collabora.com; Mani,
+> > Rajmohan <rajmohan.mani@intel.com>; Shaikh, Azhar
+> > <azhar.shaikh@intel.com>
+> > Subject: Re: [PATCH v3 2/4] platform/chrome: cros_ec_typec: Use Thunderbolt
+> > 3 cable discover mode VDO in USB4 mode
+> >
+> > Hi Utkarsh,
+> >
+> > On Wed, Nov 18, 2020 at 10:32:09PM -0800, Utkarsh Patel wrote:
+> > > Configure Thunderbolt 3 cable generation value by filling Thunderbolt
+> > > 3 cable discover mode VDO to support rounded Thunderbolt 3 cables.
+> > > While we are here use Thunderbolt 3 cable discover mode VDO to fill
+> > > active cable plug link training value.
+> > >
+> > > Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > > Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+> > >
+> > > --
+> > > Changes in v3:
+> > > - Added a check for cable's TBT support before filling TBT3 discover mode
+> > >   VDO.
+> > >
+> > > Changes in v2:
+> > > - No change.
+> > > --
+> > > ---
+> > >  drivers/platform/chrome/cros_ec_typec.c | 14 ++++++++++++--
+> > >  1 file changed, 12 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/platform/chrome/cros_ec_typec.c
+> > > b/drivers/platform/chrome/cros_ec_typec.c
+> > > index 8111ed1fc574..68b17ee1d1ae 100644
+> > > --- a/drivers/platform/chrome/cros_ec_typec.c
+> > > +++ b/drivers/platform/chrome/cros_ec_typec.c
+> > > @@ -514,8 +514,18 @@ static int cros_typec_enable_usb4(struct
+> > cros_typec_data *typec,
+> > >     else if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_CABLE)
+> > >             data.eudo |= EUDO_CABLE_TYPE_RE_TIMER <<
+> > EUDO_CABLE_TYPE_SHIFT;
+> > >
+> > > -   data.active_link_training = !!(pd_ctrl->control_flags &
+> > > -                                  USB_PD_CTRL_ACTIVE_LINK_UNIDIR);
+> > > +   /*
+> > > +    * Filling TBT3 Cable VDO when TBT3 cable is being used to establish
+> > > +    * USB4 connection.
+> > > +    */
+> > > +   if (pd_ctrl->cable_gen) {
+> > > +           data.tbt_cable_vdo = TBT_MODE;
+> > > +
+> > > +           if (pd_ctrl->control_flags &
+> > USB_PD_CTRL_ACTIVE_LINK_UNIDIR)
+> > > +                   data.tbt_cable_vdo |= TBT_CABLE_LINK_TRAINING;
+> > > +
+> > > +           data.tbt_cable_vdo |= TBT_SET_CABLE_ROUNDED(pd_ctrl-
+> > >cable_gen);
+> > > +   }
+> >
+> > I think the following would decouple Rounded Support and Active Cable Link
+> > Training?:
+>
+> Any reason you would want to decouple them?
+
+Is there anything in the spec that says Active Cable Link Training
+needs Rounded Cable support (or vice versa)?
+If yes, could you kindly point me to the relevant portion in the spec
+that states this?
+
+If no, then the two should be set independently based on the response
+from the Chrome EC.
+
+FWIW, Table F-11 ( TBT3 Cable Discover Mode VDO Responses) from the
+USB Type-C Cable & Connector Spec (Rel 2.0) suggests
+the two are independent bits although I don't have access to the TBT3
+spec to confirm.
+
+BR,
+
+-Prashant
