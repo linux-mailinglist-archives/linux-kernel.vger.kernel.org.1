@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5F72BB63A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E47E82BB648
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730097AbgKTUEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 15:04:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729484AbgKTUEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 15:04:52 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C45742225B;
-        Fri, 20 Nov 2020 20:04:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605902691;
-        bh=O6QlgpPZWJ0ZFa0Oit5xMmDdgPSwTCGSd8OW7gqJhYE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z8SAy73jokhL1rD6RinyEXwIklNEbYMURVKsRlpggkmyDXr5PBXW+52WKiLcnsuO0
-         vWsgTOJKVDxHkdTWsWxZ3hKryWwnjYPoDC3kX7eufWyQGipH/slnOu+p2EbAyfbfs/
-         zkyRBYRiHv+8TW0qcgxXpZoWr1+j8Dc1XWNUgpwA=
-Date:   Fri, 20 Nov 2020 20:04:29 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
- table
-Message-ID: <20201120200429.GJ6751@sirena.org.uk>
-References: <20201120161653.445521-1-krzk@kernel.org>
- <20201120165202.GG6751@sirena.org.uk>
- <20201120194245.GA2925@kozik-lap>
+        id S1730394AbgKTUJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 15:09:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729683AbgKTUJQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 15:09:16 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412CFC061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:09:16 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id w14so8922309pfd.7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:09:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TfymUBAMPnscgJxXttBDGIhTapd3XcXto9ob9Nf/8hk=;
+        b=cxREEUhu03A0vRrbnkG/czu2MN+ftWNFq1cQEgKatoha9fssBw1sYNwNYvyCwYWs+N
+         gVEw0g/WM3EavkUW4qVVXOpfC1vUDxHQruZiWIEoruLETt2GrO/3xSz0VSbAxijV9uAT
+         oo+yPjsUuD8XKlUSSHnMpABuffY0yDdY5Gzvo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TfymUBAMPnscgJxXttBDGIhTapd3XcXto9ob9Nf/8hk=;
+        b=DbAC12DA4bBYMe87Js/A5GzOwEUjLbvACfPSzJHWmUt7m/tt3Zt1vk/HTk9Suwhc5p
+         HuHxoOBQulMDCwTjp1g1eZrhkwTE9KDPmFRJNGlcA+XM7I084EfUzdD69Iyk0W2HQZfF
+         3SnftES/ZakztEU0u3d92RoJ80A5JZpE1qdamEWIkmQO0FQL6KV/ojOTaqVhWDqle5R/
+         ZmHlLgqIysI9Drkryw0NhQ0FGEPfW8w3wjxzQoZZd3E1WJ2/7Axko8SsndHGCodYa7E+
+         yHdU4bAMbY/Kznzd0o90LWQKXgOn8jntIvotKi+Z86mHrSUzTOrARJg9ZqXG1clD0z3p
+         c5rw==
+X-Gm-Message-State: AOAM532bHHYy24jH/wBazHxBpb1S66RkLOThM4l6wy+K8FFAEfUpo/ff
+        9NFStYLpJ2D8E7Jua4b+38jFTQ==
+X-Google-Smtp-Source: ABdhPJwVOpRGlhivqD9EaIH5+QG3WF/E6o8+aD9UZFedVwwkNHBrM+ysmz0MnYPwE5pi6m4YFOmS5w==
+X-Received: by 2002:a17:90a:aa13:: with SMTP id k19mr12444785pjq.145.1605902955659;
+        Fri, 20 Nov 2020 12:09:15 -0800 (PST)
+Received: from smtp.gmail.com ([100.99.132.239])
+        by smtp.gmail.com with ESMTPSA id r8sm4679626pfq.197.2020.11.20.12.09.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 12:09:15 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH] arm64: dts: qcom: sc7180: Remove double pull-up on p-sensor-int-l
+Date:   Fri, 20 Nov 2020 12:09:13 -0800
+Message-Id: <20201120200913.618274-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oYAXToTM8kn9Ra/9"
-Content-Disposition: inline
-In-Reply-To: <20201120194245.GA2925@kozik-lap>
-X-Cookie: Have at you!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This interrupt has an external pull-up so we don't need to pull it up
+again. Drop the internal pull here. Note I don't think this really
+changes anything, just noticed while looking at this irq pin.
 
---oYAXToTM8kn9Ra/9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cc: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-On Fri, Nov 20, 2020 at 08:42:45PM +0100, Krzysztof Kozlowski wrote:
-> On Fri, Nov 20, 2020 at 04:56:34PM +0000, Mark Brown wrote:
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index d48a75afdafb..3eb1ff2483be 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -1331,7 +1331,8 @@ pinmux {
+ 
+ 		pinconf {
+ 			pins = "gpio24";
+-			bias-pull-up;
++			/* Has external pullup */
++			bias-disable;
+ 		};
+ 	};
+ 
 
-> > It would be better to fix these by annotating the table as potentially
-> > unused, if nothing else it means if someone wants to add ACPI support
-> > (or it just works on their ACPI system with the plain old I2C ID) then
-> > they don't need to revert this change.
+base-commit: ead9f7d7ea9e20843e29e688b53859cea20044ee
+prerequisite-patch-id: 239dd75c9c3d2ef544f95466280f296fc217c096
+-- 
+https://chromeos.dev
 
-> The point is after this patch - removal of of_match_ptr() - they will
-> already support the ACPI matching through the PRP0001.
-
-> Keeping of_match_ptr() and maybe_unused will prevent any ACPI re-usage
-> unless explicit ACPI table is added
-
-Surely if that's the desired outcome the fix is to change the definition
-of of_match_ptr() such that it leaves the reference with CONFIG_ACPI,
-perhaps hidden behind a config option for PRP0001?  That seems better
-than going through the entire tree like this.
-
---oYAXToTM8kn9Ra/9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+4IUwACgkQJNaLcl1U
-h9C90Qf+I61ttAwAIZE/4fiWa7BmkBv4D00kqcaq3pu9eccMg7mleU/2IEA+WLuX
-IXI3xrY2EvAn6BerMQQOCpY7h5QDpqYpk37MlaB1/VznoqMV3kN2OVTt0iigmZZ3
-15xRwAW89OXYkZfnm2obupwURLm389fYcTFZpD6M90GYiUUFZ+uIENUT1vShaXDE
-5Wq6yxBpRgmq3BlKxQFfD2fhZKqeWgrJwtgc7ChHfjYk1b6Il22K2RMiBVwv4Ax3
-zpkY4Gbe79sa5yTYk1dRcUd9hnLMK8Sm/lIUTLuTtgMuKmKD8Aubv6x1qi6d4Cvb
-/hqYpBit+g3Cr1zBlcEAdK/u/NUhVA==
-=sv4Y
------END PGP SIGNATURE-----
-
---oYAXToTM8kn9Ra/9--
