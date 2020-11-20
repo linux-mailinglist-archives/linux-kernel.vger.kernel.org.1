@@ -2,63 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634212BA2CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363F02BA2D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725910AbgKTHGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:06:19 -0500
-Received: from smtprelay0121.hostedemail.com ([216.40.44.121]:39920 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725785AbgKTHGT (ORCPT
+        id S1726305AbgKTHGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 02:06:47 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34642 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbgKTHGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:06:19 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 44A8D182CED5B;
-        Fri, 20 Nov 2020 07:06:18 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:8985:9025:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21212:21627:21660:21740:21788:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: run85_1100a7127349
-X-Filterd-Recvd-Size: 1649
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 20 Nov 2020 07:06:16 +0000 (UTC)
-Message-ID: <f722b8c425fb78f2434b4e66bbe4fbd69165903e.camel@perches.com>
-Subject: Re: [PATCH v2] mdio_bus: suppress err message for reset gpio
- EPROBE_DEFER
-From:   Joe Perches <joe@perches.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 19 Nov 2020 23:06:15 -0800
-In-Reply-To: <20201119212122.665d5396@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-References: <20201119203446.20857-1-grygorii.strashko@ti.com>
-         <1a59fbe1-6a5d-81a3-4a86-fa3b5dbfdf8e@gmail.com>
-         <cabad89e-23cc-18b3-8306-e5ef1ee4bfa6@ti.com>
-         <44a3c8c0-9dbd-4059-bde8-98486dde269f@gmail.com>
-         <20201119214139.GL1853236@lunn.ch>
-         <221941d6-2bb1-9be8-7031-08071a509542@gmail.com>
-         <20201119212122.665d5396@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 20 Nov 2020 02:06:47 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AK76g0p073306;
+        Fri, 20 Nov 2020 01:06:42 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605856002;
+        bh=4ZnHtj3JkqJd6wTi9h6QLIgdwNG0j6oy+5LGrYhIv14=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=jSrsHXuWEl6MCckHdxtlTjaltwI0sQtkD8dXoAE/xX3vWfJNduviFQ76LUEzDe2Wl
+         YhtNCsFibTa5WSN8Di82KGVFUR01FDPILcY/gl1tOu7QV3ld3Q/8cY/wF/RN73XZ0b
+         ErnBmeI6LUYd0E5CADfzq9sNi0l+EJIFwYnR51C4=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AK76g2s039565
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Nov 2020 01:06:42 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 20
+ Nov 2020 01:06:41 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 20 Nov 2020 01:06:41 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AK76dfi041154;
+        Fri, 20 Nov 2020 01:06:40 -0600
+Subject: Re: [PATCH 2/2] arm64: dts: ti: k3-j7200-common-proc-board: Correct
+ the name of io expander on main_i2c1
+To:     Vignesh Raghavendra <vigneshr@ti.com>, <nm@ti.com>,
+        <t-kristo@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nsekhar@ti.com>
+References: <20201119132627.8041-1-peter.ujfalusi@ti.com>
+ <20201119132627.8041-3-peter.ujfalusi@ti.com>
+ <dc2f740a-e53e-d612-0ec7-e69bf8228e71@ti.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <30c98749-5893-ffa4-6351-ee805b93bcb6@ti.com>
+Date:   Fri, 20 Nov 2020 09:07:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <dc2f740a-e53e-d612-0ec7-e69bf8228e71@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-11-19 at 21:21 -0800, Jakub Kicinski wrote:
-> We do have our own comment style rule in networking since the beginning
-> of time, and reverse xmas tree, so it's not completely crazy.
-
-reverse xmas tree is completely crazy.
-
-But I posted a patch to checkpatch to suggest it for net/
-and drivers/net/ once
-
-https://lkml.org/lkml/2016/11/4/54
 
 
+On 19/11/2020 18.10, Vignesh Raghavendra wrote:
+> 
+> 
+> On 11/19/20 6:56 PM, Peter Ujfalusi wrote:
+>> J7200 main_i2c1 is connected to the i2c bus on the CPB marked as main_i2c3
+>>
+>> The i2c1 devices on the CPB are _not_ connected to the SoC, they are not
+>> usable with the J7200 SOM.
+>>
+>> Correct the expander name from exp4 to exp3 and at the same time add the
+>> line names as well.
+>>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> ---
+> 
+> Yes, the schematics call this expander as exp3. Thanks for the fix
+
+The CPB is the same for both j721e and j7200 SOMs.
+I'll send v2 with a small comment block to explain this.
+
+> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+> 
+>>  arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+>> index 2721137d8943..83e043c65f81 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+>> @@ -159,11 +159,14 @@ &main_i2c1 {
+>>  	pinctrl-0 = <&main_i2c1_pins_default>;
+>>  	clock-frequency = <400000>;
+>>  
+>> -	exp4: gpio@20 {
+>> +	exp3: gpio@20 {
+>>  		compatible = "ti,tca6408";
+>>  		reg = <0x20>;
+>>  		gpio-controller;
+>>  		#gpio-cells = <2>;
+>> +		gpio-line-names = "CODEC_RSTz", "CODEC_SPARE1", "UB926_RESETn",
+>> +				  "UB926_LOCK", "UB926_PWR_SW_CNTRL",
+>> +				  "UB926_TUNER_RESET", "UB926_GPIO_SPARE", "";
+> 
+> I assume these lines have same meaning in J721e and J7200? If so, then
+> no issues.
+> 
+>>  	};
+>>  };
+>>  
+>>
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
