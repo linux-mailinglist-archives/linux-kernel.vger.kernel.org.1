@@ -2,131 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80582BA186
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 168A42BA182
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgKTEvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 23:51:46 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52760 "EHLO
+        id S1726370AbgKTEvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 23:51:40 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52650 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgKTEvi (ORCPT
+        with ESMTP id S1726172AbgKTEvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 23:51:38 -0500
+        Thu, 19 Nov 2020 23:51:36 -0500
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 2F5FA2A45C; Thu, 19 Nov 2020 23:51:37 -0500 (EST)
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     "Joshua Thompson" <funaho@jurai.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Message-Id: <58bba4310da4c29b068345a4b36af8a531397ff7.1605847196.git.fthain@telegraphics.com.au>
+        id A38082A451; Thu, 19 Nov 2020 23:51:35 -0500 (EST)
+To:     Michael Schmitz <schmitzmic@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <af25163257796b50bb99d4ede4025cea55787b8f.1605847196.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] macintosh/adb-iop: Send correct poll command
+Subject: [PATCH] scsi/atari_scsi: Fix race condition between .queuecommand and
+ EH
 Date:   Fri, 20 Nov 2020 15:39:56 +1100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The behaviour of the IOP firmware is not well documented but we do know
-that IOP message reply data can be used to issue new ADB commands.
-Use the message reply to better control autopoll behaviour by sending
-a Talk Register 0 command after every ADB response, not unlike the
-algorithm in the via-macii driver. This poll command is addressed to
-that device which last received a Talk command (explicit or otherwise).
+It is possible that bus_reset_cleanup() or .eh_abort_handler could
+be invoked during NCR5380_queuecommand(). If that takes place before
+the new command is enqueued and after the ST-DMA "lock" has been
+acquired, the ST-DMA "lock" will be released again. This will result
+in a lost DMA interrupt and a command timeout. Fix this by excluding
+EH and interrupt handlers while the new command is enqueued.
 
-Cc: Joshua Thompson <funaho@jurai.org>
-Fixes: fa3b5a9929fc ("macintosh/adb-iop: Implement idle -> sending state transition")
-Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/macintosh/adb-iop.c | 40 +++++++++++++++++++++++++++----------
- 1 file changed, 30 insertions(+), 10 deletions(-)
+Michael, would you please send your Acked-by or Reviewed-and-tested-by?
+These two patches taken together should be equivalent to the one you tested
+recently. I've split it into two as that seemed to make more sense.
+---
+ drivers/scsi/NCR5380.c    |  9 ++++++---
+ drivers/scsi/atari_scsi.c | 10 +++-------
+ 2 files changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
-index f3d1a460fbce..6b26b6a2c463 100644
---- a/drivers/macintosh/adb-iop.c
-+++ b/drivers/macintosh/adb-iop.c
-@@ -25,6 +25,7 @@
- static struct adb_request *current_req;
- static struct adb_request *last_req;
- static unsigned int autopoll_devs;
-+static u8 autopoll_addr;
+diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
+index d654a6cc4162..ea4b5749e7da 100644
+--- a/drivers/scsi/NCR5380.c
++++ b/drivers/scsi/NCR5380.c
+@@ -580,11 +580,14 @@ static int NCR5380_queue_command(struct Scsi_Host *instance,
  
- static enum adb_iop_state {
- 	idle,
-@@ -41,6 +42,11 @@ static int adb_iop_autopoll(int);
- static void adb_iop_poll(void);
- static int adb_iop_reset_bus(void);
+ 	cmd->result = 0;
  
-+/* ADB command byte structure */
-+#define ADDR_MASK       0xF0
-+#define OP_MASK         0x0C
-+#define TALK            0x0C
-+
- struct adb_driver adb_iop_driver = {
- 	.name         = "ISM IOP",
- 	.probe        = adb_iop_probe,
-@@ -96,17 +102,24 @@ static void adb_iop_complete(struct iop_msg *msg)
- static void adb_iop_listen(struct iop_msg *msg)
- {
- 	struct adb_iopmsg *amsg = (struct adb_iopmsg *)msg->message;
-+	u8 addr = (amsg->cmd & ADDR_MASK) >> 4;
-+	u8 op = amsg->cmd & OP_MASK;
- 	unsigned long flags;
- 	bool req_done = false;
- 
- 	local_irq_save(flags);
- 
--	/* Handle a timeout. Timeout packets seem to occur even after
--	 * we've gotten a valid reply to a TALK, presumably because of
--	 * autopolling.
-+	/* Responses to Talk commands may be unsolicited as they are
-+	 * produced when the IOP polls devices. They are mostly timeouts.
- 	 */
+-	if (!NCR5380_acquire_dma_irq(instance))
+-		return SCSI_MLQUEUE_HOST_BUSY;
 -
--	if (amsg->flags & ADB_IOP_EXPLICIT) {
-+	if (op == TALK && ((1 << addr) & autopoll_devs))
-+		autopoll_addr = addr;
+ 	spin_lock_irqsave(&hostdata->lock, flags);
+ 
++	if (!NCR5380_acquire_dma_irq(instance)) {
++		spin_unlock_irqrestore(&hostdata->lock, flags);
 +
-+	switch (amsg->flags & (ADB_IOP_EXPLICIT |
-+			       ADB_IOP_AUTOPOLL |
-+			       ADB_IOP_TIMEOUT)) {
-+	case ADB_IOP_EXPLICIT:
-+	case ADB_IOP_EXPLICIT | ADB_IOP_TIMEOUT:
- 		if (adb_iop_state == awaiting_reply) {
- 			struct adb_request *req = current_req;
++		return SCSI_MLQUEUE_HOST_BUSY;
++	}
++
+ 	/*
+ 	 * Insert the cmd into the issue queue. Note that REQUEST SENSE
+ 	 * commands are added to the head of the queue since any command will
+diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
+index a82b63a66635..95d7a3586083 100644
+--- a/drivers/scsi/atari_scsi.c
++++ b/drivers/scsi/atari_scsi.c
+@@ -376,15 +376,11 @@ static int falcon_get_lock(struct Scsi_Host *instance)
+ 	if (IS_A_TT())
+ 		return 1;
  
-@@ -115,12 +128,16 @@ static void adb_iop_listen(struct iop_msg *msg)
+-	if (stdma_is_locked_by(scsi_falcon_intr) &&
+-	    instance->hostt->can_queue > 1)
++	if (stdma_is_locked_by(scsi_falcon_intr))
+ 		return 1;
  
- 			req_done = true;
- 		}
--	} else if (!(amsg->flags & ADB_IOP_TIMEOUT)) {
--		adb_input(&amsg->cmd, amsg->count + 1,
--			  amsg->flags & ADB_IOP_AUTOPOLL);
-+		break;
-+	case ADB_IOP_AUTOPOLL:
-+		if (((1 << addr) & autopoll_devs) &&
-+		    amsg->cmd == ADB_READREG(addr, 0))
-+			adb_input(&amsg->cmd, amsg->count + 1, 1);
-+		break;
- 	}
+-	if (in_interrupt())
+-		return stdma_try_lock(scsi_falcon_intr, instance);
 -
--	msg->reply[0] = autopoll_devs ? ADB_IOP_AUTOPOLL : 0;
-+	msg->reply[0] = autopoll_addr ? ADB_IOP_AUTOPOLL : 0;
-+	msg->reply[1] = 0;
-+	msg->reply[2] = autopoll_addr ? ADB_READREG(autopoll_addr, 0) : 0;
- 	iop_complete_message(msg);
- 
- 	if (req_done)
-@@ -233,6 +250,9 @@ static void adb_iop_set_ap_complete(struct iop_msg *msg)
- 	struct adb_iopmsg *amsg = (struct adb_iopmsg *)msg->message;
- 
- 	autopoll_devs = (amsg->data[1] << 8) | amsg->data[0];
-+	if (autopoll_devs & (1 << autopoll_addr))
-+		return;
-+	autopoll_addr = autopoll_devs ? (ffs(autopoll_devs) - 1) : 0;
+-	stdma_lock(scsi_falcon_intr, instance);
+-	return 1;
++	/* stdma_lock() may sleep which means it can't be used here */
++	return stdma_try_lock(scsi_falcon_intr, instance);
  }
  
- static int adb_iop_autopoll(int devs)
+ #ifndef MODULE
 -- 
 2.26.2
 
