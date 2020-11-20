@@ -2,168 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E706A2BA05C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DA82BA05F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgKTC0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 21:26:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33802 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725937AbgKTC0t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 21:26:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605839207;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4sxKhMof86hickCRVUEuAEtymNQnjon9Bfb0eSzoC34=;
-        b=inzSyg5CEt/hJdFVUB8tvA/Rb8y2mPxGR66q5XyJDqe5Hn7OnDgC+R7YDjho3lGuQ2XKlD
-        r4QJJIb3Jjcg2gBm+sFQrIDts0gXgc65V89dJcSkGtoManZP59i6RUpYf9zj2MOa+djB6J
-        raLLD5Da6kmtjOKxQi4deeYBXZBp+kQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-sOa4YTahNv2t3MXF3bnYLw-1; Thu, 19 Nov 2020 21:26:43 -0500
-X-MC-Unique: sOa4YTahNv2t3MXF3bnYLw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727032AbgKTC1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 21:27:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726094AbgKTC1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 21:27:13 -0500
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12C6A180E46F;
-        Fri, 20 Nov 2020 02:26:39 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-12-196.pek2.redhat.com [10.72.12.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2CAF110013BD;
-        Fri, 20 Nov 2020 02:26:25 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 10:26:22 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Guilherme Piccoli <gpiccoli@canonical.com>
-Cc:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-doc@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>, x86@kernel.org,
-        Michael Walle <michael@walle.cc>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>, john.p.donnelly@oracle.com,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, Baoquan He <bhe@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 27AC022267;
+        Fri, 20 Nov 2020 02:27:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605839232;
+        bh=bu0f4nai4GWUco97RbnqLeOuE/BnaVOIzMAKOz8dcGo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tJCB/2jLR5QZTBcUBdFU0RkcyuejBn2VL4VHzLLUVVmPw0RtC+rVjetjs9JeKdJ7g
+         S4Cevk22LrS95ohBK0p9QPblfD+5K/O2QJkK4pCa3S4DXgMJ+O3WgkHCCQl7JXE+Ax
+         kUiw+QG4J4JRdGE3yLM4Jpx0/cy/bkBl6sJgXcHs=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Chen Yu <yu.c.chen@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        "# v4 . 16+" <stable@vger.kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Diego Elio =?iso-8859-1?Q?Petten=F2?= <flameeyes@flameeyes.com>,
-        Olof Johansson <olof@lixom.net>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Dann Frazier <dann.frazier@canonical.com>
-Subject: Re: [PATCH 1/1] kernel/crash_core.c - Add crashkernel=auto for x86
- and ARM
-Message-ID: <20201120022622.GA3731@dhcp-128-65.nay.redhat.com>
-References: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
- <CAHD1Q_yA37wWrOscBHpSFEjFecGFcrzY6R6qU_iMESzYArV_Kg@mail.gmail.com>
+        Ingo Molnar <mingo@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: [PATCH 0/3] bootconfig: Make size and checksum fields le32
+Date:   Fri, 20 Nov 2020 11:27:09 +0900
+Message-Id: <160583922884.546818.17083813931787774050.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHD1Q_yA37wWrOscBHpSFEjFecGFcrzY6R6qU_iMESzYArV_Kg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guilherme,
-On 11/19/20 at 06:56pm, Guilherme Piccoli wrote:
-> Hi Saeed, thanks for your patch/idea! Comments inline, below.
-> 
-> On Wed, Nov 18, 2020 at 8:29 PM Saeed Mirzamohammadi
-> <saeed.mirzamohammadi@oracle.com> wrote:
-> >
-> > This adds crashkernel=auto feature to configure reserved memory for
-> > vmcore creation to both x86 and ARM platforms based on the total memory
-> > size.
-> >
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
-> > Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> > ---
-> >  Documentation/admin-guide/kdump/kdump.rst |  5 +++++
-> >  arch/arm64/Kconfig                        | 26 ++++++++++++++++++++++-
-> >  arch/arm64/configs/defconfig              |  1 +
-> >  arch/x86/Kconfig                          | 26 ++++++++++++++++++++++-
-> >  arch/x86/configs/x86_64_defconfig         |  1 +
-> >  kernel/crash_core.c                       | 20 +++++++++++++++--
-> >  6 files changed, 75 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-> > index 75a9dd98e76e..f95a2af64f59 100644
-> > --- a/Documentation/admin-guide/kdump/kdump.rst
-> > +++ b/Documentation/admin-guide/kdump/kdump.rst
-> > @@ -285,7 +285,12 @@ This would mean:
-> >      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
-> >      3) if the RAM size is larger than 2G, then reserve 128M
-> >
-> > +Or you can use crashkernel=auto if you have enough memory. The threshold
-> > +is 1G on x86_64 and arm64. If your system memory is less than the threshold,
-> > +crashkernel=auto will not reserve memory. The size changes according to
-> > +the system memory size like below:
-> >
-> > +    x86_64/arm64: 1G-64G:128M,64G-1T:256M,1T-:512M
-> 
-> As mentioned in the thread, this was tried before and never got merged
-> - I'm not sure the all the reasons, but I speculate that a stronger
-> reason is that it'd likely fail in many cases. I've seen cases of 256G
+Hello,
 
-Yes, there were a few tries, last time I tried to set a default value, I
-do not think people are strongly against it.  We have been using the
-auto in Red Hat for long time, it does work for most of usual cases
-like Saeed said in the patch. But I think all of us are aligned it is
-not possible to satisfy all the user cases.  Anyway I also think this is
-good to have.
+This is a series of patches to make the size and the checksum fields
+in the footer le32 instead of u32.
 
-> servers that require crashkernel=600M (or more), due to the amount of
-> devices. Also, the minimum nowadays would likely be 96M or more - I'm
-> looping Cascardo and Dann (Debian/Ubuntu maintainers of kdump stuff)
-> so they maybe can jump in with even more examples/considerations.
+In the thread for alignment series[1], Steve pointed that the current
+footer format didn't specify the endianness thus it is hard to apply
+the bootconfig for cross-build initrd if the target endianness is
+different from the host machine.
 
-Another reason of people have different feeling about the memory
-requirement is currently distributions are doing different on kdump,
-especially for the userspace part. Kairui did a lot of work in dracut to
-reduce the memory requirements in dracut, for example only add dump
-required kernel modules in 2nd kernel initramfs, also we have a lot of
-other twicks for dracut to use "hostonly" mode, eg. hostonly multipath
-configurations will just bring up necessary paths instead of creating
-all of the multipath devices.
+I've proposed that the hexadecimal ASCII string in the previous series
+[2] but Linus pointed that making it le32 was enough.
 
-> 
-> What we've been trying to do in Ubuntu/Debian is using an estimator
-> approach [0] - this is purely userspace and tries to infer the amount
-> of necessary memory a kdump minimal[1] kernel would take. I'm not
-> -1'ing your approach totally, but I think a bit more consideration is
-> needed in the ranges, at least accounting the number of devices of the
-> machine or something like that.
+So this just make those fields le32.
 
-There are definitely room to improve and make it better in the future,
-but I think this is a good start and simple enough proposal for the time
-being :)
+Thank you,
 
-> 
-> Cheers,
-> 
-> 
-> Guilherme
-> 
-> [0] https://salsa.debian.org/debian/makedumpfile/-/merge_requests/7
-> [1] Minimal as having a reduced initrd + "shrinking" parameters (like
-> nr_cpus=1).
-> 
+[1] https://lore.kernel.org/lkml/20201118112249.30d20147@gandalf.local.home/
+[2] https://lore.kernel.org/linux-doc/CAHk-=wi9RedSQoGF06dVs2mp7tBp4QoiW8+XZzNcDFJr3Zo5gg@mail.gmail.com/
 
-Thanks
-Dave
+---
 
+Masami Hiramatsu (3):
+      bootconfig: Load size and checksum in the footer as le32
+      tools/bootconfig: Store size and checksum in footer as le32
+      docs: bootconfig: Add the endianness of fields
+
+
+ Documentation/admin-guide/bootconfig.rst |    4 +++-
+ init/main.c                              |    4 ++--
+ tools/bootconfig/main.c                  |    7 +++++--
+ 3 files changed, 10 insertions(+), 5 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
