@@ -2,148 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3CE2BB8C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 23:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A6A2BB8DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 23:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgKTWR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 17:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
+        id S1728764AbgKTWVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 17:21:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728161AbgKTWR2 (ORCPT
+        with ESMTP id S1728362AbgKTWV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 17:17:28 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE72C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 14:17:28 -0800 (PST)
-Date:   Fri, 20 Nov 2020 23:17:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605910646;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hDMsQqZvMY3BDZ5c3i/PAw+2A0OQq7j5i3pJCfUo0/U=;
-        b=J7SVOtIGGI30btrqU14Ra5SMKUWZoY6De9VQ8z+iFn4W8vtqnlqd1IuEYLDfM/yWetsfrv
-        in4WYEY5GylYst+Xk9FCdeaudWZmTNsl6Ywv8MQF9qp836ao43N2Bhfo7kDEXGryQMr51N
-        PnzmdkZIUNtaxaZwfV+BvYDE1SGsrXwCIWhteVzAqju3j90prL1HfumLTjYnYIX6/uZf01
-        XFWQQqh10mty4vneImbUVKv63Ybd2XlxwB6IS3xhfwHolyDpGSIHJ81wVmUhQNlykamNXd
-        qfPNXrGLx+4l4ilOAyzpp3j+Qoq9NZb47c4WiknSkUDYTQq8Y+C6v8XCrQqOtw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605910646;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hDMsQqZvMY3BDZ5c3i/PAw+2A0OQq7j5i3pJCfUo0/U=;
-        b=i5HqrTNhqp6pDInxCHlksuT8SbzpME3NEMlcFuoowFiMsp1nkADxvOXC+8jeuAd+2t/A+n
-        0MbG9IZcca6FnBAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Ben Skeggs <bskeggs@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/2] kthread: Move prio/affinite change into the newly
- created thread
-Message-ID: <20201120221724.h5nji5fqywwk4p2c@linutronix.de>
-References: <20201110113848.801379-1-bigeasy@linutronix.de>
- <20201110113848.801379-2-bigeasy@linutronix.de>
- <20201117124503.GI3121406@hirez.programming.kicks-ass.net>
+        Fri, 20 Nov 2020 17:21:29 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED15C061A04;
+        Fri, 20 Nov 2020 14:21:29 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id 10so9964113ybx.9;
+        Fri, 20 Nov 2020 14:21:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=29/AaAKKWIjlxKBDiu42mXe16/c3LUzQvTdn0Wctw9g=;
+        b=th/UjqVcversiy9gEUr46cKRrhHywr0iTgf9mzUejm+T3/Jtu2c6ftjob7N1dnOe2S
+         rGVMit/4Gqy7ZDqW+do8x9wI8RCPt/cmuWncILsoBuux3CBAtfG8gT+eTL8wiBVSM5EH
+         rDgxqkIvK+vUXnfhgj71GxYIUQH1hInVNMbCl5+3prik9RGhi+hsmul85xXuf9uJVr2L
+         NGLQGWDmOXXHg4l9XujW0HrVyacbE3Q1QSLAkLJ0BjE5AdFqhLyeU3T8/6+nJ9hH0JSR
+         o1vAVeqr6Bt+/W6rGIwrn7PuvAvMGRmk1Avx4k6vjCg8etglRiDTMnimrqKcX/KEsNCP
+         0CAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=29/AaAKKWIjlxKBDiu42mXe16/c3LUzQvTdn0Wctw9g=;
+        b=g6dF/T3IXVX8QT4MfDxe+zp+ZIZ9xHCuMvUBvTX6zqjs95vMoZCWRjOR8ZvnplwSFE
+         MpW7FRJ+Cocr8Ai+2u86hCuhUCXhzTl/KKj91vXaqYUhzxnR9kkROQOnLFCEmRZKla1D
+         /TWlHYZvWd31yby8t+xuOaetfQfCA2rnKbYtvImZQoEgF4bMcyOH0wDgheWTNO/AQcgq
+         vKJHu61yvY4IK3yHPMgnP62czhvJ3I6HVNj4LuPzgNFrgnx06uPJAt0tvxIYKvpgGW+N
+         wvCFfMuDeRyb4r/j+b87COnXbi+be8kDhPqdSYEtYbeDyH//DWkZBm0w3V06nDyXNEdi
+         ds0A==
+X-Gm-Message-State: AOAM533E6x8M4HleYo3hGWOidsXyMY+wptATrgMwyVNBk+Ieg+ndwvCB
+        qvPHidvB8XuYLS48BjmsDU0X4FK8+hiPxZdptxg=
+X-Google-Smtp-Source: ABdhPJzYUhkcjTyH5GIcOV5fWMsl+OUdzem471zLY9usW3RhV8izQIRbyESMTmZwFikqgbfOQQqVvSSQCZzBPJX4q90=
+X-Received: by 2002:a5b:40e:: with SMTP id m14mr22113400ybp.33.1605910888617;
+ Fri, 20 Nov 2020 14:21:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201117124503.GI3121406@hirez.programming.kicks-ass.net>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 20 Nov 2020 23:21:17 +0100
+Message-ID: <CANiq72=E_gEVvqUUTSqU4zegC2=yZSTM4b=4G-iofp6d3=UgWQ@mail.gmail.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
+        cluster-devel@redhat.com, coreteam@netfilter.org,
+        devel@driverdev.osuosl.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
+        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-17 13:45:03 [+0100], Peter Zijlstra wrote:
-> On Tue, Nov 10, 2020 at 12:38:47PM +0100, Sebastian Andrzej Siewior wrote:
-> > With enabled threaded interrupts the nouveau driver reported the
-> > following:
-> > | Chain exists of:
-> > |   &mm->mmap_lock#2 --> &device->mutex --> &cpuset_rwsem
-> > |
-> > |  Possible unsafe locking scenario:
-> > |
-> > |        CPU0                    CPU1
-> > |        ----                    ----
-> > |   lock(&cpuset_rwsem);
-> > |                                lock(&device->mutex);
-> > |                                lock(&cpuset_rwsem);
-> > |   lock(&mm->mmap_lock#2);
-> > 
-> > The device->mutex is nvkm_device::mutex.
-> > 
-> > Unblocking the lockchain at `cpuset_rwsem' is probably the easiest thing
-> > to do.
-> > Move the priority reset to the start of the newly created thread.
-> > 
-> > Fixes: 710da3c8ea7df ("sched/core: Prevent race condition between cpuset and __sched_setscheduler()")
-> > Reported-by: Mike Galbraith <efault@gmx.de>
-> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Link: https://lkml.kernel.org/r/a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de
-> 
-> Moo... yes this is certainly the easiest solution, because nouveau is a
-> horrible rats nest. But when I spoke to Greg KH about this, he suggested
-> nouveau ought to be fixed.
-> 
-> Ben, I got terminally lost when trying to untangle nouvea init, is there
-> any chance this can be fixed to not hold that nvkm_device::mutex thing
-> while doing request_irq() ?
+Hi Gustavo,
 
-Ben, did you had a chance to peek at this?
+On Fri, Nov 20, 2020 at 7:21 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> Hi all,
+>
+> This series aims to fix almost all remaining fall-through warnings in
+> order to enable -Wimplicit-fallthrough for Clang.
 
-> > ---
-> >  kernel/kthread.c | 16 ++++++++--------
-> >  1 file changed, 8 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/kernel/kthread.c b/kernel/kthread.c
-> > index 933a625621b8d..4a31127c6efbf 100644
-> > --- a/kernel/kthread.c
-> > +++ b/kernel/kthread.c
-> > @@ -243,6 +243,7 @@ EXPORT_SYMBOL_GPL(kthread_parkme);
-> >  
-> >  static int kthread(void *_create)
-> >  {
-> > +	static const struct sched_param param = { .sched_priority = 0 };
-> >  	/* Copy data: it's on kthread's stack */
-> >  	struct kthread_create_info *create = _create;
-> >  	int (*threadfn)(void *data) = create->threadfn;
-> > @@ -273,6 +274,13 @@ static int kthread(void *_create)
-> >  	init_completion(&self->parked);
-> >  	current->vfork_done = &self->exited;
-> >  
-> > +	/*
-> > +	 * The new thread inherited kthreadd's priority and CPU mask. Reset
-> > +	 * back to default in case they have been changed.
-> > +	 */
-> > +	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
-> > +	set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_KTHREAD));
-> > +
-> >  	/* OK, tell user we're spawned, wait for stop or wakeup */
-> >  	__set_current_state(TASK_UNINTERRUPTIBLE);
-> >  	create->result = current;
-> > @@ -370,7 +378,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
-> >  	}
-> >  	task = create->result;
-> >  	if (!IS_ERR(task)) {
-> > -		static const struct sched_param param = { .sched_priority = 0 };
-> >  		char name[TASK_COMM_LEN];
-> >  
-> >  		/*
-> > @@ -379,13 +386,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
-> >  		 */
-> >  		vsnprintf(name, sizeof(name), namefmt, args);
-> >  		set_task_comm(task, name);
-> > -		/*
-> > -		 * root may have changed our (kthreadd's) priority or CPU mask.
-> > -		 * The kernel thread should not inherit these properties.
-> > -		 */
-> > -		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
-> > -		set_cpus_allowed_ptr(task,
-> > -				     housekeeping_cpumask(HK_FLAG_KTHREAD));
-> >  	}
-> >  	kfree(create);
-> >  	return task;
+Thanks for this.
 
-Sebastian
+Since this warning is reliable in both/all compilers and we are
+eventually getting rid of all the cases, what about going even further
+and making it an error right after?
+
+Cheers,
+Miguel
