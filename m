@@ -2,74 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C124F2B9F9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B20A2B9FA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgKTBUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 20:20:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726295AbgKTBUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:20:10 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4000E22254;
-        Fri, 20 Nov 2020 01:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605835209;
-        bh=bZjfUL1UblIM9s71DnjwsiTSdfRM7AR55mXRwOocJc8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=E8MpnOsNGeqopO5roB8ILOdC3mB7a19xAKbOX8voSBE4w4x37Jym1OmCMYz6SeLDg
-         sqy4hRrDUk+hKTJfJbK88QZtZZvbqHwvtWLFypCTgnF+K5XKrzmPCrmldQ0EKbuCwo
-         Lq71kermx0GKX5SCB5qg0UuCGR/hbjJyv5FB0gKI=
-Date:   Thu, 19 Nov 2020 17:20:08 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Dmytro Shytyi <dmytro@shytyi.net>
-Cc:     "yoshfuji" <yoshfuji@linux-ipv6.org>,
-        "kuznet" <kuznet@ms2.inr.ac.ru>,
-        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
-        "netdev" <netdev@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next V6] net: Variable SLAAC: SLAAC with prefixes of
- arbitrary length in PIO
-Message-ID: <20201119172008.4d26c0fb@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <175e1fdb250.1207dca53446410.2492811916841931466@shytyi.net>
-References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
-        <202011110944.7zNVZmvB-lkp@intel.com>
-        <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net>
-        <175bf515624.c67e02e8130655.7824060160954233592@shytyi.net>
-        <175c31c6260.10eef97f6180313.755036504412557273@shytyi.net>
-        <20201117124348.132862b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <175e0b9826b.c3bb0aae425910.5834444036489233360@shytyi.net>
-        <20201119104413.75ca9888@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <175e1fdb250.1207dca53446410.2492811916841931466@shytyi.net>
+        id S1726593AbgKTBUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 20:20:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726295AbgKTBUT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 20:20:19 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF11C0613CF;
+        Thu, 19 Nov 2020 17:20:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uIhwjMF8P8Wim+68g+Wg+Y0WkmC51lm2aFjKZAFLUHw=; b=CDPtdmi2TwIsopN4OrHcC5a+Ol
+        xwDv/KAULowchwLaDmA0FuPTQi1p6n1E6rkBhYF65NGb//BicvmFLdABvs/LqsszMa4yjTJ7UifjZ
+        fl81nGEvMFhF9rYgA7G3KAB9hEa+zWojt5uGKY/t0xXVDPbQTgIOWeduZmIrJXuMJC5jY0Xwdo+Gw
+        ixavW9jmYBMOocsqciTAPLfrXevPJpUr9G/uFT0v0O7GwQCdMpb1IJAJT9JvEZhBHGD+poDS3lnxw
+        rUadSTuON+Ps44svtP0CaiZumid7G0smKNbfGJJE5/nKttwiNOx2qhPVdAkfoKRhj6fhSLAoHbfgw
+        MHLhzSCg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kfv61-0005D5-3O; Fri, 20 Nov 2020 01:20:17 +0000
+Date:   Fri, 20 Nov 2020 01:20:17 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] iov_iter: optimise iov_iter_npages for bvec
+Message-ID: <20201120012017.GJ29991@casper.infradead.org>
+References: <cover.1605827965.git.asml.silence@gmail.com>
+ <ab04202d0f8c1424da47251085657c436d762785.1605827965.git.asml.silence@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab04202d0f8c1424da47251085657c436d762785.1605827965.git.asml.silence@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 20:31:41 +0100 Dmytro Shytyi wrote:
->  > Thanks for adding the helper! Looks like it needs a touch up:  =20
-> =20
-> Understood. Thank you for pointing this out. I think I did not catch this=
- warning as my Makefile didn't include "-Wmissing-prototypes"
->=20
->  > net/ipv6/addrconf.c:2579:22: warning: no previous prototype for =E2=80=
-=98ipv6_cmp_rcvd_prsnt_prfxs=E2=80=99 [-Wmissing-prototypes]=20
->  >  2579 | struct inet6_ifaddr *ipv6_cmp_rcvd_prsnt_prfxs(struct inet6_if=
-addr *ifp,=20
->  >  |                      ^~~~~~~~~~~~~~~~~~~~~~~~~=20
->  > net/ipv6/addrconf.c:2579:21: warning: symbol 'ipv6_cmp_rcvd_prsnt_prfx=
-s' was not declared. Should it be static?=20
->  >  =20
->=20
-> Hideaki Yoshifuji helped to improve this patch with suggestions. @Hideaki=
-, should I add "Reported-by" tag in this case?
-> Jakub Kicinski also helped to find errors and help with improvement. @Jak=
-ub, should I add "Reported-by" tag in this case?=20
+On Thu, Nov 19, 2020 at 11:24:38PM +0000, Pavel Begunkov wrote:
+> The block layer spends quite a while in iov_iter_npages(), but for the
+> bvec case the number of pages is already known and stored in
+> iter->nr_segs, so it can be returned immediately as an optimisation
 
-No need for a tag for me, it would be great if Hideaki was
-willing to provide his acked-by or reviewed-by though :)
+Er ... no, it doesn't.  nr_segs is the number of bvecs.  Each bvec can
+store up to 4GB of contiguous physical memory.
+
