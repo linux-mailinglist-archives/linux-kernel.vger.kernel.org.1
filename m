@@ -2,234 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23EA2BA4B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7452BA4BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgKTIdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:33:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbgKTIdF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:33:05 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEB2C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:33:04 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id f20so11719325ejz.4
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:33:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CSkCdCaqLBM0bWRHZ00ADxnd+NBE6b99YIUgGCXQ0N8=;
-        b=b0w6ldKpDUpMxM+H9MUxFarymLOND8rU0+XNOChF0O2Py4IV00Gt47AXtaGeXw0t2r
-         wHUIYai3iA2izngwjfCKMot50mClxBEGuQx4AYiM8qhD4pjCPBDtKuI2ns6damGBZZ29
-         fteKSJKPs2hjKnRux2ro3BntaD5Y1UZDqK8Mo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CSkCdCaqLBM0bWRHZ00ADxnd+NBE6b99YIUgGCXQ0N8=;
-        b=pO+DEYPPqelzI9zcwK5RRN91Ld58ikInFuJkUwe5AItc89BlpYsWQwARl6zFFgdZJV
-         eVGtz5BpmdY6YXUtRpoAO/8qyh242mc0ZV/hzlV1y2/MoHdCiBHvxwFYA2OXfpIBGNIA
-         KnraYMzrqAXMWQsAuFxgnWktIb9/nQd77CGlgkJuyJDCRqPeshC1RiLqug4VTCfpG1d/
-         Rcy1ybLrqwQ8A7kobnaL4TiGdPiI25z+WC5DvvcMbdvAw5fzK/vcCOi5leDUeHW+mC72
-         r8ARwKza9Kx2aOfaPf43UHjDmLCMc13aVzJ76KsTqo0RCnPSMCB59JK8UGAiLdNyoHw6
-         kAUw==
-X-Gm-Message-State: AOAM53337Cs80i+zVBxdCFNwD1ViAijrz6FjHnQP5idKRaRiJZJfAoth
-        1N2myPozgJ+PstyS1kRlXH+rKQA2STs8RQ==
-X-Google-Smtp-Source: ABdhPJzcFB/lPSrQIbdA7+kzX52LGBN8ejaKu9bpqnGMfvRyGtgpBun6tOA4Fqull+PI0JBRvI3Q1A==
-X-Received: by 2002:a17:907:396:: with SMTP id ss22mr16414769ejb.24.1605861182678;
-        Fri, 20 Nov 2020 00:33:02 -0800 (PST)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
-        by smtp.gmail.com with ESMTPSA id 65sm773073edj.83.2020.11.20.00.33.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 00:33:01 -0800 (PST)
-Received: by mail-wr1-f53.google.com with SMTP id o15so9147574wru.6
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:33:01 -0800 (PST)
-X-Received: by 2002:adf:fb90:: with SMTP id a16mr13977920wrr.192.1605861181149;
- Fri, 20 Nov 2020 00:33:01 -0800 (PST)
+        id S1727113AbgKTIfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:35:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:44672 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725789AbgKTIfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:35:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64BEB101E;
+        Fri, 20 Nov 2020 00:35:17 -0800 (PST)
+Received: from [10.57.26.10] (unknown [10.57.26.10])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2DBBA3F70D;
+        Fri, 20 Nov 2020 00:35:12 -0800 (PST)
+Subject: Re: [PATCH v8 2/3] dt-bindings: arm: cpus: Document
+ 'mediatek,freq-domain' property
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wsd_upstream@mediatek.com
+References: <1603700349-5922-1-git-send-email-hector.yuan@mediatek.com>
+ <1603700349-5922-3-git-send-email-hector.yuan@mediatek.com>
+ <20201028150858.GA4029348@bogus>
+ <65a4e167-9d2c-7fcb-5373-33af5e002333@arm.com>
+ <20201119171322.2gxrv5h7sqwllgsv@bogus>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <fe0d36e8-734c-8cbe-5e1b-90b6db8c5cbf@arm.com>
+Date:   Fri, 20 Nov 2020 08:35:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
- <20201119144146.1045202-10-daniel.vetter@ffwll.ch> <f1f3a1d8-d62a-6e93-afc1-87a8e51081e9@xs4all.nl>
- <e1f7d30b-2012-0249-66c7-cf9d7d6246ad@xs4all.nl>
-In-Reply-To: <e1f7d30b-2012-0249-66c7-cf9d7d6246ad@xs4all.nl>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Fri, 20 Nov 2020 17:32:49 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5BWUp6XbYN84bYGL62_bT553Y5G+ynPA3wjk6rFvGU=OQ@mail.gmail.com>
-Message-ID: <CAAFQd5BWUp6XbYN84bYGL62_bT553Y5G+ynPA3wjk6rFvGU=OQ@mail.gmail.com>
-Subject: Re: [PATCH v6 09/17] media/videbuf1|2: Mark follow_pfn usage as unsafe
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201119171322.2gxrv5h7sqwllgsv@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 5:28 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> On 20/11/2020 09:06, Hans Verkuil wrote:
-> > On 19/11/2020 15:41, Daniel Vetter wrote:
-> >> The media model assumes that buffers are all preallocated, so that
-> >> when a media pipeline is running we never miss a deadline because the
-> >> buffers aren't allocated or available.
-> >>
-> >> This means we cannot fix the v4l follow_pfn usage through
-> >> mmu_notifier, without breaking how this all works. The only real fix
-> >> is to deprecate userptr support for VM_IO | VM_PFNMAP mappings and
-> >> tell everyone to cut over to dma-buf memory sharing for zerocopy.
-> >>
-> >> userptr for normal memory will keep working as-is, this only affects
-> >> the zerocopy userptr usage enabled in 50ac952d2263 ("[media]
-> >> videobuf2-dma-sg: Support io userptr operations on io memory").
-> >>
-> >> Acked-by: Tomasz Figa <tfiga@chromium.org>
-> >
-> > Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
->
-> Actually, cancel this Acked-by.
->
-> So let me see if I understand this right: VM_IO | VM_PFNMAP mappings can
-> move around. There is a mmu_notifier that can be used to be notified when
-> that happens, but that can't be used with media buffers since those buffe=
-rs
-> must always be available and in the same place.
->
-> So follow_pfn is replaced by unsafe_follow_pfn to signal that what is att=
-empted
-> is unsafe and unreliable.
->
-> If CONFIG_STRICT_FOLLOW_PFN is set, then unsafe_follow_pfn will fail, if =
-it
-> is unset, then it writes a warning to the kernel log but just continues w=
-hile
-> still unsafe.
->
-> I am very much inclined to just drop VM_IO | VM_PFNMAP support in the med=
-ia
-> subsystem. For vb2 there is a working alternative in the form of dmabuf, =
-and
-> frankly for vb1 I don't care. If someone really needs this for a vb1 driv=
-er,
-> then they can do the work to convert that driver to vb2.
->
-> I've added Mauro to the CC list and I'll ping a few more people to see wh=
-at
-> they think, but in my opinion support for USERPTR + VM_IO | VM_PFNMAP
-> should just be killed off.
->
-> If others would like to keep it, then frame_vector.c needs a comment befo=
-re
-> the 'while' explaining why the unsafe_follow_pfn is there and that using
-> dmabuf is the proper alternative to use. That will make it easier for
-> developers to figure out why they see a kernel warning and what to do to
-> fix it, rather than having to dig through the git history for the reason.
 
-I'm all for dropping that code.
 
-Best regards,
-Tomasz
+On 11/19/20 5:13 PM, Sudeep Holla wrote:
+> On Thu, Nov 19, 2020 at 03:23:20PM +0000, Lukasz Luba wrote:
+>>
+>>
+>> On 10/28/20 3:08 PM, Rob Herring wrote:
+>>> On Mon, Oct 26, 2020 at 04:19:08PM +0800, Hector Yuan wrote:
+>>>> From: "Hector.Yuan" <hector.yuan@mediatek.com>
+>>>>
+>>>> Add devicetree documentation for 'mediatek,freq-domain' property specific
+>>>> to Mediatek CPUs. This property is used to reference the CPUFREQ node
+>>>> along with the domain id.
+>>>>
+>>>> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+>>>> ---
+>>>>    Documentation/devicetree/bindings/arm/cpus.yaml |    6 ++++++
+>>>>    1 file changed, 6 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
+>>>> index 1222bf1..e995b26 100644
+>>>> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
+>>>> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
+>>>> @@ -255,6 +255,12 @@ properties:
+>>>>          where voltage is in V, frequency is in MHz.
+>>>> +  mediatek,freq-domain:
+>>>> +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
+>>>> +    description:
+>>>> +      CPUs supporting freq-domain must set their "mediatek,freq-domain" property
+>>>> +      with phandle to a cpufreq_hw node followed by the domain id.
+>>>
+>>> This needs to be a common binding shared with SCMI domains.
+>>
+>> Would it be accurate to create a new binding file:
+>> Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.txt
+>> ?
+>>
+> 
+> Nope, Rob already asked to unify all such bindings and generalise it.
+> Here is my attempt[1] and this must just use it or help to enhance that
+> in order to make use of that binding.
+> 
 
->
-> Regards,
->
->         Hans
->
-> >
-> > Thanks!
-> >
-> >       Hans
-> >
-> >> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> >> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> >> Cc: Kees Cook <keescook@chromium.org>
-> >> Cc: Dan Williams <dan.j.williams@intel.com>
-> >> Cc: Andrew Morton <akpm@linux-foundation.org>
-> >> Cc: John Hubbard <jhubbard@nvidia.com>
-> >> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> >> Cc: Jan Kara <jack@suse.cz>
-> >> Cc: Dan Williams <dan.j.williams@intel.com>
-> >> Cc: linux-mm@kvack.org
-> >> Cc: linux-arm-kernel@lists.infradead.org
-> >> Cc: linux-samsung-soc@vger.kernel.org
-> >> Cc: linux-media@vger.kernel.org
-> >> Cc: Pawel Osciak <pawel@osciak.com>
-> >> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> >> Cc: Kyungmin Park <kyungmin.park@samsung.com>
-> >> Cc: Tomasz Figa <tfiga@chromium.org>
-> >> Cc: Laurent Dufour <ldufour@linux.ibm.com>
-> >> Cc: Vlastimil Babka <vbabka@suse.cz>
-> >> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-> >> Cc: Michel Lespinasse <walken@google.com>
-> >> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> >> --
-> >> v3:
-> >> - Reference the commit that enabled the zerocopy userptr use case to
-> >>   make it abundandtly clear that this patch only affects that, and not
-> >>   normal memory userptr. The old commit message already explained that
-> >>   normal memory userptr is unaffected, but I guess that was not clear
-> >>   enough.
-> >> ---
-> >>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
-> >>  drivers/media/v4l2-core/videobuf-dma-contig.c | 2 +-
-> >>  2 files changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/m=
-edia/common/videobuf2/frame_vector.c
-> >> index a0e65481a201..1a82ec13ea00 100644
-> >> --- a/drivers/media/common/videobuf2/frame_vector.c
-> >> +++ b/drivers/media/common/videobuf2/frame_vector.c
-> >> @@ -70,7 +70,7 @@ int get_vaddr_frames(unsigned long start, unsigned i=
-nt nr_frames,
-> >>                      break;
-> >>
-> >>              while (ret < nr_frames && start + PAGE_SIZE <=3D vma->vm_=
-end) {
-> >> -                    err =3D follow_pfn(vma, start, &nums[ret]);
-> >> +                    err =3D unsafe_follow_pfn(vma, start, &nums[ret])=
-;
-> >>                      if (err) {
-> >>                              if (ret =3D=3D 0)
-> >>                                      ret =3D err;
-> >> diff --git a/drivers/media/v4l2-core/videobuf-dma-contig.c b/drivers/m=
-edia/v4l2-core/videobuf-dma-contig.c
-> >> index 52312ce2ba05..821c4a76ab96 100644
-> >> --- a/drivers/media/v4l2-core/videobuf-dma-contig.c
-> >> +++ b/drivers/media/v4l2-core/videobuf-dma-contig.c
-> >> @@ -183,7 +183,7 @@ static int videobuf_dma_contig_user_get(struct vid=
-eobuf_dma_contig_memory *mem,
-> >>      user_address =3D untagged_baddr;
-> >>
-> >>      while (pages_done < (mem->size >> PAGE_SHIFT)) {
-> >> -            ret =3D follow_pfn(vma, user_address, &this_pfn);
-> >> +            ret =3D unsafe_follow_pfn(vma, user_address, &this_pfn);
-> >>              if (ret)
-> >>                      break;
-> >>
-> >>
-> >
->
+That's great. Thank you for the information.
+
+Regards,
+Lukasz
