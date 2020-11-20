@@ -2,131 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F462BA733
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6462BA75C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727608AbgKTKQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgKTKQ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:16:27 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A23FC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:16:26 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 34so6892774pgp.10
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:16:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FuGAn79U75S5ZXGo8UVyUxX/L7xANKhtdIaztcATE34=;
-        b=KQd57JMjjJejeNYOnX+iSU+OqayHDjugqVBc7S8yABDQ6A9FyEb6wkRl3NRZ/RlrU8
-         MZ/+S/KQduE6aCKpwjpk6HXqFJSarckiBBk2Dlgs1RHwD52Q29tqYD8rfIa6A45N5x2G
-         JmR2qKNG7Eqm+SldcemjEDKPSnP9L8zApGA+aMP3PXnKG9m73AeBUCwyb4q+1FEFHxM3
-         NG54kkuZ9C9kxWWZXTXeX8gRcgcNmBUccu+kgmLmS0sNWBCdwsnzCOAjKcvy3kTZ6KiS
-         5LyNQewnnYrPmMFmZ+7Hm07h4SXlEdUbxarieAP2+35ZbXcWGzEiAcCA8i10EuT6X1f/
-         yLhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FuGAn79U75S5ZXGo8UVyUxX/L7xANKhtdIaztcATE34=;
-        b=DSjNO+QLATTRuD9jzrhE154VFrAyx0h4HvNZMI8cYMpPgs29PP1PxGwbottioPupek
-         MnDlKrsa0jSiEpwQs/H3A5HGOC3YmaK+SJyIYIv+F4dwAQ4omFlmub5MOVezd0SQHnHB
-         nTITJ1pCn1G2QrsUCOHPgVF3saFm/8VIc1HzE6XS4pwyKSPqZXU+ftApi8h7gypuwWz5
-         Ya0DEBcBen1ujsw9p7x1T9347cdgnIoG1JFVJQcBEyF/PHYQTxFqNzwRiNoP54tW55+y
-         Nnwf5xesLiidgd0lgHMqz+roqQma5Tdd7lmZvvya4ywmo3icq4RlIB10EouevzmgoWxW
-         2BeQ==
-X-Gm-Message-State: AOAM530RH/nUVChP0kZqD2qLZ6lIuUZWT+rPHzy8rj9Yw2nQ5pHfjxYg
-        sWUz2yS+SO3lfhsJyZGxmsc=
-X-Google-Smtp-Source: ABdhPJyD654fWz1fAsqEaxw2ruQtPdHlRNromTcG1UEv3lks7dS10JFgKuWbOVUh8TA1FnNswdTdTw==
-X-Received: by 2002:a17:90a:de5:: with SMTP id 92mr9227794pjv.179.1605867385350;
-        Fri, 20 Nov 2020 02:16:25 -0800 (PST)
-Received: from f8ffc2228008.ant.amazon.com (61-68-227-232.tpgi.com.au. [61.68.227.232])
-        by smtp.gmail.com with ESMTPSA id c8sm3235181pjd.13.2020.11.20.02.15.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 02:16:24 -0800 (PST)
-Subject: Re: [PATCH -tip 03/32] sched/fair: Fix pick_task_fair crashes due to
- empty rbtree
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org
-Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-4-joel@joelfernandes.org>
-From:   "Singh, Balbir" <bsingharora@gmail.com>
-Message-ID: <cab6918c-7b52-923c-4274-f92e9f0a5cd2@gmail.com>
-Date:   Fri, 20 Nov 2020 21:15:28 +1100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        id S1726426AbgKTKYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 05:24:42 -0500
+Received: from mga12.intel.com ([192.55.52.136]:17833 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725797AbgKTKYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 05:24:41 -0500
+IronPort-SDR: rPmsEcO4JtS6NAyIT5BRJKTyCNZLMKj2xp8D4yoQ77IiG0/6V8a9a1ZUEpuMZ5e3qgcxcSJyWA
+ hPJ237ZDVdew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="150717589"
+X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
+   d="scan'208";a="150717589"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 02:24:40 -0800
+IronPort-SDR: 82QxPtX+MY911QEA499NebKqFnj+SlZcS99DH6LeAs3dgNH7zKJTQsnslR1nDiVgejQHrsD/kK
+ j9ionfDGToUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
+   d="scan'208";a="545393633"
+Received: from allen-box.sh.intel.com ([10.239.159.28])
+  by orsmga005.jf.intel.com with ESMTP; 20 Nov 2020 02:24:37 -0800
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Tom Murphy <murphyt7@tcd.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Ashok Raj <ashok.raj@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v5 0/7] Convert the intel iommu driver to the dma-iommu api
+Date:   Fri, 20 Nov 2020 18:17:12 +0800
+Message-Id: <20201120101719.3172693-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201117232003.3580179-4-joel@joelfernandes.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/11/20 10:19 am, Joel Fernandes (Google) wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> pick_next_entity() is passed curr == NULL during core-scheduling. Due to
-> this, if the rbtree is empty, the 'left' variable is set to NULL within
-> the function. This can cause crashes within the function.
-> 
-> This is not an issue if put_prev_task() is invoked on the currently
-> running task before calling pick_next_entity(). However, in core
-> scheduling, it is possible that a sibling CPU picks for another RQ in
-> the core, via pick_task_fair(). This remote sibling would not get any
-> opportunities to do a put_prev_task().
-> 
-> Fix it by refactoring pick_task_fair() such that pick_next_entity() is
-> called with the cfs_rq->curr. This will prevent pick_next_entity() from
-> crashing if its rbtree is empty.
-> 
-> Also this fixes another possible bug where update_curr() would not be
-> called on the cfs_rq hierarchy if the rbtree is empty. This could effect
-> cross-cpu comparison of vruntime.
-> 
+Hi Will,
 
-It is not clear from the changelog as to what does put_prev_task() do to prevent
-the crash from occuring? Why did we pass NULL as curr in the first place to
-pick_next_entity?
+The previous post of this series could be found here.
 
-The patch looks functionally correct as in, it passes curr as the reference
-to pick_next_entity() for left and entity_before comparisons.
+https://lore.kernel.org/linux-iommu/20200927063437.13988-1-baolu.lu@linux.intel.com/
 
-Balbir Singh
+Changes in this version:
+- Add Tested-by: Logan Gunthorpe <logang@deltatee.com>
+- Rebase to v5.10-rc3
+
+Please review and consider it for iommu/next.
+
+Best regards,
+baolu
+
+Lu Baolu (3):
+  iommu: Add quirk for Intel graphic devices in map_sg
+  iommu/vt-d: Update domain geometry in iommu_ops.at(de)tach_dev
+  iommu/vt-d: Cleanup after converting to dma-iommu ops
+
+Tom Murphy (4):
+  iommu: Handle freelists when using deferred flushing in iommu drivers
+  iommu: Add iommu_dma_free_cpu_cached_iovas()
+  iommu: Allow the dma-iommu api to use bounce buffers
+  iommu/vt-d: Convert intel iommu driver to the iommu ops
+
+ .../admin-guide/kernel-parameters.txt         |   5 -
+ drivers/iommu/dma-iommu.c                     | 228 ++++-
+ drivers/iommu/intel/Kconfig                   |   1 +
+ drivers/iommu/intel/iommu.c                   | 905 +++---------------
+ include/linux/dma-iommu.h                     |   8 +
+ include/linux/iommu.h                         |   1 +
+ 6 files changed, 336 insertions(+), 812 deletions(-)
+
+-- 
+2.25.1
+
