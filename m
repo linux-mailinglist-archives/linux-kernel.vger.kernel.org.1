@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A96E2BA669
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B54262BA670
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727678AbgKTJmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:42:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52332 "EHLO mail.kernel.org"
+        id S1727716AbgKTJmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:42:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727160AbgKTJmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:42:06 -0500
-Received: from localhost (unknown [122.171.203.152])
+        id S1727160AbgKTJmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:42:12 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28CD7223B0;
-        Fri, 20 Nov 2020 09:42:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A3AE223B0;
+        Fri, 20 Nov 2020 09:42:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605865326;
-        bh=XLxancgRgYpetl+23BnIP7WdgIKeWO32EF7mXEcNHJA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZCRPqje2mvonSCEr0psJ0aJHBWvQqNjhGk63jIYaQJnJnesIbfkxphhSJ0kNOlBD2
-         0VWha/Gg3P2L80zsigzGuzHdGQkjsiTl3kJv3hgBAwufyQWIDNEbp+hUH8iALq5Qv7
-         02krMiW8R8ku3U7BY1LteHGEiLnuJuflxxERBg/g=
-Date:   Fri, 20 Nov 2020 15:11:52 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH v4 4/5] phy: samsung: phy-exynos-pcie: rework driver to
- support Exynos5433 PCIe PHY
-Message-ID: <20201120094152.GC2925@vkoul-mobl>
-References: <20201113170139.29956-1-m.szyprowski@samsung.com>
- <CGME20201113170158eucas1p14b9e58e35f929e14aeb4f533071c8a47@eucas1p1.samsung.com>
- <20201113170139.29956-5-m.szyprowski@samsung.com>
+        s=default; t=1605865331;
+        bh=07pOOQlCf1AGEDTz1zs87GUSSMbKSFGMWO3JJGzRHPA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YlefRCN3zf5t5Fs8vJbnE671oSCmica0pA8MVDzFZFPRILhxbSFH0SEBTxkqGTlrS
+         0Lb1thKVxN+O94OfspWVuT71QXDyXMwUvqIASQ3bafn0VjyUEQqs5S1fTOdv1f6vUG
+         HJO5ZsKSNG5ECQB+1SgpA0GMTUByLQ9+ttnHiwmE=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kg2vh-00CDFB-6P; Fri, 20 Nov 2020 09:42:09 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        kernel-team@android.com, dri-devel@lists.freedesktop.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] More meson HDMI fixes
+Date:   Fri, 20 Nov 2020 09:42:03 +0000
+Message-Id: <20201120094205.525228-1-maz@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113170139.29956-5-m.szyprowski@samsung.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: narmstrong@baylibre.com, khilman@baylibre.com, jbrunet@baylibre.com, martin.blumenstingl@googlemail.com, guillaume.tucker@collabora.com, kernel-team@android.com, dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-11-20, 18:01, Marek Szyprowski wrote:
-> From: Jaehoon Chung <jh80.chung@samsung.com>
-> 
-> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
-> dts: exynos: Remove Exynos5440"). Rework this driver to support PCIe PHY
-> variant found in the Exynos5433 SoCs.
+Guillaume reported that my earlier fixes for the meson HDMI driver
+broke another set of machines which are now exploding (clock not
+enabled).
 
-I am expecting this series to go thru PCI tree, so:
+I have thus reconsidered the approach and came up with an alternative
+fix (enable a missing clock), which Guillaume confirmed to be working.
+Jerome pointed out that this driver is leaking clock references like a
+sieve, so that needed addressing too.
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
+The first patch start by fixing the clock leakage using a devm
+facility.
+
+The second patch addresses the earlier crash by reusing the
+infrastructure put together in the first patch.
+
+Tested on VIM3l.
+
+Marc Zyngier (2):
+  drm/meson: dw-hdmi: Disable clocks on driver teardown
+  drm/meson: dw-hdmi: Enable the iahb clock early enough
+
+ drivers/gpu/drm/meson/meson_dw_hdmi.c | 51 ++++++++++++++++++---------
+ 1 file changed, 35 insertions(+), 16 deletions(-)
 
 -- 
-~Vinod
+2.28.0
+
