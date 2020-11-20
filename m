@@ -2,87 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254A22BA6B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702B92BA6C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727560AbgKTJ4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:56:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727182AbgKTJ4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:56:13 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1B9F22244;
-        Fri, 20 Nov 2020 09:56:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605866172;
-        bh=VVkthN6PzsNwKav+jWWYSe0oOoxcnTuHAa2bW9xdrDk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JlrTMzujpVHAOquvVdCT/TeBVpQc9kSlLkdIIHP9135juQpOAi/z/xxwAM8ARp6Jc
-         g7gIsav3XkXJ2n250Yjt7HUdDMJBusaeWwC7fss+cFVmZrHSWcXl55swf3T/6MCQAJ
-         CHXtwiv8tpj+QdbNUoJpFPlDvUN9ZTcbIge9ZxjA=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kg39G-00CDQp-FA; Fri, 20 Nov 2020 09:56:10 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 20 Nov 2020 09:56:10 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Andrew Jones <drjones@redhat.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Haibo Xu <Haibo.Xu@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        James Morse <james.morse@arm.com>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-In-Reply-To: <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
-References: <20201119153901.53705-1-steven.price@arm.com>
- <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
- <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
- <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
- <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <d615a77783bbfb60d3b1a9ab4b33c1dc@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: steven.price@arm.com, drjones@redhat.com, peter.maydell@linaro.org, mark.rutland@arm.com, dgilbert@redhat.com, Haibo.Xu@arm.com, suzuki.poulose@arm.com, qemu-devel@nongnu.org, catalin.marinas@arm.com, quintela@redhat.com, richard.henderson@linaro.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, james.morse@arm.com, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, will@kernel.org, kvmarm@lists.cs.columbia.edu, julien.thierry.kdev@gmail.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1727777AbgKTJ4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:56:33 -0500
+Received: from lucky1.263xmail.com ([211.157.147.131]:55838 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727690AbgKTJ4c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:56:32 -0500
+Received: from localhost (unknown [192.168.167.223])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 90E95B6A27;
+        Fri, 20 Nov 2020 17:56:20 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P21631T139747833935616S1605866174624500_;
+        Fri, 20 Nov 2020 17:56:20 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <8c60b62957be87e8119d0fd2edf8f776>
+X-RL-SENDER: yifeng.zhao@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: yifeng.zhao@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        heiko@sntech.de, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Subject: [PATCH v14 1/8] dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash controller
+Date:   Fri, 20 Nov 2020 17:56:10 +0800
+Message-Id: <20201120095613.20172-2-yifeng.zhao@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201120095613.20172-1-yifeng.zhao@rock-chips.com>
+References: <20201120095613.20172-1-yifeng.zhao@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-20 09:50, Steven Price wrote:
-> On 19/11/2020 19:11, Marc Zyngier wrote:
+Documentation support for Rockchip RK3xxx NAND flash controllers
 
-> Does this sound reasonable?
-> 
-> I'll clean up the set_pte_at() change and post a v6 later today.
+Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+---
 
-Please hold on. I still haven't reviewed your v5, nor have I had time
-to read your reply to my comments on v4.
+Changes in v14: None
+Changes in v13: None
+Changes in v12:
+- Fix some warnings while make dt_binding_check
+- Drop a allOf defined
 
-Thanks,
+Changes in v11: None
+Changes in v10: None
+Changes in v9: None
+Changes in v8:
+- Fix a error while make dt_binding_check
 
-         M.
+Changes in v7:
+- Fix some wrong define
+
+Changes in v6:
+- Fix some wrong define
+- Modified the definition of compatible
+
+Changes in v5:
+- Fix some wrong define.
+- Add boot-medium define.
+- Remove some compatible define.
+
+Changes in v4:
+- The compatible define with rkxx_nfc.
+- Add assigned-clocks.
+- Fix some wrong defineChanges in.
+
+Changes in v3:
+- Change the title for the dt-bindings.
+
+Changes in v2: None
+
+ .../mtd/rockchip,nand-controller.yaml         | 161 ++++++++++++++++++
+ 1 file changed, 161 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+
+diff --git a/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+new file mode 100644
+index 000000000000..0922536b1811
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+@@ -0,0 +1,161 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/rockchip,nand-controller.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip SoCs NAND FLASH Controller (NFC)
++
++allOf:
++  - $ref: "nand-controller.yaml#"
++
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++
++properties:
++  compatible:
++    oneOf:
++      - const: rockchip,px30-nfc
++      - const: rockchip,rk2928-nfc
++      - const: rockchip,rv1108-nfc
++      - items:
++          - const: rockchip,rk3036-nfc
++          - const: rockchip,rk2928-nfc
++      - items:
++          - const: rockchip,rk3308-nfc
++          - const: rockchip,rv1108-nfc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 1
++    items:
++      - description: Bus Clock
++      - description: Module Clock
++
++  clock-names:
++    minItems: 1
++    items:
++      - const: ahb
++      - const: nfc
++
++  assigned-clocks:
++    maxItems: 1
++
++  assigned-clock-rates:
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++patternProperties:
++  "^nand@[0-7]$":
++    type: object
++    properties:
++      reg:
++        minimum: 0
++        maximum: 7
++
++      nand-ecc-mode:
++        const: hw
++
++      nand-ecc-step-size:
++        const: 1024
++
++      nand-ecc-strength:
++        enum: [16, 24, 40, 60, 70]
++        description: |
++          The ECC configurations that can be supported are as follows.
++            NFC v600 ECC 16, 24, 40, 60
++              RK2928, RK3066, RK3188
++
++            NFC v622 ECC 16, 24, 40, 60
++              RK3036, RK3128
++
++            NFC v800 ECC 16
++              RK3308, RV1108
++
++            NFC v900 ECC 16, 40, 60, 70
++              RK3326, PX30
++
++      nand-bus-width:
++        const: 8
++
++      rockchip,boot-blks:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        minimum: 2
++        default: 16
++        description:
++          The NFC driver need this information to select ECC
++          algorithms supported by the boot ROM.
++          Only used in combination with 'nand-is-boot-medium'.
++
++      rockchip,boot-ecc-strength:
++        enum: [16, 24, 40, 60, 70]
++        allOf:
++          - $ref: /schemas/types.yaml#/definitions/uint32
++        description: |
++          If specified it indicates that a different BCH/ECC setting is
++          supported by the boot ROM.
++            NFC v600 ECC 16, 24
++              RK2928, RK3066, RK3188
++
++            NFC v622 ECC 16, 24, 40, 60
++              RK3036, RK3128
++
++            NFC v800 ECC 16
++              RK3308, RV1108
++
++            NFC v900 ECC 16, 70
++              RK3326, PX30
++
++          Only used in combination with 'nand-is-boot-medium'.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/rk3308-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    nfc: nand-controller@ff4b0000 {
++      compatible = "rockchip,rk3308-nfc",
++                   "rockchip,rv1108-nfc";
++      reg = <0xff4b0000 0x4000>;
++      interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&cru HCLK_NANDC>, <&cru SCLK_NANDC>;
++      clock-names = "ahb", "nfc";
++      assigned-clocks = <&clks SCLK_NANDC>;
++      assigned-clock-rates = <150000000>;
++
++      pinctrl-0 = <&flash_ale &flash_bus8 &flash_cle &flash_csn0
++                   &flash_rdn &flash_rdy &flash_wrn>;
++      pinctrl-names = "default";
++
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      nand@0 {
++        reg = <0>;
++        label = "rk-nand";
++        nand-bus-width = <8>;
++        nand-ecc-mode = "hw";
++        nand-ecc-step-size = <1024>;
++        nand-ecc-strength = <16>;
++        nand-is-boot-medium;
++        rockchip,boot-blks = <8>;
++        rockchip,boot-ecc-strength = <16>;
++      };
++    };
++
++...
 -- 
-Jazz is not dead. It just smells funny...
+2.17.1
+
+
+
