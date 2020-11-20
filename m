@@ -2,171 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA102BA2D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 073212BA2DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgKTHI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:08:27 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:39233 "EHLO m42-4.mailgun.net"
+        id S1725883AbgKTHPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 02:15:23 -0500
+Received: from mout.gmx.net ([212.227.15.18]:47411 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbgKTHI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:08:27 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605856105; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=xhUyB64LZP19yOoIWdbZSf39K15d0YpoLNAdjUAmtwI=; b=RTa2rtAQLSL2rf2U/Cu/xTtL6G0yKlkpwLKwKLdrHGctOlCeSEHJpZKDptPZ1htHlAkVRhbF
- d6UWyWpEdD1gRIWKXkpp8UVj6f0m0Wqhcusp1FcxcRQMc0hr6GkUBWBmusloJzp3Ii2Wo5qN
- nz9w9icsVw0n1uP9FoNucv07vHE=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fb76b661b731a5d9c1358fd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Nov 2020 07:08:22
- GMT
-Sender: zhenhuah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7D25DC43463; Fri, 20 Nov 2020 07:08:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zhenhuah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DFB71C433ED;
-        Fri, 20 Nov 2020 07:08:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DFB71C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zhenhuah@codeaurora.org
-Date:   Fri, 20 Nov 2020 15:08:06 +0800
-From:   Zhenhua Huang <zhenhuah@codeaurora.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     vjitta@codeaurora.org, linux-mm <linux-mm@kvack.org>,
-        glider@google.com, Dan Williams <dan.j.williams@intel.com>,
-        broonie@kernel.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yogesh Lal <ylal@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>, tingwei@codeaurora.org
-Subject: Re: [PATCH] lib: stackdepot: Add support to configure STACK_HASH_SIZE
-Message-ID: <20201120070450.GA28239@codeaurora.org>
-References: <1603372546-27118-1-git-send-email-vjitta@codeaurora.org>
- <CAEwNFnBvxu7+oNkcO9D70OFrxQXswcJG4OvDPyzNf7kpXfpSuw@mail.gmail.com>
- <20201119033317.GA5128@codeaurora.org>
- <20201120050423.GE3113267@google.com>
+        id S1725768AbgKTHPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 02:15:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1605856516;
+        bh=+LEyJWZBHwIf02qa1cs+cqkQlhMdXc7yjscoAD4xi0o=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date;
+        b=QHrvF8X0JKxWIyhwpzUzUtKUN2toZ2pruLpm3yhtUF3HQ8trKRaCtivgolYNieVqq
+         CWisIgjKojTA5q6PiNQ4ZprcR+LowOjHZFcsIpb1ADNSQQasZrb6/52l+ZUPOfB/bj
+         tgrW8ExOYvGETzu7R8kl3cQW9Yz/u5yYMdnhu6qM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.217.24]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MHXFr-1kSW7W3iIz-00DV6H; Fri, 20
+ Nov 2020 08:15:15 +0100
+Message-ID: <eee10eb4ea028d4ac74939d5100ae9c4383b82da.camel@gmx.de>
+Subject: nouveau: WARNING: CPU: 0 PID: 20957 at
+ drivers/gpu/drm/nouveau/nvif/vmm.c:71
+From:   Mike Galbraith <efault@gmx.de>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     Ben Skeggs <bskeggs@redhat.com>,
+        nouveau <nouveau@lists.freedesktop.org>
+Date:   Fri, 20 Nov 2020 08:15:15 +0100
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120050423.GE3113267@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aiYOCE7yOonTQvzkaLZG/yT+pmhsOWuwq57JC+KrIrlKD2D3X6M
+ g5PzUpc9DgM63193lyXhGyQpbd8b7QUU7rLuIBj2cc9ipqfa7QeTACXi6NmQNSl0FRYYUpU
+ bu7rj5cF5yZU+W9qZ7+Q9KKp5oYtVhl9srujPx2481B4sZgcxjlDuHzETAusED2bab76/sr
+ Z8BmTlGOZ0fr0ValuhwyA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+VBCuNVCrXU=:/qZji59ny1UFpkeSBvoCMj
+ tud57X9VVId1+a/2vPXth3p4Zl42+UskmnsHwfttqR2RfebGN6uSfRkpMxFm3ONTl+FxsNw1F
+ Qu3leUNg+9r8JLnZm3E7gTJGHNEkpESquPwy6dbag8WB6Lfqzk8c1GmKzE8oeH6Bv80nsNt5l
+ GCiQf3l1uwEU63GB55axtmJXTjog9OIr274Dk8cfGGukDC6xDTDS12qe/xStE9wwYf1zyqEqa
+ Womnl6AeDuJaWVL3jmVfOamFHVrlQzZhBG96hs+WLQHwEP+04NMB6CsIlUYxc3LyrGAGO0f9G
+ 9k9KVpeJZ7qfmMS6/EFFXrghqa0QqvRxQemMR1Wub8DxN5wUPYI/Wz8fYJdPk7fuEm1FQ4wvr
+ wVEQpmX88Bzfplp9ALSGR3G7jtU7IiGC+qAoFuFM8C9ZwIU8IY33vf/6a0y679xVoCXKyxgdR
+ wEJszatyHXyTe47GjJu19ihoyB6z7KbLWujQpUH8k45nINDxNBvV0uKfGZT0LfjK0RRTox9Z/
+ 2SOoY1LWIeBWYjqwuv51TfcvLGOH2qkROl8DV2r9P9ebMYvMSurwu5HJz5mu025Uaa2XvLtH5
+ PSFfI+nIokTl+i35QDRHaMF+Wt6fdsOZFfsRXJIq97BLDDOrVhlblMeCMUid5fUBrgjcnjdzY
+ fj2KskYGhjg7qC6ZEcQiqPb3KgL83F+SacppjZa96XeG2OEnqcus3men25ZTN7t8BDVVn4JnC
+ GiXftTvGtOyBM09KKYzaMFX0t5m8HTT9cXHg4hJDZALL3weIwPkG88U7FYAH/OWSdw6p+37il
+ szQ7VsazrwhQOuyLLdI8V2AjzJyOGiTq9j3QdbvgXiGE35lLEhpP4AjanrVEXvIPntKSSZCsz
+ BPme47ZdBZg01Q8eR38w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 01:04:23PM +0800, Minchan Kim wrote:
-> On Thu, Nov 19, 2020 at 11:34:32AM +0800, Zhenhua Huang wrote:
-> > On Wed, Nov 04, 2020 at 07:27:03AM +0800, Minchan Kim wrote:
-> > > Sorry if this mail corrupts the mail thread or had heavy mangling
-> > > since I lost this mail from my mailbox so I am sending this mail by
-> > > web gmail.
-> > > 
-> > > On Thu, Oct 22, 2020 at 10:18 AM <vjitta@codeaurora.org> wrote:
-> > > >
-> > > > From: Yogesh Lal <ylal@codeaurora.org>
-> > > >
-> > > > Use STACK_HASH_ORDER_SHIFT to configure STACK_HASH_SIZE.
-> > > >
-> > > > Aim is to have configurable value for  STACK_HASH_SIZE,
-> > > > so depend on use case one can configure it.
-> > > >
-> > > > One example is of Page Owner, default value of
-> > > > STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
-> > > > Making it configurable and use lower value helps to enable features
-> like
-> > > > CONFIG_PAGE_OWNER without any significant overhead.
-> > > >
-> > > > Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
-> > > > Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
-> > > > Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
-> > > > ---
-> > > >  lib/Kconfig      | 9 +++++++++
-> > > >  lib/stackdepot.c | 3 +--
-> > > >  2 files changed, 10 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/lib/Kconfig b/lib/Kconfig
-> > > > index 18d76b6..b3f8259 100644
-> > > > --- a/lib/Kconfig
-> > > > +++ b/lib/Kconfig
-> > > > @@ -651,6 +651,15 @@ config STACKDEPOT
-> > > >         bool
-> > > >         select STACKTRACE
-> > > >
-> > > > +config STACK_HASH_ORDER_SHIFT
-> > > > +       int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
-> > > > +       range 12 20
-> > > > +       default 20
-> > > > +       depends on STACKDEPOT
-> > > > +       help
-> > > > +        Select the hash size as a power of 2 for the stackdepot
-> hash 
-> > > > table.
-> > > > +        Choose a lower value to reduce the memory impact.
-> > > > +
-> > > >  config SBITMAP
-> > > >         bool
-> > > >
-> > > > diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> > > > index 2caffc6..413c20b 100644
-> > > > --- a/lib/stackdepot.c
-> > > > +++ b/lib/stackdepot.c
-> > > > @@ -142,8 +142,7 @@ static struct stack_record
-> *depot_alloc_stack(unsigned 
-> > > > long *entries, int size,
-> > > >         return stack;
-> > > >  }
-> > > >
-> > > > -#define STACK_HASH_ORDER 20
-> > > > -#define STACK_HASH_SIZE (1L << STACK_HASH_ORDER)
-> > > > +#define STACK_HASH_SIZE (1L << CONFIG_STACK_HASH_ORDER_SHIFT)
-> > > >  #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
-> > > >  #define STACK_HASH_SEED 0x9747b28c
-> > > >
-> > > > --
-> > > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member 
-> > > > of Code Aurora Forum, hosted by The Linux Foundation
-> > > > 2.7.4
-> > > >
-> > > 
-> > > 1. When we don't use page_owner, we don't want to waste any memory for
-> > > stackdepot hash array.
-> > > 2. When we use page_owner, we want to have reasonable stackdeport hash
-> array
-> > > 
-> > > With this configuration, it couldn't meet since we always need to
-> > > reserve a reasonable size for the array.
-> > > Can't we make the hash size as a kernel parameter?
-> > > With it, we could use it like this.
-> > > 
-> > > 1. page_owner=off, stackdepot_stack_hash=0 -> no more wasted memory
-> > > when we don't use page_owner
-> > > 2. page_owner=on, stackdepot_stack_hash=8M -> reasonable hash size
-> > > when we use page_owner.
-> > Seems we have other users like kasan, and dma_buf_ref which we
-> introduced.
-> > Also we can't guarantee there will not be any other users for
-> stackdepot, so
-> > it's better we not depend on only page owner?
-> 
-> I didn't mean to make it page_owner dependent. What I suggested is just
-> to define kernel parameter for stackdeport hash size so admin could
-> override it at right size when we really need it.
-OK, Thanks Minchan for explanation. It's a good idea then, admin needs to
-consider all users but, especailly when setting it to 0...
+[15561.391527] ------------[ cut here ]------------
+[15561.391560] WARNING: CPU: 0 PID: 20957 at drivers/gpu/drm/nouveau/nvif/v=
+mm.c:71 nvif_vmm_put+0x4a/0x50 [nouveau]
+[15561.391562] Modules linked in: nls_utf8(E) isofs(E) fuse(E) msr(E) xt_co=
+mment(E) br_netfilter(E) xt_physdev(E) nfnetlink_cthelper(E) nfnetlink(E) e=
+btable_filter(E) ebtables(E) af_packet(E) bridge(E) stp(E) llc(E) iscsi_ibf=
+t(E) iscsi_boot_sysfs(E) rfkill(E) xt_pkttype(E) xt_tcpudp(E) ip6t_REJECT(E=
+) nf_reject_ipv6(E) ipt_REJECT(E) nf_reject_ipv4(E) iptable_filter(E) bpfil=
+ter(E) ip6table_mangle(E) ip_tables(E) xt_conntrack(E) nf_conntrack(E) nf_d=
+efrag_ipv6(E) nf_defrag_ipv4(E) libcrc32c(E) ip6table_filter(E) ip6_tables(=
+E) x_tables(E) hid_logitech_hidpp(E) sr_mod(E) usblp(E) cdrom(E) hid_logite=
+ch_dj(E) joydev(E) intel_rapl_msr(E) intel_rapl_common(E) at24(E) mei_hdcp(=
+E) iTCO_wdt(E) regmap_i2c(E) intel_pmc_bxt(E) iTCO_vendor_support(E) snd_hd=
+a_codec_realtek(E) snd_hda_codec_generic(E) ledtrig_audio(E) snd_hda_codec_=
+hdmi(E) x86_pkg_temp_thermal(E) intel_powerclamp(E) snd_hda_intel(E) corete=
+mp(E) snd_intel_dspcfg(E) kvm_intel(E) snd_hda_codec(E) snd_hwdep(E) snd_hd=
+a_core(E) kvm(E)
+[15561.391586]  nls_iso8859_1(E) nls_cp437(E) snd_pcm(E) irqbypass(E) crct1=
+0dif_pclmul(E) snd_timer(E) crc32_pclmul(E) r8169(E) ghash_clmulni_intel(E)=
+ snd(E) aesni_intel(E) realtek(E) crypto_simd(E) i2c_i801(E) mei_me(E) mdio=
+_devres(E) cryptd(E) pcspkr(E) soundcore(E) i2c_smbus(E) lpc_ich(E) glue_he=
+lper(E) mfd_core(E) libphy(E) mei(E) fan(E) thermal(E) intel_smartconnect(E=
+) nfsd(E) auth_rpcgss(E) nfs_acl(E) lockd(E) grace(E) sch_fq_codel(E) sunrp=
+c(E) nfs_ssc(E) uas(E) usb_storage(E) hid_generic(E) usbhid(E) nouveau(E) w=
+mi(E) i2c_algo_bit(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) sysim=
+gblt(E) fb_sys_fops(E) xhci_pci(E) cec(E) ahci(E) rc_core(E) ehci_pci(E) xh=
+ci_hcd(E) ttm(E) libahci(E) ehci_hcd(E) libata(E) drm(E) usbcore(E) video(E=
+) button(E) sd_mod(E) t10_pi(E) vfat(E) fat(E) virtio_blk(E) virtio_mmio(E)=
+ virtio_ring(E) virtio(E) ext4(E) crc32c_intel(E) crc16(E) mbcache(E) jbd2(=
+E) loop(E) sg(E) dm_multipath(E) dm_mod(E) scsi_dh_rdac(E) scsi_dh_emc(E) s=
+csi_dh_alua(E) scsi_mod(E)
+[15561.391626]  efivarfs(E) autofs4(E)
+[15561.391637] CPU: 0 PID: 20957 Comm: kworker/0:4 Kdump: loaded Tainted: G=
+ S          E     5.10.0.g9c87c9f-master #3
+[15561.391640] Hardware name: MEDION MS-7848/MS-7848, BIOS M7848W08.20C 09/=
+23/2013
+[15561.391667] Workqueue: events nouveau_cli_work [nouveau]
+[15561.391682] RIP: 0010:nvif_vmm_put+0x4a/0x50 [nouveau]
+[15561.391684] Code: 00 00 00 48 89 e2 48 c7 04 24 00 00 00 00 48 89 44 24 =
+08 e8 48 e7 ff ff 85 c0 75 0e 48 c7 43 08 00 00 00 00 48 83 c4 10 5b c3 <0f=
+> 0b eb ee 66 90 0f 1f 44 00 00 53 48 83 ec 18 83 fe 01 48 8b 5c
+[15561.391686] RSP: 0000:ffff8881feca7e08 EFLAGS: 00010282
+[15561.391688] RAX: 00000000fffffffe RBX: ffff8881feca7e28 RCX: 00000000000=
+00000
+[15561.391690] RDX: 0000000000000010 RSI: ffff8881feca7d80 RDI: ffff8881fec=
+a7e18
+[15561.391692] RBP: ffff8881feca7e50 R08: 0000000001dc5000 R09: 00000000000=
+00000
+[15561.391693] R10: ffffffff82003de8 R11: fefefefefefefeff R12: dead0000000=
+00122
+[15561.391695] R13: dead000000000100 R14: ffff888102fa9328 R15: ffff888102f=
+a9308
+[15561.391697] FS:  0000000000000000(0000) GS:ffff88841ec00000(0000) knlGS:=
+0000000000000000
+[15561.391698] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[15561.391700] CR2: 00007fd692058000 CR3: 0000000003c10002 CR4: 00000000001=
+706f0
+[15561.391701] Call Trace:
+[15561.391729]  nouveau_vma_del+0x58/0xa0 [nouveau]
+[15561.391755]  nouveau_gem_object_delete_work+0x26/0x40 [nouveau]
+[15561.391782]  nouveau_cli_work+0x76/0x120 [nouveau]
+[15561.391786]  ? __schedule+0x35c/0x770
+[15561.391790]  process_one_work+0x1f5/0x3c0
+[15561.391792]  ? process_one_work+0x3c0/0x3c0
+[15561.391794]  worker_thread+0x2d/0x3d0
+[15561.391796]  ? process_one_work+0x3c0/0x3c0
+[15561.391798]  kthread+0x117/0x130
+[15561.391800]  ? kthread_park+0x90/0x90
+[15561.391803]  ret_from_fork+0x1f/0x30
+[15561.391806] ---[ end trace 1f8ba448e97e64e0 ]---
 
-Thanks,
-Zhenhua
