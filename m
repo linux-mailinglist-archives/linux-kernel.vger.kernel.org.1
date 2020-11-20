@@ -2,284 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571FC2BA772
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E90272BA778
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:30:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgKTK3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgKTK27 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:28:59 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9473CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:28:59 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id g7so7454762pfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:28:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n2WTjnYPpYOXbZLxJ0YPMA+QYsuybDSPafsUWHTWsQ0=;
-        b=diopmtRuKZS2TN0vv0e79W2L2Ld7+jl4d83nw4z1m84NL+7dsNpH8NoFjbO0h4pHnL
-         4/EbUD1hhJyMoV1qozYbtTzymPRAra+S7PYWQwu2Oup9WRo2mw2PxPnsZO1i8Z+NCBqW
-         YippoZ/JQj0ks+8JXwlUlTyEexLRh05Ke34Vc2lnQ5RC/iY2durjsdkzpIqBCwOp7pD6
-         Vkyhic5uzjFW7VPS2Q5RT2CuYf3BwNiMzL/eZ+12D8OrZNkZ1vKI9vIkdeedt7Dsp1Ha
-         +CX2Mniv/Gu6Db/f7cdFisamBLxJltgyiToN6GiNMPCyvDimWFlTutFSWtj66sNiqHhe
-         G+tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=n2WTjnYPpYOXbZLxJ0YPMA+QYsuybDSPafsUWHTWsQ0=;
-        b=fWWX5dOUcSUvQnyThGWwIGIMhYCxFAaS9kXlbFxo0A1tFgnzmZvEUzltEzRPFUf5GR
-         zEUpupeNUqs2Whf8FxgZtJ9c15d+abnQlBMTnDvsNENOXK5SMq0SVJZ22lwC+yvxvQc+
-         MBl4p18jX1UwfAkp/Sw7LA5fh8n4V6K92gTVP9CHBR8hvHpPOE2oRmDi1t2All2MsoiU
-         dSN82UyJvtRL82MAf4Yk6hUGPLT+8MMmGcdSmJnque2xIfDxaV2zaA63RfB9WRgfTJsR
-         FjazLVjHRezJ9r8AAswZ2SJg2vvNAZ9DS3uXGQMCWRrfd+Ts8Bjm+c+UfKAaoyLKNPYq
-         Mq3g==
-X-Gm-Message-State: AOAM531EeOOc+tGG/vaD5W7/sEP22ScwcQPJpcISngRIg6HJp/y1rXOZ
-        neDFvhq87u/S2uNxjN4+g+0JfRFJTBU=
-X-Google-Smtp-Source: ABdhPJwCRSGLzArk2okYHa0atVUGq5VCiYt7bS/5A9HAJjsKabHYQfSaFIO9rPymIRMH+U+aR/eE5A==
-X-Received: by 2002:a62:cec6:0:b029:18a:d620:6b86 with SMTP id y189-20020a62cec60000b029018ad6206b86mr12861484pfg.2.1605868139021;
-        Fri, 20 Nov 2020 02:28:59 -0800 (PST)
-Received: from google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id m18sm2816169pfk.10.2020.11.20.02.28.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 02:28:58 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-Date:   Fri, 20 Nov 2020 19:28:50 +0900
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>
-Subject: Re: [PATCH v3 06/12] perf record: introduce data file at mmap buffer
- object
-Message-ID: <20201120102850.GE94830@google.com>
-References: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
- <c439c1f5-de40-8f6b-d494-39082092f3b4@linux.intel.com>
+        id S1727402AbgKTKaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 05:30:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727294AbgKTKaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 05:30:07 -0500
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56CF52242A;
+        Fri, 20 Nov 2020 10:30:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605868203;
+        bh=R4qqlo9ybQQpHALTqDaShX23td1huHrJiPzN69McErc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SnR3qKLySWFRIruzomBuZDnTaQEnQH9LMLNVTjpAvibM5jn/7i4Q1X3bOV7n8tXdM
+         bjQaV/OejDfDwwpl6TmQyCOukPReHlqO0/lbbLOb0E+eO8nW5oen1R0XvyX9QjTMqN
+         RD7mocgp9rrIxbpEyyku8nBmtb5VHSscycd3UnPI=
+Received: by mail-ot1-f41.google.com with SMTP id y24so2719848otk.3;
+        Fri, 20 Nov 2020 02:30:03 -0800 (PST)
+X-Gm-Message-State: AOAM531q4kdY0gsQn0jAr0nOFH5aOLRY6sKHqIDXvskN5MmJIvdG/AVE
+        uHuN2sxz8vWRpQQjXNo/f0Lsu4JkoT/PKZ53MqA=
+X-Google-Smtp-Source: ABdhPJyo1od5y8s3UXvXlpGDBDC/YwS8pW+UvtOnS5PYbG7GW+X/slcudfLbqeiD8uskrebS5/XeZyMUfAreexCHPzg=
+X-Received: by 2002:a05:6830:214c:: with SMTP id r12mr12560072otd.90.1605868202443;
+ Fri, 20 Nov 2020 02:30:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c439c1f5-de40-8f6b-d494-39082092f3b4@linux.intel.com>
+References: <20201118220731.925424-1-samitolvanen@google.com> <CAKwvOd=5PhCTZ-yHr08gPYNEsGEjZa=rDY0-unhkhofjXhqwLQ@mail.gmail.com>
+In-Reply-To: <CAKwvOd=5PhCTZ-yHr08gPYNEsGEjZa=rDY0-unhkhofjXhqwLQ@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 20 Nov 2020 11:29:51 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEVzDi5=uteUAzG5E=j+aTCHEbMxwDfor-s=DthpREpyw@mail.gmail.com>
+Message-ID: <CAMj1kXEVzDi5=uteUAzG5E=j+aTCHEbMxwDfor-s=DthpREpyw@mail.gmail.com>
+Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 03:18:50PM +0300, Alexey Budankov wrote:
-> 
-> Introduce data file and compressor objects into mmap object so
-> they could be used to process and store data stream from the
-> corresponding kernel data buffer. Introduce bytes_transferred
-> and bytes_compressed stats so they would capture statistics for
-> the related data buffer transfers. Make use of the introduced
-> per mmap file, compressor and stats when they are initialized
-> and available.
+On Thu, 19 Nov 2020 at 00:42, Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> On Wed, Nov 18, 2020 at 2:07 PM Sami Tolvanen <samitolvanen@google.com> wrote:
+> >
+> > This patch series adds support for building the kernel with Clang's
+> > Link Time Optimization (LTO). In addition to performance, the primary
+> > motivation for LTO is to allow Clang's Control-Flow Integrity (CFI) to
+> > be used in the kernel. Google has shipped millions of Pixel devices
+> > running three major kernel versions with LTO+CFI since 2018.
+> >
+> > Most of the patches are build system changes for handling LLVM bitcode,
+> > which Clang produces with LTO instead of ELF object files, postponing
+> > ELF processing until a later stage, and ensuring initcall ordering.
+> >
+> > Note that v7 brings back arm64 support as Will has now staged the
+> > prerequisite memory ordering patches [1], and drops x86_64 while we work
+> > on fixing the remaining objtool warnings [2].
+> >
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/lto
+> > [2] https://lore.kernel.org/lkml/20201114004911.aip52eimk6c2uxd4@treble/
+> >
+> > You can also pull this series from
+> >
+> >   https://github.com/samitolvanen/linux.git lto-v7
+>
+> Thanks for continuing to drive this series Sami.  For the series,
+>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> I did virtualized boot tests with the series applied to aarch64
+> defconfig without CONFIG_LTO, with CONFIG_LTO_CLANG, and a third time
+> with CONFIG_THINLTO.  If you make changes to the series in follow ups,
+> please drop my tested by tag from the modified patches and I'll help
+> re-test.  Some minor feedback on the Kconfig change, but I'll post it
+> off of that patch.
+>
 
-So the bytes_transferred == bytes read from the mmap buffer, right?
+When you say 'virtualized" do you mean QEMU on x86? Or actual
+virtualization on an AArch64 KVM host?
 
-Thanks,
-Namhyung
+The distinction is important here, given the potential impact of LTO
+on things that QEMU simply does not model when it runs in TCG mode on
+a foreign host architecture.
 
-> 
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> ---
->  tools/perf/builtin-record.c | 64 +++++++++++++++++++++++++++++--------
->  tools/perf/util/mmap.c      |  6 ++++
->  tools/perf/util/mmap.h      |  6 ++++
->  3 files changed, 63 insertions(+), 13 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 13773739bedc..779676531edf 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -188,11 +188,19 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
->  {
->  	struct perf_data_file *file = &rec->session->data->file;
->  
-> +	if (map && map->file)
-> +		file = map->file;
-> +
->  	if (perf_data_file__write(file, bf, size) < 0) {
->  		pr_err("failed to write perf data, error: %m\n");
->  		return -1;
->  	}
->  
-> +	if (map && map->file) {
-> +		map->bytes_written += size;
-> +		return 0;
-> +	}
-> +
->  	rec->bytes_written += size;
->  
->  	if (record__output_max_size_exceeded(rec) && !done) {
-> @@ -210,8 +218,8 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
->  
->  static int record__aio_enabled(struct record *rec);
->  static int record__comp_enabled(struct record *rec);
-> -static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
-> -			    void *src, size_t src_size);
-> +static size_t zstd_compress(struct zstd_data *data,
-> +			    void *dst, size_t dst_size, void *src, size_t src_size);
->  
->  #ifdef HAVE_AIO_SUPPORT
->  static int record__aio_write(struct aiocb *cblock, int trace_fd,
-> @@ -345,9 +353,13 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
->  	 */
->  
->  	if (record__comp_enabled(aio->rec)) {
-> -		size = zstd_compress(aio->rec->session, aio->data + aio->size,
-> -				     mmap__mmap_len(map) - aio->size,
-> +		struct zstd_data *zstd_data = &aio->rec->session->zstd_data;
-> +
-> +		aio->rec->session->bytes_transferred += size;
-> +		size = zstd_compress(zstd_data,
-> +				     aio->data + aio->size, mmap__mmap_len(map) - aio->size,
->  				     buf, size);
-> +		aio->rec->session->bytes_compressed += size;
->  	} else {
->  		memcpy(aio->data + aio->size, buf, size);
->  	}
-> @@ -572,8 +584,22 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
->  	struct record *rec = to;
->  
->  	if (record__comp_enabled(rec)) {
-> -		size = zstd_compress(rec->session, map->data, mmap__mmap_len(map), bf, size);
-> +		struct zstd_data *zstd_data = &rec->session->zstd_data;
-> +
-> +		if (map->file) {
-> +			zstd_data = &map->zstd_data;
-> +			map->bytes_transferred += size;
-> +		} else {
-> +			rec->session->bytes_transferred += size;
-> +		}
-> +
-> +		size = zstd_compress(zstd_data, map->data, mmap__mmap_len(map), bf, size);
->  		bf   = map->data;
-> +
-> +		if (map->file)
-> +			map->bytes_compressed += size;
-> +		else
-> +			rec->session->bytes_compressed += size;
->  	}
->  
->  	thread->samples++;
-> @@ -1291,18 +1317,15 @@ static size_t process_comp_header(void *record, size_t increment)
->  	return size;
->  }
->  
-> -static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
-> +static size_t zstd_compress(struct zstd_data *zstd_data, void *dst, size_t dst_size,
->  			    void *src, size_t src_size)
->  {
->  	size_t compressed;
->  	size_t max_record_size = PERF_SAMPLE_MAX_SIZE - sizeof(struct perf_record_compressed) - 1;
->  
-> -	compressed = zstd_compress_stream_to_records(&session->zstd_data, dst, dst_size, src, src_size,
-> +	compressed = zstd_compress_stream_to_records(zstd_data, dst, dst_size, src, src_size,
->  						     max_record_size, process_comp_header);
->  
-> -	session->bytes_transferred += src_size;
-> -	session->bytes_compressed  += compressed;
-> -
->  	return compressed;
->  }
->  
-> @@ -1959,8 +1982,9 @@ static int record__start_threads(struct record *rec)
->  
->  static int record__stop_threads(struct record *rec, unsigned long *waking)
->  {
-> -	int t;
-> +	int t, tm;
->  	struct thread_data *thread_data = rec->thread_data;
-> +	u64 bytes_written = 0, bytes_transferred = 0, bytes_compressed = 0;
->  
->  	for (t = 1; t < rec->nr_threads; t++)
->  		record__terminate_thread(&thread_data[t]);
-> @@ -1968,9 +1992,23 @@ static int record__stop_threads(struct record *rec, unsigned long *waking)
->  	for (t = 0; t < rec->nr_threads; t++) {
->  		rec->samples += thread_data[t].samples;
->  		*waking += thread_data[t].waking;
-> -		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld\n",
-> +		for (tm = 0; tm < thread_data[t].nr_mmaps; tm++) {
-> +			if (thread_data[t].maps) {
-> +				bytes_transferred += thread_data[t].maps[tm]->bytes_transferred;
-> +				bytes_compressed += thread_data[t].maps[tm]->bytes_compressed;
-> +				bytes_written += thread_data[t].maps[tm]->bytes_written;
-> +			}
-> +			if (thread_data[t].overwrite_maps) {
-> +				bytes_transferred += thread_data[t].overwrite_maps[tm]->bytes_transferred;
-> +				bytes_compressed += thread_data[t].overwrite_maps[tm]->bytes_compressed;
-> +				bytes_written += thread_data[t].overwrite_maps[tm]->bytes_written;
-> +			}
-> +		}
-> +		rec->session->bytes_transferred += bytes_transferred;
-> +		rec->session->bytes_compressed += bytes_compressed;
-> +		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld, written=%ld\n",
->  			 thread_data[t].tid, thread_data[t].samples, thread_data[t].waking,
-> -			 rec->session->bytes_transferred, rec->session->bytes_compressed);
-> +			 bytes_transferred, bytes_compressed, bytes_written);
->  	}
->  
->  	return 0;
-> diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
-> index ab7108d22428..a2c5e4237592 100644
-> --- a/tools/perf/util/mmap.c
-> +++ b/tools/perf/util/mmap.c
-> @@ -230,6 +230,8 @@ void mmap__munmap(struct mmap *map)
->  {
->  	bitmap_free(map->affinity_mask.bits);
->  
-> +	zstd_fini(&map->zstd_data);
-> +
->  	perf_mmap__aio_munmap(map);
->  	if (map->data != NULL) {
->  		munmap(map->data, mmap__mmap_len(map));
-> @@ -291,6 +293,10 @@ int mmap__mmap(struct mmap *map, struct mmap_params *mp, int fd, int cpu)
->  	map->core.flush = mp->flush;
->  
->  	map->comp_level = mp->comp_level;
-> +	if (zstd_init(&map->zstd_data, map->comp_level)) {
-> +		pr_debug2("failed to init mmap commpressor, error %d\n", errno);
-> +		return -1;
-> +	}
->  
->  	if (map->comp_level && !perf_mmap__aio_enabled(map)) {
->  		map->data = mmap(NULL, mmap__mmap_len(map), PROT_READ|PROT_WRITE,
-> diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
-> index 9d5f589f02ae..c04ca4b5adf5 100644
-> --- a/tools/perf/util/mmap.h
-> +++ b/tools/perf/util/mmap.h
-> @@ -13,6 +13,7 @@
->  #endif
->  #include "auxtrace.h"
->  #include "event.h"
-> +#include "util/compress.h"
->  
->  struct aiocb;
->  
-> @@ -43,6 +44,11 @@ struct mmap {
->  	struct mmap_cpu_mask	affinity_mask;
->  	void		*data;
->  	int		comp_level;
-> +	struct perf_data_file *file;
-> +	struct zstd_data      zstd_data;
-> +	u64		      bytes_transferred;
-> +	u64		      bytes_compressed;
-> +	u64		      bytes_written;
->  };
->  
->  struct mmap_params {
-> -- 
-> 2.24.1
-> 
-> 
+> >
+> > ---
+> > Changes in v7:
+> >
+> >   - Rebased to master again.
+> >
+> >   - Added back arm64 patches as the prerequisites are now staged,
+> >     and dropped x86_64 support until the remaining objtool issues
+> >     are resolved.
+> >
+> >   - Dropped ifdefs from module.lds.S.
+> >
+> > Changes in v6:
+> >
+> >   - Added the missing --mcount flag to patch 5.
+> >
+> >   - Dropped the arm64 patches from this series and will repost them
+> >     later.
+> >
+> > Changes in v5:
+> >
+> >   - Rebased on top of tip/master.
+> >
+> >   - Changed the command line for objtool to use --vmlinux --duplicate
+> >     to disable warnings about retpoline thunks and to fix .orc_unwind
+> >     generation for vmlinux.o.
+> >
+> >   - Added --noinstr flag to objtool, so we can use --vmlinux without
+> >     also enabling noinstr validation.
+> >
+> >   - Disabled objtool's unreachable instruction warnings with LTO to
+> >     disable false positives for the int3 padding in vmlinux.o.
+> >
+> >   - Added ANNOTATE_RETPOLINE_SAFE annotations to the indirect jumps
+> >     in x86 assembly code to fix objtool warnings with retpoline.
+> >
+> >   - Fixed modpost warnings about missing version information with
+> >     CONFIG_MODVERSIONS.
+> >
+> >   - Included Makefile.lib into Makefile.modpost for ld_flags. Thanks
+> >     to Sedat for pointing this out.
+> >
+> >   - Updated the help text for ThinLTO to better explain the trade-offs.
+> >
+> >   - Updated commit messages with better explanations.
+> >
+> > Changes in v4:
+> >
+> >   - Fixed a typo in Makefile.lib to correctly pass --no-fp to objtool.
+> >
+> >   - Moved ftrace configs related to generating __mcount_loc to Kconfig,
+> >     so they are available also in Makefile.modfinal.
+> >
+> >   - Dropped two prerequisite patches that were merged to Linus' tree.
+> >
+> > Changes in v3:
+> >
+> >   - Added a separate patch to remove the unused DISABLE_LTO treewide,
+> >     as filtering out CC_FLAGS_LTO instead is preferred.
+> >
+> >   - Updated the Kconfig help to explain why LTO is behind a choice
+> >     and disabled by default.
+> >
+> >   - Dropped CC_FLAGS_LTO_CLANG, compiler-specific LTO flags are now
+> >     appended directly to CC_FLAGS_LTO.
+> >
+> >   - Updated $(AR) flags as KBUILD_ARFLAGS was removed earlier.
+> >
+> >   - Fixed ThinLTO cache handling for external module builds.
+> >
+> >   - Rebased on top of Masahiro's patch for preprocessing modules.lds,
+> >     and moved the contents of module-lto.lds to modules.lds.S.
+> >
+> >   - Moved objtool_args to Makefile.lib to avoid duplication of the
+> >     command line parameters in Makefile.modfinal.
+> >
+> >   - Clarified in the commit message for the initcall ordering patch
+> >     that the initcall order remains the same as without LTO.
+> >
+> >   - Changed link-vmlinux.sh to use jobserver-exec to control the
+> >     number of jobs started by generate_initcall_ordering.pl.
+> >
+> >   - Dropped the x86/relocs patch to whitelist L4_PAGE_OFFSET as it's
+> >     no longer needed with ToT kernel.
+> >
+> >   - Disabled LTO for arch/x86/power/cpu.c to work around a Clang bug
+> >     with stack protector attributes.
+> >
+> > Changes in v2:
+> >
+> >   - Fixed -Wmissing-prototypes warnings with W=1.
+> >
+> >   - Dropped cc-option from -fsplit-lto-unit and added .thinlto-cache
+> >     scrubbing to make distclean.
+> >
+> >   - Added a comment about Clang >=11 being required.
+> >
+> >   - Added a patch to disable LTO for the arm64 KVM nVHE code.
+> >
+> >   - Disabled objtool's noinstr validation with LTO unless enabled.
+> >
+> >   - Included Peter's proposed objtool mcount patch in the series
+> >     and replaced recordmcount with the objtool pass to avoid
+> >     whitelisting relocations that are not calls.
+> >
+> >   - Updated several commit messages with better explanations.
+> >
+> >
+> > Sami Tolvanen (17):
+> >   tracing: move function tracer options to Kconfig
+> >   kbuild: add support for Clang LTO
+> >   kbuild: lto: fix module versioning
+> >   kbuild: lto: limit inlining
+> >   kbuild: lto: merge module sections
+> >   kbuild: lto: remove duplicate dependencies from .mod files
+> >   init: lto: ensure initcall ordering
+> >   init: lto: fix PREL32 relocations
+> >   PCI: Fix PREL32 relocations for LTO
+> >   modpost: lto: strip .lto from module names
+> >   scripts/mod: disable LTO for empty.c
+> >   efi/libstub: disable LTO
+> >   drivers/misc/lkdtm: disable LTO for rodata.o
+> >   arm64: vdso: disable LTO
+> >   KVM: arm64: disable LTO for the nVHE directory
+> >   arm64: disable recordmcount with DYNAMIC_FTRACE_WITH_REGS
+> >   arm64: allow LTO_CLANG and THINLTO to be selected
+> >
+> >  .gitignore                            |   1 +
+> >  Makefile                              |  45 +++--
+> >  arch/Kconfig                          |  74 +++++++
+> >  arch/arm64/Kconfig                    |   4 +
+> >  arch/arm64/kernel/vdso/Makefile       |   3 +-
+> >  arch/arm64/kvm/hyp/nvhe/Makefile      |   4 +-
+> >  drivers/firmware/efi/libstub/Makefile |   2 +
+> >  drivers/misc/lkdtm/Makefile           |   1 +
+> >  include/asm-generic/vmlinux.lds.h     |  11 +-
+> >  include/linux/init.h                  |  79 +++++++-
+> >  include/linux/pci.h                   |  19 +-
+> >  kernel/trace/Kconfig                  |  16 ++
+> >  scripts/Makefile.build                |  50 ++++-
+> >  scripts/Makefile.lib                  |   6 +-
+> >  scripts/Makefile.modfinal             |   9 +-
+> >  scripts/Makefile.modpost              |  25 ++-
+> >  scripts/generate_initcall_order.pl    | 270 ++++++++++++++++++++++++++
+> >  scripts/link-vmlinux.sh               |  70 ++++++-
+> >  scripts/mod/Makefile                  |   1 +
+> >  scripts/mod/modpost.c                 |  16 +-
+> >  scripts/mod/modpost.h                 |   9 +
+> >  scripts/mod/sumversion.c              |   6 +-
+> >  scripts/module.lds.S                  |  24 +++
+> >  23 files changed, 677 insertions(+), 68 deletions(-)
+> >  create mode 100755 scripts/generate_initcall_order.pl
+> >
+> >
+> > base-commit: 0fa8ee0d9ab95c9350b8b84574824d9a384a9f7d
+> > --
+> > 2.29.2.299.gdc1121823c-goog
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
