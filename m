@@ -2,151 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602A82BA187
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B032BA185
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgKTEvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 23:51:48 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52754 "EHLO
+        id S1726335AbgKTEvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 23:51:39 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52672 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgKTEvi (ORCPT
+        with ESMTP id S1726189AbgKTEvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 23:51:38 -0500
+        Thu, 19 Nov 2020 23:51:36 -0500
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 199702A45B; Thu, 19 Nov 2020 23:51:36 -0500 (EST)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Joshua Thompson" <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Message-Id: <0a7b09f5e5f48e270b82041c19e8f20f54c69216.1605847196.git.fthain@telegraphics.com.au>
+        id BE34E2A452; Thu, 19 Nov 2020 23:51:35 -0500 (EST)
+To:     Michael Schmitz <schmitzmic@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <c1317ae8fdcb498460de5d7ea0bd62a42f5eeca8.1605847196.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k/mac: Refactor iop_preinit() and iop_init()
+Subject: [PATCH] scsi/NCR5380: Reduce NCR5380_maybe_release_dma_irq() call
+ sites
 Date:   Fri, 20 Nov 2020 15:39:56 +1100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The idea behind iop_preinit() was to put the SCC IOP into bypass mode.
-However, that remains unimplemented and implementing it would be
-difficult. Let the comments and code reflect this. Even if iop_preinit()
-worked as described in the comments, it gets called immediately before
-iop_init() so it might as well part of iop_init().
+Refactor to avoid needless calls to NCR5380_maybe_release_dma_irq().
+This makes the machine code smaller and the source more readable.
 
-Cc: Joshua Thompson <funaho@jurai.org>
-Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- arch/m68k/mac/config.c |  8 -------
- arch/m68k/mac/iop.c    | 54 ++++++++++++++----------------------------
- 2 files changed, 18 insertions(+), 44 deletions(-)
+ drivers/scsi/NCR5380.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 2bea1799b8de..f66944909be9 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -55,7 +55,6 @@ struct mac_booter_data mac_bi_data;
- static unsigned long mac_orig_videoaddr;
+diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
+index ea4b5749e7da..d597d7493a62 100644
+--- a/drivers/scsi/NCR5380.c
++++ b/drivers/scsi/NCR5380.c
+@@ -725,7 +725,6 @@ static void NCR5380_main(struct work_struct *work)
  
- extern int mac_hwclk(int, struct rtc_time *);
--extern void iop_preinit(void);
- extern void iop_init(void);
- extern void via_init(void);
- extern void via_init_clock(irq_handler_t func);
-@@ -836,13 +835,6 @@ static void __init mac_identify(void)
- 		break;
+ 			if (!NCR5380_select(instance, cmd)) {
+ 				dsprintk(NDEBUG_MAIN, instance, "main: select complete\n");
+-				maybe_release_dma_irq(instance);
+ 			} else {
+ 				dsprintk(NDEBUG_MAIN | NDEBUG_QUEUES, instance,
+ 				         "main: select failed, returning %p to queue\n", cmd);
+@@ -737,8 +736,10 @@ static void NCR5380_main(struct work_struct *work)
+ 			NCR5380_information_transfer(instance);
+ 			done = 0;
+ 		}
+-		if (!hostdata->connected)
++		if (!hostdata->connected) {
+ 			NCR5380_write(SELECT_ENABLE_REG, hostdata->id_mask);
++			maybe_release_dma_irq(instance);
++		}
+ 		spin_unlock_irq(&hostdata->lock);
+ 		if (!done)
+ 			cond_resched();
+@@ -1844,7 +1845,6 @@ static void NCR5380_information_transfer(struct Scsi_Host *instance)
+ 					 */
+ 					NCR5380_write(TARGET_COMMAND_REG, 0);
+ 
+-					maybe_release_dma_irq(instance);
+ 					return;
+ 				case MESSAGE_REJECT:
+ 					/* Accept message by clearing ACK */
+@@ -1976,7 +1976,6 @@ static void NCR5380_information_transfer(struct Scsi_Host *instance)
+ 					hostdata->busy[scmd_id(cmd)] &= ~(1 << cmd->device->lun);
+ 					cmd->result = DID_ERROR << 16;
+ 					complete_cmd(instance, cmd);
+-					maybe_release_dma_irq(instance);
+ 					return;
+ 				}
+ 				msgout = NOP;
+@@ -2312,7 +2311,6 @@ static int NCR5380_abort(struct scsi_cmnd *cmd)
  	}
  
--	/*
--	 * We need to pre-init the IOPs, if any. Otherwise
--	 * the serial console won't work if the user had
--	 * the serial ports set to "Faster" mode in MacOS.
--	 */
--	iop_preinit();
--
- 	pr_info("Detected Macintosh model: %d\n", model);
+ 	queue_work(hostdata->work_q, &hostdata->main_task);
+-	maybe_release_dma_irq(instance);
+ 	spin_unlock_irqrestore(&hostdata->lock, flags);
  
- 	/*
-diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-index c669a7644301..de156a027f5b 100644
---- a/arch/m68k/mac/iop.c
-+++ b/arch/m68k/mac/iop.c
-@@ -47,6 +47,10 @@
-  *
-  * TODO:
-  *
-+ * o The SCC IOP has to be placed in bypass mode before the serial console
-+ *   gets initialized. iop_init() would be one place to do that. Or the
-+ *   bootloader could do that. For now, the Serial Switch control panel
-+ *   is needed for that -- contrary to the changelog above.
-  * o Something should be periodically checking iop_alive() to make sure the
-  *   IOP hasn't died.
-  * o Some of the IOP manager routines need better error checking and
-@@ -224,40 +228,6 @@ static struct iop_msg *iop_get_unused_msg(void)
- 	return NULL;
+ 	return result;
+@@ -2368,7 +2366,6 @@ static void bus_reset_cleanup(struct Scsi_Host *instance)
+ 	hostdata->dma_len = 0;
+ 
+ 	queue_work(hostdata->work_q, &hostdata->main_task);
+-	maybe_release_dma_irq(instance);
  }
  
--/*
-- * This is called by the startup code before anything else. Its purpose
-- * is to find and initialize the IOPs early in the boot sequence, so that
-- * the serial IOP can be placed into bypass mode _before_ we try to
-- * initialize the serial console.
-- */
--
--void __init iop_preinit(void)
--{
--	if (macintosh_config->scc_type == MAC_SCC_IOP) {
--		if (macintosh_config->ident == MAC_MODEL_IIFX) {
--			iop_base[IOP_NUM_SCC] = (struct mac_iop *) SCC_IOP_BASE_IIFX;
--		} else {
--			iop_base[IOP_NUM_SCC] = (struct mac_iop *) SCC_IOP_BASE_QUADRA;
--		}
--		iop_scc_present = 1;
--	} else {
--		iop_base[IOP_NUM_SCC] = NULL;
--		iop_scc_present = 0;
--	}
--	if (macintosh_config->adb_type == MAC_ADB_IOP) {
--		if (macintosh_config->ident == MAC_MODEL_IIFX) {
--			iop_base[IOP_NUM_ISM] = (struct mac_iop *) ISM_IOP_BASE_IIFX;
--		} else {
--			iop_base[IOP_NUM_ISM] = (struct mac_iop *) ISM_IOP_BASE_QUADRA;
--		}
--		iop_stop(iop_base[IOP_NUM_ISM]);
--		iop_ism_present = 1;
--	} else {
--		iop_base[IOP_NUM_ISM] = NULL;
--		iop_ism_present = 0;
--	}
--}
--
- /*
-  * Initialize the IOPs, if present.
-  */
-@@ -266,11 +236,23 @@ void __init iop_init(void)
- {
- 	int i;
- 
--	if (iop_scc_present) {
-+	if (macintosh_config->scc_type == MAC_SCC_IOP) {
-+		if (macintosh_config->ident == MAC_MODEL_IIFX)
-+			iop_base[IOP_NUM_SCC] = (struct mac_iop *)SCC_IOP_BASE_IIFX;
-+		else
-+			iop_base[IOP_NUM_SCC] = (struct mac_iop *)SCC_IOP_BASE_QUADRA;
-+		iop_scc_present = 1;
- 		pr_debug("SCC IOP detected at %p\n", iop_base[IOP_NUM_SCC]);
- 	}
--	if (iop_ism_present) {
-+	if (macintosh_config->adb_type == MAC_ADB_IOP) {
-+		if (macintosh_config->ident == MAC_MODEL_IIFX)
-+			iop_base[IOP_NUM_ISM] = (struct mac_iop *)ISM_IOP_BASE_IIFX;
-+		else
-+			iop_base[IOP_NUM_ISM] = (struct mac_iop *)ISM_IOP_BASE_QUADRA;
-+		iop_ism_present = 1;
- 		pr_debug("ISM IOP detected at %p\n", iop_base[IOP_NUM_ISM]);
-+
-+		iop_stop(iop_base[IOP_NUM_ISM]);
- 		iop_start(iop_base[IOP_NUM_ISM]);
- 		iop_alive(iop_base[IOP_NUM_ISM]); /* clears the alive flag */
- 	}
+ /**
 -- 
 2.26.2
 
