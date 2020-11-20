@@ -2,136 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5198A2B9FFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C6D2BA005
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgKTBwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 20:52:22 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7657 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726122AbgKTBwW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:52:22 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Ccfg73RRJz15KdD;
-        Fri, 20 Nov 2020 09:52:03 +0800 (CST)
-Received: from [127.0.0.1] (10.74.149.191) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 20 Nov 2020
- 09:52:11 +0800
-Subject: Re: [RFC net-next 1/2] ethtool: add support for controling the type
- of adaptive coalescing
-To:     Michal Kubecek <mkubecek@suse.cz>
-CC:     Andrew Lunn <andrew@lunn.ch>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <kuba@kernel.org>
-References: <1605758050-21061-1-git-send-email-tanhuazhong@huawei.com>
- <1605758050-21061-2-git-send-email-tanhuazhong@huawei.com>
- <20201119041557.GR1804098@lunn.ch>
- <e43890d1-5596-3439-f4a7-d704c069a035@huawei.com>
- <20201119220203.fv2uluoeekyoyxrv@lion.mk-sys.cz>
-From:   tanhuazhong <tanhuazhong@huawei.com>
-Message-ID: <a4805c93-300b-1599-359a-1ed94a5eb77d@huawei.com>
-Date:   Fri, 20 Nov 2020 09:52:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        id S1727060AbgKTBxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 20:53:32 -0500
+Received: from namei.org ([65.99.196.166]:54324 "EHLO namei.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726122AbgKTBxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 20:53:31 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 0AK1qcDI017804;
+        Fri, 20 Nov 2020 01:52:38 GMT
+Date:   Fri, 20 Nov 2020 12:52:38 +1100 (AEDT)
+From:   James Morris <jmorris@namei.org>
+To:     =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Jann Horn <jannh@google.com>
+cc:     "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jann Horn <jannh@google.com>, Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v24 02/12] landlock: Add ruleset and domain management
+In-Reply-To: <20201112205141.775752-3-mic@digikod.net>
+Message-ID: <alpine.LRH.2.21.2011201251010.15634@namei.org>
+References: <20201112205141.775752-1-mic@digikod.net> <20201112205141.775752-3-mic@digikod.net>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20201119220203.fv2uluoeekyoyxrv@lion.mk-sys.cz>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.149.191]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/mixed; boundary="1665246916-1401825409-1605837159=:15634"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--1665246916-1401825409-1605837159=:15634
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-On 2020/11/20 6:02, Michal Kubecek wrote:
-> On Thu, Nov 19, 2020 at 04:56:42PM +0800, tanhuazhong wrote:
->> On 2020/11/19 12:15, Andrew Lunn wrote:
->>>> diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
->>>> index 9ca87bc..afd8de2 100644
->>>> --- a/include/uapi/linux/ethtool.h
->>>> +++ b/include/uapi/linux/ethtool.h
->>>> @@ -433,6 +433,7 @@ struct ethtool_modinfo {
->>>>     *	a TX interrupt, when the packet rate is above @pkt_rate_high.
->>>>     * @rate_sample_interval: How often to do adaptive coalescing packet rate
->>>>     *	sampling, measured in seconds.  Must not be zero.
->>>> + * @use_dim: Use DIM for IRQ coalescing, if adaptive coalescing is enabled.
->>>>     *
->>>>     * Each pair of (usecs, max_frames) fields specifies that interrupts
->>>>     * should be coalesced until
->>>> @@ -483,6 +484,7 @@ struct ethtool_coalesce {
->>>>    	__u32	tx_coalesce_usecs_high;
->>>>    	__u32	tx_max_coalesced_frames_high;
->>>>    	__u32	rate_sample_interval;
->>>> +	__u32	use_dim;
->>>>    };
->>>
->>> You cannot do this.
->>>
->>> static noinline_for_stack int ethtool_set_coalesce(struct net_device *dev,
->>>                                                      void __user *useraddr)
->>> {
->>>           struct ethtool_coalesce coalesce;
->>>           int ret;
->>>
->>>           if (!dev->ethtool_ops->set_coalesce)
->>>                   return -EOPNOTSUPP;
->>>
->>>           if (copy_from_user(&coalesce, useraddr, sizeof(coalesce)))
->>>                   return -EFAULT;
->>>
->>> An old ethtool binary is not going to set this extra last byte to
->>> anything meaningful. You cannot tell if you have an old or new user
->>> space, so you have no idea if it put anything into use_dim, or if it
->>> is random junk.
-> 
-> Even worse, as there is no indication of data length, ETHTOOL_GCOALESCE
-> ioctl request from old ethtool on new kernel would result in kernel
-> writing past the end of userspace buffer.
-> 
->>> You have to leave the IOCTL interface unchanged, and limit this new
->>> feature to the netlink API.
->>>
->>
->> Hi, Andrew.
->> thanks for pointing out this problem, i will fix it.
->> without callling set_coalesce/set_coalesce of ethtool_ops, do you have any
->> suggestion for writing/reading this new attribute to/from the driver? add a
->> new field in net_device or a new callback function in ethtool_ops seems not
->> good.
-> 
-> We could use a similar approach as struct ethtool_link_ksettings, e.g.
-> 
-> 	struct kernel_ethtool_coalesce {
-> 		struct ethtool_coalesce base;
-> 		/* new members which are not part of UAPI */
-> 	}
-> 
-> get_coalesce() and set_coalesce() would get pointer to struct
-> kernel_ethtool_coalesce and ioctl code would be modified to only touch
-> the base (legacy?) part.
-> 
+On Thu, 12 Nov 2020, Mickaël Salaün wrote:
 
-Thanks for your suggestion. i will implement it in V2.
+> Cc: James Morris <jmorris@namei.org>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Serge E. Hallyn <serge@hallyn.com>
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> ---
+> 
+> Changes since v23:
+> * Always intersect access rights.  Following the filesystem change
+>   logic, make ruleset updates more consistent by always intersecting
+>   access rights (boolean AND) instead of combining them (boolean OR) for
+>   the same layer.  This defensive approach could also help avoid user
+>   space to inadvertently allow multiple access rights for the same
+>   object (e.g.  write and execute access on a path hierarchy) instead of
+>   dealing with such inconsistency.  This can happen when there is no
+>   deduplication of objects (e.g. paths and underlying inodes) whereas
+>   they get different access rights with landlock_add_rule(2).
+> * Add extra checks to make sure that:
+>   - there is always an (allocated) object in each used rules;
+>   - when updating a ruleset with a new rule (i.e. not merging two
+>     rulesets), the ruleset doesn't contain multiple layers.
+> * Hide merge parameter from the public landlock_insert_rule() API.  This
+>   helps avoid misuse of this function.
+> * Replace a remaining hardcoded 1 with SINGLE_DEPTH_NESTING.
 
-> While already changing the ops arguments, we could also add extack
-> pointer, either as a separate argument or as struct member (I slightly
-> prefer the former).
-> 
-> BtW, please don't forget to update the message descriptions in
-> Documentation/networking/ethtool-netlink.rst
-> 
-> Michal
-> 
-
-will update the doc in V2.
+Jann: any chance you could review this patch again given the changes 
+above?
 
 Thanks.
-Huazhong.
 
-> .
-> 
 
+-- 
+James Morris
+<jmorris@namei.org>
+
+--1665246916-1401825409-1605837159=:15634--
