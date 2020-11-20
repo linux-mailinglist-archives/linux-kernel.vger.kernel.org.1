@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D7E2BB813
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8C22BB819
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731086AbgKTVEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:04:31 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38959 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730524AbgKTVEb (ORCPT
+        id S1731744AbgKTVEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:04:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731276AbgKTVEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:04:31 -0500
-Received: by mail-ot1-f68.google.com with SMTP id z16so10024557otq.6;
-        Fri, 20 Nov 2020 13:04:30 -0800 (PST)
+        Fri, 20 Nov 2020 16:04:40 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180E0C0613CF;
+        Fri, 20 Nov 2020 13:04:40 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id y17so14719414ejh.11;
+        Fri, 20 Nov 2020 13:04:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KOjtLDn9Uq/1YraWwS0wYrH/Ks+SKmiXRPSVSpOE9WQ=;
+        b=PX7ZPBqTcqPGEMMwyLwueVuPCxRPhzurlpiVDbLWahTJzoQQR8EJdYpOQ8YJfLnFKq
+         DMDGN8Uo8Wga3TDxFqgghH20tKBpP+E4U9W1+VDMYIFmkVgRmAexviaYDuX0fFqzLbeK
+         QD2lSl22LVhQ0SrAd7D1knlebBhAaGKPu5vQF4qir+i86zLk12S4XkGg64RTjcKUGMXP
+         VW8YLY7m2jCWKR9I+ON/hKe6cY+6utWbIqBHxzEQiPgSDIP6+mRTZiJIk1dSvyZ4r+d+
+         jCNT0IFYiGPd2aZQ2Pf63/3MtvtQtsBqsCu/njOjAMFfqPsvWnvBDaqICwycw3oc1eKR
+         GxrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=hG0Yjdk9OimqrWpKYF/IkVWg6nsHdnZMFyZuaLz0d1k=;
-        b=M/WmwzU09ZqN89i/h+j5sU3eJv5VcQgJrLEAI0sWgrAVuyB9szLyD7n9K9eBv/wNTr
-         8ReidoP+Ph3/e1KDo8KYXu+m/kWBJoIhqEKdd6UcLUX/NLCzMV9v0UgD2apx8R7w5vd2
-         z8SPGfV6ree2X1bcy7rNBVM12hK9AHh+If9MHAdSIowld9cgW0XyVSfpvzIRyyXU9e+y
-         id9ENlpC+ZVj+lsa8g36ZfUSa2cpHOpw83QD/9NnB1n1/fw7mhgSKV6jCtbXb2V057fH
-         2Rlz7RlO1BM+zufq7xlxKxMWsIEGRxHJxk0sET5iAuvF1YVnWKOAxXoGK6OHRcmb9dJC
-         wb0g==
-X-Gm-Message-State: AOAM531Djiy7wQNDeFdOsrUs6A0S1oQdiO0NSsVFK4HY/OxH4osCrRLR
-        RVJ9uOqKYRiQ4F1YMOEwE6V5KagdFw==
-X-Google-Smtp-Source: ABdhPJwLeMlOc9JnvLCoMo/5Ni0hEffgWksdYu0UKsb07/EKXhO37Q+3KKYnD25MH0HsDzi9KghYyg==
-X-Received: by 2002:a05:6830:22c9:: with SMTP id q9mr16142414otc.48.1605906270299;
-        Fri, 20 Nov 2020 13:04:30 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n3sm2254605oif.42.2020.11.20.13.04.29
+        bh=KOjtLDn9Uq/1YraWwS0wYrH/Ks+SKmiXRPSVSpOE9WQ=;
+        b=VtUGf/dK+Ay8Kcd8rj09HTcWF/wxFq0NgxrBY+8z032kPAPx53MUm/cXrgBqVuPhxl
+         YNLN0GKJpsKBV8inCbuVIIvRvhQu+0eH2QKmM0tmtCyyTlI8xxz2eRJed96d4nztkgI2
+         kgu2dKTKqJyEzf9DKBBDcnanNZRpkZGar4LXijbA9eHUbtn0a4LOMHI+BisWP99Y61tM
+         i2lRMATCBRqE33KZilfB46TLBZX+Yzt7pLryAHPQBlGxL/1adjhhnPyLllU4sMiPbPt5
+         vvpg2HzCAVFau06EMj356H3XuMiU4KRjqJC/0HuyD8SSkgiNLV6Eqm/Cy6U0wmycNQfV
+         HFyg==
+X-Gm-Message-State: AOAM533D3/qRuJngBQZKcOPTLg1HEtsna92Q7d7YAKOljltX0uvA/VkC
+        vw/1rOOkqxm4Ta/PF6Sf1cE=
+X-Google-Smtp-Source: ABdhPJx5WdXUwcPVW61sHrqi3xa8l7C3rM5KAKhXBNca2Tlq8NEsAxQ+Na6SRG3UHRhSPeVoH1eWTw==
+X-Received: by 2002:a17:906:dbf4:: with SMTP id yd20mr33533558ejb.53.1605906278755;
+        Fri, 20 Nov 2020 13:04:38 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id k23sm1527243edv.97.2020.11.20.13.04.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 13:04:29 -0800 (PST)
-Received: (nullmailer pid 1736597 invoked by uid 1000);
-        Fri, 20 Nov 2020 21:04:28 -0000
-Date:   Fri, 20 Nov 2020 15:04:28 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Al Cooper <alcooperx@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-usb@vger.kernel.org,
-        linux-serial@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Fri, 20 Nov 2020 13:04:38 -0800 (PST)
+Date:   Fri, 20 Nov 2020 23:04:36 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Christian Eggers <ceggers@arri.de>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: Add support for the Broadcom UART driver
-Message-ID: <20201120210428.GA1736336@robh.at.kernel.org>
-References: <20201120194305.8847-1-alcooperx@gmail.com>
- <20201120194305.8847-3-alcooperx@gmail.com>
+Subject: Re: [PATCH net-next v2] net: dsa: avoid potential use-after-free
+ error
+Message-ID: <20201120210436.scmic7ygrzviy53o@skbuf>
+References: <20201119110906.25558-1-ceggers@arri.de>
+ <20201120180149.wp4ehikbc2ngvwtf@skbuf>
+ <20201120125921.1cb76a12@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120194305.8847-3-alcooperx@gmail.com>
+In-Reply-To: <20201120125921.1cb76a12@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 14:43:04 -0500, Al Cooper wrote:
-> Add DT bindings for the Broadcom 8250 based UART driver. This
-> UART is based on an 8250 but adds additional functionality. The
-> additional features include the ability to use DMA for transfers and
-> a baud rate clock system that is more accurate at high baud rates.
-> This UART is backward compatible with the standard 8250 UART.
-> 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> ---
->  .../bindings/serial/brcm,bcm7271-uart.yaml    | 94 +++++++++++++++++++
->  1 file changed, 94 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
-> 
+On Fri, Nov 20, 2020 at 12:59:21PM -0800, Jakub Kicinski wrote:
+> On Fri, 20 Nov 2020 20:01:49 +0200 Vladimir Oltean wrote:
+> > On Thu, Nov 19, 2020 at 12:09:06PM +0100, Christian Eggers wrote:
+> > > If dsa_switch_ops::port_txtstamp() returns false, clone will be freed
+> > > immediately. Shouldn't store a pointer to freed memory.
+> > >
+> > > Signed-off-by: Christian Eggers <ceggers@arri.de>
+> > > Fixes: 146d442c2357 ("net: dsa: Keep a pointer to the skb clone for TX timestamping")
+> > > ---
+> >
+> > IMO this is one of the cases to which the following from
+> > Documentation/process/stable-kernel-rules.rst does not apply:
+> >
+> >  - It must fix a real bug that bothers people (not a, "This could be a
+> >    problem..." type thing).
+> >
+> > Therefore, specifying "net-next" as the target tree here as opposed to
+> > "net" is the correct choice.
+>
+> The commit message doesn't really explain what happens after.
+>
+> Is the dangling pointer ever accessed?
 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml: 'additionalProperties' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1404090
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Nothing happens afterwards. He explained that he accessed it once while
+working on his ksz9477 PTP series. There's no code affected by this in
+mainline.
