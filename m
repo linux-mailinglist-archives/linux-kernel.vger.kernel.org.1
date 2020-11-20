@@ -2,127 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C235C2BB69E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 099AE2BB6A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730637AbgKTUWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 15:22:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58780 "EHLO
+        id S1730649AbgKTUW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 15:22:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730151AbgKTUWW (ORCPT
+        with ESMTP id S1728335AbgKTUW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 15:22:22 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F2AC0613CF;
-        Fri, 20 Nov 2020 12:22:21 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id z14so9633600ilp.11;
-        Fri, 20 Nov 2020 12:22:21 -0800 (PST)
+        Fri, 20 Nov 2020 15:22:58 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8915EC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:22:58 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id f5so8764884ilj.9
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:22:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QIpctxQjzw6bGt2SeNweCEtk7v/MSKpYQ3UV/WqFTwI=;
-        b=EOC8JgmzJPi7pcXSnxvfVK47qNX+hk2PrzsSQUe9ro9dG+jbHypNsrbLbzbIb004RA
-         sGN89301ba9WKver9/4nDKMSPdUh0WSz3qFKBsOi8N4J2ADj5CxC0AF8c52hVhd4d3h1
-         sSzHMUg0KgCfsgODv9eHXw1ns+yJZGDRLZO9A+tSn5bbWmLewi6U/64G2BHX2XSdCv0B
-         phwDt5d/JDoNAW7C3JDqfbdrcVPoQ0DbLBFej9mscmyzdZqs+ZERvXtaFJJEMpokpmKz
-         WecRlVWVy1uAh3VTJAVw/1Z2sAKE+H6NkrWVoReuccu+swUtlp/E3DfDdIJT7ylP8PBC
-         cL8w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ght5uqwgVPL14mfxNWU5XxDISwt3Xgt2hIhAbuzfV8c=;
+        b=ejkjlAjx11JYmEZSWguAJ4MVnj8U3xGHowplEv09FW1uySVng6ULKj4SlnbOqVdx5r
+         swehtuAowp2YvJtI31szphdVFsF/yJrYb1a8OA13BJG6OMVq7qe69kr5UHhy0VB8WJee
+         bH42WzoOFtnSQMgahkdo/7AR8vEXJFFrlEVfTy3Wt9gZfwPCyW96dJeVCNn975rr1HsL
+         6IEGyvD4QOBSJjHGLIzbNRkWQ0ZrQ5r69CaetQUFN4KtCgnZA96bin7RdAZILZnQJ8Yi
+         ziFcwqRLJQjT7nCy1YjV7ZDJ+XORppGfEAGYI6Bxl9Ra2xEti+FKKhdETr1l8HQKPP3O
+         nm/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QIpctxQjzw6bGt2SeNweCEtk7v/MSKpYQ3UV/WqFTwI=;
-        b=hQuN53EwkVsGrrtCNuyUPigpdzEUbg/nF+7GB3VyxkNvE9MzyfTsk+JYTOmYuj+zA9
-         XGJgiP/VJubJ0dLJg2C5EWq7zZTas8FN/N6oWgX1q39tLYaYi/WtkmDyKxzFZGsE67Xj
-         fhh18bxSutdrHS9qQD7UJF67UwuQ0rquNFliEOgPyzkMT/GWPBRKMtkFROvAOVYGPK3p
-         4gNsYbTQaUhn2/LEF2v0FRJOpjaK5bHtalvnQ6doIEJ+jUcyLH/yhqTr9DGl3auc53OW
-         koJVSBRGcqaX8GUh3mMPHsIS68cYhd3SuymloNezTprlZphZpNK9wgUHVSw3n/8QdbS8
-         RlTw==
-X-Gm-Message-State: AOAM530GEclMl/wgjdlNBCTfia6cljkX7t1tWIHWKwkLY3OZqQqAeXod
-        K87PySi1RMIbR+mxOjnWrmpW5dk3hXw=
-X-Google-Smtp-Source: ABdhPJxEwSpIrtHDXqmHvD2SyWuYOth8+zoPhFV2r/D1FrdHmobpTlOOX8a60eI17zAM+P2AqzdE8g==
-X-Received: by 2002:a05:6e02:deb:: with SMTP id m11mr26934482ilj.8.1605903741045;
-        Fri, 20 Nov 2020 12:22:21 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:61e9:2b78:3570:a66])
-        by smtp.googlemail.com with ESMTPSA id l8sm1993525ioc.19.2020.11.20.12.22.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 12:22:19 -0800 (PST)
-Subject: Re: [PATCH v4 net-next 0/3] add support for sending RFC8335 PROBE
-To:     Andreas Roeseler <andreas.a.roeseler@gmail.com>,
-        davem@davemloft.net
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1605659597.git.andreas.a.roeseler@gmail.com>
- <b4ce1651-4e45-52eb-7b2e-10075890e382@gmail.com>
- <8ac13fd8-69ac-723d-d84d-c16c4fa0a9ab@gmail.com>
- <b7b2f834e2ecdd0a973d65b0cbaf73ef2c68e899.camel@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <1f23f3d6-d459-2cd7-5d33-ca72d7d5f645@gmail.com>
-Date:   Fri, 20 Nov 2020 13:22:19 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ght5uqwgVPL14mfxNWU5XxDISwt3Xgt2hIhAbuzfV8c=;
+        b=syMkwTMsXlg3H11Afijxso0HBcXX1M723AdBTpxg7kNiThi0onk+xNlWyaEhfq0EqM
+         rEoIsmaNjRHXY5p7yHwgSD4qLsYi4LwijumK6JPAYOhbZk609SXfMHNjT5hhwXvWjRxO
+         3yKVVFBMhNW3KWQDe9/EVfscAfh79YTYj6WhLopZbvE9hF0woqXscDuM3UDSStU2CvzD
+         d3apuHBxYZtnvfK96hx+8L/uDfUDCDoRZ8SgeuepoAYTDRRoxBzQK7NaQ3EPUnbcBihq
+         fVF6m+emmHGLgK739/Y6P/TszxvdqJj2lFDdjFlsLIEzKrf4xS0iesJ7ExhoT+F/TuC4
+         V+Og==
+X-Gm-Message-State: AOAM533WsB2iSbYgA7DXaFcvlUzMNWdiL39YIV7uf6JQBRQoNCGzNr71
+        uCjAcBtJnKQ9YpSXpQctY8glQA==
+X-Google-Smtp-Source: ABdhPJy13/cZN92z4k83AHU6mxhaf2RrSdMXtJT23PYPv818sQhjrZ5FfM+5aa6X7QRQly0YveKeEg==
+X-Received: by 2002:a92:c089:: with SMTP id h9mr27376075ile.162.1605903777682;
+        Fri, 20 Nov 2020 12:22:57 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id s71sm2659348ilb.17.2020.11.20.12.22.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 12:22:57 -0800 (PST)
+Date:   Fri, 20 Nov 2020 13:22:53 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 4/6] mm: proc: Invalidate TLB after clearing soft-dirty
+ page state
+Message-ID: <20201120202253.GB1303870@google.com>
+References: <20201120143557.6715-1-will@kernel.org>
+ <20201120143557.6715-5-will@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b7b2f834e2ecdd0a973d65b0cbaf73ef2c68e899.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120143557.6715-5-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/20 10:27 AM, Andreas Roeseler wrote:
-> On Thu, 2020-11-19 at 21:01 -0700, David Ahern wrote:
->> On 11/19/20 8:51 PM, David Ahern wrote:
->>> On 11/17/20 5:46 PM, Andreas Roeseler wrote:
->>>> The popular utility ping has several severe limitations such as
->>>> the
->>>> inability to query specific  interfaces on a node and requiring
->>>> bidirectional connectivity between the probing and the probed
->>>> interfaces. RFC8335 attempts to solve these limitations by
->>>> creating the
->>>> new utility PROBE which is a specialized ICMP message that makes
->>>> use of
->>>> the ICMP Extension Structure outlined in RFC4884.
->>>>
->>>> This patchset adds definitions for the ICMP Extended Echo Request
->>>> and
->>>> Reply (PROBE) types for both IPv4 and IPv6. It also expands the
->>>> list of
->>>> supported ICMP messages to accommodate PROBEs.
->>>>
->>>
->>> You are updating the send, but what about the response side?
->>>
->>
->> you also are not setting 'ICMP Extension Structure'. From:
->> https://tools.ietf.org/html/rfc8335
->>
->>    o  ICMP Extension Structure: The ICMP Extension Structure
->> identifies
->>       the probed interface.
->>
->>    Section 7 of [RFC4884] defines the ICMP Extension Structure.  As
->> per
->>    RFC 4884, the Extension Structure contains exactly one Extension
->>    Header followed by one or more objects.  When applied to the ICMP
->>    Extended Echo Request message, the ICMP Extension Structure MUST
->>    contain exactly one instance of the Interface Identification
->> Object
->>    (see Section 2.1).
-> 
-> I am currently finishing testing and polishing the response side and
-> hope to be sendding out v1 of the patch in the upcoming few weeks.
+On Fri, Nov 20, 2020 at 02:35:55PM +0000, Will Deacon wrote:
+> Since commit 0758cd830494 ("asm-generic/tlb: avoid potential double flush"),
+> TLB invalidation is elided in tlb_finish_mmu() if no entries were batched
+> via the tlb_remove_*() functions. Consequently, the page-table modifications
+> performed by clear_refs_write() in response to a write to
+> /proc/<pid>/clear_refs do not perform TLB invalidation. Although this is
+> fine when simply aging the ptes, in the case of clearing the "soft-dirty"
+> state we can end up with entries where pte_write() is false, yet a
+> writable mapping remains in the TLB.
 
-send the response side with the request side -- 1 set of patches for the
-entire feature.
+I don't think we need a TLB flush in this context, same reason as we
+don't have one in copy_present_pte() which uses ptep_set_wrprotect()
+to write-protect a src PTE.
 
-> 
-> As for the 'ICMP Extension Structure', I have been working with the
-> iputils package to add a command to send PROBE messages, and the
-> changes included in this patchset are all that are necessary to be able
-> to send PROBEs using the existing ping framework.
-> 
+ptep_modify_prot_start/commit() and ptep_set_wrprotect() guarantee
+either the dirty bit is set (when a PTE is still writable) or a PF
+happens (when a PTE has become r/o) when h/w page table walker races
+with kernel that modifies a PTE using the two APIs.
 
-right.
+> Fix this by calling tlb_remove_tlb_entry() for each entry being
+> write-protected when cleating soft-dirty.
+> 
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  fs/proc/task_mmu.c | 18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index cd03ab9087b0..3308292ee5c5 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1032,11 +1032,12 @@ enum clear_refs_types {
+>  
+>  struct clear_refs_private {
+>  	enum clear_refs_types type;
+> +	struct mmu_gather *tlb;
+>  };
+>  
+>  #ifdef CONFIG_MEM_SOFT_DIRTY
+>  static inline void clear_soft_dirty(struct vm_area_struct *vma,
+> -		unsigned long addr, pte_t *pte)
+> +		unsigned long addr, pte_t *pte, struct mmu_gather *tlb)
+>  {
+>  	/*
+>  	 * The soft-dirty tracker uses #PF-s to catch writes
+> @@ -1053,6 +1054,7 @@ static inline void clear_soft_dirty(struct vm_area_struct *vma,
+>  		ptent = pte_wrprotect(old_pte);
+>  		ptent = pte_clear_soft_dirty(ptent);
+>  		ptep_modify_prot_commit(vma, addr, pte, old_pte, ptent);
+> +		tlb_remove_tlb_entry(tlb, pte, addr);
+>  	} else if (is_swap_pte(ptent)) {
+>  		ptent = pte_swp_clear_soft_dirty(ptent);
+>  		set_pte_at(vma->vm_mm, addr, pte, ptent);
+> @@ -1060,14 +1062,14 @@ static inline void clear_soft_dirty(struct vm_area_struct *vma,
+>  }
+>  #else
+>  static inline void clear_soft_dirty(struct vm_area_struct *vma,
+> -		unsigned long addr, pte_t *pte)
+> +		unsigned long addr, pte_t *pte, struct mmu_gather *tlb)
+>  {
+>  }
+>  #endif
+>  
+>  #if defined(CONFIG_MEM_SOFT_DIRTY) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>  static inline void clear_soft_dirty_pmd(struct vm_area_struct *vma,
+> -		unsigned long addr, pmd_t *pmdp)
+> +		unsigned long addr, pmd_t *pmdp, struct mmu_gather *tlb)
+>  {
+>  	pmd_t old, pmd = *pmdp;
+>  
+> @@ -1081,6 +1083,7 @@ static inline void clear_soft_dirty_pmd(struct vm_area_struct *vma,
+>  
+>  		pmd = pmd_wrprotect(pmd);
+>  		pmd = pmd_clear_soft_dirty(pmd);
+> +		tlb_remove_pmd_tlb_entry(tlb, pmdp, addr);
+>  
+>  		set_pmd_at(vma->vm_mm, addr, pmdp, pmd);
+>  	} else if (is_migration_entry(pmd_to_swp_entry(pmd))) {
+> @@ -1090,7 +1093,7 @@ static inline void clear_soft_dirty_pmd(struct vm_area_struct *vma,
+>  }
+>  #else
+>  static inline void clear_soft_dirty_pmd(struct vm_area_struct *vma,
+> -		unsigned long addr, pmd_t *pmdp)
+> +		unsigned long addr, pmd_t *pmdp, struct mmu_gather *tlb)
+>  {
+>  }
+>  #endif
+> @@ -1107,7 +1110,7 @@ static int clear_refs_pte_range(pmd_t *pmd, unsigned long addr,
+>  	ptl = pmd_trans_huge_lock(pmd, vma);
+>  	if (ptl) {
+>  		if (cp->type == CLEAR_REFS_SOFT_DIRTY) {
+> -			clear_soft_dirty_pmd(vma, addr, pmd);
+> +			clear_soft_dirty_pmd(vma, addr, pmd, cp->tlb);
+>  			goto out;
+>  		}
+>  
+> @@ -1133,7 +1136,7 @@ static int clear_refs_pte_range(pmd_t *pmd, unsigned long addr,
+>  		ptent = *pte;
+>  
+>  		if (cp->type == CLEAR_REFS_SOFT_DIRTY) {
+> -			clear_soft_dirty(vma, addr, pte);
+> +			clear_soft_dirty(vma, addr, pte, cp->tlb);
+>  			continue;
+>  		}
+>  
+> @@ -1212,7 +1215,8 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
+>  	if (mm) {
+>  		struct mmu_notifier_range range;
+>  		struct clear_refs_private cp = {
+> -			.type = type,
+> +			.type	= type,
+> +			.tlb	= &tlb,
+>  		};
+>  
+>  		if (type == CLEAR_REFS_MM_HIWATER_RSS) {
+> -- 
+> 2.29.2.454.gaff20da3a2-goog
+> 
