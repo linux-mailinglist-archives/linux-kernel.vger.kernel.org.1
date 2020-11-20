@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2AB2BA0FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F9C2BA0FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727271AbgKTDRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 22:17:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgKTDRU (ORCPT
+        id S1727347AbgKTDRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 22:17:37 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:37664 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgKTDRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 22:17:20 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74600C0613CF;
-        Thu, 19 Nov 2020 19:17:20 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id t37so6016988pga.7;
-        Thu, 19 Nov 2020 19:17:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7d06uGnwa3OtUYz9yRcXoPbaRdUlmhPGFQRkdMiIseo=;
-        b=uX1VFR8Fp+b0qRThdTYKgzOIsEzTY+pPp+iXkamodZ9oxrBicXTU7nz8H//kB60Di8
-         bwjACk38+w9+xo4tMHgt7tu/3ag28qnFV26vLWL0Yi9T2DxTTnnl+TKzryuSOHWDF5Cu
-         H+QcvdLau9FJEMIV1Pb84uWCdvNZA9Xqr9UyBqv0y7soLpIY7glRcYRFoKUqG8E28YrT
-         2vu2P87Pe406uZ2PBXjHGEdRG6UEoxd6YUO2SimcmsEkSpn0ZwSj9Dx0mSr1zD7tqf0L
-         92lOZ5hJkNmKrgF6NUZW+y4hF8H/5x88Sn4GfCB6+aj31VqOgED2W8bBiE+Vj9tBvO/4
-         4B/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7d06uGnwa3OtUYz9yRcXoPbaRdUlmhPGFQRkdMiIseo=;
-        b=GLXyDyreyJcYHFhIaithvSymVOkMZXwH8BCQ8ni8KtAanHnWp9m4/xFn94WyzyP/Ad
-         PFtjYWO2vjPG+GcRCbFvxwAfSZs11z0GzLo7cv8oRAihH/I0fsr226bzLtxedRHeV8Em
-         OTvaEIyUqNqieGRxxS+BTpfgUovvJmypNEN0wveikXeJD1P09CqYXSySgsGYYRG8uPtb
-         57Ggci4Sy5D8X1xG5qdBpMIk5skOBf5jCV7LQM06Lca4FzLvRVC97IsU5F4gf5msQkR1
-         voplmBvk91U3aAhOp/Xy795hvmdFKLALDu6aNJpiAIpXQPJ7V0sQ/XKaa/5fl6ObufpN
-         xEvg==
-X-Gm-Message-State: AOAM530dnR3psq4i9IPIW0Z9F1ZqHTwe26uVyYPb/mM1lSrIIrgkTRg5
-        3G8BSg0UBYGfmHZVy+jSHEE=
-X-Google-Smtp-Source: ABdhPJx8P2EE7QznY4G2BVc1/R4PdIF5SC9aTs4R5KCk73CnEGuoSumJfvWvFdwuHuG8PUpBTbFaHg==
-X-Received: by 2002:a17:90b:2342:: with SMTP id ms2mr7960349pjb.136.1605842239978;
-        Thu, 19 Nov 2020 19:17:19 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id p7sm1229344pgr.31.2020.11.19.19.17.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 19:17:19 -0800 (PST)
-Date:   Thu, 19 Nov 2020 19:17:16 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@opensource.wolfsonmicro.com>,
-        patches@opensource.cirrus.com, linux-input@vger.kernel.org
-Subject: Re: [PATCH 09/15] input: misc: wm831x-on: Source file headers are
- not good candidates for kernel-doc
-Message-ID: <20201120031716.GP2034289@dtor-ws>
-References: <20201112110204.2083435-1-lee.jones@linaro.org>
- <20201112110204.2083435-10-lee.jones@linaro.org>
+        Thu, 19 Nov 2020 22:17:36 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AK3ASSD044953;
+        Fri, 20 Nov 2020 03:17:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=/AZaGsozau1Ylap7Gb4tYCOsCEIKJGqpAULHIQ4wllw=;
+ b=ZWTUlf924IImxXkmc5OYBWA6SsxtkokZs4bbW3Jpul4VZBuEnegzsaUkF9IcbXQX2nzG
+ d9fLut2btuf4Eu9h2u11PhTjACSdgyksBEtkWvpMpR0lBJWP8vXKY+gqNxqB9CqP/oYt
+ SbWtAxH5bpt/COi6wakSHmSfh8Aan6ieJcjjEN1qCi1ANVmMLNQ41rCpECtXJDYpb26+
+ sAswCq83pjc7AbqUiqJKIYO48JH8e49wBgij+gjmAYZ2K67h46hsK65XqIkl80Wq0xeV
+ P3Wd7Zr2za5kp0ZmTPrO46+waIZkYzex7G1waYjanB6aLUrmSnEqfwSK8fMD10GyK281 Kw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 34t4rb8t65-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Nov 2020 03:17:31 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AK36eTQ160822;
+        Fri, 20 Nov 2020 03:17:31 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 34ts60w1ah-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Nov 2020 03:17:31 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AK3HUUr010591;
+        Fri, 20 Nov 2020 03:17:30 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 19 Nov 2020 19:17:29 -0800
+To:     Colin King <colin.king@canonical.com>
+Cc:     James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] scsi: lpfc: Fix memory leak on lcb_context
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1o8jswwci.fsf@ca-mkp.ca.oracle.com>
+References: <20201118141314.462471-1-colin.king@canonical.com>
+Date:   Thu, 19 Nov 2020 22:17:27 -0500
+In-Reply-To: <20201118141314.462471-1-colin.king@canonical.com> (Colin King's
+        message of "Wed, 18 Nov 2020 14:13:14 +0000")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112110204.2083435-10-lee.jones@linaro.org>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=5 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011200022
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=5 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011200022
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:01:58AM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/input/misc/wm831x-on.c:30: warning: cannot understand function prototype: 'struct wm831x_on '
-> 
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: patches@opensource.cirrus.com
-> Cc: linux-input@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Applied, thank you.
+Colin,
+
+> Currently there is an error return path that neglects to free the
+> allocation for lcb_context.  Fix this by adding a new error free exit
+> path that kfree's lcb_context before returning.  Use this new kfree
+> exit path in another exit error path that also kfree's the same
+> object, allowing a line of code to be removed.
+
+Applied to 5.11/scsi-staging, thanks!
 
 -- 
-Dmitry
+Martin K. Petersen	Oracle Linux Engineering
