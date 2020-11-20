@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2715D2BB5D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E279A2BB5D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729676AbgKTTrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:47:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
+        id S1729738AbgKTTri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728816AbgKTTrY (ORCPT
+        with ESMTP id S1726118AbgKTTri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:47:24 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA93BC061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:47:23 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id r18so8183417pgu.6
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:47:23 -0800 (PST)
+        Fri, 20 Nov 2020 14:47:38 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0696CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:47:37 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id q1so9591995ilt.6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:47:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=elr/neHdSPND1QBbHYVTIKRGGtBg1vE7OdThIsRU5pI=;
-        b=XzoPI1crChRR6wLQGUnQdTruNmuVNj0hkcwU6yjn8xXrOzmnTuw8bZwNjYOSUMiNjn
-         EBV38WHid50TNovyKvDuuqOK6ny2jvmInIM/dgDYVmxiGIxn7be54rsKduzrLe/jMV3q
-         ANWN/74SZ1EEZvtawKD5ujXQl6B2YxxD3r8JI=
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=zjN1ubd9L5JyW2b57pMALEN1q3/NatNrQydjjfQziY8=;
+        b=U7UzpJT/DhdBPsUwTdgDANBuiVprkX52uysRX2grpLqHp9Ztko7RxpTwULNSlzFB9i
+         9Subua77+85wBSp1iwEXD18/FMcZdw1PS+TYpN0tQ7jCid8sGjzvY7RPRDSYf5qGd0cO
+         yqOen9PxUPdIDPiqNWeRWrbk+lWHJBO6vruabNFhpogWBflEar6Ghm6BqsVvrUncN12P
+         325d2OCy0vIRgG2AZAKJxQc416+UI5PlVEhAjLHZLXCCbpFqhcqZSZzvfE0Ws+qbmJ2u
+         4kOjtmOz6RB5ubREENWRfUG1qDahb+qtT0LSy1f1TiB6v6FqslhPi3nVoJbJynBNR619
+         UaZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=elr/neHdSPND1QBbHYVTIKRGGtBg1vE7OdThIsRU5pI=;
-        b=Cc06BA1Aoxe81EUqUM+m5ae+2PLJa9zells7+Q/9MwaHdHu8I+HZs1rhFHnDy7K4nJ
-         QXdQbthkhYyulv1O4jjjjB5XL5uq+tHFBBGL4Yr+bZ3L6s2RZGoU/CR0TvnDWMh1mjm/
-         y/ULwO6oJnBkkI4LzDAzNo6yGdH3b5LnTNo+3l4X7/esMxqgYikovsL6/OYXLDIjspbS
-         iag8W0rRdDXCEqWfRG5n6jzcomMlV6QNPun2r2OAipkZO6ceGPvSCqQbwOX5jrwYYVNj
-         JBMG6NW5Y7MFWh1iUF4/wXFUjW2fJC90gABxU9A2ucO8e/sUSfEwVqF4Vt6GacLD5zGP
-         ywMQ==
-X-Gm-Message-State: AOAM531uguAcKvsgRq42MDUoAfJHNctiBUEKuEJUCGd+FoQYi1g3EUmG
-        pMbtnxC4fBSOuaFE402tFAQk0w==
-X-Google-Smtp-Source: ABdhPJwnsGzh6rI5stQsBcWRn8N0h8Ns8b+OJp9DPF9o8s3fODKrXmSZ/a2sub1vz+HM8LuYBAXNBw==
-X-Received: by 2002:a62:ea09:0:b029:197:bad4:1e78 with SMTP id t9-20020a62ea090000b0290197bad41e78mr8311744pfh.22.1605901643516;
-        Fri, 20 Nov 2020 11:47:23 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h16sm4507596pfo.185.2020.11.20.11.47.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 11:47:22 -0800 (PST)
-Date:   Fri, 20 Nov 2020 11:47:21 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v7 02/17] kbuild: add support for Clang LTO
-Message-ID: <202011201144.3F2BB70C@keescook>
-References: <20201118220731.925424-1-samitolvanen@google.com>
- <20201118220731.925424-3-samitolvanen@google.com>
- <CAKwvOdnYTMzaahnBqdNYPz3KMdnkp=jZ4hxiqkTYzM5+BBdezA@mail.gmail.com>
- <CABCJKucj_jUwoiLc35R7qFe+cNKTWgT+gsCa5pPiY66+1--3Lg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=zjN1ubd9L5JyW2b57pMALEN1q3/NatNrQydjjfQziY8=;
+        b=fsZkYXTOs/r46xCqeIV9JudT2IC7cCkE6dYcyQJ3fKsfzqDZEinL5bCaetVc68aerR
+         kTPVkXmKtz10C1HWda8LWqkgPFdLInmHvaN0EWoYfiYSE/bije/u25+r4TTrgkdI2n7i
+         vFE8wSK71Kr2T5A23qaXTEdZjqTyzZTdqAIuffCy0F3WU7e3cXC9GUZK1BOWg/UYMrTF
+         r3SuFnFNVWoRxlkjgJyxvJQIFsQJTo1iFTY42LGp5fYksWh/Cua1MnZ3obQMVkZG8KUX
+         h7PyPie27gDcd1bT4SmCTCn5eTNu9PyGGNUl9g7PiYBgiYoWoZD+K6/UeXc/Som5MQDP
+         WUxw==
+X-Gm-Message-State: AOAM5300O8gcP1a+k9ZMNiupymt9f2LjNUXwTFiDQ6J+LOs7vca9PFB7
+        BKwtGJNQgnuZ/qW6TqljYpx+mACMe2ygOMrxEWA=
+X-Google-Smtp-Source: ABdhPJwJwZs6CVQJZhdTN3RhPH/VNM9Jyi8JhoUEwmnk52xcxfWzgQkTgoi9o/YeyhQKPxR62a5hT82fmNUu8Sc1olQ=
+X-Received: by 2002:a92:96c1:: with SMTP id g184mr16711840ilh.205.1605901656332;
+ Fri, 20 Nov 2020 11:47:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKucj_jUwoiLc35R7qFe+cNKTWgT+gsCa5pPiY66+1--3Lg@mail.gmail.com>
+Sender: yildizgabriele00@gmail.com
+Received: by 2002:a02:c605:0:0:0:0:0 with HTTP; Fri, 20 Nov 2020 11:47:36
+ -0800 (PST)
+From:   Mrs Carlsen Monika <carlsen.monika@gmail.com>
+Date:   Fri, 20 Nov 2020 20:47:36 +0100
+X-Google-Sender-Auth: 8hHbVUcg5sCQxqChpFml6LHJzPc
+Message-ID: <CAHhmUS3+5HjaFRpBb8EPUouh9gxhycg82rr3y6GLSSAUdhTQaw@mail.gmail.com>
+Subject: Greetings My Dear, Please I Need Your Help.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 08:23:11AM -0800, Sami Tolvanen wrote:
-> Changing the ThinLTO config to a choice and moving it after the main
-> LTO config sounds like a good idea to me. I'll see if I can change
-> this in v8. Thanks!
+Greetings My Dear,
 
-Originally, I thought this might be a bit ugly once GCC LTO is added,
-but this could be just a choice like we're done for the stack
-initialization. Something like an "LTO" choice of NONE, CLANG_FULL,
-CLANG_THIN, and in the future GCC, etc.
+    I sent this mail praying it will found you in a good condition of
+health, since I myself are in a very critical health condition in
+which I  sleep every night
 
--- 
-Kees Cook
+without knowing if I may be alive to see the next day. I am Mrs.
+Monika John  Carlsen from Denmark wife of late Mr John Carlsen, a
+widow suffering from
+
+long time illness. I have some funds I inherited from my late husband,
+the sum of (eleven milliondollars) my Doctor told me recently that I
+have serious
+
+sickness which is cancer problem. What disturbs me most is my stroke
+sickness. Having known my condition, I decided to donate this fund to
+a good person
+that will utilize it the way i am going to instruct herein. I need a
+very honest and God fearing person who can claim this money and use it
+for Charity works,
+
+for orphanages, widows and also  build schools for less privileges
+that will be named after my late husband if possible and to promote
+the word of God and
+
+the effort that the house of God is maintained.
+
+I do not want a situation where this money will be used in an ungodly
+manner. That's why I'm taking this decision. I'm not afraid of death
+so I know where
+
+I'm going. I accept this decision because I do not have any child who
+will inherit this money after I die. Please I want your sincerely and
+urgent answer to
+
+know if you will be able to execute this project, and I will give you
+more information on how the fund will be transferred to your bank
+account. I am waiting
+
+for your reply.
+
+May God Bless you,
+Mrs. Monika John  Carlsen
