@@ -2,1133 +2,611 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD8E2BAB04
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FE42BAB01
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgKTNVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 08:21:34 -0500
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:55561 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726621AbgKTNVc (ORCPT
+        id S1727780AbgKTNVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 08:21:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727263AbgKTNVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:21:32 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id g6L1krNCLWTbog6LBkg9BE; Fri, 20 Nov 2020 14:21:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1605878484; bh=MpvqK5QmHGSbwUx/fzYdLOxJGa3sNQmr6wJQa6s8zhw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=jIEKbDLQdmgpKVK8cR9NTKA2xdmg+B5Ec1TLn91DretPhbHgU22hiGXnE0ka5j1a9
-         Hivv1ZOlJXmYY+ZoTS/+wvwU3zQw/Wl1BeHGlUbGtfnrGCDuiUr4m4tgW7NogGWV/2
-         P/yQecm0w+YhKeuqIDkLJpTqP/d0qTwKo2ahk0qiC65/IdLTWLWu5EE4ysMZ2L1LCI
-         Zl/vE/GNxkkJmN3alD0OqpccE2kEL8cT5f49+ZPTcJUuvfwmfBFfQtwREjjfa3OhEl
-         dzgGM9TZqp58PaFn6kPy/hXOF52vJ+Fbya22rkrSkltiB4LAqyek+81qIvcw7Wiu6S
-         4MrEFXKuo2axQ==
-Subject: Re: [PATCH v5 7/7] media: docs: add documentation for the Extended
- API
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Helen Koike <helen.koike@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Hirokazu Honda <hiroh@chromium.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Brian Starkey <Brian.Starkey@arm.com>, kernel@collabora.com,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Maxime Jourdan <mjourdan@baylibre.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-References: <20200804192939.2251988-1-helen.koike@collabora.com>
- <20200804192939.2251988-8-helen.koike@collabora.com>
- <20201120110611.GA841224@chromium.org>
- <5feb8cc4-d2ef-46b9-82f6-af5cbb552f6a@xs4all.nl>
- <CAAFQd5C70MSUhLpkT4DNOFrVqjQ8YqHnTT+WRYKwn7pU9Y8BMQ@mail.gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <9dcd5184-79d3-162c-946e-319fb19f6f83@xs4all.nl>
-Date:   Fri, 20 Nov 2020 14:20:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 20 Nov 2020 08:21:12 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC10C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:21:10 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id y78so4973796vsy.6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:21:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YK56yKmfXToTHG1Aog80N3QGp6B5xwGAT/pojMG3X24=;
+        b=kPvliV37SX9Aw4HJu6bnVq56Addz0VdnBN5IcECmXREQ2HsMxa+0yfSkfpvqJrSamM
+         ZDhjuImgApE5HiiqSO/QeWJuEnvx4iZUACq3vcEJoZBfRr2WnehG75mRRDpHsGH4kcP4
+         AK7pZGgPdhszL+w3AAbfAJ2DtdqV+ly3a8ll6KP11GCzL0bXWEopH7LS5aXaHmsBb8Ob
+         adlohVJGXTceEyfyDveW4OsYN0DRTJu/VF0f4s3wS83a3ioTTbPN/SeQVSYgxEc3dtfG
+         zvgcpoZZKv9jU6z5ww4rRXpVcxJyJz55gqm41AmvkPlR9Qjqxughd0YBDxuKxbj4AYtd
+         i+zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YK56yKmfXToTHG1Aog80N3QGp6B5xwGAT/pojMG3X24=;
+        b=TmXu1PWqUGtmE4BJi+gOIobPyv0TldhfC6+wxrb8lUiHLA+dXvlpdLSfFrP1qU6//u
+         GiaMIJZMiaEi+JRlDuV7ClWzTTDjc54KD3DDLwFHI0LXmqRDLBaU17BrLmgBZVnW8wZ5
+         FQSvKY5Dno7O32heXgoXo/bgw574buGzSYbg+qUXlqJCWzk3wRYdQUvjdBJNf2FKJNm2
+         g6X/ThfWGkeno/dvP6a0x2sZ/JWs6ViCveareK+NTrcnB60IQtdqztQIVkVKFFVI5rPG
+         iKcl3b6yZHl+K/xyaJypWLKnw08SLmtStUcl0fKv59EwQpZ1y/ViyFBByUSuEVxWr69y
+         D9gg==
+X-Gm-Message-State: AOAM53256pm88GRUzuHTSlcpkZKSoifJX1b8oHrYj4u0Xmtn8u29DvSX
+        1u8kfEuR4FUY1cUAM7agcbDeB3cE44siOKm72CvYsw==
+X-Google-Smtp-Source: ABdhPJzTngCZGBFx8AT7Z9dUTUDmNC7cmaIA8Odzur7G2W+hDQ+CaVo7eR3GJBrRlfdkgZ4ax4WMYoNqgX6ePB87dLE=
+X-Received: by 2002:a67:8c44:: with SMTP id o65mr12033513vsd.55.1605878469279;
+ Fri, 20 Nov 2020 05:21:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAAFQd5C70MSUhLpkT4DNOFrVqjQ8YqHnTT+WRYKwn7pU9Y8BMQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfLwpnIczajeCsg3WbCT2jcblxOULzqBb/Yd2s4XKxzN/2DrQEx20rR8FEV+JfUb935CJOyqsOJJFsA87WjBM4Dbyt52vMGp57kGvW0zcNbjd3/a1/J8G
- QhADbzMk36THUSmwJGlvD5+ZKZM9xWJZBg47ZLMbluoIF6cfjv2JrseWB6xLWvgkE6pUHLbT3OKB8ym+iSObGS4djRUAQysMi6VkMVyyIGcuItHB8iKCsodw
- f/LyHwHbgj9vMan7sc5wuRmiQH74ZrAUf0dSWTncfvWedWwcVJCNBrKvWF1FPl+ggleeH+/K4CcZI8OA3UaD0cpyZsYoJErNA/DjtaUPTZsdtzWgZ9UTXB8s
- q0JmOPF0g34NRmvjOQ1rouvcyTwjYRAYruv3NuRWqFXCiU70m6XcnTmsctuQ8Hzaj6x7BKpb68APVNyxZIcp09LNRXuK3IjufKbFi4gKaLhc6xGt+E/W5ArW
- fBERC6HVy3BfGamrTNfst4gG2s8SLTpaKWrxSRn+q6WY3gPPvR+5Jdn82D/rP8d83Sa9Qx8zfk4ucCPH/cqDXI+snCpuFu/a/qiInjvFiu63lzXCJySY5ega
- skt12QVSVcqPSZ6dtdb8EyhrsUeJtYnCc8gWjVp+YgpN07ZZ02MqPqoz0APRZIoByYztKe2TYwnc9xDDby34Ei10nMChhohWJRQGYb1B4IQc98i8YLXNk5kJ
- gOaEHYyf8MtIWBScO0QZLFj2OAp6nez4tfUzRFGawYh45jNpE85KDA==
+References: <20201112062422.32212-1-bbudiredla@marvell.com> <20201112062422.32212-2-bbudiredla@marvell.com>
+In-Reply-To: <20201112062422.32212-2-bbudiredla@marvell.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 20 Nov 2020 14:20:32 +0100
+Message-ID: <CAPDyKFqZij1_aZZs3EeEuNob37WsGYN+6N52H2N0nTzM427j3g@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] mmc: Support kmsg dumper based on pstore/blk
+To:     Bhaskara Budiredla <bbudiredla@marvell.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, sgoutham@marvell.com,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2020 13:40, Tomasz Figa wrote:
-> On Fri, Nov 20, 2020 at 9:24 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->>
->> On 20/11/2020 12:06, Tomasz Figa wrote:z
->>> Hi Helen,
->>>
->>> On Tue, Aug 04, 2020 at 04:29:39PM -0300, Helen Koike wrote:
->>>> Add documentation and update references in current documentation for the
->>>> Extended API.
->>>>
->>>
->>> Thank you for the patch. Please see my comments inline.
->>>
->>>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->>>> ---
->>>> Changes in v5:
->>>> - new patch
->>>>
->>>>  .../userspace-api/media/v4l/buffer.rst        |   5 +
->>>>  .../userspace-api/media/v4l/common.rst        |   1 +
->>>>  .../userspace-api/media/v4l/dev-capture.rst   |   5 +
->>>>  .../userspace-api/media/v4l/dev-output.rst    |   5 +
->>>>  .../userspace-api/media/v4l/ext-api.rst       | 107 +++++++++
->>>>  .../userspace-api/media/v4l/format.rst        |  16 +-
->>>>  .../userspace-api/media/v4l/user-func.rst     |   5 +
->>>>  .../media/v4l/vidioc-ext-create-bufs.rst      |  95 ++++++++
->>>>  .../media/v4l/vidioc-ext-prepare-buf.rst      |  62 ++++++
->>>>  .../media/v4l/vidioc-ext-qbuf.rst             | 204 ++++++++++++++++++
->>>>  .../media/v4l/vidioc-ext-querybuf.rst         |  79 +++++++
->>>>  .../media/v4l/vidioc-g-ext-pix-fmt.rst        | 117 ++++++++++
->>>>  12 files changed, 697 insertions(+), 4 deletions(-)
->>>>  create mode 100644 Documentation/userspace-api/media/v4l/ext-api.rst
->>>>  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-ext-create-bufs.rst
->>>>  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-ext-prepare-buf.rst
->>>>  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-ext-qbuf.rst
->>>>  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-ext-querybuf.rst
->>>>  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-g-ext-pix-fmt.rst
->>>>
->>>> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
->>>> index 57e752aaf414a..c832bedd64e4c 100644
->>>> --- a/Documentation/userspace-api/media/v4l/buffer.rst
->>>> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
->>>> @@ -27,6 +27,11 @@ such as pointers and sizes for each plane, are stored in
->>>>  struct :c:type:`v4l2_plane` instead. In that case,
->>>>  struct :c:type:`v4l2_buffer` contains an array of plane structures.
->>>>
->>>> +.. note::
->>>> +
->>>> +    The :ref:`ext_api` version can also be used, and it is
->>>> +    preferable when applicable.
->>>
->>> Would rephrasing this as below making a bit more definitive?
->>>
->>>       For modern applications, these operations are replaced by their
->>>       :ref:`ext_api` counterparts, which should be used instead.
->>
->> You can't say that, since especially in the beginning userspace will be running
->> on older kernels that do not support this.
->>
->> This will work: "should be used instead, if supported by the driver."
->>
-> 
-> With the wrappers that the patches provide, all drivers would support
-> the new API, so this boils down to the kernel version only, not
-> specific drivers.
-> 
-> Agreed, though, that application developers must be made aware that
-> the new API is only available in new kernels and old API must be used
-> for compatibility with old kernels.
+On Thu, 12 Nov 2020 at 07:24, Bhaskara Budiredla <bbudiredla@marvell.com> wrote:
+>
+> This patch introduces to mmcpstore. The functioning of mmcpstore is
+> is similar to mtdpstore. mmcpstore works on FTL based flash devices
+> whereas mtdpstore works on raw flash devices. When the system crashes,
+> mmcpstore stores the kmsg panic and oops logs to a user specified
+> MMC device.
+>
+> It collects the details about the host MMC device through pstore/blk
+> "blkdev" parameter. The user can specify the MMC device in many ways
+> by checking in Documentation/admin-guide/pstore-blk.rst.
+>
+> The individual mmc host drivers have to define suitable polling
+> subroutines to write kmsg panic/oops logs through mmcpstore.
 
-Is the conversion layer fully independent of vb2? We still have older
-drivers that do not use vb2, and I'm not sure if the extended buffer
-operations work with those drivers as well. (Sorry, it's been a while
-since I last looked at this series, so I can't remember).
+I don't like that changes to host drivers are needed to support this,
+but perhaps there is no other good way!?
 
-> 
->>>
->>>> +
->>>>  Dequeued video buffers come with timestamps. The driver decides at which
->>>>  part of the frame and with which clock the timestamp is taken. Please
->>>>  see flags in the masks ``V4L2_BUF_FLAG_TIMESTAMP_MASK`` and
->>>> diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Documentation/userspace-api/media/v4l/common.rst
->>>> index 7d81c58a13cd7..3430e0bdad667 100644
->>>> --- a/Documentation/userspace-api/media/v4l/common.rst
->>>> +++ b/Documentation/userspace-api/media/v4l/common.rst
->>>> @@ -59,6 +59,7 @@ applicable to all devices.
->>>>      ext-ctrls-detect
->>>>      fourcc
->>>>      format
->>>> +    ext-api
->>>>      planar-apis
->>>>      selection-api
->>>>      crop
->>>> diff --git a/Documentation/userspace-api/media/v4l/dev-capture.rst b/Documentation/userspace-api/media/v4l/dev-capture.rst
->>>> index 44d3094093ab6..5077639787d92 100644
->>>> --- a/Documentation/userspace-api/media/v4l/dev-capture.rst
->>>> +++ b/Documentation/userspace-api/media/v4l/dev-capture.rst
->>>> @@ -102,6 +102,11 @@ and :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctl, even if :ref:`VIDIOC_S_FMT <VIDIOC
->>>>  requests and always returns default parameters as :ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>` does.
->>>>  :ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>` is optional.
->>>>
->>>> +.. note::
->>>> +
->>>> +    The :ref:`ext_api` version can also be used, and it is
->>>> +    preferable when applicable.
->>>> +
->>>>
->>>>  Reading Images
->>>>  ==============
->>>> diff --git a/Documentation/userspace-api/media/v4l/dev-output.rst b/Documentation/userspace-api/media/v4l/dev-output.rst
->>>> index e4f2a1d8b0fc7..f8f40c708e49f 100644
->>>> --- a/Documentation/userspace-api/media/v4l/dev-output.rst
->>>> +++ b/Documentation/userspace-api/media/v4l/dev-output.rst
->>>> @@ -99,6 +99,11 @@ and :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctl, even if :ref:`VIDIOC_S_FMT <VIDIOC
->>>>  requests and always returns default parameters as :ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>` does.
->>>>  :ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>` is optional.
->>>>
->>>> +.. note::
->>>> +
->>>> +    The :ref:`ext_api` version can also be used, and it is
->>>> +    preferable when applicable.
->>>> +
->>>>
->>>>  Writing Images
->>>>  ==============
->>>> diff --git a/Documentation/userspace-api/media/v4l/ext-api.rst b/Documentation/userspace-api/media/v4l/ext-api.rst
->>>> new file mode 100644
->>>> index 0000000000000..da2a82960d22f
->>>> --- /dev/null
->>>> +++ b/Documentation/userspace-api/media/v4l/ext-api.rst
->>>> @@ -0,0 +1,107 @@
->>>> +.. Permission is granted to copy, distribute and/or modify this
->>>> +.. document under the terms of the GNU Free Documentation License,
->>>> +.. Version 1.1 or any later version published by the Free Software
->>>> +.. Foundation, with no Invariant Sections, no Front-Cover Texts
->>>> +.. and no Back-Cover Texts. A copy of the license is included at
->>>> +.. Documentation/userspace-api/media/fdl-appendix.rst.
->>>> +..
->>>> +.. TODO: replace it to GFDL-1.1-or-later WITH no-invariant-sections
->>>> +
->>>> +.. _ext_api:
->>>> +
->>>> +*************
->>>> +Extendend API
->>>> +*************
->>>> +
->>>> +Introduction
->>>> +============
->>>> +
->>>> +The Extended Format API was conceived to extend V4L2 capabilities and
->>>> +to simplify certain mechanisms.
->>>> +It unifies single- vs multi- planar handling,
->>>> +brings the concept of pixelformat + modifiers, allows planes to be placed
->>>> +in any offset inside a buffer and let userspace to change colorspace
->>>> +attributes if supported by the driver.
->>>
->>> How about simplifying this paragraph a bit:
->>>
->>> The Extended Format API unifies single- and multi- planar format handling
->>> and provides a base for further functional extensions, such as format
->>> modifiers, arbitrary plane offsets, colorspace configuration.
->>
->> Actually, I prefer Helen's version.
->>
-> 
-> To me it's a lot of text to read to get the same information, but I
-> won't insist.
-> 
->>>
->>>> +
->>>> +Data format negotiation and buffer handling works very similar to the classical
->>>> +version, thus in this document we'll just mention the main differences.
->>>
->>> nit: "we will" or maybe even just "we mention only the main differences".
->>>
->>>> +
->>>> +Data Format Negotiation
->>>> +=======================
->>>> +
->>>> +The API replaces the classical ioctls:
->>>> +
->>>> +:ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>`, :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>`,
->>>> +:ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>`
->>>> +(with :c:type:`v4l2_format` as the main parameter).
->>>> +
->>>> +By the extended versions:
->>>> +
->>>> +:ref:`VIDIOC_G_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>`,
->>>> +:ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>`,
->>>> +:ref:`VIDIOC_TRY_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>`
->>>> +(with :c:type:`v4l2_ext_pix_format` as the main parameter).
->>>> +
->>>> +For CAPTURE and OUTPUT queues only.
->>>> +
->>>> +The ``type`` field of struct :c:type:`v4l2_ext_pix_format` only accepts
->>>> +``V4L2_BUF_TYPE_VIDEO_CAPTURE`` or ``V4L2_BUF_TYPE_VIDEO_OUTPUT``, and it
->>>> +supports multiplanar format through a combination of ``pixelfomat`` and
->>>> +``modifier`` fields.
->>>> +
->>>> +Only the single-planar variants of the pixel formats are valid in the
->>>> +``pixelformat`` field.
->>>
->>> Some formats have only multi-planar variants, like NV12MT. What should we
->>> do about them? Since we have to keep those defines to support the legacy
->>> API anyway, maybe we can just accept both variants and treat them equally?
->>
->> Helen mentioned that as well in a reply to patch 1/7. I'll have a think about
->> that myself and reply to that post because this is a good question.
->>
-> 
-> I'm thinking about it as well. :)
-> 
->>>
->>>> +To support multi-planar, a modifier should be set in the ``modifier`` field to
->>>> +provide more information regarding the memory layout of pixels and number of
->>>> +planes.
->>>> +
->>>> +The ``plane_fmt`` field is an array which holds information by plane using
->>>> +the :c:type:`v4l2_plane_ext_pix_format`. When this struct is filled, its
->>>> +``sizeimage`` field should be non-zero for all valid planes for a given
->>>> +``pixelformat`` + ``modifier`` combination, and zeroed for the invalid ones.
->>>> +
->>>> +Colospace attributes are not read-only as in the classical version, i.e, they
->>>> +can be set by application and drivers will adjust accordingly depending on what
->>>> +is supported by the underlying hardware.
->>>> +
->>>> +Buffers
->>>> +=======
->>>> +
->>>> +The API replaces the classical ioctls:
->>>> +
->>>> +:ref:`VIDIOC_CREATE_BUFS <VIDIOC_CREATE_BUFS>`
->>>> +(with :c:type:`v4l2_create_buffers` as the main parameter),
->>>> +:ref:`VIDIOC_QUERYBUF <VIDIOC_QUERYBUF>`, :ref:`VIDIOC_QBUF <VIDIOC_QBUF>`,
->>>> +:ref:`VIDIOC_DQBUF <VIDIOC_QBUF>`, :ref:`VIDIOC_PREPARE_BUF <VIDIOC_PREPARE_BUF>`
->>>> +(with :c:type:`v4l2_buffer` as the main parameter)
->>>> +
->>>> +By the extended versions:
->>>> +
->>>> +:ref:`VIDIOC_EXT_CREATE_BUFS <VIDIOC_EXT_CREATE_BUFS>`
->>>> +(with :c:type:`v4l2_ext_create_buffers` as the main parameter),
->>>> +:ref:`VIDIOC_EXT_QUERYBUF <VIDIOC_EXT_QUERYBUF>`,
->>>> +:ref:`VIDIOC_EXT_QBUF <VIDIOC_EXT_QBUF>`,
->>>> +:ref:`VIDIOC_EXT_DQBUF <VIDIOC_EXT_QBUF>`,
->>>> +:ref:`VIDIOC_EXT_PREPARE_BUF <VIDIOC_EXT_PREPARE_BUF>`
->>>> +(with :c:type:`v4l2_ext_buffer` as the main parameter)
->>>> +
->>>> +The basic difference between :c:type:`v4l2_create_buffers` and
->>>> +:c:type:`v4l2_ext_create_buffers` is that the later have a
->>>> +:c:type:`v4l2_ext_pix_format` as the type of the ``format`` field.
->>>> +
->>>> +Comparing :c:type:`v4l2_ext_buffer` with :c:type:`v4l2_buffer`, in the
->>>> +extended version there is a unification of the single-/multi- planar handling
->>>> +through the ``planes`` field of type :c:type:`v4l2_ext_plane`.
->>>> +
->>>> +The :c:type:`v4l2_ext_plane also allows planes to be placed in a given offset
->>>> +inside a buffer.
->>>> +Planes can be placed in different locations inside the same buffer, or in
->>>> +different buffers.
->>>> +
->>>> +
->>>> +.. kernel-doc:: include/uapi/linux/videodev2.h
->>>> +   :functions: v4l2_ext_plane
->>>> +
->>>> +
->>>> +.. kernel-doc:: include/uapi/linux/videodev2.h
->>>> +   :functions: v4l2_ext_buffer
->>>> diff --git a/Documentation/userspace-api/media/v4l/format.rst b/Documentation/userspace-api/media/v4l/format.rst
->>>> index e47fc0505727c..b96d26f26793c 100644
->>>> --- a/Documentation/userspace-api/media/v4l/format.rst
->>>> +++ b/Documentation/userspace-api/media/v4l/format.rst
->>>> @@ -28,13 +28,19 @@ format and the driver selects and reports the best the hardware can do
->>>>  to satisfy the request. Of course applications can also just query the
->>>>  current selection.
->>>>
->>>> -A single mechanism exists to negotiate all data formats using the
->>>> -aggregate struct :c:type:`v4l2_format` and the
->>>> +There are two mechanism to negociate data formats:
->>>
->>> negotiate
->>>
->>>> +
->>>> +The first one is using the aggregate struct :c:type:`v4l2_format` and the
->>>>  :ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>` and
->>>>  :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctls. Additionally the
->>>>  :ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>` ioctl can be used to examine
->>>>  what the hardware *could* do, without actually selecting a new data
->>>> -format. The data formats supported by the V4L2 API are covered in the
->>>> +format.
->>>> +
->>>> +The second is through the :ref:`ext_api`, please refer to its documentation
->>>> +for more information.
->>>> +
->>>
->>> Should we reverse the order to prefer the new API?
->>>
->>>> +The data formats supported by the V4L2 API are covered in the
->>>>  respective device section in :ref:`devices`. For a closer look at
->>>>  image formats see :ref:`pixfmt`.
->>>>
->>>> @@ -71,7 +77,9 @@ earlier versions of V4L2. Switching the logical stream or returning into
->>>>  *may* support a switch using :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>`.
->>>>
->>>>  All drivers exchanging data with applications must support the
->>>> -:ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>` and :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctl. Implementation of the
->>>> +:ref:`VIDIOC_G_FMT <VIDIOC_G_FMT>` and :ref:`VIDIOC_S_FMT <VIDIOC_G_FMT>` ioctl
->>>> +or the Extended respective versions (TODO: link).
->>>
->>> TODO? :)
->>>
->>>> +Implementation of the
->>>>  :ref:`VIDIOC_TRY_FMT <VIDIOC_G_FMT>` is highly recommended but optional.
->>>>
->>>>
->>>> diff --git a/Documentation/userspace-api/media/v4l/user-func.rst b/Documentation/userspace-api/media/v4l/user-func.rst
->>>> index bf77c842718e5..67b254812791c 100644
->>>> --- a/Documentation/userspace-api/media/v4l/user-func.rst
->>>> +++ b/Documentation/userspace-api/media/v4l/user-func.rst
->>>> @@ -20,6 +20,7 @@ Function Reference
->>>>      func-close
->>>>      func-ioctl
->>>>      vidioc-create-bufs
->>>> +    vidioc-ext-create-bufs
->>>>      vidioc-cropcap
->>>>      vidioc-dbg-g-chip-info
->>>>      vidioc-dbg-g-register
->>>> @@ -48,6 +49,7 @@ Function Reference
->>>>      vidioc-g-ext-ctrls
->>>>      vidioc-g-fbuf
->>>>      vidioc-g-fmt
->>>> +    vidioc-g-ext-pix-fmt
->>>>      vidioc-g-frequency
->>>>      vidioc-g-input
->>>>      vidioc-g-jpegcomp
->>>> @@ -62,8 +64,11 @@ Function Reference
->>>>      vidioc-log-status
->>>>      vidioc-overlay
->>>>      vidioc-prepare-buf
->>>> +    vidioc-ext-prepare-buf
->>>>      vidioc-qbuf
->>>> +    vidioc-ext-qbuf
->>>>      vidioc-querybuf
->>>> +    vidioc-ext-querybuf
->>>>      vidioc-querycap
->>>>      vidioc-queryctrl
->>>>      vidioc-query-dv-timings
->>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-ext-create-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-ext-create-bufs.rst
->>>> new file mode 100644
->>>> index 0000000000000..67f2c541e4d79
->>>> --- /dev/null
->>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-ext-create-bufs.rst
->>>> @@ -0,0 +1,95 @@
->>>> +.. Permission is granted to copy, distribute and/or modify this
->>>> +.. document under the terms of the GNU Free Documentation License,
->>>> +.. Version 1.1 or any later version published by the Free Software
->>>> +.. Foundation, with no Invariant Sections, no Front-Cover Texts
->>>> +.. and no Back-Cover Texts. A copy of the license is included at
->>>> +.. Documentation/userspace-api/media/fdl-appendix.rst.
->>>> +..
->>>> +.. TODO: replace it to GFDL-1.1-or-later WITH no-invariant-sections
->>>> +
->>>
->>> TODO? :)
->>>
->>>> +.. _VIDIOC_EXT_CREATE_BUFS:
->>>> +
->>>> +****************************
->>>> +ioctl VIDIOC_EXT_CREATE_BUFS
->>>> +****************************
->>>> +
->>>> +Name
->>>> +====
->>>> +
->>>> +VIDIOC_EXT_CREATE_BUFS - Create buffers for Memory Mapped or User Pointer or DMA Buffer I/O
->>>> +
->>>> +
->>>> +Synopsis
->>>> +========
->>>> +
->>>> +.. c:function:: int ioctl( int fd, VIDIOC_EXT_CREATE_BUFS, struct v4l2_ext_create_buffers *argp )
->>>> +    :name: VIDIOC_EXT_CREATE_BUFS
->>>> +
->>>> +
->>>> +Arguments
->>>> +=========
->>>> +
->>>> +``fd``
->>>> +    File descriptor returned by :ref:`open() <func-open>`.
->>>> +
->>>> +``argp``
->>>> +    Pointer to struct :c:type:`v4l2_ext_create_buffers`.
->>>> +
->>>> +
->>>> +Description
->>>> +===========
->>>> +
->>>> +This ioctl is used to create buffers for :ref:`memory mapped <mmap>`
->>>> +or :ref:`user pointer <userp>` or :ref:`DMA buffer <dmabuf>` I/O.
->>>> +This ioctl can be called multiple times to
->>>> +create buffers of different sizes.
->>>> +
->>>> +To allocate the device buffers applications must initialize the relevant
->>>> +fields of the struct :c:type:`v4l2_ext_create_buffers` structure. The
->>>> +``count`` field must be set to the number of requested buffers, the
->>>> +``memory`` field specifies the requested I/O method and the ``reserved``
->>>> +array must be zeroed.
->>>> +
->>>> +The ``format`` field specifies the image format that the buffers must be
->>>> +able to handle. The application has to fill in this struct
->>>> +:c:type:`v4l2_format`. Usually this will be done using the
->>>> +:ref:`VIDIOC_TRY_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` or
->>>> +:ref:`VIDIOC_G_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` ioctls to ensure that the
->>>> +requested format is supported by the driver.
->>>> +The driver may return an error if the size(s) are not supported by the
->>>> +hardware (usually because they are too small).
->>>> +
->>>> +The driver can create a memory buffer per plane, or a single memory buffer
->>>> +containing all the planes, with a minimum size according to the size
->>>> +defined by the ``format.plane_fmt[i].sizeimage`` field.
->>>> +Usually if the ``format.plane_fmt[i].sizeimage``
->>>> +field is less than the minimum required for the given format, then an
->>>> +error will be returned since drivers will typically not allow this. If
->>>> +it is larger, then the value will be used as-is. In other words, the
->>>> +driver may reject the requested size, but if it is accepted the driver
->>>> +will use it unchanged.
->>>> +
->>>> +When the ioctl is called with a pointer to this structure the driver
->>>> +will attempt to allocate up to the requested number of buffers and store
->>>> +the actual number allocated and the starting index in the ``count`` and
->>>> +the ``index`` fields respectively. On return ``count`` can be smaller
->>>> +than the number requested.
->>>
->>> The 'capabilities' and 'flags' fields seem to go undocumented.
->>>
->>>> +
->>>> +
->>>> +.. kernel-doc:: include/uapi/linux/videodev2.h
->>>> +   :functions: v4l2_ext_create_buffers
->>>> +
->>>> +
->>>> +Return Value
->>>> +============
->>>> +
->>>> +On success 0 is returned, on error -1 and the ``errno`` variable is set
->>>> +appropriately. The generic error codes are described at the
->>>> +:ref:`Generic Error Codes <gen-errors>` chapter.
->>>> +
->>>> +ENOMEM
->>>> +    No memory to allocate buffers for :ref:`memory mapped <mmap>` I/O.
->>>> +
->>>> +EINVAL
->>>> +    The buffer type (``format.type`` field), requested I/O method
->>>> +    (``memory``) or format (``format`` field) is not valid.
->>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-ext-prepare-buf.rst b/Documentation/userspace-api/media/v4l/vidioc-ext-prepare-buf.rst
->>>> new file mode 100644
->>>> index 0000000000000..88e4b57121254
->>>> --- /dev/null
->>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-ext-prepare-buf.rst
->>>> @@ -0,0 +1,62 @@
->>>> +.. Permission is granted to copy, distribute and/or modify this
->>>> +.. document under the terms of the GNU Free Documentation License,
->>>> +.. Version 1.1 or any later version published by the Free Software
->>>> +.. Foundation, with no Invariant Sections, no Front-Cover Texts
->>>> +.. and no Back-Cover Texts. A copy of the license is included at
->>>> +.. Documentation/userspace-api/media/fdl-appendix.rst.
->>>> +..
->>>> +.. TODO: replace it to GFDL-1.1-or-later WITH no-invariant-sections
->>>> +
->>>> +.. _VIDIOC_EXT_PREPARE_BUF:
->>>> +
->>>> +****************************
->>>> +ioctl VIDIOC_EXT_PREPARE_BUF
->>>> +****************************
->>>> +
->>>> +Name
->>>> +====
->>>> +
->>>> +VIDIOC_EXT_PREPARE_BUF - Prepare a buffer for I/O
->>>> +
->>>> +
->>>> +Synopsis
->>>> +========
->>>> +
->>>> +.. c:function:: int ioctl( int fd, VIDIOC_EXT_PREPARE_BUF, struct v4l2_ext_buffer *argp )
->>>> +    :name: VIDIOC_EXT_PREPARE_BUF
->>>> +
->>>> +
->>>> +Arguments
->>>> +=========
->>>> +
->>>> +``fd``
->>>> +    File descriptor returned by :ref:`open() <func-open>`.
->>>> +
->>>> +``argp``
->>>> +    Pointer to struct :c:type:`v4l2_ext_buffer`.
->>>> +
->>>> +
->>>> +Description
->>>> +===========
->>>> +
->>>> +Applications can optionally call the :ref:`VIDIOC_EXT_PREPARE_BUF` ioctl to
->>>> +pass ownership of the buffer to the driver before actually enqueuing it,
->>>> +using the :ref:`VIDIOC_EXT_QBUF <VIDIOC_EXT_QBUF>` ioctl, and to prepare it for future I/O. Such
->>>> +preparations may include cache invalidation or cleaning. Performing them
->>>> +in advance saves time during the actual I/O.
->>>> +
->>>> +
->>>> +Return Value
->>>> +============
->>>> +
->>>> +On success 0 is returned, on error -1 and the ``errno`` variable is set
->>>> +appropriately. The generic error codes are described at the
->>>> +:ref:`Generic Error Codes <gen-errors>` chapter.
->>>> +
->>>> +EBUSY
->>>> +    File I/O is in progress.
->>>> +
->>>> +EINVAL
->>>> +    The buffer ``type`` is not supported, or the ``index`` is out of
->>>> +    bounds, or no buffers have been allocated yet, or the ``userptr`` or
->>>> +    ``length`` are invalid.
->>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-ext-qbuf.rst b/Documentation/userspace-api/media/v4l/vidioc-ext-qbuf.rst
->>>> new file mode 100644
->>>> index 0000000000000..083e106cf6bad
->>>> --- /dev/null
->>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-ext-qbuf.rst
->>>> @@ -0,0 +1,204 @@
->>>> +.. Permission is granted to copy, distribute and/or modify this
->>>> +.. document under the terms of the GNU Free Documentation License,
->>>> +.. Version 1.1 or any later version published by the Free Software
->>>> +.. Foundation, with no Invariant Sections, no Front-Cover Texts
->>>> +.. and no Back-Cover Texts. A copy of the license is included at
->>>> +.. Documentation/userspace-api/media/fdl-appendix.rst.
->>>> +..
->>>> +.. TODO: replace it to GFDL-1.1-or-later WITH no-invariant-sections
->>>> +
->>>> +.. _VIDIOC_EXT_QBUF:
->>>> +
->>>> +***************************************
->>>> +ioctl VIDIOC_EXT_QBUF, VIDIOC_EXT_DQBUF
->>>> +***************************************
->>>> +
->>>> +Name
->>>> +====
->>>> +
->>>> +VIDIOC_EXT_QBUF - VIDIOC_EXT_DQBUF - Exchange a buffer with the driver
->>>> +
->>>> +
->>>> +Synopsis
->>>> +========
->>>> +
->>>> +.. c:function:: int ioctl( int fd, VIDIOC_EXT_QBUF, struct v4l2_ext_buffer *argp )
->>>> +    :name: VIDIOC_EXT_QBUF
->>>> +
->>>> +.. c:function:: int ioctl( int fd, VIDIOC_EXT_DQBUF, struct v4l2_ext_buffer *argp )
->>>> +    :name: VIDIOC_EXT_DQBUF
->>>> +
->>>> +
->>>> +Arguments
->>>> +=========
->>>> +
->>>> +``fd``
->>>> +    File descriptor returned by :ref:`open() <func-open>`.
->>>> +
->>>> +``argp``
->>>> +    Pointer to struct :c:type:`v4l2_ext_buffer`.
->>>> +
->>>> +
->>>> +Description
->>>> +===========
->>>> +
->>>> +Applications call the ``VIDIOC_EXT_QBUF`` ioctl to enqueue an empty
->>>> +(capturing) or filled (output) buffer in the driver's incoming queue.
->>>> +The semantics depend on the selected I/O method.
->>>> +
->>>> +To enqueue a buffer applications set the ``type`` field of a struct
->>>> +:c:type:`v4l2_ext_buffer` to the same buffer type as was
->>>> +previously used with struct :c:type:`v4l2_ext_pix_format` ``type``.
->>>> +Applications must also set the ``index`` field. Valid index numbers
->>>> +range from zero to the number of buffers allocated with
->>>> +:ref:`VIDIOC_EXT_CREATE_BUFS` (struct
->>>> +:c:type:`v4l2_ext_create_buffers` ``count``) minus
->>>> +one. The contents of the struct :c:type:`v4l2_ext_buffer` returned
->>>
->>> I think this might not be entirely accurate. One can call
->>> VIDIOC_EXT_CREATE_BUFS multiple times. Moreover, I don't think we've
->>> prohibited VIDIOC_REQBUFS for the ext API, or have we?
->>>
->>>> +by a :ref:`VIDIOC_EXT_QUERYBUF` ioctl will do as well.
->>>> +When the buffer is intended for output (``type`` is
->>>> +``V4L2_BUF_TYPE_VIDEO_OUTPUT``) applications must also initialize the
->>>> +``timestamp`` fields and the ``planes[i].plane_length`` for each valid plane,
->>>> +and invalid ones must be set as zero.
->>>> +see :ref:`buffer` for details. Applications must also set ``flags`` to 0. The
->>>> +``reserved`` field must be set to 0.
->>>> +
->>>> +To enqueue a :ref:`memory mapped <mmap>` buffer applications set the
->>>> +``planes[i].memory`` field to ``V4L2_MEMORY_MMAP`` in all the valid planes,
->>>> +and invalid ones must be set as zero.
->>>> +When ``VIDIOC_EXT_QBUF`` is called
->>>> +with a pointer to this structure the driver sets the
->>>> +``V4L2_BUF_FLAG_MAPPED`` and ``V4L2_BUF_FLAG_QUEUED`` flags and clears
->>>> +the ``V4L2_BUF_FLAG_DONE`` flag in the ``flags`` field, or it returns an
->>>> +``EINVAL`` error code.
->>>> +
->>>> +To enqueue a :ref:`user pointer <userp>` buffer applications set the
->>>> +``planes[i].memory`` field to ``V4L2_MEMORY_USERPTR`` in all the valid planes,
->>>> +and invalid ones must be set as zero, the ``planes[i].m.userptr`` field to the
->>>> +address of the buffer,``planes[i].buffer_length`` to the size of the memory
->>>> +buffer, ``planes[i].plane_length`` to the size that should be used by the plane,
->>>> +and ``planes[i].offset`` of the plane in the memory buffer.
->>>
->>> Does offset make sense here if an arbitrary pointer can be given for the
->>> start of the plane?
->>>
->>>> +
->>>> +When ``VIDIOC_EXT_QBUF`` is called with a pointer to this structure
->>>> +the driver sets the ``V4L2_BUF_FLAG_QUEUED`` flag and clears the
->>>> +``V4L2_BUF_FLAG_MAPPED`` and ``V4L2_BUF_FLAG_DONE`` flags in the
->>>> +``flags`` field, or it returns an error code. This ioctl locks the
->>>
->>> This seems to be a copy of the text few lines above.
->>>
->>>> +memory pages of the buffer in physical memory, they cannot be swapped
->>>> +out to disk. Buffers remain locked until dequeued, until the
->>>> +:ref:`VIDIOC_STREAMOFF <VIDIOC_STREAMON>` or
->>>> +:ref:`VIDIOC_EXT_CREATE_BUFS` ioctl is called, or until the
->>>> +device is closed.
->>>
->>> Why would CREATE_BUFS affect existing buffers?
->>>
->>>> +
->>>> +To enqueue a :ref:`DMABUF <dmabuf>` buffer applications set the
->>>> +``planes[i].memory`` field to ``V4L2_MEMORY_DMABUF`` in all the valid planes,
->>>> +and invalid ones must be set as zero, the ``planes[i].m.fd`` field to a
->>>> +file descriptor associated with a DMABUF buffer.,``planes[i].buffer_length`` to
->>>> +the size of the memory buffer, ``planes[i].plane_length`` to the size that
->>>
->>> What is the buffer_length field needed for? DMA-bufs by definition are
->>> kernel objects and the kernel should already know their sizes.
->>
->> See this discussion:
->>
->> https://patchwork.linuxtv.org/project/linux-media/patch/gh5kef5bkeel3o6b2dkgc2dfagu9klj4c0@4ax.com/
->>
-> 
-> I briefly read through it and I don't see what the conclusion was.
-> Generally I'd still prefer if the need to manually specify the buffer
-> size was eliminated, because that imposes unnecessary burden on the
-> userspace for the majority of cases. It could still remain valid for
-> userspace that wants to restrict the buffer size as it was mentioned
-> in that thread, though.
+>
+> Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
+> ---
+>  drivers/mmc/core/Kconfig     |   7 +
+>  drivers/mmc/core/Makefile    |   1 +
+>  drivers/mmc/core/block.c     |  20 +++
+>  drivers/mmc/core/block.h     |   3 +
+>  drivers/mmc/core/core.c      |  24 +++
+>  drivers/mmc/core/mmcpstore.c | 318 +++++++++++++++++++++++++++++++++++
+>  include/linux/mmc/card.h     |   4 +
+>  include/linux/mmc/core.h     |   4 +
+>  include/linux/mmc/host.h     |   6 +
+>  9 files changed, 387 insertions(+)
+>  create mode 100644 drivers/mmc/core/mmcpstore.c
+>
+> diff --git a/drivers/mmc/core/Kconfig b/drivers/mmc/core/Kconfig
+> index c12fe13e4b14..cafb367c482d 100644
+> --- a/drivers/mmc/core/Kconfig
+> +++ b/drivers/mmc/core/Kconfig
+> @@ -81,3 +81,10 @@ config MMC_TEST
+>           This driver is only of interest to those developing or
+>           testing a host driver. Most people should say N here.
+>
+> +config MMC_PSTORE
+> +       bool "Log panic/oops to a MMC buffer"
+> +       depends on PSTORE
+> +       depends on PSTORE_BLK
+> +       help
+> +         Backend driver to store the kmsg crash dumps to a user specified MMC
+> +         device. The driver is based on pstore/blk.
+> diff --git a/drivers/mmc/core/Makefile b/drivers/mmc/core/Makefile
+> index 95ffe008ebdf..5f4230b79ac6 100644
+> --- a/drivers/mmc/core/Makefile
+> +++ b/drivers/mmc/core/Makefile
+> @@ -17,4 +17,5 @@ mmc_core-$(CONFIG_DEBUG_FS)   += debugfs.o
+>  obj-$(CONFIG_MMC_BLOCK)                += mmc_block.o
+>  mmc_block-objs                 := block.o queue.o
+>  obj-$(CONFIG_MMC_TEST)         += mmc_test.o
+> +obj-$(CONFIG_MMC_PSTORE)       += mmcpstore.o
+>  obj-$(CONFIG_SDIO_UART)                += sdio_uart.o
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 8d3df0be0355..f11c21d60b67 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -2870,6 +2870,21 @@ static void mmc_blk_remove_debugfs(struct mmc_card *card,
+>
+>  #endif /* CONFIG_DEBUG_FS */
+>
+> +#ifdef CONFIG_MMC_PSTORE
+> +sector_t mmc_blk_get_part(struct mmc_card *card, int part_num, sector_t *size)
+> +{
+> +       struct mmc_blk_data *md = dev_get_drvdata(&card->dev);
+> +       struct gendisk *disk = md->disk;
+> +       struct disk_part_tbl *part_tbl = disk->part_tbl;
+> +
+> +       if (part_num < 0 || part_num >= part_tbl->len)
+> +               return 0;
+> +
+> +       *size = part_tbl->part[part_num]->nr_sects << SECTOR_SHIFT;
+> +       return part_tbl->part[part_num]->start_sect;
+> +}
+> +#endif
+> +
+>  static int mmc_blk_probe(struct mmc_card *card)
+>  {
+>         struct mmc_blk_data *md, *part_md;
+> @@ -2913,6 +2928,11 @@ static int mmc_blk_probe(struct mmc_card *card)
+>                         goto out;
+>         }
+>
+> +#ifdef CONFIG_MMC_PSTORE
 
-That's really the open issue: if userspace sets length to 0, then it should
-always be replaced by the dmabuf size, that's a no-brainer. But if it is non-zero,
-what do you do then? Your input would be appreciated.
+Avoid using ifdefs in common functions like these, please. I think
+it's more clean to add a stub function and then just call it
+unconditionally here.
 
-> 
->>>
->>>> +should be used by the plane, and ``planes[i].offset`` of the plane in the memory buffer.
->>>> +When ``VIDIOC_EXT_QBUF`` is called with a pointer to this structure the driver
->>>> +sets the ``V4L2_BUF_FLAG_QUEUED`` flag and clears the
->>>> +``V4L2_BUF_FLAG_MAPPED`` and ``V4L2_BUF_FLAG_DONE`` flags in the
->>>> +``flags`` field, or it returns an error code. This ioctl locks the
->>>
->>> Ditto.
->>>
->>>> +buffer. Locking a buffer means passing it to a driver for a hardware
->>>> +access (usually DMA). If an application accesses (reads/writes) a locked
->>>> +buffer then the result is undefined. Buffers remain locked until
->>>> +dequeued, until the :ref:`VIDIOC_STREAMOFF <VIDIOC_STREAMON>` or
->>>> +:ref:`VIDIOC_EXT_CREATE_BUFS` ioctl is called, or until the
->>>> +device is closed.
->>>
->>> Ditto.
->>>
->>>> +
->>>> +The ``request_fd`` field can be used with the ``VIDIOC_EXT_QBUF`` ioctl to specify
->>>> +the file descriptor of a :ref:`request <media-request-api>`, if requests are
->>>> +in use. Setting it means that the buffer will not be passed to the driver
->>>> +until the request itself is queued. Also, the driver will apply any
->>>> +settings associated with the request for this buffer. This field will
->>>> +be ignored unless the ``V4L2_BUF_FLAG_REQUEST_FD`` flag is set.
->>>> +If the device does not support requests, then ``EBADR`` will be returned.
->>>> +If requests are supported but an invalid request file descriptor is given,
->>>> +then ``EINVAL`` will be returned.
->>>> +
->>>> +.. caution::
->>>> +   It is not allowed to mix queuing requests with queuing buffers directly.
->>>> +   ``EBUSY`` will be returned if the first buffer was queued directly and
->>>> +   then the application tries to queue a request, or vice versa. After
->>>> +   closing the file descriptor, calling
->>>> +   :ref:`VIDIOC_STREAMOFF <VIDIOC_STREAMON>` or calling :ref:`VIDIOC_EXT_CREATE_BUFS`
->>>> +   the check for this will be reset.
->>>> +
->>>> +   For :ref:`memory-to-memory devices <mem2mem>` you can specify the
->>>> +   ``request_fd`` only for output buffers, not for capture buffers. Attempting
->>>> +   to specify this for a capture buffer will result in an ``EBADR`` error.
->>>> +
->>>> +Applications call the ``VIDIOC_EXT_DQBUF`` ioctl to dequeue a filled
->>>> +(capturing) or displayed (output) buffer from the driver's outgoing
->>>
->>> "displayed" is quite inaccurate given that the majority of use cases for
->>> OUTPUT in V4L2 now are m2m devices. Maybe "consumed"?
->>>
->>>> +queue. They just set the ``type``, ``planes[i].memory`` and ``reserved`` fields of
->>>
->>> Why does the application have to set the memory field? It should be already
->>> known by the kernel which owns the buffer at the given time.
->>>
->>>> +a struct :c:type:`v4l2_ext_buffer` as above, when
->>>> +``VIDIOC_EXT_DQBUF`` is called with a pointer to this structure the driver
->>>> +fills the remaining fields or returns an error code. The driver may also
->>>> +set ``V4L2_BUF_FLAG_ERROR`` in the ``flags`` field. It indicates a
->>>> +non-critical (recoverable) streaming error. In such case the application
->>>> +may continue as normal, but should be aware that data in the dequeued
->>>> +buffer might be corrupted. When using the multi-planar API, the planes
->>>> +array must be passed in as well.
->>>> +
->>>> +If the application sets the ``memory`` field to ``V4L2_MEMORY_DMABUF`` to
->>>> +dequeue a :ref:`DMABUF <dmabuf>` buffer, the driver fills the ``m.fd`` field
->>>> +with a file descriptor numerically the same as the one given to ``VIDIOC_EXT_QBUF``
->>>> +when the buffer was enqueued. No new file descriptor is created at dequeue time
->>>> +and the value is only for the application convenience.
->>>
->>> Honestly, I don't like this aspect of the current API. It kind of implies
->>> that the value returned is valid, but the file descriptor might have been
->>> already closed. Could we just remove this and explicitly state that for
->>> DMA-buf, it is the user space responsibility to track the mapping between
->>> V4L2 indexes and its own buffer objects?
->>>
->>>> +
->>>> +By default ``VIDIOC_EXT_DQBUF`` blocks when no buffer is in the outgoing
->>>> +queue. When the ``O_NONBLOCK`` flag was given to the
->>>> +:ref:`open() <func-open>` function, ``VIDIOC_EXT_DQBUF`` returns
->>>> +immediately with an ``EAGAIN`` error code when no buffer is available.
->>>> +
->>>> +
->>>> +.. kernel-doc:: include/uapi/linux/videodev2.h
->>>> +   :functions: v4l2_ext_buffers
->>>> +
->>>> +
->>>> +Return Value
->>>> +============
->>>> +
->>>> +On success 0 is returned, on error -1 and the ``errno`` variable is set
->>>> +appropriately. The generic error codes are described at the
->>>> +:ref:`Generic Error Codes <gen-errors>` chapter.
->>>> +
->>>> +EAGAIN
->>>> +    Non-blocking I/O has been selected using ``O_NONBLOCK`` and no
->>>> +    buffer was in the outgoing queue.
->>>> +
->>>> +EINVAL
->>>> +    The buffer ``type`` is not supported, or the ``index`` is out of
->>>> +    bounds, or no buffers have been allocated yet, or the ``userptr`` or
->>>> +    ``length`` are invalid, or the ``V4L2_BUF_FLAG_REQUEST_FD`` flag was
->>>
->>> There is no 'length' now.
->>>
->>>> +    set but the the given ``request_fd`` was invalid, or ``m.fd`` was
->>>> +    an invalid DMABUF file descriptor.
->>>> +
->>>> +EIO
->>>> +    ``VIDIOC_EXT_DQBUF`` failed due to an internal error. Can also indicate
->>>> +    temporary problems like signal loss.
->>
->> Drop the last sentence, -EIO should never be used for temporary problems like
->> that. EIO really means that the DMA engine crashed and userspace will have to call
->> STREAMOFF and try to restart the DMA with STREAMON.
->>
-> 
-> I suspect the users of the new API wouldn't actually have to deal with
-> a signal loss, but if not, what should be the behavior then?
+> +       if (mmc_card_mmc(card) || mmc_card_sd(card))
+> +               mmcpstore_card_set(card, md->disk->disk_name);
+> +#endif
+> +
+>         /* Add two debugfs entries */
+>         mmc_blk_add_debugfs(card, md);
+>
+> diff --git a/drivers/mmc/core/block.h b/drivers/mmc/core/block.h
+> index 31153f656f41..2a2b81635508 100644
+> --- a/drivers/mmc/core/block.h
+> +++ b/drivers/mmc/core/block.h
+> @@ -16,5 +16,8 @@ void mmc_blk_mq_recovery(struct mmc_queue *mq);
+>  struct work_struct;
+>
+>  void mmc_blk_mq_complete_work(struct work_struct *work);
+> +#ifdef CONFIG_MMC_PSTORE
+> +sector_t mmc_blk_get_part(struct mmc_card *card, int part_num, sector_t *size);
+> +#endif
+>
+>  #endif
+> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+> index d42037f0f10d..7cc3d81f6a9a 100644
+> --- a/drivers/mmc/core/core.c
+> +++ b/drivers/mmc/core/core.c
+> @@ -569,6 +569,30 @@ int mmc_cqe_recovery(struct mmc_host *host)
+>  }
+>  EXPORT_SYMBOL(mmc_cqe_recovery);
+>
+> +
+> +#ifdef CONFIG_MMC_PSTORE
+> +/**
+> + *     mmc_wait_for_pstore_req - initiate a blocking mmc request
+> + *     @host: MMC host to start command
+> + *     @mrq: MMC request to start
+> + *
+> + *     Start a new MMC custom command request for a host, and
+> + *     wait for the command to complete based on request data timeout.
+> + */
+> +void mmc_wait_for_pstore_req(struct mmc_host *host, struct mmc_request *mrq)
+> +{
+> +       unsigned int timeout;
+> +
+> +       host->ops->req_cleanup_pending(host);
+> +       mmc_start_request(host, mrq);
+> +
+> +       if (mrq->data) {
+> +               timeout = mrq->data->timeout_ns / NSEC_PER_MSEC;
+> +               host->ops->req_completion_poll(host, timeout);
+> +       }
+> +}
 
-The typical behavior is to send out the SOURCE_CHANGE event and stall streaming,
-waiting for a valid signal.
+As I said above, I would like to avoid host specific deployments from
+being needed. Is there a way we can avoid this?
 
-That said, this is something I will dig into a bit deeper for the tegra HDMI
-support patch series next week, since this might be hard to do for that hardware.
+> +#endif
+> +
+>  /**
+>   *     mmc_is_req_done - Determine if a 'cap_cmd_during_tfr' request is done
+>   *     @host: MMC host
+> diff --git a/drivers/mmc/core/mmcpstore.c b/drivers/mmc/core/mmcpstore.c
+> new file mode 100644
+> index 000000000000..ffa44c859e10
+> --- /dev/null
+> +++ b/drivers/mmc/core/mmcpstore.c
+> @@ -0,0 +1,318 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pstore_blk.h>
+> +#include <linux/blkdev.h>
+> +#include <linux/mount.h>
+> +#include <linux/slab.h>
+> +#include <linux/mmc/mmc.h>
+> +#include <linux/mmc/host.h>
+> +#include <linux/mmc/card.h>
+> +#include <linux/scatterlist.h>
+> +#include "block.h"
+> +#include "card.h"
+> +#include "core.h"
+> +
+> +static struct mmcpstore_context {
+> +       char dev_name[BDEVNAME_SIZE];
+> +       int partno;
+> +       sector_t start_sect;
+> +       sector_t size;
+> +       struct pstore_device_info dev;
+> +       struct pstore_blk_config conf;
+> +       struct pstore_blk_info info;
+> +
+> +       char *sub;
+> +       struct mmc_card *card;
+> +       struct mmc_request *mrq;
+> +} oops_cxt;
+> +
+> +static void mmc_prep_req(struct mmc_request *mrq,
+> +               unsigned int sect_offset, unsigned int nsects,
+> +               struct scatterlist *sg, u32 opcode, unsigned int flags)
+> +{
+> +       mrq->cmd->opcode = opcode;
+> +       mrq->cmd->arg = sect_offset;
+> +       mrq->cmd->flags = MMC_RSP_R1 | MMC_CMD_ADTC;
+> +
+> +       if (nsects == 1) {
+> +               mrq->stop = NULL;
+> +       } else {
+> +               mrq->stop->opcode = MMC_STOP_TRANSMISSION;
+> +               mrq->stop->arg = 0;
+> +               mrq->stop->flags = MMC_RSP_R1B | MMC_CMD_AC;
+> +       }
+> +
+> +       mrq->data->blksz = SECTOR_SIZE;
+> +       mrq->data->blocks = nsects;
+> +       mrq->data->flags = flags;
+> +       mrq->data->sg = sg;
+> +       mrq->data->sg_len = 1;
+> +}
+> +
+> +static int mmcpstore_rdwr_req(const char *buf, unsigned int nsects,
+> +                       unsigned int sect_offset, unsigned int flags)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       struct mmc_request *mrq = cxt->mrq;
+> +       struct mmc_card *card = cxt->card;
+> +       struct mmc_host *host = card->host;
+> +       struct scatterlist sg;
+> +       u32 opcode;
+> +
+> +       if (flags == MMC_DATA_READ)
+> +               opcode  = (nsects > 1) ?
+> +                       MMC_READ_MULTIPLE_BLOCK : MMC_READ_SINGLE_BLOCK;
+> +       else
+> +               opcode = (nsects > 1) ?
+> +                       MMC_WRITE_MULTIPLE_BLOCK : MMC_WRITE_BLOCK;
+> +
+> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode, flags);
+> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
+> +       mmc_set_data_timeout(mrq->data, cxt->card);
+> +
+> +       mmc_claim_host(host);
+> +       mmc_wait_for_req(host, mrq);
+> +       mdelay(mrq->data->timeout_ns / NSEC_PER_MSEC);
+> +       mmc_release_host(host);
+> +
+> +       if (mrq->cmd->error) {
+> +               pr_err("Cmd error: %d\n", mrq->cmd->error);
+> +               return mrq->cmd->error;
+> +       }
+> +       if (mrq->data->error) {
+> +               pr_err("Data error: %d\n", mrq->data->error);
+> +               return mrq->data->error;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static ssize_t mmcpstore_write(const char *buf, size_t size, loff_t off)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       int ret;
+> +
+> +       ret = mmcpstore_rdwr_req(buf, (size >> SECTOR_SHIFT),
+> +               cxt->start_sect + (off >> SECTOR_SHIFT), MMC_DATA_WRITE);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return size;
+> +}
+> +
+> +static ssize_t mmcpstore_read(char *buf, size_t size, loff_t off)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       unsigned int sect_off = cxt->start_sect  + (off >> SECTOR_SHIFT);
+> +       unsigned long sects = (cxt->conf.kmsg_size >> SECTOR_SHIFT);
+> +       int ret;
+> +
+> +       if (unlikely(!buf || !size))
+> +               return -EINVAL;
+> +
+> +       ret = mmcpstore_rdwr_req(cxt->sub, sects, sect_off, MMC_DATA_READ);
+> +       if (ret)
+> +               return ret;
+> +       memcpy(buf, cxt->sub, size);
+> +
+> +       return size;
+> +}
+> +
+> +static void mmcpstore_panic_write_req(const char *buf,
+> +               unsigned int nsects, unsigned int sect_offset)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       struct mmc_request *mrq = cxt->mrq;
+> +       struct mmc_card *card = cxt->card;
+> +       struct mmc_host *host = card->host;
+> +       struct scatterlist sg;
+> +       u32 opcode;
+> +
+> +       opcode = (nsects > 1) ? MMC_WRITE_MULTIPLE_BLOCK : MMC_WRITE_BLOCK;
+> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode, MMC_DATA_WRITE);
+> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
+> +       mmc_set_data_timeout(mrq->data, cxt->card);
+> +
+> +       mmc_claim_host(host);
+> +       mmc_wait_for_pstore_req(host, mrq);
+> +       mmc_release_host(card->host);
+> +}
+> +
+> +static ssize_t mmcpstore_panic_write(const char *buf, size_t size, loff_t off)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +
+> +       mmcpstore_panic_write_req(buf, (size >> SECTOR_SHIFT),
+> +                       cxt->start_sect + (off >> SECTOR_SHIFT));
+> +       return size;
+> +}
+> +
+> +static struct block_device *mmcpstore_open_backend(const char *device)
+> +{
+> +       struct block_device *bdev;
+> +       dev_t devt;
+> +
+> +       bdev = blkdev_get_by_path(device, FMODE_READ, NULL);
+> +       if (IS_ERR(bdev)) {
+> +               devt = name_to_dev_t(device);
+> +               if (devt == 0)
+> +                       return ERR_PTR(-ENODEV);
+> +
+> +               bdev = blkdev_get_by_dev(devt, FMODE_READ, NULL);
+> +               if (IS_ERR(bdev))
+> +                       return bdev;
+> +       }
+> +
+> +       return bdev;
+> +}
+> +
+> +static void mmcpstore_close_backend(struct block_device *bdev)
+> +{
+> +       if (!bdev)
+> +               return;
+> +       blkdev_put(bdev, FMODE_READ);
+> +}
+> +
+> +void mmcpstore_card_set(struct mmc_card *card, const char *disk_name)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       struct pstore_blk_config *conf = &cxt->conf;
+> +       struct pstore_device_info *dev = &cxt->dev;
+> +       struct block_device *bdev;
+> +       struct mmc_command *stop;
+> +       struct mmc_command *cmd;
+> +       struct mmc_request *mrq;
+> +       struct mmc_data *data;
+> +       int ret;
+> +
+> +       if (!conf->device[0])
+> +               return;
+> +
+> +       /* Multiple backend devices not allowed */
+> +       if (cxt->dev_name[0])
+> +               return;
+> +
+> +       bdev =  mmcpstore_open_backend(conf->device);
+> +       if (IS_ERR(bdev)) {
+> +               pr_err("%s failed to open with %ld\n",
+> +                               conf->device, PTR_ERR(bdev));
+> +               return;
+> +       }
+> +
+> +       bdevname(bdev, cxt->dev_name);
+> +       cxt->partno = bdev->bd_part->partno;
+> +       mmcpstore_close_backend(bdev);
+> +
+> +       if (strncmp(cxt->dev_name, disk_name, strlen(disk_name)))
+> +               return;
+> +
+> +       cxt->start_sect = mmc_blk_get_part(card, cxt->partno, &cxt->size);
+> +       if (!cxt->start_sect) {
+> +               pr_err("Non-existent partition %d selected\n", cxt->partno);
+> +               return;
+> +       }
+> +
+> +       /* Check for host mmc panic write polling function definitions */
+> +       if (!card->host->ops->req_cleanup_pending ||
+> +                       !card->host->ops->req_completion_poll)
+> +               return;
+> +
+> +       cxt->card = card;
+> +
+> +       cxt->sub = kmalloc(conf->kmsg_size, GFP_KERNEL);
+> +       if (!cxt->sub)
+> +               goto out;
+> +
+> +       mrq = kzalloc(sizeof(struct mmc_request), GFP_KERNEL);
+> +       if (!mrq)
+> +               goto free_sub;
+> +
+> +       cmd = kzalloc(sizeof(struct mmc_command), GFP_KERNEL);
+> +       if (!cmd)
+> +               goto free_mrq;
+> +
+> +       stop = kzalloc(sizeof(struct mmc_command), GFP_KERNEL);
+> +       if (!stop)
+> +               goto free_cmd;
+> +
+> +       data = kzalloc(sizeof(struct mmc_data), GFP_KERNEL);
+> +       if (!data)
+> +               goto free_stop;
+> +
+> +       mrq->cmd = cmd;
+> +       mrq->data = data;
+> +       mrq->stop = stop;
+> +       cxt->mrq = mrq;
+> +
+> +       dev->total_size = cxt->size;
+> +       dev->flags = PSTORE_FLAGS_DMESG;
+> +       dev->read = mmcpstore_read;
+> +       dev->write = mmcpstore_write;
+> +       dev->erase = NULL;
+> +       dev->panic_write = mmcpstore_panic_write;
+> +
+> +       ret = register_pstore_device(&cxt->dev);
 
-But regardless of what is chosen for signal loss, EIO is wrong. Return values
-as are documented for VIDIOC_QUERY_DV_TIMINGS would be much more appropriate for this.
+By looking at all of the code above, lots are duplicated from the mmc
+block device implementation. Isn't there a way to make the pstore
+block device to push a request through the regular blk-mq path
+instead?
 
-> 
->>>> +
->>>> +    .. note::
->>>> +
->>>> +       The driver might dequeue an (empty) buffer despite returning
->>>> +       an error, or even stop capturing. Reusing such buffer may be unsafe
->>>> +       though and its details (e.g. ``index``) may not be returned either.
->>
->> The first part of this note is rather vague. I'm not sure what it meant with this.
->>
->>>> +       It is recommended that drivers indicate recoverable errors by setting
->>>> +       the ``V4L2_BUF_FLAG_ERROR`` and returning 0 instead. In that case the
->>>> +       application should be able to safely reuse the buffer and continue
->>>> +       streaming.
->>>
->>> What is this for? It sounds like some legacy behavior, which maybe we could
->>> drop with this new API?
->>
->> No, V4L2_BUF_FLAG_ERROR is really needed. Some hardware can really have
->> intermittent failures causing video frames to be corrupt. And yes, that's
->> typically due to hardware bugs. It usually either happens when you start
->> streaming or just intermittent, but it is not severe enough to stop streaming
->> completely (that's the -EIO error due to a call to vb2_queue_error).
->>
->> It's also used when you stop streaming and pending buffers are returned to
->> userspace. They are marked as ERROR since they don't contain any video, or
->> only partial video (if the DMA was stopped midway a frame).
->>
-> 
-> Sorry, I meant to insert that comment below the first half. The second
-> half is fine.
+That said, I wonder why you don't call register_pstore_blk(), as I
+thought that was the interface to be used for regular block devices,
+no?
 
-Ah, that makes much more sense :-)
 
-> 
->>>
->>>> +
->>>> +EPIPE
->>>> +    ``VIDIOC_EXT_DQBUF`` returns this on an empty capture queue for mem2mem
->>>> +    codecs if a buffer with the ``V4L2_BUF_FLAG_LAST`` was already
->>>> +    dequeued and no new buffers are expected to become available.
->>>> +
->>>> +EBADR
->>>> +    The ``V4L2_BUF_FLAG_REQUEST_FD`` flag was set but the device does not
->>>> +    support requests for the given buffer type, or
->>>> +    the ``V4L2_BUF_FLAG_REQUEST_FD`` flag was not set but the device requires
->>>> +    that the buffer is part of a request.
->>>> +
->>>> +EBUSY
->>>> +    The first buffer was queued via a request, but the application now tries
->>>> +    to queue it directly, or vice versa (it is not permitted to mix the two
->>>> +    APIs).
->>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-ext-querybuf.rst b/Documentation/userspace-api/media/v4l/vidioc-ext-querybuf.rst
->>>> new file mode 100644
->>>> index 0000000000000..f2a12017253f6
->>>> --- /dev/null
->>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-ext-querybuf.rst
->>>> @@ -0,0 +1,79 @@
->>>> +.. Permission is granted to copy, distribute and/or modify this
->>>> +.. document under the terms of the GNU Free Documentation License,
->>>> +.. Version 1.1 or any later version published by the Free Software
->>>> +.. Foundation, with no Invariant Sections, no Front-Cover Texts
->>>> +.. and no Back-Cover Texts. A copy of the license is included at
->>>> +.. Documentation/userspace-api/media/fdl-appendix.rst.
->>>> +..
->>>> +.. TODO: replace it to GFDL-1.1-or-later WITH no-invariant-sections
->>>> +
->>>> +.. _VIDIOC_EXT_QUERYBUF:
->>>> +
->>>> +*************************
->>>> +ioctl VIDIOC_EXT_QUERYBUF
->>>> +*************************
->>>> +
->>>> +Name
->>>> +====
->>>> +
->>>> +VIDIOC_EXT_QUERYBUF - Query the status of a buffer
->>>> +
->>>> +
->>>> +Synopsis
->>>> +========
->>>> +
->>>> +.. c:function:: int ioctl( int fd, VIDIOC_EXT_QUERYBUF, struct v4l2_ext_buffer *argp )
->>>> +    :name: VIDIOC_EXT_QUERYBUF
->>>> +
->>>> +
->>>> +Arguments
->>>> +=========
->>>> +
->>>> +``fd``
->>>> +    File descriptor returned by :ref:`open() <func-open>`.
->>>> +
->>>> +``argp``
->>>> +    Pointer to struct :c:type:`v4l2_ext_buffer`.
->>>> +
->>>> +
->>>> +Description
->>>> +===========
->>>> +
->>>> +This ioctl is part of the :ref:`streaming <mmap>` I/O method. It can
->>>> +be used to query the status of a buffer at any time after buffers have
->>>> +been allocated with the :ref:`VIDIOC_EXT_CREATE_BUFS` ioctl.
->>>> +
->>>> +Applications set the ``type`` field of a struct
->>>> +:c:type:`v4l2_ext_buffer` to the same buffer type as was
->>>> +previously used with struct :c:type:`v4l2_ext_pix_format` ``type``,
->>>> +and the ``index`` field. Valid index numbers range from zero to the
->>>> +number of buffers allocated with
->>>> +:ref:`VIDIOC_EXT_CREATE_BUFS` (struct
->>>> +:c:type:`v4l2_ext_create_buffers` ``count``) minus
->>>> +one. The ``reserved`` field must be set to 0.
->>>> +
->>>> +In the ``flags`` field the ``V4L2_BUF_FLAG_MAPPED``,
->>>> +``V4L2_BUF_FLAG_PREPARED``, ``V4L2_BUF_FLAG_QUEUED`` and
->>>> +``V4L2_BUF_FLAG_DONE`` flags will be valid. The ``planes.memory`` fields will be
->>>> +set to the current I/O method for each plane.
->>>> +
->>>> +For every valid plane, an entry in ``planes`` will be filled, and zeroed for
->>>> +invalid ones. ``planes[i].buffer_length`` is the size of the memory buffer
->>>> +which contains the plane, ``planes[i].plane_length`` is the length of the plane,
->>>
->>> What is the length of the plane here? It seems like depending on the
->>> context, the field can mean size of the payload (for filled buffer) or
->>> total space for the payload (for empty buffer), which is a bit confusing.
->>>
->>>> +and ``planes[i].offset` is where the plane is placed in the memory buffer.
->>>> +
->>>> +The size of the ``planes`` array can be calculated by the number of sequential
->>>> +planes with ``planes[i].buffer_length`` that differs from zero up to the max
->>>> +size of the array.
->>>
->>> Not sure if it's just me, but "size of array" sounds to me like the
->>> total memory size of the array, i.e. the max number of elements, which
->>> is fixed for this struct. How about
->>>
->>>   "The entries of the planes array are valid up to the last entry with
->>>   non-zero buffer_length or the last entry of the array, whichever is
->>>   first."
->>>
->>> ?
->>>
->>>> +
->>>> +
->>>> +Return Value
->>>> +============
->>>> +
->>>> +On success 0 is returned, on error -1 and the ``errno`` variable is set
->>>> +appropriately. The generic error codes are described at the
->>>> +:ref:`Generic Error Codes <gen-errors>` chapter.
->>>> +
->>>> +EINVAL
->>>> +    The buffer ``type`` is not supported, or the ``index`` is out of
->>>> +    bounds.
->>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-pix-fmt.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-pix-fmt.rst
->>>> new file mode 100644
->>>> index 0000000000000..008e6c98a88a5
->>>> --- /dev/null
->>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-pix-fmt.rst
->>>> @@ -0,0 +1,117 @@
->>>> +.. Permission is granted to copy, distribute and/or modify this
->>>> +.. document under the terms of the GNU Free Documentation License,
->>>> +.. Version 1.1 or any later version published by the Free Software
->>>> +.. Foundation, with no Invariant Sections, no Front-Cover Texts
->>>> +.. and no Back-Cover Texts. A copy of the license is included at
->>>> +.. Documentation/userspace-api/media/fdl-appendix.rst.
->>>> +..
->>>> +.. TODO: replace it to GFDL-1.1-or-later WITH no-invariant-sections
->>>> +
->>>> +.. _VIDIOC_G_EXT_PIX_FMT:
->>>> +
->>>> +************************************************************************
->>>> +ioctl VIDIOC_G_EXT_PIX_FMT, VIDIOC_S_EXT_PIX_FMT, VIDIOC_TRY_EXT_PIX_FMT
->>>> +************************************************************************
->>>> +
->>>> +Name
->>>> +====
->>>> +
->>>> +VIDIOC_G_EXT_PIX_FMT - VIDIOC_S_EXT_PIX_FMT - VIDIOC_TRY_EXT_PIX_FMT - Get or set the data format, try a format
->>>> +
->>>> +
->>>> +Synopsis
->>>> +========
->>>> +
->>>> +.. c:function:: int ioctl( int fd, VIDIOC_G_EXT_PIX_FMT, struct v4l2_ext_pix_format *argp )
->>>> +    :name: VIDIOC_G_EXT_PIX_FMT
->>>> +
->>>> +.. c:function:: int ioctl( int fd, VIDIOC_S_EXT_PIX_FMT, struct v4l2_ext_pix_format *argp )
->>>> +    :name: VIDIOC_S_EXT_PIX_FMT
->>>> +
->>>> +.. c:function:: int ioctl( int fd, VIDIOC_TRY_EXT_PIX_FMT, struct v4l2_ext_pix_format *argp )
->>>> +    :name: VIDIOC_TRY_EXT_PIX_FMT
->>>> +
->>>> +Arguments
->>>> +=========
->>>> +
->>>> +``fd``
->>>> +    File descriptor returned by :ref:`open() <func-open>`.
->>>> +
->>>> +``argp``
->>>> +    Pointer to struct :c:type:`v4l2_ext_pix_format`.
->>>> +
->>>> +
->>>> +Description
->>>> +===========
->>>> +
->>>> +These ioctls are used to negotiate the format of data (typically image
->>>> +format) exchanged between driver and application.
->>>> +
->>>> +To query the current parameters applications set the ``type`` field of a
->>>> +struct :c:type:`v4l2_ext_pix_format` to  ``V4L2_BUF_TYPE_VIDEO_CAPTURE`` or
->>>> +``V4L2_BUF_TYPE_VIDEO_OUTPUT``, all the other types are invalid in this API,
->>>> +and multiplanar is supported through modifiers.
->>>> +
->>>> +When the application calls the
->>>> +:ref:`VIDIOC_G_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` ioctl with a pointer to this
->>>> +structure the driver fills the other members.
->>>> +When the requested buffer type is not supported drivers return
->>>> +an ``EINVAL`` error code.
->>>> +
->>>> +To change the current format parameters applications initialize all
->>>> +the fields in the struct.
->>>> +For details see the documentation of the various devices types in
->>>> +:ref:`devices`. Good practice is to query the current parameters
->>>> +first, and to modify only those parameters not suitable for the
->>>> +application. When the application calls the :ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` ioctl with
->>>> +a pointer to a struct :c:type:`v4l2_ext_pix_format` structure the driver
->>>> +checks and adjusts the parameters against hardware abilities. Drivers
->>>> +should not return an error code unless the ``type`` field is invalid,
->>>> +this is a mechanism to fathom device capabilities and to approach
->>>> +parameters acceptable for both the application and driver. On success
->>>> +the driver may program the hardware, allocate resources and generally
->>>> +prepare for data exchange. Finally the :ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` ioctl returns
->>>> +the current format parameters as :ref:`VIDIOC_G_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` does. Very simple,
->>>> +inflexible devices may even ignore all input and always return the
->>>> +default parameters. However all V4L2 devices exchanging data with the
->>>> +application must implement the :ref:`VIDIOC_G_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` and :ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>`
->>>> +ioctl. When the requested buffer type is not supported drivers return an
->>>> +EINVAL error code on a :ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` attempt. When I/O is already in
->>>> +progress or the resource is not available for other reasons drivers
->>>> +return the ``EBUSY`` error code.
->>>> +
->>>> +The :ref:`VIDIOC_TRY_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` ioctl is equivalent to :ref:`VIDIOC_S_EXT_PIX_FMT <VIDIOC_G_EXT_PIX_FMT>` with one
->>>> +exception: it does not change driver state. It can also be called at any
->>>> +time, never returning ``EBUSY``. This function is provided to negotiate
->>>> +parameters, to learn about hardware limitations, without disabling I/O
->>>> +or possibly time consuming hardware preparations. Although strongly
->>>> +recommended drivers are not required to implement this ioctl.
->>>> +
->>>
->>> Could we make this mandatory to avoid ambiguities in the API? In
->>
->> Yes, please!
->>
->>> general, most drivers implemented it anyway, without much added
->>> complexity, because one can then simplify S_FMT to TRY_FMT + state
->>> update.
->>
->> Ideally we would also fix the ambiguous situation regarding TRY/S_FMT
->> and unsupported pixelformats: some drivers will replace unsupported
->> pixelformats with a valid pixelformat, others will return an error.
->>
->> v4l2-compliance warns about drivers that return an error and point to
->> this very old thread:
->>
->> http://www.mail-archive.com/linux-media@vger.kernel.org/msg56550.html
->>
->> However, I'm not really sure if we can resolve this ambiguity. I believe
->> that it is only older webcam drivers that return an error.
-> 
-> I guess we can at least enforce a specific behavior in the new API,
-> before we get compatibility obligations. :)
-> 
-> Best regards,
-> Tomasz
-> 
+> +       if (ret) {
+> +               pr_err("%s registering with psblk failed (%d)\n",
+> +                               cxt->dev_name, ret);
+> +               goto free_data;
+> +       }
+> +
+> +       pr_info("%s registered as psblk backend\n", cxt->dev_name);
+> +       return;
+> +
+> +free_data:
+> +       kfree(data);
+> +free_stop:
+> +       kfree(stop);
+> +free_cmd:
+> +       kfree(cmd);
+> +free_mrq:
+> +       kfree(mrq);
+> +free_sub:
+> +       kfree(cxt->sub);
+> +out:
+> +       return;
+> +}
+> +EXPORT_SYMBOL(mmcpstore_card_set);
+> +
+> +static int __init mmcpstore_init(void)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       struct pstore_blk_config *conf = &cxt->conf;
+> +       int err;
+> +
+> +       err = pstore_blk_get_config(conf);
+> +       if (unlikely(err))
+> +               return err;
 
-Regards,
+Looks like that this can be moved to mmc_blk_probe() function instead.
 
-	Hans
+> +
+> +       if (!conf->device[0]) {
+> +               pr_err("psblk backend is empty\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       return err;
+> +}
+> +
+> +static void __exit mmcpstore_exit(void)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +
+> +       unregister_pstore_device(&cxt->dev);
+> +       kfree(cxt->mrq->data);
+> +       kfree(cxt->mrq->stop);
+> +       kfree(cxt->mrq->cmd);
+> +       kfree(cxt->mrq);
+> +       kfree(cxt->sub);
+> +       cxt->card = NULL;
+
+Can we do this via mmc_blk_remove() instead?
+
+> +}
+> +
+> +module_init(mmcpstore_init);
+> +module_exit(mmcpstore_exit);
+> +
+> +MODULE_AUTHOR("Bhaskara Budiredla <bbudiredla@marvell.com>");
+> +MODULE_DESCRIPTION("MMC backend for pstore/blk");
+> diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+> index 42df06c6b19c..76ae8ae61d31 100644
+> --- a/include/linux/mmc/card.h
+> +++ b/include/linux/mmc/card.h
+> @@ -322,6 +322,10 @@ static inline bool mmc_large_sector(struct mmc_card *card)
+>
+>  bool mmc_card_is_blockaddr(struct mmc_card *card);
+>
+> +#ifdef CONFIG_MMC_PSTORE
+> +void mmcpstore_card_set(struct mmc_card *card, const char *disk_name);
+> +#endif /* CONFIG_MMC_PSTORE */
+> +
+>  #define mmc_card_mmc(c)                ((c)->type == MMC_TYPE_MMC)
+>  #define mmc_card_sd(c)         ((c)->type == MMC_TYPE_SD)
+>  #define mmc_card_sdio(c)       ((c)->type == MMC_TYPE_SDIO)
+> diff --git a/include/linux/mmc/core.h b/include/linux/mmc/core.h
+> index 29aa50711626..21dcd79f8f0e 100644
+> --- a/include/linux/mmc/core.h
+> +++ b/include/linux/mmc/core.h
+> @@ -166,6 +166,10 @@ struct mmc_request {
+>
+>  struct mmc_card;
+>
+> +#ifdef CONFIG_MMC_PSTORE
+> +extern void mmc_wait_for_pstore_req(struct mmc_host *, struct mmc_request *);
+> +#endif /* CONFIG_MMC_PSTORE */
+> +
+>  void mmc_wait_for_req(struct mmc_host *host, struct mmc_request *mrq);
+>  int mmc_wait_for_cmd(struct mmc_host *host, struct mmc_command *cmd,
+>                 int retries);
+> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> index c079b932330f..ef57313ee3ea 100644
+> --- a/include/linux/mmc/host.h
+> +++ b/include/linux/mmc/host.h
+> @@ -173,6 +173,12 @@ struct mmc_host_ops {
+>          */
+>         int     (*multi_io_quirk)(struct mmc_card *card,
+>                                   unsigned int direction, int blk_size);
+> +
+> +#ifdef CONFIG_MMC_PSTORE
+> +       void    (*req_cleanup_pending)(struct mmc_host *host);
+> +       int     (*req_completion_poll)(struct mmc_host *host,
+> +                                       unsigned long timeout);
+
+If these really will be needed, please add some comments about what
+they are intended to help with.
+
+> +#endif
+>  };
+>
+>  struct mmc_cqe_ops {
+
+Kind regards
+Uffe
