@@ -2,150 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB1B2BAAE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8342BAAEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727355AbgKTNQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 08:16:09 -0500
-Received: from www381.your-server.de ([78.46.137.84]:51368 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbgKTNQJ (ORCPT
+        id S1727653AbgKTNRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 08:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727404AbgKTNRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:16:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=uNlmvTkJlfUfkP1mNVRlX6byRmlW03DDOuT/fy6Pb1s=; b=ca0XXgVYissccmdKgaqut10/FO
-        TAtmChNCYpNV89EasjoGQIDrEctV7V6CPclmKyJOWw+zsRFnSr4Au5MONgXwyKSQnat4ipk2TizpY
-        fRarKyOct1Zg7jjRizKZUxEm2VCKviawLgjQfzRd8pPyWCLlVB/Mj7hjPQrBZywYKuxpzMrAvJ/K4
-        q9acNRrRnuxyKoaj7WbyhejLQUuCN9Mikz3YfPCfb4JA6O4bndMpfjO/Qvbwa2lkI9IYgHJ5yKkE7
-        gEyBZ8l/xrX2O13LRtPXxr6kRiXcaRblQ/9DBNPbsUw5K1OVFGCZbGXnPRGw/LJDH4ZV3IKfE7fBr
-        5uVDzPhA==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1kg6Gf-0004jy-6g; Fri, 20 Nov 2020 14:16:02 +0100
-Received: from [62.216.202.98] (helo=[192.168.178.20])
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1kg6Ge-0008B9-Ue; Fri, 20 Nov 2020 14:16:01 +0100
-Subject: Re: [Cocci] Proposal for a new checkpatch check; matching
- _set_drvdata() & _get_drvdata()
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>
-Cc:     Joe Perches <joe@perches.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Robo Bot <apw@canonical.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cocci <cocci@systeme.lip6.fr>
-References: <CA+U=Dspy5+RE9agcLr6eY9DCMa1c5+++0JLeugMMBRXz4YLj1w@mail.gmail.com>
- <CAHp75VcT5hZH6m0Dri1h_EFjc7=4+1XoE7sRuQyfO75k9A0GKA@mail.gmail.com>
- <b74517242de5790f8ab0cd9be00a70b9ab96564c.camel@perches.com>
- <alpine.DEB.2.22.394.2011201140480.2750@hadrien>
- <CA+U=Dsp8Aws7_GARfgNE4w_1pK-hDVW9WVsWHF1TfZUEUo0Hbw@mail.gmail.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <4af50412-a22f-4ca1-adb0-d732438c6669@metafoo.de>
-Date:   Fri, 20 Nov 2020 14:16:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 20 Nov 2020 08:17:13 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E982DC061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:17:12 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id c17so9953871wrc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:17:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Gud8TQdWG2KeJ5eqXnujFScTdH5YvKCszy+3uGYvBLY=;
+        b=JsAS2P880N+8DPnkDGT7DKKgXQzA3YXS6i6YwHO4j0npfUo72WcPqCuHBhRLhw+f58
+         3Xn/Bjy61GO1MsE+3uatjJkJZidXlfA8QuGzv55tPBsO22Kjh/3hcV0DyH7ITLAqnvFN
+         +mcTWlf7jvupzNesWG4e1ybrO9Yskg7bGhVic=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Gud8TQdWG2KeJ5eqXnujFScTdH5YvKCszy+3uGYvBLY=;
+        b=avXy3PeMsYUUm/AbebL6bYCT6OUzT8hYSoO0frOLIJG8wy5D3K/C0K2bGAdvEXZPy+
+         23lFCj9+TO5X7niIhYMzx6CmM58wsU2wIiUsS6831RXL5aaD1UU3Nes9Xj71H2gmels5
+         8E3zl0D6A8mqet6xV0X6rCvtUKcjWiNulwOjPVkJWIw3ovG/4wBbRoDTQFaQ/QS4XLth
+         N0uBc6fPRRZgeHDaT350KUDgcqXEqTU++ZzzjeCpODSPqUgltmsWLcs9jY+FyyjHGA9m
+         8PKwZC1foRJnU2LoxLWet94b5nLkaZTuqrukQyPIdQ9NetheIV7BkuBC7IZwZ+rKbauZ
+         d7DA==
+X-Gm-Message-State: AOAM530JRYkYgg+nNfylxlLTJxd2BiTkeQ5Ey+gH3meb0EBjh9/igyEv
+        zvErBztvC9S+akypqtwEv399kFstFCJzbePL
+X-Google-Smtp-Source: ABdhPJwJSTBCUva8ryQ8J/J8yWWWvmJt0sNUn79Fqo27ZMJn3q3e1QlAqOpTzwN3XyEgikySgWIUVQ==
+X-Received: by 2002:a5d:5308:: with SMTP id e8mr15718844wrv.299.1605878231382;
+        Fri, 20 Nov 2020 05:17:11 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id u203sm4260197wme.32.2020.11.20.05.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 05:17:10 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH bpf-next 1/3] ima: Implement ima_inode_hash
+Date:   Fri, 20 Nov 2020 13:17:06 +0000
+Message-Id: <20201120131708.3237864-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-In-Reply-To: <CA+U=Dsp8Aws7_GARfgNE4w_1pK-hDVW9WVsWHF1TfZUEUo0Hbw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25993/Thu Nov 19 14:11:24 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/20 12:54 PM, Alexandru Ardelean wrote:
-> On Fri, Nov 20, 2020 at 12:47 PM Julia Lawall <julia.lawall@inria.fr> wrote:
->>
->>
->> On Thu, 19 Nov 2020, Joe Perches wrote:
->>
->>> On Thu, 2020-11-19 at 17:16 +0200, Andy Shevchenko wrote:
->>>> On Thu, Nov 19, 2020 at 4:09 PM Alexandru Ardelean
->>>> <ardeleanalex@gmail.com> wrote:
->>>>> Hey,
->>>>>
->>>>> So, I stumbled on a new check that could be added to checkpatch.
->>>>> Since it's in Perl, I'm reluctant to try it.
->>>>>
->>>>> Seems many drivers got to a point where they now call (let's say)
->>>>> spi_set_drvdata(), but never access that information via
->>>>> spi_get_drvdata().
->>>>> Reasons for this seem to be:
->>>>> 1. They got converted to device-managed functions and there is no
->>>>> longer a remove hook to require the _get_drvdata() access
->>>>> 2. They look like they were copied from a driver that had a
->>>>> _set_drvdata() and when the code got finalized, the _set_drvdata() was
->>>>> omitted
->>>>>
->>>>> There are a few false positives that I can notice at a quick look,
->>>>> like the data being set via some xxx_set_drvdata() and retrieved via a
->>>>> dev_get_drvdata().
->>>> I can say quite a few. And this makes a difference.
->>>> So, basically all drivers that are using PM callbacks would rather use
->>>> dev_get_drvdata() rather than bus specific.
->>>>
->>>>> I think checkpatch reporting these as well would be acceptable simply
->>>>> from a reviewability perspective.
->>>>>
->>>>> I did a shell script to quickly check these. See below.
->>>>> It's pretty badly written but it is enough for me to gather a list.
->>>>> And I wrote it in 5 minutes :P
->>>>> I initially noticed this in some IIO drivers, and then I suspected
->>>>> that this may be more widespread.
->>>> It seems more suitable for coccinelle.
->>> To me as well.
->> To me as well, since it seems to involve nonlocal information.
->>
->> I'm not sure to understand the original shell script. Is there
->> something interesting about pci_set_drvdata?
-> Ah, it's a stupid script I wrote in 5 minutes, so I did not bother to
-> make things smart.
-> In the text-matching I did in shell, there are some entries that come
-> from comments and docs.
-> It's only about 3-4 entries, so I just did a visual/manual ignore.
->
-> In essence:
-> The script searches for all strings that contain _set_drvdata.
-> The separators are whitespace.
-> It creates a list of all  xxxx_set_drvdata functions.
-> For each xxxx_set_drvdata function:
->      It checks all files that have a xxxx_set_drvdata entry, but no
-> xxxx_get_drvdata
->
-> I piped this output into a file and started manually checking the drivers.
-> There is one [I forget which function] that is xxxx_set_drvdata() but
-> equivalent is xxxx_drvdata()
->
-> As Andy said, some precautions must be taken in places where
-> xxxx_set_drvdata() is called but dev_get_drvdata() is used.
-> Cases like PM suspend/resume calls.
-> And there may be some cases outside this context.
->
-Doing something like this with coccinelle is fairly easy.
+From: KP Singh <kpsingh@google.com>
 
-But I'd be very cautious about putting such a script into the kernel. It 
-will result in too many false positive drive-by patches. Such a script 
-will not detect cases such as:
+This is in preparation to add a helper for BPF LSM programs to use
+IMA hashes when attached to LSM hooks. There are LSM hooks like
+inode_unlink which do not have a struct file * argument and cannot
+use the existing ima_file_hash API.
 
-  * Driver is split over multiple files. One file does 
-..._set_drvdata(), another does ..._get_drvdata().
+An inode based API is, therefore, useful in LSM based detections like an
+executable trying to delete itself which rely on the inode_unlink LSM
+hook.
 
-  * Framework uses drvdata to exchange data with the driver. E.g driver 
-is expected to call set_drvdata() and then the framework uses 
-get_drvdata() to retrieve the data. This is not a very good pattern, but 
-there are some palces int he kernel where this is used. I believe for 
-example V4L2 uses this.
+Moreover, the ima_file_hash function does nothing with the struct file
+pointer apart from calling file_inode on it and converting it to an
+inode.
 
-- Lars
+Signed-off-by: KP Singh <kpsingh@google.com>
+---
+ include/linux/ima.h               |  6 +++
+ scripts/bpf_helpers_doc.py        |  1 +
+ security/integrity/ima/ima_main.c | 74 ++++++++++++++++++++++---------
+ 3 files changed, 59 insertions(+), 22 deletions(-)
+
+diff --git a/include/linux/ima.h b/include/linux/ima.h
+index 8fa7bcfb2da2..7233a2751754 100644
+--- a/include/linux/ima.h
++++ b/include/linux/ima.h
+@@ -29,6 +29,7 @@ extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+ 			      enum kernel_read_file_id id);
+ extern void ima_post_path_mknod(struct dentry *dentry);
+ extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
++extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
+ extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+ 
+ #ifdef CONFIG_IMA_KEXEC
+@@ -115,6 +116,11 @@ static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
+ #endif /* CONFIG_IMA */
+ 
+diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
+index c5bc947a70ad..add7fcb32dcd 100755
+--- a/scripts/bpf_helpers_doc.py
++++ b/scripts/bpf_helpers_doc.py
+@@ -478,6 +478,7 @@ class PrinterHelpers(Printer):
+             'struct tcp_request_sock',
+             'struct udp6_sock',
+             'struct task_struct',
++            'struct inode',
+             'struct path',
+             'struct btf_ptr',
+     }
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 2d1af8899cab..1dd2123b5b43 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -501,37 +501,17 @@ int ima_file_check(struct file *file, int mask)
+ }
+ EXPORT_SYMBOL_GPL(ima_file_check);
+ 
+-/**
+- * ima_file_hash - return the stored measurement if a file has been hashed and
+- * is in the iint cache.
+- * @file: pointer to the file
+- * @buf: buffer in which to store the hash
+- * @buf_size: length of the buffer
+- *
+- * On success, return the hash algorithm (as defined in the enum hash_algo).
+- * If buf is not NULL, this function also outputs the hash into buf.
+- * If the hash is larger than buf_size, then only buf_size bytes will be copied.
+- * It generally just makes sense to pass a buffer capable of holding the largest
+- * possible hash: IMA_MAX_DIGEST_SIZE.
+- * The file hash returned is based on the entire file, including the appended
+- * signature.
+- *
+- * If IMA is disabled or if no measurement is available, return -EOPNOTSUPP.
+- * If the parameters are incorrect, return -EINVAL.
+- */
+-int ima_file_hash(struct file *file, char *buf, size_t buf_size)
++static int __ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
+ {
+-	struct inode *inode;
+ 	struct integrity_iint_cache *iint;
+ 	int hash_algo;
+ 
+-	if (!file)
++	if (!inode)
+ 		return -EINVAL;
+ 
+ 	if (!ima_policy_flag)
+ 		return -EOPNOTSUPP;
+ 
+-	inode = file_inode(file);
+ 	iint = integrity_iint_find(inode);
+ 	if (!iint)
+ 		return -EOPNOTSUPP;
+@@ -558,8 +538,58 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+ 
+ 	return hash_algo;
+ }
++
++/**
++ * ima_file_hash - return the stored measurement if a file has been hashed and
++ * is in the iint cache.
++ * @file: pointer to the file
++ * @buf: buffer in which to store the hash
++ * @buf_size: length of the buffer
++ *
++ * On success, return the hash algorithm (as defined in the enum hash_algo).
++ * If buf is not NULL, this function also outputs the hash into buf.
++ * If the hash is larger than buf_size, then only buf_size bytes will be copied.
++ * It generally just makes sense to pass a buffer capable of holding the largest
++ * possible hash: IMA_MAX_DIGEST_SIZE.
++ * The file hash returned is based on the entire file, including the appended
++ * signature.
++ *
++ * If IMA is disabled or if no measurement is available, return -EOPNOTSUPP.
++ * If the parameters are incorrect, return -EINVAL.
++ */
++int ima_file_hash(struct file *file, char *buf, size_t buf_size)
++{
++	if (!file)
++		return -EINVAL;
++
++	return __ima_inode_hash(file_inode(file), buf, buf_size);
++}
+ EXPORT_SYMBOL_GPL(ima_file_hash);
+ 
++/**
++ * ima_inode_hash - return the stored measurement if the inode has been hashed
++ * and is in the iint cache.
++ * @inode: pointer to the inode
++ * @buf: buffer in which to store the hash
++ * @buf_size: length of the buffer
++ *
++ * On success, return the hash algorithm (as defined in the enum hash_algo).
++ * If buf is not NULL, this function also outputs the hash into buf.
++ * If the hash is larger than buf_size, then only buf_size bytes will be copied.
++ * It generally just makes sense to pass a buffer capable of holding the largest
++ * possible hash: IMA_MAX_DIGEST_SIZE.
++ * The hash returned is based on the entire contents, including the appended
++ * signature.
++ *
++ * If IMA is disabled or if no measurement is available, return -EOPNOTSUPP.
++ * If the parameters are incorrect, return -EINVAL.
++ */
++int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
++{
++	return __ima_inode_hash(inode, buf, buf_size);
++}
++EXPORT_SYMBOL_GPL(ima_inode_hash);
++
+ /**
+  * ima_post_create_tmpfile - mark newly created tmpfile as new
+  * @file : newly created tmpfile
+-- 
+2.29.2.454.gaff20da3a2-goog
 
