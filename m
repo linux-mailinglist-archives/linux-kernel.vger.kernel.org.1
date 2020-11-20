@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9572BA9A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E45732BA9A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgKTL5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:57:06 -0500
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:65376
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725824AbgKTL5G (ORCPT
+        id S1728093AbgKTL5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:57:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727083AbgKTL5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:57:06 -0500
-X-IronPort-AV: E=Sophos;i="5.78,356,1599516000"; 
-   d="scan'208";a="365151898"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 12:57:03 +0100
-Date:   Fri, 20 Nov 2020 12:57:03 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-cc:     Joe Perches <joe@perches.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Robo Bot <apw@canonical.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cocci <cocci@systeme.lip6.fr>
-Subject: Re: [Cocci] Proposal for a new checkpatch check; matching _set_drvdata()
- & _get_drvdata()
-In-Reply-To: <CA+U=Dsp8Aws7_GARfgNE4w_1pK-hDVW9WVsWHF1TfZUEUo0Hbw@mail.gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2011201256150.2750@hadrien>
-References: <CA+U=Dspy5+RE9agcLr6eY9DCMa1c5+++0JLeugMMBRXz4YLj1w@mail.gmail.com> <CAHp75VcT5hZH6m0Dri1h_EFjc7=4+1XoE7sRuQyfO75k9A0GKA@mail.gmail.com> <b74517242de5790f8ab0cd9be00a70b9ab96564c.camel@perches.com> <alpine.DEB.2.22.394.2011201140480.2750@hadrien>
- <CA+U=Dsp8Aws7_GARfgNE4w_1pK-hDVW9WVsWHF1TfZUEUo0Hbw@mail.gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 20 Nov 2020 06:57:44 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAF5C0613CF;
+        Fri, 20 Nov 2020 03:57:44 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 2so8300422ybc.12;
+        Fri, 20 Nov 2020 03:57:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gxcx568MbenUBQL8qRrYNH7PiNalGtjlP2qusXbObJ4=;
+        b=UmNZ4qbkM8AGFVGQ0gdCGBUWClZgLoGn6GuHgLUs8nhBnQYk7PvGzChRppV3DP//Ah
+         r7a26LEAcSy2RUdc2rjNBRUSlc0sB9E4WCI7H5nbDSwh8Rx8a45MJJw3+ybvaI+avhoL
+         BiedAe4VpT82HL1iibmI6aLgxssRXEQmpZ4plfdntmsy+W6+0xodgQVQvIsIeb+f022w
+         r4LlYntpu89Hc4g5HeeLGwfG7uz4mHktQ1Hh3MuqMwhEMsKjnNSpugePmwzKRSMYlD2z
+         sIdQ/MppN/hMrBRNhM+XEhPTkv/2LAUXwJhMNN5FaabUC/h52sW9cv0hG2OuJDi83DrY
+         6/kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gxcx568MbenUBQL8qRrYNH7PiNalGtjlP2qusXbObJ4=;
+        b=bQil+4LbKWzGOnu/mOMbzdtQ6/yw7csVihE0paeV6SJPEl2bwZ464hdtRi2nYrMVFo
+         p5YjkaOcgItF9hKIAWEmuHLwu/T6EoyLtmXWlqz0z6QZZ0YNJMJQk+kM1f3FvdaNjYTL
+         CTH5sJ8LaHWPW6Er02XxgXldl5qCMxl/x+jdaWNk6WgAAEe7PQF4lrJ1Qj+ZILGdd6rj
+         U9+ftkQboIthzls2tXnDbxazPzypjV/5JrYRRPCLYiXXgjimdqdcj+rq6YbXhSSmfzVB
+         umAW4h7fe5l+2WiwG3QVbaO4XWgpnV3JEXOFdBDL4v6+6O833oJeIBRoO+SqimRE3gJa
+         zjKw==
+X-Gm-Message-State: AOAM5304m4ocub1fV8p8+ee/ksk0/SVbhqwGHaIPAnLl+NyHylHHl7hq
+        y0UB8tiUNrRqSfxUkdDIMuSnrC4sRa1Fvak24Dku6Qjg3Ef/QQ==
+X-Google-Smtp-Source: ABdhPJznPp55KdRTACETWjNz0ss4tcdPuFnqYg0BJZso5gthhIdbOxQnEYn7HmiYuLqp2RbqzURSGIx501YXCqRgZgM=
+X-Received: by 2002:a25:16c4:: with SMTP id 187mr9656935ybw.39.1605873463954;
+ Fri, 20 Nov 2020 03:57:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20201120165614.0830df43@canb.auug.org.au>
+In-Reply-To: <20201120165614.0830df43@canb.auug.org.au>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Fri, 20 Nov 2020 11:57:07 +0000
+Message-ID: <CADVatmPzUv4zzzHJx23rFJgop1dHZrr7ReVoh48+Q5NAOkhzXA@mail.gmail.com>
+Subject: Re: linux-next: Tree for Nov 20
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On Fri, Nov 20, 2020 at 5:59 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Changes since 20201119:
+
+mips allmodconfig fails for next-20201120 with the error:
+/home/sudip/linux/drivers/video/fbdev/udlfb.c: In function 'dlfb_ops_mmap':
+/home/sudip/linux/drivers/video/fbdev/udlfb.c:343:52: error:
+'PAGE_SHARED' undeclared (first use in this function)
+  343 |   if (remap_pfn_range(vma, start, page, PAGE_SIZE, PAGE_SHARED))
+
+Which has been caused by 0df162e1377a ("MIPS: mm: Clean up setup of
+protection map") which removed "PAGE_SHARED".
 
 
-On Fri, 20 Nov 2020, Alexandru Ardelean wrote:
-
-> On Fri, Nov 20, 2020 at 12:47 PM Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> >
-> >
-> > On Thu, 19 Nov 2020, Joe Perches wrote:
-> >
-> > > On Thu, 2020-11-19 at 17:16 +0200, Andy Shevchenko wrote:
-> > > > On Thu, Nov 19, 2020 at 4:09 PM Alexandru Ardelean
-> > > > <ardeleanalex@gmail.com> wrote:
-> > > > >
-> > > > > Hey,
-> > > > >
-> > > > > So, I stumbled on a new check that could be added to checkpatch.
-> > > > > Since it's in Perl, I'm reluctant to try it.
-> > > > >
-> > > > > Seems many drivers got to a point where they now call (let's say)
-> > > > > spi_set_drvdata(), but never access that information via
-> > > > > spi_get_drvdata().
-> > > > > Reasons for this seem to be:
-> > > > > 1. They got converted to device-managed functions and there is no
-> > > > > longer a remove hook to require the _get_drvdata() access
-> > > > > 2. They look like they were copied from a driver that had a
-> > > > > _set_drvdata() and when the code got finalized, the _set_drvdata() was
-> > > > > omitted
-> > > > >
-> > > > > There are a few false positives that I can notice at a quick look,
-> > > > > like the data being set via some xxx_set_drvdata() and retrieved via a
-> > > > > dev_get_drvdata().
-> > > >
-> > > > I can say quite a few. And this makes a difference.
-> > > > So, basically all drivers that are using PM callbacks would rather use
-> > > > dev_get_drvdata() rather than bus specific.
-> > > >
-> > > > > I think checkpatch reporting these as well would be acceptable simply
-> > > > > from a reviewability perspective.
-> > > > >
-> > > > > I did a shell script to quickly check these. See below.
-> > > > > It's pretty badly written but it is enough for me to gather a list.
-> > > > > And I wrote it in 5 minutes :P
-> > > > > I initially noticed this in some IIO drivers, and then I suspected
-> > > > > that this may be more widespread.
-> > > >
-> > > > It seems more suitable for coccinelle.
-> > >
-> > > To me as well.
-> >
-> > To me as well, since it seems to involve nonlocal information.
-> >
-> > I'm not sure to understand the original shell script. Is there
-> > something interesting about pci_set_drvdata?
->
-> Ah, it's a stupid script I wrote in 5 minutes, so I did not bother to
-> make things smart.
-> In the text-matching I did in shell, there are some entries that come
-> from comments and docs.
-> It's only about 3-4 entries, so I just did a visual/manual ignore.
->
-> In essence:
-> The script searches for all strings that contain _set_drvdata.
-> The separators are whitespace.
-> It creates a list of all  xxxx_set_drvdata functions.
-> For each xxxx_set_drvdata function:
->     It checks all files that have a xxxx_set_drvdata entry, but no
-> xxxx_get_drvdata
-
-OK, but I have the impression that you want to ignore pci_set_drvdata for
-some reason?  Or did I misunderstand?
-
-julia
-
->
-> I piped this output into a file and started manually checking the drivers.
-> There is one [I forget which function] that is xxxx_set_drvdata() but
-> equivalent is xxxx_drvdata()
->
-> As Andy said, some precautions must be taken in places where
-> xxxx_set_drvdata() is called but dev_get_drvdata() is used.
-> Cases like PM suspend/resume calls.
-> And there may be some cases outside this context.
->
->
-> >
-> > julia
->
+-- 
+Regards
+Sudip
