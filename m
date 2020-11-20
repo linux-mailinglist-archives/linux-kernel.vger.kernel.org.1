@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA542BAE59
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F92E2BAE56
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729351AbgKTPPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:15:32 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:55962 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729314AbgKTPPX (ORCPT
+        id S1729334AbgKTPP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:15:27 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:52284 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729306AbgKTPPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:15:23 -0500
-Received: by mail-io1-f72.google.com with SMTP id j10so7634847iog.22
+        Fri, 20 Nov 2020 10:15:21 -0500
+Received: by mail-il1-f198.google.com with SMTP id o18so7743083ilg.19
         for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:15:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=OF6CiG/SEA3+wIoWj8RIQVN5WsLF1TtgPhPsr1W6Mv8=;
-        b=PS9HUtgYJTqM8A9xF8bY+0y6yRX2dZLmyZTsMWfZkd6e3fQ7fUlucUNQvnyZjkOBo5
-         bKW34aAqgtaJ4wYJYn5i555zS0dJ10TEs7i+8VF+3Ajq0pRJGAjU5okmTnlOchOAvVGk
-         VOLrjdEKpVep0l6Q3e6eVkzIXQ6hHzblLQ17k79S/gipEoxbecMPWG3OdcHZUPpkWhFy
-         axSCe7WjmOCOEj42W+umC7OTVXRSjiYyYsM/2eT15HbhjqvjjRc4ZLyzUEwD+9LuJO7S
-         SSodrPbsBg7uJ9Rey7MM9/DlxUTgcI84ky9ZwasuFUW6FiEhN43ShxYDu06HnFJZ2Jn3
-         tdWA==
-X-Gm-Message-State: AOAM530cJ5CjGoaP0sW6q4dJVih+8sP4lNEj4rvHC12JBb3apc93JNdG
-        Lf5CcMO0Tl99cQppJp3lPmzbW/BLvVT1NnOJxt2Ss0bU6WyF
-X-Google-Smtp-Source: ABdhPJx12JrSVAVPAQQFWy+FWCXh+eEQKGbT2F9NBEefXtNUuGYl3APQZzstxDao66GEVac1ufo7IX3SsgN80cI57AGvL2aHdgTC
+        bh=tkGBu9ed9HkqCobXkIkI9MEn9IDKeb0kRoM4P7yTfoc=;
+        b=P5ofje4XUOHF6dr7PFNqnox7lFetRGYIdI3bVp2NeJ6JuZIKx+Vvs147TefwfQFvDA
+         Id6RYrOSIppIzh+c1G5GSAzXVOgtHvt3i3aEH51y0lzDg7m3QDKCHRQyhiq/9ReHoR3U
+         D8G6v+k4wLlatGEVRRVK5SXx4/qSY+f9tji0JTFAKF+UbXrlx7Mc7DiMtMywHLdv3dhS
+         ziShwcWaS1FNCqDgE8xJHugjPmqHD/axqGJ7t4Vkf8awzj5c/mrc0f1gE75KsuCjE4Ef
+         /MkKIqjVDqaM1SdhnfHgudPULPwd7YXyZ8zywYeCTCTVG4SbBxGA9Ql+NMIVycs5WaxM
+         PGKQ==
+X-Gm-Message-State: AOAM531NgKzlpE8Ki1h+GxRcoziaToFTQYQVTnxmxYC2i+SfVuPu/0Sw
+        A3Ao8KUqhpIiUItVrrl25y7lDsI73vjuI5vmXtpwI/ZS3gaS
+X-Google-Smtp-Source: ABdhPJyTkdywlV2rv06IKPHZU2WygAhj5xWz3w9jMY+BBtiEvsyTXlh5nJfabDh9i7hRVaVHbxxuS4SBnPQKBWSApOz+j4VgrCEG
 MIME-Version: 1.0
-X-Received: by 2002:a92:ae0e:: with SMTP id s14mr23832161ilh.94.1605885320838;
- Fri, 20 Nov 2020 07:15:20 -0800 (PST)
-Date:   Fri, 20 Nov 2020 07:15:20 -0800
+X-Received: by 2002:a5e:df03:: with SMTP id f3mr15662613ioq.182.1605885321379;
+ Fri, 20 Nov 2020 07:15:21 -0800 (PST)
+Date:   Fri, 20 Nov 2020 07:15:21 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000019465505b48b50d1@google.com>
-Subject: memory leak in new_inode
-From:   syzbot <syzbot+aa12d6106ea4ca1b6aae@syzkaller.appspotmail.com>
+Message-ID: <00000000000021890a05b48b5068@google.com>
+Subject: kernel BUG at fs/jfs/jfs_logmgr.c:LINE!
+From:   syzbot <syzbot+889fbbf5a2eb77be373f@syzkaller.appspotmail.com>
 To:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
         shaggy@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -47,46 +47,65 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    c2e7554e Merge tag 'gfs2-v5.10-rc4-fixes' of git://git.ker..
+HEAD commit:    111e91a6 Merge tag 's390-5.10-4' of git://git.kernel.org/p..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1362415a500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dc8ee843c1fc6693
-dashboard link: https://syzkaller.appspot.com/bug?extid=aa12d6106ea4ca1b6aae
+console output: https://syzkaller.appspot.com/x/log.txt?x=104697be500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1f5252d7c8fd7762
+dashboard link: https://syzkaller.appspot.com/bug?extid=889fbbf5a2eb77be373f
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13a79ea6500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15b62d72500000
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+aa12d6106ea4ca1b6aae@syzkaller.appspotmail.com
+Reported-by: syzbot+889fbbf5a2eb77be373f@syzkaller.appspotmail.com
 
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff88810ecc2a80 (size 1280):
-  comm "syz-executor002", pid 8495, jiffies 4294947195 (age 8.020s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000c920fbb4>] jfs_alloc_inode+0x18/0x60 fs/jfs/super.c:105
-    [<00000000c664943b>] alloc_inode+0x27/0x100 fs/inode.c:234
-    [<0000000072a6900b>] new_inode_pseudo fs/inode.c:930 [inline]
-    [<0000000072a6900b>] new_inode+0x23/0x100 fs/inode.c:959
-    [<0000000022579323>] diReadSpecial+0x28/0x1e0 fs/jfs/jfs_imap.c:424
-    [<0000000035d6f1c1>] jfs_mount+0xa7/0x280 fs/jfs/jfs_mount.c:107
-    [<00000000db4745f5>] jfs_fill_super+0x1ad/0x3a0 fs/jfs/super.c:562
-    [<00000000deb24c86>] mount_bdev+0x223/0x260 fs/super.c:1419
-    [<00000000355bbcf1>] legacy_get_tree+0x2b/0x90 fs/fs_context.c:592
-    [<00000000b4778640>] vfs_get_tree+0x28/0x100 fs/super.c:1549
-    [<00000000661148dd>] do_new_mount fs/namespace.c:2875 [inline]
-    [<00000000661148dd>] path_mount+0xc5e/0x1170 fs/namespace.c:3205
-    [<00000000184bf2c6>] do_mount fs/namespace.c:3218 [inline]
-    [<00000000184bf2c6>] __do_sys_mount fs/namespace.c:3426 [inline]
-    [<00000000184bf2c6>] __se_sys_mount fs/namespace.c:3403 [inline]
-    [<00000000184bf2c6>] __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3403
-    [<000000004af9fc85>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000004cba2559>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
+BUG at fs/jfs/jfs_logmgr.c:2312 assert(bp->l_flag & lbmRELEASE)
+------------[ cut here ]------------
+kernel BUG at fs/jfs/jfs_logmgr.c:2312!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 17 Comm: ksoftirqd/1 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:lbmIODone.cold+0x24/0x5b fs/jfs/jfs_logmgr.c:2312
+Code: f8 e8 cb ff ff ff e8 ac 52 bd f8 48 c7 c1 40 ca 82 89 ba 08 09 00 00 48 c7 c6 c0 c9 82 89 48 c7 c7 00 ca 82 89 e8 7e ea fa ff <0f> 0b e8 86 52 bd f8 48 c7 c1 80 ca 82 89 ba 09 09 00 00 48 c7 c6
+RSP: 0018:ffffc900004bfbb8 EFLAGS: 00010082
+RAX: 000000000000003f RBX: ffff888012bf1b00 RCX: 0000000000000000
+RDX: ffff888010b2c580 RSI: ffffffff8158f3e5 RDI: fffff52000097f69
+RBP: 0000000000000020 R08: 000000000000003f R09: ffff88802cb30627
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000246
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000002d9aad8 CR3: 00000000691cf000 CR4: 0000000000350ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ bio_endio+0x3d3/0x7a0 block/bio.c:1450
+ req_bio_endio block/blk-core.c:263 [inline]
+ blk_update_request+0x68e/0x1490 block/blk-core.c:1467
+ blk_mq_end_request+0x4c/0x510 block/blk-mq.c:562
+ lo_complete_rq+0x20d/0x2d0 drivers/block/loop.c:501
+ blk_done_softirq+0x294/0x3e0 block/blk-mq.c:586
+ __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
+ run_ksoftirqd kernel/softirq.c:653 [inline]
+ run_ksoftirqd+0x2d/0x50 kernel/softirq.c:645
+ smpboot_thread_fn+0x655/0x9e0 kernel/smpboot.c:165
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace 6a25c5a071b6977e ]---
+RIP: 0010:lbmIODone.cold+0x24/0x5b fs/jfs/jfs_logmgr.c:2312
+Code: f8 e8 cb ff ff ff e8 ac 52 bd f8 48 c7 c1 40 ca 82 89 ba 08 09 00 00 48 c7 c6 c0 c9 82 89 48 c7 c7 00 ca 82 89 e8 7e ea fa ff <0f> 0b e8 86 52 bd f8 48 c7 c1 80 ca 82 89 ba 09 09 00 00 48 c7 c6
+RSP: 0018:ffffc900004bfbb8 EFLAGS: 00010082
+RAX: 000000000000003f RBX: ffff888012bf1b00 RCX: 0000000000000000
+RDX: ffff888010b2c580 RSI: ffffffff8158f3e5 RDI: fffff52000097f69
+RBP: 0000000000000020 R08: 000000000000003f R09: ffff88802cb30627
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000246
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000002d9aad8 CR3: 00000000691cf000 CR4: 0000000000350ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -96,5 +115,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
