@@ -2,71 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F84F2BA2BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 07:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CDF2BA2C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgKTG5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 01:57:25 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:34208 "EHLO fornost.hmeau.com"
+        id S1725942AbgKTG6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 01:58:10 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:34222 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726421AbgKTG5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 01:57:24 -0500
+        id S1725805AbgKTG6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 01:58:09 -0500
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
         by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kg0MA-0007kc-02; Fri, 20 Nov 2020 17:57:19 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 20 Nov 2020 17:57:17 +1100
-Date:   Fri, 20 Nov 2020 17:57:17 +1100
+        id 1kg0Mp-0007lK-B2; Fri, 20 Nov 2020 17:58:00 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 20 Nov 2020 17:57:59 +1100
+Date:   Fri, 20 Nov 2020 17:57:59 +1100
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] crypto: crypto4xx - Replace bitwise OR with logical OR
- in crypto4xx_build_pd
-Message-ID: <20201120065717.GD20581@gondor.apana.org.au>
-References: <20201112200702.1664905-1-natechancellor@gmail.com>
+To:     Yang Shen <shenyang39@huawei.com>
+Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
+        wangzhou1@hisilicon.com
+Subject: Re: [PATCH] crypto: hisilicon/zip - add a work_queue for zip irq
+Message-ID: <20201120065759.GE20581@gondor.apana.org.au>
+References: <1605259955-17796-1-git-send-email-shenyang39@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112200702.1664905-1-natechancellor@gmail.com>
+In-Reply-To: <1605259955-17796-1-git-send-email-shenyang39@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 01:07:02PM -0700, Nathan Chancellor wrote:
-> Clang warns:
+On Fri, Nov 13, 2020 at 05:32:35PM +0800, Yang Shen wrote:
+> The patch 'irqchip/gic-v3-its: Balance initial LPI affinity across CPUs'
+> set the IRQ to an uncentain CPU. If an IRQ is bound to the CPU used by the
+> thread which is sending request, the throughput will be just half.
 > 
-> drivers/crypto/amcc/crypto4xx_core.c:921:60: warning: operator '?:' has
-> lower precedence than '|'; '|' will be evaluated first
-> [-Wbitwise-conditional-parentheses]
->                  (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
->                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
-> drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
-> around the '|' expression to silence this warning
->                  (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
->                                                                          ^
->                                                                         )
-> drivers/crypto/amcc/crypto4xx_core.c:921:60: note: place parentheses
-> around the '?:' expression to evaluate it first
->                  (crypto_tfm_alg_type(req->tfm) == CRYPTO_ALG_TYPE_AEAD) ?
->                                                                          ^
->                  (
-> 1 warning generated.
+> So allocate a 'work_queue' and set as 'WQ_UNBOUND' to do the back half work
+> on some different CPUS.
 > 
-> It looks like this should have been a logical OR so that
-> PD_CTL_HASH_FINAL gets added to the w bitmask if crypto_tfm_alg_type
-> is either CRYPTO_ALG_TYPE_AHASH or CRYPTO_ALG_TYPE_AEAD. Change the
-> operator so that everything works properly.
-> 
-> Fixes: 4b5b79998af6 ("crypto: crypto4xx - fix stalls under heavy load")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1198
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> Signed-off-by: Yang Shen <shenyang39@huawei.com>
+> Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
 > ---
->  drivers/crypto/amcc/crypto4xx_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/crypto/hisilicon/zip/zip_main.c | 26 +++++++++++++++++++++++---
+>  1 file changed, 23 insertions(+), 3 deletions(-)
 
 Patch applied.  Thanks.
 -- 
