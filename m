@@ -2,111 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A4E2BB18E
+	by mail.lfdr.de (Postfix) with ESMTP id B1F472BB18F
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 18:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgKTRhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 12:37:35 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:57497 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727880AbgKTRhf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 12:37:35 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-253-8k7sJ26IO2eyg2tdgB7Pvg-1; Fri, 20 Nov 2020 17:37:31 +0000
-X-MC-Unique: 8k7sJ26IO2eyg2tdgB7Pvg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 20 Nov 2020 17:37:30 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 20 Nov 2020 17:37:30 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Waiman Long' <longman@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Phil Auld <pauld@redhat.com>
-Subject: RE: [RFC PATCH 5/5] locking/rwsem: Remove reader optimistic spinning
-Thread-Topic: [RFC PATCH 5/5] locking/rwsem: Remove reader optimistic spinning
-Thread-Index: AQHWvqN0O6hwIV/IOUmlkB4qEdd62KnQ/N3QgABEQACAAAOhsA==
-Date:   Fri, 20 Nov 2020 17:37:30 +0000
-Message-ID: <8e25d29ffee64b8ab377fd5ebf1c6bb2@AcuMS.aculab.com>
-References: <20201118030429.23017-1-longman@redhat.com>
- <20201118030429.23017-6-longman@redhat.com>
- <20201118053556.3fmmtat7upv6dtvd@linux-p48b.lan>
- <ee34bc01-9fef-23ff-ada1-1ec2d39533c9@redhat.com>
- <5fe76531782f4a8492b341d5f381147b@AcuMS.aculab.com>
- <68d07068-ff31-26b5-f90d-7ea8b4ee2389@redhat.com>
-In-Reply-To: <68d07068-ff31-26b5-f90d-7ea8b4ee2389@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1728766AbgKTRiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 12:38:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726556AbgKTRiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 12:38:24 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5CC512222F;
+        Fri, 20 Nov 2020 17:38:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605893904;
+        bh=/CM845kMFoyDAhbn2zmPsuwA5Dcqa08uUerunV9DE34=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UIJVTAM6h7gIYyon1gTF02NLMS/beUQLxtdV4/eqdp03Ees1TuSy6FLqH3f004zSl
+         MeCbz/+7DfVmav5zKXr/WfKpSrh8AfASFAoh64xOptvO/07904C6Xl5Rk/j0iWeN04
+         3Ie9mTwD7HtXG8Tx8Nj5XgdFdpd/AaF32doTwFCk=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 1B2603522637; Fri, 20 Nov 2020 09:38:24 -0800 (PST)
+Date:   Fri, 20 Nov 2020 09:38:24 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Marco Elver <elver@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
+ kfence: Avoid stalling...)
+Message-ID: <20201120173824.GJ1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201118233841.GS1437@paulmck-ThinkPad-P72>
+ <20201119125357.GA2084963@elver.google.com>
+ <20201119151409.GU1437@paulmck-ThinkPad-P72>
+ <20201119170259.GA2134472@elver.google.com>
+ <20201119184854.GY1437@paulmck-ThinkPad-P72>
+ <20201119193819.GA2601289@elver.google.com>
+ <20201119213512.GB1437@paulmck-ThinkPad-P72>
+ <20201120141928.GB3120165@elver.google.com>
+ <20201120143928.GH1437@paulmck-ThinkPad-P72>
+ <20201120152200.GD2328@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120152200.GD2328@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogV2FpbWFuIExvbmcNCj4gU2VudDogMjAgTm92ZW1iZXIgMjAyMCAxNzowNA0KPiANCj4g
-T24gMTEvMjAvMjAgODoxMSBBTSwgRGF2aWQgTGFpZ2h0IHdyb3RlOg0KPiA+IEZyb206IFdhaW1h
-biBMb25nDQo+ID4+IFNlbnQ6IDE5IE5vdmVtYmVyIDIwMjAgMTg6NDANCj4gPiAuLi4NCj4gPj4g
-TXkgb3duIHRlc3RpbmcgYWxzbyBzaG93IG5vdCB0b28gbXVjaCBwZXJmb3JtYW5jZSBkaWZmZXJl
-bmNlIHdoZW4NCj4gPj4gcmVtb3ZpbmcgcmVhZGVyIHNwaW5uaW5nIGV4Y2VwdCBpbiB0aGUgbGln
-aHRseSBsb2FkZWQgY2FzZXMuDQo+ID4gSSdtIGNvbmZ1c2VkLg0KPiA+DQo+ID4gSSBnb3QgbWFz
-c2l2ZSBwZXJmb3JtYW5jZSBpbXByb3ZlbWVudHMgZnJvbSBjaGFuZ2luZyBhIGRyaXZlcg0KPiA+
-IHdlIGhhdmUgdG8gdXNlIG11dGV4IGluc3RlYWQgb2YgdGhlIG9sZCBzZW1hcGhvcmVzICh0aGUg
-ZHJpdmVyDQo+ID4gd2FzIHdyaXR0ZW4gYSBsb25nIHRpbWUgYWdvKS4NCj4gPg0KPiA+IFdoaWxl
-IHRoZXNlIHdlcmVuJ3QgJ3J3JyB0aGUgc2FtZSBpc3N1ZSB3aWxsIGFwcGx5Lg0KPiA+DQo+ID4g
-VGhlIHByb2JsZW0gd2FzIHRoYXQgdGhlIHNlbWFwaG9yZS9tdXRleCB3YXMgdHlwaWNhbGx5IG9u
-bHkgaGVsZCBvdmVyDQo+ID4gYSBmZXcgaW5zdHJ1Y3Rpb25zIChlZyB0byBhZGQgYW4gaXRlbSB0
-byBhIGxpc3QpLg0KPiA+IEJ1dCB3aXRoIHNlbWFwaG9yZSBpZiB5b3UgZ290IGNvbnRlbnRpb24g
-dGhlIHByb2Nlc3MgYWx3YXlzIHNsZXB0Lg0KPiA+IE9UT0ggbXV0ZXggc3BpbiAnZm9yIGEgd2hp
-bGUnIGJlZm9yZSBzbGVlcGluZyBzbyB0aGUgY29kZSByYXJlbHkgc2xlcHQuDQo+ID4NCj4gPiBT
-byBJIHJlYWxseSBleHBlY3QgdGhhdCByZWFkZXJzIG5lZWQgdG8gc3BpbiAoZm9yIGEgd2hpbGUp
-IGlmDQo+ID4gYSByd3NlbSAoZXRjKSBpcyBsb2NrZWQgZm9yIHdyaXRpbmcuDQo+ID4NCj4gPiBD
-bGVhcmx5IHlvdSByZWFsbHkgbmVlZCBhIENCVSAoQ3J5c3RhbCBCYWxsIFVuaXQpIHRvIHdvcmsg
-b3V0DQo+ID4gd2hldGhlciB0byBzcGluIG9yIG5vdC4NCj4gDQo+IFRoYXQgaXMgdGhlIGhhcmQg
-cGFydC4gRm9yIHNob3J0IGNyaXRpY2FsIHNlY3Rpb24gYW5kIG5vdCBtYW55IHJlYWRlcnMNCj4g
-YXJvdW5kLCBtYWtpbmcgdGhlIHJlYWRlcnMgc3BpbiB3aWxsIGxpa2VseSBpbXByb3ZlIHBlcmZv
-cm1hbmNlLiBPbiB0aGUNCj4gb3RoZXIgaGFuZCwgaWYgdGhlIGNyaXRpY2FsIHNlY3Rpb24gaXMg
-bG9uZyB3aXRoIG1hbnkgcmVhZGVycywgbWFrZQ0KPiByZWFkZXJzIHNsZWVwIGFuZCB0aGVuIHdh
-a2UgdGhlbSBhbGwgdXAgYXQgb25jZSBjYW4gaGF2ZSBiZXR0ZXINCj4gcGVyZm9ybWFuY2UuIFRo
-ZXJlIGlzIG5vIG9uZS1zaXplLWZpdC1hbGwgc29sdXRpb24gaGVyZS4NCg0KRG8gdGhlIHJlYWRl
-cnMgYWN0dWFsbHkgYWxsIHdha2UgdXAgYXQgdGhlIHNhbWUgdGltZT8NCnJ3c2VtIG1pZ2h0IGJl
-IHNwZWNpYWwsIGJ1dCBpZiBJIGN2X2Jyb2FkY2FzdCBhIHVzZXJzcGFjZSBjdg0KdGhlbiBvbmx5
-IG9uZSB0aHJlYWQgaXMgd29rZW4uDQpPbmNlIGl0IHJ1bnMgdGhlIG5leHQgb25lIGlzIHdva2Vu
-Lg0KVGhpcyBpcyBob3JyaWQgaWYgeW91IGFjdHVhbGx5IHdhbnQgdGhlbSBhbGwgdG8gcnVuOg0K
-LSBJdCB0YWtlcyBhZ2VzIGZvciB0aGUgdGFyZ2V0IGNwdSB0byBjb21lIG91dCBvZiBhIGxvdy1w
-b3dlciBzdGF0ZS4NCi0gUlQgcHJvY2Vzc2VzIGRvbid0IGdldCBzY2hlZHVsZWQgaWYgdGhlIGNw
-dSB0aGV5IGxhc3QgcmFuIG9uIGlzDQogICdidXN5JyBpbiBrZXJuZWwuDQoNCkkgY2FuJ3Qgc2Vl
-IHdoeSB0aGUgbnVtYmVyIG9mIHJlYWRlcnMgaXMgcmVsZXZhbnQuDQpUaGV5IGFyZSBtb3JlIGxp
-a2VseSB0byBzdGFydCBpbiAnbG9ja3N0ZXAnIGlmIHRoZXkgc3Bpbi4NCihXaGljaCBJIHRoaW5r
-IGlzIHdoYXQgeW91IHNheSBpcyBiZXN0KS4NCg0KWW91IG1heSB3YW50IHBlci1yd3NlbSBvcHRp
-b24gb2YgaG93IGxvbmcgdG8gc3Bpbi4NCkFsdGhvdWdoIHRoZXJlIGFyZSBwcm9iYWJseSBvbmx5
-IDIgdXNlZnVsIHZhbHVlcyAtIDAgYW5kIGxvdHMuDQoNCkFyZSB0aGVyZSBydyBzcGlubG9ja3M/
-DQpUaGV5IGNhbiBiZSBtdWNoIGJldHRlciBpcyB0aGUgY3JpdGljYWwgc2VjdGlvbnMgYXJlIHNo
-b3J0Lg0KRXNwZWNpYWxseSBpZiB0aGV5IHJlYWxseSBhcmUgc2hvcnQgYW5kIFJUIGtlcm5lbHMg
-ZG9uJ3QNCmJyZWFrIGV2ZXJ5dGhpbmcgbXkgbWFraW5nIHRoZSBzbGVlcC4NCg0KSSB3YXMgZml4
-aW5nIHNvbWUgdXNlcnNwYWNlIGNvZGUgdGhhdCBkb2VzIGEgbG90IG9mIGNoYW5uZWxzIG9mDQph
-dWRpbyBwcm9jZXNzaW5nLg0KWW91IGNhbid0IGFmZm9yZCB0byB0YWtlIGEgbXV0ZXggYmVjYXVz
-ZSBhbiBpbnRlcnJ1cHQgbWlnaHQNCmNvbWUgaW4gd2hpbGUgeW91IGhvbGQgaXQgLSBzdG9wcGlu
-ZyBhbGwgdGhlIG90aGVyIHRocmVhZHMNCm9idGFpbmluZyB0aGUgc2FtZSBtdXRleC4NCk9uZSB0
-aHJlYWQgc3RvcHBpbmcgaXMgZmluZSwgYnV0IGhhdmluZyBhbGwgdGhlIHRocmVhZHMgc3RvcA0K
-bGVhZHMgdG8gcHJvY2Vzc2luZyBvdmVycnVuLg0KU2luY2UgeW91IGNhbid0IGRpc2FibGUgaW50
-ZXJydXB0cyBpbiB1c2Vyc3BhY2UgKGZvciBhIHNwaW5sb2NrKQ0KSSBoYWQgdG8gcmVwbGFjZSBs
-b2NrZWQgbGlua2VkIGxpc3RzIHdpdGggYXJyYXlzIGluZGV4ZWQgYnkNCmF0b21pYyBjb3VudGVy
-cy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBS
-b2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9u
-IE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Fri, Nov 20, 2020 at 03:22:00PM +0000, Mark Rutland wrote:
+> On Fri, Nov 20, 2020 at 06:39:28AM -0800, Paul E. McKenney wrote:
+> > On Fri, Nov 20, 2020 at 03:19:28PM +0100, Marco Elver wrote:
+> > > I found that disabling ftrace for some of kernel/rcu (see below) solved
+> > > the stalls (and any mention of deadlocks as a side-effect I assume),
+> > > resulting in successful boot.
+> > > 
+> > > Does that provide any additional clues? I tried to narrow it down to 1-2
+> > > files, but that doesn't seem to work.
+> > 
+> > There were similar issues during the x86/entry work.  Are the ARM guys
+> > doing arm64/entry work now?
+> 
+> I'm currently looking at it. I had been trying to shift things to C for
+> a while, and right now I'm trying to fix the lockdep state tracking,
+> which is requiring untangling lockdep/rcu/tracing.
+> 
+> The main issue I see remaining atm is that we don't save/restore the
+> lockdep state over exceptions taken from kernel to kernel. That could
+> result in lockdep thinking IRQs are disabled when they're actually
+> enabled (because code in the nested context might do a save/restore
+> while IRQs are disabled, then return to a context where IRQs are
+> enabled), but AFAICT shouldn't result in the inverse in most cases since
+> the non-NMI handlers all call lockdep_hardirqs_disabled().
+> 
+> I'm at a loss to explaim the rcu vs ftrace bits, so if you have any
+> pointers to the issuies ween with the x86 rework that'd be quite handy.
 
+There were several over a number of months.  I especially recall issues
+with the direct-from-idle execution of smp_call_function*() handlers,
+and also with some of the special cases in the entry code, for example,
+reentering the kernel from the kernel.  This latter could cause RCU to
+not be watching when it should have been or vice versa.
+
+I would of course be most aware of the issues that impinged on RCU
+and that were located by rcutorture.  This is actually not hard to run,
+especially if the ARM bits in the scripting have managed to avoid bitrot.
+The "modprobe rcutorture" approach has fewer dependencies.  Either way:
+https://paulmck.livejournal.com/57769.html and later posts.
+
+							Thanx, Paul
+
+> Thanks,
+> Mark.
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > > Thanks,
+> > > -- Marco
+> > > 
+> > > ------ >8 ------
+> > > 
+> > > diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
+> > > index 0cfb009a99b9..678b4b094f94 100644
+> > > --- a/kernel/rcu/Makefile
+> > > +++ b/kernel/rcu/Makefile
+> > > @@ -3,6 +3,13 @@
+> > >  # and is generally not a function of system call inputs.
+> > >  KCOV_INSTRUMENT := n
+> > >  
+> > > +ifdef CONFIG_FUNCTION_TRACER
+> > > +CFLAGS_REMOVE_update.o = $(CC_FLAGS_FTRACE)
+> > > +CFLAGS_REMOVE_sync.o = $(CC_FLAGS_FTRACE)
+> > > +CFLAGS_REMOVE_srcutree.o = $(CC_FLAGS_FTRACE)
+> > > +CFLAGS_REMOVE_tree.o = $(CC_FLAGS_FTRACE)
+> > > +endif
+> > > +
+> > >  ifeq ($(CONFIG_KCSAN),y)
+> > >  KBUILD_CFLAGS += -g -fno-omit-frame-pointer
+> > >  endif
