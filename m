@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B572BB013
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A64A2BAFDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729674AbgKTQTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:19:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37744 "EHLO mail.kernel.org"
+        id S1728801AbgKTQQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:16:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729649AbgKTQTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:19:43 -0500
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728773AbgKTQQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 11:16:49 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B38D2408E;
-        Fri, 20 Nov 2020 16:19:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605889182;
-        bh=evb6wjGRVMwrWJRqEySL6t4LzK9d/Rg6xYP1e4Vt620=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FHxY6yDE1rg6TPjAUR4pvA1eKCHn2JKmG1cx7McdjEANBo+yt1PCJM4d6dOqbG0ip
-         2h5f/mgPxao2TkncQLmtdB3tWN3nyucKDgG9bK6fqtJJqj0r2LnHSzJANbcYFqW56A
-         GCML3GdaINH8gaS1ctG9GlEJUvAvGRaEf1Kvu5a4=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 31/38] ASoC: ts3a227e: skip of_device_id table when !CONFIG_OF
-Date:   Fri, 20 Nov 2020 17:16:45 +0100
-Message-Id: <20201120161653.445521-31-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201120161653.445521-1-krzk@kernel.org>
-References: <20201120161653.445521-1-krzk@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 32447223BE;
+        Fri, 20 Nov 2020 16:16:48 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 11:16:46 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Petr Mladek <pmladek@suse.com>, <sergey.senozhatsky@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+Subject: Re: [PATCH] lib: vsprintf: Fix handling of number field widths in
+ vsscanf
+Message-ID: <20201120111646.0daee5a4@gandalf.local.home>
+In-Reply-To: <59d43108-814e-4bf1-73f9-4994291abc05@opensource.cirrus.com>
+References: <20201116143252.19983-1-rf@opensource.cirrus.com>
+        <X7ei9cENZ0dVkGZh@alley>
+        <20201120100705.3a7fb747@gandalf.local.home>
+        <59d43108-814e-4bf1-73f9-4994291abc05@opensource.cirrus.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver can match by multiple methods.  Its of_device_id table is
-referenced via of_match_ptr() so it will be unused for !CONFIG_OF
-builds:
+On Fri, 20 Nov 2020 16:04:15 +0000
+Richard Fitzgerald <rf@opensource.cirrus.com> wrote:
 
-  sound/soc/codecs/ts3a227e.c:369:34: warning: ‘ts3a227e_of_match’ defined but not used [-Wunused-const-variable=]
+> > But yeah, we could very much have cp - startp > max_chars.
+> >   
+> 
+> My code handles the prefix overflow, but I did it by having
+> __parse_integer_limit() simply give 0 if max_chars <= 0.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- sound/soc/codecs/ts3a227e.c | 2 ++
- 1 file changed, 2 insertions(+)
+Yeah, but if that's the intended result, then it needs to be commented as
+such, and the comment needs to be fixed. Right now it's:
 
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index 3ed3b45fa7ba..962f5d48378a 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -366,11 +366,13 @@ static const struct i2c_device_id ts3a227e_i2c_ids[] = {
- };
- MODULE_DEVICE_TABLE(i2c, ts3a227e_i2c_ids);
- 
-+#ifdef CONFIG_OF
- static const struct of_device_id ts3a227e_of_match[] = {
- 	{ .compatible = "ti,ts3a227e", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, ts3a227e_of_match);
-+#endif
- 
- #ifdef CONFIG_ACPI
- static struct acpi_device_id ts3a227e_acpi_match[] = {
--- 
-2.25.1
+/*
+ * Convert non-negative integer string representation in explicitly given radix
+ * to an integer. The maximum number of characters to convert can be given.
+ * A character limit of INT_MAX is effectively unlimited since a string that
+ * long is unreasonable.
+ * Return number of characters consumed maybe or-ed with overflow bit.
+ * If overflow occurs, result integer (incorrect) is still returned.
+ *
+ * Don't you dare use this function.
+ */
 
+That comment needs to include: "If max_chars <= 0, then this returns zero.".
+
+-- Steve
+
+
+> 
+> So if the field width isn't enough for the prefix/leading '-' and at
+> least one digit, subtracting the prefix length from the field length
+> will give a max_chars <= 0. And you'll get a result of 0 as in your
+> '%2li%9lx' test case.
+> 
+> I thought this was nice because it didn't need to add code to check
+> for the prefix overflow - it comes inherently from the loop in
+> __parse_integer_limit(). But I'm willing to change
+> __parse_integer_limit() to take an unsigned and add explicit checks for
+> the prefix/'-' overflow cases.
