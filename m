@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD132BAA8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F56B2BAA97
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728268AbgKTMwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:52:04 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2136 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbgKTMwD (ORCPT
+        id S1727635AbgKTMxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:53:22 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:51302 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726391AbgKTMxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:52:03 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CcxGl1WXgz67Fvf;
-        Fri, 20 Nov 2020 20:50:23 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 20 Nov 2020 13:52:00 +0100
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
- Fri, 20 Nov 2020 13:52:00 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        "Casey Schaufler" <casey@schaufler-ca.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        "James Morris" <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        "Micah Morton" <mortonm@chromium.org>
-Subject: RE: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-Thread-Topic: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-Thread-Index: AQHWuZM+vbqfejrqe02000rC0h3xoqnHabyAgAMLzKCAAG/IAIAABvEAgAAOKACAAAEYgIAAB9QAgAAHL4CAAY8zAIAAU72AgAABvoCAAAHXAIAD/8pw
-Date:   Fri, 20 Nov 2020 12:52:00 +0000
-Message-ID: <6dafff7889d34bc799b4c5bfd0bfebc8@huawei.com>
-References: <20201113080132.16591-1-roberto.sassu@huawei.com>
- <20201114111057.GA16415@infradead.org>
- <0fd0fb3360194d909ba48f13220f9302@huawei.com>
- <20201116162202.GA15010@infradead.org>
- <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
- <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
- <20201116174127.GA4578@infradead.org>
- <CAHk-=wjd0RNthZQTLVsnK_d9SFYH0rug2tkezLLB0J-YZzVC+Q@mail.gmail.com>
- <3f8cc7c9462353ac2eef58e39beee079bdd9c7b4.camel@linux.ibm.com>
- <CAHk-=wih-ibNUxeiKpuKrw3Rd2=QEAZ8zgRWt_CORAjbZykRWQ@mail.gmail.com>
- <5d8fa26d376999f703aac9103166a572fc0df437.camel@linux.ibm.com>
- <CAHk-=wiPfWZYsAqhQry=mhAbKei8bHZDyVPJS0XHZz_FH9Jymw@mail.gmail.com>
- <CAHk-=wjinHpYRk_F1qiaXbXcMtn-ZHKkPkBvZpDJHjoN_2o4ag@mail.gmail.com>
-In-Reply-To: <CAHk-=wjinHpYRk_F1qiaXbXcMtn-ZHKkPkBvZpDJHjoN_2o4ag@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
+        Fri, 20 Nov 2020 07:53:21 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-141-gW62sKHmNNyvbVQktKgy6Q-1; Fri, 20 Nov 2020 12:53:17 +0000
+X-MC-Unique: gW62sKHmNNyvbVQktKgy6Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 20 Nov 2020 12:53:16 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 20 Nov 2020 12:53:16 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Thomas Zimmermann' <tzimmermann@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Huang, Ray" <ray.huang@amd.com>, Dave Airlie <airlied@redhat.com>,
+        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>
+Subject: RE: Linux 5.10-rc4; graphics alignment
+Thread-Topic: Linux 5.10-rc4; graphics alignment
+Thread-Index: Ada/IUdqcU2WLz13TDyBa91ssXd9zQABIUYAAAEibgAAAW3SAAAAkehgAAGiZoAAAIjkIA==
+Date:   Fri, 20 Nov 2020 12:53:16 +0000
+Message-ID: <ec3130c3d22a4d4dafe020d30fd224cd@AcuMS.aculab.com>
+References: <2c474745ae884de3b4ecb8abe2152bfd@AcuMS.aculab.com>
+ <fa5c887e-82d8-5347-ff18-85e3628dadbe@suse.de>
+ <c01d2d95f1e64be984cff71e7bdf1c84@AcuMS.aculab.com>
+ <c9bae016-413f-0db9-c9ee-d6f39d24a6ab@suse.de>
+ <fa6346190d0b4936934d1f1359e5b71f@AcuMS.aculab.com>
+ <fd66bfcc-072a-ddfb-0d12-af4a5207820d@suse.de>
+In-Reply-To: <fd66bfcc-072a-ddfb-0d12-af4a5207820d@suse.de>
+Accept-Language: en-GB, en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.220.96.108]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBMaW51cyBUb3J2YWxkcyBbbWFpbHRvOnRvcnZhbGRzQGxpbnV4LWZvdW5kYXRpb24u
-b3JnXQ0KPiBTZW50OiBXZWRuZXNkYXksIE5vdmVtYmVyIDE4LCAyMDIwIDEyOjM3IEFNDQo+IE9u
-IFR1ZSwgTm92IDE3LCAyMDIwIGF0IDM6MjkgUE0gTGludXMgVG9ydmFsZHMNCj4gPHRvcnZhbGRz
-QGxpbnV4LWZvdW5kYXRpb24ub3JnPiB3cm90ZToNCj4gPg0KPiA+IE9uIFR1ZSwgTm92IDE3LCAy
-MDIwIGF0IDM6MjQgUE0gTWltaSBab2hhciA8em9oYXJAbGludXguaWJtLmNvbT4NCj4gd3JvdGU6
-DQo+ID4gPg0KPiA+ID4gSSByZWFsbHkgd2lzaCBpdCB3YXNuJ3QgbmVlZGVkLg0KPiA+DQo+ID4g
-U2VyaW91c2x5LCBJIGdldCB0aGUgZmVlbGluZyB0aGF0IElNQSBpcyBjb21wbGV0ZWx5IG1pcy1k
-ZXNpZ25lZCwgYW5kDQo+ID4gaXMgZG9pbmcgYWN0aXZlbHkgYmFkIHRoaW5ncy4NCj4gPg0KPiA+
-IFdobyB1c2VzIHRoaXMgImZlYXR1cmUiLCBhbmQgd2hvIGNhcmVzPyBCZWNhdXNlIEkgd291bGQg
-c3VnZ2VzdCB5b3UNCj4gPiBqdXN0IGNoYW5nZSB0aGUgcG9saWN5IGFuZCBiZSBkb25lIHdpdGgg
-aXQuDQo+IA0KPiBBbm90aGVyIGFsdGVybmF0aXZlIGlzIHRvIGNoYW5nZSB0aGUgcG9saWN5IGFu
-ZCBzYXkgImFueSB3cml0ZS1vbmx5DQo+IG9wZW4gZ2V0cyB0dXJuZWQgaW50byBhIHJlYWQtd3Jp
-dGUgb3BlbiIuDQoNCk9uZSBpc3N1ZSB0aGF0IHdvdWxkIGFyaXNlIGZyb20gZG9pbmcgaXQgaXMg
-dGhhdCBzZWN1cml0eSBwb2xpY2llcyBuZWVkDQp0byBiZSBtb2RpZmllZCB0byBncmFudCB0aGUg
-YWRkaXRpb25hbCByZWFkIHBlcm1pc3Npb24uIElmIHRoZSBvcGVuDQpmbGFnIGlzIGFkZGVkIGVh
-cmx5LCB0aGUgTFNNIGhvb2sgc2VjdXJpdHlfZmlsZV9vcGVuKCkgd2lsbCBzZWUgaXQuDQoNClRo
-aXMgc29sdXRpb24gc2VlbXMgbm90IG9wdGltYWwsIGFzIHdlIGFyZSBnaXZpbmcgdG8gcHJvY2Vz
-c2VzIGENCnBlcm1pc3Npb24gdGhhdCB0aGV5IHdvdWxkbid0IHJlYWxseSB0YWtlIGFkdmFudGFn
-ZSBvZiwgc2luY2UgdGhlDQpjb250ZW50IHJlYWQgcmVtYWlucyBpbiBrZXJuZWwgc3BhY2UuIEFu
-ZCBhbiBhZGRpdGlvbmFsIHBlcm1pc3Npb24NCmlzIGEgcGVybWlzc2lvbiB0aGF0IGNhbiBiZSBl
-eHBsb2l0ZWQuDQoNCkFzIE1pbWkgc2FpZCwgd2UgYWxyZWFkeSBoYXZlIGEgc2Vjb25kIG9wZW4g
-d2l0aCBkZW50cnlfb3BlbigpIHdoZW4NCnRoZSBvcmlnaW5hbCBmaWxlIGRlc2NyaXB0b3IgaXMg
-bm90IHN1aXRhYmxlLiBUaGUgb25seSBwcm9ibGVtLCB3aGljaCBpcw0Kd2h5IGNoYW5naW5nIHRo
-ZSBtb2RlIGlzIHN0aWxsIHRoZXJlLCBpcyB0aGF0IGEgcHJvY2VzcyBzdGlsbCBtaWdodCBub3QN
-CmhhdmUgdGhlIHByaXZpbGVnZSB0byByZWFkLCBhbmQgdGhpcyBpcyBhIGxlZ2l0aW1hdGUgY2Fz
-ZS4NCg0KV2UgY291bGQgYXNzaWduIGEgbW9yZSBwb3dlcmZ1bCBjcmVkZW50aWFsIHRvIHRoZSBw
-cm9jZXNzLCBzaW5jZQ0KZGVudHJ5X29wZW4oKSBhY2NlcHRzIGEgY3JlZGVudGlhbCBhcyBhbiBh
-cmd1bWVudC4gV2UgY291bGQgb2J0YWluDQpzdWNoIHBvd2VyZnVsIGNyZWRlbnRpYWwgZnJvbSBw
-cmVwYXJlX2tlcm5lbF9jcmVkKCkuIFRoaXMgb3B0aW9uDQpoYXMgYmV0dGVyIGNoYW5jZXMgdG8g
-d29yayB3aXRob3V0IG1vZGlmeWluZyBleGlzdGluZyBzZWN1cml0eSBwb2xpY2llcw0KYXMgbGlr
-ZWx5IHRob3NlIHBvbGljaWVzIGFscmVhZHkgYXNzaWduZWQgdGhlIHJlcXVpcmVkIHByaXZpbGVn
-ZSB0byB0aGUNCmtlcm5lbC4gSG93ZXZlciwgZG9pbmcgc28gbWlnaHQgbm90IGJlIHdoYXQgTFNN
-IHBlb3BsZSByZWNvbW1lbmQuDQoNCkFueSBzdWdnZXN0aW9uPw0KDQpUaGFua3MNCg0KUm9iZXJ0
-bw0KDQpIVUFXRUkgVEVDSE5PTE9HSUVTIER1ZXNzZWxkb3JmIEdtYkgsIEhSQiA1NjA2Mw0KTWFu
-YWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIExpIEppYW4sIFNoaSBZYW5saQ0K
+RnJvbTogVGhvbWFzIFppbW1lcm1hbm4NCj4gU2VudDogMjAgTm92ZW1iZXIgMjAyMCAxMjozMA0K
+PiANCj4gQW0gMjAuMTEuMjAgdW0gMTI6NDUgc2NocmllYiBEYXZpZCBMYWlnaHQ6DQo+ID4gRnJv
+bTogVGhvbWFzIFppbW1lcm1hbm4NCj4gPj4gU2VudDogMjAgTm92ZW1iZXIgMjAyMCAxMToyNw0K
+PiA+IC4uLg0KPiA+Pj4+IFlvdSBjYW4gdXNlIGRybS10aXAgZm9yIHRlc3RpbmcsIHdoZXJlIG1h
+bnkgb2YgdGhlIERSTSBwYXRjaGVzIGdvIHRocm91Z2guDQo+ID4+Pj4NCj4gPj4+PiAgICAgIGh0
+dHBzOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvZHJtL2RybS10aXAvDQo+ID4+Pj4NCj4gPj4+PiBJ
+dCdzIGZhaXJseSB1cC10by1kYXRlLg0KPiA+Pj4NCj4gPj4+IEFueSBpZGVhIG9mIHRhZ3MgZWl0
+aGVyIHNpZGUgb2YgdGhlIDUuMTAgbWVyZ2U/DQo+ID4+DQo+ID4+IFRoZSBmaW5hbCBjb21taXQg
+YmVmb3JlIHY1LjkgYXBwZWFycyB0byBiZQ0KPiA+Pg0KPiA+PiAgICAgRml4ZXM6IDMzYzgyNTZi
+M2JjYyAoImRybS9hbWQvZGlzcGxheTogQ2hhbmdlIEFCTSBjb25maWcgaW5pdCBpbnRlcmZhY2Ui
+KQ0KPiA+Pg0KPiA+PiBJJ2QgdHJ5IHRoaXMgYXMgYSBnb29kIGNvbW1pdC4gRm9yIHRoZSBiYWQg
+Y29tbWl0LCBqdXN0IHRyeSBIRUFELg0KPiA+DQo+ID4gSEVBRCBvZmYgdGhhdCB0cmVlIHdvcmtz
+Lg0KPiA+IENvbG91cnMgb2sgYW5kIG5vIHN0YWNrIGJhY2t0cmFjZS4NCj4gPg0KPiA+IElkZWFz
+Pz8NCj4gDQo+IFRoZSBnb29kIG5ld3MgaXMgdGhhdCBpdCdzIGJlZW4gZml4ZWQuIEFsbCB5b3Ug
+aGF2ZSB0byBkbyBpcyB3YWl0IGZvcg0KPiB0aGUgZml4IHRvIGhpdCB1cHN0cmVhbS4NCj4gDQo+
+IERpZCB5b3UgdHJ5IHRoZSBwYXRjaCB0aGF0IERhdmUgbGlua2VkPyANCg0KVGhhdCBwYXRjaCBt
+YWtlcyBubyBkaWZmZXJlbmNlIHRvIG15IHN5c3RlbS4NClRoZSBjb25kaXRpb24gaXMgZmFsc2Ug
+c28gaXQgZG9lc24ndCBjb3JydXB0IHRoZSBmbGFncy4NCihJIHByaW50ZWQgdGhlIHZhbHVlcyB0
+byBzZWUuKQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFt
+bGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3Ry
+YXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+
