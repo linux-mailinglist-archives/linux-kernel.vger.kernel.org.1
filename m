@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6B42BAA6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E502BAA71
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:48:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgKTMrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:47:01 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:36618 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbgKTMrB (ORCPT
+        id S1728041AbgKTMsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:48:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726621AbgKTMsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:47:01 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id ECF241C0BBF; Fri, 20 Nov 2020 13:46:57 +0100 (CET)
-Date:   Fri, 20 Nov 2020 13:46:57 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com,
-        tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: Re: [PATCH v6 0/8] IMA: support for measuring kernel integrity
- critical data
-Message-ID: <20201120124657.GA31468@duo.ucw.cz>
-References: <20201119232611.30114-1-tusharsu@linux.microsoft.com>
+        Fri, 20 Nov 2020 07:48:24 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29007C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:48:24 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kg5pr-0001b9-BC; Fri, 20 Nov 2020 13:48:19 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kg5pq-0002rg-Gt; Fri, 20 Nov 2020 13:48:18 +0100
+Date:   Fri, 20 Nov 2020 13:48:16 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: pwm: pca9685: Add staggered-outputs property
+Message-ID: <20201120124816.2ncbm75v4c5xrtw3@pengutronix.de>
+References: <20201118174515.278067-1-clemens.gruber@pqgruber.com>
+ <20201120082150.kyihkhphph7wosfz@pengutronix.de>
+ <X7e4Zj1yejjLBFyl@workstation.tuxnet>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wdptpb2gnz4jdjdu"
 Content-Disposition: inline
-In-Reply-To: <20201119232611.30114-1-tusharsu@linux.microsoft.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <X7e4Zj1yejjLBFyl@workstation.tuxnet>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---7AUc2qLy4jB3hD7Z
-Content-Type: text/plain; charset=us-ascii
+--wdptpb2gnz4jdjdu
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu 2020-11-19 15:26:03, Tushar Sugandhi wrote:
-> Kernel integrity critical data can be defined as the in-memory kernel
-> data which if accidentally or maliciously altered, can compromise the
-> integrity of the system.
-
-Is that an useful definition?
-
-> There are several kernel subsystems that contain integrity critical
-> data - e.g. LSMs like SELinux, or AppArmor; or device-mapper targets
-> like dm-crypt, dm-verity etc. Examples of critical data could be kernel
-> in-memory r/o structures, hash of the memory structures, or data that
-> represents a linux kernel subsystem state.
+On Fri, Nov 20, 2020 at 01:36:54PM +0100, Clemens Gruber wrote:
+> Hi,
 >=20
-> This patch set defines a new IMA hook namely ima_measure_critical_data()
-> to measure the critical data. Kernel subsystems can use this
-> functionality, to take advantage of IMA's measuring and quoting=20
-> abilities - thus ultimately enabling remote attestation for the
-> subsystem specific information stored in the kernel memory.
+> On Fri, Nov 20, 2020 at 09:21:50AM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Wed, Nov 18, 2020 at 06:45:15PM +0100, Clemens Gruber wrote:
+> > > The pca9685 driver supports a new staggered-outputs property for redu=
+ced
+> > > current surges and EMI. This adds documentation for the new DT proper=
+ty.
+> >=20
+> > Maybe point out the commit that added this support here?
+>=20
+> The pca9685 driver patch was not yet accepted and there will be a v2.
+>=20
+> Should I wait until the support is in Linus' tree and only then send a
+> dt-bindings documentation patch, mentioning the commit?
 
-How is it supposed to be useful?
+Then I'd say add the dt-bindings patch to the series adding this
+support.
 
-I'm pretty sure there are critical data that are not measured by
-proposed module... and that are written under normal circumstances.
-
-Best regards,
-
-									Pavel
+Best regards
+Uwe
 
 --=20
-http://www.livejournal.com/~pavelmachek
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---7AUc2qLy4jB3hD7Z
+--wdptpb2gnz4jdjdu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX7e6wQAKCRAw5/Bqldv6
-8i6vAKC6FrLMFyZX0lHzJkX+8Mez8H3kogCeJ64mXaqCarNAouB4RShXr1Nthec=
-=jlIk
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+3uw4ACgkQwfwUeK3K
+7Ak15Qf8D7HdXIO7UJ0QM2vt3GNUwmc4Lfee5+zCkePW/6oohnPJD7RQCN+3/aOX
+lqudlv0NVgCsm0DkcHVtrYxl6VTf5Ot1gHx+TGGJp04YAU/b9gNvGUm+AyYsHIbX
+c1JHSjBBhWxOx8aFAZFCGqkiFAjg/H+o89beJgKz0aQq3Ii2sp7OUdXXioC/2N8f
+YYb253k0WYEzaI9N8PEnAAvS7RQ2DkG5XiaOgpmDcPorqL6iltJ4JSD4eznAZaJp
+Mdaow35DVFruvBfRRuns5TjOM7zkJQCZ/5gOyXGZ50wEjzvpEqrqFT9kQLyZxQDD
+EK5+hK9X5h8ktRUKcsq0MXTtC6h/Zw==
+=KXOK
 -----END PGP SIGNATURE-----
 
---7AUc2qLy4jB3hD7Z--
+--wdptpb2gnz4jdjdu--
