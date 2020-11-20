@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3DF2BA1B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 06:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7982BA1BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 06:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725801AbgKTFPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 00:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbgKTFPQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 00:15:16 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5042C0613CF;
-        Thu, 19 Nov 2020 21:15:15 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1725841AbgKTFVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 00:21:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgKTFVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 00:21:24 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ccl9T6794z9sT6;
-        Fri, 20 Nov 2020 16:15:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605849311;
-        bh=qmX3V0pKiJMMxrP9g1rgonP2PEr4dj0VZSg2vPAYbqM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MTKZ/zBhkTaF/PVJwBtaMtX2lVKej3WfAS+CmEDtdme5OnxsFW9ph8HW0/9FP94GS
-         FYtl4crCj0uxsc91IKAH0DdBVh09pUY8pqaQN1IggyVrZcLISxKuyQVnvM5CFdmcHA
-         0acmjBvvsduek/HSswSof9zVBgQB3IEjfCUcN0+titrzU7ILNoX7FTuEPWCABRgHpX
-         gj1/yl7RBsq5sxQdCwkRiXHZdWAZxjB7CCdYwqiw/BiW0vcJCo4G9gORqRsXPO8Thx
-         WMi/I1AwccnJwNR2rfB3XppSf+wszgH2lSw2rIIA8SnPnSjSKerHwcCkm63LzwfAPB
-         r15Or838rDqTA==
-Date:   Fri, 20 Nov 2020 16:15:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the usb tree
-Message-ID: <20201120161506.4ff08894@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 755F32237B;
+        Fri, 20 Nov 2020 05:21:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605849684;
+        bh=DamdNeE8S3vr+HkxBAfA07bHOd4V6Q+Sf3GVGHmKRKc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T4kTwO2H43onA7VrcwUAZfM3rdgtx5uFXe0fymKLUGwiS4+i4B6mLrJ21UWg2dJZK
+         sY0uVFKXcnpZzf7BE2dNLQXG6WDOwV8/l/Y6cXSKFxTCbU8UQkWCV6xZupV1BChAmb
+         WTZKxHZI473r6Nt6Y+XjLB8VvcnU1PraZy5vtNe0=
+Date:   Thu, 19 Nov 2020 21:21:22 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mdio_bus: suppress err message for reset gpio
+ EPROBE_DEFER
+Message-ID: <20201119212122.665d5396@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <221941d6-2bb1-9be8-7031-08071a509542@gmail.com>
+References: <20201119203446.20857-1-grygorii.strashko@ti.com>
+        <1a59fbe1-6a5d-81a3-4a86-fa3b5dbfdf8e@gmail.com>
+        <cabad89e-23cc-18b3-8306-e5ef1ee4bfa6@ti.com>
+        <44a3c8c0-9dbd-4059-bde8-98486dde269f@gmail.com>
+        <20201119214139.GL1853236@lunn.ch>
+        <221941d6-2bb1-9be8-7031-08071a509542@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/EsALb==m9xzibz+=6drHdkP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EsALb==m9xzibz+=6drHdkP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 19 Nov 2020 23:09:52 +0100 Heiner Kallweit wrote:
+> Am 19.11.2020 um 22:41 schrieb Andrew Lunn:
+> >>>> Doesn't checkpatch complain about line length > 80 here? =20
+> >>>
+> >>> :)
+> >>>
+> >>> commit bdc48fa11e46f867ea4d75fa59ee87a7f48be144
+> >>> Author: Joe Perches <joe@perches.com>
+> >>> Date:=C2=A0=C2=A0 Fri May 29 16:12:21 2020 -0700
+> >>>
+> >>> =C2=A0=C2=A0=C2=A0 checkpatch/coding-style: deprecate 80-column warni=
+ng
+> >>> =20
+> >>
+> >> Ah, again something learnt. Thanks for the reference. =20
+> >=20
+> > But it then got revoked for netdev. Or at least it was planned to
+> > re-impose 80 for netdev. I don't know if checkpatch got patched yet.
 
-Hi all,
+FWIW I had a patch for it but before I sent it Dave suggested I ask
+around and Alexei was opposed.
 
-After merging the usb tree, today's linux-next build (htmldocs) produced
-this warning:
+And I don't have the strength to argue :)
 
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
-drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_=
-modes' description in 'typec_partner_set_num_altmodes'
+I'll just tell people case by case when they have 4+ indentation levels
+in their code or use 40+ character variables/defines, in my copious
+spare time.=20
 
-Introduced by commit
+> At a first glance it sounds strange that subsystems may define own
+> rules for such basic things. But supposedly there has been a longer
+> emotional disucssion about this already ..
 
-  a0ccdc4a77a1 ("usb: typec: Add number of altmodes partner attr")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/EsALb==m9xzibz+=6drHdkP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+3UNoACgkQAVBC80lX
-0GxJVQf3eQD/pkNswdMWwP/X53wNEAoylfSH+ioof7nOqx4eGMTmAETU0VmiykQS
-b50wI35YZVmIW/mWFiYkj09AG6g2jOEZj4bWaTCXhaY8Pb9tADUYvteTpQuNELAg
-EGRt2Kiw4u81qj6Eg0fCtUuYgDZzOiq49vVZTbkR4dfYck2h4wpjViyHomYrrMuH
-lGqch9K9vd05wv/9ZsSnzURGNnJgp83CF8wS4WBak3TBlYsLnuoJS9y1mc2UZE19
-7gUmnlq/eYsLcMso5yDXN4Kq9JKkW0OwX0HO5AWmJ+1YmC3zP0L7euBXw2LACOXe
-puMXIupKY3Im0B+KJB1NBzhZyFQq
-=LdQS
------END PGP SIGNATURE-----
-
---Sig_/EsALb==m9xzibz+=6drHdkP--
+We do have our own comment style rule in networking since the beginning
+of time, and reverse xmas tree, so it's not completely crazy.
