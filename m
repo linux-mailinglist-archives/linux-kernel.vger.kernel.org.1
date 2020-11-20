@@ -2,105 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675AA2B9FC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF652B9FCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbgKTBeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 20:34:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37300 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727087AbgKTBeB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:34:01 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605836039;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7uVXnrJ9FAHgnGZVOERteDJIBOwguyPNBYIyccpfRao=;
-        b=NAMeNEtibzZCn6hDuW13u0nNgnZbAGdYUadbXSfXJ0ejcSxinYzIKbQY/P1IpwrIxSolDO
-        rb4gtDfC8Nx3wegNgQB5xyMdEvSkspebzNdd97Le/YpAHCp0SWi8dabyZF4rAF7ZZ0NjMz
-        d2rJavDGJXKOvkXAKlnCXcWNr7X/30XYlMoTrOke4uXSm4H44kZUnxyq4/hWt9TFMSMhds
-        I2RF7TdU2VsWyuKaVpcRuiC+qkMFKVYJ7I6jfokGa5zhPRDBHRHw3JyFrme4C9toAt9cg3
-        qO8V23fljRGzJxr3gtn1NzOwABh2wV9nk6e0J+8D5/lpGH4JIW/L1poK/YdalA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605836039;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7uVXnrJ9FAHgnGZVOERteDJIBOwguyPNBYIyccpfRao=;
-        b=GqiCV9WE4RMEEngiPAHJwiWdyRGOC53LmO3t4JbfwinMQGX7dhTJffqL6hU3+HseoFu0jo
-        ooj9V8+xI59X2HCQ==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mel Gorman <mgorman@suse.de>, LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [patch V4 4/8] sched: Make migrate_disable/enable() independent of RT
-In-Reply-To: <20201119182843.GA2414@hirez.programming.kicks-ass.net>
-References: <20201118194838.753436396@linutronix.de> <20201118204007.269943012@linutronix.de> <20201119093834.GH3306@suse.de> <20201119111411.GL3121378@hirez.programming.kicks-ass.net> <CAHk-=wire3dzhHx=KiL_f5Rj0=1u9ustsa33QoR-F9-v-NU9Ng@mail.gmail.com> <20201119182843.GA2414@hirez.programming.kicks-ass.net>
-Date:   Fri, 20 Nov 2020 02:33:58 +0100
-Message-ID: <87tutkolq1.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1727026AbgKTBfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 20:35:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726580AbgKTBfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 20:35:46 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5863322254;
+        Fri, 20 Nov 2020 01:35:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1605836144;
+        bh=mQahlZ4oBkXPItMF4u4Zjyv8WH7f9AQL+MGPFjxwPa4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Bl2Vu6Gt2cxOBoF8QYWx3yITQmECR0Z2YJdDa2eB/UlWFYiU2LxwmQmtu7aQf3t/c
+         FELxlAHHd25VPIMj9cSoy1JjV5rPGRiQCCOGAXbrF1u7g2usKbwJx+tIX18idLtseI
+         M8BiV1QglGu8U/7r6Y2q1Lphj/mPSSBIgM2FRWbg=
+Date:   Thu, 19 Nov 2020 17:35:43 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     laniel_francis@privacyrequired.com
+Cc:     linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, dja@axtens.net, keescook@chromium.org
+Subject: Re: [PATCH v6 0/5] Fortify strscpy()
+Message-Id: <20201119173543.8821881942022fc4f39c4c73@linux-foundation.org>
+In-Reply-To: <20201119164915.10618-1-laniel_francis@privacyrequired.com>
+References: <20201119164915.10618-1-laniel_francis@privacyrequired.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19 2020 at 19:28, Peter Zijlstra wrote:
-> On Thu, Nov 19, 2020 at 09:23:47AM -0800, Linus Torvalds wrote:
->> Because this is certainly not the only time migration limiting has
->> come up, and no, it has absolutely nothing to do with per-cpu page
->> tables being completely unacceptable.
->
-> It is for this instance; but sure, it's come up before in other
-> contexts.
+On Thu, 19 Nov 2020 17:49:10 +0100 laniel_francis@privacyrequired.com wrote:
 
-Indeed. And one of the really bad outcomes of this is that people are
-forced to use preempt_disable() to prevent migration which entails a
-slew of consequences:
+> From: Francis Laniel <laniel_francis@privacyrequired.com>
+> 
+> Hi.
+> 
+> 
+> I hope your families, friends and yourselves are fine.
 
-     - Using spinlocks where it wouldn't be needed otherwise
-     - Spinwaiting instead of sleeping
-     - The whole crazyness of doing copy_to/from_user_in_atomic() along
-       with the necessary out of line error handling.
-     - ....
+Thanks.  You too ;)
 
-The introduction of per-cpu storage happened almost 20 years ago (2002)
-and still the only answer we have is preempt_disable().
+> This patch set answers to this issue:
+> https://github.com/KSPP/linux/issues/46
 
-I know the scheduling theory folks still try to wrap their heads around
-the introduction of SMP which dates back to 1962 IIRC...
+I fail to understand what this patchset has to do with that
+one-element-array issue :(
 
->> The scheduler people need to get used to this. Really. Because ASMP is
->> just going to be a fact.
->
-> ASMP is different in that it is a hardware constraint, you're just not
-> going to be able to run more of X than there's X capable hardware units
-> on (be if FPUs, Vector units, 32bit or whatever)
+> I based my modifications on top of two patches from Daniel Axtens which modify
+> calls to __builtin_object_size to ensure the true size of char * are returned
+> and not the surrounding structure size.
+> 
+> To sum up, in my first patch I implemented a fortified version of strscpy.
+> This new version ensures the following before calling vanilla strscpy:
+> 1. There is no read overflow because either size is smaller than src length
+> or we shrink size to src length by calling fortified strnlen.
+> 2. There is no write overflow because we either failed during compilation or at
+> runtime by checking that size is smaller than dest size.
+> The second patch brings a new file in LKDTM driver to test this new version.
+> The test ensures the fortified version still returns the same value as the
+> vanilla one while panic'ing when there is a write overflow.
+> The third just corrects some typos in LKDTM related file.
+> 
+> If you see any problem or way to improve the code, feel free to share it.
 
-ASMP is as old as SMP. The first SMP systems were in fact ASMP.  The
-reasons for ASMP 60 years ago were not that different from the reasons
-for ASMP today. Just the scale and the effectivness are different.
+Could you please send along a reworked [0/n] cover letter?  Explain in
+your own words, without requiring that readers go off and read web
+pages
 
->> There are few things more futile than railing against reality, Peter.
->
-> But, but, my windmills! :-)
+- What problem the patchset solves
+- How it solves it
+- The value of the patchset (to kernel developers or to end-users) so that we
+  can understand why it should be merged.
 
-At least you have windmills where you live so you can pull off the real
-Don Quixote while other people have to find substitutes :)
+Thanks.
 
-Thanks,
-
-        tglx
