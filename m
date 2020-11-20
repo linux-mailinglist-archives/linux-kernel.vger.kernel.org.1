@@ -2,86 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3A32BA69F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16ECB2BA6C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbgKTJyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:54:50 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:44986 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgKTJyt (ORCPT
+        id S1727735AbgKTJ40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:56:26 -0500
+Received: from lucky1.263xmail.com ([211.157.147.131]:55828 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727655AbgKTJ4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:54:49 -0500
-Received: by mail-lj1-f193.google.com with SMTP id s9so9380337ljo.11;
-        Fri, 20 Nov 2020 01:54:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C59c0mgsV+SRL0gTcx0qWRGq+USR/SFMGynSGvNxYmA=;
-        b=BWu/vPP+q4YBjSK/Hf7r/Tf3VHnDLnzcIOm+FNe5SLZk/CajbFADRMob7zOILJK0xH
-         3lNdcujBT0D+lHCPrbrLp0aWkYyhso8iYNDOoo4WaTX+Rcsg/3fSR+0huAiJ8PgUpB4I
-         hHT+ugouVSea+mqDJk4u0l35Vekl901a40Cfx9plJ+2zCaf2c1l8A2/AeeYHIjZERtju
-         IIQJvBCSdirpNBnEgNJveoosDj2MLr7LmBZNzByBzEoKjmpCx7QfQvrFrhLN8xIZG9RR
-         K8/2Kh+A9Ow5/YnUkNbVgQH8dlRFoLe4uOPQC67AIPUw0k6ViXMc1rL+43ykRba+613t
-         6tQg==
-X-Gm-Message-State: AOAM531J7NsaRTaWZVWcE9SpQDskqGAwJbgl24gHwHLM0mu7KURNocrM
-        /a/jhAJz2irBNv0YNUYRtW6EFeZObOyDrA==
-X-Google-Smtp-Source: ABdhPJxSgBzw5ROqXBewpxM2xbqBDivuTciM6YpFoI3bCUF3jvXcsfIxRNmiWpBeKrc/sbdnmZmM2g==
-X-Received: by 2002:a2e:93cf:: with SMTP id p15mr8423247ljh.141.1605866085852;
-        Fri, 20 Nov 2020 01:54:45 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id x8sm285070lff.196.2020.11.20.01.54.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 01:54:45 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kg37w-0007Qy-JW; Fri, 20 Nov 2020 10:54:49 +0100
-Date:   Fri, 20 Nov 2020 10:54:48 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     vpalatin@chromium.org
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] usb: serial: option: add Fibocom NL668 variants
-Message-ID: <X7eSaCD3pqvdD4jj@localhost>
-References: <20201120090107.502832-1-vpalatin@chromium.org>
- <20201120092828.665931-1-vpalatin@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120092828.665931-1-vpalatin@chromium.org>
+        Fri, 20 Nov 2020 04:56:24 -0500
+Received: from localhost (unknown [192.168.167.223])
+        by lucky1.263xmail.com (Postfix) with ESMTP id D1BD2B6AD6;
+        Fri, 20 Nov 2020 17:56:19 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P21631T139747833935616S1605866174624500_;
+        Fri, 20 Nov 2020 17:56:19 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <d8ea9b059b25f44bd2a6f9b93ca5b6f3>
+X-RL-SENDER: yifeng.zhao@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: yifeng.zhao@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        heiko@sntech.de, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Subject: [PATCH v14 0/8] Add Rockchip NFC drivers for RK3308 and others
+Date:   Fri, 20 Nov 2020 17:56:09 +0800
+Message-Id: <20201120095613.20172-1-yifeng.zhao@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 10:28:28AM +0100, vpalatin@chromium.org wrote:
-> From: Vincent Palatin <vpalatin@chromium.org>
-> 
-> Update the USB serial option driver support for the Fibocom NL668 Cat.4
-> LTE modules as there are actually several different variants.
-> Got clarifications from Fibocom, there are distinct products:
-> - VID:PID 1508:1001, NL668 for IOT (no MBIM interface)
-> - VID:PID 2cb7:01a0, NL668-AM and NL652-EU are laptop M.2 cards (with
->   MBIM interfaces for Windows/Linux/Chrome OS), respectively for Americas
->   and Europe.
-> 
-> usb-devices output for the laptop M.2 cards:
-> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  4 Spd=480 MxCh= 0
-> D:  Ver= 2.00 Cls=ef(misc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-> P:  Vendor=2cb7 ProdID=01a0 Rev=03.18
-> S:  Manufacturer=Fibocom Wireless Inc.
-> S:  Product=Fibocom NL652-EU Modem
-> S:  SerialNumber=0123456789ABCDEF
-> C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-> I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-> I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-> I:  If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-> I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-> I:  If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
-> 
-> Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
 
-Applied, thanks!
+Rockchp's NFC(Nand Flash Controller) has four versions: V600, V622, V800 and
+V900.This series patch can support all four versions.
 
-Johan
+
+Changes in v14:
+- Add oob_read and oob_write hook api.
+- Support timing config and ecc config for each chips.
+- Fix some comments.
+
+Changes in v13:
+- The nfc->buffer will realloc while the page size of the second mtd
+  is large than the first one.
+- Fix coding style.
+- Fix some comments.
+
+Changes in v12:
+- Fix some warnings while make dt_binding_check
+- Drop a allOf defined
+
+Changes in v11:
+- Fix compile error.
+
+Changes in v10:
+- Fix compile error on master v5.9-rc7.
+
+Changes in v9:
+- The nfc->buffer will realloc while the page size of the second mtd
+  is large than the first one
+- Fix coding style.
+- Remove struct rk_nfc_clk.
+- Prepend some function with rk_nfc_.
+- Replace function readl_poll_timeout_atomic with readl_relaxed_poll_timeout.
+- Remove function rk_nfc_read_byte and rk_nfc_write_byte.
+- Don't select the die if 'check_only == true' in function rk_nfc_exec_op.
+- Modify function rk_nfc_write_page and rk_nfc_write_page_raw.
+
+Changes in v8:
+- Fix a error while make dt_binding_check
+
+Changes in v7:
+- Fix some wrong define
+- Rebase to linux-next.
+- Fix coding style.
+- Reserved 4 bytes at the beginning of the oob area.
+- Page raw read and write included ecc data.
+
+Changes in v6:
+- Fix some wrong define
+- Modified the definition of compatible
+- The mtd->name set by NAND label property.
+- Add some comments.
+- Fix compile error.
+
+Changes in v5:
+- Fix some wrong define.
+- Add boot-medium define.
+- Remove some compatible define.
+- Add boot blocks support  with different ECC for bootROM.
+- Rename rockchip-nand.c to rockchip-nand-controller.c.
+- Unification of other variable names.
+- Remove some compatible define.
+
+Changes in v4:
+- The compatible define with rkxx_nfc.
+- Add assigned-clocks.
+- Fix some wrong defineChanges in.
+- Define platform data structure for the register offsets.
+- The compatible define with rkxx_nfc.
+- Use SET_SYSTEM_SLEEP_PM_OPS to define PM_OPS.
+- Use exec_op instead of legacy hooks.
+
+Changes in v3:
+- Change the title for the dt-bindings.
+
+Changes in v2:
+- Fix compile error.
+- Include header files sorted by file name.
+
+Yifeng Zhao (8):
+  dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash controller
+  mtd: rawnand: rockchip: NFC drivers for RK3308, RK2928 and others
+  MAINTAINERS: add maintainers to ROCKCHIP NFC
+  arm64: dts: rockchip: Add NFC node for RK3308 SoC
+  arm64: dts: rockchip: Add NFC node for PX30 SoC
+  arm: dts: rockchip: Add NFC node for RV1108 SoC
+  arm: dts: rockchip: Add NFC node for RK2928 and other SoCs
+  arm: dts: rockchip: Add NFC node for RK3036 SoC
+
+ .../mtd/rockchip,nand-controller.yaml         |  161 ++
+ MAINTAINERS                                   |    4 +-
+ arch/arm/boot/dts/rk3036.dtsi                 |   52 +
+ arch/arm/boot/dts/rk3xxx.dtsi                 |    9 +
+ arch/arm/boot/dts/rv1108.dtsi                 |   11 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   15 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |   15 +
+ drivers/mtd/nand/raw/Kconfig                  |   12 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ .../mtd/nand/raw/rockchip-nand-controller.c   | 1497 +++++++++++++++++
+ 10 files changed, 1775 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+ create mode 100644 drivers/mtd/nand/raw/rockchip-nand-controller.c
+
+-- 
+2.17.1
+
+
+
