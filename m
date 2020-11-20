@@ -2,176 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691C82BA05B
+	by mail.lfdr.de (Postfix) with ESMTP id E706A2BA05C
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgKTCZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 21:25:47 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8375 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbgKTCZr (ORCPT
+        id S1726444AbgKTC0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 21:26:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33802 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725937AbgKTC0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 21:25:47 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CcgPh1xSJz6xZ6;
-        Fri, 20 Nov 2020 10:25:28 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.144) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Fri, 20 Nov 2020
- 10:25:42 +0800
-Subject: Re: [PATCH 1/1] block: move the PAGE_SECTORS definition into
- <linux/blkdev.h>
-To:     John Dorminy <jdorminy@redhat.com>
-CC:     Coly Li <colyli@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        dm-devel <dm-devel@redhat.com>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-bcache <linux-bcache@vger.kernel.org>
-References: <20200821020345.3358-1-thunder.leizhen@huawei.com>
- <b4643e74-aad9-385f-01f2-f8e48ba4dbef@suse.de>
- <ad100923-e479-faf0-f749-ac8e4cf87899@huawei.com>
- <8aa638b7-6cfd-bf3d-8015-fbe59f28f31f@suse.de>
- <c2f8cf50-d9f7-df19-40eb-0543e6208c0d@huawei.com>
- <CAMeeMh_iBFpmSjgm8aC1WO-=iQPU5rQ2-Z6oe0L8nt5ke=+XQw@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <c0013047-e202-085c-f841-4468ae4072fa@huawei.com>
-Date:   Fri, 20 Nov 2020 10:25:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Thu, 19 Nov 2020 21:26:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605839207;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4sxKhMof86hickCRVUEuAEtymNQnjon9Bfb0eSzoC34=;
+        b=inzSyg5CEt/hJdFVUB8tvA/Rb8y2mPxGR66q5XyJDqe5Hn7OnDgC+R7YDjho3lGuQ2XKlD
+        r4QJJIb3Jjcg2gBm+sFQrIDts0gXgc65V89dJcSkGtoManZP59i6RUpYf9zj2MOa+djB6J
+        raLLD5Da6kmtjOKxQi4deeYBXZBp+kQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-sOa4YTahNv2t3MXF3bnYLw-1; Thu, 19 Nov 2020 21:26:43 -0500
+X-MC-Unique: sOa4YTahNv2t3MXF3bnYLw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12C6A180E46F;
+        Fri, 20 Nov 2020 02:26:39 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-12-196.pek2.redhat.com [10.72.12.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2CAF110013BD;
+        Fri, 20 Nov 2020 02:26:25 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 10:26:22 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Guilherme Piccoli <gpiccoli@canonical.com>
+Cc:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>, x86@kernel.org,
+        Michael Walle <michael@walle.cc>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, john.p.donnelly@oracle.com,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, Baoquan He <bhe@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# v4 . 16+" <stable@vger.kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Diego Elio =?iso-8859-1?Q?Petten=F2?= <flameeyes@flameeyes.com>,
+        Olof Johansson <olof@lixom.net>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Dann Frazier <dann.frazier@canonical.com>
+Subject: Re: [PATCH 1/1] kernel/crash_core.c - Add crashkernel=auto for x86
+ and ARM
+Message-ID: <20201120022622.GA3731@dhcp-128-65.nay.redhat.com>
+References: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
+ <CAHD1Q_yA37wWrOscBHpSFEjFecGFcrzY6R6qU_iMESzYArV_Kg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMeeMh_iBFpmSjgm8aC1WO-=iQPU5rQ2-Z6oe0L8nt5ke=+XQw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.144]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHD1Q_yA37wWrOscBHpSFEjFecGFcrzY6R6qU_iMESzYArV_Kg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Guilherme,
+On 11/19/20 at 06:56pm, Guilherme Piccoli wrote:
+> Hi Saeed, thanks for your patch/idea! Comments inline, below.
+> 
+> On Wed, Nov 18, 2020 at 8:29 PM Saeed Mirzamohammadi
+> <saeed.mirzamohammadi@oracle.com> wrote:
+> >
+> > This adds crashkernel=auto feature to configure reserved memory for
+> > vmcore creation to both x86 and ARM platforms based on the total memory
+> > size.
+> >
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+> > Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+> > ---
+> >  Documentation/admin-guide/kdump/kdump.rst |  5 +++++
+> >  arch/arm64/Kconfig                        | 26 ++++++++++++++++++++++-
+> >  arch/arm64/configs/defconfig              |  1 +
+> >  arch/x86/Kconfig                          | 26 ++++++++++++++++++++++-
+> >  arch/x86/configs/x86_64_defconfig         |  1 +
+> >  kernel/crash_core.c                       | 20 +++++++++++++++--
+> >  6 files changed, 75 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+> > index 75a9dd98e76e..f95a2af64f59 100644
+> > --- a/Documentation/admin-guide/kdump/kdump.rst
+> > +++ b/Documentation/admin-guide/kdump/kdump.rst
+> > @@ -285,7 +285,12 @@ This would mean:
+> >      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
+> >      3) if the RAM size is larger than 2G, then reserve 128M
+> >
+> > +Or you can use crashkernel=auto if you have enough memory. The threshold
+> > +is 1G on x86_64 and arm64. If your system memory is less than the threshold,
+> > +crashkernel=auto will not reserve memory. The size changes according to
+> > +the system memory size like below:
+> >
+> > +    x86_64/arm64: 1G-64G:128M,64G-1T:256M,1T-:512M
+> 
+> As mentioned in the thread, this was tried before and never got merged
+> - I'm not sure the all the reasons, but I speculate that a stronger
+> reason is that it'd likely fail in many cases. I've seen cases of 256G
 
+Yes, there were a few tries, last time I tried to set a default value, I
+do not think people are strongly against it.  We have been using the
+auto in Red Hat for long time, it does work for most of usual cases
+like Saeed said in the patch. But I think all of us are aligned it is
+not possible to satisfy all the user cases.  Anyway I also think this is
+good to have.
 
-On 2020/11/20 9:27, John Dorminy wrote:
-> Greetings;
-> 
-> There are a lot of uses of PAGE_SIZE/SECTOR_SIZE scattered around, and
-> it seems like a medium improvement to be able to refer to it as
-> PAGE_SECTORS everywhere instead of just inside dm, bcache, and
-> null_blk. Did this change progress forward somewhere?
+> servers that require crashkernel=600M (or more), due to the amount of
+> devices. Also, the minimum nowadays would likely be 96M or more - I'm
+> looping Cascardo and Dann (Debian/Ubuntu maintainers of kdump stuff)
+> so they maybe can jump in with even more examples/considerations.
 
-Actually, I'm trying to make further replacements after this patch is applied.
-But there was no response except Coly Li.
+Another reason of people have different feeling about the memory
+requirement is currently distributions are doing different on kdump,
+especially for the userspace part. Kairui did a lot of work in dracut to
+reduce the memory requirements in dracut, for example only add dump
+required kernel modules in 2nd kernel initramfs, also we have a lot of
+other twicks for dracut to use "hostonly" mode, eg. hostonly multipath
+configurations will just bring up necessary paths instead of creating
+all of the multipath devices.
 
 > 
-> Thanks!
+> What we've been trying to do in Ubuntu/Debian is using an estimator
+> approach [0] - this is purely userspace and tries to infer the amount
+> of necessary memory a kdump minimal[1] kernel would take. I'm not
+> -1'ing your approach totally, but I think a bit more consideration is
+> needed in the ranges, at least accounting the number of devices of the
+> machine or something like that.
+
+There are definitely room to improve and make it better in the future,
+but I think this is a good start and simple enough proposal for the time
+being :)
+
 > 
-> John Dorminy
-> 
-> 
-> On Mon, Sep 7, 2020 at 3:40 AM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
->>
->> Hi, Jens Axboe, Alasdair Kergon, Mike Snitzer:
->>   What's your opinion?
->>
->>
->> On 2020/8/21 15:05, Coly Li wrote:
->>> On 2020/8/21 14:48, Leizhen (ThunderTown) wrote:
->>>>
->>>>
->>>> On 8/21/2020 12:11 PM, Coly Li wrote:
->>>>> On 2020/8/21 10:03, Zhen Lei wrote:
->>>>>> There are too many PAGE_SECTORS definitions, and all of them are the
->>>>>> same. It looks a bit of a mess. So why not move it into <linux/blkdev.h>,
->>>>>> to achieve a basic and unique definition.
->>>>>>
->>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>>>
->>>>>
->>>>> A lazy question about page size > 4KB: currently in bcache code the
->>>>> sector size is assumed to be 512 sectors, if kernel page > 4KB, it is
->>>>> possible that PAGE_SECTORS in bcache will be a number > 8 ?
->>>>
->>>> Sorry, I don't fully understand your question. I known that the sector size
->>>> can be 512 or 4K, and the PAGE_SIZE can be 4K or 64K. So even if sector size
->>>> is 4K, isn't it greater than 8 for 64K pages?
->>>>
->>>> I'm not sure if the question you're asking is the one Matthew Wilcox has
->>>> answered before:
->>>> https://www.spinics.net/lists/raid/msg64345.html
->>>
->>> Thank you for the above information. Currently bcache code assumes
->>> sector size is always 512 bytes, you may see how many "<< 9" or ">> 9"
->>> are used. Therefore I doubt whether current code may stably work on e.g.
->>> 4Kn SSDs (this is only doubt because I don't have such SSD).
->>>
->>> Anyway your patch is fine to me. This change to bcache doesn't make
->>> thins worse or better, maybe it can be helpful to trigger my above
->>> suspicious early if people do have this kind of problem on 4Kn sector SSDs.
->>>
->>> For the bcache part of this patch, you may add,
->>> Acked-by: Coly Li <colyli@suse.de>
->>>
->>> Thanks.
->>>
->>> Coly Li
->>>
->>>>>> ---
->>>>>>  drivers/block/brd.c           | 1 -
->>>>>>  drivers/block/null_blk_main.c | 1 -
->>>>>>  drivers/md/bcache/util.h      | 2 --
->>>>>>  include/linux/blkdev.h        | 5 +++--
->>>>>>  include/linux/device-mapper.h | 1 -
->>>>>>  5 files changed, 3 insertions(+), 7 deletions(-)
->>>>>>
->>>>>
->>>>> [snipped]
->>>>>
->>>>>> diff --git a/drivers/md/bcache/util.h b/drivers/md/bcache/util.h
->>>>>> index c029f7443190805..55196e0f37c32c6 100644
->>>>>> --- a/drivers/md/bcache/util.h
->>>>>> +++ b/drivers/md/bcache/util.h
->>>>>> @@ -15,8 +15,6 @@
->>>>>>
->>>>>>  #include "closure.h"
->>>>>>
->>>>>> -#define PAGE_SECTORS              (PAGE_SIZE / 512)
->>>>>> -
->>>>>>  struct closure;
->>>>>>
->>>>>>  #ifdef CONFIG_BCACHE_DEBUG
->>>>>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
->>>>>> index bb5636cc17b91a7..b068dfc5f2ef0ab 100644
->>>>>> --- a/include/linux/blkdev.h
->>>>>> +++ b/include/linux/blkdev.h
->>>>>> @@ -949,11 +949,12 @@ static inline struct request_queue *bdev_get_queue(struct block_device *bdev)
->>>>>>   * multiple of 512 bytes. Hence these two constants.
->>>>>>   */
->>>>>>  #ifndef SECTOR_SHIFT
->>>>>> -#define SECTOR_SHIFT 9
->>>>>> +#define SECTOR_SHIFT              9
->>>>>>  #endif
->>>>>>  #ifndef SECTOR_SIZE
->>>>>> -#define SECTOR_SIZE (1 << SECTOR_SHIFT)
->>>>>> +#define SECTOR_SIZE               (1 << SECTOR_SHIFT)
->>>>>>  #endif
->>>>>> +#define PAGE_SECTORS              (PAGE_SIZE / SECTOR_SIZE)
->>>>>>
->>>>>>  /*
->>>>>>   * blk_rq_pos()                   : the current sector
->>>>> [snipped]
->>>>>
->>>>>
->>>>
->>>
->>>
->>> .
->>>
->>
+> Cheers,
 > 
 > 
-> .
+> Guilherme
 > 
+> [0] https://salsa.debian.org/debian/makedumpfile/-/merge_requests/7
+> [1] Minimal as having a reduced initrd + "shrinking" parameters (like
+> nr_cpus=1).
+> 
+
+Thanks
+Dave
 
