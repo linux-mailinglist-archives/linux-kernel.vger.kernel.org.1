@@ -2,199 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA77D2BB1DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 18:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1005D2BB1E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729043AbgKTR7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 12:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727215AbgKTR7N (ORCPT
+        id S1729146AbgKTSAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:00:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53585 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729059AbgKTSAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 12:59:13 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CBDC0613CF;
-        Fri, 20 Nov 2020 09:59:13 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id ec16so5110794qvb.0;
-        Fri, 20 Nov 2020 09:59:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=unYKej8YP+ZRl42nz0CCo6lF2anM/8H77HoEpmDKfy0=;
-        b=skW7YyvjYxSbJCJr9G6/vdoYg+vOkc9++HRhR18NcN0vJikz/7tSMWKyeGMm1G3s3m
-         D3wxcJbfr0sy0EnoWa2HeouLy5bBPpUbEVe0KDNWEEeG4YHzq+NunKRfuKZIIapPRC+r
-         n4NTjtfj50z7ZxSU14sBP7+pnMCR/u201SyW7NkMvfCW9SC0l6usG7qfi/qLTzbK4Yzf
-         1CC0TOXlHlSS53d0icvIDiTG2qNo0Ze4901D1CXTMV78yr0x8tijRloz7I58xiveqvp8
-         EE4cCCCnXnT1MpvYXo+Be0jJ9VpBPmrI1nK41IQ9PL/ywawAcDgQhpFCob4yJyXiiJMo
-         WODQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=unYKej8YP+ZRl42nz0CCo6lF2anM/8H77HoEpmDKfy0=;
-        b=coi1tCKcaX2K8IMwGi/UCJV0vi6jSpxeigbsw6XvWGZp4j4b+/fE+1yoTbYBcTP+Ev
-         BMvprSWV0HMgd6rHZ6xEK51152h+nTSp8fdOfzcYSJ/Hs1o52KhHZ4gNo/70KgjYGHXQ
-         VyaGgq3QuH5aD+HaHw7DiOdEc1TCmJwAaolB6+E2aCWVaCeXCI/zZGVwoDPw+Et3e0rc
-         SC7sL7HGY6U/sgCkZ/7PTyA2mg6qSQsiMKTrtEig4l2YOIUz/lTF8ZyF3TgGhm5mEt5X
-         KZGmyC54wVOhOsUDZh1DzqtaZDfXwOOwb6cs374GoGV3AHEvXOF4dMlNaj2GFMSugPFJ
-         XLrQ==
-X-Gm-Message-State: AOAM533LyTPkQXxnLex+c/AbdCwdsNDmHG1Zo61t9xuDz984kLI7yILw
-        YV9i7ok2xRW4DcT4KP4RAsU=
-X-Google-Smtp-Source: ABdhPJxI7KR8wOPDMoPtb9JVECgzS2Cvnqm9ghNcpnnR4mGImP8Jr/44xyhNqOMxz5sdGwZRmICBiw==
-X-Received: by 2002:a0c:a9d0:: with SMTP id c16mr17462086qvb.5.1605895152592;
-        Fri, 20 Nov 2020 09:59:12 -0800 (PST)
-Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id x25sm2356146qkh.32.2020.11.20.09.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 09:59:11 -0800 (PST)
-Date:   Fri, 20 Nov 2020 12:59:09 -0500
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Syed Nayyar Waris <syednwaris@gmail.com>
-Cc:     akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        arnd@arndb.de, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] bitmap: Modify bitmap_set_value() to check bitmap
- length
-Message-ID: <X7gD7Q/63qoUuGpi@shinobu>
-References: <cover.1605893641.git.syednwaris@gmail.com>
- <b2011fb2e0438bdfd0b663b9f0456d0aef20f04b.1605893642.git.syednwaris@gmail.com>
+        Fri, 20 Nov 2020 13:00:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605895233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JxskEXwutt4P1nZSKgawl/xEgyUPfquuR5hR5qwSjZM=;
+        b=YAofb6qXRZb424IaniSlwERtCoNEUtaY7B5h73IDegWhCecykWHJKmr0i/bJPGtBYiFc24
+        wCKHF4rwNgVk0RMWjBdVXK+uLZumMhWmzgirwZ/n4hzgfRdRT1EO0rfTE9CZ097NtwLmZw
+        MGdEvpKqaQKTdXltp/K68k08lKT3N54=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-KXpfjzaZNAWdTW2OD65koQ-1; Fri, 20 Nov 2020 13:00:27 -0500
+X-MC-Unique: KXpfjzaZNAWdTW2OD65koQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C42D100C601;
+        Fri, 20 Nov 2020 18:00:23 +0000 (UTC)
+Received: from [10.36.114.78] (ovpn-114-78.ams2.redhat.com [10.36.114.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BCE8260862;
+        Fri, 20 Nov 2020 18:00:16 +0000 (UTC)
+Subject: Re: [PATCH v5 00/21] Free some vmemmap pages of hugetlb page
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, osalvador@suse.de, song.bao.hua@hisilicon.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120084202.GJ3200@dhcp22.suse.cz>
+ <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
+ <20201120093912.GM3200@dhcp22.suse.cz>
+ <eda50930-05b5-0ad9-2985-8b6328f92cec@redhat.com>
+ <55e53264-a07a-a3ec-4253-e72c718b4ee6@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <af95bcad-80dd-d2a4-0178-b9d2869e97cf@redhat.com>
+Date:   Fri, 20 Nov 2020 19:00:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RjWzpKsaDEwQ2xsQ"
-Content-Disposition: inline
-In-Reply-To: <b2011fb2e0438bdfd0b663b9f0456d0aef20f04b.1605893642.git.syednwaris@gmail.com>
+In-Reply-To: <55e53264-a07a-a3ec-4253-e72c718b4ee6@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20.11.20 18:45, Mike Kravetz wrote:
+> On 11/20/20 1:43 AM, David Hildenbrand wrote:
+>> On 20.11.20 10:39, Michal Hocko wrote:
+>>> On Fri 20-11-20 10:27:05, David Hildenbrand wrote:
+>>>> On 20.11.20 09:42, Michal Hocko wrote:
+>>>>> On Fri 20-11-20 14:43:04, Muchun Song wrote:
+>>>>> [...]
+>>>>>
+>>>>> Thanks for improving the cover letter and providing some numbers. I have
+>>>>> only glanced through the patchset because I didn't really have more time
+>>>>> to dive depply into them.
+>>>>>
+>>>>> Overall it looks promissing. To summarize. I would prefer to not have
+>>>>> the feature enablement controlled by compile time option and the kernel
+>>>>> command line option should be opt-in. I also do not like that freeing
+>>>>> the pool can trigger the oom killer or even shut the system down if no
+>>>>> oom victim is eligible.
+>>>>>
+>>>>> One thing that I didn't really get to think hard about is what is the
+>>>>> effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
+>>>>> invalid when racing with the split. How do we enforce that this won't
+>>>>> blow up?
+>>>>
+>>>> I have the same concerns - the sections are online the whole time and
+>>>> anybody with pfn_to_online_page() can grab them
+>>>>
+>>>> I think we have similar issues with memory offlining when removing the
+>>>> vmemmap, it's just very hard to trigger and we can easily protect by
+>>>> grabbing the memhotplug lock.
+>>>
+>>> I am not sure we can/want to span memory hotplug locking out to all pfn
+>>> walkers. But you are right that the underlying problem is similar but
+>>> much harder to trigger because vmemmaps are only removed when the
+>>> physical memory is hotremoved and that happens very seldom. Maybe it
+>>> will happen more with virtualization usecases. But this work makes it
+>>> even more tricky. If a pfn walker races with a hotremove then it would
+>>> just blow up when accessing the unmapped physical address space. For
+>>> this feature a pfn walker would just grab a real struct page re-used for
+>>> some unpredictable use under its feet. Any failure would be silent and
+>>> hard to debug.
+>>
+>> Right, we don't want the memory hotplug locking, thus discussions regarding rcu. Luckily, for now I never saw a BUG report regarding this - maybe because the time between memory offlining (offline_pages()) and memory/vmemmap getting removed (try_remove_memory()) is just too long. Someone would have to sleep after pfn_to_online_page() for quite a while to trigger it.
+>>
+>>>
+>>> [...]
+>>>> To keep things easy, maybe simply never allow to free these hugetlb pages
+>>>> again for now? If they were reserved during boot and the vmemmap condensed,
+>>>> then just let them stick around for all eternity.
+>>>
+>>> Not sure I understand. Do you propose to only free those vmemmap pages
+>>> when the pool is initialized during boot time and never allow to free
+>>> them up? That would certainly make it safer and maybe even simpler wrt
+>>> implementation.
+>>
+>> Exactly, let's keep it simple for now. I guess most use cases of this (virtualization, databases, ...) will allocate hugepages during boot and never free them.
+> 
+> Not sure if I agree with that last statement.  Database and virtualization
+> use cases from my employer allocate allocate hugetlb pages after boot.  It
+> is shortly after boot, but still not from boot/kernel command line.
 
---RjWzpKsaDEwQ2xsQ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right, but the ones that care about this optimization for now could be 
+converted, I assume? I mean we are talking about "opt-in" from 
+sysadmins, so requiring to specify a different cmdline parameter does 
+not sound to weird to me. And it should simplify a first version quite a 
+lot.
 
-On Fri, Nov 20, 2020 at 11:14:16PM +0530, Syed Nayyar Waris wrote:
-> Add explicit check to see if the value being written into the bitmap
-> does not fall outside the bitmap.
-> The situation that it is falling outside would never be possible in the
-> code because the boundaries are required to be correct before the function
-> is called. The responsibility is on the caller for ensuring the boundaries
-> are correct.
-> This is just to suppress the GCC -Wtype-limits warnings.
+The more I think about this, the more I believe doing these vmemmap 
+modifications after boot are very dangerous.
 
-Hi Syed,
+> 
+> Somewhat related, but not exactly addressing this issue ...
+> 
+> One idea discussed in a previous patch set was to disable PMD/huge page
+> mapping of vmemmap if this feature was enabled.  This would eliminate a bunch
+> of the complex code doing page table manipulation.  It does not address
+> the issue of struct page pages going away which is being discussed here,
+> but it could be a way to simply the first version of this code.  If this
+> is going to be an 'opt in' feature as previously suggested, then eliminating
+> the  PMD/huge page vmemmap mapping may be acceptable.  My guess is that
+> sysadmins would only 'opt in' if they expect most of system memory to be used
+> by hugetlb pages.  We certainly have database and virtualization use cases
+> where this is true.
 
-This commit message sounds a bit strange without the context of our
-earlier discussion thread. Would you be able to reword the commit
-message to explain the motivation for using __builtin_unreachable()?
+It sounds like a hack to me, which does not fully solve the problem. But 
+yeah, it's a simplification.
 
+-- 
 Thanks,
 
-William Breathitt Gray
+David / dhildenb
 
->=20
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
-> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
->  include/linux/bitmap.h | 35 +++++++++++++++++++++--------------
->  1 file changed, 21 insertions(+), 14 deletions(-)
->=20
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index 386d08777342..efb6199ea1e7 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -78,8 +78,9 @@
->   *  bitmap_get_value(map, start, nbits)		Get bit value of size
->   *                                              'nbits' from map at start
->   *  bitmap_set_value8(map, value, start)        Set 8bit value to map at=
- start
-> - *  bitmap_set_value(map, value, start, nbits)	Set bit value of size 'nb=
-its'
-> - *                                              of map at start
-> + *  bitmap_set_value(map, nbits, value, value_width, start)
-> + *                                              Set bit value of size va=
-lue_width
-> + *                                              to map at start
->   *
->   * Note, bitmap_zero() and bitmap_fill() operate over the region of
->   * unsigned longs, that is, bits behind bitmap till the unsigned long
-> @@ -610,30 +611,36 @@ static inline void bitmap_set_value8(unsigned long =
-*map, unsigned long value,
->  }
-> =20
->  /**
-> - * bitmap_set_value - set n-bit value within a memory region
-> + * bitmap_set_value - set value within a memory region
->   * @map: address to the bitmap memory region
-> - * @value: value of nbits
-> - * @start: bit offset of the n-bit value
-> - * @nbits: size of value in bits (must be between 1 and BITS_PER_LONG in=
-clusive).
-> + * @nbits: size of map in bits
-> + * @value: value of clump
-> + * @value_width: size of value in bits (must be between 1 and BITS_PER_L=
-ONG inclusive)
-> + * @start: bit offset of the value
->   */
-> -static inline void bitmap_set_value(unsigned long *map,
-> -				    unsigned long value,
-> -				    unsigned long start, unsigned long nbits)
-> +static inline void bitmap_set_value(unsigned long *map, unsigned long nb=
-its,
-> +				    unsigned long value, unsigned long value_width,
-> +				    unsigned long start)
->  {
-> -	const size_t index =3D BIT_WORD(start);
-> +	const unsigned long index =3D BIT_WORD(start);
-> +	const unsigned long length =3D BIT_WORD(nbits);
->  	const unsigned long offset =3D start % BITS_PER_LONG;
->  	const unsigned long ceiling =3D round_up(start + 1, BITS_PER_LONG);
->  	const unsigned long space =3D ceiling - start;
-> =20
-> -	value &=3D GENMASK(nbits - 1, 0);
-> +	value &=3D GENMASK(value_width - 1, 0);
-> =20
-> -	if (space >=3D nbits) {
-> -		map[index] &=3D ~(GENMASK(nbits - 1, 0) << offset);
-> +	if (space >=3D value_width) {
-> +		map[index] &=3D ~(GENMASK(value_width - 1, 0) << offset);
->  		map[index] |=3D value << offset;
->  	} else {
->  		map[index + 0] &=3D ~BITMAP_FIRST_WORD_MASK(start);
->  		map[index + 0] |=3D value << offset;
-> -		map[index + 1] &=3D ~BITMAP_LAST_WORD_MASK(start + nbits);
-> +
-> +		if (index + 1 >=3D length)
-> +			__builtin_unreachable();
-> +
-> +		map[index + 1] &=3D ~BITMAP_LAST_WORD_MASK(start + value_width);
->  		map[index + 1] |=3D value >> space;
->  	}
->  }
-> --=20
-> 2.29.0
->=20
-
---RjWzpKsaDEwQ2xsQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+4A9MACgkQhvpINdm7
-VJLOcg//bVHY76KR7Igmki4gD1LNUL909jSCr2HZnnKLRy0/9FVuGSmB4rOAKnDu
-f701GsaEg4yuvJ5uVMdxtbkhoSm9SxdPMX9bwun0D5UYPp4QTg/c8gLL4sZfBl7t
-TG+aV/Osi+G/NaZ2X43aX/LK812ALIcb1p3gJ7+137HRxSyt/ZVl7X5gRQ6Kz1w+
-9hpkdWh+2BGFrIuV3KrtHFCmOFaww27hxfVueVag6/aNu9MtS10e+hMCmoDaX1I1
-neR+x+02fFEYV3cOVVWKvEzx2aZrEc11S8en6AgOHijrwaMfHQRFHz/pT+ZInMmU
-EWfzhMeTPcJPms4n8E7fveuy6BC+fAvgoioVtxyz2tmhVmrnGPt+yl6E/VwDi7Mo
-ssuJWHbETWxDOJmADe0Qo9WX1g2QdHGmWyvkjbZOcXAhTTXhSdOczSQlzTtR8YJx
-cJVUbjakNFfEjitaoseYfYt75sKJ0H6YDEuI8DxZvND9UXVGCUeTBQHmtnWdnD0h
-dSrV7aE/kbEeWgW93AD/XV0evSYf+FPkUcEjjml7f1sD1eWj7dP1tG0OvnlYs0kQ
-PB4ccB4Gn8UAAIaO2iT5KdHTwqa6LY5/gqKwxICQa/ek5xuoEz6ohzLhANlS/vDy
-6saVldu/0w12nDKGhaewpEArthFrzz6ayVq4vjmCoSr/uKgI9JU=
-=WFzE
------END PGP SIGNATURE-----
-
---RjWzpKsaDEwQ2xsQ--
