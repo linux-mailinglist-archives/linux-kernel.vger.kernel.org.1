@@ -2,147 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F3D2BAB22
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8457B2BAB26
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727940AbgKTNbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 08:31:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
+        id S1727241AbgKTNc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 08:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727608AbgKTNbh (ORCPT
+        with ESMTP id S1726553AbgKTNc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:31:37 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57623C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:31:37 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id t9so9515163edq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:31:37 -0800 (PST)
+        Fri, 20 Nov 2020 08:32:27 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A232CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:32:26 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id j205so13437369lfj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:32:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V2LVrCoXAZgfkykMj7CvkovonpKX+foU2OBadTMRae4=;
-        b=ZeRvPdovjk2Uug9lZhJB9OGJEBjTmTqmeknhMOx4GUXoO8fXL1pI1WNRy3VPkawi46
-         y9cSgnHGu786guwBmgIjisJ1qTGzBalxS55zWFQMVTOAuYcqwaGQ1wMAw0peVIlgEiMn
-         6HdlEk4/QOTWHPAbqIApChLHIcPTXdVPwrKxbfz4VF0FSGEk6+KbSpKGgLxvWkRDiy4d
-         HwqA1Bsv5Pc2GIqFtwxu4//CCDRct7FMtJhMqwuRzyzTZ2nmRGecgUbvm7zNIYlekHRB
-         sD/fGLpbjM/EWSrm+Z0M0oiADsJyzFSPhhF09LE3OvXoGqrfZ2m8BAImLkvIAJIyFU9D
-         AB0A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bUwWCinPU/rcnyTODhKDPV2jIh5tG5a9WWqSzvSC+LE=;
+        b=DODEhSOYxR0VIostkIvx9gvBPqeuODaAMtL6vHtXUPypI6Hooq7dZ1PP3a5TFqhlAT
+         tDmQ2E8cf7ew2PhUEBJls3dQr78ozPJVwH4JKIXiX+UPQR3DKzkLw/p1UA+c8jsNpVfM
+         vZZms18aOqYHP0jq8VNNKPxi0ZUHR4wpkAuyxPz/SNFxc7Sp2B37RZx0Jg8aFGJN6haV
+         +aInPMzb2VXh2wFdzD8habbzqGHH58bDq6RQk6IL/OZW+Q3Kf85B45DxFuz1DrhRZ9Ye
+         CA338RNw/yAkb5MtBOtnFhBoUu3nbo+GFg+pffJVo4mOAlsbPrMvGDqM2V8swDrve0mg
+         02cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V2LVrCoXAZgfkykMj7CvkovonpKX+foU2OBadTMRae4=;
-        b=A5+Su4dkU+NPX2eFkgDgeQY/WF9raRY3JvAW5OxxurG5pEeaIKiZB+urXOc0zacnFd
-         lfl5pr3IrnK6wmPv6zNWAgWrsomVFMKmSBsozEC9Wu7ZSE7Vy58yP18MGA5OQVezYb9a
-         Pm6cDhfn7TkSEQOx8mA6BicVhT0iGMr0buo+e+EdJ1d2f4O5kMjbU5Z4JZUlfvSvCdkE
-         TyTLzNuiEkK0NygeK9APOhlkHdtaiQlSls9DdK3EGO42yZPoqiLz/LWFPsbWZgYGfcks
-         vr1ifAuZ7yl7xyqb/cr+UVwyLv8OyKbfJRgNKpTuKH0pV0SKWMRP2Kf3xmrkZiL2fwhz
-         HF4A==
-X-Gm-Message-State: AOAM5322rqjA7JsbCWfzCDMNivuFjy44/3uqrESBv2aSsMQC3a+pSm+q
-        zqBJ62JXom7EO69UhJ1uKTbW2Omo4KTHWSfu
-X-Google-Smtp-Source: ABdhPJwJpbV82H8ilmC18oT4LOrQqTTkOO8hBblXFsSFKb2F/1FLikMJQ8Dvo9MsPYs1grtzaptJLA==
-X-Received: by 2002:a05:6402:1d82:: with SMTP id dk2mr13293791edb.366.1605879095666;
-        Fri, 20 Nov 2020 05:31:35 -0800 (PST)
-Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id x20sm1130500ejv.66.2020.11.20.05.31.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 05:31:35 -0800 (PST)
-To:     Youling Tang <tangyouling@loongson.cn>,
-        Stefan Asserhall <stefan.asserhall@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kernel@vger.kernel.org
-References: <1605750037-433-1-git-send-email-tangyouling@loongson.cn>
-From:   Michal Simek <monstr@monstr.eu>
-Subject: Re: [PATCH] microblaze: Use the common INIT_DATA_SECTION macro in
- vmlinux.lds.S
-Message-ID: <d513f0d1-1cfd-9f71-f12e-1b53689ef073@monstr.eu>
-Date:   Fri, 20 Nov 2020 14:31:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bUwWCinPU/rcnyTODhKDPV2jIh5tG5a9WWqSzvSC+LE=;
+        b=ED/OR1fJnYVQRFno80l70oDtPC2AsIfJXNQVzW6eEO/lJqV5d3brMgevOQyYrodZtD
+         mPkCv+g4r5GyR67oS/hpyyun1LsLqAW246ju24jGG6BiDnuG6XXWSHTOaMZamH2vxHjv
+         5y3e7CUmNG3oZ89ujba/elfE7ACmXFCWoclSN+3PLxz10Ah9cUqXQjpjb3DKfuvoAX3u
+         +aexQDzadM4jnAQrCz8oKBx2E+Cld/k8U10ZeXk/VjxeMWc2t+BI+z0ymfTvsM483DIf
+         wRw09PUpBaEzfZufCiWZN3gyYJIM/HmTb02ZWB3NFKeXm3AUpDjkNnl+6dCwFQ2GTtY4
+         EfNQ==
+X-Gm-Message-State: AOAM533ZGddeRFshDCWXxEvuNE3Nog8uMgk8ultrdpvAszHl6vHsK4jP
+        mHT3jWb2jmYwGzCYdWqoS27NPAbc9H7boFtMPVbB/g==
+X-Google-Smtp-Source: ABdhPJw+ZaoL+9LcJWAol8nf2wslsR3GB0NnzaDG5wrSlK/3TuMj5bc5CZPiPQBtsG1v9qdqHEB0pwo1KKVNp6i7bEo=
+X-Received: by 2002:a19:6a07:: with SMTP id u7mr8636932lfu.252.1605879145033;
+ Fri, 20 Nov 2020 05:32:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1605750037-433-1-git-send-email-tangyouling@loongson.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201120090630.3286-1-mgorman@techsingularity.net> <20201120090630.3286-2-mgorman@techsingularity.net>
+In-Reply-To: <20201120090630.3286-2-mgorman@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 20 Nov 2020 14:32:14 +0100
+Message-ID: <CAKfTPtDDBHEKg1n0qWp-sVeNK9RuY+2V8evYGMzsXekTTLVeGw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] sched/numa: Rename nr_running and break out the magic number
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 20 Nov 2020 at 10:06, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> This is simply a preparation patch to make the following patches easier
+> to read. No functional change.
+>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-On 19. 11. 20 2:40, Youling Tang wrote:
-> Use the common INIT_DATA_SECTION rule for the linker script in an effort
-> to regularize the linker script.
-> 
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+
 > ---
->  arch/microblaze/kernel/vmlinux.lds.S | 24 +-----------------------
->  1 file changed, 1 insertion(+), 23 deletions(-)
-> 
-> diff --git a/arch/microblaze/kernel/vmlinux.lds.S b/arch/microblaze/kernel/vmlinux.lds.S
-> index df07b3d..527ebfc 100644
-> --- a/arch/microblaze/kernel/vmlinux.lds.S
-> +++ b/arch/microblaze/kernel/vmlinux.lds.S
-> @@ -96,10 +96,7 @@ SECTIONS {
->  	__init_begin = .;
->  
->  	INIT_TEXT_SECTION(PAGE_SIZE)
-> -
-> -	.init.data : AT(ADDR(.init.data) - LOAD_OFFSET) {
-> -		INIT_DATA
-> -	}
-> +	INIT_DATA_SECTION(0)
->  
->  	. = ALIGN(4);
->  	.init.ivt : AT(ADDR(.init.ivt) - LOAD_OFFSET) {
-> @@ -107,25 +104,6 @@ SECTIONS {
->  		*(.init.ivt)
->  		__ivt_end = .;
->  	}
-> -
-> -	.init.setup : AT(ADDR(.init.setup) - LOAD_OFFSET) {
-> -		INIT_SETUP(0)
-> -	}
-> -
-> -	.initcall.init : AT(ADDR(.initcall.init) - LOAD_OFFSET ) {
-> -		INIT_CALLS
-> -	}
-> -
-> -	.con_initcall.init : AT(ADDR(.con_initcall.init) - LOAD_OFFSET) {
-> -		CON_INITCALL
-> -	}
-> -
-> -	__init_end_before_initramfs = .;
-> -
-> -	.init.ramfs : AT(ADDR(.init.ramfs) - LOAD_OFFSET) {
-> -		INIT_RAM_FS
-> -	}
-> -
->  	__init_end = .;
->  
->  	.bss ALIGN (PAGE_SIZE) : AT(ADDR(.bss) - LOAD_OFFSET) {
-> 
-
-Thanks for the patch but I can't accept it because recently we found
-that there needs to be some resorting in linker to be able to boot.
-The issue is that INIT_RAMFS_FS section is text/data/init and bss.
-But because microblaze in early code is using two TLBs (16M) each for
-early mapping and you have big initramfs bss section is unreachable.
-That's why these sections needs to be swapped.
-Maybe bss section can be moved up before INIT_DATA_SECTION maybe even
-before INIT_TEXT_SECTION and we should be fine.
-
-Thanks,
-Michal
-
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
-
-
-
+>  kernel/sched/fair.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 6d78b68847f9..5fbed29e4001 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -1550,7 +1550,7 @@ struct task_numa_env {
+>  static unsigned long cpu_load(struct rq *rq);
+>  static unsigned long cpu_runnable(struct rq *rq);
+>  static unsigned long cpu_util(int cpu);
+> -static inline long adjust_numa_imbalance(int imbalance, int nr_running);
+> +static inline long adjust_numa_imbalance(int imbalance, int dst_running);
+>
+>  static inline enum
+>  numa_type numa_classify(unsigned int imbalance_pct,
+> @@ -8991,7 +8991,9 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+>         }
+>  }
+>
+> -static inline long adjust_numa_imbalance(int imbalance, int nr_running)
+> +#define NUMA_IMBALANCE_MIN 2
+> +
+> +static inline long adjust_numa_imbalance(int imbalance, int dst_running)
+>  {
+>         unsigned int imbalance_min;
+>
+> @@ -8999,8 +9001,8 @@ static inline long adjust_numa_imbalance(int imbalance, int nr_running)
+>          * Allow a small imbalance based on a simple pair of communicating
+>          * tasks that remain local when the source domain is almost idle.
+>          */
+> -       imbalance_min = 2;
+> -       if (nr_running <= imbalance_min)
+> +       imbalance_min = NUMA_IMBALANCE_MIN;
+> +       if (dst_running <= imbalance_min)
+>                 return 0;
+>
+>         return imbalance;
+> --
+> 2.26.2
+>
