@@ -2,132 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666512B9FDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEC12B9FE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:43:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgKTBj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 20:39:26 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39704 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726342AbgKTBjY (ORCPT
+        id S1726479AbgKTBmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 20:42:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726122AbgKTBmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:39:24 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AK1EWVq016907;
-        Thu, 19 Nov 2020 17:39:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=4ViDyCvJgPOSlCa12hxCgMSYf3EBU4Ab7MQs4NghHr8=;
- b=LJ67J8+cWZw3bbcgZgqx7OeV2ZcUkMsEwypxhSYiQTnGnO+3+zKm2tx+9aLCnfutEtEG
- F75FfIxaLijfE80tLiYLqKqIIwNrBW6ogRysb29pPW23Ux3a5R8Qv6x/H3Ndso5l9VTC
- +wxLpBn4qY9gd0FiZCS/djKPM9JawEyECcQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34wdgvssv9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 19 Nov 2020 17:39:09 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 19 Nov 2020 17:39:08 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E8YItL7nrTjebqHnqhTC8dkcZ4NSNmV6mgWZNx2caNgSohG4B06Kd5BlKwb0Nip3XpYCPlUi6h80Cm2Svee6Ib7A9Hj5GZ/j4xikKE0AHxXhZA/vQN7PaVx4iGyJRlbVO+Ax9SQWmDYOxYbxFmKHxdzs0DTv78JT5qRdcFbOs7eGu3vyVh4WXw7vifGF5bkw08oWtiX5z71EHTuPZCVqRG8Pgw1gpgZ10TfYKwnwJDmos/Q0v2lR9qIlZ7Xk8a47+gO0+m9szqIAqez5uV6X/a72lB8AN63HSWW5oD7BkIlqPtASdtUFNOdyAtUuvK+Tj+lQSNzpRB7FzCcvvV8Mig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4ViDyCvJgPOSlCa12hxCgMSYf3EBU4Ab7MQs4NghHr8=;
- b=j3nytu3Rpm7r/wuZbqcZQ4dq7V8fBOvpCPMPNPMcz90fCRjcDvIr86PcwC+V2wvz4g23zGE/j7F2wivnb9CLVYn4yhLsypLFoJsZszjIFHveY7WbWeNSxK0kY0y/AoCpJDwJR4cZvkWXE9QRyLSgDHUg3kpFJp3oYvSucgVZVBntIfBg9fDrw44+qCPOLFILHNIX5E5lYsoqqYy9j6q+9WTI8vK+3cNElMKQ7KWQV3HhayaeyC9y5+NE/h1/x5SqJW9oKnDf1ZkM8g0KMZ96QZuvu4tAZyNMvgd5qCEFFEbwaFBo67ySpK960X2o6GnFlu5+8kV1ilDKFvIFQZt5sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4ViDyCvJgPOSlCa12hxCgMSYf3EBU4Ab7MQs4NghHr8=;
- b=XQOH4YKjsxHmfYwDcQLTwKcyJu1XiMO5pbe6nk4NWjAIxggy6Rt0le36fOeOGf9nqSy5ukj7aQV7KCXrDmQFSVP3WHreXJfH2jPVVLc2N0ygkjvRjQogqBU56mKrPX41+om7Ob0To8wPrW8mbvLdrNjjXdFFhC1ccX9uISa870w=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BY5PR15MB3715.namprd15.prod.outlook.com (2603:10b6:a03:1fe::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Fri, 20 Nov
- 2020 01:39:05 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::f49e:bdbb:8cd7:bf6b]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::f49e:bdbb:8cd7:bf6b%7]) with mapi id 15.20.3564.034; Fri, 20 Nov 2020
- 01:39:05 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Roman Gushchin <guro@fb.com>
-CC:     bpf <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v7 12/34] bpf: refine memcg-based memory
- accounting for hashtab maps
-Thread-Topic: [PATCH bpf-next v7 12/34] bpf: refine memcg-based memory
- accounting for hashtab maps
-Thread-Index: AQHWvprXtR3pfRAa/k2I5gDf/Ew0GanQPqUA
+        Thu, 19 Nov 2020 20:42:15 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE34C0613CF;
+        Thu, 19 Nov 2020 17:42:15 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id o9so10731588ejg.1;
+        Thu, 19 Nov 2020 17:42:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n6fJbpAsrNeTJCisyMm29rVfc8vqi6E/sg4NuVwUBwU=;
+        b=fcR70heDTymrXeSpRScs/tA0OpgvpkPyoBnHWus4kQqcyzrqHQrUm3D5kg6loUw+Ed
+         VaqIMBFTihDS4eZjaYjNffMhXF9kRdQDzj92K6DyUtGeLVuquQj26o7j28625A7/VhzE
+         Xzc4jb2tZTgysV8sOYWuJjmq5m0aUMI006MBp6oqx2ady4CfRbelXnfEyFuG2isX8043
+         e8pZNCINlCvQ0PHgoFo2dn494QW/66RlO5ZBNNjZFT3y29U/fLVr8vjyB1b9pCwQ+1pN
+         A6E+fePh5BOLcI03Y0rTb1vi1K3CqZXhcaDbNdMV4J9639XPIDB6kebowdcKMsC0SpC/
+         aoEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=n6fJbpAsrNeTJCisyMm29rVfc8vqi6E/sg4NuVwUBwU=;
+        b=hhjzyip9Hfw3DwTg2179DZZVCoUMeMh2Orog90lZqdc36g1/lPnwBNsgS3qnQLySVo
+         NipLBm2TG4yEVlhloVV6kfg29EjG8tLDHxca+Q3zsEUjho2yFemUnpnAztGyxzz55xaO
+         fzeCIn0pNllugLOjr4c/l/A7YKJnuKhVT97VFSvLUuYeo/Ic7TMLPV3fy7iDig3oVatD
+         vJuHIH3EFHHyjAFzA65cNUYLB4nzZZXPmzRpICzSK6K96/XNhS25bVNsvAer/F5LrsXo
+         hEA5llMMTzrl2I/65Xm77Z4i82NCpHkiJAFWBiSujp5codxI2T94CbRqqQ+lX+roHM3O
+         3uSw==
+X-Gm-Message-State: AOAM530/iP6AM2+HE/gxfSYMSpRkOQDwp77HfH18xvH7LGdHDWjnx8Ov
+        tFXAngdsafke76UOGVObVn1uxf9n1+lWLA==
+X-Google-Smtp-Source: ABdhPJzkrCXqcKBjRG4Qid7EAfsHOXYAVmH0qCEK801yPfrFrgVS95gEZ7o0s9HPAbgb10t/XtB3FQ==
+X-Received: by 2002:a17:906:38cc:: with SMTP id r12mr31679397ejd.277.1605836534123;
+        Thu, 19 Nov 2020 17:42:14 -0800 (PST)
+Received: from [192.168.1.33] (host109-152-100-189.range109-152.btcentralplus.com. [109.152.100.189])
+        by smtp.gmail.com with ESMTPSA id oz19sm557644ejb.28.2020.11.19.17.42.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Nov 2020 17:42:13 -0800 (PST)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1605827965.git.asml.silence@gmail.com>
+ <ab04202d0f8c1424da47251085657c436d762785.1605827965.git.asml.silence@gmail.com>
+ <20201120012017.GJ29991@casper.infradead.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH v2 1/2] iov_iter: optimise iov_iter_npages for bvec
+Message-ID: <35d5db17-f6f6-ec32-944e-5ecddcbcb0f1@gmail.com>
 Date:   Fri, 20 Nov 2020 01:39:05 +0000
-Message-ID: <25D6C4A2-A92C-403A-8550-70FC81E14286@fb.com>
-References: <20201119173754.4125257-1-guro@fb.com>
- <20201119173754.4125257-13-guro@fb.com>
-In-Reply-To: <20201119173754.4125257-13-guro@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-x-originating-ip: [2620:10d:c090:400::5:f2e3]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 03ca08bd-af04-4817-4db3-08d88cf510ef
-x-ms-traffictypediagnostic: BY5PR15MB3715:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR15MB3715822D6EDA801A5D537B8EB3FF0@BY5PR15MB3715.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:595;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5DtPUKgJJ4gfFFKwM/TU71j4N1NohVQdvJio0lOJAF3S9O2Mw66/xd/nyRRHkViOFWxTSEAhp2/LI4Sz25NIPH/5RNDMRgX1XWzhq9AmG2OkWldiYfSnboV4Rduc0cd0cNVGknJQSK2s1uB9izHmbPAgwZ+W/7aQV4kIoxx9JyVLR8/sQyjx+ULHXigUMwCLzFoB57rR2IzUGMjTLQPzTKW2HH5IX7phJyyKgqEiOWpa2knALfCGJtNEq7DTE5TFQwCduSmMmTINGhfAQO8Nwvzi/QjYBHjluvKi0raoiyC+sC0vyTyKz8AavzIRHlq7pUxBG+G0D0zjbExkR015zQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(396003)(39860400002)(366004)(376002)(478600001)(6512007)(2906002)(316002)(91956017)(54906003)(64756008)(33656002)(76116006)(558084003)(6636002)(15650500001)(66476007)(6506007)(37006003)(66946007)(71200400001)(6486002)(8676002)(5660300002)(53546011)(2616005)(86362001)(66556008)(83380400001)(6862004)(66446008)(36756003)(8936002)(186003)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 2ggT9G0jzNKPk9PAduvOYz15W3TIFVytwRJnMjYnTP1XjLknkXFxExshJ3sHCiQ+2Z5tOSMYS03sUHGnv2j6Fc8nNSfOrew6+Qq3sytqikLsoom5kslYwQj6BzxeOG+lQfPSKVurn25DsltVE/eprmolaMnckhmE0gfLLc899cQLwpUtYa+ZEhz5D/n8nkRPi/FdXq0OK8mQCMz7pV2Amsr6y5bnn5jJ6X68lp8QBD49Wa7DQQoig9gExNj2lqzu80Z4y+CBWggXQw8rw6hs3lemwFMWtA6aFD5b0glrsMgFLMHO0dA8K6xAMNgdr5thCAiod1O8AtiRC5JaQfmFjPd9U6DnjIbrDJlKvLR8YtOWmZdHYAJaFceuqW9amjvdWfBDtsSdQAhrUeFxJ9SxDYJIcH/LxHClzb4iPqm+N8cz+9+/qbOZEz3Fnj7iHinDVhMzC+7Ze4KPK61KR9f/gvP/l1UCQ+Jdo0O0b9T9rKFemSiobKPVWr+rQICifI5klxZ0Zk+GgJZXrhYlJyi3v+eN78KiTRt2g3siaBLYppPqCZcijxURd3AtD6Uozl8HZq7B3huFEqykXtH9Ji6bD51dHVqCvp9gaGnlqZPhcwPVcMp92GNgC9LKVtrYTVpv9G77IC0a7mQwoIOjZmY8zqOPLVzao4HT9YSX4KlCnepyKVcyFpDHRF2bR+TwebLe
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5B95D0878F37B6408F3801247C53D5F5@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03ca08bd-af04-4817-4db3-08d88cf510ef
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2020 01:39:05.0610
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EjH3BWOxaKWcZf/wKIxCz1uUEbB30xR/T2BV/rdPoS08CV9quVtKOGcuV2i/RB7UDCvKng34tKeqjN5t8o1Uvg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3715
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_14:2020-11-19,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 bulkscore=0
- impostorscore=0 spamscore=0 mlxlogscore=799 clxscore=1015
- lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011200009
-X-FB-Internal: deliver
+In-Reply-To: <20201120012017.GJ29991@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20/11/2020 01:20, Matthew Wilcox wrote:
+> On Thu, Nov 19, 2020 at 11:24:38PM +0000, Pavel Begunkov wrote:
+>> The block layer spends quite a while in iov_iter_npages(), but for the
+>> bvec case the number of pages is already known and stored in
+>> iter->nr_segs, so it can be returned immediately as an optimisation
+> 
+> Er ... no, it doesn't.  nr_segs is the number of bvecs.  Each bvec can
+> store up to 4GB of contiguous physical memory.
 
+Ah, really, missed min() with PAGE_SIZE in bvec_iter_len(), then it's a
+stupid statement. Thanks!
 
-> On Nov 19, 2020, at 9:37 AM, Roman Gushchin <guro@fb.com> wrote:
->=20
-> Include percpu objects and the size of map metadata into the
-> accounting.
->=20
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+Are there many users of that? All these iterators are a huge burden,
+just to count one 4KB page in bvec it takes 2% of CPU time for me.
 
-Acked-by: Song Liu <songliubraving@fb.com>
-
-
+-- 
+Pavel Begunkov
