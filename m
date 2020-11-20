@@ -2,163 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CAB32BA963
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 385AA2BA965
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727677AbgKTLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:44:30 -0500
-Received: from mga03.intel.com ([134.134.136.65]:27927 "EHLO mga03.intel.com"
+        id S1727793AbgKTLpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:45:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:48184 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727120AbgKTLoa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:44:30 -0500
-IronPort-SDR: n5dhM4T8aTo6Z3Xuf3mJh6tjfTUIBgY3QZvhPcYirOumsbTDO7GM0LFJM/8KHR2tCOUm8CTq8n
- Auhyy0sKJRbA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="171557037"
-X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
-   d="scan'208";a="171557037"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 03:44:29 -0800
-IronPort-SDR: sD/CrGkoG6LVm/YDt8AtXAcCg7Tg1tzShXmFUato1xXvvtW6ZAwX6bH4UjWpCKf+FsP7CZztbi
- aOWEyHe5AMZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
-   d="scan'208";a="360411401"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Nov 2020 03:44:25 -0800
-Date:   Fri, 20 Nov 2020 19:44:24 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Waiman Long <longman@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@intel.com, ying.huang@intel.com
-Subject: Re: [LKP] Re: [mm/memcg] bd0b230fe1: will-it-scale.per_process_ops
- -22.7% regression
-Message-ID: <20201120114424.GA103521@shbuild999.sh.intel.com>
-References: <20201102091543.GM31092@shao2-debian>
- <20201102092754.GD22613@dhcp22.suse.cz>
- <82d73ebb-a31e-4766-35b8-82afa85aa047@intel.com>
- <20201102100247.GF22613@dhcp22.suse.cz>
- <bd87e8bd-c918-3f41-0cc5-e2927d91625f@linux.intel.com>
- <20201104081546.GB10052@dhcp22.suse.cz>
- <20201112122844.GA11000@shbuild999.sh.intel.com>
- <20201112141654.GC12240@dhcp22.suse.cz>
- <20201113073436.GA113119@shbuild999.sh.intel.com>
+        id S1725805AbgKTLpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:45:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CFCC11D4;
+        Fri, 20 Nov 2020 03:45:15 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74C9A3F718;
+        Fri, 20 Nov 2020 03:45:13 -0800 (PST)
+References: <20201120075527.GB2414@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        dietmar.eggemann@arm.com, patrick.bellasi@matbug.net,
+        lenb@kernel.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, qperret@google.com,
+        viresh.kumar@linaro.org
+Subject: Re: [RFC] Documentation/scheduler/schedutil.txt
+In-reply-to: <20201120075527.GB2414@hirez.programming.kicks-ass.net>
+Date:   Fri, 20 Nov 2020 11:45:05 +0000
+Message-ID: <jhjzh3cuu9q.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113073436.GA113119@shbuild999.sh.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 03:34:36PM +0800, Feng Tang wrote:
-> On Thu, Nov 12, 2020 at 03:16:54PM +0100, Michal Hocko wrote:
-> > > > > I add one phony page_counter after the union and re-test, the regression
-> > > > > reduced to -1.2%. It looks like the regression caused by the data structure
-> > > > > layout change.
-> > > > 
-> > > > Thanks for double checking. Could you try to cache align the
-> > > > page_counter struct? If that helps then we should figure which counters
-> > > > acks against each other by adding the alignement between the respective
-> > > > counters. 
-> > > 
-> > > We tried below patch to make the 'page_counter' aligned.
-> > >   
-> > >   diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-> > >   index bab7e57..9efa6f7 100644
-> > >   --- a/include/linux/page_counter.h
-> > >   +++ b/include/linux/page_counter.h
-> > >   @@ -26,7 +26,7 @@ struct page_counter {
-> > >    	/* legacy */
-> > >    	unsigned long watermark;
-> > >    	unsigned long failcnt;
-> > >   -};
-> > >   +} ____cacheline_internodealigned_in_smp;
-> > >    
-> > > and with it, the -22.7% peformance change turns to a small -1.7%, which
-> > > confirms the performance bump is caused by the change to data alignment.
-> > > 
-> > > After the patch, size of 'page_counter' increases from 104 bytes to 128
-> > > bytes, and the size of 'mem_cgroup' increases from 2880 bytes to 3008
-> > > bytes(with our kernel config). Another major data structure which
-> > > contains 'page_counter' is 'hugetlb_cgroup', whose size will change
-> > > from 912B to 1024B.
-> > > 
-> > > Should we make these page_counters aligned to reduce cacheline conflict?
-> > 
-> > I would rather focus on a more effective mem_cgroup layout. It is very
-> > likely that we are just stumbling over two counters here.
-> > 
-> > Could you try to add cache alignment of counters after memory and see
-> > which one makes the difference? I do not expect memsw to be the one
-> > because that one is used together with the main counter. But who knows
-> > maybe the way it crosses the cache line has the exact effect. Hard to
-> > tell without other numbers.
-> 
-> I added some alignments change around the 'memsw', but neither of them can
-> restore the -22.7%. Following are some log showing how the alignments
-> are:
-> 
-> tl: memcg=0x7cd1000 memory=0x7cd10d0 memsw=0x7cd1140 kmem=0x7cd11b0 tcpmem=0x7cd1220
-> t2: memcg=0x7cd0000 memory=0x7cd00d0 memsw=0x7cd0140 kmem=0x7cd01c0 tcpmem=0x7cd0230
-> 
-> So both of the 'memsw' are aligned, but t2's 'kmem' is aligned while
-> t1's is not.
-> 
-> I will check more on the perf data about detailed hotspots.
 
-Some more check updates about it:
+Hi,
 
-Waiman's patch is effectively removing one 'struct page_counter' between
-'memory' and "memsw'. And the mem_cgroup is: 
+On 20/11/20 07:55, Peter Zijlstra wrote:
+> Frequency- / Heterogeneous Invariance
+> -------------------------------------
+>
+> Because consuming the CPU for 50% at 1GHz is not the same as consuming the CPU
+> for 50% at 2GHz, nor is running 50% on a LITTLE CPU the same as running 50% on
+> a big CPU, we allow architectures to scale the time delta with two ratios, one
+> DVFS ratio and one microarch ratio.
+>
+> For simple DVFS architectures (where software is in full control) we trivially
+> compute the ratio as:
+>
+> 	    f_cur
+>   r_dvfs := -----
+>             f_max
+>
+> For more dynamic systems where the hardware is in control of DVFS (Intel,
+> ARMv8.4-AMU) we use hardware counters to provide us this ratio. In specific,
+> for Intel, we use:
+>
+> 	   APERF
+>   f_cur := ----- * P0
+> 	   MPERF
+>
+> 	     4C-turbo;	if available and turbo enabled
+>   f_max := { 1C-turbo;	if turbo enabled
+> 	     P0;	otherwise
+>
+>                     f_cur
+>   r_dvfs := min( 1, ----- )
+>                     f_max
+>
+> We pick 4C turbo over 1C turbo to make it slightly more sustainable.
+>
+> r_het is determined as the average performance difference between a big and
+> LITTLE core when running at max frequency over 'relevant' benchmarks.
 
-struct mem_cgroup {
+Welcome to our wonderful world where there can be more than just two types
+of CPUs! A perhaps safer statement would be:
 
-	...
-
-	struct page_counter memory;		/* Both v1 & v2 */
-
-	union {
-		struct page_counter swap;	/* v2 only */
-		struct page_counter memsw;	/* v1 only */
-	};
-
-	/* Legacy consumer-oriented counters */
-	struct page_counter kmem;		/* v1 only */
-	struct page_counter tcpmem;		/* v1 only */
-
-	...
-	...
-
-	MEMCG_PADDING(_pad1_);
-
-	atomic_t		moving_account;
-	struct task_struct	*move_lock_task;
-	
-	...
-};
+  r_het is determined as the ratio of highest performance level of the
+  current CPU vs the highest performance level of any other CPU in the 
+  system.
 
 
-I do experiments by inserting a 'page_counter' between 'memory'
-and the 'MEMCG_PADDING(_pad1_)', no matter where I put it, the
-benchmark result can be recovered from 145K to 185K, which is
-really confusing, as adding a 'page_counter' right before the
-'_pad1_' doesn't change cache alignment of any members.
+Also; do we want to further state the obvious?
 
-Thanks,
-Feng
+  r_tot := r_het * r_dvfs
 
+>
+> The result is that the above 'running' and 'runnable' metrics become invariant
+> of DVFS and Heterogenous state. IOW. we can transfer and compare them between
+> CPUs.
+>
+> For more detail see:
+>
+>  - kernel/sched/pelt.h:update_rq_clock_pelt()
+>  - arch/x86/kernel/smpboot.c:"APERF/MPERF frequency ratio computation."
+>
 
+Some of that is rephrased in
+
+  Documentation/scheduler/sched-capacity.rst:"1. CPU Capacity + 2. Task utilization"
+
+(with added diagrams crafted with love by yours truly); I suppose a cross
+reference can't hurt.
+
+>
+> UTIL_EST / UTIL_EST_FASTUP
+> --------------------------
+>
+> Because periodic tasks have their averages decayed while they sleep, even
+> though when running their expected utilization will be the same, they suffer a
+> (DVFS) ramp-up after they become runnable again.
+>
+> To alleviate this (a default enabled option) UTIL_EST drives an (IIR) EWMA
+> with the 'running' value on dequeue -- when it is highest. A further default
+> enabled option UTIL_EST_FASTUP modifies the IIR filter to instantly increase
+> and only decay on decrease.
+>
+> A further runqueue wide sum (of runnable tasks) is maintained of:
+>
+>   util_est := \Sum_t max( t_running, t_util_est_ewma )
+>
+> For more detail see: kernel/sched/fair.h:util_est_dequeue()
+>
+>
+> UCLAMP
+> ------
+>
+> It is possible to set effective u_min and u_max clamps on each task; the
+
+Nit: effective clamps are the task clamps clamped by task group clamps
+(yes, that is 4 times 'clamp' in a single line).
+
+> runqueue keeps an max aggregate of these clamps for all running tasks.
+>
+> For more detail see: include/uapi/linux/sched/types.h
+>
+>
+> Schedutil / DVFS
+> ----------------
+>
+> Every time the scheduler load tracking is updated (task wakeup, task
+> migration, time progression) we call out to schedutil to update the hardware
+> DVFS state.
+>
+> The basis is the CPU runqueue's 'running' metric, which per the above it is
+> the frequency invariant utilization estimate of the CPU. From this we compute
+> a desired frequency like:
+>
+>              max( running, util_est );	if UTIL_EST
+>   u_cfs := { running;			otherwise
+>
+>   u_clamp := clamp( u_cfs, u_min, u_max )
+>
+>   u := u_cfs + u_rt + u_irq + u_dl;	[approx. see source for more detail]
+>
+>   f_des := min( f_max, 1.25 u * f_max )
+>
+> XXX IO-wait; when the update is due to a task wakeup from IO-completion we
+> boost 'u' above.
+>
+
+IIRC the boost is fiddled with during the above, but can be applied at
+different subsequent updates (even if the task that triggered the boost is
+no longer here).
+
+> This frequency is then used to select a P-state/OPP or directly munged into a
+> CPPC style request to the hardware.
+>
+> XXX: deadline tasks (Sporadic Task Model) allows us to calculate a hard f_min
+> required to satisfy the workload.
+>
+> Because these callbacks are directly from the scheduler, the DVFS hardware
+> interaction should be 'fast' and non-blocking. Schedutil supports
+> rate-limiting DVFS requests for when hardware interaction is slow and
+> expensive, this reduces effectiveness.
+>
+> For more information see: kernel/sched/cpufreq_schedutil.c
+>
+>
+> NOTES
+> -----
+>
+>  - On low-load scenarios, where DVFS is most relevant, the 'running' numbers
+>    will closely reflect utilization.
+>
+>  - In saturated scenarios task movement will cause some transient dips,
+>    suppose we have a CPU saturated with 4 tasks, then when we migrate a task
+>    to an idle CPU, the old CPU will have a 'running' value of 0.75 while the
+>    new CPU will gain 0.25. This is inevitable and time progression will
+>    correct this. XXX do we still guarantee f_max due to no idle-time?
+>
+>  - Much of the above is about avoiding DVFS dips, and independent DVFS domains
+>    having to re-learn / ramp-up when load shifts.
 
