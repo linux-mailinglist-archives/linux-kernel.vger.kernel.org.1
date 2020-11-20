@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C992BA839
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EA82BA809
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbgKTLFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:05:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53072 "EHLO mail.kernel.org"
+        id S1727904AbgKTLEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:04:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728178AbgKTLF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:05:29 -0500
+        id S1727479AbgKTLEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:04:11 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 616A9206E3;
-        Fri, 20 Nov 2020 11:05:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9200722255;
+        Fri, 20 Nov 2020 11:04:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605870328;
-        bh=fedrN5PMUtCfJkE/NZ8sOYVSYtL3qrSOxfaSH6DmO40=;
+        s=korg; t=1605870251;
+        bh=AzG+hYW+2MMV6CP9u3mWyQwef1/Y96kbJ63kZ3Op9R8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LzX4Ktx4Ztpal0X7WPmyAj92PiOu2NZTBsRFej10ejN+o0hs2qjtTKU2xuGLg95JU
-         QItYig8Id0DAFfq8O6jdWJ3mNIQy2dmBfi3+Z9/CRmn254vaMp71+adORAzQeVVjjW
-         1v5DxqZImX/q8ajMct7uSSWWcfw+xumq547oC4Qg=
+        b=zVis4Cs4765sEicjkF5hkHwHSAKvetvOAuylhH0hhpzob2po7IkZ5+M+SxR3WcZJi
+         eZggogNTkzmAExfA//P9FkuLwPLuyv43TRpa+gckQK42tWItEpAhIwYcyhXC8Ro99W
+         PaeeY9jRYokBGBSJ3K5rubnRmnPTdk8nPM6/jfHc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dja@axtens.net,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.14 05/17] powerpc: Implement user_access_begin and friends
-Date:   Fri, 20 Nov 2020 12:03:16 +0100
-Message-Id: <20201120104540.675706459@linuxfoundation.org>
+Subject: [PATCH 4.9 12/16] powerpc/8xx: Always fault when _PAGE_ACCESSED is not set
+Date:   Fri, 20 Nov 2020 12:03:17 +0100
+Message-Id: <20201120104540.338331426@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201120104540.414709708@linuxfoundation.org>
-References: <20201120104540.414709708@linuxfoundation.org>
+In-Reply-To: <20201120104539.706905067@linuxfoundation.org>
+References: <20201120104539.706905067@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,206 +43,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@c-s.fr>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit 5cd623333e7cf4e3a334c70529268b65f2a6c2c7 upstream.
+commit 29daf869cbab69088fe1755d9dd224e99ba78b56 upstream.
 
-Today, when a function like strncpy_from_user() is called,
-the userspace access protection is de-activated and re-activated
-for every word read.
+The kernel expects pte_young() to work regardless of CONFIG_SWAP.
 
-By implementing user_access_begin and friends, the protection
-is de-activated at the beginning of the copy and re-activated at the
-end.
+Make sure a minor fault is taken to set _PAGE_ACCESSED when it
+is not already set, regardless of the selection of CONFIG_SWAP.
 
-Implement user_access_begin(), user_access_end() and
-unsafe_get_user(), unsafe_put_user() and unsafe_copy_to_user()
+This adds at least 3 instructions to the TLB miss exception
+handlers fast path. Following patch will reduce this overhead.
 
-For the time being, we keep user_access_save() and
-user_access_restore() as nops.
+Also update the rotation instruction to the correct number of bits
+to reflect all changes done to _PAGE_ACCESSED over time.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Fixes: d069cb4373fe ("powerpc/8xx: Don't touch ACCESSED when no SWAP.")
+Fixes: 5f356497c384 ("powerpc/8xx: remove unused _PAGE_WRITETHRU")
+Fixes: e0a8e0d90a9f ("powerpc/8xx: Handle PAGE_USER via APG bits")
+Fixes: 5b2753fc3e8a ("powerpc/8xx: Implementation of PAGE_EXEC")
+Fixes: a891c43b97d3 ("powerpc/8xx: Prepare handlers for _PAGE_HUGE for 512k pages.")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/36d4fbf9e56a75994aca4ee2214c77b26a5a8d35.1579866752.git.christophe.leroy@c-s.fr
-Signed-off-by: Daniel Axtens <dja@axtens.net>
+Link: https://lore.kernel.org/r/af834e8a0f1fa97bfae65664950f0984a70c4750.1602492856.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/powerpc/include/asm/uaccess.h |   76 +++++++++++++++++++++++++++----------
- 1 file changed, 57 insertions(+), 19 deletions(-)
 
---- a/arch/powerpc/include/asm/uaccess.h
-+++ b/arch/powerpc/include/asm/uaccess.h
-@@ -83,9 +83,14 @@
- 	__put_user_check((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
+---
+ arch/powerpc/kernel/head_8xx.S |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+--- a/arch/powerpc/kernel/head_8xx.S
++++ b/arch/powerpc/kernel/head_8xx.S
+@@ -359,11 +359,9 @@ InstructionTLBMiss:
+ 	/* Load the MI_TWC with the attributes for this "segment." */
+ 	MTSPR_CPU6(SPRN_MI_TWC, r11, r3)	/* Set segment attributes */
  
- #define __get_user(x, ptr) \
--	__get_user_nocheck((x), (ptr), sizeof(*(ptr)))
-+	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), true)
- #define __put_user(x, ptr) \
--	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
-+	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), true)
-+
-+#define __get_user_allowed(x, ptr) \
-+	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), false)
-+#define __put_user_allowed(x, ptr) \
-+	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)), false)
- 
- #define __get_user_inatomic(x, ptr) \
- 	__get_user_nosleep((x), (ptr), sizeof(*(ptr)))
-@@ -130,10 +135,9 @@ extern long __put_user_bad(void);
- 		: "r" (x), "b" (addr), "i" (-EFAULT), "0" (err))
- #endif /* __powerpc64__ */
- 
--#define __put_user_size(x, ptr, size, retval)			\
-+#define __put_user_size_allowed(x, ptr, size, retval)		\
- do {								\
- 	retval = 0;						\
--	allow_write_to_user(ptr, size);				\
- 	switch (size) {						\
- 	  case 1: __put_user_asm(x, ptr, retval, "stb"); break;	\
- 	  case 2: __put_user_asm(x, ptr, retval, "sth"); break;	\
-@@ -141,17 +145,26 @@ do {								\
- 	  case 8: __put_user_asm2(x, ptr, retval); break;	\
- 	  default: __put_user_bad();				\
- 	}							\
-+} while (0)
-+
-+#define __put_user_size(x, ptr, size, retval)			\
-+do {								\
-+	allow_write_to_user(ptr, size);				\
-+	__put_user_size_allowed(x, ptr, size, retval);		\
- 	prevent_write_to_user(ptr, size);			\
- } while (0)
- 
--#define __put_user_nocheck(x, ptr, size)			\
-+#define __put_user_nocheck(x, ptr, size, do_allow)			\
- ({								\
- 	long __pu_err;						\
- 	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
- 	if (!is_kernel_addr((unsigned long)__pu_addr))		\
- 		might_fault();					\
- 	__chk_user_ptr(ptr);					\
--	__put_user_size((x), __pu_addr, (size), __pu_err);	\
-+	if (do_allow)								\
-+		__put_user_size((x), __pu_addr, (size), __pu_err);		\
-+	else									\
-+		__put_user_size_allowed((x), __pu_addr, (size), __pu_err);	\
- 	__pu_err;						\
- })
- 
-@@ -211,13 +224,12 @@ extern long __get_user_bad(void);
- 		: "b" (addr), "i" (-EFAULT), "0" (err))
- #endif /* __powerpc64__ */
- 
--#define __get_user_size(x, ptr, size, retval)			\
-+#define __get_user_size_allowed(x, ptr, size, retval)		\
- do {								\
- 	retval = 0;						\
- 	__chk_user_ptr(ptr);					\
- 	if (size > sizeof(x))					\
- 		(x) = __get_user_bad();				\
--	allow_read_from_user(ptr, size);			\
- 	switch (size) {						\
- 	case 1: __get_user_asm(x, ptr, retval, "lbz"); break;	\
- 	case 2: __get_user_asm(x, ptr, retval, "lhz"); break;	\
-@@ -225,6 +237,12 @@ do {								\
- 	case 8: __get_user_asm2(x, ptr, retval);  break;	\
- 	default: (x) = __get_user_bad();			\
- 	}							\
-+} while (0)
-+
-+#define __get_user_size(x, ptr, size, retval)			\
-+do {								\
-+	allow_read_from_user(ptr, size);			\
-+	__get_user_size_allowed(x, ptr, size, retval);		\
- 	prevent_read_from_user(ptr, size);			\
- } while (0)
- 
-@@ -235,7 +253,7 @@ do {								\
- #define __long_type(x) \
- 	__typeof__(__builtin_choose_expr(sizeof(x) > sizeof(0UL), 0ULL, 0UL))
- 
--#define __get_user_nocheck(x, ptr, size)			\
-+#define __get_user_nocheck(x, ptr, size, do_allow)			\
- ({								\
- 	long __gu_err;						\
- 	__long_type(*(ptr)) __gu_val;				\
-@@ -244,7 +262,10 @@ do {								\
- 	if (!is_kernel_addr((unsigned long)__gu_addr))		\
- 		might_fault();					\
- 	barrier_nospec();					\
--	__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
-+	if (do_allow)								\
-+		__get_user_size(__gu_val, __gu_addr, (size), __gu_err);		\
-+	else									\
-+		__get_user_size_allowed(__gu_val, __gu_addr, (size), __gu_err);	\
- 	(x) = (__typeof__(*(ptr)))__gu_val;			\
- 	__gu_err;						\
- })
-@@ -331,33 +352,40 @@ static inline unsigned long raw_copy_fro
- 	return ret;
- }
- 
--static inline unsigned long raw_copy_to_user(void __user *to,
--		const void *from, unsigned long n)
-+static inline unsigned long
-+raw_copy_to_user_allowed(void __user *to, const void *from, unsigned long n)
- {
--	unsigned long ret;
- 	if (__builtin_constant_p(n) && (n <= 8)) {
--		ret = 1;
-+		unsigned long ret = 1;
- 
- 		switch (n) {
- 		case 1:
--			__put_user_size(*(u8 *)from, (u8 __user *)to, 1, ret);
-+			__put_user_size_allowed(*(u8 *)from, (u8 __user *)to, 1, ret);
- 			break;
- 		case 2:
--			__put_user_size(*(u16 *)from, (u16 __user *)to, 2, ret);
-+			__put_user_size_allowed(*(u16 *)from, (u16 __user *)to, 2, ret);
- 			break;
- 		case 4:
--			__put_user_size(*(u32 *)from, (u32 __user *)to, 4, ret);
-+			__put_user_size_allowed(*(u32 *)from, (u32 __user *)to, 4, ret);
- 			break;
- 		case 8:
--			__put_user_size(*(u64 *)from, (u64 __user *)to, 8, ret);
-+			__put_user_size_allowed(*(u64 *)from, (u64 __user *)to, 8, ret);
- 			break;
- 		}
- 		if (ret == 0)
- 			return 0;
- 	}
- 
-+	return __copy_tofrom_user(to, (__force const void __user *)from, n);
-+}
-+
-+static inline unsigned long
-+raw_copy_to_user(void __user *to, const void *from, unsigned long n)
-+{
-+	unsigned long ret;
-+
- 	allow_write_to_user(to, n);
--	ret = __copy_tofrom_user(to, (__force const void __user *)from, n);
-+	ret = raw_copy_to_user_allowed(to, from, n);
- 	prevent_write_to_user(to, n);
- 	return ret;
- }
-@@ -379,4 +407,14 @@ static inline unsigned long clear_user(v
- extern long strncpy_from_user(char *dst, const char __user *src, long count);
- extern __must_check long strnlen_user(const char __user *str, long n);
- 
-+
-+#define user_access_begin(type, ptr, len) access_ok(type, ptr, len)
-+#define user_access_end()		  prevent_user_access(NULL, NULL, ~0ul)
-+
-+#define unsafe_op_wrap(op, err) do { if (unlikely(op)) goto err; } while (0)
-+#define unsafe_get_user(x, p, e) unsafe_op_wrap(__get_user_allowed(x, p), e)
-+#define unsafe_put_user(x, p, e) unsafe_op_wrap(__put_user_allowed(x, p), e)
-+#define unsafe_copy_to_user(d, s, l, e) \
-+	unsafe_op_wrap(raw_copy_to_user_allowed(d, s, l), e)
-+
- #endif	/* _ARCH_POWERPC_UACCESS_H */
+-#ifdef CONFIG_SWAP
+-	rlwinm	r11, r10, 32-5, _PAGE_PRESENT
++	rlwinm	r11, r10, 32-11, _PAGE_PRESENT
+ 	and	r11, r11, r10
+ 	rlwimi	r10, r11, 0, _PAGE_PRESENT
+-#endif
+ 	li	r11, RPN_PATTERN
+ 	/* The Linux PTE won't go exactly into the MMU TLB.
+ 	 * Software indicator bits 20-23 and 28 must be clear.
+@@ -443,11 +441,9 @@ _ENTRY(DTLBMiss_jmp)
+ 	 * r11 = ((r10 & PRESENT) & ((r10 & ACCESSED) >> 5));
+ 	 * r10 = (r10 & ~PRESENT) | r11;
+ 	 */
+-#ifdef CONFIG_SWAP
+-	rlwinm	r11, r10, 32-5, _PAGE_PRESENT
++	rlwinm	r11, r10, 32-11, _PAGE_PRESENT
+ 	and	r11, r11, r10
+ 	rlwimi	r10, r11, 0, _PAGE_PRESENT
+-#endif
+ 	/* The Linux PTE won't go exactly into the MMU TLB.
+ 	 * Software indicator bits 22 and 28 must be clear.
+ 	 * Software indicator bits 24, 25, 26, and 27 must be
 
 
