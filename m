@@ -2,216 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41722B9F6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 01:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C952B9F6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 01:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgKTAtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 19:49:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
+        id S1726118AbgKTAwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 19:52:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgKTAtu (ORCPT
+        with ESMTP id S1725887AbgKTAwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 19:49:50 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E64C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 16:49:50 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id g7so6214287pfc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 16:49:50 -0800 (PST)
+        Thu, 19 Nov 2020 19:52:00 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D86DC061A04
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 16:51:58 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id p12so8263731ljc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 16:51:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2Q+Mp75nfNtK6sDEMyLCAn9ibN5HjWvl6TODH5bfTHM=;
-        b=mbTZtbGchTO/Nfp1nQK9phNAZQAkQ3UxGzTamYMVaSTEibuNRP/5jqtj2DV6OpK3jM
-         UAgRpels/gxKgJUPbXftL/HXioxwbfp+5btqKIlyXhhl1UqtiNSvewVgvP8Afl/4k/Hi
-         LoAzQnNz8MTJDPgwi5Imxrm50/6KEgAAof+kzr6Lo5gBNKEgf1vGSp1AnZQASYlMknXM
-         28HXdk2S3f6udbjgyHiz7cB00GDyHQkXjTmZFoyRjlMBOhJ/zfJl79G7E4SnQ2k2YfVq
-         rEGkVoNIn0WXp5eP3Jz9EJ1zdulIwhmTrT5FGl1HaJCucTcwMvS70L6ddIR6D3mT8uMz
-         MGRQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mKrN4he/vrkvSrt1zels/CsZiFdIdrq/rbFyu4ivPdo=;
+        b=G0OBorvPg6QLTXy0J826VdaMJhGCVThSwjj+bJlGsE1FzCeRy34fdo3fP95cwfZsBV
+         pBdW9+mgCmyROiX0rFTyOO6Epo96f0KfNBCnhp/WjIiKcA4VOYKxL/6QgtZrFzwAVUy9
+         EGB7Cjv5dLrkBNexClj4soBKqMbASC8/nIHqk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=2Q+Mp75nfNtK6sDEMyLCAn9ibN5HjWvl6TODH5bfTHM=;
-        b=USA3GeokZ68B17tpWOPZSaGk8XPF7LHPKR7DqpwK1PEM1XdIS81bFmNlF1A7hQGkmM
-         OXm9Tm5LfcZrL0lFjcdOfBwc+jrt9dkf9SlOocjZ/lubID+o1LsRcPdD5RhPpkkwl6tQ
-         rV+HT65YFVwWjdpSdPHstRtJ1FjmcH+tEBpxeq+sEKFfbALkH1KOuG1PrJi3eDvmZk78
-         yOnXdYvZgpDv1QbxbP//mAqK5SfX5as464OxiSI3H2vqNokF16j1fzOL6SxAe+J9q8Mc
-         XGU+4vGX8Jm7fYJDmNty2EJh+zyYfdN/MPSpDlCV7x8e0gOLzcYpZYYS728JpvR7EZiC
-         Dzuw==
-X-Gm-Message-State: AOAM531HNIwDu97fRVFPhjSWsWyShulCUS3LHqqgp1kX7CjoRzD5KOwh
-        rhZ6m/QnlkXP0ZvN/okM2vI=
-X-Google-Smtp-Source: ABdhPJzmMwRA6Z/TuspnzE2mztwaREvUp8ZN1TfsOwjnlMRSOzHMBVPhc77zLs/morRdW6FYuLDZIw==
-X-Received: by 2002:a65:4483:: with SMTP id l3mr14680500pgq.96.1605833390301;
-        Thu, 19 Nov 2020 16:49:50 -0800 (PST)
-Received: from localhost.localdomain ([45.124.203.19])
-        by smtp.gmail.com with ESMTPSA id s4sm1038802pjn.0.2020.11.19.16.49.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 16:49:49 -0800 (PST)
-Sender: "joel.stan@gmail.com" <joel.stan@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-To:     Jeremy Kerr <jk@ozlabs.org>,
-        Alistar Popple <alistair@popple.id.au>,
-        Eddie James <eajames@linux.ibm.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Milton Miller <miltonm@us.ibm.com>
-Subject: [PATCH] fsi: Aspeed: Add mutex to protect HW access
-Date:   Fri, 20 Nov 2020 11:19:29 +1030
-Message-Id: <20201120004929.185239-1-joel@jms.id.au>
-X-Mailer: git-send-email 2.29.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mKrN4he/vrkvSrt1zels/CsZiFdIdrq/rbFyu4ivPdo=;
+        b=msgi6vhAq9J6Xmt327aOH53m6T1vcL0b6YJHhkY/YVTHYlGouTUt0fndNnA778gcOY
+         tLyLFecZ/8OuAMcuM3J/C45h5lgKLKLc1aZ/f3Non74llbrijX4kbDZT2DxbO8ykjLKW
+         SWyGMqT7UmDtznBNDZDkC1uu+tMqIGuvuyyCYgO0LFpOxjjNQ6nysmHMJXPt73O1AkYW
+         Xsmu5mSxXr8tNZSHj7vLlEjb00Z9avOcIgjsWsxcy181HCJe7jnrlqSXzetpME2tzMxu
+         X1cPSBTLi6YhjH3Q1ut3f/FCEZd+1vDR8O0GveJ5gu31WSI+gelpaGlwF/yKNbg4SAdW
+         oBIg==
+X-Gm-Message-State: AOAM533sCAW8edWozAc8B34oaFF73SEodtyhX1TkjgMSToZuswYAVjTW
+        /dwAxKTKS+eX//erCCpHymwZStG/2OmQIp16xQ1tiA==
+X-Google-Smtp-Source: ABdhPJzEixQlbGMhcCEj/OFUKI1Rd6geRcbZACBNq38zAfavN0BMSsd96rY2DYd4IGhTHca3FYYOCrh9nhLWIXql9ko=
+X-Received: by 2002:a2e:85c6:: with SMTP id h6mr7382215ljj.110.1605833516848;
+ Thu, 19 Nov 2020 16:51:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201119162654.2410685-1-revest@chromium.org> <20201119162654.2410685-5-revest@chromium.org>
+ <20201120003217.pnqu66467punkjln@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201120003217.pnqu66467punkjln@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Fri, 20 Nov 2020 01:51:46 +0100
+Message-ID: <CACYkzJ5z1CQjdMjsZK=3A9tRuWXtmJ-f2nrgbfBGXn_d-KknoA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] bpf: Add an iterator selftest for bpf_sk_storage_get
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eddie James <eajames@linux.ibm.com>
+On Fri, Nov 20, 2020 at 1:32 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Thu, Nov 19, 2020 at 05:26:54PM +0100, Florent Revest wrote:
+> > From: Florent Revest <revest@google.com>
+> >
+> > The eBPF program iterates over all files and tasks. For all socket
+> > files, it stores the tgid of the last task it encountered with a handle
+> > to that socket. This is a heuristic for finding the "owner" of a socket
+> > similar to what's done by lsof, ss, netstat or fuser. Potentially, this
+> > information could be used from a cgroup_skb/*gress hook to try to
+> > associate network traffic with processes.
+> >
+> > The test makes sure that a socket it created is tagged with prog_tests's
+> > pid.
+> >
+> > Signed-off-by: Florent Revest <revest@google.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/bpf_iter.c       | 35 +++++++++++++++++++
+> >  .../progs/bpf_iter_bpf_sk_storage_helpers.c   | 26 ++++++++++++++
+> >  2 files changed, 61 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > index bb4a638f2e6f..4d0626003c03 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > @@ -975,6 +975,39 @@ static void test_bpf_sk_storage_delete(void)
+> >       bpf_iter_bpf_sk_storage_helpers__destroy(skel);
+> >  }
+> >
+> > +/* The BPF program stores in every socket the tgid of a task owning a handle to
+> > + * it. The test verifies that a locally-created socket is tagged with its pid
+> > + */
+> > +static void test_bpf_sk_storage_get(void)
+> > +{
+> > +     struct bpf_iter_bpf_sk_storage_helpers *skel;
+> > +     int err, map_fd, val = -1;
+> > +     int sock_fd = -1;
+> > +
+> > +     skel = bpf_iter_bpf_sk_storage_helpers__open_and_load();
+> > +     if (CHECK(!skel, "bpf_iter_bpf_sk_storage_helpers__open_and_load",
+> > +               "skeleton open_and_load failed\n"))
+> > +             return;
+> > +
+> > +     sock_fd = socket(AF_INET6, SOCK_STREAM, 0);
+> > +     if (CHECK(sock_fd < 0, "socket", "errno: %d\n", errno))
+> > +             goto out;
+> > +
+> > +     do_dummy_read(skel->progs.fill_socket_owners);
+> > +
+> > +     map_fd = bpf_map__fd(skel->maps.sk_stg_map);
+> > +
+> > +     err = bpf_map_lookup_elem(map_fd, &sock_fd, &val);
+> > +     CHECK(err || val != getpid(), "bpf_map_lookup_elem",
+> > +           "map value wasn't set correctly (expected %d, got %d, err=%d)\n",
+> > +           getpid(), val, err);
+> > +
+> > +     if (sock_fd >= 0)
+> > +             close(sock_fd);
+> > +out:
+> > +     bpf_iter_bpf_sk_storage_helpers__destroy(skel);
+> > +}
+> > +
+> >  static void test_bpf_sk_storage_map(void)
+> >  {
+> >       DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+> > @@ -1131,6 +1164,8 @@ void test_bpf_iter(void)
+> >               test_bpf_sk_storage_map();
+> >       if (test__start_subtest("bpf_sk_storage_delete"))
+> >               test_bpf_sk_storage_delete();
+> > +     if (test__start_subtest("bpf_sk_storage_get"))
+> > +             test_bpf_sk_storage_get();
+> >       if (test__start_subtest("rdonly-buf-out-of-bound"))
+> >               test_rdonly_buf_out_of_bound();
+> >       if (test__start_subtest("buf-neg-offset"))
+> > diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
+> > index 01ff3235e413..7206fd6f09ab 100644
+> > --- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
+> > +++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
+> > @@ -21,3 +21,29 @@ int delete_bpf_sk_storage_map(struct bpf_iter__bpf_sk_storage_map *ctx)
+> >
+> >       return 0;
+> >  }
+> > +
+> > +SEC("iter/task_file")
+> > +int fill_socket_owners(struct bpf_iter__task_file *ctx)
+> > +{
+> > +     struct task_struct *task = ctx->task;
+> > +     struct file *file = ctx->file;
+> > +     struct socket *sock;
+> > +     int *sock_tgid;
+> > +
+> > +     if (!task || !file || task->tgid != task->pid)
+> > +             return 0;
+> > +
+> > +     sock = bpf_sock_from_file(file);
+> > +     if (!sock)
+> > +             return 0;
+> > +
+> > +     sock_tgid = bpf_sk_storage_get(&sk_stg_map, sock->sk, 0,
+> > +                                    BPF_SK_STORAGE_GET_F_CREATE);
+> Does it affect all sk(s) in the system?  Can it be limited to
+> the sk that the test is testing?
 
-There is nothing to prevent multiple commands being executed
-simultaneously. Add a mutex to prevent this.
-
-Fixes: 606397d67f41 ("fsi: Add ast2600 master driver")
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Reviewed-by: Milton Miller <miltonm@us.ibm.com>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
----
-
-Hi Greg, can you please merge this.
-
-Signed-off-by: Joel Stanley <joel@jms.id.au>
----
- drivers/fsi/fsi-master-aspeed.c | 45 +++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/fsi/fsi-master-aspeed.c b/drivers/fsi/fsi-master-aspeed.c
-index c006ec008a1a..90dbe58ca1ed 100644
---- a/drivers/fsi/fsi-master-aspeed.c
-+++ b/drivers/fsi/fsi-master-aspeed.c
-@@ -8,6 +8,7 @@
- #include <linux/io.h>
- #include <linux/mfd/syscon.h>
- #include <linux/module.h>
-+#include <linux/mutex.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
-@@ -19,6 +20,7 @@
- 
- struct fsi_master_aspeed {
- 	struct fsi_master	master;
-+	struct mutex		lock;	/* protect HW access */
- 	struct device		*dev;
- 	void __iomem		*base;
- 	struct clk		*clk;
-@@ -254,6 +256,8 @@ static int aspeed_master_read(struct fsi_master *master, int link,
- 	addr |= id << 21;
- 	addr += link * FSI_HUB_LINK_SIZE;
- 
-+	mutex_lock(&aspeed->lock);
-+
- 	switch (size) {
- 	case 1:
- 		ret = opb_readb(aspeed, fsi_base + addr, val);
-@@ -265,14 +269,14 @@ static int aspeed_master_read(struct fsi_master *master, int link,
- 		ret = opb_readl(aspeed, fsi_base + addr, val);
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto done;
- 	}
- 
- 	ret = check_errors(aspeed, ret);
--	if (ret)
--		return ret;
--
--	return 0;
-+done:
-+	mutex_unlock(&aspeed->lock);
-+	return ret;
- }
- 
- static int aspeed_master_write(struct fsi_master *master, int link,
-@@ -287,6 +291,8 @@ static int aspeed_master_write(struct fsi_master *master, int link,
- 	addr |= id << 21;
- 	addr += link * FSI_HUB_LINK_SIZE;
- 
-+	mutex_lock(&aspeed->lock);
-+
- 	switch (size) {
- 	case 1:
- 		ret = opb_writeb(aspeed, fsi_base + addr, *(u8 *)val);
-@@ -298,14 +304,14 @@ static int aspeed_master_write(struct fsi_master *master, int link,
- 		ret = opb_writel(aspeed, fsi_base + addr, *(__be32 *)val);
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto done;
- 	}
- 
- 	ret = check_errors(aspeed, ret);
--	if (ret)
--		return ret;
--
--	return 0;
-+done:
-+	mutex_unlock(&aspeed->lock);
-+	return ret;
- }
- 
- static int aspeed_master_link_enable(struct fsi_master *master, int link,
-@@ -320,17 +326,21 @@ static int aspeed_master_link_enable(struct fsi_master *master, int link,
- 
- 	reg = cpu_to_be32(0x80000000 >> bit);
- 
--	if (!enable)
--		return opb_writel(aspeed, ctrl_base + FSI_MCENP0 + (4 * idx),
--				  reg);
-+	mutex_lock(&aspeed->lock);
-+
-+	if (!enable) {
-+		ret = opb_writel(aspeed, ctrl_base + FSI_MCENP0 + (4 * idx), reg);
-+		goto done;
-+	}
- 
- 	ret = opb_writel(aspeed, ctrl_base + FSI_MSENP0 + (4 * idx), reg);
- 	if (ret)
--		return ret;
-+		goto done;
- 
- 	mdelay(FSI_LINK_ENABLE_SETUP_TIME);
--
--	return 0;
-+done:
-+	mutex_unlock(&aspeed->lock);
-+	return ret;
- }
- 
- static int aspeed_master_term(struct fsi_master *master, int link, uint8_t id)
-@@ -431,9 +441,11 @@ static ssize_t cfam_reset_store(struct device *dev, struct device_attribute *att
- {
- 	struct fsi_master_aspeed *aspeed = dev_get_drvdata(dev);
- 
-+	mutex_lock(&aspeed->lock);
- 	gpiod_set_value(aspeed->cfam_reset_gpio, 1);
- 	usleep_range(900, 1000);
- 	gpiod_set_value(aspeed->cfam_reset_gpio, 0);
-+	mutex_unlock(&aspeed->lock);
- 
- 	return count;
- }
-@@ -597,6 +609,7 @@ static int fsi_master_aspeed_probe(struct platform_device *pdev)
- 
- 	dev_set_drvdata(&pdev->dev, aspeed);
- 
-+	mutex_init(&aspeed->lock);
- 	aspeed_master_init(aspeed);
- 
- 	rc = fsi_master_register(&aspeed->master);
--- 
-2.29.2
-
+Yeah, one such way would be to set the socket storage on the socket
+from userspace and then "search" for the socket in the iterator and
+mark it as found in a shared global variable.
