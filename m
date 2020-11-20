@@ -2,225 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42872BA9FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60F62BA9FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728197AbgKTMQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:16:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59870 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727647AbgKTMQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:16:22 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605874580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YefhziZmkc//JJPRQ3LwkHDQuojnCOZiaUec095OI04=;
-        b=ILqKfaohLJK8dicHB14Kgv92XrND/IT0Xe8mqjbqLssK5A+dRatdi5sXW7J6K+oCUoK7fz
-        5p12xurhl/C/BUJ2g05j0XkM9uGNJk/Ds20Cw3oFy0nfvZZrSjqW2j0pGZZEBxo4KA4ZOi
-        q/rkJsUnGvHyvBpLwcKIpeqmJDzgvH0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1C1E4AD5C;
-        Fri, 20 Nov 2020 12:16:20 +0000 (UTC)
-Subject: Re: [PATCH v2 08/12] x86/paravirt: remove no longer needed 32-bit
- pvops cruft
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, luto@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-9-jgross@suse.com>
- <20201120120805.GF3021@hirez.programming.kicks-ass.net>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <5c123e7f-299d-2a4c-3e30-878537d71546@suse.com>
-Date:   Fri, 20 Nov 2020 13:16:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727957AbgKTMSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:18:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbgKTMSk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 07:18:40 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659F5C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:18:38 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id a65so9635162wme.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:18:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kLpBJn1dhuchvltixhmWPHQw7xkYxRK/FRveUh5W9mQ=;
+        b=2EUm/7MOuW0jCMsYxt/j+GuxCYw4h86NluEbXtbLOlqcIk5nnL5PYLT/wBMyr5fb0T
+         /WZDTrgaZyrYVj+aXLnqEzzdSxwM0He6W6xKbCJ7cZ9n7596zJ/Kn58Qjza2Z63D6p2F
+         xDYmtl2yBwD1e9Ju+PnLGPNCzy+v7YQwFknW2llfUaiWp0HXl2KrMyhkbtabPri015q0
+         xUsRhEnrG4uWzfqF8Tmq+SNp94W8EZyMSLKMdDLEmwaUujjiCDF4kHOs9zONXkX3QHmX
+         bSqJO9d4GZDG8ZHtgIHMpf0c35+lpF57IjgQ363zXl6iiRwTbmhwQI6+o/biSOuQXFpN
+         hZ2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=kLpBJn1dhuchvltixhmWPHQw7xkYxRK/FRveUh5W9mQ=;
+        b=YzNUM8OqRZTq7q9Zg8CayVYSWAEG6IZa+M/PgWzg9zaOrFsF3NaKCUKUjj3j4eFC4K
+         qfXsSrhF2LMYY5uatHdbDEzYKKdhFkvur3DxrBb46qhLtsoVXfkzd0vHtCSXkE77Axix
+         h5hfWR3cLpnUnb7s89/xZZCQiUbYDFfA6QQIuTG7VquoztqjRSe7zA+JQ7Xsn819B+AV
+         fvcqzJEGWwfTAi+Hzaj5Vtc+1akL660OSOSKiPWceNC6AWDvurCwBANKXYmDvNbLtdy/
+         SzMkLiWA3p3iHjXiZYP1Vm59kPeUObZf/xQWu/dDvGL1YlTiTCl0oAPYIQglFNr7Pch/
+         WTzA==
+X-Gm-Message-State: AOAM533RQ9133+2l1EeAxTvdC1ULi4s10qbQWJfHDCcRufM8GxDL7VFm
+        dqsT/G0wnH3a8kVPFauFH6KegQ==
+X-Google-Smtp-Source: ABdhPJz/LEenHvG0UTtdnz2/9CZ4EybLK6BHgmG22+PWRnYdeLNzpsqCF+kNiVsFC7j2zzd6+ZFTuA==
+X-Received: by 2002:a1c:7e4f:: with SMTP id z76mr9637087wmc.149.1605874716838;
+        Fri, 20 Nov 2020 04:18:36 -0800 (PST)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:3daa:7c69:63d6:7d7d? ([2a01:e35:2ec0:82b0:3daa:7c69:63d6:7d7d])
+        by smtp.gmail.com with ESMTPSA id o10sm4352281wma.47.2020.11.20.04.18.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 04:18:35 -0800 (PST)
+Subject: Re: [PATCH 2/2] drm/meson: dw-hdmi: Enable the iahb clock early
+ enough
+To:     Marc Zyngier <maz@kernel.org>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-amlogic@lists.infradead.org, kernel-team@android.com,
+        linux-arm-kernel@lists.infradead.org,
+        Jerome Brunet <jbrunet@baylibre.com>
+References: <20201120094205.525228-1-maz@kernel.org>
+ <20201120094205.525228-3-maz@kernel.org>
+ <966e90ba-5b38-9ba5-65b3-1a17dbd51871@collabora.com>
+ <7e7ff26fdbc8540749522c23997549f6@kernel.org>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ ZaTUOEkgIor5losDrePdPgE=
+Organization: Baylibre
+Message-ID: <43acb24a-a526-1455-d058-76629c2dacb8@baylibre.com>
+Date:   Fri, 20 Nov 2020 13:18:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201120120805.GF3021@hirez.programming.kicks-ass.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="a2dWOuOmbtLJqOPjTKdEeUzEma86pRL3J"
+In-Reply-To: <7e7ff26fdbc8540749522c23997549f6@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---a2dWOuOmbtLJqOPjTKdEeUzEma86pRL3J
-Content-Type: multipart/mixed; boundary="PNbjwsjbyz3PMr6RwhSIwf66NdqTWYnze";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: xen-devel@lists.xenproject.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, virtualization@lists.linux-foundation.org,
- luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
- "VMware, Inc." <pv-drivers@vmware.com>
-Message-ID: <5c123e7f-299d-2a4c-3e30-878537d71546@suse.com>
-Subject: Re: [PATCH v2 08/12] x86/paravirt: remove no longer needed 32-bit
- pvops cruft
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-9-jgross@suse.com>
- <20201120120805.GF3021@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201120120805.GF3021@hirez.programming.kicks-ass.net>
+On 20/11/2020 12:10, Marc Zyngier wrote:
+> On 2020-11-20 10:54, Guillaume Tucker wrote:
+>> On 20/11/2020 09:42, Marc Zyngier wrote:
+>>> Instead of moving meson_dw_hdmi_init() around which breaks existing
+>>> platform, let's enable the clock meson_dw_hdmi_init() depends on.
+>>> This means we don't have to worry about this clock being enabled or
+>>> not, depending on the boot-loader features.
+>>>
+>>> Fixes: b33340e33acd ("drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers")
+>>> Reported-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+>>
+>> Although I am triaging kernelci bisections, it was initially
+>> found thanks to our friendly bot.  So if you're OK with this, it
+>> would most definitely appreciate a mention:
+>>
+>>   Reported-by: "kernelci.org bot" <bot@kernelci.org>
+> 
+> Sure. Neil can add this when (and if) he applies these patches.
 
---PNbjwsjbyz3PMr6RwhSIwf66NdqTWYnze
-Content-Type: multipart/mixed;
- boundary="------------648324777AF01D39B6723412"
-Content-Language: en-US
+Yep applying to drm-misc-next and switching to `Reported-by: "kernelci.org bot" <bot@kernelci.org>`
 
-This is a multi-part message in MIME format.
---------------648324777AF01D39B6723412
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Thanks
+Neil
 
-On 20.11.20 13:08, Peter Zijlstra wrote:
-> On Fri, Nov 20, 2020 at 12:46:26PM +0100, Juergen Gross wrote:
->> +#define ____PVOP_CALL(rettype, op, clbr, call_clbr, extra_clbr, ...)	=
-\
->>   	({								\
->>   		PVOP_CALL_ARGS;						\
->>   		PVOP_TEST_NULL(op);					\
->> +		BUILD_BUG_ON(sizeof(rettype) > sizeof(unsigned long));	\
->> +		asm volatile(paravirt_alt(PARAVIRT_CALL)		\
->> +			     : call_clbr, ASM_CALL_CONSTRAINT		\
->> +			     : paravirt_type(op),			\
->> +			       paravirt_clobber(clbr),			\
->> +			       ##__VA_ARGS__				\
->> +			     : "memory", "cc" extra_clbr);		\
->> +		(rettype)(__eax & PVOP_RETMASK(rettype));		\
->>   	})
->=20
-> This is now very similar to ____PVOP_VCALL() (note how PVOP_CALL_ARGS i=
-s
-> PVOP_VCALL_ARGS).
->=20
-> Could we get away with doing something horrible like:
->=20
-> #define ____PVOP_VCALL(X...) (void)____PVOP_CALL(long, X)
->=20
-> ?
+> 
+> Thanks,
+> 
+>         M.
 
-Oh, indeed. And in patch 9 the same could be done for the ALT variants.
-
-
-Juergen
-
---------------648324777AF01D39B6723412
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------648324777AF01D39B6723412--
-
---PNbjwsjbyz3PMr6RwhSIwf66NdqTWYnze--
-
---a2dWOuOmbtLJqOPjTKdEeUzEma86pRL3J
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl+3s5MFAwAAAAAACgkQsN6d1ii/Ey8N
-oggAm+XTeQxxn6EH9H9b5kDull2RxB1owydVFJXiteBb0EzjXi2FD6bMGxgzfpeVsvT6e0yQgQN/
-PgTwqfzvq5glClCCPcXnzvEJubefKlqCyqBD08LRKXTnP7Dfob9f5/lq8mI507rAQf/OWDpU0djv
-gPe3gL9zbundVqMnCaFq3iTSa5jMUgAu3xqaKasSoHjEcFTBGIKYDaEzacdO5PmrsbZ4LZ/aBMow
-8ZIUowt41UurQrspfV6OaGmOuALn3DLUnYOX8iEYziExmHG1OTeUBrGK8VfketjkjMwG8EiwEo/j
-Wq3vMKtUqrycnxsC2MHef2FRwOBR0ngcXLM9FyZpUg==
-=HHlv
------END PGP SIGNATURE-----
-
---a2dWOuOmbtLJqOPjTKdEeUzEma86pRL3J--
