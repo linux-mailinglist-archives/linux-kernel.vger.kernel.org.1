@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E279A2BB5D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD272BB610
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729738AbgKTTri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:47:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgKTTri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:47:38 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0696CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:47:37 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id q1so9591995ilt.6
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:47:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=zjN1ubd9L5JyW2b57pMALEN1q3/NatNrQydjjfQziY8=;
-        b=U7UzpJT/DhdBPsUwTdgDANBuiVprkX52uysRX2grpLqHp9Ztko7RxpTwULNSlzFB9i
-         9Subua77+85wBSp1iwEXD18/FMcZdw1PS+TYpN0tQ7jCid8sGjzvY7RPRDSYf5qGd0cO
-         yqOen9PxUPdIDPiqNWeRWrbk+lWHJBO6vruabNFhpogWBflEar6Ghm6BqsVvrUncN12P
-         325d2OCy0vIRgG2AZAKJxQc416+UI5PlVEhAjLHZLXCCbpFqhcqZSZzvfE0Ws+qbmJ2u
-         4kOjtmOz6RB5ubREENWRfUG1qDahb+qtT0LSy1f1TiB6v6FqslhPi3nVoJbJynBNR619
-         UaZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=zjN1ubd9L5JyW2b57pMALEN1q3/NatNrQydjjfQziY8=;
-        b=fsZkYXTOs/r46xCqeIV9JudT2IC7cCkE6dYcyQJ3fKsfzqDZEinL5bCaetVc68aerR
-         kTPVkXmKtz10C1HWda8LWqkgPFdLInmHvaN0EWoYfiYSE/bije/u25+r4TTrgkdI2n7i
-         vFE8wSK71Kr2T5A23qaXTEdZjqTyzZTdqAIuffCy0F3WU7e3cXC9GUZK1BOWg/UYMrTF
-         r3SuFnFNVWoRxlkjgJyxvJQIFsQJTo1iFTY42LGp5fYksWh/Cua1MnZ3obQMVkZG8KUX
-         h7PyPie27gDcd1bT4SmCTCn5eTNu9PyGGNUl9g7PiYBgiYoWoZD+K6/UeXc/Som5MQDP
-         WUxw==
-X-Gm-Message-State: AOAM5300O8gcP1a+k9ZMNiupymt9f2LjNUXwTFiDQ6J+LOs7vca9PFB7
-        BKwtGJNQgnuZ/qW6TqljYpx+mACMe2ygOMrxEWA=
-X-Google-Smtp-Source: ABdhPJwJwZs6CVQJZhdTN3RhPH/VNM9Jyi8JhoUEwmnk52xcxfWzgQkTgoi9o/YeyhQKPxR62a5hT82fmNUu8Sc1olQ=
-X-Received: by 2002:a92:96c1:: with SMTP id g184mr16711840ilh.205.1605901656332;
- Fri, 20 Nov 2020 11:47:36 -0800 (PST)
+        id S1730130AbgKTTvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:51:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729559AbgKTTvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 14:51:50 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADA4D206B6;
+        Fri, 20 Nov 2020 19:51:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605901908;
+        bh=RBzOhaxiAPO90htsWQNreeN48VhmFALIIs8F+S8F2tg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=0HJ898xky9A4AiX47c8E/kv2vloKTCLDsa1B08r0Ns0UI6ViLC8sEEmzvLmSWmHDR
+         rh+QM7asV5JMfRqDaW/zMVHUMAG8pWVLOHT3LXTHM6aAp9QNwMcpVcVlrfF8wRUqJ9
+         pWgdeTKSVxQ+8c5KHivLBQCp2OjpIRpNZteZuQdk=
+Date:   Fri, 20 Nov 2020 11:51:42 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        amd-gfx@lists.freedesktop.org, bridge@lists.linux-foundation.org,
+        ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+        coreteam@netfilter.org, devel@driverdev.osuosl.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        dri-devel@lists.freedesktop.org, GR-everest-linux-l2@marvell.com,
+        GR-Linux-NIC-Dev@marvell.com, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, linux-acpi@vger.kernel.org,
+        linux-afs@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+Message-ID: <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <202011201129.B13FDB3C@keescook>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+        <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <202011201129.B13FDB3C@keescook>
 MIME-Version: 1.0
-Sender: yildizgabriele00@gmail.com
-Received: by 2002:a02:c605:0:0:0:0:0 with HTTP; Fri, 20 Nov 2020 11:47:36
- -0800 (PST)
-From:   Mrs Carlsen Monika <carlsen.monika@gmail.com>
-Date:   Fri, 20 Nov 2020 20:47:36 +0100
-X-Google-Sender-Auth: 8hHbVUcg5sCQxqChpFml6LHJzPc
-Message-ID: <CAHhmUS3+5HjaFRpBb8EPUouh9gxhycg82rr3y6GLSSAUdhTQaw@mail.gmail.com>
-Subject: Greetings My Dear, Please I Need Your Help.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings My Dear,
+On Fri, 20 Nov 2020 11:30:40 -0800 Kees Cook wrote:
+> On Fri, Nov 20, 2020 at 10:53:44AM -0800, Jakub Kicinski wrote:
+> > On Fri, 20 Nov 2020 12:21:39 -0600 Gustavo A. R. Silva wrote:  
+> > > This series aims to fix almost all remaining fall-through warnings in
+> > > order to enable -Wimplicit-fallthrough for Clang.
+> > > 
+> > > In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
+> > > add multiple break/goto/return/fallthrough statements instead of just
+> > > letting the code fall through to the next case.
+> > > 
+> > > Notice that in order to enable -Wimplicit-fallthrough for Clang, this
+> > > change[1] is meant to be reverted at some point. So, this patch helps
+> > > to move in that direction.
+> > > 
+> > > Something important to mention is that there is currently a discrepancy
+> > > between GCC and Clang when dealing with switch fall-through to empty case
+> > > statements or to cases that only contain a break/continue/return
+> > > statement[2][3][4].  
+> > 
+> > Are we sure we want to make this change? Was it discussed before?
+> > 
+> > Are there any bugs Clangs puritanical definition of fallthrough helped
+> > find?
+> > 
+> > IMVHO compiler warnings are supposed to warn about issues that could
+> > be bugs. Falling through to default: break; can hardly be a bug?!  
+> 
+> It's certainly a place where the intent is not always clear. I think
+> this makes all the cases unambiguous, and doesn't impact the machine
+> code, since the compiler will happily optimize away any behavioral
+> redundancy.
 
-    I sent this mail praying it will found you in a good condition of
-health, since I myself are in a very critical health condition in
-which I  sleep every night
+If none of the 140 patches here fix a real bug, and there is no change
+to machine code then it sounds to me like a W=2 kind of a warning.
 
-without knowing if I may be alive to see the next day. I am Mrs.
-Monika John  Carlsen from Denmark wife of late Mr John Carlsen, a
-widow suffering from
-
-long time illness. I have some funds I inherited from my late husband,
-the sum of (eleven milliondollars) my Doctor told me recently that I
-have serious
-
-sickness which is cancer problem. What disturbs me most is my stroke
-sickness. Having known my condition, I decided to donate this fund to
-a good person
-that will utilize it the way i am going to instruct herein. I need a
-very honest and God fearing person who can claim this money and use it
-for Charity works,
-
-for orphanages, widows and also  build schools for less privileges
-that will be named after my late husband if possible and to promote
-the word of God and
-
-the effort that the house of God is maintained.
-
-I do not want a situation where this money will be used in an ungodly
-manner. That's why I'm taking this decision. I'm not afraid of death
-so I know where
-
-I'm going. I accept this decision because I do not have any child who
-will inherit this money after I die. Please I want your sincerely and
-urgent answer to
-
-know if you will be able to execute this project, and I will give you
-more information on how the fund will be transferred to your bank
-account. I am waiting
-
-for your reply.
-
-May God Bless you,
-Mrs. Monika John  Carlsen
+I think clang is just being annoying here, but if I'm the only one who
+feels this way chances are I'm wrong :)
