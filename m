@@ -2,180 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235C52BAB6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288F12BAB78
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgKTNkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 08:40:53 -0500
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:60956 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725789AbgKTNkw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:40:52 -0500
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
-        with SMTP; 20 Nov 2020 15:40:46 +0200
-Received: from vnc1.mtl.labs.mlnx (vnc1.mtl.labs.mlnx [10.7.2.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 0AKDekKo029539;
-        Fri, 20 Nov 2020 15:40:46 +0200
-Received: from vnc1.mtl.labs.mlnx (localhost [127.0.0.1])
-        by vnc1.mtl.labs.mlnx (8.14.4/8.14.4) with ESMTP id 0AKDejTi006178;
-        Fri, 20 Nov 2020 15:40:45 +0200
-Received: (from moshe@localhost)
-        by vnc1.mtl.labs.mlnx (8.14.4/8.14.4/Submit) id 0AKDeh0O006172;
-        Fri, 20 Nov 2020 15:40:43 +0200
-From:   Moshe Shemesh <moshe@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>
-Subject: [PATCH net] devlink: Fix reload stats structure
-Date:   Fri, 20 Nov 2020 15:40:37 +0200
-Message-Id: <1605879637-6114-1-git-send-email-moshe@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
+        id S1727987AbgKTNnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 08:43:11 -0500
+Received: from elvis.franken.de ([193.175.24.41]:45254 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726553AbgKTNnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 08:43:10 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kg6gt-0005PV-00; Fri, 20 Nov 2020 14:43:07 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 3A2F7C0259; Fri, 20 Nov 2020 14:41:23 +0100 (CET)
+Date:   Fri, 20 Nov 2020 14:41:23 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mips@vger.kernel.org
+Subject: Re: linux-next: Tree for Nov 20
+Message-ID: <20201120134123.GA10351@alpha.franken.de>
+References: <20201120165614.0830df43@canb.auug.org.au>
+ <CADVatmPzUv4zzzHJx23rFJgop1dHZrr7ReVoh48+Q5NAOkhzXA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADVatmPzUv4zzzHJx23rFJgop1dHZrr7ReVoh48+Q5NAOkhzXA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix reload stats structure exposed to the user. Change stats structure
-hierarchy to have the reload action as a parent of the stat entry and
-then stat entry includes value per limit. This will also help to avoid
-string concatenation on iproute2 output.
+On Fri, Nov 20, 2020 at 11:57:07AM +0000, Sudip Mukherjee wrote:
+> Hi,
+> 
+> On Fri, Nov 20, 2020 at 5:59 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > Changes since 20201119:
+> 
+> mips allmodconfig fails for next-20201120 with the error:
+> /home/sudip/linux/drivers/video/fbdev/udlfb.c: In function 'dlfb_ops_mmap':
+> /home/sudip/linux/drivers/video/fbdev/udlfb.c:343:52: error:
+> 'PAGE_SHARED' undeclared (first use in this function)
+>   343 |   if (remap_pfn_range(vma, start, page, PAGE_SIZE, PAGE_SHARED))
+> 
+> Which has been caused by 0df162e1377a ("MIPS: mm: Clean up setup of
+> protection map") which removed "PAGE_SHARED".
 
-Reload stats structure before this fix:
-"stats": {
-    "reload": {
-        "driver_reinit": 2,
-        "fw_activate": 1,
-        "fw_activate_no_reset": 0
-     }
-}
+I'm working on it.
 
-After this fix:
-"stats": {
-    "reload": {
-        "driver_reinit": {
-            "unspecified": 2
-        },
-        "fw_activate": {
-            "unspecified": 1,
-            "no_reset": 0
-        }
-}
+Thomas.
 
-Fixes: a254c264267e ("devlink: Add reload stats")
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
----
- include/uapi/linux/devlink.h |  2 ++
- net/core/devlink.c           | 48 +++++++++++++++++++++++-------------
- 2 files changed, 33 insertions(+), 17 deletions(-)
-
-diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
-index 0113bc4db9f5..5203f54a2be1 100644
---- a/include/uapi/linux/devlink.h
-+++ b/include/uapi/linux/devlink.h
-@@ -526,6 +526,8 @@ enum devlink_attr {
- 	DEVLINK_ATTR_RELOAD_STATS_LIMIT,	/* u8 */
- 	DEVLINK_ATTR_RELOAD_STATS_VALUE,	/* u32 */
- 	DEVLINK_ATTR_REMOTE_RELOAD_STATS,	/* nested */
-+	DEVLINK_ATTR_RELOAD_ACTION_INFO,        /* nested */
-+	DEVLINK_ATTR_RELOAD_ACTION_STATS,       /* nested */
- 
- 	/* add new attributes above here, update the policy in devlink.c */
- 
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index ab4b1368904f..34d38abd74ee 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -517,8 +517,7 @@ devlink_reload_limit_is_supported(struct devlink *devlink, enum devlink_reload_l
- 	return test_bit(limit, &devlink->ops->reload_limits);
- }
- 
--static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_action action,
--				   enum devlink_reload_limit limit, u32 value)
-+static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_limit limit, u32 value)
- {
- 	struct nlattr *reload_stats_entry;
- 
-@@ -526,8 +525,7 @@ static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_acti
- 	if (!reload_stats_entry)
- 		return -EMSGSIZE;
- 
--	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_ACTION, action) ||
--	    nla_put_u8(msg, DEVLINK_ATTR_RELOAD_STATS_LIMIT, limit) ||
-+	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_STATS_LIMIT, limit) ||
- 	    nla_put_u32(msg, DEVLINK_ATTR_RELOAD_STATS_VALUE, value))
- 		goto nla_put_failure;
- 	nla_nest_end(msg, reload_stats_entry);
-@@ -540,7 +538,7 @@ static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_acti
- 
- static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink, bool is_remote)
- {
--	struct nlattr *reload_stats_attr;
-+	struct nlattr *reload_stats_attr, *action_info_attr, *action_stats_attr;
- 	int i, j, stat_idx;
- 	u32 value;
- 
-@@ -552,17 +550,27 @@ static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink
- 	if (!reload_stats_attr)
- 		return -EMSGSIZE;
- 
--	for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
--		/* Remote stats are shown even if not locally supported. Stats
--		 * of actions with unspecified limit are shown though drivers
--		 * don't need to register unspecified limit.
--		 */
--		if (!is_remote && j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
--		    !devlink_reload_limit_is_supported(devlink, j))
-+	for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
-+		if ((!is_remote && !devlink_reload_action_is_supported(devlink, i)) ||
-+		    i == DEVLINK_RELOAD_ACTION_UNSPEC)
- 			continue;
--		for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
--			if ((!is_remote && !devlink_reload_action_is_supported(devlink, i)) ||
--			    i == DEVLINK_RELOAD_ACTION_UNSPEC ||
-+		action_info_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_ACTION_INFO);
-+		if (!action_info_attr)
-+			goto nla_put_failure;
-+
-+		if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_ACTION, i))
-+			goto action_info_nest_cancel;
-+		action_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_ACTION_STATS);
-+		if (!action_stats_attr)
-+			goto action_info_nest_cancel;
-+
-+		for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
-+			/* Remote stats are shown even if not locally supported. Stats
-+			 * of actions with unspecified limit are shown though drivers
-+			 * don't need to register unspecified limit.
-+			 */
-+			if ((!is_remote && j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
-+			     !devlink_reload_limit_is_supported(devlink, j)) ||
- 			    devlink_reload_combination_is_invalid(i, j))
- 				continue;
- 
-@@ -571,13 +579,19 @@ static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink
- 				value = devlink->stats.reload_stats[stat_idx];
- 			else
- 				value = devlink->stats.remote_reload_stats[stat_idx];
--			if (devlink_reload_stat_put(msg, i, j, value))
--				goto nla_put_failure;
-+			if (devlink_reload_stat_put(msg, j, value))
-+				goto action_stats_nest_cancel;
- 		}
-+		nla_nest_end(msg, action_stats_attr);
-+		nla_nest_end(msg, action_info_attr);
- 	}
- 	nla_nest_end(msg, reload_stats_attr);
- 	return 0;
- 
-+action_stats_nest_cancel:
-+	nla_nest_cancel(msg, action_stats_attr);
-+action_info_nest_cancel:
-+	nla_nest_cancel(msg, action_info_attr);
- nla_put_failure:
- 	nla_nest_cancel(msg, reload_stats_attr);
- 	return -EMSGSIZE;
 -- 
-2.18.2
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
