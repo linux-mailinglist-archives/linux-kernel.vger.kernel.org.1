@@ -2,125 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AF72BAA75
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 525A82BAA87
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgKTMtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:49:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbgKTMtP (ORCPT
+        id S1728232AbgKTMt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:49:59 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:37049 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727761AbgKTMt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:49:15 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80596C0613CF;
-        Fri, 20 Nov 2020 04:49:15 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id s30so13293113lfc.4;
-        Fri, 20 Nov 2020 04:49:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BQlgWzTS/+xbjjCU0RmSKrXjRhY7m9Mf0HlrozKYR4s=;
-        b=XkvDhMzsBWOSyxaNTZACQDMk0DWHXy8CTl9FdEsLXjAyNjhUx1K15Qg/B7tVrSrMii
-         uWS2LY+OcCyS6wbO3Km5IKHvY0Y8f7kcnyvLO4/KCzqQ6qaghwjaJvLqAOihvzJGN9fi
-         ZskY6VRw//l6OGtJnxVDLqtoX3f0ieXR41ITGbijLWhZi+BnCO0m4BgTBO5gGj5XNcwU
-         0NBXpa5k+YQxtiKpt3a9kCykgsM4+tpuWpvts6js7H+6yD69muoJ82RYrzZluELuQqDL
-         ewdn/64VeHurHqvh0MPAxGMeEFt8UlH9dN36cPa679QtAtFEnXxUc2xjvHcLktzK3NLf
-         fdmQ==
+        Fri, 20 Nov 2020 07:49:57 -0500
+Received: by mail-lf1-f67.google.com with SMTP id s30so13295569lfc.4;
+        Fri, 20 Nov 2020 04:49:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BQlgWzTS/+xbjjCU0RmSKrXjRhY7m9Mf0HlrozKYR4s=;
-        b=IklUIPkrZuv/DaQIHIzmiuQxPtED8QyYYWUWTRm4ri8mwRE5D/UUdRrhFfiaUHP/n7
-         /jztmcOwH4A21JdE38BPm94BmpWpuiQDGutj2KawcbMvcoamkjhRn/hAmwMst6cQSZv2
-         Oethy7TkI1bj4tJW85WRWMUW/4vzgsoI0FeK/kU7MgGR9447N+4cktz5NXYmWAfwGYoJ
-         XML2JfC4OF+po26lHE2lbtlKj9aTbc9CLZqzkQn51UHsjJs5fnmWAqSKG5a5eoF5FknY
-         z3I1pZJCcS/a0760ebuFwUcAxM7JRqd8FVug3V+YYJ0pMUadi2cd4uMsbbK+O8aQ4G4W
-         0u8Q==
-X-Gm-Message-State: AOAM530O6qFnrYTruEwDOMUMn6nDFrLiUW6V8d9dcfLHhYag0K6UYWDd
-        ByGgXW8iJ2EKxinvtOGCUTTTRidfsu4NDACZ
-X-Google-Smtp-Source: ABdhPJwz5DyJZ3FpMx0Uhidolx+DKBwJ3ANm8A42CDzRMUugCRssgLwsps75eyGsX75+8CqgLgpQhw==
-X-Received: by 2002:a05:6512:3049:: with SMTP id b9mr7427795lfb.554.1605876553951;
-        Fri, 20 Nov 2020 04:49:13 -0800 (PST)
-Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id o84sm329975lff.302.2020.11.20.04.49.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ihaqIlNyoXPWgNUx0pqd6VTxIMabScCyo7XaTtTbQ6k=;
+        b=fqGOWhH2PV1hwBO7ccVACQK7sEWIw7TnqdVugoL0bFbzoNLGYwY6L+8wnTcEGPg0ba
+         Y27Oih8srfzPqv/P0IuPQIetNDp+8Z+rgWuF8U7IBQ4GOK2N7WkQV0fGDqlGtVknfM/8
+         PnCggmalCZVfUKCtYGbTNtlQKk97FLxi+J6DTbtXjlzUxm6fpGxF32pdYGdaOMpsBnjI
+         5rirdX0sjDZCvsxRAqAymI3Yz5g0KRM8hYQt99MkbJnuMRTeeEYc//VhTnprGzSlykAa
+         lDuiKS74jkyR1+D3FEWPVGPcOuLg/SK2FmvJZxEFnrO3FuRzIWYNlTxBuPdBmMasB7a/
+         QvYg==
+X-Gm-Message-State: AOAM530vTbzFGH2oGQBu2KgUqO4MJrXlE+60KpJF+Da7fRLJyF8XJl//
+        VVbm1vlY7JMP6xlOJ+S7DD0=
+X-Google-Smtp-Source: ABdhPJwhIKBQ9azhAbSVWT0L5aAOQm6FWyfUQCXxX/5MNNYPLDo1FPdvCXE3+ytVP7hoUjJA+xzVpA==
+X-Received: by 2002:ac2:44ac:: with SMTP id c12mr8648105lfm.602.1605876594084;
+        Fri, 20 Nov 2020 04:49:54 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id z4sm271546ljh.55.2020.11.20.04.49.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 04:49:13 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Fri, 20 Nov 2020 13:49:11 +0100
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Zqiang <qiang.zhang@windriver.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [PATCH] rcu: kasan: record and print kvfree_call_rcu call stack
-Message-ID: <20201120124911.GB8042@pc636>
-References: <20201118035309.19144-1-qiang.zhang@windriver.com>
- <20201119214934.GC1437@paulmck-ThinkPad-P72>
- <20201120115935.GA8042@pc636>
- <CACT4Y+bHpju_vXjdtb46O=zbQKTFaCSuoTKu1ggZ=CZ9SqWhXQ@mail.gmail.com>
+        Fri, 20 Nov 2020 04:49:53 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kg5rR-0007pd-Qp; Fri, 20 Nov 2020 13:49:57 +0100
+Date:   Fri, 20 Nov 2020 13:49:57 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     "tiantao (H)" <tiantao6@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Johan Hovold <johan@kernel.org>, Tian Tao <tiantao6@hisilicon.com>,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org, afaerber@suse.de,
+        manivannan.sadhasivam@linaro.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: serial: replace spin_lock_irqsave by spin_lock in
+ hard IRQ
+Message-ID: <X7e7dYlYxPDsj71G@localhost>
+References: <1605776489-16283-1-git-send-email-tiantao6@hisilicon.com>
+ <X7d85DKvisjA3nYv@localhost>
+ <9ce93d7b-f769-58ed-e6bf-95c34bd0123e@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+bHpju_vXjdtb46O=zbQKTFaCSuoTKu1ggZ=CZ9SqWhXQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9ce93d7b-f769-58ed-e6bf-95c34bd0123e@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Nov 20, 2020 at 12:59 PM Uladzislau Rezki <urezki@gmail.com> wrote:
-> >
-> > On Thu, Nov 19, 2020 at 01:49:34PM -0800, Paul E. McKenney wrote:
-> > > On Wed, Nov 18, 2020 at 11:53:09AM +0800, qiang.zhang@windriver.com wrote:
-> > > > From: Zqiang <qiang.zhang@windriver.com>
-> > > >
-> > > > Add kasan_record_aux_stack function for kvfree_call_rcu function to
-> > > > record call stacks.
-> > > >
-> > > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> > >
-> > > Thank you, but this does not apply on the "dev" branch of the -rcu tree.
-> > > See file:///home/git/kernel.org/rcutodo.html for more info.
-> > >
-> > > Adding others on CC who might have feedback on the general approach.
-> > >
-> > >                                                       Thanx, Paul
-> > >
-> > > > ---
-> > > >  kernel/rcu/tree.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index da3414522285..a252b2f0208d 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -3506,7 +3506,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > >             success = true;
-> > > >             goto unlock_return;
-> > > >     }
-> > > > -
-> > > > +   kasan_record_aux_stack(ptr);
-> > Is that save to invoke it on vmalloced ptr.?
-> 
-> Yes, kasan_record_aux_stack should figure it out itself.
-> We call kasan_record_aux_stack on call_rcu as well, and rcu structs
-> can be anywhere.
-> See:
-> https://elixir.bootlin.com/linux/v5.10-rc4/source/mm/kasan/generic.c#L335
->
-Ah, i see the check. Just a minor comment, please also add a
-clear comment about intention of doing such record.
+On Fri, Nov 20, 2020 at 07:25:03PM +0800, tiantao (H) wrote:
+> 在 2020/11/20 16:23, Johan Hovold 写道:
+> > On Thu, Nov 19, 2020 at 05:01:29PM +0800, Tian Tao wrote:
+> >> The code has been in a irq-disabled context since it is hard IRQ. There
+> >> is no necessity to do it again.
+> >>
+> >> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> >> ---
+> >>   drivers/tty/serial/owl-uart.c | 5 ++---
+> >>   1 file changed, 2 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
+> >> index c149f8c3..472fdaf 100644
+> >> --- a/drivers/tty/serial/owl-uart.c
+> >> +++ b/drivers/tty/serial/owl-uart.c
+> >> @@ -251,10 +251,9 @@ static void owl_uart_receive_chars(struct uart_port *port)
+> >>   static irqreturn_t owl_uart_irq(int irq, void *dev_id)
+> >>   {
+> >>   	struct uart_port *port = dev_id;
+> >> -	unsigned long flags;
+> >>   	u32 stat;
+> >>   
+> >> -	spin_lock_irqsave(&port->lock, flags);
+> >> +	spin_lock(&port->lock);
+> > 
+> > Same thing here; this will break with forced irq threading (i.e.
+> > "threadirqs") since the console code can still end up being called from
+> > interrupt context.
 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> As the following code shows, owl_uart_irq does not run in the irq 
+> threading context.
+>   ret = request_irq(port->irq, owl_uart_irq, IRQF_TRIGGER_HIGH,
+>                          "owl-uart", port);
+>          if (ret)
+>                  return ret;
 
-Thanks.
+It still runs in a thread when interrupts are forced to be threaded
+using the kernel parameter "threadirqs".
 
---
-Vlad Rezki
+We just had a revert of a change like yours after lockdep reported the
+resulting lock inversion with forced interrupt threading.
+
+Whether drivers should have to care about "threadirqs" is a somewhat
+different question. Not sure how that's even supposed to work generally
+unless we mass-convert drivers to spin_lock_irqsave() (or mark their
+interrupts IRQF_NO_THREAD).
+
+Thomas, any comments?
+
+Johan
