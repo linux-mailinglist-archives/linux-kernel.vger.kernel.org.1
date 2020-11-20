@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EC42BB854
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8832BB858
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgKTV3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:29:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49774 "EHLO mail.kernel.org"
+        id S1727799AbgKTVaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:30:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726693AbgKTV3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:29:44 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        id S1726587AbgKTVai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 16:30:38 -0500
+Received: from localhost (129.sub-72-107-112.myvzw.com [72.107.112.129])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03D382242B;
-        Fri, 20 Nov 2020 21:29:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7841E2240B;
+        Fri, 20 Nov 2020 21:30:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605907783;
-        bh=ChN2HwJmi1NiaE5ruSOq55VIUBiypuDKYbGvjhfCUfE=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=T5SZNLLSgvXsTE/DPUom4tWkzvM+dTF9fgX80/HVIr62l/+P+rVb+uL3EUzmgNIch
-         7LwOo3/mqAZ3Z3n1NZgPIjYfRnV09ahGZYwJZ64L7r7sGK8J8G/7Asy9BHDtfGxnY6
-         lYkPyjPpK5z5NN//vdgP+Nq8CZVWF+Gw/+7Xmj0E=
-Date:   Fri, 20 Nov 2020 21:29:22 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Kyle Russell <bkylerussell@gmail.com>
-Cc:     lkundrak@v3.sk, linux-arm-kernel@lists.infradead.org,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Daniel Mack <daniel@zonque.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20201119034106.1273906-1-bkylerussell@gmail.com>
-References: <20201119034106.1273906-1-bkylerussell@gmail.com>
-Subject: Re: [PATCH] ASoC: mmp-sspa: set phase two word length register
-Message-Id: <160590773742.47461.544548810394256009.b4-ty@kernel.org>
+        s=default; t=1605907837;
+        bh=yYWeZ4bWNoarJNFW+Bl6kgWy2hoART6WL65Zj6FeDK0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=zCmRQXICfs6qq+5SYKY1oY/aj2+nMa4EtRC/zg6zm+CoTkMC/pw9nI/iSoqDlro9q
+         URc/rknIEgisXNb6lbQ8nLd8drRT9tOypVQcGz8DPkiPJo2znZ2Au5oCyAfrwNccji
+         jRQvdZi68LgYcYtAgfJhkioiIrqaZ7Q/wD/eLHe8=
+Date:   Fri, 20 Nov 2020 15:30:36 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH] PCI/MSI: Set device flag indicating only 32-bit MSI
+ support
+Message-ID: <20201120213036.GA278887@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117145728.4516-1-vidyas@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 22:41:06 -0500, Kyle Russell wrote:
-> If hw params enables dual phase transmission, then the word length for
-> the second phase should be set to match the sample format instead of
-> remaining at the reset default.  This matches the configuration already
-> being done for the first phase.
+On Tue, Nov 17, 2020 at 08:27:28PM +0530, Vidya Sagar wrote:
+> There are devices (Ex:- Marvell SATA controller) that don't support
+> 64-bit MSIs and the same is advertised through their MSI capability
+> register. 
+
+I *think* you're saying these devices behave correctly per spec: they
+don't support 64-bit MSI, and they don't advertise support for 64-bit
+MSI.  Right?
+
+> Set no_64bit_msi flag explicitly for such devices in the
+> MSI setup code so that the msi_verify_entries() API would catch
+> if the MSI arch code tries to use 64-bit MSI.
+
+And you want msi_verify_entries() to catch attempts by the arch code
+to assign a 64-bit MSI address?
+
+That sounds OK, but the error message ("Device has broken 64-bit MSI")
+is not appropriate if the device is actually *not* broken.
+
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+>  drivers/pci/msi.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> This driver already sets the phase two sample size, so this should complete
-> the phase two configuration.
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: mmp-sspa: set phase two word length register
-      commit: 82d1aeb8a40740cf4208ce864cbcaa5e8bbabf4e
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> index d52d118979a6..af49da28854e 100644
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -581,10 +581,12 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
+>  	entry->msi_attrib.multi_cap	= (control & PCI_MSI_FLAGS_QMASK) >> 1;
+>  	entry->msi_attrib.multiple	= ilog2(__roundup_pow_of_two(nvec));
+>  
+> -	if (control & PCI_MSI_FLAGS_64BIT)
+> +	if (control & PCI_MSI_FLAGS_64BIT) {
+>  		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_64;
+> -	else
+> +	} else {
+>  		entry->mask_pos = dev->msi_cap + PCI_MSI_MASK_32;
+> +		dev->no_64bit_msi = 1;
+> +	}
+>  
+>  	/* Save the initial mask status */
+>  	if (entry->msi_attrib.maskbit)
+> -- 
+> 2.17.1
+> 
