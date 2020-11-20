@@ -2,293 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7945F2BAE5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A802BAE65
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729374AbgKTPPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:15:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60298 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729337AbgKTPP3 (ORCPT
+        id S1728968AbgKTPPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:15:54 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:56845 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729311AbgKTPPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:15:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605885327;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tFKGCGrw9cHsi1nsQr/dW0KnDcEpsBynIIxAXn+8ewA=;
-        b=PSmA30GDIO3gT5wxvGwAlZQT60coW3+O3iazeEL55FtDLjzHshIFHt/M3UrSrgVwgKwsuV
-        IfmxczkkWXWOlhfcHHhjrQL2zX7Jc9PhchuRKzBFvYPfY3SwlhPTPEPgk/GypIjVQMUpM4
-        Zavo0zRqKH6Z+LbLdtdyUNgPDvjIro4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-bu70UqL8NOe7fJqh5jo3dg-1; Fri, 20 Nov 2020 10:15:23 -0500
-X-MC-Unique: bu70UqL8NOe7fJqh5jo3dg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E400801B1A;
-        Fri, 20 Nov 2020 15:15:20 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-246.rdu2.redhat.com [10.10.112.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ECE2E60853;
-        Fri, 20 Nov 2020 15:15:14 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [RFC PATCH 59/76] afs: Don't truncate iter during data fetch
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 20 Nov 2020 15:15:14 +0000
-Message-ID: <160588531418.3465195.10712005940763063144.stgit@warthog.procyon.org.uk>
-In-Reply-To: <160588455242.3465195.3214733858273019178.stgit@warthog.procyon.org.uk>
-References: <160588455242.3465195.3214733858273019178.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Fri, 20 Nov 2020 10:15:23 -0500
+Received: by mail-il1-f200.google.com with SMTP id g2so7668651ilb.23
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:15:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=80yJjBsEuVf/DBylCCzyw6/08YZwdhWrU0iJ9iRPg0w=;
+        b=qD4WRdqoQ8B/Dit12AmQ+4UAYyaGQXY/27FP8RlyMN8y+V6PFwk4N40Z9iGLJNv7jy
+         vUoF3fc6ccwh56L+BUH/uHwF4dnFomcP8WEnEAIr9x81DRZyi5Zk8YHCwflNJBDa+nz6
+         8Wokp/5NwoC91Rbnvr/tEaKHS0D4CDPP+eT5QVGlUK4PSwNoL/OWln5eC97ZZibQgqjT
+         RpoOB1mGiJxwKFgGkyCfo5ClBZHzmSfFRlW1yHtoiwsew1EF2eVKnACea4+znrOVWvHU
+         +MigpGMMm2forAVeCMb8mUWGjjoLZyuEKrCpoqc5w45Cde355ZHLQw/SXesFwQ8nwOMy
+         TMFg==
+X-Gm-Message-State: AOAM5335I1WmsWhUH1jGrwUU3+5uWakr/UbKmUuNbcmcuT92+pYOH9Vl
+        ukVIgA0j5Q4Jqq2cXFIqpJsWPIxIMT9y7+S5w75fR5n6q1Jf
+X-Google-Smtp-Source: ABdhPJw9LDTA8N9hZ4my4t5E+35mefe+zTbMD2qUDa755S1CR7PhUFMZVVVwPWMaAFT7feKNUth24eOxMxZRVDgCH/RT5TIpFQSG
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Received: by 2002:a5e:a817:: with SMTP id c23mr13689091ioa.56.1605885320499;
+ Fri, 20 Nov 2020 07:15:20 -0800 (PST)
+Date:   Fri, 20 Nov 2020 07:15:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000014163805b48b5063@google.com>
+Subject: memory leak in hub_event
+From:   syzbot <syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't truncate the iterator to correspond to the actual data size when
-fetching the data from the server - rather, pass the length we want to read
-to rxrpc.
+Hello,
 
-This will allow the clear-after-read code in future to simply clear the
-remaining iterator capacity rather than having to reinitialise the
-iterator.
+syzbot found the following issue on:
 
-Signed-off-by: David Howells <dhowells@redhat.com>
+HEAD commit:    4d02da97 Merge tag 'net-5.10-rc5' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13a7d2b6500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c5353ac514ca5a43
+dashboard link: https://syzkaller.appspot.com/bug?extid=44e64397bd81d5e84cba
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14925089500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16810051500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff88810d5ff800 (size 2048):
+  comm "kworker/1:0", pid 17, jiffies 4294949188 (age 14.280s)
+  hex dump (first 32 bytes):
+    ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
+    00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
+  backtrace:
+    [<00000000f0428224>] kmalloc include/linux/slab.h:552 [inline]
+    [<00000000f0428224>] kzalloc include/linux/slab.h:664 [inline]
+    [<00000000f0428224>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
+    [<000000001802b3dd>] hub_port_connect drivers/usb/core/hub.c:5128 [inline]
+    [<000000001802b3dd>] hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
+    [<000000001802b3dd>] port_event drivers/usb/core/hub.c:5508 [inline]
+    [<000000001802b3dd>] hub_event+0x118d/0x20d0 drivers/usb/core/hub.c:5590
+    [<0000000092d3650d>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d4629ab0>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000003c358b45>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000003689dbb0>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+BUG: memory leak
+unreferenced object 0xffff888112544c40 (size 32):
+  comm "kworker/1:0", pid 17, jiffies 4294949188 (age 14.280s)
+  hex dump (first 32 bytes):
+    31 2d 31 00 00 00 00 00 00 00 00 00 00 00 00 00  1-1.............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000d0f4aa93>] kvasprintf+0x6c/0xf0 lib/kasprintf.c:25
+    [<000000005866b3ad>] kvasprintf_const+0x58/0x110 lib/kasprintf.c:49
+    [<00000000b590b008>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+    [<00000000d251a578>] dev_set_name+0x63/0x90 drivers/base/core.c:2722
+    [<0000000075b37c03>] usb_alloc_dev+0x1ee/0x450 drivers/usb/core/usb.c:650
+    [<000000001802b3dd>] hub_port_connect drivers/usb/core/hub.c:5128 [inline]
+    [<000000001802b3dd>] hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
+    [<000000001802b3dd>] port_event drivers/usb/core/hub.c:5508 [inline]
+    [<000000001802b3dd>] hub_event+0x118d/0x20d0 drivers/usb/core/hub.c:5590
+    [<0000000092d3650d>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d4629ab0>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000003c358b45>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000003689dbb0>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+BUG: memory leak
+unreferenced object 0xffff888112544ce0 (size 32):
+  comm "kworker/1:0", pid 17, jiffies 4294949231 (age 13.850s)
+  hex dump (first 32 bytes):
+    00 4d 54 12 81 88 ff ff 00 00 00 00 00 00 00 00  .MT.............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000005516ca37>] kmalloc include/linux/slab.h:557 [inline]
+    [<000000005516ca37>] kzalloc include/linux/slab.h:664 [inline]
+    [<000000005516ca37>] usb_get_configuration+0xce/0x1dd0 drivers/usb/core/config.c:887
+    [<000000009ab33a39>] usb_enumerate_device drivers/usb/core/hub.c:2387 [inline]
+    [<000000009ab33a39>] usb_new_device+0x1a9/0x2e0 drivers/usb/core/hub.c:2523
+    [<0000000069b10350>] hub_port_connect drivers/usb/core/hub.c:5222 [inline]
+    [<0000000069b10350>] hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
+    [<0000000069b10350>] port_event drivers/usb/core/hub.c:5508 [inline]
+    [<0000000069b10350>] hub_event+0x144a/0x20d0 drivers/usb/core/hub.c:5590
+    [<0000000092d3650d>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d4629ab0>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000003c358b45>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000003689dbb0>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+BUG: memory leak
+unreferenced object 0xffff888112544bc0 (size 32):
+  comm "kworker/1:0", pid 17, jiffies 4294949247 (age 13.690s)
+  hex dump (first 32 bytes):
+    73 79 7a 00 00 00 00 00 00 00 00 00 00 00 00 00  syz.............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000b344f779>] kmalloc include/linux/slab.h:557 [inline]
+    [<00000000b344f779>] usb_cache_string+0x8a/0xf0 drivers/usb/core/message.c:1025
+    [<0000000074577e65>] usb_enumerate_device drivers/usb/core/hub.c:2397 [inline]
+    [<0000000074577e65>] usb_new_device+0x98/0x2e0 drivers/usb/core/hub.c:2523
+    [<0000000069b10350>] hub_port_connect drivers/usb/core/hub.c:5222 [inline]
+    [<0000000069b10350>] hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
+    [<0000000069b10350>] port_event drivers/usb/core/hub.c:5508 [inline]
+    [<0000000069b10350>] hub_event+0x144a/0x20d0 drivers/usb/core/hub.c:5590
+    [<0000000092d3650d>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d4629ab0>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000003c358b45>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000003689dbb0>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+BUG: memory leak
+unreferenced object 0xffff888112544cc0 (size 32):
+  comm "kworker/1:0", pid 17, jiffies 4294949251 (age 13.650s)
+  hex dump (first 32 bytes):
+    73 79 7a 00 00 00 00 00 00 00 00 00 00 00 00 00  syz.............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000b344f779>] kmalloc include/linux/slab.h:557 [inline]
+    [<00000000b344f779>] usb_cache_string+0x8a/0xf0 drivers/usb/core/message.c:1025
+    [<000000003d5bd90b>] usb_enumerate_device drivers/usb/core/hub.c:2398 [inline]
+    [<000000003d5bd90b>] usb_new_device+0xae/0x2e0 drivers/usb/core/hub.c:2523
+    [<0000000069b10350>] hub_port_connect drivers/usb/core/hub.c:5222 [inline]
+    [<0000000069b10350>] hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
+    [<0000000069b10350>] port_event drivers/usb/core/hub.c:5508 [inline]
+    [<0000000069b10350>] hub_event+0x144a/0x20d0 drivers/usb/core/hub.c:5590
+    [<0000000092d3650d>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d4629ab0>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000003c358b45>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000003689dbb0>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+BUG: memory leak
+unreferenced object 0xffff888112544d40 (size 32):
+  comm "kworker/1:0", pid 17, jiffies 4294949255 (age 13.610s)
+  hex dump (first 32 bytes):
+    73 79 7a 00 00 00 00 00 00 00 00 00 00 00 00 00  syz.............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000b344f779>] kmalloc include/linux/slab.h:557 [inline]
+    [<00000000b344f779>] usb_cache_string+0x8a/0xf0 drivers/usb/core/message.c:1025
+    [<000000007392d5f6>] usb_enumerate_device drivers/usb/core/hub.c:2400 [inline]
+    [<000000007392d5f6>] usb_new_device+0xc4/0x2e0 drivers/usb/core/hub.c:2523
+    [<0000000069b10350>] hub_port_connect drivers/usb/core/hub.c:5222 [inline]
+    [<0000000069b10350>] hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
+    [<0000000069b10350>] port_event drivers/usb/core/hub.c:5508 [inline]
+    [<0000000069b10350>] hub_event+0x144a/0x20d0 drivers/usb/core/hub.c:5590
+    [<0000000092d3650d>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d4629ab0>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000003c358b45>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000003689dbb0>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+
+
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- fs/afs/fsclient.c      |    6 ++++--
- fs/afs/internal.h      |    6 ++++++
- fs/afs/rxrpc.c         |   13 +++++++++----
- fs/afs/yfsclient.c     |    6 ++++--
- include/net/af_rxrpc.h |    2 +-
- net/rxrpc/recvmsg.c    |    9 +++++----
- 6 files changed, 29 insertions(+), 13 deletions(-)
-
-diff --git a/fs/afs/fsclient.c b/fs/afs/fsclient.c
-index 1d95ed9dd86e..4a57c6c6f12b 100644
---- a/fs/afs/fsclient.c
-+++ b/fs/afs/fsclient.c
-@@ -305,8 +305,9 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
- 	unsigned int size;
- 	int ret;
- 
--	_enter("{%u,%zu/%llu}",
--	       call->unmarshall, iov_iter_count(call->iter), req->actual_len);
-+	_enter("{%u,%zu,%zu/%llu}",
-+	       call->unmarshall, call->iov_len, iov_iter_count(call->iter),
-+	       req->actual_len);
- 
- 	switch (call->unmarshall) {
- 	case 0:
-@@ -343,6 +344,7 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
- 			size = PAGE_SIZE - req->offset;
- 		else
- 			size = req->remain;
-+		call->iov_len = size;
- 		call->bvec[0].bv_len = size;
- 		call->bvec[0].bv_offset = req->offset;
- 		call->bvec[0].bv_page = req->pages[req->index];
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index faddb0bc3559..ea5b780518c7 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -104,6 +104,7 @@ struct afs_call {
- 	struct afs_server	*server;	/* The fileserver record if fs op (pins ref) */
- 	struct afs_vlserver	*vlserver;	/* The vlserver record if vl op */
- 	void			*request;	/* request data (first part) */
-+	size_t			iov_len;	/* Size of *iter to be used */
- 	struct iov_iter		def_iter;	/* Default buffer/data iterator */
- 	struct iov_iter		*iter;		/* Iterator currently in use */
- 	union {	/* Convenience for ->def_iter */
-@@ -1262,6 +1263,7 @@ static inline void afs_make_op_call(struct afs_operation *op, struct afs_call *c
- 
- static inline void afs_extract_begin(struct afs_call *call, void *buf, size_t size)
- {
-+	call->iov_len = size;
- 	call->kvec[0].iov_base = buf;
- 	call->kvec[0].iov_len = size;
- 	iov_iter_kvec(&call->def_iter, READ, call->kvec, 1, size);
-@@ -1269,21 +1271,25 @@ static inline void afs_extract_begin(struct afs_call *call, void *buf, size_t si
- 
- static inline void afs_extract_to_tmp(struct afs_call *call)
- {
-+	call->iov_len = sizeof(call->tmp);
- 	afs_extract_begin(call, &call->tmp, sizeof(call->tmp));
- }
- 
- static inline void afs_extract_to_tmp64(struct afs_call *call)
- {
-+	call->iov_len = sizeof(call->tmp64);
- 	afs_extract_begin(call, &call->tmp64, sizeof(call->tmp64));
- }
- 
- static inline void afs_extract_discard(struct afs_call *call, size_t size)
- {
-+	call->iov_len = size;
- 	iov_iter_discard(&call->def_iter, READ, size);
- }
- 
- static inline void afs_extract_to_buf(struct afs_call *call, size_t size)
- {
-+	call->iov_len = size;
- 	afs_extract_begin(call, call->buffer, size);
- }
- 
-diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
-index 8be709cb8542..0ec38b758f29 100644
---- a/fs/afs/rxrpc.c
-+++ b/fs/afs/rxrpc.c
-@@ -363,6 +363,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
- 	struct rxrpc_call *rxcall;
- 	struct msghdr msg;
- 	struct kvec iov[1];
-+	size_t len;
- 	s64 tx_total_len;
- 	int ret;
- 
-@@ -466,9 +467,10 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
- 		rxrpc_kernel_abort_call(call->net->socket, rxcall,
- 					RX_USER_ABORT, ret, "KSD");
- 	} else {
-+		len = 0;
- 		iov_iter_kvec(&msg.msg_iter, READ, NULL, 0, 0);
- 		rxrpc_kernel_recv_data(call->net->socket, rxcall,
--				       &msg.msg_iter, false,
-+				       &msg.msg_iter, &len, false,
- 				       &call->abort_code, &call->service_id);
- 		ac->abort_code = call->abort_code;
- 		ac->responded = true;
-@@ -504,6 +506,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
- static void afs_deliver_to_call(struct afs_call *call)
- {
- 	enum afs_call_state state;
-+	size_t len;
- 	u32 abort_code, remote_abort = 0;
- 	int ret;
- 
-@@ -516,10 +519,11 @@ static void afs_deliver_to_call(struct afs_call *call)
- 	       state == AFS_CALL_SV_AWAIT_ACK
- 	       ) {
- 		if (state == AFS_CALL_SV_AWAIT_ACK) {
-+			len = 0;
- 			iov_iter_kvec(&call->def_iter, READ, NULL, 0, 0);
- 			ret = rxrpc_kernel_recv_data(call->net->socket,
- 						     call->rxcall, &call->def_iter,
--						     false, &remote_abort,
-+						     &len, false, &remote_abort,
- 						     &call->service_id);
- 			trace_afs_receive_data(call, &call->def_iter, false, ret);
- 
-@@ -929,10 +933,11 @@ int afs_extract_data(struct afs_call *call, bool want_more)
- 	u32 remote_abort = 0;
- 	int ret;
- 
--	_enter("{%s,%zu},%d", call->type->name, iov_iter_count(iter), want_more);
-+	_enter("{%s,%zu,%zu},%d",
-+	       call->type->name, call->iov_len, iov_iter_count(iter), want_more);
- 
- 	ret = rxrpc_kernel_recv_data(net->socket, call->rxcall, iter,
--				     want_more, &remote_abort,
-+				     &call->iov_len, want_more, &remote_abort,
- 				     &call->service_id);
- 	if (ret == 0 || ret == -EAGAIN)
- 		return ret;
-diff --git a/fs/afs/yfsclient.c b/fs/afs/yfsclient.c
-index bd787e71a657..6c45d32da13c 100644
---- a/fs/afs/yfsclient.c
-+++ b/fs/afs/yfsclient.c
-@@ -363,8 +363,9 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
- 	unsigned int size;
- 	int ret;
- 
--	_enter("{%u,%zu/%llu}",
--	       call->unmarshall, iov_iter_count(call->iter), req->actual_len);
-+	_enter("{%u,%zu, %zu/%llu}",
-+	       call->unmarshall, call->iov_len, iov_iter_count(call->iter),
-+	       req->actual_len);
- 
- 	switch (call->unmarshall) {
- 	case 0:
-@@ -396,6 +397,7 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
- 			size = PAGE_SIZE - req->offset;
- 		else
- 			size = req->remain;
-+		call->iov_len = size;
- 		call->bvec[0].bv_len = size;
- 		call->bvec[0].bv_offset = req->offset;
- 		call->bvec[0].bv_page = req->pages[req->index];
-diff --git a/include/net/af_rxrpc.h b/include/net/af_rxrpc.h
-index f6abcc0bbd6e..cee5f83c0f11 100644
---- a/include/net/af_rxrpc.h
-+++ b/include/net/af_rxrpc.h
-@@ -53,7 +53,7 @@ int rxrpc_kernel_send_data(struct socket *, struct rxrpc_call *,
- 			   struct msghdr *, size_t,
- 			   rxrpc_notify_end_tx_t);
- int rxrpc_kernel_recv_data(struct socket *, struct rxrpc_call *,
--			   struct iov_iter *, bool, u32 *, u16 *);
-+			   struct iov_iter *, size_t *, bool, u32 *, u16 *);
- bool rxrpc_kernel_abort_call(struct socket *, struct rxrpc_call *,
- 			     u32, int, const char *);
- void rxrpc_kernel_end_call(struct socket *, struct rxrpc_call *);
-diff --git a/net/rxrpc/recvmsg.c b/net/rxrpc/recvmsg.c
-index 2c842851d72e..876833feac53 100644
---- a/net/rxrpc/recvmsg.c
-+++ b/net/rxrpc/recvmsg.c
-@@ -669,6 +669,7 @@ int rxrpc_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-  * @sock: The socket that the call exists on
-  * @call: The call to send data through
-  * @iter: The buffer to receive into
-+ * @_len: The amount of data we want to receive (decreased on return)
-  * @want_more: True if more data is expected to be read
-  * @_abort: Where the abort code is stored if -ECONNABORTED is returned
-  * @_service: Where to store the actual service ID (may be upgraded)
-@@ -684,7 +685,7 @@ int rxrpc_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-  * *_abort should also be initialised to 0.
-  */
- int rxrpc_kernel_recv_data(struct socket *sock, struct rxrpc_call *call,
--			   struct iov_iter *iter,
-+			   struct iov_iter *iter, size_t *_len,
- 			   bool want_more, u32 *_abort, u16 *_service)
- {
- 	size_t offset = 0;
-@@ -692,7 +693,7 @@ int rxrpc_kernel_recv_data(struct socket *sock, struct rxrpc_call *call,
- 
- 	_enter("{%d,%s},%zu,%d",
- 	       call->debug_id, rxrpc_call_states[call->state],
--	       iov_iter_count(iter), want_more);
-+	       *_len, want_more);
- 
- 	ASSERTCMP(call->state, !=, RXRPC_CALL_SERVER_SECURING);
- 
-@@ -703,8 +704,8 @@ int rxrpc_kernel_recv_data(struct socket *sock, struct rxrpc_call *call,
- 	case RXRPC_CALL_SERVER_RECV_REQUEST:
- 	case RXRPC_CALL_SERVER_ACK_REQUEST:
- 		ret = rxrpc_recvmsg_data(sock, call, NULL, iter,
--					 iov_iter_count(iter), 0,
--					 &offset);
-+					 *_len, 0, &offset);
-+		*_len -= offset;
- 		if (ret < 0)
- 			goto out;
- 
-
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
