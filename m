@@ -2,119 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6482BB700
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE462BB762
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731324AbgKTUcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 15:32:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730937AbgKTUcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 15:32:32 -0500
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65CA522470;
-        Fri, 20 Nov 2020 20:32:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605904351;
-        bh=nBNR6Kcuyu4HsWDtioHd2Yt10KwexTkZX/FhI5KMvpM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DGE0pypM+6Et9l+6LyYzwvAcDGtNpS+fK4RyXnAG478S1BZ43UIN5mjKlouxkdIxD
-         vHUKrNI4oQKPRWJQlVlYNKQYQ4/euvhDoml71f4f/fSvrssnMFjphCpf361tjZ//zp
-         iy852KNsyu2hTdA+nmw+WWPgrelnBTrsiinygjQ0=
-Received: by mail-oi1-f174.google.com with SMTP id l206so11821167oif.12;
-        Fri, 20 Nov 2020 12:32:31 -0800 (PST)
-X-Gm-Message-State: AOAM533M1Ft9kpY30/SZR3FB9EhSX/xKkHbkTaRVQGiHkGjNjjKsv3g9
-        m/QFELpsTOxexXvJBjopOrpqr3YwMuPgws+ikw==
-X-Google-Smtp-Source: ABdhPJym5NklP+6sFp3njodEc4XZImaIoXN0PinQjFQ9iXvdbCxFfXK+k/TkVG8ZRTgL+TldhMsUigWDpqkSu7LaHEU=
-X-Received: by 2002:aca:b40a:: with SMTP id d10mr7935101oif.147.1605904350599;
- Fri, 20 Nov 2020 12:32:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20201103100021.19603-1-vincent.whitchurch@axis.com>
- <20201103100021.19603-2-vincent.whitchurch@axis.com> <20201104185755.GA3948381@bogus>
- <20201105093926.msls7vgl42z7cpjy@axis.com>
-In-Reply-To: <20201105093926.msls7vgl42z7cpjy@axis.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 20 Nov 2020 14:32:19 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLOTy_dDDGhDQdZgsyh_qr3NGmKiD=BzHVVU5DDJe--TA@mail.gmail.com>
-Message-ID: <CAL_JsqLOTy_dDDGhDQdZgsyh_qr3NGmKiD=BzHVVU5DDJe--TA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: regulator: Add DA9121
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        kernel <kernel@axis.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "support.opensource@diasemi.com" <support.opensource@diasemi.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731605AbgKTUis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 15:38:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731585AbgKTUir (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 15:38:47 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A3EC061A47
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:38:47 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t37so8219857pga.7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:38:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=59gZqyNiVXdKqhjDNvK+63tFLxnPeEu7M8bQKlQEzx4=;
+        b=d7mtMb4mmAh5I0vUKUXbeFKN6/T0I770CwcI+D83j0ZTEJHZb366oLywFBRZjXqoCT
+         fihffxpvi6OF8zLikfjaqXOF+vfwtAHzvHokOkr40Bcj0Kb0Ve9wJK2M002XdIyOg5K0
+         ADdcwVshFbcc+Qy2/OmKGUP3rgbFm5++8Fp1k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=59gZqyNiVXdKqhjDNvK+63tFLxnPeEu7M8bQKlQEzx4=;
+        b=XNc1WiSC5ebtdP/g2STahK6RlXMQx7EBXUAXGTldfk+iqXeVTxkFv97ET8+zddUmB8
+         QfaFXDyZGmrzrczi7G/LTAtsPcOkV2awo8sDh2zUbWhhl9jFSYqp3XgGkfdXZwWY0A9Q
+         6GXnujv17ky2WsdwHJ2L5tPInUaDuimpfMdU6uetbc0Bg1tq9Ii/n7QxZqW5SXgtmbil
+         lhY94iW5UFXpEzboTIsHgBQxxhknhtbWAcmRYORL0mPVQja3G8jivGJSeIz2iEtnKPZ2
+         PIzaIcnBox9Z8IrEq4yiGhzAsVqPz6DPGRJymtMojfoZn+ZHWfIjI0A6IHVA3n5U7UEN
+         PLjw==
+X-Gm-Message-State: AOAM533Q8Tr7lsgToiHllA1yaMSyp0aHvRV8l9PojBcxKN7Rqui/LbmQ
+        P4ioPVTxDCioyLGEft+oQeVmeg==
+X-Google-Smtp-Source: ABdhPJxZU//+FSBVvYvqK8K9Q4lfvShlOy9LHsWRVX8RU3poGc8UVYda1wO0lq2LvWXHcOprDFjucA==
+X-Received: by 2002:a62:d11b:0:b029:18b:b3e:95aa with SMTP id z27-20020a62d11b0000b029018b0b3e95aamr15125681pfg.3.1605904726735;
+        Fri, 20 Nov 2020 12:38:46 -0800 (PST)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id gx24sm4838688pjb.38.2020.11.20.12.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 12:38:45 -0800 (PST)
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-ide@vger.kernel.org (open list:LIBATA SUBSYSTEM (Serial and
+        Parallel ATA drivers)), linux-kernel@vger.kernel.org (open list),
+        linux-pci@vger.kernel.org (open list:PCI NATIVE HOST BRIDGE AND
+        ENDPOINT DRIVERS),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE), Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 0/2] ata: ahci_brcm: Fix use of BCM7216 reset controller
+Date:   Fri, 20 Nov 2020 15:38:37 -0500
+Message-Id: <20201120203840.35139-1-james.quinlan@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000ccda7405b48fd46e"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 3:39 AM Vincent Whitchurch
-<vincent.whitchurch@axis.com> wrote:
->
-> On Wed, Nov 04, 2020 at 07:57:55PM +0100, Rob Herring wrote:
-> > On Tue, 03 Nov 2020 11:00:20 +0100, Vincent Whitchurch wrote:
-> > > Add bindings for the Dialog Semiconductor DA9121 voltage regulator.
-> > >
-> > > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> > > ---
-> > >  .../bindings/regulator/dlg,da9121.yaml        | 47 +++++++++++++++++++
-> > >  1 file changed, 47 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/regulator/dlg,da9121.yaml
-> > >
-> >
-> > My bot found errors running 'make dt_binding_check' on your patch:
-> >
-> > yamllint warnings/errors:
-> >
-> > dtschema/dtc warnings/errors:
-> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/dlg,da9121.yaml: 'additionalProperties' is a required property
-> > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/dlg,da9121.yaml: ignoring, error in schema:
-> > warning: no schema found in file: ./Documentation/devicetree/bindings/regulator/dlg,da9121.yaml
-> >
-> > See https://patchwork.ozlabs.org/patch/1392753
->
-> OK, thanks.  I'll fix it by changing the unevaluatedProperties to an
-> additionalProperties (since the $ref has moved).
->
-> I think I should also move the unevaluatedProperties to the buck1 level
-> instead of removing it completely, because I see a bunch of other
-> regulator bindings doing it, but the checks don't complain about that
-> being missing and I can't see that making any difference for the
-> validation.
+--000000000000ccda7405b48fd46e
 
-Because the meta-schema is not recursing down levels. It probably
-should, but that's another round of fixing all the current cases. And
-the top-level is more well defined as to what the structure is (IOW,
-we might not be able to define a rule that works everywhere).
+v3 -- discard commit from v2; instead relay on the new function
+      reset_control_rearm provided in a recent commit [1] applied
+      to reset/next.
+   -- New commit to correct pcie-brcmstb.c usage of a reset controller
+      to use reset/rearm verses deassert/assert.
 
-> For example, I was hoping that this:
->
->   buck1:
->     description:
->       Initial data for the Buck1 regulator.
->     $ref: "regulator.yaml#"
->     type: object
->     unevaluatedProperties: false
->
-> would complain about something like:
->
->         buck1 {
->           not-a-real-property;
->           regulator-min-microvolt = <680000>;
->           regulator-max-microvolt = <820000>;
->         };
->
-> but it doesn't, so I don't quite understand what "unevaluatedProperties:
-> false" prevents.
+v2 -- refactor rescal-reset driver to implement assert/deassert rather than
+      reset because the reset call only fires once per lifetime and we need
+      to reset after every resume from S2 or S3.
+   -- Split the use of "ahci" and "rescal" controllers in separate fields
+      to keep things simple.
 
-That's because it's currently a nop as the Python jsonschema package
-doesn't yet support 2019.09 version of jsonschema.
+v1 -- original
 
-If you aren't defining properties in addition to what's defined by a
-$ref, then use additionalProperties.
 
-Rob
+[1] Applied commit "reset: make shared pulsed reset controls re-triggerable"
+    found at git://git.pengutronix.de/git/pza/linux.git
+    branch reset/shared-retrigger
+
+Jim Quinlan (2):
+  ata: ahci_brcm: Fix use of BCM7216 reset controller
+  PCI: brcmstb: use reset/rearm instead of deassert/assert
+
+ drivers/ata/ahci_brcm.c               | 46 +++++++++++++--------------
+ drivers/pci/controller/pcie-brcmstb.c | 19 +++++++----
+ 2 files changed, 36 insertions(+), 29 deletions(-)
+
+-- 
+2.17.1
+
+
+--000000000000ccda7405b48fd46e
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
+AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
+hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
+ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
+c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
+aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
+PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
+My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
+4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
+wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
+VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
+V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
+lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
+5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKdvQOJ8LnRu
+gzi5MlkTjcFQFOmHUnZDKyf3U03bhycKMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMTEyMDIwMzg0N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDGsRGW520Q6odQkPFlaB1G3QEBZNvT
+tFAY9leAKN5ds5XXQO+6sXgjolRV1PyEXED9nkCxTPXurxJ1d/QE4UKdFTdlPt/Yr8GMO3JfUvXO
+xkYQ7m8Wk5Qi3Wj7s0S2zFoRTfgasMLQeITc1O41CTE5bxAO7o3Ns604TMzYeaAqp4pDX0wEXZP0
+EfAskLEuu6wIOqlKFKsHSUQL0o3XvlYs2TYKHxlKIcWvchYAq7D/d3MQ3B0Iqxvcou4y4SuawoEt
+F6nKJvAeO3e0zA1xTg+psdnFLREcmJGuXb887YSnG3jVBoC5kDcq8UpzBEwUKnRnLMk9uO4rXXWV
+ie88TrXj
+--000000000000ccda7405b48fd46e--
