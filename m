@@ -2,133 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED98E2BB633
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8530A2BB638
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729721AbgKTUBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 15:01:45 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:16759 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729529AbgKTUBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 15:01:44 -0500
-Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb820a70004>; Sat, 21 Nov 2020 04:01:43 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 20 Nov
- 2020 20:01:38 +0000
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.44) by
- HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 20 Nov 2020 20:01:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fzVcSizvsxf4yCVuRNWmvdeJ4G3cPgLEAA/d72jV8W7xeLtG/rXrobzqF/+YvI3D+P4564dq70E8sgcnPMryK/X6h74JMSr9Um4r3EVHV2JwVk5MbSPaj9oQpCPHRE05Sp2kG+ROOI3fLWwVEDRFTnUuLSU4A6C3H1Xuzi+nJv+VgND0oA6l9mB10IuqTgazCY7znEjG1lOHB9DqdPCo3n+AAmI5gGE7lOiH37xZzGgy4wxmQ/POjrjPo6Ng02KnGWxoPQFSYUIkiN79Da5a/HA5B0InekhyGSBzS4/FmfXnLQF4yLlA9v4/rxXMVUbjuPscaYfSrZe3YdbKds0JdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IFfp8hz1DSdZvGULg6OJS/UGwcunZv40bBdS/Y5/ieE=;
- b=Gknug4ZDgH9xKjS8xdBlHwLnwHYfDcYOocagXQ13v7PVMNe0U4eewnzCiTRfnZ6X7HfZSgNwH/17JurhmX7v/MRaVdxRsG2RVRa8dLWI4oN8q5eAhgJjCQnPhQ5OBJ5xywdfYrJ/h7BcFHORBEQh0yvgXV/jGU/parERfCJRA6TNM/nWYQb+NV+pw/cC9oED4A5zIWrCKw49QXrzziLWooZuyQZ9hWzvuKm8Z9wqJB5L5EYOVfdI6gK9Jw8N8VgGG3+SEAHG5WddvS6MQqUyhmzhb/vVc1xwdeA69uvd7tQGAxvaBiqXfC3GqvpUlE6RnHQaV3oHePztJbUgbYj3NA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2809.namprd12.prod.outlook.com (2603:10b6:5:4a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Fri, 20 Nov
- 2020 20:01:35 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3589.022; Fri, 20 Nov 2020
- 20:01:35 +0000
-Date:   Fri, 20 Nov 2020 16:01:33 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-CC:     Christoph Hellwig <hch@lst.de>, <linux-mm@kvack.org>,
-        <nouveau@lists.freedesktop.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jerome Glisse <jglisse@redhat.com>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 3/6] mm: support THP migration to device private memory
-Message-ID: <20201120200133.GH917484@nvidia.com>
-References: <20201106005147.20113-1-rcampbell@nvidia.com>
- <20201106005147.20113-4-rcampbell@nvidia.com> <20201106080322.GE31341@lst.de>
- <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com>
- <20201109091415.GC28918@lst.de>
- <bbf1f0df-85f3-5887-050e-beb2aad750f2@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <bbf1f0df-85f3-5887-050e-beb2aad750f2@nvidia.com>
-X-ClientProxiedBy: MN2PR03CA0016.namprd03.prod.outlook.com
- (2603:10b6:208:23a::21) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1730030AbgKTUDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 15:03:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729974AbgKTUDI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 15:03:08 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7A8C061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:03:07 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id o24so11305453ljj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:03:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mfEptDpP1YtMPX3UYhi5HrsU1kyxo4HUkBqW2ybT0os=;
+        b=P98qZn1jej1Te8QHhY/hWPSL0DK4pikDWmko53l/2JZ482i8q/9KwabI+EH4dt7hzV
+         FcX5ExTubtcVdBIKylljQHIbzssTlivP6hsID6WKbLWm5UiaVzcEJmKGYr1kxMKLwYDL
+         tbQRobTIlAac4nAvxvpxU+ZKcGuWm8BC83aTE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mfEptDpP1YtMPX3UYhi5HrsU1kyxo4HUkBqW2ybT0os=;
+        b=mPSLUbHINgPWixEV0iue2y/EnieON9+k9QXm0Z7fT3f21at5ZO/WtCnCwGWUT4mP2R
+         Gc84VKMtu4v/UAFReCM6OalSnWHOXQMNmIrPJ90S8gXp+cgoxUCMcgOvzUyK0wiIRYHd
+         /L30k9pPXhqCHWzPsTZVvnwAW9ren/IJBvxEXP7lwk1CsMSXxvsN6Qc7ZCtDXdSUrJ14
+         BOqxt8LP6zDyVAXZthirycZglw458xIFq57TriwUQXbDFnXR/5J+RrbFDMGtpktJxWXG
+         ll5UPd6D1fmys7MGzOLcexngEoebJNi35tyl4r298DHvutsDvXLpFuVjQWgLdnTEExIJ
+         K9qQ==
+X-Gm-Message-State: AOAM533FOQJ0xh9lExsF/JzL3MwplylxEYYY1JtiJGgzrJvD2wbtVrhe
+        kajMuJaBtNK0Tn9z4MAHZEOf/kjEdvuioQ==
+X-Google-Smtp-Source: ABdhPJwjaq/lGBBitHb/v66mabRsrmQeu4Uoo2irSFIK9CTTyryqf0qIfyggbe2Szhmc4zg3zDv0Nw==
+X-Received: by 2002:a2e:9b96:: with SMTP id z22mr8113779lji.163.1605902585756;
+        Fri, 20 Nov 2020 12:03:05 -0800 (PST)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id 17sm452207lfr.52.2020.11.20.12.03.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 12:03:04 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id l11so15219699lfg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:03:04 -0800 (PST)
+X-Received: by 2002:a19:c301:: with SMTP id t1mr8126506lff.105.1605902584160;
+ Fri, 20 Nov 2020 12:03:04 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR03CA0016.namprd03.prod.outlook.com (2603:10b6:208:23a::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Fri, 20 Nov 2020 20:01:34 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kgCb7-008wuP-OH; Fri, 20 Nov 2020 16:01:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605902503; bh=IFfp8hz1DSdZvGULg6OJS/UGwcunZv40bBdS/Y5/ieE=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=kEd8yQ8SWwe0ENlF6IPdDz1ts9iHDbWIpG2xLqqwwl4/XwyPtzkpkomCvABqpYeZ7
-         /V4kqwKMkZ7/bCpZh9GNf1SBWcxDOfGH0wuOFKSbJA8JqmEmSjy8x1tJ2JTy82OGTa
-         CnMR56uNxSmQuXrBWQsxzlpTWAx7OMgcZCZTJDWl5DjFZVN2vazZ3dGz2I4N7dO9Om
-         niay8qxI/PQtDxIpjbRZkj11WHNZd6vLTu0dHk0VWuXPPa3RRdeCWrhwEbdqS9LxmB
-         BNuo4jRG+X4PxBy0puRkATAIBo7tx3kk+fgelHEIUhlc+zHo6GcbIGJxTX//0m5cqU
-         dr6NeWVeV1kpQ==
+References: <6535286b-2532-dc86-3c6e-1b1e9bce358f@kernel.dk>
+In-Reply-To: <6535286b-2532-dc86-3c6e-1b1e9bce358f@kernel.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 20 Nov 2020 12:02:47 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjrayP=rOB+v+2eTP8micykkM76t=6vp-hyy+vWYkL8=A@mail.gmail.com>
+Message-ID: <CAHk-=wjrayP=rOB+v+2eTP8micykkM76t=6vp-hyy+vWYkL8=A@mail.gmail.com>
+Subject: Re: [GIT PULL] io_uring fixes for 5.10-rc
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 03:38:42PM -0800, Ralph Campbell wrote:
+On Fri, Nov 20, 2020 at 10:45 AM Jens Axboe <axboe@kernel.dk> wrote:
+> Jens Axboe (4):
+>       proc: don't allow async path resolution of /proc/self components
 
-> MEMORY_DEVICE_GENERIC:
-> Struct pages are created in dev_dax_probe() and represent non-volatile memory.
-> The device can be mmap()'ed which calls dax_mmap() which sets
-> vma->vm_flags | VM_HUGEPAGE.
-> A CPU page fault will result in a PTE, PMD, or PUD sized page
-> (but not compound) to be inserted by vmf_insert_mixed() which will call either
-> insert_pfn() or insert_page().
-> Neither insert_pfn() nor insert_page() increments the page reference
-> count.
+This one is ok.
 
-But why was this done? It seems very strange to put a pfn with a
-struct page into a VMA and then deliberately not take the refcount for
-the duration of that pfn being in the VMA?
+>       io_uring: handle -EOPNOTSUPP on path resolution
 
-What prevents memunmap_pages() from progressing while VMAs still point
-at the memory?
+But this one smells. It talks about how it shouldn't block, but the
+fact is, it can easily block when the path going through another
+filesystem (think ".." to get to root before even hitting /proc/self,
+but also think /proc/self/cwd/randompathgoeshere).
 
-> I think just leaving the page reference count at one is better than trying
-> to use the mmu_interval_notifier or changing vmf_insert_mixed() and
-> invalidations of pfn_t_devmap(pfn) to adjust the page reference count.
+The whole concept seems entirely broken anyway. Why would you retry
+the failure after doing it asynchronously? If it really doesn't block,
+then it shouldn't have been done async in the first place.
 
-Why so? The entire point of getting struct page's for this stuff was
-to be able to follow the struct page flow. I never did learn a reason
-why there is devmap stuff all over the place in the page table code...
+IMNSHO, the openat logic is just wrong. And that "ignore_nonblock"
+thing is a disgusting hack that is everything that is wrong with
+io_uring. Stop doing these kinds of hacky things that will just cause
+problems down the line.
 
-> MEMORY_DEVICE_FS_DAX:
-> Struct pages are created in pmem_attach_disk() and virtio_fs_setup_dax() with
-> an initial reference count of one.
-> The problem I see is that there are 3 states that are important:
-> a) memory is free and not allocated to any file (page_ref_count() == 0).
-> b) memory is allocated to a file and in the page cache (page_ref_count() == 1).
-> c) some gup() or I/O has a reference even after calling unmap_mapping_pages()
->    (page_ref_count() > 1). ext4_break_layouts() basically waits until the
->    page_ref_count() == 1 with put_page() calling wake_up_var(&page->_refcount)
->    to wake up ext4_break_layouts().
-> The current code doesn't seem to distinguish (a) and (b). If we want to use
-> the 0->1 reference count to signal (c), then the page cache would have hold
-> entries with a page_ref_count() == 0 which doesn't match the general page cache
-> assumptions.
+I think the correct thing to do is to just start the open
+synchronously with an RCU lookup, and if that fails, go to the async
+one. And if the async one fails because it's /proc/self, then it just
+fails. None of this kind of "it should be ok" stuff.
 
-This explanation feels confusing. If *anything* has a reference on the
-page it cannot be recycled. I would have guess the logic is to remove
-it from the page cache then wait for a 0 reference??
+And that would likely be the faster model anyway - do it synchronously
+and immediately for the easy cases.
 
-Jason
+And if it really is something like "/proc/self/cwd/randompathgoeshere"
+that actually will block, maybe io_uring just shouldn't support it?
+
+I've pulled this, but I really object to how io_uring keeps having
+subtle bugs, and then they get worked around with this kind of hackery
+which really smells like "this will be a subtle bug some time in the
+future".
+
+       Linus
