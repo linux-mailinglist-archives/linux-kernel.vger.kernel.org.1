@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B412BA262
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 07:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9D52BA265
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 07:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgKTGfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 01:35:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
+        id S1726065AbgKTGiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 01:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgKTGfh (ORCPT
+        with ESMTP id S1725820AbgKTGiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 01:35:37 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F159C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 22:35:36 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id v12so6885728pfm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 22:35:36 -0800 (PST)
+        Fri, 20 Nov 2020 01:38:50 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811FAC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 22:38:50 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id v12so6892955pfm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 22:38:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UYeryhhLnBdm9RAE9YUBJfYBX7HwSsxcuui/BkbEdkg=;
-        b=hrZ6UaN/7BT3yY4EPy4Kjnh32hbKPphJwy8ODAbK0rjE9fdlPAQMN/Rmx08R+qDWTh
-         1Nv8cihXOVAQhIlSk5kG1xG402l0P6qtqH486eAyf84z5iUqZVq7qeaiotSU9SaZPDTq
-         pmjaO9p/ZRnqgdfJFR/xKrRT5lYmfdF4ziEpg=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c323mLNMqZUq/40vwJ4lYewNf/J+pNzlwDWNO3qDVr8=;
+        b=aZ69K5fUiTDNSM/xH2G4F9HzKpj6eoOwd6ryzPyLi3q2PILxPMz+3wwqGEAhBibFQp
+         JpQyGiE63o/e4Gli5G7OFCgXnrl+2Ne0px1dbtjEbpFLrFjfKXdTQ+91AhZUmSID18X3
+         D6YQs+L+cNm0EurpOCS39HhHzovsS236Yv9aA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UYeryhhLnBdm9RAE9YUBJfYBX7HwSsxcuui/BkbEdkg=;
-        b=IbgQOOD5fVDMx36b6x9z/aR6TcrE4hNO+OFvHcQZcAWAaE4stYJ67+f0dncEHmegI6
-         zONsYYuq6yw5bzJmVDxY9HPkHrNqEd98c07jtK2i9SlK66973b5/tRjJBypfpwDri2CC
-         RJGn029ZZelsDvGoip/SxgRUv/Ta5Ghru5chEArvgMKaD73yeu9kn66ODzv1FJSBBSw6
-         XsdiNGC5eDnw/BOwo4QPa3r7ORgsN4y8f4fzyn6GEigfrrfnVAv8HrVZzf9JGdamQJyo
-         3aLGHoP+7/HLTGXdT8lW3zB4M7ShfSAsd0k38uiJYRrWHCWqwxBJWl07rUB1Hsg3N/K3
-         E4wQ==
-X-Gm-Message-State: AOAM5304DGt2BhRkHFoDuo8bsfY2tRVQpIxqa14AAYEbk5lcTaSxeJZR
-        h7V4OQCsrfa7DurMUG4LkS9IUA==
-X-Google-Smtp-Source: ABdhPJxeYZSrhZzf4QcE/FoGldIyvdOZipOafH9bIW9lFXOjGUzixr0COtgUDsu0rO4YI5qPreqyIQ==
-X-Received: by 2002:a17:90a:4483:: with SMTP id t3mr8169405pjg.116.1605854135701;
-        Thu, 19 Nov 2020 22:35:35 -0800 (PST)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id s15sm2191962pfd.33.2020.11.19.22.35.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c323mLNMqZUq/40vwJ4lYewNf/J+pNzlwDWNO3qDVr8=;
+        b=Py/YkwSQ9PdRIRIDP/cl3DR1Kl9JJ5cdCBPadf593NWpT1NRW8Cjlc+ZdDi/53inkH
+         igM3jqVfYB3K8joEJG3NsH+Od6xRAr4StrtQmq+76qXslBKuQiHT1oehfcMGh+N+oxNw
+         ko2ChEItnyIZDzxa58iLMTa3Y3CCekBkcpdAaSrwFLCW8NaRn40IU4Bf5bbstrj7RTNX
+         RiUYa79FemebvrfoGucbT96peC5LTDl4+AFW+BN3ZIuNMQM8C/N0oYkQc9S2wIHH4S/H
+         Wp0t24Ckmt4kqDcdvr15CjFQtNKaAlfjDZ/tDgbjM5OrO52MUILh1ZLbCjGbCDhXAElY
+         OHQA==
+X-Gm-Message-State: AOAM530k/aOHtZNeMX5/Rd8QJ+VO9KpphAcdP5Z5z+olaZxBETn6IvIZ
+        QpWi14nFsEPaIdHsCWfY65288Q==
+X-Google-Smtp-Source: ABdhPJzU7CvciCiqHc5ToRID+yU0JNGKbObI6oQotfKOrWevabb0yaq3YXILdHQDV1MOfPDhG/8s8w==
+X-Received: by 2002:a63:6305:: with SMTP id x5mr15967299pgb.269.1605854330010;
+        Thu, 19 Nov 2020 22:38:50 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id l20sm2074167pjq.33.2020.11.19.22.38.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 22:35:35 -0800 (PST)
+        Thu, 19 Nov 2020 22:38:49 -0800 (PST)
+Date:   Thu, 19 Nov 2020 22:38:48 -0800
 From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-usb@vger.kernel.org, gregkh@linuxfoundation.org,
-        heikki.krogerus@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, sfr@canb.auug.org.au,
-        linux-next@vger.kernel.org, Prashant Malani <pmalani@chromium.org>
-Subject: [PATCH] usb: typec: Fix num_altmodes kernel-doc error
-Date:   Thu, 19 Nov 2020 22:35:22 -0800
-Message-Id: <20201120063523.4159877-1-pmalani@chromium.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Greg KH <greg@kroah.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the usb tree
+Message-ID: <20201120063848.GA4160865@google.com>
+References: <20201120161506.4ff08894@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120161506.4ff08894@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit to introduce the num_altmodes attribute for partner had an
-error where one of the parameters was named differently in the comment
-and the function signature. Fix the version in the comment to align with
-what is in the function signature.
+Hi Stephen,
 
-This fixes the following htmldocs warning:
+On Fri, Nov 20, 2020 at 04:15:06PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the usb tree, today's linux-next build (htmldocs) produced
+> this warning:
+> 
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> drivers/usb/typec/class.c:632: warning: Excess function parameter 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> 
+> Introduced by commit
+> 
+>   a0ccdc4a77a1 ("usb: typec: Add number of altmodes partner attr")
 
-drivers/usb/typec/class.c:632: warning: Excess function parameter
-'num_alt_modes' description in 'typec_partner_set_num_altmodes'
 
-Fixes: a0ccdc4a77a1 ("usb: typec: Add number of altmodes partner attr")
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
----
- drivers/usb/typec/class.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you for the email, and my apologies about the warning. I've sent a
+patch the mailing lists which should hopefully fix this [1].
 
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index e68798599ca8..cb1362187a7c 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -618,7 +618,7 @@ EXPORT_SYMBOL_GPL(typec_partner_set_identity);
- /**
-  * typec_partner_set_num_altmodes - Set the number of available partner altmodes
-  * @partner: The partner to be updated.
-- * @num_alt_modes: The number of altmodes we want to specify as available.
-+ * @num_altmodes: The number of altmodes we want to specify as available.
-  *
-  * This routine is used to report the number of alternate modes supported by the
-  * partner. This value is *not* enforced in alternate mode registration routines.
--- 
-2.29.2.454.gaff20da3a2-goog
+Please let me know if there is further action required from my side.
+
+Best regards,
+
+[1]:
+https://lore.kernel.org/linux-usb/20201120063523.4159877-1-pmalani@chromium.org/
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+
 
