@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C3E2BB3B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C7C2BB3B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731213AbgKTSha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:37:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55620 "EHLO mail.kernel.org"
+        id S1731143AbgKTShi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:37:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729793AbgKTSh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:37:28 -0500
+        id S1730315AbgKTShg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:37:36 -0500
 Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB2A224181;
-        Fri, 20 Nov 2020 18:37:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2CDB24654;
+        Fri, 20 Nov 2020 18:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605897447;
-        bh=5dWhuUO/oHpV2V7fo9QOdb69sHzl2L5kSFQKxqFnL80=;
+        s=default; t=1605897456;
+        bh=2bhoMmVygSUPKT93A0DAHGg2hZg6OEYngPqQhxzi7tM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lYKUxepI2Y9w7Lw0LEgaRaXfpYiNPDk7cSrwfrhgtlX4wbX37LTxU+4yapG4Vvgat
-         mxlOkDrnSQPFM21TDicZaqiIHD9PcM3fBCC7TdYlKVrfyI8ySsuaXSpGv1Lq8Uqvg/
-         WeuqxqMaZg/rNwgQcRAwfUKbsmm1RPaYih4erYWM=
-Date:   Fri, 20 Nov 2020 12:37:33 -0600
+        b=x4wIZXPclmEBR9oWZSh3r4QafP0RM3CQ6A2K1P79N5DRNPh2wOMO9lwZ1XgIgrA9s
+         w6ajaGuDdbIwP2Bh88++DYv1tnRUtDeMGr0jtV2LrCz/ac3lqgo01hPX97FscNe0EX
+         t6uI+wp5ahdWHPITurZSdPOHpHqDg1eTuuHfuSCg=
+Date:   Fri, 20 Nov 2020 12:37:42 -0600
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kyungmin Park <kyungmin.park@samsung.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>
 Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-hardening@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 102/141] mtd: onenand: Fix fall-through warnings for Clang
-Message-ID: <3579ecfc6f989699a1663ce0a7bcdd84f173c900.1605896060.git.gustavoars@kernel.org>
+Subject: [PATCH 103/141] mtd: rawnand: fsmc: Fix fall-through warnings for
+ Clang
+Message-ID: <3020f35812cb74a63323bcc36971aa598a5e3730.1605896060.git.gustavoars@kernel.org>
 References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -51,21 +51,21 @@ through to the next case.
 Link: https://github.com/KSPP/linux/issues/115
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/mtd/nand/onenand/onenand_samsung.c | 1 +
+ drivers/mtd/nand/raw/fsmc_nand.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/onenand/onenand_samsung.c b/drivers/mtd/nand/onenand/onenand_samsung.c
-index 87b28e397d67..b64895573515 100644
---- a/drivers/mtd/nand/onenand/onenand_samsung.c
-+++ b/drivers/mtd/nand/onenand/onenand_samsung.c
-@@ -396,6 +396,7 @@ static int s3c_onenand_command(struct mtd_info *mtd, int cmd, loff_t addr,
- 	case ONENAND_CMD_READOOB:
- 	case ONENAND_CMD_BUFFERRAM:
- 		ONENAND_SET_NEXT_BUFFERRAM(this);
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index 4191831df182..273626d49769 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -916,6 +916,7 @@ static int fsmc_nand_attach_chip(struct nand_chip *nand)
+ 				 "Using 4-bit SW BCH ECC scheme\n");
+ 			break;
+ 		}
 +		break;
- 	default:
+ 
+ 	case NAND_ECC_ENGINE_TYPE_ON_DIE:
  		break;
- 	}
 -- 
 2.27.0
 
