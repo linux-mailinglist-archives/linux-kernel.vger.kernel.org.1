@@ -2,64 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA652BA6F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6792BA6F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727367AbgKTKDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:03:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:46326 "EHLO foss.arm.com"
+        id S1727505AbgKTKEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 05:04:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727214AbgKTKDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:03:46 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A2EF11D4;
-        Fri, 20 Nov 2020 02:03:46 -0800 (PST)
-Received: from [10.57.53.209] (unknown [10.57.53.209])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8E5F3F70D;
-        Fri, 20 Nov 2020 02:03:43 -0800 (PST)
-Subject: Re: [PATCH v4 24/25] arm64: Add TRFCR_ELx definitions
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, linux-kernel@vger.kernel.org,
-        anshuman.khandual@arm.com, jonathan.zhouwen@huawei.com,
-        coresight@lists.linaro.org, Will Deacon <will@kernel.org>
-References: <20201119164547.2982871-1-suzuki.poulose@arm.com>
- <20201119164547.2982871-25-suzuki.poulose@arm.com>
- <20201119171801.GE4376@gaia>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <43d9f4ac-df91-1cc4-ea4b-518f3433a915@arm.com>
-Date:   Fri, 20 Nov 2020 10:03:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1725942AbgKTKEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 05:04:23 -0500
+Received: from localhost (unknown [122.171.203.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20F6C22244;
+        Fri, 20 Nov 2020 10:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605866663;
+        bh=ARRNZfpi+Mn1V6hzOdD605q35U5qiyEAfEvZ9NLxQYo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zKMYARwWUfc4c3r+USqkSPVcAVGEPkVMTtKs8egzt2R6APjiPlEQ5fKpWa9rH6VHR
+         7jRRF8FdsG1EEOeuPR8nPnlq2GZrbvOEfeftih+9T5nA2NwzP9w9tbHHYeIxFe1iUU
+         ZqCg9fFGKhjSFgP31Kl/9yPrT/2P/S1vjOWmabkw=
+Date:   Fri, 20 Nov 2020 15:34:08 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Amelie Delaunay <amelie.delaunay@st.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v2 1/1] dt-bindings: phy: phy-stm32-usbphyc: convert
+ bindings to json-schema
+Message-ID: <20201120100408.GG2925@vkoul-mobl>
+References: <20201116171917.10447-1-amelie.delaunay@st.com>
 MIME-Version: 1.0
-In-Reply-To: <20201119171801.GE4376@gaia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116171917.10447-1-amelie.delaunay@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/20 5:18 PM, Catalin Marinas wrote:
-> On Thu, Nov 19, 2020 at 04:45:46PM +0000, Suzuki K Poulose wrote:
->> @@ -988,6 +991,14 @@
->>   /* Safe value for MPIDR_EL1: Bit31:RES1, Bit30:U:0, Bit24:MT:0 */
->>   #define SYS_MPIDR_SAFE_VAL	(BIT(31))
->>   
->> +#define TRFCR_ELx_TS_SHIFT		5
->> +#define TRFCR_ELx_TS_VIRTUAL		((0x1) << TRFCR_ELx_TS_SHIFT)
->> +#define TRFCR_ELx_TS_GUEST_PHYSICAL	((0x2) << TRFCR_ELx_TS_SHIFT)
->> +#define TRFCR_ELx_TS_PHYSICAL		((0x3) << TRFCR_ELx_TS_SHIFT)
-> 
-> For consistency, I'd use 0x1UL etc. in case the shift goes beyond 32
-> (not the case here though).
+On 16-11-20, 18:19, Amelie Delaunay wrote:
+> Convert the STM32 USB PHY Controller (USBPHYC) bindings to DT schema format
+> using json-schema.
 
-Agreed, will fix it.
+Applied, thanks
 
-> 
-> Otherwise:
-> 
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-
-Thanks
-Suzuki
+-- 
+~Vinod
