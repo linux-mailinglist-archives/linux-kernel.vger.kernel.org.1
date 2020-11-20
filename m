@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B422BB896
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D772BB897
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728097AbgKTVsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:48:50 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:33248 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgKTVst (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:48:49 -0500
-Received: by mail-pg1-f195.google.com with SMTP id 81so8470806pgf.0;
-        Fri, 20 Nov 2020 13:48:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r5s9Nfl+0KYeKItM6n6lJJDSkgKhIjfqr5FQFmXMKTM=;
-        b=lmySlCf+ICJIcaqBZwB/NJKMbVFwsar2xOIfZhVJMjlKYbVpxGSwDza3G8bDFbbFxS
-         PMyJZ5Pt4ZhkTfdPTs9TEklEeIPcW39yYdoCyCU9FHFyEyx9CzkSim8zuOYGz/UrpZHG
-         7XBP5kgUUI4htM77D0LbBWbbrBikO/zxAVWlTWWYvU95EsPyESeMrwUk97bY86SItx4n
-         UxnyuzJHGObsyhYPCmI12CpXiAm2e/fCYcqiA/7XOhTPdqHqgR1dbxMv+T4AcIrechtk
-         OIWBz0RbNqrX22HpuoYWb+i2i5KCnUpgdIr6r9PM0Xw6nZxJkjrAZmLtNfDlIWL+oIFj
-         85RQ==
-X-Gm-Message-State: AOAM532ZiAZmdoM5xqkb17MYMLZwZ9xqgW2UE2xDKcQ1Kh5wE182qsLa
-        yGSxXi/SUeksNYH0TitqkA8=
-X-Google-Smtp-Source: ABdhPJyl5Cc20dNbYPB3BbEG9Nj4aAlVcKLLHDXAo8+QU2Wt0fGuoBFL78TNX7/RtxYNIF7IQQbHQA==
-X-Received: by 2002:a17:90a:aa0f:: with SMTP id k15mr12892893pjq.171.1605908928992;
-        Fri, 20 Nov 2020 13:48:48 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id y23sm2209558pfb.207.2020.11.20.13.48.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 13:48:48 -0800 (PST)
-Date:   Fri, 20 Nov 2020 13:48:47 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     David Gow <davidgow@google.com>, Moritz Fischer <mdf@kernel.org>,
-        Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>
-Subject: Re: [PATCH] drivers: fpga: Specify HAS_IOMEM dependency for FPGA_DFL
-Message-ID: <X7g5v94FINKC+f8i@archbook>
-References: <20201119082209.3598354-1-davidgow@google.com>
- <X7dhwNFehhCRs7Ry@epycbox.lan>
- <CABVgOSmat7h9qqtEokwX69Aj-Q5AiAxU2G3yz_4ZMpmAArur7w@mail.gmail.com>
- <20201120074012.GB12837@yilunxu-OptiPlex-7050>
+        id S1728305AbgKTVtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:49:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgKTVtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 16:49:47 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5541221FB;
+        Fri, 20 Nov 2020 21:49:45 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 16:49:44 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: [ANNOUNCE] v5.10-rc3-rt7
+Message-ID: <20201120164944.00fbfadf@gandalf.local.home>
+In-Reply-To: <20201112165824.s56wsbzsovunzwwg@linutronix.de>
+References: <20201112165824.s56wsbzsovunzwwg@linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120074012.GB12837@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Thu, 12 Nov 2020 17:58:24 +0100
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
 
-On Fri, Nov 20, 2020 at 03:40:13PM +0800, Xu Yilun wrote:
-> On Fri, Nov 20, 2020 at 03:30:35PM +0800, David Gow wrote:
-> > On Fri, Nov 20, 2020 at 2:27 PM Moritz Fischer <mdf@kernel.org> wrote:
-> > >
-> > > Hi David,
-> > >
-> > > On Thu, Nov 19, 2020 at 12:22:09AM -0800, David Gow wrote:
-> > > > Because dfl.c uses the 'devm_ioremap', 'devm_iounmap',
-> > > > 'devm_ioremap_resource', and 'devm_platform_ioremap_resource'
-> > > > functions, it should depend on HAS_IOMEM.
-> > > >
-> > > > This fixes make allyesconfig under UML (ARCH=um), which doesn't provide
-> > > > HAS_IOMEM.
-> > > >
-> > > > Signed-off-by: David Gow <davidgow@google.com>
-> > > > ---
-> > > >  drivers/fpga/Kconfig | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > >
-> > > > diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> > > > index 7cd5a29fc437..5645226ca3ce 100644
-> > > > --- a/drivers/fpga/Kconfig
-> > > > +++ b/drivers/fpga/Kconfig
-> > > > @@ -142,6 +142,7 @@ config FPGA_DFL
-> > > >       tristate "FPGA Device Feature List (DFL) support"
-> > > >       select FPGA_BRIDGE
-> > > >       select FPGA_REGION
-> > > > +     depends on HAS_IOMEM
-> > > >       help
-> > > >         Device Feature List (DFL) defines a feature list structure that
-> > > >         creates a linked list of feature headers within the MMIO space
-> > > > --
-> > > > 2.29.2.454.gaff20da3a2-goog
-> > > >
-> > > Do you think we can add a Fixes: tag for this?
-> > 
-> > Sure. I think it should be:
-> > 
-> > Fixes: 543be3d ("fpga: add device feature list support")
+> Dear RT folks!
 > 
-> I think it should be:
+> I'm pleased to announce the v5.10-rc3-rt7 patch set. 
 > 
-> Fixes: 89eb35e810a8 ("fpga: dfl: map feature mmio resources in their own feature drivers")
-I think so, yes.
+> Changes since v5.10-rc3-rt6:
+> 
+>   - Mike Galbraith reported a lockdep warning triggered by the nouveau
+>     driver with threaded interrupts.
 
-Can you resend?
+Although these patches have:
 
-Cheers
+Fixes: 710da3c8ea7df ("sched/core: Prevent race condition between cpuset and __sched_setscheduler()")
+
+Which exists in 5.4, I'm guessing it's not needed for 5.4-rt as there's no
+stable-rt tag in them?
+
+-- Steve
+
+
+> 
+>   - The recently reworked highmem code could trigger a warning on
+>     certain ARM configurations. Reported upstream once parts of the code
+>     hit linux-next. Patch by Thomas Gleixner.
+> 
+>   - Update the softirq patches by Thomas Gleixner to newer version.
+> 
+> Known issues
+>      - It has been pointed out that due to changes to the printk code the
+>        internal buffer representation changed. This is only an issue if tools
+>        like `crash' are used to extract the printk buffer from a kernel memory
+>        image.
+> 
+> The delta patch against v5.10-rc3-rt6 is appended below and can be found here:
+>  
+>      https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/incr/patch-5.10-rc3-rt6-rt7.patch.xz
+> 
+> You can get this release via the git tree at:
+> 
+>     git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.10-rc3-rt7
+> 
+> The RT patch against v5.10-rc3 can be found here:
+> 
+>     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10-rc3-rt7.patch.xz
+> 
+> The split quilt queue is available at:
+> 
+>     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10-rc3-rt7.tar.xz
+> 
+> Sebastian
+> 
