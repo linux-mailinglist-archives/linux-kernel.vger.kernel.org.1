@@ -2,53 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B0E2BB10F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8B32BB117
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730249AbgKTQ44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:56:56 -0500
-Received: from pic75-3-78-194-244-226.fbxo.proxad.net ([78.194.244.226]:44780
-        "EHLO mail.corsac.net" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1730229AbgKTQ4z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:56:55 -0500
-Received: from scapa.corsac.net (unknown [IPv6:2a01:e34:ec2f:4e20:6af7:28ff:fe8d:2119])
-        by mail.corsac.net (Postfix) with ESMTPS id 5F96F9A
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 17:56:48 +0100 (CET)
-Received: from corsac (uid 1000)
-        (envelope-from corsac@corsac.net)
-        id a0181
-        by scapa.corsac.net (DragonFly Mail Agent v0.12);
-        Fri, 20 Nov 2020 17:56:47 +0100
-Message-ID: <6266fe045aa8a1a0fc927c6e731a10dc64b41628.camel@corsac.net>
-Subject: Re: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
-From:   Yves-Alexis Perez <corsac@corsac.net>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin Habets <mhabets@solarflare.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        "Michael S. Tsirkin" <mst@redhat.com>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Matti Vuorela <matti.vuorela@bitfactor.fi>, stable@vger.kernel.org
-Date:   Fri, 20 Nov 2020 17:56:47 +0100
-In-Reply-To: <22d938ab-babc-815a-f635-5025e871cf62@gmail.com>
-References: <CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com>
-         <20201119172439.94988-1-corsac@corsac.net>
-         <22d938ab-babc-815a-f635-5025e871cf62@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.38.1-2 
+        id S1730267AbgKTQ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:57:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:52484 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728748AbgKTQ5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 11:57:40 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 714C01042;
+        Fri, 20 Nov 2020 08:57:39 -0800 (PST)
+Received: from red-moon.arm.com (unknown [10.57.59.104])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49F7E3F70D;
+        Fri, 20 Nov 2020 08:57:37 -0800 (PST)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-renesas-soc@vger.kernel.org, linux-pci@vger.kernel.org,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: pcie-rcar-host: Drop unused members from struct rcar_pcie_host
+Date:   Fri, 20 Nov 2020 16:57:25 +0000
+Message-Id: <160589135951.28652.16815637433396377893.b4-ty@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20201023162008.967-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20201023162008.967-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTExLTIwIGF0IDEyOjE1ICswMzAwLCBTZXJnZWkgU2h0eWx5b3Ygd3JvdGU6
-Cj4gPiBJbnZlc3RpZ2F0aW9uIG9uIHRoZSBtYXR0ZXIgc2hvd3MgdGhhdCBVRFAgYW5kIElDTVAg
-dHJhZmZpYyBmcm9tIHRoZQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIF4gIm5vIiBtaXNzaW5n
-PwpZZXMgaW5kZWVkLiBUaGFua3MgYW5kIHNvcnJ5IGZvciB0aGUgdHlwby4KClJlZ2FyZHMsCi0t
-IApZdmVzLUFsZXhpcwo=
+On Fri, 23 Oct 2020 17:20:08 +0100, Lad Prabhakar wrote:
+> Drop unused members dev and base from struct rcar_pcie_host.
 
+Applied to pci/rcar, thanks!
+
+[1/1] PCI: rcar: Drop unused members from struct rcar_pcie_host
+      https://git.kernel.org/lpieralisi/pci/c/6e8e137abe
+
+Thanks,
+Lorenzo
