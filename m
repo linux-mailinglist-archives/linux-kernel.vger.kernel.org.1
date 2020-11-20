@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766222BA6A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3A32BA69F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727477AbgKTJyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:54:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726460AbgKTJyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:54:52 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60895222BA;
-        Fri, 20 Nov 2020 09:54:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605866091;
-        bh=8yLZr8Urldyw9+/0Dncp4nYOW1ni13hGaZD0CHdLh3Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=2fw5an37Tk3rK8u+Msft/SvUw5wpnXDparfUlovlz1epzDweYfGqWpIvI0PDtPEv3
-         OBAzjqGYLs3hfXrfjy4+v3fV4ox9LPbuOqAlBXAXdv3mUOhz2J6diN3eFywexfWMHC
-         dyLG1crOCtuptxjKOUBJXXizQyWXv7wkuC5538SI=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kg37x-00CDPj-2S; Fri, 20 Nov 2020 09:54:49 +0000
+        id S1727206AbgKTJyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:54:50 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:44986 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgKTJyt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:54:49 -0500
+Received: by mail-lj1-f193.google.com with SMTP id s9so9380337ljo.11;
+        Fri, 20 Nov 2020 01:54:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C59c0mgsV+SRL0gTcx0qWRGq+USR/SFMGynSGvNxYmA=;
+        b=BWu/vPP+q4YBjSK/Hf7r/Tf3VHnDLnzcIOm+FNe5SLZk/CajbFADRMob7zOILJK0xH
+         3lNdcujBT0D+lHCPrbrLp0aWkYyhso8iYNDOoo4WaTX+Rcsg/3fSR+0huAiJ8PgUpB4I
+         hHT+ugouVSea+mqDJk4u0l35Vekl901a40Cfx9plJ+2zCaf2c1l8A2/AeeYHIjZERtju
+         IIQJvBCSdirpNBnEgNJveoosDj2MLr7LmBZNzByBzEoKjmpCx7QfQvrFrhLN8xIZG9RR
+         K8/2Kh+A9Ow5/YnUkNbVgQH8dlRFoLe4uOPQC67AIPUw0k6ViXMc1rL+43ykRba+613t
+         6tQg==
+X-Gm-Message-State: AOAM531J7NsaRTaWZVWcE9SpQDskqGAwJbgl24gHwHLM0mu7KURNocrM
+        /a/jhAJz2irBNv0YNUYRtW6EFeZObOyDrA==
+X-Google-Smtp-Source: ABdhPJxSgBzw5ROqXBewpxM2xbqBDivuTciM6YpFoI3bCUF3jvXcsfIxRNmiWpBeKrc/sbdnmZmM2g==
+X-Received: by 2002:a2e:93cf:: with SMTP id p15mr8423247ljh.141.1605866085852;
+        Fri, 20 Nov 2020 01:54:45 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id x8sm285070lff.196.2020.11.20.01.54.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 01:54:45 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kg37w-0007Qy-JW; Fri, 20 Nov 2020 10:54:49 +0100
+Date:   Fri, 20 Nov 2020 10:54:48 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     vpalatin@chromium.org
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] usb: serial: option: add Fibocom NL668 variants
+Message-ID: <X7eSaCD3pqvdD4jj@localhost>
+References: <20201120090107.502832-1-vpalatin@chromium.org>
+ <20201120092828.665931-1-vpalatin@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 20 Nov 2020 09:54:48 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Vladimir Murzin <vladimir.murzin@arm.com>
-Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>, mark.rutland@arm.com,
-        suzuki.poulose@arm.com, ionela.voinescu@arm.com,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, catalin.marinas@arm.com,
-        Will Deacon <will@kernel.org>, valentin.schneider@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: AMU extension v1 support for cortex A76, A77, A78 CPUs
-In-Reply-To: <e15de351-63c1-2599-82bf-22c95e8a6a62@arm.com>
-References: <2cc9dd44-0b4b-94a8-155a-7a2446a1b892@codeaurora.org>
- <1712842eb0767e51155a5396d282102c@kernel.org>
- <e15de351-63c1-2599-82bf-22c95e8a6a62@arm.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <d77713992e5abef5c6066d9f1939e8db@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: vladimir.murzin@arm.com, neeraju@codeaurora.org, mark.rutland@arm.com, suzuki.poulose@arm.com, ionela.voinescu@arm.com, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, valentin.schneider@arm.com, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120092828.665931-1-vpalatin@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-20 09:09, Vladimir Murzin wrote:
-> On 11/20/20 8:56 AM, Marc Zyngier wrote:
->> On 2020-11-20 04:30, Neeraj Upadhyay wrote:
->>> Hi,
->>> 
->>> For ARM cortex A76, A77, A78 cores (which as per TRM, support AMU)
->>> AA64PFR0[47:44] field is not set, and AMU does not get enabled for
->>> them.
->>> Can you please provide support for these CPUs in cpufeature.c?
->> 
->> If that was the case, that'd be an erratum, and it would need to be
->> documented as such. It could also be that this is an optional feature
->> for these cores (though the TRM doesn't suggest that).
->> 
->> Can someone at ARM confirm what is the expected behaviour of these 
->> CPUs?
+On Fri, Nov 20, 2020 at 10:28:28AM +0100, vpalatin@chromium.org wrote:
+> From: Vincent Palatin <vpalatin@chromium.org>
 > 
-> Not a confirmation, but IIRC, these are imp def features, while our 
-> cpufeatures
-> catches architected one.
+> Update the USB serial option driver support for the Fibocom NL668 Cat.4
+> LTE modules as there are actually several different variants.
+> Got clarifications from Fibocom, there are distinct products:
+> - VID:PID 1508:1001, NL668 for IOT (no MBIM interface)
+> - VID:PID 2cb7:01a0, NL668-AM and NL652-EU are laptop M.2 cards (with
+>   MBIM interfaces for Windows/Linux/Chrome OS), respectively for Americas
+>   and Europe.
+> 
+> usb-devices output for the laptop M.2 cards:
+> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  4 Spd=480 MxCh= 0
+> D:  Ver= 2.00 Cls=ef(misc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+> P:  Vendor=2cb7 ProdID=01a0 Rev=03.18
+> S:  Manufacturer=Fibocom Wireless Inc.
+> S:  Product=Fibocom NL652-EU Modem
+> S:  SerialNumber=0123456789ABCDEF
+> C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
+> I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+> I:  If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+> I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+> I:  If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
+> 
+> Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
 
-Ah, good point. So these CPUs implement some sort of AMU, and not *the* 
-AMU.
+Applied, thanks!
 
-Yet the register names are the same. Who thought that'd be a good idea?
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Johan
