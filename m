@@ -2,105 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA032BB8BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 23:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3CE2BB8C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 23:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728620AbgKTWPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 17:15:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48292 "EHLO
+        id S1728672AbgKTWR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 17:17:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727859AbgKTWPL (ORCPT
+        with ESMTP id S1728161AbgKTWR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 17:15:11 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3414C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 14:15:10 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id v12so9191541pfm.13
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 14:15:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=prvg8B1KrWWe0HEsg9Zq+0hq/o/+oUphxhhcU5YZPAc=;
-        b=JjVQvz53y0sUe4tDbun89hJwEgwjFoRzlFj6sxzrLA6Fxhs2My/ERhuiMFHtKX/tJ9
-         GG9vqqYcQVJFr/Jj2kHdIDT6fB70TC7kTUFL+LXqwDowbfnJsnwPpqAYzPBZ9/LbP1CF
-         qlpTBXZdy0aGXTrjBS3DL5dGfwlBQMWCD8EDTuugqJWvIXt5lszkpDnGpxfNHlOgr4Mj
-         FToUB5RR3jx5WHcgh+o4LPGHZNC9eSoprOjtartzv+Wrk5vVInJ5I7fYywX+z615mGVs
-         Qgyt7P7KwY9do/9DzhQTO6t4LFf2C74XxWqONzVGzHi6/vqdCTsuZL+76Flym3mqwOVc
-         40xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=prvg8B1KrWWe0HEsg9Zq+0hq/o/+oUphxhhcU5YZPAc=;
-        b=KUaupEPjv7YvX0f35w7ezRB3fjWn3nYVufIShLz7dGW0Oc07UCEcHKErt/8UXqHWy6
-         Yh1eszR9u4EYwae0iIk+DXHIJnXmAAsbCJzkEisPESPCL0Hct0VJoD4VA+JnG9Un1Ub+
-         poG/kX3O2flvenlQkjaQVtV7+K4LUKZ8PPbToyxsufWXc2Q7i7vj5QKvItQX8glgHF7u
-         8zpdiksUJYtTQ9sw4wejB6Ba0+9o6dL9fdKblHZXwNDJdtY5VBUlFs8a+XAIoEobkJfM
-         8QNCEXNts3f9z4l0HY/7PLSjT5AX5PT14jGQir9XNobsUsMK5uAZy6gYCpC0K0aKdA82
-         8u/Q==
-X-Gm-Message-State: AOAM532gpOvkGUUxduPqjuJZ+hnLcKIOyw1jhgZbD1FfOCkcp9fJ+hwr
-        qu9wd8iaNVEIKJMtxICHM3aNLWJ3ELAmDQ==
-X-Google-Smtp-Source: ABdhPJz69AbNH3kD/vjJGU0KicZy7bG9TzXlbQcQLLB5PEQgRaLHieKXEUfYuogR05wuKTPQG/6MJw==
-X-Received: by 2002:a63:d357:: with SMTP id u23mr19387230pgi.106.1605910509948;
-        Fri, 20 Nov 2020 14:15:09 -0800 (PST)
-Received: from localhost (g133.220-213-56.ppp.wakwak.ne.jp. [220.213.56.133])
-        by smtp.gmail.com with ESMTPSA id t8sm4704085pfe.65.2020.11.20.14.15.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 14:15:09 -0800 (PST)
-From:   Stafford Horne <shorne@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Stafford Horne <shorne@gmail.com>, Tejun Heo <tj@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        openrisc@lists.librecores.org
-Subject: [PATCH] openrisc: add local64.h to fix blk-iocost build
-Date:   Sat, 21 Nov 2020 07:14:58 +0900
-Message-Id: <20201120221500.3097841-1-shorne@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 20 Nov 2020 17:17:28 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE72C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 14:17:28 -0800 (PST)
+Date:   Fri, 20 Nov 2020 23:17:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605910646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hDMsQqZvMY3BDZ5c3i/PAw+2A0OQq7j5i3pJCfUo0/U=;
+        b=J7SVOtIGGI30btrqU14Ra5SMKUWZoY6De9VQ8z+iFn4W8vtqnlqd1IuEYLDfM/yWetsfrv
+        in4WYEY5GylYst+Xk9FCdeaudWZmTNsl6Ywv8MQF9qp836ao43N2Bhfo7kDEXGryQMr51N
+        PnzmdkZIUNtaxaZwfV+BvYDE1SGsrXwCIWhteVzAqju3j90prL1HfumLTjYnYIX6/uZf01
+        XFWQQqh10mty4vneImbUVKv63Ybd2XlxwB6IS3xhfwHolyDpGSIHJ81wVmUhQNlykamNXd
+        qfPNXrGLx+4l4ilOAyzpp3j+Qoq9NZb47c4WiknSkUDYTQq8Y+C6v8XCrQqOtw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605910646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hDMsQqZvMY3BDZ5c3i/PAw+2A0OQq7j5i3pJCfUo0/U=;
+        b=i5HqrTNhqp6pDInxCHlksuT8SbzpME3NEMlcFuoowFiMsp1nkADxvOXC+8jeuAd+2t/A+n
+        0MbG9IZcca6FnBAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Ben Skeggs <bskeggs@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 1/2] kthread: Move prio/affinite change into the newly
+ created thread
+Message-ID: <20201120221724.h5nji5fqywwk4p2c@linutronix.de>
+References: <20201110113848.801379-1-bigeasy@linutronix.de>
+ <20201110113848.801379-2-bigeasy@linutronix.de>
+ <20201117124503.GI3121406@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201117124503.GI3121406@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of 5.10 OpenRISC allyesconfig builds fail with the following error.
+On 2020-11-17 13:45:03 [+0100], Peter Zijlstra wrote:
+> On Tue, Nov 10, 2020 at 12:38:47PM +0100, Sebastian Andrzej Siewior wrote:
+> > With enabled threaded interrupts the nouveau driver reported the
+> > following:
+> > | Chain exists of:
+> > |   &mm->mmap_lock#2 --> &device->mutex --> &cpuset_rwsem
+> > |
+> > |  Possible unsafe locking scenario:
+> > |
+> > |        CPU0                    CPU1
+> > |        ----                    ----
+> > |   lock(&cpuset_rwsem);
+> > |                                lock(&device->mutex);
+> > |                                lock(&cpuset_rwsem);
+> > |   lock(&mm->mmap_lock#2);
+> > 
+> > The device->mutex is nvkm_device::mutex.
+> > 
+> > Unblocking the lockchain at `cpuset_rwsem' is probably the easiest thing
+> > to do.
+> > Move the priority reset to the start of the newly created thread.
+> > 
+> > Fixes: 710da3c8ea7df ("sched/core: Prevent race condition between cpuset and __sched_setscheduler()")
+> > Reported-by: Mike Galbraith <efault@gmx.de>
+> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Link: https://lkml.kernel.org/r/a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de
+> 
+> Moo... yes this is certainly the easiest solution, because nouveau is a
+> horrible rats nest. But when I spoke to Greg KH about this, he suggested
+> nouveau ought to be fixed.
+> 
+> Ben, I got terminally lost when trying to untangle nouvea init, is there
+> any chance this can be fixed to not hold that nvkm_device::mutex thing
+> while doing request_irq() ?
 
-    $ make ARCH=openrisc CROSS_COMPILE=or1k-elf- block/blk-iocost.o
-      CALL    scripts/checksyscalls.sh
-      CALL    scripts/atomic/check-atomics.sh
-      CC      block/blk-iocost.o
-    block/blk-iocost.c:183:10: fatal error: asm/local64.h: No such file or directory
-      183 | #include <asm/local64.h>
-	  |          ^~~~~~~~~~~~~~~
-    compilation terminated.
+Ben, did you had a chance to peek at this?
 
-The new include of local64.h was added in commit 5e124f74325d
-("blk-iocost: use local[64]_t for percpu stat") by Tejun.
+> > ---
+> >  kernel/kthread.c | 16 ++++++++--------
+> >  1 file changed, 8 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/kernel/kthread.c b/kernel/kthread.c
+> > index 933a625621b8d..4a31127c6efbf 100644
+> > --- a/kernel/kthread.c
+> > +++ b/kernel/kthread.c
+> > @@ -243,6 +243,7 @@ EXPORT_SYMBOL_GPL(kthread_parkme);
+> >  
+> >  static int kthread(void *_create)
+> >  {
+> > +	static const struct sched_param param = { .sched_priority = 0 };
+> >  	/* Copy data: it's on kthread's stack */
+> >  	struct kthread_create_info *create = _create;
+> >  	int (*threadfn)(void *data) = create->threadfn;
+> > @@ -273,6 +274,13 @@ static int kthread(void *_create)
+> >  	init_completion(&self->parked);
+> >  	current->vfork_done = &self->exited;
+> >  
+> > +	/*
+> > +	 * The new thread inherited kthreadd's priority and CPU mask. Reset
+> > +	 * back to default in case they have been changed.
+> > +	 */
+> > +	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
+> > +	set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_KTHREAD));
+> > +
+> >  	/* OK, tell user we're spawned, wait for stop or wakeup */
+> >  	__set_current_state(TASK_UNINTERRUPTIBLE);
+> >  	create->result = current;
+> > @@ -370,7 +378,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+> >  	}
+> >  	task = create->result;
+> >  	if (!IS_ERR(task)) {
+> > -		static const struct sched_param param = { .sched_priority = 0 };
+> >  		char name[TASK_COMM_LEN];
+> >  
+> >  		/*
+> > @@ -379,13 +386,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+> >  		 */
+> >  		vsnprintf(name, sizeof(name), namefmt, args);
+> >  		set_task_comm(task, name);
+> > -		/*
+> > -		 * root may have changed our (kthreadd's) priority or CPU mask.
+> > -		 * The kernel thread should not inherit these properties.
+> > -		 */
+> > -		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
+> > -		set_cpus_allowed_ptr(task,
+> > -				     housekeeping_cpumask(HK_FLAG_KTHREAD));
+> >  	}
+> >  	kfree(create);
+> >  	return task;
 
-Adding the generic version of local64.h to OpenRISC fixes the build
-issue.
-
-Cc: Tejun Heo <tj@kernel.org>
-Signed-off-by: Stafford Horne <shorne@gmail.com>
----
- arch/openrisc/include/asm/Kbuild | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/openrisc/include/asm/Kbuild b/arch/openrisc/include/asm/Kbuild
-index ca5987e11053..442f3d3bcd90 100644
---- a/arch/openrisc/include/asm/Kbuild
-+++ b/arch/openrisc/include/asm/Kbuild
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- generic-y += extable.h
- generic-y += kvm_para.h
-+generic-y += local64.h
- generic-y += mcs_spinlock.h
- generic-y += qspinlock_types.h
- generic-y += qspinlock.h
--- 
-2.26.2
-
+Sebastian
