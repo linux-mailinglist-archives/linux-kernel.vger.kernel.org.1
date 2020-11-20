@@ -2,102 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2552BB32D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E72F2BB326
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730522AbgKTSad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:30:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730493AbgKTSab (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:30:31 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98535C061A47
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:30:31 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id q22so9826667qkq.6
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:30:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qS9ZqheXF3qXlYveFf6+vMdNm1LP9a7sCRmU5tIj0vQ=;
-        b=DrFYWt+1hb4WfINS92U5IVQMCB6WKF5xEz75W+ZSkpzKVYZw8JxEaaLRhFgpFsX1Rs
-         XUxXlb8HtK40tSfGjjunkX8SU199oPuB/G80+Ihj5S6pCKGr2HFJlL7MHo65gDiv8c23
-         ofoLjjtqKLcM53/YSHMQnD2n64U/s4LGFx0MXmrxSwtmydzCFFOGbOgl5AefevNt9z4B
-         /AzLhrlEIRoOx3a/FI6xZiykdYU/2XpV/SH5UXKmuao5MFBbsI3vKTIdga3hvHSW64qo
-         Z/90o2IZQUfzW0ooGr7K6UIiRhh4E1F7jHOF81fznndZO1wpQBiuooGayp0HJjzgftiB
-         hUzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qS9ZqheXF3qXlYveFf6+vMdNm1LP9a7sCRmU5tIj0vQ=;
-        b=rSTJJ5HY7eLc6ouIwSJ47qPmjwDbNSdOelbp5uHrBU3NKHNJuY0Vcl+wCYmK7uwRQ+
-         5AmbDxJcZkh2RIF6td7U9S8mk7SexEi2PrTJb8F1otCdsYtkDU7zG1w8haYXh1/AQ1iA
-         A121FHOQni33/m8FUsxViJb6B4JDvV0U+QRSyc3dmJiSQYZLF7mlcbV+SuEl16RbFAJZ
-         ERxCfuETH7qvE4e1G+Jvcve0eNB4d2hO3DFkQ5fjRuFfBnW81lMAZ4KxzsYf2CpaU/dL
-         S+JuBwlb7FCnneAgva2M/hGNv3Hw+fA63rDQTU4eA4hSJ06OWe+wM+iJIDNsh90lTNdq
-         SgZQ==
-X-Gm-Message-State: AOAM533slpBoRPXqb3wIpcwdb/rwFmg5PZkVeP+F20Oca4bpEUvtLbIJ
-        MumSzy8jlHHIDDBCyjdmFuSv1x5n8FSYt770
-X-Google-Smtp-Source: ABdhPJz9SdUwITc+pZGgA9oQw0nYR0dAsKTieY7dxiA1OR9ilvjUimdkoUQjm+gMpnpYWVeoTDxPfg==
-X-Received: by 2002:a37:9441:: with SMTP id w62mr17877583qkd.474.1605897030779;
-        Fri, 20 Nov 2020 10:30:30 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id f14sm2400142qkk.89.2020.11.20.10.30.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 10:30:30 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kgBAz-008ujM-Ig; Fri, 20 Nov 2020 14:30:29 -0400
-Date:   Fri, 20 Nov 2020 14:30:29 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v6 17/17] RFC: mm: add mmu_notifier argument to follow_pfn
-Message-ID: <20201120183029.GQ244516@ziepe.ca>
-References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
- <20201119144146.1045202-18-daniel.vetter@ffwll.ch>
+        id S1730411AbgKTSa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:30:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729792AbgKTSa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:30:26 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27F9F2224C;
+        Fri, 20 Nov 2020 18:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605897025;
+        bh=gebyIGXTezq+YZfUPcdCaJWXT2isISFOj3AQGtOCvr8=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=Zf09tj+o6f6kRkXirktpkqTC0x0ODrs5+sUISJShbM970mfmWgbCafR9mwU6jadQc
+         RB56Ce5QPHO2BmaSbuLd///Iv5NL7FIYFMAug947rswXzdx5c3c4jEqs93iqm/sEow
+         g3ySqMJMUQHSHEQw7O98qZm9fhl1038DGaURGfP8=
+Date:   Fri, 20 Nov 2020 12:30:31 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 038/141] isofs: Fix fall-through warnings for Clang
+Message-ID: <5b7caa73958588065fabc59032c340179b409ef5.1605896059.git.gustavoars@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119144146.1045202-18-daniel.vetter@ffwll.ch>
+In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 03:41:46PM +0100, Daniel Vetter wrote:
-> @@ -4805,21 +4824,15 @@ EXPORT_SYMBOL(follow_pte_pmd);
->   * Return: zero and the pfn at @pfn on success, -ve otherwise.
->   */
->  int follow_pfn(struct vm_area_struct *vma, unsigned long address,
-> -	unsigned long *pfn)
-> +	unsigned long *pfn, struct mmu_notifier *subscription)
->  {
-> -	int ret = -EINVAL;
-> -	spinlock_t *ptl;
-> -	pte_t *ptep;
-> +	if (WARN_ON(!subscription->mm))
-> +		return -EINVAL;
->  
-> +	if (WARN_ON(subscription->mm != vma->vm_mm))
-> +		return -EINVAL;
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+by explicitly adding a break statement instead of just letting the code
+fall through to the next case.
 
-These two things are redundant right? vma->vm_mm != NULL?
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ fs/isofs/rock.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-BTW, why do we even have this for nommu? If the only caller is kvm,
-can you even compile kvm on nommu??
+diff --git a/fs/isofs/rock.c b/fs/isofs/rock.c
+index 94ef92fe806c..4880146babaf 100644
+--- a/fs/isofs/rock.c
++++ b/fs/isofs/rock.c
+@@ -767,6 +767,7 @@ static int rock_ridge_symlink_readpage(struct file *file, struct page *page)
+ 			rs.cont_extent = isonum_733(rr->u.CE.extent);
+ 			rs.cont_offset = isonum_733(rr->u.CE.offset);
+ 			rs.cont_size = isonum_733(rr->u.CE.size);
++			break;
+ 		default:
+ 			break;
+ 		}
+-- 
+2.27.0
 
-Jason
