@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19B52B9EF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 00:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C4E2B9EFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 01:07:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727466AbgKSX6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 18:58:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48366 "EHLO mail.kernel.org"
+        id S1726355AbgKTAGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 19:06:45 -0500
+Received: from mga07.intel.com ([134.134.136.100]:51260 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727445AbgKSX6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 18:58:11 -0500
-Received: from devnote2 (unknown [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EA762222D;
-        Thu, 19 Nov 2020 23:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605830290;
-        bh=bJWR+Naet2mx9h3HZuwqD8kLmSrizdb8YfFZnV3X+eo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DdG2OB3XK4ATuldQr9IY1x//t30slxFx20b2rsKveKL6Z8YbGpRusyP/bmrdFQsos
-         319FmvoRGUtTuaZsTo2+zAuBxRPwtiB6/HqomTZ1Gl1ej0PXlNFslJxE1DpBkXePJc
-         eHyiBcjppY3Yve9LRQdar2w3RRlYqt9T31zxP5oM=
-Date:   Fri, 20 Nov 2020 08:58:05 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Chen Yu <yu.chen.surf@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/3] bootconfig: Use hexadecimal ASCII string for
- size and checksum
-Message-Id: <20201120085805.dd581c5fa9dc52f699bcbcc6@kernel.org>
-In-Reply-To: <20201119124234.6827fd41@gandalf.local.home>
-References: <160579629161.503380.9118263439060046721.stgit@devnote2>
-        <CAHk-=wi9RedSQoGF06dVs2mp7tBp4QoiW8+XZzNcDFJr3Zo5gg@mail.gmail.com>
-        <20201119124234.6827fd41@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726117AbgKTAGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 19:06:44 -0500
+IronPort-SDR: oVzYdSyNhBRRelooA+qv8BH3v6n/Dukip8V89tS3ESznkhPjVeg9wh78TJUmIt14ZtTEqEKe7j
+ Wuw3Va2o9LjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="235534486"
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="235534486"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 16:06:43 -0800
+IronPort-SDR: iz+IielfoYppbtbikNhl3Wz2qLKZa2w0KeA48U77kvg/3ENjHg7xD+kQMaK7TM4lLN8PWKg+s4
+ hFNuXq6YmpQw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
+   d="scan'208";a="360222742"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Nov 2020 16:06:43 -0800
+Received: from [10.213.153.3] (vramuthx-MOBL1.gar.corp.intel.com [10.213.153.3])
+        by linux.intel.com (Postfix) with ESMTP id A8265580806;
+        Thu, 19 Nov 2020 16:06:40 -0800 (PST)
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: Re: [PATCH v8 0/6] spi: cadence-quadspi: Add QSPI controller support
+ for Intel LGM SoC
+To:     Vignesh Raghavendra <vigneshr@ti.com>, broonie@kernel.org,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Cc:     linux-mtd@lists.infradead.org, p.yadav@ti.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com
+References: <20201119055551.26493-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <98b7b367-0bf3-e745-1dd2-302f76bab0b7@ti.com>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <b57321fc-f6ff-1a15-20fa-e776416544c9@linux.intel.com>
+Date:   Fri, 20 Nov 2020 08:06:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
+MIME-Version: 1.0
+In-Reply-To: <98b7b367-0bf3-e745-1dd2-302f76bab0b7@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 12:42:34 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On Thu, 19 Nov 2020 09:36:47 -0800
-> Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Hi Vignesh,
+
+Thank you very much for the review comments...
+
+On 19/11/2020 8:36 pm, Vignesh Raghavendra wrote:
 > 
-> > On Thu, Nov 19, 2020 at 6:31 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > >
-> > > Here is a seires of patches to change the bootconfig footer format
-> > > to use 8-bytes hexadecimal ASCII string for size and checksum instead
-> > > of u32.  
-> > 
-> > Ugh.,
-> > 
-> > Just make it little-endian only.
-> > 
-> > The _worst_ thing to do is to make it some kind of "native-endian",
-> > because then you have to deal with cross building issues etc.
-> > 
-> > But using a __le32 type and just doing "le32_to_cpu()" is trivial and
-> > optimal - not just because everybody relevant is LE anyway, but simply
-> > because even if you _aren't_ LE, an unconditional byte swap is better
-> > than a conditional native access.
 > 
-> And since this isn't used in any fast paths, the byte swapping in the
-> kernel should be a non-issue.
+> On 11/19/20 11:25 AM, Ramuthevar,Vadivel MuruganX wrote:
+>> Add QSPI controller support for Intel LGM SoC.
+>>
+>> Note from Vignesh(mtd subsystem maintainer):H
+>> This series is a subset of "[PATCH v12 0/4] spi: cadence-quadspi: Add
+>> support for the Cadence QSPI controller" by Ramuthevar,Vadivel MuruganX
+>> <vadivel.muruganx.ramuthevar@linux.intel.com> that intended to move
+>> cadence-quadspi driver to spi-mem framework
+>>
+>> Those patches were trying to accomplish too many things in a single set
+>> of patches and need to split into smaller patches. This is reduced
+>> version of above series.
+>>
+>> Changes that are intended to make migration easy are split into separate
+>> patches. Patches 1 to 3 drop features that cannot be supported under
+>> spi-mem at the moment (backward compatibility is maintained).
+>> Patch 4-5 are trivial cleanups. Patch 6 does the actual conversion to
+>> spi-mem and patch 7 moves the driver to drivers/spi folder.
+>>
+>> I have tested both INDAC mode (used by non TI platforms like Altera
+>> SoCFPGA) and DAC mode (used by TI platforms) on TI EVMs.
+>>
+>> Patches to move move bindings over to
+>> "Documentation/devicetree/bindings/spi/" directory and also conversion
+>> of bindig doc to YAML will be posted separately.  Support for Intel
+>> platform would follow that.
+>>
+>> Reference:
+>>          https://lkml.org/lkml/2020/6/1/50
+>>
+>> ---
+>> v8:
+>>    - As Mark suggested to add the dt-bindings documentation patches
+>>      end of the series , so dropped.
+> 
+> Suggestion was to drop patches converting legacy binding doc to YAML schema.
+> You still need to include a patch documenting new compatible
+> "intel,lgm-qspi" in the existing (legacy) binding doc.
+Noted, will do that.
 
-Thanks for the comment!
-OK, let me renew the series to use le32.
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Regards
+Vadivel
+> 
