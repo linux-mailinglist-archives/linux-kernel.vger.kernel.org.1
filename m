@@ -2,118 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DE02BA4FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1CF2BA4DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbgKTIoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:44:30 -0500
-Received: from mailout06.rmx.de ([94.199.90.92]:33765 "EHLO mailout06.rmx.de"
+        id S1727165AbgKTIkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:40:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726559AbgKTIo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:44:29 -0500
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726558AbgKTIkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:40:39 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailout06.rmx.de (Postfix) with ESMTPS id 4Ccqpw5nvnz9wqD;
-        Fri, 20 Nov 2020 09:44:24 +0100 (CET)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4Ccqp608hLz2TRm7;
-        Fri, 20 Nov 2020 09:43:42 +0100 (CET)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.143) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 20 Nov
- 2020 09:43:03 +0100
-From:   Christian Eggers <ceggers@arri.de>
-To:     Richard Cochran <richardcochran@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Vladimir Oltean <olteanv@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>,
-        "Kurt Kanzenbach" <kurt@linutronix.de>
-Subject: [PATCH net-next v3 3/3] ptp: ptp_ines: use new PTP_MSGTYPE_* define(s)
-Date:   Fri, 20 Nov 2020 09:41:06 +0100
-Message-ID: <20201120084106.10046-4-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201120084106.10046-1-ceggers@arri.de>
-References: <20201120084106.10046-1-ceggers@arri.de>
+        by mail.kernel.org (Postfix) with ESMTPSA id 0002722244;
+        Fri, 20 Nov 2020 08:40:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1605861638;
+        bh=dMzZlCs5sLmUYyTkOdmbEULzF7orbNVTDESsGpFByl8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1oBieG22nyex1qdaCb4oeucEUir+1Bd12wZTeO9GLvXYsw+4eNO8YkgMk41OMMfls
+         gf40PB99fzXut/MsHbtH6TE2kwMPyfMx0lZV13QhhfBr0k67ZtiUvhwog08NpMh8vQ
+         Q/Wp4vLizAJaKYf0SC6ku6/TdFz+qpbbNLyzjr4Q=
+Date:   Fri, 20 Nov 2020 09:41:21 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-usb@vger.kernel.org, heikki.krogerus@linux.intel.com,
+        linux-kernel@vger.kernel.org, sfr@canb.auug.org.au,
+        linux-next@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: Fix num_altmodes kernel-doc error
+Message-ID: <X7eBMRWAopEYu78r@kroah.com>
+References: <20201120063523.4159877-1-pmalani@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.143]
-X-RMX-ID: 20201120-094344-4Ccqp608hLz2TRm7-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120063523.4159877-1-pmalani@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove driver internal defines for this. Masking msgtype with 0xf is
-already done within ptp_get_msgtype().
+On Thu, Nov 19, 2020 at 10:35:22PM -0800, Prashant Malani wrote:
+> The commit to introduce the num_altmodes attribute for partner had an
+> error where one of the parameters was named differently in the comment
+> and the function signature. Fix the version in the comment to align with
+> what is in the function signature.
+> 
+> This fixes the following htmldocs warning:
+> 
+> drivers/usb/typec/class.c:632: warning: Excess function parameter
+> 'num_alt_modes' description in 'typec_partner_set_num_altmodes'
+> 
+> Fixes: a0ccdc4a77a1 ("usb: typec: Add number of altmodes partner attr")
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Cc: Richard Cochran <richardcochran@gmail.com>
-Cc: Kurt Kanzenbach <kurt@linutronix.de>
----
- drivers/ptp/ptp_ines.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+You forgot a "Reported-by:" tag here :(
 
-diff --git a/drivers/ptp/ptp_ines.c b/drivers/ptp/ptp_ines.c
-index 4700ffbdfced..6c7c2843ba0b 100644
---- a/drivers/ptp/ptp_ines.c
-+++ b/drivers/ptp/ptp_ines.c
-@@ -108,11 +108,6 @@ MODULE_LICENSE("GPL");
- #define MESSAGE_TYPE_P_DELAY_RESP	3
- #define MESSAGE_TYPE_DELAY_REQ		4
- 
--#define SYNC				0x0
--#define DELAY_REQ			0x1
--#define PDELAY_REQ			0x2
--#define PDELAY_RESP			0x3
--
- static LIST_HEAD(ines_clocks);
- static DEFINE_MUTEX(ines_clocks_lock);
- 
-@@ -683,9 +678,9 @@ static bool is_sync_pdelay_resp(struct sk_buff *skb, int type)
- 
- 	msgtype = ptp_get_msgtype(hdr, type);
- 
--	switch ((msgtype & 0xf)) {
--	case SYNC:
--	case PDELAY_RESP:
-+	switch (msgtype) {
-+	case PTP_MSGTYPE_SYNC:
-+	case PTP_MSGTYPE_PDELAY_RESP:
- 		return true;
- 	default:
- 		return false;
-@@ -696,13 +691,13 @@ static u8 tag_to_msgtype(u8 tag)
- {
- 	switch (tag) {
- 	case MESSAGE_TYPE_SYNC:
--		return SYNC;
-+		return PTP_MSGTYPE_SYNC;
- 	case MESSAGE_TYPE_P_DELAY_REQ:
--		return PDELAY_REQ;
-+		return PTP_MSGTYPE_PDELAY_REQ;
- 	case MESSAGE_TYPE_P_DELAY_RESP:
--		return PDELAY_RESP;
-+		return PTP_MSGTYPE_PDELAY_RESP;
- 	case MESSAGE_TYPE_DELAY_REQ:
--		return DELAY_REQ;
-+		return PTP_MSGTYPE_DELAY_REQ;
- 	}
- 	return 0xf;
- }
--- 
-Christian Eggers
-Embedded software developer
+I'll go add it by hand...
 
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
-
+greg k-h
