@@ -2,298 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9815E2BA241
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 07:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE082BA247
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 07:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbgKTGYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 01:24:47 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8007 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbgKTGYr (ORCPT
+        id S1726391AbgKTG0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 01:26:30 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36945 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbgKTG02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 01:24:47 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CcmjR30T9zhdV3;
-        Fri, 20 Nov 2020 14:24:27 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 20 Nov 2020 14:24:34 +0800
-From:   Huazhong Tan <tanhuazhong@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <kuba@kernel.org>, <andrew@lunn.ch>,
-        <mkubecek@suse.cz>, Huazhong Tan <tanhuazhong@huawei.com>
-Subject: [RFC V2 net-next 2/2] net: hns3: add support for dynamic interrupt moderation
-Date:   Fri, 20 Nov 2020 14:24:39 +0800
-Message-ID: <1605853479-4483-3-git-send-email-tanhuazhong@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605853479-4483-1-git-send-email-tanhuazhong@huawei.com>
-References: <1605853479-4483-1-git-send-email-tanhuazhong@huawei.com>
+        Fri, 20 Nov 2020 01:26:28 -0500
+Received: by mail-pg1-f195.google.com with SMTP id m9so6459141pgb.4;
+        Thu, 19 Nov 2020 22:26:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3VBe9I6ZLvjv0+rw9dc7utKP5dO8QvFfLdr1B42slpA=;
+        b=q0q77clooqHJDT7OXh1YAXYXmHvXPc5M6RbqoJfg7BKBI7FYxG/5utS+BX3PhuWwlW
+         JgefFzPjaYfZCAvp2UxlRHURWgpeYE1UFzPwc77CBwDnZMa8xNYNvYxitEIW0o+04yyH
+         +WeBhMa7vfKxV2rDscVTjgekCOLPTzrgF3tVni0aU2LQAIuodo81mZkVB2AvfMKxbrwG
+         lJCMiAPUyhZlhWXdp83oubyBXHahK34Vu8Lmao336efrJ1K5zDiMv4OEYSgcHsx1uYDR
+         H2uM9LNIbOZl3sEt1Zn8+4+G6AgPf7/OTi+rsqKbdfw8lMkkMKUSp9PhpSOn3ZaB+WSO
+         rcXA==
+X-Gm-Message-State: AOAM533gT2+vj2RDWG5s8LAxQQuNWkZkmcGdXiJK02OAmONOONwKobrU
+        hKH6LDOg30H9G8PsXFZ+QO+V6uVSeiO1iA==
+X-Google-Smtp-Source: ABdhPJwb7zSSXu/pUeAEtfulz9pGF2LNLNmLnDtuUGi4uNMYrIpTLlmqlw2jcgfFTT5FEDwv+QGMyA==
+X-Received: by 2002:a17:90a:2e04:: with SMTP id q4mr8729613pjd.37.1605853587398;
+        Thu, 19 Nov 2020 22:26:27 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id x61sm2200747pjj.4.2020.11.19.22.26.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 22:26:26 -0800 (PST)
+Date:   Thu, 19 Nov 2020 22:26:25 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v6 1/7] fpga: sec-mgr: fpga security manager class driver
+Message-ID: <X7dhkWZmsfTXfpWd@epycbox.lan>
+References: <20201106010905.11935-1-russell.h.weight@intel.com>
+ <20201106010905.11935-2-russell.h.weight@intel.com>
+ <X7GzpM95S5pdjNi/@epycbox.lan>
+ <4368b462-3ead-d9f5-7d87-be4da390ee49@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4368b462-3ead-d9f5-7d87-be4da390ee49@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dynamic interrupt moderation support for the HNS3 driver,
-and add ethtool support for controlling the type of adaptive.
+Hi Russ,
 
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
----
- drivers/net/ethernet/hisilicon/Kconfig             |  1 +
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 87 +++++++++++++++++++++-
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  4 +
- drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 25 ++++++-
- 4 files changed, 115 insertions(+), 2 deletions(-)
+On Thu, Nov 19, 2020 at 06:39:44PM -0800, Russ Weight wrote:
+> 
+> 
+> On 11/15/20 3:03 PM, Moritz Fischer wrote:
+> > Hi Russ,
+> >
+> > On Thu, Nov 05, 2020 at 05:08:59PM -0800, Russ Weight wrote:
+> >> Create the FPGA Security Manager class driver. The security
+> >> manager provides interfaces to manage secure updates for the
+> >> FPGA and BMC images that are stored in FLASH. The driver can
+> >> also be used to update root entry hashes and to cancel code
+> >> signing keys. The image type is encoded in the image file
+> >> and is decoded by the HW/FW secure update engine.
+> >>
+> >> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> >> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> >> Reviewed-by: Tom Rix <trix@redhat.com>
+> >> ---
+> >> v6:
+> >>   - Removed sysfs support and documentation for the display of the
+> >>     flash count, root entry hashes, and code-signing-key cancelation
+> >>     vectors.
+> >> v5:
+> >>   - Added the devm_fpga_sec_mgr_unregister() function, following recent
+> >>     changes to the fpga_manager() implementation.
+> >>   - Changed some *_show() functions to use sysfs_emit() instead of sprintf(
+> >> v4:
+> >>   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+> >>     and removed unnecessary references to "Intel".
+> >>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+> >> v3:
+> >>   - Modified sysfs handler check in check_sysfs_handler() to make
+> >>     it more readable.
+> >> v2:
+> >>   - Bumped documentation dates and versions
+> >>   - Added Documentation/fpga/ifpga-sec-mgr.rst 
+> >>   - Removed references to bmc_flash_count & smbus_flash_count (not supported)
+> >>   - Split ifpga_sec_mgr_register() into create() and register() functions
+> >>   - Added devm_ifpga_sec_mgr_create()
+> >>   - Removed typedefs for imgr ops
+> >> ---
+> >>  .../ABI/testing/sysfs-class-fpga-sec-mgr      |   5 +
+> >>  Documentation/fpga/fpga-sec-mgr.rst           |  44 +++
+> >>  Documentation/fpga/index.rst                  |   1 +
+> >>  MAINTAINERS                                   |   9 +
+> >>  drivers/fpga/Kconfig                          |   9 +
+> >>  drivers/fpga/Makefile                         |   3 +
+> >>  drivers/fpga/fpga-sec-mgr.c                   | 296 ++++++++++++++++++
+> >>  include/linux/fpga/fpga-sec-mgr.h             |  44 +++
+> >>  8 files changed, 411 insertions(+)
+> >>  create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+> >>  create mode 100644 Documentation/fpga/fpga-sec-mgr.rst
+> >>  create mode 100644 drivers/fpga/fpga-sec-mgr.c
+> >>  create mode 100644 include/linux/fpga/fpga-sec-mgr.h
+> >>
+> >> diff --git a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+> >> new file mode 100644
+> >> index 000000000000..ecda22a3ff3b
+> >> --- /dev/null
+> >> +++ b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+> >> @@ -0,0 +1,5 @@
+> >> +What: 		/sys/class/fpga_sec_mgr/fpga_secX/name
+> >> +Date:		Oct 2020
+> >> +KernelVersion:  5.11
+> >> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> >> +Description:	Name of low level fpga security manager driver.
+> >> diff --git a/Documentation/fpga/fpga-sec-mgr.rst b/Documentation/fpga/fpga-sec-mgr.rst
+> >> new file mode 100644
+> >> index 000000000000..26dac599ead7
+> >> --- /dev/null
+> >> +++ b/Documentation/fpga/fpga-sec-mgr.rst
+> >> @@ -0,0 +1,44 @@
+> >> +.. SPDX-License-Identifier: GPL-2.0
+> >> +
+> >> +========================================
+> >> +FPGA Security Manager Class Driver
+> >> +========================================
+> >> +
+> >> +The FPGA Security Manager class driver provides a common
+> >> +API for user-space tools to manage updates for secure FPGA
+> >> +devices. Device drivers that instantiate the Security
+> >> +Manager class driver will interact with a HW secure update
+> >> +engine in order to transfer new FPGA and BMC images to FLASH so
+> >> +that they will be automatically loaded when the FPGA card reboots.
+> >> +
+> >> +A significant difference between the FPGA Manager and the FPGA
+> >> +Security Manager is that the FPGA Manager does a live update (Partial
+> >> +Reconfiguration) to a device, whereas the FPGA Security Manager
+> >> +updates the FLASH images for the Static Region and the BMC so that
+> >> +they will be loaded the next time the FPGA card boots. Security is
+> >> +enforced by hardware and firmware. The security manager interacts
+> >> +with the firmware to initiate an update, pass in the necessary data,
+> >> +and collect status on the update.
+> > I've always wondered if we could've made this a functionality of an FPGA
+> > manager 'non-volatile' node or something.
+> >
+> > I guess there might be cases where you can only do either of them, i.e.
+> > only update flash or only update at runtime.
+> 
+> Today, in light of Richard Gong's recent patch set, I took another look at
+> the fpga manager, trying to determine what changes would need to be made in
+> the fpga manager order to support secure updates. These are my observations:
+> 
+> (1) For the devices that I am working on, the lower-level drivers are
+>     completely different for PR vs image updates to flash. As a result,
+>     if we used the fpga-mgr, we would need to create different instances
+>     of the fpga-mgr, one for PR and one for secure updates - each supported
+>     by a different low-level driver.
 
-diff --git a/drivers/net/ethernet/hisilicon/Kconfig b/drivers/net/ethernet/hisilicon/Kconfig
-index 44f9279..fa6025d 100644
---- a/drivers/net/ethernet/hisilicon/Kconfig
-+++ b/drivers/net/ethernet/hisilicon/Kconfig
-@@ -130,6 +130,7 @@ config HNS3_ENET
- 	default m
- 	depends on 64BIT && PCI
- 	depends on INET
-+	select DIMLIB
- 	help
- 	  This selects the Ethernet Driver for Hisilicon Network Subsystem 3 for hip08
- 	  family of SoCs. This module depends upon HNAE3 driver to access the HNAE3
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 999a2aa..b08aea7 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -96,6 +96,7 @@ static irqreturn_t hns3_irq_handle(int irq, void *vector)
- 	struct hns3_enet_tqp_vector *tqp_vector = vector;
- 
- 	napi_schedule_irqoff(&tqp_vector->napi);
-+	tqp_vector->event_cnt++;
- 
- 	return IRQ_HANDLED;
- }
-@@ -199,6 +200,8 @@ static void hns3_vector_disable(struct hns3_enet_tqp_vector *tqp_vector)
- 
- 	disable_irq(tqp_vector->vector_irq);
- 	napi_disable(&tqp_vector->napi);
-+	cancel_work_sync(&tqp_vector->rx_group.dim.work);
-+	cancel_work_sync(&tqp_vector->tx_group.dim.work);
- }
- 
- void hns3_set_vector_coalesce_rl(struct hns3_enet_tqp_vector *tqp_vector,
-@@ -3401,6 +3404,32 @@ static void hns3_update_new_int_gl(struct hns3_enet_tqp_vector *tqp_vector)
- 	tqp_vector->last_jiffies = jiffies;
- }
- 
-+static void hns3_update_rx_int_coalesce(struct hns3_enet_tqp_vector *tqp_vector)
-+{
-+	struct hns3_enet_ring_group *rx_group = &tqp_vector->rx_group;
-+	struct dim_sample sample = {};
-+
-+	if (!rx_group->coal.adapt_enable)
-+		return;
-+
-+	dim_update_sample(tqp_vector->event_cnt, rx_group->total_packets,
-+			  rx_group->total_bytes, &sample);
-+	net_dim(&rx_group->dim, sample);
-+}
-+
-+static void hns3_update_tx_int_coalesce(struct hns3_enet_tqp_vector *tqp_vector)
-+{
-+	struct hns3_enet_ring_group *tx_group = &tqp_vector->tx_group;
-+	struct dim_sample sample = {};
-+
-+	if (!tx_group->coal.adapt_enable)
-+		return;
-+
-+	dim_update_sample(tqp_vector->event_cnt, tx_group->total_packets,
-+			  tx_group->total_bytes, &sample);
-+	net_dim(&tx_group->dim, sample);
-+}
-+
- static int hns3_nic_common_poll(struct napi_struct *napi, int budget)
- {
- 	struct hns3_nic_priv *priv = netdev_priv(napi->dev);
-@@ -3444,7 +3473,13 @@ static int hns3_nic_common_poll(struct napi_struct *napi, int budget)
- 
- 	if (napi_complete(napi) &&
- 	    likely(!test_bit(HNS3_NIC_STATE_DOWN, &priv->state))) {
--		hns3_update_new_int_gl(tqp_vector);
-+		if (priv->dim_enable) {
-+			hns3_update_rx_int_coalesce(tqp_vector);
-+			hns3_update_tx_int_coalesce(tqp_vector);
-+		} else {
-+			hns3_update_new_int_gl(tqp_vector);
-+		}
-+
- 		hns3_mask_vector_irq(tqp_vector, 1);
- 	}
- 
-@@ -3575,6 +3610,54 @@ static void hns3_nic_set_cpumask(struct hns3_nic_priv *priv)
- 	}
- }
- 
-+static void hns3_rx_dim_work(struct work_struct *work)
-+{
-+	struct dim *dim = container_of(work, struct dim, work);
-+	struct hns3_enet_ring_group *group = container_of(dim,
-+		struct hns3_enet_ring_group, dim);
-+	struct hns3_enet_tqp_vector *tqp_vector = group->ring->tqp_vector;
-+	struct dim_cq_moder cur_moder =
-+		net_dim_get_rx_moderation(dim->mode, dim->profile_ix);
-+
-+	hns3_set_vector_coalesce_rx_gl(group->ring->tqp_vector, cur_moder.usec);
-+	tqp_vector->rx_group.coal.int_gl = cur_moder.usec;
-+
-+	if (cur_moder.pkts < tqp_vector->rx_group.coal.int_ql_max) {
-+		hns3_set_vector_coalesce_rx_ql(tqp_vector, cur_moder.pkts);
-+		tqp_vector->rx_group.coal.int_ql = cur_moder.pkts;
-+	}
-+
-+	dim->state = DIM_START_MEASURE;
-+}
-+
-+static void hns3_tx_dim_work(struct work_struct *work)
-+{
-+	struct dim *dim = container_of(work, struct dim, work);
-+	struct hns3_enet_ring_group *group = container_of(dim,
-+		struct hns3_enet_ring_group, dim);
-+	struct hns3_enet_tqp_vector *tqp_vector = group->ring->tqp_vector;
-+	struct dim_cq_moder cur_moder =
-+		net_dim_get_tx_moderation(dim->mode, dim->profile_ix);
-+
-+	hns3_set_vector_coalesce_tx_gl(tqp_vector, cur_moder.usec);
-+	tqp_vector->tx_group.coal.int_gl = cur_moder.usec;
-+
-+	if (cur_moder.pkts < tqp_vector->tx_group.coal.int_ql_max) {
-+		hns3_set_vector_coalesce_tx_ql(tqp_vector, cur_moder.pkts);
-+		tqp_vector->tx_group.coal.int_ql = cur_moder.pkts;
-+	}
-+
-+	dim->state = DIM_START_MEASURE;
-+}
-+
-+static void hns3_nic_init_dim(struct hns3_enet_tqp_vector *tqp_vector)
-+{
-+	INIT_WORK(&tqp_vector->rx_group.dim.work, hns3_rx_dim_work);
-+	tqp_vector->rx_group.dim.mode = DIM_CQ_PERIOD_MODE_START_FROM_EQE;
-+	INIT_WORK(&tqp_vector->tx_group.dim.work, hns3_tx_dim_work);
-+	tqp_vector->tx_group.dim.mode = DIM_CQ_PERIOD_MODE_START_FROM_EQE;
-+}
-+
- static int hns3_nic_init_vector_data(struct hns3_nic_priv *priv)
- {
- 	struct hnae3_ring_chain_node vector_ring_chain;
-@@ -3589,6 +3672,7 @@ static int hns3_nic_init_vector_data(struct hns3_nic_priv *priv)
- 		tqp_vector = &priv->tqp_vector[i];
- 		hns3_vector_coalesce_init_hw(tqp_vector, priv);
- 		tqp_vector->num_tqps = 0;
-+		hns3_nic_init_dim(tqp_vector);
- 	}
- 
- 	for (i = 0; i < h->kinfo.num_tqps; i++) {
-@@ -4161,6 +4245,7 @@ static int hns3_client_init(struct hnae3_handle *handle)
- 	netdev->max_mtu = HNS3_MAX_MTU;
- 
- 	set_bit(HNS3_NIC_STATE_INITED, &priv->state);
-+	priv->dim_enable = 1;
- 
- 	if (netif_msg_drv(handle))
- 		hns3_info_show(priv);
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index 8d33652..4af11aa 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -4,6 +4,7 @@
- #ifndef __HNS3_ENET_H
- #define __HNS3_ENET_H
- 
-+#include <linux/dim.h>
- #include <linux/if_vlan.h>
- 
- #include "hnae3.h"
-@@ -449,6 +450,7 @@ struct hns3_enet_ring_group {
- 	u64 total_packets;	/* total packets processed this group */
- 	u16 count;
- 	struct hns3_enet_coalesce coal;
-+	struct dim dim;
- };
- 
- struct hns3_enet_tqp_vector {
-@@ -471,6 +473,7 @@ struct hns3_enet_tqp_vector {
- 	char name[HNAE3_INT_NAME_LEN];
- 
- 	unsigned long last_jiffies;
-+	u64 event_cnt;
- } ____cacheline_internodealigned_in_smp;
- 
- struct hns3_nic_priv {
-@@ -486,6 +489,7 @@ struct hns3_nic_priv {
- 	struct hns3_enet_tqp_vector *tqp_vector;
- 	u16 vector_num;
- 	u8 max_non_tso_bd_num;
-+	u8 dim_enable:1;
- 
- 	u64 tx_timeout_count;
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index c30d5d3..5cad027 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -1127,6 +1127,16 @@ static int hns3_get_coalesce(struct net_device *netdev,
- 	return hns3_get_coalesce_per_queue(netdev, 0, cmd);
- }
- 
-+static int hns3_get_ext_coalesce(struct net_device *netdev,
-+				 struct ethtool_ext_coalesce *cmd)
-+{
-+	struct hns3_nic_priv *priv = netdev_priv(netdev);
-+
-+	cmd->use_dim = priv->dim_enable;
-+
-+	return 0;
-+}
-+
- static int hns3_check_gl_coalesce_para(struct net_device *netdev,
- 				       struct ethtool_coalesce *cmd)
- {
-@@ -1319,6 +1329,16 @@ static int hns3_set_coalesce(struct net_device *netdev,
- 	return 0;
- }
- 
-+static int hns3_set_ext_coalesce(struct net_device *netdev,
-+				 struct ethtool_ext_coalesce *cmd)
-+{
-+	struct hns3_nic_priv *priv = netdev_priv(netdev);
-+
-+	priv->dim_enable = cmd->use_dim;
-+
-+	return 0;
-+}
-+
- static int hns3_get_regs_len(struct net_device *netdev)
- {
- 	struct hnae3_handle *h = hns3_get_handle(netdev);
-@@ -1520,7 +1540,8 @@ static int hns3_get_module_eeprom(struct net_device *netdev,
- 				 ETHTOOL_COALESCE_USE_ADAPTIVE |	\
- 				 ETHTOOL_COALESCE_RX_USECS_HIGH |	\
- 				 ETHTOOL_COALESCE_TX_USECS_HIGH |	\
--				 ETHTOOL_COALESCE_MAX_FRAMES)
-+				 ETHTOOL_COALESCE_MAX_FRAMES |		\
-+				 ETHTOOL_COALESCE_USE_DIM)
- 
- static const struct ethtool_ops hns3vf_ethtool_ops = {
- 	.supported_coalesce_params = HNS3_ETHTOOL_COALESCE,
-@@ -1572,7 +1593,9 @@ static const struct ethtool_ops hns3_ethtool_ops = {
- 	.get_channels = hns3_get_channels,
- 	.set_channels = hns3_set_channels,
- 	.get_coalesce = hns3_get_coalesce,
-+	.get_ext_coalesce = hns3_get_ext_coalesce,
- 	.set_coalesce = hns3_set_coalesce,
-+	.set_ext_coalesce = hns3_set_ext_coalesce,
- 	.get_regs_len = hns3_get_regs_len,
- 	.get_regs = hns3_get_regs,
- 	.set_phys_id = hns3_set_phys_id,
--- 
-2.7.4
+I was mostly thinking about adding a somewhat similar API to the FPGA
+manager (close to what you're doing), but as I said it was a suggestion.
+> 
+> (2) For secure updates, our worst case time is 40 minutes. I doubt that it
+>     will ever be longer than that, but we need to support that case. For this
+>     length of time, we feel that it is important to show some indication
+>     of progress to the user during the update. To handle this, we
+>     are using a write_blk() function to break up the writes so that the
+>     class driver can provide updates during the data transfer (e.g. this
+>     much is left to transfer). We have also "backgrounded" the kernel
+>     process by spawning a kernel worker thread to do the update. The user,
+>     or user-space code, can monitor the progress by polling for status
+>     through sysfs.
+> 
+> (3) Also, because of the long updates, it seems necessary to provide a way
+>     to cancel the update. For example, if the user accidentally specifies the
+>     wrong image file, 40 minutes is too long to wait before they are able
+>     to try again. We have provided a way to signal the worker thread to
+>     abort when possible.
+> 
+> (4) Another observation is that we are using the same secure update mechanism
+>     to program new root-entry-hashes and to cancel code-signing keys. The
+>     image type is encoded in the file header. The payload is opaque to host
+>     software, so this isn't an issue - just an observation.
+>    
+> So is it worth adding these additional features to the fpga-mgr? Or is it
+> better to keep them separate? To me they seem different enough, that I think
+> it would be cleaner to keep them separate.
 
+Yeah, I think that's fine. Thanks for taking another look, though.
+
+Cheers,
+Moritz
