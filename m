@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757D42BA0EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A602BA0EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgKTDOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 22:14:11 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:35480 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgKTDOL (ORCPT
+        id S1726654AbgKTDQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 22:16:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgKTDQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 22:14:11 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AK3AOfF044941;
-        Fri, 20 Nov 2020 03:14:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=s/8N3xCSQsdW1nxIK6iFS39cuZ3X3S3099X+yNSwVNY=;
- b=UNyZAqzNHYbh92DyeBhBKycv3nrnu/v4KNDn6BoUqSe1Lidew3RZvORL40otx1NnnKR+
- 1R3atx06DUJUTMxloGzWN1LdgFygK3KdelvDdREaYD8LNyIUmOiNkY0vZjwDgTpscGLW
- QuA8/GoJ82t5O4IoUyHhjDuT1cycDp6OFYe6uDzZiN13fl9PeJH2QNV+4jdAEED5sJmQ
- h5lDzb7rexe0DbLMcROYhHrAFutM4F9v9jWHJBcU/PdS+txexRsTx0z7St+P6deJ3Vem
- ajtjtFCDMJ48UrMrlu+VEh34zKY2B98O5SQQtdC9mLKdcCOYUQej6gI+TnK000lnDRxs OQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 34t4rb8t00-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Nov 2020 03:14:05 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AK35iaK166566;
-        Fri, 20 Nov 2020 03:14:04 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 34uspx1ycv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Nov 2020 03:14:04 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AK3E3jp021197;
-        Fri, 20 Nov 2020 03:14:03 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Nov 2020 19:14:03 -0800
-To:     Colin King <colin.king@canonical.com>
-Cc:     James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] scsi: lpfc: fix pointer defereference before it
- is null checked issue
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1zh3cwwi5.fsf@ca-mkp.ca.oracle.com>
-References: <20201118131345.460631-1-colin.king@canonical.com>
-Date:   Thu, 19 Nov 2020 22:14:01 -0500
-In-Reply-To: <20201118131345.460631-1-colin.king@canonical.com> (Colin King's
-        message of "Wed, 18 Nov 2020 13:13:45 +0000")
+        Thu, 19 Nov 2020 22:16:05 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DB3C0613CF;
+        Thu, 19 Nov 2020 19:16:05 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id b63so6492886pfg.12;
+        Thu, 19 Nov 2020 19:16:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=pdfA6s3fWqziHuzU5IfqkqyEhz6AkKps0y0I1IerNn0=;
+        b=LclX1MEVeijePZ/UsD8dxUqJwCGmUwvMbyC+sx+MGU+gkZCuWke2fgTtDEKxImNSUh
+         gUrtg6EJx2O6zFLK3kgSQ1xa2WMVrQViex4aJGS3nIW7Xaiu+In08cgvnQz4oFZ1bI6D
+         8GSiw40qVTCCPOJ8rsi/5MTjgCQbukGmmmCbECsX5SzDy5iJzVgBqoCHHZqG70PEObDb
+         kkFJhqKGVccH8ka+k91qCFsOJwY9hsOJ4TU7vKgqFJBHV4rfxJNPqQ/QZ7mKUDZsQ5R9
+         Aimq4Chv+qRhbPsK6/LsXb0LhU3R4Jbvjey76iWGIPbMAFInEBfndKjcPXoTo6boX6SH
+         vUXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=pdfA6s3fWqziHuzU5IfqkqyEhz6AkKps0y0I1IerNn0=;
+        b=C4Q0f8S6Lom9Y4YRhHktqUoQl7ztSzb2T8hjNHPna6olY+62PPuqy9FPV3NVS2dJHO
+         6yf4pbyAYUMuAfMI6Gj/bT64PxhXSg24fy9D06vRej6YJcUtZ9geUkfLzEkH9AxI0GV+
+         4iPMhcsQwVF6Xx+gkFVMTuhnfd7IE/xHe6GtMDsNC+v6qLnon/aHjTOboHJ3klYyUfFU
+         +itff2PfZ8WNWQWOHN8IPYox+tUmSaBVMudnHU46HbjfkcK6+zeoRlTdCoIXi84gAwFj
+         mebMqPsIp8SxpyzkrE3z75g6fMIpnTPWOj9FHg15z23Uo2JuEL3pqvqpgBHd89ENnrSZ
+         0Clg==
+X-Gm-Message-State: AOAM530pahuHTRO1MD86+Kr+DH24DRnkmbqa1N2IpSCsRYyCm20+HUo0
+        HhlkUw7FRQYqjeAoGI55s48=
+X-Google-Smtp-Source: ABdhPJxoqqPuVTYgw/px//azuwEk19il/8kgjxo7gQpMFiolckH0F1GeTxidu8VS9oQz05VHjpyMug==
+X-Received: by 2002:a63:e757:: with SMTP id j23mr13812098pgk.301.1605842165218;
+        Thu, 19 Nov 2020 19:16:05 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id n4sm1182181pgh.12.2020.11.19.19.16.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 19:16:04 -0800 (PST)
+Date:   Thu, 19 Nov 2020 19:16:01 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        =?utf-8?Q?=C5=81ukasz?= Patron <priv.luk@gmail.com>,
+        Cameron Gutman <aicommander@gmail.com>,
+        Marko Friedemann <mfr@bmx-chemnitz.de>,
+        Oliver Schwartz <Oliver.Schwartz@gmx.de>,
+        Steven Toth <steve@toth.demon.co.uk>,
+        Franz Lehner <franz@caos.at>,
+        Ivan Hawkes <blackhawk@ivanhawkes.com>,
+        Dominic Cerquetti <binary1230@yahoo.com>,
+        Adam Buchbinder <adam.buchbinder@gmail.com>,
+        Jan Kratochvil <honza@jikos.cz>,
+        Christoph Fritz <chf.fritz@googlemail.com>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH 01/15] input: joystick: xpad: Demote non-conformant
+ kernel-doc header
+Message-ID: <20201120031601.GL2034289@dtor-ws>
+References: <20201112110204.2083435-1-lee.jones@linaro.org>
+ <20201112110204.2083435-2-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 bulkscore=0 suspectscore=1 adultscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011200022
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=1 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011200022
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112110204.2083435-2-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 12, 2020 at 11:01:50AM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/input/joystick/xpad.c:1361: warning: Function parameter or member 'xpad' not described in 'xpad_send_led_command'
+>  drivers/input/joystick/xpad.c:1361: warning: Function parameter or member 'command' not described in 'xpad_send_led_command'
+> 
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: "Łukasz Patron" <priv.luk@gmail.com>
+> Cc: Cameron Gutman <aicommander@gmail.com>
+> Cc: Marko Friedemann <mfr@bmx-chemnitz.de>
+> Cc: Oliver Schwartz <Oliver.Schwartz@gmx.de>
+> Cc: Steven Toth <steve@toth.demon.co.uk>
+> Cc: Franz Lehner <franz@caos.at>
+> Cc: Ivan Hawkes <blackhawk@ivanhawkes.com>
+> Cc: Dominic Cerquetti <binary1230@yahoo.com>
+> Cc: Adam Buchbinder <adam.buchbinder@gmail.com>
+> Cc: Jan Kratochvil <honza@jikos.cz>
+> Cc: Christoph Fritz <chf.fritz@googlemail.com>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Colin,
-
-> There is a null check on pointer lpfc_cmd after the pointer has been
-> dereferenced when pointers rdata and ndlp are initialized at the start
-> of the function. Fix this by only assigning rdata and ndlp after the
-> pointer lpfc_cmd has been null checked.
-
-Applied to 5.11/scsi-staging, thanks!
+Applied, thank you.
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+Dmitry
