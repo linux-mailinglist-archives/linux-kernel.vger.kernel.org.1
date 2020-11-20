@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452F32BA4A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33002BA4AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgKTI37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:29:59 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7709 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgKTI37 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:29:59 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CcqTq21P7zkc9s;
-        Fri, 20 Nov 2020 16:29:35 +0800 (CST)
-Received: from [10.174.179.81] (10.174.179.81) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 20 Nov 2020 16:29:53 +0800
-Subject: Re: [PATCH net] ipvs: fix possible memory leak in
- ip_vs_control_net_init
-To:     Julian Anastasov <ja@ssi.bg>
-CC:     <horms@verge.net.au>, <pablo@netfilter.org>,
-        <kadlec@netfilter.org>, <fw@strlen.de>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <christian@brauner.io>,
-        <hans.schillstrom@ericsson.com>, <lvs-devel@vger.kernel.org>,
-        <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201119104102.67427-1-wanghai38@huawei.com>
- <f111e78-b9c1-453-c6e5-a063e62cd83b@ssi.bg>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <0574c34c-60a8-8d8d-38b1-962898e55801@huawei.com>
-Date:   Fri, 20 Nov 2020 16:29:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <f111e78-b9c1-453-c6e5-a063e62cd83b@ssi.bg>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.81]
-X-CFilter-Loop: Reflected
+        id S1727145AbgKTIbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:31:10 -0500
+Received: from smtp25.cstnet.cn ([159.226.251.25]:37420 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725789AbgKTIbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:31:09 -0500
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-05 (Coremail) with SMTP id zQCowACXnZXBfrdfIC9bAQ--.19653S2;
+        Fri, 20 Nov 2020 16:30:57 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     gregkh@linuxfoundation.org, lee.jones@linaro.org,
+        gustavoars@kernel.org, chunfeng.yun@mediatek.com,
+        linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: fotg210-hcd: remove casting dma_alloc_coherent
+Date:   Fri, 20 Nov 2020 08:30:54 +0000
+Message-Id: <20201120083054.8973-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowACXnZXBfrdfIC9bAQ--.19653S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw15CFWUWF1ktr1xZr43ZFb_yoW3Arb_Cw
+        15Xr93WrW2gFWqyrySyF9xAFWkta4rZry8ZFs7tr1aga4jqrn5Jry29r1rJa43G3yDXrZ8
+        C398Xr409a1kujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r43MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU001v3UUUUU==
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwYGA1z4jl7uAQAAsT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove casting the values returned by dma_alloc_coherent.
 
-ÔÚ 2020/11/20 2:22, Julian Anastasov Ð´µÀ:
-> 	Hello,
->
-> On Thu, 19 Nov 2020, Wang Hai wrote:
->
->> kmemleak report a memory leak as follows:
->>
->> BUG: memory leak
->> unreferenced object 0xffff8880759ea000 (size 256):
->> comm "syz-executor.3", pid 6484, jiffies 4297476946 (age 48.546s)
->> hex dump (first 32 bytes):
->> 00 00 00 00 01 00 00 00 08 a0 9e 75 80 88 ff ff ...........u....
-[...]
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Wang Hai <wanghai38@huawei.com>
->> ---
->>   net/netfilter/ipvs/ip_vs_ctl.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
->> index e279ded4e306..d99bb89e7c25 100644
->> --- a/net/netfilter/ipvs/ip_vs_ctl.c
->> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
->> @@ -4180,6 +4180,9 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
->>   	return 0;
-> 	May be we should add some #ifdef CONFIG_PROC_FS because
-> proc_create_net* return NULL when PROC is not used. For example:
->
-> #ifdef CONFIG_PROC_FS
-> 	if (!proc_create_net...
-> 		goto err_vs;
-> 	if (!proc_create_net...
-> 		goto err_stats;
-> 	...
-> #endif
-> 	...
->
->>   err:
-> #ifdef CONFIG_PROC_FS
->> +	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
-> err_percpu:
->> +	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
-> err_stats:
->> +	remove_proc_entry("ip_vs", ipvs->net->proc_net);
-> err_vs:
-> #endif
->
->>   	free_percpu(ipvs->tot_stats.cpustats);
->>   	return -ENOMEM;
->>   }
->> -- 
-> Regards
->
-> --
-> Julian Anastasov <ja@ssi.bg>
->
-> .
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/usb/host/fotg210-hcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for your advice, I just sent v2
+diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
+index 1d94fcfac2c2..8961492a4c53 100644
+--- a/drivers/usb/host/fotg210-hcd.c
++++ b/drivers/usb/host/fotg210-hcd.c
+@@ -1951,7 +1951,7 @@ static int fotg210_mem_init(struct fotg210_hcd *fotg210, gfp_t flags)
+ 		goto fail;
+ 
+ 	/* Hardware periodic table */
+-	fotg210->periodic = (__le32 *)
++	fotg210->periodic =
+ 		dma_alloc_coherent(fotg210_to_hcd(fotg210)->self.controller,
+ 				fotg210->periodic_size * sizeof(__le32),
+ 				&fotg210->periodic_dma, 0);
+-- 
+2.17.1
 
-¡°[PATCH net v2] ipvs: fix possible memory leak in ip_vs_control_net_init¡±
-
->
