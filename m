@@ -2,113 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AE42BB085
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D66D72BB088
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:29:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730019AbgKTQ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
+        id S1730058AbgKTQ1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:27:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729462AbgKTQ1s (ORCPT
+        with ESMTP id S1729462AbgKTQ1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:27:48 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79908C0613CF;
-        Fri, 20 Nov 2020 08:27:46 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id d12so10554985wrr.13;
-        Fri, 20 Nov 2020 08:27:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jBzR8Id+7M0Czb52UJefnNNvKcaDzi1oZktzIdquhwU=;
-        b=OSUomNH10iI8X8CHGrnhpjxm5D/9PF6R3aqOYA8+rljoezLXLJNNMcLxlrYmX/He3x
-         PRZPXvHESg+3fqH3h4T+PNvVSJv+WvT5pTNXYEbuGt639w7dbfw5Z7Nzojj09WTRfx0W
-         +oWPLWjbWW914DDaorH15Z6EbSyDSOB6SEPct4KzsrhYLz3FhE0+eVsaI3T/ILL/CWVZ
-         7Kn+wWzZrlj3zlbWp66cmoUtNOsiZ2yuMXoJhDTiEva4bgXSgw9jPZSp96EO5EfWbBtq
-         pXOswbs0TmPG3BQi9ziJZYZkPEuM6MKa+HfvDxfdr4nunyWuL31Idrqat5B9u23AeQmC
-         daoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jBzR8Id+7M0Czb52UJefnNNvKcaDzi1oZktzIdquhwU=;
-        b=kdjhz3Hawt5XqXpKS5Q7eTIHZ/a+QS97Sh1SySWEgHpGRL7d8JnR2gXIDU6FpR80oB
-         m7PrWQLC6qDU1mOc2rYbmqYU7NoYwgsPO4GKIG6bXxm4il2jpCWbT3iHMktekzSbs9Uh
-         LoiozN9/GkJsVtG6yM08qaDIS/DuLDoaPMMqQ+4/qs9fIAAepDVBzwf1XcOmp51VE2rW
-         sWELGyENO31bHeXk5DsQcjfFFMJ9yr5hj9zpbAF1XZcgPB+hGshwsk7WzFdOF52i3KjJ
-         0TNZLdKm91gaRuLA+WOZNzAzgADjU4UuORTXAWQzFsCYIQi/3uCZ+stqz+FC+PqqCqra
-         Rbeg==
-X-Gm-Message-State: AOAM5319kwOblr3ddrwNIw2jRTeMuiVoJ+kfAs+Km+2apZ/XY8y5qLpF
-        AdE6tDBlWjYkJbAQTxyLS1I=
-X-Google-Smtp-Source: ABdhPJyL2aEAQVy2Ox6BqbPIexTfs9w8kV1rbhVdL3n8Uds1Kwsjl1pl2Xid/+VuxscVyuAl7xPo8g==
-X-Received: by 2002:a5d:694f:: with SMTP id r15mr16635290wrw.165.1605889665216;
-        Fri, 20 Nov 2020 08:27:45 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id h15sm5679944wrw.15.2020.11.20.08.27.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 08:27:43 -0800 (PST)
-Date:   Fri, 20 Nov 2020 17:27:42 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     krzk@kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] memory: tegra: Complete tegra210_swgroups
-Message-ID: <20201120162742.GH3870099@ulmo>
-References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
- <20201008003746.25659-6-nicoleotsuka@gmail.com>
+        Fri, 20 Nov 2020 11:27:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6CFC0613CF;
+        Fri, 20 Nov 2020 08:27:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=7Y8ty/OHid/7xfd+STeqJh1pPeiPdY+PYtVeDGND+YI=; b=lYKcOBRrKaBosabnRWTDqQaI80
+        vSJ5lUA58C3LdCBO5PzpvUyalYGL0O054d/Yd17EydymuFGFrF+CrDemCdyyQgC+uefraKdx3F8k4
+        gMmWz/Ak7wapY5BcVhAwb+CHL6BjhOEFuyHwAp1z9XjNjXsvfoIFHcXElIBbFbL+CyIOvB+NQwu/4
+        lFZ2ArmsiB67R2tv8L/7Lauku9m/OF0kuUvjAms9Dhov7sbJt2eUDcFxQ2EcwhFdO0wBxoW3uOUqL
+        jMSAlIW6EH+MzQAAqFVILzrQExxe0rwcG4NX04Y5L1Z0BdgWkQwJUyQQqblyWh4QKgOIDGvzZ9Px5
+        ErrJ2LMg==;
+Received: from [2601:1c0:6280:3f0::bcc4]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kg9GH-0007Fz-Sf; Fri, 20 Nov 2020 16:27:50 +0000
+Subject: Re: [RFC PATCH v2 00/26] Make reporting-bugs easier to grasp and yet
+ more detailed & helpful
+To:     Thorsten Leemhuis <linux@leemhuis.info>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1605203187.git.linux@leemhuis.info>
+ <20201113153313.68ff210c@lwn.net>
+ <458eb542-ff4d-e734-67fd-01e8378d4864@leemhuis.info>
+ <20201118172958.5b014a44@lwn.net>
+ <2dcea97c-7b98-1ad2-d2ba-e7f7d77dc855@leemhuis.info>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <465a1a11-726a-73f8-bf30-05fa8d902620@infradead.org>
+Date:   Fri, 20 Nov 2020 08:27:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ewQ5hdP4CtoTt3oD"
-Content-Disposition: inline
-In-Reply-To: <20201008003746.25659-6-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <2dcea97c-7b98-1ad2-d2ba-e7f7d77dc855@leemhuis.info>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/20/20 2:46 AM, Thorsten Leemhuis wrote:
+>    Any improvements for the text or other feedback is thus very much welcome. Please send it to 'Thorsten Leemhuis <linux@leemhuis.info>' and 'Jonathan Corbet <corbet@lwn.net>', ideally with 'Linux kernel mailing list (LKML) <linux-kernel@vger.kernel.org>' and the 'Linux Kernel Documentation List <linux-doc@vger.kernel.org>' in CC.
+> 
+>    Areas in the text that still need work or discussion contain a hint like this which point out the remaining issues; all of them start with the word "FIXME" to make them easy to find.
+> ```
+> 
+> Randy let me know if you want to be mentioned there, too.
 
---ewQ5hdP4CtoTt3oD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No thanks, I don't need to be mentioned.
+I'll see it (unless I can't).
 
-On Wed, Oct 07, 2020 at 05:37:46PM -0700, Nicolin Chen wrote:
-> According to Tegra X1 TRM, there are missing swgroups in the
-> tegra210_swgroups list. So this patch adds them to the list.
->=20
-> Note that the TEGRA_SWGROUP_GPU (in list) should be actually
-> TEGRA_SWGROUP_GPUB (in TRM), yet TEGRA_SWGROUP_GPU (in TRM)
-> is not being used -- only TEGRA_SWGROUP_GPUB (in TRM) is. So
-> this patch does not add TEGRA_SWGROUP_GPU (in TRM) and keeps
-> TEGRA_SWGROUP_GPU (in list) as it is.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/memory/tegra/tegra210.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+-- 
+~Randy
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---ewQ5hdP4CtoTt3oD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+37n4ACgkQ3SOs138+
-s6FWAQ//UUcNf8R4DtwB33Rrlhx9IgMOi46MAt0hJ6dnJqbH4iWK6gL3RcUDEP9W
-mzWucuL65XgDfERKWGKRAgv/F3Gxb/dyT5Kf2N/mhkLR7m41/sGENadQea6wQ4K8
-/or83hB3hZuHcJoqlPtyCdszXq8acJxUBWZR23tyFalNq4MSKkwjteVWj+dCprlK
-2sV5XVETey9gY2KLgsIamWFdhrCH1CLoPGvannn/t+47yAQyXt+JMinyUPc0aWXc
-x3U2qIEdX798yvnwzzS2lcHPMI7i+fmtbnoUjWXLX7trxL6xU+yfiZZAxnKf2Fp1
-yhffvZzOYnwxwW+DTDxOmmC92OYl8ArfvhR3Z2Z7QoNoRZ7xx0mYjH0ky9IKGT3P
-gwXqGUfkGbCECE28WKm1ryswKo3IXn/cOq1wmGJAnko5Wyk+Er2wOHdAHGf6WBKS
-U43OiO9mncq7xNqwnuUp2rL7k+q4gd/rqo8JwMJ8/R3mBPaO9OMendo/u3eNx+0y
-8S9IvQ4sgdbFEUvhJDOwg5QGkR2izoYr2YlLUmtWBHq6ZyQqyqCQDDdgQRKemUh2
-GLxhoWU1iCXGCTRWbEyd3el/xAVv3Ock7cW9orZ1F5cGa3oMKSsAxgKbas4DUeUZ
-d26nI2DVhsRtOllxn7u9qU8TLk0+djr8eebM71Q0N3IygkKNI7A=
-=PiTV
------END PGP SIGNATURE-----
-
---ewQ5hdP4CtoTt3oD--
