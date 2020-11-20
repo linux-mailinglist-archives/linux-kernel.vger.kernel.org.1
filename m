@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0782BAF9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A322BAFC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgKTQJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:09:57 -0500
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:59496 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728041AbgKTQJz (ORCPT
+        id S1728348AbgKTQN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:13:28 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:48850 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727222AbgKTQN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:09:55 -0500
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 067C01D70;
-        Fri, 20 Nov 2020 19:09:53 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1605888593;
-        bh=nuxsA96Gr7XdCPoXEZaW4gikHnYVlWDUcVx/u5zV40g=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=U8LVZ28a73BzJOKu0eEpvWOtdeg2phhSd0qrmwLznqSWyOFTWeaqpu3cg73DEMmUn
-         fJ8Bx8pO14+c5uo867znvlNtlxzRawV3eGx7VM72iD278coNtdOs7V9V0c5NtMUHwu
-         r2UWaaVZhoUdlufqIPEpyxTm4hMTBQ7bhIzqZfGE=
-Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 20 Nov 2020 19:09:52 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
-        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
-        <mark@harmstone.com>, <nborisov@suse.com>,
-        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
-        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v13 10/10] fs/ntfs3: Add MAINTAINERS
-Date:   Fri, 20 Nov 2020 19:09:44 +0300
-Message-ID: <20201120160944.1629091-11-almaz.alexandrovich@paragon-software.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201120160944.1629091-1-almaz.alexandrovich@paragon-software.com>
-References: <20201120160944.1629091-1-almaz.alexandrovich@paragon-software.com>
+        Fri, 20 Nov 2020 11:13:28 -0500
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 0AKGDATV012139;
+        Sat, 21 Nov 2020 01:13:11 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0AKGDATV012139
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1605888791;
+        bh=iU2E8WqK+GYbABrMQGSxjO38FdbIP5ezM11ClAh2md4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=y6hpSTcyZQur9J8qBkV94ABkicqMtyfdsa3J1XWe3W6CdonlBM71JzlumpvdvcVWc
+         nP1ZGAR6a4hI3246oW+2AABY0w9kNLtYwuOActCIR8ShOO/oFINgZeKRnwAv57cHl8
+         vyk5FZOEn7luPaw9GCfGE4S4Xbl9LajHU8AcTeCfx3sZre8cLjy26Fg6DKLF+KO/hw
+         4lR64aPl3AE+U4QoZsXw2XtGCE0lIEYLylO8FyIlm/WUHcRSZ4rD9g9RMCBzqzZiWj
+         Jd8KtOX0i3RRI4Hlm/pIBOV0dcZBBYDcN97rgEQQ2OhYx/uSlgkrB0t4rKr+yF1zG9
+         mRfFtf27Ttx4A==
+X-Nifty-SrcIP: [209.85.210.170]
+Received: by mail-pf1-f170.google.com with SMTP id 10so8296367pfp.5;
+        Fri, 20 Nov 2020 08:13:10 -0800 (PST)
+X-Gm-Message-State: AOAM531cJ+wP8OxOXFX1TRu7du13ftxOi6ABuVJzDuPB0hxhQyvk2p4h
+        eu9Y1dXWLfAQQ4/183bBJekyh2nl8am7Q3+OUVE=
+X-Google-Smtp-Source: ABdhPJxhmT65Kyzw9ITyap9ViNyzzNdTxYz77+nZczLuZhgcEzQaVPH3QmKIeErf3blDFui4aXgctDj1N5hln7e6TDw=
+X-Received: by 2002:a63:c00b:: with SMTP id h11mr17167737pgg.7.1605888790218;
+ Fri, 20 Nov 2020 08:13:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.30.114.105]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+References: <20201102120853.96855-1-dzagorui@cisco.com> <1604929732138.17256@cisco.com>
+ <1605704642269.72893@cisco.com>
+In-Reply-To: <1605704642269.72893@cisco.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 21 Nov 2020 01:12:33 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQuoNeMTMqCssT8iHQJOfqwt7NTLHow_4ebrxCZoi_KCg@mail.gmail.com>
+Message-ID: <CAK7LNAQuoNeMTMqCssT8iHQJOfqwt7NTLHow_4ebrxCZoi_KCg@mail.gmail.com>
+Subject: Re: [PATCH v3] kbuild: use -fmacro-prefix-map for .S sources
+To:     "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)" 
+        <dzagorui@cisco.com>
+Cc:     "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds MAINTAINERS
+On Wed, Nov 18, 2020 at 10:04 PM Denys Zagorui -X (dzagorui -
+GLOBALLOGIC INC at Cisco) <dzagorui@cisco.com> wrote:
+>
+> > ping
+>
+> Any comments on this ?
+>
+> Thanks,
+> Denys
+>
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c7f6924d34c7..2dc2437ba8ee 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12458,6 +12458,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
- F:	Documentation/filesystems/ntfs.rst
- F:	fs/ntfs/
- 
-+NTFS3 FILESYSTEM
-+M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-+S:	Supported
-+W:	http://www.paragon-software.com/
-+F:	Documentation/filesystems/ntfs3.rst
-+F:	fs/ntfs3/
-+
- NUBUS SUBSYSTEM
- M:	Finn Thain <fthain@telegraphics.com.au>
- L:	linux-m68k@lists.linux-m68k.org
--- 
-2.25.4
+Sorry for the delay. Now applied.
 
+
+
+
+I fixed the first sentence:
+
+Follow-up to a73619a845d5 ("kbuild: use -fmacro-prefix-map to make
+__FILE__ a relative path") commit.
+
+to
+
+Follow-up to commit a73619a845d5 ("kbuild: use -fmacro-prefix-map to
+make __FILE__ a relative path").
+
+
+
+
+
+
+> Assembler sources also use __FILE__
+> macro so this flag should be also apllied to that sources.
+
+I fixed "apllied" to "applied".
+
+
+
+
+Maybe, "that sources" should be "those sources".
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
