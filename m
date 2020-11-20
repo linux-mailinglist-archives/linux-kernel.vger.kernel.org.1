@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CAB2BB0FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 410092BB0FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730178AbgKTQz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:55:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729569AbgKTQz0 (ORCPT
+        id S1730195AbgKTQ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:56:11 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:55997 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1730139AbgKTQ4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:55:26 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754A4C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 08:55:26 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id f15so4064334qto.13
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 08:55:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fP9H0NfmnH39CvoMhVDgN4MIBYLW4dx4A1D7re6k5gk=;
-        b=A7nnsNFzrs19WzwXPOcfgoQ5JHYBzmxO1EAo4F5bjJ8eWLbxaMFpV+Y6jHXGPB3hUW
-         k9XxBfRkz+BbHIjQOg9kQ9ajar8VcjbCAeMjbth+mvLj3kZd2EXyfniXaV7BXdnOEJpW
-         I2PlrcjSkpA/BJJ0h8FWQOwsGTauXI+Es3npw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fP9H0NfmnH39CvoMhVDgN4MIBYLW4dx4A1D7re6k5gk=;
-        b=RPdw/Tda4b0XM/i6Yr80nCT+bdeeUnYsOT62wFEkYFtpdmPk/Jr8X9kaITn8vwEY2H
-         oJVI9O60m0BfGVOu4GpbQ1QAZunWK06umdmoalLEoXpS6WgFd4irK8/FK2tA7QybGFSI
-         DH/pnj3XXPckBeWzGv4/vA2hufWgFzIVV+O0CwjaI2TmLF8cgZeRp5QFCp7LiXobPMlm
-         cklq/6nTVQwl+UQfZ9pBAYmUTHrnvJXJcwgZPdoUpc8jPvagagqwCTlYtgMuCpA1h+Nr
-         dkb+k3q1Ic1SjwCvFV4blh/7Ce3EKI391/GbSGSd6s0n3eGs2YXMV5h1IlUTYMD2IeTR
-         +3jQ==
-X-Gm-Message-State: AOAM5329JCCJwCmqWTnRb+cvQYrOiWbI3MQHkF8BOWaSTVCaj1izqk19
-        1606ESLMOdA6MaWswoHKgnyVMw==
-X-Google-Smtp-Source: ABdhPJxmn6oVWR/xWqYDbDhHu1EsrrkLU1zUpnfYSEU62rOSprJ1z/s50Ysi8ADShK+pmdMBVlLR5g==
-X-Received: by 2002:ac8:44cf:: with SMTP id b15mr16057309qto.325.1605891323285;
-        Fri, 20 Nov 2020 08:55:23 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id v16sm2394875qka.72.2020.11.20.08.55.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 08:55:22 -0800 (PST)
-Date:   Fri, 20 Nov 2020 11:55:22 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Singh, Balbir" <bsingharora@gmail.com>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 01/32] sched: Wrap rq::lock access
-Message-ID: <20201120165522.GA1021337@google.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-2-joel@joelfernandes.org>
- <1489211d-594c-d244-0111-8bd8a27fb945@gmail.com>
+        Fri, 20 Nov 2020 11:56:10 -0500
+Received: (qmail 621944 invoked by uid 1000); 20 Nov 2020 11:56:09 -0500
+Date:   Fri, 20 Nov 2020 11:56:09 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: memory leak in hub_event
+Message-ID: <20201120165609.GE619708@rowland.harvard.edu>
+References: <00000000000014163805b48b5063@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1489211d-594c-d244-0111-8bd8a27fb945@gmail.com>
+In-Reply-To: <00000000000014163805b48b5063@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 10:31:39AM +1100, Singh, Balbir wrote:
-> On 18/11/20 10:19 am, Joel Fernandes (Google) wrote:
-> > From: Peter Zijlstra <peterz@infradead.org>
-> > 
-> > In preparation of playing games with rq->lock, abstract the thing
-> > using an accessor.
-> > 
+On Fri, Nov 20, 2020 at 07:15:20AM -0800, syzbot wrote:
+> Hello,
 > 
-> Could you clarify games? I presume the intention is to redefine the scope
-> of the lock based on whether core sched is enabled or not? I presume patch
-> 4/32 has the details.
+> syzbot found the following issue on:
+> 
+> HEAD commit:    4d02da97 Merge tag 'net-5.10-rc5' of git://git.kernel.org/..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13a7d2b6500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c5353ac514ca5a43
+> dashboard link: https://syzkaller.appspot.com/bug?extid=44e64397bd81d5e84cba
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14925089500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16810051500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
+> 
+> BUG: memory leak
+> unreferenced object 0xffff88810d5ff800 (size 2048):
+>   comm "kworker/1:0", pid 17, jiffies 4294949188 (age 14.280s)
+>   hex dump (first 32 bytes):
+>     ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
+>     00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
+>   backtrace:
+>     [<00000000f0428224>] kmalloc include/linux/slab.h:552 [inline]
+>     [<00000000f0428224>] kzalloc include/linux/slab.h:664 [inline]
+>     [<00000000f0428224>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
+>     [<000000001802b3dd>] hub_port_connect drivers/usb/core/hub.c:5128 [inline]
+>     [<000000001802b3dd>] hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
+>     [<000000001802b3dd>] port_event drivers/usb/core/hub.c:5508 [inline]
+>     [<000000001802b3dd>] hub_event+0x118d/0x20d0 drivers/usb/core/hub.c:5590
+>     [<0000000092d3650d>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+>     [<00000000d4629ab0>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+>     [<000000003c358b45>] kthread+0x178/0x1b0 kernel/kthread.c:292
+>     [<000000003689dbb0>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-Your line wrapping broke, I fixed it.
+This looks like a reference is being taken but not released.  Hard to 
+tell where it's happening, though.  Let's try to narrow it down.
 
-That is in fact the game. By wrapping it, the nature of the locking is
-dynamic based on whether core sched is enabled or not (both statically and
-dynamically).
+Alan Stern
 
-thanks,
+#syz test: upstream 4d02da97
 
- - Joel
-
+Index: usb-devel/drivers/media/usb/gspca/gspca.c
+===================================================================
+--- usb-devel.orig/drivers/media/usb/gspca/gspca.c
++++ usb-devel/drivers/media/usb/gspca/gspca.c
+@@ -1489,6 +1489,8 @@ int gspca_dev_probe2(struct usb_interfac
+ 	}
  
-> Balbir Singh
+ 	gspca_dev->v4l2_dev.release = gspca_release;
++	ret = -EIO;
++	goto out;
+ 	ret = v4l2_device_register(&intf->dev, &gspca_dev->v4l2_dev);
+ 	if (ret)
+ 		goto out;
