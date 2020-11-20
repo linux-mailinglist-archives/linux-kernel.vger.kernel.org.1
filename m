@@ -2,173 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAD72BA2E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE872BA2E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbgKTHRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:17:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgKTHRO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:17:14 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01323C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 23:17:14 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id v11so6421359qtq.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 23:17:13 -0800 (PST)
+        id S1726381AbgKTHR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 02:17:26 -0500
+Received: from mail-eopbgr150083.outbound.protection.outlook.com ([40.107.15.83]:19824
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725768AbgKTHRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 02:17:25 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gBwfYk7gM7bcvusBS9wU+q96TIxtxPI9k7SfFnTm8x6C0XHh54ExWCLcNXNF8wYZ2dHZBzpdpJFZOu5hgjcGIGEf7932XBtiKTUoENmmh0MX0DE2cQxtfkPDQjxFhNFOx78E548UUW56lnUyRYaQtt8DAheJDrtb6y77P1SNR+Jy7xz1VBwYv2dJ1KH2tuNy12OfqmGZYh/X1CU8vBZ6glX/0PP09O1o17ZduoID9T/caqm4vKDdW7H5krF2HcpuCzAtcMaJrEnwlaYXJFgsq6MXV+DEbSmEbAoOWh7suBw6cKuXHr3KmcK/y7UILX6dbE625tqv24QmAUeVu7rMRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=swfXi/ncLH6KAZX3yUbIUlXlZSOVZ2hVNIk7iNXXC5s=;
+ b=erVSpU3yVTqIAoF+DezeKVqL2OEES1KUgLSxPruVXzpXJWPhEeEN1QsO6lLAlE+WAWjJ8VdKWt8SNJBB/le/LI9irA+mpmXs3V8k01Opg5C+6i6efy9Jx1aq6Tl8DJ+tIQkvjrwbyfAAznMvfd4+KtLGhcHbArileY8rCEU+qxK6aWG2QCwAtuiDnSZfx98GUcNWHMCsThNXuTz3YJs5zkjrHklHIkcqwSUoYjz4RJJ7i/Rs6ssFQEKfGdCeDknyTLsxISPLwPYlvy8K5R8xN9LSdVAIsYsE4MxmVaTtxvQ6c8+7tEgXED6Mb6UFjPU97zagFE0Rzm/ljFI9Y4n5OA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
+ dkim=pass header.d=siemens.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Sh8xmbzzMkthaM4PoDLTGz1bJq0JyTvV/ga+xaNOrmI=;
-        b=bR0hdO+hsOd8AUYZWe4rqe0t+8dVsRt+T4yQEkOEvVEXBjkbl5odWxMUtdNYnC+drO
-         V08kxpT4/IJO6UOYS/e/PPNbS77BTgDAoQXJumg6181V7SIItcljacwtAT56IkCFev0t
-         gDXcbmFCQDif7Wp7Uhi73kuOsIgj2H7/BnPmA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Sh8xmbzzMkthaM4PoDLTGz1bJq0JyTvV/ga+xaNOrmI=;
-        b=P8GGT5y6B8fryQKMWnB0PzAW7yCWC9001tQu1doapwGPl0z7qfwmhD8Fvr8xflyo19
-         Yd91G7b8i/jHpe15iy1sqX6J/07CDAH/+4CjlxfvJMMJL5+uTJtHMvwRfmpXPZ6sUnOB
-         Vwqb/uwuHbFSFlj6oelsK3OJtSNI2GvbMSNmD5uxy6wV19B1A+pfK5ofWKDGgVGWiCuO
-         A32xFq+uf+tr6g+BonuSXC/5AtCPbrb/J4ku8oYObKZHvR89d4ZQm2Zfz+3bZJf2Oj1m
-         Dylm8iGG5eRsz1nuMordso0sBnndmcd4SsXH9bTngkJnhY0kONRGz1cTl7gajJX/7OqU
-         GT3A==
-X-Gm-Message-State: AOAM531dnkeleYDQPLRsyLoMIUeqvg1eW+DPCxiSBnTpbNNHEJB4GFyY
-        E+3drC+Hg8Cnx8Mxfjtw2vZSfZkJUvAhLxR1DPqv3w==
-X-Google-Smtp-Source: ABdhPJx/eC9KnP7s2NwSVaEcdk04k18m7EKL83AP6lLCbA027oPQLUgOEbP/71EKYM87y4byuAR+jMUKOJmcTDbufBk=
-X-Received: by 2002:ac8:74c9:: with SMTP id j9mr14398512qtr.208.1605856632944;
- Thu, 19 Nov 2020 23:17:12 -0800 (PST)
+ d=siemens.onmicrosoft.com; s=selector1-siemens-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=swfXi/ncLH6KAZX3yUbIUlXlZSOVZ2hVNIk7iNXXC5s=;
+ b=RrCoOM9cCraE/6pD5m7MPpj3jgwSf6qNW1evqgzHYscK73c0tHiFdavyMQfOFWyeAUzgNZFmnwp2fsjI3LpEaFUZJAXLtlf08cQ5kxony4dqzw2aSd48/jrRHXsYVpGHor3tH+xmbBKSPDBXqUPJDrCsSIZdDQO5nJyTofZSPcc=
+Received: from AM0PR10MB3971.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:144::20)
+ by AM9PR10MB4182.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1cc::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Fri, 20 Nov
+ 2020 07:17:20 +0000
+Received: from AM0PR10MB3971.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::c806:d3c3:3a93:ac47]) by AM0PR10MB3971.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::c806:d3c3:3a93:ac47%4]) with mapi id 15.20.3564.028; Fri, 20 Nov 2020
+ 07:17:20 +0000
+From:   "Valek, Andrej" <andrej.valek@siemens.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+CC:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>
+Subject: RE: [PATCH v2] Input: st1232 - add support resolution reading
+Thread-Topic: [PATCH v2] Input: st1232 - add support resolution reading
+Thread-Index: AQHWuJausQ675DfOyEKCxRf7capNnKnEJVGAgAyDAQA=
+Date:   Fri, 20 Nov 2020 07:17:20 +0000
+Message-ID: <AM0PR10MB3971222411966A87E29A9F5C92FF0@AM0PR10MB3971.EURPRD10.PROD.OUTLOOK.COM>
+References: <202011030200.dKK6cKCM-lkp@intel.com>
+ <20201103073949.12198-1-andrej.valek@siemens.com>
+ <20201112015348.GD1003057@dtor-ws>
+ <DB8PR10MB3977BDD73A260EE7999DD76892E70@DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <DB8PR10MB3977BDD73A260EE7999DD76892E70@DB8PR10MB3977.EURPRD10.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Enabled=true;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_SetDate=2020-11-20T07:17:17Z;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Method=Standard;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Name=restricted-default;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_SiteId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_ActionId=8687f37a-1984-451f-bf2b-f32752f66bf7;
+ MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_ContentBits=0
+document_confidentiality: Restricted
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=siemens.com;
+x-originating-ip: [165.225.200.172]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c9c5438f-5f57-4cad-5edb-08d88d2451bb
+x-ms-traffictypediagnostic: AM9PR10MB4182:
+x-microsoft-antispam-prvs: <AM9PR10MB4182315E788D7E29384DFCD892FF0@AM9PR10MB4182.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Aj7BcEoco1zzX1D2R3TITY/RCDpJj20CWd626/U8syv84PQOxCLOpqEhhH/p3Hd1bgRglt0Y3CkaT87rayO7lt+gNAWX3HBmt3k3UHHKjDrHrRzW0GkZWS6Ujx23H5Cb5r80HIN7rbEG3Jo98e5UQt0DB+0Kc+2eE3YvX5/tcdhTecuosDSJJtJCOsFx4k31oVG3bJFf6hwtkOVJ38Cx+uAWSHTBqsl8SJw8xmoWHT+W1/iV0p/LnBM9luGQTykqYWATi9iPtB26TBqD78PCtK6DhYuFFkVioDSkFwBdX47YitlkF6ljFMgR+OHK5ECgfjYhBK1CZEfNqpdErHHm/w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB3971.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(376002)(39860400002)(366004)(76116006)(6916009)(55236004)(53546011)(83380400001)(7696005)(6506007)(64756008)(54906003)(8936002)(8676002)(478600001)(2906002)(66446008)(71200400001)(66556008)(26005)(52536014)(86362001)(33656002)(186003)(5660300002)(66476007)(66946007)(9686003)(316002)(4326008)(55016002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: o4ydcNpyHOu7so55W87F8dVk3NLKA1Th73jRL1/JOlSNY70jeGzk3JV1x9nyPjCdb9+lgZ1de1wS98esY2na496QppcEeEitfnJOn4Gud/4oQzHHCaXTiM3xpSa5HUhaTMFXy1ztnvAugwhrI5ljJuhNu3F3sP0bf5nEU5N7tNaktvFDfPt4Nv0Fheis4HwtyLNhdCjVoa0Rj0/xElu7BQoNj0dH+6QRzuyRe9PsnG+dEvOducQXaCv/62i4B/pikJjc1PiYXZuxGUGKjb97TynxxN5mzx56cg0SMgPHuygbICr7iLLitzuBntf/rSmj27xOUG0diGJfCgz8fw3C45Y6hdxgpZMGCQs+4cJHDjd1WJcPnp3x8B6nuCbN8ZDgkmL7n6Quz0WFI8k4lUWrIu8vRqRUZsTxRLzZGtk3SMgdBSWOEqcCXeFtROG+5bCor4EhcVl8RcPGPF88DsGGhCQyMvnho4vb8SZhp0SIPMoXOxVLwbzn+lQUePxk7zdUJGmQO524zygl2VW89SeQr57mBvmZ2YVmGKaCIRxEoLPy9O+YtZVg+JQ5Ivslajg5Vk7PpxnwnOK0Gg1X2etmRh9MPRqrfUg8vhRdsZVjmzGrlSL4EExJPGqj17jl3++WzvthQptGEqVF/c9D9/aETg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <1605792621-6268-1-git-send-email-zhangchangzhong@huawei.com>
- <CAKOOJTyJ_R6cTij0uZweOm2aFCDg+AG3qGcOSb=wsOSQKzL60g@mail.gmail.com> <20201119215309.0f9c4b82@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201119215309.0f9c4b82@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Thu, 19 Nov 2020 23:17:01 -0800
-Message-ID: <CACKFLimkjTmZZe4Wpy0YERit=nVa6tPkUQ9L5Pwx4gYg-=Qc7w@mail.gmail.com>
-Subject: Re: [PATCH net] bnxt_en: fix error return code in bnxt_init_board()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Edwin Peer <edwin.peer@broadcom.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Prashant Sreedharan <prashant@broadcom.com>,
-        Jeffrey Huang <huangjw@broadcom.com>,
-        Eddie Wai <eddie.wai@broadcom.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000003283b505b484a2d6"
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB3971.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9c5438f-5f57-4cad-5edb-08d88d2451bb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2020 07:17:20.2050
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X28OLDxmo/XsJP38xmW5xDUFq0gr6i0QJONORgwUw+bLj448wG2RJ8F74b0cDsfQM3w3o6hsFi9D4ohC2WFxboA/p4AgcuHTO+kPUu+rolo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4182
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000003283b505b484a2d6
-Content-Type: text/plain; charset="UTF-8"
+Hello again Dimitry,
 
-On Thu, Nov 19, 2020 at 9:53 PM Jakub Kicinski <kuba@kernel.org> wrote:
+I haven't received any response yet, so I will ask again.
+
+I would like to know, the current status about my other patches for goodix =
+and atmel input.
+Are there any problems, or what I have to do, to be applied?
+
+Thanks,
+Andrej
+
+> Hello Dimitry,
+>=20
+> Thank you for that.
+> What about the other patches?
 >
-> On Thu, 19 Nov 2020 10:53:23 -0800 Edwin Peer wrote:
-> > > Fix to return a negative error code from the error handling
-> > > case instead of 0, as done elsewhere in this function.
-> > >
-> > > Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
-> > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> Regards,
+> Andrej
 >
-> > >         if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) != 0 &&
-> > >             dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) != 0) {
-> > >                 dev_err(&pdev->dev, "System does not support DMA, aborting\n");
-> > > +               rc = -EIO;
-> > >                 goto init_err_disable;
->
-> Edwin, please double check if this shouldn't jump to
-> pci_release_regions() (or maybe it's harmless 'cause
-> PCI likes to magically release things on its own).
-
-Good point.  We definitely should call pci_release_regions() for correctness.
-
-I will send out the patch shortly.  Thanks.
-
---0000000000003283b505b484a2d6
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-ENt96uQJNu/QKZCsRxnu8bu9XkzIQTTFs7+NKghvf+h9ck5SSEvV5vlzS8HDlhKReyLBOxx5AgMB
-AAGjggHQMIIBzDAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
-hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
-ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
-c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
-aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
-PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
-My5jcmwwJAYDVR0RBB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUyZbpLEwR
-KZHEh+rXp6GbCZmMEwUwDQYJKoZIhvcNAQELBQADggEBADZsABrJEwqeVLJJcX+rKN/oFPl/Sb1f
-4NQRqf0J5IHlqI7oSUUaSVHviPvq4QyTMh7P9KHkuTwANTnTPr4f4y1SirdtxgZKy1xDmt1KjL5u
-nA4rBLSA+Kp/mo0DMxKKQY/LsZNS3Zn+HIAZpXTUEFotC5qgN35ua7sP0hTynKzfLG8Fi565tQkX
-Si7Gzq+VM1jcLa3+kjHalTIlC7q7gkvVhgEwmztW1SuO7pJn0/GOncxYGQXEk3PIH3QbPNO8VMkx
-3YeEtbaXosR5XLWchobv9S5HB9h4t0TUbZh2kX0HlGzgFLCPif27aL7ZpahFcoCS928kT+/V4tAj
-BB+IwnkxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMC
-DF5npqHWO504Sj4Q1TANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgxxIFE55jo398
-uO8oTDVEC9icVroqXn6P8oIALWaC6IQwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG
-9w0BCQUxDxcNMjAxMTIwMDcxNzEzWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglg
-hkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0B
-AQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAAEj+RDzZkJa75XuqsEFIILhx2BWhcuv
-C7Vp+pOmiHH3TRkF1Ll1dXxEX9djxyvKTQdFZHr3NnInOe9UuS+DRwdWJanN+qIEMsGvRpgJUuLt
-NbIpMA/3YE/xqng7HeTKyGTXW9t3+oA/W/OUkpDeR/3+WH67LoAdQmDaEKB3vQmgdwYSiHCpii29
-zHsquRSMViCE3a77h6olxXyXjF/FHJjpq4+QpYoeaIUDStln/yBVsKg7Z5U7GjMv3iLw1z01dpBQ
-o0LDqF7Rwo7g7dq12G2uW8W3AkNzBHG61uGdJVy/4Z5+qFJPqMyUsUIzl39PRovydfMnD2MFWxDg
-4+PrzQs=
---0000000000003283b505b484a2d6--
+>> -----Original Message-----
+>> From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+>> Sent: Thursday, November 12, 2020 2:54 AM>
+>> To: Valek, Andrej (ADV D EU SK SI-BP1) <andrej.valek@siemens.com>
+>> Cc: linux-input@vger.kernel.org; linux-kernel@vger.kernel.org;=20
+>> kbuild-all@lists.01.org
+>> Subject: Re: [PATCH v2] Input: st1232 - add support resolution reading
+>>=20
+>> On Tue, Nov 03, 2020 at 08:39:49AM +0100, Andrej Valek wrote:
+>>> Hard-coding resolution for st1633 device was wrong. Some of LCDs like=20
+>>> YTS700TLBC-02-100C has assembled Sitronix st1633 touchcontroller too.
+>>> But the resolution is not 320x480 as was hard-coded.
+>>> Add new function which reads correct resolution directly from register.
+>>>=20
+>>> Signed-off-by: Andrej Valek <andrej.valek@siemens.com>
+>>
+>> Applied, thank you.
+>>
+> --
+>> Dmitry
