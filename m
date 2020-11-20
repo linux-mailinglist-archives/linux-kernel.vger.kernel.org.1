@@ -2,101 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2930E2BA445
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD222BA44C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgKTIF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:05:27 -0500
-Received: from mga17.intel.com ([192.55.52.151]:2079 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726567AbgKTIF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:05:26 -0500
-IronPort-SDR: ZsxY5ISn67CybMpPmNk8nbNFe+f1bC8qzAcJMjiirgxoq7JVNhGs8F6zsIDIE7IK3NJSj6Vil8
- g7c7NBl/vyaw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="151281798"
-X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
-   d="scan'208";a="151281798"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 00:05:20 -0800
-IronPort-SDR: jA6jC7mvEXMDRVXWA7dkEP+5iTF7xiZoEJ0f2tq7GNfuYsasYtyui4ugVYffAFxuifEc+/8N/H
- g+zRUMJVygTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
-   d="scan'208";a="431499744"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 20 Nov 2020 00:05:16 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 20 Nov 2020 10:05:14 +0200
-Date:   Fri, 20 Nov 2020 10:05:14 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        pmalani@chromium.org, enric.balletbo@collabora.com,
-        rajmohan.mani@intel.com, azhar.shaikh@intel.com
-Subject: Re: [PATCH v3 1/4] usb: typec: Use Thunderbolt 3 cable discover mode
- VDO in Enter_USB message
-Message-ID: <20201120080514.GC4120550@kuha.fi.intel.com>
-References: <20201119063211.2264-1-utkarsh.h.patel@intel.com>
- <20201119063211.2264-2-utkarsh.h.patel@intel.com>
+        id S1727037AbgKTIHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:07:11 -0500
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:39201 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726558AbgKTIHL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:07:11 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id g1RVk0X9Olmd2g1RYkPQEf; Fri, 20 Nov 2020 09:07:07 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1605859628; bh=5ef7lI42EJC0jhODZv8aRbqRC0kxVqZ7bUU3H8kTkJ0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=sCz/nqjJKBqA3Iy+hXRhoPwJZL4RSnoEtFxis6hkV75LW75H+8Mmf4xAFrJVrm+pe
+         8hj9fY43X0dqeh5hcaBFUdzWOJyUGVN+kLdzF+HYD2GMKZ191HzrbBTSABtTsVzA60
+         CvFYS7ezfnr1FTaFjba06AEAIGK1cPKBvJnU0bV//E1AUEPH/j9aY3U67vZ93V4hF3
+         6I2h2Od2vKJaEqVVhdF9KG8FIUuOZ8CG53hsXtNKL1Ch1fABIwEX5ve+bjxpFXGSyB
+         aulCIunjrg9nl2+Y0ytv3CWHuxLF8HC5EnBBERF6rxbWpTScSnwiEMYNWkAwQXYMxf
+         cBr7jUjdLWeiw==
+Subject: Re: [PATCH v6 09/17] media/videbuf1|2: Mark follow_pfn usage as
+ unsafe
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        Tomasz Figa <tfiga@chromium.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>
+References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
+ <20201119144146.1045202-10-daniel.vetter@ffwll.ch>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <f1f3a1d8-d62a-6e93-afc1-87a8e51081e9@xs4all.nl>
+Date:   Fri, 20 Nov 2020 09:06:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119063211.2264-2-utkarsh.h.patel@intel.com>
+In-Reply-To: <20201119144146.1045202-10-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfFkC2JJwDijdDHxk6QLdzYl86sxkzUvUR2rXQtLzS7Z3VCur8Sec0yc9/yj+teseucfM5Id3FSotdLzmsmr0WrYFYFXWblZvd586PxVzp7yalD+lMMTn
+ /GP83mNKzjc5heCNLfvA46owaFZXBn0xPi+CrgcCTXCH+zCXDT/AugYk6WH31S/1fbilR/Bbn3VeP/VhTIjFK4ZkC7eOo9LJEqJWAP4kRBAdILmunjJmxXCT
+ T9pw+MuwA6aQValWt8fR+2+Lohjgd26Kp3nsob/wGjkR2luEcNWBtmlzFVNrH+o+PP5aQAr4PDD+Z3dwOYMFNf76JTi6TFmlFZu78KxaX22EGz/bSPQghfFt
+ yr7PTAmX010Y9mMvI/xJ8+OsZxM4+7H5b5EdPvoogEg/pCMQmvIqXLrivqredG5EOF57yPgwvUWyST9kqoBQZ0Y5vkkhX1LEjhptReds6BhrXH1RbB7N/mgZ
+ ZNy1MjlvK64zXtOJ8uXaMBuHmzQtKNk3YzD5aJoakoowrkbNlF3olnS6jqrDz84rGP635GzH4xQ2JVz/bYDGw6/RyYu6BwKwqJsYho1oIn5pWJtwG6eL4Sys
+ WJAb+ARL9Ka4wQ5SjbYr73z0jlMszhtNG0g91E+gV/ngoX+TfzOw3D4uv9zhis07qCCrZd9mZ+HYWRB2t95Ix5qwHZnN7P6GbcP06CUCv3W3u8KpUPI+dEI0
+ b7vGOZDkWvFsE1dmLjD9sCa6x/ZGIgVOw626FWzt8bTHFsqPP2Z98RzxcN50nCJkPPI4P7rtQrMlsZmhmzigHBYPfh6cR7KNLyviHXr0Ek3rvsLoxjZOhR9P
+ ZAaqSLxwNMHu8kbI+D4pvREzqEx2gbSD1KX/g26bCR0cSsz8hqf0mItBK2Ua6ADVuO/ZaLWD+DrKIUrbYZn3vfZdKI8Mrv3xJUieHzHB/b6gDHFWvMdfKJii
+ mpsBubC9N+hw7++PiHs0zH7FLmEY2rO4oZf0kE/dqwF7EyrF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 10:32:08PM -0800, Utkarsh Patel wrote:
-> When Thunderbolt 3 cable is being used to create USB4 connection, use
-> Thunderbolt 3 discover mode VDO to fill details such as active cable plug
-> link training and cable rounded support.
-> With USB4 cables, these VDO members need not be filled.
+On 19/11/2020 15:41, Daniel Vetter wrote:
+> The media model assumes that buffers are all preallocated, so that
+> when a media pipeline is running we never miss a deadline because the
+> buffers aren't allocated or available.
 > 
-> Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+> This means we cannot fix the v4l follow_pfn usage through
+> mmu_notifier, without breaking how this all works. The only real fix
+> is to deprecate userptr support for VM_IO | VM_PFNMAP mappings and
+> tell everyone to cut over to dma-buf memory sharing for zerocopy.
 > 
+> userptr for normal memory will keep working as-is, this only affects
+> the zerocopy userptr usage enabled in 50ac952d2263 ("[media]
+> videobuf2-dma-sg: Support io userptr operations on io memory").
+> 
+> Acked-by: Tomasz Figa <tfiga@chromium.org>
+
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+
+Thanks!
+
+	Hans
+
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Jérôme Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Pawel Osciak <pawel@osciak.com>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Cc: Tomasz Figa <tfiga@chromium.org>
+> Cc: Laurent Dufour <ldufour@linux.ibm.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Cc: Michel Lespinasse <walken@google.com>
+> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 > --
-> Changes in v3:
-> - Changed the commit mesage to reflect why TBT3 VDO is being used.
-> - Added more details in the header file about the usage of TBT3 VDO.
-> 
-> Changes in v2:
-> - No change.
-> --
+> v3:
+> - Reference the commit that enabled the zerocopy userptr use case to
+>   make it abundandtly clear that this patch only affects that, and not
+>   normal memory userptr. The old commit message already explained that
+>   normal memory userptr is unaffected, but I guess that was not clear
+>   enough.
 > ---
->  include/linux/usb/typec.h | 5 +++++
->  1 file changed, 5 insertions(+)
+>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
+>  drivers/media/v4l2-core/videobuf-dma-contig.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-> index 6be558045942..25731ed863fa 100644
-> --- a/include/linux/usb/typec.h
-> +++ b/include/linux/usb/typec.h
-> @@ -75,6 +75,10 @@ enum typec_orientation {
->  /*
->   * struct enter_usb_data - Enter_USB Message details
->   * @eudo: Enter_USB Data Object
-> + * @tbt_cable_vdo: TBT3 Cable Discover Mode Response
+> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
+> index a0e65481a201..1a82ec13ea00 100644
+> --- a/drivers/media/common/videobuf2/frame_vector.c
+> +++ b/drivers/media/common/videobuf2/frame_vector.c
+> @@ -70,7 +70,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+>  			break;
+>  
+>  		while (ret < nr_frames && start + PAGE_SIZE <= vma->vm_end) {
+> -			err = follow_pfn(vma, start, &nums[ret]);
+> +			err = unsafe_follow_pfn(vma, start, &nums[ret]);
+>  			if (err) {
+>  				if (ret == 0)
+>  					ret = err;
+> diff --git a/drivers/media/v4l2-core/videobuf-dma-contig.c b/drivers/media/v4l2-core/videobuf-dma-contig.c
+> index 52312ce2ba05..821c4a76ab96 100644
+> --- a/drivers/media/v4l2-core/videobuf-dma-contig.c
+> +++ b/drivers/media/v4l2-core/videobuf-dma-contig.c
+> @@ -183,7 +183,7 @@ static int videobuf_dma_contig_user_get(struct videobuf_dma_contig_memory *mem,
+>  	user_address = untagged_baddr;
+>  
+>  	while (pages_done < (mem->size >> PAGE_SHIFT)) {
+> -		ret = follow_pfn(vma, user_address, &this_pfn);
+> +		ret = unsafe_follow_pfn(vma, user_address, &this_pfn);
+>  		if (ret)
+>  			break;
+>  
+> 
 
-This is fine..
-
-> + * @tbt_cable_vdo needs to be filled with details of active cable plug link
-> + * training and cable rounded support when thunderbolt 3 cable is being used to
-> + * create USB4 connection. Do not fill this in case of USB4 cable.
-
-But this is not. The description of the member tells what the member
-contains, but it does not make sense to explain also how to use the
-member in the same place. Instead you should explain how to use the
-member in the description of the structure. So..
-
->   * @active_link_training: Active Cable Plug Link Training
->   *
->   * @active_link_training is a flag that should be set with uni-directional SBRX
-
-Put it here. That will make this much more readable.
-
-
-thanks,
-
--- 
-heikki
