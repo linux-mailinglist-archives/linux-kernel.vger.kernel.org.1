@@ -2,229 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184F72BA8C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A005B2BA8C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgKTLLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:11:53 -0500
-Received: from smtp.asem.it ([151.1.184.197]:56351 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728743AbgKTLLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:11:46 -0500
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000621209.MSG 
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:11:37 +0100
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 20
- Nov 2020 12:11:35 +0100
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Fri, 20 Nov 2020 12:11:34 +0100
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-CC:     <linux-acpi@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH v2] docs: ACPI: enumeration: add PCI hierarchy representation
-Date:   Fri, 20 Nov 2020 12:11:25 +0100
-Message-ID: <20201120111125.78296-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.25.1
+        id S1728759AbgKTLLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:11:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728673AbgKTLLl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:11:41 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C50C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 03:11:37 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id m6so9602852wrg.7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 03:11:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=singlestore.com; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=T1sCuFGPmJIrg834QtNFcm2Npw1oR1DJJdJcFrQ+l0g=;
+        b=R2BhDoX89FdlX37JS34vaDuKzSy7y4LuSpfIWI5CMbea5/TkwZ3hR8BCNDWUeEyNC0
+         Xvt8r6pmsE1k5uDRi6ow3EGofasGZXICHcRlZZMW4oZpcN7rZPQx9x9U5WcKgaS5imtm
+         tYs8uaW33GTBabNg+b6cUdTk9xuuPyfDGjBnP6wNpVItwgBPEdT4FupwHwZYdt1TDYRE
+         AIUSTOLIPk0H9PQ3SvVcj0Y7vZdY0GsHYQHuYMMZjFAD0EqmlIXem9ZJ4uiphqQEuuAs
+         J0z77o8HYniq3ofuFOYrqyCduljRIVE9bpOlqpfA9qDLEauZwDKfXfogtD8/shuHuGQC
+         8MIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=T1sCuFGPmJIrg834QtNFcm2Npw1oR1DJJdJcFrQ+l0g=;
+        b=siWMmaSxRncaONDL1zCwdpUSAfze3Rq0hpaIoZL30NX233tgflNAe70j862QAb8BdS
+         GvrhRsAYJ0mZcWYxyHiv/cxbe/f469iFdUU9xgx/CYP9EXQpE3b6j9xPLrUSk1x0ZXa4
+         Ob9GK/b+CfNllq48KRTZDiDRC6HmgY7Qh6aAPj2jtyJp6rSLPhAdtHhXBcD2aUILWnpv
+         1PkbwhXCQiSFd4DzR86Ykjs6JYOL+AbSE6hg45U15rT9PVgvYQuU4c3PZHhILba3t2te
+         kyVNXQ/hjzqPmTQANNh9Y8qyDvUfV89V9PuWyUPMJxY3i2f6uraaaqFQtaEh5/qOhqsk
+         YtuA==
+X-Gm-Message-State: AOAM530CI+ZT164Rr8/uXuM44QHKUWr9Iz7PhoC8FphjKHVybZcmIgen
+        V43ZPXUAfsNih6FDMDq5YzEq1A==
+X-Google-Smtp-Source: ABdhPJwITvz+cRtdRfJeFeArCpD4QthqMZBCRYtbHLt8u4G320KrWVcneR22wVqYRr4xOj/60unhWQ==
+X-Received: by 2002:a5d:474f:: with SMTP id o15mr14770627wrs.377.1605870696220;
+        Fri, 20 Nov 2020 03:11:36 -0800 (PST)
+Received: from rdias-suse-pc.lan (bl13-26-148.dsl.telepac.pt. [85.246.26.148])
+        by smtp.gmail.com with ESMTPSA id c62sm3755975wme.22.2020.11.20.03.11.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 03:11:35 -0800 (PST)
+Date:   Fri, 20 Nov 2020 11:11:33 +0000
+From:   Ricardo Dias <rdias@singlestore.com>
+To:     davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, edumazet@google.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8] tcp: fix race condition when creating child sockets from
+ syncookies
+Message-ID: <20201120111133.GA67501@rdias-suse-pc.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A090204.5FB7A467.005D,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For "fixed" PCI devices, such as chips directly soldered
-on the main board (ethernet, Wi-Fi, serial ports, etc.),
-it is possible to find an ACPI enumeration.
+When the TCP stack is in SYN flood mode, the server child socket is
+created from the SYN cookie received in a TCP packet with the ACK flag
+set.
 
-This allows to add useful properties to these devices.
-Just for an example: the property "gpio-line-names" can be
-added to the pins of a GPIO expander on the PCI bus.
+The child socket is created when the server receives the first TCP
+packet with a valid SYN cookie from the client. Usually, this packet
+corresponds to the final step of the TCP 3-way handshake, the ACK
+packet. But is also possible to receive a valid SYN cookie from the
+first TCP data packet sent by the client, and thus create a child socket
+from that SYN cookie.
 
-In order to find the ACPI name of a PCI device, it's necessary
-to disassemble the BIOS ACPI tables (in particular the DSDT)
-and also to analyze the PCI bus topology of the board.
+Since a client socket is ready to send data as soon as it receives the
+SYN+ACK packet from the server, the client can send the ACK packet (sent
+by the TCP stack code), and the first data packet (sent by the userspace
+program) almost at the same time, and thus the server will equally
+receive the two TCP packets with valid SYN cookies almost at the same
+instant.
 
-This patch, with a practical example, show how to do this.
+When such event happens, the TCP stack code has a race condition that
+occurs between the momement a lookup is done to the established
+connections hashtable to check for the existence of a connection for the
+same client, and the moment that the child socket is added to the
+established connections hashtable. As a consequence, this race condition
+can lead to a situation where we add two child sockets to the
+established connections hashtable and deliver two sockets to the
+userspace program to the same client.
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+This patch fixes the race condition by checking if an existing child
+socket exists for the same client when we are adding the second child
+socket to the established connections socket. If an existing child
+socket exists, we drop the packet and discard the second child socket
+to the same client.
+
+Signed-off-by: Ricardo Dias <rdias@singlestore.com>
 ---
- .../firmware-guide/acpi/enumeration.rst       | 154 ++++++++++++++++++
- 1 file changed, 154 insertions(+)
+v8 (2020-11-20):
+  * Implemented the approach suggested by Eric where we drop the packet
+    in case we found an already existing socket for the same connection.
+  * Updated the commit message to match the new approach.
 
-diff --git a/Documentation/firmware-guide/acpi/enumeration.rst b/Documentation/firmware-guide/acpi/enumeration.rst
-index c13fee8b02ba..9f0d5c854fa4 100644
---- a/Documentation/firmware-guide/acpi/enumeration.rst
-+++ b/Documentation/firmware-guide/acpi/enumeration.rst
-@@ -461,3 +461,157 @@ Otherwise, the _DSD itself is regarded as invalid and therefore the "compatible"
- property returned by it is meaningless.
+v7 (2020-11-19):
+  * Changed the approach to re-use the first (existing) socket created
+    from thge syncookie. Instead of returning the existing socket in
+    tcp_(v4|v6)_syn_recv_sock and continue the protocol state machine
+    execution, tcp_(v4|v6)_syn_recv_sock signals that already exists a
+    socket, and tells tcp_(v4|v6)_rcv to lookup the socket again in the
+    established connections table.
+    This new approach fixes the errors reported by Eric for the previous
+    version of the patch.
+  * Also fixes the memory leaks by making sure that the newly created
+    socket in syn_recv_sock is destroyed in case an already existing
+    socket exists.
+
+v6 (2020-11-17):
+  * Moved the ehash bucket list search for its own helper function.
+
+v5 (2020-11-16):
+ - Not considered for review -
  
- Refer to :doc:`DSD-properties-rules` for more information.
+v4 (2020-11-12):
+  * Added `struct sock **esk) parameter to `inet_ehash_insert`.
+  * Fixed ref count increment in `inet_ehash_insert`.
+  * Fixed callers of inet_ehash_nolisten.
+
+v3 (2020-11-11):
+  * Fixed IPv6 handling in inet_ehash_insert
+  * Removed unecessary comparison while traversing the ehash bucket
+    list.
+ 
+v2 (2020-11-09):
+  * Changed the author's email domain.
+  * Removed the helper function inet_ehash_insert_chk_dup and moved the
+    logic to the existing inet_ehash_insert.
+  * Updated the callers of iner_ehash_nolisten to deal with the new
+    logic.
+
+ include/net/inet_hashtables.h   |  5 ++-
+ net/dccp/ipv4.c                 |  2 +-
+ net/dccp/ipv6.c                 |  2 +-
+ net/ipv4/inet_connection_sock.c |  2 +-
+ net/ipv4/inet_hashtables.c      | 68 +++++++++++++++++++++++++++++----
+ net/ipv4/tcp_ipv4.c             | 15 +++++++-
+ net/ipv6/tcp_ipv6.c             | 13 ++++++-
+ 7 files changed, 91 insertions(+), 16 deletions(-)
+
+diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
+index 92560974ea67..ca6a3ea9057e 100644
+--- a/include/net/inet_hashtables.h
++++ b/include/net/inet_hashtables.h
+@@ -247,8 +247,9 @@ void inet_hashinfo2_init(struct inet_hashinfo *h, const char *name,
+ 			 unsigned long high_limit);
+ int inet_hashinfo2_init_mod(struct inet_hashinfo *h);
+ 
+-bool inet_ehash_insert(struct sock *sk, struct sock *osk);
+-bool inet_ehash_nolisten(struct sock *sk, struct sock *osk);
++bool inet_ehash_insert(struct sock *sk, struct sock *osk, bool *found_dup_sk);
++bool inet_ehash_nolisten(struct sock *sk, struct sock *osk,
++			 bool *found_dup_sk);
+ int __inet_hash(struct sock *sk, struct sock *osk);
+ int inet_hash(struct sock *sk);
+ void inet_unhash(struct sock *sk);
+diff --git a/net/dccp/ipv4.c b/net/dccp/ipv4.c
+index 9c28c8251125..098bae35ab76 100644
+--- a/net/dccp/ipv4.c
++++ b/net/dccp/ipv4.c
+@@ -427,7 +427,7 @@ struct sock *dccp_v4_request_recv_sock(const struct sock *sk,
+ 
+ 	if (__inet_inherit_port(sk, newsk) < 0)
+ 		goto put_and_exit;
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), NULL);
+ 	if (*own_req)
+ 		ireq->ireq_opt = NULL;
+ 	else
+diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
+index ef4ab28cfde0..78ee1b5acf1f 100644
+--- a/net/dccp/ipv6.c
++++ b/net/dccp/ipv6.c
+@@ -533,7 +533,7 @@ static struct sock *dccp_v6_request_recv_sock(const struct sock *sk,
+ 		dccp_done(newsk);
+ 		goto out;
+ 	}
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), NULL);
+ 	/* Clone pktoptions received with SYN, if we own the req */
+ 	if (*own_req && ireq->pktopts) {
+ 		newnp->pktoptions = skb_clone(ireq->pktopts, GFP_ATOMIC);
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index b457dd2d6c75..df26489e4f6c 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -787,7 +787,7 @@ static void reqsk_queue_hash_req(struct request_sock *req,
+ 	timer_setup(&req->rsk_timer, reqsk_timer_handler, TIMER_PINNED);
+ 	mod_timer(&req->rsk_timer, jiffies + timeout);
+ 
+-	inet_ehash_insert(req_to_sk(req), NULL);
++	inet_ehash_insert(req_to_sk(req), NULL, NULL);
+ 	/* before letting lookups find us, make sure all req fields
+ 	 * are committed to memory and refcnt initialized.
+ 	 */
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 239e54474b65..bd5d370ec51e 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -20,6 +20,9 @@
+ #include <net/addrconf.h>
+ #include <net/inet_connection_sock.h>
+ #include <net/inet_hashtables.h>
++#if IS_ENABLED(CONFIG_IPV6)
++#include <net/inet6_hashtables.h>
++#endif
+ #include <net/secure_seq.h>
+ #include <net/ip.h>
+ #include <net/tcp.h>
+@@ -510,10 +513,52 @@ static u32 inet_sk_port_offset(const struct sock *sk)
+ 					  inet->inet_dport);
+ }
+ 
+-/* insert a socket into ehash, and eventually remove another one
+- * (The another one can be a SYN_RECV or TIMEWAIT
++/* Searches for an exsiting socket in the ehash bucket list.
++ * Returns true if found, false otherwise.
+  */
+-bool inet_ehash_insert(struct sock *sk, struct sock *osk)
++static bool inet_ehash_lookup_by_sk(struct sock *sk,
++				    struct hlist_nulls_head *list)
++{
++	const __portpair ports = INET_COMBINED_PORTS(sk->sk_dport, sk->sk_num);
++	const int sdif = sk->sk_bound_dev_if;
++	const int dif = sk->sk_bound_dev_if;
++	const struct hlist_nulls_node *node;
++	struct net *net = sock_net(sk);
++	struct sock *esk;
 +
-+PCI hierarchy representation
-+============================
++	INET_ADDR_COOKIE(acookie, sk->sk_daddr, sk->sk_rcv_saddr);
 +
-+Sometimes could be useful to enumerate a PCI device, knowing its position on the
-+PCI bus.
-+
-+For example, some systems use PCI devices soldered directly on the mother board,
-+in a fixed position (ethernet, Wi-Fi, serial ports, etc.). In this conditions it
-+is possible to refer to these PCI devices knowing their position on the PCI bus
-+topology.
-+
-+To identify a PCI device, a complete hierarchical description is required, from
-+the chipset root port to the final device, through all the intermediate
-+bridges/switches of the board.
-+
-+For example, let us assume to have a system with a PCIe serial port, an
-+Exar XR17V3521, soldered on the main board. This UART chip also includes
-+16 GPIOs and we want to add the property ``gpio-line-names`` [1] to these pins.
-+In this case, the ``lspci`` output for this component is::
-+
-+	07:00.0 Serial controller: Exar Corp. XR17V3521 Dual PCIe UART (rev 03)
-+
-+The complete ``lspci`` output (manually reduced in length) is::
-+
-+	00:00.0 Host bridge: Intel Corp... Host Bridge (rev 0d)
-+	...
-+	00:13.0 PCI bridge: Intel Corp... PCI Express Port A #1 (rev fd)
-+	00:13.1 PCI bridge: Intel Corp... PCI Express Port A #2 (rev fd)
-+	00:13.2 PCI bridge: Intel Corp... PCI Express Port A #3 (rev fd)
-+	00:14.0 PCI bridge: Intel Corp... PCI Express Port B #1 (rev fd)
-+	00:14.1 PCI bridge: Intel Corp... PCI Express Port B #2 (rev fd)
-+	...
-+	05:00.0 PCI bridge: Pericom Semiconductor Device 2404 (rev 05)
-+	06:01.0 PCI bridge: Pericom Semiconductor Device 2404 (rev 05)
-+	06:02.0 PCI bridge: Pericom Semiconductor Device 2404 (rev 05)
-+	06:03.0 PCI bridge: Pericom Semiconductor Device 2404 (rev 05)
-+	07:00.0 Serial controller: Exar Corp. XR17V3521 Dual PCIe UART (rev 03) <-- Exar
-+	...
-+
-+The bus topology is::
-+
-+	-[0000:00]-+-00.0
-+	           ...
-+	           +-13.0-[01]----00.0
-+	           +-13.1-[02]----00.0
-+	           +-13.2-[03]--
-+	           +-14.0-[04]----00.0
-+	           +-14.1-[05-09]----00.0-[06-09]--+-01.0-[07]----00.0 <-- Exar
-+	           |                               +-02.0-[08]----00.0
-+	           |                               \-03.0-[09]--
-+	           ...
-+	           \-1f.1
-+
-+To describe this Exar device on the PCI bus, we must start from the ACPI name
-+of the chipset bridge (also called "root port") with address::
-+
-+	Bus: 0 - Device: 14 - Function: 1
-+
-+To find this information is necessary disassemble the BIOS ACPI tables, in
-+particular the DSDT (see also [2])::
-+
-+	mkdir ~/tables/
-+	cd ~/tables/
-+	acpidump > acpidump
-+	acpixtract -a acpidump
-+	iasl -e ssdt?.* -d dsdt.dat
-+
-+Now, in the dsdt.dsl, we have to search the device whose address is related to
-+0x14 (device) and 0x01 (function). In this case we can find the following
-+device::
-+
-+	Scope (_SB.PCI0)
-+	{
-+	... other definitions follow ...
-+		Device (RP02)
-+		{
-+			Method (_ADR, 0, NotSerialized)  // _ADR: Address
-+			{
-+				If ((RPA2 != Zero))
-+				{
-+					Return (RPA2) /* \RPA2 */
-+				}
-+				Else
-+				{
-+					Return (0x00140001)
-+				}
-+			}
-+	... other definitions follow ...
-+
-+and the _ADR method [3] returns exactly the device/function couple that
-+we are looking for. With this information and analyzing the above ``lspci``
-+output (both the devices list and the devices tree), we can write the following
-+ACPI description for the Exar PCIe UART, also adding the list of its GPIO line
-+names::
-+
-+	Scope (_SB.PCI0.RP02)
-+	{
-+		Device (BRG1) //Bridge
-+		{
-+			Name (_ADR, 0x0000)
-+
-+			Device (BRG2) //Bridge
-+			{
-+				Name (_ADR, 0x00010000)
-+
-+				Device (EXAR)
-+				{
-+					Name (_ADR, 0x0000)
-+
-+					Name (_DSD, Package ()
-+					{
-+						ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-+						Package ()
-+						{
-+							Package ()
-+							{
-+								"gpio-line-names",
-+								Package ()
-+								{
-+									"mode_232",
-+									"mode_422",
-+									"mode_485",
-+									"misc_1",
-+									"misc_2",
-+									"misc_3",
-+									"",
-+									"",
-+									"aux_1",
-+									"aux_2",
-+									"aux_3",
-+								}
-+							}
-+						}
-+					})
-+				}
++	sk_nulls_for_each_rcu(esk, node, list) {
++		if (esk->sk_hash != sk->sk_hash)
++			continue;
++		if (sk->sk_family == AF_INET) {
++			if (unlikely(INET_MATCH(esk, net, acookie,
++						sk->sk_daddr,
++						sk->sk_rcv_saddr,
++						ports, dif, sdif))) {
++				return true;
 +			}
 +		}
++#if IS_ENABLED(CONFIG_IPV6)
++		else if (sk->sk_family == AF_INET6) {
++			if (unlikely(INET6_MATCH(esk, net,
++						 &sk->sk_v6_daddr,
++						 &sk->sk_v6_rcv_saddr,
++						 ports, dif, sdif))) {
++				return true;
++			}
++		}
++#endif
 +	}
++	return false;
++}
 +
-+The location "_SB.PCI0.RP02" is obtained by the above investigation in the
-+dsdt.dsl table, whereas the device names "BRG1", "BRG2" and "EXAR" are
-+created analyzing the position of the Exar UART in the PCI bus topology.
++/* Insert a socket into ehash, and eventually remove another one
++ * (The another one can be a SYN_RECV or TIMEWAIT)
++ * If an existing socket already exists, socket sk is not inserted,
++ * and sets found_dup_sk parameter to true.
++ */
++bool inet_ehash_insert(struct sock *sk, struct sock *osk, bool *found_dup_sk)
+ {
+ 	struct inet_hashinfo *hashinfo = sk->sk_prot->h.hashinfo;
+ 	struct hlist_nulls_head *list;
+@@ -532,16 +577,23 @@ bool inet_ehash_insert(struct sock *sk, struct sock *osk)
+ 	if (osk) {
+ 		WARN_ON_ONCE(sk->sk_hash != osk->sk_hash);
+ 		ret = sk_nulls_del_node_init_rcu(osk);
++	} else if (found_dup_sk) {
++		*found_dup_sk = inet_ehash_lookup_by_sk(sk, list);
++		if (*found_dup_sk)
++			ret = false;
+ 	}
 +
-+References
-+==========
+ 	if (ret)
+ 		__sk_nulls_add_node_rcu(sk, list);
 +
-+[1] Documentation/firmware-guide/acpi/gpio-properties.rst
+ 	spin_unlock(lock);
 +
-+[2] Documentation/admin-guide/acpi/initrd_table_override.rst
-+
-+[3] ACPI Specifications, Version 6.3 - Paragraph 6.1.1 _ADR Address)
-+    https://uefi.org/sites/default/files/resources/ACPI_6_3_May16.pdf,
-+    referenced 2020-11-18
+ 	return ret;
+ }
+ 
+-bool inet_ehash_nolisten(struct sock *sk, struct sock *osk)
++bool inet_ehash_nolisten(struct sock *sk, struct sock *osk, bool *found_dup_sk)
+ {
+-	bool ok = inet_ehash_insert(sk, osk);
++	bool ok = inet_ehash_insert(sk, osk, found_dup_sk);
+ 
+ 	if (ok) {
+ 		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, 1);
+@@ -585,7 +637,7 @@ int __inet_hash(struct sock *sk, struct sock *osk)
+ 	int err = 0;
+ 
+ 	if (sk->sk_state != TCP_LISTEN) {
+-		inet_ehash_nolisten(sk, osk);
++		inet_ehash_nolisten(sk, osk, NULL);
+ 		return 0;
+ 	}
+ 	WARN_ON(!sk_unhashed(sk));
+@@ -681,7 +733,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+ 		tb = inet_csk(sk)->icsk_bind_hash;
+ 		spin_lock_bh(&head->lock);
+ 		if (sk_head(&tb->owners) == sk && !sk->sk_bind_node.next) {
+-			inet_ehash_nolisten(sk, NULL);
++			inet_ehash_nolisten(sk, NULL, NULL);
+ 			spin_unlock_bh(&head->lock);
+ 			return 0;
+ 		}
+@@ -760,7 +812,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+ 	inet_bind_hash(sk, tb, port);
+ 	if (sk_unhashed(sk)) {
+ 		inet_sk(sk)->inet_sport = htons(port);
+-		inet_ehash_nolisten(sk, (struct sock *)tw);
++		inet_ehash_nolisten(sk, (struct sock *)tw, NULL);
+ 	}
+ 	if (tw)
+ 		inet_twsk_bind_unhash(tw, hinfo);
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 592c73962723..fe4259f8c207 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -1492,6 +1492,7 @@ struct sock *tcp_v4_syn_recv_sock(const struct sock *sk, struct sk_buff *skb,
+ 				  bool *own_req)
+ {
+ 	struct inet_request_sock *ireq;
++	bool found_dup_sk = false;
+ 	struct inet_sock *newinet;
+ 	struct tcp_sock *newtp;
+ 	struct sock *newsk;
+@@ -1565,12 +1566,22 @@ struct sock *tcp_v4_syn_recv_sock(const struct sock *sk, struct sk_buff *skb,
+ 
+ 	if (__inet_inherit_port(sk, newsk) < 0)
+ 		goto put_and_exit;
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash),
++				       &found_dup_sk);
+ 	if (likely(*own_req)) {
+ 		tcp_move_syn(newtp, req);
+ 		ireq->ireq_opt = NULL;
+ 	} else {
+-		newinet->inet_opt = NULL;
++		if (!req_unhash && found_dup_sk) {
++			/* This code path should only be executed in the
++			 * syncookie case only
++			 */
++			bh_unlock_sock(newsk);
++			sock_put(newsk);
++			newsk = NULL;
++		} else {
++			newinet->inet_opt = NULL;
++		}
+ 	}
+ 	return newsk;
+ 
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index 305870a72352..925d61244f8f 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -1188,6 +1188,7 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 	const struct ipv6_pinfo *np = tcp_inet6_sk(sk);
+ 	struct ipv6_txoptions *opt;
+ 	struct inet_sock *newinet;
++	bool found_dup_sk = false;
+ 	struct tcp_sock *newtp;
+ 	struct sock *newsk;
+ #ifdef CONFIG_TCP_MD5SIG
+@@ -1359,7 +1360,8 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 		tcp_done(newsk);
+ 		goto out;
+ 	}
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash),
++				       &found_dup_sk);
+ 	if (*own_req) {
+ 		tcp_move_syn(newtp, req);
+ 
+@@ -1374,6 +1376,15 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 				skb_set_owner_r(newnp->pktoptions, newsk);
+ 			}
+ 		}
++	} else {
++		if (!req_unhash && found_dup_sk) {
++			/* This code path should only be executed in the
++			 * syncookie case only
++			 */
++			bh_unlock_sock(newsk);
++			sock_put(newsk);
++			newsk = NULL;
++		}
+ 	}
+ 
+ 	return newsk;
 -- 
 2.25.1
 
