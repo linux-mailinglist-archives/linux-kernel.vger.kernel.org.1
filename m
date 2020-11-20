@@ -2,137 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0040C2BA544
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A3E2BA540
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbgKTI5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:57:05 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:44083 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727425AbgKTI5E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:57:04 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201120085651euoutp022c9b962a590e050290cfc118e857ad53~JK4mJ6mbR2740127401euoutp02a
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 08:56:51 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201120085651euoutp022c9b962a590e050290cfc118e857ad53~JK4mJ6mbR2740127401euoutp02a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1605862611;
-        bh=h5UXQY4qdsdhi3mAVzUaa+m1BPhdLaUubrYWCg7tzFs=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=Hh+05ypP4xl5Y8JeDkuVzzsahzD3CE0QA4/hWngySJ52/IokRSq0Fk0szuRzprvd3
-         VVeOAhEZ2c2sZ/VtvVZV+SRgkphGBl8ouC+vjFDn/gy7mPxAGQZyA+U8JJcr4ZNGHg
-         0sxFyBmAcsdSR2OLFVSoBRyifSnhb9Os2he/xr6s=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201120085651eucas1p2b614494d168369b50ef9afa5762683eb~JK4l8FE9z2574625746eucas1p2T;
-        Fri, 20 Nov 2020 08:56:51 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 45.AA.44805.3D487BF5; Fri, 20
-        Nov 2020 08:56:51 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201120085651eucas1p1382e2677b29af0fc94a0b6c1f8d7da12~JK4lmbYRw3018230182eucas1p1Y;
-        Fri, 20 Nov 2020 08:56:51 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201120085651eusmtrp2da5e8c8b1df9445978a643527b7dcbef~JK4llIWln2124121241eusmtrp2T;
-        Fri, 20 Nov 2020 08:56:51 +0000 (GMT)
-X-AuditID: cbfec7f4-b37ff7000000af05-58-5fb784d3ce77
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 8F.2E.21957.3D487BF5; Fri, 20
-        Nov 2020 08:56:51 +0000 (GMT)
-Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201120085650eusmtip134c462302f077eebe685462a990bc467~JK4lEzLA60452604526eusmtip1C;
-        Fri, 20 Nov 2020 08:56:50 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     linux-samsung-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
-        Marian Mihailescu <mihailescu2m@gmail.com>
-Subject: [PATCH 0/2] Fix USB2 PHY operation on Exynos542x
-Date:   Fri, 20 Nov 2020 09:56:35 +0100
-Message-Id: <20201120085637.7299-1-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrIIsWRmVeSWpSXmKPExsWy7djP87qXW7bHG5z7JmexccZ6VosLT3vY
-        LM6f38BucXnXHDaLGef3MVmsPXKX3WL9tJ+sFofftLNa7Lxzgtni24lHjA5cHjtn3WX32LSq
-        k82jb8sqRo/jN7YzeXzeJBfAGsVlk5Kak1mWWqRvl8CVcXxbD1tBE1fFzxOb2BsYv7F3MXJy
-        SAiYSOz4vYuti5GLQ0hgBaPEnCObmSCcL4wS7cfaGCGcz4wSXxdPYe5i5ABr+fVNHCK+nFFi
-        19ledriOk7s/sYLMZRMwlOh628UGYosIqEp8blsAto9Z4D+TxM0NnCC2sIClxNbOA0wgNgtQ
-        zZlzG8BqeAVsJCbueM4EcZ+8xOoNB5hBFkgITOWQmPF/KgtEwkVi0t8vzBC2sMSr41ugHpKR
-        +L9zPhNEQzOjxMNza9khnB5GictNMxghqqwl7pz7xQbyD7OApsT6XfoQYUeJg18fs0O8ySdx
-        460gxNF8EpO2TYf6nleio00IolpNYtbxdXBrD164BHWOh8TvV5fB4SAkECvR33aGZQKj3CyE
-        XQsYGVcxiqeWFuempxYb5aWW6xUn5haX5qXrJefnbmIEporT/45/2cG4/NVHvUOMTByMhxgl
-        OJiVRHjXam6NF+JNSaysSi3Kjy8qzUktPsQozcGiJM6btGVNvJBAemJJanZqakFqEUyWiYNT
-        qoFp25S2FHXJwBThRSxuT+ZPeGDslNt18Irg4bqIAoNba87EvVrSo5ksIPpYJvWjxvQ5SYpK
-        Tm/93Y/zF50pVfHecLphjUTYGtYNaz5GWjjbHzQ4xL8/4HuPo+hnsZwm1h+2zGsLZjPoXZ7F
-        U+HrNuvz7xzpl4eedFawNXC8XCHzPVShc1pkhef0qKSrTb8zt95T1RCx/i+R/eMenwbLaed/
-        Nze0sOtedHmZZuF/L3iF5uKIr+7rLy53ae35KnZTaHb1tBXnpJdwzZ5m1dbp9yjLysT07S6z
-        IzL1DLFO39T23U+TN2iP5Feqfyw0beUi+TXXN03kuhDLJ3r2q/yrOn2T+9f+XPjMyuDbM/f/
-        rGAlluKMREMt5qLiRABHST0YhAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGLMWRmVeSWpSXmKPExsVy+t/xu7qXW7bHG3Qc4LLYOGM9q8WFpz1s
-        FufPb2C3uLxrDpvFjPP7mCzWHrnLbrF+2k9Wi8Nv2lktdt45wWzx7cQjRgcuj52z7rJ7bFrV
-        yebRt2UVo8fxG9uZPD5vkgtgjdKzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV
-        0rezSUnNySxLLdK3S9DLOL6th62giavi54lN7A2M39i7GDk4JARMJH59E+9i5OIQEljKKPFp
-        cgNTFyMnUFxG4uS0BlYIW1jiz7UuNoiiT4wSV28fYAdJsAkYSnS9BUlwcogIqEp8blsAFmcW
-        aGWW+NNlBWILC1hKbO08ADaUBajmzLkNYDW8AjYSE3c8h1omL7F6wwHmCYw8CxgZVjGKpJYW
-        56bnFhvqFSfmFpfmpesl5+duYgQG6LZjPzfvYJz36qPeIUYmDsZDjBIczEoivGs1t8YL8aYk
-        VlalFuXHF5XmpBYfYjQF2jeRWUo0OR8YI3kl8YZmBqaGJmaWBqaWZsZK4rxb566JFxJITyxJ
-        zU5NLUgtgulj4uCUamDqODqzyqg2YccBiyezZYss8ubVmEV/nfapkpP55pspfokl6Y4f3Uss
-        I4w55p34N7H79fuuf/KrDbae2qIk1DLtZnwa64GTBycsmpYhqXGJqXFry+5J9l16b9IM7oTU
-        3a4udmxxF510YPeEpECfHzohSf2fD8/P+bjiT+/rn6zugr/OW+w9HFEjrhrVpdYl8751xYqW
-        bH35Bbmvlj3dmXL+ktKPqyXJNs7hjUV7rm7f//Of4rnjBo5vZD+0KPCvCcy0NHogHftrgzbP
-        LcmPq3bwTv37+cu7F0Uz72bu7V69vjZTfdf54g/r3b64fNr212ZjckzgJyYzVru8PUll5rNr
-        zmR3nkt7E3Bhx/Ip26Y2KbEUZyQaajEXFScCACZQ+HzZAgAA
-X-CMS-MailID: 20201120085651eucas1p1382e2677b29af0fc94a0b6c1f8d7da12
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201120085651eucas1p1382e2677b29af0fc94a0b6c1f8d7da12
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201120085651eucas1p1382e2677b29af0fc94a0b6c1f8d7da12
-References: <CGME20201120085651eucas1p1382e2677b29af0fc94a0b6c1f8d7da12@eucas1p1.samsung.com>
+        id S1727438AbgKTI4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:56:40 -0500
+Received: from mga11.intel.com ([192.55.52.93]:64567 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727426AbgKTI4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:56:39 -0500
+IronPort-SDR: m2eGyCc2z49k8d0DDH/+htGpZ9bmqqWDBf0Cu9Sfc6kQ5YWVQyBWY82kAxGqUl14wp5TF3oqRC
+ IC817ZEfr87g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="167929965"
+X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
+   d="scan'208";a="167929965"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 00:56:39 -0800
+IronPort-SDR: pr7YBjOONhgkk0kXi1Chlf0YQXl5MlE91XeE+xN+57fHuJXMcrVi+cQgIBpP6KpywGcuFQBWDE
+ XpQ6zWucd7mQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
+   d="scan'208";a="533484301"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by fmsmga006.fm.intel.com with ESMTP; 20 Nov 2020 00:56:39 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 20 Nov 2020 00:56:38 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 20 Nov 2020 00:56:38 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 20 Nov 2020 00:56:38 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.108)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Fri, 20 Nov 2020 00:56:36 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zvv2UTNoWA9RachenIg0tkjHN87xEiTqkWZjZFuoBsqCuE4E9VL13s4GMxYGd28NhHPgxbuGxFZDIHymn+9BmsvE++FNqWeWrMq4kubzEQAdu5hBnBOUPh1+pKXB/G3HQIQzA1bBNNPfUNoq4A++qkllYOqy91GLrlswElS37iJ86jBC2l/oDZJQP0y9oka2cE+XLx/9p6WirgenIzh5uzap2aZrYgW1/9BuVpI0DOY3qiK/Dp0ogy+9FTH5U4y5jLuDevmP7Ex/A/OFqfB53kOCEqyzWRUPGmKTdKMDr7wyFmFykKScl4lHlm3KWBoAF2wgUGLPl1IXBRPHywXeHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=32TEqE5FSttrSXfMwmC5QwNe/Q4YIiiDgBdzKVzf/xI=;
+ b=JzKBWQO/SJ4v5XkVLLJ6zMdB//ZfIDhKt49U1O1TCEpKt5uf8LV09i1eSKlufkiygVuFJeojDibNm3vnd7b/sMM6CdIWbk7uI/vVCLOUbNZBvM8ppW9VURNibXSoJKaxhnNUt2tZjTQt6BVl3VfVg9DR32Bhlbe9uN0mt7diAZla2whg5hvrlNAeEJqlB6qePue6futMbWslSLXJaMRbDeRvQnIgpWQE24D10BZVLIr2tIxx/OzjRVMwKk+PNpTas88tk4Frdw3n7tu+frZq4GTKPwYjrOridcMK0ObDI0TJ+EQPRrxW1TdeoUVc+06gXtIURcf1XfuZ5mc0J9nbHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=32TEqE5FSttrSXfMwmC5QwNe/Q4YIiiDgBdzKVzf/xI=;
+ b=fNNgdLoRjHTw49SFn6MhkonLXnB3mSCtu/jrlfev9RBuJdiXDybItF/oyJBNUIWUKWXME/lTt3gVqZ5GQ9ObcTA04wHXeuN3WtVHTdGIczohl3kUL8ix73MXs90bdrrCOzBvAKCxkexLjSXDQw0VHYUEczaJ3x1n8h5alXDBDh0=
+Received: from CO1PR11MB5026.namprd11.prod.outlook.com (2603:10b6:303:9c::13)
+ by MWHPR11MB0063.namprd11.prod.outlook.com (2603:10b6:301:6c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 20 Nov
+ 2020 08:56:35 +0000
+Received: from CO1PR11MB5026.namprd11.prod.outlook.com
+ ([fe80::4820:6e90:3d0e:3b5f]) by CO1PR11MB5026.namprd11.prod.outlook.com
+ ([fe80::4820:6e90:3d0e:3b5f%4]) with mapi id 15.20.3589.022; Fri, 20 Nov 2020
+ 08:56:35 +0000
+From:   "Sia, Jee Heng" <jee.heng.sia@intel.com>
+To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+CC:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH v4 13/15] dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA
+ handshake
+Thread-Topic: [PATCH v4 13/15] dmaengine: dw-axi-dmac: Add Intel KeemBay
+ AxiDMA handshake
+Thread-Index: AQHWvIranRliWUyoiUC041c/U0Xoy6nOkjKOgAGhikCAAIM/wA==
+Date:   Fri, 20 Nov 2020 08:56:35 +0000
+Message-ID: <CO1PR11MB502626E7EE93B74E20BBB437DAFF0@CO1PR11MB5026.namprd11.prod.outlook.com>
+References: <20201117022215.2461-1-jee.heng.sia@intel.com>,<20201117022215.2461-14-jee.heng.sia@intel.com>
+ <MWHPR1201MB0029177B655D2B57D636CAB0DEE10@MWHPR1201MB0029.namprd12.prod.outlook.com>
+ <CO1PR11MB502675222991EE9CECE782F2DAFF0@CO1PR11MB5026.namprd11.prod.outlook.com>
+In-Reply-To: <CO1PR11MB502675222991EE9CECE782F2DAFF0@CO1PR11MB5026.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: synopsys.com; dkim=none (message not signed)
+ header.d=none;synopsys.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.192]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e87b6b0a-c358-4835-5fbb-08d88d322f44
+x-ms-traffictypediagnostic: MWHPR11MB0063:
+x-microsoft-antispam-prvs: <MWHPR11MB0063A77EDFAC46A3DEE1DCC9DAFF0@MWHPR11MB0063.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bLkhtynce5rFXyIDHtpipqyLey4Y3lDLP7yqLSU8ofP/I1IzOP/yukCwAZd0eh25KBmTEmxhjWuIBmf8RPiMxO4VEaNVsJNU3XJv3E+c7PfPp7bOw/vocBtnVvxM7S1BwS022JH0XaimijVtojIhzmsICjNAbuydx/68GunOZVtQlebZorHC59bINQAiDbOifhgyyYunyyxF2pULQcsm+o50Ow002UipV932Z6IXo1gp+EVVL1a1s/FMRBi1QL9s7CyV+1TingjL0DrwzNvv8MkUMjBJv/upzy+g5CsQv+sG2InzozLvi1Mk3OeSD+nusQAbeYQdl85dQOKyNvit/Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5026.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(346002)(396003)(136003)(2906002)(6916009)(8676002)(186003)(8936002)(6506007)(26005)(83380400001)(2940100002)(33656002)(9686003)(4326008)(52536014)(54906003)(55016002)(478600001)(71200400001)(76116006)(53546011)(5660300002)(66446008)(66476007)(7696005)(64756008)(66556008)(86362001)(66946007)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 5yo9HgKvtKS1dRWWtXD2I9r240Miy/u+aLPJDVD/6FRQ36xPIK+4W3LyCiZUgTrk5qAyf9Yp45a/e4PUW+2MnVr6yqSAdtg425c9WBiBamXcD0N/4PkP7cwy1n7hbr5zni7iu4mOR3HW8SZejRIpoT2f1KDA9y/av9amuSVX2NUGgjrToLXrIjUO9jkY+etNu6ikfxfzARKXJYJRdjwFnYyF1Rc371Et/ILGdJZJVh7UDOA1+sCPUr+cr5LVWFJFxVi77j+Gwe9VXRXvo3b5EOF5ZJkAi5aeCAYJq8xRe7XgdVFfHWJ2GJMt4F9dM03+P4wjjyCml20lMKp2yBApcRTZ+wtONY1dWsWl3FmCRFI+kcWyC/DKMPfQmZThz4XJxlrzp8TtHWoAKm95iSxqFVMjgKlDlbfiQNQRSo0vtZ6f3nQxUG7CJlNb8VQRQbYlEev8qTsmew2SRftui/j85cpXBhbOPI64SD8pU/XnIO5pMOtCzqs87qtCQPpt9LqWSJvDT1/FVmDgjtau2PKMcu1t2AQBd4E0N6i3hAACryP/RuIL+8/aUhJFS/rtQkH3yvT5nnc7Wg79HcGS+1jSHbskRwXbxJpk35a1/hR4ZhOcRFvdzD1pphxv+cEFL7ThNh032flH6nuf3vrCO0Cj1cqicHiAmgpwUZnQEMUWF5b07HsP4xi8gNP83c4jgST/oGcYOduQOsKviQyJyIXwDGvr39I+R4RLgPfgsARbCzEshsgRebdl59jnpA4JW6cxs3TS5zxeBzFqh+a9VPk69VvXGnhfUffmvyWR4Vj2qp5OirvFiUsY1ZHGbTaEx4Xh13uozQkleFMa895XJpm7PF9ONuQ6Ef5wVZTa9Ed6grwvEJ1eiYyS6u8gHiqD5aJvAEtTbxEndjSGMj8QqvcHFQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5026.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e87b6b0a-c358-4835-5fbb-08d88d322f44
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2020 08:56:35.2442
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SQTU6HG3qLXQjB5T1SYbu/ai0QowRd+Fq4kbitRjoyAkda8Zq4olnnvehrwy9OUpofvX9n/qqKQPq9HeEqSwDA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB0063
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear All,
+Hi Eugeniy,
 
-This patchset finally fixes the last remaining issue related to the
-system suspend/resume on Odroid XU3/XU4/HC1 board family. It can be
-observed that system suspend/resume fails on XU4/HC1 when kernel is
-compiled from multi_v7_defconfig. Chaning the configuration a bit -
-switching Exynos USB2 PHY driver to be built-in surprisingly fixed that
-issue. An investigation revealed that the Exynos USB2 PHY driver poked
-wrong registers in the PMU area on Exynos5420 SoCs breaking the USB3.0
-DRD PHY operation, what caused the suspend failure. Fix this by learning
-the Exynos USB2 PHY driver about the Exynos5420 variant.
+With regards to the below comment
+> > In some places you check for this region existence using if
+> > (IS_ERR(chip->regs)) and in other places you use if (!chip->apb_regs)
+The main reason of using IS_ERR() is because of the ioremap() function retu=
+rn an error value
+if the mapping failed.
+And now with your suggestion to add conditional checking to the compatible =
+property, the chip->apb will
+remain NULL on non Intel KeemBay SoC. Therefore, the "if (!chip->apb_regs)"=
+ condition will be used instead.
 
-Best regards,
-Marek Szyprowski
+Please let me  know if you have other concern.
 
-
-Patch summary:
-
-Marek Szyprowski (2):
-  phy: samsung: add support for the Exynos5420 variant of the USB2 PHY
-  ARM: dts: exynos: use Exynos5420 dedicated USB2 PHY compatible
-
- .../devicetree/bindings/phy/samsung-phy.txt   |  1 +
- arch/arm/boot/dts/exynos54xx.dtsi             |  6 +--
- drivers/phy/samsung/Kconfig                   |  7 ++-
- drivers/phy/samsung/phy-exynos5250-usb2.c     | 48 +++++++++++++------
- drivers/phy/samsung/phy-samsung-usb2.c        |  6 +++
- drivers/phy/samsung/phy-samsung-usb2.h        |  1 +
- 6 files changed, 51 insertions(+), 18 deletions(-)
-
--- 
-2.17.1
-
+> -----Original Message-----
+> From: Sia, Jee Heng
+> Sent: 20 November 2020 8:47 AM
+> To: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+> Cc: andriy.shevchenko@linux.intel.com; dmaengine@vger.kernel.org; linux-
+> kernel@vger.kernel.org; devicetree@vger.kernel.org
+> Subject: RE: [PATCH v4 13/15] dmaengine: dw-axi-dmac: Add Intel KeemBay A=
+xiDMA
+> handshake
+>=20
+>=20
+>=20
+> > -----Original Message-----
+> > From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+> > Sent: 19 November 2020 7:59 AM
+> > To: Sia, Jee Heng <jee.heng.sia@intel.com>
+> > Cc: andriy.shevchenko@linux.intel.com; dmaengine@vger.kernel.org;
+> > linux- kernel@vger.kernel.org; devicetree@vger.kernel.org
+> > Subject: Re: [PATCH v4 13/15] dmaengine: dw-axi-dmac: Add Intel
+> > KeemBay AxiDMA handshake
+> >
+> > Hi Sia,
+> >
+> > > Subject: [PATCH v4 13/15] dmaengine: dw-axi-dmac: Add Intel KeemBay
+> > > AxiDMA handshake
+> > >
+> > > Add support for Intel KeemBay AxiDMA device handshake programming.
+> > > Device handshake number passed in to the AxiDMA shall be written to
+> > > the Intel KeemBay AxiDMA hardware handshake registers before DMA
+> > > operations are started.
+> > >
+> > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
+> > > ---
+> > >  .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 52 +++++++++++++++++=
+++
+> > >  1 file changed, 52 insertions(+)
+> > >
+> > > diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > > b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > > index c2ffc5d44b6e..d44a5c9eb9c1 100644
+> > > --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > > +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> > > @@ -445,6 +445,48 @@ static void dma_chan_free_chan_resources(struct
+> > dma_chan *dchan)
+> > >         pm_runtime_put(chan->chip->dev);  }
+> > >
+> > > +static int dw_axi_dma_set_hw_channel(struct axi_dma_chip *chip, u32
+> > hs_number,
+> > > +                                    bool set) {
+> > > +       unsigned long start =3D 0;
+> > > +       unsigned long reg_value;
+> > > +       unsigned long reg_mask;
+> > > +       unsigned long reg_set;
+> > > +       unsigned long mask;
+> > > +       unsigned long val;
+> > > +
+> > > +       if (!chip->apb_regs)
+> > > +               return -ENODEV;
+> >
+> > In some places you check for this region existence using if
+> > (IS_ERR(chip->regs)) and in other places you use if (!chip->apb_regs)
+> >
+> > I guess it isn't correct. NOTE that this comment valid for other patche=
+s as well.
+> [>>] Thanks for the invaluable comment, will make sure the consistency in=
+ the code.
+> >
+> > > +
+> > > +       /*
+> > > +        * An unused DMA channel has a default value of 0x3F.
+> > > +        * Lock the DMA channel by assign a handshake number to the c=
+hannel.
+> > > +        * Unlock the DMA channel by assign 0x3F to the channel.
+> > > +        */
+> > > +       if (set) {
+> > > +               reg_set =3D UNUSED_CHANNEL;
+> > > +               val =3D hs_number;
+> > > +       } else {
+> > > +               reg_set =3D hs_number;
+> > > +               val =3D UNUSED_CHANNEL;
+> > > +       }
+> > > +
+> > > +       reg_value =3D lo_hi_readq(chip->apb_regs +
+> > > + DMAC_APB_HW_HS_SEL_0);
+> > > +
+> > > +       for_each_set_clump8(start, reg_mask, &reg_value, 64) {
+> > > +               if (reg_mask =3D=3D reg_set) {
+> > > +                       mask =3D GENMASK_ULL(start + 7, start);
+> > > +                       reg_value &=3D ~mask;
+> > > +                       reg_value |=3D rol64(val, start);
+> > > +                       lo_hi_writeq(reg_value,
+> > > +                                    chip->apb_regs + DMAC_APB_HW_HS_=
+SEL_0);
+> > > +                       break;
+> > > +               }
+> > > +       }
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > >  /*
+> > >   * If DW_axi_dmac sees CHx_CTL.ShadowReg_Or_LLI_Last bit of the fetc=
+hed LLI
+> > >   * as 1, it understands that the current block is the final block
+> > > in the @@ -626,6 +668,9 @@ dw_axi_dma_chan_prep_cyclic(struct
+> > > dma_chan
+> > *dchan, dma_addr_t dma_addr,
+> > >                 llp =3D hw_desc->llp;
+> > >         } while (num_periods);
+> > >
+> > > +       if (dw_axi_dma_set_hw_channel(chan->chip, chan->hw_hs_num, tr=
+ue))
+> > > +               goto err_desc_get;
+> > > +
+> > >         return vchan_tx_prep(&chan->vc, &desc->vd, flags);
+> > >
+> > >  err_desc_get:
+> > > @@ -684,6 +729,9 @@ dw_axi_dma_chan_prep_slave_sg(struct dma_chan
+> > *dchan, struct scatterlist *sgl,
+> > >                 llp =3D hw_desc->llp;
+> > >         } while (sg_len);
+> > >
+> > > +       if (dw_axi_dma_set_hw_channel(chan->chip, chan->hw_hs_num, tr=
+ue))
+> > > +               goto err_desc_get;
+> > > +
+> > >         return vchan_tx_prep(&chan->vc, &desc->vd, flags);
+> > >
+> > >  err_desc_get:
+> > > @@ -959,6 +1007,10 @@ static int dma_chan_terminate_all(struct
+> > > dma_chan
+> > *dchan)
+> > >                 dev_warn(dchan2dev(dchan),
+> > >                          "%s failed to stop\n",
+> > > axi_chan_name(chan));
+> > >
+> > > +       if (chan->direction !=3D DMA_MEM_TO_MEM)
+> > > +               dw_axi_dma_set_hw_channel(chan->chip,
+> > > +                                         chan->hw_hs_num, false);
+> > > +
+> > >         spin_lock_irqsave(&chan->vc.lock, flags);
+> > >
+> > >         vchan_get_all_descriptors(&chan->vc, &head);
+> > > --
+> > > 2.18.0
+> > >
