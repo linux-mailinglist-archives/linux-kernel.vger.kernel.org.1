@@ -2,126 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062542BB1E8
+	by mail.lfdr.de (Postfix) with ESMTP id 7461B2BB1E9
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729219AbgKTSB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:01:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729059AbgKTSBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:01:25 -0500
-Received: from gaia (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E163F2240B;
-        Fri, 20 Nov 2020 18:01:22 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 18:01:20 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Khalid Aziz <khalid.aziz@oracle.com>
-Cc:     jannh@google.com, hch@infradead.org, davem@davemloft.net,
-        akpm@linux-foundation.org, anthony.yznaga@oracle.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        sparclinux@vger.kernel.org
-Subject: Re: [PATCH] sparc64: Use arch_validate_flags() to validate ADI flag
-Message-ID: <20201120180119.GM24344@gaia>
-References: <20201023175611.12819-1-khalid.aziz@oracle.com>
+        id S1729249AbgKTSCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:02:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728438AbgKTSCA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:02:00 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45A9C0613CF;
+        Fri, 20 Nov 2020 10:01:59 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id y17so14044091ejh.11;
+        Fri, 20 Nov 2020 10:01:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZHlPDc9Juyz9GO1VkrQBp9QuPjGIDPQ8AofEX/x8Cbo=;
+        b=pfZsxNWBLDC2OuhMxDpD7tpabZcdanHEgvnLCF43ZE6dh4fIq+x6OGl3SqCkivi5X4
+         kR2sy6XXhA1geH5kNq6X1l5El+YwY0ASFAQVTe3rQT74DOxBjFJOtHiWujhEhYrXSbJs
+         cJ+WJreH8JfTb2Q/aehF/UUzLcxjuqkLQ4aCwtlWDOveYCtIkAvNB+qkWJUb3vUZXgd9
+         dIbMXpP2XmRzoclTN5WAG7xK0aILXIaMWcQ/ndQPOQbJivC1YI8nAAsg3ZcSun9bVQs4
+         5FSikJGMnYMo2Cy/Ft7unZUETmSyUJL2B+Ew6iUYww/OBEplu0WsxKrb93VWdeiK4NLT
+         DL1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZHlPDc9Juyz9GO1VkrQBp9QuPjGIDPQ8AofEX/x8Cbo=;
+        b=BQeKovkwxjDtZaIgOsnFkH3+26jRurrMnaYkhMmWXMKFSNeAwFp9pLSXYChEj0hzzr
+         rmgyzkQExS8G+jYcnv0o72koqFL0Z1LDhlNvhT+M+W0JL6dDfZXCoYKYZrWXDabJRH+x
+         7fXM3WKf2+btmUIWWE5yeVoNqW+2APUo57rgUXfMnNAERRvrwd5D4AqMxFWyD2iJRNRE
+         ldtA8LUHm7OFCJQnCg9Bop+d7BMmv5WRMRFDrxtHqZk/EesP8zjZ1KrAPp1WaDjIvMCE
+         lJbnmk2JVXodUHoN0jFyPwwNJpF3W5IaPu/FuIV8AzlaTJIxNYi3fffRulS62H/zm++G
+         FaYA==
+X-Gm-Message-State: AOAM530Mj3474eOkpuETO446LqTd60uAikMGlOMDGide2h8MyibY8PRx
+        zDGVd59egAYBy+EHr8GZhcE=
+X-Google-Smtp-Source: ABdhPJzcLHScrILGBpSkLukYGwUpHOE+eU+4Ysaad5rEwj5QtGKsFtJQuoCQ2eZ/UigaTGBq6vM37w==
+X-Received: by 2002:a17:907:2657:: with SMTP id ar23mr16286661ejc.386.1605895318334;
+        Fri, 20 Nov 2020 10:01:58 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id 27sm860119ejy.19.2020.11.20.10.01.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 10:01:54 -0800 (PST)
+Date:   Fri, 20 Nov 2020 20:01:49 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2] net: dsa: avoid potential use-after-free
+ error
+Message-ID: <20201120180149.wp4ehikbc2ngvwtf@skbuf>
+References: <20201119110906.25558-1-ceggers@arri.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201023175611.12819-1-khalid.aziz@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201119110906.25558-1-ceggers@arri.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Khalid,
+On Thu, Nov 19, 2020 at 12:09:06PM +0100, Christian Eggers wrote:
+> If dsa_switch_ops::port_txtstamp() returns false, clone will be freed
+> immediately. Shouldn't store a pointer to freed memory.
+> 
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> Fixes: 146d442c2357 ("net: dsa: Keep a pointer to the skb clone for TX timestamping")
+> ---
 
-On Fri, Oct 23, 2020 at 11:56:11AM -0600, Khalid Aziz wrote:
-> diff --git a/arch/sparc/include/asm/mman.h b/arch/sparc/include/asm/mman.h
-> index f94532f25db1..274217e7ed70 100644
-> --- a/arch/sparc/include/asm/mman.h
-> +++ b/arch/sparc/include/asm/mman.h
-> @@ -57,35 +57,39 @@ static inline int sparc_validate_prot(unsigned long prot, unsigned long addr)
->  {
->  	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_ADI))
->  		return 0;
-> -	if (prot & PROT_ADI) {
-> -		if (!adi_capable())
-> -			return 0;
-> +	return 1;
-> +}
+IMO this is one of the cases to which the following from
+Documentation/process/stable-kernel-rules.rst does not apply:
 
-We kept the equivalent of !adi_capable() check in the arm64
-arch_validate_prot() and left arch_validate_flags() more relaxed. I.e.
-you can pass PROT_MTE to mmap() even if the hardware doesn't support
-MTE. This is in line with the pre-MTE ABI where unknown mmap() flags
-would be ignored while mprotect() would reject them. This discrepancy
-isn't nice but we decided to preserve the pre-MTE mmap ABI behaviour.
-Anyway, it's up to you if you want to change the sparc behaviour, I
-don't think it matters in practice.
+ - It must fix a real bug that bothers people (not a, "This could be a
+   problem..." type thing).
 
-I think with this patch, arch_validate_prot() no longer needs the 'addr'
-argument. Maybe you can submit an additional patch to remove them (not
-urgent, the compiler should get rid of them).
+Therefore, specifying "net-next" as the target tree here as opposed to
+"net" is the correct choice.
 
->  
-> -		if (addr) {
-> -			struct vm_area_struct *vma;
-> +#define arch_validate_flags(vm_flags) arch_validate_flags(vm_flags)
-> +/* arch_validate_flags() - Ensure combination of flags is valid for a
-> + *	VMA.
-> + */
-> +static inline bool arch_validate_flags(unsigned long vm_flags)
-> +{
-> +	/* If ADI is being enabled on this VMA, check for ADI
-> +	 * capability on the platform and ensure VMA is suitable
-> +	 * for ADI
-> +	 */
-> +	if (vm_flags & VM_SPARC_ADI) {
-> +		if (!adi_capable())
-> +			return false;
->  
-> -			vma = find_vma(current->mm, addr);
-> -			if (vma) {
-> -				/* ADI can not be enabled on PFN
-> -				 * mapped pages
-> -				 */
-> -				if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
-> -					return 0;
-> +		/* ADI can not be enabled on PFN mapped pages */
-> +		if (vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
-> +			return false;
->  
-> -				/* Mergeable pages can become unmergeable
-> -				 * if ADI is enabled on them even if they
-> -				 * have identical data on them. This can be
-> -				 * because ADI enabled pages with identical
-> -				 * data may still not have identical ADI
-> -				 * tags on them. Disallow ADI on mergeable
-> -				 * pages.
-> -				 */
-> -				if (vma->vm_flags & VM_MERGEABLE)
-> -					return 0;
-> -			}
-> -		}
-> +		/* Mergeable pages can become unmergeable
-> +		 * if ADI is enabled on them even if they
-> +		 * have identical data on them. This can be
-> +		 * because ADI enabled pages with identical
-> +		 * data may still not have identical ADI
-> +		 * tags on them. Disallow ADI on mergeable
-> +		 * pages.
-> +		 */
-> +		if (vm_flags & VM_MERGEABLE)
-> +			return false;
-
-Ah, you added a check to the madvise(MADV_MERGEABLE) path to ignore the
-flag if VM_SPARC_ADI. On arm64 we intercept memcmp_pages() but we have a
-PG_arch_2 flag to mark a page as containing tags. Either way should
-work.
-
-FWIW, if you are happy with the mmap() rejecting PROT_ADI on
-!adi_capable() hardware:
-
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Tested-by: Vladimir Oltean <olteanv@gmail.com>
