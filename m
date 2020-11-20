@@ -2,68 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49E52BA46D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABB72BA472
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgKTIOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbgKTIOc (ORCPT
+        id S1726768AbgKTIP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:15:26 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:38666 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbgKTIPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:14:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98662C0613CF;
-        Fri, 20 Nov 2020 00:14:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9eTcmneDEkMa+Ci3UvbK1WCqbss7MNqMPJgSFOsLpRE=; b=Bt4O35kZ1R0xwyIj1tfdoQRbiJ
-        RLqNsohzyZnBavvjnUbi4J/vPlbtPqB0v+F8c9zPB+fUoVnbd5Idu9mS2GlQ+pcXguuGCx/m7HvTA
-        vWp0oGm/wap0CLaD/6FSdL+5SJQdQ1D22M5Nc/fSvF8QKUUcpZPbxF7f0OKNadAZ9KCx5afiHjIhD
-        lXYwI7oXj9FkegV6Qo7M6ozH/OSVrzhzBDaVnEtIbHPaq0cd+VyRHyq8CsUPSducO55uG+cCDLXa0
-        gRXxiOW5Jhre/lGXZA2QM46wS3mieoX8TC4q9IMumt8zorTdWo3Cs+0B7vkl/+8qTQuSXsxf1+eUU
-        zoXCegvA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kg1Yr-0000Ag-Fs; Fri, 20 Nov 2020 08:14:29 +0000
-Date:   Fri, 20 Nov 2020 08:14:29 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Ming Lei <ming.lei@redhat.com>, linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Fri, 20 Nov 2020 03:15:25 -0500
+Received: by mail-lj1-f194.google.com with SMTP id r17so9144570ljg.5;
+        Fri, 20 Nov 2020 00:15:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WDs6obGTLR1+wdJ6BVB6dndSCVFd0as/yCTkI8gYmPU=;
+        b=Y/xPta9rvf7YKf4ZukcFJI5daQExV4qAMp40tpHdLOeUXuDb6YQ0Nxn36UQg1WFNWs
+         fkReHJeQ3naoM3VQIjwZ4XVldStY0TJ4BX2LJ8ljlAp9zjrmI/dctR7Sy3LjiuAR0RZf
+         n5u3UgKtTb7Wpcows8hreTNurE4CBobwpn9BgT9wsI6TYy+BvPbn5da0v2yMBt/pbPfs
+         YxdbVnX9O4VvnKXJ5819YZ+C2ZRHA/VH0B0yhsnXZ7dbMBaozuXOx1HM61V3+wbNAlkL
+         +tndx23C+gMd01/d6rBC9swXLkwR/9RZbQ6KsluVbq7OdjbdHmelrz22gCHGCiAZ36dF
+         otIg==
+X-Gm-Message-State: AOAM533G7gzApWGtyW1HkeXxnghiEHXppCuKQLaVJyKO9P7gEUnk4AIa
+        iUwdqeKeA4LttgM9uv9u0d8=
+X-Google-Smtp-Source: ABdhPJxmm2fXT+CqTHKLbKnoL9h2nvyj3DpRahFss6PyhtuoOWUmAs/POQ+0B/EFEX06/htv9hKBVw==
+X-Received: by 2002:a2e:9005:: with SMTP id h5mr6752085ljg.59.1605860122921;
+        Fri, 20 Nov 2020 00:15:22 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id p25sm261261lfc.125.2020.11.20.00.15.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 00:15:21 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kg1Zl-0006KK-9f; Fri, 20 Nov 2020 09:15:26 +0100
+Date:   Fri, 20 Nov 2020 09:15:25 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-unisoc@lists.infradead.org, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] iov_iter: optimise iov_iter_npages for bvec
-Message-ID: <20201120081429.GA30801@infradead.org>
-References: <cover.1605827965.git.asml.silence@gmail.com>
- <ab04202d0f8c1424da47251085657c436d762785.1605827965.git.asml.silence@gmail.com>
- <20201120012017.GJ29991@casper.infradead.org>
- <35d5db17-f6f6-ec32-944e-5ecddcbcb0f1@gmail.com>
- <20201120022200.GB333150@T590>
- <e70a3c05-a968-7802-df81-0529eaa7f7b4@gmail.com>
- <20201120025457.GM29991@casper.infradead.org>
+Subject: Re: [PATCH] tty: serial: rad-uart: replace spin_lock_irqsave by
+ spin_lock in hard IRQ
+Message-ID: <X7d7HXBp01JN5It5@localhost>
+References: <1605835613-28359-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120025457.GM29991@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1605835613-28359-1-git-send-email-tiantao6@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 02:54:57AM +0000, Matthew Wilcox wrote:
-> On Fri, Nov 20, 2020 at 02:25:08AM +0000, Pavel Begunkov wrote:
-> > On 20/11/2020 02:22, Ming Lei wrote:
-> > > iov_iter_npages(bvec) still can be improved a bit by the following way:
-> > 
-> > Yep, was doing exactly that, +a couple of other places that are in my way.
+On Fri, Nov 20, 2020 at 09:26:53AM +0800, Tian Tao wrote:
+> The code has been in a irq-disabled context since it is hard IRQ. There
+> is no necessity to do it again.
 > 
-> Are you optimising the right thing here?  Assuming you're looking at
-> the one in do_blockdev_direct_IO(), wouldn't we be better off figuring
-> out how to copy the bvecs directly from the iov_iter into the bio
-> rather than calling dio_bio_add_page() for each page?
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
+>  drivers/tty/serial/rda-uart.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/rda-uart.c b/drivers/tty/serial/rda-uart.c
+> index 85366e0..d6705a0 100644
+> --- a/drivers/tty/serial/rda-uart.c
+> +++ b/drivers/tty/serial/rda-uart.c
+> @@ -406,10 +406,9 @@ static void rda_uart_receive_chars(struct uart_port *port)
+>  static irqreturn_t rda_interrupt(int irq, void *dev_id)
+>  {
+>  	struct uart_port *port = dev_id;
+> -	unsigned long flags;
+>  	u32 val, irq_mask;
+>  
+> -	spin_lock_irqsave(&port->lock, flags);
+> +	spin_lock(&port->lock);
 
-Which is most effectively done by stopping to to use *blockdev_direct_IO
-and switching to iomap instead :)
+This will break with forced irq threading (i.e. "threadirqs") since the
+console code can still end up being called from interrupt context (which
+can result in a deadlock).
+
+>  
+>  	/* Clear IRQ cause */
+>  	val = rda_uart_read(port, RDA_UART_IRQ_CAUSE);
+> @@ -426,7 +425,7 @@ static irqreturn_t rda_interrupt(int irq, void *dev_id)
+>  		rda_uart_send_chars(port);
+>  	}
+>  
+> -	spin_unlock_irqrestore(&port->lock, flags);
+> +	spin_unlock(&port->lock);
+>  
+>  	return IRQ_HANDLED;
+>  }
+
+Johan
