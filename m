@@ -2,64 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7D82BB49F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E1E2BB4AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732175AbgKTSzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:55:16 -0500
-Received: from mga12.intel.com ([192.55.52.136]:60653 "EHLO mga12.intel.com"
+        id S1730053AbgKTS5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:57:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732139AbgKTSzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:55:14 -0500
-IronPort-SDR: vGt8cgmLjUqOy0p5FYfXowlxAybwHIXrPXypSIw2h3+Hfr4uscJbJ2mC+rNpD4BLxks5RPw3WU
- eSTXLsBhWCig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="150788420"
-X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
-   d="scan'208";a="150788420"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 10:55:14 -0800
-IronPort-SDR: AWmO/6KsI/Qp62TUx1W3PMnoqTT2mxLQjlGsttyki7oiQoZNyZopGqWcwpPtVsuwKdGFzhvQ6E
- oMhH1SLTHwXQ==
-X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
-   d="scan'208";a="331416503"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 10:55:11 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kgBZt-008LwO-8M; Fri, 20 Nov 2020 20:56:13 +0200
-Date:   Fri, 20 Nov 2020 20:56:13 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Alban Bedel <albeu@free.fr>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 007/141] gpio: Fix fall-through warnings for Clang
-Message-ID: <20201120185613.GT4077@smile.fi.intel.com>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <9611e213448b27f3f08a010c683d566c712bdbbb.1605896059.git.gustavoars@kernel.org>
+        id S1728378AbgKTS5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:57:37 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F2AD22464;
+        Fri, 20 Nov 2020 18:57:35 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 13:57:33 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
+ kfence: Avoid stalling...)
+Message-ID: <20201120135733.0807c20f@gandalf.local.home>
+In-Reply-To: <20201120181737.GA3301774@elver.google.com>
+References: <20201118225621.GA1770130@elver.google.com>
+        <20201118233841.GS1437@paulmck-ThinkPad-P72>
+        <20201119125357.GA2084963@elver.google.com>
+        <20201119151409.GU1437@paulmck-ThinkPad-P72>
+        <20201119170259.GA2134472@elver.google.com>
+        <20201119184854.GY1437@paulmck-ThinkPad-P72>
+        <20201119193819.GA2601289@elver.google.com>
+        <20201119213512.GB1437@paulmck-ThinkPad-P72>
+        <20201120141928.GB3120165@elver.google.com>
+        <20201120102613.3d18b90e@gandalf.local.home>
+        <20201120181737.GA3301774@elver.google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9611e213448b27f3f08a010c683d566c712bdbbb.1605896059.git.gustavoars@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:25:16PM -0600, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-> warnings by explicitly adding a break and a fallthrough statements
-> instead of just letting the code fall through to the next case.
+On Fri, 20 Nov 2020 19:17:37 +0100
+Marco Elver <elver@google.com> wrote:
 
-Shouldn't this go via GPIO tree?
+> | # cat /sys/kernel/tracing/recursed_functions
+> | trace_selftest_test_recursion_func+0x34/0x48:   trace_selftest_dynamic_test_func+0x4/0x28
+> | el1_irq+0xc0/0x180:     gic_handle_irq+0x4/0x108
+> | gic_handle_irq+0x70/0x108:      __handle_domain_irq+0x4/0x130
+> | __handle_domain_irq+0x7c/0x130: irq_enter+0x4/0x28
+> | trace_rcu_dyntick+0x168/0x190:  rcu_read_lock_sched_held+0x4/0x98
+> | rcu_read_lock_sched_held+0x30/0x98:     rcu_read_lock_held_common+0x4/0x88
+> | rcu_read_lock_held_common+0x50/0x88:    rcu_lockdep_current_cpu_online+0x4/0xd0
+> | irq_enter+0x1c/0x28:    irq_enter_rcu+0x4/0xa8
+> | irq_enter_rcu+0x3c/0xa8:        irqtime_account_irq+0x4/0x198
+> | irq_enter_rcu+0x44/0xa8:        preempt_count_add+0x4/0x1a0
+> | trace_hardirqs_off+0x254/0x2d8: __srcu_read_lock+0x4/0xa0
+> | trace_hardirqs_off+0x25c/0x2d8: rcu_irq_enter_irqson+0x4/0x78
+> | trace_rcu_dyntick+0xd8/0x190:   __traceiter_rcu_dyntick+0x4/0x80
+> | trace_hardirqs_off+0x294/0x2d8: rcu_irq_exit_irqson+0x4/0x78
+> | trace_hardirqs_off+0x2a0/0x2d8: __srcu_read_unlock+0x4/0x88
 
--- 
-With Best Regards,
-Andy Shevchenko
+These look normal. They happen when an interrupt occurs while tracing
+something with interrupts enabled, and the interrupt traces a function
+before it sets the "preempt_count" to reflect that its in a new context.
 
+That is:
+
+	normal_context:
+		func_A();
+			trace_function();
+				<interrupt>
+					irq_enter();
+						trace_function()
+							if (int_interrupt())
+							 [returns false]
+
+					set_preempt_count (in interrupt)
+
+And the recursion detection is tricked into thinking it recursed in the
+same context. The lastest code handles this by allowing one level of
+recursion:
+
+ https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=b02414c8f045ab3b9afc816c3735bc98c5c3d262
+
+-- Steve
 
