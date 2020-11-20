@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A322BAFC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5314B2BAFC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgKTQN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:13:28 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:48850 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727222AbgKTQN2 (ORCPT
+        id S1728523AbgKTQOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728296AbgKTQOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:13:28 -0500
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 0AKGDATV012139;
-        Sat, 21 Nov 2020 01:13:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0AKGDATV012139
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1605888791;
-        bh=iU2E8WqK+GYbABrMQGSxjO38FdbIP5ezM11ClAh2md4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=y6hpSTcyZQur9J8qBkV94ABkicqMtyfdsa3J1XWe3W6CdonlBM71JzlumpvdvcVWc
-         nP1ZGAR6a4hI3246oW+2AABY0w9kNLtYwuOActCIR8ShOO/oFINgZeKRnwAv57cHl8
-         vyk5FZOEn7luPaw9GCfGE4S4Xbl9LajHU8AcTeCfx3sZre8cLjy26Fg6DKLF+KO/hw
-         4lR64aPl3AE+U4QoZsXw2XtGCE0lIEYLylO8FyIlm/WUHcRSZ4rD9g9RMCBzqzZiWj
-         Jd8KtOX0i3RRI4Hlm/pIBOV0dcZBBYDcN97rgEQQ2OhYx/uSlgkrB0t4rKr+yF1zG9
-         mRfFtf27Ttx4A==
-X-Nifty-SrcIP: [209.85.210.170]
-Received: by mail-pf1-f170.google.com with SMTP id 10so8296367pfp.5;
-        Fri, 20 Nov 2020 08:13:10 -0800 (PST)
-X-Gm-Message-State: AOAM531cJ+wP8OxOXFX1TRu7du13ftxOi6ABuVJzDuPB0hxhQyvk2p4h
-        eu9Y1dXWLfAQQ4/183bBJekyh2nl8am7Q3+OUVE=
-X-Google-Smtp-Source: ABdhPJxhmT65Kyzw9ITyap9ViNyzzNdTxYz77+nZczLuZhgcEzQaVPH3QmKIeErf3blDFui4aXgctDj1N5hln7e6TDw=
-X-Received: by 2002:a63:c00b:: with SMTP id h11mr17167737pgg.7.1605888790218;
- Fri, 20 Nov 2020 08:13:10 -0800 (PST)
+        Fri, 20 Nov 2020 11:14:00 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578BCC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 08:14:00 -0800 (PST)
+Received: from zn.tnic (p200300ec2f11ba002f58e87ff3ef848f.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:ba00:2f58:e87f:f3ef:848f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 655451EC04E4;
+        Fri, 20 Nov 2020 17:13:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1605888838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=KtO9yaqvZcz3NUWGPTgeRgf/kR7pds6O5UFlAwADpkQ=;
+        b=R2dKT3/AWv3hTfmPbhgbFl4GN/PVNtgFKLvveM8PAa+A2co4QD2tc05rD+i7SYWmlVWbTL
+        /Wis3G5l9fyaCChzuQ+aGwkE3C5MQXmZA4Yt1NORLtmx/QXW+KAya9Du9m7b+XF+KVcf30
+        jOSl2oG4hdyoHAIX35TOsB9p81q0/s8=
+Date:   Fri, 20 Nov 2020 17:13:51 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Xiaochen Shen <xiaochen.shen@intel.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        tony.luck@intel.com, fenghua.yu@intel.com,
+        reinette.chatre@intel.com, willemb@google.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, pei.p.jia@intel.com
+Subject: Re: [PATCH 1/3] x86/resctrl: Remove superfluous kernfs_get() calls
+ to prevent refcount leak
+Message-ID: <20201120161351.GC712@zn.tnic>
+References: <1604084530-31048-1-git-send-email-xiaochen.shen>
+ <1604084638-31197-1-git-send-email-xiaochen.shen@intel.com>
 MIME-Version: 1.0
-References: <20201102120853.96855-1-dzagorui@cisco.com> <1604929732138.17256@cisco.com>
- <1605704642269.72893@cisco.com>
-In-Reply-To: <1605704642269.72893@cisco.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 21 Nov 2020 01:12:33 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQuoNeMTMqCssT8iHQJOfqwt7NTLHow_4ebrxCZoi_KCg@mail.gmail.com>
-Message-ID: <CAK7LNAQuoNeMTMqCssT8iHQJOfqwt7NTLHow_4ebrxCZoi_KCg@mail.gmail.com>
-Subject: Re: [PATCH v3] kbuild: use -fmacro-prefix-map for .S sources
-To:     "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)" 
-        <dzagorui@cisco.com>
-Cc:     "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1604084638-31197-1-git-send-email-xiaochen.shen@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 10:04 PM Denys Zagorui -X (dzagorui -
-GLOBALLOGIC INC at Cisco) <dzagorui@cisco.com> wrote:
->
-> > ping
->
-> Any comments on this ?
->
-> Thanks,
-> Denys
->
+On Sat, Oct 31, 2020 at 03:03:58AM +0800, Xiaochen Shen wrote:
+> Willem reported growing of kernfs_node_cache entries in slabtop when
+> repeatedly creating and removing resctrl subdirectories as well as when
+> repeatedly mounting and unmounting resctrl filesystem.
+> 
+> On resource group (control as well as monitoring) creation via a mkdir
+> an extra kernfs_node reference is obtained to ensure that the rdtgroup
+> structure remains accessible for the rdtgroup_kn_unlock() calls where it
+> is removed on deletion. The kernfs_node reference count is dropped by
+> kernfs_put() in rdtgroup_kn_unlock().
+> 
+> With the above explaining the need for one kernfs_get()/kernfs_put()
+> pair in resctrl there are more places where a kernfs_node reference is
+> obtained without a corresponding release. The excessive amount of
+> reference count on kernfs nodes will never be dropped to 0 and the
+> kernfs nodes will never be freed in the call paths of rmdir and umount.
+> It leads to reference count leak and kernfs_node_cache memory leak.
+> 
+> Remove the superfluous kernfs_get() calls and expand the existing
+> comments surrounding the remaining kernfs_get()/kernfs_put() pair that
+> remains in use.
+> 
+> Superfluous kernfs_get() calls are removed from two areas:
+> 
+>   (1) In call paths of mount and mkdir, when kernfs nodes for "info",
+>   "mon_groups" and "mon_data" directories and sub-directories are
+>   created, the reference count of newly created kernfs node is set to 1.
+>   But after kernfs_create_dir() returns, superfluous kernfs_get() are
+>   called to take an additional reference.
+> 
+>   (2) kernfs_get() calls in rmdir call paths.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 17eafd076291 ("x86/intel_rdt: Split resource group removal in two")
+> Fixes: 4af4a88e0c92 ("x86/intel_rdt/cqm: Add mount,umount support")
+> Fixes: f3cbeacaa06e ("x86/intel_rdt/cqm: Add rmdir support")
+> Fixes: d89b7379015f ("x86/intel_rdt/cqm: Add mon_data")
+> Fixes: c7d9aac61311 ("x86/intel_rdt/cqm: Add mkdir support for RDT monitoring")
+> Fixes: 5dc1d5c6bac2 ("x86/intel_rdt: Simplify info and base file lists")
+> Fixes: 60cf5e101fd4 ("x86/intel_rdt: Add mkdir to resctrl file system")
+> Fixes: 4e978d06dedb ("x86/intel_rdt: Add "info" files to resctrl file system")
 
+Are those 8(!) Fixes tags supposed to list *all* commits which add those
+wrong kernfs_get() calls?
 
-Sorry for the delay. Now applied.
+-- 
+Regards/Gruss,
+    Boris.
 
-
-
-
-I fixed the first sentence:
-
-Follow-up to a73619a845d5 ("kbuild: use -fmacro-prefix-map to make
-__FILE__ a relative path") commit.
-
-to
-
-Follow-up to commit a73619a845d5 ("kbuild: use -fmacro-prefix-map to
-make __FILE__ a relative path").
-
-
-
-
-
-
-> Assembler sources also use __FILE__
-> macro so this flag should be also apllied to that sources.
-
-I fixed "apllied" to "applied".
-
-
-
-
-Maybe, "that sources" should be "those sources".
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+https://people.kernel.org/tglx/notes-about-netiquette
