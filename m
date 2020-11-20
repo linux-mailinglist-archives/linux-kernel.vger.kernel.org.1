@@ -2,80 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2122BBA5F
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 689FC2BBA65
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728514AbgKTXun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 18:50:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34768 "EHLO
+        id S1728291AbgKTXx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 18:53:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727364AbgKTXun (ORCPT
+        with ESMTP id S1726739AbgKTXx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 18:50:43 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406F8C0613CF;
-        Fri, 20 Nov 2020 15:50:43 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id t37so8585795pga.7;
-        Fri, 20 Nov 2020 15:50:43 -0800 (PST)
+        Fri, 20 Nov 2020 18:53:58 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D71C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 15:53:58 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id y7so9386281pfq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 15:53:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=x+VRrY9R8Fek/ma6fK+h1GJxZ+01lLXYDncUiaHc+18=;
-        b=uX7vzR+xT2SS3BLynmzaH8E5JPpSnpNOZwUopYees7e5PjrCTSYxuhGmlluTYPcm8l
-         kL9ENaX/79ZoJKfrA/zRZXTxDQ6fCzWn6rG01DvrxL6kZSrddwvm4r35IjeSzp7w94/0
-         4LQDU75uXPBsWp/Pvqj/xw2HKkdoEMdOa1eRlby7tUOd2f6UPxvGX/DzGKU2uEUwRqgx
-         RiBflxOwCkb/pL22z9nyeBixGBlS0obVLtejJlu3fNzvAjhrSZkGAWcqOg+qDvq21194
-         jYM0qmcZnVcZyf35QN/0wbmMHUhEpz8MonuZY+1SkIsPwOw4e7rCXDXMbkvRVqdcPRQq
-         L66w==
+        bh=/9QmQzu0viMhe1+E2AuJjw4yABAqeWJl/tuV7zSeb+U=;
+        b=mdmSYKuoJmPQiSSZKAXRHrhaYfKRSQA9hE/wfOsOCkhwS+3+67n+lejlrZY4HtZfn/
+         a2ORoKHB2+RW61Vt9T9zrAHoM1RsQbsuWV47pPf93KFSlEHy1Tfio9hzAUE4BkPNXx+I
+         YITKk0YEENSGCNohJ36jZOmfNM0ry/U9Rv8sczK8LJbtzspnCR2SDBjJ4zad2AR6UovQ
+         Szo2WkElnVp3Pq1aFadmc5JzwZozrsYu/68ODALQuad6JmMLMpwoXKqfBusvVuclgTF+
+         rSwKmAgZg2oXKzT79ocvKhy7QjjLbUii5XJDdT+bt/WFOVYQqnt9FCLWzuGSaXf0zzOP
+         TH/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=x+VRrY9R8Fek/ma6fK+h1GJxZ+01lLXYDncUiaHc+18=;
-        b=mQMbR+6mpuWx+6oHqd/1RekzwNXzO5XF+NRPQ40A3bvOen254IKcTvPoKNnsm4YSDp
-         E77eKvYP+VU8PPGx6FqCUOHx6smTJsqeLRZ0OhDvqEenQxky2C8xYlK0iaSgCigp0IhG
-         T//ByB2dTbiWaWcbUNWb0Uf989xGsarxPVZL4tOU3Z5P+KQUKCUnLaKwV6RNwIkj5jng
-         /K0z5iUh3g2s/POtNdOGIdHkXWKRrOprfSJZgDckfQ/sX52GQqON7NxcVpRCJEFG9UXX
-         u312KZ2LBbHFgvd0wfPWMCentR5KIXRaC1/Lowdc+hzXHoN6RcYfDQeEqCk6VUd25Uv9
-         SAlg==
-X-Gm-Message-State: AOAM533isTdczEBsP4qxHwk9TJUo12a9cpYPXYUj5c9z/I1KAN0H89Vd
-        xhEd1IICPUUXCO4Z9t3Uc3OZzqZH81WJ2vC+WC4=
-X-Google-Smtp-Source: ABdhPJyqk5SI0b4KOczElKitjGAYAnP/+majfWho0/qSwvuapRnSbkpr2QhZdam6bYX/zrA3Ra/qmoEHLyvmQIrzK+o=
-X-Received: by 2002:a17:90a:ff08:: with SMTP id ce8mr12888020pjb.210.1605916242824;
- Fri, 20 Nov 2020 15:50:42 -0800 (PST)
+        bh=/9QmQzu0viMhe1+E2AuJjw4yABAqeWJl/tuV7zSeb+U=;
+        b=ce9M5Wjt+Jn25EUJ48Wb+6svF+ZwRn+bm0NLP9wJCM3kyXxcEdBrEhL1ePj2p7nJLj
+         wRlReP35bQfBHWljn0Xe6aYMeMPm6ccABuwj7M37V86ztkHKbkRaq7x90vEHenOA7i14
+         bqwAIZsxb2e0SCGUlbaQo0dhBPo0cLMkx0Cw/O0spWN2eq6Ts8wYWCb2eXNC+wffe+pd
+         95oBH7sBvH4MG+X9tcf0DVgyXhqKUNbvtmTu15Xo9CxPh3jt6EGHnGB2tmLm+/I8CrLC
+         qIpt+hiuVZNqT9KtwTId+vYlQ6PpdD/IFFpCZM/z4hFjTSApqeqlyZVWYHlQc+ps11Qi
+         A7NA==
+X-Gm-Message-State: AOAM532csKp5YMDP6mY8cLDF0Z93SFfAo/+9lKwX4C79OYHQnE68wy10
+        D9MBpIaS4j3JPrMeIY4/sYRSIfUQeWtxyKrOldrXfA==
+X-Google-Smtp-Source: ABdhPJy2DGSHmfFcAh4bM/VKta4IGQmsyfxYSHlfpKnMfeL7FrQ+44E3UgsHXg0jgCwAXeN0PaduNYVMcO8diBSDC4k=
+X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr13286585pjj.101.1605916438104;
+ Fri, 20 Nov 2020 15:53:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20201120054036.15199-1-ms@dev.tdt.de> <20201120054036.15199-3-ms@dev.tdt.de>
- <CAJht_EONd3+S12upVPk2K3PWvzMLdE3BkzY_7c5gA493NHcGnA@mail.gmail.com>
-In-Reply-To: <CAJht_EONd3+S12upVPk2K3PWvzMLdE3BkzY_7c5gA493NHcGnA@mail.gmail.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Fri, 20 Nov 2020 15:50:31 -0800
-Message-ID: <CAJht_EP_oqCDs6mMThBZNtz4sgpbyQgMhKkHeqfS_7JmfEzfQg@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 2/5] net/lapb: support netdev events
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201118220731.925424-1-samitolvanen@google.com>
+ <CAKwvOd=5PhCTZ-yHr08gPYNEsGEjZa=rDY0-unhkhofjXhqwLQ@mail.gmail.com>
+ <CAMj1kXEVzDi5=uteUAzG5E=j+aTCHEbMxwDfor-s=DthpREpyw@mail.gmail.com>
+ <CAKwvOdmpBNx9iSguGXivjJ03FaN5rgv2oaXZUQxYPdRccQmdyQ@mail.gmail.com> <CAMj1kXEoPEd6GzjL1XuxTPwitbR03BiBEXpAGtUytMj-h=vCkg@mail.gmail.com>
+In-Reply-To: <CAMj1kXEoPEd6GzjL1XuxTPwitbR03BiBEXpAGtUytMj-h=vCkg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 20 Nov 2020 15:53:45 -0800
+Message-ID: <CAKwvOdmk1D0dLDOHEWX=jHpUxUT2JbwgnF62Qv3Rv=coNPadHg@mail.gmail.com>
+Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Alistair Delva <adelva@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 3:11 PM Xie He <xie.he.0141@gmail.com> wrote:
+On Fri, Nov 20, 2020 at 3:30 PM Ard Biesheuvel <ardb@kernel.org> wrote:
 >
-> Should we also handle the NETDEV_UP event here? In previous versions
-> of this patch series you seemed to want to establish the L2 connection
-> on device-up. But in this patch, you didn't handle NETDEV_UP.
+> On Fri, 20 Nov 2020 at 21:19, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+> > On Fri, Nov 20, 2020 at 2:30 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > On Thu, 19 Nov 2020 at 00:42, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > > >
+> > > > Thanks for continuing to drive this series Sami.  For the series,
+> > > >
+> > > > Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > >
+> > > > I did virtualized boot tests with the series applied to aarch64
+> > > > defconfig without CONFIG_LTO, with CONFIG_LTO_CLANG, and a third time
+> > > > with CONFIG_THINLTO.  If you make changes to the series in follow ups,
+> > > > please drop my tested by tag from the modified patches and I'll help
+> > > > re-test.  Some minor feedback on the Kconfig change, but I'll post it
+> > > > off of that patch.
+> > > >
+> > >
+> > > When you say 'virtualized" do you mean QEMU on x86? Or actual
+> > > virtualization on an AArch64 KVM host?
+> >
+> > aarch64 guest on x86_64 host.  If you have additional configurations
+> > that are important to you, additional testing help would be
+> > appreciated.
+> >
 >
-> Maybe on device-up, we need to check if the carrier is up, and if it
-> is, we do the same thing as we do on carrier-up.
+> Could you run this on an actual phone? Or does Android already ship
+> with this stuff?
 
-Are the device up/down status and the carrier up/down status
-independent of each other? If they are, on device-up or carrier-up, we
-only need to try establishing the L2 connection if we see both are up.
+By `this`, if you mean "the LTO series", it has been shipping on
+Android phones for years now, I think it's even required in the latest
+release.
 
-On NETDEV_GOING_DOWN, we can also check the carrier status first and
-if it is down, we don't need to call lapb_disconnect_request.
+If you mean "the LTO series + mainline" on a phone, well there's the
+android-mainline of https://android.googlesource.com/kernel/common/,
+in which this series was recently removed in order to facilitate
+rebasing Android's patches on ToT-mainline until getting the series
+landed upstream.  Bit of a chicken and the egg problem there.
+
+If you mean "the LTO series + mainline + KVM" on a phone; I don't know
+the precise state of aarch64 KVM and Android (Will or Marc would
+know).  We did experiment recently with RockPI's for aach64 KVM, IIRC;
+I think Android is tricky as it still requires A64+A32/T32 chipsets,
+Alistair would know more.  Might be interesting to boot a virtualized
+(or paravirtualized?) guest built with LTO in a host built with LTO
+for sure, but I don't know if we have tried that yet (I think we did
+try LTO guests of android kernels, but I think they were on the stock
+RockPI host BSP image IIRC).
+
+> > > The distinction is important here, given the potential impact of LTO
+> > > on things that QEMU simply does not model when it runs in TCG mode on
+> > > a foreign host architecture.
+
+-- 
+Thanks,
+~Nick Desaulniers
