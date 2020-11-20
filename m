@@ -2,115 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F1B2BA065
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B67B2BA07E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgKTC22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 21:28:28 -0500
-Received: from mga06.intel.com ([134.134.136.31]:43320 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726500AbgKTC22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 21:28:28 -0500
-IronPort-SDR: 6GrYfy0T4dWbtDZL+2IUp7nH8E0IPY18BQ5Iya/teDHSIWciuwqjBEdywGNpm9HT09hTh0u+Wf
- ZH4o2A7EjOwA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="233020669"
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="233020669"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 18:28:27 -0800
-IronPort-SDR: LYLZFbIpxeWq8Zh281iXmWRS3BKvfgEYmEAWRrj5EfIgFBr+KVuRyqJ3pf+1qOelsAC8i1m8Ak
- ROlsVR4Oh4cA==
-X-IronPort-AV: E=Sophos;i="5.78,354,1599548400"; 
-   d="scan'208";a="545268237"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2020 18:28:18 -0800
-Date:   Fri, 20 Nov 2020 10:42:35 +0800
-From:   Oliver Sang <oliver.sang@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kbuild test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        feng tang <feng.tang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@intel.com>,
-        guobing.chen@intel.com, ming.a.chen@intel.com, frank.du@intel.com,
-        Shuhua.Fan@intel.com, wangyang.guo@intel.com,
-        Wenhuan.Huang@intel.com, jessica.ji@intel.com, shan.kang@intel.com,
-        guangli.li@intel.com, tiejun.li@intel.com, yu.ma@intel.com,
-        dapeng1.mi@intel.com, jiebin.sun@intel.com, gengxin.xie@intel.com,
-        fan.zhao@intel.com, philip.li@intel.com
-Subject: Re: [mm/gup] 47e29d32af: phoronix-test-suite.npb.FT.A.total_mop_s
- -45.0% regression
-Message-ID: <20201120024235.GA4755@xsang-OptiPlex-9020>
-References: <20201117024825.GA8169@xsang-OptiPlex-9020>
- <24d9d093-5b7a-9aee-8d61-59c0007a9269@nvidia.com>
- <20201118134952.GE1981@quack2.suse.cz>
- <CAPcyv4g=MFAojCeCST+sF22A+2cetVMFmQuDtu7arEM+0a+Ebw@mail.gmail.com>
+        id S1727162AbgKTCea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 21:34:30 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:55690 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726985AbgKTCe2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 21:34:28 -0500
+X-UUID: 6f86debced76427e9da06cb20af6fb03-20201120
+X-UUID: 6f86debced76427e9da06cb20af6fb03-20201120
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <daoyuan.huang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 152737837; Fri, 20 Nov 2020 10:29:18 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 20 Nov 2020 10:29:08 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 20 Nov 2020 10:29:08 +0800
+From:   Daoyuan Huang <daoyuan.huang@mediatek.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+CC:     Maoguang Meng <maoguang.meng@mediatek.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Landley <rob@landley.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <tfiga@chromium.org>,
+        <drinkcat@chromium.org>, <acourbot@chromium.org>,
+        <pihsun@chromium.org>, <menghui.lin@mediatek.com>,
+        <sj.huang@mediatek.com>, <ben.lok@mediatek.com>,
+        <randy.wu@mediatek.com>, <moudy.ho@mediatek.com>,
+        <srv_heupstream@mediatek.com>
+Subject: [PATCH v4 0/4] media: mediatek: support mdp3 on mt8183 platform
+Date:   Fri, 20 Nov 2020 10:29:02 +0800
+Message-ID: <1605839346-10648-1-git-send-email-daoyuan.huang@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4g=MFAojCeCST+sF22A+2cetVMFmQuDtu7arEM+0a+Ebw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 396CC85A8D0E16EE1F5570B1027F9616E51282698A71B637A4F9EBCC55A77EA42000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 10:17:27AM -0800, Dan Williams wrote:
-> On Wed, Nov 18, 2020 at 5:51 AM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Mon 16-11-20 19:35:31, John Hubbard wrote:
-> > >
-> > > On 11/16/20 6:48 PM, kernel test robot wrote:
-> > > >
-> > > > Greeting,
-> > > >
-> > > > FYI, we noticed a -45.0% regression of phoronix-test-suite.npb.FT.A.total_mop_s due to commit:
-> > > >
-> > >
-> > > That's a huge slowdown...
-> > >
-> > > >
-> > > > commit: 47e29d32afba11b13efb51f03154a8cf22fb4360 ("mm/gup: page->hpage_pinned_refcount: exact pin counts for huge pages")
-> > > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > >
-> > > ...but that commit happened in April, 2020. Surely if this were a serious
-> > > issue we would have some other indication...is this worth following up
-> > > on?? I'm inclined to ignore it, honestly.
-> >
-> > Why this was detected so late is a fair question although it doesn't quite
-> > invalidate the report...
-> 
-> I don't know what specifically happened in this case, perhaps someone
-> from the lkp team can comment? 
+From: daoyuan huang <daoyuan.huang@mediatek.com>
 
-- some extra phoronix test suites are enabled/fixed gradually so we will have
-better coverage
-- we scan kernel releases within the year to baseline the performance, it may
-trigger bisection if one release has regressed and not recovered.
+Changes since v3:
+- Rebase on v5.9-rc1.
+- modify code for review comment from Rob Herring, cancel multiple nodes using
+  same register base situation.
+- control IOMMU port through pm runtime get/put to DMA components' device.
+- SCP(VPU) driver revision.
+- stop queuing jobs(remove flush_workqueue()) after mdp_m2m_release().
+- add computation of plane address with data_offset.
+- fix scale ratio check issue.
+- add default v4l2_format setting.
 
-With this continuous effort, 0-day ci can detect the changes on mainline.
+Changes since v2:
+- modify code for review comment from Tomasz Figa & Alexandre Courbot
+- review comment from Rob Herring will offer code revision in v4, due to
+  it's related to device node modification, will need to modify code
+  architecture
 
-> However, the myth / contention that
-> "surely someone else would have noticed by now" is why the lkp project
-> was launched. Kernels regressed without much complaint and it wasn't
-> until much later in the process, around the time enterprise distros
-> rebased to new kernels, did end users start filing performance loss
-> regression reports. Given -stable kernel releases, 6-7 months is still
-> faster than many end user upgrade cycles to new kernel baselines.
+Changes since v1:
+- modify code for CMDQ v3 API support
+- EC ipi cmd migration
+- fix compliance test fail item (m2m cmd with -f)
+due to there is two problem in runing all format(-f) cmd:
+1. out of memory before test complete
+        Due to capture buffer mmap (refcount + 1) after reqbuf but seems
+        no corresponding munmap called before device close.
+        There are total 12XX items(formats) in format test and each format
+        alloc 8 capture/output buffers.
+2. unceasingly captureBufs() (randomly)
+        Seems the break statement didn't catch the count == 0 situation:
+        In v4l2-test-buffers.cpp, function: captureBufs()
+                        ...
+                        count--;
+                        if (!node->is_m2m && !count)
+                                break;
+        Log is as attachment
+
+I will paste the test result with problem part in another e-mail
+
+Hi,
+
+This is the first version of RFC patch for Media Data Path 3 (MDP3),
+MDP3 is used for scaling and color format conversion.
+support using GCE to write register in critical time limitation.
+support V4L2 m2m device control.
+
+daoyuan huang (4):
+  [v4,1/4] dt-binding: mt8183: Add Mediatek MDP3 dt-bindings
+  [v4,2/4] dts: arm64: mt8183: Add Mediatek MDP3 nodes
+  [v4,3/4] media: platform: Add Mediatek MDP3 driver KConfig
+  [v4,4/4] media: platform: mtk-mdp3: Add Mediatek MDP3 driver
+
+ .../bindings/media/mediatek,mt8183-mdp3.txt   |  208 +++
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  116 ++
+ drivers/media/platform/Kconfig                |   17 +
+ drivers/media/platform/Makefile               |    2 +
+ drivers/media/platform/mtk-mdp3/Makefile      |    7 +
+ drivers/media/platform/mtk-mdp3/isp_reg.h     |   37 +
+ .../media/platform/mtk-mdp3/mdp-platform.h    |   58 +
+ .../media/platform/mtk-mdp3/mdp_reg_ccorr.h   |   75 +
+ .../media/platform/mtk-mdp3/mdp_reg_rdma.h    |  206 +++
+ drivers/media/platform/mtk-mdp3/mdp_reg_rsz.h |  109 ++
+ .../media/platform/mtk-mdp3/mdp_reg_wdma.h    |  125 ++
+ .../media/platform/mtk-mdp3/mdp_reg_wrot.h    |  115 ++
+ .../media/platform/mtk-mdp3/mmsys_config.h    |  188 +++
+ drivers/media/platform/mtk-mdp3/mmsys_mutex.h |   35 +
+ .../media/platform/mtk-mdp3/mmsys_reg_base.h  |   38 +
+ drivers/media/platform/mtk-mdp3/mtk-img-ipi.h |  281 ++++
+ .../media/platform/mtk-mdp3/mtk-mdp3-cmdq.c   |  504 ++++++
+ .../media/platform/mtk-mdp3/mtk-mdp3-cmdq.h   |   54 +
+ .../media/platform/mtk-mdp3/mtk-mdp3-comp.c   | 1420 +++++++++++++++++
+ .../media/platform/mtk-mdp3/mtk-mdp3-comp.h   |  155 ++
+ .../media/platform/mtk-mdp3/mtk-mdp3-core.c   |  269 ++++
+ .../media/platform/mtk-mdp3/mtk-mdp3-core.h   |   86 +
+ .../media/platform/mtk-mdp3/mtk-mdp3-m2m.c    |  795 +++++++++
+ .../media/platform/mtk-mdp3/mtk-mdp3-m2m.h    |   42 +
+ .../media/platform/mtk-mdp3/mtk-mdp3-regs.c   |  748 +++++++++
+ .../media/platform/mtk-mdp3/mtk-mdp3-regs.h   |  373 +++++
+ .../media/platform/mtk-mdp3/mtk-mdp3-vpu.c    |  313 ++++
+ .../media/platform/mtk-mdp3/mtk-mdp3-vpu.h    |   79 +
+ 28 files changed, 6455 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,mt8183-mdp3.txt
+ create mode 100644 drivers/media/platform/mtk-mdp3/Makefile
+ create mode 100644 drivers/media/platform/mtk-mdp3/isp_reg.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mdp-platform.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_ccorr.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_rdma.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_rsz.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_wdma.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_wrot.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mmsys_config.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mmsys_mutex.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mmsys_reg_base.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-img-ipi.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-core.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-m2m.c
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-m2m.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.c
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.h
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-vpu.c
+ create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-vpu.h
+
+-- 
+2.18.0
+
