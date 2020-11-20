@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1D52BA61B
+	by mail.lfdr.de (Postfix) with ESMTP id C857C2BA61C
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727435AbgKTJ1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727312AbgKTJ1a (ORCPT
+        id S1727451AbgKTJ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:27:32 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8568 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727355AbgKTJ1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:27:30 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A45C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:27:29 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id 23so9279263wrc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:27:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ETHeYbN6hBpTG62cbJNz0JDBf9vI0VaNEPAJRWU9xC0=;
-        b=lEfJ1DDqui1+HfYPrsT0dk46sBjS8FTGqAl7VV2pCRfosbO/VdvtXDKsDcqKCCdhbn
-         N545BqEmmJtVMEO61BrL6zHc87uhHuX7MGufM6xFyip8oeKjUo8rL8uxQrpaVv7L2ERw
-         2MQKBA0lHfVfOa85YwhxPmhdVuISu1vIgNpN7nmDk3pBrP8SLXRgLCsrJ90eQmEMgavR
-         FqrzcYPqXu0sJF2ZkffAJBbvaYncDN7SGt2SlxaTpy9MMz73yGPGG+qK0lPxS0Y6tzx3
-         mPzlzA3+bZvrBUO4Nt+xy+VIH3SmL0DqlssAqwSkYKJPBWbfLNTUsCuyoPWM/22DqiOM
-         cCEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ETHeYbN6hBpTG62cbJNz0JDBf9vI0VaNEPAJRWU9xC0=;
-        b=LYvCqIoXqrT3YB3CmZKqI08c1untZHZKcRzrLoyK3TPBj35XTgoqt5o7thGD+nJlsB
-         6XVApWVoij5SSb+2ecNQ0FgmSaAOpYFQfaeiVlsCa1TaE5hzm+z0HltPMcK5HttiFPrA
-         9xdM9aJUrpzL/coSoRxTPaRqhUDaSJbzM9hJx8NRXeqdqtiDegghKIeAAzaSFJWAmxoh
-         Bvry8IkbuDUzt4IdyTpgSBABjxyIDT7beSzBSibNHhFW2n+k90tlSj+XapXC2BXMBSZt
-         gB3EYFKwwaZlbyyiJfhNqgmFmz52ZtE7upMGY22Ar5vHcumIk8YbxKpeH3A76E6mLYXd
-         j9Ng==
-X-Gm-Message-State: AOAM532MDCKhXUN4ySIKW/bLfKl23qI4gCOOh5pJocCk7KBv0heXLAPN
-        e/VdE/aPZBuxtFlqZuk3/qenCA==
-X-Google-Smtp-Source: ABdhPJwFzel9kSZkOmP6r8U5b51jx3UJiaUzkIxD3haslzkIVE8CtmMY4yN939lxl+JNFkDui6j6cA==
-X-Received: by 2002:a5d:4e4c:: with SMTP id r12mr14845723wrt.348.1605864448213;
-        Fri, 20 Nov 2020 01:27:28 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id c5sm4291172wrb.64.2020.11.20.01.27.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 01:27:27 -0800 (PST)
-Date:   Fri, 20 Nov 2020 09:27:24 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        dietmar.eggemann@arm.com, patrick.bellasi@matbug.net,
-        lenb@kernel.org, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com, ionela.voinescu@arm.com
-Subject: Re: [RFC] Documentation/scheduler/schedutil.txt
-Message-ID: <20201120092724.GB2653684@google.com>
-References: <20201120075527.GB2414@hirez.programming.kicks-ass.net>
- <20201120085653.GA3092@hirez.programming.kicks-ass.net>
- <20201120091356.GA2653684@google.com>
- <20201120091904.6zvovj2yxjxtnq2x@vireshk-i7>
+        Fri, 20 Nov 2020 04:27:31 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CcrmB6BLXzLrMn;
+        Fri, 20 Nov 2020 17:27:06 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.144) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 20 Nov 2020
+ 17:27:26 +0800
+Subject: Re: [PATCH 1/1] device-dax: delete a redundancy check in
+ dev_dax_validate_align()
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201120092057.2144-1-thunder.leizhen@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <7ccddd02-e2e6-ec48-43b8-10700285e61c@huawei.com>
+Date:   Fri, 20 Nov 2020 17:27:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120091904.6zvovj2yxjxtnq2x@vireshk-i7>
+In-Reply-To: <20201120092057.2144-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.144]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 20 Nov 2020 at 14:49:04 (+0530), Viresh Kumar wrote:
->     This is unlikely to be an issue on systems where cpufreq policies are
->     shared between multiple CPUs, because in those cases the policy
->     utilization is computed as the maximum of the CPU utilization values
->     over the whole policy and if that turns out to be low, reducing the
->     frequency for the policy most likely is a good idea anyway.
 
-Hmm, I'm not sure I agree with this actually. We may be migrating the
-task to a different policy altogether. And even if we migrate to another
-CPU in the current policy, the task util_avg may be small just because
-it was packed with other tasks on a rq, which means it may not increase
-the util of the destination rq by much.
 
-ISTR Douglas' EM-based schedutil boosting series was addressing that at
-some point, I'll go have a look back at that discussion...
+On 2020/11/20 17:20, Zhen Lei wrote:
+> After we have done the alignment check for the length of each range, the
+> alignment check for dev_dax_size(dev_dax) is no longer needed, because it
+> get the sum of the length of each range.
+
+For example:
+x/M + y/M = (x + y)/M
+If x/M is a integer and y/M is also a integer, then (x + y)/M must be a integer.
+
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  drivers/dax/bus.c | 7 -------
+>  1 file changed, 7 deletions(-)
+> 
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 1efae11d947a..35f9238c0139 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -1109,16 +1109,9 @@ static ssize_t align_show(struct device *dev,
+>  
+>  static ssize_t dev_dax_validate_align(struct dev_dax *dev_dax)
+>  {
+> -	resource_size_t dev_size = dev_dax_size(dev_dax);
+>  	struct device *dev = &dev_dax->dev;
+>  	int i;
+>  
+> -	if (dev_size > 0 && !alloc_is_aligned(dev_dax, dev_size)) {
+> -		dev_dbg(dev, "%s: align %u invalid for size %pa\n",
+> -			__func__, dev_dax->align, &dev_size);
+> -		return -EINVAL;
+> -	}
+> -
+>  	for (i = 0; i < dev_dax->nr_range; i++) {
+>  		size_t len = range_len(&dev_dax->ranges[i].range);
+>  
+> 
+
