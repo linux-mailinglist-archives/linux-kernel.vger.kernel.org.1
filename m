@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F354A2BA4E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0162BA4E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbgKTImF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:42:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55920 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727120AbgKTImF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:42:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605861723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MNOFiQtIQ/Y0rDgNN5kTTR1VqVa93kqccMa8KF0RIG4=;
-        b=GDiMTJsC4HaxfVv0+8YSZSejokk+wM15yKilSV79cAMmGEld8iatqZpL7x05RKawd1r7EA
-        CeEXdJtWgXQaKN9jeEQSbHEYtl0KboYq6AM21k4jrWN51rd55Vz+0E3gxx9SL/z3x0Jdle
-        ZWFxIELplvVBCkbBX8K4Z0O/KzYE2B0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7DECDACBA;
-        Fri, 20 Nov 2020 08:42:03 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 09:42:02 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, song.bao.hua@hisilicon.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 00/21] Free some vmemmap pages of hugetlb page
-Message-ID: <20201120084202.GJ3200@dhcp22.suse.cz>
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
+        id S1727288AbgKTImW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:42:22 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:25728 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725801AbgKTImV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:42:21 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AK8b2i4018746;
+        Fri, 20 Nov 2020 03:42:20 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34td19n9ra-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Nov 2020 03:42:20 -0500
+Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0AK8gIFJ053252
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Fri, 20 Nov 2020 03:42:19 -0500
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 20 Nov 2020 00:42:17 -0800
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 20 Nov 2020 00:42:17 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Fri, 20 Nov 2020 00:42:16 -0800
+Received: from saturn.ad.analog.com ([10.48.65.107])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AK8gFSZ027136;
+        Fri, 20 Nov 2020 03:42:15 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH 1/3] uio: uio_sercos3: use device-managed functions for simple allocs
+Date:   Fri, 20 Nov 2020 10:42:05 +0200
+Message-ID: <20201120084207.50736-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120064325.34492-1-songmuchun@bytedance.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-20_03:2020-11-19,2020-11-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=3
+ impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0 clxscore=1015
+ phishscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ mlxlogscore=842 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011200057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 20-11-20 14:43:04, Muchun Song wrote:
-[...]
+This change converts the simple allocations [kzalloc()] to devm_kzalloc()
+tying the life-time of these objects to the PCI device object.
+It cleans up the error and exit path and bit, and does a minor correction
+that -ENOMEM is returned (vs -ENODEV) in case the 'priv' object cannot be
+allocated.
 
-Thanks for improving the cover letter and providing some numbers. I have
-only glanced through the patchset because I didn't really have more time
-to dive depply into them.
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/uio/uio_sercos3.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-Overall it looks promissing. To summarize. I would prefer to not have
-the feature enablement controlled by compile time option and the kernel
-command line option should be opt-in. I also do not like that freeing
-the pool can trigger the oom killer or even shut the system down if no
-oom victim is eligible.
-
-One thing that I didn't really get to think hard about is what is the
-effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
-invalid when racing with the split. How do we enforce that this won't
-blow up?
-
-I have also asked in a previous version whether the vmemmap manipulation
-should be really unconditional. E.g. shortlived hugetlb pages allocated
-from the buddy allocator directly rather than for a pool. Maybe it
-should be restricted for the pool allocation as those are considered
-long term and therefore the overhead will be amortized and freeing path
-restrictions better understandable.
-
->  Documentation/admin-guide/kernel-parameters.txt |   9 +
->  Documentation/admin-guide/mm/hugetlbpage.rst    |   3 +
->  arch/x86/include/asm/hugetlb.h                  |  17 +
->  arch/x86/include/asm/pgtable_64_types.h         |   8 +
->  arch/x86/mm/init_64.c                           |   7 +-
->  fs/Kconfig                                      |  14 +
->  include/linux/bootmem_info.h                    |  78 +++
->  include/linux/hugetlb.h                         |  19 +
->  include/linux/hugetlb_cgroup.h                  |  15 +-
->  include/linux/memory_hotplug.h                  |  27 -
->  mm/Makefile                                     |   2 +
->  mm/bootmem_info.c                               | 124 ++++
->  mm/hugetlb.c                                    | 163 ++++-
->  mm/hugetlb_vmemmap.c                            | 765 ++++++++++++++++++++++++
->  mm/hugetlb_vmemmap.h                            | 103 ++++
-
-I will need to look closer but I suspect that a non-trivial part of the
-vmemmap manipulation really belongs to mm/sparse-vmemmap.c because the
-split and remapping shouldn't really be hugetlb specific. Sure hugetlb
-knows how to split but all the splitting should be implemented in
-vmemmap proper.
-
->  mm/memory_hotplug.c                             | 116 ----
->  mm/sparse.c                                     |   5 +-
->  17 files changed, 1295 insertions(+), 180 deletions(-)
->  create mode 100644 include/linux/bootmem_info.h
->  create mode 100644 mm/bootmem_info.c
->  create mode 100644 mm/hugetlb_vmemmap.c
->  create mode 100644 mm/hugetlb_vmemmap.h
-
-Thanks!
+diff --git a/drivers/uio/uio_sercos3.c b/drivers/uio/uio_sercos3.c
+index 9658a0887fee..b93a5f8f4cba 100644
+--- a/drivers/uio/uio_sercos3.c
++++ b/drivers/uio/uio_sercos3.c
+@@ -124,16 +124,16 @@ static int sercos3_pci_probe(struct pci_dev *dev,
+ 	struct sercos3_priv *priv;
+ 	int i;
+ 
+-	info = kzalloc(sizeof(struct uio_info), GFP_KERNEL);
++	info = devm_kzalloc(&dev->dev, sizeof(struct uio_info), GFP_KERNEL);
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	priv = kzalloc(sizeof(struct sercos3_priv), GFP_KERNEL);
++	priv = devm_kzalloc(&dev->dev, sizeof(struct sercos3_priv), GFP_KERNEL);
+ 	if (!priv)
+-		goto out_free;
++		return -ENOMEM;
+ 
+ 	if (pci_enable_device(dev))
+-		goto out_free_priv;
++		return -ENODEV;
+ 
+ 	if (pci_request_regions(dev, "sercos3"))
+ 		goto out_disable;
+@@ -174,10 +174,6 @@ static int sercos3_pci_probe(struct pci_dev *dev,
+ 	pci_release_regions(dev);
+ out_disable:
+ 	pci_disable_device(dev);
+-out_free_priv:
+-	kfree(priv);
+-out_free:
+-	kfree(info);
+ 	return -ENODEV;
+ }
+ 
+@@ -193,8 +189,6 @@ static void sercos3_pci_remove(struct pci_dev *dev)
+ 		if (info->mem[i].internal_addr)
+ 			iounmap(info->mem[i].internal_addr);
+ 	}
+-	kfree(info->priv);
+-	kfree(info);
+ }
+ 
+ static struct pci_device_id sercos3_pci_ids[] = {
 -- 
-Michal Hocko
-SUSE Labs
+2.27.0
+
