@@ -2,153 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2F82BA78E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6525D2BA795
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727443AbgKTKiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:38:06 -0500
-Received: from mail-dm6nam10on2065.outbound.protection.outlook.com ([40.107.93.65]:12129
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725824AbgKTKiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:38:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iLvfQGHAF0jn0Ur2oafNckmT6H3ilfbv0Eg1Roudj2FQMR5ct+aOi0nSYxSMS00Ol5ZxWpfp0hSN4P2aNdFuNMqmArh/oSr+VM5vzmGQZOW1S5e+ybKIeiEeKx20xyE5HIv+7kdtw/rRPWZkXhLrAqsVrxkbtM3MG2UbleBK4YOirmK2nYxniwNwGFfY/qH2MDgdJFIxn3FzBDhVcK/mwuceJz23Cdhsu1dVZompSA0mtjiaccBshy6DK0TiFPa/6pUTYWwZGbT47fh4P3vOkwKZqQBtn+hVahhESU34lYQBUcSfLGwDVp1Wb+UNnUk/XvuQV2vMo+/jROYV1bKLFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7HZ+Xmy0aG64QNyaQwc2lH520uMthFUQLvSfTL9KPdM=;
- b=PGBh45CsKNcx9fJ3agB8fyXQIPlZSz7jpiv3cNZQYI1sswkZhZWeVO5eB/zVFUOfyf3pXOCHxGwwOOXeszduop9E0mLwaFBC1lBlHoI92sSGEdCYfFLWGtZyzPyWoQjjD2i2WL+sbyHjhQAXAn/A0ikmDRjNS28Z/wf907SZ5mkWUSuOi0DaWIx7tUvXWn0r/ePbokAtdxPFdCq1LBn1wVd7u7NwehIzxtrCUXLpJ5yFj+ZHf2foky6n3pwGwe7zJ1b/zKN16KGpJA+eVF/rDwQBHYkMk0myY8VFZyLZderPs3gW+2bU7yoyrl6Q11WPwxk5+I50XA+/GSQMyUsXzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7HZ+Xmy0aG64QNyaQwc2lH520uMthFUQLvSfTL9KPdM=;
- b=L67Ev+/KlZfW0M/31CZOR26emC9owWErvBF/rHPYo45WTuJFoS1xqIItdYtkcaQn+z1cmBYUyI2e36zjY7ZgCRiO5Glw7diHoVQEhOvFksNzQyo7ihWsWZUXGKV0mNfeNuVAOs+Ovx078lBlufV9J/CafpxbyIuR3NrzAML8cUY=
-Received: from SA9PR13CA0150.namprd13.prod.outlook.com (2603:10b6:806:27::35)
- by BYAPR02MB5365.namprd02.prod.outlook.com (2603:10b6:a03:66::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 20 Nov
- 2020 10:38:01 +0000
-Received: from SN1NAM02FT019.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:27:cafe::80) by SA9PR13CA0150.outlook.office365.com
- (2603:10b6:806:27::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.13 via Frontend
- Transport; Fri, 20 Nov 2020 10:38:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT019.mail.protection.outlook.com (10.152.72.130) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3589.20 via Frontend Transport; Fri, 20 Nov 2020 10:38:01 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 20 Nov 2020 02:37:47 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Fri, 20 Nov 2020 02:37:47 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org,
- linux-usb@vger.kernel.org,
- p.zabel@pengutronix.de,
- balbi@kernel.org,
- robh+dt@kernel.org,
- gregkh@linuxfoundation.org
-Received: from [172.30.17.109] (port=43496)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1kg3nW-0001A8-AV; Fri, 20 Nov 2020 02:37:46 -0800
-Subject: Re: [PATCH v3 0/2] Add a separate DWC3 OF driver for Xilinx platforms
-To:     Manish Narani <manish.narani@xilinx.com>,
-        <gregkh@linuxfoundation.org>, <robh+dt@kernel.org>,
-        <michal.simek@xilinx.com>, <balbi@kernel.org>,
-        <p.zabel@pengutronix.de>
-CC:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <git@xilinx.com>
-References: <1602162416-28058-1-git-send-email-manish.narani@xilinx.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <e491bc10-96ca-34a9-4e96-ff5701763584@xilinx.com>
-Date:   Fri, 20 Nov 2020 11:37:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727479AbgKTKjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 05:39:11 -0500
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:41611 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725952AbgKTKjK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 05:39:10 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id g3odkqci3WTbog3ogkflSv; Fri, 20 Nov 2020 11:39:04 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1605868744; bh=UJbsoc+m2DQXtat1J+FSEFEQVZTUCPoXOGzxzQw644s=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=kcuAXQ1B/GTzWwQml12T3GbJXUhrFJRX5LaU3qV0GdLQGzXoDChd8SkjAllwPt3zH
+         lub6Gp+k/Kvre6ug0Fa5Abl8/Hrxr0ywrpyek9moKX8pNHcYfPWWCVh4VjaK2tgHsa
+         GkgnglWwjplRJEYBPSj2a8s+e4KZ/ySUEeABdvYY9EcNL3hnaU2R9DFQbBX4AvDwYl
+         v55zKKQOeWUtg0JTeDGQ/aETRbVDYpz0piVOHQi0i4kFvqiTbOOJRECUUwNxNUeFKx
+         yUK2HHoEGu/IzTAWVM6QKCSprtR9qfLYwNS6rKhxbvJQHHGoStiTaI9a0DXd7Pp9sP
+         p9N9Sjv3vSUGg==
+Subject: Re: [PATCH v6 09/17] media/videbuf1|2: Mark follow_pfn usage as
+ unsafe
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Tomasz Figa <tfiga@chromium.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
+ <20201119144146.1045202-10-daniel.vetter@ffwll.ch>
+ <f1f3a1d8-d62a-6e93-afc1-87a8e51081e9@xs4all.nl>
+ <e1f7d30b-2012-0249-66c7-cf9d7d6246ad@xs4all.nl>
+ <CAKMK7uEzFAtr9yxjaxi-kiuZhb+hWT3q6E41OegJr+J2-zkT8w@mail.gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <9035555a-af6b-e2dd-dbad-41ca70235e21@xs4all.nl>
+Date:   Fri, 20 Nov 2020 11:38:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <1602162416-28058-1-git-send-email-manish.narani@xilinx.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAKMK7uEzFAtr9yxjaxi-kiuZhb+hWT3q6E41OegJr+J2-zkT8w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 44ed3098-b629-4714-8b50-08d88d405acd
-X-MS-TrafficTypeDiagnostic: BYAPR02MB5365:
-X-Microsoft-Antispam-PRVS: <BYAPR02MB53650645F64D2CD30EF4086AC6FF0@BYAPR02MB5365.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G2CcN+JPRI7Fv/3ptSV81djWpduz/iwEFjioVLGHb3wugRmDgPpToqfU88Uj7JNOqs8ssKaoacLWzdBaTHzw2l1lIiJTCjGz+58C/vu4JMEQzH65cIA2ee3AND7JkRUpxCFJpZs/Tvul+AdCAthk8QNpwhnVrfsbm6W+kqBkomOK8yiCYQg8MUoB0/j+M85DTCZUeLjd+QqjUiqRmfyhCqw95WmlwMeA3BsWX5YM9UhB15qLvS1hzog0YqNsalSfZiRdzPyHWpXA/QwGigImL1J0ht8wdNkOO9gSFVldGOWLc2I4PLj06qwvU7RXkZzlaVg1SiengU/LJ/AbwKV3a8GFrN91xIxeoFfhgAshtsfwp2UjrSfsiWgPx0VeL3ZfAdHwEnBtxhClNImQsuYdfv80aCPAKSXsXsqbjGZstTQaIHA8IM2b5TYwD+MMYEq6NR/fnxxzhJg7cvDGfBsb7g==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(39860400002)(46966005)(2616005)(26005)(186003)(54906003)(47076004)(356005)(44832011)(316002)(336012)(426003)(83380400001)(2906002)(82740400003)(36906005)(8936002)(7636003)(110136005)(9786002)(31686004)(4326008)(478600001)(107886003)(5660300002)(36756003)(8676002)(82310400003)(70206006)(70586007)(31696002)(6666004)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2020 10:38:01.2958
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44ed3098-b629-4714-8b50-08d88d405acd
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT019.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5365
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfDss0FwL2fqdI2i/Ld6jk5YpMRTothqQOe/9Yd2P1xeqdCmohX7XXb96LZlza31qpcmNMYJwPa81XchZVa1S7q0JJklTc6tNeVGRAAYdr+AbM+yqKuxh
+ HYR4y9BVgxtQf4jgcpuWAISFzS9JO9asb6c6vsbpOUMsoZVmKvX3blng9eCgwzmJEFWVy6RFBjEP+YuywmY0Cbsra6piUdkAnXxA28LQBb4c4pANgMwK3/20
+ bqwtn2oqGhmwrstC4HjCP7+ky7n9e+nny11fIZoZXpYud8ngwlCvv3JO5DEhppBBMyU4wzh6wey7nRYMfQcZKL3tBnPLxG084wGKlaIDxqlPIqzON2yPqUtM
+ BdjovZp1X9w67sDw2YnPtJI+t5QjtH7wDE8HymLGzpo/iSWefSev4TB6DyT8z5q4VwW3nHLvv+AKe+XDfQUaFLrmIHckyHvzBresJqeVQNqozNuU1qToV+l/
+ ErEPsay/ueUS5Hj5b6jRplY77yT/PNOmchZCs7zBkOUY6YONev0nZYJIoJ6WsUMULo52xVhX1Tta1mgMr4SugcE1W1C9YPZPWPqPWe/3L6bhxjXGPcTMvgGG
+ EfWAwqzm38P0NR/GybtBl/gWm/ZJOCla09xasqa1HdLeHPFcGIUr2RcK8vk1M1FL+s1q9wqIJ1k+h51TQcL8ss+oalkYZ+Es/zXbGn8CGFesXujAIbbI9SeX
+ RbG5KoDDqiF0i/z9VR5/dyz1ChlFanbUWs7vGG6zLRPUB94JMiDLcyq0sgkrQslnPzRt5atIb4ACU1K5prEyGZXzYGJ67wH+5Ote3N/ZKwr9ZzDCJOlZyz1Y
+ 7NCIKU+LJw+dc7vff5v2/nfaydMU8yk1Sjiw2vMM60fyIjtgLWiysLdmBcHztcTuIRFp2fTCyaD4dNzasFyk6gZzUhJytpwVEiTZ4cIcT8wwnB8yzHSlynCb
+ PBnOPcalqnNL1YwgL4G+XJik3k/M6qqSrY43N1O21jk+k7JmerrFuMJh03HUnX+RhONUkg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Felipe,
+On 20/11/2020 10:18, Daniel Vetter wrote:
+> On Fri, Nov 20, 2020 at 9:28 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>>
+>> On 20/11/2020 09:06, Hans Verkuil wrote:
+>>> On 19/11/2020 15:41, Daniel Vetter wrote:
+>>>> The media model assumes that buffers are all preallocated, so that
+>>>> when a media pipeline is running we never miss a deadline because the
+>>>> buffers aren't allocated or available.
+>>>>
+>>>> This means we cannot fix the v4l follow_pfn usage through
+>>>> mmu_notifier, without breaking how this all works. The only real fix
+>>>> is to deprecate userptr support for VM_IO | VM_PFNMAP mappings and
+>>>> tell everyone to cut over to dma-buf memory sharing for zerocopy.
+>>>>
+>>>> userptr for normal memory will keep working as-is, this only affects
+>>>> the zerocopy userptr usage enabled in 50ac952d2263 ("[media]
+>>>> videobuf2-dma-sg: Support io userptr operations on io memory").
+>>>>
+>>>> Acked-by: Tomasz Figa <tfiga@chromium.org>
+>>>
+>>> Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>>
+>> Actually, cancel this Acked-by.
+>>
+>> So let me see if I understand this right: VM_IO | VM_PFNMAP mappings can
+>> move around. There is a mmu_notifier that can be used to be notified when
+>> that happens, but that can't be used with media buffers since those buffers
+>> must always be available and in the same place.
+>>
+>> So follow_pfn is replaced by unsafe_follow_pfn to signal that what is attempted
+>> is unsafe and unreliable.
+>>
+>> If CONFIG_STRICT_FOLLOW_PFN is set, then unsafe_follow_pfn will fail, if it
+>> is unset, then it writes a warning to the kernel log but just continues while
+>> still unsafe.
+>>
+>> I am very much inclined to just drop VM_IO | VM_PFNMAP support in the media
+>> subsystem. For vb2 there is a working alternative in the form of dmabuf, and
+>> frankly for vb1 I don't care. If someone really needs this for a vb1 driver,
+>> then they can do the work to convert that driver to vb2.
+>>
+>> I've added Mauro to the CC list and I'll ping a few more people to see what
+>> they think, but in my opinion support for USERPTR + VM_IO | VM_PFNMAP
+>> should just be killed off.
+>>
+>> If others would like to keep it, then frame_vector.c needs a comment before
+>> the 'while' explaining why the unsafe_follow_pfn is there and that using
+>> dmabuf is the proper alternative to use. That will make it easier for
+>> developers to figure out why they see a kernel warning and what to do to
+>> fix it, rather than having to dig through the git history for the reason.
+> 
+> I'm happy to add a comment, but otherwise if you all want to ditch
+> this, can we do this as a follow up on top? There's quite a bit of
+> code that can be deleted and I'd like to not hold up this patch set
+> here on that - it's already a fairly sprawling pain touching about 7
+> different subsystems (ok only 6-ish now since the s390 patch landed).
+> For the comment, is the explanation next to unsafe_follow_pfn not good
+> enough?
 
-On 08. 10. 20 15:06, Manish Narani wrote:
-> This patch series documents the Xilinx Versal DWC3 controller. This also
-> adds a new Xilinx specific driver for adding new features in the future.
+No, because that doesn't mention that you should use dma-buf as a replacement.
+That's really the critical piece of information I'd like to see. That doesn't
+belong in unsafe_follow_pfn, it needs to be in frame_vector.c since it's
+vb2 specific.
+
 > 
-> Changes in v2:
-> 	- Addressed review comments from v1
-> 	- merged normal and runtime suspend resume functions as they are
-> 	  same
-> 	- Improved description of some register operations to avoid
-> 	  confusion
-> 	- Updated commit log for patch 2/2 for better clarity.
+> So ... can I get you to un-cancel your ack?
+
+Hmm, I really would like to see support for this to be dropped completely.
+
+How about this: just replace follow_pfn() by -EINVAL instead of unsafe_follow_pfn().
+
+Add a TODO comment that this code now can be cleaned up a lot. Such a clean up patch
+can be added on top later, and actually that is something that I can do once this
+series has landed.
+
+Regardless, frame_vector.c should mention dma-buf as a replacement in a comment
+since I don't want users who hit this issue to have to dig through git logs
+to find that dma-buf is the right approach.
+
+BTW, nitpick: the subject line of this patch says 'videbuf' instead of 'videobuf'.
+
+Regards,
+
+	Hans
+
 > 
-> Changes in v3:
-> 	- Removed snps,enable-hibernation property from the devicetree
-> 	  binding.
+> Thanks, Daniel
 > 
-> Manish Narani (2):
->   dt-bindings: usb: dwc3-xilinx: Add documentation for Versal DWC3
->     Controller
->   usb: dwc3: Add driver for Xilinx platforms
+>>
+>> Regards,
+>>
+>>         Hans
+>>
+>>>
+>>> Thanks!
+>>>
+>>>       Hans
+>>>
+>>>> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+>>>> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+>>>> Cc: Kees Cook <keescook@chromium.org>
+>>>> Cc: Dan Williams <dan.j.williams@intel.com>
+>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>>> Cc: John Hubbard <jhubbard@nvidia.com>
+>>>> Cc: Jérôme Glisse <jglisse@redhat.com>
+>>>> Cc: Jan Kara <jack@suse.cz>
+>>>> Cc: Dan Williams <dan.j.williams@intel.com>
+>>>> Cc: linux-mm@kvack.org
+>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>> Cc: linux-samsung-soc@vger.kernel.org
+>>>> Cc: linux-media@vger.kernel.org
+>>>> Cc: Pawel Osciak <pawel@osciak.com>
+>>>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+>>>> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+>>>> Cc: Tomasz Figa <tfiga@chromium.org>
+>>>> Cc: Laurent Dufour <ldufour@linux.ibm.com>
+>>>> Cc: Vlastimil Babka <vbabka@suse.cz>
+>>>> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+>>>> Cc: Michel Lespinasse <walken@google.com>
+>>>> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>>>> --
+>>>> v3:
+>>>> - Reference the commit that enabled the zerocopy userptr use case to
+>>>>   make it abundandtly clear that this patch only affects that, and not
+>>>>   normal memory userptr. The old commit message already explained that
+>>>>   normal memory userptr is unaffected, but I guess that was not clear
+>>>>   enough.
+>>>> ---
+>>>>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
+>>>>  drivers/media/v4l2-core/videobuf-dma-contig.c | 2 +-
+>>>>  2 files changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
+>>>> index a0e65481a201..1a82ec13ea00 100644
+>>>> --- a/drivers/media/common/videobuf2/frame_vector.c
+>>>> +++ b/drivers/media/common/videobuf2/frame_vector.c
+>>>> @@ -70,7 +70,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+>>>>                      break;
+>>>>
+>>>>              while (ret < nr_frames && start + PAGE_SIZE <= vma->vm_end) {
+>>>> -                    err = follow_pfn(vma, start, &nums[ret]);
+>>>> +                    err = unsafe_follow_pfn(vma, start, &nums[ret]);
+>>>>                      if (err) {
+>>>>                              if (ret == 0)
+>>>>                                      ret = err;
+>>>> diff --git a/drivers/media/v4l2-core/videobuf-dma-contig.c b/drivers/media/v4l2-core/videobuf-dma-contig.c
+>>>> index 52312ce2ba05..821c4a76ab96 100644
+>>>> --- a/drivers/media/v4l2-core/videobuf-dma-contig.c
+>>>> +++ b/drivers/media/v4l2-core/videobuf-dma-contig.c
+>>>> @@ -183,7 +183,7 @@ static int videobuf_dma_contig_user_get(struct videobuf_dma_contig_memory *mem,
+>>>>      user_address = untagged_baddr;
+>>>>
+>>>>      while (pages_done < (mem->size >> PAGE_SHIFT)) {
+>>>> -            ret = follow_pfn(vma, user_address, &this_pfn);
+>>>> +            ret = unsafe_follow_pfn(vma, user_address, &this_pfn);
+>>>>              if (ret)
+>>>>                      break;
+>>>>
+>>>>
+>>>
+>>
 > 
->  .../devicetree/bindings/usb/dwc3-xilinx.txt   |  17 +-
->  drivers/usb/dwc3/Kconfig                      |   9 +
->  drivers/usb/dwc3/Makefile                     |   1 +
->  drivers/usb/dwc3/dwc3-of-simple.c             |   1 -
->  drivers/usb/dwc3/dwc3-xilinx.c                | 334 ++++++++++++++++++
->  5 files changed, 359 insertions(+), 3 deletions(-)
->  create mode 100644 drivers/usb/dwc3/dwc3-xilinx.c
 > 
 
-Can you please take a look at these patches?
-I see that the first one has been reviewed by Rob already.
-
-Thanks,
-Michal
