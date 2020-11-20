@@ -2,96 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B255D2BB072
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAB12BB073
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730037AbgKTQXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:23:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729999AbgKTQX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:23:27 -0500
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF0252245F;
-        Fri, 20 Nov 2020 16:23:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605889406;
-        bh=TW9QAW2bJjU901D/24EX/NZE33VO0XZUivHwSIXQ8QQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bcQd5vpH+TDAt1JkLCb6v2m7neiC3aKeXnvHVr4qahN2C2bvsakCH27mqsDJYYroA
-         vLTTOXMLaH3m58VfzJu8nfLdyIgpSwVVCT5T7tLv48UY5MDuALgDVm9w4Dg0ADBPfK
-         By2b/8jR4sx+fvtNr98fcmssiENpxxTlx1IuPxQc=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        chenqiwu <chenqiwu@xiaomi.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 6/6] dmaengine: ti: drop of_match_ptr and mark of_device_id table as maybe unused
-Date:   Fri, 20 Nov 2020 17:23:03 +0100
-Message-Id: <20201120162303.482126-6-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201120162303.482126-1-krzk@kernel.org>
-References: <20201120162303.482126-1-krzk@kernel.org>
+        id S1730045AbgKTQXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:23:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730017AbgKTQXY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 11:23:24 -0500
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8907CC061A47
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 08:23:24 -0800 (PST)
+Received: by mail-ua1-x944.google.com with SMTP id r23so3306506uak.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 08:23:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vOo6J2qOaNEsmcSt6ibqCSmyULbkJ5ut9vT5313WIA4=;
+        b=BnDD+UEZp9fE0ahf/zN/kLbG7kjRVUr1faC9KKf98v7DPL1XE0vyh9dxjpCHrS3lNW
+         kKvDMNikzoKSTXwSpuCq2nMSCpe/evgWjYPck5JKJ8+CthvbR0ZNc9v0IupNF+zBlKnE
+         uWG4Vnm7aF8vloRUfGNs1t64C7wzHzCYxkl+1FW8NQnQrHmCwCwd5XrUMJbaJCsjLXkf
+         PDvNljmVdmQyxI1ZTz4Ld366+uXkkI5lh48Nb6TVvQ1syIEF+qmtpYm348qLXzUWJTvt
+         eZGAJVW1RbhW1zWWoyWjl4wJmt5Yp9gZSkDByUKeL3sJfgBeoD9b6u8myXwoWwoCSaXl
+         zRGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vOo6J2qOaNEsmcSt6ibqCSmyULbkJ5ut9vT5313WIA4=;
+        b=GU49RH6f4pN/tQV27STMCsq50xjROwFaURXk2haDYFacWzkczQffS6F4RriyoCCDR5
+         F/XHNa1SRPbwQA6X2OMWwiG4v5YFTzSgpo0sqMvf6LvCOgH2ZfreWiPuEYupBu3wH2eA
+         yKkARgoaPyylr+6d6kOaAG3DZkEJ+Z4oE4zCYTGYHfRWqhkR6y9PgSDre4iYxbxtM5v6
+         yL0MUfuGSh1XN/dSnA8xxxDalQD2G6aOkRO4Gv+/JxIhBOA0Y2glouwhFBHZqqsRmii6
+         U8K3wGyyCT8ISuqnq+QSgcoeFWfxd93s2mi+ek+MN2CwWXq1OGyCt47cE8tFeR/eFrF4
+         3u1A==
+X-Gm-Message-State: AOAM5332oh0T2pYqH94rpeBtwyYdoCl5MJcy5CXugvAYsz7LWDj6ieoF
+        8XG4KtabeM0bsqfI4/Md0D48lBpBTxnjH8p4X6U+aA==
+X-Google-Smtp-Source: ABdhPJzJbx0o+d/bY6jtwZK7GW+lglt9oYk7o/Vt+a1dboyBqZ3CDfKGfXuk6ql3DjjDQQyhV682LGMMj50jprmokXk=
+X-Received: by 2002:ab0:36db:: with SMTP id v27mr12115443uau.66.1605889402882;
+ Fri, 20 Nov 2020 08:23:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201118220731.925424-1-samitolvanen@google.com>
+ <20201118220731.925424-3-samitolvanen@google.com> <CAKwvOdnYTMzaahnBqdNYPz3KMdnkp=jZ4hxiqkTYzM5+BBdezA@mail.gmail.com>
+In-Reply-To: <CAKwvOdnYTMzaahnBqdNYPz3KMdnkp=jZ4hxiqkTYzM5+BBdezA@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 20 Nov 2020 08:23:11 -0800
+Message-ID: <CABCJKucj_jUwoiLc35R7qFe+cNKTWgT+gsCa5pPiY66+1--3Lg@mail.gmail.com>
+Subject: Re: [PATCH v7 02/17] kbuild: add support for Clang LTO
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver can match only via the DT table so the main table should be
-always used and the of_match_ptr does not have any sense (this also
-allows ACPI matching via PRP0001, even though it is not relevant here).
+On Wed, Nov 18, 2020 at 3:49 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Wed, Nov 18, 2020 at 2:07 PM Sami Tolvanen <samitolvanen@google.com> wrote:
+> >
+> > This change adds build system support for Clang's Link Time
+> > Optimization (LTO). With -flto, instead of ELF object files, Clang
+> > produces LLVM bitcode, which is compiled into native code at link
+> > time, allowing the final binary to be optimized globally. For more
+> > details, see:
+> >
+> >   https://llvm.org/docs/LinkTimeOptimization.html
+> >
+> > The Kconfig option CONFIG_LTO_CLANG is implemented as a choice,
+> > which defaults to LTO being disabled. To use LTO, the architecture
+> > must select ARCH_SUPPORTS_LTO_CLANG and support:
+> >
+> >   - compiling with Clang,
+> >   - compiling inline assembly with Clang's integrated assembler,
+> >   - and linking with LLD.
+> >
+> > While using full LTO results in the best runtime performance, the
+> > compilation is not scalable in time or memory. CONFIG_THINLTO
+> > enables ThinLTO, which allows parallel optimization and faster
+> > incremental builds. ThinLTO is used by default if the architecture
+> > also selects ARCH_SUPPORTS_THINLTO:
+> >
+> >   https://clang.llvm.org/docs/ThinLTO.html
+> >
+> > To enable LTO, LLVM tools must be used to handle bitcode files. The
+> > easiest way is to pass the LLVM=1 option to make:
+> >
+> >   $ make LLVM=1 defconfig
+> >   $ scripts/config -e LTO_CLANG
+> >   $ make LLVM=1
+> >
+> > Alternatively, at least the following LLVM tools must be used:
+> >
+> >   CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm
+> >
+> > To prepare for LTO support with other compilers, common parts are
+> > gated behind the CONFIG_LTO option, and LTO can be disabled for
+> > specific files by filtering out CC_FLAGS_LTO.
+> >
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  Makefile                          | 19 +++++++-
+> >  arch/Kconfig                      | 75 +++++++++++++++++++++++++++++++
+> >  include/asm-generic/vmlinux.lds.h | 11 +++--
+> >  scripts/Makefile.build            |  9 +++-
+> >  scripts/Makefile.modfinal         |  9 +++-
+> >  scripts/Makefile.modpost          | 21 ++++++++-
+> >  scripts/link-vmlinux.sh           | 32 +++++++++----
+> >  7 files changed, 158 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 8c8feb4245a6..240560e88d69 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -893,6 +893,21 @@ KBUILD_CFLAGS      += $(CC_FLAGS_SCS)
+> >  export CC_FLAGS_SCS
+> >  endif
+> >
+> > +ifdef CONFIG_LTO_CLANG
+> > +ifdef CONFIG_THINLTO
+> > +CC_FLAGS_LTO   += -flto=thin -fsplit-lto-unit
+> > +KBUILD_LDFLAGS += --thinlto-cache-dir=$(extmod-prefix).thinlto-cache
+> > +else
+> > +CC_FLAGS_LTO   += -flto
+> > +endif
+> > +CC_FLAGS_LTO   += -fvisibility=default
+> > +endif
+> > +
+> > +ifdef CONFIG_LTO
+> > +KBUILD_CFLAGS  += $(CC_FLAGS_LTO)
+> > +export CC_FLAGS_LTO
+> > +endif
+> > +
+> >  ifdef CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_32B
+> >  KBUILD_CFLAGS += -falign-functions=32
+> >  endif
+> > @@ -1473,7 +1488,7 @@ MRPROPER_FILES += include/config include/generated          \
+> >                   *.spec
+> >
+> >  # Directories & files removed with 'make distclean'
+> > -DISTCLEAN_FILES += tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS
+> > +DISTCLEAN_FILES += tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS .thinlto-cache
+> >
+> >  # clean - Delete most, but leave enough to build external modules
+> >  #
+> > @@ -1719,7 +1734,7 @@ PHONY += compile_commands.json
+> >
+> >  clean-dirs := $(KBUILD_EXTMOD)
+> >  clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers $(KBUILD_EXTMOD)/modules.nsdeps \
+> > -       $(KBUILD_EXTMOD)/compile_commands.json
+> > +       $(KBUILD_EXTMOD)/compile_commands.json $(KBUILD_EXTMOD)/.thinlto-cache
+> >
+> >  PHONY += help
+> >  help:
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index 56b6ccc0e32d..a41fcb3ca7c6 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -598,6 +598,81 @@ config SHADOW_CALL_STACK
+> >           reading and writing arbitrary memory may be able to locate them
+> >           and hijack control flow by modifying the stacks.
+> >
+> > +config LTO
+> > +       bool
+> > +
+> > +config ARCH_SUPPORTS_LTO_CLANG
+> > +       bool
+> > +       help
+> > +         An architecture should select this option if it supports:
+> > +         - compiling with Clang,
+> > +         - compiling inline assembly with Clang's integrated assembler,
+> > +         - and linking with LLD.
+> > +
+> > +config ARCH_SUPPORTS_THINLTO
+> > +       bool
+> > +       help
+> > +         An architecture should select this option if it supports Clang's
+> > +         ThinLTO.
+> > +
+> > +config THINLTO
+> > +       bool "Clang ThinLTO"
+> > +       depends on LTO_CLANG && ARCH_SUPPORTS_THINLTO
+> > +       default y
+> > +       help
+> > +         This option enables Clang's ThinLTO, which allows for parallel
+> > +         optimization and faster incremental compiles. More information
+> > +         can be found from Clang's documentation:
+> > +
+> > +           https://clang.llvm.org/docs/ThinLTO.html
+> > +
+> > +         If you say N here, the compiler will use full LTO, which may
+> > +         produce faster code, but building the kernel will be significantly
+> > +         slower as the linker won't efficiently utilize multiple threads.
+> > +
+> > +         If unsure, say Y.
+>
+> I think the order of these new configs makes it so that ThinLTO
+> appears above LTO in menuconfig; I don't like that, and wish it came
+> immediately after.  Does `THINLTO` have to be defined _after_ the
+> choice for LTO_NONE/LTO_CLANG, perhaps?
+>
+> Secondly, I don't like how ThinLTO is a config and not a choice.  If I
+> don't set ThinLTO, what am I getting?  That's a rhetorical question; I
+> know its full LTO, and I guess the help text does talk about the
+> tradeoffs and what you would get.  I guess what's curious to me is
+> "why does it display ThinLTO? Why not FullLTO?"  I can't help but
+> wonder if a kconfig `choice` rather than a `config` would be better
+> here, that way it's more obvious the user is making a choice between
+> ThinLTO vs Full LTO, rather than the current patches which look like
+> "ThinkLTO on/off."
 
-The secondary match of_device_id tables (passed to of_match_node) should
-be marked as maybe unused to fix compile testing (!CONFIG_OF on x86_64)
-warnings:
+Changing the ThinLTO config to a choice and moving it after the main
+LTO config sounds like a good idea to me. I'll see if I can change
+this in v8. Thanks!
 
-    drivers/dma/ti/dma-crossbar.c:125:34: warning:
-        ‘ti_am335x_master_match’ defined but not used [-Wunused-const-variable=]
-    drivers/dma/ti/dma-crossbar.c:22:34: warning:
-        ‘ti_dma_xbar_match’ defined but not used [-Wunused-const-variable=]
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/dma/ti/dma-crossbar.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/dma/ti/dma-crossbar.c b/drivers/dma/ti/dma-crossbar.c
-index 4ba8fa5d9c36..71d24fc07c00 100644
---- a/drivers/dma/ti/dma-crossbar.c
-+++ b/drivers/dma/ti/dma-crossbar.c
-@@ -122,7 +122,7 @@ static void *ti_am335x_xbar_route_allocate(struct of_phandle_args *dma_spec,
- 	return map;
- }
- 
--static const struct of_device_id ti_am335x_master_match[] = {
-+static const struct of_device_id ti_am335x_master_match[] __maybe_unused = {
- 	{ .compatible = "ti,edma3-tpcc", },
- 	{},
- };
-@@ -292,7 +292,7 @@ static const u32 ti_dma_offset[] = {
- 	[TI_XBAR_SDMA_OFFSET] = 1,
- };
- 
--static const struct of_device_id ti_dra7_master_match[] = {
-+static const struct of_device_id ti_dra7_master_match[] __maybe_unused = {
- 	{
- 		.compatible = "ti,omap4430-sdma",
- 		.data = &ti_dma_offset[TI_XBAR_SDMA_OFFSET],
-@@ -460,7 +460,7 @@ static int ti_dma_xbar_probe(struct platform_device *pdev)
- static struct platform_driver ti_dma_xbar_driver = {
- 	.driver = {
- 		.name = "ti-dma-crossbar",
--		.of_match_table = of_match_ptr(ti_dma_xbar_match),
-+		.of_match_table = ti_dma_xbar_match,
- 	},
- 	.probe	= ti_dma_xbar_probe,
- };
--- 
-2.25.1
-
+Sami
