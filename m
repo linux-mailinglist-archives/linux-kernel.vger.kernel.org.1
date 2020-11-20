@@ -2,98 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390502BB50F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:19:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEFC12BB515
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732293AbgKTTQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:16:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732258AbgKTTQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:16:43 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 308AD22240;
-        Fri, 20 Nov 2020 19:16:41 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 14:16:39 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
- kfence: Avoid stalling...)
-Message-ID: <20201120141639.3896a3c8@gandalf.local.home>
-In-Reply-To: <20201120181737.GA3301774@elver.google.com>
-References: <20201118225621.GA1770130@elver.google.com>
-        <20201118233841.GS1437@paulmck-ThinkPad-P72>
-        <20201119125357.GA2084963@elver.google.com>
-        <20201119151409.GU1437@paulmck-ThinkPad-P72>
-        <20201119170259.GA2134472@elver.google.com>
-        <20201119184854.GY1437@paulmck-ThinkPad-P72>
-        <20201119193819.GA2601289@elver.google.com>
-        <20201119213512.GB1437@paulmck-ThinkPad-P72>
-        <20201120141928.GB3120165@elver.google.com>
-        <20201120102613.3d18b90e@gandalf.local.home>
-        <20201120181737.GA3301774@elver.google.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1732307AbgKTTSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730586AbgKTTSU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 14:18:20 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504CBC061A47
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:18:20 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id 81so8137779pgf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:18:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/i9Wp3NyJ2XAt6V6C9rMEOf56CSMVPqB9lvPKpuPC6o=;
+        b=A6bz8MoKhMEpf6tg+2HvalqvDlw1xmOxSg1SO4BbPffCb035fRyi6HeSG7U7LvQT7l
+         xYU+VK7bi8OvfoYUaobXKHp+XtF4j5Voevd9nX72QgtS+cF68Aox8idwsVnML4uYmsyb
+         SZCSt5TLA33olgVKwrlwIfeZ9z5z8JQ/GSR2I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/i9Wp3NyJ2XAt6V6C9rMEOf56CSMVPqB9lvPKpuPC6o=;
+        b=l6Asg+BPdc5SUPfDG8WboR158HslVQ+Fm2ztTacDx3psvqMsxzJvBqM279MLX3BjR/
+         qe1iqrsfv092aFWBmjKjBKetTyejTPtM1RJzlfOfrvbycOTE5P45+T26Er4kawkYUE5f
+         8qKRAa26XrTmzi9vsQY51eSHFOd+spQBB20SdTBsKIg5P96QnthWDi9YK0oBB92l/XRg
+         m5rm+s46DaIfjyjYxGdXuOsV7mSg2FX3WgzPC27SSh9dOqSESZQwvUN0ZTSUDJXQmrUQ
+         m466TyTDeooOkN2vtHwJVffXgC1HbwEp8YBgetd20xexGr2Lb4KNWvdQbB1MiTezkeNb
+         DoFg==
+X-Gm-Message-State: AOAM530hVs8BOiFTDyrHo5+GWHAlOeSUIMk9lAww54sF/c/M9Fj3UFR1
+        dDyCo6xP3QAfX8jYbSV3Wb7wVQ==
+X-Google-Smtp-Source: ABdhPJznhQs1XspFf53XI5p/EZOAG/c4T0kD/aTaNNbMtCtrqvJ764hFSBr91h1gUzYPJVGuU5VyXQ==
+X-Received: by 2002:a63:e41:: with SMTP id 1mr17848400pgo.195.1605899899003;
+        Fri, 20 Nov 2020 11:18:19 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f6sm3933626pgi.70.2020.11.20.11.18.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 11:18:17 -0800 (PST)
+Date:   Fri, 20 Nov 2020 11:18:17 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sedat Dilek <sedat.dilek@gmail.com>
+Subject: Re: [PATCH net] cfg80211: fix callback type mismatches in wext-compat
+Message-ID: <202011201118.8F1A488@keescook>
+References: <20201117205902.405316-1-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117205902.405316-1-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 19:17:37 +0100
-Marco Elver <elver@google.com> wrote:
-
-> > > +++ b/kernel/rcu/Makefile
-> > > @@ -3,6 +3,13 @@
-> > >  # and is generally not a function of system call inputs.
-> > >  KCOV_INSTRUMENT := n
-> > >  
-> > > +ifdef CONFIG_FUNCTION_TRACER
-> > > +CFLAGS_REMOVE_update.o = $(CC_FLAGS_FTRACE)
-> > > +CFLAGS_REMOVE_sync.o = $(CC_FLAGS_FTRACE)
-> > > +CFLAGS_REMOVE_srcutree.o = $(CC_FLAGS_FTRACE)
-> > > +CFLAGS_REMOVE_tree.o = $(CC_FLAGS_FTRACE)
-> > > +endif
-> > > +  
-> > 
-> > Can you narrow it down further? That is, do you really need all of the
-> > above to stop the stalls?  
+On Tue, Nov 17, 2020 at 12:59:02PM -0800, Sami Tolvanen wrote:
+> Instead of casting callback functions to type iw_handler, which trips
+> indirect call checking with Clang's Control-Flow Integrity (CFI), add
+> stub functions with the correct function type for the callbacks.
 > 
-> I tried to reduce it to 1 or combinations of 2 files only, but that
-> didn't work.
+> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-I'm curious if this would help at all?
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2a52f42f64b6..d020ecefd151 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1094,7 +1094,7 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
-  * if the current CPU is not in its idle loop or is in an interrupt or
-  * NMI handler, return true.
-  */
--bool rcu_is_watching(void)
-+notrace bool rcu_is_watching(void)
- {
- 	bool ret;
- 
-Although I don't see it in the recursion list.
-
--- Steve
+-- 
+Kees Cook
