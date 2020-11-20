@@ -2,96 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C182BA48A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711AF2BA493
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgKTIW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:22:59 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:33231 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbgKTIW7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:22:59 -0500
-Received: by mail-lf1-f68.google.com with SMTP id l11so12297973lfg.0;
-        Fri, 20 Nov 2020 00:22:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=igNyjk3ZPx8gip3TWBwYGkCHE1bwLNjhy25vHgmoofM=;
-        b=ntrnyXrNEEaeUfDL8GLWp4xNBCDXlR3btQrEPT2eIsp7Jtxblf+y+XahrsRcywrvHq
-         qIoeqiQvZqj4jaL1tgw1hPqCEIfOrsWr3ZAJalr6BRhWU8jXi/hWrRp98ratIE8zgGvg
-         b4R3INVaGF9Xx1Sic+oJgeqgqMlq9CTVpMCISFb0Pd+rrQYKkUWS6BdAm3hq75l047He
-         WFrywV2JgZM7n28jjXpuNOCqWFq+IerLjaG3vSmobmqdvLxEscfIdlsFUEhTzcXkwzQe
-         XDkmrtG89F8whwFWDW3ylokdnJfMLmVpa0waMsvkkBoRLgSkFY4N+/yJOntVuR3sRO0W
-         4Vzw==
-X-Gm-Message-State: AOAM530VbRBr47c8zoU2pmFqS/jwarfn2BY5BoAtFHyQ+uhwVduTbY/d
-        dRBMFErh0myZsdz8n8afzE8mP552sZCVaA==
-X-Google-Smtp-Source: ABdhPJzOp+eccDhMRSlMLj+WI/oOOIjtCIyDA73IFZ4z9h1b+/Wws70IvzKvmw3L9gkeUZvmlfMgEw==
-X-Received: by 2002:a19:e01b:: with SMTP id x27mr2881996lfg.510.1605860577080;
-        Fri, 20 Nov 2020 00:22:57 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id v16sm220722ljj.0.2020.11.20.00.22.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 00:22:56 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kg1h6-0006VH-Ax; Fri, 20 Nov 2020 09:23:00 +0100
-Date:   Fri, 20 Nov 2020 09:23:00 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org, afaerber@suse.de,
-        manivannan.sadhasivam@linaro.org, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: serial: replace spin_lock_irqsave by spin_lock in
- hard IRQ
-Message-ID: <X7d85DKvisjA3nYv@localhost>
-References: <1605776489-16283-1-git-send-email-tiantao6@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605776489-16283-1-git-send-email-tiantao6@hisilicon.com>
+        id S1727137AbgKTIYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:24:02 -0500
+Received: from smtp25.cstnet.cn ([159.226.251.25]:58928 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725952AbgKTIYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:24:01 -0500
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-05 (Coremail) with SMTP id zQCowABnepwTfbdfzxRbAQ--.19873S2;
+        Fri, 20 Nov 2020 16:23:48 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
+        jani.nikula@intel.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] video: goldfishfb: remove casting dma_alloc_coherent
+Date:   Fri, 20 Nov 2020 08:23:44 +0000
+Message-Id: <20201120082344.8623-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowABnepwTfbdfzxRbAQ--.19873S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw15CFW5tw43Kw1DWw1UGFg_yoWfWrbEkF
+        WkuF97W348Jrs5Wrn7t3y5Cryqkr95Z3Z7uFnrKrWaq347ur15Way7Zrn5G3yUWw4jgFZ8
+        Kr90krW7Aw1fujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb28YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r43MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j4yxiUUUUU=
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQYGA102ZuqQ7AAAsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 05:01:29PM +0800, Tian Tao wrote:
-> The code has been in a irq-disabled context since it is hard IRQ. There
-> is no necessity to do it again.
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/tty/serial/owl-uart.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
-> index c149f8c3..472fdaf 100644
-> --- a/drivers/tty/serial/owl-uart.c
-> +++ b/drivers/tty/serial/owl-uart.c
-> @@ -251,10 +251,9 @@ static void owl_uart_receive_chars(struct uart_port *port)
->  static irqreturn_t owl_uart_irq(int irq, void *dev_id)
->  {
->  	struct uart_port *port = dev_id;
-> -	unsigned long flags;
->  	u32 stat;
->  
-> -	spin_lock_irqsave(&port->lock, flags);
-> +	spin_lock(&port->lock);
+Remove casting the values returned by dma_alloc_coherent.
 
-Same thing here; this will break with forced irq threading (i.e.
-"threadirqs") since the console code can still end up being called from
-interrupt context.
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/video/fbdev/goldfishfb.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
->  	stat = owl_uart_read(port, OWL_UART_STAT);
->  
-> @@ -268,7 +267,7 @@ static irqreturn_t owl_uart_irq(int irq, void *dev_id)
->  	stat |= OWL_UART_STAT_RIP | OWL_UART_STAT_TIP;
->  	owl_uart_write(port, stat, OWL_UART_STAT);
->  
-> -	spin_unlock_irqrestore(&port->lock, flags);
-> +	spin_unlock(&port->lock);
->  
->  	return IRQ_HANDLED;
->  }
+diff --git a/drivers/video/fbdev/goldfishfb.c b/drivers/video/fbdev/goldfishfb.c
+index 9c83ec3f8e1f..c2f386b35617 100644
+--- a/drivers/video/fbdev/goldfishfb.c
++++ b/drivers/video/fbdev/goldfishfb.c
+@@ -238,8 +238,7 @@ static int goldfish_fb_probe(struct platform_device *pdev)
+ 	fb->fb.var.blue.length = 5;
+ 
+ 	framesize = width * height * 2 * 2;
+-	fb->fb.screen_base = (char __force __iomem *)dma_alloc_coherent(
+-						&pdev->dev, framesize,
++	fb->fb.screen_base = dma_alloc_coherent(&pdev->dev, framesize,
+ 						&fbpaddr, GFP_KERNEL);
+ 	pr_debug("allocating frame buffer %d * %d, got %p\n",
+ 					width, height, fb->fb.screen_base);
+-- 
+2.17.1
 
-Johan
