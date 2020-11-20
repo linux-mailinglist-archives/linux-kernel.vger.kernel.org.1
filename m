@@ -2,135 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D242BA68F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 023472BA690
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727181AbgKTJui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:50:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgKTJuh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:50:37 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1C6C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:50:37 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 142so9383502ljj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:50:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v+lvM0oe2csxAdgkijCshZJQ9aSiN+9+WmHYhC9WJtA=;
-        b=qtMggYAdJf1aw4+cMpfp/iom82fLnRQp6EBvBByIIavdGTqYBTerpCmF6Bkn0HlXfy
-         9ODbKv0z1uWs0g8Wzcdkeqwe7Jq3wFv132D0+fgkw4T1YT3EC6b2DlsouJ6Fah7uvBoz
-         WqYY2Z58ts/+lxxErpcIkuSSVOq6HfrCNYAio+odE6ORDsrSqUgtp8fPuIulyzCzDcXw
-         kuHBBeAOw3kKoh7Ui8H25NTALqb+cMWmPHq2+zRLQ21IavnzdLcK3X9ANSq/14ymK30L
-         MeycMwP6XNdd1ZJiTEwnuAxdek8Qvdpnjwv3GJvJ4Cc622BUBeh7Srfbrw5KuRZZUupJ
-         Lo/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v+lvM0oe2csxAdgkijCshZJQ9aSiN+9+WmHYhC9WJtA=;
-        b=UvR0RiYL4idTITNoRw8oFf6Vi+aEQMEcHjizVDbwVzVfWhPXEXyQdVM/wl3Y0bfMuZ
-         CjMKxrqKOg654ziZ2ZPocxKv/UocYl5tYhN9SAAnmbeT/aUbF/4Vpz1vQnNdH9uoh3Cx
-         W81vXIod+QdQdpEn5LukoLHdu1tOTK88d5GrSZ/SGxYttwz8oQCd6lYQEa1xulwgJjsx
-         c2brzmXuopfQhZbmjHHUwNgkWrSinB+2CvDiTpNN25UPDNmeY4oAuKVCAyeJixUKdqJ9
-         JqX2XgOzhMZumyGaNUaf2Q3wnq9RDlSVy+J1JXXzAhXhy7aO7T8g1fWTnkVpGqnhfYXu
-         Pgvg==
-X-Gm-Message-State: AOAM533zMWc7vC3KHNi6wL0Dqp/n45SG7u4WwIePE0pbzfYXw9hCn8wQ
-        LukoY/DDdIHMfGEQ8Hm7R115vXr1BBdOFOboipc=
-X-Google-Smtp-Source: ABdhPJyW/LZr4X9CYLjbuFt8en5R66Y7CjYyYmY9uPKecVPFtsgX++l7o3f2yu2M+CANSzxoxSzmK25HTlnKLb9HLvs=
-X-Received: by 2002:a2e:54e:: with SMTP id 75mr7390121ljf.381.1605865835824;
- Fri, 20 Nov 2020 01:50:35 -0800 (PST)
+        id S1727239AbgKTJu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:50:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:45952 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725809AbgKTJu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:50:58 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FF871042;
+        Fri, 20 Nov 2020 01:50:57 -0800 (PST)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BD123F70D;
+        Fri, 20 Nov 2020 01:50:54 -0800 (PST)
+Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
+To:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>
+Cc:     Peter Maydell <peter.maydell@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Haibo Xu <Haibo.Xu@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        James Morse <james.morse@arm.com>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>
+References: <20201119153901.53705-1-steven.price@arm.com>
+ <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
+ <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
+ <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
+Date:   Fri, 20 Nov 2020 09:50:53 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAFcO6XN=cd=_K_2AY9OL7f+HWsazY-nJ81Ufrw4azvkjj-Mpng@mail.gmail.com>
- <e8c8ef27-1f09-40b5-e5e4-facfcc9956dd@oracle.com> <CAFcO6XMhrhJXWjRymKUWgFUov6OV7fTk-Nu9Tq=kOyPTMRnTug@mail.gmail.com>
- <298485e2-01de-048d-5515-44ac254167e4@oracle.com>
-In-Reply-To: <298485e2-01de-048d-5515-44ac254167e4@oracle.com>
-From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date:   Fri, 20 Nov 2020 17:50:24 +0800
-Message-ID: <CAFcO6XOOOCLwdcK3enSV3Ap-PZmY8RTu2ifgKRJX+pdmhaq5uA@mail.gmail.com>
-Subject: Re: UBSAN: array-index-out-of-bounds in dbAdjTree
-To:     Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You are welcome and have you submitted the patch to linux upstream ?
-If you have no time do that and I can do it.
+On 19/11/2020 19:11, Marc Zyngier wrote:
+> On 2020-11-19 18:42, Andrew Jones wrote:
+>> On Thu, Nov 19, 2020 at 03:45:40PM +0000, Peter Maydell wrote:
+>>> On Thu, 19 Nov 2020 at 15:39, Steven Price <steven.price@arm.com> wrote:
+>>> > This series adds support for Arm's Memory Tagging Extension (MTE) to
+>>> > KVM, allowing KVM guests to make use of it. This builds on the 
+>>> existing
+>>> > user space support already in v5.10-rc1, see [1] for an overview.
+>>>
+>>> > The change to require the VMM to map all guest memory PROT_MTE is
+>>> > significant as it means that the VMM has to deal with the MTE tags 
+>>> even
+>>> > if it doesn't care about them (e.g. for virtual devices or if the VMM
+>>> > doesn't support migration). Also unfortunately because the VMM can
+>>> > change the memory layout at any time the check for PROT_MTE/VM_MTE has
+>>> > to be done very late (at the point of faulting pages into stage 2).
+>>>
+>>> I'm a bit dubious about requring the VMM to map the guest memory
+>>> PROT_MTE unless somebody's done at least a sketch of the design
+>>> for how this would work on the QEMU side. Currently QEMU just
+>>> assumes the guest memory is guest memory and it can access it
+>>> without special precautions...
+>>>
+>>
+>> There are two statements being made here:
+>>
+>> 1) Requiring the use of PROT_MTE when mapping guest memory may not fit
+>>    QEMU well.
+>>
+>> 2) New KVM features should be accompanied with supporting QEMU code in
+>>    order to prove that the APIs make sense.
+>>
+>> I strongly agree with (2). While kvmtool supports some quick testing, it
+>> doesn't support migration. We must test all new features with a migration
+>> supporting VMM.
+>>
+>> I'm not sure about (1). I don't feel like it should be a major problem,
+>> but (2).
 
-On Sun, Nov 15, 2020 at 12:17 AM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
->
-> Thanks for reporting and testing this!
->
-> Shaggy
->
-> On 11/14/20 7:55 AM, butt3rflyh4ck wrote:
-> > Yes, I have tested the patch, it seem to fix the problem.
-> >
-> > Regard,
-> >  butt3rflyh4ck.
-> >
-> > On Sat, Nov 14, 2020 at 5:16 AM Dave Kleikamp <dave.kleikamp@oracle.com> wrote:
-> >>
-> >> On 10/8/20 12:00 PM, butt3rflyh4ck wrote:
-> >>> I report a array-index-out-of-bounds bug (in linux-5.9.0-rc6) found by
-> >>> kernel fuzz.
-> >>>
-> >>> kernel config: https://github.com/butterflyhack/syzkaller-fuzz/blob/master/v5.9.0-rc6-config
-> >>>
-> >>> and can reproduce.
-> >>>
-> >>> the dmtree_t is that
-> >>> typedef union dmtree {
-> >>> struct dmaptree t1;
-> >>> struct dmapctl t2;
-> >>> } dmtree_t;
-> >>>
-> >>> the dmaptree is that
-> >>> struct dmaptree {
-> >>> __le32 nleafs; /* 4: number of tree leafs */
-> >>> __le32 l2nleafs; /* 4: l2 number of tree leafs */
-> >>> __le32 leafidx; /* 4: index of first tree leaf */
-> >>> __le32 height; /* 4: height of the tree */
-> >>> s8 budmin; /* 1: min l2 tree leaf value to combine */
-> >>> s8 stree[TREESIZE]; /* TREESIZE: tree */
-> >>> u8 pad[2]; /* 2: pad to word boundary */
-> >>> };
-> >>> the TREESIZE is totally 341, but the leafidx type is __le32.
-> >>
-> >> Does this patch fix the problem?
-> >>
-> >> jfs: Fix array index bounds check in dbAdjTree
-> >>
-> >> Bounds checking tools can flag a bug in dbAdjTree() for an array index
-> >> out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
-> >> both structures dmaptree and dmapctl, use the larger array to eliminate
-> >> the false positive.
-> >>
-> >> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-> >> ---
-> >>  fs/jfs/jfs_dmap.h | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/jfs/jfs_dmap.h b/fs/jfs/jfs_dmap.h
-> >> index 29891fad3f09..aa03a904d5ab 100644
-> >> --- a/fs/jfs/jfs_dmap.h
-> >> +++ b/fs/jfs/jfs_dmap.h
-> >> @@ -183,7 +183,7 @@ typedef union dmtree {
-> >>  #define        dmt_leafidx     t1.leafidx
-> >>  #define        dmt_height      t1.height
-> >>  #define        dmt_budmin      t1.budmin
-> >> -#define        dmt_stree       t1.stree
-> >> +#define        dmt_stree       t2.stree
-> >>
-> >>  /*
-> >>   *     on-disk aggregate disk allocation map descriptor.
-> >> --
-> >> 2.29.2
-> >>
+(1) seems to be contentious whichever way we go. Either PROT_MTE isn't 
+required in which case it's easy to accidentally screw up migration, or 
+it is required in which case it's difficult to handle normal guest 
+memory from the VMM. I get the impression that probably I should go back 
+to the previous approach - sorry for the distraction with this change.
+
+(2) isn't something I'm trying to skip, but I'm limited in what I can do 
+myself so would appreciate help here. Haibo is looking into this.
+
+>>
+>> I'd be happy to help with the QEMU prototype, but preferably when there's
+>> hardware available. Has all the current MTE testing just been done on
+>> simulators? And, if so, are there regression tests regularly running on
+>> the simulators too? And can they test migration? If hardware doesn't
+>> show up quickly and simulators aren't used for regression tests, then
+>> all this code will start rotting from day one.
+
+As Marc says, hardware isn't available. Testing is either via the Arm 
+FVP model (that I've been using for most of my testing) or QEMU full 
+system emulation.
+
+> 
+> While I agree with the sentiment, the reality is pretty bleak.
+> 
+> I'm pretty sure nobody will ever run a migration on emulation. I also doubt
+> there is much overlap between MTE users and migration users, unfortunately.
+> 
+> No HW is available today, and when it becomes available, it will be in
+> the form of a closed system on which QEMU doesn't run, either because
+> we are locked out of EL2 (as usual), or because migration is not part of
+> the use case (like KVM on Android, for example).
+> 
+> So we can wait another two (five?) years until general purpose HW becomes
+> available, or we start merging what we can test today. I'm inclined to
+> do the latter.
+> 
+> And I think it is absolutely fine for QEMU to say "no MTE support with KVM"
+> (we can remove all userspace visibility, except for the capability).
+
+What I'm trying to achieve is a situation where KVM+MTE without 
+migration works and we leave ourselves a clear path where migration can 
+be added. With hindsight I think this version of the series was a wrong 
+turn - if we return to not requiring PROT_MTE then we have the following 
+two potential options to explore for migration in the future:
+
+  * The VMM can choose to enable PROT_MTE if it needs to, and if desired 
+we can add a flag to enforce this in the kernel.
+
+  * If needed a new kernel interface can be provided to fetch/set tags 
+from guest memory which isn't mapped PROT_MTE.
+
+Does this sound reasonable?
+
+I'll clean up the set_pte_at() change and post a v6 later today.
