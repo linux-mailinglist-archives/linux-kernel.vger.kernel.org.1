@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5502BB86A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DC72BB876
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728388AbgKTVgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:36:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727248AbgKTVgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:36:21 -0500
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0720F2237B;
-        Fri, 20 Nov 2020 21:36:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605908180;
-        bh=1rzRLgdpZdI/PWxav/ixRoMIL2da2T/gEM+OQBevwqY=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=CIZEaTqeAUy4sehhHduWQSnyEpi4pM2TWmjPaIyZDGAmEJNv1GMd/FPufJreF2xoS
-         O2nwVi2iS1WmWUMCGDnKMfCIto23AU3zT+U9/br1RPw3sgrKPZjbAlr3CTabqjkKP1
-         X6vIOhd8p5Ed0hDEgEieOy6SvSti5HQAAv82NA+c=
-Date:   Fri, 20 Nov 2020 21:35:59 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-In-Reply-To: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
-References: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
-Subject: Re: [RFC PATCH] spi: Take the SPI IO-mutex in the spi_setup() method
-Message-Id: <160590815903.48662.5764722048038617376.b4-ty@kernel.org>
+        id S1728084AbgKTVin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:38:43 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:60948 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727905AbgKTVim (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 16:38:42 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AKLc9ED004163;
+        Fri, 20 Nov 2020 21:38:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=vdgWyMqTZ/KgANno+C5rCsxsLffEg7/4wEFhdg4BzwI=;
+ b=hjCAAPiQuGKgg9PQlmF2CEhfXgsK4V3IL0TBllq3pwdLW2cAsCBNqTQ4ThGfPvnQoh9+
+ V7EbbfgvR6mElEDy6mt+/BayXJ+D9umRbQoMUux/U76sqn2bBS0eFkGWVhKyhmvo+iOW
+ pOZGAsOecys9/DjyqOootIsFGCbj54uTsMShNy2TgH7R72HHP4isQNzlEyT35/1CmhDI
+ JCsQZTzIA37BdmeXrTiRI13i2DeCcMcrOP56wP6TIXdMpjjWdE4ef5e6oK3KN5BTnDFc
+ Ak9rAB4fR9ngZI1whbbshi5ybA/yEtPOObnfChfOccclqBnRcR5YseEhI/aYwHBhJ2g3 3Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34t76mcr2p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Nov 2020 21:38:31 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AKLVUlF003267;
+        Fri, 20 Nov 2020 21:36:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 34umd3yqg2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Nov 2020 21:36:31 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AKLaREe006534;
+        Fri, 20 Nov 2020 21:36:28 GMT
+Received: from [10.74.102.87] (/10.74.102.87)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 20 Nov 2020 13:36:27 -0800
+Subject: Re: [PATCH 058/141] xen-blkfront: Fix fall-through warnings for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <33057688012c34dd60315ad765ff63f070e98c0c.1605896059.git.gustavoars@kernel.org>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <e8d67ea1-3d0d-509a-a2f1-cf1758bb373f@oracle.com>
+Date:   Fri, 20 Nov 2020 16:36:26 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <33057688012c34dd60315ad765ff63f070e98c0c.1605896059.git.gustavoars@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9811 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011200143
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9811 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1011 mlxlogscore=999
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011200143
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 12:45:17 +0300, Serge Semin wrote:
-> I've discovered that due to the recent commit 49d7d695ca4b ("spi: dw:
-> Explicitly de-assert CS on SPI transfer completion") a concurrent usage of
-> the spidev devices with different chip-selects causes the "SPI transfer
-> timed out" error. The root cause of the problem has turned to be in a race
-> condition of the SPI-transfer execution procedure and the spi_setup()
-> method being called at the same time. In particular in calling the
-> spi_set_cs(false) while there is an SPI-transfer being executed. In my
-> case due to the commit cited above all CSs get to be switched off by
-> calling the spi_setup() for /dev/spidev0.1 while there is an concurrent
-> SPI-transfer execution performed on /dev/spidev0.0. Of course a situation
-> of the spi_setup() being called while there is an SPI-transfer being
-> executed for two different SPI peripheral devices of the same controller
-> may happen not only for the spidev driver, but for instance for MMC SPI +
-> some another device, or spi_setup() being called from an SPI-peripheral
-> probe method while some other device has already been probed and is being
-> used by a corresponding driver...
-> 
-> [...]
 
-Applied to
+On 11/20/20 1:32 PM, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of letting the code fall
+> through to the next case.
+>
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/block/xen-blkfront.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+> index 48629d3433b4..34b028be78ab 100644
+> --- a/drivers/block/xen-blkfront.c
+> +++ b/drivers/block/xen-blkfront.c
+> @@ -2462,6 +2462,7 @@ static void blkback_changed(struct xenbus_device *dev,
+>  			break;
+>  		if (talk_to_blkback(dev, info))
+>  			break;
+> +		break;
+>  	case XenbusStateInitialising:
+>  	case XenbusStateInitialised:
+>  	case XenbusStateReconfiguring:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Thanks!
+Reviewed-by Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
-[1/1] spi: Take the SPI IO-mutex in the spi_setup() method
-      commit: 4fae3a58ab59d8a286864d61fe1846283a0316f2
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+(for patch 138 as well)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Although I thought using 'fallthrough' attribute was the more common approach.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
 
-Thanks,
-Mark
+-boris
+
