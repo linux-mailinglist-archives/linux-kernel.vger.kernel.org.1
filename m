@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B12C2BA407
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AF72BA42B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727048AbgKTH4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:56:37 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:12586 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725768AbgKTH4h (ORCPT
+        id S1726894AbgKTIAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:00:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24995 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725944AbgKTIAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:56:37 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AK7sZqt011156;
-        Fri, 20 Nov 2020 02:56:35 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34t9ybwhpx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Nov 2020 02:56:35 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0AK7uYCJ034921
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Fri, 20 Nov 2020 02:56:34 -0500
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 20 Nov 2020 02:56:33 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 20 Nov 2020 02:56:33 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Fri, 20 Nov 2020 02:56:33 -0500
-Received: from saturn.ad.analog.com ([10.48.65.107])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AK7uUct017423;
-        Fri, 20 Nov 2020 02:56:31 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <gregkh@linuxfoundation.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 2/2] uio: uio_dmem_genirq: finalize conversion of probe to devm_ handlers
-Date:   Fri, 20 Nov 2020 09:56:25 +0200
-Message-ID: <20201120075625.12272-2-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201120075625.12272-1-alexandru.ardelean@analog.com>
-References: <20201120075625.12272-1-alexandru.ardelean@analog.com>
+        Fri, 20 Nov 2020 03:00:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605859208;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=N2xPbyKm5kWucgRMomxf8Rd7DQvx68gwcIIgnF4Qsb0=;
+        b=e81QCtJFJIemUmOHJbLSX6twNOLDJEOxQLeU2NXiBN1oflJLTFJ7NLbxVmlnMv+JFzHGlU
+        ZSrlx6O31YyxHvyrOgoEbeTeCycNb58jjsLjMDkqZab+cbYsiayxDBiR9UO8iuAp22NztR
+        5ozyL4zZfM5wwJ8yNW5HGGbYMz/0pvM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-EchVDhMNOPeNgw6Nsp9LSQ-1; Fri, 20 Nov 2020 03:00:06 -0500
+X-MC-Unique: EchVDhMNOPeNgw6Nsp9LSQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AFB0801B16;
+        Fri, 20 Nov 2020 08:00:05 +0000 (UTC)
+Received: from gondolin (ovpn-112-250.ams2.redhat.com [10.36.112.250])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D1CD60C15;
+        Fri, 20 Nov 2020 08:00:02 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 09:00:00 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] s390: cmf: fix use-after-free in enable_cmf
+Message-ID: <20201120090000.5ac4b5b8.cohuck@redhat.com>
+In-Reply-To: <20201120074850.31609-1-miaoqinglang@huawei.com>
+References: <20201120074850.31609-1-miaoqinglang@huawei.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-20_03:2020-11-19,2020-11-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 suspectscore=1 impostorscore=0 lowpriorityscore=0
- bulkscore=0 clxscore=1015 spamscore=0 adultscore=0 mlxlogscore=766
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011200051
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This moves move pm_runtime_disable on a devm_add_action_or_reset() handler.
-And with the use of the devm_uio_register_device() function, the remove
-hook is no longer required.
+On Fri, 20 Nov 2020 15:48:50 +0800
+Qinglang Miao <miaoqinglang@huawei.com> wrote:
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/uio/uio_dmem_genirq.c | 28 ++++++++++------------------
- 1 file changed, 10 insertions(+), 18 deletions(-)
+> kfree(cdev) is called in put_device in the error branch. So that
+> device_unlock(&cdev->dev) would raise a use-after-free bug. In fact,
+> there's no need to call device_unlock after put_device.
+> 
+> Fix it by adding simply return after put_device.
+> 
+> Fixes: a6ef15652d26 ("s390/cio: fix use after free in cmb processing")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  drivers/s390/cio/cmf.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/s390/cio/cmf.c b/drivers/s390/cio/cmf.c
+> index 72dd2471e..e95ca476f 100644
+> --- a/drivers/s390/cio/cmf.c
+> +++ b/drivers/s390/cio/cmf.c
+> @@ -1149,9 +1149,12 @@ int enable_cmf(struct ccw_device *cdev)
+>  		sysfs_remove_group(&cdev->dev.kobj, cmbops->attr_group);
+>  		cmbops->free(cdev);
+>  	}
+> +
+>  out:
+> -	if (ret)
+> +	if (ret) {
+>  		put_device(&cdev->dev);
 
-diff --git a/drivers/uio/uio_dmem_genirq.c b/drivers/uio/uio_dmem_genirq.c
-index 72aa372d6ba6..6b5cfa5b0673 100644
---- a/drivers/uio/uio_dmem_genirq.c
-+++ b/drivers/uio/uio_dmem_genirq.c
-@@ -143,6 +143,13 @@ static int uio_dmem_genirq_irqcontrol(struct uio_info *dev_info, s32 irq_on)
- 	return 0;
- }
- 
-+static void uio_dmem_genirq_pm_disable(void *data)
-+{
-+	struct device *dev = data;
-+
-+	pm_runtime_disable(dev);
-+}
-+
- static int uio_dmem_genirq_probe(struct platform_device *pdev)
- {
- 	struct uio_dmem_genirq_pdata *pdata = dev_get_platdata(&pdev->dev);
-@@ -280,25 +287,11 @@ static int uio_dmem_genirq_probe(struct platform_device *pdev)
- 	 */
- 	pm_runtime_enable(&pdev->dev);
- 
--	ret = uio_register_device(&pdev->dev, priv->uioinfo);
--	if (ret) {
--		dev_err(&pdev->dev, "unable to register uio device\n");
--		pm_runtime_disable(&pdev->dev);
-+	ret = devm_add_action_or_reset(&pdev->dev, uio_dmem_genirq_pm_disable, &pdev->dev);
-+	if (ret)
- 		return ret;
--	}
--
--	platform_set_drvdata(pdev, priv);
--	return 0;
--}
--
--static int uio_dmem_genirq_remove(struct platform_device *pdev)
--{
--	struct uio_dmem_genirq_platdata *priv = platform_get_drvdata(pdev);
--
--	uio_unregister_device(priv->uioinfo);
--	pm_runtime_disable(&pdev->dev);
- 
--	return 0;
-+	return devm_uio_register_device(&pdev->dev, priv->uioinfo);
- }
- 
- static int uio_dmem_genirq_runtime_nop(struct device *dev)
-@@ -332,7 +325,6 @@ MODULE_DEVICE_TABLE(of, uio_of_genirq_match);
- 
- static struct platform_driver uio_dmem_genirq = {
- 	.probe = uio_dmem_genirq_probe,
--	.remove = uio_dmem_genirq_remove,
- 	.driver = {
- 		.name = DRIVER_NAME,
- 		.pm = &uio_dmem_genirq_dev_pm_ops,
--- 
-2.27.0
+The put_device() here undoes a get_device() further up in the function.
+There is at least one more reference remaining, held by the caller of
+enable_cmf(). Returning here would actually introduce a bug (missing
+unlock).
+
+> +		return ret;
+> +	}
+>  out_unlock:
+>  	device_unlock(&cdev->dev);
+>  	return ret;
 
