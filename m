@@ -2,159 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CB02BAF31
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9FB2BAF37
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729282AbgKTPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:43:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24461 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728598AbgKTPns (ORCPT
+        id S1729916AbgKTPpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:45:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729908AbgKTPpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:43:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605887026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CBateyvwObqLkmQosYkCqxAkxmRC8MiV0YwwaE2Y+0c=;
-        b=D5IbxQxvShO6Ljas5ySLppuWx63cSja/4bN1aXDVwgBaEn5IojKg+UFNfdBus3VrolZPhx
-        hoFWvqfFgkjDHwyc/2eIHTV7mWz1GIXcFtr+UhZJYuTIQ77nUMVAskSlaph1cdKbQGBDkO
-        7Ir/0j/xPlKCuqv2LiDTTvZtUzT3gEk=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-T7w2MSHsPkGpo0rSEwO3Kg-1; Fri, 20 Nov 2020 10:43:43 -0500
-X-MC-Unique: T7w2MSHsPkGpo0rSEwO3Kg-1
-Received: by mail-ej1-f72.google.com with SMTP id e7so3622832eja.15
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:43:42 -0800 (PST)
+        Fri, 20 Nov 2020 10:45:05 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FE0C061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:45:04 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id j19so7599915pgg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:45:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DUaJ36sT5sqvT77QZgKqlW4z7GZkzcPfj81qnxeQebA=;
+        b=qW+cbYIfyE/YclD6/OoMNca+M7Tkh/aPKcKUa2/jD8YKhRzUfQ5xuQPJditN/3qfXi
+         iomQyjtsl1XRlyUvHy/KwLYMeXPq92PnxjZRh34FTSNV944O/9RWLlra1f9ixcihX0wP
+         Y7WNpIPH8xxtinwgWAu7uHXLAkTejPdX2VQvhz6fjsFQ/SaKWq/B9j8ARM38OACC1/aq
+         zsgiwfkKQQ94B2YYCidxE7So02PncvNpjnNAor+EaeO7amsTxH6WxPopLIMA8JTTbnvI
+         fSmTqpzpyg0uWYNUhZgg6wvslriEFUZlrnqOGOhrVPHyzv6x+L0+jgnptbqwJYBwICyu
+         hSVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CBateyvwObqLkmQosYkCqxAkxmRC8MiV0YwwaE2Y+0c=;
-        b=Ev5t0ve1ZMZtzK7jp0c1KIQoBcN5IBC7ZFOCXSKb+/3pZfz0npK3bxBfdu2stKg/km
-         WnWhHtJQcldPaKOwDZhiBFWAnamUuua+hirJIrUmE79++52/z69/Wofrmz7aKualxEeG
-         F5lZlait/23/bzLSk6cDmwZ6UxJrdQCwXbnsyU/f2lZpY0/3UNWdE49LLTb47VUdoGtN
-         39YZePKgz3Ozb7NKGunfcJie9+rlxoKmSQGyEz/N9TmcFAKm0g5QuRaPnGoQG8Xj72Bf
-         182z643fVAfCLMMH7jhDZOJidWesP8d7CzfMZhqEYNuPCGQ2OpmcqRf9Z/8cRWeercLq
-         sv3g==
-X-Gm-Message-State: AOAM530iEAlzTdqavehBXXJDvMjL2BaUle4fduX1C/adpBXVdciAUZOE
-        MBkOKVqnkAFU3mwg11mxyH+1NpNpe7uth3ZB9Bt0NnaB24fpr2h/oGV3lj3CjXmpeR2kV/PquLB
-        Ww8pl/tXQ1mOZqApxGk4WR6F1
-X-Received: by 2002:a50:e68a:: with SMTP id z10mr5689118edm.66.1605887021683;
-        Fri, 20 Nov 2020 07:43:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyOyZDUWxcXdDON+pnk/DNSHvuOI/cWE01yiWF6mFLkuzrxdnx4N7O+NduZHwIqegjSs2yBNQ==
-X-Received: by 2002:a50:e68a:: with SMTP id z10mr5689084edm.66.1605887021491;
-        Fri, 20 Nov 2020 07:43:41 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id n11sm1260584eds.3.2020.11.20.07.43.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 07:43:40 -0800 (PST)
-Subject: Re: [PATCH v2] brcmfmac: expose firmware config files through modinfo
-To:     Matthias Brugger <mbrugger@suse.com>,
-        Dmitry Osipenko <digetx@gmail.com>, matthias.bgg@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Chung-Hsien Hsu <stanley.hsu@cypress.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Double Lo <double.lo@cypress.com>,
-        Frank Kao <frank.kao@cypress.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
-        netdev@vger.kernel.org,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Saravanan Shanmugham <saravanan.shanmugham@cypress.com>,
-        brcm80211-dev-list@cypress.com, linux-kernel@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Amar Shankar <amsr@cypress.com>
-References: <20201120095233.19953-1-matthias.bgg@kernel.org>
- <2ff4dcc3-6f99-a068-8989-4293d2013627@gmail.com>
- <7e8e689a-9804-86fc-dd2c-f1622dd40476@suse.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <74370289-ae29-53ca-e8b6-107998a4a23f@redhat.com>
-Date:   Fri, 20 Nov 2020 16:43:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DUaJ36sT5sqvT77QZgKqlW4z7GZkzcPfj81qnxeQebA=;
+        b=oAombXiajZLGRoxgMzPY1RrB7tTV0BtuWByFMNKVglymMon1XgEAOAeqNBjqlMOYAJ
+         ll8C1Xg80EVsKWwzt9L0a8CSdYDNxV+0sBkZB0hbRxzMiAvI3zDuI6KWvWS/hwksPUMJ
+         fzvLXg72t/QCvxdAE5VEPiT/I0SoB/IhOSht4L2P+7enbPdJNEpWg388ZkWOk5b4EWMH
+         tfeeh6kmi3sAJ41BONoURbbgACbFDSxKRUjqF/KyOZd59Z+7LvMWSYXwK+VvslLCBR6a
+         6eAfO5BT9lx8jsL2ULnJwhxu2Witw9PA3zfLogtcSshFpahJcRGN+mBzcHk0xMMDv5bz
+         5woQ==
+X-Gm-Message-State: AOAM533vyb+t/HcgoADvPhQOyARlpRVjV7YZl2hyiDnotqmj+LnJoqIY
+        c8D/P3gp/xmBDF9vLJGofqyXQ5sjmU+ONg2RzzV4pg==
+X-Google-Smtp-Source: ABdhPJzmbK5n3mM2ZmdJphA3yz5noZLknoJg14VWIwCafTYyHUe6A7LPpGU824Rpt37PGuu19LPqU3nP+FXJHz+pCRU=
+X-Received: by 2002:a63:594a:: with SMTP id j10mr17197062pgm.341.1605887103558;
+ Fri, 20 Nov 2020 07:45:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <7e8e689a-9804-86fc-dd2c-f1622dd40476@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120084202.GJ3200@dhcp22.suse.cz> <CAMZfGtWJXni21J=Yn55gksKy9KZnDScCjKmMasNz5XUwx3OcKw@mail.gmail.com>
+ <20201120131129.GO3200@dhcp22.suse.cz>
+In-Reply-To: <20201120131129.GO3200@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 20 Nov 2020 23:44:26 +0800
+Message-ID: <CAMZfGtWNDJWWTtpUDtngtgNiOoSd6sJpdAB6MnJW8KH0gePfYA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 00/21] Free some vmemmap pages of
+ hugetlb page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Nov 20, 2020 at 9:11 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 20-11-20 20:40:46, Muchun Song wrote:
+> > On Fri, Nov 20, 2020 at 4:42 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Fri 20-11-20 14:43:04, Muchun Song wrote:
+> > > [...]
+> > >
+> > > Thanks for improving the cover letter and providing some numbers. I have
+> > > only glanced through the patchset because I didn't really have more time
+> > > to dive depply into them.
+> > >
+> > > Overall it looks promissing. To summarize. I would prefer to not have
+> > > the feature enablement controlled by compile time option and the kernel
+> > > command line option should be opt-in. I also do not like that freeing
+> > > the pool can trigger the oom killer or even shut the system down if no
+> > > oom victim is eligible.
+> >
+> > Hi Michal,
+> >
+> > I have replied to you about those questions on the other mail thread.
+> >
+> > Thanks.
+> >
+> > >
+> > > One thing that I didn't really get to think hard about is what is the
+> > > effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
+> > > invalid when racing with the split. How do we enforce that this won't
+> > > blow up?
+> >
+> > This feature depends on the CONFIG_SPARSEMEM_VMEMMAP,
+> > in this case, the pfn_to_page can work. The return value of the
+> > pfn_to_page is actually the address of it's struct page struct.
+> > I can not figure out where the problem is. Can you describe the
+> > problem in detail please? Thanks.
+>
+> struct page returned by pfn_to_page might get invalid right when it is
+> returned because vmemmap could get freed up and the respective memory
+> released to the page allocator and reused for something else. See?
 
-On 11/20/20 12:11 PM, Matthias Brugger wrote:
-> 
-> 
-> On 20/11/2020 11:05, Dmitry Osipenko wrote:
->> 20.11.2020 12:52, matthias.bgg@kernel.org пишет:
->>> From: Matthias Brugger <mbrugger@suse.com>
->>>
->>> Apart from a firmware binary the chip needs a config file used by the
->>> FW. Add the config files to modinfo so that they can be read by
->>> userspace.
->>>
->>> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
->>>
->>> ---
->>>
->>> Changes in v2:
->>> In comparison to first version [0] we use wildcards to enumerate the
->>> firmware configuration files. Wildcard support was added to dracut
->>> recently [1].
->>> [0] https://lore.kernel.org/linux-wireless/20200701153123.25602-1-matthias.bgg@kernel.org/
->>> [1] https://github.com/dracutdevs/dracut/pull/860
->>>
->>>   drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 9 +++++++++
->>>   1 file changed, 9 insertions(+)
->>>
->>> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
->>> index 99987a789e7e..dd6d287b1b00 100644
->>> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
->>> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
->>> @@ -625,6 +625,15 @@ BRCMF_FW_DEF(4359, "brcmfmac4359-sdio");
->>>   BRCMF_FW_DEF(4373, "brcmfmac4373-sdio");
->>>   BRCMF_FW_DEF(43012, "brcmfmac43012-sdio");
->>>   +/* firmware config files */
->>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac4330-sdio.*.txt");
->>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43340-sdio.*.txt");
->>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43362-sdio.*.txt");
->>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43430a0-sdio.*.txt");
->>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43430-sdio.*.txt");
->>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43455-sdio.*.txt");
->>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac4356-pcie.*.txt");
->>
->> This doesn't cover all hardware models. Note that the upstream
->> linux-firmware has files only for a few hardware models.
->>
->> I suppose that the correct mask should be "brcm/brcmfmac*-sdio.*.txt".
->>
-> 
-> We can use the two "brcm/brcmfmac*-sdio.*.txt" and "brcm/brcmfmac*-pcie.*.txt" to also include firmware files for chips that don't have any config file in linux-firmware.
+If the HugeTLB page is already allocated from the buddy allocator,
+the struct page of the HugeTLB can be freed? Does this exist?
+If yes, how to free the HugeTLB page to the buddy allocator
+(cannot access the struct page)?
 
-Yes, lets just go with those 2 wildcard matches, that should catch all the files the driver needs without needing to add a lot of extra MODULE_FIRMWARE() entries to the module's firmware.
+>
+> > > I have also asked in a previous version whether the vmemmap manipulation
+> > > should be really unconditional. E.g. shortlived hugetlb pages allocated
+> > > from the buddy allocator directly rather than for a pool. Maybe it
+> > > should be restricted for the pool allocation as those are considered
+> > > long term and therefore the overhead will be amortized and freeing path
+> > > restrictions better understandable.
+> >
+> > Yeah, I agree with you. This can be an optimization. And we can
+> > add it to the todo list and implement it in the future. Now the patch
+> > series is already huge.
+>
+> Yes the patchset is large and the primary aim should be reducing
+> functionality to make it smaller in the first incarnation. Especially
+> when it is tricky to implement. Releasing vmemmap sparse hugepages is
+> one of those things. Do you really need it for your usecase?
+> --
+> Michal Hocko
+> SUSE Labs
 
-> I'm indifferent to that, although I think we should make incentivize to upstream firmware config files to linux-firmware.
 
-I completely agree with you. Actually, if you take a look you will see that most of these were submitted to linux-firmware by me :)
 
-But this is really orthogonal to which MODULE_FIRMWARE() entries we should add.
-
-Regards,
-
-Hans
-
+-- 
+Yours,
+Muchun
