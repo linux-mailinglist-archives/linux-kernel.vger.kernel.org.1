@@ -2,135 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CF42BBA59
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E78F2BBA38
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728581AbgKTXsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 18:48:22 -0500
-Received: from gateway22.websitewelcome.com ([192.185.47.206]:42139 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728498AbgKTXsW (ORCPT
+        id S1728541AbgKTXdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 18:33:44 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:44502 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726255AbgKTXdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 18:48:22 -0500
-X-Greylist: delayed 1214 seconds by postgrey-1.27 at vger.kernel.org; Fri, 20 Nov 2020 18:48:20 EST
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 58D645E9E
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 17:28:05 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id gFozkBfbvnPrxgFozkg8TO; Fri, 20 Nov 2020 17:28:05 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LmTPhVD6W7fwbQKt+ZkEN1nvVKzXfUG4pxtl43lU5II=; b=Q85P+4l+Cu0o4wkK2xljnBF+dF
-        fIhATGkB0Md7C8FU0zRFX/2q0gMQWtfNC6u47LEvx/d6OL8oh/AHJARAWpjh68jux4UVPbN4imbGm
-        /jNDpP8OD4H0faFrPixqzNR+3ZxiVHsZMBzE2VeXsyv4Ohi1tu1HC4J66yhA133hnwTFtlRV6PLrx
-        nodBWFkyWkmgnub50FzN1mRC1hHnakDEUWQdaXLxaR6LG5BT7iivVywJ9b7+PADcbSS66uD7f4gF/
-        Bk39uMeS1nTVcZG4RCEXvZVKUQenx7aIsaKilAVVpm/22lw/dnm0zor6zls+eZ/ToBLDrY/q+DVaf
-        ncVkfYRQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:59276 helo=[192.168.15.4])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1kgFoy-002ELi-Vn; Fri, 20 Nov 2020 17:28:05 -0600
-Subject: Re: [PATCH 001/141] afs: Fix fall-through warnings for Clang
-To:     Joe Perches <joe@perches.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <51150b54e0b0431a2c401cd54f2c4e7f50e94601.1605896059.git.gustavoars@kernel.org>
- <5e9c1d953c6b6254a3288f1e797064666e82a79d.camel@perches.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <83d2d50c-1708-f4a7-0e2f-c3c5a6b9e736@embeddedor.com>
-Date:   Fri, 20 Nov 2020 17:28:13 -0600
+        Fri, 20 Nov 2020 18:33:42 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 89BC420B717A;
+        Fri, 20 Nov 2020 15:33:41 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 89BC420B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1605915221;
+        bh=zmpsSKY4r1FjWqHBJ/nPiw3LVnG+vNwkCnUTsFeLSRM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VzXBAcAfAz5Ayii51kKy40d0qTGct8L6HwgiTEnBqNwIDE99VdQSgw5O3QTe6/oGF
+         YVbjddqbqrGxB13ZGH2jr4YTVbTRmMj0vj7IFXSHQBlEFomqRDvoAhy1O8EP/gtYxX
+         EKtEfEIhW/YrDq6NxVjwIIkoO2lon0aagWOwdNJc=
+Subject: Re: [PATCH v6 7/8] IMA: add a built-in policy rule for critical data
+ measurement
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201119232611.30114-1-tusharsu@linux.microsoft.com>
+ <20201119232611.30114-8-tusharsu@linux.microsoft.com>
+ <e151e67e0749766c1b501ecc54dbeb0450c0cea2.camel@linux.ibm.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <58607cc2-2a20-03d7-9f38-9c3bebb1c494@linux.microsoft.com>
+Date:   Fri, 20 Nov 2020 15:33:36 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <5e9c1d953c6b6254a3288f1e797064666e82a79d.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <e151e67e0749766c1b501ecc54dbeb0450c0cea2.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1kgFoy-002ELi-Vn
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.4]) [187.162.31.110]:59276
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/20/20 6:30 AM, Mimi Zohar wrote:
 
+Hi Mimi,
 
-On 11/20/20 17:18, Joe Perches wrote:
+> 
+> On Thu, 2020-11-19 at 15:26 -0800, Tushar Sugandhi wrote:
+>> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>>
+>> The IMA hook to measure kernel critical data, namely
+>> ima_measure_critical_data(), could be called before a custom IMA policy
+>> is loaded.
+>> Define a new critical data builtin policy to allow measuring
+>> early kernel integrity critical data before a custom IMA policy is
+>> loaded.
+> 
+> Everything needing to be said seems to be included in the second
+> sentence.  Does the first sentence add anything?  "Define a new
+> critical data builtin policy" makes for a good Subject line.
 
-> My preference would be to change these to break and not fallthrough;
+Agreed - will update.
 
-And my preference is fallthrough.
+> 
+>>
+>> Add critical data to built-in IMA rules if the kernel command line
+>> contains "ima_policy=critical_data".
+> 
+> The boot command line parameters are defined in Documentation/admin-
+> guide/kernel-parameters.txt.  Please update "ima_policy".
 
-Joe, please, let the maintainer share their opinion on this first.
+Will do.
 
-Thanks
---
-Gustavo
+> 
+>>
+>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>> ---
+>>   security/integrity/ima/ima_policy.c | 12 ++++++++++++
+>>   1 file changed, 12 insertions(+)
+>>
+>> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+>> index c9e52dab0638..119604a3efa0 100644
+>> --- a/security/integrity/ima/ima_policy.c
+>> +++ b/security/integrity/ima/ima_policy.c
+>> @@ -206,6 +206,10 @@ static struct ima_rule_entry secure_boot_rules[] __ro_after_init = {
+>>   	 .flags = IMA_FUNC | IMA_DIGSIG_REQUIRED},
+>>   };
+>>
+>> +static struct ima_rule_entry critical_data_rules[] __ro_after_init = {
+>> +	{.action = MEASURE, .func = CRITICAL_DATA, .flags = IMA_FUNC},
+>> +};
+>> +
+>>   /* An array of architecture specific rules */
+>>   static struct ima_rule_entry *arch_policy_entry __ro_after_init;
+>>   
+>> @@ -228,6 +232,7 @@ __setup("ima_tcb", default_measure_policy_setup);
+>>   
+>>   static bool ima_use_appraise_tcb __initdata;
+>>   static bool ima_use_secure_boot __initdata;
+>> +static bool ima_use_critical_data __ro_after_init;
+> 
+> Unlike ima_fail_unverifiable_sigs, ima_use_critical_data is only used
+> during __init.  Please change "__ro_after_init" to "__initdata".  (The
+> critical data policy itself is defined properly as __ro_after_init.)
+
+Will do.
+
+> 
+>>   static bool ima_fail_unverifiable_sigs __ro_after_init;
+>>   static int __init policy_setup(char *str)
+>>   {
+>> @@ -242,6 +247,8 @@ static int __init policy_setup(char *str)
+>>   			ima_use_appraise_tcb = true;
+>>   		else if (strcmp(p, "secure_boot") == 0)
+>>   			ima_use_secure_boot = true;
+>> +		else if (strcmp(p, "critical_data") == 0)
+>> +			ima_use_critical_data = true;
+>>   		else if (strcmp(p, "fail_securely") == 0)
+>>   			ima_fail_unverifiable_sigs = true;
+>>   		else
+>> @@ -875,6 +882,11 @@ void __init ima_init_policy(void)
+>>   			  ARRAY_SIZE(default_appraise_rules),
+>>   			  IMA_DEFAULT_POLICY);
+>>   
+>> +	if (ima_use_critical_data)
+>> +		add_rules(critical_data_rules,
+>> +			  ARRAY_SIZE(critical_data_rules),
+>> +			  IMA_DEFAULT_POLICY);
+>> +
+>>   	ima_update_policy_flag();
+>>   }
+>>   
+> 
+
+thanks,
+  -lakshmi
