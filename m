@@ -2,68 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B5C2BA666
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A96E2BA669
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727634AbgKTJlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:41:50 -0500
-Received: from latitanza.investici.org ([82.94.249.234]:40917 "EHLO
-        latitanza.investici.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727133AbgKTJlt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:41:49 -0500
-Received: from mx3.investici.org (unknown [127.0.0.1])
-        by latitanza.investici.org (Postfix) with ESMTP id 4Ccs570zRhz8shR;
-        Fri, 20 Nov 2020 09:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
-        s=stigmate; t=1605865307;
-        bh=tBQjbRxRmmM2FXxuzx0z8uEn2WQkoLKnaGfyzbzpCgg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CVubdfDFqnnBICaQzyN+eSK85jPOR6A6MS1rU9To5YB1+JDFSUeTDJAxPnVc150rW
-         OGktopcDfBcaW49glL2gCtgZk4kJ7yHf3/pFVxQWPM4QdkkgPVwA962FGxdzaUOq+K
-         bxxV6lSfNXyTvhm9fph81PM4ddmIH8BKiK+FHTlM=
-Received: from [82.94.249.234] (mx3.investici.org [82.94.249.234]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4Ccs563Jh5z8sgs;
-        Fri, 20 Nov 2020 09:41:46 +0000 (UTC)
-From:   Francis Laniel <laniel_francis@privacyrequired.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-hardening@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, dja@axtens.net,
-        keescook@chromium.org, Daniel Micay <danielmicay@gmail.com>
-Subject: Re: [PATCH v6 1/5] string.h: detect intra-object overflow in fortified string functions
-Date:   Fri, 20 Nov 2020 10:41:45 +0100
-Message-ID: <2634935.IsWps63H46@machine>
-In-Reply-To: <20201119173822.779c253bd946f7da30155cc8@linux-foundation.org>
-References: <20201119164915.10618-1-laniel_francis@privacyrequired.com> <20201119164915.10618-2-laniel_francis@privacyrequired.com> <20201119173822.779c253bd946f7da30155cc8@linux-foundation.org>
+        id S1727678AbgKTJmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:42:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727160AbgKTJmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:42:06 -0500
+Received: from localhost (unknown [122.171.203.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28CD7223B0;
+        Fri, 20 Nov 2020 09:42:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605865326;
+        bh=XLxancgRgYpetl+23BnIP7WdgIKeWO32EF7mXEcNHJA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZCRPqje2mvonSCEr0psJ0aJHBWvQqNjhGk63jIYaQJnJnesIbfkxphhSJ0kNOlBD2
+         0VWha/Gg3P2L80zsigzGuzHdGQkjsiTl3kJv3hgBAwufyQWIDNEbp+hUH8iALq5Qv7
+         02krMiW8R8ku3U7BY1LteHGEiLnuJuflxxERBg/g=
+Date:   Fri, 20 Nov 2020 15:11:52 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v4 4/5] phy: samsung: phy-exynos-pcie: rework driver to
+ support Exynos5433 PCIe PHY
+Message-ID: <20201120094152.GC2925@vkoul-mobl>
+References: <20201113170139.29956-1-m.szyprowski@samsung.com>
+ <CGME20201113170158eucas1p14b9e58e35f929e14aeb4f533071c8a47@eucas1p1.samsung.com>
+ <20201113170139.29956-5-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113170139.29956-5-m.szyprowski@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 20 novembre 2020, 02:38:22 CET Andrew Morton a =E9crit :
-> On Thu, 19 Nov 2020 17:49:11 +0100 laniel_francis@privacyrequired.com wro=
-te:
-> > From: Daniel Axtens <dja@axtens.net>
-> >=20
-> > ...
-> >=20
-> > Cc: Daniel Micay <danielmicay@gmail.com>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Daniel Axtens <dja@axtens.net>
->=20
-> This patch should have your signoff as well, as per
-> Documentation/process/submitting-patches.rst "Developer's Certificate
-> of Origin 1.1".
->=20
-> I think it would be best to send out a v7 to address this and the cover
-> letter issue, please.
+On 13-11-20, 18:01, Marek Szyprowski wrote:
+> From: Jaehoon Chung <jh80.chung@samsung.com>
+> 
+> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
+> dts: exynos: Remove Exynos5440"). Rework this driver to support PCIe PHY
+> variant found in the Exynos5433 SoCs.
 
-Will be done for the v7!
-I just read the documentation page, rebase on Linus Torvalds tree and send =
-the=20
-v7!
+I am expecting this series to go thru PCI tree, so:
 
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
-
+-- 
+~Vinod
