@@ -2,420 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C252BB88A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64F72BB893
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728628AbgKTVm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:42:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
+        id S1728443AbgKTVpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:45:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728509AbgKTVmz (ORCPT
+        with ESMTP id S1726255AbgKTVpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:42:55 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E97AC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:42:55 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id w14so9142129pfd.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:42:55 -0800 (PST)
+        Fri, 20 Nov 2020 16:45:46 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE599C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:45:45 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id r127so6145878yba.10
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:45:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=63rMQGgTveQJcbvHL2mx/Fk9RBk50g78bSEyxHKSZcQ=;
-        b=UtkdwYVxWYYem2V8rU+RzKN2jmDFckKfsKlrokcoVTlCJUrDNLUGOZiUriZpQoqpOo
-         LgLP9zifdEj0igh2atnYeeBjK8Rsa29VYVwCKVgB/G4EyOWnIWhUUdvsx+ntC1PmVUGW
-         Hzs5qyBMFfw0obxXBEtNjoTvPRtabygbEE0c+Cskil6u/b/MsRp7vVvGRCYA72vxk4uq
-         GtA/8qNzaootwNSNa+grkaThW5fdg1p4eF86hKnj0TcS7NUeoFDyVpZyCofG9qs3yqqA
-         cY/vpDfL2pgf3JvjyzedpYeIke5O0JkufUJcuSekJL2xkAhfzb9PJxT6awk1Vtws3X4/
-         FJ/w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MUNSzIysyOtHGRvS1Q0seQIvDGj5F7ggrvJWqiZgbhU=;
+        b=s9Pxp8RRhw1tSzuuJj/cVBeN7uGSWSGSjHhU63AEzivzhHPEW73kYkn+9PcWWsSAmg
+         1TW6jJP9HVNCcWJNE8LtZinCXzgItJ4SHNBoBqjFxj5Bp9kxwI+PfRk5lHGTQIImxfkv
+         EkXmQ1RDTtiQ0ukLJ+LXHUsj5HhQdmH6W+7WurNyXPGSEVglOonjda0cXN1H9bL6RHNy
+         HrkwN6TPr++90fDmKqrFB3NabCYvhP4L+hWdnPFD5W5HtjAyxv7xOIgKUtMwlbQtOhDi
+         W5qCyyfW8o6HPElzSLhE31Zhtl5jzUBHII2E52HMnjwCWBB5nQA8YUdy/ZyjjOBlliD9
+         Ijuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=63rMQGgTveQJcbvHL2mx/Fk9RBk50g78bSEyxHKSZcQ=;
-        b=SjEq6UjG7JzxqBb/ZIJt9Nw+9/e33S1RNAasAAZK4wLre5/0PJrENRq9cTfDc/+Fm+
-         BnIi8+OdaTlK6YizNA+se/IXJ8HZP0B3gD5x/5eD0tXjbk72gTx7DRETrSPmut2QrdmO
-         9nFCE4NcTxnRr0QJXz7SHEBzrFAncYeQcrrck2dZ1n/jkzXTAYfhxHWnr4avmrKRM4gb
-         RITVqH+o3KtuTQvSDTwKGUhcx8Nl1d9/aeiiI2qnKBhZp32kv+EUZ2Uo86wJoMnJfYho
-         eeyofQK3HL8Pl7l9RugLGlrCUrlh0HjJyb/413x5RohU2xxReBl8GuQi/o8RUM8LOAHJ
-         cg4Q==
-X-Gm-Message-State: AOAM532jr6I7cfed10WDNsoYHd3fvlXkjISPE2dMdQL32q4l/wm8erPp
-        3w2Zo/0MOpn1K1GsQswM/uRJ9w==
-X-Google-Smtp-Source: ABdhPJyFOF0cow3f1y89onw/qO+L9XkPq1jkEvE/Hh0l/fGHzBbq28gHIgejUhm6fVt8+gs6ApO2eg==
-X-Received: by 2002:a17:90b:30d0:: with SMTP id hi16mr12164670pjb.144.1605908574903;
-        Fri, 20 Nov 2020 13:42:54 -0800 (PST)
-Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id e8sm4713197pfj.157.2020.11.20.13.42.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 13:42:54 -0800 (PST)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org
-Cc:     guennadi.liakhovetski@linux.intel.com, arnaud.pouliquen@st.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 8/8] rpmsg: Turn name service into a stand alone driver
-Date:   Fri, 20 Nov 2020 14:42:45 -0700
-Message-Id: <20201120214245.172963-9-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201120214245.172963-1-mathieu.poirier@linaro.org>
-References: <20201120214245.172963-1-mathieu.poirier@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MUNSzIysyOtHGRvS1Q0seQIvDGj5F7ggrvJWqiZgbhU=;
+        b=B8ns27rJ/+xYSmDAZAwc4kTcvinHCrawnnX44HXOF2PFqUl8QR87wxHhyxPXAUmAWu
+         23LJIimNMhV8vq99wF73D+LIJRSABt58Ykf0v14Mx0J8CQDmUWP6Xg19T8Peu8h7qIne
+         ErdzZhh9bbvt7/c72fAc1nOoFM1NHGKrayB2I9SjAbmDz/lwOuGSQ32h8CEOhl+L5QNL
+         /XWqHiUJVPri4TD23/RpRSVe12zUkuS8tPl3dWcDt4iZNhnu28oJ/YV2V8kcXpMMiA3g
+         1HCVsCT+2k/ztW3CcDZ7HTPtRkhalfGBuqqiDWXp30ccJVBQIAQ4Ztznr+rY1HV1Om4p
+         ZbuQ==
+X-Gm-Message-State: AOAM531diL/Y07SCM8CN/yqYNJI6YllZLRqPuOOj50YfJaFhhCNaV7U9
+        YLYZ/vaYOY1NH2Qkrz4lZiaX/tKBKqWoAs/5vvJOWg==
+X-Google-Smtp-Source: ABdhPJz8VYL/knv6Gy5VdWHumNKk0t2Ym33EHs6QsRJif6lZk0dNntTX+KUCqACbEHQTIXy2oKg1Vqs3521JMtzguU4=
+X-Received: by 2002:a25:d34a:: with SMTP id e71mr33925433ybf.229.1605908744747;
+ Fri, 20 Nov 2020 13:45:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <5ff0fc487272a7c21f63a929bfceee1ac9b43348.camel@debian.org>
+In-Reply-To: <5ff0fc487272a7c21f63a929bfceee1ac9b43348.camel@debian.org>
+From:   Adam Goode <agoode@google.com>
+Date:   Fri, 20 Nov 2020 16:45:09 -0500
+Message-ID: <CAOf41N=PopZ=8_05e9WfvWkBhuN5iRq1=JJ2KqkLJE5S3-XW5A@mail.gmail.com>
+Subject: Re: PROBLEM: Broken pixel format for Elgato Cam Link 4K
+To:     Benjamin Drung <benjamin.drung@cloud.ionos.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+On Fri, Nov 20, 2020 at 1:52 PM Benjamin Drung
+<benjamin.drung@cloud.ionos.com> wrote:
+>
+> Hi,
+>
+> I own an Elgato Cam Link 4K which is a very popular USB HDMI capture
+> device (number one capture card by click rates on Geizhals [1]). The
+> problem is that the video feed is distorted when using the /dev/videoX
+> device in the browser (tested on Firefox and Chromium) for video
+> conferencing (tested with Jitsi Meet and Google Meet). The same
+> distortion is present when opening `v4l2:///dev/video0` with VLC.
+>
+> The Elgato Cam Link 4K reports to have three different pixel formats:
+>
+> ```
+> $ v4l2-ctl -d /dev/video0 --list-formats-ext
+> ioctl: VIDIOC_ENUM_FMT
+>         Type: Video Capture
+>
+>         [0]: 'NV12' (Y/CbCr 4:2:0)
+>                 Size: Discrete 3840x2160
+>                         Interval: Discrete 0.040s (25.000 fps)
+>         [1]: 'NV12' (Y/CbCr 4:2:0)
+>                 Size: Discrete 3840x2160
+>                         Interval: Discrete 0.040s (25.000 fps)
+>         [2]: 'YU12' (Planar YUV 4:2:0)
+>                 Size: Discrete 3840x2160
+>                         Interval: Discrete 0.040s (25.000 fps)
+> ```
+>
+> When specifying the video format 'YU12' to VLC, the video is distorted
+> the same way as using the default video format. When specifying 'NV12'
+> to VLC, the video feed is displayed correctly:
+>
+> ```
+> vlc v4l2:///dev/video0 --v4l2-chroma=NV12
+> ```
+>
+> In OBS, the video feed is always displayed correctly. All video formats
+> 'Y/CbCr 4:2:0', 'Planar YUV 4:2:0', 'BGR3 (Emulated)', and 'YV12
+> (Emulated)' combined with the color ranges 'Default', 'Partial', and
+> 'Full' produce the same correct output.
+>
+> With Linux >= 5.9 this behavior in OBS changes: The video format
+> 'Y/CbCr 4:2:0' displays the video correctly. Switching to 'Planar YUV
+> 4:2:0', 'BGR3 (Emulated)', or 'YV12 (Emulated)' shows the video
+> distorted and OBS shows this error message:
+>
+> ```
+> info: v4l2-input: Pixelformat: NV12
+> [...]
+> libv4l2: error set_fmt gave us a different result than try_fmt!
+> info: v4l2-input: Resolution: 3840x2160
+> info: v4l2-input: Pixelformat: NV12
+> ```
+>
+> Changing the video format back does not have an effect until I also
+> change the color range (does seem to be relevant what to select there).
+>
+> Workaround
+> ----------
+>
+> You can create a v4l2loopback device and use ffmpeg to stream from the
+> Cam Link 4K to the loopback device:
+>
+> ```
+> ffmpeg -f v4l2 -input_format yuv420p -video_size 3840x2160 \
+>   -i "$camlink" -codec copy -f v4l2 "$loopdev"
+> ```
+>
+> This workaround works, but is cumbersome and burns CPU cycles.
+>
+> Other reports
+> -------------
+>
+> Searching the web for "Cam Link 4K Linux" reveals many similar reports
+> like this. Noteworthy is blog post [3] from Mike Walters who patched
+> the Cam Link 4K firmware to report the correct video format. I am
+> willing to debug this issue and do test, but I don't want to flash the
+> firmware to not break the warrenty (bisides I lack the hardware for
+> flashing).
+>
+> Environment
+> -----------
+>
+> This problem is present in Ubuntu 20.04 with linux 5.4.0-54.60 and
+> Ubuntu 20.10 with linux 5.8.0-29.31. I also tested the mainline kernels
+> builds 5.9.8-050908.202011101634 and 5.10.0-051000rc4.202011152030 from
+> Ubuntu [2].
+>
+> The Cam Link 4K shows follow entries in dmesg:
+>
+> ```
+> [    1.575753] usb 2-3: new SuperSpeed Gen 1 USB device number 2 using xhci_hcd
+> [    1.596664] usb 2-3: LPM exit latency is zeroed, disabling LPM.
+> [    1.598557] usb 2-3: New USB device found, idVendor=0fd9, idProduct=0066, bcdDevice= 0.00
+> [    1.598558] usb 2-3: New USB device strings: Mfr=1, Product=2, SerialNumber=4
+> [    1.598559] usb 2-3: Product: Cam Link 4K
+> [    1.598560] usb 2-3: Manufacturer: Elgato
+> ```
+>
+> I have another problems with 5.9.8-050908.202011101634 and 5.10.0-
+> 051000rc4.202011152030: Chromium fail to access the video device of Cam
+> Link 4K and the notebook integrated webcam has a too low brightness.
+>
+> [1] https://geizhals.de/?cat=vidext
+> [2] https://kernel.ubuntu.com/~kernel-ppa/mainline/
+> [3] https://assortedhackery.com/patching-cam-link-to-play-nicer-on-linux/
+>
+> --
+> Benjamin Drung
+> Debian & Ubuntu Developer
+>
 
-Make the RPMSG name service announcement a stand alone driver so that it
-can be reused by other subsystems.  It is also the first step in making the
-functionatlity transport independent, i.e that is not tied to virtIO.
 
-Co-developed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Co-developed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- drivers/rpmsg/Kconfig            |   9 +++
- drivers/rpmsg/Makefile           |   1 +
- drivers/rpmsg/rpmsg_ns.c         | 126 +++++++++++++++++++++++++++++++
- drivers/rpmsg/virtio_rpmsg_bus.c |  87 +++++----------------
- include/linux/rpmsg/ns.h         |   3 +
- 5 files changed, 159 insertions(+), 67 deletions(-)
- create mode 100644 drivers/rpmsg/rpmsg_ns.c
+Hi,
 
-diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-index f96716893c2a..0b4407abdf13 100644
---- a/drivers/rpmsg/Kconfig
-+++ b/drivers/rpmsg/Kconfig
-@@ -15,6 +15,14 @@ config RPMSG_CHAR
- 	  in /dev. They make it possible for user-space programs to send and
- 	  receive rpmsg packets.
- 
-+config RPMSG_NS
-+	tristate "RPMSG name service announcement"
-+	depends on RPMSG
-+	help
-+	  Say Y here to enable the support of the name service announcement
-+	  channel that probes the associated RPMsg device on remote endpoint
-+	  service announcement.
-+
- config RPMSG_MTK_SCP
- 	tristate "MediaTek SCP"
- 	depends on MTK_SCP
-@@ -62,6 +70,7 @@ config RPMSG_VIRTIO
- 	tristate "Virtio RPMSG bus driver"
- 	depends on HAS_DMA
- 	select RPMSG
-+	select RPMSG_NS
- 	select VIRTIO
- 
- endmenu
-diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
-index ffe932ef6050..8d452656f0ee 100644
---- a/drivers/rpmsg/Makefile
-+++ b/drivers/rpmsg/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_RPMSG)		+= rpmsg_core.o
- obj-$(CONFIG_RPMSG_CHAR)	+= rpmsg_char.o
-+obj-$(CONFIG_RPMSG_NS)		+= rpmsg_ns.o
- obj-$(CONFIG_RPMSG_MTK_SCP)	+= mtk_rpmsg.o
- qcom_glink-objs			:= qcom_glink_native.o qcom_glink_ssr.o
- obj-$(CONFIG_RPMSG_QCOM_GLINK) += qcom_glink.o
-diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
-new file mode 100644
-index 000000000000..762ff1ae279f
---- /dev/null
-+++ b/drivers/rpmsg/rpmsg_ns.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) STMicroelectronics 2020 - All Rights Reserved
-+ */
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/rpmsg.h>
-+#include <linux/rpmsg/ns.h>
-+#include <linux/slab.h>
-+
-+#include "rpmsg_internal.h"
-+
-+/**
-+ * rpmsg_ns_register_device() - register name service device based on rpdev
-+ * @rpdev: prepared rpdev to be used for creating endpoints
-+ *
-+ * This function wraps rpmsg_register_device() preparing the rpdev for use as
-+ * basis for the rpmsg name service device.
-+ */
-+int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
-+{
-+	strcpy(rpdev->id.name, "rpmsg_ns");
-+	rpdev->driver_override = "rpmsg_ns";
-+	rpdev->src = RPMSG_NS_ADDR;
-+	rpdev->dst = RPMSG_NS_ADDR;
-+
-+	return rpmsg_register_device(rpdev);
-+}
-+EXPORT_SYMBOL(rpmsg_ns_register_device);
-+
-+/* invoked when a name service announcement arrives */
-+static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
-+		       void *priv, u32 src)
-+{
-+	struct rpmsg_ns_msg *msg = data;
-+	struct rpmsg_device *newch;
-+	struct rpmsg_channel_info chinfo;
-+	struct device *dev = rpdev->dev.parent;
-+	int ret;
-+
-+#if defined(CONFIG_DYNAMIC_DEBUG)
-+	dynamic_hex_dump("NS announcement: ", DUMP_PREFIX_NONE, 16, 1,
-+			 data, len, true);
-+#endif
-+
-+	if (len != sizeof(*msg)) {
-+		dev_err(dev, "malformed ns msg (%d)\n", len);
-+		return -EINVAL;
-+	}
-+
-+	/* don't trust the remote processor for null terminating the name */
-+	msg->name[RPMSG_NAME_SIZE - 1] = '\0';
-+
-+	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
-+	chinfo.src = RPMSG_ADDR_ANY;
-+	chinfo.dst = rpmsg32_to_cpu(rpdev, msg->addr);
-+
-+	dev_info(dev, "%sing channel %s addr 0x%x\n",
-+		 rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY ?
-+		 "destroy" : "creat", msg->name, chinfo.dst);
-+
-+	if (rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY) {
-+		ret = rpmsg_release_channel(rpdev, &chinfo);
-+		if (ret)
-+			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
-+	} else {
-+		newch = rpmsg_create_channel(rpdev, &chinfo);
-+		if (!newch)
-+			dev_err(dev, "rpmsg_create_channel failed\n");
-+	}
-+
-+	return 0;
-+}
-+
-+static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
-+{
-+	struct rpmsg_endpoint *ns_ept;
-+	struct rpmsg_channel_info ns_chinfo = {
-+		.src = RPMSG_NS_ADDR,
-+		.dst = RPMSG_NS_ADDR,
-+		.name = "name_service",
-+	};
-+
-+	/*
-+	 * Create the NS announcement service endpoint associated to the RPMsg
-+	 * device. The endpoint will be automatically destroyed when the RPMsg
-+	 * device will be deleted.
-+	 */
-+	ns_ept = rpmsg_create_ept(rpdev, rpmsg_ns_cb, NULL, ns_chinfo);
-+	if (!ns_ept) {
-+		dev_err(&rpdev->dev, "failed to create the ns ept\n");
-+		return -ENOMEM;
-+	}
-+	rpdev->ept = ns_ept;
-+
-+	return 0;
-+}
-+
-+static struct rpmsg_driver rpmsg_ns_driver = {
-+	.drv.name = KBUILD_MODNAME,
-+	.probe = rpmsg_ns_probe,
-+};
-+
-+static int rpmsg_ns_init(void)
-+{
-+	int ret;
-+
-+	ret = register_rpmsg_driver(&rpmsg_ns_driver);
-+	if (ret < 0)
-+		pr_err("%s: Failed to register rpmsg driver\n", __func__);
-+
-+	return ret;
-+}
-+postcore_initcall(rpmsg_ns_init);
-+
-+static void rpmsg_ns_exit(void)
-+{
-+	unregister_rpmsg_driver(&rpmsg_ns_driver);
-+}
-+module_exit(rpmsg_ns_exit);
-+
-+MODULE_DESCRIPTION("Name service announcement rpmsg driver");
-+MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
-+MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-index 6ec299f7f790..e87d4cf926eb 100644
---- a/drivers/rpmsg/virtio_rpmsg_bus.c
-+++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-@@ -49,7 +49,6 @@
-  * @endpoints_lock: lock of the endpoints set
-  * @sendq:	wait queue of sending contexts waiting for a tx buffers
-  * @sleepers:	number of senders that are waiting for a tx buffer
-- * @ns_ept:	the bus's name service endpoint
-  *
-  * This structure stores the rpmsg state of a given virtio remote processor
-  * device (there might be several virtio proc devices for each physical
-@@ -68,7 +67,6 @@ struct virtproc_info {
- 	struct mutex endpoints_lock;
- 	wait_queue_head_t sendq;
- 	atomic_t sleepers;
--	struct rpmsg_endpoint *ns_ept;
- };
- 
- /* The feature bitmap for virtio rpmsg */
-@@ -815,69 +813,14 @@ static void rpmsg_xmit_done(struct virtqueue *svq)
- 	wake_up_interruptible(&vrp->sendq);
- }
- 
--/* invoked when a name service announcement arrives */
--static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
--		       void *priv, u32 src)
--{
--	struct rpmsg_ns_msg *msg = data;
--	struct rpmsg_device *newch;
--	struct rpmsg_channel_info chinfo;
--	struct virtproc_info *vrp = priv;
--	struct device *dev = &vrp->vdev->dev;
--	bool little_endian = virtio_is_little_endian(vrp->vdev);
--	int ret;
--
--#if defined(CONFIG_DYNAMIC_DEBUG)
--	dynamic_hex_dump("NS announcement: ", DUMP_PREFIX_NONE, 16, 1,
--			 data, len, true);
--#endif
--
--	if (len != sizeof(*msg)) {
--		dev_err(dev, "malformed ns msg (%d)\n", len);
--		return -EINVAL;
--	}
--
--	/*
--	 * the name service ept does _not_ belong to a real rpmsg channel,
--	 * and is handled by the rpmsg bus itself.
--	 * for sanity reasons, make sure a valid rpdev has _not_ sneaked
--	 * in somehow.
--	 */
--	if (rpdev) {
--		dev_err(dev, "anomaly: ns ept has an rpdev handle\n");
--		return -EINVAL;
--	}
--
--	/* don't trust the remote processor for null terminating the name */
--	msg->name[RPMSG_NAME_SIZE - 1] = '\0';
--
--	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
--	chinfo.src = RPMSG_ADDR_ANY;
--	chinfo.dst = __rpmsg32_to_cpu(little_endian, msg->addr);
--
--	dev_info(dev, "%sing channel %s addr 0x%x\n",
--		 __rpmsg32_to_cpu(little_endian, msg->flags) & RPMSG_NS_DESTROY ?
--		 "destroy" : "creat", msg->name, chinfo.dst);
--
--	if (__rpmsg32_to_cpu(little_endian, msg->flags) & RPMSG_NS_DESTROY) {
--		ret = rpmsg_unregister_device(&vrp->vdev->dev, &chinfo);
--		if (ret)
--			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
--	} else {
--		newch = __rpmsg_create_channel(vrp, &chinfo);
--		if (!newch)
--			dev_err(dev, "rpmsg_create_channel failed\n");
--	}
--
--	return 0;
--}
--
- static int rpmsg_probe(struct virtio_device *vdev)
- {
- 	vq_callback_t *vq_cbs[] = { rpmsg_recv_done, rpmsg_xmit_done };
- 	static const char * const names[] = { "input", "output" };
- 	struct virtqueue *vqs[2];
- 	struct virtproc_info *vrp;
-+	struct virtio_rpmsg_channel *vch;
-+	struct rpmsg_device *rpdev_ns;
- 	void *bufs_va;
- 	int err = 0, i;
- 	size_t total_buf_space;
-@@ -953,14 +896,26 @@ static int rpmsg_probe(struct virtio_device *vdev)
- 
- 	/* if supported by the remote processor, enable the name service */
- 	if (virtio_has_feature(vdev, VIRTIO_RPMSG_F_NS)) {
--		/* a dedicated endpoint handles the name service msgs */
--		vrp->ns_ept = __rpmsg_create_ept(vrp, NULL, rpmsg_ns_cb,
--						vrp, RPMSG_NS_ADDR);
--		if (!vrp->ns_ept) {
--			dev_err(&vdev->dev, "failed to create the ns ept\n");
-+		vch = kzalloc(sizeof(*vch), GFP_KERNEL);
-+		if (!vch) {
- 			err = -ENOMEM;
- 			goto free_coherent;
- 		}
-+
-+		/* Link the channel to our vrp */
-+		vch->vrp = vrp;
-+
-+		/* Assign public information to the rpmsg_device */
-+		rpdev_ns = &vch->rpdev;
-+		rpdev_ns->ops = &virtio_rpmsg_ops;
-+		rpdev_ns->little_endian = virtio_is_little_endian(vrp->vdev);
-+
-+		rpdev_ns->dev.parent = &vrp->vdev->dev;
-+		rpdev_ns->dev.release = virtio_rpmsg_release_device;
-+
-+		err = rpmsg_ns_register_device(rpdev_ns);
-+		if (err)
-+			goto free_coherent;
- 	}
- 
- 	/*
-@@ -985,6 +940,7 @@ static int rpmsg_probe(struct virtio_device *vdev)
- 	return 0;
- 
- free_coherent:
-+	kfree(vch);
- 	dma_free_coherent(vdev->dev.parent, total_buf_space,
- 			  bufs_va, vrp->bufs_dma);
- vqs_del:
-@@ -1013,9 +969,6 @@ static void rpmsg_remove(struct virtio_device *vdev)
- 	if (ret)
- 		dev_warn(&vdev->dev, "can't remove rpmsg device: %d\n", ret);
- 
--	if (vrp->ns_ept)
--		__rpmsg_destroy_ept(vrp, vrp->ns_ept);
--
- 	idr_destroy(&vrp->endpoints);
- 
- 	vdev->config->del_vqs(vrp->vdev);
-diff --git a/include/linux/rpmsg/ns.h b/include/linux/rpmsg/ns.h
-index 73ecc91dc26f..a7804edd6d58 100644
---- a/include/linux/rpmsg/ns.h
-+++ b/include/linux/rpmsg/ns.h
-@@ -4,6 +4,7 @@
- #define _LINUX_RPMSG_NS_H
- 
- #include <linux/mod_devicetable.h>
-+#include <linux/rpmsg.h>
- #include <linux/rpmsg/byteorder.h>
- #include <linux/types.h>
- 
-@@ -39,4 +40,6 @@ enum rpmsg_ns_flags {
- /* Address 53 is reserved for advertising remote services */
- #define RPMSG_NS_ADDR			(53)
- 
-+int rpmsg_ns_register_device(struct rpmsg_device *rpdev);
-+
- #endif
--- 
-2.25.1
+I am running on Fedora 32 which has the fix I wrote for the buggy
+elgato firmware. The bug in the firmware makes it impossible to
+properly select a non-0 pixel format when following the UVC
+negotiation protocol. This is because the firmware returns the pixel
+format in the wrong byte of the packet. The driver was following the
+UVC protocol but did not send the pixel format back to the v4l2
+subsystem. It does that now.
 
+I'm not surprised that other bugs are emerging now. Ultimately the
+firmware is buggy and announces pixel formats that it then rejects. If
+I flip through the settings in OBS, I do manage to wedge the
+interface. But most of the programs I've seen that use v4l2 are buggy
+in this way. A reliable one is the qv4l2 test program. I've also had
+no problems with Chromium.
+
+That reverse engineering is interesting! But I think it hides the real
+problem, where the pixel format negotiation on the firmware writes
+into the wrong byte of the packet.
+
+
+Adam
