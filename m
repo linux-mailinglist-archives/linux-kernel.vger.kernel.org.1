@@ -2,243 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6525D2BA795
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA302BA79A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727479AbgKTKjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:39:11 -0500
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:41611 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725952AbgKTKjK (ORCPT
+        id S1727535AbgKTKj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 05:39:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727430AbgKTKjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:39:10 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id g3odkqci3WTbog3ogkflSv; Fri, 20 Nov 2020 11:39:04 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1605868744; bh=UJbsoc+m2DQXtat1J+FSEFEQVZTUCPoXOGzxzQw644s=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=kcuAXQ1B/GTzWwQml12T3GbJXUhrFJRX5LaU3qV0GdLQGzXoDChd8SkjAllwPt3zH
-         lub6Gp+k/Kvre6ug0Fa5Abl8/Hrxr0ywrpyek9moKX8pNHcYfPWWCVh4VjaK2tgHsa
-         GkgnglWwjplRJEYBPSj2a8s+e4KZ/ySUEeABdvYY9EcNL3hnaU2R9DFQbBX4AvDwYl
-         v55zKKQOeWUtg0JTeDGQ/aETRbVDYpz0piVOHQi0i4kFvqiTbOOJRECUUwNxNUeFKx
-         yUK2HHoEGu/IzTAWVM6QKCSprtR9qfLYwNS6rKhxbvJQHHGoStiTaI9a0DXd7Pp9sP
-         p9N9Sjv3vSUGg==
-Subject: Re: [PATCH v6 09/17] media/videbuf1|2: Mark follow_pfn usage as
- unsafe
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Tomasz Figa <tfiga@chromium.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
- <20201119144146.1045202-10-daniel.vetter@ffwll.ch>
- <f1f3a1d8-d62a-6e93-afc1-87a8e51081e9@xs4all.nl>
- <e1f7d30b-2012-0249-66c7-cf9d7d6246ad@xs4all.nl>
- <CAKMK7uEzFAtr9yxjaxi-kiuZhb+hWT3q6E41OegJr+J2-zkT8w@mail.gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <9035555a-af6b-e2dd-dbad-41ca70235e21@xs4all.nl>
-Date:   Fri, 20 Nov 2020 11:38:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 20 Nov 2020 05:39:55 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A748EC061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:39:55 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id d17so4650916plr.5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:39:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tp1Yn6PcYwDveyfmiNUMjqoohGn5JgQdU6bb6b54s7c=;
+        b=QXuoT0YGe3HDxz+HXbH17h6UKx5WhqJBvvvjMJBBZq2FNc1zrSX59gmBtx3vzBZalN
+         JT69SsXhQtlq1zgI7hllhxrbDFAWelFFMocFYKNiAHFPd5YNckbSBCW1yYHdh5TG2aQL
+         86Qjz9M3UfKWKIdCX60Vb3vV9Nw/Si4ZgfNwJiqW8V5+i+oGqzDL+Uld/Y+1WfRtkHSK
+         WRDFJirytKoexo3twKJEkEJiKOJNBPqHqr5pHmcKGY+1KcjFueMlE++7eWtExSbgVy0R
+         C5Ottl56Y88HOgabvGotKsHw4tK3CnHE2/6KOZHcaAaWTxdEIcT6NkeMwHIkSdKIXeuS
+         lwZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tp1Yn6PcYwDveyfmiNUMjqoohGn5JgQdU6bb6b54s7c=;
+        b=sZgUZdfrBufUB6NWwWwcckd6/mP2HFkhslFz+dF82towoRPDL4En1VJdv1/hdVSawN
+         ZFlJYHc9/wZ5H8jZRNQ1rLPJYQXaelqfWVEhvcpp7hQeCf2uHJ+NCtlVKEx7irLVD6K8
+         XRz5sJ6HHnGyyOT7j2gAZSi8o1JWCaCXw20n6TO5A91xPjDR6r/LGH6mz/fl/ej7F82z
+         qjolovGIHGoG1TPn5e6W4USws10beNr7t/wOYYAz0G7W+JN52hqV0oG19I2j3l9pB7bO
+         pf8DSzz9xB1WmPY9wWselSUIzzsx24IbVWUqOSCg8ZgOpdEsU7Uz4nn2rWwVMCMyCrzB
+         I+Tw==
+X-Gm-Message-State: AOAM531ym3brJEYDm8bJS3N6Ii/QD2qE4u5lyMNX+vayu7FQBbtb+AUs
+        6IL7/yKASqXKaPIKfvX7LZc5kcD8u/PZ6KDyyD0jTg==
+X-Google-Smtp-Source: ABdhPJwyeHponJyLYkFShPtIMQjhm14hpbv9nuNdyb0slhePQUiE+rmZ2muvx54FRFWkF7TSl9xDPloHXXLtI1r7PYw=
+X-Received: by 2002:a17:902:c14b:b029:d6:ab18:108d with SMTP id
+ 11-20020a170902c14bb02900d6ab18108dmr13501415plj.20.1605868795137; Fri, 20
+ Nov 2020 02:39:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uEzFAtr9yxjaxi-kiuZhb+hWT3q6E41OegJr+J2-zkT8w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfDss0FwL2fqdI2i/Ld6jk5YpMRTothqQOe/9Yd2P1xeqdCmohX7XXb96LZlza31qpcmNMYJwPa81XchZVa1S7q0JJklTc6tNeVGRAAYdr+AbM+yqKuxh
- HYR4y9BVgxtQf4jgcpuWAISFzS9JO9asb6c6vsbpOUMsoZVmKvX3blng9eCgwzmJEFWVy6RFBjEP+YuywmY0Cbsra6piUdkAnXxA28LQBb4c4pANgMwK3/20
- bqwtn2oqGhmwrstC4HjCP7+ky7n9e+nny11fIZoZXpYud8ngwlCvv3JO5DEhppBBMyU4wzh6wey7nRYMfQcZKL3tBnPLxG084wGKlaIDxqlPIqzON2yPqUtM
- BdjovZp1X9w67sDw2YnPtJI+t5QjtH7wDE8HymLGzpo/iSWefSev4TB6DyT8z5q4VwW3nHLvv+AKe+XDfQUaFLrmIHckyHvzBresJqeVQNqozNuU1qToV+l/
- ErEPsay/ueUS5Hj5b6jRplY77yT/PNOmchZCs7zBkOUY6YONev0nZYJIoJ6WsUMULo52xVhX1Tta1mgMr4SugcE1W1C9YPZPWPqPWe/3L6bhxjXGPcTMvgGG
- EfWAwqzm38P0NR/GybtBl/gWm/ZJOCla09xasqa1HdLeHPFcGIUr2RcK8vk1M1FL+s1q9wqIJ1k+h51TQcL8ss+oalkYZ+Es/zXbGn8CGFesXujAIbbI9SeX
- RbG5KoDDqiF0i/z9VR5/dyz1ChlFanbUWs7vGG6zLRPUB94JMiDLcyq0sgkrQslnPzRt5atIb4ACU1K5prEyGZXzYGJ67wH+5Ote3N/ZKwr9ZzDCJOlZyz1Y
- 7NCIKU+LJw+dc7vff5v2/nfaydMU8yk1Sjiw2vMM60fyIjtgLWiysLdmBcHztcTuIRFp2fTCyaD4dNzasFyk6gZzUhJytpwVEiTZ4cIcT8wwnB8yzHSlynCb
- PBnOPcalqnNL1YwgL4G+XJik3k/M6qqSrY43N1O21jk+k7JmerrFuMJh03HUnX+RhONUkg==
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-18-songmuchun@bytedance.com> <20201120082212.GG3200@dhcp22.suse.cz>
+In-Reply-To: <20201120082212.GG3200@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 20 Nov 2020 18:39:12 +0800
+Message-ID: <CAMZfGtU693Q-CoSENZ+5ReLEXu3_QfU0RNwh8SspMNC1kV6OZA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 17/21] mm/hugetlb: Add a kernel
+ parameter hugetlb_free_vmemmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2020 10:18, Daniel Vetter wrote:
-> On Fri, Nov 20, 2020 at 9:28 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->>
->> On 20/11/2020 09:06, Hans Verkuil wrote:
->>> On 19/11/2020 15:41, Daniel Vetter wrote:
->>>> The media model assumes that buffers are all preallocated, so that
->>>> when a media pipeline is running we never miss a deadline because the
->>>> buffers aren't allocated or available.
->>>>
->>>> This means we cannot fix the v4l follow_pfn usage through
->>>> mmu_notifier, without breaking how this all works. The only real fix
->>>> is to deprecate userptr support for VM_IO | VM_PFNMAP mappings and
->>>> tell everyone to cut over to dma-buf memory sharing for zerocopy.
->>>>
->>>> userptr for normal memory will keep working as-is, this only affects
->>>> the zerocopy userptr usage enabled in 50ac952d2263 ("[media]
->>>> videobuf2-dma-sg: Support io userptr operations on io memory").
->>>>
->>>> Acked-by: Tomasz Figa <tfiga@chromium.org>
->>>
->>> Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
->>
->> Actually, cancel this Acked-by.
->>
->> So let me see if I understand this right: VM_IO | VM_PFNMAP mappings can
->> move around. There is a mmu_notifier that can be used to be notified when
->> that happens, but that can't be used with media buffers since those buffers
->> must always be available and in the same place.
->>
->> So follow_pfn is replaced by unsafe_follow_pfn to signal that what is attempted
->> is unsafe and unreliable.
->>
->> If CONFIG_STRICT_FOLLOW_PFN is set, then unsafe_follow_pfn will fail, if it
->> is unset, then it writes a warning to the kernel log but just continues while
->> still unsafe.
->>
->> I am very much inclined to just drop VM_IO | VM_PFNMAP support in the media
->> subsystem. For vb2 there is a working alternative in the form of dmabuf, and
->> frankly for vb1 I don't care. If someone really needs this for a vb1 driver,
->> then they can do the work to convert that driver to vb2.
->>
->> I've added Mauro to the CC list and I'll ping a few more people to see what
->> they think, but in my opinion support for USERPTR + VM_IO | VM_PFNMAP
->> should just be killed off.
->>
->> If others would like to keep it, then frame_vector.c needs a comment before
->> the 'while' explaining why the unsafe_follow_pfn is there and that using
->> dmabuf is the proper alternative to use. That will make it easier for
->> developers to figure out why they see a kernel warning and what to do to
->> fix it, rather than having to dig through the git history for the reason.
-> 
-> I'm happy to add a comment, but otherwise if you all want to ditch
-> this, can we do this as a follow up on top? There's quite a bit of
-> code that can be deleted and I'd like to not hold up this patch set
-> here on that - it's already a fairly sprawling pain touching about 7
-> different subsystems (ok only 6-ish now since the s390 patch landed).
-> For the comment, is the explanation next to unsafe_follow_pfn not good
-> enough?
+On Fri, Nov 20, 2020 at 4:22 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 20-11-20 14:43:21, Muchun Song wrote:
+> > Add a kernel parameter hugetlb_free_vmemmap to disable the feature of
+> > freeing unused vmemmap pages associated with each hugetlb page on boot.
+>
+> As replied to the config patch. This is fine but I would argue that the
+> default should be flipped. Saving memory is nice but it comes with
+> overhead and therefore should be an opt-in. The config option should
+> only guard compile time dependencies not a user choice.
 
-No, because that doesn't mention that you should use dma-buf as a replacement.
-That's really the critical piece of information I'd like to see. That doesn't
-belong in unsafe_follow_pfn, it needs to be in frame_vector.c since it's
-vb2 specific.
+Got it. The default will be flipped in the next version. Thanks.
 
-> 
-> So ... can I get you to un-cancel your ack?
+>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
+> >  Documentation/admin-guide/mm/hugetlbpage.rst    |  3 +++
+> >  mm/hugetlb_vmemmap.c                            | 21 +++++++++++++++++++++
+> >  3 files changed, 33 insertions(+)
+> >
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 5debfe238027..ccf07293cb63 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -1551,6 +1551,15 @@
+> >                       Documentation/admin-guide/mm/hugetlbpage.rst.
+> >                       Format: size[KMG]
+> >
+> > +     hugetlb_free_vmemmap=
+> > +                     [KNL] When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set,
+> > +                     this controls freeing unused vmemmap pages associated
+> > +                     with each HugeTLB page.
+> > +                     Format: { on (default) | off }
+> > +
+> > +                     on:  enable the feature
+> > +                     off: disable the feature
+> > +
+> >       hung_task_panic=
+> >                       [KNL] Should the hung task detector generate panics.
+> >                       Format: 0 | 1
+> > diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
+> > index f7b1c7462991..7d6129ee97dd 100644
+> > --- a/Documentation/admin-guide/mm/hugetlbpage.rst
+> > +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+> > @@ -145,6 +145,9 @@ default_hugepagesz
+> >
+> >       will all result in 256 2M huge pages being allocated.  Valid default
+> >       huge page size is architecture dependent.
+> > +hugetlb_free_vmemmap
+> > +     When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set, this disables freeing
+> > +     unused vmemmap pages associated each HugeTLB page.
+> >
+> >  When multiple huge page sizes are supported, ``/proc/sys/vm/nr_hugepages``
+> >  indicates the current number of pre-allocated huge pages of the default size.
+> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> > index 3629165d8158..c958699d1393 100644
+> > --- a/mm/hugetlb_vmemmap.c
+> > +++ b/mm/hugetlb_vmemmap.c
+> > @@ -144,6 +144,22 @@ static inline bool vmemmap_pmd_huge(pmd_t *pmd)
+> >  }
+> >  #endif
+> >
+> > +static bool hugetlb_free_vmemmap_disabled __initdata;
+> > +
+> > +static int __init early_hugetlb_free_vmemmap_param(char *buf)
+> > +{
+> > +     if (!buf)
+> > +             return -EINVAL;
+> > +
+> > +     if (!strcmp(buf, "off"))
+> > +             hugetlb_free_vmemmap_disabled = true;
+> > +     else if (strcmp(buf, "on"))
+> > +             return -EINVAL;
+> > +
+> > +     return 0;
+> > +}
+> > +early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
+> > +
+> >  static inline unsigned int vmemmap_pages_per_hpage(struct hstate *h)
+> >  {
+> >       return free_vmemmap_pages_per_hpage(h) + RESERVE_VMEMMAP_NR;
+> > @@ -541,6 +557,11 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
+> >       unsigned int order = huge_page_order(h);
+> >       unsigned int vmemmap_pages;
+> >
+> > +     if (hugetlb_free_vmemmap_disabled) {
+> > +             pr_info("disable free vmemmap pages for %s\n", h->name);
+> > +             return;
+> > +     }
+> > +
+> >       vmemmap_pages = ((1 << order) * sizeof(struct page)) >> PAGE_SHIFT;
+> >       /*
+> >        * The head page and the first tail page are not to be freed to buddy
+> > --
+> > 2.11.0
+>
+> --
+> Michal Hocko
+> SUSE Labs
 
-Hmm, I really would like to see support for this to be dropped completely.
 
-How about this: just replace follow_pfn() by -EINVAL instead of unsafe_follow_pfn().
 
-Add a TODO comment that this code now can be cleaned up a lot. Such a clean up patch
-can be added on top later, and actually that is something that I can do once this
-series has landed.
-
-Regardless, frame_vector.c should mention dma-buf as a replacement in a comment
-since I don't want users who hit this issue to have to dig through git logs
-to find that dma-buf is the right approach.
-
-BTW, nitpick: the subject line of this patch says 'videbuf' instead of 'videobuf'.
-
-Regards,
-
-	Hans
-
-> 
-> Thanks, Daniel
-> 
->>
->> Regards,
->>
->>         Hans
->>
->>>
->>> Thanks!
->>>
->>>       Hans
->>>
->>>> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
->>>> Cc: Jason Gunthorpe <jgg@ziepe.ca>
->>>> Cc: Kees Cook <keescook@chromium.org>
->>>> Cc: Dan Williams <dan.j.williams@intel.com>
->>>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>>> Cc: John Hubbard <jhubbard@nvidia.com>
->>>> Cc: Jérôme Glisse <jglisse@redhat.com>
->>>> Cc: Jan Kara <jack@suse.cz>
->>>> Cc: Dan Williams <dan.j.williams@intel.com>
->>>> Cc: linux-mm@kvack.org
->>>> Cc: linux-arm-kernel@lists.infradead.org
->>>> Cc: linux-samsung-soc@vger.kernel.org
->>>> Cc: linux-media@vger.kernel.org
->>>> Cc: Pawel Osciak <pawel@osciak.com>
->>>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
->>>> Cc: Kyungmin Park <kyungmin.park@samsung.com>
->>>> Cc: Tomasz Figa <tfiga@chromium.org>
->>>> Cc: Laurent Dufour <ldufour@linux.ibm.com>
->>>> Cc: Vlastimil Babka <vbabka@suse.cz>
->>>> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
->>>> Cc: Michel Lespinasse <walken@google.com>
->>>> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->>>> --
->>>> v3:
->>>> - Reference the commit that enabled the zerocopy userptr use case to
->>>>   make it abundandtly clear that this patch only affects that, and not
->>>>   normal memory userptr. The old commit message already explained that
->>>>   normal memory userptr is unaffected, but I guess that was not clear
->>>>   enough.
->>>> ---
->>>>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
->>>>  drivers/media/v4l2-core/videobuf-dma-contig.c | 2 +-
->>>>  2 files changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
->>>> index a0e65481a201..1a82ec13ea00 100644
->>>> --- a/drivers/media/common/videobuf2/frame_vector.c
->>>> +++ b/drivers/media/common/videobuf2/frame_vector.c
->>>> @@ -70,7 +70,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
->>>>                      break;
->>>>
->>>>              while (ret < nr_frames && start + PAGE_SIZE <= vma->vm_end) {
->>>> -                    err = follow_pfn(vma, start, &nums[ret]);
->>>> +                    err = unsafe_follow_pfn(vma, start, &nums[ret]);
->>>>                      if (err) {
->>>>                              if (ret == 0)
->>>>                                      ret = err;
->>>> diff --git a/drivers/media/v4l2-core/videobuf-dma-contig.c b/drivers/media/v4l2-core/videobuf-dma-contig.c
->>>> index 52312ce2ba05..821c4a76ab96 100644
->>>> --- a/drivers/media/v4l2-core/videobuf-dma-contig.c
->>>> +++ b/drivers/media/v4l2-core/videobuf-dma-contig.c
->>>> @@ -183,7 +183,7 @@ static int videobuf_dma_contig_user_get(struct videobuf_dma_contig_memory *mem,
->>>>      user_address = untagged_baddr;
->>>>
->>>>      while (pages_done < (mem->size >> PAGE_SHIFT)) {
->>>> -            ret = follow_pfn(vma, user_address, &this_pfn);
->>>> +            ret = unsafe_follow_pfn(vma, user_address, &this_pfn);
->>>>              if (ret)
->>>>                      break;
->>>>
->>>>
->>>
->>
-> 
-> 
-
+-- 
+Yours,
+Muchun
