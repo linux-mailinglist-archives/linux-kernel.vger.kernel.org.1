@@ -2,65 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B26A2BA3C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5512BA3D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727277AbgKTHpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:45:39 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8376 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbgKTHpi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:45:38 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CcpVm0hcKz6yxL;
-        Fri, 20 Nov 2020 15:45:20 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 20 Nov 2020 15:45:29 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <jfrederich@gmail.com>, <dsd@laptop.org>,
-        <jon.nettleton@gmail.com>, <gregkh@linuxfoundation.org>
-CC:     <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH] staging: olpc_dcon: Do not call platform_device_unregister() in dcon_probe()
-Date:   Fri, 20 Nov 2020 15:49:32 +0800
-Message-ID: <20201120074932.31871-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726381AbgKTHtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 02:49:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40334 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725785AbgKTHty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 02:49:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605858593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JFvwpWs+I7VuMZUnQ/M4/DdrXRj39dZAkTCNQ3+7/8A=;
+        b=MSBzqEZLMEN+gaZEtO/cfHVZBm5k4R1ZQbopfPyPqkDcH0wFI9n0P2DeIJpYxBDGgW5g6p
+        U6YUsrEPzs3nG68yJDBPvGIcynTAGESGi0tDZKxWWXEIQaJyfcUN9vGfT8MHzudXCzfgAS
+        UOmJnox8Zr4nNsFQMlCv31/N2sC7lQQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D5A8BAC0C;
+        Fri, 20 Nov 2020 07:49:52 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 08:49:50 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 03/21] mm/hugetlb: Introduce a new config
+ HUGETLB_PAGE_FREE_VMEMMAP
+Message-ID: <20201120074950.GB3200@dhcp22.suse.cz>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-4-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120064325.34492-4-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In dcon_probe(), when platform_device_add() failes to add the device,
-it jumps to call platform_device_unregister() to remove the device,
-which is unnecessary. So use platform_device_put() instead.
+On Fri 20-11-20 14:43:07, Muchun Song wrote:
+> The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
+> whether to enable the feature of freeing unused vmemmap associated
+> with HugeTLB pages. Now only support x86.
 
-Fixes: 53c43c5ca133 ("Revert "Staging: olpc_dcon: Remove obsolete driver"")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
----
- drivers/staging/olpc_dcon/olpc_dcon.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Why is the config option necessary? Are code savings with the feature
+disabled really worth it? I can see that your later patch adds a kernel
+command line option. I believe that is a more reasonable way to control
+the feature. I would argue that this should be an opt-in rather than
+opt-out though. Think of users of pre-built (e.g. distribution kernels)
+who might be interested in the feature. Yet you cannot assume that such
+a kernel would enable the feature with its overhead to all hugetlb
+users.
 
-diff --git a/drivers/staging/olpc_dcon/olpc_dcon.c b/drivers/staging/olpc_dcon/olpc_dcon.c
-index a0d6d90f4cc8..e7281212db5b 100644
---- a/drivers/staging/olpc_dcon/olpc_dcon.c
-+++ b/drivers/staging/olpc_dcon/olpc_dcon.c
-@@ -659,8 +659,9 @@ static int dcon_probe(struct i2c_client *client, const struct i2c_device_id *id)
-  ecreate:
- 	for (j = 0; j < i; j++)
- 		device_remove_file(&dcon_device->dev, &dcon_device_files[j]);
-+	platform_device_del(dcon_device);
-  edev:
--	platform_device_unregister(dcon_device);
-+	platform_device_put(dcon_device);
- 	dcon_device = NULL;
-  eirq:
- 	free_irq(DCON_IRQ, dcon);
+That being said, unless there are huge advantages to introduce a
+config option I would rather not add it because our config space is huge
+already and the more we add the more future code maintainance that will
+add. If you want the config just for dependency checks then fine by me.
+ 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  arch/x86/mm/init_64.c |  2 +-
+>  fs/Kconfig            | 14 ++++++++++++++
+>  2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> index 0a45f062826e..0435bee2e172 100644
+> --- a/arch/x86/mm/init_64.c
+> +++ b/arch/x86/mm/init_64.c
+> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
+>  
+>  static void __init register_page_bootmem_info(void)
+>  {
+> -#ifdef CONFIG_NUMA
+> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
+>  	int i;
+>  
+>  	for_each_online_node(i)
+> diff --git a/fs/Kconfig b/fs/Kconfig
+> index 976e8b9033c4..4961dd488444 100644
+> --- a/fs/Kconfig
+> +++ b/fs/Kconfig
+> @@ -245,6 +245,20 @@ config HUGETLBFS
+>  config HUGETLB_PAGE
+>  	def_bool HUGETLBFS
+>  
+> +config HUGETLB_PAGE_FREE_VMEMMAP
+> +	def_bool HUGETLB_PAGE
+> +	depends on X86
+> +	depends on SPARSEMEM_VMEMMAP
+> +	depends on HAVE_BOOTMEM_INFO_NODE
+> +	help
+> +	  When using HUGETLB_PAGE_FREE_VMEMMAP, the system can save up some
+> +	  memory from pre-allocated HugeTLB pages when they are not used.
+> +	  6 pages per 2MB HugeTLB page and 4094 per 1GB HugeTLB page.
+> +
+> +	  When the pages are going to be used or freed up, the vmemmap array
+> +	  representing that range needs to be remapped again and the pages
+> +	  we discarded earlier need to be rellocated again.
+> +
+>  config MEMFD_CREATE
+>  	def_bool TMPFS || HUGETLBFS
+>  
+> -- 
+> 2.11.0
+
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
