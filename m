@@ -2,55 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA3E2BB0E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE102BB0F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730094AbgKTQrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:47:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729303AbgKTQrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:47:06 -0500
-Received: from [192.168.0.50] (89-70-52-201.dynamic.chello.pl [89.70.52.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 926A92075A;
-        Fri, 20 Nov 2020 16:47:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605890826;
-        bh=YDvxkQfSjvu+0SikCKKbCn6uLgy8FVGGQiRe0c5xiVc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=uBXWip375+XrF/ZE+X8BkpJr4ozZgbjVbQ2q8dwSjTuDAjNTsZT3I92JcRHuzIJic
-         MJyvQ4uheRuTbvgeo9XgfMC2J5tgXuR1bt1BMkX3eGUxwvDYIGCcB2/8mCnqFm5mHp
-         nRA3nwLX/6KSiPnCi/NNedYmx12+ex8xW9SvwXyM=
-Subject: Re: [PATCH 38/38] ASoC: samsung: smdk_wm8994: remove redundant
- of_match_ptr()
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-References: <20201120161653.445521-1-krzk@kernel.org>
- <20201120161653.445521-38-krzk@kernel.org>
-From:   Sylwester Nawrocki <snawrocki@kernel.org>
-Message-ID: <cc848379-073f-f6f5-53bc-f3ca9abf915c@kernel.org>
-Date:   Fri, 20 Nov 2020 17:47:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730117AbgKTQum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:50:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728569AbgKTQul (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 11:50:41 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80065C0613CF;
+        Fri, 20 Nov 2020 08:50:41 -0800 (PST)
+Date:   Fri, 20 Nov 2020 16:50:38 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605891039;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R+9g7ppAZ6gq8mGwFM65WXuEXeuVXze9ykXF/9uwAaE=;
+        b=2aoYJbhsMKqnbfwJgjcRuUhdxj33pyAs0ULyyEoEhiPjVjowMtAm11ng91WdPE/D7doyau
+        wxVsagJ0c5nej3VFN563rismCcTyagTj/SOmb3KR/ySqudXRdLdYwWpmwxtppv76nHNXwu
+        7s8t4aBkRJ+vJYZ2nZBHKlgEzefaY2Lp6ThZwlo9ZkejF1gg8wJStNIz7mOfRyPhHix2jv
+        SmKcsMAEj4EPeYluZEbNB8tpneIoVlWXvAETCaeRCMvQa5aDpaMiDllUFBxfwsInWXPYLs
+        nlAqMs6YrazETG6TNgfWCZrt5LCoSzuAgK/PKce9t0oZzcZrU9HmKxr7I4/QpA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605891039;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R+9g7ppAZ6gq8mGwFM65WXuEXeuVXze9ykXF/9uwAaE=;
+        b=t0Vap+7Wk4IweaAX6SM/24EWV/8lu83m2o0JVqXWoBATE4z4ivv6mMFvm7db0dVKrz4mQO
+        jxU5rueHOeoq5KCg==
+From:   "tip-bot2 for Wang Qing" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/head64: Remove duplicate include
+Cc:     Wang Qing <wangqing@vivo.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1604893542-20961-1-git-send-email-wangqing@vivo.com>
+References: <1604893542-20961-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <20201120161653.445521-38-krzk@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Message-ID: <160589103814.11244.14763975533616682453.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/20 17:16, Krzysztof Kozlowski wrote:
-> of_match_device() already handles properly !CONFIG_OF case, so passing
-> the argument via of_match_ptr() is not needed.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Reviewed-by: Sylwester Nawrocki <snawrocki@kernel.org>
+Commit-ID:     61b39ad9a7d26fe14a2f5f23e5e940e7f9664d41
+Gitweb:        https://git.kernel.org/tip/61b39ad9a7d26fe14a2f5f23e5e940e7f9664d41
+Author:        Wang Qing <wangqing@vivo.com>
+AuthorDate:    Mon, 09 Nov 2020 11:45:41 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 20 Nov 2020 17:43:15 +01:00
 
+x86/head64: Remove duplicate include
+
+Remove duplicate header include.
+
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/1604893542-20961-1-git-send-email-wangqing@vivo.com
+---
+ arch/x86/kernel/head64.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+index 05e1171..5e9beb7 100644
+--- a/arch/x86/kernel/head64.c
++++ b/arch/x86/kernel/head64.c
+@@ -37,7 +37,6 @@
+ #include <asm/kasan.h>
+ #include <asm/fixmap.h>
+ #include <asm/realmode.h>
+-#include <asm/desc.h>
+ #include <asm/extable.h>
+ #include <asm/trapnr.h>
+ #include <asm/sev-es.h>
