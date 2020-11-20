@@ -2,70 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711AF2BA493
+	by mail.lfdr.de (Postfix) with ESMTP id 041BD2BA492
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727137AbgKTIYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727156AbgKTIYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 20 Nov 2020 03:24:02 -0500
-Received: from smtp25.cstnet.cn ([159.226.251.25]:58928 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725952AbgKTIYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+Received: from mx2.suse.de ([195.135.220.15]:40280 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727063AbgKTIYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Nov 2020 03:24:01 -0500
-Received: from localhost.localdomain (unknown [124.16.141.242])
-        by APP-05 (Coremail) with SMTP id zQCowABnepwTfbdfzxRbAQ--.19873S2;
-        Fri, 20 Nov 2020 16:23:48 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
-        jani.nikula@intel.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] video: goldfishfb: remove casting dma_alloc_coherent
-Date:   Fri, 20 Nov 2020 08:23:44 +0000
-Message-Id: <20201120082344.8623-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowABnepwTfbdfzxRbAQ--.19873S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw15CFW5tw43Kw1DWw1UGFg_yoWfWrbEkF
-        WkuF97W348Jrs5Wrn7t3y5Cryqkr95Z3Z7uFnrKrWaq347ur15Way7Zrn5G3yUWw4jgFZ8
-        Kr90krW7Aw1fujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb28YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r43MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j4yxiUUUUU=
-X-Originating-IP: [124.16.141.242]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQYGA102ZuqQ7AAAsR
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605860639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mHnP+yX2N2LZSSewnqFwv1a+NYYLkuguHW8g8xxywSE=;
+        b=siOCTUSEgBxmOgufcaTFbod3WpqPrULS0gegbW3G1+ijWH+xyX1WvCFHWmWJ6nTFcdxPuA
+        seRKapRQYCiGLLy0S2dIVLo0UnoRXf6ua5/g23M0hgg4opl1vv2fmtD/IZ1AraSJOnoNG2
+        vk1CHdCtXkwwnmNurkdkXlQgTFSwo/0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ADA76ACB0;
+        Fri, 20 Nov 2020 08:23:59 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 09:23:58 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 18/21] mm/hugetlb: Merge pte to huge pmd only for
+ gigantic page
+Message-ID: <20201120082358.GH3200@dhcp22.suse.cz>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-19-songmuchun@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120064325.34492-19-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove casting the values returned by dma_alloc_coherent.
+On Fri 20-11-20 14:43:22, Muchun Song wrote:
+> Merge pte to huge pmd if it has ever been split. Now only support
+> gigantic page which's vmemmap pages size is an integer multiple of
+> PMD_SIZE. This is the simplest case to handle.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/video/fbdev/goldfishfb.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I think it would be benefitial for anybody who plan to implement this
+for normal PMDs to document challenges while you still have them fresh
+in your mind.
 
-diff --git a/drivers/video/fbdev/goldfishfb.c b/drivers/video/fbdev/goldfishfb.c
-index 9c83ec3f8e1f..c2f386b35617 100644
---- a/drivers/video/fbdev/goldfishfb.c
-+++ b/drivers/video/fbdev/goldfishfb.c
-@@ -238,8 +238,7 @@ static int goldfish_fb_probe(struct platform_device *pdev)
- 	fb->fb.var.blue.length = 5;
- 
- 	framesize = width * height * 2 * 2;
--	fb->fb.screen_base = (char __force __iomem *)dma_alloc_coherent(
--						&pdev->dev, framesize,
-+	fb->fb.screen_base = dma_alloc_coherent(&pdev->dev, framesize,
- 						&fbpaddr, GFP_KERNEL);
- 	pr_debug("allocating frame buffer %d * %d, got %p\n",
- 					width, height, fb->fb.screen_base);
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  arch/x86/include/asm/hugetlb.h |   8 +++
+>  mm/hugetlb_vmemmap.c           | 118 ++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 124 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/hugetlb.h b/arch/x86/include/asm/hugetlb.h
+> index c601fe042832..1de1c519a84a 100644
+> --- a/arch/x86/include/asm/hugetlb.h
+> +++ b/arch/x86/include/asm/hugetlb.h
+> @@ -12,6 +12,14 @@ static inline bool vmemmap_pmd_huge(pmd_t *pmd)
+>  {
+>  	return pmd_large(*pmd);
+>  }
+> +
+> +#define vmemmap_pmd_mkhuge vmemmap_pmd_mkhuge
+> +static inline pmd_t vmemmap_pmd_mkhuge(struct page *page)
+> +{
+> +	pte_t entry = pfn_pte(page_to_pfn(page), PAGE_KERNEL_LARGE);
+> +
+> +	return __pmd(pte_val(entry));
+> +}
+>  #endif
+>  
+>  #define hugepages_supported() boot_cpu_has(X86_FEATURE_PSE)
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index c958699d1393..bf2b6b3e75af 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -144,6 +144,14 @@ static inline bool vmemmap_pmd_huge(pmd_t *pmd)
+>  }
+>  #endif
+>  
+> +#ifndef vmemmap_pmd_mkhuge
+> +#define vmemmap_pmd_mkhuge vmemmap_pmd_mkhuge
+> +static inline pmd_t vmemmap_pmd_mkhuge(struct page *page)
+> +{
+> +	return pmd_mkhuge(mk_pmd(page, PAGE_KERNEL));
+> +}
+> +#endif
+> +
+>  static bool hugetlb_free_vmemmap_disabled __initdata;
+>  
+>  static int __init early_hugetlb_free_vmemmap_param(char *buf)
+> @@ -422,6 +430,104 @@ static void __remap_huge_page_pte_vmemmap(struct page *reuse, pte_t *ptep,
+>  	}
+>  }
+>  
+> +static void __replace_huge_page_pte_vmemmap(pte_t *ptep, unsigned long start,
+> +					    unsigned int nr, struct page *huge,
+> +					    struct list_head *free_pages)
+> +{
+> +	unsigned long addr;
+> +	unsigned long end = start + (nr << PAGE_SHIFT);
+> +	pgprot_t pgprot = PAGE_KERNEL;
+> +
+> +	for (addr = start; addr < end; addr += PAGE_SIZE, ptep++) {
+> +		struct page *page;
+> +		pte_t old = *ptep;
+> +		pte_t entry;
+> +
+> +		prepare_vmemmap_page(huge);
+> +
+> +		entry = mk_pte(huge++, pgprot);
+> +		VM_WARN_ON(!pte_present(old));
+> +		page = pte_page(old);
+> +		list_add(&page->lru, free_pages);
+> +
+> +		set_pte_at(&init_mm, addr, ptep, entry);
+> +	}
+> +}
+> +
+> +static void replace_huge_page_pmd_vmemmap(pmd_t *pmd, unsigned long start,
+> +					  struct page *huge,
+> +					  struct list_head *free_pages)
+> +{
+> +	unsigned long end = start + VMEMMAP_HPAGE_SIZE;
+> +
+> +	flush_cache_vunmap(start, end);
+> +	__replace_huge_page_pte_vmemmap(pte_offset_kernel(pmd, start), start,
+> +					VMEMMAP_HPAGE_NR, huge, free_pages);
+> +	flush_tlb_kernel_range(start, end);
+> +}
+> +
+> +static pte_t *merge_vmemmap_pte(pmd_t *pmdp, unsigned long addr)
+> +{
+> +	pte_t *pte;
+> +	struct page *page;
+> +
+> +	pte = pte_offset_kernel(pmdp, addr);
+> +	page = pte_page(*pte);
+> +	set_pmd(pmdp, vmemmap_pmd_mkhuge(page));
+> +
+> +	return pte;
+> +}
+> +
+> +static void merge_huge_page_pmd_vmemmap(pmd_t *pmd, unsigned long start,
+> +					struct page *huge,
+> +					struct list_head *free_pages)
+> +{
+> +	replace_huge_page_pmd_vmemmap(pmd, start, huge, free_pages);
+> +	pte_free_kernel(&init_mm, merge_vmemmap_pte(pmd, start));
+> +	flush_tlb_kernel_range(start, start + VMEMMAP_HPAGE_SIZE);
+> +}
+> +
+> +static inline void dissolve_compound_page(struct page *page, unsigned int order)
+> +{
+> +	int i;
+> +	unsigned int nr_pages = 1 << order;
+> +
+> +	for (i = 1; i < nr_pages; i++)
+> +		set_page_count(page + i, 1);
+> +}
+> +
+> +static void merge_gigantic_page_vmemmap(struct hstate *h, struct page *head,
+> +					pmd_t *pmd)
+> +{
+> +	LIST_HEAD(free_pages);
+> +	unsigned long addr = (unsigned long)head;
+> +	unsigned long end = addr + vmemmap_pages_size_per_hpage(h);
+> +
+> +	for (; addr < end; addr += VMEMMAP_HPAGE_SIZE) {
+> +		void *to;
+> +		struct page *page;
+> +
+> +		page = alloc_pages(GFP_VMEMMAP_PAGE & ~__GFP_NOFAIL,
+> +				   VMEMMAP_HPAGE_ORDER);
+> +		if (!page)
+> +			goto out;
+> +
+> +		dissolve_compound_page(page, VMEMMAP_HPAGE_ORDER);
+> +		to = page_to_virt(page);
+> +		memcpy(to, (void *)addr, VMEMMAP_HPAGE_SIZE);
+> +
+> +		/*
+> +		 * Make sure that any data that writes to the
+> +		 * @to is made visible to the physical page.
+> +		 */
+> +		flush_kernel_vmap_range(to, VMEMMAP_HPAGE_SIZE);
+> +
+> +		merge_huge_page_pmd_vmemmap(pmd++, addr, page, &free_pages);
+> +	}
+> +out:
+> +	free_vmemmap_page_list(&free_pages);
+> +}
+> +
+>  static inline void alloc_vmemmap_pages(struct hstate *h, struct list_head *list)
+>  {
+>  	int i;
+> @@ -454,10 +560,18 @@ void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+>  				    __remap_huge_page_pte_vmemmap);
+>  	if (!freed_vmemmap_hpage_dec(pmd_page(*pmd)) && pmd_split(pmd)) {
+>  		/*
+> -		 * Todo:
+> -		 * Merge pte to huge pmd if it has ever been split.
+> +		 * Merge pte to huge pmd if it has ever been split. Now only
+> +		 * support gigantic page which's vmemmap pages size is an
+> +		 * integer multiple of PMD_SIZE. This is the simplest case
+> +		 * to handle.
+>  		 */
+>  		clear_pmd_split(pmd);
+> +
+> +		if (IS_ALIGNED(vmemmap_pages_per_hpage(h), VMEMMAP_HPAGE_NR)) {
+> +			spin_unlock(ptl);
+> +			merge_gigantic_page_vmemmap(h, head, pmd);
+> +			return;
+> +		}
+>  	}
+>  	spin_unlock(ptl);
+>  }
+> -- 
+> 2.11.0
+
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
