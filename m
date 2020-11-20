@@ -2,112 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AAC2BA61A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1D52BA61B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727417AbgKTJ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:27:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24570 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727355AbgKTJ1W (ORCPT
+        id S1727435AbgKTJ1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:27:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727312AbgKTJ1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:27:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605864441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KlxOBewGXWN3HOKYRRw+C3ApbHJeGd+c+gin3g9QdWQ=;
-        b=gEplfDzJMkN/ktgWKK1aZ7m6N6mOZ03ttF4E2Bu+lHJCZIwHEVR9w3lasZH9T696McohOw
-        eovfYZC6St9RppJYxNrTlC6wLO2FEQqbLgGSAS5UZmikVMFsDzRgv7tL3cTGfZWVnhtQsV
-        f2QXCa7xs0ZM8TTve7FjaHTdWfnvzeQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-hPIF7dlKMGinxX5_bH1DLw-1; Fri, 20 Nov 2020 04:27:16 -0500
-X-MC-Unique: hPIF7dlKMGinxX5_bH1DLw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A686E85B67D;
-        Fri, 20 Nov 2020 09:27:12 +0000 (UTC)
-Received: from [10.36.114.78] (ovpn-114-78.ams2.redhat.com [10.36.114.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C168210016DB;
-        Fri, 20 Nov 2020 09:27:06 +0000 (UTC)
-Subject: Re: [PATCH v5 00/21] Free some vmemmap pages of hugetlb page
-To:     Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, song.bao.hua@hisilicon.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120084202.GJ3200@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <6b1533f7-69c6-6f19-fc93-c69750caaecc@redhat.com>
-Date:   Fri, 20 Nov 2020 10:27:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 20 Nov 2020 04:27:30 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A45C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:27:29 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id 23so9279263wrc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:27:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ETHeYbN6hBpTG62cbJNz0JDBf9vI0VaNEPAJRWU9xC0=;
+        b=lEfJ1DDqui1+HfYPrsT0dk46sBjS8FTGqAl7VV2pCRfosbO/VdvtXDKsDcqKCCdhbn
+         N545BqEmmJtVMEO61BrL6zHc87uhHuX7MGufM6xFyip8oeKjUo8rL8uxQrpaVv7L2ERw
+         2MQKBA0lHfVfOa85YwhxPmhdVuISu1vIgNpN7nmDk3pBrP8SLXRgLCsrJ90eQmEMgavR
+         FqrzcYPqXu0sJF2ZkffAJBbvaYncDN7SGt2SlxaTpy9MMz73yGPGG+qK0lPxS0Y6tzx3
+         mPzlzA3+bZvrBUO4Nt+xy+VIH3SmL0DqlssAqwSkYKJPBWbfLNTUsCuyoPWM/22DqiOM
+         cCEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ETHeYbN6hBpTG62cbJNz0JDBf9vI0VaNEPAJRWU9xC0=;
+        b=LYvCqIoXqrT3YB3CmZKqI08c1untZHZKcRzrLoyK3TPBj35XTgoqt5o7thGD+nJlsB
+         6XVApWVoij5SSb+2ecNQ0FgmSaAOpYFQfaeiVlsCa1TaE5hzm+z0HltPMcK5HttiFPrA
+         9xdM9aJUrpzL/coSoRxTPaRqhUDaSJbzM9hJx8NRXeqdqtiDegghKIeAAzaSFJWAmxoh
+         Bvry8IkbuDUzt4IdyTpgSBABjxyIDT7beSzBSibNHhFW2n+k90tlSj+XapXC2BXMBSZt
+         gB3EYFKwwaZlbyyiJfhNqgmFmz52ZtE7upMGY22Ar5vHcumIk8YbxKpeH3A76E6mLYXd
+         j9Ng==
+X-Gm-Message-State: AOAM532MDCKhXUN4ySIKW/bLfKl23qI4gCOOh5pJocCk7KBv0heXLAPN
+        e/VdE/aPZBuxtFlqZuk3/qenCA==
+X-Google-Smtp-Source: ABdhPJwFzel9kSZkOmP6r8U5b51jx3UJiaUzkIxD3haslzkIVE8CtmMY4yN939lxl+JNFkDui6j6cA==
+X-Received: by 2002:a5d:4e4c:: with SMTP id r12mr14845723wrt.348.1605864448213;
+        Fri, 20 Nov 2020 01:27:28 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id c5sm4291172wrb.64.2020.11.20.01.27.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 01:27:27 -0800 (PST)
+Date:   Fri, 20 Nov 2020 09:27:24 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        dietmar.eggemann@arm.com, patrick.bellasi@matbug.net,
+        lenb@kernel.org, linux-kernel@vger.kernel.org,
+        valentin.schneider@arm.com, ionela.voinescu@arm.com
+Subject: Re: [RFC] Documentation/scheduler/schedutil.txt
+Message-ID: <20201120092724.GB2653684@google.com>
+References: <20201120075527.GB2414@hirez.programming.kicks-ass.net>
+ <20201120085653.GA3092@hirez.programming.kicks-ass.net>
+ <20201120091356.GA2653684@google.com>
+ <20201120091904.6zvovj2yxjxtnq2x@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <20201120084202.GJ3200@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120091904.6zvovj2yxjxtnq2x@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.11.20 09:42, Michal Hocko wrote:
-> On Fri 20-11-20 14:43:04, Muchun Song wrote:
-> [...]
-> 
-> Thanks for improving the cover letter and providing some numbers. I have
-> only glanced through the patchset because I didn't really have more time
-> to dive depply into them.
-> 
-> Overall it looks promissing. To summarize. I would prefer to not have
-> the feature enablement controlled by compile time option and the kernel
-> command line option should be opt-in. I also do not like that freeing
-> the pool can trigger the oom killer or even shut the system down if no
-> oom victim is eligible.
-> 
-> One thing that I didn't really get to think hard about is what is the
-> effect of vmemmap manipulation wrt pfn walkers. pfn_to_page can be
-> invalid when racing with the split. How do we enforce that this won't
-> blow up?
+On Friday 20 Nov 2020 at 14:49:04 (+0530), Viresh Kumar wrote:
+>     This is unlikely to be an issue on systems where cpufreq policies are
+>     shared between multiple CPUs, because in those cases the policy
+>     utilization is computed as the maximum of the CPU utilization values
+>     over the whole policy and if that turns out to be low, reducing the
+>     frequency for the policy most likely is a good idea anyway.
 
-I have the same concerns - the sections are online the whole time and 
-anybody with pfn_to_online_page() can grab them
+Hmm, I'm not sure I agree with this actually. We may be migrating the
+task to a different policy altogether. And even if we migrate to another
+CPU in the current policy, the task util_avg may be small just because
+it was packed with other tasks on a rq, which means it may not increase
+the util of the destination rq by much.
 
-I think we have similar issues with memory offlining when removing the 
-vmemmap, it's just very hard to trigger and we can easily protect by 
-grabbing the memhotplug lock. I once discussed with Dan using rcu to 
-protect the SECTION_IS_ONLINE bit, to make sure anybody who did a 
-pfn_to_online_page() stopped using the page. Of course, such an approach 
-is not easy to use in this context where the sections stay online the 
-whole time ... we would have to protect vmemmap table entries using rcu 
-or similar, which can get quite ugly.
-
-To keep things easy, maybe simply never allow to free these hugetlb 
-pages again for now? If they were reserved during boot and the vmemmap 
-condensed, then just let them stick around for all eternity.
-
-Once we have a safe approach on how to modify an online vmemmap, we can 
-enable this freeing, and eventually also dynamically manage vmemmaps for 
-runtime-allocated huge pages.
-
--- 
-Thanks,
-
-David / dhildenb
-
+ISTR Douglas' EM-based schedutil boosting series was addressing that at
+some point, I'll go have a look back at that discussion...
