@@ -2,66 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF172BA959
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9252BA95D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgKTLjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:39:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36496 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727344AbgKTLjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:39:39 -0500
-Received: from localhost.localdomain (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D418B22253;
-        Fri, 20 Nov 2020 11:39:35 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org, ardb@kernel.org,
-        hch@lst.de
-Cc:     Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org, linux-acpi@vger.kernel.org,
-        robin.murphy@arm.com, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org, linux-riscv@lists.infradead.org,
-        lorenzo.pieralisi@arm.com, linux-mm@kvack.org,
-        guohanjun@huawei.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v7 0/7] arm64: Default to 32-bit wide ZONE_DMA
-Date:   Fri, 20 Nov 2020 11:39:34 +0000
-Message-Id: <160587230018.19468.15360551479275381470.b4-ty@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201119175400.9995-1-nsaenzjulienne@suse.de>
-References: <20201119175400.9995-1-nsaenzjulienne@suse.de>
+        id S1728002AbgKTLkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:40:35 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:60230 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726541AbgKTLkf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:40:35 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 380411C0BBE; Fri, 20 Nov 2020 12:40:33 +0100 (CET)
+Date:   Fri, 20 Nov 2020 12:40:32 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/15] 4.4.245-rc1 review
+Message-ID: <20201120114032.GA27262@duo.ucw.cz>
+References: <20201120104539.534424264@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+Content-Disposition: inline
+In-Reply-To: <20201120104539.534424264@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 18:53:52 +0100, Nicolas Saenz Julienne wrote:
-> Using two distinct DMA zones turned out to be problematic. Here's an
-> attempt go back to a saner default.
-> 
-> I tested this on both a RPi4 and QEMU.
 
-Applied to arm64 (for-next/zone-dma-default-32-bit), thanks!
+--4Ckj6UjgE2iN1+kY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1/7] arm64: mm: Move reserve_crashkernel() into mem_init()
-      https://git.kernel.org/arm64/c/0a30c53573b0
-[2/7] arm64: mm: Move zone_dma_bits initialization into zone_sizes_init()
-      https://git.kernel.org/arm64/c/9804f8c69b04
-[3/7] of/address: Introduce of_dma_get_max_cpu_address()
-      https://git.kernel.org/arm64/c/964db79d6c18
-[4/7] of: unittest: Add test for of_dma_get_max_cpu_address()
-      https://git.kernel.org/arm64/c/07d13a1d6120
-[5/7] arm64: mm: Set ZONE_DMA size based on devicetree's dma-ranges
-      https://git.kernel.org/arm64/c/8424ecdde7df
-[6/7] arm64: mm: Set ZONE_DMA size based on early IORT scan
-      https://git.kernel.org/arm64/c/2b8652936f0c
-[7/7] mm: Remove examples from enum zone_type comment
-      https://git.kernel.org/arm64/c/04435217f968
+Hi!
 
--- 
-Catalin
+> This is the start of the stable review cycle for the 4.4.245 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Sun, 22 Nov 2020 10:45:32 +0000.
+> Anything received after that time might be too late.
 
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.4.y
+=20
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--4Ckj6UjgE2iN1+kY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX7erMAAKCRAw5/Bqldv6
+8qYaAJ9DG61OaDs43exJ+IavHk4B2amaAgCfTIDD71Z9cX3ZIzgo2TgngGuuwV8=
+=wrJt
+-----END PGP SIGNATURE-----
+
+--4Ckj6UjgE2iN1+kY--
