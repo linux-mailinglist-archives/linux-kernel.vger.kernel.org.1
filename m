@@ -2,173 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5892BA4BF
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4EB2BA4C0
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727163AbgKTIgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
+        id S1727185AbgKTIg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:36:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbgKTIgA (ORCPT
+        with ESMTP id S1726896AbgKTIg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:36:00 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F0E0C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:35:59 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 10so7190974pfp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:35:59 -0800 (PST)
+        Fri, 20 Nov 2020 03:36:27 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02D3C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:36:27 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id m9so6714891pgb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:36:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v8+mXQPphnEalmROxh/i56omdGOqj/p5Ii14lIEaDXc=;
-        b=y56aEgz7bs4GaAyDTrLBYqViMqxej7ZiXuaI4A7Y82jFPMu4C0G1GOGfoK39NqZu0J
-         44J4qDdpeFais5XnAu7FsZJcejS94IyDqJ82BLgq3qHL5UQCXYnAx+Skwu70mXMBR8wa
-         oLiZkB+NrihfcRK+/wCV6LpooBJm2feHkUJ5YPbEYncR4snTvn2gBbM7UDBjZJpKH4bZ
-         WN4qbfLNOhGOpPwOJWEmAeC2caSUnlYcgrAdd/g89rcxcZWVCKAyo6Hl/SkOLm3xgqNh
-         qgrNz1ZOOcNINEaj3vKcDr7HTjoSfbxrrexuEzTO4NwxqB72mRVdmdjJyyAGF1Ri7rBd
-         yqIw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P8tCjphQcsFX+yvshUO1Kuefw2AH2A0LgC7HFq1U8TI=;
+        b=ZaIuETKp1Fjacx7TPouf0HrG3pxdX2zR8WuHLuFstSbLyveKDgsl2LohpSU6OPpNR1
+         U2cnPz7m3YVYQYi1vSbE8VvbOTvjEWfrUiqY45q2u+ZnGcRR2ugXX445EtZ+q8cyMqRl
+         pYA1w11Su77NwOINiIcWjbGTcX/zYrzmOufVU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v8+mXQPphnEalmROxh/i56omdGOqj/p5Ii14lIEaDXc=;
-        b=bTkBe1EcCwlRcpCO44PhwqeyRlDGCS7BVsYI5FMmWBhkGXZ4DYVHuXxdT1D3bFy2jd
-         F9ZiiW25X9HBkWPxAQByVP60zW24cEJytG8EyEWd4aWQ29G/048SQk5EPKUUDpNhgYm/
-         5xWxZV5VGrVGtx42rtRCFmhx2VSOT62NU80PG65G2fezGgEX6s7ftFUBaZa9wN+fRe6/
-         NEdrk30dNfK/56fW2ydEFCYXbNmZlh1pLYBO2tsysynsLBEsEM6M+aVmavnNFwRph5Jc
-         Wl1k4RtyBPVgEZaNndAnlxkkBW1Ii5F2GpZYJwJ2RBjgvWO3LCDqlrD/Zi+vP2OFrJPr
-         oHbA==
-X-Gm-Message-State: AOAM5335AfnC26RNLnY/X8Km7U/IaaKrB5joOcCPQmBreYfG5TZE2/lq
-        D6qj3jJwZI4gEdTDV0UCbKVKcJCqtlwOG13K2O5OHw==
-X-Google-Smtp-Source: ABdhPJzY472bsCYM6XW2O521h+JXC9KpHBxbY6cz52QULFVtH4t2TDj/9BfSmdxmuvEjiO7bZe0KIe0KIZyLWMDKe0I=
-X-Received: by 2002:a17:90b:88b:: with SMTP id bj11mr9288264pjb.229.1605861358891;
- Fri, 20 Nov 2020 00:35:58 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P8tCjphQcsFX+yvshUO1Kuefw2AH2A0LgC7HFq1U8TI=;
+        b=pvXTiELVoo1uH6EIjy0WD41+i8it9JPcqBHm2P2NhDRPowik0KaJYusSzXh+eO90OV
+         2zIRmOe7ZW+u9gdJSwf2wFgcNvQPje6risLa4k0H+ZIv/vJz8L53edbCSurqn4dNt+vZ
+         uNMG7M8Jn9yumCIpUHDGg5pNI81SP4CKg0lDZ1bshNO92OaCE37iVrIKqKExQ3WIftxh
+         AoKDUfjwa+jlLO2Z/Gvx/LABdC4Fxyr0++sLax+yAIYAcNlrdNNz21F4IiIJ1DC8unPj
+         ON4qsDc/5jQdoPcDwIOSjHbdeFAeHgY1sPDRCcoPQtAVdg42AzLSAA9s2Zb1tP1DiR8r
+         8jBA==
+X-Gm-Message-State: AOAM531lftj53jAiMnYY15MtcM11Q6GTAa+Mk+zPvoB2HSGsu3RGEjms
+        QML3hVe7U41a/wvwGtFUZQT8bA==
+X-Google-Smtp-Source: ABdhPJzHfJSY1spSCgsVYSdN+P4nLes1SzhPq4/vwU/WASuzlKdR5JuJ5itVaTJKIIeRDKigDOhsvQ==
+X-Received: by 2002:a63:c944:: with SMTP id y4mr15788825pgg.435.1605861387253;
+        Fri, 20 Nov 2020 00:36:27 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id e29sm2278921pgl.58.2020.11.20.00.36.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 00:36:26 -0800 (PST)
+Date:   Fri, 20 Nov 2020 00:36:25 -0800
+From:   Prashant Malani <pmalani@chromium.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Utkarsh Patel <utkarsh.h.patel@intel.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        enric.balletbo@collabora.com, rajmohan.mani@intel.com,
+        azhar.shaikh@intel.com
+Subject: Re: [PATCH v3 1/4] usb: typec: Use Thunderbolt 3 cable discover mode
+ VDO in Enter_USB message
+Message-ID: <20201120083625.GB4160865@google.com>
+References: <20201119063211.2264-1-utkarsh.h.patel@intel.com>
+ <20201119063211.2264-2-utkarsh.h.patel@intel.com>
+ <20201120080514.GC4120550@kuha.fi.intel.com>
 MIME-Version: 1.0
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120064325.34492-4-songmuchun@bytedance.com> <20201120074950.GB3200@dhcp22.suse.cz>
-In-Reply-To: <20201120074950.GB3200@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 20 Nov 2020 16:35:16 +0800
-Message-ID: <CAMZfGtWuCuuR+N8h-509BbDL8CN+s_djsodPN0Wb1+YHbF9PHw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v5 03/21] mm/hugetlb: Introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120080514.GC4120550@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 3:49 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 20-11-20 14:43:07, Muchun Song wrote:
-> > The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
-> > whether to enable the feature of freeing unused vmemmap associated
-> > with HugeTLB pages. Now only support x86.
->
-> Why is the config option necessary? Are code savings with the feature
-> disabled really worth it? I can see that your later patch adds a kernel
-> command line option. I believe that is a more reasonable way to control
-> the feature. I would argue that this should be an opt-in rather than
-> opt-out though. Think of users of pre-built (e.g. distribution kernels)
-> who might be interested in the feature. Yet you cannot assume that such
-> a kernel would enable the feature with its overhead to all hugetlb
-> users.
-
-Now the config option may be necessary. Because the feature only
-supports x86. While other architectures need some code to support
-this feature. In the future, we will implement it on other architectures.
-Then, we can remove this option.
-
-Also, this config option is not optional. It is default by the
-CONFIG_HUGETLB_PAGE. If the kernel selects the
-CONFIG_HUGETLB_PAGE, the CONFIG_ HUGETLB_PAGE_FREE_VMEMMAP
-is also selected. The user only can disable this feature by
-boot command line :).
-
-Thanks.
-
->
-> That being said, unless there are huge advantages to introduce a
-> config option I would rather not add it because our config space is huge
-> already and the more we add the more future code maintainance that will
-> add. If you want the config just for dependency checks then fine by me.
-
-Yeah, it is only for dependency checks :)
-
->
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  arch/x86/mm/init_64.c |  2 +-
-> >  fs/Kconfig            | 14 ++++++++++++++
-> >  2 files changed, 15 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> > index 0a45f062826e..0435bee2e172 100644
-> > --- a/arch/x86/mm/init_64.c
-> > +++ b/arch/x86/mm/init_64.c
-> > @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
-> >
-> >  static void __init register_page_bootmem_info(void)
-> >  {
-> > -#ifdef CONFIG_NUMA
-> > +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
-> >       int i;
-> >
-> >       for_each_online_node(i)
-> > diff --git a/fs/Kconfig b/fs/Kconfig
-> > index 976e8b9033c4..4961dd488444 100644
-> > --- a/fs/Kconfig
-> > +++ b/fs/Kconfig
-> > @@ -245,6 +245,20 @@ config HUGETLBFS
-> >  config HUGETLB_PAGE
-> >       def_bool HUGETLBFS
-> >
-> > +config HUGETLB_PAGE_FREE_VMEMMAP
-> > +     def_bool HUGETLB_PAGE
-> > +     depends on X86
-> > +     depends on SPARSEMEM_VMEMMAP
-> > +     depends on HAVE_BOOTMEM_INFO_NODE
-> > +     help
-> > +       When using HUGETLB_PAGE_FREE_VMEMMAP, the system can save up some
-> > +       memory from pre-allocated HugeTLB pages when they are not used.
-> > +       6 pages per 2MB HugeTLB page and 4094 per 1GB HugeTLB page.
-> > +
-> > +       When the pages are going to be used or freed up, the vmemmap array
-> > +       representing that range needs to be remapped again and the pages
-> > +       we discarded earlier need to be rellocated again.
-> > +
-> >  config MEMFD_CREATE
-> >       def_bool TMPFS || HUGETLBFS
-> >
+On Fri, Nov 20, 2020 at 10:05:14AM +0200, Heikki Krogerus wrote:
+> On Wed, Nov 18, 2020 at 10:32:08PM -0800, Utkarsh Patel wrote:
+> > When Thunderbolt 3 cable is being used to create USB4 connection, use
+> > Thunderbolt 3 discover mode VDO to fill details such as active cable plug
+> > link training and cable rounded support.
+> > With USB4 cables, these VDO members need not be filled.
+> > 
+> > Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+> > 
 > > --
-> > 2.11.0
->
-> --
-> Michal Hocko
-> SUSE Labs
+> > Changes in v3:
+> > - Changed the commit mesage to reflect why TBT3 VDO is being used.
+> > - Added more details in the header file about the usage of TBT3 VDO.
+> > 
+> > Changes in v2:
+> > - No change.
+> > --
+> > ---
+> >  include/linux/usb/typec.h | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
+> > index 6be558045942..25731ed863fa 100644
+> > --- a/include/linux/usb/typec.h
+> > +++ b/include/linux/usb/typec.h
+> > @@ -75,6 +75,10 @@ enum typec_orientation {
+> >  /*
+> >   * struct enter_usb_data - Enter_USB Message details
+> >   * @eudo: Enter_USB Data Object
+> > + * @tbt_cable_vdo: TBT3 Cable Discover Mode Response
+> 
+> This is fine..
+> 
+> > + * @tbt_cable_vdo needs to be filled with details of active cable plug link
+> > + * training and cable rounded support when thunderbolt 3 cable is being used to
+> > + * create USB4 connection. Do not fill this in case of USB4 cable.
+> 
+> But this is not. The description of the member tells what the member
+> contains, but it does not make sense to explain also how to use the
+> member in the same place.
 
+Slightly tangential question here:
 
+Is there a need to mention "active cable plug link training" and "cable
+rounded support" at all? Wouldn't it be sufficient to omit those in the
+description (in case some mux implementation wants to use the other fields
+of the VDO) ?
 
---
-Yours,
-Muchun
+> Instead you should explain how to use the
+> member in the description of the structure. So..
+> 
+> >   * @active_link_training: Active Cable Plug Link Training
+> >   *
+> >   * @active_link_training is a flag that should be set with uni-directional SBRX
+> 
+> Put it here. That will make this much more readable.
+> 
+> 
+> thanks,
+> 
+> -- 
+> heikki
