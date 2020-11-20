@@ -2,183 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32C72B9FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:27:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FB42B9FB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 02:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgKTB1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 20:27:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30195 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726580AbgKTB1S (ORCPT
+        id S1726761AbgKTB2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 20:28:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726683AbgKTB2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:27:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605835636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DLIVQHvx6BWBfd7HmGxTRnB/+14KaYzo8H+szC2YlPI=;
-        b=NV29aVEFQ0NDGgSVCR8PH9QV8S2SHf+xrST9WD11wNAawkgefZQRigEoZyQPEUaYZ/E0sN
-        0utQJd+RAOKuRxgGnBY6Xd5Adg5peaUWzjJ+wb5xVYlYrlT5ERswnaIvimqph3SHTTsb5B
-        sEof+fq2F0h1FIdlLTlWHI0UVbQAmkg=
-Received: from mail-ua1-f70.google.com (mail-ua1-f70.google.com
- [209.85.222.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-257-zHTgypmDMNms5cAJhTKOxA-1; Thu, 19 Nov 2020 20:27:14 -0500
-X-MC-Unique: zHTgypmDMNms5cAJhTKOxA-1
-Received: by mail-ua1-f70.google.com with SMTP id 93so2459750uav.7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 17:27:14 -0800 (PST)
+        Thu, 19 Nov 2020 20:28:09 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04967C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 17:28:09 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id cu18so5934471qvb.17
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 17:28:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=lK0xAgnqnFlKaValXVa+KwtGL7PSxTSCBTzwbu0iobI=;
+        b=KQ4eOTwhgUo10eJlVVLVGUDH3sWNKajxu3x9BVxOBLT8YFeUdiXb9KqX7CC8fSQZn2
+         Ib6zq2ftRSnDPAvCB35gqCoP8snEJTtPuFSxmmrSopU5llloGetTUTykmU5LnzzpS/Sd
+         Eqc8VhXWNuv465Nqbmh5Mez1PuIVaFg8k92MKpmQjxCppNbbTRFOibip654xHkMDB2Tp
+         U1GJKDO/KOjz1IHyjWqDr8iZIoLyMyzsWxO9U7/Mh+0g06k8nSw+cPFy2714dpuDCrVo
+         3VJ9W5ws0hmXS2+Sklv0y0djPifhPSjaWJ/GxiVxdQrftP5RQkDVnXfnXOoq7uwxlXCN
+         vp/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DLIVQHvx6BWBfd7HmGxTRnB/+14KaYzo8H+szC2YlPI=;
-        b=YaDTUMhaSiA1YJxtqTvvp/rqIGKHGkQc/eMlHpUEFTE3FoesmTfUMujdndIzkWrSbs
-         T3loph9BdY8YH6jxmFS1fO0fyG+AZqY+h66/22Np6cGGsBXXXaq52jowdlJY4KFrBAKK
-         D00n//tRWIy+dEH3/JgvO0ImEHxNU3PArwtprOOVYnxC7DvwxVc3DqVSjjyU7og7BaN4
-         etWu3XNTPTNkLbqz1dESFAF/0CjwJ33eaCFwnU2KHEa0o66ZwFmzdPwCotnMOXgQHl3K
-         zBHDg/KzjqKtj11nlqraxqRzDaw4VhwZofsJKE8D4BfjQxrm8yfPGyd5ecZCpSe4OTTc
-         2F7A==
-X-Gm-Message-State: AOAM532ShA2gOTYleDa0eR3LFxhmks31feOlL0ASQo87Q+dJvbzxP7ua
-        6qPBjTO+dbJGxR8yZ3X8NHvaiFdv0mbgAU3hf5PJIhl6D9byQg71otd2TR9NNTnyaQvRT5jYPAJ
-        RQ5vQ115dazay7Xo3V56T3ulhLhOu6oZmMPozExYQ
-X-Received: by 2002:a67:ead4:: with SMTP id s20mr9956263vso.23.1605835633570;
-        Thu, 19 Nov 2020 17:27:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxAOprCn+MSLwpUL1KRNzUeNpOM1FggL7enU/sNOGdCf/2dwEQ+lfxQplsQG9tT32TFdvR6vVegizOMc4DLrrs=
-X-Received: by 2002:a67:ead4:: with SMTP id s20mr9956250vso.23.1605835633366;
- Thu, 19 Nov 2020 17:27:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20200821020345.3358-1-thunder.leizhen@huawei.com>
- <b4643e74-aad9-385f-01f2-f8e48ba4dbef@suse.de> <ad100923-e479-faf0-f749-ac8e4cf87899@huawei.com>
- <8aa638b7-6cfd-bf3d-8015-fbe59f28f31f@suse.de> <c2f8cf50-d9f7-df19-40eb-0543e6208c0d@huawei.com>
-In-Reply-To: <c2f8cf50-d9f7-df19-40eb-0543e6208c0d@huawei.com>
-From:   John Dorminy <jdorminy@redhat.com>
-Date:   Thu, 19 Nov 2020 20:27:02 -0500
-Message-ID: <CAMeeMh_iBFpmSjgm8aC1WO-=iQPU5rQ2-Z6oe0L8nt5ke=+XQw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] block: move the PAGE_SECTORS definition into <linux/blkdev.h>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Coly Li <colyli@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        dm-devel <dm-devel@redhat.com>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-bcache <linux-bcache@vger.kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=lK0xAgnqnFlKaValXVa+KwtGL7PSxTSCBTzwbu0iobI=;
+        b=OxNlmXNS7I9LlFH84xtywBfqO/gThGXPu+it3cwx8t019jP6zhW/YM6uWF7I7ZcnsR
+         e4LsmwxXAxmMa9hOdTdnn24P/R77x+6pOJTorI/sbmt1qqyzhjpr12SdWt22w5ZVvta5
+         Dxe/DrUjwmA7gVGQW+tM4pkO3u0rWrQ9yHKii9I0CIqJF/avgVEDYIu14jF4lnyTXnTr
+         c2OZq9vlhO8Plm5JN1K+jWTrV4e8FjERXi0lc5K2u+tY7CNkF2zEgoZTg02S6eX8Wbrs
+         UHU3neJU7+IFt20XcNKt7PtJmiJB4JHFTZB2nedgTjyenFSQBaeV8YDtOw33rq3qnJL5
+         bEiQ==
+X-Gm-Message-State: AOAM533OYVNWcqVov5ID/+3scd1gB8PJNgedsxXXTiMiEl/gb3+uRCI8
+        ywr5BdS5NBdVmbBGTSY6Ivt8XjNHz4l26g==
+X-Google-Smtp-Source: ABdhPJy3thbcQda3qTSamHoN14zSoMqlE5FrSw5T5Rl4P3mib92c8R3jPpQikTCaiYgC8wczkE5ClkRj7537vQ==
+Sender: "tmroeder via sendgmr" <tmroeder@tmroeder.kir.corp.google.com>
+X-Received: from tmroeder.kir.corp.google.com ([2620:0:1008:11:7220:84ff:fe09:dc21])
+ (user=tmroeder job=sendgmr) by 2002:a05:6214:aab:: with SMTP id
+ ew11mr14234348qvb.4.1605835688035; Thu, 19 Nov 2020 17:28:08 -0800 (PST)
+Date:   Thu, 19 Nov 2020 17:27:37 -0800
+Message-Id: <20201120012738.2953282-1-tmroeder@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH v2] nvme: Cache DMA descriptors to prevent corruption.
+From:   Tom Roeder <tmroeder@google.com>
+To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>
+Cc:     Peter Gonda <pgonda@google.com>,
+        Marios Pomonis <pomonis@google.com>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tom Roeder <tmroeder@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings;
+This patch changes the NVMe PCI implementation to cache host_mem_descs
+in non-DMA memory instead of depending on descriptors stored in DMA
+memory. This change is needed under the malicious-hypervisor threat
+model assumed by the AMD SEV and Intel TDX architectures, which encrypt
+guest memory to make it unreadable. Some versions of these architectures
+also make it cryptographically hard to modify guest memory without
+detection.
 
-There are a lot of uses of PAGE_SIZE/SECTOR_SIZE scattered around, and
-it seems like a medium improvement to be able to refer to it as
-PAGE_SECTORS everywhere instead of just inside dm, bcache, and
-null_blk. Did this change progress forward somewhere?
+On these architectures, Linux generally leaves DMA memory unencrypted so
+that devices can still communicate directly with the kernel: DMA memory
+remains readable to and modifiable by devices. This means that this
+memory is also accessible to a hypervisor.
 
-Thanks!
+However, this means that a malicious hypervisor could modify the addr or
+size fields of descriptors and cause the NVMe driver to call
+dma_free_attrs on arbitrary addresses or on the right addresses but with
+the wrong size. To prevent this attack, this commit changes the code to
+cache those descriptors in non-DMA memory and to use the cached values
+when freeing the memory they describe.
 
-John Dorminy
+Tested: Built and ran with Google-internal NVMe tests.
+Tested-by: Tom Roeder <tmroeder@google.com>
+Signed-off-by: Tom Roeder <tmroeder@google.com>
+---
+Changes from v1:
+- Use native integers instead of __le{32,64} for the addr and size.
+- Rename added fields/variables for better consistency.
+- Make comment style consistent with other comments in pci.c.
 
+ drivers/nvme/host/pci.c | 35 ++++++++++++++++++++++++++++-------
+ include/linux/nvme.h    |  5 +++++
+ 2 files changed, 33 insertions(+), 7 deletions(-)
 
-On Mon, Sep 7, 2020 at 3:40 AM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
->
-> Hi, Jens Axboe, Alasdair Kergon, Mike Snitzer:
->   What's your opinion?
->
->
-> On 2020/8/21 15:05, Coly Li wrote:
-> > On 2020/8/21 14:48, Leizhen (ThunderTown) wrote:
-> >>
-> >>
-> >> On 8/21/2020 12:11 PM, Coly Li wrote:
-> >>> On 2020/8/21 10:03, Zhen Lei wrote:
-> >>>> There are too many PAGE_SECTORS definitions, and all of them are the
-> >>>> same. It looks a bit of a mess. So why not move it into <linux/blkdev.h>,
-> >>>> to achieve a basic and unique definition.
-> >>>>
-> >>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >>>
-> >>>
-> >>> A lazy question about page size > 4KB: currently in bcache code the
-> >>> sector size is assumed to be 512 sectors, if kernel page > 4KB, it is
-> >>> possible that PAGE_SECTORS in bcache will be a number > 8 ?
-> >>
-> >> Sorry, I don't fully understand your question. I known that the sector size
-> >> can be 512 or 4K, and the PAGE_SIZE can be 4K or 64K. So even if sector size
-> >> is 4K, isn't it greater than 8 for 64K pages?
-> >>
-> >> I'm not sure if the question you're asking is the one Matthew Wilcox has
-> >> answered before:
-> >> https://www.spinics.net/lists/raid/msg64345.html
-> >
-> > Thank you for the above information. Currently bcache code assumes
-> > sector size is always 512 bytes, you may see how many "<< 9" or ">> 9"
-> > are used. Therefore I doubt whether current code may stably work on e.g.
-> > 4Kn SSDs (this is only doubt because I don't have such SSD).
-> >
-> > Anyway your patch is fine to me. This change to bcache doesn't make
-> > thins worse or better, maybe it can be helpful to trigger my above
-> > suspicious early if people do have this kind of problem on 4Kn sector SSDs.
-> >
-> > For the bcache part of this patch, you may add,
-> > Acked-by: Coly Li <colyli@suse.de>
-> >
-> > Thanks.
-> >
-> > Coly Li
-> >
-> >>>> ---
-> >>>>  drivers/block/brd.c           | 1 -
-> >>>>  drivers/block/null_blk_main.c | 1 -
-> >>>>  drivers/md/bcache/util.h      | 2 --
-> >>>>  include/linux/blkdev.h        | 5 +++--
-> >>>>  include/linux/device-mapper.h | 1 -
-> >>>>  5 files changed, 3 insertions(+), 7 deletions(-)
-> >>>>
-> >>>
-> >>> [snipped]
-> >>>
-> >>>> diff --git a/drivers/md/bcache/util.h b/drivers/md/bcache/util.h
-> >>>> index c029f7443190805..55196e0f37c32c6 100644
-> >>>> --- a/drivers/md/bcache/util.h
-> >>>> +++ b/drivers/md/bcache/util.h
-> >>>> @@ -15,8 +15,6 @@
-> >>>>
-> >>>>  #include "closure.h"
-> >>>>
-> >>>> -#define PAGE_SECTORS              (PAGE_SIZE / 512)
-> >>>> -
-> >>>>  struct closure;
-> >>>>
-> >>>>  #ifdef CONFIG_BCACHE_DEBUG
-> >>>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> >>>> index bb5636cc17b91a7..b068dfc5f2ef0ab 100644
-> >>>> --- a/include/linux/blkdev.h
-> >>>> +++ b/include/linux/blkdev.h
-> >>>> @@ -949,11 +949,12 @@ static inline struct request_queue *bdev_get_queue(struct block_device *bdev)
-> >>>>   * multiple of 512 bytes. Hence these two constants.
-> >>>>   */
-> >>>>  #ifndef SECTOR_SHIFT
-> >>>> -#define SECTOR_SHIFT 9
-> >>>> +#define SECTOR_SHIFT              9
-> >>>>  #endif
-> >>>>  #ifndef SECTOR_SIZE
-> >>>> -#define SECTOR_SIZE (1 << SECTOR_SHIFT)
-> >>>> +#define SECTOR_SIZE               (1 << SECTOR_SHIFT)
-> >>>>  #endif
-> >>>> +#define PAGE_SECTORS              (PAGE_SIZE / SECTOR_SIZE)
-> >>>>
-> >>>>  /*
-> >>>>   * blk_rq_pos()                   : the current sector
-> >>> [snipped]
-> >>>
-> >>>
-> >>
-> >
-> >
-> > .
-> >
->
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 3be352403839..4c55a96f9e34 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -148,6 +148,11 @@ struct nvme_dev {
+ 	u32 nr_host_mem_descs;
+ 	dma_addr_t host_mem_descs_dma;
+ 	struct nvme_host_mem_buf_desc *host_mem_descs;
++	/*
++	 * A cache for the host_mem_descs in non-DMA memory so a malicious
++	 * hypervisor can't change them.
++	 */
++	struct nvme_host_mem_buf_cached_desc *host_mem_cached_descs;
+ 	void **host_mem_desc_bufs;
+ 	unsigned int nr_allocated_queues;
+ 	unsigned int nr_write_queues;
+@@ -1874,11 +1879,16 @@ static void nvme_free_host_mem(struct nvme_dev *dev)
+ 	int i;
+ 
+ 	for (i = 0; i < dev->nr_host_mem_descs; i++) {
+-		struct nvme_host_mem_buf_desc *desc = &dev->host_mem_descs[i];
+-		size_t size = le32_to_cpu(desc->size) * NVME_CTRL_PAGE_SIZE;
++		/*
++		 * Use the cached version to free the DMA allocations, not a
++		 * version that could be controlled by a malicious hypervisor.
++		 */
++		struct nvme_host_mem_buf_cached_desc *desc =
++			&dev->host_mem_cached_descs[i];
++		size_t size = desc->size * NVME_CTRL_PAGE_SIZE;
+ 
+ 		dma_free_attrs(dev->dev, size, dev->host_mem_desc_bufs[i],
+-			       le64_to_cpu(desc->addr),
++			       desc->addr,
+ 			       DMA_ATTR_NO_KERNEL_MAPPING | DMA_ATTR_NO_WARN);
+ 	}
+ 
+@@ -1888,6 +1898,8 @@ static void nvme_free_host_mem(struct nvme_dev *dev)
+ 			dev->nr_host_mem_descs * sizeof(*dev->host_mem_descs),
+ 			dev->host_mem_descs, dev->host_mem_descs_dma);
+ 	dev->host_mem_descs = NULL;
++	kfree(dev->host_mem_cached_descs);
++	dev->host_mem_cached_descs = NULL;
+ 	dev->nr_host_mem_descs = 0;
+ }
+ 
+@@ -1895,6 +1907,7 @@ static int __nvme_alloc_host_mem(struct nvme_dev *dev, u64 preferred,
+ 		u32 chunk_size)
+ {
+ 	struct nvme_host_mem_buf_desc *descs;
++	struct nvme_host_mem_buf_cached_desc *cached_descs;
+ 	u32 max_entries, len;
+ 	dma_addr_t descs_dma;
+ 	int i = 0;
+@@ -1913,9 +1926,13 @@ static int __nvme_alloc_host_mem(struct nvme_dev *dev, u64 preferred,
+ 	if (!descs)
+ 		goto out;
+ 
++	cached_descs = kcalloc(max_entries, sizeof(*cached_descs), GFP_KERNEL);
++	if (!cached_descs)
++		goto out_free_descs;
++
+ 	bufs = kcalloc(max_entries, sizeof(*bufs), GFP_KERNEL);
+ 	if (!bufs)
+-		goto out_free_descs;
++		goto out_free_cached_descs;
+ 
+ 	for (size = 0; size < preferred && i < max_entries; size += len) {
+ 		dma_addr_t dma_addr;
+@@ -1928,6 +1945,8 @@ static int __nvme_alloc_host_mem(struct nvme_dev *dev, u64 preferred,
+ 
+ 		descs[i].addr = cpu_to_le64(dma_addr);
+ 		descs[i].size = cpu_to_le32(len / NVME_CTRL_PAGE_SIZE);
++		cached_descs[i].addr = dma_addr;
++		cached_descs[i].size = len / NVME_CTRL_PAGE_SIZE;
+ 		i++;
+ 	}
+ 
+@@ -1937,20 +1956,22 @@ static int __nvme_alloc_host_mem(struct nvme_dev *dev, u64 preferred,
+ 	dev->nr_host_mem_descs = i;
+ 	dev->host_mem_size = size;
+ 	dev->host_mem_descs = descs;
++	dev->host_mem_cached_descs = cached_descs;
+ 	dev->host_mem_descs_dma = descs_dma;
+ 	dev->host_mem_desc_bufs = bufs;
+ 	return 0;
+ 
+ out_free_bufs:
+ 	while (--i >= 0) {
+-		size_t size = le32_to_cpu(descs[i].size) * NVME_CTRL_PAGE_SIZE;
++		size_t size = cached_descs[i].size * NVME_CTRL_PAGE_SIZE;
+ 
+-		dma_free_attrs(dev->dev, size, bufs[i],
+-			       le64_to_cpu(descs[i].addr),
++		dma_free_attrs(dev->dev, size, bufs[i], cached_descs[i].addr,
+ 			       DMA_ATTR_NO_KERNEL_MAPPING | DMA_ATTR_NO_WARN);
+ 	}
+ 
+ 	kfree(bufs);
++out_free_cached_descs:
++	kfree(cached_descs);
+ out_free_descs:
+ 	dma_free_coherent(dev->dev, max_entries * sizeof(*descs), descs,
+ 			descs_dma);
+diff --git a/include/linux/nvme.h b/include/linux/nvme.h
+index d92535997687..e9e14df417bc 100644
+--- a/include/linux/nvme.h
++++ b/include/linux/nvme.h
+@@ -1114,6 +1114,11 @@ struct nvme_host_mem_buf_desc {
+ 	__u32			rsvd;
+ };
+ 
++struct nvme_host_mem_buf_cached_desc {
++	__u64			addr;
++	__u32			size;
++};
++
+ struct nvme_create_cq {
+ 	__u8			opcode;
+ 	__u8			flags;
+-- 
+2.29.2.454.gaff20da3a2-goog
 
