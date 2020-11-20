@@ -2,33 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890E02BB372
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 734342BB374
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730869AbgKTSeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:34:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53074 "EHLO mail.kernel.org"
+        id S1729733AbgKTSeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:34:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730681AbgKTSea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:34:30 -0500
+        id S1729952AbgKTSee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:34:34 -0500
 Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD1DC22470;
-        Fri, 20 Nov 2020 18:34:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87D0222470;
+        Fri, 20 Nov 2020 18:34:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605897269;
-        bh=3ol0GXV2w5ae7brwiU4z35v9uepu/8t4+NvhW4QdRvA=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=FtIfofQBVyfBnvTShsFnkOfODiHPrQdSVxIIlAI0mQXtrbci7XokI08jiy0rM3vWi
-         XpVqVlBxSxdEeYL4U5NJrBG3jKNYDUHdiaQHjw1JtXSHRjvRhnB5A/gC7tI34QVOAi
-         D1gSoO3U+EZphW1ouOb2T7MdWbhsl6fO2GQ6rrMM=
-Date:   Fri, 20 Nov 2020 12:34:35 -0600
+        s=default; t=1605897274;
+        bh=pNUFEE16O9q1lV79zGxWuVcJGvY5m6bMjPJFWzou+m8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1qAYtGR0yoZVgzXkrY8ihvySutVvfR0l/auGAHC69QBHKGTs1eRqubAV3V4yh3uc5
+         XfKrnN90Y0I9sTLO+QaUEl3sEmV44k6cEJSMocI6ap6+2Ej3b0RRFyYeZ15PUFY5kM
+         WJFfzbTXZPyBjOSqqlVTDJtvxR0dJKLoRPqObw04=
+Date:   Fri, 20 Nov 2020 12:34:40 -0600
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 071/141] braille_console: Fix fall-through warnings for Clang
-Message-ID: <a0be16871b77956d75ea2f877da2fa5fba3e64ac.1605896059.git.gustavoars@kernel.org>
+Subject: [PATCH 072/141] can: peak_usb: Fix fall-through warnings for Clang
+Message-ID: <aab7cf16bf43cc7c3e9c9930d2dae850c1d07a3c.1605896059.git.gustavoars@kernel.org>
 References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -46,21 +51,22 @@ through to the next case.
 Link: https://github.com/KSPP/linux/issues/115
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/accessibility/braille/braille_console.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/accessibility/braille/braille_console.c b/drivers/accessibility/braille/braille_console.c
-index 9861302cc7db..359bead4b280 100644
---- a/drivers/accessibility/braille/braille_console.c
-+++ b/drivers/accessibility/braille/braille_console.c
-@@ -246,6 +246,7 @@ static int keyboard_notifier_call(struct notifier_block *blk,
- 				beep(440);
- 		}
- 	}
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+index c2764799f9ef..fd65a155be3b 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -299,6 +299,8 @@ static void peak_usb_write_bulk_callback(struct urb *urb)
+ 		if (net_ratelimit())
+ 			netdev_err(netdev, "Tx urb aborted (%d)\n",
+ 				   urb->status);
 +		break;
- 	case KBD_UNBOUND_KEYCODE:
- 	case KBD_UNICODE:
- 	case KBD_KEYSYM:
++
+ 	case -EPROTO:
+ 	case -ENOENT:
+ 	case -ECONNRESET:
 -- 
 2.27.0
 
