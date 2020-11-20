@@ -2,199 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EA42BA988
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B59B42BA990
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:51:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgKTLqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:46:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56120 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727882AbgKTLqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:46:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605872798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RvGJzF3kLsbrT/VFYKE6yOfFu7G7ZuC1Hu1vcGbSYR0=;
-        b=NFyZJJGo7Rm2MSDuNGewrxDAq0Ask4NpUk48WrgYcF0spwnkO34hJz75+m3ma+FokdkL1B
-        FjiHGB8NlDkZCUw1tIyBMEPrKwaVIdnUxNewB8hbvR4fR/YO+4L1JfzR1I+w/zExML29M1
-        AZGUh6y9Gai0RPBULFe19SmUiV2I40E=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 460FBADDB;
-        Fri, 20 Nov 2020 11:46:38 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, luto@kernel.org,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
+        id S1727139AbgKTLta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgKTLt3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:49:29 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70720C0613CF;
+        Fri, 20 Nov 2020 03:49:29 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id 11so9748441ljf.2;
+        Fri, 20 Nov 2020 03:49:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=siq01dsnoBEVAA2j5Gd4vmHNXcANoBmTuWqv5FdkRRg=;
+        b=nabdbzL3qLoy6eyU1INiss6AzaU3MOG7PfET7Y8JPQdPzpvCja7qs0wNQjVbWzV67i
+         ugyreE5Pn4JcBpdetLsXMZlCv+h5x2ATavRmHkEVs0rFUM7S76fara/rSK41MdAfy1g4
+         lwWWJoLFGnPu9xg1IcdQyaimv/qTNkuHkXtulExJPC3/BLscFhSYcqbpHCmCcV45tHqu
+         gG1N1IM2uRfcWEdj5liqNIzTwSDG8p/I5OHnd3tLr6QNSrJckwH9DZY/44Sf03jY26GX
+         XWE0VfZ7EXoifXpXLyUlFytzIBhpFhZP+MT/2vkzqTOTrURvSuLQl8038Dw4NxyHkvcC
+         68nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=siq01dsnoBEVAA2j5Gd4vmHNXcANoBmTuWqv5FdkRRg=;
+        b=gX4q7NvE1m1quFdOjdxnjv3fC0er17xwhohK9VK13FRFypFuArFUve/o9Gf+9Cw6mp
+         g+QOxP2BPmKYH6oNndWBVbikl6js4Vi4gdujzrDILqEd4rMTA2hhmMUWIfIWwaxdncZc
+         69nlxfCi97c52aEiNEE8Olc0hKN1TugiFKXq0ICIToVgsyfD06xrTk8eC78opEN4nW3I
+         cUSie5SAhukP0/QKaXBx/GOE/ID7xLf+GDltrBgc09T4bVv0eoyGxG6leesrlKCsWCZx
+         QdVHSNvt7DAHccxPHEY5nqD++1LDi0/NR4kCZEGUiOn2ZOH1awpjbCskZwimidkqxhfC
+         6hmA==
+X-Gm-Message-State: AOAM533347PTwB09Bnzhp7wxYIOHkYFNa3opeGIPxwUhcmrbuUM8yXk7
+        4vUTMcfzQBXu9YAbNUgJGPIBKYXF6hyAvUDl
+X-Google-Smtp-Source: ABdhPJzFGWiC4bBLK+dTr2G0AiHCUim+NlzToVpyQaOg5ek+5X0QP/ptD2YnYaVdQOUDhPB3iQcFyw==
+X-Received: by 2002:a2e:9614:: with SMTP id v20mr8167013ljh.13.1605872967505;
+        Fri, 20 Nov 2020 03:49:27 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id i17sm262683ljb.1.2020.11.20.03.49.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 03:49:26 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: [PATCH v2 12/12] x86/paravirt: have only one paravirt patch function
-Date:   Fri, 20 Nov 2020 12:46:30 +0100
-Message-Id: <20201120114630.13552-13-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201120114630.13552-1-jgross@suse.com>
-References: <20201120114630.13552-1-jgross@suse.com>
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH 1/2] rcu: introduce kfree_rcu() single argument macro
+Date:   Fri, 20 Nov 2020 12:49:16 +0100
+Message-Id: <20201120114917.5263-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need any longer to have different paravirt patch functions
-for native and Xen. Eliminate native_patch() and rename
-paravirt_patch_default() to paravirt_patch().
+There is a kvfree_rcu() single argument macro that pairs
+with kvmalloc() allocated pointer. Even though it also
+deals with SLAB one, it might be confused for the users.
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
+That is why add an extra kfree_rcu() macro that explicitly
+pairs with kmalloc() pointer and its name, so it becomes
+more obvious for users.
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- arch/x86/include/asm/paravirt_types.h | 19 +------------------
- arch/x86/kernel/Makefile              |  3 +--
- arch/x86/kernel/alternative.c         |  2 +-
- arch/x86/kernel/paravirt.c            |  7 ++-----
- arch/x86/kernel/paravirt_patch.c      | 11 -----------
- arch/x86/xen/enlighten_pv.c           |  1 -
- 6 files changed, 5 insertions(+), 38 deletions(-)
- delete mode 100644 arch/x86/kernel/paravirt_patch.c
+ include/linux/rcupdate.h | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index 481d3b667005..bb79e21e1ead 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -74,19 +74,6 @@ struct pv_info {
- 	const char *name;
- };
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index e09c0d87b3c3..b1e75648d402 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -853,8 +853,9 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
  
--struct pv_init_ops {
--	/*
--	 * Patch may replace one of the defined code sequences with
--	 * arbitrary code, subject to the same register constraints.
--	 * This generally means the code is not free to clobber any
--	 * registers other than EAX.  The patch function should return
--	 * the number of bytes of code generated, as we nop pad the
--	 * rest in generic code.
--	 */
--	unsigned (*patch)(u8 type, void *insn_buff,
--			  unsigned long addr, unsigned len);
--} __no_randomize_layout;
--
- #ifdef CONFIG_PARAVIRT_XXL
- struct pv_lazy_ops {
- 	/* Set deferred update mode, used for batching operations. */
-@@ -282,7 +269,6 @@ struct pv_lock_ops {
-  * number for each function using the offset which we use to indicate
-  * what to patch. */
- struct paravirt_patch_template {
--	struct pv_init_ops	init;
- 	struct pv_cpu_ops	cpu;
- 	struct pv_irq_ops	irq;
- 	struct pv_mmu_ops	mmu;
-@@ -323,10 +309,7 @@ extern void (*paravirt_iret)(void);
- /* Simple instruction patching code. */
- #define NATIVE_LABEL(a,x,b) "\n\t.globl " a #x "_" #b "\n" a #x "_" #b ":\n\t"
+ /**
+  * kfree_rcu() - kfree an object after a grace period.
+- * @ptr:	pointer to kfree
+- * @rhf:	the name of the struct rcu_head within the type of @ptr.
++ * @ptr: pointer to kfree(both for single argument and double one)
++ * @rhf: the name of the struct rcu_head within the type of @ptr,
++ *       only for double argument.
+  *
+  * Many rcu callbacks functions just call kfree() on the base structure.
+  * These functions are trivial, but their size adds up, and furthermore
+@@ -877,13 +878,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+  * The BUILD_BUG_ON check must not involve any function calls, hence the
+  * checks are done in macros here.
+  */
+-#define kfree_rcu(ptr, rhf)						\
+-do {									\
+-	typeof (ptr) ___p = (ptr);					\
+-									\
+-	if (___p)							\
+-		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
+-} while (0)
++#define kfree_rcu kvfree_rcu
  
--unsigned paravirt_patch_default(u8 type, void *insn_buff, unsigned long addr, unsigned len);
--unsigned paravirt_patch_insns(void *insn_buff, unsigned len, const char *start, const char *end);
--
--unsigned native_patch(u8 type, void *insn_buff, unsigned long addr, unsigned len);
-+unsigned paravirt_patch(u8 type, void *insn_buff, unsigned long addr, unsigned len);
+ /**
+  * kvfree_rcu() - kvfree an object after a grace period.
+@@ -915,7 +910,14 @@ do {									\
+ 	kvfree_rcu_arg_2, kvfree_rcu_arg_1)(__VA_ARGS__)
  
- int paravirt_disable_iospace(void);
- 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 68608bd892c0..61f52f95670b 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -35,7 +35,6 @@ KASAN_SANITIZE_sev-es.o					:= n
- KCSAN_SANITIZE := n
- 
- OBJECT_FILES_NON_STANDARD_test_nx.o			:= y
--OBJECT_FILES_NON_STANDARD_paravirt_patch.o		:= y
- 
- ifdef CONFIG_FRAME_POINTER
- OBJECT_FILES_NON_STANDARD_ftrace_$(BITS).o		:= y
-@@ -122,7 +121,7 @@ obj-$(CONFIG_AMD_NB)		+= amd_nb.o
- obj-$(CONFIG_DEBUG_NMI_SELFTEST) += nmi_selftest.o
- 
- obj-$(CONFIG_KVM_GUEST)		+= kvm.o kvmclock.o
--obj-$(CONFIG_PARAVIRT)		+= paravirt.o paravirt_patch.o
-+obj-$(CONFIG_PARAVIRT)		+= paravirt.o
- obj-$(CONFIG_PARAVIRT_SPINLOCKS)+= paravirt-spinlocks.o
- obj-$(CONFIG_PARAVIRT_CLOCK)	+= pvclock.o
- obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index f8f9700719cf..7ed2c3992eb3 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -617,7 +617,7 @@ void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
- 		BUG_ON(p->len > MAX_PATCH_LEN);
- 		/* prep the buffer with the original instructions */
- 		memcpy(insn_buff, p->instr, p->len);
--		used = pv_ops.init.patch(p->type, insn_buff, (unsigned long)p->instr, p->len);
-+		used = paravirt_patch(p->type, insn_buff, (unsigned long)p->instr, p->len);
- 
- 		BUG_ON(used > p->len);
- 
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index db6ae7f7c14e..f05404844245 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -99,8 +99,8 @@ void __init native_pv_lock_init(void)
- 		static_branch_disable(&virt_spin_lock_key);
- }
- 
--unsigned paravirt_patch_default(u8 type, void *insn_buff,
--				unsigned long addr, unsigned len)
-+unsigned paravirt_patch(u8 type, void *insn_buff, unsigned long addr,
-+			unsigned len)
- {
- 	/*
- 	 * Neat trick to map patch type back to the call within the
-@@ -255,9 +255,6 @@ struct pv_info pv_info = {
- #define PTE_IDENT	__PV_IS_CALLEE_SAVE(_paravirt_ident_64)
- 
- struct paravirt_patch_template pv_ops = {
--	/* Init ops. */
--	.init.patch		= native_patch,
--
- 	/* Cpu ops. */
- 	.cpu.io_delay		= native_io_delay,
- 
-diff --git a/arch/x86/kernel/paravirt_patch.c b/arch/x86/kernel/paravirt_patch.c
-deleted file mode 100644
-index 10543dcc8211..000000000000
---- a/arch/x86/kernel/paravirt_patch.c
-+++ /dev/null
-@@ -1,11 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/stringify.h>
--
--#include <asm/paravirt.h>
--#include <asm/asm-offsets.h>
--
--unsigned int native_patch(u8 type, void *insn_buff, unsigned long addr,
--			  unsigned int len)
--{
--	return paravirt_patch_default(type, insn_buff, addr, len);
--}
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 4716383c64a9..66f83de4d9e0 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1218,7 +1218,6 @@ asmlinkage __visible void __init xen_start_kernel(void)
- 
- 	/* Install Xen paravirt ops */
- 	pv_info = xen_info;
--	pv_ops.init.patch = paravirt_patch_default;
- 	pv_ops.cpu = xen_cpu_ops;
- 	paravirt_iret = xen_iret;
- 	xen_init_irq_ops();
+ #define KVFREE_GET_MACRO(_1, _2, NAME, ...) NAME
+-#define kvfree_rcu_arg_2(ptr, rhf) kfree_rcu(ptr, rhf)
++#define kvfree_rcu_arg_2(ptr, rhf)					\
++do {									\
++	typeof (ptr) ___p = (ptr);					\
++									\
++	if (___p)							\
++		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
++} while (0)
++
+ #define kvfree_rcu_arg_1(ptr)					\
+ do {								\
+ 	typeof(ptr) ___p = (ptr);				\
 -- 
-2.26.2
+2.20.1
 
