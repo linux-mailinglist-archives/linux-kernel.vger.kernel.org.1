@@ -2,99 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8042BA0A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 873592BA0A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgKTCsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 21:48:13 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33682 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725937AbgKTCsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 21:48:12 -0500
-Received: from [10.130.0.170] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxitBnLrdfHlMTAA--.30966S3;
-        Fri, 20 Nov 2020 10:48:07 +0800 (CST)
-Subject: Re: [PATCH 1/3] MIPS: KASLR: Correcte valid bits in
- apply_r_mips_26_rel
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1605752954-10368-1-git-send-email-hejinyang@loongson.cn>
- <20201119123636.GA4936@alpha.franken.de>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <0fbbdce0-1449-fb40-0a11-2cded0c3472b@loongson.cn>
-Date:   Fri, 20 Nov 2020 10:48:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726224AbgKTCwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 21:52:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgKTCwm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 21:52:42 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711F9C061A04
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 18:52:42 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id 62so6039749pgg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 18:52:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x3fQTleE37dBaaRILN4zja/x8tkqs0SN0a6ZWTGISLw=;
+        b=xXyxgqODRAMMU0TFUNqpr/JQ8NScJjSNeRtfE69kZJl7F2i+xOmuYWnakeuKW2+7qC
+         6LkRF2YJ3oHPUuKEZ3ePeujmEXQ5K84jXbRmhEZR3c+vJAy+CzpTIH2LjMPsZGr9JweN
+         70noZeB/jPfeSbknhioqeiqqp0o602+KijL+n/yDY1RVUItp+jDmnbrUBFN9uK4oDE3q
+         KUXRKR/cdldDw8NrltAckAJdyU00yBQM3Rg4QcfdTBGoHXPaVKKqfYeNkwyrnv+GNcvE
+         TBgx/jRVDZ0OnrWwNsJ47Fi2UeWmrBcMc8yvyMgpJfXpr57aolX/H3ICJvRlSoWtaAi4
+         Fo+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x3fQTleE37dBaaRILN4zja/x8tkqs0SN0a6ZWTGISLw=;
+        b=WhfUP34Gr589LwLwv6w+WKWSTBZFXOvW6WM6goHUQwfESPmMt+gOpiHFb2jFehCqfC
+         0MzRQnmxHzP3JyprJff4/uAkb+mSsQm2d3H9whR5vWPHYUn0hNN7s/I66rShDmsd9STN
+         jzSXFcD1CBp2ZrwC1j6CLeYyiHLBAftPDwKKbmws+sivSIBWa/d3V+xqL+AxQrgbno8y
+         Z9zZDtGcjaKngQGhVqCxI3VXjuaCOeLq4eSQ2f+p76QqZLYWB78TSCzsXqXBRKVZyJgM
+         ilX2Nw6YrkakbOZi+o9sXFlrGq26mFkIrsWJAwip9Cl0APYI7TTmOsZyeeHy125QyyyY
+         TBCA==
+X-Gm-Message-State: AOAM531rwl2l/HBx606X/BEKnMjK6C8WerXBo/AYzD8Sp9geEydhiOWd
+        gOWc7AAtJeMUY7a4tBA1gggr3lUnGjuWcWFkTPNJ4g==
+X-Google-Smtp-Source: ABdhPJwSi5hXLwYwcc3owyMdpS7hyrS2TAlDEStfyPSgBWEmCwvUNzG52KrLGt3o75xw6sXcUfAk2L+XtfsQE/7R3r4=
+X-Received: by 2002:a17:90b:941:: with SMTP id dw1mr7748343pjb.147.1605840761818;
+ Thu, 19 Nov 2020 18:52:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201119123636.GA4936@alpha.franken.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxitBnLrdfHlMTAA--.30966S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF1rurW3Jry8urWkZF4xZwb_yoW8WrW3pr
-        9rJFyxGr4UJFyUKFyUJF15Jr1UJa1DXF17GF1kt34Ivwn8ZryDGF18Gr1xX3y0gr10kF17
-        XFyqgr1UAr4UAFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
-        8wCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
-        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280
-        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
-        uYvjxUqR6zDUUUU
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+References: <20201113105952.11638-1-songmuchun@bytedance.com>
+ <20201113105952.11638-6-songmuchun@bytedance.com> <20201117150604.GA15679@linux>
+ <CAMZfGtW=Oyaoooow9_i+R1LkvGpcFoUjBxYzGqBZsOa-t-sFsg@mail.gmail.com> <44efc25e-525b-9e51-60e4-da20deb25ded@oracle.com>
+In-Reply-To: <44efc25e-525b-9e51-60e4-da20deb25ded@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 20 Nov 2020 10:52:00 +0800
+Message-ID: <CAMZfGtXrieb8n=RqLReaQyFL13B4PN20FqKqYSfAAKoR+AdEeQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v4 05/21] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/19/2020 08:36 PM, Thomas Bogendoerfer wrote:
-> On Thu, Nov 19, 2020 at 10:29:12AM +0800, Jinyang He wrote:
->> Apply_r_mips_26_rel() relocates instructions like j, jal and etc. These
->> instructions consist of 6bits function field and 26bits address field.
->> The value of target_addr as follows,
->> =================================================================
->> |     high 4bits           |            low 28bits              |
->> =================================================================
->> |the high 4bits of this PC | the low 26bits of instructions << 2|
->> =================================================================
->> Thus, loc_orig and log_new both need high 4bits ranther than high 6bits.
-> 						  rather
+On Fri, Nov 20, 2020 at 7:22 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
 >
->> Replace 0x3ffffff with 0xfffffff.
->>
->> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
->> ---
->>   arch/mips/kernel/relocate.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
->> index 3d80a51..709cfa0 100644
->> --- a/arch/mips/kernel/relocate.c
->> +++ b/arch/mips/kernel/relocate.c
->> @@ -95,7 +95,7 @@ static int __init apply_r_mips_26_rel(u32 *loc_orig, u32 *loc_new, long offset)
->>   
->>   	/* Original target address */
->>   	target_addr <<= 2;
->> -	target_addr += (unsigned long)loc_orig & ~0x03ffffff;
->> +	target_addr += (unsigned long)loc_orig & ~0x0fffffff;
-> how about using
+> On 11/18/20 10:17 PM, Muchun Song wrote:
+> > On Tue, Nov 17, 2020 at 11:06 PM Oscar Salvador <osalvador@suse.de> wrote:
+> >>
+> >> On Fri, Nov 13, 2020 at 06:59:36PM +0800, Muchun Song wrote:
+> >>> +#define page_huge_pte(page)          ((page)->pmd_huge_pte)
+> >>
+> >> Seems you do not need this one anymore.
+> >>
+> >>> +void vmemmap_pgtable_free(struct page *page)
+> >>> +{
+> >>> +     struct page *pte_page, *t_page;
+> >>> +
+> >>> +     list_for_each_entry_safe(pte_page, t_page, &page->lru, lru) {
+> >>> +             list_del(&pte_page->lru);
+> >>> +             pte_free_kernel(&init_mm, page_to_virt(pte_page));
+> >>> +     }
+> >>> +}
+> >>> +
+> >>> +int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+> >>> +{
+> >>> +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> >>> +
+> >>> +     /* Store preallocated pages on huge page lru list */
+> >>> +     INIT_LIST_HEAD(&page->lru);
+> >>> +
+> >>> +     while (nr--) {
+> >>> +             pte_t *pte_p;
+> >>> +
+> >>> +             pte_p = pte_alloc_one_kernel(&init_mm);
+> >>> +             if (!pte_p)
+> >>> +                     goto out;
+> >>> +             list_add(&virt_to_page(pte_p)->lru, &page->lru);
+> >>> +     }
+> >>
+> >> Definetely this looks better and easier to handle.
+> >> Btw, did you explore Matthew's hint about instead of allocating a new page,
+> >> using one of the ones you are going to free to store the ptes?
+> >> I am not sure whether it is feasible at all though.
+> >
+> > Hi Oscar and Matthew,
+> >
+> > I have started an investigation about this. Finally, I think that it
+> > may not be feasible. If we use a vmemmap page frame as a
+> > page table when we split the PMD table firstly, in this stage,
+> > we need to set 512 pte entry to the vmemmap page frame. If
+> > someone reads the tail struct page struct of the HugeTLB,
+> > it can get the arbitrary value (I am not sure it actually exists,
+> > maybe the memory compaction module can do this). So on
+> > the safe side, I think that allocating a new page is a good
+> > choice.
 >
-> 	target_addr += (unsigned long)log_orig & 0xf0000000;
+> Thanks for looking into this.
 >
-> which makes it IMHO even clearer what this does ?
-That sounds good. I'll send v2 later.
-
-Thanks,
-Jinyang.
-
-> Thomas.
+> If I understand correctly, the issue is that you need the pte page to set
+> up the new mappings.  In your current code, this is done before removing
+> the pages of struct pages.  This keeps everything 'consistent' as things
+> are remapped.
 >
+> If you want to use one of the 'pages of struct pages' for the new pte
+> page, then there will be a period of time when things are inconsistent.
+> Before setting up the mapping, some code could potentially access that
+> pages of struct pages.
 
+Yeah, you are right.
+
+>
+> I tend to agree that allocating allocating a new page is the safest thing
+> to do here.  Or, perhaps someone can think of a way make this safe.
+> --
+> Mike Kravetz
+
+
+
+-- 
+Yours,
+Muchun
