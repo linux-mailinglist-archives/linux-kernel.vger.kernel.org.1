@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1CC2BB8BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 23:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AF92BB8BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 23:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728254AbgKTWOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 17:14:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726898AbgKTWOT (ORCPT
+        id S1728597AbgKTWPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 17:15:01 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:43096 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727859AbgKTWPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 17:14:19 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23193C0613CF;
-        Fri, 20 Nov 2020 14:14:19 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id d28so10452600qka.11;
-        Fri, 20 Nov 2020 14:14:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z1pyZKUt70+7Oah4brRuaKPswnwh6VHan/l11sMx/Yg=;
-        b=ljsWDBMqGzGOgdCS3yCLBdUS4tlf5XcKxFGdE2y5hnGDPlHFCJvgNgONmquepZKXm3
-         gA3I75WL0l/JV+dAYNQwIwXg/ito2mPyy3WMIeEno7t+bzQLXNa+y1vhfB2r9f7Osb2/
-         Rc/lpcKXHbQGiSD1QNy3tpmxLvtnTVo+4G7XFjVtBL8QCCQUoKfYoD4A7cLOXlw20f3M
-         qGyxp/h6erD4hnK6wMCjix/lF3sUsQozSnQX6aSYEMelVacfe22lymxKLrTNQSMNK25I
-         a4JDZtUmf4RU4wuufHvcAW46kKpj++bgP5VpvRvQ047kFD7cyGCF54+mVNun1zsbvTdu
-         QSsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Z1pyZKUt70+7Oah4brRuaKPswnwh6VHan/l11sMx/Yg=;
-        b=l/rKvg8yy9yDUO5tjx8FbPw2RGX7PB6pYwJXGbYd1Nwrm6qHFI/3iSDayNyqDFlfwK
-         mZWKYLq2dV9E7oBgUqmRr2FyaujvJV8FK82EDKR9PaF7eor5GVv4YWNkIuP5j6MAWLV8
-         I+N43YleRbewLiv5AWJSM5EOWFoAr9d1Vv9qrOD7OtTkz9KP6TN2a+yNIcZMWXBoNY0f
-         xMW5hH4MOkDAE5G6mIOSwYxWQuGhISod2jKb2LKCfaf4/G6oRRnqhkrKgGEieI7aPzTX
-         m7DErReoJn/72ATaeMlH4BU27CtJPXt1x4jGD/pO+ngmScvGuqlzYRBFsL22MwetILcF
-         tynA==
-X-Gm-Message-State: AOAM532gm20Fy9eRy4wWUOTb+SXkTPUFlnHX58/G3hsQ387PlCQ9IILB
-        zK+ptepKvn+qLoTyXlWUaO8=
-X-Google-Smtp-Source: ABdhPJwWmiLh5lhE8VTo8bVOrHhqsC7gkA+K1WDhWiAkSx5wwDJmdi7e0C+ZoL3KAVGwoGYNzYqbtw==
-X-Received: by 2002:a37:5243:: with SMTP id g64mr18994470qkb.248.1605910458220;
-        Fri, 20 Nov 2020 14:14:18 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id r55sm3097330qte.8.2020.11.20.14.14.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 14:14:17 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 20 Nov 2020 17:13:57 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, newella@fb.com
-Subject: Re: [PATCH 03/27] blk-iocost: use local[64]_t for percpu stat
-Message-ID: <X7g/pTLLJEQXdbD7@mtj.duckdns.org>
-References: <20200901185257.645114-1-tj@kernel.org>
- <20200901185257.645114-4-tj@kernel.org>
- <20201120215147.GB961977@lianli.shorne-pla.net>
+        Fri, 20 Nov 2020 17:15:01 -0500
+Date:   Fri, 20 Nov 2020 23:14:56 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605910498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l9HO7qi/CgtyTcImgZFKn9YOTyR3bGoKJJqynYm53xY=;
+        b=BP7K1aHSDoVAPGJoZox2+vmOSrpyBxTP7AJ7vWpDn3R8fTcI01MRWvRxqTtc3z/uPt3FHP
+        SSYb41H147QVeBhAXBtS76isM0Gro5Od3vo4gMPxTCAyt2bBNqggBXOgPevjZyGLZiz/ur
+        SQBKbSa8bWnpWFPkFpicq3Nn+ShPrbc+9M8XtZx4yKfKNYh/gIrfJm1jGoLb5elpAE9WOQ
+        C1/cq8WwV73XuPVpMoouwJT/hWrxwVgFEJXlKhVWjrnWIFwTusIaxTj2FpDcHWMxu6TvFJ
+        l18lxYJyToqyCaxSj6by+Qdg72veu2XmBoH7ftxPOEzc/hhTjcDqKZ5Ei5Mcgw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605910498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l9HO7qi/CgtyTcImgZFKn9YOTyR3bGoKJJqynYm53xY=;
+        b=NMMqvJnmHit7utGDXt0A3Sz/TiJ/PNjjdg/Oo1vEqHvCWxnw6rCiiX+d0j9nCOiWAQjcgW
+        JK4wmolRgi8uWxAQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: [ANNOUNCE] v5.10-rc3-rt7
+Message-ID: <20201120221456.aaup3ga5kxjt4x6h@linutronix.de>
+References: <20201112165824.s56wsbzsovunzwwg@linutronix.de>
+ <20201120164944.00fbfadf@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201120215147.GB961977@lianli.shorne-pla.net>
+In-Reply-To: <20201120164944.00fbfadf@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Sat, Nov 21, 2020 at 06:51:47AM +0900, Stafford Horne wrote:
-> FYI, I am just noticing this but this breaks my allyesconfig build
-> on OpenRISC; as 32-bit arch/openrisc doesn't define local64.h
+On 2020-11-20 16:49:44 [-0500], Steven Rostedt wrote:
+> On Thu, 12 Nov 2020 17:58:24 +0100
+> Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+> > Changes since v5.10-rc3-rt6:
+> > 
+> >   - Mike Galbraith reported a lockdep warning triggered by the nouveau
+> >     driver with threaded interrupts.
 > 
-> In general local64 is slow on 32-bit architectures, would that
-> be a problem with the usage here?  Are the calls to local64_*
-> below on critical paths?
+> Although these patches have:
+> 
+> Fixes: 710da3c8ea7df ("sched/core: Prevent race condition between cpuset and __sched_setscheduler()")
+> 
+> Which exists in 5.4, I'm guessing it's not needed for 5.4-rt as there's no
+> stable-rt tag in them?
 
-It gets hot when running on really high iops devices but that hopefully
-isn't a problem for 32bit openrisc.
+Correct. I posted both upstream and PeterZ asked if this issue could be
+addressed within the nouveau driver. So I would suggest to hold on until
+there is a decision how to fix it in the end.
 
-> Either way I will submit a patch in include generic local64.h
-> on OpenRISC, I confirmed it fixes the build.  I do not know of anyone
-> using cgroups on OpenRISC systems.
+> -- Steve
 
-Yeah, sounds like the right fix.
-
-Thanks.
-
--- 
-tejun
+Sebastian
