@@ -2,326 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BB52BA616
+	by mail.lfdr.de (Postfix) with ESMTP id 89A402BA617
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727344AbgKTJ0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:26:52 -0500
-Received: from sender11-of-o52.zoho.eu ([31.186.226.238]:21381 "EHLO
-        sender11-of-o52.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725942AbgKTJ0t (ORCPT
+        id S1727388AbgKTJ07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:26:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbgKTJ05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:26:49 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1605864367; cv=none; 
-        d=zohomail.eu; s=zohoarc; 
-        b=DfwoevSeLwJHUFoHlc2BIDBj1x0PTsfCvenuoueT2wGSRXGI8s7YPmdmhjIX9DhL66RVhQ9gIu1JjtAkc4AK2j8A37t6+RpGChpH/+31ipIXivv7fVRLlo+RCJrOB6vf+PVQwRs3+7pTpij8BYSvGfxE+enFAUuS+FLZ7qUuDMc=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-        t=1605864367; h=Content-Type:Content-Transfer-Encoding:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=Q1Z7u3/19piKh5TPP33XogbleV1eFFi1/M1BOUwPw0M=; 
-        b=Gd3oqU3Qa6ysNlnDdFd2DdvEpYa+LAVQiDtZEmQdPLgRKw4+l96hxS8vWYJKm6punKGGShjm5HfxBYLSWdxiSzzxRn6TlshjwJMXKbzXhHcVJ3VWbJtuDZ7EgGfAAoYr9zgixpsd5Jw11qEzR3Eo99s5IgtKUSwNfG8KrKTtp5s=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-        dkim=pass  header.i=shytyi.net;
-        spf=pass  smtp.mailfrom=dmytro@shytyi.net;
-        dmarc=pass header.from=<dmytro@shytyi.net> header.from=<dmytro@shytyi.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1605864367;
-        s=hs; d=shytyi.net; i=dmytro@shytyi.net;
-        h=Date:From:To:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=Q1Z7u3/19piKh5TPP33XogbleV1eFFi1/M1BOUwPw0M=;
-        b=TnOkOS3VB2Tr+kyM1vZSOinWvy6eKVQoZ4w+U91UW/5Mc+BZxq66kzNsAMWvEqS8
-        kQj2/+kY+tJEu5YHSPf8xhTNv1bMZfmLvjpJkjoiLgwzgmeZaoHptZmNjSwlLfsevUr
-        O7TxKzWcT7OtM3DtdsoLK1EA6/FmR8p76EXRYnjg=
-Received: from mail.zoho.eu by mx.zoho.eu
-        with SMTP id 1605864361499137.62084601263723; Fri, 20 Nov 2020 10:26:01 +0100 (CET)
-Date:   Fri, 20 Nov 2020 10:26:01 +0100
-From:   Dmytro Shytyi <dmytro@shytyi.net>
-To:     "Jakub Kicinski" <kuba@kernel.org>,
-        "yoshfuji" <yoshfuji@linux-ipv6.org>,
-        "kuznet" <kuznet@ms2.inr.ac.ru>,
-        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
-        "netdev" <netdev@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <175e4f98e19.bcccf9b7450965.5991300381666674110@shytyi.net>
-In-Reply-To: <175e1fdb250.1207dca53446410.2492811916841931466@shytyi.net>
-References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
-        <202011110944.7zNVZmvB-lkp@intel.com>
-        <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net>
-        <175bf515624.c67e02e8130655.7824060160954233592@shytyi.net>
-        <175c31c6260.10eef97f6180313.755036504412557273@shytyi.net>
-        <20201117124348.132862b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <175e0b9826b.c3bb0aae425910.5834444036489233360@shytyi.net> <20201119104413.75ca9888@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net> <175e1fdb250.1207dca53446410.2492811916841931466@shytyi.net>
-Subject: [PATCH net-next V7] net: Variable SLAAC: SLAAC with prefixes of
- arbitrary length in PIO
+        Fri, 20 Nov 2020 04:26:57 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5663C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:26:55 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id s13so9164341wmh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:26:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zeFjuFGeYCYUaAKQyjMkKInsaG2E8UkQCv+L8e6qaRM=;
+        b=FViVQOB+4kPRotuMYoJNz12BqNGgO5A8FGRC0TVJJvZ72dvVbsWWqwWhdV9pCMk7mW
+         yyZpsNG7JS2QYGMBIB2+lFw4V6ig0n2QAahhacASKrLMKO5B3gjdY7Hb3C079bRalirC
+         /qhN8NsMIO3L1ZAHDZI4/+lSheCVUV2t+KedKlKTGuwXRZznmUh1GgXqlkj2E2pmVUAP
+         vG5GxiPhh1LQCVsTrHOXeOWmjunXJ8WUJmKXJ4thKIgVmmBGBownrU0djwVPPOn18zII
+         NMhXR/G1TK0Lcu504spx+pofzzQYFWb2L9fW6hPHo2yfNHvBETUFi8bpr1eNrPuhXID1
+         JuFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=zeFjuFGeYCYUaAKQyjMkKInsaG2E8UkQCv+L8e6qaRM=;
+        b=GkX68LoI2L4mz9BUzNPr2N0Qqq+OVlDMJOsxm8sRDQYACf1keZuo/Lk4/R9+W4HsH4
+         Q4JOgIPo2c/4ZVq1+FHu+YTrbZh2QQpsv4IbCfDgjihKOq7onhE45M69hI2mO47AN9Nk
+         WHtztdoFmcPT/ZTQD1FQ5+QMJv46SnGHupxwgfRa55dk4MwEJg3RBQwUg6YxMfa9kRlz
+         RZo6rajMvACJA6l8ex3EBeHa6RtFziCZtsgx5JxXwSwQgR/ooYyW+rh/+jh7kiQVENbd
+         66vG55TKInatHcWybQwjE2uI8TONUfiHbwGu4dLjOmZfjmAt9V9m9pZyMjiiobkuZ0bm
+         g7aA==
+X-Gm-Message-State: AOAM5318u5x15YHwTd0s7JFEmehdcpD4CtDgq2Rlji1sF5E8Ht5XUeaQ
+        AyzU3nGMTOW0hkNGOcvuh6r5Wy04vohXJbHJ
+X-Google-Smtp-Source: ABdhPJwT6EX04fltJ1c/P+yeHfvNo4GGo2vd/oODlWJKISvukVhe/TAnbsSuH5WC/OUhzU12Yjy0xg==
+X-Received: by 2002:a05:600c:ce:: with SMTP id u14mr8979275wmm.150.1605864413787;
+        Fri, 20 Nov 2020 01:26:53 -0800 (PST)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:419f:dca4:d17a:66a7? ([2a01:e35:2ec0:82b0:419f:dca4:d17a:66a7])
+        by smtp.gmail.com with ESMTPSA id x63sm4049700wmb.48.2020.11.20.01.26.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 01:26:52 -0800 (PST)
+Subject: Re: next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
+To:     Marc Zyngier <maz@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        kernelci-results@groups.io, Kevin Hilman <khilman@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
+ <a0bec7c4-9bec-8858-4879-52f4688d9992@collabora.com>
+ <630e00e83cdd07ee5a0eaba9d3479554@kernel.org>
+ <3f54de27-0fef-c5a1-8991-0a0614c90667@baylibre.com>
+ <c76273f5fe483766e6a7f509f82d928a@kernel.org>
+ <f59922c6-69f5-c70e-b424-0659bf91a4fd@collabora.com>
+ <1jr1op8bbc.fsf@starbuckisacylon.baylibre.com>
+ <00a10c12a4eb2a9cdd9f50e88a293c3f@kernel.org>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ ZaTUOEkgIor5losDrePdPgE=
+Organization: Baylibre
+Message-ID: <93dcf61a-be80-8870-48f5-30e215cc56ed@baylibre.com>
+Date:   Fri, 20 Nov 2020 10:26:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
+In-Reply-To: <00a10c12a4eb2a9cdd9f50e88a293c3f@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable SLAAC: SLAAC with prefixes of arbitrary length in PIO (randomly
-generated hostID or stable privacy + privacy extensions).
-The main problem is that SLAAC RA or PD allocates a /64 by the Wireless
-carrier 4G, 5G to a mobile hotspot, however segmentation of the /64 via
-SLAAC is required so that downstream interfaces can be further subnetted.
-Example: uCPE device (4G + WI-FI enabled) receives /64 via Wireless, and
-assigns /72 to VNF-Firewall, /72 to WIFI, /72 to VNF-Router, /72 to
-Load-Balancer and /72 to wired connected devices.
-IETF document that defines problem statement:
-draft-mishra-v6ops-variable-slaac-problem-stmt
-IETF document that specifies variable slaac:
-draft-mishra-6man-variable-slaac
+On 19/11/2020 19:35, Marc Zyngier wrote:
+> On 2020-11-19 18:13, Jerome Brunet wrote:
+>> On Thu 19 Nov 2020 at 19:04, Guillaume Tucker
+>> <guillaume.tucker@collabora.com> wrote:
+>>
+>>> Hi Marc,
+>>>
+>>> On 19/11/2020 11:58, Marc Zyngier wrote:
+>>>> On 2020-11-19 10:26, Neil Armstrong wrote:
+>>>>> On 19/11/2020 11:20, Marc Zyngier wrote:
+>>>>>> On 2020-11-19 08:50, Guillaume Tucker wrote:
+>>>>>>> Please see the automated bisection report below about some kernel
+>>>>>>> errors on meson-gxbb-p200.
+>>>>>>>
+>>>>>>> Reports aren't automatically sent to the public while we're
+>>>>>>> trialing new bisection features on kernelci.org, however this one
+>>>>>>> looks valid.
+>>>>>>>
+>>>>>>> The bisection started with next-20201118 but the errors are still
+>>>>>>> present in next-20201119.  Details for this regression:
+>>>>>>>
+>>>>>>>   https://kernelci.org/test/case/id/5fb6196bfd0127fd68d8d902/
+>>>>>>>
+>>>>>>> The first error is:
+>>>>>>>
+>>>>>>>   [   14.757489] Internal error: synchronous external abort: 96000210
+>>>>>>> [#1] PREEMPT SMP
+>>>>>>
+>>>>>> Looks like yet another clock ordering setup. I guess different Amlogic
+>>>>>> platforms have slightly different ordering requirements.
+>>>>>>
+>>>>>> Neil, do you have any idea of which platform requires which ordering?
+>>>>>> The variability in DT and platforms is pretty difficult to follow (and
+>>>>>> I don't think I have such board around).
+>>>>>
+>>>>> The requirements should be the same, here the init was done before calling
+>>>>> dw_hdmi_probe to be sure the clocks and internals resets were deasserted.
+>>>>> But since you boot from u-boot already enabling these, it's already active.
+>>>>>
+>>>>> The solution would be to revert and do some check in meson_dw_hdmi_init() to
+>>>>> check if already enabled and do nothing.
+>>>>
+>>>> A better fix seems to be this, which makes it explicit that there is
+>>>> a dependency between some of the registers accessed from meson_dw_hdmi_init()
+>>>> and the iahb clock.
+>>>>
+>>>> Guillaume, can you give this a go on your failing box?
+>>>
+>>> I confirm it solves the problem.  Please add this to your fix
+>>> patch if it's OK with you:
+>>>
+>>>   Reported-by: "kernelci.org bot" <bot@kernelci.org>
+>>>   Tested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+>>>
+>>>
+>>> For the record, it passed all the tests when applied on top of
+>>> the "bad" revision found by the bisection:
+>>>
+>>>   http://lava.baylibre.com:10080/scheduler/alljobs?search=v5.10-rc3-1021-gb8668a2e5ea1
+>>>
+>>> and the exact same test on the "bad" revision without the fix
+>>> consistently showed the error:
+>>>
+>>>   http://lava.baylibre.com:10080/scheduler/job/374176
+>>>
+>>>
+>>> Thanks,
+>>> Guillaume
+>>>
+>>>
+>>>> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>>>> index 7f8eea494147..52af8ba94311 100644
+>>>> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>>>> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>>>> @@ -146,6 +146,7 @@ struct meson_dw_hdmi {
+>>>>      struct reset_control *hdmitx_ctrl;
+>>>>      struct reset_control *hdmitx_phy;
+>>>>      struct clk *hdmi_pclk;
+>>>> +    struct clk *iahb_clk;
+>>>>      struct clk *venci_clk;
+>>>>      struct regulator *hdmi_supply;
+>>>>      u32 irq_stat;
+>>>> @@ -1033,6 +1034,13 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+>>>>      }
+>>>>      clk_prepare_enable(meson_dw_hdmi->hdmi_pclk);
+>>>>
+>>>> +    meson_dw_hdmi->iahb_clk = devm_clk_get(dev, "iahb");
+>>>> +    if (IS_ERR(meson_dw_hdmi->iahb_clk)) {
+>>>> +        dev_err(dev, "Unable to get iahb clk\n");
+>>>> +        return PTR_ERR(meson_dw_hdmi->iahb_clk);
+>>>> +    }
+>>>> +    clk_prepare_enable(meson_dw_hdmi->iahb_clk);
 
-Signed-off-by: Dmytro Shytyi <dmytro@shytyi.net>
----
-diff -rupN net-next-5.10.0-rc2/net/ipv6/addrconf.c net-next-patch-5.10.0-rc2/net/ipv6/addrconf.c
---- net-next-5.10.0-rc2/net/ipv6/addrconf.c	2020-11-10 08:46:01.075193379 +0100
-+++ net-next-patch-5.10.0-rc2/net/ipv6/addrconf.c	2020-11-19 21:26:39.770872898 +0100
-@@ -142,7 +142,6 @@ static int ipv6_count_addresses(const st
- static int ipv6_generate_stable_address(struct in6_addr *addr,
- 					u8 dad_count,
- 					const struct inet6_dev *idev);
--
- #define IN6_ADDR_HSIZE_SHIFT	8
- #define IN6_ADDR_HSIZE		(1 << IN6_ADDR_HSIZE_SHIFT)
- /*
-@@ -1315,6 +1314,7 @@ static int ipv6_create_tempaddr(struct i
- 	struct ifa6_config cfg;
- 	long max_desync_factor;
- 	struct in6_addr addr;
-+	struct in6_addr temp;
- 	int ret = 0;
- 
- 	write_lock_bh(&idev->lock);
-@@ -1340,9 +1340,16 @@ retry:
- 		goto out;
- 	}
- 	in6_ifa_hold(ifp);
--	memcpy(addr.s6_addr, ifp->addr.s6_addr, 8);
--	ipv6_gen_rnd_iid(&addr);
- 
-+	if (ifp->prefix_len == 64) {
-+		memcpy(addr.s6_addr, ifp->addr.s6_addr, 8);
-+		ipv6_gen_rnd_iid(&addr);
-+	} else if (ifp->prefix_len > 0 && ifp->prefix_len <= 128) {
-+		memcpy(addr.s6_addr32, ifp->addr.s6_addr, 16);
-+		get_random_bytes(temp.s6_addr32, 16);
-+		ipv6_addr_prefix_copy(&temp, &addr, ifp->prefix_len);
-+		memcpy(addr.s6_addr, temp.s6_addr, 16);
-+	}
- 	age = (now - ifp->tstamp) / HZ;
- 
- 	regen_advance = idev->cnf.regen_max_retry *
-@@ -2569,6 +2576,41 @@ static bool is_addr_mode_generate_stable
- 	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_RANDOM;
- }
- 
-+static struct inet6_ifaddr *ipv6_cmp_rcvd_prsnt_prfxs(struct inet6_ifaddr *ifp,
-+						      struct inet6_dev *in6_dev,
-+						      struct net *net,
-+						      const struct prefix_info *pinfo)
-+{
-+	struct inet6_ifaddr *result_base = NULL;
-+	struct inet6_ifaddr *result = NULL;
-+	struct in6_addr curr_net_prfx;
-+	struct in6_addr net_prfx;
-+	bool prfxs_equal;
-+
-+	result_base = result;
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) {
-+		if (!net_eq(dev_net(ifp->idev->dev), net))
-+			continue;
-+		ipv6_addr_prefix_copy(&net_prfx, &pinfo->prefix, pinfo->prefix_len);
-+		ipv6_addr_prefix_copy(&curr_net_prfx, &ifp->addr, pinfo->prefix_len);
-+		prfxs_equal =
-+			ipv6_prefix_equal(&net_prfx, &curr_net_prfx, pinfo->prefix_len);
-+		if (prfxs_equal && pinfo->prefix_len == ifp->prefix_len) {
-+			result = ifp;
-+			in6_ifa_hold(ifp);
-+			break;
-+		}
-+	}
-+	rcu_read_unlock();
-+	if (result_base != result)
-+		ifp = result;
-+	else
-+		ifp = NULL;
-+
-+	return ifp;
-+}
-+
- int addrconf_prefix_rcv_add_addr(struct net *net, struct net_device *dev,
- 				 const struct prefix_info *pinfo,
- 				 struct inet6_dev *in6_dev,
-@@ -2576,9 +2618,16 @@ int addrconf_prefix_rcv_add_addr(struct
- 				 u32 addr_flags, bool sllao, bool tokenized,
- 				 __u32 valid_lft, u32 prefered_lft)
- {
--	struct inet6_ifaddr *ifp = ipv6_get_ifaddr(net, addr, dev, 1);
-+	struct inet6_ifaddr *ifp = NULL;
-+	int plen = pinfo->prefix_len;
- 	int create = 0;
- 
-+	if (plen > 0 && plen <= 128 && plen != 64 &&
-+	    in6_dev->cnf.addr_gen_mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY)
-+		ifp = ipv6_cmp_rcvd_prsnt_prfxs(ifp, in6_dev, net, pinfo);
-+	else
-+		ifp = ipv6_get_ifaddr(net, addr, dev, 1);
-+
- 	if (!ifp && valid_lft) {
- 		int max_addresses = in6_dev->cnf.max_addresses;
- 		struct ifa6_config cfg = {
-@@ -2657,6 +2706,91 @@ int addrconf_prefix_rcv_add_addr(struct
- }
- EXPORT_SYMBOL_GPL(addrconf_prefix_rcv_add_addr);
- 
-+static bool ipv6_reserved_interfaceid(struct in6_addr address)
-+{
-+	if ((address.s6_addr32[2] | address.s6_addr32[3]) == 0)
-+		return true;
-+
-+	if (address.s6_addr32[2] == htonl(0x02005eff) &&
-+	    ((address.s6_addr32[3] & htonl(0xfe000000)) == htonl(0xfe000000)))
-+		return true;
-+
-+	if (address.s6_addr32[2] == htonl(0xfdffffff) &&
-+	    ((address.s6_addr32[3] & htonl(0xffffff80)) == htonl(0xffffff80)))
-+		return true;
-+
-+	return false;
-+}
-+
-+static int ipv6_gen_addr_var_plen(struct in6_addr *address,
-+				  u8 dad_count,
-+				  const struct inet6_dev *idev,
-+				  unsigned int rcvd_prfx_len,
-+				  bool stable_privacy_mode)
-+{
-+	static union {
-+		char __data[SHA1_BLOCK_SIZE];
-+		struct {
-+			struct in6_addr secret;
-+			__be32 prefix[2];
-+			unsigned char hwaddr[MAX_ADDR_LEN];
-+			u8 dad_count;
-+		} __packed;
-+	} data;
-+	static __u32 workspace[SHA1_WORKSPACE_WORDS];
-+	static __u32 digest[SHA1_DIGEST_WORDS];
-+	struct net *net = dev_net(idev->dev);
-+	static DEFINE_SPINLOCK(lock);
-+	struct in6_addr secret;
-+	struct in6_addr temp;
-+
-+	BUILD_BUG_ON(sizeof(data.__data) != sizeof(data));
-+
-+	if (stable_privacy_mode) {
-+		if (idev->cnf.stable_secret.initialized)
-+			secret = idev->cnf.stable_secret.secret;
-+		else if (net->ipv6.devconf_dflt->stable_secret.initialized)
-+			secret = net->ipv6.devconf_dflt->stable_secret.secret;
-+		else
-+			return -1;
-+	}
-+
-+retry:
-+	spin_lock_bh(&lock);
-+	if (stable_privacy_mode) {
-+		sha1_init(digest);
-+		memset(&data, 0, sizeof(data));
-+		memset(workspace, 0, sizeof(workspace));
-+		memcpy(data.hwaddr, idev->dev->perm_addr, idev->dev->addr_len);
-+		data.prefix[0] = address->s6_addr32[0];
-+		data.prefix[1] = address->s6_addr32[1];
-+		data.secret = secret;
-+		data.dad_count = dad_count;
-+
-+		sha1_transform(digest, data.__data, workspace);
-+
-+		temp = *address;
-+		temp.s6_addr32[0] = (__force __be32)digest[0];
-+		temp.s6_addr32[1] = (__force __be32)digest[1];
-+		temp.s6_addr32[2] = (__force __be32)digest[2];
-+		temp.s6_addr32[3] = (__force __be32)digest[3];
-+	} else {
-+		temp = *address;
-+		get_random_bytes(temp.s6_addr32, 16);
-+	}
-+	spin_unlock_bh(&lock);
-+
-+	if (ipv6_reserved_interfaceid(temp)) {
-+		dad_count++;
-+		if (dad_count > dev_net(idev->dev)->ipv6.sysctl.idgen_retries)
-+			return -1;
-+		goto retry;
-+	}
-+	ipv6_addr_prefix_copy(&temp, address, rcvd_prfx_len);
-+	*address = temp;
-+	return 0;
-+}
-+
- void addrconf_prefix_rcv(struct net_device *dev, u8 *opt, int len, bool sllao)
- {
- 	struct prefix_info *pinfo;
-@@ -2781,9 +2915,33 @@ void addrconf_prefix_rcv(struct net_devi
- 				dev_addr_generated = true;
- 			}
- 			goto ok;
-+		} else if (pinfo->prefix_len != 64 &&
-+			   pinfo->prefix_len > 0 && pinfo->prefix_len <= 128) {
-+			/* SLAAC with prefixes of arbitrary length (Variable SLAAC).
-+			 * draft-mishra-6man-variable-slaac
-+			 * draft-mishra-v6ops-variable-slaac-problem-stmt
-+			 */
-+			memcpy(&addr, &pinfo->prefix, 16);
-+			if (in6_dev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY) {
-+				if (!ipv6_gen_addr_var_plen(&addr,
-+							    0,
-+							    in6_dev,
-+							    pinfo->prefix_len,
-+							    true)) {
-+					addr_flags |= IFA_F_STABLE_PRIVACY;
-+					goto ok;
-+				}
-+			} else if (!ipv6_gen_addr_var_plen(&addr,
-+							   0,
-+							   in6_dev,
-+							   pinfo->prefix_len,
-+							   false)) {
-+				goto ok;
-+			}
-+		} else {
-+			net_dbg_ratelimited("IPv6: Prefix with unexpected length %d\n",
-+					    pinfo->prefix_len);
- 		}
--		net_dbg_ratelimited("IPv6 addrconf: prefix with wrong length %d\n",
--				    pinfo->prefix_len);
- 		goto put;
- 
- ok:
-@@ -3186,22 +3344,6 @@ void addrconf_add_linklocal(struct inet6
- }
- EXPORT_SYMBOL_GPL(addrconf_add_linklocal);
- 
--static bool ipv6_reserved_interfaceid(struct in6_addr address)
--{
--	if ((address.s6_addr32[2] | address.s6_addr32[3]) == 0)
--		return true;
--
--	if (address.s6_addr32[2] == htonl(0x02005eff) &&
--	    ((address.s6_addr32[3] & htonl(0xfe000000)) == htonl(0xfe000000)))
--		return true;
--
--	if (address.s6_addr32[2] == htonl(0xfdffffff) &&
--	    ((address.s6_addr32[3] & htonl(0xffffff80)) == htonl(0xffffff80)))
--		return true;
--
--	return false;
--}
--
- static int ipv6_generate_stable_address(struct in6_addr *address,
- 					u8 dad_count,
- 					const struct inet6_dev *idev)
+
+On previous SoCs, iahb was directly the bus clock (clk81), and on recent socs
+this clock is a gate.
+
+The question is why is it disabled. Maybe a previous failed probe disabled it
+in the dw-hdmi probe failure code and this clock is needed for meson_dw_hdmi_init(),
+so yeah this is the right fix.
+
+Thanks.
+
+Could you send a revert of b33340e33acdfe5ca6a5aa1244709575ae1e0432 and then proper fix with clk_disable_unprepare added ?
+
+>>
+>> If you guys are going ahead with this fix, this call to
+>> clk_prepare_enable() needs to be balanced with clk_disable_unprepare() somehow
+> 
+> Yup, good point.
+> 
+> Although this driver *never* disables any clock it enables, and leaves it
+> to the main DW driver, which I guess makes it leak references.
+> 
+> So all 3 clocks need fixing.
+
+Exact.
+
+Thx Guillaume for testing,
+
+Neil
+
+> 
+> Thanks,
+> 
+>         M.
+
