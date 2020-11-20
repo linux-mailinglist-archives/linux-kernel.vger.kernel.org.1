@@ -2,110 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE512BAEEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF312BAEEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728846AbgKTP0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:26:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33240 "EHLO mail.kernel.org"
+        id S1728503AbgKTP1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:27:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728628AbgKTP0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:26:17 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1727404AbgKTP1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 10:27:17 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80E0322252;
-        Fri, 20 Nov 2020 15:26:15 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 10:26:13 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
- kfence: Avoid stalling...)
-Message-ID: <20201120102613.3d18b90e@gandalf.local.home>
-In-Reply-To: <20201120141928.GB3120165@elver.google.com>
-References: <20201117105236.GA1964407@elver.google.com>
-        <20201117182915.GM1437@paulmck-ThinkPad-P72>
-        <20201118225621.GA1770130@elver.google.com>
-        <20201118233841.GS1437@paulmck-ThinkPad-P72>
-        <20201119125357.GA2084963@elver.google.com>
-        <20201119151409.GU1437@paulmck-ThinkPad-P72>
-        <20201119170259.GA2134472@elver.google.com>
-        <20201119184854.GY1437@paulmck-ThinkPad-P72>
-        <20201119193819.GA2601289@elver.google.com>
-        <20201119213512.GB1437@paulmck-ThinkPad-P72>
-        <20201120141928.GB3120165@elver.google.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 769352240B;
+        Fri, 20 Nov 2020 15:27:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605886036;
+        bh=zkypNPVntse5hesjdrXLwa0zi5Eu4BcMXLccRupOcic=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QNHSEdTFBO8wQy1q4Af7SAAp0dtJLCmAoxTm5/L3gu4AwADVtUU8SmsdYcWxZ1C9v
+         +Jq1xaflQIfNJAe2AuSUpk0FWcMwJEpddzWJsqXl9QXZVDoh9qmCLp3axXc2bgH2wt
+         woubZobgT06zqSDAgHTQLIk4yFRYz44KkVSJVHrY=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kg8Je-00CI9B-2v; Fri, 20 Nov 2020 15:27:14 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 20 Nov 2020 15:27:14 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     tytso@mit.edu, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com,
+        broonie@kernel.org, andre.przywara@arm.com
+Subject: Re: [PATCH] random: avoid arch_get_random_seed_long() when collecting
+ IRQ randomness
+In-Reply-To: <20201105152944.16953-1-ardb@kernel.org>
+References: <20201105152944.16953-1-ardb@kernel.org>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <d6cfb1487c1077a7b413276c838dc7aa@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: ardb@kernel.org, tytso@mit.edu, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com, broonie@kernel.org, andre.przywara@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 15:19:28 +0100
-Marco Elver <elver@google.com> wrote:
-
-> None of those triggered either.
+On 2020-11-05 15:29, Ard Biesheuvel wrote:
+> When reseeding the CRNG periodically, arch_get_random_seed_long() is
+> called to obtain entropy from an architecture specific source if one
+> is implemented. In most cases, these are special instructions, but in
+> some cases, such as on ARM, we may want to back this using firmware
+> calls, which are considerably more expensive.
 > 
-> I found that disabling ftrace for some of kernel/rcu (see below) solved
-> the stalls (and any mention of deadlocks as a side-effect I assume),
-> resulting in successful boot.
+> Another call to arch_get_random_seed_long() exists in the CRNG driver,
+> in add_interrupt_randomness(), which collects entropy by capturing
+> inter-interrupt timing and relying on interrupt jitter to provide
+> random bits. This is done by keeping a per-CPU state, and mixing in
+> the IRQ number, the cycle counter and the return address every time an
+> interrupt is taken, and mixing this per-CPU state into the entropy pool
+> every 64 invocations, or at least once per second. The entropy that is
+> gathered this way is credited as 1 bit of entropy. Every time this
+> happens, arch_get_random_seed_long() is invoked, and the result is
+> mixed in as well, and also credited with 1 bit of entropy.
 > 
-> Does that provide any additional clues? I tried to narrow it down to 1-2
-> files, but that doesn't seem to work.
+> This means that arch_get_random_seed_long() is called at least once
+> per second on every CPU, which seems excessive, and doesn't really
+> scale, especially in a virtualization scenario where CPUs may be
+> oversubscribed: in cases where arch_get_random_seed_long() is backed
+> by an instruction that actually goes back to a shared hardware entropy
+> source (such as RNDRRS on ARM), we will end up hitting it hundreds of
+> times per second.
 > 
-> Thanks,
-> -- Marco
+> So let's drop the call to arch_get_random_seed_long() from
+> add_interrupt_randomness(), and instead, rely on crng_reseed() to call
+> the arch hook to get random seed material from the platform.
 > 
-> ------ >8 ------  
-> 
-> diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
-> index 0cfb009a99b9..678b4b094f94 100644
-> --- a/kernel/rcu/Makefile
-> +++ b/kernel/rcu/Makefile
-> @@ -3,6 +3,13 @@
->  # and is generally not a function of system call inputs.
->  KCOV_INSTRUMENT := n
->  
-> +ifdef CONFIG_FUNCTION_TRACER
-> +CFLAGS_REMOVE_update.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_sync.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_srcutree.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_tree.o = $(CC_FLAGS_FTRACE)
-> +endif
-> +
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
-Can you narrow it down further? That is, do you really need all of the
-above to stop the stalls?
+Looks sensible. Having this on the interrupt path looks quite
+heavy handed, and my understanding of the above is that it has
+an adverse effect on the entropy pool.
 
-Also, since you are using linux-next, you have ftrace recursion debugging.
-Please enable:
+Acked-by: Marc Zyngier <maz@kernel.org>
 
-CONFIG_FTRACE_RECORD_RECURSION=y
-CONFIG_RING_BUFFER_RECORD_RECURSION=y
-
-when enabling any of the above. If you can get to a successful boot, you
-can then:
-
- # cat /sys/kernel/tracing/recursed_functions
-
-Which would let me know if there's an recursion issue in RCU somewhere.
-
--- Steve
-
-
--- Steve
+         M.
+-- 
+Jazz is not dead. It just smells funny...
