@@ -2,115 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228522BA62E
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD9D2BA62F
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727403AbgKTJaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:30:22 -0500
-Received: from mail-eopbgr70047.outbound.protection.outlook.com ([40.107.7.47]:51329
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726321AbgKTJaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:30:21 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R4RVJnr0qlNUa8urc9T1K5Ci4CnNtugWmvDricMaQKc9q74ELeQFohp5o64N7+vT/6ifPfYv2Dao4Iy4UbNhzbSVQ/+SdxJC631hjOFTTPFZBXkaNbu+kwUWtgJVxfxWdmo6o8Kg6MDXsHoNZwSiSrGADoUeGhdikAIr6cwTMbmY5are5UiI7PeJKalkdqCy4TFchZSLb0DHxn48xlEjWzo3MLe/F90QCpH0H8bNR+Fxa/fYXm76RqE+HjCTEcNAUsI+/5tYe6ub4+qnTlegw66oESEKaOwO7ngRcHTQPVVzYQPmlIfYJt/dgmvLdPStjPN2fxaUJoS7oaDmC8HYOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rBM15V8blh8hHkC0R7jXZPtNBh4BS+G3h9/KNJ9KXh8=;
- b=VMRc6a5o7ePc79LysxXhwPw1gobZufw+lTmzQFh8cE9fOXQ8sL71uYJdsU4rixNAv7ysMMhyO4hAuBH7+L9MBRA5PRuH361yt/eQ+wKlANP8yLXZ+01zrE8f8yqzvlqxIRUxU4zEoSI/BMizeUMBgMU5m4qb7qQ8hgPdbcMTnSQuNQsvm9aMDxJ4n+e+qPcrDd6pTFEujpJ6+s3plYpx4oKNq0Vnr4ZXl3ErE6QqZkjUalcOYVnZp0gNF6MFXpVLNd29DkO3AYTizKiX4MeefxtpVKCwBfJz0/sVoY/7jxFQFXRS9SprRi+dZ12GhvFMSB/nyXChup37lcn962J6uw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rBM15V8blh8hHkC0R7jXZPtNBh4BS+G3h9/KNJ9KXh8=;
- b=TrjSCPDcLnViKSWvttsGxsDUawtiDEPElwyizmXF6QwaY/QBjWAT6ikYbr1oZvlMEG5LuRSn1UAUUQGAxiKx/jNl7glwK+X+KY7L6hBp/ip2jMNoAUz2PL8jM9HdpMiQ1rVkHhectGKIvazDzpfvgAzRVtCsYNJxOaKeensZ4jc=
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VI1PR04MB4429.eurprd04.prod.outlook.com (2603:10a6:803:6e::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Fri, 20 Nov
- 2020 09:30:16 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::2dd6:8dc:2da7:ad84]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::2dd6:8dc:2da7:ad84%5]) with mapi id 15.20.3589.024; Fri, 20 Nov 2020
- 09:30:16 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     "Y.b. Lu" <yangbo.lu@nxp.com>
-CC:     Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
- controllers use fixed indices
-Thread-Topic: [PATCH] arm64: dts: ls1028a: make the eMMC and SD card
- controllers use fixed indices
-Thread-Index: AQHWvovBrojMBFt1EECB86LxwqdSo6nQRb0AgAB8rIA=
-Date:   Fri, 20 Nov 2020 09:30:16 +0000
-Message-ID: <20201120093015.duel3yx63cbya77w@skbuf>
-References: <20201119155025.965941-1-vladimir.oltean@nxp.com>
- <AM7PR04MB688536E10A0B35D75A9F8F34F8FF0@AM7PR04MB6885.eurprd04.prod.outlook.com>
-In-Reply-To: <AM7PR04MB688536E10A0B35D75A9F8F34F8FF0@AM7PR04MB6885.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.2.177]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 79227e0e-fed3-4680-d01f-08d88d36e416
-x-ms-traffictypediagnostic: VI1PR04MB4429:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB442937F4F4B8C152ED30E7D0E0FF0@VI1PR04MB4429.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DYlvYTqJQHwpnZOsfccFeEP3rOpHh5vPS2ck3GLkdaZjt5OwMXGRQYC3FkOgf1AdY/TsLnxfPki37am9io0OWc/skyEGofeB4ylvE6VGtuW4XLsZoFZET1Q8ln2ByThMYSJUHKkDbNyLcBhwfvM43WvUJM8mAy346haNx+tpafOkjvEWN0CEsAp/3n0MeD273onkfHvA252ja6KhAUfYXygwa8oQNWzf5VOMW6w8Fm3iZopauxZrX4ij/WYEymwHAEB6wXpyKu59tLqhz91csaWs2jHLYMz5Lhcq4Jo2D/GhRg5bte6nrAQJdI8EjtGwLRkacmTmAsbI4NlDPPHF+JFyVNNygIFYgKoxXV0DK5extAHIkcrFXCK4+/TiwoZ8FFAqR9zgroo7VuhqOZy2uA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(366004)(39860400002)(396003)(346002)(376002)(66556008)(66476007)(83380400001)(76116006)(64756008)(54906003)(26005)(8936002)(4744005)(2906002)(316002)(8676002)(33716001)(86362001)(186003)(1076003)(6486002)(6506007)(66446008)(5660300002)(66946007)(44832011)(966005)(71200400001)(9686003)(6862004)(6512007)(4326008)(6636002)(91956017)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: kE5TJL+93mgsD32rMxQsn2ACrO1L4nZWgBhO/0wd/u3EQn32xN3nLEORvqv6ABgsaxabkj3t9FeAZ+bSPRwg8bNDMpE1ia1H+T6H6eucW2g7v0SE4TSQwjYQz0Tp8AgVPMVdBfDGM/FUR5SuhRgvoH1ThUGHkIBmzD1gEfUlOZ3lHHr5KFLdHtha8inviA1PDgyh28s3fssNtS3FWG9R5fX6ebcxsmwART/Kxm8Fq9u5fFuHtZdoWQgoSTFG8gye1IFV0NOve5j9eULiC/USuc9ezBoxPeF1eiCELi5el3DAlSpq8FrJK3kJWAl318KxzBZZj6V49x/RyNb8/42iMc0F0hfuGxD6ciffaoorTZuDv44ASF1KziVypA9Z3G/6mAfxXPJUrojnUEcqcW9u2ezynqXL8HU9BuogR5lCzzApWaXDOOOIa+1WnhwLjq+KqqtTYrbfv2s9jhEnF07IibAkdfq8LCpddU3F32AxxEeD2vNv7YBlV7nsIIJs5xENmuiLf4JdkzI8XkGmFs1M+PzzRKKeMDUCAjgXgFys/HMDJcbYW2Ma9j1gnuC+auSt4Gbjz0AKbyiAS8OX3utcU60wKzN1gjD9Sz6gcqu81aEWHLNEG7GdIdDfFtXFZS7eAb31BleaTPP1AkVodxxEuA==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1B4C7972AB25C6439AEE8F367D94CFDC@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727520AbgKTJa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:30:29 -0500
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:33437 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726321AbgKTJa2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:30:28 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id g2kHk0xfglmd2g2kLkPgxH; Fri, 20 Nov 2020 10:30:25 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1605864625; bh=euwjf/1flaoFtA2L1HmEHhsxXmII9NFUyQC+UNU/XRY=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=g+CMLlQHQkaVollEHtz8aRp5dlyKKBLz6Di71unWFtn/qAjR9GVRhHiB93LoXnlB/
+         CzaRd0ooQRgHztFQVCUvtdxZTJMF2lHtMqS/bZ9oUaVqpIhOFS/91u5USWFdCy2SpS
+         3h7qiSidshU4XbQsnAtnvBlK0wjZsOaqMxdGxEU/h1SAMLVdik/CmuVme4OHg9HmEL
+         qiwz2Wong0zx9Tw5sOeIcmGdx5sOP4mre5YKYIyW1qjP+awxOyvHndQBj6DC2W5nAY
+         tB4UYsxwQwVFS3CH3gEZ4oQiIOJHhGcdM6MrEsbT4UHFI/jrov4Lf84L2plzDSKOK7
+         ZHlpgTsJ/nSIA==
+Subject: Re: [PATCH v3 07/13] media: controls: Validate H264 stateless
+ controls
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <20201118184700.331213-1-ezequiel@collabora.com>
+ <20201118184700.331213-8-ezequiel@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <ce737ae7-053d-1171-1c03-5ff1efb5ea8c@xs4all.nl>
+Date:   Fri, 20 Nov 2020 10:30:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79227e0e-fed3-4680-d01f-08d88d36e416
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2020 09:30:16.6506
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zUnUUh2ifwYv5OfD0cgk3EZByKwLKfndKmpncQLw1AqzK0Z94lC2NAuI8hT2p7BpKkbAVoIt58EFFIiKazZElw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4429
+In-Reply-To: <20201118184700.331213-8-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfLY4UGI7vVzgO+LnBO1AAjRWMBtnDJPQnLVzwhe1mvha+d9wMiiUyJkRzkaD30ZJRs5dpJUrXiUFrVL0BK6T9aZGoYn0pltpKIAak43QLO0AF1JSDSHZ
+ 443nsf+/IQGiEHWVq6XYX0jaLwnuSuWfnBKZSD6ehRoifjq4XHIJpSnVDMpSAvRvt76B/7jcMp+LCApLXdA20+aOlyDJxYd8rhuIovVfyT6dUNxiVLsFOpuR
+ rci+sVf0vhmh1OsDHEtUa2b4zXgKNQGdh7SNHNATvvNjZE2k2mJ9sryaF4MzkQqxKfiqmEbx+6M8RgP9PGZ8LI7EFkHyR+eHER30YTe50CR008E3NhXpKKX6
+ O8wqcNNuFl841tY9rJkQWBcbZ3EF6iNNjLhw7XCgqHGn5rENtrM1BFXE2dHmDt43CODjn6neZhd0rszWyhgotdYO0vnKf/H0/RlHtfhbFrMcAH788pkKbRjr
+ kZgEMVec8+uiy6eNje9lrD5Y6ZUGs2ogxkgfJBaehaHDwT3Cqm0fiiz1/oE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 02:04:02AM +0000, Y.b. Lu wrote:
-> Hi Vladimir,
->
-> I have already upstreamed a patch for all affected layerscape boards.
-> https://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git/commit=
-/?h=3Dimx/dt64&id=3D342ab37ecaf8c1b10dd3ca9a1271db29a6af0705
->
-> Please check whether it works for you.
+On 18/11/2020 19:46, Ezequiel Garcia wrote:
+> Check that all the fields that correspond or are related
+> to a H264 specification syntax element have legal values.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-ctrls.c | 83 ++++++++++++++++++++++++++++
+>  1 file changed, 83 insertions(+)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index 21c1928a9df8..adcf47bddbe3 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -1775,6 +1775,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  {
+>  	struct v4l2_ctrl_mpeg2_slice_params *p_mpeg2_slice_params;
+>  	struct v4l2_ctrl_vp8_frame_header *p_vp8_frame_header;
+> +	struct v4l2_ctrl_h264_sps *p_h264_sps;
+> +	struct v4l2_ctrl_h264_pps *p_h264_pps;
+> +	struct v4l2_ctrl_h264_pred_weights *p_h264_pred_weigths;
 
-Thanks, one can tell that I haven't done my due diligence of checking
-Shawn's tree first. I'll cherry-pick that patch and carry on with my
-work.
+weigths -> weights
 
-However, the fact still remains that Michael has expressed his opinion
-regarding mmcblk0 vs mmcblk1. Do you think that we could make the
-aliases a per-board option instead of per-SoC? Consider that there might
-even be boards that only use SD card. It would be strange for the block
-device in that case to be called /dev/mmcblk1.=
+>  	struct v4l2_ctrl_h264_slice_params *p_h264_slice_params;
+>  	struct v4l2_ctrl_h264_decode_params *p_h264_dec_params;
+>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+> @@ -1834,20 +1837,100 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  		break;
+>  
+>  	case V4L2_CTRL_TYPE_H264_SPS:
+> +		p_h264_sps = p;
+> +
+> +		/* Only monochrome and 4:2:0 allowed */
+> +		if (p_h264_sps->profile_idc < V4L2_H264_PROFILE_IDC_HIGH_422 &&
+> +		    p_h264_sps->chroma_format_idc > 1)
+> +				return -EINVAL;
+> +		/* 4:2:2 allowed */
+> +		else if (p_h264_sps->profile_idc < V4L2_H264_PROFILE_IDC_HIGH_444 &&
+
+You can drop the 'else'.
+
+> +			 p_h264_sps->chroma_format_idc > 2)
+> +				return -EINVAL;
+> +		else if (p_h264_sps->chroma_format_idc > 3)
+
+Ditto.
+
+> +				return -EINVAL;
+> +
+> +		if (p_h264_sps->bit_depth_luma_minus8 > 6)
+> +			return -EINVAL;
+> +		if (p_h264_sps->bit_depth_chroma_minus8 > 6)
+> +			return -EINVAL;
+> +		if (p_h264_sps->log2_max_frame_num_minus4 > 12)
+> +			return -EINVAL;
+> +		if (p_h264_sps->pic_order_cnt_type > 2)
+> +			return -EINVAL;
+> +		if (p_h264_sps->log2_max_pic_order_cnt_lsb_minus4 > 12)
+> +			return -EINVAL;
+> +		if (p_h264_sps->max_num_ref_frames > V4L2_H264_REF_LIST_LEN)
+> +			return -EINVAL;
+> +		break;
+> +
+>  	case V4L2_CTRL_TYPE_H264_PPS:
+> +		p_h264_pps = p;
+> +
+> +		if (p_h264_pps->num_slice_groups_minus1 > 7)
+> +			return -EINVAL;
+> +		if (p_h264_pps->num_ref_idx_l0_default_active_minus1 >
+> +		    (V4L2_H264_REF_LIST_LEN - 1))
+> +			return -EINVAL;
+> +		if (p_h264_pps->num_ref_idx_l1_default_active_minus1 >
+> +		    (V4L2_H264_REF_LIST_LEN - 1))
+> +			return -EINVAL;
+> +		if (p_h264_pps->weighted_bipred_idc > 2)
+> +			return -EINVAL;
+> +		/*
+> +		 * pic_init_qp_minus26 shall be in the range of
+> +		 * -(26 + QpBdOffset_y) to +25, inclusive,
+> +		 *  where QpBdOffset_y is 6 * bit_depth_luma_minus8
+> +		 */
+> +		if (p_h264_pps->pic_init_qp_minus26 < -62 ||
+> +		    p_h264_pps->pic_init_qp_minus26 > 25)
+> +			return -EINVAL;
+> +		if (p_h264_pps->pic_init_qs_minus26 < -26 ||
+> +		    p_h264_pps->pic_init_qs_minus26 > 25)
+> +			return -EINVAL;
+> +		if (p_h264_pps->chroma_qp_index_offset < -12 ||
+> +		    p_h264_pps->chroma_qp_index_offset > 12)
+> +			return -EINVAL;
+> +		if (p_h264_pps->second_chroma_qp_index_offset < -12 ||
+> +		    p_h264_pps->second_chroma_qp_index_offset > 12)
+> +			return -EINVAL;
+> +		break;
+> +
+>  	case V4L2_CTRL_TYPE_H264_SCALING_MATRIX:
+> +		break;
+> +
+>  	case V4L2_CTRL_TYPE_H264_PRED_WEIGHTS:
+> +		p_h264_pred_weigths = p;
+> +
+> +		if (p_h264_pred_weigths->luma_log2_weight_denom > 7)
+> +			return -EINVAL;
+> +		if (p_h264_pred_weigths->chroma_log2_weight_denom > 7)
+> +			return -EINVAL;
+>  		break;
+>  
+>  	case V4L2_CTRL_TYPE_H264_SLICE_PARAMS:
+>  		p_h264_slice_params = p;
+>  
+> +		if (p_h264_slice_params->colour_plane_id > 2)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->cabac_init_idc > 2)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->disable_deblocking_filter_idc > 2)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->slice_alpha_c0_offset_div2 < -6 ||
+> +		    p_h264_slice_params->slice_alpha_c0_offset_div2 > 6)
+> +			return -EINVAL;
+> +		if (p_h264_slice_params->slice_beta_offset_div2 < -6 ||
+> +		    p_h264_slice_params->slice_beta_offset_div2 > 6)
+> +			return -EINVAL;
+>  		zero_reserved(*p_h264_slice_params);
+>  		break;
+>  
+>  	case V4L2_CTRL_TYPE_H264_DECODE_PARAMS:
+>  		p_h264_dec_params = p;
+>  
+> +		if (p_h264_dec_params->nal_ref_idc > 3)
+> +			return -EINVAL;
+>  		for (i = 0; i < V4L2_H264_NUM_DPB_ENTRIES; i++) {
+>  			struct v4l2_h264_dpb_entry *dpb_entry =
+>  				&p_h264_dec_params->dpb[i];
+> 
+
+General question: I don't see anything in std_init_compound() for these
+controls. Is initializing these compound controls to 0 enough to make them
+pass std_validate_compound()? It probably is, otherwise you'd see errors
+in the compliance test, I guess.
+
+Regards,
+
+	Hans
