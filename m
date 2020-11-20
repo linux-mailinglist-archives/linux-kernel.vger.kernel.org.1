@@ -2,145 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3164A2BA6E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D21332BA6DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727874AbgKTJ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:59:15 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:58030 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727300AbgKTJ7P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:59:15 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201120095902euoutp01364cdd66a6b70d739d513da82bca9a79~JLu42aCFw1282312823euoutp01L
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 09:59:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201120095902euoutp01364cdd66a6b70d739d513da82bca9a79~JLu42aCFw1282312823euoutp01L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1605866342;
-        bh=1Xgz3Vi28G/lFDopVGk+v6JNh2kYnT6n6pfNzZQVzhw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=mCEKNiM8SUm5i7jTc/V4WQIa6my/v3nGMBLYpjSIwaKAbBqa2rnyYtpi4wk3v1c+1
-         v5pGSF7xlwFEic85KmSQcmKWqjqPgKIADRGyyAzIwuYJ8kZZ/l33uAOso3A5C8Brix
-         kF+eQ2vPfUR99Xn3Xaha5rH7toVojCMY4QjftIDM=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201120095857eucas1p2f40340602f63199c141b8856be667c5a~JLuz33vTF3145031450eucas1p2b;
-        Fri, 20 Nov 2020 09:58:57 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 1B.B2.45488.16397BF5; Fri, 20
-        Nov 2020 09:58:57 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201120095857eucas1p2d51431962017b478816d3f0920438c91~JLuzjy_Xt2257522575eucas1p2V;
-        Fri, 20 Nov 2020 09:58:57 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201120095857eusmtrp19b5be0806e79fdbfd8346bfe3af6cf08~JLuzi5qy-0739907399eusmtrp1Y;
-        Fri, 20 Nov 2020 09:58:57 +0000 (GMT)
-X-AuditID: cbfec7f5-c77ff7000000b1b0-b4-5fb7936150fc
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 46.88.16282.06397BF5; Fri, 20
-        Nov 2020 09:58:56 +0000 (GMT)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201120095856eusmtip145ff2079c7f9880c52a591fc3e68073a~JLuy12Yef0586805868eusmtip1c;
-        Fri, 20 Nov 2020 09:58:56 +0000 (GMT)
-Subject: Re: [PATCH v4 4/5] phy: samsung: phy-exynos-pcie: rework driver to
- support Exynos5433 PCIe PHY
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <8eaebd62-345f-4d13-1b65-055a2acc68bd@samsung.com>
-Date:   Fri, 20 Nov 2020 10:58:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.4.3
+        id S1727862AbgKTJ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:59:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726548AbgKTJ7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:59:05 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FE7722240;
+        Fri, 20 Nov 2020 09:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605866344;
+        bh=/9Svc1nB4x4FQpTn7Lh51eg63FO1h5B4OU0Pfe7eNec=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wJtvxMFtDr40TCmI+wTiQIU2yKxHb8Jp3i/Ci+irezyklhocG0CV+5L7Xx7DEPAE9
+         86BPbtTyVEgag5qIdvDQRBG4jMeZV10ZbTKDynFeOMfsIv31QoSAZ49MOMowo4j8lc
+         8sZhm0o2zr5UIgNt79JWXQt4QMgVbk6V/hwxt6YU=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kg3C2-00CDVO-29; Fri, 20 Nov 2020 09:59:02 +0000
 MIME-Version: 1.0
-In-Reply-To: <20201120094152.GC2925@vkoul-mobl>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCKsWRmVeSWpSXmKPExsWy7djP87qJk7fHG9zZJmaxccZ6VoslTRkW
-        84+cY7W48auN1WLFl5nsFhee9rBZnD+/gd3i8q45bBZn5x1ns5hxfh+TxZvfL9gt/u/ZwW6x
-        884JZgdejzXz1jB67Jx1l91jwaZSj02rOtk8+rasYvQ4fmM7k8fnTXIB7FFcNimpOZllqUX6
-        dglcGXNfxBT0cFTc3POeqYHxEFsXIyeHhICJxJTZhxi7GLk4hARWMEpcbpzCAuF8YZR4tG4j
-        M4TzmVHi76ntzDAt+1Y8ZoNILGeUOLdvLVTLe0aJn4/2soBUCQtkSrzduZcRxBYRUJS42nOc
-        FaSIWeAks8TF07vBRrEJGEp0ve0Cu4RXwE7i+5y1YHEWAVWJ1V9vs4LYogJJEtu3bGeFqBGU
-        ODnzCdgCTgF9ibbJ08AWMAvIS2x/O4cZwhaXuPVkPhPEqZM5JfbOVoewXST6PmyC+lpY4tXx
-        LewQtozE6ck9YB9ICDQzSjw8t5YdwukBBkfTDEaIKmuJO+d+AXVzAG3QlFi/Sx8i7Chx/Oli
-        RpCwhACfxI23ghA38ElM2jadGSLMK9HRJgRRrSYx6/g6uLUHL1xinsCoNAvJZ7OQfDMLyTez
-        EPYuYGRZxSieWlqcm55abJyXWq5XnJhbXJqXrpecn7uJEZjQTv87/nUH44pXH/UOMTJxMB5i
-        lOBgVhLhXau5NV6INyWxsiq1KD++qDQntfgQozQHi5I4766ta+KFBNITS1KzU1MLUotgskwc
-        nFINTFPMlZ0KZO68yCr/qdv/vOVtxd8jXV+WlsULc/cxevUVMMuKN1ydsIlVYTeTydcz91oM
-        Jmdf4TQ7pbbGvFLr1Mbke03hhrcO1txff3PFlRWL5cQZOSNTG1YpqZ9dyh3bZSd0SmZR/f6w
-        Qwax7dP1X5yPbfiSI3rqaHgXI+85V72ZIv80TjC1bIt2Ovyh++LMRpk3HUv86sxKevs2VPSZ
-        ae1yP/HqYPX9CMkz287dNkxbYff/Ve7KG8y7YwR4tFNYZ3252KM5pThcwf26wpIpUu+sfT8f
-        KjZdVsAonL84cFrnNDnpKydszeav/Jj5r/v0yrMNv/6LmS7ZKx8jmyD07sajg///mldd7DiS
-        xaE4S4mlOCPRUIu5qDgRAKNFxy7XAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOIsWRmVeSWpSXmKPExsVy+t/xu7oJk7fHGxz6bWOxccZ6VoslTRkW
-        84+cY7W48auN1WLFl5nsFhee9rBZnD+/gd3i8q45bBZn5x1ns5hxfh+TxZvfL9gt/u/ZwW6x
-        884JZgdejzXz1jB67Jx1l91jwaZSj02rOtk8+rasYvQ4fmM7k8fnTXIB7FF6NkX5pSWpChn5
-        xSW2StGGFkZ6hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GXNfxBT0cFTc3POeqYHx
-        EFsXIyeHhICJxL4Vj4FsLg4hgaWMEhtP3mOESMhInJzWwAphC0v8udYFVfSWUeLYpztMIAlh
-        gUyJtzv3gjWICChKXO05zgpSxCxwklli7vbvzBAdrxglpm65AtbBJmAo0fW2C2w3r4CdxPc5
-        a5lBbBYBVYnVX2+DrRMVSJKYefwsO0SNoMTJmU9YQGxOAX2JtsnTwLYxC5hJzNv8kBnClpfY
-        /nYOlC0ucevJfKYJjEKzkLTPQtIyC0nLLCQtCxhZVjGKpJYW56bnFhvpFSfmFpfmpesl5+du
-        YgTG8LZjP7fsYFz56qPeIUYmDsZDjBIczEoivGs1t8YL8aYkVlalFuXHF5XmpBYfYjQF+mci
-        s5Rocj4wieSVxBuaGZgamphZGphamhkrifOaHFkTLySQnliSmp2aWpBaBNPHxMEp1cDEsXHb
-        yzOJRf/c7DuM9M/f0A5ymB7JVrOnPpmR+W9MdkpV3vo/LgV90ea7LWYVnb700CbxgN2Wvh1h
-        +RNm6Ew8oWeSZfXQV/llAv+hHMFsj9/x/Lv3Bswwebl5w3+bpjUvnjOx/k3NTvj42WaVvFJA
-        5VmDDUbLWQXrSmb43zCeq9VRl9sTs3vDgk6eLIOW8lnv7NekzPxsOPGc/8ZrIaLrc+qk+5Zv
-        PdRm12k/2e5YzyqV0BOc7nlrtmZ3aqUtdtm3Wcm+47YbQ17lm9+XbryZLv7v8uTf/ivsJu92
-        MbNy9tx0uapgi53wXm3VefuPG9xVMN+YoDslb1ZiWeOXdvXTlkp7Z0ne3Phxzqr3HSJKLMUZ
-        iYZazEXFiQAHfNgvagMAAA==
-X-CMS-MailID: 20201120095857eucas1p2d51431962017b478816d3f0920438c91
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201113170158eucas1p14b9e58e35f929e14aeb4f533071c8a47
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201113170158eucas1p14b9e58e35f929e14aeb4f533071c8a47
-References: <20201113170139.29956-1-m.szyprowski@samsung.com>
-        <CGME20201113170158eucas1p14b9e58e35f929e14aeb4f533071c8a47@eucas1p1.samsung.com>
-        <20201113170139.29956-5-m.szyprowski@samsung.com>
-        <20201120094152.GC2925@vkoul-mobl>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 20 Nov 2020 09:59:02 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        kernelci-results@groups.io, Kevin Hilman <khilman@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: next/master bisection: baseline.dmesg.emerg on meson-gxbb-p200
+In-Reply-To: <93dcf61a-be80-8870-48f5-30e215cc56ed@baylibre.com>
+References: <5fb5e094.1c69fb81.a2014.2e62@mx.google.com>
+ <a0bec7c4-9bec-8858-4879-52f4688d9992@collabora.com>
+ <630e00e83cdd07ee5a0eaba9d3479554@kernel.org>
+ <3f54de27-0fef-c5a1-8991-0a0614c90667@baylibre.com>
+ <c76273f5fe483766e6a7f509f82d928a@kernel.org>
+ <f59922c6-69f5-c70e-b424-0659bf91a4fd@collabora.com>
+ <1jr1op8bbc.fsf@starbuckisacylon.baylibre.com>
+ <00a10c12a4eb2a9cdd9f50e88a293c3f@kernel.org>
+ <93dcf61a-be80-8870-48f5-30e215cc56ed@baylibre.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <45c711c9d5fb5ef0e3b80e82b10f5998@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: narmstrong@baylibre.com, jbrunet@baylibre.com, guillaume.tucker@collabora.com, kernelci-results@groups.io, khilman@baylibre.com, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, martin.blumenstingl@googlemail.com, airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On 2020-11-20 09:26, Neil Armstrong wrote:
+> On 19/11/2020 19:35, Marc Zyngier wrote:
+>>>>> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c 
+>>>>> b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>>>>> index 7f8eea494147..52af8ba94311 100644
+>>>>> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>>>>> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+>>>>> @@ -146,6 +146,7 @@ struct meson_dw_hdmi {
+>>>>>      struct reset_control *hdmitx_ctrl;
+>>>>>      struct reset_control *hdmitx_phy;
+>>>>>      struct clk *hdmi_pclk;
+>>>>> +    struct clk *iahb_clk;
+>>>>>      struct clk *venci_clk;
+>>>>>      struct regulator *hdmi_supply;
+>>>>>      u32 irq_stat;
+>>>>> @@ -1033,6 +1034,13 @@ static int meson_dw_hdmi_bind(struct device 
+>>>>> *dev, struct device *master,
+>>>>>      }
+>>>>>      clk_prepare_enable(meson_dw_hdmi->hdmi_pclk);
+>>>>> 
+>>>>> +    meson_dw_hdmi->iahb_clk = devm_clk_get(dev, "iahb");
+>>>>> +    if (IS_ERR(meson_dw_hdmi->iahb_clk)) {
+>>>>> +        dev_err(dev, "Unable to get iahb clk\n");
+>>>>> +        return PTR_ERR(meson_dw_hdmi->iahb_clk);
+>>>>> +    }
+>>>>> +    clk_prepare_enable(meson_dw_hdmi->iahb_clk);
+> 
+> 
+> On previous SoCs, iahb was directly the bus clock (clk81), and on 
+> recent socs
+> this clock is a gate.
+> 
+> The question is why is it disabled. Maybe a previous failed probe 
+> disabled it
+> in the dw-hdmi probe failure code and this clock is needed for
+> meson_dw_hdmi_init(),
+> so yeah this is the right fix.
+> 
+> Thanks.
+> 
+> Could you send a revert of b33340e33acdfe5ca6a5aa1244709575ae1e0432
+> and then proper fix with clk_disable_unprepare added ?
 
-On 20.11.2020 10:41, Vinod Koul wrote:
-> On 13-11-20, 18:01, Marek Szyprowski wrote:
->> From: Jaehoon Chung <jh80.chung@samsung.com>
->>
->> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
->> dts: exynos: Remove Exynos5440"). Rework this driver to support PCIe PHY
->> variant found in the Exynos5433 SoCs.
-> I am expecting this series to go thru PCI tree, so:
->
-> Acked-By: Vinod Koul <vkoul@kernel.org>
+Bah. I missed that email and sent a slightly different resolution.
+Hopefully that'll be good enough.
 
-Frankly, the PHY driver can also go via PHY tree without causing any 
-issue. The old driver is not used at all, so there is no runtime 
-dependency. This will help avoiding the merge conflict: yesterday I've 
-noticed that this patch conflicts with the commit 2f0c9fac3be6 ("phy: 
-samsung: convert to devm_platform_ioremap_resource") in phy-next. The 
-resolution is simple (use all the code from the new driver), but if 
-needed I can resend the PHY driver after a rebase onto the current next 
-tree.
+Thanks,
 
-Best regards
-
+         M.
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Jazz is not dead. It just smells funny...
