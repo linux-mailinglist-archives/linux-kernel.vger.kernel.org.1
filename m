@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EDF2BA18A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC72D2BA188
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgKTEvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 23:51:52 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52758 "EHLO
+        id S1726476AbgKTEvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 23:51:48 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52756 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgKTEvi (ORCPT
+        with ESMTP id S1726295AbgKTEvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Nov 2020 23:51:38 -0500
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 508152A45D; Thu, 19 Nov 2020 23:51:37 -0500 (EST)
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
+        id BB33E2A45A; Thu, 19 Nov 2020 23:51:36 -0500 (EST)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     "Joshua Thompson" <funaho@jurai.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Message-Id: <0f0a25855391e7eaa53a50f651aea0124e8525dd.1605847196.git.fthain@telegraphics.com.au>
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <c6b1d9620af3e8f89dd0157a41fa4147294b251d.1605847196.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] macintosh/adb-iop: Always wait for reply message from IOP
+Subject: [PATCH] m68k/mac: Remove redundant VIA register writes
 Date:   Fri, 20 Nov 2020 15:39:56 +1100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent patch incorrectly altered the adb-iop state machine behaviour
-and introduced a regression that can appear intermittently as a
-malfunctioning ADB input device. This seems to be caused when reply
-packets from different ADB commands become mixed up, especially during
-the adb bus scan. Fix this by unconditionally entering the awaiting_reply
-state after sending an explicit command, even when the ADB command won't
-generate a reply from the ADB device.
+There's no need to write the same value to the timer latch and timer
+counter registers. Values written to the counter registers get stored
+in the latches anyway. The write to vT1CH copies the latch values to
+the counter.
 
 Cc: Joshua Thompson <funaho@jurai.org>
-Fixes: e2954e5f727f ("macintosh/adb-iop: Implement sending -> idle state transition")
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/macintosh/adb-iop.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/m68k/mac/via.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
-index 6b26b6a2c463..0ee327249150 100644
---- a/drivers/macintosh/adb-iop.c
-+++ b/drivers/macintosh/adb-iop.c
-@@ -84,10 +84,7 @@ static void adb_iop_complete(struct iop_msg *msg)
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index 4226ae2e7501..36ff997d4706 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -170,8 +170,6 @@ void __init via_init(void)
  
- 	local_irq_save(flags);
+ 	via1[vIER] = 0x7F;
+ 	via1[vIFR] = 0x7F;
+-	via1[vT1LL] = 0;
+-	via1[vT1LH] = 0;
+ 	via1[vT1CL] = 0;
+ 	via1[vT1CH] = 0;
+ 	via1[vT2CL] = 0;
+@@ -226,8 +224,6 @@ void __init via_init(void)
+ 	via2[gIER] = 0x7F;
+ 	via2[gIFR] = 0x7F | rbv_clear;
+ 	if (!rbv_present) {
+-		via2[vT1LL] = 0;
+-		via2[vT1LH] = 0;
+ 		via2[vT1CL] = 0;
+ 		via2[vT1CH] = 0;
+ 		via2[vT2CL] = 0;
+@@ -605,8 +601,6 @@ void __init via_init_clock(irq_handler_t timer_routine)
+ 		return;
+ 	}
  
--	if (current_req->reply_expected)
--		adb_iop_state = awaiting_reply;
--	else
--		adb_iop_done();
-+	adb_iop_state = awaiting_reply;
- 
- 	local_irq_restore(flags);
- }
-@@ -95,8 +92,9 @@ static void adb_iop_complete(struct iop_msg *msg)
- /*
-  * Listen for ADB messages from the IOP.
-  *
-- * This will be called when unsolicited messages (usually replies to TALK
-- * commands or autopoll packets) are received.
-+ * This will be called when unsolicited IOP messages are received.
-+ * These IOP messages can carry ADB autopoll responses and also occur
-+ * after explicit ADB commands.
-  */
- 
- static void adb_iop_listen(struct iop_msg *msg)
-@@ -123,8 +121,10 @@ static void adb_iop_listen(struct iop_msg *msg)
- 		if (adb_iop_state == awaiting_reply) {
- 			struct adb_request *req = current_req;
- 
--			req->reply_len = amsg->count + 1;
--			memcpy(req->reply, &amsg->cmd, req->reply_len);
-+			if (req->reply_expected) {
-+				req->reply_len = amsg->count + 1;
-+				memcpy(req->reply, &amsg->cmd, req->reply_len);
-+			}
- 
- 			req_done = true;
- 		}
+-	via1[vT1LL] = VIA_TC_LOW;
+-	via1[vT1LH] = VIA_TC_HIGH;
+ 	via1[vT1CL] = VIA_TC_LOW;
+ 	via1[vT1CH] = VIA_TC_HIGH;
+ 	via1[vACR] |= 0x40;
 -- 
 2.26.2
 
