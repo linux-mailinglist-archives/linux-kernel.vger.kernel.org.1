@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23AA2BA52C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BA02BA536
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727214AbgKTIyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:54:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36494 "EHLO
+        id S1727379AbgKTIzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726123AbgKTIyV (ORCPT
+        with ESMTP id S1725789AbgKTIzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:54:21 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFB1C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:54:20 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id m9so6749378pgb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:54:20 -0800 (PST)
+        Fri, 20 Nov 2020 03:55:40 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A36C0613CF;
+        Fri, 20 Nov 2020 00:55:40 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id u19so12368618lfr.7;
+        Fri, 20 Nov 2020 00:55:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+/obyKwhLmELIOTNjIjMVdmJhk74zSgJefv372u+mWk=;
-        b=T4Bxv0LzpQqYFqnbeoS5z/ymTAG70N5QauApvRu4qkPvG7VYaK9AXKbvZlE86tp5yk
-         fcPnYwapwHzMDp+jEDGBEvDwx6spPXhDfJyf8sgWfTNABV200qxPHXrK3Rit6Oce0j5l
-         wLfS+XEwnskhpBt15tIZ6iOu4IDS00Khmp5i6lhieuw8Y8iAT+u/rx3Fo8BvBaASOEi/
-         iba04pd7eKQjZL9vCbNICUU4idRDKUOEEYQUOoAheAntgu6yoGk5inGNaVsx+E6lDiTT
-         2SCFgLs6lj3X/wvtIGkcFFI3BPo4tKQjVr1niCgGn1jiSixtv99mnKU0DJFAui7wSVSB
-         bcNA==
+        bh=eCE5S3AtPfjPlYA0YjZN8U5ZXZvn/LY2xX90AL/N/n4=;
+        b=k2cWikdNzhvRX1o1rxZQ/r3PGgWpEY+B7ESKW2u8t1R8t6f9mVujNibnb0xM6ing7A
+         KfwsHX+X6R14I3BFEZYAn2U7cIM6uOP4q9b31bn1BIYmLL7YkACHogP7alLylVznwrXp
+         BPAn6eXWw7S6VzXwesvbnJDVcNih5Yjsbj8bvdMWMFLvdh/L6RTLse/hcRaYliYD7n9b
+         2XaTSQKoJu7iUAzDApDSnX1PIvTJO5bd0jYPXkLkakYkB5bXMdNe+GiPa25QZqpWJJ9Q
+         WrGRsKc/OarUCS+WnMWlQxNUU9Puo5bdGbrV+FrGgFJIseSpXYTdgvJvH7jp82hq3rJ3
+         Vj1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+/obyKwhLmELIOTNjIjMVdmJhk74zSgJefv372u+mWk=;
-        b=PTxkPtkUetPR2yuh4VT/uhXeB/MR9RKCIzHND/vPc5fmJG4tf8nk5bNlbx6KMSVYJw
-         B3Wb+5dBinBNusYISnBKf1AKydTw3eBUSw6awB763a5DdO4OQKwjptfmTgjv43K0yEZl
-         fvjRrfniiW4qdbOSp+BaaMT/PUr1WcQyUCBctDUUzLWitJcHRQBd5MmFgFEkwo2w6HSB
-         XOHaEyTsOFrgzOKHlUv+1Y2GZbnuxQWFx0WXvAHYkB3Bil8TFV2S/sIkrawP/eb1Gu3F
-         i84Ir50k2Y/ukmAqq/BBu+2ViZjOgBel6MBVyDlYOtwnhGnSwBENSRhbB34n3VKEdZiR
-         49MA==
-X-Gm-Message-State: AOAM533UpIj9RhfqJrdkskgSZYqh31bK35ah4+UVrPWZ6XXrtkv1GS8p
-        OXvK++iwwA1qbuk/dw89ps6iPOI7Lo7d9d9eswh47w==
-X-Google-Smtp-Source: ABdhPJy1+LfEuD8o9GFskPkG8bpoSM/jlOhzy1Ph5ajz7lZTeqmYNK0X1dfui/R4WQbABZDeaxI2ByEigdWN7vPUj54=
-X-Received: by 2002:a17:90a:ae14:: with SMTP id t20mr9193687pjq.13.1605862460402;
- Fri, 20 Nov 2020 00:54:20 -0800 (PST)
+        bh=eCE5S3AtPfjPlYA0YjZN8U5ZXZvn/LY2xX90AL/N/n4=;
+        b=hiXSAIl6GON8ioS+qTAGDJUkDZCvNkfeuSpruLXsZtf0HF5JrgsPX0KVJIzqQh7JRT
+         eeHCKWF/g8LINcL+7LyQFN3d12mtydouxBgMWR+ijs6jRxe/ST87BIBkeaQNfheH7WCb
+         MPgV6K71pOQGL6gWqo1gXj6xpMy0ItxxXg89fjpY53MM1sy53O/TusG9PemizW/Xv8wa
+         IRso2X7KUEGZDiVXmWScmxuVV0Ol85Kmmlk16WHatSSMnURq5NHccumElC58F0er8nM8
+         vBWHBpgE+S6yluSn7tkChhRziV+J7ZvGm3a3zIugXBZSGCVQsjZyeYTHLwqygH0Iz2O+
+         SnnA==
+X-Gm-Message-State: AOAM533/26bmWBL2NWikCYZnjZE6W89pGNNgVDB2C1F3GBsXPE9hyUtl
+        iFyi9DnJcRuhpJNnldb5zLFhFHunXGHEpa+/mEc=
+X-Google-Smtp-Source: ABdhPJyhgrajddGaPcfQLxvzIx4y0UvcooH+ce7MoDObk9cBX4B6NGc1idbwywPDrlRxQWjGIn5r/eswg6fHVuWIx00=
+X-Received: by 2002:a05:6512:20c:: with SMTP id a12mr7496565lfo.219.1605862538701;
+ Fri, 20 Nov 2020 00:55:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120064325.34492-4-songmuchun@bytedance.com> <20201120074950.GB3200@dhcp22.suse.cz>
- <CAMZfGtWuCuuR+N8h-509BbDL8CN+s_djsodPN0Wb1+YHbF9PHw@mail.gmail.com> <20201120084750.GK3200@dhcp22.suse.cz>
-In-Reply-To: <20201120084750.GK3200@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 20 Nov 2020 16:53:37 +0800
-Message-ID: <CAMZfGtW2QEuRgYv_WXjN5OU+EhLPO9UHJ+8puSoVG8cwKQBvjA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v5 03/21] mm/hugetlb: Introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <CANL0fFQqsGU01Z8iEhznDLQjw5huayarNoqbJ8Nikujs0r+ecQ@mail.gmail.com>
+ <6b71718c405541d681f4d8b045a66a79ade0dd4f.camel@intel.com>
+In-Reply-To: <6b71718c405541d681f4d8b045a66a79ade0dd4f.camel@intel.com>
+From:   Gonsolo <gonsolo@gmail.com>
+Date:   Fri, 20 Nov 2020 09:55:27 +0100
+Message-ID: <CANL0fFQeh0SdUd_v98X-YJewZRAOmiaKaCLO+7FsoZBO=SENvQ@mail.gmail.com>
+Subject: Kernel warning "TX on unused queue" for iwlwifi on 7260 with kernel 5.10-rc2
+To:     "Coelho, Luciano" <luciano.coelho@intel.com>
+Cc:     "Damary, Guy" <guy.damary@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        linuxwifi <linuxwifi@intel.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "longman@redhat.com" <longman@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 4:47 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 20-11-20 16:35:16, Muchun Song wrote:
-> [...]
-> > > That being said, unless there are huge advantages to introduce a
-> > > config option I would rather not add it because our config space is huge
-> > > already and the more we add the more future code maintainance that will
-> > > add. If you want the config just for dependency checks then fine by me.
-> >
-> > Yeah, it is only for dependency checks :)
->
-> OK, I must have misread the definition to think that it requires user to
-> enable explicitly.
->
-> Anyway this feature cannot be really on by default due to overhead. So
-> the command line option default has to be flipped.
+Output of lspci -nn:
 
-Got it. Thanks for your suggestion.
+02:00.0 Network controller [0280]: Intel Corporation Wireless 7260
+[8086:08b1] (rev 73)
 
->
-> --
-> Michal Hocko
-> SUSE Labs
+> Guy, can you help with this one? I believe there is a bugzilla issue
+> for this already...
 
-
+I'd like to know this too.
 
 -- 
-Yours,
-Muchun
+g
