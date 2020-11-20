@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EFE2BB811
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA7F2BB818
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730499AbgKTVDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:03:51 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34264 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727335AbgKTVDv (ORCPT
+        id S1731636AbgKTVEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:04:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731276AbgKTVEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:03:51 -0500
-Received: by mail-ot1-f65.google.com with SMTP id j14so10060257ots.1;
-        Fri, 20 Nov 2020 13:03:48 -0800 (PST)
+        Fri, 20 Nov 2020 16:04:37 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30C4C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:04:36 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id l206so11920860oif.12
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:04:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=veXWdye4EPb1hf22k/yabOHMzQdWo29UrU9Jxr6Z+6g=;
+        b=B2TUNk7NCv+2OSJErtonoLqm/CVdIxLlDhUNhg9hUAKvLxHavqwTBEfy7xbTEig+pi
+         72h1LH2HQOEeZDXMsNSKayDVvWjo1Z96344pykxAqmngrq1s9duCmE4qUtu0oFjLWK8V
+         yuTqiR6RmH00V5KgVczlVzF0pnOm6OWCCfFlg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=O65YbVoUCwPPqb4vh57HQOwrA45uehfsHs7MDRTYAAU=;
-        b=ROkRVT0sefAR+sXP9NrN6lamXMPeD7fritNKpYSyKcKosnX+MP+02TMF4phkfIm3T5
-         l/LglMaF4BSNYHSHw9HcsOyukYyarRqHzfTtnDv+BE/1UipOhWtdHiPK/Wie9h2LydW6
-         yDvCzlbveSnPJ+nMPtEjarpqKizGUvBc1dP8tApuJeFm5Xc96s3AnWTRACO+wwPHQj/s
-         94Uy6fnNcpt4YJOfc8yX8sIdN9SsxiMyc2YeFubGDg6xAP/5jNH9OdkUbwO978AOspsS
-         t+wzr1/zzn+c+Y3Gf04H5DFHowz8x2R2D5z6/r+tcAtpWQ5NpyySAEFIj1ovtV5v7EPC
-         s9Ew==
-X-Gm-Message-State: AOAM530EUbSEXoASIQwqLHQGUK4Th110Iaya2ka5QVhg5KCNtC9I6kPL
-        xWeNhTEJ9RX0j7pdlNCmFMqeb5XMDQ==
-X-Google-Smtp-Source: ABdhPJyyd4nJ5cBeo0GfgCatXLS1+K5s7Wdlo9Y4p10ZxC6b39GxFzKFByFu7DhX54sswaXYUOnhdA==
-X-Received: by 2002:a9d:3408:: with SMTP id v8mr15548863otb.335.1605906228600;
-        Fri, 20 Nov 2020 13:03:48 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a1sm1867965oti.56.2020.11.20.13.03.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 13:03:47 -0800 (PST)
-Received: (nullmailer pid 1735577 invoked by uid 1000);
-        Fri, 20 Nov 2020 21:03:46 -0000
-Date:   Fri, 20 Nov 2020 15:03:46 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Steen.Hegelund@microchip.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Jason Cooper <jason@lakedaemon.net>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 1/6] dt-bindings: interrupt-controller: convert icpu
- intr bindings to json-schema
-Message-ID: <20201120210346.GA1734708@robh.at.kernel.org>
-References: <20201120164108.2096359-1-gregory.clement@bootlin.com>
- <20201120164108.2096359-2-gregory.clement@bootlin.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=veXWdye4EPb1hf22k/yabOHMzQdWo29UrU9Jxr6Z+6g=;
+        b=Cmp5tBuiIZbgwSVZquChaQ5siCLfneAhDfQqFR6USZny3GvobFgP2ptjFVTq9w6Z63
+         Ob5/q5Qp27rLW1w7As0rIUU02TkinfDWry0dKrna1wOQIVI91BKOB3txuwYUgZtwkXrb
+         tjukIaw8bz6u+NUdpYPfsjNEt6bheMSdxRuwrX1gfhrjqPa+9zXYeuCfB0aEiRjGnBxs
+         dDY3sbzRrvRDr8Qjpid+SgZCSfm0sV5LZHQzpLYKgNjT5ey5BY2kxKpHlLFvTFD3t+yI
+         csxOY761n1XE9jX59DpBfCE1F+HDy4XyG1gBtRe0M9klyNsiOXE/ydFyzLn3RLEjMTfZ
+         UuqA==
+X-Gm-Message-State: AOAM532oJj8tQpGKNNSti/3+GJHavfaygU8ZOZ3hoKIjIUZlZ0hn+pOV
+        MAGjGOE46YMEIdCCgJYb9wYAc9BquBwsPw==
+X-Google-Smtp-Source: ABdhPJyZSnDFH1W/vZux6eFNCBV3Iuw8bL6dopA9yKYDA/+eNVXcTtwvwtxaqRocHFzYB1/lhQNW6w==
+X-Received: by 2002:aca:3087:: with SMTP id w129mr7540470oiw.78.1605906273985;
+        Fri, 20 Nov 2020 13:04:33 -0800 (PST)
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
+        by smtp.gmail.com with ESMTPSA id j40sm2020812ota.8.2020.11.20.13.04.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 13:04:32 -0800 (PST)
+Received: by mail-ot1-f47.google.com with SMTP id h16so10030825otq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:04:31 -0800 (PST)
+X-Received: by 2002:a05:6830:2083:: with SMTP id y3mr16408151otq.203.1605906270889;
+ Fri, 20 Nov 2020 13:04:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120164108.2096359-2-gregory.clement@bootlin.com>
+References: <20201028142433.18501-1-kitakar@gmail.com> <20201028142433.18501-2-kitakar@gmail.com>
+ <CA+ASDXMfuqy=kCECktP_mYm9cAapXukeLhe=1i3uPbTu9wS2Qw@mail.gmail.com> <8fa12bfff1cc30b655934e303cad78ae75b0fcde.camel@gmail.com>
+In-Reply-To: <8fa12bfff1cc30b655934e303cad78ae75b0fcde.camel@gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Fri, 20 Nov 2020 13:04:19 -0800
+X-Gmail-Original-Message-ID: <CA+ASDXMUdYHTKphxFwcAim79N_DJiQFHFN0gDZsPB4rMHyxxXw@mail.gmail.com>
+Message-ID: <CA+ASDXMUdYHTKphxFwcAim79N_DJiQFHFN0gDZsPB4rMHyxxXw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mwifiex: disable ps_mode explicitly by default instead
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 17:41:03 +0100, Gregory CLEMENT wrote:
-> Convert device tree bindings for Microsemi Ocelot SoC ICPU Interrupt
-> Controller to YAML format
-> 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
->  .../mscc,ocelot-icpu-intr.txt                 | 21 -------
->  .../mscc,ocelot-icpu-intr.yaml                | 60 +++++++++++++++++++
->  2 files changed, 60 insertions(+), 21 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml
-> 
+On Fri, Oct 30, 2020 at 1:04 AM Tsuchiya Yuto <kitakar@gmail.com> wrote:
+> On Thu, 2020-10-29 at 11:25 -0700, Brian Norris wrote:
+> > For the record, Chrome OS supports plenty of mwifiex systems with 8897
+> > (SDIO only) and 8997 (PCIe), with PS enabled, and you're hurting
+> > those. Your problem sounds to be exclusively a problem with the PCIe
+> > 8897 firmware.
+>
+> Actually, I already know that some Chromebooks use these mwifiex cards
+> (but not out PCIe-88W8897) because I personally like chromiumos. I'm
+> always wondering what is the difference. If the difference is firmware,
+> our PCIe-88W8897 firmware should really be fixed instead of this stupid
+> series.
 
+PCIe is a very different beast. (For one, it uses DMA and
+memory-mapped registers, where SDIO has neither.) It was a very
+difficult slog to get PCIe/8997 working reliably for the few
+Chromebooks that shipped it, and lots of that work is in firmware. I
+would not be surprised if the PCIe-related changes Marvell made for
+8997 never fed back into their PCIe-8897 firmware. Or maybe they only
+ever launched PCIe-8897 for Windows, and the Windows driver included
+workarounds that were never published to their Linux driver. But now
+I'm just speculating.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+> Yes, I'm sorry that I know this series is just a stupid one but I have to
+> send this anyway because this stability issue has not been fixed for a
+> long time. I should have added this buglink to every commit as well:
+>
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=109681
+>
+> If the firmware can't be fixed, I'm afraid I have to go this way. It makes
+> no sense to keep enabling power_save for the affected devices if we know
+> it's broken.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml:55:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+Condolences and sympathy, seriously. You likely have little chance of
+getting the firmware fixed, so without new information (e.g,. other
+workarounds?), this is the probably the right way to go.
 
-dtschema/dtc warnings/errors:
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning a block scalar
-  in "<unicode string>", line 50, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 55, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.example.dts] Error 1
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.example.dts'
-make[1]: *** Waiting for unfinished jobs....
-make[1]: *** [Documentation/devicetree/bindings/Makefile:59: Documentation/devicetree/bindings/processed-schema-examples.json] Error 123
-make: *** [Makefile:1364: dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1403891
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Brian
