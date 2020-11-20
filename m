@@ -2,166 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85B72BA646
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA4B2BA64A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727379AbgKTJew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:34:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41601 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727312AbgKTJeu (ORCPT
+        id S1727429AbgKTJfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727355AbgKTJfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:34:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605864888;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gbikbOFWLmH51xEMI3CZCcV1DBmB6rsbo4SOuPJyr+Q=;
-        b=cbpQTy1fmfZEEGUZr9Zjcj2Ha6vhpZ8gbi1xjgbChaMxkwqZ6fscIacyVef89080c2mxGk
-        P6UTsE72bvs15s78WDVSnKGcmfHmk2jb+rStsNOht4pJQp/Z5HzjIvpGz6+ea9p0qj9RYj
-        fwBlllgLa8BHWEVcwvZKMS85vTaxwlI=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-nCRGwqM4Mui-FlfaSwB15A-1; Fri, 20 Nov 2020 04:34:47 -0500
-X-MC-Unique: nCRGwqM4Mui-FlfaSwB15A-1
-Received: by mail-io1-f70.google.com with SMTP id p67so7020404iod.9
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:34:46 -0800 (PST)
+        Fri, 20 Nov 2020 04:35:01 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93517C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:35:01 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id m13so9737819oih.8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:35:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hgF4wfg69hNpww4OAKMoqR+eWE3jKpfJosXp9fxVBjI=;
+        b=X4UHOJmNLvGaGQarNMiO8EklXG6lG45+9sS//8PEIAcGFyr8tKX+5nnGXzRAbO6Ue6
+         3W839yCL3pKJT002ic0S4VGSLeiJV67iqE0XZrHk+eXI21jAtiOEXzLIkiE0kqevhGVR
+         MPDC0aauVbAhrazQEsofDf0TWh93oG9z4Np2U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gbikbOFWLmH51xEMI3CZCcV1DBmB6rsbo4SOuPJyr+Q=;
-        b=ZisO429iu+aG0mOn89XkA1BzFJg6cnIoGE9ctXFWMwFJIZtIE6nouLdsjX+WAQtBRT
-         Wbn6/zr/sNOICph+B3j3MzE9XJbtKkxZBIhw8U6AkSQSeArc6/eufDF+z8hyWvp1YFSu
-         snMb+qYcT2tTH4wmvZrDgv0OtCavxQNpKZUU64lisYHcnmOKoB2+upYsr4It7OwNVBcy
-         ihartFkrsrT0SQzqkZAS/u72FZ72Tfh+OQzNsBDkPTgSezb/PihuqlY+fLr16wbaFuGE
-         1GrXJAbwgfz+bdPhfS6no83GyJP737bxHm6q+UEEwcjUd6bGax71+AaDFyGh5y2eX68d
-         YE/g==
-X-Gm-Message-State: AOAM5316HWsgfLdYJrYmgGXVaopgwebo50jIrX1GPg1rLuqKR1m/lUm6
-        lsdpP/GrYloVH6DrR7LHyCgsGu5LlU2xsUlmLgBgsl09tedxGzp9neAJygK/ZXMDy7FrI9Glxwa
-        Wl6HA1oybcrrn64+20rMXEiTB2EpDr99dtEnfyT6/
-X-Received: by 2002:a05:6e02:e8e:: with SMTP id t14mr4572462ilj.207.1605864886428;
-        Fri, 20 Nov 2020 01:34:46 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwZTkOfTuI3Fs1qspxBePJyTE8vzwQ8naLykgg6urOciQRhNvxGx1ixR75FmurFgow5FjHHGWgcjObn0wV/Cq8=
-X-Received: by 2002:a05:6e02:e8e:: with SMTP id t14mr4572436ilj.207.1605864886218;
- Fri, 20 Nov 2020 01:34:46 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=hgF4wfg69hNpww4OAKMoqR+eWE3jKpfJosXp9fxVBjI=;
+        b=eP7fGukP0VG5qGAs0USK+U6EjhLGjpsqCr9Kr94XfTeX1nBGM1Kv1LDPAz0719yA6z
+         TjXcIxorWPhRXLwyCb0xmWzzN3c80q8kYXA0PY102wncg/bnYM97a67+3Pc39wcgu0/s
+         Tmv/Db6DLzZ/sFfJP8pu18pjYqytVvjbAnTt4wMDXXCyqFD3C/AgJlIJl9DlyFhDriUn
+         middMM5MAjZfYa/0yHuampxLKuMUgSovBRnGVHXY55tLVKw3gcmqLI2DqBkzVlwGqZsW
+         HOcnfos95z2ISudOT+VjSgog+VsFkk/fBv4wpiR7jtf13CqUKn1ZMx3CiXumM/AvvX3v
+         ETsA==
+X-Gm-Message-State: AOAM532z7TImuDgLuYciKG0Ssvp5pqvQZu8pO/6cocCPHH3EVbD4CQdT
+        ZonYS28jF3qRBTR52A2LakQinv4pw68QvduXwz8dfA==
+X-Google-Smtp-Source: ABdhPJwGdgkRwcd6PL3pN7daWCrNpgUvuP86thM6e5fGMCZGTC6PnlV9Y7Fldm85Rp0ewgPAUXlSIvmIrS0hPfBByDs=
+X-Received: by 2002:aca:7506:: with SMTP id q6mr5872181oic.128.1605864900943;
+ Fri, 20 Nov 2020 01:35:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
- <CACPcB9e8p5Ayw15aOe5ZNPOa7MF3+pzPdcaZgTc_E_TZYkgD6Q@mail.gmail.com> <AC36B9BC-654C-4FC1-8EA3-94B986639F1E@oracle.com>
-In-Reply-To: <AC36B9BC-654C-4FC1-8EA3-94B986639F1E@oracle.com>
-From:   Kairui Song <kasong@redhat.com>
-Date:   Fri, 20 Nov 2020 17:34:35 +0800
-Message-ID: <CACPcB9d7kU1TYaF-g2GH16Wg=hrQu71sGDoC8uMFFMc6oW_duQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] kernel/crash_core.c - Add crashkernel=auto for x86
- and ARM
-To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     John Donnelly <john.p.donnelly@oracle.com>, stable@vger.kernel.org,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Walle <michael@walle.cc>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        =?UTF-8?Q?Diego_Elio_Petten=C3=B2?= <flameeyes@flameeyes.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
+References: <20201110034934.70898-1-john.stultz@linaro.org>
+ <CAO_48GHNE6AyKv4k=3=2EVjfSZsgz4pjuMJ1xJojbuFU9a90EQ@mail.gmail.com>
+ <20201112093237.GS401619@phenom.ffwll.local> <CALAqxLWWBaOc3W1s3xBe-innHZ0pAon7UCfumjjQftPqf7bO0Q@mail.gmail.com>
+ <20201113203933.GT401619@phenom.ffwll.local> <CALAqxLU886mjGaNx3cvXB0hyOd=tTo7G=tw6iQ1uAxcXShN+kg@mail.gmail.com>
+ <CAKMK7uGew_sdw=NPrzuAQ_-5_kQnn-qvLHK9DGqSk=k22tQGDg@mail.gmail.com> <CAO_48GHLFJi+DKYf4fBs7NZr+f+Q0USoGEtL6nW_FQFv+OOJ5Q@mail.gmail.com>
+In-Reply-To: <CAO_48GHLFJi+DKYf4fBs7NZr+f+Q0USoGEtL6nW_FQFv+OOJ5Q@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Fri, 20 Nov 2020 10:34:50 +0100
+Message-ID: <CAKMK7uFz6SbHqH_Q7f5v13-dSRokq16fy0z6YbPFY6X9sDAm1w@mail.gmail.com>
+Subject: Re: [PATCH v5 0/7] dma-buf: Performance improvements for system heap
+ & a system-uncached implementation
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 4:28 AM Saeed Mirzamohammadi
-<saeed.mirzamohammadi@oracle.com> wrote:
+On Fri, Nov 20, 2020 at 7:32 AM Sumit Semwal <sumit.semwal@linaro.org> wrote:
 >
-> Hi,
+> Hi Daniel,
 >
-> And I think crashkernel=3Dauto could be used as an indicator that user
-> want the kernel to control the crashkernel size, so some further work
-> could be done to adjust the crashkernel more accordingly. eg. when
-> memory encryption is enabled, increase the crashkernel value for the
-> auto estimation, as it's known to consume more crashkernel memory.
 >
-> Thanks for the suggestion! I tried to keep it simple and leave it to the =
-user to change Kconfig in case a different range is needed. Based on experi=
-ence, these ranges work well for most of the regular cases.
+> On Wed, 18 Nov 2020 at 13:16, Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Wed, Nov 18, 2020 at 3:40 AM John Stultz <john.stultz@linaro.org> wrote:
+> > > On Fri, Nov 13, 2020 at 12:39 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > On Thu, Nov 12, 2020 at 08:11:02PM -0800, John Stultz wrote:
+> > > > > On Thu, Nov 12, 2020 at 1:32 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > > > On Thu, Nov 12, 2020 at 11:09:04AM +0530, Sumit Semwal wrote:
+> > > > > > > On Tue, 10 Nov 2020 at 09:19, John Stultz <john.stultz@linaro.org> wrote:
+> > > > > > > >
+> > > > > > > > Hey All,
+> > > > > > > >   So just wanted to send my last revision of my patch series
+> > > > > > > > of performance optimizations to the dma-buf system heap.
+> > > > > > >
+> > > > > > > Thanks very much for your patches - I think the first 5 patches look good to me.
+> > > > > > >
+> > > > > > > I know there was a bit of discussion over adding a new system-uncached
+> > > > > > > heap v/s using a flag to identify that; I think I prefer the separate
+> > > > > > > heap idea, but lets ask one last time if any one else has any real
+> > > > > > > objections to it.
+> > > > > > >
+> > > > > > > Daniel, Christian: any comments from your side on this?
+> > > > > >
+> > > > > > I do wonder a bit where the userspace stack for this all is, since tuning
+> > > > > > allocators without a full stack is fairly pointless. dma-buf heaps is a
+> > > > > > bit in a limbo situation here it feels like.
+> > > > >
+> > > > > As mentioned in the system-uncached patch:
+> > > > > Pending opensource users of this code include:
+> > > > > * AOSP HiKey960 gralloc:
+> > > > >   - https://android-review.googlesource.com/c/device/linaro/hikey/+/1399519
+> > > > >   - Visibly improves performance over the system heap
+> > > > > * AOSP Codec2 (possibly, needs more review):
+> > > > >   - https://android-review.googlesource.com/c/platform/frameworks/av/+/1360640/17/media/codec2/vndk/C2DmaBufAllocator.cpp#325
+> > > > >
+> > > > > Additionally both the HiKey, HiKey960 grallocs  and Codec2 are already
+> > > > > able to use the current dmabuf heaps instead of ION.
+> > > > >
+> > > > > So I'm not sure what you mean by limbo, other than it being in a
+> > > > > transition state where the interface is upstream and we're working on
+> > > > > moving vendors to it from ION (which is staged to be dropped in 5.11).
+> > > > > Part of that work is making sure we don't regress the performance
+> > > > > expectations.
+> > > >
+> > > > The mesa thing below, since if we test this with some downstream kernel
+> > > > drivers or at least non-mesa userspace I'm somewhat worried we're just
+> > > > creating a nice split world between the android gfx world and the
+> > > > mesa/linux desktop gfx world.
+> > > >
+> > > > But then that's kinda how android rolls, so *shrug*
+> > > >
+> > > > > > Plus I'm vary of anything related to leaking this kind of stuff beyond the
+> > > > > > dma-api because dma api maintainers don't like us doing that. But
+> > > > > > personally no concern on that front really, gpus need this. It's just that
+> > > > > > we do need solid justification I think if we land this. Hence back to
+> > > > > > first point.
+> > > > > >
+> > > > > > Ideally first point comes in the form of benchmarking on android together
+> > > > > > with a mesa driver (or mesa + some v4l driver or whatever it takes to
+> > > > > > actually show the benefits, I have no idea).
+> > > > >
+> > > > > Tying it with mesa is a little tough as the grallocs for mesa devices
+> > > > > usually use gbm (gralloc.gbm or gralloc.minigbm). Swapping the
+> > > > > allocation path for dmabuf heaps there gets a little complex as last I
+> > > > > tried that (when trying to get HiKey working with Lima graphics, as
+> > > > > gbm wouldn't allocate the contiguous buffers required by the display),
+> > > > > I ran into issues with the drm_hwcomposer and mesa expecting the gbm
+> > > > > private handle metadata in the buffer when it was passed in.
+> > > > >
+> > > > > But I might take a look at it again. I got a bit lost digging through
+> > > > > the mesa gbm allocation paths last time.
+> > > > >
+> > > > > I'll also try to see if I can find a benchmark for the codec2 code
+> > > > > (using dmabuf heaps with and without the uncached heap) on on db845c
+> > > > > (w/ mesa), as that is already working and I suspect that might be
+> > > > > close to what you're looking for.
+> > > >
+> > > > tbh I think trying to push for this long term is the best we can hope for.
+> > > >
+> > > > Media is also a lot more *meh* since it's deeply fragmented and a lot less
+> > > > of it upstream than on the gles/display side.
+> > > >
+> > > > I think confirming that this at least doesn't horrible blow up on a
+> > > > gralloc/gbm+mesa stack would be useful I think.
+> > >
+> > > Sorry, I'm still a little foggy on precisely what you're suggesting here.
+> > >
+> > > The patch stack I have has already been used with db845c (mesa +
+> > > gbm_grallloc), with the codec2 (sw decoders) using dmabuf heaps.
+> > > So no blowing up there. And I'm working with Hridya to find a
+> > > benchmark for codec2 so we can try to show the performance delta.
+> > >
+> > > However, if you're wanting a dma-buf gralloc implementation with mesa,
+> > > that may be a little tougher to do, but I guess I can give it a go.
+> > >
+> > > Hopefully this will address concerns about the system-uncached heap
+> > > patch (the last two patches in this series)?
+> > >
+> > > In the meantime I hope we can queue the first five patches, as it
+> > > would be nice to get the code rearranging in as there are others
+> > > trying to stage their own heaps, and I'd like to avoid dragging that
+> > > churn out for too long (in addition to improving the allocation
+> > > performance). Those changes have no ABI implications.
+> >
+> > Maybe I'm also misunderstanding what dma-buf heaps is used for in
+> > Android, at least usually. I thought it's used to allocate all the
+> > winsys/shared buffers through gralloc (at least in the blobby stacks),
+> > to handle the allocation constraints problem. In the open stacks we
+> > don't seem to have a platform with both mesa and v4l (or some other
+> > codec) with "interesting" allocations constraints, so no one using
+> > that gralloc+dma-buf heaps combo for what it was meant for. Hence why
+> > I'm a bit vary that we're creating something here which just misses
+> > the point a bit when we try to actually use it (in that glorious
+> > forever-future world where an android platform has enough drivers in
+> > upstream to do so).
+> >
+> > For other "this solves a system problem" we tend to be quite a bit
+> > more picky with the demonstration use case, to make sure we're
+> > actually creating something that solves the problem in reality.
+> >
+> > But it also looks like Android's just not there yet, so *shrug* ...
+>
+> For me, looking at the first 5 patches (listed below, for quick
+> reference), they are only doing code reorganisation and minor updates
+> for already existing heaps, and no ABI change, I am not able to
+> clearly see your objection here. To me, these seem to be required
+> updates that the existing system heap users can benefit from.
+>
+> dma-buf: system_heap: Rework system heap to use sgtables instead of
+>     pagelists
+>   dma-buf: heaps: Move heap-helper logic into the cma_heap
+>     implementation
+>   dma-buf: heaps: Remove heap-helpers code
+>   dma-buf: heaps: Skip sync if not mapped
+>   dma-buf: system_heap: Allocate higher order pages if available
+>
+> If we talk about the last two patches - the ones that add system
+> uncached heap, I somewhat agree that we should be able to show the
+> performance gains with this approach (which has been in use on ION and
+> in devices) using dma-buf gralloc or similar.
+>
+> We can discuss the system-uncached heap when the dma-buf gralloc or
+> similar demonstration for performance benefits is done, but I am
+> inclined to push these 5 patches listed above through.
 
-Yes, I think the current implementation is a very good start.
-
-There are some use cases, where kernel is expected to reserve more memory, =
-like:
-- when memory encryption is enabled, an extra swiotlb size of memory
-should be reserved
-- on pcc, fadump will expect more memory to be reserved
-
-I believe there are a lot more cases like these.
-I tried to come up with some patches to let the kernel reserve more
-memory automatically, when such conditions are detected, but changing
-the crashkernel=3D specified value is really weird.
-
-But if we have a crashkernel=3Dauto, then kernel automatically reserve
-more memory will make sense.
-
-> But why not make it arch-independent? This crashkernel=3Dauto idea
-> should simply work with every arch.
->
->
-> Thanks! I=E2=80=99ll be making it arch-independent in the v2 patch.
->
->
-> #include <asm/page.h>
-> #include <asm/sections.h>
-> @@ -41,6 +42,15 @@ static int __init parse_crashkernel_mem(char *cmdline,
->                                        unsigned long long *crash_base)
-> {
->        char *cur =3D cmdline, *tmp;
-> +       unsigned long long total_mem =3D system_ram;
-> +
-> +       /*
-> +        * Firmware sometimes reserves some memory regions for it's own u=
-se.
-> +        * so we get less than actual system memory size.
-> +        * Workaround this by round up the total size to 128M which is
-> +        * enough for most test cases.
-> +        */
-> +       total_mem =3D roundup(total_mem, SZ_128M);
->
->
-> I think this rounding may be better moved to the arch specified part
-> where parse_crashkernel is called?
->
->
-> Thanks for the suggestion. Could you please elaborate why do we need to d=
-o that?
-
-Every arch gets their total memory value using different methods,
-(just check every parse_crashkernel call, and the system_ram param is
-filled in many different ways), so I'm really not sure if this
-rounding is always suitable.
+Yeah makes total sense - I was arguing about the new stuff, not the refactoring.
+-Daniel
 
 >
-> Thanks,
-> Saeed
+> Best,
+> Sumit.
 >
->
---
-Best Regards,
-Kairui Song
+> > -Daniel
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
 
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
