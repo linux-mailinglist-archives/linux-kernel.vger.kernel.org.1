@@ -2,77 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49072BAF67
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5442BAF55
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729963AbgKTP5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:57:04 -0500
-Received: from confino.investici.org ([212.103.72.250]:58955 "EHLO
-        confino.investici.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728430AbgKTP5D (ORCPT
+        id S1729028AbgKTPw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:52:57 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:42833 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728476AbgKTPw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:57:03 -0500
-X-Greylist: delayed 317 seconds by postgrey-1.27 at vger.kernel.org; Fri, 20 Nov 2020 10:57:03 EST
-Received: from mx1.investici.org (unknown [127.0.0.1])
-        by confino.investici.org (Postfix) with ESMTP id 4Cd1Hz5TDSz115q;
-        Fri, 20 Nov 2020 15:51:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
-        s=stigmate; t=1605887503;
-        bh=xaqO1+KopYk7SsjxvaHIb9pLWW1k+TeBHLFfUnwp7/4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iPOpvSM/2l260ZsZLa+8KlHIUP6LBT87h9FDrnKQdt6XqO8mT6Vdxoy/3sUj6E9Vk
-         UvW6W+JC2I/KE4G5wBWxZzNkx4nTh1VcElrESrdDZxSpUQy8nOxHgrqtak3es0LbUd
-         +01BqGLvoDkka63h1BbWYs3i0zZlC7Vr4v1FbIUw=
-Received: from [212.103.72.250] (mx1.investici.org [212.103.72.250]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4Cd1Hz3rX1z115G;
-        Fri, 20 Nov 2020 15:51:43 +0000 (UTC)
-From:   Francis Laniel <laniel_francis@privacyrequired.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Andrew Morton' <akpm@linux-foundation.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dja@axtens.net" <dja@axtens.net>,
-        "keescook@chromium.org" <keescook@chromium.org>
-Subject: Re: [PATCH v6 0/5] Fortify strscpy()
-Date:   Fri, 20 Nov 2020 16:51:41 +0100
-Message-ID: <6074200.xW2bGMXWAE@machine>
-In-Reply-To: <824aad3a91254445b0f30359f1606e2a@AcuMS.aculab.com>
-References: <20201119164915.10618-1-laniel_francis@privacyrequired.com> <20201119173543.8821881942022fc4f39c4c73@linux-foundation.org> <824aad3a91254445b0f30359f1606e2a@AcuMS.aculab.com>
+        Fri, 20 Nov 2020 10:52:56 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 38A045C0073;
+        Fri, 20 Nov 2020 10:52:55 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 20 Nov 2020 10:52:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=243zuxKtb9Id8Wghr25UlB2KG++
+        k7labUCOuppsTHUM=; b=UhEKbxr/G9zEmm4mGuI+MdHuJL1mDaXGKgjLWPSltlx
+        Ae0XP3P1jT/9itgiZQQY7eAoae0GF8nk+mXGMRqMzW5ErNQ8/EkVwF5jeMN7PfdJ
+        b9PClGJSxKC4TJEVCgoVlRd3w/3ioFVyJBERMtZYXP4JRCj790i1F3kmkeIJhmSd
+        I6/0NI9fcqM3LF52/qTDmfQ417pTAV5qE82N72BVPq8bqyu+Rnb9z2xzCJDA8RfZ
+        Fyv++8vjWB70FV0MgDDZqs1qUSuzhnnobhJb21kJFppjyOTrUttelcBpy3zcQdxb
+        6Jvq2etogfGVqG918dtF0/sgdYPl/gvYWhKSR5TxfNw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=243zux
+        Ktb9Id8Wghr25UlB2KG++k7labUCOuppsTHUM=; b=WqRaRHLcvJ8IczAzkV76Q1
+        G2Upf/YA65CitbxAD+VM01BfNQCWR/lMP80I4CtI1bI35LKlsavtDH1ePaHEzVfb
+        w3cU/LtDPyM70SY59JtqEkqHXMFdwDf0yny9fbP2Tl3RR26AO35eUVLVJf3KcZRH
+        FalIX1GkjTFyLKJ/oFnoY+Bk52BSKM7oJh1w0Q90R9xJIWRyGweccE4wOjUfIhOo
+        y+QPy5SyKrpYIURMZ7IF7rTzN7EW+Kyoh3D16TJcsQlDGlCktI7A2CvtKbXvr4Ze
+        3MvWYxdR4iE2LS8wbSk3Up6JHnJ30bZcckjZrQb+MHpcsz958UH24y4bYdw+2GEA
+        ==
+X-ME-Sender: <xms:Vua3X-If6XXSIocIbrK0KdyrSbdDhKvf7KsfE350hurX9J2n6zMOBg>
+    <xme:Vua3X2K7NU9am4Nn1YX4uQ6TNbHa0hK3Rra5wTAQDqFAKOZTbh6IN-4bZX1e203op
+    v0sOkzK1is9NAr-ZVM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegtddgjeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
+    sehgtderredttddvnecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomhgrgihimh
+    gvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvghrnhepgfffieeiudduveefjeel
+    geelhefgtdelgffhkeefjeefvdeviefhheekgeeivddunecuffhomhgrihhnpegsrghnrg
+    hnrgdqphhirdhorhhgpdhgohhoghhlvgdrtghomhenucfkphepledtrdekledrieekrdej
+    ieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:Vua3X-ss87GSqIUDVEh63ZTQ3_4qIjXPTAnUVnZew65lWcB1d5XW4g>
+    <xmx:Vua3XzaubLYcjVWnwq2r3RiyRIrJOLxzzTA4IMD8ihvOTgNESm7_nA>
+    <xmx:Vua3X1Z11vr-NrgDMCKR2mXlxnlmU19cenUQ4Ypd-DKzg6B1pnVguw>
+    <xmx:V-a3X5EJXTWUhW18Fi_CV3_A4ZZOC9nvxoksvfTGaNWLe0XrjQsguw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E61953064AB3;
+        Fri, 20 Nov 2020 10:52:53 -0500 (EST)
+Date:   Fri, 20 Nov 2020 16:52:52 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Michael Klein <michael@fossekall.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: sun8i-h2-plus-bananapi-m2-zero: add
+ gpio-line-names
+Message-ID: <20201120155252.kfkavrn4wpqzmbyc@gilmour>
+References: <20201115222425.2885427-1-michael@fossekall.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="nl5t3kiqe4j3hvdu"
+Content-Disposition: inline
+In-Reply-To: <20201115222425.2885427-1-michael@fossekall.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 20 novembre 2020, 14:33:53 CET David Laight a =E9crit :
-> From: Andrew Morton
+
+--nl5t3kiqe4j3hvdu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+On Sun, Nov 15, 2020 at 11:24:25PM +0100, Michael Klein wrote:
+> Add gpio-line-names as documented in the Banana Pi wiki [1] and in the
+> schematics [2].
 >=20
-> > Sent: 20 November 2020 01:36
+> [1]: http://wiki.banana-pi.org/Banana_Pi_BPI-M2_ZERO#GPIO_PIN_define
+> [2]: https://drive.google.com/file/d/0B4PAo2nW2KfnMW5sVkxWSW9qa28/view
 >=20
-> ...
+> Signed-off-by: Michael Klein <michael@fossekall.de>
+> ---
+>  .../dts/sun8i-h2-plus-bananapi-m2-zero.dts    | 64 +++++++++++++++++++
+>  1 file changed, 64 insertions(+)
 >=20
-> > Could you please send along a reworked [0/n] cover letter?  Explain in
-> > your own words, without requiring that readers go off and read web
-> > pages
-> >=20
-> > - What problem the patchset solves
-> > - How it solves it
-> > - The value of the patchset (to kernel developers or to end-users) so t=
-hat
-> > we>=20
-> >   can understand why it should be merged.
->=20
-> - How much it slows things down.
+> diff --git a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts b/arch/=
+arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> index 4c6704e4c57e..b4ddfaf01b45 100644
+> --- a/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> +++ b/arch/arm/boot/dts/sun8i-h2-plus-bananapi-m2-zero.dts
+> @@ -136,6 +136,70 @@ bluetooth {
+> =20
+>  };
+> =20
+> +&pio {
+> +	gpio-line-names =3D
+> +		/* PA */
+> +		"UART2-TX", "UART2-RX", "UART2-RTS", "UART2-CTS",
+> +			"UART0-TXD", "UART0-RXD", "PWM1", "PA7-EINT7",
+> +		"PA8-EINT8", "PA9-EINT9", "PA10-EINT10", "TWI0-SCK",
+> +			"TWI0-SDA", "UART3-TX", "UART3-RX", "UART3-RTS",
+> +		"UART3-CTS", "PA17-EINT17", "TWI1-SCK", "TWI1-SDA",
+> +			"PA20-EINT20", "PA21-EINT21", "", "",
+> +		"", "", "", "", "", "", "", "",
 
-I will add it for the next version!
+IIRC, the point is to have the pin names that the vendor publishes.
 
-> 	David
->=20
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1
-> 1PT, UK Registration No: 1397386 (Wales)
+Looking at Documentation/devicetree/bindings/gpio/gpio.txt, it says:
 
+"""
+Optionally, a GPIO controller may have a "gpio-line-names" property. This is
+an array of strings defining the names of the GPIO lines going out of the
+GPIO controller. This name should be the most meaningful producer name
+for the system, such as a rail name indicating the usage. Package names
+such as pin name are discouraged: such lines have opaque names (since they
+are by definition generic purpose) and such names are usually not very
+helpful.
+"""
 
+In this case, from the link you gave above, I think having the CON*-P*
+names make more sense.
 
+Maxime
 
+--nl5t3kiqe4j3hvdu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX7fmVAAKCRDj7w1vZxhR
+xXU4AP4rHtsdpzFcD4BLjn5wb0mrt9+1t23Fg6bPt8E4FDyhPgD/bjrssgUM+XQI
+V2oEzJyjtAMwQ08hqEm0tQuzaZzt+gI=
+=2t/3
+-----END PGP SIGNATURE-----
+
+--nl5t3kiqe4j3hvdu--
