@@ -2,190 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EBA2BA853
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DBCE2BA860
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728395AbgKTLG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:06:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53928 "EHLO mail.kernel.org"
+        id S1728512AbgKTLHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:07:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728339AbgKTLGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:06:07 -0500
+        id S1728433AbgKTLGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:06:45 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04296206E3;
-        Fri, 20 Nov 2020 11:06:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9165A2222F;
+        Fri, 20 Nov 2020 11:06:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605870364;
-        bh=nhKPT080cM875lJQZtSiee6bjERfifBErAF3SJY+oH0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EMH0vVz9h3qCb0q/pKv1xEJYmLdmyqEpR6UyUFY5/A0wFFTYuOCbZpfp+M540TOza
-         wEjtFPIAjnmZPvG6vUzbq0KAQ7shwrvXONtaQARJ73X3TcYNzNxLwaMtBZq3HeCgPE
-         1CtGcHbx4HX2L3OYo8zr74aYWAeE/tKVvR4C6zdE=
+        s=korg; t=1605870403;
+        bh=mhwq9ZnCQPYBv6TgsKy3PVBeNOl7gK9R3k1tN5wCTzE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=C4vr5UrnVCsX0mpPKp1FlXVE0ziEyRE3BAu3+y8r+nEXFb771L9cvAxPjxkvG7lzQ
+         E2e2wx5rS7r57t+PsHkzdCU9N1khw1psbfdUi9dOpnBCabKAGVHlRIoJjnrKbJCz4Y
+         1sA/axJPqdqMyUqFtEMutfPI8lcZ1U5uemjQatvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dja@axtens.net,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 06/14] powerpc/uaccess: Evaluate macro arguments once, before user access is allowed
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 5.4 00/17] 5.4.79-rc1 review
 Date:   Fri, 20 Nov 2020 12:03:27 +0100
-Message-Id: <20201120104540.111277429@linuxfoundation.org>
+Message-Id: <20201120104541.058449969@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201120104539.806156260@linuxfoundation.org>
-References: <20201120104539.806156260@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.4.79-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.79-rc1
+X-KernelTest-Deadline: 2020-11-22T10:45+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+This is the start of the stable review cycle for the 5.4.79 release.
+There are 17 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit d02f6b7dab8228487268298ea1f21081c0b4b3eb upstream.
+Responses should be made by Sun, 22 Nov 2020 10:45:32 +0000.
+Anything received after that time might be too late.
 
-get/put_user() can be called with nontrivial arguments. fs/proc/page.c
-has a good example:
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.79-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+and the diffstat can be found below.
 
-    if (put_user(stable_page_flags(ppage), out)) {
+thanks,
 
-stable_page_flags() is quite a lot of code, including spin locks in
-the page allocator.
+greg k-h
 
-Ensure these arguments are evaluated before user access is allowed.
+-------------
+Pseudo-Shortlog of commits:
 
-This improves security by reducing code with access to userspace, but
-it also fixes a PREEMPT bug with KUAP on powerpc/64s:
-stable_page_flags() is currently called with AMR set to allow writes,
-it ends up calling spin_unlock(), which can call preempt_schedule. But
-the task switch code can not be called with AMR set (it relies on
-interrupts saving the register), so this blows up.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.4.79-rc1
 
-It's fine if the code inside allow_user_access() is preemptible,
-because a timer or IPI will save the AMR, but it's not okay to
-explicitly cause a reschedule.
+Nick Desaulniers <ndesaulniers@google.com>
+    ACPI: GED: fix -Wformat
 
-Fixes: de78a9c42a79 ("powerpc: Add a framework for Kernel Userspace Access Protection")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200407041245.600651-1-npiggin@gmail.com
-Signed-off-by: Daniel Axtens <dja@axtens.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/powerpc/include/asm/uaccess.h |   49 ++++++++++++++++++++++++++-----------
- 1 file changed, 35 insertions(+), 14 deletions(-)
+David Edmondson <david.edmondson@oracle.com>
+    KVM: x86: clflushopt should be treated as a no-op by emulation
 
---- a/arch/powerpc/include/asm/uaccess.h
-+++ b/arch/powerpc/include/asm/uaccess.h
-@@ -167,13 +167,17 @@ do {								\
- ({								\
- 	long __pu_err;						\
- 	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
-+	__typeof__(*(ptr)) __pu_val = (x);			\
-+	__typeof__(size) __pu_size = (size);			\
-+								\
- 	if (!is_kernel_addr((unsigned long)__pu_addr))		\
- 		might_fault();					\
--	__chk_user_ptr(ptr);					\
-+	__chk_user_ptr(__pu_addr);				\
- 	if (do_allow)								\
--		__put_user_size((x), __pu_addr, (size), __pu_err);		\
-+		__put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err);	\
- 	else									\
--		__put_user_size_allowed((x), __pu_addr, (size), __pu_err);	\
-+		__put_user_size_allowed(__pu_val, __pu_addr, __pu_size, __pu_err); \
-+								\
- 	__pu_err;						\
- })
- 
-@@ -181,9 +185,13 @@ do {								\
- ({									\
- 	long __pu_err = -EFAULT;					\
- 	__typeof__(*(ptr)) __user *__pu_addr = (ptr);			\
-+	__typeof__(*(ptr)) __pu_val = (x);				\
-+	__typeof__(size) __pu_size = (size);				\
-+									\
- 	might_fault();							\
--	if (access_ok(VERIFY_WRITE, __pu_addr, size))			\
--		__put_user_size((x), __pu_addr, (size), __pu_err);	\
-+	if (access_ok(VERIFY_WRITE, __pu_addr, __pu_size))			\
-+		__put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
-+									\
- 	__pu_err;							\
- })
- 
-@@ -191,8 +199,12 @@ do {								\
- ({								\
- 	long __pu_err;						\
- 	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
--	__chk_user_ptr(ptr);					\
--	__put_user_size((x), __pu_addr, (size), __pu_err);	\
-+	__typeof__(*(ptr)) __pu_val = (x);			\
-+	__typeof__(size) __pu_size = (size);			\
-+								\
-+	__chk_user_ptr(__pu_addr);				\
-+	__put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
-+								\
- 	__pu_err;						\
- })
- 
-@@ -284,15 +296,18 @@ do {								\
- 	long __gu_err;						\
- 	__long_type(*(ptr)) __gu_val;				\
- 	__typeof__(*(ptr)) __user *__gu_addr = (ptr);	\
--	__chk_user_ptr(ptr);					\
-+	__typeof__(size) __gu_size = (size);			\
-+								\
-+	__chk_user_ptr(__gu_addr);				\
- 	if (!is_kernel_addr((unsigned long)__gu_addr))		\
- 		might_fault();					\
- 	barrier_nospec();					\
- 	if (do_allow)								\
--		__get_user_size(__gu_val, __gu_addr, (size), __gu_err);		\
-+		__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err);	\
- 	else									\
--		__get_user_size_allowed(__gu_val, __gu_addr, (size), __gu_err);	\
-+		__get_user_size_allowed(__gu_val, __gu_addr, __gu_size, __gu_err); \
- 	(x) = (__typeof__(*(ptr)))__gu_val;			\
-+								\
- 	__gu_err;						\
- })
- 
-@@ -301,12 +316,15 @@ do {								\
- 	long __gu_err = -EFAULT;					\
- 	__long_type(*(ptr)) __gu_val = 0;				\
- 	__typeof__(*(ptr)) __user *__gu_addr = (ptr);		\
-+	__typeof__(size) __gu_size = (size);				\
-+									\
- 	might_fault();							\
--	if (access_ok(VERIFY_READ, __gu_addr, (size))) {		\
-+	if (access_ok(VERIFY_READ, __gu_addr, __gu_size)) {		\
- 		barrier_nospec();					\
--		__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
-+		__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err); \
- 	}								\
- 	(x) = (__force __typeof__(*(ptr)))__gu_val;				\
-+									\
- 	__gu_err;							\
- })
- 
-@@ -315,10 +333,13 @@ do {								\
- 	long __gu_err;						\
- 	__long_type(*(ptr)) __gu_val;				\
- 	__typeof__(*(ptr)) __user *__gu_addr = (ptr);	\
--	__chk_user_ptr(ptr);					\
-+	__typeof__(size) __gu_size = (size);			\
-+								\
-+	__chk_user_ptr(__gu_addr);				\
- 	barrier_nospec();					\
--	__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
-+	__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err); \
- 	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
-+								\
- 	__gu_err;						\
- })
- 
+Zhang Changzhong <zhangchangzhong@huawei.com>
+    can: proc: can_remove_proc(): silence remove_proc_entry warning
+
+Johannes Berg <johannes.berg@intel.com>
+    mac80211: always wind down STA state
+
+Dmitry Torokhov <dmitry.torokhov@gmail.com>
+    Input: sunkbd - avoid use-after-free in teardown paths
+
+Hauke Mehrtens <hauke@hauke-m.de>
+    net: lantiq: Add locking for TX DMA channel
+
+Christophe Leroy <christophe.leroy@csgroup.eu>
+    powerpc/8xx: Always fault when _PAGE_ACCESSED is not set
+
+Eran Ben Elisha <eranbe@nvidia.com>
+    net/mlx5: Add retry mechanism to the command entry index allocation
+
+Eran Ben Elisha <eranbe@mellanox.com>
+    net/mlx5: Fix a race when moving command interface to events mode
+
+Eran Ben Elisha <eranbe@mellanox.com>
+    net/mlx5: poll cmd EQ in case of command timeout
+
+Parav Pandit <parav@mellanox.com>
+    net/mlx5: Use async EQ setup cleanup helpers for multiple EQs
+
+Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+    MIPS: PCI: Fix MIPS build
+
+Daniel Axtens <dja@axtens.net>
+    selftests/powerpc: entry flush test
+
+Michael Ellerman <mpe@ellerman.id.au>
+    powerpc: Only include kup-radix.h for 64-bit Book3S
+
+Nicholas Piggin <npiggin@gmail.com>
+    powerpc/64s: flush L1D after user accesses
+
+Nicholas Piggin <npiggin@gmail.com>
+    powerpc/64s: flush L1D on kernel entry
+
+Russell Currey <ruscur@russell.cc>
+    selftests/powerpc: rfi_flush: disable entry flush if present
+
+
+-------------
+
+Diffstat:
+
+ Documentation/admin-guide/kernel-parameters.txt    |   7 +
+ Makefile                                           |   4 +-
+ arch/mips/pci/pci-xtalk-bridge.c                   |   2 +-
+ arch/powerpc/include/asm/book3s/64/kup-radix.h     |  29 ++--
+ arch/powerpc/include/asm/exception-64s.h           |  12 +-
+ arch/powerpc/include/asm/feature-fixups.h          |  19 +++
+ arch/powerpc/include/asm/kup.h                     |  27 +++-
+ arch/powerpc/include/asm/security_features.h       |   7 +
+ arch/powerpc/include/asm/setup.h                   |   4 +
+ arch/powerpc/kernel/exceptions-64s.S               |  88 +++++------
+ arch/powerpc/kernel/head_8xx.S                     |  14 +-
+ arch/powerpc/kernel/setup_64.c                     | 122 ++++++++++++++-
+ arch/powerpc/kernel/vmlinux.lds.S                  |  14 ++
+ arch/powerpc/lib/feature-fixups.c                  | 104 +++++++++++++
+ arch/powerpc/platforms/powernv/setup.c             |  17 +++
+ arch/powerpc/platforms/pseries/setup.c             |   8 +
+ arch/x86/kvm/emulate.c                             |   8 +-
+ drivers/acpi/evged.c                               |   2 +-
+ drivers/input/keyboard/sunkbd.c                    |  41 +++++-
+ drivers/net/ethernet/lantiq_xrx200.c               |   2 +
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c      | 109 ++++++++++++--
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c       | 157 +++++++++++---------
+ drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h   |   2 +
+ include/linux/mlx5/driver.h                        |   6 +
+ net/can/proc.c                                     |   6 +-
+ net/mac80211/sta_info.c                            |  18 +++
+ .../testing/selftests/powerpc/security/.gitignore  |   1 +
+ tools/testing/selftests/powerpc/security/Makefile  |   2 +-
+ .../selftests/powerpc/security/entry_flush.c       | 163 +++++++++++++++++++++
+ .../testing/selftests/powerpc/security/rfi_flush.c |  35 ++++-
+ 30 files changed, 857 insertions(+), 173 deletions(-)
 
 
