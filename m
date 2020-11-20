@@ -2,98 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499032BA8FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C592BA930
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728175AbgKTLZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:25:16 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7962 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728129AbgKTLZQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:25:16 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CcvN926DKzhdJ2;
-        Fri, 20 Nov 2020 19:24:57 +0800 (CST)
-Received: from [127.0.0.1] (10.57.60.129) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 20 Nov 2020
- 19:25:03 +0800
-Subject: Re: [PATCH] tty: serial: replace spin_lock_irqsave by spin_lock in
- hard IRQ
-To:     Johan Hovold <johan@kernel.org>, Tian Tao <tiantao6@hisilicon.com>
-CC:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
-        <afaerber@suse.de>, <manivannan.sadhasivam@linaro.org>,
-        <linux-serial@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1605776489-16283-1-git-send-email-tiantao6@hisilicon.com>
- <X7d85DKvisjA3nYv@localhost>
-From:   "tiantao (H)" <tiantao6@huawei.com>
-Message-ID: <9ce93d7b-f769-58ed-e6bf-95c34bd0123e@huawei.com>
-Date:   Fri, 20 Nov 2020 19:25:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728498AbgKTL1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:27:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37044 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728441AbgKTL1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:27:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B3735AC23;
+        Fri, 20 Nov 2020 11:26:57 +0000 (UTC)
+Subject: Re: Linux 5.10-rc4; graphics alignment
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Huang, Ray" <ray.huang@amd.com>, Dave Airlie <airlied@redhat.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+References: <2c474745ae884de3b4ecb8abe2152bfd@AcuMS.aculab.com>
+ <fa5c887e-82d8-5347-ff18-85e3628dadbe@suse.de>
+ <c01d2d95f1e64be984cff71e7bdf1c84@AcuMS.aculab.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <c9bae016-413f-0db9-c9ee-d6f39d24a6ab@suse.de>
+Date:   Fri, 20 Nov 2020 12:26:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <X7d85DKvisjA3nYv@localhost>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.57.60.129]
-X-CFilter-Loop: Reflected
+In-Reply-To: <c01d2d95f1e64be984cff71e7bdf1c84@AcuMS.aculab.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="aqEwkkoB4jBYUZOR7lsALh0407X1bAtVt"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--aqEwkkoB4jBYUZOR7lsALh0407X1bAtVt
+Content-Type: multipart/mixed; boundary="4N369hkFGXSoiqUSPeNJJx1oDml3nHKNz";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: David Laight <David.Laight@ACULAB.COM>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>, "Huang, Ray"
+ <ray.huang@amd.com>, Dave Airlie <airlied@redhat.com>,
+ =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <c9bae016-413f-0db9-c9ee-d6f39d24a6ab@suse.de>
+Subject: Re: Linux 5.10-rc4; graphics alignment
+References: <2c474745ae884de3b4ecb8abe2152bfd@AcuMS.aculab.com>
+ <fa5c887e-82d8-5347-ff18-85e3628dadbe@suse.de>
+ <c01d2d95f1e64be984cff71e7bdf1c84@AcuMS.aculab.com>
+In-Reply-To: <c01d2d95f1e64be984cff71e7bdf1c84@AcuMS.aculab.com>
 
+--4N369hkFGXSoiqUSPeNJJx1oDml3nHKNz
+Content-Type: multipart/mixed;
+ boundary="------------C2B00784E529A67056A3ECA3"
+Content-Language: en-US
 
-ÔÚ 2020/11/20 16:23, Johan Hovold Ð´µÀ:
-> On Thu, Nov 19, 2020 at 05:01:29PM +0800, Tian Tao wrote:
->> The code has been in a irq-disabled context since it is hard IRQ. There
->> is no necessity to do it again.
+This is a multi-part message in MIME format.
+--------------C2B00784E529A67056A3ECA3
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Am 20.11.20 um 11:51 schrieb David Laight:
+> From: Thomas Zimmermann
+>> Sent: 20 November 2020 10:14
+> ...
+>>> Is there any way to bisect through the parts of the
+>>> drm merge patch into v5.10-rc1 ?
+>>>
+>>> That ought to be quicker (and less error prone) than
+>>> the bisect builds I was doing.
+>>>
+>>> Note that the stack 'splat' is due to a later change.
+>>> It is separate from the broken pixel alignment.
+>>>
+>>> I actually saw the vga text go 'funny' while the boot
+>>> was outputting all the [OK] messages (from systemd?)
+>>> before the graphic login stole tty1 (bloody stupid
+>>> to use tty1).
+>>>
+>>> I don't need to use the failing system today, I'll
+>>> have another go at isolating the failure.
 >>
->> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
->> ---
->>   drivers/tty/serial/owl-uart.c | 5 ++---
->>   1 file changed, 2 insertions(+), 3 deletions(-)
+>> You can use drm-tip for testing, where many of the DRM patches go thro=
+ugh.
 >>
->> diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
->> index c149f8c3..472fdaf 100644
->> --- a/drivers/tty/serial/owl-uart.c
->> +++ b/drivers/tty/serial/owl-uart.c
->> @@ -251,10 +251,9 @@ static void owl_uart_receive_chars(struct uart_port *port)
->>   static irqreturn_t owl_uart_irq(int irq, void *dev_id)
->>   {
->>   	struct uart_port *port = dev_id;
->> -	unsigned long flags;
->>   	u32 stat;
->>   
->> -	spin_lock_irqsave(&port->lock, flags);
->> +	spin_lock(&port->lock);
-> 
-> Same thing here; this will break with forced irq threading (i.e.
-> "threadirqs") since the console code can still end up being called from
-> interrupt context.
-As the following code shows, owl_uart_irq does not run in the irq 
-threading context.
-  ret = request_irq(port->irq, owl_uart_irq, IRQF_TRIGGER_HIGH,
-                         "owl-uart", port);
-         if (ret)
-                 return ret;
+>>     https://cgit.freedesktop.org/drm/drm-tip/
+>>
+>> It's fairly up-to-date.
+>=20
+> Any idea of tags either side of the 5.10 merge?
 
-> 
->>   	stat = owl_uart_read(port, OWL_UART_STAT);
->>   
->> @@ -268,7 +267,7 @@ static irqreturn_t owl_uart_irq(int irq, void *dev_id)
->>   	stat |= OWL_UART_STAT_RIP | OWL_UART_STAT_TIP;
->>   	owl_uart_write(port, stat, OWL_UART_STAT);
->>   
->> -	spin_unlock_irqrestore(&port->lock, flags);
->> +	spin_unlock(&port->lock);
->>   
->>   	return IRQ_HANDLED;
->>   }
-> 
-> Johan
-> 
-> .
-> 
+The final commit before v5.9 appears to be
 
+   Fixes: 33c8256b3bcc ("drm/amd/display: Change ABM config init interfac=
+e")
+
+I'd try this as a good commit. For the bad commit, just try HEAD.
+
+Best regards
+Thomas
+
+>=20
+>> I have two systems with AST chips and neither shows any of the symptom=
+s
+>> you describe; nor do we have such reports about drivers that use a
+>> similar stack (hibmc, bochs). Could you provide the output of
+>>
+>>     dmesg | grep drm
+>=20
+> [    2.112303] fb0: switching to astdrmfb from EFI VGA
+> [    2.120222] ast 0000:02:00.0: [drm] Using P2A bridge for configurati=
+on
+> [    2.120233] ast 0000:02:00.0: [drm] AST 2400 detected
+> [    2.120247] ast 0000:02:00.0: [drm] Analog VGA only
+> [    2.120257] ast 0000:02:00.0: [drm] dram MCLK=3D408 Mhz type=3D1 bus=
+_width=3D16
+> [    2.121121] [drm] Initialized ast 0.1.0 20120228 for 0000:02:00.0 on=
+ minor 0
+> [    2.125838] fbcon: astdrmfb (fb0) is primary device
+> [    2.152179] ast 0000:02:00.0: [drm] fb0: astdrmfb frame buffer devic=
+e
+> [    6.061034] systemd[1]: Condition check resulted in Load Kernel Modu=
+le drm being skipped.
+>=20
+> The output is the same for both good and bad kernels.
+>=20
+> 	David
+>=20
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, M=
+K1 1PT, UK
+> Registration No: 1397386 (Wales)
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+--------------C2B00784E529A67056A3ECA3
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0x680DC11D530B7A23.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0x680DC11D530B7A23.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdgX=
+H47
+fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0BeB5B=
+bqP
+5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4YchdHm3bkPj=
+z9E
+ErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB9GluwvIhSezPg=
+nEm
+imZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEBAAHNKFRob21hcyBaa=
+W1t
+ZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmNvbT7CwI4EEwEIADgCGwMFCwkIBwIGFQoJCAsCB=
+BYC
+AwECHgECF4AWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCXvxIWAAKCRBoDcEdUwt6I+aZB/9ih=
+Onf
+G4Lgf1L87cvoXh95/bnaJ6aQhP6/ZeRleuCXflnyDajlm3c9loQr0r2bQUi7JeYwUKbBab2QS=
+GJm
+DMRGlLMnmzWB8mHmZ6bHAu+2Sth8SraE42p6BB9d8dlYEID+dl/D/xUBeulfkck5rloGtYqDi=
++1Q
+DfkEZJaxVSZ6FFkXuQi/G9qcI4iklN2nv02iQ7mZe8WYAysix6s/6vIobhirEBreclSNxXqis=
+p8n
+91+v855JC11EgRdUXMRK81IAaCKXP8zLx3ixku7mvP9Om61yerHSbeU2HZbIggZYQlFh6llJm=
+zF1
+CjCWgPTJyk4t4kMTcNOw5ykD47vU/KW+wl0EEBECAB0WIQQn6OOmnzvP/7ktjmoud6EwEfXTw=
+gUC
+WzodVwAKCRAud6EwEfXTwidvAKDkOADDHfI0QNXqAZcg6i1kOndAYACeLXHBwpjnumkPSyoab=
+IiL
++he8r3zCwHMEEAEIAB0WIQQeXZghmQijlU7YzFiqUDvJrg9HpwUCWznxsQAKCRCqUDvJrg9Hp=
+42f
+CADIvsZcAd04PDFclRltHr2huy6s7+ZZA6PgYlMblEBh4bJA+dNPBTvzpJ7FJv/bmHOa+phWy=
+Urj
+EpfFGuOKGuWAfzgVAEu52fMrW3/mm+O26z1AKIu8hiZ/x9OAe4AM71ZO2lZrV1/53ZdzWnRuO=
+45N
+GQcotU8oeVfT9okAfmozmWMmIMq7Q0K6bV8W3qiD5XfDNxjr2caxc/9WX1bZPUo3n0H23MNaA=
+Tpy
+Oz732UtDh6sKUAB1RfzBBd/REbjHD7+quwJGAdRScyDRncX1vNb2+wihy0ipA69XY3bkhR5iD=
+u5r
+A9enuiMe6J1IBMI1PZh+vOufB/M6cd2D9RULIJaJwsBzBBABCAAdFiEEuyNtt7Ge78bIRx1op=
+/N8
+GYw5MYEFAls6MrsACgkQp/N8GYw5MYEnLQf/dwqlDJVQL2q+i8FFaqTMAm0n9jLRV6pN8JxFH=
+j0g
+voyWUOnQuNdAFgtKd26ZhN8NkLoSMO8E19eBPfLoBIFK5yNNVmRHAZm07MzGbA0uNWINJhmdR=
+bZM
+RMh0nneXjcEU/IvUmd8TPFTAd24X2mbzHgcaHMLJSVx1ohd4alRJXHIqDobKmiVwekyPnInJn=
+zWw
+iuZUkIotTkQple1PT/dF3S+KtPXBL6ldQ4NkAeCjsz4wnzSa9+VKOxEhiHM0PMzXSbkCMP+4m=
+Xy9
+RMplBw9Dm9hN2PSouBPifIrSodiiSWZYXOEkzLiBAB0frCKR63Dnx9kvjCD9Pz5wLd/70rjqI=
+cLA
+jgQTAQgAOAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC=
+3oj
+BQJftODHAAoJEGgNwR1TC3ojZSIIAIV3makffp4P4leU8JSLt0aTNewsOhy7VQzKUtlCw3PKD=
+3l/
+SuymZhQKgH+n6sijzFauZnZ+x0T+Oy+dDVZb3sNJuuMUDIHw18EO9daZBMcueaS54FGe73lAp=
+HUl
+7nxyocCxoqIG8+fP+75itV/ls2TSh5rJvjLvHC8J3NqfGlJ/jlSKrQUnzFbXfE5KGWiKNAn+I=
+1a2
+EE0I7uLpYgkdb8hcjtV9Rxr2ja+GWOaSoqB29P5GUzipkWo4144Q16JBO6QP2R9y/1ZK9VqH2=
+5T8
+lTKocLAaHCEdpDqY5KI15as9tIxlI1Vh+eqhTh/gwEm1ykO1gmrQ1zvGLDMB1EE6El3NJ1Rob=
+21h
+cyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIbAwULCQgHAgYVC=
+gkI
+CwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJe/EheAAoJEGgNwR1TC3ojq=
+RgI
+AIoegtTp1prPzfHgTAuEPd8v58ssHubwi9tg69a8IJ+iMNozhs4iUou84WOLBJNjSieXHZRa8=
+fJj
+//2/sTuABn38AQ9FcKX9/B49hrdCo6c0WHHKqlPrSTzuXNKYyOdmSFd/pDhBb2Bn5DTxxH5RP=
+m/N
+U/C9nUlwi7Y+FgBlDNa5h592wmJfv0cJAfvF56C+QL65jHFOFIW9xSaTOAxxMXHGJHXki6Iwa=
+aTg
+s7QQlKQcd5XvvED1bwLyQ7rq+MEZo5N7IygpQMM3qqGMlCnDdyQ3W95rd0HCWpfa0oVRCOwdu=
+SL3
+5hG7ONqBpvBj8z5GjSbt4HLJGvpeT0k37qzRExrCXQQQEQIAHRYhBCfo46afO8//uS2Oai53o=
+TAR
+9dPCBQJbOh1XAAoJEC53oTAR9dPC05AAoIy0HQ2DBDYugQ42P4HfyxfZTIvKAJ0fqNBcBFW9S=
+tbR
+DEP9cfpNVOv8YMLAcwQQAQgAHRYhBB5dmCGZCKOVTtjMWKpQO8muD0enBQJbOfGzAAoJEKpQO=
+8mu
+D0enL0wIAM2NTeUDCofBAkbWHGTZopclefbh0xGPYQEfttNyalp0hn1CrVO7OsX5eTjRqgyOa=
+1C5
+OAsNghCM4PUmrfv5cZ9+sNn9bRM50uVW9IFRlq8wwBY4+7QejJ5gs7DW/0tZIMZ6iTGKK0WEO=
+7gd
+2K9hXadPBScTdIqXeWH82meiqElnEQL+K9UeGUBrku+1EQIOxwziKwTDlTvhyJ+xmEKj0uWRc=
+Ocl
+27xLS9XOWPGXcNQBtlZhF8e/E1kFRt5CPP5UBdUCN8qydUadseXivSNDiYob9dyJSFt7G0Bq4=
+/ac
+Ret5ANtGRWsp8xYJQRossRMWL0w9P8SiIc2IY/JrQrpz29nCwHMEEAEIAB0WIQS7I223sZ7vx=
+shH
+HWin83wZjDkxgQUCWzoywAAKCRCn83wZjDkxgQaDCACyFuBLQWNvLT8GTDqTf/gETzmtoEM6Y=
+r8O
+4jbYg05xiFzAqMZctQsm3zHakx2JrimxDvQJRQJQzp5ICJ7J/BOuSL4FE1SPeQIfjm4jyBZGH=
+P/W
+vgHsT5e3+ZCPePPZO+3irarTKVhaaP70Tpka6EsOCZzO6L8D6tUDkhxMX0ymy7p8w9Yt1eD0o=
+Ume
+mxrKdS1ulpNJUTBw7gJN8bMowVnycEm6wntxOjrCxuwbkKhFLdn0ejcXQ0UkfbUFKfU64gGBu=
+S53
+ZlM8XlOhQEIw/FrdXszhR+Tg3Ag130cmJhOrghgOBLzvJfUd6OvDT5VIz0QGbAm8SWlAIIms1=
+9Z8
+kBsLwsCOBBMBCAA4AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEEchf7rIzpz2NEoWjla=
+A3B
+HVMLeiMFAl+04McACgkQaA3BHVMLeiPHXAf/SEoZa6CKoOAs1ctEP/hN8cEQqbEiuZ+71nm3u=
+/BQ
+p/CEUvqGq+iVc8kkpClDbPz5fa9mb+yWwufsnXKOs6ygmEoAEOL7dBZZIaRobBEkB09VXIkx8=
+lE0
+00grBVtToHUGRfZcMoMZ98XhPGU6lJDN200j/2CV46hQDz6PLySecNjOME05mosbYW5N2JwFd=
+uXP
+Qx++DjWB32QLBhcOcP3WslTy3PKVe/TcTvk0JpPFMz4UFc+awBVhDgZiGGAW3xLZRYyhpoAEs=
+N7u
+XkV2ct0MRxuZ3y4tTYJobhbZwutRojiPPZduRw9CSpNDcQHruFiSOIQTpnLeCA6K2JAZyqmP/=
+87A
+TQRbOdLgAQgAxiY/gz9X5PlFjlq3+DutR02wuFa/UA9iuH1FB584Nges1EdQT16ixhtPpcyvJ=
+H2F
+PxeUY5hHApbCJAGhZIOJMyj9eLb2NSefgFd8janHYNNfBzbYsq0sCBNGM/6ptTrdjTGdA3b1Q=
+YNt
+iDLIrnUNbcfQh/Zrck2yF4AAr5dz1tqPQsYhzxP26IRYcGcIf5F2GABOdZYYp0N6BRHkGQN8O=
+Dk7
+8UhLKYkEfHYPKiSW/mDgHOSCpOrCZpjOyXxTFkq9trGrTNt6EN1ryW+EVeh00UwCBMsmUu4Ng=
+4Ys
+rYDButLdKnQARuSl0kFvjipWUablsClmi4d4n/6f7uvXb6Wp2wARAQABwsB8BBgBCAAmFiEEc=
+hf7
+rIzpz2NEoWjlaA3BHVMLeiMFAls50uACGwwFCQPCZwAACgkQaA3BHVMLeiOl9wgAifA/k6VwQ=
+qiR
+OccKINPPg6fLgacdE/Z9cBNBkIrGa7gAljaH2J/D01/ZOMJnoAy8Le2EA3SsUOPnk32XizUKl=
+oOj
+gn7R+Sse7I1pydPbToJ4lXUTs1ie3FSf4tKJGs53LCfp6uPFGL0RhNUsIdwOEESMqYVl+DgAz=
+gZk
+xZfWWDT54dt3mgvVqzbxa+8j+4hozJXxFvJei3Wv/xAuVaV1Tc2tMXmntMxTbLdkfaZ/my5Io=
+cAy
+1sTiMonxkcU6jcaEuCNWsFYcT0lc7TzEqSAP7Dq/zf6eiawS5/oLotiupj+2xm/IRfrM3wK2K=
+s90
+9a79Vc1FgCX+Vq3uVIjcfbqqscLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojB=
+QJf
+tOH6AAoJEGgNwR1TC3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6=
+Baa
+6H7ufXNQtThRyIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3=
+T0T
+trijKP4ASAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446S=
+h8W
+n/2DYa8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRai=
+tYJ
+4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9fOwU0EX7ThE=
+wEQ
+ANJiTIb/nQ+MPgIBsSfBBhmXrVFUwFveO6DWPZ0M+Y5xBJhvDukosstSgcLCdld4SFF2JnnCo=
+yh9
+boM2j2Ksd5wNzTzXlo3lEzFRAipftboviUjap0qxoRwy1hBV3Ft1/VyNwwYY7qjGVATQU7cIT=
+/zL
+gb+Sd0NPQA8r2NvpJq1MnI8nFfA2ZH4diuRtavhEBUzp63SlCYxnyxqT5AQzSQGUpsjSyh1A5=
+ezt
+j1pwxgnkX7F9ZT0lUBo6zZM6ZBq8Nkyvox46l79QoWMBm9y+/nIXy/uXdT6RaumPjBzVttGmk=
+Onm
+TlGUJyQAndAE1boib9iWCJ4kIr2ezRKjXJXGuaM1m7hSfdQYWed0j52+nW9qGSNNk1GjYXM8Z=
+SWT
+agX6O5mfbpzRgBBK/XoE9NWRNAa4V+tUX4/vqqDl0m+O4F2GYs6Eu7WLredRgwjDuMF/VCKvQ=
+fr3
+yjIt90Zi10cHQw3khdJWmSDKYgenpvsffo4x56biifOh6IxS/whf5/BAx4nx8GyX7JO0DUnUu=
+ieC
+NfEGRu8QbYBSOkO/vdm4xy7RZwdzlqN8zjCLFOCG346Bnsx3ku2lNtX6qZoajmfD4oO6N0Xds=
+2pE
+wjufCfJW9sCLdBmqLD5OvsRljyv7vt5w28XSF1tyhQaxIs+8sFJtwfCliduffq56FcFrEXCxs=
+LQr
+ABEBAAHCwqwEGAEIACAWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCX7ThEwIbAgJACRBoDcEdU=
+wt6
+I8F0IAQZAQgAHRYhBMZ3Zv36bjFHcGBRaJYfxNxEKL/gBQJftOETAAoJEJYfxNxEKL/gkygQA=
+LQH
+pXm45ZfMCDx7u/d7rRH/R7EfEV5OAoS981IkzbTgrb9z6YYfhQqH+R2ImgoX/Lou7zSjyd22/=
+IaZ
+AnTKHKkXIFIM1uB144dqAi3tW/Bei/CSdiD7DY1q92Ebl6e+Gpf3TZdATSY00fVeLMNFnjbbz=
+CVX
+9+LEKYARNm7kYogVJMc5CuVmXBn9FFF3cioRvpuals8llsFc4WiUBJfDfOzjXExqv3OMtJj0s=
+qlK
+sXdnLkXbtAmEvFaxqUuO1ZwTCTGflrn/g4C8Cg0ifk0wZGgGYRindkJE1vOQZPaDI7GtNxJ+D=
+sx4
+fL/8tf7Wuk3TZ6t/ofKhjq8sUVCVhnlyd/3ujruDu/PhwwYBsHjNn+PmHeCCRJuOWwKapdfjH=
+9nt
+sHXTvyXBB2D3H7Oj7S/HOTXRNTUWhaxICKtq+XDSuJKOv7CNevkjMF4ybQDsrUxnaWd76YqNP=
+vZv
+PYoTqKzKukifjGXMsxC6HU4K2GscpvoaIk7glaD+NYi3fIGi/gR0UNc6cmXtOrYKSnCsNOwcO=
+CJL
+DjEr6YdbdAXO2wxCLqnupo8JRJgA8hjjHM5OoTGEyP/c+DKDqFO90YilX1XN8xchHrw+bDv0E=
+Zm0
+RZpVdL7WNr7qQE4UhDfuyo4Gis4Z+npzoOL4g3yaQQfK32zZD9iqk9152b7ny2Ke5oFIF5SSa=
+EwH
+/2tLNBevzgzWuEB6FtqoMT5RjDyx+xBeImRlhnP0EenRh+EP0nmLCAaFiP4tTp1bX54SyByp8=
+wcN
+7F2+v2Sgdd64w1pdrjT74Zf1xj0NTxEdt5jEaPfl5Vjv3cXiB8ACwPkMIXmkJx3uaGJynl4Os=
+irb
+nzzviEzvDVpLAxL7Qr6imlKUh92iAoz+XxEDqgMZnJJOTDFdDxEBhv911VzlRraDNdxw4MHMm=
+5Nr
+5pj4HGYh3PigzNo0KIreB50YqhGOesaC4Q75gv8mLc2Ec5dEq79BVMUOaCmYDShBN9j6JovNs=
+WSR
+5YP3tXi+jZ+VnyKLft9wo1fh1oYadFEVSHgGsEY=3D
+=3DfoRs
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------C2B00784E529A67056A3ECA3--
+
+--4N369hkFGXSoiqUSPeNJJx1oDml3nHKNz--
+
+--aqEwkkoB4jBYUZOR7lsALh0407X1bAtVt
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl+3qAAFAwAAAAAACgkQlh/E3EQov+Dk
+AQ/9FANZ9kpdVdCep+2ncIruyIiEZq42L+Me5ny/mgjEG0sXJjrWM9B4Ked4Ej7JmNOSIbXWV+4W
+Qsfg+m4BzXTRhlKotCULWQmio4OTNTM3QWjqVdJraStCi/1MIZ72ebcuyEeGzH6XCk8koa+4UvxI
+xGuA7ownyxtLGGVcIOO82iXyrlZT5sLxqnx1JgRgrfdyWfKMeQJdQtj0lFqnXHJ5Rkfs6b/bIMNi
+OWdLOpULiGw03l4Xkt4I5m4cwdO6CQpY9w9ohaRMmu+gUbo3saL/yBX3JTfOSZUm72JBwYoqMgv/
+DGh9Ou9DcD10ckoJhBc0B8/MOkazLIvWRKfWYDyub9xgqrRGoQAYNrshwx+TbyTbRNJrfuvFnvmS
+lebcM1c8U2y7FygA5t6JGZIM3IFNGd2mcTd5Q0girUCUTtMbkMpNfNQ1taM07o+tH/f4M1C5rd32
+wufJcvkhx5U9V4+ci6gkcmMHgsnNEDPqNpnxTZxVyzoSdpDSpe5f4e8uxz9X81lyE4DG820gQ6Ma
+QtTSx5Npk5qBKPu0bGtZF4hdp1pfaCtO3vQzhsU5mybC54VtjaqTg9q4h47K2c7SMO4GzhOF5u4C
+y62DAqE2jDSBQtG6Ak1RHDW9r46SGpoxrpBRQ8tS+Vx70n+ntWvhk83NaOz4rccplaW0TixHgkIV
+AOU=
+=zRZD
+-----END PGP SIGNATURE-----
+
+--aqEwkkoB4jBYUZOR7lsALh0407X1bAtVt--
