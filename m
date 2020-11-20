@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4B62BB529
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0D22BB53A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgKTTXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:23:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725805AbgKTTXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:23:45 -0500
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BA2D22254;
-        Fri, 20 Nov 2020 19:23:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605900224;
-        bh=6utPp8y2IfYmogUP7teaB/ARZBuClgZZ+lpoxaOZ1Tw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HdzUkH8aXfOx06ArXihJtVhMjRyBFPYN5WiUGxcu+uPOQwa+qRego7DIDxlrJpc3z
-         OnrL5XHCOB41fkEHRIq3W14m0i86yIC+Tb33nzfNVX3cDP5OLf1l/SGmMjmtrmKjd/
-         j6GJmogIJy3tnclRF3JshyrxKDgf52CK8xvmW8wU=
-Received: by mail-oi1-f169.google.com with SMTP id a130so3538242oif.7;
-        Fri, 20 Nov 2020 11:23:44 -0800 (PST)
-X-Gm-Message-State: AOAM531F5d/sd2XemslXtgynMkG062nPnvri8ssuerARqx3JvwRFmShL
-        aEbv4nYPEarRmvrXCwCxmSZpjPFObNJB4YFib0Q=
-X-Google-Smtp-Source: ABdhPJy3M4r4RIwLPKw4jM9j70Gq7pe8ELR64/eLX4GDAY/+QnF48WsYtKd8QomkWGuoX98DlbImVcer5fOZAV1UTlk=
-X-Received: by 2002:aca:180a:: with SMTP id h10mr7112996oih.4.1605900223419;
- Fri, 20 Nov 2020 11:23:43 -0800 (PST)
+        id S1732339AbgKTTZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:25:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732125AbgKTTZm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 14:25:42 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3208C0613CF;
+        Fri, 20 Nov 2020 11:25:42 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id v202so8505840oia.9;
+        Fri, 20 Nov 2020 11:25:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aTAufQ4Bma92aLC+9C3RuWuBMCw2ydbQLMQwQOeoh60=;
+        b=ggN2zpRiLcBcHenNDcik0CyDHlBuEGq3AxPp5EwOJOiagrgvndemkHHQw22add85W3
+         GgCtP6kfgS5y3RhzO7tnAr+W0V90IlEFn7ostRBqXebuyL8QY28lU32EAJmsx5Elm4H8
+         1RMxZI0dCbCMtfrff6aizhCb51pMPsUgFQ1aTS7EN5jqjIcDBCp/pORTguBNynqtlxMm
+         0x+SeOB3r7Iurew3/nQIYi0IY6jcS4zASOZVBKkoOy+p5tnFmTzHaCqa42PsH6F9IWs3
+         csZXVX8YPjtreCX+qkX90AqjaE3nBHS1ZOa5QMszceSrCFRoRdJsdn8u+b75V2WDNbiC
+         uBTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aTAufQ4Bma92aLC+9C3RuWuBMCw2ydbQLMQwQOeoh60=;
+        b=FBsjTUGM7Z0xLE1nNd8Nqfov1JqsOPk/0tZV46CVPi2mnNsOGgIZGZNNcVQACrBrGp
+         pJHwUMDJvCIYl1LR7/EoFYXZch1BFx/ES9sdgsbq9zqhKbTTnnFV1CYhIH6WCM0y5Wo7
+         s77aH5uhqFba8NPDISHO1rfyBXaEbF2IMpwZl7gJV6u7xwPXTdABUxnhfCGxDjhNOeVy
+         rskohzSsg3t/KfL7hObzmXig/58L/DN9tPmDtcqXh2v+PFvKuud1TKhvWrLlT1KzFxR2
+         WkRWyckBDwTZQIftRhq1S0/QH9p/xgbZtMFyghUDK84qCbXyYk2T4FmCJulJezKhkpci
+         hFvw==
+X-Gm-Message-State: AOAM531XPiGOAEfpmoiAeNZiQbe9SA9I13wBlbKdJcn6IHgGINf/ymmg
+        CMYlkuomzUpkjisS2f6eILSDRPWzklb7wg==
+X-Google-Smtp-Source: ABdhPJy7OIKUfpdGLvaD8t11c9aeGnHIGQio21epQrxLYHpxQroYfvLcbt9KXSXVr93jLryv+JAwxQ==
+X-Received: by 2002:a05:6808:3da:: with SMTP id o26mr7475924oie.80.1605900341929;
+        Fri, 20 Nov 2020 11:25:41 -0800 (PST)
+Received: from proxmox.local.lan (2603-80a0-0e01-cc2f-0226-b9ff-fe41-ba6b.res6.spectrum.com. [2603:80a0:e01:cc2f:226:b9ff:fe41:ba6b])
+        by smtp.googlemail.com with ESMTPSA id o28sm1271562oie.3.2020.11.20.11.25.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 11:25:41 -0800 (PST)
+From:   Tom Seewald <tseewald@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ayush.sawal@chelsio.com, rajur@chelsio.com,
+        Tom Seewald <tseewald@gmail.com>
+Subject: [PATCH] cxgb4: Fix build failure when CONFIG_TLS=m
+Date:   Fri, 20 Nov 2020 13:25:28 -0600
+Message-Id: <20201120192528.615-1-tseewald@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201120073502.4beeb482@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+References: <20201120073502.4beeb482@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 MIME-Version: 1.0
-References: <20201118144617.986860-1-willemdebruijn.kernel@gmail.com>
- <20201118144617.986860-2-willemdebruijn.kernel@gmail.com> <20201118150041.GF29991@casper.infradead.org>
- <CA+FuTSdxNBvNMy341EHeiKOWZ19H++aw-tfr6Fx1mFmbg-z4zQ@mail.gmail.com>
- <CAK8P3a0t02o77+8QNZwXF2k1pY3Xrm5bydv8Vx1TW060P7BKqA@mail.gmail.com>
- <893e8ed21e544d048bff7933013332a0@AcuMS.aculab.com> <CAF=yD-+arBFuZCU3UDx0XKmUGaEz8P1EaDLPK0YFCz82MdwBcg@mail.gmail.com>
- <20201119143131.GG29991@casper.infradead.org> <CAK8P3a1SwQ=L_qA1BmeAt=Xc-Q9Mv4V+J5LFLB5R6rMDST8UiA@mail.gmail.com>
- <CAF=yD-Kd-6f9wAYLD=dP1pk4qncWim424Fu6Hgj=ZrnUtEPORA@mail.gmail.com>
- <CAK8P3a21JRFUJrz1+TYWcVL8s4uSfeSFyoMkGsqUPbV+F=r_yw@mail.gmail.com> <CAF=yD-Lzu9j6T4ubRjawF-EKOC3pkQTkpigg=PugWwybY-1ZyQ@mail.gmail.com>
-In-Reply-To: <CAF=yD-Lzu9j6T4ubRjawF-EKOC3pkQTkpigg=PugWwybY-1ZyQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 20 Nov 2020 20:23:27 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1cJf7+b5HCmFiLq+FdM+D+37rHYaftRgRYbhTyjwR6wg@mail.gmail.com>
-Message-ID: <CAK8P3a1cJf7+b5HCmFiLq+FdM+D+37rHYaftRgRYbhTyjwR6wg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] epoll: add nsec timeout support with epoll_pwait2
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 5:01 PM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> On Fri, Nov 20, 2020 at 3:13 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > On Thu, Nov 19, 2020 at 9:13 PM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> > > On Thu, Nov 19, 2020 at 10:45 AM Arnd Bergmann <arnd@kernel.org> wrote:
+After commit 9d2e5e9eeb59 ("cxgb4/ch_ktls: decrypted bit is not enough")
+whenever CONFIG_TLS=m and CONFIG_CHELSIO_T4=y, the following build
+failure occurs:
 
-> Thanks for the suggestion.
->
-> I do have an initial patchset. As expected, it does involve quite a
-> bit of code churn to pass slack through the callers. I'll take a look
-> at your suggestion to simplify it.
->
-> As is, the patchset is not ready to send to the list for possible
-> merge. In the meantime, I did push the patchset to github at
-> https://github.com/wdebruij/linux/commits/epoll-nstimeo-1 . I can send
-> a version marked RFC to the list if that's easier.
+ld: drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.o: in function
+`cxgb_select_queue':
+cxgb4_main.c:(.text+0x2dac): undefined reference to `tls_validate_xmit_skb'
 
-Looks all good to me, just two small things I noticed that you can
-address before sending the new series:
+Fix this by ensuring that if TLS is set to be a module, CHELSIO_T4 will
+also be compiled as a module. As otherwise the cxgb4 driver will not be
+able to access TLS' symbols.
 
-* The div_u64_rem() in ep_timeout_to_timespec() looks wrong, as
-  you are actually dividing a 'long' that does not need it.
+Fixes: 9d2e5e9eeb59 ("cxgb4/ch_ktls: decrypted bit is not enough")
+Signed-off-by: Tom Seewald <tseewald@gmail.com>
+---
+ drivers/net/ethernet/chelsio/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-* In "epoll: wire up syscall epoll_pwait2", the alpha syscall has the
-wrong number, it
-   should be 110 higher than the others, not 109.
+diff --git a/drivers/net/ethernet/chelsio/Kconfig b/drivers/net/ethernet/chelsio/Kconfig
+index 87cc0ef68b31..8ba0e08e5e64 100644
+--- a/drivers/net/ethernet/chelsio/Kconfig
++++ b/drivers/net/ethernet/chelsio/Kconfig
+@@ -68,7 +68,7 @@ config CHELSIO_T3
+ 
+ config CHELSIO_T4
+ 	tristate "Chelsio Communications T4/T5/T6 Ethernet support"
+-	depends on PCI && (IPV6 || IPV6=n)
++	depends on PCI && (IPV6 || IPV6=n) && (TLS || TLS=n)
+ 	select FW_LOADER
+ 	select MDIO
+ 	select ZLIB_DEFLATE
+-- 
+2.20.1
 
-> Btw, the other change, to convert epoll implementation to timespec64
-> before adding the syscall, equally adds some code churn compared to
-> patch v3. But perhaps the end state is cleaner and more consistent.
-
-Right, that's what I meant. If it causes too much churn, don't worry
-about it it.
-
-       Arndd
