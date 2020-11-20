@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003F12BA458
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58FA2BA45E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgKTIJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:09:24 -0500
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:40746 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgKTIJY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:09:24 -0500
-Received: by mail-oo1-f65.google.com with SMTP id t142so2024320oot.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 00:09:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=InNbA7CRjLYtLhlk26DHO/uIWWNOi+DN6zjuKNiE/Ks=;
-        b=QmDATsJ95zDrnlMT7cKf3ewGAsErRNMOOgNiYtjzuLG0mA1FnWMzeV0NAmcBOIhEi/
-         zF/T8FddAc8KJal6z6kMFr8U8HmJn+9RcmPtYJApa8GuQ8d2EsG5XphB8GcFa2CsgU/v
-         O5mwt66vzzmCrhbBbHY8gISmY5M/lrZx3Cu8TbGbyoA+EYjaUqR6fYx1F5IVjXZB91ex
-         z5tEqfw64Z1i3DzpaQhW4ryZQdBtwsLlVxb/4SnUc1k87NV8xOSZMmWB0by9++1nFX6X
-         +vX49J90iBhNcPNQ0+2CGyO+p+diyIOu2V0KL2MofiN2JTNbpR4dR4MI4M8FjYlqcZtq
-         Ioiw==
-X-Gm-Message-State: AOAM531WJmpfsvHaNO75zYS31lYhtjwTmbiArjADTxuiiExJ/shOkyQa
-        PbUMYrJeLdksM3VUI6ymvwAQ88mP6M1hrE8MQjkAcQo7Qoo=
-X-Google-Smtp-Source: ABdhPJxGwm7/S5ctN8aQPOK7rG35tOPLhSt3z2MThLsdzZA1IkYeZDNG+QHEOYf8XzjUIIBm2N3HdRGurzA1HWWneiU=
-X-Received: by 2002:a4a:e5ce:: with SMTP id r14mr13347126oov.11.1605859762129;
- Fri, 20 Nov 2020 00:09:22 -0800 (PST)
+        id S1727028AbgKTIL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:11:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59024 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725942AbgKTILZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:11:25 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605859884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=POm2upnSpy8lgJ9BozivrNRInBH5i4/oOnz1KLQ0wVs=;
+        b=PzJ3jlLWTN2U/kyBTyLSPcBdx1xw2KXRrDbXt6VoCLIpeyoxr02RjaSrVnquca5Hzcf+Rk
+        Uno/i0l38a9XVd31/wRMsOY7MLATJC+fb0nwhT7t/aSdrc6wjPgeMVYBpmJqXXz0dI9yuy
+        mCfK4/e04gdHAH0UFpztAkkGR2imKvo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 204F7AB3D;
+        Fri, 20 Nov 2020 08:11:24 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 09:11:23 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, song.bao.hua@hisilicon.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 11/21] mm/hugetlb: Allocate the vmemmap pages
+ associated with each hugetlb page
+Message-ID: <20201120081123.GC3200@dhcp22.suse.cz>
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-12-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <1605852474-23446-1-git-send-email-tangyouling@loongson.cn>
-In-Reply-To: <1605852474-23446-1-git-send-email-tangyouling@loongson.cn>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 20 Nov 2020 09:09:11 +0100
-Message-ID: <CAMuHMdUq4ghBczAXOb8pdVc5=Uv5kUDmBdKW0O4VCkeQ7pBnuQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] m68k: Drop redundant NOTES in link script
-To:     Youling Tang <tangyouling@loongson.cn>
-Cc:     Sam Creasey <sammy@sammy.net>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120064325.34492-12-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 7:08 AM Youling Tang <tangyouling@loongson.cn> wrote:
-> Commit eaf937075c9a ("vmlinux.lds.h: Move NOTES into RO_DATA") after
-> should remove redundant NOTES.
->
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+On Fri 20-11-20 14:43:15, Muchun Song wrote:
+[...]
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index eda7e3a0b67c..361c4174e222 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -117,6 +117,8 @@
+>  #define RESERVE_VMEMMAP_NR		2U
+>  #define RESERVE_VMEMMAP_SIZE		(RESERVE_VMEMMAP_NR << PAGE_SHIFT)
+>  #define TAIL_PAGE_REUSE			-1
+> +#define GFP_VMEMMAP_PAGE		\
+> +	(GFP_KERNEL | __GFP_NOFAIL | __GFP_MEMALLOC)
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.11 branch.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+This is really dangerous! __GFP_MEMALLOC would allow a complete memory
+depletion. I am not even sure triggering the OOM killer is a reasonable
+behavior. It is just unexpected that shrinking a hugetlb pool can have
+destructive side effects. I believe it would be more reasonable to
+simply refuse to shrink the pool if we cannot free those pages up. This
+sucks as well but it isn't destructive at least.
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Michal Hocko
+SUSE Labs
