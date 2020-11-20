@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862882BA570
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB012BA574
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgKTJGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:06:00 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7713 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgKTJF7 (ORCPT
+        id S1727120AbgKTJGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:06:35 -0500
+Received: from outbound-smtp07.blacknight.com ([46.22.139.12]:54223 "EHLO
+        outbound-smtp07.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725789AbgKTJGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:05:59 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CcrHH06xVzkcQN;
-        Fri, 20 Nov 2020 17:05:31 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 20 Nov 2020 17:05:00 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <mpm@selenic.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
-        Weili Qian <qianweili@huawei.com>
-Subject: [PATCH 4/4] MAINTAINERS: Move HiSilicon TRNG V2 driver
-Date:   Fri, 20 Nov 2020 17:02:34 +0800
-Message-ID: <1605862954-38300-4-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1605862954-38300-1-git-send-email-qianweili@huawei.com>
-References: <1605862954-38300-1-git-send-email-qianweili@huawei.com>
+        Fri, 20 Nov 2020 04:06:34 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp07.blacknight.com (Postfix) with ESMTPS id 2CF9D1C404D
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 09:06:32 +0000 (GMT)
+Received: (qmail 11172 invoked from network); 20 Nov 2020 09:06:32 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 20 Nov 2020 09:06:31 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH v3 0/4] Revisit NUMA imbalance tolerance and fork balancing
+Date:   Fri, 20 Nov 2020 09:06:26 +0000
+Message-Id: <20201120090630.3286-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move HiSilicon TRNG V2 driver into 'drivers/crypto/hisilicon/trng'
-with some updating on 'MAINTAINERS'.
+Changelog since v2
+o Build fix for !NUMA_BALANCING configurations
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
-Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changelog since v1
+o Split out patch that moves imbalance calculation
+o Strongly connect fork imbalance considerations with adjust_numa_imbalance
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e73636b..a835a74 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7999,7 +7999,7 @@ F:	drivers/staging/hikey9xx/
- HISILICON TRUE RANDOM NUMBER GENERATOR V2 SUPPORT
- M:	Zaibo Xu <xuzaibo@huawei.com>
- S:	Maintained
--F:	drivers/char/hw_random/hisi-trng-v2.c
-+F:	drivers/crypto/hisilicon/trng/trng.c
- 
- HISILICON V3XX SPI NOR FLASH Controller Driver
- M:	John Garry <john.garry@huawei.com>
+When NUMA and CPU balancing were reconciled, there was an attempt to allow
+a degree of imbalance but it caused more problems than it solved. Instead,
+imbalance was only allowed with an almost idle NUMA domain. A lot of the
+problems have since been addressed so it's time for a revisit. There is
+also an issue with how fork is balanced across threads. It's mentioned
+in this context as patch 3 and 4 should share similar behaviour in terms
+of a nodes utilisation.
+
+Patch 1 is just a cosmetic rename
+
+Patch 2 moves an imbalance calculation. It is both a micro-optimisation
+	and avoids confusing what imbalance means for different group
+	types.
+
+Patch 3 allows a "floating" imbalance to exist so communicating tasks can
+	remain on the same domain until utilisation is higher. It aims
+	to balance compute availability with memory bandwidth.
+
+Patch 4 is the interesting one. Currently fork can allow a NUMA node
+	to be completely utilised as long as there are idle CPUs until
+	the load balancer gets involved. This caused serious problems
+	with a real workload that unfortunately I cannot share many
+	details about but there is a proxy reproducer.
+
 -- 
-2.8.1
+2.26.2
+
+Mel Gorman (4):
+  sched/numa: Rename nr_running and break out the magic number
+  sched: Avoid unnecessary calculation of load imbalance at clone time
+  sched/numa: Allow a floating imbalance between NUMA nodes
+  sched: Limit the amount of NUMA imbalance that can exist at fork time
+
+ kernel/sched/fair.c | 44 +++++++++++++++++++++++++++++++-------------
+ 1 file changed, 31 insertions(+), 13 deletions(-)
+
+-- 
+2.26.2
 
