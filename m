@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BE92BB423
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB722BB424
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731137AbgKTSlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:41:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58832 "EHLO mail.kernel.org"
+        id S1731688AbgKTSlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:41:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731670AbgKTSkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:40:53 -0500
+        id S1731658AbgKTSkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:40:55 -0500
 Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C64FD2467D;
-        Fri, 20 Nov 2020 18:40:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B04424655;
+        Fri, 20 Nov 2020 18:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605897649;
-        bh=b9FdqbhetGxlSrLNwiAqLkeUTdEkk4mAKgqcmtTsp+U=;
+        s=default; t=1605897654;
+        bh=PZVaIjk40l4bncqdoGs4NhN5bCd08ySW8uH6LdCAoTw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hrmt+c+r6d/bWt+4ljBbSgqtFgarptX12kO+U2fLRv5VtqpaFFiUvoqLobkrL44vb
-         YzASrHzjRkeEDxzxAjUDereBGScx1uBnMz/YCJDvmwUPgBPkS2EvsTCQpisizSL5Lh
-         KeRWZ32/JPMy2/BEohFcbSIzB6HdVvQS5AJDIFaw=
-Date:   Fri, 20 Nov 2020 12:40:55 -0600
+        b=f/i9w9Dj5WbgbDNIZXrlTq5LE4Ig2xpAhPsZMTOz7vPCTZKtEz4K2FZyJNHJlKMF4
+         1LB9eYYINopT0xnLSyxmMz+B+iciOM0V/2Vcbvy2OwblwScQ/GYKBsIRl/GE8XZd7u
+         dzSl7Tbdwq8fW/yaX55cpt3xP+DVAlc9UKykKZPg=
+Date:   Fri, 20 Nov 2020 12:41:00 -0600
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+To:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-hardening@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 138/141] xen/manage: Fix fall-through warnings for Clang
-Message-ID: <5cfc00b1d8ed68eb2c2b6317806a0aa7e57d27f1.1605896060.git.gustavoars@kernel.org>
+Subject: [PATCH 139/141] xfrm: Fix fall-through warnings for Clang
+Message-ID: <ddfa06633ac050d96303cc6455b2cf6d4a09b818.1605896060.git.gustavoars@kernel.org>
 References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -50,21 +51,21 @@ through to the next case.
 Link: https://github.com/KSPP/linux/issues/115
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/xen/manage.c | 1 +
+ net/xfrm/xfrm_interface.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/xen/manage.c b/drivers/xen/manage.c
-index cd046684e0d1..374d36de7f5a 100644
---- a/drivers/xen/manage.c
-+++ b/drivers/xen/manage.c
-@@ -179,6 +179,7 @@ static int poweroff_nb(struct notifier_block *cb, unsigned long code, void *unus
- 	case SYS_HALT:
- 	case SYS_POWER_OFF:
- 		shutting_down = SHUTDOWN_POWEROFF;
+diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
+index 9b8e292a7c6a..8ea705df8e3c 100644
+--- a/net/xfrm/xfrm_interface.c
++++ b/net/xfrm/xfrm_interface.c
+@@ -433,6 +433,7 @@ static int xfrmi4_err(struct sk_buff *skb, u32 info)
+ 	case ICMP_DEST_UNREACH:
+ 		if (icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
+ 			return 0;
 +		break;
- 	default:
+ 	case ICMP_REDIRECT:
  		break;
- 	}
+ 	default:
 -- 
 2.27.0
 
