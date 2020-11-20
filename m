@@ -2,103 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A609B2BAC22
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE232BAC2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgKTOpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 09:45:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40972 "EHLO mail.kernel.org"
+        id S1727241AbgKTOuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 09:50:37 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:41362 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727901AbgKTOpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:45:51 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B2B22224C;
-        Fri, 20 Nov 2020 14:45:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605883551;
-        bh=iQt6TxOK2VvdxwLtKZByq7REWXrtsi+MSfT+A8mHwf8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EsniAHv5LbxsNcQjYNefizo0sY/5aR4Q6OCmGHnY9Y4jRV7HDKC0ci/Tf8ZQsrVSy
-         Hu7QcuWWGakMg0oBL7Cxz/CkHc4CnGDauckWE8mQHwg8pRHyyCcOWOZ4UOsSbRwmK+
-         7uFREZ9IYSgLIHRfSd+3hbBo65U+QpDwMtaHebjM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C57CC3522A6E; Fri, 20 Nov 2020 06:45:50 -0800 (PST)
-Date:   Fri, 20 Nov 2020 06:45:50 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     "Zhang, Qiang" <qiang.zhang@windriver.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH] rcu: kasan: record and print kvfree_call_rcu call stack
-Message-ID: <20201120144550.GA8216@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201118035309.19144-1-qiang.zhang@windriver.com>
- <20201119214934.GC1437@paulmck-ThinkPad-P72>
- <CACT4Y+bas5xfc-+W+wkpbx6Lw=9dsKv=ha83=hs1pytjfK+drg@mail.gmail.com>
- <20201120143440.GF1437@paulmck-ThinkPad-P72>
+        id S1726490AbgKTOug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 09:50:36 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kg7k2-0087lL-LC; Fri, 20 Nov 2020 15:50:26 +0100
+Date:   Fri, 20 Nov 2020 15:50:26 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Joe Perches <joe@perches.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mdio_bus: suppress err message for reset gpio
+ EPROBE_DEFER
+Message-ID: <20201120145026.GM1853236@lunn.ch>
+References: <20201119203446.20857-1-grygorii.strashko@ti.com>
+ <1a59fbe1-6a5d-81a3-4a86-fa3b5dbfdf8e@gmail.com>
+ <cabad89e-23cc-18b3-8306-e5ef1ee4bfa6@ti.com>
+ <44a3c8c0-9dbd-4059-bde8-98486dde269f@gmail.com>
+ <20201119214139.GL1853236@lunn.ch>
+ <221941d6-2bb1-9be8-7031-08071a509542@gmail.com>
+ <20201119212122.665d5396@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <f722b8c425fb78f2434b4e66bbe4fbd69165903e.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120143440.GF1437@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <f722b8c425fb78f2434b4e66bbe4fbd69165903e.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 06:34:40AM -0800, Paul E. McKenney wrote:
-> On Fri, Nov 20, 2020 at 09:51:15AM +0100, Dmitry Vyukov wrote:
-> > On Thu, Nov 19, 2020 at 10:49 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Wed, Nov 18, 2020 at 11:53:09AM +0800, qiang.zhang@windriver.com wrote:
-> > > > From: Zqiang <qiang.zhang@windriver.com>
-> > > >
-> > > > Add kasan_record_aux_stack function for kvfree_call_rcu function to
-> > > > record call stacks.
-> > > >
-> > > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> > >
-> > > Thank you, but this does not apply on the "dev" branch of the -rcu tree.
-> > > See file:///home/git/kernel.org/rcutodo.html for more info.
-> > >
-> > > Adding others on CC who might have feedback on the general approach.
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > > ---
-> > > >  kernel/rcu/tree.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index da3414522285..a252b2f0208d 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -3506,7 +3506,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > >               success = true;
-> > > >               goto unlock_return;
-> > > >       }
-> > > > -
-> > > > +     kasan_record_aux_stack(ptr);
-> > > >       success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
-> > > >       if (!success) {
-> > > >               run_page_cache_worker(krcp);
-> > 
-> > kvfree_call_rcu is intended to free objects, right? If so this is:
+Hi Joe
+
+> reverse xmas tree is completely crazy.
 > 
-> True, but mightn't there still be RCU readers referencing this object for
-> some time, as in up to the point that the RCU grace period ends?  If so,
-> won't adding this cause KASAN to incorrectly complain about those readers?
+> But I posted a patch to checkpatch to suggest it for net/
+> and drivers/net/ once
 > 
-> Or am I missing something here?
+> https://lkml.org/lkml/2016/11/4/54
+ 
 
-For example, is kasan_record_aux_stack() -only- recording the stack and
-not at all updating the allocated/freed state?
+> From Joe Perches <> 
+>
+...
 
-						Thanx, Paul
+> and the reverse xmas tree helpfulness of looking up the
+> type of bar is neither obvious nor easy.
+>
+> My preference would be for a bar that serves coffee and alcohol.
 
-> > Acked-by: Dmitry Vyukov <dvyukov@google.com>
+Ah, those were the days.
+
+Anyway, can this patch be brought back to life, with the problem
+pointed out fixed? It is still something we do in netdev, and a
+machine can spot these problems better than a human maintainer or
+developer.
+
+Thanks
+	Andrew
