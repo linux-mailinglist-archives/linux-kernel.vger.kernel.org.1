@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2AB2BAA3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A7B2BAA3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728225AbgKTMeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:34:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728090AbgKTMeK (ORCPT
+        id S1728214AbgKTMeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:34:19 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:40374 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728081AbgKTMeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:34:10 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52C3C0613CF;
-        Fri, 20 Nov 2020 04:34:09 -0800 (PST)
-Date:   Fri, 20 Nov 2020 12:34:07 -0000
+        Fri, 20 Nov 2020 07:34:11 -0500
+Date:   Fri, 20 Nov 2020 12:34:08 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1605875648;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nF1HoHSFVRBWBfN9j0IUyFvGWYJKtElnQpu9GuQFIOc=;
-        b=KCiy5na6jL2sm2kwHp6ZO2iNXA6eoXuog1roMvs5iD+IOkeaeAMBChdvjc1dQISZxLGsBx
-        kdmx8NVh9WSlaVGvD9NbzxGCkfDdYyRYjPKQtWwYt1JBay2K4xraT+FEhKoxJezVmx+x0y
-        LqCm4MebiIA7hsZ+btiBQh/52sJsXHf64yg+X+Q9mz13su4XFS69AVXrre1kYgDfzkeYFk
-        S6djURgw/OlcVd7NRdAxr6R4JE9UXzILuURvTvb0So60xwwLgrGmBDxNkYSK58iZYcWy0w
-        6ndloJO0izm9MRQQEBCZHjqJJ4jAb/g5yg8bvraDOqwdrj3gl8w4DPf7gr3bYQ==
+        bh=/R3Nv8geTEWe7XJre62KWCxkOkvWaUKucxnms62BpTg=;
+        b=AOfdJV4Szz0UyZvg7fpIkFAUkO9eF1Aa11QWfsJtqQ4AoOIZI9ZfZ3v8rBWLa8r7DUBD4M
+        FCwXknNN9wFtQSjumMsWNyBccT8jKCqYJC4c6dG40PwyMQU24pJODlxLvV/LY4cDZ5IZQX
+        Yblt1p810j4m821FLlU1Pxrjo6y5YTPIvb8X45MHuY33gzpwuqQeqieJfhV0doil2M6ifb
+        1955v+JT1yZg73uYudzwe5g/cKspXvpFeeAzvrOen7W5bWK0iLpvk9Ti+irQeWiLuQwHT5
+        ldZshwXpxlujrlLub32MY9frkVU5Y7Z0m4fR2UqIrhtl0cTj8atC9oaxxHhnkA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1605875648;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,23 +33,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nF1HoHSFVRBWBfN9j0IUyFvGWYJKtElnQpu9GuQFIOc=;
-        b=XgIJzKKB36vOofjC01WBr8REApV3Afx1cuNStpjzPNvO7AtSQtks/XVi+MS7pf4MdsJfqc
-        sjCU4n06Hd6nsLDA==
-From:   "tip-bot2 for Barry Song" <tip-bot2@linutronix.de>
+        bh=/R3Nv8geTEWe7XJre62KWCxkOkvWaUKucxnms62BpTg=;
+        b=lzIv/I7E5IJQJ/7JiQBqJbWEK3WDmA1OllJHunXkHntX9umdasJtsg8AWvZmkmZPTocYo3
+        fTSa0VzWCYF7/MDg==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] Documentation: scheduler: fix information on arch
- SD flags, sched_domain and sched_debug
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
+Subject: [tip: sched/core] sched/topology: Warn when NUMA diameter > 2
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201113115018.1628-1-song.bao.hua@hisilicon.com>
-References: <20201113115018.1628-1-song.bao.hua@hisilicon.com>
+        Mel Gorman <mgorman@techsingularity.net>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <jhjtux5edo2.mognet@arm.com>
+References: <jhjtux5edo2.mognet@arm.com>
 MIME-Version: 1.0
-Message-ID: <160587564747.11244.10441742114321996450.tip-bot2@tip-bot2>
+Message-ID: <160587564803.11244.428473772437307273.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,72 +59,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     9032dc211523f7cd5395302a0658c306249553f4
-Gitweb:        https://git.kernel.org/tip/9032dc211523f7cd5395302a0658c306249553f4
-Author:        Barry Song <song.bao.hua@hisilicon.com>
-AuthorDate:    Sat, 14 Nov 2020 00:50:18 +13:00
+Commit-ID:     b5b217346de85ed1b03fdecd5c5076b34fbb2f0b
+Gitweb:        https://git.kernel.org/tip/b5b217346de85ed1b03fdecd5c5076b34fbb2f0b
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Tue, 10 Nov 2020 18:43:00 
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Thu, 19 Nov 2020 11:25:46 +01:00
 
-Documentation: scheduler: fix information on arch SD flags, sched_domain and sched_debug
+sched/topology: Warn when NUMA diameter > 2
 
-This document seems to be out of date for many, many years. Even it has
-misspelled from the first day.
-ARCH_HASH_SCHED_TUNE should be ARCH_HAS_SCHED_TUNE
-ARCH_HASH_SCHED_DOMAIN should be ARCH_HAS_SCHED_DOMAIN
+NUMA topologies where the shortest path between some two nodes requires
+three or more hops (i.e. diameter > 2) end up being misrepresented in the
+scheduler topology structures.
 
-Since v2.6.14, kernel completely deleted the relevant code and even
-arch_init_sched_domains() was deleted.
+This is currently detected when booting a kernel with CONFIG_SCHED_DEBUG=y
++ sched_debug on the cmdline, although this will only yield a warning about
+sched_group spans not matching sched_domain spans:
 
-Right now, kernel is asking architectures to call set_sched_topology() to
-override the default sched domains.
+  ERROR: groups don't span domain->span
 
-On the other hand, to print the schedule debug information, users need to
-set sched_debug cmdline or enable it by sysfs entry. So this patch also
-adds the description for sched_debug.
+Add an explicit warning for that case, triggered regardless of
+CONFIG_SCHED_DEBUG, and decorate it with an appropriate comment.
 
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+The topology described in the comment can be booted up on QEMU by appending
+the following to your usual QEMU incantation:
+
+    -smp cores=4 \
+    -numa node,cpus=0,nodeid=0 -numa node,cpus=1,nodeid=1, \
+    -numa node,cpus=2,nodeid=2, -numa node,cpus=3,nodeid=3, \
+    -numa dist,src=0,dst=1,val=20, -numa dist,src=0,dst=2,val=30, \
+    -numa dist,src=0,dst=3,val=40, -numa dist,src=1,dst=2,val=20, \
+    -numa dist,src=1,dst=3,val=30, -numa dist,src=2,dst=3,val=20
+
+A somewhat more realistic topology (6-node mesh) with the same affliction
+can be conjured with:
+
+    -smp cores=6 \
+    -numa node,cpus=0,nodeid=0 -numa node,cpus=1,nodeid=1, \
+    -numa node,cpus=2,nodeid=2, -numa node,cpus=3,nodeid=3, \
+    -numa node,cpus=4,nodeid=4, -numa node,cpus=5,nodeid=5, \
+    -numa dist,src=0,dst=1,val=20, -numa dist,src=0,dst=2,val=30, \
+    -numa dist,src=0,dst=3,val=40, -numa dist,src=0,dst=4,val=30, \
+    -numa dist,src=0,dst=5,val=20, \
+    -numa dist,src=1,dst=2,val=20, -numa dist,src=1,dst=3,val=30, \
+    -numa dist,src=1,dst=4,val=20, -numa dist,src=1,dst=5,val=30, \
+    -numa dist,src=2,dst=3,val=20, -numa dist,src=2,dst=4,val=30, \
+    -numa dist,src=2,dst=5,val=40, \
+    -numa dist,src=3,dst=4,val=20, -numa dist,src=3,dst=5,val=30, \
+    -numa dist,src=4,dst=5,val=20
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20201113115018.1628-1-song.bao.hua@hisilicon.com
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Link: https://lore.kernel.org/lkml/jhjtux5edo2.mognet@arm.com
 ---
- Documentation/scheduler/sched-domains.rst | 26 +++++++++-------------
- 1 file changed, 11 insertions(+), 15 deletions(-)
+ kernel/sched/topology.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/Documentation/scheduler/sched-domains.rst b/Documentation/scheduler/sched-domains.rst
-index 5c4b7f4..8582fa5 100644
---- a/Documentation/scheduler/sched-domains.rst
-+++ b/Documentation/scheduler/sched-domains.rst
-@@ -65,21 +65,17 @@ of the SMP domain will span the entire machine, with each group having the
- cpumask of a node. Or, you could do multi-level NUMA or Opteron, for example,
- might have just one domain covering its one NUMA level.
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 90f3e55..b296c1c 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -675,6 +675,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+ 	struct sched_domain *tmp;
++	int numa_distance = 0;
  
--The implementor should read comments in include/linux/sched.h:
--struct sched_domain fields, SD_FLAG_*, SD_*_INIT to get an idea of
--the specifics and what to tune.
-+The implementor should read comments in include/linux/sched/sd_flags.h:
-+SD_* to get an idea of the specifics and what to tune for the SD flags
-+of a sched_domain.
+ 	/* Remove the sched domains which do not contribute to scheduling. */
+ 	for (tmp = sd; tmp; ) {
+@@ -706,6 +707,38 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
+ 			sd->child = NULL;
+ 	}
  
--Architectures may retain the regular override the default SD_*_INIT flags
--while using the generic domain builder in kernel/sched/core.c if they wish to
--retain the traditional SMT->SMP->NUMA topology (or some subset of that). This
--can be done by #define'ing ARCH_HASH_SCHED_TUNE.
--
--Alternatively, the architecture may completely override the generic domain
--builder by #define'ing ARCH_HASH_SCHED_DOMAIN, and exporting your
--arch_init_sched_domains function. This function will attach domains to all
--CPUs using cpu_attach_domain.
-+Architectures may override the generic domain builder and the default SD flags
-+for a given topology level by creating a sched_domain_topology_level array and
-+calling set_sched_topology() with this array as the parameter.
++	for (tmp = sd; tmp; tmp = tmp->parent)
++		numa_distance += !!(tmp->flags & SD_NUMA);
++
++	/*
++	 * FIXME: Diameter >=3 is misrepresented.
++	 *
++	 * Smallest diameter=3 topology is:
++	 *
++	 *   node   0   1   2   3
++	 *     0:  10  20  30  40
++	 *     1:  20  10  20  30
++	 *     2:  30  20  10  20
++	 *     3:  40  30  20  10
++	 *
++	 *   0 --- 1 --- 2 --- 3
++	 *
++	 * NUMA-3	0-3		N/A		N/A		0-3
++	 *  groups:	{0-2},{1-3}					{1-3},{0-2}
++	 *
++	 * NUMA-2	0-2		0-3		0-3		1-3
++	 *  groups:	{0-1},{1-3}	{0-2},{2-3}	{1-3},{0-1}	{2-3},{0-2}
++	 *
++	 * NUMA-1	0-1		0-2		1-3		2-3
++	 *  groups:	{0},{1}		{1},{2},{0}	{2},{3},{1}	{3},{2}
++	 *
++	 * NUMA-0	0		1		2		3
++	 *
++	 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
++	 * group span isn't a subset of the domain span.
++	 */
++	WARN_ONCE(numa_distance > 2, "Shortest NUMA path spans too many nodes\n");
++
+ 	sched_domain_debug(sd, cpu);
  
- The sched-domains debugging infrastructure can be enabled by enabling
--CONFIG_SCHED_DEBUG. This enables an error checking parse of the sched domains
--which should catch most possible errors (described above). It also prints out
--the domain structure in a visual format.
-+CONFIG_SCHED_DEBUG and adding 'sched_debug' to your cmdline. If you forgot to
-+tweak your cmdline, you can also flip the /sys/kernel/debug/sched_debug
-+knob. This enables an error checking parse of the sched domains which should
-+catch most possible errors (described above). It also prints out the domain
-+structure in a visual format.
+ 	rq_attach_root(rq, rd);
