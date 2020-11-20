@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909452BA722
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 465E52BA728
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727755AbgKTKLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:11:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37908 "EHLO mail.kernel.org"
+        id S1727364AbgKTKNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 05:13:35 -0500
+Received: from foss.arm.com ([217.140.110.172]:46578 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726122AbgKTKLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:11:53 -0500
-Received: from localhost (unknown [122.171.203.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 307AF22272;
-        Fri, 20 Nov 2020 10:11:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605867112;
-        bh=oRF6mylMSIwIrnp3jROSzpmjuKuj4N8/pJejw/abE4E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XUGzQTO74JOY2cw/14EwGbV2iYSx5Xwk+O53czUoG/H6OmbX5fWBz3ZfJz/0z4OSX
-         jOKBuQRIINCJlDvmDzkyA+LqABBA45Nws6GL3sbonDoJyyU4/F7FuGIQdcwmbWcA2K
-         WrNo68KxOxOnzV4b2vpLaMoro9vhVSu+0iZtVxe8=
-Date:   Fri, 20 Nov 2020 15:41:38 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH v4 4/5] phy: samsung: phy-exynos-pcie: rework driver to
- support Exynos5433 PCIe PHY
-Message-ID: <20201120101138.GI2925@vkoul-mobl>
-References: <20201113170139.29956-1-m.szyprowski@samsung.com>
- <CGME20201113170158eucas1p14b9e58e35f929e14aeb4f533071c8a47@eucas1p1.samsung.com>
- <20201113170139.29956-5-m.szyprowski@samsung.com>
- <20201120094152.GC2925@vkoul-mobl>
- <8eaebd62-345f-4d13-1b65-055a2acc68bd@samsung.com>
+        id S1726554AbgKTKNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 05:13:34 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3975B1042;
+        Fri, 20 Nov 2020 02:13:34 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.27.176])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93C723F70D;
+        Fri, 20 Nov 2020 02:13:31 -0800 (PST)
+Date:   Fri, 20 Nov 2020 10:13:24 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Vladimir Murzin <vladimir.murzin@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        suzuki.poulose@arm.com, ionela.voinescu@arm.com,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, catalin.marinas@arm.com,
+        Will Deacon <will@kernel.org>, valentin.schneider@arm.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: AMU extension v1 support for cortex A76, A77, A78 CPUs
+Message-ID: <20201120101249.GA2328@C02TD0UTHF1T.local>
+References: <2cc9dd44-0b4b-94a8-155a-7a2446a1b892@codeaurora.org>
+ <1712842eb0767e51155a5396d282102c@kernel.org>
+ <e15de351-63c1-2599-82bf-22c95e8a6a62@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8eaebd62-345f-4d13-1b65-055a2acc68bd@samsung.com>
+In-Reply-To: <e15de351-63c1-2599-82bf-22c95e8a6a62@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-11-20, 10:58, Marek Szyprowski wrote:
-> Hi Vinod,
-> 
-> On 20.11.2020 10:41, Vinod Koul wrote:
-> > On 13-11-20, 18:01, Marek Szyprowski wrote:
-> >> From: Jaehoon Chung <jh80.chung@samsung.com>
+On Fri, Nov 20, 2020 at 09:09:00AM +0000, Vladimir Murzin wrote:
+> On 11/20/20 8:56 AM, Marc Zyngier wrote:
+> > On 2020-11-20 04:30, Neeraj Upadhyay wrote:
+> >> Hi,
 > >>
-> >> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
-> >> dts: exynos: Remove Exynos5440"). Rework this driver to support PCIe PHY
-> >> variant found in the Exynos5433 SoCs.
-> > I am expecting this series to go thru PCI tree, so:
-> >
-> > Acked-By: Vinod Koul <vkoul@kernel.org>
+> >> For ARM cortex A76, A77, A78 cores (which as per TRM, support AMU)
+> >> AA64PFR0[47:44] field is not set, and AMU does not get enabled for
+> >> them.
+> >> Can you please provide support for these CPUs in cpufeature.c?
+> > 
+> > If that was the case, that'd be an erratum, and it would need to be
+> > documented as such. It could also be that this is an optional feature
+> > for these cores (though the TRM doesn't suggest that).
+> > 
+> > Can someone at ARM confirm what is the expected behaviour of these CPUs?
 > 
-> Frankly, the PHY driver can also go via PHY tree without causing any 
-> issue. The old driver is not used at all, so there is no runtime 
-> dependency. This will help avoiding the merge conflict: yesterday I've 
-> noticed that this patch conflicts with the commit 2f0c9fac3be6 ("phy: 
-> samsung: convert to devm_platform_ioremap_resource") in phy-next. The 
-> resolution is simple (use all the code from the new driver), but if 
-> needed I can resend the PHY driver after a rebase onto the current next 
-> tree.
+> Not a confirmation, but IIRC, these are imp def features, while our cpufeatures
+> catches architected one.
 
-Okay do send me the rebase patch
+We generally don't make use of IMP-DEF featurees because of all the pain
+it brings. 
 
-Thanks
--- 
-~Vinod
+Looking at the Cortex-A76 TRM, the encoding for AMCNTENCLR is:
+
+ Op0: 3  (0b11)
+ Op1: 3  (0b011)
+ CRn: 15 (0b1111)
+ CRm: 9  (0b1001)
+ Op2: 7  (0b111)
+
+... whereas the architected encoding (from our sysreg.h) is:
+
+ Op0: 3
+ Op1: 3
+ CRn: 13
+ CRm: 2
+ Op2: 4
+
+... so that's a different register with the same name, which is
+confusing and unfortunate.
+
+The encodings are different (and I haven't checked whether the fields /
+semantics are the same), so it's not just a matter of wiring up new
+detection code. There are also IMP-DEF traps in ACTLR_EL3 and ACTLR_EL2
+which we can't be certain of the configuration of, and as the registers
+are in the IMP-DEF encoding space they'll be trapped by HCR_EL2.TIDCP
+and emulated as UNDEFINED by a hypervisor. All of that means that going
+by the MIDR alone is not sufficient to know we can safely access the
+registers.
+
+So as usual for IMP-DEF stuff I don't think we can or should make use of
+this.
+
+Thanks,
+Mark.
