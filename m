@@ -2,208 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CA22BAB17
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4622BAB14
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727160AbgKTN0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 08:26:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726719AbgKTN0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:26:53 -0500
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03E1E2236F;
-        Fri, 20 Nov 2020 13:26:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605878812;
-        bh=+RFM63VBDWH7JjmXp5qfMg6s8bW4Hxl04yTQdjzQX1Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NcwbmeHrDlmpvdoSJgqy4B5TDidwyTlm7Y65tjq3ZxcTxygP0cuTMkuZf9jIAMHGn
-         VDktvbmxrqsxq+a97VO4tbwM+1A82rtlLtk5PzpEf41Kt0a50aHolJivCO57J/89+Q
-         1G6hFWfh7mU6DB7oWcVcB2L/zQTHywxnTp6whhpI=
-Received: by mail-ot1-f52.google.com with SMTP id l36so8687244ota.4;
-        Fri, 20 Nov 2020 05:26:51 -0800 (PST)
-X-Gm-Message-State: AOAM533GR1tECVkwzZBm7mTvkHFk+gqRvWGizV39lb/P+bWOVUvJWKZm
-        NphEReH4LFthNeD21np6b6bkKjYwSaGAfQN9qEQ=
-X-Google-Smtp-Source: ABdhPJycdOt0E7taH95kL9xNWmd2z1tmptCoguqnNm7BPcbFhkWfH7eyh/Z4r9uWCWLSQqLWhUFBDe25sXtuyM0Xbk0=
-X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr12449744otc.305.1605878811162;
- Fri, 20 Nov 2020 05:26:51 -0800 (PST)
+        id S1727518AbgKTN1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 08:27:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgKTN1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 08:27:15 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71366C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:27:13 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id o11so9860018ioo.11
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:27:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=khYDe4ODkehJy6MjwBnKiqHGgEbY3DM8JifHtJFFyNc=;
+        b=ISDL+Va2Q9i2ZxAJkYOi6SkHb01ET9KdtDy57qKq5uX6+mu+HoUzdq0B//zc/FJsse
+         aX0V/As/e/uUbVxfalHXmDYWax01DlUcojzrP3W/dA1budm1XnAnUz873PnJflAXVMF8
+         CcsWBuUQqgbSwxx0VVWbG0XitkO4s3mqUqlqV94XUHTAznm3rclRd43IZaTsynxQ40Ef
+         j8yYPgFykZlUJ89o4JKmt4vRzDptuBHholYKPwS/mTWrpiZQ+SxOaRTX85pf0E45Ctmd
+         RL2NvKNF2jCuHlEoES/qXsVABS4SQHjWI5qDcs7l4gggbyOL4LJS9exCtvyuY5J2IK43
+         JMIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=khYDe4ODkehJy6MjwBnKiqHGgEbY3DM8JifHtJFFyNc=;
+        b=LuBygrHqhsX+i5ihbW6SbuDqE25dZyer+QXJFMVY0aLsHG/97rpd0oJYxU2tVlAG5m
+         5XIa2LMEx3CVhV/FniJW5ORuVLt8kvXWKznQ3onxusbq6u+5ctMDye8asWbpJnb/KYj2
+         36h7yrZVlOEXAd8Mzwby7HnsfZybI1hBsOJqEJCurZC3oPRgxhXtBMLGCwAoqonx9kUZ
+         WZuIQBNqAmKFIo1CU99J/ZFXZGX0YCQBxXpwSdKrvEjMzQDu0WTTLbkU8LT3lL30ixv+
+         cj/QRSDe0F8Oe9AazcI720VIXZwMR/4nj7mWAAPC58aob3A6MhTcwDV3mOIKcrWqxLul
+         JvWQ==
+X-Gm-Message-State: AOAM530wu++HhbeWoBAy79XuhHs4guSXaqUMmbtow3vDEN6auByLzAd8
+        j+HadrFryd8aNxmXCsyQCl9Aw5tXrj65sSaFqeo=
+X-Google-Smtp-Source: ABdhPJylHXVxobE5e1ifiJDHDRquO0pMLQBoaBS/tG4ccMuwhxW9YXfZsUzkdYtO5UNqKBFH5lc+a679a57IWjJb0s4=
+X-Received: by 2002:a02:840c:: with SMTP id k12mr18319689jah.91.1605878832764;
+ Fri, 20 Nov 2020 05:27:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20201109134128.GA5596@shinobu> <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
- <20201109164529.GA28710@syed.domain.name> <20201109171140.GA14045@shinobu>
- <20201109172220.GI4077@smile.fi.intel.com> <20201109173107.GA14643@shinobu>
- <fe1cfe4c-e4d7-f9fb-1218-7a1d48e6f68a@xilinx.com> <20201110123538.GA3193@shinobu>
- <CACG_h5p84sKjDnK5xYRNjGnRzwsbjZ-76P-cC13LKx=7x=4KqQ@mail.gmail.com>
- <20201110174316.GA12192@shinobu> <20201110220004.GA25801@syed> <CACG_h5orr+smPGFdHbEDAgYS=RUJYZCvf10KjGkkvS9rkbzQFA@mail.gmail.com>
-In-Reply-To: <CACG_h5orr+smPGFdHbEDAgYS=RUJYZCvf10KjGkkvS9rkbzQFA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 20 Nov 2020 14:26:35 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a07ohL40kSgj1EJ-EuQk5HUGyVGXE1acsg50PiKf7j=mA@mail.gmail.com>
-Message-ID: <CAK8P3a07ohL40kSgj1EJ-EuQk5HUGyVGXE1acsg50PiKf7j=mA@mail.gmail.com>
-Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
- and _set_value
-To:     Syed Nayyar Waris <syednwaris@gmail.com>
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <CA+U=Dspy5+RE9agcLr6eY9DCMa1c5+++0JLeugMMBRXz4YLj1w@mail.gmail.com>
+ <CAHp75VcT5hZH6m0Dri1h_EFjc7=4+1XoE7sRuQyfO75k9A0GKA@mail.gmail.com>
+ <b74517242de5790f8ab0cd9be00a70b9ab96564c.camel@perches.com>
+ <alpine.DEB.2.22.394.2011201140480.2750@hadrien> <CA+U=Dsp8Aws7_GARfgNE4w_1pK-hDVW9WVsWHF1TfZUEUo0Hbw@mail.gmail.com>
+ <4af50412-a22f-4ca1-adb0-d732438c6669@metafoo.de>
+In-Reply-To: <4af50412-a22f-4ca1-adb0-d732438c6669@metafoo.de>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Fri, 20 Nov 2020 15:27:01 +0200
+Message-ID: <CA+U=DsqHvQqkjWKsd_deN_ud3zCL=kzt-Bxd9f=Z9NJ6i+m71Q@mail.gmail.com>
+Subject: Re: [Cocci] Proposal for a new checkpatch check; matching
+ _set_drvdata() & _get_drvdata()
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
+        Joe Perches <joe@perches.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Robo Bot <apw@canonical.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        cocci <cocci@systeme.lip6.fr>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 5:52 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
-> On Wed, Nov 11, 2020 at 3:30 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
-> > On Tue, Nov 10, 2020 at 12:43:16PM -0500, William Breathitt Gray wrote:
-> > > On Tue, Nov 10, 2020 at 10:52:42PM +0530, Syed Nayyar Waris wrote:
-> > > > On Tue, Nov 10, 2020 at 6:05 PM William Breathitt Gray
-> > > > <vilhelm.gray@gmail.com> wrote:
-> > > > >
-> > > > > On Tue, Nov 10, 2020 at 11:02:43AM +0100, Michal Simek wrote:
-> > > > > >
-> > > > > >
-> > > > > > On 09. 11. 20 18:31, William Breathitt Gray wrote:
-> > > > > > > On Mon, Nov 09, 2020 at 07:22:20PM +0200, Andy Shevchenko wrote:
-> > > > > > >> On Mon, Nov 09, 2020 at 12:11:40PM -0500, William Breathitt Gray wrote:
-> > > > > > >>> On Mon, Nov 09, 2020 at 10:15:29PM +0530, Syed Nayyar Waris wrote:
-> > > > > > >>>> On Mon, Nov 09, 2020 at 03:41:53PM +0100, Arnd Bergmann wrote:
-> > > > > > >>
-> > > > > > >> ...
-> > > > > > >>
-> > > > > > >>>>  static inline void bitmap_set_value(unsigned long *map,
-> > > > > > >>>> -                                    unsigned long value,
-> > > > > > >>>> +                                    unsigned long value, const size_t length,
-> > > > > > >>>>                                      unsigned long start, unsigned long nbits)
-> > > > > > >>>>  {
-> > > > > > >>>>          const size_t index = BIT_WORD(start);
-> > > > > > >>>> @@ -15,6 +15,10 @@ static inline void bitmap_set_value(unsigned long *map,
-> > > > > > >>>>          } else {
-> > > > > > >>>>                  map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-> > > > > > >>>>                  map[index + 0] |= value << offset;
-> > > > > > >>>> +
-> > > > > > >>>> +               if (index + 1 >= length)
-> > > > > > >>>> +                       __builtin_unreachable();
-> > > > > > >>>> +
-> > > > > > >>>>                  map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> > > > > > >>>>                  map[index + 1] |= value >> space;
-> > > > > > >>>>          }
-> > > > > > >>>
-> > > > > > >>> Hi Syed,
-> > > > > > >>>
-> > > > > > >>> Let's rename 'length' to 'nbits' as Arnd suggested, and rename 'nbits'
-> > > > > > >>> to value_width.
-> > > > > > >>
-> > > > > > >> length here is in longs. I guess this is the point of entire patch.
-> > > > > > >
-> > > > > > > Ah yes, this should become 'const unsigned long nbits' and represent the
-> > > > > > > length of the bitmap in bits and not longs.
-> > > >
-> > > > Hi William, Andy and All,
-> > > >
-> > > > Thank You for reviewing. I was looking into the review comments and I
-> > > > have a question on the above.
-> > > >
-> > > > Actually, in bitmap_set_value(), the intended comparison is to be made
-> > > > between 'index + 1' and 'length' (which is now renamed as 'nbits').
-> > > > That is, the comparison would look-like as follows:
-> > > > if (index + 1 >= nbits)
-> > > >
-> > > > The 'index' is getting populated with BIT_WORD(start).
-> > > > The 'index' variable in above is the actual index of the bitmap array,
-> > > > while in previous mail it is suggested to use 'nbits' which represent
-> > > > the length of the bitmap in bits and not longs.
-> > > >
-> > > > Isn't it comparing two different things? index of array (not the
-> > > > bit-wise-length) on left hand side and nbits (bit-wise-length) on
-> > > > right hand side?
-> > > >
-> > > > Have I misunderstood something? If yes, request to clarify.
-> > > >
-> > > > Or do I have to first divide 'nbits' by BITS_PER_LONG and then compare
-> > > > it with 'index + 1'? Something like this?
-> > > >
-> > > > Regards
-> > > > Syed Nayyar Waris
-> > >
-> > > The array elements of the bitmap memory region are abstracted away for
-> > > the covenience of the users of the bitmap_* functions; the driver
-> > > authors are able to treat their bitmaps as just a set of contiguous bits
-> > > and not worry about where the division between array elements happen.
-> > >
-> > > So to match the interface of the other bitmap_* functions, you should
-> > > take in nbits and figure out the actual array length by dividing by
-> > > BITS_PER_LONG inside bitmap_set_value(). Then you can use your
-> > > conditional check (index + 1 >= length) like you have been doing so far.
-> > >
-> > > William Breathitt Gray
-> >
-> > Hi Arnd,
-> >
-> > Sharing a new version of bitmap_set_value(). Let me know if it looks
-> > good and whether it suppresses the compiler warning.
-> >
-> > The below patch is created against the v12 version of bitmap_set_value().
-> >
-> > -static inline void bitmap_set_value(unsigned long *map,
-> > -                                    unsigned long value,
-> > -                                    unsigned long start, unsigned long nbits)
-> > +static inline void bitmap_set_value(unsigned long *map, unsigned long nbits,
-> > +                                   unsigned long value, unsigned long value_width,
-> > +                                   unsigned long start)
-> >  {
-> > -        const size_t index = BIT_WORD(start);
-> > +        const unsigned long index = BIT_WORD(start);
-> > +        const unsigned long length = BIT_WORD(nbits);
-> >          const unsigned long offset = start % BITS_PER_LONG;
-> >          const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
-> >          const unsigned long space = ceiling - start;
-> >
-> > -        value &= GENMASK(nbits - 1, 0);
-> > +        value &= GENMASK(value_width - 1, 0);
-> >
-> > -        if (space >= nbits) {
-> > -                map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
-> > +        if (space >= value_width) {
-> > +                map[index] &= ~(GENMASK(value_width - 1, 0) << offset);
-> >                  map[index] |= value << offset;
-> >          } else {
-> >                  map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-> >                  map[index + 0] |= value << offset;
-> > -                map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> > +
-> > +               if (index + 1 >= length)
-> > +                       __builtin_unreachable();
-> > +
-> > +                map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + value_width);
-> >                  map[index + 1] |= value >> space;
-> >          }
-> >  }
-> >
-> >
+On Fri, Nov 20, 2020 at 3:16 PM Lars-Peter Clausen <lars@metafoo.de> wrote:
 >
-> Hi Arnd,
+> On 11/20/20 12:54 PM, Alexandru Ardelean wrote:
+> > On Fri, Nov 20, 2020 at 12:47 PM Julia Lawall <julia.lawall@inria.fr> wrote:
+> >>
+> >>
+> >> On Thu, 19 Nov 2020, Joe Perches wrote:
+> >>
+> >>> On Thu, 2020-11-19 at 17:16 +0200, Andy Shevchenko wrote:
+> >>>> On Thu, Nov 19, 2020 at 4:09 PM Alexandru Ardelean
+> >>>> <ardeleanalex@gmail.com> wrote:
+> >>>>> Hey,
+> >>>>>
+> >>>>> So, I stumbled on a new check that could be added to checkpatch.
+> >>>>> Since it's in Perl, I'm reluctant to try it.
+> >>>>>
+> >>>>> Seems many drivers got to a point where they now call (let's say)
+> >>>>> spi_set_drvdata(), but never access that information via
+> >>>>> spi_get_drvdata().
+> >>>>> Reasons for this seem to be:
+> >>>>> 1. They got converted to device-managed functions and there is no
+> >>>>> longer a remove hook to require the _get_drvdata() access
+> >>>>> 2. They look like they were copied from a driver that had a
+> >>>>> _set_drvdata() and when the code got finalized, the _set_drvdata() was
+> >>>>> omitted
+> >>>>>
+> >>>>> There are a few false positives that I can notice at a quick look,
+> >>>>> like the data being set via some xxx_set_drvdata() and retrieved via a
+> >>>>> dev_get_drvdata().
+> >>>> I can say quite a few. And this makes a difference.
+> >>>> So, basically all drivers that are using PM callbacks would rather use
+> >>>> dev_get_drvdata() rather than bus specific.
+> >>>>
+> >>>>> I think checkpatch reporting these as well would be acceptable simply
+> >>>>> from a reviewability perspective.
+> >>>>>
+> >>>>> I did a shell script to quickly check these. See below.
+> >>>>> It's pretty badly written but it is enough for me to gather a list.
+> >>>>> And I wrote it in 5 minutes :P
+> >>>>> I initially noticed this in some IIO drivers, and then I suspected
+> >>>>> that this may be more widespread.
+> >>>> It seems more suitable for coccinelle.
+> >>> To me as well.
+> >> To me as well, since it seems to involve nonlocal information.
+> >>
+> >> I'm not sure to understand the original shell script. Is there
+> >> something interesting about pci_set_drvdata?
+> > Ah, it's a stupid script I wrote in 5 minutes, so I did not bother to
+> > make things smart.
+> > In the text-matching I did in shell, there are some entries that come
+> > from comments and docs.
+> > It's only about 3-4 entries, so I just did a visual/manual ignore.
+> >
+> > In essence:
+> > The script searches for all strings that contain _set_drvdata.
+> > The separators are whitespace.
+> > It creates a list of all  xxxx_set_drvdata functions.
+> > For each xxxx_set_drvdata function:
+> >      It checks all files that have a xxxx_set_drvdata entry, but no
+> > xxxx_get_drvdata
+> >
+> > I piped this output into a file and started manually checking the drivers.
+> > There is one [I forget which function] that is xxxx_set_drvdata() but
+> > equivalent is xxxx_drvdata()
+> >
+> > As Andy said, some precautions must be taken in places where
+> > xxxx_set_drvdata() is called but dev_get_drvdata() is used.
+> > Cases like PM suspend/resume calls.
+> > And there may be some cases outside this context.
+> >
+> Doing something like this with coccinelle is fairly easy.
 >
-> What do you think of the above solution ( new version of
-> bitmap_set_value() )? Does it look good?
+> But I'd be very cautious about putting such a script into the kernel. It
+> will result in too many false positive drive-by patches. Such a script
+> will not detect cases such as:
 
-Sorry for the late reply and thanks for continuing to look at solutions.
+Yeah, it would probably be a good idea to start with a few simple
+checks, then scale it.
+If we go for the existing _set_drvdata() / _get_drvdata() pair checks,
+there is a risk of breaking things.
 
-I don't really like the idea of having the __builtin_unreachable() in
-there, since that would lead to even worse undefined behavior
-(jumping to a random instruction) than the previous one (writing
-to a random location) when invalid data gets passed.
-
-Isn't passing the length of the bitmap sufficient to suppress the
-warning (sorry I did not try myself)? If not, maybe this could
-be a "BUG_ON(index + 1 >= length)" instead of the
-__builtin_unreachable(). That way it would at least crash
-in a well-defined way.
-
-     Arnd
+>
+>   * Driver is split over multiple files. One file does
+> ..._set_drvdata(), another does ..._get_drvdata().
+>
+>   * Framework uses drvdata to exchange data with the driver. E.g driver
+> is expected to call set_drvdata() and then the framework uses
+> get_drvdata() to retrieve the data. This is not a very good pattern, but
+> there are some palces int he kernel where this is used. I believe for
+> example V4L2 uses this.
+>
+> - Lars
+>
