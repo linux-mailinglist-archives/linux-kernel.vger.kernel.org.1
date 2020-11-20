@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA622BAB66
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C4B2BAB6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728232AbgKTNh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 08:37:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727543AbgKTNh0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:37:26 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8D8C0613CF;
-        Fri, 20 Nov 2020 05:37:26 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id b3so4852003pls.11;
-        Fri, 20 Nov 2020 05:37:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=n6R3cMz6omhOAvz8CiMkGHAuvWiXe6mVts5SfsAyuIk=;
-        b=tIIHixZbZ27sxFyPBuVo4aNkvYBvUhgLWWwvlPy4yDe2SB4H28o0lUxjwKKgGV10+d
-         Nb8yHbGbY4/kaiPwM+exFRD2XCYGjxux2BMkvQA3vVuq+XbNRp2YUhzj2X/yNlvHjpAv
-         FBB1preOvldSs9giReMFPdZJG2qi507pC3usOuMhEKhDxP4QWnE4ifVHwvviCpRGWQ0z
-         e/nXBsbreIhgyRXFbsyCXWPmlyi/18EWvoaBmCEVpehNZ6BDzkBr9NtSfbF+fv0ZHe1z
-         hq+oLQhv6UtK0KRqfhDkyXvBDtBh+zsWSBy5b32Z838ud4hHBibuvvwVicsR7p85Sbx8
-         gP0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=n6R3cMz6omhOAvz8CiMkGHAuvWiXe6mVts5SfsAyuIk=;
-        b=qxZpnP1q98kAztHa6MBp+AqbJsCTflIrTvt8RFu5KCxmgwlbTjwuM+/0VnAeTNEVOk
-         DcBmUH7bhwGsKeLbZ4IQkNI7oGiPHYcbko0Z4A1QY2pXEXu60O4MSKAo8MlugaVJKHHp
-         gv7CGhumQNu1aes0FEzgmV6C6eRcp301Fi/J7RpKwB+/9JS9rgbNQkHxFGXnC5KNISIB
-         Myfim8iiJKpRoaWN0AMb7mDwt0GDJj1/bt71AYT59GU0Xvm76zjhdJFLYj3EIXKCxEe1
-         kasM8zC4IvgCAc0lx7SyUVsxSNfWmwlOIuIkAGrEkh5fQFQ5geJRUTqIUpW1mkriOu59
-         bdnQ==
-X-Gm-Message-State: AOAM533FDbLzMANolC9iVW7gcJ3urFyYCVpYX6NlXm9XBBUt+b8P5kDQ
-        rygTFjD8+w/jWY1AHpWEXhs=
-X-Google-Smtp-Source: ABdhPJyHAn2w9eY4sS2nsQfEZLVDLForkZ/CI/Uajqh398xrcLjRrJeUFmYX0tdil5eG4zJLHIx5pA==
-X-Received: by 2002:a17:902:7486:b029:d9:d4aa:e033 with SMTP id h6-20020a1709027486b02900d9d4aae033mr9321488pll.16.1605879445922;
-        Fri, 20 Nov 2020 05:37:25 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id ha21sm3808332pjb.2.2020.11.20.05.37.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 05:37:25 -0800 (PST)
-Date:   Fri, 20 Nov 2020 05:37:22 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 0/3] net: ptp: introduce common defines for
- PTP message types
-Message-ID: <20201120133722.GB7027@hoboy.vegasvil.org>
-References: <20201120084106.10046-1-ceggers@arri.de>
+        id S1727382AbgKTNjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 08:39:41 -0500
+Received: from mga09.intel.com ([134.134.136.24]:55383 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726590AbgKTNjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 08:39:41 -0500
+IronPort-SDR: pM3rVf0c6LKISPsBQDn09QzOaTvUIXOe1L8QO709Q6Y8SSZUc4yyeAldRi/VgnNybB/XCl4z8d
+ XdyzM7GW5fcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="171639314"
+X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
+   d="scan'208";a="171639314"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 05:39:40 -0800
+IronPort-SDR: zcG5jgBnh2cMRVml9SIPx982RrslX9yNsB54Wl4V064d/Q6eIpva3+ifWf9WrQEC7BZslaVb/d
+ ov8mxQPySJwQ==
+X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
+   d="scan'208";a="360447085"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.215.97]) ([10.254.215.97])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 05:39:38 -0800
+Cc:     baolu.lu@linux.intel.com, Ashok Raj <ashok.raj@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+To:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
+        Will Deacon <will@kernel.org>
+References: <20201120101719.3172693-1-baolu.lu@linux.intel.com>
+ <160587504147.19364.17448380121292539865@build.alporthouse.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH v5 0/7] Convert the intel iommu driver to the dma-iommu
+ api
+Message-ID: <2ff7be9f-75e8-03a2-8030-92cb734faa61@linux.intel.com>
+Date:   Fri, 20 Nov 2020 21:39:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120084106.10046-1-ceggers@arri.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <160587504147.19364.17448380121292539865@build.alporthouse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 09:41:03AM +0100, Christian Eggers wrote:
-> This series introduces commen defines for PTP event messages. Driver
-> internal defines are removed and some uses of magic numbers are replaced
-> by the new defines.
+Hi Chris,
 
-Nice cleanup!
+On 2020/11/20 20:24, Chris Wilson wrote:
+> Quoting Lu Baolu (2020-11-20 10:17:12)
+>> Lu Baolu (3):
+>>    iommu: Add quirk for Intel graphic devices in map_sg
+>>    iommu/vt-d: Update domain geometry in iommu_ops.at(de)tach_dev
+>>    iommu/vt-d: Cleanup after converting to dma-iommu ops
+>>
+>> Tom Murphy (4):
+>>    iommu: Handle freelists when using deferred flushing in iommu drivers
+>>    iommu: Add iommu_dma_free_cpu_cached_iovas()
+>>    iommu: Allow the dma-iommu api to use bounce buffers
+>>    iommu/vt-d: Convert intel iommu driver to the iommu ops
+> 
+> Something that may be of interest is that we encounter problems with
+> using intel-iommu across a PCI remove event. All HW generations fail
+> with faults like:
+> 
+> DMAR: DRHD: handling fault status reg 3
+> DMAR: [DMA Write] Request device [00:02.0] PASID ffffffff fault addr 4b822000 [fault reason 02] Present bit in context entry is clear
+> 
+> i.e. they all report missing present bit after re-adding the device to the
+> iommu group. Forcing an identity map (or disabling iommu) works fine.
+> 
+> I applied this series just on the off-chance it changed the symptoms; it
+> does not. If you have any ideas on how to chase down this fault, that
+> would be very useful. We have a few other DMAR faults visible on many
+> platforms, all "[fault reason 07] Next page table ptr is invalid" that
+> are again not affected by this series, that we also need to resolve.
 
-Reviewed-by: Richard Cochran <richardcochran@gmail.com>
+This series only replaces the previous vt-d self-made dma api's with the
+generic one (which has already been used by some other vendor iommu
+drivers). It shouldn't solve the problem you're having.
 
-Thanks,
-Richard
+How about reporting them in https://bugzilla.kernel.org/? I have
+interests to help to figure out possible fixes.
+
+> -Chris
+> 
+
+Best regards,
+baolu
