@@ -2,82 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B191D2BA9DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C983A2BA9DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727983AbgKTMIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:08:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgKTMIP (ORCPT
+        id S1728046AbgKTMId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:08:33 -0500
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:37809 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727070AbgKTMIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:08:15 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89350C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:08:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vlXR+DeDm58p736gPlu4ZNiSJsmquQxprWhu8Q3iIL8=; b=fRHC2Nb6zcdTb+UFSiq7GQRUml
-        BUcux3dn7RsKDlz4v+LiwCLL5XUhYCq1gUqZpb9juEnjSzn/4qQQIeiFL1LSLrh9HtqKFvu6oo2fy
-        YaGX3kbhn8wEu45EEmSdWXGs1CGyP3hJ72OQrgns8cznCA9Yy75jioH9PKqiPbWVoPm3nex2Aw93R
-        vbfyV+gyoMK/k6uyjezWSI2d4xiZaaa/qfdcjAV7GkIz2Ijn5O6uyxpTUYsOj7IwiraWKv9KDE44j
-        HymhtOgRlYegJPkO3F0EUjLjhaP7ZarIEGVFdAeQafXl7tla9cn5tt/6O/8+i0vh5behC/4jxjuIo
-        bAK0zS/w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kg5Cx-0004e7-7B; Fri, 20 Nov 2020 12:08:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DB2573069B1;
-        Fri, 20 Nov 2020 13:08:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C6997200EC4FD; Fri, 20 Nov 2020 13:08:05 +0100 (CET)
-Date:   Fri, 20 Nov 2020 13:08:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, luto@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>
-Subject: Re: [PATCH v2 08/12] x86/paravirt: remove no longer needed 32-bit
- pvops cruft
-Message-ID: <20201120120805.GF3021@hirez.programming.kicks-ass.net>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-9-jgross@suse.com>
+        Fri, 20 Nov 2020 07:08:32 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id g5Cxkr2rxWTbog5D9kfzgT; Fri, 20 Nov 2020 13:08:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1605874108; bh=4jVkUAot4OkLKdxNnM2R7h+vykTpDc6FD3DDb6ZVY7M=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=uHv02Byp+OKNK2sc5/QsU9aZXUOamTly4qmRiKFMhVLHZC9oAdP0t1qLCK4uT32ZL
+         JvMmyH9d//M/aVURiloYZTz94DYlOFPdri/RAlPqyib7a8zGMXZ3r+Ukxrihz1KBTA
+         pzELFneVfe0anmRAcsKbt3Navg8THjaowUTR5Kt8IYTNoh0UQ78ySx96mpF+OHPNwR
+         n9ayftzOJv5En1mfD5u8+e6Da/Cefewo45vtmo457egEzUwGnt0EbBf3AMXaPpgAew
+         wqQ1nzK1qxYYn83USCOLPhDlTu44CxWTdhYJ/7jbLw7k/5CKeTbZgI17nWoIwnkwpN
+         dmqIcygKAiVFQ==
+Subject: Re: [PATCH v6 09/17] media/videbuf1|2: Mark follow_pfn usage as
+ unsafe
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Tomasz Figa <tfiga@chromium.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
+ <20201119144146.1045202-10-daniel.vetter@ffwll.ch>
+ <f1f3a1d8-d62a-6e93-afc1-87a8e51081e9@xs4all.nl>
+ <e1f7d30b-2012-0249-66c7-cf9d7d6246ad@xs4all.nl>
+ <CAKMK7uEzFAtr9yxjaxi-kiuZhb+hWT3q6E41OegJr+J2-zkT8w@mail.gmail.com>
+ <9035555a-af6b-e2dd-dbad-41ca70235e21@xs4all.nl>
+ <CAKMK7uFrXJh9jc5-v02A=JE8B3aThbYtTxFN-CGQUB=0TGmKgQ@mail.gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <d44c6518-bd9c-87e0-dce4-2b63890e0f7e@xs4all.nl>
+Date:   Fri, 20 Nov 2020 13:08:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120114630.13552-9-jgross@suse.com>
+In-Reply-To: <CAKMK7uFrXJh9jc5-v02A=JE8B3aThbYtTxFN-CGQUB=0TGmKgQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfH2GQWtU8AqZJ/UOgmSeeLm02eV8ZsNLUP3VIk9wxP4VrDl9eKEQ/GNR0B/F6KP8LGV9lEB9KsxM/bE7FLkzIW+51QE8QQQChGr6Vd/khqTq/SSBolV+
+ 5mykW4HLxMsJRt6Y//nsI/14HHVG2nrSl4nSBLfWvyaOZRJMLX0HTPBEnApfvM5ceWWGs4UbRiBakSeRO+dYXEe/M2ogChstqRf4M38KPOYakcOlmLLZ0Gp4
+ E4St22I46NNWLKcN1Xnose9kMtLX8nZ4lh0ubBOJFThbsukJyY1SC8vLE3nAms2/MKJTvm74IbQZW8mMPy11+KUo+CsYPNrqavznhaDE4XRJzvtMl7kJo9K5
+ Xpf333DG8wTRTX9bUCB6DcfHELtrcjN1+OFUKK15HHdYKP+mdMfpOj9eogAnfzHCLd02Uc/yxg18CJsR6amJQlaNEXE2lQIJoDbcXqkcvCpUGVk4MbvbgUex
+ 3milY2o/WAY3AW/H6C+guaKpSAzecCaGxSB5cU0gO5AQAWfWam2LjvduQAi7ZnA85gfZrmVd42Ln2D+AlQi8+gInTOfa3auO5Dx40r46uhYg6utrSHqE68c3
+ ukjQWK8G7oJFCI/KM3KbjQB5w8BPAEYbQurlQ4PudX1V/iuQkP5zXPlNUzP/C4u6IdQM7N1Ky0NzdvxTeaESidfvyuIwM03RhiZ1Ss8r6CAbTG7NMAHwGK1U
+ ZTz74GM+0sB4ZcquzCC2g/PpFeYu99Jvn3mPzvKIvfKjgGOOGR9lCljNc5QOlVIHsIOF+ACAh0rea88kRsb5seV8og+sHQDCGCWG+nNa3ccIFB3ztHOPm8e3
+ gjdEiWj3RqwWlERoMkQoIVOBKmHvXLdhuj1bqMd/8svArQjZCiFGDMeAiP2Bqiz8SH2/MxykyApI36FsuQ9pkt/qJYljguMj33uZzK+efbJFEbvDk9NLI6nO
+ bIs0TCnWe3TP3tQqjTs2OURi9sI3Uvj3avAE0mcR7ViC8WeR99/gdTtsJXOcGuibgxKaOQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:46:26PM +0100, Juergen Gross wrote:
-> +#define ____PVOP_CALL(rettype, op, clbr, call_clbr, extra_clbr, ...)	\
->  	({								\
->  		PVOP_CALL_ARGS;						\
->  		PVOP_TEST_NULL(op);					\
-> +		BUILD_BUG_ON(sizeof(rettype) > sizeof(unsigned long));	\
-> +		asm volatile(paravirt_alt(PARAVIRT_CALL)		\
-> +			     : call_clbr, ASM_CALL_CONSTRAINT		\
-> +			     : paravirt_type(op),			\
-> +			       paravirt_clobber(clbr),			\
-> +			       ##__VA_ARGS__				\
-> +			     : "memory", "cc" extra_clbr);		\
-> +		(rettype)(__eax & PVOP_RETMASK(rettype));		\
->  	})
+On 20/11/2020 11:51, Daniel Vetter wrote:
+> On Fri, Nov 20, 2020 at 11:39 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>>
+>> On 20/11/2020 10:18, Daniel Vetter wrote:
+>>> On Fri, Nov 20, 2020 at 9:28 AM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>>>>
+>>>> On 20/11/2020 09:06, Hans Verkuil wrote:
+>>>>> On 19/11/2020 15:41, Daniel Vetter wrote:
+>>>>>> The media model assumes that buffers are all preallocated, so that
+>>>>>> when a media pipeline is running we never miss a deadline because the
+>>>>>> buffers aren't allocated or available.
+>>>>>>
+>>>>>> This means we cannot fix the v4l follow_pfn usage through
+>>>>>> mmu_notifier, without breaking how this all works. The only real fix
+>>>>>> is to deprecate userptr support for VM_IO | VM_PFNMAP mappings and
+>>>>>> tell everyone to cut over to dma-buf memory sharing for zerocopy.
+>>>>>>
+>>>>>> userptr for normal memory will keep working as-is, this only affects
+>>>>>> the zerocopy userptr usage enabled in 50ac952d2263 ("[media]
+>>>>>> videobuf2-dma-sg: Support io userptr operations on io memory").
+>>>>>>
+>>>>>> Acked-by: Tomasz Figa <tfiga@chromium.org>
+>>>>>
+>>>>> Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>>>>
+>>>> Actually, cancel this Acked-by.
+>>>>
+>>>> So let me see if I understand this right: VM_IO | VM_PFNMAP mappings can
+>>>> move around. There is a mmu_notifier that can be used to be notified when
+>>>> that happens, but that can't be used with media buffers since those buffers
+>>>> must always be available and in the same place.
+>>>>
+>>>> So follow_pfn is replaced by unsafe_follow_pfn to signal that what is attempted
+>>>> is unsafe and unreliable.
+>>>>
+>>>> If CONFIG_STRICT_FOLLOW_PFN is set, then unsafe_follow_pfn will fail, if it
+>>>> is unset, then it writes a warning to the kernel log but just continues while
+>>>> still unsafe.
+>>>>
+>>>> I am very much inclined to just drop VM_IO | VM_PFNMAP support in the media
+>>>> subsystem. For vb2 there is a working alternative in the form of dmabuf, and
+>>>> frankly for vb1 I don't care. If someone really needs this for a vb1 driver,
+>>>> then they can do the work to convert that driver to vb2.
+>>>>
+>>>> I've added Mauro to the CC list and I'll ping a few more people to see what
+>>>> they think, but in my opinion support for USERPTR + VM_IO | VM_PFNMAP
+>>>> should just be killed off.
+>>>>
+>>>> If others would like to keep it, then frame_vector.c needs a comment before
+>>>> the 'while' explaining why the unsafe_follow_pfn is there and that using
+>>>> dmabuf is the proper alternative to use. That will make it easier for
+>>>> developers to figure out why they see a kernel warning and what to do to
+>>>> fix it, rather than having to dig through the git history for the reason.
+>>>
+>>> I'm happy to add a comment, but otherwise if you all want to ditch
+>>> this, can we do this as a follow up on top? There's quite a bit of
+>>> code that can be deleted and I'd like to not hold up this patch set
+>>> here on that - it's already a fairly sprawling pain touching about 7
+>>> different subsystems (ok only 6-ish now since the s390 patch landed).
+>>> For the comment, is the explanation next to unsafe_follow_pfn not good
+>>> enough?
+>>
+>> No, because that doesn't mention that you should use dma-buf as a replacement.
+>> That's really the critical piece of information I'd like to see. That doesn't
+>> belong in unsafe_follow_pfn, it needs to be in frame_vector.c since it's
+>> vb2 specific.
+> 
+> Ah makes sense, I'll add that.
+> 
+>>>
+>>> So ... can I get you to un-cancel your ack?
+>>
+>> Hmm, I really would like to see support for this to be dropped completely.
+>>
+>> How about this: just replace follow_pfn() by -EINVAL instead of unsafe_follow_pfn().
+>>
+>> Add a TODO comment that this code now can be cleaned up a lot. Such a clean up patch
+>> can be added on top later, and actually that is something that I can do once this
+>> series has landed.
+>>
+>> Regardless, frame_vector.c should mention dma-buf as a replacement in a comment
+>> since I don't want users who hit this issue to have to dig through git logs
+>> to find that dma-buf is the right approach.
+>>
+>> BTW, nitpick: the subject line of this patch says 'videbuf' instead of 'videobuf'.
+> 
+> Will fix to, and next round will have the additional -EINVAL on top.
+> Iirc Mauro was pretty clear that we can't just delete this, so I kinda
+> don't want to get stuck in this discussion with my patches :-)
 
-This is now very similar to ____PVOP_VCALL() (note how PVOP_CALL_ARGS is
-PVOP_VCALL_ARGS).
+Ah, I found that discussion for the v2 of this series.
 
-Could we get away with doing something horrible like:
+Yes, add that on top and we can discuss whether to Ack that -EINVAL patch or
+not.
 
-#define ____PVOP_VCALL(X...) (void)____PVOP_CALL(long, X)
+I don't see why we would want to continue supporting a broken model that is
+also a security risk, as I understand it.
 
-?
+Tomasz, can you look at the discussion for this old RFC patch of mine:
+
+https://patchwork.linuxtv.org/project/linux-media/patch/20200221084531.576156-9-hverkuil-cisco@xs4all.nl/
+
+Specifically, if we just drop support for follow_pfn(), would that cause
+problems for Chromium since that is apparently still using USERPTR for encoders?
+
+Regards,
+
+	Hans
+
+> -Daniel
+> 
+>>
+>> Regards,
+>>
+>>         Hans
+>>
+>>>
+>>> Thanks, Daniel
+>>>
+>>>>
+>>>> Regards,
+>>>>
+>>>>         Hans
+>>>>
+>>>>>
+>>>>> Thanks!
+>>>>>
+>>>>>       Hans
+>>>>>
+>>>>>> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+>>>>>> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+>>>>>> Cc: Kees Cook <keescook@chromium.org>
+>>>>>> Cc: Dan Williams <dan.j.williams@intel.com>
+>>>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>>>>> Cc: John Hubbard <jhubbard@nvidia.com>
+>>>>>> Cc: Jérôme Glisse <jglisse@redhat.com>
+>>>>>> Cc: Jan Kara <jack@suse.cz>
+>>>>>> Cc: Dan Williams <dan.j.williams@intel.com>
+>>>>>> Cc: linux-mm@kvack.org
+>>>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>>>> Cc: linux-samsung-soc@vger.kernel.org
+>>>>>> Cc: linux-media@vger.kernel.org
+>>>>>> Cc: Pawel Osciak <pawel@osciak.com>
+>>>>>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+>>>>>> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+>>>>>> Cc: Tomasz Figa <tfiga@chromium.org>
+>>>>>> Cc: Laurent Dufour <ldufour@linux.ibm.com>
+>>>>>> Cc: Vlastimil Babka <vbabka@suse.cz>
+>>>>>> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+>>>>>> Cc: Michel Lespinasse <walken@google.com>
+>>>>>> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>>>>>> --
+>>>>>> v3:
+>>>>>> - Reference the commit that enabled the zerocopy userptr use case to
+>>>>>>   make it abundandtly clear that this patch only affects that, and not
+>>>>>>   normal memory userptr. The old commit message already explained that
+>>>>>>   normal memory userptr is unaffected, but I guess that was not clear
+>>>>>>   enough.
+>>>>>> ---
+>>>>>>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
+>>>>>>  drivers/media/v4l2-core/videobuf-dma-contig.c | 2 +-
+>>>>>>  2 files changed, 2 insertions(+), 2 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
+>>>>>> index a0e65481a201..1a82ec13ea00 100644
+>>>>>> --- a/drivers/media/common/videobuf2/frame_vector.c
+>>>>>> +++ b/drivers/media/common/videobuf2/frame_vector.c
+>>>>>> @@ -70,7 +70,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+>>>>>>                      break;
+>>>>>>
+>>>>>>              while (ret < nr_frames && start + PAGE_SIZE <= vma->vm_end) {
+>>>>>> -                    err = follow_pfn(vma, start, &nums[ret]);
+>>>>>> +                    err = unsafe_follow_pfn(vma, start, &nums[ret]);
+>>>>>>                      if (err) {
+>>>>>>                              if (ret == 0)
+>>>>>>                                      ret = err;
+>>>>>> diff --git a/drivers/media/v4l2-core/videobuf-dma-contig.c b/drivers/media/v4l2-core/videobuf-dma-contig.c
+>>>>>> index 52312ce2ba05..821c4a76ab96 100644
+>>>>>> --- a/drivers/media/v4l2-core/videobuf-dma-contig.c
+>>>>>> +++ b/drivers/media/v4l2-core/videobuf-dma-contig.c
+>>>>>> @@ -183,7 +183,7 @@ static int videobuf_dma_contig_user_get(struct videobuf_dma_contig_memory *mem,
+>>>>>>      user_address = untagged_baddr;
+>>>>>>
+>>>>>>      while (pages_done < (mem->size >> PAGE_SHIFT)) {
+>>>>>> -            ret = follow_pfn(vma, user_address, &this_pfn);
+>>>>>> +            ret = unsafe_follow_pfn(vma, user_address, &this_pfn);
+>>>>>>              if (ret)
+>>>>>>                      break;
+>>>>>>
+>>>>>>
+>>>>>
+>>>>
+>>>
+>>>
+>>
+> 
+> 
+
