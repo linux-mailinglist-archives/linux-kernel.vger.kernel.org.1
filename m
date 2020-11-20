@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0012F2BAB27
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E46522BAB29
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgKTNcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 08:32:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51566 "EHLO
+        id S1728017AbgKTNdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 08:33:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726553AbgKTNco (ORCPT
+        with ESMTP id S1727839AbgKTNdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:32:44 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76335C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:32:44 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id r17so10048859ljg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:32:44 -0800 (PST)
+        Fri, 20 Nov 2020 08:33:13 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65317C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:33:13 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id d17so13426522lfq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:33:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rkBwPCRy+fYCiET35Xw1czk/fPbP21kh2s/p3jdHihw=;
-        b=Ktpb8TKdDPxW/PfYzp2UAo+7rqk4NjKTLjAWC3KWxvQOspDXNwd9PtQ8ge5eYdjgaw
-         VI0ymAY4+R/Vjhp6qN0vBM7uFAaQfMlLwrqVcNnS+pa9ivv/cBDXVTxSzfgUDns5oVpc
-         8LOLq+TjIjY2ethjJL88AvWoOM037u3Kjbw1XJiUbnQpEY0V3gT7fa15CUM5GLOUbStM
-         hMpIF7AMidxCZKCx1WbCa+Ed7iIMvKzJV9KomlMs6QMJ/mSJn3dxx/sjSTx9WqIdGti2
-         zEGTF2rik/khJSLMM2I64ZgqjovYVwq7ZAm/qN0G9jPrgiEKKEUR4rIXKcu71ZaYFwvF
-         n9kw==
+        bh=2T+MwhTnfOUJGpHzabKS99TwgxNb8yVa9ij6X6D/tX4=;
+        b=EFuPOAjB+ZwugfsfvJp9vryEQbO5kl4j/d2eqJtVamwCgCwJalUKGJ34G+I4bEvuGj
+         k1slKAw73KT3mxID4QMKVEzJpwPYKYpmjH2EnYjhRJSqzPrmt+hGKK9KlJZ7A9FxSbYO
+         b5UK7B7IjmXqRUtpmUq8q1EMi/LBVF9tXtZAUulqS4GGfOFw+ucEAis3NirEWUtE4Okm
+         ZJ/bya2iXlYrDuVLkz53R3Pl3Q00Hi/qgfGf5Sj78XKoZd++SaRDcnzmtpjoi5pjIIHf
+         BLEGOd2qL9EIYnznML2+DxxtEbH2mNeKucinVRMYx2fLY4oE7BEq9UGh8IpdfxdReNN2
+         a6hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rkBwPCRy+fYCiET35Xw1czk/fPbP21kh2s/p3jdHihw=;
-        b=SRtoof8oz6pUO2lSQensru8u0oEBapJydBbJCyqhL4CHKWklEanzE+4LAykYi5bVnA
-         RxjxTuc+4Ns1NIsQ9876kedYKKDjPLEWQdMCerCVpWkv1tYQ7MwBKSovF50XTyiqjrb1
-         olUaBvqx7PHNXPIutESh4PBcbED1YH+x537DFh0ynCvYYH4LwRCNNNUTdZkclFY1YLLN
-         Ql5H37JJMcHytu+0Ha1t+ngeBiIn2nJFkMrVdJc62wbEUCtxpYsdV9ubvoTdE39S3ENl
-         7YJUvDbdCaTb9iZwlbfQGcBq1CWGn0f94RIKlSi7H7agR62QSg0p+VRPBQWd/TB+U7rm
-         g3Og==
-X-Gm-Message-State: AOAM531HmjOdC/j9FJOFGuwf/HIU4VN3D1vT32J/+NMgnYctpLzDAH3V
-        qIv6CqA0YxS0kPbWthfun+iTOVwiX5E6EbcqJPH6Kg==
-X-Google-Smtp-Source: ABdhPJwtRgtX/cppp9nnkixiI+q2nhYET9gaAq/jCze+fTtj42InDuwii3wNe7EERUPGZY0wZXZVyF2UKK0GQtNQ0Qs=
-X-Received: by 2002:a2e:8050:: with SMTP id p16mr8596856ljg.69.1605879162916;
- Fri, 20 Nov 2020 05:32:42 -0800 (PST)
+        bh=2T+MwhTnfOUJGpHzabKS99TwgxNb8yVa9ij6X6D/tX4=;
+        b=ewfE7N/LrZPmV/gFGRCJU5UYA4QXaOHb5d2emFs5uYHFrqpb/K5IOVbfsVNKsM5wZL
+         GUMiPJKqVLHOvkj90khh//7Sfh0UMuJ1CSOzuczpxoRSNrz0sQGOJ28qno9Vk7ClLnOh
+         G76hp8N4VMUDk1c82TyWm6MsvTawMIoGtWpVHVOeyhokg0aVX2chEuTAdsp6N4rZhOPv
+         DygVCly6bnvjxrd+jTBlB/hhjEP0OaXRIEteYzM3huHAAGhoxh6MBmO9zGipd5Y84DoN
+         50XkSXfwCUd07cgT1thGlF6YwPFv82fTVG60EabgFVrBKYd2Mz0Q48aCGKLsMX/X2tx+
+         WWcw==
+X-Gm-Message-State: AOAM530318xxfSPg1cbKRY0Pn4YYPArlUSyD9aWQEckSj8ny6yK0PNDE
+        R7KWHDUA4EXMT8RcNqzh8wgxetOgO2VXFEHkEUMjZu8pe/x6Iw==
+X-Google-Smtp-Source: ABdhPJxTY95CBFz08Fur9iIn16xSB3EkMAo+RWAuefoTdkwezuX2bYbBKTYSq00dC7Gd9RIQB1RGbhzL0PtdyqDrPMA=
+X-Received: by 2002:ac2:5f4b:: with SMTP id 11mr7517261lfz.385.1605879191854;
+ Fri, 20 Nov 2020 05:33:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20201120090630.3286-1-mgorman@techsingularity.net> <20201120090630.3286-3-mgorman@techsingularity.net>
-In-Reply-To: <20201120090630.3286-3-mgorman@techsingularity.net>
+References: <20201120090630.3286-1-mgorman@techsingularity.net> <20201120090630.3286-4-mgorman@techsingularity.net>
+In-Reply-To: <20201120090630.3286-4-mgorman@techsingularity.net>
 From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 20 Nov 2020 14:32:31 +0100
-Message-ID: <CAKfTPtDynYOR138kw7=KUU8ATw0u8_o7X_+ekWdTm1wNMdef4g@mail.gmail.com>
-Subject: Re: [PATCH 2/4] sched: Avoid unnecessary calculation of load
- imbalance at clone time
+Date:   Fri, 20 Nov 2020 14:33:00 +0100
+Message-ID: <CAKfTPtC_RF=yJHfuGHgLjCJvGnUNhtEeOuzLywP=6HEWHMQd7g@mail.gmail.com>
+Subject: Re: [PATCH 3/4] sched/numa: Allow a floating imbalance between NUMA nodes
 To:     Mel Gorman <mgorman@techsingularity.net>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
@@ -65,49 +64,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, 20 Nov 2020 at 10:06, Mel Gorman <mgorman@techsingularity.net> wrote:
 >
-> In find_idlest_group(), the load imbalance is only relevant when the group
-> is either overloaded or fully busy but it is calculated unconditionally.
-> This patch moves the imbalance calculation to the context it is required.
-> Technically, it is a micro-optimisation but really the benefit is avoiding
-> confusing one type of imbalance with another depending on the group_type
-> in the next patch.
+> Currently, an imbalance is only allowed when a destination node
+> is almost completely idle. This solved one basic class of problems
+> and was the cautious approach.
 >
-> No functional change.
+> This patch revisits the possibility that NUMA nodes can be imbalanced
+> until 25% of the CPUs are occupied. The reasoning behind 25% is somewhat
+> superficial -- it's half the cores when HT is enabled.  At higher
+> utilisations, balancing should continue as normal and keep things even
+> until scheduler domains are fully busy or over utilised.
+>
+> Note that this is not expected to be a universal win. Any benchmark
+> that prefers spreading as wide as possible with limited communication
+> will favour the old behaviour as there is more memory bandwidth.
+> Workloads that communicate heavily in pairs such as netperf or tbench
+> benefit. For the tests I ran, the vast majority of workloads saw
+> a benefit so it seems to be a worthwhile trade-off.
 >
 > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
 Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
 > ---
->  kernel/sched/fair.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>  kernel/sched/fair.c | 21 +++++++++++----------
+>  1 file changed, 11 insertions(+), 10 deletions(-)
 >
 > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 5fbed29e4001..9aded12aaa90 100644
+> index 9aded12aaa90..e17e6c5da1d5 100644
 > --- a/kernel/sched/fair.c
 > +++ b/kernel/sched/fair.c
-> @@ -8777,9 +8777,6 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
->                         .group_type = group_overloaded,
->         };
+> @@ -1550,7 +1550,8 @@ struct task_numa_env {
+>  static unsigned long cpu_load(struct rq *rq);
+>  static unsigned long cpu_runnable(struct rq *rq);
+>  static unsigned long cpu_util(int cpu);
+> -static inline long adjust_numa_imbalance(int imbalance, int dst_running);
+> +static inline long adjust_numa_imbalance(int imbalance,
+> +                                       int dst_running, int dst_weight);
 >
-> -       imbalance = scale_load_down(NICE_0_LOAD) *
-> -                               (sd->imbalance_pct-100) / 100;
+>  static inline enum
+>  numa_type numa_classify(unsigned int imbalance_pct,
+> @@ -1930,7 +1931,8 @@ static void task_numa_find_cpu(struct task_numa_env *env,
+>                 src_running = env->src_stats.nr_running - 1;
+>                 dst_running = env->dst_stats.nr_running + 1;
+>                 imbalance = max(0, dst_running - src_running);
+> -               imbalance = adjust_numa_imbalance(imbalance, dst_running);
+> +               imbalance = adjust_numa_imbalance(imbalance, dst_running,
+> +                                                       env->dst_stats.weight);
+>
+>                 /* Use idle CPU if there is no imbalance */
+>                 if (!imbalance) {
+> @@ -8995,16 +8997,14 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+>
+>  #define NUMA_IMBALANCE_MIN 2
+>
+> -static inline long adjust_numa_imbalance(int imbalance, int dst_running)
+> +static inline long adjust_numa_imbalance(int imbalance,
+> +                               int dst_running, int dst_weight)
+>  {
+> -       unsigned int imbalance_min;
 > -
->         do {
->                 int local_group;
+>         /*
+>          * Allow a small imbalance based on a simple pair of communicating
+> -        * tasks that remain local when the source domain is almost idle.
+> +        * tasks that remain local when the destination is lightly loaded.
+>          */
+> -       imbalance_min = NUMA_IMBALANCE_MIN;
+> -       if (dst_running <= imbalance_min)
+> +       if (dst_running < (dst_weight >> 2) && imbalance <= NUMA_IMBALANCE_MIN)
+>                 return 0;
 >
-> @@ -8833,6 +8830,11 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
->         switch (local_sgs.group_type) {
->         case group_overloaded:
->         case group_fully_busy:
-> +
-> +               /* Calculate allowed imbalance based on load */
-> +               imbalance = scale_load_down(NICE_0_LOAD) *
-> +                               (sd->imbalance_pct-100) / 100;
-> +
->                 /*
->                  * When comparing groups across NUMA domains, it's possible for
->                  * the local domain to be very lightly loaded relative to the
+>         return imbalance;
+> @@ -9107,9 +9107,10 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+>                 }
+>
+>                 /* Consider allowing a small imbalance between NUMA groups */
+> -               if (env->sd->flags & SD_NUMA)
+> +               if (env->sd->flags & SD_NUMA) {
+>                         env->imbalance = adjust_numa_imbalance(env->imbalance,
+> -                                               busiest->sum_nr_running);
+> +                               busiest->sum_nr_running, busiest->group_weight);
+> +               }
+>
+>                 return;
+>         }
 > --
 > 2.26.2
 >
