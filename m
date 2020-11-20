@@ -2,233 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEEF2BA9CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9B52BA9CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727479AbgKTMFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:05:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45230 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727137AbgKTMFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:05:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605873919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NzTiA4NG82ayN413wirwqqYr4HehcKAsF24Gn5hP2dU=;
-        b=bmYyX8nILg+ZlY8sbtWE5w2bO2VV8WEs5T/iV+E9cNskIM3/nmOQdHogS6LmAUqDiCIN7o
-        uep+xZsGp+4iiWlkS7R5O+A3tUuUCh3Zjoj5861nPuFhVVaUm7oGIsCOvz4fsp1+Fs7rrG
-        1a0+AfThrxlQZZZfV/WGh6OWJYlmzC4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2EDC4AC23;
-        Fri, 20 Nov 2020 12:05:19 +0000 (UTC)
-Subject: Re: [PATCH v2 05/12] x86: rework arch_local_irq_restore() to not use
- popf
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, luto@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-6-jgross@suse.com>
- <20201120115943.GD3021@hirez.programming.kicks-ass.net>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <d2148d19-b8b3-1492-701b-3a85b761fd76@suse.com>
-Date:   Fri, 20 Nov 2020 13:05:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727897AbgKTMGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:06:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727137AbgKTMGv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 07:06:51 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76517C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:06:51 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id a13so8612372qkl.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 04:06:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ONlxph66vinoq7WQfOgvS0BntK6G4N++ZL2XryVnJQ0=;
+        b=MljDJCHkujFrU1c2g2ZELpi5rlMJCDGjG/DmHtXJkIoff9yjCv9f/ikpnKtgIbOWcD
+         G4bIlhmWLD/f3G2+R8EYH4Bls3hTAxDGWJ59YSyW8ExYtaLvMVYZTBI+U1S2DI7pR6qk
+         qiWHwcQIFJZ6umxP1DryKwMxVbbDZaHrBo1jMZOsQUA9z2lH27uusK1KxB7ymfd5QsKn
+         e9buBHIaWBzIaBMDgNRElLwyGqORtZZiPkWip3SnVXExioFjo1Mq4C2nGblp0T3NFbDn
+         GyNYCeK/OQBjZsHeYtVegfTmj4rSkPvbLlFSfIav+MOCR88DklVns02fycEcnsgO1SmX
+         QQQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ONlxph66vinoq7WQfOgvS0BntK6G4N++ZL2XryVnJQ0=;
+        b=I3Q2+eq1bJcRGdjOvQtOq1xuZRLJig9GLuRbT0oaaCHnMbApOhVDbPOi+Tw4+8+k6b
+         bEfbOu2z+CI0jQX8UeXhgocNrDTBVSWDyVlnGrHY438LbqFTwI1w1TmBZ540KUwuRIFg
+         MniZ75Ol8AiyLDYMiwSllfDHV6q/eLE31blXpDRnLhPB4FN6Q6UfSPKyZTbpUI4qQu6D
+         CEvi2NYf0kdBn9RdMJTjTHIMwao+3MOhvv0XD5fe5PWy2eY1wmkp6yW7nSk3PipQ3y6y
+         erRnGDdrxZErLjKQRcpxz6f6ErbPWx7AoNNsp7o0aU8sGhQbv4zSg9ulFkvvybSHtnyT
+         YkwA==
+X-Gm-Message-State: AOAM531nErQaWgBLe8aU31mPFnoCD/erxyEsBOok4h6FDT8SQ3Jk2MBi
+        sEfQe4h0JQmlB/LIEEQiPYk+Uq4qJpIjFw/6eQkJBQ==
+X-Google-Smtp-Source: ABdhPJxlzoLbJUDOR5DZrfB3R91d4OSUz1r4Uyt4EmTjFvPWYFscosYrTT9xdvonmTIzg6R/ZwORId0Js5HU/Rbszeo=
+X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr16608080qkm.231.1605874010482;
+ Fri, 20 Nov 2020 04:06:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201120115943.GD3021@hirez.programming.kicks-ass.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ylZJJWu3CTRSDQL4pjinjf9KQnc2Mi8Rq"
+References: <20201118035309.19144-1-qiang.zhang@windriver.com>
+ <20201119214934.GC1437@paulmck-ThinkPad-P72> <20201120115935.GA8042@pc636>
+In-Reply-To: <20201120115935.GA8042@pc636>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 20 Nov 2020 13:06:39 +0100
+Message-ID: <CACT4Y+bHpju_vXjdtb46O=zbQKTFaCSuoTKu1ggZ=CZ9SqWhXQ@mail.gmail.com>
+Subject: Re: [PATCH] rcu: kasan: record and print kvfree_call_rcu call stack
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Zqiang <qiang.zhang@windriver.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ylZJJWu3CTRSDQL4pjinjf9KQnc2Mi8Rq
-Content-Type: multipart/mixed; boundary="OJdSKNZQ7zTeFDk7fKB1vgvgQ8RAMAcBi";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: xen-devel@lists.xenproject.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, virtualization@lists.linux-foundation.org,
- luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
- "VMware, Inc." <pv-drivers@vmware.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>
-Message-ID: <d2148d19-b8b3-1492-701b-3a85b761fd76@suse.com>
-Subject: Re: [PATCH v2 05/12] x86: rework arch_local_irq_restore() to not use
- popf
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-6-jgross@suse.com>
- <20201120115943.GD3021@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201120115943.GD3021@hirez.programming.kicks-ass.net>
+On Fri, Nov 20, 2020 at 12:59 PM Uladzislau Rezki <urezki@gmail.com> wrote:
+>
+> On Thu, Nov 19, 2020 at 01:49:34PM -0800, Paul E. McKenney wrote:
+> > On Wed, Nov 18, 2020 at 11:53:09AM +0800, qiang.zhang@windriver.com wrote:
+> > > From: Zqiang <qiang.zhang@windriver.com>
+> > >
+> > > Add kasan_record_aux_stack function for kvfree_call_rcu function to
+> > > record call stacks.
+> > >
+> > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> >
+> > Thank you, but this does not apply on the "dev" branch of the -rcu tree.
+> > See file:///home/git/kernel.org/rcutodo.html for more info.
+> >
+> > Adding others on CC who might have feedback on the general approach.
+> >
+> >                                                       Thanx, Paul
+> >
+> > > ---
+> > >  kernel/rcu/tree.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index da3414522285..a252b2f0208d 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -3506,7 +3506,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > >             success = true;
+> > >             goto unlock_return;
+> > >     }
+> > > -
+> > > +   kasan_record_aux_stack(ptr);
+> Is that save to invoke it on vmalloced ptr.?
 
---OJdSKNZQ7zTeFDk7fKB1vgvgQ8RAMAcBi
-Content-Type: multipart/mixed;
- boundary="------------67F8C41D891759989B303093"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------67F8C41D891759989B303093
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 20.11.20 12:59, Peter Zijlstra wrote:
-> On Fri, Nov 20, 2020 at 12:46:23PM +0100, Juergen Gross wrote:
->> +static __always_inline void arch_local_irq_restore(unsigned long flag=
-s)
->> +{
->> +	if (!arch_irqs_disabled_flags(flags))
->> +		arch_local_irq_enable();
->> +}
->=20
-> If someone were to write horrible code like:
->=20
-> 	local_irq_disable();
-> 	local_irq_save(flags);
-> 	local_irq_enable();
-> 	local_irq_restore(flags);
->=20
-> we'd be up some creek without a paddle... now I don't _think_ we have
-> genius code like that, but I'd feel saver if we can haz an assertion in=
-
-> there somewhere...
->=20
-> Maybe something like:
->=20
-> #ifdef CONFIG_DEBUG_ENTRY // for lack of something saner
-> 	WARN_ON_ONCE((arch_local_save_flags() ^ flags) & X86_EFLAGS_IF);
-> #endif
->=20
-> At the end?
->=20
-
-I'd be fine with that. I didn't add something like that because I
-couldn't find a suitable CONFIG_ :-)
-
-
-Juergen
-
---------------67F8C41D891759989B303093
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------67F8C41D891759989B303093--
-
---OJdSKNZQ7zTeFDk7fKB1vgvgQ8RAMAcBi--
-
---ylZJJWu3CTRSDQL4pjinjf9KQnc2Mi8Rq
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl+3sP0FAwAAAAAACgkQsN6d1ii/Ey9w
-0Af/dT6XeG9kNTyqYmy9/CPAH4Oth+lNpcfbnKD+N1KHS2cUBc7/EQ1Aqjbe2nDZKRK6vw/E21u8
-U8mU0GsAvfwZltDYvmAtBfgOErYFp2LEjWHrNw+jAAFcCQB9VQewNhQ87VwBv3dHNCz5SkabXif9
-2ql8lQg3+TvIHyMzqRvXeAHCiIWmvjWceaniEwjo8aVB21XrySpCpSBh7wI9bvD+66Y3rrl9wNTD
-K+gLs8izRO4wUOrq8+OJDN+CE2NZIgcnUICM62DRs9EPa6RaDpfXa072Tggc1z0Y0JUElLSS/NDa
-QULDL6tNrQjVAVhoV8PiR7Zvit8cbRocdGdIpSlcrA==
-=bqp5
------END PGP SIGNATURE-----
-
---ylZJJWu3CTRSDQL4pjinjf9KQnc2Mi8Rq--
+Yes, kasan_record_aux_stack should figure it out itself.
+We call kasan_record_aux_stack on call_rcu as well, and rcu structs
+can be anywhere.
+See:
+https://elixir.bootlin.com/linux/v5.10-rc4/source/mm/kasan/generic.c#L335
