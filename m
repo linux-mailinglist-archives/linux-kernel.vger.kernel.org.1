@@ -2,147 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F242BA485
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C182BA48A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbgKTIWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:22:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38614 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726559AbgKTIWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:22:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605860534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rUWjaY/+C4/6mXNmnlJHLKENTydPJvcWDaqoKy/+AxE=;
-        b=p2XZg5MGbqcIH9+gJr/UY0TtqQN1xa16G6tXYzAYrZ2AA7tuiXFa31IuvEppxtLLOF5kPR
-        5IgmuM1D3vxPsWQ9LUUS+e8bDEGBS4w53qh9+3VuibKpd4lt9nfLbFaeZ8kAUbSeEAeZ/j
-        tK5AzmtT01vq/WDbRwSFRHv85NzQzuU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1C3ADACB0;
-        Fri, 20 Nov 2020 08:22:14 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 09:22:12 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, song.bao.hua@hisilicon.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 17/21] mm/hugetlb: Add a kernel parameter
- hugetlb_free_vmemmap
-Message-ID: <20201120082212.GG3200@dhcp22.suse.cz>
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120064325.34492-18-songmuchun@bytedance.com>
+        id S1726118AbgKTIW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:22:59 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:33231 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbgKTIW7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 03:22:59 -0500
+Received: by mail-lf1-f68.google.com with SMTP id l11so12297973lfg.0;
+        Fri, 20 Nov 2020 00:22:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=igNyjk3ZPx8gip3TWBwYGkCHE1bwLNjhy25vHgmoofM=;
+        b=ntrnyXrNEEaeUfDL8GLWp4xNBCDXlR3btQrEPT2eIsp7Jtxblf+y+XahrsRcywrvHq
+         qIoeqiQvZqj4jaL1tgw1hPqCEIfOrsWr3ZAJalr6BRhWU8jXi/hWrRp98ratIE8zgGvg
+         b4R3INVaGF9Xx1Sic+oJgeqgqMlq9CTVpMCISFb0Pd+rrQYKkUWS6BdAm3hq75l047He
+         WFrywV2JgZM7n28jjXpuNOCqWFq+IerLjaG3vSmobmqdvLxEscfIdlsFUEhTzcXkwzQe
+         XDkmrtG89F8whwFWDW3ylokdnJfMLmVpa0waMsvkkBoRLgSkFY4N+/yJOntVuR3sRO0W
+         4Vzw==
+X-Gm-Message-State: AOAM530VbRBr47c8zoU2pmFqS/jwarfn2BY5BoAtFHyQ+uhwVduTbY/d
+        dRBMFErh0myZsdz8n8afzE8mP552sZCVaA==
+X-Google-Smtp-Source: ABdhPJzOp+eccDhMRSlMLj+WI/oOOIjtCIyDA73IFZ4z9h1b+/Wws70IvzKvmw3L9gkeUZvmlfMgEw==
+X-Received: by 2002:a19:e01b:: with SMTP id x27mr2881996lfg.510.1605860577080;
+        Fri, 20 Nov 2020 00:22:57 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id v16sm220722ljj.0.2020.11.20.00.22.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 00:22:56 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kg1h6-0006VH-Ax; Fri, 20 Nov 2020 09:23:00 +0100
+Date:   Fri, 20 Nov 2020 09:23:00 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org, afaerber@suse.de,
+        manivannan.sadhasivam@linaro.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: serial: replace spin_lock_irqsave by spin_lock in
+ hard IRQ
+Message-ID: <X7d85DKvisjA3nYv@localhost>
+References: <1605776489-16283-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120064325.34492-18-songmuchun@bytedance.com>
+In-Reply-To: <1605776489-16283-1-git-send-email-tiantao6@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 20-11-20 14:43:21, Muchun Song wrote:
-> Add a kernel parameter hugetlb_free_vmemmap to disable the feature of
-> freeing unused vmemmap pages associated with each hugetlb page on boot.
-
-As replied to the config patch. This is fine but I would argue that the
-default should be flipped. Saving memory is nice but it comes with
-overhead and therefore should be an opt-in. The config option should
-only guard compile time dependencies not a user choice.
-
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
->  Documentation/admin-guide/mm/hugetlbpage.rst    |  3 +++
->  mm/hugetlb_vmemmap.c                            | 21 +++++++++++++++++++++
->  3 files changed, 33 insertions(+)
+On Thu, Nov 19, 2020 at 05:01:29PM +0800, Tian Tao wrote:
+> The code has been in a irq-disabled context since it is hard IRQ. There
+> is no necessity to do it again.
 > 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 5debfe238027..ccf07293cb63 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -1551,6 +1551,15 @@
->  			Documentation/admin-guide/mm/hugetlbpage.rst.
->  			Format: size[KMG]
->  
-> +	hugetlb_free_vmemmap=
-> +			[KNL] When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set,
-> +			this controls freeing unused vmemmap pages associated
-> +			with each HugeTLB page.
-> +			Format: { on (default) | off }
-> +
-> +			on:  enable the feature
-> +			off: disable the feature
-> +
->  	hung_task_panic=
->  			[KNL] Should the hung task detector generate panics.
->  			Format: 0 | 1
-> diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
-> index f7b1c7462991..7d6129ee97dd 100644
-> --- a/Documentation/admin-guide/mm/hugetlbpage.rst
-> +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
-> @@ -145,6 +145,9 @@ default_hugepagesz
->  
->  	will all result in 256 2M huge pages being allocated.  Valid default
->  	huge page size is architecture dependent.
-> +hugetlb_free_vmemmap
-> +	When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set, this disables freeing
-> +	unused vmemmap pages associated each HugeTLB page.
->  
->  When multiple huge page sizes are supported, ``/proc/sys/vm/nr_hugepages``
->  indicates the current number of pre-allocated huge pages of the default size.
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 3629165d8158..c958699d1393 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -144,6 +144,22 @@ static inline bool vmemmap_pmd_huge(pmd_t *pmd)
->  }
->  #endif
->  
-> +static bool hugetlb_free_vmemmap_disabled __initdata;
-> +
-> +static int __init early_hugetlb_free_vmemmap_param(char *buf)
-> +{
-> +	if (!buf)
-> +		return -EINVAL;
-> +
-> +	if (!strcmp(buf, "off"))
-> +		hugetlb_free_vmemmap_disabled = true;
-> +	else if (strcmp(buf, "on"))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
-> +
->  static inline unsigned int vmemmap_pages_per_hpage(struct hstate *h)
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
+>  drivers/tty/serial/owl-uart.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
+> index c149f8c3..472fdaf 100644
+> --- a/drivers/tty/serial/owl-uart.c
+> +++ b/drivers/tty/serial/owl-uart.c
+> @@ -251,10 +251,9 @@ static void owl_uart_receive_chars(struct uart_port *port)
+>  static irqreturn_t owl_uart_irq(int irq, void *dev_id)
 >  {
->  	return free_vmemmap_pages_per_hpage(h) + RESERVE_VMEMMAP_NR;
-> @@ -541,6 +557,11 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
->  	unsigned int order = huge_page_order(h);
->  	unsigned int vmemmap_pages;
+>  	struct uart_port *port = dev_id;
+> -	unsigned long flags;
+>  	u32 stat;
 >  
-> +	if (hugetlb_free_vmemmap_disabled) {
-> +		pr_info("disable free vmemmap pages for %s\n", h->name);
-> +		return;
-> +	}
-> +
->  	vmemmap_pages = ((1 << order) * sizeof(struct page)) >> PAGE_SHIFT;
->  	/*
->  	 * The head page and the first tail page are not to be freed to buddy
-> -- 
-> 2.11.0
+> -	spin_lock_irqsave(&port->lock, flags);
+> +	spin_lock(&port->lock);
 
--- 
-Michal Hocko
-SUSE Labs
+Same thing here; this will break with forced irq threading (i.e.
+"threadirqs") since the console code can still end up being called from
+interrupt context.
+
+>  	stat = owl_uart_read(port, OWL_UART_STAT);
+>  
+> @@ -268,7 +267,7 @@ static irqreturn_t owl_uart_irq(int irq, void *dev_id)
+>  	stat |= OWL_UART_STAT_RIP | OWL_UART_STAT_TIP;
+>  	owl_uart_write(port, stat, OWL_UART_STAT);
+>  
+> -	spin_unlock_irqrestore(&port->lock, flags);
+> +	spin_unlock(&port->lock);
+>  
+>  	return IRQ_HANDLED;
+>  }
+
+Johan
