@@ -2,112 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6845B2BB1EB
+	by mail.lfdr.de (Postfix) with ESMTP id DFA1F2BB1EC
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729271AbgKTSCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:02:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:53070 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728438AbgKTSCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:02:13 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 483481042;
-        Fri, 20 Nov 2020 10:02:12 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.27.176])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DBCEC3F719;
-        Fri, 20 Nov 2020 10:02:08 -0800 (PST)
-Date:   Fri, 20 Nov 2020 18:02:06 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Marco Elver <elver@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
- kfence: Avoid stalling...)
-Message-ID: <20201120180206.GF2328@C02TD0UTHF1T.local>
-References: <20201119125357.GA2084963@elver.google.com>
- <20201119151409.GU1437@paulmck-ThinkPad-P72>
- <20201119170259.GA2134472@elver.google.com>
- <20201119184854.GY1437@paulmck-ThinkPad-P72>
- <20201119193819.GA2601289@elver.google.com>
- <20201119213512.GB1437@paulmck-ThinkPad-P72>
- <20201120141928.GB3120165@elver.google.com>
- <20201120143928.GH1437@paulmck-ThinkPad-P72>
- <20201120152200.GD2328@C02TD0UTHF1T.local>
- <20201120173824.GJ1437@paulmck-ThinkPad-P72>
+        id S1729302AbgKTSCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:02:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728438AbgKTSCX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:02:23 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DF1C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:02:23 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w14so8596761pfd.7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Pi314qbACkjvb24O5TOH5mgSNjJFBx6zBuaW1GBgOBw=;
+        b=anUMddH1t++aHeatBjzyWQq6MC3KcPFQxcSP0boTBtJ1Wf8V8zxkpr9PANfBJ7nuXA
+         iy323bWUVOhNqEj33fQ3duFIF7Z0s4nI12XRaYbXvet1AmLNdWAI6sGCTpCoAPf9za+E
+         TX6tmnT0QipCiXBBfml6V8jVo88QHDO67A5yupSqyiSExAh6HBrDuwSYuBr2r6JEImvh
+         u9fdM1PQcrrkpH4DRvZ9Jr7OF06Wh58Rv8wJ+2hunkuGfC57xLm8bGPKngYpP6NGBYp8
+         2nAiUdId0sye5vi5QuDn4c2JvdPbm+Al0+VF4ceJdPrGh02TQRPkz7IgxhZOtfQr6ieK
+         yudA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Pi314qbACkjvb24O5TOH5mgSNjJFBx6zBuaW1GBgOBw=;
+        b=AokVHa7q3iWy2rwzp+jw/bm2yxsze2JmJcrnsawn2Zt+CFARYP+l39uZfCuzsMIy1W
+         QB+UW+WLOO/reuUTgbUFsXGVV7HozhqbLWILqHN9Lo7g4UdXGBk6diQG8glaYIozWTas
+         42tz2t7oA7BVwcv88k+LP27q8J8pvbIJCEFb+TNNuUEr7zptHzmn5N5dfAysAZBWvSZO
+         hki/KfSpegTZyRbnB1FmQaRDLKsN6xX1s7vkYuOtkewirBqZwduaiEbktvdczLfkO/Cj
+         rFnyZSS3cmDnBvKtwaS2sVmfbhFIdfs3ai822shWUIDv8VWDsECdJEjZBGB0Q1DvssAQ
+         lwFQ==
+X-Gm-Message-State: AOAM5314TaATH7HClbaWXc34MpZRLaQew4RwArXk43/R5hSYxadxHc4T
+        AQZz/wBUAJFt5LKK8Rj+2crLBzXIgakwWg==
+X-Google-Smtp-Source: ABdhPJyMU0p+BzlD058jBRxrtiWOLaHeym1uqUUcGQUYH93F6JCRU4jFp0pLuLw2RuC3SktGxcFUAA==
+X-Received: by 2002:a17:90a:14e5:: with SMTP id k92mr11376797pja.169.1605895343009;
+        Fri, 20 Nov 2020 10:02:23 -0800 (PST)
+Received: from ?IPv6:2402:3a80:415:f607:e09e:f6d6:daa6:f3cd? ([2402:3a80:415:f607:e09e:f6d6:daa6:f3cd])
+        by smtp.gmail.com with ESMTPSA id a12sm4684255pjh.48.2020.11.20.10.02.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 10:02:22 -0800 (PST)
+Subject: Re: [PATCH v3] checkpatch: add fix option for
+ ASSIGNMENT_CONTINUATIONS
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+References: <20201117171856.13284-1-yashsri421@gmail.com>
+ <48f56f40-a365-faac-542d-0e120fcf4365@gmail.com>
+ <08f164e93dc40e066e81c4021485d27d5ad5a6b7.camel@perches.com>
+From:   Aditya <yashsri421@gmail.com>
+Message-ID: <6deacf63-a80f-67b5-0594-e5cb5e82f42b@gmail.com>
+Date:   Fri, 20 Nov 2020 23:32:16 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120173824.GJ1437@paulmck-ThinkPad-P72>
+In-Reply-To: <08f164e93dc40e066e81c4021485d27d5ad5a6b7.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 09:38:24AM -0800, Paul E. McKenney wrote:
-> On Fri, Nov 20, 2020 at 03:22:00PM +0000, Mark Rutland wrote:
-> > On Fri, Nov 20, 2020 at 06:39:28AM -0800, Paul E. McKenney wrote:
-> > > On Fri, Nov 20, 2020 at 03:19:28PM +0100, Marco Elver wrote:
-> > > > I found that disabling ftrace for some of kernel/rcu (see below) solved
-> > > > the stalls (and any mention of deadlocks as a side-effect I assume),
-> > > > resulting in successful boot.
-> > > > 
-> > > > Does that provide any additional clues? I tried to narrow it down to 1-2
-> > > > files, but that doesn't seem to work.
-> > > 
-> > > There were similar issues during the x86/entry work.  Are the ARM guys
-> > > doing arm64/entry work now?
-> > 
-> > I'm currently looking at it. I had been trying to shift things to C for
-> > a while, and right now I'm trying to fix the lockdep state tracking,
-> > which is requiring untangling lockdep/rcu/tracing.
-> > 
-> > The main issue I see remaining atm is that we don't save/restore the
-> > lockdep state over exceptions taken from kernel to kernel. That could
-> > result in lockdep thinking IRQs are disabled when they're actually
-> > enabled (because code in the nested context might do a save/restore
-> > while IRQs are disabled, then return to a context where IRQs are
-> > enabled), but AFAICT shouldn't result in the inverse in most cases since
-> > the non-NMI handlers all call lockdep_hardirqs_disabled().
-> > 
-> > I'm at a loss to explaim the rcu vs ftrace bits, so if you have any
-> > pointers to the issuies ween with the x86 rework that'd be quite handy.
+On 20/11/20 10:56 pm, Joe Perches wrote:
+> On Fri, 2020-11-20 at 16:11 +0530, Aditya wrote:
+>> On 17/11/20 10:48 pm, Aditya Srivastava wrote:
+>>> Currently, checkpatch warns us if an assignment operator is placed
+>>> at the start of a line and not at the end of previous line.
+>>>
+>>> E.g., running checkpatch on commit 8195b1396ec8 ("hv_netvsc: fix
+>>> deadlock on hotplug") reports:
+>>>
+>>> CHECK: Assignment operator '=' should be on the previous line
+>>> +	struct netvsc_device *nvdev
+>>> +		= container_of(w, struct netvsc_device, subchan_work);
+>>>
+>>> Provide a simple fix by appending assignment operator to the previous
+>>> line and removing from the current line, if both the lines are additions
+>>> (ie start with '+')
+>>>
+>>> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+>>> ---
+>>> Changes in v2:
+>>> add check if both the lines are additions (ie start with '+')
+>>>
+>>> Changes in v3:
+>>> quote $operator; test with division assignment operator ('/=')
+>>>
+>>>  scripts/checkpatch.pl | 10 ++++++++--
+>>>  1 file changed, 8 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+>>> index c9aaaa443265..d5bc4d8e4f6c 100755
+>>> --- a/scripts/checkpatch.pl
+>>> +++ b/scripts/checkpatch.pl
+>>> @@ -3542,8 +3542,14 @@ sub process {
+>>>  
+>>>
+>>>  # check for assignments on the start of a line
+>>>  		if ($sline =~ /^\+\s+($Assignment)[^=]/) {
+>>> -			CHK("ASSIGNMENT_CONTINUATIONS",
+>>> -			    "Assignment operator '$1' should be on the previous line\n" . $hereprev);
+>>> +			my $operator = "$1";
+>>> +			if (CHK("ASSIGNMENT_CONTINUATIONS",
+>>> +				"Assignment operator '$1' should be on the previous line\n" . $hereprev) &&
+>>> +			    $fix && $prevrawline =~ /^\+/) {
+>>> +				# add assignment operator to the previous line, remove from current line
+>>> +				$fixed[$fixlinenr - 1] .= " $operator";
+>>> +				$fixed[$fixlinenr] =~ s/$operator\s*//;
+>>> +			}
+>>>  		}
+>>>  
+>>>
+>>>  # check for && or || at the start of a line
+>>>
+>>
+>> Hi Joe
+>> This patch probably got missed. Please review :)
 > 
-> There were several over a number of months.  I especially recall issues
-> with the direct-from-idle execution of smp_call_function*() handlers,
-> and also with some of the special cases in the entry code, for example,
-> reentering the kernel from the kernel.  This latter could cause RCU to
-> not be watching when it should have been or vice versa.
+> Did you look at $Assignment?  Did you see it can be /= ?
+> 
 
-Ah; those are precisely the cases I'm currently fixing, so if we're
-lucky this is an indirect result of one of those rather than a novel
-source of pain...
+Yes, I tested the patch with '/=' operator as well.
+As I could not find any occurrences in the past(over 4.13..5.8), I
+created an example for myself by modifying the above mentioned commit
+example i.e. commit 8195b1396ec8 ("hv_netvsc: fix deadlock on
+hotplug") as:
 
-> I would of course be most aware of the issues that impinged on RCU
-> and that were located by rcutorture.  This is actually not hard to run,
-> especially if the ARM bits in the scripting have managed to avoid bitrot.
-> The "modprobe rcutorture" approach has fewer dependencies.  Either way:
-> https://paulmck.livejournal.com/57769.html and later posts.
++	struct netvsc_device *nvdev
++		/= container_of(w, struct netvsc_device, subchan_work);
 
-That is a very good idea. I'd been relying on Syzkaller to tickle the
-issue, but the torture infrastructure is a much better fit for this
-problem. I hadn't realise how comprehensive the scripting was, thanks
-for this!
+[For Line 144 and 145(where the warning was reported for '=' earlier)]
 
-I'll see about giving that a go once I have the irq-from-idle cases
-sorted, as those are very obviously broken if you hack
-trace_hardirqs_{on,off}() to check that RCU is watching.
+The fix changes these lines to:
++	struct netvsc_device *nvdev /=
++		container_of(w, struct netvsc_device, subchan_work);
 
-Thanks,
-Mark.
+On retesting the patch with checkpatch.pl, it did not give this CHECK,
+nor did we add any new warning/error.
+
+> If it is, what happens in the $fixed[$fixlinenr] line?
+>
+
+In $fixed[$fixlinenr], we are just getting rid of the operator and any
+space(s) following it.
+
+What do you think?
+
+Thanks
+Aditya
