@@ -2,118 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41142BB0AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A57242BB0AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbgKTQf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:35:26 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:60601 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728673AbgKTQfZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:35:25 -0500
-Received: (qmail 620760 invoked by uid 1000); 20 Nov 2020 11:35:24 -0500
-Date:   Fri, 20 Nov 2020 11:35:24 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH RFC v2 1/1] scsi: pm: Leave runtime PM status alone
- during system resume/thaw/restore
-Message-ID: <20201120163524.GB619708@rowland.harvard.edu>
-References: <1605861443-11459-1-git-send-email-cang@codeaurora.org>
+        id S1729486AbgKTQgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:36:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728652AbgKTQgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 11:36:39 -0500
+Received: from [192.168.0.50] (89-70-52-201.dynamic.chello.pl [89.70.52.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DF4B2225B;
+        Fri, 20 Nov 2020 16:36:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605890199;
+        bh=+6bZltzFpZ4MwiZnSxxhZ/CseoiCy6+hsLiO8faWlD0=;
+        h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
+        b=MY8zmLEe/QE0BdrC68uX0K1xuhy2SkkVHfqAsWtkwIek7Vx4oy5F2X7ccpA/vRITX
+         XPmuL7T25W3RAdJAOSsNWh4ixSwSkWhRtJrGIpz4KdRXSzH8K/owd1QH8jt0Oq7MPB
+         sowyb5FxdJg+lXQhrEhgwzPq1oZvxpLcMWwBxuSY=
+Subject: Re: [PATCH] clk: samsung: allow compile testing of Exynos, S3C64xx
+ and S5Pv210
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+References: <20201119164509.754851-1-krzk@kernel.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <f44c5f4f-bda4-a1c1-dc6a-dc31efa314c6@kernel.org>
+Date:   Fri, 20 Nov 2020 17:36:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605861443-11459-1-git-send-email-cang@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201119164509.754851-1-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:37:22AM -0800, Can Guo wrote:
-> Runtime resume is handled by runtime PM framework, no need to forcibly
-> set runtime PM status to RPM_ACTIVE during system resume/thaw/restore.
+On 11/19/20 17:45, Krzysztof Kozlowski wrote:
+> So far all Exynos, S3C64xx and S5Pv210 clock units were selected by
+> respective SOC/ARCH Kconfig option.  On a kernel built for selected
+> SoCs, this allowed to build only limited set of matching clock drivers.
+> However compile testing was not possible in such case as Makefile object
+> depent on SOC/ARCH option.
 
-Sorry, I don't understand this explanation at all.
+"objects depend" or "object depends" ?
 
-Sure, runtime resume is handled by the runtime PM framework.  But this 
-patch changes the code for system resume, which is completely different.
-
-Following a system resume, the hardware will be at full power.  We don't 
-want the kernel to think that the device is still in runtime suspend; 
-otherwise is would never put the device back into low-power mode.
-
-Alan Stern
-
-> Cc: Stanley Chu <stanley.chu@mediatek.com>
-> Cc: Bart Van Assche <bvanassche@acm.org>
-> Cc: Alan Stern <stern@rowland.harvard.edu>
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> ---
+> Add separate Kconfig options for each of them to be able to compile
+> test.
 > 
-> Changes since v1:
-> - Incorporated Bart's comments
-> 
-> ---
->  drivers/scsi/scsi_pm.c | 24 +-----------------------
->  1 file changed, 1 insertion(+), 23 deletions(-)
-> 
-> diff --git a/drivers/scsi/scsi_pm.c b/drivers/scsi/scsi_pm.c
-> index 3717eea..908f27f 100644
-> --- a/drivers/scsi/scsi_pm.c
-> +++ b/drivers/scsi/scsi_pm.c
-> @@ -79,25 +79,6 @@ static int scsi_dev_type_resume(struct device *dev,
->  	scsi_device_resume(to_scsi_device(dev));
->  	dev_dbg(dev, "scsi resume: %d\n", err);
->  
-> -	if (err == 0) {
-> -		pm_runtime_disable(dev);
-> -		err = pm_runtime_set_active(dev);
-> -		pm_runtime_enable(dev);
-> -
-> -		/*
-> -		 * Forcibly set runtime PM status of request queue to "active"
-> -		 * to make sure we can again get requests from the queue
-> -		 * (see also blk_pm_peek_request()).
-> -		 *
-> -		 * The resume hook will correct runtime PM status of the disk.
-> -		 */
-> -		if (!err && scsi_is_sdev_device(dev)) {
-> -			struct scsi_device *sdev = to_scsi_device(dev);
-> -
-> -			blk_set_runtime_active(sdev->request_queue);
-> -		}
-> -	}
-> -
->  	return err;
->  }
->  
-> @@ -165,11 +146,8 @@ static int scsi_bus_resume_common(struct device *dev,
->  		 */
->  		if (strncmp(scsi_scan_type, "async", 5) != 0)
->  			async_synchronize_full_domain(&scsi_sd_pm_domain);
-> -	} else {
-> -		pm_runtime_disable(dev);
-> -		pm_runtime_set_active(dev);
-> -		pm_runtime_enable(dev);
->  	}
-> +
->  	return 0;
->  }
->  
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-> 
+> Signed-off-by: Krzysztof Kozlowski<krzk@kernel.org>
+
+The patch look good to me, thanks.
+Acked-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+
+I guess it's best now to merge it through your tree as it depends on 
+patches already sent to arm-soc? Next time it might be better to use 
+immutable branches right away to keep the clk changes in the clk 
+maintainer's tree.
+
+--
+Regards,
+Sylwester
