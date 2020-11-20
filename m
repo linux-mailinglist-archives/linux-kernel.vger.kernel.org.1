@@ -2,89 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EDF2BA7B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2047E2BA7B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgKTKrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:47:19 -0500
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:54127
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725766AbgKTKrS (ORCPT
+        id S1727227AbgKTKrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 05:47:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41356 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725766AbgKTKrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:47:18 -0500
-X-IronPort-AV: E=Sophos;i="5.78,356,1599516000"; 
-   d="scan'208";a="365143387"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 11:47:15 +0100
-Date:   Fri, 20 Nov 2020 11:47:15 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Joe Perches <joe@perches.com>
-cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Robo Bot <apw@canonical.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cocci <cocci@systeme.lip6.fr>
-Subject: Re: [Cocci] Proposal for a new checkpatch check; matching _set_drvdata()
- & _get_drvdata()
-In-Reply-To: <b74517242de5790f8ab0cd9be00a70b9ab96564c.camel@perches.com>
-Message-ID: <alpine.DEB.2.22.394.2011201140480.2750@hadrien>
-References: <CA+U=Dspy5+RE9agcLr6eY9DCMa1c5+++0JLeugMMBRXz4YLj1w@mail.gmail.com> <CAHp75VcT5hZH6m0Dri1h_EFjc7=4+1XoE7sRuQyfO75k9A0GKA@mail.gmail.com> <b74517242de5790f8ab0cd9be00a70b9ab96564c.camel@perches.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 20 Nov 2020 05:47:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605869270;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FWeqzBmZlLWAnJm9w9KD07ccv+2odS4qEQoYooXswuk=;
+        b=cXkKSbgmjG6ii2sVCxbDNQVsJWAsKtm6eOOIpyMOq67WZVdsP4BhDJnPw+blN0ZLQZ+ld0
+        bMawmSVwXYWNiomh7rt25XLZ5MIM9ej86nOpPhppKvJP1AW8OYFz+WTSb00O+XtJfynKtd
+        94JUYi9jX50rJVOFim6PHR2jBMvR7dM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-141-z5gMOlHWMvOuFb6u_w9ZmA-1; Fri, 20 Nov 2020 05:47:47 -0500
+X-MC-Unique: z5gMOlHWMvOuFb6u_w9ZmA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA5A9801B1C;
+        Fri, 20 Nov 2020 10:47:45 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-114-22.ams2.redhat.com [10.36.114.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0495F1F0;
+        Fri, 20 Nov 2020 10:47:36 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Sergio Lopez <slp@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jia He <justin.he@arm.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net] vsock/virtio: discard packets only when socket is really closed
+Date:   Fri, 20 Nov 2020 11:47:36 +0100
+Message-Id: <20201120104736.73749-1-sgarzare@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Starting from commit 8692cefc433f ("virtio_vsock: Fix race condition
+in virtio_transport_recv_pkt"), we discard packets in
+virtio_transport_recv_pkt() if the socket has been released.
 
+When the socket is connected, we schedule a delayed work to wait the
+RST packet from the other peer, also if SHUTDOWN_MASK is set in
+sk->sk_shutdown.
+This is done to complete the virtio-vsock shutdown algorithm, releasing
+the port assigned to the socket definitively only when the other peer
+has consumed all the packets.
 
-On Thu, 19 Nov 2020, Joe Perches wrote:
+If we discard the RST packet received, the socket will be closed only
+when the VSOCK_CLOSE_TIMEOUT is reached.
 
-> On Thu, 2020-11-19 at 17:16 +0200, Andy Shevchenko wrote:
-> > On Thu, Nov 19, 2020 at 4:09 PM Alexandru Ardelean
-> > <ardeleanalex@gmail.com> wrote:
-> > >
-> > > Hey,
-> > >
-> > > So, I stumbled on a new check that could be added to checkpatch.
-> > > Since it's in Perl, I'm reluctant to try it.
-> > >
-> > > Seems many drivers got to a point where they now call (let's say)
-> > > spi_set_drvdata(), but never access that information via
-> > > spi_get_drvdata().
-> > > Reasons for this seem to be:
-> > > 1. They got converted to device-managed functions and there is no
-> > > longer a remove hook to require the _get_drvdata() access
-> > > 2. They look like they were copied from a driver that had a
-> > > _set_drvdata() and when the code got finalized, the _set_drvdata() was
-> > > omitted
-> > >
-> > > There are a few false positives that I can notice at a quick look,
-> > > like the data being set via some xxx_set_drvdata() and retrieved via a
-> > > dev_get_drvdata().
-> >
-> > I can say quite a few. And this makes a difference.
-> > So, basically all drivers that are using PM callbacks would rather use
-> > dev_get_drvdata() rather than bus specific.
-> >
-> > > I think checkpatch reporting these as well would be acceptable simply
-> > > from a reviewability perspective.
-> > >
-> > > I did a shell script to quickly check these. See below.
-> > > It's pretty badly written but it is enough for me to gather a list.
-> > > And I wrote it in 5 minutes :P
-> > > I initially noticed this in some IIO drivers, and then I suspected
-> > > that this may be more widespread.
-> >
-> > It seems more suitable for coccinelle.
->
-> To me as well.
+Sergio discovered the issue while running ab(1) HTTP benchmark using
+libkrun [1] and observing a latency increase with that commit.
 
-To me as well, since it seems to involve nonlocal information.
+To avoid this issue, we discard packet only if the socket is really
+closed (SOCK_DONE flag is set).
+We also set SOCK_DONE in virtio_transport_release() when we don't need
+to wait any packets from the other peer (we didn't schedule the delayed
+work). In this case we remove the socket from the vsock lists, releasing
+the port assigned.
 
-I'm not sure to understand the original shell script. Is there
-something interesting about pci_set_drvdata?
+[1] https://github.com/containers/libkrun
 
-julia
+Fixes: 8692cefc433f ("virtio_vsock: Fix race condition in virtio_transport_recv_pkt")
+Cc: justin.he@arm.com
+Reported-by: Sergio Lopez <slp@redhat.com>
+Tested-by: Sergio Lopez <slp@redhat.com>
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ net/vmw_vsock/virtio_transport_common.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index 0edda1edf988..5956939eebb7 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -841,8 +841,10 @@ void virtio_transport_release(struct vsock_sock *vsk)
+ 		virtio_transport_free_pkt(pkt);
+ 	}
+ 
+-	if (remove_sock)
++	if (remove_sock) {
++		sock_set_flag(sk, SOCK_DONE);
+ 		vsock_remove_sock(vsk);
++	}
+ }
+ EXPORT_SYMBOL_GPL(virtio_transport_release);
+ 
+@@ -1132,8 +1134,8 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+ 
+ 	lock_sock(sk);
+ 
+-	/* Check if sk has been released before lock_sock */
+-	if (sk->sk_shutdown == SHUTDOWN_MASK) {
++	/* Check if sk has been closed before lock_sock */
++	if (sock_flag(sk, SOCK_DONE)) {
+ 		(void)virtio_transport_reset_no_sock(t, pkt);
+ 		release_sock(sk);
+ 		sock_put(sk);
+-- 
+2.26.2
+
