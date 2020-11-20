@@ -2,139 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECD32BA490
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B512BA49C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 09:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgKTIXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 03:23:40 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7708 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbgKTIXj (ORCPT
+        id S1727083AbgKTI1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 03:27:35 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:52291 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726123AbgKTI1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 03:23:39 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CcqLJ0WTSzkYwy;
-        Fri, 20 Nov 2020 16:23:04 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Fri, 20 Nov 2020
- 16:23:19 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <ja@ssi.bg>, <horms@verge.net.au>, <pablo@netfilter.org>,
-        <kadlec@netfilter.org>, <fw@strlen.de>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <christian@brauner.io>,
-        <hans.schillstrom@ericsson.com>
-CC:     <lvs-devel@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
-        <coreteam@netfilter.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net v2] ipvs: fix possible memory leak in ip_vs_control_net_init
-Date:   Fri, 20 Nov 2020 16:26:10 +0800
-Message-ID: <20201120082610.60917-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+        Fri, 20 Nov 2020 03:27:35 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UFyQvrT_1605860851;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFyQvrT_1605860851)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 20 Nov 2020 16:27:31 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Yu Zhao <yuzhao@google.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH next] mm/swap.c: reduce lock contention in lru_cache_add
+Date:   Fri, 20 Nov 2020 16:27:27 +0800
+Message-Id: <1605860847-47445-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak report a memory leak as follows:
+The current relock logical will change lru_lock when found a new
+lruvec, so if 2 memcgs are reading file or alloc page at same time,
+they could hold the lru_lock alternately, and wait for each other for
+fairness attribute of ticket spin lock.
 
-BUG: memory leak
-unreferenced object 0xffff8880759ea000 (size 256):
-comm "syz-executor.3", pid 6484, jiffies 4297476946 (age 48.546s)
-hex dump (first 32 bytes):
-00 00 00 00 01 00 00 00 08 a0 9e 75 80 88 ff ff ...........u....
-08 a0 9e 75 80 88 ff ff 00 00 00 00 ad 4e ad de ...u.........N..
-backtrace:
-[<00000000c0bf2deb>] kmem_cache_zalloc include/linux/slab.h:656 [inline]
-[<00000000c0bf2deb>] __proc_create+0x23d/0x7d0 fs/proc/generic.c:421
-[<000000009d718d02>] proc_create_reg+0x8e/0x140 fs/proc/generic.c:535
-[<0000000097bbfc4f>] proc_create_net_data+0x8c/0x1b0 fs/proc/proc_net.c:126
-[<00000000652480fc>] ip_vs_control_net_init+0x308/0x13a0 net/netfilter/ipvs/ip_vs_ctl.c:4169
-[<000000004c927ebe>] __ip_vs_init+0x211/0x400 net/netfilter/ipvs/ip_vs_core.c:2429
-[<00000000aa6b72d9>] ops_init+0xa8/0x3c0 net/core/net_namespace.c:151
-[<00000000153fd114>] setup_net+0x2de/0x7e0 net/core/net_namespace.c:341
-[<00000000be4e4f07>] copy_net_ns+0x27d/0x530 net/core/net_namespace.c:482
-[<00000000f1c23ec9>] create_new_namespaces+0x382/0xa30 kernel/nsproxy.c:110
-[<00000000098a5757>] copy_namespaces+0x2e6/0x3b0 kernel/nsproxy.c:179
-[<0000000026ce39e9>] copy_process+0x220a/0x5f00 kernel/fork.c:2072
-[<00000000b71f4efe>] _do_fork+0xc7/0xda0 kernel/fork.c:2428
-[<000000002974ee96>] __do_sys_clone3+0x18a/0x280 kernel/fork.c:2703
-[<0000000062ac0a4d>] do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
-[<0000000093f1ce2c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+This patch will sort that all lru_locks and only hold them once in
+above scenario. That could reduce fairness waiting for lock reget.
+Than, vm-scalability/case-lru-file-readtwice could get ~5% performance
+gain on my 2P*20core*HT machine.
 
-In the error path of ip_vs_control_net_init(), remove_proc_entry() needs
-to be called to remove the added proc entry, otherwise a memory leak
-will occur.
-
-Also, add some '#ifdef CONFIG_PROC_FS' because proc_create_net* return NULL
-when PROC is not used.
-
-Fixes: b17fc9963f83 ("IPVS: netns, ip_vs_stats and its procfs")
-Fixes: 61b1ab4583e2 ("IPVS: netns, add basic init per netns.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Suggested-by: Konstantin Khlebnikov <koct9i@gmail.com>
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Konstantin Khlebnikov <koct9i@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
 ---
-v1->v2: add some '#ifdef CONFIG_PROC_FS' and check the return value of proc_create_net*
- net/netfilter/ipvs/ip_vs_ctl.c | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
+ mm/swap.c | 57 +++++++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 49 insertions(+), 8 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index e279ded4e306..c00394ba20db 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -4167,12 +4167,17 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
- 
- 	spin_lock_init(&ipvs->tot_stats.lock);
- 
--	proc_create_net("ip_vs", 0, ipvs->net->proc_net, &ip_vs_info_seq_ops,
--			sizeof(struct ip_vs_iter));
--	proc_create_net_single("ip_vs_stats", 0, ipvs->net->proc_net,
--			ip_vs_stats_show, NULL);
--	proc_create_net_single("ip_vs_stats_percpu", 0, ipvs->net->proc_net,
--			ip_vs_stats_percpu_show, NULL);
-+#ifdef CONFIG_PROC_FS
-+	if (!proc_create_net("ip_vs", 0, ipvs->net->proc_net, &ip_vs_info_seq_ops,
-+			sizeof(struct ip_vs_iter)))
-+		goto err_vs;
-+	if (!proc_create_net_single("ip_vs_stats", 0, ipvs->net->proc_net,
-+			ip_vs_stats_show, NULL))
-+		goto err_stats;
-+	if (!proc_create_net_single("ip_vs_stats_percpu", 0, ipvs->net->proc_net,
-+			ip_vs_stats_percpu_show, NULL))
-+		goto err_percpu;
-+#endif
- 
- 	if (ip_vs_control_net_init_sysctl(ipvs))
- 		goto err;
-@@ -4180,6 +4185,14 @@ int __net_init ip_vs_control_net_init(struct netns_ipvs *ipvs)
- 	return 0;
- 
- err:
-+#ifdef CONFIG_PROC_FS
-+	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
-+err_percpu:
-+	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
-+err_stats:
-+	remove_proc_entry("ip_vs", ipvs->net->proc_net);
-+err_vs:
-+#endif
- 	free_percpu(ipvs->tot_stats.cpustats);
- 	return -ENOMEM;
+diff --git a/mm/swap.c b/mm/swap.c
+index 490553f3f9ef..c787b38bf9c0 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -1009,24 +1009,65 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
+ 	trace_mm_lru_insertion(page, lru);
  }
-@@ -4188,9 +4201,11 @@ void __net_exit ip_vs_control_net_cleanup(struct netns_ipvs *ipvs)
+ 
++struct lruvecs {
++	struct list_head lists[PAGEVEC_SIZE];
++	struct lruvec *vecs[PAGEVEC_SIZE];
++};
++
++/* Sort pvec pages on their lruvec */
++int sort_page_lruvec(struct lruvecs *lruvecs, struct pagevec *pvec)
++{
++	int i, j, nr_lruvec;
++	struct page *page;
++	struct lruvec *lruvec = NULL;
++
++	lruvecs->vecs[0] = NULL;
++	for (i = nr_lruvec = 0; i < pagevec_count(pvec); i++) {
++		page = pvec->pages[i];
++		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
++
++		/* Try to find a same lruvec */
++		for (j = 0; j <= nr_lruvec; j++)
++			if (lruvec == lruvecs->vecs[j])
++				break;
++
++		/* A new lruvec */
++		if (j > nr_lruvec) {
++			INIT_LIST_HEAD(&lruvecs->lists[nr_lruvec]);
++			lruvecs->vecs[nr_lruvec] = lruvec;
++			j = nr_lruvec++;
++			lruvecs->vecs[nr_lruvec] = 0;
++		}
++
++		list_add_tail(&page->lru, &lruvecs->lists[j]);
++	}
++
++	return nr_lruvec;
++}
++
+ /*
+  * Add the passed pages to the LRU, then drop the caller's refcount
+  * on them.  Reinitialises the caller's pagevec.
+  */
+ void __pagevec_lru_add(struct pagevec *pvec)
  {
- 	ip_vs_trash_cleanup(ipvs);
- 	ip_vs_control_net_cleanup_sysctl(ipvs);
-+#ifdef CONFIG_PROC_FS
- 	remove_proc_entry("ip_vs_stats_percpu", ipvs->net->proc_net);
- 	remove_proc_entry("ip_vs_stats", ipvs->net->proc_net);
- 	remove_proc_entry("ip_vs", ipvs->net->proc_net);
-+#endif
- 	free_percpu(ipvs->tot_stats.cpustats);
- }
+-	int i;
+-	struct lruvec *lruvec = NULL;
++	int i, nr_lruvec;
+ 	unsigned long flags = 0;
++	struct page *page;
++	struct lruvecs lruvecs;
  
+-	for (i = 0; i < pagevec_count(pvec); i++) {
+-		struct page *page = pvec->pages[i];
++	nr_lruvec = sort_page_lruvec(&lruvecs, pvec);
+ 
+-		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
+-		__pagevec_lru_add_fn(page, lruvec);
++	for (i = 0; i < nr_lruvec; i++) {
++		spin_lock_irqsave(&lruvecs.vecs[i]->lru_lock, flags);
++		while (!list_empty(&lruvecs.lists[i])) {
++			page = lru_to_page(&lruvecs.lists[i]);
++			list_del(&page->lru);
++			__pagevec_lru_add_fn(page, lruvecs.vecs[i]);
++		}
++		spin_unlock_irqrestore(&lruvecs.vecs[i]->lru_lock, flags);
+ 	}
+-	if (lruvec)
+-		unlock_page_lruvec_irqrestore(lruvec, flags);
++
+ 	release_pages(pvec->pages, pvec->nr);
+ 	pagevec_reinit(pvec);
+ }
 -- 
-2.17.1
+2.29.GIT
 
