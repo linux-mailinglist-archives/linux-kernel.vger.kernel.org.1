@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AA22BA864
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE5D2BA854
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgKTLH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:07:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55354 "EHLO mail.kernel.org"
+        id S1728403AbgKTLGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:06:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728533AbgKTLHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:07:24 -0500
+        id S1728369AbgKTLGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:06:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11C5F206E3;
-        Fri, 20 Nov 2020 11:07:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D3402240C;
+        Fri, 20 Nov 2020 11:06:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605870443;
-        bh=Zx6LwWrX+yP0uTz1SGQQB1VW0hkPewD97l1Zy0kYuro=;
+        s=korg; t=1605870379;
+        bh=pacmUmtR7LmVBsOgRqR+EBHryOQtqgnOc84petNq3Ks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N7MiTGwS0kaBJpwksNDoWdqGnOzvULby7nRCD06a++P6gnrkhx5NyJkJgXm+5GlaI
-         LaVIPZe86nvz+9zNhPndQcaDviPZFixsdJvL2X5tyrrcAjZsUdweaQ/164JRy1s45h
-         7LR+YpIBNayZguBdhzi7+RzOTfC1WlxkrLPYzlis=
+        b=iZmLKrNto0eC6X99HApHMI4GQfZG58bh1bhFVLAZhRmH8/JgleJdscmsGp5R5yngz
+         AhSihECAKAEeO190XPDtmpcEqaIB3e/S+2w7UwRyGFcx00nNvCS+NkJzx8mDpzwYWo
+         EwrEXCh37z9R1vt2u706pEYXijyFhn+5lgo+wylE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dja@axtens.net,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 04/17] powerpc: Only include kup-radix.h for 64-bit Book3S
-Date:   Fri, 20 Nov 2020 12:03:31 +0100
-Message-Id: <20201120104541.287600992@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        syzbot+2e293dbd67de2836ba42@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.19 11/14] mac80211: always wind down STA state
+Date:   Fri, 20 Nov 2020 12:03:32 +0100
+Message-Id: <20201120104540.368043685@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201120104541.058449969@linuxfoundation.org>
-References: <20201120104541.058449969@linuxfoundation.org>
+In-Reply-To: <20201120104539.806156260@linuxfoundation.org>
+References: <20201120104539.806156260@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,110 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 178d52c6e89c38d0553b0ac8b99927b11eb995b0 upstream.
+commit dcd479e10a0510522a5d88b29b8f79ea3467d501 upstream.
 
-In kup.h we currently include kup-radix.h for all 64-bit builds, which
-includes Book3S and Book3E. The latter doesn't make sense, Book3E
-never uses the Radix MMU.
+When (for example) an IBSS station is pre-moved to AUTHORIZED
+before it's inserted, and then the insertion fails, we don't
+clean up the fast RX/TX states that might already have been
+created, since we don't go through all the state transitions
+again on the way down.
 
-This has worked up until now, but almost by accident, and the recent
-uaccess flush changes introduced a build breakage on Book3E because of
-the bad structure of the code.
+Do that, if it hasn't been done already, when the station is
+freed. I considered only freeing the fast TX/RX state there,
+but we might add more state so it's more robust to wind down
+the state properly.
 
-So disentangle things so that we only use kup-radix.h for Book3S. This
-requires some more stubs in kup.h.
+Note that we warn if the station was ever inserted, it should
+have been properly cleaned up in that case, and the driver
+will probably not like things happening out of order.
 
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Daniel Axtens <dja@axtens.net>
+Reported-by: syzbot+2e293dbd67de2836ba42@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20201009141710.7223b322a955.I95bd08b9ad0e039c034927cce0b75beea38e059b@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/powerpc/include/asm/book3s/64/kup-radix.h |    5 +++--
- arch/powerpc/include/asm/kup.h                 |   14 +++++++++++---
- 2 files changed, 14 insertions(+), 5 deletions(-)
 
---- a/arch/powerpc/include/asm/book3s/64/kup-radix.h
-+++ b/arch/powerpc/include/asm/book3s/64/kup-radix.h
-@@ -11,13 +11,12 @@
- 
- #ifdef __ASSEMBLY__
- 
--.macro kuap_restore_amr	gpr
- #ifdef CONFIG_PPC_KUAP
-+.macro kuap_restore_amr	gpr
- 	BEGIN_MMU_FTR_SECTION_NESTED(67)
- 	ld	\gpr, STACK_REGS_KUAP(r1)
- 	mtspr	SPRN_AMR, \gpr
- 	END_MMU_FTR_SECTION_NESTED_IFSET(MMU_FTR_RADIX_KUAP, 67)
--#endif
- .endm
- 
- .macro kuap_check_amr gpr1, gpr2
-@@ -31,6 +30,7 @@
- 	END_MMU_FTR_SECTION_NESTED_IFSET(MMU_FTR_RADIX_KUAP, 67)
- #endif
- .endm
-+#endif
- 
- .macro kuap_save_amr_and_lock gpr1, gpr2, use_cr, msr_pr_cr
- #ifdef CONFIG_PPC_KUAP
-@@ -87,6 +87,7 @@ bad_kuap_fault(struct pt_regs *regs, uns
- 		    "Bug: %s fault blocked by AMR!", is_write ? "Write" : "Read");
- }
- #else /* CONFIG_PPC_KUAP */
-+static inline void kuap_restore_amr(struct pt_regs *regs, unsigned long amr) { }
- static inline void set_kuap(unsigned long value) { }
- #endif /* !CONFIG_PPC_KUAP */
- 
---- a/arch/powerpc/include/asm/kup.h
-+++ b/arch/powerpc/include/asm/kup.h
-@@ -6,7 +6,7 @@
- #define KUAP_WRITE	2
- #define KUAP_READ_WRITE	(KUAP_READ | KUAP_WRITE)
- 
--#ifdef CONFIG_PPC64
-+#ifdef CONFIG_PPC_BOOK3S_64
- #include <asm/book3s/64/kup-radix.h>
- #endif
- #ifdef CONFIG_PPC_8xx
-@@ -24,9 +24,15 @@
- .macro kuap_restore	sp, current, gpr1, gpr2, gpr3
- .endm
- 
-+.macro kuap_restore_amr gpr
-+.endm
-+
- .macro kuap_check	current, gpr
- .endm
- 
-+.macro kuap_check_amr	gpr1, gpr2
-+.endm
-+
- #endif
- 
- #else /* !__ASSEMBLY__ */
-@@ -52,17 +58,19 @@ bad_kuap_fault(struct pt_regs *regs, uns
- 	return false;
- }
- 
-+static inline void kuap_check_amr(void) { }
-+
- /*
-  * book3s/64/kup-radix.h defines these functions for the !KUAP case to flush
-  * the L1D cache after user accesses. Only include the empty stubs for other
-  * platforms.
+---
+ net/mac80211/sta_info.c |   18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+--- a/net/mac80211/sta_info.c
++++ b/net/mac80211/sta_info.c
+@@ -244,6 +244,24 @@ struct sta_info *sta_info_get_by_idx(str
   */
--#ifndef CONFIG_PPC64
-+#ifndef CONFIG_PPC_BOOK3S_64
- static inline void allow_user_access(void __user *to, const void __user *from,
- 				     unsigned long size, unsigned long dir) { }
- static inline void prevent_user_access(void __user *to, const void __user *from,
- 				       unsigned long size, unsigned long dir) { }
--#endif /* CONFIG_PPC64 */
-+#endif /* CONFIG_PPC_BOOK3S_64 */
- #endif /* CONFIG_PPC_KUAP */
+ void sta_info_free(struct ieee80211_local *local, struct sta_info *sta)
+ {
++	/*
++	 * If we had used sta_info_pre_move_state() then we might not
++	 * have gone through the state transitions down again, so do
++	 * it here now (and warn if it's inserted).
++	 *
++	 * This will clear state such as fast TX/RX that may have been
++	 * allocated during state transitions.
++	 */
++	while (sta->sta_state > IEEE80211_STA_NONE) {
++		int ret;
++
++		WARN_ON_ONCE(test_sta_flag(sta, WLAN_STA_INSERTED));
++
++		ret = sta_info_move_state(sta, sta->sta_state - 1);
++		if (WARN_ONCE(ret, "sta_info_move_state() returned %d\n", ret))
++			break;
++	}
++
+ 	if (sta->rate_ctrl)
+ 		rate_control_free_sta(sta);
  
- static inline void allow_read_from_user(const void __user *from, unsigned long size)
 
 
