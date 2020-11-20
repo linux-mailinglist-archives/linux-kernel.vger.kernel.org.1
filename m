@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7553D2BB198
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 18:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A022BB19E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 18:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbgKTRmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 12:42:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
+        id S1728959AbgKTRnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 12:43:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728853AbgKTRmP (ORCPT
+        with ESMTP id S1728912AbgKTRnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 12:42:15 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813C0C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 09:42:14 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id v144so14558829lfa.13
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 09:42:14 -0800 (PST)
+        Fri, 20 Nov 2020 12:43:06 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B49C0613CF;
+        Fri, 20 Nov 2020 09:43:06 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id b63so8522643pfg.12;
+        Fri, 20 Nov 2020 09:43:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hvM/LSSgC/tnV2UckBGwLgeFxj82XVDHBn5i8yTzPoc=;
-        b=WQOOknlZ8F+t2Kqhx+/MokFS4U6JsIVoI24638zYY6iykL7IFtVbg7ZAZBkFF5OEf1
-         L08UK6oBAyUmkQjspP1fMdgnkurzkrhPgamkO8jVj+4LoSunIpo6bEefyHNISLDXTmDg
-         bn+27eY+exS2MXRYWuydpquaxxcniVPi3YJzY=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=kmuAYSzMoeIo0u18AuX5Dattf9rqR9IenRhvLXpBl38=;
+        b=VI+nmxvQg2sUIWi35kqMfRMIJ3Fz8czvVaSR7G1Zfgx8FiDgqspZLIVJIoQgfC9/3R
+         vgz47lVm4b0zgiQWEYEx81MnYUa2OckpIPL38evGB35D1ZIZ4z3C6jfnGOMTuI4V37gg
+         S58LIbJR+YDRJBM5FVzE/MB6eps76AZ2nUezRy8tqpv5UlRaXRE9NXvHEN+1ySEC6D4z
+         AfLBNuhEaJeBvJlolW8rXubLak9FFD//01PhNq+ZDDvZCN2mRQjfAfXHQc8hUrbM3/vN
+         utzUzUgJU5a5bbWo6r39NcOShTjktTO2Kq5lUDWytCUWlYZWAhiyXL3gewy0MCVHJYxt
+         cVuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hvM/LSSgC/tnV2UckBGwLgeFxj82XVDHBn5i8yTzPoc=;
-        b=qbxiNJ0+n/GYNBMB+Y8l2TORTGiCNJgML7rXtDgh9Xl0FmBN0ChoxMCy4mEbDmcCmS
-         GqWCThl41PuCX+PmiqYqxcftVU16pQnO2wTQVyvwtrd+SIyJCfM4JXO8ChTirhCF0r9n
-         6O0oIiQFCzjaN3xPQcZSmnFv55iyxaaW/dZWCzwIUIO/jyKi9UDrqaoda+mADz80Vt7O
-         r/0bWTTtGuc1rQQzqjP7TQz5KI9ectfjOxbCNJjkmt5YHs54UetlE2W9kiEc0M7Pus3M
-         sQEevKH2GJQMv9QakY7OKTCebQlU47dcbDckB0QS3vJo4ksbQHYW+U0clANB2QUTxGju
-         5DQQ==
-X-Gm-Message-State: AOAM530wrAK/Fw3NPJ8hcyvqoHi+erR0NJUiGFKDOVC4+8KwnXoh/OJM
-        LMxHED4+pQKuDqVNShy1KipEwSuQSddf0w==
-X-Google-Smtp-Source: ABdhPJwX8xO4+L0mAeVDPU8EhH4aZgRXV9f1c2S1u2V3m296qRDIkMByyuTaxPMJE6pLqHVNT1G8Gg==
-X-Received: by 2002:ac2:4543:: with SMTP id j3mr7862019lfm.511.1605894131849;
-        Fri, 20 Nov 2020 09:42:11 -0800 (PST)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id h6sm413466lfj.108.2020.11.20.09.42.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 09:42:11 -0800 (PST)
-Received: by mail-lf1-f45.google.com with SMTP id e139so14634976lfd.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 09:42:10 -0800 (PST)
-X-Received: by 2002:a19:7f55:: with SMTP id a82mr9487841lfd.603.1605894130308;
- Fri, 20 Nov 2020 09:42:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=kmuAYSzMoeIo0u18AuX5Dattf9rqR9IenRhvLXpBl38=;
+        b=BGMHDHJBROnI/Ep2aA/ejtfYt+aBLD1kTri3jR9dPzgjlHP1hLQnCXax4HDt6s+eWC
+         Dp+EOO8aP0Z5KkroJ22ofK4Tj0cbmnBeXxFX2pVMYPLGEdn+33+ln9/PlGgnUa6pJpko
+         2ho0dJ3z8Tbv2aqaafBKK6znt2BzEU+TW17/gM0dSZoalmdoirKRZi4q6yPzBHjM6rRn
+         8GXY9AeBH3FdpsEdXivrNGaBncqwunXQz6+yQ52j48eKLtcYq8zGQpmL/uc5o7+lIgAe
+         ObOVYrnUCGCVZu4fLG86nEKutyMjStpuK6/L9nIhL20ii4rWVdkxAaAIH7IetDdEegNR
+         L2tw==
+X-Gm-Message-State: AOAM530veF9S8uTXXaya0L4E1XUdji9djil6OMAEjJvdhXqWmvY/Cdgb
+        geVDx626F0N4KfjIYL4NoQM=
+X-Google-Smtp-Source: ABdhPJz/l0AJ+PJtLuAfYLcSRppjH0Yz5mla4ScCRnKm4ezN8+CXxzOdqZOJxDwSuNiM5cQWBdyCRQ==
+X-Received: by 2002:a63:9d8d:: with SMTP id i135mr18423403pgd.213.1605894185560;
+        Fri, 20 Nov 2020 09:43:05 -0800 (PST)
+Received: from syed ([2401:4900:2e82:cfda:fc82:287b:3e19:db98])
+        by smtp.gmail.com with ESMTPSA id y19sm4284226pfn.147.2020.11.20.09.42.56
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 20 Nov 2020 09:43:05 -0800 (PST)
+Date:   Fri, 20 Nov 2020 23:12:44 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
+        michal.simek@xilinx.com, arnd@arndb.de, rrichter@marvell.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        yamada.masahiro@socionext.com, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
+        linux-arch@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH 0/4] Modify bitmap_set_value() to suppress compiler warning
+Message-ID: <cover.1605893641.git.syednwaris@gmail.com>
 MIME-Version: 1.0
-References: <20201120143557.6715-1-will@kernel.org> <20201120143557.6715-7-will@kernel.org>
-In-Reply-To: <20201120143557.6715-7-will@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 20 Nov 2020 09:41:54 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjKjnT=yNnRgfPRknOBYF4oJHixbT10wDqXpjQ1qiW7SA@mail.gmail.com>
-Message-ID: <CAHk-=wjKjnT=yNnRgfPRknOBYF4oJHixbT10wDqXpjQ1qiW7SA@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mm: proc: Avoid fullmm flush for young/dirty bit toggling
-To:     Will Deacon <will@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 6:36 AM Will Deacon <will@kernel.org> wrote:
->
-> Ensure that TLB invalidation is performed after updating soft-dirty
-> entries via clear_refs_write() by using the non-fullmm API to MMU gather.
+Hi All,
 
-This code sequence looks bogus to begin with.
+The purpose of this patchset is to suppress the compiler warning (-Wtype-limits).
 
-It does that
+In function bitmap_set_value(), add explicit check to see if the value being
+written into the bitmap does not fall outside the bitmap.
+The situation that it is falling outside is never possible in the code 
+because the boundaries are required to be correct before the function is 
+called. The responsibility is on the caller for ensuring the boundaries 
+are correct.
+The code change is simply to silence the GCC warning messages
+because GCC is not aware that the boundaries have already been checked.
+As such, we're better off using __builtin_unreachable() here because we
+can avoid the latency of the conditional check entirely.
 
-                tlb_gather_mmu(&tlb, mm, 0, -1);
-     ..
-                tlb_finish_mmu(&tlb, 0, -1);
+Michal,
+What do you think of [PATCH 4/4]? Is the conditional check needed, and also whether
+returning -EINVAL looks good?
 
-around the loop (all, your patch series changes those arguments), but
-it doesn't actually use "tlb" anywhere inside the loop itself that I
-can see.
+Syed Nayyar Waris (4):
+  bitmap: Modify bitmap_set_value() to check bitmap length
+  lib/test_bitmap.c: Modify for_each_set_clump test
+  gpio: xilinx: Modify bitmap_set_value() calls
+  gpio: xilinx: Add extra check if sum of widths exceed 64
 
-Yeah., yeah, it sets the flush_pending thing etc, but that still
-sounds fundamentally wrong. It should do the proper range adjustments
-if/when it actually wals the range. No?
+ drivers/gpio/gpio-xilinx.c | 18 ++++++++++++------
+ include/linux/bitmap.h     | 35 +++++++++++++++++++++--------------
+ lib/test_bitmap.c          |  4 ++--
+ 3 files changed, 35 insertions(+), 22 deletions(-)
 
-If I read this all right, it will do a full TLB flush even when it
-doesn't do anything (eg CLEAR_REFS_SOFT_DIRTY with no softdirty
-pages).
 
-So this looks all kinds of bogus. Not your patch, but the code it patches.
+base-commit: b640c4e12bbe1f0b6383c3ef788a89e5427c763f
+-- 
+2.29.0
 
-               Linus
