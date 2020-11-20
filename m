@@ -2,106 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDF02BAF64
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 577B42BAF66
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729951AbgKTPzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:55:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48312 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729936AbgKTPzH (ORCPT
+        id S1729957AbgKTPzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:55:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728403AbgKTPzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:55:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605887705;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rY2Rec5SHAHV9d9Nn2wvBLT2el7uEj1Kc43gm3aG5HM=;
-        b=g9lD0bCxENPqcIGc2Z5tasWLJyAqqyHwdIWyhdE3T+gFEmncp1Z07rSQz1E2Gi3/qTwJ+3
-        skp0DCXX7dsULaSAGcfW7EiyaIfzVDY8pSkV/5a65pPivfHUbXb+ZLHeS7GQuCmhACXkH8
-        bIu4k/kvl7e+wNF5Tqkh0s8Olh/H8HQ=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-121-AsQZi94gPGqkIvui97I9ig-1; Fri, 20 Nov 2020 10:55:04 -0500
-X-MC-Unique: AsQZi94gPGqkIvui97I9ig-1
-Received: by mail-ej1-f69.google.com with SMTP id a13so3256208ejv.17
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:55:03 -0800 (PST)
+        Fri, 20 Nov 2020 10:55:18 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D58C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:55:18 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id y7so8212373pfq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:55:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mH0XWTPw1aDZdBTH/G0qziz2DLxku/Ckk+DQq/83avE=;
+        b=nQ8Gix8WRyqbKUlkh4PixmhfzCCdN6Vp1oepEYKR1kSzb0c9NFHOT/nOqiemkWOXmc
+         ouxU3ZBc4u58gBkwswnza3mAVLFvjxHgsX31Et3extwahWtmKpiqNIu2KKpIhCOIg/mt
+         vBUXuPdJEmhSbV+yN2v5TFjxZpim0OVTR16hEkvV2Nrz3Q3igRSvZNjgrHW+CAU0zW9W
+         d4h/rwZSnIPvpumibKFp/DN9gzoYRg5h65NjqUJekm18Nec8Tl4SPu4HI+p2YFQcNYV+
+         UAQ9XJKpX4a4LaCSu22juQDRUm1s8tzoP4XzyhKyOqXyO6iNn/6VVDR27RzxllLrXeda
+         iCBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rY2Rec5SHAHV9d9Nn2wvBLT2el7uEj1Kc43gm3aG5HM=;
-        b=HpUqTT9tZ4SfJlov6nGfEzxebzDHFoHZR6pHyQpef7W/8udieXrqF/4CL+fpLH6lIH
-         ZjBeJac3zzy4+Lg77ioua0wJV4yaBCtZE879OO9eurHHkpRSN+yiCT6gh8ftW9+nShJq
-         FQO3x0IvEY9S5K7gWTjSR7xfR6lkPvESE/NmS8aSHqGv/+mPvoTu0e2ucaZYpfzuOc3O
-         ypHZPSWEzKeUtllSAcR4Sbe77rsOj3myRy78m2tgT9Tm1MTIemSsOLU1c8I9l5rlBSxu
-         Zdx9QDy5bkPP/GTwel/toetyA78EZZTbVmKIPAtDG9sr+iL6ls2vLECWs/aLt0Hmval9
-         1bQQ==
-X-Gm-Message-State: AOAM531hah8nHNHHBT4WECLboemdxr04tMMiuNxArocI3bWQLLsYuibq
-        zHPkiJnKerHkCCSKBQ5qSCMsqT2MqROSC9yTMg28smAJttWjOnM3SvCurmBOTDLIKd5vfmfCttv
-        nDj/ULBUJ+ZaxagBLoK3Sm1wO
-X-Received: by 2002:aa7:d2d9:: with SMTP id k25mr34928698edr.310.1605887702587;
-        Fri, 20 Nov 2020 07:55:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw3gVlgwW/bmEajthpJVdpMUNtgPUbi/HFUtFVuvcpkMu9pSTRR3a9KC3tEdlGleoOWxNajPA==
-X-Received: by 2002:aa7:d2d9:: with SMTP id k25mr34928681edr.310.1605887702427;
-        Fri, 20 Nov 2020 07:55:02 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r25sm1300693eji.8.2020.11.20.07.55.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 07:55:01 -0800 (PST)
-Subject: Re: [PATCH v6 16/17] RFC: kvm: pass kvm argument to follow_pfn
- callsites
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>
-References: <20201119144146.1045202-1-daniel.vetter@ffwll.ch>
- <20201119144146.1045202-17-daniel.vetter@ffwll.ch>
- <cd56eb8a-fbec-e81f-9c14-d1256a193b68@redhat.com>
- <CAKMK7uHDrPDcsWyMgFgjf0+hdebSUT4hX5hKR=CnTH=soLU-Kg@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <3eca2dde-c78b-3eb4-8f61-7fdf16573419@redhat.com>
-Date:   Fri, 20 Nov 2020 16:55:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=mH0XWTPw1aDZdBTH/G0qziz2DLxku/Ckk+DQq/83avE=;
+        b=e5SW+/Jck6kg2DTCNxJsrAWs081Upws1wVP51eYkSMLkRnJ48aHzN0aLZoFtv1r0wB
+         9nLh7OwCPoX8zCdHGgz7gyqU8rU3dPzyooqkvFbm+k5UdN/wVRCSqdXV9N5ByJx2AlR8
+         xGA97ZZ85dBf6W/v1NLW20R78AXdqGYy0r6T7/Nj6qpDKgYXH+eqdUsSPoHCB03nUZSV
+         R6fYS7QzbCOseERoy4+52J3+IVP9TsnD4TPdjd+7A5pKO5mC0xMWi7ZlEDVVymC206z4
+         XMx/F1XIJPmC8cuHvIRv9mqdGp4oFG9yY0BOCTmuFGzgfKCXrDUbTqhXIaLWoOrLcjoB
+         +mEw==
+X-Gm-Message-State: AOAM532YoNfbpNudYS5dfKeI5wMhhKa8cYULbIIZUlBKWykn+cjo/vyj
+        wSWiwdiD5beWKsev+2zXQ1Y=
+X-Google-Smtp-Source: ABdhPJzY/UZC1PpZ/zzTDc+GgXIRIMMltQQy7bU5UOZcHAdIY6OkOzwMpFDnmqnHJ2Oa1mRfWmjHGw==
+X-Received: by 2002:a63:e20:: with SMTP id d32mr5040393pgl.94.1605887717816;
+        Fri, 20 Nov 2020 07:55:17 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id x12sm4088482pjr.51.2020.11.20.07.55.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 07:55:16 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 20 Nov 2020 07:55:14 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Catalin Marinas <catalin.marinas@arm.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 4/6] mm: proc: Invalidate TLB after clearing soft-dirty
+ page state
+Message-ID: <20201120155514.GA3377168@google.com>
+References: <20201120143557.6715-1-will@kernel.org>
+ <20201120143557.6715-5-will@kernel.org>
+ <20201120150023.GH3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uHDrPDcsWyMgFgjf0+hdebSUT4hX5hKR=CnTH=soLU-Kg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120150023.GH3040@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/20 16:44, Daniel Vetter wrote:
->> It's a bit of a pity, it's making an API more complex (the point of
->> gfn_to_pfn_memslot vs gfn_to_pfn is exactly that you don't need a
->> "struct kvm*" and it's clear that you've already done the lookup into
->> that struct kvm.
->
-> Yeah I noticed that, I think pushing the lookups down should work, but
-> that's a fairly large-scale change. I didn't want to do that for the
-> RFC since it would distract from the actual change/goal.
-> -Daniel
+On Fri, Nov 20, 2020 at 04:00:23PM +0100, Peter Zijlstra wrote:
+> On Fri, Nov 20, 2020 at 02:35:55PM +0000, Will Deacon wrote:
+> > Since commit 0758cd830494 ("asm-generic/tlb: avoid potential double flush"),
+> > TLB invalidation is elided in tlb_finish_mmu() if no entries were batched
+> > via the tlb_remove_*() functions. Consequently, the page-table modifications
+> > performed by clear_refs_write() in response to a write to
+> > /proc/<pid>/clear_refs do not perform TLB invalidation. Although this is
+> > fine when simply aging the ptes, in the case of clearing the "soft-dirty"
+> > state we can end up with entries where pte_write() is false, yet a
+> > writable mapping remains in the TLB.
+> > 
+> > Fix this by calling tlb_remove_tlb_entry() for each entry being
+> > write-protected when cleating soft-dirty.
+> > 
+> 
+> > @@ -1053,6 +1054,7 @@ static inline void clear_soft_dirty(struct vm_area_struct *vma,
+> >  		ptent = pte_wrprotect(old_pte);
+> >  		ptent = pte_clear_soft_dirty(ptent);
+> >  		ptep_modify_prot_commit(vma, addr, pte, old_pte, ptent);
+> > +		tlb_remove_tlb_entry(tlb, pte, addr);
+> >  	} else if (is_swap_pte(ptent)) {
+> >  		ptent = pte_swp_clear_soft_dirty(ptent);
+> >  		set_pte_at(vma->vm_mm, addr, pte, ptent);
+> 
+> Oh!
+> 
+> Yesterday when you had me look at this code; I figured the sane thing
+> to do was to make it look more like mprotect().
+> 
+> Why did you chose to make it work with mmu_gather instead? I'll grant
+> you that it's probably the smaller patch, but I still think it's weird
+> to use mmu_gather here.
 
-Pushing the lookups down would be worse code and possibly introduce 
-TOC/TOU races, so better avoid that.  Your patch is fine. :)
+I agree. The reason why clear_refs_write used the gather API was [1] and
+seems like to overkill to me.
 
-Paolo
+We could just do like [inc|dec]_tlb_flush_pending with flush_tlb_mm at
+right before dec_tlb_flush_pending instead of gather.
 
+thought?
+
+[1] b3a81d0841a95, mm: fix KSM data corruption
