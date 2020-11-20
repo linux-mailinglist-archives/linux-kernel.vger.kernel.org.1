@@ -2,57 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298B82BB462
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2774F2BB464
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732025AbgKTSwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:52:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731852AbgKTSwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:52:37 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 641C72242B;
-        Fri, 20 Nov 2020 18:52:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605898357;
-        bh=hLPZb8iExdwklsyXpivIHTZH7cu3MZVNRHIV7AOiAXM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n5W8DqB0dy27EIrepwTa0pzByFN1uYe4L3XjSaVw9nUpAv7UAkGo39AlKRx9MwrMm
-         mR7XTUZZRjX3VU3r70ypKcQpOkEQ5XykpQdOFMN0KTnnjfHSjrVfjd+zsEtsQMUszo
-         h3w31apWVM2vp5rioX0tnSdekkRC6XPvRYtu9bKI=
-Date:   Fri, 20 Nov 2020 10:52:35 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH] random: remove dead code left over from blocking pool
-Message-ID: <X7gQc1IrC18+WBST@sol.localdomain>
-References: <20200916043652.96640-1-ebiggers@kernel.org>
- <20201007035058.GC912@sol.localdomain>
- <20201026163403.GC858@sol.localdomain>
+        id S1732039AbgKTSwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:52:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732029AbgKTSwx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:52:53 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB120C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:52:51 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id t11so10539039edj.13
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:52:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:message-id:subject:to:cc:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=YWmGRFuNHs/yxtUY5BY7eUclhKXBL2jg9TrRJQIfFj4=;
+        b=GBA5xY9xV/sXdszXmG8ZHqQousSsvIWIxPxV8wYn/3CqIBLN3Z/TU5XG8qA0rBF6iC
+         225LsMyBtxiLQ/ixWagFX0ssAOnab/zpnI+uCbKRdZbymb/0URlcMaO3pUXtaGDLkwVE
+         c6/6fDL7XU5CYvN4LR4vboYItJ99sxagGCY2iHn/o9Pn+qNJ22LrU8uuJYs6lZZIy9NX
+         XPL4PDfmPh1/83PlreoJ3AYpPCtGG7LLKyX8jrhkm9yjRPcWnhpXAkJIhY2R1jtsaXkC
+         dEEuf5xUKORbduvVRUjqySJe4gZfEDvd5es+Cdwte/bq+1RTpRtAgz7t4gFGLxUZYbQh
+         HbZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:subject:to:cc:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=YWmGRFuNHs/yxtUY5BY7eUclhKXBL2jg9TrRJQIfFj4=;
+        b=S1Tiq4R+jJYa1MpBsN07LSjT2KLPtl5mKZklwoZ5K9Qawl4hDX5opMwnJMHNhjDqWw
+         dLpmuOJTzV2+Drqc3npXY7x7b1DrEnvqeiEZGb8yOR5ieab/2VWxnUEovm7fJfm9ux+P
+         tfV6CKKdX4JmD3eibQ2G4N8BRrRstTEQTjBkxU4GlQ7yQS0weerD1iy4E3wBJGmq2OuU
+         zEJOnQAA4DYi/YH6RSY3nUoWHWHOL7MwAe/V+F6Xxg59/BKE3Du7Ql1W5lYBuDfl/fF2
+         QvEGU/9eie0TxPPlXyvYPrA7dJ7yD30pP5QDbDVnFytakhFukWGxwrzTViAVIVOBXHpR
+         eo1Q==
+X-Gm-Message-State: AOAM532/BOv0Wwi3A+e0wZfdaea+V/ufOK6Fj4OHI8S0t/9NLJNItvWP
+        2X9p53hE7yQm4Fb2yHyaxewyO0soxk8yYLR3
+X-Google-Smtp-Source: ABdhPJwpQlG+Hy5tN0Lw+ip3j5xGVRILm1dIyebcuCMfBvP78CcJJjiGwqo0QqnOXsAn3be2SuQl0Q==
+X-Received: by 2002:a50:ff05:: with SMTP id a5mr38181982edu.43.1605898370316;
+        Fri, 20 Nov 2020 10:52:50 -0800 (PST)
+Received: from fiftytwodotfive.bdrung.de (ip5b401b14.dynamic.kabel-deutschland.de. [91.64.27.20])
+        by smtp.googlemail.com with ESMTPSA id x15sm1447345edj.91.2020.11.20.10.52.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 10:52:49 -0800 (PST)
+From:   Benjamin Drung <benjamin.drung@cloud.ionos.com>
+X-Google-Original-From: Benjamin Drung <bdrung@debian.org>
+Message-ID: <5ff0fc487272a7c21f63a929bfceee1ac9b43348.camel@debian.org>
+Subject: PROBLEM: Broken pixel format for Elgato Cam Link 4K
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Adam Goode <agoode@google.com>
+Date:   Fri, 20 Nov 2020 19:52:48 +0100
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026163403.GC858@sol.localdomain>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 09:34:03AM -0700, Eric Biggers wrote:
-> On Tue, Oct 06, 2020 at 08:50:58PM -0700, Eric Biggers wrote:
-> > On Tue, Sep 15, 2020 at 09:36:52PM -0700, Eric Biggers wrote:
-> > > From: Eric Biggers <ebiggers@google.com>
-> > > 
-> > > Remove some dead code that was left over following commit 90ea1c6436d2
-> > > ("random: remove the blocking pool").
-> > > 
-> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > 
-> > Ping?
-> 
-> Ping.
+Hi,
 
-Ping.
+I own an Elgato Cam Link 4K which is a very popular USB HDMI capture
+device (number one capture card by click rates on Geizhals [1]). The
+problem is that the video feed is distorted when using the /dev/videoX
+device in the browser (tested on Firefox and Chromium) for video
+conferencing (tested with Jitsi Meet and Google Meet). The same
+distortion is present when opening `v4l2:///dev/video0` with VLC.
+
+The Elgato Cam Link 4K reports to have three different pixel formats:
+
+```
+$ v4l2-ctl -d /dev/video0 --list-formats-ext
+ioctl: VIDIOC_ENUM_FMT
+        Type: Video Capture
+
+        [0]: 'NV12' (Y/CbCr 4:2:0)
+                Size: Discrete 3840x2160
+                        Interval: Discrete 0.040s (25.000 fps)
+        [1]: 'NV12' (Y/CbCr 4:2:0)
+                Size: Discrete 3840x2160
+                        Interval: Discrete 0.040s (25.000 fps)
+        [2]: 'YU12' (Planar YUV 4:2:0)
+                Size: Discrete 3840x2160
+                        Interval: Discrete 0.040s (25.000 fps)
+```
+
+When specifying the video format 'YU12' to VLC, the video is distorted
+the same way as using the default video format. When specifying 'NV12'
+to VLC, the video feed is displayed correctly:
+
+```
+vlc v4l2:///dev/video0 --v4l2-chroma=NV12
+```
+
+In OBS, the video feed is always displayed correctly. All video formats
+'Y/CbCr 4:2:0', 'Planar YUV 4:2:0', 'BGR3 (Emulated)', and 'YV12
+(Emulated)' combined with the color ranges 'Default', 'Partial', and
+'Full' produce the same correct output.
+
+With Linux >= 5.9 this behavior in OBS changes: The video format
+'Y/CbCr 4:2:0' displays the video correctly. Switching to 'Planar YUV
+4:2:0', 'BGR3 (Emulated)', or 'YV12 (Emulated)' shows the video
+distorted and OBS shows this error message:
+
+```
+info: v4l2-input: Pixelformat: NV12
+[...]
+libv4l2: error set_fmt gave us a different result than try_fmt!
+info: v4l2-input: Resolution: 3840x2160
+info: v4l2-input: Pixelformat: NV12
+```
+
+Changing the video format back does not have an effect until I also
+change the color range (does seem to be relevant what to select there).
+
+Workaround
+----------
+
+You can create a v4l2loopback device and use ffmpeg to stream from the
+Cam Link 4K to the loopback device:
+
+```
+ffmpeg -f v4l2 -input_format yuv420p -video_size 3840x2160 \
+  -i "$camlink" -codec copy -f v4l2 "$loopdev"
+```
+
+This workaround works, but is cumbersome and burns CPU cycles.
+
+Other reports
+-------------
+
+Searching the web for "Cam Link 4K Linux" reveals many similar reports
+like this. Noteworthy is blog post [3] from Mike Walters who patched
+the Cam Link 4K firmware to report the correct video format. I am
+willing to debug this issue and do test, but I don't want to flash the
+firmware to not break the warrenty (bisides I lack the hardware for
+flashing).
+
+Environment
+-----------
+
+This problem is present in Ubuntu 20.04 with linux 5.4.0-54.60 and
+Ubuntu 20.10 with linux 5.8.0-29.31. I also tested the mainline kernels
+builds 5.9.8-050908.202011101634 and 5.10.0-051000rc4.202011152030 from
+Ubuntu [2].
+
+The Cam Link 4K shows follow entries in dmesg:
+
+```
+[    1.575753] usb 2-3: new SuperSpeed Gen 1 USB device number 2 using xhci_hcd
+[    1.596664] usb 2-3: LPM exit latency is zeroed, disabling LPM.
+[    1.598557] usb 2-3: New USB device found, idVendor=0fd9, idProduct=0066, bcdDevice= 0.00
+[    1.598558] usb 2-3: New USB device strings: Mfr=1, Product=2, SerialNumber=4
+[    1.598559] usb 2-3: Product: Cam Link 4K
+[    1.598560] usb 2-3: Manufacturer: Elgato
+```
+
+I have another problems with 5.9.8-050908.202011101634 and 5.10.0-
+051000rc4.202011152030: Chromium fail to access the video device of Cam
+Link 4K and the notebook integrated webcam has a too low brightness.
+
+[1] https://geizhals.de/?cat=vidext
+[2] https://kernel.ubuntu.com/~kernel-ppa/mainline/
+[3] https://assortedhackery.com/patching-cam-link-to-play-nicer-on-linux/
+
+--
+Benjamin Drung
+Debian & Ubuntu Developer
+
