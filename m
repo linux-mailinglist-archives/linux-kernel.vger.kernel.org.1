@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88732BA5B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB2D2BA5C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727477AbgKTJQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:16:25 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8563 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727204AbgKTJQW (ORCPT
+        id S1727719AbgKTJRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:17:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60636 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727706AbgKTJRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:16:22 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CcrWK15zczLqnH;
-        Fri, 20 Nov 2020 17:15:57 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 20 Nov 2020 17:16:12 +0800
-From:   Huazhong Tan <tanhuazhong@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
-        <linuxarm@huawei.com>, <kuba@kernel.org>,
-        Yonglong Liu <liuyonglong@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>
-Subject: [PATCH net-next 5/5] net: hns3: adds debugfs to dump more info of shaping parameters
-Date:   Fri, 20 Nov 2020 17:16:23 +0800
-Message-ID: <1605863783-36995-6-git-send-email-tanhuazhong@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605863783-36995-1-git-send-email-tanhuazhong@huawei.com>
-References: <1605863783-36995-1-git-send-email-tanhuazhong@huawei.com>
+        Fri, 20 Nov 2020 04:17:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605863818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ITZXc1TXvVFkkNpcVLTYs8BZNWT7SU+qlHrGasDetMo=;
+        b=LE6dPOwzcTfwPOp5E/ZeEt0VpPDL6Jb9/r64Tdy4JYYqstGAbBTEQbvvJ3nLPHPDM88tYp
+        Y5c9MgZ7Q8gi1WkJsd3jPL7ckrsX9sBvfdR+csLY1kiI9AGYyyCeZKmCa2q2jZJwbiBRrj
+        yr5mb0XDHd0KyKCDRpjMlM2MsfPpheY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-y8ps-3dMPUGoeQojge184g-1; Fri, 20 Nov 2020 04:16:54 -0500
+X-MC-Unique: y8ps-3dMPUGoeQojge184g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D0CD1DDF2;
+        Fri, 20 Nov 2020 09:16:49 +0000 (UTC)
+Received: from [10.36.114.78] (ovpn-114-78.ams2.redhat.com [10.36.114.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3A02919725;
+        Fri, 20 Nov 2020 09:16:44 +0000 (UTC)
+Subject: Re: [PATCH v5 21/21] mm/hugetlb: Disable freeing vmemmap if struct
+ page size is not power of two
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201120064325.34492-1-songmuchun@bytedance.com>
+ <20201120064325.34492-22-songmuchun@bytedance.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <dc77d433-b5f0-0f4a-a4e9-f888b079618a@redhat.com>
+Date:   Fri, 20 Nov 2020 10:16:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201120064325.34492-22-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonglong Liu <liuyonglong@huawei.com>
+On 20.11.20 07:43, Muchun Song wrote:
+> We only can free the unused vmemmap to the buddy system when the
+> size of struct page is a power of two.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>   mm/hugetlb_vmemmap.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index c3b3fc041903..7bb749a3eea2 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -671,7 +671,8 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
+>   	unsigned int order = huge_page_order(h);
+>   	unsigned int vmemmap_pages;
+>   
+> -	if (hugetlb_free_vmemmap_disabled) {
+> +	if (hugetlb_free_vmemmap_disabled ||
+> +	    !is_power_of_2(sizeof(struct page))) {
+>   		pr_info("disable free vmemmap pages for %s\n", h->name);
+>   		return;
+>   	}
+> 
 
-Adds debugfs to dump new shaping parameters: rate and flag.
+This patch should be merged into the original patch that introduced 
+vmemmap freeing.
 
-Signed-off-by: Yonglong Liu <liuyonglong@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
----
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-index c82d2ca..bedbc11 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-@@ -498,6 +498,9 @@ static void hclge_dbg_dump_tm_pg(struct hclge_dev *hdev)
- 	dev_info(&hdev->pdev->dev, "PG_P pg_id: %u\n", pg_shap_cfg_cmd->pg_id);
- 	dev_info(&hdev->pdev->dev, "PG_P pg_shapping: 0x%x\n",
- 		 le32_to_cpu(pg_shap_cfg_cmd->pg_shapping_para));
-+	dev_info(&hdev->pdev->dev, "PG_P flag: %#x\n", pg_shap_cfg_cmd->flag);
-+	dev_info(&hdev->pdev->dev, "PG_P pg_rate: %u(Mbps)\n",
-+		 le32_to_cpu(pg_shap_cfg_cmd->pg_rate));
- 
- 	cmd = HCLGE_OPC_TM_PORT_SHAPPING;
- 	hclge_cmd_setup_basic_desc(&desc, cmd, true);
-@@ -508,6 +511,9 @@ static void hclge_dbg_dump_tm_pg(struct hclge_dev *hdev)
- 	port_shap_cfg_cmd = (struct hclge_port_shapping_cmd *)desc.data;
- 	dev_info(&hdev->pdev->dev, "PORT port_shapping: 0x%x\n",
- 		 le32_to_cpu(port_shap_cfg_cmd->port_shapping_para));
-+	dev_info(&hdev->pdev->dev, "PORT flag: %#x\n", port_shap_cfg_cmd->flag);
-+	dev_info(&hdev->pdev->dev, "PORT port_rate: %u(Mbps)\n",
-+		 le32_to_cpu(port_shap_cfg_cmd->port_rate));
- 
- 	cmd = HCLGE_OPC_TM_PG_SCH_MODE_CFG;
- 	hclge_cmd_setup_basic_desc(&desc, cmd, true);
-@@ -655,6 +661,9 @@ static void hclge_dbg_dump_tm(struct hclge_dev *hdev)
- 	dev_info(&hdev->pdev->dev, "PRI_C pri_id: %u\n", shap_cfg_cmd->pri_id);
- 	dev_info(&hdev->pdev->dev, "PRI_C pri_shapping: 0x%x\n",
- 		 le32_to_cpu(shap_cfg_cmd->pri_shapping_para));
-+	dev_info(&hdev->pdev->dev, "PRI_C flag: %#x\n", shap_cfg_cmd->flag);
-+	dev_info(&hdev->pdev->dev, "PRI_C pri_rate: %u(Mbps)\n",
-+		 le32_to_cpu(shap_cfg_cmd->pri_rate));
- 
- 	cmd = HCLGE_OPC_TM_PRI_P_SHAPPING;
- 	hclge_cmd_setup_basic_desc(&desc, cmd, true);
-@@ -666,6 +675,9 @@ static void hclge_dbg_dump_tm(struct hclge_dev *hdev)
- 	dev_info(&hdev->pdev->dev, "PRI_P pri_id: %u\n", shap_cfg_cmd->pri_id);
- 	dev_info(&hdev->pdev->dev, "PRI_P pri_shapping: 0x%x\n",
- 		 le32_to_cpu(shap_cfg_cmd->pri_shapping_para));
-+	dev_info(&hdev->pdev->dev, "PRI_P flag: %#x\n", shap_cfg_cmd->flag);
-+	dev_info(&hdev->pdev->dev, "PRI_P pri_rate: %u(Mbps)\n",
-+		 le32_to_cpu(shap_cfg_cmd->pri_rate));
- 
- 	hclge_dbg_dump_tm_pg(hdev);
- 
-@@ -1401,6 +1413,7 @@ static void hclge_dbg_dump_qs_shaper_single(struct hclge_dev *hdev, u16 qsid)
- 	u8 ir_u, ir_b, ir_s, bs_b, bs_s;
- 	struct hclge_desc desc;
- 	u32 shapping_para;
-+	u32 rate;
- 	int ret;
- 
- 	hclge_cmd_setup_basic_desc(&desc, HCLGE_OPC_QCN_SHAPPING_CFG, true);
-@@ -1422,10 +1435,11 @@ static void hclge_dbg_dump_qs_shaper_single(struct hclge_dev *hdev, u16 qsid)
- 	ir_s = hclge_tm_get_field(shapping_para, IR_S);
- 	bs_b = hclge_tm_get_field(shapping_para, BS_B);
- 	bs_s = hclge_tm_get_field(shapping_para, BS_S);
-+	rate = le32_to_cpu(shap_cfg_cmd->qs_rate);
- 
- 	dev_info(&hdev->pdev->dev,
--		 "qs%u ir_b:%u, ir_u:%u, ir_s:%u, bs_b:%u, bs_s:%u\n",
--		 qsid, ir_b, ir_u, ir_s, bs_b, bs_s);
-+		 "qs%u ir_b:%u, ir_u:%u, ir_s:%u, bs_b:%u, bs_s:%u, flag:%#x, rate:%u(Mbps)\n",
-+		 qsid, ir_b, ir_u, ir_s, bs_b, bs_s, shap_cfg_cmd->flag, rate);
- }
- 
- static void hclge_dbg_dump_qs_shaper_all(struct hclge_dev *hdev)
 -- 
-2.7.4
+Thanks,
+
+David / dhildenb
 
