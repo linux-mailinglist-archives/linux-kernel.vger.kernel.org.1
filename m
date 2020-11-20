@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51212BA230
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 07:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE612BA233
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 07:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725989AbgKTGRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 01:17:49 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8006 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgKTGRt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 01:17:49 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CcmYN1Ys2zhdD3;
-        Fri, 20 Nov 2020 14:17:28 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 20 Nov
- 2020 14:17:38 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: remove writeback_inodes_sb in
- f2fs_remount
-To:     Liu Song <fishland@aliyun.com>, <jaegeuk@kernel.org>,
-        <chao@kernel.org>
-CC:     <liu.song11@zte.com.cn>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201118140104.5825-1-fishland@aliyun.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <862998f9-aac8-83e1-b11e-d70df3714e19@huawei.com>
-Date:   Fri, 20 Nov 2020 14:17:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726297AbgKTGSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 01:18:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725791AbgKTGSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 01:18:31 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B12F722256;
+        Fri, 20 Nov 2020 06:18:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605853110;
+        bh=kgE8YnXPz2O7Fw8Fqo+KnJOVq5kmPwWw1fm7scPoKek=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=2Tk6spH/euf2l13zEbaiYj9BSnEnxkVir9xnmS5rYL517pYEs1IsURM6C7E7eEaI7
+         5eh5Am13VXooLn8PWSP1rIvd0bl/vj/+5M1Bz7wULZB71w8aQXb9ptxrF0hG0ZFaoe
+         AaBA5bIciI+yPvd8pKQ2ssZtG1PdvvJpYydLR3+c=
+Date:   Thu, 19 Nov 2020 22:18:28 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>, kvalo@codeaurora.org,
+        linux-wireless@vger.kernel.org, cjhuang@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
+        clew@codeaurora.org, loic.poulain@linaro.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] net: qrtr: Unprepare MHI channels during remove
+Message-ID: <20201119221828.72ba151a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201120061512.GB3909@work>
+References: <1605723625-11206-1-git-send-email-bbhatt@codeaurora.org>
+        <20201119211046.64294cf6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20201120061512.GB3909@work>
 MIME-Version: 1.0
-In-Reply-To: <20201118140104.5825-1-fishland@aliyun.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/18 22:01, Liu Song via Linux-f2fs-devel wrote:
-> From: Liu Song <liu.song11@zte.com.cn>
-> 
-> Since sync_inodes_sb has been used, there is no need to
-> use writeback_inodes_sb, so remove it.
-> 
-> Signed-off-by: Liu Song <liu.song11@zte.com.cn>
+On Fri, 20 Nov 2020 11:45:12 +0530 Manivannan Sadhasivam wrote:
+> Jakub, can you please provide your ack so that I can take it?
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Sure:
 
-Thanks,
+Acked-by: Jakub Kicinski <kuba@kernel.org>
