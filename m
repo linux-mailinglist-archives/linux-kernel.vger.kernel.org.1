@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375602BA5BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B182BA5AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbgKTJQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:16:36 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:48609 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727185AbgKTJQe (ORCPT
+        id S1727335AbgKTJPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:15:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbgKTJPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:16:34 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AK9Blqd012545;
-        Fri, 20 Nov 2020 10:15:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
- date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=R/vYxilZj+dFFN/UrLsX4aZGw1rVzm4efQsXjf2WTUM=;
- b=Gn+BkJmpEZYiJ89gbWVEOtTpmXfBUNMfyA5v0JpYC+fWQOeF4oZQ8Q3+lFTgvQ2BCoE6
- SEUw5RQA2NdamyDh70K2tGzzeyzyipk3l1Cu14iKW5uSe+Qr5XdWDBQUax+kMfdCbtJm
- r5a5ndGTircPEkSwoxOxPqkjCxsBn0pvzC1GpV9Z5Eb06jXC9vODQEVx2WiQo2q0d/v3
- 1T/eupB++iXfIJD+QFl+DZ1/FE3bJ0s0iJcGUeYA96URQDcxNNbGVJsziVM5hqU6DD9F
- /q+Lb0ohTff5RieGLw1din76vVl5w60FIpVJYmxhHWcHrFj/ZleanKIUKGYv/rpNPD1T 9Q== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34x70msbn2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Nov 2020 10:15:12 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 37036100038;
-        Fri, 20 Nov 2020 10:15:12 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 18187236075;
-        Fri, 20 Nov 2020 10:15:12 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 20 Nov 2020 10:15:11
- +0100
-From:   Olivier Moysan <olivier.moysan@st.com>
-To:     <linux@armlinux.org.uk>, <shawnguo@kernel.org>, <olof@lixom.net>,
-        <alexandre.torgue@st.com>, <krzk@kernel.org>,
-        <geert+renesas@glider.be>, <amelie.delaunay@st.com>,
-        <aisheng.dong@nxp.com>, <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <christian.gmeiner@gmail.com>, <enric.balletbo@collabora.com>,
-        <lionel.debieve@st.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <olivier.moysan@st.com>
-Subject: [PATCH v2 2/2] ARM: multi_v7_defconfig: enable dfsdm audio support
-Date:   Fri, 20 Nov 2020 10:15:06 +0100
-Message-ID: <20201120091506.18326-3-olivier.moysan@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201120091506.18326-1-olivier.moysan@st.com>
-References: <20201120091506.18326-1-olivier.moysan@st.com>
+        Fri, 20 Nov 2020 04:15:41 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72B4C0613CF;
+        Fri, 20 Nov 2020 01:15:40 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id s30so12460094lfc.4;
+        Fri, 20 Nov 2020 01:15:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y8QalvGL8usu1SwxJBoIJinCnrXoIgcEw4s5L2goS2o=;
+        b=fAwWFYp2VFJSmmIBV05rXILYcwgnD0HL9tGpAsbw7C6AhzJjsT3eFdHN5Q5OxnOo0h
+         0ZK0WJvzeaE8wERL3n3nFmUgDrOMNWLjM0S2WmJhz/aW7jH5Kb6yaHyyQyMm9NIOuPnP
+         jaCOvhPW7H0P6aIy80jsKP4xmsHRWWwaZh5cuSd97Rm4tsumhUM6NwAWVtH4FLGLzFyK
+         cd2Qo5vr+X0NEMTr6a0wQG2deW9sJarLgncsWN309VrQZWyS0zVZAdCSEQFbifNvAumm
+         5AiBaLp/wnuVyU+mkCmaNrQ2KBi+BzoIs3Vr5JTQiQS3fdTQAKZKkWYKiG5VZ0Y7QyhI
+         ASaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Y8QalvGL8usu1SwxJBoIJinCnrXoIgcEw4s5L2goS2o=;
+        b=YX+2Tu/wzo579TRYTt+kPieLfXLwxWsjD37RFrgyJgJ0qm+DkRT08vLz311xpY5l19
+         IT9skvfwwKFxL4BGv5vKV+7F1StdWFDMkGcLkeW/FAHynh0ePabJ/OE3U8vujkwT4ggO
+         B1cbzxX//A6OHRuN9/s93g5AZYlWOC1a7DVSv8Zc8kur8WCl5JMhthXNsboGmn4m6Gyv
+         bXWeJ11SesuGKN8QjNUT0oLzZVjDMsPnpDhU6IrzsWOwc127zVg1CZi9Vv3NisgTZW84
+         1mEp7X2uMlwNmbbzXQ1D4dr+1prpJ8/4lw7/MPxJers+sAklz2jwEToN6wn/rvQm/pTT
+         Q3vg==
+X-Gm-Message-State: AOAM530TcUbhYBDzLmY/or1/g7x31W85iA6eFnJGxr4f+sTWpz4vLCOI
+        q83gj2JJBFkju9I1Kl9FXODYS3kwJXZ21A==
+X-Google-Smtp-Source: ABdhPJzXLvDx2eEVxLt/6eq1f5plMqpfDIPoFgYudE2g9hbOtU3QH5N3ENLP4SI7peIxvz577priyA==
+X-Received: by 2002:a05:6512:304b:: with SMTP id b11mr7138498lfb.546.1605863739110;
+        Fri, 20 Nov 2020 01:15:39 -0800 (PST)
+Received: from ?IPv6:2a00:1fa0:46ec:d97a:8999:fa0b:162:4c32? ([2a00:1fa0:46ec:d97a:8999:fa0b:162:4c32])
+        by smtp.gmail.com with ESMTPSA id z19sm226988ljn.15.2020.11.20.01.15.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 01:15:38 -0800 (PST)
+Subject: Re: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
+To:     Yves-Alexis Perez <corsac@corsac.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin Habets <mhabets@solarflare.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        "Michael S. Tsirkin" <mst@redhat.com>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Matti Vuorela <matti.vuorela@bitfactor.fi>, stable@vger.kernel.org
+References: <CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com>
+ <20201119172439.94988-1-corsac@corsac.net>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <22d938ab-babc-815a-f635-5025e871cf62@gmail.com>
+Date:   Fri, 20 Nov 2020 12:15:24 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-20_04:2020-11-19,2020-11-20 signatures=0
+In-Reply-To: <20201119172439.94988-1-corsac@corsac.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add STM32 DFSDM audio support by enabling CONFIG_SND_SOC_STM32_DFSDM
-as module.
+Hello!
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+On 19.11.2020 20:24, Yves-Alexis Perez wrote:
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index b30a3bc6762b..083d5f4450f4 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -743,6 +743,7 @@ CONFIG_SND_SOC_STI=m
- CONFIG_SND_SOC_STM32_SAI=m
- CONFIG_SND_SOC_STM32_I2S=m
- CONFIG_SND_SOC_STM32_SPDIFRX=m
-+CONFIG_SND_SOC_STM32_DFSDM=m
- CONFIG_SND_SUN4I_CODEC=m
- CONFIG_SND_SOC_TEGRA=m
- CONFIG_SND_SOC_TEGRA20_I2S=m
--- 
-2.17.1
+> Starting with iOS 14 released in September 2020, connectivity using the
+> personal hotspot USB tethering function of iOS devices is broken.
+> 
+> Communication between the host and the device (for example ICMP traffic
+> or DNS resolution using the DNS service running in the device itself)
+> works fine, but communication to endpoints further away doesn't work.
+> 
+> Investigation on the matter shows that UDP and ICMP traffic from the
+                                         ^ "no" missing?
 
+> tethered host is reaching the Internet at all. For TCP traffic there are
+> exchanges between tethered host and server but packets are modified in
+> transit leading to impossible communication.
+> 
+> After some trials Matti Vuorela discovered that reducing the URB buffer
+> size by two bytes restored the previous behavior. While a better
+> solution might exist to fix the issue, since the protocol is not
+> publicly documented and considering the small size of the fix, let's do
+> that.
+> 
+> Tested-by: Matti Vuorela <matti.vuorela@bitfactor.fi>
+> Signed-off-by: Yves-Alexis Perez <corsac@corsac.net>
+> Link: https://lore.kernel.org/linux-usb/CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com/
+> Link: https://github.com/libimobiledevice/libimobiledevice/issues/1038
+> Cc: stable@vger.kernel.org
+[...]
+
+MBR, Sergei
