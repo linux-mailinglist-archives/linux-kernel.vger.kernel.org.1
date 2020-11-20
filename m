@@ -2,117 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4714B2BA8CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 353282BA8D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:18:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgKTLOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:14:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:47670 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727083AbgKTLOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:14:35 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6482511D4;
-        Fri, 20 Nov 2020 03:14:35 -0800 (PST)
-Received: from bogus (unknown [10.57.54.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 283DB3F718;
-        Fri, 20 Nov 2020 03:14:33 -0800 (PST)
-Date:   Fri, 20 Nov 2020 11:14:27 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] firmware: arm_scmi: Augment SMC/HVC to allow
- optional interrupt
-Message-ID: <20201120111427.erqfowx4rosuktao@bogus>
-References: <20201112175632.42234-1-james.quinlan@broadcom.com>
- <20201112175632.42234-3-james.quinlan@broadcom.com>
- <20201113094732.4bcyjs7zz7vwg4of@bogus>
- <CA+-6iNxZ73gYtjP54kBJhcwzL5h4Co6Wh8-Nk4poqLV0s=jA8w@mail.gmail.com>
- <20201113143627.jxxha7uejhjucwbz@bogus>
- <CA+-6iNz099CQQky7U7vm7w7s=QAECauuosLAf7zC4hWNFZ9yqQ@mail.gmail.com>
- <CA+-6iNw2+uGX3W3boiNokbVwaK2MseJORPq8mDpc+SihoLSOQw@mail.gmail.com>
+        id S1728407AbgKTLSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:18:13 -0500
+Received: from mail-dm6nam11on2061.outbound.protection.outlook.com ([40.107.223.61]:21366
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727364AbgKTLSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:18:11 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XEUtfzQZb25Pxf6XNS+Qtc+9/lajwOfB+Z6V45SOsXNMzmFJk1e4B/J7TxGE/BFCv0XOTG8Bd9MNsacQ4xjQpuL9/tNnpZCiBitZtcjNNEjDY9xUAxBnZFol4IitU+QoRreZk0qRg851zWPUAeyIJ4OZgHhQA8K0ELZqL8IhiDit/LChf9vWPcRNktzeE6UZ3KjagzvMwkM3COQFrGs6/e6qHCBjaEIJQUE7Eo4NkWmGGhMJgv5RxaGVJyMT5FIG1UsZDFxRUd2WSz8BIfHIBmLhM6EMgp1h5K+yDjg3tAf73vIAwJn37oGTZIrAXz9jLygosXK2aFNcQJhtwxi2Mg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0EXeMocXvusfYdKt1kOEej7xLoUdDbyBuqq8eSAGUfk=;
+ b=ROczNvmWXq6GZg9PlAt4n/ZprmatspEyo/BUPSATl8Ru7nkE4tpgt6KEFfG/GsrykF9Eg7jhdTcqu5vtnxUv/JdxdFqMecooXS0X/IgP62N7TONhp3lbiKMmg8BwfCwHa0ROEKxP0UJblksmGenls9Zx9t9mQNNQzszEIFryfY5SwqeJq0YfGKG2VLpfsq6wt35sLBuhe4UtCITa53ZttZVaFznbvJUoeXNdmQU/3mMVrahB1rHSvj+C/sX3SiYqjqQFl1Ajsnh8mbxPfuVPpMsJCHCLFuseR+6Of5OhPRRi2V9fPr8Z/Z1bzTMauEvFHjUGS1jnSdL2eu1Kxbi7Yg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0EXeMocXvusfYdKt1kOEej7xLoUdDbyBuqq8eSAGUfk=;
+ b=DeyfmG9uF0CHC6OjxnNeyrWnkhn550VCdbzBKn7YnkqhBvOAE4ti1CK86j/30yDGq86/1a9qnERxZUDiX//tqfldb5SEKSp9wi7OBDn/yEEBovZp26DQDauWMOC3Wu8k2718vEO6TG8Z86WRUu1akgGHtvwoqpexxL1+7AkOOlw=
+Authentication-Results: amazon.com; dkim=none (message not signed)
+ header.d=none;amazon.com; dmarc=none action=none header.from=synaptics.com;
+Received: from SN2PR03MB2383.namprd03.prod.outlook.com (2603:10b6:804:d::23)
+ by SN6PR03MB3808.namprd03.prod.outlook.com (2603:10b6:805:67::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Fri, 20 Nov
+ 2020 11:18:09 +0000
+Received: from SN2PR03MB2383.namprd03.prod.outlook.com
+ ([fe80::412b:8366:f594:a39]) by SN2PR03MB2383.namprd03.prod.outlook.com
+ ([fe80::412b:8366:f594:a39%9]) with mapi id 15.20.3589.022; Fri, 20 Nov 2020
+ 11:18:09 +0000
+Date:   Fri, 20 Nov 2020 19:16:11 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Jonathan Chocron <jonnyc@amazon.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH dwc-next v2 0/2] PCI: dwc: remove useless dw_pcie_ops
+Message-ID: <20201120191611.7b84a86b@xhacker.debian>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR11CA0092.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::33) To SN2PR03MB2383.namprd03.prod.outlook.com
+ (2603:10b6:804:d::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+-6iNw2+uGX3W3boiNokbVwaK2MseJORPq8mDpc+SihoLSOQw@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR11CA0092.namprd11.prod.outlook.com (2603:10b6:a03:f4::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Fri, 20 Nov 2020 11:18:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cf2d1cb7-66c1-40bc-691f-08d88d45f5fa
+X-MS-TrafficTypeDiagnostic: SN6PR03MB3808:
+X-Microsoft-Antispam-PRVS: <SN6PR03MB38087598E7C374594C131F9CEDFF0@SN6PR03MB3808.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:741;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nsMqM8PQA8nYtpkxYXxuq5CI/JxZTGVxfS7xyWFPzYD7iVn1BLrH2kCdVBD0Ki9OWS7GZz6nFwJt8LODtLmkoJZA963ao2oFMo2ZC16EGogMA4cuudjDVkpjNIFs+lSE5dmj4byL8Kt5g9O6xwf1A2EGxzk06tX5AK6q7HhuFwWcvLf8wFV3hH5xC1yahn8x5PMufDgk7rgfjzwhg35AkrdB2oNMV99MXAGp+0KwlMecEbhMAMiZFfwkYTP37b2ywTcFUKBOtZm1zbEpxULo+xN/SnPa6PcfOtF5T6cnDyR1RJrHXQ4iTKoCF7/wZvm7+KXIwJ5EvZWr3jg/DlGM4Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN2PR03MB2383.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(366004)(376002)(396003)(9686003)(66946007)(4744005)(8936002)(316002)(186003)(478600001)(4326008)(26005)(5660300002)(55016002)(16526019)(8676002)(2906002)(6666004)(6506007)(86362001)(83380400001)(66476007)(66556008)(52116002)(956004)(110136005)(7696005)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 0WQ1bRl0Ly4ev6woZys6kOBL59MpRpGCICgD8SrLHi6+YIRpm8tco7nH2lsO4EhlU1iQnsmlYKf74b7LlMShXCwWzx4viDUDCs83O3fH3jogwUHDJ9DRfatEPJO4ijZXLdHnDf8PqZwjm8iiWVQ7241pBFM2alLECsqYuwgMH/6y0Gvv4RjysEwzQC2QNfPgLraHETXt3VHOOUlbhzf+foDczJL92N9lUi1+aPl/0mWVsXlOrXvD9Ef13RXYoorNsR8PgmMCgEQb6TBbZ5EdeRAk3N3OraTHBCyZ1osukCNgw0i4H9j7AWvhze/CBnBT77511ebiIacWzVtbZd4BizaJsBFbPfvr4PYK/OSUxxm2AZmw+NA6MKnXFMuF9K0jkgSCCUEeqtyzPRgRnzJ/MPjlLLizG8A/hxxE37yVE6z8OAF3YG1E4gi66iDi/YaexdwerrVqTJSq+dOpokqmWEH0UEEDkUsK0Nreith6GZKzTczxbz4nFBRzLcxCmRbq4DZR3PyaK+vZzEuHEQgbeQVpdfHOQp2SwdRwseD19SetT6XK2C30URXdJ67ksGeTDdnCwd+CBJ1P4iCNxsufiBk1s3kWVmGj9rLOfe6+WnSHsTXNodmKSRLWnbKMvn2wNlWM1gWRQC87BE6nplXqug==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf2d1cb7-66c1-40bc-691f-08d88d45f5fa
+X-MS-Exchange-CrossTenant-AuthSource: SN2PR03MB2383.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2020 11:18:09.3393
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vdfZKJB1I7fcEn3bNncvrn+QDB9IhARCUgSeQQh4xWiO7FuTGOsgECHzhJNJ9dBLuldWx5D3Nel7gEQv5OOy8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR03MB3808
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 01:34:18PM -0500, Jim Quinlan wrote:
-> On Fri, Nov 13, 2020 at 10:12 AM Jim Quinlan <james.quinlan@broadcom.com> wrote:
-> >
-> > On Fri, Nov 13, 2020 at 9:36 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > >
-> > > On Fri, Nov 13, 2020 at 09:26:43AM -0500, Jim Quinlan wrote:
-> > > > Hi, these are fast calls.  Regards, Jim
-> > > >
-> > > >
-> > > > On Fri, Nov 13, 2020 at 4:47 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > > > >
-> > > > > On Thu, Nov 12, 2020 at 12:56:27PM -0500, Jim Quinlan wrote:
-> > > > > > The SMC/HVC SCMI transport is modified to allow the completion of an SCMI
-> > > > > > message to be indicated by an interrupt rather than the return of the smc
-> > > > > > call.  This accommodates the existing behavior of the BrcmSTB SCMI
-> > > > > > "platform" whose SW is already out in the field and cannot be changed.
-> > > > > >
-> > > > >
-> > > > > Sorry for missing to check with you earlier. Are these not fast smc calls ?
-> > > > > Can we check the SMC Function IDs for the same and expect IRQ to be present
-> > > > > if they are not fast calls ?
-> > > > Hi, if I understand you correctly you want to do something like this:
-> > > >
-> > > >  if (! ARM_SMCCC_IS_FAST_CALL(func_id)) {
-> > > >         /* look for irq and request it */
-> > > > }
-> > > >
-> > >
-> > > Yes.
-> > >
-> > > > But we  do use fast calls.
-> > >
-> > > What was the rationale for retaining fast SMC calls but use IRQ for Tx
-> > > completion ?
-> > >
-> > > Is it because you offload it to some other microprocessor and don't
-> > > continue execution on secure side in whcih case you can afford fast call ?
-> Hi Sudeep,
->
+Some designware based device driver especially host only driver may
+work well with the default read_dbi/write_dbi/link_up implementation
+in pcie-designware.c, thus remove the assumption to simplify those
+drivers.
 
-Thanks for the details. Unfortunately more questions:
+Since v1:
+  - rebase to the latest dwc-next
 
-> Here is my understanding:  Some SMC calls may take a few longer to
-> complete than others. The longer ones tie up the CPU core that is
-> handling the SMC call, and so nothing can be scheduled on that
-> specific core.
+Jisheng Zhang (2):
+  PCI: dwc: Don't assume the ops in dw_pcie always exists
+  PCI: dwc: al: Remove useless dw_pcie_ops
 
-So far good.
+ drivers/pci/controller/dwc/pcie-al.c              |  4 ----
+ drivers/pci/controller/dwc/pcie-designware-ep.c   |  8 +++-----
+ drivers/pci/controller/dwc/pcie-designware-host.c |  2 +-
+ drivers/pci/controller/dwc/pcie-designware.c      | 14 +++++++-------
+ 4 files changed, 11 insertions(+), 17 deletions(-)
 
-> Unfortunately, we have a real-time OS that runs
-> sporadically on one specific core and if that happens to be the same
-> core that is handling the SMC, the RTOS will miss its deadline.  So we
-> need to have the SMC return immediately and use an SGI for task
-> completion.
->
+-- 
+2.29.2
 
-So it sounds more like it can't be fast call then.
-
-Does that me, it will always return early and send SGI when the request
-is complete ?
-
-1. If yes, what happens if there are multiple requests in parallel and
-   second one completes before the first. Can we handle that with this
-   patch set. Of will the second request fails until the first one is
-   complete ? It extends to number of cpus in the system worst case.
-
-2. If no, will this not cause issues if we unconditional wait for interrupt
-   every single time ?
-
---
-Regards,
-Sudeep
