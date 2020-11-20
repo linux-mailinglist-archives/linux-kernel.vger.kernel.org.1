@@ -2,156 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDECE2BAC0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 369CB2BAC0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbgKTOja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 09:39:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727246AbgKTOja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:39:30 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E7122224C;
-        Fri, 20 Nov 2020 14:39:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605883169;
-        bh=TAwBwzFSTpCTleLfZQ8+ZcWFhYmGk+5E1muhTgKlVwA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FmgQYZ4oMCALsaw6U1qaA54aFyaUqxhNoCwtOECuPWnMfsF7iTLeFxZkhPS916SF/
-         rMfTurzQ/uZuMTNNsd6/8Q76z8U2b9I1LeSG2BUcxAbFvD8UnUyqLLLnUkUoPh3mc2
-         mL/qo8R/Mg/Ov98CmrIsF1+Xuj4oSWG9ZL/tGcC8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AEB373522A6E; Fri, 20 Nov 2020 06:39:28 -0800 (PST)
-Date:   Fri, 20 Nov 2020 06:39:28 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
- kfence: Avoid stalling...)
-Message-ID: <20201120143928.GH1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201117182915.GM1437@paulmck-ThinkPad-P72>
- <20201118225621.GA1770130@elver.google.com>
- <20201118233841.GS1437@paulmck-ThinkPad-P72>
- <20201119125357.GA2084963@elver.google.com>
- <20201119151409.GU1437@paulmck-ThinkPad-P72>
- <20201119170259.GA2134472@elver.google.com>
- <20201119184854.GY1437@paulmck-ThinkPad-P72>
- <20201119193819.GA2601289@elver.google.com>
- <20201119213512.GB1437@paulmck-ThinkPad-P72>
- <20201120141928.GB3120165@elver.google.com>
+        id S1728018AbgKTOlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 09:41:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46346 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727897AbgKTOlP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 09:41:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605883274;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O1lkgsCtAW9gay4nzrsgpJCYCXHG/gdOfQ5aoMkR6+I=;
+        b=TUkGMczl366J9djoxklEC+y+r3wfAu92vtP3RlKShEWi58kTYJS3em/FiSm0Lipgu9EcCI
+        ll2SHsHYF+gPBhqCoD0j5vmjSSKNI8dRejlgcS2DKojY8MymGMn4rfELziXIBSMbCSlno/
+        AALheBiPuFWP70zryjgjDKbK8VTwWq4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-531-aBXpNp_wNF2CFcvwAk-v3A-1; Fri, 20 Nov 2020 09:41:12 -0500
+X-MC-Unique: aBXpNp_wNF2CFcvwAk-v3A-1
+Received: by mail-wr1-f69.google.com with SMTP id l5so3457858wrn.18
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 06:41:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O1lkgsCtAW9gay4nzrsgpJCYCXHG/gdOfQ5aoMkR6+I=;
+        b=Su7EEZDHuY+iUqL/jvR55zVZDmv8a/WCOi3Uoz1t/g7eASWnYJ8GP5/RXnbkM/E3QP
+         oQ9xMpOcc+fDSVRhRnlSO78gTe8Be3bdGmusAPNdn7agk++fke6Ja8zpwbpeQq/c3zLF
+         0EqWEPbVavIO3/eZRl2hbX/a0iBNT35fGFYV2UP7h4hake3GfhzWfFtrIKSEFGmLdLnT
+         6Lr9XsF45khE/sYmhn5k/IZL9Z2/RTHEvgAwYAH6umOiUCWbgqdHj1qHBCDVk+/Avaw7
+         qwTqESiYadWZHj4zo9mb/Zqrnyn4F2kiK++doB//DQlAaXNe2gNHBfDr1ivtdmIwTxjv
+         9u9A==
+X-Gm-Message-State: AOAM5307+9OdPPVeqAzZKzFXas8XpQ1rVorqqk6ASosJcGWf+qg9GZ7R
+        gx1dUyHCakvHSuqlL+Xr3Y/Yts9gFr6eCCzm4KtKR1ytbAkhdqI4yx/p5L02443amAKXP3Ifqma
+        TjZzyysmoEtOibuKRpac/IaY0
+X-Received: by 2002:adf:f181:: with SMTP id h1mr15982313wro.267.1605883271029;
+        Fri, 20 Nov 2020 06:41:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxEZQejCgLFVrq6q+ujHyBd46vdktdOw4jy0hWO52Dab1yBLPrKbw2vTOTtv2NCzaReoRni8w==
+X-Received: by 2002:adf:f181:: with SMTP id h1mr15982290wro.267.1605883270766;
+        Fri, 20 Nov 2020 06:41:10 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id k64sm4598406wmb.11.2020.11.20.06.41.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 06:41:10 -0800 (PST)
+Date:   Fri, 20 Nov 2020 15:41:07 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH RFC 10/12] vdpa_sim: split vdpasim_virtqueue's iov field
+ in riov and wiov
+Message-ID: <20201120144107.hlpkkrjdvjhvuxma@steredhat>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <20201113134712.69744-11-sgarzare@redhat.com>
+ <20201117112703.GF131917@stefanha-x1.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201120141928.GB3120165@elver.google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201117112703.GF131917@stefanha-x1.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 03:19:28PM +0100, Marco Elver wrote:
-> On Thu, Nov 19, 2020 at 01:35PM -0800, Paul E. McKenney wrote:
-> > On Thu, Nov 19, 2020 at 08:38:19PM +0100, Marco Elver wrote:
-> > > On Thu, Nov 19, 2020 at 10:48AM -0800, Paul E. McKenney wrote:
-> > > > On Thu, Nov 19, 2020 at 06:02:59PM +0100, Marco Elver wrote:
-> > 
-> > [ . . . ]
-> > 
-> > > > > I can try bisection again, or reverting some commits that might be
-> > > > > suspicious? But we'd need some selection of suspicious commits.
-> > > > 
-> > > > The report claims that one of the rcu_node ->lock fields is held
-> > > > with interrupts enabled, which would indeed be bad.  Except that all
-> > > > of the stack traces that it shows have these locks held within the
-> > > > scheduling-clock interrupt handler.  Now with the "rcu: Don't invoke
-> > > > try_invoke_on_locked_down_task() with irqs disabled" but without the
-> > > > "sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled"
-> > > > commit, I understand why.  With both, I don't see how this happens.
-> > > 
-> > > I'm at a loss, but happy to keep bisecting and trying patches. I'm also
-> > > considering:
-> > > 
-> > > 	Is it the compiler? Probably not, I tried 2 versions of GCC.
-> > > 
-> > > 	Can we trust lockdep to precisely know IRQ state? I know there's
-> > > 	been some recent work around this, but hopefully we're not
-> > > 	affected here?
-> > > 
-> > > 	Is QEMU buggy?
-> > > 
-> > > > At this point, I am reduced to adding lockdep_assert_irqs_disabled()
-> > > > calls at various points in that code, as shown in the patch below.
-> > > > 
-> > > > At this point, I would guess that your first priority would be the
-> > > > initial bug rather than this following issue, but you never know, this
-> > > > might well help diagnose the initial bug.
-> > > 
-> > > I don't mind either way. I'm worried deadlocking the whole system might
-> > > be worse.
-> > 
-> > Here is another set of lockdep_assert_irqs_disabled() calls on the
-> > off-chance that they actually find something.
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit bcca5277df3f24db15e15ccc8b05ecf346d05169
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Thu Nov 19 13:30:33 2020 -0800
-> > 
-> >     rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
-> 
-> None of those triggered either.
-> 
-> I found that disabling ftrace for some of kernel/rcu (see below) solved
-> the stalls (and any mention of deadlocks as a side-effect I assume),
-> resulting in successful boot.
-> 
-> Does that provide any additional clues? I tried to narrow it down to 1-2
-> files, but that doesn't seem to work.
+On Tue, Nov 17, 2020 at 11:27:03AM +0000, Stefan Hajnoczi wrote:
+>On Fri, Nov 13, 2020 at 02:47:10PM +0100, Stefano Garzarella wrote:
+>> vringh_getdesc_iotlb() manages 2 iovs for writable and readable
+>> descriptors. This is very useful for the block device, where for
+>> each request we have both types of descriptor.
+>>
+>> Let's split the vdpasim_virtqueue's iov field in riov and wiov
+>> to use them with vringh_getdesc_iotlb().
+>
+>Is riov/wiov naming common? VIRTIO uses "in" (device-to-driver) and
+>"out" (driver-to-device). Using VIRTIO terminology might be clearer.
 
-There were similar issues during the x86/entry work.  Are the ARM guys
-doing arm64/entry work now?
+I followed the vringh_getdesc_iotlb() attribute names, but I agree that 
+"in" and "out" would be better. I lost multiple times with read/write...
 
-							Thanx, Paul
+I'll fix!
 
-> Thanks,
-> -- Marco
-> 
-> ------ >8 ------
-> 
-> diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
-> index 0cfb009a99b9..678b4b094f94 100644
-> --- a/kernel/rcu/Makefile
-> +++ b/kernel/rcu/Makefile
-> @@ -3,6 +3,13 @@
->  # and is generally not a function of system call inputs.
->  KCOV_INSTRUMENT := n
->  
-> +ifdef CONFIG_FUNCTION_TRACER
-> +CFLAGS_REMOVE_update.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_sync.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_srcutree.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_tree.o = $(CC_FLAGS_FTRACE)
-> +endif
-> +
->  ifeq ($(CONFIG_KCSAN),y)
->  KBUILD_CFLAGS += -g -fno-omit-frame-pointer
->  endif
+Thanks,
+Stefano
+
