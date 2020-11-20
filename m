@@ -2,160 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81412BB457
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6372BB45D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731884AbgKTSve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:51:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34056 "EHLO mail.kernel.org"
+        id S1732010AbgKTSwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:52:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729012AbgKTSvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:51:32 -0500
-Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
+        id S1731397AbgKTSwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:52:16 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 637BD2242B;
-        Fri, 20 Nov 2020 18:51:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97A012242B;
+        Fri, 20 Nov 2020 18:52:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605898292;
-        bh=xpsW+j5Z95aEf14SEZ/cG4zHUfe+fcw4VxLFbmk0zE0=;
-        h=Subject:From:To:Date:From;
-        b=wSCPaTVT3oyvh6eYohEqaqZV0cPySdoZ/E485rh8O46grvmhq0ozrHLsr08dA0jP2
-         Hu3Hmy04NV6HpR6bTTcl7NXgyv/4HR93bP3Q39AhBGGFZMNZDERFQ+GycSVVq4LKE/
-         RA1X4lqyvEH1IQsRuzR0bYNkbZWjtCr22UT+PDQ0=
-Message-ID: <0a643944215d02582d5c7acd1cedcd90388e3353.camel@kernel.org>
-Subject: [ANNOUNCE] 4.19.152-rt66
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>, Tom Zanussi <zanussi@kernel.org>
-Date:   Fri, 20 Nov 2020 12:51:30 -0600
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        s=default; t=1605898335;
+        bh=TOm8+E7QSfFHHrs5MxkrMPjm3NEOVrQslJtGI4sgauQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wA2HsvP/OWpc9I0nbT5LPnhdTTA8eKlIHY+JzpILdOh6eA0SgynwhWTw8GCjPOp7B
+         yUKjsMJsRMPsTvVJQdTGaNKGIgbi4aWNzN+93Fq1HFHl3n3rmpfDSk576AifO59erz
+         hqleKOwZaTu69H9pV4sRQU68csevrf0mQ/pNdxRw=
+Date:   Fri, 20 Nov 2020 10:52:14 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH] random: fix the RNDRESEEDCRNG ioctl
+Message-ID: <X7gQXgoXHHEr6HXC@sol.localdomain>
+References: <20200916041908.66649-1-ebiggers@kernel.org>
+ <20201007035021.GB912@sol.localdomain>
+ <20201026163343.GA858@sol.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026163343.GA858@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT Folks!
+On Mon, Oct 26, 2020 at 09:33:43AM -0700, Eric Biggers wrote:
+> On Tue, Oct 06, 2020 at 08:50:21PM -0700, Eric Biggers wrote:
+> > On Tue, Sep 15, 2020 at 09:19:08PM -0700, Eric Biggers wrote:
+> > > From: Eric Biggers <ebiggers@google.com>
+> > > 
+> > > The RNDRESEEDCRNG ioctl reseeds the primary_crng from itself, which
+> > > doesn't make sense.  Reseed it from the input_pool instead.
+> > > 
+> > > Fixes: d848e5f8e1eb ("random: add new ioctl RNDRESEEDCRNG")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> > 
+> > Ping?
+> 
+> Ping.
 
-I'm pleased to announce the 4.19.152-rt66 stable release.
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.19-rt
-  Head SHA1: 3b515711216822e708490d1c686813c819e237b1
-
-Or to build 4.19.152-rt66 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.152.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.152-rt66.patch.xz
-
-
-You can also build from 4.19.152-rt65 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.152-rt65-rt66.patch.xz
-
-Enjoy!
-
-   Tom
-
-Changes from v4.19.152-rt65:
----
-
-Oleg Nesterov (1):
-      ptrace: fix ptrace_unfreeze_traced() race with rt-lock
-
-Sebastian Andrzej Siewior (1):
-      mm/memcontrol: Disable preemption in __mod_memcg_lruvec_state()
-
-Tom Zanussi (1):
-      Linux 4.19.152-rt66
----
-include/linux/memcontrol.h |  2 ++
- kernel/ptrace.c            | 23 +++++++++++++++--------
- localversion-rt            |  2 +-
- 3 files changed, 18 insertions(+), 9 deletions(-)
----
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index cc6b6532eb56..dbb2c4e27277 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -665,6 +665,7 @@ static inline void __mod_lruvec_state(struct lruvec *lruvec,
- 
- 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
- 
-+	preempt_disable_rt();
- 	/* Update memcg */
- 	__mod_memcg_state(pn->memcg, idx, val);
- 
-@@ -675,6 +676,7 @@ static inline void __mod_lruvec_state(struct lruvec *lruvec,
- 		x = 0;
- 	}
- 	__this_cpu_write(pn->lruvec_stat_cpu->count[idx], x);
-+	preempt_enable_rt();
- }
- 
- static inline void mod_lruvec_state(struct lruvec *lruvec,
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index a38b304fb9fd..cbefb0234be3 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -191,8 +191,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
- 
- static void ptrace_unfreeze_traced(struct task_struct *task)
- {
--	if (task->state != __TASK_TRACED)
--		return;
-+	unsigned long flags;
-+	bool frozen = true;
- 
- 	WARN_ON(!task->ptrace || task->parent != current);
- 
-@@ -201,12 +201,19 @@ static void ptrace_unfreeze_traced(struct task_struct *task)
- 	 * Recheck state under the lock to close this race.
- 	 */
- 	spin_lock_irq(&task->sighand->siglock);
--	if (task->state == __TASK_TRACED) {
--		if (__fatal_signal_pending(task))
--			wake_up_state(task, __TASK_TRACED);
--		else
--			task->state = TASK_TRACED;
--	}
-+
-+	raw_spin_lock_irqsave(&task->pi_lock, flags);
-+	if (task->state == __TASK_TRACED)
-+		task->state = TASK_TRACED;
-+	else if (task->saved_state == __TASK_TRACED)
-+		task->saved_state = TASK_TRACED;
-+	else
-+		frozen = false;
-+	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
-+
-+	if (frozen && __fatal_signal_pending(task))
-+		wake_up_state(task, __TASK_TRACED);
-+
- 	spin_unlock_irq(&task->sighand->siglock);
- }
- 
-diff --git a/localversion-rt b/localversion-rt
-index e2eb19782d4c..d42c0971b041 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt65
-+-rt66
-
+Ping.
