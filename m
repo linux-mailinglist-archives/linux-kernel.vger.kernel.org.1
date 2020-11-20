@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6AE2BA121
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC092BA12B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727373AbgKTD1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 22:27:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727350AbgKTD1K (ORCPT
+        id S1727116AbgKTDbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 22:31:04 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:34300 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbgKTDbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 22:27:10 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FD8C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:27:08 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id p12so8555918ljc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:27:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Fqn08+QfMXXA0wyLDJZny72GR+5yc4I41ZsdzMIQxEI=;
-        b=QSQT9GTqnDt2d59Jscrlg1jfUicDIQxu4P6sOB+YstjUJsDDTUv5VQQYJA8QRKjt3+
-         n5hOOzT2w6WoMNH2yPji10UInHviBo1xSK5yux/QosPm40BRVa+4dkJ6PI8WHcAEIBHy
-         g6vYjx3r+5SW8QoH9SrmY2YwgSmrgXnXXPB6rgDYk6hIvCfvI/fUKspLwKfhCV0lOb8B
-         /Z52P+fDY0RvamChMgho3pc3xL0OwpdWodl4vgN0wT+ANxfsrTsZSnlfZV+RUYdVHFTv
-         BnoqfY/bkCnc/74/iWjI7QnzSXY0OqLS5H7GTLLmQXso1TzqEUj01t7L6nrS2/YZ24Nd
-         9RSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Fqn08+QfMXXA0wyLDJZny72GR+5yc4I41ZsdzMIQxEI=;
-        b=VgiSgVclcBB92QFwt6wZdrREoRc7O75aoSWDrkGfCdhv0DkaXXPI6iatwjyZPuz5kE
-         sPrDVYw830e2Dd3WagI/7pvOkiKzSJ5u8do0Mo+kaJArsJYtZVYFMZMl4LZCj97zk06O
-         3LXbqJnBw0QbDlaJUg5U9yXssErZGi/kfvSlS9c4EqCvys8AmClpewe+6KoJGkDy6Fu6
-         61ubmsEFiYerePg2qUlvHoN0MPczfADZdWKDv2Dzhp3RDBaYXStgxqKmDz68f8nZyot9
-         12cwC8vpKqhJHsF4fiIcVMF40XsYwpvBa/rGAWiKvR9U/7NBHRX4RQfH1x3x8Aw+gvj7
-         f5Cw==
-X-Gm-Message-State: AOAM530aOYCUDXuY0jbaZgrPc9lQFoNh8EKOUoKqLOXsH7GXxZ/kz29V
-        80nmxRmAMk4Bl1IL++9iCGqEo18xN+DW7J1G
-X-Google-Smtp-Source: ABdhPJxTs4t98C90I5qm0dbb3G80E/eQ8N7BnPM3lQeJgjr6k+T3T8OBpKGGm5LGmYH/us7HDgRRPw==
-X-Received: by 2002:a2e:b0c4:: with SMTP id g4mr7327273ljl.20.1605842826727;
-        Thu, 19 Nov 2020 19:27:06 -0800 (PST)
-Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id s26sm153647lji.31.2020.11.19.19.27.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Nov 2020 19:27:06 -0800 (PST)
-From:   Marcin Wojtas <mw@semihalf.com>
-To:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-Cc:     ulf.hansson@linaro.org, huziji@marvell.com,
-        adrian.hunter@intel.com, jaz@semihalf.com, tn@semihalf.com,
-        ard.biesheuvel@arm.com, kostap@marvell.com,
-        Marcin Wojtas <mw@semihalf.com>
-Subject: [PATCH v2 4/4] mmc: sdhci-xenon: introduce ACPI support
-Date:   Fri, 20 Nov 2020 04:26:39 +0100
-Message-Id: <20201120032639.24386-5-mw@semihalf.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201120032639.24386-1-mw@semihalf.com>
-References: <20201120032639.24386-1-mw@semihalf.com>
+        Thu, 19 Nov 2020 22:31:04 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AK3POrJ096713;
+        Fri, 20 Nov 2020 03:30:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=jpMD3b1qJW/Kul31vRtcwfkmxhU26skq+zg6BUmega4=;
+ b=lWHAHkAD0KmpcibgC0Z1+H2PrV/CUbDLr7rie2WaMBxfIjbR1dwusGS4rZvG/W1kP5kp
+ tt9mQYoNNZXX+iGSciu29U6CbSQvuXQZdT6oxsl497RxZwA31oFsRvkthsZnf7XSEG3E
+ FkKTztrFIwFclkJ2oSzL/rtkzFbO1c3TWKyNE4QlikmIHN08lVNqoZdKdnZfHk/IWKbA
+ aQ+xuJyTXjy9hZBcPz2TG0/HleMRX+JjFEL0lgDiyKNqcjenxtnZyw6ZMb4ciDzXbCV5
+ Bfa6sA7qBh8qGuYlqNgicogwawemTPLGc8zPG41ctu4uWVuZcB0ji1KTvOTg6h4APdDx Gg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 34t76m8qvp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Nov 2020 03:30:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AK3PjYv032437;
+        Fri, 20 Nov 2020 03:30:41 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 34uspx2hq7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Nov 2020 03:30:41 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AK3UaPc017127;
+        Fri, 20 Nov 2020 03:30:36 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 19 Nov 2020 19:30:36 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>, jejb@linux.ibm.com,
+        alim.akhtar@samsung.com, avri.altman@wdc.com,
+        linux-scsi@vger.kernel.org
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        bvanassche@acm.org, cang@codeaurora.org, peter.wang@mediatek.com,
+        asutoshd@codeaurora.org, chun-hung.wu@mediatek.com,
+        alice.chao@mediatek.com, matthias.bgg@gmail.com,
+        chaotian.jing@mediatek.com, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, kuohong.wang@mediatek.com,
+        jiajie.hao@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        andy.teng@mediatek.com, beanhuo@micron.com, cc.chou@mediatek.com
+Subject: Re: [PATCH v1] scsi: ufs: Fix race between shutdown and runtime resume flow
+Date:   Thu, 19 Nov 2020 22:30:34 -0500
+Message-Id: <160584260540.532.6488395968913616505.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201119062916.12931-1-stanley.chu@mediatek.com>
+References: <20201119062916.12931-1-stanley.chu@mediatek.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 bulkscore=0 suspectscore=0 adultscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011200023
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011200023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previous patches dropped the strict dependency on the OF_*
-in the sdhci-xenon driver. As a result the ACPI support
-can be introduced (except for the XENON_A3700 variant)
-by adding the necessary ID's in the acpi_match_table.
+On Thu, 19 Nov 2020 14:29:16 +0800, Stanley Chu wrote:
 
-Signed-off-by: Marcin Wojtas <mw@semihalf.com>
----
- drivers/mmc/host/sdhci-xenon.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> If UFS host device is in runtime-suspended state while
+> UFS shutdown callback is invoked, UFS device shall be
+> resumed for register accesses. Currently only UFS local
+> runtime resume function will be invoked to wake up the host.
+> This is not enough because if someone triggers runtime
+> resume from block layer, then race may happen between
+> shutdown and runtime resume flow, and finally lead to
+> unlocked register access.
+> 
+> [...]
 
-diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
-index dfc3b5f62a6d..6d4f588d4c11 100644
---- a/drivers/mmc/host/sdhci-xenon.c
-+++ b/drivers/mmc/host/sdhci-xenon.c
-@@ -11,6 +11,7 @@
-  * Special thanks to Video BG4 project team.
-  */
- 
-+#include <linux/acpi.h>
- #include <linux/delay.h>
- #include <linux/ktime.h>
- #include <linux/module.h>
-@@ -698,11 +699,22 @@ static const struct of_device_id sdhci_xenon_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, sdhci_xenon_dt_ids);
- 
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id sdhci_xenon_acpi_ids[] = {
-+	{ .id = "MRVL0002", XENON_AP806},
-+	{ .id = "MRVL0003", XENON_AP807},
-+	{ .id = "MRVL0004", XENON_CP110},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(acpi, sdhci_xenon_acpi_ids);
-+#endif
-+
- static struct platform_driver sdhci_xenon_driver = {
- 	.driver	= {
- 		.name	= "xenon-sdhci",
- 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 		.of_match_table = sdhci_xenon_dt_ids,
-+		.acpi_match_table = ACPI_PTR(sdhci_xenon_acpi_ids),
- 		.pm = &sdhci_xenon_dev_pm_ops,
- 	},
- 	.probe	= xenon_probe,
+Applied to 5.10/scsi-fixes, thanks!
+
+[1/1] scsi: ufs: Fix race between shutdown and runtime resume flow
+      https://git.kernel.org/mkp/scsi/c/e92643db5148
+
 -- 
-2.29.0
-
+Martin K. Petersen	Oracle Linux Engineering
