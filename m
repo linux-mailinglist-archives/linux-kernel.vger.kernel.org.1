@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537402BB40F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF832BB412
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731517AbgKTSjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:39:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57980 "EHLO mail.kernel.org"
+        id S1731529AbgKTSkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:40:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731038AbgKTSjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:39:51 -0500
+        id S1731038AbgKTSj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:39:58 -0500
 Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 900232242B;
-        Fri, 20 Nov 2020 18:39:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7209E24178;
+        Fri, 20 Nov 2020 18:39:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605897591;
-        bh=NSiVkHuwCQOGIqiUhJTbQNG/xlYA2hjEuMHcHZMtryY=;
+        s=default; t=1605897597;
+        bh=vUARP2CaeWis9/yRUx6zGzkgMtkO+rE+mlZhTiYg26o=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kf0kj7uBEwJeWgtiAS+MM9Ku9rgGv4HAm4a8OHNbLs8YFxbvlP+eSqXqDXvYwTp+e
-         uPwiT7oJesHIwJCGCI1MsXTf/4mtLGhs0SDce1lpjcb62n3uMxvXM9K8TjRbz3W3Cj
-         thNaR5lt+EJGtCCIz9NzZVCsxnqWk8VxYkr2smTM=
-Date:   Fri, 20 Nov 2020 12:39:57 -0600
+        b=M9ISOAL0VXvMHdFCOsz57eqGUQpeswDilMz9QgcXFqGfxrsKKvgVsTAKuZqRa60H8
+         j71bRLbMMN85myUWU1x1tGg0nEeqiDPedM7HzVzBAi1kE+/QSi4aV/Omv4eUizTcfs
+         XEDpHf/5NGjWqHyr2I2DjP/DBp3mZ69aPc8xMufs=
+Date:   Fri, 20 Nov 2020 12:40:02 -0600
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
+To:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 128/141] staging: vt6656: Fix fall-through warnings for Clang
-Message-ID: <5a5a8f2489fbf61f65f0241c349737f7c9ad59ca.1605896060.git.gustavoars@kernel.org>
+Subject: [PATCH 129/141] SUNRPC: Fix fall-through warnings for Clang
+Message-ID: <adea8b6765c2bb0f30eb40460240e0b7a9932fd2.1605896060.git.gustavoars@kernel.org>
 References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -42,28 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-by explicitly adding a break statement instead of letting the code fall
-through to the next case.
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding multiple break statements instead of
+letting the code fall through to the next case.
 
 Link: https://github.com/KSPP/linux/issues/115
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/staging/vt6656/main_usb.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/sunrpc/rpc_pipe.c | 1 +
+ net/sunrpc/xprtsock.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/staging/vt6656/main_usb.c b/drivers/staging/vt6656/main_usb.c
-index 8bf851c53f4e..b90d3dab28b1 100644
---- a/drivers/staging/vt6656/main_usb.c
-+++ b/drivers/staging/vt6656/main_usb.c
-@@ -914,6 +914,7 @@ static int vnt_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 
- 			vnt_mac_disable_keyentry(priv, key->hw_key_idx);
- 		}
+diff --git a/net/sunrpc/rpc_pipe.c b/net/sunrpc/rpc_pipe.c
+index eadc0ede928c..99fcb0bea1d0 100644
+--- a/net/sunrpc/rpc_pipe.c
++++ b/net/sunrpc/rpc_pipe.c
+@@ -478,6 +478,7 @@ rpc_get_inode(struct super_block *sb, umode_t mode)
+ 		inode->i_fop = &simple_dir_operations;
+ 		inode->i_op = &simple_dir_inode_operations;
+ 		inc_nlink(inode);
 +		break;
- 
  	default:
  		break;
+ 	}
+diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
+index 7090bbee0ec5..a785c15804d6 100644
+--- a/net/sunrpc/xprtsock.c
++++ b/net/sunrpc/xprtsock.c
+@@ -1874,6 +1874,7 @@ static int xs_local_setup_socket(struct sock_xprt *transport)
+ 		xprt->stat.connect_time += (long)jiffies -
+ 					   xprt->stat.connect_start;
+ 		xprt_set_connected(xprt);
++		break;
+ 	case -ENOBUFS:
+ 		break;
+ 	case -ENOENT:
 -- 
 2.27.0
 
