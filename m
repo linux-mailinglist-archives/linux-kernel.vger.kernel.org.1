@@ -2,189 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69C42BA5E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5F22BA5EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727755AbgKTJU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:20:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727527AbgKTJUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:20:21 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 180B12224C;
-        Fri, 20 Nov 2020 09:20:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605864020;
-        bh=8RZpdc9rhvQ7VBlC0MqUV7y9Pd6IAW8XU8MT5TxsxtI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ds2ReALj76fYX0N9YcUBzIBPwBsr9Uf3CQFvm7iLhEfc3P/Qg7QVtvY91ba3t/d1y
-         sqW3JKMsjWtLDodt27D7BapHVvxNXMELvJEXT+nMethmXcDSrXyBb919mEQ7EVop2M
-         vad/tsLIWr/BRVuzZjTAF7hRK6ct1YOD5cXiMYpA=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kg2aX-00CCq5-M9; Fri, 20 Nov 2020 09:20:17 +0000
+        id S1727614AbgKTJVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:21:38 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8377 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgKTJVg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:21:36 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CcrdS5SW4z70n0;
+        Fri, 20 Nov 2020 17:21:16 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.176.144) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 20 Nov 2020 17:21:25 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] device-dax: delete a redundancy check in dev_dax_validate_align()
+Date:   Fri, 20 Nov 2020 17:20:57 +0800
+Message-ID: <20201120092057.2144-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 20 Nov 2020 09:20:17 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        mark.rutland@arm.com
-Subject: Re: [PATCH 0/2] arm64: Allow the rescheduling IPI to bypass
- irq_enter/exit
-In-Reply-To: <87ft5q18qs.fsf@nanos.tec.linutronix.de>
-References: <20201101131430.257038-1-maz@kernel.org>
- <87ft5q18qs.fsf@nanos.tec.linutronix.de>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <91cde5eeb22eb2926515dd27113c664a@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, Valentin.Schneider@arm.com, peterz@infradead.org, kernel-team@android.com, mark.rutland@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.176.144]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+ Mark who has been hacking in the same area lately]
+After we have done the alignment check for the length of each range, the
+alignment check for dev_dax_size(dev_dax) is no longer needed, because it
+get the sum of the length of each range.
 
-Hi Thomas,
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/dax/bus.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-On 2020-11-03 20:32, Thomas Gleixner wrote:
-> On Sun, Nov 01 2020 at 13:14, Marc Zyngier wrote:
->> Vincent recently reported [1] that 5.10-rc1 showed a significant
->> regression when running "perf bench sched pipe" on arm64, and
->> pinpointed it to the recent move to handling IPIs as normal
->> interrupts.
->> 
->> The culprit is the use of irq_enter/irq_exit around the handling of
->> the rescheduling IPI, meaning that we enter the scheduler right after
->> the handling of the IPI instead of deferring it to the next preemption
->> event. This accounts for most of the overhead introduced.
-> 
-> irq_enter()/exit() does not end up in the scheduler. If it does then
-> please show the call chain.
-> 
-> Scheduling happens when the IPI returns just before returning into the
-> low level code (or on ARM in the low level code) when NEED_RESCHED is
-> set (which is usually the case when the IPI is sent) and:
-> 
->   the IPI hit user space
-> 
-> or
-> 
->   the IPI hit in preemptible kernel context and CONFIG_PREEMPT[_RT] is
->   enabled.
-> 
-> Not doing so would be a bug. So I really don't understand your 
-> reasoning
-> here.
-
-You are of course right. I somehow associated the overhead of the 
-resched
-IPI with the scheduler itself. I stand corrected.
-
-> 
->> On architectures that have architected IPIs at the CPU level (x86
->> being the obvious one), the absence of irq_enter/exit is natural.
-> 
-> It's not really architected IPIs. We reserve the top 20ish vectors on
-> each CPU for IPIs and other per processor interrupts, e.g. the per cpu
-> timer.
-> 
-> Now lets look at what x86 does:
-> 
-> Interrupts and regular IPIs (function call ....) do
-> 
->     irqentry_enter()   <- handles rcu_irq_enter() or context tracking
->       ...
->       irq_enter_rcu()
->       ...
->       irq_exit_rcu()
->     irqentry_exit()     <- handles need_resched()
-> 
-> The scheduler IPI does:
-> 
->     irqentry_enter()   <- handles rcu_irq_enter() or context tracking
->       ...
->       __irq_enter_raw()
->       ...
->       __irq_exit_raw()
->     irqentry_exit()     <- handles need_resched()
-> 
-> So we don't invoke irq_enter_rcu() on enter and on exit we skip
-> irq_exit_rcu(). That's fine because
-> 
->   - Calling the tick management is pointless because this is going to
->     schedule anyway or something consumed the need_resched already.
-> 
->   - The irqtime accounting is silly because it covers only the call and
->     returns. The time spent in the accounting is more than the time
->     we are accounting (empty call).
-> 
-> So what your hack fails to invoke is rcu_irq_enter()/exit() in case 
-> that
-> the IPI hits the idle task in an RCU off region. You also fail to tell
-> lockdep. No cookies!
-
-Who needs cookies when you can have cheese? ;-)
-
-More seriously, it seems to me that we have a bit of a 
-cross-architecture
-disconnect here. I have been trying to join the dots between what you
-describe above, and the behaviour of arm64 (and probably a large number
-of the non-x86 architectures), and I feel massively confused.
-
-Up to 5.9, our handling of the rescheduling IPI was "do as little as
-possible": decode the interrupt from the lowest possible level (the
-root irqchip), call into arch code, end-up in scheduler_ipi(), the end.
-
-No lockdep, no RCU, no nothing.
-
-What changed? Have we missed some radical change in the way the core
-kernel expects the arch code to do thing? I'm aware of the 
-kernel/entry/common.c stuff, which implements most of the goodies you
-mention, but this effectively is x86-only at the moment.
-
-If arm64 has forever been broken, I'd really like to know and fix it.
-
->> The bad news is that these patches are ugly as sin, and I really don't
->> like them.
-> 
-> Yes, they are ugly and the extra conditional in the irq handling path 
-> is
-> not pretty either.
-> 
->> I specially hate that they can give driver authors the idea that they
->> can make random interrupts "faster".
-> 
-> Just split the guts of irq_modify_status() into __irq_modify_status()
-> and call that from irq_modify_status().
-> 
-> Reject IRQ_HIDDEN (which should have been IRQ_IPI really) and IRQ_NAKED
-> (IRQ_RAW perhaps) in irq_modify_status().
-> 
-> Do not export __irq_modify_status() so it can be only used from 
-> built-in
-> code which takes it away from driver writers.
-
-Yup, done.
-
-Thanks,
-
-         M.
+diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+index 1efae11d947a..35f9238c0139 100644
+--- a/drivers/dax/bus.c
++++ b/drivers/dax/bus.c
+@@ -1109,16 +1109,9 @@ static ssize_t align_show(struct device *dev,
+ 
+ static ssize_t dev_dax_validate_align(struct dev_dax *dev_dax)
+ {
+-	resource_size_t dev_size = dev_dax_size(dev_dax);
+ 	struct device *dev = &dev_dax->dev;
+ 	int i;
+ 
+-	if (dev_size > 0 && !alloc_is_aligned(dev_dax, dev_size)) {
+-		dev_dbg(dev, "%s: align %u invalid for size %pa\n",
+-			__func__, dev_dax->align, &dev_size);
+-		return -EINVAL;
+-	}
+-
+ 	for (i = 0; i < dev_dax->nr_range; i++) {
+ 		size_t len = range_len(&dev_dax->ranges[i].range);
+ 
 -- 
-Jazz is not dead. It just smells funny...
+2.26.0.106.g9fadedd
+
+
