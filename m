@@ -2,120 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD94A2BAF2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CB02BAF31
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729872AbgKTPlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:41:55 -0500
-Received: from mga02.intel.com ([134.134.136.20]:54280 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729562AbgKTPly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:41:54 -0500
-IronPort-SDR: XwGWDuSVlwEknQ2glxGryBHUPzvFg/u548zqriXOTv7/6HOvqre3gfHhcC3ZWCVEiKzHDYCMru
- l7RTBjH/tUoQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="158530872"
-X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
-   d="scan'208";a="158530872"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 07:41:53 -0800
-IronPort-SDR: V0f1R63X3+TeWm/uJnSDfi/nczcdNXXBUUVrXy34FmHPGSHEDpTaGB+/LbLmuZJt37WHM24dBG
- mp1wfvUFhScQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
-   d="scan'208";a="360483674"
-Received: from lkp-server01.sh.intel.com (HELO 00bc34107a07) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Nov 2020 07:41:52 -0800
-Received: from kbuild by 00bc34107a07 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kg8Xn-00000k-NA; Fri, 20 Nov 2020 15:41:51 +0000
-Date:   Fri, 20 Nov 2020 23:41:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.11.17a] BUILD SUCCESS
- 96583621c593dacaa3b4447e58b89f58b5834c00
-Message-ID: <5fb7e391.uS+dEA8TolMy5plT%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729282AbgKTPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:43:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24461 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728598AbgKTPns (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 10:43:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605887026;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CBateyvwObqLkmQosYkCqxAkxmRC8MiV0YwwaE2Y+0c=;
+        b=D5IbxQxvShO6Ljas5ySLppuWx63cSja/4bN1aXDVwgBaEn5IojKg+UFNfdBus3VrolZPhx
+        hoFWvqfFgkjDHwyc/2eIHTV7mWz1GIXcFtr+UhZJYuTIQ77nUMVAskSlaph1cdKbQGBDkO
+        7Ir/0j/xPlKCuqv2LiDTTvZtUzT3gEk=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-486-T7w2MSHsPkGpo0rSEwO3Kg-1; Fri, 20 Nov 2020 10:43:43 -0500
+X-MC-Unique: T7w2MSHsPkGpo0rSEwO3Kg-1
+Received: by mail-ej1-f72.google.com with SMTP id e7so3622832eja.15
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 07:43:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CBateyvwObqLkmQosYkCqxAkxmRC8MiV0YwwaE2Y+0c=;
+        b=Ev5t0ve1ZMZtzK7jp0c1KIQoBcN5IBC7ZFOCXSKb+/3pZfz0npK3bxBfdu2stKg/km
+         WnWhHtJQcldPaKOwDZhiBFWAnamUuua+hirJIrUmE79++52/z69/Wofrmz7aKualxEeG
+         F5lZlait/23/bzLSk6cDmwZ6UxJrdQCwXbnsyU/f2lZpY0/3UNWdE49LLTb47VUdoGtN
+         39YZePKgz3Ozb7NKGunfcJie9+rlxoKmSQGyEz/N9TmcFAKm0g5QuRaPnGoQG8Xj72Bf
+         182z643fVAfCLMMH7jhDZOJidWesP8d7CzfMZhqEYNuPCGQ2OpmcqRf9Z/8cRWeercLq
+         sv3g==
+X-Gm-Message-State: AOAM530iEAlzTdqavehBXXJDvMjL2BaUle4fduX1C/adpBXVdciAUZOE
+        MBkOKVqnkAFU3mwg11mxyH+1NpNpe7uth3ZB9Bt0NnaB24fpr2h/oGV3lj3CjXmpeR2kV/PquLB
+        Ww8pl/tXQ1mOZqApxGk4WR6F1
+X-Received: by 2002:a50:e68a:: with SMTP id z10mr5689118edm.66.1605887021683;
+        Fri, 20 Nov 2020 07:43:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyOyZDUWxcXdDON+pnk/DNSHvuOI/cWE01yiWF6mFLkuzrxdnx4N7O+NduZHwIqegjSs2yBNQ==
+X-Received: by 2002:a50:e68a:: with SMTP id z10mr5689084edm.66.1605887021491;
+        Fri, 20 Nov 2020 07:43:41 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id n11sm1260584eds.3.2020.11.20.07.43.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 07:43:40 -0800 (PST)
+Subject: Re: [PATCH v2] brcmfmac: expose firmware config files through modinfo
+To:     Matthias Brugger <mbrugger@suse.com>,
+        Dmitry Osipenko <digetx@gmail.com>, matthias.bgg@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Chung-Hsien Hsu <stanley.hsu@cypress.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Double Lo <double.lo@cypress.com>,
+        Frank Kao <frank.kao@cypress.com>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+        netdev@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Saravanan Shanmugham <saravanan.shanmugham@cypress.com>,
+        brcm80211-dev-list@cypress.com, linux-kernel@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Amar Shankar <amsr@cypress.com>
+References: <20201120095233.19953-1-matthias.bgg@kernel.org>
+ <2ff4dcc3-6f99-a068-8989-4293d2013627@gmail.com>
+ <7e8e689a-9804-86fc-dd2c-f1622dd40476@suse.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <74370289-ae29-53ca-e8b6-107998a4a23f@redhat.com>
+Date:   Fri, 20 Nov 2020 16:43:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <7e8e689a-9804-86fc-dd2c-f1622dd40476@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.11.17a
-branch HEAD: 96583621c593dacaa3b4447e58b89f58b5834c00  fixup! rcutorture: Test runtime toggling of CPUs' callback offloading
+Hi,
 
-elapsed time: 723m
+On 11/20/20 12:11 PM, Matthias Brugger wrote:
+> 
+> 
+> On 20/11/2020 11:05, Dmitry Osipenko wrote:
+>> 20.11.2020 12:52, matthias.bgg@kernel.org пишет:
+>>> From: Matthias Brugger <mbrugger@suse.com>
+>>>
+>>> Apart from a firmware binary the chip needs a config file used by the
+>>> FW. Add the config files to modinfo so that they can be read by
+>>> userspace.
+>>>
+>>> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+>>>
+>>> ---
+>>>
+>>> Changes in v2:
+>>> In comparison to first version [0] we use wildcards to enumerate the
+>>> firmware configuration files. Wildcard support was added to dracut
+>>> recently [1].
+>>> [0] https://lore.kernel.org/linux-wireless/20200701153123.25602-1-matthias.bgg@kernel.org/
+>>> [1] https://github.com/dracutdevs/dracut/pull/860
+>>>
+>>>   drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 9 +++++++++
+>>>   1 file changed, 9 insertions(+)
+>>>
+>>> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+>>> index 99987a789e7e..dd6d287b1b00 100644
+>>> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+>>> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+>>> @@ -625,6 +625,15 @@ BRCMF_FW_DEF(4359, "brcmfmac4359-sdio");
+>>>   BRCMF_FW_DEF(4373, "brcmfmac4373-sdio");
+>>>   BRCMF_FW_DEF(43012, "brcmfmac43012-sdio");
+>>>   +/* firmware config files */
+>>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac4330-sdio.*.txt");
+>>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43340-sdio.*.txt");
+>>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43362-sdio.*.txt");
+>>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43430a0-sdio.*.txt");
+>>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43430-sdio.*.txt");
+>>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac43455-sdio.*.txt");
+>>> +MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac4356-pcie.*.txt");
+>>
+>> This doesn't cover all hardware models. Note that the upstream
+>> linux-firmware has files only for a few hardware models.
+>>
+>> I suppose that the correct mask should be "brcm/brcmfmac*-sdio.*.txt".
+>>
+> 
+> We can use the two "brcm/brcmfmac*-sdio.*.txt" and "brcm/brcmfmac*-pcie.*.txt" to also include firmware files for chips that don't have any config file in linux-firmware.
 
-configs tested: 58
-configs skipped: 2
+Yes, lets just go with those 2 wildcard matches, that should catch all the files the driver needs without needing to add a lot of extra MODULE_FIRMWARE() entries to the module's firmware.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> I'm indifferent to that, although I think we should make incentivize to upstream firmware config files to linux-firmware.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                      pcm030_defconfig
-arm                        magician_defconfig
-m68k                           sun3_defconfig
-um                            kunit_defconfig
-powerpc                     ppa8548_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a016-20201120
-i386                 randconfig-a015-20201120
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+I completely agree with you. Actually, if you take a look you will see that most of these were submitted to linux-firmware by me :)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+But this is really orthogonal to which MODULE_FIRMWARE() entries we should add.
+
+Regards,
+
+Hans
+
