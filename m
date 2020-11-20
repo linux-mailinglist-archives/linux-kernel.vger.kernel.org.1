@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B63B2BB0BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5593C2BB0BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 17:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730052AbgKTQkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 11:40:40 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:49020 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729316AbgKTQkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 11:40:39 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605890439; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=u5J0GfVy+/VyMT1PA9pFklPWc/9n5dvJShGZaqKDPRo=; b=V3C43Gxmxdb1HPSaciLyE4QB5xa1K2i1QtjdZckDlTsyZC+SUxpXvzBaJBaPiCeC/sJWYDvT
- x3cZdCp0sc1s2R6Sm661ruEI7UQ5R+VirEsNZkDYSggjheoSNRT0oVZKLRB8ZEYcvKzbXpKg
- vEhSAwiPq7Y2dCKdtJpJkliu8Nc=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fb7f181ba50d14f8812a3c9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Nov 2020 16:40:33
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 86925C433ED; Fri, 20 Nov 2020 16:40:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6EC2EC433C6;
-        Fri, 20 Nov 2020 16:40:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6EC2EC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-From:   Taniya Das <tdas@codeaurora.org>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
-Cc:     David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v1] clk: qcom: lpasscc: Introduce pm autosuspend for SC7180
-Date:   Fri, 20 Nov 2020 22:10:17 +0530
-Message-Id: <1605890417-721-1-git-send-email-tdas@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1730072AbgKTQlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 11:41:17 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:55675 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729311AbgKTQlP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 11:41:15 -0500
+X-Originating-IP: 86.194.86.39
+Received: from localhost (lfbn-lyo-1-1010-39.w86-194.abo.wanadoo.fr [86.194.86.39])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id F3A121BF209;
+        Fri, 20 Nov 2020 16:41:12 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        <Steen.Hegelund@microchip.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH v4 0/6] Extend irqchip ocelot driver to support other SoCs
+Date:   Fri, 20 Nov 2020 17:41:02 +0100
+Message-Id: <20201120164108.2096359-1-gregory.clement@bootlin.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LPASSCC driver's suspend/resume is invoked multiple number of times
-and thus allow the device to autosuspend for 500ms.
+Hello,
 
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
----
- drivers/clk/qcom/lpasscorecc-sc7180.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Ocelot SoC belongs to a larger family of SoCs which use the same
+interrupt controller with a few variation.
 
-diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
-index 9081649..2e0ecc3 100644
---- a/drivers/clk/qcom/lpasscorecc-sc7180.c
-+++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
-@@ -370,7 +370,10 @@ static int lpass_create_pm_clks(struct platform_device *pdev)
- {
- 	int ret;
+This series of patches add support for Luton, Serval and Jaguar2, they
+are all MIPS based.
 
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, 500);
- 	pm_runtime_enable(&pdev->dev);
-+
- 	ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_runtime_disable, &pdev->dev);
- 	if (ret)
- 		return ret;
-@@ -423,7 +426,12 @@ static int lpass_core_cc_sc7180_probe(struct platform_device *pdev)
- 	clk_fabia_pll_configure(&lpass_lpaaudio_dig_pll, regmap,
- 				&lpass_lpaaudio_dig_pll_config);
+The first patches of the series also updates the binding documentation
+with the new compatible strings.
 
--	return qcom_cc_really_probe(pdev, &lpass_core_cc_sc7180_desc, regmap);
-+	ret = qcom_cc_really_probe(pdev, &lpass_core_cc_sc7180_desc, regmap);
-+
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_put_autosuspend(&pdev->dev);
-+
-+	return ret;
- }
+Gregory
 
- static int lpass_hm_core_probe(struct platform_device *pdev)
---
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the  Linux Foundation.
+Changelog:
+v3 -> v4
+ - Fix example in binding adding #address-cells property.
+
+ - Split the intial "irqchip: ocelot: Add support for Luton platforms"
+   patch with a new patch "irqchip: ocelot: prepare to support more
+   SoC"
+
+ - Move from u32 to u8 the type used inside the "struct chip_props"
+
+ - Keep the function ocelot_irq_unmask as is and use generic function
+   irq_gc_mask_disable_reg and irq_gc_unmask_enable_reg for Luton.
+
+ - Removed the irq_set_irqchip_state callback, actually this function
+   was never called on this platform and seemed in the end useless.
+
+ - Add acked-by from Alexandre on the last 2 patches.
+
+v2 -> v3
+ - Fix new-line-at-end-of-file error in the yaml file
+
+v1 -> v2:
+ - Convert the binding to yaml
+ - Squashed the patches adding new binding in a single one
+
+Gregory CLEMENT (6):
+  dt-bindings: interrupt-controller: convert icpu intr bindings to
+    json-schema
+  dt-bindings: interrupt-controller: Add binding for few Microsemi
+    interrupt controllers
+  irqchip: ocelot: prepare to support more SoC
+  irqchip: ocelot: Add support for Luton platforms
+  irqchip: ocelot: Add support for Serval platforms
+  irqchip: ocelot: Add support for Jaguar2 platforms
+
+ .../mscc,ocelot-icpu-intr.txt                 |  21 ---
+ .../mscc,ocelot-icpu-intr.yaml                |  64 ++++++++
+ drivers/irqchip/irq-mscc-ocelot.c             | 146 +++++++++++++++---
+ 3 files changed, 187 insertions(+), 44 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml
+
+-- 
+2.29.2
 
