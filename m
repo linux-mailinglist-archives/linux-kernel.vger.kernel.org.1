@@ -2,135 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5102E2BA6BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766222BA6A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727719AbgKTJ4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:56:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727648AbgKTJ4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:56:18 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4904DC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:56:17 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id m6so9366069wrg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:56:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lnj1vSewnYJ6/gw6qejvRzkdxRWgCvvqGMHaDGl+NSM=;
-        b=YJHuMUqOdXD3RjBDXwq4xxm28eTiQkgXVF1XT/DPzqcSwCe7bJ+AxNmLfgQwjHIsKW
-         3SeM+TDUPXszr6Zc57JPx/POuZ5YPbxXs6IfAyzVdZ+bCJo3OgkoLmATYI/rVBFBr9pw
-         e/MhE42helKCwyMkK6vSTfE6uxAtZHvyO2IBs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lnj1vSewnYJ6/gw6qejvRzkdxRWgCvvqGMHaDGl+NSM=;
-        b=TXEKcoU8QoOVPrNLC5fIE3CkJbMEf6M7W4oaojVwGmrmonXtP2UepILUxZ4YiRrF/X
-         P9rL9cTtxlxGREjNWXDzf76aR+OHVWRDzV7HtZJBeBoUBsAzDyqTZod6JCCPM8oUd1LH
-         v9WSkhSFSWqqPUMwznNRUa3Q8ODgx4eM9nq5R0zfvTqW+GscJvBojSaAVZ6C6vJDOscq
-         29Jm5Ifg9zi2rE0hQpL8C3llcpTYuWb+9HGe/gCqX3gl8vO+B8dI7CuVfXP+wNC331JU
-         uY1TAs9IEwu2WYgKrxoefx6vJcBAm+tUnnJPcUPwYU6JGC6LFAs/iDfhwHPrvD2lBU4j
-         8wcg==
-X-Gm-Message-State: AOAM533zISYCEqgAy872TY+hNXpmXDg5VNgUu+5NftRrAWAWEQyxP0V5
-        HwW21S6DgIFfzmme1KD1tg/5Eg==
-X-Google-Smtp-Source: ABdhPJweygNEvtsDvm694/J94/vH0HdxxfmvF5F1IyJUepsC34aungjZF3hY+8zZe4LmawNek04kBA==
-X-Received: by 2002:adf:b74d:: with SMTP id n13mr15648919wre.101.1605866176083;
-        Fri, 20 Nov 2020 01:56:16 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id t9sm4500208wrr.49.2020.11.20.01.56.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 01:56:15 -0800 (PST)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Brian Paul <brianp@vmware.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>
-Subject: [PATCH] drm/ttm: don't set page->mapping
-Date:   Fri, 20 Nov 2020 10:54:45 +0100
-Message-Id: <20201120095445.1195585-5-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201120095445.1195585-1-daniel.vetter@ffwll.ch>
-References: <20201120095445.1195585-1-daniel.vetter@ffwll.ch>
+        id S1727477AbgKTJyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:54:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726460AbgKTJyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:54:52 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60895222BA;
+        Fri, 20 Nov 2020 09:54:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605866091;
+        bh=8yLZr8Urldyw9+/0Dncp4nYOW1ni13hGaZD0CHdLh3Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=2fw5an37Tk3rK8u+Msft/SvUw5wpnXDparfUlovlz1epzDweYfGqWpIvI0PDtPEv3
+         OBAzjqGYLs3hfXrfjy4+v3fV4ox9LPbuOqAlBXAXdv3mUOhz2J6diN3eFywexfWMHC
+         dyLG1crOCtuptxjKOUBJXXizQyWXv7wkuC5538SI=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kg37x-00CDPj-2S; Fri, 20 Nov 2020 09:54:49 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 20 Nov 2020 09:54:48 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Vladimir Murzin <vladimir.murzin@arm.com>
+Cc:     Neeraj Upadhyay <neeraju@codeaurora.org>, mark.rutland@arm.com,
+        suzuki.poulose@arm.com, ionela.voinescu@arm.com,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, catalin.marinas@arm.com,
+        Will Deacon <will@kernel.org>, valentin.schneider@arm.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: AMU extension v1 support for cortex A76, A77, A78 CPUs
+In-Reply-To: <e15de351-63c1-2599-82bf-22c95e8a6a62@arm.com>
+References: <2cc9dd44-0b4b-94a8-155a-7a2446a1b892@codeaurora.org>
+ <1712842eb0767e51155a5396d282102c@kernel.org>
+ <e15de351-63c1-2599-82bf-22c95e8a6a62@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <d77713992e5abef5c6066d9f1939e8db@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: vladimir.murzin@arm.com, neeraju@codeaurora.org, mark.rutland@arm.com, suzuki.poulose@arm.com, ionela.voinescu@arm.com, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, valentin.schneider@arm.com, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Random observation while trying to review Christian's patch series to
-stop looking at struct page for dma-buf imports.
+On 2020-11-20 09:09, Vladimir Murzin wrote:
+> On 11/20/20 8:56 AM, Marc Zyngier wrote:
+>> On 2020-11-20 04:30, Neeraj Upadhyay wrote:
+>>> Hi,
+>>> 
+>>> For ARM cortex A76, A77, A78 cores (which as per TRM, support AMU)
+>>> AA64PFR0[47:44] field is not set, and AMU does not get enabled for
+>>> them.
+>>> Can you please provide support for these CPUs in cpufeature.c?
+>> 
+>> If that was the case, that'd be an erratum, and it would need to be
+>> documented as such. It could also be that this is an optional feature
+>> for these cores (though the TRM doesn't suggest that).
+>> 
+>> Can someone at ARM confirm what is the expected behaviour of these 
+>> CPUs?
+> 
+> Not a confirmation, but IIRC, these are imp def features, while our 
+> cpufeatures
+> catches architected one.
 
-This was originally added in
+Ah, good point. So these CPUs implement some sort of AMU, and not *the* 
+AMU.
 
-commit 58aa6622d32af7d2c08d45085f44c54554a16ed7
-Author: Thomas Hellstrom <thellstrom@vmware.com>
-Date:   Fri Jan 3 11:47:23 2014 +0100
+Yet the register names are the same. Who thought that'd be a good idea?
 
-    drm/ttm: Correctly set page mapping and -index members
-
-    Needed for some vm operations; most notably unmap_mapping_range() with
-    even_cows = 0.
-
-    Signed-off-by: Thomas Hellstrom <thellstrom@vmware.com>
-    Reviewed-by: Brian Paul <brianp@vmware.com>
-
-but we do not have a single caller of unmap_mapping_range with
-even_cows == 0. And all the gem drivers don't do this, so another
-small thing we could standardize between drm and ttm drivers.
-
-Plus I don't really see a need for unamp_mapping_range where we don't
-want to indiscriminately shoot down all ptes.
-
-Cc: Thomas Hellstrom <thellstrom@vmware.com>
-Cc: Brian Paul <brianp@vmware.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: Huang Rui <ray.huang@amd.com>
----
- drivers/gpu/drm/ttm/ttm_tt.c | 12 ------------
- 1 file changed, 12 deletions(-)
-
-diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
-index da9eeffe0c6d..5b2eb6d58bb7 100644
---- a/drivers/gpu/drm/ttm/ttm_tt.c
-+++ b/drivers/gpu/drm/ttm/ttm_tt.c
-@@ -284,17 +284,6 @@ int ttm_tt_swapout(struct ttm_bo_device *bdev, struct ttm_tt *ttm)
- 	return ret;
- }
- 
--static void ttm_tt_add_mapping(struct ttm_bo_device *bdev, struct ttm_tt *ttm)
--{
--	pgoff_t i;
--
--	if (ttm->page_flags & TTM_PAGE_FLAG_SG)
--		return;
--
--	for (i = 0; i < ttm->num_pages; ++i)
--		ttm->pages[i]->mapping = bdev->dev_mapping;
--}
--
- int ttm_tt_populate(struct ttm_bo_device *bdev,
- 		    struct ttm_tt *ttm, struct ttm_operation_ctx *ctx)
- {
-@@ -313,7 +302,6 @@ int ttm_tt_populate(struct ttm_bo_device *bdev,
- 	if (ret)
- 		return ret;
- 
--	ttm_tt_add_mapping(bdev, ttm);
- 	ttm->page_flags |= TTM_PAGE_FLAG_PRIV_POPULATED;
- 	if (unlikely(ttm->page_flags & TTM_PAGE_FLAG_SWAPPED)) {
- 		ret = ttm_tt_swapin(ttm);
+         M.
 -- 
-2.29.2
-
+Jazz is not dead. It just smells funny...
