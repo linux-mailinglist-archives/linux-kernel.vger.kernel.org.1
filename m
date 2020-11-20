@@ -2,127 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10062BAA5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E6A2BAA67
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgKTMoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:44:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727061AbgKTMox (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:44:53 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD6DC0613CF;
-        Fri, 20 Nov 2020 04:44:53 -0800 (PST)
-Date:   Fri, 20 Nov 2020 12:44:51 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605876291;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eKLcV/WYYyGNgCWRgdFXboCOeLhVJZbJEql6VgEEZhY=;
-        b=ji3GNGq5Dqa1TS5zAo16WwwAjFETTXPCmrX+cMAGJFizFKsDMBogco3tfg32PS1KZn951m
-        m+5rZ5LBwGz3DwIxBbwJ3iUM3+Kkj7IGR8Rm9g5GV0gD0mbrvKiPyMqQulHtWpQJDHkOuR
-        Su7gtP3dy0YFyowQSvPr/bDyV/JQ+K7aSMyI+bTqc+/SdlVmX+NlzN3Lr8gFlih8bCTMMH
-        V2Y72H+sSzVUe9PDrMaDUZuO3u6l+Nlcy3dYahvu7SegGj0erPW7q2til1XzbnPbLaO2dy
-        nwmYjP8vO3U9KWfiLZ9oeSZ7jP2mFLNNbrkklXiW279CnTRmLsrXuhPLndGPMg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605876291;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eKLcV/WYYyGNgCWRgdFXboCOeLhVJZbJEql6VgEEZhY=;
-        b=9rADVcmZlKL8lR8fqXv04sSAI9zu9mbRv7bA+dsiRf2rLypLwDcR7WwKSJJScyIIWIZrgC
-        7H+ZplopmCr6+nCw==
-From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/entry] context_tracking: Introduce HAVE_CONTEXT_TRACKING_OFFSTACK
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201117151637.259084-2-frederic@kernel.org>
-References: <20201117151637.259084-2-frederic@kernel.org>
+        id S1727757AbgKTMqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:46:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgKTMqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 07:46:14 -0500
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net [92.233.91.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 391B82222F;
+        Fri, 20 Nov 2020 12:46:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605876373;
+        bh=7hAofjYH5iXNJ02vsuSUoDIPviy3rmTdf1rIte8kiN0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HUN11mHUsbI++NuPSH4QGPttskzxJGNE9ob1LuLNA5wzeW73nWyVonn9fleaM0oG/
+         tmZWKMefluthmTNj00s49zU+FwTYLFn6JG39FG/Bw1ZSvnLV6DKD5wpAs8evnC9T9d
+         pfP9o693N57Ogki8HDFJ8HEbLCAomnxlNeNWQiJc=
+Date:   Fri, 20 Nov 2020 12:45:52 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Adam Ward <adam.ward@diasemi.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 4/9] regulator: da9121: Add device variant details and
+ respective regmaps
+Message-ID: <20201120124552.GA6751@sirena.org.uk>
+References: <cover.1605868780.git.Adam.Ward.opensource@diasemi.com>
+ <e3f0e227c099a2dc560af5aae92f13e4d2a112cb.1605868780.git.Adam.Ward.opensource@diasemi.com>
 MIME-Version: 1.0
-Message-ID: <160587629107.11244.6940310491124628401.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
+Content-Disposition: inline
+In-Reply-To: <e3f0e227c099a2dc560af5aae92f13e4d2a112cb.1605868780.git.Adam.Ward.opensource@diasemi.com>
+X-Cookie: Have at you!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/entry branch of tip:
 
-Commit-ID:     83c2da2e605c73aafcc02df04b2dbf1ccbfc24c0
-Gitweb:        https://git.kernel.org/tip/83c2da2e605c73aafcc02df04b2dbf1ccbfc24c0
-Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Tue, 17 Nov 2020 16:16:33 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 19 Nov 2020 11:25:41 +01:00
+--3V7upXqbjpZ4EhLz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-context_tracking: Introduce HAVE_CONTEXT_TRACKING_OFFSTACK
+On Fri, Nov 20, 2020 at 12:14:54PM +0000, Adam Ward wrote:
 
-Historically, context tracking had to deal with fragile entry code path,
-ie: before user_exit() is called and after user_enter() is called, in
-case some of those spots would call schedule() or use RCU. On such
-cases, the site had to be protected between exception_enter() and
-exception_exit() that save the context tracking state in the task stack.
+> Add ability to probe device and validate configuration, then apply a regmap
+> configuration for a single or dual buck device accordingly.
 
-Such sleepable fragile code path had many different origins: tracing,
-exceptions, early or late calls to context tracking on syscalls...
+This looks like it might benefit from being multiple commits - "X then
+Y" type commit logs are often a warning sign of this, it's quite
+difficult to review as it's doing several different things.
 
-Aside of that not being pretty, saving the context tracking state on
-the task stack forces us to run context tracking on all CPUs, including
-housekeepers, and prevents us to completely shutdown nohz_full at
-runtime on a CPU in the future as context tracking and its overhead
-would still need to run system wide.
+> +static int da9121_i2c_reg_read(struct i2c_client *client, u8 addr,
+> +				    u8 *buf, int count)
+> +{
+> +	struct i2c_msg xfer[2];
+> +	int ret;
 
-Now thanks to the extensive efforts to sanitize x86 entry code, those
-conditions have been removed and we can now get rid of these workarounds
-in this architecture.
+Why is this open coding register I/O?
 
-Create a Kconfig feature to express this achievement.
+> +	name = of_get_property(chip->dev->of_node, "compatible", NULL);
+> +	if (!name) {
+> +		dev_err(chip->dev, "Cannot get device not compatible string.\n");
+> +		goto error;
+> +	}
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201117151637.259084-2-frederic@kernel.org
----
- arch/Kconfig | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+You shouldn't need to query the compatible string as a property, why is
+the code doing this?  You know what compatible was used from probe().
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 56b6ccc..090ef35 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -618,6 +618,23 @@ config HAVE_CONTEXT_TRACKING
- 	  protected inside rcu_irq_enter/rcu_irq_exit() but preemption or signal
- 	  handling on irq exit still need to be protected.
- 
-+config HAVE_CONTEXT_TRACKING_OFFSTACK
-+	bool
-+	help
-+	  Architecture neither relies on exception_enter()/exception_exit()
-+	  nor on schedule_user(). Also preempt_schedule_notrace() and
-+	  preempt_schedule_irq() can't be called in a preemptible section
-+	  while context tracking is CONTEXT_USER. This feature reflects a sane
-+	  entry implementation where the following requirements are met on
-+	  critical entry code, ie: before user_exit() or after user_enter():
-+
-+	  - Critical entry code isn't preemptible (or better yet:
-+	    not interruptible).
-+	  - No use of RCU read side critical sections, unless rcu_nmi_enter()
-+	    got called.
-+	  - No use of instrumentation, unless instrumentation_begin() got
-+	    called.
-+
- config HAVE_TIF_NOHZ
- 	bool
- 	help
+--3V7upXqbjpZ4EhLz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+3un8ACgkQJNaLcl1U
+h9ApYgf/WbJsyT3LlJAbon/jHXkpaLqxqEdvDxVjgfCs8gcEKWZODsFuURcmvon4
+yOPmr73Mcy00D1eU4QqrbrOdFO3bKzaxQKG3YyhrHRaejN07PYTCUucey5AVNCkF
+CXeUGzu6XCMlPSw17REm3byFkc6YITeYA+pMMZgarTW9emfvhJ6Y2lGE+yPlYCls
+YjjsSFLyqqMqnN076OHZ/BK2sOrc3WKV8QH/jh804AmDoeLAuFXXRUDlLr4HUDi8
++8gKtzL2RYnCDCit2uSWoVUVE5hehNTdDoPBFNnYf6PO/5LIxcR75ky2kwPkXNvz
+RIfK6ML8mqEbpULuZ7PLtP5ma7HqYQ==
+=d8wh
+-----END PGP SIGNATURE-----
+
+--3V7upXqbjpZ4EhLz--
