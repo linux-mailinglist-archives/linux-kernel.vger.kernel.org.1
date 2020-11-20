@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA7F2BA9C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9A42BA9C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbgKTMDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 07:03:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727678AbgKTMDQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 07:03:16 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50FFC0613CF;
-        Fri, 20 Nov 2020 04:03:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xeukajkb0Dh8Aj05tLhXcYnJX0ZZcEiN+jLi0pnGRWQ=; b=eEI2XdW3SS3SvnEYkgrxIgrkkZ
-        QESj0xks6qaTJAnkv/SrECagNU+vSqctcrq0xLMAWIfHAZKLk9ye2uO7gskiUylP8RbcybpWeUXL2
-        uK6+gWyoCZxLIYAsj/8Cr6bDQjqDWnVAJEvPDRs9mQv3WAo/KAacUwgv54o4zvTL/2MI1ffWEmq47
-        iGzPS/OuVWATcJv3FdWhjqRfpijJMY2zQfXpueb6tRHat5LxD9HkJ5lF4m33YjKhMqWD/w/svRfZq
-        kIH2ZsgedGxLYnMj1h8GrezPVSEXeHN6F04tocRnYrqwZsV1M6RSBowt+3mIDzez5FevIapCnyvmm
-        E0VqGnQQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kg572-0006MQ-D6; Fri, 20 Nov 2020 12:02:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EAD53305C16;
-        Fri, 20 Nov 2020 13:01:54 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CD10B200DF1A6; Fri, 20 Nov 2020 13:01:54 +0100 (CET)
-Date:   Fri, 20 Nov 2020 13:01:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v2 06/12] x86/paravirt: switch time pvops functions to
- use static_call()
-Message-ID: <20201120120154.GE3021@hirez.programming.kicks-ass.net>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-7-jgross@suse.com>
+        id S1728097AbgKTMER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:04:17 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:55622 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727100AbgKTMEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 07:04:16 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 6FD90FB03;
+        Fri, 20 Nov 2020 13:04:12 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9mru4xLJe_vU; Fri, 20 Nov 2020 13:04:11 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 2AAF743F6E; Fri, 20 Nov 2020 13:04:11 +0100 (CET)
+Date:   Fri, 20 Nov 2020 13:04:11 +0100
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        allen <allen.chen@ite.com.tw>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/6] drm/panel: mantix and st7703 fixes and additions
+Message-ID: <20201120120411.GB23988@bogon.m.sigxcpu.org>
+References: <cover.1605688147.git.agx@sigxcpu.org>
+ <CACRpkda97nJ+nJX4CuZHQnDVh1mhykc_vb6xFh7BcAWQoNjz7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201120114630.13552-7-jgross@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkda97nJ+nJX4CuZHQnDVh1mhykc_vb6xFh7BcAWQoNjz7Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:46:24PM +0100, Juergen Gross wrote:
-> The time pvops functions are the only ones left which might be
-> used in 32-bit mode and which return a 64-bit value.
+Hi Linus,
+On Thu, Nov 19, 2020 at 09:35:17AM +0100, Linus Walleij wrote:
+> On Wed, Nov 18, 2020 at 9:29 AM Guido Günther <agx@sigxcpu.org> wrote:
 > 
-> Switch them to use the static_call() mechanism instead of pvops, as
-> this allows quite some simplification of the pvops implementation.
+> > This adds new panel type to the mantix driver as found on the Librem 5 and
+> > fixes a glitch in the init sequence (affecting both panels). The fix is at the
+> > start of the series to make backporting simpler.
+> > It also adds a patch to make st7703 use dev_err_probe().
+> >
+> > changes from v1
+> > - as per review comments by Linus Walleij
+> >   - fix alphabetical ordering in Documentation/devicetree/bindings/vendor-prefixes.yaml
+> >     https://lore.kernel.org/dri-devel/CACRpkdao_TMcpRsdK=7K5fNKJse0Bqwk58iWu0xsXdDNdcffVA@mail.gmail.com/
+> >   - add reviewed by to all except 5/6, thanks
 > 
-> Due to include hell this requires to split out the time interfaces
-> into a new header file.
+> The whole v2 looks fine to me, I'd give the devicetree
+> maintainers some slack to review the DT patches then I can
+> apply the whole series unless you have commit access yourself,
+> just tell me.
 
-There's also this patch floating around; just in case that would come in
-handy:
+I have commit access, so i can push in a couple of days. Thanks!
 
-  https://lkml.kernel.org/r/20201110005609.40989-3-frederic@kernel.org
+> 
+> For all v2 patches:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> If you have time, please review my s6e63m0 series.
+> https://lore.kernel.org/dri-devel/20201117175621.870085-1-linus.walleij@linaro.org/
+> https://lore.kernel.org/dri-devel/20201117175621.870085-2-linus.walleij@linaro.org/
+> https://lore.kernel.org/dri-devel/20201117175621.870085-3-linus.walleij@linaro.org/
+
+Done. The panel stuff is always scary with all those magic values.
+ -- Guido
+
+> 
+> Yours,
+> Linus Walleij
+> 
