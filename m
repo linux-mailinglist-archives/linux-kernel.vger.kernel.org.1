@@ -2,159 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA1F2BB1EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 392CE2BB1EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729302AbgKTSCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:02:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36894 "EHLO
+        id S1729316AbgKTSDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:03:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728438AbgKTSCX (ORCPT
+        with ESMTP id S1728278AbgKTSDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:02:23 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DF1C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:02:23 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w14so8596761pfd.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:02:23 -0800 (PST)
+        Fri, 20 Nov 2020 13:03:08 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51516C0613CF;
+        Fri, 20 Nov 2020 10:03:07 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id l12so9344532ilo.1;
+        Fri, 20 Nov 2020 10:03:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Pi314qbACkjvb24O5TOH5mgSNjJFBx6zBuaW1GBgOBw=;
-        b=anUMddH1t++aHeatBjzyWQq6MC3KcPFQxcSP0boTBtJ1Wf8V8zxkpr9PANfBJ7nuXA
-         iy323bWUVOhNqEj33fQ3duFIF7Z0s4nI12XRaYbXvet1AmLNdWAI6sGCTpCoAPf9za+E
-         TX6tmnT0QipCiXBBfml6V8jVo88QHDO67A5yupSqyiSExAh6HBrDuwSYuBr2r6JEImvh
-         u9fdM1PQcrrkpH4DRvZ9Jr7OF06Wh58Rv8wJ+2hunkuGfC57xLm8bGPKngYpP6NGBYp8
-         2nAiUdId0sye5vi5QuDn4c2JvdPbm+Al0+VF4ceJdPrGh02TQRPkz7IgxhZOtfQr6ieK
-         yudA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5qvqz11R6f8JI5zsBDFVuBEzAMW6fNdbI/OnEdkYk48=;
+        b=RHVlUyuc/jgWCGOtrINdtrjVi44N6tl4aeFWrZQXyiJSNNMXTwj4bAuUGrJNx+KZtz
+         3eB0wDFU4t4X2hmzFLvaJj/MWsktOi6XOL26dZNs69o2n4KEnU28En57NqL9a2HmDre7
+         GCeWDuCmgWnLPIwFoasY0b2vDyGSfJ8fBs/GFvrhrfvRvXDjVYjItQRaJ5lsu6FBvV9f
+         6/xenz4/TMXRhcbTjSafEgOgjdyGkgn1pDjmz1McA8I2o/y5EOb17A5zgi4qYAmZGV3z
+         EuSB+qy7OOn9NdxEwKv2U7FuSxkstVGLGvr9185+rOZVjMHeWkyYFJURQeyHvJgalCTb
+         6W9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Pi314qbACkjvb24O5TOH5mgSNjJFBx6zBuaW1GBgOBw=;
-        b=AokVHa7q3iWy2rwzp+jw/bm2yxsze2JmJcrnsawn2Zt+CFARYP+l39uZfCuzsMIy1W
-         QB+UW+WLOO/reuUTgbUFsXGVV7HozhqbLWILqHN9Lo7g4UdXGBk6diQG8glaYIozWTas
-         42tz2t7oA7BVwcv88k+LP27q8J8pvbIJCEFb+TNNuUEr7zptHzmn5N5dfAysAZBWvSZO
-         hki/KfSpegTZyRbnB1FmQaRDLKsN6xX1s7vkYuOtkewirBqZwduaiEbktvdczLfkO/Cj
-         rFnyZSS3cmDnBvKtwaS2sVmfbhFIdfs3ai822shWUIDv8VWDsECdJEjZBGB0Q1DvssAQ
-         lwFQ==
-X-Gm-Message-State: AOAM5314TaATH7HClbaWXc34MpZRLaQew4RwArXk43/R5hSYxadxHc4T
-        AQZz/wBUAJFt5LKK8Rj+2crLBzXIgakwWg==
-X-Google-Smtp-Source: ABdhPJyMU0p+BzlD058jBRxrtiWOLaHeym1uqUUcGQUYH93F6JCRU4jFp0pLuLw2RuC3SktGxcFUAA==
-X-Received: by 2002:a17:90a:14e5:: with SMTP id k92mr11376797pja.169.1605895343009;
-        Fri, 20 Nov 2020 10:02:23 -0800 (PST)
-Received: from ?IPv6:2402:3a80:415:f607:e09e:f6d6:daa6:f3cd? ([2402:3a80:415:f607:e09e:f6d6:daa6:f3cd])
-        by smtp.gmail.com with ESMTPSA id a12sm4684255pjh.48.2020.11.20.10.02.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 10:02:22 -0800 (PST)
-Subject: Re: [PATCH v3] checkpatch: add fix option for
- ASSIGNMENT_CONTINUATIONS
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-References: <20201117171856.13284-1-yashsri421@gmail.com>
- <48f56f40-a365-faac-542d-0e120fcf4365@gmail.com>
- <08f164e93dc40e066e81c4021485d27d5ad5a6b7.camel@perches.com>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <6deacf63-a80f-67b5-0594-e5cb5e82f42b@gmail.com>
-Date:   Fri, 20 Nov 2020 23:32:16 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5qvqz11R6f8JI5zsBDFVuBEzAMW6fNdbI/OnEdkYk48=;
+        b=q4UTZTs176d1ijZg+J42pW3dQK3kIY8mqSfavv0n4NXCepNRY+cJK2w85P9kxuoGkU
+         UMJ5KB3G3cXTKUA6tjchkjnBDK8TydJ9bkQhU4F3UdiHB0RZgsSeSwqA+XzgoSUxiqk8
+         xIjFJG3rPR3PEALHuHK52IkcabzaeNAHErRTE2OmuXenW03PMvRUfUHw+vMLD7wsR0op
+         PaWVDNqnXkLl92ecDTlJRkgUYWnfSZpxURhIyN03tCjx+oRlxS9NNjd0eMSJeueB4lOc
+         +cC4Kba2kbKv+FcwUI7rn58tY3BoazNahRtDWNd7QeqLoq8AZder0mgj0PtnQvsN2vvo
+         iXvw==
+X-Gm-Message-State: AOAM532YkpJd5OVmbU87Odm1cugDxZ9ZyQnr9EcEQayNznHGqzymTEXR
+        DiZJI1IOckxpa8l2IuCBFp+jRKHD9lv03o1olKw1ZLRb4NE=
+X-Google-Smtp-Source: ABdhPJyydj+hM5HvBcpEvaW9M2cKq6pn/UfAvmG9+CIxFGpE+iODkbPxPsMOBPozQuDc4258F6K0WtzIY9ML+5DtKrw=
+X-Received: by 2002:a92:96c1:: with SMTP id g184mr16340833ilh.205.1605895385704;
+ Fri, 20 Nov 2020 10:03:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <08f164e93dc40e066e81c4021485d27d5ad5a6b7.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1605893641.git.syednwaris@gmail.com> <b2011fb2e0438bdfd0b663b9f0456d0aef20f04b.1605893642.git.syednwaris@gmail.com>
+ <X7gD7Q/63qoUuGpi@shinobu>
+In-Reply-To: <X7gD7Q/63qoUuGpi@shinobu>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Fri, 20 Nov 2020 23:32:53 +0530
+Message-ID: <CACG_h5qjvPN-LFH-JGm=8xeM-k4KB9pd==xvf0DDBMgRb-TXUQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] bitmap: Modify bitmap_set_value() to check bitmap length
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/20 10:56 pm, Joe Perches wrote:
-> On Fri, 2020-11-20 at 16:11 +0530, Aditya wrote:
->> On 17/11/20 10:48 pm, Aditya Srivastava wrote:
->>> Currently, checkpatch warns us if an assignment operator is placed
->>> at the start of a line and not at the end of previous line.
->>>
->>> E.g., running checkpatch on commit 8195b1396ec8 ("hv_netvsc: fix
->>> deadlock on hotplug") reports:
->>>
->>> CHECK: Assignment operator '=' should be on the previous line
->>> +	struct netvsc_device *nvdev
->>> +		= container_of(w, struct netvsc_device, subchan_work);
->>>
->>> Provide a simple fix by appending assignment operator to the previous
->>> line and removing from the current line, if both the lines are additions
->>> (ie start with '+')
->>>
->>> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
->>> ---
->>> Changes in v2:
->>> add check if both the lines are additions (ie start with '+')
->>>
->>> Changes in v3:
->>> quote $operator; test with division assignment operator ('/=')
->>>
->>>  scripts/checkpatch.pl | 10 ++++++++--
->>>  1 file changed, 8 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
->>> index c9aaaa443265..d5bc4d8e4f6c 100755
->>> --- a/scripts/checkpatch.pl
->>> +++ b/scripts/checkpatch.pl
->>> @@ -3542,8 +3542,14 @@ sub process {
->>>  
->>>
->>>  # check for assignments on the start of a line
->>>  		if ($sline =~ /^\+\s+($Assignment)[^=]/) {
->>> -			CHK("ASSIGNMENT_CONTINUATIONS",
->>> -			    "Assignment operator '$1' should be on the previous line\n" . $hereprev);
->>> +			my $operator = "$1";
->>> +			if (CHK("ASSIGNMENT_CONTINUATIONS",
->>> +				"Assignment operator '$1' should be on the previous line\n" . $hereprev) &&
->>> +			    $fix && $prevrawline =~ /^\+/) {
->>> +				# add assignment operator to the previous line, remove from current line
->>> +				$fixed[$fixlinenr - 1] .= " $operator";
->>> +				$fixed[$fixlinenr] =~ s/$operator\s*//;
->>> +			}
->>>  		}
->>>  
->>>
->>>  # check for && or || at the start of a line
->>>
->>
->> Hi Joe
->> This patch probably got missed. Please review :)
-> 
-> Did you look at $Assignment?  Did you see it can be /= ?
-> 
-
-Yes, I tested the patch with '/=' operator as well.
-As I could not find any occurrences in the past(over 4.13..5.8), I
-created an example for myself by modifying the above mentioned commit
-example i.e. commit 8195b1396ec8 ("hv_netvsc: fix deadlock on
-hotplug") as:
-
-+	struct netvsc_device *nvdev
-+		/= container_of(w, struct netvsc_device, subchan_work);
-
-[For Line 144 and 145(where the warning was reported for '=' earlier)]
-
-The fix changes these lines to:
-+	struct netvsc_device *nvdev /=
-+		container_of(w, struct netvsc_device, subchan_work);
-
-On retesting the patch with checkpatch.pl, it did not give this CHECK,
-nor did we add any new warning/error.
-
-> If it is, what happens in the $fixed[$fixlinenr] line?
+On Fri, Nov 20, 2020 at 11:29 PM William Breathitt Gray
+<vilhelm.gray@gmail.com> wrote:
 >
+> On Fri, Nov 20, 2020 at 11:14:16PM +0530, Syed Nayyar Waris wrote:
+> > Add explicit check to see if the value being written into the bitmap
+> > does not fall outside the bitmap.
+> > The situation that it is falling outside would never be possible in the
+> > code because the boundaries are required to be correct before the function
+> > is called. The responsibility is on the caller for ensuring the boundaries
+> > are correct.
+> > This is just to suppress the GCC -Wtype-limits warnings.
+>
+> Hi Syed,
+>
+> This commit message sounds a bit strange without the context of our
+> earlier discussion thread. Would you be able to reword the commit
+> message to explain the motivation for using __builtin_unreachable()?
+>
+> Thanks,
+>
+> William Breathitt Gray
 
-In $fixed[$fixlinenr], we are just getting rid of the operator and any
-space(s) following it.
+Hi William,
 
-What do you think?
+Actually I explained the motivation for using __builtin_unreachable()
+in the cover letter.
+So, left it here in this patch.
 
-Thanks
-Aditya
+I am sending this patch again updating the commit message.
+
+Regards
+Syed Nayyar Waris
+
+>
+> >
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+> > Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > ---
+> >  include/linux/bitmap.h | 35 +++++++++++++++++++++--------------
+> >  1 file changed, 21 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> > index 386d08777342..efb6199ea1e7 100644
+> > --- a/include/linux/bitmap.h
+> > +++ b/include/linux/bitmap.h
+> > @@ -78,8 +78,9 @@
+> >   *  bitmap_get_value(map, start, nbits)              Get bit value of size
+> >   *                                              'nbits' from map at start
+> >   *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
+> > - *  bitmap_set_value(map, value, start, nbits)       Set bit value of size 'nbits'
+> > - *                                              of map at start
+> > + *  bitmap_set_value(map, nbits, value, value_width, start)
+> > + *                                              Set bit value of size value_width
+> > + *                                              to map at start
+> >   *
+> >   * Note, bitmap_zero() and bitmap_fill() operate over the region of
+> >   * unsigned longs, that is, bits behind bitmap till the unsigned long
+> > @@ -610,30 +611,36 @@ static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
+> >  }
+> >
+> >  /**
+> > - * bitmap_set_value - set n-bit value within a memory region
+> > + * bitmap_set_value - set value within a memory region
+> >   * @map: address to the bitmap memory region
+> > - * @value: value of nbits
+> > - * @start: bit offset of the n-bit value
+> > - * @nbits: size of value in bits (must be between 1 and BITS_PER_LONG inclusive).
+> > + * @nbits: size of map in bits
+> > + * @value: value of clump
+> > + * @value_width: size of value in bits (must be between 1 and BITS_PER_LONG inclusive)
+> > + * @start: bit offset of the value
+> >   */
+> > -static inline void bitmap_set_value(unsigned long *map,
+> > -                                 unsigned long value,
+> > -                                 unsigned long start, unsigned long nbits)
+> > +static inline void bitmap_set_value(unsigned long *map, unsigned long nbits,
+> > +                                 unsigned long value, unsigned long value_width,
+> > +                                 unsigned long start)
+> >  {
+> > -     const size_t index = BIT_WORD(start);
+> > +     const unsigned long index = BIT_WORD(start);
+> > +     const unsigned long length = BIT_WORD(nbits);
+> >       const unsigned long offset = start % BITS_PER_LONG;
+> >       const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
+> >       const unsigned long space = ceiling - start;
+> >
+> > -     value &= GENMASK(nbits - 1, 0);
+> > +     value &= GENMASK(value_width - 1, 0);
+> >
+> > -     if (space >= nbits) {
+> > -             map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
+> > +     if (space >= value_width) {
+> > +             map[index] &= ~(GENMASK(value_width - 1, 0) << offset);
+> >               map[index] |= value << offset;
+> >       } else {
+> >               map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
+> >               map[index + 0] |= value << offset;
+> > -             map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> > +
+> > +             if (index + 1 >= length)
+> > +                     __builtin_unreachable();
+> > +
+> > +             map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + value_width);
+> >               map[index + 1] |= value >> space;
+> >       }
+> >  }
+> > --
+> > 2.29.0
+> >
