@@ -2,85 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF832BB412
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD512BB415
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731529AbgKTSkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:40:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58062 "EHLO mail.kernel.org"
+        id S1731554AbgKTSkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:40:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731038AbgKTSj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:39:58 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7209E24178;
-        Fri, 20 Nov 2020 18:39:56 +0000 (UTC)
+        id S1731038AbgKTSkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:40:03 -0500
+Subject: Re: [GIT PULL] xen: branch for v5.10-rc5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605897597;
-        bh=vUARP2CaeWis9/yRUx6zGzkgMtkO+rE+mlZhTiYg26o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M9ISOAL0VXvMHdFCOsz57eqGUQpeswDilMz9QgcXFqGfxrsKKvgVsTAKuZqRa60H8
-         j71bRLbMMN85myUWU1x1tGg0nEeqiDPedM7HzVzBAi1kE+/QSi4aV/Omv4eUizTcfs
-         XEDpHf/5NGjWqHyr2I2DjP/DBp3mZ69aPc8xMufs=
-Date:   Fri, 20 Nov 2020 12:40:02 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 129/141] SUNRPC: Fix fall-through warnings for Clang
-Message-ID: <adea8b6765c2bb0f30eb40460240e0b7a9932fd2.1605896060.git.gustavoars@kernel.org>
-References: <cover.1605896059.git.gustavoars@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        s=default; t=1605897603;
+        bh=yrhE7j00Mtsf9/fQt335X97bxVz/PrGLW3m6roM1KR4=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=08MvlJg85Q1TZ/e5dO04m95fWliauAvm09XpRu0pSGoM4dptkUo6grfMn3qH+fRyT
+         gjmliPDEsW56C8VhyKaN5nYjN2yw8xPf3es1h55RtC/bjRJygNg4sjlUlEpbA1+j+I
+         BR7aCx6LdR/L1cjax4HB6sE4jTUxu7OknBrzFDfo=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201120055947.613-1-jgross@suse.com>
+References: <20201120055947.613-1-jgross@suse.com>
+X-PR-Tracked-List-Id: Xen developer discussion <xen-devel.lists.xenproject.org>
+X-PR-Tracked-Message-Id: <20201120055947.613-1-jgross@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.10b-rc5-tag
+X-PR-Tracked-Commit-Id: 65cae18882f943215d0505ddc7e70495877308e6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4ccf7a01e805f04defd423fb410f47a13af76399
+Message-Id: <160589760312.4306.8801434833258557230.pr-tracker-bot@kernel.org>
+Date:   Fri, 20 Nov 2020 18:40:03 +0000
+To:     Juergen Gross <jgross@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-warnings by explicitly adding multiple break statements instead of
-letting the code fall through to the next case.
+The pull request you sent on Fri, 20 Nov 2020 06:59:47 +0100:
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- net/sunrpc/rpc_pipe.c | 1 +
- net/sunrpc/xprtsock.c | 1 +
- 2 files changed, 2 insertions(+)
+> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.10b-rc5-tag
 
-diff --git a/net/sunrpc/rpc_pipe.c b/net/sunrpc/rpc_pipe.c
-index eadc0ede928c..99fcb0bea1d0 100644
---- a/net/sunrpc/rpc_pipe.c
-+++ b/net/sunrpc/rpc_pipe.c
-@@ -478,6 +478,7 @@ rpc_get_inode(struct super_block *sb, umode_t mode)
- 		inode->i_fop = &simple_dir_operations;
- 		inode->i_op = &simple_dir_inode_operations;
- 		inc_nlink(inode);
-+		break;
- 	default:
- 		break;
- 	}
-diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index 7090bbee0ec5..a785c15804d6 100644
---- a/net/sunrpc/xprtsock.c
-+++ b/net/sunrpc/xprtsock.c
-@@ -1874,6 +1874,7 @@ static int xs_local_setup_socket(struct sock_xprt *transport)
- 		xprt->stat.connect_time += (long)jiffies -
- 					   xprt->stat.connect_start;
- 		xprt_set_connected(xprt);
-+		break;
- 	case -ENOBUFS:
- 		break;
- 	case -ENOENT:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4ccf7a01e805f04defd423fb410f47a13af76399
+
+Thank you!
+
 -- 
-2.27.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
