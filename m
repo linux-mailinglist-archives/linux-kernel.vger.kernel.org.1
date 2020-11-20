@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040832BB4F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 390502BB50F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732285AbgKTTNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:13:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732042AbgKTTNy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:13:54 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65959C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:13:53 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 81so8127403pgf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:13:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=f4oy8hA8+0VkI6V9P3UsdKj1qYzye7Q8Qrm+k2T2ngM=;
-        b=oOep55n2xA3d/KWyW4lnBlUoK3V5hP2Gg0sLzIR+hDkVV/YnL3V6kin2DIgMv/YkaK
-         y1ymHUxuSTvENC6Rx4UcJ9DYryf+2RH0qJyAXzJIJLI8qxwdqnxmR07cenR4QwtGWcRv
-         g0zI00QfUT8szjTEV1tftc7v8CYDdjpP6VU+A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=f4oy8hA8+0VkI6V9P3UsdKj1qYzye7Q8Qrm+k2T2ngM=;
-        b=Vv9zjABlvQjig+mXZr19A4vLUz+EISLjel111chxW+7DLMUnbb4Vcgp+DPFDhdwptg
-         6/f9BFPEOb/c89cCLTJOsPDzFUegBFYJEjPYmFKOCl+6DeZxp/Vrp0sbzBLRwvReipeg
-         qy/btHc0oMMJZHj6/0kd1F+llIuvsSVAIfSVFcGNHXPR/ymgKQhn6UEJX6g2UBDok6W2
-         PlLKtlDmGmWGC2YnyVAwKGaVmrXXqiLfI5Ad/4NJR0OUwA4cR/MSRsEpWeZ/A+yMJBqB
-         oG6libMjV23kBPvq11JoKCCc7jP1FQsBGSwYSTtVTjHSNW3hDJJz19GmhLVGF414e4wZ
-         q6Fg==
-X-Gm-Message-State: AOAM5319Aw4Ynfqf6Y5ZE/RaqZUesuGX7WCS2Rx1x20xeImzHJVs3mZv
-        SBCUyEQQetyHsfVLpqFShFq8Ew==
-X-Google-Smtp-Source: ABdhPJw4I4Hccpuf85mP4mX3O9jGouvA5Tu8/SuTRmtKwcyCVuemjT9T579pj8p2ssIEDaQFbaK2nA==
-X-Received: by 2002:a17:90a:3c8b:: with SMTP id g11mr11341872pjc.14.1605899632992;
-        Fri, 20 Nov 2020 11:13:52 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q18sm4309808pfs.150.2020.11.20.11.13.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 11:13:52 -0800 (PST)
-Date:   Fri, 20 Nov 2020 11:13:51 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Eric Paris <eparis@redhat.com>, Jann Horn <jannh@google.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Will Drewry <wad@chromium.org>
-Subject: [GIT PULL] seccomp fixes for v5.10-rc5
-Message-ID: <202011201112.C7CFF68B07@keescook>
+        id S1732293AbgKTTQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:16:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732258AbgKTTQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 14:16:43 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 308AD22240;
+        Fri, 20 Nov 2020 19:16:41 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 14:16:39 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: linux-next: stall warnings and deadlock on Arm64 (was: [PATCH]
+ kfence: Avoid stalling...)
+Message-ID: <20201120141639.3896a3c8@gandalf.local.home>
+In-Reply-To: <20201120181737.GA3301774@elver.google.com>
+References: <20201118225621.GA1770130@elver.google.com>
+        <20201118233841.GS1437@paulmck-ThinkPad-P72>
+        <20201119125357.GA2084963@elver.google.com>
+        <20201119151409.GU1437@paulmck-ThinkPad-P72>
+        <20201119170259.GA2134472@elver.google.com>
+        <20201119184854.GY1437@paulmck-ThinkPad-P72>
+        <20201119193819.GA2601289@elver.google.com>
+        <20201119213512.GB1437@paulmck-ThinkPad-P72>
+        <20201120141928.GB3120165@elver.google.com>
+        <20201120102613.3d18b90e@gandalf.local.home>
+        <20201120181737.GA3301774@elver.google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, 20 Nov 2020 19:17:37 +0100
+Marco Elver <elver@google.com> wrote:
 
-Please pull these seccomp fixes for v5.10-rc5. This gets the seccomp
-selftests running against on powerpc and sh, and fixes an audit
-reporting oversight noticed in both seccomp and ptrace.
+> > > +++ b/kernel/rcu/Makefile
+> > > @@ -3,6 +3,13 @@
+> > >  # and is generally not a function of system call inputs.
+> > >  KCOV_INSTRUMENT := n
+> > >  
+> > > +ifdef CONFIG_FUNCTION_TRACER
+> > > +CFLAGS_REMOVE_update.o = $(CC_FLAGS_FTRACE)
+> > > +CFLAGS_REMOVE_sync.o = $(CC_FLAGS_FTRACE)
+> > > +CFLAGS_REMOVE_srcutree.o = $(CC_FLAGS_FTRACE)
+> > > +CFLAGS_REMOVE_tree.o = $(CC_FLAGS_FTRACE)
+> > > +endif
+> > > +  
+> > 
+> > Can you narrow it down further? That is, do you really need all of the
+> > above to stop the stalls?  
+> 
+> I tried to reduce it to 1 or combinations of 2 files only, but that
+> didn't work.
 
-Thanks!
+I'm curious if this would help at all?
 
--Kees
 
-The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576:
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 2a52f42f64b6..d020ecefd151 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1094,7 +1094,7 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+  * if the current CPU is not in its idle loop or is in an interrupt or
+  * NMI handler, return true.
+  */
+-bool rcu_is_watching(void)
++notrace bool rcu_is_watching(void)
+ {
+ 	bool ret;
+ 
+Although I don't see it in the recursion list.
 
-  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v5.10-rc5
-
-for you to fetch changes up to 4c222f31fb1db4d590503a181a6268ced9252379:
-
-  selftests/seccomp: sh: Fix register names (2020-11-20 11:03:08 -0800)
-
-----------------------------------------------------------------
-seccomp fixes for v5.10-rc5
-
-- Fix typos in seccomp selftests on powerpc and sh (Kees Cook)
-
-- Fix PF_SUPERPRIV audit marking in seccomp and ptrace (Mickaël Salaün)
-
-----------------------------------------------------------------
-Kees Cook (2):
-      selftests/seccomp: powerpc: Fix typo in macro variable name
-      selftests/seccomp: sh: Fix register names
-
-Mickaël Salaün (2):
-      ptrace: Set PF_SUPERPRIV when checking capability
-      seccomp: Set PF_SUPERPRIV when checking capability
-
- kernel/ptrace.c                               | 16 +++++-----------
- kernel/seccomp.c                              |  5 ++---
- tools/testing/selftests/seccomp/seccomp_bpf.c |  8 ++++----
- 3 files changed, 11 insertions(+), 18 deletions(-)
-
--- 
-Kees Cook
+-- Steve
