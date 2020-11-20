@@ -2,102 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DAF2BB4D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB782BB4D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729476AbgKTTHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728679AbgKTTHD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:07:03 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53BBC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:07:03 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id j19so8084766pgg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:07:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=11Eta9PcDmID7GuvdD9NV69zOyzPlPo2uoTpizVJNq0=;
-        b=CyTX47cyF+niHWQLzKah4aKrFGiMHUofouO8PaXWLsVatTXdc//xaUQuAdf034iOVf
-         fF2WijA7zShrNEI22N83dmZ9j1ZbHPrcObJTfpjqDJ6+1kzdXO1Wci3PV3k3LOMxmPB7
-         VhoP6DN+cB5DWRLpSjKgKZ5MfpLVswJBeriuPMmHCZnx6rODzQcpjJU0lGqottSrf8Lp
-         lvXl/sfFr0gRTbqjfgD0yjsR2Oac5qVhLM07xjV0Hjfu/kRANaHpqUfzilmRzKk53PAW
-         o0VSpiGgfGAmApq9CF6bE0YGPmJkLMcQQiWpFNz33F3l8bSNxBgHCWlQxpFsE0mVWh+n
-         77Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=11Eta9PcDmID7GuvdD9NV69zOyzPlPo2uoTpizVJNq0=;
-        b=kt7pxIWD6fpw+MBJz8Aa7Y/lUF6p7DS/nLgJ1EL7Yof8X+hD0Suir9F0mlw8Mi4oG1
-         6BXoexEYjjdm/nkO3YxzFll05tCc3DbSRrd0E5BALvwhtdTrN7jdpoxuqj0iXMJv7PF4
-         INiinhBEr/wHcTTustl9G9YZ7cZTCFAMhWHZLVifVKp6ocdXedTr7PEsSobRZnXATFXT
-         KNAIEWgtyhDYmL3n3VRwOAdTqrB2x+a93LxK7N5zjhSe7634ghftlnP1aEEJpVxQD4Fj
-         ejf48612K3eGlh4YjV1e2WJA08a6qt2+LeZgknhDyZtbpEr28zraEMO46Qe1McOnlKvS
-         SlJg==
-X-Gm-Message-State: AOAM532XiiVdR4iQRutPxdJE8yHsw9NGrz3PWbx6IjyVRjuSzE4sU4Sh
-        sF1ziFKBWuzDyt7HUyHIjJ/AmR9B9gwhsBNsipI=
-X-Google-Smtp-Source: ABdhPJzh4GW9wtmo3ns+czrLoOwLYLdwZH0GMjU9lqh+oqm9TvF0Dfa414qSBF+MxSEbx5enfG/R40JmHdZUKCyepmE=
-X-Received: by 2002:a17:90b:4382:: with SMTP id in2mr12187395pjb.180.1605899223406;
- Fri, 20 Nov 2020 11:07:03 -0800 (PST)
+        id S1729278AbgKTTJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:09:17 -0500
+Received: from m12-12.163.com ([220.181.12.12]:35264 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728415AbgKTTJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 14:09:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=DiHu0
+        po/f5/WN7ZezhXfY9C5nO2oq5AMzNtm78n4y4c=; b=ZunsjLNlyM4hRgqY8hUFv
+        gG3w2E68cAa6AwosVxco4H8X1sMWRodPIULLbuUM8jmSD+6HyhU+9jP/I11k4ny0
+        5D8MXO5k9xCGH0gUam5MSEaCd6hrrI/jFBN3S+avWpIJGyJ0MVnUksGy/qSupyNY
+        /fueLB1J48wGlQX4pDJt+0=
+Received: from localhost (unknown [101.86.213.141])
+        by smtp8 (Coremail) with SMTP id DMCowAAnChxFFLhfn+9sCw--.55196S2;
+        Sat, 21 Nov 2020 03:08:53 +0800 (CST)
+Date:   Sat, 21 Nov 2020 03:08:52 +0800
+From:   Hui Su <sh_def@163.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/lru: simplify is_file_lru() and is_active_lru()
+Message-ID: <20201120190852.GA19256@rlk>
+References: <20201117171242.GA120587@rlk>
+ <20201117174117.GQ29991@casper.infradead.org>
+ <20201117174633.GA158014@rlk>
+ <20201117174727.GR29991@casper.infradead.org>
+ <20201117175658.GA158143@rlk>
+ <20201117175900.GS29991@casper.infradead.org>
 MIME-Version: 1.0
-References: <cover.1605607138.git.viresh.kumar@linaro.org> <180854d3b40b779ea989dfa18154431f70011c18.1605607138.git.viresh.kumar@linaro.org>
-In-Reply-To: <180854d3b40b779ea989dfa18154431f70011c18.1605607138.git.viresh.kumar@linaro.org>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Fri, 20 Nov 2020 13:06:52 -0600
-Message-ID: <CABb+yY2mhUPbigeYo+ZirFP0z1n0wKPP46VOtsBmbZQmWB=jAA@mail.gmail.com>
-Subject: Re: [PATCH V5 2/2] mailbox: arm_mhuv2: Add driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Tushar Khandelwal <Tushar.Khandelwal@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Sudeep Holla <Sudeep.Holla@arm.com>,
-        Morten Borup Petersen <morten_bp@live.dk>,
-        Usama Arif <usama.arif@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117175900.GS29991@casper.infradead.org>
+X-CM-TRANSID: DMCowAAnChxFFLhfn+9sCw--.55196S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJw1rAw43Wr47CFyftF13Arb_yoWrJFyfp3
+        43tanIyF1kJ3WDJr1vgw1Uuw1qqw4ftwn0gr1UZ348CFn0yFW0qr9rtr1rua4qgFyku3yF
+        yrWUWa43t3y2y3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UHxRgUUUUU=
+X-Originating-IP: [101.86.213.141]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbBDgXiX1rbLHniewAAs7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 4:02 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Tue, Nov 17, 2020 at 05:59:00PM +0000, Matthew Wilcox wrote:
+> On Wed, Nov 18, 2020 at 01:56:58AM +0800, Hui Su wrote:
+> > On Tue, Nov 17, 2020 at 05:47:27PM +0000, Matthew Wilcox wrote:
+> > > On Wed, Nov 18, 2020 at 01:46:33AM +0800, Hui Su wrote:
+> > > > On Tue, Nov 17, 2020 at 05:41:17PM +0000, Matthew Wilcox wrote:
+> > > > > On Wed, Nov 18, 2020 at 01:12:42AM +0800, Hui Su wrote:
+> > > > > > lru_list lru bit 0 can tell whether the list is
+> > > > > > avtive lru-list or not.
+> > > > > > lru_list lru bit 1 can tell whether the list is
+> > > > > > file lru-list or not.
+> > > > > > 
+> > > > > > And fix some define type in shrink_active_list()
+> > > > > > and get_scan_count().
+> > > > > > 
+> > > > > > v1->v2:
+> > > > > > correct the commit message, and fix the define type.
+> > > > > 
+> > > > > No, still incorrect.
+> > > > 
+> > > > I am a little confused, can you tell in detail?
+> > > 
+> > > Have you booted a kernel with this change?  Have you run any kind of
+> > > tests on it?
+> > 
+> > Yes, I boot it with qemu-system-x86_64-4.1.50 on ubuntu20.04:
+> > qemu-system-x86_64 -kernel /home/rlk/workspace/compile/out/arch/x86_64/boot/bzImage -hda \
+> >  /home/rlk/myspace/qemu_build/rootfs.img -append "root=/dev/sda console=ttyS0" -nographic
+> > 
+> > using the kernel compiled with ubuntu20.04's default .config.
+> > 
+> > It seems nothing abnormal.
+> > And i did not do other test.
+> 
+> Maybe you should ... how about LTP?  I think that's pretty straightforward
+> to set up and run.
 
-> +
-> +/**
-> + * struct mhuv2 - MHUv2 mailbox controller data
-> + *
-> + * @mbox:      Mailbox controller belonging to the MHU frame.
-> + * @send/recv: Base address of the register mapping region.
-> + * @frame:     Frame type: RECEIVER_FRAME or SENDER_FRAME.
-> + * @irq:       Interrupt.
-> + * @windows:   Channel windows implemented by the platform.
-> + * @minor:     Minor version of the controller.
-> + * @length:    Length of the protocols array in bytes.
-> + * @protocols: Raw protocol information, derived from device tree.
-> + * @doorbell_pending_lock: spinlock required for correct operation of Tx
-> + *             interrupt for doorbells.
-> + */
-> +struct mhuv2 {
-> +       struct mbox_controller mbox;
-> +       union {
-> +               struct mhu2_send_frame_reg __iomem *send;
-> +               struct mhu2_recv_frame_reg __iomem *recv;
-> +       };
-> +       enum mhuv2_frame frame;
-> +       unsigned int irq;
-> +       unsigned int windows;
-> +       unsigned int minor;
-> +       unsigned int length;
-> +       u32 *protocols;
-> +
-> +       spinlock_t doorbell_pending_lock;
->
-Can you please explain the need of this lock? Some usecase?
-It should be unnecessary if the controller natively supports doorbell mode.
+Hi Matthew:
 
-thanks.
+Thanks for your advice, i finally setup a test platform powered by
+jenkins and QEMU emulator version 4.2.1 with two evening. This is
+the things that i always wanted to do but didn't do.
+
+I apply this change based on the commit: 4d02da974ea8, and compile
+it with x86_64_defconfig:
+make bzImage O=/var/lib/jenkins/workspace/linux_kernel_ltp/out/
+
+Then start qemu:
+sudo qemu-system-x86_64 \
+    -kernel /var/lib/jenkins/workspace/linux_kernel_ltp/out/arch/x86/boot/bzImage \
+    -hda /home/ubuntu/myspace/qemu_build/ubuntu.img \
+    -hdb /home/ubuntu/myspace/qemu_build/init.img       \
+    -append "root=/dev/sda console=ttyS0" \
+    -nographic \
+    -m 1024 \
+    -fsdev local,id=fs1,path=/home/ubuntu/workspace,security_model=none \
+    -device virtio-9p-pci,fsdev=fs1,mount_tag=jeff-host-code
+
+Then run the ltp test:
+sudo bash /opt/ltp/runltp -f mm
+
+The result is:
+Test Start Time: Sat Nov 21 02:06:46 2020
+-----------------------------------------
+Testcase                                           Result     Exit Value
+--------                                           ------     ----------
+mm01                                               PASS       0    
+mm02                                               PASS       0    
+mtest01                                            PASS       0    
+mtest01w                                           PASS       0    
+mtest05                                            PASS       0    
+mtest06                                            FAIL       2    
+mtest06_2                                          PASS       0    
+mtest06_3                                          PASS       0    
+mem02                                              PASS       0    
+
+mmapstress01                                       PASS       0    
+mmapstress02                                       PASS       0    
+mmapstress03                                       PASS       0    
+mmapstress04                                       PASS       0    
+mmapstress05                                       PASS       0    
+mmapstress06                                       PASS       0    
+mmapstress07                                       PASS       0    
+mmapstress08                                       PASS       0    
+mmapstress09                                       PASS       0    
+mmapstress10                                       PASS       0    
+mmap10                                             PASS       0    
+mmap10_1                                           PASS       0    
+mmap10_2                                           CONF       32   
+mmap10_3                                           CONF       32   
+mmap10_4                                           CONF       32   
+ksm01                                              CONF       32   
+ksm01_1                                            CONF       32   
+ksm02                                              CONF       32   
+ksm02_1                                            CONF       32   
+ksm03                                              CONF       32   
+ksm03_1                                            CONF       32   
+ksm04                                              CONF       32   
+ksm04_1                                            CONF       32   
+ksm05                                              CONF       32   
+ksm06                                              CONF       32   
+
+thp02                                              CONF       32   
+thp03                                              CONF       32   
+thp04                                              CONF       32   
+vma01                                              PASS       0    
+vma02                                              CONF       32   
+vma03                                              CONF       32   
+vma04                                              CONF       32   
+vma05                                              CONF       32   
+overcommit_memory01                                PASS       0    
+overcommit_memory02                                CONF       32   
+overcommit_memory03                                PASS       0    
+overcommit_memory04                                PASS       0    
+overcommit_memory05                                PASS       0    
+overcommit_memory06                                PASS       0    
+max_map_count                                      PASS       0    
+min_free_kbytes                                    PASS       0    
+
+-----------------------------------------------
+Total Tests: 76
+Total Skipped Tests: 29
+Total Failures: 1
+Kernel Version: 5.10.0-rc4+
+Machine Architecture: x86_64
+Hostname: ubuntu
+
+The one failure happens without my change, too.(maybe my config is
+not correct? I am not sure). 
+
+Last, i think this change have no problem.
+And what's your opinions, Matthew.
+
+Thanks.
+
+
