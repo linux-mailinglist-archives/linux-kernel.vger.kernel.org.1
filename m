@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1B82BA872
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6B32BA874
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgKTLH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:07:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55744 "EHLO mail.kernel.org"
+        id S1728515AbgKTLIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:08:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728432AbgKTLHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:07:51 -0500
+        id S1727913AbgKTLHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:07:54 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B483206E3;
-        Fri, 20 Nov 2020 11:07:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D28D7206E3;
+        Fri, 20 Nov 2020 11:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1605870470;
-        bh=HElhHWD3NNO9omoBPlZg5mSoMAUJsp5xfB2CXHCBRTs=;
+        s=korg; t=1605870473;
+        bh=+R9mbpPh7h148JHzELe0UuzUPeX5lF+ArRayE6tiq0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eSgiXQHWae3D3xeFS9upnRyraAxX2TNrUQZBs3oeDx/yAv/rDuKD21pky0kLMnOZ2
-         JUpyQ9ahYUOKjYyGI+JBrPVFcuWVN0h1EqCko65ysQP38xxC/u9Er0d0fSgpm8Uf3Q
-         9uJw2Or4zUq0LEOK/euL1QtfNuWUXDrIjyoHtD+k=
+        b=edJQKoV1m1MWGsJU3Mwtk72+q3H1X4MZ9GPA42M7wBd/FV2j7xcO0F348Cj3ACJMK
+         ElSOPZ2d9A/mPGQs7CHyAF+BbiZ0ortA2nAlHMdf+d9+KsT8H+X7rRx7Rq+NSz5q/D
+         1vtwOACPLsGlMNJl2xEdmbSYe1VtGKKtT6jjRm8I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dja@axtens.net
-Subject: [PATCH 5.9 05/14] selftests/powerpc: entry flush test
-Date:   Fri, 20 Nov 2020 12:03:43 +0100
-Message-Id: <20201120104541.433708552@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Gabriel David <ultracoolguy@tutanota.com>,
+        Pavel Machek <pavel@ucw.cz>, stable@kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 5.9 06/14] leds: lm3697: Fix out-of-bound access
+Date:   Fri, 20 Nov 2020 12:03:44 +0100
+Message-Id: <20201120104541.482562040@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201120104541.168007611@linuxfoundation.org>
 References: <20201120104541.168007611@linuxfoundation.org>
@@ -40,241 +43,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Axtens <dja@axtens.net>
+From: Gabriel David <ultracoolguy@tutanota.com>
 
-commit 89a83a0c69c81a25ce91002b90ca27ed86132a0a upstream.
+commit 98d278ca00bd8f62c8bc98bd9e65372d16eb6956 upstream
 
-Add a test modelled on the RFI flush test which counts the number
-of L1D misses doing a simple syscall with the entry flush on and off.
+If both LED banks aren't used in device tree, an out-of-bounds
+condition in lm3697_init occurs because of the for loop assuming that
+all the banks are used.  Fix it by adding a variable that contains the
+number of used banks.
 
-For simplicity of backporting, this test duplicates a lot of code from
-rfi_flush. We clean that up in the next patch.
-
-Signed-off-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Gabriel David <ultracoolguy@tutanota.com>
+[removed extra rename, minor tweaks]
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Cc: stable@kernel.org
+[sudip: use client->dev]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/powerpc/security/.gitignore    |    1 
- tools/testing/selftests/powerpc/security/Makefile      |    2 
- tools/testing/selftests/powerpc/security/entry_flush.c |  198 +++++++++++++++++
- 3 files changed, 200 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/powerpc/security/entry_flush.c
+ drivers/leds/leds-lm3697.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/tools/testing/selftests/powerpc/security/.gitignore
-+++ b/tools/testing/selftests/powerpc/security/.gitignore
-@@ -1,2 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- rfi_flush
-+entry_flush
---- a/tools/testing/selftests/powerpc/security/Makefile
-+++ b/tools/testing/selftests/powerpc/security/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0+
+--- a/drivers/leds/leds-lm3697.c
++++ b/drivers/leds/leds-lm3697.c
+@@ -78,6 +78,7 @@ struct lm3697 {
+ 	struct mutex lock;
  
--TEST_GEN_PROGS := rfi_flush spectre_v2
-+TEST_GEN_PROGS := rfi_flush entry_flush spectre_v2
- top_srcdir = ../../../../..
+ 	int bank_cfg;
++	int num_banks;
  
- CFLAGS += -I../../../../../usr/include
---- /dev/null
-+++ b/tools/testing/selftests/powerpc/security/entry_flush.c
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+
-+/*
-+ * Copyright 2018 IBM Corporation.
-+ */
-+
-+#define __SANE_USERSPACE_TYPES__
-+
-+#include <sys/types.h>
-+#include <stdint.h>
-+#include <malloc.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <stdio.h>
-+#include "utils.h"
-+
-+#define CACHELINE_SIZE 128
-+
-+struct perf_event_read {
-+	__u64 nr;
-+	__u64 l1d_misses;
-+};
-+
-+static inline __u64 load(void *addr)
-+{
-+	__u64 tmp;
-+
-+	asm volatile("ld %0,0(%1)" : "=r"(tmp) : "b"(addr));
-+
-+	return tmp;
-+}
-+
-+static void syscall_loop(char *p, unsigned long iterations,
-+			 unsigned long zero_size)
-+{
-+	for (unsigned long i = 0; i < iterations; i++) {
-+		for (unsigned long j = 0; j < zero_size; j += CACHELINE_SIZE)
-+			load(p + j);
-+		getppid();
-+	}
-+}
-+
-+static void sigill_handler(int signr, siginfo_t *info, void *unused)
-+{
-+	static int warned;
-+	ucontext_t *ctx = (ucontext_t *)unused;
-+	unsigned long *pc = &UCONTEXT_NIA(ctx);
-+
-+	/* mtspr 3,RS to check for move to DSCR below */
-+	if ((*((unsigned int *)*pc) & 0xfc1fffff) == 0x7c0303a6) {
-+		if (!warned++)
-+			printf("WARNING: Skipping over dscr setup. Consider running 'ppc64_cpu --dscr=1' manually.\n");
-+		*pc += 4;
-+	} else {
-+		printf("SIGILL at %p\n", pc);
-+		abort();
-+	}
-+}
-+
-+static void set_dscr(unsigned long val)
-+{
-+	static int init;
-+	struct sigaction sa;
-+
-+	if (!init) {
-+		memset(&sa, 0, sizeof(sa));
-+		sa.sa_sigaction = sigill_handler;
-+		sa.sa_flags = SA_SIGINFO;
-+		if (sigaction(SIGILL, &sa, NULL))
-+			perror("sigill_handler");
-+		init = 1;
-+	}
-+
-+	asm volatile("mtspr %1,%0" : : "r" (val), "i" (SPRN_DSCR));
-+}
-+
-+int entry_flush_test(void)
-+{
-+	char *p;
-+	int repetitions = 10;
-+	int fd, passes = 0, iter, rc = 0;
-+	struct perf_event_read v;
-+	__u64 l1d_misses_total = 0;
-+	unsigned long iterations = 100000, zero_size = 24 * 1024;
-+	unsigned long l1d_misses_expected;
-+	int rfi_flush_orig;
-+	int entry_flush, entry_flush_orig;
-+
-+	SKIP_IF(geteuid() != 0);
-+
-+	// The PMU event we use only works on Power7 or later
-+	SKIP_IF(!have_hwcap(PPC_FEATURE_ARCH_2_06));
-+
-+	if (read_debugfs_file("powerpc/rfi_flush", &rfi_flush_orig) < 0) {
-+		perror("Unable to read powerpc/rfi_flush debugfs file");
-+		SKIP_IF(1);
-+	}
-+
-+	if (read_debugfs_file("powerpc/entry_flush", &entry_flush_orig) < 0) {
-+		perror("Unable to read powerpc/entry_flush debugfs file");
-+		SKIP_IF(1);
-+	}
-+
-+	if (rfi_flush_orig != 0) {
-+		if (write_debugfs_file("powerpc/rfi_flush", 0) < 0) {
-+			perror("error writing to powerpc/rfi_flush debugfs file");
-+			FAIL_IF(1);
-+		}
-+	}
-+
-+	entry_flush = entry_flush_orig;
-+
-+	fd = perf_event_open_counter(PERF_TYPE_RAW, /* L1d miss */ 0x400f0, -1);
-+	FAIL_IF(fd < 0);
-+
-+	p = (char *)memalign(zero_size, CACHELINE_SIZE);
-+
-+	FAIL_IF(perf_event_enable(fd));
-+
-+	// disable L1 prefetching
-+	set_dscr(1);
-+
-+	iter = repetitions;
-+
-+	/*
-+	 * We expect to see l1d miss for each cacheline access when entry_flush
-+	 * is set. Allow a small variation on this.
-+	 */
-+	l1d_misses_expected = iterations * (zero_size / CACHELINE_SIZE - 2);
-+
-+again:
-+	FAIL_IF(perf_event_reset(fd));
-+
-+	syscall_loop(p, iterations, zero_size);
-+
-+	FAIL_IF(read(fd, &v, sizeof(v)) != sizeof(v));
-+
-+	if (entry_flush && v.l1d_misses >= l1d_misses_expected)
-+		passes++;
-+	else if (!entry_flush && v.l1d_misses < (l1d_misses_expected / 2))
-+		passes++;
-+
-+	l1d_misses_total += v.l1d_misses;
-+
-+	while (--iter)
-+		goto again;
-+
-+	if (passes < repetitions) {
-+		printf("FAIL (L1D misses with entry_flush=%d: %llu %c %lu) [%d/%d failures]\n",
-+		       entry_flush, l1d_misses_total, entry_flush ? '<' : '>',
-+		       entry_flush ? repetitions * l1d_misses_expected :
-+		       repetitions * l1d_misses_expected / 2,
-+		       repetitions - passes, repetitions);
-+		rc = 1;
-+	} else {
-+		printf("PASS (L1D misses with entry_flush=%d: %llu %c %lu) [%d/%d pass]\n",
-+		       entry_flush, l1d_misses_total, entry_flush ? '>' : '<',
-+		       entry_flush ? repetitions * l1d_misses_expected :
-+		       repetitions * l1d_misses_expected / 2,
-+		       passes, repetitions);
-+	}
-+
-+	if (entry_flush == entry_flush_orig) {
-+		entry_flush = !entry_flush_orig;
-+		if (write_debugfs_file("powerpc/entry_flush", entry_flush) < 0) {
-+			perror("error writing to powerpc/entry_flush debugfs file");
-+			return 1;
-+		}
-+		iter = repetitions;
-+		l1d_misses_total = 0;
-+		passes = 0;
-+		goto again;
-+	}
-+
-+	perf_event_disable(fd);
-+	close(fd);
-+
-+	set_dscr(0);
-+
-+	if (write_debugfs_file("powerpc/rfi_flush", rfi_flush_orig) < 0) {
-+		perror("unable to restore original value of powerpc/rfi_flush debugfs file");
-+		return 1;
-+	}
-+
-+	if (write_debugfs_file("powerpc/entry_flush", entry_flush_orig) < 0) {
-+		perror("unable to restore original value of powerpc/entry_flush debugfs file");
-+		return 1;
-+	}
-+
-+	return rc;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	return test_harness(entry_flush_test, "entry_flush_test");
-+}
+ 	struct lm3697_led leds[];
+ };
+@@ -180,7 +181,7 @@ static int lm3697_init(struct lm3697 *pr
+ 	if (ret)
+ 		dev_err(&priv->client->dev, "Cannot write OUTPUT config\n");
+ 
+-	for (i = 0; i < LM3697_MAX_CONTROL_BANKS; i++) {
++	for (i = 0; i < priv->num_banks; i++) {
+ 		led = &priv->leds[i];
+ 		ret = ti_lmu_common_set_ramp(&led->lmu_data);
+ 		if (ret)
+@@ -307,8 +308,8 @@ static int lm3697_probe(struct i2c_clien
+ 	int ret;
+ 
+ 	count = device_get_child_node_count(&client->dev);
+-	if (!count) {
+-		dev_err(&client->dev, "LEDs are not defined in device tree!");
++	if (!count || count > LM3697_MAX_CONTROL_BANKS) {
++		dev_err(&client->dev, "Strange device tree!");
+ 		return -ENODEV;
+ 	}
+ 
+@@ -322,6 +323,7 @@ static int lm3697_probe(struct i2c_clien
+ 
+ 	led->client = client;
+ 	led->dev = &client->dev;
++	led->num_banks = count;
+ 	led->regmap = devm_regmap_init_i2c(client, &lm3697_regmap_config);
+ 	if (IS_ERR(led->regmap)) {
+ 		ret = PTR_ERR(led->regmap);
 
 
