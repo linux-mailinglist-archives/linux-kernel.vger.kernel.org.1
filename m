@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A702BA115
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE642BA118
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbgKTDYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 22:24:41 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:42452 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726094AbgKTDYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 22:24:41 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv9P0NrdfOlkTAA--.39544S2;
-        Fri, 20 Nov 2020 11:24:37 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
-Cc:     linux-c6x-dev@linux-c6x.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] c6x: Use common DISCARDS in vmlinux.lds.S
-Date:   Fri, 20 Nov 2020 11:24:36 +0800
-Message-Id: <1605842676-7508-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxv9P0NrdfOlkTAA--.39544S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrWw13KF13ZFy7Ww18KF47CFg_yoWxXrg_GF
-        1aqw1xKr1F9FnxZryUCw4rZF90ya1rGFyS9rnrZr4xJFn8Xrs8t3Z3XFy3u3W5ZrW5CrW3
-        ZF4xur93Zw17ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gr4l42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0YiiDUUUUU==
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S1726799AbgKTD1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 22:27:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726385AbgKTD1E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 22:27:04 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C4CC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:27:04 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id s9so8540835ljo.11
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:27:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P9yk9CQBv+wHVI+u3khuln/FnkAkgCRh1kbuFM32wYo=;
+        b=HScsIqszCe4ZeQN7agASe0mHYVTAAsmRlik/QecWIfQ7ENPlG9DvXMFMMm6Fi1Jg/E
+         vQiHWZRnEsl9X/K7wdfIsSH9uTdutyzbtQzsql708OAM2pNnOnOf5QZSCu2ztHymLDWj
+         ssVN2kECw79wU/VrU5muycbjsBoXNc8rfHNnba0JT9XlKTjA9pbykEQWAEjIgHR7MPkl
+         xNKIfSE8Xe4UupU44IZVa0Q6rgIK24quNEGewMp++YHzRcwCi4aVp6K+8Ot2do5EXS+q
+         HxflTZPg5rIU2MxgYDT3XegXKmSYswaphvf6BeAc0Ew+GbXe1g68z7lVt5juGOQj6lGn
+         qpxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P9yk9CQBv+wHVI+u3khuln/FnkAkgCRh1kbuFM32wYo=;
+        b=atGIehKG2JUAZHKogTby7ZRk0G/ScvpQWtkE4Kbb16gvAyRX4rHIV+MEEm5+ydjL/6
+         a5gBOUl2gmBmF19/bDwAwxhwaxC2HWHIm25JVD4aUh59mKwWzKeLN++X2ydydfsM8Yeg
+         RDMhyNbnFERho0TWqqwCJ9nOX6D8F9/Zn0d8HCkoxCkucFU9Oo+3UB1IwfebkTz1qwl+
+         D/RTREQPt9WPaL+NsYtzpNiBUlpvp/nMhU9KZ6e8ue9f2kvuz+Fw/5906UQ5i7gZyCZM
+         rHOT0hSSRsTRWvfEfc0Ln9PnjGO63DMdqM8DRoDZ58UWb46awhcGjMYIcORVhm/VdfS0
+         cozw==
+X-Gm-Message-State: AOAM530/upQgKt9w9V+ek9r2vGNZ1w8SbFyCpb7N24p2nno5AU1gjCRb
+        KhJ3vBd32MkOsIJHnxDnBbeHfPAwAeoBs8YO
+X-Google-Smtp-Source: ABdhPJw/xASpUOgSh8LBQvQ2MraAR2lQubQ5Vtuk4iIgbG9734HMINhrlkWn+g0fljbxEVKi23Zh4w==
+X-Received: by 2002:a2e:8846:: with SMTP id z6mr7270703ljj.311.1605842821629;
+        Thu, 19 Nov 2020 19:27:01 -0800 (PST)
+Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id s26sm153647lji.31.2020.11.19.19.27.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 19 Nov 2020 19:27:00 -0800 (PST)
+From:   Marcin Wojtas <mw@semihalf.com>
+To:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+Cc:     ulf.hansson@linaro.org, huziji@marvell.com,
+        adrian.hunter@intel.com, jaz@semihalf.com, tn@semihalf.com,
+        ard.biesheuvel@arm.com, kostap@marvell.com,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: [PATCH v2 0/4] sdhci-xenon ACPI support
+Date:   Fri, 20 Nov 2020 04:26:35 +0100
+Message-Id: <20201120032639.24386-1-mw@semihalf.com>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the common DISCARDS rule for the linker script in an effort to
-regularize the linker script.
+Hi,
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
----
- arch/c6x/kernel/vmlinux.lds.S | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+The second version of the sdhci-xenon ACPI support
+is now split into 4 patches instead of a single one.
+There are minor functional differencse - match_data
+introduction and using dedicated ACPI ID per
+controller variant.
 
-diff --git a/arch/c6x/kernel/vmlinux.lds.S b/arch/c6x/kernel/vmlinux.lds.S
-index ac99ba0..188a334 100644
---- a/arch/c6x/kernel/vmlinux.lds.S
-+++ b/arch/c6x/kernel/vmlinux.lds.S
-@@ -139,13 +139,9 @@ SECTIONS
- 
- 	DWARF_DEBUG
- 
-+	DISCARDS
- 	/DISCARD/ :
- 	{
--		  EXIT_TEXT
--		  EXIT_DATA
--		  EXIT_CALL
--		  *(.discard)
--		  *(.discard.*)
--		  *(.interp)
-+		*(.interp)
- 	}
- }
+The MacchiatoBin firmware for testing can be obtained from:
+https://drive.google.com/file/d/1Y8BhyaCrksQgT_GPfpqqiYHpQ41kP8Kp
+
+Changelog:
+v1->v2
+  * Split single commit to 4
+  * Use device_match_data and dedicated ACPI ID's per controller
+    variant
+
+Marcin Wojtas (4):
+  mmc: sdhci-xenon: use match data for controllers variants
+  mmc: sdhci-xenon: switch to device_* API
+  mmc: sdhci-xenon: use clk only with DT
+  mmc: sdhci-xenon: introduce ACPI support
+
+ drivers/mmc/host/sdhci-xenon.h     |  12 +-
+ drivers/mmc/host/sdhci-xenon-phy.c |  40 ++++---
+ drivers/mmc/host/sdhci-xenon.c     | 120 +++++++++++++-------
+ 3 files changed, 110 insertions(+), 62 deletions(-)
+
 -- 
-2.1.0
+2.29.0
 
