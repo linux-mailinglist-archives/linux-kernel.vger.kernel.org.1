@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F402BB5AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0D72BB5BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728960AbgKTTmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:42:51 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:42895 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728761AbgKTTmv (ORCPT
+        id S1729200AbgKTTpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:45:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728590AbgKTTpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:42:51 -0500
-Received: by mail-ed1-f68.google.com with SMTP id v22so10706259edt.9
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:42:48 -0800 (PST)
+        Fri, 20 Nov 2020 14:45:46 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457FEC0613CF;
+        Fri, 20 Nov 2020 11:45:46 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id g7so8875976pfc.2;
+        Fri, 20 Nov 2020 11:45:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZVzA6BcrTZh0tSWw4NpPHXuO0gXGORPvDJECx8JucK8=;
+        b=FgLWOaHjZ0f+Ob1LQWqJroVeWbvc+ZBQztZWdvWC6x4t/WBpFRk09IcVpP4QRpthDn
+         oPeVexHzxtZdgbrPhoGqHyRPEYKEbbqEOOUeC5WEBQlhNdrtJMGxy5mv3fwr2Hl8hRMu
+         t7LVKxvUZ/G7DrJwgvt8tqFkcgdOJR2baAkH+2zQYsKf2pUGLRQgrnDY2gXp+MHBiBzV
+         +jinJhhWEFgOOg1cht7FQLBhbJoCkRey96s8mFFvJjlDuAUODFepKa7qwSYUbdgIUevb
+         cngtkLq/9NET42s07yDzUpaaTnjv5m1UAModYjAExVtwIyaiO/jD7SX2YVBXYrKRENRZ
+         SPQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jOXZ/NCVCIvYKIWpmcFp+SbynGH7tAa1IfD+gFImPbE=;
-        b=aIQluDI1xzhVM7lg3XleI5zNTtwJ0gS3WLwfgOAK57BrrmXAldqm8ZS5Y9HCOgcOLB
-         geAdcgx2pkXl1jJc6grUImMV4HXva7sF4JC3X+n7r5WYEqVCgAnUCpPh/YiuDpGB1Ll+
-         v/OYgqQkCSkfrn/aFMz21aO52VqjRQ4M/do02M2C9KVbPempU9w7l3w1AGRybHeC8Vfl
-         JB6d1U1RqKumiyNqkpGMzKs9rM/mxAGwxkbsAyFeWEH7QcqvN8Cd32/Oxs6Uhwo/GuAO
-         Ywvl5iBQcX/Q8UWAQmKNaUdo6dAFAl9HQBcC63j9FMxz+QIULv1ZzFZyyFb0SsY4cwf0
-         fhWQ==
-X-Gm-Message-State: AOAM531bkT0W8dANFMuowAvaqrIPd6i0rF8BLpbLun7P4b2l1tLgOHgj
-        oIDRMzTy7cqSENf0K6nKuY0=
-X-Google-Smtp-Source: ABdhPJz8vRJ4tmub7T+MlTQoYvIJ7sDYDo7OFVZA0mTWzf4Z26ouD98jDYhqeqIh8GIHyhvgky2LXg==
-X-Received: by 2002:a50:ab06:: with SMTP id s6mr29303017edc.288.1605901368051;
-        Fri, 20 Nov 2020 11:42:48 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id u8sm1514624edr.2.2020.11.20.11.42.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZVzA6BcrTZh0tSWw4NpPHXuO0gXGORPvDJECx8JucK8=;
+        b=LcxYp/qKqIR6fc5Vbdm6ZRJluWtMSDwmSt7VIWlHLvtiYyXvTuEEPcfgeyyBIoUyec
+         h30Ye/ArwhztlbC1fTLoD1Kxuv5z003XNpi+I9OHlIF1zF42+hdZOvqJef4nZ8O30/PH
+         Oz6ti/qc032gVnK6RT1BhJGezAYmaNnYhBIx0/DiLHrXI927ooJR/3q7joNpd1Gq8ETf
+         ac6px8gGIuYWWQf/DxyYyNII0TDbqsEgRi4NilcEhIWTpcT1n/E+Fdp6NnvwSyZXbPNp
+         bOVWyaQlzAkxi2ivE6+Noq+rzYh8G9IpLPV73ENVItJOX7zdmSoAbWxw2fnj2YGYetZn
+         pWQA==
+X-Gm-Message-State: AOAM531oKdEFJRL743eX4boJVdwQTQ0kL3o3pwsCtsD41sgS/ldzliJk
+        FWB7uI6fFMT2RxDpcwX8sZMkGI9iyf0=
+X-Google-Smtp-Source: ABdhPJzQf/Rj1Vsba1yzL0jn1ipKLmVplUbWUrOf/qQASTlqZCh+KP4IKf9FenQVkaFIwoXym73Jcg==
+X-Received: by 2002:a17:90a:f318:: with SMTP id ca24mr12180801pjb.100.1605901545652;
+        Fri, 20 Nov 2020 11:45:45 -0800 (PST)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id b1sm3755884pgg.74.2020.11.20.11.45.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 11:42:46 -0800 (PST)
-Date:   Fri, 20 Nov 2020 20:42:45 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
- table
-Message-ID: <20201120194245.GA2925@kozik-lap>
-References: <20201120161653.445521-1-krzk@kernel.org>
- <20201120165202.GG6751@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201120165202.GG6751@sirena.org.uk>
+        Fri, 20 Nov 2020 11:45:45 -0800 (PST)
+From:   Al Cooper <alcooperx@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH 0/3] serial: 8250: Add driver for Broadcom UART
+Date:   Fri, 20 Nov 2020 14:43:02 -0500
+Message-Id: <20201120194305.8847-1-alcooperx@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 04:56:34PM +0000, Mark Brown wrote:
-> On Fri, Nov 20, 2020 at 05:16:15PM +0100, Krzysztof Kozlowski wrote:
-> > The driver can match only via the DT table so the table should be always
-> > used and the of_match_ptr does not have any sense (this also allows ACPI
-> > matching via PRP0001, even though it is not relevant here).  This fixes
-> > compile warning (!CONFIG_OF on x86_64):
-> 
-> It would be better to fix these by annotating the table as potentially
-> unused, if nothing else it means if someone wants to add ACPI support
-> (or it just works on their ACPI system with the plain old I2C ID) then
-> they don't need to revert this change.
+Add UART driver for the new Broadcom 8250 based STB UART. The new
+UART is backward compatible with the standard 8250, but has some
+additional features. The new features include a high accuracy baud
+rate clock system and DMA support.
 
-The point is after this patch - removal of of_match_ptr() - they will
-already support the ACPI matching through the PRP0001.
+Al Cooper (2):
+  dt-bindings: Add support for the Broadcom UART driver
+  serial: 8250: Add new 8250-core based Broadcom STB driver
 
-Keeping of_match_ptr() and maybe_unused will prevent any ACPI re-usage
-unless explicit ACPI table is added
+Jim Quinlan (1):
+  serial: 8250: of: Check for CONFIG_SERIAL_8250_BCM7271
 
-Best regards,
-Krzysztof
+ .../bindings/serial/brcm,bcm7271-uart.yaml    |   94 ++
+ MAINTAINERS                                   |    8 +
+ drivers/tty/serial/8250/8250_bcm7271.c        | 1131 +++++++++++++++++
+ drivers/tty/serial/8250/8250_of.c             |    4 +
+ drivers/tty/serial/8250/Kconfig               |   11 +
+ drivers/tty/serial/8250/Makefile              |    1 +
+ drivers/tty/serial/8250/bcm7271_uart.h        |  158 +++
+ 7 files changed, 1407 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
+ create mode 100644 drivers/tty/serial/8250/8250_bcm7271.c
+ create mode 100644 drivers/tty/serial/8250/bcm7271_uart.h
+
+-- 
+2.17.1
+
