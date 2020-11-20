@@ -2,134 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F002BA998
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D852BA999
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgKTLvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:51:51 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:40046 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727934AbgKTLvv (ORCPT
+        id S1728080AbgKTLwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:52:30 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2135 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727366AbgKTLwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:51:51 -0500
-Date:   Fri, 20 Nov 2020 11:51:47 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605873108;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mhgLeBe98T66vHPfQ+Qad065DCd4QEmp0NUSOu/SXmw=;
-        b=EDQhEYu7kQIW0bmbyUTEHyh4Btx6rw8MM0Vh4VyavhdVV//zMLuGopdXuycQa7Fb4m3V08
-        qhre2cjVtRk3euPWxswZTst55SEpi3YZRFPXjh1tKlTsleov2OboetxK1u69aHE6rd96DB
-        96i/tunZqG/4ShBUOa4mVe84D9bh3vGbAqHgDIJREvTaWnR0rBTW426nQp+FeTNaq/GBd9
-        uXkMjobKdPkeOhVjIAvA1r7j6IKkVtxMo0u1vqyvZaBMgtrgPFyb0mxZdJsGxQdmBMHn/L
-        5gHcMgZHUhpzDCFkD0V2ZSPo46/sIIz5mhG/HwIsNAdGkedgLEmfgrm6g7d4Eg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605873108;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mhgLeBe98T66vHPfQ+Qad065DCd4QEmp0NUSOu/SXmw=;
-        b=9vo9H9yJOxU0mRRdVZR2ZjWbnsVf/QtW/7RRonfLpxFazKL0/2Y0b33419KtDKEf1H7bNL
-        StsVmrJOA6SFMeCg==
-From:   "tip-bot2 for Lukas Bulwahn" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/mm: Declare 'start' variable where it is used
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20200928100004.25674-1-lukas.bulwahn@gmail.com>
-References: <20200928100004.25674-1-lukas.bulwahn@gmail.com>
+        Fri, 20 Nov 2020 06:52:30 -0500
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CcvxB0lmjz67Ckx;
+        Fri, 20 Nov 2020 19:50:06 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Fri, 20 Nov 2020 12:52:26 +0100
+Received: from [10.47.4.214] (10.47.4.214) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 20 Nov
+ 2020 11:52:25 +0000
+Subject: Re: [PATCH v2 1/3] genirq/affinity: Add irq_update_affinity_desc()
+To:     Thomas Gleixner <tglx@linutronix.de>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <martin.petersen@oracle.com>,
+        <jejb@linux.ibm.com>
+CC:     <linuxarm@huawei.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <maz@kernel.org>
+References: <87ft57r7v3.fsf@nanos.tec.linutronix.de>
+ <78356caa-57a0-b807-fe52-8f12d36c1789@huawei.com>
+ <874klmqu2r.fsf@nanos.tec.linutronix.de>
+ <b86af904-2288-8b53-7e99-e763b73987d0@huawei.com>
+ <87lfexp6am.fsf@nanos.tec.linutronix.de>
+ <3acb7fde-eae2-a223-9cfd-f409cc2abba6@huawei.com>
+ <873615oy8a.fsf@nanos.tec.linutronix.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <4aab9d3b-6ca6-01c5-f840-459f945c7577@huawei.com>
+Date:   Fri, 20 Nov 2020 11:52:09 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Message-ID: <160587310720.11244.17157588656599003783.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <873615oy8a.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.4.214]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+Hi Thomas,
 
-Commit-ID:     bab202ab87ba4da48018daf0f6810b22705a570d
-Gitweb:        https://git.kernel.org/tip/bab202ab87ba4da48018daf0f6810b22705a570d
-Author:        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-AuthorDate:    Mon, 28 Sep 2020 12:00:04 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 20 Nov 2020 12:49:00 +01:00
+>> Just mentioning a couple of things here, which could be a clue to what
+>> is going on:
+>> - the device is behind mbigen secondary irq controller
+>> - the flow in the LLDD is to allocate all 128 interrupts during probe,
+>> but we only register handlers for a subset with device managed API
+> Right, but if the driver is removed then the interrupts should be
+> deallocated, right?
+> 
 
-x86/mm: Declare 'start' variable where it is used
+When removing the driver we just call free_irq(), which removes the 
+handler and disables the interrupt.
 
-It is not required to initialize the local variable start in
-memory_map_top_down(), as the variable will be initialized in any path
-before it is used.
+But about the irq_desc, this is created when the mapping is created in 
+irq_create_fwspec_mapping(), and I don't see this being torn down in the 
+driver removal, so persistent in that regard.
 
-make clang-analyzer on x86_64 tinyconfig reports:
+So for pci msi I can see that we free the irq_desc in pci_disable_msi() 
+-> free_msi_irqs() -> msi_domain_free_irqs() ...
 
-  arch/x86/mm/init.c:612:15: warning: Although the value stored to 'start' \
-  is used in the enclosing expression, the value is never actually read \
-  from 'start' [clang-analyzer-deadcode.DeadStores]
+So what I am missing here?
 
-Move the variable declaration into the loop, where it is used.
-
-No code changed:
-
-  # arch/x86/mm/init.o:
-
-   text    data     bss     dec     hex filename
-   7105    1424   26768   35297    89e1 init.o.before
-   7105    1424   26768   35297    89e1 init.o.after
-
-md5:
-   a8d76c1bb5fce9cae251780a7ee7730f  init.o.before.asm
-   a8d76c1bb5fce9cae251780a7ee7730f  init.o.after.asm
-
- [ bp: Massage. ]
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lkml.kernel.org/r/20200928100004.25674-1-lukas.bulwahn@gmail.com
----
- arch/x86/mm/init.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index c7a4760..e26f5c5 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -596,7 +596,7 @@ static unsigned long __init get_new_step_size(unsigned long step_size)
- static void __init memory_map_top_down(unsigned long map_start,
- 				       unsigned long map_end)
- {
--	unsigned long real_end, start, last_start;
-+	unsigned long real_end, last_start;
- 	unsigned long step_size;
- 	unsigned long addr;
- 	unsigned long mapped_ram_size = 0;
-@@ -609,7 +609,7 @@ static void __init memory_map_top_down(unsigned long map_start,
- 	step_size = PMD_SIZE;
- 	max_pfn_mapped = 0; /* will get exact value next */
- 	min_pfn_mapped = real_end >> PAGE_SHIFT;
--	last_start = start = real_end;
-+	last_start = real_end;
- 
- 	/*
- 	 * We start from the top (end of memory) and go to the bottom.
-@@ -618,6 +618,8 @@ static void __init memory_map_top_down(unsigned long map_start,
- 	 * for page table.
- 	 */
- 	while (last_start > map_start) {
-+		unsigned long start;
-+
- 		if (last_start > step_size) {
- 			start = round_down(last_start - 1, step_size);
- 			if (start < map_start)
+Thanks,
+John
