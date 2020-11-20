@@ -2,79 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B3D2BA7DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 560212BA7EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgKTLA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:00:58 -0500
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:43046 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgKTLA6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:00:58 -0500
-Received: by mail-ej1-f65.google.com with SMTP id k27so12240925ejs.10;
-        Fri, 20 Nov 2020 03:00:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nAks2XnecKIV4A3av2th6mRYw3f1mAliyxLw1+NXRko=;
-        b=g4w5E1Zgwz1g9K/Qv8fF2hUfAdy6ET6pSnssthr+2SFtZn+wg87P7b2Lo+xIWbXS/e
-         6x6M6xBlksARVFniz+C3xT6rKl2hv6xQA/z1/2PW1VmkC5lRnPhaj91cd6PWGfrdi+Cf
-         2FHrTM1wtbVcDVWa27Fq5dtAoH9DQeYXvpJc0ABdwfq7JSmIfnJEdiDhGwlt4QFHWraF
-         UHU2qlc2IUBYDGThlb8nDjj9zsCWFl18yFGR54uwPZSnbnIYQHPeM7ugbu6Q52/yxnG9
-         sXsb5JlIqsDlVuczagoyN9wI4+tZtk2KUdw2ZrqpDJF1Te01dkphyiWsBzYVDwgiZA6D
-         wCnQ==
-X-Gm-Message-State: AOAM5316FT4IDzIs2M/EyQjxhLii2d3rUkThYiNN3Nij/3HCnjEZAvUH
-        AWwA1T6uXu2Hb42x84KJwWg=
-X-Google-Smtp-Source: ABdhPJz9cad0dK9v8Bzg08JoVZCRoIQ59OHWv8Et2ehlg8QViIBBflkven0dCZQqipoAFOJvZEyNMw==
-X-Received: by 2002:a17:906:17d1:: with SMTP id u17mr31208004eje.229.1605870055921;
-        Fri, 20 Nov 2020 03:00:55 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id p20sm970666ejd.78.2020.11.20.03.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 03:00:54 -0800 (PST)
-Date:   Fri, 20 Nov 2020 12:00:51 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
-        Marian Mihailescu <mihailescu2m@gmail.com>
-Subject: Re: [PATCH 1/2] phy: samsung: Add support for the Exynos5420 variant
- of the USB2 PHY
-Message-ID: <20201120110051.GA26836@kozik-lap>
-References: <20201120085637.7299-1-m.szyprowski@samsung.com>
- <CGME20201120085651eucas1p1d30223968745e93e6177892b400a7773@eucas1p1.samsung.com>
- <20201120085637.7299-2-m.szyprowski@samsung.com>
+        id S1727505AbgKTLDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:03:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725789AbgKTLD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:03:29 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BB79206E3;
+        Fri, 20 Nov 2020 11:03:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1605870208;
+        bh=1DT4WrIM2xL7eIBEAy+lLMxB0SpmYBM2psEqtCrikZQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IEP55ZbBYUfH8g7YPdvSkt0MyYNqO5Q3tGif31mo+SPvcusaJwh/PqvQsV8yyxDtY
+         mkHmxIAUVXn4BW9xsXRS5N1bNx6+xNoJu9cMfM1RGVBEsrL/DIGRCR5g0WeI1IYT3+
+         Ny933u+m83nBEzLgtvIKXB78i/BzV9xinoOBAUZY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/15] 4.4.245-rc1 review
+Date:   Fri, 20 Nov 2020 12:02:58 +0100
+Message-Id: <20201120104539.534424264@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201120085637.7299-2-m.szyprowski@samsung.com>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.245-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.245-rc1
+X-KernelTest-Deadline: 2020-11-22T10:45+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 09:56:36AM +0100, Marek Szyprowski wrote:
-> Exynos5420 differs a bit from Exynos5250 in USB2 PHY related registers in
-> the PMU region. Add a variant for the Exynos5420 case. Till now, USB2 PHY
-> worked only because the bootloader enabled the PHY, but then driver messed
-> USB 3.0 DRD related registers during the suspend/resume cycle.
-> 
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->  .../devicetree/bindings/phy/samsung-phy.txt   |  1 +
->  drivers/phy/samsung/Kconfig                   |  7 ++-
->  drivers/phy/samsung/phy-exynos5250-usb2.c     | 48 +++++++++++++------
->  drivers/phy/samsung/phy-samsung-usb2.c        |  6 +++
->  drivers/phy/samsung/phy-samsung-usb2.h        |  1 +
->  5 files changed, 48 insertions(+), 15 deletions(-)
-> 
+This is the start of the stable review cycle for the 4.4.245 release.
+There are 15 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Responses should be made by Sun, 22 Nov 2020 10:45:32 +0000.
+Anything received after that time might be too late.
 
-Best regards,
-Krzysztof
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.245-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.245-rc1
+
+David Edmondson <david.edmondson@oracle.com>
+    KVM: x86: clflushopt should be treated as a no-op by emulation
+
+Johannes Berg <johannes.berg@intel.com>
+    mac80211: always wind down STA state
+
+Dmitry Torokhov <dmitry.torokhov@gmail.com>
+    Input: sunkbd - avoid use-after-free in teardown paths
+
+Christophe Leroy <christophe.leroy@csgroup.eu>
+    powerpc/8xx: Always fault when _PAGE_ACCESSED is not set
+
+Dave Chinner <dchinner@redhat.com>
+    xfs: validate cached inodes are free when allocated
+
+Dave Chinner <dchinner@redhat.com>
+    xfs: catch inode allocation state mismatch corruption
+
+Krzysztof Kozlowski <krzk@kernel.org>
+    i2c: imx: Fix external abort on interrupt in exit paths
+
+Nicholas Piggin <npiggin@gmail.com>
+    powerpc/64s: flush L1D after user accesses
+
+Nicholas Piggin <npiggin@gmail.com>
+    powerpc/uaccess: Evaluate macro arguments once, before user access is allowed
+
+Andrew Donnellan <ajd@linux.ibm.com>
+    powerpc: Fix __clear_user() with KUAP enabled
+
+Christophe Leroy <christophe.leroy@c-s.fr>
+    powerpc: Implement user_access_begin and friends
+
+Christophe Leroy <christophe.leroy@c-s.fr>
+    powerpc: Add a framework for user access tracking
+
+Nicholas Piggin <npiggin@gmail.com>
+    powerpc/64s: flush L1D on kernel entry
+
+Daniel Axtens <dja@axtens.net>
+    powerpc/64s: move some exception handlers out of line
+
+Daniel Axtens <dja@axtens.net>
+    powerpc/64s: Define MASKABLE_RELON_EXCEPTION_PSERIES_OOL
+
+
+-------------
+
+Diffstat:
+
+ Documentation/kernel-parameters.txt            |   7 +
+ Makefile                                       |   4 +-
+ arch/powerpc/include/asm/book3s/64/kup-radix.h |  23 +++
+ arch/powerpc/include/asm/exception-64s.h       |  15 +-
+ arch/powerpc/include/asm/feature-fixups.h      |  19 +++
+ arch/powerpc/include/asm/futex.h               |   4 +
+ arch/powerpc/include/asm/kup.h                 |  40 +++++
+ arch/powerpc/include/asm/security_features.h   |   7 +
+ arch/powerpc/include/asm/setup.h               |   4 +
+ arch/powerpc/include/asm/uaccess.h             | 142 +++++++++++++----
+ arch/powerpc/kernel/exceptions-64s.S           | 210 +++++++++++++++----------
+ arch/powerpc/kernel/head_8xx.S                 |   8 +-
+ arch/powerpc/kernel/ppc_ksyms.c                |  10 ++
+ arch/powerpc/kernel/setup_64.c                 | 138 ++++++++++++++++
+ arch/powerpc/kernel/vmlinux.lds.S              |  14 ++
+ arch/powerpc/lib/checksum_wrappers_64.c        |   4 +
+ arch/powerpc/lib/feature-fixups.c              | 104 ++++++++++++
+ arch/powerpc/lib/string.S                      |   2 +-
+ arch/powerpc/lib/string_64.S                   |   4 +-
+ arch/powerpc/platforms/powernv/setup.c         |  15 ++
+ arch/powerpc/platforms/pseries/setup.c         |   8 +
+ arch/x86/kvm/emulate.c                         |   8 +-
+ drivers/i2c/busses/i2c-imx.c                   |  25 +--
+ drivers/input/keyboard/sunkbd.c                |  41 ++++-
+ fs/xfs/xfs_icache.c                            |  58 ++++++-
+ net/mac80211/sta_info.c                        |  18 +++
+ 26 files changed, 782 insertions(+), 150 deletions(-)
+
+
