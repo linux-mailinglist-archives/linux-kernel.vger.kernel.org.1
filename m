@@ -2,159 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDD82BA0D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 098442BA0DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:10:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgKTDJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 22:09:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbgKTDJr (ORCPT
+        id S1727294AbgKTDKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 22:10:05 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:32840 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbgKTDKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 22:09:47 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29716C061A04
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:09:47 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id o9so10937793ejg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:09:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BHaBikdORLgIWL2Zcc+GTT7BbTPgBYlKWDmbyDdvnI0=;
-        b=BlMJXUOrMkE8p1dWkSA6E9qAZQAPL7vNYFrLTslEl0CJ6Tk5TIEsqYITg83d96s/zP
-         Gn68dv0zAK/lYizr1/20RvnZ4ZrKPLNxWzZNgiIqGzbOPUKd/TSif/KO4B+fKTy5o9zO
-         +N06jKbNsJzav1XU/O3kcsWYleXjdIcIckDilyv44CTt6GxudNElOH4rQFC2D+YPuzmk
-         SMJ7WFpSIzX8I4th8i+uqUkyRjLXmxVhlVpJnF786qLWQ3hhCtP6YVwZmoR/KpQPhw46
-         aHrCDm9+1u9Qz8gitoX9eR/5aw7h7yqbvEKXp5AgTV3oRjV2nq1o7MMTOaSq75sGn4k2
-         NTsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BHaBikdORLgIWL2Zcc+GTT7BbTPgBYlKWDmbyDdvnI0=;
-        b=Q9oZOO4LpuM6fh+isnHsdENsK5Y/zKn0x0OCubRPCfAmzeS0jqSF07DRYb7DwjWNMX
-         aoZkNR22xtz9jrINwtz+oFP4cAM6jasSg9Z7kiKgFYAuXNfOMTymJ5sbi42uAm6KVV6n
-         fOGi1yA5N0KeT3wrFQrnt8GczfBksZpnKEyVWTBSCY7edKN6mpJX0w+TnrB9aeahRH7b
-         eV96sWXPZ75e3+8gr3D9008boAQnEW1f/aAsxLE1Fd//QvebodmsbTddK3HfQzsTldrt
-         7cYB0GeeaMy8j2ZBUIqjxaFRQHIBJvfyHZM7aUPuouOcmoB1lK33noa3I+t/lgj6GlKD
-         CL+A==
-X-Gm-Message-State: AOAM532iLSge78lSzIN1Ip3iKCg1Y6KiyeMSUBJSb84zKo/iJYbJiiaY
-        SPVAZ4nVHHi0uh0zoUbTVZ0GxMbWXvjBF4x2SNy4dg==
-X-Google-Smtp-Source: ABdhPJx5v3n3B2swPuZb7KD4eIkmwhRaWF/FXiLbVFI6wx/oCnz34Y7gUKNQv8DzpME54THwdKVT1yn9jrayayaWLBg=
-X-Received: by 2002:a17:906:1804:: with SMTP id v4mr31380199eje.201.1605841785662;
- Thu, 19 Nov 2020 19:09:45 -0800 (PST)
+        Thu, 19 Nov 2020 22:10:05 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AK34W9B040618;
+        Fri, 20 Nov 2020 03:09:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=lLCnPs3Y88E1DLLJhdWCcM4wtkjHToEze7h1vCE4g/o=;
+ b=QsSQLvHsCFYbv5YnpvgoXRF1Z2M8NKs9UHPgzXS3Gd2Ccv1xrba6YymT+HTcA8e2A9s8
+ Zklms5pYC8CS7QuB2KUsqN41tE2NJPBr4o/Ax93rL5WgzpxqrX2JcJ8JlgiY7pCFayNw
+ ET58pDC5234x0US4OaSM/D1LzngwId+j9FaRR9e2WDXjPlP/geO/wYIIbYUU3WFp4JL5
+ CdFTTy4Va0BneGty9D2uldEzCMe+fKxluPqLopf7TOB9it+BE5PKY8tqWhlzk7aoZW4x
+ cyEuiDWkLs8kf1XziawbLFelYREkApsXNABxAMkBmzgb9mtfPHlJVgyYGX1QmJEcyaoV Lg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 34t4rb8sr0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Nov 2020 03:09:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AK36eWd160659;
+        Fri, 20 Nov 2020 03:09:55 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 34ts60vr31-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Nov 2020 03:09:55 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AK39nTv007582;
+        Fri, 20 Nov 2020 03:09:49 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 19 Nov 2020 19:09:49 -0800
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc:     james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, brking@linux.ibm.com
+Subject: Re: [PATCH 1/3] ibmvfc: byte swap login_buf.resp values in
+ attribute show functions
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1blfsyb9t.fsf@ca-mkp.ca.oracle.com>
+References: <20201117185031.129939-1-tyreld@linux.ibm.com>
+Date:   Thu, 19 Nov 2020 22:09:47 -0500
+In-Reply-To: <20201117185031.129939-1-tyreld@linux.ibm.com> (Tyrel Datwyler's
+        message of "Tue, 17 Nov 2020 12:50:29 -0600")
 MIME-Version: 1.0
-References: <20201120030411.2690816-1-lokeshgidra@google.com> <20201120030411.2690816-2-lokeshgidra@google.com>
-In-Reply-To: <20201120030411.2690816-2-lokeshgidra@google.com>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Thu, 19 Nov 2020 19:09:34 -0800
-Message-ID: <CA+EESO6xfnRWD2xrmar6VrcWBA8P53J8gVZmOtR0Ri65yb-Q4w@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] Add UFFD_USER_MODE_ONLY
-To:     Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Nitin Gupta <nigupta@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=1 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011200022
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=1 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011200021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 7:04 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
->
-> userfaultfd handles page faults from both user and kernel code.
-> Add a new UFFD_USER_MODE_ONLY flag for userfaultfd(2) that makes
-> the resulting userfaultfd object refuse to handle faults from kernel
-> mode, treating these faults as if SIGBUS were always raised, causing
-> the kernel code to fail with EFAULT.
->
-> A future patch adds a knob allowing administrators to give some
-> processes the ability to create userfaultfd file objects only if they
-> pass UFFD_USER_MODE_ONLY, reducing the likelihood that these processes
-> will exploit userfaultfd's ability to delay kernel page faults to open
-> timing windows for future exploits.
->
-> Signed-off-by: Daniel Colascione <dancol@google.com>
-> Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> Reviewed-by: Andrea Arcangeli <aarcange@redhat.com>
-> ---
->  fs/userfaultfd.c                 | 10 +++++++++-
->  include/uapi/linux/userfaultfd.h |  9 +++++++++
->  2 files changed, 18 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> index 000b457ad087..605599fde015 100644
-> --- a/fs/userfaultfd.c
-> +++ b/fs/userfaultfd.c
-> @@ -405,6 +405,13 @@ vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason)
->
->         if (ctx->features & UFFD_FEATURE_SIGBUS)
->                 goto out;
-> +       if ((vmf->flags & FAULT_FLAG_USER) == 0 &&
-> +           ctx->flags & UFFD_USER_MODE_ONLY) {
-> +               printk_once(KERN_WARNING "uffd: Set unprivileged_userfaultfd "
-> +                       "sysctl knob to 1 if kernel faults must be handled "
-> +                       "without obtaining CAP_SYS_PTRACE capability\n");
-> +               goto out;
-> +       }
->
->         /*
->          * If it's already released don't get it. This avoids to loop
-> @@ -1965,10 +1972,11 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
->         BUG_ON(!current->mm);
->
->         /* Check the UFFD_* constants for consistency.  */
-> +       BUILD_BUG_ON(UFFD_USER_MODE_ONLY & UFFD_SHARED_FCNTL_FLAGS);
->         BUILD_BUG_ON(UFFD_CLOEXEC != O_CLOEXEC);
->         BUILD_BUG_ON(UFFD_NONBLOCK != O_NONBLOCK);
->
-> -       if (flags & ~UFFD_SHARED_FCNTL_FLAGS)
-> +       if (flags & ~(UFFD_SHARED_FCNTL_FLAGS | UFFD_USER_MODE_ONLY))
->                 return -EINVAL;
->
->         ctx = kmem_cache_alloc(userfaultfd_ctx_cachep, GFP_KERNEL);
-> diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
-> index e7e98bde221f..5f2d88212f7c 100644
-> --- a/include/uapi/linux/userfaultfd.h
-> +++ b/include/uapi/linux/userfaultfd.h
-> @@ -257,4 +257,13 @@ struct uffdio_writeprotect {
->         __u64 mode;
->  };
->
-> +/*
-> + * Flags for the userfaultfd(2) system call itself.
-> + */
-> +
-> +/*
-> + * Create a userfaultfd that can handle page faults only in user mode.
-> + */
-> +#define UFFD_USER_MODE_ONLY 1
-> +
->  #endif /* _LINUX_USERFAULTFD_H */
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
->
-Adding linux-mm@kvack.org mailing list
+
+Tyrel,
+
+> Both ibmvfc_show_host_(capabilities|npiv_version) functions retrieve
+> values from vhost->login_buf.resp buffer. This is the MAD response
+> buffer from the VIOS and as such any multi-byte non-string values are in
+> big endian format.
+
+Applied 1-3 to 5.11/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
