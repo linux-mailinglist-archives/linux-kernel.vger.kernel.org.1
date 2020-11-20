@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C0A2BB77B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F792BB7A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731690AbgKTUkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 15:40:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        id S1731708AbgKTUnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 15:43:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730731AbgKTUkL (ORCPT
+        with ESMTP id S1728928AbgKTUnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 15:40:11 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28549C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:40:11 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id w10so9720885ilq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:40:11 -0800 (PST)
+        Fri, 20 Nov 2020 15:43:17 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEA6C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:43:17 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id 62so8296481pgg.12
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:43:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=TD3o5iLKwU8zdratpmBsatFArpZthyFmbqxgB9MOjPI=;
-        b=l3vaiI1ac+8dhD50x/5uK13Cu2aUgwNOWKJNmC+bu+75M3KtxPGQGFUHugXkXFSOtz
-         RYDLWqI5QSaSpHPS1G+BXBpU+AVvdbLMW0Jk+LzwlsOyPE2JcnfhQxnEjPJnzJmSfWRr
-         +MsGH76gSVMw4g7190iaec4efnBG0EDi+SaQ7AvMDAcqp68dJz2GsHoqsit+WNfN9fy9
-         k1zNH2z8TFCnjxDt7a4fQgrLALzNepcfTuSKzXd8cKzYm82jcvNXNBPBVofaQnpNV2KQ
-         oQPtYP1XYk4eIie9ePH0hMOiFrF0uBYu6MlRmhEp4yZ1/hGRGwk502ppiafCmL6YIaum
-         A3mg==
+        bh=i55oAU3/0ChRWnSy8Vy2lsf5/3oQQZ1SpwWH7R5fDAQ=;
+        b=GpFB8JoFYlzs5IPt1A4zHefiujfDAb4Aupd2Gt8XWPGlHwTgyLSPZ69lnmpG8AcDUI
+         P5TQWbT45S+7ZLN8NYpqb8spc1x7xM2RTsvR4yoBcsZ8FoV3W56Xp36fdQTbZm5G+EPS
+         8sdwQfqqqLt9BxwKajipmRGH3q24bpLwIUoOI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=TD3o5iLKwU8zdratpmBsatFArpZthyFmbqxgB9MOjPI=;
-        b=flgEUMauIgaTqtCGe8cYZhJ7lKSbCr/mXK1rXvSIpOwe3iWOpbrKQ0PVTuBE6c0W+G
-         e0ySDLG/VvWTt59mwmNvI3zdxRAzXO0gXwvHlXc5D5pdshJGNorjmBBunWSOZqI9qWL1
-         5lQicPOl+Adxuje92JX3KMPZoEVNPHBoWmKvA25NfS75VrnxU3xcJzsSen6OGZjtj7I4
-         1kvYazZQnj9FJJgKFt7K7BtdHAtAScx/xxBTSnkqU9eXp2o+kVd99awUISHObo/T4E/L
-         VNsG1rXi8XXZBiftueFk4/USnRO4A7Du5BfEuXUCQOCsJ1ct/A/fTk+LC2w255gPOjJX
-         Fokg==
-X-Gm-Message-State: AOAM5301p/uJyKXLTn6sujXwCoDM++t/hsPhHwfv1zG2b423pD7BrReW
-        mF9CPvZe9ibpuLExOlAvbsl4xEPBEc8oqyDt
-X-Google-Smtp-Source: ABdhPJx2YPyA8+PrxQVdxE2fbx1FR9qm5FX6boWJoKvZ1Tsrv7fg2bruJzhdDC5G6i4LoN3rp3bbpA==
-X-Received: by 2002:a92:a80d:: with SMTP id o13mr12283087ilh.60.1605904810251;
-        Fri, 20 Nov 2020 12:40:10 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id w3sm2068621iol.9.2020.11.20.12.40.08
+        bh=i55oAU3/0ChRWnSy8Vy2lsf5/3oQQZ1SpwWH7R5fDAQ=;
+        b=Fao8tXakWPvk6n01Uu0P38d+88AaOwkmpKw5+YNZY6gWyCJ32/OtNNvPOWkZ8tcZVG
+         JqdbJMI37+4M0KC5PKi4lJ88M0tbC/dl+le87xcLvqyph02KljIR51OY/izqltuqqPgv
+         7cXMWzUBO+qe0qpDLngrL0AQVmGfCjzMGbPEKGWaL5R9Nr4JaJfnr8k50LJ+DaRae+vO
+         RhCKGtNXdK0y21oOj4vgxZDjpQym3WFUzFt1MuD1dEQxC7yKnvymo2wIR5gaWNiSGVPl
+         C7vRc/dyyjnjvyiHq59DQ9C7aEVb77kLc0VH5uUNTb2jOULb6fMdPjy0cmSaE10zSk+m
+         1Vzw==
+X-Gm-Message-State: AOAM532acTSMa+HcaHPlXG40nQ2jW7jmsWmRywbkAn/S8SW1zoYVGOF9
+        SzXj5mEGyLF2VRoPtwVf9sQh2g==
+X-Google-Smtp-Source: ABdhPJwImKJNbu1EQwiGGAUktKiLdCpi1F8qQGza+VZgx7A7t3fyRz/FVTV1hNGkrOLQAws/XjLW2g==
+X-Received: by 2002:a17:90b:e08:: with SMTP id ge8mr12659157pjb.29.1605904996598;
+        Fri, 20 Nov 2020 12:43:16 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l133sm4882417pfd.112.2020.11.20.12.43.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 12:40:09 -0800 (PST)
-Date:   Fri, 20 Nov 2020 13:40:05 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Minchan Kim <minchan@kernel.org>,
+        Fri, 20 Nov 2020 12:43:15 -0800 (PST)
+Date:   Fri, 20 Nov 2020 12:43:14 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 6/6] mm: proc: Avoid fullmm flush for young/dirty bit
- toggling
-Message-ID: <20201120204005.GC1303870@google.com>
-References: <20201120143557.6715-1-will@kernel.org>
- <20201120143557.6715-7-will@kernel.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v7 02/17] kbuild: add support for Clang LTO
+Message-ID: <202011201241.B159562D7@keescook>
+References: <20201118220731.925424-1-samitolvanen@google.com>
+ <20201118220731.925424-3-samitolvanen@google.com>
+ <CAKwvOdnYTMzaahnBqdNYPz3KMdnkp=jZ4hxiqkTYzM5+BBdezA@mail.gmail.com>
+ <CABCJKucj_jUwoiLc35R7qFe+cNKTWgT+gsCa5pPiY66+1--3Lg@mail.gmail.com>
+ <202011201144.3F2BB70C@keescook>
+ <20201120202935.GA1220359@ubuntu-m3-large-x86>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120143557.6715-7-will@kernel.org>
+In-Reply-To: <20201120202935.GA1220359@ubuntu-m3-large-x86>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 02:35:57PM +0000, Will Deacon wrote:
-> clear_refs_write() uses the 'fullmm' API for invalidating TLBs after
-> updating the page-tables for the current mm. However, since the mm is not
-> being freed, this can result in stale TLB entries on architectures which
-> elide 'fullmm' invalidation.
+On Fri, Nov 20, 2020 at 01:29:35PM -0700, Nathan Chancellor wrote:
+> On Fri, Nov 20, 2020 at 11:47:21AM -0800, Kees Cook wrote:
+> > On Fri, Nov 20, 2020 at 08:23:11AM -0800, Sami Tolvanen wrote:
+> > > Changing the ThinLTO config to a choice and moving it after the main
+> > > LTO config sounds like a good idea to me. I'll see if I can change
+> > > this in v8. Thanks!
+> > 
+> > Originally, I thought this might be a bit ugly once GCC LTO is added,
+> > but this could be just a choice like we're done for the stack
+> > initialization. Something like an "LTO" choice of NONE, CLANG_FULL,
+> > CLANG_THIN, and in the future GCC, etc.
 > 
-> Ensure that TLB invalidation is performed after updating soft-dirty
-> entries via clear_refs_write() by using the non-fullmm API to MMU gather.
-> 
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  fs/proc/task_mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index a76d339b5754..316af047f1aa 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1238,7 +1238,7 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
->  			count = -EINTR;
->  			goto out_mm;
->  		}
-> -		tlb_gather_mmu_fullmm(&tlb, mm);
-> +		tlb_gather_mmu(&tlb, mm, 0, TASK_SIZE);
+> Having two separate choices might be a little bit cleaner though? One
+> for the compiler (LTO_CLANG versus LTO_GCC) and one for the type
+> (THINLTO versus FULLLTO). The type one could just have a "depends on
+> CC_IS_CLANG" to ensure it only showed up when needed.
 
-Let's assume my reply to patch 4 is wrong, and therefore we still need
-tlb_gather/finish_mmu() here. But then wouldn't this change deprive
-architectures other than ARM the opportunity to optimize based on the
-fact it's a full-mm flush?
+Right, that's how the stack init choice works. Kconfigs that aren't
+supported by the compiler won't be shown. I.e. after Sami's future
+patch, the only choice for GCC will be CONFIG_LTO_NONE. But building
+under Clang, it would offer CONFIG_LTO_NONE, CONFIG_LTO_CLANG_FULL,
+CONFIG_LTO_CLANG_THIN, or something.
 
-It seems to me ARM's interpretation of tlb->fullmm is a special case,
-not the other way around.
+(and I assume  CONFIG_LTO would be def_bool y, depends on !LTO_NONE)
+
+-- 
+Kees Cook
