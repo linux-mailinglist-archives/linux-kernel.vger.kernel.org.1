@@ -2,103 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5382BA7BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 710192BA7C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgKTKuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:50:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726541AbgKTKuN (ORCPT
+        id S1727466AbgKTKuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 05:50:50 -0500
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:37086 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726541AbgKTKuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:50:13 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1605CC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:50:11 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id 74so12810017lfo.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:50:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ui6T7CKVZyX5zdmfFixy92Jf09nez5RkHLtV0WeJzY0=;
-        b=dZCQEwHNsskYy5D8AIWz2qi45Wcs2Z4e3xfY3hTUk2tKBatAOnviRmerOylIfPKZEl
-         /Sras5siDr0dT01k0si+JSuJfNxrBSOan/3ulR3lp6WVXjas4lKdolIUMWkEgr+t/sKH
-         Bu5Wpar/LnDEmp3pRRoS1IPMrlnXYL0JrJxCjjwNjhU5MecV0Wocrf/oMq8w9w819L8F
-         pJ4ICNTExU6+CoHAtxrWcemC2eS/5oFioel086QvUSOwl3lJIFTJwSL2FyqSGfKeCW7Y
-         0GKUVaw+lhVvpByWp5qUkIpLZXw6w4k7RblCsT/ihZomp82v6bcW4DQQTxyEHaKcAYZC
-         /WNw==
+        Fri, 20 Nov 2020 05:50:50 -0500
+Received: by mail-ed1-f68.google.com with SMTP id cq7so9045635edb.4;
+        Fri, 20 Nov 2020 02:50:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ui6T7CKVZyX5zdmfFixy92Jf09nez5RkHLtV0WeJzY0=;
-        b=L1Yin4CsGNvlyF9dSjSD8N4RfuqMLjRrvnavdCj0GbZP1uAAu+tr9VIRaRcxKluW8h
-         11eaAtZcknhZSNJl05K5pZdKsbqwbx5dWwj5C6GzbA0yUP6JOGUrlyviEH8SJjSWOupW
-         wJrZuCgmjiiorQUMmhxicAn/LuA8DkN2t/gFi2JHBS21SwB9jaKyjeQYH/8/eYS25Z3r
-         +8EIGV1uYDV6Jlseb4fbetLMIUgFM0eHnPbgf6N1CEnpVIpzMIbJu1Stex7NJwiRmvHv
-         O1Zcofnyp9DYpt6n//p/eWQLYS818zk3F+YU2LwpNieUUH7Es6tI+jzHnc5UfNqKsFB6
-         Yc8w==
-X-Gm-Message-State: AOAM530USk5SwT9hFfP4pD4xP+IJGaSbAiRuxrruGiX0vDvH/aOncW1b
-        Eg0LD+RxMmyCapMkVXUGKrz0+w==
-X-Google-Smtp-Source: ABdhPJzq8ILTQ9yBLCQ/f9XRy5F3bqzu27ePwvgzTE82Is2/Rk36zeq42qf4V6XmwUJhiZ2fyx6zcA==
-X-Received: by 2002:a19:5c7:: with SMTP id 190mr8263208lff.467.1605869409385;
-        Fri, 20 Nov 2020 02:50:09 -0800 (PST)
-Received: from localhost.localdomain (h-98-128-180-251.NA.cust.bahnhof.se. [98.128.180.251])
-        by smtp.gmail.com with ESMTPSA id 13sm313017lfy.90.2020.11.20.02.50.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=It+D4YQDqmKcdjcjbq/4hP36Dz2LcB1jnl1T6CqVtu4=;
+        b=gh16UBw8lEI6YYRrFggXiW693pnhtsnijta5KbRWtif4aE7iAgNfVDHaokIl8BpcCE
+         PZe7fRnVJpHYy0iqIyvvXm64rP2laOyTJAcKS4XxkBg6lL67+cM+XE7fXNGoP/d9Twmr
+         z+ulh1OsuAuISKvrZA2/lf60wT71KPRizS6229lH+mJ90Zei40v2nRu4/wVI+V5fHeOa
+         4ucT+P2s6LfL9eX+xYlRjLprzgxvLKKAZ5pVT3lKY0AatxQDtmeVYvNxQWLrVcXF0oan
+         TIoaY+Yuixi6NE1WLvYJapSZb0Vn7tT3dMvuuxwivlJrW7u7hQNQXP5VpV9ONT2pob5j
+         /mZw==
+X-Gm-Message-State: AOAM530mi/6zYlAP4za608qdmUfcS9DJ+gHtUT2tcdBr1lrVHkprUSkZ
+        U/Hf5dwRaKY1C7KAZF3uCYw=
+X-Google-Smtp-Source: ABdhPJwOgFAFmzsp7sleJCO2BGhXf7meuzi4Aj0kJqXk//7z8BdixlPZGgWt+vnNhCvpXWAuFhnSeA==
+X-Received: by 2002:aa7:c512:: with SMTP id o18mr34240215edq.357.1605869447554;
+        Fri, 20 Nov 2020 02:50:47 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id j6sm923497edy.87.2020.11.20.02.50.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 02:50:08 -0800 (PST)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC fixes for v5.10-rc5
-Date:   Fri, 20 Nov 2020 11:50:07 +0100
-Message-Id: <20201120105007.8184-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Fri, 20 Nov 2020 02:50:46 -0800 (PST)
+Date:   Fri, 20 Nov 2020 11:50:45 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Alice Guo <alice.guo@nxp.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        linux-imx@nxp.com, peng.fan@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
+ soc unique ID
+Message-ID: <20201120105045.GA18581@kozik-lap>
+References: <20201120101112.31819-1-alice.guo@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201120101112.31819-1-alice.guo@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Nov 20, 2020 at 06:11:09PM +0800, Alice Guo wrote:
+> Add DT Binding doc for the Unique ID of i.MX 8M series.
+> 
+> v2: remove the subject prefix "LF-2571-1"
+> v3: put it into Documentation/devicetree/bindings/arm/fsl.yaml
+>     modify the description of nvmem-cells
+>     use "make ARCH=arm64 dtbs_check" to test it and fix errors
+> v4: use allOf to limit new version DTS files for i.MX8M to include
+>     "fsl,imx8mm/n/p/q-soc", nvmem-cells and nvmem-cells-names
+> 
+> Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> ---
+>  .../devicetree/bindings/arm/fsl.yaml          | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> index 67980dcef66d..d8048323a290 100644
+> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> @@ -918,6 +918,57 @@ properties:
+>                - fsl,s32v234-evb           # S32V234-EVB2 Customer Evaluation Board
+>            - const: fsl,s32v234
+> 
+> +  soc:
+> +    type: object
+> +    properties:
+> +      compatible:
+> +        oneOf:
+> +          - description: new version compatible for i.MX8M SoCs
+> +            items:
+> +              - enum:
+> +                  - fsl,imx8mm-soc
+> +                  - fsl,imx8mn-soc
+> +                  - fsl,imx8mp-soc
+> +                  - fsl,imx8mq-soc
+> +              - const: simple-bus
+> +
+> +          - description: old version compatible for i.MX8M SoCs
+> +            items:
+> +              - const: simple-bus
+> +
+> +      nvmem-cells:
+> +        maxItems: 1
+> +        description: Phandle to the SOC Unique ID provided by a nvmem node
+> +
+> +      nvmem-cells-names:
+> +        const: soc_unique_id
+> +
+> +    allOf:
 
-Here's a PR with a couple of MMC fixes intended for v5.10-rc5. Details about the
-highlights are as usual found in the signed tag.
+Nothing changed here comparing to previous version. Still does not
+work.
 
-Please pull this in!
+The allOf should not be part of soc node because the "if" below won't
+match. Instead, it should be against root node.
 
-Kind regards
-Ulf Hansson
+Best regards,
+Krzysztof
 
-
-The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576:
-
-  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.10-rc4
-
-for you to fetch changes up to d06d60d52ec0b0eef702dd3e7b4699f0b589ad0f:
-
-  mmc: sdhci-of-arasan: Issue DLL reset explicitly (2020-11-17 12:44:44 +0100)
-
-----------------------------------------------------------------
-MMC host:
- - sdhci-of-arasan: Stabilize communication by fixing tap value configs
- - sdhci-pci: Use SDR25 timing for HS mode for BYT-based Intel HWs
-
-----------------------------------------------------------------
-Adrian Hunter (1):
-      mmc: sdhci-pci: Prefer SDR25 timing for High Speed mode for BYT-based Intel controllers
-
-Manish Narani (3):
-      mmc: sdhci-of-arasan: Allow configuring zero tap values
-      mmc: sdhci-of-arasan: Use Mask writes for Tap delays
-      mmc: sdhci-of-arasan: Issue DLL reset explicitly
-
- drivers/mmc/host/sdhci-of-arasan.c | 51 ++++++++++++++------------------------
- drivers/mmc/host/sdhci-pci-core.c  | 13 ++++++++--
- 2 files changed, 30 insertions(+), 34 deletions(-)
+> +      - if:
+> +          properties:
+> +            compatible:
+> +              contains:
+> +                enum:
+> +                  - fsl,imx8mm
+> +                  - fsl,imx8mn
+> +                  - fsl,imx8mp
+> +                  - fsl,imx8mq
+> +
+> +        then:
+> +          properties:
+> +            compatible:
+> +              items:
+> +                - enum:
+> +                    - fsl,imx8mm-soc
+> +                    - fsl,imx8mn-soc
+> +                    - fsl,imx8mp-soc
+> +                    - fsl,imx8mq-soc
+> +                - const: simple-bus
+> +
+> +          required:
+> +            - nvmem-cells
+> +            - nvmem-cells-names
+> +
+>  additionalProperties: true
+> 
+>  ...
+> --
+> 2.17.1
+> 
