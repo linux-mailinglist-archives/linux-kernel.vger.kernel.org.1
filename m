@@ -2,217 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7852BBA55
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CBD2BBA57
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgKTXri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 18:47:38 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:42886 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbgKTXri (ORCPT
+        id S1728456AbgKTXsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 18:48:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbgKTXsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 18:47:38 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 28F422A688;
-        Fri, 20 Nov 2020 18:47:32 -0500 (EST)
-Date:   Sat, 21 Nov 2020 10:47:31 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        stable <stable@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH] m68k: Fix WARNING splat in pmac_zilog driver
-In-Reply-To: <CAMuHMdUS4wmUUtAqgjGc=WVcRC4RJ9nJhVnne89YzOUvd=CCvw@mail.gmail.com>
-Message-ID: <alpine.LNX.2.23.453.2011210955390.6@nippy.intranet>
-References: <b39102a332ae92c274fc8651acb4c52cfb9824a1.1605847196.git.fthain@telegraphics.com.au> <CAMuHMdUS4wmUUtAqgjGc=WVcRC4RJ9nJhVnne89YzOUvd=CCvw@mail.gmail.com>
+        Fri, 20 Nov 2020 18:48:12 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A662C0613CF;
+        Fri, 20 Nov 2020 15:48:12 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id a15so11267375edy.1;
+        Fri, 20 Nov 2020 15:48:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CyKAPxvMiczHwzRvYIDIEmLvOjkahE2iThwjzTWMcNM=;
+        b=QB5ILDjqliOWl7IGgOprLh/zl7eIyoqodmchzjouywoX5puth2HmkiHpTYN5w/TuIp
+         AmcPia8art/Cb26pTF2wDVVLYFBKlY1Jf5S6grkFtSqgSLxKI9n3rFAbBeL1eVLODeWr
+         yYf9ct7BEfC3hM8W4YP8374F68modUAKpEPN/GDb/6waYjjLZTcSKPjrvL/lSQwlEbPv
+         sieTRjYm6p+jrY4qg1TuXRz/B0WkYsD3twbZrzO9CCKYTOOzRsQPajoOKFHOKwPvgkGK
+         wQ6lDj+4iTchKWhsGL/qfo4zdmW7piSL9XFFAEsSClFxfS6o4q/fTidoOILedNcOfAhs
+         Pi9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CyKAPxvMiczHwzRvYIDIEmLvOjkahE2iThwjzTWMcNM=;
+        b=SzdNwm7Noxn5Nm3ccU8XDhiiMhqtJcM2H/geV8i8WSFUL9AkCWbpYW9jzLZMyysno7
+         FFHqQLTPcmPM2xTMAQg5xVxyPZvPYoNL8iM2yOCKqiHf1czQYCea4attj3jtfBufKEAT
+         0MnMm3ABKRBevtZmfY2MbraBxiOez3zfL5kKVACZCfLW5NR7lFuxnGhDgRLJlNVu/NX/
+         16Jtx6XG+G5icXZl3GRHqjJJar9SyjWZAhQiWWYqbJVAhm/h9vMRUGiaAetm0kXnuLPO
+         kxbyWsOwlJSSERr5JTLxOLGQpPbXtIbQf0ud3xsd2Eh2WrwO9KC5yev0j9gL0eflB7pz
+         9YsQ==
+X-Gm-Message-State: AOAM531BgZcoEtEjrsAPsoxDrIsQiK0++jnwfAZx1jlzmtbmlatYukUm
+        ob4N+x7QwSNmfLKBDt5zpWM=
+X-Google-Smtp-Source: ABdhPJz7xnL/Gpl4xnShu57nlQxmS2wMPwaiX+0mSoBISVtgfNmDPFqeD+rGz83ZVLQ9VeiELOCysg==
+X-Received: by 2002:a05:6402:b35:: with SMTP id bo21mr39651519edb.52.1605916090763;
+        Fri, 20 Nov 2020 15:48:10 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id gn41sm910465ejc.32.2020.11.20.15.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 15:48:09 -0800 (PST)
+Date:   Sat, 21 Nov 2020 01:48:08 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 12/12] net: dsa: microchip: ksz9477: add
+ periodic output support
+Message-ID: <20201120234808.q4qvxpuj6akuev6h@skbuf>
+References: <20201118203013.5077-1-ceggers@arri.de>
+ <20201118203013.5077-13-ceggers@arri.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118203013.5077-13-ceggers@arri.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020, Geert Uytterhoeven wrote:
+On Wed, Nov 18, 2020 at 09:30:13PM +0100, Christian Eggers wrote:
+> The KSZ9563 has a Trigger Output Unit (TOU) which can be used to
+> generate periodic signals.
+> 
+> The pulse length can be altered via a device attribute.
+> 
+> Tested on a Microchip KSZ9563 switch.
+> 
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> ---
+>  drivers/net/dsa/microchip/ksz9477_ptp.c | 197 +++++++++++++++++++++++-
+>  drivers/net/dsa/microchip/ksz_common.h  |   5 +
+>  2 files changed, 201 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/dsa/microchip/ksz9477_ptp.c b/drivers/net/dsa/microchip/ksz9477_ptp.c
+> index ce3fdc9a1f9e..3174574d52f6 100644
+> --- a/drivers/net/dsa/microchip/ksz9477_ptp.c
+> +++ b/drivers/net/dsa/microchip/ksz9477_ptp.c
+> @@ -90,6 +90,20 @@ static int ksz9477_ptp_tou_cycle_count_set(struct ksz_device *dev, u16 count)
+>  	return 0;
+>  }
+>  
+> +static int ksz9477_ptp_tou_pulse_verify(u64 pulse_ns)
+> +{
+> +	u32 data;
+> +
+> +	if (pulse_ns & 0x3)
+> +		return -EINVAL;
+> +
+> +	data = (pulse_ns / 8);
+> +	if (data != (data & TRIG_PULSE_WIDTH_M))
+> +		return -ERANGE;
+> +
+> +	return 0;
+> +}
+> +
+>  static int ksz9477_ptp_tou_pulse_set(struct ksz_device *dev, u32 pulse_ns)
+>  {
+>  	u32 data;
+> @@ -196,6 +210,7 @@ static int ksz9477_ptp_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
+>  	return ret;
+>  }
+>  
+> +static int ksz9477_ptp_restart_perout(struct ksz_device *dev);
+>  static int ksz9477_ptp_enable_pps(struct ksz_device *dev, int on);
+>  
+>  static int ksz9477_ptp_adjtime(struct ptp_clock_info *ptp, s64 delta)
+> @@ -241,6 +256,15 @@ static int ksz9477_ptp_adjtime(struct ptp_clock_info *ptp, s64 delta)
+>  	case KSZ_PTP_TOU_IDLE:
+>  		break;
+>  
+> +	case KSZ_PTP_TOU_PEROUT:
+> +		dev_info(dev->dev, "Restarting periodic output signal\n");
 
-> Hi Finn,
-> 
-> On Fri, Nov 20, 2020 at 5:51 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > Don't add platform resources that won't be used. This avoids a
-> > recently-added warning from the driver core, that can show up on a
-> > multi-platform kernel when !MACH_IS_MAC.
-> >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 0 PID: 0 at drivers/base/platform.c:224 platform_get_irq_optional+0x8e/0xce
-> > 0 is an invalid IRQ number
-> > Modules linked in:
-> > CPU: 0 PID: 0 Comm: swapper Not tainted 5.9.0-multi #1
-> > Stack from 004b3f04:
-> >         004b3f04 00462c2f 00462c2f 004b3f20 0002e128 004754db 004b6ad4 004b3f4c
-> >         0002e19c 004754f7 000000e0 00285ba0 00000009 00000000 004b3f44 ffffffff
-> >         004754db 004b3f64 004b3f74 00285ba0 004754f7 000000e0 00000009 004754db
-> >         004fdf0c 005269e2 004fdf0c 00000000 004b3f88 00285cae 004b6964 00000000
-> >         004fdf0c 004b3fac 0051cc68 004b6964 00000000 004b6964 00000200 00000000
-> >         0051cc3e 0023c18a 004b3fc0 0051cd8a 004fdf0c 00000002 0052b43c 004b3fc8
-> > Call Trace: [<0002e128>] __warn+0xa6/0xd6
-> >  [<0002e19c>] warn_slowpath_fmt+0x44/0x76
-> >  [<00285ba0>] platform_get_irq_optional+0x8e/0xce
-> >  [<00285ba0>] platform_get_irq_optional+0x8e/0xce
-> >  [<00285cae>] platform_get_irq+0x12/0x4c
-> >  [<0051cc68>] pmz_init_port+0x2a/0xa6
-> >  [<0051cc3e>] pmz_init_port+0x0/0xa6
-> >  [<0023c18a>] strlen+0x0/0x22
-> >  [<0051cd8a>] pmz_probe+0x34/0x88
-> >  [<0051cde6>] pmz_console_init+0x8/0x28
-> >  [<00511776>] console_init+0x1e/0x28
-> >  [<0005a3bc>] printk+0x0/0x16
-> >  [<0050a8a6>] start_kernel+0x368/0x4ce
-> >  [<005094f8>] _sinittext+0x4f8/0xc48
-> > random: get_random_bytes called from print_oops_end_marker+0x56/0x80 with crng_init=0
-> > ---[ end trace 392d8e82eed68d6c ]---
-> >
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > Cc: Paul Mackerras <paulus@samba.org>
-> > Cc: Joshua Thompson <funaho@jurai.org>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Jiri Slaby <jirislaby@kernel.org>
-> > Cc: stable@vger.kernel.org # v5.8+
-> > References: commit a85a6c86c25b ("driver core: platform: Clarify that IRQ 0 is invalid")
-> > Reported-by: Laurent Vivier <laurent@vivier.eu>
-> > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> > ---
-> > The global platform_device structs provide the equivalent of a direct
-> > search of the OpenFirmware tree, for platforms that don't have OF.
-> > The purpose of that search is discussed in the comments in pmac_zilog.c:
-> >
-> >          * First, we need to do a direct OF-based probe pass. We
-> >          * do that because we want serial console up before the
-> >          * macio stuffs calls us back
-> >
-> > The actual platform bus matching takes place later, with a module_initcall,
-> > following the usual pattern.
-> 
-> I think it would be good for this explanation to be part of the
-> actual patch description above.
-> 
+Isn't this a bit too verbose, or is there something for the user to be
+concerned about?
 
-Thanks for your review.
+> +
+> +		ret = ksz9477_ptp_restart_perout(dev);
+> +		if (ret)
+> +			goto error_return;
+> +
+> +		break;
+> +
+>  	case KSZ_PTP_TOU_PPS:
+>  		dev_info(dev->dev, "Restarting PPS\n");
+>  
+> @@ -358,6 +382,15 @@ static int ksz9477_ptp_settime(struct ptp_clock_info *ptp,
+>  	case KSZ_PTP_TOU_IDLE:
+>  		break;
+>  
+> +	case KSZ_PTP_TOU_PEROUT:
+> +		dev_info(dev->dev, "Restarting periodic output signal\n");
+> +
+> +		ret = ksz9477_ptp_restart_perout(dev);
+> +		if (ret)
+> +			goto error_return;
+> +
+> +		break;
+> +
+>  	case KSZ_PTP_TOU_PPS:
+>  		dev_info(dev->dev, "Restarting PPS\n");
+>  
+> @@ -377,6 +410,159 @@ static int ksz9477_ptp_settime(struct ptp_clock_info *ptp,
+>  	return ret;
+>  }
+>  
+> +static int ksz9477_ptp_configure_perout(struct ksz_device *dev, u32 cycle_width_ns,
 
-I take that explanation as read because it was fundamental to the changes 
-I made to pmac_zilog.c back in 2009 with commit ec9cbe09899e ("pmac-zilog: 
-add platform driver").
+Watch out for 80 characters, please!
 
-IMO, being that it isn't news, it doesn't belong in the changelog. 
-However, I agree that it needs to be documented. How about I add a comment 
-to pmac_zilog.c?
+> +					u16 cycle_count, u32 pulse_width_ns,
+> +					struct timespec64 const *target_time)
+> +{
+> +	int ret;
+> +	u32 trig_ctrl;
 
-> > --- a/arch/m68k/mac/config.c
-> > +++ b/arch/m68k/mac/config.c
-> > @@ -777,16 +777,12 @@ static struct resource scc_b_rsrcs[] = {
-> >  struct platform_device scc_a_pdev = {
-> >         .name           = "scc",
-> >         .id             = 0,
-> > -       .num_resources  = ARRAY_SIZE(scc_a_rsrcs),
-> > -       .resource       = scc_a_rsrcs,
-> >  };
-> >  EXPORT_SYMBOL(scc_a_pdev);
-> >
-> >  struct platform_device scc_b_pdev = {
-> >         .name           = "scc",
-> >         .id             = 1,
-> > -       .num_resources  = ARRAY_SIZE(scc_b_rsrcs),
-> > -       .resource       = scc_b_rsrcs,
-> >  };
-> >  EXPORT_SYMBOL(scc_b_pdev);
-> >
-> > @@ -813,10 +809,15 @@ static void __init mac_identify(void)
-> >
-> >         /* Set up serial port resources for the console initcall. */
-> >
-> > -       scc_a_rsrcs[0].start = (resource_size_t) mac_bi_data.sccbase + 2;
-> > -       scc_a_rsrcs[0].end   = scc_a_rsrcs[0].start;
-> > -       scc_b_rsrcs[0].start = (resource_size_t) mac_bi_data.sccbase;
-> > -       scc_b_rsrcs[0].end   = scc_b_rsrcs[0].start;
-> > +       scc_a_rsrcs[0].start     = (resource_size_t)mac_bi_data.sccbase + 2;
-> > +       scc_a_rsrcs[0].end       = scc_a_rsrcs[0].start;
-> > +       scc_a_pdev.num_resources = ARRAY_SIZE(scc_a_rsrcs);
-> > +       scc_a_pdev.resource      = scc_a_rsrcs;
-> > +
-> > +       scc_b_rsrcs[0].start     = (resource_size_t)mac_bi_data.sccbase;
-> > +       scc_b_rsrcs[0].end       = scc_b_rsrcs[0].start;
-> > +       scc_b_pdev.num_resources = ARRAY_SIZE(scc_b_rsrcs);
-> > +       scc_b_pdev.resource      = scc_b_rsrcs;
-> >
-> >         switch (macintosh_config->scc_type) {
-> >         case MAC_SCC_PSC:
-> > diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
-> > index 96e7aa479961..95abdb305d67 100644
-> > --- a/drivers/tty/serial/pmac_zilog.c
-> > +++ b/drivers/tty/serial/pmac_zilog.c
-> > @@ -1697,18 +1697,17 @@ extern struct platform_device scc_a_pdev, scc_b_pdev;
-> >
-> >  static int __init pmz_init_port(struct uart_pmac_port *uap)
-> >  {
-> > -       struct resource *r_ports;
-> > -       int irq;
-> > +       struct resource *r_ports, *r_irq;
-> >
-> >         r_ports = platform_get_resource(uap->pdev, IORESOURCE_MEM, 0);
-> > -       irq = platform_get_irq(uap->pdev, 0);
-> > -       if (!r_ports || irq <= 0)
-> > +       r_irq = platform_get_resource(uap->pdev, IORESOURCE_IRQ, 0);
-> > +       if (!r_ports || !r_irq)
-> >                 return -ENODEV;
-> >
-> >         uap->port.mapbase  = r_ports->start;
-> >         uap->port.membase  = (unsigned char __iomem *) r_ports->start;
-> >         uap->port.iotype   = UPIO_MEM;
-> > -       uap->port.irq      = irq;
-> > +       uap->port.irq      = r_irq->start;
-> >         uap->port.uartclk  = ZS_CLOCK;
-> >         uap->port.fifosize = 1;
-> >         uap->port.ops      = &pmz_pops;
-> 
-> Given the resources are no longer present on !MAC, just doing
-> 
->             r_ports = platform_get_resource(uap->pdev, IORESOURCE_MEM, 0);
->     +       if (!r_ports)
->     +               return -ENODEV;
->             irq = platform_get_irq(uap->pdev, 0);
-> 
-> should be sufficient?
-> 
+Reverse Christmas tree.
 
-I think your suggestion is shorter but not better. Commit a85a6c86c25b 
-(which introduced the WARNING) suggests that testing for irq == 0 is 
-undesirable. My patch resolves that.
+> +
+> +	/* Enable notify, set rising edge, set periodic pattern */
+> +	trig_ctrl = TRIG_NOTIFY | (TRIG_POS_PERIOD << TRIG_PATTERN_S);
+> +	ret = ksz_write32(dev, REG_TRIG_CTRL__4, trig_ctrl);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = ksz9477_ptp_tou_cycle_width_set(dev, cycle_width_ns);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ksz9477_ptp_tou_cycle_count_set(dev,  cycle_count);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = ksz9477_ptp_tou_pulse_set(dev, pulse_width_ns);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = ksz9477_ptp_tou_target_time_set(dev, target_time);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +static int ksz9477_ptp_enable_perout(struct ksz_device *dev,
+> +				     struct ptp_perout_request const *perout_request, int on)
+> +{
+> +	u32 gpio_stat0;
+> +	u64 cycle_width_ns;
+> +	int ret;
+> +
+> +	if (dev->ptp_tou_mode != KSZ_PTP_TOU_PEROUT && dev->ptp_tou_mode != KSZ_PTP_TOU_IDLE)
+> +		return -EBUSY;
+> +
+> +	ret = ksz9477_ptp_tou_reset(dev, 0);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (!on) {
+> +		dev->ptp_tou_mode = KSZ_PTP_TOU_IDLE;
+> +		return 0;  /* success */
+> +	}
+> +
+> +	dev->ptp_perout_target_time_first.tv_sec  = perout_request->start.sec;
+> +	dev->ptp_perout_target_time_first.tv_nsec = perout_request->start.nsec;
+> +
+> +	dev->ptp_perout_period.tv_sec = perout_request->period.sec;
+> +	dev->ptp_perout_period.tv_nsec = perout_request->period.nsec;
+> +
+> +	cycle_width_ns = timespec64_to_ns(&dev->ptp_perout_period);
+> +	if ((cycle_width_ns & GENMASK(31, 0)) != cycle_width_ns)
+> +		return -EINVAL;
+> +
+> +	if (perout_request->flags & PTP_PEROUT_DUTY_CYCLE) {
+> +		u64 value = perout_request->on.sec * NSEC_PER_SEC +
+> +			    perout_request->on.nsec;
+> +
+> +		ret = ksz9477_ptp_tou_pulse_verify(value);
+> +		if (ret)
+> +			return ret;
+> +
+> +		dev->ptp_perout_pulse_width_ns = value;
+> +	}
 
-As a bonus, by simply testing for the existence of both resources, I've 
-addressed the mistake I made when I originally added the slick 
-platform_get_irq() call instead of consistently using 
-platform_get_resource().
+It is not guaranteed that user space will set this flag. Shouldn't you
+assign a default value for the pulse width? I don't know, half the
+period should be a good default.
 
-platform_get_irq() hides a bunch of architecture-specific logic that is 
-not appropriate here. The WARNING itself is a good example of that kind of 
-logic.
+Also, please reject PTP_PEROUT_ONE_SHOT and PTP_PEROUT_PHASE, since you
+don't do anything with them, but user space might be led into believing
+otherwise.
 
-Do you agree? If so, I will add this explanation to the commit log.
+> +
+> +	ret = ksz9477_ptp_configure_perout(dev, cycle_width_ns,
+> +					   dev->ptp_perout_cycle_count,
+> +					   dev->ptp_perout_pulse_width_ns,
+> +					   &dev->ptp_perout_target_time_first);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Activate trigger unit */
+> +	ret = ksz9477_ptp_tou_start(dev, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Check error flag:
+> +	 * - the ACTIVE flag is NOT cleared an error!
+> +	 */
+> +	ret = ksz_read32(dev, REG_PTP_TRIG_STATUS__4, &gpio_stat0);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (gpio_stat0 & (1 << (0 + TRIG_ERROR_S))) {
 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
+What is the role of this "0 +" term here?
+
+> +		dev_err(dev->dev, "%s: Trigger unit0 error!\n", __func__);
+> +		ret = -EIO;
+> +		/* Unit will be reset on next access */
+> +		return ret;
+> +	}
+> +
+> +	dev->ptp_tou_mode = KSZ_PTP_TOU_PEROUT;
+> +	return 0;
+> +}
