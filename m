@@ -2,61 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959BF2BA0A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 03:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123592BA0AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgKTCzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 21:55:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
+        id S1726224AbgKTC6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 21:58:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgKTCzA (ORCPT
+        with ESMTP id S1725890AbgKTC6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 21:55:00 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C9EC0613CF;
-        Thu, 19 Nov 2020 18:55:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jvn+KMDsmyCAOnl/eEDj/eaq4/3pkp2Gxkg1M/4pZI8=; b=i7WxRkyicXc6O7brzAVt9euJqe
-        xVEYhNtsX+CyrrZn1V9r2jBaqTzeEIEr1Wl8gcNsZSsPBVGLMBKLElxsNihdHmkKwK7IfxomLu/D3
-        k90+JnnsxS4TAwx0GQzE49IU9t/bzgRAaXE5MMFjWhHCsN7nWU9ov1HN7qpVz7p+QaD9yPAthQZrh
-        b8X1oBRPsZ17dqZbrw9owqEHTkIA4rnbBcePv/7srH3gkjgnEE/41prmMxMQmpj8xpZxydBuJ77CY
-        tGyHb2em2SoD0LML6yOeInxpoHV0gOMjQIuoHAAVKbWJtqzfuAAbIDf2lSOr8JQ7cmqk0YB6aES/h
-        KkuveGDA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kfwZd-00018i-9A; Fri, 20 Nov 2020 02:54:57 +0000
-Date:   Fri, 20 Nov 2020 02:54:57 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Ming Lei <ming.lei@redhat.com>, linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Thu, 19 Nov 2020 21:58:06 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF12C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 18:58:06 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id i13so6051621pgm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 18:58:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LEquB2e4ILjHkuvoO1HDaYbpd0GtS6EX4u7NzQ82bGM=;
+        b=qwaRz9PzkgumlOLi6+U/YB2GvWe8NTcbyeFyYcl1tx+ZCOb8wx26LgiYUsITReXuI5
+         AKdC25sqEkLSn+pn+ghWdehXOkTQzQKLKN8rU+9phrz8+lyLEw5IcqeXrlXq8Un1W9mk
+         x6rut2m2uUY2JeDfr+//mz/yfN0VEFWhr3I4oJ+F2rgfdRMMuI4+6rOWQBWk9D4O/P1G
+         JYha8RQW+gTPv0mpu8zkUYkfHXAr28zd+HqvrKGKECEH2hvZnprIt6Ydih80X8M0+JvE
+         nWRg4rUMzDMKqVBPHm4bl5kQDyHa8KAblvxxlj2T44hiCkSiZnezGB6VV0xdTSxIoZQA
+         yRUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LEquB2e4ILjHkuvoO1HDaYbpd0GtS6EX4u7NzQ82bGM=;
+        b=ik/G7LVH+djXLI27D80LjpjoMKjvavqdZLb3Gxuh2Lj8Y/0o0nfK/yxSNL0Ik1n6Q5
+         sQEhakfpctfvgOP13Fed+pE4d1NMM+ohD9nq3+DN7hKa13cSf+0058sPkhbnCZIRXrAF
+         ZqU1dviXs2pcpKA3KBeIQEtSO+vPpv3s+1uNtOTWH5v/RlEpfFB34FHyJubPwY9Jgpn0
+         6nNpWx0OYe4xM5vdUVySLMXvLfLue6c3m2M8YVMdOVc3KqmkEC3PTmtPjjUiRgelgBJz
+         Qb4l8N+E6tcWv55jFQ+QyDNwwU1nKoGa8e4ROwo3b0DNJeBSjHCS2rgBPBBtdbIuthBR
+         xVXA==
+X-Gm-Message-State: AOAM531080IiQAfoM8IUI43QaUoZfcxnmrTkPI69BiktNRODTJcEyHjZ
+        ul3yqa53ioqyVNiyzlSSERk=
+X-Google-Smtp-Source: ABdhPJzV6Iqey8/uSJdBfUMohg+eIQvpY6Ifki/IcYVuYzXRJbV3GpliRlXIFEnM/YSdiNCpW4kZSw==
+X-Received: by 2002:a63:4956:: with SMTP id y22mr15351360pgk.266.1605841085625;
+        Thu, 19 Nov 2020 18:58:05 -0800 (PST)
+Received: from bobo.ozlabs.ibm.com (27-32-36-31.tpgi.com.au. [27.32.36.31])
+        by smtp.gmail.com with ESMTPSA id i130sm1181212pgc.7.2020.11.19.18.58.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 18:58:05 -0800 (PST)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anton Vorontsov <anton.vorontsov@linaro.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] iov_iter: optimise iov_iter_npages for bvec
-Message-ID: <20201120025457.GM29991@casper.infradead.org>
-References: <cover.1605827965.git.asml.silence@gmail.com>
- <ab04202d0f8c1424da47251085657c436d762785.1605827965.git.asml.silence@gmail.com>
- <20201120012017.GJ29991@casper.infradead.org>
- <35d5db17-f6f6-ec32-944e-5ecddcbcb0f1@gmail.com>
- <20201120022200.GB333150@T590>
- <e70a3c05-a968-7802-df81-0529eaa7f7b4@gmail.com>
+Subject: [PATCH 0/2] powerpc/64s: fix for CPU hotplug vs mm_cpumask bug
+Date:   Fri, 20 Nov 2020 12:57:55 +1000
+Message-Id: <20201120025757.325930-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e70a3c05-a968-7802-df81-0529eaa7f7b4@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 02:25:08AM +0000, Pavel Begunkov wrote:
-> On 20/11/2020 02:22, Ming Lei wrote:
-> > iov_iter_npages(bvec) still can be improved a bit by the following way:
-> 
-> Yep, was doing exactly that, +a couple of other places that are in my way.
+This fixes a race in powerpc mm_cpumask code, I hope the core kernel
+patch looks okay and we could take it through the powerpc tree with
+an ack from someone (Peter or Thomas, perhaps?)
 
-Are you optimising the right thing here?  Assuming you're looking at
-the one in do_blockdev_direct_IO(), wouldn't we be better off figuring
-out how to copy the bvecs directly from the iov_iter into the bio
-rather than calling dio_bio_add_page() for each page?
+Thanks,
+Nick
+
+Nicholas Piggin (2):
+  kernel/cpu: add arch override for clear_tasks_mm_cpumask() mm handling
+  powerpc/64s: Trim offlined CPUs from mm_cpumasks
+
+ arch/powerpc/include/asm/book3s/64/mmu.h     | 12 ++++++++++++
+ arch/powerpc/mm/book3s64/mmu_context.c       | 20 ++++++++++++++++++++
+ arch/powerpc/platforms/powermac/smp.c        |  2 ++
+ arch/powerpc/platforms/powernv/smp.c         |  3 +++
+ arch/powerpc/platforms/pseries/hotplug-cpu.c |  3 +++
+ kernel/cpu.c                                 |  6 +++++-
+ 6 files changed, 45 insertions(+), 1 deletion(-)
+
+-- 
+2.23.0
+
