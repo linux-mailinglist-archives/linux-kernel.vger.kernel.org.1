@@ -2,120 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363F02BA2D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA102BA2D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgKTHGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:06:47 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:34642 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbgKTHGr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:06:47 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AK76g0p073306;
-        Fri, 20 Nov 2020 01:06:42 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605856002;
-        bh=4ZnHtj3JkqJd6wTi9h6QLIgdwNG0j6oy+5LGrYhIv14=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=jSrsHXuWEl6MCckHdxtlTjaltwI0sQtkD8dXoAE/xX3vWfJNduviFQ76LUEzDe2Wl
-         YhtNCsFibTa5WSN8Di82KGVFUR01FDPILcY/gl1tOu7QV3ld3Q/8cY/wF/RN73XZ0b
-         ErnBmeI6LUYd0E5CADfzq9sNi0l+EJIFwYnR51C4=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AK76g2s039565
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Nov 2020 01:06:42 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 20
- Nov 2020 01:06:41 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 20 Nov 2020 01:06:41 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AK76dfi041154;
-        Fri, 20 Nov 2020 01:06:40 -0600
-Subject: Re: [PATCH 2/2] arm64: dts: ti: k3-j7200-common-proc-board: Correct
- the name of io expander on main_i2c1
-To:     Vignesh Raghavendra <vigneshr@ti.com>, <nm@ti.com>,
-        <t-kristo@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nsekhar@ti.com>
-References: <20201119132627.8041-1-peter.ujfalusi@ti.com>
- <20201119132627.8041-3-peter.ujfalusi@ti.com>
- <dc2f740a-e53e-d612-0ec7-e69bf8228e71@ti.com>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <30c98749-5893-ffa4-6351-ee805b93bcb6@ti.com>
-Date:   Fri, 20 Nov 2020 09:07:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726362AbgKTHI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 02:08:27 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:39233 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725818AbgKTHI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 02:08:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605856105; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=xhUyB64LZP19yOoIWdbZSf39K15d0YpoLNAdjUAmtwI=; b=RTa2rtAQLSL2rf2U/Cu/xTtL6G0yKlkpwLKwKLdrHGctOlCeSEHJpZKDptPZ1htHlAkVRhbF
+ d6UWyWpEdD1gRIWKXkpp8UVj6f0m0Wqhcusp1FcxcRQMc0hr6GkUBWBmusloJzp3Ii2Wo5qN
+ nz9w9icsVw0n1uP9FoNucv07vHE=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fb76b661b731a5d9c1358fd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Nov 2020 07:08:22
+ GMT
+Sender: zhenhuah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7D25DC43463; Fri, 20 Nov 2020 07:08:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zhenhuah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DFB71C433ED;
+        Fri, 20 Nov 2020 07:08:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DFB71C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zhenhuah@codeaurora.org
+Date:   Fri, 20 Nov 2020 15:08:06 +0800
+From:   Zhenhua Huang <zhenhuah@codeaurora.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     vjitta@codeaurora.org, linux-mm <linux-mm@kvack.org>,
+        glider@google.com, Dan Williams <dan.j.williams@intel.com>,
+        broonie@kernel.org, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yogesh Lal <ylal@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>, tingwei@codeaurora.org
+Subject: Re: [PATCH] lib: stackdepot: Add support to configure STACK_HASH_SIZE
+Message-ID: <20201120070450.GA28239@codeaurora.org>
+References: <1603372546-27118-1-git-send-email-vjitta@codeaurora.org>
+ <CAEwNFnBvxu7+oNkcO9D70OFrxQXswcJG4OvDPyzNf7kpXfpSuw@mail.gmail.com>
+ <20201119033317.GA5128@codeaurora.org>
+ <20201120050423.GE3113267@google.com>
 MIME-Version: 1.0
-In-Reply-To: <dc2f740a-e53e-d612-0ec7-e69bf8228e71@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120050423.GE3113267@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 19/11/2020 18.10, Vignesh Raghavendra wrote:
+On Fri, Nov 20, 2020 at 01:04:23PM +0800, Minchan Kim wrote:
+> On Thu, Nov 19, 2020 at 11:34:32AM +0800, Zhenhua Huang wrote:
+> > On Wed, Nov 04, 2020 at 07:27:03AM +0800, Minchan Kim wrote:
+> > > Sorry if this mail corrupts the mail thread or had heavy mangling
+> > > since I lost this mail from my mailbox so I am sending this mail by
+> > > web gmail.
+> > > 
+> > > On Thu, Oct 22, 2020 at 10:18 AM <vjitta@codeaurora.org> wrote:
+> > > >
+> > > > From: Yogesh Lal <ylal@codeaurora.org>
+> > > >
+> > > > Use STACK_HASH_ORDER_SHIFT to configure STACK_HASH_SIZE.
+> > > >
+> > > > Aim is to have configurable value for  STACK_HASH_SIZE,
+> > > > so depend on use case one can configure it.
+> > > >
+> > > > One example is of Page Owner, default value of
+> > > > STACK_HASH_SIZE lead stack depot to consume 8MB of static memory.
+> > > > Making it configurable and use lower value helps to enable features
+> like
+> > > > CONFIG_PAGE_OWNER without any significant overhead.
+> > > >
+> > > > Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
+> > > > Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
+> > > > Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+> > > > ---
+> > > >  lib/Kconfig      | 9 +++++++++
+> > > >  lib/stackdepot.c | 3 +--
+> > > >  2 files changed, 10 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/lib/Kconfig b/lib/Kconfig
+> > > > index 18d76b6..b3f8259 100644
+> > > > --- a/lib/Kconfig
+> > > > +++ b/lib/Kconfig
+> > > > @@ -651,6 +651,15 @@ config STACKDEPOT
+> > > >         bool
+> > > >         select STACKTRACE
+> > > >
+> > > > +config STACK_HASH_ORDER_SHIFT
+> > > > +       int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
+> > > > +       range 12 20
+> > > > +       default 20
+> > > > +       depends on STACKDEPOT
+> > > > +       help
+> > > > +        Select the hash size as a power of 2 for the stackdepot
+> hash 
+> > > > table.
+> > > > +        Choose a lower value to reduce the memory impact.
+> > > > +
+> > > >  config SBITMAP
+> > > >         bool
+> > > >
+> > > > diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> > > > index 2caffc6..413c20b 100644
+> > > > --- a/lib/stackdepot.c
+> > > > +++ b/lib/stackdepot.c
+> > > > @@ -142,8 +142,7 @@ static struct stack_record
+> *depot_alloc_stack(unsigned 
+> > > > long *entries, int size,
+> > > >         return stack;
+> > > >  }
+> > > >
+> > > > -#define STACK_HASH_ORDER 20
+> > > > -#define STACK_HASH_SIZE (1L << STACK_HASH_ORDER)
+> > > > +#define STACK_HASH_SIZE (1L << CONFIG_STACK_HASH_ORDER_SHIFT)
+> > > >  #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
+> > > >  #define STACK_HASH_SEED 0x9747b28c
+> > > >
+> > > > --
+> > > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> member 
+> > > > of Code Aurora Forum, hosted by The Linux Foundation
+> > > > 2.7.4
+> > > >
+> > > 
+> > > 1. When we don't use page_owner, we don't want to waste any memory for
+> > > stackdepot hash array.
+> > > 2. When we use page_owner, we want to have reasonable stackdeport hash
+> array
+> > > 
+> > > With this configuration, it couldn't meet since we always need to
+> > > reserve a reasonable size for the array.
+> > > Can't we make the hash size as a kernel parameter?
+> > > With it, we could use it like this.
+> > > 
+> > > 1. page_owner=off, stackdepot_stack_hash=0 -> no more wasted memory
+> > > when we don't use page_owner
+> > > 2. page_owner=on, stackdepot_stack_hash=8M -> reasonable hash size
+> > > when we use page_owner.
+> > Seems we have other users like kasan, and dma_buf_ref which we
+> introduced.
+> > Also we can't guarantee there will not be any other users for
+> stackdepot, so
+> > it's better we not depend on only page owner?
 > 
-> 
-> On 11/19/20 6:56 PM, Peter Ujfalusi wrote:
->> J7200 main_i2c1 is connected to the i2c bus on the CPB marked as main_i2c3
->>
->> The i2c1 devices on the CPB are _not_ connected to the SoC, they are not
->> usable with the J7200 SOM.
->>
->> Correct the expander name from exp4 to exp3 and at the same time add the
->> line names as well.
->>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> ---
-> 
-> Yes, the schematics call this expander as exp3. Thanks for the fix
+> I didn't mean to make it page_owner dependent. What I suggested is just
+> to define kernel parameter for stackdeport hash size so admin could
+> override it at right size when we really need it.
+OK, Thanks Minchan for explanation. It's a good idea then, admin needs to
+consider all users but, especailly when setting it to 0...
 
-The CPB is the same for both j721e and j7200 SOMs.
-I'll send v2 with a small comment block to explain this.
-
-> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-> 
->>  arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 5 ++++-
->>  1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
->> index 2721137d8943..83e043c65f81 100644
->> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
->> @@ -159,11 +159,14 @@ &main_i2c1 {
->>  	pinctrl-0 = <&main_i2c1_pins_default>;
->>  	clock-frequency = <400000>;
->>  
->> -	exp4: gpio@20 {
->> +	exp3: gpio@20 {
->>  		compatible = "ti,tca6408";
->>  		reg = <0x20>;
->>  		gpio-controller;
->>  		#gpio-cells = <2>;
->> +		gpio-line-names = "CODEC_RSTz", "CODEC_SPARE1", "UB926_RESETn",
->> +				  "UB926_LOCK", "UB926_PWR_SW_CNTRL",
->> +				  "UB926_TUNER_RESET", "UB926_GPIO_SPARE", "";
-> 
-> I assume these lines have same meaning in J721e and J7200? If so, then
-> no issues.
-> 
->>  	};
->>  };
->>  
->>
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Thanks,
+Zhenhua
