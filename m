@@ -2,148 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023472BA690
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67DC92BA696
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727239AbgKTJu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:50:59 -0500
-Received: from foss.arm.com ([217.140.110.172]:45952 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725809AbgKTJu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:50:58 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FF871042;
-        Fri, 20 Nov 2020 01:50:57 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BD123F70D;
-        Fri, 20 Nov 2020 01:50:54 -0800 (PST)
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-To:     Marc Zyngier <maz@kernel.org>, Andrew Jones <drjones@redhat.com>
-Cc:     Peter Maydell <peter.maydell@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Haibo Xu <Haibo.Xu@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        James Morse <james.morse@arm.com>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>
-References: <20201119153901.53705-1-steven.price@arm.com>
- <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
- <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
- <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
-Date:   Fri, 20 Nov 2020 09:50:53 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727327AbgKTJvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:51:55 -0500
+Received: from mail-eopbgr80070.outbound.protection.outlook.com ([40.107.8.70]:56197
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726118AbgKTJvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:51:54 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FarNGhUif77UWGzvf0FsW9K1cXA4QWLs87F7s2L7U3epvP6cuRbYC+/zFKJ81V4XedaLWS49R4PcIsuTBZzTYr82Oy3qMGqHGGhaPpewunTmmgCcjIIVRBgmF6JQboSw6hCrnaCDaXw2yP8DNuyZIJggOBEkQaQ1VpEfUcJQiijQkkdMxJNuJDNlN8q8cKG4YQgAfF1ZNWZmGvv35REErgZv4Xvr1WZ+ZUHjyb8+ZjZddcrpAXtnVpkRCfOasYbLRHO7VZnq7iHHCA+akwiWZIhWeSfgzxNk5vrelSUlLkqXRSpCNVad8CRcdW78dj8g9Tq9kz2lzUeHSfNT8uT97Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KJXQILvcV1qtNYycEV8I698uJwftNSt9q9ELOCoec9g=;
+ b=cWynsro6MAJuGpgxZSSvkbQAFq+qFkf01DQ0fiWlkPt/TkCbFUbFza+T6jRGNLzmGa968RR8uYtkPGi2t4iXtxHumRgs2nzVrJiOxUZQ6UQ/PkHcXTed12m2l5i0FQFSN6mOUmES7kQR4Omq8vOMhcLn6oC6vSTB3Uf4F8+STAW6yBu828jpTjer+6HutdhCufn/lC7O7RSUsIYLYdxHMaGYQblgVh1zZ25VuGuonovCE2zOrWblg9RS3p6aaIv/iDFzY2ipYVljqajDcPFyE4jEKWZBtjx2o3iyg/qQm8fyWauA2sWIk7mRuNqC90MyXxtewkrXuRvyysbThSttzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KJXQILvcV1qtNYycEV8I698uJwftNSt9q9ELOCoec9g=;
+ b=NnQcIJfXZB5+tieTPeuVNwoS4BjRcRcZZCDL86L144AzyNbW6DZdawDYOTELY9vghM5NdjVW0ifPEw+/+y8yzR7HxY/qPsTt143lbNcq08cgyicIAbumSFavH+D+j3nb5Nxtps2obZNTGuFPvHOLAYau1MzhJ2Dz5tmpuwZl3c8=
+Received: from HE1PR04MB3196.eurprd04.prod.outlook.com (2603:10a6:7:21::31) by
+ HE1PR0401MB2314.eurprd04.prod.outlook.com (2603:10a6:3:24::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3589.22; Fri, 20 Nov 2020 09:51:49 +0000
+Received: from HE1PR04MB3196.eurprd04.prod.outlook.com
+ ([fe80::a5f9:47b0:c473:7ddf]) by HE1PR04MB3196.eurprd04.prod.outlook.com
+ ([fe80::a5f9:47b0:c473:7ddf%7]) with mapi id 15.20.3564.028; Fri, 20 Nov 2020
+ 09:51:49 +0000
+From:   Ashish Kumar <ashish.kumar@nxp.com>
+To:     Michael Walle <michael@walle.cc>
+CC:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>,
+        "Y.b. Lu" <yangbo.lu@nxp.com>, Xiaowei Bao <xiaowei.bao@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: RE: [EXT] Re: [PATCH v3 4/9] arm64: dts: ls1028a: use constants in
+ the clockgen phandle
+Thread-Topic: [EXT] Re: [PATCH v3 4/9] arm64: dts: ls1028a: use constants in
+ the clockgen phandle
+Thread-Index: AQHWvyD6jxkZgeSzMUWX/NSrBeW1EKnQxs7Q
+Date:   Fri, 20 Nov 2020 09:51:49 +0000
+Message-ID: <HE1PR04MB319630198F85E59B2547046095FF0@HE1PR04MB3196.eurprd04.prod.outlook.com>
+References: <20201108185113.31377-1-michael@walle.cc>
+ <20201108185113.31377-5-michael@walle.cc>
+ <HE1PR04MB319684750CF7D1920DCCCDD095FF0@HE1PR04MB3196.eurprd04.prod.outlook.com>
+ <08b751d01cfc82fcfe425833793dcda9@walle.cc>
+In-Reply-To: <08b751d01cfc82fcfe425833793dcda9@walle.cc>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: walle.cc; dkim=none (message not signed)
+ header.d=none;walle.cc; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [122.177.30.104]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6170d506-4acb-42dd-6a15-08d88d39e6ad
+x-ms-traffictypediagnostic: HE1PR0401MB2314:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HE1PR0401MB2314D987C279E0AA7E83B3E595FF0@HE1PR0401MB2314.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IhIFRrdkCbAJB7SOdbW0KIcFSclQCu3NorKSAAHHjk15/GCM7HgUwlfCGxGDAOENzUINoNnobIhJn3qrLmq8M0ciwlrnnK6JyyZl+dz0LQjh3LpoHR4m33lscdS9+isgGxekPZRtEOlf3ybmyXOJVVT31VMcXCXyRgEkArZT8p7rAn8jcZgr+xAA/eFY3qEKgW1maAucbIUqtC9JwsemFzL5bK/m+auCYIs4YPKhV36geyfb6gC1Q+qCQRYka4LpRog56kLRjKCxENyBqdb3xT2vHCHdL9fcGiHe7uVtMAm3d6RxtI8LM9J7WcExSF9bFQz7UaxH7xI4ln1SMNbxzcCdPF67XgxLlWsqlT4TrZBCH+NTB6Hsh3tf/W0t3DswMGavUIYQPHBEZ7biV/hEXg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR04MB3196.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(136003)(346002)(39860400002)(8936002)(52536014)(55016002)(6506007)(966005)(53546011)(66446008)(76116006)(64756008)(2906002)(66476007)(66556008)(66946007)(26005)(316002)(5660300002)(9686003)(186003)(55236004)(44832011)(7696005)(4326008)(33656002)(478600001)(4001150100001)(6916009)(71200400001)(8676002)(83380400001)(86362001)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: dEkvIc0Bb5dQV7gsfqC8WLOjGEMXRvRgTj6WnlPlVrQOHAQLogEUtAGhQ6hbMunGgPQJk5//CeZLMHyCYU5g4RQJG5bTbCgJv6yRBayQHiAJLIhzEKZx5BdGa4rORhHZPENcQd+CUTtEb6tZ6UR/sA+02XeW5h7xnuzxl2jYpxSuuRDq9k+0Dx5qi2jygmxMqqGSZHjp1wtd0mXyUOXIFMQzWpUZYhBYMlG/Cyob3tRo/MUxkfrka3g3k2Vpvbb7y0MKgXHSFpJ1VMP/PoCwkLDAvdeaWrbPTOBWt7ONWh4pNE/wRNKriuPQNv8K3VzLcpSdGUmHDPQGrdEN4BBE0pap00KzadeftkMhbFcjDxkYGtPojTIR1rJmPUZQQYkKnpJh6WQVsWYCq6imBYrsJlFcKp0M80EJZV8zDblnfRvodrWeWJ8jjJDUMSWndIUZRSwkMGMI8NUXZ8mEOFc4CCqwuyWpYyFp3KKiWK/CvhDu2VmBBO+HW8gpsj7F342QPpLA50bYmDZPMtrxg0+A9ZLmD6mJGDu8dW5L3NxMUzvJw38kvt/MeiEeQltknWpkooabGIOB2FclpDswrWAihDhwuB8fO/ej+hD5O2w16LnmmgPo1RfY+K1ZA7D+iT+UgvuV4hMV+ZLSXapWvkW0Yw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR04MB3196.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6170d506-4acb-42dd-6a15-08d88d39e6ad
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2020 09:51:49.4662
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8FwO5OrX3xD/AE4IwcnoCZecpO+nrZZIljQUJV/mfeVkAMJSJcsgKPtr53ZSgcPGYa6NylqUj6TYmrAdMMbnIQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0401MB2314
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/11/2020 19:11, Marc Zyngier wrote:
-> On 2020-11-19 18:42, Andrew Jones wrote:
->> On Thu, Nov 19, 2020 at 03:45:40PM +0000, Peter Maydell wrote:
->>> On Thu, 19 Nov 2020 at 15:39, Steven Price <steven.price@arm.com> wrote:
->>> > This series adds support for Arm's Memory Tagging Extension (MTE) to
->>> > KVM, allowing KVM guests to make use of it. This builds on the 
->>> existing
->>> > user space support already in v5.10-rc1, see [1] for an overview.
->>>
->>> > The change to require the VMM to map all guest memory PROT_MTE is
->>> > significant as it means that the VMM has to deal with the MTE tags 
->>> even
->>> > if it doesn't care about them (e.g. for virtual devices or if the VMM
->>> > doesn't support migration). Also unfortunately because the VMM can
->>> > change the memory layout at any time the check for PROT_MTE/VM_MTE has
->>> > to be done very late (at the point of faulting pages into stage 2).
->>>
->>> I'm a bit dubious about requring the VMM to map the guest memory
->>> PROT_MTE unless somebody's done at least a sketch of the design
->>> for how this would work on the QEMU side. Currently QEMU just
->>> assumes the guest memory is guest memory and it can access it
->>> without special precautions...
->>>
->>
->> There are two statements being made here:
->>
->> 1) Requiring the use of PROT_MTE when mapping guest memory may not fit
->>    QEMU well.
->>
->> 2) New KVM features should be accompanied with supporting QEMU code in
->>    order to prove that the APIs make sense.
->>
->> I strongly agree with (2). While kvmtool supports some quick testing, it
->> doesn't support migration. We must test all new features with a migration
->> supporting VMM.
->>
->> I'm not sure about (1). I don't feel like it should be a major problem,
->> but (2).
+Hi Michelle,
 
-(1) seems to be contentious whichever way we go. Either PROT_MTE isn't 
-required in which case it's easy to accidentally screw up migration, or 
-it is required in which case it's difficult to handle normal guest 
-memory from the VMM. I get the impression that probably I should go back 
-to the previous approach - sorry for the distraction with this change.
+> -----Original Message-----
+> From: Michael Walle <michael@walle.cc>
+> Sent: Friday, November 20, 2020 3:09 PM
+> To: Ashish Kumar <ashish.kumar@nxp.com>
+> Cc: linux-clk@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Michael
+> Turquette <mturquette@baylibre.com>; Stephen Boyd <sboyd@kernel.org>;
+> Rob Herring <robh+dt@kernel.org>; Shawn Guo <shawnguo@kernel.org>; Leo
+> Li <leoyang.li@nxp.com>; Y.b. Lu <yangbo.lu@nxp.com>; Xiaowei Bao
+> <xiaowei.bao@nxp.com>; Vladimir Oltean <vladimir.oltean@nxp.com>
+> Subject: [EXT] Re: [PATCH v3 4/9] arm64: dts: ls1028a: use constants in t=
+he
+> clockgen phandle
+>=20
+> Caution: EXT Email
+>=20
+> Hi Ashish,
+>=20
+> Am 2020-11-20 10:25, schrieb Ashish Kumar:
+> > I am not able to apply this patch cleanly, does it have any dependency
+> > patch that I have missed?
+>=20
+> What is your base? I've just tried to apply this series (stand-alone) ont=
+o linux-
+> next and it applied cleanly.
+I used https://github.com/torvalds/linux.git should I try this git://git.ke=
+rnel.org/pub/scm/linux/kernel/git/clk/linux.git ?
 
-(2) isn't something I'm trying to skip, but I'm limited in what I can do 
-myself so would appreciate help here. Haibo is looking into this.
-
->>
->> I'd be happy to help with the QEMU prototype, but preferably when there's
->> hardware available. Has all the current MTE testing just been done on
->> simulators? And, if so, are there regression tests regularly running on
->> the simulators too? And can they test migration? If hardware doesn't
->> show up quickly and simulators aren't used for regression tests, then
->> all this code will start rotting from day one.
-
-As Marc says, hardware isn't available. Testing is either via the Arm 
-FVP model (that I've been using for most of my testing) or QEMU full 
-system emulation.
-
-> 
-> While I agree with the sentiment, the reality is pretty bleak.
-> 
-> I'm pretty sure nobody will ever run a migration on emulation. I also doubt
-> there is much overlap between MTE users and migration users, unfortunately.
-> 
-> No HW is available today, and when it becomes available, it will be in
-> the form of a closed system on which QEMU doesn't run, either because
-> we are locked out of EL2 (as usual), or because migration is not part of
-> the use case (like KVM on Android, for example).
-> 
-> So we can wait another two (five?) years until general purpose HW becomes
-> available, or we start merging what we can test today. I'm inclined to
-> do the latter.
-> 
-> And I think it is absolutely fine for QEMU to say "no MTE support with KVM"
-> (we can remove all userspace visibility, except for the capability).
-
-What I'm trying to achieve is a situation where KVM+MTE without 
-migration works and we leave ourselves a clear path where migration can 
-be added. With hindsight I think this version of the series was a wrong 
-turn - if we return to not requiring PROT_MTE then we have the following 
-two potential options to explore for migration in the future:
-
-  * The VMM can choose to enable PROT_MTE if it needs to, and if desired 
-we can add a flag to enforce this in the kernel.
-
-  * If needed a new kernel interface can be provided to fetch/set tags 
-from guest memory which isn't mapped PROT_MTE.
-
-Does this sound reasonable?
-
-I'll clean up the set_pte_at() change and post a v6 later today.
+Regards
+Ashish=20
+>=20
+> > My assumption is that this patch series is superset of Series 1: [1/4]
+> > dt-bindings: clock: document the fsl-flexspi-clk driver And Series 2:
+> > [v2,1/5] clk: divider: add
+> > devm_clk_hw_register_divider_table()
+>=20
+> That is correct.
+>=20
+> -michael
