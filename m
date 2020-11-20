@@ -2,109 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CF12BB133
+	by mail.lfdr.de (Postfix) with ESMTP id BC8102BB134
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 18:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730318AbgKTRHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 12:07:47 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:50186 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729976AbgKTRHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 12:07:46 -0500
-Received: from zn.tnic (p200300ec2f11ba0074b4ba83d21d5a9c.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:ba00:74b4:ba83:d21d:5a9c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 09FA01EC047E;
-        Fri, 20 Nov 2020 18:07:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1605892065;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3KR92vuxYVBgK06PedGl/KeDJFbNpeGefSx2Yb7CWNQ=;
-        b=geHBLt7iPjdg5zExWPyw89Os6akDxLqEyRiyOhnSw/sKpOqGQJkhhELIvem9t+ok/b8PBI
-        Wtm8pOCwCDISigUS6AuowJxglb5MrIx8eVeifm013fH26lwsRGcOJN0SVs5tsxxcfXLXAr
-        7xruRul0mZV7OBzYhQ60+FZI9M9c75c=
-Date:   Fri, 20 Nov 2020 18:07:37 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Gabriele Paoloni <gabriele.paoloni@intel.com>
-Cc:     tony.luck@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        x86@kernel.org, hpa@zytor.com, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech
-Subject: Re: [PATCH 1/4] x86/mce: do not overwrite no_way_out if mce_end()
- fails
-Message-ID: <20201120170737.GD712@zn.tnic>
-References: <20201118151552.1412-1-gabriele.paoloni@intel.com>
- <20201118151552.1412-2-gabriele.paoloni@intel.com>
+        id S1730320AbgKTRJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 12:09:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729976AbgKTRJH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 12:09:07 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD88C0613CF;
+        Fri, 20 Nov 2020 09:09:07 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id q28so7819546pgk.1;
+        Fri, 20 Nov 2020 09:09:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S7NIupRzj3PUr0ZCv6mIkIMUnIw4nNedbT1JtFuJtQg=;
+        b=BvT8QPjD5F7pdrvLKVYHj/ZNriTsFhgHF0+BQGonq0YOOD95joc0eNp0bAs+Hkjf7m
+         VsBdwUQzy6pXLrmYme9/muSh4pCnjkh6yz62WbhxtW1qPMUoi9ebWuWOAiLjXd7YJ4XC
+         A8saEcMIVPKB0lm4zCVrdXDRvOMkpBmKIwmjmqIpkPN0YyxroxoTKQSqpe/co9EUL/+n
+         cIpUF4r0BVJ+Yr92UWOx1bvF84n5cmD4NhwxTn2OSF4IDKBhFip3fD+dhWbkKN0aut1Y
+         qQ/6NXEztDeGU8shSrglSPk9jpK+dCBaEK1I2T3CoWEUUkrF0t0XRETSC5WoYsJ5mfiF
+         nxAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=S7NIupRzj3PUr0ZCv6mIkIMUnIw4nNedbT1JtFuJtQg=;
+        b=NuYpNMUfxHi7p87UkXdbO4ycD0TfSiKe6pE4O4z8OYlQmoLvQMay2TTFjZcldgNaHR
+         I16tukX3JDhAfVD5GmX+qthWYNZcYFmNtT+Oj/8MD0KO7lkSxHW/Kx9YN3X5IRniPXKb
+         o8C7kGCO+O6a9wiNHTDl7dlsKyeUcnASL7LDmlt51rpXq86GJCOv0hrCxg+Oz8TLCwLt
+         p4tIpu2AV8zF9iPW8JhD4T7+QAS854f9Wdt3GM9vDmBpYjJIOrBABzQbRsgX3ovoU4PU
+         dxkt4uUSp08Ft/X0U42L4xR5H5+90goNwsTFhZ1i6rn4ahybF1yqCyExJqy65S92EVZ1
+         T3mQ==
+X-Gm-Message-State: AOAM533DsoUrdHoGTro7yJtLIInVWMJcvHqBcJ80/U1UhpANuqcqWgGS
+        lYZkm+aSjXsDlnh0lQywh0Y=
+X-Google-Smtp-Source: ABdhPJyA750sKahKtUX1refXtKAQhPqtVn1tIpVDVcrxdlyb5F7dNflMGdvgDmmn4jagOr89LRPoPg==
+X-Received: by 2002:a62:cec6:0:b029:18a:d620:6b86 with SMTP id y189-20020a62cec60000b029018ad6206b86mr14299369pfg.2.1605892146573;
+        Fri, 20 Nov 2020 09:09:06 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id z11sm4244993pfk.52.2020.11.20.09.09.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 09:09:05 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 20 Nov 2020 09:09:03 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 2/6] arm64: pgtable: Ensure dirty bit is preserved across
+ pte_wrprotect()
+Message-ID: <20201120170903.GC3377168@google.com>
+References: <20201120143557.6715-1-will@kernel.org>
+ <20201120143557.6715-3-will@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118151552.1412-2-gabriele.paoloni@intel.com>
+In-Reply-To: <20201120143557.6715-3-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 03:15:49PM +0000, Gabriele Paoloni wrote:
-> Currently if mce_end() fails no_way_out is set equal to worst.
-> worst is the worst severirty that was found in the MCA banks
-		     ^^^^^^^^^
-
-Please introduce a spellchecker into your patch creation workflow.
-
-> associated to the current CPU; however at this point no_way_out
-	     ^
-	     with
-
-
-> could be already set by mca_start() by looking at all severities
-
-I think you mean "could have been already set" here
-
-> of all CPUs that entered the MCE handler.
-> if mce_end() fails we first check if no_way_out is already set and
-
-Please use passive voice in your commit message: no "we" or "I", etc.
-
-Also, pls start new sentences with a capital letter and end them with a
-fullstop.
-
-> if so we stick to it, otherwise we use the local worst value
-
-So basically you're trying to say here that no_way_out might have been
-already set and other CPUs could overwrite it and that should not
-happen.
-
-Is that what you mean?
-
-> Signed-off-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> ---
->  arch/x86/kernel/cpu/mce/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Nov 20, 2020 at 02:35:53PM +0000, Will Deacon wrote:
+> With hardware dirty bit management, calling pte_wrprotect() on a writable,
+> dirty PTE will lose the dirty state and return a read-only, clean entry.
 > 
-> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> index 4102b866e7c0..b990892c6766 100644
-> --- a/arch/x86/kernel/cpu/mce/core.c
-> +++ b/arch/x86/kernel/cpu/mce/core.c
-> @@ -1385,7 +1385,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
->  	 */
->  	if (!lmce) {
->  		if (mce_end(order) < 0)
-> -			no_way_out = worst >= MCE_PANIC_SEVERITY;
-> +			no_way_out = no_way_out ? no_way_out : worst >= MCE_PANIC_SEVERITY;
+> Move the logic from ptep_set_wrprotect() into pte_wrprotect() to ensure that
+> the dirty bit is preserved for writable entries, as this is required for
+> soft-dirty bit management if we enable it in the future.
+> 
+> Cc: <stable@vger.kernel.org>
 
-I had to stare at this a bit to figure out what you're doing. So how
-about simplifying this:
+It this stable material if it would be a problem once ARM64 supports
+softdirty in future?
 
-			if (!no_way_out)
-				no_way_out = worst >= MCE_PANIC_SEVERITY;
-
-?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  arch/arm64/include/asm/pgtable.h | 27 ++++++++++++++-------------
+>  1 file changed, 14 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 1bdf51f01e73..a155551863c9 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -162,13 +162,6 @@ static inline pmd_t set_pmd_bit(pmd_t pmd, pgprot_t prot)
+>  	return pmd;
+>  }
+>  
+> -static inline pte_t pte_wrprotect(pte_t pte)
+> -{
+> -	pte = clear_pte_bit(pte, __pgprot(PTE_WRITE));
+> -	pte = set_pte_bit(pte, __pgprot(PTE_RDONLY));
+> -	return pte;
+> -}
+> -
+>  static inline pte_t pte_mkwrite(pte_t pte)
+>  {
+>  	pte = set_pte_bit(pte, __pgprot(PTE_WRITE));
+> @@ -194,6 +187,20 @@ static inline pte_t pte_mkdirty(pte_t pte)
+>  	return pte;
+>  }
+>  
+> +static inline pte_t pte_wrprotect(pte_t pte)
+> +{
+> +	/*
+> +	 * If hardware-dirty (PTE_WRITE/DBM bit set and PTE_RDONLY
+> +	 * clear), set the PTE_DIRTY bit.
+> +	 */
+> +	if (pte_hw_dirty(pte))
+> +		pte = pte_mkdirty(pte);
+> +
+> +	pte = clear_pte_bit(pte, __pgprot(PTE_WRITE));
+> +	pte = set_pte_bit(pte, __pgprot(PTE_RDONLY));
+> +	return pte;
+> +}
+> +
+>  static inline pte_t pte_mkold(pte_t pte)
+>  {
+>  	return clear_pte_bit(pte, __pgprot(PTE_AF));
+> @@ -843,12 +850,6 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
+>  	pte = READ_ONCE(*ptep);
+>  	do {
+>  		old_pte = pte;
+> -		/*
+> -		 * If hardware-dirty (PTE_WRITE/DBM bit set and PTE_RDONLY
+> -		 * clear), set the PTE_DIRTY bit.
+> -		 */
+> -		if (pte_hw_dirty(pte))
+> -			pte = pte_mkdirty(pte);
+>  		pte = pte_wrprotect(pte);
+>  		pte_val(pte) = cmpxchg_relaxed(&pte_val(*ptep),
+>  					       pte_val(old_pte), pte_val(pte));
+> -- 
+> 2.29.2.454.gaff20da3a2-goog
+> 
