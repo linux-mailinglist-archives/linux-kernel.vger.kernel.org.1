@@ -2,157 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A0B2BB28D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1662BB2BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729378AbgKTSYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:24:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728454AbgKTSY3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:24:29 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFBEC061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:24:28 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id v12so8633839pfm.13
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:24:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=30Bgpe4tRZbHCL1xlPM9iOd0AtYEUn6hOn8Ryly2PPA=;
-        b=M98xqGzPeoUCxhHCksDZ+aqukGT+z9t2J672BwZUETcjYvDyLQb6sUrruRUI533fmf
-         gNbla1W5c/VWSorPRrSd5hutpiBrZTzfzeF0SNuZARQXTLOOS6wf9T/t+i0maHyt8HTW
-         jG5Z/3FylRgAf65nM2A3X5MG2Sr3SmCPR7CJ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=30Bgpe4tRZbHCL1xlPM9iOd0AtYEUn6hOn8Ryly2PPA=;
-        b=SFZoKfqbHseYO+8ZMapv8s+9qTTySFMbV9giI/VYiqyrSJShFxdVNq1VvoxgsThVXm
-         lPaTDfXKvMrvDK7/0bFUZUGZW70W3XT05JQ99MVhJyhgxnTRQTHDZHfh5keNdYdTd1zn
-         BKDKktKtRiWcwIudjbyS4gKQltGOKW0WEIm4OIdArkgPn/B3rnE5+AgFJd9vmyzwjWGY
-         BxgV8YUEi3JfPPr/PLf5U2q8MMz9iE6Gvst22U2gVDxXWfRj7gmNP92+INC9hT9cXxN3
-         Xi+cAApC1domWozXRr219uvB4pUW6BKUyMFSFLCDZR2oqniz4V77yYMCTkIhDP5rm2Et
-         fVxg==
-X-Gm-Message-State: AOAM5321ML+Wbl+/3BbFaBQYAWTqH56EbiouumYx4dztjvoqCbYvxLaO
-        AeIi6DoEzCkWXe7HtoHODjzjXg==
-X-Google-Smtp-Source: ABdhPJy+qo4UdHWB8uDJPIvHzv9KiiwxNQimizWemMRpe7dMo/W3Iay3js2pxsTDC2SYgZTTx142ug==
-X-Received: by 2002:a17:90a:4593:: with SMTP id v19mr11934492pjg.217.1605896668009;
-        Fri, 20 Nov 2020 10:24:28 -0800 (PST)
-Received: from smtp.gmail.com ([100.99.132.239])
-        by smtp.gmail.com with ESMTPSA id gd4sm4706497pjb.39.2020.11.20.10.24.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 10:24:27 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH v3] arm64: dts: qcom: sc7180: Add prox sensor to LTE sku Lazor boards
-Date:   Fri, 20 Nov 2020 10:24:26 -0800
-Message-Id: <20201120182426.541884-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+        id S1729435AbgKTSYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:24:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728454AbgKTSYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:24:37 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7AF712224C;
+        Fri, 20 Nov 2020 18:24:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605896676;
+        bh=+OS2oYrvHv6lArkE838oF8ZR5+CFnhvfhz5MvdYIP7s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eh/DWBNvSzi1QCtnRqUQxpUC8yVxnHz5dbXezR73m3z6ZH9StO4yWVo32PCUsq80q
+         Cj/wDNVWrONrRyfwWFG1TmWBcjCTOpVQ9mQRNpBUcDlQk7i5NPxll8HUcczl/jV9HT
+         DkO30teaXvsRAP7nBno9Gx5bMsq4YKusha0XnFNQ=
+Date:   Fri, 20 Nov 2020 12:24:41 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 004/141] drm/amdgpu: Fix fall-through warnings for Clang
+Message-ID: <dc55f2cf59d8d3426bf9b01a6555db6de61c9361.1605896059.git.gustavoars@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a proximity sensor on Lazor devices, but only for LTE SKUs.
-Enable it only on the Lazor LTE SKUs and also configure it properly so
-it works.
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding multiple break statements instead of just
+letting the code fall through to the next case.
 
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Matthias Kaehlcke <mka@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c | 1 +
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c  | 1 +
+ drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 1 +
+ drivers/gpu/drm/amd/amdgpu/vi.c        | 1 +
+ 4 files changed, 4 insertions(+)
 
-Changes from v2 (https://lore.kernel.org/r/20201120074508.3236616-1-swboyd@chromium.org):
- * Also disabled ap_sar_sensor_i2c node in trogdor.dtsi file
-
-Changes from v1 (https://lore.kernel.org/r/20201118045454.2503325-1-swboyd@chromium.org):                                                                                                         
- * Fixed startup-sensor property to be 0 instead of 1                                                                                                                                             
- * Fixed proxraw-strength to be 8 instead of 2   
-
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts | 8 ++++++++
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts | 8 ++++++++
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi       | 7 ++++++-
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi             | 1 -
- 4 files changed, 22 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts
-index 5a67e5baafec..e16ba7b01f25 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1-lte.dts
-@@ -13,6 +13,14 @@ / {
- 	compatible = "google,lazor-rev1-sku0", "google,lazor-rev2-sku0", "qcom,sc7180";
- };
- 
-+&ap_sar_sensor {
-+	status = "okay";
-+};
-+
-+&ap_sar_sensor_i2c {
-+	status = "okay";
-+};
-+
- &keyboard_backlight {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts
-index 43836fc4d403..0881f8dd02c9 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3-lte.dts
-@@ -13,6 +13,14 @@ / {
- 	compatible = "google,lazor-sku0", "qcom,sc7180";
- };
- 
-+&ap_sar_sensor {
-+	status = "okay";
-+};
-+
-+&ap_sar_sensor_i2c {
-+	status = "okay";
-+};
-+
- &keyboard_backlight {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-index 180ef9e04306..89e5cd29ec09 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-@@ -30,7 +30,12 @@ panel_in_edp: endpoint {
- };
- 
- &ap_sar_sensor {
--	status = "okay";
-+	semtech,cs0-ground;
-+	semtech,combined-sensors = <3>;
-+	semtech,resolution = "fine";
-+	semtech,startup-sensor = <0>;
-+	semtech,proxraw-strength = <8>;
-+	semtech,avg-pos-strength = <64>;
- };
- 
- ap_ts_pen_1v8: &i2c4 {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 781e61ad75a6..d48a75afdafb 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -654,7 +654,6 @@ sn65dsi86_out: endpoint {
- };
- 
- ap_sar_sensor_i2c: &i2c5 {
--	status = "okay";
- 	clock-frequency = <400000>;
- 
- 	ap_sar_sensor: proximity@28 {
-
-base-commit: ead9f7d7ea9e20843e29e688b53859cea20044ee
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+index 3579565e0eab..98ca6b976b6e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+@@ -8398,6 +8398,7 @@ static int gfx_v10_0_set_priv_inst_fault_state(struct amdgpu_device *adev,
+ 		WREG32_FIELD15(GC, 0, CP_INT_CNTL_RING0,
+ 			       PRIV_INSTR_INT_ENABLE,
+ 			       state == AMDGPU_IRQ_STATE_ENABLE ? 1 : 0);
++		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+index 0d8e203b10ef..e61121629b93 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+@@ -5683,6 +5683,7 @@ static int gfx_v9_0_set_priv_inst_fault_state(struct amdgpu_device *adev,
+ 		WREG32_FIELD15(GC, 0, CP_INT_CNTL_RING0,
+ 			       PRIV_INSTR_INT_ENABLE,
+ 			       state == AMDGPU_IRQ_STATE_ENABLE ? 1 : 0);
++		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+index 3ebbddb63705..584b99b80c29 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+@@ -502,6 +502,7 @@ static int gmc_v9_0_vm_fault_interrupt_state(struct amdgpu_device *adev,
+ 				WREG32(reg, tmp);
+ 			}
+ 		}
++		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/drivers/gpu/drm/amd/amdgpu/vi.c b/drivers/gpu/drm/amd/amdgpu/vi.c
+index 9bcd0eebc6d7..d56b474b3a21 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vi.c
++++ b/drivers/gpu/drm/amd/amdgpu/vi.c
+@@ -1645,6 +1645,7 @@ static int vi_common_set_clockgating_state(void *handle,
+ 	case CHIP_POLARIS12:
+ 	case CHIP_VEGAM:
+ 		vi_common_set_clockgating_state_by_smu(adev, state);
++		break;
+ 	default:
+ 		break;
+ 	}
 -- 
-https://chromeos.dev
+2.27.0
 
