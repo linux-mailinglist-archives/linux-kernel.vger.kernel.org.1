@@ -2,106 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B90C22BA567
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9519E2BA56E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbgKTJC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:02:27 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:11990 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726335AbgKTJC0 (ORCPT
+        id S1726618AbgKTJF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:05:57 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7710 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbgKTJF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:02:26 -0500
-X-UUID: a13e9e7876b24e11b8b92e7003cf77cd-20201120
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=NOnBEeD5QcqRy5ACxANNtYY5eIEEbKNWhHFCVwRq7Bk=;
-        b=DwfGG6wPx8bwL1YuhPBQqay0GjEFZHN+7ZklUtK4gmQpzaPr/NDBddmO2BU28NP5qJQfzbDbLIVuq5U1cuKBqwtmkVYH+wPJCNIGgrOa7qBQ1ACmWXmMOP6J+eSscooV+ERUSIlPtefL/KwuPyOL7CLQnClG9kSBbCNW7sh9+Yk=;
-X-UUID: a13e9e7876b24e11b8b92e7003cf77cd-20201120
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <min.guo@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1925620927; Fri, 20 Nov 2020 17:02:17 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 20 Nov
- 2020 17:02:16 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 20 Nov 2020 17:02:15 +0800
-Message-ID: <1605862935.3995.20.camel@mhfsdcap03>
-Subject: Re: [PATCH] usb: musb: remove unused variable 'devctl'
-From:   Min Guo <min.guo@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Bin Liu <b-liu@ti.com>, Matthias Brugger <matthias.bgg@gmail.com>,
-        <chunfeng.yun@mediatek.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Fri, 20 Nov 2020 17:02:15 +0800
-In-Reply-To: <X7eAEaTN/fM3fkkp@kroah.com>
-References: <20201117082125.7619-1-min.guo@mediatek.com>
-         <X7UKJtWtE0UZgqAQ@kroah.com> <1605854930.3995.8.camel@mhfsdcap03>
-         <X7doKlP1k824LGGN@kroah.com> <1605858126.3995.14.camel@mhfsdcap03>
-         <X7eAEaTN/fM3fkkp@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Fri, 20 Nov 2020 04:05:56 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CcrHG5yRgzkcPy;
+        Fri, 20 Nov 2020 17:05:30 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 20 Nov 2020 17:04:56 +0800
+From:   Weili Qian <qianweili@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <mpm@selenic.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
+        Weili Qian <qianweili@huawei.com>
+Subject: [PATCH 1/4] hwrng: hisi - remove HiSilicon TRNG driver
+Date:   Fri, 20 Nov 2020 17:02:31 +0800
+Message-ID: <1605862954-38300-1-git-send-email-qianweili@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: F523D46BD23D8F2D4C4167306D0A9C11AFC2932A6549B7623E792AD4C4C739792000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTExLTIwIGF0IDA5OjM2ICswMTAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
-dGU6DQo+IE9uIEZyaSwgTm92IDIwLCAyMDIwIGF0IDAzOjQyOjA2UE0gKzA4MDAsIE1pbiBHdW8g
-d3JvdGU6DQo+ID4gT24gRnJpLCAyMDIwLTExLTIwIGF0IDA3OjU0ICswMTAwLCBHcmVnIEtyb2Fo
-LUhhcnRtYW4gd3JvdGU6DQo+ID4gPiBPbiBGcmksIE5vdiAyMCwgMjAyMCBhdCAwMjo0ODo1MFBN
-ICswODAwLCBNaW4gR3VvIHdyb3RlOg0KPiA+ID4gPiBIaSBncmVnIGstaDoNCj4gPiA+ID4gT24g
-V2VkLCAyMDIwLTExLTE4IGF0IDEyOjQ4ICswMTAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3JvdGU6
-DQo+ID4gPiA+ID4gT24gVHVlLCBOb3YgMTcsIDIwMjAgYXQgMDQ6MjE6MjVQTSArMDgwMCwgbWlu
-Lmd1b0BtZWRpYXRlay5jb20gd3JvdGU6DQo+ID4gPiA+ID4gPiBGcm9tOiBNaW4gR3VvIDxtaW4u
-Z3VvQG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gUmVtb3ZlIHVudXNl
-ZCAnZGV2Y3RsJyB2YXJpYWJsZSB0byBmaXggY29tcGlsZSB3YXJuaW5nczoNCj4gPiA+ID4gPiA+
-IA0KPiA+ID4gPiA+ID4gICAgIGRyaXZlcnMvdXNiL211c2IvbXVzYmhzZG1hLmM6IEluIGZ1bmN0
-aW9uICdkbWFfY29udHJvbGxlcl9pcnEnOg0KPiA+ID4gPiA+ID4gICAgIGRyaXZlcnMvdXNiL211
-c2IvbXVzYmhzZG1hLmM6MzI0Ojg6IHdhcm5pbmc6IHZhcmlhYmxlICdkZXZjdGwnIHNldA0KPiA+
-ID4gPiA+ID4gICAgIGJ1dCBub3QgdXNlZCBbLVd1bnVzZWQtYnV0LXNldC12YXJpYWJsZV0NCj4g
-PiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gU2lnbmVkLW9mZi1ieTogTWluIEd1byA8bWluLmd1b0Bt
-ZWRpYXRlay5jb20+DQo+ID4gPiA+ID4gPiAtLS0NCj4gPiA+ID4gPiA+ICBkcml2ZXJzL3VzYi9t
-dXNiL211c2Joc2RtYS5jIHwgNCAtLS0tDQo+ID4gPiA+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDQg
-ZGVsZXRpb25zKC0pDQo+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL3VzYi9tdXNiL211c2Joc2RtYS5jIGIvZHJpdmVycy91c2IvbXVzYi9tdXNiaHNkbWEuYw0K
-PiA+ID4gPiA+ID4gaW5kZXggMGFhY2ZjOGJlNWExLi43YWNkMTYzNTg1MGQgMTAwNjQ0DQo+ID4g
-PiA+ID4gPiAtLS0gYS9kcml2ZXJzL3VzYi9tdXNiL211c2Joc2RtYS5jDQo+ID4gPiA+ID4gPiAr
-KysgYi9kcml2ZXJzL3VzYi9tdXNiL211c2Joc2RtYS5jDQo+ID4gPiA+ID4gPiBAQCAtMzIxLDgg
-KzMyMSw2IEBAIGlycXJldHVybl90IGRtYV9jb250cm9sbGVyX2lycShpbnQgaXJxLCB2b2lkICpw
-cml2YXRlX2RhdGEpDQo+ID4gPiA+ID4gPiAgCQkJCW11c2JfY2hhbm5lbC0+Y2hhbm5lbC5zdGF0
-dXMgPQ0KPiA+ID4gPiA+ID4gIAkJCQkJTVVTQl9ETUFfU1RBVFVTX0JVU19BQk9SVDsNCj4gPiA+
-ID4gPiA+ICAJCQl9IGVsc2Ugew0KPiA+ID4gPiA+ID4gLQkJCQl1OCBkZXZjdGw7DQo+ID4gPiA+
-ID4gPiAtDQo+ID4gPiA+ID4gPiAgCQkJCWFkZHIgPSBtdXNiX3JlYWRfaHNkbWFfYWRkcihtYmFz
-ZSwNCj4gPiA+ID4gPiA+ICAJCQkJCQliY2hhbm5lbCk7DQo+ID4gPiA+ID4gPiAgCQkJCWNoYW5u
-ZWwtPmFjdHVhbF9sZW4gPSBhZGRyDQo+ID4gPiA+ID4gPiBAQCAtMzM2LDggKzMzNCw2IEBAIGly
-cXJldHVybl90IGRtYV9jb250cm9sbGVyX2lycShpbnQgaXJxLCB2b2lkICpwcml2YXRlX2RhdGEp
-DQo+ID4gPiA+ID4gPiAgCQkJCQkJPCBtdXNiX2NoYW5uZWwtPmxlbikgPw0KPiA+ID4gPiA+ID4g
-IAkJCQkJIj0+IHJlY29uZmlnIDAiIDogIj0+IGNvbXBsZXRlIik7DQo+ID4gPiA+ID4gPiAgDQo+
-ID4gPiA+ID4gPiAtCQkJCWRldmN0bCA9IG11c2JfcmVhZGIobWJhc2UsIE1VU0JfREVWQ1RMKTsN
-Cj4gPiA+ID4gPiANCj4gPiA+ID4gPiBBcmUgeW91IHN1cmUgdGhhdCB0aGUgaGFyZHdhcmUgZG9l
-cyBub3QgcmVxdWlyZSB0aGlzIHJlYWQgdG8gY29tcGxldGUNCj4gPiA+ID4gPiB0aGUgY29tbWFu
-ZD8gIExvdHMgb2YgaGFyZHdhcmUgaXMgdGhhdCB3YXksIHNvIGJlIHZlcnkgY2FyZWZ1bCBhYm91
-dA0KPiA+ID4gPiA+IHRoaXMuICBEaWQgeW91IHRlc3QgaXQ/DQo+ID4gPiA+IA0KPiA+ID4gPiBJ
-IGhhdmUgdGVzdGVkIHRoaXMgcGF0Y2ggb24gTWVkaWF0ZWsncyBwbGF0Zm9ybSwgYW5kIG5vdCBz
-dXJlIGlmIGl0DQo+ID4gPiA+IHdpbGwgYWZmZWN0IG90aGVyIHZlbmRvcnMnIHBsYXRmb3Jtcy4N
-Cj4gPiA+ID4gDQo+ID4gPiA+IERlYXIgQmluOg0KPiA+ID4gPiANCj4gPiA+ID4gRG9lcyB0aGlz
-IHBhdGNoIHdpbGwgYWZmZWN0IG90aGVyIHZlbmRvcnMnIHBsYXRmb3Jtcz8NCj4gPiA+IA0KPiA+
-ID4gVGhlIGhhcmR3YXJlIHNwZWNzIHdpbGwgYW5zd2VyIHRoaXMgcXVlc3Rpb24sIHdoYXQgZG8g
-dGhleSBzYXkgYWJvdXQNCj4gPiA+IHRoaXMgcmVhZD8NCj4gPiANCj4gPiBTb3JyeSwgSSBkaWRu
-J3Qgc2VlbiB0aGUgY29tbWVudCBvbiB0aGUgaGFyZHdhcmUgc3BlY3MgaW5kaWNhdGUgdGhhdA0K
-PiA+IGRldmN0bCByZWdpc3RlciBuZWVkcyB0byByZWFkIG9uY2UgdG8gdGFrZSBlZmZlY3QuDQo+
-IA0KPiBQZXJoYXBzIHlvdSBtaWdodCB3YW50IHRvIGFkZCBhIGNvbW1lbnQgaGVyZSBzbyB0aGF0
-IHBlb3BsZSB3aWxsIG5vdA0KPiBrZWVwIG1ha2luZyB0aGlzIHNhbWUgbWlzdGFrZSB3aGVuIHRo
-ZXkgcnVuIGF1dG8tY2hlY2tlcnMgb24gdGhlDQo+IGNvZGViYXNlPw0KDQpTb3JyeSBmb3IgY29u
-ZnVzZWQgeW91LCBJIHNlYXJjaGVkIHRoZSBoYXJkd2FyZSBzcGVjcywgYnV0IGRpZCBub3QgZmlu
-ZA0KdGhlIHNwZWNpYWwgZGVzY3JpcHRpb24gb2YgdGhlIHJlZ2lzdGVyIGRldmN0bCBpbmRpY2F0
-aW5nIHRoYXQgaXQgbmVlZHMNCnRvIGJlIHJlYWQgb3V0IGJlZm9yZSB0aGUgaGFyZHdhcmUgY2Fu
-IHdvcmsuDQoNCj4gdGhhbmtzLA0KPiANCj4gZ3JlZyBrLWgNCg0K
+Driver of HiSilicon true random number generator(TRNG)
+is removed from 'drivers/char/hw_random'.
+
+Both 'Kunpeng 920' and 'Kunpeng 930' chips have TRNG,
+however, PRNG is only supported by 'Kunpeng 930'.
+So, this driver is moved to 'drivers/crypto/hisilicon/trng/'
+in the next to enable the two's TRNG better.
+
+Signed-off-by: Weili Qian <qianweili@huawei.com>
+Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
+---
+ drivers/char/hw_random/Kconfig        | 13 -----
+ drivers/char/hw_random/Makefile       |  1 -
+ drivers/char/hw_random/hisi-trng-v2.c | 99 -----------------------------------
+ 3 files changed, 113 deletions(-)
+ delete mode 100644 drivers/char/hw_random/hisi-trng-v2.c
+
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index e92c4d9..eb0d51a 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -348,19 +348,6 @@ config HW_RANDOM_HISI
+ 
+ 	  If unsure, say Y.
+ 
+-config HW_RANDOM_HISI_V2
+-	tristate "HiSilicon True Random Number Generator V2 support"
+-	depends on HW_RANDOM && ARM64 && ACPI
+-	default HW_RANDOM
+-	help
+-	  This driver provides kernel-side support for the True Random Number
+-	  Generator V2 hardware found on HiSilicon Hi1620 SoC.
+-
+-	  To compile this driver as a module, choose M here: the
+-	  module will be called hisi-trng-v2.
+-
+-	  If unsure, say Y.
+-
+ config HW_RANDOM_ST
+ 	tristate "ST Microelectronics HW Random Number Generator support"
+ 	depends on HW_RANDOM && ARCH_STI
+diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
+index 5da3445..8933fad 100644
+--- a/drivers/char/hw_random/Makefile
++++ b/drivers/char/hw_random/Makefile
+@@ -30,7 +30,6 @@ obj-$(CONFIG_HW_RANDOM_NOMADIK) += nomadik-rng.o
+ obj-$(CONFIG_HW_RANDOM_PSERIES) += pseries-rng.o
+ obj-$(CONFIG_HW_RANDOM_POWERNV) += powernv-rng.o
+ obj-$(CONFIG_HW_RANDOM_HISI)	+= hisi-rng.o
+-obj-$(CONFIG_HW_RANDOM_HISI_V2) += hisi-trng-v2.o
+ obj-$(CONFIG_HW_RANDOM_BCM2835) += bcm2835-rng.o
+ obj-$(CONFIG_HW_RANDOM_IPROC_RNG200) += iproc-rng200.o
+ obj-$(CONFIG_HW_RANDOM_ST) += st-rng.o
+diff --git a/drivers/char/hw_random/hisi-trng-v2.c b/drivers/char/hw_random/hisi-trng-v2.c
+deleted file mode 100644
+index 6a65b82..0000000
+--- a/drivers/char/hw_random/hisi-trng-v2.c
++++ /dev/null
+@@ -1,99 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* Copyright (c) 2019 HiSilicon Limited. */
+-
+-#include <linux/acpi.h>
+-#include <linux/err.h>
+-#include <linux/hw_random.h>
+-#include <linux/io.h>
+-#include <linux/iopoll.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/random.h>
+-
+-#define HISI_TRNG_REG		0x00F0
+-#define HISI_TRNG_BYTES		4
+-#define HISI_TRNG_QUALITY	512
+-#define SLEEP_US		10
+-#define TIMEOUT_US		10000
+-
+-struct hisi_trng {
+-	void __iomem *base;
+-	struct hwrng rng;
+-};
+-
+-static int hisi_trng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+-{
+-	struct hisi_trng *trng;
+-	int currsize = 0;
+-	u32 val = 0;
+-	u32 ret;
+-
+-	trng = container_of(rng, struct hisi_trng, rng);
+-
+-	do {
+-		ret = readl_poll_timeout(trng->base + HISI_TRNG_REG, val,
+-					 val, SLEEP_US, TIMEOUT_US);
+-		if (ret)
+-			return currsize;
+-
+-		if (max - currsize >= HISI_TRNG_BYTES) {
+-			memcpy(buf + currsize, &val, HISI_TRNG_BYTES);
+-			currsize += HISI_TRNG_BYTES;
+-			if (currsize == max)
+-				return currsize;
+-			continue;
+-		}
+-
+-		/* copy remaining bytes */
+-		memcpy(buf + currsize, &val, max - currsize);
+-		currsize = max;
+-	} while (currsize < max);
+-
+-	return currsize;
+-}
+-
+-static int hisi_trng_probe(struct platform_device *pdev)
+-{
+-	struct hisi_trng *trng;
+-	int ret;
+-
+-	trng = devm_kzalloc(&pdev->dev, sizeof(*trng), GFP_KERNEL);
+-	if (!trng)
+-		return -ENOMEM;
+-
+-	trng->base = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(trng->base))
+-		return PTR_ERR(trng->base);
+-
+-	trng->rng.name = pdev->name;
+-	trng->rng.read = hisi_trng_read;
+-	trng->rng.quality = HISI_TRNG_QUALITY;
+-
+-	ret = devm_hwrng_register(&pdev->dev, &trng->rng);
+-	if (ret)
+-		dev_err(&pdev->dev, "failed to register hwrng!\n");
+-
+-	return ret;
+-}
+-
+-static const struct acpi_device_id hisi_trng_acpi_match[] = {
+-	{ "HISI02B3", 0 },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(acpi, hisi_trng_acpi_match);
+-
+-static struct platform_driver hisi_trng_driver = {
+-	.probe		= hisi_trng_probe,
+-	.driver		= {
+-		.name	= "hisi-trng-v2",
+-		.acpi_match_table = ACPI_PTR(hisi_trng_acpi_match),
+-	},
+-};
+-
+-module_platform_driver(hisi_trng_driver);
+-
+-MODULE_LICENSE("GPL v2");
+-MODULE_AUTHOR("Weili Qian <qianweili@huawei.com>");
+-MODULE_AUTHOR("Zaibo Xu <xuzaibo@huawei.com>");
+-MODULE_DESCRIPTION("HiSilicon true random number generator V2 driver");
+-- 
+2.8.1
 
