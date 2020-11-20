@@ -2,96 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E412BB9EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BEA2BB9EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 00:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729415AbgKTXRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 18:17:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726255AbgKTXRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 18:17:16 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97CE52240B;
-        Fri, 20 Nov 2020 23:17:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605914236;
-        bh=KvO84Nal/tJn9KZ59r6ifWaSbl38e4OTyNa1SPsm4hk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YjH/R92g11wYtasnpI/valctwreQ9Di/QydAA7gZcTZVno+oaZJwdrWX81itAm5DE
-         7z+fa7yM0T9nSHeDOy97yjdCaXnVkuKn11IUmWZcm/S6E4GeJrGEGB+6YaZb7KXCQ/
-         sRuJE7DwgNZy6Kfnelc3+n6iRLARGrKwG83X3pNM=
-Date:   Fri, 20 Nov 2020 15:17:14 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     xiakaixu1987@gmail.com, Ion Badulescu <ionut@badula.org>
-Cc:     ionut@badula.org, leon@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] net: adaptec: remove dead code in set_vlan_mode
-Message-ID: <20201120151714.0cc2f00b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1605858600-7096-1-git-send-email-kaixuxia@tencent.com>
-References: <1605858600-7096-1-git-send-email-kaixuxia@tencent.com>
+        id S1728863AbgKTXS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 18:18:27 -0500
+Received: from smtprelay0213.hostedemail.com ([216.40.44.213]:38790 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728359AbgKTXS0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 18:18:26 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 9655D182CED2A;
+        Fri, 20 Nov 2020 23:18:25 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,3,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2194:2196:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:4321:5007:7903:8660:9108:10012:10400:10848:11026:11232:11658:11914:12043:12296:12297:12346:12438:12740:12895:13069:13148:13160:13229:13230:13311:13357:13439:13894:14659:14721:21080:21627:21939:21990:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:2:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: grade25_3d0ec972734f
+X-Filterd-Recvd-Size: 1719
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 20 Nov 2020 23:18:24 +0000 (UTC)
+Message-ID: <5e9c1d953c6b6254a3288f1e797064666e82a79d.camel@perches.com>
+Subject: Re: [PATCH 001/141] afs: Fix fall-through warnings for Clang
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Date:   Fri, 20 Nov 2020 15:18:23 -0800
+In-Reply-To: <51150b54e0b0431a2c401cd54f2c4e7f50e94601.1605896059.git.gustavoars@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+         <51150b54e0b0431a2c401cd54f2c4e7f50e94601.1605896059.git.gustavoars@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 15:50:00 +0800 xiakaixu1987@gmail.com wrote:
-> From: Kaixu Xia <kaixuxia@tencent.com>
+On Fri, 2020-11-20 at 12:23 -0600, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+> warnings by explicitly adding multiple fallthrough pseudo-keywords
+> in places where the code is intended to fall through to the next
+> case.
+
+This is the first of the actual patches I've seen.
+I think adding fallthough for these patches isn't the best option.
+
+> diff --git a/fs/afs/cmservice.c b/fs/afs/cmservice.c
+[]
+> @@ -322,6 +322,8 @@ static int afs_deliver_cb_callback(struct afs_call *call)
+>  			return ret;
+>  
 > 
-> The body of the if statement can be executed only when the variable
-> vlan_count equals to 32, so the condition of the while statement can
-> not be true and the while statement is dead code. Remove it.
-> 
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> ---
->  drivers/net/ethernet/adaptec/starfire.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/adaptec/starfire.c b/drivers/net/ethernet/adaptec/starfire.c
-> index 555299737b51..ad27a9fa5e95 100644
-> --- a/drivers/net/ethernet/adaptec/starfire.c
-> +++ b/drivers/net/ethernet/adaptec/starfire.c
-> @@ -1754,14 +1754,9 @@ static u32 set_vlan_mode(struct netdev_private *np)
->  		filter_addr += 16;
->  		vlan_count++;
->  	}
-> -	if (vlan_count == 32) {
-> +	if (vlan_count == 32)
->  		ret |= PerfectFilterVlan;
-> -		while (vlan_count < 32) {
-> -			writew(0, filter_addr);
-> -			filter_addr += 16;
-> -			vlan_count++;
-> -		}
-> -	}
+>  		call->unmarshall++;
 > +
->  	return ret;
->  }
->  #endif /* VLAN_SUPPORT */
+> +		fallthrough;
 
-This got broken back in 2011:
+My preference would be to change these to break and not fallthrough;
 
-commit 5da96be53a16a62488316810d0c7c5d58ce3ee4f
-Author: Jiri Pirko <jpirko@redhat.com>
-Date:   Wed Jul 20 04:54:31 2011 +0000
+>  	case 5:
+>  		break;
+>  	}
 
-    starfire: do vlan cleanup
-    
-    - unify vlan and nonvlan rx path
-    - kill np->vlgrp and netdev_vlan_rx_register
-    
-    Signed-off-by: Jiri Pirko <jpirko@redhat.com>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
+etc...
 
-The comparison to 32 was on a different variable before that change.
-
-Ion, do you think anyone is still using this driver?
-
-Maybe it's time we put it in the history book (by which I mean remove
-from the kernel).
