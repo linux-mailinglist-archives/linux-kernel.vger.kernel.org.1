@@ -2,163 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4622BAB14
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DAF2BAB18
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 14:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgKTN1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 08:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
+        id S1727788AbgKTN1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 08:27:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgKTN1P (ORCPT
+        with ESMTP id S1726640AbgKTN1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:27:15 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71366C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:27:13 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id o11so9860018ioo.11
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 05:27:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=khYDe4ODkehJy6MjwBnKiqHGgEbY3DM8JifHtJFFyNc=;
-        b=ISDL+Va2Q9i2ZxAJkYOi6SkHb01ET9KdtDy57qKq5uX6+mu+HoUzdq0B//zc/FJsse
-         aX0V/As/e/uUbVxfalHXmDYWax01DlUcojzrP3W/dA1budm1XnAnUz873PnJflAXVMF8
-         CcsWBuUQqgbSwxx0VVWbG0XitkO4s3mqUqlqV94XUHTAznm3rclRd43IZaTsynxQ40Ef
-         j8yYPgFykZlUJ89o4JKmt4vRzDptuBHholYKPwS/mTWrpiZQ+SxOaRTX85pf0E45Ctmd
-         RL2NvKNF2jCuHlEoES/qXsVABS4SQHjWI5qDcs7l4gggbyOL4LJS9exCtvyuY5J2IK43
-         JMIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=khYDe4ODkehJy6MjwBnKiqHGgEbY3DM8JifHtJFFyNc=;
-        b=LuBygrHqhsX+i5ihbW6SbuDqE25dZyer+QXJFMVY0aLsHG/97rpd0oJYxU2tVlAG5m
-         5XIa2LMEx3CVhV/FniJW5ORuVLt8kvXWKznQ3onxusbq6u+5ctMDye8asWbpJnb/KYj2
-         36h7yrZVlOEXAd8Mzwby7HnsfZybI1hBsOJqEJCurZC3oPRgxhXtBMLGCwAoqonx9kUZ
-         WZuIQBNqAmKFIo1CU99J/ZFXZGX0YCQBxXpwSdKrvEjMzQDu0WTTLbkU8LT3lL30ixv+
-         cj/QRSDe0F8Oe9AazcI720VIXZwMR/4nj7mWAAPC58aob3A6MhTcwDV3mOIKcrWqxLul
-         JvWQ==
-X-Gm-Message-State: AOAM530wu++HhbeWoBAy79XuhHs4guSXaqUMmbtow3vDEN6auByLzAd8
-        j+HadrFryd8aNxmXCsyQCl9Aw5tXrj65sSaFqeo=
-X-Google-Smtp-Source: ABdhPJylHXVxobE5e1ifiJDHDRquO0pMLQBoaBS/tG4ccMuwhxW9YXfZsUzkdYtO5UNqKBFH5lc+a679a57IWjJb0s4=
-X-Received: by 2002:a02:840c:: with SMTP id k12mr18319689jah.91.1605878832764;
- Fri, 20 Nov 2020 05:27:12 -0800 (PST)
+        Fri, 20 Nov 2020 08:27:20 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F35C0613CF;
+        Fri, 20 Nov 2020 05:27:20 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605878838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cHqHNj7D5d9Cv8EzyvHSjgSpDYg4ETCAPafLpAfo//Q=;
+        b=HEhswiImS/dENygnbZ2I5TlKQ+4kWcihUrziVeV1d3qqfS3S26UnHRv/Ped0aUKXHjC9Nx
+        DgwT754SAUbLML1w4KO9RwBfh4sQ2O3PSAV5pp6fY0aRCPMDk+Ryzev4plDG17YzlQhCFN
+        dqjGb9veqbjv5/eG77x99PMJN/E0iPrxWkOOXMljHyyxsQXrY5Kjc24r2mEGZtvBSokEmc
+        +wT4EvfQN1L+I+rTB/YyTlA9HawaS+cC7iosldQh5dV51/fJq8R7Kzu0OdcAxdEJcpNSd6
+        zzvupz6s5Mp5GkbewQvx7NRr/TQ8pUfDtBascYj+a0qodcbS7k6TmB+sk3flmw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605878838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cHqHNj7D5d9Cv8EzyvHSjgSpDYg4ETCAPafLpAfo//Q=;
+        b=RZkuXUktbRUflzdqY4fITcI9dyb3o37qGwy9CStVW1rfFicwzfXkw4b0liQC4o1VRZpd5V
+        cwwxQS4BdJvQIABw==
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch 14/19] softirq: Make softirq control and processing RT aware
+In-Reply-To: <20201120002621.GA32792@lothringen>
+References: <20201113140207.499353218@linutronix.de> <20201113141734.324061522@linutronix.de> <20201120002621.GA32792@lothringen>
+Date:   Fri, 20 Nov 2020 14:27:18 +0100
+Message-ID: <87o8jsnop5.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <CA+U=Dspy5+RE9agcLr6eY9DCMa1c5+++0JLeugMMBRXz4YLj1w@mail.gmail.com>
- <CAHp75VcT5hZH6m0Dri1h_EFjc7=4+1XoE7sRuQyfO75k9A0GKA@mail.gmail.com>
- <b74517242de5790f8ab0cd9be00a70b9ab96564c.camel@perches.com>
- <alpine.DEB.2.22.394.2011201140480.2750@hadrien> <CA+U=Dsp8Aws7_GARfgNE4w_1pK-hDVW9WVsWHF1TfZUEUo0Hbw@mail.gmail.com>
- <4af50412-a22f-4ca1-adb0-d732438c6669@metafoo.de>
-In-Reply-To: <4af50412-a22f-4ca1-adb0-d732438c6669@metafoo.de>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Fri, 20 Nov 2020 15:27:01 +0200
-Message-ID: <CA+U=DsqHvQqkjWKsd_deN_ud3zCL=kzt-Bxd9f=Z9NJ6i+m71Q@mail.gmail.com>
-Subject: Re: [Cocci] Proposal for a new checkpatch check; matching
- _set_drvdata() & _get_drvdata()
-To:     Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Joe Perches <joe@perches.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Robo Bot <apw@canonical.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cocci <cocci@systeme.lip6.fr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 3:16 PM Lars-Peter Clausen <lars@metafoo.de> wrote:
+On Fri, Nov 20 2020 at 01:26, Frederic Weisbecker wrote:
+> On Fri, Nov 13, 2020 at 03:02:21PM +0100, Thomas Gleixner wrote:
+>> +void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
+>> +{
+>> +	unsigned long flags;
+>> +	int newcnt;
+>> +
+>> +	WARN_ON_ONCE(in_hardirq());
+>> +
+>> +	/* First entry of a task into a BH disabled section? */
+>> +	if (!current->softirq_disable_cnt) {
+>> +		if (preemptible()) {
+>> +			local_lock(&softirq_ctrl.lock);
+>> +			rcu_read_lock();
 >
-> On 11/20/20 12:54 PM, Alexandru Ardelean wrote:
-> > On Fri, Nov 20, 2020 at 12:47 PM Julia Lawall <julia.lawall@inria.fr> wrote:
-> >>
-> >>
-> >> On Thu, 19 Nov 2020, Joe Perches wrote:
-> >>
-> >>> On Thu, 2020-11-19 at 17:16 +0200, Andy Shevchenko wrote:
-> >>>> On Thu, Nov 19, 2020 at 4:09 PM Alexandru Ardelean
-> >>>> <ardeleanalex@gmail.com> wrote:
-> >>>>> Hey,
-> >>>>>
-> >>>>> So, I stumbled on a new check that could be added to checkpatch.
-> >>>>> Since it's in Perl, I'm reluctant to try it.
-> >>>>>
-> >>>>> Seems many drivers got to a point where they now call (let's say)
-> >>>>> spi_set_drvdata(), but never access that information via
-> >>>>> spi_get_drvdata().
-> >>>>> Reasons for this seem to be:
-> >>>>> 1. They got converted to device-managed functions and there is no
-> >>>>> longer a remove hook to require the _get_drvdata() access
-> >>>>> 2. They look like they were copied from a driver that had a
-> >>>>> _set_drvdata() and when the code got finalized, the _set_drvdata() was
-> >>>>> omitted
-> >>>>>
-> >>>>> There are a few false positives that I can notice at a quick look,
-> >>>>> like the data being set via some xxx_set_drvdata() and retrieved via a
-> >>>>> dev_get_drvdata().
-> >>>> I can say quite a few. And this makes a difference.
-> >>>> So, basically all drivers that are using PM callbacks would rather use
-> >>>> dev_get_drvdata() rather than bus specific.
-> >>>>
-> >>>>> I think checkpatch reporting these as well would be acceptable simply
-> >>>>> from a reviewability perspective.
-> >>>>>
-> >>>>> I did a shell script to quickly check these. See below.
-> >>>>> It's pretty badly written but it is enough for me to gather a list.
-> >>>>> And I wrote it in 5 minutes :P
-> >>>>> I initially noticed this in some IIO drivers, and then I suspected
-> >>>>> that this may be more widespread.
-> >>>> It seems more suitable for coccinelle.
-> >>> To me as well.
-> >> To me as well, since it seems to involve nonlocal information.
-> >>
-> >> I'm not sure to understand the original shell script. Is there
-> >> something interesting about pci_set_drvdata?
-> > Ah, it's a stupid script I wrote in 5 minutes, so I did not bother to
-> > make things smart.
-> > In the text-matching I did in shell, there are some entries that come
-> > from comments and docs.
-> > It's only about 3-4 entries, so I just did a visual/manual ignore.
-> >
-> > In essence:
-> > The script searches for all strings that contain _set_drvdata.
-> > The separators are whitespace.
-> > It creates a list of all  xxxx_set_drvdata functions.
-> > For each xxxx_set_drvdata function:
-> >      It checks all files that have a xxxx_set_drvdata entry, but no
-> > xxxx_get_drvdata
-> >
-> > I piped this output into a file and started manually checking the drivers.
-> > There is one [I forget which function] that is xxxx_set_drvdata() but
-> > equivalent is xxxx_drvdata()
-> >
-> > As Andy said, some precautions must be taken in places where
-> > xxxx_set_drvdata() is called but dev_get_drvdata() is used.
-> > Cases like PM suspend/resume calls.
-> > And there may be some cases outside this context.
-> >
-> Doing something like this with coccinelle is fairly easy.
+> Ah you lock RCU because local_bh_disable() implies it and
+> since it doesn't disable preemption anymore, you must do it
+> explicitly?
 >
-> But I'd be very cautious about putting such a script into the kernel. It
-> will result in too many false positive drive-by patches. Such a script
-> will not detect cases such as:
+> Perhaps local_lock() should itself imply rcu_read_lock() ?
 
-Yeah, it would probably be a good idea to start with a few simple
-checks, then scale it.
-If we go for the existing _set_drvdata() / _get_drvdata() pair checks,
-there is a risk of breaking things.
+It's really only required for local_bh_disable(). Lemme add a comment.
 
+>> +		} else {
+>> +			DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt));
+>> +		}
+>> +	}
+>> +
+>> +	preempt_disable();
 >
->   * Driver is split over multiple files. One file does
-> ..._set_drvdata(), another does ..._get_drvdata().
+> Do you really need to disable preemption here? Migration is disabled by local_lock()
+> and I can't figure out a scenario where the below can conflict with a
+> preempting task.
+
+Indeed it's pointless.
+
+>> +	/*
+>> +	 * Track the per CPU softirq disabled state. On RT this is per CPU
+>> +	 * state to allow preemption of bottom half disabled sections.
+>> +	 */
+>> +	newcnt = this_cpu_add_return(softirq_ctrl.cnt, cnt);
 >
->   * Framework uses drvdata to exchange data with the driver. E.g driver
-> is expected to call set_drvdata() and then the framework uses
-> get_drvdata() to retrieve the data. This is not a very good pattern, but
-> there are some palces int he kernel where this is used. I believe for
-> example V4L2 uses this.
->
-> - Lars
->
+> __this_cpu_add_return() ?
+
+Yep.
+
+Thanks,
+
+        tglx
