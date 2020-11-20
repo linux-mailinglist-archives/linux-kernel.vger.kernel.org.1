@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA092BA9B9
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8502BA9BA
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 13:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727309AbgKTL7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 06:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37120 "EHLO
+        id S1727761AbgKTMAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 07:00:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgKTL7j (ORCPT
+        with ESMTP id S1725797AbgKTMAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 06:59:39 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C8BC0613CF;
-        Fri, 20 Nov 2020 03:59:39 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id z21so13034353lfe.12;
-        Fri, 20 Nov 2020 03:59:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+ibvwxqqWhUDi9O2xUIvhnipfczvPxS9v9Q92lXKwNA=;
-        b=E+RENnwRFPmloIRPsPF9987TnDlBNl4sW1tDkyIco/g/xYrJOqer8TOpyfTxsXsYLH
-         TEvc4Mpo6P1v+D+ZG/Yn4KJYCrHwBS8sgzZXs4ZmvWlxqHaa4xQHhfncg5sBW0+GzaZU
-         1jtfUiwYZYRniUz37Sygfv9w+aPYhTBPE2efFOQcEjbEAguytG6L9T9hVpvf7c0pfFPU
-         XPsb3bKDs09QQ+WESoznWSP5JgQF1DhAcGCiyq68ws+mc2/dD+wpOW06BCDODr+Oy1+z
-         qVw8VOzRqDX6Zy6PHJpO0gyyK1uzhixT9BDRCdyTjNnmYB0UTgHf51eBidTpsLHlpeN7
-         +9RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+ibvwxqqWhUDi9O2xUIvhnipfczvPxS9v9Q92lXKwNA=;
-        b=n9TDfIUvxWNJ0McAgPfIfDLQLE2j5w2hS4KdEVf1brALF5LTEW195vGYC6WBzZqeNO
-         tvVbcLhnjH8sOVD/pm+ZL5WvXeqGxgi8bTAfvilh2qCbEnZdQflFM3scweyJHbLhL7TU
-         fHfZRTLmS2b5lFG4l+uR5IU6C/tuiYAFg8FwoaDkbJZeuB/3j8w8JTIzJtgNdOWdh5On
-         7hx7eB77BslJcbgeMz+xnxnN8pNpm6Eoz7s4YK77qQpWSvx0uso6ar6LhNUk0wJjcjAl
-         LkArwlQTTJwI6KMEXq9LTVAsvu7efL2Pep69TW+ni+2Ebu+SfYZmGzG/OO8xvKqlZD+4
-         vTUw==
-X-Gm-Message-State: AOAM531Zoaeq8l/Md9atxkiQQg+W6hqOi9cZ2rP0htdKejmBt8TQ6e4g
-        LEhc8RCkvpQoBq9CvvQU8Ys=
-X-Google-Smtp-Source: ABdhPJxwBMYpxCJ5Z1QnjvybI2+pP5SKY3ok0iFap91fslmRlgBzgQpR5eVf5Tgqs0xp2oPvBhPSxQ==
-X-Received: by 2002:a19:e21b:: with SMTP id z27mr7441956lfg.409.1605873577627;
-        Fri, 20 Nov 2020 03:59:37 -0800 (PST)
-Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id h12sm322311lfl.74.2020.11.20.03.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 03:59:37 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Fri, 20 Nov 2020 12:59:35 +0100
-To:     Zqiang <qiang.zhang@windriver.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, josh@joshtriplett.org,
-        rostedt@goodmis.org, joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        urezki@gmail.com
-Subject: Re: [PATCH] rcu: kasan: record and print kvfree_call_rcu call stack
-Message-ID: <20201120115935.GA8042@pc636>
-References: <20201118035309.19144-1-qiang.zhang@windriver.com>
- <20201119214934.GC1437@paulmck-ThinkPad-P72>
+        Fri, 20 Nov 2020 07:00:00 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38584C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 03:59:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1IRDo4hBUd8j6ToyEOlhDczl8zQL0MZ1VcE/2Tj86V8=; b=lWgrloRSTuiGC5nk/4mHtAapdq
+        VwjRJ9pV/B0T1qMIc8kscWWKsHYukR+oAG35rA52pWTnBDx5lko8Mg2mrSuBc9HXXKzFegH7oJGtp
+        cwml6uFpFrBaQnbMehbVUamRufyImy2h3sQ01dQNaCyElJ40tKE7oY7DlyW91yiQQ3HL8MtyQUvbq
+        My0bogQ20GyepoV5LrRr5SCuJg65biu6wXWYQzw+W+2vh2FY8g8nwuPKoIFrqvMl6beiZDTPBQfCH
+        /pI3NOmklXlVteKMmE3U6Bp4Myx1Ojzlpwrt8x2Its6o0bCkEETXsUOqeydQ25qMtkGezRaNWRG5r
+        37I6qZZA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kg54r-0004IG-6x; Fri, 20 Nov 2020 11:59:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 61B3B307062;
+        Fri, 20 Nov 2020 12:59:43 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 41741200DF1A6; Fri, 20 Nov 2020 12:59:43 +0100 (CET)
+Date:   Fri, 20 Nov 2020 12:59:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, luto@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: Re: [PATCH v2 05/12] x86: rework arch_local_irq_restore() to not use
+ popf
+Message-ID: <20201120115943.GD3021@hirez.programming.kicks-ass.net>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-6-jgross@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119214934.GC1437@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201120114630.13552-6-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 01:49:34PM -0800, Paul E. McKenney wrote:
-> On Wed, Nov 18, 2020 at 11:53:09AM +0800, qiang.zhang@windriver.com wrote:
-> > From: Zqiang <qiang.zhang@windriver.com>
-> > 
-> > Add kasan_record_aux_stack function for kvfree_call_rcu function to
-> > record call stacks.
-> > 
-> > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> 
-> Thank you, but this does not apply on the "dev" branch of the -rcu tree.
-> See file:///home/git/kernel.org/rcutodo.html for more info.
-> 
-> Adding others on CC who might have feedback on the general approach.
-> 
-> 							Thanx, Paul
-> 
-> > ---
-> >  kernel/rcu/tree.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index da3414522285..a252b2f0208d 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3506,7 +3506,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >  		success = true;
-> >  		goto unlock_return;
-> >  	}
-> > -
-> > +	kasan_record_aux_stack(ptr);
-Is that save to invoke it on vmalloced ptr.?
+On Fri, Nov 20, 2020 at 12:46:23PM +0100, Juergen Gross wrote:
+> +static __always_inline void arch_local_irq_restore(unsigned long flags)
+> +{
+> +	if (!arch_irqs_disabled_flags(flags))
+> +		arch_local_irq_enable();
+> +}
 
---
-Vlad Rezki
+If someone were to write horrible code like:
+
+	local_irq_disable();
+	local_irq_save(flags);
+	local_irq_enable();
+	local_irq_restore(flags);
+
+we'd be up some creek without a paddle... now I don't _think_ we have
+genius code like that, but I'd feel saver if we can haz an assertion in
+there somewhere...
+
+Maybe something like:
+
+#ifdef CONFIG_DEBUG_ENTRY // for lack of something saner
+	WARN_ON_ONCE((arch_local_save_flags() ^ flags) & X86_EFLAGS_IF);
+#endif
+
+At the end?
