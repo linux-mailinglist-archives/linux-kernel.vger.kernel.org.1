@@ -2,129 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073212BA2DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAD72BA2E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725883AbgKTHPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:15:23 -0500
-Received: from mout.gmx.net ([212.227.15.18]:47411 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725768AbgKTHPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:15:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605856516;
-        bh=+LEyJWZBHwIf02qa1cs+cqkQlhMdXc7yjscoAD4xi0o=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date;
-        b=QHrvF8X0JKxWIyhwpzUzUtKUN2toZ2pruLpm3yhtUF3HQ8trKRaCtivgolYNieVqq
-         CWisIgjKojTA5q6PiNQ4ZprcR+LowOjHZFcsIpb1ADNSQQasZrb6/52l+ZUPOfB/bj
-         tgrW8ExOYvGETzu7R8kl3cQW9Yz/u5yYMdnhu6qM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.217.24]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MHXFr-1kSW7W3iIz-00DV6H; Fri, 20
- Nov 2020 08:15:15 +0100
-Message-ID: <eee10eb4ea028d4ac74939d5100ae9c4383b82da.camel@gmx.de>
-Subject: nouveau: WARNING: CPU: 0 PID: 20957 at
- drivers/gpu/drm/nouveau/nvif/vmm.c:71
-From:   Mike Galbraith <efault@gmx.de>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     Ben Skeggs <bskeggs@redhat.com>,
-        nouveau <nouveau@lists.freedesktop.org>
-Date:   Fri, 20 Nov 2020 08:15:15 +0100
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1725942AbgKTHRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 02:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgKTHRO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 02:17:14 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01323C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 23:17:14 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id v11so6421359qtq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 23:17:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Sh8xmbzzMkthaM4PoDLTGz1bJq0JyTvV/ga+xaNOrmI=;
+        b=bR0hdO+hsOd8AUYZWe4rqe0t+8dVsRt+T4yQEkOEvVEXBjkbl5odWxMUtdNYnC+drO
+         V08kxpT4/IJO6UOYS/e/PPNbS77BTgDAoQXJumg6181V7SIItcljacwtAT56IkCFev0t
+         gDXcbmFCQDif7Wp7Uhi73kuOsIgj2H7/BnPmA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Sh8xmbzzMkthaM4PoDLTGz1bJq0JyTvV/ga+xaNOrmI=;
+        b=P8GGT5y6B8fryQKMWnB0PzAW7yCWC9001tQu1doapwGPl0z7qfwmhD8Fvr8xflyo19
+         Yd91G7b8i/jHpe15iy1sqX6J/07CDAH/+4CjlxfvJMMJL5+uTJtHMvwRfmpXPZ6sUnOB
+         Vwqb/uwuHbFSFlj6oelsK3OJtSNI2GvbMSNmD5uxy6wV19B1A+pfK5ofWKDGgVGWiCuO
+         A32xFq+uf+tr6g+BonuSXC/5AtCPbrb/J4ku8oYObKZHvR89d4ZQm2Zfz+3bZJf2Oj1m
+         Dylm8iGG5eRsz1nuMordso0sBnndmcd4SsXH9bTngkJnhY0kONRGz1cTl7gajJX/7OqU
+         GT3A==
+X-Gm-Message-State: AOAM531dnkeleYDQPLRsyLoMIUeqvg1eW+DPCxiSBnTpbNNHEJB4GFyY
+        E+3drC+Hg8Cnx8Mxfjtw2vZSfZkJUvAhLxR1DPqv3w==
+X-Google-Smtp-Source: ABdhPJx/eC9KnP7s2NwSVaEcdk04k18m7EKL83AP6lLCbA027oPQLUgOEbP/71EKYM87y4byuAR+jMUKOJmcTDbufBk=
+X-Received: by 2002:ac8:74c9:: with SMTP id j9mr14398512qtr.208.1605856632944;
+ Thu, 19 Nov 2020 23:17:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:aiYOCE7yOonTQvzkaLZG/yT+pmhsOWuwq57JC+KrIrlKD2D3X6M
- g5PzUpc9DgM63193lyXhGyQpbd8b7QUU7rLuIBj2cc9ipqfa7QeTACXi6NmQNSl0FRYYUpU
- bu7rj5cF5yZU+W9qZ7+Q9KKp5oYtVhl9srujPx2481B4sZgcxjlDuHzETAusED2bab76/sr
- Z8BmTlGOZ0fr0ValuhwyA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+VBCuNVCrXU=:/qZji59ny1UFpkeSBvoCMj
- tud57X9VVId1+a/2vPXth3p4Zl42+UskmnsHwfttqR2RfebGN6uSfRkpMxFm3ONTl+FxsNw1F
- Qu3leUNg+9r8JLnZm3E7gTJGHNEkpESquPwy6dbag8WB6Lfqzk8c1GmKzE8oeH6Bv80nsNt5l
- GCiQf3l1uwEU63GB55axtmJXTjog9OIr274Dk8cfGGukDC6xDTDS12qe/xStE9wwYf1zyqEqa
- Womnl6AeDuJaWVL3jmVfOamFHVrlQzZhBG96hs+WLQHwEP+04NMB6CsIlUYxc3LyrGAGO0f9G
- 9k9KVpeJZ7qfmMS6/EFFXrghqa0QqvRxQemMR1Wub8DxN5wUPYI/Wz8fYJdPk7fuEm1FQ4wvr
- wVEQpmX88Bzfplp9ALSGR3G7jtU7IiGC+qAoFuFM8C9ZwIU8IY33vf/6a0y679xVoCXKyxgdR
- wEJszatyHXyTe47GjJu19ihoyB6z7KbLWujQpUH8k45nINDxNBvV0uKfGZT0LfjK0RRTox9Z/
- 2SOoY1LWIeBWYjqwuv51TfcvLGOH2qkROl8DV2r9P9ebMYvMSurwu5HJz5mu025Uaa2XvLtH5
- PSFfI+nIokTl+i35QDRHaMF+Wt6fdsOZFfsRXJIq97BLDDOrVhlblMeCMUid5fUBrgjcnjdzY
- fj2KskYGhjg7qC6ZEcQiqPb3KgL83F+SacppjZa96XeG2OEnqcus3men25ZTN7t8BDVVn4JnC
- GiXftTvGtOyBM09KKYzaMFX0t5m8HTT9cXHg4hJDZALL3weIwPkG88U7FYAH/OWSdw6p+37il
- szQ7VsazrwhQOuyLLdI8V2AjzJyOGiTq9j3QdbvgXiGE35lLEhpP4AjanrVEXvIPntKSSZCsz
- BPme47ZdBZg01Q8eR38w==
+References: <1605792621-6268-1-git-send-email-zhangchangzhong@huawei.com>
+ <CAKOOJTyJ_R6cTij0uZweOm2aFCDg+AG3qGcOSb=wsOSQKzL60g@mail.gmail.com> <20201119215309.0f9c4b82@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201119215309.0f9c4b82@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Michael Chan <michael.chan@broadcom.com>
+Date:   Thu, 19 Nov 2020 23:17:01 -0800
+Message-ID: <CACKFLimkjTmZZe4Wpy0YERit=nVa6tPkUQ9L5Pwx4gYg-=Qc7w@mail.gmail.com>
+Subject: Re: [PATCH net] bnxt_en: fix error return code in bnxt_init_board()
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Edwin Peer <edwin.peer@broadcom.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Prashant Sreedharan <prashant@broadcom.com>,
+        Jeffrey Huang <huangjw@broadcom.com>,
+        Eddie Wai <eddie.wai@broadcom.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000003283b505b484a2d6"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[15561.391527] ------------[ cut here ]------------
-[15561.391560] WARNING: CPU: 0 PID: 20957 at drivers/gpu/drm/nouveau/nvif/v=
-mm.c:71 nvif_vmm_put+0x4a/0x50 [nouveau]
-[15561.391562] Modules linked in: nls_utf8(E) isofs(E) fuse(E) msr(E) xt_co=
-mment(E) br_netfilter(E) xt_physdev(E) nfnetlink_cthelper(E) nfnetlink(E) e=
-btable_filter(E) ebtables(E) af_packet(E) bridge(E) stp(E) llc(E) iscsi_ibf=
-t(E) iscsi_boot_sysfs(E) rfkill(E) xt_pkttype(E) xt_tcpudp(E) ip6t_REJECT(E=
-) nf_reject_ipv6(E) ipt_REJECT(E) nf_reject_ipv4(E) iptable_filter(E) bpfil=
-ter(E) ip6table_mangle(E) ip_tables(E) xt_conntrack(E) nf_conntrack(E) nf_d=
-efrag_ipv6(E) nf_defrag_ipv4(E) libcrc32c(E) ip6table_filter(E) ip6_tables(=
-E) x_tables(E) hid_logitech_hidpp(E) sr_mod(E) usblp(E) cdrom(E) hid_logite=
-ch_dj(E) joydev(E) intel_rapl_msr(E) intel_rapl_common(E) at24(E) mei_hdcp(=
-E) iTCO_wdt(E) regmap_i2c(E) intel_pmc_bxt(E) iTCO_vendor_support(E) snd_hd=
-a_codec_realtek(E) snd_hda_codec_generic(E) ledtrig_audio(E) snd_hda_codec_=
-hdmi(E) x86_pkg_temp_thermal(E) intel_powerclamp(E) snd_hda_intel(E) corete=
-mp(E) snd_intel_dspcfg(E) kvm_intel(E) snd_hda_codec(E) snd_hwdep(E) snd_hd=
-a_core(E) kvm(E)
-[15561.391586]  nls_iso8859_1(E) nls_cp437(E) snd_pcm(E) irqbypass(E) crct1=
-0dif_pclmul(E) snd_timer(E) crc32_pclmul(E) r8169(E) ghash_clmulni_intel(E)=
- snd(E) aesni_intel(E) realtek(E) crypto_simd(E) i2c_i801(E) mei_me(E) mdio=
-_devres(E) cryptd(E) pcspkr(E) soundcore(E) i2c_smbus(E) lpc_ich(E) glue_he=
-lper(E) mfd_core(E) libphy(E) mei(E) fan(E) thermal(E) intel_smartconnect(E=
-) nfsd(E) auth_rpcgss(E) nfs_acl(E) lockd(E) grace(E) sch_fq_codel(E) sunrp=
-c(E) nfs_ssc(E) uas(E) usb_storage(E) hid_generic(E) usbhid(E) nouveau(E) w=
-mi(E) i2c_algo_bit(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) sysim=
-gblt(E) fb_sys_fops(E) xhci_pci(E) cec(E) ahci(E) rc_core(E) ehci_pci(E) xh=
-ci_hcd(E) ttm(E) libahci(E) ehci_hcd(E) libata(E) drm(E) usbcore(E) video(E=
-) button(E) sd_mod(E) t10_pi(E) vfat(E) fat(E) virtio_blk(E) virtio_mmio(E)=
- virtio_ring(E) virtio(E) ext4(E) crc32c_intel(E) crc16(E) mbcache(E) jbd2(=
-E) loop(E) sg(E) dm_multipath(E) dm_mod(E) scsi_dh_rdac(E) scsi_dh_emc(E) s=
-csi_dh_alua(E) scsi_mod(E)
-[15561.391626]  efivarfs(E) autofs4(E)
-[15561.391637] CPU: 0 PID: 20957 Comm: kworker/0:4 Kdump: loaded Tainted: G=
- S          E     5.10.0.g9c87c9f-master #3
-[15561.391640] Hardware name: MEDION MS-7848/MS-7848, BIOS M7848W08.20C 09/=
-23/2013
-[15561.391667] Workqueue: events nouveau_cli_work [nouveau]
-[15561.391682] RIP: 0010:nvif_vmm_put+0x4a/0x50 [nouveau]
-[15561.391684] Code: 00 00 00 48 89 e2 48 c7 04 24 00 00 00 00 48 89 44 24 =
-08 e8 48 e7 ff ff 85 c0 75 0e 48 c7 43 08 00 00 00 00 48 83 c4 10 5b c3 <0f=
-> 0b eb ee 66 90 0f 1f 44 00 00 53 48 83 ec 18 83 fe 01 48 8b 5c
-[15561.391686] RSP: 0000:ffff8881feca7e08 EFLAGS: 00010282
-[15561.391688] RAX: 00000000fffffffe RBX: ffff8881feca7e28 RCX: 00000000000=
-00000
-[15561.391690] RDX: 0000000000000010 RSI: ffff8881feca7d80 RDI: ffff8881fec=
-a7e18
-[15561.391692] RBP: ffff8881feca7e50 R08: 0000000001dc5000 R09: 00000000000=
-00000
-[15561.391693] R10: ffffffff82003de8 R11: fefefefefefefeff R12: dead0000000=
-00122
-[15561.391695] R13: dead000000000100 R14: ffff888102fa9328 R15: ffff888102f=
-a9308
-[15561.391697] FS:  0000000000000000(0000) GS:ffff88841ec00000(0000) knlGS:=
-0000000000000000
-[15561.391698] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[15561.391700] CR2: 00007fd692058000 CR3: 0000000003c10002 CR4: 00000000001=
-706f0
-[15561.391701] Call Trace:
-[15561.391729]  nouveau_vma_del+0x58/0xa0 [nouveau]
-[15561.391755]  nouveau_gem_object_delete_work+0x26/0x40 [nouveau]
-[15561.391782]  nouveau_cli_work+0x76/0x120 [nouveau]
-[15561.391786]  ? __schedule+0x35c/0x770
-[15561.391790]  process_one_work+0x1f5/0x3c0
-[15561.391792]  ? process_one_work+0x3c0/0x3c0
-[15561.391794]  worker_thread+0x2d/0x3d0
-[15561.391796]  ? process_one_work+0x3c0/0x3c0
-[15561.391798]  kthread+0x117/0x130
-[15561.391800]  ? kthread_park+0x90/0x90
-[15561.391803]  ret_from_fork+0x1f/0x30
-[15561.391806] ---[ end trace 1f8ba448e97e64e0 ]---
+--0000000000003283b505b484a2d6
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, Nov 19, 2020 at 9:53 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Thu, 19 Nov 2020 10:53:23 -0800 Edwin Peer wrote:
+> > > Fix to return a negative error code from the error handling
+> > > case instead of 0, as done elsewhere in this function.
+> > >
+> > > Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
+> > > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > > Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+>
+> > >         if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) != 0 &&
+> > >             dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) != 0) {
+> > >                 dev_err(&pdev->dev, "System does not support DMA, aborting\n");
+> > > +               rc = -EIO;
+> > >                 goto init_err_disable;
+>
+> Edwin, please double check if this shouldn't jump to
+> pci_release_regions() (or maybe it's harmless 'cause
+> PCI likes to magically release things on its own).
+
+Good point.  We definitely should call pci_release_regions() for correctness.
+
+I will send out the patch shortly.  Thanks.
+
+--0000000000003283b505b484a2d6
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+ENt96uQJNu/QKZCsRxnu8bu9XkzIQTTFs7+NKghvf+h9ck5SSEvV5vlzS8HDlhKReyLBOxx5AgMB
+AAGjggHQMIIBzDAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
+hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
+ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
+c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
+aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
+PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
+My5jcmwwJAYDVR0RBB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUyZbpLEwR
+KZHEh+rXp6GbCZmMEwUwDQYJKoZIhvcNAQELBQADggEBADZsABrJEwqeVLJJcX+rKN/oFPl/Sb1f
+4NQRqf0J5IHlqI7oSUUaSVHviPvq4QyTMh7P9KHkuTwANTnTPr4f4y1SirdtxgZKy1xDmt1KjL5u
+nA4rBLSA+Kp/mo0DMxKKQY/LsZNS3Zn+HIAZpXTUEFotC5qgN35ua7sP0hTynKzfLG8Fi565tQkX
+Si7Gzq+VM1jcLa3+kjHalTIlC7q7gkvVhgEwmztW1SuO7pJn0/GOncxYGQXEk3PIH3QbPNO8VMkx
+3YeEtbaXosR5XLWchobv9S5HB9h4t0TUbZh2kX0HlGzgFLCPif27aL7ZpahFcoCS928kT+/V4tAj
+BB+IwnkxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMC
+DF5npqHWO504Sj4Q1TANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgxxIFE55jo398
+uO8oTDVEC9icVroqXn6P8oIALWaC6IQwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG
+9w0BCQUxDxcNMjAxMTIwMDcxNzEzWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglg
+hkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0B
+AQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAAEj+RDzZkJa75XuqsEFIILhx2BWhcuv
+C7Vp+pOmiHH3TRkF1Ll1dXxEX9djxyvKTQdFZHr3NnInOe9UuS+DRwdWJanN+qIEMsGvRpgJUuLt
+NbIpMA/3YE/xqng7HeTKyGTXW9t3+oA/W/OUkpDeR/3+WH67LoAdQmDaEKB3vQmgdwYSiHCpii29
+zHsquRSMViCE3a77h6olxXyXjF/FHJjpq4+QpYoeaIUDStln/yBVsKg7Z5U7GjMv3iLw1z01dpBQ
+o0LDqF7Rwo7g7dq12G2uW8W3AkNzBHG61uGdJVy/4Z5+qFJPqMyUsUIzl39PRovydfMnD2MFWxDg
+4+PrzQs=
+--0000000000003283b505b484a2d6--
