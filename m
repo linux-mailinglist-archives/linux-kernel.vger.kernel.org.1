@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42A62BA68D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1F52BA68E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgKTJtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:49:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57594 "EHLO mail.kernel.org"
+        id S1727100AbgKTJuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:50:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34002 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbgKTJtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:49:52 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14F74204EF;
-        Fri, 20 Nov 2020 09:49:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605865792;
-        bh=qKccB098mAm5w/p7q6BC7LJEV+f2/iZ7mmRnARRYYyA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0Rcc4IIPYstEoDx1kd4aoWSdpqskcu/T2mLE+C39hGUC51zGEo45Gh6qQjhIOMyqy
-         2yAxbwrKuNyrHH4++zbD5UKKa++dEga2PmuwrtCv1ACUz64Rea17+O5Aef/YiM7P8p
-         GEqeRrPLmlr7f1fkWEjE6kSCtm9vwiTsIUEzHvLE=
-Date:   Fri, 20 Nov 2020 09:49:46 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>, mark.rutland@arm.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Shiju Jose <shiju.jose@huawei.com>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        guohanjun@huawei.com, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        lenb@kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH 1/1] ACPI/IORT: Fix doc warnings in iort.c
-Message-ID: <20201120094946.GA6033@willie-the-truck>
-References: <20201014093139.1580-1-shiju.jose@huawei.com>
- <20201119180120.GA25142@e121166-lin.cambridge.arm.com>
- <20201119180346.GI4376@gaia>
+        id S1726293AbgKTJuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 04:50:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605865804; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1xs/FyEHbTR25nH7LU7ymZu1HNJyJ3XDN8eI7fh5D2s=;
+        b=l5zibdCR+QfC0tlu+B6KjUOtYv+PGV5renAYAAYNjlen1woKlzLTKTGGHHN8Rv6DakcjNd
+        Ldp9fuRFQ9jgwHCyqvSVooh9YcLE85ecvcBa2y4fadePrjAc4mLKbpGSG0b4y6cC1tWTQj
+        Bav2Lvf/VSxANxvgjvVS/I1uAlqykjI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3485FAC60;
+        Fri, 20 Nov 2020 09:50:04 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 10:50:03 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Hui Su <sh_def@163.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, 0x7f454c46@gmail.com, jroedel@suse.de,
+        akpm@linux-foundation.org, jannh@google.com,
+        mark.mossberg@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/dumpstack: make show_trace_log_lvl() static
+Message-ID: <X7eRSzvm98AOk9pZ@alley>
+References: <20201113133943.GA136221@rlk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119180346.GI4376@gaia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201113133943.GA136221@rlk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 06:03:47PM +0000, Catalin Marinas wrote:
-> On Thu, Nov 19, 2020 at 06:01:20PM +0000, Lorenzo Pieralisi wrote:
-> > [+Catalin - I hope it can go via arm64 tree, trivial doc fixup]
+On Fri 2020-11-13 21:39:43, Hui Su wrote:
+> show_trace_log_lvl() won't be used by other files, so
+> make it static and remove the declaration from the header
+> file.
 > 
-> Or Will if you want it in 5.10, otherwise I can pick it up for 5.11.
+> Signed-off-by: Hui Su <sh_def@163.com>
 
-I can pick this up for 5.10, but I won't be sending a pull request until
-next week, since I'm waiting for Mark's irq tracing fixes to appear and I
-don't have anything else queued atm.
+I would make sense to add:
 
-Will
+Fixes: 16d1cb0bc43642a4d9 ("x86/dumpstack: Unify show_regs()")
+
+Othrewise, it looks good:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
