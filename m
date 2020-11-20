@@ -2,204 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D9F2BB89C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B9B2BB89E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 22:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728492AbgKTVvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 16:51:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        id S1728141AbgKTVye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 16:54:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728034AbgKTVvu (ORCPT
+        with ESMTP id S1726426AbgKTVyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:51:50 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2CAC0613CF;
-        Fri, 20 Nov 2020 13:51:50 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id i13so8445348pgm.9;
-        Fri, 20 Nov 2020 13:51:50 -0800 (PST)
+        Fri, 20 Nov 2020 16:54:33 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C1FC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:54:33 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id k9so98695ejc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:54:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DMZDqk3EJTuLlBttmZxfIGencN4dIvpRMnJMaj5PBvU=;
-        b=sRT77v23nRDxyQSyZSuMgmdeaEAoyhj7Z59RWqMDuKoYEnw5wtqRSqfEpVjc9Hdx30
-         d4qXl/FXmc5VUCfMBuuLVUo9qFy2UzVgtq9799+9c5xAlIYHz05JFa1AAbLlmGnQyWIY
-         SAaQiZcNv9M7IhIXFK3ttWB/RUOJo4lFekX35PZhHQ12Hz/BPTj7YwvGyQPHgFpINSch
-         8nEHkLVUcKsJ5AWntGnKbwb8jz1wjrFE/18RxCcg7aKHI3adYFjJfL2NIYYdexnhq/6X
-         H+FtqU4coAoCuH1JrxNDtaJ+V64XjjINgYfp/nhmxYJ8QJBWVZ2lK0deeBQHHfVIwX7P
-         qEfw==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BdGxZHHmNWUjxqYGOe+E7s2xXNJsvySUdvnv2lEf71E=;
+        b=X7MLb6Q6fRECqWHpGN/RhKmYjHYauDLrSBvyd3prItB4mnb08UyJgAUVNo7NujpNDb
+         kUaFG/GtH+ofG3FrxNu4EsTUDLUWtQ8HMEKRcMkZvEGkJP+SYaYMtSK/GP13TrP78HNB
+         OGHs2r/zoDEfWLprdi64t0CfJQwI/miuV7r3NlEsXYMne1Y7NQLujpcX6FVi0sjmt8yJ
+         RNt3qI2W5xvpe7EZg9JLzt1D67oSCCdb/nQNp29/WtbOxGrRH0vmc+dKy2uFSBEvSORd
+         Ne4RW1OcCI+1n9QMw+Gk4dEes4uWXz/cpuPpZHaopPiWhiZnj1I69mf/vxEdJqwBFcHP
+         76Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DMZDqk3EJTuLlBttmZxfIGencN4dIvpRMnJMaj5PBvU=;
-        b=PQumrgpqUUZcrUrD0OD9nSRi2umZJ10aaJXl1ENEWzpwHn5iW5UCmxFzLBqnap+j/d
-         NQCz6hQpXmV4ILvrftkR/anMIIF4P+oZQ75FqhH7NnzlXV4Nbnmd8Salr+yV2SMawvbO
-         oDTZkNjVGLeaYhyWCP2ueh5PLre1i8nz3Syw5PmGjxt7KdK8Rb8fROpew9qCctFGMwRH
-         YZKtV61dkzCpz5fa9ZVBoNqzpKZ+phXcWgz+Qe70W43gll5UXv2l9Odi0jb5cFG4i/l2
-         QOj3i8EtMv6uQjDOZYy4A7Z45NG912+Wbb7AjXokB9qVRIVEWt2dyAp4c5cIoZgiUvCU
-         aw8w==
-X-Gm-Message-State: AOAM531mqusEPVugPkDP7CoNUkEmimJkuIJuUKkRe2uNb3gkTxDGgRq6
-        nTZkotweu5yYXwEtG5dX6OML+HkdnvM=
-X-Google-Smtp-Source: ABdhPJzTM+m7K00QasW+CUKrFf9wSBg2cvJbboS9htreZKHu4KGgAwPq5WC6PEM+L1fECUWiTSUNUQ==
-X-Received: by 2002:a62:7cd3:0:b029:18b:8c56:91eb with SMTP id x202-20020a627cd30000b029018b8c5691ebmr15451198pfc.23.1605909110033;
-        Fri, 20 Nov 2020 13:51:50 -0800 (PST)
-Received: from localhost (g133.220-213-56.ppp.wakwak.ne.jp. [220.213.56.133])
-        by smtp.gmail.com with ESMTPSA id r66sm3410197pfc.114.2020.11.20.13.51.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 13:51:49 -0800 (PST)
-Date:   Sat, 21 Nov 2020 06:51:47 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, newella@fb.com
-Subject: Re: [PATCH 03/27] blk-iocost: use local[64]_t for percpu stat
-Message-ID: <20201120215147.GB961977@lianli.shorne-pla.net>
-References: <20200901185257.645114-1-tj@kernel.org>
- <20200901185257.645114-4-tj@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BdGxZHHmNWUjxqYGOe+E7s2xXNJsvySUdvnv2lEf71E=;
+        b=a2APOPywcLkPJ6mctjSnrcLfDbZuE0OSQniTJ9C9nLAoQLaOjWYXAsnmr6JHZCTMP1
+         B7s7CRS0/O7YNz/Otn7rcFL4Ti6sMAoMn9KOgGJiCL4xFyIZ81Sy3okDfVGnMLiBeZBQ
+         GINSt0ydp8YzOJ0tmnpiu/13SGIfhC0uqcyVHDVyN3iWmB1UO6Hh+/o1ApiyD/OM3jT8
+         j7X0TBrDNV8OnhqvSsHKKv/OQG7unvzG6gueGJKG+SrrqwmtAPuTOBZcE6eQkTLgQIdi
+         a9qarJ0XKFZomLJglFPU4J6Fn7JBH9IlHdrdE0W4MXEfjYVnP6FOiwqrdgZC52cUOHVP
+         pjFQ==
+X-Gm-Message-State: AOAM533NDDSEWeKoR1xWlwnB8ftekl1NdNIo4BjVkDOwtnJW4ax4KMWQ
+        DUwMmiLfVKckp4amYciW8CuLpjC9B2XcOiX9t7AdXQ==
+X-Google-Smtp-Source: ABdhPJyE2b/0YtawlbtxEUnWGo0jKy4x0sab3BacEj+0/c6kKxXAnmdvCPHRiJBllOsf974BtGexofusrunUiAvykHo=
+X-Received: by 2002:a17:906:1458:: with SMTP id q24mr36056793ejc.541.1605909272243;
+ Fri, 20 Nov 2020 13:54:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901185257.645114-4-tj@kernel.org>
+References: <20201120211707.GC4327@casper.infradead.org> <9C8F0E5D-2D42-4BA5-A5B5-9E049E1BE862@redhat.com>
+In-Reply-To: <9C8F0E5D-2D42-4BA5-A5B5-9E049E1BE862@redhat.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 20 Nov 2020 16:53:56 -0500
+Message-ID: <CA+CK2bC9u3pAi0tEOyobUUEFnX1J3us=mxmwvnmzCkudq_MhxQ@mail.gmail.com>
+Subject: Re: Pinning ZONE_MOVABLE pages
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, sthemmin@microsoft.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 02:52:33PM -0400, Tejun Heo wrote:
-> blk-iocost has been reading percpu stat counters from remote cpus which on
-> some archs can lead to torn reads in really rare occassions. Use local[64]_t
-> for those counters.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> ---
->  block/blk-iocost.c | 37 +++++++++++++++++++++++++++----------
->  1 file changed, 27 insertions(+), 10 deletions(-)
-> 
-> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-> index d37b55db2409..e2266e7692b4 100644
-> --- a/block/blk-iocost.c
-> +++ b/block/blk-iocost.c
-> @@ -179,6 +179,8 @@
->  #include <linux/parser.h>
->  #include <linux/sched/signal.h>
->  #include <linux/blk-cgroup.h>
-> +#include <asm/local.h>
-> +#include <asm/local64.h>
+On Fri, Nov 20, 2020 at 4:34 PM David Hildenbrand <david@redhat.com> wrote:
+>
+>
+> > Am 20.11.2020 um 22:17 schrieb Matthew Wilcox <willy@infradead.org>:
+> >
+> > =EF=BB=BFOn Fri, Nov 20, 2020 at 09:59:24PM +0100, David Hildenbrand wr=
+ote:
+> >>
+> >>>> Am 20.11.2020 um 21:28 schrieb Pavel Tatashin <pasha.tatashin@soleen=
+.com>:
+> >>>
+> >>> =EF=BB=BFRecently, I encountered a hang that is happening during memo=
+ry hot
+> >>> remove operation. It turns out that the hang is caused by pinned user
+> >>> pages in ZONE_MOVABLE.
+> >>>
+> >>> Kernel expects that all pages in ZONE_MOVABLE can be migrated, but
+> >>> this is not the case if a user applications such as through dpdk
+> >>> libraries pinned them via vfio dma map. Kernel keeps trying to
+> >>> hot-remove them, but refcnt never gets to zero, so we are looping
+> >>> until the hardware watchdog kicks in.
+> >>>
+> >>> We cannot do dma unmaps before hot-remove, because hot-remove is a
+> >>> slow operation, and we have thousands for network flows handled by
+> >>> dpdk that we just cannot suspend for the duration of hot-remove
+> >>> operation.
+> >>>
+> >>
+> >> Hi!
+> >>
+> >> It=E2=80=98s a known problem also for VMs using vfio. I thought about =
+this some while ago an came to the same conclusion: before performing long-=
+term pinnings, we have to migrate pages off the movable zone. After that, i=
+t=E2=80=98s too late.
+> >
+> > We can't, though.  VMs using vfio pin their entire address space (right=
+?)
+> > so we end up with basically all of the !MOVABLE memory used for VMs and
+> > the MOVABLE memory goes unused (I'm thinking about the case of a machin=
+e
+> > which only hosts VMs and has nothing else to do with its memory).  In
+> > that case, the sysadmin is going to reconfigure ZONE_MOVABLE away, and
+> > now we just don't have any ZONE_MOVABLE.  So what's the point?
+>
+> When the guest is using an vIOMMU, it will only pin what=E2=80=98s curren=
+tly mapped by the guest into the vIOMMU. Otherwise: yes.
 
-Hi Tejun,
+Right, not all guest memory needs to be pinned, so ZONE_MOVABLE can
+still be used for a vast amount of allocations.
 
-FYI, I am just noticing this but this breaks my allyesconfig build
-on OpenRISC; as 32-bit arch/openrisc doesn't define local64.h
+>
+> If you assume all memory will be used for VMs with vfio, then yes: no ZON=
+E_MOVABLE, no memory hotunplug. If its=E2=80=98s only some VMs, it=E2=80=98=
+s a different story.
 
-In general local64 is slow on 32-bit architectures, would that
-be a problem with the usage here?  Are the calls to local64_*
-below on critical paths?
+Sounds like in such an extreme case it is reasonable to assume no
+hot-plug. But, when you have 8G, and need to remove 2G movable zone,
+but can't guarantee it even if you have 6G of free mem, this is
+unreasonable.
 
-Either way I will submit a patch in include generic local64.h
-on OpenRISC, I confirmed it fixes the build.  I do not know of anyone
-using cgroups on OpenRISC systems.
+>
+> >
+> > ZONE_MOVABLE can also be pinned by mlock() and other such system calls.
+>
+> Mlocked pages can be migrated, no? They are simply not swappable iirc.
 
--Stafford
+Yes, mlocked they are simply in memory, but the content of the pages
+can be migrated to a different place in RAM.
 
->  #include "blk-rq-qos.h"
->  #include "blk-stat.h"
->  #include "blk-wbt.h"
-> @@ -373,8 +375,8 @@ struct ioc_params {
->  };
->  
->  struct ioc_missed {
-> -	u32				nr_met;
-> -	u32				nr_missed;
-> +	local_t				nr_met;
-> +	local_t				nr_missed;
->  	u32				last_met;
->  	u32				last_missed;
->  };
-> @@ -382,7 +384,7 @@ struct ioc_missed {
->  struct ioc_pcpu_stat {
->  	struct ioc_missed		missed[2];
->  
-> -	u64				rq_wait_ns;
-> +	local64_t			rq_wait_ns;
->  	u64				last_rq_wait_ns;
->  };
->  
-> @@ -1278,8 +1280,8 @@ static void ioc_lat_stat(struct ioc *ioc, u32 *missed_ppm_ar, u32 *rq_wait_pct_p
->  		u64 this_rq_wait_ns;
->  
->  		for (rw = READ; rw <= WRITE; rw++) {
-> -			u32 this_met = READ_ONCE(stat->missed[rw].nr_met);
-> -			u32 this_missed = READ_ONCE(stat->missed[rw].nr_missed);
-> +			u32 this_met = local_read(&stat->missed[rw].nr_met);
-> +			u32 this_missed = local_read(&stat->missed[rw].nr_missed);
->  
->  			nr_met[rw] += this_met - stat->missed[rw].last_met;
->  			nr_missed[rw] += this_missed - stat->missed[rw].last_missed;
-> @@ -1287,7 +1289,7 @@ static void ioc_lat_stat(struct ioc *ioc, u32 *missed_ppm_ar, u32 *rq_wait_pct_p
->  			stat->missed[rw].last_missed = this_missed;
->  		}
->  
-> -		this_rq_wait_ns = READ_ONCE(stat->rq_wait_ns);
-> +		this_rq_wait_ns = local64_read(&stat->rq_wait_ns);
->  		rq_wait_ns += this_rq_wait_ns - stat->last_rq_wait_ns;
->  		stat->last_rq_wait_ns = this_rq_wait_ns;
->  	}
-> @@ -1908,6 +1910,7 @@ static void ioc_rqos_done_bio(struct rq_qos *rqos, struct bio *bio)
->  static void ioc_rqos_done(struct rq_qos *rqos, struct request *rq)
->  {
->  	struct ioc *ioc = rqos_to_ioc(rqos);
-> +	struct ioc_pcpu_stat *ccs;
->  	u64 on_q_ns, rq_wait_ns, size_nsec;
->  	int pidx, rw;
->  
-> @@ -1931,13 +1934,17 @@ static void ioc_rqos_done(struct rq_qos *rqos, struct request *rq)
->  	rq_wait_ns = rq->start_time_ns - rq->alloc_time_ns;
->  	size_nsec = div64_u64(calc_size_vtime_cost(rq, ioc), VTIME_PER_NSEC);
->  
-> +	ccs = get_cpu_ptr(ioc->pcpu_stat);
-> +
->  	if (on_q_ns <= size_nsec ||
->  	    on_q_ns - size_nsec <= ioc->params.qos[pidx] * NSEC_PER_USEC)
-> -		this_cpu_inc(ioc->pcpu_stat->missed[rw].nr_met);
-> +		local_inc(&ccs->missed[rw].nr_met);
->  	else
-> -		this_cpu_inc(ioc->pcpu_stat->missed[rw].nr_missed);
-> +		local_inc(&ccs->missed[rw].nr_missed);
-> +
-> +	local64_add(rq_wait_ns, &ccs->rq_wait_ns);
->  
-> -	this_cpu_add(ioc->pcpu_stat->rq_wait_ns, rq_wait_ns);
-> +	put_cpu_ptr(ccs);
->  }
->  
->  static void ioc_rqos_queue_depth_changed(struct rq_qos *rqos)
-> @@ -1977,7 +1984,7 @@ static int blk_iocost_init(struct request_queue *q)
->  {
->  	struct ioc *ioc;
->  	struct rq_qos *rqos;
-> -	int ret;
-> +	int i, cpu, ret;
->  
->  	ioc = kzalloc(sizeof(*ioc), GFP_KERNEL);
->  	if (!ioc)
-> @@ -1989,6 +1996,16 @@ static int blk_iocost_init(struct request_queue *q)
->  		return -ENOMEM;
->  	}
->  
-> +	for_each_possible_cpu(cpu) {
-> +		struct ioc_pcpu_stat *ccs = per_cpu_ptr(ioc->pcpu_stat, cpu);
-> +
-> +		for (i = 0; i < ARRAY_SIZE(ccs->missed); i++) {
-> +			local_set(&ccs->missed[i].nr_met, 0);
-> +			local_set(&ccs->missed[i].nr_missed, 0);
-> +		}
-> +		local64_set(&ccs->rq_wait_ns, 0);
-> +	}
-> +
->  	rqos = &ioc->rqos;
->  	rqos->id = RQ_QOS_COST;
->  	rqos->ops = &ioc_rqos_ops;
-> -- 
-> 2.26.2
-> 
+>
+> > The kernel needs to understand that ZONE_MOVABLE memory may not actuall=
+y
+> > be movable, and skip the unmovable stuff.
+> >
+>
+> Then you don=E2=80=98t have unplug guarantees. Memory unplug broken by de=
+sign. Then there is no point in optimizing that case at all and tell custom=
+ers =E2=80=9Evfio and memory hotunplug is incompatible=E2=80=9C. The only u=
+gly thing is the endless loop.
+
+Right, if memory in ZONE_MOVABLE is not guaranteed to be movable, we
+can never guarantee memory hot-remove even when we have a lot of free
+memory to migrate to.
+
+>
