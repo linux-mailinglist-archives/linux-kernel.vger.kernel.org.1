@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A96E32BB55B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9677D2BB55D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732353AbgKTT1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:27:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732352AbgKTT1A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:27:00 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C10C061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:27:00 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id 10so8829321pfp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:27:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JAgY0tq6Ik3G8Dzw77qh9IOUQgJXhqP7cfUlywmdszQ=;
-        b=IpTyZPIsHzhSixSaN8+yeNKl+4Bhg7vz3+0AskxXK5poLugV+o/SaUcm6H6JfS6/a0
-         FVrCONA4B6e6DjlInfbjwi2hcpX5U3wdeeWt3SW6J747MOyVWMuXF5cU6UV8Fapn6qOA
-         J7VALfJ1CUpT4U/2Duh4vOxJD1wc1wY5781gc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JAgY0tq6Ik3G8Dzw77qh9IOUQgJXhqP7cfUlywmdszQ=;
-        b=FICjwcRaTUqIBe+8nQB7YpNS2gNcC2JWldonoGYJ/2EzAp/e2jcV2Llzl7CQjlqBTn
-         fesy92Zw6L7vXtdVDgJJQlMbaas/YGb8w4TybOlQOCPiW9NB38hCCBc2uWDNah4mMl3m
-         6ILbrT+eFT0KtEP/dcXO/lggGZK0Y/R4VJRVXlBrRejAM6jnrAL9ZsPmFMXiG5Zybnm1
-         WmWsvYIbKLVQFj4OZAFXOZdMqnc5w3FTnm9+SBFZqlJUiJLFR0WZ7hcnzRIbyMpm3iw/
-         FOlFkhGquZqRPZc+rudRUaDk97hia5Qf4gGDcwqFssD008IlqsPwmRA7TmCNrXm0x+7r
-         mOZQ==
-X-Gm-Message-State: AOAM531gQBtF4chyDVt/lm9ymEonxv0ynHOy9dxi4xfn8tB1d9recarJ
-        7Pq3hkndyB3T5fqPZNnL0zMxGQ==
-X-Google-Smtp-Source: ABdhPJxNL29Qeef692HCopyeFIbwwVBljgH/IuUdVdz1s0pzb+mMNOithVjvqP4GD/3IutOxlVfTCQ==
-X-Received: by 2002:a62:1887:0:b029:18c:234a:4640 with SMTP id 129-20020a6218870000b029018c234a4640mr15777245pfy.1.1605900420218;
-        Fri, 20 Nov 2020 11:27:00 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h15sm3906086pgk.3.2020.11.20.11.26.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 11:26:59 -0800 (PST)
-Date:   Fri, 20 Nov 2020 11:26:58 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [PATCH net] cfg80211: fix callback type mismatches in wext-compat
-Message-ID: <202011201118.CE625B965@keescook>
-References: <20201117205902.405316-1-samitolvanen@google.com>
- <202011171338.BB25DBD1E6@keescook>
- <CABCJKudJojTh+is8mdMicczgWiTXw+KwCuepmG5gLVmqPWjnHA@mail.gmail.com>
+        id S1732373AbgKTT1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:27:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729489AbgKTT1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 14:27:38 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2C75221F1;
+        Fri, 20 Nov 2020 19:27:35 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 14:27:34 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] kfence: Avoid stalling work queue task without
+ allocations
+Message-ID: <20201120142734.75af5cd6@gandalf.local.home>
+In-Reply-To: <20201119125357.GA2084963@elver.google.com>
+References: <20201111202153.GT517454@elver.google.com>
+        <20201112001129.GD3249@paulmck-ThinkPad-P72>
+        <CANpmjNNyZs6NrHPmomC4=9MPEvCy1bFA5R2pRsMhG7=c3LhL_Q@mail.gmail.com>
+        <20201112161439.GA2989297@elver.google.com>
+        <20201112175406.GF3249@paulmck-ThinkPad-P72>
+        <20201113175754.GA6273@paulmck-ThinkPad-P72>
+        <20201117105236.GA1964407@elver.google.com>
+        <20201117182915.GM1437@paulmck-ThinkPad-P72>
+        <20201118225621.GA1770130@elver.google.com>
+        <20201118233841.GS1437@paulmck-ThinkPad-P72>
+        <20201119125357.GA2084963@elver.google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKudJojTh+is8mdMicczgWiTXw+KwCuepmG5gLVmqPWjnHA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 02:07:43PM -0800, Sami Tolvanen wrote:
-> On Tue, Nov 17, 2020 at 1:45 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Tue, Nov 17, 2020 at 12:59:02PM -0800, Sami Tolvanen wrote:
-> > > Instead of casting callback functions to type iw_handler, which trips
-> > > indirect call checking with Clang's Control-Flow Integrity (CFI), add
-> > > stub functions with the correct function type for the callbacks.
-> >
-> > Oh, wow. iw_handler with union iwreq_data look like really nasty hacks.
-> > Aren't those just totally bypassing type checking? Where do the
-> > callbacks actually happen? I couldn't find them...
-> 
-> The callbacks to these happen in ioctl_standard_call in wext-core.c.
+On Thu, 19 Nov 2020 13:53:57 +0100
+Marco Elver <elver@google.com> wrote:
 
-Thanks! If this is all the 'old compat' code, this patch looks fine. I
-think new stuff should probably encode types in some fashion (rather
-than via wrappers).
+> Running tests again, along with the function tracer
+> Running tests on all trace events:
+> Testing all events: 
+> BUG: workqueue lockup - pool cpus=0 node=0 flags=0x0 nice=0 stuck for 12s!
 
--- 
-Kees Cook
+The below patch might be noisy, but can you add it to the kernel that
+crashes and see if a particular event causes the issue?
+
+[ note I didn't even compile test. I hope it works ;) ]
+
+Perhaps run it a couple of times to see if it crashes on the same set of
+events each time.
+
+-- Steve
+
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 98d194d8460e..eb1dd9cf77a9 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -773,6 +773,8 @@ static void remove_event_file_dir(struct trace_event_file *file)
+ 	kmem_cache_free(file_cachep, file);
+ }
+ 
++static int spam;
++
+ /*
+  * __ftrace_set_clr_event(NULL, NULL, NULL, set) will set/unset all events.
+  */
+@@ -808,6 +810,8 @@ __ftrace_set_clr_event_nolock(struct trace_array *tr, const char *match,
+ 		if (event && strcmp(event, name) != 0)
+ 			continue;
+ 
++		if (spam)
++			printk("%s event %s\n", set ? "enabling" : "disabling", name);
+ 		ret = ftrace_event_enable_disable(file, set);
+ 
+ 		/*
+@@ -3647,6 +3651,7 @@ static __init void event_trace_self_tests(void)
+ 	pr_info("Running tests on all trace events:\n");
+ 	pr_info("Testing all events: ");
+ 
++	spam = 1;
+ 	ret = __ftrace_set_clr_event(tr, NULL, NULL, NULL, 1);
+ 	if (WARN_ON_ONCE(ret)) {
+ 		pr_warn("error enabling all events\n");
+@@ -3661,6 +3666,7 @@ static __init void event_trace_self_tests(void)
+ 		pr_warn("error disabling all events\n");
+ 		return;
+ 	}
++	spam = 0;
+ 
+ 	pr_cont("OK\n");
+ }
