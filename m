@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8530A2BB638
+	by mail.lfdr.de (Postfix) with ESMTP id F2FBD2BB639
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 21:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730030AbgKTUDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 15:03:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729974AbgKTUDI (ORCPT
+        id S1730291AbgKTUDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 15:03:49 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:35718 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729484AbgKTUDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 15:03:08 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7A8C061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:03:07 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id o24so11305453ljj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:03:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mfEptDpP1YtMPX3UYhi5HrsU1kyxo4HUkBqW2ybT0os=;
-        b=P98qZn1jej1Te8QHhY/hWPSL0DK4pikDWmko53l/2JZ482i8q/9KwabI+EH4dt7hzV
-         FcX5ExTubtcVdBIKylljQHIbzssTlivP6hsID6WKbLWm5UiaVzcEJmKGYr1kxMKLwYDL
-         tbQRobTIlAac4nAvxvpxU+ZKcGuWm8BC83aTE=
+        Fri, 20 Nov 2020 15:03:48 -0500
+Received: by mail-ot1-f67.google.com with SMTP id n11so9886671ota.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:03:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mfEptDpP1YtMPX3UYhi5HrsU1kyxo4HUkBqW2ybT0os=;
-        b=mPSLUbHINgPWixEV0iue2y/EnieON9+k9QXm0Z7fT3f21at5ZO/WtCnCwGWUT4mP2R
-         Gc84VKMtu4v/UAFReCM6OalSnWHOXQMNmIrPJ90S8gXp+cgoxUCMcgOvzUyK0wiIRYHd
-         /L30k9pPXhqCHWzPsTZVvnwAW9ren/IJBvxEXP7lwk1CsMSXxvsN6Qc7ZCtDXdSUrJ14
-         BOqxt8LP6zDyVAXZthirycZglw458xIFq57TriwUQXbDFnXR/5J+RrbFDMGtpktJxWXG
-         ll5UPd6D1fmys7MGzOLcexngEoebJNi35tyl4r298DHvutsDvXLpFuVjQWgLdnTEExIJ
-         K9qQ==
-X-Gm-Message-State: AOAM533FOQJ0xh9lExsF/JzL3MwplylxEYYY1JtiJGgzrJvD2wbtVrhe
-        kajMuJaBtNK0Tn9z4MAHZEOf/kjEdvuioQ==
-X-Google-Smtp-Source: ABdhPJwjaq/lGBBitHb/v66mabRsrmQeu4Uoo2irSFIK9CTTyryqf0qIfyggbe2Szhmc4zg3zDv0Nw==
-X-Received: by 2002:a2e:9b96:: with SMTP id z22mr8113779lji.163.1605902585756;
-        Fri, 20 Nov 2020 12:03:05 -0800 (PST)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id 17sm452207lfr.52.2020.11.20.12.03.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 12:03:04 -0800 (PST)
-Received: by mail-lf1-f52.google.com with SMTP id l11so15219699lfg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 12:03:04 -0800 (PST)
-X-Received: by 2002:a19:c301:: with SMTP id t1mr8126506lff.105.1605902584160;
- Fri, 20 Nov 2020 12:03:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kOieT1B4Wy217FTmYdr9SeWcw+wzIYUCF7lyPYhxoIQ=;
+        b=aAEsxJdSV5on6is+QjK81iAmVgLAWGslmjrOqD1Hg2hbGk3vhCXbz4YdueCQxH/rEP
+         2bnqOPmFFXHwioq48cEO87/lKcjcOy5EoCxoZk7v7YbeDk8biHZIoLjnkJ20It6w3141
+         FAsLx8+ow97k/UcZv4JbgSLhyWJiP9L7t+kTc6DipT41thuZyQHSrKw3Q/RIEXR6xIsy
+         8fqkLnsc/+9U6DQ7z7ijXlRracPF3TcSgsS34SspyrUx7CfGWo+y67ZDIYfjoArknZ8w
+         CYh0qFhjmfH/uTuv6KMdOQlwNlMC4tMF/OTMXxwVjzywp3n75ILH0Q2fyHFqO7WeXJtu
+         kqxg==
+X-Gm-Message-State: AOAM5313MFZ57gNHou9ysZXNYNgWrZ/y01HRWblCdgPHtHVYSY80jpGd
+        snTTtlVwB1srvN1nNTf18Q==
+X-Google-Smtp-Source: ABdhPJx8UyDZ2WZB8MOoIL+fk0x6mt0VLjgCkFCe36079B8wXfu/qSvvf52TK/tAtu/bv25UkC+6Yg==
+X-Received: by 2002:a9d:3461:: with SMTP id v88mr15323231otb.40.1605902627605;
+        Fri, 20 Nov 2020 12:03:47 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v5sm2048811oob.40.2020.11.20.12.03.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 12:03:46 -0800 (PST)
+Received: (nullmailer pid 1658486 invoked by uid 1000);
+        Fri, 20 Nov 2020 20:03:45 -0000
+Date:   Fri, 20 Nov 2020 14:03:45 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Subject: Re: [PATCH v4 2/9] arm64: perf: Enable pmu counter direct access for
+ perf event on armv8
+Message-ID: <20201120200345.GA1194400@robh.at.kernel.org>
+References: <20201001140116.651970-1-robh@kernel.org>
+ <20201001140116.651970-3-robh@kernel.org>
+ <20201113180633.GE44988@C02TD0UTHF1T.local>
+ <20201119191515.GA4906@willie-the-truck>
 MIME-Version: 1.0
-References: <6535286b-2532-dc86-3c6e-1b1e9bce358f@kernel.dk>
-In-Reply-To: <6535286b-2532-dc86-3c6e-1b1e9bce358f@kernel.dk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 20 Nov 2020 12:02:47 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjrayP=rOB+v+2eTP8micykkM76t=6vp-hyy+vWYkL8=A@mail.gmail.com>
-Message-ID: <CAHk-=wjrayP=rOB+v+2eTP8micykkM76t=6vp-hyy+vWYkL8=A@mail.gmail.com>
-Subject: Re: [GIT PULL] io_uring fixes for 5.10-rc
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119191515.GA4906@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 10:45 AM Jens Axboe <axboe@kernel.dk> wrote:
-> Jens Axboe (4):
->       proc: don't allow async path resolution of /proc/self components
+On Thu, Nov 19, 2020 at 07:15:15PM +0000, Will Deacon wrote:
+> On Fri, Nov 13, 2020 at 06:06:33PM +0000, Mark Rutland wrote:
+> > On Thu, Oct 01, 2020 at 09:01:09AM -0500, Rob Herring wrote:
+> > > +static void armv8pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
+> > > +{
+> > > +	if (!(event->hw.flags & ARMPMU_EL0_RD_CNTR))
+> > > +		return;
+> > > +
+> > > +	if (atomic_dec_and_test(&mm->context.pmu_direct_access))
+> > > +		on_each_cpu_mask(mm_cpumask(mm), refresh_pmuserenr, NULL, 1);
+> > > +}
+> > 
+> > I didn't think we kept our mm_cpumask() up-to-date in all cases on
+> > arm64, so I'm not sure we can use it like this.
+> > 
+> > Will, can you confirm either way?
+> 
+> We don't update mm_cpumask() as the cost of the atomic showed up in some
+> benchmarks I did years ago and we've never had any need for the thing anyway
+> because out TLB invalidation is one or all.
 
-This one is ok.
+That's good because we're also passing NULL instead of mm which would 
+crash. So it must be more than it's not up to date, but it's always 0. 
+It looks like event_mapped on x86 uses mm_cpumask(mm) which I guess was 
+dropped when copying this code as it didn't work... For reference, the 
+x86 version of this originated in commit 7911d3f7af14a6.
 
->       io_uring: handle -EOPNOTSUPP on path resolution
+I'm not clear on why we need to update pmuserenr_el0 here anyways. To 
+get here userspace has to mmap the event and then unmmap it. If we did 
+nothing, then counter accesses would not fault until the next context 
+switch.
 
-But this one smells. It talks about how it shouldn't block, but the
-fact is, it can easily block when the path going through another
-filesystem (think ".." to get to root before even hitting /proc/self,
-but also think /proc/self/cwd/randompathgoeshere).
+If you all have any ideas, I'm all ears. I'm not a scheduler nor perf 
+hacker. ;)
 
-The whole concept seems entirely broken anyway. Why would you retry
-the failure after doing it asynchronously? If it really doesn't block,
-then it shouldn't have been done async in the first place.
+Rob
 
-IMNSHO, the openat logic is just wrong. And that "ignore_nonblock"
-thing is a disgusting hack that is everything that is wrong with
-io_uring. Stop doing these kinds of hacky things that will just cause
-problems down the line.
-
-I think the correct thing to do is to just start the open
-synchronously with an RCU lookup, and if that fails, go to the async
-one. And if the async one fails because it's /proc/self, then it just
-fails. None of this kind of "it should be ok" stuff.
-
-And that would likely be the faster model anyway - do it synchronously
-and immediately for the easy cases.
-
-And if it really is something like "/proc/self/cwd/randompathgoeshere"
-that actually will block, maybe io_uring just shouldn't support it?
-
-I've pulled this, but I really object to how io_uring keeps having
-subtle bugs, and then they get worked around with this kind of hackery
-which really smells like "this will be a subtle bug some time in the
-future".
-
-       Linus
