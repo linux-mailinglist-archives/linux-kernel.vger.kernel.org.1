@@ -2,186 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA302BA79A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCA12BA79D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbgKTKj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:39:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
+        id S1727635AbgKTKlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 05:41:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727430AbgKTKjz (ORCPT
+        with ESMTP id S1727145AbgKTKlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:39:55 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A748EC061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:39:55 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id d17so4650916plr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:39:55 -0800 (PST)
+        Fri, 20 Nov 2020 05:41:20 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46898C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:41:19 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id k7so4670607plk.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:41:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tp1Yn6PcYwDveyfmiNUMjqoohGn5JgQdU6bb6b54s7c=;
-        b=QXuoT0YGe3HDxz+HXbH17h6UKx5WhqJBvvvjMJBBZq2FNc1zrSX59gmBtx3vzBZalN
-         JT69SsXhQtlq1zgI7hllhxrbDFAWelFFMocFYKNiAHFPd5YNckbSBCW1yYHdh5TG2aQL
-         86Qjz9M3UfKWKIdCX60Vb3vV9Nw/Si4ZgfNwJiqW8V5+i+oGqzDL+Uld/Y+1WfRtkHSK
-         WRDFJirytKoexo3twKJEkEJiKOJNBPqHqr5pHmcKGY+1KcjFueMlE++7eWtExSbgVy0R
-         C5Ottl56Y88HOgabvGotKsHw4tK3CnHE2/6KOZHcaAaWTxdEIcT6NkeMwHIkSdKIXeuS
-         lwZA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JhgoSSa0VQ0nyn+Q0xsYnxGWeWoI2cCn6P4kqzjhBDk=;
+        b=M3elM6KpbCmxPEC9Db9m32mzN8kKezFp8Nbfb1lEwkDZZZJ3Pjqv9u9zaGx5KR5QrF
+         P7Sdi6R/irfMNinKcawL4MYdHhU3y6M9zR5gRBLCpax27sRC7qo89sCV5YMgwnY8+fww
+         ewUFh/soVDYIAEdNd8qgtOCv+kxIC3t9aeIFbQLg0Hcd6rsSOGH4/b61pCe2drLrnA9b
+         IS3e0pKeFwNjte133UyGb8CFgr+OV18ou0eYoRIHBNEDIZfu+84wL8XOxzbfU7zvM04F
+         viJmVrNCnb3TM7F8H1uDmOJGuT66QYxxcvYN0EWNLC6WkHEP30jYT8HTXga6xoVKRpQM
+         twag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tp1Yn6PcYwDveyfmiNUMjqoohGn5JgQdU6bb6b54s7c=;
-        b=sZgUZdfrBufUB6NWwWwcckd6/mP2HFkhslFz+dF82towoRPDL4En1VJdv1/hdVSawN
-         ZFlJYHc9/wZ5H8jZRNQ1rLPJYQXaelqfWVEhvcpp7hQeCf2uHJ+NCtlVKEx7irLVD6K8
-         XRz5sJ6HHnGyyOT7j2gAZSi8o1JWCaCXw20n6TO5A91xPjDR6r/LGH6mz/fl/ej7F82z
-         qjolovGIHGoG1TPn5e6W4USws10beNr7t/wOYYAz0G7W+JN52hqV0oG19I2j3l9pB7bO
-         pf8DSzz9xB1WmPY9wWselSUIzzsx24IbVWUqOSCg8ZgOpdEsU7Uz4nn2rWwVMCMyCrzB
-         I+Tw==
-X-Gm-Message-State: AOAM531ym3brJEYDm8bJS3N6Ii/QD2qE4u5lyMNX+vayu7FQBbtb+AUs
-        6IL7/yKASqXKaPIKfvX7LZc5kcD8u/PZ6KDyyD0jTg==
-X-Google-Smtp-Source: ABdhPJwyeHponJyLYkFShPtIMQjhm14hpbv9nuNdyb0slhePQUiE+rmZ2muvx54FRFWkF7TSl9xDPloHXXLtI1r7PYw=
-X-Received: by 2002:a17:902:c14b:b029:d6:ab18:108d with SMTP id
- 11-20020a170902c14bb02900d6ab18108dmr13501415plj.20.1605868795137; Fri, 20
- Nov 2020 02:39:55 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JhgoSSa0VQ0nyn+Q0xsYnxGWeWoI2cCn6P4kqzjhBDk=;
+        b=dUohbfX1CLmlFJAWYJz/9a21kTRxA/Vkqec4rNDpeWt8wuzo5mAREuDoMkWAWz06LW
+         5NvlFDAQhDI0GtehXw7YIxuAfuIgtgMy6w3IN4EfTk1lwOhCgPOeHAruGVbd8ogrU5C5
+         n+MB+tTewRXfrIzE536S/rc4OUG3FStW61NhJRCKz/MuY/h+77SRTjVS0nb/0bi7mLSv
+         ROVIMyitLYzGiAaGXnt5ctHBh8AKvqhq5Vn2vIIy8uYJ8D/piTlBfb+SUsoCyw0rgWgr
+         XlBfqVbcYcFIrLFzCSdeKaAe7g0hQqD/GejCCv8sITtZS7lIvshUCP0e/SeJqc0ykfDW
+         r4mw==
+X-Gm-Message-State: AOAM531h8NF4ELIoIKiIsLLDiuFmvxDLqVdzrb66VkTXq/Ox+Y6Lgc4R
+        r8tAqw5vtisdEXqPzDz44EE=
+X-Google-Smtp-Source: ABdhPJyKOm2ljjvDVJ6ZkrSlgbnBO006Hn2BcZJ/sfVHnB+G3QJ7cQSSG9pnjasd8sPZHC2oJri/og==
+X-Received: by 2002:a17:902:c20a:b029:d6:b2d6:8006 with SMTP id 10-20020a170902c20ab02900d6b2d68006mr13442428pll.31.1605868878734;
+        Fri, 20 Nov 2020 02:41:18 -0800 (PST)
+Received: from ?IPv6:2402:3a80:40a:513c:8f5:b466:78ec:c186? ([2402:3a80:40a:513c:8f5:b466:78ec:c186])
+        by smtp.gmail.com with ESMTPSA id f134sm3116387pfa.208.2020.11.20.02.41.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 02:41:18 -0800 (PST)
+Subject: Re: [PATCH v3] checkpatch: add fix option for
+ ASSIGNMENT_CONTINUATIONS
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+References: <20201117171856.13284-1-yashsri421@gmail.com>
+From:   Aditya <yashsri421@gmail.com>
+Message-ID: <48f56f40-a365-faac-542d-0e120fcf4365@gmail.com>
+Date:   Fri, 20 Nov 2020 16:11:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201120064325.34492-1-songmuchun@bytedance.com>
- <20201120064325.34492-18-songmuchun@bytedance.com> <20201120082212.GG3200@dhcp22.suse.cz>
-In-Reply-To: <20201120082212.GG3200@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 20 Nov 2020 18:39:12 +0800
-Message-ID: <CAMZfGtU693Q-CoSENZ+5ReLEXu3_QfU0RNwh8SspMNC1kV6OZA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v5 17/21] mm/hugetlb: Add a kernel
- parameter hugetlb_free_vmemmap
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201117171856.13284-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 4:22 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 20-11-20 14:43:21, Muchun Song wrote:
-> > Add a kernel parameter hugetlb_free_vmemmap to disable the feature of
-> > freeing unused vmemmap pages associated with each hugetlb page on boot.
->
-> As replied to the config patch. This is fine but I would argue that the
-> default should be flipped. Saving memory is nice but it comes with
-> overhead and therefore should be an opt-in. The config option should
-> only guard compile time dependencies not a user choice.
+On 17/11/20 10:48 pm, Aditya Srivastava wrote:
+> Currently, checkpatch warns us if an assignment operator is placed
+> at the start of a line and not at the end of previous line.
+> 
+> E.g., running checkpatch on commit 8195b1396ec8 ("hv_netvsc: fix
+> deadlock on hotplug") reports:
+> 
+> CHECK: Assignment operator '=' should be on the previous line
+> +	struct netvsc_device *nvdev
+> +		= container_of(w, struct netvsc_device, subchan_work);
+> 
+> Provide a simple fix by appending assignment operator to the previous
+> line and removing from the current line, if both the lines are additions
+> (ie start with '+')
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+> ---
+> Changes in v2:
+> add check if both the lines are additions (ie start with '+')
+> 
+> Changes in v3:
+> quote $operator; test with division assignment operator ('/=')
+> 
+>  scripts/checkpatch.pl | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index c9aaaa443265..d5bc4d8e4f6c 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3542,8 +3542,14 @@ sub process {
+>  
+>  # check for assignments on the start of a line
+>  		if ($sline =~ /^\+\s+($Assignment)[^=]/) {
+> -			CHK("ASSIGNMENT_CONTINUATIONS",
+> -			    "Assignment operator '$1' should be on the previous line\n" . $hereprev);
+> +			my $operator = "$1";
+> +			if (CHK("ASSIGNMENT_CONTINUATIONS",
+> +				"Assignment operator '$1' should be on the previous line\n" . $hereprev) &&
+> +			    $fix && $prevrawline =~ /^\+/) {
+> +				# add assignment operator to the previous line, remove from current line
+> +				$fixed[$fixlinenr - 1] .= " $operator";
+> +				$fixed[$fixlinenr] =~ s/$operator\s*//;
+> +			}
+>  		}
+>  
+>  # check for && or || at the start of a line
+> 
 
-Got it. The default will be flipped in the next version. Thanks.
+Hi Joe
+This patch probably got missed. Please review :)
 
->
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
-> >  Documentation/admin-guide/mm/hugetlbpage.rst    |  3 +++
-> >  mm/hugetlb_vmemmap.c                            | 21 +++++++++++++++++++++
-> >  3 files changed, 33 insertions(+)
-> >
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index 5debfe238027..ccf07293cb63 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -1551,6 +1551,15 @@
-> >                       Documentation/admin-guide/mm/hugetlbpage.rst.
-> >                       Format: size[KMG]
-> >
-> > +     hugetlb_free_vmemmap=
-> > +                     [KNL] When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set,
-> > +                     this controls freeing unused vmemmap pages associated
-> > +                     with each HugeTLB page.
-> > +                     Format: { on (default) | off }
-> > +
-> > +                     on:  enable the feature
-> > +                     off: disable the feature
-> > +
-> >       hung_task_panic=
-> >                       [KNL] Should the hung task detector generate panics.
-> >                       Format: 0 | 1
-> > diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
-> > index f7b1c7462991..7d6129ee97dd 100644
-> > --- a/Documentation/admin-guide/mm/hugetlbpage.rst
-> > +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
-> > @@ -145,6 +145,9 @@ default_hugepagesz
-> >
-> >       will all result in 256 2M huge pages being allocated.  Valid default
-> >       huge page size is architecture dependent.
-> > +hugetlb_free_vmemmap
-> > +     When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set, this disables freeing
-> > +     unused vmemmap pages associated each HugeTLB page.
-> >
-> >  When multiple huge page sizes are supported, ``/proc/sys/vm/nr_hugepages``
-> >  indicates the current number of pre-allocated huge pages of the default size.
-> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> > index 3629165d8158..c958699d1393 100644
-> > --- a/mm/hugetlb_vmemmap.c
-> > +++ b/mm/hugetlb_vmemmap.c
-> > @@ -144,6 +144,22 @@ static inline bool vmemmap_pmd_huge(pmd_t *pmd)
-> >  }
-> >  #endif
-> >
-> > +static bool hugetlb_free_vmemmap_disabled __initdata;
-> > +
-> > +static int __init early_hugetlb_free_vmemmap_param(char *buf)
-> > +{
-> > +     if (!buf)
-> > +             return -EINVAL;
-> > +
-> > +     if (!strcmp(buf, "off"))
-> > +             hugetlb_free_vmemmap_disabled = true;
-> > +     else if (strcmp(buf, "on"))
-> > +             return -EINVAL;
-> > +
-> > +     return 0;
-> > +}
-> > +early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
-> > +
-> >  static inline unsigned int vmemmap_pages_per_hpage(struct hstate *h)
-> >  {
-> >       return free_vmemmap_pages_per_hpage(h) + RESERVE_VMEMMAP_NR;
-> > @@ -541,6 +557,11 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
-> >       unsigned int order = huge_page_order(h);
-> >       unsigned int vmemmap_pages;
-> >
-> > +     if (hugetlb_free_vmemmap_disabled) {
-> > +             pr_info("disable free vmemmap pages for %s\n", h->name);
-> > +             return;
-> > +     }
-> > +
-> >       vmemmap_pages = ((1 << order) * sizeof(struct page)) >> PAGE_SHIFT;
-> >       /*
-> >        * The head page and the first tail page are not to be freed to buddy
-> > --
-> > 2.11.0
->
-> --
-> Michal Hocko
-> SUSE Labs
-
-
-
--- 
-Yours,
-Muchun
+Thanks
+Aditya
