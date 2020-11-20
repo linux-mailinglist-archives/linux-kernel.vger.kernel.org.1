@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AA52BA11A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138E32BA11C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727159AbgKTD1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 22:27:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42724 "EHLO
+        id S1727298AbgKTD1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 22:27:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726385AbgKTD1F (ORCPT
+        with ESMTP id S1727216AbgKTD1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 22:27:05 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAB6C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:27:04 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id b17so8529476ljf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:27:04 -0800 (PST)
+        Thu, 19 Nov 2020 22:27:07 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1846FC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:27:06 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id u19so11434137lfr.7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Nov 2020 19:27:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XrHwQaCMJh08ONMTBH+6V1+tkj13F2Y4HGn4qByhl4o=;
-        b=Dw6QGdv1TxRcj9yj9vdmXtAeUrBVvjYfYF3eN9OkYR7IXJIVwxjf/2f6FBtM2fafbp
-         1m+r3p2mFUML7g3LrECuTYf6KHE+qer0o5CpfPZUXUNicCVMCmnNxQ063MWV6dULykDs
-         Ip7g/ke9/U2pwaWFd0pa+6dmNluwFFFSTF8rueZj30CVl0g1+y4KsgXS9Oe66D6Mnglr
-         iPv1x5JwnVQO5q2mYmewFvFmhDeFXmgKA7iJOhpJLbEnmrpp9EFF4+vVqeTOQ7YPIVUp
-         nYSyVJITLGb6MKrcvYFgZ7wjpO+mhvMWYc48pAUE2Jdykkk3qPOTvbOEqilKARw9dJjj
-         ijgg==
+        bh=XtVhfYD/69XwLnY3chV1Pn/LsBq7+sufek6izqaTxb0=;
+        b=odlhDTNku9GOSmqPl1PVZ9SNfNX1Z4NRTHhzEcEJTCM/DWw48xU9d2FVOn3Vf+Lhpy
+         aDfwWrT4OXwmyi8H3HqLDHuWg5LgHQ18EnM6VnlH75QiwkKGLRDBTCfCKW3QI2YiJ4xm
+         /nzteJtM8a+NNEyd4rZSzOgk0+eKIJxZ3QcpGRKNAgRyKuj0D7yCeWopTAPYDWQkfK+C
+         rKYUSN4g8//AGAuBmapL9PHouH0IdIkmSokcmL9xELXo0R7Pktyb3phE+YgEgrNeFA9D
+         1MP9sQzTnmsbVL6VqzpaK3w34wU+Z99V91b8z4LpOu/dBqHD6q943ZZp+GgdOBgtNknk
+         fH2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XrHwQaCMJh08ONMTBH+6V1+tkj13F2Y4HGn4qByhl4o=;
-        b=G9PFE534vgi5i/5ZriG4rFazEAIXE6Oi68zGZNNOOy2S2rpfHPg+Zd5f4BqbrH51B9
-         5IHSVvAoJVL43KEgrQV9CHQHWD4zXYKGZalOv/b5u5/EYKIiN83zrZHIn0/Y3m44/ydo
-         93Dk19C8Q2hXfCkL5NfCI0CKP6bR++8e2FfaSZRkP2cg8sYavFPYIay2EpJM94eRCk0L
-         2CCSWEPMDBePnI3iB0KZpJ2yRrxwMD5f65TAwpNNsFdvg8g/Lb2wDvR3KJg9lucO73/r
-         +rHk9bB/9qbkK8YkAQVm13DwbtoRRWyf4OTEo2u/bWjd44SMSxxC+9vxgGY3TWjZQgiR
-         tubg==
-X-Gm-Message-State: AOAM530e55rcFyYmcvHXheJOPfwuGz5+twsi42WebL/BisWcgfkgPiAf
-        WD3XyjgHjewHE5OLcHsPZNlTaT2/stAn9fDt
-X-Google-Smtp-Source: ABdhPJwSyP09EmgyW4eJinnn1yMoCmTQN5FucXntVXk0ESXiz61GfqqYhD3PLBO/doujPjtJLmVGww==
-X-Received: by 2002:a2e:854a:: with SMTP id u10mr7541204ljj.443.1605842822844;
-        Thu, 19 Nov 2020 19:27:02 -0800 (PST)
+        bh=XtVhfYD/69XwLnY3chV1Pn/LsBq7+sufek6izqaTxb0=;
+        b=j2uzpUnuiu3IBt1PoJKHCqUTMBdzjRfHWlbNA0DH1HABBZiLmrSIdMzY2HgsoJ0dva
+         aEUBZkYVV00imxz+pMsEzR76peJmhUQEq7evQIwk0RGl+l0u+FIk6PMY91iqM+bqVKdM
+         LEtdMkPW1V9L08QKwO3yrHxnXlH0XvkN8+qslGy6FIwY2tLkNl7Ej12y40z4uIq4TJMr
+         J5k2cIkVQH2NAQYbSxULzTB5ItaZ8a73z9Npjtyr/u5R1CNFxfmIHb7aoi4iBaNuOJpM
+         Bkvx3dpPUWj3uvm9SYhypNBhaHlcY+2R+xfAb/v2QaOBKmnUm022OIhW3UUoRdBQXIj5
+         ryrA==
+X-Gm-Message-State: AOAM532LXSCN1RmyoVN0Df34bkqFftKHNYUP0slS0Q/FmeoJKRWbd+0Z
+        X8UZDS96zK/RaeJpkBiyPw00ePFAkXrVHwUJ
+X-Google-Smtp-Source: ABdhPJyKrAhREoYW3DfnIVVwC2htmmAJRkwB1cZZeLeNnIneLPPB8ObU+UPIw9YWPKx0dVxRwUebCQ==
+X-Received: by 2002:a19:2d5c:: with SMTP id t28mr6938372lft.267.1605842824095;
+        Thu, 19 Nov 2020 19:27:04 -0800 (PST)
 Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id s26sm153647lji.31.2020.11.19.19.27.01
+        by smtp.gmail.com with ESMTPSA id s26sm153647lji.31.2020.11.19.19.27.02
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Nov 2020 19:27:02 -0800 (PST)
+        Thu, 19 Nov 2020 19:27:03 -0800 (PST)
 From:   Marcin Wojtas <mw@semihalf.com>
 To:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
 Cc:     ulf.hansson@linaro.org, huziji@marvell.com,
         adrian.hunter@intel.com, jaz@semihalf.com, tn@semihalf.com,
         ard.biesheuvel@arm.com, kostap@marvell.com,
         Marcin Wojtas <mw@semihalf.com>
-Subject: [PATCH v2 1/4] mmc: sdhci-xenon: use match data for controllers variants
-Date:   Fri, 20 Nov 2020 04:26:36 +0100
-Message-Id: <20201120032639.24386-2-mw@semihalf.com>
+Subject: [PATCH v2 2/4] mmc: sdhci-xenon: switch to device_* API
+Date:   Fri, 20 Nov 2020 04:26:37 +0100
+Message-Id: <20201120032639.24386-3-mw@semihalf.com>
 X-Mailer: git-send-email 2.29.0
 In-Reply-To: <20201120032639.24386-1-mw@semihalf.com>
 References: <20201120032639.24386-1-mw@semihalf.com>
@@ -66,97 +66,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a part of the ACPI support preparation resign from checking
-compatible strings in the driver. Instead of that use a new
-enum and assign the values to match data accordingly.
+In order to support both ACPI and DT, modify the driver
+to use device_* routines for obtaining the properties
+values.
 
 Signed-off-by: Marcin Wojtas <mw@semihalf.com>
 ---
- drivers/mmc/host/sdhci-xenon.h     |  8 ++++++++
- drivers/mmc/host/sdhci-xenon-phy.c |  4 +++-
- drivers/mmc/host/sdhci-xenon.c     | 10 ++++++----
- 3 files changed, 17 insertions(+), 5 deletions(-)
+ drivers/mmc/host/sdhci-xenon.h     |  4 +--
+ drivers/mmc/host/sdhci-xenon-phy.c | 36 +++++++++++---------
+ drivers/mmc/host/sdhci-xenon.c     | 18 +++++-----
+ 3 files changed, 30 insertions(+), 28 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-xenon.h b/drivers/mmc/host/sdhci-xenon.h
-index 593b82d7b68a..39e898605937 100644
+index 39e898605937..3e9c6c908a79 100644
 --- a/drivers/mmc/host/sdhci-xenon.h
 +++ b/drivers/mmc/host/sdhci-xenon.h
-@@ -53,6 +53,13 @@
- #define XENON_CTRL_HS200			0x5
- #define XENON_CTRL_HS400			0x6
- 
-+enum xenon_variant {
-+	XENON_A3700,
-+	XENON_AP806,
-+	XENON_AP807,
-+	XENON_CP110
-+};
-+
- struct xenon_priv {
- 	unsigned char	tuning_count;
- 	/* idx of SDHC */
-@@ -90,6 +97,7 @@ struct xenon_priv {
- 	void		*phy_params;
- 	struct xenon_emmc_phy_regs *emmc_phy_regs;
- 	bool restore_needed;
-+	enum xenon_variant hw_version;
+@@ -101,8 +101,8 @@ struct xenon_priv {
  };
  
  int xenon_phy_adj(struct sdhci_host *host, struct mmc_ios *ios);
+-int xenon_phy_parse_dt(struct device_node *np,
+-		       struct sdhci_host *host);
++int xenon_phy_parse_params(struct device *dev,
++			   struct sdhci_host *host);
+ void xenon_soc_pad_ctrl(struct sdhci_host *host,
+ 			unsigned char signal_voltage);
+ #endif
 diff --git a/drivers/mmc/host/sdhci-xenon-phy.c b/drivers/mmc/host/sdhci-xenon-phy.c
-index 03ce57ef4585..c33e0cddc81a 100644
+index c33e0cddc81a..8cf3a375de65 100644
 --- a/drivers/mmc/host/sdhci-xenon-phy.c
 +++ b/drivers/mmc/host/sdhci-xenon-phy.c
-@@ -651,11 +651,13 @@ static int get_dt_pad_ctrl_data(struct sdhci_host *host,
- 				struct device_node *np,
- 				struct xenon_emmc_phy_params *params)
- {
-+	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-+	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
- 	int ret = 0;
- 	const char *name;
- 	struct resource iomem;
+@@ -691,35 +691,37 @@ static int get_dt_pad_ctrl_data(struct sdhci_host *host,
+ 	return ret;
+ }
  
--	if (of_device_is_compatible(np, "marvell,armada-3700-sdhci"))
-+	if (priv->hw_version == XENON_A3700)
- 		params->pad_ctrl.set_soc_pad = armada_3700_soc_pad_voltage_set;
- 	else
- 		return 0;
+-static int xenon_emmc_phy_parse_param_dt(struct sdhci_host *host,
+-					 struct device_node *np,
+-					 struct xenon_emmc_phy_params *params)
++static int xenon_emmc_phy_parse_params(struct sdhci_host *host,
++				       struct device *dev,
++				       struct xenon_emmc_phy_params *params)
+ {
+ 	u32 value;
+ 
+ 	params->slow_mode = false;
+-	if (of_property_read_bool(np, "marvell,xenon-phy-slow-mode"))
++	if (device_property_read_bool(dev, "marvell,xenon-phy-slow-mode"))
+ 		params->slow_mode = true;
+ 
+ 	params->znr = XENON_ZNR_DEF_VALUE;
+-	if (!of_property_read_u32(np, "marvell,xenon-phy-znr", &value))
++	if (!device_property_read_u32(dev, "marvell,xenon-phy-znr", &value))
+ 		params->znr = value & XENON_ZNR_MASK;
+ 
+ 	params->zpr = XENON_ZPR_DEF_VALUE;
+-	if (!of_property_read_u32(np, "marvell,xenon-phy-zpr", &value))
++	if (!device_property_read_u32(dev, "marvell,xenon-phy-zpr", &value))
+ 		params->zpr = value & XENON_ZPR_MASK;
+ 
+ 	params->nr_tun_times = XENON_TUN_CONSECUTIVE_TIMES;
+-	if (!of_property_read_u32(np, "marvell,xenon-phy-nr-success-tun",
+-				  &value))
++	if (!device_property_read_u32(dev, "marvell,xenon-phy-nr-success-tun",
++				      &value))
+ 		params->nr_tun_times = value & XENON_TUN_CONSECUTIVE_TIMES_MASK;
+ 
+ 	params->tun_step_divider = XENON_TUNING_STEP_DIVIDER;
+-	if (!of_property_read_u32(np, "marvell,xenon-phy-tun-step-divider",
+-				  &value))
++	if (!device_property_read_u32(dev, "marvell,xenon-phy-tun-step-divider",
++				      &value))
+ 		params->tun_step_divider = value & 0xFF;
+ 
+-	return get_dt_pad_ctrl_data(host, np, params);
++	if (dev->of_node)
++		return get_dt_pad_ctrl_data(host, dev->of_node, params);
++	return 0;
+ }
+ 
+ /* Set SoC PHY Voltage PAD */
+@@ -813,7 +815,7 @@ int xenon_phy_adj(struct sdhci_host *host, struct mmc_ios *ios)
+ 	return ret;
+ }
+ 
+-static int xenon_add_phy(struct device_node *np, struct sdhci_host *host,
++static int xenon_add_phy(struct device *dev, struct sdhci_host *host,
+ 			 const char *phy_name)
+ {
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+@@ -832,15 +834,15 @@ static int xenon_add_phy(struct device_node *np, struct sdhci_host *host,
+ 	if (ret)
+ 		return ret;
+ 
+-	return xenon_emmc_phy_parse_param_dt(host, np, priv->phy_params);
++	return xenon_emmc_phy_parse_params(host, dev, priv->phy_params);
+ }
+ 
+-int xenon_phy_parse_dt(struct device_node *np, struct sdhci_host *host)
++int xenon_phy_parse_params(struct device *dev, struct sdhci_host *host)
+ {
+ 	const char *phy_type = NULL;
+ 
+-	if (!of_property_read_string(np, "marvell,xenon-phy-type", &phy_type))
+-		return xenon_add_phy(np, host, phy_type);
++	if (!device_property_read_string(dev, "marvell,xenon-phy-type", &phy_type))
++		return xenon_add_phy(dev, host, phy_type);
+ 
+-	return xenon_add_phy(np, host, "emmc 5.1 phy");
++	return xenon_add_phy(dev, host, "emmc 5.1 phy");
+ }
 diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
-index 24c978de2a3f..1e7ce9b1a143 100644
+index 1e7ce9b1a143..bfc76b0e3eaa 100644
 --- a/drivers/mmc/host/sdhci-xenon.c
 +++ b/drivers/mmc/host/sdhci-xenon.c
-@@ -418,7 +418,7 @@ static int xenon_probe_dt(struct platform_device *pdev)
- 	u32 tuning_count;
- 
- 	/* Disable HS200 on Armada AP806 */
--	if (of_device_is_compatible(np, "marvell,armada-ap806-sdhci"))
-+	if (priv->hw_version == XENON_AP806)
+@@ -407,9 +407,9 @@ static void xenon_replace_mmc_host_ops(struct sdhci_host *host)
+  *	    Refer to XENON_SYS_CFG_INFO register
+  * tun-count: the interval between re-tuning
+  */
+-static int xenon_probe_dt(struct platform_device *pdev)
++static int xenon_probe_params(struct platform_device *pdev)
+ {
+-	struct device_node *np = pdev->dev.of_node;
++	struct device *dev = &pdev->dev;
+ 	struct sdhci_host *host = platform_get_drvdata(pdev);
+ 	struct mmc_host *mmc = host->mmc;
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+@@ -422,7 +422,7 @@ static int xenon_probe_dt(struct platform_device *pdev)
  		host->quirks2 |= SDHCI_QUIRK2_BROKEN_HS200;
  
  	sdhc_id = 0x0;
-@@ -495,6 +495,8 @@ static int xenon_probe(struct platform_device *pdev)
- 	pltfm_host = sdhci_priv(host);
- 	priv = sdhci_pltfm_priv(pltfm_host);
+-	if (!of_property_read_u32(np, "marvell,xenon-sdhc-id", &sdhc_id)) {
++	if (!device_property_read_u32(dev, "marvell,xenon-sdhc-id", &sdhc_id)) {
+ 		nr_sdhc = sdhci_readl(host, XENON_SYS_CFG_INFO);
+ 		nr_sdhc &= XENON_NR_SUPPORTED_SLOT_MASK;
+ 		if (unlikely(sdhc_id > nr_sdhc)) {
+@@ -434,8 +434,8 @@ static int xenon_probe_dt(struct platform_device *pdev)
+ 	priv->sdhc_id = sdhc_id;
  
-+	priv->hw_version = (unsigned long)device_get_match_data(&pdev->dev);
-+
- 	/*
- 	 * Link Xenon specific mmc_host_ops function,
- 	 * to replace standard ones in sdhci_ops.
-@@ -667,9 +669,9 @@ static const struct dev_pm_ops sdhci_xenon_dev_pm_ops = {
- };
+ 	tuning_count = XENON_DEF_TUNING_COUNT;
+-	if (!of_property_read_u32(np, "marvell,xenon-tun-count",
+-				  &tuning_count)) {
++	if (!device_property_read_u32(dev, "marvell,xenon-tun-count",
++				      &tuning_count)) {
+ 		if (unlikely(tuning_count >= XENON_TMR_RETUN_NO_PRESENT)) {
+ 			dev_err(mmc_dev(mmc), "Wrong Re-tuning Count. Set default value %d\n",
+ 				XENON_DEF_TUNING_COUNT);
+@@ -444,7 +444,7 @@ static int xenon_probe_dt(struct platform_device *pdev)
+ 	}
+ 	priv->tuning_count = tuning_count;
  
- static const struct of_device_id sdhci_xenon_dt_ids[] = {
--	{ .compatible = "marvell,armada-ap806-sdhci",},
--	{ .compatible = "marvell,armada-cp110-sdhci",},
--	{ .compatible = "marvell,armada-3700-sdhci",},
-+	{ .compatible = "marvell,armada-ap806-sdhci", .data = (void *)XENON_AP806},
-+	{ .compatible = "marvell,armada-cp110-sdhci", .data =  (void *)XENON_CP110},
-+	{ .compatible = "marvell,armada-3700-sdhci", .data =  (void *)XENON_A3700},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sdhci_xenon_dt_ids);
+-	return xenon_phy_parse_dt(np, host);
++	return xenon_phy_parse_params(dev, host);
+ }
+ 
+ static int xenon_sdhc_prepare(struct sdhci_host *host)
+@@ -528,12 +528,12 @@ static int xenon_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto err_clk_axi;
+ 
+-	sdhci_get_of_property(pdev);
++	sdhci_get_property(pdev);
+ 
+ 	xenon_set_acg(host, false);
+ 
+-	/* Xenon specific dt parse */
+-	err = xenon_probe_dt(pdev);
++	/* Xenon specific parameters parse */
++	err = xenon_probe_params(pdev);
+ 	if (err)
+ 		goto err_clk_axi;
+ 
 -- 
 2.29.0
 
