@@ -2,172 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FBE2BB216
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE542BB229
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 19:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729665AbgKTSHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 13:07:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729637AbgKTSHY (ORCPT
+        id S1729494AbgKTSLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 13:11:16 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:34522 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729508AbgKTSLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:07:24 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE49C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:07:23 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id p12so7736019qtp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 10:07:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qzxXYsRioiP+WS2W7+JqANiIkJuxsiB0XH0K0d6+qtg=;
-        b=kVX4x5fpgWWco5Ty/z9+LAK78NhaMagv/tDBnm6DUUeCWaj1HGUIBbp2aJhNnNEDUX
-         3IMNQ6fbdY/PqyJeGpV5XT5MgmuXF/v6yWfNDjhcSQMDpwtr4+hJbu4qzdlNIbE032j8
-         N6WJP4W+ttGh8C6hBS0bHnuTG8JeA6PqV00NQ1bEloyaSOSySEoGweqsuBTnHZ5oOVe5
-         XKsn1y3u4gVoVT0r8VMZFNv/f6Pn/mmX1yQCnK2oUwYxk5go3vzZ3Bk/GbZSg3FiOcOx
-         72YuC+2VxZ6koXFYbos9ZFiX1/r83F90VF+cOVa4au/lfdem40sM6v1eigLfygQrHcDA
-         NXpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qzxXYsRioiP+WS2W7+JqANiIkJuxsiB0XH0K0d6+qtg=;
-        b=OO8EGxBbhWrIQ0pXoqDWInbg/5gyUjoZr0AcYLWUxD5RKfO/irgTlqXjv0g/3LJr/X
-         SkjfWMB9X8hnW/S0GwiSB8aqLmE+K7984qAWplOe1zzAmGbBo5RmXcwgKSOmCWTJ1xND
-         0VKh4alnEvq+pGS5uFKPlC1tLhlSfJHnF+OVqMYvtcodhfcDRKeSkhgueEED0Dl5bMIC
-         sULH2ykB7pSZfzJkcjKraggz1GUw/V+3phYkeOvsnxQpUDGmDkdRfSKaBnekFZuKfF4x
-         1BVBfve6aF7RwqySnFKxcdw5Ob7Lbk3Q1pRz8yXjp6jnsnOwTQzHNXg2gUBUuuV38gvv
-         InSA==
-X-Gm-Message-State: AOAM5337Evn7ToXclpbkytuQkKc3le3sSQmXDAZp8/IyKoar9fqWcqoc
-        iq47P81PIJz6td/hEu4+xtFUpA==
-X-Google-Smtp-Source: ABdhPJz17n7O3IQoUnG1lr3Y+t6u4VkEghZe6VwPVl7Std3Wem+S+IGdLYrv/xtqRZWsm/mbwrw9gw==
-X-Received: by 2002:ac8:6a16:: with SMTP id t22mr16861888qtr.304.1605895641688;
-        Fri, 20 Nov 2020 10:07:21 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id q15sm2444862qki.13.2020.11.20.10.07.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 10:07:20 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kgAoZ-008uHM-Rm; Fri, 20 Nov 2020 14:07:19 -0400
-Date:   Fri, 20 Nov 2020 14:07:19 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Fri, 20 Nov 2020 13:11:13 -0500
+Received: from [192.168.86.179] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D301E20B717A;
+        Fri, 20 Nov 2020 10:11:07 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D301E20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1605895872;
+        bh=o3HGfEV+KvcBH59b0ShX6ILxpiauc3u3nnu8jBOhqu8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=mChXe2XyjeoACPf6tie7qgKERp54WJ9C483uVNUX2LsivEAa30sUYo41XFsixb0Za
+         ceqjBlDYfyAHhLZNldwbHFYf+TO36eNNjsSHz44VvPSoVDNNo8C8/rQlXjIUQrZZV7
+         jDol1/79uRl+bRC189L4xfbZwZnqppaUMjjG8gJo=
+Subject: Re: [PATCH -tip 03/32] sched/fair: Fix pick_task_fair crashes due to
+ empty rbtree
+To:     "Singh, Balbir" <bsingharora@gmail.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Michel Lespinasse <walken@google.com>,
-        Waiman Long <longman@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH 2/3] mm: Extract might_alloc() debug check
-Message-ID: <20201120180719.GO244516@ziepe.ca>
-References: <20201120095445.1195585-1-daniel.vetter@ffwll.ch>
- <20201120095445.1195585-3-daniel.vetter@ffwll.ch>
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org
+Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-4-joel@joelfernandes.org>
+ <cab6918c-7b52-923c-4274-f92e9f0a5cd2@gmail.com>
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+Message-ID: <caa77c3c-dc21-5c64-8236-d9e7d4c90995@linux.microsoft.com>
+Date:   Fri, 20 Nov 2020 13:11:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120095445.1195585-3-daniel.vetter@ffwll.ch>
+In-Reply-To: <cab6918c-7b52-923c-4274-f92e9f0a5cd2@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 10:54:43AM +0100, Daniel Vetter wrote:
-> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> index d5ece7a9a403..f94405d43fd1 100644
-> --- a/include/linux/sched/mm.h
-> +++ b/include/linux/sched/mm.h
-> @@ -180,6 +180,22 @@ static inline void fs_reclaim_acquire(gfp_t gfp_mask) { }
->  static inline void fs_reclaim_release(gfp_t gfp_mask) { }
->  #endif
->  
-> +/**
-> + * might_alloc - Marks possible allocation sites
-> + * @gfp_mask: gfp_t flags that would be use to allocate
-> + *
-> + * Similar to might_sleep() and other annotations this can be used in functions
-> + * that might allocate, but often dont. Compiles to nothing without
-> + * CONFIG_LOCKDEP. Includes a conditional might_sleep() if @gfp allows blocking.
-> + */
-> +static inline void might_alloc(gfp_t gfp_mask)
-> +{
-> +	fs_reclaim_acquire(gfp_mask);
-> +	fs_reclaim_release(gfp_mask);
-> +
-> +	might_sleep_if(gfpflags_allow_blocking(gfp_mask));
-> +}
+Hi Balbir,
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+On 11/20/20 5:15 AM, Singh, Balbir wrote:
+> On 18/11/20 10:19 am, Joel Fernandes (Google) wrote:
+>> From: Peter Zijlstra <peterz@infradead.org>
+>>
+>> pick_next_entity() is passed curr == NULL during core-scheduling. Due to
+>> this, if the rbtree is empty, the 'left' variable is set to NULL within
+>> the function. This can cause crashes within the function.
+>>
+>> This is not an issue if put_prev_task() is invoked on the currently
+>> running task before calling pick_next_entity(). However, in core
+>> scheduling, it is possible that a sibling CPU picks for another RQ in
+>> the core, via pick_task_fair(). This remote sibling would not get any
+>> opportunities to do a put_prev_task().
+>>
+>> Fix it by refactoring pick_task_fair() such that pick_next_entity() is
+>> called with the cfs_rq->curr. This will prevent pick_next_entity() from
+>> crashing if its rbtree is empty.
+>>
+>> Also this fixes another possible bug where update_curr() would not be
+>> called on the cfs_rq hierarchy if the rbtree is empty. This could effect
+>> cross-cpu comparison of vruntime.
+>>
+> It is not clear from the changelog as to what does put_prev_task() do to prevent
+> the crash from occuring? Why did we pass NULL as curr in the first place to
+> pick_next_entity?
+A little more context on this crash in v8 is here:
+https://lwn.net/ml/linux-kernel/8230ada7-839f-2335-9a55-b09f6a813e91@linux.microsoft.com/
 
-Oh, I just had a another thread with Matt about xarray, this would be
-perfect to add before xas_nomem():
+The issue here arises from the fact that, we try to pick task for a
+sibling while sibling is running a task. Running tasks are not in the
+cfs_rq and pick_next_entity can return NULL if there is only one cfs
+task in the cfs_rq. This would not happen normally because
+put_prev_task is called before pick_task and put_prev_task adds the
+task back to cfs_rq. But for coresched, pick_task is called on a
+remote sibling's cfs_rq without calling put_prev_task and this can
+lead to pick_next_entity returning NULL.
 
-diff --git a/lib/idr.c b/lib/idr.c
-index f4ab4f4aa3c7f5..722d9ddff53221 100644
---- a/lib/idr.c
-+++ b/lib/idr.c
-@@ -391,6 +391,8 @@ int ida_alloc_range(struct ida *ida, unsigned int min, unsigned int max,
- 	if ((int)max < 0)
- 		max = INT_MAX;
- 
-+	might_alloc(gfp);
-+
- retry:
- 	xas_lock_irqsave(&xas, flags);
- next:
-diff --git a/lib/xarray.c b/lib/xarray.c
-index 5fa51614802ada..dd260ee7dcae9a 100644
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -1534,6 +1534,8 @@ void *__xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
- 	XA_STATE(xas, xa, index);
- 	void *curr;
- 
-+	might_alloc(gfp);
-+
- 	if (WARN_ON_ONCE(xa_is_advanced(entry)))
- 		return XA_ERROR(-EINVAL);
- 	if (xa_track_free(xa) && !entry)
-@@ -1600,6 +1602,8 @@ void *__xa_cmpxchg(struct xarray *xa, unsigned long index,
- 	XA_STATE(xas, xa, index);
- 	void *curr;
- 
-+	might_alloc(gfp);
-+
- 	if (WARN_ON_ONCE(xa_is_advanced(entry)))
- 		return XA_ERROR(-EINVAL);
- 
-@@ -1637,6 +1641,8 @@ int __xa_insert(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
- 	XA_STATE(xas, xa, index);
- 	void *curr;
- 
-+	might_alloc(gfp);
-+
- 	if (WARN_ON_ONCE(xa_is_advanced(entry)))
- 		return -EINVAL;
- 	if (!entry)
-@@ -1806,6 +1812,8 @@ int __xa_alloc(struct xarray *xa, u32 *id, void *entry,
- {
- 	XA_STATE(xas, xa, 0);
- 
-+	might_alloc(gfp);
-+
- 	if (WARN_ON_ONCE(xa_is_advanced(entry)))
- 		return -EINVAL;
- 	if (WARN_ON_ONCE(!xa_track_free(xa)))
+The initial logic of passing NULL would work fine as long as we call
+put_prev_task before calling pick_task_fair. But for coresched, we
+call pick_task_fair on siblings while the task is running and would
+not be able to call put_prev_task. So this refactor of the code fixes
+the crash by explicitly passing curr.
+
+Hope this clarifies..
+
+Thanks,
+Vineeth
+
