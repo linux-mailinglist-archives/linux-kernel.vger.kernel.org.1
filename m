@@ -2,99 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC00B2BB4B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEF62BB4CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 20:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732005AbgKTTAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 14:00:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728697AbgKTTAl (ORCPT
+        id S1732158AbgKTTCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 14:02:34 -0500
+Received: from gateway33.websitewelcome.com ([192.185.145.9]:15822 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732157AbgKTTCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:00:41 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5982C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:00:40 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id u2so5313893pls.10
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 11:00:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=YFGbjMAixunjadRt/WNDu4Gi9oV8lPHMKlwpA1Dc+2Q=;
-        b=PUrXRudevdfwpKTWyzcLGsmlLQ+wz4pg7i7qVoqSQahOJkZ1MCGJyGGp9lj8P7wqdQ
-         1wZrDY7RKvl3i+FHco9AHnzpNRsv+WDmlo3LPJ9s4j/+tpdtTn8QAb7CO4+5lWRxPUoT
-         SoBm7dYGx+lU8xiR3w6JHrhXtTDSHYonolxATY74JusyBcsFffiWb+1/eQSh1dOjG/QV
-         vEgnnncEp9ekv7MSpTZmbXA8J0UZwBBJJ44KEVfrod/WDpwBaFz5iQNJd1N3YKVJ1z2s
-         vp50zuzFn5tZ7/fxd6oHeGUafCLzdYdN1AjohJFDkM1rg9aleEo++CwhosC5jKkytdJJ
-         A0yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=YFGbjMAixunjadRt/WNDu4Gi9oV8lPHMKlwpA1Dc+2Q=;
-        b=fuMrqktYoME+y6QU27H0rSxjdMVgmQzUU3BERE93xKXmm2WLEiWHPRIpNQEJCPyzrw
-         kju1qqWh1dz4puzbJLxxoLmAzW8ivLosHl9idvjMAMuUFmEzpa9Y43kGCvpM0mpMAbqN
-         m3Yyk436FhJv5J9458I+AgupCm9yblq7n98zADi3HCpN0ovtYJBYDmXZs5axqCM00ibX
-         OYz87YlRrtqWwZvqV+YBaLI/Vj+BFKOJ+LFIW4MMj7lcdjg++WEC/qvK+GYdji8TdBLH
-         3mteYkP4LEaA2Hardoa9kc2+bli+Ab5eT/oV8Kt9WuL/XTf7044NU+WmKm2FlNEsoXZG
-         HeBA==
-X-Gm-Message-State: AOAM532Q7Nw2SjnV3K3bBDWu63kUSxaBGW/MifPDzf71BlbzSWOHcbfE
-        vsiO9gJIOu2NlhZexVmTBrf8Vw==
-X-Google-Smtp-Source: ABdhPJz6mX7mESKaTaoDQ0nba24kvRr492R62CY1RT35HX5Q2sHsihUhSg5mzAR/PiNRC/EMsYA2vQ==
-X-Received: by 2002:a17:902:7b83:b029:d8:ff06:3184 with SMTP id w3-20020a1709027b83b02900d8ff063184mr14439746pll.37.1605898840189;
-        Fri, 20 Nov 2020 11:00:40 -0800 (PST)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id x28sm3845049pgk.21.2020.11.20.11.00.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 11:00:39 -0800 (PST)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH 0/2] arm64: dts: meson-axg-s400: add support for Power Controller & MIPI-DSI PHY
-In-Reply-To: <20201120152131.3918814-1-narmstrong@baylibre.com>
-References: <20201120152131.3918814-1-narmstrong@baylibre.com>
-Date:   Fri, 20 Nov 2020 11:00:39 -0800
-Message-ID: <7hzh3bsvjc.fsf@baylibre.com>
+        Fri, 20 Nov 2020 14:02:34 -0500
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 6322DFA4F7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 13:02:32 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id gBg0kUIynAAk4gBg0kygO9; Fri, 20 Nov 2020 13:02:32 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=+4VxQ3E1SMf3fqpPxA59SXnFTIYnqNYQQfNHAF4XRGw=; b=n09KqYnyKHrO7dveIUWc55mzig
+        y4HUZZbrqh9oIGiAW16mTaR8pcvnAozTxI+rYVVIt9CxAErudOIqW44giqY0jAAxUq2Az5FkJRw8D
+        DdYM3ceCwzW72Iyh3zFwKX+btf9zXkIFnOla0anfthw4DZBTFFqyoxwOvEOl2OJ26TOTLqWU9obCG
+        intkFNaJRljaeNwR96RWCduzT1c1ht64s9kRw8R+vb7ftuKF/SC10c1DXlPqmQL512w8QCfyvTWtG
+        dzgy+MeNJCgbGq47RynDwYUz9POm4OiFKWoqxvHGtR/GFZ1BW9GSDXleqWC/tOZ433VaTMSGJy7Ut
+        yE2h40Yg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52198 helo=[192.168.15.4])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1kgBfw-0000VH-WA; Fri, 20 Nov 2020 13:02:29 -0600
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To:     Joe Perches <joe@perches.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
+        cluster-devel@redhat.com, coreteam@netfilter.org,
+        devel@driverdev.osuosl.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
+        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-geode@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <3e0bbb1644fe53d79322c2feb28ccaf3e20c0e94.camel@perches.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <9f986394-125a-81f7-7696-fe1a9f4eb4f5@embeddedor.com>
+Date:   Fri, 20 Nov 2020 13:02:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <3e0bbb1644fe53d79322c2feb28ccaf3e20c0e94.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1kgBfw-0000VH-WA
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.4]) [187.162.31.110]:52198
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neil Armstrong <narmstrong@baylibre.com> writes:
-
-> This adds the Power Controller and MIPI DSI PHY nodes to AXG, since the corresponding
-> driver and dt-bindings had been applied for next release.
->
-> Dependencies:
-> - Patch 1: [1] applied for 5.11 in meson-clk tree & [2] merged for 5.10
-> - Patch 2: [3] & [4] both applied for 5.11 in phy tree
-
-Thanks for describing the dependencies in detail.
-
-Looks like only [1] is needed a build time.  Could you give me a
-immutable tag from the clk tree (or clk-meson) I could use in my dt64
-branch to ensure my dt64 branch is buildable.
-
-Thanks,
-
-Kevin
 
 
-> [1] https://lore.kernel.org/r/20200915124553.8056-1-narmstrong@baylibre.com
-> [2] https://lore.kernel.org/r/20200917064702.1459-1-narmstrong@baylibre.com
-> [3] https://lore.kernel.org/r/20201116101315.71720-1-narmstrong@baylibre.com
-> [4] https://lore.kernel.org/r/20201116101647.73448-1-narmstrong@baylibre.com
->
-> Neil Armstrong (2):
->   arm64: dts: meson-axg: add PWRC node
->   arm64: dts: meson-axg: add MIPI DSI PHY nodes
->
->  arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 61 ++++++++++++++++++++++
->  1 file changed, 61 insertions(+)
->
-> -- 
-> 2.25.1
+On 11/20/20 12:28, Joe Perches wrote:
+> On Fri, 2020-11-20 at 12:21 -0600, Gustavo A. R. Silva wrote:
+>> Hi all,
+>>
+>> This series aims to fix almost all remaining fall-through warnings in
+>> order to enable -Wimplicit-fallthrough for Clang.
+>>
+>> In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
+>> add multiple break/goto/return/fallthrough statements instead of just
+>> letting the code fall through to the next case.
+>>
+>> Notice that in order to enable -Wimplicit-fallthrough for Clang, this
+>> change[1] is meant to be reverted at some point. So, this patch helps
+>> to move in that direction.
+> 
+> This was a bit hard to parse for a second or three.
+> 
+> Thanks Gustavo.
+> 
+> How was this change done?
+
+I audited case by case in order to determine the best fit for each
+situation. Depending on the surrounding logic, sometimes it makes
+more sense a goto or a fallthrough rather than merely a break.
+
+Thanks
+--
+Gustavo
