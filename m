@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125A72BA7D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B3D2BA7DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 12:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727254AbgKTKyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:54:31 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:33162 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgKTKyb (ORCPT
+        id S1726739AbgKTLA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 06:00:58 -0500
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:43046 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726335AbgKTLA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:54:31 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 8FBA01F45E80
-Subject: Re: [PATCH 2/2] drm/meson: dw-hdmi: Enable the iahb clock early
- enough
-To:     Marc Zyngier <maz@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-amlogic@lists.infradead.org, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org,
-        Jerome Brunet <jbrunet@baylibre.com>
-References: <20201120094205.525228-1-maz@kernel.org>
- <20201120094205.525228-3-maz@kernel.org>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <966e90ba-5b38-9ba5-65b3-1a17dbd51871@collabora.com>
-Date:   Fri, 20 Nov 2020 10:54:26 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Fri, 20 Nov 2020 06:00:58 -0500
+Received: by mail-ej1-f65.google.com with SMTP id k27so12240925ejs.10;
+        Fri, 20 Nov 2020 03:00:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nAks2XnecKIV4A3av2th6mRYw3f1mAliyxLw1+NXRko=;
+        b=g4w5E1Zgwz1g9K/Qv8fF2hUfAdy6ET6pSnssthr+2SFtZn+wg87P7b2Lo+xIWbXS/e
+         6x6M6xBlksARVFniz+C3xT6rKl2hv6xQA/z1/2PW1VmkC5lRnPhaj91cd6PWGfrdi+Cf
+         2FHrTM1wtbVcDVWa27Fq5dtAoH9DQeYXvpJc0ABdwfq7JSmIfnJEdiDhGwlt4QFHWraF
+         UHU2qlc2IUBYDGThlb8nDjj9zsCWFl18yFGR54uwPZSnbnIYQHPeM7ugbu6Q52/yxnG9
+         sXsb5JlIqsDlVuczagoyN9wI4+tZtk2KUdw2ZrqpDJF1Te01dkphyiWsBzYVDwgiZA6D
+         wCnQ==
+X-Gm-Message-State: AOAM5316FT4IDzIs2M/EyQjxhLii2d3rUkThYiNN3Nij/3HCnjEZAvUH
+        AWwA1T6uXu2Hb42x84KJwWg=
+X-Google-Smtp-Source: ABdhPJz9cad0dK9v8Bzg08JoVZCRoIQ59OHWv8Et2ehlg8QViIBBflkven0dCZQqipoAFOJvZEyNMw==
+X-Received: by 2002:a17:906:17d1:: with SMTP id u17mr31208004eje.229.1605870055921;
+        Fri, 20 Nov 2020 03:00:55 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id p20sm970666ejd.78.2020.11.20.03.00.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 03:00:54 -0800 (PST)
+Date:   Fri, 20 Nov 2020 12:00:51 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
+        Marian Mihailescu <mihailescu2m@gmail.com>
+Subject: Re: [PATCH 1/2] phy: samsung: Add support for the Exynos5420 variant
+ of the USB2 PHY
+Message-ID: <20201120110051.GA26836@kozik-lap>
+References: <20201120085637.7299-1-m.szyprowski@samsung.com>
+ <CGME20201120085651eucas1p1d30223968745e93e6177892b400a7773@eucas1p1.samsung.com>
+ <20201120085637.7299-2-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20201120094205.525228-3-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201120085637.7299-2-m.szyprowski@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2020 09:42, Marc Zyngier wrote:
-> Instead of moving meson_dw_hdmi_init() around which breaks existing
-> platform, let's enable the clock meson_dw_hdmi_init() depends on.
-> This means we don't have to worry about this clock being enabled or
-> not, depending on the boot-loader features.
+On Fri, Nov 20, 2020 at 09:56:36AM +0100, Marek Szyprowski wrote:
+> Exynos5420 differs a bit from Exynos5250 in USB2 PHY related registers in
+> the PMU region. Add a variant for the Exynos5420 case. Till now, USB2 PHY
+> worked only because the bootloader enabled the PHY, but then driver messed
+> USB 3.0 DRD related registers during the suspend/resume cycle.
 > 
-> Fixes: b33340e33acd ("drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers")
-> Reported-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>  .../devicetree/bindings/phy/samsung-phy.txt   |  1 +
+>  drivers/phy/samsung/Kconfig                   |  7 ++-
+>  drivers/phy/samsung/phy-exynos5250-usb2.c     | 48 +++++++++++++------
+>  drivers/phy/samsung/phy-samsung-usb2.c        |  6 +++
+>  drivers/phy/samsung/phy-samsung-usb2.h        |  1 +
+>  5 files changed, 48 insertions(+), 15 deletions(-)
+> 
 
-Although I am triaging kernelci bisections, it was initially
-found thanks to our friendly bot.  So if you're OK with this, it
-would most definitely appreciate a mention:
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-  Reported-by: "kernelci.org bot" <bot@kernelci.org>
-
-Thanks,
-Guillaume
+Best regards,
+Krzysztof
