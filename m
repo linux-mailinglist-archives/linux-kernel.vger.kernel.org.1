@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA85E2BABA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7794A2BABAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 15:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727364AbgKTOHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 09:07:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727015AbgKTOG7 (ORCPT
+        id S1727678AbgKTOIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 09:08:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52509 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726561AbgKTOIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 09:06:59 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B3FC0613CF;
-        Fri, 20 Nov 2020 06:06:58 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id r9so13611503lfn.11;
-        Fri, 20 Nov 2020 06:06:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fbAiUqaPdGmgSOxYvD/S4BBUsRrQ9zsclh+SLteqLJA=;
-        b=R9VsB7bz9NIu4jPGvQ2kIxDpZ2ePLSn1P5eSwuX1IgM9/pF9HOpV053s/b/DSiyUOq
-         WsyVfw8cjLUBb/jx+/TwG0CvkpjZ1LVfBq/m4CvGkmkdmjPflW/K9P7atyg0tiZCYSR/
-         BKP/SOILpQ5tKTfHTeXDLhnleCnpkekVLYm78YyP6NEOE2NWGlR2maGvWAHbI4f7P6Wh
-         rxwkpjpjVKL6xrzsWz9u8S4/ti/SfikiQBdNF6DqrByVIvODkrPEpQwv4M4BE6oFX8cA
-         rOvRvKKhWhVgGAvurosFFO/Xxj+7mzZSqau/Ibu1Yf1dhgOCLVGPraVFyMjeWjjopN+Q
-         /Gwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fbAiUqaPdGmgSOxYvD/S4BBUsRrQ9zsclh+SLteqLJA=;
-        b=eZujAQuXR92vz1eKaIndb6CBKgM48R9dZQ0Y05MVXBrzSEFJbOOfJHrIaz4YsRMHr+
-         FDOl/pjnK+N/H14f/8CiFsy2pc3+23GHXQbI/OPzs6+9Ky9IwrSfVY71Ot0ZU+IAczrB
-         p+daufWiZ/GiLkNapGEUiynNYSSSid9Rf5kpCQvQ06uHXZDRYbiLxE4hn5ZcmU+U2g2C
-         ZEIEWljDDStxDQQDFtyE8FbjVcmb15AAiIEpbch3FguyBo+Kd4rDbb76GOXSkxRoH7+O
-         AFVtVqiFyT2Wef4JVZonApxzBKRInSDfv+1XYfZfQ+ngTpTDOVMHyxYp/rOUfLNmG26k
-         4Rug==
-X-Gm-Message-State: AOAM531jzwXoY+FOBJaKAnE2trzYsek+jasSXIoth1h5p8nCxRCQ62ks
-        V/vDpTT5T2KjlR8DGXr58x4=
-X-Google-Smtp-Source: ABdhPJzwQWJ63D8TNJulIR6b4LRfQ1CTUfPxdqBigm13RDf7nmdJmKIaOW0KZp0Sm/bTfgHqiYOeQw==
-X-Received: by 2002:ac2:48b7:: with SMTP id u23mr8773594lfg.327.1605881217368;
-        Fri, 20 Nov 2020 06:06:57 -0800 (PST)
-Received: from mobilestation ([95.79.141.114])
-        by smtp.gmail.com with ESMTPSA id l18sm291084ljj.60.2020.11.20.06.06.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 06:06:56 -0800 (PST)
-Date:   Fri, 20 Nov 2020 17:06:54 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: cdmm: fix use-after-free in mips_cdmm_bus_discover
-Message-ID: <20201120140654.e3jrnnyqesqbsko3@mobilestation>
-References: <20201120074847.31369-1-miaoqinglang@huawei.com>
+        Fri, 20 Nov 2020 09:08:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605881324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aGTiEL+52RoWS+9nd1Ms/clbRnrmeizFKg1laIg8ttk=;
+        b=jVlVn/G72N0HCSwV9sN3r8VKcg7slmk/em9TWmkqHA1w7QOT4wFoJSLKWchHeFvvz8luEX
+        yrRCwJEIggsc3QrbdxoogxduxMYu49tbtYsZqaHoJUl6cp9Ikb5ZgHjuzqvCkt/qr2Djdn
+        jE3MlR+5WEmTypWywdmw5ADn2CWNJdQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-jDTPSWkfN9q9QjQ53M0X-Q-1; Fri, 20 Nov 2020 09:08:42 -0500
+X-MC-Unique: jDTPSWkfN9q9QjQ53M0X-Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F640814410;
+        Fri, 20 Nov 2020 14:08:41 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7663519C46;
+        Fri, 20 Nov 2020 14:08:37 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 09:08:20 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
+        dm-devel@redhat.com, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: Re: md: dm-writeback: add __noreturn to BUG-ging function
+Message-ID: <20201120140819.GA7359@redhat.com>
+References: <20201113225228.20563-1-rdunlap@infradead.org>
+ <344abf76-9405-58ba-2dc4-27cab88c974d@de.ibm.com>
+ <c29eeb5d-0683-49eb-f729-38b14fac7745@infradead.org>
+ <20201117163147.GA27243@redhat.com>
+ <20201118154944.GB545@redhat.com>
+ <20201118160748.GA754@redhat.com>
+ <alpine.LRH.2.02.2011181611470.16933@file01.intranet.prod.int.rdu2.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120074847.31369-1-miaoqinglang@huawei.com>
+In-Reply-To: <alpine.LRH.2.02.2011181611470.16933@file01.intranet.prod.int.rdu2.redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Qinglang
+On Wed, Nov 18 2020 at  4:24pm -0500,
+Mikulas Patocka <mpatocka@redhat.com> wrote:
 
-Thanks for the patch. Good catch. Please see a tiny nitpick below.
-
-On Fri, Nov 20, 2020 at 03:48:47PM +0800, Qinglang Miao wrote:
-> kfree(dev) has been called inside put_device so anther
-> kfree would cause a use-after-free bug/
 > 
-> Fixes: 8286ae03308c ("MIPS: Add CDMM bus support")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  drivers/bus/mips_cdmm.c | 1 -
->  1 file changed, 1 deletion(-)
 > 
-> diff --git a/drivers/bus/mips_cdmm.c b/drivers/bus/mips_cdmm.c
-> index 9f7ed1fcd..e43786c67 100644
-> --- a/drivers/bus/mips_cdmm.c
-> +++ b/drivers/bus/mips_cdmm.c
-> @@ -561,7 +561,6 @@ static void mips_cdmm_bus_discover(struct mips_cdmm_bus *bus)
->  		ret = device_register(&dev->dev);
-
->  		if (ret) {
->  			put_device(&dev->dev);
-> -			kfree(dev);
->  		}
-
-After removing kfree() from here the braces around the if clause
-are no more needed in accordance with the kernel coding style.
-Please remove them too. Then feel free to add the tag
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
-
--Sergey
-
->  	}
->  }
-> -- 
-> 2.23.0
+> On Wed, 18 Nov 2020, Mike Snitzer wrote:
 > 
+> > On Wed, Nov 18 2020 at 10:49am -0500,
+> > Mike Snitzer <snitzer@redhat.com> wrote:
+> > 
+> > > I don't think my suggestion will help.. given it'd still leave
+> > > persistent_memory_claim() without a return statement.
+> > > 
+> > > Think it worthwhile to just add a dummy 'return 0;' after the BUG().
+> > 
+> > Decided to go with this, now staged for 5.11:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/commit/?h=dm-5.11&id=a1e4865b4dda7071f3707f7e551289ead66e38b1
+> 
+> Hi
+> 
+> I would just use "return -EOPNOTSUPP;" and drop the "#ifdef 
+> DM_WRITECACHE_HAS_PMEM" that you added.
+> 
+> That BUG/return -EOPNOTSUPP code can't happen at all - if 
+> DM_WRITECACHE_HAS_PMEM is not defined, WC_MODE_PMEM(wc) always returns 
+> false - so persistent_memory_claim and BUG() can't ever be called. And if 
+> it can't be called, you don't need to add a code that prints an error in 
+> that case.
+> 
+> If we don't have DM_WRITECACHE_HAS_PMEM, the compiler optimizer will 
+> remove all the code guarded with if (WC_MODE_PMEM(wc)) as unreachable.
+> 
+> Mikulas
+
+Fair enough.
+
