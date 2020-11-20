@@ -2,113 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2AD2BA18B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602A82BA187
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgKTEv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 23:51:56 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52646 "EHLO
+        id S1726509AbgKTEvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 23:51:48 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52754 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbgKTEvg (ORCPT
+        with ESMTP id S1726282AbgKTEvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 23:51:36 -0500
+        Thu, 19 Nov 2020 23:51:38 -0500
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 329F927C1B; Thu, 19 Nov 2020 23:51:34 -0500 (EST)
-To:     "David S. Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Michael Schmitz" <schmitzmic@gmail.com>,
-        "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <63369c9b96673442a4bd653fe92acda99172123a.1605847196.git.fthain@telegraphics.com.au>
+        id 199702A45B; Thu, 19 Nov 2020 23:51:36 -0500 (EST)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Joshua Thompson" <funaho@jurai.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <0a7b09f5e5f48e270b82041c19e8f20f54c69216.1605847196.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH RESEND] ide/falconide: Fix module unload
+Subject: [PATCH] m68k/mac: Refactor iop_preinit() and iop_init()
 Date:   Fri, 20 Nov 2020 15:39:56 +1100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unloading the falconide module results in a crash:
+The idea behind iop_preinit() was to put the SCC IOP into bypass mode.
+However, that remains unimplemented and implementing it would be
+difficult. Let the comments and code reflect this. Even if iop_preinit()
+worked as described in the comments, it gets called immediately before
+iop_init() so it might as well part of iop_init().
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000000
-Oops: 00000000
-Modules linked in: falconide(-)
-PC: [<002930b2>] ide_host_remove+0x2e/0x1d2
-SR: 2000  SP: 00b49e28  a2: 009b0f90
-d0: 00000000    d1: 009b0f90    d2: 00000000    d3: 00b48000
-d4: 003cef32    d5: 00299188    a0: 0086d000    a1: 0086d000
-Process rmmod (pid: 322, task=009b0f90)
-Frame format=7 eff addr=00000000 ssw=0505 faddr=00000000
-wb 1 stat/addr/data: 0000 00000000 00000000
-wb 2 stat/addr/data: 0000 00000000 00000000
-wb 3 stat/addr/data: 0000 00000000 00018da9
-push data: 00000000 00000000 00000000 00000000
-Stack from 00b49e90:
-        004c456a 0027f176 0027cb0a 0027cb9e 00000000 0086d00a 2187d3f0 0027f0e0
-        00b49ebc 2187d1f6 00000000 00b49ec8 002811e8 0086d000 00b49ef0 0028024c
-        0086d00a 002800d6 00279a1a 00000001 00000001 0086d00a 2187d3f0 00279a58
-        00b49f1c 002802e0 0086d00a 2187d3f0 004c456a 0086d00a ef96af74 00000000
-        2187d3f0 002805d2 800de064 00b49f44 0027f088 2187d3f0 00ac1cf4 2187d3f0
-        004c43be 2187d3f0 00000000 2187d3f0 800b66a8 00b49f5c 00280776 2187d3f0
-Call Trace: [<0027f176>] __device_driver_unlock+0x0/0x48
- [<0027cb0a>] device_links_busy+0x0/0x94
- [<0027cb9e>] device_links_unbind_consumers+0x0/0x130
- [<0027f0e0>] __device_driver_lock+0x0/0x5a
- [<2187d1f6>] falconide_remove+0x12/0x18 [falconide]
- [<002811e8>] platform_drv_remove+0x1c/0x28
- [<0028024c>] device_release_driver_internal+0x176/0x17c
- [<002800d6>] device_release_driver_internal+0x0/0x17c
- [<00279a1a>] get_device+0x0/0x22
- [<00279a58>] put_device+0x0/0x18
- [<002802e0>] driver_detach+0x56/0x82
- [<002805d2>] driver_remove_file+0x0/0x24
- [<0027f088>] bus_remove_driver+0x4c/0xa4
- [<00280776>] driver_unregister+0x28/0x5a
- [<00281a00>] platform_driver_unregister+0x12/0x18
- [<2187d2a0>] ide_falcon_driver_exit+0x10/0x16 [falconide]
- [<000764f0>] sys_delete_module+0x110/0x1f2
- [<000e83ea>] sys_rename+0x1a/0x1e
- [<00002e0c>] syscall+0x8/0xc
- [<00188004>] ext4_multi_mount_protect+0x35a/0x3ce
-Code: 0029 9188 4bf9 0027 aa1c 283c 003c ef32 <265c> 4a8b 6700 00b8 2043 2028 000c 0280 00ff ff00 6600 0176 40c0 7202 b2b9 004c
-Disabling lock debugging due to kernel taint
-
-This happens because the driver_data pointer is uninitialized.
-Add the missing platform_set_drvdata() call. For clarity, use the
-matching platform_get_drvdata() as well.
-
-Cc: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Fixes: 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Joshua Thompson <funaho@jurai.org>
+Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
-This patch was tested using Aranym.
----
- drivers/ide/falconide.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/m68k/mac/config.c |  8 -------
+ arch/m68k/mac/iop.c    | 54 ++++++++++++++----------------------------
+ 2 files changed, 18 insertions(+), 44 deletions(-)
 
-diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
-index dbeb2605e5f6..607c44bc50f1 100644
---- a/drivers/ide/falconide.c
-+++ b/drivers/ide/falconide.c
-@@ -166,6 +166,7 @@ static int __init falconide_init(struct platform_device *pdev)
- 	if (rc)
- 		goto err_free;
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 2bea1799b8de..f66944909be9 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -55,7 +55,6 @@ struct mac_booter_data mac_bi_data;
+ static unsigned long mac_orig_videoaddr;
  
-+	platform_set_drvdata(pdev, host);
- 	return 0;
- err_free:
- 	ide_host_free(host);
-@@ -176,7 +177,7 @@ static int __init falconide_init(struct platform_device *pdev)
+ extern int mac_hwclk(int, struct rtc_time *);
+-extern void iop_preinit(void);
+ extern void iop_init(void);
+ extern void via_init(void);
+ extern void via_init_clock(irq_handler_t func);
+@@ -836,13 +835,6 @@ static void __init mac_identify(void)
+ 		break;
+ 	}
  
- static int falconide_remove(struct platform_device *pdev)
+-	/*
+-	 * We need to pre-init the IOPs, if any. Otherwise
+-	 * the serial console won't work if the user had
+-	 * the serial ports set to "Faster" mode in MacOS.
+-	 */
+-	iop_preinit();
+-
+ 	pr_info("Detected Macintosh model: %d\n", model);
+ 
+ 	/*
+diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
+index c669a7644301..de156a027f5b 100644
+--- a/arch/m68k/mac/iop.c
++++ b/arch/m68k/mac/iop.c
+@@ -47,6 +47,10 @@
+  *
+  * TODO:
+  *
++ * o The SCC IOP has to be placed in bypass mode before the serial console
++ *   gets initialized. iop_init() would be one place to do that. Or the
++ *   bootloader could do that. For now, the Serial Switch control panel
++ *   is needed for that -- contrary to the changelog above.
+  * o Something should be periodically checking iop_alive() to make sure the
+  *   IOP hasn't died.
+  * o Some of the IOP manager routines need better error checking and
+@@ -224,40 +228,6 @@ static struct iop_msg *iop_get_unused_msg(void)
+ 	return NULL;
+ }
+ 
+-/*
+- * This is called by the startup code before anything else. Its purpose
+- * is to find and initialize the IOPs early in the boot sequence, so that
+- * the serial IOP can be placed into bypass mode _before_ we try to
+- * initialize the serial console.
+- */
+-
+-void __init iop_preinit(void)
+-{
+-	if (macintosh_config->scc_type == MAC_SCC_IOP) {
+-		if (macintosh_config->ident == MAC_MODEL_IIFX) {
+-			iop_base[IOP_NUM_SCC] = (struct mac_iop *) SCC_IOP_BASE_IIFX;
+-		} else {
+-			iop_base[IOP_NUM_SCC] = (struct mac_iop *) SCC_IOP_BASE_QUADRA;
+-		}
+-		iop_scc_present = 1;
+-	} else {
+-		iop_base[IOP_NUM_SCC] = NULL;
+-		iop_scc_present = 0;
+-	}
+-	if (macintosh_config->adb_type == MAC_ADB_IOP) {
+-		if (macintosh_config->ident == MAC_MODEL_IIFX) {
+-			iop_base[IOP_NUM_ISM] = (struct mac_iop *) ISM_IOP_BASE_IIFX;
+-		} else {
+-			iop_base[IOP_NUM_ISM] = (struct mac_iop *) ISM_IOP_BASE_QUADRA;
+-		}
+-		iop_stop(iop_base[IOP_NUM_ISM]);
+-		iop_ism_present = 1;
+-	} else {
+-		iop_base[IOP_NUM_ISM] = NULL;
+-		iop_ism_present = 0;
+-	}
+-}
+-
+ /*
+  * Initialize the IOPs, if present.
+  */
+@@ -266,11 +236,23 @@ void __init iop_init(void)
  {
--	struct ide_host *host = dev_get_drvdata(&pdev->dev);
-+	struct ide_host *host = platform_get_drvdata(pdev);
+ 	int i;
  
- 	ide_host_remove(host);
- 
+-	if (iop_scc_present) {
++	if (macintosh_config->scc_type == MAC_SCC_IOP) {
++		if (macintosh_config->ident == MAC_MODEL_IIFX)
++			iop_base[IOP_NUM_SCC] = (struct mac_iop *)SCC_IOP_BASE_IIFX;
++		else
++			iop_base[IOP_NUM_SCC] = (struct mac_iop *)SCC_IOP_BASE_QUADRA;
++		iop_scc_present = 1;
+ 		pr_debug("SCC IOP detected at %p\n", iop_base[IOP_NUM_SCC]);
+ 	}
+-	if (iop_ism_present) {
++	if (macintosh_config->adb_type == MAC_ADB_IOP) {
++		if (macintosh_config->ident == MAC_MODEL_IIFX)
++			iop_base[IOP_NUM_ISM] = (struct mac_iop *)ISM_IOP_BASE_IIFX;
++		else
++			iop_base[IOP_NUM_ISM] = (struct mac_iop *)ISM_IOP_BASE_QUADRA;
++		iop_ism_present = 1;
+ 		pr_debug("ISM IOP detected at %p\n", iop_base[IOP_NUM_ISM]);
++
++		iop_stop(iop_base[IOP_NUM_ISM]);
+ 		iop_start(iop_base[IOP_NUM_ISM]);
+ 		iop_alive(iop_base[IOP_NUM_ISM]); /* clears the alive flag */
+ 	}
 -- 
 2.26.2
 
