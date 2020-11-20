@@ -2,362 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4ED2BA729
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF992BA72C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 11:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbgKTKNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 05:13:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33476 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726541AbgKTKNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:13:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD44BAC23;
-        Fri, 20 Nov 2020 10:13:32 +0000 (UTC)
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Huang, Ray" <ray.huang@amd.com>, Dave Airlie <airlied@redhat.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-References: <2c474745ae884de3b4ecb8abe2152bfd@AcuMS.aculab.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: Linux 5.10-rc4; graphics alignment
-Message-ID: <fa5c887e-82d8-5347-ff18-85e3628dadbe@suse.de>
-Date:   Fri, 20 Nov 2020 11:13:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727428AbgKTKOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 05:14:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726122AbgKTKOV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 05:14:21 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7ACC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:14:21 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id t18so4646145plo.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 02:14:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C2VeCZ8D8lK98N1AUbap+uVyqm64B6OelNbA4oPS3qI=;
+        b=WJWNINrRMPPPg3nUIzYYSYBvEHCrNbkKKB8htDYafxOshrWg4q8zPkSaO3CBAy6s9u
+         Z7GpaTdd8wifqUlAKAoBXMijo/4rk+pws5leR0syUYv9Cu807/lSNMwA8/JL6f8tFQLi
+         L9M61d9ud1paoyO9YGPTAm7V0GHf03wXLdmj2QLQqH4xSY1luRn3kn3rkBurqDQowjt9
+         ros98SVhkAkRNRS3t+flvp19o5ymlszZ68+BXRoA57MhZ4/7S9Z76W0HYs2n1LmRELxT
+         q2OqjVq809L8VLWJgKtaC5gyOqoeaJVqCS08a6dPGAsKGX2ZV2IxFmCnkk+PC2QoeSqB
+         5QyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=C2VeCZ8D8lK98N1AUbap+uVyqm64B6OelNbA4oPS3qI=;
+        b=S8yW9v6ejcRLcGuvCV5hp68azN3fPWj5opZR/STHoeAby2fLpx5SNIWX8vLpYnN+FU
+         o5/1XBZFCdQpetbvFYpwuQl4IzXTds+0qthz558veqApVJxtoGCzZ8hqZk4pY5SdlyAS
+         YEcJogkuv7m/B0Sol2hUg6f0/LDMjgpucp3BJxif1u0hKI0PXrtkH8NTDIqCp/WsS+7G
+         BgengSqEvn7p0zAWkgwmL9g6qGZ/uawYWhu67eelurxEbv+qfaEkFyzx65KFoyx8wGuG
+         qYDPi7NzZaiSVWdPn0NFBAg9wxGkf7idWbJ6GK2ZQ+prByF7GFZDqjwMahYDUrTfPJOz
+         PbNA==
+X-Gm-Message-State: AOAM5337SLITV4jtl1lddYCjYL8fqra2Yv3kO7mEXI7lL0CImgjLN2Dk
+        M+dl7fDzSIxyLmXYCAYLbDo=
+X-Google-Smtp-Source: ABdhPJwTgdjfQjvup00+hYgF72UDovjuWJFctbJHhifxn/gKu1GfTdO6T+O8Hx4DUFbA4zxpmd068A==
+X-Received: by 2002:a17:902:7c01:b029:d8:ee2a:ce88 with SMTP id x1-20020a1709027c01b02900d8ee2ace88mr13706137pll.22.1605867260696;
+        Fri, 20 Nov 2020 02:14:20 -0800 (PST)
+Received: from google.com ([101.235.31.111])
+        by smtp.gmail.com with ESMTPSA id r6sm3259817pjo.0.2020.11.20.02.14.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 02:14:19 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+Date:   Fri, 20 Nov 2020 19:14:14 +0900
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>
+Subject: Re: [PATCH v3 02/12] perf record: introduce thread specific data
+ array
+Message-ID: <20201120101414.GC94830@google.com>
+References: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
+ <6ad03a01-a3a4-5df4-7cf5-cbc768764e75@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <2c474745ae884de3b4ecb8abe2152bfd@AcuMS.aculab.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="SjKHnW276XLyi23E5B0Ra4T0p1p72Mjox"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6ad03a01-a3a4-5df4-7cf5-cbc768764e75@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SjKHnW276XLyi23E5B0Ra4T0p1p72Mjox
-Content-Type: multipart/mixed; boundary="GlZ7RjJFNmCTn93tGiW7Y0l9ttOfVA1zA";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: David Laight <David.Laight@ACULAB.COM>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>, "Huang, Ray"
- <ray.huang@amd.com>, Dave Airlie <airlied@redhat.com>,
- =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <fa5c887e-82d8-5347-ff18-85e3628dadbe@suse.de>
-Subject: Re: Linux 5.10-rc4; graphics alignment
-References: <2c474745ae884de3b4ecb8abe2152bfd@AcuMS.aculab.com>
-In-Reply-To: <2c474745ae884de3b4ecb8abe2152bfd@AcuMS.aculab.com>
+On Mon, Nov 16, 2020 at 03:15:42PM +0300, Alexey Budankov wrote:
+> 
+> Introduce thread specific data object and array of such objects
+> to store and manage thread local data. Implement functions to
+> allocate, initialize, finalize and release thread specific data.
+> 
+> Thread local maps and overwrite_maps arrays keep pointers to
+> mmap buffer objects to serve according to maps thread mask.
+> Thread local pollfd array keeps event fds connected to mmaps
+> buffers according to maps thread mask.
+> 
+> Thread control commands are delivered via thread local comm pipes
+> and ctlfd_pos fd. External control commands (--control option)
+> are delivered via evlist ctlfd_pos fd and handled by the main
+> tool thread.
+> 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> ---
+>  tools/lib/api/fd/array.c    |  17 ++++
+>  tools/lib/api/fd/array.h    |   1 +
+>  tools/perf/builtin-record.c | 191 +++++++++++++++++++++++++++++++++++-
+>  3 files changed, 206 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
+> index 5e6cb9debe37..de8bcbaea3f1 100644
+> --- a/tools/lib/api/fd/array.c
+> +++ b/tools/lib/api/fd/array.c
+> @@ -88,6 +88,23 @@ int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags
+>  	return pos;
+>  }
+>  
+> +int fdarray__clone(struct fdarray *fda, int pos, struct fdarray *base)
+> +{
+> +	struct pollfd *entry;
+> +	int npos;
+> +
+> +	if (pos >= base->nr)
+> +		return -EINVAL;
+> +
+> +	entry = &base->entries[pos];
+> +
+> +	npos = fdarray__add(fda, entry->fd, entry->events, base->priv[pos].flags);
+> +	if (npos >= 0)
+> +		fda->priv[npos] = base->priv[pos];
+> +
+> +	return npos;
+> +}
+> +
+>  int fdarray__filter(struct fdarray *fda, short revents,
+>  		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
+>  		    void *arg)
+> diff --git a/tools/lib/api/fd/array.h b/tools/lib/api/fd/array.h
+> index 7fcf21a33c0c..4a03da7f1fc1 100644
+> --- a/tools/lib/api/fd/array.h
+> +++ b/tools/lib/api/fd/array.h
+> @@ -42,6 +42,7 @@ struct fdarray *fdarray__new(int nr_alloc, int nr_autogrow);
+>  void fdarray__delete(struct fdarray *fda);
+>  
+>  int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags flags);
+> +int fdarray__clone(struct fdarray *fda, int pos, struct fdarray *base);
+>  int fdarray__poll(struct fdarray *fda, int timeout);
+>  int fdarray__filter(struct fdarray *fda, short revents,
+>  		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 82f009703ad7..765a90e38f69 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -56,6 +56,7 @@
+>  #include <poll.h>
+>  #include <pthread.h>
+>  #include <unistd.h>
+> +#include <sys/syscall.h>
+>  #include <sched.h>
+>  #include <signal.h>
+>  #ifdef HAVE_EVENTFD_SUPPORT
+> @@ -90,6 +91,24 @@ struct thread_mask {
+>  	struct mmap_cpu_mask	affinity;
+>  };
+>  
+> +struct thread_data {
+> +	pid_t			tid;
+> +	struct thread_mask	*mask;
+> +	struct {
+> +		int		msg[2];
+> +		int		ack[2];
+> +	} comm;
 
---GlZ7RjJFNmCTn93tGiW7Y0l9ttOfVA1zA
-Content-Type: multipart/mixed;
- boundary="------------426DA6C83A1A6C49B5A99EAE"
-Content-Language: en-US
+I think the name 'comm' is misleading as we have thread's comm
+already.
 
-This is a multi-part message in MIME format.
---------------426DA6C83A1A6C49B5A99EAE
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
 
-Hi
+> +	struct fdarray		pollfd;
+> +	int			ctlfd_pos;
+> +	struct mmap		**maps;
+> +	struct mmap		**overwrite_maps;
+> +	int			nr_mmaps;
+> +	struct record		*rec;
+> +	unsigned long long	samples;
+> +	unsigned long		waking;
+> +	u64			bytes_written;
+> +};
+> +
+>  struct record {
+>  	struct perf_tool	tool;
+>  	struct record_opts	opts;
+> @@ -114,6 +133,7 @@ struct record {
+>  	struct mmap_cpu_mask	affinity_mask;
+>  	unsigned long		output_max_size;	/* = 0: unlimited */
+>  	struct thread_mask	*thread_masks;
+> +	struct thread_data	*thread_data;
+>  	int			nr_threads;
+>  };
+>  
+> @@ -842,9 +862,168 @@ static int record__kcore_copy(struct machine *machine, struct perf_data *data)
+>  	return kcore_copy(from_dir, kcore_dir);
+>  }
+>  
+> +static int record__thread_data_init_comm(struct thread_data *thread_data)
+> +{
+> +	if (pipe(thread_data->comm.msg) || pipe(thread_data->comm.ack)) {
+> +		pr_err("Failed to create thread comm pipes, error %m\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	pr_debug("thread_data[%p]: msg=[%d,%d], ack=[%d,%d]\n", thread_data,
+> +		 thread_data->comm.msg[0], thread_data->comm.msg[1],
+> +		 thread_data->comm.ack[0], thread_data->comm.ack[1]);
+> +
+> +	return 0;
+> +}
+> +
+> +static int record__thread_data_init_maps(struct thread_data *thread_data, struct evlist *evlist)
+> +{
+> +	int m, tm, nr_mmaps = evlist->core.nr_mmaps;
+> +	struct mmap *mmap = evlist->mmap;
+> +	struct mmap *overwrite_mmap = evlist->overwrite_mmap;
+> +	struct perf_cpu_map *cpus = evlist->core.cpus;
+> +
+> +	thread_data->nr_mmaps = bitmap_weight(thread_data->mask->maps.bits, thread_data->mask->maps.nbits);
+> +	if (mmap) {
+> +		thread_data->maps = zalloc(thread_data->nr_mmaps * sizeof(struct mmap *));
+> +		if (!thread_data->maps) {
+> +			pr_err("Failed to allocate maps thread data\n");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +	if (overwrite_mmap) {
+> +		thread_data->overwrite_maps = zalloc(thread_data->nr_mmaps * sizeof(struct mmap *));
+> +		if (!thread_data->overwrite_maps) {
+> +			pr_err("Failed to allocate overwrite maps thread data\n");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +	pr_debug("thread_data[%p]: nr_mmaps=%d, maps=%p, overwrite_maps=%p\n", thread_data,
+> +		 thread_data->nr_mmaps, thread_data->maps, thread_data->overwrite_maps);
+> +
+> +	for (m = 0, tm = 0; m < nr_mmaps && tm < thread_data->nr_mmaps; m++) {
+> +		if (test_bit(cpus->map[m], thread_data->mask->maps.bits)) {
+> +			if (thread_data->maps) {
+> +				thread_data->maps[tm] = &mmap[m];
+> +				pr_debug("thread_data[%p]: maps[%d] -> mmap[%d], cpus[%d]\n",
+> +					 thread_data, tm, m, cpus->map[m]);
+> +			}
+> +			if (thread_data->overwrite_maps) {
+> +				thread_data->overwrite_maps[tm] = &overwrite_mmap[m];
+> +				pr_debug("thread_data[%p]: overwrite_maps[%d] -> overwrite_mmap[%d], cpus[%d]\n",
+> +					 thread_data, tm, m, cpus->map[m]);
 
-Am 20.11.20 um 10:52 schrieb David Laight:
->> Hi David
->>
->> Am 18.11.20 um 23:01 schrieb David Laight:
-> ...
->> Did you try Daniel's suggestion of testing with the direct parent comm=
-it?
-> (I was on holiday yesterday and didn't want to spend a sunny
-> afternoon doing bisects.)
+I'm afraid this will add too much debug message for verbose=1.  Maybe
+we can demote some to pr_debug2()?
 
-Makes sense :)
 
->=20
-> I've just done that and it is bad.
->=20
-> Is there any way to bisect through the parts of the
-> drm merge patch into v5.10-rc1 ?
->=20
-> That ought to be quicker (and less error prone) than
-> the bisect builds I was doing.
->=20
-> Note that the stack 'splat' is due to a later change.
-> It is separate from the broken pixel alignment.
->=20
-> I actually saw the vga text go 'funny' while the boot
-> was outputting all the [OK] messages (from systemd?)
-> before the graphic login stole tty1 (bloody stupid
-> to use tty1).
->=20
-> I don't need to use the failing system today, I'll
-> have another go at isolating the failure.
+> +			}
+> +			tm++;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int record__thread_data_init_pollfd(struct thread_data *thread_data, struct evlist *evlist)
+> +{
+> +	int f, tm, pos;
+> +	struct mmap *map, *overwrite_map;
+> +
+> +	fdarray__init(&thread_data->pollfd, 64);
+> +
+> +	for (tm = 0; tm < thread_data->nr_mmaps; tm++) {
+> +		map = thread_data->maps ? thread_data->maps[tm] : NULL;
+> +		overwrite_map = thread_data->overwrite_maps ? thread_data->overwrite_maps[tm] : NULL;
+> +
+> +		for (f = 0; f < evlist->core.pollfd.nr; f++) {
+> +			void *ptr = evlist->core.pollfd.priv[f].ptr;
+> +
+> +			if ((map && ptr == map) || (overwrite_map && ptr == overwrite_map)) {
+> +				pos = fdarray__clone(&thread_data->pollfd, f, &evlist->core.pollfd);
+> +				if (pos < 0)
+> +					return pos;
+> +				pr_debug("thread_data[%p]: pollfd[%d] <- event_fd=%d\n",
+> +					 thread_data, pos, evlist->core.pollfd.entries[f].fd);
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int record__alloc_thread_data(struct record *rec, struct evlist *evlist)
+> +{
+> +	int t, ret;
+> +	struct thread_data *thread_data;
+> +
+> +	thread_data = zalloc(rec->nr_threads * sizeof(*(rec->thread_data)));
+> +	if (!thread_data) {
+> +		pr_err("Failed to allocate thread data\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	for (t = 0; t < rec->nr_threads; t++) {
+> +		thread_data[t].rec = rec;
+> +		thread_data[t].mask = &rec->thread_masks[t];
+> +		ret = record__thread_data_init_maps(&thread_data[t], evlist);
+> +		if (ret)
+> +			return ret;
 
-You can use drm-tip for testing, where many of the DRM patches go through=
-=2E
+This and other places that return in the middle will leak the
+thread_data.
 
-   https://cgit.freedesktop.org/drm/drm-tip/
 
-It's fairly up-to-date.
+> +		ret = record__thread_data_init_pollfd(&thread_data[t], evlist);
+> +		if (ret)
+> +			return ret;
+> +		if (t) {
+> +			thread_data[t].tid = -1;
+> +			ret = record__thread_data_init_comm(&thread_data[t]);
+> +			if (ret)
+> +				return ret;
+> +			thread_data[t].ctlfd_pos = fdarray__add(&thread_data[t].pollfd,
+> +								thread_data[t].comm.msg[0],
+> +								POLLIN | POLLERR | POLLHUP,
+> +								fdarray_flag__nonfilterable);
+> +			if (thread_data[t].ctlfd_pos < 0)
+> +				return -ENOMEM;
+> +			pr_debug("thread_data[%p]: pollfd[%d] <- ctl_fd=%d\n",
+> +				 thread_data, thread_data[t].ctlfd_pos,
+> +				 thread_data[t].comm.msg[0]);
+> +		} else {
+> +			thread_data[t].tid = syscall(SYS_gettid);
+> +			if (evlist->ctl_fd.pos == -1)
+> +				continue;
+> +			thread_data[t].ctlfd_pos = fdarray__clone(&thread_data[t].pollfd,
+> +								  evlist->ctl_fd.pos,
+> +								  &evlist->core.pollfd);
+> +			if (ret < 0)
+> +				return ret;
 
-I have two systems with AST chips and neither shows any of the symptoms=20
-you describe; nor do we have such reports about drivers that use a=20
-similar stack (hibmc, bochs). Could you provide the output of
+You should check ctlfd_pos instead.
 
-   dmesg | grep drm
+> +			pr_debug("thread_data[%p]: pollfd[%d] <- ctl_fd=%d\n",
+> +				 thread_data, thread_data[t].ctlfd_pos,
+> +				 evlist->core.pollfd.entries[evlist->ctl_fd.pos].fd);
+> +		}
+> +	}
+> +
+> +	rec->thread_data = thread_data;
+> +
+> +	return 0;
+> +}
+> +
+> +static int record__free_thread_data(struct record *rec)
+> +{
+> +	int t;
+> +
+> +	for (t = 0; t < rec->nr_threads; t++) {
+> +		close(rec->thread_data[t].comm.msg[0]);
+> +		close(rec->thread_data[t].comm.msg[1]);
+> +		close(rec->thread_data[t].comm.ack[0]);
+> +		close(rec->thread_data[t].comm.ack[1]);
+> +		zfree(&rec->thread_data[t].maps);
+> +		zfree(&rec->thread_data[t].overwrite_maps);
+> +		fdarray__exit(&rec->thread_data[t].pollfd);
 
-Best regards
-Thomas
+The rec->thread_data might not be set.
 
->=20
-> 	David
->=20
+Thanks,
+Namhyung
+
+
+> +	}
+> +
+> +	zfree(&rec->thread_data);
+> +
+> +	return 0;
+> +}
+> +
+>  static int record__mmap_evlist(struct record *rec,
+>  			       struct evlist *evlist)
+>  {
+> +	int ret;
+>  	struct record_opts *opts = &rec->opts;
+>  	bool auxtrace_overwrite = opts->auxtrace_snapshot_mode ||
+>  				  opts->auxtrace_sample_mode;
+> @@ -875,6 +1054,14 @@ static int record__mmap_evlist(struct record *rec,
+>  				return -EINVAL;
+>  		}
+>  	}
+> +
+> +	if (evlist__initialize_ctlfd(evlist, opts->ctl_fd, opts->ctl_fd_ack))
+> +		return -1;
+> +
+> +	ret = record__alloc_thread_data(rec, evlist);
+> +	if (ret)
+> +		return ret;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1845,9 +2032,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  		perf_evlist__start_workload(rec->evlist);
+>  	}
+>  
+> -	if (evlist__initialize_ctlfd(rec->evlist, opts->ctl_fd, opts->ctl_fd_ack))
+> -		goto out_child;
 > -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, M=
-K1 1PT, UK
-> Registration No: 1397386 (Wales)
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
---------------426DA6C83A1A6C49B5A99EAE
-Content-Type: application/pgp-keys;
- name="OpenPGP_0x680DC11D530B7A23.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0x680DC11D530B7A23.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdgX=
-H47
-fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0BeB5B=
-bqP
-5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4YchdHm3bkPj=
-z9E
-ErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB9GluwvIhSezPg=
-nEm
-imZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEBAAHNKFRob21hcyBaa=
-W1t
-ZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmNvbT7CwI4EEwEIADgCGwMFCwkIBwIGFQoJCAsCB=
-BYC
-AwECHgECF4AWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCXvxIWAAKCRBoDcEdUwt6I+aZB/9ih=
-Onf
-G4Lgf1L87cvoXh95/bnaJ6aQhP6/ZeRleuCXflnyDajlm3c9loQr0r2bQUi7JeYwUKbBab2QS=
-GJm
-DMRGlLMnmzWB8mHmZ6bHAu+2Sth8SraE42p6BB9d8dlYEID+dl/D/xUBeulfkck5rloGtYqDi=
-+1Q
-DfkEZJaxVSZ6FFkXuQi/G9qcI4iklN2nv02iQ7mZe8WYAysix6s/6vIobhirEBreclSNxXqis=
-p8n
-91+v855JC11EgRdUXMRK81IAaCKXP8zLx3ixku7mvP9Om61yerHSbeU2HZbIggZYQlFh6llJm=
-zF1
-CjCWgPTJyk4t4kMTcNOw5ykD47vU/KW+wl0EEBECAB0WIQQn6OOmnzvP/7ktjmoud6EwEfXTw=
-gUC
-WzodVwAKCRAud6EwEfXTwidvAKDkOADDHfI0QNXqAZcg6i1kOndAYACeLXHBwpjnumkPSyoab=
-IiL
-+he8r3zCwHMEEAEIAB0WIQQeXZghmQijlU7YzFiqUDvJrg9HpwUCWznxsQAKCRCqUDvJrg9Hp=
-42f
-CADIvsZcAd04PDFclRltHr2huy6s7+ZZA6PgYlMblEBh4bJA+dNPBTvzpJ7FJv/bmHOa+phWy=
-Urj
-EpfFGuOKGuWAfzgVAEu52fMrW3/mm+O26z1AKIu8hiZ/x9OAe4AM71ZO2lZrV1/53ZdzWnRuO=
-45N
-GQcotU8oeVfT9okAfmozmWMmIMq7Q0K6bV8W3qiD5XfDNxjr2caxc/9WX1bZPUo3n0H23MNaA=
-Tpy
-Oz732UtDh6sKUAB1RfzBBd/REbjHD7+quwJGAdRScyDRncX1vNb2+wihy0ipA69XY3bkhR5iD=
-u5r
-A9enuiMe6J1IBMI1PZh+vOufB/M6cd2D9RULIJaJwsBzBBABCAAdFiEEuyNtt7Ge78bIRx1op=
-/N8
-GYw5MYEFAls6MrsACgkQp/N8GYw5MYEnLQf/dwqlDJVQL2q+i8FFaqTMAm0n9jLRV6pN8JxFH=
-j0g
-voyWUOnQuNdAFgtKd26ZhN8NkLoSMO8E19eBPfLoBIFK5yNNVmRHAZm07MzGbA0uNWINJhmdR=
-bZM
-RMh0nneXjcEU/IvUmd8TPFTAd24X2mbzHgcaHMLJSVx1ohd4alRJXHIqDobKmiVwekyPnInJn=
-zWw
-iuZUkIotTkQple1PT/dF3S+KtPXBL6ldQ4NkAeCjsz4wnzSa9+VKOxEhiHM0PMzXSbkCMP+4m=
-Xy9
-RMplBw9Dm9hN2PSouBPifIrSodiiSWZYXOEkzLiBAB0frCKR63Dnx9kvjCD9Pz5wLd/70rjqI=
-cLA
-jgQTAQgAOAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC=
-3oj
-BQJftODHAAoJEGgNwR1TC3ojZSIIAIV3makffp4P4leU8JSLt0aTNewsOhy7VQzKUtlCw3PKD=
-3l/
-SuymZhQKgH+n6sijzFauZnZ+x0T+Oy+dDVZb3sNJuuMUDIHw18EO9daZBMcueaS54FGe73lAp=
-HUl
-7nxyocCxoqIG8+fP+75itV/ls2TSh5rJvjLvHC8J3NqfGlJ/jlSKrQUnzFbXfE5KGWiKNAn+I=
-1a2
-EE0I7uLpYgkdb8hcjtV9Rxr2ja+GWOaSoqB29P5GUzipkWo4144Q16JBO6QP2R9y/1ZK9VqH2=
-5T8
-lTKocLAaHCEdpDqY5KI15as9tIxlI1Vh+eqhTh/gwEm1ykO1gmrQ1zvGLDMB1EE6El3NJ1Rob=
-21h
-cyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIbAwULCQgHAgYVC=
-gkI
-CwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJe/EheAAoJEGgNwR1TC3ojq=
-RgI
-AIoegtTp1prPzfHgTAuEPd8v58ssHubwi9tg69a8IJ+iMNozhs4iUou84WOLBJNjSieXHZRa8=
-fJj
-//2/sTuABn38AQ9FcKX9/B49hrdCo6c0WHHKqlPrSTzuXNKYyOdmSFd/pDhBb2Bn5DTxxH5RP=
-m/N
-U/C9nUlwi7Y+FgBlDNa5h592wmJfv0cJAfvF56C+QL65jHFOFIW9xSaTOAxxMXHGJHXki6Iwa=
-aTg
-s7QQlKQcd5XvvED1bwLyQ7rq+MEZo5N7IygpQMM3qqGMlCnDdyQ3W95rd0HCWpfa0oVRCOwdu=
-SL3
-5hG7ONqBpvBj8z5GjSbt4HLJGvpeT0k37qzRExrCXQQQEQIAHRYhBCfo46afO8//uS2Oai53o=
-TAR
-9dPCBQJbOh1XAAoJEC53oTAR9dPC05AAoIy0HQ2DBDYugQ42P4HfyxfZTIvKAJ0fqNBcBFW9S=
-tbR
-DEP9cfpNVOv8YMLAcwQQAQgAHRYhBB5dmCGZCKOVTtjMWKpQO8muD0enBQJbOfGzAAoJEKpQO=
-8mu
-D0enL0wIAM2NTeUDCofBAkbWHGTZopclefbh0xGPYQEfttNyalp0hn1CrVO7OsX5eTjRqgyOa=
-1C5
-OAsNghCM4PUmrfv5cZ9+sNn9bRM50uVW9IFRlq8wwBY4+7QejJ5gs7DW/0tZIMZ6iTGKK0WEO=
-7gd
-2K9hXadPBScTdIqXeWH82meiqElnEQL+K9UeGUBrku+1EQIOxwziKwTDlTvhyJ+xmEKj0uWRc=
-Ocl
-27xLS9XOWPGXcNQBtlZhF8e/E1kFRt5CPP5UBdUCN8qydUadseXivSNDiYob9dyJSFt7G0Bq4=
-/ac
-Ret5ANtGRWsp8xYJQRossRMWL0w9P8SiIc2IY/JrQrpz29nCwHMEEAEIAB0WIQS7I223sZ7vx=
-shH
-HWin83wZjDkxgQUCWzoywAAKCRCn83wZjDkxgQaDCACyFuBLQWNvLT8GTDqTf/gETzmtoEM6Y=
-r8O
-4jbYg05xiFzAqMZctQsm3zHakx2JrimxDvQJRQJQzp5ICJ7J/BOuSL4FE1SPeQIfjm4jyBZGH=
-P/W
-vgHsT5e3+ZCPePPZO+3irarTKVhaaP70Tpka6EsOCZzO6L8D6tUDkhxMX0ymy7p8w9Yt1eD0o=
-Ume
-mxrKdS1ulpNJUTBw7gJN8bMowVnycEm6wntxOjrCxuwbkKhFLdn0ejcXQ0UkfbUFKfU64gGBu=
-S53
-ZlM8XlOhQEIw/FrdXszhR+Tg3Ag130cmJhOrghgOBLzvJfUd6OvDT5VIz0QGbAm8SWlAIIms1=
-9Z8
-kBsLwsCOBBMBCAA4AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEEchf7rIzpz2NEoWjla=
-A3B
-HVMLeiMFAl+04McACgkQaA3BHVMLeiPHXAf/SEoZa6CKoOAs1ctEP/hN8cEQqbEiuZ+71nm3u=
-/BQ
-p/CEUvqGq+iVc8kkpClDbPz5fa9mb+yWwufsnXKOs6ygmEoAEOL7dBZZIaRobBEkB09VXIkx8=
-lE0
-00grBVtToHUGRfZcMoMZ98XhPGU6lJDN200j/2CV46hQDz6PLySecNjOME05mosbYW5N2JwFd=
-uXP
-Qx++DjWB32QLBhcOcP3WslTy3PKVe/TcTvk0JpPFMz4UFc+awBVhDgZiGGAW3xLZRYyhpoAEs=
-N7u
-XkV2ct0MRxuZ3y4tTYJobhbZwutRojiPPZduRw9CSpNDcQHruFiSOIQTpnLeCA6K2JAZyqmP/=
-87A
-TQRbOdLgAQgAxiY/gz9X5PlFjlq3+DutR02wuFa/UA9iuH1FB584Nges1EdQT16ixhtPpcyvJ=
-H2F
-PxeUY5hHApbCJAGhZIOJMyj9eLb2NSefgFd8janHYNNfBzbYsq0sCBNGM/6ptTrdjTGdA3b1Q=
-YNt
-iDLIrnUNbcfQh/Zrck2yF4AAr5dz1tqPQsYhzxP26IRYcGcIf5F2GABOdZYYp0N6BRHkGQN8O=
-Dk7
-8UhLKYkEfHYPKiSW/mDgHOSCpOrCZpjOyXxTFkq9trGrTNt6EN1ryW+EVeh00UwCBMsmUu4Ng=
-4Ys
-rYDButLdKnQARuSl0kFvjipWUablsClmi4d4n/6f7uvXb6Wp2wARAQABwsB8BBgBCAAmFiEEc=
-hf7
-rIzpz2NEoWjlaA3BHVMLeiMFAls50uACGwwFCQPCZwAACgkQaA3BHVMLeiOl9wgAifA/k6VwQ=
-qiR
-OccKINPPg6fLgacdE/Z9cBNBkIrGa7gAljaH2J/D01/ZOMJnoAy8Le2EA3SsUOPnk32XizUKl=
-oOj
-gn7R+Sse7I1pydPbToJ4lXUTs1ie3FSf4tKJGs53LCfp6uPFGL0RhNUsIdwOEESMqYVl+DgAz=
-gZk
-xZfWWDT54dt3mgvVqzbxa+8j+4hozJXxFvJei3Wv/xAuVaV1Tc2tMXmntMxTbLdkfaZ/my5Io=
-cAy
-1sTiMonxkcU6jcaEuCNWsFYcT0lc7TzEqSAP7Dq/zf6eiawS5/oLotiupj+2xm/IRfrM3wK2K=
-s90
-9a79Vc1FgCX+Vq3uVIjcfbqqscLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojB=
-QJf
-tOH6AAoJEGgNwR1TC3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6=
-Baa
-6H7ufXNQtThRyIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3=
-T0T
-trijKP4ASAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446S=
-h8W
-n/2DYa8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRai=
-tYJ
-4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9fOwU0EX7ThE=
-wEQ
-ANJiTIb/nQ+MPgIBsSfBBhmXrVFUwFveO6DWPZ0M+Y5xBJhvDukosstSgcLCdld4SFF2JnnCo=
-yh9
-boM2j2Ksd5wNzTzXlo3lEzFRAipftboviUjap0qxoRwy1hBV3Ft1/VyNwwYY7qjGVATQU7cIT=
-/zL
-gb+Sd0NPQA8r2NvpJq1MnI8nFfA2ZH4diuRtavhEBUzp63SlCYxnyxqT5AQzSQGUpsjSyh1A5=
-ezt
-j1pwxgnkX7F9ZT0lUBo6zZM6ZBq8Nkyvox46l79QoWMBm9y+/nIXy/uXdT6RaumPjBzVttGmk=
-Onm
-TlGUJyQAndAE1boib9iWCJ4kIr2ezRKjXJXGuaM1m7hSfdQYWed0j52+nW9qGSNNk1GjYXM8Z=
-SWT
-agX6O5mfbpzRgBBK/XoE9NWRNAa4V+tUX4/vqqDl0m+O4F2GYs6Eu7WLredRgwjDuMF/VCKvQ=
-fr3
-yjIt90Zi10cHQw3khdJWmSDKYgenpvsffo4x56biifOh6IxS/whf5/BAx4nx8GyX7JO0DUnUu=
-ieC
-NfEGRu8QbYBSOkO/vdm4xy7RZwdzlqN8zjCLFOCG346Bnsx3ku2lNtX6qZoajmfD4oO6N0Xds=
-2pE
-wjufCfJW9sCLdBmqLD5OvsRljyv7vt5w28XSF1tyhQaxIs+8sFJtwfCliduffq56FcFrEXCxs=
-LQr
-ABEBAAHCwqwEGAEIACAWIQRyF/usjOnPY0ShaOVoDcEdUwt6IwUCX7ThEwIbAgJACRBoDcEdU=
-wt6
-I8F0IAQZAQgAHRYhBMZ3Zv36bjFHcGBRaJYfxNxEKL/gBQJftOETAAoJEJYfxNxEKL/gkygQA=
-LQH
-pXm45ZfMCDx7u/d7rRH/R7EfEV5OAoS981IkzbTgrb9z6YYfhQqH+R2ImgoX/Lou7zSjyd22/=
-IaZ
-AnTKHKkXIFIM1uB144dqAi3tW/Bei/CSdiD7DY1q92Ebl6e+Gpf3TZdATSY00fVeLMNFnjbbz=
-CVX
-9+LEKYARNm7kYogVJMc5CuVmXBn9FFF3cioRvpuals8llsFc4WiUBJfDfOzjXExqv3OMtJj0s=
-qlK
-sXdnLkXbtAmEvFaxqUuO1ZwTCTGflrn/g4C8Cg0ifk0wZGgGYRindkJE1vOQZPaDI7GtNxJ+D=
-sx4
-fL/8tf7Wuk3TZ6t/ofKhjq8sUVCVhnlyd/3ujruDu/PhwwYBsHjNn+PmHeCCRJuOWwKapdfjH=
-9nt
-sHXTvyXBB2D3H7Oj7S/HOTXRNTUWhaxICKtq+XDSuJKOv7CNevkjMF4ybQDsrUxnaWd76YqNP=
-vZv
-PYoTqKzKukifjGXMsxC6HU4K2GscpvoaIk7glaD+NYi3fIGi/gR0UNc6cmXtOrYKSnCsNOwcO=
-CJL
-DjEr6YdbdAXO2wxCLqnupo8JRJgA8hjjHM5OoTGEyP/c+DKDqFO90YilX1XN8xchHrw+bDv0E=
-Zm0
-RZpVdL7WNr7qQE4UhDfuyo4Gis4Z+npzoOL4g3yaQQfK32zZD9iqk9152b7ny2Ke5oFIF5SSa=
-EwH
-/2tLNBevzgzWuEB6FtqoMT5RjDyx+xBeImRlhnP0EenRh+EP0nmLCAaFiP4tTp1bX54SyByp8=
-wcN
-7F2+v2Sgdd64w1pdrjT74Zf1xj0NTxEdt5jEaPfl5Vjv3cXiB8ACwPkMIXmkJx3uaGJynl4Os=
-irb
-nzzviEzvDVpLAxL7Qr6imlKUh92iAoz+XxEDqgMZnJJOTDFdDxEBhv911VzlRraDNdxw4MHMm=
-5Nr
-5pj4HGYh3PigzNo0KIreB50YqhGOesaC4Q75gv8mLc2Ec5dEq79BVMUOaCmYDShBN9j6JovNs=
-WSR
-5YP3tXi+jZ+VnyKLft9wo1fh1oYadFEVSHgGsEY=3D
-=3DfoRs
------END PGP PUBLIC KEY BLOCK-----
-
---------------426DA6C83A1A6C49B5A99EAE--
-
---GlZ7RjJFNmCTn93tGiW7Y0l9ttOfVA1zA--
-
---SjKHnW276XLyi23E5B0Ra4T0p1p72Mjox
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl+3lswFAwAAAAAACgkQlh/E3EQov+A4
-NQ/+L/dPYDrOBIBxFSBtmNBMMZI6nJNGBndpR/ts3LT2JLYO6pMvzUc+7flxuBRJUgwpe0r+UgDh
-6CsMvWCbDwzDKnShQPcZLSSDX9ZFW2Jjv1nsXuHkoEjbKfDSB/HN8b9KChk5ZDKi8bVCt6PO4SEe
-B4xZyXk/2JY9KH6WvHJQNod9RjukCiiuasncP7w3KXvmj3NtrI/fJmQD/Pl2WDq2DfH/SlDsRiRZ
-gfWfhWXIaoR+iU7IdxvUJpGIHtW14448eOjWCUUisYlzuvHQ+pKv2+qmyCRPJY7oH+Z5rYKRm9Cn
-f0qbUmpMjApVWCoOyc8Qv19jqyVRasdi37klSdup4dSp+8fKa/colgQyDVFcvw+E3sdgk+3fzmk+
-s1b/jtbGNqDKfT6kN+Uy3Q/xCww7vXTFnQ6sJlSWQarP9qYIYzCkdbIPlbmGHiyUD1D0D/dUyOVS
-MvgynvN1DhC//1BpSc/ROoTvS17ovqyojI7uExLNa1rvnGW1OOwspCpFIduNEH2fe5kRAWdmGOJA
-IS3datDJYn/iJQnZ0soK0c6I+lSTZHcN7CrBBZqLm2zKzhbFQKvO9mDRCVRn1Div9VMrEvRuNVAj
-C1TSpZ/+YJTXo0UUjxvKA/hIeUcGl2JhhwbTdAyXt1adAozNBtGW11TnaUU4GJ5x2o1xCHBdsy5j
-q1g=
-=2A6u
------END PGP SIGNATURE-----
-
---SjKHnW276XLyi23E5B0Ra4T0p1p72Mjox--
+>  	if (opts->initial_delay) {
+>  		pr_info(EVLIST_DISABLED_MSG);
+>  		if (opts->initial_delay > 0) {
+> @@ -1998,6 +2182,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  		record__synthesize_workload(rec, true);
+>  
+>  out_child:
+> +	record__free_thread_data(rec);
+>  	evlist__finalize_ctlfd(rec->evlist);
+>  	record__mmap_read_all(rec, true);
+>  	record__aio_mmap_read_sync(rec);
+> -- 
+> 2.24.1
+> 
+> 
