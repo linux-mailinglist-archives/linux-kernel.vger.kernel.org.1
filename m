@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D2C2BA24A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 07:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B263B2BA24C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 07:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbgKTG1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 01:27:16 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:43620 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgKTG1P (ORCPT
+        id S1726297AbgKTG2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 01:28:15 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:29992 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725833AbgKTG2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 01:27:15 -0500
-Received: by mail-pl1-f195.google.com with SMTP id u2so4337420pls.10;
-        Thu, 19 Nov 2020 22:27:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bSunvUGJaujt7yUjWo9uue1vsdmlgja9FozF8lkzkW4=;
-        b=oKuKVOoEEba7sHKf8Qi8L9JMSPSBpHgzpk0xW29f4jP+l3XmdutUlbbJYtN6rWO2d/
-         ff7FrHKqVcnYHnYz6UZSnXOCVgtMc63KE7Iau2dJ4cvYkmzvjthP5RiVwnOctDeDrSvD
-         O+GBJ52q7bNOIsn2Nv/dWSDvQbvlTvAwjTYIWyXQvh6gigejrJDUPWRjlczDKOcyov5j
-         aPm0W+MWNb0RrCz2y779AD/4zzVcSvXZZgRx7dgNkpmrIMCeK+hj1nf4RJcDXllGHQjB
-         lFaNTNQ/hPwh/be1uY9pfWfzAvOj0l6W+i/+QHYu45iXuEU8N76WlkAutM/sloi6S8s4
-         ftWw==
-X-Gm-Message-State: AOAM531JeV/nsipTN778gNHlcfyQaslzzCyvcVwud325FIF50r5TI+63
-        lxK1d5QCy7YxZbV/Ab2v86rJDUjuiCvWeA==
-X-Google-Smtp-Source: ABdhPJwkBY42pVdpeyGTJEF+W7CkFS+TgoQrLcZo3TdkR6JZk4nDmp8f/4jyORkJDr3nd4Cy82554g==
-X-Received: by 2002:a17:902:9f86:b029:d6:d25f:7ad8 with SMTP id g6-20020a1709029f86b02900d6d25f7ad8mr12344848plq.4.1605853633648;
-        Thu, 19 Nov 2020 22:27:13 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id k6sm2273338pfd.169.2020.11.19.22.27.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 22:27:13 -0800 (PST)
-Date:   Thu, 19 Nov 2020 22:27:12 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     David Gow <davidgow@google.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-um@lists.infradead.org,
-        Brendan Higgins <brendanhiggins@google.com>
-Subject: Re: [PATCH] drivers: fpga: Specify HAS_IOMEM dependency for FPGA_DFL
-Message-ID: <X7dhwNFehhCRs7Ry@epycbox.lan>
-References: <20201119082209.3598354-1-davidgow@google.com>
+        Fri, 20 Nov 2020 01:28:14 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AK6Q4NH020879;
+        Thu, 19 Nov 2020 22:28:08 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=RTiiY1W5QiroEgCbb5B4H8U08XnFYLJCbRH3ROGnkNA=;
+ b=I70+BAE5DkF6tfl6MmQXBhkkXNEhfFXvD8itRmE/2iqsTXH5QZZtSq1IBre4l/6232nl
+ COpEj79+a+IHcpbI/bKVG8j3fYxpCm1i6R6CzKx/EmX8BUPRIH3OWerG1vJH9XiB8xch
+ VKCIU+kAIXbArqdxFWUi0NxjODekhwNjcjC8wybFc1tjlCc5GKaKJRRznu7duP8Louql
+ QDXNcLFC+3e1iiJ+xKCOeGmA1rW+55nsxdCvSjk1R5LTIHdSbAoyWyt0ir1x7ctgaxx/
+ 1YJFsn4EelYBni90XdJCU7ur404qrI6/a3YnAXsRjDfd2d42fY5xA14/rQIWkIHZECON 9w== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 34w7ncy0ms-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 19 Nov 2020 22:28:08 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 19 Nov
+ 2020 22:28:07 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 19 Nov
+ 2020 22:28:06 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 19 Nov 2020 22:28:06 -0800
+Received: from hyd1584.caveonetworks.com (unknown [10.29.37.82])
+        by maili.marvell.com (Postfix) with ESMTP id A76083F703F;
+        Thu, 19 Nov 2020 22:28:02 -0800 (PST)
+From:   George Cherian <george.cherian@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>,
+        <masahiroy@kernel.org>, <george.cherian@marvell.com>,
+        <willemdebruijn.kernel@gmail.com>, <saeed@kernel.org>
+Subject: [PATCHv3 net-next 0/3] Add devlink and devlink health reporters to 
+Date:   Fri, 20 Nov 2020 11:57:58 +0530
+Message-ID: <20201120062801.2821502-1-george.cherian@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119082209.3598354-1-davidgow@google.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-20_03:2020-11-19,2020-11-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Add basic devlink and devlink health reporters.
+Devlink health reporters are added for NPA and NIX blocks.
+These reporters report the error count in respective blocks.
 
-On Thu, Nov 19, 2020 at 12:22:09AM -0800, David Gow wrote:
-> Because dfl.c uses the 'devm_ioremap', 'devm_iounmap',
-> 'devm_ioremap_resource', and 'devm_platform_ioremap_resource'
-> functions, it should depend on HAS_IOMEM.
-> 
-> This fixes make allyesconfig under UML (ARCH=um), which doesn't provide
-> HAS_IOMEM.
-> 
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
->  drivers/fpga/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> index 7cd5a29fc437..5645226ca3ce 100644
-> --- a/drivers/fpga/Kconfig
-> +++ b/drivers/fpga/Kconfig
-> @@ -142,6 +142,7 @@ config FPGA_DFL
->  	tristate "FPGA Device Feature List (DFL) support"
->  	select FPGA_BRIDGE
->  	select FPGA_REGION
-> +	depends on HAS_IOMEM
->  	help
->  	  Device Feature List (DFL) defines a feature list structure that
->  	  creates a linked list of feature headers within the MMIO space
-> -- 
-> 2.29.2.454.gaff20da3a2-goog
-> 
-Do you think we can add a Fixes: tag for this?
+Address Jakub's comment to add devlink support for error reporting.
+https://www.spinics.net/lists/netdev/msg670712.html
 
-Thanks,
-Moritz
+Change-log:
+v3
+ - Address Saeed's comments on v2.
+ - Renamed the reporter name as hw_*.
+ - Call devlink_health_report() when an event is raised.
+ - Added recover op too.
+
+v2
+ - Address Willem's comments on v1.
+ - Fixed the sparse issues, reported by Jakub.
+
+George Cherian (3):
+  octeontx2-af: Add devlink suppoort to af driver
+  octeontx2-af: Add devlink health reporters for NPA
+  octeontx2-af: Add devlink health reporters for NIX
+
+ .../net/ethernet/marvell/octeontx2/Kconfig    |   1 +
+ .../ethernet/marvell/octeontx2/af/Makefile    |   3 +-
+ .../net/ethernet/marvell/octeontx2/af/rvu.c   |   9 +-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |   4 +
+ .../marvell/octeontx2/af/rvu_devlink.c        | 972 ++++++++++++++++++
+ .../marvell/octeontx2/af/rvu_devlink.h        |  82 ++
+ .../marvell/octeontx2/af/rvu_struct.h         |  33 +
+ 7 files changed, 1102 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.h
+
+-- 
+2.25.1
+
