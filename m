@@ -2,93 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168A42BA182
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0D42BA18C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 05:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgKTEvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 23:51:40 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52650 "EHLO
+        id S1726580AbgKTEvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Nov 2020 23:51:55 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52718 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbgKTEvg (ORCPT
+        with ESMTP id S1726255AbgKTEvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Nov 2020 23:51:36 -0500
+        Thu, 19 Nov 2020 23:51:37 -0500
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id A38082A451; Thu, 19 Nov 2020 23:51:35 -0500 (EST)
-To:     Michael Schmitz <schmitzmic@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <af25163257796b50bb99d4ede4025cea55787b8f.1605847196.git.fthain@telegraphics.com.au>
+        id 215022A459; Thu, 19 Nov 2020 23:51:36 -0500 (EST)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Joshua Thompson" <funaho@jurai.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <effef6339c919a4ef2e81a47e4383f712cdd7626.1605847196.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] scsi/atari_scsi: Fix race condition between .queuecommand and
- EH
+Subject: [PATCH] m68k/mac: Remove dead code
 Date:   Fri, 20 Nov 2020 15:39:56 +1100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible that bus_reset_cleanup() or .eh_abort_handler could
-be invoked during NCR5380_queuecommand(). If that takes place before
-the new command is enqueued and after the ST-DMA "lock" has been
-acquired, the ST-DMA "lock" will be released again. This will result
-in a lost DMA interrupt and a command timeout. Fix this by excluding
-EH and interrupt handlers while the new command is enqueued.
-
+Cc: Joshua Thompson <funaho@jurai.org>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
-Michael, would you please send your Acked-by or Reviewed-and-tested-by?
-These two patches taken together should be equivalent to the one you tested
-recently. I've split it into two as that seemed to make more sense.
----
- drivers/scsi/NCR5380.c    |  9 ++++++---
- drivers/scsi/atari_scsi.c | 10 +++-------
- 2 files changed, 9 insertions(+), 10 deletions(-)
+ arch/m68k/mac/via.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
-diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
-index d654a6cc4162..ea4b5749e7da 100644
---- a/drivers/scsi/NCR5380.c
-+++ b/drivers/scsi/NCR5380.c
-@@ -580,11 +580,14 @@ static int NCR5380_queue_command(struct Scsi_Host *instance,
- 
- 	cmd->result = 0;
- 
--	if (!NCR5380_acquire_dma_irq(instance))
--		return SCSI_MLQUEUE_HOST_BUSY;
--
- 	spin_lock_irqsave(&hostdata->lock, flags);
- 
-+	if (!NCR5380_acquire_dma_irq(instance)) {
-+		spin_unlock_irqrestore(&hostdata->lock, flags);
-+
-+		return SCSI_MLQUEUE_HOST_BUSY;
-+	}
-+
- 	/*
- 	 * Insert the cmd into the issue queue. Note that REQUEST SENSE
- 	 * commands are added to the head of the queue since any command will
-diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
-index a82b63a66635..95d7a3586083 100644
---- a/drivers/scsi/atari_scsi.c
-+++ b/drivers/scsi/atari_scsi.c
-@@ -376,15 +376,11 @@ static int falcon_get_lock(struct Scsi_Host *instance)
- 	if (IS_A_TT())
- 		return 1;
- 
--	if (stdma_is_locked_by(scsi_falcon_intr) &&
--	    instance->hostt->can_queue > 1)
-+	if (stdma_is_locked_by(scsi_falcon_intr))
- 		return 1;
- 
--	if (in_interrupt())
--		return stdma_try_lock(scsi_falcon_intr, instance);
--
--	stdma_lock(scsi_falcon_intr, instance);
--	return 1;
-+	/* stdma_lock() may sleep which means it can't be used here */
-+	return stdma_try_lock(scsi_falcon_intr, instance);
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index 66209cb7696f..4226ae2e7501 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -305,21 +305,6 @@ void via_l2_flush(int writeback)
+ 	local_irq_restore(flags);
  }
  
- #ifndef MODULE
+-/*
+- * Return the status of the L2 cache on a IIci
+- */
+-
+-int via_get_cache_disable(void)
+-{
+-	/* Safeguard against being called accidentally */
+-	if (!via2) {
+-		printk(KERN_ERR "via_get_cache_disable called on a non-VIA machine!\n");
+-		return 1;
+-	}
+-
+-	return (int) via2[gBufB] & VIA2B_vCDis;
+-}
+-
+ /*
+  * Initialize VIA2 for Nubus access
+  */
 -- 
 2.26.2
 
