@@ -2,247 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA4B2BA64A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8FA2BA64D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 10:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbgKTJfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 04:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727355AbgKTJfB (ORCPT
+        id S1727120AbgKTJfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 04:35:36 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:34656 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725942AbgKTJff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 04:35:01 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93517C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:35:01 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id m13so9737819oih.8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 01:35:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hgF4wfg69hNpww4OAKMoqR+eWE3jKpfJosXp9fxVBjI=;
-        b=X4UHOJmNLvGaGQarNMiO8EklXG6lG45+9sS//8PEIAcGFyr8tKX+5nnGXzRAbO6Ue6
-         3W839yCL3pKJT002ic0S4VGSLeiJV67iqE0XZrHk+eXI21jAtiOEXzLIkiE0kqevhGVR
-         MPDC0aauVbAhrazQEsofDf0TWh93oG9z4Np2U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hgF4wfg69hNpww4OAKMoqR+eWE3jKpfJosXp9fxVBjI=;
-        b=eP7fGukP0VG5qGAs0USK+U6EjhLGjpsqCr9Kr94XfTeX1nBGM1Kv1LDPAz0719yA6z
-         TjXcIxorWPhRXLwyCb0xmWzzN3c80q8kYXA0PY102wncg/bnYM97a67+3Pc39wcgu0/s
-         Tmv/Db6DLzZ/sFfJP8pu18pjYqytVvjbAnTt4wMDXXCyqFD3C/AgJlIJl9DlyFhDriUn
-         middMM5MAjZfYa/0yHuampxLKuMUgSovBRnGVHXY55tLVKw3gcmqLI2DqBkzVlwGqZsW
-         HOcnfos95z2ISudOT+VjSgog+VsFkk/fBv4wpiR7jtf13CqUKn1ZMx3CiXumM/AvvX3v
-         ETsA==
-X-Gm-Message-State: AOAM532z7TImuDgLuYciKG0Ssvp5pqvQZu8pO/6cocCPHH3EVbD4CQdT
-        ZonYS28jF3qRBTR52A2LakQinv4pw68QvduXwz8dfA==
-X-Google-Smtp-Source: ABdhPJwGdgkRwcd6PL3pN7daWCrNpgUvuP86thM6e5fGMCZGTC6PnlV9Y7Fldm85Rp0ewgPAUXlSIvmIrS0hPfBByDs=
-X-Received: by 2002:aca:7506:: with SMTP id q6mr5872181oic.128.1605864900943;
- Fri, 20 Nov 2020 01:35:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20201110034934.70898-1-john.stultz@linaro.org>
- <CAO_48GHNE6AyKv4k=3=2EVjfSZsgz4pjuMJ1xJojbuFU9a90EQ@mail.gmail.com>
- <20201112093237.GS401619@phenom.ffwll.local> <CALAqxLWWBaOc3W1s3xBe-innHZ0pAon7UCfumjjQftPqf7bO0Q@mail.gmail.com>
- <20201113203933.GT401619@phenom.ffwll.local> <CALAqxLU886mjGaNx3cvXB0hyOd=tTo7G=tw6iQ1uAxcXShN+kg@mail.gmail.com>
- <CAKMK7uGew_sdw=NPrzuAQ_-5_kQnn-qvLHK9DGqSk=k22tQGDg@mail.gmail.com> <CAO_48GHLFJi+DKYf4fBs7NZr+f+Q0USoGEtL6nW_FQFv+OOJ5Q@mail.gmail.com>
-In-Reply-To: <CAO_48GHLFJi+DKYf4fBs7NZr+f+Q0USoGEtL6nW_FQFv+OOJ5Q@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 20 Nov 2020 10:34:50 +0100
-Message-ID: <CAKMK7uFz6SbHqH_Q7f5v13-dSRokq16fy0z6YbPFY6X9sDAm1w@mail.gmail.com>
-Subject: Re: [PATCH v5 0/7] dma-buf: Performance improvements for system heap
- & a system-uncached implementation
-To:     Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 20 Nov 2020 04:35:35 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UFykla5_1605864932;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFykla5_1605864932)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 20 Nov 2020 17:35:32 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH next-akpm] mm/memcg: remove incorrect comments
+Date:   Fri, 20 Nov 2020 17:35:30 +0800
+Message-Id: <1605864930-49405-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 7:32 AM Sumit Semwal <sumit.semwal@linaro.org> wrote:
->
-> Hi Daniel,
->
->
-> On Wed, 18 Nov 2020 at 13:16, Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Wed, Nov 18, 2020 at 3:40 AM John Stultz <john.stultz@linaro.org> wrote:
-> > > On Fri, Nov 13, 2020 at 12:39 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > On Thu, Nov 12, 2020 at 08:11:02PM -0800, John Stultz wrote:
-> > > > > On Thu, Nov 12, 2020 at 1:32 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > > > On Thu, Nov 12, 2020 at 11:09:04AM +0530, Sumit Semwal wrote:
-> > > > > > > On Tue, 10 Nov 2020 at 09:19, John Stultz <john.stultz@linaro.org> wrote:
-> > > > > > > >
-> > > > > > > > Hey All,
-> > > > > > > >   So just wanted to send my last revision of my patch series
-> > > > > > > > of performance optimizations to the dma-buf system heap.
-> > > > > > >
-> > > > > > > Thanks very much for your patches - I think the first 5 patches look good to me.
-> > > > > > >
-> > > > > > > I know there was a bit of discussion over adding a new system-uncached
-> > > > > > > heap v/s using a flag to identify that; I think I prefer the separate
-> > > > > > > heap idea, but lets ask one last time if any one else has any real
-> > > > > > > objections to it.
-> > > > > > >
-> > > > > > > Daniel, Christian: any comments from your side on this?
-> > > > > >
-> > > > > > I do wonder a bit where the userspace stack for this all is, since tuning
-> > > > > > allocators without a full stack is fairly pointless. dma-buf heaps is a
-> > > > > > bit in a limbo situation here it feels like.
-> > > > >
-> > > > > As mentioned in the system-uncached patch:
-> > > > > Pending opensource users of this code include:
-> > > > > * AOSP HiKey960 gralloc:
-> > > > >   - https://android-review.googlesource.com/c/device/linaro/hikey/+/1399519
-> > > > >   - Visibly improves performance over the system heap
-> > > > > * AOSP Codec2 (possibly, needs more review):
-> > > > >   - https://android-review.googlesource.com/c/platform/frameworks/av/+/1360640/17/media/codec2/vndk/C2DmaBufAllocator.cpp#325
-> > > > >
-> > > > > Additionally both the HiKey, HiKey960 grallocs  and Codec2 are already
-> > > > > able to use the current dmabuf heaps instead of ION.
-> > > > >
-> > > > > So I'm not sure what you mean by limbo, other than it being in a
-> > > > > transition state where the interface is upstream and we're working on
-> > > > > moving vendors to it from ION (which is staged to be dropped in 5.11).
-> > > > > Part of that work is making sure we don't regress the performance
-> > > > > expectations.
-> > > >
-> > > > The mesa thing below, since if we test this with some downstream kernel
-> > > > drivers or at least non-mesa userspace I'm somewhat worried we're just
-> > > > creating a nice split world between the android gfx world and the
-> > > > mesa/linux desktop gfx world.
-> > > >
-> > > > But then that's kinda how android rolls, so *shrug*
-> > > >
-> > > > > > Plus I'm vary of anything related to leaking this kind of stuff beyond the
-> > > > > > dma-api because dma api maintainers don't like us doing that. But
-> > > > > > personally no concern on that front really, gpus need this. It's just that
-> > > > > > we do need solid justification I think if we land this. Hence back to
-> > > > > > first point.
-> > > > > >
-> > > > > > Ideally first point comes in the form of benchmarking on android together
-> > > > > > with a mesa driver (or mesa + some v4l driver or whatever it takes to
-> > > > > > actually show the benefits, I have no idea).
-> > > > >
-> > > > > Tying it with mesa is a little tough as the grallocs for mesa devices
-> > > > > usually use gbm (gralloc.gbm or gralloc.minigbm). Swapping the
-> > > > > allocation path for dmabuf heaps there gets a little complex as last I
-> > > > > tried that (when trying to get HiKey working with Lima graphics, as
-> > > > > gbm wouldn't allocate the contiguous buffers required by the display),
-> > > > > I ran into issues with the drm_hwcomposer and mesa expecting the gbm
-> > > > > private handle metadata in the buffer when it was passed in.
-> > > > >
-> > > > > But I might take a look at it again. I got a bit lost digging through
-> > > > > the mesa gbm allocation paths last time.
-> > > > >
-> > > > > I'll also try to see if I can find a benchmark for the codec2 code
-> > > > > (using dmabuf heaps with and without the uncached heap) on on db845c
-> > > > > (w/ mesa), as that is already working and I suspect that might be
-> > > > > close to what you're looking for.
-> > > >
-> > > > tbh I think trying to push for this long term is the best we can hope for.
-> > > >
-> > > > Media is also a lot more *meh* since it's deeply fragmented and a lot less
-> > > > of it upstream than on the gles/display side.
-> > > >
-> > > > I think confirming that this at least doesn't horrible blow up on a
-> > > > gralloc/gbm+mesa stack would be useful I think.
-> > >
-> > > Sorry, I'm still a little foggy on precisely what you're suggesting here.
-> > >
-> > > The patch stack I have has already been used with db845c (mesa +
-> > > gbm_grallloc), with the codec2 (sw decoders) using dmabuf heaps.
-> > > So no blowing up there. And I'm working with Hridya to find a
-> > > benchmark for codec2 so we can try to show the performance delta.
-> > >
-> > > However, if you're wanting a dma-buf gralloc implementation with mesa,
-> > > that may be a little tougher to do, but I guess I can give it a go.
-> > >
-> > > Hopefully this will address concerns about the system-uncached heap
-> > > patch (the last two patches in this series)?
-> > >
-> > > In the meantime I hope we can queue the first five patches, as it
-> > > would be nice to get the code rearranging in as there are others
-> > > trying to stage their own heaps, and I'd like to avoid dragging that
-> > > churn out for too long (in addition to improving the allocation
-> > > performance). Those changes have no ABI implications.
-> >
-> > Maybe I'm also misunderstanding what dma-buf heaps is used for in
-> > Android, at least usually. I thought it's used to allocate all the
-> > winsys/shared buffers through gralloc (at least in the blobby stacks),
-> > to handle the allocation constraints problem. In the open stacks we
-> > don't seem to have a platform with both mesa and v4l (or some other
-> > codec) with "interesting" allocations constraints, so no one using
-> > that gralloc+dma-buf heaps combo for what it was meant for. Hence why
-> > I'm a bit vary that we're creating something here which just misses
-> > the point a bit when we try to actually use it (in that glorious
-> > forever-future world where an android platform has enough drivers in
-> > upstream to do so).
-> >
-> > For other "this solves a system problem" we tend to be quite a bit
-> > more picky with the demonstration use case, to make sure we're
-> > actually creating something that solves the problem in reality.
-> >
-> > But it also looks like Android's just not there yet, so *shrug* ...
->
-> For me, looking at the first 5 patches (listed below, for quick
-> reference), they are only doing code reorganisation and minor updates
-> for already existing heaps, and no ABI change, I am not able to
-> clearly see your objection here. To me, these seem to be required
-> updates that the existing system heap users can benefit from.
->
-> dma-buf: system_heap: Rework system heap to use sgtables instead of
->     pagelists
->   dma-buf: heaps: Move heap-helper logic into the cma_heap
->     implementation
->   dma-buf: heaps: Remove heap-helpers code
->   dma-buf: heaps: Skip sync if not mapped
->   dma-buf: system_heap: Allocate higher order pages if available
->
-> If we talk about the last two patches - the ones that add system
-> uncached heap, I somewhat agree that we should be able to show the
-> performance gains with this approach (which has been in use on ION and
-> in devices) using dma-buf gralloc or similar.
->
-> We can discuss the system-uncached heap when the dma-buf gralloc or
-> similar demonstration for performance benefits is done, but I am
-> inclined to push these 5 patches listed above through.
+Swapcache readahead pages are charged before get used, so it unlikely be
+migrated before charged. remove the incorrect comments.
 
-Yeah makes total sense - I was arguing about the new stuff, not the refactoring.
--Daniel
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org> 
+Cc: Michal Hocko <mhocko@kernel.org> 
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com> 
+Cc: Andrew Morton <akpm@linux-foundation.org> 
+Cc: cgroups@vger.kernel.org 
+Cc: linux-mm@kvack.org 
+Cc: linux-kernel@vger.kernel.org 
+---
+ mm/memcontrol.c | 1 -
+ 1 file changed, 1 deletion(-)
 
->
-> Best,
-> Sumit.
->
-> > -Daniel
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-
-
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 45465c03a8d7..08c267305725 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6941,7 +6941,6 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
+ 	if (page_memcg(newpage))
+ 		return;
+ 
+-	/* Swapcache readahead pages can get replaced before being charged */
+ 	memcg = page_memcg(oldpage);
+ 	VM_WARN_ON_ONCE_PAGE(!memcg, oldpage);
+ 	if (!memcg)
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.29.GIT
+
