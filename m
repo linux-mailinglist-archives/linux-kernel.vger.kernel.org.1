@@ -2,96 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923302BAE5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DE52BAE5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 16:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729365AbgKTPPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 10:15:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728872AbgKTPP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:15:29 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729181AbgKTPPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 10:15:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58965 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729366AbgKTPPi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 10:15:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605885336;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LVrYBw50M3qAWt5OO3susLl641/S5k5EWEOat7h2fvM=;
+        b=H5HNGAPfdS9BpDDvRbEbdInQGeLKU/JeKH7/vD4LCU3w6883lhfdQykj57eQkdqanHM524
+        gZClQi6Lfrjv3ULbJzIBiszlEhKzxDFx3XaAJGW4Y85/GJ3IuICex7CFSCtuBkxNWfexBk
+        aU7lyNsGT8n7lT0QCMjYWxKWDMn3RbU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177-HUm0pn3kMw6WdLRutqTL8w-1; Fri, 20 Nov 2020 10:15:34 -0500
+X-MC-Unique: HUm0pn3kMw6WdLRutqTL8w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 726E42222F;
-        Fri, 20 Nov 2020 15:15:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605885329;
-        bh=myF2EzCes4UVMutespd8PDoerC1yzUqdk7cGgmK3HWk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IRDorcB6ldF3sNlcORjj2k73XJBnmxxSjcSDRg1jxvIfT96O4MqbTKjmNtoGNUIrU
-         lKbjYVfTXF+0+uDHZPITUOToP+Ct1EsDmk5iRd2om4XbZ6ZbYn7QJDJdcyFqtoCtl/
-         edQ6erShqwUz/0RpRBDNw+8k8ogMf5rXVAC52jms=
-Date:   Fri, 20 Nov 2020 15:15:24 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Yu Zhao <yuzhao@google.com>, Minchan Kim <minchan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/6] mm: proc: Invalidate TLB after clearing soft-dirty
- page state
-Message-ID: <20201120151523.GA6861@willie-the-truck>
-References: <20201120143557.6715-1-will@kernel.org>
- <20201120143557.6715-5-will@kernel.org>
- <20201120150023.GH3040@hirez.programming.kicks-ass.net>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85F961DDE5;
+        Fri, 20 Nov 2020 15:15:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-246.rdu2.redhat.com [10.10.112.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BB1D060C15;
+        Fri, 20 Nov 2020 15:15:26 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [RFC PATCH 60/76] afs: Log remote unmarshalling errors
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 20 Nov 2020 15:15:25 +0000
+Message-ID: <160588532584.3465195.15618385466614028590.stgit@warthog.procyon.org.uk>
+In-Reply-To: <160588455242.3465195.3214733858273019178.stgit@warthog.procyon.org.uk>
+References: <160588455242.3465195.3214733858273019178.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120150023.GH3040@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 04:00:23PM +0100, Peter Zijlstra wrote:
-> On Fri, Nov 20, 2020 at 02:35:55PM +0000, Will Deacon wrote:
-> > Since commit 0758cd830494 ("asm-generic/tlb: avoid potential double flush"),
-> > TLB invalidation is elided in tlb_finish_mmu() if no entries were batched
-> > via the tlb_remove_*() functions. Consequently, the page-table modifications
-> > performed by clear_refs_write() in response to a write to
-> > /proc/<pid>/clear_refs do not perform TLB invalidation. Although this is
-> > fine when simply aging the ptes, in the case of clearing the "soft-dirty"
-> > state we can end up with entries where pte_write() is false, yet a
-> > writable mapping remains in the TLB.
-> > 
-> > Fix this by calling tlb_remove_tlb_entry() for each entry being
-> > write-protected when cleating soft-dirty.
-> > 
-> 
-> > @@ -1053,6 +1054,7 @@ static inline void clear_soft_dirty(struct vm_area_struct *vma,
-> >  		ptent = pte_wrprotect(old_pte);
-> >  		ptent = pte_clear_soft_dirty(ptent);
-> >  		ptep_modify_prot_commit(vma, addr, pte, old_pte, ptent);
-> > +		tlb_remove_tlb_entry(tlb, pte, addr);
-> >  	} else if (is_swap_pte(ptent)) {
-> >  		ptent = pte_swp_clear_soft_dirty(ptent);
-> >  		set_pte_at(vma->vm_mm, addr, pte, ptent);
-> 
-> Oh!
-> 
-> Yesterday when you had me look at this code; I figured the sane thing
-> to do was to make it look more like mprotect().
+Log unmarshalling errors reported by the peer (ie. it can't parse what we
+sent it).  Limit the maximum number of messages to 3.
 
-Ah, so you mean ditch the mmu_gather altogether?
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-> Why did you chose to make it work with mmu_gather instead? I'll grant
-> you that it's probably the smaller patch, but I still think it's weird
-> to use mmu_gather here.
-> 
-> Also, is tlb_remote_tlb_entry() actually correct? If you look at
-> __tlb_remove_tlb_entry() you'll find that Power-Hash-32 will clear the
-> entry, which might not be what we want here, we want to update the
-> entrty.
+ fs/afs/rxrpc.c |   34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-Hmm, I didn't spot that, although ptep_modify_prot_start() does actually
-clear the pte so we could just move this up a few lines.
+diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
+index 0ec38b758f29..ae68576f822f 100644
+--- a/fs/afs/rxrpc.c
++++ b/fs/afs/rxrpc.c
+@@ -500,6 +500,39 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
+ 	_leave(" = %d", ret);
+ }
+ 
++/*
++ * Log remote abort codes that indicate that we have a protocol disagreement
++ * with the server.
++ */
++static void afs_log_error(struct afs_call *call, s32 remote_abort)
++{
++	static int max = 0;
++	const char *msg;
++	int m;
++
++	switch (remote_abort) {
++	case RX_EOF:		 msg = "unexpected EOF";	break;
++	case RXGEN_CC_MARSHAL:	 msg = "client marshalling";	break;
++	case RXGEN_CC_UNMARSHAL: msg = "client unmarshalling";	break;
++	case RXGEN_SS_MARSHAL:	 msg = "server marshalling";	break;
++	case RXGEN_SS_UNMARSHAL: msg = "server unmarshalling";	break;
++	case RXGEN_DECODE:	 msg = "opcode decode";		break;
++	case RXGEN_SS_XDRFREE:	 msg = "server XDR cleanup";	break;
++	case RXGEN_CC_XDRFREE:	 msg = "client XDR cleanup";	break;
++	case -32:		 msg = "insufficient data";	break;
++	default:
++		return;
++	}
++
++	m = max;
++	if (m < 3) {
++		max = m + 1;
++		pr_notice("kAFS: Peer reported %s failure on %s [%pISp]\n",
++			  msg, call->type->name,
++			  &call->alist->addrs[call->addr_ix].transport);
++	}
++}
++
+ /*
+  * deliver messages to a call
+  */
+@@ -563,6 +596,7 @@ static void afs_deliver_to_call(struct afs_call *call)
+ 			goto out;
+ 		case -ECONNABORTED:
+ 			ASSERTCMP(state, ==, AFS_CALL_COMPLETE);
++			afs_log_error(call, call->abort_code);
+ 			goto done;
+ 		case -ENOTSUPP:
+ 			abort_code = RXGEN_OPCODE;
 
-Will
 
-> 
-> 
-> 
