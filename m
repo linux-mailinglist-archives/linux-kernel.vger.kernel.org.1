@@ -2,59 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86A32BB12E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 18:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CF12BB133
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 18:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730312AbgKTRHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 12:07:22 -0500
-Received: from foss.arm.com ([217.140.110.172]:52580 "EHLO foss.arm.com"
+        id S1730318AbgKTRHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 12:07:47 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:50186 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729976AbgKTRHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 12:07:21 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CA5B1042;
-        Fri, 20 Nov 2020 09:07:21 -0800 (PST)
-Received: from red-moon.arm.com (unknown [10.57.59.104])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68C893F70D;
-        Fri, 20 Nov 2020 09:07:18 -0800 (PST)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     linux-pci@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>
-Subject: Re: [PATCH v1] PCI: brcmstb: variable is missing proper initialization
-Date:   Fri, 20 Nov 2020 17:07:12 +0000
-Message-Id: <160589201520.1295.14447752492499400941.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20201102205712.23332-1-james.quinlan@broadcom.com>
-References: <20201102205712.23332-1-james.quinlan@broadcom.com>
+        id S1729976AbgKTRHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 12:07:46 -0500
+Received: from zn.tnic (p200300ec2f11ba0074b4ba83d21d5a9c.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:ba00:74b4:ba83:d21d:5a9c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 09FA01EC047E;
+        Fri, 20 Nov 2020 18:07:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1605892065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3KR92vuxYVBgK06PedGl/KeDJFbNpeGefSx2Yb7CWNQ=;
+        b=geHBLt7iPjdg5zExWPyw89Os6akDxLqEyRiyOhnSw/sKpOqGQJkhhELIvem9t+ok/b8PBI
+        Wtm8pOCwCDISigUS6AuowJxglb5MrIx8eVeifm013fH26lwsRGcOJN0SVs5tsxxcfXLXAr
+        7xruRul0mZV7OBzYhQ60+FZI9M9c75c=
+Date:   Fri, 20 Nov 2020 18:07:37 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Gabriele Paoloni <gabriele.paoloni@intel.com>
+Cc:     tony.luck@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        x86@kernel.org, hpa@zytor.com, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech
+Subject: Re: [PATCH 1/4] x86/mce: do not overwrite no_way_out if mce_end()
+ fails
+Message-ID: <20201120170737.GD712@zn.tnic>
+References: <20201118151552.1412-1-gabriele.paoloni@intel.com>
+ <20201118151552.1412-2-gabriele.paoloni@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201118151552.1412-2-gabriele.paoloni@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Nov 2020 15:57:12 -0500, Jim Quinlan wrote:
-> The variable 'tmp' is used multiple times in the brcm_pcie_setup()
-> function.  One such usage did not initialize 'tmp' to the current value of
-> the target register.  By luck the mistake does not currently affect
-> behavior;  regardless 'tmp' is now initialized properly.
+On Wed, Nov 18, 2020 at 03:15:49PM +0000, Gabriele Paoloni wrote:
+> Currently if mce_end() fails no_way_out is set equal to worst.
+> worst is the worst severirty that was found in the MCA banks
+		     ^^^^^^^^^
 
-Applied to pci/brcmstb, thanks!
+Please introduce a spellchecker into your patch creation workflow.
 
-[1/1] PCI: brcmstb: Initialize "tmp" before use
-      https://git.kernel.org/lpieralisi/pci/c/ddaff0af65
+> associated to the current CPU; however at this point no_way_out
+	     ^
+	     with
 
-Thanks,
-Lorenzo
+
+> could be already set by mca_start() by looking at all severities
+
+I think you mean "could have been already set" here
+
+> of all CPUs that entered the MCE handler.
+> if mce_end() fails we first check if no_way_out is already set and
+
+Please use passive voice in your commit message: no "we" or "I", etc.
+
+Also, pls start new sentences with a capital letter and end them with a
+fullstop.
+
+> if so we stick to it, otherwise we use the local worst value
+
+So basically you're trying to say here that no_way_out might have been
+already set and other CPUs could overwrite it and that should not
+happen.
+
+Is that what you mean?
+
+> Signed-off-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  arch/x86/kernel/cpu/mce/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> index 4102b866e7c0..b990892c6766 100644
+> --- a/arch/x86/kernel/cpu/mce/core.c
+> +++ b/arch/x86/kernel/cpu/mce/core.c
+> @@ -1385,7 +1385,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
+>  	 */
+>  	if (!lmce) {
+>  		if (mce_end(order) < 0)
+> -			no_way_out = worst >= MCE_PANIC_SEVERITY;
+> +			no_way_out = no_way_out ? no_way_out : worst >= MCE_PANIC_SEVERITY;
+
+I had to stare at this a bit to figure out what you're doing. So how
+about simplifying this:
+
+			if (!no_way_out)
+				no_way_out = worst >= MCE_PANIC_SEVERITY;
+
+?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
