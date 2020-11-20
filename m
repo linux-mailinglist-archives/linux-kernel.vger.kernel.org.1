@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABE32BA3D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DB52BA3F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 08:55:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgKTHuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 02:50:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgKTHuI (ORCPT
+        id S1726882AbgKTHyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 02:54:44 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:43613 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726776AbgKTHyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 02:50:08 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAEDEC0613CF;
-        Thu, 19 Nov 2020 23:50:06 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id q10so7092734pfn.0;
-        Thu, 19 Nov 2020 23:50:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=lEfZb4daZScUklBiNuYLi7g4cfVyq/meS+BFrwd1Myo=;
-        b=Ba2VXotgppH4nkVR4KQKycDMpluqrRUF+MIUS0NRuTh1919LMjlJSmUD5KkqFsN34W
-         C8AKvUR4aziTkR6rUKwdkVmiJV9Ab5bGDHVyIZ7h7ynNd8zncalcQr8rn5tG3v3jTIoW
-         hmABTx16qnq91g8/r8akWcmW2qESyms1LyjFBAmQId6WEviCxWPNEaFcUu1/B4ZlNsS+
-         h+5ranm4RMSjFSWiUDQ73O5QhoRyzo6NjF3P91P9tPpnNiX8sgxQJ1MkST/Cu9zz55z8
-         6667sj0CuYrUKXhNQ+8Oa8LaHcRVipKKB3L3tzyng1kRozvtP9DEbyC5T6exd58ksd/7
-         kMPw==
+        Fri, 20 Nov 2020 02:54:43 -0500
+Received: by mail-ej1-f66.google.com with SMTP id k27so11543249ejs.10;
+        Thu, 19 Nov 2020 23:54:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lEfZb4daZScUklBiNuYLi7g4cfVyq/meS+BFrwd1Myo=;
-        b=ZMR35Ipu3XIVlgCqT0PLc65KjNLkdjBJangDIPovylWQS1XhSwVWskjZQUOxM1m74a
-         VEmwdFFCZKe1DOs18iNqW8s1FyKKqpAvjNCO45hzwvqoCY64c2KkgKQjvGuW5nDyRxzj
-         PEb2APbkl27mapI6DMCp4V1zoQgFNtj3fATtrol8BROkoznofUM0cjDWD71MWRCUzFuY
-         RpFa/KucidLzkU6xHlnhymrQ7FWd51CPpmHC74zvxS2tFDh5oifUMyWJVz9muF6GCN6r
-         uUstpxSDDkjp0XxZ9AFkmvCm1VIRDEyXjbzGc3bUAFWPm84BPpE5gn0HSpO6EtWSBc1H
-         tYOw==
-X-Gm-Message-State: AOAM533nPpwTOXwECrEaZJCNOUsNX8XwYz1LoRD9ViPpkpr9JDGdkuAf
-        +cj5iyeeExM4U0gKPSL9pg==
-X-Google-Smtp-Source: ABdhPJw3ttoEDnNbsCZcHmIudvdVSeUFeCLlz3DW9MtaBD5okjoozVR7QiqGeVQ3J6Sr8+sJtx/BRQ==
-X-Received: by 2002:a63:c053:: with SMTP id z19mr15681965pgi.418.1605858606440;
-        Thu, 19 Nov 2020 23:50:06 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id v1sm2503851pjs.16.2020.11.19.23.50.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Nov 2020 23:50:05 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     ionut@badula.org, kuba@kernel.org, leon@kernel.org,
-        davem@davemloft.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] net: adaptec: remove dead code in set_vlan_mode
-Date:   Fri, 20 Nov 2020 15:50:00 +0800
-Message-Id: <1605858600-7096-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Eq/cujlUFAwrKQYzYbGEyGBEOnWSD/TTaG5voRoVQjE=;
+        b=VbqFQeV9bXE9iJmOIcXwt8VjuRfrb0aWggsouBqyVBh7C6A0AIozz+FXacXVHa/ZvP
+         2WJzQlkBvvGoMWnMBG3Dn6n5lXmgAMJCNt4TaZHWStCG8uoi0RbJM6KuizVYUQ1mC/JX
+         0EF5ypdEFngPRE1b4tV1M0zNDeE8YYupct21pmCpAROQt8j0H94MFUV4X2dh2p8Zlea3
+         F9yxhicq5pP7bk/l10jU8o7jpmFucYs5L820bitS3vNFJnxfqOHaW2KfFD34sJ4+YoJk
+         HIqM4yegQmBn2tXAI+/xKlUNjuOsShcxuoL77Ae/UgxfkmKS4/5DR25qkUlFOz5O7kTe
+         gkog==
+X-Gm-Message-State: AOAM533N1N2cOoy2LteuDJRvwQULzhF8kOinyx+Geg47Yb5PHSif1YMH
+        kub2sIbO0T9FvFeVyDDIYxWcuiEYFfnuOQ==
+X-Google-Smtp-Source: ABdhPJxuaR27wac9OpeJdOqiC/c4OeL2/B+cbpng51ZXhzx1PGawUYjtXR4G4tE9CeA6tkvySD65bg==
+X-Received: by 2002:a17:906:840e:: with SMTP id n14mr31661878ejx.147.1605858881515;
+        Thu, 19 Nov 2020 23:54:41 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id la9sm771763ejb.121.2020.11.19.23.54.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 23:54:40 -0800 (PST)
+Date:   Fri, 20 Nov 2020 08:54:38 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Alice Guo <alice.guo@nxp.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: [PATCH v3 1/4] dt-bindings: soc: imx8m: add DT Binding
+ doc for soc unique ID
+Message-ID: <20201120075438.GA4750@kozik-lap>
+References: <AM6PR04MB605309F95A4BBD29DFA42B61E2E20@AM6PR04MB6053.eurprd04.prod.outlook.com>
+ <20201117073609.GA3436@kozik-lap>
+ <AM6PR04MB6053B8E66327B3204D58A0C1E2FF0@AM6PR04MB6053.eurprd04.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <AM6PR04MB6053B8E66327B3204D58A0C1E2FF0@AM6PR04MB6053.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+On Fri, Nov 20, 2020 at 06:21:55AM +0000, Alice Guo wrote:
+> > > +  soc:
+> > > +    type: object
+> > > +    properties:
+> > > +      compatible:
+> > > +        oneOf:
+> > > +          - description: new version DTS for i.MX8M SoCs
+> > > +            items:
+> > > +              - enum:
+> > > +                  - fsl,imx8mm-soc
+> > > +                  - fsl,imx8mn-soc
+> > > +                  - fsl,imx8mp-soc
+> > > +                  - fsl,imx8mq-soc
+> > > +              - const: simple-bus
+> > > +
+> > > +          - description: other SoCs and old version DTS for i.MX8M SoCs
+> > > +            items:
+> > > +              - const: simple-bus
+> > > +
+> > > +      nvmem-cells:
+> > > +        maxItems: 1
+> > > +        description: Phandle to the SOC Unique ID provided by a nvmem
+> > > + node
+> > > +
+> > > +      nvmem-cells-names:
+> > > +        const: soc_unique_id
+> > > +
+> > > +    allOf:
+> > > +      - if:
+> > > +          properties:
+> > > +            compatible:
+> > > +              contains:
+> > > +                enum:
+> > > +                  - fsl,imx8mm-soc
+> > > +                  - fsl,imx8mn-soc
+> > > +                  - fsl,imx8mp-soc
+> > > +                  - fsl,imx8mq-soc
+> > > +                const: simple-bus
+> > > +
+> > > +        then:
+> > > +          required:
+> > > +            - nvmem-cells
+> > > +            - nvmem-cells-names
+> > >
+> > > The above is my modification. Is that ok?
+> > 
+> > Does not look like solving anything.
+> 
+> If restrict that the newly added DTS file must have "fsl,imx8mX-soc" attributes, it cannot pass make dtbs_check because
+> there are other DTS files which have soc node but are not used for i.mx8m family SoCs.
 
-The body of the if statement can be executed only when the variable
-vlan_count equals to 32, so the condition of the while statement can
-not be true and the while statement is dead code. Remove it.
+You need to check whether boards with i.MX 8M compatible have the SoC
+node with one of above compatibles and nvmem-cells.  Since the top
+select choses root node, then just check whether child exists with
+specific pattern and compatibles (for given root compatibles).
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- drivers/net/ethernet/adaptec/starfire.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/adaptec/starfire.c b/drivers/net/ethernet/adaptec/starfire.c
-index 555299737b51..ad27a9fa5e95 100644
---- a/drivers/net/ethernet/adaptec/starfire.c
-+++ b/drivers/net/ethernet/adaptec/starfire.c
-@@ -1754,14 +1754,9 @@ static u32 set_vlan_mode(struct netdev_private *np)
- 		filter_addr += 16;
- 		vlan_count++;
- 	}
--	if (vlan_count == 32) {
-+	if (vlan_count == 32)
- 		ret |= PerfectFilterVlan;
--		while (vlan_count < 32) {
--			writew(0, filter_addr);
--			filter_addr += 16;
--			vlan_count++;
--		}
--	}
-+
- 	return ret;
- }
- #endif /* VLAN_SUPPORT */
--- 
-2.20.0
+Best regards,
+Krzysztof
 
