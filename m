@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F9C2BA0FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D46242BA0FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 04:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727347AbgKTDRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Nov 2020 22:17:37 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:37664 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgKTDRg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727314AbgKTDRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 19 Nov 2020 22:17:36 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AK3ASSD044953;
-        Fri, 20 Nov 2020 03:17:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=/AZaGsozau1Ylap7Gb4tYCOsCEIKJGqpAULHIQ4wllw=;
- b=ZWTUlf924IImxXkmc5OYBWA6SsxtkokZs4bbW3Jpul4VZBuEnegzsaUkF9IcbXQX2nzG
- d9fLut2btuf4Eu9h2u11PhTjACSdgyksBEtkWvpMpR0lBJWP8vXKY+gqNxqB9CqP/oYt
- SbWtAxH5bpt/COi6wakSHmSfh8Aan6ieJcjjEN1qCi1ANVmMLNQ41rCpECtXJDYpb26+
- sAswCq83pjc7AbqUiqJKIYO48JH8e49wBgij+gjmAYZ2K67h46hsK65XqIkl80Wq0xeV
- P3Wd7Zr2za5kp0ZmTPrO46+waIZkYzex7G1waYjanB6aLUrmSnEqfwSK8fMD10GyK281 Kw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 34t4rb8t65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Nov 2020 03:17:31 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AK36eTQ160822;
-        Fri, 20 Nov 2020 03:17:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 34ts60w1ah-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Nov 2020 03:17:31 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AK3HUUr010591;
-        Fri, 20 Nov 2020 03:17:30 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Nov 2020 19:17:29 -0800
-To:     Colin King <colin.king@canonical.com>
-Cc:     James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] scsi: lpfc: Fix memory leak on lcb_context
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1o8jswwci.fsf@ca-mkp.ca.oracle.com>
-References: <20201118141314.462471-1-colin.king@canonical.com>
-Date:   Thu, 19 Nov 2020 22:17:27 -0500
-In-Reply-To: <20201118141314.462471-1-colin.king@canonical.com> (Colin King's
-        message of "Wed, 18 Nov 2020 14:13:14 +0000")
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727286AbgKTDRe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Nov 2020 22:17:34 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE99C0613CF;
+        Thu, 19 Nov 2020 19:17:33 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id b63so6495628pfg.12;
+        Thu, 19 Nov 2020 19:17:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a5QGltMhuGEUt+qCg2Y4ft9JeMn/8wz3R3MkTA0qEkQ=;
+        b=Fel3w72QdbiWFf/jFb6TPXF9B0gAaki0mjS6HWa/SQVO5aKqO30TjFqEccfJfTGqeI
+         8PytpF2mNeWODRrLo5tnZyy8lbEOzAe4eX5qoLyD1VVLcq7xuw3IFNV00zn9dwatkeoW
+         dfqvMoMU6jy6acuBflNnwRJ2nZ2Hu8EzZmpG/iuQIXIT8gcfU/MiphGUWjkQC6c3zdzw
+         2Vp2/fXP+6lD0iMcRhKjkqW4LT3mjev3c3wbaOQEFXInQzHKqxXxyxnrxiSGb4Hfn5lo
+         1r3/zRIZ1X3IzV9WL+9t9AhuttECPqOExfs5ZBARd8UC4N7Npr57reJFEBcFCPdjdzam
+         hbWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a5QGltMhuGEUt+qCg2Y4ft9JeMn/8wz3R3MkTA0qEkQ=;
+        b=W4WsZHWgwqCAn7ENuX70Na44v0hm6Igwgsk7YWADVCi2OqiZGHX+7CupGYlHPHdaHa
+         mlhsnh4pl+73XgRASWhtDxvY3XhShxYgZ+XEsHJd/jUOnD7BUyq7+lUa3Blgf2mqFwQm
+         TW31+9qomlrLifljgFBYqpyx0s/RGMPmsr7Dv1LiM4aw+7+J7C5ovCQyqamjvuHjMpEn
+         zgNTrhsn9AEL+lUKaxTkCV/VnUoPHZ+kp993+6g4+wkk7C+UbLAmls7yiDB8eDI+pCDH
+         YrRT7ht7o26v7NkjvfJ+zMl2ZeZhKGNEm1QvCL1KZwj6QLtQQeptuMjZJ2nh1oULnOQS
+         8G8A==
+X-Gm-Message-State: AOAM530CfL2JDPfASIxbQWZaZqY3ImP+2Th627zT6HVLxZ4y+kXVfZ4s
+        0ku6IoKezAZb1Ui4YmqJXMQ=
+X-Google-Smtp-Source: ABdhPJyilT4uWqIAETboDc2NhJo0SollptE7Zsa001ViLqANhWlqCzmoutscogHwWeSepMgGAIZ4OA==
+X-Received: by 2002:a63:ba1d:: with SMTP id k29mr15077546pgf.179.1605842252978;
+        Thu, 19 Nov 2020 19:17:32 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id k30sm1145002pgb.83.2020.11.19.19.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 19:17:32 -0800 (PST)
+Date:   Thu, 19 Nov 2020 19:17:29 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>,
+        Ian Molton <spyro@f2s.com>, Andrew Zabolotny <zap@homelink.ru>,
+        Russell King <rmk@arm.linux.org.uk>,
+        patches@opensource.cirrus.com, linux-input@vger.kernel.org
+Subject: Re: [PATCH 11/15] input: touchscreen: wm97xx-core: Provide missing
+ description for 'status'
+Message-ID: <20201120031729.GQ2034289@dtor-ws>
+References: <20201112110204.2083435-1-lee.jones@linaro.org>
+ <20201112110204.2083435-12-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=5 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011200022
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9810 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=5 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011200022
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112110204.2083435-12-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 12, 2020 at 11:02:00AM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/input/touchscreen/wm97xx-core.c:204: warning: Function parameter or member 'status' not described in 'wm97xx_set_gpio'
+> 
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+> Cc: Ian Molton <spyro@f2s.com>
+> Cc: Andrew Zabolotny <zap@homelink.ru>
+> Cc: Russell King <rmk@arm.linux.org.uk>
+> Cc: patches@opensource.cirrus.com
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Colin,
-
-> Currently there is an error return path that neglects to free the
-> allocation for lcb_context.  Fix this by adding a new error free exit
-> path that kfree's lcb_context before returning.  Use this new kfree
-> exit path in another exit error path that also kfree's the same
-> object, allowing a line of code to be removed.
-
-Applied to 5.11/scsi-staging, thanks!
+Applied, thank you.
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+Dmitry
