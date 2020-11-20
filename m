@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D102BB931
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 23:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7D42BB932
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Nov 2020 23:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728931AbgKTWjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 17:39:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728470AbgKTWjo (ORCPT
+        id S1728941AbgKTWj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 17:39:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55474 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728470AbgKTWj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 17:39:44 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4924C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 14:39:44 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id y22so10244337oti.10
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 14:39:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vEb2uBInLCs8IsOkwmnYRce3Wq6xcB4B+D0gKBebh3s=;
-        b=h4pWoCg3U9Kl89tXl7GLuHaBLzfyq/mc9J6vMUskj5qYU9vvPN66+lNvcXxbbPGeXS
-         GvmlgLxEYMzlnhIlCVxKKin2sdFGoBOim5JdtwCrTkBBJDjlBFjQNeyv/zq1hn1qVY6z
-         unlhZSbNHcpHLnKjcZsFDIxXnj/V+/Kh+yfPY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vEb2uBInLCs8IsOkwmnYRce3Wq6xcB4B+D0gKBebh3s=;
-        b=Dyc8YrI9TbU6uMtsZsxR8HwHRby6BaFSU6y9UMH8y729P5fkCDUwyzAMG0FQZikDkq
-         dQJXvnRXLlGFfPdoTKY7+fhGFKcOJdSXbinrriGAcN556oZxRCfnNs+UD8cZEF3M6mOx
-         StRNrbXbRzc8/0bqkIapTBw4Tpmfbfktgp2/1c0+BzOC5s1DBetr/NzRpnm8844k9blz
-         Hu41yy6cINZRx4Lk3+H36LRja9qR8NjfZpdoKk4ZWRPqQk633DWlM1+L8Gfe40kLTFzH
-         OBGcIv+KuiW+NlZsPhcmQMRz4TGgKjX35q+oauT5OpuGbS81smLTcZeSNoTHRMUkG4aI
-         Uogw==
-X-Gm-Message-State: AOAM5305zfluI7yYRhExL9Zii/Lsz8CRVCxuhliQ+Ik+LWKCccmm7CJ0
-        WV2EyrLPbYmI51PPhh0rVOX6Mw==
-X-Google-Smtp-Source: ABdhPJyBisCkWa2BWCHze9LlSOmV2DyuKPPJMp1IPSqMsbK2UaWiD2nBMK7QxbkWM5ZPQj6gs5QsPg==
-X-Received: by 2002:a05:6830:50:: with SMTP id d16mr14315206otp.226.1605911984095;
-        Fri, 20 Nov 2020 14:39:44 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o6sm2245556oon.7.2020.11.20.14.39.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 14:39:43 -0800 (PST)
-Subject: Re: [PATCH 4.9 00/16] 4.9.245-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org, skhan@linuxfoundation.org
-References: <20201120104539.706905067@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <87002b8e-59cb-7f83-600d-e00d981b4880@linuxfoundation.org>
-Date:   Fri, 20 Nov 2020 15:39:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Fri, 20 Nov 2020 17:39:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605911994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K3El2hXRpQVR3PZtynZGSoJC07Ftno34H/6B207e9Sg=;
+        b=IiEqQVWS4Vc3Z0sLBbT+0SqD+cMo2M7CMiZWhvVKAdNgWHaDCdr6uyLZvQW02AjcLyos1E
+        U9wqncZh1z/dzb2pSJPzM9Zzup1ZkW0R56N/0NyihDirVm518TIrGnHsbYlmdl6tLgaPuq
+        5qFlU5R+eHOxemovkWvNg0en9QO9Znw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-28-_OsoQEVgP2SmTPA7clkpMg-1; Fri, 20 Nov 2020 17:39:52 -0500
+X-MC-Unique: _OsoQEVgP2SmTPA7clkpMg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3DC318B613D;
+        Fri, 20 Nov 2020 22:39:51 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-119-225.rdu2.redhat.com [10.10.119.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 19F025C1D5;
+        Fri, 20 Nov 2020 22:39:51 +0000 (UTC)
+Subject: Re: [RFC PATCH 5/5] locking/rwsem: Remove reader optimistic spinning
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>
+References: <20201118030429.23017-1-longman@redhat.com>
+ <20201118030429.23017-6-longman@redhat.com>
+ <20201118053556.3fmmtat7upv6dtvd@linux-p48b.lan>
+ <20201120144408.GF3040@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <90e1bc43-fead-904f-3bed-a2fbadf9c1ac@redhat.com>
+Date:   Fri, 20 Nov 2020 17:39:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201120104539.706905067@linuxfoundation.org>
+In-Reply-To: <20201120144408.GF3040@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/20 4:03 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.245 release.
-> There are 16 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 22 Nov 2020 10:45:32 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.245-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On 11/20/20 9:44 AM, Peter Zijlstra wrote:
+> On Tue, Nov 17, 2020 at 09:35:56PM -0800, Davidlohr Bueso wrote:
+>> On Tue, 17 Nov 2020, Waiman Long wrote:
+>>
+>>> The column "CS Load" represents the number of pause instructions issued
+>>> in the locking critical section. A CS load of 1 is extremely short and
+>>> is not likey in real situations. A load of 20 (moderate) and 100 (long)
+>>> are more realistic.
+>>>
+>>> It can be seen that the previous patches in this series have reduced
+>>> performance in general except in highly contended cases with moderate
+>>> or long critical sections that performance improves a bit. This change
+>>> is mostly caused by the "Prevent potential lock starvation" patch that
+>>> reduce reader optimistic spinning and hence reduce reader fragmentation.
+>>>
+>>> The patch that further limit reader optimistic spinning doesn't seem to
+>>> have too much impact on overall performance as shown in the benchmark
+>>> data.
+>>>
+>>> The patch that disables reader optimistic spinning shows reduced
+>>> performance at lightly loaded cases, but comparable or slightly better
+>>> performance on with heavier contention.
+>> I'm not overly worried about the lightly loaded cases here as the users
+>> (mostly thinking mmap_sem) most likely won't care for real workloads,
+>> not, ie: will-it-scale type things.
+>>
+>> So at SUSE we also ran into this very same problem with reader optimistic
+>> spinning and considering the fragmentation went with disabling it, much
+>> like this patch - but without the reader optimistic lock stealing bits
+>> you have. So far nothing has really shown to fall out in our performance
+>> automation. And per your data a single reader spinner does not seem to be
+>> worth the added complexity of keeping reader spinning vs ripping it out.
+> I'm fine with ripping it... It was finnicky to begin with.
+>
+Good to know. I am going to sent out v2 with some update commit logs and 
+some !CONFIG_RWSEM_SPIN_ON_OWNER fixes.
 
-Compiled and booted on my test system. No dmesg regressions.
+Cheers,
+Longman
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
