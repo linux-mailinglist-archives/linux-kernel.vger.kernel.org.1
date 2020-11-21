@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329102BC197
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FD32BC199
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgKUSu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 13:50:29 -0500
-Received: from gproxy7-pub.mail.unifiedlayer.com ([70.40.196.235]:54695 "EHLO
-        gproxy7-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728244AbgKUSu3 (ORCPT
+        id S1728286AbgKUSuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 13:50:32 -0500
+Received: from smtprelay0220.hostedemail.com ([216.40.44.220]:55772 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728244AbgKUSub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 13:50:29 -0500
-Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
-        by gproxy7.mail.unifiedlayer.com (Postfix) with ESMTP id 0ADE1215C67
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 11:50:28 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id gXxrkBWJOh41lgXxrkFuUH; Sat, 21 Nov 2020 11:50:28 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=FoUrAVjq c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=nNwsprhYR40A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=iH7RfIX4AAAA:20
- a=VwQbUJbxAAAA:8 a=_jlGtV7tAAAA:8 a=8y_7F0WFO_vNhfgCrDoA:9
- a=CjuIK1q_8ugA:10:nop_charset_2 a=AjGcO6oz07-iQ99wixmX:22
- a=nlm17XC03S6CtCLSeiRr:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=CO3ZopLurYfZ1yt43p5M9cveWYTt3s3J5YWhtvV2Bno=; b=q1i2JhEV44laI+W5Pque6fhyXe
-        c/xFxb+fjL0cpHFVRYnOEZVSHSxao/rSInqJOEVXKqvajFvfwwOrzBg1eE7vDMT+y3XoIXTm/6x7Q
-        vqpfFAEpB/j1lZh5Trzk57IZP8jSpyFpJnimctiO/eZqjte+UjXSnB6ACaAj1SJ7Wcch+VYTsy4Qg
-        41efHNdSH1GJUprQRhyzYA6GI4BgtuZ9IezCwDVJWdjsCjSjuAbl4gz3EkRf4yhu3IKAOuWUAKbQg
-        8kbLo0NvgQO6z36Pp3ox/IPEgZgRc1SrlhZQjF9D5NpbdevtFhveg2PrQFw75s9ECyzimlgCUgiWh
-        ygvVPMQQ==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:40994 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kgXxr-003Cdf-1e; Sat, 21 Nov 2020 18:50:27 +0000
-Date:   Sat, 21 Nov 2020 10:50:26 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 087/141] hwmon: (max6621) Fix fall-through warnings for
- Clang
-Message-ID: <20201121185026.GC114144@roeck-us.net>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <e59b39ab11a5d8c2a2ec86c15eabc00b5a056c15.1605896060.git.gustavoars@kernel.org>
+        Sat, 21 Nov 2020 13:50:31 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id A4BE6837F24A;
+        Sat, 21 Nov 2020 18:50:30 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2198:2199:2200:2393:2559:2562:2731:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:3874:4321:5007:6120:7514:7875:7901:9010:10004:10400:10848:11232:11658:11914:12043:12297:12555:12740:12895:13069:13161:13229:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:30030:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: jewel53_0b07cea27356
+X-Filterd-Recvd-Size: 2305
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 21 Nov 2020 18:50:29 +0000 (UTC)
+Message-ID: <ee2f79f5e9237773617fbce877353817c1137246.camel@perches.com>
+Subject: Re: [PATCH v2] MAINTAINERS: Add Kamel Bouhara as TCB counter driver
+ maintainer
+From:   Joe Perches <joe@perches.com>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
+Cc:     alexandre.belloni@bootlin.com,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kamel Bouhara <kamel.bouhara@bootlin.com>
+Date:   Sat, 21 Nov 2020 10:50:28 -0800
+In-Reply-To: <20201121184305.450149-1-vilhelm.gray@gmail.com>
+References: <20201121184305.450149-1-vilhelm.gray@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e59b39ab11a5d8c2a2ec86c15eabc00b5a056c15.1605896060.git.gustavoars@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kgXxr-003Cdf-1e
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:40994
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 67
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:36:09PM -0600, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a break statement instead of letting the code fall
-> through to the next case.
-> 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-
+On Sat, 2020-11-21 at 13:43 -0500, William Breathitt Gray wrote:
+> Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 > ---
->  drivers/hwmon/max6621.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes in v2:
+>  - Reorder section names alphabetically
+>  - Rename title to ARM/Microchip etc...
+>  - Add linux-arm-kernel@lists.infradead.org as mailing list
 > 
-> diff --git a/drivers/hwmon/max6621.c b/drivers/hwmon/max6621.c
-> index 367855d5edae..7821132e17fa 100644
-> --- a/drivers/hwmon/max6621.c
-> +++ b/drivers/hwmon/max6621.c
-> @@ -156,7 +156,7 @@ max6621_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
->  		default:
->  			break;
->  		}
-> -
-> +		break;
->  	default:
->  		break;
->  	}
-> -- 
-> 2.27.0
+>  MAINTAINERS | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 913b5eb64e44..1bc3acf55ed4 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2104,6 +2104,13 @@ S:	Supported
+>  F:	arch/arm64/boot/dts/microchip/
+>  N:	sparx5
+>  
+> 
+> +ARM/Microchip Timer Counter Block (TCB) Capture Driver
+> +F:	drivers/counter/microchip-tcb-capture.c
+> +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> +L:	linux-iio@vger.kernel.org
+> +M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
+> +S:	Maintained
+
+There's a section near the top of the MAINTAINERS file that describes
+the preferred order for these entries.
+
+Ideally this should be ordered like:
+
+ARM/Microchip Timer Counter Block (TCB) Capture Driver
+M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+L:	linux-iio@vger.kernel.org
+S:	Maintained
+F:	drivers/counter/microchip-tcb-capture.c
+
+
