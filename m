@@ -2,248 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65D82BBEE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 13:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E00DB2BBEE5
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 13:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727688AbgKUMT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 07:19:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727191AbgKUMTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 07:19:23 -0500
-Received: from localhost (unknown [122.171.203.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55C1022226;
-        Sat, 21 Nov 2020 12:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605961162;
-        bh=DX2F2/Tpx8zdWIAzxkpTpbMme91YP7XBB0zwX+FpLsI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U7V85E0rjcq/A45mVknEQ7z6MfOC8AKXOwyOr35oEhWpd9gmwNtc8AmYnPByftA4q
-         5IY/Ph3gJ/Rc4F6DmGzDmKYSkuhfUEW6ykqT1fB8y1kKhuv1KJyJwHshLAGkTmDlpd
-         ascqz21+bAped/YN27JX1H9meADP4CICcJMBOQlU=
-Date:   Sat, 21 Nov 2020 17:49:17 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@intel.com, chuanhua.lei@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
-Subject: Re: [PATCH v9 1/2] dt-bindings: dma: Add bindings for Intel LGM SoC
-Message-ID: <20201121121917.GC8403@vkoul-mobl>
-References: <cover.1605158930.git.mallikarjunax.reddy@linux.intel.com>
- <bfe586ac62080d14759bda22ebf1de1a1fa9c09d.1605158930.git.mallikarjunax.reddy@linux.intel.com>
- <20201118155552.GV50232@vkoul-mobl>
- <44fba7c3-37a9-7168-3c19-eeb5068b7063@linux.intel.com>
+        id S1727682AbgKUMXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 07:23:06 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:52866 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727191AbgKUMXE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 07:23:04 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07462001|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.410477-0.000193703-0.589329;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047209;MF=fuyao@allwinnertech.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.IzZCTo2_1605961376;
+Received: from localhost(mailfrom:fuyao@allwinnertech.com fp:SMTPD_---.IzZCTo2_1605961376)
+          by smtp.aliyun-inc.com(10.147.42.198);
+          Sat, 21 Nov 2020 20:22:56 +0800
+Date:   Sat, 21 Nov 2020 20:22:55 +0800
+From:   fuyao <fuyao@allwinnertech.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
+        linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH 2/2] hwspinlock: add sunxi hardware spinlock support
+Message-ID: <20201121122255.GB22987@debian>
+Mail-Followup-To: Maxime Ripard <maxime@cerno.tech>,
+        Wilken Gottwalt <wilken.gottwalt@posteo.net>,
+        linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <cover.1605693132.git.wilken.gottwalt@posteo.net>
+ <149526a0ba8d18ebb68baa24e95d946ede90b4c0.1605693132.git.wilken.gottwalt@posteo.net>
+ <20201118153733.jgiokn6jkwu6rv6c@gilmour.lan>
+ <20201118203624.7221ba8b@monster.powergraphx.local>
+ <20201119071523.5cbpgy2cpo5cmuev@gilmour.lan>
+ <20201119111343.74956eae@monster.powergraphx.local>
+ <20201120164231.nmzxe5scwnfoyy3o@gilmour>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <44fba7c3-37a9-7168-3c19-eeb5068b7063@linux.intel.com>
+In-Reply-To: <20201120164231.nmzxe5scwnfoyy3o@gilmour>
+Organization: fuyao_love_xxt.Allwinnertech.Technology
+User-Agent: Mutt/1.12.1+6 (4c2f7c70) (2019-08-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-11-20, 19:30, Reddy, MallikarjunaX wrote:
-> Hi Vinod,
-> Thanks for the review. My comments inline.
+On Fri, Nov 20, 2020 at 05:42:31PM +0100, Maxime Ripard wrote:
+> Hi,
 > 
-> On 11/18/2020 11:55 PM, Vinod Koul wrote:
-> > On 12-11-20, 13:38, Amireddy Mallikarjuna reddy wrote:
-> > > Add DT bindings YAML schema for DMA controller driver
-> > > of Lightning Mountain (LGM) SoC.
+> On Thu, Nov 19, 2020 at 11:13:43AM +0100, Wilken Gottwalt wrote:
+> > On Thu, 19 Nov 2020 08:15:23 +0100
+> > Maxime Ripard <maxime@cerno.tech> wrote:
+> > > > can you help me here a bit? I still try to figure out how to do patch sets
+> > > > properly. Some kernel submitting documentation says everything goes into the
+> > > > coverletter and other documentation only tells how to split the patches. So
+> > > > what would be the right way? A quick example based on my patch set would be
+> > > > really helpful.
 > > > 
-> > > Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
-> > > ---
-> > > v1:
-> > > - Initial version.
+> > > I mean, the split between your patches and so on is good, you got that right
 > > > 
-> > > v2:
-> > > - Fix bot errors.
-> > > 
-> > > v3:
-> > > - No change.
-> > > 
-> > > v4:
-> > > - Address Thomas langer comments
-> > >    - use node name pattern as dma-controller as in common binding.
-> > >    - Remove "_" (underscore) in instance name.
-> > >    - Remove "port-" and "chan-" in attribute name for both 'dma-ports' & 'dma-channels' child nodes.
-> > > 
-> > > v5:
-> > > - Moved some of the attributes in 'dma-ports' & 'dma-channels' child nodes to dma client/consumer side as cells in 'dmas' properties.
-> > > 
-> > > v6:
-> > > - Add additionalProperties: false
-> > > - completely removed 'dma-ports' and 'dma-channels' child nodes.
-> > > - Moved channel dt properties to client side dmas.
-> > > - Use standard dma-channels and dma-channel-mask properties.
-> > > - Documented reset-names
-> > > - Add description for dma-cells
-> > > 
-> > > v7:
-> > > - modified compatible to oneof
-> > > - Reduced number of dma-cells to 3
-> > > - Fine tune the description of some properties.
-> > > 
-> > > v7-resend:
-> > > - rebase to 5.10-rc1
-> > > 
-> > > v8:
-> > > - rebased to 5.10-rc3
-> > > - Fixing the bot issues (wrong indentation)
-> > > 
-> > > v9:
-> > > - rebased to 5.10-rc3
-> > > - Use 'enum' instead of oneOf+const
-> > > - Drop '#dma-cells' in required:, already covered in dma-common.yaml
-> > > - Drop nodename Already covered by dma-controller.yaml
-> > > ---
-> > >   .../devicetree/bindings/dma/intel,ldma.yaml        | 130 +++++++++++++++++++++
-> > >   1 file changed, 130 insertions(+)
-> > >   create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/dma/intel,ldma.yaml b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
-> > > new file mode 100644
-> > > index 000000000000..c06281a10178
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
-> > > @@ -0,0 +1,130 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/dma/intel,ldma.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Lightning Mountain centralized low speed DMA and high speed DMA controllers.
-> > > +
-> > > +maintainers:
-> > > +  - chuanhua.lei@intel.com
-> > > +  - mallikarjunax.reddy@intel.com
-> > > +
-> > > +allOf:
-> > > +  - $ref: "dma-controller.yaml#"
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - intel,lgm-cdma
-> > > +      - intel,lgm-dma2tx
-> > > +      - intel,lgm-dma1rx
-> > > +      - intel,lgm-dma1tx
-> > > +      - intel,lgm-dma0tx
-> > > +      - intel,lgm-dma3
-> > > +      - intel,lgm-toe-dma30
-> > > +      - intel,lgm-toe-dma31
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  "#dma-cells":
-> > > +    const: 3
-> > > +    description:
-> > > +      The first cell is the peripheral's DMA request line.
-> > > +      The second cell is the peripheral's (port) number corresponding to the channel.
-> > > +      The third cell is the burst length of the channel.
-> > > +
-> > > +  dma-channels:
-> > > +    minimum: 1
-> > > +    maximum: 16
-> > > +
-> > > +  dma-channel-mask:
-> > > +    maxItems: 1
-> > > +
-> > > +  clocks:
-> > > +    maxItems: 1
-> > > +
-> > > +  resets:
-> > > +    maxItems: 1
-> > > +
-> > > +  reset-names:
-> > > +    items:
-> > > +      - const: ctrl
-> > > +
-> > > +  interrupts:
-> > > +    maxItems: 1
-> > > +
-> > > +  intel,dma-poll-cnt:
-> > > +    $ref: /schemas/types.yaml#definitions/uint32
-> > > +    description:
-> > > +      DMA descriptor polling counter is used to control the poling mechanism
-> > s/poling/polling
-> Ok, Thanks.
+> > > The thing I wanted better details on is the commit log itself, so the
+> > > message attached to that patch.
 > > 
-> > > +      for the descriptor fetching for all channels.
-> > > +
-> > > +  intel,dma-byte-en:
-> > > +    type: boolean
-> > > +    description:
-> > > +      DMA byte enable is only valid for DMA write(RX).
-> > > +      Byte enable(1) means DMA write will be based on the number of dwords
-> > > +      instead of the whole burst.
-> > Can you explain this, also sounds you could use _maxburst values..?
-> when dma-byte-en = 0 (disabled) DMA write will be in terms of burst length,
-> dma-byte-en = 1 (enabled) write will be in terms of Dwords.
+> > Ah yes, I think I got it now. So basically add a nice summary of the coverletter
+> > there.
 > 
-> Byte enable = 0 (Disabled) means that DMA write will be based on the burst
-> length, even if it only transmits one byte.
-> Byte enable = 1(enabled) means that DMA write will be based on the number of
-> Dwords, instead of the whole burst.
-
-Sounds like a hw property or is this configurable to engine..?
+> Yes, a bit more context as well. Eventually, this should be the
+> motivation on why this patch is useful. So what it can be used for, what
+> are the challenges, how it was tested, etc.
 > 
+> The cover letter is usually here more to provide some meta-context: what
+> you expect from the maintainers / reviewers if it's an RFC, if there's
+> any feature missing or that could be added later on, etc.
+> 
+> > > > > Most importantly, this hwspinlock is used to synchronize the ARM cores
+> > > > > and the ARISC. How did you test this driver?
+> > > > 
+> > > > Yes, you are right, I should have mentioned this. I have a simple test kernel
+> > > > module for this. But I must admit, testing the ARISC is very hard and I have
+> > > > no real idea how to do it. Testing the hwspinlocks in general seems to work
+> > > > with my test kernel module, but I'm not sure if this is really sufficient. I
+> > > > can provide the code for it if you like. What would be the best way? Github?
+> > > > Just mailing a patch?
+> > > > 
+> > > > The test module produces these results:
+> > > > 
+> > > > # insmod /lib/modules/5.9.8/kernel/drivers/hwspinlock/sunxi_hwspinlock_test.ko 
+> > > > [   45.395672] [init] sunxi hwspinlock test driver start
+> > > > [   45.400775] [init] start test locks
+> > > > [   45.404263] [run ] testing 32 locks
+> > > > [   45.407804] [test] testing lock 0 -----
+> > > > [   45.411652] [test] taking lock attempt #0 succeded
+> > > > [   45.416438] [test] try taken lock attempt #0
+> > > > [   45.420735] [test] unlock/take attempt #0
+> > > > [   45.424752] [test] taking lock attempt #1 succeded
+> > > > [   45.429556] [test] try taken lock attempt #1
+> > > > [   45.433823] [test] unlock/take attempt #1
+> > > > [   45.437862] [test] testing lock 1 -----
+> > > 
+> > > That doesn't really test for contention though, and dealing with
+> > > contention is mostly what this hardware is about. Could you make a small
+> > > test with crust to see if when the arisc has taken the lock, the ARM
+> > > cores can't take it?
 > > 
-> > > +
-> > > +  intel,dma-drb:
-> > > +    type: boolean
-> > > +    description:
-> > > +      DMA descriptor read back to make sure data and desc synchronization.
-> > > +
-> > > +  intel,dma-desc-in-sram:
-> > > +    type: boolean
-> > > +    description:
-> > > +      DMA descritpors in SRAM or not. Some old controllers descriptors
-> > > +      can be in DRAM or SRAM. The new ones are all in SRAM.
-> > should that not be decided by driver..? Or is this a hw property?
-> This is DMA controller capability. It can be decided from driver also. i
-> will change accordingly.
-> > 
-> > > +
-> > > +  intel,dma-orrc:
-> > > +    $ref: /schemas/types.yaml#definitions/uint32
-> > > +    description:
-> > > +      DMA outstanding read counter value determine the number of
-> > > +      ORR-Outstanding Read Request. The maximum value is 16.
-> > How would this be used by folks..?
-> A register bit will be used to enable/disable the ORR feature.
+> > So the best solution would be to write a bare metal program that runs on the
+> > arisc and can be triggered from the linux side (the test kernel module) to take
+> > a spinlock ... or at least take spinlocks periodically for a while and watch it
+> > on the linux side. Okay, I think I can do this. Though, I have to dig through
+> > all this new stuff first.
 > 
-> Outstanding Read Capability introduce CMD FIFO to support up to 16
-> outstanding reads for different packet in same channel.
+> It doesn't have to be super complicated, just a loop that takes a lock,
+> sleeps for some time, and releases the lock should be enough to at least
+> validate that the lock is actually working
 > 
-> For large packets up to 16 OR can be issued, the number of OR is
-> configurable.
+I think the difficulty is the bare metal program in arsic has little
+documentation.
 
-How will configure this and when..?
+the arisc is usually used for standby, so don't provide detailed, and
+start it with boot0 or uboot.
 
-> > 
-> > > +
-> > > +  intel,dma-dburst-wr:
-> > > +    type: boolean
-> > > +    description:
-> > > +      Enable RX dynamic burst write. When it is enabled, the DMA does RX dynamic burst;
-> > > +      if it is disabled, the DMA RX will still support programmable fixed burst size of 2,4,8,16.
-> > > +      It only applies to RX DMA and memcopy DMA.
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > So only two are mandatory, what about the bunch of intel properties you
-> > added above..?
-> Some of the properties are DMA capabilities, Enabling from device tree.
-> other properties will use default values from driver if we dont pass it from
-> device tree.
+maybe we can run it use remoteproc to start it.
 
 
--- 
-~Vinod
+
