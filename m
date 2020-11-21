@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3122BC1CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 20:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FED2BC1CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 20:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728490AbgKUTon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 14:44:43 -0500
-Received: from conuserg-07.nifty.com ([210.131.2.74]:21975 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728472AbgKUTon (ORCPT
+        id S1728449AbgKUTpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 14:45:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38323 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728402AbgKUTpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 14:44:43 -0500
-Received: from grover.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 0ALJhlQW018082;
-        Sun, 22 Nov 2020 04:43:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 0ALJhlQW018082
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1605987828;
-        bh=kMMLEunEMIDisWEYWqEwz2gIWOM0bj/iT9P6aQkYuAA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ed4YR6jCsEtGEDLmMjHzJsPekt449R4rvo+kLcDiqhConMsBK7GnZj47QGbL9Zfvz
-         F7JN4vuT9U42wImHJxZC+JkSuW358QGOQsiIWcKKZt0X5K85iY4qxq4urVA3MoG+dJ
-         HdGOZZ9UcddBdtjwbgdME9cB6bRr9PPT0YA3ZgBqxHvync6gU9yfgKSoCXMC2O6bP5
-         E5JpIg82ZiGWVerVt3xqwloF+WbkRVv6L5JjdF38neunrDIRCBP34+JIuLX3KARh2+
-         gpLzk4lSZFr22g9gqJGBDP1+T6Jz7yNfHWOCtfFIqtyA3Z3LpAWQWN7nt/nJuhj0TL
-         h8TjAVnBvm7AA==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        wireguard@lists.zx2c4.com
-Subject: [PATCH] compiler_attribute: remove CONFIG_ENABLE_MUST_CHECK
-Date:   Sun, 22 Nov 2020 04:43:39 +0900
-Message-Id: <20201121194339.52290-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        Sat, 21 Nov 2020 14:45:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605987916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/n9qzU93yjpwWqpZ4t1OnDoSkIDxpyCWRVsrij+PqBU=;
+        b=cemCWQ7oly83tjEpQa/ROAt9TQDAU0N6t3y3arP0+DmrNBq9rv7ABe2pf/RTGZFThIt0QJ
+        PMYXOMNvsnr534+SWP7R6Ha/9OcNHDM9ackK4JawGBKyf7S95gzm034/EL0QH3qRcJAAnf
+        Fddrcnx/4VxCmYKFCfRdxIGdYe3K+X8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-112-FDfrJ_tzPVSMkHwmKiKa3g-1; Sat, 21 Nov 2020 14:45:12 -0500
+X-MC-Unique: FDfrJ_tzPVSMkHwmKiKa3g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A872151D8;
+        Sat, 21 Nov 2020 19:45:10 +0000 (UTC)
+Received: from mail (ovpn-112-35.rdu2.redhat.com [10.10.112.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2A24E18996;
+        Sat, 21 Nov 2020 19:45:07 +0000 (UTC)
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Mel Gorman <mgorman@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Qian Cai <cai@lca.pw>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>
+Subject: [PATCH 0/1] VM_BUG_ON_PAGE(!zone_spans_pfn) in set_pfnblock_flags_mask
+Date:   Sat, 21 Nov 2020 14:45:05 -0500
+Message-Id: <20201121194506.13464-1-aarcange@redhat.com>
+In-Reply-To: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
+References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Revert commit cebc04ba9aeb ("add CONFIG_ENABLE_MUST_CHECK").
+Hello,
 
-A lot of warn_unused_result warnings existed in 2006, but until now
-they have been fixed thanks to people doing allmodconfig tests.
+After hitting this twice on two different systems, I'm now running
+with the tentative fix applied, but it's not a meaningful test since
+it's non reproducible.
 
-Our goal is to always enable __must_check where appreciate, so this
-CONFIG option is no longer needed.
+However it is possible to inject this bug if you do "grep E820
+/proc/iomem" and then find a phys addr there with a struct page
+(i.e. pfn_valid) in a zone, with this change:
 
-I see a lot of defconfig (arch/*/configs/*_defconfig) files having:
+	min_pfn = pageblock_start_pfn(cc->free_pfn - (distance >> 1));
++	if (cc->zone is the zone where the e820 physaddr has a pfn_valid)
++	   min_pfn = physaddr_of_E820_non_RAM_page_with_valid_pfn >> PAGE_SHIFT;
 
-    # CONFIG_ENABLE_MUST_CHECK is not set
+I didn't try to inject the bug to validate the fix and it'd be great
+if someone can try that to validate this or any other fix.
 
-I did not touch them for now since it would be a big churn. If arch
-maintainers want to clean them up, please go ahead.
+Andrea Arcangeli (1):
+  mm: compaction: avoid fast_isolate_around() to set pageblock_skip on
+    reserved pages
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- include/linux/compiler_types.h                      | 4 ----
- lib/Kconfig.debug                                   | 8 --------
- tools/testing/selftests/wireguard/qemu/debug.config | 1 -
- 3 files changed, 13 deletions(-)
-
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index ac3fa37a84f9..02f6d3fbad9d 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -110,11 +110,7 @@ struct ftrace_likely_data {
- 	unsigned long			constant;
- };
- 
--#ifdef CONFIG_ENABLE_MUST_CHECK
- #define __must_check		__attribute__((__warn_unused_result__))
--#else
--#define __must_check
--#endif
- 
- #if defined(CC_USING_HOTPATCH)
- #define notrace			__attribute__((hotpatch(0, 0)))
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index c789b39ed527..cb8ef4fd0d02 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -286,14 +286,6 @@ config GDB_SCRIPTS
- 
- endif # DEBUG_INFO
- 
--config ENABLE_MUST_CHECK
--	bool "Enable __must_check logic"
--	default y
--	help
--	  Enable the __must_check logic in the kernel build.  Disable this to
--	  suppress the "warning: ignoring return value of 'foo', declared with
--	  attribute warn_unused_result" messages.
--
- config FRAME_WARN
- 	int "Warn for stack frames larger than"
- 	range 0 8192
-diff --git a/tools/testing/selftests/wireguard/qemu/debug.config b/tools/testing/selftests/wireguard/qemu/debug.config
-index b50c2085c1ac..fe07d97df9fa 100644
---- a/tools/testing/selftests/wireguard/qemu/debug.config
-+++ b/tools/testing/selftests/wireguard/qemu/debug.config
-@@ -1,5 +1,4 @@
- CONFIG_LOCALVERSION="-debug"
--CONFIG_ENABLE_MUST_CHECK=y
- CONFIG_FRAME_POINTER=y
- CONFIG_STACK_VALIDATION=y
- CONFIG_DEBUG_KERNEL=y
--- 
-2.25.1
+ mm/compaction.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
