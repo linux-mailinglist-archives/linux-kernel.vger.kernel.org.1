@@ -2,318 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E9A2BC19B
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D070C2BC19E
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgKUSur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 13:50:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727171AbgKUSur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 13:50:47 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C7D52100A;
-        Sat, 21 Nov 2020 18:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605984646;
-        bh=K2WrYdEUGCQKpizOrDcceJA5DPVDv5LgqSZyqbNFO9A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CR2SkCrv8z1Zjvs+Gq6Er5FwCsjmohsRKKVBSoC0dAlTymyUyJ1VAG5EQzABCf70V
-         39lh+KuJb//dZZcEX36TCxDsZab3yfpa40j8TkBS+7yuvKsw/BFJh58Xdq817tVPJ5
-         CsGHCuJnbB8mAcTfwbhnReeXQzn20IN5p22iTYfI=
-Date:   Sat, 21 Nov 2020 18:50:41 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lars@metafoo.de>
-Subject: Re: [RFC PATCH 12/12] iio: buffer: add ioctl() to support opening
- extra buffers for IIO device
-Message-ID: <20201121185041.7a0649f7@archlinux>
-In-Reply-To: <20201117162340.43924-13-alexandru.ardelean@analog.com>
-References: <20201117162340.43924-1-alexandru.ardelean@analog.com>
-        <20201117162340.43924-13-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728336AbgKUSvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 13:51:54 -0500
+Received: from gproxy4-pub.mail.unifiedlayer.com ([69.89.23.142]:36476 "EHLO
+        gproxy4-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728319AbgKUSvy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 13:51:54 -0500
+Received: from CMGW (unknown [10.9.0.13])
+        by gproxy4.mail.unifiedlayer.com (Postfix) with ESMTP id 92E86175C7E
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 11:51:52 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id gXzEkRSCWi1lMgXzEkQyJJ; Sat, 21 Nov 2020 11:51:52 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.2 cv=D4A3ErZj c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10 a=nNwsprhYR40A:10
+ a=evQFzbml-YQA:10 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=G9OVi-XX-SaVrF5UqbQA:9
+ a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HotaPkXnnpv3O3DIEezLBKrXxNiD0dVLa4OpYyJGbVE=; b=rXxT8kLIjYMFJ0NTHFNeIef7W8
+        nBClDWJC3f/IkYwxtWppURf5lc3RrmUJQgUD8VM4qjArsm9h1vFEYlcXubvxcOPPz9ETeScoxnigF
+        RKisfl1BNXu9PSa8gQSekgmkTdGba2v4rt+JabvcyS/pnSPMM60nZMmu/f2u31+3T6vswIjYqW7c0
+        F5CUCXX7TAtIVPGjfvY8UErrPXjjKsoBxt8pqKxF0dDtmys35Y8694DBA4I8oXgUT0nbegtxecfTC
+        za1hKfrL50JZ4Xpkt8zCVC/R2XlooYLQ6m3DJUXEBsPAEPt7Djd+Q2Ew1ZPE2MHBnSTsMkuwRTVpy
+        AJvA1LkA==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:40998 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kgXzD-003D3U-Gp; Sat, 21 Nov 2020 18:51:51 +0000
+Date:   Sat, 21 Nov 2020 10:51:51 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Eddie James <eajames@linux.ibm.com>,
+        Andrew Jeffery <andrew@aj.id.au>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-fsi@lists.ozlabs.org
+Subject: Re: [PATCH v2 0/3] occ: Add support for P10
+Message-ID: <20201121185150.GD114144@roeck-us.net>
+References: <20201120010315.190737-1-joel@jms.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120010315.190737-1-joel@jms.id.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kgXzD-003D3U-Gp
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:40998
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 74
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 18:23:40 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-
-> With this change, an ioctl() call is added to open a character device for a
-> buffer.
-> The ioctl() will not work for the first buffer, as that buffer is already
-> opened/reserved for the IIO device's character device.
-> This is also to preserve backwards compatibility.
+On Fri, Nov 20, 2020 at 11:33:12AM +1030, Joel Stanley wrote:
+> Hi Guenter, here's v2 of this series on behalf of Eddie. I made the
+> change to the compatible string that we spoke about in v2, and I'm happy
+> for these to go through the hwmon tree.
 > 
-> For any other extra buffer (after the first buffer) this ioctl() will be
-> required.
 
-Silly question, but can we have the ioctl just return the file handle for
-the buffer itself if called on index 0? 
+I'll be happy to do that, as soon as we get a Reviewed-by: tag for the DT
+change.
 
-Would make for slightly more natural userspace code even though it
-doesn't do anything...
+Thanks,
+Guenter
 
+> v1: https://lore.kernel.org/linux-hwmon/20200501150833.5251-1-eajames@linux.ibm.com/
 > 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/industrialio-buffer.c | 111 ++++++++++++++++++++++++++++++
->  drivers/iio/industrialio-core.c   |   8 +++
->  include/linux/iio/buffer_impl.h   |   5 ++
->  include/linux/iio/iio-opaque.h    |   2 +
->  include/uapi/linux/iio/buffer.h   |  16 +++++
->  5 files changed, 142 insertions(+)
->  create mode 100644 include/uapi/linux/iio/buffer.h
+> The OCC in the P10 has a number of differences from the P9. Add some logic to
+> handle the differences in accessing the OCC from the service processor, and
+> support the new temperature sensor type.
 > 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index daa68822cea7..77f02870cd18 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -9,6 +9,7 @@
->   * - Better memory allocation techniques?
->   * - Alternative access techniques?
->   */
-> +#include <linux/anon_inodes.h>
->  #include <linux/kernel.h>
->  #include <linux/export.h>
->  #include <linux/device.h>
-> @@ -1399,6 +1400,99 @@ static void iio_sysfs_del_attrs(struct kobject *kobj, struct attribute **ptr)
->  		sysfs_remove_file(kobj, ptr[i]);
->  }
->  
-> +static int iio_buffer_chrdev_release(struct inode *inode, struct file *filep)
-> +{
-> +	struct iio_dev_buffer_pair *ib = filep->private_data;
-> +	struct iio_dev *indio_dev = ib->indio_dev;
-> +	struct iio_buffer *buffer = ib->buffer;
-> +
-> +	clear_bit(IIO_BUSY_BIT_POS, &buffer->flags);
-> +	iio_device_put(indio_dev);
-> +	kfree(ib);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations iio_buffer_chrdev_fileops = {
-> +	.owner = THIS_MODULE,
-> +	.llseek = noop_llseek,
-> +	.read = iio_buffer_read_outer_addr,
-> +	.poll = iio_buffer_poll_addr,
-> +	.compat_ioctl = compat_ptr_ioctl,
-> +	.release = iio_buffer_chrdev_release,
-> +};
-> +
-> +static long iio_device_buffer_getfd(struct iio_dev *indio_dev, unsigned long arg)
-> +{
-> +	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> +	int __user *ival = (int __user *)arg;
-> +	char buf_name[sizeof("iio:buffer:xxx")];
-> +	struct iio_dev_buffer_pair *ib;
-> +	struct iio_buffer *buffer;
-> +	int fd, idx;
-> +
-> +	if (copy_from_user(&idx, ival, sizeof(idx)))
-> +		return -EFAULT;
-> +
-> +	if (idx >= iio_dev_opaque->attached_buffers_cnt)
-> +		return -ENOENT;
-> +
-> +	fd = mutex_lock_interruptible(&indio_dev->mlock);
-> +	if (fd)
-> +		return fd;
-> +
-> +	buffer = iio_dev_opaque->attached_buffers[idx];
-> +
-> +	if (test_and_set_bit(IIO_BUSY_BIT_POS, &buffer->flags)) {
-> +		fd = -EBUSY;
-> +		goto error_unlock;
-> +	}
-> +
-> +	iio_device_get(indio_dev);
-> +
-> +	ib = kzalloc(sizeof(*ib), GFP_KERNEL);
-> +	if (!ib) {
-> +		fd = -ENOMEM;
-> +		goto error_iio_dev_put;
-> +	}
-> +
-> +	ib->indio_dev = indio_dev;
-> +	ib->buffer = buffer;
-> +
-> +	fd = anon_inode_getfd(buf_name, &iio_buffer_chrdev_fileops,
-> +			      ib, O_RDWR | O_CLOEXEC);
-> +	if (fd < 0)
-> +		goto error_free_ib;
-> +
-> +	if (copy_to_user(ival, &fd, sizeof(fd))) {
-> +		fd = -EFAULT;
-> +		goto error_free_ib;
-> +	}
-> +
-> +	mutex_unlock(&indio_dev->mlock);
-> +	return fd;
-> +
-> +error_free_ib:
-> +	kfree(ib);
-> +error_iio_dev_put:
-> +	iio_device_put(indio_dev);
-> +	clear_bit(IIO_BUSY_BIT_POS, &buffer->flags);
-> +error_unlock:
-> +	mutex_unlock(&indio_dev->mlock);
-> +	return fd;
-> +}
-> +
-> +static long iio_device_buffer_ioctl(struct iio_dev *indio_dev, struct file *filp,
-> +				    unsigned int cmd, unsigned long arg)
-> +{
-> +	switch (cmd) {
-> +	case IIO_BUFFER_GET_FD_IOCTL:
-> +		return iio_device_buffer_getfd(indio_dev, arg);
-> +	default:
-> +		return IIO_IOCTL_UNHANDLED;
-> +	}
-> +}
-> +
->  static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  					     struct iio_dev *indio_dev,
->  					     unsigned int idx)
-> @@ -1549,8 +1643,21 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
->  	if (ret)
->  		goto error_remove_buffer_dir_link;
->  
-> +	i = sizeof(*(iio_dev_opaque->buffer_ioctl_handler));
-
-using i for that isn't particularly readable.  Add a sz or similar local
-variable for it.
-
-> +	iio_dev_opaque->buffer_ioctl_handler = kzalloc(i, GFP_KERNEL);
-> +	if (!iio_dev_opaque->buffer_ioctl_handler) {
-> +		ret = -ENOMEM;
-> +		goto error_remove_scan_el_dir;
-> +	}
-> +
-> +	iio_dev_opaque->buffer_ioctl_handler->ioctl = iio_device_buffer_ioctl;
-> +	iio_device_ioctl_handler_register(indio_dev,
-> +					  iio_dev_opaque->buffer_ioctl_handler);
-> +
->  	return 0;
->  
-> +error_remove_scan_el_dir:
-> +	sysfs_remove_link(&indio_dev->dev.kobj, "scan_elements");
->  error_remove_buffer_dir_link:
->  	sysfs_remove_link(&indio_dev->dev.kobj, "buffer");
->  	i = iio_dev_opaque->attached_buffers_cnt - 1;
-> @@ -1585,6 +1692,10 @@ void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
->  	if (!buffer)
->  		return;
->  
-> +	iio_device_ioctl_handler_unregister(iio_dev_opaque->buffer_ioctl_handler);
-> +	kfree(iio_dev_opaque->buffer_ioctl_handler);
-> +	iio_dev_opaque->buffer_ioctl_handler = NULL;
-> +
->  	sysfs_remove_link(&indio_dev->dev.kobj, "scan_elements");
->  	sysfs_remove_link(&indio_dev->dev.kobj, "buffer");
->  
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 9e7a76723f00..b4f7dd75bef5 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1685,6 +1685,9 @@ static int iio_chrdev_open(struct inode *inode, struct file *filp)
->  	ib->indio_dev = indio_dev;
->  	ib->buffer = indio_dev->buffer;
->  
-> +	if (indio_dev->buffer)
-> +		test_and_set_bit(IIO_BUSY_BIT_POS, &indio_dev->buffer->flags);
-> +
->  	filp->private_data = ib;
->  
->  	return 0;
-> @@ -1702,6 +1705,11 @@ static int iio_chrdev_release(struct inode *inode, struct file *filp)
->  	struct iio_dev_buffer_pair *ib = filp->private_data;
->  	struct iio_dev *indio_dev = container_of(inode->i_cdev,
->  						struct iio_dev, chrdev);
-> +	struct iio_buffer *buffer = ib->buffer;
-> +
-> +	if (buffer)
-> +		clear_bit(IIO_BUSY_BIT_POS, &buffer->flags);
-> +
->  	clear_bit(IIO_BUSY_BIT_POS, &indio_dev->flags);
->  	iio_device_put(indio_dev);
->  	kfree(ib);
-> diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
-> index e25d26a7f601..78da590b5607 100644
-> --- a/include/linux/iio/buffer_impl.h
-> +++ b/include/linux/iio/buffer_impl.h
-> @@ -6,6 +6,8 @@
->  
->  #ifdef CONFIG_IIO_BUFFER
->  
-> +#include <uapi/linux/iio/buffer.h>
-> +
->  struct iio_dev;
->  struct iio_buffer;
->  
-> @@ -75,6 +77,9 @@ struct iio_buffer {
->  	/** @length: Number of datums in buffer. */
->  	unsigned int length;
->  
-> +	/** @flags: File ops flags including busy flag. */
-> +	unsigned long flags;
-> +
->  	/**  @bytes_per_datum: Size of individual datum including timestamp. */
->  	size_t bytes_per_datum;
->  
-> diff --git a/include/linux/iio/iio-opaque.h b/include/linux/iio/iio-opaque.h
-> index 1db0ea09520e..d0429b13afa8 100644
-> --- a/include/linux/iio/iio-opaque.h
-> +++ b/include/linux/iio/iio-opaque.h
-> @@ -9,6 +9,7 @@
->   * @event_interface:		event chrdevs associated with interrupt lines
->   * @attached_buffers:		array of buffers statically attached by the driver
->   * @attached_buffers_cnt:	number of buffers in the array of statically attached buffers
-> + * @buffer_ioctl_handler:	ioctl() handler for this IIO device's buffer interface
->   * @buffer_list:		list of all buffers currently attached
->   * @channel_attr_list:		keep track of automatically created channel
->   *				attributes
-> @@ -24,6 +25,7 @@ struct iio_dev_opaque {
->  	struct iio_event_interface	*event_interface;
->  	struct iio_buffer		**attached_buffers;
->  	unsigned int			attached_buffers_cnt;
-> +	struct iio_ioctl_handler	*buffer_ioctl_handler;
->  	struct list_head		buffer_list;
->  	struct list_head		channel_attr_list;
->  	struct attribute_group		chan_attr_group;
-> diff --git a/include/uapi/linux/iio/buffer.h b/include/uapi/linux/iio/buffer.h
-> new file mode 100644
-> index 000000000000..3794eca78dad
-> --- /dev/null
-> +++ b/include/uapi/linux/iio/buffer.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/* industrial I/O buffer definitions needed both in and out of kernel
-> + *
-> + * Copyright (c) 2020 Alexandru Ardelean
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License version 2 as published by
-> + * the Free Software Foundation.
-> + */
-> +
-> +#ifndef _UAPI_IIO_BUFFER_H_
-> +#define _UAPI_IIO_BUFFER_H_
-> +
-> +#define IIO_BUFFER_GET_FD_IOCTL		_IOWR('i', 0xa0, int)
-Is it more sensible to just have that alongside the other IOCTLs rather than
-defining a new header for it?
-
-If not available I guess we'd just get an -EINVAL response, so harmless.
-
-> +
-> +#endif /* _UAPI_IIO_BUFFER_H_ */
-
+> Eddie James (3):
+>   dt-bindings: fsi: Add P10 OCC device documentation
+>   fsi: occ: Add support for P10
+>   hwmon: (occ) Add new temperature sensor type
+> 
+>  .../devicetree/bindings/fsi/ibm,p9-occ.txt    |  12 +-
+>  drivers/fsi/fsi-occ.c                         | 125 +++++++++++++-----
+>  drivers/hwmon/occ/common.c                    |  75 +++++++++++
+>  3 files changed, 172 insertions(+), 40 deletions(-)
+> 
+> -- 
+> 2.29.2
+> 
