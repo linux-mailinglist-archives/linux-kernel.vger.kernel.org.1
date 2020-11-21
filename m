@@ -2,143 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F952BC0C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB3C2BC0C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727309AbgKURCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 12:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
+        id S1726806AbgKURF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 12:05:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgKURCC (ORCPT
+        with ESMTP id S1726398AbgKURF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 12:02:02 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63828C0613CF;
-        Sat, 21 Nov 2020 09:02:02 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id d28so12126251qka.11;
-        Sat, 21 Nov 2020 09:02:02 -0800 (PST)
+        Sat, 21 Nov 2020 12:05:27 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDC1C061A4A
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 09:05:27 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id 62so10210169pgg.12
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 09:05:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=b47tRijBGMRrjyZdvQwGUkV/0RU29edy34U5L+Fy2Yg=;
-        b=bPBwFixZOzNh4bclPxy76rsmr8xP20aYNukT6yJIJyyVDRm296BjS9VigHmQlf2fgM
-         yGnnWjPXs6WXwebsEcMl044UBvoynN4b0FNQfyEu4ocWQ69vbWVlL3WoN1I6M8mcK5aI
-         jpmEqG36hdy+WL4kRd4cN5xTmdp1kK4136CQMfSNSIYtgR10B3B491znOmsTKvCtjtB/
-         XJVlg+lwiHYr37BYgl1pEgk0OdTblVIXo5DwoC4qTVW22sUxzy8i+X4Y+1o0E9Zm9Vcj
-         vh2ZVYguDeO3rjoV8nF3NlwoW3G80b/UeEKfGLhFxGZ1syrQ1/K37JP2ghQWzGcZjLf0
-         UTBQ==
+        bh=udCudOkQ6HPcbXHtIkmb4T/h3gOsNcHb8sL22tg22wE=;
+        b=ujUZnxZcWFPOeVwO1+lBKSkM5lfmF/E5gDkOF3LhD3fA2yeNCWgvgAA9t9s0Z7yuIA
+         iwg7Lg3N8vHfnHzsX55ZAHDfwNEetExC39jq7iXFd/faLbNkeVDtS1tq4HMMxw3YIXBQ
+         FdX6wJ8/mSUCaxk33PBnJgLmPCFsmG4MlVAB4bMVgLK/3xC7ufk0hndTksh0tu20ATrP
+         icB1rj3wjy/GrfKpKVgJGboY7ntZ2d3EyxwUq6K0dFXJ5KNoduSTtGGGOGW1pfvFkST6
+         NKMpPNJXwaGPtEH3xydmAV2KDlD7E2dU/5UDAym5gekXeJdgd0KwGcFbMb7jKj25/uhb
+         EoZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=b47tRijBGMRrjyZdvQwGUkV/0RU29edy34U5L+Fy2Yg=;
-        b=IOIh2l0GPUjcRwFx+ibo53uzKVwJ6t8oHvrOurdb6RHjVGC3ftgj17M4rjhKdpXFyl
-         quNVIcK88DDEwU+ON/sBRGo7pxcjligXwgW1m0nwCJ1rZ9wFPmsNJ+6c3JmyXgRqkyCy
-         Q2oBb6frxT92LOUPhsuCQDejV5EQYCq2UB0xsc7kTrGL7PK+c7t52yZ8Jlc9rWANACPB
-         lRCpWrplXR3HT9jrqMClEWNhrFZaEMnxHSdh7ukUmFmq2xqnPcQIinFn2CxeyfRTF771
-         X/z+6F5tW/LeigdjdejmPeKE75eYg+niABMWkIQjUREIM++DTeEg/+dXrvsNRCJihxp4
-         bU9g==
-X-Gm-Message-State: AOAM533WHdIjX6UujUr01g9hLrbBlZbF3Cex4ISFRFwzSI+O4woy8mXP
-        Nei7JpcztnsIWZfJUUYIzjA=
-X-Google-Smtp-Source: ABdhPJxFAYhk3oqx1pShTLfb1UTfGotPARuR37jyNVpEfx7eZEBbVBrrvBswlCnwZpbpap42Lp1CrQ==
-X-Received: by 2002:a37:4552:: with SMTP id s79mr21650121qka.6.1605978121654;
-        Sat, 21 Nov 2020 09:02:01 -0800 (PST)
-Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id u14sm1251440qta.4.2020.11.21.09.02.00
+        bh=udCudOkQ6HPcbXHtIkmb4T/h3gOsNcHb8sL22tg22wE=;
+        b=AkoG+91+m0bFvu1Wg9Q3t0Mx4IrxdVn5gimhZdLua8erifl9h/UotPpY7ZitJjDBc5
+         7fqezsxXGDLKe/gGdQeaO8NHAv0gbDD3MVfrp+eL9UFX0XP2ZPMy3PknWjwp2QmD51++
+         2xIqkUOAU0Wh0JexXtSB1z9HlWPwBmD5WF4EsJdPXk6/RXI1bAiwAMnxztIErby09Sp3
+         ufsmc2zxNTF58T892fLMZzdGQcOAyRaUual3wkj+I6gDch4l/FrHjZMgoo81WDnXL4HN
+         fz8v7zZ4+mAA6tJD5yf81tJJcvwxzUxNBKjJqrAMgyCWZMSGPhTWWeqKjEhd6b1BS98j
+         0tWw==
+X-Gm-Message-State: AOAM5334MgRcMtZ+RDaWzx6wN/Fn3E5O2a6Adf6OU0acUs104BzWbCFh
+        pHe1uH/6X1wKhEIXTlwmPEKU
+X-Google-Smtp-Source: ABdhPJxv/JSyhM/rLau/C8wSMcj0Jnmngq5v/hiADMZYDx89o8qc1ol5bc+2whBnP56+AEjnwFkMcw==
+X-Received: by 2002:a65:4187:: with SMTP id a7mr20950383pgq.16.1605978326683;
+        Sat, 21 Nov 2020 09:05:26 -0800 (PST)
+Received: from thinkpad ([2409:4072:6d88:a48b:4152:ad0c:a438:7e97])
+        by smtp.gmail.com with ESMTPSA id 145sm6644616pga.11.2020.11.21.09.05.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 09:02:00 -0800 (PST)
-Date:   Sat, 21 Nov 2020 12:01:58 -0500
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     alexandre.belloni@bootlin.com,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kamel Bouhara <kamel.bouhara@bootlin.com>
-Subject: Re: [PATCH] MAINTAINERS: Add Kamel Bouhara as TCB counter driver
- maintainer
-Message-ID: <X7lIBkqspjUmTbgr@shinobu>
-References: <20201116131141.3985-1-vilhelm.gray@gmail.com>
- <20201121161902.5ede1a23@archlinux>
+        Sat, 21 Nov 2020 09:05:25 -0800 (PST)
+Date:   Sat, 21 Nov 2020 22:35:19 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, loic.poulain@linaro.org,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] bus: mhi: core: Add support to stop or start
+ channel data transfers
+Message-ID: <20201121170519.GA2343@thinkpad>
+References: <1605122473-12179-1-git-send-email-bbhatt@codeaurora.org>
+ <1605122473-12179-4-git-send-email-bbhatt@codeaurora.org>
+ <20201116124332.GK3926@Mani-XPS-13-9360>
+ <3bf88d90e4006ba17e2e86c76a926581@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="i+ElQXCcUksXloOI"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201121161902.5ede1a23@archlinux>
+In-Reply-To: <3bf88d90e4006ba17e2e86c76a926581@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 16, 2020 at 12:56:16PM -0800, Bhaumik Bhatt wrote:
+> Hi Mani,
+> 
+> On 2020-11-16 04:43, Manivannan Sadhasivam wrote:
+> > On Wed, Nov 11, 2020 at 11:21:10AM -0800, Bhaumik Bhatt wrote:
+> > > Some MHI client drivers may want to request a pause or halt of
+> > > data transfer activity on their channels. Support for this does
+> > > not exist and must be introduced, wherein the channel context is
+> > > not reset or cleared but only the STOP channel command is issued.
+> > > This would need to be paired with an API that allows resuming the
+> > > data transfer activity on channels by use of the START channel
+> > > command. This API assumes that the context information is already
+> > > setup. Enable this using two new APIs, mhi_start_transfer() and
+> > > mhi_stop_transfer().
+> > > 
+> > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > ---
+> > >  drivers/bus/mhi/core/main.c | 41
+> > > +++++++++++++++++++++++++++++++++++++++++
+> > >  include/linux/mhi.h         | 19 +++++++++++++++++++
+> > >  2 files changed, 60 insertions(+)
+> > > 
+> > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> > > index 1226933..1a969f4 100644
+> > > --- a/drivers/bus/mhi/core/main.c
+> > > +++ b/drivers/bus/mhi/core/main.c
+> > > @@ -1560,6 +1560,47 @@ void mhi_unprepare_from_transfer(struct
+> > > mhi_device *mhi_dev)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
+> > > 
+> > > +static int mhi_update_transfer_state(struct mhi_device *mhi_dev,
+> > > +				     enum mhi_ch_state_type to_state)
+> > > +{
+> > > +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+> > > +	struct mhi_chan *mhi_chan;
+> > > +	int dir, ret;
+> > > +
+> > > +	for (dir = 0; dir < 2; dir++) {
+> > > +		mhi_chan = dir ? mhi_dev->ul_chan : mhi_dev->dl_chan;
+> > > +
+> > > +		if (!mhi_chan)
+> > > +			continue;
+> > > +
+> > > +		/*
+> > > +		 * Bail out if one of the channels fail as client will reset
+> > > +		 * both upon failure
+> > > +		 */
+> > > +		mutex_lock(&mhi_chan->mutex);
+> > 
+> > Hmm. The documentation about wait_for_completion*() used in
+> > mhi_update_channel_state()says below,
+> > 
+> > "As all variants of wait_for_completion() can (obviously) block for a
+> > long
+> > time depending on the nature of the activity they are waiting for, so in
+> > most cases you probably don't want to call this with held mutexes."
+> > 
+> Yes, that is understood. The mhi_chan->mutex is only used to lock any
+> channel
+> enable/start/stop/disable type operations, since these have to be in order,
+> it
+> is essential that we wait for one of the operations to finish before the
+> next
+> one.
+> 
+> Also we avoid a race, for example, at a time when a device crash forces a
+> driver
+> "remove" call, while an operation to start/stop a channel is already going
+> on.
 
---i+ElQXCcUksXloOI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Can't you just drop the lock before calling wait_for_completion() and
+acquire later? You should add a comment for that also!
 
-On Sat, Nov 21, 2020 at 04:19:02PM +0000, Jonathan Cameron wrote:
-> On Mon, 16 Nov 2020 08:11:41 -0500
-> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
->=20
-> > Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> Purely for the record, Kamel, would you mind giving an
-> Acked-by for this?
->=20
-> Thanks,
->=20
-> Jonathan
+> > > +		ret = mhi_update_channel_state(mhi_cntrl, mhi_chan, to_state);
+> > > +		if (ret) {
+> > > +			mutex_unlock(&mhi_chan->mutex);
+> > > +			return ret;
+> > > +		}
+> > > +		mutex_unlock(&mhi_chan->mutex);
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +int mhi_stop_transfer(struct mhi_device *mhi_dev)
+> > > +{
+> > > +	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_STOP);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(mhi_stop_transfer);
+> > > +
+> > > +int mhi_start_transfer(struct mhi_device *mhi_dev)
+> > > +{
+> > > +	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_START);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(mhi_start_transfer);
+> > > +
+> > >  int mhi_poll(struct mhi_device *mhi_dev, u32 budget)
+> > >  {
+> > >  	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+> > > diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> > > index 52b3c60..aee8494 100644
+> > > --- a/include/linux/mhi.h
+> > > +++ b/include/linux/mhi.h
+> > > @@ -702,6 +702,25 @@ int mhi_prepare_for_transfer(struct mhi_device
+> > > *mhi_dev);
+> > >  void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev);
+> > > 
+> > >  /**
+> > > + * mhi_stop_transfer - Pauses ongoing channel activity by issuing
+> > > the STOP
+> > > + *                     channel command to both UL and DL channels.
+> > > This command
+> > > + *                     does not reset the channel context and the
+> > > client drivers
+> > > + *                     can issue mhi_start_transfer to resume
+> > > activity.
+> > > + * @mhi_dev: Device associated with the channels
+> > > + */
+> > > +int mhi_stop_transfer(struct mhi_device *mhi_dev);
+> > > +
+> > > +/**
+> > > + * mhi_start_transfer - Resumes channel activity by issuing the
+> > > START channel
+> > > + *                      command to both UL and DL channels. This
+> > > command assumes
+> > > + *                      the channel context is already setup and
+> > > the client
+> > > + *                      drivers can issue mhi_stop_transfer to
+> > > pause activity if
+> > > + *                      required.
+> > > + * @mhi_dev: Device associated with the channels
+> > > + */
+> > > +int mhi_start_transfer(struct mhi_device *mhi_dev);
+> > > +
+> > > +/**
+> > 
+> > Align the comment header properly.
+> > 
+> So I am trying to follow the documentation style for other functions in the
+> same
+> file. Is there any particular format you want me to refer to?
+> 
+> I use all spaces for the lines after the first one to align them just like
+> the
+> rest of them.
+> 
 
-Kamel,
+The diff shows me of below style:
 
-Let me know as well if I should add any additional information
-(additional mailing lists, reviewers, etc.), and I'll submit a v2 of
-this patch with it included.
+/**
++ *
++ *
+...
++ /**
+
+I just asked to fix this.
 
 Thanks,
+Mani
 
-William Breathitt Gray
-
-> > ---
-> >  MAINTAINERS | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >=20
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 913b5eb64e44..18d34536c4bd 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -2095,6 +2095,12 @@ X:	drivers/net/wireless/atmel/
-> >  N:	at91
-> >  N:	atmel
-> > =20
-> > +Microchip Timer Counter Block (TCB) Capture Driver
-> > +M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > +L:	linux-iio@vger.kernel.org
-> > +S:	Maintained
-> > +F:	drivers/counter/microchip-tcb-capture.c
-> > +
-> >  ARM/Microchip Sparx5 SoC support
-> >  M:	Lars Povlsen <lars.povlsen@microchip.com>
-> >  M:	Steen Hegelund <Steen.Hegelund@microchip.com>
->=20
-
---i+ElQXCcUksXloOI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+5R/gACgkQhvpINdm7
-VJLbohAAiPQiE1c2lFVV9+ofihgY9paYGkNhTi/+M668Prxy10lQDn0IKeqy0ekG
-YP+72D3AqTEvNiOL9z6KDAWbTOFLO8t9+J5RJ1ZRNVYAhu5E/Bvcf0ZHNKhov33F
-+rPeYWTQzDe6UTv9GyQM6zYtQHdlze5ekNs2RGnR188CbBYahleSO9bgq4YeqFNp
-TyT8PbFT3Er7IAmvTCiufmXOka5B4qZNSUKg/aeZGXiXalQB3OjyS4cC/B4fRj7k
-68Jb8JipWXWXL2KNb1ZJGv7vFUM9aws2hB9VpHOHnUBT/YfHY1TCXpifKTI5X861
-i5k1W2K+rzvFYrNd3nzJl6Ok3LOlWHJJPV9SI/v2TqjQruAhxg6uxXUq2IFVB/im
-a4pPtqf0+vX19fk+prBtMhvcV0iNgRcTlvoJJ6mnY/2dS3agAVmdj7EKRcFdgs9g
-nmMO3GzmyFWDWi3dwBCtwFuyFdqd1v1PuXpc50m40qpOQtBWKNNGrZ4qwd3tuqQp
-1VGML7JXEkhY0zh45SR5exIleBJV2qcdRNzm1cGHiMC0Xd5smRRQ7W8LtMe44QQe
-MVZs5HayPjESU0nniXlQREl4caoNK1yjK7qZXayq3Zpp7l01JOgRhXKPLkLgQebS
-lCpdv4DrhfixQfbAyat9xuWdZHfSknBY/CvVeB0jYgXfgIrkxZ8=
-=Nsv4
------END PGP SIGNATURE-----
-
---i+ElQXCcUksXloOI--
+> > Thanks,
+> > Mani
+> > 
+> > >   * mhi_poll - Poll for any available data in DL direction
+> > >   * @mhi_dev: Device associated with the channels
+> > >   * @budget: # of events to process
+> > > --
+> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+> > > Forum,
+> > > a Linux Foundation Collaborative Project
+> > > 
+> 
+> Thanks,
+> Bhaumik
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
