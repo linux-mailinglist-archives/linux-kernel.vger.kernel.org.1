@@ -2,96 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0F12BBDA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5F62BBDC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgKUHAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 02:00:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727027AbgKUHAn (ORCPT
+        id S1727028AbgKUHUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 02:20:08 -0500
+Received: from mail-m121143.qiye.163.com ([115.236.121.143]:39400 "EHLO
+        mail-m121143.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726483AbgKUHUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 02:00:43 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5914C061A4C
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 23:00:42 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id j205so16618131lfj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 23:00:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qSt/XnTloXSnWYtWCxId4OBXpP28x7HyJlEM0VTTxfw=;
-        b=SXMdW3IqDbJ6iWw8IZ9Q5CNHq9VhrWbVp/EFAUzmCzAPgt7dcdixohikYsRS8jBWb1
-         kjZbjAisDfdp9lwbGwx8t8ITuW2ZvTjirm7OuW6PzkBN++x9KgW/YZWIVfeW6e6mlx3U
-         /lumB7FQ98t3ujt+mefcDxCxr8UBoHSfT7/x/vIP0AqU4k0hMZAjxoIG9CjXFXs8CFQQ
-         HZdfjKvCNoGFCrGQCY8jcCvrkzlnJsbl7lsY/u+ZRYaynCCRUhJ+Qr2rZkAfpo8ZBl7g
-         IhCZE31GiyxOfhCWdnhAONlyo2d8Cy1QH+CApFXoypZopMLIK39U9YnN+CMIrVgDo1yp
-         gxMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qSt/XnTloXSnWYtWCxId4OBXpP28x7HyJlEM0VTTxfw=;
-        b=oofHRHsMym589NB0GZePCs5bHItLDdf3hEzWyfwZLzE1NPBpCqLeoQ2u49aVtHqNGV
-         F3Kunz5OEfodo4dAN8jgx2b76eVLben8gfL612bFxWlqKR5IHekfb/ER2DMGEVQ1+r5s
-         iuVCQ9y59hIaFZx2gFU9iH61BK9u0LjY0OLoJHBRFh8EzTpA/0tKgwJkbuxvLRBf02a+
-         X3Oz2v2PWSVIfi5ZPXeo2Yjn9Wrudf2QCQmszX3V/8epecprMxzVAuFwYzDiHdspy88D
-         uzMFAiraeJD3LYa1Yeo+E8gy/kOFDp7tGKVbeEXAjqg7cuipVWRKN9M6PpEJ6+cDyZWX
-         KLeQ==
-X-Gm-Message-State: AOAM531s58wRzSuQyAHiWtw32hN/0DTkjwq13YgDf2HG2+qooG7UMfyt
-        5ccoI8zPw7yPSOY2Tlw1HxwwpZcjgE19i199J6Ftlw==
-X-Google-Smtp-Source: ABdhPJysESVBpzmb8AIe4IsYMGTwUSB/SEEqglyDLyhegKtUN1uX2v4ambD1WjsgatbnwE0AiCnynPiP1Rb9iZe/YZ0=
-X-Received: by 2002:a05:6512:348e:: with SMTP id v14mr8698488lfr.97.1605942041000;
- Fri, 20 Nov 2020 23:00:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20201112205141.775752-1-mic@digikod.net> <20201112205141.775752-13-mic@digikod.net>
-In-Reply-To: <20201112205141.775752-13-mic@digikod.net>
-From:   Jann Horn <jannh@google.com>
-Date:   Sat, 21 Nov 2020 08:00:00 +0100
-Message-ID: <CAG48ez0S1_jd0YzXZ9tx94gU0sw-WeXgG336d=3YP7+iZvRgaA@mail.gmail.com>
-Subject: Re: [PATCH v24 12/12] landlock: Add user and kernel documentation
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Sat, 21 Nov 2020 02:20:08 -0500
+X-Greylist: delayed 528 seconds by postgrey-1.27 at vger.kernel.org; Sat, 21 Nov 2020 02:20:07 EST
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by mail-m121143.qiye.163.com (Hmail) with ESMTPA id D5495540163;
+        Sat, 21 Nov 2020 15:11:14 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] nfs: Only include nfs42.h when NFS_V4_2 enable
+Date:   Sat, 21 Nov 2020 15:11:09 +0800
+Message-Id: <1605942669-585-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSktLTx4ZGhkaHklKVkpNS05CT0lNTE5KTUxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hOT1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mjo6Ljo4Tz8ZNwI6AVYtMDQM
+        HBcwCxFVSlVKTUtOQk9JTUxOTE1OVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFKSUNCNwY+
+X-HM-Tid: 0a75e9a48668b038kuuud5495540163
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 9:52 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
-wrote:
-> This documentation can be built with the Sphinx framework.
->
-> Cc: James Morris <jmorris@namei.org>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Serge E. Hallyn <serge@hallyn.com>
-> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
-> Reviewed-by: Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>
+Remove duplicate header unnecessary.
+Only include nfs42.h when NFS_V4_2 enable.
 
-Reviewed-by: Jann Horn <jannh@google.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ fs/nfs/nfs4proc.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 9e0ca9b..a1321a5 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -67,7 +67,6 @@
+ #include "nfs4idmap.h"
+ #include "nfs4session.h"
+ #include "fscache.h"
+-#include "nfs42.h"
+ 
+ #include "nfs4trace.h"
+ 
+-- 
+2.7.4
+
