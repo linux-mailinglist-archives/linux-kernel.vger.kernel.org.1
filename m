@@ -2,160 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B26A2BC07A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 17:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA5D2BC070
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 17:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgKUQQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 11:16:33 -0500
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:48579 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726335AbgKUQQc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 11:16:32 -0500
-X-Greylist: delayed 406 seconds by postgrey-1.27 at vger.kernel.org; Sat, 21 Nov 2020 11:16:32 EST
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 8B045D73;
-        Sat, 21 Nov 2020 11:09:45 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sat, 21 Nov 2020 11:09:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=huz5Dh
-        VGIoT2g9v8/zblY/2WU9UNWjC3Gk6t7/f3xxM=; b=HjcgaItDtOjMydkE2UkT2C
-        n+C8mjKYwU5H6Q66922FFvagUGKlwx/VjvjEx3+r4/1eFOq4Co6G7c08txulgj/l
-        ZlAlGf7VCt3KxpUDRBj8nOhkax3mS2LIQ/kZ1IxRan0JBuppGlyV4NtFbL/DGa7Z
-        TbC/QXFofb6xPc5+4+vBkLjp17wCdCMSzk7LX7rAD5q+naUn1n2+kNVKiOHIEyXU
-        7rpM6b0jJnd9aK3k/tlsEJsWqIXOe78T6JMfhQXpLH8nJFjOuf1yOSuOBxdN16cC
-        c+KNMx8ya3hmZlUsGSz4N6bmDFI1t/N0jAdp8mx4/4GnuqDwB+wEReCoChMoFcmA
-        ==
-X-ME-Sender: <xms:yDu5X1vJwh_3X-0DsgHfoLAVuftGWgi7VrHVsKWk4pkMifeKHOUwTg>
-    <xme:yDu5X-eZsViXxoNP5Jli79mL_eBihqXI5cR1UQNkv82vO-65XO_F3SUKgt8AfcA2o
-    0nzI0Pv63o5_qs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegvddgkeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
-    teenucfkphepkeegrddvvdelrdduheegrddugeejnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:yDu5X4xpOH7hEl0hO32HiyS6UB6te8zF5fqs4NIB9SWKIts2_Mb7NQ>
-    <xmx:yDu5X8MkzGZTjZPlhXVR6WFmr8VfdaPS1YwL_qqCzGUo2b4pRRG4Ng>
-    <xmx:yDu5X1-d-mcsQVrkV-zeiwNK4u0B4A19243zdEJP7Y-DrzDzYVe5UA>
-    <xmx:yTu5X8WFGlRmAxbfkQUq03Lt-CbrUr0j4eDSm7cFMLv0J4JQHJYJQouZBiQ>
-Received: from localhost (igld-84-229-154-147.inter.net.il [84.229.154.147])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2F31F3064AAE;
-        Sat, 21 Nov 2020 11:09:44 -0500 (EST)
-Date:   Sat, 21 Nov 2020 18:09:41 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>, fw@strlen.de
-Cc:     davem@davemloft.net, kuba@kernel.org, johannes@sipsolutions.net,
-        edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>
-Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
-Message-ID: <20201121160941.GA485907@shredder.lan>
-References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
- <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
+        id S1726549AbgKUQN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 11:13:29 -0500
+Received: from mout.gmx.net ([212.227.15.18]:39553 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726421AbgKUQN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 11:13:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1605975168;
+        bh=5XWucgV8E35bUAw4aZcK+RdQSdGH0BbK0144kscnzcI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=WQolZIuuxEiDb/4MIogv7qWitrEDh9yZwc21+uMJ8+WIOE/ed1OKqJoypw6F/kbvl
+         39WotD6bjU87mQ5cmeTjoXAKZPL+PjeUve69J1kCDVxTd/HqW77CA2MEvSXyNrz9AR
+         /cCVn5tv+VYz93V1lWMNOrSuYpy4Y2N4jnQOLp24=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [185.75.72.182] ([185.75.72.182]) by web-mail.gmx.net
+ (3c-app-gmx-bs42.server.lan [172.19.170.94]) (via HTTP); Sat, 21 Nov 2020
+ 17:12:48 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
+Message-ID: <trinity-79472418-bec7-4097-9612-fa7a79c27620-1605975168396@3c-app-gmx-bs42>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <linux@fw-web.de>,
+        linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Aw: Re:  Re:  Re: [PATCH] pci: mediatek: fix warning in msi.h
+Content-Type: text/plain; charset=UTF-8
+Date:   Sat, 21 Nov 2020 17:12:48 +0100
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <c63d8d7d966c1dda82884f361d4691c3@kernel.org>
+References: <20201031140330.83768-1-linux@fw-web.de>
+ <1604253261.22363.0.camel@mtkswgap22>
+ <trinity-9eb2a213-f877-4af3-87df-f76a9c093073-1604255233122@3c-app-gmx-bap08>
+ <87k0v4u4uq.wl-maz@kernel.org> <87pn4w90hm.fsf@nanos.tec.linutronix.de>
+ <df5565a2f1e821041c7c531ad52a3344@kernel.org>
+ <87h7q791j8.fsf@nanos.tec.linutronix.de>
+ <877dr38kt8.fsf@nanos.tec.linutronix.de>
+ <901c5eb8bbaa3fe53ddc8f65917e48ef@kernel.org>
+ <87o8ke7njb.fsf@nanos.tec.linutronix.de>
+ <trinity-1d7f8900-10db-40c0-a0aa-47bb99ed84cd-1604508571909@3c-app-gmx-bs02>
+ <87h7q4lnoz.fsf@nanos.tec.linutronix.de>
+ <074d057910c3e834f4bd58821e8583b1@kernel.org>
+ <87blgbl887.fsf@nanos.tec.linutronix.de>
+ <c63d8d7d966c1dda82884f361d4691c3@kernel.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:0WIPfXZNx+COWrzO6EWqhIOYRhYsuaEetPZRHGICmDa5l4cTCVnVnw0NbFHdi/ukfb57B
+ 6Lxz2OgLXMSr5/sLZ9j0KeqQe9najHHMVgLiJavcBw1i28PIl+j0IgRbSTL8Th60ZpqaRZYhyRIK
+ QjWgVE5drMTBYjDwVBLFA4kAa/3ZuKPVy1/qTV/Hh7g5rsFwX6y5eGEE+zxoF6Sv9oDXvsEC2oDj
+ DZkqXXREa2aW5ClACLGG2C2cD7q4q7NS0LHGaoTWc8wnipzl4h9m3r17XTbZcvlS5ciH6UT3Hxwp
+ Cc=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eADDipfb3v0=:KBRN9L8eDneVATspJUwmja
+ XPTN2pmGNuR+KRj/6s7kAKPPo6YhEbChm8G0MtP+rjsnpBZCOXSjBbTUS+gE0zLVh3XhqGHRs
+ gwQopYWXCPmE+LUThjau41VJI8mrH9VyebUy2hiWKLfCkoZiqQNAWiGi4X49zFS9+pY3pABs2
+ FF1ikYXvw90kdUxYZnc1V0vli/ebkvfnAvX3Hy07dUbXZMoANVO8le7DL5x4jdLS3SR8Ffrcz
+ x9DNglGD0SdwwoOWazBCLvBDD6Tiyk4a38OYvjStb777J3XegwXEBO/YCgKCLJK6W+LTtkIJZ
+ TClV2KG0egtTMd5P0Wg7IsyHPvMd9+38wAcHJFTMnfC9u6pLpWZU1z4OY970dhJfTJFC1aGAK
+ Caxwvu8Wp0aQ06xJdPvocBRh88WAOum2QjOQKnILjCi95/KaSZoWuCLKCDQAPVRbGADYhgPKh
+ w7fpVLoH9BI4ThFZQ0Rdt5uro74R4XbRP8YtNonBHiND+KoLYdOBBRKVKZL8CZyrHC5+VGjGj
+ cqRIhWV/R92vXLQcpvkuI+irJc576bjainFPKd+C6+xouBNIvH7my3NiJF+CRBwvegJ5kekcT
+ 7LSM9o73dxXyw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Florian
-
-On Thu, Oct 29, 2020 at 05:36:19PM +0000, Aleksandr Nogikh wrote:
-> From: Aleksandr Nogikh <nogikh@google.com>
-> 
-> Remote KCOV coverage collection enables coverage-guided fuzzing of the
-> code that is not reachable during normal system call execution. It is
-> especially helpful for fuzzing networking subsystems, where it is
-> common to perform packet handling in separate work queues even for the
-> packets that originated directly from the user space.
-> 
-> Enable coverage-guided frame injection by adding kcov remote handle to
-> skb extensions. Default initialization in __alloc_skb and
-> __build_skb_around ensures that no socket buffer that was generated
-> during a system call will be missed.
-> 
-> Code that is of interest and that performs packet processing should be
-> annotated with kcov_remote_start()/kcov_remote_stop().
-> 
-> An alternative approach is to determine kcov_handle solely on the
-> basis of the device/interface that received the specific socket
-> buffer. However, in this case it would be impossible to distinguish
-> between packets that originated during normal background network
-> processes or were intentionally injected from the user space.
-> 
-> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
-> Acked-by: Willem de Bruijn <willemb@google.com>
-
-[...]
-
-> @@ -249,6 +249,9 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
->  
->  		fclones->skb2.fclone = SKB_FCLONE_CLONE;
->  	}
-> +
-> +	skb_set_kcov_handle(skb, kcov_common_handle());
-
 Hi,
 
-This causes skb extensions to be allocated for the allocated skb, but
-there are instances that blindly overwrite 'skb->extensions' by invoking
-skb_copy_header() after __alloc_skb(). For example, skb_copy(),
-__pskb_copy_fclone() and skb_copy_expand(). This results in the skb
-extensions being leaked [1].
+any new state here?
 
-One possible solution is to try to patch all these instances with
-skb_ext_put() before skb_copy_header().
+last fix works, but i have not seen it approved by anyone for merge or sent as separate Patch
 
-Another possible solution is to convert skb_copy_header() to use
-skb_ext_copy() instead of __skb_ext_copy(). It will first drop the
-reference on the skb extensions of the new skb, but it assumes that
-'skb->active_extensions' is valid. This is not the case in the
-skb_clone() path so we should probably zero this field in __skb_clone().
-
-Other suggestions?
-
-Thanks
-
-[1]
-BUG: memory leak
-unreferenced object 0xffff888027f9a490 (size 16):
-  comm "syz-executor.0", pid 1155, jiffies 4295996826 (age 66.927s)
-  hex dump (first 16 bytes):
-    01 00 00 00 01 02 6b 6b 01 00 00 00 00 00 00 00  ......kk........
-  backtrace:
-    [<0000000005a5f2c4>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
-    [<0000000005a5f2c4>] slab_post_alloc_hook mm/slab.h:528 [inline]
-    [<0000000005a5f2c4>] slab_alloc_node mm/slub.c:2891 [inline]
-    [<0000000005a5f2c4>] slab_alloc mm/slub.c:2899 [inline]
-    [<0000000005a5f2c4>] kmem_cache_alloc+0x173/0x800 mm/slub.c:2904
-    [<00000000c5e43ea9>] __skb_ext_alloc+0x22/0x90 net/core/skbuff.c:6173
-    [<000000000de35e81>] skb_ext_add+0x230/0x4a0 net/core/skbuff.c:6268
-    [<000000003b7efba4>] skb_set_kcov_handle include/linux/skbuff.h:4622 [inline]
-    [<000000003b7efba4>] skb_set_kcov_handle include/linux/skbuff.h:4612 [inline]
-    [<000000003b7efba4>] __alloc_skb+0x47f/0x6a0 net/core/skbuff.c:253
-    [<000000007f789b23>] skb_copy+0x151/0x310 net/core/skbuff.c:1512
-    [<000000001ce26864>] mlxsw_emad_transmit+0x4e/0x620 drivers/net/ethernet/mellanox/mlxsw/core.c:585
-    [<000000005c732123>] mlxsw_emad_reg_access drivers/net/ethernet/mellanox/mlxsw/core.c:829 [inline]
-    [<000000005c732123>] mlxsw_core_reg_access_emad+0xda8/0x1770 drivers/net/ethernet/mellanox/mlxsw/core.c:2408
-    [<00000000c07840b3>] mlxsw_core_reg_access+0x101/0x7f0 drivers/net/ethernet/mellanox/mlxsw/core.c:2583
-    [<000000007c47f30f>] mlxsw_reg_write+0x30/0x40 drivers/net/ethernet/mellanox/mlxsw/core.c:2603
-    [<00000000675e3fc7>] mlxsw_sp_port_admin_status_set+0x8a7/0x980 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:300
-    [<00000000fefe35a4>] mlxsw_sp_port_stop+0x63/0x70 drivers/net/ethernet/mellanox/mlxsw/spectrum.c:537
-    [<00000000c41390e8>] __dev_close_many+0x1c7/0x300 net/core/dev.c:1607
-    [<00000000628c5987>] __dev_close net/core/dev.c:1619 [inline]
-    [<00000000628c5987>] __dev_change_flags+0x2b9/0x710 net/core/dev.c:8421
-    [<000000008cc810c6>] dev_change_flags+0x97/0x170 net/core/dev.c:8494
-    [<0000000053274a78>] do_setlink+0xa5b/0x3b80 net/core/rtnetlink.c:2706
-    [<00000000e4085785>] rtnl_group_changelink net/core/rtnetlink.c:3225 [inline]
-    [<00000000e4085785>] __rtnl_newlink+0xe06/0x17d0 net/core/rtnetlink.c:3379
+regards Frank
