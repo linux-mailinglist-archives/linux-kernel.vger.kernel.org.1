@@ -2,158 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE35F2BBC9E
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 04:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 307142BBCA3
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 04:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbgKUDON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 22:14:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727358AbgKUDOM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 22:14:12 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4CCC0613CF;
-        Fri, 20 Nov 2020 19:14:12 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id e10so1289579qte.4;
-        Fri, 20 Nov 2020 19:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MnceUBKO5CKDULZmr15ARJRXunPRBIoWz0MuHJiULrg=;
-        b=gsNR/CpmvNQ3U+ijqCwO8esji7bm1QnpPb+gjcQIHmOVilGJtCH7wljw5OuoR2+ByD
-         Eu3ArHbg0KOX4QqUwemDaTkU/zaCmVz9NXecmCRSJQykGNIqev281MSCPFW6iyFfCalh
-         OXU5NgKpKUUxeSGcDHdTDiB+8xUj7RQbdjIsa52m2B9JAVMTC4wE43lynK1gJnIiNcfD
-         9l3VbICmSeaGwxXVG1ypIdI92hsCdUXBe06U+zSDwzqwaBADLFUpJVMg61p6t8YeCIac
-         RAunoKa4yJRKwIKPoTystOV6bK3iAFZIuzfr8A4Wxoe8TDYQp/m8PUNb++rax2JElIaq
-         lP0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MnceUBKO5CKDULZmr15ARJRXunPRBIoWz0MuHJiULrg=;
-        b=EgbDUOfMxzfU4Cj+0mbak3nJaclCFNOiwP1R5ABmxMSKucFyaViGAZsqXmZj5pgiJL
-         R0l0ePWME+9XeTbwBclsEevSzCB3FuN8okiwSI5xt/htcgjjEfzOFKn7lhXK9ZOjOmde
-         qCPy4+lwCSzfJvK+/rOHIy9t7Ic5QQCd2Do29dH9co8QEYAK9N1WbusYoj1R6JizEM6t
-         P1+XRpLwhSftomTz5OioeRzqDSwyEXXY+rlg/micHbnciLX3L69l1chOP28von0uyKAy
-         ncwp1gwjghzYth7T0IOq+af9GG3Y/UIFZey65Oun6wL2AiRNksR+LT/9TJWKRRdrA4YE
-         /cfw==
-X-Gm-Message-State: AOAM532N2ds0qWRc/xPpf9pcEIxG35BVEqWzsmLBLROllNi7gE25wdm6
-        RvnbzrdEwpHO55J7RdNIbOU=
-X-Google-Smtp-Source: ABdhPJwFM1Zex8JyH4dWcYr9Ean4nPf9JBfv8fPcfexg+IsjIR+dtwfqcokR9OMKLw5/d/3ypGQmrg==
-X-Received: by 2002:a05:622a:1cd:: with SMTP id t13mr19064421qtw.39.1605928451613;
-        Fri, 20 Nov 2020 19:14:11 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id o9sm3406683qte.35.2020.11.20.19.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 19:14:10 -0800 (PST)
-Date:   Fri, 20 Nov 2020 20:14:09 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
-Message-ID: <20201121031409.GA2282710@ubuntu-m3-large-x86>
-References: <20201118220731.925424-1-samitolvanen@google.com>
- <CAKwvOd=5PhCTZ-yHr08gPYNEsGEjZa=rDY0-unhkhofjXhqwLQ@mail.gmail.com>
- <CAMj1kXEVzDi5=uteUAzG5E=j+aTCHEbMxwDfor-s=DthpREpyw@mail.gmail.com>
+        id S1726808AbgKUDSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 22:18:17 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:37227 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725890AbgKUDSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 22:18:16 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605928696; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=tsjgLaYaSJcIz+X5WrJmtxBmcPAH7mtdLQEdy3BKU04=; b=UsIJfiT8YgKmhjo2Hk6CrPmSq1MJmjjpcd3V+7kPOfHGtAlXm5MIyEfZEq9dZH25ik4ZVRMS
+ cmSiynAdDjZQ4hPgBPjNwERqhIouc+kvcXGw1IYAjqegupLd3Hdrtot8JSBorTd1iJxnfddH
+ zmUaCFiumtucIZDdfl8LSwAfHVg=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fb886f71b731a5d9c2f8bc3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Nov 2020 03:18:15
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6BDF5C43461; Sat, 21 Nov 2020 03:18:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 348C6C433ED;
+        Sat, 21 Nov 2020 03:18:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 348C6C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v12 5/5] selftest: mhi: Add support to test MHI LOOPBACK
+ channel
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jhugo@codeaurora.org,
+        bbhatt@codeaurora.org, loic.poulain@linaro.org,
+        netdev@vger.kernel.org, skhan@linuxfoundation.org
+References: <1605566782-38013-1-git-send-email-hemantk@codeaurora.org>
+ <1605566782-38013-6-git-send-email-hemantk@codeaurora.org>
+ <20201120061003.GA3909@work>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <7673cbe1-0ab1-8e44-2e24-190dd808e2e2@codeaurora.org>
+Date:   Fri, 20 Nov 2020 19:18:12 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXEVzDi5=uteUAzG5E=j+aTCHEbMxwDfor-s=DthpREpyw@mail.gmail.com>
+In-Reply-To: <20201120061003.GA3909@work>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 11:29:51AM +0100, Ard Biesheuvel wrote:
-> On Thu, 19 Nov 2020 at 00:42, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > On Wed, Nov 18, 2020 at 2:07 PM Sami Tolvanen <samitolvanen@google.com> wrote:
-> > >
-> > > This patch series adds support for building the kernel with Clang's
-> > > Link Time Optimization (LTO). In addition to performance, the primary
-> > > motivation for LTO is to allow Clang's Control-Flow Integrity (CFI) to
-> > > be used in the kernel. Google has shipped millions of Pixel devices
-> > > running three major kernel versions with LTO+CFI since 2018.
-> > >
-> > > Most of the patches are build system changes for handling LLVM bitcode,
-> > > which Clang produces with LTO instead of ELF object files, postponing
-> > > ELF processing until a later stage, and ensuring initcall ordering.
-> > >
-> > > Note that v7 brings back arm64 support as Will has now staged the
-> > > prerequisite memory ordering patches [1], and drops x86_64 while we work
-> > > on fixing the remaining objtool warnings [2].
-> > >
-> > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/lto
-> > > [2] https://lore.kernel.org/lkml/20201114004911.aip52eimk6c2uxd4@treble/
-> > >
-> > > You can also pull this series from
-> > >
-> > >   https://github.com/samitolvanen/linux.git lto-v7
-> >
-> > Thanks for continuing to drive this series Sami.  For the series,
-> >
-> > Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> >
-> > I did virtualized boot tests with the series applied to aarch64
-> > defconfig without CONFIG_LTO, with CONFIG_LTO_CLANG, and a third time
-> > with CONFIG_THINLTO.  If you make changes to the series in follow ups,
-> > please drop my tested by tag from the modified patches and I'll help
-> > re-test.  Some minor feedback on the Kconfig change, but I'll post it
-> > off of that patch.
-> >
+
+Hi Mani,
+On 11/19/20 10:10 PM, Manivannan Sadhasivam wrote:
+> On Mon, Nov 16, 2020 at 02:46:22PM -0800, Hemant Kumar wrote:
+>> Loopback test opens the MHI device file node and writes
+>> a data buffer to it. MHI UCI kernel space driver copies
+>> the data and sends it to MHI uplink (Tx) LOOPBACK channel.
+>> MHI device loops back the same data to MHI downlink (Rx)
+>> LOOPBACK channel. This data is read by test application
+>> and compared against the data sent. Test passes if data
+>> buffer matches between Tx and Rx. Test application performs
+>> open(), poll(), write(), read() and close() file operations.
+>>
+>> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
 > 
-> When you say 'virtualized" do you mean QEMU on x86? Or actual
-> virtualization on an AArch64 KVM host?
+> One nitpick below, with that addressed:
 > 
-> The distinction is important here, given the potential impact of LTO
-> on things that QEMU simply does not model when it runs in TCG mode on
-> a foreign host architecture.
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+[..]
+> 
+> Effectively this functions does parse and run, so this should be called
+> as, "loopback_test_parse_run" or pthread creation should be moved here.
+Done.
 
-I have booted this series on my Raspberry Pi 4 (ARCH=arm64 defconfig).
-
-$ uname -r
-5.10.0-rc4-00108-g830200082c74
-
-$ zgrep LTO /proc/config.gz
-CONFIG_LTO=y
-CONFIG_ARCH_SUPPORTS_LTO_CLANG=y
-CONFIG_ARCH_SUPPORTS_THINLTO=y
-CONFIG_THINLTO=y
-# CONFIG_LTO_NONE is not set
-CONFIG_LTO_CLANG=y
-# CONFIG_HID_WALTOP is not set
-
-and I have taken that same kernel and booted it under QEMU with
-'-enable-kvm' without any visible issues.
-
-I have tested four combinations:
-
-clang 12 @ f9f0a4046e11c2b4c130640f343e3b2b5db08c1:
-    * CONFIG_THINLTO=y
-    * CONFIG_THINLTO=n
-
-clang 11.0.0
-    * CONFIG_THINLTO=y
-    * CONFIG_THINLTO=n
-
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-
-Cheers,
-Nathan
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
