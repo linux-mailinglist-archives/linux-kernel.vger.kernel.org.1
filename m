@@ -2,248 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9192BBAB7
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB122BBABF
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgKUANi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 19:13:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728124AbgKUANh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:13:37 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E57122470;
-        Sat, 21 Nov 2020 00:13:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605917616;
-        bh=5zB1AfWDQYwfDmz40UJYUCjQwB9bwxL+MKW9vHuE2G4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=spE2DzduUV//465dUX/iVEtr1ncMWxR0ZUty1K39hRjqZD7LO1qFkxS/X/ZWfRp4h
-         iULl/zC2Fxh934+zVvzWGyrI5LU3YYiDa/YqLcVdJBiYowrP5z1TkQPpAFPuhqTW7v
-         IsxyVmhzSD/RbyllaTvIL02/rk9BebZfrFVe5/Jk=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3A5F33522A6E; Fri, 20 Nov 2020 16:13:36 -0800 (PST)
-Date:   Fri, 20 Nov 2020 16:13:36 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH RFC tip/core/rcu 4/5] srcu: Provide polling interfaces
- for Tiny SRCU grace periods
-Message-ID: <20201121001336.GN1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
- <20201117004052.14758-4-paulmck@kernel.org>
- <f7a47e5f-095c-e4ba-ece0-83f2137fb381@codeaurora.org>
+        id S1729034AbgKUAOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 19:14:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728732AbgKUAOS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 19:14:18 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF2BC061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:14:17 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id o24so11857838ljj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:14:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OOhlCXLQ7me4aX62QOG9RwxgBAhj7Ibflx4qGQLcgl4=;
+        b=ZXn6sV+kmyx7QPspcL9OH8Ac7HBSusOAhV7jGyMTLB/Ng2bK8UvEtybGL/9quDiS5B
+         kazkzkKO7lr3zNI3Yu+yMrqkQjVBxUJzcFOWfHwMnTARFBBzXJn8b08522F4e0VARaE1
+         yiMyfJlmkJMEE5xjV0mq1dX7Vp48u0EpkChkE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OOhlCXLQ7me4aX62QOG9RwxgBAhj7Ibflx4qGQLcgl4=;
+        b=MnfrziYG7oE1LGguGu5mkObZ8f9cZTTgKnZjHT+RZT1Euazw20hnWyWjZE8PTOmzud
+         f+gfnhdA3kaEfUx+SD8TDMybjfQNYI5JSQw69lj6wFdv75A/ieu1ipZpiPXf6phIO4IH
+         3Gc+efsKVl/fCjW6nXl8DeLLJVnDYsdafewyfSBnZfSHsVUZUkIuP4WWga8h4aEeeMB2
+         80Sr1dtccYBIm4TwFPX6Ao62D8aEluO8wwMrG1UTrnxdhUhSQ8aPkiwnTvvuzlPj+xmX
+         Gco2pLsVZgdrYYEJhEkkWGgsQjLhXZ4uDCPXjQqbw4B1AbJ0fGV0okQ6esDRnuZFCCwO
+         DEFw==
+X-Gm-Message-State: AOAM5311LKnK+xsLtKBj6WLsYwDc/BNJLXGbqJ25oZ1W3Z1RmVtOtsXX
+        m3SYLHcd6FVwjFDoJFQ9Ml4tj3P5haMy4wO6QsBItQ==
+X-Google-Smtp-Source: ABdhPJyI5y9/w8jHkxQAIdO6MKmQNNfY/wh+g99sPjgo0T0PGpb9YCvSxqIeWiqNOT7ZTYQ+tHnXuk7VJNy+u/hJtz4=
+X-Received: by 2002:a2e:85c6:: with SMTP id h6mr9465290ljj.110.1605917655576;
+ Fri, 20 Nov 2020 16:14:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7a47e5f-095c-e4ba-ece0-83f2137fb381@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201120131708.3237864-1-kpsingh@chromium.org>
+ <20201120131708.3237864-2-kpsingh@chromium.org> <a9336dd5-df17-85d9-7c63-d8ab4b74b459@fb.com>
+In-Reply-To: <a9336dd5-df17-85d9-7c63-d8ab4b74b459@fb.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Sat, 21 Nov 2020 01:14:04 +0100
+Message-ID: <CACYkzJ6bZBybX5tg2DvyJUkBPQ6_qP5FVKvMxdCe+CbA-OmPag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add a BPF helper for getting the IMA
+ hash of an inode
+To:     Yonghong Song <yhs@fb.com>
+Cc:     James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 05:28:32PM +0530, Neeraj Upadhyay wrote:
-> Hi Paul,
-> 
-> On 11/17/2020 6:10 AM, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > There is a need for a polling interface for SRCU grace
-> > periods, so this commit supplies get_state_synchronize_srcu(),
-> > start_poll_synchronize_srcu(), and poll_state_synchronize_srcu() for this
-> > purpose.  The first can be used if future grace periods are inevitable
-> > (perhaps due to a later call_srcu() invocation), the second if future
-> > grace periods might not otherwise happen, and the third to check if a
-> > grace period has elapsed since the corresponding call to either of the
-> > first two.
-> > 
-> > As with get_state_synchronize_rcu() and cond_synchronize_rcu(),
-> > the return value from either get_state_synchronize_srcu() or
-> > start_poll_synchronize_srcu() must be passed in to a later call to
-> > poll_state_synchronize_srcu().
-> > 
-> > Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-> > Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-> > [ paulmck: Add EXPORT_SYMBOL_GPL() per kernel test robot feedback. ]
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >   include/linux/rcupdate.h |  2 ++
-> >   include/linux/srcu.h     |  3 +++
-> >   include/linux/srcutiny.h |  1 +
-> >   kernel/rcu/srcutiny.c    | 52 ++++++++++++++++++++++++++++++++++++++++++++++--
-> >   4 files changed, 56 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > index de08264..e09c0d8 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -33,6 +33,8 @@
-> >   #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
-> >   #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
-> >   #define ulong2long(a)		(*(long *)(&(a)))
-> > +#define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
-> > +#define USHORT_CMP_LT(a, b)	(USHRT_MAX / 2 < (unsigned short)((a) - (b)))
-> >   /* Exported common interfaces */
-> >   void call_rcu(struct rcu_head *head, rcu_callback_t func);
-> > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> > index e432cc9..a0895bb 100644
-> > --- a/include/linux/srcu.h
-> > +++ b/include/linux/srcu.h
-> > @@ -60,6 +60,9 @@ void cleanup_srcu_struct(struct srcu_struct *ssp);
-> >   int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
-> >   void __srcu_read_unlock(struct srcu_struct *ssp, int idx) __releases(ssp);
-> >   void synchronize_srcu(struct srcu_struct *ssp);
-> > +unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp);
-> > +unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp);
-> > +bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie);
-> >   #ifdef CONFIG_DEBUG_LOCK_ALLOC
-> > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> > index fed4a2d..e9bd6fb 100644
-> > --- a/include/linux/srcutiny.h
-> > +++ b/include/linux/srcutiny.h
-> > @@ -16,6 +16,7 @@
-> >   struct srcu_struct {
-> >   	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
-> >   	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
-> > +	unsigned short srcu_idx_max;	/* Furthest future srcu_idx request. */
-> >   	u8 srcu_gp_running;		/* GP workqueue running? */
-> >   	u8 srcu_gp_waiting;		/* GP waiting for readers? */
-> >   	struct swait_queue_head srcu_wq;
-> > diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> > index 3bac1db..b405811 100644
-> > --- a/kernel/rcu/srcutiny.c
-> > +++ b/kernel/rcu/srcutiny.c
-> > @@ -34,6 +34,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
-> >   	ssp->srcu_gp_running = false;
-> >   	ssp->srcu_gp_waiting = false;
-> >   	ssp->srcu_idx = 0;
-> > +	ssp->srcu_idx_max = 0;
-> >   	INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
-> >   	INIT_LIST_HEAD(&ssp->srcu_work.entry);
-> >   	return 0;
-> > @@ -114,7 +115,7 @@ void srcu_drive_gp(struct work_struct *wp)
-> >   	struct srcu_struct *ssp;
-> >   	ssp = container_of(wp, struct srcu_struct, srcu_work);
-> > -	if (ssp->srcu_gp_running || !READ_ONCE(ssp->srcu_cb_head))
-> > +	if (ssp->srcu_gp_running || USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
-> >   		return; /* Already running or nothing to do. */
-> >   	/* Remove recently arrived callbacks and wait for readers. */
-> > @@ -147,14 +148,19 @@ void srcu_drive_gp(struct work_struct *wp)
-> >   	 * straighten that out.
-> >   	 */
-> >   	WRITE_ONCE(ssp->srcu_gp_running, false);
-> > -	if (READ_ONCE(ssp->srcu_cb_head))
-> > +	if (USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
-> 
-> Should this be USHORT_CMP_LT ?
+[...]
 
-I believe that you are correct.  As is, it works but does needless
-grace periods.
+> > + * long bpf_ima_inode_hash(struct inode *inode, void *dst, u32 size)
+> > + *   Description
+> > + *           Returns the stored IMA hash of the *inode* (if it's avaialable).
+> > + *           If the hash is larger than *size*, then only *size*
+> > + *           bytes will be copied to *dst*
+> > + *   Return > + *            The **hash_algo** of is returned on success,
+>
+> of => if?
 
-> >   		schedule_work(&ssp->srcu_work);
-> >   }
-> >   EXPORT_SYMBOL_GPL(srcu_drive_gp);
-> >   static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
-> >   {
-> > +	unsigned short cookie;
-> > +
-> >   	if (!READ_ONCE(ssp->srcu_gp_running)) {
-> > +		cookie = get_state_synchronize_srcu(ssp);
-> > +		if (USHORT_CMP_LT(READ_ONCE(ssp->srcu_idx_max), cookie))
-> > +			WRITE_ONCE(ssp->srcu_idx_max, cookie);
-> 
-> I was thinking of a case which might break with this.
-> 
-> Consider a scenario, where GP is in progress and kworker is right
-> before below point, after executing callbacks:
-> 
-> void srcu_drive_gp(struct work_struct *wp) {
->   <snip>
+Just changed it to:
 
-We updated ->srcu_idx up here, correct?  So it has bottom bit zero.
+"The **hash_algo** is returned on success"
 
->   while (lh) {
->   <cb execution loop>
->   }
->   >>> CURRENT EXECUTION POINT
+>
+> > + *           **-EOPNOTSUP** if IMA is disabled and **-EINVAL** if
+>
+> and => or
 
-Keeping in mind that Tiny SRCU always runs !PREEMPT, this must be
-due to an interrupt.
+Done. (and the same for tools/)
 
->   WRITE_ONCE(ssp->srcu_gp_running, false);
-> 
->   if (USHORT_CMP_LT(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
->     schedule_work(&ssp->srcu_work);
-> }
-> 
-> Now, at this instance, srcu_gp_start_if_needed() runs and samples
-> srcu_gp_running and returns, without updating srcu_idx_max
-> 
-> static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
-> {
->   if (!READ_ONCE(ssp->srcu_gp_running)) returns true
->   <snip>
-> }
+>
 
-This could happen in an interrupt handler, so with you thus far.
+[...]
 
-> kworker running srcu_drive_gp() resumes and returns without queueing a new
-> schedule_work(&ssp->srcu_work); for new GP?
-> 
-> Prior to this patch, call_srcu() enqueues a cb before entering
-> srcu_gp_start_if_needed(), and srcu_drive_gp() observes this
-> queuing, and schedule a work for the new GP, for this scenario.
-> 
-> 
->  	WRITE_ONCE(ssp->srcu_gp_running, false);
-> -	if (READ_ONCE(ssp->srcu_cb_head))
-> +	if (USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
->  		schedule_work(&ssp->srcu_work);
-> 
-> So, should the "cookie" calculation and "srcu_idx_max" setting be moved
-> outside of ssp->srcu_gp_running check and maybe return the same cookie to
-> caller and use that as the returned cookie from
-> start_poll_synchronize_srcu() ?
-> 
-> srcu_gp_start_if_needed()
->   cookie = get_state_synchronize_srcu(ssp);
->   if (USHORT_CMP_LT(READ_ONCE(ssp->srcu_idx_max), cookie))
->      WRITE_ONCE(ssp->srcu_idx_max, cookie);
->   if (!READ_ONCE(ssp->srcu_gp_running)) {
->   <snip>
-> }
+> > +     .gpl_only       = false,
+> > +     .ret_type       = RET_INTEGER,
+> > +     .arg1_type      = ARG_PTR_TO_BTF_ID,
+> > +     .arg1_btf_id    = &bpf_ima_inode_hash_btf_ids[0],
+> > +     .arg2_type      = ARG_PTR_TO_UNINIT_MEM,
+> > +     .arg3_type      = ARG_CONST_SIZE_OR_ZERO,
+>
+> I know ARG_CONST_SIZE_OR_ZERO provides some flexibility and may
+> make verifier easier to verify programs. But beyond that did
+> you see any real use case user will pass a zero size buf to
+> get hash value?
+>
 
-I believe that you are quite correct, thank you!
+I agree, in this case it makes more sense to ARG_CONST_SIZE.
 
-But rcutorture does have a call_srcu() (really a ->call, but same if SRCU)
-in a timer handler.  The race window is quite narrow, so testing it might
-be a challenge...
+> > +     .allowed        = bpf_ima_inode_hash_allowed,
+> > +};
 
-This is what I end up with:
-
-	static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
-	{
-		unsigned short cookie;
-
-		cookie = get_state_synchronize_srcu(ssp);
-		if (USHORT_CMP_LT(READ_ONCE(ssp->srcu_idx_max), cookie))
-			WRITE_ONCE(ssp->srcu_idx_max, cookie);
-		if (!READ_ONCE(ssp->srcu_gp_running)) {
-			if (likely(srcu_init_done))
-				schedule_work(&ssp->srcu_work);
-			else if (list_empty(&ssp->srcu_work.entry))
-				list_add(&ssp->srcu_work.entry, &srcu_boot_list);
-		}
-	}
-
-Does that look plausible?
-
-							Thanx, Paul
+[...]
