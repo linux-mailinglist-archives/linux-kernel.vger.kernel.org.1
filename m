@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C102BBC44
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 03:38:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1110A2BBC46
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 03:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgKUCgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 21:36:33 -0500
+        id S1727030AbgKUCge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 21:36:34 -0500
 Received: from mga14.intel.com ([192.55.52.115]:47086 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726479AbgKUCgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 21:36:32 -0500
-IronPort-SDR: coVDiZSCQ4i2Rp7EseJ/nXdBN5RHPLVKJ7LsTlJdxyIWwB1M7OQ8qFOuP8MgfG9ATn7EBkZXn0
- ns0Ao1crE44A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="170788360"
+        id S1726560AbgKUCgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 21:36:33 -0500
+IronPort-SDR: bBoQs6rl0LYESVMpaPFjPo6xziSj4YRbx2WLBqCP50qbLWEDoOjycCBine5Te+r6pc6yC7vkZI
+ suOlwuLAMkqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="170788361"
 X-IronPort-AV: E=Sophos;i="5.78,358,1599548400"; 
-   d="scan'208";a="170788360"
+   d="scan'208";a="170788361"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 18:36:32 -0800
-IronPort-SDR: jJiq9Gt3Y+qHXu5Qoxwv867eSj2LH2ekhPHU5iGfgfGsc1e45P9ZILdOrAp2m6dj/hn6L7oLj4
- TIu1YDu2Q3BQ==
+IronPort-SDR: TDNbTIlAUd9+XN8nhYucfTvzbZs7Ag9LVyDVMInj0gXkzxE/KF8Vemfb52n/6fT4y/DmLpF00q
+ 9aEnBgReFiFg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,358,1599548400"; 
-   d="scan'208";a="431759876"
+   d="scan'208";a="431759880"
 Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
   by fmsmga001.fm.intel.com with ESMTP; 20 Nov 2020 18:36:32 -0800
 From:   Fenghua Yu <fenghua.yu@intel.com>
@@ -37,9 +37,9 @@ To:     "Thomas Gleixner" <tglx@linutronix.de>,
         "Ravi V Shankar" <ravi.v.shankar@intel.com>
 Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
         "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v3 1/4] x86/cpufeatures: Enumerate #DB for bus lock detection
-Date:   Sat, 21 Nov 2020 02:36:21 +0000
-Message-Id: <20201121023624.3604415-2-fenghua.yu@intel.com>
+Subject: [PATCH v3 2/4] x86/bus_lock: Handle warn and fatal in #DB for bus lock
+Date:   Sat, 21 Nov 2020 02:36:22 +0000
+Message-Id: <20201121023624.3604415-3-fenghua.yu@intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201121023624.3604415-1-fenghua.yu@intel.com>
 References: <20201121023624.3604415-1-fenghua.yu@intel.com>
@@ -49,35 +49,368 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A bus lock is acquired though either split locked access to
-writeback (WB) memory or any locked access to non-WB memory. This is
-typically >1000 cycles slower than an atomic operation within a cache
-line. It also disrupts performance on other cores.
+#DB for bus lock is enabled by bus lock detection bit 2 in DEBUGCTL MSR
+while #AC for split lock is enabled by split lock detection bit 29 in
+TEST_CTRL MSR.
 
-Some CPUs have ability to notify the kernel by an #DB trap after a user
-instruction acquires a bus lock and is executed. This allows the kernel
-to enforce user application throttling or mitigations.
+Delivery of #DB for bus lock in userspace clears DR6[11]. To avoid
+confusion in identifying #DB, #DB handler sets the bit to 1 before
+returning to the interrupted task.
 
-The CPU feature flag to be shown in /proc/cpuinfo will be "bus_lock_detect".
+Use the existing kernel command line option "split_lock_detect=" to handle
+#DB for bus lock:
+
+split_lock_detect=
+		#AC for split lock		#DB for bus lock
+
+off		Do nothing			Do nothing
+
+warn		Kernel OOPs			Warn once per task and
+		Warn once per task and		and continues to run.
+		disable future checking 	When both features are
+						supported, warn in #DB
+
+fatal		Kernel OOPs			Send SIGBUS to user
+		Send SIGBUS to user		When both features are
+						supported, split lock
+						triggers #AC and bus lock
+						from non-WB triggers #DB.
+
+Default option is "warn".
+
+Hardware only generates #DB for bus lock detect when CPL>0 to avoid
+nested #DB from multiple bus locks while the first #DB is being handled.
+So no need to handle #DB for bus lock detected in the kernel.
 
 Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/cpufeatures.h | 1 +
- 1 file changed, 1 insertion(+)
+Change Log:
+v3:
+- Enable Bus Lock Detection when fatal to handle bus lock from non-WB
+  (PeterZ).
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index dad350d42ecf..f375d9cb8123 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -352,6 +352,7 @@
- #define X86_FEATURE_AVX512_VPOPCNTDQ	(16*32+14) /* POPCNT for vectors of DW/QW */
- #define X86_FEATURE_LA57		(16*32+16) /* 5-level page tables */
- #define X86_FEATURE_RDPID		(16*32+22) /* RDPID instruction */
-+#define X86_FEATURE_BUS_LOCK_DETECT	(16*32+24) /* Bus Lock detect */
- #define X86_FEATURE_CLDEMOTE		(16*32+25) /* CLDEMOTE instruction */
- #define X86_FEATURE_MOVDIRI		(16*32+27) /* MOVDIRI instruction */
- #define X86_FEATURE_MOVDIR64B		(16*32+28) /* MOVDIR64B instruction */
+v2:
+- Send SIGBUS in fatal case for bus lock #DB (PeterZ).
+
+v1::
+- Check bus lock bit by its positive polarity (Xiaoyao).
+
+RFC v3:
+- Remove DR6_RESERVED change (PeterZ).
+
+ arch/x86/include/asm/cpu.h           |   9 +-
+ arch/x86/include/asm/msr-index.h     |   1 +
+ arch/x86/include/uapi/asm/debugreg.h |   1 +
+ arch/x86/kernel/cpu/common.c         |   2 +-
+ arch/x86/kernel/cpu/intel.c          | 126 ++++++++++++++++++++++-----
+ arch/x86/kernel/traps.c              |   7 ++
+ 6 files changed, 123 insertions(+), 23 deletions(-)
+
+diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
+index da78ccbd493b..c16b9bab502f 100644
+--- a/arch/x86/include/asm/cpu.h
++++ b/arch/x86/include/asm/cpu.h
+@@ -41,12 +41,13 @@ unsigned int x86_family(unsigned int sig);
+ unsigned int x86_model(unsigned int sig);
+ unsigned int x86_stepping(unsigned int sig);
+ #ifdef CONFIG_CPU_SUP_INTEL
+-extern void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c);
++extern void __init sld_setup(struct cpuinfo_x86 *c);
+ extern void switch_to_sld(unsigned long tifn);
+ extern bool handle_user_split_lock(struct pt_regs *regs, long error_code);
+ extern bool handle_guest_split_lock(unsigned long ip);
++extern void handle_bus_lock(struct pt_regs *regs);
+ #else
+-static inline void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c) {}
++static inline void __init sld_setup(struct cpuinfo_x86 *c) {}
+ static inline void switch_to_sld(unsigned long tifn) {}
+ static inline bool handle_user_split_lock(struct pt_regs *regs, long error_code)
+ {
+@@ -57,6 +58,10 @@ static inline bool handle_guest_split_lock(unsigned long ip)
+ {
+ 	return false;
+ }
++
++static inline void handle_bus_lock(struct pt_regs *regs)
++{
++}
+ #endif
+ #ifdef CONFIG_IA32_FEAT_CTL
+ void init_ia32_feat_ctl(struct cpuinfo_x86 *c);
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 972a34d93505..62f7534e0855 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -264,6 +264,7 @@
+ #define DEBUGCTLMSR_LBR			(1UL <<  0) /* last branch recording */
+ #define DEBUGCTLMSR_BTF_SHIFT		1
+ #define DEBUGCTLMSR_BTF			(1UL <<  1) /* single-step on branches */
++#define DEBUGCTLMSR_BUS_LOCK_DETECT	(1UL <<  2) /* Bus lock detect */
+ #define DEBUGCTLMSR_TR			(1UL <<  6)
+ #define DEBUGCTLMSR_BTS			(1UL <<  7)
+ #define DEBUGCTLMSR_BTINT		(1UL <<  8)
+diff --git a/arch/x86/include/uapi/asm/debugreg.h b/arch/x86/include/uapi/asm/debugreg.h
+index d95d080b30e3..0007ba077c0c 100644
+--- a/arch/x86/include/uapi/asm/debugreg.h
++++ b/arch/x86/include/uapi/asm/debugreg.h
+@@ -24,6 +24,7 @@
+ #define DR_TRAP3	(0x8)		/* db3 */
+ #define DR_TRAP_BITS	(DR_TRAP0|DR_TRAP1|DR_TRAP2|DR_TRAP3)
+ 
++#define DR_BUS_LOCK	(0x800)		/* bus_lock */
+ #define DR_STEP		(0x4000)	/* single-step */
+ #define DR_SWITCH	(0x8000)	/* task switch */
+ 
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 35ad8480c464..92705ac301ec 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1327,7 +1327,7 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
+ 
+ 	cpu_set_bug_bits(c);
+ 
+-	cpu_set_core_cap_bits(c);
++	sld_setup(c);
+ 
+ 	fpu__init_system(c);
+ 
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 59a1e3ce3f14..77c3e33f41c7 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -43,12 +43,16 @@ enum split_lock_detect_state {
+ };
+ 
+ /*
+- * Default to sld_off because most systems do not support split lock detection
+- * split_lock_setup() will switch this to sld_warn on systems that support
+- * split lock detect, unless there is a command line override.
++ * Default to sld_off because most systems do not support split lock detection.
++ * sld_state_setup() will switch this to sld_warn on systems that support
++ * split lock/bus lock detect, unless there is a command line override.
+  */
+ static enum split_lock_detect_state sld_state __ro_after_init = sld_off;
+ static u64 msr_test_ctrl_cache __ro_after_init;
++/* Split lock detection is enabled if it's true. */
++static bool sld;
++/* Bus lock detection is enabled if it's true. */
++static bool bld;
+ 
+ /*
+  * With a name like MSR_TEST_CTL it should go without saying, but don't touch
+@@ -602,6 +606,7 @@ static void init_intel_misc_features(struct cpuinfo_x86 *c)
+ }
+ 
+ static void split_lock_init(void);
++static void bus_lock_init(void);
+ 
+ static void init_intel(struct cpuinfo_x86 *c)
+ {
+@@ -719,6 +724,7 @@ static void init_intel(struct cpuinfo_x86 *c)
+ 		tsx_disable();
+ 
+ 	split_lock_init();
++	bus_lock_init();
+ }
+ 
+ #ifdef CONFIG_X86_32
+@@ -1017,16 +1023,15 @@ static bool split_lock_verify_msr(bool on)
+ 	return ctrl == tmp;
+ }
+ 
+-static void __init split_lock_setup(void)
++static void __init sld_state_setup(void)
+ {
+ 	enum split_lock_detect_state state = sld_warn;
+ 	char arg[20];
+ 	int i, ret;
+ 
+-	if (!split_lock_verify_msr(false)) {
+-		pr_info("MSR access failed: Disabled\n");
++	if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT) &&
++	    !boot_cpu_has(X86_FEATURE_BUS_LOCK_DETECT))
+ 		return;
+-	}
+ 
+ 	ret = cmdline_find_option(boot_command_line, "split_lock_detect",
+ 				  arg, sizeof(arg));
+@@ -1038,17 +1043,14 @@ static void __init split_lock_setup(void)
+ 			}
+ 		}
+ 	}
++	sld_state = state;
++}
+ 
+-	switch (state) {
+-	case sld_off:
+-		pr_info("disabled\n");
++static void __init _split_lock_setup(void)
++{
++	if (!split_lock_verify_msr(false)) {
++		pr_info("MSR access failed: Disabled\n");
+ 		return;
+-	case sld_warn:
+-		pr_info("warning about user-space split_locks\n");
+-		break;
+-	case sld_fatal:
+-		pr_info("sending SIGBUS on user-space split_locks\n");
+-		break;
+ 	}
+ 
+ 	rdmsrl(MSR_TEST_CTRL, msr_test_ctrl_cache);
+@@ -1058,8 +1060,11 @@ static void __init split_lock_setup(void)
+ 		return;
+ 	}
+ 
+-	sld_state = state;
++	/* Restore the MSR to its cached value. */
++	wrmsrl(MSR_TEST_CTRL, msr_test_ctrl_cache);
++
+ 	setup_force_cpu_cap(X86_FEATURE_SPLIT_LOCK_DETECT);
++	sld = true;
+ }
+ 
+ /*
+@@ -1079,6 +1084,15 @@ static void sld_update_msr(bool on)
+ 
+ static void split_lock_init(void)
+ {
++	/*
++	 * If supported, #DB for bus lock will handle warn
++	 * and #AC for split lock is disabled.
++	 */
++	if (bld && sld_state == sld_warn) {
++		split_lock_verify_msr(false);
++		return;
++	}
++
+ 	if (cpu_model_supports_sld)
+ 		split_lock_verify_msr(sld_state != sld_off);
+ }
+@@ -1115,14 +1129,48 @@ bool handle_guest_split_lock(unsigned long ip)
+ }
+ EXPORT_SYMBOL_GPL(handle_guest_split_lock);
+ 
++static void bus_lock_init(void)
++{
++	u64 val;
++
++	if (!bld || sld_state == sld_off)
++		return;
++
++	/*
++	 * Enable #DB for bus lock. All bus locks are handled in #DB except
++	 * split locks are handled in #AC in fatal case.
++	 */
++	rdmsrl(MSR_IA32_DEBUGCTLMSR, val);
++	val |= DEBUGCTLMSR_BUS_LOCK_DETECT;
++	wrmsrl(MSR_IA32_DEBUGCTLMSR, val);
++}
++
+ bool handle_user_split_lock(struct pt_regs *regs, long error_code)
+ {
+-	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
++	if ((regs->flags & X86_EFLAGS_AC) || !sld || sld_state == sld_fatal)
+ 		return false;
+ 	split_lock_warn(regs->ip);
+ 	return true;
+ }
+ 
++void handle_bus_lock(struct pt_regs *regs)
++{
++	if (!bld)
++		return;
++
++	switch (sld_state) {
++	case sld_off:
++		break;
++	case sld_warn:
++		pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address: 0x%lx\n",
++				    current->comm, current->pid, regs->ip);
++		break;
++	case sld_fatal:
++		force_sig_fault(SIGBUS, BUS_ADRALN, NULL);
++		break;
++	}
++}
++
+ /*
+  * This function is called only when switching between tasks with
+  * different split-lock detection modes. It sets the MSR for the
+@@ -1162,7 +1210,7 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
+ 	{}
+ };
+ 
+-void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
++static void __init split_lock_setup(struct cpuinfo_x86 *c)
+ {
+ 	const struct x86_cpu_id *m;
+ 	u64 ia32_core_caps;
+@@ -1189,5 +1237,43 @@ void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
+ 	}
+ 
+ 	cpu_model_supports_sld = true;
+-	split_lock_setup();
++	_split_lock_setup();
++}
++
++static void sld_state_show(void)
++{
++	if (!bld && !sld)
++		return;
++
++	switch (sld_state) {
++	case sld_off:
++		pr_info("disabled\n");
++		break;
++	case sld_warn:
++		if (bld)
++			pr_info("#DB: warning about user-space bus_locks\n");
++		else
++			pr_info("#AC: crashing the kernel about kernel split_locks and warning about user-space split_locks\n");
++		break;
++	case sld_fatal:
++		if (sld)
++			pr_info("#AC: crashing the kernel on kernel split_locks and sending SIGBUS on user-space split_locks\n");
++		if (bld)
++			pr_info("#DB: sending SIGBUS on user-space bus_locks%s\n", sld ? " from non-WB" : "");
++		break;
++	}
++}
++
++static void __init bus_lock_setup(void)
++{
++	if (boot_cpu_has(X86_FEATURE_BUS_LOCK_DETECT))
++		bld = true;
++}
++
++void __init sld_setup(struct cpuinfo_x86 *c)
++{
++	split_lock_setup(c);
++	bus_lock_setup();
++	sld_state_setup();
++	sld_state_show();
+ }
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index e19df6cde35d..dea26135e10b 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -970,6 +970,13 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
+ 		goto out_irq;
+ 	}
+ 
++	/*
++	 * Handle bus lock. #DB for bus lock can only be triggered from
++	 * userspace. The bus lock bit was flipped to positive polarity.
++	 */
++	if (dr6 & DR_BUS_LOCK)
++		handle_bus_lock(regs);
++
+ 	/* Add the virtual_dr6 bits for signals. */
+ 	dr6 |= current->thread.virtual_dr6;
+ 	if (dr6 & (DR_STEP | DR_TRAP_BITS) || icebp)
 -- 
 2.29.2
 
