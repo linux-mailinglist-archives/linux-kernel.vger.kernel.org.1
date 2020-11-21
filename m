@@ -2,392 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131B92BBFF0
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4A72BBFF3
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgKUOep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 09:34:45 -0500
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:57306 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727851AbgKUOeo (ORCPT
+        id S1728030AbgKUOiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 09:38:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727922AbgKUOiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 09:34:44 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436287|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0754813-0.000384625-0.924134;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=fuyao@allwinnertech.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.IzafzYM_1605969186;
-Received: from localhost(mailfrom:fuyao@allwinnertech.com fp:SMTPD_---.IzafzYM_1605969186)
-          by smtp.aliyun-inc.com(10.147.41.199);
-          Sat, 21 Nov 2020 22:33:07 +0800
-Date:   Sat, 21 Nov 2020 22:33:06 +0800
-From:   fuyao <fuyao@allwinnertech.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     mripard@kernel.org, wens@csie.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] hwspinlock: add SUNXI implementation
-Message-ID: <20201121143306.GB23438@debian>
-Mail-Followup-To: Bjorn Andersson <bjorn.andersson@linaro.org>,
-        mripard@kernel.org, wens@csie.org, linux-remoteproc@vger.kernel.org,
+        Sat, 21 Nov 2020 09:38:01 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA185C0613CF;
+        Sat, 21 Nov 2020 06:37:59 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so13872614wrx.5;
+        Sat, 21 Nov 2020 06:37:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uWjggj2LgaDrTK7OTDqfKMOswwqFU3ZQPnsfVGvdxbM=;
+        b=Ac060P5tBTf+vUKMrW4iyigJdsXRU7ihwsUjBcObS3prY6E2sgL3MmPl/gSjHq+qD7
+         g9tBOKepZTy0NqLNaEVgB50p/1X++o8Ew6p2mtbGgHpaXXFwMVr5qm7Yz688rKYpgKRp
+         7bXmERniLFvOgNCYS0DlamsEFaZ7givkcIzVwXu6pPDttwXWCgi9llbpBwqfUfHfvRM5
+         Sn0FPDnbi6J8CTz6MTTq9PZ0NrejGoxQj+dwxB3RDH8U4cA/DJ4haHDAKlRV8tU1Fgos
+         cSkCGYDsyFXMu5WVZxfH4KvBts4+VJGxbUcf8VaI55BHbfqlyq0MNIE7s/jxaAvYXiEi
+         DCgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=uWjggj2LgaDrTK7OTDqfKMOswwqFU3ZQPnsfVGvdxbM=;
+        b=aw4VY2aU3AqlwlFf8M3cFo8Nw8dXvd+Ht0Ehsp1Kjz4tuZKk4Gt0smex/Zdd4VAf3Q
+         RdxpV40oMssrUYhKQ8cBRG1Qf8PoZ4ASi+TPWos67qbfdFJzLB42J9ktmjjVVbtSvonr
+         ceE3fDbM4/gjz2ZY/pSJjJpPKGaL+WRrs0g3nlMN9MI9JTCIk5UCdL3gn5C6IvP3S/Qx
+         Ux+thK/Cm4mraYrCBZlbXuJxpwbGEH15rNdvewmqDKn9YF8nD9YM3TBR/pEflp5x+H6F
+         GRJM6bsgTpC41t73bLyl6+iN5/2QVg5sqR2WK7QECRlRFh8SLfM+gUvFSIyp7EdBqMm1
+         BKAQ==
+X-Gm-Message-State: AOAM532hMQVl3Wqq0sQmO3QGCd7VZ/42osnPwfI8lWPK3QGr5DtCvK9e
+        rG0vaidsMkBwz1bp9l5KPOyIlyFoJ6c=
+X-Google-Smtp-Source: ABdhPJwS6khJVWhhtBIAjCngM3jmeEZzsBedBNdC0rBX3mI1ECByMZtHcijWO6PZvdF30OZ+SOMupg==
+X-Received: by 2002:adf:e512:: with SMTP id j18mr22941758wrm.390.1605969478130;
+        Sat, 21 Nov 2020 06:37:58 -0800 (PST)
+Received: from [192.168.1.173] (host109-152-100-135.range109-152.btcentralplus.com. [109.152.100.135])
+        by smtp.gmail.com with ESMTPSA id i5sm9228795wrw.45.2020.11.21.06.37.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 21 Nov 2020 06:37:57 -0800 (PST)
+Subject: Re: [PATCH 00/29] RFC: iov_iter: Switch to using an ops table
+To:     David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <cover.1605767679.git.fuyao@allwinnertech.com>
- <f2b445651339e616af5348f2e7008dbc42275159.1605767679.git.fuyao@allwinnertech.com>
- <20201121040104.GI9177@builder.lan>
+References: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <4a277f64-e744-34cc-a4ec-16636f23b13a@gmail.com>
+Date:   Sat, 21 Nov 2020 14:34:50 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121040104.GI9177@builder.lan>
-Organization: fuyao_love_xxt.Allwinnertech.Technology
-User-Agent: Mutt/1.12.1+6 (4c2f7c70) (2019-08-28)
+In-Reply-To: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 10:01:04PM -0600, Bjorn Andersson wrote:
-> On Thu 19 Nov 00:44 CST 2020, fuyao@allwinnertech.com wrote:
+On 21/11/2020 14:13, David Howells wrote:
 > 
-> > From: fuyao <fuyao@allwinnertech.com>
-> > 
-> > Add hwspinlock support for the SUNXI Hardware Spinlock device.
-> > 
-> > The Hardware Spinlock device on SUNXI provides hardware assistance
-> > for synchronization between the multiple processors in the system
-> > (Cortex-A7, or1k, Xtensa DSP, Cortex-A53)
-> > 
-> > Signed-off-by: fuyao <fuyao@allwinnertech.com>
-> > ---
-> >  MAINTAINERS                           |   6 +
-> >  drivers/hwspinlock/Kconfig            |  10 ++
-> >  drivers/hwspinlock/Makefile           |   1 +
-> >  drivers/hwspinlock/sunxi_hwspinlock.c | 205 ++++++++++++++++++++++++++
-> >  4 files changed, 222 insertions(+)
-> >  create mode 100644 drivers/hwspinlock/sunxi_hwspinlock.c
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index e451dcce054f0..68d25574432d0 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -737,6 +737,12 @@ L:	linux-media@vger.kernel.org
-> >  S:	Maintained
-> >  F:	drivers/staging/media/sunxi/cedrus/
-> >  
-> > +ALLWINNER HWSPINLOCK DRIVER
-> > +M:	fuyao <fuyao@allwinnertech.com>
-> > +S:	Maintained
-> > +F:	drivers/hwspinlock/sunxi_hwspinlock.c
-> > +F:      Documentation/devicetree/bindings/hwlock/sunxi,hwspinlock.yaml
-> > +
-> >  ALPHA PORT
-> >  M:	Richard Henderson <rth@twiddle.net>
-> >  M:	Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> > diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
-> > index 32cd26352f381..4d0d516dcb544 100644
-> > --- a/drivers/hwspinlock/Kconfig
-> > +++ b/drivers/hwspinlock/Kconfig
-> > @@ -55,6 +55,16 @@ config HWSPINLOCK_STM32
-> >  
-> >  	  If unsure, say N.
-> >  
-> > +config HWSPINLOCK_SUNXI
-> > +	tristate "SUNXI Hardware Spinlock device"
-> > +	depends on ARCH_SUNXI || COMPILE_TEST
-> > +	help
-> > +	  Say y here to support the SUNXI Hardware Semaphore functionality, which
-> > +	  provides a synchronisation mechanism for the various processor on the
-> > +	  SoC.
-> > +
-> > +	  If unsure, say N.
-> > +
-> >  config HSEM_U8500
-> >  	tristate "STE Hardware Semaphore functionality"
-> >  	depends on ARCH_U8500 || COMPILE_TEST
-> > diff --git a/drivers/hwspinlock/Makefile b/drivers/hwspinlock/Makefile
-> > index ed053e3f02be4..839a053205f73 100644
-> > --- a/drivers/hwspinlock/Makefile
-> > +++ b/drivers/hwspinlock/Makefile
-> > @@ -10,3 +10,4 @@ obj-$(CONFIG_HWSPINLOCK_SIRF)		+= sirf_hwspinlock.o
-> >  obj-$(CONFIG_HWSPINLOCK_SPRD)		+= sprd_hwspinlock.o
-> >  obj-$(CONFIG_HWSPINLOCK_STM32)		+= stm32_hwspinlock.o
-> >  obj-$(CONFIG_HSEM_U8500)		+= u8500_hsem.o
-> > +obj-$(CONFIG_HWSPINLOCK_SUNXI)		+= sunxi_hwspinlock.o
-> > diff --git a/drivers/hwspinlock/sunxi_hwspinlock.c b/drivers/hwspinlock/sunxi_hwspinlock.c
-> > new file mode 100644
-> > index 0000000000000..2c3dc148c9b72
-> > --- /dev/null
-> > +++ b/drivers/hwspinlock/sunxi_hwspinlock.c
-> > @@ -0,0 +1,205 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * SUNXI hardware spinlock driver
-> > + *
-> > + * Copyright (C) 2020 Allwinnertech - http://www.allwinnertech.com
-> > + *
+> Hi Pavel, Willy, Jens, Al,
 > 
-> Please remove the remainder of this comment, it's already covered by the
-> SPDX header above.
+> I had a go switching the iov_iter stuff away from using a type bitmask to
+> using an ops table to get rid of the if-if-if-if chains that are all over
+> the place.  After I pushed it, someone pointed me at Pavel's two patches.
 > 
-> > + * This program is free software; you can redistribute it and/or
-> > + * modify it under the terms of the GNU General Public License
-> > + * version 2 as published by the Free Software Foundation.
-> > + *
-> > + * This program is distributed in the hope that it will be useful, but
-> > + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> > + * General Public License for more details.
-> > + */
-> > +
-> > +#include <linux/kernel.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/module.h>
-> > +#include <linux/device.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/io.h>
-> > +#include <linux/bitops.h>
-> > +#include <linux/pm_runtime.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/spinlock.h>
-> > +#include <linux/hwspinlock.h>
-> > +#include <linux/clk.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_address.h>
-> > +#include <linux/of_device.h>
-> > +#include <linux/err.h>
-> > +#include <linux/reset.h>
+> I have another iterator class that I want to add - which would lengthen the
+> if-if-if-if chains.  A lot of the time, there's a conditional clause at the
+> beginning of a function that just jumps off to a type-specific handler or
+> to reject the operation for that type.  An ops table can just point to that
+> instead.
 > 
-> You don't need all of these.
+> As far as I can tell, there's no difference in performance in most cases,
+> though doing AFS-based kernel compiles appears to take less time (down from
+> 3m20 to 2m50), which might make sense as that uses iterators a lot - but
+> there are too many variables in that for that to be a good benchmark (I'm
+> dealing with a remote server, for a start).
 > 
-> > +
-> > +#include "hwspinlock_internal.h"
-> > +
-> > +/* hardware spinlock register list */
-> > +#define	LOCK_SYS_STATUS_REG             (0x0000)
-> > +#define	LOCK_STATUS_REG                 (0x0010)
-> > +#define LOCK_BASE_OFFSET                (0x0100)
-> > +#define LOCK_BASE_ID                    (0)
-> 
-> No need for the parenthesis on these, please drop them.
-> 
-> > +
-> > +/* Possible values of SPINLOCK_LOCK_REG */
-> > +#define SPINLOCK_NOTTAKEN               (0)     /* free */
-> > +#define SPINLOCK_TAKEN                  (1)     /* locked */
-> > +
-> > +struct sunxi_spinlock_config {
-> > +	int nspin;
-> > +};
-> > +
-> > +static int sunxi_hwspinlock_trylock(struct hwspinlock *lock)
-> > +{
-> > +	void __iomem *lock_addr = lock->priv;
-> > +
-> > +	/* attempt to acquire the lock by reading its value */
-> > +	return (readl(lock_addr) == SPINLOCK_NOTTAKEN);
-> 
-> Please drop the outer ().
-> 
-> > +}
-> > +
-> > +static void sunxi_hwspinlock_unlock(struct hwspinlock *lock)
-> > +{
-> > +	void __iomem *lock_addr = lock->priv;
-> > +
-> > +	/* release the lock by writing 0 to it */
-> > +	writel(SPINLOCK_NOTTAKEN, lock_addr);
-> > +}
-> > +
-> > +/*
-> > + * relax the SUNXI interconnect while spinning on it.
-> > + *
-> > + * The specs recommended that the retry delay time will be
-> > + * just over half of the time that a requester would be
-> > + * expected to hold the lock.
-> > + *
-> > + * in sunxi spinlock time less then 200 cycles
-> > + *
-> > + * The number below is taken from an hardware specs example,
-> > + * obviously it is somewhat arbitrary.
-> 
-> Thank you for the good explanation.
-> 
-> > + */
-> > +static void sunxi_hwspinlock_relax(struct hwspinlock *lock)
-> > +{
-> > +	ndelay(50);
-> > +}
-> > +
-> > +static const struct hwspinlock_ops sunxi_hwspinlock_ops = {
-> > +	.trylock = sunxi_hwspinlock_trylock,
-> > +	.unlock = sunxi_hwspinlock_unlock,
-> > +	.relax = sunxi_hwspinlock_relax,
-> > +};
-> > +
-> > +struct sunxi_hwspinlock_device {
-> > +	struct hwspinlock_device *bank;
-> > +	struct clk *bus_clk;
-> > +	struct reset_control *reset;
-> > +};
-> > +
-> > +static void sunxi_hwspinlock_clk_init(struct platform_device *pdev,
-> > +				      struct sunxi_hwspinlock_device *private)
-> > +{
-> > +	private->bus_clk = devm_clk_get(&pdev->dev, NULL);
-> > +	private->reset = devm_reset_control_get(&pdev->dev, NULL);
-> 
-> You should check the return value of these, e.g. for EPROBE_DEFER and if
-> so return appropriately from sunxi_hwspinlock_probe().
-> 
-> So please move them to the probe function to make this easier and
-> cleaner.
-> 
-> > +
-> > +	if (private->reset)
-> > +		reset_control_deassert(private->reset);
-> > +	if (private->bus_clk)
-> > +		clk_prepare_enable(private->bus_clk);
-> 
-> Both of these apis start with
-> 
-> 	if (!argument)
-> 		return;
-> 
-> So there's no need for you to check for NULL before calling them. Also
-> to make it clear that you want these to be deassered and prepare_enabled
-> between probe and remvoe, move them into probe (and next function into
-> remove).
-> 
-> > +}
-> > +
-> > +static void sunxi_hwspinlock_clk_dinit(struct sunxi_hwspinlock_device *private)
-> > +{
-> > +	if (private->reset)
-> > +		reset_control_assert(private->reset);
-> > +	if (private->bus_clk)
-> > +		clk_disable(private->bus_clk);
-> > +}
-> > +
-> > +static const struct sunxi_spinlock_config spin_ver_1 = {
-> > +	.nspin = 32,
-> > +};
-> > +
-> > +static const struct of_device_id sunxi_hwspinlock_of_match[] = {
-> > +	{
-> > +		.compatible = "allwinner,h3-hwspinlock",
-> > +		.data = &spin_ver_1,
-> 
-> If all cases comes with the same "data", then please just put nspin in a
-> #define until you're going to support hardware that has some other
-> number of locks.
-> 
-> > +	},
-> > +	{
-> > +		.compatible = "allwinner,h6-hwspinlock",
-> > +		.data = &spin_ver_1,
-> > +	},
-> > +	{ /* Sentinel */ },
-> 
-> No need to spell out "/* Sentinel */", leave it emtpy and please drop the , at
-> the end.
-> 
-> > +};
-> > +MODULE_DEVICE_TABLE(of, sunxi_hwspinlock_of_match);
-> 
-> Please move this down by sunxi_hwspinlock_driver and use
-> device_get_match_data() instead of of_match_device().
-> 
-> > +
-> > +static int sunxi_hwspinlock_probe(struct platform_device *pdev)
-> > +{
-> > +	struct sunxi_hwspinlock_device *private;
-> > +	struct hwspinlock_device *bank;
-> > +	struct hwspinlock *hwlock;
-> > +	const struct sunxi_spinlock_config *config;
-> > +	const struct of_device_id *match;
-> > +	void __iomem *iobase;
-> > +	int num_locks, i, ret;
-> > +
-> > +	iobase = devm_platform_ioremap_resource(pdev, 0);
-> > +	if (PTR_ERR(iobase))
-> > +		return PTR_ERR(iobase);
-> > +
-> > +	match = of_match_device(of_match_ptr(sunxi_hwspinlock_of_match),
-> > +				&pdev->dev);
-> > +	if (!match)
-> > +		return -ENODEV;
-> > +
-> > +	config = match->data;
-> > +	num_locks = config->nspin;
-> > +
-> > +	private = devm_kzalloc(&pdev->dev, sizeof(*private), GFP_KERNEL);
-> > +	if (!private)
-> > +		return -ENOMEM;
-> > +
-> > +	bank = devm_kzalloc(&pdev->dev,
-> > +			    sizeof(*bank) + num_locks * sizeof(*hwlock),
-> > +			    GFP_KERNEL);
-> > +	if (!bank)
-> > +		return -ENOMEM;
-> > +
-> > +	private->bank = bank;
-> > +	sunxi_hwspinlock_clk_init(pdev, private);
-> > +
-> > +	platform_set_drvdata(pdev, private);
-> > +
-> > +	for (i = 0, hwlock = &bank->lock[0]; i < num_locks; i++, hwlock++)
-> > +		hwlock->priv = iobase + LOCK_BASE_OFFSET + sizeof(u32) * i;
-> > +
-> > +	ret = devm_hwspin_lock_register(&pdev->dev, bank, &sunxi_hwspinlock_ops,
-> > +					LOCK_BASE_ID, num_locks);
-> 
-> This returns 0 or -errno, so rather than returning ret if ret otherwise
-> 0, just do:
-> 
-> 	return devm_hwspin_lock_register(...)
-> 
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int sunxi_hwspinlock_remove(struct platform_device *pdev)
-> > +{
-> > +	struct sunxi_hwspinlock_device *private = platform_get_drvdata(pdev);
-> > +
-> > +	sunxi_hwspinlock_clk_dinit(private);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static struct platform_driver sunxi_hwspinlock_driver = {
-> > +	.probe		= sunxi_hwspinlock_probe,
-> > +	.remove		= sunxi_hwspinlock_remove,
-> > +	.driver		= {
-> > +		.name	= "sunxi-hwspinlock",
-> > +		.owner	= THIS_MODULE,
-> 
-> module_platform_driver() fills out .owner for you, so please remove
-> this.
-> 
-> > +		.of_match_table = of_match_ptr(sunxi_hwspinlock_of_match),
-> 
-> Please skip of_match_ptr(), it will just cause build warnings when
-> compile tested without CONFIG_OF.
-> 
-> Thank you,
-> Bjorn
-> 
-> > +	},
-> > +};
-> > +
-> > +module_platform_driver(sunxi_hwspinlock_driver);
-> > +
-> > +MODULE_LICENSE("GPL v2");
-> > +MODULE_DESCRIPTION("Hardware spinlock driver for SUNXI");
-> > +MODULE_AUTHOR("fuyao <fuyao@allwinnertech.com>");
+> Can someone recommend a good way to benchmark this properly?  The problem
+> is that the difference this makes relative to the amount of time taken to
+> actually do I/O is tiny.
 
-Thanks for you review, I read it carefully, and learned a lot.
+I find enough of iov overhead running fio/t/io_uring.c with nullblk.
+Not sure whether it'll help you but worth a try.
 
-Maxim tells that there is already the same submission, so this
-submission will be abandoned.
-
-thanks again.
+> 
+> I've tried TCP transfers using the following sink program:
+> 
+> 	#include <stdio.h>
+> 	#include <stdlib.h>
+> 	#include <string.h>
+> 	#include <fcntl.h>
+> 	#include <unistd.h>
+> 	#include <netinet/in.h>
+> 	#define OSERROR(X, Y) do { if ((long)(X) == -1) { perror(Y); exit(1); } } while(0)
+> 	static unsigned char buffer[512 * 1024] __attribute__((aligned(4096)));
+> 	int main(int argc, char *argv[])
+> 	{
+> 		struct sockaddr_in sin = { .sin_family = AF_INET, .sin_port = htons(5555) };
+> 		int sfd, afd;
+> 		sfd = socket(AF_INET, SOCK_STREAM, 0);
+> 		OSERROR(sfd, "socket");
+> 		OSERROR(bind(sfd, (struct sockaddr *)&sin, sizeof(sin)), "bind");
+> 		OSERROR(listen(sfd, 1), "listen");
+> 		for (;;) {
+> 			afd = accept(sfd, NULL, NULL);
+> 			if (afd != -1) {
+> 				while (read(afd, buffer, sizeof(buffer)) > 0) {}
+> 				close(afd);
+> 			}
+> 		}
+> 	}
+> 
+> and send program:
+> 
+> 	#include <stdio.h>
+> 	#include <stdlib.h>
+> 	#include <string.h>
+> 	#include <fcntl.h>
+> 	#include <unistd.h>
+> 	#include <netdb.h>
+> 	#include <netinet/in.h>
+> 	#include <sys/stat.h>
+> 	#include <sys/sendfile.h>
+> 	#define OSERROR(X, Y) do { if ((long)(X) == -1) { perror(Y); exit(1); } } while(0)
+> 	static unsigned char buffer[512*1024] __attribute__((aligned(4096)));
+> 	int main(int argc, char *argv[])
+> 	{
+> 		struct sockaddr_in sin = { .sin_family = AF_INET, .sin_port = htons(5555) };
+> 		struct hostent *h;
+> 		ssize_t size, r, o;
+> 		int cfd;
+> 		if (argc != 3) {
+> 			fprintf(stderr, "tcp-gen <server> <size>\n");
+> 			exit(2);
+> 		}
+> 		size = strtoul(argv[2], NULL, 0);
+> 		if (size <= 0) {
+> 			fprintf(stderr, "Bad size\n");
+> 			exit(2);
+> 		}
+> 		h = gethostbyname(argv[1]);
+> 		if (!h) {
+> 			fprintf(stderr, "%s: %s\n", argv[1], hstrerror(h_errno));
+> 			exit(3);
+> 		}
+> 		if (!h->h_addr_list[0]) {
+> 			fprintf(stderr, "%s: No addresses\n", argv[1]);
+> 			exit(3);
+> 		}
+> 		memcpy(&sin.sin_addr, h->h_addr_list[0], h->h_length);
+> 		cfd = socket(AF_INET, SOCK_STREAM, 0);
+> 		OSERROR(cfd, "socket");
+> 		OSERROR(connect(cfd, (struct sockaddr *)&sin, sizeof(sin)), "connect");
+> 		do {
+> 			r = size > sizeof(buffer) ? sizeof(buffer) : size;
+> 			size -= r;
+> 			o = 0;
+> 			do {
+> 				ssize_t w = write(cfd, buffer + o, r - o);
+> 				OSERROR(w, "write");
+> 				o += w;
+> 			} while (o < r);
+> 		} while (size > 0);
+> 		OSERROR(close(cfd), "close/c");
+> 		return 0;
+> 	}
+> 
+> since the socket interface uses iterators.  It seems to show no difference.
+> One side note, though: I've been doing 10GiB same-machine transfers, and it
+> takes either ~2.5s or ~0.87s and rarely in between, with or without these
+> patches, alternating apparently randomly between the two times.
+> 
+> The patches can be found here:
+> 
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=iov-ops
+> 
+> David
+> ---
+> David Howells (29):
+>       iov_iter: Switch to using a table of operations
+>       iov_iter: Split copy_page_to_iter()
+>       iov_iter: Split iov_iter_fault_in_readable
+>       iov_iter: Split the iterate_and_advance() macro
+>       iov_iter: Split copy_to_iter()
+>       iov_iter: Split copy_mc_to_iter()
+>       iov_iter: Split copy_from_iter()
+>       iov_iter: Split the iterate_all_kinds() macro
+>       iov_iter: Split copy_from_iter_full()
+>       iov_iter: Split copy_from_iter_nocache()
+>       iov_iter: Split copy_from_iter_flushcache()
+>       iov_iter: Split copy_from_iter_full_nocache()
+>       iov_iter: Split copy_page_from_iter()
+>       iov_iter: Split iov_iter_zero()
+>       iov_iter: Split copy_from_user_atomic()
+>       iov_iter: Split iov_iter_advance()
+>       iov_iter: Split iov_iter_revert()
+>       iov_iter: Split iov_iter_single_seg_count()
+>       iov_iter: Split iov_iter_alignment()
+>       iov_iter: Split iov_iter_gap_alignment()
+>       iov_iter: Split iov_iter_get_pages()
+>       iov_iter: Split iov_iter_get_pages_alloc()
+>       iov_iter: Split csum_and_copy_from_iter()
+>       iov_iter: Split csum_and_copy_from_iter_full()
+>       iov_iter: Split csum_and_copy_to_iter()
+>       iov_iter: Split iov_iter_npages()
+>       iov_iter: Split dup_iter()
+>       iov_iter: Split iov_iter_for_each_range()
+>       iov_iter: Remove iterate_all_kinds() and iterate_and_advance()
+> 
+> 
+>  lib/iov_iter.c | 1440 +++++++++++++++++++++++++++++++-----------------
+>  1 file changed, 934 insertions(+), 506 deletions(-)
+> 
+> 
 
 -- 
-fuyao
+Pavel Begunkov
