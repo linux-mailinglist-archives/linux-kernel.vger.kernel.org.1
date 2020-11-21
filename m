@@ -2,151 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CA42BBE45
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 10:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88AB42BBE4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 10:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbgKUJs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 04:48:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727378AbgKUJs6 (ORCPT
+        id S1727429AbgKUJvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 04:51:32 -0500
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:45550 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726629AbgKUJvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 04:48:58 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3278C061A4A
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 01:48:57 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id u19so16986813lfr.7
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 01:48:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BQiLNTLnW3SLtn0YsnDFKEJnLKO+RrQeEC1pO6DUX3I=;
-        b=NDK1nLAguE/ieGaWEY+FmLBnFzKQ+keiUbLA87fRWbeoBl0TUnxoIWidngljNw3njr
-         T9o8cTivwQ/PNTS8SRA8GGOH3lhovcdXa7KS3UtRt1obJiBdyCZZl9Xlfw4rzkmyGOTd
-         uLGvEZ1QZa5J6Tp8nfw/NzJd+K1nkbMjtRkcCChOxm0B7P2+fVxhLjJYZYL3Q7DkFqaR
-         T3AKSwfY5cZnPoVzlZ66HzscshjnesEaQzqHuuFTVW0GRzwo5rZ75HFGKONmKLB103Am
-         QO3KboK3J0HYVm4pMpi2LzNDqw5WjPohXcC1BMna74BqabedOAZCTbSZTqUHiUTJ5sWr
-         xRZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BQiLNTLnW3SLtn0YsnDFKEJnLKO+RrQeEC1pO6DUX3I=;
-        b=N5is0ZY1ulbNpGKTXEcsD5yDu3TcFry3y3ghIJZtTytCcbwYKQOHRMcLUKXy0cI05r
-         S4N7JunpjMXaqRxjbsrbvsGu3CQx1x4bBeWnCnH0w9AUIqkPkgaf4Xdqk17Q8ZHoWzM6
-         JzILp4stPPLGdOtVWeFX52DGF0mWOq+0w0e92tFXzppi3dlQVZGtzcRRGkB5vJAA2dJY
-         4sPaJAWp0CJ2AHt8xZUd4WTLkWXZow2vkt91UEoD3PVTMU58uJoHyyIKDjTIKCelCRfO
-         8iACkRgQ6b4Jkm7hLAMSUG/DE783vFFspupk/ueSNHpP+WskXY8Xm27QZ9wgbl2tRMCe
-         y9Ug==
-X-Gm-Message-State: AOAM532P0d4QkZ1xWI586+Xfa91W1ViuKNtqyjqRW0xMKQepeTwGKevJ
-        EME38C5v7GaFrXDE9mjfno9rc7lXFM8BImjPMZeOdg==
-X-Google-Smtp-Source: ABdhPJxud8h9+Zsb7MJedEB+VgeNBdrfewqkbrhXLdc6jkC62nTrXEoFHkJAkLhxgIShY2CKy1qJr682LJJZVeaTVL4=
-X-Received: by 2002:a05:6512:110a:: with SMTP id l10mr9769828lfg.167.1605952135886;
- Sat, 21 Nov 2020 01:48:55 -0800 (PST)
+        Sat, 21 Nov 2020 04:51:31 -0500
+Received: from localhost.localdomain ([81.185.161.242])
+        by mwinf5d61 with ME
+        id uxrS230045E5lq903xrSLm; Sat, 21 Nov 2020 10:51:27 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 21 Nov 2020 10:51:27 +0100
+X-ME-IP: 81.185.161.242
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] IB/qib: Use dma_set_mask_and_coherent to simplify code
+Date:   Sat, 21 Nov 2020 10:51:27 +0100
+Message-Id: <20201121095127.1335228-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201119085022.3606135-1-davidgow@google.com> <CAEf4BzY4i0fH34eO=-4WOzVpifgPmJ0ER5ipBJWB0_4Zdv0AQg@mail.gmail.com>
-In-Reply-To: <CAEf4BzY4i0fH34eO=-4WOzVpifgPmJ0ER5ipBJWB0_4Zdv0AQg@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Sat, 21 Nov 2020 17:48:44 +0800
-Message-ID: <CABVgOSn10kCaD7EQCMJTgD8udNx6fOExqUL1gXHzEViemiq3LA@mail.gmail.com>
-Subject: Re: [RFC PATCH] bpf: preload: Fix build error when O= is set
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-um <linux-um@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 3:38 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Nov 19, 2020 at 12:51 AM David Gow <davidgow@google.com> wrote:
-> >
-> > If BPF_PRELOAD is enabled, and an out-of-tree build is requested with
-> > make O=<path>, compilation seems to fail with:
-> >
-> > tools/scripts/Makefile.include:4: *** O=.kunit does not exist.  Stop.
-> > make[4]: *** [../kernel/bpf/preload/Makefile:8: kernel/bpf/preload/libbpf.a] Error 2
-> > make[3]: *** [../scripts/Makefile.build:500: kernel/bpf/preload] Error 2
-> > make[2]: *** [../scripts/Makefile.build:500: kernel/bpf] Error 2
-> > make[2]: *** Waiting for unfinished jobs....
-> > make[1]: *** [.../Makefile:1799: kernel] Error 2
-> > make[1]: *** Waiting for unfinished jobs....
-> > make: *** [Makefile:185: __sub-make] Error 2
-> >
-> > By the looks of things, this is because the (relative path) O= passed on
-> > the command line is being passed to the libbpf Makefile, which then
-> > can't find the directory. Given OUTPUT= is being passed anyway, we can
-> > work around this by explicitly setting an empty O=, which will be
-> > ignored in favour of OUTPUT= in tools/scripts/Makefile.include.
->
-> Strange, but I can't repro it. I use make O=<absolute path> all the
-> time with no issues. I just tried specifically with a make O=.build,
-> where .build is inside Linux repo, and it still worked fine. See also
-> be40920fbf10 ("tools: Let O= makes handle a relative path with -C
-> option") which was supposed to address such an issue. So I'm wondering
-> what exactly is causing this problem.
->
-[+ linux-um list]
+'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
+an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
 
-Hmm... From a quick check, I can't reproduce this on x86, so it's
-possibly a UML-specific issue.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/infiniband/hw/qib/qib_pcie.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-The problem here seems to be that $PWD is, for whatever reason, equal
-to the srcdir on x86, but not on UML. In general, $PWD behaves pretty
-weirdly -- I don't fully understand it -- but if I add a tactical "PWD
-:= $(shell pwd)" or use $(CURDIR) instead, the issue shows up on x86
-as well. I guess this is because PWD only gets updated when set by a
-shell or something, and UML does this somewhere?
+diff --git a/drivers/infiniband/hw/qib/qib_pcie.c b/drivers/infiniband/hw/qib/qib_pcie.c
+index 3dc6ce033319..2e07b3749b88 100644
+--- a/drivers/infiniband/hw/qib/qib_pcie.c
++++ b/drivers/infiniband/hw/qib/qib_pcie.c
+@@ -90,25 +90,18 @@ int qib_pcie_init(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		goto bail;
+ 	}
+ 
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (ret) {
+ 		/*
+ 		 * If the 64 bit setup fails, try 32 bit.  Some systems
+ 		 * do not setup 64 bit maps on systems with 2GB or less
+ 		 * memory installed.
+ 		 */
+-		ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++		ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 		if (ret) {
+ 			qib_devinfo(pdev, "Unable to set DMA mask: %d\n", ret);
+ 			goto bail;
+ 		}
+-		ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+-	} else
+-		ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+-	if (ret) {
+-		qib_early_err(&pdev->dev,
+-			      "Unable to set DMA consistent mask: %d\n", ret);
+-		goto bail;
+ 	}
+ 
+ 	pci_set_master(pdev);
+-- 
+2.27.0
 
-Thoughts?
-
-Cheers,
--- David
-
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
-> > ---
-> >
-> > Hi all,
-> >
-> > I'm not 100% sure this is the correct fix here -- it seems to work for
-> > me, and makes some sense, but let me know if there's a better way.
-> >
-> > One other thing worth noting is that I've been hitting this with
-> > make allyesconfig on ARCH=um, but there's a comment in the Kconfig
-> > suggesting that, because BPF_PRELOAD depends on !COMPILE_TEST, that
-> > maybe it shouldn't be being built at all. I figured that it was worth
-> > trying to fix this anyway.
-> >
-> > Cheers,
-> > -- David
-> >
-> >
-> >  kernel/bpf/preload/Makefile | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
-> > index 23ee310b6eb4..39848d296097 100644
-> > --- a/kernel/bpf/preload/Makefile
-> > +++ b/kernel/bpf/preload/Makefile
-> > @@ -5,7 +5,7 @@ LIBBPF_A = $(obj)/libbpf.a
-> >  LIBBPF_OUT = $(abspath $(obj))
-> >
-> >  $(LIBBPF_A):
-> > -       $(Q)$(MAKE) -C $(LIBBPF_SRCS) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
-> > +       $(Q)$(MAKE) -C $(LIBBPF_SRCS) O= OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
-> >
-> >  userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
-> >         -I $(srctree)/tools/lib/ -Wno-unused-result
-> > --
-> > 2.29.2.454.gaff20da3a2-goog
-> >
