@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC722BBDD0
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 396C92BBDD1
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgKUHdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 02:33:23 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:50305 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgKUHdW (ORCPT
+        id S1727051AbgKUHdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 02:33:24 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:41676 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726483AbgKUHdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 02:33:22 -0500
-Received: by mail-il1-f198.google.com with SMTP id f66so9421261ilh.17
+        Sat, 21 Nov 2020 02:33:23 -0500
+Received: by mail-io1-f70.google.com with SMTP id y2so9229502ioy.8
         for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 23:33:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5Bu/hK7E2C/9qkvXSyysPqfemJDnqPa41mYYytxGwNE=;
-        b=pcQM56nbPJv40OK91AvqZpUc8PnawENJ3ZqCWj4qXLbJWTqJ0BxsGMv7mpB0cPj/Bi
-         +iPzKqSesQfSzHc9n8U60a0YwQi2jGhJgNKeTjQmtFmCUZNCO0ZbAZzIXfT7OBfE2fzN
-         YMsrs5DLZ14NrfOroO9UAM83DmIqiMr9aSvwqVoSjWzBoBaseMQo63pzoJ24JlgEdEF0
-         /2Eropp2QFVfLZCHiStdwy/4JOCAfd4GoM/m0bA8OfHKKs/ODCjQQCXh9tebk4R8WFQ2
-         Pw1az1hfe+ED8EXtVKjvZv+kHbrZ6axDZ2IAVLzGGhtNc1+IvZOB5JnGnO3N8re0dQ7Z
-         FQJA==
-X-Gm-Message-State: AOAM530gnIR/tVYtZM7tGQPe5v2pRIzqnAe5K5F6Z5HegzgKrxQ+q/vu
-        S/5FDmPfFusKS6K4OGIxQZFSJMnpUSXeBuCx9SAiZuZufGjw
-X-Google-Smtp-Source: ABdhPJyXDXB4QfV1XVGuEJVfOww3GyarhBgfhGE9cbf7eEwi4VJ1D6W8Xm0VfJDvT3qJqjqF7vFnYMSYaciSDURfi0GeSrwrVw1l
+        bh=dnRpk+wn7kRauS/xOSeOJLi9iu9F5fwdtvBOmPbW9zU=;
+        b=nl6GRk54okQEJgIMfD/oRbWQd/C57EWr13kKJD6WPWk4+QVgAmmMUVFOfifPFMpQ/w
+         UrCftPrdsdVr9CNCnqISrBnMx0u/zx0rxQ2xBysiW8py8IzlnSHkEYJXSmP3t1g+yvOu
+         BS5SKTZRECDQCNBtgc7FsbDqDMDJN9C6L4oyW+gozozk3KPWRFnsnisaA16AWJnOLgls
+         krqC644CSH2hsxE/jyxjMtiE0uuEcnxl5ui33toR76n3dU5aE44glsCHW7W8GhH8ffkx
+         UeMGShF1zZRSkP29XwQ9QlQefLvGVYg/t3bBVYOumwDEj+ciBp94qumI7sRIrTOkAXUq
+         Y7aA==
+X-Gm-Message-State: AOAM533eFV9V2OGdtmbhUbZhHk3kT+apID3mU+7q83XeQnzdRxRW20xj
+        UHsqVCVe5j5HgJdRSpuqRYHSY5lEiToC6RwaSU4pqnYv/8Ib
+X-Google-Smtp-Source: ABdhPJy7Y4Hc5g2NVtRvdLUY4nr+CRiZz0z7REXJ6iPCis8kWtNZ0/tMNh+RgOM8R9QRZT1gOz4c92UicHjIQal/6cX2kvEHZjs/
 MIME-Version: 1.0
-X-Received: by 2002:a6b:4014:: with SMTP id k20mr27862179ioa.177.1605944001884;
+X-Received: by 2002:a92:d489:: with SMTP id p9mr11869785ilg.123.1605944001646;
  Fri, 20 Nov 2020 23:33:21 -0800 (PST)
 Date:   Fri, 20 Nov 2020 23:33:21 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c2f72c05b498f9bd@google.com>
-Subject: WARNING: filesystem loop2 was created with 512 inodes, the real
+Message-ID: <000000000000bf566005b498f95f@google.com>
+Subject: WARNING: filesystem loop4 was created with 512 inodes, the real
  maximum is 511, mounting anyway
-From:   syzbot <syzbot+ae3ff0bb2a0133596a5b@syzkaller.appspotmail.com>
+From:   syzbot <syzbot+1a219abc12077a390bc9@syzkaller.appspotmail.com>
 To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -49,20 +49,20 @@ syzbot found the following issue on:
 
 HEAD commit:    09162bc3 Linux 5.10-rc4
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16e9a486500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e93bbe4ce29223b
-dashboard link: https://syzkaller.appspot.com/bug?extid=ae3ff0bb2a0133596a5b
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+console output: https://syzkaller.appspot.com/x/log.txt?x=103f4fbe500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=75292221eb79ace2
+dashboard link: https://syzkaller.appspot.com/bug?extid=1a219abc12077a390bc9
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ae3ff0bb2a0133596a5b@syzkaller.appspotmail.com
+Reported-by: syzbot+1a219abc12077a390bc9@syzkaller.appspotmail.com
 
-BFS-fs: bfs_fill_super(): WARNING: filesystem loop2 was created with 512 inodes, the real maximum is 511, mounting anyway
-BFS-fs: bfs_fill_super(): Last block not available on loop2: 1507328
-BFS-fs: bfs_fill_super(): WARNING: filesystem loop2 was created with 512 inodes, the real maximum is 511, mounting anyway
-BFS-fs: bfs_fill_super(): Last block not available on loop2: 1507328
+BFS-fs: bfs_fill_super(): WARNING: filesystem loop4 was created with 512 inodes, the real maximum is 511, mounting anyway
+BFS-fs: bfs_fill_super(): Last block not available on loop4: 1507328
+BFS-fs: bfs_fill_super(): WARNING: filesystem loop4 was created with 512 inodes, the real maximum is 511, mounting anyway
+BFS-fs: bfs_fill_super(): Last block not available on loop4: 1507328
 
 
 ---
