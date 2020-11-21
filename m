@@ -2,384 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DF92BBB63
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECBC2BBB66
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:03:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbgKUBC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 20:02:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727149AbgKUBC6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 20:02:58 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B54AC061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 17:02:58 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id a16so15384901ejj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 17:02:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sk9JMkU18BJoY1tiLV8iF0/kiIHyna9O/RVdUCBqU8U=;
-        b=V7bNk2SPrdN/SRh+iXN6Ri1rwBZAuSGh6TyIHNJrk8vH48eXGgEMm/YmZKcooovROC
-         ftcGKO1vRdN7AHK2Lt/wF0U7LnT0XCt6Fx+Af/IpPON15v5KGiS2PhIeulTZWrNrUYz8
-         7DKCJv8vzsUXsmcXTHBs86CtnrAt+kOsMSzn4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sk9JMkU18BJoY1tiLV8iF0/kiIHyna9O/RVdUCBqU8U=;
-        b=nHinpVmj3gij5i0gC9ISNQe79qIAF59RX4q3QFf/xTLMMwcXT0tZ6VcSN/UCni9v9W
-         gJXtvT11+GmlMY5eQ0NeeV3rV5lgCE0Bh7KQah6oo2w05UyspPR2VXzUIrfAI9/qTld5
-         avOqH8/nLUWZpyXPx4UoDvtjuzDWUsFlPgaF8zAIPN1TGnnYGMgKxYw/5yzI2jjtUxXm
-         csYGN75e0/a3YwMmAHopKF2n1gTAJlaCK9xO1sgqi02m3aBLQflQ4/nBhXjlUTrF/HZq
-         LKBfzPmKgJ/dIIfzOQrmteb5RRmJN6yCJ5Ws6EwzkT0LTurrC+hSY9M1FRpRjHq1ZAGk
-         On3w==
-X-Gm-Message-State: AOAM532tObkuui0oifoKRnJvwhY9aEHhN6lKgIycMj4hFwuPovj+0PWk
-        5NuYO3dL3JNnYMXHFpr99Ft4Sw//jAy2kw==
-X-Google-Smtp-Source: ABdhPJz7hw291XhGYY57zMogpzsp5HObsAf/KxUpHzqH91JFZl4GUYJ92r0lqxS29fgQB9uCFdzI8g==
-X-Received: by 2002:a17:907:b02:: with SMTP id h2mr7999985ejl.128.1605920576429;
-        Fri, 20 Nov 2020 17:02:56 -0800 (PST)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id d20sm1745474eja.4.2020.11.20.17.02.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 17:02:55 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id x13so3960591wmj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 17:02:55 -0800 (PST)
-X-Received: by 2002:a1c:31c6:: with SMTP id x189mr1524416wmx.50.1605920575058;
- Fri, 20 Nov 2020 17:02:55 -0800 (PST)
+        id S1728881AbgKUBDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 20:03:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727149AbgKUBDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 20:03:18 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 068AE20729;
+        Sat, 21 Nov 2020 01:03:15 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 20:03:14 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>,
+        Linux-trace Users <linux-trace-users@vger.kernel.org>
+Cc:     Zamir SUN <sztsian@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, zsun@redhat.com,
+        Vitaly Chikunov <vt@altlinux.org>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Tony Jones <tonyj@suse.de>, John Kacur <jkacur@redhat.com>,
+        Clark Williams <williams@redhat.com>, powertop@lists.01.org,
+        Al Stone <ahs3@debian.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jes Sorensen <jes.sorensen@gmail.com>
+Subject: [ANNOUNCE] libtracefs.git
+Message-ID: <20201120200314.21efabe5@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201120001037.10032-1-stanimir.varbanov@linaro.org> <20201120001037.10032-4-stanimir.varbanov@linaro.org>
-In-Reply-To: <20201120001037.10032-4-stanimir.varbanov@linaro.org>
-From:   Fritz Koenig <frkoenig@chromium.org>
-Date:   Fri, 20 Nov 2020 17:02:42 -0800
-X-Gmail-Original-Message-ID: <CAMfZQbwjCNjeWJYt8A4Zrq5yABB0bDnOrg41JjDP=MZF86TOjQ@mail.gmail.com>
-Message-ID: <CAMfZQbwjCNjeWJYt8A4Zrq5yABB0bDnOrg41JjDP=MZF86TOjQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] media: hfi_venus: Request interrupt for sync cmds
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Mansur Alisha Shaik <mansur@codeaurora.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 4:12 PM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
-> From: Vikash Garodia <vgarodia@codeaurora.org>
->
-> For synchronous commands, update the message queue variable.
-> This would inform video firmware to raise interrupt on host
-> CPU whenever there is a response for such commands.
->
-> Signed-off-by: Vikash Garodia <vgarodia@codeaurora.org>
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  drivers/media/platform/qcom/venus/hfi_venus.c | 74 ++++++++++---------
->  1 file changed, 41 insertions(+), 33 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/venus/hfi_venus.c
-> index 4be4a75ddcb6..b8fdb464ba9c 100644
-> --- a/drivers/media/platform/qcom/venus/hfi_venus.c
-> +++ b/drivers/media/platform/qcom/venus/hfi_venus.c
-> @@ -372,7 +372,7 @@ static void venus_soft_int(struct venus_hfi_device *hdev)
->  }
->
->  static int venus_iface_cmdq_write_nolock(struct venus_hfi_device *hdev,
-> -                                        void *pkt)
-> +                                        void *pkt, bool sync)
->  {
->         struct device *dev = hdev->core->dev;
->         struct hfi_pkt_hdr *cmd_packet;
-> @@ -397,15 +397,23 @@ static int venus_iface_cmdq_write_nolock(struct venus_hfi_device *hdev,
->         if (rx_req)
->                 venus_soft_int(hdev);
->
-> +       /* Inform video firmware to raise interrupt for synchronous commands */
-> +       queue = &hdev->queues[IFACEQ_MSG_IDX];
+I split out the libtracefs code from trace-cmd.git using "git subtree",
+which recreates all the commits of a directory and makes that directory
+a stand alone. I then updated the Makefiles, and copied over some of
+the header files used to build the library. I pushed this up to:
 
-I don't think there is any reason to scope queue outside of  the sync
-block below.
+  https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
 
->
-> +       if (sync) {
-> +               queue->qhdr->rx_req = 1;
-> +               /* ensure rx_req is updated in memory */
-> +               wmb();
-> +       }
-> +
->         return 0;
->  }
->
-> -static int venus_iface_cmdq_write(struct venus_hfi_device *hdev, void *pkt)
-> +static int venus_iface_cmdq_write(struct venus_hfi_device *hdev, void *pkt, bool sync)
->  {
->         int ret;
->
->         mutex_lock(&hdev->lock);
-> -       ret = venus_iface_cmdq_write_nolock(hdev, pkt);
-> +       ret = venus_iface_cmdq_write_nolock(hdev, pkt, sync);
->         mutex_unlock(&hdev->lock);
->
->         return ret;
-> @@ -428,7 +436,7 @@ static int venus_hfi_core_set_resource(struct venus_core *core, u32 id,
->         if (ret)
->                 return ret;
->
-> -       ret = venus_iface_cmdq_write(hdev, pkt);
-> +       ret = venus_iface_cmdq_write(hdev, pkt, false);
->         if (ret)
->                 return ret;
->
-> @@ -778,7 +786,7 @@ static int venus_sys_set_debug(struct venus_hfi_device *hdev, u32 debug)
->
->         pkt_sys_debug_config(pkt, HFI_DEBUG_MODE_QUEUE, debug);
->
-> -       ret = venus_iface_cmdq_write(hdev, pkt);
-> +       ret = venus_iface_cmdq_write(hdev, pkt, false);
->         if (ret)
->                 return ret;
->
-> @@ -795,7 +803,7 @@ static int venus_sys_set_coverage(struct venus_hfi_device *hdev, u32 mode)
->
->         pkt_sys_coverage_config(pkt, mode);
->
-> -       ret = venus_iface_cmdq_write(hdev, pkt);
-> +       ret = venus_iface_cmdq_write(hdev, pkt, false);
->         if (ret)
->                 return ret;
->
-> @@ -816,7 +824,7 @@ static int venus_sys_set_idle_message(struct venus_hfi_device *hdev,
->
->         pkt_sys_idle_indicator(pkt, enable);
->
-> -       ret = venus_iface_cmdq_write(hdev, pkt);
-> +       ret = venus_iface_cmdq_write(hdev, pkt, false);
->         if (ret)
->                 return ret;
->
-> @@ -834,7 +842,7 @@ static int venus_sys_set_power_control(struct venus_hfi_device *hdev,
->
->         pkt_sys_power_control(pkt, enable);
->
-> -       ret = venus_iface_cmdq_write(hdev, pkt);
-> +       ret = venus_iface_cmdq_write(hdev, pkt, false);
->         if (ret)
->                 return ret;
->
-> @@ -885,14 +893,14 @@ static int venus_sys_set_default_properties(struct venus_hfi_device *hdev)
->         return ret;
->  }
->
-> -static int venus_session_cmd(struct venus_inst *inst, u32 pkt_type)
-> +static int venus_session_cmd(struct venus_inst *inst, u32 pkt_type, bool sync)
->  {
->         struct venus_hfi_device *hdev = to_hfi_priv(inst->core);
->         struct hfi_session_pkt pkt;
->
->         pkt_session_cmd(&pkt, pkt_type, inst);
->
-> -       return venus_iface_cmdq_write(hdev, &pkt);
-> +       return venus_iface_cmdq_write(hdev, &pkt, sync);
->  }
->
->  static void venus_flush_debug_queue(struct venus_hfi_device *hdev)
-> @@ -922,7 +930,7 @@ static int venus_prepare_power_collapse(struct venus_hfi_device *hdev,
->
->         pkt_sys_pc_prep(&pkt);
->
-> -       ret = venus_iface_cmdq_write(hdev, &pkt);
-> +       ret = venus_iface_cmdq_write(hdev, &pkt, false);
->         if (ret)
->                 return ret;
->
-> @@ -1064,13 +1072,13 @@ static int venus_core_init(struct venus_core *core)
->
->         venus_set_state(hdev, VENUS_STATE_INIT);
->
-> -       ret = venus_iface_cmdq_write(hdev, &pkt);
-> +       ret = venus_iface_cmdq_write(hdev, &pkt, false);
->         if (ret)
->                 return ret;
->
->         pkt_sys_image_version(&version_pkt);
->
-> -       ret = venus_iface_cmdq_write(hdev, &version_pkt);
-> +       ret = venus_iface_cmdq_write(hdev, &version_pkt, false);
->         if (ret)
->                 dev_warn(dev, "failed to send image version pkt to fw\n");
->
-> @@ -1099,7 +1107,7 @@ static int venus_core_ping(struct venus_core *core, u32 cookie)
->
->         pkt_sys_ping(&pkt, cookie);
->
-> -       return venus_iface_cmdq_write(hdev, &pkt);
-> +       return venus_iface_cmdq_write(hdev, &pkt, false);
->  }
->
->  static int venus_core_trigger_ssr(struct venus_core *core, u32 trigger_type)
-> @@ -1112,7 +1120,7 @@ static int venus_core_trigger_ssr(struct venus_core *core, u32 trigger_type)
->         if (ret)
->                 return ret;
->
-> -       return venus_iface_cmdq_write(hdev, &pkt);
-> +       return venus_iface_cmdq_write(hdev, &pkt, false);
->  }
->
->  static int venus_session_init(struct venus_inst *inst, u32 session_type,
-> @@ -1130,7 +1138,7 @@ static int venus_session_init(struct venus_inst *inst, u32 session_type,
->         if (ret)
->                 goto err;
->
-> -       ret = venus_iface_cmdq_write(hdev, &pkt);
-> +       ret = venus_iface_cmdq_write(hdev, &pkt, true);
->         if (ret)
->                 goto err;
->
-> @@ -1151,7 +1159,7 @@ static int venus_session_end(struct venus_inst *inst)
->                         dev_warn(dev, "fw coverage msg ON failed\n");
->         }
->
-> -       return venus_session_cmd(inst, HFI_CMD_SYS_SESSION_END);
-> +       return venus_session_cmd(inst, HFI_CMD_SYS_SESSION_END, true);
->  }
->
->  static int venus_session_abort(struct venus_inst *inst)
-> @@ -1160,7 +1168,7 @@ static int venus_session_abort(struct venus_inst *inst)
->
->         venus_flush_debug_queue(hdev);
->
-> -       return venus_session_cmd(inst, HFI_CMD_SYS_SESSION_ABORT);
-> +       return venus_session_cmd(inst, HFI_CMD_SYS_SESSION_ABORT, true);
->  }
->
->  static int venus_session_flush(struct venus_inst *inst, u32 flush_mode)
-> @@ -1173,22 +1181,22 @@ static int venus_session_flush(struct venus_inst *inst, u32 flush_mode)
->         if (ret)
->                 return ret;
->
-> -       return venus_iface_cmdq_write(hdev, &pkt);
-> +       return venus_iface_cmdq_write(hdev, &pkt, true);
->  }
->
->  static int venus_session_start(struct venus_inst *inst)
->  {
-> -       return venus_session_cmd(inst, HFI_CMD_SESSION_START);
-> +       return venus_session_cmd(inst, HFI_CMD_SESSION_START, true);
->  }
->
->  static int venus_session_stop(struct venus_inst *inst)
->  {
-> -       return venus_session_cmd(inst, HFI_CMD_SESSION_STOP);
-> +       return venus_session_cmd(inst, HFI_CMD_SESSION_STOP, true);
->  }
->
->  static int venus_session_continue(struct venus_inst *inst)
->  {
-> -       return venus_session_cmd(inst, HFI_CMD_SESSION_CONTINUE);
-> +       return venus_session_cmd(inst, HFI_CMD_SESSION_CONTINUE, false);
->  }
->
->  static int venus_session_etb(struct venus_inst *inst,
-> @@ -1205,7 +1213,7 @@ static int venus_session_etb(struct venus_inst *inst,
->                 if (ret)
->                         return ret;
->
-> -               ret = venus_iface_cmdq_write(hdev, &pkt);
-> +               ret = venus_iface_cmdq_write(hdev, &pkt, false);
->         } else if (session_type == VIDC_SESSION_TYPE_ENC) {
->                 struct hfi_session_empty_buffer_uncompressed_plane0_pkt pkt;
->
-> @@ -1213,7 +1221,7 @@ static int venus_session_etb(struct venus_inst *inst,
->                 if (ret)
->                         return ret;
->
-> -               ret = venus_iface_cmdq_write(hdev, &pkt);
-> +               ret = venus_iface_cmdq_write(hdev, &pkt, false);
->         } else {
->                 ret = -EINVAL;
->         }
-> @@ -1232,7 +1240,7 @@ static int venus_session_ftb(struct venus_inst *inst,
->         if (ret)
->                 return ret;
->
-> -       return venus_iface_cmdq_write(hdev, &pkt);
-> +       return venus_iface_cmdq_write(hdev, &pkt, false);
->  }
->
->  static int venus_session_set_buffers(struct venus_inst *inst,
-> @@ -1252,7 +1260,7 @@ static int venus_session_set_buffers(struct venus_inst *inst,
->         if (ret)
->                 return ret;
->
-> -       return venus_iface_cmdq_write(hdev, pkt);
-> +       return venus_iface_cmdq_write(hdev, pkt, false);
->  }
->
->  static int venus_session_unset_buffers(struct venus_inst *inst,
-> @@ -1272,17 +1280,17 @@ static int venus_session_unset_buffers(struct venus_inst *inst,
->         if (ret)
->                 return ret;
->
-> -       return venus_iface_cmdq_write(hdev, pkt);
-> +       return venus_iface_cmdq_write(hdev, pkt, true);
->  }
->
->  static int venus_session_load_res(struct venus_inst *inst)
->  {
-> -       return venus_session_cmd(inst, HFI_CMD_SESSION_LOAD_RESOURCES);
-> +       return venus_session_cmd(inst, HFI_CMD_SESSION_LOAD_RESOURCES, true);
->  }
->
->  static int venus_session_release_res(struct venus_inst *inst)
->  {
-> -       return venus_session_cmd(inst, HFI_CMD_SESSION_RELEASE_RESOURCES);
-> +       return venus_session_cmd(inst, HFI_CMD_SESSION_RELEASE_RESOURCES, true);
->  }
->
->  static int venus_session_parse_seq_hdr(struct venus_inst *inst, u32 seq_hdr,
-> @@ -1299,7 +1307,7 @@ static int venus_session_parse_seq_hdr(struct venus_inst *inst, u32 seq_hdr,
->         if (ret)
->                 return ret;
->
-> -       ret = venus_iface_cmdq_write(hdev, pkt);
-> +       ret = venus_iface_cmdq_write(hdev, pkt, false);
->         if (ret)
->                 return ret;
->
-> @@ -1320,7 +1328,7 @@ static int venus_session_get_seq_hdr(struct venus_inst *inst, u32 seq_hdr,
->         if (ret)
->                 return ret;
->
-> -       return venus_iface_cmdq_write(hdev, pkt);
-> +       return venus_iface_cmdq_write(hdev, pkt, false);
->  }
->
->  static int venus_session_set_property(struct venus_inst *inst, u32 ptype,
-> @@ -1339,7 +1347,7 @@ static int venus_session_set_property(struct venus_inst *inst, u32 ptype,
->         if (ret)
->                 return ret;
->
-> -       return venus_iface_cmdq_write(hdev, pkt);
-> +       return venus_iface_cmdq_write(hdev, pkt, false);
->  }
->
->  static int venus_session_get_property(struct venus_inst *inst, u32 ptype)
-> @@ -1352,7 +1360,7 @@ static int venus_session_get_property(struct venus_inst *inst, u32 ptype)
->         if (ret)
->                 return ret;
->
-> -       return venus_iface_cmdq_write(hdev, &pkt);
-> +       return venus_iface_cmdq_write(hdev, &pkt, true);
->  }
->
->  static int venus_resume(struct venus_core *core)
-> --
-> 2.17.1
->
+What libtracefs.so will be use for, is to allow programs to have an API
+to access the tracefs directory. Right now, it has a very limited set
+of functions that do the bare minimum, for example, to print all sched
+events:
+
+	const char *tracefs_dir;
+	char **sched_events;
+	char *event;
+	int i;
+
+	tracefs_dir = tracefs_get_tracing_dir();
+
+	sched_events = tracefs_system_events(tracefs_dir, "sched");
+	if (!sched_events)
+		return -1;
+	for (i = 0; sched_events[i]; i++)
+		printf("sched event: %s\n", sched_events[i]);
+
+	tracefs_list_free(sched_events);
+
+We plan on adding man pages for all the functions, as well as expand
+the functionality. For example (TBD):
+
+	char **funcs;
+
+	funcs = tracefs_available_filter_functions(tracefs_dir, ".*lock.*");
+
+Which would return a list of all functions that have "lock" in its name
+that can be traced by the function tracer.
+
+Same for setting and getting the ftrace filter, enabling disable
+events, and even setting filters and histograms. The version of this
+library is at 0.1.0 as we are working on it. It is currently at the
+stage that kernelshark can use it. Once libtracecmd is ready, then
+kernelshark will become its own repo as well.
+
+The repo is still a little rough around the edges, and needs some
+loving for making sure the library is installed properly, but it is now
+out there for people to have a look, and better yet, send patches! :-)
+
+Note: From now on, updates to libtraceevent and libtracefs will now be
+made in their corresponding git repos on kernel.org, and no longer
+fixed in trace-cmd or the kernel proper (with some exceptions). After a
+couple of years, when these are packaged in all major repos, I tend to
+remove the code from these other locations.
+
+-- Steve
