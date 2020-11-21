@@ -2,339 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35E32BBC43
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 03:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982AA2BBC45
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 03:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgKUCeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 21:34:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgKUCeo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 21:34:44 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFE4C061A47
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 18:34:42 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id g7so9684247pfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 18:34:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=37P7Jp8XSIot7E8fEFKnYF/0x/havgOQAmhG1+AF0yA=;
-        b=bLFTrW9873Ae9vJUsAjQxjkt1Pjx0SDYg+l7N6bdkOz1ymhAcnBcLE2TvvHJW+P65Q
-         WXl2ZMuBiyf6wmIAiqZks+kRpeKLwwSToOZlJMHIEi1qdT0tJpxG8/vVt+hCqBRLLXyk
-         tLh+v4i8wnb+FqbE4K75EZct9hswU+mSMTAvjOaKP+ig7v2hZ12AUqqtLK/vvTm9ENFA
-         UPZXb7jClQET+PSUu0s9d9L2uZ17bTbhmgNkexJapEyi/zwD7xbmBKZqt5zg76szT1KF
-         MecH8ZfNz12TYNluG3T6BpZN+bihvvXFR/oe+3T8+SqxIe3yBwifIcMIZtYc50wLj+ui
-         KvXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=37P7Jp8XSIot7E8fEFKnYF/0x/havgOQAmhG1+AF0yA=;
-        b=DLYn0cfpN9LS6nSX/jaY97xUEov2pgCm5cszp92otfyhJd4mRQU1CzB+jRstZIZeSq
-         OFaG8e2hSCZ6H3p4OiGATItcsBnGME1lBgSxZxBIN4W0dC5shddefDGdo08bUg/AdJPq
-         Kd7bF300QCqaSUxfwguV8ShhA6gNS/gNhjBVi4g43+/Vf97pUkbnYvanMRSAPIbq54Ak
-         voNWIqR5e3VUXS0pII+C1THuIV7q/0wvSFT/eYrgTIIfhE7ZuPih06VULWENqDsuQ7QA
-         aUgMQTrrcb2Y8tNUK2OxsIJEA2TwOThLTuwPBU9GME0jO1oIC+0Oq3gDIAc63DROoAg8
-         +/bQ==
-X-Gm-Message-State: AOAM530Z6EAnCXhbUNbdh0Rs7iSEzjfOR1d2vSM8Uar5L43eGLzYfyBF
-        dBMF3SZ/gh7zTJre1c8D8m72ItGUMnuO7A==
-X-Google-Smtp-Source: ABdhPJxUtfqQocBNJXNZyJmlVXOuOTyrvZBFsXf/39nF4EUtYC0A4QA5HkZ857JVjeQc1ATtuP+42Q==
-X-Received: by 2002:a17:90a:154a:: with SMTP id y10mr13440501pja.6.1605926081647;
-        Fri, 20 Nov 2020 18:34:41 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id k9sm5028411pfp.68.2020.11.20.18.34.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 18:34:40 -0800 (PST)
-Date:   Fri, 20 Nov 2020 18:34:40 -0800 (PST)
-X-Google-Original-Date: Fri, 20 Nov 2020 18:34:38 PST (-0800)
-Subject:     Re: [v3] cpuidle: add riscv cpuidle driver
-In-Reply-To: <CAJZ5v0h-7Hc9MxeaqVSjOREYHfc+m2Bjxcuk9Q04d9b1r4zqVg@mail.gmail.com>
-CC:     liush@allwinnertech.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, rjw@rjwysocki.net,
-        daniel.lezcano@linaro.org, Anup Patel <Anup.Patel@wdc.com>,
-        keescook@chromium.org, christian.brauner@ubuntu.com,
-        geert@linux-m68k.org, amanieu@gmail.com, guoren@linux.alibaba.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     rafael@kernel.org
-Message-ID: <mhng-28f02efa-2790-4a6d-bff7-a91bf3a0d227@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726738AbgKUCgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 21:36:33 -0500
+Received: from mga14.intel.com ([192.55.52.115]:47086 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726389AbgKUCgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 21:36:32 -0500
+IronPort-SDR: FZZRgPpItxMwDU0eOreZ3teD20WqUki8bTIHAOni+5i1qwZ90Pr1/RXYlRRlAIfmKI+fLawzFP
+ U1KMdn+sANyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="170788359"
+X-IronPort-AV: E=Sophos;i="5.78,358,1599548400"; 
+   d="scan'208";a="170788359"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 18:36:32 -0800
+IronPort-SDR: tMO5/dfiyoACOi+38Nf/TN0U9Pgak+DffhJ6VFrPjUUknSwMouIT2Zu3EzQzLkadvCJTKYyiWE
+ 88Z7etQtV5/w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,358,1599548400"; 
+   d="scan'208";a="431759873"
+Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
+  by fmsmga001.fm.intel.com with ESMTP; 20 Nov 2020 18:36:32 -0800
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Borislav Petkov" <bp@alien8.de>, "Ingo Molnar" <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Xiaoyao Li " <xiaoyao.li@intel.com>,
+        "Ravi V Shankar" <ravi.v.shankar@intel.com>
+Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
+Subject: [PATCH v3 0/4] x86/bus_lock: Enable bus lock detection
+Date:   Sat, 21 Nov 2020 02:36:20 +0000
+Message-Id: <20201121023624.3604415-1-fenghua.yu@intel.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 08:28:09 PST (-0800), rafael@kernel.org wrote:
-> On Fri, Sep 25, 2020 at 5:46 AM liush <liush@allwinnertech.com> wrote:
->>
->> This patch adds a simple cpuidle driver for RISC-V systems using
->> the WFI state. Other states will be supported in the future.
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->
-> This isn't needed in a patch adding a new driver.
->
->> Signed-off-by: liush <liush@allwinnertech.com>
->> ---
->> Changes in v3:
->> - fix the issue reported by kernel test robot
->>   "drivers/cpuidle/cpuidle-riscv.c:22:12: warning: no previous prototype
->>    for 'riscv_low_level_suspend_enter' [-Wmissing-prototypes]"
->> Changes in v2:
->> - call "mb()" before run "WFI" in cpu_do_idle
->> - modify commit description
->> - place "select CPU_IDLE" in alphabetical order
->> - replace "__asm__ __volatile__ ("wfi")" with "wait_for_interrupt()"
->> - delete "cpuidle.c",move "cpu_do_idle()" to cpuidle.h
->> - modify "arch_cpu_idle", "cpu_do_idle" can be called by
->>   "arch_cpu_idle"
->> - fix space/tab issues
->> - modify riscv_low_level_suspend_enter to __weak mode
->>
->>  arch/riscv/Kconfig               |  7 +++++
->>  arch/riscv/include/asm/cpuidle.h | 16 ++++++++++++
->>  arch/riscv/kernel/process.c      |  3 ++-
->>  drivers/cpuidle/Kconfig          |  5 ++++
->>  drivers/cpuidle/Kconfig.riscv    | 11 ++++++++
->>  drivers/cpuidle/Makefile         |  4 +++
->>  drivers/cpuidle/cpuidle-riscv.c  | 55 ++++++++++++++++++++++++++++++++++++++++
->>  7 files changed, 100 insertions(+), 1 deletion(-)
->>  create mode 100644 arch/riscv/include/asm/cpuidle.h
->>  create mode 100644 drivers/cpuidle/Kconfig.riscv
->>  create mode 100644 drivers/cpuidle/cpuidle-riscv.c
->>
->> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> index df18372..799bf86 100644
->> --- a/arch/riscv/Kconfig
->> +++ b/arch/riscv/Kconfig
->> @@ -33,6 +33,7 @@ config RISCV
->>         select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
->>         select CLONE_BACKWARDS
->>         select COMMON_CLK
->> +       select CPU_IDLE
->>         select EDAC_SUPPORT
->>         select GENERIC_ARCH_TOPOLOGY if SMP
->>         select GENERIC_ATOMIC64 if !64BIT
->> @@ -407,6 +408,12 @@ config BUILTIN_DTB
->>         depends on RISCV_M_MODE
->>         depends on OF
->>
->> +menu "CPU Power Management"
->> +
->> +source "drivers/cpuidle/Kconfig"
->> +
->> +endmenu
->> +
->>  menu "Power management options"
->>
->>  source "kernel/power/Kconfig"
->> diff --git a/arch/riscv/include/asm/cpuidle.h b/arch/riscv/include/asm/cpuidle.h
->> new file mode 100644
->> index 00000000..599b810
->> --- /dev/null
->> +++ b/arch/riscv/include/asm/cpuidle.h
->> @@ -0,0 +1,16 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef __RISCV_CPUIDLE_H
->> +#define __RISCV_CPUIDLE_H
->> +
->> +static inline void cpu_do_idle(void)
->> +{
->> +       /*
->> +        * Add mb() here to ensure that all
->> +        * IO/MEM access are completed prior
->> +        * to enter WFI.
->> +        */
->> +       mb();
->
-> Either the comment isn't precise enough, or this may not work as expected.
->
-> The memory barrier prevents memory accesses occurring earlier in the
-> code flow from being reordered (by the processor or by the compiler)
-> after the function call below, but is this really needed?  That is,
-> can they be reordered anyway?  If so, then why?
->
->> +       wait_for_interrupt();
->> +}
->> +
->> +#endif
->> diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
->> index 2b97c49..5431aaa 100644
->> --- a/arch/riscv/kernel/process.c
->> +++ b/arch/riscv/kernel/process.c
->> @@ -21,6 +21,7 @@
->>  #include <asm/string.h>
->>  #include <asm/switch_to.h>
->>  #include <asm/thread_info.h>
->> +#include <asm/cpuidle.h>
->>
->>  register unsigned long gp_in_global __asm__("gp");
->>
->> @@ -35,7 +36,7 @@ extern asmlinkage void ret_from_kernel_thread(void);
->>
->>  void arch_cpu_idle(void)
->>  {
->> -       wait_for_interrupt();
->> +       cpu_do_idle();
->>         local_irq_enable();
->>  }
->>
->> diff --git a/drivers/cpuidle/Kconfig b/drivers/cpuidle/Kconfig
->> index c0aeedd..f6be0fd 100644
->> --- a/drivers/cpuidle/Kconfig
->> +++ b/drivers/cpuidle/Kconfig
->> @@ -62,6 +62,11 @@ depends on PPC
->>  source "drivers/cpuidle/Kconfig.powerpc"
->>  endmenu
->>
->> +menu "RISCV CPU Idle Drivers"
->> +depends on RISCV
->> +source "drivers/cpuidle/Kconfig.riscv"
->> +endmenu
->> +
->>  config HALTPOLL_CPUIDLE
->>         tristate "Halt poll cpuidle driver"
->>         depends on X86 && KVM_GUEST
->> diff --git a/drivers/cpuidle/Kconfig.riscv b/drivers/cpuidle/Kconfig.riscv
->> new file mode 100644
->> index 00000000..7bec059
->> --- /dev/null
->> +++ b/drivers/cpuidle/Kconfig.riscv
->> @@ -0,0 +1,11 @@
->> +# SPDX-License-Identifier: GPL-2.0-only
->> +#
->> +# RISCV CPU Idle drivers
->> +#
->> +config RISCV_CPUIDLE
->> +       bool "Generic RISCV CPU idle Driver"
->> +       select DT_IDLE_STATES
->> +       select CPU_IDLE_MULTIPLE_DRIVERS
->> +       help
->> +         Select this option to enable generic cpuidle driver for RISCV.
->> +         Now only support C0 State.
->> diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
->> index 26bbc5e..4c83c4e 100644
->> --- a/drivers/cpuidle/Makefile
->> +++ b/drivers/cpuidle/Makefile
->> @@ -34,3 +34,7 @@ obj-$(CONFIG_MIPS_CPS_CPUIDLE)                += cpuidle-cps.o
->>  # POWERPC drivers
->>  obj-$(CONFIG_PSERIES_CPUIDLE)          += cpuidle-pseries.o
->>  obj-$(CONFIG_POWERNV_CPUIDLE)          += cpuidle-powernv.o
->> +
->> +###############################################################################
->> +# RISCV drivers
->> +obj-$(CONFIG_RISCV_CPUIDLE)            += cpuidle-riscv.o
->> diff --git a/drivers/cpuidle/cpuidle-riscv.c b/drivers/cpuidle/cpuidle-riscv.c
->> new file mode 100644
->> index 00000000..5dddcfa
->> --- /dev/null
->> +++ b/drivers/cpuidle/cpuidle-riscv.c
->> @@ -0,0 +1,55 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * RISC-V CPU idle driver.
->> + *
->> + * Copyright (C) 2020-2022 Allwinner Ltd
->> + *
->> + * Based on code - driver/cpuidle/cpuidle-at91.c
->> + *
->> + */
->> +#include <linux/cpuidle.h>
->> +#include <linux/cpumask.h>
->> +#include <linux/cpu_pm.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/of.h>
->> +#include <linux/slab.h>
->> +#include <linux/platform_device.h>
->> +#include <asm/cpuidle.h>
->> +
->> +#define MAX_IDLE_STATES        1
->> +
->> +/* TODO: Implement deeper idle states */
->> +static int riscv_low_level_suspend_enter(int state)
->> +{
->> +       return 0;
->> +}
->> +
->> +/* Actual code that puts the SoC in different idle states */
->> +static int riscv_enter_idle(struct cpuidle_device *dev,
->> +                       struct cpuidle_driver *drv,
->> +                              int index)
->> +{
->> +       return CPU_PM_CPU_IDLE_ENTER_PARAM(riscv_low_level_suspend_enter,
->> +                                          index, 0);
->
-> I'm not sure why this is needed at all.
->
-> Because there is only one idle state, idx in __CPU_PM_CPU_IDLE_ENTER()
-> will always be 0, so it'll always call cpu_do_idle(), so can't it be
-> invoked directly from here?
->
-> And since the arch_cpu_idle() is also WFI, why is the full-blown
-> cpuidle driver needed at this point?
+A bus lock [1] is acquired through either split locked access to
+writeback (WB) memory or any locked access to non-WB memory. This is
+typically >1000 cycles slower than an atomic operation within
+a cache line. It also disrupts performance on other cores.
 
-IIRC that was essentially the same feedback as I had on some earlier version of
-this.  The ISA defines WFI and a handful of pause mechanisms, and while I'd be
-happy to take a driver that selects between those I don't really see a reason
-to unless there's some hardware that benefits from it.  I would definitely buy
-the argument that those existing standard mechanisms are insufficient to build
-a realistic chip, but without any concrete users it's very hard to reason about
-any code -- that's true for standard extensions, but doubly so for anything
-else.  In this case requiring an in-tree user may be a bit pedantic, as there's
-really only one way to go about this sort of thing, but it's the generally
-accepted approach in Linux and without an in-tree user it's very hard to
-maintain the code.
+Although split lock can be detected by #AC trap, the trap is triggered
+before the instruction acquires bus lock. This makes it difficult to
+mitigate bus lock (e.g. throttle the user application).
 
-I know it can be a headache to keep stuff like this out of tree, and while
-we've accepted some stuff with only out of tree users I don't want to make that
-a general policy.  Specifically I'm thinking of some helper functions for the
-hypervisor extension that aren't properly used, but I consider that a bit of a
-special case -- that's a standard RISC-V extension, and the ratification
-process is just so glacially paced that it seems silly to make a bunch more
-work for everyone when it comes to some simple refactoring.
+Some CPUs have ability to notify the kernel by an #DB trap after a user
+instruction acquires a bus lock and is executed. This allows the kernel
+to enforce user application throttling or mitigations.
 
-In this case I don't really see such a concrete use case.  I suppose a driver
-could be constructed for the WFM/pause type stuff, but I don't really see those
-(at least as currently defined) being interesting for the Linux use case.
-While obviously it'd be best to have any other idle scheme as a standard RISC-V
-extension, I understand that is a long process and my guess would be that
-(assuming the RISC-V stuff ever get taken seriously) we have a bunch of
-non-standard schemes that arrive before an official standard shows up.  While I
-don't really see any reason to do anything differently for an arbitrary idle
-driver, it's impossible to reason about that sort of thing without some user of
-the code.
+#DB for bus lock detect fixes issues in #AC for split lock detect:
+1) It's architectural ... just need to look at one CPUID bit to know it
+   exists
+2) The IA32_DEBUGCTL MSR, which reports bus lock in #DB, is per-thread.
+   So each process or guest can have different behavior.
+3) It has support for VMM/guests (new VMEXIT codes, etc).
+4) It detects not only split locks but also bus locks from non-WB.
 
-So essentially: I'd be happy to take this if something used it, but without a
-user I don't really see how I can.
+Hardware only generates #DB for bus lock detect when CPL>0 to avoid
+nested #DB from multiple bus locks while the first #DB is being handled.
 
-Sorry!
+Use the existing kernel command line option "split_lock_detect=" to handle
+#DB for bus lock:
 
->
->> +}
->> +
->> +static struct cpuidle_driver riscv_idle_driver = {
->> +       .name                   = "riscv_idle",
->> +       .owner                  = THIS_MODULE,
->> +       .states[0]              = {
->> +               .enter                  = riscv_enter_idle,
->> +               .exit_latency           = 1,
->> +               .target_residency       = 1,
->> +               .name                   = "WFI",
->> +               .desc                   = "RISCV WFI",
->> +       },
->> +       .state_count = MAX_IDLE_STATES,
->> +};
->> +
->> +static int __init riscv_cpuidle_init(void)
->> +{
->> +       return cpuidle_register(&riscv_idle_driver, NULL);
->> +}
->> +
->> +device_initcall(riscv_cpuidle_init);
->> --
+split_lock_detect=
+		#AC for split lock		#DB for bus lock
+
+off		Do nothing			Do nothing
+
+warn		Kernel OOPs			Warn once per task and
+		Warn once per task and		and continues to run.
+		disable future checking 	When both features are
+						supported, warn in #DB
+
+fatal		Kernel OOPs			Send SIGBUS to user.
+		Send SIGBUS to user		When both features are
+						supported, split lock
+						triggers #AC and bus lock
+						from non-WB triggers #DB.
+
+ratelimit:N	Do nothing			Limit bus lock rate to
+						N per second in the
+						current non-root user.
+
+Default split_lock_detect is "warn".
+
+[1] Intel Instruction Set Extension Chapter 8: https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
+
+Change Log:
+v3:
+- Enable Bus Lock Detection when fatal to handle bus lock from non-WB
+  (PeterZ).
+- Add Acked-by: PeterZ in patch 2.
+
+v2:
+- Send SIGBUS in fatal case for bus lock #DB (PeterZ).
+
+v1:
+- Check bus lock bit by its positive polarity (Xiaoyao).
+- Fix a few wording issues in the documentation (Randy).
+[RFC v3 can be found at: https://lore.kernel.org/patchwork/cover/1329943/]
+
+RFC v3:
+- Remove DR6_RESERVED change (PeterZ).
+- Simplify the documentation (Randy).
+
+RFC v2:
+- Architecture changed based on feedback from Thomas and PeterZ. #DB is
+  no longer generated for bus lock in ring0.
+- Split the one single patch into four patches.
+[RFC v1 can be found at: https://lore.kernel.org/lkml/1595021700-68460-1-git-send-email-fenghua.yu@intel.com/]
+
+Fenghua Yu (4):
+  x86/cpufeatures: Enumerate #DB for bus lock detection
+  x86/bus_lock: Handle warn and fatal in #DB for bus lock
+  x86/bus_lock: Set rate limit for bus lock
+  Documentation/admin-guide: Change doc for split_lock_detect parameter
+
+ .../admin-guide/kernel-parameters.txt         |  31 +++-
+ arch/x86/include/asm/cpu.h                    |   9 +-
+ arch/x86/include/asm/cpufeatures.h            |   1 +
+ arch/x86/include/asm/msr-index.h              |   1 +
+ arch/x86/include/uapi/asm/debugreg.h          |   1 +
+ arch/x86/kernel/cpu/common.c                  |   2 +-
+ arch/x86/kernel/cpu/intel.c                   | 155 +++++++++++++++---
+ arch/x86/kernel/traps.c                       |   7 +
+ include/linux/sched/user.h                    |   4 +-
+ kernel/user.c                                 |   7 +
+ 10 files changed, 186 insertions(+), 32 deletions(-)
+
+-- 
+2.29.2
+
