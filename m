@@ -2,91 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D305D2BC0E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1C42BC0E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727505AbgKURMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 12:12:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
+        id S1727311AbgKURQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 12:16:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727155AbgKURMA (ORCPT
+        with ESMTP id S1727048AbgKURQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 12:12:00 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63595C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 09:11:58 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id f11so17985658lfs.3
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 09:11:58 -0800 (PST)
+        Sat, 21 Nov 2020 12:16:10 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40C5C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 09:16:09 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id i13so10233032pgm.9
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 09:16:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=quCrZw3xjQlus6dsPuthLkw5agQjB3m+LKm8h41dAL0=;
-        b=ddmMBP4Ze9m33DVUykspjKY2KVNIw9KTrtgVsU/DE6Ka8lRHMfvRcSEul+eztgd45n
-         6wZqm3AsD7SS7l9Yrdrs6TovA6f3BX5Rp7sq7IF+1Sm85JVxkuoQlE8H70DQsTp2A1jd
-         V/q+DIdNv/g/HAzs26YWcNxjPnHpTrOdOZ2CA1Jb5yZWFoE2SXwv4iXxJ5fsKKLRjJTo
-         jEebQ4b2oOi67818pbR9CxMIXGhJdWi0/4bhOpG3QSMj7wSPpaFXqvIwe8v5OPGa5mOP
-         KRM8e5B5G8FU4OOzi3jXWnnT3dzCALuP9ZvqxFvxgfumGlIDWFWOy8yOl7eLrQtg02yf
-         SAnQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mIhGD64TVT2e/okt0H5po+f21VD7x2dMhrZto+qW1po=;
+        b=yxAlvJr0KVlf3l1unVUfJj6i1rgYO6rGgbW7JiXgntmlHT9BOq3cj5Q/jBoUHG8uZs
+         fJOCyUYZvLc8fV740rMg5HrS9zofSi9/EGck9xT1F3lUE5aje0OJNOmdTWmEZo0Q9AZB
+         r5yMvXelOYRfz5mpvRmnWr2Ev8DtkTTCrkWZDbmwbsnlHaA/5z797mB9D8llp08gUgNt
+         BI/0Fg+hy8UmwJwgH9TvXBpxN8lrEURn8CCK1TTWZJAFefpXUSuXwwPeN9Typm8Ft93A
+         FAJP4rCLUs7Hf8ovKLl0Edx/3QcfoA2ltCv4cl399+9BdqKrGDN/q4MSyIK4AsYuXu+A
+         oQaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=quCrZw3xjQlus6dsPuthLkw5agQjB3m+LKm8h41dAL0=;
-        b=ZodIsE3zS2uUUTBNTkF0Q4MExFraMuhDOGoy0QBWxislTsu8dlyCm9nzt5bnr+1ofn
-         0gjbrZm8DgbhPSIwutRbW9PoRYNzat3K9LZfFSH7lYCwAvp4lmawHabK/VTdgxURFzaB
-         iD6xYQ/u7oUoxRJ8T6RxhpKTruASvYK1kh0+hvJFENXcmjr2tRgc6I5Kvr027ZWwMnh0
-         fuJm16uTlTOnxpym7+ENyT/VwDNf1YPQLnSlFpvz8zl0sp3qk9prI80Jq3L7pxecv+B5
-         8Xt9LA6El1OGBywRsM4tz2i5cPp7k83e+2LzFPa4/26V8oZz/wlNvIau7b2a9TpAhKWp
-         hfmg==
-X-Gm-Message-State: AOAM532n9aNVaFU5rLGRz/Wu1BdLjp/5dDUm/uYBwovXPOyy5VX/Mz1b
-        ILTrajQDYpFyrDWyMWUpH1+jhLuDJ+G7eqY80nxPGQ==
-X-Google-Smtp-Source: ABdhPJyMNlwa4X7CQkWhvPpd88a2fJ9PtYFIy30vHt74u7V6698gYdMM3A7vxWOrDPJjPlcNcQktRKUdn+L0sTaJR5M=
-X-Received: by 2002:a19:4147:: with SMTP id o68mr10708124lfa.365.1605978716421;
- Sat, 21 Nov 2020 09:11:56 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mIhGD64TVT2e/okt0H5po+f21VD7x2dMhrZto+qW1po=;
+        b=YyE9I9E/TTgsmBUXrLiWobMzhuprHsbDwxKuiFKd8zduXZGMrWrCeXmtCVSQvCJIUb
+         5APiZlcoynHRc0Rq26vjOroL8KoD3Up2+Wh3AYzkbHA64lIZoHAntsXnhs5q4mAFpXli
+         ub3/cvpid9HRuJiLrQ+ZbjGmsXVi3NJyKeyvnB/wYyc5WcInW8uL5sXUjE04sMoXPjTA
+         t2IERvdpbFxtYTvZDtVg1JQrbXnKOXYYLYwHKRIdE+G+6Yf71lUdbMGZeggrf3g7ppLu
+         ++ijuVdgC1BNk4zMwK75fZ67pyQ9CZnuEUazk1tFKkyWblbf6pTHVdvqzBhzHwepyY6o
+         jl1A==
+X-Gm-Message-State: AOAM532xY5e8gUzm8VaNHFkeBKudmi/LsnVR6DxAZ21qw42UhrTRBGvc
+        F41rqgpRV4uv2dLsaLyW2YYBYW3mm4F3
+X-Google-Smtp-Source: ABdhPJzbzxR5+L1pWDPSSwrD/Awi0W0+mr+c2okgEWIzN6r/4hzsFnc9ZXotgsNX1izJPWg9ZvtErQ==
+X-Received: by 2002:a17:90a:4a85:: with SMTP id f5mr17322069pjh.216.1605978969149;
+        Sat, 21 Nov 2020 09:16:09 -0800 (PST)
+Received: from thinkpad ([2409:4072:6d88:a48b:4152:ad0c:a438:7e97])
+        by smtp.gmail.com with ESMTPSA id mv5sm8488072pjb.42.2020.11.21.09.16.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 09:16:08 -0800 (PST)
+Date:   Sat, 21 Nov 2020 22:46:01 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, loic.poulain@linaro.org,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] bus: mhi: core: Allow receiving a STOP channel
+ command response
+Message-ID: <20201121171601.GB2343@thinkpad>
+References: <1605122473-12179-1-git-send-email-bbhatt@codeaurora.org>
+ <1605122473-12179-2-git-send-email-bbhatt@codeaurora.org>
+ <20201116071339.GI3926@Mani-XPS-13-9360>
+ <616fe76b6757e8d545cfaaba1ab3ab50@codeaurora.org>
 MIME-Version: 1.0
-References: <20201120233743.3617529-1-tkjos@google.com> <X7i+QcE8hhY03FX1@kroah.com>
-In-Reply-To: <X7i+QcE8hhY03FX1@kroah.com>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Sat, 21 Nov 2020 09:11:42 -0800
-Message-ID: <CAHRSSEypnwWwNNvs0giYTjOeUXJuAb-4MNTymVf1uUJr8aUwSQ@mail.gmail.com>
-Subject: Re: [PATCH] binder: add flag to clear buffer on txn complete
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martijn Coenen <maco@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Steven Moreland <smoreland@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <616fe76b6757e8d545cfaaba1ab3ab50@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 11:14 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Nov 20, 2020 at 03:37:43PM -0800, Todd Kjos wrote:
-> > Add a per-transaction flag to indicate that the buffer
-> > must be cleared when the transaction is complete to
-> > prevent copies of sensitive data from being preserved
-> > in memory.
-> >
-> > Signed-off-by: Todd Kjos <tkjos@google.com>
-> > ---
->
-> DOes this need to be backported to stable kernels as well?
+On Mon, Nov 16, 2020 at 09:36:09AM -0800, Bhaumik Bhatt wrote:
+> Hi Mani,
+> 
+> On 2020-11-15 23:13, Manivannan Sadhasivam wrote:
+> > On Wed, Nov 11, 2020 at 11:21:08AM -0800, Bhaumik Bhatt wrote:
+> > > Add support to receive the response to a STOP channel command to the
+> > > MHI bus. If a client would like to STOP a channel instead of issuing
+> > > a RESET to it, this would provide support for it.
+> > > 
+> > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > ---
+> > >  drivers/bus/mhi/core/init.c | 5 +++--
+> > >  drivers/bus/mhi/core/main.c | 5 +++++
+> > >  2 files changed, 8 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> > > index 8cefa35..4d34d62 100644
+> > > --- a/drivers/bus/mhi/core/init.c
+> > > +++ b/drivers/bus/mhi/core/init.c
+> > > @@ -1267,8 +1267,9 @@ static int mhi_driver_remove(struct device *dev)
+> > > 
+> > >  		mutex_lock(&mhi_chan->mutex);
+> > > 
+> > > -		if (ch_state[dir] == MHI_CH_STATE_ENABLED &&
+> > > -		    !mhi_chan->offload_ch)
+> > > +		if ((ch_state[dir] == MHI_CH_STATE_ENABLED ||
+> > > +		     ch_state[dir] == MHI_CH_STATE_STOP) &&
+> > 
+> > This enum is not defined in this patch so it'll break. Please add a
+> > separate
+> > patch which introduces the new state enums alone and then have patches
+> > 1/2
+> > as a followup.
+> > 
+> It is actually already defined and present in internal.h as enum
+> mhi_ch_state.
+> 
+> The old set of enums has MHI_CH_STATE_STOP from enum mhi_ch_state and the
+> new
+> enum I introduced is MHI_CH_STATE_TYPE_STOP from enum enum
+> mhi_ch_state_type.
+> 
+> If it seems confusing, suggestions to renaming them are welcome.
+> 
 
-It doesn't technically qualify for stable since it is a new feature --
-not a bug fix. We will want it for Android S launch devices (5.4+), so
-it would be handy to have it in 5.4.y and later.
+Ah, sorry. I got confused with MHI_CH_STATE_TYPE_STOP and MHI_CH_STATE_STOP.
+Ignore my previous comment.
 
->
-> thanks,
->
-> greg k-h
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+Thanks,
+Mani
+
+> > Also this change is not belonging to this commit I believe.
+> > 
+> I included this change here because, a channel can be in "stopped" state and
+> a user module could be unloaded or a crash could force a driver remove
+> leading
+> us to come this check.
+> 
+> If you think I should move it as a separate patch, let me know.
+> > Thanks,
+> > Mani
+> > 
+> > > +		     !mhi_chan->offload_ch)
+> > >  			mhi_deinit_chan_ctxt(mhi_cntrl, mhi_chan);
+> > > 
+> > >  		mhi_chan->ch_state = MHI_CH_STATE_DISABLED;
+> > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> > > index f953e2a..ad881a1 100644
+> > > --- a/drivers/bus/mhi/core/main.c
+> > > +++ b/drivers/bus/mhi/core/main.c
+> > > @@ -1194,6 +1194,11 @@ int mhi_send_cmd(struct mhi_controller
+> > > *mhi_cntrl,
+> > >  		cmd_tre->dword[0] = MHI_TRE_CMD_RESET_DWORD0;
+> > >  		cmd_tre->dword[1] = MHI_TRE_CMD_RESET_DWORD1(chan);
+> > >  		break;
+> > > +	case MHI_CMD_STOP_CHAN:
+> > > +		cmd_tre->ptr = MHI_TRE_CMD_STOP_PTR;
+> > > +		cmd_tre->dword[0] = MHI_TRE_CMD_STOP_DWORD0;
+> > > +		cmd_tre->dword[1] = MHI_TRE_CMD_STOP_DWORD1(chan);
+> > > +		break;
+> > >  	case MHI_CMD_START_CHAN:
+> > >  		cmd_tre->ptr = MHI_TRE_CMD_START_PTR;
+> > >  		cmd_tre->dword[0] = MHI_TRE_CMD_START_DWORD0;
+> > > --
+> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+> > > Forum,
+> > > a Linux Foundation Collaborative Project
+> > > 
+> 
+> Thanks,
+> Bhaumik
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
