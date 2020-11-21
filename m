@@ -2,38 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76522BC14D
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F362BC152
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgKUSCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 13:02:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46408 "EHLO mail.kernel.org"
+        id S1728171AbgKUSGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 13:06:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727159AbgKUSCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 13:02:51 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        id S1726305AbgKUSGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 13:06:38 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3819022201;
-        Sat, 21 Nov 2020 18:02:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BA0422201;
+        Sat, 21 Nov 2020 18:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605981770;
-        bh=ZnvJ6O/llDrOwGdBy79JQvWupbbyMukQLD21Xwe8+aE=;
+        s=default; t=1605981997;
+        bh=pRRiUjCIvCXAWQNcMYZqHMIWEh2yfgzcy8eELup0gSo=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vit/CzavitK+in26XVdXwSyOfZkrxiWyRHL5003mHEX0iyiKIYN/j69zsMsZfMzZ/
-         oVJ3zuiBIemMjwTbM0BZC7raGvMZmY0liVdZQBCR89IAN/ppW7gioyp3mrVrFiljvV
-         JX2iaDhQxErUinOqemyKDWwtxzCDD1jiEZ07ouE4=
-Date:   Sat, 21 Nov 2020 18:02:46 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lars@metafoo.de>
-Subject: Re: [RFC PATCH 01/12] iio: core: register chardev only if needed
-Message-ID: <20201121180246.772ad299@archlinux>
-In-Reply-To: <20201117162340.43924-2-alexandru.ardelean@analog.com>
-References: <20201117162340.43924-1-alexandru.ardelean@analog.com>
-        <20201117162340.43924-2-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        b=NZ0ejuk5Xv9pZVpBhbuGW9tzWoNsMypJ7ObGrE/j6g6en8v9NtxU0fUeBrD2JDTuv
+         m+Kyi/QLoCfCxrqK+hpCE/Uqk+oj4whfKcAsjMluBdYOmQJB3Lt0CPJlfM140yyJcg
+         gfC36WtEGRWL2BXa6CBVyx9z3bxNzvMKPoiQCKa8=
+Date:   Sat, 21 Nov 2020 10:06:36 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        Aleksandr Nogikh <aleksandrnogikh@gmail.com>,
+        davem@davemloft.net, johannes@sipsolutions.net,
+        edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
+        elver@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        willemdebruijn.kernel@gmail.com,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
+Message-ID: <20201121100636.26aaaf8a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201121165227.GT15137@breakpoint.cc>
+References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
+        <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
+        <20201121160941.GA485907@shredder.lan>
+        <20201121165227.GT15137@breakpoint.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -41,93 +49,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 18:23:29 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+On Sat, 21 Nov 2020 17:52:27 +0100 Florian Westphal wrote:
+> Ido Schimmel <idosch@idosch.org> wrote:
+> > Other suggestions?  
+> 
+> Aleksandr, why was this made into an skb extension in the first place?
+> 
+> AFAIU this feature is usually always disabled at build time.
+> For debug builds (test farm /debug kernel etc) its always needed.
+> 
+> If thats the case this u64 should be an sk_buff member, not an
+> extension.
 
-> We only need a chardev if we need to support buffers and/or events.
-> 
-> With this change, a chardev will be created only if an IIO buffer is
-> attached OR an event_interface is configured.
-> 
-> Otherwise, no chardev will be created, and the IIO device will get
-> registered with the 'device_add()' call.
-> 
-> Quite a lot of IIO devices don't really need a chardev, so this is a minor
-> improvement to the IIO core, as the IIO device will take up (slightly)
-> fewer resources.
-> 
-> In order to not create a chardev, we mostly just need to not initialize the
-> indio_dev->dev.devt field. If that is un-initialized, cdev_device_add()
-> behaves like device_add().
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-I'll be honest. I have no idea why I didn't do this in first place!
+Yeah, in hindsight I should have looked at how it's used. Not a great
+fit for extensions. We can go back, but...
 
-I 'think' we are safe dropping this but I suppose it's possible some
-odd code checks for the chrdev presence?
+In general I'm not very happy at how this is going. First of all just
+setting the handle in a couple of allocs seems to not be enough, skbs
+get cloned, reused etc. There were also build problems caused by this
+patch and Aleksandr & co where nowhere to be found. Now we find out
+this causes leaks, how was that not caught by the syzbot it's supposed
+to serve?!
 
-Hopefully not though.
-
-Jonathan
- 
-> ---
->  drivers/iio/industrialio-core.c | 23 ++++++++++++++++++-----
->  1 file changed, 18 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 419d6f8acc13..ca8b11541477 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1763,6 +1763,15 @@ static const struct file_operations iio_buffer_fileops = {
->  	.compat_ioctl = compat_ptr_ioctl,
->  };
->  
-> +static const struct file_operations iio_event_fileops = {
-> +	.owner = THIS_MODULE,
-> +	.llseek = noop_llseek,
-> +	.unlocked_ioctl = iio_ioctl,
-> +	.compat_ioctl = compat_ptr_ioctl,
-> +	.open = iio_chrdev_open,
-> +	.release = iio_chrdev_release,
-> +};
-> +
->  static int iio_check_unique_scan_index(struct iio_dev *indio_dev)
->  {
->  	int i, j;
-> @@ -1790,6 +1799,7 @@ static const struct iio_buffer_setup_ops noop_ring_setup_ops;
->  
->  int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
->  {
-> +	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
->  	int ret;
->  
->  	if (!indio_dev->info)
-> @@ -1807,9 +1817,6 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
->  	if (ret < 0)
->  		return ret;
->  
-> -	/* configure elements for the chrdev */
-> -	indio_dev->dev.devt = MKDEV(MAJOR(iio_devt), indio_dev->id);
-> -
->  	iio_device_register_debugfs(indio_dev);
->  
->  	ret = iio_buffer_alloc_sysfs_and_mask(indio_dev);
-> @@ -1838,9 +1845,15 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
->  		indio_dev->setup_ops == NULL)
->  		indio_dev->setup_ops = &noop_ring_setup_ops;
->  
-> -	cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
-> +	if (indio_dev->buffer)
-> +		cdev_init(&indio_dev->chrdev, &iio_buffer_fileops);
-> +	else if (iio_dev_opaque->event_interface)
-> +		cdev_init(&indio_dev->chrdev, &iio_event_fileops);
->  
-> -	indio_dev->chrdev.owner = this_mod;
-> +	if (indio_dev->buffer || iio_dev_opaque->event_interface) {
-> +		indio_dev->dev.devt = MKDEV(MAJOR(iio_devt), indio_dev->id);
-> +		indio_dev->chrdev.owner = this_mod;
-> +	}
->  
->  	ret = cdev_device_add(&indio_dev->chrdev, &indio_dev->dev);
->  	if (ret < 0)
-
+So I'm leaning towards reverting the whole thing. You can attach
+kretprobes and record the information you need in BPF maps.
