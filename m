@@ -2,95 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77DA2BBF8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217142BBF8C
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbgKUOOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 09:14:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727974AbgKUOOC (ORCPT
+        id S1728058AbgKUOOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 09:14:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31778 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728040AbgKUOOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 09:14:02 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18066C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 06:14:02 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id a3so13086076wmb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 06:14:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IWYFKF/mJ+HUJoPCxsHdk7pAqaDwieEIuOGknNJBkGE=;
-        b=T5kzv0DqSCFOItJlu9zICD7Mvo71KO8n2HK1FPPMevYCRmL3oFyxfWBoQ3uWLUti+f
-         zYUc6sMQvjXZKlrZZaB9hJ+tEX3Fs3JzeqzfxAZEjoJ+duUlL4VOUM79R50TS4F8OGSa
-         WWkDEMixMKiqwkbvRco+h5W+IMoW7hTI6XLM4Bt/hN7i1Fr6GGH7w4Jq+2k5KkkI78w6
-         8YlFJgB3ZTJW6RjkWOwmJETzneES9a1ANCaykUz4nXsYEVfRNk5AYgzSmClfaUK5ebpu
-         IO9NGeO5y06M+Tn+kyVwGen8IJRqa+E8qrcIJOLvXZjZEnxHO0kbNFII5yHeZCB+QUXO
-         zKnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IWYFKF/mJ+HUJoPCxsHdk7pAqaDwieEIuOGknNJBkGE=;
-        b=WO8P9fE9AUwXlEJruDanI9jBWg9cs+kgMpe+hB3EIl4KJmdPDo7MnLfhtwVV6YDpcL
-         jpamS/uefTuy4M2HqTlxgoPzrXzaqFsf3TfaID5reGuSGVyZ9+5NEw3iDjmtjld8gKSV
-         N7oS2a4nXwRBQIHvayRZ0MMLWt5jhNaELusxQfycPqyWVpysZ0yHM2V/iFnAp7CU+meW
-         Kn8/M7AFNR6m116X50V3pYC4K/EMjzniv8gRgmLFidKrZTDIY94BraAtRJ5dhqUaT86T
-         FSGSOb5mlKo2fCcG0E3Aj09aYe+4Loq3MpzN04dhq9dVchZqbug5KdGN1pHqRzAqI9aL
-         S46A==
-X-Gm-Message-State: AOAM533plJSCtQBgGJAq1ysrBTeK1yYTZaCaA+dcBp/twTZaoPTuFndx
-        wowF200D296U8We1BjQx6kYBOA==
-X-Google-Smtp-Source: ABdhPJwh+gQ2mbKXw8vN5oViDyMNpn5R8RMKiFi8GDqjtHa3AWKn3to7d/4Mu3/AdMYvKrlqx0MukA==
-X-Received: by 2002:a1c:99d3:: with SMTP id b202mr14764169wme.0.1605968040759;
-        Sat, 21 Nov 2020 06:14:00 -0800 (PST)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id q1sm1519818wrj.8.2020.11.21.06.13.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 06:14:00 -0800 (PST)
-Date:   Sat, 21 Nov 2020 15:13:59 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     George Cherian <george.cherian@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, sgoutham@marvell.com,
-        lcherian@marvell.com, gakula@marvell.com, masahiroy@kernel.org,
-        willemdebruijn.kernel@gmail.com, saeed@kernel.org
-Subject: Re: [PATCHv4 net-next 2/3] octeontx2-af: Add devlink health
- reporters for NPA
-Message-ID: <20201121141359.GE3055@nanopsycho.orion>
-References: <20201121040201.3171542-1-george.cherian@marvell.com>
- <20201121040201.3171542-3-george.cherian@marvell.com>
+        Sat, 21 Nov 2020 09:14:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605968048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lMVXr0SmpHGBj3khS+Fv45yL6polUCT+1h37uSQqPAQ=;
+        b=fQ0jq0SfQe9Vx0RKnrAxosnaC8zTLbl6Geqdn+kzgP/zeqAGRUGCNzb54gLqQKDbmtU4Dz
+        1NQjTU/bTRwZmZ39hJygPdyYoA2VqqtZGDcAygFEArIbv9bost84zfFyc+KpIMnK0DhHiH
+        aFkmvzA0vSMunKKXS17G/vpiueIiv28=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-277-9caVioyUN0WqeRNE9gUNAg-1; Sat, 21 Nov 2020 09:14:05 -0500
+X-MC-Unique: 9caVioyUN0WqeRNE9gUNAg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4712E80EDAA;
+        Sat, 21 Nov 2020 14:14:04 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-246.rdu2.redhat.com [10.10.112.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 731CD60C15;
+        Sat, 21 Nov 2020 14:14:02 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 05/29] iov_iter: Split copy_to_iter()
+From:   David Howells <dhowells@redhat.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     dhowells@redhat.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 21 Nov 2020 14:14:01 +0000
+Message-ID: <160596804162.154728.9403561513393584180.stgit@warthog.procyon.org.uk>
+In-Reply-To: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
+References: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121040201.3171542-3-george.cherian@marvell.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sat, Nov 21, 2020 at 05:02:00AM CET, george.cherian@marvell.com wrote:
->Add health reporters for RVU NPA block.
->NPA Health reporters handle following HW event groups
-> - GENERAL events
-> - ERROR events
-> - RAS events
-> - RVU event
->An event counter per event is maintained in SW.
->
->Output:
-> # devlink health
-> pci/0002:01:00.0:
->   reporter npa
->     state healthy error 0 recover 0
-> # devlink  health dump show pci/0002:01:00.0 reporter npa
-> NPA_AF_GENERAL:
->        Unmap PF Error: 0
->        Free Disabled for NIX0 RX: 0
->        Free Disabled for NIX0 TX: 0
->        Free Disabled for NIX1 RX: 0
->        Free Disabled for NIX1 TX: 0
+Split copy_to_iter() by type.
 
-This is for 2 ports if I'm not mistaken. Then you need to have this
-reporter per-port. Register ports and have reporter for each.
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-NAK.
+ lib/iov_iter.c |   47 +++++++++++++++++++++++++++++++----------------
+ 1 file changed, 31 insertions(+), 16 deletions(-)
+
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index a221e7771201..0865e0b6eee9 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -634,7 +634,7 @@ static size_t push_pipe(struct iov_iter *i, size_t size,
+ 	return size - left;
+ }
+ 
+-static size_t copy_pipe_to_iter(const void *addr, size_t bytes,
++static size_t pipe_copy_to_iter(const void *addr, size_t bytes,
+ 				struct iov_iter *i)
+ {
+ 	struct pipe_inode_info *pipe = i->pipe;
+@@ -703,20 +703,35 @@ static size_t csum_and_copy_to_pipe_iter(const void *addr, size_t bytes,
+ 	return bytes;
+ }
+ 
+-static size_t xxx_copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
++static size_t iovec_copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
+ {
+ 	const char *from = addr;
+-	if (unlikely(iov_iter_is_pipe(i)))
+-		return copy_pipe_to_iter(addr, bytes, i);
+-	if (iter_is_iovec(i))
+-		might_fault();
+-	iterate_and_advance(i, bytes, v,
+-		copyout(v.iov_base, (from += v.iov_len) - v.iov_len, v.iov_len),
++	might_fault();
++	iterate_and_advance_iovec(i, bytes, v,
++		copyout(v.iov_base, (from += v.iov_len) - v.iov_len, v.iov_len));
++	return bytes;
++}
++
++static size_t bvec_copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
++{
++	const char *from = addr;
++	iterate_and_advance_bvec(i, bytes, v,
+ 		memcpy_to_page(v.bv_page, v.bv_offset,
+-			       (from += v.bv_len) - v.bv_len, v.bv_len),
+-		memcpy(v.iov_base, (from += v.iov_len) - v.iov_len, v.iov_len)
+-	)
++			       (from += v.bv_len) - v.bv_len, v.bv_len));
++	return bytes;
++}
+ 
++static size_t kvec_copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
++{
++	const char *from = addr;
++	iterate_and_advance_kvec(i, bytes, v,
++		memcpy(v.iov_base, (from += v.iov_len) - v.iov_len, v.iov_len));
++	return bytes;
++}
++
++static size_t discard_copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
++{
++	iterate_and_advance_discard(i, bytes);
+ 	return bytes;
+ }
+ 
+@@ -1915,7 +1930,7 @@ static const struct iov_iter_ops iovec_iter_ops = {
+ 	.single_seg_count		= xxx_single_seg_count,
+ 	.copy_page_to_iter		= iovec_copy_page_to_iter,
+ 	.copy_page_from_iter		= xxx_copy_page_from_iter,
+-	.copy_to_iter			= xxx_copy_to_iter,
++	.copy_to_iter			= iovec_copy_to_iter,
+ 	.copy_from_iter			= xxx_copy_from_iter,
+ 	.copy_from_iter_full		= xxx_copy_from_iter_full,
+ 	.copy_from_iter_nocache		= xxx_copy_from_iter_nocache,
+@@ -1949,7 +1964,7 @@ static const struct iov_iter_ops kvec_iter_ops = {
+ 	.single_seg_count		= xxx_single_seg_count,
+ 	.copy_page_to_iter		= bkvec_copy_page_to_iter,
+ 	.copy_page_from_iter		= xxx_copy_page_from_iter,
+-	.copy_to_iter			= xxx_copy_to_iter,
++	.copy_to_iter			= kvec_copy_to_iter,
+ 	.copy_from_iter			= xxx_copy_from_iter,
+ 	.copy_from_iter_full		= xxx_copy_from_iter_full,
+ 	.copy_from_iter_nocache		= xxx_copy_from_iter_nocache,
+@@ -1983,7 +1998,7 @@ static const struct iov_iter_ops bvec_iter_ops = {
+ 	.single_seg_count		= xxx_single_seg_count,
+ 	.copy_page_to_iter		= bkvec_copy_page_to_iter,
+ 	.copy_page_from_iter		= xxx_copy_page_from_iter,
+-	.copy_to_iter			= xxx_copy_to_iter,
++	.copy_to_iter			= bvec_copy_to_iter,
+ 	.copy_from_iter			= xxx_copy_from_iter,
+ 	.copy_from_iter_full		= xxx_copy_from_iter_full,
+ 	.copy_from_iter_nocache		= xxx_copy_from_iter_nocache,
+@@ -2017,7 +2032,7 @@ static const struct iov_iter_ops pipe_iter_ops = {
+ 	.single_seg_count		= xxx_single_seg_count,
+ 	.copy_page_to_iter		= pipe_copy_page_to_iter,
+ 	.copy_page_from_iter		= xxx_copy_page_from_iter,
+-	.copy_to_iter			= xxx_copy_to_iter,
++	.copy_to_iter			= pipe_copy_to_iter,
+ 	.copy_from_iter			= xxx_copy_from_iter,
+ 	.copy_from_iter_full		= xxx_copy_from_iter_full,
+ 	.copy_from_iter_nocache		= xxx_copy_from_iter_nocache,
+@@ -2051,7 +2066,7 @@ static const struct iov_iter_ops discard_iter_ops = {
+ 	.single_seg_count		= xxx_single_seg_count,
+ 	.copy_page_to_iter		= discard_copy_page_to_iter,
+ 	.copy_page_from_iter		= xxx_copy_page_from_iter,
+-	.copy_to_iter			= xxx_copy_to_iter,
++	.copy_to_iter			= discard_copy_to_iter,
+ 	.copy_from_iter			= xxx_copy_from_iter,
+ 	.copy_from_iter_full		= xxx_copy_from_iter_full,
+ 	.copy_from_iter_nocache		= xxx_copy_from_iter_nocache,
+
+
