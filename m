@@ -2,155 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB712BC16B
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EED12BC16D
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727645AbgKUS1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 13:27:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726305AbgKUS1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 13:27:52 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08C8522202;
-        Sat, 21 Nov 2020 18:27:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605983271;
-        bh=7lt63X1rrAa65RoyzuKKWmk8dw5q5FvCsJSgulEN+YY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cUIwzgZHr3VvJwvhJwNVT5QzOjgJCmRoI4ULgsgW7gMbDl8H3gM+pXJrXgvm3cC6V
-         RqPbJQ1HIQIpT0FbSRz344QTGRiXLHYnOd7+v3bYKBAKbnPecmEfrxKv0kKXAIBWnm
-         CUutXvt+U6rk553jo3XZD5GDn+o4hdzvUxm17V9w=
-Date:   Sat, 21 Nov 2020 18:27:47 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lars@metafoo.de>
-Subject: Re: [RFC PATCH 04/12] iio: buffer: add index to the first IIO
- buffer dir and symlink it back
-Message-ID: <20201121182747.28b8d576@archlinux>
-In-Reply-To: <20201117162340.43924-5-alexandru.ardelean@analog.com>
-References: <20201117162340.43924-1-alexandru.ardelean@analog.com>
-        <20201117162340.43924-5-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728123AbgKUS3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 13:29:07 -0500
+Received: from gproxy8-pub.mail.unifiedlayer.com ([67.222.33.93]:35967 "EHLO
+        gproxy8-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726662AbgKUS3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 13:29:06 -0500
+Received: from cmgw12.unifiedlayer.com (unknown [10.9.0.12])
+        by gproxy8.mail.unifiedlayer.com (Postfix) with ESMTP id CB0B61AB142
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 11:29:04 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id gXdAkTCMGeMJHgXdAkbNgJ; Sat, 21 Nov 2020 11:29:04 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=T72iscCQ c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10:nop_charset_1
+ a=nNwsprhYR40A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=_jlGtV7tAAAA:8
+ a=cVLmmrZ5nNubQtdbMK8A:9 a=QEXdDO2ut3YA:10:nop_charset_2
+ a=nlm17XC03S6CtCLSeiRr:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=WERaUIfmHQF75+9YsbUyCzDuYF0iuOfj6cexs/noDIQ=; b=QQMGnWvvG/Ly6Sr4TqPiuCZK95
+        ICOrQWWrGeEDxErDVFyem5TW0sTHeMuYStd+kED/ghQ3DZVo1Aq5rPDqQi/Ul4/69rXr94JUmMkBG
+        qur54PW6cJaQM1WP9Cn0kiII7wvfPrmYtgBnv9RegBY2Hv2VVD60Nx7WKGL/KXe62ZLa1APFvaYvs
+        ODJ7WKLU7QKu7e7CC9oYlqsDWJaDSfcEcNyYIz2rbVKdDtnnD0YWrOcv0Ldca87EeDIWBGweT3CWV
+        adWsDKAJC9K6RmHMBi1ps5GdKKFhbkhrROsDpbBBoFp1aaG9GxMvZvIcanIuwEV/NI6PO4MziJ0hN
+        Z85fb8oA==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:40902 helo=localhost)
+        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kgXd9-0035yW-NU; Sat, 21 Nov 2020 18:29:03 +0000
+Date:   Sat, 21 Nov 2020 10:29:03 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/15] 4.4.245-rc1 review
+Message-ID: <20201121182903.GB111877@roeck-us.net>
+References: <20201120104539.534424264@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201120104539.534424264@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kgXd9-0035yW-NU
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:40902
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 8
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 18:23:32 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-
-> This change makes it so that the first buffer directory is named 'buffer0'
-> and moves the 'scan_elements' under it.
+On Fri, Nov 20, 2020 at 12:02:58PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.245 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> For backwards compatibility these folders are symlinked back to the
-> original folders.
-Well done on your patch breakdown here.  Makes the actual switch nice
-and simple in this patch.
-
-Looks good to me.
-
-Thanks,
-
-Jonathan
-
+> Responses should be made by Sun, 22 Nov 2020 10:45:32 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/industrialio-buffer.c | 38 +++++++++++++++++++++++++++----
->  1 file changed, 33 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 8b31faf049a5..62c8bd6b67cd 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1346,7 +1346,8 @@ static void iio_sysfs_del_attrs(struct kobject *kobj, struct attribute **ptr)
->  }
->  
->  static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
-> -					     struct iio_dev *indio_dev)
-> +					     struct iio_dev *indio_dev,
-> +					     unsigned int idx)
->  {
->  	struct iio_dev_attr *p;
->  	struct attribute **attr;
-> @@ -1378,7 +1379,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  	buffer->buffer_attrs = attr;
->  
->  	ret = kobject_init_and_add(&buffer->buffer_dir, &iio_buffer_dir_ktype,
-> -				   &indio_dev->dev.kobj, "buffer");
-> +				   &indio_dev->dev.kobj, "buffer%u", idx);
->  	if (ret)
->  		goto error_buffer_free_attrs;
->  
-> @@ -1423,7 +1424,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  	}
->  
->  	ret = kobject_init_and_add(&buffer->scan_el_dir, &iio_scan_el_dir_ktype,
-> -				   &indio_dev->dev.kobj, "scan_elements");
-> +				   &buffer->buffer_dir, "scan_elements");
->  	if (ret)
->  		goto error_free_scan_attrs;
->  
-> @@ -1454,11 +1455,13 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  	return ret;
->  }
->  
-> +static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer);
-> +
->  int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
->  {
->  	struct iio_buffer *buffer = indio_dev->buffer;
->  	const struct iio_chan_spec *channels;
-> -	int i;
-> +	int i, ret;
->  
->  	channels = indio_dev->channels;
->  	if (channels) {
-> @@ -1472,7 +1475,29 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
->  	if (!buffer)
->  		return 0;
->  
-> -	return __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev);
-> +	ret = __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev, 0);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = sysfs_create_link(&indio_dev->dev.kobj,
-> +				&indio_dev->buffer->buffer_dir,
-> +				"buffer");
-> +	if (ret)
-> +		goto error_free_sysfs_and_mask;
-> +
-> +	ret = sysfs_create_link(&indio_dev->dev.kobj,
-> +				&indio_dev->buffer->scan_el_dir,
-> +				"scan_elements");
-> +	if (ret)
-> +		goto error_remove_buffer_dir_link;
-> +
-> +	return 0;
-> +
-> +error_remove_buffer_dir_link:
-> +	sysfs_remove_link(&indio_dev->dev.kobj, "buffer");
-> +error_free_sysfs_and_mask:
-> +	__iio_buffer_free_sysfs_and_mask(buffer);
-> +	return ret;
->  }
->  
->  static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
-> @@ -1494,6 +1519,9 @@ void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
->  	if (!buffer)
->  		return;
->  
-> +	sysfs_remove_link(&indio_dev->dev.kobj, "scan_elements");
-> +	sysfs_remove_link(&indio_dev->dev.kobj, "buffer");
-> +
->  	__iio_buffer_free_sysfs_and_mask(buffer);
->  }
->  
+Build results:
+	total: 165 pass: 164 fail: 1
+Failed builds:
+	powerpc:ppc64e_defconfig
+Qemu test results:
+	total: 328 pass: 323 fail: 5
+Failed tests:
+	ppc64:ppce500:corenet64_smp_defconfig:e5500:initrd
+	ppc64:ppce500:corenet64_smp_defconfig:e5500:nvme:rootfs
+	ppc64:ppce500:corenet64_smp_defconfig:e5500:sdhci:mmc:rootfs
+	ppc64:ppce500:corenet64_smp_defconfig:e5500:scsi[53C895A]:rootfs
+	ppc64:ppce500:corenet64_smp_defconfig:e5500:sata-sii3112:rootfs	
 
+Failure in all cases is:
+
+In file included from arch/powerpc/kernel/ppc_ksyms.c:10:0:
+arch/powerpc/include/asm/book3s/64/kup-radix.h:11:29: error: redefinition of ‘allow_user_access’
+ static __always_inline void allow_user_access(void __user *to, const void __user *from,
+                             ^~~~~~~~~~~~~~~~~
+In file included from arch/powerpc/include/asm/uaccess.h:12:0,
+                 from arch/powerpc/kernel/ppc_ksyms.c:8:
+arch/powerpc/include/asm/kup.h:12:20: note: previous definition of ‘allow_user_access’ was here
+ static inline void allow_user_access(void __user *to, const void __user *from,
+                    ^~~~~~~~~~~~~~~~~
+In file included from arch/powerpc/kernel/ppc_ksyms.c:10:0:
+arch/powerpc/include/asm/book3s/64/kup-radix.h:16:20: error: redefinition of ‘prevent_user_access’
+ static inline void prevent_user_access(void __user *to, const void __user *from,
+                    ^~~~~~~~~~~~~~~~~~~
+In file included from arch/powerpc/include/asm/uaccess.h:12:0,
+                 from arch/powerpc/kernel/ppc_ksyms.c:8:
+arch/powerpc/include/asm/kup.h:14:20: note: previous definition of ‘prevent_user_access’ was here
+ static inline void prevent_user_access(void __user *to, const void __user *from,
+                    ^~~~~~~~~~~~~~~~~~~
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
