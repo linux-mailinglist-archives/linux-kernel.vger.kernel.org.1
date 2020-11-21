@@ -2,231 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294BB2BBF27
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 14:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713AD2BBF2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 14:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbgKUNKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 08:10:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44362 "EHLO
+        id S1727741AbgKUNSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 08:18:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727531AbgKUNKF (ORCPT
+        with ESMTP id S1727668AbgKUNSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 08:10:05 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91356C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 05:10:03 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id l11so17470218lfg.0
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 05:10:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telliq.com; s=google;
-        h=subject:from:to:references:cc:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=wyyXlZOdGsqMQlWFF4RFXmu5nRjaX3Xs6qIF/S+qrVc=;
-        b=mVJ3xoAEhjFY1nPmSDsbPmThRCD3QE+gtRluawX6YM3T9Tp05Awgd2RglaZ8v1CZ6m
-         D9ulXSfjAdpXrikN7arRkayuDiXFRsrMn4hAebjszhyf38J6Elnk8EVF7oQaHrRzHPx4
-         MadwsENeOWkYb8L7Y+lCb6ZVojIoTi1k2mqScRpIlOB4Dpjjx1u5pzNQsO9orrl4xhCq
-         Yo75xDHWX7EreOM3tMykHJersnT7y/OWLMe3Ukn3rB9xSzEkiwTYo7c3bLm92vx+Ay9l
-         L6vEvOKTDC2mqgZmfTLKMAM8sZjQ694cVwHcxwxE6qoKrD0sHJMQjUeIOTGmmumof6RV
-         IT8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:cc:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=wyyXlZOdGsqMQlWFF4RFXmu5nRjaX3Xs6qIF/S+qrVc=;
-        b=WBtZntKDEzcVK3TRuMzDYsf8pcxT4UWwWJ+H0brMLPcNYNP5n5/fUGk+hcfeOilXbq
-         or113XEkh0VziZkAQaX2zglcZ8eu/aY7CZilkb9cP5/3U/wUJTjGLqWqs5IM5NDDGCpu
-         nLo8NK2jh55nu7VkvEg/J4oaSIr3gzAhFnTgPSvMRh09DvMohSSaZMfQGzaY7xhghwhb
-         q3CTAgvqn0pbqx8HG6TPsRLMAJsuHR15RS+goZD1BMwXZZCk6HSUZm2KXjaGwfMa2zc0
-         NCyYlwRe/nANvpl5A/AGWyX1ZzRlRyjDhqjuvWW2ZP40CLQt3QWZ8mG6w9WhfWksHb9Z
-         M73w==
-X-Gm-Message-State: AOAM533pC0UrmX/tmOgUwXpnxYpAOPrMMsfcFfcM5gmCCXZ3hM4nhu4V
-        Rek13mzVecEqKwL8TL4daaypFrkc0MyJdjwV
-X-Google-Smtp-Source: ABdhPJzeCBlg6BgO8NEY2XIjeZGvecNZKZL3B6k5fvDZ4Ktp8bO4X/IwPAN4C/EtL+jHT/yTQpi+OQ==
-X-Received: by 2002:a19:8353:: with SMTP id f80mr8914943lfd.348.1605964201762;
-        Sat, 21 Nov 2020 05:10:01 -0800 (PST)
-Received: from [192.168.53.116] (h77-53-209-86.cust.a3fiber.se. [77.53.209.86])
-        by smtp.gmail.com with ESMTPSA id q5sm605162ljc.46.2020.11.21.05.10.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Nov 2020 05:10:01 -0800 (PST)
-Subject: arm: lockdep complaining about static memory allocations
-From:   Jan Kardell <jan.kardell@telliq.com>
-To:     OpenWrt Development List <openwrt-devel@lists.openwrt.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org
-References: <a669a3e0-e87e-d4f8-fec7-2b445fc9affb@telliq.com>
-Cc:     Russell King <linux@armlinux.org.uk>
-Message-ID: <c28a67ba-0d10-75d5-516c-b494f927eeaf@telliq.com>
-Date:   Sat, 21 Nov 2020 14:09:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 SeaMonkey/2.53.5.1
+        Sat, 21 Nov 2020 08:18:00 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C1DC061A4A
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 05:18:00 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kgSm0-00089W-LG; Sat, 21 Nov 2020 14:17:52 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:4c1f:9c86:2b81:b0ea] (unknown [IPv6:2a03:f580:87bc:d400:4c1f:9c86:2b81:b0ea])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 5BCBD5983CB;
+        Sat, 21 Nov 2020 13:17:50 +0000 (UTC)
+Subject: Re: [PATCH 072/141] can: peak_usb: Fix fall-through warnings for
+ Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <aab7cf16bf43cc7c3e9c9930d2dae850c1d07a3c.1605896059.git.gustavoars@kernel.org>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <bf3dbc5c-c34e-b3ef-abb6-0c88d8a90332@pengutronix.de>
+Date:   Sat, 21 Nov 2020 14:17:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <a669a3e0-e87e-d4f8-fec7-2b445fc9affb@telliq.com>
-Content-Type: multipart/mixed;
- boundary="------------C498ABEC954CF09DB2F7BBCD"
+In-Reply-To: <aab7cf16bf43cc7c3e9c9930d2dae850c1d07a3c.1605896059.git.gustavoars@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Um0PBROohAn87SHKH5Z0CxiUa3ZnYBeOM"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------C498ABEC954CF09DB2F7BBCD
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Um0PBROohAn87SHKH5Z0CxiUa3ZnYBeOM
+Content-Type: multipart/mixed; boundary="uwJFcgT96ZkDsWpG9kNWehKVQzdOYN6eR";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Message-ID: <bf3dbc5c-c34e-b3ef-abb6-0c88d8a90332@pengutronix.de>
+Subject: Re: [PATCH 072/141] can: peak_usb: Fix fall-through warnings for
+ Clang
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <aab7cf16bf43cc7c3e9c9930d2dae850c1d07a3c.1605896059.git.gustavoars@kernel.org>
+In-Reply-To: <aab7cf16bf43cc7c3e9c9930d2dae850c1d07a3c.1605896059.git.gustavoars@kernel.org>
 
-Jan Kardell skrev:
-> Hi,
->
-> I'm lifting our old barrier_braker code on an omap am3552 custom 
-> board, and building it on master per 13 november. I currently run it 
-> as an zImage-initramfs, but the board normally uses ubifs on nand 
-> flash. I get exceptions logged to dmesg, included snippets from the 
-> logs  as attachment. I also saw it with an older kernel, 5.4.68 from 
-> september. I'm not sure how to debug this and would be happy if 
-> someone can point me in the right direction. It looks to me it is 
-> something wrong with allocating/freeing net devices in the kernel. 
-> Maybe there are OpenWrt patches affecting this?
->
-> Regards
-> //Jan
+--uwJFcgT96ZkDsWpG9kNWehKVQzdOYN6eR
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Turns out this is not an OpenWrt thing. After enabling CONFIG_PREEMT i 
-started to see allocation of net devices in the memory that previously 
-was initmem, and lockdep detect that as static memory. To linux 5.2 a 
-patch for s390 in commit 7a5da02de8d6eafba99556f8c98e5313edebb449 added 
-the function arch_is_kernel_initmem_freed(). It has later been added for 
-powerpc and x86 too. I now believe that is needed for arm as well. 
-Though I don't know the inner workings of memory management so I don't 
-know if an identical solution as s390 and powerpc will do for arm. The 
-commit message for s390 says "virt == phys", but that seems not to be 
-the case for my arm system.
+On 11/20/20 7:34 PM, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warnin=
+g
+> by explicitly adding a break statement instead of letting the code fall=
 
-I did a "dummy" arch_is_kernel_initmem_freed() with a printk to verify 
-that the address is in the initmem area:
+> through to the next case.
+>=20
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/net/can/usb/peak_usb/pcan_usb_core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net=
+/can/usb/peak_usb/pcan_usb_core.c
+> index c2764799f9ef..fd65a155be3b 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> @@ -299,6 +299,8 @@ static void peak_usb_write_bulk_callback(struct urb=
+ *urb)
+>  		if (net_ratelimit())
+>  			netdev_err(netdev, "Tx urb aborted (%d)\n",
+>  				   urb->status);
+> +		break;
+> +
+>  	case -EPROTO:
+>  	case -ENOENT:
+>  	case -ECONNRESET:
+>=20
 
-|[ 73.966965] Address 0xc0e6e630 is in initmem! [ 73.978934] 
-------------[ cut here ]------------ [ 74.001003] WARNING: CPU: 0 PID: 
-2008 at kernel/locking/lockdep.c:1119 alloc_netdev_mqs+0xb4/0x3b0|
+What about moving the default to the end if the case, which is more commo=
+n anyways:
+
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/c=
+an/usb/peak_usb/pcan_usb_core.c
+index 204ccb27d6d9..e8977dd10902 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -295,16 +295,16 @@ static void peak_usb_write_bulk_callback(struct urb=
+ *urb)
+                netif_trans_update(netdev);
+                break;
+=20
+-       default:
+-               if (net_ratelimit())
+-                       netdev_err(netdev, "Tx urb aborted (%d)\n",
+-                                  urb->status);
+        case -EPROTO:
+        case -ENOENT:
+        case -ECONNRESET:
+        case -ESHUTDOWN:
+-
+                break;
++
++       default:
++               if (net_ratelimit())
++                       netdev_err(netdev, "Tx urb aborted (%d)\n",
++                                  urb->status);
+        }
+=20
+        /* should always release echo skb and corresponding context */
 
 
-This also makes me wonder if more archs needs this and maybe a more 
-general solution, but that's definitely out of my league...
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-//Jan
+Marc
 
--- 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-"I have always wished for my computer to be as easy to use as my telephone; my wish has come true because I can no longer figure out how to use my telephone."
-- Bjarne Stroustrup
 
+--uwJFcgT96ZkDsWpG9kNWehKVQzdOYN6eR--
 
---------------C498ABEC954CF09DB2F7BBCD
-Content-Type: text/plain; charset=UTF-8;
- name="dmesg-5.4.75.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="dmesg-5.4.75.txt"
+--Um0PBROohAn87SHKH5Z0CxiUa3ZnYBeOM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-WyAgIDkyLjE2ODc4OV0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tClsg
-ICA5Mi4xOTg5ODldIFdBUk5JTkc6IENQVTogMCBQSUQ6IDIwMTUgYXQga2VybmVsL2xvY2tp
-bmcvbG9ja2RlcC5jOjExMTkgYWxsb2NfbmV0ZGV2X21xcysweGI0LzB4M2IwClsgICA5Mi4y
-MzAzODRdIE1vZHVsZXMgbGlua2VkIGluOiBwcHBvZSBwcHBfYXN5bmMgb3B0aW9uIHVzYl93
-d2FuIHBwcG94IHBwcF9nZW5lcmljIHBsMjMwMyBpcHRfUkVKRUNUIGZ0ZGlfc2lvIGNwMjEw
-eCB4dF90aW1lIHh0X3RjcHVkcCB4dF9zdGF0ZSB4dF9yZWNlbnQgeHRfcG9saWN5IHh0X25h
-dCB4dF9tdWx0aXBvcnQgeHRfbWFyayB4dF9tYWMgeHRfbGltaXQgeHRfaGVscGVyIHh0X2Vz
-cCB4dF9jb25udHJhY2sgeHRfY29ubm1hcmsgeHRfY29ubmxpbWl0IHh0X2Nvbm5ieXRlcyB4
-dF9jb21tZW50IHh0X1RDUE1TUyB4dF9SRURJUkVDVCB4dF9NQVNRVUVSQURFIHh0X0xPRyB1
-c2JzZXJpYWwgc2xoYyBuZl9yZWplY3RfaXB2NCBuZl9sb2dfaXB2NCBuZl9mbG93X3RhYmxl
-X2h3IG5mX2Zsb3dfdGFibGUgbmZfY29ubnRyYWNrX3J0Y2FjaGUgbmZfY29ubnRyYWNrX25l
-dGxpbmsgbmZfY29ubmNvdW50IGlwdGFibGVfbmF0IGlwdGFibGVfbWFuZ2xlIGlwdGFibGVf
-ZmlsdGVyIGlwdF9haCBpcF90YWJsZXMgY2RjX2FjbSB0cHM2NTIxN19wb3dlcm9mZiB4dF9z
-ZXQgaXBfc2V0X2xpc3Rfc2V0IGlwX3NldF9oYXNoX25ldHBvcnRuZXQgaXBfc2V0X2hhc2hf
-bmV0cG9ydCBpcF9zZXRfaGFzaF9uZXRuZXQgaXBfc2V0X2hhc2hfbmV0aWZhY2UgaXBfc2V0
-X2hhc2hfbmV0IGlwX3NldF9oYXNoX21hYyBpcF9zZXRfaGFzaF9pcHBvcnRuZXQgaXBfc2V0
-X2hhc2hfaXBwb3J0aXAgaXBfc2V0X2hhc2hfaXBwb3J0IGlwX3NldF9oYXNoX2lwbWFyayBp
-cF9zZXRfaGFzaF9pcCBpcF9zZXRfYml0bWFwX3BvcnQgaXBfc2V0X2JpdG1hcF9pcG1hYyBp
-cF9zZXRfYml0bWFwX2lwIGlwX3NldCBuZm5ldGxpbmsgaXA2dGFibGVfbmF0IG5mX25hdCBu
-Zl9jb25udHJhY2sgbmZfZGVmcmFnX2lwdjYgbmZfZGVmcmFnX2lwdjQgaXA2dF9OUFQgbmZf
-bG9nX2lwdjYgbmZfbG9nX2NvbW1vbiBpcDZ0YWJsZV9tYW5nbGUgaXA2dGFibGVfZmlsdGVy
-IGlwNl90YWJsZXMgaXA2dF9SRUpFQ1QKWyAgIDkyLjIzMDY4M10gIHhfdGFibGVzIG5mX3Jl
-amVjdF9pcHY2IGlwaXAgdHVubmVsNCBpcF90dW5uZWwgbmxzX3V0ZjggbmxzX2lzbzg4NTlf
-MTUgZWNkaF9nZW5lcmljIGVjYyBjcnlwdG9fdXNlciBhbGdpZl9za2NpcGhlciBhbGdpZl9y
-bmcgYWxnaWZfaGFzaCBhbGdpZl9hZWFkIGFmX2FsZyBrcHAgY21hYyBhcmM0IHVzYl9zdG9y
-YWdlIG1paQpbICAgOTIuNTU5ODIzXSBDUFU6IDAgUElEOiAyMDE1IENvbW06IG5ldGlmZCBO
-b3QgdGFpbnRlZCA1LjQuNzUgIzAKWyAgIDkyLjU2NjA4M10gSGFyZHdhcmUgbmFtZTogR2Vu
-ZXJpYyBBTTMzWFggKEZsYXR0ZW5lZCBEZXZpY2UgVHJlZSkKWyAgIDkyLjU3MjUzOF0gWzxj
-MDEwZTY1ND5dICh1bndpbmRfYmFja3RyYWNlKSBmcm9tIFs8YzAxMGIzZDg+XSAoc2hvd19z
-dGFjaysweDEwLzB4MTQpClsgICA5Mi41ODA3MDVdIFs8YzAxMGIzZDg+XSAoc2hvd19zdGFj
-aykgZnJvbSBbPGMwNzdmYjUwPl0gKGR1bXBfc3RhY2srMHg5NC8weGE4KQpbICAgOTIuNTg4
-MzI0XSBbPGMwNzdmYjUwPl0gKGR1bXBfc3RhY2spIGZyb20gWzxjMDEyOTQxMD5dIChfX3dh
-cm4rMHhiYy8weGQ4KQpbICAgOTIuNTk1NTY0XSBbPGMwMTI5NDEwPl0gKF9fd2FybikgZnJv
-bSBbPGMwMTI5NDdjPl0gKHdhcm5fc2xvd3BhdGhfZm10KzB4NTAvMHg5NCkKWyAgIDkyLjYw
-MzQ1Nl0gWzxjMDEyOTQ3Yz5dICh3YXJuX3Nsb3dwYXRoX2ZtdCkgZnJvbSBbPGMwNjBkZTY0
-Pl0gKGFsbG9jX25ldGRldl9tcXMrMHhiNC8weDNiMCkKWyAgIDkyLjYxMjM1N10gWzxjMDYw
-ZGU2ND5dIChhbGxvY19uZXRkZXZfbXFzKSBmcm9tIFs8YzA3M2JhMDQ+XSAoYnJfYWRkX2Jy
-aWRnZSsweDI4LzB4NzApClsgICA5Mi42MjA3ODNdIFs8YzA3M2JhMDQ+XSAoYnJfYWRkX2Jy
-aWRnZSkgZnJvbSBbPGMwNzNkOTQ0Pl0gKGJyX2lvY3RsX2RldmljZWxlc3Nfc3R1YisweDIw
-Yy8weDQwOCkKWyAgIDkyLjYzMDEyMl0gWzxjMDczZDk0ND5dIChicl9pb2N0bF9kZXZpY2Vs
-ZXNzX3N0dWIpIGZyb20gWzxjMDVmMGRkND5dIChzb2NrX2lvY3RsKzB4MjQ4LzB4NWFjKQpb
-ICAgOTIuNjM5MTg0XSBbPGMwNWYwZGQ0Pl0gKHNvY2tfaW9jdGwpIGZyb20gWzxjMDIzZDdk
-Yz5dIChkb192ZnNfaW9jdGwrMHhhMC8weDkxOCkKWyAgIDkyLjY0NzA2MF0gWzxjMDIzZDdk
-Yz5dIChkb192ZnNfaW9jdGwpIGZyb20gWzxjMDIzZTBiMD5dIChrc3lzX2lvY3RsKzB4NWMv
-MHg4MCkKWyAgIDkyLjY1NDg0M10gWzxjMDIzZTBiMD5dIChrc3lzX2lvY3RsKSBmcm9tIFs8
-YzAxMDEwMDA+XSAocmV0X2Zhc3Rfc3lzY2FsbCsweDAvMHg1NCkKWyAgIDkyLjY2Mjg5NF0g
-RXhjZXB0aW9uIHN0YWNrKDB4YzBlODFmYTggdG8gMHhjMGU4MWZmMCkKWyAgIDkyLjY2ODIx
-Nl0gMWZhMDogICAgICAgICAgICAgICAgICAgYjZmMDEyODAgYjZmMDEyZTAgMDAwMDAwMDgg
-MDAwMDg5YTAgYjZmMDEyZTAgYmU5OTJhMTAKWyAgIDkyLjY3NjgyMV0gMWZjMDogYjZmMDEy
-ODAgYjZmMDEyZTAgYjZmNGFmMjAgMDAwMDAwMzYgYmU5OTJiMzggYjZmNGFkYjAgMDAwMmU2
-OGYgYjZmNGFmNDQKWyAgIDkyLjY4NTQyMl0gMWZlMDogMDAwM2ZkMmMgYmU5OTI5ZjggMDAw
-MWU3NzggYjZmYTg4NDQKWyAgIDkyLjg0NTk3MF0gLS0tWyBlbmQgdHJhY2UgYWY2OTdiMjE3
-MDhmYzI0YSBdLS0tCgpbICA4MDYuMTkyNjk4XSAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0t
-LS0tLS0tLS0tLS0KWyAgODA2LjE5NzY0NF0gV0FSTklORzogQ1BVOiAwIFBJRDogMjYwNiBh
-dCBrZXJuZWwvbG9ja2luZy9sb2NrZGVwLmM6NTE4OCBmcmVlX25ldGRldisweGE4LzB4MTA4
-ClsgIDgwNi4yNDEyMTZdIE1vZHVsZXMgbGlua2VkIGluOiBwcHBvZSBwcHBfYXN5bmMgb3B0
-aW9uIHVzYl93d2FuIHBwcG94IHBwcF9nZW5lcmljIHBsMjMwMyBpcHRfUkVKRUNUIGZ0ZGlf
-c2lvIGNwMjEweCB4dF90aW1lIHh0X3RjcHVkcCB4dF9zdGF0ZSB4dF9yZWNlbnQgeHRfcG9s
-aWN5IHh0X25hdCB4dF9tdWx0aXBvcnQgeHRfbWFyayB4dF9tYWMgeHRfbGltaXQgeHRfaGVs
-cGVyIHh0X2VzcCB4dF9jb25udHJhY2sgeHRfY29ubm1hcmsgeHRfY29ubmxpbWl0IHh0X2Nv
-bm5ieXRlcyB4dF9jb21tZW50IHh0X1RDUE1TUyB4dF9SRURJUkVDVCB4dF9NQVNRVUVSQURF
-IHh0X0xPRyB1c2JzZXJpYWwgc2xoYyBuZl9yZWplY3RfaXB2NCBuZl9sb2dfaXB2NCBuZl9m
-bG93X3RhYmxlX2h3IG5mX2Zsb3dfdGFibGUgbmZfY29ubnRyYWNrX3J0Y2FjaGUgbmZfY29u
-bnRyYWNrX25ldGxpbmsgbmZfY29ubmNvdW50IGlwdGFibGVfbmF0IGlwdGFibGVfbWFuZ2xl
-IGlwdGFibGVfZmlsdGVyIGlwdF9haCBpcF90YWJsZXMgY2RjX2FjbSB0cHM2NTIxN19wb3dl
-cm9mZiB4dF9zZXQgaXBfc2V0X2xpc3Rfc2V0IGlwX3NldF9oYXNoX25ldHBvcnRuZXQgaXBf
-c2V0X2hhc2hfbmV0cG9ydCBpcF9zZXRfaGFzaF9uZXRuZXQgaXBfc2V0X2hhc2hfbmV0aWZh
-Y2UgaXBfc2V0X2hhc2hfbmV0IGlwX3NldF9oYXNoX21hYyBpcF9zZXRfaGFzaF9pcHBvcnRu
-ZXQgaXBfc2V0X2hhc2hfaXBwb3J0aXAgaXBfc2V0X2hhc2hfaXBwb3J0IGlwX3NldF9oYXNo
-X2lwbWFyayBpcF9zZXRfaGFzaF9pcCBpcF9zZXRfYml0bWFwX3BvcnQgaXBfc2V0X2JpdG1h
-cF9pcG1hYyBpcF9zZXRfYml0bWFwX2lwIGlwX3NldCBuZm5ldGxpbmsgaXA2dGFibGVfbmF0
-IG5mX25hdCBuZl9jb25udHJhY2sgbmZfZGVmcmFnX2lwdjYgbmZfZGVmcmFnX2lwdjQgaXA2
-dF9OUFQgbmZfbG9nX2lwdjYgbmZfbG9nX2NvbW1vbiBpcDZ0YWJsZV9tYW5nbGUgaXA2dGFi
-bGVfZmlsdGVyIGlwNl90YWJsZXMgaXA2dF9SRUpFQ1QKWyAgODA2LjI0MTg0Nl0gIHhfdGFi
-bGVzIG5mX3JlamVjdF9pcHY2IGlwaXAgdHVubmVsNCBpcF90dW5uZWwgbmxzX3V0Zjggbmxz
-X2lzbzg4NTlfMTUgZWNkaF9nZW5lcmljIGVjYyBjcnlwdG9fdXNlciBhbGdpZl9za2NpcGhl
-ciBhbGdpZl9ybmcgYWxnaWZfaGFzaCBhbGdpZl9hZWFkIGFmX2FsZyBrcHAgY21hYyBhcmM0
-IHVzYl9zdG9yYWdlIG1paQpbICA4MDYuNDgzMDQxXSBDUFU6IDAgUElEOiAyNjA2IENvbW06
-IHBwcGQgVGFpbnRlZDogRyAgICAgICAgVyAgICAgICAgIDUuNC43NSAjMApbICA4MDYuNDkw
-NTc0XSBIYXJkd2FyZSBuYW1lOiBHZW5lcmljIEFNMzNYWCAoRmxhdHRlbmVkIERldmljZSBU
-cmVlKQpbICA4MDYuNDk3MDMzXSBbPGMwMTBlNjU0Pl0gKHVud2luZF9iYWNrdHJhY2UpIGZy
-b20gWzxjMDEwYjNkOD5dIChzaG93X3N0YWNrKzB4MTAvMHgxNCkKWyAgODA2LjUwNTE5Nl0g
-WzxjMDEwYjNkOD5dIChzaG93X3N0YWNrKSBmcm9tIFs8YzA3N2ZiNTA+XSAoZHVtcF9zdGFj
-aysweDk0LzB4YTgpClsgIDgwNi41MTI4MTVdIFs8YzA3N2ZiNTA+XSAoZHVtcF9zdGFjaykg
-ZnJvbSBbPGMwMTI5NDEwPl0gKF9fd2FybisweGJjLzB4ZDgpClsgIDgwNi41MjAwNTNdIFs8
-YzAxMjk0MTA+XSAoX193YXJuKSBmcm9tIFs8YzAxMjk0N2M+XSAod2Fybl9zbG93cGF0aF9m
-bXQrMHg1MC8weDk0KQpbICA4MDYuNTI3OTQyXSBbPGMwMTI5NDdjPl0gKHdhcm5fc2xvd3Bh
-dGhfZm10KSBmcm9tIFs8YzA2MGNkZTg+XSAoZnJlZV9uZXRkZXYrMHhhOC8weDEwOCkKWyAg
-ODA2LjUzNjQwNl0gWzxjMDYwY2RlOD5dIChmcmVlX25ldGRldikgZnJvbSBbPGJmMjkzZGU4
-Pl0gKHBwcF9yZWxlYXNlKzB4ODQvMHg5YyBbcHBwX2dlbmVyaWNdKQpbICA4MDYuNTQ1NTc1
-XSBbPGJmMjkzZGU4Pl0gKHBwcF9yZWxlYXNlIFtwcHBfZ2VuZXJpY10pIGZyb20gWzxjMDIy
-YjU5Yz5dIChfX2ZwdXQrMHg4OC8weDIyMCkKWyAgODA2LjU1NDI5NV0gWzxjMDIyYjU5Yz5d
-IChfX2ZwdXQpIGZyb20gWzxjMDE0NmNhYz5dICh0YXNrX3dvcmtfcnVuKzB4OGMvMHhhOCkK
-WyAgODA2LjU2MTgxMF0gWzxjMDE0NmNhYz5dICh0YXNrX3dvcmtfcnVuKSBmcm9tIFs8YzAx
-MGE3MTA+XSAoZG9fd29ya19wZW5kaW5nKzB4YTAvMHg1MjgpClsgIDgwNi41NzAyMzNdIFs8
-YzAxMGE3MTA+XSAoZG9fd29ya19wZW5kaW5nKSBmcm9tIFs8YzAxMDEwNmM+XSAoc2xvd193
-b3JrX3BlbmRpbmcrMHhjLzB4MjApClsgIDgwNi41Nzg4MzBdIEV4Y2VwdGlvbiBzdGFjaygw
-eGMzMDM5ZmIwIHRvIDB4YzMwMzlmZjgpClsgIDgwNi41ODQxNTBdIDlmYTA6ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAw
-IDAwMDAwMDAwClsgIDgwNi41OTI3NTRdIDlmYzA6IDAwMDAwMDAwIDAwMDAwMDAwIDAwNGQw
-MDQwIDAwMDAwMDA2IDAwNGQzNzMwIDAwMDAwMDA0IDAwNGUxOTk0IDAwMDAwMDAwClsgIDgw
-Ni42MDEzNTZdIDlmZTA6IGJlYTI2YWM4IGJlYTI2YWI4IGI2ZjQ1NTM4IGI2ZjQ0OWY4IDYw
-MDAwMDEwIDAwMDAwMDBmClsgIDgwNi43NzUyMzFdIC0tLVsgZW5kIHRyYWNlIGFmNjk3YjIx
-NzA4ZmMyNGIgXS0tLQoK
---------------C498ABEC954CF09DB2F7BBCD--
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+5E3kACgkQqclaivrt
+76kOuAf9FXn8cpXGeMIslKjsSJryU/nEjyGXwnMsE4DWltNdOsTzjaomGpAPxq7V
+lkXiduWwveC8VMEJwfYiK6XwOWctQ+tZvMCXzue25RDjk+wRHGSL93DBY8vnlj6w
+Xq3HueD2jPEbc/P4rXH0Gu/+MnCkT8dwSEDJHslTYxk2Pl7GPYvdS+L6rARGw9tA
+ZtI4J7DMZHOtxCVhCcJitIl5uIa+0gtz64UIyAqq5pR2ffAkLKi4dj9JXMTwbBXt
+mtTun+VyBOaThPCLw0SX70V1SGlT8q8yj34G1TALFuBU+kdh/wau1qf7HjenLEEU
+13++IkqjMhyCTpJXS7Zz8jIMNOs2ug==
+=YRBG
+-----END PGP SIGNATURE-----
+
+--Um0PBROohAn87SHKH5Z0CxiUa3ZnYBeOM--
