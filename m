@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA052BBDCE
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC722BBDD0
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgKUHbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 02:31:38 -0500
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:53301 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgKUHbh (ORCPT
+        id S1726854AbgKUHdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 02:33:23 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:50305 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726483AbgKUHdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 02:31:37 -0500
-Received: from localhost.localdomain ([81.185.161.242])
-        by mwinf5d61 with ME
-        id uvXW230025E5lq903vXW9e; Sat, 21 Nov 2020 08:31:33 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 21 Nov 2020 08:31:33 +0100
-X-ME-IP: 81.185.161.242
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        miaoqinglang@huawei.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] crypto: cavium/zip - Use dma_set_mask_and_coherent to simplify code
-Date:   Sat, 21 Nov 2020 08:31:31 +0100
-Message-Id: <20201121073131.1321343-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Sat, 21 Nov 2020 02:33:22 -0500
+Received: by mail-il1-f198.google.com with SMTP id f66so9421261ilh.17
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 23:33:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=5Bu/hK7E2C/9qkvXSyysPqfemJDnqPa41mYYytxGwNE=;
+        b=pcQM56nbPJv40OK91AvqZpUc8PnawENJ3ZqCWj4qXLbJWTqJ0BxsGMv7mpB0cPj/Bi
+         +iPzKqSesQfSzHc9n8U60a0YwQi2jGhJgNKeTjQmtFmCUZNCO0ZbAZzIXfT7OBfE2fzN
+         YMsrs5DLZ14NrfOroO9UAM83DmIqiMr9aSvwqVoSjWzBoBaseMQo63pzoJ24JlgEdEF0
+         /2Eropp2QFVfLZCHiStdwy/4JOCAfd4GoM/m0bA8OfHKKs/ODCjQQCXh9tebk4R8WFQ2
+         Pw1az1hfe+ED8EXtVKjvZv+kHbrZ6axDZ2IAVLzGGhtNc1+IvZOB5JnGnO3N8re0dQ7Z
+         FQJA==
+X-Gm-Message-State: AOAM530gnIR/tVYtZM7tGQPe5v2pRIzqnAe5K5F6Z5HegzgKrxQ+q/vu
+        S/5FDmPfFusKS6K4OGIxQZFSJMnpUSXeBuCx9SAiZuZufGjw
+X-Google-Smtp-Source: ABdhPJyXDXB4QfV1XVGuEJVfOww3GyarhBgfhGE9cbf7eEwi4VJ1D6W8Xm0VfJDvT3qJqjqF7vFnYMSYaciSDURfi0GeSrwrVw1l
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a6b:4014:: with SMTP id k20mr27862179ioa.177.1605944001884;
+ Fri, 20 Nov 2020 23:33:21 -0800 (PST)
+Date:   Fri, 20 Nov 2020 23:33:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c2f72c05b498f9bd@google.com>
+Subject: WARNING: filesystem loop2 was created with 512 inodes, the real
+ maximum is 511, mounting anyway
+From:   syzbot <syzbot+ae3ff0bb2a0133596a5b@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
+Hello,
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+syzbot found the following issue on:
+
+HEAD commit:    09162bc3 Linux 5.10-rc4
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16e9a486500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e93bbe4ce29223b
+dashboard link: https://syzkaller.appspot.com/bug?extid=ae3ff0bb2a0133596a5b
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ae3ff0bb2a0133596a5b@syzkaller.appspotmail.com
+
+BFS-fs: bfs_fill_super(): WARNING: filesystem loop2 was created with 512 inodes, the real maximum is 511, mounting anyway
+BFS-fs: bfs_fill_super(): Last block not available on loop2: 1507328
+BFS-fs: bfs_fill_super(): WARNING: filesystem loop2 was created with 512 inodes, the real maximum is 511, mounting anyway
+BFS-fs: bfs_fill_super(): Last block not available on loop2: 1507328
+
+
 ---
- drivers/crypto/cavium/zip/zip_main.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/crypto/cavium/zip/zip_main.c b/drivers/crypto/cavium/zip/zip_main.c
-index d35216e2f6cd..812b4ac9afd6 100644
---- a/drivers/crypto/cavium/zip/zip_main.c
-+++ b/drivers/crypto/cavium/zip/zip_main.c
-@@ -263,15 +263,9 @@ static int zip_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto err_disable_device;
- 	}
- 
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(48));
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
- 	if (err) {
--		dev_err(dev, "Unable to get usable DMA configuration\n");
--		goto err_release_regions;
--	}
--
--	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(48));
--	if (err) {
--		dev_err(dev, "Unable to get 48-bit DMA for allocations\n");
-+		dev_err(dev, "Unable to get usable 48-bit DMA configuration\n");
- 		goto err_release_regions;
- 	}
- 
--- 
-2.27.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
