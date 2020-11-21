@@ -2,108 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614392BBB46
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8F02BBB48
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728433AbgKUAq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 19:46:27 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:37241 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727149AbgKUAq0 (ORCPT
+        id S1728408AbgKUAvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 19:51:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgKUAu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:46:26 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 58CD15C00F8;
-        Fri, 20 Nov 2020 19:46:25 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 20 Nov 2020 19:46:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=ucYJrYfTfYw67KZqLBN1lebNfBZ
-        QfLofYDO7kwicGFo=; b=UmV6t3wWY/CvGzSDs7Je7vNPHUbdR0537tQDO0WYH6V
-        8feS+S510CvsTzwNCCasS+NtBEBr2qKUyfObM3Ry0m7Z+x7OdDwDwI3xsj1w0B71
-        Gj6q7IwBHAm/uj2UGlGuG9dKbXs/Y+ek/ZcoDiBvvA+i1nPMMtvj0VPkA8F7C5ge
-        NhAPUCoZxeAJwh64gioQKolBEfpwofJOIgjow8dgi1tFP+E37mz+4TgIm/zBEU6M
-        38h/U3hHjvj1i+WqONqKoAWN4vMAlS8/ooRUVHX7tT321m9mDFCZgEfqnNPdZJwB
-        vQEag29m/YEY0izE8Ae9buwFYmPp/DteliMTw4Yqm/g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ucYJrY
-        fTfYw67KZqLBN1lebNfBZQfLofYDO7kwicGFo=; b=Tw/OQkizawECArtejrOegf
-        nFdHFI3gQkQZg2BLT84qAEnJKnJVe3ToPEz2HvJSIcwCCAEAbKdTVHOinB5OcZXl
-        q7c+yNLKrj91OwP4z94gtO/Z/hCvClwvVSXIFEBhvIccaRt07gsVaqXRtRTDOzK0
-        +MJphOQFAeE4fWjrW8upiqB7oK4nwdC+wyFmej7TlWn4VGkKC5FPDdmesNfcAifS
-        PoWAD9zEsT7pL0s9Z51iovGXdD3soU42HMnftsgyBQIuiolhEDjMpxJGUA2QM9jL
-        1aqfEzr6KFnF/PGqMUd5z6HjOGuYWC+0fIx1EslVP5dIrxEqR/b3mJEtsZybdXbw
-        ==
-X-ME-Sender: <xms:YGO4XyC18F-2mJA1JBa8rjq4Rzw436itXcJrJ1_Lq_eWdedCq8wNGw>
-    <xme:YGO4X8j6rR3yrIy21WxsQPqQbHxBVpDgeE9smJxMpS7LkLpD3VhkI6QeTjrDhx2s7
-    eMh_43ALUPdQTUrvQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeguddgvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhgurhgv
-    shcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucggtffrrg
-    htthgvrhhnpedvtdeuhefgtdehleeljeeffffhudfhudeikeehgeejjeduleejkeevvddv
-    feffhfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeeijedrudeitddrvd
-    dujedrvdehtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
-    ohhmpegrnhgurhgvshesrghnrghrrgiivghlrdguvg
-X-ME-Proxy: <xmx:YGO4X1nPI4p0XgyaMSQCDfDx-hiV5WBOFIqMa4TKpRpmKjPAKqoqtQ>
-    <xmx:YGO4XwyreJbLfFjKgMiWz25KFn0AsZfK6Hue1Nc62ttkcu5WzNwpbQ>
-    <xmx:YGO4X3RgYc6E4Q5qtE7sxpib0GjMwVbNBxna-vQ8hFtFgZ2Bg8N_kg>
-    <xmx:YWO4XxcMNJzQwqC_f6_hpDNvuVzA08jiG_Obe3XAfP6Ha-FSPVLJ6A>
-Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BD5013280064;
-        Fri, 20 Nov 2020 19:46:24 -0500 (EST)
-Date:   Fri, 20 Nov 2020 16:46:23 -0800
-From:   Andres Freund <andres@anarazel.de>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tushar Dave <tushar.n.dave@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
- PCH.
-Message-ID: <20201121004623.mgbcn5ddo7hjdpfq@alap3.anarazel.de>
-References: <2fd3733b-ed67-80e0-7b27-8e3c421eeb9c@linaro.org>
- <20201113204916.1144907-1-andres@anarazel.de>
- <116a81e6-7989-8077-1fc4-c9f047256e9a@linaro.org>
+        Fri, 20 Nov 2020 19:50:58 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47219C061A47
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:50:58 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id 23so12666129wrc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:50:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4EcEA95lNa5ZZ+4yTLKOmHZRpqe2owrp9tTkgwACEiM=;
+        b=HDfVcfahM3bKl9+qUQ17zfP7VPqPF47VMw+BHus3Ay4VZMn3CaP64kl4ysBf8B662Z
+         8iy2knqgDfzfRBSuxTRSuVI/mM9QU6Xl3uvF+LmivdARc+EhYceK73AoEr5+4YBtgdwx
+         H6MZ1Xw9f4RCyLGtwXbNlRLg4+6a4ugdGEerA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4EcEA95lNa5ZZ+4yTLKOmHZRpqe2owrp9tTkgwACEiM=;
+        b=qgz9LX4gECGYS0vqmmd/xj8rORi7pFjI2zb/X+K5A0l/SKFYqmgNbCy70vbYfGsFZL
+         HFIqbabwVpOwLKjzhP69klqqBk3pO28IJyv+Wbq8BfbV9t5o4HMPnNFEy7IEoEoAgzBj
+         QVAmZQyLk/VRr75+2stdEQ266v7ckcAai7ZN7UrmxEx0CZipiYW9XvCBZgNimLGv+itG
+         NbIKFQJwLTYOTRPem2BhDOPw4/lfYoCk48o89ge5hEzfNMoy+hQWZMLNGgKakfapnR+X
+         NKubXn+AdWzPZGxGh6XLYoZhEfmShREviH04V5lmVN00GIet9VFC2nBv4hn8tyRIXaB/
+         WY0Q==
+X-Gm-Message-State: AOAM530f+O/8qlIjX/T68mcAWAxkZ9bVTeo3WpXM0LnClIaVlaLitzkp
+        UCyT/CJzCVyCoqT7HwhOCoDPTQ==
+X-Google-Smtp-Source: ABdhPJwn2Ze2G+n7GEIgV6IFe/lQ3oFyWVfyjqDt0housibEsSKQxsoyQ5onAdYaytbYDxL5VwbWIA==
+X-Received: by 2002:adf:ead1:: with SMTP id o17mr18872821wrn.396.1605919856713;
+        Fri, 20 Nov 2020 16:50:56 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id s8sm7133607wrn.33.2020.11.20.16.50.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 16:50:56 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH bpf-next v2 1/3] ima: Implement ima_inode_hash
+Date:   Sat, 21 Nov 2020 00:50:52 +0000
+Message-Id: <20201121005054.3467947-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <116a81e6-7989-8077-1fc4-c9f047256e9a@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: KP Singh <kpsingh@google.com>
 
-On 2020-11-16 10:28:04 +0100, Daniel Lezcano wrote:
-> On 13/11/2020 21:49, Andres Freund wrote:
-> > I noticed that I couldn't read the PCH temperature on my workstation
-> > (C620 series chipset, w/ 2x Xeon Gold 5215 CPUs) directly, but had to go
-> > through IPMI. Looking at the data sheet, it looks to me like the
-> > existing intel PCH thermal driver should work without changes for
-> > Lewisburg.
-> > 
-> > I suspect there's some other PCI IDs missing. But I hope somebody at
-> > Intel would have an easier time figuring that out than I...
-> > 
-> > Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> > Cc: Tushar Dave <tushar.n.dave@intel.com>
-> > Cc: Zhang Rui <rui.zhang@intel.com>
-> > Cc: linux-pm@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Link: https://lore.kernel.org/lkml/20200115184415.1726953-1-andres@anarazel.de/
-> > Signed-off-by: Andres Freund <andres@anarazel.de>
-> > ---
-> 
-> Applied, thanks
+This is in preparation to add a helper for BPF LSM programs to use
+IMA hashes when attached to LSM hooks. There are LSM hooks like
+inode_unlink which do not have a struct file * argument and cannot
+use the existing ima_file_hash API.
 
-Thanks for review and applying.
+An inode based API is, therefore, useful in LSM based detections like an
+executable trying to delete itself which rely on the inode_unlink LSM
+hook.
 
-Greetings,
+Moreover, the ima_file_hash function does nothing with the struct file
+pointer apart from calling file_inode on it and converting it to an
+inode.
 
-Andres Freund
+Signed-off-by: KP Singh <kpsingh@google.com>
+---
+ include/linux/ima.h               |  6 +++
+ security/integrity/ima/ima_main.c | 78 +++++++++++++++++++++----------
+ 2 files changed, 60 insertions(+), 24 deletions(-)
+
+diff --git a/include/linux/ima.h b/include/linux/ima.h
+index 8fa7bcfb2da2..7233a2751754 100644
+--- a/include/linux/ima.h
++++ b/include/linux/ima.h
+@@ -29,6 +29,7 @@ extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+ 			      enum kernel_read_file_id id);
+ extern void ima_post_path_mknod(struct dentry *dentry);
+ extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
++extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
+ extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+ 
+ #ifdef CONFIG_IMA_KEXEC
+@@ -115,6 +116,11 @@ static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
+ #endif /* CONFIG_IMA */
+ 
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 2d1af8899cab..cb2deaa188e7 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -501,37 +501,14 @@ int ima_file_check(struct file *file, int mask)
+ }
+ EXPORT_SYMBOL_GPL(ima_file_check);
+ 
+-/**
+- * ima_file_hash - return the stored measurement if a file has been hashed and
+- * is in the iint cache.
+- * @file: pointer to the file
+- * @buf: buffer in which to store the hash
+- * @buf_size: length of the buffer
+- *
+- * On success, return the hash algorithm (as defined in the enum hash_algo).
+- * If buf is not NULL, this function also outputs the hash into buf.
+- * If the hash is larger than buf_size, then only buf_size bytes will be copied.
+- * It generally just makes sense to pass a buffer capable of holding the largest
+- * possible hash: IMA_MAX_DIGEST_SIZE.
+- * The file hash returned is based on the entire file, including the appended
+- * signature.
+- *
+- * If IMA is disabled or if no measurement is available, return -EOPNOTSUPP.
+- * If the parameters are incorrect, return -EINVAL.
+- */
+-int ima_file_hash(struct file *file, char *buf, size_t buf_size)
++static int __ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
+ {
+-	struct inode *inode;
+ 	struct integrity_iint_cache *iint;
+ 	int hash_algo;
+ 
+-	if (!file)
+-		return -EINVAL;
+-
+ 	if (!ima_policy_flag)
+ 		return -EOPNOTSUPP;
+ 
+-	inode = file_inode(file);
+ 	iint = integrity_iint_find(inode);
+ 	if (!iint)
+ 		return -EOPNOTSUPP;
+@@ -558,8 +535,61 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+ 
+ 	return hash_algo;
+ }
++
++/**
++ * ima_file_hash - return the stored measurement if a file has been hashed and
++ * is in the iint cache.
++ * @file: pointer to the file
++ * @buf: buffer in which to store the hash
++ * @buf_size: length of the buffer
++ *
++ * On success, return the hash algorithm (as defined in the enum hash_algo).
++ * If buf is not NULL, this function also outputs the hash into buf.
++ * If the hash is larger than buf_size, then only buf_size bytes will be copied.
++ * It generally just makes sense to pass a buffer capable of holding the largest
++ * possible hash: IMA_MAX_DIGEST_SIZE.
++ * The file hash returned is based on the entire file, including the appended
++ * signature.
++ *
++ * If IMA is disabled or if no measurement is available, return -EOPNOTSUPP.
++ * If the parameters are incorrect, return -EINVAL.
++ */
++int ima_file_hash(struct file *file, char *buf, size_t buf_size)
++{
++	if (!file)
++		return -EINVAL;
++
++	return __ima_inode_hash(file_inode(file), buf, buf_size);
++}
+ EXPORT_SYMBOL_GPL(ima_file_hash);
+ 
++/**
++ * ima_inode_hash - return the stored measurement if the inode has been hashed
++ * and is in the iint cache.
++ * @inode: pointer to the inode
++ * @buf: buffer in which to store the hash
++ * @buf_size: length of the buffer
++ *
++ * On success, return the hash algorithm (as defined in the enum hash_algo).
++ * If buf is not NULL, this function also outputs the hash into buf.
++ * If the hash is larger than buf_size, then only buf_size bytes will be copied.
++ * It generally just makes sense to pass a buffer capable of holding the largest
++ * possible hash: IMA_MAX_DIGEST_SIZE.
++ * The hash returned is based on the entire contents, including the appended
++ * signature.
++ *
++ * If IMA is disabled or if no measurement is available, return -EOPNOTSUPP.
++ * If the parameters are incorrect, return -EINVAL.
++ */
++int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
++{
++	if (!inode)
++		return -EINVAL;
++
++	return __ima_inode_hash(inode, buf, buf_size);
++}
++EXPORT_SYMBOL_GPL(ima_inode_hash);
++
+ /**
+  * ima_post_create_tmpfile - mark newly created tmpfile as new
+  * @file : newly created tmpfile
+-- 
+2.29.2.454.gaff20da3a2-goog
+
