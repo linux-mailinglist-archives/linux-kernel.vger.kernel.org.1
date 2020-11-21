@@ -2,30 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D822BBE10
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 09:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA6D2BBE15
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 09:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727358AbgKUIaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 03:30:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36518 "EHLO mx2.suse.de"
+        id S1727392AbgKUIbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 03:31:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36662 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727063AbgKUIaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 03:30:14 -0500
+        id S1726581AbgKUIbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 03:31:06 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D4824ABE4;
-        Sat, 21 Nov 2020 08:30:12 +0000 (UTC)
-Date:   Sat, 21 Nov 2020 09:30:12 +0100
-Message-ID: <s5hpn47dsdn.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 33F6DAC2D;
+        Sat, 21 Nov 2020 08:31:05 +0000 (UTC)
+Date:   Sat, 21 Nov 2020 09:31:05 +0100
+Message-ID: <s5ho8jrdsc6.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 067/141] ALSA: pcsp: Fix fall-through warnings for Clang
-In-Reply-To: <9705120ac2310bb20035e375862410413359611d.1605896059.git.gustavoars@kernel.org>
-References: <cover.1605896059.git.gustavoars@kernel.org>
-        <9705120ac2310bb20035e375862410413359611d.1605896059.git.gustavoars@kernel.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Takashi Iwai <tiwai@suse.com>, aroslav Kysela <perex@perex.cz>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: aloop: Constify ops structs
+In-Reply-To: <20201120231046.76758-1-rikard.falkeborn@gmail.com>
+References: <20201120231046.76758-1-rikard.falkeborn@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -35,15 +33,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 19:34:01 +0100,
-Gustavo A. R. Silva wrote:
+On Sat, 21 Nov 2020 00:10:46 +0100,
+Rikard Falkeborn wrote:
 > 
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a break statement instead of letting the code fall
-> through to the next case.
+> The only usage of the ops field in the loopback_cable struct is to call
+> its members, the field it self is never changed. Make it a pointer to
+> const. This allows us to constify two static loopback_ops structs to
+> allow the compiler to put them in read-only memory.
 > 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
 Thanks, applied.
 
