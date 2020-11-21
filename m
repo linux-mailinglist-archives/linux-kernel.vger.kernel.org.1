@@ -2,120 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE1E2BC15B
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FD02BC161
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728029AbgKUSOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 13:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
+        id S1727298AbgKUSTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 13:19:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727159AbgKUSOI (ORCPT
+        with ESMTP id S1726305AbgKUSTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 13:14:08 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA4EC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:14:08 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id n137so973648pfd.3
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:14:08 -0800 (PST)
+        Sat, 21 Nov 2020 13:19:38 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10C1C0613CF;
+        Sat, 21 Nov 2020 10:19:37 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id v20so13533381ljk.8;
+        Sat, 21 Nov 2020 10:19:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+/ZgAn65K2RfMWm1/R12+2z9h8SUdfpl5HlRWBvrjuw=;
-        b=ipeZBrltvCVVMRe3DxVaGeYIQVgjnJwR/dPqF5qt+o4olKQYYgeeOZTKGTqyJhvy4s
-         6NvLD+fgKLjcqfxy+UA3vdiTSauFu3fBV6RJ6HbTiSbjbv7Qpa4zfMIxXotH+nAV0eW+
-         H7QPjB4q1W2kMC87QZtaflCKLXCQx2ICMQaCU03+0PCpOvP6Tj2uTmVnpsGqQr1OazIN
-         vvp2xGui3bgNqQouxM9BxKwwbnZWetKpeLGd0nWQ7KgM7JXOdrmPY/GUTbXGGKV3+nkf
-         +FmINOytMGewrr2SeEzfuZ3cBOqxn1l9BSXKHULT2Bcbkw00XkqRITGC3osy9etvFNWd
-         gdiw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vQCmFX/umPbiMsZoXWe+X5y6oNK3IuEAPLs+n2uAmo4=;
+        b=U6l/rAIjaxTbciXjBAeL1qc2fuhrtnhaqnQSy4rdmFAGct51Jsboj7/YV3lor8izCI
+         OXMpm02R1gKg4WSW574P57QHbboJGngAIK730MkBWxswxPCJM11r0XHzJd8lFEqq8BL1
+         xTx98BquRqahs/1MSJJoGxHgJYW/bxRsnlYhrVn6w9+WJ6fdjmzX4X6gdfEL2aL8mxwA
+         +Hw6jjmTTtkyN0xI23RQVZ08otUS88GfIdWw3LYL64RLHiSN2CUidiRmW5XLMMbAl+yV
+         PfVNXnFF9nyUZiumCUYOeEZmnbH5VW3DPy8rACqCnn+u90Svtnh19/ePlCrjVWEoqXGC
+         8yiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=+/ZgAn65K2RfMWm1/R12+2z9h8SUdfpl5HlRWBvrjuw=;
-        b=Itw9t7WHGORXhh7cdqSY0BwNGOUTk3i8cpMjRQU57pf5iEWGDJNhqDOUTpuKQqOkEv
-         GDFvc0wrYHIghDPv8/UxK+BRblDH0diqyRdrHBG3L9zrrU6s677FStbWjzi8a3YkQCpM
-         JdI9PSOX4wuNoULwW1FOeBkMDZ3HJiXDib3Syi02H5b2qp9lKQPjLL2nxCi+BoSDwNK3
-         AJi2M/9AQT33OuaNG0b+K6NLbY3rD+qDVKmxx5E1Au04nXl+cjo/uZKQlHbsbuM9A9/S
-         bOph4J7N34KTu0MzGNAzFXAcB2HloFrij1cdC0KI3eRklvCw9v3OLR1nzVMV1p5uqs24
-         87gw==
-X-Gm-Message-State: AOAM533FBVhPdaxSNRPT0bLuDSlQQj62+on45nly+2QolvME7GW6J+Qk
-        /YjVEhrEVxb+NRgk7oI2cFI=
-X-Google-Smtp-Source: ABdhPJzmDqpomjK6zMP+8OPnxE+MasuFLkfHmO+4FpgGlFmBCydCw0jcgsqH7UXDwJUCke7W98J+Pw==
-X-Received: by 2002:a62:7883:0:b029:18a:e054:edf1 with SMTP id t125-20020a6278830000b029018ae054edf1mr18916039pfc.70.1605982447804;
-        Sat, 21 Nov 2020 10:14:07 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:40c:d321:ed91:20bf:333c:1bc4])
-        by smtp.googlemail.com with ESMTPSA id q19sm7311072pfh.37.2020.11.21.10.14.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vQCmFX/umPbiMsZoXWe+X5y6oNK3IuEAPLs+n2uAmo4=;
+        b=L9MkMpZabNz+SbPUznQPpXMWnB2RLU9d94LMJYGXAhkiqxCvd2CQCEpQCpSUTuYuHc
+         oPkS+vF/Plb/72mmHzR/d/Ew9ZJU5+K3hzHnmgvtiS/eRDuxbu+iu+UPULyI/oGvXKOw
+         HwYEuCt/w/CeQCdFIwUpkIjkZXtjZlyo/u6saY60hjULpSjQrWpjl/xiISgEj1hCww8B
+         5sRzq0lnS7cdXE11Mt6XHhrH1HgEt+eUJgznU7qAqpb9P501t2RA7pHwkN+iplONnlma
+         4DWJ7kkkdQSxX/6++qz1Y/BprSxER302dm3/Am6HXG0gPPTp1X53rAHojeOCnkRdNS3w
+         439A==
+X-Gm-Message-State: AOAM533mihiReCA0alPlrDMhevJQ6HeRG+0URn/zYGnp2W8ndM5EgpWV
+        iEuUcrs2TwE89L2A+ruSwcw=
+X-Google-Smtp-Source: ABdhPJymdebhWpdCthC1P6kzH7+x5uwWxx3Uw9cIWhTIrOvZX45MvWqWzA7naD4V/DPv+IZsUcvh2g==
+X-Received: by 2002:a2e:3c1a:: with SMTP id j26mr10576302lja.294.1605982776262;
+        Sat, 21 Nov 2020 10:19:36 -0800 (PST)
+Received: from grain.localdomain ([5.18.91.94])
+        by smtp.gmail.com with ESMTPSA id r19sm785566lfi.41.2020.11.21.10.19.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 10:14:07 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     joe@perches.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] checkpatch: add fix option for LOGICAL_CONTINUATIONS
-Date:   Sat, 21 Nov 2020 23:43:57 +0530
-Message-Id: <20201121181357.7621-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <d68afd4b87e2ce3fc846d8ca5ab9a401ce04344a.camel@perches.com>
-References: <d68afd4b87e2ce3fc846d8ca5ab9a401ce04344a.camel@perches.com>
+        Sat, 21 Nov 2020 10:19:34 -0800 (PST)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id 73BDE1A008D; Sat, 21 Nov 2020 21:19:33 +0300 (MSK)
+Date:   Sat, 21 Nov 2020 21:19:33 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        criu@openvz.org, bpf@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jann@thejh.net>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Chris Wright <chrisw@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH v2 11/24] file: Implement task_lookup_fd_rcu
+Message-ID: <20201121181933.GH875895@grain>
+References: <87r1on1v62.fsf@x220.int.ebiederm.org>
+ <20201120231441.29911-11-ebiederm@xmission.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120231441.29911-11-ebiederm@xmission.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, checkpatch warns if logical continuations are placed at the
-start of a line and not at the end of previous line.
+On Fri, Nov 20, 2020 at 05:14:28PM -0600, Eric W. Biederman wrote:
+> 
+> diff --git a/fs/file.c b/fs/file.c
+> index 5861c4f89419..6448523ca29e 100644
+> --- a/fs/file.c
+> +++ b/fs/file.c
+> @@ -865,6 +865,21 @@ struct file *fget_task(struct task_struct *task, unsigned int fd)
+>  	return file;
+>  }
+>  
+> +struct file *task_lookup_fd_rcu(struct task_struct *task, unsigned int fd)
+> +{
+> +	/* Must be called with rcu_read_lock held */
 
-E.g., running checkpatch on commit 3485507fc272 ("staging:
-bcm2835-camera: Reduce length of enum names") reports:
+Eric, maybe worth to have something like
 
-CHECK:LOGICAL_CONTINUATIONS: Logical continuations should be on the
-previous line
-+	if (!ret
-+	    && camera_port ==
+	RCU_LOCKDEP_WARN(!rcu_read_lock_held(),
+			 "suspicious task_lookup_fd_rcu() usage");
 
-Provide a simple fix by adding logical operator at the end of previous
-line and removing from current line, if both the lines are additions
-(ie start with '+')
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-changes in v2: quote $operator at substitution
-
-changes in v3: add a check for previous line ending with comment;
-If so, insert $operator at the last non-comment, non-whitespace char of the previous line
-
- scripts/checkpatch.pl | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 5b1a5a65e69a..533c4a6bbf12 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3553,8 +3553,22 @@ sub process {
- 
- # check for && or || at the start of a line
- 		if ($rawline =~ /^\+\s*(&&|\|\|)/) {
--			CHK("LOGICAL_CONTINUATIONS",
--			    "Logical continuations should be on the previous line\n" . $hereprev);
-+			my $operator = $1;
-+			if (CHK("LOGICAL_CONTINUATIONS",
-+				"Logical continuations should be on the previous line\n" . $hereprev) &&
-+			    $fix && $prevrawline =~ /^\+/) {
-+				# add logical operator to the previous line, remove from current line
-+				# if last line ends with a comment
-+				if ($prevrawline =~ /(\/\/.*)$/) {
-+					my $comment = trim($1);
-+					$fixed[$fixlinenr - 1] =~ s/\s*$comment//;
-+					$fixed[$fixlinenr - 1] .= " $operator $comment";
-+				}
-+				else {
-+					$fixed[$fixlinenr - 1] .= " $operator";
-+				}
-+				$fixed[$fixlinenr] =~ s/\Q$operator\E\s*//;
-+			}
- 		}
- 
- # check indentation starts on a tab stop
--- 
-2.17.1
-
+here?
