@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125F82BBC93
+	by mail.lfdr.de (Postfix) with ESMTP id 7F08A2BBC94
 	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 04:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727347AbgKUDL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 22:11:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37682 "EHLO
+        id S1727382AbgKUDLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 22:11:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727312AbgKUDL2 (ORCPT
+        with ESMTP id S1727024AbgKUDL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 22:11:28 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D158DC061A48
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:11:27 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id z83so5165142ybz.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:11:27 -0800 (PST)
+        Fri, 20 Nov 2020 22:11:29 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918C3C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:11:29 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id c137so14332091ybf.21
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:11:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=hD5ejNfyuyCoS/ZIO0QMnxuYssX6WcYQssRc/NoOro8=;
-        b=pKhG4kp2fu3Kf0Vg8dDYwOua9NYqWjFTTnSDXzN43ene1McqdpT6vnAlBwck7y2FwV
-         LSQIdP6u+EhejIjUqqqYDczUtYt7ldDDRd/s7fBvA1MBgSCME7iZYDNcPcklQoaBFI25
-         lz/QSXCHblPZROHJ44XFn2fovhxywozKh6H5cJtWfU0gMopZKqFzq3v5CsIBdCNYzcGP
-         Pn79GREFkUHV8D6s+FYX5q9g4RZK6Z2ZLNGl7rdAX+EhNG8wRDn/speh2/NuN7+Uy6d6
-         YNiwBpVExAwOxY9Q5/ryLWfdqlFEFMJTcQAf4e4ZIknTHG+npbol9hxdzASALPjptEYm
-         U3EQ==
+        bh=TcMg2D4AR9XYjmITcmV1XG9smtxoIoKtYLDcV7haDhw=;
+        b=Ado+uJCaoDYKbcx0IaKNBAaY7QJz23ovtZlsVrSa1DjIcsc/zu+Reuu9rFsPrtZd+a
+         FWeUklnGcvexOrTy5cfmlHm6nPu06ol79pBJ4XbR0Kmo4AdbOq/1JIYlLAE6CJNqX5zr
+         XE+ouxpYhCxy5Lgl4Vs7k47QBkzY5UElnFqVDFCAthRoSi/dzUUme2RE2tTz0whXwtAI
+         O4s1mLJbfD/I/48B15u8RQrJwA816GeQ5K+BbR8Dnf9FEnF1ivXhnVx2rSoNyBMxKjMR
+         cmAqgV4IRikUzXivCdD5J26KZo+F+tKrS3koIZUIAmyBGVNiX3MPte/EpbXGMlcg/5fA
+         2/OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=hD5ejNfyuyCoS/ZIO0QMnxuYssX6WcYQssRc/NoOro8=;
-        b=ucmoQbSeUY39HMdW+E+ZffSqc8c9jDOfX8NTIZg4mS8LIhmdMhUuN1rYfQPqCkUhHZ
-         76TqEye4KQSIA3ZGmylCzU3K46wTbvqsnFe5Zae5samIbxW/6+68D7xSgH7m9dfQkMvb
-         yXzuffhfysCzFjAKJ3pGoUzXa0muey282hELY66oNi7uzJV6/GijyGYyaDZDnhgsM6GA
-         cpI0M2u2vRrlVavVkG4DHN8GahcRJ1qMhDLQnf6aDmu+LsaqlHb4cXqI6y3kFOzYRoux
-         aG4sBY5sjhA7G95G1vl5EN2KcNElFZ8ddszFzjsVUd7Uz9Lz39DodugOwn309ki3yjOI
-         58bQ==
-X-Gm-Message-State: AOAM533OuYmZMuhSV/6EUGskVVrWyTrYjwALjxGqy6T9NqY9aB9bHY/n
-        0oIT9CjvmL9DzJtiREPrztyXBot1TWkv
-X-Google-Smtp-Source: ABdhPJwv0J+E4kWkivpM7VPp7V7tFtvwnQAvk8kmQi5P4KCeAaTpgfvGQ8Df30uUz/tFc52skYtOrUGabjX3
+        bh=TcMg2D4AR9XYjmITcmV1XG9smtxoIoKtYLDcV7haDhw=;
+        b=Sjd80GvDQxQ9Ye/E2pXINnPW9oMYCzEKB1KgUfLuOPqvagAdu1KcotMVLtPXLTfFCs
+         hhxZS9GgYXGLH/YHwlcfTkhx0It/5GyWJetwlcZaWqpWwGKssSjGFplH7ahJebj/9hZc
+         nahWFK31kdUw4tVlB01pxA/P4t6N98K/T79n7R8ZeoMaK3JKzkl8V/Ylt5HJApgMktgp
+         o0oCSAhiX44yhBqOkK2N7Zqivs53obe83yxSCMcOl8u9uFTIiAeDnJgNFcqXQVAWS6UB
+         d/m+3fKEdpZbKdy1kG6SBPCFx/2dCIeKUwkRz/Rsjn8KvFRMhM0lFIpoU+0/iFq9MAho
+         o9IA==
+X-Gm-Message-State: AOAM5307LjSZh7FIG4ITX8k+fxD2VSxQnRFNsrkITyDXrEh9BymgZ7JM
+        B+/wCzUs0GmJwDTdwZnvz1Pd9QmbVt4H
+X-Google-Smtp-Source: ABdhPJydzBQ0miBh8UjdMilHJqAMKVfeIl5xRP8cG+8g0YT/WGQ6kPYYRZywwZb6iw//ngFKroH9k2yiXt7X
 Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a25:7355:: with SMTP id
- o82mr27433034ybc.122.1605928287009; Fri, 20 Nov 2020 19:11:27 -0800 (PST)
-Date:   Fri, 20 Nov 2020 19:11:16 -0800
+ (user=irogers job=sendgmr) by 2002:a25:be42:: with SMTP id
+ d2mr32756749ybm.217.1605928288827; Fri, 20 Nov 2020 19:11:28 -0800 (PST)
+Date:   Fri, 20 Nov 2020 19:11:17 -0800
 In-Reply-To: <20201121031119.3554769-1-irogers@google.com>
-Message-Id: <20201121031119.3554769-3-irogers@google.com>
+Message-Id: <20201121031119.3554769-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20201121031119.3554769-1-irogers@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v3 2/5] perf metric: Use NAN for missing event IDs.
+Subject: [PATCH v3 3/5] perf metric: Rename expr__find_other.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -73,44 +73,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If during computing a metric an event (id) is missing the parsing
-aborts. A later patch will make it so that events that aren't used in
-the output are deliberately omitted, in which case we don't want the
-abort. Modify the missing ID case to report NAN for these cases.
+A later change will remove the notion of other, rename the function to
+expr__find_ids as this is what it populates.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/expr.y | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ tools/perf/tests/expr.c       | 26 +++++++++++++-------------
+ tools/perf/tests/pmu-events.c |  9 ++++-----
+ tools/perf/util/expr.c        |  4 ++--
+ tools/perf/util/expr.h        |  2 +-
+ tools/perf/util/metricgroup.c |  2 +-
+ tools/perf/util/stat-shadow.c |  6 +++---
+ 6 files changed, 24 insertions(+), 25 deletions(-)
 
-diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-index b2ada8f8309a..41c9cd4efadd 100644
---- a/tools/perf/util/expr.y
-+++ b/tools/perf/util/expr.y
-@@ -1,6 +1,7 @@
- /* Simple expression parser */
- %{
- #define YYDEBUG 1
-+#include <math.h>
- #include <stdio.h>
- #include "util.h"
- #include "util/debug.h"
-@@ -88,12 +89,10 @@ expr:	  NUMBER
- 	| ID			{
- 					struct expr_id_data *data;
+diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
+index b0a3b5fd0c00..7ccb97c73347 100644
+--- a/tools/perf/tests/expr.c
++++ b/tools/perf/tests/expr.c
+@@ -64,25 +64,25 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+ 	TEST_ASSERT_VAL("missing operand", ret == -1);
  
--					if (expr__resolve_id(ctx, $1, &data)) {
--						free($1);
--						YYABORT;
--					}
-+					$$ = NAN;
-+					if (expr__resolve_id(ctx, $1, &data) == 0)
-+						$$ = expr_id_data__value(data);
+ 	expr__ctx_clear(ctx);
+-	TEST_ASSERT_VAL("find other",
+-			expr__find_other("FOO + BAR + BAZ + BOZO", "FOO",
+-					 ctx, 1) == 0);
+-	TEST_ASSERT_VAL("find other", hashmap__size(ctx->ids) == 3);
+-	TEST_ASSERT_VAL("find other", hashmap__find(ctx->ids, "BAR",
++	TEST_ASSERT_VAL("find ids",
++			expr__find_ids("FOO + BAR + BAZ + BOZO", "FOO",
++					ctx, 1) == 0);
++	TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 3);
++	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "BAR",
+ 						    (void **)&val_ptr));
+-	TEST_ASSERT_VAL("find other", hashmap__find(ctx->ids, "BAZ",
++	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "BAZ",
+ 						    (void **)&val_ptr));
+-	TEST_ASSERT_VAL("find other", hashmap__find(ctx->ids, "BOZO",
++	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "BOZO",
+ 						    (void **)&val_ptr));
  
--					$$ = expr_id_data__value(data);
- 					free($1);
- 				}
- 	| expr '|' expr		{ $$ = (long)$1 | (long)$3; }
+ 	expr__ctx_clear(ctx);
+-	TEST_ASSERT_VAL("find other",
+-			expr__find_other("EVENT1\\,param\\=?@ + EVENT2\\,param\\=?@",
+-					 NULL, ctx, 3) == 0);
+-	TEST_ASSERT_VAL("find other", hashmap__size(ctx->ids) == 2);
+-	TEST_ASSERT_VAL("find other", hashmap__find(ctx->ids, "EVENT1,param=3/",
++	TEST_ASSERT_VAL("find ids",
++			expr__find_ids("EVENT1\\,param\\=?@ + EVENT2\\,param\\=?@",
++					NULL, ctx, 3) == 0);
++	TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 2);
++	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "EVENT1,param=3/",
+ 						    (void **)&val_ptr));
+-	TEST_ASSERT_VAL("find other", hashmap__find(ctx->ids, "EVENT2,param=3/",
++	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "EVENT2,param=3/",
+ 						    (void **)&val_ptr));
+ 
+ 	expr__ctx_free(ctx);
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index 294daf568bb6..3ac70fa31379 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -502,9 +502,8 @@ static int test_parsing(void)
+ 			if (!pe->metric_expr)
+ 				continue;
+ 			expr__ctx_clear(ctx);
+-			if (expr__find_other(pe->metric_expr, NULL, ctx, 0)
+-				  < 0) {
+-				expr_failure("Parse other failed", map, pe);
++			if (expr__find_ids(pe->metric_expr, NULL, ctx, 0) < 0) {
++				expr_failure("Parse find ids failed", map, pe);
+ 				ret++;
+ 				continue;
+ 			}
+@@ -559,8 +558,8 @@ static int metric_parse_fake(const char *str)
+ 	pr_debug("parsing '%s'\n", str);
+ 
+ 	ctx = expr__ctx_new();
+-	if (expr__find_other(str, NULL, ctx, 0) < 0) {
+-		pr_err("expr__find_other failed\n");
++	if (expr__find_ids(str, NULL, ctx, 0) < 0) {
++		pr_err("expr__find_ids failed\n");
+ 		return -1;
+ 	}
+ 
+diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+index e0623d38e6ee..a248d14882cc 100644
+--- a/tools/perf/util/expr.c
++++ b/tools/perf/util/expr.c
+@@ -287,8 +287,8 @@ int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
+ 	return __expr__parse(final_val, ctx, expr, EXPR_PARSE, runtime) ? -1 : 0;
+ }
+ 
+-int expr__find_other(const char *expr, const char *one,
+-		     struct expr_parse_ctx *ctx, int runtime)
++int expr__find_ids(const char *expr, const char *one,
++		   struct expr_parse_ctx *ctx, int runtime)
+ {
+ 	int ret = __expr__parse(NULL, ctx, expr, EXPR_OTHER, runtime);
+ 
+diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
+index 00b941cfe6a6..955d5adb7ca4 100644
+--- a/tools/perf/util/expr.h
++++ b/tools/perf/util/expr.h
+@@ -43,7 +43,7 @@ int expr__resolve_id(struct expr_parse_ctx *ctx, const char *id,
+ 		     struct expr_id_data **datap);
+ int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
+ 		const char *expr, int runtime);
+-int expr__find_other(const char *expr, const char *one,
++int expr__find_ids(const char *expr, const char *one,
+ 		struct expr_parse_ctx *ids, int runtime);
+ 
+ double expr_id_data__value(const struct expr_id_data *data);
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 342dcccb860f..0be684bb020f 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -761,7 +761,7 @@ static int __add_metric(struct list_head *metric_list,
+ 	 * For both the parent and referenced metrics, we parse
+ 	 * all the metric's IDs and add it to the parent context.
+ 	 */
+-	if (expr__find_other(pe->metric_expr, NULL, m->pctx, runtime) < 0) {
++	if (expr__find_ids(pe->metric_expr, NULL, m->pctx, runtime) < 0) {
+ 		if (m->metric_refs_cnt == 0) {
+ 			expr__ctx_free(m->pctx);
+ 			free(m);
+diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
+index bea7b5c6b1c0..91bb7245f8b1 100644
+--- a/tools/perf/util/stat-shadow.c
++++ b/tools/perf/util/stat-shadow.c
+@@ -357,9 +357,9 @@ void perf_stat__collect_metric_expr(struct evlist *evsel_list)
+ 		expr__ctx_clear(ctx);
+ 		metric_events = counter->metric_events;
+ 		if (!metric_events) {
+-			if (expr__find_other(counter->metric_expr,
+-					     counter->name,
+-					     ctx, 1) < 0)
++			if (expr__find_ids(counter->metric_expr,
++					   counter->name,
++					   ctx, 1) < 0)
+ 				continue;
+ 
+ 			metric_events = calloc(sizeof(struct evsel *),
 -- 
 2.29.2.454.gaff20da3a2-goog
 
