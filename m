@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C3B2BC113
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6A92BC119
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727086AbgKURcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 12:32:33 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:57873 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726305AbgKURcd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 12:32:33 -0500
-Received: (qmail 658838 invoked by uid 1000); 21 Nov 2020 12:32:31 -0500
-Date:   Sat, 21 Nov 2020 12:32:31 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH RFC v2 1/1] scsi: pm: Leave runtime PM status alone
- during system resume/thaw/restore
-Message-ID: <20201121173231.GA657814@rowland.harvard.edu>
-References: <1605861443-11459-1-git-send-email-cang@codeaurora.org>
- <20201120163524.GB619708@rowland.harvard.edu>
- <9df460a7-c7fc-4999-bfaa-076229b8a752@acm.org>
+        id S1727457AbgKURdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 12:33:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727128AbgKURdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 12:33:35 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC7B4221FC;
+        Sat, 21 Nov 2020 17:33:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605980014;
+        bh=LU5zxVHmcNwqc3zeelUfrSz7RLmz5VLKXsOofsxAqWA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dpDMMZJlwBowguTkYMIfZ/Rxdy9Iwskb4j49CZfsZKk58je9+T7QyIeCWgtiGc2Gu
+         w3N+aXWlnkD2EMlHgdFS/W+10HgNPKR4CeQTX1UzL64aM2/XL415OzF1jq8PRCq8Xl
+         8/n7GbRuTFZ1Omvvyz6wxx9Iwd6Cyqf9uxNZmiuw=
+Date:   Sat, 21 Nov 2020 17:33:30 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ye Xiang <xiang.ye@intel.com>
+Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] iio: hid-sensor-trigger: Use iio->trig instead
+ trig field internal structure
+Message-ID: <20201121173330.3afd1087@archlinux>
+In-Reply-To: <20201119100331.2594-4-xiang.ye@intel.com>
+References: <20201119100331.2594-1-xiang.ye@intel.com>
+        <20201119100331.2594-4-xiang.ye@intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9df460a7-c7fc-4999-bfaa-076229b8a752@acm.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 09:00:02AM -0800, Bart Van Assche wrote:
-> On 11/20/20 8:35 AM, Alan Stern wrote:
-> > On Fri, Nov 20, 2020 at 12:37:22AM -0800, Can Guo wrote:
-> >> Runtime resume is handled by runtime PM framework, no need to forcibly
-> >> set runtime PM status to RPM_ACTIVE during system resume/thaw/restore.
-> > 
-> > Sorry, I don't understand this explanation at all.
-> > 
-> > Sure, runtime resume is handled by the runtime PM framework.  But this 
-> > patch changes the code for system resume, which is completely different.
-> > 
-> > Following a system resume, the hardware will be at full power.  We don't 
-> > want the kernel to think that the device is still in runtime suspend; 
-> > otherwise is would never put the device back into low-power mode.
+On Thu, 19 Nov 2020 18:03:30 +0800
+Ye Xiang <xiang.ye@intel.com> wrote:
+
+> Use iio->trig instead of attrb->trig as parameter of iio_trigger_unregister
+> and iio_trigger_free. This allows one HID sensor driver to create
+> multiple iio devices. In this case common attributes are shared and
+> there can be one instance for the structure containing common attributes
+> for all iio devices.
 > 
-> Hi Alan,
+> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+Whilst indio_dev->trig is set to the local trigger at startup,
+I'm not seeing the validate callbacks that will be needed to ensure it 
+is still set to that trigger when you remove the driver.
+
+Specifically validate_trigger callback for all the hid sensor devices.
+
+It is entirely possible that should be set and these devices can only
+use the hid sensor trigger, but I don't think it currently is.
+
+Thus this patch is going to cause some interesting crashes.
+Note this is the reason all IIO drivers have to carry an extra copy
+of the trig pointer.
+
+So you'll have to do something a bit more interesting to pass that
+trigger to the relevant devices that share it.
+
+Arguably if they are actually sharing the trigger, then we shouldn't really
+have separate IIO devices in the first place as we loose the
+connection between the timing of the data across the different channels.
+
+Jonathan
+
+> ---
+>  drivers/iio/common/hid-sensors/hid-sensor-trigger.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Does this mean that every driver needs similar code for handling runtime
-> suspended devices upon system resume? If so, would it be possible to
-> move that code into the power management core (drivers/base/power)?
+> diff --git a/drivers/iio/common/hid-sensors/hid-sensor-trigger.c b/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
+> index 30340abcbc8d..bb5e7c8ff15b 100644
+> --- a/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
+> +++ b/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
+> @@ -236,8 +236,8 @@ void hid_sensor_remove_trigger(struct iio_dev *indio_dev,
+>  	pm_runtime_put_noidle(&attrb->pdev->dev);
+>  
+>  	cancel_work_sync(&attrb->work);
+> -	iio_trigger_unregister(attrb->trigger);
+> -	iio_trigger_free(attrb->trigger);
+> +	iio_trigger_unregister(indio_dev->trig);
+> +	iio_trigger_free(indio_dev->trig);
 
-That's a complicated story.
+>  	iio_triggered_buffer_cleanup(indio_dev);
+>  }
+>  EXPORT_SYMBOL(hid_sensor_remove_trigger);
 
-In short, many drivers need to do this, but not all.  There is a complex 
-collection of settings available for subsystems or drivers that would 
-like their devices to remain in runtime system across a system sleep.
-
-For the subsystems/drivers that don't care to deal with this complexity 
-or don't have any special requirements -- yes, they all need to include 
-code like this in their system-resume paths.
-
-I had a very long discussion with Rafael Wysocki about all this starting 
-last March; you can find the relevant emails beginning roughly here:
-
-	https://marc.info/?l=linux-pm&m=158516934924947&w=2
-
-and continuing through a few different threads.
-
-Rafael ended up making a large number of changes to the PM core and API 
-to simplify things, straighten them out, and improve the documentation.  
-But we never did try to add this automatic set-runtime-active thing into 
-the core.  Probably we wanted all the other changes to settle down 
-before trying to do it, and then just forgot about it.  In fact, I'm not 
-certain that it is possible now, but we should look into it.
-
-Alan Stern
