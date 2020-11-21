@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2330C2BC091
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 17:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 085E42BC097
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 17:39:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgKUQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 11:32:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbgKUQcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 11:32:03 -0500
+        id S1726580AbgKUQj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 11:39:27 -0500
+Received: from saturn.retrosnub.co.uk ([46.235.226.198]:59546 "EHLO
+        saturn.retrosnub.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgKUQj0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 11:39:26 -0500
 Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8E9522206;
-        Sat, 21 Nov 2020 16:32:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605976323;
-        bh=hvZKMfDT45SrrDndTb88nBfj/K+dMn9SERmCh1poRBU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Oq3tI8Oz4rEXwir+kMVZH4uUSC7r4JxdX82Fi3ATqi4vr+Scc/oeUSxJyRGELne6v
-         nabUVSzoXO0peaa0KabLXJmrdkKYWLhEFWh4JBY3H5h10VsIliDa5mt1JqWtbQTnXP
-         cxi76GPl/rZeZny8fKb5bG11F9BSFj+Zyizb+md8=
-Date:   Sat, 21 Nov 2020 16:31:57 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Kamel Bouhara <kamel.bouhara@bootlin.com>
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        robh+dt@kernel.org, alexandre.belloni@bootlin.com,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] counter: microchip-tcb-capture: Fix CMR value check
-Message-ID: <20201121163157.086ae03b@archlinux>
-In-Reply-To: <20201115152617.GB2233@kb-xps>
-References: <20201114232805.253108-1-vilhelm.gray@gmail.com>
-        <20201115152617.GB2233@kb-xps>
+        by saturn.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id 44EAF9E0076;
+        Sat, 21 Nov 2020 16:39:21 +0000 (GMT)
+Date:   Sat, 21 Nov 2020 16:39:19 +0000
+From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Heiko Stuebner <heiko@sntech.de>, <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-rockchip@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] iio: adc: rockchip_saradc: fix missing
+ clk_disable_unprepare() on error in rockchip_saradc_resume
+Message-ID: <20201121163919.2fcb9e71@archlinux>
+In-Reply-To: <20201108154128.57f4162f@archlinux>
+References: <20201103120743.110662-1-miaoqinglang@huawei.com>
+        <20201108154128.57f4162f@archlinux>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,21 +39,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Nov 2020 16:26:17 +0100
-Kamel Bouhara <kamel.bouhara@bootlin.com> wrote:
+On Sun, 8 Nov 2020 15:41:28 +0000
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-> On Sat, Nov 14, 2020 at 06:28:05PM -0500, William Breathitt Gray wrote:
-> > The ATMEL_TC_ETRGEDG_* defines are not masks but rather possible values
-> > for CMR. This patch fixes the action_get() callback to properly check
-> > for these values rather than mask them.
-> >
-> > Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
-> > Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> > ---  
+> On Tue, 3 Nov 2020 20:07:43 +0800
+> Qinglang Miao <miaoqinglang@huawei.com> wrote:
 > 
-> Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > Fix the missing clk_disable_unprepare() of info->pclk
+> > before return from rockchip_saradc_resume in the error
+> > handling case when fails to prepare and enable info->clk.
+> > 
+> > Fixes: 44d6f2ef94f9 ("iio: adc: add driver for Rockchip saradc")
+> > Suggested-by:Robin Murphy <robin.murphy@arm.com>
+> > Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>  
+> 
+> Looks good to me.  I'll just give it a little longer on the list so Heiko
+> and others have a chance to sanity check it.
 > 
 Applied to the fixes-togreg branch of iio.git and marked for stable.
 
@@ -65,46 +62,28 @@ Thanks,
 
 Jonathan
 
-> >  drivers/counter/microchip-tcb-capture.c | 16 ++++++++++------
-> >  1 file changed, 10 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
-> > index 039c54a78aa5..710acc0a3704 100644
-> > --- a/drivers/counter/microchip-tcb-capture.c
-> > +++ b/drivers/counter/microchip-tcb-capture.c
-> > @@ -183,16 +183,20 @@ static int mchp_tc_count_action_get(struct counter_device *counter,
-> >
-> >  	regmap_read(priv->regmap, ATMEL_TC_REG(priv->channel[0], CMR), &cmr);
-> >
-> > -	*action = MCHP_TC_SYNAPSE_ACTION_NONE;
-> > -
-> > -	if (cmr & ATMEL_TC_ETRGEDG_NONE)
-> > +	switch (cmr & ATMEL_TC_ETRGEDG) {
-> > +	default:
-> >  		*action = MCHP_TC_SYNAPSE_ACTION_NONE;
-> > -	else if (cmr & ATMEL_TC_ETRGEDG_RISING)
-> > +		break;
-> > +	case ATMEL_TC_ETRGEDG_RISING:
-> >  		*action = MCHP_TC_SYNAPSE_ACTION_RISING_EDGE;
-> > -	else if (cmr & ATMEL_TC_ETRGEDG_FALLING)
-> > +		break;
-> > +	case ATMEL_TC_ETRGEDG_FALLING:
-> >  		*action = MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE;
-> > -	else if (cmr & ATMEL_TC_ETRGEDG_BOTH)
-> > +		break;
-> > +	case ATMEL_TC_ETRGEDG_BOTH:
-> >  		*action = MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE;
-> > +		break;
-> > +	}
-> >
-> >  	return 0;
-> >  }
-> > --
-> > 2.29.2
-> >  
+> Thanks,
 > 
-> --
-> Kamel Bouhara, Bootlin
-> Embedded Linux and kernel engineering
-> https://bootlin.com
+> Jonathan
+> 
+> > ---
+> > v2: remove useless braces because early return is pointless.
+> > 
+> >  drivers/iio/adc/rockchip_saradc.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
+> > index 1f3d7d639..12584f163 100644
+> > --- a/drivers/iio/adc/rockchip_saradc.c
+> > +++ b/drivers/iio/adc/rockchip_saradc.c
+> > @@ -462,7 +462,7 @@ static int rockchip_saradc_resume(struct device *dev)
+> >  
+> >  	ret = clk_prepare_enable(info->clk);
+> >  	if (ret)
+> > -		return ret;
+> > +		clk_disable_unprepare(info->pclk);
+> >  
+> >  	return ret;
+> >  }  
+> 
 
