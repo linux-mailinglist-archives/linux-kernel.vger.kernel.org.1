@@ -2,79 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F4B2BBD84
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 07:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624D92BBD85
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 07:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgKUGbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 01:31:09 -0500
-Received: from unknown.scnet.net ([204.93.157.22]:56330 "EHLO
-        vps.turpyapps.com" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgKUGbJ (ORCPT
+        id S1726558AbgKUGdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 01:33:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726433AbgKUGdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 01:31:09 -0500
-X-Greylist: delayed 83608 seconds by postgrey-1.27 at vger.kernel.org; Sat, 21 Nov 2020 01:31:08 EST
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=turpymobileapps.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Reply-To:From:Subject:Date:Message-ID:Sender:To:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JhC6nrMaYa+xW3qfIjlINuBFH5+ic6+UIlp7A6EbiF4=; b=bTZMUfETHcp3Kd9nH4BgoVjgvv
-        zaZd7xczHpes+blC2YoEk+ku20MPzrwUO0TaUeAfHn6WYegBKPWNop/DnIp7nUITgNbI1Eit7Bs/7
-        OknkbnIhqe2+/DUkWB4yvKQYu/hLPXSfm57dEflcoGkqO14HGzQCLdF4TiV2Qf8okwHDrSe0ctSur
-        rFGTUyoQ4ORI8ZWuITUK84Ug7+Xg0j4AscKh26b19m85JH4+F7dEHKd4fE3q6oEA0aaItGm/3IV3l
-        6Am92LQB+xE5AWJ6J5bv6zT3Kr50vmlEPm5j/xbSURbKbZCLIoh/etLN2m0vz8w47ghviB9oTm2CO
-        NOaIAuWA==;
-Received: from [::1] (port=33816 helo=webmail.turpymobileapps.com)
-        by vps.turpyapps.com with esmtpa (Exim 4.91)
-        (envelope-from <zakeer@turpymobileapps.com>)
-        id 1kg0ed-0005SN-2o; Fri, 20 Nov 2020 12:46:23 +0530
-Received: from 102.39.193.123 ([102.39.193.123]) (proxying for
- 102.39.193.123)
-        (SquirrelMail authenticated user zakeer@turpymobileapps.com)
-        by webmail.turpymobileapps.com with HTTP;
-        Fri, 20 Nov 2020 12:46:23 +0530
-Message-ID: <2a10aa07f85e7c8f376d704ef2888640.squirrel@webmail.turpymobileapps.com>
-Date:   Fri, 20 Nov 2020 12:46:23 +0530
-Subject: 
-From:   =?utf-8?B?IlN0ZXZlICYgTGVua2EgVGhvbXNvbiBGb3VuZGF0aW9uwq4i?= 
-        <zakeer@turpymobileapps.com>
-Reply-To: steve.foundation009@hotmail.com
-User-Agent: SquirrelMail/1.5.2 [SVN]
-MIME-Version: 1.0
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vps.turpyapps.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - turpymobileapps.com
-X-Get-Message-Sender-Via: vps.turpyapps.com: authenticated_id: zakeer@turpymobileapps.com
-X-Authenticated-Sender: vps.turpyapps.com: zakeer@turpymobileapps.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-To:     unlisted-recipients:; (no To-header on input)
+        Sat, 21 Nov 2020 01:33:06 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D929C061A48
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 22:33:06 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id 81so9325298pgf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 22:33:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=/QcxfXErWWujy+nFNlFKMWzF0EXFpsGg4+Dh63UDNx4=;
+        b=EdA2h3p87/J7Q4xNVksxAGFt1xTbDRs12kJw3waq/qrqWlgrQ+yK4fwbXqdE3I8EeY
+         EejVAGVllbDov3IjWVlfSVCTz4orFfzGoXH+uxCMX8m5ezEyYJW08bKLp4rnbrNIrWvz
+         slbygK3FIpgNQn/1Y2X8euXNLtlMi/eid7WpIpa1UEQy19sldi+I9K0bPZTG1yZwDkia
+         nNy2mU3tZ2UsRZagnC7s4b1BMpRtF52GrV8HLNHVUyCXqJMZRl8WH1E+cR2J4yHy6iJK
+         SivyHKufvTZNt8/s3107RWlRYSiKxYDRMT/Ol/HY3i0VVyvGjAu9/EAZQxslq+a1FWV9
+         JvGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/QcxfXErWWujy+nFNlFKMWzF0EXFpsGg4+Dh63UDNx4=;
+        b=d942+Yo61aHefiEsnw1PQUKK1mdJcXouQV3AgwhLJD8y7hu5YtEAtkKYKZyVtRQ9xB
+         X4NWqRfHjcz6ZzYRIxZAUa8SQzRAURanAP3ljToNvtFucl7AwROOE2GOMV4GTIC6x4AW
+         BASJOesjncQO+esQpUgkhULhfRODPWZGIw33ZaWJjVc3UR5Vgh1xZkTb6JMrnHQtI7Tb
+         hCbtdCpt5qtZHLx4V8jyV1hx/lM8WW4mwURDmm2z4fs0x/Mb0pfKlMe55f0zRuVbP/5T
+         nBf/EWqmAdVO8gp/HAG3QelfWfljAVu+WvgJYE1C/bWCiI0Tl3+3W/CGiuo5AExVufsn
+         GBRA==
+X-Gm-Message-State: AOAM530/LsoFVjJEwIDV56kRateTMDT27mZsjHlkOozzbKonW1JQfZj/
+        tKi7e0lL5JqlboFUbSQI7KjWbHk32oMkFA==
+X-Google-Smtp-Source: ABdhPJwzT1WHUftegVeHBEHmL1+Lb0AS44SxEhcpfzWQqyrxoXeSsAtm5eLrRamw0mIW+nUj6+H3dA==
+X-Received: by 2002:a63:c749:: with SMTP id v9mr20013228pgg.451.1605940385315;
+        Fri, 20 Nov 2020 22:33:05 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id l7sm6471460pjg.29.2020.11.20.22.33.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 22:33:04 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>, Todd Kjos <tkjos@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org
+Subject: [PATCH] regulator: Kconfig: Fix REGULATOR_QCOM_RPMH dependencies to avoid build error
+Date:   Sat, 21 Nov 2020 06:33:02 +0000
+Message-Id: <20201121063302.84090-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The kernel test robot reported the following build error:
 
+All errors (new ones prefixed by >>):
 
+   xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
+   qcom-rpmh-regulator.c:(.text+0x270): undefined reference to `rpmh_write'
+   xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
+   qcom-rpmh-regulator.c:(.text+0x2f2): undefined reference to `rpmh_write'
+   xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_vrm_get_voltage_sel':
+>> qcom-rpmh-regulator.c:(.text+0x274): undefined reference to `rpmh_write_async'
+   xtensa-linux-ld: drivers/regulator/qcom-rpmh-regulator.o: in function `rpmh_regulator_send_request':
+   qcom-rpmh-regulator.c:(.text+0x2fc): undefined reference to `rpmh_write_async'
 
-Greetings,
+Which is due to REGULATOR_QCOM_RPMH depending on
+QCOM_RPMH || COMPILE_TEST. The problem is that QOM_RPMH can now
+be a module, which in that case requires REGULATOR_QCOM_RPMH=m
+to build.
 
-We are pleased to inform you that an amount of £500,000.00(GBP) has been
-donated and given, gifted to you and your family by Steve & Lenka Thomson,
-who won the Euro Millions jackpot, lottery of
-£105,100,701.90 Euro Millions, part of this donation, it is for you and
-your family. This donation is to help fight against Corona Virus COVID -19
-pandemic in the world, and help the poor people off the streets, also to
-contribute to poverty reduction, public donations, public charity,
-orphanages, less privileged and help poor individuals in your community
-please contact her to claim the money via email for more details:
-info@supportfoundation.co.uk
+However, if COMPILE_TEST is enabled, REGULATOR_QCOM_RPMH can be
+set to =y while REGULATOR_QCOM_RPMH=m which will cause build
+failures.
 
-Regards
-Steve Thomson
+The easy fix here is to remove COMPILE_TEST.
+
+Feedback would be appreciated!
+
+Cc: Todd Kjos <tkjos@google.com>
+Cc: Saravana Kannan <saravanak@google.com>
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Rajendra Nayak <rnayak@codeaurora.org>
+Cc: Maulik Shah <mkshah@codeaurora.org>
+Cc: Stephen Boyd <swboyd@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+ drivers/regulator/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 020a00d6696b..9e4fc73ed5a1 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -843,7 +843,7 @@ config REGULATOR_QCOM_RPM
+ 
+ config REGULATOR_QCOM_RPMH
+ 	tristate "Qualcomm Technologies, Inc. RPMh regulator driver"
+-	depends on QCOM_RPMH || COMPILE_TEST
++	depends on QCOM_RPMH
+ 	help
+ 	  This driver supports control of PMIC regulators via the RPMh hardware
+ 	  block found on Qualcomm Technologies Inc. SoCs.  RPMh regulator
+-- 
+2.17.1
 
