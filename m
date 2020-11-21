@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E112BC125
+	by mail.lfdr.de (Postfix) with ESMTP id D3FE42BC126
 	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:45:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727417AbgKURnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 12:43:51 -0500
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:56219 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgKURnv (ORCPT
+        id S1727171AbgKURoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 12:44:46 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:57494 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbgKURop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 12:43:51 -0500
-X-Originating-IP: 52.47.93.88
-Received: from ip-172-31-39-236.eu-west-3.compute.internal (ec2-52-47-93-88.eu-west-3.compute.amazonaws.com [52.47.93.88])
-        (Authenticated sender: kamel.bouhara@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 0E2D51C0005;
-        Sat, 21 Nov 2020 17:43:47 +0000 (UTC)
-Date:   Sat, 21 Nov 2020 17:43:46 +0000
-From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, alexandre.belloni@bootlin.com,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        Sat, 21 Nov 2020 12:44:45 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 86DE91C0B7C; Sat, 21 Nov 2020 18:44:42 +0100 (CET)
+Date:   Sat, 21 Nov 2020 18:44:42 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Add Kamel Bouhara as TCB counter driver
- maintainer
-Message-ID: <20201121174346.GA11423@ip-172-31-39-236.eu-west-3.compute.internal>
-References: <20201116131141.3985-1-vilhelm.gray@gmail.com>
+Subject: Re: [PATCH 3/5] arm64: dts: sdm845: add oneplus 6/t devices
+Message-ID: <20201121174442.GA12057@duo.ucw.cz>
+References: <20201112161920.2671430-1-caleb@connolly.tech>
+ <20201112161920.2671430-4-caleb@connolly.tech>
+ <20201116220153.GA1003@bug>
+ <a20145ef-31a1-a72d-2d60-87a5282ace87@connolly.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
 Content-Disposition: inline
-In-Reply-To: <20201116131141.3985-1-vilhelm.gray@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <a20145ef-31a1-a72d-2d60-87a5282ace87@connolly.tech>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 08:11:41AM -0500, William Breathitt Gray wrote:
-> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 
-Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  MAINTAINERS | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 913b5eb64e44..18d34536c4bd 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2095,6 +2095,12 @@ X:	drivers/net/wireless/atmel/
->  N:	at91
->  N:	atmel
->  
-> +Microchip Timer Counter Block (TCB) Capture Driver
-> +M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
-> +L:	linux-iio@vger.kernel.org
-> +S:	Maintained
-> +F:	drivers/counter/microchip-tcb-capture.c
-> +
->  ARM/Microchip Sparx5 SoC support
->  M:	Lars Povlsen <lars.povlsen@microchip.com>
->  M:	Steen Hegelund <Steen.Hegelund@microchip.com>
-> -- 
-> 2.29.2
-> 
+On Mon 2020-11-16 23:49:32, Caleb Connolly wrote:
+> On 2020-11-16 22:01, Pavel Machek wrote:
+> > Hi!
+> >
+> >> Add initial support for the OnePlus 6 (enchilada) and 6T (fajita) based
+> >> on the sdm845-mtp DT. Support includes:
+> >>
+> >> * Display panels and Adreno 630
+> >> * Touch screen support with synaptics rmi4
+> >> * All remoteprocs start correctly
+> >> * WLAN / Bluetooth
+> >> * Volume / power buttons and OnePlus Tri-State switch are functional
+> >>      The tri-state switch is a 3 state mute slider on the side of the =
+phone * USB
+> >> support, currently forced to peripheral as type C detection isn't func=
+tional.
+> > I have similar switches on my joystick... but I don't believe modelling=
+ it as 3 separate
+> > keys with "macro" keysym is the right way to go.
+>=20
+> Hi! I agree that this is a bit of a weird way to model the switch, do=20
+> you have any ideas for a better solution?
+
+You should ask on the input mailing list, I guess.
+
+Best regards,
+									Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--opJtzjQTFsWo+cga
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX7lSCgAKCRAw5/Bqldv6
+8jxNAKC4o5ygVLVd+at56gz7xUlBzH8xVACdFWV2UYjfFsDiF/QZkq9jDna2iSU=
+=SfAe
+-----END PGP SIGNATURE-----
+
+--opJtzjQTFsWo+cga--
