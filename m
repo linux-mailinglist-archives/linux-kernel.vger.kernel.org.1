@@ -2,68 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F4D2BC1DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 21:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFDC2BC1E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 21:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbgKUTyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 14:54:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20110 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728466AbgKUTyC (ORCPT
+        id S1728459AbgKUUAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 15:00:34 -0500
+Received: from smtprelay0129.hostedemail.com ([216.40.44.129]:59716 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728402AbgKUUAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 14:54:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605988441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Zt6PGtlR8y/mkqi+5YNjO4Oe9KhPCG+m4BdR6B7XWq0=;
-        b=MYtHAcq9SwYezC8vHYaFwpVp1Ed/SmARxqSX9aRFmC1Rg+YgA36qcTTKaNshjrP2iLQ79W
-        AOAFFzdxJCsmxWlTchI4SVlAnys0wmSiyqPbsxFiOT6bDZrGlyMN/5rMoTypBwAkFH3n45
-        8lNq+U2mY9zW1mt8RfA2pUqzjyZwPKY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-88-slEJZEyBP2qos4b0_OSvVg-1; Sat, 21 Nov 2020 14:53:57 -0500
-X-MC-Unique: slEJZEyBP2qos4b0_OSvVg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AFB5E51D4;
-        Sat, 21 Nov 2020 19:53:55 +0000 (UTC)
-Received: from mail (ovpn-112-35.rdu2.redhat.com [10.10.112.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 68A9B5C224;
-        Sat, 21 Nov 2020 19:53:52 +0000 (UTC)
-Date:   Sat, 21 Nov 2020 14:53:51 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Qian Cai <cai@lca.pw>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>
-Subject: Re: [PATCH 1/1] mm: compaction: avoid fast_isolate_around() to set
- pageblock_skip on reserved pages
-Message-ID: <X7lwT2+uSVGKRApQ@redhat.com>
-References: <8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw>
- <20201121194506.13464-1-aarcange@redhat.com>
- <20201121194506.13464-2-aarcange@redhat.com>
+        Sat, 21 Nov 2020 15:00:34 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 993CC100E7B42;
+        Sat, 21 Nov 2020 20:00:32 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7903:9025:10004:10400:10848:11026:11232:11658:11914:12043:12295:12297:12555:12740:12895:13069:13161:13229:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:21939:21990:30012:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: band36_01089c827356
+X-Filterd-Recvd-Size: 2643
+Received: from XPS-9350.home (unknown [47.151.128.180])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 21 Nov 2020 20:00:31 +0000 (UTC)
+Message-ID: <7456d8ffa0e980e52964c539081228dff4627ae3.camel@perches.com>
+Subject: Re: [PATCH 086/141] hwmon: (corsair-cpro) Fix fall-through warnings
+ for Clang
+From:   Joe Perches <joe@perches.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Marius Zachmann <mail@mariuszachmann.de>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Date:   Sat, 21 Nov 2020 12:00:30 -0800
+In-Reply-To: <20201121185010.GB114144@roeck-us.net>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+         <be5c59f9bc4bac8c968bbd7443d08eaaf8a28ef8.1605896060.git.gustavoars@kernel.org>
+         <20201121185010.GB114144@roeck-us.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121194506.13464-2-aarcange@redhat.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 02:45:06PM -0500, Andrea Arcangeli wrote:
-> +					if (likely(!PageReserved(page)))
+On Sat, 2020-11-21 at 10:50 -0800, Guenter Roeck wrote:
+> On Fri, Nov 20, 2020 at 12:36:04PM -0600, Gustavo A. R. Silva wrote:
+> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> > by explicitly adding a break statement instead of letting the code fall
+> > through to the next case.
+> > 
+> > Link: https://github.com/KSPP/linux/issues/115
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 
+> Acked-by: Guenter Roeck <linux@roeck-us.net>
+[]
+> > diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
+[]
+> > @@ -310,6 +310,7 @@ static int ccp_write(struct device *dev, enum hwmon_sensor_types type,
+> >  		default:
+> >  			break;
+> >  		}
+> > +		break;
 
-NOTE: this line will have to become "likely(page &&
-!PageReserved(page))" to handle the case of non contiguous zones,
-since pageblock_pfn_to_page might return NULL in that case.. I noticed
-right after sending, but I'll wait some feedback before resending the
-correction in case it gets fixed in another way.
+The
+		default:
+			break;
+
+bit above (but not below as it's a switch on an enum) could also be deleted no?
+
+> >  	default:
+> >  		break;
+> >  	}
+
+---
+ drivers/hwmon/corsair-cpro.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
+index 591929ec217a..580173fca0f6 100644
+--- a/drivers/hwmon/corsair-cpro.c
++++ b/drivers/hwmon/corsair-cpro.c
+@@ -299,17 +299,14 @@ static int ccp_write(struct device *dev, enum hwmon_sensor_types type,
+ 		switch (attr) {
+ 		case hwmon_pwm_input:
+ 			return set_pwm(ccp, channel, val);
+-		default:
+-			break;
+ 		}
+ 		break;
+ 	case hwmon_fan:
+ 		switch (attr) {
+ 		case hwmon_fan_target:
+ 			return set_target(ccp, channel, val);
+-		default:
+-			break;
+ 		}
++		break;
+ 	default:
+ 		break;
+ 	}
+
 
