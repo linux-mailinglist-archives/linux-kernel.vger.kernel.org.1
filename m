@@ -2,161 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBAF2BBD1A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 05:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25AAC2BBD1B
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 05:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgKUEzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 23:55:19 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:49201 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgKUEzR (ORCPT
+        id S1727127AbgKUEzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 23:55:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725829AbgKUEzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 23:55:17 -0500
-Received: by mail-il1-f200.google.com with SMTP id s74so9276307ili.16
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:55:16 -0800 (PST)
+        Fri, 20 Nov 2020 23:55:31 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D806C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:55:31 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id q5so11133631qkc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:55:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pl3i26dZKCO4ZlqiTecHj3kWUWBkOrjJfw37hSukKXY=;
+        b=gJkFSQ6pB0E5gW9adpZm98U8X0fBKYTf1NPal0K4XCcdN3ITqQ/8YbWNAocj4h4/vC
+         8xLH1celr2jep48NmQCTWgYr9PvUe1fiFYGSxIecGNJ3yGOnMQQCivrEQvD+KcoO+g6F
+         fObfQpAr3xjM+JHvuVIVaouWwH0koWdWq+4uKAGQZWNYiJL5hTFyYOI7CzTG3/DT3Hha
+         IYKBjQNw3Uemgko2blzL76r56/IUK6D4PCOGx2ld+beQKVn3WW5gjwaP9ipd1k37YQZ5
+         G01Qw2Z7Y7709i3oeWz9HxJF8V0t6b8tP7lwG7m2CGTvY2UGARqzeR+FDVpBaj95u1fL
+         8k6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Bc8DJgBNhzyknhToDKlCX+JkuaB11Va6geaeIXU01nE=;
-        b=iji7z7KcPcvZJQArc0ZQX9kTsU2Jwe7/cH0qb9+GR6FKmAe0vXIyk0rfzEk3eaKF7r
-         QuAci7g0x/6uu6ka+nlMM7geU8mxwWT2ut9CScb39+cohVTrS1iMKQBSDbX9YIPk1jqi
-         H6LBF+ZY1orY7OjM0ukFHQmcw2hE3T/mznatUCZAIBY2ZJWtHBy+G7vaV57VyLjVIO3L
-         VoxLSDSLF7iCfGuqgKrykno8BmmA3UHY+7jVVOP4s/y5IWHK6v+OpqdQQhX/DBElqbM+
-         RkoWUi5DjFp+ebBF0Ee9MruOR+dDq7X2UMFUnJF/XHpg1HnouySZudnlqLsd+SOWUaw1
-         91Hg==
-X-Gm-Message-State: AOAM533O9LQzFDQBVa4iG/qAL3Qks6QOLdklbe9k9eBCWG0J8KrS8tQ+
-        OLg5tzNRzH4sdY1iy/WhE1AumrKAuTP5TjUK67uWwe7X2RTQ
-X-Google-Smtp-Source: ABdhPJy7jTsYFQbu+2stHEviHh2ADsNbk/5yIIh45u18OZoQ1AtChCr2ehXwg0NxNJ5eVesTx/pC19Olx6poLQCbggKPqLZyD3TN
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pl3i26dZKCO4ZlqiTecHj3kWUWBkOrjJfw37hSukKXY=;
+        b=OFWv3SUIRB4gC+pB7OOkDXuz/NYc9fwaAL/ARCzampaLwWLD4sIbEoKkIeYnegTxdq
+         Cirq/f+GEYkRVHvMnSBWye9V0PDrHkAbMCtxntZfuW7gmpfyXP19VzkwFchBE+DrP4Zn
+         KanFy57qOaKyDAqdipUc4bxo7x/bzR4PecskfA0yM4pAOWZE+ZiamYq1h408NtHKImly
+         jWz2UdHNAB21zapcrpTaUuOEHtQt+PamNvULOtUA8lkpldeAhTIf5/FmtnkOKECcSiwE
+         Ck/VyfvQfBPoztWHDtWgxmdQCP4dTB73x7br3alxPvdwzMexBgzHNK1nxFjtvasxykdx
+         oxoA==
+X-Gm-Message-State: AOAM531qU7d4DleF9wllw9iLx6gMclxcud0dfSx+UWA2Ikid4OzFp1N5
+        S0Mp3rshTr+ka2ilRZMjMKHHS6V+g9P0ew==
+X-Google-Smtp-Source: ABdhPJyf7ovD+hgMuV9K6xbhsmpemqFHnC1PqWaMETOexqkEGgxNso6aKC/ckH/5blNFFwdZ0EKf3w==
+X-Received: by 2002:a37:6cd:: with SMTP id 196mr19633793qkg.228.1605934530324;
+        Fri, 20 Nov 2020 20:55:30 -0800 (PST)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:d86c:639e:b9b5:3fe])
+        by smtp.googlemail.com with ESMTPSA id y44sm3905737qtb.50.2020.11.20.20.55.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 20:55:29 -0800 (PST)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Junxiao Bi <junxiao.bi@oracle.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Tong Zhang <ztong0001@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] qnx6: avoid double release bh
+Date:   Fri, 20 Nov 2020 23:55:16 -0500
+Message-Id: <20201121045523.2692410-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:b2c4:: with SMTP id b187mr28358647iof.187.1605934515653;
- Fri, 20 Nov 2020 20:55:15 -0800 (PST)
-Date:   Fri, 20 Nov 2020 20:55:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000056928205b496c43b@google.com>
-Subject: INFO: task hung in sync_inodes_sb (4)
-From:   syzbot <syzbot+7d50f1e54a12ba3aeae2@syzkaller.appspotmail.com>
-To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        davem@davemloft.net, emmanuel.grumbach@intel.com,
-        johannes.berg@intel.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luciano.coelho@intel.com,
-        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+set bh to NULL to avoid double release
 
-syzbot found the following issue on:
+[   38.848384] qnx6: superblock #1 active
+[   38.855489] attempt to access beyond end of device
+[   38.855489] sdb: rw=0, want=6359988796, limit=200000
+[   38.855852] Buffer I/O error on dev sdb, logical block 3179994397, async page read
+[   38.856327] attempt to access beyond end of device
+[   38.856327] sdb: rw=0, want=1390132904, limit=200000
+[   38.856513] Buffer I/O error on dev sdb, logical block 695066451, async page read
+[   38.856800] attempt to access beyond end of device
+[   38.856800] sdb: rw=0, want=1646095356, limit=200000
+[   38.857059] Buffer I/O error on dev sdb, logical block 823047677, async page read
+[   38.857339] attempt to access beyond end of device
+[   38.857339] sdb: rw=0, want=2511434484, limit=200000
+[   38.857504] Buffer I/O error on dev sdb, logical block 1255717241, async page read
+[   38.857911] qnx6: major problem: unable to read inode from dev sdb
+[   38.858318] qnx6: get inode failed
+[   38.866847] ------------[ cut here ]------------
+[   38.866992] VFS: brelse: Trying to free free buffer
+[   38.867406] WARNING: CPU: 0 PID: 159 at fs/buffer.c:1177 __brelse+0x31/0x50
+[   38.867576] Modules linked in:
+[   38.867933] CPU: 0 PID: 159 Comm: mount Not tainted 5.10.0-rc4+ #97
+[   38.868068] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812d4
+[   38.868408] RIP: 0010:__brelse+0x31/0x50
+[   38.868562] Code: 00 00 00 53 48 89 fb 48 89 ef e8 ea 89 f8 ff 48 89 ef e8 c2 a6 f8 ff 8b 40
+[   38.868877] RSP: 0018:ffff8880042a7b90 EFLAGS: 00000082
+[   38.869119] RAX: 0000000000000000 RBX: ffff888002eeaa80 RCX: 0000000000000000
+[   38.869286] RDX: dffffc0000000000 RSI: 0000000000000008 RDI: ffffed1000854f64
+[   38.869419] RBP: ffff888002eeaae0 R08: 0000000000000000 R09: ffffed1000854f03
+[   38.869553] R10: ffff8880042a7817 R11: ffffed1000854f02 R12: ffffffffa8b71460
+[   38.869687] R13: 0000000000000000 R14: ffffffffa8b70a10 R15: 0000000000000000
+[   38.869854] FS:  00007f2e41c2a6a0(0000) GS:ffff888016200000(0000) knlGS:0000000000000000
+[   38.869996] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   38.870103] CR2: 00000000004ad288 CR3: 00000000027ca000 CR4: 00000000000006f0
+[   38.870281] Call Trace:
+[   38.870572]  invalidate_bh_lru+0x2d/0x50
+[   38.870702]  on_each_cpu_cond_mask+0x64/0x80
+[   38.870808]  kill_bdev.isra.0+0x36/0x50
+[   38.870904]  __blkdev_put+0x10d/0x370
+[   38.871030]  ? freeze_bdev+0xf0/0xf0
+[   38.871123]  ? _raw_read_lock_irq+0x30/0x30
+[   38.871224]  ? mutex_unlock+0x18/0x40
+[   38.871320]  deactivate_locked_super+0x50/0x90
+[   38.871420]  mount_bdev+0x20f/0x220
+[   38.871513]  ? qnx6_iget+0x460/0x460
+[   38.871603]  ? qnx6_readpage+0x10/0x10
+[   38.871694]  legacy_get_tree+0x6b/0xa0
+[   38.871791]  vfs_get_tree+0x41/0x110
+[   38.871887]  path_mount+0x3b3/0xd50
+[   38.871984]  ? finish_automount+0x2b0/0x2b0
+[   38.872085]  ? getname_flags+0x100/0x2a0
+[   38.872182]  do_mount+0xc5/0xe0
+[   38.872272]  ? path_mount+0xd50/0xd50
+[   38.872366]  ? memdup_user+0x3c/0x80
+[   38.872458]  __x64_sys_mount+0xb9/0xf0
+[   38.872555]  do_syscall_64+0x33/0x40
+[   38.872649]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   38.872823] RIP: 0033:0x7f2e41ba8515
+[   38.873013] Code: b8 b0 00 00 00 0f 05 48 3d 00 f0 ff ff 76 10 48 8b 15 5f 79 06 00 f7 d8 63
+[   38.873257] RSP: 002b:00007ffd2d0eaaf8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+[   38.873420] RAX: ffffffffffffffda RBX: 0000000000008001 RCX: 00007f2e41ba8515
+[   38.873537] RDX: 00007ffd2d0ecf62 RSI: 00007ffd2d0ecf54 RDI: 00007ffd2d0ecf4b
+[   38.873652] RBP: 00007ffd2d0eac80 R08: 0000000000000000 R09: 00007f2e41bf1480
+[   38.873766] R10: 0000000000008001 R11: 0000000000000202 R12: 0000000000000000
+[   38.873882] R13: 00007f2e41c2a690 R14: 0000000000000000 R15: 0000000000000000
+[   38.874049] ---[ end trace cc983a0044562d15 ]---
 
-HEAD commit:    03430750 Add linux-next specific files for 20201116
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17027fdc500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1c4c3f27041fdb8
-dashboard link: https://syzkaller.appspot.com/bug?extid=7d50f1e54a12ba3aeae2
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124a8841500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15a4fce2500000
-
-The issue was bisected to:
-
-commit c68df2e7be0c1238ea3c281fd744a204ef3b15a0
-Author: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
-Date:   Thu Sep 15 13:30:02 2016 +0000
-
-    mac80211: allow using AP_LINK_PS with mac80211-generated TIM IE
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1445e981500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1645e981500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1245e981500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7d50f1e54a12ba3aeae2@syzkaller.appspotmail.com
-Fixes: c68df2e7be0c ("mac80211: allow using AP_LINK_PS with mac80211-generated TIM IE")
-
-INFO: task syz-executor017:8513 blocked for more than 143 seconds.
-      Not tainted 5.10.0-rc3-next-20201116-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor017 state:D stack:27448 pid: 8513 ppid:  8507 flags:0x00004000
-Call Trace:
- context_switch kernel/sched/core.c:4269 [inline]
- __schedule+0x890/0x2030 kernel/sched/core.c:5019
- schedule+0xcf/0x270 kernel/sched/core.c:5098
- wb_wait_for_completion+0x17b/0x230 fs/fs-writeback.c:209
- sync_inodes_sb+0x1a6/0x9d0 fs/fs-writeback.c:2559
- __sync_filesystem fs/sync.c:34 [inline]
- sync_filesystem fs/sync.c:67 [inline]
- sync_filesystem+0x15c/0x260 fs/sync.c:48
- generic_shutdown_super+0x70/0x370 fs/super.c:448
- kill_block_super+0x97/0xf0 fs/super.c:1446
- deactivate_locked_super+0x94/0x160 fs/super.c:335
- deactivate_super+0xad/0xd0 fs/super.c:366
- cleanup_mnt+0x3a3/0x530 fs/namespace.c:1123
- task_work_run+0xdd/0x190 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x1f0/0x200 kernel/entry/common.c:199
- syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:274
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44e0e7
-Code: Unable to access opcode bytes at RIP 0x44e0bd.
-RSP: 002b:00007fff42061288 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 00000000000cee4c RCX: 000000000044e0e7
-RDX: 0000000000400be0 RSI: 0000000000000002 RDI: 00007fff42061330
-RBP: 0000000000002142 R08: 0000000000000000 R09: 0000000000000009
-R10: 0000000000000005 R11: 0000000000000206 R12: 00007fff420623e0
-R13: 0000000001f67880 R14: 0000000000000000 R15: 0000000000000000
-
-Showing all locks held in the system:
-2 locks held by kworker/u4:5/225:
- #0: ffff8881413a4138 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8881413a4138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8881413a4138 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8881413a4138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8881413a4138 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8881413a4138 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc9000191fda8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
-1 lock held by khungtaskd/1655:
- #0: ffffffff8b339ce0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6252
-1 lock held by in:imklog/8188:
- #0: ffff888017c8f4f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
-2 locks held by syz-executor017/8513:
- #0: ffff88801a8500e0 (&type->s_umount_key#49){+.+.}-{3:3}, at: deactivate_super+0xa5/0xd0 fs/super.c:365
- #1: ffff888143f5e708 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:344 [inline]
- #1: ffff888143f5e708 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x18c/0x9d0 fs/fs-writeback.c:2557
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1655 Comm: khungtaskd Not tainted 5.10.0-rc3-next-20201116-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
- watchdog+0xd89/0xf30 kernel/hung_task.c:338
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
-NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
-NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
-NMI backtrace for cpu 1 skipped: idling at acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:517
-
-
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/qnx6/inode.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/fs/qnx6/inode.c b/fs/qnx6/inode.c
+index 61191f7bdf62..9fbe2b29bd9b 100644
+--- a/fs/qnx6/inode.c
++++ b/fs/qnx6/inode.c
+@@ -404,12 +404,14 @@ static int qnx6_fill_super(struct super_block *s, void *data, int silent)
+ 		sbi->sb_buf = bh1;
+ 		sbi->sb = (struct qnx6_super_block *)bh1->b_data;
+ 		brelse(bh2);
++		bh2 = NULL;
+ 		pr_info("superblock #1 active\n");
+ 	} else {
+ 		/* superblock #2 active */
+ 		sbi->sb_buf = bh2;
+ 		sbi->sb = (struct qnx6_super_block *)bh2->b_data;
+ 		brelse(bh1);
++		bh1 = NULL;
+ 		pr_info("superblock #2 active\n");
+ 	}
+ mmi_success:
+-- 
+2.25.1
+
