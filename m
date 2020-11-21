@@ -2,145 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F90E2BBC13
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 03:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 551C42BBC15
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 03:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbgKUCDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 21:03:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727443AbgKUCD3 (ORCPT
+        id S1727520AbgKUCDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 21:03:37 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:55444 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727443AbgKUCDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 21:03:29 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BCAC061A04
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 18:03:29 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id g129so14192332ybf.20
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 18:03:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=/4b98HN7Dg/gsZp1FJDKtTqc5+TRGSRPQQAwQrD06k0=;
-        b=ELFquWWmVQsPKcB73FJvKB8rjQRr79nN6pXIgdOw3TJNpJs/SGo0AHl0FEmMW05BRV
-         Xes5u0tIB4/MDSdfr9mD+s0AnIIyA2+S7MuxmGWUvou6iB0bVgpu3JaR6HLp1AmrlTAS
-         8Qks1RPu4kiemPkvShsX9exOQZLRvgPL66Ji50TUOVAf2U85Kedz9LW4KGm0ZYqtAKMj
-         DT/hLkTBeTQZ3cne0CCV8Qm4pl7RNzWq59terw7rikrP3Lc37CA345pmIWsjczkJdSBZ
-         6Oudkw/Dufr8rxRjyRzpznxlFRQ11LjraK0Ty2n7Vvxhjy5DzqyIZ+keKTzIjQ7gWkHu
-         I5Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/4b98HN7Dg/gsZp1FJDKtTqc5+TRGSRPQQAwQrD06k0=;
-        b=GY8QiCvvp2kOqOHhlaymM//FyvFqnf24Ztc8PIwl99GJ/iDisWcqQwS5EK7220urQz
-         p/I23vKkJF3zfnExMCQ+ee2ku4saqCUUy1gi3r1nWnyZBGLEmJer7PnGMtF7bonsIDn+
-         s3pXfsRgs73wKUw8vninJyzL4jl4LrnXxadHcH1I0NcEFSXd4St9ehw5fR8al9oC09lp
-         EGzEXTDuETgvorMWT25VITmBSLFvsF4JnBhcfrxCyNDkN+r+QPsJWLWlryKyXrxlGUwk
-         oSX/5FE2UqO3oUubZ4UJKj486acEiU5ahyY7ErOLOoyxZ2qno55eW4qHfTFeBwAH/oD6
-         8g7Q==
-X-Gm-Message-State: AOAM530R1BUjuj3pJlJuBRgenud41A3Y8d0OMS7YZY9eF0EsRfYswzzg
-        nLP7ktZH7uZCn2JkCzpIu6p56i42wZKvFzE=
-X-Google-Smtp-Source: ABdhPJxe1QO0yyWkfLZI2Ck3kq+oJXU7180eiST2dap9Bfk+tY8Z9kisuDNZoag/ofp3xkKJ+0iQVTquDNjuK7s=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a25:d18c:: with SMTP id
- i134mr25682880ybg.448.1605924208599; Fri, 20 Nov 2020 18:03:28 -0800 (PST)
-Date:   Fri, 20 Nov 2020 18:02:32 -0800
-In-Reply-To: <20201121020232.908850-1-saravanak@google.com>
-Message-Id: <20201121020232.908850-18-saravanak@google.com>
-Mime-Version: 1.0
-References: <20201121020232.908850-1-saravanak@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v2 17/17] driver core: Delete pointless parameter in fwnode_operations.add_links
-From:   Saravana Kannan <saravanak@google.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        kernel-team@android.com, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 20 Nov 2020 21:03:36 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AL20cmG076800;
+        Sat, 21 Nov 2020 02:03:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=0UJfCyIxUW1jtzShXnnQ2bfG36cw6LE9qxJledb3hlo=;
+ b=zqsLQU79wiZIOwaXbutWjsHTbHsYLGCoPliFplVEzBK6BiiFKA1NwlrQzMVmy+4uUqr5
+ npJsc64BjSYpEFt99endXXT6YrkZsmd92wS2Lxcit2SoxfoKvFOshyzqzcj6TGQ3ENw9
+ zFZ27GfVFH7FaP4NBBoK28XyF92/hpyZjpNSUdjOYsU6uxAo0SCYioxoHYkSgFoCtPi6
+ caabwCbObQPfUQwyHpytiqfGaRyyrd6C36ekCFBhX7N2BEdzXtAYu+OmX9PpQfNmTjyF
+ QLACGyrHMS9uU4DDR/jIidntTXY7OF5KUTC8oG6hmLib/7jxxO/pUewSf282xwHMTvSE fg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 34xrdag3gr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 21 Nov 2020 02:03:27 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AL1xkMq120715;
+        Sat, 21 Nov 2020 02:03:26 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 34xrx8se7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 21 Nov 2020 02:03:26 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AL23Jlk006772;
+        Sat, 21 Nov 2020 02:03:19 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 20 Nov 2020 18:03:19 -0800
+Date:   Fri, 20 Nov 2020 18:03:18 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     XiaoLi Feng <xifeng@redhat.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        ira.weiny@intel.com, Xiaoli Feng <fengxiaoli0714@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] fs/stat: set attributes_mask for STATX_ATTR_DAX
+Message-ID: <20201121011516.GD3837269@magnolia>
+References: <20201121003331.21342-1-xifeng@redhat.com>
+ <21890103-fce2-bb50-7fc2-6c6d509b982f@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <21890103-fce2-bb50-7fc2-6c6d509b982f@infradead.org>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9811 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
+ mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011210013
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9811 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0 mlxscore=0
+ mlxlogscore=999 spamscore=0 phishscore=0 clxscore=1011 malwarescore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=1 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011210013
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct device input to add_links() is not used for anything. So
-delete it.
+[Adding fsdevel to cc since this is a filesystems question]
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/base/core.c             | 2 +-
- drivers/firmware/efi/efi-init.c | 3 +--
- drivers/of/property.c           | 3 +--
- include/linux/fwnode.h          | 3 +--
- 4 files changed, 4 insertions(+), 7 deletions(-)
+On Fri, Nov 20, 2020 at 04:58:09PM -0800, Randy Dunlap wrote:
+> Hi,
+> 
+> I don't know this code, but:
+> 
+> On 11/20/20 4:33 PM, XiaoLi Feng wrote:
+> > From: Xiaoli Feng <fengxiaoli0714@gmail.com>
+> > 
+> > keep attributes and attributes_mask are consistent for
+> > STATX_ATTR_DAX.
+> > ---
+> >  fs/stat.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/stat.c b/fs/stat.c
+> > index dacecdda2e79..914a61d256b0 100644
+> > --- a/fs/stat.c
+> > +++ b/fs/stat.c
+> > @@ -82,7 +82,7 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
+> >  
+> >  	if (IS_DAX(inode))
+> >  		stat->attributes |= STATX_ATTR_DAX;
+> > -
+> > +	stat->attributes_mask |= STATX_ATTR_DAX;
+> 
+> Why shouldn't that be:
+> 
+> 	if (IS_DAX(inode))
+> 		stat->attributes_mask |= STATX_ATTR_DAX;
+> 
+> or combine them, like this:
+> 
+> 	if (IS_DAX(inode)) {
+> 		stat->attributes |= STATX_ATTR_DAX;
+> 		stat->attributes_mask |= STATX_ATTR_DAX;
+> 	}
+> 
+> 
+> and no need to delete that blank line.
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 9edf9084fc98..63edb8bd9d7d 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1472,7 +1472,7 @@ static void fw_devlink_parse_fwnode(struct fwnode_handle *fwnode)
- 	if (fwnode->flags & FWNODE_FLAG_LINKS_ADDED)
- 		return;
- 
--	fwnode_call_int_op(fwnode, add_links, NULL);
-+	fwnode_call_int_op(fwnode, add_links);
- 	fwnode->flags |= FWNODE_FLAG_LINKS_ADDED;
- }
- 
-diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
-index c0c3d4c3837a..a552a08a1741 100644
---- a/drivers/firmware/efi/efi-init.c
-+++ b/drivers/firmware/efi/efi-init.c
-@@ -316,8 +316,7 @@ static struct device_node *find_pci_overlap_node(void)
-  * resource reservation conflict on the memory window that the efifb
-  * framebuffer steals from the PCIe host bridge.
-  */
--static int efifb_add_links(struct fwnode_handle *fwnode,
--			   struct device *dev)
-+static int efifb_add_links(struct fwnode_handle *fwnode)
- {
- 	struct device_node *sup_np;
- 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 620d29fdace8..5f9eed79a8aa 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1343,8 +1343,7 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
- 	return ret;
- }
- 
--static int of_fwnode_add_links(struct fwnode_handle *fwnode,
--			       struct device *dev)
-+static int of_fwnode_add_links(struct fwnode_handle *fwnode)
- {
- 	struct property *p;
- 	struct device_node *con_np = to_of_node(fwnode);
-diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-index ffa9129182a6..fde4ad97564c 100644
---- a/include/linux/fwnode.h
-+++ b/include/linux/fwnode.h
-@@ -127,8 +127,7 @@ struct fwnode_operations {
- 	(*graph_get_port_parent)(struct fwnode_handle *fwnode);
- 	int (*graph_parse_endpoint)(const struct fwnode_handle *fwnode,
- 				    struct fwnode_endpoint *endpoint);
--	int (*add_links)(struct fwnode_handle *fwnode,
--			 struct device *dev);
-+	int (*add_links)(struct fwnode_handle *fwnode);
- };
- 
- #define fwnode_has_op(fwnode, op)				\
--- 
-2.29.2.454.gaff20da3a2-goog
+Some filesystems could support DAX but not have it enabled for this
+particular file, so this won't work.
 
+General question: should filesystems that are /capable/ of DAX signal
+this by setting the DAX bit in the attributes mask?  Or is this a VFS
+feature and hence here is the appropriate place to be setting the mask?
+
+Extra question: should we only set this in the attributes mask if
+CONFIG_FS_DAX=y ?
+
+--D
+
+> >  	if (inode->i_op->getattr)
+> >  		return inode->i_op->getattr(path, stat, request_mask,
+> >  					    query_flags);
+> > 
+> 
+> thanks.
+> -- 
+> ~Randy
+> 
