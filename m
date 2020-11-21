@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65EE2BBE0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 09:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 276612BBE0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 09:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727316AbgKUI3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 03:29:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36324 "EHLO mx2.suse.de"
+        id S1727337AbgKUIaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 03:30:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36390 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726709AbgKUI3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 03:29:49 -0500
+        id S1727063AbgKUIaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 03:30:02 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3A2F1AD63;
-        Sat, 21 Nov 2020 08:29:48 +0000 (UTC)
-Date:   Sat, 21 Nov 2020 09:29:48 +0100
-Message-ID: <s5hsg93dseb.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id CB458AC2D;
+        Sat, 21 Nov 2020 08:30:00 +0000 (UTC)
+Date:   Sat, 21 Nov 2020 09:30:00 +0100
+Message-ID: <s5hr1ondsdz.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 068/141] ALSA: sb: Fix fall-through warnings for Clang
-In-Reply-To: <0f6d5b94f1890be2b8f88d6f930fc75779e26345.1605896059.git.gustavoars@kernel.org>
+Subject: Re: [PATCH 066/141] ALSA: hdspm: Fix fall-through warnings for Clang
+In-Reply-To: <3f70182b366fca7e085a3b57cb2eb193be04eed8.1605896059.git.gustavoars@kernel.org>
 References: <cover.1605896059.git.gustavoars@kernel.org>
-        <0f6d5b94f1890be2b8f88d6f930fc75779e26345.1605896059.git.gustavoars@kernel.org>
+        <3f70182b366fca7e085a3b57cb2eb193be04eed8.1605896059.git.gustavoars@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -35,7 +35,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Nov 2020 19:34:12 +0100,
+On Fri, 20 Nov 2020 19:33:52 +0100,
 Gustavo A. R. Silva wrote:
 > 
 > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
