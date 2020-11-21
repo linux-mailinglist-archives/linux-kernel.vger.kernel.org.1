@@ -2,120 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B322BBBB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:57:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581DC2BBBB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbgKUBzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 20:55:13 -0500
-Received: from mga01.intel.com ([192.55.52.88]:29458 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725820AbgKUBzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 20:55:12 -0500
-IronPort-SDR: aCMKIaS9hFtYuylGtNBm9SjZYmiHycLDr5PfLth6RHbJPRHQ/gpzEP53zb0UWMfQG9LU8ah8to
- Us/y0IfVGQdA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="189675474"
-X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
-   d="scan'208";a="189675474"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 17:55:11 -0800
-IronPort-SDR: bgJfTOWxlCgV4CIvdgq7z8DIzdPLtB12sb0MmAahztHzRolqb2ydz8KEVjAJwwy8EXJILEo+yw
- x9kkt51+5HOw==
-X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
-   d="scan'208";a="369367575"
-Received: from xshen14-mobl.ccr.corp.intel.com (HELO [10.254.215.103]) ([10.254.215.103])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 17:55:08 -0800
-Subject: Re: [PATCH 1/3] x86/resctrl: Remove superfluous kernfs_get() calls to
- prevent refcount leak
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        tony.luck@intel.com, fenghua.yu@intel.com,
-        reinette.chatre@intel.com, willemb@google.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, pei.p.jia@intel.com,
-        Xiaochen Shen <xiaochen.shen@intel.com>
-References: <1604084530-31048-1-git-send-email-xiaochen.shen>
- <1604084638-31197-1-git-send-email-xiaochen.shen@intel.com>
- <20201120161351.GC712@zn.tnic>
-From:   Xiaochen Shen <xiaochen.shen@intel.com>
-Message-ID: <cf46b633-79b8-4124-450f-09f4e23189d9@intel.com>
-Date:   Sat, 21 Nov 2020 09:55:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726354AbgKUBzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 20:55:23 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:39107 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbgKUBzX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 20:55:23 -0500
+Received: by mail-il1-f199.google.com with SMTP id g125so9051022ilh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 17:55:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=1IKqnv005mgSmVVQHSfdeIOpBBo9GqeKm6WhFvCEO20=;
+        b=rbw2OBsBra/cE9qMfgmCq5thwoeaH7ggUyh0RsBkX5M1FtIR+tzar9HFI7706/jcQR
+         jxGSVfHjfYVl5gU+8Wz+JcRbYPozTeQ8+cUXclw41mgzpCKITUtIjTH9PoW6c1DFSQw/
+         E6Sa1ZjpDPUfaeAiKXO/LKS4G9HxPG5mBkh5E/YzD/rwSgiVdrJ8DVYqUOOWlm7kF8S7
+         G0XYC/Pn4I0pSCRSbZsCMS10yTg+2n7wJZbOmNx8wgHoB/7EEji7BeCxAlQP++4arzlf
+         XCFzBPDBVrVr96LCudSUVH08Gl1QwGS6sXs/fiLC4+nKx2QUHJhrdSFvVayO5f0Kg8Ia
+         q8tQ==
+X-Gm-Message-State: AOAM5315jM41Iko9NAOZbhsfbCHFHiGtveLqpE+t/rMxc2KKQj6FSlEY
+        /IITcj1DY8SxW86ThqYwA3b6AJhKxy/ybrKZwJhoy1bzzivV
+X-Google-Smtp-Source: ABdhPJwaq6cI3xu2GU55UEW081O52W5TKOcdZRqdv7wpeWYP6TLT0brnchOwa4TLmMXZEiF6O2l+i8U0RVdweNwgy31Dfmrc7mzX
 MIME-Version: 1.0
-In-Reply-To: <20201120161351.GC712@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Received: by 2002:a92:509:: with SMTP id q9mr2468227ile.179.1605923722442;
+ Fri, 20 Nov 2020 17:55:22 -0800 (PST)
+Date:   Fri, 20 Nov 2020 17:55:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000340a105b49441d3@google.com>
+Subject: INFO: task can't die in shrink_inactive_list (2)
+From:   syzbot <syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
+Hello,
 
-Thank you very much for code review. More comments are inline.
+syzbot found the following issue on:
 
-But I am sorry that I sent this thread by mistake (--in-reply-to a wrong
-Message-ID). Please ignore this thread and help review from following
-threads:
+HEAD commit:    03430750 Add linux-next specific files for 20201116
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f80e5e500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a1c4c3f27041fdb8
+dashboard link: https://syzkaller.appspot.com/bug?extid=e5a33e700b1dd0da20a2
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f7bc5a500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10934cf2500000
 
-The link of correct version of this patch [PATCH 1/3]:
-https://lkml.kernel.org/r/1604085053-31639-1-git-send-email-xiaochen.shen@intel.com
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com
 
-The link of the patch series with 3 patches:
-https://lkml.kernel.org/r/1604084530-31048-1-git-send-email-xiaochen.shen@intel.com
+INFO: task syz-executor880:8534 can't die for more than 143 seconds.
+task:syz-executor880 state:R  running task     stack:25304 pid: 8534 ppid:  8504 flags:0x00004006
+Call Trace:
+ context_switch kernel/sched/core.c:4269 [inline]
+ __schedule+0x890/0x2030 kernel/sched/core.c:5019
+ preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:5179
+ preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:40
+ __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:169 [inline]
+ _raw_spin_unlock_irq+0x3c/0x40 kernel/locking/spinlock.c:199
+ spin_unlock_irq include/linux/spinlock.h:404 [inline]
+ shrink_inactive_list+0x4b1/0xce0 mm/vmscan.c:1974
+ shrink_list mm/vmscan.c:2167 [inline]
+ shrink_lruvec+0x61b/0x11b0 mm/vmscan.c:2462
+ shrink_node_memcgs mm/vmscan.c:2650 [inline]
+ shrink_node+0x839/0x1d60 mm/vmscan.c:2767
+ shrink_zones mm/vmscan.c:2970 [inline]
+ do_try_to_free_pages+0x38b/0x1440 mm/vmscan.c:3025
+ try_to_free_pages+0x29f/0x720 mm/vmscan.c:3264
+ __perform_reclaim mm/page_alloc.c:4360 [inline]
+ __alloc_pages_direct_reclaim mm/page_alloc.c:4381 [inline]
+ __alloc_pages_slowpath.constprop.0+0x917/0x2510 mm/page_alloc.c:4785
+ __alloc_pages_nodemask+0x5f0/0x730 mm/page_alloc.c:4995
+ alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+ alloc_pages include/linux/gfp.h:547 [inline]
+ __page_cache_alloc mm/filemap.c:977 [inline]
+ __page_cache_alloc+0x2ce/0x360 mm/filemap.c:962
+ page_cache_ra_unbounded+0x3a1/0x920 mm/readahead.c:216
+ do_page_cache_ra+0xf9/0x140 mm/readahead.c:267
+ do_sync_mmap_readahead mm/filemap.c:2721 [inline]
+ filemap_fault+0x19d0/0x2940 mm/filemap.c:2809
+ __do_fault+0x10d/0x4d0 mm/memory.c:3623
+ do_shared_fault mm/memory.c:4071 [inline]
+ do_fault mm/memory.c:4149 [inline]
+ handle_pte_fault mm/memory.c:4385 [inline]
+ __handle_mm_fault mm/memory.c:4520 [inline]
+ handle_mm_fault+0x3033/0x55d0 mm/memory.c:4618
+ do_user_addr_fault+0x55b/0xba0 arch/x86/mm/fault.c:1377
+ handle_page_fault arch/x86/mm/fault.c:1434 [inline]
+ exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1490
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:580
+RIP: 0033:0x400e71
+Code: Unable to access opcode bytes at RIP 0x400e47.
+RSP: 002b:00007f8a5353fdc0 EFLAGS: 00010246
+RAX: 6c756e2f7665642f RBX: 00000000006dbc38 RCX: 0000000000402824
+RDX: 928195da81441750 RSI: 0000000000000000 RDI: 00000000006dbc30
+RBP: 00000000006dbc30 R08: 0000000000000000 R09: 00007f8a53540700
+R10: 00007f8a535409d0 R11: 0000000000000202 R12: 00000000006dbc3c
+R13: 00007ffe80747a5f R14: 00007f8a535409c0 R15: 0000000000000001
 
-I am so sorry for the inconvenience.
+Showing all locks held in the system:
+1 lock held by khungtaskd/1659:
+ #0: ffffffff8b339ce0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6252
+1 lock held by kswapd0/2195:
+1 lock held by kswapd1/2196:
+1 lock held by in:imklog/8191:
+ #0: ffff8880125b1270 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+1 lock held by cron/8189:
+2 locks held by syz-executor880/8502:
+2 locks held by syz-executor880/8505:
+2 locks held by syz-executor880/8507:
+2 locks held by syz-executor880/11706:
+2 locks held by syz-executor880/11709:
+3 locks held by syz-executor880/12008:
+2 locks held by syz-executor880/12015:
+
+=============================================
 
 
-On 11/21/2020 0:13, Borislav Petkov wrote:
-> On Sat, Oct 31, 2020 at 03:03:58AM +0800, Xiaochen Shen wrote:
->> Willem reported growing of kernfs_node_cache entries in slabtop when
->> repeatedly creating and removing resctrl subdirectories as well as when
->> repeatedly mounting and unmounting resctrl filesystem.
->>
->> On resource group (control as well as monitoring) creation via a mkdir
->> an extra kernfs_node reference is obtained to ensure that the rdtgroup
->> structure remains accessible for the rdtgroup_kn_unlock() calls where it
->> is removed on deletion. The kernfs_node reference count is dropped by
->> kernfs_put() in rdtgroup_kn_unlock().
->>
->> With the above explaining the need for one kernfs_get()/kernfs_put()
->> pair in resctrl there are more places where a kernfs_node reference is
->> obtained without a corresponding release. The excessive amount of
->> reference count on kernfs nodes will never be dropped to 0 and the
->> kernfs nodes will never be freed in the call paths of rmdir and umount.
->> It leads to reference count leak and kernfs_node_cache memory leak.
->>
->> Remove the superfluous kernfs_get() calls and expand the existing
->> comments surrounding the remaining kernfs_get()/kernfs_put() pair that
->> remains in use.
->>
->> Superfluous kernfs_get() calls are removed from two areas:
->>
->>    (1) In call paths of mount and mkdir, when kernfs nodes for "info",
->>    "mon_groups" and "mon_data" directories and sub-directories are
->>    created, the reference count of newly created kernfs node is set to 1.
->>    But after kernfs_create_dir() returns, superfluous kernfs_get() are
->>    called to take an additional reference.
->>
->>    (2) kernfs_get() calls in rmdir call paths.
->>
->> Cc: stable@vger.kernel.org
->> Fixes: 17eafd076291 ("x86/intel_rdt: Split resource group removal in two")
->> Fixes: 4af4a88e0c92 ("x86/intel_rdt/cqm: Add mount,umount support")
->> Fixes: f3cbeacaa06e ("x86/intel_rdt/cqm: Add rmdir support")
->> Fixes: d89b7379015f ("x86/intel_rdt/cqm: Add mon_data")
->> Fixes: c7d9aac61311 ("x86/intel_rdt/cqm: Add mkdir support for RDT monitoring")
->> Fixes: 5dc1d5c6bac2 ("x86/intel_rdt: Simplify info and base file lists")
->> Fixes: 60cf5e101fd4 ("x86/intel_rdt: Add mkdir to resctrl file system")
->> Fixes: 4e978d06dedb ("x86/intel_rdt: Add "info" files to resctrl file system")
-> Are those 8(!) Fixes tags supposed to list *all* commits which add those
-> wrong kernfs_get() calls?
 
-Yes. Thank you.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--- 
-Best regards,
-Xiaochen
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
