@@ -2,124 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27442BBDD6
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17ACF2BBDDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 08:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgKUHfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 02:35:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726161AbgKUHfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 02:35:45 -0500
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A43012224A;
-        Sat, 21 Nov 2020 07:35:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605944144;
-        bh=JIOyIP3Z1qYK7PEjNX1ygOHQ10RRXlMdlRpxuOVqaF4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NBoERCzx0bOfs1Spi/qI4Jr4R9gR8nafDvLzNl5y954yhL+AaVOlArn46YJkANI7T
-         7abJYj5XFHRgl30rA/lbg/rqlMovYayapPUq/NdCriwpLmDqbHGPoFB/SLz/cLTFne
-         1lltJvXcAoTRU2aCkyn4SJsnZCZs0Biim543HgXo=
-Received: by mail-oi1-f177.google.com with SMTP id c80so13347823oib.2;
-        Fri, 20 Nov 2020 23:35:44 -0800 (PST)
-X-Gm-Message-State: AOAM533XGJRslAI2T+3QpkpO+RvNRSTokXUTYapch7qFcAvRgtNw5gjL
-        pF3r1REgFKT6pLRKz68m5wAup7lQ0Now8fP87ps=
-X-Google-Smtp-Source: ABdhPJx40jOdwbcNKyqzBINwkmCmwPpkhWi97MwgNpvEdbPfdyMgPT4NA53Xt6JomdsOtV9RsBYuyUMJZVUA9Le699M=
-X-Received: by 2002:aca:d4d5:: with SMTP id l204mr7701517oig.174.1605944144026;
- Fri, 20 Nov 2020 23:35:44 -0800 (PST)
+        id S1727204AbgKUHiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 02:38:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726983AbgKUHiG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 02:38:06 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA77C0613CF;
+        Fri, 20 Nov 2020 23:38:06 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id g15so10827741ybq.6;
+        Fri, 20 Nov 2020 23:38:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V0uMqtuZYyit3rkstjKgdpdIgZ+hwCKX+nB+J4vIPM8=;
+        b=FdaQIrPLzHPeHnyS/kXSYoqjT0PKYicSc5gjxbQyk14akh1tVkLPf6nYY8NvyIht37
+         CfRUoE5ELPs1JpEA+ZRT3arwi3/oIfe1lFreYv09WE0cNi/062yUNXzPtQVqSSISMu26
+         0K4jz9U6UkS/iBFyzmmr/UnzrjkhtLy4IV/17RKc+8hZ6tTRqIbngn//eniYlaS81Je+
+         iIR2wh/PjDHX+JRQozK62Uq9U+PnVetgpe1TShQrGYyx6E/hbUhnYY2gEZFCgxaE/ar6
+         7phwkeAj4F2lO47Xx4bqz5xzyzlIxWLPyDsjENh9nPLf1Tg7Q8qq6AKlGVQ53hrj1EEc
+         wFdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V0uMqtuZYyit3rkstjKgdpdIgZ+hwCKX+nB+J4vIPM8=;
+        b=euIPjoWufOf2T1J+YYaEAKVfV3ClHwzM0L3R58qn+U21cyrJdieu8fyvvm6eYFrFhM
+         USMWSnlPDW5FatfLg4vktMwKbNu3s2E7ZOiyACirSDPJaQEc+e5b0nRvievQ+fd6r2dy
+         DDfLVBPHo1nClO9ZH+r4hr0PFN3t8Z7muNAVu57JLXnB4+HDPKlU2O3hSrti4X7R5xSY
+         pFmBlP/DtWROc2pXVcBG8MAj3CNSCBSeT911aG8IKztIKOEavBvsoOlsH0YiXcdAp1iY
+         i5IC/xMjbY+/3868AXymUA2GuZVc3bzHEFayHWMDBJyYbM417tLmhrPyv9J383z6KOrn
+         duJg==
+X-Gm-Message-State: AOAM530S3VpxdOGX6DQ90PnvLCdPWQuWtFwjEN+ePBkat6ZtlelXf4WE
+        dRnWzOP/nP57LBqui6/FOn/Cd2YdPWASTwtvHuesCvaHD7TAUg==
+X-Google-Smtp-Source: ABdhPJwZ6CjIPowUxq3oip+ROMaNn/h2brOlLVZlRVexvOQ9kEIeM067fq0dbIhpztB7MrHazoYaAK2/gwVGAzBSWm4=
+X-Received: by 2002:a25:df82:: with SMTP id w124mr29190011ybg.347.1605944285647;
+ Fri, 20 Nov 2020 23:38:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118220731.925424-1-samitolvanen@google.com>
- <CAKwvOd=5PhCTZ-yHr08gPYNEsGEjZa=rDY0-unhkhofjXhqwLQ@mail.gmail.com>
- <CAMj1kXEVzDi5=uteUAzG5E=j+aTCHEbMxwDfor-s=DthpREpyw@mail.gmail.com>
- <CAKwvOdmpBNx9iSguGXivjJ03FaN5rgv2oaXZUQxYPdRccQmdyQ@mail.gmail.com>
- <CAMj1kXEoPEd6GzjL1XuxTPwitbR03BiBEXpAGtUytMj-h=vCkg@mail.gmail.com> <CAKwvOdmk1D0dLDOHEWX=jHpUxUT2JbwgnF62Qv3Rv=coNPadHg@mail.gmail.com>
-In-Reply-To: <CAKwvOdmk1D0dLDOHEWX=jHpUxUT2JbwgnF62Qv3Rv=coNPadHg@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 21 Nov 2020 08:35:33 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHTtXqssica=ADMOrA+7mhBQv=nGBsR-XR0+LAKk_-dWA@mail.gmail.com>
-Message-ID: <CAMj1kXHTtXqssica=ADMOrA+7mhBQv=nGBsR-XR0+LAKk_-dWA@mail.gmail.com>
-Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Alistair Delva <adelva@google.com>
+References: <20201119085022.3606135-1-davidgow@google.com>
+In-Reply-To: <20201119085022.3606135-1-davidgow@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 20 Nov 2020 23:37:54 -0800
+Message-ID: <CAEf4BzY4i0fH34eO=-4WOzVpifgPmJ0ER5ipBJWB0_4Zdv0AQg@mail.gmail.com>
+Subject: Re: [RFC PATCH] bpf: preload: Fix build error when O= is set
+To:     David Gow <davidgow@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 21 Nov 2020 at 00:53, Nick Desaulniers <ndesaulniers@google.com> wrote:
+On Thu, Nov 19, 2020 at 12:51 AM David Gow <davidgow@google.com> wrote:
 >
-> On Fri, Nov 20, 2020 at 3:30 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Fri, 20 Nov 2020 at 21:19, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > >
-> > > On Fri, Nov 20, 2020 at 2:30 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > >
-> > > > On Thu, 19 Nov 2020 at 00:42, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > > > >
-> > > > > Thanks for continuing to drive this series Sami.  For the series,
-> > > > >
-> > > > > Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > > >
-> > > > > I did virtualized boot tests with the series applied to aarch64
-> > > > > defconfig without CONFIG_LTO, with CONFIG_LTO_CLANG, and a third time
-> > > > > with CONFIG_THINLTO.  If you make changes to the series in follow ups,
-> > > > > please drop my tested by tag from the modified patches and I'll help
-> > > > > re-test.  Some minor feedback on the Kconfig change, but I'll post it
-> > > > > off of that patch.
-> > > > >
-> > > >
-> > > > When you say 'virtualized" do you mean QEMU on x86? Or actual
-> > > > virtualization on an AArch64 KVM host?
-> > >
-> > > aarch64 guest on x86_64 host.  If you have additional configurations
-> > > that are important to you, additional testing help would be
-> > > appreciated.
-> > >
-> >
-> > Could you run this on an actual phone? Or does Android already ship
-> > with this stuff?
+> If BPF_PRELOAD is enabled, and an out-of-tree build is requested with
+> make O=<path>, compilation seems to fail with:
 >
-> By `this`, if you mean "the LTO series", it has been shipping on
-> Android phones for years now, I think it's even required in the latest
-> release.
+> tools/scripts/Makefile.include:4: *** O=.kunit does not exist.  Stop.
+> make[4]: *** [../kernel/bpf/preload/Makefile:8: kernel/bpf/preload/libbpf.a] Error 2
+> make[3]: *** [../scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+> make[2]: *** [../scripts/Makefile.build:500: kernel/bpf] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [.../Makefile:1799: kernel] Error 2
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:185: __sub-make] Error 2
 >
-> If you mean "the LTO series + mainline" on a phone, well there's the
-> android-mainline of https://android.googlesource.com/kernel/common/,
-> in which this series was recently removed in order to facilitate
-> rebasing Android's patches on ToT-mainline until getting the series
-> landed upstream.  Bit of a chicken and the egg problem there.
->
-> If you mean "the LTO series + mainline + KVM" on a phone; I don't know
-> the precise state of aarch64 KVM and Android (Will or Marc would
-> know).  We did experiment recently with RockPI's for aach64 KVM, IIRC;
-> I think Android is tricky as it still requires A64+A32/T32 chipsets,
-> Alistair would know more.  Might be interesting to boot a virtualized
-> (or paravirtualized?) guest built with LTO in a host built with LTO
-> for sure, but I don't know if we have tried that yet (I think we did
-> try LTO guests of android kernels, but I think they were on the stock
-> RockPI host BSP image IIRC).
->
+> By the looks of things, this is because the (relative path) O= passed on
+> the command line is being passed to the libbpf Makefile, which then
+> can't find the directory. Given OUTPUT= is being passed anyway, we can
+> work around this by explicitly setting an empty O=, which will be
+> ignored in favour of OUTPUT= in tools/scripts/Makefile.include.
 
-I don't think testing under KVM gives us more confidence or coverage
-than testing on bare metal. I was just pointing out that 'virtualized'
-is misleading, and if you test things under QEMU/x86 + TCG, it is
-better to be clear about this, and refer to it as 'under emulation'.
+Strange, but I can't repro it. I use make O=<absolute path> all the
+time with no issues. I just tried specifically with a make O=.build,
+where .build is inside Linux repo, and it still worked fine. See also
+be40920fbf10 ("tools: Let O= makes handle a relative path with -C
+option") which was supposed to address such an issue. So I'm wondering
+what exactly is causing this problem.
+
+>
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+>
+> Hi all,
+>
+> I'm not 100% sure this is the correct fix here -- it seems to work for
+> me, and makes some sense, but let me know if there's a better way.
+>
+> One other thing worth noting is that I've been hitting this with
+> make allyesconfig on ARCH=um, but there's a comment in the Kconfig
+> suggesting that, because BPF_PRELOAD depends on !COMPILE_TEST, that
+> maybe it shouldn't be being built at all. I figured that it was worth
+> trying to fix this anyway.
+>
+> Cheers,
+> -- David
+>
+>
+>  kernel/bpf/preload/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
+> index 23ee310b6eb4..39848d296097 100644
+> --- a/kernel/bpf/preload/Makefile
+> +++ b/kernel/bpf/preload/Makefile
+> @@ -5,7 +5,7 @@ LIBBPF_A = $(obj)/libbpf.a
+>  LIBBPF_OUT = $(abspath $(obj))
+>
+>  $(LIBBPF_A):
+> -       $(Q)$(MAKE) -C $(LIBBPF_SRCS) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+> +       $(Q)$(MAKE) -C $(LIBBPF_SRCS) O= OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+>
+>  userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
+>         -I $(srctree)/tools/lib/ -Wno-unused-result
+> --
+> 2.29.2.454.gaff20da3a2-goog
+>
