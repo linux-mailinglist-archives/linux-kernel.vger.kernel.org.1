@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC552BBED6
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 13:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63EB2BBEDA
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 13:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727661AbgKUMKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 07:10:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727191AbgKUMKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 07:10:45 -0500
-Received: from localhost (unknown [122.171.203.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FDC122226;
-        Sat, 21 Nov 2020 12:10:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605960644;
-        bh=pLtOpTjqaSBqVkIMo4IbPawnLHJWlqUmIWLK+EBv8j0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1hE4JGMV5qPuxoVu/sr0h3uY/XgZLXfFiYzLUZA1qnrKSCOyTbqG9WQZvL+HZhZZ2
-         FBi7xXNgkfAkYfU4KeImXv8l9ntga8LO+XJUsGCJlmvIe92gg3r0R+Vqn0ms5PJnR+
-         IX+yYyEShjoKB4AsQhRsG8j3MjoXpfNOXcmd+evg=
-Date:   Sat, 21 Nov 2020 17:40:39 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        NeilBrown <neil@brown.name>
-Subject: Re: [PATCH v5 0/4] MT7621 PCIe PHY
-Message-ID: <20201121121039.GA8403@vkoul-mobl>
-References: <20201119154337.9195-1-sergio.paracuellos@gmail.com>
- <CAMhs-H8bUuSQ+ROr4PNJXYaGFnjG2=zpjGK7UAAfoPMPbFBb1Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMhs-H8bUuSQ+ROr4PNJXYaGFnjG2=zpjGK7UAAfoPMPbFBb1Q@mail.gmail.com>
+        id S1727641AbgKUMQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 07:16:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727337AbgKUMQG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 07:16:06 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFAEC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 04:16:05 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w4so9780160pgg.13
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 04:16:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=2t2a5RSuhb/As1zEzgXiwAu23fEnENund7CGHbuUhkQ=;
+        b=miLvxHlc4BbrEYEi+uRD0x9o2B2KdXcmQXh+NLu50hfybZ7gL0uU0ycHmcA0l5jO6Q
+         gJWZ6atrttsCAPm7vU0hVtFHdh+9D1WjdXhNulmSnh486HibHA0dkj8b03L2yIFsdqYi
+         SFeTKWvOhMMsa3bbUuiZycJdQacgLmfGHCABaZ1ZyC5gSuVv00Kdw7PpuxIgJKb3w5+7
+         1v5NPS4S9VtHBJsA+/BkS2aLa80DJNOYazNu83IyYkNNl0yWxMjdblygmQxJofwOKqcV
+         vh2rMYhqwy6n1ZcNwrBaBOHvGP0+ShkWqLg8DIvYmSyIDNuVhU3exHkyDLHAEkHx+Th6
+         jwSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2t2a5RSuhb/As1zEzgXiwAu23fEnENund7CGHbuUhkQ=;
+        b=hWYJO4yf7VgW0i2uw6aYIpI+G8ZyiWgBceIrSR8VM4BlxtSFo7PAn7qG4fhexhgqT4
+         CSRO/016GJSyoflMQGNqVjua876mZshiEwHFPhXdO0XapzbLS3JsdhalyngE4tE5Ghpa
+         AyHFPPVC8zWycTEiXkNHr9xMiqQuRTDqjpV3O4Y0Cz0bIXVQroU29KsQTWOQJCIckmW1
+         dAegnUKH3fcNa2Cyqe/M83ooBjFOAwmfDM030gKDVZeGCzRti7suQY9qsb2NrDMBZzNd
+         WP7vR9dZDzX7ruRljiQiFCZXAqmVlM02he//dyps5kzsmvE0RJSF4fVSCnWPaPVheDOr
+         73IQ==
+X-Gm-Message-State: AOAM5330G4DZI1tJTJZV5gkNMgiZAXRWD+gbT2Ajc9mFTaQqiLXTIHfm
+        cz6FRYzrLtw+YJAikUZp79w=
+X-Google-Smtp-Source: ABdhPJw021THeZczZOFtV6/DAMEPKjirc50VNwyXspYWUCgSnKm0I4Zug9Qubs4pmU72MiDQWg3k6g==
+X-Received: by 2002:a17:90a:9403:: with SMTP id r3mr15748398pjo.66.1605960965308;
+        Sat, 21 Nov 2020 04:16:05 -0800 (PST)
+Received: from localhost.localdomain ([2402:3a80:400:4498:ed91:20bf:333c:1bc4])
+        by smtp.googlemail.com with ESMTPSA id q13sm7838249pjq.15.2020.11.21.04.16.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 04:16:04 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     joe@perches.com
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] checkpatch: add fix option for LOGICAL_CONTINUATIONS
+Date:   Sat, 21 Nov 2020 17:45:57 +0530
+Message-Id: <20201121121557.23528-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-11-20, 17:20, Sergio Paracuellos wrote:
-> Hi Vinod,
-> 
-> On Thu, Nov 19, 2020 at 4:43 PM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> >
-> > This series adds support for the PCIe PHY found in the Mediatek
-> > MT7621 SoC.
-> >
-> > There is also a 'mt7621-pci' driver which is the controller part
-> > which is still in staging and is a client of this phy.
-> >
-> > Both drivers have been tested together in a gnubee1 board.
-> >
-> > This series are rebased on the top of linux-next:
-> > commit 4e78c578cb98 ("Add linux-next specific files for 20201030")
-> >
-> > Changes in v5:
-> >   - PATCH 1/4: Recollect Rob's Reviewed-by of bindings.
-> >   - PATCH 4/4: Recollect Greg's Acked-by for removing stuff from
-> >     staging area.
-> >   - Make Vinod's review comments changes in [0]:
-> >     * Use FIELD_GET and FIELD_PREP apis and avoid multiple *_VAL and
-> >       *_SHIFT custom definitions.
-> >     * Remove phy-read and phy-write internal functions and directly
-> >       call regmap_read and regmap_write in 'mt7621_phy_rmw'.
-> >     * Change some traces from info to debug log level.
-> >     * Note that I have maintained 'mt7621_phy_rmw' instead of use
-> >       'regmap_update_bits'. This is because in order to get a reliable
-> >       boot registers must be written event the contained value in
-> >       that register is the same. I have preferred doing in this way
-> >       instead of using 'regmap_update_bits_base' passing 'false' for
-> >       async and 'true' for the force write. If this way of using
-> >       'regmap_update_bits_base' is preferred just let me know.
-> 
-> I notice we already have 'regmap_write_bits' function. I will use this
-> and avoid mt7621_phy_rmw
-> and send v6 of this series.
-> 
-> Also, do you have any preference of where you want this series to be rebased on?
+Currently, checkpatch warns if logical continuations are placed at the
+start of a line and not at the end of previous line.
 
-Phy-next please
+E.g., running checkpatch on commit 3485507fc272 ("staging:
+bcm2835-camera: Reduce length of enum names") reports:
 
+CHECK:LOGICAL_CONTINUATIONS: Logical continuations should be on the
+previous line
++	if (!ret
++	    && camera_port ==
+
+Provide a simple fix by adding logical operator at the end of previous
+line and removing from current line, if both the lines are additions
+(ie start with '+')
+
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+changes in v2: quote $operator at substitution
+
+ scripts/checkpatch.pl | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 5b1a5a65e69a..7cb8942b6a16 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3553,8 +3553,14 @@ sub process {
+ 
+ # check for && or || at the start of a line
+ 		if ($rawline =~ /^\+\s*(&&|\|\|)/) {
+-			CHK("LOGICAL_CONTINUATIONS",
+-			    "Logical continuations should be on the previous line\n" . $hereprev);
++			my $operator = $1;
++			if (CHK("LOGICAL_CONTINUATIONS",
++				"Logical continuations should be on the previous line\n" . $hereprev) &&
++			    $fix && $prevrawline =~ /^\+/) {
++				# add logical operator to the previous line, remove from current line
++				$fixed[$fixlinenr - 1] .= " $operator";
++				$fixed[$fixlinenr] =~ s/\Q$operator\E\s*//;
++			}
+ 		}
+ 
+ # check indentation starts on a tab stop
 -- 
-~Vinod
+2.17.1
+
