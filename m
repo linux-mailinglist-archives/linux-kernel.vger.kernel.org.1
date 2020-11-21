@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F3B2BBBDF
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 03:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F28A2BBBE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 03:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgKUCCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 21:02:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
+        id S1727171AbgKUCC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 21:02:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727098AbgKUCCv (ORCPT
+        with ESMTP id S1727124AbgKUCCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 21:02:51 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E81C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 18:02:50 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id b11so8305701pfi.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 18:02:50 -0800 (PST)
+        Fri, 20 Nov 2020 21:02:54 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CE4C061A04
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 18:02:52 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id c137so14144290ybf.21
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 18:02:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=C0bHKb1/iWiLgdtF9sSmjqtEvvSI0v807amqNyJzdNU=;
-        b=oVICUpmkGZYeD7GCm7OHZePNr0D7oNE9MGHDeA14TlrhsrfYTroblrGIZDXkuUvKJy
-         1xmlgXXXtOvWXNsWsBLt4bjiHDWfOXdlI7nWqGRa/D++ATibv0GyA81LGS2AyZV2uvhZ
-         x1VfPlF7j5GZQUE6NdUdZj40qx2f51YwrtoiBrZdlrx7qx0MrmlCwAe5UWli6SN7FtbP
-         bLbzo5MqzQ4xydQHAZfNdgDtBArIgPU44e6eGAm5wOsWzo6Xx/5rTfinOOyVkJkMiID9
-         bH+2ZhrIwEgzDXXX/v946bSvkc4YQrqI7kbnnhnitJIohJMixgsYDLl0FdY66/cdy6V9
-         cocg==
+        bh=W0J7h6NLwXezG3nw9wROdbEnvnNKGLsOxhSb3UWP0QY=;
+        b=iyIhHWCU9fj/oBG0xaKujfMHdcE8iB1SHBs4M9uqPOEXOlyOZGNCOu4kJplToKtsqJ
+         fm9DBFExGlNp0BWtvnxzXaRl0F2u7jENq1EfgLZiZAfHyGLUmsUve7IGj3V4JMdosQD/
+         tpoo12lOko1CXTc92SEtontayS9W0+oxCJIHIp3E6HX/pgQ70Q4/4/DvH/6Rm0Pzddet
+         GinuxCIH3bZkCO68pDwYARdQQ0Ygh4QCrpj5fBxPcuGt1CKVwtdaMxLpxgy1flqww/JQ
+         EA1F39eN5dGotPk2TCgI2lBfxTDM4CROmmwjA0+wZ6znQee7HUsmCtDzqXxzZk1Xo/4N
+         vM9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=C0bHKb1/iWiLgdtF9sSmjqtEvvSI0v807amqNyJzdNU=;
-        b=H4FWLVAz+VO0aD/8Y3RGUwJAjuw0Xa6qJaSuHtb5wmRBEmy0VJ6WMGZU4c6lLukvCY
-         S1BW0ANAowoZYuqcKNlQnmr0pWKM3S2HTk50ZVm0KbGGHZXYz5TdtDQW3dc054QtPyTk
-         4ENhOmVihEsmBrXDmaOy2nVY6j+3ealrOXHDlBu9XoenWHtjEp7uYv7WzxvBVq42oAiV
-         O8Gl+ECdS2CVIv1zSBNmx56rGINDWFPwAtxVMZKlaQw1dyzFDbZ06oY39xe0rSzNmvUY
-         U+YYsPRF4Zh4dRFRZsgp22YCNkWSFeTyTtE5+Q0887uPNW8MaLMoqz12ndfb4lOsr728
-         46DQ==
-X-Gm-Message-State: AOAM531t89+LhewArNi1ktAuBV+wG+3aQF0dlkuTCYJqX7EZyp71MktC
-        fscCJjECWqpzAazP4+eHFJpGpP0ZOeBxfz8=
-X-Google-Smtp-Source: ABdhPJwkoh7gsKp85NKgP+D91F1jQ8SL7LKV9shZgwbKa77TXviiL3HDVdSCd11fSTpospmRJjxFmFG2oPfHfGM=
+        bh=W0J7h6NLwXezG3nw9wROdbEnvnNKGLsOxhSb3UWP0QY=;
+        b=LVFoJmDMSPNVRlA133MVUDaGCd53U5WNqDLpUbbpbD0PrT43e2Qu0pBgI7X0FUQuUE
+         05SvKoqo5PjRdHNfKf8x/9ENrkeGXHjtlV2n30BGa1Zvg0LfVuljYPu8Iq2ygBrkIfRh
+         85NZHpx3usOkfYGoISDaZ3fyZO5L4ALK5rT7MF8DAjtJDaBKqoHW8VSEqHH8RrXOyH14
+         GPhaonf1RhrXKH4YsCnN/ZQNtEDCWWsUCmlAW2WwF5tLx4gomyq18VF1btxauMcg5aSQ
+         6buaeUcAX8ZuzJr6ZZrF5x8HmiqxTUATzThDtTwOLb8aviGDq0xaXWvUPrUJPMHEiuKB
+         EriA==
+X-Gm-Message-State: AOAM532pZFm3pATVsHuyDWzNZDaoeUUjHoUMIMCgILdOSY5jHx/BOMqU
+        9lql00Ygi9oNwl3bhKdhFl4uM2RpaP3lB+U=
+X-Google-Smtp-Source: ABdhPJxaPaEuH/NuIAbXGDdgzhB6YudXw1v6b5GdSJ/2qVXcj02CQC8DkQhxDv4As8NeECYbE4iKP/J9Hk/OB9Y=
 Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:aa7:8552:0:b029:18e:f030:e514 with SMTP
- id y18-20020aa785520000b029018ef030e514mr15787534pfn.2.1605924169466; Fri, 20
- Nov 2020 18:02:49 -0800 (PST)
-Date:   Fri, 20 Nov 2020 18:02:17 -0800
+ (user=saravanak job=sendgmr) by 2002:a25:ac1a:: with SMTP id
+ w26mr32786299ybi.395.1605924172031; Fri, 20 Nov 2020 18:02:52 -0800 (PST)
+Date:   Fri, 20 Nov 2020 18:02:18 -0800
 In-Reply-To: <20201121020232.908850-1-saravanak@google.com>
-Message-Id: <20201121020232.908850-3-saravanak@google.com>
+Message-Id: <20201121020232.908850-4-saravanak@google.com>
 Mime-Version: 1.0
 References: <20201121020232.908850-1-saravanak@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v2 02/17] Revert "driver core: Rename dev_links_info.defer_sync
- to defer_hook"
+Subject: [PATCH v2 03/17] Revert "driver core: Don't do deferred probe in
+ parallel with kernel_init thread"
 From:   Saravana Kannan <saravanak@google.com>
 To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -77,115 +76,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit ec7bd78498f29680f536451fbdf9464e851273ed.
+This reverts commit cec72f3efc6272420c2c2c699607f03d09b93e41.
 
-This field rename was done to reuse defer_syc list head for multiple
-lists. That's not needed anymore and this list head will only be used
-for defer sync. So revert this patch to avoid conflicts with the other
-reverts coming after this.
+Commit cec72f3efc62 ("driver core: Don't do deferred probe in parallel
+with kernel_init thread") was fixing a commit 716a7a259690 ("driver
+core: fw_devlink: Add support for batching fwnode parsing"). Since the
+commit being fixed itself is going to be reverted, the fix can also be
+reverted.
 
 Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- drivers/base/core.c    | 22 +++++++++++-----------
- include/linux/device.h |  4 ++--
- 2 files changed, 13 insertions(+), 13 deletions(-)
+ drivers/base/base.h | 1 +
+ drivers/base/core.c | 1 +
+ drivers/base/dd.c   | 5 +++++
+ 3 files changed, 7 insertions(+)
 
+diff --git a/drivers/base/base.h b/drivers/base/base.h
+index 91cfb8405abd..c3562adf4789 100644
+--- a/drivers/base/base.h
++++ b/drivers/base/base.h
+@@ -156,6 +156,7 @@ extern char *make_class_name(const char *name, struct kobject *kobj);
+ extern int devres_release_all(struct device *dev);
+ extern void device_block_probing(void);
+ extern void device_unblock_probing(void);
++extern void driver_deferred_probe_force_trigger(void);
+ 
+ /* /sys/devices directory */
+ extern struct kset *devices_kset;
 diff --git a/drivers/base/core.c b/drivers/base/core.c
-index b202fe54f46a..c91ff2546247 100644
+index c91ff2546247..e6bb4bf4f19d 100644
 --- a/drivers/base/core.c
 +++ b/drivers/base/core.c
-@@ -959,11 +959,11 @@ static void __device_links_queue_sync_state(struct device *dev,
- 	 */
- 	dev->state_synced = true;
- 
--	if (WARN_ON(!list_empty(&dev->links.defer_hook)))
-+	if (WARN_ON(!list_empty(&dev->links.defer_sync)))
- 		return;
- 
- 	get_device(dev);
--	list_add_tail(&dev->links.defer_hook, list);
-+	list_add_tail(&dev->links.defer_sync, list);
- }
- 
- /**
-@@ -981,8 +981,8 @@ static void device_links_flush_sync_list(struct list_head *list,
- {
- 	struct device *dev, *tmp;
- 
--	list_for_each_entry_safe(dev, tmp, list, links.defer_hook) {
--		list_del_init(&dev->links.defer_hook);
-+	list_for_each_entry_safe(dev, tmp, list, links.defer_sync) {
-+		list_del_init(&dev->links.defer_sync);
- 
- 		if (dev != dont_lock_dev)
- 			device_lock(dev);
-@@ -1020,12 +1020,12 @@ void device_links_supplier_sync_state_resume(void)
- 	if (defer_sync_state_count)
+@@ -1548,6 +1548,7 @@ void fw_devlink_resume(void)
  		goto out;
  
--	list_for_each_entry_safe(dev, tmp, &deferred_sync, links.defer_hook) {
-+	list_for_each_entry_safe(dev, tmp, &deferred_sync, links.defer_sync) {
- 		/*
- 		 * Delete from deferred_sync list before queuing it to
--		 * sync_list because defer_hook is used for both lists.
-+		 * sync_list because defer_sync is used for both lists.
- 		 */
--		list_del_init(&dev->links.defer_hook);
-+		list_del_init(&dev->links.defer_sync);
- 		__device_links_queue_sync_state(dev, &sync_list);
- 	}
+ 	device_link_add_missing_supplier_links();
++	driver_deferred_probe_force_trigger();
  out:
-@@ -1043,8 +1043,8 @@ late_initcall(sync_state_resume_initcall);
- 
- static void __device_links_supplier_defer_sync(struct device *sup)
- {
--	if (list_empty(&sup->links.defer_hook) && dev_has_sync_state(sup))
--		list_add_tail(&sup->links.defer_hook, &deferred_sync);
-+	if (list_empty(&sup->links.defer_sync) && dev_has_sync_state(sup))
-+		list_add_tail(&sup->links.defer_sync, &deferred_sync);
+ 	mutex_unlock(&defer_fw_devlink_lock);
  }
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index 148e81969e04..001caa0b447c 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -167,6 +167,11 @@ static void driver_deferred_probe_trigger(void)
+ 	if (!driver_deferred_probe_enable)
+ 		return;
  
- static void device_link_drop_managed(struct device_link *link)
-@@ -1274,7 +1274,7 @@ void device_links_driver_cleanup(struct device *dev)
- 		WRITE_ONCE(link->status, DL_STATE_DORMANT);
- 	}
- 
--	list_del_init(&dev->links.defer_hook);
-+	list_del_init(&dev->links.defer_sync);
- 	__device_links_no_driver(dev);
- 
- 	device_links_write_unlock();
-@@ -2407,7 +2407,7 @@ void device_initialize(struct device *dev)
- 	INIT_LIST_HEAD(&dev->links.consumers);
- 	INIT_LIST_HEAD(&dev->links.suppliers);
- 	INIT_LIST_HEAD(&dev->links.needs_suppliers);
--	INIT_LIST_HEAD(&dev->links.defer_hook);
-+	INIT_LIST_HEAD(&dev->links.defer_sync);
- 	dev->links.status = DL_DEV_NO_DRIVER;
- }
- EXPORT_SYMBOL_GPL(device_initialize);
-diff --git a/include/linux/device.h b/include/linux/device.h
-index da00f8e449bb..1e771ea4dca6 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -352,7 +352,7 @@ enum dl_dev_state {
-  * @suppliers: List of links to supplier devices.
-  * @consumers: List of links to consumer devices.
-  * @needs_suppliers: Hook to global list of devices waiting for suppliers.
-- * @defer_hook: Hook to global list of devices that have deferred sync_state.
-+ * @defer_sync: Hook to global list of devices that have deferred sync_state.
-  * @need_for_probe: If needs_suppliers is on a list, this indicates if the
-  *		    suppliers are needed for probe or not.
-  * @status: Driver status information.
-@@ -361,7 +361,7 @@ struct dev_links_info {
- 	struct list_head suppliers;
- 	struct list_head consumers;
- 	struct list_head needs_suppliers;
--	struct list_head defer_hook;
-+	struct list_head defer_sync;
- 	bool need_for_probe;
- 	enum dl_dev_state status;
- };
++	driver_deferred_probe_force_trigger();
++}
++
++void driver_deferred_probe_force_trigger(void)
++{
+ 	/*
+ 	 * A successful probe means that all the devices in the pending list
+ 	 * should be triggered to be reprobed.  Move all the deferred devices
 -- 
 2.29.2.454.gaff20da3a2-goog
 
