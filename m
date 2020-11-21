@@ -2,71 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F042BC24A
+	by mail.lfdr.de (Postfix) with ESMTP id F3BCC2BC24C
 	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 22:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728559AbgKUVkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 16:40:19 -0500
-Received: from mail.alarsen.net ([144.76.18.233]:50576 "EHLO mail.alarsen.net"
+        id S1728594AbgKUVkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 16:40:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728402AbgKUVkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 16:40:18 -0500
-Received: from oscar.alarsen.net (unknown [IPv6:2001:470:1f0b:246:40e7:424f:4d36:7fd2])
-        by joe.alarsen.net (Postfix) with ESMTPS id 416CC2B80439;
-        Sat, 21 Nov 2020 22:40:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alarsen.net; s=joe;
-        t=1605994817; bh=2awW3mgEqEV/daRfAclvkh4F9k5IYVwtCGHMH+2xswA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X9IIOyeh5ch0CHB6+neZeJD2/OMi1kd0Cwyf+sYChpcGdb0BlK4ijPOABsMZmjX68
-         Y05zXsrG6FOq+aJKDCImjWb2Z/PFFnMBcccu6IuGqmBUrCE18mGhQtQN24FJOB0SH9
-         qvjZtMAhIwYKN3h2xRJcxh5CTdUfxEQ4kUPPjc/0=
-Received: from oscar.localnet (localhost [IPv6:::1])
-        by oscar.alarsen.net (Postfix) with ESMTP id 1DE6F27C0929;
-        Sat, 21 Nov 2020 22:40:17 +0100 (CET)
-From:   Anders Larsen <al@alarsen.net>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] qnx4_match: do not over run the buffer
-Date:   Sat, 21 Nov 2020 22:40:17 +0100
-Message-ID: <2474566.rpppqFFLNx@alarsen.net>
-In-Reply-To: <20201120212120.2502522-1-ztong0001@gmail.com>
-References: <20201120212120.2502522-1-ztong0001@gmail.com>
+        id S1728402AbgKUVkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 16:40:40 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11FEB21D7A;
+        Sat, 21 Nov 2020 21:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605994840;
+        bh=Ovwoe+hlcKIY8SdSV622ELvlp3mbfc7w6Hr/DYwRing=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=inS7sVPD3LmeHiLYOlxWCFtEyeTDs3UtYN0OYPrOQ/s/JJVzioZbPIbqrkbMTiZOJ
+         00fNSPy5wqFOciPfh/0PulvFhimTWnmOL/60u4ntBHIiSCEcW6M/vC2rnW+Dr+XiKl
+         uLya/6wnv+HpdWqw5CmHk+TUfm7z4Yq2b5/qaGgI=
+Date:   Sat, 21 Nov 2020 13:40:39 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <min.li.xe@renesas.com>
+Cc:     <richardcochran@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 net] ptp: clockmatrix: bug fix for idtcm_strverscmp
+Message-ID: <20201121134039.42586c72@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1605757824-3292-1-git-send-email-min.li.xe@renesas.com>
+References: <1605757824-3292-1-git-send-email-min.li.xe@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, 2020-11-20 22:21 Tong Zhang wrote:
-> the di_fname may not terminated by '\0', use strnlen to prevent buffer
-> overrun
+On Wed, 18 Nov 2020 22:50:24 -0500 min.li.xe@renesas.com wrote:
+> From: Min Li <min.li.xe@renesas.com>
 > 
-> ---
->  fs/qnx4/namei.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Feed kstrtou8 with NULL terminated string.
 > 
-> diff --git a/fs/qnx4/namei.c b/fs/qnx4/namei.c
-> index 8d72221735d7..c0e79094f578 100644
-> --- a/fs/qnx4/namei.c
-> +++ b/fs/qnx4/namei.c
-> @@ -40,7 +40,7 @@ static int qnx4_match(int len, const char *name,
->  	} else {
->  		namelen = QNX4_SHORT_NAME_MAX;
+> Changes since v1:
+> -Only strcpy 15 characters to leave 1 space for '\0'
+> 
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
+
+> -static int idtcm_strverscmp(const char *ver1, const char *ver2)
+> +static int idtcm_strverscmp(const char *version1, const char *version2)
+>  {
+>  	u8 num1;
+>  	u8 num2;
+>  	int result = 0;
+> +	char ver1[16];
+> +	char ver2[16];
+> +	char *cur1;
+> +	char *cur2;
+> +	char *next1;
+> +	char *next2;
+> +
+> +	strncpy(ver1, version1, 15);
+> +	strncpy(ver2, version2, 15);
+> +	cur1 = ver1;
+> +	cur2 = ver2;
+
+Now there is no guarantee that the buffer is null terminated.
+
+You need to use strscpy(ver... 16) or add ver[15] = '\0';
+
+>  	/* loop through each level of the version string */
+>  	while (result == 0) {
+> +		next1 = strchr(cur1, '.');
+> +		next2 = strchr(cur2, '.');
+> +
+> +		/* kstrtou8 could fail for dot */
+> +		if (next1) {
+> +			*next1 = '\0';
+> +			next1++;
+> +		}
+> +
+> +		if (next2) {
+> +			*next2 = '\0';
+> +			next2++;
+> +		}
+> +
+>  		/* extract leading version numbers */
+> -		if (kstrtou8(ver1, 10, &num1) < 0)
+> +		if (kstrtou8(cur1, 10, &num1) < 0)
+>  			return -1;
+>  
+> -		if (kstrtou8(ver2, 10, &num2) < 0)
+> +		if (kstrtou8(cur2, 10, &num2) < 0)
+>  			return -1;
+>  
+>  		/* if numbers differ, then set the result */
+> -		if (num1 < num2)
+> +		if (num1 < num2) {
+>  			result = -1;
+
+Why do you set the result to something instead of just returning that
+value? The kstrtou8() checks above just return value directly...
+
+If you use a return you can save yourself all the else branches.
+
+> -		else if (num1 > num2)
+> +		} else if (num1 > num2) {
+>  			result = 1;
+> -		else {
+> +		} else {
+>  			/* if numbers are the same, go to next level */
+> -			ver1 = strchr(ver1, '.');
+> -			ver2 = strchr(ver2, '.');
+> -			if (!ver1 && !ver2)
+> +			if (!next1 && !next2)
+>  				break;
+> -			else if (!ver1)
+> +			else if (!next1) {
+>  				result = -1;
+> -			else if (!ver2)
+> +			} else if (!next2) {
+>  				result = 1;
+> -			else {
+> -				ver1++;
+> -				ver2++;
+> +			} else {
+> +				cur1 = next1;
+> +				cur2 = next2;
+>  			}
+>  		}
 >  	}
-> -	thislen = strlen( de->di_fname );
-> +	thislen = strnlen( de->di_fname, QNX4_SHORT_NAME_MAX );
-
-that should be
-+	thislen = strnlen( de->di_fname, namelen );
-otherwise the length of a filename would always be limited to QNX4_SHORT_NAME_MAX (16) characters.
-
->  	if ( thislen > namelen )
->  		thislen = namelen;
-
-These two lines can be dropped now, as the result of strnlen() cannot exceed namelen anyway.
-
-Cheers
-Anders
-
+> +
+>  	return result;
+>  }
+>  
 
