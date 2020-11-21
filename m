@@ -2,134 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B69E2BC259
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 23:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36C52BC25B
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 23:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbgKUWAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 17:00:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728541AbgKUWAX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 17:00:23 -0500
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8799C0613CF;
-        Sat, 21 Nov 2020 14:00:22 -0800 (PST)
-Received: by mail-vs1-xe43.google.com with SMTP id u7so7068370vsq.11;
-        Sat, 21 Nov 2020 14:00:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MY8NzMGPcLXMY/ED4DpGvzZfCPFifC8yIRCCQIJaAG8=;
-        b=sH8eYt+nuILX4uSEZPd8QQEZZ1sJYsmp0hOBlQs2XgLAJFtvjAvNEPKSHY6tKzmARY
-         SqD6woaXcqAIK7niRps8kAehaeMYBgcbDmw1Yx7KxJukvQ/VLJyf1KvBGfM1VozUkA4K
-         3BgALZkFxDU1e+n+GSTt5EVe9oV9Tt9dq6kUjgO0hHUPHOowO1UTgkp+t8/Nbjh5mLOK
-         NkqvItf7XARVpIbGJfwLM5XhY9Yxcm1JgrSi+WlHy8xy0dRrcDcpelW0X7xL3in3RTZ9
-         VzSQiy8Ipv7QFY72BAs3MW5ezeToTuMxsdD6wrwDKfbfIlTno97yTcUW055yCnEdU/OT
-         81Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MY8NzMGPcLXMY/ED4DpGvzZfCPFifC8yIRCCQIJaAG8=;
-        b=Bv/aXmcBfK8gtZ9ep/pzObcK1+D0Cb3R63gq67lONMyeTSpfF+kwAzIkxqeSe5Rr+5
-         BEeph635gep18H9GeYCOpcTymnegSKJRPPJJsLEia8g7KX6WjN2CELuMxMUHvJp4pJK1
-         xoJEOwdK20rac7fffEz3fDjhlPayl/5Fd0AL+P4cUskL1jKre2sVhaMa+6N5d47G+63J
-         WC4t4o/E9W0V4iOtZ4BcytS0ywenw3QZPZIqOAShDop+p2HVPmYlUG9FMYbQLlOrEt25
-         q1DqLV0U/YfWXt/pAhqgaOsm2IUm3sO4Y2N5mdObYkpcdBmrYvy/VzdvUgOttVl9476v
-         VCEw==
-X-Gm-Message-State: AOAM5332lTyJZ0B4IQM7VixlyZJfWcEkLYTLwtLbRghqjMS0yqvGS7Uo
-        S+BTA7ys6PaJfAMiVgRTOTq+jtylfotZII3rHlo=
-X-Google-Smtp-Source: ABdhPJyM5fgCbpzyQBMLyFUj2jZYULdnUezsPW1i/hsn0T5zQd5HbyDJmLzm+qad0ideMIVov0zq3o8Sz6uTgDGucuE=
-X-Received: by 2002:a67:ff10:: with SMTP id v16mr15914156vsp.40.1605996021829;
- Sat, 21 Nov 2020 14:00:21 -0800 (PST)
+        id S1728634AbgKUWDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 17:03:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728554AbgKUWDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 17:03:13 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00D2F221EB;
+        Sat, 21 Nov 2020 22:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605996192;
+        bh=R6LqJxezNsIXeikq7/GWHBaCNJJhNQqtYGcbp68R/3M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DHo8lItmfyDlGx9rDMqCPK3RRroyKQ1eP/qG2LLbTrbP86PRDurhtMGIjcPjaPGFF
+         GbWL1gsbT9DO9XYEjhQ+Sk+nVuGrCVmCwPe2UfADDYAcqNrmN43VavyrrCmsRg0gM5
+         I3lzR5ifW8oYRN04boVkjovzzP11R6f7R6sNQpZo=
+Date:   Sat, 21 Nov 2020 14:03:11 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yves-Alexis Perez <corsac@corsac.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Martin Habets <mhabets@solarflare.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        "Michael S. Tsirkin" <mst@redhat.com>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matti Vuorela <matti.vuorela@bitfactor.fi>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
+Message-ID: <20201121140311.42585c68@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201119172439.94988-1-corsac@corsac.net>
+References: <CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com>
+        <20201119172439.94988-1-corsac@corsac.net>
 MIME-Version: 1.0
-References: <20201118174417.278011-1-clemens.gruber@pqgruber.com>
- <CAGngYiV+oDeagaCfpeACMzQyDHVzk9ERbSBjW_fW5hoQANHqog@mail.gmail.com>
- <20201119100005.GA703@workstation.tuxnet> <CAGngYiU7+X1AbadQ0kFBQOqxK-adowg6CTOMx260fyF1-rpO-Q@mail.gmail.com>
- <20201119160013.GA217674@workstation.tuxnet> <CAGngYiUELShMgFnvq6XzF0v=2UAwj7gJsPmbdGkmyAbzhM8OLA@mail.gmail.com>
- <X7krI+JkhCO5nYC+@workstation.tuxnet>
-In-Reply-To: <X7krI+JkhCO5nYC+@workstation.tuxnet>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Sat, 21 Nov 2020 17:00:10 -0500
-Message-ID: <CAGngYiWKwDoeM+Hgj-ehJBRp16u2_-dDULzvVbGEUQ2ZOY9w4A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] pwm: pca9685: Switch to atomic API
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 9:58 AM Clemens Gruber
-<clemens.gruber@pqgruber.com> wrote:
->
-> I'd rather continue supporting this driver with !CONFIG_PM. (In our
-> company we have a product with a !CONFIG_PM build using this driver)
+On Thu, 19 Nov 2020 18:24:39 +0100 Yves-Alexis Perez wrote:
+> Starting with iOS 14 released in September 2020, connectivity using the
+> personal hotspot USB tethering function of iOS devices is broken.
+> 
+> Communication between the host and the device (for example ICMP traffic
+> or DNS resolution using the DNS service running in the device itself)
+> works fine, but communication to endpoints further away doesn't work.
+> 
+> Investigation on the matter shows that UDP and ICMP traffic from the
+> tethered host is reaching the Internet at all. For TCP traffic there are
+> exchanges between tethered host and server but packets are modified in
+> transit leading to impossible communication.
+> 
+> After some trials Matti Vuorela discovered that reducing the URB buffer
+> size by two bytes restored the previous behavior. While a better
+> solution might exist to fix the issue, since the protocol is not
+> publicly documented and considering the small size of the fix, let's do
+> that.
+> 
+> Tested-by: Matti Vuorela <matti.vuorela@bitfactor.fi>
+> Signed-off-by: Yves-Alexis Perez <corsac@corsac.net>
+> Link: https://lore.kernel.org/linux-usb/CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com/
+> Link: https://github.com/libimobiledevice/libimobiledevice/issues/1038
 
-Absolutely, makes sense. If you do add support for !CONFIG_PM, then it's
-important that both PM and !PM cases get tested by you.
-
->
-> I am thinking about the following solution:
-> #ifdef CONFIG_PM
->   /* Set runtime PM status according to chip sleep state */
->   if (reg & MODE1_SLEEP)
->     pm_runtime_set_suspended(..);
->   else
->     pm_runtime_set_active(..);
->
->   pm_runtime_enable(..);
-> #else
->   /* If in SLEEP state on non-PM environments, wake the chip up */
->   if (reg & MODE1_SLEEP)
->     pca9685_set_sleep_mode(.., false)
-> #endif
-
-I don't think we need the #ifdef CONFIG_PM, because all pm_runtime_xxx
-functions become no-ops when !CONFIG_PM.
-
-Also, I believe "if (IS_ENABLED(CONFIG_XXX))" is preferred, because
-it allows the compiler to syntax-check disabled code.
-
-How about the following? It should be correct, short, and easy to understand.
-Yes, there's one single unnecessary register write (+ 500us delay if !PM) when
-the chip is already active on probe(). But maybe that's worth it if it makes
-the code easier to understand?
-
-probe()
-{
-    ...
-    pm_runtime_set_active(&client->dev);
-    pm_runtime_enable(&client->dev);
-
-    if (!IS_ENABLED(CONFIG_PM))
-        pca9685_set_sleep_mode(pca, false);
-
-    return 0;
-}
-
-remove()
-{
-    ...
-    pm_runtime_disable(&client->dev);
-
-    if (!IS_ENABLED(CONFIG_PM))
-        pca9685_set_sleep_mode(pca, true);
-
-    return 0;
-}
-
->
-> About the regmap cache: I looked into it and think it is a good idea but
-> it's probably best to get these patches merged first and then rework the
-> driver to using the regmap cache?
-
-Good suggestion, I agree.
+Applied to net with the typo fixed, thanks!
