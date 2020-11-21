@@ -2,202 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F208C2BBE31
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 10:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC3B2BBE34
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 10:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727292AbgKUJSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 04:18:43 -0500
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:45006 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726854AbgKUJSj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 04:18:39 -0500
-Received: by mail-oo1-f66.google.com with SMTP id i13so2791892oou.11;
-        Sat, 21 Nov 2020 01:18:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WaMha0En6LkvNa0zqCPwgKvusypP+GNCRLE4znVs274=;
-        b=YjKYBzAT59/F26ZJYCuI2A7KEdcHpHvLTL1Keq6hC+VwHnHtbE/zMwgl/lVqMaifvO
-         Sp+qR6ciylkPXgGto4SSGrtbxR1SHu5E0mJGKNLDB5BBHn+xdEOXN6omoD69kZUc0x2D
-         q3b+z6vzPgeYR0PYYHaDXOq0ss1Cp6rDWRqQGzzhcOMoqDTEccyEnQ4Sr6JGN9me+qxM
-         D8O7yChJ3bXm4pMkeDA6Ns02ROC3MGtucRuIZJsE9nCevdrnSSI7fbTfQf73I+KMzQCk
-         vYPOG7eIj+Fy4KgutbABeOdi9Fg8KRL72AGnMVTIEZ0OGE/JRoo5Rsvu2iq0ja05qNes
-         GS0A==
-X-Gm-Message-State: AOAM533kv1O2FX2r3lE875K2APLPOY5FyCtK4S62TXlOW7MgjKOzErJj
-        gbMFejj8B6LbDD0rMTPEsvUpnm6earFentM1o2o=
-X-Google-Smtp-Source: ABdhPJyowNnoUrA3Mz/7yfMy3Z3o1JIdvy8nv3Lo7KpazvsKj/zkLv5vUmVX8M/ykA2X5Tbn+KzYCs8VU79DooXNsrw=
-X-Received: by 2002:a4a:d694:: with SMTP id i20mr16921417oot.40.1605950318178;
- Sat, 21 Nov 2020 01:18:38 -0800 (PST)
+        id S1727316AbgKUJ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 04:27:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726709AbgKUJ14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 04:27:56 -0500
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81A5F22269;
+        Sat, 21 Nov 2020 09:27:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605950875;
+        bh=uUE+BwhJZQbnAt5h9J7aJjQ56rhNF6AJaSotMShsjjw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ON94Agc/s57Gqw3EUmZlgsso7EUmKsH7ty9efQnjbxpm/7Uvzx8Glg8536rUjh1RK
+         ctShKcEsxsK4H6T/fE/adSdr+yC6M9lmTEKL7pXTbEnuYoGTQKPe0THVuHJvy2zgnS
+         G+H1bWuB7l9jYDVl4nxJezbY8tV7fbujYf7ER+DU=
+Received: by mail-ot1-f42.google.com with SMTP id 92so8125097otd.5;
+        Sat, 21 Nov 2020 01:27:55 -0800 (PST)
+X-Gm-Message-State: AOAM531zzI8pNQYHrpX2C9CJWsjj6atrN8XTGrwhv0CxKPD2oz+GBagw
+        fAL6q9UDUc5e8uqoEuUxHkXuBOaqdji5PE/2CUk=
+X-Google-Smtp-Source: ABdhPJw8tZEWlczyttYsnJQ6uLhwZuA22h1QJBv7lMqVso6n63xbWEtnhxTHnmW/htaNLmzBLlOTQkGDkhJBZcl9sFg=
+X-Received: by 2002:a9d:6317:: with SMTP id q23mr7263123otk.251.1605950874850;
+ Sat, 21 Nov 2020 01:27:54 -0800 (PST)
 MIME-Version: 1.0
-References: <b39102a332ae92c274fc8651acb4c52cfb9824a1.1605847196.git.fthain@telegraphics.com.au>
- <CAMuHMdUS4wmUUtAqgjGc=WVcRC4RJ9nJhVnne89YzOUvd=CCvw@mail.gmail.com> <alpine.LNX.2.23.453.2011210955390.6@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2011210955390.6@nippy.intranet>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sat, 21 Nov 2020 10:18:26 +0100
-Message-ID: <CAMuHMdVRXxEU_R_Sdi7tSR7y7FoU+fFScsfUCVS+JbXU9BWt8A@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Fix WARNING splat in pmac_zilog driver
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        stable <stable@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20201118144617.986860-1-willemdebruijn.kernel@gmail.com>
+ <20201118144617.986860-2-willemdebruijn.kernel@gmail.com> <20201118150041.GF29991@casper.infradead.org>
+ <CA+FuTSdxNBvNMy341EHeiKOWZ19H++aw-tfr6Fx1mFmbg-z4zQ@mail.gmail.com>
+ <CAK8P3a0t02o77+8QNZwXF2k1pY3Xrm5bydv8Vx1TW060P7BKqA@mail.gmail.com>
+ <893e8ed21e544d048bff7933013332a0@AcuMS.aculab.com> <CAF=yD-+arBFuZCU3UDx0XKmUGaEz8P1EaDLPK0YFCz82MdwBcg@mail.gmail.com>
+ <20201119143131.GG29991@casper.infradead.org> <CAK8P3a1SwQ=L_qA1BmeAt=Xc-Q9Mv4V+J5LFLB5R6rMDST8UiA@mail.gmail.com>
+ <CAF=yD-Kd-6f9wAYLD=dP1pk4qncWim424Fu6Hgj=ZrnUtEPORA@mail.gmail.com>
+ <CAK8P3a21JRFUJrz1+TYWcVL8s4uSfeSFyoMkGsqUPbV+F=r_yw@mail.gmail.com>
+ <CAF=yD-Lzu9j6T4ubRjawF-EKOC3pkQTkpigg=PugWwybY-1ZyQ@mail.gmail.com>
+ <CAK8P3a1cJf7+b5HCmFiLq+FdM+D+37rHYaftRgRYbhTyjwR6wg@mail.gmail.com> <CAF=yD-LdtCCY=Mg9CruZHdjBXV6VmEPydzwfcE2BHUC8z7Xgng@mail.gmail.com>
+In-Reply-To: <CAF=yD-LdtCCY=Mg9CruZHdjBXV6VmEPydzwfcE2BHUC8z7Xgng@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 21 Nov 2020 10:27:38 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2WifcGmmFzSLC4-0SKsv0RT231P6TVKpWm=j927ykmQg@mail.gmail.com>
+Message-ID: <CAK8P3a2WifcGmmFzSLC4-0SKsv0RT231P6TVKpWm=j927ykmQg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] epoll: add nsec timeout support with epoll_pwait2
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        Willem de Bruijn <willemb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
-
-On Sat, Nov 21, 2020 at 12:47 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Fri, 20 Nov 2020, Geert Uytterhoeven wrote:
-> > On Fri, Nov 20, 2020 at 5:51 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > > Don't add platform resources that won't be used. This avoids a
-> > > recently-added warning from the driver core, that can show up on a
-> > > multi-platform kernel when !MACH_IS_MAC.
-> > >
-> > > ------------[ cut here ]------------
-> > > WARNING: CPU: 0 PID: 0 at drivers/base/platform.c:224 platform_get_irq_optional+0x8e/0xce
-> > > 0 is an invalid IRQ number
-> > > Modules linked in:
-> > > CPU: 0 PID: 0 Comm: swapper Not tainted 5.9.0-multi #1
-> > > Stack from 004b3f04:
-> > >         004b3f04 00462c2f 00462c2f 004b3f20 0002e128 004754db 004b6ad4 004b3f4c
-> > >         0002e19c 004754f7 000000e0 00285ba0 00000009 00000000 004b3f44 ffffffff
-> > >         004754db 004b3f64 004b3f74 00285ba0 004754f7 000000e0 00000009 004754db
-> > >         004fdf0c 005269e2 004fdf0c 00000000 004b3f88 00285cae 004b6964 00000000
-> > >         004fdf0c 004b3fac 0051cc68 004b6964 00000000 004b6964 00000200 00000000
-> > >         0051cc3e 0023c18a 004b3fc0 0051cd8a 004fdf0c 00000002 0052b43c 004b3fc8
-> > > Call Trace: [<0002e128>] __warn+0xa6/0xd6
-> > >  [<0002e19c>] warn_slowpath_fmt+0x44/0x76
-> > >  [<00285ba0>] platform_get_irq_optional+0x8e/0xce
-> > >  [<00285ba0>] platform_get_irq_optional+0x8e/0xce
-> > >  [<00285cae>] platform_get_irq+0x12/0x4c
-> > >  [<0051cc68>] pmz_init_port+0x2a/0xa6
-> > >  [<0051cc3e>] pmz_init_port+0x0/0xa6
-> > >  [<0023c18a>] strlen+0x0/0x22
-> > >  [<0051cd8a>] pmz_probe+0x34/0x88
-> > >  [<0051cde6>] pmz_console_init+0x8/0x28
-> > >  [<00511776>] console_init+0x1e/0x28
-> > >  [<0005a3bc>] printk+0x0/0x16
-> > >  [<0050a8a6>] start_kernel+0x368/0x4ce
-> > >  [<005094f8>] _sinittext+0x4f8/0xc48
-> > > random: get_random_bytes called from print_oops_end_marker+0x56/0x80 with crng_init=0
-> > > ---[ end trace 392d8e82eed68d6c ]---
-> > >
-> > > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > > Cc: Paul Mackerras <paulus@samba.org>
-> > > Cc: Joshua Thompson <funaho@jurai.org>
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Cc: Jiri Slaby <jirislaby@kernel.org>
-> > > Cc: stable@vger.kernel.org # v5.8+
-> > > References: commit a85a6c86c25b ("driver core: platform: Clarify that IRQ 0 is invalid")
-> > > Reported-by: Laurent Vivier <laurent@vivier.eu>
-> > > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> > > ---
-> > > The global platform_device structs provide the equivalent of a direct
-> > > search of the OpenFirmware tree, for platforms that don't have OF.
-> > > The purpose of that search is discussed in the comments in pmac_zilog.c:
-> > >
-> > >          * First, we need to do a direct OF-based probe pass. We
-> > >          * do that because we want serial console up before the
-> > >          * macio stuffs calls us back
-> > >
-> > > The actual platform bus matching takes place later, with a module_initcall,
-> > > following the usual pattern.
-> >
-> > I think it would be good for this explanation to be part of the
-> > actual patch description above.
-> >
+On Fri, Nov 20, 2020 at 11:28 PM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+> On Fri, Nov 20, 2020 at 2:23 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > On Fri, Nov 20, 2020 at 5:01 PM Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
 >
-> Thanks for your review.
+> I think it'll be better to split the patchsets:
 >
-> I take that explanation as read because it was fundamental to the changes
-> I made to pmac_zilog.c back in 2009 with commit ec9cbe09899e ("pmac-zilog:
-> add platform driver").
-
-That's a long time ago ;-)
-I asked because to the casual reader, it's far from obvious why the platform
-device use-time is different from the platform device's resources use-time.
-
-> IMO, being that it isn't news, it doesn't belong in the changelog.
-> However, I agree that it needs to be documented. How about I add a comment
-> to pmac_zilog.c?
-
-Fine for me.
-
-> > > --- a/drivers/tty/serial/pmac_zilog.c
-> > > +++ b/drivers/tty/serial/pmac_zilog.c
-> > > @@ -1697,18 +1697,17 @@ extern struct platform_device scc_a_pdev, scc_b_pdev;
-> > >
-> > >  static int __init pmz_init_port(struct uart_pmac_port *uap)
-> > >  {
-> > > -       struct resource *r_ports;
-> > > -       int irq;
-> > > +       struct resource *r_ports, *r_irq;
-> > >
-> > >         r_ports = platform_get_resource(uap->pdev, IORESOURCE_MEM, 0);
-> > > -       irq = platform_get_irq(uap->pdev, 0);
-> > > -       if (!r_ports || irq <= 0)
-> > > +       r_irq = platform_get_resource(uap->pdev, IORESOURCE_IRQ, 0);
-> > > +       if (!r_ports || !r_irq)
-> > >                 return -ENODEV;
-> > >
-> > >         uap->port.mapbase  = r_ports->start;
-> > >         uap->port.membase  = (unsigned char __iomem *) r_ports->start;
-> > >         uap->port.iotype   = UPIO_MEM;
-> > > -       uap->port.irq      = irq;
-> > > +       uap->port.irq      = r_irq->start;
-> > >         uap->port.uartclk  = ZS_CLOCK;
-> > >         uap->port.fifosize = 1;
-> > >         uap->port.ops      = &pmz_pops;
-> >
-> > Given the resources are no longer present on !MAC, just doing
-> >
-> >             r_ports = platform_get_resource(uap->pdev, IORESOURCE_MEM, 0);
-> >     +       if (!r_ports)
-> >     +               return -ENODEV;
-> >             irq = platform_get_irq(uap->pdev, 0);
-> >
-> > should be sufficient?
+> epoll: convert internal api to timespec64
+> epoll: add syscall epoll_pwait2
+> epoll: wire up syscall epoll_pwait2
+> selftests/filesystems: expand epoll with epoll_pwait2
 >
-> I think your suggestion is shorter but not better. Commit a85a6c86c25b
-> (which introduced the WARNING) suggests that testing for irq == 0 is
-> undesirable. My patch resolves that.
+> and
 >
-> As a bonus, by simply testing for the existence of both resources, I've
-> addressed the mistake I made when I originally added the slick
-> platform_get_irq() call instead of consistently using
-> platform_get_resource().
+> select: compute slack based on relative time
+> epoll: compute slack based on relative time
 >
-> platform_get_irq() hides a bunch of architecture-specific logic that is
-> not appropriate here. The WARNING itself is a good example of that kind of
-> logic.
+> and judge the slack conversion on its own merit.
+
+Yes, makes sense.
+
+> I also would rather not tie this up with the compat deduplication.
+> Happy to take a stab at that though. On that note, when combining
+> functions like
 >
-> Do you agree? If so, I will add this explanation to the commit log.
+>   int core_sys_select(int n, fd_set __user *inp, fd_set __user *outp,
+>                            fd_set __user *exp, struct timespec64 *end_time,
+>                            u64 slack)
+>
+> and
+>
+>   static int compat_core_sys_select(int n, compat_ulong_t __user *inp,
+>         compat_ulong_t __user *outp, compat_ulong_t __user *exp,
+>         struct timespec64 *end_time, u64 slack)
+>
+> by branching on in_compat_syscall() inside get_fd_set/set_fd_set and
+> deprecating their compat_.. counterparts, what would the argument
+> pointers look like? Or is that not the approach you have in mind?
 
-OK, your main motivation is to get rid of the zero-check.
-Leaving it could indeed trigger some janitorial changes by people who
-don't understand the code at all, so it's good to avoid that ;-)
+In this case, the top-level entry points becomes unified, and you get
+the prototype from core_sys_select() with the native arguments.
 
-Thanks!
+I would imagine this can be done like the way I proposed
+for get_bitmap() in sys_migrate_pages:
 
-Gr{oetje,eeting}s,
+https://lore.kernel.org/lkml/20201102123151.2860165-4-arnd@kernel.org/
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+        Arnd
