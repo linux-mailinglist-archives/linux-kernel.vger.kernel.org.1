@@ -2,81 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C5A2BC227
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 22:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E012E2BC22E
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 22:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728568AbgKUU6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 15:58:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728477AbgKUU6v (ORCPT
+        id S1728456AbgKUVBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 16:01:53 -0500
+Received: from v133-130-127-43.a05a.g.tyo1.static.cnode.io ([133.130.127.43]:56346
+        "EHLO mail.hard-wi.red" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728459AbgKUVBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 15:58:51 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFB0C0613CF;
-        Sat, 21 Nov 2020 12:58:51 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kgZxu-00CAJ8-TN; Sat, 21 Nov 2020 21:58:39 +0100
-Message-ID: <86c6369a937c760e374c78f5252ffc67cf67b1e1.camel@sipsolutions.net>
-Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>, Ido Schimmel <idosch@idosch.org>,
-        Aleksandr Nogikh <aleksandrnogikh@gmail.com>,
-        davem@davemloft.net, edumazet@google.com, andreyknvl@google.com,
-        dvyukov@google.com, elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>
-Date:   Sat, 21 Nov 2020 21:58:37 +0100
-In-Reply-To: <20201121125508.4d526dd0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
-         <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
-         <20201121160941.GA485907@shredder.lan>
-         <20201121165227.GT15137@breakpoint.cc>
-         <20201121100636.26aaaf8a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <bcfb0fe1b207d2f4bb52f0d1ef51207f9b5587de.camel@sipsolutions.net>
-         <20201121103529.4b4acbff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <106fc65f0459bc316e89beaf6bd71e823c4c01b7.camel@sipsolutions.net>
-         <20201121125508.4d526dd0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Sat, 21 Nov 2020 16:01:50 -0500
+X-Greylist: delayed 371 seconds by postgrey-1.27 at vger.kernel.org; Sat, 21 Nov 2020 16:01:48 EST
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by mail.hard-wi.red (Postfix) with ESMTPA id 3666E2000E7;
+        Sat, 21 Nov 2020 20:55:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hard-wi.red; s=dkim;
+        t=1605992130;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xXmjl9KdvMj+q78Dtg4S+J4OXqzsc707ZPj+S2i4LKI=;
+        b=OAMMVio3LCJPhNbEgW6+wTFR5BdQBZ4YyZEyN5mYc8IyJOKqmxWitD6ZCz2zjX8QumBtVa
+        dacjnVKY2xEMYeu9MGiPI0bUS5SwOc26KsPfrWBsd2h9JGC83mZXXB3bHpbZ7+q0JccqRT
+        AHWg9tYloD3GFvUyUEuecvRPAGWqOp8=
+From:   YOSHIOKA Takuma <lo48576@hard-wi.red>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     YOSHIOKA Takuma <lo48576@hard-wi.red>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] HID: elecom: rewrite report based on model specific parameters
+Date:   Sun, 22 Nov 2020 05:54:37 +0900
+Message-Id: <20201121205438.4092-1-lo48576@hard-wi.red>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=hard-wi.red;
+        s=dkim; t=1605992130;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xXmjl9KdvMj+q78Dtg4S+J4OXqzsc707ZPj+S2i4LKI=;
+        b=lDcxjQhxKfKtMsswsEqF1NkAXR0n9RmT8VRtAgk53p1BYFzAVyh3ZRznMGRiHJiJVKAjgq
+        3t2BSXqe8tACdLnX7gtp2CG01bbenHjv84kB2ZONDnld0yE82x65m1f5Ht69Z78iFYYi+H
+        SkkWeNeJvqHDmjne+ZfIakIgYzEWhlA=
+ARC-Seal: i=1; s=dkim; d=hard-wi.red; t=1605992130; a=rsa-sha256; cv=none;
+        b=ZSqU2ZDXpCb9qeu94Xz2Pj0oH+eP8O461ajvwZy2VHeMlOplm6mPU20IKeGy+QIB2UvBao
+        C0uhoQi27zAWY82fjxmYpOd/Qm2BkDkdJKxlw6wG+1QZTOVKVKqYG3qnLDqKUMZ+D8wo2p
+        lHoD73OxxheQUkHJOTIeAu5gL5S2CTg=
+ARC-Authentication-Results: i=1;
+        mail.hard-wi.red;
+        auth=pass smtp.auth=lo48576@hard-wi.red smtp.mailfrom=lo48576@hard-wi.red
+Authentication-Results: mail.hard-wi.red;
+        auth=pass smtp.auth=lo48576@hard-wi.red smtp.mailfrom=lo48576@hard-wi.red
+X-Spamd-Bar: /
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-11-21 at 12:55 -0800, Jakub Kicinski wrote:
-> [snip]
-> Ack, you have to figure out all the places anyway, the question is
-> whether you put probes there or calls in the source code.
-> 
-> Shifting the maintenance burden but also BPF is flexibility.
+The report descriptor for EX-G wireless mouse (M-XGL20DLBK) is a bit
+different from that for trackball mice such as DEFT. For such mouse, the
+current `mouse_button_fixup` cannot be used as is, because it uses
+hard-coded indices for a report descriptor.
 
-Yeah, true. Though I'd argue also visibility - this stuff is pretty
-simple now, if it gets into lots of lines of BPF code to track it that
-is maintained "elsewhere", we won't see the bugs in it :-)
+Add parameters to `mouse_button_fixup` function, in order to support
+fixing report descriptors for more models.
 
-And it's kinda a thing that we as kernel developers _should_ be the ones
-looking at since it's testing our code.
+Signed-off-by: YOSHIOKA Takuma <lo48576@hard-wi.red>
+---
+ drivers/hid/hid-elecom.c | 41 ++++++++++++++++++++++++++++------------
+ 1 file changed, 29 insertions(+), 12 deletions(-)
 
-> Yup, the point is you can feed a raw skb pointer (and all other
-> possible context you may want) to a BPF prog in kcov_remote_start() 
-> and let BPF/BTF give you the handle it recorded in its maps.
-
-Yeah, it's possible. Personally, I don't think it's worth the
-complexity.
-
-> It is more complicated. We can go back to an skb field if this work is
-> expected to yield results for mac80211. Would you mind sending a patch?
-
-I can do that, but I'm not going to be able to do it now/tonight (GMT+1
-here), so probably only Monday/Tuesday or so, sorry.
-
-johannes
+diff --git a/drivers/hid/hid-elecom.c b/drivers/hid/hid-elecom.c
+index 8c712d4bc075..233188100884 100644
+--- a/drivers/hid/hid-elecom.c
++++ b/drivers/hid/hid-elecom.c
+@@ -11,6 +11,7 @@
+  *  Copyright (c) 2017 Diego Elio Pettenò <flameeyes@flameeyes.eu>
+  *  Copyright (c) 2017 Alex Manoussakis <amanou@gnu.org>
+  *  Copyright (c) 2017 Tomasz Kramkowski <tk@the-tk.com>
++ *  Copyright (c) 2020 YOSHIOKA Takuma <lo48576@hard-wi.red>
+  */
+ 
+ /*
+@@ -29,25 +30,26 @@
+  * report descriptor but it does not appear that these enable software to
+  * control what the extra buttons map to. The only simple and straightforward
+  * solution seems to involve fixing up the report descriptor.
+- *
+- * Report descriptor format:
+- * Positions 13, 15, 21 and 31 store the button bit count, button usage minimum,
+- * button usage maximum and padding bit count respectively.
+  */
+ #define MOUSE_BUTTONS_MAX 8
+ static void mouse_button_fixup(struct hid_device *hdev,
+ 			       __u8 *rdesc, unsigned int rsize,
++			       unsigned int button_bit_count,
++			       unsigned int padding_bit,
++			       unsigned int button_report_size,
++			       unsigned int button_usage_maximum,
+ 			       int nbuttons)
+ {
+-	if (rsize < 32 || rdesc[12] != 0x95 ||
+-	    rdesc[14] != 0x75 || rdesc[15] != 0x01 ||
+-	    rdesc[20] != 0x29 || rdesc[30] != 0x75)
++	if (rsize < 32 || rdesc[button_bit_count] != 0x95 ||
++	    rdesc[button_report_size] != 0x75 ||
++	    rdesc[button_report_size + 1] != 0x01 ||
++	    rdesc[button_usage_maximum] != 0x29 || rdesc[padding_bit] != 0x75)
+ 		return;
+ 	hid_info(hdev, "Fixing up Elecom mouse button count\n");
+ 	nbuttons = clamp(nbuttons, 0, MOUSE_BUTTONS_MAX);
+-	rdesc[13] = nbuttons;
+-	rdesc[21] = nbuttons;
+-	rdesc[31] = MOUSE_BUTTONS_MAX - nbuttons;
++	rdesc[button_bit_count + 1] = nbuttons;
++	rdesc[button_usage_maximum + 1] = nbuttons;
++	rdesc[padding_bit + 1] = MOUSE_BUTTONS_MAX - nbuttons;
+ }
+ 
+ static __u8 *elecom_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+@@ -65,13 +67,28 @@ static __u8 *elecom_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+ 	case USB_DEVICE_ID_ELECOM_M_XT3URBK:
+ 	case USB_DEVICE_ID_ELECOM_M_XT3DRBK:
+ 	case USB_DEVICE_ID_ELECOM_M_XT4DRBK:
+-		mouse_button_fixup(hdev, rdesc, *rsize, 6);
++		/*
++		 * Report descriptor format:
++		 * 12: button bit count
++		 * 30: padding bit count
++		 * 14: button report size
++		 * 20: button usage maximum
++		 */
++		mouse_button_fixup(hdev, rdesc, *rsize, 12, 30, 14, 20, 6);
+ 		break;
+ 	case USB_DEVICE_ID_ELECOM_M_DT1URBK:
+ 	case USB_DEVICE_ID_ELECOM_M_DT1DRBK:
+ 	case USB_DEVICE_ID_ELECOM_M_HT1URBK:
+ 	case USB_DEVICE_ID_ELECOM_M_HT1DRBK:
+-		mouse_button_fixup(hdev, rdesc, *rsize, 8);
++		/*mouse_button_fixup(hdev, rdesc, *rsize, 13, 15, 21, 31, 8);*/
++		/*
++		 * Report descriptor format:
++		 * 12: button bit count
++		 * 30: padding bit count
++		 * 14: button report size
++		 * 20: button usage maximum
++		 */
++		mouse_button_fixup(hdev, rdesc, *rsize, 12, 30, 14, 20, 8);
+ 		break;
+ 	}
+ 	return rdesc;
+-- 
+2.29.2
 
