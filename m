@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018462BBC95
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4672BBC96
 	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 04:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727436AbgKUDLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 22:11:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
+        id S1727468AbgKUDLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 22:11:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727024AbgKUDLc (ORCPT
+        with ESMTP id S1727403AbgKUDLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 22:11:32 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CC0C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:11:31 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id g11so1090327pll.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:11:31 -0800 (PST)
+        Fri, 20 Nov 2020 22:11:33 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5417BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:11:33 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id n21so8454682pfu.9
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 19:11:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=c7ylYkXg+Wq4kHcwpXY8Kwg0nOcNAwjZ1t+TgIWVj0g=;
-        b=hV6WSXRbGQdYgGjpCBPVu1Jp7+8tXMbkz3hNFWFKkDuBOD19WiALfv5rlf4NfOutuU
-         Cp9d+asazG9OeixzP+mypV6WtMPFR9PeesXkFA2vYxm5xcS8fWF1n3DyfxCXbA9uKdrJ
-         M8D1BOJ+nzJVvj+/Jl0HCtW5xV2gX8xHbN5IuI9Z5+HDpQAja0Xx/h8SoKc/iWKmNIyX
-         DKmDzCfbaBaRt6bXbQR5LP/C8CgMzOC0aX3NKuxW6cpGb/0tU2cNiNLIMK2a1qPnGwcL
-         D04X7Gri0dapOoGB6vKWMWCyVIdQbBMgEsqcaSjtRFtwVwxsnWq6ZGVny/npttWNvTAK
-         kN1w==
+        bh=QjIzsr3Sehmkc2TdWVcrCBlT+B5+tP7u62kKjGb72rM=;
+        b=lsF+0iSc1725jkvE+oPZQUj+/LX0xPiR3ZeN7rBFUjphKQYn9ZuCXYsDuz25+k/W3O
+         Qh3C819RdjQBXHcf0eLtT21ZmwkKYVU8Fnesqid07QfAUmQ6Pb41u67PX6dZuUwtTOXl
+         RT6j7SBRYW09SIloICjI8dd9w4lDIDhX7F+JnBMaLBQZPRcdn5XXh7CVQmNsQ7qA3hsp
+         cGOIr6LPUxEOR5WfUdGsMTdMzT5l8Nbq4JTqpMgULKSwqC71/6zLvym5eOEOWg5dZpN9
+         ybs54xxGaBbC7Scem9ivaPhZ2xSk2vLfvtqf5YFFJBMhciY/7dXE3F5sHjbEZZCriqDM
+         Ow7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=c7ylYkXg+Wq4kHcwpXY8Kwg0nOcNAwjZ1t+TgIWVj0g=;
-        b=FboFh26m/6EtX6JPsBhNnybqGFuFrDAZ5iwutwXlwOr/fKS/hFUMaF7FYiujXlNBJB
-         dGcRwzxZSEN+1v7FEOt0jT1duZNaF/2xyGrJ3I/EkVTqTHiowRjXAoApwj5AJYBTmw0l
-         v/FlIPbjNyofc00CeapRQM0IeWIiVKbWAxWMyqZTbfkmDu89itElT8bCDkei2RuT5ham
-         ljEW8nKP6nOKaUPqhss2EYdkHMpHMMEnSCH5M0HoQfzAdx1D7ugR5TdzY63YbsY4G+WN
-         vV6/WnIXjeSbTli+6jVc2nIfRvwW2qiOvniBIj6t+sOEF0pBtalx58MxOhutGZbbOzbw
-         209A==
-X-Gm-Message-State: AOAM532bND4yoM7iU9Pir2ODxDM+jF2q1jqeSwgZOjqp8WtD3/KPRgWB
-        JRmimsw0LatHwQXSJwYf6t010Yn552sG
-X-Google-Smtp-Source: ABdhPJwPXaWCa4Cb02joPe2aCoMmiI1wZRGVQGLkuRk8EM0gjYdERWm0VQ5BCUxPJQcAyzsiYCkJoImUCSpc
+        bh=QjIzsr3Sehmkc2TdWVcrCBlT+B5+tP7u62kKjGb72rM=;
+        b=a+EmoBN9seNlWFrxV9FqjJpU35RzmVH/TYwTfI84DBmbfERaVCgwVu3wqRjHY+l85f
+         jI0OW3asjrDqmK/smxrXxULBliZZst+C6wWETpb8jh8LpsdkwVXS3DoNs0En03ZY+ai8
+         Fp6r8CdOhusp9OAc6R394/buZsQBDeUZRzEug9IQrhlk1YP9S3LbrFe9DjnVG14QpcAQ
+         7TK8Uh0JdSCEf8au6ryESn15aMhq8eYdfCrnvI2B2FSNH2jFgY3Q1IYlQc+SlEPwrIG8
+         pLykeFf1c+IDBR27DwhMcV4HPHf3jnujHR/qKBc+qdGbLayvww3uynS0jMt9aEg1FV6A
+         CBKA==
+X-Gm-Message-State: AOAM532lYUoR9HwPyWFqYzfkkxgeQhVLkN9gMD4RTzh6/PHgV+mmOXrX
+        czP0zZRTN3yuUrw8MIZi2S5HJFaiE+hh
+X-Google-Smtp-Source: ABdhPJzdfhj+2uKZobM6ftDJrihixmL9V+TCb5Y9sbxW521vO8iACiV5WVJAEmC4vFsSw8SIcsP7PIhXLXBt
 Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a63:f64c:: with SMTP id
- u12mr20717483pgj.325.1605928290850; Fri, 20 Nov 2020 19:11:30 -0800 (PST)
-Date:   Fri, 20 Nov 2020 19:11:18 -0800
+ (user=irogers job=sendgmr) by 2002:a63:8c7:: with SMTP id 190mr19430078pgi.366.1605928292823;
+ Fri, 20 Nov 2020 19:11:32 -0800 (PST)
+Date:   Fri, 20 Nov 2020 19:11:19 -0800
 In-Reply-To: <20201121031119.3554769-1-irogers@google.com>
-Message-Id: <20201121031119.3554769-5-irogers@google.com>
+Message-Id: <20201121031119.3554769-6-irogers@google.com>
 Mime-Version: 1.0
 References: <20201121031119.3554769-1-irogers@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v3 4/5] perf metric: Add utilities to work on ids map.
+Subject: [PATCH v3 5/5] perf metric: Don't compute unused events.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -73,230 +73,577 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add utilities to new/free an ids hashmap, as well as to union. Add
-testing of the union. Unioning hashmaps will be used when parsing the
-metric, if a value is known then the hashmap is unnecessary, otherwise
-we need to union together all the event ids to compute their values for
-reporting.
+For a metric like:
+  EVENT1 if #smt_on else EVENT2
+
+currently EVENT1 and EVENT2 will be measured and then when the metric is
+reported EVENT1 or EVENT2 will be printed depending on the value from
+smt_on() during the expr parsing. Computing both events is unnecessary and
+can lead to multiplexing as discussed in this thread:
+https://lore.kernel.org/lkml/20201110100346.2527031-1-irogers@google.com/
+
+This change modifies the expression parsing code by:
+ - getting rid of the "other" parsing and introducing a boolean argument
+   to say whether ids should be computed or not.
+ - expressions are changed so that a pair of value and ids are returned.
+ - when computing the metric value the ids are unused.
+ - when computing the ids, constant values and smt_on are assigned to
+   the value.
+ - If the value is from an event ID then the event is added to the ids
+   hashmap and the value set to NAN.
+ - Typically operators union IDs for their inputs and set the value to
+   NAN, however, if the inputs are constant then these are computed and
+   propagated as the value.
+ - If the input is constant to certain operators like:
+ IDS1 if CONST else IDS2
+   then the result will be either IDS1 or IDS2 depending on CONST (which
+   may be evaluated from an entire expression), and so IDS1 or IDS2 may
+   be discarded avoiding events from being programmed.
+ - The ids at the end of parsing are added to the context.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/expr.c | 47 ++++++++++++++++++++++
- tools/perf/util/expr.c  | 87 +++++++++++++++++++++++++++++++++++++++--
- tools/perf/util/expr.h  |  9 +++++
- 3 files changed, 139 insertions(+), 4 deletions(-)
+ tools/perf/tests/expr.c |  17 ++
+ tools/perf/util/expr.c  |   9 +-
+ tools/perf/util/expr.h  |   1 -
+ tools/perf/util/expr.l  |   9 -
+ tools/perf/util/expr.y  | 373 ++++++++++++++++++++++++++++++++--------
+ 5 files changed, 319 insertions(+), 90 deletions(-)
 
 diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-index 7ccb97c73347..1c881bea7fca 100644
+index 1c881bea7fca..5cab5960b257 100644
 --- a/tools/perf/tests/expr.c
 +++ b/tools/perf/tests/expr.c
-@@ -6,6 +6,51 @@
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include "util/debug.h"
+ #include "util/expr.h"
++#include "util/smt.h"
+ #include "tests.h"
+ #include <stdlib.h>
  #include <string.h>
- #include <linux/zalloc.h>
+@@ -132,6 +133,22 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+ 	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "EVENT2,param=3/",
+ 						    (void **)&val_ptr));
  
-+static int test_ids_union(void)
-+{
-+	struct hashmap *ids1, *ids2;
++	/* Only EVENT1 or EVENT2 need be measured depending on the value of smt_on. */
++	expr__ctx_clear(ctx);
++	TEST_ASSERT_VAL("find ids",
++			expr__find_ids("EVENT1 if #smt_on else EVENT2",
++				NULL, ctx, 0) == 0);
++	TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 1);
++	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids,
++						  smt_on() ? "EVENT1" : "EVENT2",
++						  (void **)&val_ptr));
 +
-+	/* Empty union. */
-+	ids1 = ids__new();
-+	TEST_ASSERT_VAL("ids__new", ids1);
-+	ids2 = ids__new();
-+	TEST_ASSERT_VAL("ids__new", ids2);
-+
-+	ids1 = ids__union(ids1, ids2);
-+	TEST_ASSERT_EQUAL("union", (int)hashmap__size(ids1), 0);
-+
-+	/* Union {foo, bar} against {}. */
-+	ids2 = ids__new();
-+	TEST_ASSERT_VAL("ids__new", ids2);
-+
-+	TEST_ASSERT_EQUAL("ids__insert", ids__insert(ids1, strdup("foo"), NULL), 0);
-+	TEST_ASSERT_EQUAL("ids__insert", ids__insert(ids1, strdup("bar"), NULL), 0);
-+
-+	ids1 = ids__union(ids1, ids2);
-+	TEST_ASSERT_EQUAL("union", (int)hashmap__size(ids1), 2);
-+
-+	/* Union {foo, bar} against {foo}. */
-+	ids2 = ids__new();
-+	TEST_ASSERT_VAL("ids__new", ids2);
-+	TEST_ASSERT_EQUAL("ids__insert", ids__insert(ids2, strdup("foo"), NULL), 0);
-+
-+	ids1 = ids__union(ids1, ids2);
-+	TEST_ASSERT_EQUAL("union", (int)hashmap__size(ids1), 2);
-+
-+	/* Union {foo, bar} against {bar,baz}. */
-+	ids2 = ids__new();
-+	TEST_ASSERT_VAL("ids__new", ids2);
-+	TEST_ASSERT_EQUAL("ids__insert", ids__insert(ids2, strdup("bar"), NULL), 0);
-+	TEST_ASSERT_EQUAL("ids__insert", ids__insert(ids2, strdup("baz"), NULL), 0);
-+
-+	ids1 = ids__union(ids1, ids2);
-+	TEST_ASSERT_EQUAL("union", (int)hashmap__size(ids1), 3);
-+
-+	ids__free(ids1);
-+
-+	return 0;
-+}
-+
- static int test(struct expr_parse_ctx *ctx, const char *e, double val2)
- {
- 	double val;
-@@ -24,6 +69,8 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
- 	int ret;
- 	struct expr_parse_ctx *ctx;
++	/* The expression is a constant 1.0 without needing to evaluate EVENT1. */
++	expr__ctx_clear(ctx);
++	TEST_ASSERT_VAL("find ids",
++			expr__find_ids("1.0 if EVENT1 > 100.0 else 1.0",
++				NULL, ctx, 0) == 0);
++	TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 0);
+ 	expr__ctx_free(ctx);
  
-+	TEST_ASSERT_EQUAL("ids_union", test_ids_union(), 0);
-+
- 	ctx = expr__ctx_new();
- 	TEST_ASSERT_VAL("expr__ctx_new", ctx);
- 	expr__add_id_val(ctx, strdup("FOO"), 1);
+ 	return 0;
 diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-index a248d14882cc..1adb6cd202e0 100644
+index 1adb6cd202e0..28aaa50c6c68 100644
 --- a/tools/perf/util/expr.c
 +++ b/tools/perf/util/expr.c
-@@ -59,8 +59,48 @@ static bool key_equal(const void *key1, const void *key2,
- 	return !strcmp((const char *)key1, (const char *)key2);
+@@ -329,10 +329,9 @@ void expr__ctx_free(struct expr_parse_ctx *ctx)
+ 
+ static int
+ __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
+-	      int start, int runtime)
++	      bool compute_ids, int runtime)
+ {
+ 	struct expr_scanner_ctx scanner_ctx = {
+-		.start_token = start,
+ 		.runtime = runtime,
+ 	};
+ 	YY_BUFFER_STATE buffer;
+@@ -352,7 +351,7 @@ __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
+ 	expr_set_debug(1, scanner);
+ #endif
+ 
+-	ret = expr_parse(val, ctx, scanner);
++	ret = expr_parse(val, ctx, compute_ids, scanner);
+ 
+ 	expr__flush_buffer(buffer, scanner);
+ 	expr__delete_buffer(buffer, scanner);
+@@ -363,13 +362,13 @@ __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
+ int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
+ 		const char *expr, int runtime)
+ {
+-	return __expr__parse(final_val, ctx, expr, EXPR_PARSE, runtime) ? -1 : 0;
++	return __expr__parse(final_val, ctx, expr, /*compute_ids=*/false, runtime) ? -1 : 0;
  }
  
--/* Caller must make sure id is allocated */
--int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
-+struct hashmap *ids__new(void)
-+{
-+	return hashmap__new(key_hash, key_equal, NULL);
-+}
-+
-+void ids__free(struct hashmap *ids)
-+{
-+	struct hashmap_entry *cur;
-+	size_t bkt;
-+
-+	if (ids == NULL)
-+		return;
-+
-+#ifdef PARSER_DEBUG
-+	fprintf(stderr, "freeing ids: ");
-+	ids__print(ids);
-+	fprintf(stderr, "\n");
-+#endif
-+
-+	hashmap__for_each_entry(ids, cur, bkt) {
-+		free((char *)cur->key);
-+		free(cur->value);
-+	}
-+
-+	hashmap__free(ids);
-+}
-+
-+void ids__print(struct hashmap *ids)
-+{
-+	size_t bkt;
-+	struct hashmap_entry *cur;
-+
-+	if (!ids)
-+		return;
-+
-+	hashmap__for_each_entry(ids, cur, bkt) {
-+		fprintf(stderr, "key:%s, ", (const char *)cur->key);
-+	}
-+}
-+
-+int ids__insert(struct hashmap *ids, const char *id,
-+		struct expr_id *parent)
+ int expr__find_ids(const char *expr, const char *one,
+ 		   struct expr_parse_ctx *ctx, int runtime)
  {
- 	struct expr_id_data *data_ptr = NULL, *old_data = NULL;
- 	char *old_key = NULL;
-@@ -70,10 +110,10 @@ int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
- 	if (!data_ptr)
- 		return -ENOMEM;
+-	int ret = __expr__parse(NULL, ctx, expr, EXPR_OTHER, runtime);
++	int ret = __expr__parse(NULL, ctx, expr, /*compute_ids=*/true, runtime);
  
--	data_ptr->parent = ctx->parent;
-+	data_ptr->parent = parent;
- 	data_ptr->kind = EXPR_ID_DATA__PARENT;
- 
--	ret = hashmap__set(ctx->ids, id, data_ptr,
-+	ret = hashmap__set(ids, id, data_ptr,
- 			   (const void **)&old_key, (void **)&old_data);
- 	if (ret)
- 		free(data_ptr);
-@@ -82,6 +122,45 @@ int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
- 	return ret;
- }
- 
-+struct hashmap *ids__union(struct hashmap *ids1, struct hashmap *ids2)
-+{
-+	size_t bkt;
-+	struct hashmap_entry *cur;
-+	int ret;
-+	struct expr_id_data *old_data = NULL;
-+	char *old_key = NULL;
-+
-+	if (!ids1)
-+		return ids2;
-+
-+	if (!ids2)
-+		return ids1;
-+
-+	if (hashmap__size(ids1) <  hashmap__size(ids2)) {
-+		struct hashmap *tmp = ids1;
-+
-+		ids1 = ids2;
-+		ids2 = tmp;
-+	}
-+	hashmap__for_each_entry(ids2, cur, bkt) {
-+		ret = hashmap__set(ids1, cur->key, cur->value,
-+				(const void **)&old_key, (void **)&old_data);
-+		free(old_key);
-+		free(old_data);
-+
-+		if (ret)
-+			break;
-+	}
-+	hashmap__free(ids2);
-+	return ids1;
-+}
-+
-+/* Caller must make sure id is allocated */
-+int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
-+{
-+	return ids__insert(ctx->ids, id, ctx->parent);
-+}
-+
- /* Caller must make sure id is allocated */
- int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val)
- {
+ 	if (one)
+ 		expr__del_id(ctx, one);
 diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
-index 955d5adb7ca4..62d3ae5ddfba 100644
+index 62d3ae5ddfba..cefeb2c8d85e 100644
 --- a/tools/perf/util/expr.h
 +++ b/tools/perf/util/expr.h
-@@ -30,9 +30,16 @@ struct expr_scanner_ctx {
+@@ -26,7 +26,6 @@ struct expr_parse_ctx {
+ struct expr_id_data;
+ 
+ struct expr_scanner_ctx {
+-	int start_token;
  	int runtime;
  };
  
-+struct hashmap *ids__new(void);
-+void ids__free(struct hashmap *ids);
-+void ids__print(struct hashmap *ids);
-+int ids__insert(struct hashmap *ids, const char *id, struct expr_id *parent);
-+struct hashmap *ids__union(struct hashmap *ids1, struct hashmap *ids2);
-+
- struct expr_parse_ctx *expr__ctx_new(void);
- void expr__ctx_clear(struct expr_parse_ctx *ctx);
- void expr__ctx_free(struct expr_parse_ctx *ctx);
-+
- void expr__del_id(struct expr_parse_ctx *ctx, const char *id);
- int expr__add_id(struct expr_parse_ctx *ctx, const char *id);
- int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val);
-@@ -41,8 +48,10 @@ int expr__get_id(struct expr_parse_ctx *ctx, const char *id,
- 		 struct expr_id_data **data);
- int expr__resolve_id(struct expr_parse_ctx *ctx, const char *id,
- 		     struct expr_id_data **datap);
-+
- int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
- 		const char *expr, int runtime);
-+
- int expr__find_ids(const char *expr, const char *one,
- 		struct expr_parse_ctx *ids, int runtime);
+diff --git a/tools/perf/util/expr.l b/tools/perf/util/expr.l
+index 13e5e3c75f56..702fdf6456ca 100644
+--- a/tools/perf/util/expr.l
++++ b/tools/perf/util/expr.l
+@@ -91,15 +91,6 @@ symbol		({spec}|{sym})+
+ %%
+ 	struct expr_scanner_ctx *sctx = expr_get_extra(yyscanner);
  
+-	{
+-		int start_token = sctx->start_token;
+-
+-		if (sctx->start_token) {
+-			sctx->start_token = 0;
+-			return start_token;
+-		}
+-	}
+-
+ d_ratio		{ return D_RATIO; }
+ max		{ return MAX; }
+ min		{ return MIN; }
+diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
+index 41c9cd4efadd..7355beafb874 100644
+--- a/tools/perf/util/expr.y
++++ b/tools/perf/util/expr.y
+@@ -1,43 +1,45 @@
+ /* Simple expression parser */
+ %{
+ #define YYDEBUG 1
++#include <assert.h>
+ #include <math.h>
+-#include <stdio.h>
+-#include "util.h"
+ #include "util/debug.h"
+-#include <stdlib.h> // strtod()
++#include "smt.h"
+ #define IN_EXPR_Y 1
+ #include "expr.h"
+-#include "smt.h"
+-#include <string.h>
+-
+-static double d_ratio(double val0, double val1)
+-{
+-	if (val1 == 0) {
+-		return 0;
+-	}
+-	return  val0 / val1;
+-}
+-
+ %}
+ 
+ %define api.pure full
+ 
+ %parse-param { double *final_val }
+ %parse-param { struct expr_parse_ctx *ctx }
++%parse-param { bool compute_ids }
+ %parse-param {void *scanner}
+ %lex-param {void* scanner}
+ 
+ %union {
+ 	double	 num;
+ 	char	*str;
++	struct ids {
++		/* When creating ids, holds the working set of event ids. */
++		struct hashmap *ids;
++		/*
++		 * The metric value. When not creating ids this is the value
++		 * read from a counter, a constant or some computed value. When
++		 * creating ids the value is either a constant or NAN. NAN is
++		 * used as a special "set of all values" case. Consider:
++		 *   1.0 if event1 > 50.0 else 2.0
++		 * The set of values {1.0, 2.0} is possible from this
++		 * expression, but we conservatively use NAN to say any value is
++		 * possible. By tracking constants an expression like:
++		 *   1.0 if event1 > 50.0 else 1.0
++		 * can avoid computing event1.
++		 */
++		double val;
++	} ids;
+ }
+ 
+-%token EXPR_PARSE EXPR_OTHER EXPR_ERROR
+-%token <num> NUMBER
+-%token <str> ID
+-%destructor { free ($$); } <str>
+-%token MIN MAX IF ELSE SMT_ON D_RATIO
++%token ID NUMBER MIN MAX IF ELSE SMT_ON D_RATIO EXPR_ERROR
+ %left MIN MAX IF
+ %left '|'
+ %left '^'
+@@ -46,11 +48,16 @@ static double d_ratio(double val0, double val1)
+ %left '-' '+'
+ %left '*' '/' '%'
+ %left NEG NOT
+-%type <num> expr if_expr
++%type <num> NUMBER
++%type <str> ID
++%destructor { free ($$); } <str>
++%type <ids> expr if_expr
++%destructor { ids__free($$.ids); } <ids>
+ 
+ %{
+ static void expr_error(double *final_val __maybe_unused,
+ 		       struct expr_parse_ctx *ctx __maybe_unused,
++		       bool compute_ids __maybe_unused,
+ 		       void *scanner,
+ 		       const char *s)
+ {
+@@ -60,67 +67,283 @@ static void expr_error(double *final_val __maybe_unused,
+ %}
+ %%
+ 
+-start:
+-EXPR_PARSE all_expr
+-|
+-EXPR_OTHER all_other
++start: if_expr
++{
++	if (compute_ids)
++		ctx->ids = ids__union($1.ids, ctx->ids);
+ 
+-all_other: all_other other
+-|
++	if (final_val)
++		*final_val = $1.val;
++}
++;
+ 
+-other: ID
++if_expr: expr IF expr ELSE expr
+ {
+-	expr__add_id(ctx, $1);
++	if (fpclassify($3.val) == FP_ZERO) {
++		/*
++		 * The IF expression evaluated to 0 so treat as false, take the
++		 * ELSE and discard everything else.
++		 */
++		$$.val = $5.val;
++		$$.ids = $5.ids;
++		ids__free($1.ids);
++		ids__free($3.ids);
++	} else if (!compute_ids || isfinite($3.val)) {
++		/* The expression is true, NAN, etc. */
++		$$.val = $1.val;
++		$$.ids = $1.ids;
++		ids__free($3.ids);
++		ids__free($5.ids);
++	} else if ($1.val == $5.val) {
++		/* LHS == RHS, and not NAN, so no need to evaluate expr. */
++		$$.ids = ids__union($1.ids, $5.ids);
++		$$.val = NAN;
++	} else {
++		/*
++		 * Value is either the LHS, RHS and we need the IF expression to
++		 * compute it.
++		 */
++		$$.ids = ids__union(ids__union($1.ids, $3.ids), $5.ids);
++		$$.val = NAN;
++	}
+ }
+-|
+-MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')' | ','
+-|
+-'<' | '>' | D_RATIO
++| expr
++;
+ 
+-all_expr: if_expr			{ *final_val = $1; }
+-	;
+-
+-if_expr:
+-	expr IF expr ELSE expr { $$ = $3 ? $1 : $5; }
+-	| expr
+-	;
+-
+-expr:	  NUMBER
+-	| ID			{
+-					struct expr_id_data *data;
++expr: NUMBER
++{
++	$$.val = $1;
++	$$.ids = NULL;
++}
++| ID
++{
++	if (!compute_ids) {
++		/*
++		 * Compute the event's value from ID. If the ID isn't known then
++		 * it isn't used to compute the formula so set to NAN.
++		 */
++		struct expr_id_data *data;
+ 
+-					$$ = NAN;
+-					if (expr__resolve_id(ctx, $1, &data) == 0)
+-						$$ = expr_id_data__value(data);
++		$$.val = NAN;
++		if (expr__resolve_id(ctx, $1, &data) == 0)
++			$$.val = expr_id_data__value(data);
+ 
+-					free($1);
+-				}
+-	| expr '|' expr		{ $$ = (long)$1 | (long)$3; }
+-	| expr '&' expr		{ $$ = (long)$1 & (long)$3; }
+-	| expr '^' expr		{ $$ = (long)$1 ^ (long)$3; }
+-	| expr '<' expr		{ $$ = $1 < $3; }
+-	| expr '>' expr		{ $$ = $1 > $3; }
+-	| expr '+' expr		{ $$ = $1 + $3; }
+-	| expr '-' expr		{ $$ = $1 - $3; }
+-	| expr '*' expr		{ $$ = $1 * $3; }
+-	| expr '/' expr		{ if ($3 == 0) {
+-					pr_debug("division by zero\n");
+-					YYABORT;
+-				  }
+-				  $$ = $1 / $3;
+-	                        }
+-	| expr '%' expr		{ if ((long)$3 == 0) {
+-					pr_debug("division by zero\n");
+-					YYABORT;
+-				  }
+-				  $$ = (long)$1 % (long)$3;
+-	                        }
+-	| '-' expr %prec NEG	{ $$ = -$2; }
+-	| '(' if_expr ')'	{ $$ = $2; }
+-	| MIN '(' expr ',' expr ')' { $$ = $3 < $5 ? $3 : $5; }
+-	| MAX '(' expr ',' expr ')' { $$ = $3 > $5 ? $3 : $5; }
+-	| SMT_ON		 { $$ = smt_on() > 0; }
+-	| D_RATIO '(' expr ',' expr ')' { $$ = d_ratio($3,$5); }
+-	;
++		$$.ids = NULL;
++		free($1);
++	} else {
++		/*
++		 * Set the value to NAN to show that any value is possible when
++		 * the event is computed. Create a set of just the ID.
++		 */
++		$$.val = NAN;
++		$$.ids = ids__new();
++		if (!$$.ids || ids__insert($$.ids, $1, ctx->parent))
++			YYABORT;
++	}
++}
++| expr '|' expr
++{
++	if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
++		assert($1.ids == NULL);
++		assert($3.ids == NULL);
++		$$.val = (long)$1.val | (long)$3.val;
++		$$.ids = NULL;
++	} else {
++		/*
++		 * LHS or RHS needs to be computed from event IDs, consequently
++		 * so does this expression. Set val to NAN to show that the set
++		 * of all values is possible, the events are the union of those
++		 * on the LHS and RHS.
++		 */
++		$$.val = NAN;
++		$$.ids = ids__union($1.ids, $3.ids);
++	}
++}
++| expr '&' expr
++{
++	if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
++		assert($1.ids == NULL);
++		assert($3.ids == NULL);
++		$$.val = (long)$1.val & (long)$3.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($1.ids, $3.ids);
++	}
++}
++| expr '^' expr
++{
++	if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
++		assert($1.ids == NULL);
++		assert($3.ids == NULL);
++		$$.val = (long)$1.val ^ (long)$3.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($1.ids, $3.ids);
++	}
++}
++| expr '<' expr
++{
++	if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
++		assert($1.ids == NULL);
++		assert($3.ids == NULL);
++		$$.val = $1.val < $3.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($1.ids, $3.ids);
++	}
++}
++| expr '>' expr
++{
++	if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
++		assert($1.ids == NULL);
++		assert($3.ids == NULL);
++		$$.val = $1.val > $3.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($1.ids, $3.ids);
++	}
++}
++| expr '+' expr
++{
++	if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
++		assert($1.ids == NULL);
++		assert($3.ids == NULL);
++		$$.val = $1.val + $3.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($1.ids, $3.ids);
++	}
++}
++| expr '-' expr
++{
++	if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
++		assert($1.ids == NULL);
++		assert($3.ids == NULL);
++		$$.val = $1.val - $3.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($1.ids, $3.ids);
++	}
++}
++| expr '*' expr
++{
++	if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
++		assert($1.ids == NULL);
++		assert($3.ids == NULL);
++		$$.val = $1.val * $3.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($1.ids, $3.ids);
++	}
++}
++| expr '/' expr
++{
++	if (fpclassify($3.val) == FP_ZERO) {
++		pr_debug("division by zero\n");
++		YYABORT;
++	} else if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
++		assert($1.ids == NULL);
++		assert($3.ids == NULL);
++		$$.val = $1.val / $3.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($1.ids, $3.ids);
++	}
++}
++| D_RATIO '(' expr ',' expr ')'
++{
++	if (fpclassify($5.val) == FP_ZERO) {
++		/*
++		 * Division by constant zero always yields zero and no events
++		 * are necessary.
++		 */
++		assert($5.ids == NULL);
++		$$.val = 0.0;
++		$$.ids = NULL;
++		ids__free($3.ids);
++	} else if (!compute_ids || (isfinite($3.val) && isfinite($5.val))) {
++		assert($3.ids == NULL);
++		assert($5.ids == NULL);
++		$$.val = $3.val / $5.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($3.ids, $5.ids);
++	}
++}
++| expr '%' expr
++{
++	if (fpclassify($3.val) == FP_ZERO) {
++		pr_debug("division by zero\n");
++		YYABORT;
++	} else if (!compute_ids || (isfinite($1.val) && isfinite($3.val))) {
++		assert($1.ids == NULL);
++		assert($3.ids == NULL);
++		$$.val = (long)$1.val % (long)$3.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($1.ids, $3.ids);
++	}
++}
++| '-' expr %prec NEG
++{
++	$$.val = -$2.val;
++	$$.ids = $2.ids;
++}
++| '(' if_expr ')'
++{
++	$$ = $2;
++}
++| MIN '(' expr ',' expr ')'
++{
++	if (!compute_ids || (isfinite($3.val) && isfinite($5.val))) {
++		assert($3.ids == NULL);
++		assert($5.ids == NULL);
++		$$.val = $3.val < $5.val ? $3.val : $5.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($3.ids, $5.ids);
++	}
++}
++| MAX '(' expr ',' expr ')'
++{
++	if (!compute_ids || (isfinite($3.val) && isfinite($5.val))) {
++		assert($3.ids == NULL);
++		assert($5.ids == NULL);
++		$$.val = $3.val > $5.val ? $3.val : $5.val;
++		$$.ids = NULL;
++	} else {
++		/* LHS and/or RHS need computing from event IDs so union. */
++		$$.val = NAN;
++		$$.ids = ids__union($3.ids, $5.ids);
++	}
++}
++| SMT_ON
++{
++	$$.val = smt_on() > 0 ? 1.0 : 0.0;
++	$$.ids = NULL;
++}
++;
+ 
+ %%
 -- 
 2.29.2.454.gaff20da3a2-goog
 
