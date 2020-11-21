@@ -2,68 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949B52BBB0A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C102BBB28
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728492AbgKUAd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 19:33:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47094 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728275AbgKUAd4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:33:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605918835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=x+2FVCoUrDqnhADckFSP/psuNV4yeinap0Vncl0UAfQ=;
-        b=JOV2WzfgyDTZPhG2ZVgC264yB611kDoDgpgjSe/76OzXOmg7fI9UjTloY+2Lv633oIW+uN
-        1mNq8jpF/UAYval/4UpXkS2Oeg4SKnVB7dfwKZ+MLK0XU+q5U4HBHJK3QT1h0OTBgWmS58
-        f6ytoDCBzcbfpezgN0vy00MtRI04ymg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-519-rXNqsWTFP7K37anzyHzFAA-1; Fri, 20 Nov 2020 19:33:50 -0500
-X-MC-Unique: rXNqsWTFP7K37anzyHzFAA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728881AbgKUAhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 19:37:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727773AbgKUAhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 19:37:22 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76E705B380;
-        Sat, 21 Nov 2020 00:33:35 +0000 (UTC)
-Received: from localhost.localdomain.com (unknown [10.66.60.98])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D936C10013C1;
-        Sat, 21 Nov 2020 00:33:33 +0000 (UTC)
-From:   XiaoLi Feng <xifeng@redhat.com>
-To:     linux-kernel@vger.kernel.org, ira.weiny@intel.com,
-        darrick.wong@oracle.com
-Cc:     Xiaoli Feng <fengxiaoli0714@gmail.com>
-Subject: [PATCH] fs/stat: set attributes_mask for STATX_ATTR_DAX
-Date:   Sat, 21 Nov 2020 08:33:31 +0800
-Message-Id: <20201121003331.21342-1-xifeng@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CFFA23A65;
+        Sat, 21 Nov 2020 00:37:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605919041;
+        bh=tLZavfhr0ifkbVL3g4BOQSGiy46EeE9naID7vgrT4AM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=xo6cCdx64X8RXPhygMb7IY5bI0Nu57rVwu3eXiOHT+l6jgYjqQl/PATvcq8lacYFh
+         11djyQXAC/3fOyrO8w32SBx9vAJSlWi92mLqDifdwcmNi9LQQ5N7XQrsw4JYEj0rm9
+         AbgKVRDAbuk6SBBTb2JsL6sFpl6rRrmQZ+kYkPUk=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id CB9953522A6E; Fri, 20 Nov 2020 16:37:20 -0800 (PST)
+Date:   Fri, 20 Nov 2020 16:37:20 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH RFC tip/core/rcu 3/5] srcu: Provide internal interface to
+ start a Tree SRCU grace period
+Message-ID: <20201121003720.GQ1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
+ <20201117004052.14758-3-paulmck@kernel.org>
+ <69c05cd0-8187-49a7-5b2d-1a10ba42fa44@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <69c05cd0-8187-49a7-5b2d-1a10ba42fa44@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoli Feng <fengxiaoli0714@gmail.com>
+On Fri, Nov 20, 2020 at 05:06:50PM +0530, Neeraj Upadhyay wrote:
+> 
+> 
+> On 11/17/2020 6:10 AM, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > There is a need for a polling interface for SRCU grace periods.
+> > This polling needs to initiate an SRCU grace period without having
+> > to queue (and manage) a callback.  This commit therefore splits the
+> > Tree SRCU __call_srcu() function into callback-initialization and
+> > queuing/start-grace-period portions, with the latter in a new function
+> > named srcu_gp_start_if_needed().  This function may be passed a NULL
+> > callback pointer, in which case it will refrain from queuing anything.
+> > 
+> > Why have the new function mess with queuing?  Locking considerations,
+> > of course!
+> > 
+> > Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+> > Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> 
+> Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 
-keep attributes and attributes_mask are consistent for
-STATX_ATTR_DAX.
----
- fs/stat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I applied both Reviewed-bys, thank you!
 
-diff --git a/fs/stat.c b/fs/stat.c
-index dacecdda2e79..914a61d256b0 100644
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -82,7 +82,7 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
- 
- 	if (IS_DAX(inode))
- 		stat->attributes |= STATX_ATTR_DAX;
--
-+	stat->attributes_mask |= STATX_ATTR_DAX;
- 	if (inode->i_op->getattr)
- 		return inode->i_op->getattr(path, stat, request_mask,
- 					    query_flags);
--- 
-2.18.1
+							Thanx, Paul
 
+> Thanks
+> Neeraj
+> 
+> >   kernel/rcu/srcutree.c | 66 +++++++++++++++++++++++++++++----------------------
+> >   1 file changed, 37 insertions(+), 29 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index 79b7081..d930ece 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -808,6 +808,42 @@ static void srcu_leak_callback(struct rcu_head *rhp)
+> >   }
+> >   /*
+> > + * Start an SRCU grace period, and also queue the callback if non-NULL.
+> > + */
+> > +static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rhp, bool do_norm)
+> > +{
+> > +	unsigned long flags;
+> > +	int idx;
+> > +	bool needexp = false;
+> > +	bool needgp = false;
+> > +	unsigned long s;
+> > +	struct srcu_data *sdp;
+> > +
+> > +	idx = srcu_read_lock(ssp);
+> > +	sdp = raw_cpu_ptr(ssp->sda);
+> > +	spin_lock_irqsave_rcu_node(sdp, flags);
+> > +	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+> > +	rcu_segcblist_advance(&sdp->srcu_cblist,
+> > +			      rcu_seq_current(&ssp->srcu_gp_seq));
+> > +	s = rcu_seq_snap(&ssp->srcu_gp_seq);
+> > +	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist, s);
+> > +	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
+> > +		sdp->srcu_gp_seq_needed = s;
+> > +		needgp = true;
+> > +	}
+> > +	if (!do_norm && ULONG_CMP_LT(sdp->srcu_gp_seq_needed_exp, s)) {
+> > +		sdp->srcu_gp_seq_needed_exp = s;
+> > +		needexp = true;
+> > +	}
+> > +	spin_unlock_irqrestore_rcu_node(sdp, flags);
+> > +	if (needgp)
+> > +		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
+> > +	else if (needexp)
+> > +		srcu_funnel_exp_start(ssp, sdp->mynode, s);
+> > +	srcu_read_unlock(ssp, idx);
+> > +}
+> > +
+> > +/*
+> >    * Enqueue an SRCU callback on the srcu_data structure associated with
+> >    * the current CPU and the specified srcu_struct structure, initiating
+> >    * grace-period processing if it is not already running.
+> > @@ -838,13 +874,6 @@ static void srcu_leak_callback(struct rcu_head *rhp)
+> >   static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+> >   			rcu_callback_t func, bool do_norm)
+> >   {
+> > -	unsigned long flags;
+> > -	int idx;
+> > -	bool needexp = false;
+> > -	bool needgp = false;
+> > -	unsigned long s;
+> > -	struct srcu_data *sdp;
+> > -
+> >   	check_init_srcu_struct(ssp);
+> >   	if (debug_rcu_head_queue(rhp)) {
+> >   		/* Probable double call_srcu(), so leak the callback. */
+> > @@ -853,28 +882,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+> >   		return;
+> >   	}
+> >   	rhp->func = func;
+> > -	idx = srcu_read_lock(ssp);
+> > -	sdp = raw_cpu_ptr(ssp->sda);
+> > -	spin_lock_irqsave_rcu_node(sdp, flags);
+> > -	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+> > -	rcu_segcblist_advance(&sdp->srcu_cblist,
+> > -			      rcu_seq_current(&ssp->srcu_gp_seq));
+> > -	s = rcu_seq_snap(&ssp->srcu_gp_seq);
+> > -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist, s);
+> > -	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
+> > -		sdp->srcu_gp_seq_needed = s;
+> > -		needgp = true;
+> > -	}
+> > -	if (!do_norm && ULONG_CMP_LT(sdp->srcu_gp_seq_needed_exp, s)) {
+> > -		sdp->srcu_gp_seq_needed_exp = s;
+> > -		needexp = true;
+> > -	}
+> > -	spin_unlock_irqrestore_rcu_node(sdp, flags);
+> > -	if (needgp)
+> > -		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
+> > -	else if (needexp)
+> > -		srcu_funnel_exp_start(ssp, sdp->mynode, s);
+> > -	srcu_read_unlock(ssp, idx);
+> > +	srcu_gp_start_if_needed(ssp, rhp, do_norm);
+> >   }
+> >   /**
+> > 
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
+> the Code Aurora Forum, hosted by The Linux Foundation
