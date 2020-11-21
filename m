@@ -2,101 +2,372 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D362BBBB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 02:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C042BBBB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 03:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgKUB4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 20:56:13 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7963 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgKUB4N (ORCPT
+        id S1726189AbgKUCAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 21:00:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725820AbgKUCAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 20:56:13 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CdGj92yymzhdwG;
-        Sat, 21 Nov 2020 09:55:57 +0800 (CST)
-Received: from [127.0.0.1] (10.74.149.191) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Sat, 21 Nov 2020
- 09:56:03 +0800
-Subject: Re: [RFC net-next 1/2] ethtool: add support for controling the type
- of adaptive coalescing
-To:     Michal Kubecek <mkubecek@suse.cz>, Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <kuba@kernel.org>
-References: <1605758050-21061-1-git-send-email-tanhuazhong@huawei.com>
- <1605758050-21061-2-git-send-email-tanhuazhong@huawei.com>
- <20201119041557.GR1804098@lunn.ch>
- <e43890d1-5596-3439-f4a7-d704c069a035@huawei.com>
- <20201119220203.fv2uluoeekyoyxrv@lion.mk-sys.cz>
- <8e9ba4c4-3ef4-f8bc-ab2f-92d695f62f12@huawei.com>
- <20201120072322.slrpgqydcupm63ep@lion.mk-sys.cz>
- <20201120133938.GG1804098@lunn.ch>
- <20201120212243.n7vnwo3ldzisr4hl@lion.mk-sys.cz>
-From:   tanhuazhong <tanhuazhong@huawei.com>
-Message-ID: <4451853d-bcbe-5de0-6a44-a3e87b211f6b@huawei.com>
-Date:   Sat, 21 Nov 2020 09:56:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        Fri, 20 Nov 2020 21:00:10 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DA6C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 18:00:10 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id e81so8770434ybc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 18:00:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RL33UOTlemNQ/vQ4qwl9EYK4T3gfkWAqCMJ5EwZ1yTY=;
+        b=Sbi44ROn89jSK8XlzyBlrwwURpgLSbihh/F0n6JsqZvGBlqw8IlZCselUourV3uXVt
+         sHszvmbbyueaU/ivacebDR45mAotQWucVjP35+UeQ5knBZzj+kbAoXy9Y40GhptM8yTX
+         L5dJVeNDGmeBKTtwvDQm3mVk4OuvRfDRRM4r3FEba8eXqohYh6s+q4YSdeoUNguCc7H6
+         N+Plww5vrPEmhZ5kz8jNVcyYESpsTm9PViVuLxVmpdW4HkFSpwHh0YyoEKuK6c2WlYc+
+         H89NqB5aN6hD1i1yoLuT2uMtvyCZGBh5FVwwRbCeDG0iKOlVL0G8E2/fhrvD/FSasPjH
+         jIbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RL33UOTlemNQ/vQ4qwl9EYK4T3gfkWAqCMJ5EwZ1yTY=;
+        b=JOvXDO+egKKNBgExZelNT4q16khind//fBmGryTZDl2yr0AHMN0xsAxD8lO1TFud+I
+         ilBPc5PtawTTcLnRpGMmxmvObIsYg4LDB0SVskfUjQgx3lmLm3JH6UEX3VCfXIrxhby3
+         WxS7sv/Q8RKi4RRFEfnhjD2Gcp/4a1s7yqER9+kJQuZlXQawcpxh3lNtCbstCC3QzekI
+         IcOFas+4Tjw+daVSGrg/fvMotOYzqt5tLdQ54hipEQ37JOiewX9lZA79XpeKajtANqEA
+         V60JjyCGl5jQQ6Ii6qU23WGzOE1buzhZw91YNK7e3UjBO/gdUzjLRCQYE/xiR+ktOBr3
+         sETQ==
+X-Gm-Message-State: AOAM5318WMbXst5tNEBgp/lzx3bPBGBRwLjhtOwC95PS0WHxnqcUwlmw
+        lW1DtghbcfP7w7/E3l2w28wrkIUHd7wm/hsjiqksSQ==
+X-Google-Smtp-Source: ABdhPJycFco7NhhJCzLELdACWMic5hnonHza8FX12/J6/oDiCBN0OtjIXt6xR1BOMfz82Hk1vNgpXPQaTkdvtWCLCeo=
+X-Received: by 2002:a25:b090:: with SMTP id f16mr25880254ybj.466.1605924008934;
+ Fri, 20 Nov 2020 18:00:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201120212243.n7vnwo3ldzisr4hl@lion.mk-sys.cz>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.149.191]
-X-CFilter-Loop: Reflected
+References: <20201104232356.4038506-1-saravanak@google.com>
+ <20201104232356.4038506-9-saravanak@google.com> <CAJZ5v0iKAzkP1jDo202J117Mb=NipEMiLiV0-C8b4LPLDyUSmw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iKAzkP1jDo202J117Mb=NipEMiLiV0-C8b4LPLDyUSmw@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 20 Nov 2020 17:59:32 -0800
+Message-ID: <CAGETcx9-Vt5pWxoaBRwisCv4ZTUrCBp+jX3eVU7bh=cvNqqe_A@mail.gmail.com>
+Subject: Re: [PATCH v1 08/18] driver core: Add fwnode link support
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 16, 2020 at 7:51 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Nov 5, 2020 at 12:24 AM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > This patch adds support for creating supplier-consumer links between
+>
+> Generally speaking the "This patch" part is redundant.  It is
+> sufficient to simply say "Add ...".
+>
+> > fwnode.
+>
+> fwnodes (plural)?
+>
+> > It is intentionally kept simple and with limited APIs as it is
+> > meant to be used only by driver core and firmware code (Eg: device tree,
+> > ACPI, etc).
+>
+> I'd say "It is intended for internal use in the driver core and
+> generic firmware support code (eg. Device Tree, ACPI), so it is simple
+> by design and the API provided by it is limited."
+>
+> >
+> > We can expand the APIs later if there is ever a need for
+> > drivers/frameworks to start using them.
+>
+> The above is totally redundant IMO.
+>
+> >
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> >  drivers/base/core.c    | 95 ++++++++++++++++++++++++++++++++++++++++++
+> >  drivers/of/dynamic.c   |  1 +
+> >  include/linux/fwnode.h | 14 +++++++
+> >  3 files changed, 110 insertions(+)
+> >
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index 31a76159f118..1a1d9a55645c 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -50,6 +50,101 @@ static LIST_HEAD(wait_for_suppliers);
+> >  static DEFINE_MUTEX(wfs_lock);
+> >  static LIST_HEAD(deferred_sync);
+> >  static unsigned int defer_sync_state_count = 1;
+> > +static DEFINE_MUTEX(fwnode_link_lock);
+> > +
+> > +/**
+> > + * fwnode_link_add - Create a link between two fwnode_handles.
+> > + * @con: Consumer end of the link.
+> > + * @sup: Supplier end of the link.
+> > + *
+> > + * Creates a fwnode link between two fwnode_handles. These fwnode links are
+>
+> Why don't you refer to the arguments here, that is "Create a link
+> between fwnode handles @con and @sup ..."
 
+Ack/done to everything above.
 
-On 2020/11/21 5:22, Michal Kubecek wrote:
-> On Fri, Nov 20, 2020 at 02:39:38PM +0100, Andrew Lunn wrote:
->> On Fri, Nov 20, 2020 at 08:23:22AM +0100, Michal Kubecek wrote:
->>> On Fri, Nov 20, 2020 at 10:59:59AM +0800, tanhuazhong wrote:
->>>> On 2020/11/20 6:02, Michal Kubecek wrote:
->>>>> We could use a similar approach as struct ethtool_link_ksettings, e.g.
->>>>>
->>>>> 	struct kernel_ethtool_coalesce {
->>>>> 		struct ethtool_coalesce base;
->>>>> 		/* new members which are not part of UAPI */
->>>>> 	}
->>>>>
->>>>> get_coalesce() and set_coalesce() would get pointer to struct
->>>>> kernel_ethtool_coalesce and ioctl code would be modified to only touch
->>>>> the base (legacy?) part.
->>>>>   > While already changing the ops arguments, we could also add extack
->>>>> pointer, either as a separate argument or as struct member (I slightly
->>>>> prefer the former).
->>>> If changing the ops arguments, each driver who implement
->>>> set_coalesce/get_coalesce of ethtool_ops need to be updated. Is it
->>>> acceptable adding two new ops to get/set ext_coalesce info (like
->>>> ecc31c60240b ("ethtool: Add link extended state") does)? Maybe i can send V2
->>>> in this way, and then could you help to see which one is more suitable?
->>> If it were just this one case, adding an extra op would be perfectly
->>> fine. But from long term point of view, we should expect extending also
->>> other existing ethtool requests and going this way for all of them would
->>> essentially double the number of callbacks in struct ethtool_ops.
->> coccinella might be useful here.
-> I played with spatch a bit and it with the spatch and patch below, I got
-> only three build failures (with allmodconfig) that would need to be
-> addressed manually - these drivers call the set_coalesce() callback on
-> device initialization.
-> 
-> I also tried to make the structure argument const in ->set_coalesce()
-> but that was more tricky as adjusting other functions that the structure
-> is passed to required either running the spatch three times or repeating
-> the same two rules three times in the spatch (or perhaps there is
-> a cleaner way but I'm missing relevant knowledge of coccinelle). Then
-> there was one more problem in i40e driver which modifies the structure
-> before passing it on to its helpers. It could be worked around but I'm
-> not sure if constifying the argument is worth these extra complications.
-> 
-> Michal
+>
+> > + * used by the driver core to automatically generate device links. Attempts to
+> > + * create duplicate links are simply ignored and there is no refcounting.
+>
+> And I'd generally write it this way:
+>
+> "Create a link between fwnode handles @con and @sup representing a
+> pair of devices the first of which uses certain resources provided by
+> the second one, respectively.
+>
+> The driver core will use that link to create a device link between the
+> two device objects corresponding to @con and @sup when they are
+> created and it will automatically delete the link between @con and
+> @sup after doing that.
+>
+> Attempts to create a duplicate link between the same pair of fwnode
+> handles are ignored and there is no reference counting."
 
-will implement it like this in V3.
+Took most of this as is with some minor rewording.
 
-Regards,
-Huazhong.
+>
+> > + *
+> > + * These links are automatically deleted once they are converted to device
+> > + * links or when the fwnode_handles (or their corresponding devices) are
+> > + * deleted.
+> > + */
+> > +int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup)
+>
+> Why doesn't it return a pointer to the new link or NULL?
+>
+> That would be consistent with device_link_add().
 
+However, as opposed to device_link_add(), I don't want the caller
+holding any reference to the allocated link. So I don't want to return
+any pointer to them.
+
+> > +{
+> > +       struct fwnode_link *link;
+> > +       int ret = 0;
+> > +
+> > +       mutex_lock(&fwnode_link_lock);
+> > +
+> > +       /* Duplicate requests are intentionally not refcounted. */
+>
+> Is this comment really necessary?
+
+I guess with the function comment explicitly stating "no ref
+counting", this is kind of redundant. I can remove this.
+
+>
+> > +       list_for_each_entry(link, &sup->consumers, s_hook)
+> > +               if (link->consumer == con)
+> > +                       goto out;
+>
+> It is also necessary to look the other way around AFAICS, that is if
+> there is a link between the two fwnode handles in the other direction
+> already, the creation of a new one should fail.
+
+No, fwnode links can have cycles. At this state, we can't tell which
+ones are invali.d When we create device links out of this, we have
+more info at that point and we make sure not to add any device links
+that can cause cycles. There are a bunch of corner cases where we
+can't tell which one is the invalid fwnode link in the links that make
+up the cycle and in those cases, we have to make the device links as
+SYNC_STATE_ONLY device links. Long story short, cycles are allowed.
+
+>
+> > +
+> > +       link = kzalloc(sizeof(*link), GFP_KERNEL);
+> > +       if (!link) {
+> > +               ret = -ENOMEM;
+> > +               goto out;
+> > +       }
+> > +
+> > +       link->supplier = sup;
+> > +       INIT_LIST_HEAD(&link->s_hook);
+> > +       link->consumer = con;
+> > +       INIT_LIST_HEAD(&link->c_hook);
+> > +
+> > +       list_add(&link->s_hook, &sup->consumers);
+> > +       list_add(&link->c_hook, &con->suppliers);
+> > +out:
+> > +       mutex_unlock(&fwnode_link_lock);
+> > +
+> > +       return ret;
+> > +}
+> > +
+> > +/**
+> > + * fwnode_links_purge_suppliers - Delete all supplier links of fwnode_handle.
+> > + * @fwnode: fwnode whose supplier links needs to be deleted
+>
+> s/needs/need/
+
+Ack
+
+>
+> > + *
+> > + * Deletes all supplier links connecting directly to a fwnode.
+>
+> I'd say "Delete all supplier links connecting directly to @fwnode."
+> and analogously below.
+
+Ack
+
+>
+> > + */
+> > +static void fwnode_links_purge_suppliers(struct fwnode_handle *fwnode)
+> > +{
+> > +       struct fwnode_link *link, *tmp;
+> > +
+> > +       mutex_lock(&fwnode_link_lock);
+> > +       list_for_each_entry_safe(link, tmp, &fwnode->suppliers, c_hook) {
+> > +               list_del(&link->s_hook);
+> > +               list_del(&link->c_hook);
+> > +               kfree(link);
+> > +       }
+> > +       mutex_unlock(&fwnode_link_lock);
+> > +}
+> > +
+> > +/**
+> > + * fwnode_links_purge_consumers - Delete all consumer links of fwnode_handle.
+> > + * @fwnode: fwnode whose consumer links needs to be deleted
+> > + *
+> > + * Deletes all consumer links connecting directly to a fwnode.
+> > + */
+> > +static void fwnode_links_purge_consumers(struct fwnode_handle *fwnode)
+> > +{
+> > +       struct fwnode_link *link, *tmp;
+> > +
+> > +       mutex_lock(&fwnode_link_lock);
+> > +       list_for_each_entry_safe(link, tmp, &fwnode->consumers, s_hook) {
+> > +               list_del(&link->s_hook);
+> > +               list_del(&link->c_hook);
+> > +               kfree(link);
+>
+> I'd avoid the code duplication, even though it doesn't appear to be
+> significant ATM.
+
+I'd like to leave this as is for now if that's okay.
+
+> > +       }
+> > +       mutex_unlock(&fwnode_link_lock);
+> > +}
+> > +
+> > +/**
+> > + * fwnode_links_purge - Delete all links connected to a fwnode_handle.
+> > + * @fwnode: fwnode whose links needs to be deleted
+> > + *
+> > + * Deletes all links connecting directly to a fwnode.
+> > + */
+> > +void fwnode_links_purge(struct fwnode_handle *fwnode)
+> > +{
+> > +       fwnode_links_purge_suppliers(fwnode);
+>
+> Dropping the lock here may turn out to be problematic at one point
+> going forward.  IMO it is better to hold it throughout the entire
+> operation.
+
+It's not really a problem as there's nothing that can happen in
+between these two calls that can cause a problem but won't be a
+problem if it happens after these two calls. I was trying to avoid
+repeating the purge supplier/consumer code here again. Can we leave
+this as is for now?
+
+>
+> > +       fwnode_links_purge_consumers(fwnode);
+>
+> I'd get rid of the two functions above, add something like
+> fwnode_link_del() and walk the lists directly here calling it for
+> every link on the way.
+
+I need a fwnode_links_purge_suppliers() (as in, not purging consumer
+links) though. I used it later in the series. So instead of repeating
+that code for fwnode_links_purge(), I created
+fwnode_links_purge_consumers() and called both functions from here.
+Can we leave this as is?
+
+-Saravana
+
+>
+> > +}
+> >
+> >  #ifdef CONFIG_SRCU
+> >  static DEFINE_MUTEX(device_links_lock);
+> > diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
+> > index fe64430b438a..9a824decf61f 100644
+> > --- a/drivers/of/dynamic.c
+> > +++ b/drivers/of/dynamic.c
+> > @@ -356,6 +356,7 @@ void of_node_release(struct kobject *kobj)
+> >
+> >         property_list_free(node->properties);
+> >         property_list_free(node->deadprops);
+> > +       fwnode_links_purge(of_fwnode_handle(node));
+> >
+> >         kfree(node->full_name);
+> >         kfree(node->data);
+> > diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+> > index 593fb8e58f21..afde643f37a2 100644
+> > --- a/include/linux/fwnode.h
+> > +++ b/include/linux/fwnode.h
+> > @@ -10,6 +10,7 @@
+> >  #define _LINUX_FWNODE_H_
+> >
+> >  #include <linux/types.h>
+> > +#include <linux/list.h>
+> >
+> >  struct fwnode_operations;
+> >  struct device;
+> > @@ -18,6 +19,15 @@ struct fwnode_handle {
+> >         struct fwnode_handle *secondary;
+> >         const struct fwnode_operations *ops;
+> >         struct device *dev;
+> > +       struct list_head suppliers;
+> > +       struct list_head consumers;
+> > +};
+> > +
+> > +struct fwnode_link {
+> > +       struct fwnode_handle *supplier;
+> > +       struct list_head s_hook;
+> > +       struct fwnode_handle *consumer;
+> > +       struct list_head c_hook;
+> >  };
+> >
+> >  /**
+> > @@ -173,8 +183,12 @@ static inline void fwnode_init(struct fwnode_handle *fwnode,
+> >                                const struct fwnode_operations *ops)
+> >  {
+> >         fwnode->ops = ops;
+> > +       INIT_LIST_HEAD(&fwnode->consumers);
+> > +       INIT_LIST_HEAD(&fwnode->suppliers);
+> >  }
+> >
+> >  extern u32 fw_devlink_get_flags(void);
+> > +int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
+> > +void fwnode_links_purge(struct fwnode_handle *fwnode);
+> >
+> >  #endif
+> > --
+> > 2.29.1.341.ge80a0c044ae-goog
+> >
