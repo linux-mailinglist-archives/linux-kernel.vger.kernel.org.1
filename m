@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293702BBED4
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 13:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC552BBED6
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 13:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727584AbgKUMKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 07:10:32 -0500
-Received: from smtprelay0030.hostedemail.com ([216.40.44.30]:39332 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727191AbgKUMKc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 07:10:32 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id BB7C0837F24A;
-        Sat, 21 Nov 2020 12:10:30 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:4321:5007:7514:7903:10004:10400:10848:11232:11658:11914:12043:12296:12297:12438:12555:12740:12895:13439:13894:14181:14659:14721:21080:21221:21451:21627:21740:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: drain07_1a158e527354
-X-Filterd-Recvd-Size: 2923
-Received: from XPS-9350.home (unknown [47.151.128.180])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 21 Nov 2020 12:10:29 +0000 (UTC)
-Message-ID: <edc52eb1c1515a592d93799933021ff39ba8028e.camel@perches.com>
-Subject: Re: [PATCH v4] checkpatch: add fix option for
- ASSIGNMENT_CONTINUATIONS
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 21 Nov 2020 04:10:28 -0800
-In-Reply-To: <20201121120407.22942-1-yashsri421@gmail.com>
-References: <1d7692d0-359f-6b6a-32d4-1627ebd8b100@gmail.com>
-         <20201121120407.22942-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1727661AbgKUMKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 07:10:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727191AbgKUMKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 07:10:45 -0500
+Received: from localhost (unknown [122.171.203.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FDC122226;
+        Sat, 21 Nov 2020 12:10:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605960644;
+        bh=pLtOpTjqaSBqVkIMo4IbPawnLHJWlqUmIWLK+EBv8j0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1hE4JGMV5qPuxoVu/sr0h3uY/XgZLXfFiYzLUZA1qnrKSCOyTbqG9WQZvL+HZhZZ2
+         FBi7xXNgkfAkYfU4KeImXv8l9ntga8LO+XJUsGCJlmvIe92gg3r0R+Vqn0ms5PJnR+
+         IX+yYyEShjoKB4AsQhRsG8j3MjoXpfNOXcmd+evg=
+Date:   Sat, 21 Nov 2020 17:40:39 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        NeilBrown <neil@brown.name>
+Subject: Re: [PATCH v5 0/4] MT7621 PCIe PHY
+Message-ID: <20201121121039.GA8403@vkoul-mobl>
+References: <20201119154337.9195-1-sergio.paracuellos@gmail.com>
+ <CAMhs-H8bUuSQ+ROr4PNJXYaGFnjG2=zpjGK7UAAfoPMPbFBb1Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMhs-H8bUuSQ+ROr4PNJXYaGFnjG2=zpjGK7UAAfoPMPbFBb1Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-11-21 at 17:34 +0530, Aditya Srivastava wrote:
-> Currently, checkpatch warns us if an assignment operator is placed
-> at the start of a line and not at the end of previous line.
+On 20-11-20, 17:20, Sergio Paracuellos wrote:
+> Hi Vinod,
+> 
+> On Thu, Nov 19, 2020 at 4:43 PM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> >
+> > This series adds support for the PCIe PHY found in the Mediatek
+> > MT7621 SoC.
+> >
+> > There is also a 'mt7621-pci' driver which is the controller part
+> > which is still in staging and is a client of this phy.
+> >
+> > Both drivers have been tested together in a gnubee1 board.
+> >
+> > This series are rebased on the top of linux-next:
+> > commit 4e78c578cb98 ("Add linux-next specific files for 20201030")
+> >
+> > Changes in v5:
+> >   - PATCH 1/4: Recollect Rob's Reviewed-by of bindings.
+> >   - PATCH 4/4: Recollect Greg's Acked-by for removing stuff from
+> >     staging area.
+> >   - Make Vinod's review comments changes in [0]:
+> >     * Use FIELD_GET and FIELD_PREP apis and avoid multiple *_VAL and
+> >       *_SHIFT custom definitions.
+> >     * Remove phy-read and phy-write internal functions and directly
+> >       call regmap_read and regmap_write in 'mt7621_phy_rmw'.
+> >     * Change some traces from info to debug log level.
+> >     * Note that I have maintained 'mt7621_phy_rmw' instead of use
+> >       'regmap_update_bits'. This is because in order to get a reliable
+> >       boot registers must be written event the contained value in
+> >       that register is the same. I have preferred doing in this way
+> >       instead of using 'regmap_update_bits_base' passing 'false' for
+> >       async and 'true' for the force write. If this way of using
+> >       'regmap_update_bits_base' is preferred just let me know.
+> 
+> I notice we already have 'regmap_write_bits' function. I will use this
+> and avoid mt7621_phy_rmw
+> and send v6 of this series.
+> 
+> Also, do you have any preference of where you want this series to be rebased on?
 
-Right, thanks.
+Phy-next please
 
-Acked-by: Joe Perches <joe@perches.com>
-
-> 
-> E.g., running checkpatch on commit 8195b1396ec8 ("hv_netvsc: fix
-> deadlock on hotplug") reports:
-> 
-> CHECK: Assignment operator '=' should be on the previous line
-> +	struct netvsc_device *nvdev
-> +		= container_of(w, struct netvsc_device, subchan_work);
-> 
-> Provide a simple fix by appending assignment operator to the previous
-> line and removing from the current line, if both the lines are additions
-> (ie start with '+')
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
-> Changes in v2:
-> add check if both the lines are additions (ie start with '+')
-> 
-> Changes in v3:
-> quote $operator; test with division assignment operator ('/=')
-> 
-> Changes in v4:
-> fix incorrect use of quote
-> 
->  scripts/checkpatch.pl | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 2749f32dffe9..d4c8d42cb13e 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3533,8 +3533,14 @@ sub process {
->  
-> 
->  # check for assignments on the start of a line
->  		if ($sline =~ /^\+\s+($Assignment)[^=]/) {
-> -			CHK("ASSIGNMENT_CONTINUATIONS",
-> -			    "Assignment operator '$1' should be on the previous line\n" . $hereprev);
-> +			my $operator = $1;
-> +			if (CHK("ASSIGNMENT_CONTINUATIONS",
-> +				"Assignment operator '$1' should be on the previous line\n" . $hereprev) &&
-> +			    $fix && $prevrawline =~ /^\+/) {
-> +				# add assignment operator to the previous line, remove from current line
-> +				$fixed[$fixlinenr - 1] .= " $operator";
-> +				$fixed[$fixlinenr] =~ s/\Q$operator\E\s*//;
-> +			}
->  		}
->  
-> 
->  # check for && or || at the start of a line
-
-
+-- 
+~Vinod
