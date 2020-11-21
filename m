@@ -2,613 +2,565 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCEA2BC12F
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E91E2BC133
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727171AbgKUR4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 12:56:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45158 "EHLO mail.kernel.org"
+        id S1727215AbgKUR71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 12:59:27 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:37041 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726305AbgKUR4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 12:56:35 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 577BA22201;
-        Sat, 21 Nov 2020 17:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605981393;
-        bh=PmJe3ldVH42KB340hb6Mpbn8nCahqGnNV9Igfz0AtKA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cr9n7qgXO6TLJvO4q3EA/4d1Cju54qyZBEPct/+0V04PZkj5DOcPQb5mPNpDJbSDd
-         n46Gya3Xeb8I/lH8pWApny6WnzE4ZIZ16kABmfyc+aQiA9LlYtjsSPIFWA45IxilVd
-         SMCn4DZJAjL22dhvv+Sr/Yx1Yr0isqnF7KdbtZRs=
-Date:   Sat, 21 Nov 2020 17:56:29 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ye Xiang <xiang.ye@intel.com>
-Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] iio: hid-sensors: Add hinge sensor driver
-Message-ID: <20201121175629.057031af@archlinux>
-In-Reply-To: <20201119100331.2594-5-xiang.ye@intel.com>
-References: <20201119100331.2594-1-xiang.ye@intel.com>
-        <20201119100331.2594-5-xiang.ye@intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726556AbgKUR71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 12:59:27 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Cdh4l0SGCz9tvyn;
+        Sat, 21 Nov 2020 18:59:19 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id WE5crqo2u7BH; Sat, 21 Nov 2020 18:59:19 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Cdh4k6bWJz9v0td;
+        Sat, 21 Nov 2020 18:59:18 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 85A348B76E;
+        Sat, 21 Nov 2020 18:59:20 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Q5ygbl9T9fDV; Sat, 21 Nov 2020 18:59:20 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 250508B75B;
+        Sat, 21 Nov 2020 18:59:20 +0100 (CET)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id A7FCD668CD; Sat, 21 Nov 2020 17:59:19 +0000 (UTC)
+Message-Id: <18b357d68c4cde149f75c7a1031c850925cd8128.1605981539.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc: inline iomap accessors
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sat, 21 Nov 2020 17:59:19 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 18:03:31 +0800
-Ye Xiang <xiang.ye@intel.com> wrote:
+ioreadXX()/ioreadXXbe() accessors are equivalent to ppc
+in_leXX()/in_be16() accessors but they are not inlined.
 
-> The Hinge sensor is a common custom sensor on laptops. It calculates
-> the angle between the lid (screen) and the base (keyboard). In addition,
-> it also exposes screen and the keyboard angels with respect to the
-> ground. Applications can easily get laptop's status in space through
-> this sensor, in order to display appropriate user interface.
+Since commit 0eb573682872 ("powerpc/kerenl: Enable EEH for IO
+accessors"), the 'le' versions are equivalent to the ones
+defined in asm-generic/io.h, allthough the ones there are inlined.
 
-I'm a little unclear on why the 3 axes aren't treated as a single sensor.
-You seem to always grab the 3 together or am I missing something?
+Include asm-generic/io.h to get them. Keep ppc versions of the
+'be' ones as they are optimised, but make them inline in ppc io.h.
 
-That will greatly simplify things and get rid of the need to have
-a shared trigger with the problems that causes in the previous
-patch.
+This reduces the size of ppc64e_defconfig build by 3 kbytes:
 
-Thanks,
+   text	   data	    bss	    dec	    hex	filename
+10160733	4343422	 562972	15067127	 e5e7f7	vmlinux.before
+10159239	4341590	 562972	15063801	 e5daf9	vmlinux.after
 
-Jonathan
+A typical function using ioread and iowrite before the change:
 
-> 
-> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-> ---
->  .../hid-sensors/hid-sensor-attributes.c       |   2 +
->  drivers/iio/position/Kconfig                  |  16 +
->  drivers/iio/position/Makefile                 |   3 +
->  .../iio/position/hid-sensor-custom-hinge.c    | 412 ++++++++++++++++++
+c00000000066a3c4 <.ata_bmdma_stop>:
+c00000000066a3c4:	7c 08 02 a6 	mflr    r0
+c00000000066a3c8:	fb c1 ff f0 	std     r30,-16(r1)
+c00000000066a3cc:	f8 01 00 10 	std     r0,16(r1)
+c00000000066a3d0:	fb e1 ff f8 	std     r31,-8(r1)
+c00000000066a3d4:	f8 21 ff 81 	stdu    r1,-128(r1)
+c00000000066a3d8:	eb e3 00 00 	ld      r31,0(r3)
+c00000000066a3dc:	eb df 00 98 	ld      r30,152(r31)
+c00000000066a3e0:	7f c3 f3 78 	mr      r3,r30
+c00000000066a3e4:	4b 9b 6f 7d 	bl      c000000000021360 <.ioread8>
+c00000000066a3e8:	60 00 00 00 	nop
+c00000000066a3ec:	7f c4 f3 78 	mr      r4,r30
+c00000000066a3f0:	54 63 06 3c 	rlwinm  r3,r3,0,24,30
+c00000000066a3f4:	4b 9b 70 4d 	bl      c000000000021440 <.iowrite8>
+c00000000066a3f8:	60 00 00 00 	nop
+c00000000066a3fc:	7f e3 fb 78 	mr      r3,r31
+c00000000066a400:	38 21 00 80 	addi    r1,r1,128
+c00000000066a404:	e8 01 00 10 	ld      r0,16(r1)
+c00000000066a408:	eb c1 ff f0 	ld      r30,-16(r1)
+c00000000066a40c:	7c 08 03 a6 	mtlr    r0
+c00000000066a410:	eb e1 ff f8 	ld      r31,-8(r1)
+c00000000066a414:	4b ff ff 8c 	b       c00000000066a3a0 <.ata_sff_dma_pause>
 
-Given it's custom probably needs a more specific name.  I guess
-hid-sensor-custom-intel-hinge.c might be safe?
+The same function with this patch:
 
-Same for other places we need names in here.
+c000000000669cb4 <.ata_bmdma_stop>:
+c000000000669cb4:	e8 63 00 00 	ld      r3,0(r3)
+c000000000669cb8:	e9 43 00 98 	ld      r10,152(r3)
+c000000000669cbc:	7c 00 04 ac 	hwsync
+c000000000669cc0:	89 2a 00 00 	lbz     r9,0(r10)
+c000000000669cc4:	0c 09 00 00 	twi     0,r9,0
+c000000000669cc8:	4c 00 01 2c 	isync
+c000000000669ccc:	55 29 06 3c 	rlwinm  r9,r9,0,24,30
+c000000000669cd0:	7c 00 04 ac 	hwsync
+c000000000669cd4:	99 2a 00 00 	stb     r9,0(r10)
+c000000000669cd8:	a1 4d 06 f0 	lhz     r10,1776(r13)
+c000000000669cdc:	2c 2a 00 00 	cmpdi   r10,0
+c000000000669ce0:	41 c2 00 08 	beq-    c000000000669ce8 <.ata_bmdma_stop+0x34>
+c000000000669ce4:	b1 4d 06 f2 	sth     r10,1778(r13)
+c000000000669ce8:	4b ff ff a8 	b       c000000000669c90 <.ata_sff_dma_pause>
 
->  4 files changed, 433 insertions(+)
->  create mode 100644 drivers/iio/position/hid-sensor-custom-hinge.c
-> 
-> diff --git a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> index 442ff787f7af..5b822a4298a0 100644
-> --- a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> +++ b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
-> @@ -71,6 +71,8 @@ static struct {
->  	{HID_USAGE_SENSOR_TEMPERATURE, HID_USAGE_SENSOR_UNITS_DEGREES, 1000, 0},
->  
->  	{HID_USAGE_SENSOR_HUMIDITY, 0, 1000, 0},
-> +	{HID_USAGE_SENSOR_HINGE, 0, 0, 17453293},
-> +	{HID_USAGE_SENSOR_HINGE, HID_USAGE_SENSOR_UNITS_DEGREES, 0, 17453293},
->  };
->  
->  static void simple_div(int dividend, int divisor, int *whole,
-> diff --git a/drivers/iio/position/Kconfig b/drivers/iio/position/Kconfig
-> index eda67f008c5b..0346f6f2b422 100644
-> --- a/drivers/iio/position/Kconfig
-> +++ b/drivers/iio/position/Kconfig
-> @@ -16,4 +16,20 @@ config IQS624_POS
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called iqs624-pos.
->  
-> +config HID_SENSOR_CUSTOM_HINGE
-> +	depends on HID_SENSOR_HUB
-> +	select IIO_BUFFER
-> +	select IIO_TRIGGERED_BUFFER
-> +	select HID_SENSOR_IIO_COMMON
-> +	select HID_SENSOR_IIO_TRIGGER
-> +	tristate "HID Hinge"
-> +	help
-> +	  This sensor present three angles, hinge angel, screen angles
-> +	  and keyboard angle respect to horizon (ground).
-> +	  Say yes here to build support for the HID SENSOR CUSTOM
-> +	  HINGE.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/io.h | 154 ++++++++++++++++++++++++++++++-
+ arch/powerpc/kernel/iomap.c   | 166 ----------------------------------
+ 2 files changed, 153 insertions(+), 167 deletions(-)
 
-Capitalization is a bit odd looking. I'd drop it.
-
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called hid-sensor-custom-hinge.
-> +
->  endmenu
-> diff --git a/drivers/iio/position/Makefile b/drivers/iio/position/Makefile
-> index 3cbe7a734352..7a6225977a01 100644
-> --- a/drivers/iio/position/Makefile
-> +++ b/drivers/iio/position/Makefile
-> @@ -5,3 +5,6 @@
->  # When adding new entries keep the list in alphabetical order
->  
->  obj-$(CONFIG_IQS624_POS)	+= iqs624-pos.o
-> +
-> +obj-$(CONFIG_HID_SENSOR_CUSTOM_HINGE) += hid-sensor-custom-hinge.o
-
-Alphabetical order preferred.
-
-> +ccflags-y	+= -I$(srctree)/drivers/iio/common/hid-sensors
-
-Why?
-
-> diff --git a/drivers/iio/position/hid-sensor-custom-hinge.c b/drivers/iio/position/hid-sensor-custom-hinge.c
-> new file mode 100644
-> index 000000000000..a91b333f36fa
-> --- /dev/null
-> +++ b/drivers/iio/position/hid-sensor-custom-hinge.c
-> @@ -0,0 +1,412 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * HID Sensors Driver
-> + * Copyright (c) 2020, Intel Corporation.
-> + */
-> +#include <linux/hid-sensor-hub.h>
-> +#include <linux/iio/buffer.h>
-> +#include <linux/iio/iio.h>
-> +#include <linux/platform_device.h>
-> +
-> +#include "hid-sensor-trigger.h"
-> +
-> +/* Channel definitions */
-> +static const struct iio_chan_spec hinge_channels[] = {
-> +	{ .type = IIO_ANGL,
-> +	  .info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +	  .info_mask_shared_by_type =
-> +		  BIT(IIO_CHAN_INFO_OFFSET) | BIT(IIO_CHAN_INFO_SCALE) |
-> +		  BIT(IIO_CHAN_INFO_SAMP_FREQ) | BIT(IIO_CHAN_INFO_HYSTERESIS),
-> +	  .scan_type.realbits = 16,
-> +	  .scan_type.storagebits = 32,
-
-It a bit odd to see a single channel that is 16 bits inside a 32 bit with
-no shift or similar.  Why not just pack it into 16 bits?
-
-> +	  .scan_type.sign = 's',
-> +	  .scan_index = 0 },
-> +
-> +	IIO_CHAN_SOFT_TIMESTAMP(1)
-> +};
-> +
-> +struct hinge_state {
-> +	struct iio_dev *indio_dev;
-> +	struct hid_sensor_hub_attribute_info hinge;
-> +	/* Reserve for 1 channel + pading + timestamp */
-> +	u32 hinge_val[1 + 3];
-
-__aligned(8)
-
-see below for requirements on this.
-Perhaps better to use
-
-	struct hinge_scan {
-		u32 val;
-		s64 timestamp __aligned(8); // Note this is needed for x86_32
-	} scan;
-
-> +	int scale_pre_decml;
-> +	int scale_post_decml;
-> +	int scale_precision;
-> +	int value_offset;
-> +	int64_t timestamp;
-> +	u32 hinge_address;
-> +};
-> +
-> +#define IIO_DEV_NUM 3
-
-That needs a prefix to make it clear it's not a generic constant
-but is specific to this driver.
-
-> +
-> +struct hinge_group {
-> +	struct hinge_state *hg_states[IIO_DEV_NUM];
-> +	struct hid_sensor_hub_callbacks callbacks;
-> +	struct hid_sensor_common common_attributes;
-> +};
-> +
-> +static struct hinge_group *hg_group;
-
-We shouldn't see globals like this. Please figure out how to avoid it.
-
-> +
-> +/* Channel read_raw handler */
-> +static int hinge_read_raw(struct iio_dev *indio_dev,
-> +			  struct iio_chan_spec const *chan, int *val, int *val2,
-> +			  long mask)
-> +{
-> +	struct hinge_state *hg_state = iio_priv(indio_dev);
-> +	struct hid_sensor_hub_device *hsdev;
-> +	int report_id = -1;
-> +	int ret_type;
-> +	s32 min;
-> +
-> +	hsdev = hg_group->common_attributes.hsdev;
-> +
-> +	*val = 0;
-> +	*val2 = 0;
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		hid_sensor_power_state(&hg_group->common_attributes, true);
-> +		report_id = hg_state->hinge.report_id;
-> +		min = hg_state->hinge.logical_minimum;
-> +		if (report_id < 0) {
-> +			*val = 0;
-> +			hid_sensor_power_state(&hg_group->common_attributes,
-> +					       false);
-> +			return -EINVAL;
-> +		}
-> +
-> +		*val = sensor_hub_input_attr_get_raw_value(
-> +			hg_group->common_attributes.hsdev, hsdev->usage,
-> +			hg_state->hinge_address, report_id, SENSOR_HUB_SYNC,
-> +			min < 0);
-> +
-> +		hid_sensor_power_state(&hg_group->common_attributes, false);
-> +		ret_type = IIO_VAL_INT;
-> +		break;
-> +	case IIO_CHAN_INFO_SCALE:
-> +		*val = hg_state->scale_pre_decml;
-> +		*val2 = hg_state->scale_post_decml;
-> +		ret_type = hg_state->scale_precision;
-> +		break;
-> +	case IIO_CHAN_INFO_OFFSET:
-> +		*val = hg_state->value_offset;
-> +		ret_type = IIO_VAL_INT;
-> +		break;
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		ret_type = hid_sensor_read_samp_freq_value(
-> +			&hg_group->common_attributes, val, val2);
-> +		break;
-> +	case IIO_CHAN_INFO_HYSTERESIS:
-> +		ret_type = hid_sensor_read_raw_hyst_value(
-> +			&hg_group->common_attributes, val, val2);
-> +		break;
-> +	default:
-> +		ret_type = -EINVAL;
-> +		break;
-> +	}
-> +
-> +	return ret_type;
-> +}
-> +
-> +/* Channel write_raw handler */
-> +static int hinge_write_raw(struct iio_dev *indio_dev,
-> +			   struct iio_chan_spec const *chan, int val, int val2,
-> +			   long mask)
-> +{
-> +	int ret;
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		ret = hid_sensor_write_samp_freq_value(
-> +			&hg_group->common_attributes, val, val2);
-> +		break;
-> +	case IIO_CHAN_INFO_HYSTERESIS:
-> +		ret = hid_sensor_write_raw_hyst_value(
-> +			&hg_group->common_attributes, val, val2);
-> +
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct iio_info hinge_info = {
-> +	.read_raw = &hinge_read_raw,
-> +	.write_raw = &hinge_write_raw,
-> +};
-> +
-> +/*
-> + * Function to push data to buffer;
-> + * wrapper added for symmetry with other hid-sensor drivers
-> + */
-> +static void hid_sensor_push_data(struct iio_dev *indio_dev, void *data, int len,
-
-This doesn't seem to be generic, so don't name it as such.
-
-> +				 int64_t timestamp)
-> +{
-> +	iio_push_to_buffers_with_timestamp(indio_dev, data, timestamp);
-I hope that data buffer obeys the various rules needed by (and admittedly
-not that well documented) iio_push_to_buffers_with_timestamp()
-
-1. Needs to be 8 byte aligned.
-2. Needs to have space for an aligned 8 byte timestamp at the end.
-
-> +}
-> +
-> +/*
-> + * Callback handler to send event after all samples are received
-> + * and captured.
-> + */
-> +static int hinge_proc_event(struct hid_sensor_hub_device *hsdev,
-> +			    unsigned int usage_id, void *priv)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < IIO_DEV_NUM; ++i) {
-If we push for all sensors together, better to have
-this as a single iio_device with 3 channels.
-
-Use the channel labels (just added to IIO) to identify which is which.
-
-> +		struct hinge_state *hg_state;
-> +		struct iio_dev *indio_dev;
-> +
-> +		hg_state = hg_group->hg_states[i];
-> +		indio_dev = hg_state->indio_dev;
-> +
-> +		dev_dbg(&indio_dev->dev, "%s timestamp:%llu scan_bytes:%d\n",
-> +			__func__, hg_state->timestamp, indio_dev->scan_bytes);
-> +
-> +		if (!hg_state->timestamp)
-> +			hg_state->timestamp = iio_get_time_ns(indio_dev);
-> +
-> +		hid_sensor_push_data(indio_dev, hg_state->hinge_val,
-> +				     sizeof(hg_state->hinge_val),
-> +				     hg_state->timestamp);
-> +
-> +		hg_state->timestamp = 0;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/* Capture samples in local storage */
-> +static int hinge_capture_sample(struct hid_sensor_hub_device *hsdev,
-> +				unsigned int usage_id, size_t raw_len,
-> +				char *raw_data, void *priv)
-> +{
-> +	struct hinge_state *hg_state;
-> +	int offset;
-> +	int ret = -EINVAL;
-> +	int i;
-> +
-> +	if (usage_id == HID_USAGE_SENSOR_TIME_TIMESTAMP) {
-> +		for (i = 0; i < IIO_DEV_NUM; i++)
-> +			hg_group->hg_states[i]->timestamp =
-
-This rather implies all the data is captured together... If so single
-iio_device may make more sense.
-
-> +				hid_sensor_convert_timestamp(
-> +					&hg_group->common_attributes,
-> +					*(int64_t *)raw_data);
-> +		return 0;
-> +	}
-> +
-> +	switch (usage_id) {
-> +	case HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_1:
-> +	case HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_2:
-> +	case HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_3:
-> +		offset = usage_id - HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_1;
-> +		hg_state = hg_group->hg_states[offset];
-> +		hg_state->hinge_val[0] = *(u32 *)raw_data;
-> +		ret = 0;
-
-		return 0;
-
-> +		break;
-> +	default:
-		return -EINVAL;
-> +		break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/* Parse report which is specific to an usage id */
-> +static int hinge_parse_report(struct platform_device *pdev,
-> +			      struct hid_sensor_hub_device *hsdev,
-> +			      unsigned int usage_id, unsigned int attr_usage_id,
-> +			      struct hinge_state *st)
-> +{
-> +	int ret;
-> +
-> +	ret = sensor_hub_input_get_attribute_info(
-> +		hsdev, HID_INPUT_REPORT, usage_id, attr_usage_id, &st->hinge);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	st->hinge_address = attr_usage_id;
-> +	st->scale_precision =
-> +		hid_sensor_format_scale(HID_USAGE_SENSOR_HINGE, &st->hinge,
-> +					&st->scale_pre_decml,
-> +					&st->scale_post_decml);
-> +
-> +	/* Set Sensitivity field ids, when there is no individual modifier */
-> +	if (hg_group->common_attributes.sensitivity.index < 0) {
-> +		sensor_hub_input_get_attribute_info(
-> +			hsdev, HID_FEATURE_REPORT, usage_id,
-> +			HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSITIVITY_ABS |
-> +				HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_1,
-> +			&hg_group->common_attributes.sensitivity);
-> +		dev_dbg(&pdev->dev, "Sensitivity index:report %d:%d\n",
-> +			hg_group->common_attributes.sensitivity.index,
-> +			hg_group->common_attributes.sensitivity.report_id);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/* Function to initialize the processing for usage id */
-> +static int hinge_add_iio_device(struct platform_device *pdev, int index,
-> +				const char *name, struct hinge_state **st)
-> +{
-> +	struct hid_sensor_hub_device *hsdev = pdev->dev.platform_data;
-> +	struct hinge_state *hg_state;
-> +	struct iio_dev *indio_dev;
-> +	int ret;
-> +
-> +	indio_dev =
-> +		devm_iio_device_alloc(&pdev->dev, sizeof(struct hinge_state));
-
-sizeof (*hg_state) preferred.
-
-> +	if (indio_dev == NULL)
-> +		return -ENOMEM;
-> +
-> +	hg_state = iio_priv(indio_dev);
-> +	hg_state->indio_dev = indio_dev;
-> +
-> +	indio_dev->num_channels = ARRAY_SIZE(hinge_channels);
-> +	indio_dev->channels =
-> +		kmemdup(hinge_channels, sizeof(hinge_channels), GFP_KERNEL);
-
-I don't immediately see anything that is modifying channels. As such you
-should be able have it shared by all the instances.
-
-> +	if (!indio_dev->channels)
-> +		return -ENOMEM;
-> +
-> +	ret = hinge_parse_report(
-> +		pdev, hsdev, hsdev->usage,
-> +		HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE_1 + index, hg_state);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to setup attributes\n");
-> +		goto error_free_dev_mem;
-> +	}
-> +
-> +	indio_dev->dev.parent = &pdev->dev;
-> +	indio_dev->info = &hinge_info;
-> +	indio_dev->name = name;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
-> +
-> +	ret = hid_sensor_setup_trigger(indio_dev, name,
-> +				       &hg_group->common_attributes);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "trigger setup failed\n");
-> +		goto error_free_dev_mem;
-> +	}
-> +
-> +	ret = iio_device_register(indio_dev);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "device register failed\n");
-> +		goto error_remove_trigger;
-> +	}
-> +
-> +	*st = hg_state;
-> +
-> +	return ret;
-> +
-> +error_remove_trigger:
-> +	hid_sensor_remove_trigger(indio_dev, &hg_group->common_attributes);
-> +error_free_dev_mem:
-> +	kfree(indio_dev->channels);
-> +	return ret;
-> +}
-> +
-> +/* Function to deinitialize the processing for usage id */
-> +static int hinge_remove_iio_device(struct platform_device *pdev, int index)
-> +{
-> +	struct hinge_state *hg_state = hg_group->hg_states[index];
-> +	struct iio_dev *indio_dev = hg_state->indio_dev;
-> +
-> +	iio_device_unregister(indio_dev);
-> +	hid_sensor_remove_trigger(indio_dev, &hg_group->common_attributes);
-> +	kfree(indio_dev->channels);
-> +
-> +	return 0;
-> +}
-> +
-> +static int hid_hinge_probe(struct platform_device *pdev)
-> +{
-> +	struct hinge_state *hg_state;
-> +	struct hid_sensor_hub_device *hsdev = pdev->dev.platform_data;
-> +	static const char *const names[] = { "hinge", "screen", "keyboard" };
-> +	int ret;
-> +	int i;
-> +
-> +	hg_group = devm_kzalloc(&pdev->dev, sizeof(struct hinge_group),
-> +				GFP_KERNEL);
-
-As mentioned above, I'd really not expect to see a global like this.
-Technically nothing stops there being more than one instance of this
-device on a platform (even if that would be a bit odd) + it's almost
-always cleaner to not use a global in the first place.
-
-> +	if (!hg_group)
-> +		return -ENOMEM;
-> +
-> +	hg_group->common_attributes.hsdev = hsdev;
-> +	hg_group->common_attributes.pdev = pdev;
-> +
-> +	ret = hid_sensor_parse_common_attributes(hsdev, hsdev->usage,
-> +						 &hg_group->common_attributes);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to setup common attributes\n");
-> +		return ret;
-> +	}
-> +
-> +	atomic_set(&hg_group->common_attributes.data_ready, 0);
-> +	for (i = 0; i < IIO_DEV_NUM; i++) {
-> +		ret = hinge_add_iio_device(pdev, i, names[i], &hg_state);
-> +		if (ret)
-> +			goto err_probe;
-> +
-> +		hg_group->hg_states[i] = hg_state;
-> +	}
-> +
-> +	/* use the first iio device to do the PM */
-> +	platform_set_drvdata(pdev, hg_group->hg_states[0]->indio_dev);
-> +
-> +	hg_group->callbacks.send_event = hinge_proc_event;
-> +	hg_group->callbacks.capture_sample = hinge_capture_sample;
-> +	hg_group->callbacks.pdev = pdev;
-> +	ret = sensor_hub_register_callback(hsdev, hsdev->usage,
-> +					   &hg_group->callbacks);
-> +	if (ret < 0)
-> +		dev_err(&pdev->dev, "callback reg failed\n");
-> +
-> +	return ret;
-> +
-> +err_probe:
-> +	for (i--; i >= 0; i--)
-> +		hinge_remove_iio_device(pdev, i);
-> +
-> +	return ret;
-> +}
-> +
-> +/* Function to deinitialize the processing for usage id */
-> +static int hid_hinge_remove(struct platform_device *pdev)
-> +{
-> +	struct hid_sensor_hub_device *hsdev = pdev->dev.platform_data;
-> +	int i;
-> +
-> +	sensor_hub_remove_callback(hsdev, hsdev->usage);
-> +
-> +	for (i = 0; i < IIO_DEV_NUM; i++)
-> +		hinge_remove_iio_device(pdev, i);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct platform_device_id hid_hinge_ids[] = {
-> +	{
-> +		/* Format: HID-SENSOR-INT-usage_id_in_hex_lowercase */
-> +		.name = "HID-SENSOR-INT-020b",
-> +	},
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(platform, hid_hinge_ids);
-> +
-> +static struct platform_driver hid_hinge_platform_driver = {
-> +	.id_table = hid_hinge_ids,
-> +	.driver = {
-> +		.name	= KBUILD_MODNAME,
-> +		.pm	= &hid_sensor_pm_ops,
-> +	},
-> +	.probe		= hid_hinge_probe,
-> +	.remove		= hid_hinge_remove,
-> +};
-> +module_platform_driver(hid_hinge_platform_driver);
-> +
-> +MODULE_DESCRIPTION("HID Sensor Custom Hinge");
-> +MODULE_AUTHOR("Ye Xiang <xiang.ye@intel.com>");
-> +MODULE_LICENSE("GPL");
+diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
+index 58635960403c..2469b46ac2c4 100644
+--- a/arch/powerpc/include/asm/io.h
++++ b/arch/powerpc/include/asm/io.h
+@@ -302,41 +302,56 @@ static inline unsigned char __raw_readb(const volatile void __iomem *addr)
+ {
+ 	return *(volatile unsigned char __force *)PCI_FIX_ADDR(addr);
+ }
++#define __raw_readb __raw_readb
++
+ static inline unsigned short __raw_readw(const volatile void __iomem *addr)
+ {
+ 	return *(volatile unsigned short __force *)PCI_FIX_ADDR(addr);
+ }
++#define __raw_readw __raw_readw
++
+ static inline unsigned int __raw_readl(const volatile void __iomem *addr)
+ {
+ 	return *(volatile unsigned int __force *)PCI_FIX_ADDR(addr);
+ }
++#define __raw_readl __raw_readl
++
+ static inline void __raw_writeb(unsigned char v, volatile void __iomem *addr)
+ {
+ 	*(volatile unsigned char __force *)PCI_FIX_ADDR(addr) = v;
+ }
++#define __raw_writeb __raw_writeb
++
+ static inline void __raw_writew(unsigned short v, volatile void __iomem *addr)
+ {
+ 	*(volatile unsigned short __force *)PCI_FIX_ADDR(addr) = v;
+ }
++#define __raw_writew __raw_writew
++
+ static inline void __raw_writel(unsigned int v, volatile void __iomem *addr)
+ {
+ 	*(volatile unsigned int __force *)PCI_FIX_ADDR(addr) = v;
+ }
++#define __raw_writel __raw_writel
+ 
+ #ifdef __powerpc64__
+ static inline unsigned long __raw_readq(const volatile void __iomem *addr)
+ {
+ 	return *(volatile unsigned long __force *)PCI_FIX_ADDR(addr);
+ }
++#define __raw_readq __raw_readq
++
+ static inline void __raw_writeq(unsigned long v, volatile void __iomem *addr)
+ {
+ 	*(volatile unsigned long __force *)PCI_FIX_ADDR(addr) = v;
+ }
++#define __raw_writeq __raw_writeq
+ 
+ static inline void __raw_writeq_be(unsigned long v, volatile void __iomem *addr)
+ {
+ 	__raw_writeq((__force unsigned long)cpu_to_be64(v), addr);
+ }
++#define __raw_writeq_be __raw_writeq_be
+ 
+ /*
+  * Real mode versions of the above. Those instructions are only supposed
+@@ -609,10 +624,37 @@ static inline void name at					\
+ /* Some drivers check for the presence of readq & writeq with
+  * a #ifdef, so we make them happy here.
+  */
++#define readb readb
++#define readw readw
++#define readl readl
++#define writeb writeb
++#define writew writew
++#define writel writel
++#define readsb readsb
++#define readsw readsw
++#define readsl readsl
++#define writesb writesb
++#define writesw writesw
++#define writesl writesl
++#define inb inb
++#define inw inw
++#define inl inl
++#define outb outb
++#define outw outw
++#define outl outl
++#define insb insb
++#define insw insw
++#define insl insl
++#define outsb outsb
++#define outsw outsw
++#define outsl outsl
+ #ifdef __powerpc64__
+ #define readq	readq
+ #define writeq	writeq
+ #endif
++#define memset_io memset_io
++#define memcpy_fromio memcpy_fromio
++#define memcpy_toio memcpy_toio
+ 
+ /*
+  * Convert a physical pointer to a virtual kernel pointer for /dev/mem
+@@ -637,7 +679,106 @@ static inline void name at					\
+ #define writel_relaxed(v, addr)	writel(v, addr)
+ #define writeq_relaxed(v, addr)	writeq(v, addr)
+ 
++#ifdef CONFIG_GENERIC_IOMAP
+ #include <asm-generic/iomap.h>
++#else
++/*
++ * Here comes the implementation of the IOMAP interfaces.
++ */
++static inline unsigned int ioread16be(const void __iomem *addr)
++{
++	return readw_be(addr);
++}
++#define ioread16be ioread16be
++
++static inline unsigned int ioread32be(const void __iomem *addr)
++{
++	return readl_be(addr);
++}
++#define ioread32be ioread32be
++
++#ifdef __powerpc64__
++static inline u64 ioread64_lo_hi(const void __iomem *addr)
++{
++	return readq(addr);
++}
++#define ioread64_lo_hi ioread64_lo_hi
++
++static inline u64 ioread64_hi_lo(const void __iomem *addr)
++{
++	return readq(addr);
++}
++#define ioread64_hi_lo ioread64_hi_lo
++
++static inline u64 ioread64be(const void __iomem *addr)
++{
++	return readq_be(addr);
++}
++#define ioread64be ioread64be
++
++static inline u64 ioread64be_lo_hi(const void __iomem *addr)
++{
++	return readq_be(addr);
++}
++#define ioread64be_lo_hi ioread64be_lo_hi
++
++static inline u64 ioread64be_hi_lo(const void __iomem *addr)
++{
++	return readq_be(addr);
++}
++#define ioread64be_hi_lo ioread64be_hi_lo
++#endif /* __powerpc64__ */
++
++static inline void iowrite16be(u16 val, void __iomem *addr)
++{
++	writew_be(val, addr);
++}
++#define iowrite16be iowrite16be
++
++static inline void iowrite32be(u32 val, void __iomem *addr)
++{
++	writel_be(val, addr);
++}
++#define iowrite32be iowrite32be
++
++#ifdef __powerpc64__
++static inline void iowrite64_lo_hi(u64 val, void __iomem *addr)
++{
++	writeq(val, addr);
++}
++#define iowrite64_lo_hi iowrite64_lo_hi
++
++static inline void iowrite64_hi_lo(u64 val, void __iomem *addr)
++{
++	writeq(val, addr);
++}
++#define iowrite64_hi_lo iowrite64_hi_lo
++
++static inline void iowrite64be(u64 val, void __iomem *addr)
++{
++	writeq_be(val, addr);
++}
++#define iowrite64be iowrite64be
++
++static inline void iowrite64be_lo_hi(u64 val, void __iomem *addr)
++{
++	writeq_be(val, addr);
++}
++#define iowrite64be_lo_hi iowrite64be_lo_hi
++
++static inline void iowrite64be_hi_lo(u64 val, void __iomem *addr)
++{
++	writeq_be(val, addr);
++}
++#define iowrite64be_hi_lo iowrite64be_hi_lo
++#endif /* __powerpc64__ */
++
++struct pci_dev;
++void pci_iounmap(struct pci_dev *dev, void __iomem *addr);
++#define pci_iounmap pci_iounmap
++void __iomem *ioport_map(unsigned long port, unsigned int len);
++#define ioport_map ioport_map
++#endif
+ 
+ static inline void iosync(void)
+ {
+@@ -670,7 +811,6 @@ static inline void iosync(void)
+ 
+ #define IO_SPACE_LIMIT ~(0UL)
+ 
+-
+ /**
+  * ioremap     -   map bus memory into CPU space
+  * @address:   bus address of the memory
+@@ -706,7 +846,13 @@ extern void __iomem *ioremap(phys_addr_t address, unsigned long size);
+ extern void __iomem *ioremap_prot(phys_addr_t address, unsigned long size,
+ 				  unsigned long flags);
+ extern void __iomem *ioremap_wc(phys_addr_t address, unsigned long size);
++#define ioremap_wc ioremap_wc
++
++#ifdef CONFIG_PPC32
+ void __iomem *ioremap_wt(phys_addr_t address, unsigned long size);
++#define ioremap_wt ioremap_wt
++#endif
++
+ void __iomem *ioremap_coherent(phys_addr_t address, unsigned long size);
+ #define ioremap_uc(addr, size)		ioremap((addr), (size))
+ #define ioremap_cache(addr, size) \
+@@ -766,6 +912,7 @@ static inline unsigned long virt_to_phys(volatile void * address)
+ 
+ 	return __pa((unsigned long)address);
+ }
++#define virt_to_phys virt_to_phys
+ 
+ /**
+  *	phys_to_virt	-	map physical address to virtual
+@@ -783,6 +930,7 @@ static inline void * phys_to_virt(unsigned long address)
+ {
+ 	return (void *)__va(address);
+ }
++#define phys_to_virt phys_to_virt
+ 
+ /*
+  * Change "struct page" to physical address.
+@@ -810,6 +958,7 @@ static inline unsigned long virt_to_bus(volatile void * address)
+ 		return 0;
+         return __pa(address) + PCI_DRAM_OFFSET;
+ }
++#define virt_to_bus virt_to_bus
+ 
+ static inline void * bus_to_virt(unsigned long address)
+ {
+@@ -817,6 +966,7 @@ static inline void * bus_to_virt(unsigned long address)
+ 		return NULL;
+         return __va(address - PCI_DRAM_OFFSET);
+ }
++#define bus_to_virt bus_to_virt
+ 
+ #define page_to_bus(page)	(page_to_phys(page) + PCI_DRAM_OFFSET)
+ 
+@@ -855,6 +1005,8 @@ static inline void * bus_to_virt(unsigned long address)
+ 
+ #define clrsetbits_8(addr, clear, set) clrsetbits(8, addr, clear, set)
+ 
++#include <asm-generic/io.h>
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* _ASM_POWERPC_IO_H */
+diff --git a/arch/powerpc/kernel/iomap.c b/arch/powerpc/kernel/iomap.c
+index 9fe4fb3b08aa..72862a4d3a5d 100644
+--- a/arch/powerpc/kernel/iomap.c
++++ b/arch/powerpc/kernel/iomap.c
+@@ -11,177 +11,11 @@
+ #include <asm/pci-bridge.h>
+ #include <asm/isa-bridge.h>
+ 
+-/*
+- * Here comes the ppc64 implementation of the IOMAP 
+- * interfaces.
+- */
+-unsigned int ioread8(const void __iomem *addr)
+-{
+-	return readb(addr);
+-}
+-unsigned int ioread16(const void __iomem *addr)
+-{
+-	return readw(addr);
+-}
+-unsigned int ioread16be(const void __iomem *addr)
+-{
+-	return readw_be(addr);
+-}
+-unsigned int ioread32(const void __iomem *addr)
+-{
+-	return readl(addr);
+-}
+-unsigned int ioread32be(const void __iomem *addr)
+-{
+-	return readl_be(addr);
+-}
+-EXPORT_SYMBOL(ioread8);
+-EXPORT_SYMBOL(ioread16);
+-EXPORT_SYMBOL(ioread16be);
+-EXPORT_SYMBOL(ioread32);
+-EXPORT_SYMBOL(ioread32be);
+-#ifdef __powerpc64__
+-u64 ioread64(const void __iomem *addr)
+-{
+-	return readq(addr);
+-}
+-u64 ioread64_lo_hi(const void __iomem *addr)
+-{
+-	return readq(addr);
+-}
+-u64 ioread64_hi_lo(const void __iomem *addr)
+-{
+-	return readq(addr);
+-}
+-u64 ioread64be(const void __iomem *addr)
+-{
+-	return readq_be(addr);
+-}
+-u64 ioread64be_lo_hi(const void __iomem *addr)
+-{
+-	return readq_be(addr);
+-}
+-u64 ioread64be_hi_lo(const void __iomem *addr)
+-{
+-	return readq_be(addr);
+-}
+-EXPORT_SYMBOL(ioread64);
+-EXPORT_SYMBOL(ioread64_lo_hi);
+-EXPORT_SYMBOL(ioread64_hi_lo);
+-EXPORT_SYMBOL(ioread64be);
+-EXPORT_SYMBOL(ioread64be_lo_hi);
+-EXPORT_SYMBOL(ioread64be_hi_lo);
+-#endif /* __powerpc64__ */
+-
+-void iowrite8(u8 val, void __iomem *addr)
+-{
+-	writeb(val, addr);
+-}
+-void iowrite16(u16 val, void __iomem *addr)
+-{
+-	writew(val, addr);
+-}
+-void iowrite16be(u16 val, void __iomem *addr)
+-{
+-	writew_be(val, addr);
+-}
+-void iowrite32(u32 val, void __iomem *addr)
+-{
+-	writel(val, addr);
+-}
+-void iowrite32be(u32 val, void __iomem *addr)
+-{
+-	writel_be(val, addr);
+-}
+-EXPORT_SYMBOL(iowrite8);
+-EXPORT_SYMBOL(iowrite16);
+-EXPORT_SYMBOL(iowrite16be);
+-EXPORT_SYMBOL(iowrite32);
+-EXPORT_SYMBOL(iowrite32be);
+-#ifdef __powerpc64__
+-void iowrite64(u64 val, void __iomem *addr)
+-{
+-	writeq(val, addr);
+-}
+-void iowrite64_lo_hi(u64 val, void __iomem *addr)
+-{
+-	writeq(val, addr);
+-}
+-void iowrite64_hi_lo(u64 val, void __iomem *addr)
+-{
+-	writeq(val, addr);
+-}
+-void iowrite64be(u64 val, void __iomem *addr)
+-{
+-	writeq_be(val, addr);
+-}
+-void iowrite64be_lo_hi(u64 val, void __iomem *addr)
+-{
+-	writeq_be(val, addr);
+-}
+-void iowrite64be_hi_lo(u64 val, void __iomem *addr)
+-{
+-	writeq_be(val, addr);
+-}
+-EXPORT_SYMBOL(iowrite64);
+-EXPORT_SYMBOL(iowrite64_lo_hi);
+-EXPORT_SYMBOL(iowrite64_hi_lo);
+-EXPORT_SYMBOL(iowrite64be);
+-EXPORT_SYMBOL(iowrite64be_lo_hi);
+-EXPORT_SYMBOL(iowrite64be_hi_lo);
+-#endif /* __powerpc64__ */
+-
+-/*
+- * These are the "repeat read/write" functions. Note the
+- * non-CPU byte order. We do things in "IO byteorder"
+- * here.
+- *
+- * FIXME! We could make these do EEH handling if we really
+- * wanted. Not clear if we do.
+- */
+-void ioread8_rep(const void __iomem *addr, void *dst, unsigned long count)
+-{
+-	readsb(addr, dst, count);
+-}
+-void ioread16_rep(const void __iomem *addr, void *dst, unsigned long count)
+-{
+-	readsw(addr, dst, count);
+-}
+-void ioread32_rep(const void __iomem *addr, void *dst, unsigned long count)
+-{
+-	readsl(addr, dst, count);
+-}
+-EXPORT_SYMBOL(ioread8_rep);
+-EXPORT_SYMBOL(ioread16_rep);
+-EXPORT_SYMBOL(ioread32_rep);
+-
+-void iowrite8_rep(void __iomem *addr, const void *src, unsigned long count)
+-{
+-	writesb(addr, src, count);
+-}
+-void iowrite16_rep(void __iomem *addr, const void *src, unsigned long count)
+-{
+-	writesw(addr, src, count);
+-}
+-void iowrite32_rep(void __iomem *addr, const void *src, unsigned long count)
+-{
+-	writesl(addr, src, count);
+-}
+-EXPORT_SYMBOL(iowrite8_rep);
+-EXPORT_SYMBOL(iowrite16_rep);
+-EXPORT_SYMBOL(iowrite32_rep);
+-
+ void __iomem *ioport_map(unsigned long port, unsigned int len)
+ {
+ 	return (void __iomem *) (port + _IO_BASE);
+ }
+-
+-void ioport_unmap(void __iomem *addr)
+-{
+-	/* Nothing to do */
+-}
+ EXPORT_SYMBOL(ioport_map);
+-EXPORT_SYMBOL(ioport_unmap);
+ 
+ #ifdef CONFIG_PCI
+ void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
+-- 
+2.25.0
 
