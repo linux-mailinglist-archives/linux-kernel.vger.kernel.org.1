@@ -2,81 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D8C2BC12A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718E42BC12C
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727928AbgKURpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 12:45:34 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:42897 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbgKURpe (ORCPT
+        id S1728012AbgKURpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 12:45:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbgKURpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 12:45:34 -0500
-X-Originating-IP: 52.47.93.88
-Received: from ip-172-31-39-236.eu-west-3.compute.internal (ec2-52-47-93-88.eu-west-3.compute.amazonaws.com [52.47.93.88])
-        (Authenticated sender: kamel.bouhara@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3EC2A20003;
-        Sat, 21 Nov 2020 17:45:31 +0000 (UTC)
-Date:   Sat, 21 Nov 2020 17:45:30 +0000
-From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        alexandre.belloni@bootlin.com,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Add Kamel Bouhara as TCB counter driver
- maintainer
-Message-ID: <20201121174530.GB11423@ip-172-31-39-236.eu-west-3.compute.internal>
-References: <20201116131141.3985-1-vilhelm.gray@gmail.com>
- <20201121161902.5ede1a23@archlinux>
+        Sat, 21 Nov 2020 12:45:53 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783ABC0613CF;
+        Sat, 21 Nov 2020 09:45:53 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id d12so14109158wrr.13;
+        Sat, 21 Nov 2020 09:45:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CmLzE4UtMwXnfnKb5jOVMuAz+yy9QBReO6ZHCKfQ55I=;
+        b=Qd4Xx/EPAOlqOCKpFWNXhlixrBcK12nOahenM2/Ucy99hWa2rwXMJvuoz8uD5KjLGB
+         cme+8I9isjfXMDBbp3qOr1bJ/OyX3XBbGdJVyGfscIAJ42gCyexuy93CN38KKPkEnJ/v
+         w2vivZSSMPxUtN9ucaNO6BzvxmTA5nYdanXG8vlfqmF71Ye3El0GIklfkdIGjsGZQ52n
+         jFyAE05DJvRGnOvLTfZO5qzTzc3PHz+PM/SXLe0OxRqRl4LNfwItthhuBUMg15oonL1N
+         cYVPLbU39lNQzWa0uTx9ZnSOPsxdqNQrJC5qjRFsTTOBq6W5MxAVkK2IFkXJygWtv+Gf
+         diNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CmLzE4UtMwXnfnKb5jOVMuAz+yy9QBReO6ZHCKfQ55I=;
+        b=PBqM+zzBg9J48J5eV9Nf/cuGiZU8vwMzjx1QYAHn5ZeUvYXUY3PtZXmmwX07OjVbAD
+         uJizpP/5QCyFMFv40vo2jTwkUcVY2D5b6Wj8mGeKypzxH315FwE71FuDYLSXNmY6t4sZ
+         YwV1/VOhda+Djs7clj2hG33oqkRMKc5hnx/rbwd8NdagItT4PpEeMYzjPFyKLRMRt4Ef
+         8BHkYHSkLlONKW38v5+u1UtELwiiCxtkVjufg309i7YEoPRh4arU3rDd9eEceewDetoQ
+         yJG2MAymzYm3/mmguX4cK+t57r2PdlCk4ajfG1pVxHzKfmZWwxOhU/PfEccCHyisdl7A
+         LZhw==
+X-Gm-Message-State: AOAM531+DLbw0Tqkji3Jdax5ewFFPhtGkRauV6wuzPBBY0Ur62qi8vfU
+        cJvlXFD+GWsV+u3uFHqCvAT48MD3qld80w==
+X-Google-Smtp-Source: ABdhPJxHDqFDtMWLXbEGAz83X92mje739HE9WlnMeN1iWBJfLuj1Z4NLGUa2JRprj3vhsB/2l7PQig==
+X-Received: by 2002:a5d:4e0a:: with SMTP id p10mr23382784wrt.358.1605980752025;
+        Sat, 21 Nov 2020 09:45:52 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id b14sm9176533wrs.46.2020.11.21.09.45.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 21 Nov 2020 09:45:51 -0800 (PST)
+Subject: Re: [PATCH] lseek.2: SYNOPSIS: Use correct types
+To:     mtk.manpages@gmail.com
+Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201121173054.12172-1-alx.manpages@gmail.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <5e3a4489-48dd-b33c-9733-4967cdb8a310@gmail.com>
+Date:   Sat, 21 Nov 2020 18:45:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121161902.5ede1a23@archlinux>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201121173054.12172-1-alx.manpages@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 04:19:02PM +0000, Jonathan Cameron wrote:
-> On Mon, 16 Nov 2020 08:11:41 -0500
-> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> 
-> > Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> Purely for the record, Kamel, would you mind giving an
-> Acked-by for this?
+Hi Michael,
 
-Hello Wiliam, Jon,
-
-Of course, done.
+I'm a bit lost in all the *lseek* pages.
+You had a good read some months ago, so you may know it better.
+I don't know which of those functions come from the kernel,
+and which come from glibc (if any).
+In the kernel I only found the lseek, llseek, and 32_llseek
+(as you can see in the patch).
+So if any other prototype needs to be updated, please do so.
+Especially, have a look at lseek64(3),
+which I suspect needs the same changes I propose in that patch.
 
 Thanks,
-Kamel
+
+Alex
+
+On 11/21/20 6:30 PM, Alejandro Colomar wrote:
+> The Linux kernel uses 'unsigned int' instead of 'int'
+> for 'fd' and 'whence'.
+> As glibc provides no wrapper, use the same types the kernel uses.
 > 
-> Thanks,
+> src/linux$ grep -rn "SYSCALL_DEFINE.*lseek"
+> fs/read_write.c:322:SYSCALL_DEFINE3(lseek, unsigned int, fd, off_t, offset, unsigned int, whence)
+> fs/read_write.c:328:COMPAT_SYSCALL_DEFINE3(lseek, unsigned int, fd, compat_off_t, offset, unsigned int, whence)
+> fs/read_write.c:336:SYSCALL_DEFINE5(llseek, unsigned int, fd, unsigned long, offset_high,
+> arch/mips/kernel/linux32.c:65:SYSCALL_DEFINE5(32_llseek, unsigned int, fd, unsigned int, offset_high,
 > 
-> Jonathan
+> src/linux$ sed -n 322,325p fs/read_write.c
+> SYSCALL_DEFINE3(lseek, unsigned int, fd, off_t, offset, unsigned int, whence)
+> {
+> 	return ksys_lseek(fd, offset, whence);
+> }
 > 
-> > ---
-> >  MAINTAINERS | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 913b5eb64e44..18d34536c4bd 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -2095,6 +2095,12 @@ X:	drivers/net/wireless/atmel/
-> >  N:	at91
-> >  N:	atmel
-> >  
-> > +Microchip Timer Counter Block (TCB) Capture Driver
-> > +M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > +L:	linux-iio@vger.kernel.org
-> > +S:	Maintained
-> > +F:	drivers/counter/microchip-tcb-capture.c
-> > +
-> >  ARM/Microchip Sparx5 SoC support
-> >  M:	Lars Povlsen <lars.povlsen@microchip.com>
-> >  M:	Steen Hegelund <Steen.Hegelund@microchip.com>
+> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+> ---
+>  man2/lseek.2 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/man2/lseek.2 b/man2/lseek.2
+> index e35e410a6..2ff878ffa 100644
+> --- a/man2/lseek.2
+> +++ b/man2/lseek.2
+> @@ -51,7 +51,7 @@ lseek \- reposition read/write file offset
+>  .br
+>  .B #include <unistd.h>
+>  .PP
+> -.BI "off_t lseek(int " fd ", off_t " offset ", int " whence );
+> +.BI "off_t lseek(unsigned int " fd ", off_t " offset ", unsigned int " whence );
+>  .SH DESCRIPTION
+>  .BR lseek ()
+>  repositions the file offset of the open file description
 > 
