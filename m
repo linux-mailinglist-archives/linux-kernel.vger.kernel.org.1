@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB452BC08D
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 17:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2330C2BC091
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 17:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgKUQZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 11:25:27 -0500
-Received: from mga07.intel.com ([134.134.136.100]:60104 "EHLO mga07.intel.com"
+        id S1726476AbgKUQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 11:32:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726562AbgKUQZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 11:25:25 -0500
-IronPort-SDR: b9KTDjpuEqbz/AYCLQndYThLOQQQE3+6DrSzMrc8XTZywhMU9ePbYwIyAneFm/3EDwn3z/r4rW
- 8EZQjKPHPdAA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9812"; a="235744555"
-X-IronPort-AV: E=Sophos;i="5.78,359,1599548400"; 
-   d="scan'208";a="235744555"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2020 08:25:25 -0800
-IronPort-SDR: +27ZHzQwkB2oCTZZOyqtZet+eiuKzK+aHmOZHux7knxxZUX2eLzoKynQ+Mj0w2CHyn/xOLa2RV
- snyDXV/6+uGw==
-X-IronPort-AV: E=Sophos;i="5.78,359,1599548400"; 
-   d="scan'208";a="545854498"
-Received: from ichengtu-mobl1.amr.corp.intel.com (HELO [10.252.131.162]) ([10.252.131.162])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2020 08:25:24 -0800
-Subject: Re: [PATCH v40 00/24] Intel SGX foundations
-To:     "Dr. Greg" <greg@enjellic.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, sean.j.christopherson@intel.com,
-        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
- <20201121151259.GA3948@wind.enjellic.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <5ac4eccb-fcf9-eed3-fcec-b8b6bf56bb39@intel.com>
-Date:   Sat, 21 Nov 2020 08:25:23 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725914AbgKUQcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 11:32:03 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8E9522206;
+        Sat, 21 Nov 2020 16:32:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605976323;
+        bh=hvZKMfDT45SrrDndTb88nBfj/K+dMn9SERmCh1poRBU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Oq3tI8Oz4rEXwir+kMVZH4uUSC7r4JxdX82Fi3ATqi4vr+Scc/oeUSxJyRGELne6v
+         nabUVSzoXO0peaa0KabLXJmrdkKYWLhEFWh4JBY3H5h10VsIliDa5mt1JqWtbQTnXP
+         cxi76GPl/rZeZny8fKb5bG11F9BSFj+Zyizb+md8=
+Date:   Sat, 21 Nov 2020 16:31:57 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Kamel Bouhara <kamel.bouhara@bootlin.com>
+Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        robh+dt@kernel.org, alexandre.belloni@bootlin.com,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] counter: microchip-tcb-capture: Fix CMR value check
+Message-ID: <20201121163157.086ae03b@archlinux>
+In-Reply-To: <20201115152617.GB2233@kb-xps>
+References: <20201114232805.253108-1-vilhelm.gray@gmail.com>
+        <20201115152617.GB2233@kb-xps>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201121151259.GA3948@wind.enjellic.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/21/20 7:12 AM, Dr. Greg wrote:
->> Important Kernel Touch Points
->> =============================
->>
->> This implementation is picky and will decline to work on hardware which
->> is locked to Intel's root of trust.
-> Given that this driver is no longer locked to the Intel trust root, by
-> virtue of being restricted to run only on platforms which support
-> Flexible Launch Control, there is no longer any legitimate technical
-> reason to not expose all of the functionality of the hardware.
+On Sun, 15 Nov 2020 16:26:17 +0100
+Kamel Bouhara <kamel.bouhara@bootlin.com> wrote:
 
-I honestly can't understand what the point of this is, and I mean that
-on multiple levels.
+> On Sat, Nov 14, 2020 at 06:28:05PM -0500, William Breathitt Gray wrote:
+> > The ATMEL_TC_ETRGEDG_* defines are not masks but rather possible values
+> > for CMR. This patch fixes the action_get() callback to properly check
+> > for these values rather than mask them.
+> >
+> > Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
+> > Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > ---  
+> 
+> Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> 
+Applied to the fixes-togreg branch of iio.git and marked for stable.
 
-First of all, there's not a coherent description of the problem you're
-solving with ~700 lines of code and the treatise you wrote here instead
-of a changelog.
+Thanks,
 
-Second, is the point here to distract folks from testing the branch in
-the tip tree?  Or, is it to show appreciation to maintainers by giving
-them more of the thing they love: code to review?
+Jonathan
+
+> >  drivers/counter/microchip-tcb-capture.c | 16 ++++++++++------
+> >  1 file changed, 10 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
+> > index 039c54a78aa5..710acc0a3704 100644
+> > --- a/drivers/counter/microchip-tcb-capture.c
+> > +++ b/drivers/counter/microchip-tcb-capture.c
+> > @@ -183,16 +183,20 @@ static int mchp_tc_count_action_get(struct counter_device *counter,
+> >
+> >  	regmap_read(priv->regmap, ATMEL_TC_REG(priv->channel[0], CMR), &cmr);
+> >
+> > -	*action = MCHP_TC_SYNAPSE_ACTION_NONE;
+> > -
+> > -	if (cmr & ATMEL_TC_ETRGEDG_NONE)
+> > +	switch (cmr & ATMEL_TC_ETRGEDG) {
+> > +	default:
+> >  		*action = MCHP_TC_SYNAPSE_ACTION_NONE;
+> > -	else if (cmr & ATMEL_TC_ETRGEDG_RISING)
+> > +		break;
+> > +	case ATMEL_TC_ETRGEDG_RISING:
+> >  		*action = MCHP_TC_SYNAPSE_ACTION_RISING_EDGE;
+> > -	else if (cmr & ATMEL_TC_ETRGEDG_FALLING)
+> > +		break;
+> > +	case ATMEL_TC_ETRGEDG_FALLING:
+> >  		*action = MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE;
+> > -	else if (cmr & ATMEL_TC_ETRGEDG_BOTH)
+> > +		break;
+> > +	case ATMEL_TC_ETRGEDG_BOTH:
+> >  		*action = MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE;
+> > +		break;
+> > +	}
+> >
+> >  	return 0;
+> >  }
+> > --
+> > 2.29.2
+> >  
+> 
+> --
+> Kamel Bouhara, Bootlin
+> Embedded Linux and kernel engineering
+> https://bootlin.com
+
