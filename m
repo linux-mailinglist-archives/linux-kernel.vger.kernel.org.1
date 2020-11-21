@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CB32BC10E
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9702BC11C
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 18:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgKURXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 12:23:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727145AbgKURXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 12:23:02 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4DF8208CA;
-        Sat, 21 Nov 2020 17:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605979382;
-        bh=yG2OGMLqiBkxwmYUNcyYmCrFrypiBHz3ksLoG91LVDg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Gjunsitt6iiGoM0+hr+GV4rs9pyY5IpsRUW4QXditBE/s/y3+eO8LwCSXa2EpiaPy
-         EVNbj+uRohX35CA/OzUXtmEyPiWfd5w6QWP2Qx7EC/i8RN3HLZJpH/tpzxu7bUNCnu
-         v6O1eGrt5YEnmEoddCTRSXXHALmz25KNC0f50axQ=
-Date:   Sat, 21 Nov 2020 17:22:57 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ye Xiang <xiang.ye@intel.com>
-Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] iio: hid-sensor-trigger: Decrement runtime pm
- enable count on driver removal
-Message-ID: <20201121172257.59fa05d5@archlinux>
-In-Reply-To: <20201119100331.2594-3-xiang.ye@intel.com>
-References: <20201119100331.2594-1-xiang.ye@intel.com>
-        <20201119100331.2594-3-xiang.ye@intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727171AbgKURep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 12:34:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbgKUReo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 12:34:44 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1EAC0613CF;
+        Sat, 21 Nov 2020 09:34:44 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id w24so13381832wmi.0;
+        Sat, 21 Nov 2020 09:34:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=flwT+iURKLpYtLG5AlpA8Euuebh0s1kBcUIZ+rA7YaQ=;
+        b=eA5wM3W1GGMzK+9Hh3e8lW8rH8c5LSX2Tt8HemDN8YWSxcq6vF4g9Ad5UfGzbjJaBC
+         OcaudtmGn27vpZ0MjBVpcOJ2MBC0b1AV2Jg9cDSzjVLg8fS0FXsAEcySmJNuxxhsKjI0
+         BSSre8tlbDAaJqfveBjsq+IKR0+VS9gcqc5Vi9SAgAE6YR6lakhi/hUsSNLLooEmDNdc
+         MZx7vmSKJydm2sO8Nxk4u40FLfFs/czaSWCl0O3vxOvdLNFDHHJA1MDTXXxtjrM3fHiQ
+         QexIrKsXlmJ2rvgMbLUAWFQ1AtCfVFPNzirk2IoSr4bi3KuYw+DebDedHCSGVoJ0KJiL
+         FRnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=flwT+iURKLpYtLG5AlpA8Euuebh0s1kBcUIZ+rA7YaQ=;
+        b=nSa8K+a+MvKdEbcQNlcjdpNQYFmUD565thZppbB4xjIVbIGOL4+tH0PH1cZDTlKiiW
+         T+AielINYr5Jqjdu4ya7lbZyFa1O1jHUlP8TFJnxyIENRWOayAeKBjBAbsVw6GGaurVf
+         Z8McaK9H6V6xa1YY9XyzDl9QZzbVQOttG3ENrIrJZEMULnlnRHC4OoNV3qNtaCeR9czt
+         RuDp9SYn1wuQu+dIi0vCF/vs5uA+gGFmZeDke6PRQDVaMYk2UPzdIsgUIoApVnDD33CA
+         uURbznMsArq9NkDHLL6xVsVqi45/C8UBe1GIAqxfPmju7jmBreR3z68jrhy2UfzcBYdb
+         6qfg==
+X-Gm-Message-State: AOAM533FSo8FCMh/321fz8XP+PS+Z1y3TbJFS05RL5uHIHfKyseAuFL+
+        4letOLVFil15FjmdnHR99NI=
+X-Google-Smtp-Source: ABdhPJxsSvF4HlyGXI+JDzIX9uLXNQ8Jp+1PsAmfm100yu02DW1vmpYiONqx5O9L00/4Fm3jF8pfvQ==
+X-Received: by 2002:a1c:6043:: with SMTP id u64mr15137362wmb.166.1605980082827;
+        Sat, 21 Nov 2020 09:34:42 -0800 (PST)
+Received: from localhost.localdomain ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id w17sm9345125wru.82.2020.11.21.09.34.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 09:34:42 -0800 (PST)
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+To:     mtk.manpages@gmail.com
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] lseek.2: SYNOPSIS: Use correct types
+Date:   Sat, 21 Nov 2020 18:30:56 +0100
+Message-Id: <20201121173054.12172-1-alx.manpages@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Nov 2020 18:03:29 +0800
-Ye Xiang <xiang.ye@intel.com> wrote:
+The Linux kernel uses 'unsigned int' instead of 'int'
+for 'fd' and 'whence'.
+As glibc provides no wrapper, use the same types the kernel uses.
 
-> To avoid pm_runtime_disable called repeatedly by hid sensor drivers,
-> decrease runtime pm enable count after call it.
-> 
-> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-This sounds like a fix.  If so please make that clear and add a fixes tag.
+src/linux$ grep -rn "SYSCALL_DEFINE.*lseek"
+fs/read_write.c:322:SYSCALL_DEFINE3(lseek, unsigned int, fd, off_t, offset, unsigned int, whence)
+fs/read_write.c:328:COMPAT_SYSCALL_DEFINE3(lseek, unsigned int, fd, compat_off_t, offset, unsigned int, whence)
+fs/read_write.c:336:SYSCALL_DEFINE5(llseek, unsigned int, fd, unsigned long, offset_high,
+arch/mips/kernel/linux32.c:65:SYSCALL_DEFINE5(32_llseek, unsigned int, fd, unsigned int, offset_high,
 
-If it couldn't have been triggered before, then please explain why in this
-patch description.
+src/linux$ sed -n 322,325p fs/read_write.c
+SYSCALL_DEFINE3(lseek, unsigned int, fd, off_t, offset, unsigned int, whence)
+{
+	return ksys_lseek(fd, offset, whence);
+}
 
-Thanks,
+Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+---
+ man2/lseek.2 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Jonathan
-
-> ---
->  drivers/iio/common/hid-sensors/hid-sensor-trigger.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/common/hid-sensors/hid-sensor-trigger.c b/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
-> index ff375790b7e8..30340abcbc8d 100644
-> --- a/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
-> +++ b/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
-> @@ -227,8 +227,10 @@ static int hid_sensor_data_rdy_trigger_set_state(struct iio_trigger *trig,
->  void hid_sensor_remove_trigger(struct iio_dev *indio_dev,
->  			       struct hid_sensor_common *attrb)
->  {
-> -	if (atomic_read(&attrb->runtime_pm_enable))
-> +	if (atomic_read(&attrb->runtime_pm_enable)) {
->  		pm_runtime_disable(&attrb->pdev->dev);
-> +		atomic_dec(&attrb->runtime_pm_enable);
-> +	}
->  
->  	pm_runtime_set_suspended(&attrb->pdev->dev);
->  	pm_runtime_put_noidle(&attrb->pdev->dev);
+diff --git a/man2/lseek.2 b/man2/lseek.2
+index e35e410a6..2ff878ffa 100644
+--- a/man2/lseek.2
++++ b/man2/lseek.2
+@@ -51,7 +51,7 @@ lseek \- reposition read/write file offset
+ .br
+ .B #include <unistd.h>
+ .PP
+-.BI "off_t lseek(int " fd ", off_t " offset ", int " whence );
++.BI "off_t lseek(unsigned int " fd ", off_t " offset ", unsigned int " whence );
+ .SH DESCRIPTION
+ .BR lseek ()
+ repositions the file offset of the open file description
+-- 
+2.29.2
 
