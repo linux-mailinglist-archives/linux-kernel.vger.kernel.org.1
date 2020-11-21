@@ -2,127 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB0B2BBEBE
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 12:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 460392BBEBF
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 12:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgKULko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 06:40:44 -0500
-Received: from disco-boy.misterjones.org ([51.254.78.96]:37050 "EHLO
-        disco-boy.misterjones.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727403AbgKULkn (ORCPT
+        id S1727560AbgKULl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 06:41:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727337AbgKULl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 06:40:43 -0500
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@misterjones.org>)
-        id 1kgRFo-00CVLU-BN; Sat, 21 Nov 2020 11:40:32 +0000
+        Sat, 21 Nov 2020 06:41:26 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B504C061A4A
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 03:41:26 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id d18so12195230edt.7
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 03:41:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=n6maI52ojE6yJGXdjCJAlZ//7OuY9jKG+qgEqxsfnH4=;
+        b=tvfimv+TjozKEmB88rp6JT9bj3JgoeLdKn/zP5i9KGCBMGVNwl9VVR/a/coCkVIaUh
+         o82ZPALt8b8vN7HpHucA/+lJmZpTtqEdAfkSBO98Up/x/d8jtt+w8gb+VxWkxS3En75p
+         vsp+ER+y0vDMZkyps8qrrI5BX6LSfJezKL+3sG6v+WFKc3ZSTO6erNrxc8lerfhrarAX
+         yLSQS0AfcJ+RnRl5k8ULTohBKRsICef2Og1IHGIJTgRJ+xYRRqUGN59ZLFtZWFk0zlH8
+         BGDKeFjolmwnvFoHor/u08dRAVCvhI++iSpOKr/ijDpjmTXegNlfiaBxertjvmN8sZ6W
+         tjjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=n6maI52ojE6yJGXdjCJAlZ//7OuY9jKG+qgEqxsfnH4=;
+        b=qGVNl0cHz+udoM9lWWuK0eqBPcb3K4sRvFsifosfbfA56Z8waPJ6ZEsmP369VUXQHw
+         yiFebgev3SIZlYI6DbyQe4f3JYxMEipUxwM+dVeLNvvyp5s4TV2fm+ZqjYtkSRgdeFhJ
+         +FWNAPgd1o1afwOuPXG49rx46iwI+02qGFI+x2HPtAiw5hAf3uzDXvIDAM/hqKWJBnqe
+         9xGn7tZo2pI999MyvI/D7v8+Q52A+aoph47pVNff6ztFfvVAiabaQfCQRHc2zt3zs4Hw
+         FSfvjgonh0zFERtJ5GS3EuqLej/oOVwKnba7GMwGf4Z3Sl4Gq2NsTtX+aSEjQ/CNcoR3
+         X8sw==
+X-Gm-Message-State: AOAM533BaEgZnOGbd8q+/neMu7Cbf/EAtzNnPpEJsMUSMiTGge35fK4p
+        RyCJRmo4/FwIqNynAvLItMDfAqKBouSkmZE4M04KUw==
+X-Google-Smtp-Source: ABdhPJy+mOMwZMYdETgNS5ikT77YDHit2Hf2xPGZDiTz+FbwN1zfG2wNEAWEmH1va+b1GtqYBQBGI3amLNdB/qyB058=
+X-Received: by 2002:a05:6402:1644:: with SMTP id s4mr21985603edx.221.1605958884763;
+ Sat, 21 Nov 2020 03:41:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 21 Nov 2020 11:40:32 +0000
-From:   Marc Zyngier <maz@misterjones.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Alistair Delva <adelva@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v7 00/17] Add support for Clang LTO
-In-Reply-To: <CAKwvOdmk1D0dLDOHEWX=jHpUxUT2JbwgnF62Qv3Rv=coNPadHg@mail.gmail.com>
-References: <20201118220731.925424-1-samitolvanen@google.com>
- <CAKwvOd=5PhCTZ-yHr08gPYNEsGEjZa=rDY0-unhkhofjXhqwLQ@mail.gmail.com>
- <CAMj1kXEVzDi5=uteUAzG5E=j+aTCHEbMxwDfor-s=DthpREpyw@mail.gmail.com>
- <CAKwvOdmpBNx9iSguGXivjJ03FaN5rgv2oaXZUQxYPdRccQmdyQ@mail.gmail.com>
- <CAMj1kXEoPEd6GzjL1XuxTPwitbR03BiBEXpAGtUytMj-h=vCkg@mail.gmail.com>
- <CAKwvOdmk1D0dLDOHEWX=jHpUxUT2JbwgnF62Qv3Rv=coNPadHg@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <a578025ea33108773fe9f3f6e1f180b5@misterjones.org>
-X-Sender: maz@misterjones.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: ndesaulniers@google.com, ardb@kernel.org, linux-arch@vger.kernel.org, adelva@google.com, keescook@chromium.org, paulmck@kernel.org, kernel-hardening@lists.openwall.com, peterz@infradead.org, gregkh@linuxfoundation.org, masahiroy@kernel.org, linux-kbuild@vger.kernel.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org, clang-built-linux@googlegroups.com, samitolvanen@google.com, jpoimboe@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@misterjones.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201120104539.806156260@linuxfoundation.org>
+In-Reply-To: <20201120104539.806156260@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 21 Nov 2020 17:11:13 +0530
+Message-ID: <CA+G9fYvjXhDdNi+OBBMgjdQxD2O6YtTD1nJ-Qd2HKnUDRYibhQ@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/14] 4.19.159-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-20 23:53, Nick Desaulniers wrote:
-> On Fri, Nov 20, 2020 at 3:30 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->> 
->> On Fri, 20 Nov 2020 at 21:19, Nick Desaulniers 
->> <ndesaulniers@google.com> wrote:
->> >
->> > On Fri, Nov 20, 2020 at 2:30 AM Ard Biesheuvel <ardb@kernel.org> wrote:
->> > >
->> > > On Thu, 19 Nov 2020 at 00:42, Nick Desaulniers <ndesaulniers@google.com> wrote:
->> > > >
->> > > > Thanks for continuing to drive this series Sami.  For the series,
->> > > >
->> > > > Tested-by: Nick Desaulniers <ndesaulniers@google.com>
->> > > >
->> > > > I did virtualized boot tests with the series applied to aarch64
->> > > > defconfig without CONFIG_LTO, with CONFIG_LTO_CLANG, and a third time
->> > > > with CONFIG_THINLTO.  If you make changes to the series in follow ups,
->> > > > please drop my tested by tag from the modified patches and I'll help
->> > > > re-test.  Some minor feedback on the Kconfig change, but I'll post it
->> > > > off of that patch.
->> > > >
->> > >
->> > > When you say 'virtualized" do you mean QEMU on x86? Or actual
->> > > virtualization on an AArch64 KVM host?
->> >
->> > aarch64 guest on x86_64 host.  If you have additional configurations
->> > that are important to you, additional testing help would be
->> > appreciated.
->> >
->> 
->> Could you run this on an actual phone? Or does Android already ship
->> with this stuff?
-> 
-> By `this`, if you mean "the LTO series", it has been shipping on
-> Android phones for years now, I think it's even required in the latest
-> release.
-> 
-> If you mean "the LTO series + mainline" on a phone, well there's the
-> android-mainline of https://android.googlesource.com/kernel/common/,
-> in which this series was recently removed in order to facilitate
-> rebasing Android's patches on ToT-mainline until getting the series
-> landed upstream.  Bit of a chicken and the egg problem there.
-> 
-> If you mean "the LTO series + mainline + KVM" on a phone; I don't know
-> the precise state of aarch64 KVM and Android (Will or Marc would
-> know).
+On Fri, 20 Nov 2020 at 16:38, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.159 release.
+> There are 14 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 22 Nov 2020 10:45:32 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.159-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-If you are lucky enough to have an Android system booting at EL2,
-KVM should just works [1], though I haven't tried with this series.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> We did experiment recently with RockPI's for aach64 KVM, IIRC;
-> I think Android is tricky as it still requires A64+A32/T32 chipsets,
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Which is about 100% of the Android systems at the moment (I don't think
-any of the asymmetric SoCs are in the wild yet). It doesn't really 
-affect
-KVM anyway.
+Summary
+------------------------------------------------------------------------
 
-          M.
+kernel: 4.19.159-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 5ab11a539ca71c870174aca46b388b09581e06c0
+git describe: v4.19.158-15-g5ab11a539ca7
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.158-15-g5ab11a539ca7
 
-[1] with the broken firmware gotchas that I believed to be erradicated
-8 years ago, but are still prevalent in the Android world: laughable
-PSCI implementation, invalid CNTFRQ_EL0...
--- 
-Who you jivin' with that Cosmik Debris?
+No regressions (compared to build v4.19.158)
+
+No fixes (compared to build v4.19.158)
+
+
+Ran 47170 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-sched-tests
+* network-basic-tests
+* v4l2-compliance
+* kselftest
+* ltp-fs_bind-tests
+* ltp-open-posix-tests
+* ltp-tracing-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
