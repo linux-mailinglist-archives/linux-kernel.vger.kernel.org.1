@@ -2,184 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0995E2BC00E
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E71D2BC013
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728163AbgKUOrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 09:47:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728098AbgKUOrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 09:47:45 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0D7522201;
-        Sat, 21 Nov 2020 14:47:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605970064;
-        bh=Cl4E3d2JPq+RWEtQZw6I3IJe+3MOIsFWQMC3attam+M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ASmt0X5x+fFQoqwZ6jgmyyImbqNul1uBJZPdUHLThnJSWxuViJByQLjtHTZ6ONUHp
-         Bu/yvX//4/NaOKLPGDaol+pE1WasIoemqK8ByH1FP8RU7zBfxbvX/uSThyHAGLYq2O
-         ZDkt63PLgShZPdVZ5sv89MixPBeK8VfY6CcYBo/I=
-Date:   Sat, 21 Nov 2020 14:47:39 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        groeck@chromium.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Gwendal Grignou <gwendal@chromium.org>
-Subject: Re: [PATCH v3 7/9] iio: cros_ec: use
- devm_iio_triggered_buffer_setup_ext()
-Message-ID: <20201121144739.338dadb3@archlinux>
-In-Reply-To: <CA+U=Dsqsz37HD0rjQLemnkOjdLOSBXoyVbpL_8svKS732jA-Uw@mail.gmail.com>
-References: <20200929125949.69934-1-alexandru.ardelean@analog.com>
-        <20200929125949.69934-8-alexandru.ardelean@analog.com>
-        <CAHp75VerL3x7L=AeLfnT6D01a=FyY3JE4vbwNFMaJz-v=f2k9w@mail.gmail.com>
-        <CA+U=DsoKM6S+1vrhE6txB-zQLhpJE1St19D_tmHa0=bbqj-g8w@mail.gmail.com>
-        <20200929164010.75f191c3@archlinux>
-        <CA+U=Dsqsz37HD0rjQLemnkOjdLOSBXoyVbpL_8svKS732jA-Uw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728027AbgKUOuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 09:50:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727874AbgKUOug (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 09:50:36 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC618C0613CF;
+        Sat, 21 Nov 2020 06:50:34 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id q206so14155877oif.13;
+        Sat, 21 Nov 2020 06:50:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ette9kx7pLe3BTxF6SA7N6NBJN1cBdU9jOFxOgT8Dgs=;
+        b=C98eNIJQ96ROHkZRL2BXaceiD1FesqjudfRDq0SpYUawYUbCsJMGSJnsiTUwp+ChlT
+         m4kiJfomdNY6iWhv9UK81qwOFUCOseOB+YLSTDuzWlcTHD45LIH6deMhEFjpv8zwnRsZ
+         F5PDDrjO3Jly6kUL5VABH4/9KRP5UwkMRT1mxrEAaZ9nCCNw9bbLebPJgNbvD/KcwcKG
+         KRAt1AyVrrgnbZ8qjoNtbFrDp28z/eI4ki6K6oxtKYMZKmQwvNEHwnQVWDZFDBDTuzWq
+         /7/0SuxWzzN2qPxvilP23Ega639E64hREY3F/w3y2+39Rlc8brtm/8PnKKhypzapyapf
+         RFsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ette9kx7pLe3BTxF6SA7N6NBJN1cBdU9jOFxOgT8Dgs=;
+        b=d79kQ7Qimgywbnq+EPRQvH71IRirBLysUn4v5sCOrA4p4K9bLz6KORgo5sjR+tCT3U
+         5ncgnm69ltIre23bWbOao+xKAWfr25/ne4h6/gMD2QdW8zodfASR5SZp/0agb419UMAk
+         sewCd+VJQOMz1emkms3CRv7ADWi+UX09XyMlhcwvgn0JjQfXeYpgIRpZ4zGQjmrFGBqo
+         SFQO2ew4uPrAN68PfKIiPBuI4zs53v4ILau0MVjuk/9riBelPHBApMgMgnrE4ChvpoQp
+         PSoyRtzrJFPCuzGBPZoxRq9ppgbebKB8eBM/3s7pBvOZ5Zj4Ef7JLhcUccYRQgJuU+Wb
+         DR9Q==
+X-Gm-Message-State: AOAM531Sk752XyQmKNV8zpUVRlcnhkXbZCtK3i0bLMt9Vb9j4LK2eJYW
+        V35pMpeXJPQwmexwIsgRV0utI8RK2xrDr6HtESE=
+X-Google-Smtp-Source: ABdhPJySOdSRaChFfDTdyVQzHEvIojGBbrolLIz896Qw2h4xpte1Ro7K6uWBdEMow99a6PELRxBLWCEe9btAVMFc9CI=
+X-Received: by 2002:aca:59c3:: with SMTP id n186mr9282300oib.149.1605970234325;
+ Sat, 21 Nov 2020 06:50:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201113154632.24973-1-sergio.paracuellos@gmail.com>
+ <20201113154632.24973-3-sergio.paracuellos@gmail.com> <20201121133432.GA2130098@robh.at.kernel.org>
+In-Reply-To: <20201121133432.GA2130098@robh.at.kernel.org>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Sat, 21 Nov 2020 15:50:23 +0100
+Message-ID: <CAMhs-H9JORHgPmq0-n=hx=yRo0SCT33mP_quxZoRtKYkiVDy_Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] dt: bindings: add mt7621-clk device tree binding documentation
+To:     Rob Herring <robh@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John Crispin <john@phrozen.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Weijie Gao <hackpascal@gmail.com>, jiaxun.yang@flygoat.com,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        NeilBrown <neil@brown.name>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 12:35:16 +0200
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+Hi Rob,
 
-> On Tue, Sep 29, 2020 at 6:40 PM Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Tue, 29 Sep 2020 17:31:55 +0300
-> > Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
-> >  
-> > > On Tue, Sep 29, 2020 at 4:09 PM Andy Shevchenko
-> > > <andy.shevchenko@gmail.com> wrote:  
-> > > >
-> > > > On Tue, Sep 29, 2020 at 3:55 PM Alexandru Ardelean
-> > > > <alexandru.ardelean@analog.com> wrote:
-> > > >  
-> > > > > This change switches to the new devm_iio_triggered_buffer_setup_ext()
-> > > > > function and removes the iio_buffer_set_attrs() call, for assigning the
-> > > > > HW FIFO attributes to the buffer.  
-> > > >
-> > > > Sorry, you were too fast with the version, below one nit.
-> > > >  
-> > > > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > > > > ---
-> > > > >  .../common/cros_ec_sensors/cros_ec_sensors_core.c | 15 +++++++++------
-> > > > >  1 file changed, 9 insertions(+), 6 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > > > > index c62cacc04672..1eafcf04ad69 100644
-> > > > > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > > > > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > > > > @@ -353,19 +353,22 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
-> > > > >                         if (ret)
-> > > > >                                 return ret;
-> > > > >                 } else {
-> > > > > +                       const struct attribute **fifo_attrs;
-> > > > > +
-> > > > > +                       if (has_hw_fifo)
-> > > > > +                               fifo_attrs = cros_ec_sensor_fifo_attributes;
-> > > > > +                       else
-> > > > > +                               fifo_attrs = NULL;
-> > > > > +
-> > > > >                         /*
-> > > > >                          * The only way to get samples in buffer is to set a
-> > > > >                          * software trigger (systrig, hrtimer).
-> > > > >                          */
-> > > > > -                       ret = devm_iio_triggered_buffer_setup(  
-> > > >  
-> > > > > +                       ret = devm_iio_triggered_buffer_setup_ext(
-> > > > >                                         dev, indio_dev, NULL, trigger_capture,
-> > > > > -                                       NULL);
-> > > > > +                                       NULL, fifo_attrs);  
-> > > >
-> > > > Perhaps it's time to reformat a bit, i.e. move dev to the first line
-> > > > and do the rest accordingly?  
-> > >
-> > > this feels like a mix of preferences here;
-> > > for once, the patch here [as-is], is the minimal form for this change
-> > > [in terms of patch-noise];
-> > > so, some people would choose the least noisiest patch;
-> > >
-> > > also, this indentation was chosen [as-is here] from the start [for
-> > > this code block];
-> > > not sure if it was preferred; i'd suspect it was due to the old 80-col limit;
-> > >
-> > > i'd leave it as-is [for now], or defer the decision to a maintainer to
-> > > decide [either IIO or chromium];  
-> >
-> > The indenting of this whole code block is a bit too deep.
-> >
-> > Looks to me like we should flip the sense of the outer if statement
-> >
-> > if (!physical_device)
-> >         return 0;
-> >
-> > That would lead to a whole bunch of reformatting around here including
-> > picking up this.
-> >
-> > For now I can just shuffle it a bit whilst applying.
-> >
-> > This set isn't likely to make the merge window anyway now as I'd like
-> > it to sit on list a little longer just because it touches several
-> > drivers with active maintainers and I'd like time for them to sanity
-> > check.
-> >  
-> 
-> ping on this;
-> should i do a V4 for this?
-Yes, probably worth sending out again. I'd like to see a few more acks
-on the individual drivers ideally and a v4 will get this to the
-top of peoples' inboxes.
+Thanks for the review.
 
-If we don't get them I won't let it block this series, but it's nice
-to try at least!
-
-Thanks,
-
-Jonathan
-
-> 
-> this is related to the multiple IIO buffer support:
-> https://lore.kernel.org/linux-iio/20201117162340.43924-1-alexandru.ardelean@analog.com/T/#t
-> 
-> it's one of the patchsets i could split away on it's own;
-> 
-> > Jonathan
+On Sat, Nov 21, 2020 at 2:34 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, Nov 13, 2020 at 04:46:29PM +0100, Sergio Paracuellos wrote:
+> > Adds device tree binding documentation for clocks in the
+> > MT7621 SOC.
 > >
-> >  
-> > >  
-> > > >  
-> > > > >                         if (ret)
-> > > > >                                 return ret;
-> > > > > -
-> > > > > -                       if (has_hw_fifo)
-> > > > > -                               iio_buffer_set_attrs(indio_dev->buffer,
-> > > > > -                                                    cros_ec_sensor_fifo_attributes);
-> > > > >                 }
-> > > > >         }
-> > > > >
-> > > > > --
-> > > > > 2.17.1
-> > > > >  
-> > > >
-> > > >
-> > > > --
-> > > > With Best Regards,
-> > > > Andy Shevchenko  
-> >  
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  .../bindings/clock/mediatek,mt7621-clk.yaml   | 61 +++++++++++++++++++
+> >  1 file changed, 61 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+> > new file mode 100644
+> > index 000000000000..363bd9880e29
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+> > @@ -0,0 +1,61 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/clock/mediatek,mt7621-clk.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: MT7621 Clock Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > +
+> > +description: |
+> > +  The MT7621 has a PLL controller from where the cpu clock is provided
+> > +  as well as derived clocks for the bus and the peripherals. It also
+> > +  can gate SoC device clocks.
+> > +
+> > +  Each clock is assigned an identifier and client nodes use this identifier
+> > +  to specify the clock which they consume.
+> > +
+> > +  All these identifiers could be found in:
+> > +  [1]: <include/dt-bindings/clock/mt7621-clk.h>.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: mediatek,mt7621-clk
+> > +
+> > +  ralink,sysctl:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description:
+> > +      phandle to the syscon which is in the same address area with syscon
+> > +      device.
+> > +
+> > +  "#clock-cells":
+> > +    description:
+> > +      The first cell indicates the clock gate number, see [1] for available
+> > +      clocks.
+> > +    const: 1
+> > +
+> > +  clock-output-names:
+> > +    maxItems: 8
+> > +
+> > +required:
+> > +  - compatible
+> > +  - ralink,sysctl
+> > +  - '#clock-cells'
+> > +  - clock-output-names
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/mt7621-clk.h>
+> > +
+> > +    pll {
+> > +      compatible = "mediatek,mt7621-clk";
+> > +      ralink,sysctl = <&sysc>;
+>
+> If this is the only control interface, then make this a child of 'sysc'.
+> And use 'reg' if there's a dedicated range of registers.
 
+This is the only one now in the device tree which is still in staging
+but there are several places where this sys control registers are
+accessed from. In the case of the clocks we need:
+
+#define SYSC_REG_SYSTEM_CONFIG0         0x10
+#define SYSC_REG_SYSTEM_CONFIG1         0x14
+#define SYSC_REG_CLKCFG0                0x2c
+#define SYSC_REG_CLKCFG1                0x30
+#define SYSC_REG_CUR_CLK_STS            0x44
+
+where there is not a range as it is but several different registers
+from where we need to read or write things. I wrote the driver using
+syscon and regmap because I thought in that way it might be more
+maintainable but this architecture also has operations to read and
+write registers from sysc and not using regmap at all. This operations
+are defined in arch/mips/include/asm/mach-ralink/ralink_regs.h. But
+because this sysc is currently mapped I cannot request its registers
+using reg in the device tree. If you prefer me to avoid the use of
+this syscon and regmap and use operations defined in ralink_regs.h,
+this will become in a node without "regs" or  "ralink,sysctl"
+property:
+
+pll {
+    compatible = "mediatek,mt7621-clk";
+    #clock-cells = <1>;
+    clock-output-names = "xtal", "cpu", "bus",
+                      "50m", "125m", "150m",
+                       "250m", "270m";
+};
+
+What should I do then?
+
+Best regards,
+    Sergio Paracuellos
+
+>
+> > +      #clock-cells = <1>;
+> > +      clock-output-names = "xtal", "cpu", "bus",
+> > +                           "50m", "125m", "150m",
+> > +                           "250m", "270m";
+> > +    };
+> > --
+> > 2.25.1
+> >
