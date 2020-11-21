@@ -2,106 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4662BBD02
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 05:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F2E2BBD0A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 05:51:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726324AbgKUEsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 23:48:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
+        id S1726560AbgKUEuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 23:50:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725829AbgKUEsH (ORCPT
+        with ESMTP id S1725829AbgKUEuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 23:48:07 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F45C061A47
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:48:07 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id o25so13031980oie.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:48:07 -0800 (PST)
+        Fri, 20 Nov 2020 23:50:01 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB40C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:50:00 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t21so9152665pgl.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:50:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+5tuY8DghcZBvhcmNZ1QBUM0wOMXflva60dOunjBFlM=;
-        b=hEfpldQOix/WT+Po0WGDlXh6hu4sjFQXHsfMLWLFHo/G9OEdGqxAbZqPPQwYx1FZmx
-         I3ZjlJl21PCfzGVogb4UhgsLsAv+2qoreIvLIFQxX1IxPcsgbSw4lEZRBDls6WjhL/g/
-         6pOxExIBguvb0AgbjSaiHDd3Vyim10/H68RS/hcR9HzUMCA7kFYWxvKNEx/hZFcAQHwK
-         RdaGb3b2uBMVORGB1hPZ5MK9Dg2L2QV93WRtLG6Z1/p3TPyLir36KHYX9KtGLZ3tKKe2
-         8+qYQTzLc45hrb8ff0E7tqjlYjnb50Xmu2TKQWhTen/KFC8PYy72xNOI6Qrx0SH2+7Dm
-         ABqA==
+        bh=1dCpwtABCBAjt0w8Zd+Ad9bD2W4r2bOOZVX2c+Uu5fs=;
+        b=dWZndGYY+uUFnjhTHmwgKC5kbCrdYmubSee+8hTXlbn/lIbOxvZ5Ttleyy46be1rVp
+         qkjr2mvMwk7LjJWmsfxi3Q4PR6eFA0UA3aAUKtM4P2ZPe+0LcvmlhQcOgYPLkEdCIIzz
+         wNJSVJ0EXPQ/HxHgOwIoeCjJqHxvAtGHQ7F4d2xt/aZfo3mkP4hHGzWSvOr7iTEJHtAj
+         z93hcZeMjn9tZGTzsGiq6KvXp61nQQynOsvheETm4xBNBIa2RT0/JqqAsRTb3j63Rqx/
+         EMV0tlo39IeO6+VXs+9xIUNUCyxfoLQCYVohHcREV5xp0jF1u+vbO4uW4WRMeIFG5ZTl
+         vHhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+5tuY8DghcZBvhcmNZ1QBUM0wOMXflva60dOunjBFlM=;
-        b=jDHQH7713jUoWyD/GMNR068WI7UzOh5KG0wlg6US1TbWXJEc03DFy270iMH7F4vfaQ
-         9GX7zZ6BDCSn2T8E+yY4uGWi5mwa2gE/DbgpfzGgTJOAICjMIQwlNALTx925SXfcNvZz
-         2/m4v/9HgXBezOkRN/1EjkyffgIxlmUfYpA83FCGuaQ06QO25iBhS9g1zJDOZUpt4272
-         PP5SSArJyL0ML0ebffi924LiKfGdR7IBdpX1OjNc/rJm9grNJhwuf70hMpLzYpftSop/
-         re1kLKm1gKhlU91T0Xu8anv8Yzv0ArclrhfWJEAbnaf/03xUNlAtch1/nDObaswUxXk1
-         sCyw==
-X-Gm-Message-State: AOAM531FOuzmixaLcFX+fByMPIkCdgFL0neV93ALQlEd9sxrdeRGh2Yr
-        +XMEpcrjo7LF7yxvIDE71VMLaQ==
-X-Google-Smtp-Source: ABdhPJzPZMaQkLsy6sCEJGtV7eRVF/ZWjoSa7tpvgaAqhe01hBeXktkYzZLQurCVbDvJibTDsCRJIg==
-X-Received: by 2002:a05:6808:301:: with SMTP id i1mr8853175oie.49.1605934086863;
-        Fri, 20 Nov 2020 20:48:06 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g3sm2875800oif.26.2020.11.20.20.48.05
+        bh=1dCpwtABCBAjt0w8Zd+Ad9bD2W4r2bOOZVX2c+Uu5fs=;
+        b=bqtS7iWi2yeLwxwS/EgAZ2E9m7Dipww8j7piJyPwog7ohpqt4fFf4KTthvKV4xWPNu
+         M/GRxjvwhdBRp/zap3T355z3KTLcv9DmH/Uw9vvdYwIyTkYNlMybGHaR2Nm8/6yW566o
+         Ex5V3mJMs7dpHdcLePeaSiZvbhi7Spr1ka4mQPGl38p/S05+up21TmT8kj7oHf9hs66m
+         kJs9w9U7XvXQM7ZFKwCA0q6eTDzYzhsAlLZ1ijRfKirmOiIn1XteHoRh/DL8n76c3kxh
+         SMhrq+10VO6BOnDRkoy5XQ3em6tYCrBLPeSz9zbMJBxNYYlSePUeT2RdXoCbeKaYYrQr
+         KY6w==
+X-Gm-Message-State: AOAM531Ob98iIfaKtIexYGOrOcUydUhbdchcXAQLALVjHBgWb6UQF0Yi
+        jk2LwY0MON77tnOnGaAMeij1OZDcWQYsqQ==
+X-Google-Smtp-Source: ABdhPJyRE/0jIW/09/jq9G1nAs4OeW/5voPWRhKLPi853CLU1nhono7tAJRPn8bBZ4NkUjbxQj1OVQ==
+X-Received: by 2002:a17:90a:c003:: with SMTP id p3mr13414860pjt.221.1605934200086;
+        Fri, 20 Nov 2020 20:50:00 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id w196sm5407692pfd.177.2020.11.20.20.49.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 20:48:06 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bean Huo <beanhuo@micron.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH] scsi: ufs: Adjust logic in common ADAPT helper
-Date:   Fri, 20 Nov 2020 20:48:10 -0800
-Message-Id: <20201121044810.507288-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        Fri, 20 Nov 2020 20:49:59 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v6 0/5] dma-buf: Code rework and performance improvements for system heap
+Date:   Sat, 21 Nov 2020 04:49:50 +0000
+Message-Id: <20201121044955.58215-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The introduction of ufshcd_dme_configure_adapt() refactored out
-duplication from the Mediatek and Qualcomm drivers.
+Hey All,
+  So just wanted to send another revision of my patch series
+of performance optimizations to the dma-buf system heap, this
+time against drm-misc-next.
 
-Both these implementations had the logic of:
-    gear_tx == UFS_HS_G4 => PA_INITIAL_ADAPT
-    gear_tx != UFS_HS_G4 => PA_NO_ADAPT
+This series reworks the system heap to use sgtables, and then
+consolidates the pagelist method from the heap-helpers into the
+CMA heap. After which the heap-helpers logic is removed (as it
+is unused). I'd still like to find a better way to avoid some of
+the logic duplication in implementing the entire dma_buf_ops
+handlers per heap. But unfortunately that code is tied somewhat
+to how the buffer's memory is tracked. As more heaps show up I
+think we'll have a better idea how to best share code, so for
+now I think this is ok.
 
-but now both implementations pass PA_INITIAL_ADAPT as "adapt_val" and if
-gear_tx is not UFS_HS_G4 that is replaced with PA_INITIAL_ADAPT. In
-other words, it's PA_INITIAL_ADAPT in both above cases.
+After this, the series introduces an optimization that
+Ørjan Eide implemented for ION that avoids calling sync on
+attachments that don't have a mapping.
 
-The result is that e.g. Qualcomm SM8150 has no longer functional UFS, so
-adjust the logic to match the previous implementation.
+Finally, an optimization to use larger order pages for the system
+heap. This change brings us closer to the current performance
+of the ION allocation code (though there still is a gap due
+to ION using a mix of deferred-freeing and page pools, I'll be
+looking at integrating those eventually).
 
-Fixes: fc85a74e28fe ("scsi: ufs: Refactor ADAPT configuration function")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/scsi/ufs/ufshcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This version of the series does not include the system-uncached
+heap as Daniel wanted further demonstration that it is useful
+with devices that use the mesa stack. I'm working on such a
+justification but I don't want to hold up these rework patches
+in the meantime.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 52e077aa3efe..13281c74cb4f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -3618,7 +3618,7 @@ int ufshcd_dme_configure_adapt(struct ufs_hba *hba,
- 	int ret;
- 
- 	if (agreed_gear != UFS_HS_G4)
--		adapt_val = PA_INITIAL_ADAPT;
-+		adapt_val = PA_NO_ADAPT;
- 
- 	ret = ufshcd_dme_set(hba,
- 			     UIC_ARG_MIB(PA_TXHSADAPTTYPE),
+thanks
+-john
+
+New in v6:
+* Dropped the system-uncached heap submission for now
+* Rebased onto drm-misc-next
+
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+
+John Stultz (5):
+  dma-buf: system_heap: Rework system heap to use sgtables instead of
+    pagelists
+  dma-buf: heaps: Move heap-helper logic into the cma_heap
+    implementation
+  dma-buf: heaps: Remove heap-helpers code
+  dma-buf: heaps: Skip sync if not mapped
+  dma-buf: system_heap: Allocate higher order pages if available
+
+ drivers/dma-buf/heaps/Makefile       |   1 -
+ drivers/dma-buf/heaps/cma_heap.c     | 325 +++++++++++++++++----
+ drivers/dma-buf/heaps/heap-helpers.c | 274 ------------------
+ drivers/dma-buf/heaps/heap-helpers.h |  53 ----
+ drivers/dma-buf/heaps/system_heap.c  | 411 ++++++++++++++++++++++++---
+ 5 files changed, 640 insertions(+), 424 deletions(-)
+ delete mode 100644 drivers/dma-buf/heaps/heap-helpers.c
+ delete mode 100644 drivers/dma-buf/heaps/heap-helpers.h
+
 -- 
-2.28.0
+2.17.1
 
