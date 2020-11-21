@@ -2,555 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAB42BC179
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86CE2BC17A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 19:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbgKUShA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 13:37:00 -0500
-Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95]:53010 "EHLO
-        gproxy1-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728201AbgKUShA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 13:37:00 -0500
-Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
-        by gproxy1.mail.unifiedlayer.com (Postfix) with ESMTP id CDFE6BA37ACB7
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 11:36:55 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id gXklkBUD6h41lgXklkFsSa; Sat, 21 Nov 2020 11:36:55 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=FoUrAVjq c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10:nop_charset_1
- a=nNwsprhYR40A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=_jlGtV7tAAAA:8
- a=lqMFVYZ4xg_k5nRSVlkA:9 a=QEXdDO2ut3YA:10:nop_charset_2
- a=nlm17XC03S6CtCLSeiRr:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=idSkd0PCcMkEslPYeZdxV8BnODSDcu+6bb65U/uIc/8=; b=1dYD+/yzLviPWxTUZ1tUlUrH/d
-        1V/GPdAqFIL6EAaSbXQZW4qtYbz68/pVVuB2143A7VhFoFb5htqg8e8IxVk9K+wvQ0vZGZWO3nNDc
-        2+bWmNlqCflHxmQEBbXmzjYXsy9KiUX4a6mb70bbpXk5e+8JmSDOAIcxgaQP1rlELJU60CW6STz/I
-        HD9nh+l+T1xRIxV6qpA1xWuaC9meZ8iOfDkH4Lb0peCyfkT4KtaYppJhfCAravyiT3jgpBcJ+wtF7
-        NAyD4Ij7d/oitwH9KlOCflFLCgfMIXsbroN+DUdBynE7d6TQkq4hUmVTlEVNofYPIAsLsqXE2Kp1O
-        wyn+CiEA==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:40928 helo=localhost)
-        by bh-25.webhostbox.net with esmtpa (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kgXkk-00386a-LK; Sat, 21 Nov 2020 18:36:54 +0000
-Date:   Sat, 21 Nov 2020 10:36:54 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.14 00/17] 4.14.208-rc1 review
-Message-ID: <20201121183654.GD111877@roeck-us.net>
-References: <20201120104540.414709708@linuxfoundation.org>
+        id S1728267AbgKUShS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 13:37:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727171AbgKUShR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 13:37:17 -0500
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C9C22224A
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 18:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605983836;
+        bh=k4bb1XSryjOjrKpxNZH2F9eH58+fbIVd+aoQp0laXe4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Y4NAE/tEqUg/gNMrQ7inrCvPTLXMwTuIj3xOAWqsXeKJ+KzxTBJwDo9ThXWitboWn
+         DcLN36fXAWIljW5O/B76tftncEDlzr9WVJZs5/K56Edt42vSlCydm8qtp7i75IQ4es
+         9z1GViBGnY+3/drXDznTvhLlCyIiqi59OB1O/rXI=
+Received: by mail-wm1-f50.google.com with SMTP id p19so10448559wmg.0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 10:37:16 -0800 (PST)
+X-Gm-Message-State: AOAM531kbJ98WFYRjhZ8t7Pteoo0sz7zCiAYwSd5JQ89+KC6uH1wLYhi
+        olAbqz5QQx2rygha6HOgrOitOyB3D/120FOtX0yrWw==
+X-Google-Smtp-Source: ABdhPJyT+5j8rFsBwyu797OsJDl+WuTD1EdSAaQGjTptGYVDhPFIXviNZWOffcBNlGT7AqKtPnhaNScW8JUX+5hc0PY=
+X-Received: by 2002:a7b:c92a:: with SMTP id h10mr15913375wml.138.1605983835075;
+ Sat, 21 Nov 2020 10:37:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201120104540.414709708@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kgXkk-00386a-LK
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:40928
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 26
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com> <20201121151259.GA3948@wind.enjellic.com>
+In-Reply-To: <20201121151259.GA3948@wind.enjellic.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 21 Nov 2020 10:36:58 -0800
+X-Gmail-Original-Message-ID: <CALCETrXTjZSg-ccDKF7yX8y+vCCrcn9C_m6ZCGNdWHq73aUHQQ@mail.gmail.com>
+Message-ID: <CALCETrXTjZSg-ccDKF7yX8y+vCCrcn9C_m6ZCGNdWHq73aUHQQ@mail.gmail.com>
+Subject: Re: [PATCH v40 00/24] Intel SGX foundations
+To:     "Dr. Greg" <greg@enjellic.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
+        Mikko Ylinen <mikko.ylinen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:03:11PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.208 release.
-> There are 17 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 22 Nov 2020 10:45:32 +0000.
-> Anything received after that time might be too late.
-> 
+Dr. Greg, I know you like sending these emails, but they're not really
+helpful for Linux kernel development.  Please see below.
 
-Build results:
-	total: 168 pass: 166 fail: 2
-Failed builds:
-	powerpc:cell_defconfig
-	powerpc:maple_defconfig
-Qemu test results:
-	total: 404 pass: 399 fail: 5
-Failed tests:
-	ppc64:mac99:ppc64_book3s_defconfig:smp:initrd
-	ppc64:mac99:ppc64_book3s_defconfig:smp:ide:rootfs
-	ppc64:mac99:ppc64_book3s_defconfig:smp:sdhci:mmc:rootfs
-	ppc64:mac99:ppc64_book3s_defconfig:smp:nvme:rootfs
-	ppc64:mac99:ppc64_book3s_defconfig:smp:scsi[DC395]:rootfs
+On Sat, Nov 21, 2020 at 7:13 AM Dr. Greg <greg@enjellic.com> wrote:
+>
+> On Wed, Nov 04, 2020 at 04:54:06PM +0200, Jarkko Sakkinen wrote:
+>
+> Good morning, I hope the weekend is going well for everyone.
+>
+> > Important Kernel Touch Points
+> > =============================
+> >
+> > This implementation is picky and will decline to work on hardware which
+> > is locked to Intel's root of trust.
+>
+> Given that this driver is no longer locked to the Intel trust root, by
+> virtue of being restricted to run only on platforms which support
+> Flexible Launch Control, there is no longer any legitimate technical
+> reason to not expose all of the functionality of the hardware.
 
-Build failures see below.
+I read this three times, and I can't tell what functionality you're
+referring to.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+>
+> The patch that I am including below implements signature based policy
+> controls for enclave initialization.  It does so in a manner that is
+> completely transparent to the default behavior of the driver, which is
+> to initialize any enclave passed to it with the exception of enclaves
+> that set the PROVISION_KEY attribute bit.
 
-Guenter
+It's completely unreviewable.  It's an ABI patch, and it does not
+document what it does, nor does it document why it does it.  It's just
+a bunch of code.  NAK.
 
----
-Building powerpc:cell_defconfig ... failed
---------------
-Error log:
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from arch/powerpc/lib/checksum_wrappers.c:24:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: data definition has no type or storage class [-Werror]
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: parameter names (without types) in function declaration [-Werror]
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-cc1: all warnings being treated as errors
-make[2]: *** [arch/powerpc/lib/checksum_wrappers.o] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[2]: *** wait: No child processes.  Stop.
-make[1]: *** [arch/powerpc/lib] Error 2
-make[1]: *** Waiting for unfinished jobs....
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from include/linux/crypto.h:26,
-                 from crypto/cipher.c:17:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from include/linux/crypto.h:26,
-                 from crypto/compress.c:15:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from arch/powerpc/platforms/cell/spufs/syscalls.c:9:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: data definition has no type or storage class [-Werror]
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: parameter names (without types) in function declaration [-Werror]
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from include/linux/crypto.h:26,
-                 from include/crypto/algapi.h:15,
-                 from crypto/memneq.c:62:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
-make[2]: *** [crypto/cipher.o] Error 1
-make[2]: *** Waiting for unfinished jobs....
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from include/asm-generic/termios-base.h:8,
-                 from arch/powerpc/include/asm/termios.h:20,
-                 from include/uapi/linux/termios.h:6,
-                 from include/linux/tty.h:7,
-                 from kernel/signal.c:23:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-cc1: all warnings being treated as errors
-make[4]: *** [arch/powerpc/platforms/cell/spufs/syscalls.o] Error 1
-make[4]: *** Waiting for unfinished jobs....
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-make[2]: *** [crypto/compress.o] Error 1
-cc1: some warnings being treated as errors
-make[2]: *** [crypto/memneq.o] Error 1
-make[1]: *** [crypto] Error 2
-cc1: some warnings being treated as errors
-make[2]: *** [kernel/signal.o] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[3]: *** [arch/powerpc/platforms/cell/spufs] Error 2
-make[2]: *** [arch/powerpc/platforms/cell] Error 2
-make[1]: *** [arch/powerpc/platforms] Error 2
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from drivers/char/ps3flash.c:24:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-cc1: some warnings being treated as errors
-make[3]: *** [drivers/char/ps3flash.o] Error 1
-make[3]: *** Waiting for unfinished jobs....
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from include/asm-generic/termios-base.h:8,
-                 from arch/powerpc/include/asm/termios.h:20,
-                 from include/uapi/linux/termios.h:6,
-                 from include/linux/tty.h:7,
-                 from arch/powerpc/kernel/setup_64.c:27:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: data definition has no type or storage class [-Werror]
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: parameter names (without types) in function declaration [-Werror]
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-make[1]: *** [kernel] Error 2
-cc1: all warnings being treated as errors
-make[2]: *** [arch/powerpc/kernel/setup_64.o] Error 1
-make[2]: *** Waiting for unfinished jobs....
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from drivers/edac/edac_device.c:16:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from drivers/edac/edac_mc_sysfs.c:20:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-make[2]: *** [drivers/char] Error 2
-make[2]: *** Waiting for unfinished jobs....
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-make[1]: *** [arch/powerpc/kernel] Error 2
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from include/linux/poll.h:12,
-                 from fs/bad_inode.c:17:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-cc1: some warnings being treated as errors
-cc1: some warnings being treated as errors
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-make[3]: *** [drivers/edac/edac_mc_sysfs.o] Error 1
-make[3]: *** Waiting for unfinished jobs....
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-make[3]: *** [drivers/edac/edac_device.o] Error 1
-cc1: some warnings being treated as errors
-make[2]: *** [fs/bad_inode.o] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[2]: *** [drivers/edac] Error 2
-make[1]: *** [fs] Error 2
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from drivers/base/regmap/regmap-debugfs.c:16:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-cc1: some warnings being treated as errors
-make[4]: *** [drivers/base/regmap/regmap-debugfs.o] Error 1
-make[4]: *** Waiting for unfinished jobs....
-make[3]: *** [drivers/base/regmap] Error 2
-make[2]: *** [drivers/base] Error 2
-make[1]: *** [drivers] Error 2
-make[1]: *** wait: No child processes.  Stop.
-make: *** [sub-make] Error 2
---------------
-Building powerpc:maple_defconfig ... failed
---------------
-Error log:
-In file included from arch/powerpc/include/asm/kup.h:10,
-                 from arch/powerpc/include/asm/uaccess.h:10,
-                 from include/linux/uaccess.h:14,
-                 from arch/powerpc/lib/checksum_wrappers.c:24:
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: data definition has no type or storage class [-Werror]
-    5 | DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
-arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: parameter names (without types) in function declaration [-Werror]
-arch/powerpc/include/asm/book3s/64/kup-radix.h: In function 'prevent_user_access':
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: 'uaccess_flush_key' undeclared (first use in this function)
-   18 |  if (static_branch_unlikely(&uaccess_flush_key))
-      |                              ^~~~~~~~~~~~~~~~~
-arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-cc1: all warnings being treated as errors
-make[2]: *** [arch/powerpc/lib/checksum_wrappers.o] Error 1
+To be crystal clear, I will not review, and I will NAK outright, any
+patches of this sort, until ALL of the following conditions are met:
 
----
-Building ppc64:mac99:qemu_ppc64_book3s_defconfig:smp:initrd ... failed
-------------
-Error log:
-In file included from ./arch/powerpc/include/asm/kup.h:10:0,
-                 from ./arch/powerpc/include/asm/uaccess.h:10,
-                 from ./include/linux/uaccess.h:14,
-                 from arch/powerpc/lib/checksum_wrappers.c:24:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: data definition has no type or storage class [-Werror]
- DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
- ^~~~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to ‘int’ in declaration of ‘DECLARE_STATIC_KEY_FALSE’ [-Werror=implicit-int]
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: parameter names (without types) in function declaration [-Werror]
-./arch/powerpc/include/asm/book3s/64/kup-radix.h: In function ‘prevent_user_access’:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function ‘static_branch_unlikely’ [-Werror=implicit-function-declaration]
-  if (static_branch_unlikely(&uaccess_flush_key))
-      ^~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: ‘uaccess_flush_key’ undeclared (first use in this function); did you mean ‘do_uaccess_flush’?
-  if (static_branch_unlikely(&uaccess_flush_key))
-                              ^~~~~~~~~~~~~~~~~
-                              do_uaccess_flush
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-cc1: all warnings being treated as errors
-make[1]: *** [arch/powerpc/lib/checksum_wrappers.o] Error 1
-make[1]: *** Waiting for unfinished jobs....
-In file included from ./arch/powerpc/include/asm/kup.h:10:0,
-                 from ./arch/powerpc/include/asm/uaccess.h:10,
-                 from ./include/linux/uaccess.h:14,
-                 from arch/powerpc/platforms/pseries/nvram.c:21:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: data definition has no type or storage class [-Werror]
- DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
- ^~~~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to ‘int’ in declaration of ‘DECLARE_STATIC_KEY_FALSE’ [-Werror=implicit-int]
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: parameter names (without types) in function declaration [-Werror]
-./arch/powerpc/include/asm/book3s/64/kup-radix.h: In function ‘prevent_user_access’:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function ‘static_branch_unlikely’ [-Werror=implicit-function-declaration]
-  if (static_branch_unlikely(&uaccess_flush_key))
-      ^~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: ‘uaccess_flush_key’ undeclared (first use in this function); did you mean ‘do_uaccess_flush’?
-  if (static_branch_unlikely(&uaccess_flush_key))
-                              ^~~~~~~~~~~~~~~~~
-                              do_uaccess_flush
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-cc1: all warnings being treated as errors
-make[2]: *** [arch/powerpc/platforms/pseries/nvram.o] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [arch/powerpc/platforms/pseries] Error 2
-make[1]: *** Waiting for unfinished jobs....
-In file included from ./arch/powerpc/include/asm/kup.h:10:0,
-                 from ./arch/powerpc/include/asm/uaccess.h:10,
-                 from ./include/linux/uaccess.h:14,
-                 from ./include/asm-generic/termios-base.h:8,
-                 from ./arch/powerpc/include/asm/termios.h:20,
-                 from ./include/uapi/linux/termios.h:6,
-                 from ./include/linux/tty.h:7,
-                 from arch/powerpc/kernel/setup_64.c:27:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: data definition has no type or storage class [-Werror]
- DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
- ^~~~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to ‘int’ in declaration of ‘DECLARE_STATIC_KEY_FALSE’ [-Werror=implicit-int]
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: parameter names (without types) in function declaration [-Werror]
-./arch/powerpc/include/asm/book3s/64/kup-radix.h: In function ‘prevent_user_access’:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function ‘static_branch_unlikely’ [-Werror=implicit-function-declaration]
-  if (static_branch_unlikely(&uaccess_flush_key))
-      ^~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: ‘uaccess_flush_key’ undeclared (first use in this function); did you mean ‘do_uaccess_flush’?
-  if (static_branch_unlikely(&uaccess_flush_key))
-                              ^~~~~~~~~~~~~~~~~
-                              do_uaccess_flush
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-make: *** [arch/powerpc/lib] Error 2
-make: *** Waiting for unfinished jobs....
-cc1: all warnings being treated as errors
-make[1]: *** [arch/powerpc/kernel/setup_64.o] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [arch/powerpc/kernel] Error 2
-In file included from ./arch/powerpc/include/asm/kup.h:10:0,
-                 from ./arch/powerpc/include/asm/uaccess.h:10,
-                 from ./include/linux/uaccess.h:14,
-                 from ./arch/powerpc/include/asm/sections.h:7,
-                 from arch/powerpc/platforms/powermac/nvram.c:24:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: data definition has no type or storage class [-Werror]
- DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
- ^~~~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to ‘int’ in declaration of ‘DECLARE_STATIC_KEY_FALSE’ [-Werror=implicit-int]
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: parameter names (without types) in function declaration [-Werror]
-./arch/powerpc/include/asm/book3s/64/kup-radix.h: In function ‘prevent_user_access’:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function ‘static_branch_unlikely’ [-Werror=implicit-function-declaration]
-  if (static_branch_unlikely(&uaccess_flush_key))
-      ^~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: ‘uaccess_flush_key’ undeclared (first use in this function); did you mean ‘do_uaccess_flush’?
-  if (static_branch_unlikely(&uaccess_flush_key))
-                              ^~~~~~~~~~~~~~~~~
-                              do_uaccess_flush
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-cc1: all warnings being treated as errors
-make[2]: *** [arch/powerpc/platforms/powermac/nvram.o] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [arch/powerpc/platforms/powermac] Error 2
-make: *** [arch/powerpc/platforms] Error 2
-In file included from ./arch/powerpc/include/asm/kup.h:10:0,
-                 from ./arch/powerpc/include/asm/uaccess.h:10,
-                 from ./include/linux/uaccess.h:14,
-                 from ./include/asm-generic/termios-base.h:8,
-                 from ./arch/powerpc/include/asm/termios.h:20,
-                 from ./include/uapi/linux/termios.h:6,
-                 from ./include/linux/tty.h:7,
-                 from kernel/signal.c:23:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
- DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
- ^~~~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to ‘int’ in declaration of ‘DECLARE_STATIC_KEY_FALSE’ [-Werror=implicit-int]
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-./arch/powerpc/include/asm/book3s/64/kup-radix.h: In function ‘prevent_user_access’:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function ‘static_branch_unlikely’ [-Werror=implicit-function-declaration]
-  if (static_branch_unlikely(&uaccess_flush_key))
-      ^~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: ‘uaccess_flush_key’ undeclared (first use in this function); did you mean ‘do_uaccess_flush’?
-  if (static_branch_unlikely(&uaccess_flush_key))
-                              ^~~~~~~~~~~~~~~~~
-                              do_uaccess_flush
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-cc1: some warnings being treated as errors
-make[1]: *** [kernel/signal.o] Error 1
-make[1]: *** Waiting for unfinished jobs....
-In file included from ./arch/powerpc/include/asm/kup.h:10:0,
-                 from ./arch/powerpc/include/asm/uaccess.h:10,
-                 from ./include/linux/uaccess.h:14,
-                 from ./include/linux/poll.h:12,
-                 from fs/bad_inode.c:17:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: data definition has no type or storage class
- DECLARE_STATIC_KEY_FALSE(uaccess_flush_key);
- ^~~~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: error: type defaults to ‘int’ in declaration of ‘DECLARE_STATIC_KEY_FALSE’ [-Werror=implicit-int]
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:5:1: warning: parameter names (without types) in function declaration
-./arch/powerpc/include/asm/book3s/64/kup-radix.h: In function ‘prevent_user_access’:
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:6: error: implicit declaration of function ‘static_branch_unlikely’ [-Werror=implicit-function-declaration]
-  if (static_branch_unlikely(&uaccess_flush_key))
-      ^~~~~~~~~~~~~~~~~~~~~~
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: error: ‘uaccess_flush_key’ undeclared (first use in this function); did you mean ‘do_uaccess_flush’?
-  if (static_branch_unlikely(&uaccess_flush_key))
-                              ^~~~~~~~~~~~~~~~~
-                              do_uaccess_flush
-./arch/powerpc/include/asm/book3s/64/kup-radix.h:18:30: note: each undeclared identifier is reported only once for each function it appears in
-cc1: some warnings being treated as errors
-make[1]: *** [fs/bad_inode.o] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [fs] Error 2
-make: *** [kernel] Error 2
-------------
+a) Either a functioning SGX driver lands in a -rc kernel or there is
+an excellent justification for why a change of this sort is needed
+prior to a release.  Dr. Greg, you seem to be interested in SGX
+actually landing upstream, but these patches are just causing delays.
+Please stop.
+
+b) The patch needs to explain what problem it solves and why it is a
+good solution to that problem.
+
+c) The patch needs to explain, either in a changelog or in a text file
+in the patch, *exactly* what it does.  Imagine MSDN-like documentation
+in the good old days.  The documentation needs to be sufficiently
+clear that a userspace programmer could use your mechanism without
+reference to your implementation and that a kernel programmer could,
+in principle, re-implement your code from the description.
+
+Unless all three of these are met, your patch is going nowhere, and I
+think no one should waste their time trying to read it.
+
+>
+> Secondary to the discussions that have been ongoing regarding the
+> restriction of mmap/mprotect, this patch has been extended to
+> implement signature based controls on dynamic enclaves.  The default
+> behavior of the driver under this patch is to reject mmap/mprotect on
+> initialized enclaves, unless the platform owner has elected to allow
+> the enclave signer the option to implement 'dynamic' enclaves,
+> ie. enclaves that are allowed to modify their page permissions after
+> initialization.
+
+You have sent this change repeatedly, and now for some reason you're
+sending it mixed in with unrelated changes.  Please stop.  At no point
+have you explained why this approach is better than anything else.  It
+has the obnoxious side effect that you can't usefully SCM_RIGHTS an
+enclave to a different process with your patch applied, which is at
+least a minor disadvantage.  You have not explained any advantage to
+your patch at all.
+
+Dr Greg, before you hit send on further emails about SGX, could you
+kindly try to imagine you're a kernel maintainer, read your own email,
+and consider whether how to make it add something useful to the
+discussion?
+
+Thanks,
+Andy
