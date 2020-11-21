@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077CC2BBABA
+	by mail.lfdr.de (Postfix) with ESMTP id E005F2BBABC
 	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 01:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbgKUAOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 19:14:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
+        id S1729012AbgKUAOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 19:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728766AbgKUAOL (ORCPT
+        with ESMTP id S1728528AbgKUAON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:14:11 -0500
+        Fri, 20 Nov 2020 19:14:13 -0500
 Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107FEC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:14:11 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id t8so9429988pfg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:14:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58DEC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:14:12 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id v12so9419882pfm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 16:14:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=U5bxGcfchBQVmEBBbdQ2iExVkYUOiZ88oTXx0NbjtJo=;
-        b=lFf95V8UJCgnIR3tVTNzhQbMvHSGH4PFeD3IW3zbQXYRLFulE0tlnHgaGHzjcWqYCu
-         M8hHkR/53SfKqioD8PcoDSfRujcXhIfaQV/4wscMe5p1veyQgpfnkiGNMlG/iFFlELI2
-         R+jnrlb1lcIbvdAaHM80Q1jzKSH1tQNe0fSdBqV+D0J2l6PK0FnBuYUGjD0oRfCtkbWb
-         yBRMmO0oU2eAqpZ68t1sLuhcE1Me2ig6IovdpGz7YsZAS6IFKYitGTBaRwTawdo2ydOr
-         1RqKRPvktkKjlrAcwx+nFGdl7vDUwEmNz5ozQf5b7IvvVimu2MbKVYNGjiltrDPohpN2
-         XzsQ==
+        bh=uKqWBXY7mffdyrXuPqWycdmx7WjMxlzQo4Hepbp5MLA=;
+        b=MGiQ7+/4djIxMNoiGQ2HQ5FgX0BiX7MECdXbKPZQNck9BCSf+vD2+mluHPNMzxP+cG
+         RI0JpcoQox5J9JpacWYIlNvbSs1OrmSiauOJ68nqJB8tYnVuKuPBYc8FcY1jjqvArHkA
+         I6HVsM1vDIu+1mfN0Wl7aQWjh2gsxwta3wtgwqJ9oZ+fcL+3/zZ0LOLgvGnvXFaqMwCj
+         hL03GrfM7phnxuW/StGxVHtcBP2ondXPfL4j3l6zj5t+qWg1haT1vASUsL4Qti5hi+nw
+         5coIoF1phUpLhxGUIGQtFXzot8Pa+T381k+CAFNX/BgZfUyxMNe2Zr9rrHM2tF0Z1vRx
+         MYlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=U5bxGcfchBQVmEBBbdQ2iExVkYUOiZ88oTXx0NbjtJo=;
-        b=IkhJPKdaq8QzBOZyXetzjY5lQxAr8py6hgPMPK0us0OVTyYn11CXpSjFo/zyrj3m9q
-         rnhpOAdSJDFcwLNm05yibGVbPYh82L7eof+4SP62cGi/M3bZg/rTcvhIa22xnZCrBoZu
-         /O1wqewgVbUBQaUMmknnXlDhA2fng0EjLHFMtnJqQ0SqoPJBvSFN3C+kDLnBxNwMlddj
-         QLkIwzkxgfmcDAS/gRKy1Xcy0L6OcKjynwKRmKO81gYmlk50+HwMMHCkTrpGdmkLlr6j
-         F8KncGJifADxiNf47gs5zoOXSQuGrVxcCpXtkHAxd4HBG13TPauBNPMauYxKauijKly2
-         aatQ==
-X-Gm-Message-State: AOAM533mg+Bz28PZxhi4/zeyF3mPUxVdIpUxu/wGRfL0R8A5PFDSaT2j
-        CgPt5/rRhCZ+Gbg/WN8ouc1sYw==
-X-Google-Smtp-Source: ABdhPJykWdoCK3edkgyoG1Ve3dUjBWdlHpE0EPxnlt+Lx3ZCannMjWZK+ue4hlwPPCKu2iPp9+fvsw==
-X-Received: by 2002:a65:684d:: with SMTP id q13mr19480014pgt.372.1605917650458;
-        Fri, 20 Nov 2020 16:14:10 -0800 (PST)
+        bh=uKqWBXY7mffdyrXuPqWycdmx7WjMxlzQo4Hepbp5MLA=;
+        b=lw7k7X+fSr0961w937N3mZobLGj5P4mwlnAM3t7kQiL/fJqwF634mGVJzQt/BvIbHJ
+         QXqKRIS8KB6nGIHlEwFwF4uVPR9luU9MGZ68gg13F74VvSGNr8c8PAO16klmnI+tFxga
+         m6RhXUn7nGqS+YXJV5yAxoX/3ff9T/3SkHuU1/WxyfypWJGDnC8IWJOa+aqUeh5agDBI
+         mV3uap3/qM/7zJivFwmRQVkilOdEDxxwCn/22R10UQ/gPayRGJ8qjmlkf1RgQ91spYFu
+         9FX6sdCkBUVvxPrPczr0CSjwV7NbBAQJNofZe4d3LZfzJg8biyRtw+ebgb1l/iMDxE+F
+         7C0A==
+X-Gm-Message-State: AOAM530bzyKdfmvlRxdi/jEH0baNLsW1cBIa9WWV3KkJeCK+0kLjAsd7
+        GhXgpKiO6nCu8PP8kbJzhX2cJg==
+X-Google-Smtp-Source: ABdhPJwimHlEuo6JCbvv0hg1vOC1+1xFeCDf/huX/AovS5V1x99g1hDelggACAaCxCijehAiqasUPg==
+X-Received: by 2002:a05:6a00:1684:b029:18b:665e:5211 with SMTP id k4-20020a056a001684b029018b665e5211mr15948880pfc.20.1605917652295;
+        Fri, 20 Nov 2020 16:14:12 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id k8sm5080220pfh.6.2020.11.20.16.14.09
+        by smtp.gmail.com with ESMTPSA id s4sm5432591pjr.44.2020.11.20.16.14.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 16:14:09 -0800 (PST)
-Date:   Fri, 20 Nov 2020 16:14:09 -0800 (PST)
-X-Google-Original-Date: Fri, 20 Nov 2020 16:13:38 PST (-0800)
-Subject:     Re: [PATCH] riscv: Explicitly specify the build id style in vDSO Makefile again
-In-Reply-To: <20201108203737.94270-1-natechancellor@gmail.com>
-CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, natechancellor@gmail.com
+        Fri, 20 Nov 2020 16:14:11 -0800 (PST)
+Date:   Fri, 20 Nov 2020 16:14:11 -0800 (PST)
+X-Google-Original-Date: Fri, 20 Nov 2020 16:14:07 PST (-0800)
+Subject:     Re: [PATCH] RISC-V: Add missing jump label initialization
+In-Reply-To: <20201106075359.3401471-1-anup.patel@wdc.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        anup@brainfault.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Anup Patel <Anup.Patel@wdc.com>,
+        stable@vger.kernel.org
 From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     natechancellor@gmail.com
-Message-ID: <mhng-f056461a-d53c-4405-b514-1d01dba13cc1@palmerdabbelt-glaptop1>
+To:     Anup Patel <Anup.Patel@wdc.com>
+Message-ID: <mhng-f4c607c8-ecf6-4eda-88de-4011214fcb33@palmerdabbelt-glaptop1>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -64,35 +68,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 08 Nov 2020 12:37:37 PST (-0800), natechancellor@gmail.com wrote:
-> Commit a96843372331 ("kbuild: explicitly specify the build id style")
-> explicitly set the build ID style to SHA1. Commit c2c81bb2f691 ("RISC-V:
-> Fix the VDSO symbol generaton for binutils-2.35+") undid this change,
-> likely unintentionally.
+On Thu, 05 Nov 2020 23:53:59 PST (-0800), Anup Patel wrote:
+> The jump_label_init() should be called from setup_arch() very
+> early for proper functioning of jump label support.
 >
-> Restore it so that the build ID style stays consistent across the tree
-> regardless of linker.
->
-> Fixes: c2c81bb2f691 ("RISC-V: Fix the VDSO symbol generaton for binutils-2.35+")
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> Fixes: ebc00dde8a97 ("riscv: Add jump-label implementation")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
 > ---
->  arch/riscv/kernel/vdso/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/riscv/kernel/setup.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-> index cb8f9e4cfcbf..0cfd6da784f8 100644
-> --- a/arch/riscv/kernel/vdso/Makefile
-> +++ b/arch/riscv/kernel/vdso/Makefile
-> @@ -44,7 +44,7 @@ SYSCFLAGS_vdso.so.dbg = $(c_flags)
->  $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
->  	$(call if_changed,vdsold)
->  SYSCFLAGS_vdso.so.dbg = -shared -s -Wl,-soname=linux-vdso.so.1 \
-> -	-Wl,--build-id -Wl,--hash-style=both
-> +	-Wl,--build-id=sha1 -Wl,--hash-style=both
+> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> index c424cc6dd833..117f3212a8e4 100644
+> --- a/arch/riscv/kernel/setup.c
+> +++ b/arch/riscv/kernel/setup.c
+> @@ -75,6 +75,7 @@ void __init setup_arch(char **cmdline_p)
+>  	*cmdline_p = boot_command_line;
 >
->  # We also create a special relocatable object that should mirror the symbol
->  # table and layout of the linked DSO. With ld --just-symbols we can then
+>  	early_ioremap_setup();
+> +	jump_label_init();
+>  	parse_early_param();
 >
-> base-commit: c2c81bb2f69138f902e1a58d3bef6ad97fb8a92c
+>  	efi_init();
 
-Sorry about that.  This is on fixes.
+Thanks, this is on fixes.
