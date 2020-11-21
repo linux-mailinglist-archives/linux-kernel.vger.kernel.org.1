@@ -2,137 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551E82BC1B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 20:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C36A2BC1B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 20:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728233AbgKUTLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 14:11:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42088 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728190AbgKUTLd (ORCPT
+        id S1728461AbgKUTa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 14:30:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728404AbgKUTa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 14:11:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605985891;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=Y+ODGJoKAQB4fqN11EBA++p3TYNoPdfULESrqAv4joY=;
-        b=PqTZNmdZhvPA8jZBNO6bfjI20CxkiK1uRBTWVU0S03K640+dGVcXotnHuv3oVC3GivklOk
-        gEiVw1P7/SgFJCV2wcAp6RHQrYqvCUMNcIoaBA1mznatlCWmp5iVM6iT4VYkqIlF9PCesJ
-        HpTlJShiD84XwImogilTayAoVz0TqZU=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-dmOB1s57O5eMvid9tLkGhg-1; Sat, 21 Nov 2020 14:11:28 -0500
-X-MC-Unique: dmOB1s57O5eMvid9tLkGhg-1
-Received: by mail-pf1-f199.google.com with SMTP id a24so9673929pfo.3
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 11:11:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Y+ODGJoKAQB4fqN11EBA++p3TYNoPdfULESrqAv4joY=;
-        b=UATUXWezC4/0SRyLJKp43QEY4OYtDBgaT/Ekpnq43+dhuc0VBAkEEeA8MF+oZuXNdW
-         HFJ6oRyezuAgdqwiH48DMp7hUOlQETJjihO3MHF0UV48AwhFT6HJ5NN9t43dks4tsZtz
-         vnSgTjX73ocURLE+9n8Udr2Hyl+OcvGJ8zJnaEWJjH5CUQsm8zdD3ogtOxf8xu0he/V4
-         XBBM80yCIq/XTuubIOl/IgELTUJOXbU7kg1Z9oEPdOYzrkE889B3vMFD5cZdie1sS0Uc
-         ZhYJnRXGBq6So2fsUB3nynEWACaeWGE51VNt6ELwwYuYEjZpuBYlZoMprd82tJd3ojVW
-         ixMg==
-X-Gm-Message-State: AOAM533qehWoN+7Oyc5OoZ0ZJtpjaCHU42lnxktS04TeJnZe3SUQuGpJ
-        HWnRIfe534fv1XiqGhM05/vzAI5mCc6Bg7PUkKh4n4L2fgUPBiGGHdWveyaFSModVWigpqIjy6Q
-        fsZEYbUr8i3dQj5l/6G9qHCvz
-X-Received: by 2002:aa7:96ba:0:b029:197:e733:ae3c with SMTP id g26-20020aa796ba0000b0290197e733ae3cmr3715430pfk.46.1605985886911;
-        Sat, 21 Nov 2020 11:11:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwo3SCUDysueXZ4MblxGao2p3clXqAuVx7Nt4q0WMp76p0Ga9m1dvQu8yA5wEYFXOkl3de4eg==
-X-Received: by 2002:aa7:96ba:0:b029:197:e733:ae3c with SMTP id g26-20020aa796ba0000b0290197e733ae3cmr3715420pfk.46.1605985886711;
-        Sat, 21 Nov 2020 11:11:26 -0800 (PST)
-Received: from xiangao.remote.csb ([119.254.120.70])
-        by smtp.gmail.com with ESMTPSA id m8sm6576375pgg.1.2020.11.21.11.11.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 11:11:26 -0800 (PST)
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Gao Xiang <hsiangkao@redhat.com>,
-        Yann Collet <yann.collet.73@gmail.com>,
-        Miao Xie <miaoxie@huawei.com>, Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] lib/lz4: explicitly support in-place decompression
-Date:   Sun, 22 Nov 2020 03:10:24 +0800
-Message-Id: <20201121191024.2631523-1-hsiangkao@redhat.com>
-X-Mailer: git-send-email 2.18.4
+        Sat, 21 Nov 2020 14:30:56 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D29C0613CF;
+        Sat, 21 Nov 2020 11:30:56 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1kgYar-00C8JD-PD; Sat, 21 Nov 2020 20:30:45 +0100
+Message-ID: <106fc65f0459bc316e89beaf6bd71e823c4c01b7.camel@sipsolutions.net>
+Subject: Re: [PATCH v5 2/3] net: add kcov handle to skb extensions
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>, Ido Schimmel <idosch@idosch.org>,
+        Aleksandr Nogikh <aleksandrnogikh@gmail.com>,
+        davem@davemloft.net, edumazet@google.com, andreyknvl@google.com,
+        dvyukov@google.com, elver@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        willemdebruijn.kernel@gmail.com,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>
+Date:   Sat, 21 Nov 2020 20:30:44 +0100
+In-Reply-To: <20201121103529.4b4acbff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201029173620.2121359-1-aleksandrnogikh@gmail.com>
+         <20201029173620.2121359-3-aleksandrnogikh@gmail.com>
+         <20201121160941.GA485907@shredder.lan>
+         <20201121165227.GT15137@breakpoint.cc>
+         <20201121100636.26aaaf8a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <bcfb0fe1b207d2f4bb52f0d1ef51207f9b5587de.camel@sipsolutions.net>
+         <20201121103529.4b4acbff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LZ4 final literal copy could be overlapped when doing
-in-place decompression, so it's unsafe to just use memcpy()
-on an optimized memcpy approach but memmove() instead.
+On Sat, 2020-11-21 at 10:35 -0800, Jakub Kicinski wrote:
+> On Sat, 21 Nov 2020 19:12:21 +0100 Johannes Berg wrote:
+> > > So I'm leaning towards reverting the whole thing. You can attach
+> > > kretprobes and record the information you need in BPF maps.  
+> > 
+> > I'm not going to object to reverting it (and perhaps redoing it better
+> > later), but I will point out that kretprobe isn't going to work, you
+> > eventually need kcov_remote_start() to be called in strategic points
+> > before processing the skb after it bounced through the system.
+> > 
+> > IOW, it's not really about serving userland, it's about enabling (and
+> > later disabling) coverage collection for the bits of code it cares
+> > about, mostly because collecting it for _everything_ is going to be too
+> > slow and will mess up the data since for coverage guided fuzzing you
+> > really need the reported coverage data to be only about the injected
+> > fuzz data...
+> 
+> All you need is make kcov_remote_start_common() be BPF-able, like 
+> the LSM hooks are now, right? And then BPF can return whatever handle 
+> it pleases.
 
-Upstream LZ4 has updated this years ago [1] (and the impact
-is non-sensible [2]), this commit just synchronizes LZ4
-upstream code to the kernel side as well.
+Not sure I understand. Are you saying something should call
+"kcov_remote_start_common()" with, say, the SKB, and leave it to a mass
+of bpf hooks to figure out where the SKB got cloned or copied or
+whatnot, track that in a map, and then ... no, wait, I don't really see
+what you mean, sorry.
 
-It can be observed as EROFS in-place decompression failure
-on specific files when X86_FEATURE_ERMS is unsupported,
-memcpy() optimization of commit 59daa706fbec ("x86, mem:
-Optimize memcpy by avoiding memory false dependece") will
-be enabled then.
+IIUC, fundamentally, you have this:
 
-Currently most modern x86-CPUs support ERMS, these CPUs
-just use "rep movsb" approach so no problem at all. However,
-it can still be verified with forcely disabling ERMS feature...
+ - at the beginning, a task is tagged with "please collect coverage
+   data for this handle"
+ - this task creates an SKB, etc, and all of the code that this task
+   executes is captured and the coverage data is reported
+ - However, the SKB traverses lots of things, gets copied, cloned, or
+   whatnot, and eventually leaves the annotated task, say for further
+   processing in softirq context or elsewhere.
 
-arch/x86/lib/memcpy_64.S:
-        ALTERNATIVE_2 "jmp memcpy_orig", "", X86_FEATURE_REP_GOOD, \
--                     "jmp memcpy_erms", X86_FEATURE_ERMS
-+                     "jmp memcpy_orig", X86_FEATURE_ERMS
+Now since the whole point is to see what chaos this SKB created from
+beginning (allocation) to end (free), since it was filled with fuzzed
+data, you now have to figure out where to pick back up when the SKB is
+processed further.
 
-We didn't observed any strange on arm64/arm platform before,
-but it really needs an update for sure considering this
-unsafe overlapping memcpy() behavior for LZ4 in-place
-decompression.
+This is what the infrastructure was meant to solve. But note that the
+SKB might be further cloned etc, so in order to track it you'd have to
+(out-of-band) figure out all the possible places where it could
+be reallocated, any time the skb pointer could change.
 
-[1] https://github.com/lz4/lz4/commit/33cb8518ac385835cc17be9a770b27b40cd0e15b
-[2] https://github.com/lz4/lz4/pull/717#issuecomment-497818921
-Cc: Yann Collet <yann.collet.73@gmail.com>
-Cc: Miao Xie <miaoxie@huawei.com>
-Cc: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
-Hi Andrew,
+Then, when you know you've got interesting code on your hands, like in
+mac80211 that was annotated in patch 3 here, you basically say
 
-Could you kindly consider picking this patch up, although
-the impact is EROFS but it touchs in-kernel lz4 library
-anyway...
+  "oohhh, this SKB was annotated before, let's continue capturing
+   coverage data here"
 
-Thanks,
-Gao Xiang
+(and turn it off again later by the corresponding kcov_remote_stop().
 
- lib/lz4/lz4_decompress.c | 2 +-
- lib/lz4/lz4defs.h        | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/lib/lz4/lz4_decompress.c b/lib/lz4/lz4_decompress.c
-index 00cb0d0b73e1..fa88e13ef00b 100644
---- a/lib/lz4/lz4_decompress.c
-+++ b/lib/lz4/lz4_decompress.c
-@@ -263,7 +263,7 @@ static FORCE_INLINE int LZ4_decompress_generic(
- 				}
- 			}
- 
--			LZ4_memcpy(op, ip, length);
-+			LZ4_memmove(op, ip, length);
- 			ip += length;
- 			op += length;
- 
-diff --git a/lib/lz4/lz4defs.h b/lib/lz4/lz4defs.h
-index c91dd96ef629..673bd206aa98 100644
---- a/lib/lz4/lz4defs.h
-+++ b/lib/lz4/lz4defs.h
-@@ -146,6 +146,7 @@ static FORCE_INLINE void LZ4_writeLE16(void *memPtr, U16 value)
-  * environments. This is needed when decompressing the Linux Kernel, for example.
-  */
- #define LZ4_memcpy(dst, src, size) __builtin_memcpy(dst, src, size)
-+#define LZ4_memmove(dst, src, size) __builtin_memmove(dst, src, size)
- 
- static FORCE_INLINE void LZ4_copy8(void *dst, const void *src)
- {
--- 
-2.18.4
+So the only way I could _possibly_ see how to do this would be to
+
+ * capture all possible places where the skb pointer can change
+ * still call something like skb_get_kcov_handle() but let it call out
+   to a BPF program to query a map or something to figure out if this
+   SKB has a handle attached to it
+
+> Or if you don't like BPF or what to KCOV BPF itself in the future you
+> can roll your own mechanism. The point is - this should be relatively
+> easily doable out of line...
+
+Seems pretty complicated to me though ...
+
+johannes
 
