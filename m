@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0162BBCEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 05:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AC82BBCEB
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 05:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727140AbgKUEMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Nov 2020 23:12:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgKUEMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Nov 2020 23:12:16 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CEBC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Nov 2020 20:12:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=y9J6TA2XyIOiGe135EkUeEFKYt+K/2ofYTqPfM8e/Hg=; b=UFhGKBLKLlMO8H35N3k/HTU7fO
-        eJ2ZZhm/uIlwbtp58Dku/UBNsQThaWEl97F5S0sVZDY/WU3VfhahcTlp/CRXEs9WMWacqmFqcfAF5
-        nyoOuNXnLZQPBKl0p7RH6cvpwRPsO7rWMe6ZobzlH4S/AnogSu5SZ+t2xpbujvCwT84fZO6Qufffy
-        kj1LRfFanOacmBjc+YEfOj0ijarCQK1M9mM1V7sxQvevX/w3aUJoRHEWVyjJwQQBVMzXCJLHOBXm4
-        FN2zx03TGX3DoqIkAoun19WpVYWtO4u+KLt9wp0QF+Gkxw2grI8s5EBfHFb6JQyXWEC53IC1SGg0L
-        WopuaFAA==;
-Received: from [2601:1c0:6280:3f0::bcc4]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kgKFw-0003el-3I; Sat, 21 Nov 2020 04:12:12 +0000
-Subject: Re: [PATCH v3 4/4] Documentation/admin-guide: Change doc for
- split_lock_detect parameter
-To:     "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Li, Xiaoyao" <xiaoyao.li@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-References: <20201121023624.3604415-1-fenghua.yu@intel.com>
- <20201121023624.3604415-5-fenghua.yu@intel.com>
- <d90ce156-5c44-e0b2-276e-a818ce99317f@infradead.org>
- <38db3c2d5d51432b95cd1011c9f83c27@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <171caa46-8431-ee58-2cad-954cb63cb1f3@infradead.org>
-Date:   Fri, 20 Nov 2020 20:12:07 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727174AbgKUEMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Nov 2020 23:12:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726329AbgKUEMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Nov 2020 23:12:20 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 347CD22227;
+        Sat, 21 Nov 2020 04:12:19 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 23:12:17 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Libo Chen <libo.chen@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, m.mizuma@jp.fujitsu.com
+Subject: Re: [PATCH 1/1] ktest.pl: Fix incorrect reboot for grub2bls
+Message-ID: <20201120231217.7fdc38d6@oasis.local.home>
+In-Reply-To: <20201121021243.1532477-1-libo.chen@oracle.com>
+References: <20201121021243.1532477-1-libo.chen@oracle.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <38db3c2d5d51432b95cd1011c9f83c27@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/20 8:09 PM, Yu, Fenghua wrote:
-> Hi, Randy,
-> 
->>> +			ratelimit:N -
->>> +				  Set rate limit to N bus locks per second
->>> +				  for bus lock detection. 0 < N <= HZ/2 and
->>> +				  N is approximate. Only applied to non-root
->>> +				  users.
->>
->> Sorry, but I don't know what this means. I think it's the "and N is
->> appropriate"
->> that is confusing me.
->>
->> 	0 < N <= HZ/2 and N is appropriate.
-> 
-> You are right. I will remove "and N is appropriate" in the next version.
-> 
-> Could you please ack this patch? Can I add Acked-by from you in the updated patch?
-> 
-> Thank you very much for your review!
+On Fri, 20 Nov 2020 18:12:43 -0800
+Libo Chen <libo.chen@oracle.com> wrote:
 
-Sure, no problem.
+> This issue was first noticed when I was testing different kernels on
+> Oracle Linux 8 which as Fedora 30+ adopts BLS as default. Even though a
+> kernel entry was added successfully and the index of that kernel entry was
+> retrieved correctly, ktest still wouldn't reboot the system into
+> user-specified kernel.
+> 
+> The bug was spotted in subroutine reboot_to where the if-statement never
+> checks for REBOOT_TYPE "grub2bls", therefore the desired entry will not be
+> set for the next boot.
+> 
+> Add a check for "grub2bls" so that $grub_reboot $grub_number can
+> be run before a reboot if REBOOT_TYPE is "grub2bls" then we can boot to
+> the correct kernel.
+> 
+> Fixes: ac2466456eaa ("ktest: introduce grub2bls REBOOT_TYPE option")
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+I was just thinking a couple of hours ago if anyone uses ktest.pl, and
+if so, how come I haven't received any patches for it ;-)
 
-thanks.
--- 
-~Randy
+Anyway, I'll take a look at this next week, and it may be a while
+before it gets into the kernel, as I like to run updates for a few
+weeks on my systems (as I use it to build all my kernels), before I
+push it upstream.
+
+Thanks!
+
+-- Steve
+
+
+> 
+> Signed-off-by: Libo Chen <libo.chen@oracle.com>
+> ---
+>  tools/testing/ktest/ktest.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/ktest/ktest.pl b/tools/testing/ktest/ktest.pl
+> index cb16d2aac51c..54188ee16c48 100755
+> --- a/tools/testing/ktest/ktest.pl
+> +++ b/tools/testing/ktest/ktest.pl
+> @@ -2040,7 +2040,7 @@ sub reboot_to {
+>  
+>      if ($reboot_type eq "grub") {
+>  	run_ssh "'(echo \"savedefault --default=$grub_number --once\" | grub --batch)'";
+> -    } elsif ($reboot_type eq "grub2") {
+> +    } elsif (($reboot_type eq "grub2") or ($reboot_type eq "grub2bls")) {
+>  	run_ssh "$grub_reboot $grub_number";
+>      } elsif ($reboot_type eq "syslinux") {
+>  	run_ssh "$syslinux --once \\\"$syslinux_label\\\" $syslinux_path";
 
