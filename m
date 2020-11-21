@@ -2,69 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53252BC27F
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 23:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 443912BC285
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 23:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728634AbgKUWpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 17:45:34 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:45403 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728541AbgKUWpd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 17:45:33 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 8A4A420006;
-        Sat, 21 Nov 2020 22:45:31 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
+        id S1726983AbgKUWxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 17:53:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726175AbgKUWxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Nov 2020 17:53:50 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 171E62168B;
+        Sat, 21 Nov 2020 22:53:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605999230;
+        bh=Af1aJtEqKNBl8t38Z6wC8czbvt6AmdYSSoogoDPHcpE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=r8ZftB8yKDY4d3IoUEOv9HMc9z9wFbLFiO8+rT5GUiTaud+dra38K3fZ8gkeegmv3
+         YBTFnK84udv43Lx2yfjl8fCj+ef14nEnd9Xe5kDC5PfrlJiaMMSllBjgsLlsv7Rtr2
+         V588oqLjtsjTc2gPerkC9zSo3T8RFv29PipbjIPs=
+Date:   Sat, 21 Nov 2020 14:53:49 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] rtc: mxc{,_v2}: enable COMPILE_TEST
-Date:   Sat, 21 Nov 2020 23:45:29 +0100
-Message-Id: <20201121224529.568237-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.28.0
+Subject: Re: [PATCH net] devlink: Fix reload stats structure
+Message-ID: <20201121145349.3824029c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1605879637-6114-1-git-send-email-moshe@mellanox.com>
+References: <1605879637-6114-1-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend code coverage for the rtc-mxc and rtc-mxc-v2 drivers.
+On Fri, 20 Nov 2020 15:40:37 +0200 Moshe Shemesh wrote:
+> Fix reload stats structure exposed to the user. Change stats structure
+> hierarchy to have the reload action as a parent of the stat entry and
+> then stat entry includes value per limit. This will also help to avoid
+> string concatenation on iproute2 output.
+> 
+> Reload stats structure before this fix:
+> "stats": {
+>     "reload": {
+>         "driver_reinit": 2,
+>         "fw_activate": 1,
+>         "fw_activate_no_reset": 0
+>      }
+> }
+> 
+> After this fix:
+> "stats": {
+>     "reload": {
+>         "driver_reinit": {
+>             "unspecified": 2
+>         },
+>         "fw_activate": {
+>             "unspecified": 1,
+>             "no_reset": 0
+>         }
+> }
+> 
+> Fixes: a254c264267e ("devlink: Add reload stats")
+> Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/rtc/Kconfig | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+At least try to fold the core networking code at 80 characters *please*.
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 4d2c5d1f75cc..9341ab15241e 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -1754,7 +1754,9 @@ config RTC_DRV_LOONGSON1
- 
- config RTC_DRV_MXC
- 	tristate "Freescale MXC Real Time Clock"
--	depends on ARCH_MXC
-+	depends on ARCH_MXC || COMPILE_TEST
-+	depends on HAS_IOMEM
-+	depends on OF
- 	help
- 	   If you say yes here you get support for the Freescale MXC
- 	   RTC module.
-@@ -1764,7 +1766,9 @@ config RTC_DRV_MXC
- 
- config RTC_DRV_MXC_V2
- 	tristate "Freescale MXC Real Time Clock for i.MX53"
--	depends on ARCH_MXC
-+	depends on ARCH_MXC || COMPILE_TEST
-+	depends on HAS_IOMEM
-+	depends on OF
- 	help
- 	   If you say yes here you get support for the Freescale MXC
- 	   SRTC module in i.MX53 processor.
--- 
-2.28.0
-
+You folded the comments at 86 chars, neither 100 nor 80.
