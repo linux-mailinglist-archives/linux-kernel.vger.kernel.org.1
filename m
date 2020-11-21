@@ -2,199 +2,473 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E71D2BC013
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5322BC016
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728027AbgKUOuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 09:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
+        id S1728026AbgKUOyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 09:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727874AbgKUOug (ORCPT
+        with ESMTP id S1727851AbgKUOyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 09:50:36 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC618C0613CF;
-        Sat, 21 Nov 2020 06:50:34 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id q206so14155877oif.13;
-        Sat, 21 Nov 2020 06:50:34 -0800 (PST)
+        Sat, 21 Nov 2020 09:54:45 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097ACC0613CF;
+        Sat, 21 Nov 2020 06:54:44 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id x13so6189881qvk.8;
+        Sat, 21 Nov 2020 06:54:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ette9kx7pLe3BTxF6SA7N6NBJN1cBdU9jOFxOgT8Dgs=;
-        b=C98eNIJQ96ROHkZRL2BXaceiD1FesqjudfRDq0SpYUawYUbCsJMGSJnsiTUwp+ChlT
-         m4kiJfomdNY6iWhv9UK81qwOFUCOseOB+YLSTDuzWlcTHD45LIH6deMhEFjpv8zwnRsZ
-         F5PDDrjO3Jly6kUL5VABH4/9KRP5UwkMRT1mxrEAaZ9nCCNw9bbLebPJgNbvD/KcwcKG
-         KRAt1AyVrrgnbZ8qjoNtbFrDp28z/eI4ki6K6oxtKYMZKmQwvNEHwnQVWDZFDBDTuzWq
-         /7/0SuxWzzN2qPxvilP23Ega639E64hREY3F/w3y2+39Rlc8brtm/8PnKKhypzapyapf
-         RFsg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rotW7tt4m5jTt2NSPYd12LYOUVPQuE9OKHf8G7kqiZw=;
+        b=A28kXqD14Gz6l1jwtw6TdX3Q6L06mzBAA4VOxdyHmpzEzqm3LV9ZyWkchMHjHZ4pJS
+         U3g9XWrEVI4yBYhyX9So24km2qlwMoBgod6t7/QppG9nCogKEW93S8AhMaKFiZu0NUI1
+         PkP2RaT8f1fT4nphnyeL17LYvSR6TT+sJHfmfW4s/w58I3HI6Jy9fgA36ambX9bRgsZ6
+         o/+86WFDNZZupNmHNnLM+xO9DHhyEsSEAGdCIcn0kM2JGTEg440Xie9q/vB+91UhBdRD
+         WGiY+BXep9Z61ppu1kPDganKC1QH4LZ+5/+/walt8nPUgg76cJOTFCWUs8j2eLIp7LEO
+         3I8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ette9kx7pLe3BTxF6SA7N6NBJN1cBdU9jOFxOgT8Dgs=;
-        b=d79kQ7Qimgywbnq+EPRQvH71IRirBLysUn4v5sCOrA4p4K9bLz6KORgo5sjR+tCT3U
-         5ncgnm69ltIre23bWbOao+xKAWfr25/ne4h6/gMD2QdW8zodfASR5SZp/0agb419UMAk
-         sewCd+VJQOMz1emkms3CRv7ADWi+UX09XyMlhcwvgn0JjQfXeYpgIRpZ4zGQjmrFGBqo
-         SFQO2ew4uPrAN68PfKIiPBuI4zs53v4ILau0MVjuk/9riBelPHBApMgMgnrE4ChvpoQp
-         PSoyRtzrJFPCuzGBPZoxRq9ppgbebKB8eBM/3s7pBvOZ5Zj4Ef7JLhcUccYRQgJuU+Wb
-         DR9Q==
-X-Gm-Message-State: AOAM531Sk752XyQmKNV8zpUVRlcnhkXbZCtK3i0bLMt9Vb9j4LK2eJYW
-        V35pMpeXJPQwmexwIsgRV0utI8RK2xrDr6HtESE=
-X-Google-Smtp-Source: ABdhPJySOdSRaChFfDTdyVQzHEvIojGBbrolLIz896Qw2h4xpte1Ro7K6uWBdEMow99a6PELRxBLWCEe9btAVMFc9CI=
-X-Received: by 2002:aca:59c3:: with SMTP id n186mr9282300oib.149.1605970234325;
- Sat, 21 Nov 2020 06:50:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rotW7tt4m5jTt2NSPYd12LYOUVPQuE9OKHf8G7kqiZw=;
+        b=IGOw5OGkI2XMl0uE0WbFA7EPqqxSQS9BTg5gAUtCqw0MPg67mrw1NjoZnwQi0wxW0o
+         dX8VVg6YiSJCTkBZLX1lpnNANIwlWmUK48ZyRbH3Mp1ABsoZkwmdgcqN2ESkz2kHr4GL
+         xjyheHFdrQA1zho5FVH7+q4Rg/v6jkJ99NixV8TuXSa5qZLd3gc19rjW3Gh3H+y980SG
+         SZzyVK7JWBb8A9KNuexsxAdBn9RTkE47i0IwloIDSFUJ03GF5RPyHJiLxkf6WicoUZjv
+         TY2YPIeMpkmSWwvpzolf826w8GDCwCTs5Os+94Qs7ZHh97a5I6xGI5+uoT/nBF3F6Pz9
+         aStQ==
+X-Gm-Message-State: AOAM532fBWGWmZy2VJKcZhYX2xNheqYWWZXraBXphpnPoxulTo02ihnz
+        NxjTlcPGh6cWRgh7AcFWIOs=
+X-Google-Smtp-Source: ABdhPJyaROsfol3G15/G2X0fakOYPjz+m40sZbrxS1WjiIAqgV9KM1mdHzo9zyDNeQvgK40N3T9sJQ==
+X-Received: by 2002:a0c:9e20:: with SMTP id p32mr21272640qve.44.1605970483006;
+        Sat, 21 Nov 2020 06:54:43 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id r190sm3937548qkf.101.2020.11.21.06.54.41
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 21 Nov 2020 06:54:42 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 499B827C0054;
+        Sat, 21 Nov 2020 09:54:40 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sat, 21 Nov 2020 09:54:40 -0500
+X-ME-Sender: <xms:Lyq5X0BeJMpVMNv0jTlactffGziLvzaXSwTkH0aRsaGVxs8JEwL_5A>
+    <xme:Lyq5X2i9H2lW7IV3Zyf4kC6sTB2B93dSS2sn3I1PX06jKK5DPKTWdc03TGBJLqU2j
+    CPFPNrNKpQsA1USuA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudegvddgjeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepveeijedthfeijeefudehhedvveegudegteehgffgtddvuedtveegtedvvdef
+    gedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudeijedrvddvtddrvd
+    druddvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtd
+    eigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehf
+    ihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:Lyq5X3lt7wnTRedTToBykKwW_AefAv5rVipG3-Pal9AonHu8LcZ_aQ>
+    <xmx:Lyq5X6y-u3Vp4WQZPs-zATNhQd7a8oWqDdnEfNgYO5xTTeKQsTU-Mw>
+    <xmx:Lyq5X5R7Evk7glgMX306Z6fnxkqI5u4O-u7-y3CzOLC2F-JTTtoCmA>
+    <xmx:MCq5X-IaH3LW1UbpObJkdG6JjgGNltPaGn1YdDXJRWF7s-3Pitcj2q23ELg>
+Received: from localhost (unknown [167.220.2.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2F512328005A;
+        Sat, 21 Nov 2020 09:54:39 -0500 (EST)
+Date:   Sat, 21 Nov 2020 22:54:11 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, b.zolnierkie@samsung.com,
+        linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mikelley@microsoft.com, weh@microsoft.com
+Subject: Re: [PATCH] video: hyperv_fb: Directly use the MMIO VRAM
+Message-ID: <20201121145411.GG3025@boqun-archlinux>
+References: <20201121014547.54890-1-decui@microsoft.com>
 MIME-Version: 1.0
-References: <20201113154632.24973-1-sergio.paracuellos@gmail.com>
- <20201113154632.24973-3-sergio.paracuellos@gmail.com> <20201121133432.GA2130098@robh.at.kernel.org>
-In-Reply-To: <20201121133432.GA2130098@robh.at.kernel.org>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sat, 21 Nov 2020 15:50:23 +0100
-Message-ID: <CAMhs-H9JORHgPmq0-n=hx=yRo0SCT33mP_quxZoRtKYkiVDy_Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] dt: bindings: add mt7621-clk device tree binding documentation
-To:     Rob Herring <robh@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Weijie Gao <hackpascal@gmail.com>, jiaxun.yang@flygoat.com,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        NeilBrown <neil@brown.name>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201121014547.54890-1-decui@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi Dexuan,
 
-Thanks for the review.
+On Fri, Nov 20, 2020 at 05:45:47PM -0800, Dexuan Cui wrote:
+> Late in 2019, 2 commits (see the 2 Fixes tags) were introduced to
+> mitigate the slow framebuffer issue. Now that we have fixed the
+> slowness issue by correctly mapping the MMIO VRAM (see
+> commit 5f1251a48c17 ("video: hyperv_fb: Fix the cache type when mapping
+> the VRAM")), we can remove most of the code introduced by the 2 commits,
+> i.e. we no longer need to allocate physical memory and use it to back up
+> the VRAM in Generation-1 VM, and we also no longer need to allocate
+> physical memory to back up the framebuffer in a Generation-2 VM and copy
+> the framebuffer to the real VRAM.
+> 
+> synthvid_deferred_io() is kept, because it's still desirable to send the
+> SYNTHVID_DIRT message only for the exact dirty rectangle, and only when
+> needed.
+> 
+> Fixes: d21987d709e8 ("video: hyperv: hyperv_fb: Support deferred IO for Hyper-V frame buffer driver")
+> Fixes: 3a6fb6c4255c ("video: hyperv: hyperv_fb: Use physical memory for fb on HyperV Gen 1 VMs.")
+> Cc: Wei Hu <weh@microsoft.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
 
-On Sat, Nov 21, 2020 at 2:34 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Fri, Nov 13, 2020 at 04:46:29PM +0100, Sergio Paracuellos wrote:
-> > Adds device tree binding documentation for clocks in the
-> > MT7621 SOC.
-> >
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > ---
-> >  .../bindings/clock/mediatek,mt7621-clk.yaml   | 61 +++++++++++++++++++
-> >  1 file changed, 61 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> > new file mode 100644
-> > index 000000000000..363bd9880e29
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> > @@ -0,0 +1,61 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/clock/mediatek,mt7621-clk.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: MT7621 Clock Device Tree Bindings
-> > +
-> > +maintainers:
-> > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > +
-> > +description: |
-> > +  The MT7621 has a PLL controller from where the cpu clock is provided
-> > +  as well as derived clocks for the bus and the peripherals. It also
-> > +  can gate SoC device clocks.
-> > +
-> > +  Each clock is assigned an identifier and client nodes use this identifier
-> > +  to specify the clock which they consume.
-> > +
-> > +  All these identifiers could be found in:
-> > +  [1]: <include/dt-bindings/clock/mt7621-clk.h>.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: mediatek,mt7621-clk
-> > +
-> > +  ralink,sysctl:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description:
-> > +      phandle to the syscon which is in the same address area with syscon
-> > +      device.
-> > +
-> > +  "#clock-cells":
-> > +    description:
-> > +      The first cell indicates the clock gate number, see [1] for available
-> > +      clocks.
-> > +    const: 1
-> > +
-> > +  clock-output-names:
-> > +    maxItems: 8
-> > +
-> > +required:
-> > +  - compatible
-> > +  - ralink,sysctl
-> > +  - '#clock-cells'
-> > +  - clock-output-names
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/mt7621-clk.h>
-> > +
-> > +    pll {
-> > +      compatible = "mediatek,mt7621-clk";
-> > +      ralink,sysctl = <&sysc>;
->
-> If this is the only control interface, then make this a child of 'sysc'.
-> And use 'reg' if there's a dedicated range of registers.
+After I applied this patch and patch ("video: hyperv_fb: Fix the cache
+type when mapping the VRAM") on my development branch (with Michael's
+patchset for ARM64 core support on Hyper-V), and everything worked fine.
+So feel free to add:
 
-This is the only one now in the device tree which is still in staging
-but there are several places where this sys control registers are
-accessed from. In the case of the clocks we need:
+Tested-by: Boqun Feng <boqun.feng@gmail.com>
 
-#define SYSC_REG_SYSTEM_CONFIG0         0x10
-#define SYSC_REG_SYSTEM_CONFIG1         0x14
-#define SYSC_REG_CLKCFG0                0x2c
-#define SYSC_REG_CLKCFG1                0x30
-#define SYSC_REG_CUR_CLK_STS            0x44
+Regards,
+Bqoun
 
-where there is not a range as it is but several different registers
-from where we need to read or write things. I wrote the driver using
-syscon and regmap because I thought in that way it might be more
-maintainable but this architecture also has operations to read and
-write registers from sysc and not using regmap at all. This operations
-are defined in arch/mips/include/asm/mach-ralink/ralink_regs.h. But
-because this sysc is currently mapped I cannot request its registers
-using reg in the device tree. If you prefer me to avoid the use of
-this syscon and regmap and use operations defined in ralink_regs.h,
-this will become in a node without "regs" or  "ralink,sysctl"
-property:
-
-pll {
-    compatible = "mediatek,mt7621-clk";
-    #clock-cells = <1>;
-    clock-output-names = "xtal", "cpu", "bus",
-                      "50m", "125m", "150m",
-                       "250m", "270m";
-};
-
-What should I do then?
-
-Best regards,
-    Sergio Paracuellos
-
->
-> > +      #clock-cells = <1>;
-> > +      clock-output-names = "xtal", "cpu", "bus",
-> > +                           "50m", "125m", "150m",
-> > +                           "250m", "270m";
-> > +    };
-> > --
-> > 2.25.1
-> >
+> ---
+> 
+> This patch changes drivers/video/fbdev/Kconfig, but I hope this can
+> still go through the Hyper-V tree
+> https://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git/log/?h=hyperv-next
+> because it's unlikely to cause any build issue to other fbdev drivers
+> (that line was introduced by 3a6fb6c4255c only for hyperv_fb.c)
+> 
+> Note: this patch is based on the Hyper-V tree's hyperv-fixes branch, but
+> it should also apply cleanly to the branch hyperv-next if the commit
+> 5f1251a48c17 is applied first.  This patch is for v5.11 rather than
+> v5.10.
+> 
+>  drivers/video/fbdev/Kconfig     |   1 -
+>  drivers/video/fbdev/hyperv_fb.c | 170 ++------------------------------
+>  2 files changed, 9 insertions(+), 162 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+> index 402e85450bb5..05b37fb3c6d6 100644
+> --- a/drivers/video/fbdev/Kconfig
+> +++ b/drivers/video/fbdev/Kconfig
+> @@ -2205,7 +2205,6 @@ config FB_HYPERV
+>  	select FB_CFB_COPYAREA
+>  	select FB_CFB_IMAGEBLIT
+>  	select FB_DEFERRED_IO
+> -	select DMA_CMA if HAVE_DMA_CONTIGUOUS && CMA
+>  	help
+>  	  This framebuffer driver supports Microsoft Hyper-V Synthetic Video.
+>  
+> diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
+> index 58c74d2356ba..8131f4e66f98 100644
+> --- a/drivers/video/fbdev/hyperv_fb.c
+> +++ b/drivers/video/fbdev/hyperv_fb.c
+> @@ -31,16 +31,6 @@
+>   * "set-vmvideo" command. For example
+>   *     set-vmvideo -vmname name -horizontalresolution:1920 \
+>   * -verticalresolution:1200 -resolutiontype single
+> - *
+> - * Gen 1 VMs also support direct using VM's physical memory for framebuffer.
+> - * It could improve the efficiency and performance for framebuffer and VM.
+> - * This requires to allocate contiguous physical memory from Linux kernel's
+> - * CMA memory allocator. To enable this, supply a kernel parameter to give
+> - * enough memory space to CMA allocator for framebuffer. For example:
+> - *    cma=130m
+> - * This gives 130MB memory to CMA allocator that can be allocated to
+> - * framebuffer. For reference, 8K resolution (7680x4320) takes about
+> - * 127MB memory.
+>   */
+>  
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> @@ -267,16 +257,8 @@ struct hvfb_par {
+>  	/* If true, the VSC notifies the VSP on every framebuffer change */
+>  	bool synchronous_fb;
+>  
+> -	/* If true, need to copy from deferred IO mem to framebuffer mem */
+> -	bool need_docopy;
+> -
+>  	struct notifier_block hvfb_panic_nb;
+>  
+> -	/* Memory for deferred IO and frame buffer itself */
+> -	unsigned char *dio_vp;
+> -	unsigned char *mmio_vp;
+> -	phys_addr_t mmio_pp;
+> -
+>  	/* Dirty rectangle, protected by delayed_refresh_lock */
+>  	int x1, y1, x2, y2;
+>  	bool delayed_refresh;
+> @@ -405,21 +387,6 @@ synthvid_update(struct fb_info *info, int x1, int y1, int x2, int y2)
+>  	return 0;
+>  }
+>  
+> -static void hvfb_docopy(struct hvfb_par *par,
+> -			unsigned long offset,
+> -			unsigned long size)
+> -{
+> -	if (!par || !par->mmio_vp || !par->dio_vp || !par->fb_ready ||
+> -	    size == 0 || offset >= dio_fb_size)
+> -		return;
+> -
+> -	if (offset + size > dio_fb_size)
+> -		size = dio_fb_size - offset;
+> -
+> -	memcpy(par->mmio_vp + offset, par->dio_vp + offset, size);
+> -}
+> -
+> -/* Deferred IO callback */
+>  static void synthvid_deferred_io(struct fb_info *p,
+>  				 struct list_head *pagelist)
+>  {
+> @@ -444,10 +411,6 @@ static void synthvid_deferred_io(struct fb_info *p,
+>  		y2 = end / p->fix.line_length;
+>  		miny = min_t(int, miny, y1);
+>  		maxy = max_t(int, maxy, y2);
+> -
+> -		/* Copy from dio space to mmio address */
+> -		if (par->fb_ready && par->need_docopy)
+> -			hvfb_docopy(par, start, PAGE_SIZE);
+>  	}
+>  
+>  	if (par->fb_ready && par->update)
+> @@ -704,7 +667,7 @@ static int synthvid_send_config(struct hv_device *hdev)
+>  	msg->vid_hdr.type = SYNTHVID_VRAM_LOCATION;
+>  	msg->vid_hdr.size = sizeof(struct synthvid_msg_hdr) +
+>  		sizeof(struct synthvid_vram_location);
+> -	msg->vram.user_ctx = msg->vram.vram_gpa = par->mmio_pp;
+> +	msg->vram.user_ctx = msg->vram.vram_gpa = info->fix.smem_start;
+>  	msg->vram.is_vram_gpa_specified = 1;
+>  	synthvid_send(hdev, msg);
+>  
+> @@ -714,7 +677,7 @@ static int synthvid_send_config(struct hv_device *hdev)
+>  		ret = -ETIMEDOUT;
+>  		goto out;
+>  	}
+> -	if (msg->vram_ack.user_ctx != par->mmio_pp) {
+> +	if (msg->vram_ack.user_ctx != info->fix.smem_start) {
+>  		pr_err("Unable to set VRAM location\n");
+>  		ret = -ENODEV;
+>  		goto out;
+> @@ -740,7 +703,6 @@ static void hvfb_update_work(struct work_struct *w)
+>  	struct fb_info *info = par->info;
+>  	unsigned long flags;
+>  	int x1, x2, y1, y2;
+> -	int j;
+>  
+>  	spin_lock_irqsave(&par->delayed_refresh_lock, flags);
+>  	/* Reset the request flag */
+> @@ -762,14 +724,6 @@ static void hvfb_update_work(struct work_struct *w)
+>  	    y1 > info->var.yres || y2 > info->var.yres || x2 <= x1)
+>  		return;
+>  
+> -	/* Copy the dirty rectangle to frame buffer memory */
+> -	if (par->need_docopy)
+> -		for (j = y1; j < y2; j++)
+> -			hvfb_docopy(par,
+> -				    j * info->fix.line_length +
+> -				    (x1 * screen_depth / 8),
+> -				    (x2 - x1) * screen_depth / 8);
+> -
+>  	/* Refresh */
+>  	if (par->fb_ready && par->update)
+>  		synthvid_update(info, x1, y1, x2, y2);
+> @@ -813,8 +767,6 @@ static int hvfb_on_panic(struct notifier_block *nb,
+>  	par = container_of(nb, struct hvfb_par, hvfb_panic_nb);
+>  	par->synchronous_fb = true;
+>  	info = par->info;
+> -	if (par->need_docopy)
+> -		hvfb_docopy(par, 0, dio_fb_size);
+>  	synthvid_update(info, 0, 0, INT_MAX, INT_MAX);
+>  
+>  	return NOTIFY_DONE;
+> @@ -953,62 +905,6 @@ static void hvfb_get_option(struct fb_info *info)
+>  	return;
+>  }
+>  
+> -/*
+> - * Allocate enough contiguous physical memory.
+> - * Return physical address if succeeded or -1 if failed.
+> - */
+> -static phys_addr_t hvfb_get_phymem(struct hv_device *hdev,
+> -				   unsigned int request_size)
+> -{
+> -	struct page *page = NULL;
+> -	dma_addr_t dma_handle;
+> -	void *vmem;
+> -	phys_addr_t paddr = 0;
+> -	unsigned int order = get_order(request_size);
+> -
+> -	if (request_size == 0)
+> -		return -1;
+> -
+> -	if (order < MAX_ORDER) {
+> -		/* Call alloc_pages if the size is less than 2^MAX_ORDER */
+> -		page = alloc_pages(GFP_KERNEL | __GFP_ZERO, order);
+> -		if (!page)
+> -			return -1;
+> -
+> -		paddr = (page_to_pfn(page) << PAGE_SHIFT);
+> -	} else {
+> -		/* Allocate from CMA */
+> -		hdev->device.coherent_dma_mask = DMA_BIT_MASK(64);
+> -
+> -		vmem = dma_alloc_coherent(&hdev->device,
+> -					  round_up(request_size, PAGE_SIZE),
+> -					  &dma_handle,
+> -					  GFP_KERNEL | __GFP_NOWARN);
+> -
+> -		if (!vmem)
+> -			return -1;
+> -
+> -		paddr = virt_to_phys(vmem);
+> -	}
+> -
+> -	return paddr;
+> -}
+> -
+> -/* Release contiguous physical memory */
+> -static void hvfb_release_phymem(struct hv_device *hdev,
+> -				phys_addr_t paddr, unsigned int size)
+> -{
+> -	unsigned int order = get_order(size);
+> -
+> -	if (order < MAX_ORDER)
+> -		__free_pages(pfn_to_page(paddr >> PAGE_SHIFT), order);
+> -	else
+> -		dma_free_coherent(&hdev->device,
+> -				  round_up(size, PAGE_SIZE),
+> -				  phys_to_virt(paddr),
+> -				  paddr);
+> -}
+> -
+>  
+>  /* Get framebuffer memory from Hyper-V video pci space */
+>  static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+> @@ -1018,7 +914,6 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+>  	void __iomem *fb_virt;
+>  	int gen2vm = efi_enabled(EFI_BOOT);
+>  	resource_size_t pot_start, pot_end;
+> -	phys_addr_t paddr;
+>  	int ret;
+>  
+>  	info->apertures = alloc_apertures(1);
+> @@ -1036,38 +931,12 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+>  
+>  		info->apertures->ranges[0].base = pci_resource_start(pdev, 0);
+>  		info->apertures->ranges[0].size = pci_resource_len(pdev, 0);
+> -
+> -		/*
+> -		 * For Gen 1 VM, we can directly use the contiguous memory
+> -		 * from VM. If we succeed, deferred IO happens directly
+> -		 * on this allocated framebuffer memory, avoiding extra
+> -		 * memory copy.
+> -		 */
+> -		paddr = hvfb_get_phymem(hdev, screen_fb_size);
+> -		if (paddr != (phys_addr_t) -1) {
+> -			par->mmio_pp = paddr;
+> -			par->mmio_vp = par->dio_vp = __va(paddr);
+> -
+> -			info->fix.smem_start = paddr;
+> -			info->fix.smem_len = screen_fb_size;
+> -			info->screen_base = par->mmio_vp;
+> -			info->screen_size = screen_fb_size;
+> -
+> -			par->need_docopy = false;
+> -			goto getmem_done;
+> -		}
+> -		pr_info("Unable to allocate enough contiguous physical memory on Gen 1 VM. Using MMIO instead.\n");
+>  	} else {
+>  		info->apertures->ranges[0].base = screen_info.lfb_base;
+>  		info->apertures->ranges[0].size = screen_info.lfb_size;
+>  	}
+>  
+> -	/*
+> -	 * Cannot use the contiguous physical memory.
+> -	 * Allocate mmio space for framebuffer.
+> -	 */
+> -	dio_fb_size =
+> -		screen_width * screen_height * screen_depth / 8;
+> +	dio_fb_size = screen_width * screen_height * screen_depth / 8;
+>  
+>  	if (gen2vm) {
+>  		pot_start = 0;
+> @@ -1101,22 +970,11 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+>  	if (!fb_virt)
+>  		goto err2;
+>  
+> -	/* Allocate memory for deferred IO */
+> -	par->dio_vp = vzalloc(round_up(dio_fb_size, PAGE_SIZE));
+> -	if (par->dio_vp == NULL)
+> -		goto err3;
+> -
+> -	/* Physical address of FB device */
+> -	par->mmio_pp = par->mem->start;
+> -	/* Virtual address of FB device */
+> -	par->mmio_vp = (unsigned char *) fb_virt;
+> -
+>  	info->fix.smem_start = par->mem->start;
+>  	info->fix.smem_len = dio_fb_size;
+> -	info->screen_base = par->dio_vp;
+> +	info->screen_base = fb_virt;
+>  	info->screen_size = dio_fb_size;
+>  
+> -getmem_done:
+>  	remove_conflicting_framebuffers(info->apertures,
+>  					KBUILD_MODNAME, false);
+>  	if (!gen2vm)
+> @@ -1125,8 +983,6 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+>  
+>  	return 0;
+>  
+> -err3:
+> -	iounmap(fb_virt);
+>  err2:
+>  	vmbus_free_mmio(par->mem->start, screen_fb_size);
+>  	par->mem = NULL;
+> @@ -1139,19 +995,12 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+>  }
+>  
+>  /* Release the framebuffer */
+> -static void hvfb_putmem(struct hv_device *hdev, struct fb_info *info)
+> +static void hvfb_putmem(struct fb_info *info)
+>  {
+>  	struct hvfb_par *par = info->par;
+>  
+> -	if (par->need_docopy) {
+> -		vfree(par->dio_vp);
+> -		iounmap(info->screen_base);
+> -		vmbus_free_mmio(par->mem->start, screen_fb_size);
+> -	} else {
+> -		hvfb_release_phymem(hdev, info->fix.smem_start,
+> -				    screen_fb_size);
+> -	}
+> -
+> +	iounmap(info->screen_base);
+> +	vmbus_free_mmio(par->mem->start, screen_fb_size);
+>  	par->mem = NULL;
+>  }
+>  
+> @@ -1170,7 +1019,6 @@ static int hvfb_probe(struct hv_device *hdev,
+>  	par = info->par;
+>  	par->info = info;
+>  	par->fb_ready = false;
+> -	par->need_docopy = true;
+>  	init_completion(&par->wait);
+>  	INIT_DELAYED_WORK(&par->dwork, hvfb_update_work);
+>  
+> @@ -1256,7 +1104,7 @@ static int hvfb_probe(struct hv_device *hdev,
+>  
+>  error:
+>  	fb_deferred_io_cleanup(info);
+> -	hvfb_putmem(hdev, info);
+> +	hvfb_putmem(info);
+>  error2:
+>  	vmbus_close(hdev->channel);
+>  error1:
+> @@ -1286,7 +1134,7 @@ static int hvfb_remove(struct hv_device *hdev)
+>  	vmbus_close(hdev->channel);
+>  	hv_set_drvdata(hdev, NULL);
+>  
+> -	hvfb_putmem(hdev, info);
+> +	hvfb_putmem(info);
+>  	framebuffer_release(info);
+>  
+>  	return 0;
+> -- 
+> 2.19.1
+> 
