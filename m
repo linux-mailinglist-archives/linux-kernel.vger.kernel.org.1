@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DBF2BC20B
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 21:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8792BC214
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 21:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728498AbgKUUaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 15:30:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49489 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728402AbgKUUaJ (ORCPT
+        id S1728530AbgKUUb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 15:31:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728513AbgKUUb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 15:30:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605990607;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:in-reply-to:in-reply-to:  references:references;
-        bh=jIrMvS3fqSg9X4blIZwjBFdkrYYk3E5Uj4UHcmCYcYw=;
-        b=DA16yGLCu7U6kFlBgzpci/hQudexghZn/nJsEGG0VkR4TabjBgnq2RHhDwlz16hVSuf5Ne
-        Kg6ewepl7UpbBt+CvC4xM1YRY4/cPvlYUP4gQFvyqL1CXB5TbmubqXzDYFlu15m7yM+0LA
-        s3/9bcKcO9+hiNOaSQJVlKf9atEcJI8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-tvJV7NueNYawQwS84FWyHQ-1; Sat, 21 Nov 2020 15:30:03 -0500
-X-MC-Unique: tvJV7NueNYawQwS84FWyHQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B6F81842174;
-        Sat, 21 Nov 2020 20:30:02 +0000 (UTC)
-Received: from tucnak.zalov.cz (ovpn-113-127.ams2.redhat.com [10.36.113.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id ADB161349A;
-        Sat, 21 Nov 2020 20:30:01 +0000 (UTC)
-Received: from tucnak.zalov.cz (localhost [127.0.0.1])
-        by tucnak.zalov.cz (8.16.1/8.16.1) with ESMTPS id 0ALKTwiO2730785
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Sat, 21 Nov 2020 21:29:58 +0100
-Received: (from jakub@localhost)
-        by tucnak.zalov.cz (8.16.1/8.16.1/Submit) id 0ALKTs3I2730784;
-        Sat, 21 Nov 2020 21:29:54 +0100
-Date:   Sat, 21 Nov 2020 21:29:54 +0100
-From:   Jakub Jelinek <jakub@redhat.com>
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, christophe.leroy@csgroup.eu,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] ilog2: Improve ilog2 for constant arguments
-Message-ID: <20201121202954.GW3788@tucnak>
-Reply-To: Jakub Jelinek <jakub@redhat.com>
-References: <20201120125154.GB3040@hirez.programming.kicks-ass.net>
- <20201121202310.lx2iqqebal3fmmmo@ltop.local>
+        Sat, 21 Nov 2020 15:31:58 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3560C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 12:31:56 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id t6so2243760lfl.13
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Nov 2020 12:31:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4d/b7Hy04mhwjDpN6XL4TWAKPlQGwHadj3yQZ49j5Bk=;
+        b=TwbsGRk2hSuldi031hRpur/5BVIv3rNiJ9E5XiM8UJQvom7OcU2G7vYCoWEB++lNt3
+         NS8HT09uklpHK7k8Jf2vSKrZe4xpUsm4HZ5aiwFIfa9w9sYukVKKFOFthSIBDTp7D7wq
+         mN9+ljC9HM2O2ufc1q/PC59kn6NdZ8CQ9hmmADrW2Tq1dZWk6iWUcQ022tVYxETgiUsV
+         jwO5AvBkOZzVSwuYpXRPJZMqwXwW/t37AxNSbOxEREqi8G2T2ewCF/MJ0LcRuCDQV4dl
+         cAGucVsHqGzhTmUlgPDmkm5PkuHT9nxSQI/7bl8p4x6EugC5O9X2jprnD9cck6TYBkKE
+         Jy1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4d/b7Hy04mhwjDpN6XL4TWAKPlQGwHadj3yQZ49j5Bk=;
+        b=WUf/HAclALs6MRT00bDYl5jlAFu5oJ3Ak6mRejHQy+M55npZkU8XLmGHAP7lIo0W9q
+         aOg23zR815nnjkKh4+SELJuuAy3e2rhKX3dbTMww535EMpfR5Uz6sBTUBJ6Qiq5pR9HD
+         hvKnoHP49kYPTsjNf2pftgCUek5UGTWCrc5+QY/QUwZUZ15uSCb7LWjEcWb48ES7WvV2
+         Gl9r+lj/e4fMRh4CNaw3j0mVSN0ohd7SNC06MhDkSfnt9nkMC56DcKCz0Pt0Yy6YwzRU
+         HyLg45vU8rFbu3UGREnmxP82avSdHulfNKMuePsu89KZL1x1jNLwv2fTwRwHEPPwyHsV
+         xK7Q==
+X-Gm-Message-State: AOAM533qoUFkPXoQKvZr1tXHc9QaZ+FIDyUtdGE+RBo9hFOeQD/dflIS
+        tQXhCDVe7ImU3MLbEZkqPWgwiiZnxTKPu+xUGpE=
+X-Google-Smtp-Source: ABdhPJwqJBgxkEiVS/mKJFtZOtD5D9pfov++RYKrPoOWaURnCAeie5c+HkF6OgZ6MS7f8U7m/YUWIoBCkHoOGiZ3sEU=
+X-Received: by 2002:a19:4147:: with SMTP id o68mr10937840lfa.365.1605990715231;
+ Sat, 21 Nov 2020 12:31:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121202310.lx2iqqebal3fmmmo@ltop.local>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20201121161706.104631-1-dwaipayanray1@gmail.com> <185d4505b35be4b9d039f430b3f95e7c33ed6a49.camel@perches.com>
+In-Reply-To: <185d4505b35be4b9d039f430b3f95e7c33ed6a49.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Sun, 22 Nov 2020 02:01:23 +0530
+Message-ID: <CABJPP5AsOwPDYrqMAZ5Vdo8kz55Uccq0jPFfzvB4NTWHDhkJ8A@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: add --fix option for INCLUDE_LINUX
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 09:23:10PM +0100, Luc Van Oostenryck wrote:
-> On Fri, Nov 20, 2020 at 01:51:54PM +0100, Peter Zijlstra wrote:
-> > 
-> > Other option would be to change the const_ilog2 macro, though as the
-> > description says it is meant to be used also in C constant expressions,
-> > and while GCC will fold it to constant with constant argument even in
-> > those, perhaps it is better to avoid using extensions in that case.
-> 
-> Just for info, the description is outdated and Sparse is just fine with
-> __builtin_clzll() and friends in constant expressions (since Feb 2017)
+On Sun, Nov 22, 2020 at 1:35 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Sat, 2020-11-21 at 21:47 +0530, Dwaipayan Ray wrote:
+> > Provide fix option to INCLUDE_LINUX check to replace asm
+> > includes.
+> >
+> > Macros of type:
+> >  #include <asm/percpu.h>
+> >
+> > are corrected to:
+> >  #include <linux/percpu.h>
+> []
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -5468,8 +5468,11 @@ sub process {
+> >                                               CHK("ARCH_INCLUDE_LINUX",
+> >                                                   "Consider using #include <linux/$file> instead of <asm/$file>\n" . $herecurr);
+> >                                       } else {
+> > -                                             WARN("INCLUDE_LINUX",
+> > -                                                  "Use #include <linux/$file> instead of <asm/$file>\n" . $herecurr);
+> > +                                             if (WARN("INCLUDE_LINUX",
+> > +                                                      "Use #include <linux/$file> instead of <asm/$file>\n" . $herecurr) &&
+> > +                                                 $fix) {
+> > +                                                     $fixed[$fixlinenr] =~ s/\<asm\/$file\>/\<linux\/$file\>/;
+>
+> $file can include a slash.
+>
+> e.g.: arch/arm/kernel/atags_parse.c:#include <asm/mach/arch.h>
+>
+> Probably simpler to use /Q /E quoting.
+>
+>
+Thanks. I will do that.
 
-Why is the description outdated?  It is still an extension that not every
-compiler might fold in constant expressions.  And, the large expressions
-aren't really a problem in constant expressions, they will be folded there
-to constant or error.
-The problem the patch was trying to solve is that the large expressions are
-a problem at least for GCC in runtime code when guarded by
-__builtin_constant_p, because __builtin_constant_p is folded quite late
-(intentionally so, so that more constants can be propagated into it, e.g.
-after inlining etc.), and the large expressions might confuse inliner
-heuristics.
-
-	Jakub
-
+Regards,
+Dwaipayan.
