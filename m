@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12D32BBF71
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1712BBF74
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Nov 2020 15:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727920AbgKUOEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Nov 2020 09:04:53 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:41996 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727741AbgKUOEw (ORCPT
+        id S1727874AbgKUOJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Nov 2020 09:09:07 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:51899 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726570AbgKUOJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Nov 2020 09:04:52 -0500
-Received: by mail-qk1-f195.google.com with SMTP id z188so422624qke.9;
-        Sat, 21 Nov 2020 06:04:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wwSyffURhFDeBnrx6J6OeK2E2lbKIqJMz9PrJJH/RC0=;
-        b=KfF7C+61OQ5acci9uhIeITn7Weo+a5/kN9rT0EMmmEJYpPpwt4bl07YfvpR6TVqdK5
-         Vex0/MsDI1SDKChWwHxTm/bDgcvYuo9HRgPvP696PGWTEFgs7VpUuVvzisysJGYMT1hB
-         gTRDZMXPlAlAxtFNgpM6huLkzAmELID9m7HD8tdFirLNKFG4KIZmf5GJuBHtXJD0uCK6
-         70ii5Y5nuGKqFNbWapLpiaxinN5hpp0RI5GmHjdJFxU6He2RaNfS6S26pVrGd1RL7ud6
-         6bjgpBJj149ZCEWWgo/isb9O3+eK+nh9eru/PfAmWno/enZpKDfHyxAQGlSLPXwKACfQ
-         h+JQ==
-X-Gm-Message-State: AOAM530x7OAiDQ0cb2V56mC4JyHTNwnk/xdklh5cwukh8eRJNo+aHL7m
-        lsCQLXlNOF/XEsYKrpj99Q==
-X-Google-Smtp-Source: ABdhPJynrIKv2Ye3GvsMlDEoJ/XAMOUbvNz3bmZkSg/xPEZNu9UzBQz8diHoAS1DsNu0usRPer7Pbw==
-X-Received: by 2002:a37:5242:: with SMTP id g63mr22162778qkb.317.1605967491394;
-        Sat, 21 Nov 2020 06:04:51 -0800 (PST)
-Received: from xps15 ([172.58.99.230])
-        by smtp.gmail.com with ESMTPSA id w192sm4131343qka.68.2020.11.21.06.04.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Nov 2020 06:04:50 -0800 (PST)
-Received: (nullmailer pid 2173568 invoked by uid 1000);
-        Sat, 21 Nov 2020 14:04:47 -0000
-Date:   Sat, 21 Nov 2020 08:04:47 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, thierry.reding@gmail.com,
-        linux-kernel@vger.kernel.org, jonathanh@nvidia.com,
-        linux-ide@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] dt-binding: ata: tegra: Add dt-binding
- documentation for Tegra186
-Message-ID: <20201121140447.GA2173518@robh.at.kernel.org>
-References: <1605296218-2510-1-git-send-email-skomatineni@nvidia.com>
- <1605296218-2510-5-git-send-email-skomatineni@nvidia.com>
+        Sat, 21 Nov 2020 09:09:06 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1342164|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.018434-0.00355031-0.978016;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=fuyao@allwinnertech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.IzZuxG._1605967737;
+Received: from localhost(mailfrom:fuyao@allwinnertech.com fp:SMTPD_---.IzZuxG._1605967737)
+          by smtp.aliyun-inc.com(10.147.41.187);
+          Sat, 21 Nov 2020 22:08:57 +0800
+Date:   Sat, 21 Nov 2020 22:08:57 +0800
+From:   fuyao <fuyao@allwinnertech.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     wens@csie.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] introduce sunxi hwspinlock
+Message-ID: <20201121140857.GA23438@debian>
+Mail-Followup-To: Maxime Ripard <maxime@cerno.tech>, wens@csie.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <y>
+ <cover.1605767679.git.fuyao@allwinnertech.com>
+ <20201120160710.wlkl5cdfqlrym2fj@gilmour>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1605296218-2510-5-git-send-email-skomatineni@nvidia.com>
+In-Reply-To: <20201120160710.wlkl5cdfqlrym2fj@gilmour>
+Organization: fuyao_love_xxt.Allwinnertech.Technology
+User-Agent: Mutt/1.12.1+6 (4c2f7c70) (2019-08-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 11:36:56 -0800, Sowjanya Komatineni wrote:
-> This patch adds dt-bindings documentation for Tegra186 AHCI
-> controller.
+On Fri, Nov 20, 2020 at 05:07:10PM +0100, Maxime Ripard wrote:
+> Hi!
 > 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 38 ++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
+> On Thu, Nov 19, 2020 at 02:44:51PM +0800, fuyao@allwinnertech.com wrote:
+> > From: fuyao <fuyao@allwinnertech.com>
+> > 
+> > this series add hwspinlock of sunxi. it provides hardware assistance for
+> > synchronization between the multiple processors in the system.
+> > (Or1k, Cortex-A7, Cortex-A53, Xtensa)
 > 
+> Xtensa? Which SoC has an Xtensa core?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+The new Soc named R329 use Xtensa core as the arisc role and audio.
+And the hwspinlock is the same as h3 and h6.
+
+Additional, The new RISC-V Soc also use the same hwspinlock.
+
+> 
+> Unfortunately, there's been a submission of the same driver earlier this week:
+> https://lore.kernel.org/lkml/cover.1605693132.git.wilken.gottwalt@posteo.net/
+> 
+> It would be great if you could point out whatever issue there is with
+> that patch series (it looks like the retry delay could be useful for
+> example).
+
+I will test that submission with arisc next week.
+
+BTW, which sunxi board you used, I want to used the same board with you.
+
+^-^
+
+thanks
+-- 
+fuyao
+
+
